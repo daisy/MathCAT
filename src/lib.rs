@@ -44,6 +44,7 @@ mod chemistry;
 pub mod shim_filesystem; // really just for override_file_for_debugging_rules, but the config seems to throw it off
 pub use interface::*;
 use crate::errors::{bail, Result};
+pub use ext_php_rs::prelude::*;
 
 #[cfg(test)]
 pub fn init_logger() {
@@ -115,8 +116,32 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
 pub fn are_strs_canonically_equal(test: &str, target: &str, ignore_attrs: &[&str]) -> bool {
     are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".").is_ok()
 }
-
 /// Like `are_strs_canonically_equal` but returns `Result` for use in `#[test]` functions that return `Result<()>`.
 pub fn are_strs_canonically_equal_result(test: &str, target: &str, ignore_attrs: &[&str]) -> Result<()> {
     are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".")
+}
+
+#[php_function]
+pub fn mathcat_set_rules_dir(dir: String) {
+    let _ = set_rules_dir(dir);
+}
+
+#[php_function]
+pub fn mathcat_set_mathml(mathml_str: String) -> String {
+    return set_mathml(mathml_str).unwrap();
+}
+
+#[php_function]
+pub fn mathcat_get_spoken_text() -> String {
+    return get_spoken_text().unwrap();
+}
+
+#[php_function]
+pub fn mathcat_set_preference(name: String, value: String) {
+    let _ = set_preference(name, value);
+}
+
+#[php_module]
+pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
+    module
 }
