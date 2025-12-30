@@ -5,7 +5,7 @@
 use libmathcat::{errors::*, interface::*};
 use log::*;
 use std::path::PathBuf;
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 
 // Maybe also have this speak to test the TTS generation.
 // There is a rust winapi crate that mirrors the WinPAI and has "Speak(...)" in it
@@ -18,6 +18,13 @@ fn get_rules_dir() -> String {
     return rules_path.as_os_str().to_str().unwrap().to_string();
 }
 
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum OutputType {
+    Text,
+    Braille,
+    Speech,
+}
+
 #[derive(Parser)]
 #[command(version, about)]
 struct Options {
@@ -28,6 +35,9 @@ struct Options {
 
     #[arg(short, long, default_value="en")]
     language: String,
+
+    #[arg(value_enum, long, default_value="text")]
+    output: OutputType,
 }
 
 
@@ -77,26 +87,38 @@ fn main() -> Result<()> {
     info!("Speech styles: {}", libmathcat::interface::get_supported_speech_styles("ClearSpeak".to_string()).join(", "));
     info!("BrailleCodes: {}", libmathcat::interface::get_supported_braille_codes().join(", "));
 
-    if let Err(e) = set_mathml(expr.to_string()) {
-	panic!("Error: exiting -- {}", errors_to_string(&e));
-    };
-
-    match get_spoken_text() {
-	Ok(speech) => println!("{speech}"),
-	Err(e) => panic!("{}", errors_to_string(&e)),
-    }
-
     debug!("Speech language is {}", get_preference("Language".to_string()).unwrap());
     debug!("DecimalSeparator: {:?}", get_preference("DecimalSeparator".to_string()).unwrap());
     debug!("DecimalSeparators: {:?}, BlockSeparators: {:?}", get_preference("DecimalSeparators".to_string()).unwrap(), get_preference("BlockSeparators".to_string()).unwrap());
     debug!("SpeechStyle: {:?}", get_preference("SpeechStyle".to_string()).unwrap());
     debug!("Verbosity: {:?}", get_preference("Verbosity".to_string()).unwrap());
 
-    match get_braille("".to_string()) {
-	Ok(braille) => info!("Computed braille string:\n   '{braille}'"),
-	Err(e) => panic!("{}", errors_to_string(&e)),
+    match set_mathml(expr.to_string()) {
+	Err(e) => {
+	    panic!("Error: exiting -- {}", errors_to_string(&e));
+	},
+	Ok(fmt) => {
+	    info!("formatted input mathml into {fmt}");
+	}
     }
-    debug!("...using BrailleCode: {:?}", get_preference("BrailleCode".to_string()).unwrap());
+
+    match cli.output {
+	OutputType::Text => {
+	    match get_spoken_text() {
+		Ok(speech) => println!("{speech}"),
+		Err(e) => panic!("{}", errors_to_string(&e)),
+	    }
+	},
+	OutputType::Braille => {
+	    debug!("...using BrailleCode: {:?}", get_preference("BrailleCode".to_string()).unwrap());
+	    match get_braille("".to_string()) {
+		Ok(braille) => println!("{braille}"),
+		Err(e) => panic!("{}", errors_to_string(&e)),
+	    }
+	},
+	_ => {
+	}
+    }
 
     Ok(())
 }
