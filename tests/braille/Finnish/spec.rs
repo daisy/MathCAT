@@ -1927,7 +1927,7 @@ fn p51_set_with_closure() {
 <mrow>
 <mo>(</mo>
 <mi>X</mi>
-<mo>−</mo>
+<mo>∖</mo>
 <mi>A</mi>
 <mo>)</mo>
 </mrow>
