@@ -1781,7 +1781,7 @@ fn p50_such_that_y_greater_than_x() {
     <mi>ℝ</mi>
     <mo>,</mo>
     <mi>∃</mi>
-    <mi>𝑦</mi>
+    <mi>y</mi>
     <mo>∈</mo>
     <mi>ℝ</mi>
     <mo>;</mo>
