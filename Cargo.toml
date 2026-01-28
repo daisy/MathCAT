@@ -14,6 +14,8 @@ exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", bu
 [features]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
+"tts" = [ "natural-tts" ]
+
 
 # FIX: temporary -- need to replace error-chain package which has been deprecated
 [lints.rust]
@@ -46,8 +48,7 @@ zip = { version = "6.0", default-features = false, features = ["deflate"] }
 zip = { version = "6.0", default-features = false, features = ["bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
-
-
+natural-tts = { version = "*", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
@@ -64,6 +65,8 @@ crate-type = ["rlib", "cdylib"]
 [[bin]]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
+required-features = ["tts"]
+
 
 [profile.test]
 debug = true
