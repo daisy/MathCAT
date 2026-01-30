@@ -22,6 +22,7 @@ fn get_rules_dir() -> String {
 enum OutputType {
     Text,
     Braille,
+    #[cfg(feature="tts")]
     Speech,
 }
 
@@ -116,6 +117,7 @@ fn main() -> Result<()> {
 		Err(e) => panic!("{}", errors_to_string(&e)),
 	    }
 	},
+	#[cfg(feature="tts")]
 	OutputType::Speech => {
 	    // Create the NaturalTts struct using the builder pattern.
 	    let mut natural = natural_tts::NaturalTtsBuilder::default()
