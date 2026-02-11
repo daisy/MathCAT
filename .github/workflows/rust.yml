@@ -56,6 +56,7 @@ jobs:
   pre-release:
     name: Pre Release
     continue-on-error: false
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # otherwise, job fails on pull requests, as GITHUB_TOKEN is not available
     needs: [zip-rules]
     runs-on: ubuntu-latest
     permissions:
