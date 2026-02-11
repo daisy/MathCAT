@@ -14,6 +14,8 @@ exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", bu
 [features]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
+"tts" = [ "natural-tts" ]
+
 
 [dependencies]
 sxd-document = "0.3"
@@ -34,6 +36,7 @@ log = "0.4"
 env_logger = "0.11.8"
 cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
+clap = { version = "*", features = ["derive"] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 zip = { version = "7.0", default-features = false, features = ["deflate"] }
@@ -41,8 +44,7 @@ zip = { version = "7.0", default-features = false, features = ["deflate"] }
 zip = { version = "7.0", default-features = false, features = ["bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
-
-
+natural-tts = { version = "*", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
@@ -54,6 +56,11 @@ zip = { version = "7.0", default-features = false, features = ["bzip2"] }
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "mathml2text"
+path = "src/bin/mathml2text.rs"
+
 
 [profile.test]
 debug = true
