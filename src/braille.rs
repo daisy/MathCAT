@@ -1618,7 +1618,7 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
     }
     return (is_alone, &chars[i..i+2+n_right_matched], n_letters);
 
-    /// chars before before 'L'
+    /// chars before 'L'
     fn left_side_stands_alone(chars: &[char]) -> bool {
         // scan backwards to skip letters and intervening chars
         // once we hit an intervening char, only intervening chars are allowed if standing alone
@@ -2561,7 +2561,7 @@ impl BrailleChars {
                 (None, None) => (),
                 (Some(dot), Some(comma)) => {
                     if comma < dot {
-                        // switch dot/comma -- using "\x01" as a temp when switching the the two chars
+                        // switch dot/comma -- using "\x01" as a temp when switching the two chars
                         let switched = text.replace('.', "\x01").replace(',', ".").replace('\x01', ",");
                         mn_node.set_text(&switched);
                     }

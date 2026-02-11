@@ -2042,7 +2042,7 @@ impl FilesAndTimes {
         }
 
 
-        // check the time stamp on the included files -- if the head file hasn't changed, the the paths for the included files will the same
+        // check the time stamp on the included files -- if the head file hasn't changed, the paths for the included files will be the same
         for file in &self.ft {
             if !file.is_up_to_date() {
                 return false;

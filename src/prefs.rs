@@ -1,7 +1,7 @@
 //! Preferences come from either the user or are programmatically set by the AT.
-//! The either source can set any preference, but users and AT typically set different preferences.
+//! Either source can set any preference, but users and AT typically set different preferences.
 //!
-//! User prefs are read in from a YAML file (prefs.yaml). The can be written by hand.
+//! User prefs are read in from a YAML file (prefs.yaml). They can be written by hand.
 //! In the future, there will hopefully be a nice UI that writes out the YAML file.
 //!
 //! AT prefs are set via the API given in the [crate::interface] module.
@@ -207,7 +207,7 @@ thread_local!{
 
 /// PreferenceManager keeps track of user and api prefs along with current files
 ///
-/// If one one the `FileAndTime` files changes while the program is running, the values will auto-update
+/// If one of the `FileAndTime` files changes while the program is running, the values will auto-update
 /// Among other things, that means that a UI that changes a user pref will be reflected the next time someone gets speech, braille, etc.
 //
 // Note: I experimented with PREF_MANAGER being a Result<PreferenceManager> in the case of no rule files,

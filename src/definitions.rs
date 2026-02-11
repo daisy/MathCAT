@@ -6,16 +6,16 @@
 //! There is no escaping some implementation details.
 //! Because these definitions are stored in global variables, the variables need to be protected
 //!   in some way so they can be written at runtime when the files are read.
-//!   This is done by putting them in side of a lock (`thread_local`).
+//!   This is done by putting them inside of a lock (`thread_local`).
 //!
-//! Furthermore, it was necessary to use use `RefCell` and `Rc` to deal with interior mutability.
+//! Furthermore, it was necessary to use `RefCell` and `Rc` to deal with interior mutability.
 //! All of this means that a lock needs to be obtained _and_ the contents borrowed to access a definition.
 //!
 //! To minimize the global variable footprint, all of the definitions are put inside of a single global variable [`DEFINITIONS`].
 //!
-//! //! Note: some of the variable are `vec`s and some are `hashset`s.
+//! //! Note: some of the variables are `vec`s and some are `hashset`s.
 //! Numbers are typically vectors so that indexing a digit is easy.
-//! Others such a `functions_names` are a hashset because you just want to know if an `mi` is a known name or not.
+//! Others such as `functions_names` are a hashset because you just want to know if an `mi` is a known name or not.
 //! The functions `as_vec` and `as_hashset` should be used on the appropriate variable.
 //! ## Names
 //! The names of "variables" in the definition files use camel case (e.g., "FunctionNames"). In the code, to fit with rust

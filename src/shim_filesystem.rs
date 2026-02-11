@@ -34,7 +34,7 @@ cfg_if! {
         use std::io::Read;
         use std::collections::{HashMap, HashSet};
         thread_local! {
-            // mapping the file names to whether they are are directory or a file
+            // mapping the file names to whether they are a directory or a file
             // Note: these are always stored with "/" as the path separator
             static DIRECTORIES: RefCell<HashSet<String>> = RefCell::new(HashSet::with_capacity(127));
             // if a file, we note whether it is in ZIPPED_RULE_FILES or the index of a zipped file within ZIPPED_RULE_FILES

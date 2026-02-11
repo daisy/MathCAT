@@ -403,7 +403,7 @@ pub fn get_presentation_element(element: Element) -> (usize, Element) {
 /// 2. normalize the characters
 /// 3. clean up "bad" MathML based on known output from some converters (TODO: still a work in progress)
 /// 4. the tree is "parsed" based on the mo (priority)/mi/mn's in an mrow
-///    *  this adds mrows mrows and some invisible operators (implied times, function app, ...)
+///    *  this adds mrows and some invisible operators (implied times, function app, ...)
 ///    * extra mrows are removed
 ///    * implicit mrows are turned into explicit mrows (e.g, there will be a single child of 'math')
 ///
@@ -1127,7 +1127,7 @@ impl CanonicalizeContext {
 								i += 1;
 							}
 						}
-						children = mathml.children();						// 'children' moved above, so need need new values
+						children = mathml.children();						// 'children' moved above, so need new values
 					} else {
 						// bad mathml such as '<annotation-xml> </annotation-xml>' -- don't add to new_children
 						i += 1;
@@ -1266,7 +1266,7 @@ impl CanonicalizeContext {
 			   following.len() == 1 && name(following_child) == "mn" {
 				return true;
 			}
-			// only want want one "∷"
+			// only want one "∷"
 			let is_before = is_proportional_before_colon(preceding.iter().rev());
 			if let Some(is_before) = is_before
 				&& !is_before {
@@ -1374,7 +1374,7 @@ impl CanonicalizeContext {
 		fn clean_chemistry_leaf(mathml: Element) -> Element {
 			if !(is_chemistry_off(mathml) || mathml.attribute(MAYBE_CHEMISTRY).is_some()) {
 				assert!(name(mathml)=="mi" || name(mathml)=="mtext");
-				// this is hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
+				// this is a hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
 				// FIX: come up with a less hacky way to prevent chem element misinterpretation
 				let text = as_text(mathml);
 				if text.len() > 2 && is_roman_number_match(text) {
@@ -3410,7 +3410,7 @@ impl CanonicalizeContext {
 			// if there isn't an obvious one, we have parsed the left, but not the right, so discount that
 		
 			// Trig functions have some special syntax
-			// We need to to treat '-' as prefix for things like "sin -2x"
+			// We need to treat '-' as prefix for things like "sin -2x"
 			// Need to be careful because (sin - cos)(x) needs an infix '-'
 			// Return either the prefix or infix version of the operator
 			if next_node.is_some() &&
@@ -3712,7 +3712,7 @@ impl CanonicalizeContext {
 	
 			// Names like "Tr" are likely function names, single letter names like "M" or "J" are iffy
 			// This needs to be after the chemical state check above to rule out Cl(g), etc
-			// This would be better if if were part of 'likely_names' as "[A-Za-z]+", but reg exprs don't work in HashSets.
+			// This would be better if it were part of 'likely_names' as "[A-Za-z]+", but reg exprs don't work in HashSets.
 			// FIX: create our own struct and write appropriate traits for it and then it could work
 			let mut chars = base_name.chars();
 			let first_char = chars.next().unwrap();		// we know there is at least one byte in it, hence one char
@@ -4309,7 +4309,7 @@ impl CanonicalizeContext {
 			if !ptr_eq(current_op.op, &ILLEGAL_OPERATOR_INFO) {
 				if current_op.op.is_left_fence() || current_op.op.is_prefix() {
 					if top(&parse_stack).is_operand {
-						// will end up with operand operand -- need to choose operator associated with prev child
+						// will end up with duplicate operands -- need to choose operator associated with prev child
 						// we use the original input here because in this case, we need to look to the right of the ()s to deal with chemical states
 						let likely_function_name = self.is_function_name(as_element(children[i_child-1]), Some(&children[i_child..]));
 						let implied_operator = if likely_function_name== FunctionNameCertainty::True {
@@ -6701,4 +6701,3 @@ mod canonicalize_tests {
 
 
 }
-

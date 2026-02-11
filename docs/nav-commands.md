@@ -36,7 +36,7 @@ Note: while navigating an expression, "control+c" copies the math content of the
    </td>
    <td valign=top style='border:solid 1.0pt;border-left:none;
    padding:0in 5.4pt 0in 5.4pt'>
-   <b>+Cntrl+Shift</b>
+   <b>+Ctrl+Shift</b>
    </td>
   </tr>
  </thead>
@@ -319,7 +319,7 @@ MathCAT supports three different navigation modes: enhanced, simple, and charact
 ## Typical Use
 
 Typically, you will start at the first term of an expression and move right as needed.
-You might move up and down levels if needed. This done with the arrow keys.
+You might move up and down levels if needed. This is done with the arrow keys.
 `alt+ctrl+arrow` is used to move around tabular entries.
 
 <i>Backspace</i> will take you back to where you were, which
