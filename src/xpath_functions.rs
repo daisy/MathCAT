@@ -1413,6 +1413,83 @@ impl Function for ReplaceAll {
     }
 }
 
+pub struct CountTableDims;
+impl CountTableDims {
+    /// For an `mtable` element, count the number of rows and columns in the table.
+    ///
+    /// This function is relatively permissive. Non-`mtr` rows are
+    /// ignored. The number of columns is determined only from the first
+    /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
+    fn count_table_dims<'d>(e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
+	if e.name().local_part() != "mtable" {
+	    return Err(Error::Other(format!("invalid tag {} for CountTableRows", e.name().local_part())));
+	}
+	let mut num_cols = 0;
+	let mut num_rows = 0;
+	for child in e.children() {
+	    let ChildOfElement::Element(row) = child else {
+		continue
+	    };
+
+	    // each child of mtable should be an mtr. Ignore non-mtr rows.
+	    if name(row) != "mtr" {
+		continue;
+	    }
+	    num_rows += 1;
+
+	    // count columns based on the number of rows.
+	    if num_rows == 1 {
+		// count the number of columns, including column spans, in the first row.
+		for row_child in row.children() {
+		    let ChildOfElement::Element(mtd) = row_child else  {
+			continue;
+		    };
+		    if name(mtd) != "mtd" {
+			continue;
+		    }
+		    // add the contributing columns, taking colspan into account
+		    let colspan = mtd.attribute_value("colspan").map_or(1, |e| e.parse::<usize>().unwrap_or(0));
+		    num_cols += colspan;
+		}
+	    }
+	}
+
+	Ok((Value::Number(num_rows as f64), Value::Number(num_cols as f64)))
+    }
+
+    fn evaluate<'c, 'd>(fn_name: &str,
+                        args: Vec<Value<'d>>) -> Result<(Value<'d>, Value<'d>), Error> {
+	let mut args = Args(args);
+	args.exactly(1)?;
+	let element = args.pop_nodeset()?;
+	let node = validate_one_node(element, fn_name)?;
+	if let Node::Element(e) = node {
+	    return Ok(Self::count_table_dims(e)?);
+	}
+
+	Err( Error::Other(format!("couldn't count table rows")) )
+    }
+}
+
+pub struct CountTableRows;
+impl Function for CountTableRows {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+	CountTableDims::evaluate("CountTableRows", args).map(|a| a.0)
+    }
+}
+
+pub struct CountTableCols;
+impl Function for CountTableCols {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+	CountTableDims::evaluate("CountTableCols", args).map(|a| a.1)
+    }
+}
+
+
 /// Add all the functions defined in this module to `context`.
 pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("NestingChars", crate::braille::NemethNestingChars);
@@ -1432,6 +1509,8 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("SpeakIntentName", SpeakIntentName);
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
+    context.set_function("CountTableRows", CountTableRows);
+    context.set_function("CountTableCols", CountTableCols);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1604,6 +1683,27 @@ mod tests {
         test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
                     "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>");
                    
+    }
+
+    #[test]
+    fn table_row_count() {
+	let mathml = "<math><mrow>a</mrow></math>";
+	let package = parser::parse(mathml).expect("failed to parse XML");
+	let math_elem = get_element(&package);
+	let child = as_element(math_elem.children()[0]);
+	assert!(CountTableDims::count_table_dims(child).is_err());
+
+	let mathml = "<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>";
+	let package = parser::parse(mathml).expect("failed to parse XML");
+	let math_elem = get_element(&package);
+	let child = as_element(math_elem.children()[0]);
+	assert!(CountTableDims::count_table_dims(child) == Ok((Value::Number(1.0), Value::Number(1.0))));
+
+	let mathml = "<math><mtable><mtr><mtd colspan=\"3\">a</mtd><mtd>b</mtd></mtr><mtr><mtd></mtd></mtr></mtable></math>";
+	let package = parser::parse(mathml).expect("failed to parse XML");
+	let math_elem = get_element(&package);
+	let child = as_element(math_elem.children()[0]);
+	assert!(CountTableDims::count_table_dims(child) == Ok((Value::Number(2.0), Value::Number(4.0))));
     }
 
     #[test]
