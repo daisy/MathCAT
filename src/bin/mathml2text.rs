@@ -53,48 +53,48 @@ fn main() -> Result<()> {
     let cli = Options::parse();
 
     let expr = if let Some(f) = cli.input_file {
-	std::fs::read_to_string(&f).chain_err(|| format!("unable to open {}", f.to_str().unwrap_or_default()))?
+	std::fs::read_to_string(&f).with_context(|| format!("unable to open {}", f.to_str().unwrap_or_default()))?
     } else {
-	r#"
-<math xmlns="http://www.w3.org/1998/Math/MathML"><mo>(</mo><mn>1</mn><mo>)</mo></math>
-		   "#.to_string()
+        r#"
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><mo>(</mo><mn>1</mn><mo>)</mo></math>
+		"#.to_string()
     };
 
     if let Err(e) = set_rules_dir(get_rules_dir()) {
 	panic!("Error: exiting -- {}", errors_to_string(&e));
     }
-    debug!("Languages: {}", libmathcat::interface::get_supported_languages().join(", "));
+    debug!("Languages: {}", libmathcat::interface::get_supported_languages()?.join(", "));
 
     #[cfg(feature = "include-zip")]
     info!("***********include-zip is present**********");
     info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
-    set_preference("Language".to_string(), cli.language)?;
+    set_preference("Language", cli.language)?;
 
-    set_preference("DecimalSeparator".to_string(), "Auto".to_string()).unwrap();
-    set_preference("BrailleCode".to_string(), "Nemeth".to_string()).unwrap();
-    set_preference("TTS".to_string(), "None".to_string()).unwrap();
-    set_preference("Verbosity".to_string(), "Verbose".to_string()).unwrap();
-    set_preference("NavVerbosity".to_string(), "Verbose".to_string()).unwrap();
-    set_preference("NavMode".to_string(), "Enhanced".to_string()).unwrap();
-    set_preference("Impairment".to_string(), "Blindness".to_string()).unwrap();
-    set_preference("SpeechOverrides_CapitalLetters".to_string(), "".to_string()).unwrap();
-    set_preference("MathRate".to_string(), "80".to_string()).unwrap();
-    set_preference("CapitalLetters_Beep".to_string(), "true".to_string()).unwrap();
-    set_preference("IntentErrorRecovery".to_string(), "Error".to_string()).unwrap();
+    set_preference("DecimalSeparator", "Auto").unwrap();
+    set_preference("BrailleCode", "Nemeth").unwrap();
+    set_preference("TTS", "None").unwrap();
+    set_preference("Verbosity", "Verbose").unwrap();
+    set_preference("NavVerbosity", "Verbose").unwrap();
+    set_preference("NavMode", "Enhanced").unwrap();
+    set_preference("Impairment", "Blindness").unwrap();
+    set_preference("SpeechOverrides_CapitalLetters", "").unwrap();
+    set_preference("MathRate", "80").unwrap();
+    set_preference("CapitalLetters_Beep", "true").unwrap();
+    set_preference("IntentErrorRecovery", "Error").unwrap();
 
-    set_preference("Bookmark".to_string(), "false".to_string()).unwrap();
-    set_preference("SpeechStyle".to_string(), "ClearSpeak".to_string()).unwrap();
-    info!("Languages: {}", libmathcat::interface::get_supported_languages().join(", "));
-    info!("Speech styles: {}", libmathcat::interface::get_supported_speech_styles("ClearSpeak".to_string()).join(", "));
-    info!("BrailleCodes: {}", libmathcat::interface::get_supported_braille_codes().join(", "));
+    set_preference("Bookmark", "false").unwrap();
+    set_preference("SpeechStyle", "ClearSpeak").unwrap();
+    info!("Languages: {}", libmathcat::interface::get_supported_languages()?.join(", "));
+    info!("Speech styles: {}", libmathcat::interface::get_supported_speech_styles("ClearSpeak")?.join(", "));
+    info!("BrailleCodes: {}", libmathcat::interface::get_supported_braille_codes()?.join(", "));
 
-    debug!("Speech language is {}", get_preference("Language".to_string()).unwrap());
-    debug!("DecimalSeparator: {:?}", get_preference("DecimalSeparator".to_string()).unwrap());
-    debug!("DecimalSeparators: {:?}, BlockSeparators: {:?}", get_preference("DecimalSeparators".to_string()).unwrap(), get_preference("BlockSeparators".to_string()).unwrap());
-    debug!("SpeechStyle: {:?}", get_preference("SpeechStyle".to_string()).unwrap());
-    debug!("Verbosity: {:?}", get_preference("Verbosity".to_string()).unwrap());
+    debug!("Speech language is {}", get_preference("Language").unwrap());
+    debug!("DecimalSeparator: {:?}", get_preference("DecimalSeparator").unwrap());
+    debug!("DecimalSeparators: {:?}, BlockSeparators: {:?}", get_preference("DecimalSeparators").unwrap(), get_preference("BlockSeparators").unwrap());
+    debug!("SpeechStyle: {:?}", get_preference("SpeechStyle").unwrap());
+    debug!("Verbosity: {:?}", get_preference("Verbosity").unwrap());
 
-    match set_mathml(expr.to_string()) {
+    match set_mathml(&expr) {
 	Err(e) => {
 	    panic!("Error: exiting -- {}", errors_to_string(&e));
 	},
@@ -111,8 +111,8 @@ fn main() -> Result<()> {
 	    }
 	},
 	OutputType::Braille => {
-	    debug!("...using BrailleCode: {:?}", get_preference("BrailleCode".to_string()).unwrap());
-	    match get_braille("".to_string()) {
+	    debug!("...using BrailleCode: {:?}", get_preference("BrailleCode").unwrap());
+	    match get_braille("") {
 		Ok(braille) => println!("{braille}"),
 		Err(e) => panic!("{}", errors_to_string(&e)),
 	    }
