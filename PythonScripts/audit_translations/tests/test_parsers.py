@@ -1,12 +1,13 @@
 """
 Tests for parsers.py.
 """
+from typing import List
 
 import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..dataclasses import RuleInfo
+from ..dataclasses import RuleInfo, RuleDifference
 from ..parsers import (
     diff_rules,
     extract_conditions,
@@ -382,6 +383,69 @@ class TestDiffRules:
         tr = make_rule("test", "mo", {"if": "condition2"})
         diffs = diff_rules(en, tr)
         assert any(d.diff_type == "condition" for d in diffs)
+
+    def test_condition_snippet_preserves_rule_order(self):
+        """
+        Condition snippets should preserve the order seen in each rule.
+        Originally, alphabetical order was used, which is not very helpful.
+        """
+        en = make_rule(
+            "test",
+            "mo",
+            {
+                "test": {
+                    "if": "condition_b",
+                    "then": [
+                        {
+                            "test": {
+                                "if": "condition_a",
+                                "then": [{"T": "x"}],
+                            }
+                        }
+                    ],
+                }
+            },
+        )
+        tr = make_rule("test", "mo", {"if": "condition_c"})
+        diffs: List[RuleDifference] = diff_rules(en, tr)
+        cond_diff: RuleDifference = [d for d in diffs if d.diff_type == "condition"][0]
+        assert cond_diff.english_snippet == "condition_b, condition_a"
+        assert cond_diff.translated_snippet == "condition_c"
+
+    def test_condition_snippet_deduplicates_repeated_conditions(self):
+        """
+        Repeated conditions should be shown once, in first-seen order.
+        """
+        en = make_rule(
+            "test",
+            "mo",
+            {
+                "test": {
+                    "if": "condition_a",
+                    "then": [
+                        {
+                            "test": {
+                                "if": "condition_a",
+                                "then": [{"T": "x"}],
+                            }
+                        },
+                        {
+                            "test": {
+                                "if": "condition_b",
+                                "then": [{"T": "y"}],
+                            }
+                        },
+                    ],
+                }
+            },
+        )
+        tr = make_rule("test", "mo", {"if": "condition_c"})
+        diffs: List[RuleDifference] = diff_rules(en, tr)
+        cond_diff: RuleDifference = [d for d in diffs if d.diff_type == "condition"][0]
+
+        # without deduplication, we'd have "condition_a" repeated.
+        assert cond_diff.english_snippet == "condition_a, condition_b"
+        assert cond_diff.translated_snippet == "condition_c"
 
     def test_detects_missing_condition(self):
         """Ensure detects missing condition."""
