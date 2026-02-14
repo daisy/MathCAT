@@ -296,6 +296,19 @@ def normalize_match(value: Any) -> str:
 def normalize_xpath(value: str) -> str:
     return " ".join(value.split())
 
+def dedup_list(values: List[str]) -> List[str]:
+    """
+    Return a list without duplicates while preserving first-seen order.
+    Originally, rule differences were stored as sets, losing their original order,
+    which is not helpful and why it changed with the help of this function.
+
+    Example:
+        >>> dedup_list(["if:a", "if:b", "if:a"])
+        ['if:a', 'if:b']
+    """
+
+    return list(dict.fromkeys(values)) # dict preserves insertion order (guaranteed in Python 3.7+)
+
 
 def extract_match_pattern(rule_data: Any) -> str:
     if isinstance(rule_data, dict):
@@ -403,8 +416,8 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> List[RuleDi
                 translated_rule=translated_rule,
                 diff_type='condition',
                 description='Conditions differ',
-                english_snippet=', '.join(sorted(en_set)) or '(none)',
-                translated_snippet=', '.join(sorted(tr_set)) or '(none)'
+                english_snippet=', '.join(dedup_list(en_conditions)) or '(none)',
+                translated_snippet=', '.join(dedup_list(tr_conditions)) or '(none)'
             ))
 
     # Check variable differences

@@ -158,8 +158,8 @@
     "issue_type": "rule_difference",
     "diff_type": "condition",
     "description": "Conditions differ",
-    "english_snippet": "$Setting = 'Value', $Verbosity!='Terse', *[2][.='2'], parent::m:minus",
-    "translated_snippet": "$Setting = 'Value', *[2][.='2'], parent::m:minus",
+    "english_snippet": "$Verbosity!='Terse', $Setting = 'Value', parent::m:minus, *[2][.='2']",
+    "translated_snippet": "$Setting = 'Value', parent::m:minus, *[2][.='2']",
     "untranslated_texts": [],
     "_explanation": "structure_misaligned.yaml: English has extra test block causing misalignment. Fix filters out misleading structure differences but reports condition difference."
   },
