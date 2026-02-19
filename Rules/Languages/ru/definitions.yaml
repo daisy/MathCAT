@@ -10,44 +10,44 @@
 #   for readability, spaces can be used around any of the delimiter characters
 # Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
 - IntentMappings: {
-    "indexed-by": "infix= ; sub; end sub: end sub: end subscript",
+    "indexed-by": "infix= ; индекс; конец индекса: конец индекса: конец индекса",
     "modified-variable": "silent= ",
-    "say-super": "infix=super: superscript: superscript",   # used with 'mo' for superscripts (e.g, "<")
+    "say-super": "infix=верхний индекс: верхний индекс: верхний индекс",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
 
-    "absolute-value": "function= ; absolute value: the absolute value: the absolute value; end absolute value",
-    "binomial": "infix=binomial; choose; end binomial",
-    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
-    "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
-    "imaginary-part": "function=imaginary part, the imaginary part, the imaginary part",
-    "least-common-multiple": "function=lcm:the lcm:the least common multiple",
-    # "large-op": "infix=over || other=from,to",
-    "limit": "prefix=limit as: the limit as: the limit as",
-    "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
-    "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
-    "logarithm-with-base": "prefix=log base: the log base: the log base",
-    "natural-logarithm": "function=l n: natural log: natural log",
-    "minus": "infix=minus || prefix=negative",
-    "plus": "infix=plus || prefix=positive",
+    "absolute-value": "function= ; модуль: модуль: модуль; конец модуля",
+    "binomial": "infix=бином; по; конец бинома",
+    # "closed-interval": "other=closed-interval; от,до; end closed-interval",
+    "greatest-common-divisor": "function=нод: нод: наибольший общий делитель",
+    "imaginary-part": "function=мнимая часть, мнимая часть, мнимая часть",
+    "least-common-multiple": "function=нок:нок:наименьшее общее кратное",
+    # "large-op": "infix=над || other=от,до",
+    "limit": "prefix=придел при: придел при: придел при",
+    "lim-sup": "prefix=верхний предел при: верхний предел при: верхний предел при",
+    "lim-inf": "prefix=нижний предел при: нижний предел при: нижний предел при",
+    "logarithm-with-base": "prefix=логарифм по основанию: логарифм по основанию: логарифм по основанию",
+    "natural-logarithm": "function=l n: натуральный логарифм: натуральный логарифм",
+    "minus": "infix=минус || prefix=отрицательное",
+    "plus": "infix=плюс || prefix=положительное",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "real-part": "function=the real part",
+    "real-part": "function=действительная часть",
 
-    "transpose": "postfix=transpose || function=transpose",
-    "norm": "function=; norm: norm: norm; end norm",
-    "trace": "function=;trace : trace: the trace; end trace",
-    "dimension": "function=; dimension : dimension: the dimension; end dimension",
-    "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
-    "kernel": "function= ; kernel : kernel: the kernel; end kernel",
-    "vector": "function= ; vector || prefix=vector",
-    "cross-product": "infix=cross: cross product: cross product",
-    "dot-product": "infix=dot: dot product: dot:dot product",
+    "transpose": "postfix=транспонирование || function=транспонированная",
+    "norm": "function=; норма: норма: норма; конец нормы",
+    "trace": "function=;след : след: след; конец следа",
+    "dimension": "function=; размерность : размерность: размерность; конец размерности",
+    "homomorphism": "function= ; гомоморфизм : гомоморфизм: гомоморфизм; конец гомоморфизма",
+    "kernel": "function= ; ядро : ядро: ядро; конец ядра",
+    "vector": "function= ; вектор || prefix=вектор",
+    "cross-product": "infix=векторное произведение: векторное произведение: векторное произведение",
+    "dot-product": "infix=скалярное произведение: скалярное произведение: скалярное произведение",
 
-    "divergence": "function= ; dihv: divergence: divergence; end divergence",
-    "curl": "function= ; curl; end curl",
-    "gradient": "function= ; del: gradient: gradient; end gradient",
-    "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
+    "divergence": "function= ; дивергенция: дивергенция: дивергенция; конец дивергенции",
+    "curl": "function= ; ротор; конец ротора",
+    "gradient": "function= ; градиент: градиент: градиент; конец градиента",
+    "laplacian": "function=лапласиан",   # speech engines don't do a good job with "laplacian"
 
-    "chemistry-concentration": "function= ; concentration: concentration of: the concentration of; end concentration",
+    "chemistry-concentration": "function= ; концентрация: концентрация: концентрация; конец концентрации",
   }
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 
@@ -307,25 +307,25 @@
     ]
 
 - NumbersOrdinalOnes: [
-«ноль», «первый», «второй», «третий», «четвертый», «пятый», «шестой», «седьмой», «восьмой», «девятый»,
+«нулевой», «первый», «второй», «третий», «четвертый», «пятый», «шестой», «седьмой», «восьмой», «девятый»,
 «десятый», «одиннадцатый», «двенадцатый», «тринадцатый», «четырнадцатый», «пятнадцатый», «шестнадцатый»,
 «семнадцатый», «восемнадцатый», «девятнадцатый»
     ]
 
 - NumbersOrdinalPluralOnes: [
-«ноль», «первый», «секунды», «терции», «четвертые», «пятые», «шестые», «седьмые», «восьмые», «девятые»,
+«нулевые», «первые», «вторые», «третьи», «четвертые», «пятые», «шестые», «седьмые», «восьмые», «девятые»,
 «десятые», «одиннадцатые», «двенадцатые», «тринадцатые», «четырнадцатые», «пятнадцатые», «шестнадцатые»,
 «семнадцатые», «восемнадцатые», «девятнадцатые»
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalOnes: [
-«ноль», «первый», «половина»
+«нулевая», «первая», «вторая»
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-«нули», «первые», «половинки»
+«нулевых», «первых», «вторых»
     ]
 
 
@@ -354,8 +354,8 @@
     ]
 
 - NumbersOrdinalPluralHundreds: [
-"", "сотые", "две сотых", "три сотых", "четыре сотых", "пять сотых",
-« шесть сотых», «семь сотых», «восемь сотых», «девять сотых»
+"", "сотые", "двухсотые", "трёхсотые", "четырёхсотые", "пятисотые",
+« шестисотые», «семисотые», «восьмисотые», «девятисотые»
     ]
       
 

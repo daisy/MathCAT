@@ -79,13 +79,13 @@
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
                 then: [t: "право"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
-                then: [t: "левый"]                                # phrase(move to the 'left')
+                then: [t: "лево"]                                # phrase(move to the 'left')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
-                then: [t: "нынешним"]                                 # phrase(who is the 'current' president)
+                then: [t: "текущий"]                                 # phrase(who is the 'current' president)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
-                then: [t: "на начало линии"]                                 # phrase(move 'to start of line')
+                then: [t: "к началу строки"]                                 # phrase(move 'to start of line')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
-                then: [t: "к концу линии"]                                 # phrase(move 'to end of line')
+                then: [t: "к концу строки"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "1"]
 
@@ -118,7 +118,7 @@
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
       then: [t: "корень"]               # phrase(the cube 'root' of x)
-      else: [t: "корневой индекс"]         # phrase(the 'root index' of x is 3)
+      else: [t: "индекс корня"]         # phrase(the 'root index' of x is 3)
   - pause: "medium"
 
 - name: into-or-out-of-msub
@@ -128,7 +128,7 @@
   - x: "$Move2D"
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "база"]              # phrase(the 'base' of the power)
+      then: [t: "основание"]              # phrase(the 'base' of the power)
       else: [t: "sepcript"]         # phrase(x with 'subscript' 2)
   - pause: "medium"
 
@@ -139,7 +139,7 @@
   - x: "$Move2D"
   - test:
       if: "not($Child2D/preceding-sibling::*)"
-      then: [t: "база"]            # phrase(the 'base' of the power)
+      then: [t: "основание"]            # phrase(the 'base' of the power)
       else: [t: "superscript"]     # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
   - pause: "medium"
 
@@ -150,7 +150,7 @@
   - x: "$Move2D"
   - test:
     - if: "not($Child2D/preceding-sibling::*)"
-      then: [t: "база"]             # phrase(the 'base' of the power)
+      then: [t: "основание"]             # phrase(the 'base' of the power)
     - else_if: "count($Child2D/preceding-sibling::*)=1"
       then: [t: "sepcript"]        # phrase(x with 'subscript' 2)
       else: [t: "superscript"]      # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
@@ -163,7 +163,7 @@
   - x: "$Move2D"
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "база"]          # phrase(the 'base' of the power)
+      then: [t: "основание"]          # phrase(the 'base' of the power)
       else: [t: "нижний предел"]   # phrase(the 'lower limit' of the function is zero)
   - pause: "medium"
 
@@ -174,7 +174,7 @@
   - x: "$Move2D"
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "база"]         # phrase(the 'base' of the power)
+      then: [t: "основание"]         # phrase(the 'base' of the power)
       else: [t: "верхний предел"]  # phrase(the 'upper limit' of the function is zero)
   - pause: "medium"
 
@@ -185,7 +185,7 @@
   - x: "$Move2D"
   - test:
     - if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "база"]           # phrase(the 'base' of the power)
+      then: [t: "основание"]           # phrase(the 'base' of the power)
     - else_if: "count($Child2D/preceding-sibling::*)=1"
       then: [t: "нижний предел"]    # phrase(the 'lower limit' of the function is zero)
       else: [t: "верхний предел"]   # phrase(the 'upper limit' of the function is zero)
@@ -205,7 +205,7 @@
           - x: "$Move2D"
           - test:
             - if: "$NumPrecedingSiblings=0"
-              then: [t: "база"]                 # phrase(the 'base' of the power)
+              then: [t: "основание"]                 # phrase(the 'base' of the power)
             - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # are we before mprescripts and hence are postscripts
               then:
               - test:   # in postscripts -- base shifts by one
@@ -564,12 +564,12 @@
           then:
           - test:
             - if: "$NavCommand = 'MoveStart'"
-              then: [t: "перейти на начало математики"]                  # phrase('move to start of math')
+              then: [t: "перейти к началу математики"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [t: "перейти на начало линии"]                  # phrase('move to start of line')
+              then: [t: "перейти к началу строки"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
               then: [t: "перейти к концу математики"]                    # phrase('move to end of math')
-              else: [t: "перейти к концу линии"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              else: [t: "перейти к концу строки"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -608,8 +608,8 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [t: "перейти на начало линии"]                                # phrase('move to start of line')
-          else: [t: "перейти к концу линии"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          then: [t: "перейти к началу строки"]                                # phrase('move to start of line')
+          else: [t: "перейти к концу строки"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"

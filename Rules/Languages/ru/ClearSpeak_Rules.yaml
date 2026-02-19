@@ -34,7 +34,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' square root of 25)
+      then: [t: ""]      # phrase('the' square root of 25)
   - test:
       if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
@@ -53,7 +53,7 @@
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "end root"      # phrase(the square root of x 'end root')
+      - t: "конец корня"      # phrase(the square root of x 'end root')
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -65,7 +65,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "квадратный корень 36"]      # phrase(6 is 'the' square root of 36)
+      then: [t: ""]      # phrase(6 is 'the' square root of 36)
   - test:
       if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
@@ -82,7 +82,7 @@
       - if: "*[2][.='2']"
         then: [t: "квадратный корень"]      # phrase(5 is the 'square root' of 25)
       - else_if: "*[2][.='3']"
-        then: [t: "корень куба"]      # phrase(5 is the 'cube root' of 625)
+        then: [t: "кубический корень"]      # phrase(5 is the 'cube root' of 625)
       - else: [x: "ToOrdinal(*[2])", t: "корень"]      # phrase(the square 'root' of 25)
       else:
       - test:
@@ -100,7 +100,7 @@
       if: $ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
       - pause: short
-      - t: "end root"      # phrase(start the fifth root of x 'end root')
+      - t: "конец корня"      # phrase(start the fifth root of x 'end root')
       - pause: medium
       else_test:
         if: IsNode(*[1], 'simple')
@@ -136,7 +136,7 @@
           BaseNode(*[1])[contains(@data-intent-property, ':unit') or (self::m:mrow and self::*[3][contains(@data-intent-property, ':unit')])]"
   replace:
   - x: "*[1]"
-  - t: "перемещение"      # phrase('5 meters 'per' second)
+  - t: "в"      # phrase('5 meters 'per' second)
   - x: "*[2]"
 
 - name: common-fraction
@@ -175,7 +175,7 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [ot: "а"]
+          then: [ot: ""]
       - t: "дробь"      # phrase(the 'fraction' with 3 over 4)
   - x: "*[1]"
   - t: "над"      # phrase(the fraction 3 'over' 4)
@@ -220,7 +220,7 @@
   tag: fraction
   match: "."
   replace:
-  - ot: "квадратный корень из 25"      # phrase(5 is 'the' square root of 25)
+  - ot: ""      # phrase(5 is 'the' square root of 25)
   - t: "дробь с числителем"      # phrase(the 'fraction with numerator' 6)
   - test:
       if: not(IsNode(*[1], 'simple'))
@@ -262,8 +262,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.='2']"
-      then: [t: "квадрат"]      # phrase(25 equals 5 'squared')
-      else: [t: "куб"]      # phrase(625 equals 5 'cubed')
+      then: [t: "в квадрате"]      # phrase(25 equals 5 'squared')
+      else: [t: "в кубе"]      # phrase(625 equals 5 'cubed')
 
 - name: function-power
   tag: power
@@ -272,13 +272,13 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' third power of 2)
+      then: [t: ""]      # phrase('the' third power of 2)
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
       then: [x: "ToOrdinal(*[2])"]
       else: [x: "*[2]"]
-  - t: "сила"      # phrase(the third 'power of' 6)
+  - t: "степень"      # phrase(the third 'power of' 6)
   - pause: short
   - x: "*[1]"
 
@@ -293,14 +293,14 @@
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "конечный показатель"      # phrase(5 raised to the exponent x plus 1 'end exponent')
+  - t: "конец показателя"      # phrase(5 raised to the exponent x plus 1 'end exponent')
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - t: "поднялся на власть"      # phrase(x is 'raised to the power' 4)
+  - t: "возведено в степень"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
   - pause: short
 
@@ -310,7 +310,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "квадрат"      # phrase(7 'squared' equals 49)
+  - t: "в квадрате"      # phrase(7 'squared' equals 49)
 
 - name: cubed
   tag: power
@@ -318,14 +318,14 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "куб"      # phrase(5 'cubed' equals 125)
+  - t: "в кубе"      # phrase(5 'cubed' equals 125)
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "до"      # phrase(2 raised 'to the' power 7)
+  - t: "в"      # phrase(2 raised 'to the' power 7)
   - test:
       if: "*[2][.>0]"
       then: {x: "ToOrdinal(*[2])"}
@@ -342,7 +342,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "до"      # phrase(2 raised 'to the' power 7)
+  - t: "в"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Exponents != 'Ordinal'"
@@ -353,7 +353,7 @@
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "до"      # phrase(3 raised 'to the' power 7)
+  - t: "в"      # phrase(3 raised 'to the' power 7)
   - x: "*[2]"
   - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
   - test:
@@ -383,7 +383,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "возведено в"      # phrase(x 'raised to the' second power)
+  - t: "в"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
   - t: "степень"      # phrase(x raised to the second 'power')
 
@@ -404,7 +404,7 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - t: "возведено в"      # phrase(x 'raised to the' second power)
+  - t: "в"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
   - t: "степень"      # phrase(x raised to the second 'power')
 
@@ -427,9 +427,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "поднят до"      # phrase(x 'raised to the' second power)
+  - t: "в"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "сила"      # phrase(x raised to the second 'power')
+  - t: "степень"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -452,9 +452,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "поднят до"      # phrase(x 'raised to the' second power)
+  - t: "в"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "сила"      # phrase(x raised to the second 'power')
+  - t: "степень"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -462,20 +462,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "поднят до экспонента"      # phrase(x is 'raised to the exponent')
+  - t: "возведено в степень"      # phrase(x is 'raised to the exponent')
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "конечный показатель"      # phrase(and now 'end exponent' has been reached)
+  - t: "конец показателя"      # phrase(and now 'end exponent' has been reached)
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "поднят до"      # phrase(x 'raised to the' second power)
+  - t: "возведено в"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "сила"      # phrase(x raised to the second 'power')
+  - t: "степень"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows
@@ -484,11 +484,11 @@
   name: ClearSpeak-absolute-value
   tag: absolute-value
   match: "."
-  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'cardinality', 'absolute value')"]
+  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', ', 'мощность', 'модуль')"]
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' absolute value of 25)
+      then: [t: ""]      # phrase('the' absolute value of 25)
   - x: "$WordToSay"
   - t: "из"      # phrase(the absolute value 'of' 25)
   - x: "*[1]"
@@ -506,24 +506,24 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [t: "пустой набор"]      # phrase('the empty set')
+      then: [t: "пустое множество"]      # phrase('the empty set')
     - else_if: "count(*)=2"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [t: "а"]      # phrase('the' empty set)
-      - t: "пустой набор"      # phrase(the 'empty set')
+      - t: "пустое множество"      # phrase(the 'empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [t: "а"]      # phrase('the' set of all integers)
-      - t: "набор чисел"      # phrase(this is a 'set of' numbers)
+      - t: "множество"      # phrase(this is a 'set of' numbers)
       - test:
           if: $ClearSpeak_Sets != 'woAll'
           then: [t: "всех"]      # phrase(the set of 'all' integers)
       - x: "*[1]/*[1]"
-      - t: "так что"      # phrase(the set S 'such that' x is less than y)
+      - t: "таких, что"      # phrase(the set S 'such that' x is less than y)
       - x: "*[1]/*[3]"
       else:
       - test:
@@ -532,7 +532,7 @@
           - test:
               if: "$Verbosity!='Terse'"
               then: [t: "а"]      # phrase('the' set of integers)
-          - t: "набор"      # phrase(this is a 'set' of integers)
+          - t: "множество"      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 - # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
@@ -557,7 +557,7 @@
       - test:
           if: "starts-with(name(.), 'open')"
           then: [t: "не"]      # phrase(the interval from a to b 'not' including b)
-      - t: "в том числе "      # phrase(the interval from a to b not 'including' b)
+      - t: "включая "      # phrase(the interval from a to b not 'including' b)
       - x: "*[1]"
     # logic to deal with [not] arg #1
   - test:
@@ -590,7 +590,7 @@
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
   - x: "*[1]/*[1]/*" # mtable/mtr/mtd
-  - t: "выберите"      # phrase(the binomial coefficient n 'choose' m)
+  - t: "по"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
@@ -599,7 +599,7 @@
   variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - pause: medium
-  - t: "ряд"      # phrase(the first 'row' of a matrix)
+  - t: "строка"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: .[self::m:mlabeledtr]
@@ -626,19 +626,19 @@
       if: "$log_is_simple"
       then_test:
       - if: "*[1][.='log']"
-        then: [t: "log"]      # phrase(the 'log' of x)
+        then: [t: "логарифм"]      # phrase(the 'log' of x)
       - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-        then: [t: "натуральный журнал"]      # phrase(the 'natural log' of the product of 2 numbers)
+        then: [t: "натуральный логарифм"]      # phrase(the 'natural log' of the product of 2 numbers)
         else: [spell: "'ln'"]
       else:
       - test:
           if: "$Verbosity!='Terse' and not(log_is_simple)"
-          then: [t: "а"]      # phrase('the' square root of 25)
+          then: [t: ""]      # phrase('the' square root of 25)
       - test:
         - if: "*[1][.='log']"
-          then: [t: "бревно"]
+          then: [t: "логарифм"]
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-          then: [t: "естественный журнал"]      # phrase(the 'natural log' of x)
+          then: [t: "натуральный логарифм"]      # phrase(the 'natural log' of x)
           else: [spell: "'ln'"]
       - t: "из"      # phrase(the natural log 'of' x)
       - pause: short
@@ -661,19 +661,19 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then: [t: "случай"]      # phrase(this is the first 'case' of three cases)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
-          then: [t: "линия"]      # phrase(this is the first 'line' of three lines)
+          then: [t: "строка"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then: [t: "ограничение"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then: [t: "уравнение"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "ряд"]      # phrase(this is the first 'row' of three rows)
+          then: [t: "строка"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then: [t: "шаг"]      # phrase(this is the first 'step' of three steps)
           # else 'None -- don't say anything'
       - test:
         - if: "$LineCount != 1"
-          then: [ct: "s"] # plural      # phrase(shown by the letter 's')
+          then: [ct: "ов"] # plural      # phrase(shown by the letter 's')
       - pause: short
   - x: "*"
   - pause: long
@@ -691,7 +691,7 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then: [t: "случае"]      # phrase(in this  'case' x is not equal to y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-          then: [t: "линия"]      # phrase(the straight 'line' between x and y)
+          then: [t: "строка"]      # phrase(the straight 'line' between x and y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then: [t: "ограничение"]      # phrase(there is a 'constraint' on possible values)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"

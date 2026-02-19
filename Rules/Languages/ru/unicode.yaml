@@ -84,17 +84,17 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "открыть"]                	#  0x28	(en: 'open', google translation)
-            else: [t: "открытая скобка"]        	#  0x28	(en: 'open paren', google translation)
-        else: [t: "левая скобка"]               	#  0x28	(en: 'left paren', google translation)
+            then: [t: "открытая"]                	#  0x28	(en: 'open', google translation)
+            else: [t: "открывающая круглая скобка"]        	#  0x28	(en: 'open paren', google translation)
+        else: [t: "левая круглая скобка"]               	#  0x28	(en: 'left paren', google translation)
  - ")":                                         	#  0x29
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "закрывать"]              	#  0x29	(en: 'close', google translation)
-            else: [t: "закрыть скобку"]         	#  0x29	(en: 'close paren', google translation)
-        else: [t: "правильная скобка"]          	#  0x29	(en: 'right paren', google translation)
+            then: [t: "закрытая"]              	#  0x29	(en: 'close', google translation)
+            else: [t: "закрывающая круглая скобка"]         	#  0x29	(en: 'close paren', google translation)
+        else: [t: "правая круглая скобка"]          	#  0x29	(en: 'right paren', google translation)
 
  - "*":                                         	#  0x2a
     test:
@@ -150,26 +150,26 @@
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "открытый кронштейн"]         	# 	(en: 'open bracket', google translation)
-        else: [t: "левый кронштейн"]            	# 	(en: 'left bracket', google translation)
- - "\\": [t: "обратная черта"]                  	#  0x5c	(en: 'back slash', google translation)
+        then: [t: "открывающая квадратная скобка"]         	# 	(en: 'open bracket', google translation)
+        else: [t: "левая квадратная скобка"]            	# 	(en: 'left bracket', google translation)
+ - "\\": [t: "обратная косая черта"]                  	#  0x5c	(en: 'back slash', google translation)
  - "]":                                         	#  0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "близкий кронштейн"]          	# 	(en: 'close bracket', google translation)
-        else: [t: "правый кронштейн"]           	# 	(en: 'right bracket', google translation)
+        then: [t: "закрывающая квадратная скобка"]          	# 	(en: 'close bracket', google translation)
+        else: [t: "правая квадратная скобка"]           	# 	(en: 'right bracket', google translation)
  - "^":                                         	#  0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
         then: [t: "шляп"]                       	# 	(en: 'hat', google translation)
-        else: [t: "каретка"]                    	# 	(en: 'caret', google translation)
+        else: [t: "крышка"]                    	# 	(en: 'caret', google translation)
  - "_": [t: "под баром"]                        	#  0x5f	(en: 'under bar', google translation)
  - "`": [t: "могила"]                           	#  0x60	(en: 'grave', google translation)
  - "{":                                         	#  0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "открытая скоба"]             	# 	(en: 'open brace', google translation)
-        else: [t: "оставленный скоба"]          	# 	(en: 'left brace', google translation)
+        then: [t: "открывающая фигурная скобка"]             	# 	(en: 'open brace', google translation)
+        else: [t: "левая фигурная скобка"]          	# 	(en: 'left brace', google translation)
  - "|":                                         	#  0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -192,10 +192,10 @@
  - "}":                                         	#  0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "близкая скоба"]              	# 	(en: 'close brace', google translation)
-        else: [t: "правая скоба"]               	# 	(en: 'right brace', google translation)
+        then: [t: "закрывающая фигурная скобка"]              	# 	(en: 'close brace', google translation)
+        else: [t: "правая фигурная скобка"]               	# 	(en: 'right brace', google translation)
 
- - "~": [t: "тилде"]                            	#  0x7e	(en: 'tilde', google translation)
+ - "~": [t: "тилда"]                            	#  0x7e	(en: 'tilde', google translation)
  - " ":                                         	#  0xa0
     - test:
         # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
@@ -244,7 +244,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "пропусков"]              	# 	(en: 'cap', google translation)
+            then: [t: "большая"]              	# 	(en: 'cap', google translation)
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -296,7 +296,7 @@
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
             then: [t: "и так далее"]            	# 	(en: 'and so on', google translation)
-            else: [t: "и так далее"]            	# 	(en: 'and so on up to', google translation)
+            else: [t: "и так далее до"]            	# 	(en: 'and so on up to', google translation)
 
  - "⁡":                                         	#  0x2061
     - test:
@@ -315,8 +315,8 @@
     - t: "тройной штрих"                        	# 	(en: 'double-struck')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
- - "℃": [t: "градусы по цельсию"]               	#  0x2103	(en: 'degrees celsius', google translation)
- - "℉": [t: "степени фаренгейт"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
+ - "℃": [t: "градусы цельсия"]               	#  0x2103	(en: 'degrees celsius', google translation)
+ - "℉": [t: "градусы фаренгейта"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
  - "ℋℛℓ":                                       	#  0x210b
     - t: "сценарий"                             	# 	(en: 'script', google translation)
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
@@ -329,7 +329,7 @@
  - "K": [t: "кельвин"]                          	#  0x212a	(en: 'kelvin', google translation)
  - "Å": [t: "ангстры"]                          	#  0x212b	(en: 'angstroms', google translation)
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
-    - t: "дважды поразил курсив"                	# 	(en: 'double-struck italic', google translation)
+    - t: "двойной курсив"                	# 	(en: 'double-struck italic', google translation)
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
  - "←": [t: "стрелка влево"]                    	#  0x2190	(en: 'leftwards arrow', google translation)
@@ -337,7 +337,7 @@
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "подходы"]                    	# 	(en: 'approaches', google translation)
+        then: [t: "достигает"]                    	# 	(en: 'approaches', google translation)
         else: [t: "стрелка вправо"]             	# 	(en: 'right arrow', google translation)
 
  - "↓": [t: "стрелка вниз"]                      	#  0x2193	(en: 'downwards arrow', google translation)
