@@ -1429,14 +1429,21 @@ impl CountTableDims {
 	    };
 
 	    // each child of mtable should be an mtr. Ignore non-mtr rows.
-	    if name(row) != "mtr" {
+	    let row_name = name(row);
+
+	    let labeled_row = if row_name == "mlabeledtr" {
+		true
+	    } else if row_name == "mtr" {
+		false
+	    } else {
 		continue;
-	    }
+	    };
 	    num_rows += 1;
 
 	    // count columns based on the number of rows.
 	    if num_rows == 1 {
 		// count the number of columns, including column spans, in the first row.
+		let mut first_elem = true;
 		for row_child in row.children() {
 		    let ChildOfElement::Element(mtd) = row_child else  {
 			continue;
@@ -1444,9 +1451,13 @@ impl CountTableDims {
 		    if name(mtd) != "mtd" {
 			continue;
 		    }
-		    // add the contributing columns, taking colspan into account
+		    // Add the contributing columns, taking colspan into account. Don't contribute if
+		    // this is the first element of a labeled row.
 		    let colspan = mtd.attribute_value("colspan").map_or(1, |e| e.parse::<usize>().unwrap_or(0));
-		    num_cols += colspan;
+		    if !(labeled_row && first_elem) {
+			num_cols += colspan;
+		    }
+		    first_elem = false;
 		}
 	    }
 	}
@@ -1695,6 +1706,13 @@ mod tests {
 	let math_elem = get_element(&package);
 	let child = as_element(math_elem.children()[0]);
 	assert!(CountTableDims::count_table_dims(child) == Ok((Value::Number(2.0), Value::Number(4.0))));
+
+	let mathml = "<math><mtable><mlabeledtr><mtd>label</mtd><mtd>a</mtd><mtd>b</mtd></mlabeledtr><mtr><mtd>c</mtd><mtd>d</mtd></mtr></mtable></math>";
+	let package = parser::parse(mathml).expect("failed to parse XML");
+	let math_elem = get_element(&package);
+	let child = as_element(math_elem.children()[0]);
+	let ctd = CountTableDims::count_table_dims(child);
+	assert!(ctd == Ok((Value::Number(2.0), Value::Number(2.0))));
     }
 
     #[test]
