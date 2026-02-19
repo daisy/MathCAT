@@ -1421,9 +1421,6 @@ impl CountTableDims {
     /// ignored. The number of columns is determined only from the first
     /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
     fn count_table_dims<'d>(e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
-	if e.name().local_part() != "mtable" {
-	    return Err(Error::Other(format!("invalid tag {} for CountTableRows", e.name().local_part())));
-	}
 	let mut num_cols = 0;
 	let mut num_rows = 0;
 	for child in e.children() {
@@ -1480,12 +1477,12 @@ impl Function for CountTableRows {
     }
 }
 
-pub struct CountTableCols;
-impl Function for CountTableCols {
+pub struct CountTableColumns;
+impl Function for CountTableColumns {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-	CountTableDims::evaluate("CountTableCols", args).map(|a| a.1)
+	CountTableDims::evaluate("CountTableColumns", args).map(|a| a.1)
     }
 }
 
@@ -1510,7 +1507,7 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
     context.set_function("CountTableRows", CountTableRows);
-    context.set_function("CountTableCols", CountTableCols);
+    context.set_function("CountTableColumns", CountTableColumns);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1687,12 +1684,6 @@ mod tests {
 
     #[test]
     fn table_row_count() {
-	let mathml = "<math><mrow>a</mrow></math>";
-	let package = parser::parse(mathml).expect("failed to parse XML");
-	let math_elem = get_element(&package);
-	let child = as_element(math_elem.children()[0]);
-	assert!(CountTableDims::count_table_dims(child).is_err());
-
 	let mathml = "<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>";
 	let package = parser::parse(mathml).expect("failed to parse XML");
 	let math_elem = get_element(&package);
