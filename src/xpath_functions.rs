@@ -1465,17 +1465,17 @@ impl CountTableDims {
 	Ok((Value::Number(num_rows as f64), Value::Number(num_cols as f64)))
     }
 
-    fn evaluate<'c, 'd>(fn_name: &str,
+    fn evaluate<'d>(fn_name: &str,
                         args: Vec<Value<'d>>) -> Result<(Value<'d>, Value<'d>), Error> {
 	let mut args = Args(args);
 	args.exactly(1)?;
 	let element = args.pop_nodeset()?;
 	let node = validate_one_node(element, fn_name)?;
 	if let Node::Element(e) = node {
-	    return Ok(Self::count_table_dims(e)?);
+	    return Self::count_table_dims(e);
 	}
 
-	Err( Error::Other(format!("couldn't count table rows")) )
+	Err( Error::Other("couldn't count table rows".to_string()) )
     }
 }
 
