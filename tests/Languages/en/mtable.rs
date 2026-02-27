@@ -1028,9 +1028,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
 test_ClearSpeak("en", "ClearSpeak_Matrix", "EndVector",
         expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
                                                  row 2; column 1; b sub 2 1; column 2; b sub 2 2; end matrix")?;
-    return Ok(());
-  }
-
+  return Ok(());
+}
 
 
 #[test]
@@ -1041,11 +1040,28 @@ fn matrix_binomial() -> Result<()> {
       </mrow><mo>)</mo>
     </math>";
   test_ClearSpeak("en", "ClearSpeak_Matrix", "Combinatorics", expr, "3 choose 2")?;
-    return Ok(());
-  }
+  return Ok(());
+}
 
 #[test]
-fn matrix_times() -> Result<()> {
+fn matrix_simple_table() {
+  let expr = "<math>
+        <mtable intent=\":array\"><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2");
+}
+
+#[test]
+fn matrix_span_table() {
+  let expr = "<math>
+        <mtable><mtr rowspan=\"1\"><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2");
+}
+
+
+#[test]
+fn matrix_times() {
   let expr = "<math>
     <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
