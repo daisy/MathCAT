@@ -3174,7 +3174,7 @@ mod chem_tests {
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
                     <mtext data-maybe-chemistry='0'>to</mtext>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
-                    <mtext data-maybe-chemistry='0'>2</mtext>
+                    <mn data-maybe-chemistry='0'>2</mn>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
                     <mi data-maybe-chemistry='1' mathvariant='normal'>H</mi>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
