@@ -506,8 +506,8 @@ impl PreferenceManager {
 
     /// Set BlockSeparators and DecimalSeparators
     /// FIX: changing these values could change the parse, so we really should reparse the original expr, but that doesn't exist anymore (store the original string???)
-    // # Note: DecimalSeparator is user-facing (can be Auto), DecimalSeparators is code-facing (always a char)
-
+    ///
+    /// Note: DecimalSeparator is user-facing (can be Auto), DecimalSeparators is code-facing (always a char)
     fn set_separators(&mut self, language_country: &str) -> Result<()> {
         // This list was generated from https://en.wikipedia.org/wiki/Decimal_separator#Countries_using_decimal_point
         // The countries were then mapped to language(s) using https://en.wikipedia.org/wiki/List_of_official_languages_by_country_and_territory

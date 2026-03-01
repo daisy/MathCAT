@@ -1,7 +1,7 @@
 //! Useful functions for debugging and error messages.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, ChildOfElement, Attribute};
 
 // #[allow(dead_code)]
 // pub fn pp_doc(doc: &Document) {

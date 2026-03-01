@@ -1,40 +1,49 @@
 /// Tests for rules shared between various speech styles:
 /// *  this has tests focused on the various alphabets
 use crate::common::*;
+use anyhow::Result;
 
 
 #[test]
-fn silent_intent_mi() {
+fn silent_intent_mi() -> Result<()> {
     let expr = "<math> <mn>2</mn> <mi intent=':silent'>x</mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "2");
+    test("zh-tw", "SimpleSpeak", expr, "2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn silent_intent_msup() {
+fn silent_intent_msup() -> Result<()> {
     let expr = "<math>
         <msup intent='index:silent($H,$n)'>
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("zh-tw", "SimpleSpeak", expr, "大寫 h 2");
+    test("zh-tw", "SimpleSpeak", expr, "大寫 h 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn silent_intent_underscore() {
+fn silent_intent_underscore() -> Result<()> {
     let expr = "<math>
         <msup intent='_($H,$n)'>
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("zh-tw", "SimpleSpeak", expr, "大寫 h 2");
+    test("zh-tw", "SimpleSpeak", expr, "大寫 h 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn intent_prob_x() {
+fn intent_prob_x() -> Result<()> {
     let expr = "<math>
     <msup intent='$op($arg)'>
         <mi arg='arg'>x</mi>
         <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
     </msup></math>";
-    test("zh-tw", "SimpleSpeak", expr, "probability x");
+    test("zh-tw", "SimpleSpeak", expr, "probability x")?;
+    return Ok(());
+
 }

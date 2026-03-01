@@ -5,6 +5,7 @@ use regex::Regex;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::sync::LazyLock;
 pub use libmathcat::interface::*;
+use anyhow::Result;
 
 
 #[allow(dead_code)] 
@@ -73,7 +74,7 @@ fn set_default_speech_prefs() {
 // Compare the result of speaking the mathml input to the output 'speech'
 // This uses default preferences
 #[allow(dead_code)]     // used in testing
-pub fn test(language: &str, style: &str, mathml: &str, speech: &str) {
+pub fn test(language: &str, style: &str, mathml: &str, speech: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_default_speech_prefs();
@@ -82,16 +83,14 @@ pub fn test(language: &str, style: &str, mathml: &str, speech: &str) {
         check_answer(mathml, speech, &format!("{}/{}", language, style));
         Ok(())
     }));
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
 // This takes the speech style along with a vector of (pref_name, pref_value)
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
-pub fn test_prefs(language: &str, speech_style: &str, test_prefs: Vec<(&str, &str)>, mathml: &str, speech: &str) {
+pub fn test_prefs(language: &str, speech_style: &str, test_prefs: Vec<(&str, &str)>, mathml: &str, speech: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_default_speech_prefs();
@@ -103,32 +102,30 @@ pub fn test_prefs(language: &str, speech_style: &str, test_prefs: Vec<(&str, &st
         check_answer(mathml, speech, &format!("{}/{} with prefs {:#?}", language, speech_style, test_prefs));
         Ok(())
     }));
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
 // This forces the use of ClearSpeak and sets a single ClearSpeak preference
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
-pub fn test_ClearSpeak(language: &str, pref_name: &str, pref_value: &str, mathml: &str, speech: &str) {
+pub fn test_ClearSpeak(language: &str, pref_name: &str, pref_value: &str, mathml: &str, speech: &str) -> Result<()> {
     let prefs = vec![(pref_name, pref_value)];
-    test_prefs(language, "ClearSpeak", prefs, mathml, speech);
+    return test_prefs(language, "ClearSpeak", prefs, mathml, speech);
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
 // This forces the use of ClearSpeak and sets multiple ClearSpeak preferences
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
-pub fn test_ClearSpeak_prefs(language: &str, prefs: Vec<(&str, &str)>, mathml: &str, speech: &str) {
-    test_prefs(language, "ClearSpeak", prefs, mathml, speech);
+pub fn test_ClearSpeak_prefs(language: &str, prefs: Vec<(&str, &str)>, mathml: &str, speech: &str) -> Result<()> {
+    return test_prefs(language, "ClearSpeak", prefs, mathml, speech);
 }
 
 // Compare the result of brailling the mathml input to the output (Unicode) 'braille'
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
-pub fn test_braille(code: &str, mathml: &str, braille: &str) {
+pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -153,13 +150,11 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) {
         };
         Ok(())
     }));
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }
 
 #[allow(dead_code)]     // used in testing
-pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &str, braille: &str) {
+pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &str, braille: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -188,13 +183,11 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
         };
         Ok(())
     }));
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }
 
 #[allow(dead_code)]
-pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) {
+pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) -> Result<()> {
     use sxd_document::{dom::Element, parser};
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
@@ -257,15 +250,13 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) {
         return mathml;
     }
 
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }
 
 /// This is a prototype function to test whether 'from_braille' (or whatever gets called) is cannonically the same as 'mathml'
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
-pub fn test_from_braille(code: &str, mathml: &str, braille: &str) {
+pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -290,7 +281,5 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) {
         assert!(libmathcat::are_strs_canonically_equal(mathml, braille, &["data-changed", "data-id-added"]));
         Ok(())
     }));
-    if let Err(e) = report_any_panic(result) {
-        panic!("{}", e);
-    }
+    return report_any_panic(result);
 }

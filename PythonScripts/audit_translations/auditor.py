@@ -392,10 +392,16 @@ class IssueWriter:
         self.stream.write(json.dumps(issue, ensure_ascii=False) + "\n")
 
 
-def print_warnings(result: ComparisonResult, file_name: str, verbose: bool = False) -> int:
+def print_warnings(
+    result: ComparisonResult,
+    file_name: str,
+    verbose: bool = False,
+    target_language: str = "tr",
+) -> int:
     """Print warnings to console. Returns count of issues found."""
     issues = 0
     display_name = Path(file_name).as_posix()
+    target_label = normalize_language(target_language)
 
     has_issues = result.missing_rules or result.untranslated_text or result.extra_rules or result.rule_differences
     if not has_issues:
@@ -497,24 +503,24 @@ def print_warnings(result: ComparisonResult, file_name: str, verbose: bool = Fal
                         issues += 1
                     elif issue_type == "extra_rule":
                         console.print(
-                            f"              [dim]•[/] [dim](line {entry['line_tr']} in translation)[/]"
+                            f"              [dim]•[/] [dim](line {entry['line_tr']} in {target_label})[/]"
                         )
                         issues += 1
                     elif issue_type == "untranslated_text":
                         console.print(
-                            f"              [dim]•[/] [dim](line {entry['line_tr']} tr)[/] "
+                            f"              [dim]•[/] [dim](line {entry['line_tr']} {target_label})[/] "
                             f"[yellow]\"{escape(entry['text'])}\"[/]"
                         )
                         issues += 1
                     else:
                         diff: RuleDifference = entry["diff"]
                         console.print(
-                            f"              [dim]•[/] [dim](line {entry['line_en']} en, {entry['line_tr']} tr)[/]"
+                            f"              [dim]•[/] [dim](line {entry['line_en']} en, {entry['line_tr']} {target_label})[/]"
                         )
                         console.print(f"                  [dim]{diff.description}[/]")
                         if verbose:
                             console.print(f"                  [green]en:[/] {escape(diff.english_snippet)}")
-                            console.print(f"                  [red]tr:[/] {escape(diff.translated_snippet)}")
+                            console.print(f"                  [red]{target_label}:[/] {escape(diff.translated_snippet)}")
                         issues += 1
 
     return issues
@@ -595,7 +601,7 @@ def audit_language(
         has_issues = result.missing_rules or result.untranslated_text or result.extra_rules or result.rule_differences
         if output_format == "rich":
             if has_issues:
-                issues = print_warnings(result, file_name, verbose)
+                issues = print_warnings(result, file_name, verbose, language)
                 if issues > 0:
                     files_with_issues += 1
                 total_issues += issues

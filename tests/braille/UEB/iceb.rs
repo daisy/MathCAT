@@ -6,129 +6,166 @@
 // Many come from (refer to) https://iceb.org/guidelines_for_technical_material_2014.pdf
 // For example, "fraction_6_1_1" is a fraction example from section 6.1, and is the first example there.
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn bana_2_1() {
+fn bana_2_1() -> Result<()> {
     let expr = "<math><mn>6</mn><mo>=</mo><mn>1</mn><mo>&#xD7;</mo><mn>2</mn><mo>&#xD7;</mo><mn>3</mn>
                 <mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>3</mn></math>";
-    test_braille("UEB", expr, "⠼⠋⠀⠐⠶⠀⠼⠁⠐⠦⠼⠃⠐⠦⠼⠉⠀⠐⠶⠀⠼⠁⠐⠖⠼⠃⠐⠖⠼⠉");
+    test_braille("UEB", expr, "⠼⠋⠀⠐⠶⠀⠼⠁⠐⠦⠼⠃⠐⠦⠼⠉⠀⠐⠶⠀⠼⠁⠐⠖⠼⠃⠐⠖⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5_1() {
+fn bana_5_1() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>+</mo><mi>y</mi><mo>=</mo><mn>6</mn></math>";
-    test_braille("UEB", expr, "⠭⠐⠖⠽⠀⠐⠶⠀⠼⠋");
+    test_braille("UEB", expr, "⠭⠐⠖⠽⠀⠐⠶⠀⠼⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5_2() {
+fn bana_5_2() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><mi>C</mi></math>";
-    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠰⠠⠉");
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠰⠠⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5_3() {
+fn bana_5_3() -> Result<()> {
     let expr = "<math><mfrac><mi>a</mi><mi>b</mi></mfrac><mo>+</mo><mfrac><mi>c</mi><mi>d</mi></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠁⠨⠌⠃⠾⠐⠖⠷⠉⠨⠌⠙⠾");
+    test_braille("UEB", expr, "⠰⠰⠷⠁⠨⠌⠃⠾⠐⠖⠷⠉⠨⠌⠙⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5_4() {
+fn bana_5_4() -> Result<()> {
     let expr = "<math><msup><mi>a</mi><mi>n</mi></msup><mo>&#xD7;</mo><msup><mi>a</mi><mi>m</mi></msup><mo>=</mo>
                     <msup><mi>a</mi><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠁⠔⠝⠐⠦⠁⠔⠍⠀⠐⠶⠀⠁⠔⠣⠝⠐⠖⠍⠜⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠁⠔⠝⠐⠦⠁⠔⠍⠀⠐⠶⠀⠁⠔⠣⠝⠐⠖⠍⠜⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5_5() {
+fn bana_5_5() -> Result<()> {
     let expr = "<math><msub><mi>log</mi><mi>x</mi></msub><mi>y</mi></math>";
     // BANA example contradicts GTM 9.2 that says don't use a space after a function name if there is an intervening indicator.
     // Corrected: removed the space and the G1 indicator needed if a space were inserted
-    test_braille("UEB", expr, "⠰⠰⠇⠕⠛⠢⠭⠽");
+    test_braille("UEB", expr, "⠰⠰⠇⠕⠛⠢⠭⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5a_1() {
+fn bana_5a_1() -> Result<()> {
     let expr = "<math><msup><mn>100</mn><mo>&#xB0;</mo></msup><mi>F</mi></math>";
-    test_braille("UEB", expr, "⠼⠁⠚⠚⠘⠚⠠⠋");
+    test_braille("UEB", expr, "⠼⠁⠚⠚⠘⠚⠠⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5a_1_baseline() {
+fn bana_5a_1_baseline() -> Result<()> {
     let expr = "<math><mn>100</mn><mo>&#xB0;</mo><mi class='MathML-unit'>F</mi></math>";
-    test_braille("UEB", expr, "⠼⠁⠚⠚⠘⠚⠠⠋");
+    test_braille("UEB", expr, "⠼⠁⠚⠚⠘⠚⠠⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5a_2() {
+fn bana_5a_2() -> Result<()> {
     let expr = "<math><mn>25</mn><mo>&#xA0;</mo><msup><mi class='MathML-unit'>km</mi><mn>2</mn></msup></math>";
-    test_braille("UEB", expr, "⠼⠃⠑⠀⠅⠍⠰⠔⠼⠃");
+    test_braille("UEB", expr, "⠼⠃⠑⠀⠅⠍⠰⠔⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5a_2_mtext() {
+fn bana_5a_2_mtext() -> Result<()> {
     let expr = "<math><mn>25</mn><mo>&#xA0;</mo><msup><mtext class='MathML-unit'>km</mtext><mn>2</mn></msup></math>";
-    test_braille("UEB", expr, "⠼⠃⠑⠀⠅⠍⠰⠔⠼⠃");
+    test_braille("UEB", expr, "⠼⠃⠑⠀⠅⠍⠰⠔⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_5a_3() {
+fn bana_5a_3() -> Result<()> {
     let expr = "<math><mn>6</mn><mo>&#xA0;</mo><mi class='MathML-unit'>m</mi><mo>&#xA0;</mo>
             <msup><mi class='MathML-unit'>s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
-    test_braille("UEB", expr, "⠼⠋⠀⠰⠍⠀⠰⠰⠎⠔⠣⠐⠤⠼⠁⠜");
+    test_braille("UEB", expr, "⠼⠋⠀⠰⠍⠀⠰⠰⠎⠔⠣⠐⠤⠼⠁⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bana_6_1() {
+fn bana_6_1() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>+</mo><mi>y</mi><mo>=</mo><mi>z</mi>
                         <mo>=</mo><msup><mi>t</mi><mn>2</mn></msup><mo>.</mo></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠭⠐⠖⠽⠀⠐⠶⠀⠵⠀⠐⠶⠀⠞⠔⠼⠃⠲⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠐⠖⠽⠀⠐⠶⠀⠵⠀⠐⠶⠀⠞⠔⠼⠃⠲⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cap_1_6_1() {
+fn cap_1_6_1() -> Result<()> {
     let expr = "<math><mi>ABCD</mi></math>";
-    test_braille("UEB", expr, "⠠⠠⠁⠃⠉⠙");
+    test_braille("UEB", expr, "⠠⠠⠁⠃⠉⠙")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cap_1_6_1_separate() {
+fn cap_1_6_1_separate() -> Result<()> {
     let expr = "<math>
         <mi mathvariant='normal'>A</mi>
         <mi mathvariant='normal'>B</mi>
         <mi mathvariant='normal'>C</mi>
         <mi mathvariant='normal'>D</mi></math>";
-    test_braille("UEB", expr, "⠠⠠⠁⠃⠉⠙");
+    test_braille("UEB", expr, "⠠⠠⠁⠃⠉⠙")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cap_1_6_2() {
+fn cap_1_6_2() -> Result<()> {
     let expr = "<math><mi>V</mi><mo>=</mo><mi>I</mi><mi>R</mi></math>";
-    test_braille("UEB", expr, "⠰⠠⠧⠀⠐⠶⠀⠠⠠⠊⠗");
+    test_braille("UEB", expr, "⠰⠠⠧⠀⠐⠶⠀⠠⠠⠊⠗")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cap_1_6_4() {
+fn cap_1_6_4() -> Result<()> {
     let expr = "<math><mi>A</mi><msup><mi>B</mi><mn>2</mn></msup></math>";
-    test_braille("UEB", expr, "⠠⠠⠁⠃⠰⠔⠼⠃");
+    test_braille("UEB", expr, "⠠⠠⠁⠃⠰⠔⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn grade1_1_7_1() {
+fn grade1_1_7_1() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>-</mo><mn>2</mn>
                             <mfrac bevelled='true'><mn>1</mn><mn>2</mn></mfrac ><mo>=</mo></math>";
     // removed the spaces around the '-' from the braille -- they typically wouldn't be used
-    test_braille("UEB", expr, "⠼⠉⠐⠤⠼⠃⠼⠁⠌⠃⠀⠐⠶");
+    test_braille("UEB", expr, "⠼⠉⠐⠤⠼⠃⠼⠁⠌⠃⠀⠐⠶")?;
+    return Ok(());
+
 }
 
 #[test]
-fn grade1_1_7_2() {
+fn grade1_1_7_2() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>4</mn><mi>c</mi></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠭⠐⠖⠼⠙⠰⠉");
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠭⠐⠖⠼⠙⠰⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn grade1_1_7_3_1() {
+fn grade1_1_7_3_1() -> Result<()> {
     let expr = "<math>
         <mn>3</mn><mi>x</mi><mo>&#x2212;</mo><mn>4</mn><mi>y</mi><mo>+</mo>
         <msup><mi>y</mi><mn>2</mn></msup>
@@ -136,288 +173,372 @@ fn grade1_1_7_3_1() {
         <msup><mi>x</mi><mn>2</mn></msup>
     </math>";
     // GTM says it can be either "⠼⠉⠭⠐⠤⠼⠙⠽⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠭⠰⠔⠼⠃" or "⠰⠰⠰⠼⠉⠭⠐⠤⠼⠙⠽⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠭⠔⠼⠃⠰⠄"
-    test_braille("UEB", expr, "⠼⠉⠭⠐⠤⠼⠙⠽⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠭⠰⠔⠼⠃");
+    test_braille("UEB", expr, "⠼⠉⠭⠐⠤⠼⠙⠽⠐⠖⠽⠔⠼⠃⠀⠐⠶⠀⠭⠰⠔⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn grade1_1_7_3_2() {
+fn grade1_1_7_3_2() -> Result<()> {
     let expr = "<math> <mfrac>
     <mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>x</mi></mrow>
     <mrow><mn>1</mn><mo>+</mo><msup><mi>x</mi><mn>2</mn></msup></mrow>
     </mfrac><mo>=</mo><mn>1</mn>
     </math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠭⠔⠼⠃⠐⠖⠼⠃⠭⠨⠌⠼⠁⠐⠖⠭⠔⠼⠃⠾⠀⠐⠶⠀⠼⠁");
+    test_braille("UEB", expr, "⠰⠰⠷⠭⠔⠼⠃⠐⠖⠼⠃⠭⠨⠌⠼⠁⠐⠖⠭⠔⠼⠃⠾⠀⠐⠶⠀⠼⠁")?;
+    return Ok(());
+
 }
 
 #[test]
-fn grade1_1_7_4() {
+fn grade1_1_7_4() -> Result<()> {
     let expr = "<math><msqrt>
             <mo>(</mo><mi>y</mi><mo>&#x2212;</mo><msup><mi>x</mi><mn>2</mn></msup><mo>)</mo>
         </msqrt></math>";
-    test_braille("UEB", expr, "⠰⠰⠩⠐⠣⠽⠐⠤⠭⠔⠼⠃⠐⠜⠬");
+    test_braille("UEB", expr, "⠰⠰⠩⠐⠣⠽⠐⠤⠭⠔⠼⠃⠐⠜⠬")?;
+    return Ok(());
+
 }
 
 #[test]
-fn number_2_1_2() {
+fn number_2_1_2() -> Result<()> {
     let expr = "<math><mn>3,000</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠂⠚⠚⠚");
+    test_braille("UEB", expr, "⠼⠉⠂⠚⠚⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn number_2_1_3() {
+fn number_2_1_3() -> Result<()> {
     let expr = "<math><mn>5 000 000</mn></math>";
-    test_braille("UEB", expr, "⠼⠑⠐⠚⠚⠚⠐⠚⠚⠚");
+    test_braille("UEB", expr, "⠼⠑⠐⠚⠚⠚⠐⠚⠚⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn number_2_2_1() {
+fn number_2_2_1() -> Result<()> {
     let expr = "<math><mn>8.93</mn></math>";
-    test_braille("UEB", expr, "⠼⠓⠲⠊⠉");
+    test_braille("UEB", expr, "⠼⠓⠲⠊⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn number_2_2_2() {
+fn number_2_2_2() -> Result<()> {
     let expr = "<math><mn>0.7</mn></math>";
-    test_braille("UEB", expr, "⠼⠚⠲⠛");
+    test_braille("UEB", expr, "⠼⠚⠲⠛")?;
+    return Ok(());
+
 }
 
 #[test]
-fn number_2_2_3() {
+fn number_2_2_3() -> Result<()> {
     let expr = "<math><mn>.7</mn></math>";
-    test_braille("UEB", expr, "⠼⠲⠛");
+    test_braille("UEB", expr, "⠼⠲⠛")?;
+    return Ok(());
+
 }
 
 #[test]
-fn time_2_4_1() {
+fn time_2_4_1() -> Result<()> {
     let expr = "<math><mn>5</mn><mo>:</mo><mn>30</mn><mo>&#xA0;</mo><mtext>pm</mtext></math>";
-    test_braille("UEB", expr, "⠼⠑⠒⠼⠉⠚⠀⠏⠍");
+    test_braille("UEB", expr, "⠼⠑⠒⠼⠉⠚⠀⠏⠍")?;
+    return Ok(());
+
 }
 
 #[test]
-fn time_2_4_1_mtext() {
+fn time_2_4_1_mtext() -> Result<()> {
     // this was a bug when only mtext occurred
     let expr = "<math><mtext>5:30</mtext></math>";
-    test_braille("UEB", expr, "⠼⠑⠒⠼⠉⠚");
+    test_braille("UEB", expr, "⠼⠑⠒⠼⠉⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn roman_numeral_2_6_1() {
+fn roman_numeral_2_6_1() -> Result<()> {
     let expr = " <math><mi mathvariant='normal'>I</mi><mo>,</mo>
         <mo>&#xA0;</mo><mi>II</mi>
         <mo>&#xA0;</mo><mtext>and</mtext><mo>&#xA0;</mo><mi mathvariant='normal'>V</mi></math>";
-    test_braille("UEB", expr, "⠠⠊⠂⠀⠠⠠⠊⠊⠀⠯⠀⠰⠠⠧");
+    test_braille("UEB", expr, "⠠⠊⠂⠀⠠⠠⠊⠊⠀⠯⠀⠰⠠⠧")?;
+    return Ok(());
+
 }
 
 #[test]
-fn roman_numeral_2_6_2() {
+fn roman_numeral_2_6_2() -> Result<()> {
     let expr = " <math><mi mathvariant='normal'>i</mi><mo>,</mo>
         <mo>&#xA0;</mo><mi>vi</mi>
         <mo>&#xA0;</mo><mtext>and</mtext><mo>&#xA0;</mo><mi mathvariant='normal'>x</mi></math>";
-    test_braille("UEB", expr, "⠊⠂⠀⠧⠊⠀⠯⠀⠰⠭");
+    test_braille("UEB", expr, "⠊⠂⠀⠧⠊⠀⠯⠀⠰⠭")?;
+    return Ok(());
+
 }
 
 #[test]
-fn roman_numeral_2_6_3() {
+fn roman_numeral_2_6_3() -> Result<()> {
     let expr = "<math><mn>CD</mn></math>";
-    test_braille("UEB", expr, "⠰⠠⠠⠉⠙");
+    test_braille("UEB", expr, "⠰⠠⠠⠉⠙")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bold_2_7_1() {
+fn bold_2_7_1() -> Result<()> {
     let expr = "<math><mn>67𝟖45</mn></math>";
-    test_braille("UEB", expr, "⠼⠋⠛⠘⠆⠼⠓⠙⠑");
+    test_braille("UEB", expr, "⠼⠋⠛⠘⠆⠼⠓⠙⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bold_2_7_2() {
+fn bold_2_7_2() -> Result<()> {
     let expr = "<math><mn>67</mn><mn mathvariant='bold'>845</mn></math>";
-    test_braille("UEB", expr, "⠼⠋⠛⠘⠂⠼⠓⠙⠑");
+    test_braille("UEB", expr, "⠼⠋⠛⠘⠂⠼⠓⠙⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bold_2_7_3() {
+fn bold_2_7_3() -> Result<()> {
     let expr = "<math><mn>67</mn><mn mathvariant='bold'>84</mn><mn>5</mn></math>";
-    test_braille("UEB", expr, "⠼⠋⠛⠘⠂⠼⠓⠙⠘⠄⠼⠑");
+    test_braille("UEB", expr, "⠼⠋⠛⠘⠂⠼⠓⠙⠘⠄⠼⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn signs_2_10_2() {
+fn signs_2_10_2() -> Result<()> {
     let expr = "<math><mo>$</mo><mn>0.30</mn><mo>,</mo><mo>&#xA0;</mo>
                 <mn>30</mn><mi mathvariant='normal'>c</mi><mo>&#xA0;</mo>
                 <mtext>or</mtext><mo>&#xA0;</mo><mn>30</mn><mo>&#xA2;</mo></math>";
-    test_braille("UEB", expr, "⠈⠎⠼⠚⠲⠉⠚⠂⠀⠼⠉⠚⠰⠉⠀⠕⠗⠀⠼⠉⠚⠈⠉");
+    test_braille("UEB", expr, "⠈⠎⠼⠚⠲⠉⠚⠂⠀⠼⠉⠚⠰⠉⠀⠕⠗⠀⠼⠉⠚⠈⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn signs_2_10_5() {
+fn signs_2_10_5() -> Result<()> {
     let expr = "<math><mn>1</mn><mo>&#xA0;</mo><mi>ft</mi><mo>&#xA0;</mo><mn>6</mn><mo>&#xA0;</mo><mi>in</mi>
         <mo>&#xA0;</mo><mtext>or</mtext><mo>&#xA0;</mo>
         <mn>1</mn><mo>&#x2032;</mo><mo>&#xA0;</mo><mn>6</mn><mo>&#x2032;</mo><mo>&#x2032;</mo></math>";
-    test_braille("UEB", expr, "⠼⠁⠀⠋⠞⠀⠼⠋⠀⠔⠀⠕⠗⠀⠼⠁⠶⠀⠼⠋⠶⠶");
+    test_braille("UEB", expr, "⠼⠁⠀⠋⠞⠀⠼⠋⠀⠔⠀⠕⠗⠀⠼⠁⠶⠀⠼⠋⠶⠶")?;
+    return Ok(());
+
 }
 
 #[test]
-fn signs_2_10_8() {
+fn signs_2_10_8() -> Result<()> {
     let expr = "<math><mn>0</mn><mo>&#xB0;</mo><mi mathvariant='normal'>C</mi><mo>&#xA0;</mo><mtext>or</mtext>
         <mo>&#xA0;</mo><mn>32</mn><mo>&#xB0;</mo><mi mathvariant='normal'>F</mi></math>";
-    test_braille("UEB", expr, "⠼⠚⠘⠚⠠⠉⠀⠕⠗⠀⠼⠉⠃⠘⠚⠠⠋");
+    test_braille("UEB", expr, "⠼⠚⠘⠚⠠⠉⠀⠕⠗⠀⠼⠉⠃⠘⠚⠠⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn signs_2_10_16() {
+fn signs_2_10_16() -> Result<()> {
     let expr = "<math><mn>1</mn><mo>&#xA0;</mo><mi mathvariant='normal'>&#xC5;</mi><mo>=</mo>
         <mfrac><mn>1</mn><mrow><mn>10</mn><mo>,</mo><mn>000</mn></mrow></mfrac><mo>&#xA0;</mo>
         <mi mathvariant='normal'>&#x3BC;</mi></math>";
-    test_braille("UEB", expr, "⠼⠁⠀⠠⠘⠫⠁⠀⠐⠶⠀⠼⠁⠌⠁⠚⠂⠚⠚⠚⠀⠨⠍");
+    test_braille("UEB", expr, "⠼⠁⠀⠠⠘⠫⠁⠀⠐⠶⠀⠼⠁⠌⠁⠚⠂⠚⠚⠚⠀⠨⠍")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_1_spaces() {
+fn expr_3_1_1_spaces() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>8</mn></math>";
-    test_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠉⠀⠐⠖⠀⠼⠑⠀⠐⠶⠀⠼⠓");
+    test_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠉⠀⠐⠖⠀⠼⠑⠀⠐⠶⠀⠼⠓")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_2_spaces() {
+fn expr_3_1_2_spaces() -> Result<()> {
     let expr = "<math><mn>8</mn><mo>-</mo><mn>5</mn><mo>=</mo><mn>3</mn></math>";
-    test_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠓⠀⠐⠤⠀⠼⠑⠀⠐⠶⠀⠼⠉");
+    test_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠓⠀⠐⠤⠀⠼⠑⠀⠐⠶⠀⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_1() {
+fn expr_3_1_1() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>8</mn></math>";
     // correct not to use extra spacing
-    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠑⠀⠐⠶⠀⠼⠓");
+    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠑⠀⠐⠶⠀⠼⠓")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_2() {
+fn expr_3_1_2() -> Result<()> {
     let expr = "<math><mn>8</mn><mo>-</mo><mn>5</mn><mo>=</mo><mn>3</mn></math>";
     // correct not to use extra spacing
-    test_braille("UEB", expr, "⠼⠓⠐⠤⠼⠑⠀⠐⠶⠀⠼⠉");
+    test_braille("UEB", expr, "⠼⠓⠐⠤⠼⠑⠀⠐⠶⠀⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_3() {
+fn expr_3_1_3() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>&#xD7;</mo><mn>5</mn><mo>=</mo><mn>5</mn><mo>&#xD7;</mo><mn>3</mn><mo>=</mo><mn>15</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠐⠦⠼⠑⠀⠐⠶⠀⠼⠑⠐⠦⠼⠉⠀⠐⠶⠀⠼⠁⠑");
+    test_braille("UEB", expr, "⠼⠉⠐⠦⠼⠑⠀⠐⠶⠀⠼⠑⠐⠦⠼⠉⠀⠐⠶⠀⠼⠁⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_6() {
+fn expr_3_1_6() -> Result<()> {
     // example includes spaces, so does the MathML (from WIRIS)
     let expr = "<math><mn>5</mn><mo>.</mo><mn>72</mn><mo>&#xA0;</mo><mtext>m</mtext><mo>&#xF7;</mo><mn>10</mn><mo>=</mo>
                     <mn>57</mn><mo>.</mo><mn>2</mn><mo>&#xA0;</mo><mi>cm</mi></math>";
-    test_braille("UEB", expr, "⠼⠑⠲⠛⠃⠀⠍⠐⠌⠼⠁⠚⠀⠐⠶⠀⠼⠑⠛⠲⠃⠀⠉⠍");
+    test_braille("UEB", expr, "⠼⠑⠲⠛⠃⠀⠍⠐⠌⠼⠁⠚⠀⠐⠶⠀⠼⠑⠛⠲⠃⠀⠉⠍")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_7() {
+fn expr_3_1_7() -> Result<()> {
     let expr = "<math><mn>15</mn><mo>&#xB1;</mo><mn>0</mn><mo>.</mo><mn>5</mn></math>";
-    test_braille("UEB", expr, "⠼⠁⠑⠸⠖⠼⠚⠲⠑");
+    test_braille("UEB", expr, "⠼⠁⠑⠸⠖⠼⠚⠲⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_8() {
+fn expr_3_1_8() -> Result<()> {
     let expr = "<math><mi>Area</mi><mo>=</mo><mi>b</mi><mi>h</mi><mo>=</mo>
             <mn>5</mn><mo>&#xB7;</mo><mn>3</mn><mo>=</mo><mn>15</mn></math>";
-    test_braille("UEB", expr, "⠠⠜⠑⠁⠀⠐⠶⠀⠃⠓⠀⠐⠶⠀⠼⠑⠐⠲⠼⠉⠀⠐⠶⠀⠼⠁⠑");
+    test_braille("UEB", expr, "⠠⠜⠑⠁⠀⠐⠶⠀⠃⠓⠀⠐⠶⠀⠼⠑⠐⠲⠼⠉⠀⠐⠶⠀⠼⠁⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_9_wiris() {
+fn expr_3_1_9_wiris() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>.</mo><mn>9</mn><mo>&#xD7;</mo><mn>4</mn><mo>.</mo><mn>1</mn><mo>&#x2243;</mo><mn>16</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠲⠊⠐⠦⠼⠙⠲⠁⠀⠸⠔⠀⠼⠁⠋");
+    test_braille("UEB", expr, "⠼⠉⠲⠊⠐⠦⠼⠙⠲⠁⠀⠸⠔⠀⠼⠁⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_9() {
+fn expr_3_1_9() -> Result<()> {
     let expr = "<math><mn>3.9</mn><mo>&#xD7;</mo><mn>4.1</mn><mo>&#x2243;</mo><mn>16</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠲⠊⠐⠦⠼⠙⠲⠁⠀⠸⠔⠀⠼⠁⠋");
+    test_braille("UEB", expr, "⠼⠉⠲⠊⠐⠦⠼⠙⠲⠁⠀⠸⠔⠀⠼⠁⠋")?;
+    return Ok(());
+
 }
 
 #[test]
-fn expr_3_1_10() {
+fn expr_3_1_10() -> Result<()> {
     let expr = "<math><mn>5</mn><mo>-</mo><mn>3</mn><mo>&#x2260;</mo><mn>3</mn><mo>-</mo><mn>5</mn></math>";
-    test_braille("UEB", expr, "⠼⠑⠐⠤⠼⠉⠀⠐⠶⠈⠱⠀⠼⠉⠐⠤⠼⠑");
+    test_braille("UEB", expr, "⠼⠑⠐⠤⠼⠉⠀⠐⠶⠈⠱⠀⠼⠉⠐⠤⠼⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ratio_3_1_11() {
+fn ratio_3_1_11() -> Result<()> {
     let expr = "<math><mn>1</mn><mo>:</mo><mn>200</mn></math>";
-    test_braille("UEB", expr, "⠼⠁⠒⠼⠃⠚⠚");
+    test_braille("UEB", expr, "⠼⠁⠒⠼⠃⠚⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ratio_3_1_12() {
+fn ratio_3_1_12() -> Result<()> {
     let expr = "<math><mn>2</mn><mo>:</mo><mn>4</mn><mo>=</mo><mn>6</mn><mo>:</mo><mn>12</mn></math>";
-    test_braille("UEB", expr, "⠼⠃⠒⠼⠙⠀⠐⠶⠀⠼⠋⠒⠼⠁⠃");
+    test_braille("UEB", expr, "⠼⠃⠒⠼⠙⠀⠐⠶⠀⠼⠋⠒⠼⠁⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn alg_3_2_1_1() {
+fn alg_3_2_1_1() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>&#x221D;</mo><mi>x</mi></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠸⠐⠶⠀⠰⠭");
+    test_braille("UEB", expr, "⠰⠽⠀⠸⠐⠶⠀⠰⠭")?;
+    return Ok(());
+
 }
 
 #[test]
-fn alg_3_2_1_2() {
+fn alg_3_2_1_2() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>=</mo><mi>k</mi><mi>x</mi></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠅⠭");
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠅⠭")?;
+    return Ok(());
+
 }
 
 #[test]
-fn alg_3_2_2() {
+fn alg_3_2_2() -> Result<()> {
     let expr = "<math><mn>0</mn><mo>&#x2264;</mo><mi>&#x3B8;</mi>
             <mo>&#x2264;</mo><mn>2</mn><mi mathvariant='normal'>&#x3C0;</mi></math>";
-    test_braille("UEB", expr, "⠼⠚⠀⠸⠈⠣⠀⠨⠹⠀⠸⠈⠣⠀⠼⠃⠨⠏");
+    test_braille("UEB", expr, "⠼⠚⠀⠸⠈⠣⠀⠨⠹⠀⠸⠈⠣⠀⠼⠃⠨⠏")?;
+    return Ok(());
+
 }
 
 #[test]
-fn alg_3_2_3() {
+fn alg_3_2_3() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>4</mn></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠭⠐⠖⠼⠙");
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠭⠐⠖⠼⠙")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn alg_3_2_4() {
+fn alg_3_2_4() -> Result<()> {
     let expr = "<math><mn>2</mn><mi>y</mi><mo>=</mo><mn>2</mn><mi>c</mi><mo>-</mo><mn>4</mn></math>";
-    test_braille("UEB", expr, "⠼⠃⠽⠀⠐⠶⠀⠼⠃⠰⠉⠐⠤⠼⠙");
+    test_braille("UEB", expr, "⠼⠃⠽⠀⠐⠶⠀⠼⠃⠰⠉⠐⠤⠼⠙")?;
+    return Ok(());
+
 }
 
 #[test]
-fn alg_3_2_5() {
+fn alg_3_2_5() -> Result<()> {
     let expr = "<math><mi>d</mi><mo>+</mo><mi>a</mi><mi>b</mi><mo>=</mo><mi>a</mi><mi>c</mi></math>";
     // BANA says use a word indicator if G1 not in first 3 cells (it is after the '='); use passage if >=2 whitespace
     // This seems like a poor choice in this case since there is only one G1 indicator, but that's the BANA guidance so...
     // "⠰⠰⠰⠙⠐⠖⠁⠃⠀⠐⠶⠀⠁⠉⠰⠄"
     // GTM says to use the following and it is more sensisble, so I'm going with it
-    test_braille("UEB", expr, "⠙⠐⠖⠁⠃⠀⠐⠶⠀⠰⠁⠉");
+    test_braille("UEB", expr, "⠙⠐⠖⠁⠃⠀⠐⠶⠀⠰⠁⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ratio_3_2_6() {
+fn ratio_3_2_6() -> Result<()> {
     // the difference from ratio_3_1_12 is this involves letters
     let expr = "<math><mi>x</mi><mo>:</mo><mi>y</mi></math>";
-    test_braille("UEB", expr, "⠭⠰⠒⠽");
+    test_braille("UEB", expr, "⠭⠰⠒⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn standing_alone_1() {
+fn standing_alone_1() -> Result<()> {
     // Tests bug: github.com/NSoiffer/MathCAT/issues/142
     let expr = "<math><mo>(</mo><mi>n</mi><mo>=</mo><mn>7</mn><mo>)</mo></math>";
-    test_braille("UEB", expr, "⠐⠣⠰⠝⠀⠐⠶⠀⠼⠛⠐⠜");
+    test_braille("UEB", expr, "⠐⠣⠰⠝⠀⠐⠶⠀⠼⠛⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_3_4_1() {
+fn example_3_4_1() -> Result<()> {
     let expr = "<math><mo>-</mo><mn>4</mn><mtext>&#xA0;to&#xA0;</mtext><mo>+</mo><mn>5</mn></math>";
-    test_braille("UEB", expr, "⠐⠤⠼⠙⠀⠞⠕⠀⠐⠖⠼⠑");
+    test_braille("UEB", expr, "⠐⠤⠼⠙⠀⠞⠕⠀⠐⠖⠼⠑")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_3_4_2() {
+fn example_3_4_2() -> Result<()> {
     // removed some cruft from TeX output of {}^{-}2+{}^{+}3, but the basics are preserved
     let expr = "<math>
         <msup> <mrow/> <mo>&#x2212;</mo></msup>
@@ -426,275 +547,355 @@ fn example_3_4_2() {
         <msup> <mrow/> <mo>&#x2212;</mo></msup>
         <mn>3</mn>
     </math>";
-    test_braille("UEB", expr, "⠰⠔⠐⠤⠼⠃⠐⠖⠔⠐⠤⠼⠉");
+    test_braille("UEB", expr, "⠰⠔⠐⠤⠼⠃⠐⠖⠔⠐⠤⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_1() {
+fn omission_3_6_1() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>7</mn><mo>=</mo><mo>―</mo></math>";
-    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠐⠠⠤");
+    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠐⠠⠤")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_2() {
+fn omission_3_6_2() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>7</mn><mo>=</mo><mi>_</mi></math>";
-    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠨⠤");
+    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠨⠤")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_3() {
+fn omission_3_6_3() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>7</mn><mo>=</mo><mo>?</mo></math>";
-    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠰⠦");
+    test_braille("UEB", expr, "⠼⠉⠐⠖⠼⠛⠀⠐⠶⠀⠰⠦")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_4() {
+fn omission_3_6_4() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>&#x25A1;</mo><mn>7</mn><mo>=</mo><mn>10</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠫⠼⠙⠱⠼⠛⠀⠐⠶⠀⠼⠁⠚");
+    test_braille("UEB", expr, "⠼⠉⠫⠼⠙⠱⠼⠛⠀⠐⠶⠀⠼⠁⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_5() {
+fn omission_3_6_5() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>&#xA0;</mo><mo>&#xA0;</mo><mn>7</mn><mo>=</mo><mn>10</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠬⠼⠛⠀⠐⠶⠀⠼⠁⠚");
+    test_braille("UEB", expr, "⠼⠉⠬⠼⠛⠀⠐⠶⠀⠼⠁⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_6() {
+fn omission_3_6_6() -> Result<()> {
     // comes from WIRIS
     let expr = "<math><mfrac><mn>9</mn><mn>12</mn></mfrac><mo>=</mo><mfrac><mn>3</mn><mrow/></mfrac></math>";
-    test_braille("UEB", expr, "⠼⠊⠌⠁⠃⠀⠐⠶⠀⠰⠷⠼⠉⠨⠌⠬⠾");
+    test_braille("UEB", expr, "⠼⠊⠌⠁⠃⠀⠐⠶⠀⠰⠷⠼⠉⠨⠌⠬⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn omission_3_6_7() {
+fn omission_3_6_7() -> Result<()> {
     // comes from MathType
     let expr = "<math><mrow><mn>5</mn><mo>=</mo><msqrt><mrow/></msqrt></mrow></math>";
-    test_braille("UEB", expr, "⠼⠑⠀⠐⠶⠀⠰⠰⠩⠬⠬");
+    test_braille("UEB", expr, "⠼⠑⠀⠐⠶⠀⠰⠰⠩⠬⠬")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_1_1() {
+fn fraction_6_1_1() -> Result<()> {
     let expr = "<math><mfrac><mn>5</mn><mn>8</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠼⠑⠌⠓");
+    test_braille("UEB", expr, "⠼⠑⠌⠓")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_1_2() {
+fn fraction_6_1_2() -> Result<()> {
     let expr = "<math><mfrac><mrow><mn>5</mn><mo>.</mo><mn>7</mn></mrow><mrow><mn>2</mn><mo>,</mo><mn>000</mn></mrow></mfrac></math>";
-    test_braille("UEB", expr, "⠼⠑⠲⠛⠌⠃⠂⠚⠚⠚");
+    test_braille("UEB", expr, "⠼⠑⠲⠛⠌⠃⠂⠚⠚⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_2_1() {
+fn fraction_6_2_1() -> Result<()> {
     let expr = "<math><mn>2</mn><mfrac bevelled='true'><mn>1</mn><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠼⠃⠼⠁⠌⠃");
+    test_braille("UEB", expr, "⠼⠃⠼⠁⠌⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_2_2() {
+fn fraction_6_2_2() -> Result<()> {
     let expr = "<math><mn>1750</mn>
                 <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>cm</mi><mo>=</mo>
                 <mn>1</mn><mfrac bevelled='true'><mn>3</mn><mn>4</mn></mfrac>
                 <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>m</mi></math>";
-    test_braille("UEB", expr, "⠼⠁⠛⠑⠚⠀⠉⠍⠀⠐⠶⠀⠼⠁⠼⠉⠌⠙⠀⠰⠍");
+    test_braille("UEB", expr, "⠼⠁⠛⠑⠚⠀⠉⠍⠀⠐⠶⠀⠼⠁⠼⠉⠌⠙⠀⠰⠍")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_2_2_unicode_frac() {
+fn fraction_6_2_2_unicode_frac() -> Result<()> {
     let expr = "<math><mn>1750</mn>
                 <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>cm</mi><mo>=</mo>
                 <mn>1</mn><mn>&#xBE;</mn>
                 <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>m</mi></math>";
-    test_braille("UEB", expr, "⠼⠁⠛⠑⠚⠀⠉⠍⠀⠐⠶⠀⠼⠁⠼⠉⠌⠙⠀⠰⠍");
+    test_braille("UEB", expr, "⠼⠁⠛⠑⠚⠀⠉⠍⠀⠐⠶⠀⠼⠁⠼⠉⠌⠙⠀⠰⠍")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_3_1() {
+fn fraction_6_3_1() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>/</mo><mn>8</mn></math>";
-    test_braille("UEB", expr, "⠼⠉⠸⠌⠼⠓");
+    test_braille("UEB", expr, "⠼⠉⠸⠌⠼⠓")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_1() {
+fn fraction_6_4_1() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>=</mo><mfrac><mi>x</mi><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠽⠀⠐⠶⠀⠷⠭⠨⠌⠼⠃⠾⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠽⠀⠐⠶⠀⠷⠭⠨⠌⠼⠃⠾⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_2() {
+fn fraction_6_4_2() -> Result<()> {
     let expr = "<math><mfrac>
         <mrow><mn>2</mn><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow>
         <mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>
         </mfrac></math>";
-    test_braille("UEB", expr, "⠰⠷⠼⠃⠼⠁⠌⠃⠨⠌⠭⠐⠖⠽⠾");
+    test_braille("UEB", expr, "⠰⠷⠼⠃⠼⠁⠌⠃⠨⠌⠭⠐⠖⠽⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_3() {
+fn fraction_6_4_3() -> Result<()> {
     let expr = "<math><mfrac><mrow><mn>2</mn><mo>/</mo><mn>3</mn></mrow><mn>5</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠷⠼⠃⠸⠌⠼⠉⠨⠌⠼⠑⠾");
+    test_braille("UEB", expr, "⠰⠷⠼⠃⠸⠌⠼⠉⠨⠌⠼⠑⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_4() {
+fn fraction_6_4_4() -> Result<()> {
     let expr = "<math><mfrac>
     <mrow><mfrac><mi>x</mi><mn>2</mn></mfrac><mo>+</mo><mfrac><mi>y</mi><mn>3</mn></mfrac></mrow>
     <mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>
         </mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠷⠭⠨⠌⠼⠃⠾⠐⠖⠷⠽⠨⠌⠼⠉⠾⠨⠌⠭⠐⠖⠽⠾");
+    test_braille("UEB", expr, "⠰⠰⠷⠷⠭⠨⠌⠼⠃⠾⠐⠖⠷⠽⠨⠌⠼⠉⠾⠨⠌⠭⠐⠖⠽⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_5() {
+fn fraction_6_4_5() -> Result<()> {
     let expr = "<math><mfrac>
         <mrow><mfrac><mi>x</mi><mn>2</mn></mfrac><mo>+</mo><mfrac><mi>y</mi><mn>3</mn></mfrac></mrow>
         <mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>
         </mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠷⠭⠨⠌⠼⠃⠾⠐⠖⠷⠽⠨⠌⠼⠉⠾⠨⠌⠭⠐⠖⠽⠾");
+    test_braille("UEB", expr, "⠰⠰⠷⠷⠭⠨⠌⠼⠃⠾⠐⠖⠷⠽⠨⠌⠼⠉⠾⠨⠌⠭⠐⠖⠽⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_6_4_6() {
+fn fraction_6_4_6() -> Result<()> {
     let expr = "<math><mtext>speed</mtext><mo>=</mo><mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac></math>";
     // GTM lists two options:  "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾" and "⠰⠰⠰⠎⠏⠑⠑⠙⠀⠐⠶⠀⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾⠰⠄"
-    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾");
+    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn msup_7_3_2() {
+fn msup_7_3_2() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mi>y</mi></math>";
-    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠽");
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_3_3() {
+fn msup_7_3_3() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mrow><mn>2</mn><mi>y</mi></mrow></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠼⠃⠽⠜");
+    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠼⠃⠽⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_3_4() {
+fn msup_7_3_4() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mi>y</mi></msup><mo>+</mo><mn>1</mn></math>";
-    test_braille("UEB", expr, "⠭⠰⠔⠽⠐⠖⠼⠁");
+    test_braille("UEB", expr, "⠭⠰⠔⠽⠐⠖⠼⠁")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_3_6() {
+fn msup_7_3_6() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>+</mo><mn>3</mn></math>";
-    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠽⠐⠖⠼⠁⠜⠐⠖⠼⠉");
+    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠽⠐⠖⠼⠁⠜⠐⠖⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_3_7() {
+fn msup_7_3_7() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mn>⅔</mn></msup></math>";
-    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠌⠉");
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠌⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_3_11() {
+fn msup_7_3_11() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mfrac><mi>a</mi><mi>b</mi></mfrac></msup><mi>y</mi><mo>=</mo><mi>x</mi></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠭⠔⠷⠁⠨⠌⠃⠾⠽⠀⠐⠶⠀⠭⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠔⠷⠁⠨⠌⠃⠾⠽⠀⠐⠶⠀⠭⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_4_1() {
+fn msup_7_4_1() -> Result<()> {
     let expr = "<math><msup><mi>e</mi><msup><mi>x</mi><mn>2</mn></msup></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠑⠔⠣⠭⠔⠼⠃⠜");
+    test_braille("UEB", expr, "⠰⠰⠑⠔⠣⠭⠔⠼⠃⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_4_2() {
+fn msup_7_4_2() -> Result<()> {
     let expr = "<math><msup><mi>e</mi><mrow><mo>(</mo><msup><mi>x</mi><mn>2</mn></msup><mo>)</mo></mrow></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠑⠔⠐⠣⠭⠔⠼⠃⠐⠜");
+    test_braille("UEB", expr, "⠰⠰⠑⠔⠐⠣⠭⠔⠼⠃⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msub_7_4_3() {
+fn msub_7_4_3() -> Result<()> {
     let expr = "<math><msub><mi>P</mi><msub><mi>x</mi><mi>i</mi></msub></msub></math>";
-    test_braille("UEB", expr, "⠰⠰⠠⠏⠢⠣⠭⠢⠊⠜");
+    test_braille("UEB", expr, "⠰⠰⠠⠏⠢⠣⠭⠢⠊⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_5_1() {
+fn msup_7_5_1() -> Result<()> {
     let expr = "<math><mn>0</mn><mo>.</mo><mn>0045</mn><mo>=</mo>
         <mn>4</mn><mo>.</mo><mn>5</mn><mo>&#xD7;</mo><msup><mn>10</mn><mrow><mo>-</mo><mn>3</mn></mrow></msup>
         </math>";
-    test_braille("UEB", expr, "⠼⠚⠲⠚⠚⠙⠑⠀⠐⠶⠀⠼⠙⠲⠑⠐⠦⠼⠁⠚⠔⠣⠐⠤⠼⠉⠜");
+    test_braille("UEB", expr, "⠼⠚⠲⠚⠚⠙⠑⠀⠐⠶⠀⠼⠙⠲⠑⠐⠦⠼⠁⠚⠔⠣⠐⠤⠼⠉⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_5_3() {
+fn msup_7_5_3() -> Result<()> {
     let expr = "<math><msup><mi>a</mi><mrow><mo>-</mo><mn>2</mn><mi>b</mi></mrow></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠁⠔⠣⠐⠤⠼⠃⠰⠃⠜");
+    test_braille("UEB", expr, "⠰⠰⠁⠔⠣⠐⠤⠼⠃⠰⠃⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_7_6_2() {
+fn msup_7_6_2() -> Result<()> {
     let expr = "<math><msup><mi mathvariant='normal'>H</mi><mo>+</mo></msup></math>";
-    test_braille("UEB", expr, "⠠⠓⠰⠔⠐⠖");
+    test_braille("UEB", expr, "⠠⠓⠰⠔⠐⠖")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msubsup_7_7_1() {
+fn msubsup_7_7_1() -> Result<()> {
     let expr = "<math><msubsup><mi>x</mi><mn>1</mn><mn>2</mn></msubsup><mo>=</mo><msubsup><mi>y</mi><mn>2</mn><mn>3</mn></msubsup></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠭⠢⠼⠁⠔⠼⠃⠀⠐⠶⠀⠽⠢⠼⠃⠔⠼⠉⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠢⠼⠁⠔⠼⠃⠀⠐⠶⠀⠽⠢⠼⠃⠔⠼⠉⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msubsup_7_7_2() {
+fn msubsup_7_7_2() -> Result<()> {
     let expr = "<math><msub><msup><mi>x</mi><mn>2</mn></msup><mi>k</mi></msub></math>";
-    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠢⠅");
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠢⠅")?;
+    return Ok(());
+
 }
 
 #[test]
-fn pre_msubsup_7_8_1() {
+fn pre_msubsup_7_8_1() -> Result<()> {
     // Note: modified because word indicator is not needed
     let expr = "<math><mmultiscripts><mi>U</mi><mprescripts/><mn>92</mn><mn>238</mn></mmultiscripts></math>";
-    test_braille("UEB", expr, "⠰⠢⠼⠊⠃⠔⠼⠃⠉⠓⠠⠥");
+    test_braille("UEB", expr, "⠰⠢⠼⠊⠃⠔⠼⠃⠉⠓⠠⠥")?;
+    return Ok(());
+
 }
 
 #[test]
-fn pre_sup_7_8_2() {
+fn pre_sup_7_8_2() -> Result<()> {
     let expr = "<math><mmultiscripts><mn>2</mn><mprescripts/><none/><mo>-</mo></mmultiscripts>
             <mo>+</mo><mmultiscripts><mn>3</mn><mprescripts/><none/><mo>-</mo></mmultiscripts>
             <mo>=</mo><mmultiscripts><mn>5</mn><mprescripts/><none/><mo>-</mo></mmultiscripts>
         </math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠔⠐⠤⠼⠃⠐⠖⠔⠐⠤⠼⠉⠀⠐⠶⠀⠔⠐⠤⠼⠑⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠔⠐⠤⠼⠃⠐⠖⠔⠐⠤⠼⠉⠀⠐⠶⠀⠔⠐⠤⠼⠑⠰⠄")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn sum_7_9_1() {
+fn sum_7_9_1() -> Result<()> {
     let expr = "<math><munderover><mo>&#x2211;</mo><mrow><mi>x</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover>
             <msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup></math>";
-    test_braille("UEB", expr, "⠰⠰⠠⠨⠎⠨⠢⠣⠭⠐⠶⠼⠁⠜⠨⠔⠝⠭⠢⠊⠔⠼⠃");
+    test_braille("UEB", expr, "⠰⠰⠠⠨⠎⠨⠢⠣⠭⠐⠶⠼⠁⠜⠨⠔⠝⠭⠢⠊⠔⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn lim_7_9_2() {
+fn lim_7_9_2() -> Result<()> {
     // Note: modified because passage indicator is not needed (same expr when word indicator is used)
     let expr = "<math><munder><mi>lim</mi><mrow><mi>x</mi><mo>&#x2192;</mo><mi>a</mi></mrow></munder>
             <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mn>1</mn></math>";
-    test_braille("UEB", expr, "⠰⠰⠇⠊⠍⠨⠢⠣⠭⠳⠕⠁⠜⠋⠐⠣⠭⠐⠜⠀⠐⠶⠀⠼⠁");
+    test_braille("UEB", expr, "⠰⠰⠇⠊⠍⠨⠢⠣⠭⠳⠕⠁⠜⠋⠐⠣⠭⠐⠜⠀⠐⠶⠀⠼⠁")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sqrt_8_1_1() {
+fn sqrt_8_1_1() -> Result<()> {
     let expr = "<math><msqrt><mn>9</mn></msqrt><mo>=</mo><mn>3</mn></math>";
-    test_braille("UEB", expr, "⠰⠩⠼⠊⠬⠀⠐⠶⠀⠼⠉");
+    test_braille("UEB", expr, "⠰⠩⠼⠊⠬⠀⠐⠶⠀⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sqrt_8_1_2() {
+fn sqrt_8_1_2() -> Result<()> {
     let expr = "<math><mi>r</mi><mo>=</mo>
         <msqrt><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></msqrt></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠗⠀⠐⠶⠀⠩⠭⠔⠼⠃⠐⠖⠽⠔⠼⠃⠬⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠗⠀⠐⠶⠀⠩⠭⠔⠼⠃⠐⠖⠽⠔⠼⠃⠬⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sqrt_8_1_3() {
+fn sqrt_8_1_3() -> Result<()> {
     let expr = "<math>
     <msqrt>
       <mfrac>
@@ -703,11 +904,13 @@ fn sqrt_8_1_3() {
       </mfrac>
     </msqrt>
   </math>";
-    test_braille("UEB", expr, "⠰⠰⠩⠷⠼⠛⠓⠉⠲⠃⠐⠦⠼⠋⠲⠑⠙⠛⠨⠌⠼⠚⠲⠙⠋⠃⠓⠾⠬");
+    test_braille("UEB", expr, "⠰⠰⠩⠷⠼⠛⠓⠉⠲⠃⠐⠦⠼⠋⠲⠑⠙⠛⠨⠌⠼⠚⠲⠙⠋⠃⠓⠾⠬")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sqrt_8_1_4() {
+fn sqrt_8_1_4() -> Result<()> {
     let expr = "<math>
       <mi>x</mi> <mo>=</mo>
       <mfrac>
@@ -722,34 +925,42 @@ fn sqrt_8_1_4() {
       </mfrac>
       </math>
     ";
-    test_braille("UEB", expr, "⠰⠰⠰⠭⠀⠐⠶⠀⠷⠐⠤⠃⠸⠖⠩⠃⠔⠼⠃⠐⠤⠼⠙⠰⠁⠉⠬⠨⠌⠼⠃⠰⠁⠾⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠀⠐⠶⠀⠷⠐⠤⠃⠸⠖⠩⠃⠔⠼⠃⠐⠤⠼⠙⠰⠁⠉⠬⠨⠌⠼⠃⠰⠁⠾⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn root_8_2_1() {
+fn root_8_2_1() -> Result<()> {
     let expr = "<math><mroot><mn>8</mn><mn>3</mn></mroot><mo>=</mo><mn>2</mn></math>";
-    test_braille("UEB", expr, "⠰⠰⠩⠔⠼⠉⠼⠓⠬⠀⠐⠶⠀⠼⠃");
+    test_braille("UEB", expr, "⠰⠰⠩⠔⠼⠉⠼⠓⠬⠀⠐⠶⠀⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn root_8_2_2() {
+fn root_8_2_2() -> Result<()> {
     let expr = "<math><mi>q</mi><mo>=</mo>
         <mroot><mrow>
         <msup><mi>x</mi><mn>3</mn></msup><mo>+</mo>
         <msup><mi>y</mi><mn>3</mn></msup><mo>+</mo>
         <msup><mi>z</mi><mn>3</mn></msup>
         </mrow><mn>3</mn></mroot></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠟⠀⠐⠶⠀⠩⠔⠼⠉⠭⠔⠼⠉⠐⠖⠽⠔⠼⠉⠐⠖⠵⠔⠼⠉⠬⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠟⠀⠐⠶⠀⠩⠔⠼⠉⠭⠔⠼⠉⠐⠖⠽⠔⠼⠉⠐⠖⠵⠔⠼⠉⠬⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn root_8_2_3() {
+fn root_8_2_3() -> Result<()> {
     let expr = "<math><mroot><mrow><mi>x</mi><mi>y</mi></mrow><mrow><mi>m</mi><mi>n</mi></mrow></mroot></math>";
-    test_braille("UEB", expr, "⠰⠰⠩⠔⠣⠍⠝⠜⠭⠽⠬");
+    test_braille("UEB", expr, "⠰⠰⠩⠔⠣⠍⠝⠜⠭⠽⠬")?;
+    return Ok(());
+
 }
 
 #[test]
-fn root_8_2_4() {
+fn root_8_2_4() -> Result<()> {
     let expr = "<math>
         <msup><mn>81</mn><mfrac><mn>3</mn><mn>4</mn></mfrac></msup> <mo>=</mo>
         <msup><mrow><mo>(</mo><mroot><mn>81</mn><mn>4</mn></mroot><mo>)</mo></mrow><mn>3</mn></msup><mo>=</mo>
@@ -757,198 +968,254 @@ fn root_8_2_4() {
         <msup><mrow><mo>(</mo><msqrt><mn>9</mn></msqrt><mo>)</mo></mrow><mn>3</mn></msup>  <mo>=</mo>
         <msup><mn>3</mn><mn>3</mn></msup>
         <mo>=</mo> <mn>27</mn> </math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠼⠓⠁⠔⠼⠉⠌⠙⠀⠐⠶⠀⠐⠣⠩⠔⠼⠙⠼⠓⠁⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠐⠣⠩⠩⠼⠓⠁⠬⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠐⠣⠩⠼⠊⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠼⠉⠔⠼⠉⠀⠐⠶⠀⠼⠃⠛⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠼⠓⠁⠔⠼⠉⠌⠙⠀⠐⠶⠀⠐⠣⠩⠔⠼⠙⠼⠓⠁⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠐⠣⠩⠩⠼⠓⠁⠬⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠐⠣⠩⠼⠊⠬⠐⠜⠔⠼⠉⠀⠐⠶⠀⠼⠉⠔⠼⠉⠀⠐⠶⠀⠼⠃⠛⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn root_letter_base() {
+fn root_letter_base() -> Result<()> {
     // none of the guides cover this case, but it seems that an a-j base needs a grade 1 indicator
     let expr = "<math><mroot><mi>b</mi><mn>3</mn></mroot><mroot><mi>x</mi><mn>3</mn></mroot></math>";
-    test_braille("UEB", expr, "⠰⠰⠩⠔⠼⠉⠰⠃⠬⠩⠔⠼⠉⠭⠬");
+    test_braille("UEB", expr, "⠰⠰⠩⠔⠼⠉⠰⠃⠬⠩⠔⠼⠉⠭⠬")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_1_1() {
+fn spacing_9_3_1_1() -> Result<()> {
     let expr = "<math> <mi>Sin</mi><mo>&#x2061;</mo> <mn>30</mn> </math>";
-    test_braille("UEB", expr, "⠠⠎⠔⠼⠉⠚");
+    test_braille("UEB", expr, "⠠⠎⠔⠼⠉⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_1_2() {
+fn spacing_9_3_1_2() -> Result<()> {
     let expr = "<math><mn>3</mn><mi>tan</mi><mn>45</mn><mo>&#xB0;</mo></math>";
-    test_braille("UEB", expr, "⠼⠉⠞⠁⠝⠼⠙⠑⠘⠚");
+    test_braille("UEB", expr, "⠼⠉⠞⠁⠝⠼⠙⠑⠘⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_1_3() {
+fn spacing_9_3_1_3() -> Result<()> {
     let expr = "<math><mn>4</mn><mi>cos</mi><mn>5</mn><mi>x</mi></math>";
-    test_braille("UEB", expr, "⠼⠙⠰⠉⠕⠎⠼⠑⠭");
+    test_braille("UEB", expr, "⠼⠙⠰⠉⠕⠎⠼⠑⠭")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_2_1() {
+fn spacing_9_3_2_1() -> Result<()> {
     let expr = "<math><mi>log</mi><mi>y</mi></math>";
-    test_braille("UEB", expr, "⠇⠕⠛⠀⠰⠽");
+    test_braille("UEB", expr, "⠇⠕⠛⠀⠰⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_2_2() {
+fn spacing_9_3_2_2() -> Result<()> {
     let expr = "<math><mi>sin</mi><mi>&#x3B8;</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠨⠹");
+    test_braille("UEB", expr, "⠎⠔⠨⠹")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_2_3() {
+fn spacing_9_3_2_3() -> Result<()> {
     let expr = "<math><mi>Sec</mi><mi>A</mi></math>";
-    test_braille("UEB", expr, "⠠⠎⠑⠉⠠⠁");
+    test_braille("UEB", expr, "⠠⠎⠑⠉⠠⠁")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_2_4() {
+fn spacing_9_3_2_4() -> Result<()> {
     let expr = "<math><mi>log</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
-    test_braille("UEB", expr, "⠇⠕⠛⠐⠣⠭⠐⠖⠽⠐⠜");
+    test_braille("UEB", expr, "⠇⠕⠛⠐⠣⠭⠐⠖⠽⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_2_5() {
+fn spacing_9_3_2_5() -> Result<()> {
     let expr = "<math><mi>Lim</mi><mfrac><mi>x</mi><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠠⠇⠊⠍⠷⠭⠨⠌⠼⠃⠾");
+    test_braille("UEB", expr, "⠰⠰⠠⠇⠊⠍⠷⠭⠨⠌⠼⠃⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_1() {
+fn spacing_9_3_3_1() -> Result<()> {
     let expr = "<math><mi>x</mi><mi>sin</mi><mn>60</mn></math>";
-    test_braille("UEB", expr, "⠰⠭⠀⠎⠔⠼⠋⠚");
+    test_braille("UEB", expr, "⠰⠭⠀⠎⠔⠼⠋⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_2() {
+fn spacing_9_3_3_2() -> Result<()> {
     let expr = "<math><mi>x</mi><mrow><mi>Sin</mi><mo>&#x2061;</mo><mn>60</mn></mrow></math>";
-    test_braille("UEB", expr, "⠭⠠⠎⠔⠼⠋⠚");
+    test_braille("UEB", expr, "⠭⠠⠎⠔⠼⠋⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_3() {
+fn spacing_9_3_3_3() -> Result<()> {
     let expr = "<math><mi>X</mi><mi>log</mi><mi>y</mi></math>";
-    test_braille("UEB", expr, "⠰⠠⠭⠀⠇⠕⠛⠀⠰⠽");
+    test_braille("UEB", expr, "⠰⠠⠭⠀⠇⠕⠛⠀⠰⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_4() {
+fn spacing_9_3_3_4() -> Result<()> {
     let expr = "<math><mi>x</mi><mi>Log</mi><mi>y</mi></math>";
-    test_braille("UEB", expr, "⠭⠠⠇⠕⠛⠀⠰⠽");
+    test_braille("UEB", expr, "⠭⠠⠇⠕⠛⠀⠰⠽")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_5() {
+fn spacing_9_3_3_5() -> Result<()> {
     let expr = "<math>
         <mi>sin</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>A</mi><mo>+</mo><mi>B</mi><mo>)</mo> </mrow>
         <mo>=</mo><mi>sin</mi><mo>&#x2061;</mo><mi>A</mi><mi>cos</mi><mo>&#x2061;</mo>  <mi>B</mi>
         <mo>+</mo><mi>cos</mi><mo>&#x2061;</mo><mi>A</mi><mi>sin</mi><mo>&#x2061;</mo><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠐⠣⠠⠁⠐⠖⠠⠃⠐⠜⠀⠐⠶⠀⠎⠔⠠⠁⠀⠉⠕⠎⠠⠃⠐⠖⠉⠕⠎⠠⠁⠀⠎⠔⠠⠃");
+    test_braille("UEB", expr, "⠎⠔⠐⠣⠠⠁⠐⠖⠠⠃⠐⠜⠀⠐⠶⠀⠎⠔⠠⠁⠀⠉⠕⠎⠠⠃⠐⠖⠉⠕⠎⠠⠁⠀⠎⠔⠠⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn spacing_9_3_3_6() {
+fn spacing_9_3_3_6() -> Result<()> {
     let expr = "<math><mi>sin</mi><mn>2</mn><mi>&#x3B2;</mi><mo>=</mo>
                 <mn>2</mn><mi>sin</mi><mi>&#x3B2;</mi><mi>cos</mi><mi>&#x3B2;</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠼⠃⠨⠃⠀⠐⠶⠀⠼⠃⠎⠊⠝⠨⠃⠉⠕⠎⠨⠃");
+    test_braille("UEB", expr, "⠎⠔⠼⠃⠨⠃⠀⠐⠶⠀⠼⠃⠎⠊⠝⠨⠃⠉⠕⠎⠨⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn text_9_7_1_mtext() {
+fn text_9_7_1_mtext() -> Result<()> {
     let expr = "<math><mtext>Pr</mtext><mo>(</mo><mi>A</mi><mo>&#xA0;</mo><mtext>and</mtext><mo>&#xA0;</mo><mi>B</mi><mo>)</mo><mo>=</mo>
          <mtext>Pr</mtext><mi>A</mi><mo>+</mo><mtext>Pr</mtext><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠠⠏⠗⠐⠣⠠⠁⠀⠯⠀⠰⠠⠃⠐⠜⠀⠐⠶⠀⠠⠏⠗⠠⠁⠐⠖⠠⠏⠗⠠⠃");
+    test_braille("UEB", expr, "⠠⠏⠗⠐⠣⠠⠁⠀⠯⠀⠰⠠⠃⠐⠜⠀⠐⠶⠀⠠⠏⠗⠠⠁⠐⠖⠠⠏⠗⠠⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn text_9_7_1() {
+fn text_9_7_1() -> Result<()> {
     // ugly as the MathML is with non-breaking space in mo's, this is a WIRIS editor output
     let expr = "<math><mi>Pr</mi><mo>(</mo><mi>A</mi><mo>&#xA0;</mo><mi>and</mi><mo>&#xA0;</mo><mi>B</mi><mo>)</mo><mo>=</mo>
          <mi>Pr</mi><mi>A</mi><mo>+</mo><mi>Pr</mi><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠠⠏⠗⠐⠣⠠⠁⠀⠯⠀⠰⠠⠃⠐⠜⠀⠐⠶⠀⠠⠏⠗⠠⠁⠐⠖⠠⠏⠗⠠⠃");
+    test_braille("UEB", expr, "⠠⠏⠗⠐⠣⠠⠁⠀⠯⠀⠰⠠⠃⠐⠜⠀⠐⠶⠀⠠⠏⠗⠠⠁⠐⠖⠠⠏⠗⠠⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn stat_9_7_2() {
+fn stat_9_7_2() -> Result<()> {
     let expr = "<math><mi>Exp</mi><mo>(</mo><mi>R</mi><mo>)</mo><mo>=</mo>
                             <mfrac><mi>n</mi><mn>2</mn></mfrac><mo>+</mo><mn>1</mn></math>";
     // GTM uses "⠰⠰⠰⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁⠰⠄",
     //      but "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁" is shorter and is consistent with omission_3_6_7 and fraction_6_4_6
-    test_braille("UEB", expr, "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁");
+    test_braille("UEB", expr, "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_10_1() {
+fn set_10_1() -> Result<()> {
     let expr = "<math><mi>A</mi><mo>=</mo>
         <mfenced open='{' close='}'> 
         <mrow><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn></mrow>
     </mfenced></math>";
-    test_braille("UEB", expr, "⠠⠁⠀⠐⠶⠀⠸⠣⠼⠁⠂⠀⠼⠃⠂⠀⠼⠉⠂⠀⠼⠙⠸⠜");
+    test_braille("UEB", expr, "⠠⠁⠀⠐⠶⠀⠸⠣⠼⠁⠂⠀⠼⠃⠂⠀⠼⠉⠂⠀⠼⠙⠸⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_10_3() {
+fn set_10_3() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>&#x2208;</mo><mi>A</mi><mo>&#x2229;</mo><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠼⠉⠀⠘⠑⠀⠠⠁⠨⠦⠠⠃");
+    test_braille("UEB", expr, "⠼⠉⠀⠘⠑⠀⠠⠁⠨⠦⠠⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_10_4() {
+fn set_10_4() -> Result<()> {
     let expr = "<math><mi>A</mi><mo>&#x2229;</mo><mi>B</mi><mo>&#x2282;</mo><mi>A</mi><mo>&#x222A;</mo><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠠⠁⠨⠦⠠⠃⠀⠘⠣⠀⠠⠁⠨⠖⠠⠃");
+    test_braille("UEB", expr, "⠠⠁⠨⠦⠠⠃⠀⠘⠣⠀⠠⠁⠨⠖⠠⠃")?;
+    return Ok(());
+
 }
 #[test]
-fn set_10_5() {
+fn set_10_5() -> Result<()> {
     let expr = "<math><msup><mi>A</mi><mo>'</mo></msup><mo>∪</mo><msup><mi>B</mi><mo>'</mo></msup><mo>=</mo>
                         <msup><mrow><mo>(</mo><mi>A</mi><mo>∩</mo><mi>B</mi><mo>)</mo></mrow><mo>'</mo></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠠⠁⠶⠨⠖⠠⠃⠶⠀⠐⠶⠀⠐⠣⠠⠁⠨⠦⠠⠃⠐⠜⠶⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠁⠶⠨⠖⠠⠃⠶⠀⠐⠶⠀⠐⠣⠠⠁⠨⠦⠠⠃⠐⠜⠶⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_10_6() {
+fn set_10_6() -> Result<()> {
     // Note: example uses the wrong char "├" in the display -- should be "⊢"
     let expr = "<math><mo>[</mo><mo>(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>)</mo><mo>&#x2227;</mo><mo>&#xAC;</mo><mi>p</mi><mo>]</mo>
                 <mo>⊢</mo><mi>q</mi></math>";
     // Acceptable: GTM does uses a G1 passage indicator: "⠰⠰⠰⠨⠣⠐⠣⠏⠈⠖⠟⠐⠜⠈⠦⠈⠹⠏⠨⠜⠀⠸⠒⠀⠟⠰⠄"
     // However, the BANA G1 standing alone rule ("...before a single letter standing alone") applies, so start in G2 mode.
     // Corrected to remove the passage indicator
-    test_braille("UEB", expr, "⠨⠣⠐⠣⠏⠈⠖⠟⠐⠜⠈⠦⠈⠹⠏⠨⠜⠀⠸⠒⠀⠰⠟");
+    test_braille("UEB", expr, "⠨⠣⠐⠣⠏⠈⠖⠟⠐⠜⠈⠦⠈⠹⠏⠨⠜⠀⠸⠒⠀⠰⠟")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_1_2() {
+fn example_11_5_1_2() -> Result<()> {
     let expr = "<math><mfrac><mrow><mi>d</mi><mi>y</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠙⠽⠨⠌⠙⠭⠾");
+    test_braille("UEB", expr, "⠰⠰⠷⠙⠽⠨⠌⠙⠭⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_1_3() {
+fn example_11_5_1_3() -> Result<()> {
     let expr = "<math><mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
     // Acceptable: GTM uses a G1 start indicator: "⠰⠰⠋⠶⠐⠣⠭⠐⠜"
     // However, BANA says don't use a word indicator if G1 is in first 3 cells (the ':' needs it)
     // Corrected to avoid word indicator
-    test_braille("UEB", expr, "⠋⠰⠶⠐⠣⠭⠐⠜");
+    test_braille("UEB", expr, "⠋⠰⠶⠐⠣⠭⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_1_4() {
+fn example_11_5_1_4() -> Result<()> {
     let expr = "<math><mfrac><mrow><mo>&#x2202;</mo><mi>y</mi></mrow><mrow><mo>&#x2202;</mo><mi>x</mi></mrow></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠷⠈⠙⠽⠨⠌⠈⠙⠭⠾");
+    test_braille("UEB", expr, "⠰⠰⠷⠈⠙⠽⠨⠌⠈⠙⠭⠾")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_2() {
+fn example_11_5_2() -> Result<()> {
     let expr = "<math><msubsup><mo>&#x222B;</mo><mn>2</mn><mn>3</mn></msubsup><mo>(</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>d</mo><mi>x</mi>
         <mo>=</mo><msubsup><mfenced open='[' close=']'><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>x</mi></mrow></mfenced><mn>2</mn><mn>3</mn></msubsup>
         <mo>=</mo><mo>(</mo><msup><mn>3</mn><mn>2</mn></msup><mo>+</mo><mn>3</mn><mo>)</mo><mo>-</mo><mo>(</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>2</mn><mo>)</mo>
         <mo>=</mo><mn>12</mn><mo>-</mo><mn>6</mn><mo>=</mo><mn>6</mn></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠮⠢⠼⠃⠔⠼⠉⠐⠣⠼⠃⠭⠐⠖⠼⠁⠐⠜⠙⠭⠀⠐⠶⠀⠨⠣⠭⠔⠼⠃⠐⠖⠭⠨⠜⠢⠼⠃⠔⠼⠉⠀⠐⠶⠀⠐⠣⠼⠉⠔⠼⠃⠐⠖⠼⠉⠐⠜⠐⠤⠐⠣⠼⠃⠔⠼⠃⠐⠖⠼⠃⠐⠜⠀⠐⠶⠀⠼⠁⠃⠐⠤⠼⠋⠀⠐⠶⠀⠼⠋⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠮⠢⠼⠃⠔⠼⠉⠐⠣⠼⠃⠭⠐⠖⠼⠁⠐⠜⠙⠭⠀⠐⠶⠀⠨⠣⠭⠔⠼⠃⠐⠖⠭⠨⠜⠢⠼⠃⠔⠼⠉⠀⠐⠶⠀⠐⠣⠼⠉⠔⠼⠃⠐⠖⠼⠉⠐⠜⠐⠤⠐⠣⠼⠃⠔⠼⠃⠐⠖⠼⠃⠐⠜⠀⠐⠶⠀⠼⠁⠃⠐⠤⠼⠋⠀⠐⠶⠀⠼⠋⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_3() {
+fn example_11_5_3() -> Result<()> {
     // from MathJaX
     let expr = "<math>
         <msup><mrow/><mi>n</mi></msup>
@@ -966,18 +1233,22 @@ fn example_11_5_3() {
         </mfrac>
     </math>";
     // modified to use "shape" as recommended in a comment on this example
-    test_braille("UEB", expr, "⠰⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠰⠻⠗⠐⠜⠀⠐⠶⠀⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠰⠻⠗⠐⠜⠀⠐⠶⠀⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_4() {
+fn example_11_5_4() -> Result<()> {
     let expr = "<math><mi>a</mi><mo>&#x2217;</mo><mo>(</mo><mi>b</mi><mo>&#x25E6;</mo><mi>c</mi><mo>)</mo>
         <mo>=</mo><mo>(</mo><mi>a</mi><mo>&#x2217;</mo><mi>b</mi><mo>)</mo><mo>&#x25E6;</mo><mo>(</mo><mi>a</mi><mo>&#x2217;</mo><mi>c</mi><mo>)</mo></math>";
-    test_braille("UEB", expr, "⠁⠐⠔⠐⠣⠃⠐⠴⠉⠐⠜⠀⠐⠶⠀⠐⠣⠁⠐⠔⠃⠐⠜⠐⠴⠐⠣⠁⠐⠔⠉⠐⠜");
+    test_braille("UEB", expr, "⠁⠐⠔⠐⠣⠃⠐⠴⠉⠐⠜⠀⠐⠶⠀⠐⠣⠁⠐⠔⠃⠐⠜⠐⠴⠐⠣⠁⠐⠔⠉⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_5_2() {
+fn example_11_5_5_2() -> Result<()> {
     let expr = "<math>
     <msup>
       <mi>f</mi>
@@ -988,11 +1259,13 @@ fn example_11_5_5_2() {
     <mo>&#x2192;</mo>
     <mi>X</mi>
   </math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠋⠔⠣⠐⠤⠼⠁⠜⠒⠀⠠⠽⠀⠳⠕⠀⠠⠭⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠋⠔⠣⠐⠤⠼⠁⠜⠒⠀⠠⠽⠀⠳⠕⠀⠠⠭⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_5_3() {
+fn example_11_5_5_3() -> Result<()> {
     // this comes from MathJax
     let expr = "<math>
         <mi mathvariant='normal'>&#x2200;</mi>
@@ -1005,140 +1278,180 @@ fn example_11_5_5_3() {
         <mo>&#x2208;</mo>
         <mi>X</mi>
   </math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠘⠁⠽⠀⠘⠑⠀⠠⠽⠀⠘⠢⠭⠀⠘⠑⠀⠠⠭⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠘⠁⠽⠀⠘⠑⠀⠠⠽⠀⠘⠢⠭⠀⠘⠑⠀⠠⠭⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_5_6() {
+fn example_11_5_6() -> Result<()> {
     let expr = "<math> <mo>{</mo>
             <mo>(</mo> <mi>x</mi> <mo>,</mo> <mi>y</mi> <mo>)</mo>
             <mo>|</mo>
             <mi>x</mi> <mo>+</mo> <mi>y</mi> <mo>=</mo> <mn>6</mn>
+            return Ok(());
         <mo>}</mo> </math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠸⠣⠐⠣⠭⠂⠀⠽⠐⠜⠀⠸⠳⠀⠭⠐⠖⠽⠀⠐⠶⠀⠼⠋⠸⠜⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠸⠣⠐⠣⠭⠂⠀⠽⠐⠜⠀⠸⠳⠀⠭⠐⠖⠽⠀⠐⠶⠀⠼⠋⠸⠜⠰⠄")?;
+    return Ok(());
 }
 
 #[test]
-fn example_11_6_math_variant() {
+fn example_11_6_math_variant() -> Result<()> {
     let expr = "<math><mi mathvariant='fraktur'>R</mi></math>";
-    test_braille("UEB", expr, "⠈⠆⠰⠠⠗");
+    test_braille("UEB", expr, "⠈⠆⠰⠠⠗")?;
+    return Ok(());
+
 }
 
 #[test]
-fn example_11_6() {
+fn example_11_6() -> Result<()> {
     let expr = "<math><mi>ℜ</mi></math>";
-    test_braille("UEB", expr, "⠈⠆⠰⠠⠗");
+    test_braille("UEB", expr, "⠈⠆⠰⠠⠗")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bar_over_12_1_1() {
+fn bar_over_12_1_1() -> Result<()> {
     let expr = "<math><mover><mi>x</mi><mo>_</mo></mover><mo>=</mo>
         <mfrac><mrow><mn>10</mn><mo>+</mo><mn>11</mn><mo>+</mo><mn>12</mn></mrow><mn>3</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠰⠭⠱⠀⠐⠶⠀⠷⠼⠁⠚⠐⠖⠼⠁⠁⠐⠖⠼⠁⠃⠨⠌⠼⠉⠾⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠱⠀⠐⠶⠀⠷⠼⠁⠚⠐⠖⠼⠁⠁⠐⠖⠼⠁⠃⠨⠌⠼⠉⠾⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bar_under_12_1_2() {
+fn bar_under_12_1_2() -> Result<()> {
     let expr = "<math><munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>_</mo></munder></math>";
-    test_braille("UEB", expr, "⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱");
+    test_braille("UEB", expr, "⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bar_menclose_12_1_2() {
+fn bar_menclose_12_1_2() -> Result<()> {
     let expr = "<math><menclose notation='bottom'><mi>x</mi><mo>+</mo><mi>y</mi></menclose></math>";
-    test_braille("UEB", expr, "⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱");
+    test_braille("UEB", expr, "⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dot_12_1_4() {
+fn dot_12_1_4() -> Result<()> {
     let expr = "<math><mn>0</mn><mo>.</mo><mover><mn>3</mn><mo>.</mo></mover></math>";
-    test_braille("UEB", expr, "⠼⠚⠲⠣⠼⠉⠜⠘⠲");
+    test_braille("UEB", expr, "⠼⠚⠲⠣⠼⠉⠜⠘⠲")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dot_12_1_5() {
+fn dot_12_1_5() -> Result<()> {
     let expr = "<math><mn>0</mn><mo>.</mo><mn>56</mn><mover><mn>1</mn><mo>&#x2D9;</mo></mover>
             <mn>2</mn><mover><mn>3</mn><mo>&#x2D9;</mo></mover></math>";
-    test_braille("UEB", expr, "⠼⠚⠲⠑⠋⠣⠼⠁⠜⠘⠲⠼⠃⠣⠼⠉⠜⠘⠲");
+    test_braille("UEB", expr, "⠼⠚⠲⠑⠋⠣⠼⠁⠜⠘⠲⠼⠃⠣⠼⠉⠜⠘⠲")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dot_12_1_6_single() {
+fn dot_12_1_6_single() -> Result<()> {
     let expr = "<math><mover><mi>x</mi><mo>&#x2D9;</mo></mover></math>";
-    test_braille("UEB", expr, "⠭⠘⠲");
+    test_braille("UEB", expr, "⠭⠘⠲")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dot_12_1_6_double() {
+fn dot_12_1_6_double() -> Result<()> {
     let expr = "<math><mover><mi>x</mi><mo>&#xA8;</mo></mover></math>";
-    test_braille("UEB", expr, "⠰⠰⠭⠨⠔⠣⠲⠲⠜");
+    test_braille("UEB", expr, "⠰⠰⠭⠨⠔⠣⠲⠲⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn hat_12_1_7() {
+fn hat_12_1_7() -> Result<()> {
     let expr = "<math><mi>A</mi><mover><mi>B</mi><mo>^</mo></mover><mi>C</mi></math>";
     // Acceptable: GTM uses a G1 start indicator: "⠰⠰⠠⠁⠠⠃⠐⠱⠠⠉"
     // BANA says use a word indicator if G1 not in first 3 cells (modified it to not count cap indicators since that helps with GTM compatibility)
     // Corrected to skip the G1 indicator at the start (it's debatable as to which is better)
-    test_braille("UEB", expr, "⠠⠁⠠⠃⠰⠐⠱⠠⠉");
+    test_braille("UEB", expr, "⠠⠁⠠⠃⠰⠐⠱⠠⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn arrow_over_12() {
+fn arrow_over_12() -> Result<()> {
     // This comes from https://uebonline.org/wp-content/uploads/2021/05/Unified-English-Braille-Extension-Maths-Training-Manual-First-Edition-Rev-4.pdf
     let expr = "<math><mover><mi>x</mi><mo>→</mo></mover></math>";
-    test_braille("UEB", expr, "⠭⠰⠘⠱");
+    test_braille("UEB", expr, "⠭⠰⠘⠱")?;
+    return Ok(());
+
 }
 
 #[test]
-fn arrow_under_12() {
+fn arrow_under_12() -> Result<()> {
     // This comes from https://uebonline.org/wp-content/uploads/2021/05/Unified-English-Braille-Extension-Maths-Training-Manual-First-Edition-Rev-4.pdf
     let expr = "<math><munder><mi>x</mi><mo>→</mo></munder></math>";
-    test_braille("UEB", expr, "⠭⠰⠠⠘⠱");
+    test_braille("UEB", expr, "⠭⠰⠠⠘⠱")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bar_12_2_1() {
+fn bar_12_2_1() -> Result<()> {
     let expr = "<math><msup><mi>x</mi><mover><mi>y</mi><mo>&#xAF;</mo></mover></msup></math>";
-    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠽⠱⠜");
+    test_braille("UEB", expr, "⠰⠰⠭⠔⠣⠽⠱⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bar_12_2_2() {
+fn bar_12_2_2() -> Result<()> {
     let expr = "<math><mover><msup><mi>x</mi><mi>y</mi></msup><mo>&#xAF;</mo></mover></math>";
-    test_braille("UEB", expr, "⠰⠰⠣⠭⠔⠽⠜⠱");
+    test_braille("UEB", expr, "⠰⠰⠣⠭⠔⠽⠜⠱")?;
+    return Ok(());
+
 }
 
 #[test]
-fn shape_14_1_1_1() {
+fn shape_14_1_1_1() -> Result<()> {
     let expr = "<math><mo>&#x25B3;</mo><mo>&#xA0;</mo><mtext>ABC</mtext></math>";
-    test_braille("UEB", expr, "⠰⠫⠼⠉⠀⠠⠠⠁⠃⠉");
+    test_braille("UEB", expr, "⠰⠫⠼⠉⠀⠠⠠⠁⠃⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn shape_14_1_2_1() {
+fn shape_14_1_2_1() -> Result<()> {
     let expr = "<math><mo>&#x25B3;</mo><mtext>ABC</mtext></math>";
-    test_braille("UEB", expr, "⠰⠫⠼⠉⠱⠠⠠⠁⠃⠉");
+    test_braille("UEB", expr, "⠰⠫⠼⠉⠱⠠⠠⠁⠃⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn shape_14_1_2_2() {
+fn shape_14_1_2_2() -> Result<()> {
     // the <mo> for the shapes are wrong -- but it isn't clear what they should be (from WIRIS editor)
     let expr = "<math><mo>{</mo><mo>&#x25A1;</mo><mo>,</mo>
                             <mo>&#xA0;</mo><mo>&#x25CD;</mo><mo>,</mo>
                             <mo>&#xA0;</mo><mo>&#x25B2;</mo><mo>,</mo>
+                            return Ok(());
                             <mo>&#xA0;</mo><mo>&#x25A7;</mo><mo>&#xA0;</mo><mo>&#x2026;</mo><mo>}</mo></math>";
-    test_braille("UEB", expr, "⠸⠣⠰⠫⠼⠙⠱⠂⠀⠨⠫⠿⠱⠂⠀⠸⠫⠼⠉⠱⠂⠀⠨⠫⠼⠙⠀⠲⠲⠲⠸⠜");
+    test_braille("UEB", expr, "⠸⠣⠰⠫⠼⠙⠱⠂⠀⠨⠫⠿⠱⠂⠀⠸⠫⠼⠉⠱⠂⠀⠨⠫⠼⠙⠀⠲⠲⠲⠸⠜")?;
+    return Ok(());
 }
 
 #[test]
-fn binomial_14_3_3_2() {
+fn binomial_14_3_3_2() -> Result<()> {
     let expr = "<math><mfenced><mfrac linethickness='0'><mi>n</mi><mi>r</mi></mfrac></mfenced></math>";
-    test_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜");
+    test_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn binomial_14_3_3_2_mtable() {
+fn binomial_14_3_3_2_mtable() -> Result<()> {
     let expr = "<math><mrow intent='binomial($n,$r)'>
             <mo>(</mo>
                 <mtable>
@@ -1147,21 +1460,25 @@ fn binomial_14_3_3_2_mtable() {
                 </mtable>
             <mo>)</mo>
         </mrow></math>";
-    test_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜");
+    test_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_8() {
+fn chem_16_2_8() -> Result<()> {
     let expr = "<math><mi>Ca</mi><msub><mrow><mo>(</mo><mi>OH</mi><mo>)</mo></mrow><mn>2</mn></msub></math>";
     // Acceptable: GTM does not use a G1 start indicator: "⠠⠉⠁⠐⠣⠠⠕⠠⠓⠐⠜⠰⠢⠼⠃"
     // However, BANA says use a word indicator if G1 not in first 3 cells (it is before the subscript near the end); use passage if >=2 whitespace
     // This seems like a debateable choice in this case since there is only one G1 indicator, but that's the BANA guidance so...
     // Corrected to use word indicator
-    test_braille("UEB", expr, "⠰⠰⠠⠉⠁⠐⠣⠠⠕⠠⠓⠐⠜⠢⠼⠃");
+    test_braille("UEB", expr, "⠰⠰⠠⠉⠁⠐⠣⠠⠕⠠⠓⠐⠜⠢⠼⠃")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_9() {
+fn chem_16_2_9() -> Result<()> {
     // from mhchem -- \ce{CuSO4·5H2O}
     let expr = "<math>
         <mrow>
@@ -1229,26 +1546,32 @@ fn chem_16_2_9() {
     // However, BANA says use a word indicator if G1 not in first 3 cells (it is before the subscript); use passage if >=2 whitespace
     // This seems like a debatable choice in this case since there is only one G1 indicator, but that's the BANA guidance so...
     // Corrected to use word indicator
-    test_braille("UEB", expr, "⠰⠰⠠⠉⠥⠠⠎⠠⠕⠢⠼⠙⠐⠲⠼⠑⠠⠓⠢⠼⠃⠠⠕");
+    test_braille("UEB", expr, "⠰⠰⠠⠉⠥⠠⠎⠠⠕⠢⠼⠙⠐⠲⠼⠑⠠⠓⠢⠼⠃⠠⠕")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_10() {
+fn chem_16_2_10() -> Result<()> {
     let expr = "<math><mmultiscripts><mi mathvariant='normal'>H</mi><none/><mo>+</mo></mmultiscripts></math>";
-    test_braille("UEB", expr, "⠠⠓⠰⠔⠐⠖");
+    test_braille("UEB", expr, "⠠⠓⠰⠔⠐⠖")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_11() {
+fn chem_16_2_11() -> Result<()> {
     let expr = "<math>
         <mi mathvariant='normal'>S</mi>
         <mmultiscripts> <mi mathvariant='normal'>O</mi> <mn>4</mn> <mrow><mo>-</mo><mo>-</mo></mrow>  </mmultiscripts>
     </math>";
-    test_braille("UEB", expr, "⠠⠎⠠⠕⠰⠢⠼⠙⠔⠣⠐⠤⠐⠤⠜");
+    test_braille("UEB", expr, "⠠⠎⠠⠕⠰⠢⠼⠙⠔⠣⠐⠤⠐⠤⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_12() {
+fn chem_16_2_12() -> Result<()> {
     // from MathJax/mhchem V3
     let expr = "<math>
             <mrow data-mjx-texclass='ORD'>
@@ -1289,35 +1612,43 @@ fn chem_16_2_12() {
         </math>";
     // GTM uses G2 mode and has two G1 indicators (in middle and near end). That definitely violates BANA guidelines and maybe there guidelines.
     // I have switched it to G1 word mode, which seems better (same length, but no switching)
-    test_braille("UEB", expr, "⠰⠰⠠⠠⠠⠗⠐⠲⠉⠓⠐⠣⠕⠓⠐⠜⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠕⠢⠼⠃⠰⠓⠠⠄");
+    test_braille("UEB", expr, "⠰⠰⠠⠠⠠⠗⠐⠲⠉⠓⠐⠣⠕⠓⠐⠜⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠕⠢⠼⠃⠰⠓⠠⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_2_13() {
+fn chem_16_2_13() -> Result<()> {
     let expr = "<math>
         <mmultiscripts><mi>Fe</mi><none/><mi>III</mi></mmultiscripts>
         <mmultiscripts><mi>Cl</mi><mn>3</mn><none/></mmultiscripts>
     </math>";
-    test_braille("UEB", expr, "⠰⠰⠠⠋⠑⠔⠣⠠⠠⠊⠊⠊⠜⠠⠉⠇⠢⠼⠉");
+    test_braille("UEB", expr, "⠰⠰⠠⠋⠑⠔⠣⠠⠠⠊⠊⠊⠜⠠⠉⠇⠢⠼⠉")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_3_1() {
+fn chem_16_3_1() -> Result<()> {
     // see also pre_msubsup_7_8_1 which uses mmultiscripts
     // from MathJax
     let expr = "<math><msubsup><mrow/><mn>92</mn><mn>238</mn></msubsup><mi>U</mi></math>";
-    test_braille("UEB", expr, "⠰⠢⠼⠊⠃⠔⠼⠃⠉⠓⠠⠥");
+    test_braille("UEB", expr, "⠰⠢⠼⠊⠃⠔⠼⠃⠉⠓⠠⠥")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_4_2() {
+fn chem_16_4_2() -> Result<()> {
     // from MathJax
     let expr = r#"<math><msup><mrow/><mn>1</mn></msup><msub><mi mathvariant="normal">S</mi><mn>0</mn></msub></math>"#;
-    test_braille("UEB", expr, "⠰⠔⠼⠁⠠⠎⠢⠼⠚");
+    test_braille("UEB", expr, "⠰⠔⠼⠁⠠⠎⠢⠼⠚")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_4_3() {
+fn chem_16_4_3() -> Result<()> {
     // from MathJax using \mathrm{}
     let expr = r#"<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
         <mn>4</mn><msup><mi mathvariant="normal">d</mi><mn>9</mn></msup>
@@ -1326,11 +1657,13 @@ fn chem_16_4_3() {
         <msup><mrow/><mn>2</mn></msup>
         <msub><mi mathvariant="normal">D</mi><mrow><mn>5</mn><mo>/</mo><mn>2</mn></mrow></msub>
     </math>"#;
-    test_braille("UEB", expr, "⠼⠙⠰⠙⠔⠼⠊⠼⠑⠎⠔⠼⠃⠀⠰⠔⠼⠃⠠⠙⠢⠣⠼⠑⠸⠌⠼⠃⠜");
+    test_braille("UEB", expr, "⠼⠙⠰⠙⠔⠼⠊⠼⠑⠎⠔⠼⠃⠀⠰⠔⠼⠃⠠⠙⠢⠣⠼⠑⠸⠌⠼⠃⠜")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_5_1() {
+fn chem_16_5_1() -> Result<()> {
     // from MathJax v3 mhchem, but substituted short arrow because that is what example uses (although it shouldn't)
     let expr = r#"
         <math>
@@ -1412,11 +1745,13 @@ fn chem_16_5_1() {
         </mrow>
         </math>
         "#;
-    test_braille("UEB", expr, "⠰⠰⠰⠼⠃⠠⠝⠁⠠⠕⠠⠓⠐⠖⠠⠓⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠀⠳⠕⠀⠠⠝⠁⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠐⠖⠼⠃⠠⠓⠢⠼⠃⠠⠕⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠼⠃⠠⠝⠁⠠⠕⠠⠓⠐⠖⠠⠓⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠀⠳⠕⠀⠠⠝⠁⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠐⠖⠼⠃⠠⠓⠢⠼⠃⠠⠕⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_5_2() {
+fn chem_16_5_2() -> Result<()> {
     // from WIRIS
     let expr = r#"
     <math>
@@ -1429,11 +1764,13 @@ fn chem_16_5_2() {
     // GTM has the order be over followed by under. This is opposite of what is shown in 7.9 (which are  large op examples).
     // I have spoken with several people about this, including ICEB committee members who all feel this example is a mistake.
     // I have adjusted the expected output
-    test_braille("UEB", expr, "⠰⠰⠰⠠⠝⠢⠼⠃⠀⠳⠕⠨⠢⠣⠠⠓⠁⠃⠑⠗⠀⠏⠗⠕⠉⠑⠎⠎⠜⠨⠔⠣⠠⠓⠢⠼⠃⠜⠀⠠⠝⠠⠓⠢⠼⠉⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠝⠢⠼⠃⠀⠳⠕⠨⠢⠣⠠⠓⠁⠃⠑⠗⠀⠏⠗⠕⠉⠑⠎⠎⠜⠨⠔⠣⠠⠓⠢⠼⠃⠜⠀⠠⠝⠠⠓⠢⠼⠉⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_5_3() {
+fn chem_16_5_3() -> Result<()> {
     // from MathJax v3 mhchem, uses "\;" before parens because example adds a space there (although it shouldn't)
     let expr = r#"
         <math>
@@ -1477,11 +1814,13 @@ fn chem_16_5_3() {
             </mrow>
         </math>
           "#;
-    test_braille("UEB", expr, "⠰⠰⠰⠠⠓⠢⠼⠃⠀⠐⠣⠛⠐⠜⠐⠖⠠⠊⠢⠼⠃⠀⠐⠣⠎⠐⠜⠀⠐⠶⠀⠼⠃⠠⠓⠠⠊⠀⠐⠣⠛⠐⠜⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠓⠢⠼⠃⠀⠐⠣⠛⠐⠜⠐⠖⠠⠊⠢⠼⠃⠀⠐⠣⠎⠐⠜⠀⠐⠶⠀⠼⠃⠠⠓⠠⠊⠀⠐⠣⠛⠐⠜⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_5_4() {
+fn chem_16_5_4() -> Result<()> {
     // from MathJax v4 mhchem, but substituted short arrow because that is what example uses (although it shouldn't) 
     let expr = r#"
     <math xmlns="http://www.w3.org/1998/Math/MathML" data-latex="\ce{HNCO + ROH -&gt; NH2.CO.OR -&gt; NH2CO.NH.CO2R}" display="block">
@@ -1634,11 +1973,13 @@ fn chem_16_5_4() {
     </mrow>
   </math>
             "#;
-    test_braille("UEB", expr, "⠰⠰⠰⠠⠠⠠⠓⠝⠉⠕⠐⠖⠗⠕⠓⠀⠳⠕⠀⠝⠓⠢⠼⠃⠐⠲⠉⠕⠐⠲⠕⠗⠀⠳⠕⠀⠝⠓⠢⠼⠃⠰⠉⠕⠐⠲⠝⠓⠐⠲⠉⠕⠢⠼⠃⠗⠠⠄⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠠⠠⠓⠝⠉⠕⠐⠖⠗⠕⠓⠀⠳⠕⠀⠝⠓⠢⠼⠃⠐⠲⠉⠕⠐⠲⠕⠗⠀⠳⠕⠀⠝⠓⠢⠼⠃⠰⠉⠕⠐⠲⠝⠓⠐⠲⠉⠕⠢⠼⠃⠗⠠⠄⠰⠄")?;
+    return Ok(());
+
 }
 
 #[test]
-fn chem_16_5_5() {
+fn chem_16_5_5() -> Result<()> {
     // from MathJax v3 mhchem
     let expr = r#"
         <math>
@@ -1671,5 +2012,7 @@ fn chem_16_5_5() {
             </mrow>
         </math>
         "#;
-    test_braille("UEB", expr, "⠰⠰⠰⠠⠏⠃⠔⠣⠐⠖⠐⠖⠜⠐⠖⠼⠃⠰⠑⠀⠘⠸⠶⠀⠠⠏⠃⠰⠄");
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠏⠃⠔⠣⠐⠖⠐⠖⠜⠐⠖⠼⠃⠰⠑⠀⠘⠸⠶⠀⠠⠏⠃⠰⠄")?;
+    return Ok(());
+
 }

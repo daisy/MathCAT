@@ -2307,7 +2307,7 @@ impl Function for NemethNestingChars {
             } else if name == "msqrt" || name == "mroot" {
                 return Ok( Value::String( NemethNestingChars::nemeth_root_value(el, &repeat_char)? ) );
             } else {
-                panic!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name);
+                return Err(XPathError::Other(format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name)));
             }
         } else {
             // not an element, so nothing to do

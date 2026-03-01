@@ -9,7 +9,7 @@ use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
 use regex::{Captures, Regex};
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
 use sxd_document::parser;
 use sxd_document::Package;
 

@@ -1,40 +1,49 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn multiplication() {
+fn multiplication() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn><mo>×</mo><mn>3</mn>
                 </math>";
-    test("nb", "ClearSpeak", expr, "2 ganger 3");
+    test("nb", "ClearSpeak", expr, "2 ganger 3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn multiplication_by() {
+fn multiplication_by() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn><mo>×</mo><mn>3</mn>
                 </math>";
-    test_ClearSpeak("nb", "ClearSpeak_MultSymbolX", "By", expr, "2 ganger 3");
+    test_ClearSpeak("nb", "ClearSpeak_MultSymbolX", "By", expr, "2 ganger 3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn multiplication_cross() {
+fn multiplication_cross() -> Result<()> {
     let expr = "<math>
                     <mi>u</mi><mo>×</mo><mi>v</mi>
                 </math>";
-    test_ClearSpeak("nb", "ClearSpeak_MultSymbolX", "Cross", expr, "u kryss v");
+    test_ClearSpeak("nb", "ClearSpeak_MultSymbolX", "Cross", expr, "u kryss v")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ellipses_auto_start() {
+fn ellipses_auto_start() -> Result<()> {
     let expr = "<math>
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-    test("nb", "ClearSpeak", expr, "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0");
+    test("nb", "ClearSpeak", expr, "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ellipses_auto_end() {
+fn ellipses_auto_end() -> Result<()> {
     let expr = "<math>
             <mn>1</mn>
             <mo>,</mo>
@@ -44,11 +53,13 @@ fn ellipses_auto_end() {
             <mo>,</mo>
             <mi>…</mi>
         </math>";
-    test_ClearSpeak("nb", "ClearSpeak_Ellipses", "Auto", expr, "1 komma, 2 komma, 3 komma, prikk prikk prikk");
+    test_ClearSpeak("nb", "ClearSpeak_Ellipses", "Auto", expr, "1 komma, 2 komma, 3 komma, prikk prikk prikk")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ellipses_auto_middle() {
+fn ellipses_auto_middle() -> Result<()> {
     let expr = "<math>
             <mrow>
                 <mn>1</mn>
@@ -63,31 +74,37 @@ fn ellipses_auto_middle() {
             </mrow>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_Ellipses", "Auto", expr,
-            "1 komma, 2 komma, 3 komma, prikk prikk prikk komma, 20");
+            "1 komma, 2 komma, 3 komma, prikk prikk prikk komma, 20")?;
+            return Ok(());
+
 }
 
 #[test]
-fn ellipses_auto_both() {
+fn ellipses_auto_both() -> Result<()> {
     let expr = "<math>
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn>
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("nb", "ClearSpeak_Ellipses", "Auto", expr,
-            "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0 komma, 1 komma, 2 komma, prikk prikk prikk");
+            "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0 komma, 1 komma, 2 komma, prikk prikk prikk")?;
+            return Ok(());
+
 }
 
 #[test]
-fn ellipses_and_so_on_start() {
+fn ellipses_and_so_on_start() -> Result<()> {
     let expr = "<math>
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-        test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr, "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0");
+        test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr, "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0")?;
+        return Ok(());
+
 }
 
 #[test]
-fn ellipses_and_so_on_end() {
+fn ellipses_and_so_on_end() -> Result<()> {
     let expr = "<math>
             <mn>1</mn>
             <mo>,</mo>
@@ -97,11 +114,13 @@ fn ellipses_and_so_on_end() {
             <mo>,</mo>
             <mi>…</mi>
         </math>";
-    test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr, "1 komma, 2 komma, 3 og så videre");
+    test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr, "1 komma, 2 komma, 3 og så videre")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ellipses_and_so_on_middle() {
+fn ellipses_and_so_on_middle() -> Result<()> {
     let expr = "<math>
             <mrow>
                 <mn>1</mn>
@@ -116,49 +135,59 @@ fn ellipses_and_so_on_middle() {
             </mrow>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr,
-            "1 komma, 2 komma, 3 og så videre opp til, 20");
+            "1 komma, 2 komma, 3 og så videre opp til, 20")?;
+            return Ok(());
+
 }
 
 #[test]
-fn ellipses_and_so_on_both() {
+fn ellipses_and_so_on_both() -> Result<()> {
     let expr = "<math>
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn>
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("nb", "ClearSpeak_Ellipses", "AndSoOn", expr,
-            "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0 komma, 1 komma, 2 komma, prikk prikk prikk");
+            "prikk prikk prikk komma, minus 2 komma, minus 1 komma, 0 komma, 1 komma, 2 komma, prikk prikk prikk")?;
+            return Ok(());
+
 }
 
 #[test]
-fn vertical_line_auto() {
+fn vertical_line_auto() -> Result<()> {
     let expr = "<math>
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Auto", expr,
-            "3 deler 6");
+            "3 deler 6")?;
+            return Ok(());
+
 }
 
 #[test]
-fn vertical_line_divides() {
+fn vertical_line_divides() -> Result<()> {
     let expr = "<math>
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Divides", expr,
-            "3 deler 6");
+            "3 deler 6")?;
+            return Ok(());
+
 }
 
     #[test]
-    fn vertical_line_given() {
+    fn vertical_line_given() -> Result<()> {
         let expr = "<math>
             <mn>3</mn><mo>|</mo><mn>6</mn>
         </math>";
         test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Given", expr,
-                "3, gitt 6");
+                "3, gitt 6")?;
+                return Ok(());
+
     }
 
     #[test]
-    fn vertical_line_probability_given() {
+    fn vertical_line_probability_given() -> Result<()> {
         let expr = "<math>
                 <mi>P</mi>
                 <mrow>
@@ -172,11 +201,12 @@ fn vertical_line_divides() {
                 </mrow>
             </math>";
         test_ClearSpeak_prefs("nb", vec![("ClearSpeak_VerticalLine", "Given"), ("ClearSpeak_ImpliedTimes", "None")]
-                        , expr, "stor p; startparentes; stor a, gitt stor b; sluttparentes");
+                        , expr, "stor p; startparentes; stor a, gitt stor b; sluttparentes")?;
+                        return Ok(());
     }
 
 #[test]
-fn vertical_line_set() {
+fn vertical_line_set() -> Result<()> {
     let expr = "<math>
         <mo>{</mo>
         <mrow>
@@ -189,12 +219,14 @@ fn vertical_line_set() {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Auto", expr,
-            "mengden av alle x slik at x er større enn 0");
+            "mengden av alle x slik at x er større enn 0")?;
+            return Ok(());
+
 }
 
 
 #[test]
-fn vertical_line_set_such_that() {
+fn vertical_line_set_such_that() -> Result<()> {
     let expr = "<math>
         <mo>{</mo>
         <mrow>
@@ -207,11 +239,13 @@ fn vertical_line_set_such_that() {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "mengden av alle x slik at x er større enn 0");
+            "mengden av alle x slik at x er større enn 0")?;
+            return Ok(());
+
 }
 
 #[test]
-fn vertical_line_set_given() {
+fn vertical_line_set_given() -> Result<()> {
     let expr = "<math>
         <mo>{</mo>
         <mrow>
@@ -225,11 +259,13 @@ fn vertical_line_set_given() {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Given", expr,
-            "mengden av alle x slik at x er større enn 0");
+            "mengden av alle x slik at x er større enn 0")?;
+            return Ok(());
+
 }
 
 #[test]
-fn vertical_line_set_and_abs() {
+fn vertical_line_set_and_abs() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mrow>
@@ -246,11 +282,13 @@ fn vertical_line_set_and_abs() {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Auto", expr,
-        "mengden av alle x slik at absoluttverdien av x; er større enn 2");
+        "mengden av alle x slik at absoluttverdien av x; er større enn 2")?;
+        return Ok(());
+
 }
 
 #[test]
-fn vertical_line_evaluated_at() {
+fn vertical_line_evaluated_at() -> Result<()> {
     let expr = "<math>
             <mi>f</mi>
             <mrow>
@@ -268,11 +306,13 @@ fn vertical_line_evaluated_at() {
             </msub>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Auto", expr,
-        "f av x evaluert i x er lik 5");
+        "f av x evaluert i x er lik 5")?;
+        return Ok(());
+
 }
 
 #[test]
-fn vertical_line_evaluated_at_both() {
+fn vertical_line_evaluated_at_both() -> Result<()> {
     let expr = "<math>
             <msup>
             <mi>x</mi>
@@ -287,10 +327,12 @@ fn vertical_line_evaluated_at_both() {
             </msubsup>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Auto", expr,
-        "x i andre pluss x, evaluert for øvre verdi, 1, og nedre verdi, 0");
+        "x i andre pluss x, evaluert for øvre verdi, 1, og nedre verdi, 0")?;
+        return Ok(());
+
 }
 #[test]
-fn vertical_line_evaluated_at_divides() {
+fn vertical_line_evaluated_at_divides() -> Result<()> {
     let expr = "<math>
             <mi>f</mi>
             <mrow>
@@ -308,11 +350,13 @@ fn vertical_line_evaluated_at_divides() {
             </msub>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Divides", expr,
-        "f av x evaluert i x er lik 5");
+        "f av x evaluert i x er lik 5")?;
+        return Ok(());
+
 }
 
 #[test]
-fn vertical_line_evaluated_at_both_given() {
+fn vertical_line_evaluated_at_both_given() -> Result<()> {
     let expr = "<math>
             <msup>
             <mi>x</mi>
@@ -327,5 +371,7 @@ fn vertical_line_evaluated_at_both_given() {
             </msubsup>
         </math>";
     test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Given", expr,
-        "x i andre pluss x, evaluert for øvre verdi, 1, og nedre verdi, 0");
+        "x i andre pluss x, evaluert for øvre verdi, 1, og nedre verdi, 0")?;
+        return Ok(());
+
 }

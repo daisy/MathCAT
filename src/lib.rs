@@ -41,6 +41,7 @@ mod chemistry;
 
 pub mod shim_filesystem; // really just for override_file_for_debugging_rules, but the config seems to throw it off
 pub use interface::*;
+use crate::errors::{bail, Result};
 
 #[cfg(test)]
 pub fn init_logger() {
@@ -66,7 +67,7 @@ pub fn abs_rules_dir_path() -> String {
     }
 }
 
-pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> bool {
+pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> Result<()> {
     use crate::{interface::*, pretty_print::mml_to_string};
     use sxd_document::parser;
     use crate::canonicalize::canonicalize;
@@ -91,23 +92,27 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
         trim_element(mathml_target, false);
 
         match is_same_element(mathml_test, mathml_target, ignore_attrs) {
-            Ok(_) => Ok(true),
+            Ok(_) => Ok( () ),
             Err(e) => {
-                eprintln!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target));
-                Ok(false)
+                bail!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target));
             },
         }
     }));
     match crate::interface::report_any_panic(result) {
-        Ok(b) => b,
+        Ok(()) => Ok(()),
         Err(e) => {
             eprintln!("{}", e);
-            false
+            Err(e)
         }
     }
 }
 
 /// sets locale to be US standard
 pub fn are_strs_canonically_equal(test: &str, target: &str, ignore_attrs: &[&str]) -> bool {
-    return are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".");
+    are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".").is_ok()
+}
+
+/// Like `are_strs_canonically_equal` but returns `Result` for use in `#[test]` functions that return `Result<()>`.
+pub fn are_strs_canonically_equal_result(test: &str, target: &str, ignore_attrs: &[&str]) -> Result<()> {
+    are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".")
 }

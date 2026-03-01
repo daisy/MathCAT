@@ -248,7 +248,7 @@ cfg_if! {
                         file
                     },
                     Err(..) => {
-                        panic!("Didn't find {} in zip archive", file_name);
+                        bail!("Didn't find {} in zip archive", file_name);
                     }
                 };
 

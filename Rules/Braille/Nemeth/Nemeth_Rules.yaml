@@ -269,7 +269,7 @@
   match:
   - "(( (.='?' and name(EdgeNode(., 'right', 'math'))!='math') or 
         .='-?-') and parent::*[1][self::m:mrow]) or
-     .='\u00A0'"
+     (.='\u00A0' and @data-width > 0)"
   variables:
   # guess whether this needs spacing or not
   - IsComparisonOp: "not(

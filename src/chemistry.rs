@@ -35,7 +35,7 @@
 //           no: clear all the marks for the old children
 // After canonicalization, we take another pass looking for chemical equations and marking them if found.
 
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfElement};
 use crate::canonicalize::*;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
@@ -458,7 +458,7 @@ pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
             }
         }
     }
-    // debug!("...after marking:\n{}", mml_to_string(child));
+    debug!("...after marking:\n{}", mml_to_string(child));
 
     if child.attribute(CHEM_FORMULA).is_none() && child.attribute(CHEM_EQUATION).is_none() {
         if !has_maybe_chemistry(mathml) {
@@ -592,27 +592,39 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
             preceding_children = parent.preceding_siblings();
             parent = get_parent(parent);
             if name(parent) == "math" {
-                // this shouldn't happen -- rather than crash, let's do something
-                error!("is_changed_after_unmarking_chemistry: error no preceding children to merge. mathml=\n{}", mml_to_string(mathml));
-                return false;
+                panic!("is_changed_after_unmarking_chemistry: error no preceding children to merge. mathml=\n{}", mml_to_string(mathml));
             }
         }
 
         // deal with the first element (if it needs unwrapping, it has only prescripts)
         let first_element_of_split = as_element(preceding_children[preceding_children.len()-1]);
+        // debug!("first_element_of_split: \n{}", mml_to_string(first_element_of_split));
         if name(first_element_of_split) == "mmultiscripts" {
             // take the base and make it the first child of preceding_children (what will get merged)
             // put the rest of the elements (the prescripts) at the end of the parent last element (mathml) which must be an mmultiscripts
             let first_element_children = first_element_of_split.children();
             assert_eq!(name(mathml), "mmultiscripts");
             let mut script_children = mathml.children();
-            assert_eq!(script_children.len() % 2, 1);  // doesn't have <mprescripts/>
-            preceding_children[0] = first_element_children[0];
-            script_children.push(first_element_children[1]);
-            script_children.push(first_element_children[2]);
-            script_children.push(first_element_children[3]);
+            assert_eq!(name(as_element(script_children[0])), "mi");
+            assert!(!script_children.len().is_multiple_of(2));  // doesn't have <mprescripts/>
+            script_children.push(first_element_children[1]);    // mprescripts
+            script_children.push(first_element_children[2]);    // prescripts subscript
+            script_children.push(first_element_children[3]);    // prescripts superscript
+
+            let base_of_first_element = first_element_children[0];  // base
+            assert_eq!(name(as_element(base_of_first_element)), "mi");
+            let script_base = as_element(script_children[0]);
+            let mut merged_base_text = as_text( as_element(base_of_first_element)).to_string();
+            merged_base_text.push_str(as_text(script_base));
+            script_base.set_text(&merged_base_text);
+            script_base.remove_attribute("mathvariant");
+            script_base.remove_attribute(ADDED_ATTR_VALUE);
+            script_base.remove_attribute(MAYBE_CHEMISTRY);
+            script_base.remove_attribute(SPLIT_TOKEN);
             mathml.replace_children(script_children);
+    
             first_element_of_split.remove_from_parent();
+            return true;
         }
         let mut children_of_script = mathml.children();
         let split_child = as_element(children_of_script[0]);
@@ -644,7 +656,7 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
                     // We are left with only removing mrows with one child or mrows that are children of mrows (simpler test than ELEMENTS_WITH_ONE_CHILD)
                     let parent = get_parent(mathml);   // mathml is mrow, so parent always exists
                     if mathml.children().len() == 1 || name(parent) == "mrow" {
-                        let children = mathml.children().iter().map(|&el| as_element(el)).collect::<Vec<Element>>();                        // debug!("is_changed_after_unmarking: before replace - mathml\n{}", mml_to_string(mathml));
+                        let children = mathml.children().iter().map(|&el| as_element(el)).collect::<Vec<Element>>();
                         mathml.remove_attribute(CHANGED_ATTR);  // if just one child, the attrs are pushed onto the child
                         // debug!("is_changed_after_unmarking: before replace - parent\n{}", mml_to_string(parent));
                         replace_children(mathml, children);
@@ -741,11 +753,15 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
         if mrow_children.len() == 3 && is_arrow_or_equal(as_element(mrow_children[1])) {
             let mut lhs_elements = HashSet::with_capacity(8);   // likely more than anything we'll encounter -- bigger affects '=' op
             let lhs_has_prescripts = gather_chemical_elements(as_element(mrow_children[0]), &mut lhs_elements);
+            // need to include the arrow as it might have the addition of some chemical elements (see UEB/iceb.rs/chem_16_5_2)
+            gather_chemical_elements(as_element(mrow_children[1]), &mut lhs_elements);
             let mut rhs_elements = HashSet::with_capacity(8);  // likely more than anything we'll encounter -- bigger affects '=' op
             let rhs_has_prescripts = gather_chemical_elements(as_element(mrow_children[2]), &mut rhs_elements);
             if lhs_elements.is_empty() {
                 return false;
             }
+            // debug!("lhs/rhs elements: {:?}, {:?}", lhs_elements, rhs_elements);
+            // debug!("lhs/rhs has prescripts: {}, {}", lhs_has_prescripts, rhs_has_prescripts);
             if lhs_elements == rhs_elements {
                 return !(lhs_has_prescripts ^ rhs_has_prescripts);      // seems reasonable that if the lhs has prescripts, so should the rhs
             }
@@ -767,16 +783,19 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
 
     }
 
+    /// Gather up all the chemical elements in the element and return true if it has numerical prescripts
     fn gather_chemical_elements<'a>(mathml: Element<'a>, chem_elements: &mut HashSet<&'a str>) -> bool {
         match name(mathml) {
             "mi" | "mtext" => {
-                // debug!("gather_chemical_elements: {}", mml_to_string(mathml));
                 if is_chemical_element(mathml) {
                     chem_elements.insert(as_text(mathml));
                 }
                 return false;
             },
-            "msub" | "msup" | "msubsup" | "mmultiscripts" => return gather_chemical_elements(get_possible_embellished_node(mathml), chem_elements),
+            "msub" | "msup" | "msubsup" | "mmultiscripts" => {
+                gather_chemical_elements(get_possible_embellished_node(mathml), chem_elements);
+                return name(mathml) == "mmultiscripts" &&  has_numerical_prescripts(mathml);
+            },
             "semantics" => {
                 return gather_chemical_elements( get_presentation_element(mathml).1, chem_elements );
             },
@@ -790,6 +809,36 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
             has_prescripts |= gather_chemical_elements(child, chem_elements);
         }
         return has_prescripts;
+    }
+
+        /// find the mprescripts child and then check the following siblings for numerical prescripts
+    fn has_numerical_prescripts(mathml: Element) -> bool {
+        let children = mathml.children();
+        // quick check to see if there is an mprescripts child
+        if !children.len().is_multiple_of(2) { // <mprescripts/> => even number of children
+            return false;
+        }
+        // we need enumerate because the "step_by" will cause any returned iterator to jump ahead by 2
+        let i_mprescripts = children.iter()
+            .enumerate()
+            .skip(1)
+            .step_by(2)
+            .find(|(_, child)| name(as_element(**child)) == "mprescripts")
+            .map(|(i, _)| i);
+
+        if let Some(i) = i_mprescripts {
+            let subscript = as_element(children[i+1]);  // can be +1/-1 for beta decay
+            let superscript = as_element(children[i+2]);  // mass number, so always >= 0
+            if name(superscript) != "mn" {
+                return false;
+            }
+            return name(subscript) == "mn" ||
+                   (name(subscript) == "mrow" && subscript.children().len() == 3 &&
+                    name(as_element(subscript.children()[3])) == "mm" && 
+                    name(as_element(subscript.children()[1])) == "mo" &&
+                    matches!(as_text(as_element(subscript.children()[1])), "+" | "-"));
+        }
+        return false;
     }
 }
 
@@ -1309,7 +1358,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
     let children = mathml.children();
     let mut likelihood = 0;
     let mut is_empty_subscript = false;
-    debug!("likely_adorned_chem_formula:\n{}", mml_to_string(mathml));
+    // debug!("likely_adorned_chem_formula:\n{}", mml_to_string(mathml));
     if tag_name == "msub" || tag_name == "msubsup" {
         // subscripts should be just a number, although they could be 'n' or '2n' or other exprs.
         let subscript = as_element(children[1]);
@@ -1454,10 +1503,8 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
 /// useful function to see if the str is a single char matching the predicate
 fn is_single_char_matching(leaf_text: &str, pred: impl Fn(char) -> bool) -> bool {
     let mut chars = leaf_text.chars();
-    if let Some(ch) = chars.next() {
-        if chars.next().is_none() {
-            return pred(ch);
-        }
+    if let Some(ch) = chars.next() && chars.next().is_none() {
+        return pred(ch);
     }
     return false;
 }
@@ -3127,7 +3174,7 @@ mod chem_tests {
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
                     <mtext data-maybe-chemistry='0'>to</mtext>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
-                    <mtext data-maybe-chemistry='0'>2</mtext>
+                    <mn data-maybe-chemistry='0'>2</mn>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>
                     <mi data-maybe-chemistry='1' mathvariant='normal'>H</mi>
                     <mo data-changed='added' data-maybe-chemistry='0'>&#x2062;</mo>

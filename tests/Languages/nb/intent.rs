@@ -1,117 +1,144 @@
 /// Tests for rules shared between various speech styles:
 /// *  this has tests focused on the various alphabets
 use crate::common::*;
+use anyhow::Result;
 
 
 #[test]
-fn silent_intent() {
+fn silent_intent() -> Result<()> {
     let expr = "<math> <mrow intent='testing:silent($arg1, $arg2)'><mn arg='arg1'>2</mn> <mi arg='arg2'>x</mi></mrow> </math>";
-    test("nb", "SimpleSpeak", expr, "2 x");
-    test("nb", "LiteralSpeak", expr, "2 x");
+    test("nb", "SimpleSpeak", expr, "2 x")?;
+    test("nb", "LiteralSpeak", expr, "2 x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn prefix_intent() {
+fn prefix_intent() -> Result<()> {
     let expr = r#"<math><msup intent='testing:prefix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
-    test("nb", "SimpleSpeak", expr, "testing x");
+    test("nb", "SimpleSpeak", expr, "testing x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn postfix_intent() {
+fn postfix_intent() -> Result<()> {
     let expr = r#"<math><msup intent='testing:postfix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
-    test("nb", "SimpleSpeak", expr, "x testing");
+    test("nb", "SimpleSpeak", expr, "x testing")?;
+    return Ok(());
+
 }
 
 #[test]
-fn infix_intent() {
+fn infix_intent() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:infix($x, $y, $z, 2)'>
         <mi arg='x'>x</mi>
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("nb", "SimpleSpeak", expr, "x testing y testing z testing 2");
+    test("nb", "SimpleSpeak", expr, "x testing y testing z testing 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn infix_intent_no_args() {
+fn infix_intent_no_args() -> Result<()> {
     // this is illegal intent, so it is just an mrow with one child
     let expr = r#"<math><mrow intent='testing:infix()'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
-    test("nb", "SimpleSpeak", expr, "x");
+    test("nb", "SimpleSpeak", expr, "x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn infix_intent_one_arg() {
+fn infix_intent_one_arg() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:infix($x)'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
     // Note: we say the intent name because there are infix plus/minus with a single arg due to continued rows or combined columns
-    test("nb", "SimpleSpeak", expr, "testing x");
+    test("nb", "SimpleSpeak", expr, "testing x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn function_intent() {
+fn function_intent() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:function($x, $y, $z, 2)'>
         <mi arg='x'>x</mi>
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("nb", "SimpleSpeak", expr, "testing av x, y, z, 2");
+    test("nb", "SimpleSpeak", expr, "testing av x, y, z, 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn function_no_args_intent() {
+fn function_no_args_intent() -> Result<()> {
     // this is illegal intent, so it is just an mrow with one child
     let expr = r#"<math><mrow intent='testing:function()'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
-    test("nb", "SimpleSpeak", expr, "x");
+    test("nb", "SimpleSpeak", expr, "x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn function_one_arg_intent() {
+fn function_one_arg_intent() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:function($x)'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
-    test("nb", "SimpleSpeak", expr, "testing av x");
+    test("nb", "SimpleSpeak", expr, "testing av x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn silent_intent_mi() {
+fn silent_intent_mi() -> Result<()> {
     let expr = "<math> <mn>2</mn> <mi intent=':silent'>x</mi></math>";
-    test("nb", "SimpleSpeak", expr, "2");
-    test("nb", "ClearSpeak", expr, "2");
+    test("nb", "SimpleSpeak", expr, "2")?;
+    test("nb", "ClearSpeak", expr, "2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn silent_intent_msup() {
+fn silent_intent_msup() -> Result<()> {
     let expr = "<math>
         <msup intent='index:silent($H,$n)'>
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("nb", "SimpleSpeak", expr, "stor h 2");
-    test("nb", "ClearSpeak", expr, "stor h 2");
+    test("nb", "SimpleSpeak", expr, "stor h 2")?;
+    test("nb", "ClearSpeak", expr, "stor h 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn silent_intent_underscore() {
+fn silent_intent_underscore() -> Result<()> {
     let expr = "<math>
         <msup intent='_($H,$n)'>
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("nb", "SimpleSpeak", expr, "stor h 2");
-    test("nb", "ClearSpeak", expr, "stor h 2");
+    test("nb", "SimpleSpeak", expr, "stor h 2")?;
+    test("nb", "ClearSpeak", expr, "stor h 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn intent_prob_x() {
+fn intent_prob_x() -> Result<()> {
     let expr = "<math>
     <msup intent='$op($arg)'>
         <mi arg='arg'>x</mi>
         <mi arg='op' intent='sannsynligheten' mathvariant='normal'>P</mi>
     </msup></math>";
-    test("nb", "ClearSpeak", expr, "sannsynligheten av x");
+    test("nb", "ClearSpeak", expr, "sannsynligheten av x")?;
+    return Ok(());
+
 }

@@ -4,9 +4,10 @@
 /// *  parens
 /// These are all intertwined, so they are in one file
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn binomial() {
+fn binomial() -> Result<()> {
   let mathml = "<math><mrow>
         <mo>(</mo>
         <mfrac linethickness='0'> <mn arg='n'>7</mn> <mn arg='m'>3</mn> </mfrac>
@@ -18,11 +19,13 @@ fn binomial() {
           <mn data-from-mathml='mn' arg='m'>3</mn>
         </binomial>
     </math>";
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn closed_interval() {
+fn closed_interval() -> Result<()> {
     let expr = r#"<math>
       <mo stretchy="false">[</mo>
       <mi>a</mi>
@@ -36,11 +39,13 @@ fn closed_interval() {
         <mi data-from-mathml='mi'>b</mi>
       </closed-interval>
     </math>";
-    test_intent(expr, target, vec![]);
+    test_intent(expr, target, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn nested_interval_bug_329() {
+fn nested_interval_bug_329() -> Result<()> {
     let expr = r#"<math>
       <mo stretchy="false">[</mo>
       <mi>A</mi>
@@ -71,11 +76,13 @@ fn nested_interval_bug_329() {
       <mo data-from-mathml='mo' stretchy='false'>]</mo>
     </mrow>
    </math>";
-    test_intent(expr, target, vec![]);
+    test_intent(expr, target, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn evaluated_at() {
+fn evaluated_at() -> Result<()> {
     let expr = r#"<math>
           <msubsup>
               <mrow>
@@ -103,5 +110,7 @@ fn evaluated_at() {
           <mn data-from-mathml='mn'>1</mn>
       </evaluate>
     </math>";
-    test_intent(expr, target, vec![]);
+    test_intent(expr, target, vec![])?;
+    return Ok(());
+
 }

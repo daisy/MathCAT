@@ -8,58 +8,75 @@
 // Thus the first example on the first page is named "augenbit0_1_1" and the "a_{12}" example on that pages is "augenbit0_2_6".
 // This naming scheme makes it easy to find the source of the example and what the translation should be.
 use crate::common::*;
+use anyhow::Result;
 
 
 #[test]
-fn augenbit1_1_1 () {
+fn augenbit1_1_1 () -> Result<()> {
     let expr = r#"<math><mo>{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>}</mo></math>"#;
-    test_braille("ASCIIMath", expr, r"{1, 2, 3, 4}");
+    test_braille("ASCIIMath", expr, r"{1, 2, 3, 4}")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_2_3 () {
+fn augenbit1_2_3 () -> Result<()> {
     let expr = r#"<math><msubsup><mi mathvariant="normal">&#x2124;</mi><mn>0</mn><mo>-</mo></msubsup></math>"#;
-    test_braille("ASCIIMath", expr, r"ZZ_0^-");
+    test_braille("ASCIIMath", expr, r"ZZ_0^-")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_3_2 () {
+fn augenbit1_3_2 () -> Result<()> {
     let expr = r#"<math><mn>9</mn><mo>&#x2212;</mo><mn>3</mn><mo>&#x2260;</mo><mn>5</mn></math>"#;
-    test_braille("ASCIIMath", expr, r"9-3 != 5");
+    test_braille("ASCIIMath", expr, r"9-3 != 5")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_3_3 () {
+fn augenbit1_3_3 () -> Result<()> {
     let expr = r#"<math><mi>x</mi><mo>&#xB1;</mo><mn>3</mn></math>"#;
-    test_braille("ASCIIMath", expr, r"x+-3");
+    test_braille("ASCIIMath", expr, r"x+-3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_3_6 () {
+fn augenbit1_3_6 () -> Result<()> {
     let expr = r#"<math><mi>x</mi><mo>&#x2264;</mo><mn>10</mn></math>"#;
-    test_braille("ASCIIMath", expr, r"x <= 10");
+    test_braille("ASCIIMath", expr, r"x <= 10")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_3_10 () {
+fn augenbit1_3_10 () -> Result<()> {
     let expr = r#"<math><mi>&#x3C0;</mi><mo>&#x2248;</mo><mn>3</mn><mo>,</mo><mn>14</mn></math>"#;
-    test_braille_prefs("ASCIIMath", vec![("DecimalSeparators", ","), ("BlockSeparators", ". ")], expr, r"pi ~~ 3,14");
+    test_braille_prefs("ASCIIMath", vec![("DecimalSeparators", ","), ("BlockSeparators", ". ")], expr, r"pi ~~ 3,14")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_3_14 () {
+fn augenbit1_3_14 () -> Result<()> {
     let expr = r#"<math><mi>a</mi><mover><mo>=</mo><mo>^</mo></mover><mi>b</mi></math>"#;
-    test_braille("ASCIIMath", expr, r"a hat=b");
+    test_braille("ASCIIMath", expr, r"a hat=b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_5_2 () {
+fn augenbit1_5_2 () -> Result<()> {
     let expr = r#"<math><mfrac><mn>1</mn><mi>x</mi></mfrac></math>"#;
-    test_braille("ASCIIMath", expr, r"1/x");
+    test_braille("ASCIIMath", expr, r"1/x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_5_7 () {
+fn augenbit1_5_7 () -> Result<()> {
     // put number together -- editor created "<mn>0</mn><mo>,</mo><mn>1</mn>" and canonicalize didn't fix it
     let expr = r#"<math><mrow>
             <mn>0,1</mn>
@@ -67,26 +84,29 @@ fn augenbit1_5_7 () {
             <mo>=</mo>
             <mn>1</mn><mrow><mo>/</mo></mrow><mn>6</mn>
         </mrow></math>"#;
-    test_braille("ASCIIMath", expr, r"0,1 bar 6 = 1//6");
+    test_braille("ASCIIMath", expr, r"0,1 bar 6 = 1//6")?;
+    return Ok(());
 }
 
 #[test]
-fn augenbit1_5_8 () {
+fn augenbit1_5_8 () -> Result<()> {
     let expr = r#"<math><mn>75</mn><mo>%</mo><mo>=</mo><mn>3</mn><mo>/</mo><mn>4</mn></math>"#;
-    test_braille("ASCIIMath", expr, r"75% = 3//4");
+    test_braille("ASCIIMath", expr, r"75% = 3//4")?;
+    return Ok(());
 }
 
 #[test]
-fn augenbit1_6_8 () {
+fn augenbit1_6_8 () -> Result<()> {
     let expr = r#"<math>
             <mroot><msup><mi>a</mi><mn>2</mn></msup><mn>3</mn></mroot><mo>=</mo>
             <msup><mi>a</mi><mrow><mn>2</mn><mo>/</mo><mn>3</mn></mrow></msup>
         </math>"#;
-    test_braille("ASCIIMath", expr, r"root(3)(a^2) = a^(2//3)");
+    test_braille("ASCIIMath", expr, r"root(3)(a^2) = a^(2//3)")?;
+    return Ok(());
 }
 
 #[test]
-fn augenbit1_6_11() {
+fn augenbit1_6_11() -> Result<()> {
     // this is a slightly cleaned up version that comes for the original example (via MathJax)
     let expr = r#" <math> <mrow>
         <msubsup>
@@ -96,42 +116,54 @@ fn augenbit1_6_11() {
         </msubsup>
         <mrow><mi mathvariant="normal">U</mi></mrow>
         </mrow></math>"#;
-    test_braille("ASCIIMath", expr, r"\ _(95)^(238)U");
+    test_braille("ASCIIMath", expr, r"\ _(95)^(238)U")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn augenbit1_7_7 () {
+fn augenbit1_7_7 () -> Result<()> {
     let expr = r#"<math><msub><mi>log</mi><mi>a</mi></msub><mi>x</mi></math>"#;
-    test_braille("ASCIIMath", expr, r"log_a x");
+    test_braille("ASCIIMath", expr, r"log_a x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_7_10 () {
+fn augenbit1_7_10 () -> Result<()> {
     let expr = r#"<math><msup><mi>cos</mi><mn>2</mn></msup><mi>&#x3B2;</mi></math>"#;
-    test_braille("ASCIIMath", expr, r"cos^2 beta");
+    test_braille("ASCIIMath", expr, r"cos^2 beta")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_7_12 () {
+fn augenbit1_7_12 () -> Result<()> {
     let expr = r#"<math><mi>cot</mi><mn>45</mn><mo>&#xB0;</mo></math>"#;
-    test_braille_prefs("LaTeX", vec![("Language", "de")], expr, r"\cot 45°");
+    test_braille_prefs("LaTeX", vec![("Language", "de")], expr, r"\cot 45°")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_8_2 () {
+fn augenbit1_8_2 () -> Result<()> {
     let expr = r#"<math><mi mathvariant="normal">&#x25B3;</mi><mi>A</mi><mi>B</mi><mi>C</mi></math>"#;
-    test_braille("ASCIIMath", expr, r"/_\ABC");
+    test_braille("ASCIIMath", expr, r"/_\ABC")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit1_8_4 () {
+fn augenbit1_8_4 () -> Result<()> {
     let expr = r#"<math><mi>&#x3B1;</mi><mo>,</mo><mi>&#x3B2;</mi><mo>,</mo><mi>&#x3B3;</mi><mo>,</mo><mi>&#x3B4;</mi><mo>,</mo><mi>&#x3B5;</mi></math>"#;
-    test_braille("ASCIIMath", expr, r"alpha, beta, gamma, delta, epsilon");
+    test_braille("ASCIIMath", expr, r"alpha, beta, gamma, delta, epsilon")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit2_1_3 () {
+fn augenbit2_1_3 () -> Result<()> {
     // original display code contains forced spaces not in the output -- they are cleaned up here
     let expr = r#"<math>
         <munder>
@@ -143,32 +175,38 @@ fn augenbit2_1_3 () {
         </mrow>
         </munder>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"lim_(x->x_0)");
+    test_braille("ASCIIMath", expr, r"lim_(x->x_0)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit2_1_4 () {
+fn augenbit2_1_4 () -> Result<()> {
     // original display code contains forced spaces not in the output -- they are cleaned up here
     let expr = r#"<math>
             <msup><mi>f</mi><mo>'</mo> </msup><mo>(</mo><mi>x</mi><mo>)</mo><mo>,</mo>
             <msup><mi>f</mi><mo>''</mo></msup><mo>(</mo><mi>x</mi><mo>)</mo>
         </math>"#;
-    test_braille("ASCIIMath", expr, r"f'(x), f''(x)");
+    test_braille("ASCIIMath", expr, r"f'(x), f''(x)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit2_2_2 () {
+fn augenbit2_2_2 () -> Result<()> {
     // original display code contains forced spaces not in the output -- they are cleaned up here
     let expr = r#"<math>
         <mo minsize="2.047em" maxsize="2.047em">(</mo>
         <mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac>
         <mo minsize="2.047em" maxsize="2.047em">)</mo>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"((n), (k))");
+    test_braille("ASCIIMath", expr, r"((n), (k))")?;
+    return Ok(());
+
 }
 
 #[test]
-fn augenbit2_3_2 () {
+fn augenbit2_3_2 () -> Result<()> {
     let expr = r#"<math>
             <mover><mi>q</mi><mo stretchy="false">&#x2192;</mo></mover><mo>=</mo>
             <mfenced>
@@ -180,11 +218,13 @@ fn augenbit2_3_2 () {
             </mfenced></math>"#;
     // set number preferences to European style
     test_braille_prefs("ASCIIMath", vec![("DecimalSeparators", ","), ("BlockSeparators", ". ")], expr, 
-                r"vec q = ([-5], [0,5], [k+4])");
+                r"vec q = ([-5], [0,5], [k+4])")?;
+                return Ok(());
+
 }
 
 #[test]
-fn augenbit2_3_4 () {
+fn augenbit2_3_4 () -> Result<()> {
     let expr = r#"<math>
         <mo>(</mo>
         <mtable columnspacing="1em" rowspacing="4pt">
@@ -195,5 +235,7 @@ fn augenbit2_3_4 () {
     </math>"#;
     // set number preferences to European style
     test_braille_prefs("ASCIIMath", vec![("DecimalSeparators", ","), ("BlockSeparators", ". ")], expr, 
-                r"([a, b, c], [d, e, f])");
+                r"([a, b, c], [d, e, f])")?;
+                return Ok(());
+
 }

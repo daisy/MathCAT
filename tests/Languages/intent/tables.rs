@@ -1,8 +1,9 @@
 /// Tests for table properties
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn array() {
+fn array() -> Result<()> {
     let mathml = r#"<math><mfenced open="[" close="]"><mtable intent=":array">
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
@@ -20,11 +21,13 @@ fn array() {
                             </mtr>
                         </array>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_mtable_intent() {
+fn matrix_mtable_intent() -> Result<()> {
     let mathml = r#"<math><mfenced open="[" close="]"><mtable intent=":matrix">
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
@@ -42,11 +45,13 @@ fn matrix_mtable_intent() {
                             </mtr>
                         </matrix>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_mrow_intent() {
+fn matrix_mrow_intent() -> Result<()> {
     let mathml = r#"<math><mfenced open="[" close="]" intent="$t"><mtable arg="t" intent=":matrix">
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
@@ -64,11 +69,13 @@ fn matrix_mrow_intent() {
                             </mtr>
                         </matrix>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_infer_intent() {
+fn matrix_infer_intent() -> Result<()> {
     let mathml = r#"<math><mfenced open="[" close="]" ><mtable>
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
@@ -86,11 +93,13 @@ fn matrix_infer_intent() {
                             </mtr>
                         </matrix>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn determinant_not_matrix() {
+fn determinant_not_matrix() -> Result<()> {
     let mathml = r#"<math><mfenced open="[" close="]" ><mtable intent=":determinant">
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd></mtr>
@@ -107,11 +116,13 @@ fn determinant_not_matrix() {
                             </mtr>
                         </determinant>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn determinant_infer_intent() {
+fn determinant_infer_intent() -> Result<()> {
     let mathml = r#"<math><mfenced open="|" close="|" ><mtable>
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
@@ -129,11 +140,13 @@ fn determinant_infer_intent() {
                             </mtr>
                         </determinant>
                     </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn system_of_equations() {
+fn system_of_equations() -> Result<()> {
     let mathml = r#"<math>
             <mtable intent=':system-of-equations' columnalign="right left" columnspacing="0em" rowspacing="3pt">
                 <mtr>
@@ -184,11 +197,13 @@ fn system_of_equations() {
             </mtr>
         </system-of-equations>
         </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn system_of_equations_infer_intent() {
+fn system_of_equations_infer_intent() -> Result<()> {
     let mathml = r#"<math>
             <mtable intent=":system-of-equations" columnalign="right left" columnspacing="0em" rowspacing="3pt">
                 <mtr>
@@ -239,11 +254,13 @@ fn system_of_equations_infer_intent() {
             </mtr>
         </system-of-equations>
         </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn lines() {
+fn lines() -> Result<()> {
     let mathml = r#"<math>
             <mtable intent=":lines">
                 <mtr>
@@ -294,5 +311,7 @@ fn lines() {
             </mtr>
         </lines>
         </math>";
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }

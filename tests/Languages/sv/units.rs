@@ -1,6 +1,7 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 // The basic layout of the tests is:
 // 1. Sweep through all the SI prefixes
@@ -11,7 +12,7 @@ use crate::common::*;
 // These are broken into chunks so it is easier to see errors, when there are errors
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -62,11 +63,13 @@ fn prefix_sweep() {
                 zepto-gram komma, \
                 yokto-gram komma, \
                 ronto-gram komma, \
-                quekto-gram");
+                quekto-gram")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -91,11 +94,13 @@ fn si_base() {
                 1 sekund, komma, 2 sekunder, komma, \
                 1 sekund, komma, 2 sekunder, komma, \
                 1 sekund, komma, 2 sekunder, komma, \
-                1 sekund, komma, 2 sekunder");
+                1 sekund, komma, 2 sekunder")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -116,12 +121,14 @@ fn si_base_with_prefixes() {
                 1 hekto-meter, komma; 2 deka-meter, komma; \
                 1 deci-mol, komma; 2 centi-mol, komma; \
                 1 milli-sekund, komma; 2 mikro-sekunder, komma; \
-                1 nano-sekund, komma; 2 piko-sekunder");
+                1 nano-sekund, komma; 2 piko-sekunder")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -148,11 +155,13 @@ fn si_derived_1() {
                 1 joule, komma, 2 joule, komma, \
                 1 katal, komma, 2 katal, komma, \
                 1 lumen, komma, 2 lumen, komma, \
-                1 lux, komma, 2 lux");
+                1 lux, komma, 2 lux")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -179,11 +188,13 @@ fn si_derived_1_with_prefixes() {
                 1 piko-lumen, komma; 2 femto-lumen, komma; \
                 1 atto-lux, komma; 2 zepto-lux, komma; \
                 1 milli-grad celsius, komma; 2 mikro-grader celsius; komma; \
-                1 piko-grad celsius, komma; 2 nano-grader celsius");
+                1 piko-grad celsius, komma; 2 nano-grader celsius")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -206,11 +217,13 @@ fn si_derived_2() {
                 1 tesla, komma, 2 tesla, komma, \
                 1 volt, komma, 2 volt, komma, \
                 1 watt, komma, 2 watt, komma, \
-                1 weber, komma, 2 weber");
+                1 weber, komma, 2 weber")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -233,12 +246,14 @@ fn si_derived_2_with_prefixes() {
                 1 deka-tesla, komma; 2 hekto-tesla, komma; \
                 1 kilo-volt, komma; 2 mega-volt, komma; \
                 1 giga-watt, komma; 2 tera-watt, komma; \
-                1 peta-weber, komma; 2 exa-weber");
+                1 peta-weber, komma; 2 exa-weber")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -271,11 +286,13 @@ fn si_accepted() {
                 1 bågsekund, komma; 2 bågsekunder, komma, \
                 1 bit, komma, 2 bits, komma, \
                 1 byte, komma, 2 bytes, komma, \
-                1 baud, komma, 2 bauds");
+                1 baud, komma, 2 bauds")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -308,11 +325,13 @@ fn si_accepted_with_prefixes() {
                 1 zepto-bågsekund, komma; 2 yokto-bågsekunder, komma; \
                 1 kilo-bit, komma; 2 mega-bits, komma; \
                 1 giga-byte, komma; 2 tera-bytes, komma; \
-                1 tera-baud, komma; 2 exa-bauds");
+                1 tera-baud, komma; 2 exa-bauds")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_timme() {
+fn without_prefix_timme() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -343,11 +362,13 @@ fn without_prefix_timme() {
                 1 vecka, komma, 2 veckor, komma, \
                 1 vecka, komma, 2 veckor, komma, \
                 ett år, komma, 2 år, komma, \
-                ett år, komma, 2 år");
+                ett år, komma, 2 år")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -366,11 +387,13 @@ fn without_prefix_angles() {
                 1 bågminut, komma, 2 bågminuter, komma, \
                 1 bågminut, komma, 2 bågminuter, komma, \
                 1 bågsekund, komma; 2 bågsekunder, komma, \
-                1 bågsekund, komma; 2 bågsekunder");
+                1 bågsekund, komma; 2 bågsekunder")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -385,11 +408,13 @@ fn without_prefix_distance() {
                 1 parsek, komma, 2 parsek, komma, \
                 1 ångström, komma, 2 ångström, komma, \
                 1 ångström, komma, 2 ångström, komma, \
-                1 fermi, komma, 2 fermi");
+                1 fermi, komma, 2 fermi")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -420,11 +445,13 @@ fn without_prefix_other() {
                 ett varv per minut, komma; 2 varv per minut, komma, \
                 1 m-h-o, komma, 2 m-h-o, komma, \
                 1 dyn, komma, 2 dyn, komma, \
-                1 erg, komma, 2 erg");
+                1 erg, komma, 2 erg")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -459,12 +486,14 @@ fn without_prefix_powers_of_2() {
                 1 pebi-byte, komma, 2 pebi-bytes, komma, \
                 1 exbi-byte, komma, 2 exbi-bytes, komma, \
                 1 zebi-byte, komma, 2 zebi-bytes, komma, \
-                1 yobi-byte, komma, 2 yobi-bytes");
+                1 yobi-byte, komma, 2 yobi-bytes")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -475,12 +504,14 @@ fn si_other_numbers() {
                             <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test("sv", "SimpleSpeak", expr, 
         "1,0 liter, komma, 2,0 meter, komma; x milli-sekunder, komma; y mikro-sekunder, komma, \
-                deka-gram komma; 1235 deka-newton, komma; 2,5 mikro-sekunder, komma, 32,34 mol");
+                deka-gram komma; 1235 deka-newton, komma; 2,5 mikro-sekunder, komma, 32,34 mol")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -488,124 +519,144 @@ fn test_mtext_inference() {
                 <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("sv", "SimpleSpeak", expr, 
-        "start hak-parentes; ett tonn, komma; 2 peta-ampère, komma, 3 pascal, komma; 4,5 milli-tesla; slut hak-parentes");
+        "start hak-parentes; ett tonn, komma; 2 peta-ampère, komma, 3 pascal, komma; 4,5 milli-tesla; slut hak-parentes")?;
+        return Ok(());
+
 }
 /// Tests for fractions followed by units
 
 #[test]
-fn one_neuter_unit() {
+fn one_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 minut");
-    test("sv", "SimpleSpeak", expr, "1 minut");
+    test("sv", "ClearSpeak", expr, "1 minut")?;
+    test("sv", "SimpleSpeak", expr, "1 minut")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn one_masculine_feminine_unit() {
+fn one_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 timme");
-    test("sv", "SimpleSpeak", expr, "1 timme");
+    test("sv", "ClearSpeak", expr, "1 timme")?;
+    test("sv", "SimpleSpeak", expr, "1 timme")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn half_neuter_unit() {
+fn half_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>2</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">sek</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv sekund");
-    test("sv", "SimpleSpeak", expr, "1 halv sekund");
+    test("sv", "ClearSpeak", expr, "1 halv sekund")?;
+    test("sv", "SimpleSpeak", expr, "1 halv sekund")?;
     
+    return Ok(());
+
 }
 
 
 #[test]
-fn half_masculine_feminine_unit() {
+fn half_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>2</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">l</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv liter");
-    test("sv", "SimpleSpeak", expr, "1 halv liter");
+    test("sv", "ClearSpeak", expr, "1 halv liter")?;
+    test("sv", "SimpleSpeak", expr, "1 halv liter")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn one_third_neuter_unit() {
+fn one_third_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>3</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">as</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 tredjedels bågsekund");
-    test("sv", "SimpleSpeak", expr, "1 tredjedels bågsekund");
+    test("sv", "ClearSpeak", expr, "1 tredjedels bågsekund")?;
+    test("sv", "SimpleSpeak", expr, "1 tredjedels bågsekund")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn one_third_masculine_feminine_unit() {
+fn one_third_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>3</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">m</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 tredjedels meter");
-    test("sv", "SimpleSpeak", expr, "1 tredjedels meter");
+    test("sv", "ClearSpeak", expr, "1 tredjedels meter")?;
+    test("sv", "SimpleSpeak", expr, "1 tredjedels meter")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn five_thirds_unit() {
+fn five_thirds_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>5</mn><mn>3</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "5 tredjedels timme");
-    test("sv", "SimpleSpeak", expr, "5 tredjedels timme");
+    test("sv", "ClearSpeak", expr, "5 tredjedels timme")?;
+    test("sv", "SimpleSpeak", expr, "5 tredjedels timme")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn four_eighths_unit() {
+fn four_eighths_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>4</mn><mn>8</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">g</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "4 åttondels gram");
-    test("sv", "SimpleSpeak", expr, "4 åttondels gram");
+    test("sv", "ClearSpeak", expr, "4 åttondels gram")?;
+    test("sv", "SimpleSpeak", expr, "4 åttondels gram")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn six_ninths_unit() {
+fn six_ninths_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>6</mn><mn>9</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "6 niondels timme");
-    test("sv", "SimpleSpeak", expr, "6 niondels timme");
+    test("sv", "ClearSpeak", expr, "6 niondels timme")?;
+    test("sv", "SimpleSpeak", expr, "6 niondels timme")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mixed_fraction__half_neuter_unit() {
+fn mixed_fraction__half_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>3</mn>
     <mfrac>
@@ -613,13 +664,15 @@ fn mixed_fraction__half_neuter_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "3 och 1 halv, minut");
-    test("sv", "SimpleSpeak", expr, "3 och 1 halv, minut");
+    test("sv", "ClearSpeak", expr, "3 och 1 halv, minut")?;
+    test("sv", "SimpleSpeak", expr, "3 och 1 halv, minut")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mixed_fraction__half_masculine_feminine_unit() {
+fn mixed_fraction__half_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>3</mn>
     <mfrac>
@@ -627,13 +680,15 @@ fn mixed_fraction__half_masculine_feminine_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "3 och 1 halv, timme");
-    test("sv", "SimpleSpeak", expr, "3 och 1 halv, timme");
+    test("sv", "ClearSpeak", expr, "3 och 1 halv, timme")?;
+    test("sv", "SimpleSpeak", expr, "3 och 1 halv, timme")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mixed_fractions_third_neuter_unit() {
+fn mixed_fractions_third_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn>
     <mfrac>
@@ -641,13 +696,15 @@ fn mixed_fractions_third_neuter_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, minut");
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, minut");
+    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, minut")?;
+    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, minut")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mixed_fractions_third_masculine_feminine_unit() {
+fn mixed_fractions_third_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn>
     <mfrac>
@@ -655,12 +712,14 @@ fn mixed_fractions_third_masculine_feminine_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, timme");
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, timme");
+    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, timme")?;
+    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, timme")?;
+    return Ok(());
+
 }
 
 #[test]
-fn mixed_fractions_two_and_two_thirds_unit() {
+fn mixed_fractions_two_and_two_thirds_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>2</mn>
     <mfrac>
@@ -668,12 +727,14 @@ fn mixed_fractions_two_and_two_thirds_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "2 och 2 tredjedels, timme");
-    test("sv", "SimpleSpeak", expr, "2 och 2 tredjedels, timme");
+    test("sv", "ClearSpeak", expr, "2 och 2 tredjedels, timme")?;
+    test("sv", "SimpleSpeak", expr, "2 och 2 tredjedels, timme")?;
+    return Ok(());
+
 }
 
 #[test]
-fn mixed_fractions_four_and_five_sevenths_unit() {
+fn mixed_fractions_four_and_five_sevenths_unit() -> Result<()> {
     let expr = r#"<math>
     <mn>4</mn>
     <mfrac>
@@ -681,145 +742,171 @@ fn mixed_fractions_four_and_five_sevenths_unit() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "4 och 5 sjundedels, minut");
-    test("sv", "SimpleSpeak", expr, "4 och 5 sjundedels, minut");
+    test("sv", "ClearSpeak", expr, "4 och 5 sjundedels, minut")?;
+    test("sv", "SimpleSpeak", expr, "4 och 5 sjundedels, minut")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_with_units_neuter_unit() {
+fn fraction_with_units_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>1</mn><mn>2</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">g</mi><mi mathvariant="normal" intent=":unit">hr</mi></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "ett halvt gram per timme");
-    test("sv", "SimpleSpeak", expr, "ett halvt gram per timme");
+    test("sv", "ClearSpeak", expr, "ett halvt gram per timme")?;
+    test("sv", "SimpleSpeak", expr, "ett halvt gram per timme")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_with_units_masculine_feminine_unit() {
+fn fraction_with_units_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>1</mn><mn>2</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">m</mi><mi mathvariant="normal" intent=":unit">sek</mi></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv meter per sekund");
-    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund");
+    test("sv", "ClearSpeak", expr, "1 halv meter per sekund")?;
+    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_with_units_2_neuter_unit() {
+fn fraction_with_units_2_neuter_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mrow><mn>1</mn><mi mathvariant="normal" intent=":unit">g</mi></mrow>
         <mrow><mn>3</mn><mi mathvariant="normal" intent=":unit">hr</mi></mrow>
     </mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "division med täljaren ett gram; och nämnaren 3 timmar");
-    test("sv", "SimpleSpeak", expr, "division, ett gram, genom, 3 timmar, slut division");
+    test("sv", "ClearSpeak", expr, "division med täljaren ett gram; och nämnaren 3 timmar")?;
+    test("sv", "SimpleSpeak", expr, "division, ett gram, genom, 3 timmar, slut division")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_with_units_2_masculine_feminine_unit() {
+fn fraction_with_units_2_masculine_feminine_unit() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mrow><mn>1</mn><mi mathvariant="normal" intent=":unit">m</mi></mrow>
         <mrow><mn>3</mn><mi mathvariant="normal" intent=":unit">sek</mi></mrow>
     </mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "division med täljaren 1 meter; och nämnaren 3 sekunder");
-    test("sv", "SimpleSpeak", expr, "division, 1 meter, genom, 3 sekunder, slut division");
+    test("sv", "ClearSpeak", expr, "division med täljaren 1 meter; och nämnaren 3 sekunder")?;
+    test("sv", "SimpleSpeak", expr, "division, 1 meter, genom, 3 sekunder, slut division")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_not_ordinal_units_neuter() {
+fn fraction_not_ordinal_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 3 genom 11, slut bråk; minuter");
-    test("sv", "SimpleSpeak", expr, "3 genom 11, minuter");
+    test("sv", "ClearSpeak", expr, ", bråk, 3 genom 11, slut bråk; minuter")?;
+    test("sv", "SimpleSpeak", expr, "3 genom 11, minuter")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_not_ordinal_units_masculine_feminine() {
+fn fraction_not_ordinal_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 3 genom 11, slut bråk; timmar");
-    test("sv", "SimpleSpeak", expr, "3 genom 11, timmar");
+    test("sv", "ClearSpeak", expr, ", bråk, 3 genom 11, slut bråk; timmar")?;
+    test("sv", "SimpleSpeak", expr, "3 genom 11, timmar")?;
+    return Ok(());
+
 }
 
 #[test]
-fn fraction_not_ordinal_2_units_neuter() {
+fn fraction_not_ordinal_2_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; minuter");
-    test("sv", "SimpleSpeak", expr, "7 genom 21, minuter");
+    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; minuter")?;
+    test("sv", "SimpleSpeak", expr, "7 genom 21, minuter")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_not_ordinal_2_units_masculine_feminine() {
+fn fraction_not_ordinal_2_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; timmar");
-    test("sv", "SimpleSpeak", expr, "7 genom 21, timmar");
+    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; timmar")?;
+    test("sv", "SimpleSpeak", expr, "7 genom 21, timmar")?;
+    return Ok(());
+
 }
 
 /// Fractions followed by units with prefix. 
 
 #[test]
-fn one_neuter_unit_prefix() {
+fn one_neuter_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn><mi mathvariant="normal" intent=":unit">mg</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "ett milli-gram");
-    test("sv", "SimpleSpeak", expr, "ett milli-gram");
+    test("sv", "ClearSpeak", expr, "ett milli-gram")?;
+    test("sv", "SimpleSpeak", expr, "ett milli-gram")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn one_masculine_feminine_unit_prefix() {
+fn one_masculine_feminine_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn><mi mathvariant="normal" intent=":unit">µm</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 mikro-meter");
-    test("sv", "SimpleSpeak", expr, "1 mikro-meter");
+    test("sv", "ClearSpeak", expr, "1 mikro-meter")?;
+    test("sv", "SimpleSpeak", expr, "1 mikro-meter")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn half_neuter_unit_prefix() {
+fn half_neuter_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>2</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">nsek</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv nano-sekund");
-    test("sv", "SimpleSpeak", expr, "1 halv nano-sekund");
+    test("sv", "ClearSpeak", expr, "1 halv nano-sekund")?;
+    test("sv", "SimpleSpeak", expr, "1 halv nano-sekund")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn third_neuter_unit_prefix() {
+fn third_neuter_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
         <mn>1</mn><mn>3</mn>
     </mfrac>
     <mi mathvariant="normal" intent=":unit">mt</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "ett tredjedels milli-tonn");
-    test("sv", "SimpleSpeak", expr, "ett tredjedels milli-tonn");
+    test("sv", "ClearSpeak", expr, "ett tredjedels milli-tonn")?;
+    test("sv", "SimpleSpeak", expr, "ett tredjedels milli-tonn")?;
+    return Ok(());
+
 }
 
 #[test]
-fn mixed_fractions_third_masculine_feminine_unit_prefix() {
+fn mixed_fractions_third_masculine_feminine_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mn>1</mn>
     <mfrac>
@@ -827,13 +914,15 @@ fn mixed_fractions_third_masculine_feminine_unit_prefix() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">dN</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, deci-newton");
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, deci-newton");
+    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, deci-newton")?;
+    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, deci-newton")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mixed_fractions_four_and_five_sevenths_unit_prefix() {
+fn mixed_fractions_four_and_five_sevenths_unit_prefix() -> Result<()> {
     let expr = r#"<math>
     <mn>4</mn>
     <mfrac>
@@ -841,98 +930,116 @@ fn mixed_fractions_four_and_five_sevenths_unit_prefix() {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">nas</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "4 och 5 sjundedels, nano-bågsekund");
-    test("sv", "SimpleSpeak", expr, "4 och 5 sjundedels, nano-bågsekund");
+    test("sv", "ClearSpeak", expr, "4 och 5 sjundedels, nano-bågsekund")?;
+    test("sv", "SimpleSpeak", expr, "4 och 5 sjundedels, nano-bågsekund")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_not_ordinal_units_neuter_prefix() {
+fn fraction_not_ordinal_units_neuter_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">nsek</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; nano-sekunder");
-    test("sv", "SimpleSpeak", expr, "7 genom 21, nano-sekunder");
+    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; nano-sekunder")?;
+    test("sv", "SimpleSpeak", expr, "7 genom 21, nano-sekunder")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn fraction_not_ordinal_units_masculine_feminine_prefix() {
+fn fraction_not_ordinal_units_masculine_feminine_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">ml</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; milli-liter");
-    test("sv", "SimpleSpeak", expr, "7 genom 21, milli-liter");
+    test("sv", "ClearSpeak", expr, ", bråk, 7 genom 21, slut bråk; milli-liter")?;
+    test("sv", "SimpleSpeak", expr, "7 genom 21, milli-liter")?;
+    return Ok(());
+
 }
 
 
 ///Some more complicated fractions with units
 
 #[test]
-fn acceleration_half() {
+fn acceleration_half() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>1</mn><mn>2</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">m</mi><msup><mi mathvariant="normal" intent=":unit">s</mi><mn>2</mn></msup></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv meter per sekund kvadrat");
-    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund kvadrat");
+    test("sv", "ClearSpeak", expr, "1 halv meter per sekund kvadrat")?;
+    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund kvadrat")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn acceleration_half_one_fraction() {
+fn acceleration_half_one_fraction() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
     <mrow><mn>1</mn><mi mathvariant="normal" intent=":unit">m</mi></mrow>
     <mrow><mn>2</mn><msup><mi mathvariant="normal" intent=":unit">s</mi><mn>2</mn></msup></mrow>
     </mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "division med täljaren 1 meter; och nämnaren 2 sekunder kvadrat");
-    test("sv", "SimpleSpeak", expr, "division, 1 meter, genom, 2 sekunder kvadrat, slut division");
+    test("sv", "ClearSpeak", expr, "division med täljaren 1 meter; och nämnaren 2 sekunder kvadrat")?;
+    test("sv", "SimpleSpeak", expr, "division, 1 meter, genom, 2 sekunder kvadrat, slut division")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn acceleration_four_sevenths() {
+fn acceleration_four_sevenths() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>4</mn><mn>7</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">m</mi><msup><mi mathvariant="normal" intent=":unit">s</mi><mn>2</mn></msup></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "4 sjundedels meter per sekund kvadrat");
-    test("sv", "SimpleSpeak", expr, "4 sjundedels meter per sekund kvadrat");
+    test("sv", "ClearSpeak", expr, "4 sjundedels meter per sekund kvadrat")?;
+    test("sv", "SimpleSpeak", expr, "4 sjundedels meter per sekund kvadrat")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn density_thirds() {
+fn density_thirds() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>1</mn><mn>3</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">kg</mi><msup><mi mathvariant="normal" intent=":unit">m</mi><mn>3</mn></msup></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "ett tredjedels kilo-gram per meter kubik");
-    test("sv", "SimpleSpeak", expr, "ett tredjedels kilo-gram per meter kubik");
+    test("sv", "ClearSpeak", expr, "ett tredjedels kilo-gram per meter kubik")?;
+    test("sv", "SimpleSpeak", expr, "ett tredjedels kilo-gram per meter kubik")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn density_thirds_one_fraction() {
+fn density_thirds_one_fraction() -> Result<()> {
     let expr = r#"<math>
     <mfrac>
     <mrow><mn>1</mn><mi mathvariant="normal" intent=":unit">kg</mi></mrow>
     <mrow><mn>3</mn><msup><mi mathvariant="normal" intent=":unit">m</mi><mn>3</mn></msup></mrow>
     </mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "division med täljaren; ett kilo-gram; och nämnaren 3 meter kubik");
-    test("sv", "SimpleSpeak", expr, "division, ett kilo-gram, genom, 3 meter kubik, slut division");
+    test("sv", "ClearSpeak", expr, "division med täljaren; ett kilo-gram; och nämnaren 3 meter kubik")?;
+    test("sv", "SimpleSpeak", expr, "division, ett kilo-gram, genom, 3 meter kubik, slut division")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn density_two_fifths() {
+fn density_two_fifths() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>2</mn><mn>5</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">kg</mi><msup><mi mathvariant="normal" intent=":unit">m</mi><mn>3</mn></msup></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "2 femtedels kilo-gram per meter kubik");
-    test("sv", "SimpleSpeak", expr, "2 femtedels kilo-gram per meter kubik");
+    test("sv", "ClearSpeak", expr, "2 femtedels kilo-gram per meter kubik")?;
+    test("sv", "SimpleSpeak", expr, "2 femtedels kilo-gram per meter kubik")?;
+    return Ok(());
+
 }

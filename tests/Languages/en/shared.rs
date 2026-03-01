@@ -1,9 +1,10 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn modified_vars() {
+fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
         <mover> <mi>b</mi> <mo>~</mo> </mover>
@@ -21,11 +22,13 @@ fn modified_vars() {
         </mrow> </math>";
     test("en", "SimpleSpeak", expr, 
         "eigh grave, b tilde, c breve, b check, c grave; plus \
-            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t");
+            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
+            return Ok(());
+
 }
 
 #[test]
-fn limit() {
+fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -38,13 +41,15 @@ fn limit() {
             </mfrac>
             </mrow>
         </math>";
-    test("en", "SimpleSpeak", expr, "the limit as x approaches 0, of, fraction, sine of x, over x, end fraction");
+    test("en", "SimpleSpeak", expr, "the limit as x approaches 0, of, fraction, sine of x, over x, end fraction")?;
     test_prefs("en", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "the limit as x approaches 0, of; sine of x, over x");
+            "the limit as x approaches 0, of; sine of x, over x")?;
+            return Ok(());
+
 }
 
 #[test]
-fn limit_from_below() {
+fn limit_from_below() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -54,82 +59,104 @@ fn limit_from_below() {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("en", "SimpleSpeak", expr, "the limit as x approaches from below 0, of sine of x");
+    test("en", "SimpleSpeak", expr, "the limit as x approaches from below 0, of sine of x")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn binomial_mmultiscripts() {
+fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("en", "SimpleSpeak", expr, "n choose m");
+    test("en", "SimpleSpeak", expr, "n choose m")?;
+    return Ok(());
+
 }
 
 #[test]
-fn binomial_mmultiscripts_other() {
+fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("en", "SimpleSpeak", expr, "n choose m");
+    test("en", "SimpleSpeak", expr, "n choose m")?;
+    return Ok(());
+
 }
 
 #[test]
-fn binomial_subscript() {  // C_{n,k}
+fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
-    test("en", "SimpleSpeak", expr, "n choose m");
+    test("en", "SimpleSpeak", expr, "n choose m")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_mmultiscripts() {
+fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("en", "SimpleSpeak", expr, "k permutations of n");
+    test("en", "SimpleSpeak", expr, "k permutations of n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_mmultiscripts_sup() {
+fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("en", "SimpleSpeak", expr, "k permutations of n");
+    test("en", "SimpleSpeak", expr, "k permutations of n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_msubsup() {
+fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("en", "SimpleSpeak", expr, "k permutations of n");
+    test("en", "SimpleSpeak", expr, "k permutations of n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn tensor_mmultiscripts() {
+fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 postscripts, subscript i superscript j subscript k subscript l");
+            "cap r with 4 postscripts, subscript i superscript j subscript k subscript l")?;
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "cap r with 4 postscripts, sub i super j sub k sub l");
+            "cap r with 4 postscripts, sub i super j sub k sub l")?;
+            return Ok(());
+
 }
 
 #[test]
-fn huge_num_mmultiscripts() {
+fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 prescripts, pre subscript cap i, pre superscript cap j and alternating prescripts cap k none cap l none end prescripts and with 5 postscripts, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts");
+            "cap r with 4 prescripts, pre subscript cap i, pre superscript cap j and alternating prescripts cap k none cap l none end prescripts and with 5 postscripts, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts")?;
+            return Ok(());
+
 }
 
 #[test]
-fn prime() {
+fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
-    test("en", "SimpleSpeak", expr, "x prime");
+    test("en", "SimpleSpeak", expr, "x prime")?;
+    return Ok(());
+
 }
 
 #[test]
-fn given() {
+fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("en", "SimpleSpeak", expr, "cap p, open paren, cap eigh given cap b, close paren");
-    test("en", "ClearSpeak", expr,  "cap p, open paren, cap eigh given cap b, close paren");  // not good, but follows the spec
+    test("en", "SimpleSpeak", expr, "cap p, open paren, cap eigh given cap b, close paren")?;
+    test("en", "ClearSpeak", expr,  "cap p, open paren, cap eigh given cap b, close paren")?; // not good, but follows the spec
+    return Ok(());
+
 }
 
 #[test]
-fn simple_msubsup() {
+fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>
             <msubsup>
@@ -143,20 +170,24 @@ fn simple_msubsup() {
             </msubsup>
             </mstyle>
         </math>";
-    test("en", "ClearSpeak", expr, "x sub k, to the i-th power");
+    test("en", "ClearSpeak", expr, "x sub k, to the i-th power")?;
+    return Ok(());
+
 }
 
 #[test]
-fn non_simple_msubsup() {
+fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("en", "SimpleSpeak", expr, "i sub j minus 2 end sub, to the k-th");
-  test("en", "ClearSpeak", expr, "i sub j minus 2 end sub, to the k-th power");
+  test("en", "SimpleSpeak", expr, "i sub j minus 2 end sub, to the k-th")?;
+  test("en", "ClearSpeak", expr, "i sub j minus 2 end sub, to the k-th power")?;
   test_prefs("en", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "i sub j minus 2, to the k-th");
+          "i sub j minus 2, to the k-th")?;
+          return Ok(());
+
 }
 
 #[test]
-fn presentation_mathml_in_semantics() {
+fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
         <semantics>
             <annotation encoding='application/x-tex'>{\\displaystyle x_k^i}</annotation>
@@ -173,11 +204,13 @@ fn presentation_mathml_in_semantics() {
             </annotation-xml>
         </semantics>
     </math>";
-    test("en", "ClearSpeak", expr, "x sub k, to the i-th power");
+    test("en", "ClearSpeak", expr, "x sub k, to the i-th power")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_period() {
+fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <semantics>
@@ -217,17 +250,21 @@ fn ignore_period() {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("en", "SimpleSpeak", expr, "cap p; open paren, cap eigh and cap b; close paren; is equal to; cap p, open paren, cap eigh intersection cap b; close paren; is equal to, cap p of cap eigh, cap p of cap b");
+    test("en", "SimpleSpeak", expr, "cap p; open paren, cap eigh and cap b; close paren; is equal to; cap p, open paren, cap eigh intersection cap b; close paren; is equal to, cap p of cap eigh, cap p of cap b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_mtext_period() {
+fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
-    test("en", "SimpleSpeak", expr, "the set 2");
+    test("en", "SimpleSpeak", expr, "the set 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_comma() {
+fn ignore_comma() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <mrow>
@@ -260,12 +297,14 @@ fn ignore_comma() {
       </mstyle>
     </mrow>
 </math>";
-    test("en", "SimpleSpeak", expr, "phi of x is equal to; c times, e raised to the negative h squared, x squared power");
+    test("en", "SimpleSpeak", expr, "phi of x is equal to; c times, e raised to the negative h squared, x squared power")?;
+    return Ok(());
+
 }
 
 #[test]
 #[ignore] // issue #14
-fn ignore_period_and_space() {
+fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
       <mrow>
@@ -300,12 +339,14 @@ fn ignore_period_and_space() {
         </mstyle>
       </mrow>
 </math>";
-    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b");
+    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn bug_199_2pi() {
+fn bug_199_2pi() -> Result<()> {
   let expr = "<math>
       <mrow>
         <mo stretchy=\"false\" form=\"prefix\">[</mo>
@@ -320,23 +361,29 @@ fn bug_199_2pi() {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("en", "SimpleSpeak",expr, "the closed open interval from 0 to 2 pi");
+  test("en", "SimpleSpeak",expr, "the closed open interval from 0 to 2 pi")?;
+  return Ok(());
+
 }
 
 #[test]
-fn caret_and_hat() {
+fn caret_and_hat() -> Result<()> {
   let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
-  test("en", "SimpleSpeak",expr, "x caret 2 plus y hat");
+  test("en", "SimpleSpeak",expr, "x caret 2 plus y hat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn mn_with_space() {
+fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
-  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567");
+  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ignore_bold() {
+fn ignore_bold() -> Result<()> {
   let expr = r#"<math>
 				<mi mathvariant="bold-italic">x</mi>
 				<mo>=</mo>
@@ -350,42 +397,52 @@ fn ignore_bold() {
 				<mn>1</mn>
 			</math>"#; 
   test_prefs("en", "SimpleSpeak", vec![("IgnoreBold", "false")],
-             expr, "bold x is equal to, 2 sine of bold t, minus 1");
+             expr, "bold x is equal to, 2 sine of bold t, minus 1")?;
   test_prefs("en", "SimpleSpeak", vec![("IgnoreBold", "true")],
-             expr, "x is equal to, 2 sine of t, minus 1");
+             expr, "x is equal to, 2 sine of t, minus 1")?;
+             return Ok(());
+
 }
 
 #[test]
-fn mn_with_block_and_decimal_separators() {
+fn mn_with_block_and_decimal_separators() -> Result<()> {
   let expr = "<math><mn>1,234.56</mn></math>";                                       // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56");
+  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56")?;
+  return Ok(());
+
 }
 
 #[test]
-fn divergence() {
+fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "dihv cap f");
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of cap f");
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "dihv cap f")?;
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of cap f")?;
+  return Ok(());
+
 }
 
 #[test]
-fn curl() {
+fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "curl cap f");
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "curl of cap f");
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "curl cap f")?;
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "curl of cap f")?;
+  return Ok(());
+
 }
 
 #[test]
-fn gradient() {
+fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "del cap f");
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradient of cap f");
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "del cap f")?;
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradient of cap f")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_speak_perpendicular() {
+fn literal_speak_perpendicular() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow data-changed='added'>
     <mover data-latex='\vec{A}'>
@@ -399,11 +456,13 @@ fn literal_speak_perpendicular() {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow");
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_speak_chars() {
+fn literal_speak_chars() -> Result<()> {
   let expr = r#"<math>
         <mfenced open="|" close="|">
             <mrow>
@@ -417,11 +476,13 @@ fn literal_speak_chars() {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("en", "LiteralSpeak", expr, "vertical line; x cross, y dot z slash 2; plus eigh; double vertical line, b plus x exclamation point; vertical line");
+  test("en", "LiteralSpeak", expr, "vertical line; x cross, y dot z slash 2; plus eigh; double vertical line, b plus x exclamation point; vertical line")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_speak_with_name() {
+fn literal_speak_with_name() -> Result<()> {
   let expr = r#"<math intent='forced($x)'>
       <mrow arg="x">
         <mi>f</mi>
@@ -436,11 +497,13 @@ fn literal_speak_with_name() {
         </mrow>
       </mrow>
     </math>"#;
-  test("en", "LiteralSpeak", expr, "forced f, left paren x exclamation point, right paren");
+  test("en", "LiteralSpeak", expr, "forced f, left paren x exclamation point, right paren")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_speak_with_property() {
+fn literal_speak_with_property() -> Result<()> {
   let expr = r#"<math intent=':prefix'>
       <mrow arg="x">
         <mi>f</mi>
@@ -455,11 +518,13 @@ fn literal_speak_with_property() {
         </mrow>
       </mrow>
     </math>"#; 
-  test("en", "LiteralSpeak", expr, "f, left paren x exclamation point, right paren");
+  test("en", "LiteralSpeak", expr, "f, left paren x exclamation point, right paren")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_intent_property() {
+fn literal_intent_property() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow intent=":literal">
     <mover data-latex='\vec{A}'>
@@ -473,11 +538,13 @@ fn literal_intent_property() {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow");
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  return Ok(());
+
 }
 
 #[test]
-fn literal_intent_property_with_name() {
+fn literal_intent_property_with_name() -> Result<()> {
   let expr = r#"<math intent='forced:literal($x)'>
       <mrow arg="x">
         <mi>f</mi>
@@ -492,5 +559,7 @@ fn literal_intent_property_with_name() {
         </mrow>
       </mrow>
     </math>"#; 
-  test("en", "SimpleSpeak", expr, "forced f, open paren x exclamation point, close paren");
+  test("en", "SimpleSpeak", expr, "forced f, open paren x exclamation point, close paren")?;
+  return Ok(());
+
 }

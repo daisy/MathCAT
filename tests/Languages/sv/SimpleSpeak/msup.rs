@@ -2,58 +2,71 @@
 ///   simple superscripts
 ///   complex/nested superscripts
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn squared() {
+fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "x kvadrat");
+    test("sv", "SimpleSpeak", expr, "x kvadrat")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cubed() {
+fn cubed() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>3</mn> </msup>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "x kubik");
+    test("sv", "SimpleSpeak", expr, "x kubik")?;
+    return Ok(());
+
 }
 
 #[test]
-    fn ordinal_power() {
+    fn ordinal_power() -> Result<()> {
         let expr = "<math>
                         <msup> <mi>x</mi> <mn>4</mn> </msup>
                     </math>";
-        test("sv", "SimpleSpeak", expr, "x upphöjt till 4");
+        test("sv", "SimpleSpeak", expr, "x upphöjt till 4")?;
+        return Ok(());
+
     }
 
 #[test]
-fn simple_mi_power() {
+fn simple_mi_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mi>n</mi> </msup>
                 </math>";
-  test("sv", "SimpleSpeak", expr, "x upphöjt till n");
+  test("sv", "SimpleSpeak", expr, "x upphöjt till n")?;
+  return Ok(());
+
 }
 
 #[test]
-fn zero_power() {
+fn zero_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>0</mn> </msup>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "x upphöjt till 0");
+    test("sv", "SimpleSpeak", expr, "x upphöjt till 0")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn decimal_power() {
+fn decimal_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2,0</mn> </msup>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "x upphöjt till 2,0");
+    test("sv", "SimpleSpeak", expr, "x upphöjt till 2,0")?;
+    return Ok(());
+
 }
 
 #[test]
-fn non_simple_power() {
+fn non_simple_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -63,33 +76,39 @@ fn non_simple_power() {
       </msup>
       </mrow>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "3 upphöjt till y plus 2");
+    test("sv", "SimpleSpeak", expr, "3 upphöjt till y plus 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn negative_power() {
+fn negative_power() -> Result<()> {
     let expr = "<math>
                     <msup>
                         <mi>x</mi>
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("sv", "SimpleSpeak", expr, "x upphöjt till minus 2");
+    test("sv", "SimpleSpeak", expr, "x upphöjt till minus 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_fraction_power() {
+fn simple_fraction_power() -> Result<()> {
   let expr = "<math>
                   <msup>
                       <mi>x</mi> 
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("sv", "SimpleSpeak", expr, "x upphöjt till 1 tredjedel");
+  test("sv", "SimpleSpeak", expr, "x upphöjt till 1 tredjedel")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_squared_power_with_coef() {
+fn nested_squared_power_with_coef() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -104,11 +123,13 @@ fn nested_squared_power_with_coef() {
       </msup>
       </mrow>
       </math>";
-  test("sv", "SimpleSpeak", expr, "3 upphöjt till 2 x kvadrat");
+  test("sv", "SimpleSpeak", expr, "3 upphöjt till 2 x kvadrat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_squared_power_with_neg_coef() {
+fn nested_squared_power_with_neg_coef() -> Result<()> {
     let expr = "<math>
     <mrow>
     <msup>
@@ -124,12 +145,14 @@ fn nested_squared_power_with_neg_coef() {
     </msup>
     </mrow>
   </math>";
-  test("sv", "SimpleSpeak", expr, "3 upphöjt till minus 2 x kvadrat");
+  test("sv", "SimpleSpeak", expr, "3 upphöjt till minus 2 x kvadrat")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn nested_cubed_power() {
+fn nested_cubed_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -139,11 +162,13 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-  test("sv", "SimpleSpeak", expr, "y upphöjt till 4 femtedelar kubik");
+  test("sv", "SimpleSpeak", expr, "y upphöjt till 4 femtedelar kubik")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_cubed_power_with_neg_base() {
+fn nested_cubed_power_with_neg_base() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -156,11 +181,13 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-  test("sv", "SimpleSpeak", expr, "y upphöjt till minus 4 femtedelar kubik");
+  test("sv", "SimpleSpeak", expr, "y upphöjt till minus 4 femtedelar kubik")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_number_times_squared() {
+fn nested_number_times_squared() -> Result<()> {
     let expr = "<math>
         <mrow>
         <msup>
@@ -178,11 +205,13 @@ fn nested_number_times_squared() {
         </msup>
         </mrow>
         </math>";
-  test("sv", "SimpleSpeak", expr, "e upphöjt till 1 halv x kvadrat");
+  test("sv", "SimpleSpeak", expr, "e upphöjt till 1 halv x kvadrat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_negative_number_times_squared() {
+fn nested_negative_number_times_squared() -> Result<()> {
   let expr = "<math>
     <mrow>
     <msup>
@@ -200,11 +229,13 @@ fn nested_negative_number_times_squared() {
     </msup>
     </mrow>
     </math>";
-  test("sv", "SimpleSpeak", expr, "e upphöjt till minus 1 halv x kvadrat");
+  test("sv", "SimpleSpeak", expr, "e upphöjt till minus 1 halv x kvadrat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_expr_to_tenth() {
+fn nested_expr_to_tenth() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -219,11 +250,13 @@ fn nested_expr_to_tenth() {
       </msup>
       </mrow>
       </math>";
-  test("sv", "SimpleSpeak", expr, "3 upphöjt till 3 upphöjt till 10");
+  test("sv", "SimpleSpeak", expr, "3 upphöjt till 3 upphöjt till 10")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_non_simple_squared_exp() {
+fn nested_non_simple_squared_exp() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -241,11 +274,13 @@ fn nested_non_simple_squared_exp() {
       </msup>
       </mrow>
       </math>";
-  test("sv", "SimpleSpeak", expr, "3 upphöjt till vänster-parentes; x plus 1; höger-parentes kvadrat");
+  test("sv", "SimpleSpeak", expr, "3 upphöjt till vänster-parentes; x plus 1; höger-parentes kvadrat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_simple_power() {
+fn nested_simple_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -255,11 +290,13 @@ fn nested_simple_power() {
       </msup>
     </msup>
   </math>";
-  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till n");
+  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till n")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_end_exponent_power() {
+fn nested_end_exponent_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -269,11 +306,13 @@ fn nested_end_exponent_power() {
       </msup>
     </msup>
   </math>";
-  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till n plus 1, slut exponent");
+  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till n plus 1, slut exponent")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_end_exponent_neg_power() {
+fn nested_end_exponent_neg_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -283,11 +322,13 @@ fn nested_end_exponent_neg_power() {
       </msup>
     </msup>
   </math>";
-  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till minus 3; slut exponent");
+  test("sv", "SimpleSpeak", expr, "t upphöjt till 4 femtedelar upphöjt till minus 3; slut exponent")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_complex_power() {
+fn nested_complex_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -314,11 +355,13 @@ fn nested_complex_power() {
       </msup>
       </mrow>
       </math>";
-  test("sv", "SimpleSpeak", expr, "e upphöjt till minus 1 halv gånger; vänster-parentes; division, x minus my, genom sigma, slut division; höger-parentes kvadrat");
+  test("sv", "SimpleSpeak", expr, "e upphöjt till minus 1 halv gånger; vänster-parentes; division, x minus my, genom sigma, slut division; höger-parentes kvadrat")?;
+  return Ok(());
+
 }
 
 #[test]
-fn default_power() {
+fn default_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -328,5 +371,7 @@ fn default_power() {
       </mfrac>
     </msup>
   </math>";
-  test("sv", "SimpleSpeak", expr, "t upphöjt till division, b plus 1, genom 3, slut division");
+  test("sv", "SimpleSpeak", expr, "t upphöjt till division, b plus 1, genom 3, slut division")?;
+  return Ok(());
+
 }

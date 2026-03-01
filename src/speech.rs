@@ -649,7 +649,7 @@ impl Intent {
             }
         }
         if self.name.is_none() && self.xpath.is_none() {
-            panic!("Intent::replace: internal error -- neither 'name' nor 'xpath' is set");
+            bail!("Intent::replace: internal error -- neither 'name' nor 'xpath' is set");
         };
         
         for attr in mathml.attributes() {

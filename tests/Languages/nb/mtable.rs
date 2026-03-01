@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn matrix_1x1() {
+fn matrix_1x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -12,12 +13,14 @@ fn matrix_1x1() {
         <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "1 ganger 1 matrise med element 3");
-    test("nb", "SimpleSpeak", expr, "1 ganger 1 matrise med element 3");
+    test("nb", "ClearSpeak",  expr, "1 ganger 1 matrise med element 3")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 1 matrise med element 3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn determinant_1x1() {
+fn determinant_1x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -28,13 +31,15 @@ fn determinant_1x1() {
         <mo>|</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "1 ganger 1 determinant med element 3");
-    test("nb", "SimpleSpeak", expr, "1 ganger 1 determinant med element 3");
+    test("nb", "ClearSpeak",  expr, "1 ganger 1 determinant med element 3")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 1 determinant med element 3")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn matrix_1x2() {
+fn matrix_1x2() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -52,13 +57,15 @@ fn matrix_1x2() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "1 ganger 2 rad-matrise; 3, 5");
-    test("nb", "SimpleSpeak", expr, "1 ganger 2 rad-matrise; 3, 5");
+    test("nb", "ClearSpeak",  expr, "1 ganger 2 rad-matrise; 3, 5")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 2 rad-matrise; 3, 5")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn matrix_1x3() {
+fn matrix_1x3() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -79,12 +86,14 @@ fn matrix_1x3() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak", expr, "1 ganger 3 rad-matrise; minus x, 5, 12");
-    test("nb", "SimpleSpeak", expr, "1 ganger 3 rad-matrise; minus x, 5, 12");
+    test("nb", "ClearSpeak", expr, "1 ganger 3 rad-matrise; minus x, 5, 12")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 3 rad-matrise; minus x, 5, 12")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_2x1_not_simple() {
+fn matrix_2x1_not_simple() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -107,11 +116,13 @@ fn matrix_2x1_not_simple() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak", expr, "2 ganger 1 kolonne-matrise; rad 1; x pluss 1; rad 2; x minus 1");
-    test("nb", "SimpleSpeak", expr, "2 ganger 1 kolonne-matrise; rad 1; x pluss 1; rad 2; x minus 1");
+    test("nb", "ClearSpeak", expr, "2 ganger 1 kolonne-matrise; rad 1; x pluss 1; rad 2; x minus 1")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 1 kolonne-matrise; rad 1; x pluss 1; rad 2; x minus 1")?;
+    return Ok(());
+
 }
 #[test]
-fn matrix_3x1_not_simple() {
+fn matrix_3x1_not_simple() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -147,15 +158,17 @@ fn matrix_3x1_not_simple() {
     test("nb", "SimpleSpeak", expr, "3 ganger 1 kolonne-matrise; \
             rad 1; x; \
             rad 2; a; \
-            rad 3; brøk, x over, x pluss 1, slutt brøk");
+            rad 3; brøk, x over, x pluss 1, slutt brøk")?;
     test("nb", "ClearSpeak",  expr, "3 ganger 1 kolonne-matrise; \
             rad 1; x; \
             rad 2; a; \
-            rad 3; brøken med teller x; og nevner x pluss 1");
+            rad 3; brøken med teller x; og nevner x pluss 1")?;
+            return Ok(());
+
 }
 
 #[test]
-fn determinant_2x2() {
+fn determinant_2x2() -> Result<()> {
     let expr = "<math>
       <mrow>
       <mrow><mo>|</mo>
@@ -180,12 +193,14 @@ fn determinant_2x2() {
         </mtable>
       <mo>|</mo></mrow></mrow>
                         </math>";
-    test("nb", "ClearSpeak",  expr, "2 ganger 2 determinant; rad 1; 2, 1; rad 2; 7, 5");
-    test("nb", "SimpleSpeak", expr, "2 ganger 2 determinant; rad 1; 2, 1; rad 2; 7, 5");
+    test("nb", "ClearSpeak",  expr, "2 ganger 2 determinant; rad 1; 2, 1; rad 2; 7, 5")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 2 determinant; rad 1; 2, 1; rad 2; 7, 5")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_2x3() {
+fn matrix_2x3() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -217,12 +232,14 @@ fn matrix_2x3() {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "2 ganger 3 matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6");
-    test("nb", "SimpleSpeak", expr, "2 ganger 3 matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6");
+    test("nb", "ClearSpeak",  expr, "2 ganger 3 matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 3 matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_2x3_labeled() {
+fn matrix_2x3_labeled() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -258,13 +275,15 @@ fn matrix_2x3_labeled() {
     </math>
                                 ";
     test("nb", "ClearSpeak",  expr,
-        "2 ganger 3 matrise; rad 1 med etiketten (3 punktum 1); kolonne 1; 3, kolonne 2; 1, kolonne 3; 4; rad 2; kolonne 1; 0, kolonne 2; 2, kolonne 3; 6");
+        "2 ganger 3 matrise; rad 1 med etiketten (3 punktum 1); kolonne 1; 3, kolonne 2; 1, kolonne 3; 4; rad 2; kolonne 1; 0, kolonne 2; 2, kolonne 3; 6")?;
     test("nb", "SimpleSpeak", expr,
-        "2 ganger 3 matrise; rad 1 med etiketten (3 punktum 1); kolonne 1; 3, kolonne 2; 1, kolonne 3; 4; rad 2; kolonne 1; 0, kolonne 2; 2, kolonne 3; 6");
+        "2 ganger 3 matrise; rad 1 med etiketten (3 punktum 1); kolonne 1; 3, kolonne 2; 1, kolonne 3; 4; rad 2; kolonne 1; 0, kolonne 2; 2, kolonne 3; 6")?;
+        return Ok(());
+
 }
 
 #[test]
-fn matrix_3x1() {
+fn matrix_3x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -288,12 +307,14 @@ fn matrix_3x1() {
         </mtable> <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "3 ganger 1 kolonne-matrise; 1; 2; 3");
-    test("nb", "SimpleSpeak", expr, "3 ganger 1 kolonne-matrise; 1; 2; 3");
+    test("nb", "ClearSpeak",  expr, "3 ganger 1 kolonne-matrise; 1; 2; 3")?;
+    test("nb", "SimpleSpeak", expr, "3 ganger 1 kolonne-matrise; 1; 2; 3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_4x1() {
+fn matrix_4x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -323,12 +344,14 @@ fn matrix_4x1() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4; 2");
-    test("nb", "SimpleSpeak", expr, "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4; 2");
+    test("nb", "ClearSpeak",  expr, "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4; 2")?;
+    test("nb", "SimpleSpeak", expr, "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4; 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_4x1_labeled() {
+fn matrix_4x1_labeled() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -362,13 +385,15 @@ fn matrix_4x1_labeled() {
     </math>
                                 ";
     test("nb", "ClearSpeak",  expr,
-        "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4 med etiketten (3 punktum 1); 2");
+        "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4 med etiketten (3 punktum 1); 2")?;
     test("nb", "SimpleSpeak", expr,
-        "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4 med etiketten (3 punktum 1); 2");
+        "4 ganger 1 kolonne-matrise; rad 1; 3; rad 2; 6; rad 3; 1; rad 4 med etiketten (3 punktum 1); 2")?;
+        return Ok(());
+
 }
 
 #[test]
-fn matrix_1x4() {
+fn matrix_1x4() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -392,12 +417,14 @@ fn matrix_1x4() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "1 ganger 4 rad-matrise; kolonne 1; 3, kolonne 2; 6, kolonne 3; 1, kolonne 4; 2");
-    test("nb", "SimpleSpeak", expr, "1 ganger 4 rad-matrise; kolonne 1; 3, kolonne 2; 6, kolonne 3; 1, kolonne 4; 2");
+    test("nb", "ClearSpeak",  expr, "1 ganger 4 rad-matrise; kolonne 1; 3, kolonne 2; 6, kolonne 3; 1, kolonne 4; 2")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 4 rad-matrise; kolonne 1; 3, kolonne 2; 6, kolonne 3; 1, kolonne 4; 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn matrix_4x4() {
+fn matrix_4x4() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -467,15 +494,17 @@ fn matrix_4x4() {
           rad 1; kolonne 1; 0, kolonne 2; 3, kolonne 3; 4, kolonne 4; 3; \
           rad 2; kolonne 1; 2, kolonne 2; 1, kolonne 3; 0, kolonne 4; 9; \
           rad 3; kolonne 1; 3, kolonne 2; 0, kolonne 3; 2, kolonne 4; 1; \
-          rad 4; kolonne 1; 6, kolonne 2; 2, kolonne 3; 9, kolonne 4; 0");
+          rad 4; kolonne 1; 6, kolonne 2; 2, kolonne 3; 9, kolonne 4; 0")?;
     test("nb", "SimpleSpeak", expr, "4 ganger 4 matrise; \
           rad 1; kolonne 1; 0, kolonne 2; 3, kolonne 3; 4, kolonne 4; 3; \
           rad 2; kolonne 1; 2, kolonne 2; 1, kolonne 3; 0, kolonne 4; 9; \
           rad 3; kolonne 1; 3, kolonne 2; 0, kolonne 3; 2, kolonne 4; 1; \
-          rad 4; kolonne 1; 6, kolonne 2; 2, kolonne 3; 9, kolonne 4; 0");}
+          rad 4; kolonne 1; 6, kolonne 2; 2, kolonne 3; 9, kolonne 4; 0")?;
+    return Ok(());
+}
 
 #[test]
-fn matrix_4x2() {
+fn matrix_4x2() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
     <mrow>
@@ -523,51 +552,56 @@ fn matrix_4x2() {
               rad 2; kolonne 1; 4, kolonne 2; 2; \
               rad 3; kolonne 1; 2, kolonne 2; 1; \
               rad 4; kolonne 1; 0, kolonne 2; 5\
-    ");
+    ")?;
     test("nb", "SimpleSpeak", expr, "4 ganger 2 matrise; \
               rad 1; kolonne 1; 1, kolonne 2; 3; \
               rad 2; kolonne 1; 4, kolonne 2; 2; \
               rad 3; kolonne 1; 2, kolonne 2; 1; \
               rad 4; kolonne 1; 0, kolonne 2; 5\
-    ");}
+    ")?;
+    return Ok(());
+}
 
 // put absolute value test here since it is related to determinate and is small for its own file
 #[test]
-fn simple_absolute_value() {
+fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
-  test("nb", "SimpleSpeak", expr, "absoluttverdien av x");
-  test("nb", "ClearSpeak",  expr, "absoluttverdien av x");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "absoluttverdien av x");
+  test("nb", "SimpleSpeak", expr, "absoluttverdien av x")?;
+  test("nb", "ClearSpeak",  expr, "absoluttverdien av x")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "absoluttverdien av x")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "absoluttverdien av x, slutt absoluttverdi");
+             expr, "absoluttverdien av x, slutt absoluttverdi")?;
+    return Ok(());
 }
   
 #[test]
-fn absolute_value_plus_1() {
+fn absolute_value_plus_1() -> Result<()> {
 let expr = "<math>
     <mrow><mrow><mo>|</mo>
       <mrow><mi>x</mi><mo>+</mo><mn>1</mn> </mrow>
     <mo>|</mo></mrow></mrow>
   </math>";
-  test("nb", "ClearSpeak", expr, "absoluttverdien av x pluss 1");
+  test("nb", "ClearSpeak", expr, "absoluttverdien av x pluss 1")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "absoluttverdien av x pluss 1, slutt absoluttverdi");
+             expr, "absoluttverdien av x pluss 1, slutt absoluttverdi")?;
+  return Ok(());
 }
 
 #[test]
-fn simple_cardinality_value() {
+fn simple_cardinality_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "kardinaliteten til stor s");
+             "kardinaliteten til stor s")?;
+  return Ok(());
 }
   
 // Test preferences
 #[test]
-fn simple_matrix_speak_col_num() {
+fn simple_matrix_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -585,11 +619,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "2 ganger 2 matrise; rad 1; kolonne 1; 2, kolonne 2; 1; rad 2; kolonne 1; 7, kolonne 2; 5");
+        expr, "2 ganger 2 matrise; rad 1; kolonne 1; 2, kolonne 2; 1; rad 2; kolonne 1; 7, kolonne 2; 5")?;
+  return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_speak_col_num() {
+fn col_matrix_3x1_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -607,12 +642,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>)</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "3 ganger 1 kolonne-matrise; rad 1; 1; rad 2; 2; rad 3; 3");
+    test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
+        expr, "3 ganger 1 kolonne-matrise; rad 1; 1; rad 2; 2; rad 3; 3")?;
+  return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_speak_col_num() {
+fn row_matrix_1x2_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -624,12 +660,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>]</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "1 ganger 2 rad-matrise; kolonne 1; 1, kolonne 2; 2");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
+        expr, "1 ganger 2 rad-matrise; kolonne 1; 1, kolonne 2; 2")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_2x2_speak_col_num() {
+fn matrix_2x2_speak_col_num() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -642,13 +679,14 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtr>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "SpeakColNum",
+        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2")?;
+  return Ok(());
 }
 
 
-#[test]
-fn simple_matrix_silent_col_num() {
+#[test] 
+fn simple_matrix_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -666,11 +704,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5");
+        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5")?;
+  return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_silent_col_num() {
+fn col_matrix_3x1_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -688,12 +727,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>)</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "3 ganger 1 kolonne-matrise; 1; 2; 3");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
+        expr, "3 ganger 1 kolonne-matrise; 1; 2; 3")?;
+  return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_silent_col_num() {
+fn row_matrix_1x2_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -705,12 +745,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>]</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "1 ganger 2 rad-matrise; 1, 2");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
+        expr, "1 ganger 2 rad-matrise; 1, 2")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_2x2_silent_col_num() {
+fn matrix_2x2_silent_col_num() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -723,13 +764,14 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtr>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "2 ganger 2 matrise; rad 1; b, senket 1 1; b, senket 1 2; rad 2; b, senket 2 1; b, senket 2 2");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "SilentColNum",
+        expr, "2 ganger 2 matrise; rad 1; b, senket 1 1; b, senket 1 2; rad 2; b, senket 2 1; b, senket 2 2")?;
+  return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_end_matrix() {
+fn simple_matrix_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -747,11 +789,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5; slutt matrise");
+        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5; slutt matrise")?;
+  return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_end_matrix() {
+fn col_matrix_3x1_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -769,12 +812,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>)</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "3 ganger 1 kolonne-matrise; 1; 2; 3; slutt matrise");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "3 ganger 1 kolonne-matrise; 1; 2; 3; slutt matrise")?;
+  return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_end_matrix() {
+fn row_matrix_1x2_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -786,12 +830,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>]</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "1 ganger 2 rad-matrise; 1, 2; slutt matrise");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "1 ganger 2 rad-matrise; 1, 2; slutt matrise")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_2x2_end_matrix() {
+fn matrix_2x2_end_matrix() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -804,13 +849,14 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtr>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2; slutt matrise");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2; slutt matrise")?;
+  return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_vector() {
+fn simple_matrix_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -828,11 +874,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
-        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5");
+        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5")?;
+  return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_vector() {
+fn col_matrix_3x1_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -850,12 +897,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>)</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
-        expr, "3 ganger 1 kolonne-vektor; 1; 2; 3");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
+        expr, "3 ganger 1 kolonne-vektor; 1; 2; 3")?;
+  return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_vector() {
+fn row_matrix_1x2_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -867,12 +915,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>]</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
-        expr, "1 ganger 2 rad-vektor; 1, 2");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
+        expr, "1 ganger 2 rad-vektor; 1, 2")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_2x2_vector() {
+fn matrix_2x2_vector() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -885,13 +934,14 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtr>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
-        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "Vector",
+        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2")?;
+  return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_end_vector() {
+fn simple_matrix_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -909,11 +959,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
-        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5; slutt matrise");
+        expr, "2 ganger 2 matrise; rad 1; 2, 1; rad 2; 7, 5; slutt matrise")?;
+  return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_end_vector() {
+fn col_matrix_3x1_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -931,12 +982,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>)</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
-        expr, "3 ganger 1 kolonne-vektor; 1; 2; 3; slutt vektor");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
+        expr, "3 ganger 1 kolonne-vektor; 1; 2; 3; slutt vektor")?;
+  return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_end_vector() {
+fn row_matrix_1x2_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -948,12 +1000,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       </mtable></mrow>
     <mo>]</mo></mrow></mrow>
   </math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
-        expr, "1 ganger 2 rad-vektor; 1, 2; slutt vektor");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
+        expr, "1 ganger 2 rad-vektor; 1, 2; slutt vektor")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_2x2_end_vector() {
+fn matrix_2x2_end_vector() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -966,34 +1019,37 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtr>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
-test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
-        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2; slutt matrise");
+	test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndVector",
+        expr, "2 ganger 2 matrise; rad 1; kolonne 1; b, senket 1 1; kolonne 2; b, senket 1 2; rad 2; kolonne 1; b, senket 2 1; kolonne 2; b, senket 2 2; slutt matrise")?;
+  return Ok(());
 }
 
 
 
 #[test]
-fn matrix_binomial() {
+fn matrix_binomial() -> Result<()> {
   let expr = "<math>
       <mo>(</mo><mrow>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
       </mrow><mo>)</mo>
     </math>";
-  test_ClearSpeak("nb", "ClearSpeak_Matrix", "Combinatorics", expr, "3 over 2");
+  test_ClearSpeak("nb", "ClearSpeak_Matrix", "Combinatorics", expr, "3 over 2")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_times() {
+fn matrix_times() -> Result<()> {
   let expr = "<math>
     <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
   test("nb", "SimpleSpeak", expr,
-    "2 ganger 2 matrise; rad 1; 1, 2; rad 2; 3, 4; ganger, 2 ganger 2 matrise; rad 1; a, b; rad 2; c, d");
+    "2 ganger 2 matrise; rad 1; 1, 2; rad 2; 3, 4; ganger, 2 ganger 2 matrise; rad 1; a, b; rad 2; c, d")?;
+  return Ok(());
 }
 
 #[test]
-fn unknown_mtable_property() {
+fn unknown_mtable_property() -> Result<()> {
   let expr = "<math display='block'>
       <mtable intent=':system-of-equations:prefix($e1,$e1x)'>
         <mtr arg='e1'>
@@ -1026,12 +1082,13 @@ fn unknown_mtable_property() {
       </mtable>
     </math>";
     test("nb", "ClearSpeak",  expr,
-         "2 rader; rad 1; a er lik, b pluss c minus d; rad 2; pluss e minus f");
+         "2 rader; rad 1; a er lik, b pluss c minus d; rad 2; pluss e minus f")?;
+  return Ok(());
 }
 
 
 #[test]
-fn zero_matrix() {
+fn zero_matrix() -> Result<()> {
   let expr = "<math>
       <mo>[</mo>
       <mtable>
@@ -1041,11 +1098,12 @@ fn zero_matrix() {
       <mo>]</mo>
   </math>";
   test("nb", "SimpleSpeak", expr,
-    "2 ganger 2 null-matrise");
+    "2 ganger 2 null-matrise")?;
+  return Ok(());
 }
 
 #[test]
-fn identity_matrix() {
+fn identity_matrix() -> Result<()> {
   let expr = "<math>
       <mo>(</mo>
       <mtable>
@@ -1056,11 +1114,12 @@ fn identity_matrix() {
       <mo>)</mo>
   </math>";
   test("nb", "SimpleSpeak", expr,
-    "3 ganger 3 identitetsmatrise");
+    "3 ganger 3 identitetsmatrise")?;
+  return Ok(());
 }
 
 #[test]
-fn diagonal_matrix() {
+fn diagonal_matrix() -> Result<()> {
   let expr = "<math>
       <mo>(</mo>
       <mtable>
@@ -1071,7 +1130,8 @@ fn diagonal_matrix() {
       <mo>)</mo>
   </math>";
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "3 ganger 3 diagonalmatrise; kolonne 1; 2; kolonne 2; 1; kolonne 3; x i andre");
+      expr, "3 ganger 3 diagonalmatrise; kolonne 1; 2; kolonne 2; 1; kolonne 3; x i andre")?;
   // test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")],
   //     expr, "the 3 by 3 diagonal matrix; row 1, column 1, 2; row 2, column 2, 1; row 3, column 3, x squared");
+  return Ok(());
 }

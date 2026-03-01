@@ -1,72 +1,87 @@
 // Other tests for LaTeX generation
 use crate::common::*;
+use anyhow::Result;
 
 
 #[test]
-fn menclose_strikes () {
+fn menclose_strikes () -> Result<()> {
     let expr = r#"<math><menclose notation='updiagonalstrike downdiagonalstrike verticalstrike horizontalstrike'>
         <mi>x</mi>
     </menclose></math>"#;
-    test_braille("ASCIIMath", expr, r"\cancel(x)");
+    test_braille("ASCIIMath", expr, r"\cancel(x)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_box_and_circle () {
+fn menclose_box_and_circle () -> Result<()> {
     let expr = r#"<math><menclose notation='box circle'>
         <mi>x</mi>
     </menclose></math>"#;
     // box and circle aren't part of ASCIIMath
-    test_braille("ASCIIMath", expr, r"|overline(underline(x))|");
+    test_braille("ASCIIMath", expr, r"|overline(underline(x))|")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_sides () {
+fn menclose_sides () -> Result<()> {
     let expr = r#"<math>
         <menclose notation='left right '><mi>x</mi> </menclose>
         <menclose notation='top bottom'><mi>x</mi> </menclose>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"|x|overline(underline(x))");
+    test_braille("ASCIIMath", expr, r"|x|overline(underline(x))")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_all_sides() {
+fn menclose_all_sides() -> Result<()> {
     let expr = r#"<math><menclose notation='left right top bottom'>
         <mi>x</mi>
     </menclose></math>"#;
-    test_braille("ASCIIMath", expr, r"|overline(underline(x))|");
+    test_braille("ASCIIMath", expr, r"|overline(underline(x))|")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_diagonal_arrows() {
+fn menclose_diagonal_arrows() -> Result<()> {
     let expr = r#"<math><menclose notation='northeastarrow southeastarrow southwestarrow northwestarrow'>
         <mi>x</mi>
     </menclose></math>"#;
     // arrows aren't part of ASCIIMath
-    test_braille("ASCIIMath", expr, r"x");
+    test_braille("ASCIIMath", expr, r"x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_double_arrows() {
+fn menclose_double_arrows() -> Result<()> {
     // extra spaces are deliberate -- they shouldn't make a difference
     let expr = r#"<math><menclose notation='updownarrow leftrightarrow northeastsouthwestarrow  northwestsoutheastarrow '>
         <mi>x</mi>
     </menclose></math>"#;
     // arrows aren't part of ASCIIMath
-    test_braille("ASCIIMath", expr, r"x");
+    test_braille("ASCIIMath", expr, r"x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn menclose_horiz_and_vert_arrows() {
+fn menclose_horiz_and_vert_arrows() -> Result<()> {
     let expr = r#"<math><menclose notation='uparrow downarrow leftarrow rightarrow'>
         <mi>x</mi>
     </menclose></math>"#;
     // arrows aren't part of ASCIIMath
-    test_braille("ASCIIMath", expr, r"x");
+    test_braille("ASCIIMath", expr, r"x")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn char_test() {
+fn char_test() -> Result<()> {
     let expr = r#"<math>
         <mstyle displaystyle="true">
             <mstyle mathvariant="bold"><mi>A</mi></mstyle><mo>,</mo>
@@ -81,11 +96,13 @@ fn char_test() {
             <mi>x</mi><mo>,</mo><mi>h</mi>
         </mstyle>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"bb A, bbb A, CC, cc l, cc P, tt X, fr H, fr z, sf t, x, h");
+    test_braille("ASCIIMath", expr, r"bb A, bbb A, CC, cc l, cc P, tt X, fr H, fr z, sf t, x, h")?;
+    return Ok(());
+
 }
 
 #[test]
-fn quadratic_formula() {
+fn quadratic_formula() -> Result<()> {
     let expr = r#"<math>
         <mi>x</mi>
         <mo>=</mo>
@@ -99,21 +116,25 @@ fn quadratic_formula() {
         <mrow><mn>2</mn><mi>a</mi></mrow>
         </mfrac>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"x = (-b+-sqrt(b^2-4ac))/(2a)");
+    test_braille("ASCIIMath", expr, r"x = (-b+-sqrt(b^2-4ac))/(2a)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn porportional() {
+fn porportional() -> Result<()> {
     let expr = r#"<math>
         <mi>a</mi>
         <mo>&#x221D;</mo>
         <mi>b</mi>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"a prop b");
+    test_braille("ASCIIMath", expr, r"a prop b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn bracketing() {
+fn bracketing() -> Result<()> {
     let expr = r#"<math>
         <mi>x</mi>
         <mo>=</mo>
@@ -127,11 +148,13 @@ fn bracketing() {
         <mo>&#x232A;</mo>
         </mrow>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"x = <<|__|a-b| __|>>");
+    test_braille("ASCIIMath", expr, r"x = <<|__|a-b| __|>>")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dydx() {
+fn dydx() -> Result<()> {
     let expr = r#"<math>
         <mi>f</mi>
         <mo>&#x2032;</mo>
@@ -142,32 +165,38 @@ fn dydx() {
         <mrow><mi>d</mi><mi>x</mi></mrow>
         </mfrac>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"f'(x) = dy/dx");
+    test_braille("ASCIIMath", expr, r"f'(x) = dy/dx")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dqdp() {
+fn dqdp() -> Result<()> {
     let expr = r#"<math>
         <mfrac>
         <mrow><mi>d</mi><mi>q</mi></mrow>
         <mrow><mi>d</mi><mi>p</mi></mrow>
         </mfrac>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"(dq)/(dp)");
+    test_braille("ASCIIMath", expr, r"(dq)/(dp)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn norm() {
+fn norm() -> Result<()> {
     let expr = r#"<math>
         <mo>&#x2225;</mo>
         <mover><mi>x</mi><mo stretchy="false">&#x2192;</mo></mover>
         <mo>&#x2225;</mo>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"norm(vec x)");
+    test_braille("ASCIIMath", expr, r"norm(vec x)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn above_and_below() {
+fn above_and_below() -> Result<()> {
     let expr = r#"<math>
         <munder>
         <mrow><mn>1</mn><mo>+</mo><mn>2</mn></mrow>
@@ -189,11 +218,13 @@ fn above_and_below() {
         <mrow><mi>x</mi><mo>&#x2192;</mo><mi>y</mi></mrow>
         </mover>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"ubrace(1+2), obrace(x-y), underset(x->y)(->), overset(x->y)(lArr)");
+    test_braille("ASCIIMath", expr, r"ubrace(1+2), obrace(x-y), underset(x->y)(->), overset(x->y)(lArr)")?;
+    return Ok(());
+
 }
 
 #[test]
-fn dots_and_bars() {
+fn dots_and_bars() -> Result<()> {
     let expr = r#"<math>
         <mover><mi>x</mi><mo>^</mo></mover>
         <mo>,</mo>
@@ -207,21 +238,25 @@ fn dots_and_bars() {
         <mo>,</mo>
         <mover><mi>y</mi><mo>..</mo></mover>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"hat x, bar x, ul(x+y), vec bb x, dot x, ddot y");
+    test_braille("ASCIIMath", expr, r"hat x, bar x, ul(x+y), vec bb x, dot x, ddot y")?;
+    return Ok(());
+
 }
 
 #[test]
-fn backslash() {
+fn backslash() -> Result<()> {
     let expr = r#"<math>
         <mi>a</mi>
         <mo>\</mo>
         <mi>b</mi>
     </math>"#;
-    test_braille("ASCIIMath", expr, r"a\\b");
+    test_braille("ASCIIMath", expr, r"a\\b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn text_and_space() {
+fn text_and_space() -> Result<()> {
     let expr = r#"<math>
         <mi>a</mi>
         <mo>&#xA0;</mo>
@@ -231,11 +266,15 @@ fn text_and_space() {
         <mo>&#xA0;</mo>
         <mi>b</mi>
     </math>"#;
-    test_braille("ASCIIMath", expr, r#"a\ "some text"\ b"#);
+    test_braille("ASCIIMath", expr, r#"a\ "some text"\ b"#)?;
+    return Ok(());
+
 }
 
 #[test]
-fn mixed_fraction() {
+fn mixed_fraction() -> Result<()> {
     let expr = r#"<math><mn>2</mn><mfrac><mi>1</mi><mn>2</mn></mfrac></math>"#;
-    test_braille("ASCIIMath", expr, r#"2 1/2"#);
+    test_braille("ASCIIMath", expr, r#"2 1/2"#)?;
+    return Ok(());
+
 }

@@ -226,7 +226,7 @@
    # normally(?) this is an omission, but the case 6'2" causes problems due to WIRIS
    # in that case, it doesn't put the ft/in in a superscript and thinks the space is an operator
    # canonicalization moves them into <msup> with base <mn>, so this shouldn't be an omission for that case
-   match: ".='\u00A0' and @width > 1.1 and 
+   match: ".='\u00A0' and @data-width > 1.1 and
            not( preceding-sibling::*[1][self::m:msup and *[2][self::m:mo]] and
                 following-sibling::*[1][self::m:msup and *[2][self::m:mo]] )"
    replace:

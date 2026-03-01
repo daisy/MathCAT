@@ -16,46 +16,46 @@
               • (line 4 in English)
       • divergence (divergence)
           Untranslated Text [3]
-              • (line 10 tr) "divergence"
-              • (line 11 tr) "div"
-              • (line 12 tr) "of"
+              • (line 10 es) "divergence"
+              • (line 11 es) "div"
+              • (line 12 es) "of"
           Match Pattern Differences [1]
-              • (line 22 en, 6 tr)
+              • (line 22 en, 6 es)
                   Match pattern differs
                   en: count(*) = 1
-                  tr: .
+                  es: .
           Condition Differences [1]
-              • (line 25 en, 9 tr)
+              • (line 25 en, 9 es)
                   Conditions differ
                   en: $Verbosity='Terse', not(IsNode(*[1], 'leaf'))
-                  tr: $Verbosity='Verbose', not(IsNode(*[1], 'leaf'))
+                  es: $Verbosity='Verbose', not(IsNode(*[1], 'leaf'))
       • curl (curl)
           Untranslated Text [1]
-              • (line 22 tr) "curl of"
+              • (line 22 es) "curl of"
           Match Pattern Differences [1]
-              • (line 35 en, 20 tr)
+              • (line 35 en, 20 es)
                   Match pattern differs
                   en: count(*) = 1
-                  tr: .
+                  es: .
           Condition Differences [1]
-              • (line 39 en, 24 tr)
+              • (line 39 en, 24 es)
                   Conditions differ
                   en: $Verbosity!='Terse', not(IsNode(*[1], 'leaf'))
-                  tr: not(IsNode(*[1], 'leaf'))
+                  es: not(IsNode(*[1], 'leaf'))
           Structure Differences [1]
-              • (line 38 en, 18 tr)
+              • (line 38 en, 18 es)
                   Rule structure differs (test/if/then/else blocks)
                   en: replace: test: if: then: test: if: then:
-                  tr: replace: test: if: then:
+                  es: replace: test: if: then:
       • gradient (gradient)
           Untranslated Text [2]
-              • (line 34 tr) "gradient of"
-              • (line 35 tr) "del"
+              • (line 34 es) "gradient of"
+              • (line 35 es) "del"
           Match Pattern Differences [1]
-              • (line 48 en, 30 tr)
+              • (line 48 en, 30 es)
                   Match pattern differs
                   en: count(*) = 1
-                  tr: .
+                  es: .
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │                 SUMMARY                                                      │
 │   Files checked                     1                                        │
