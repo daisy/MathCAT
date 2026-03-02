@@ -1413,7 +1413,7 @@ impl Function for ReplaceAll {
     }
 }
 
-pub struct CountTableDims;
+struct CountTableDims;
 impl CountTableDims {
     /// For an `mtable` element, count the number of rows and columns in the table.
     ///
@@ -1421,79 +1421,79 @@ impl CountTableDims {
     /// ignored. The number of columns is determined only from the first
     /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
     fn count_table_dims<'d>(e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
-	let mut num_cols = 0;
-	let mut num_rows = 0;
-	for child in e.children() {
-	    let ChildOfElement::Element(row) = child else {
-		continue
-	    };
+        let mut num_cols = 0;
+        let mut num_rows = 0;
+        for child in e.children() {
+            let ChildOfElement::Element(row) = child else {
+                continue
+            };
 
-	    // each child of mtable should be an mtr. Ignore non-mtr rows.
-	    let row_name = name(row);
+            // each child of mtable should be an mtr. Ignore non-mtr rows.
+            let row_name = name(row);
 
-	    let labeled_row = if row_name == "mlabeledtr" {
-		true
-	    } else if row_name == "mtr" {
-		false
-	    } else {
-		continue;
-	    };
-	    num_rows += 1;
+            let labeled_row = if row_name == "mlabeledtr" {
+                true
+            } else if row_name == "mtr" {
+                false
+            } else {
+                continue;
+            };
+            num_rows += 1;
 
-	    // count columns based on the number of rows.
-	    if num_rows == 1 {
-		// count the number of columns, including column spans, in the first row.
-		let mut first_elem = true;
-		for row_child in row.children() {
-		    let ChildOfElement::Element(mtd) = row_child else  {
-			continue;
-		    };
-		    if name(mtd) != "mtd" {
-			continue;
-		    }
-		    // Add the contributing columns, taking colspan into account. Don't contribute if
-		    // this is the first element of a labeled row.
-		    let colspan = mtd.attribute_value("colspan").map_or(1, |e| e.parse::<usize>().unwrap_or(0));
-		    if !(labeled_row && first_elem) {
-			num_cols += colspan;
-		    }
-		    first_elem = false;
-		}
-	    }
-	}
+            // count columns based on the number of rows.
+            if num_rows == 1 {
+                // count the number of columns, including column spans, in the first row.
+                let mut first_elem = true;
+                for row_child in row.children() {
+                    let ChildOfElement::Element(mtd) = row_child else  {
+                        continue;
+                    };
+                    if name(mtd) != "mtd" {
+                        continue;
+                    }
+                    // Add the contributing columns, taking colspan into account. Don't contribute if
+                    // this is the first element of a labeled row.
+                    let colspan = mtd.attribute_value("colspan").map_or(1, |e| e.parse::<usize>().unwrap_or(0));
+                    if !(labeled_row && first_elem) {
+                        num_cols += colspan;
+                    }
+                    first_elem = false;
+                }
+            }
+        }
 
-	Ok((Value::Number(num_rows as f64), Value::Number(num_cols as f64)))
+        Ok((Value::Number(num_rows as f64), Value::Number(num_cols as f64)))
     }
 
     fn evaluate<'d>(fn_name: &str,
                         args: Vec<Value<'d>>) -> Result<(Value<'d>, Value<'d>), Error> {
-	let mut args = Args(args);
-	args.exactly(1)?;
-	let element = args.pop_nodeset()?;
-	let node = validate_one_node(element, fn_name)?;
-	if let Node::Element(e) = node {
-	    return Self::count_table_dims(e);
-	}
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let element = args.pop_nodeset()?;
+        let node = validate_one_node(element, fn_name)?;
+        if let Node::Element(e) = node {
+            return Self::count_table_dims(e);
+        }
 
-	Err( Error::Other("couldn't count table rows".to_string()) )
+        Err( Error::Other("couldn't count table rows".to_string()) )
     }
 }
 
-pub struct CountTableRows;
+struct CountTableRows;
 impl Function for CountTableRows {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-	CountTableDims::evaluate("CountTableRows", args).map(|a| a.0)
+        CountTableDims::evaluate("CountTableRows", args).map(|a| a.0)
     }
 }
 
-pub struct CountTableColumns;
+struct CountTableColumns;
 impl Function for CountTableColumns {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-	CountTableDims::evaluate("CountTableColumns", args).map(|a| a.1)
+        CountTableDims::evaluate("CountTableColumns", args).map(|a| a.1)
     }
 }
 
