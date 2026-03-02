@@ -804,7 +804,7 @@
 -
   name: mtable-array-property
   tag: mtable
-  match: "count(*) > 0 and ((@frame='solid' or @frame='dashed') or child::*[@rowspan]) or child::*/child::*[@rowspan or @colspan]"
+  match: "count(*) > 0 and ((@frame='solid' or @frame='dashed') or child::*[@rowspan]) or child::*/child::*[@rowspan or @colspan or @columnspan]"
   replace:
   - with:
       variables:
