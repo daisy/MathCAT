@@ -82,7 +82,7 @@ def collect_issues(
     result: ComparisonResult,
     file_name: str,
     language: str,
-) -> List[dict]:
+) -> list[dict]:
     """
     Flatten a ComparisonResult into one normalized dictionary per issue.
 
