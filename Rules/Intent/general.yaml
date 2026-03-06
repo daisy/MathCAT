@@ -801,6 +801,20 @@
           name: "system-of-equations"
           children:
           - x: "*"
+-
+  name: mtable-array-property
+  tag: mtable
+  match: "count(*) > 0 and ((@frame='solid' or @frame='dashed') or child::*[@rowspan]) or child::*/child::*[@rowspan or @colspan or @columnspan]"
+  replace:
+  - with:
+      variables:
+      - TableProperty: "'array'"
+      replace:
+      - intent:
+          name: "array"
+          children:
+          - x: "*"
+
 
 -
   name: mtable-lines-property
