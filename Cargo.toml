@@ -15,11 +15,12 @@ exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", bu
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
+"no-unsafe" = ["sxd-document/no-unsafe", "sxd-xpath/no-unsafe"]
 
 
 [dependencies]
-sxd-document = "0.3"
-sxd-xpath = "0.4"
+sxd-document = { path = "../sxd-document" }
+sxd-xpath = { path = "../sxd-xpath-no-unsafe" }
 yaml-rust = "0.4"
 # yaml-rust = { version = "0.11", package = "yaml-rust2" }
 strum = "0.27.2"

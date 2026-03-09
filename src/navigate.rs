@@ -7,6 +7,7 @@ use sxd_xpath::context::Evaluation;
 use sxd_xpath::Value;
 use sxd_document::dom::Element;
 use sxd_document::Package;
+use sxd_document::as_opt_str;
 
 use std::fmt;
 use crate::canonicalize::{name, get_parent};
@@ -250,7 +251,7 @@ fn get_node_by_id<'a>(mathml: Element<'a>, pos: &NavigationPosition) -> Option<E
     if let Some(mathml_id) = mathml.attribute_value("id") &&
        mathml_id == pos.current_node.as_str() &&
         (crate::xpath_functions::is_leaf(mathml) || 
-        mathml.attribute_value(ID_OFFSET).unwrap_or("0") == pos.current_node_offset.to_string()) {
+        as_opt_str!(mathml.attribute_value(ID_OFFSET)).unwrap_or("0") == pos.current_node_offset.to_string()) {
         return Some(mathml);
     }
 
@@ -287,13 +288,14 @@ pub fn set_navigation_node_from_id(mathml: Element, id: &str, offset: usize) -> 
 /// Get's the Nav Node from the context, with some exceptions such as Toggle commands where it isn't set.
 /// Note: mathml can be any node. It isn't really used but some Element needs to be part of Evaluate().
 pub fn get_nav_node<'c>(context: &sxd_xpath::Context<'c>, var_name: &str, mathml: Element<'c>, start_node: Element<'c>, command: &str, nav_mode: &str) -> Result<String> {
-    let start_id = start_node.attribute_value("id").unwrap_or_default();
+    let raw_start_id = start_node.attribute_value("id");
+    let start_id = as_opt_str!(raw_start_id).unwrap_or_default();
     if command.starts_with("Toggle") {
         return Ok( start_id.to_string() );
     } else {
         return context_get_variable(context, var_name, mathml)
                 .with_context(|| format!("When trying to {} starting at id={} in {} mode",
-                                                command, start_node.attribute_value("id").unwrap_or_default(), nav_mode));
+                                                command, as_opt_str!(start_node.attribute_value("id")).unwrap_or_default(), nav_mode));
     }
 }
 
@@ -482,8 +484,9 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         };
 
         let mut properties = "";
+        let raw_properties = mathml.attribute_value("data-intent-property");
         if add_literal {
-            properties  = mathml.attribute_value("data-intent-property").unwrap_or_default();
+            properties  = as_opt_str!(raw_properties).unwrap_or_default();
             if properties.contains(":literal:") {
                 add_literal = false;
             } else {
@@ -503,8 +506,8 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                     found_node = get_parent(found_node);
                     // debug!("found_node:\n{}", mml_to_string(found_node));
                     let temp_pos = NavigationPosition {
-                        current_node: found_node.attribute_value("id").unwrap_or_default().to_string().clone(),
-                        current_node_offset: found_node.attribute_value(ID_OFFSET).unwrap_or_default().parse::<usize>().unwrap_or_default(),
+                        current_node: as_opt_str!(found_node.attribute_value("id")).unwrap_or_default().to_string().clone(),
+                        current_node_offset: as_opt_str!(found_node.attribute_value(ID_OFFSET)).unwrap_or_default().parse::<usize>().unwrap_or_default(),
                     };
                     if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
                         found_node = intent_node;
