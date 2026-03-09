@@ -1790,6 +1790,7 @@ fn p50_such_that_y_greater_than_x() {
     <mi>x</mi>
 </math>";
     test_braille("Finnish", expr, "⠳⠂⠭⠀⠳⠔⠠⠗⠂⠀⠳⠢⠽⠀⠳⠔⠠⠗⠆⠀⠽⠀⠱⠀⠭");
+    // Sami, FI: The comma <mo>,</mo> is not produced by MathCAT. Should be.
 }
 
 // After the root sign, dot 5 is used to signify 'change of zone' in the braille.
@@ -1840,6 +1841,7 @@ fn p50_binomial_with_factorial() {
   </mrow>
 </math>"#;
     test_braille("Finnish", expr, "⠦⠼⠋⠯⠀⠼⠙⠴⠀⠶⠼⠋⠠⠲⠀⠌⠷⠼⠙⠠⠲⠀⠦⠼⠋⠀⠤⠼⠙⠠⠴⠠⠲⠾");
+    // The ⠯ character is used between the elements in the binomial.
 }
 
 #[test]
@@ -1890,7 +1892,7 @@ fn p50_alternative_derivative_1() {
     </mrow>
   </mfrac>
 </math>";
-    test_braille("Finnish", expr, "⠙⠇⠝⠭⠀⠌⠙⠭");
+    test_braille("Finnish", expr, "⠙⠇⠝⠀⠭⠀⠌⠙⠭");
 }
 
 // Not sure about this MathML markup.
@@ -1909,7 +1911,7 @@ fn p50_alternative_derivative_2() {
     <mi>x</mi>
   </mrow>
 </math>";
-    test_braille("Finnish", expr, "⠙⠀⠌⠙⠭⠀⠇⠝⠭");
+    test_braille("Finnish", expr, "⠙⠀⠌⠙⠭⠀⠇⠝⠀⠭");
 }
 
 #[test]
@@ -2083,7 +2085,7 @@ fn p64_chemistry_bond_1() {
 #[test]
 fn p64_chemistry_bond_1_alternative() {
     let expr = "<math intent=':chemical-formula'><mi>H</mi><mo>:</mo><mi>H</mi></math>";
-    test_braille("Finnish", expr, "⠠⠓⠀⠒⠠⠓");
+    test_braille("Finnish", expr, "⠠⠓⠀⠆⠠⠓");
 }
 
 #[test]
