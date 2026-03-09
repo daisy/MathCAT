@@ -36,8 +36,8 @@ pub fn format_element(e: Element, indent: usize) -> String {
         let content = children.iter().fold(String::new(), |mut acc, c| {
                 if let ChildOfElement::Text(t) = c {
                 acc.push_str(as_str!(t.text()));
-            }
-            acc
+                }
+        acc
         });
         return format!("{}{}</{}{}>\n", answer, &handle_special_chars(&content), namespace, as_qname!(e.name()).local_part());
         // for child in children {

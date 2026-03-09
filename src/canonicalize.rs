@@ -4349,14 +4349,14 @@ impl CanonicalizeContext {
 						ch: acts_as_ch,
 						op: CanonicalizeContext::find_operator(Some(self), temp_mo, previous_op,
 								top(&parse_stack).last_child_in_mrow(), next_node),
-					_phantom: PhantomData,
+								_phantom: PhantomData,
 					};
 				} else {
 					current_op = OperatorPair{
 						ch: as_text(base_of_child),
 						op: CanonicalizeContext::find_operator(Some(self), base_of_child, previous_op,
 								top(&parse_stack).last_child_in_mrow(), next_node),
-					_phantom: PhantomData,
+								_phantom: PhantomData,
 					};
 		
 					// deal with vertical bars which might be infix, open, or close fences
