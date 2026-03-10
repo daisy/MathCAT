@@ -277,7 +277,7 @@ fn p16_division() {
     <mo>:</mo>
     <mn>3</mn>
 </math>";
-    test_braille("Finnish", expr, "⠦⠼⠋⠀⠭⠀⠖⠼⠉⠀⠭⠴⠀⠒⠼⠉");
+    test_braille("Finnish", expr, "⠦⠼⠋⠀⠭⠀⠖⠼⠉⠀⠭⠴⠀⠌⠼⠉");
 }
 
 #[test]
@@ -386,7 +386,8 @@ fn p17_multiple_operations() {
       <mn>2</mn>
     </msup>
 </math>";
-    test_braille("Finnish", expr, "⠼⠑⠀⠄⠼⠉⠬⠀⠖⠦⠼⠓⠁⠀⠤⠼⠋⠚⠴⠀⠒⠼⠉⠀⠤⠦⠼⠃⠀⠖⠼⠙⠴⠬");
+    test_braille("Finnish", expr, "⠼⠑⠀⠄⠼⠉⠬⠀⠖⠦⠼⠓⠁⠀⠤⠼⠋⠚⠴⠀⠌⠼⠉⠀⠤⠦⠼⠃⠀⠖⠼⠙⠴⠬");
+    // : as a division sign
 }
 
 #[test]
@@ -595,13 +596,14 @@ fn p22_equation_solving_notation() {
     <mo>:</mo>
     <mn>5</mn>
 </math>";
-    test_braille("Finnish", expr, "⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠀⠒⠼⠑");
+    test_braille("Finnish", expr, "⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠀⠌⠼⠑");
+    // Context: the equation is divided by five on both sides.
 }
 
 #[test]
 fn operate_by_on_both_sides() {
     let expr = "<math>
-        <mo>|</mo>
+    <mo>|</mo>
     <mo>+</mo>
     <mn>5</mn>
     <mo>|</mo>
@@ -617,17 +619,20 @@ fn operate_by_on_both_sides() {
     <mo>×</mo>
     <mn>5</mn>
     <mo>|</mo>
-    <mo>(</mo>
     <msup>
+    <mrow>
+    <mo>(</mo>
     <mo>)</mo>
+    </mrow>
     <mn>2</mn>
-        <mo>|</mo>
+    </msup>
+    <mo>|</mo>
     <mo>/</mo>
     <mn>5</mn>
-    </msup>
 </math>";
-    test_braille("Finnish", expr, "⠀⠀⠸⠀⠖⠼⠑⠀⠀⠸⠀⠤⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠒⠼⠑⠀⠀⠸⠦⠴⠬⠀⠀⠸⠀⠌⠼⠑");
-}
+    test_braille("Finnish", expr, "⠀⠀⠸⠀⠖⠼⠑⠀⠀⠸⠀⠤⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠒⠼⠑⠀⠀⠸ ⠦⠴⠬⠀⠀⠸⠀⠌⠼⠑");
+  // Context: When marking up operation on both sides on an equation, this is the correct result.
+  }
 
 #[test]
 fn p24_fraction() {
@@ -717,6 +722,7 @@ fn p25_long_fraction() {
   </mrow>
 </math>";
     test_braille("Finnish", expr, "⠦⠦⠭⠬⠀⠤⠼⠛⠀⠭⠀⠖⠼⠁⠃⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠃⠚⠴⠴⠀⠒⠦⠦⠭⠬⠀⠤⠼⠓⠀⠭⠀⠖⠼⠁⠑⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠁⠋⠴⠴");
+    // Rule fix: Fractions' division requires double parentheses so that the order of operations is respected.
 }
 
 #[test]
@@ -935,7 +941,7 @@ fn msub_parentheses() {
     <mo>+</mo>
     <mn>1</mn>
 </math>";
-    test_braille("Finnish", expr, "⠁⠡⠦⠭⠀⠲⠼⠁⠴⠀⠖⠼⠁");
+    test_braille("Finnish", expr, "⠁⠡⠦⠭⠀⠖⠼⠁⠴⠀⠖⠼⠁");
 }
 
 // Overline notation comes after the subscript
@@ -953,6 +959,7 @@ fn msub_with_vector() {
     <mn>1</mn>
 </math>";
     test_braille("Finnish", expr, "⠁⠡⠃⠱⠀⠖⠼⠁");
+    // For the rule: order should be first subscript and then superscript
 }
 
 #[test]
@@ -969,6 +976,7 @@ fn msub_with_vector_with_sub_text() {
     <mn>1</mn>
 </math>";
     test_braille("Finnish", expr, "⠁⠡⠞⠥⠅⠊⠱⠀⠖⠼⠁");
+    // For the rule: order should be first subscript and then superscript
 }
 
 #[test]
@@ -999,11 +1007,12 @@ fn msubsup_parentheses_in_sub_and_sup() {
     <mi>x</mi>
     <mo>−</mo>
     <mn>10</mn>
+    </mrow>
     </msubsup>
     <mo>+</mo>
     <mn>1</mn>
 </math>";
-    test_braille("Finnish", expr, "⠁⠡⠦⠭⠀⠲⠼⠁⠴⠬⠦⠭⠀⠤⠼⠁⠚⠴⠀⠖⠼⠁");
+    test_braille("Finnish", expr, "⠁⠡⠦⠭⠀⠖⠼⠁⠴⠬⠦⠭⠀⠤⠼⠁⠚⠴⠀⠖⠼⠁");
 }
 
 #[test]
@@ -1029,7 +1038,7 @@ fn p32_expected_value() {
       <mi>i</mi>
     </msub>
 </math>";
-    test_braille("Finnish", expr, "⠠⠑⠦⠭⠴⠀⠶⠨⠍⠀⠶⠸⠎⠡⠊⠐⠏⠡⠊ ⠭⠡⠊");
+    test_braille("Finnish", expr, "⠠⠑⠦⠭⠴⠀⠶⠨⠍⠀⠶⠸⠎⠡⠊⠐⠏⠡⠊⠐⠭⠡⠊");
 }
 
 // Dots 156 to signify the bar over "AB"
@@ -1410,7 +1419,6 @@ fn p40_function_with_parts() {
   test_braille("Finnish", expr, "⠋⠦⠭⠴⠀⠶⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻");
 }
 
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
 #[test]
 fn p42_matrix() {
     let expr = "<math>
@@ -1480,7 +1488,7 @@ fn p42_matrix() {
     test_braille("Finnish", expr, "⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠁⠀⠼⠚⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠚⠀⠼⠁⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴");
 }
 
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
+
 #[test]
 fn p42_determinant() {
     let expr = "<math>
@@ -1520,9 +1528,11 @@ fn p42_determinant() {
     <mi>b</mi>
     </math>";
     test_braille("Finnish", expr, "⠸⠁⠀⠖⠃ ⠁⠀⠤⠃⠸⠀⠐⠐⠀⠸⠁⠀⠤⠃ ⠁⠀⠖⠃⠸⠀⠶⠼⠙⠀⠁⠃");
+    // Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
+    // Rules fix: There are extra whitespaces between the elements of the matrix.
 }
 
-// Dots 156 to signify the bar over "arc"
+
 #[test]
 fn p45_arcsin_with_bar_over() {
     let expr = "<math>
@@ -1534,6 +1544,8 @@ fn p45_arcsin_with_bar_over() {
 <mi>x</mi>
 </math>";
     test_braille("Finnish", expr, "⠁⠗⠉⠱⠀⠎⠊⠝⠀⠭");
+    // Dots 156 to signify the bar over "arc".
+    // Rules fix: There should be a whitespace after the bar.
 }
 
 #[test]
@@ -1585,6 +1597,7 @@ fn line_under_parentheses() {
 <mn>1</mn>
 </math>";
     test_braille("Finnish", expr, "⠦⠎⠀⠌⠼⠃⠴⠤⠀⠖⠼⠁");
+    // Needs parentheses so that grouping works.
 }
 
 // 'Change of zone' dot 5 is used after the limit subscript notation.
