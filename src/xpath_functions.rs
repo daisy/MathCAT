@@ -17,9 +17,9 @@
 //!   This can be used to surround a whole or part of an xpath expression in a match or output.
 //!   The result will be printed to standard output and the result returned so that `DEBUG` does not affect the computation.    
 
-use sxd_document::dom::{Element, ChildOfElement};
-use sxd_document::as_str;
-use sxd_xpath::{Value, Context, context, function::*, nodeset::*};
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
+use sxd_document_no_unsafe::as_str;
+use sxd_xpath_no_unsafe::{Value, Context, context, function::*, nodeset::*};
 use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
@@ -28,7 +28,7 @@ use log::{debug, error, warn};
 use std::sync::LazyLock;
 use std::thread::LocalKey;
 use phf::phf_set;
-use sxd_xpath::function::Error as XPathError;
+use sxd_xpath_no_unsafe::function::Error as XPathError;
 use crate::canonicalize::{as_element, name, get_parent, MATHML_FROM_NAME_ATTR};
 
 // useful utility functions
@@ -1440,7 +1440,7 @@ pub fn add_builtin_functions(context: &mut Context) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
     use crate::interface::{trim_element, get_element};
 
 

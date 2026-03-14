@@ -188,7 +188,7 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
 
 #[allow(dead_code)]
 pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) -> Result<()> {
-    use sxd_document::{dom::Element, parser};
+    use sxd_document_no_unsafe::{dom::Element, parser};
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();

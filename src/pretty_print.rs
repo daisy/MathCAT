@@ -1,8 +1,8 @@
 //! Useful functions for debugging and error messages.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::{Element, ChildOfElement, Attribute};
-use sxd_document::{as_str, as_qname};
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::{as_str, as_qname};
 
 // #[allow(dead_code)]
 // pub fn pp_doc(doc: &Document) {
@@ -92,8 +92,8 @@ fn handle_special_chars(text: &str) -> String {
 // /// Pretty print an xpath value.
 // /// If the value is a `NodeSet`, the MathML for the node/element is returned.
 // pub fn pp_xpath_value(value: Value) {
-//     use sxd_xpath::Value;
-//     use sxd_xpath::nodeset::Node;
+//     use sxd_xpath_no_unsafe::Value;
+//     use sxd_xpath_no_unsafe::nodeset::Node;
 //     debug!("XPath value:");
 //     if let Value::Nodeset(nodeset) = &value {
 //         for node in nodeset.document_order() {
@@ -520,11 +520,11 @@ fn need_quotes(string: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sxd_document::dom::{ChildOfElement, ChildOfRoot};
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::dom::{ChildOfElement, ChildOfRoot};
+    use sxd_document_no_unsafe::parser;
 
     /// helper function
-    fn first_element(package: &sxd_document::Package) -> Element<'_> {
+    fn first_element(package: &sxd_document_no_unsafe::Package) -> Element<'_> {
         let doc = package.as_document();
         for child in doc.root().children() {
             if let ChildOfRoot::Element(e) = child {
@@ -618,11 +618,11 @@ mod tests {
     #[test]
     /// Evaluates non-BMP literal text through sxd_xpath.
     fn xpath_non_bmp_literal() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let package = parser::parse("<math><mi>𝞪</mi></math>").unwrap();
         let xpath = Factory::new().build("string(/math/mi)").unwrap();
-        let context = sxd_xpath::Context::new();
+        let context = sxd_xpath_no_unsafe::Context::new();
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
         match value {
@@ -634,11 +634,11 @@ mod tests {
     #[test]
     /// Evaluates non-BMP numeric text through sxd_xpath.
     fn xpath_non_bmp_numeric() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let package = parser::parse("<math><mi>&#x1d7aa;</mi></math>").unwrap();
         let xpath = Factory::new().build("string(/math/mi)").unwrap();
-        let context = sxd_xpath::Context::new();
+        let context = sxd_xpath_no_unsafe::Context::new();
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
         match value {
@@ -650,14 +650,14 @@ mod tests {
     #[test]
     /// Evaluates non-BMP literal text with a MathML namespace-qualified XPath.
     fn xpath_non_bmp_namespace_literal() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>𝞪</mi></math>";
         let package = parser::parse(xml).unwrap();
         let xpath = Factory::new()
             .build("string(/m:math/m:mi)")
             .unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
@@ -670,14 +670,14 @@ mod tests {
     #[test]
     /// Evaluates non-BMP numeric text with a MathML namespace-qualified XPath.
     fn xpath_non_bmp_namespace_numeric() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>&#120746;</mi></math>";
         let package = parser::parse(xml).unwrap();
         let xpath = Factory::new()
             .build("string(/m:math/m:mi)")
             .unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
@@ -690,12 +690,12 @@ mod tests {
     #[test]
     /// Extracts a text node via XPath (nodeset result) and verifies the non-BMP character survives.
     fn xpath_non_bmp_text_nodeset() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>𝞪</mi></math>";
         let package = parser::parse(xml).unwrap();
         let xpath = Factory::new().build("/m:math/m:mi/text()").unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();

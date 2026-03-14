@@ -9,14 +9,14 @@
 use crate::errors::*;
 use std::rc::Rc;
 use std::cell::RefCell;
-use sxd_document::dom::{Element, Document, ChildOfElement, Attribute};
-use sxd_document::QName;
-use sxd_document::{as_str, as_qname};
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::QName;
+use sxd_document_no_unsafe::{as_str, as_qname};
 
 #[cfg(not(feature = "no-unsafe"))]
 pub type NameStr<'a> = &'a str;
 #[cfg(feature = "no-unsafe")]
-pub type NameStr<'a> = sxd_document::InternedString;
+pub type NameStr<'a> = sxd_document_no_unsafe::InternedString;
 
 use phf::{phf_map, phf_set};
 use crate::xpath_functions::{IsBracketed, is_leaf, IsNode};
@@ -152,7 +152,7 @@ struct OperatorPair<'op> {
 #[cfg(not(feature = "no-unsafe"))]
 fn op_ch(s: &'static str) -> NameStr<'static> { s }
 #[cfg(feature = "no-unsafe")]
-fn op_ch(s: &str) -> NameStr<'static> { sxd_document::InternedString::from_str(s) }
+fn op_ch(s: &str) -> NameStr<'static> { sxd_document_no_unsafe::InternedString::from_str(s) }
 
 impl<'op> OperatorPair<'op> {
 	fn new() -> OperatorPair<'op> {
@@ -335,7 +335,7 @@ impl<'a, 'op:'a> StackInfo<'a, 'op> {
 
 
 pub fn create_mathml_element<'a>(doc: &Document<'a>, name: &str) -> Element<'a> {
-	return doc.create_element(sxd_document::QName::with_namespace_uri(
+	return doc.create_element(sxd_document_no_unsafe::QName::with_namespace_uri(
 		Some("http://www.w3.org/1998/Math/MathML"),
 		name));
 }
@@ -4551,7 +4551,7 @@ pub fn as_text(leaf_child: Element<'_>) -> NameStr<'_> {
 	if children.is_empty() {
 		cfg_if::cfg_if! {
 			if #[cfg(feature = "no-unsafe")] {
-				return sxd_document::InternedString::from_str("");
+				return sxd_document_no_unsafe::InternedString::from_str("");
 				} else {
 		return "";
 	}
@@ -4617,7 +4617,7 @@ mod canonicalize_tests {
 	use super::super::init_logger;
 	use super::super::abs_rules_dir_path;
     use super::*;
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
 
 
     #[test]
@@ -4986,7 +4986,7 @@ mod canonicalize_tests {
     #[test]
     fn mrow_with_intent_and_single_child() -> Result<()> {
 		use crate::interface::*;
-		use sxd_document::parser;
+		use sxd_document_no_unsafe::parser;
 		use crate::canonicalize::canonicalize;
 		// this forces initialization
 		crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -5011,7 +5011,7 @@ mod canonicalize_tests {
     fn empty_mrow_with_intent() -> Result<()> {
 		// we don't want to remove the mrow because the intent on the mi would reference itself
 		use crate::interface::*;
-		use sxd_document::parser;
+		use sxd_document_no_unsafe::parser;
 		use crate::canonicalize::canonicalize;
 		// this forces initialization
 		crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();

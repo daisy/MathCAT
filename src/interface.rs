@@ -9,10 +9,10 @@ use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
 use regex::{Captures, Regex};
-use sxd_document::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
-use sxd_document::parser;
-use sxd_document::Package;
-use sxd_document::{as_str, as_qname};
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::parser;
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::{as_str, as_qname};
 
 use crate::canonicalize::{as_element, name};
 use crate::shim_filesystem::{find_all_dirs_shim, find_files_in_dir_that_ends_with_shim};

@@ -1,8 +1,8 @@
 #![allow(clippy::needless_return)]
 use strum_macros::Display;
-use sxd_document::dom::{Element, ChildOfElement};
-use sxd_document::Package;
-use sxd_document::as_str;
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::as_str;
 use crate::definitions::SPEECH_DEFINITIONS;
 use crate::errors::*;
 use crate::pretty_print::mml_to_string;
@@ -2212,10 +2212,10 @@ fn ASCIIMath_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String)
 use crate::canonicalize::{as_element, as_text, name};
 use crate::xpath_functions::{is_leaf, validate_one_node, IsBracketed};
 use std::result::Result as StdResult;
-use sxd_document::dom::ParentOfChild;
-use sxd_xpath::function::Error as XPathError;
-use sxd_xpath::function::{Args, Function};
-use sxd_xpath::{context, nodeset::*, Value};
+use sxd_document_no_unsafe::dom::ParentOfChild;
+use sxd_xpath_no_unsafe::function::Error as XPathError;
+use sxd_xpath_no_unsafe::function::{Args, Function};
+use sxd_xpath_no_unsafe::{context, nodeset::*, Value};
 
 pub struct NemethNestingChars;
 const NEMETH_FRAC_LEVEL: &str = "data-nemeth-frac-level";    // name of attr where value is cached
@@ -2275,7 +2275,7 @@ impl NemethNestingChars {
                 if let ParentOfChild::Element(e) =  parent_of_child {
                     parent = e;
                 } else {
-                    return Err( sxd_xpath::function::Error::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
+                    return Err( sxd_xpath_no_unsafe::function::Error::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
                 }
             }
         }
@@ -2332,11 +2332,11 @@ impl BrailleChars {
             "Vietnam" => BrailleChars:: get_braille_vietnam_chars(node, text_range),
             "Swedish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
             "Finnish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
-            _ => return Err(sxd_xpath::function::Error::Other { what: format!("get_braille_chars: unknown braille code '{code}'") })
+            _ => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: format!("get_braille_chars: unknown braille code '{code}'") })
         };
         return match result {
             Ok(string) => Ok(make_quoted_string(string)),
-            Err(err) => return Err(sxd_xpath::function::Error::Other { what: err.to_string() }),
+            Err(err) => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: err.to_string() }),
         }
     }
 

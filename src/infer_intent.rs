@@ -5,8 +5,8 @@
 //! The implementation of the module is on hold until the MathML committee figures out how it wants to do this.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::{Element, Document, ChildOfElement};
-use sxd_document::as_str;
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfElement};
+use sxd_document_no_unsafe::as_str;
 use crate::prefs::PreferenceManager;
 use crate::speech::SpeechRulesWithContext;
 use crate::canonicalize::{as_element, as_text, name, create_mathml_element, set_mathml_name, INTENT_ATTR, MATHML_FROM_NAME_ATTR};
@@ -627,7 +627,7 @@ mod tests {
     #[allow(unused_imports)]
     use crate::init_logger;
     use log::debug;
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
 
 
     fn test_intent(mathml: &str, target: &str, intent_error_recovery: &str) -> bool {

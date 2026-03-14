@@ -35,9 +35,9 @@
 //           no: clear all the marks for the old children
 // After canonicalization, we take another pass looking for chemical equations and marking them if found.
 
-use sxd_document::dom::{Element, Document, ChildOfElement};
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfElement};
 #[allow(unused_imports)]
-use sxd_document::{as_str, as_qname};
+use sxd_document_no_unsafe::{as_str, as_qname};
 use crate::canonicalize::*;
 use crate::canonicalize::NameStr;
 use crate::pretty_print::mml_to_string;
@@ -1896,7 +1896,7 @@ mod chem_tests {
 
     fn parse_mathml_string<F>(test: &str, test_mathml: F) -> bool
             where F: Fn(Element) -> bool {
-        use sxd_document::parser;
+        use sxd_document_no_unsafe::parser;
         use crate::interface::{get_element, trim_element};
 
         
