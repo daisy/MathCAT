@@ -22,7 +22,7 @@ use sxd_xpath::{Value, Context, context, function::*, nodeset::*};
 use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
-use std::cell::{Ref, RefCell};
+use std::{cell::{Ref, RefCell}, collections::HashMap};
 use log::{debug, error, warn};
 use std::sync::LazyLock;
 use std::thread::LocalKey;
@@ -333,7 +333,7 @@ static ALL_MATHML_ELEMENTS: phf::Set<&str> = phf_set!{
 };
 
 static MATHML_LEAF_NODES: phf::Set<&str> = phf_set! {
-	"mi", "mo", "mn", "mtext", "ms", "mspace", "mglyph",
+    "mi", "mo", "mn", "mtext", "ms", "mspace", "mglyph",
     "none", "annotation", "ci", "cn", "csymbol",    // content could be inside an annotation-xml (faster to allow here than to check lots of places)
 };
 
@@ -1413,6 +1413,172 @@ impl Function for ReplaceAll {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum CTDRowType {
+    Normal,
+    Labeled,
+    Implicit,
+}
+
+/// A single-use structure for computing the proper dimensions of an
+/// `mtable`.
+struct CountTableDims {
+    num_rows: usize,
+    num_cols: usize,
+    /// map from number of remaining in extra row-span to number of
+    /// columns with that value.
+    extended_cells: HashMap<usize, usize>,
+    /// rowspan=0 cells extend for the rest of the table, however
+    /// long that may be as determined by all other finite cells.
+    permanent_cols: usize,
+}
+
+impl CountTableDims {
+
+    fn new() -> CountTableDims {
+        Self { num_rows: 0, num_cols: 0, extended_cells: HashMap::new(), permanent_cols: 0 }
+    }
+
+    /// Returns the number of columns the cell contributes to the
+    /// current row. Also updates `extended_cells` as appropriate.
+    fn process_cell_in_row<'d>(&mut self, mtd: Element<'d>, is_first: bool, row_type: CTDRowType) -> usize {
+        // Rows can only contain `mtd`s.  If this is not an `mtd`, we will just skip it.
+        if name(mtd) != "mtd" {
+            return 0;
+        }
+
+        // Add the contributing columns, taking colspan into account. Don't contribute if
+        // this is the first element of a labeled row.
+        let colspan = mtd.attribute_value("colspan")
+            .or_else(|| mtd.attribute_value("columnspan"))
+            .map_or(1, |e| e.parse::<usize>().unwrap_or(1));
+        if row_type == CTDRowType::Labeled && is_first {
+            // This is a label for the row and does not contibute to
+            // the size of the table. NOTE: Can this label have a
+            // non-trivial rowspan? If so, can it otherwise extend the
+            // size of the table?
+            return 0;
+        }
+
+        let rowspan = mtd.attribute_value("rowspan").map_or(1, |e| {
+            e.parse::<usize>().unwrap_or(1)
+        });
+
+        if rowspan > 1 {
+            *self.extended_cells.entry(rowspan).or_default() += colspan;
+        } else if rowspan == 0 {
+            self.permanent_cols += colspan;
+        }
+
+        colspan
+    }
+
+    /// Update the number of rows, and update the extended cells.
+    /// Returns the total number of columns accross all extended
+    /// cells.
+    fn next_row(&mut self) -> usize {
+        self.num_rows += 1;
+        let mut ext_cols = 0;
+        self.extended_cells = self.extended_cells.iter().filter(|&(k, _)| *k > 1).map(|(k, v)| {
+            ext_cols += *v;
+            (k-1, *v)
+        }).collect();
+        ext_cols
+    }
+
+    /// For an `mtable` element, count the number of rows and columns in the table.
+    ///
+    /// This function is relatively permissive. Non-`mtr` rows are
+    /// ignored. The number of columns is determined only from the first
+    /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
+    fn count_table_dims<'d>(mut self, e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
+        for child in e.children() {
+            let ChildOfElement::Element(row) = child else {
+                continue
+            };
+
+            // Each child of mtable should be an mtr or mlabeledtr. According to the spec, though,
+            // bare `mtd`s should also be treated as having an implicit wrapping `<mtr>`.
+            // Other elements should be ignored.
+            let row_name = name(row);
+
+            let row_type = if row_name == "mlabeledtr" {
+                CTDRowType::Labeled
+            } else if row_name == "mtr" {
+                CTDRowType::Normal
+            } else if row_name == "mtd" {
+                CTDRowType::Implicit
+            } else {
+                continue;
+            };
+
+            let ext_cols = self.next_row();
+
+            let mut num_cols_in_row = 0;
+            match row_type {
+                CTDRowType::Normal | CTDRowType::Labeled => {
+                    let mut first_elem = true;
+                    for row_child in row.children() {
+                        let ChildOfElement::Element(mtd) = row_child else  {
+                            continue;
+                        };
+
+                        num_cols_in_row += self.process_cell_in_row(mtd, first_elem, row_type);
+                        first_elem= false;
+                    }
+                }
+                CTDRowType::Implicit => {
+                    num_cols_in_row += self.process_cell_in_row(row, true, row_type)
+                }
+            }
+            // update the number of columns based on this row.
+            self.num_cols = self.num_cols.max(num_cols_in_row + ext_cols + self.permanent_cols);
+        }
+
+        // At this point, the number of columns is correct. If we have
+        // any leftover rows from rowspan extended cells, we need to
+        // account for them here.
+        //
+        // NOTE: It does not appear that renderers respect these extra
+        // columns, so we will not use them.
+        let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
+
+        Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)))
+    }
+
+    fn evaluate<'d>(self, fn_name: &str,
+                        args: Vec<Value<'d>>) -> Result<(Value<'d>, Value<'d>), Error> {
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let element = args.pop_nodeset()?;
+        let node = validate_one_node(element, fn_name)?;
+        if let Node::Element(e) = node {
+            return self.count_table_dims(e);
+        }
+
+        Err( Error::Other("Could not count dimensions of non-Element.".to_string()) )
+    }
+}
+
+struct CountTableRows;
+impl Function for CountTableRows {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        CountTableDims::new().evaluate("CountTableRows", args).map(|a| a.0)
+    }
+}
+
+struct CountTableColumns;
+impl Function for CountTableColumns {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        CountTableDims::new().evaluate("CountTableColumns", args).map(|a| a.1)
+    }
+}
+
+
 /// Add all the functions defined in this module to `context`.
 pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("NestingChars", crate::braille::NemethNestingChars);
@@ -1432,6 +1598,8 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("SpeakIntentName", SpeakIntentName);
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
+    context.set_function("CountTableRows", CountTableRows);
+    context.set_function("CountTableColumns", CountTableColumns);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1604,6 +1772,27 @@ mod tests {
         test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
                     "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>");
                    
+    }
+
+    fn check_table_dims(mathml: &str, dims: (usize, usize)) {
+        let package = parser::parse(mathml).expect("failed to parse XML");
+        let math_elem = get_element(&package);
+        let child = as_element(math_elem.children()[0]);
+        assert!(CountTableDims::new().count_table_dims(child) == Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64))));
+    }
+
+    #[test]
+    fn table_dim() {
+        check_table_dims("<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>", (1, 1));
+        check_table_dims("<math><mtable><mtr><mtd colspan=\"3\">a</mtd><mtd>b</mtd></mtr><mtr><mtd></mtd></mtr></mtable></math>", (2, 4));
+
+        check_table_dims("<math><mtable><mlabeledtr><mtd>label</mtd><mtd>a</mtd><mtd>b</mtd></mlabeledtr><mtr><mtd>c</mtd><mtd>d</mtd></mtr></mtable></math>", (2, 2));
+        // extended rows beyond the `mtr`s do *not* count towards the row count.
+        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr></mtable></math>", (1, 1));
+
+        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr>
+<mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3));
+
     }
 
     #[test]
