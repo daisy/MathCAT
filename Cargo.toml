@@ -53,6 +53,9 @@ zip = { version = "7.0", default-features = false, features = ["deflate"] }
 [target.'cfg(not(target_family = "wasm"))'.build-dependencies]
 zip = { version = "7.0", default-features = false, features = ["bzip2"] }
 
+[dev-dependencies]
+tempfile = "3.23"
+
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
