@@ -1484,7 +1484,7 @@
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "🅐-🅩":                                         # 0x1f150 - 0x1f169
-    - T: "schwarz eingekreiste"                              #  (en: 'black circled', google translation)
+    - T: "schwarz eingekreist"                              #  (en: 'black circled', google translation)
     - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
