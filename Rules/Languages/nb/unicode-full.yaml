@@ -1444,6 +1444,11 @@
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "i sirkel"                                 #     (en: 'circled', google translation)
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    # switched order
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "i fylt sirkel"                                     #  (en: 'black circled', google translation)
+
  - "ⓐ-ⓩ":                                           #  0x24d0 - 0x24e9
     # SWEDISH: switched order
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
