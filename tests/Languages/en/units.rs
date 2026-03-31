@@ -153,7 +153,7 @@ fn si_derived_1() -> Result<()> {
                 1 henry, comma, 2 henrys, comma, \
                 1 hertz, comma, 2 hertz, comma, \
                 1 joule, comma, 2 joules, comma, \
-                1 kattel, comma, 2 kattels, comma, \
+                1 katal, comma, 2 katals, comma, \
                 1 lumen, comma, 2 lumens, comma, \
                 1 lux, comma, 2 luxs")?;
                 return Ok(());
@@ -184,7 +184,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
                 1 mega-henry, comma; 2 kilo-henrys, comma; \
                 1 deka-hertz, comma; 2 deci-hertz, comma; \
                 1 centi-joule, comma; 2 milli-joules, comma; \
-                1 micro-kattel, comma; 2 nano-kattels, comma; \
+                1 micro-katal, comma; 2 nano-katals, comma; \
                 1 pico-lumen, comma; 2 femto-lumens, comma; \
                 1 atto-lux, comma; 2 zepto-luxs, comma; \
                 1 milli-degree celsius; comma; 2 micro-degrees celsius; comma; \
@@ -281,7 +281,7 @@ fn si_accepted() -> Result<()> {
                 1 atomic mass unit, comma; 2 atomic mass units, comma; \
                 1 electronvolt, comma; 2 electronvolts, comma, \
                 1 radian, comma, 2 radians, comma, \
-                1 sterradion, comma; 2 sterradions, comma, \
+                1 steradian, comma; 2 steradians, comma, \
                 1 annum, comma, 2 annums, comma, \
                 1 arcsecond, comma; 2 arcseconds, comma, \
                 1 bit, comma, 2 bits, comma, \
@@ -320,7 +320,7 @@ fn si_accepted_with_prefixes() -> Result<()> {
                 1 hecto-atomic mass unit; comma; 2 deka-atomic mass units; comma; \
                 1 milli-electronvolt, comma; 2 micro-electronvolts; comma; \
                 1 nano-radian, comma; 2 pico-radians, comma; \
-                1 femto-sterradion, comma; 2 atto-sterradions; comma; \
+                1 femto-steradian, comma; 2 atto-steradians; comma; \
                 1 giga-annum, comma; 2 mega-annums, comma; \
                 1 zepto-arcsecond, comma; 2 yocto-arcseconds; comma; \
                 1 kilo-bit, comma; 2 mega-bits, comma; \
