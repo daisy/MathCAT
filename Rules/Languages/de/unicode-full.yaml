@@ -19,7 +19,7 @@
         else: [T: "Überstrich"]                 	# 	(en: 'line', MathPlayer: 'macron', google: 'linie')
  - "²": [T: "Quadrat"]                          	#  0xb2	(en: 'two', MathPlayer: 'zum Quadrat', google: 'zwei')
  - "³": [T: "Kubik"]                            	#  0xb3	(en: 'three', MathPlayer: 'hoch drei', google: 'drei')
- - "´": [T: "Acuteakzent"]                      	#  0xb4	(en: 'acute', MathPlayer: 'acute accent', google: 'akut')
+ - "´": [T: "Akutakzent"]                       	#  0xb4	(en: 'acute', MathPlayer: 'acute accent', google: 'akut')
  - "µ": [T: "Mikrozeichen"]                     	#  0xb5	(en: 'micro', MathPlayer: 'micro sign', google: 'mikro')
  - "¹": [T: "hoch eins"]                        	#  0xb9	(en: 'one', google: 'eins')
  - "º": [T: "Männliches Ordnungszeichen"]       	#  0xb9	(en: 'masculine ordinal indicator')
@@ -89,7 +89,7 @@
  - "˚": [T: "Ring oberhalb"]                         	#  0x2da	(en: 'ring above', MathPlayer: 'Ring darüber', google: 'oben läuten')
  - "˛": [T: "ogonek"]                           	#  0x2db	(SRE: 'Ogonek')
  - "˜": [T: "Tilde"]                            	#  0x2dc	(en: 'small tilde')
- - "˝": [T: "Doppleakutakzent"]                 	#  0x2dd	(en: 'double acute accent', MathPlayer: 'double acute accent', google: 'doppelter akuter akzent')
+ - "˝": [T: "Doppelakutakzent"]                 	#  0x2dd	(en: 'double acute accent', MathPlayer: 'double acute accent', google: 'doppelter akuter akzent')
  - "˞": [T: "modifikator rhotischer haken"]          	#  0x2de	(en: 'modifier rhotic hook', google translation)
  - "˟": [T: "modifikator kreuzakzent"]          	#  0x2df	(en: 'modifier cross accent', google translation)
  - "ˠ": [T: "modifikator kleines gamma"]        	#  0x2e0	(en: 'modifier small gamma', google translation)
@@ -100,35 +100,35 @@
  - "˥": [T: "modifikator extra hoher tonbalken"]  	#  0x2e5	(en: 'modifier extra-high tone bar', google translation)
  - "˦": [T: "modifikator hoher tonbalken"]      	#  0x2e6	(en: 'modifier high tone bar', google translation)
  - "˧": [T: "modifikator mittlerer tonbalken"]         	#  0x2e7	(en: 'modifier mid tone bar', google translation)
- - "˨": [T: "modifikator niedrige tonleiste"]  	#  0x2e8	(en: 'modifier low tone bar', google translation)
- - "˩": [T: "modifikator extra niedrige tonleiste"]   	#  0x2e9	(en: 'modifier extra-low tone bar', google translation)
- - "˪": [T: "modifikator yin abgabetonmarke"]   	#  0x2ea	(en: 'modifier yin departing tone mark', google translation)
- - "˫": [T: "modifikator yang abgassing tonmarke"]	#  0x2eb	(en: 'modifier yang departing tone mark', google translation)
- - "ˬ": [T: "modifikator -stimmen"]             	#  0x2ec	(en: 'modifier voicing', google translation)
- - "˭": [T: "modifikator ungebildet"]           	#  0x2ed	(en: 'modifier unaspirated', google translation)
- - "ˮ": [T: "modifikator doppel apostroph"]     	#  0x2ee	(en: 'modifier double apostrophe', google translation)
+ - "˨": [T: "modifikator niedrige tonbalken"]   	#  0x2e8	(en: 'modifier low tone bar', google translation)
+ - "˩": [T: "modifikator extra niedrige tonbalken"]    	#  0x2e9	(en: 'modifier extra-low tone bar', google translation)
+ - "˪": [T: "modifikator yin-abgangstonmarke"]   	#  0x2ea	(en: 'modifier yin departing tone mark', google translation)
+ - "˫": [T: "modifikator yang-abgangstonmarke"]	#  0x2eb	(en: 'modifier yang departing tone mark', google translation)
+ - "ˬ": [T: "modifikator stimmgebung"]           	#  0x2ec	(en: 'modifier voicing', google translation)
+ - "˭": [T: "modifikator nicht-aspiriert"]       	#  0x2ed	(en: 'modifier unaspirated', google translation)
+ - "ˮ": [T: "modifikator doppelapostroph"]      	#  0x2ee	(en: 'modifier double apostrophe', google translation)
  - "˯": [T: "modifikator niedrige pfeilspitze nach unten gerichtet"]	#  0x2ef	(en: 'modifier low down arrowhead', google translation)
  - "˰": [T: "modifikator niedrige pfeilspitze aufwärts gerichtet"] 	#  0x2f0	(en: 'modifier low up arrowhead', google translation)
  - "˱": [T: "modifikator niedrige pfeilspitze nach links gerichtet"]	#  0x2f1	(en: 'modifier low left arrowhead', google translation)
  - "˲": [T: "modifikator niedrige pfeilspitze nach rechts gerichtet"]	#  0x2f2	(en: 'modifier low right arrowhead', google translation)
  - "˳": [T: "modifikator niedriger ring"]       	#  0x2f3	(en: 'modifier low ring', google translation)
- - "˴": [T: "modifikator mittlerer grabakzent"] 	#  0x2f4	(en: 'modifier middle grave accent', google translation)
- - "˵": [T: "modifikator mittlerer doppelt grabakzent"]	#  0x2f5	(en: 'modifier middle double grave accent', google translation)
- - "˶": [T: "modifikator mit mittlerem doppelt akutem akzent"]	#  0x2f6	(en: 'modifier middle double acute accent', google translation)
+ - "˴": [T: "modifikator mittlerer gravisakzent"]	#  0x2f4	(en: 'modifier middle grave accent', google translation)
+ - "˵": [T: "modifikator mittlerer doppelter gravisakzent"]	#  0x2f5	(en: 'modifier middle double grave accent', google translation)
+ - "˶": [T: "modifikator mittlerer doppelter akutakzent"]	#  0x2f6	(en: 'modifier middle double acute accent', google translation)
  - "˷": [T: "modifikator niedrige tilde"]      	#  0x2f7	(en: 'modifier low tilde', google translation)
  - "˸": [T: "modifikator hoch gestellter Doppelpunkt"]     	#  0x2f8	(en: 'modifier raised colon', google translation)
- - "˹": [T: "der modifikator beginnt mit hohem ton"]	#  0x2f9	(en: 'modifier begin high tone', google translation)
+ - "˹": [T: "modifikator beginn hoher ton"]    	#  0x2f9	(en: 'modifier begin high tone', google translation)
  - "˺": [T: "modifikator endet mit hohem ton"]       	#  0x2fa	(en: 'modifier end high tone', google translation)
- - "˻": [T: "der modifikator beginnt niedrig"]  	#  0x2fb	(en: 'modifier begin low tone', google translation)
- - "˼": [T: "modifikator ende niedriger ton"]   	#  0x2fc	(en: 'modifier end low tone', google translation)
+ - "˻": [T: "modifikator beginn tiefer ton"]    	#  0x2fb	(en: 'modifier begin low tone', google translation)
+ - "˼": [T: "modifikator ende tiefer ton"]      	#  0x2fc	(en: 'modifier end low tone', google translation)
  - "˽": [T: "modifikatorregal"]                 	#  0x2fd	(en: 'modifier shelf', google translation)
  - "˾": [T: "modifikator offenes regal"]        	#  0x2fe	(en: 'modifier open shelf', google translation)
  - "˿": [T: "modifikator niedriger links pfeil"]	#  0x2ff	(en: 'modifier low left arrow', google translation)
- - "̀": [T: "Akzent auf dem Grave"]              	#  0x300	(en: 'grave accent embellishment', google: 'grabakzentverzierung')
- - "́": [T: "Akzentverzierung"]           	#  0x301	(en: 'acute accent embellishment', google: 'akute akzentverzierung')
+ - "̀": [T: "gravisakzentverzierung"]             	#  0x300	(en: 'grave accent embellishment', google: 'grabakzentverzierung')
+ - "́": [T: "akutakzentverzierung"]        	#  0x301	(en: 'acute accent embellishment', google: 'akute akzentverzierung')
  - "̂": [T: "Hutverzierung"]                	#  0x302	(en: 'circumflex accent embellishment', google: 'zirma akzentverzierung')
  - "̃": [T: "tildeverzierung"]              	#  0x303	(google: 'tilde verzierung')
- - "̄": [T: "Macronkombination"]                 	#  0x304	(en: 'macron embellishment', google: 'makron -verzierung')
+ - "̄": [T: "makronverzierung"]                  	#  0x304	(en: 'macron embellishment', google: 'makron -verzierung')
  - "̅": [T: "Überstreifenverzierung"]            	#  0x305	(google: 'überbärerverzierung')
  - "̆": [T: "kombinierendes Breve"]                  	#  0x306	(en: 'breve embellishment', google: 'breve -verzierung')
  - "̇": [T: "Punkt über Verzierung"]          	#  0x307	(google: 'punkt über verzierung')
@@ -187,9 +187,9 @@
  - "̼": [T: "möwe unter der verzierung"]        	#  0x33c	(en: 'seagull below embellishment', google translation)
  - "̽": [T: "x über verzierung"]                	#  0x33d	(en: 'x above embellishment', google translation)
  - "̾": [T: "vertikale tilde verzierung"]       	#  0x33e	(en: 'vertical tilde embellishment', google translation)
- - "̿": [T: "doppelte überlaufverzerrung"]      	#  0x33f	(en: 'double overline embellishment', google translation)
- - "̀": [T: "grabtonmarke verzierung"]          	#  0x340	(en: 'grave tone mark embellishment', google translation)
- - "́": [T: "akute tonmarkierungsverzerrung"]   	#  0x341	(en: 'acute tone mark embellishment', google translation)
+ - "̿": [T: "doppelte überstrichverzierung"]     	#  0x33f	(en: 'double overline embellishment', google translation)
+ - "̀": [T: "gravistonmarkenverzierung"]         	#  0x340	(en: 'grave tone mark embellishment', google translation)
+ - "́": [T: "akute tonmarkenverzierung"]        	#  0x341	(en: 'acute tone mark embellishment', google translation)
  - "͆": [T: "brücke oben"]                      	#  0x346	(en: 'bridge above')
 
  - "ΪΫϏ":                                       	#  0x3aa, 0x3ab, 0x3cf
@@ -217,12 +217,12 @@
  - "ύ": [T: "upsilon mit tonos"]                	#  0x3cd	(en: 'upsilon with tonos', google translation)
  - "ώ": [T: "omega mit tonos"]                  	#  0x3ce	(en: 'omega with tonos', google translation)
  - "ϐ": [T: "beta"]                             	#  0x3d0	(MathPlayer: 'greek beta')
- - "ϑ": [T: "variant theta"]                    	#  0x3d1	(en: 'theta', google: 'theta')
- - "ϒ": [T: "variant upsilon with hook"]        	#  0x3d2	(en: 'upsilon with hook', google: 'upsilon mit haken')
- - "ϓ": [T: "upsilon mit akuter und haken"]     	#  0x3d3	(en: 'upsilon with acute and hook', google translation)
- - "ϔ": [T: "upsilon mit diaerse und haken"]    	#  0x3d4	(en: 'upsilon with diaeresis and hook', google translation)
- - "ϕ": [T: "straight phi"]                     	#  0x3d5	(en: 'phi', google: 'phi')
- - "ϖ": [T: "variant pi"]                       	#  0x3d6	(en: 'pi', google: 'pi')
+ - "ϑ": [T: "Variante Theta"]                   	#  0x3d1	(en: 'theta', google: 'theta')
+ - "ϒ": [T: "Variante Upsilon mit Haken"]       	#  0x3d2	(en: 'upsilon with hook', google: 'upsilon mit haken')
+ - "ϓ": [T: "Upsilon mit Akutakzent und Haken"] 	#  0x3d3	(en: 'upsilon with acute and hook', google translation)
+ - "ϔ": [T: "Upsilon mit Diaeresis und Haken"]  	#  0x3d4	(en: 'upsilon with diaeresis and hook', google translation)
+ - "ϕ": [T: "gerades Phi"]                      	#  0x3d5	(en: 'phi', google: 'phi')
+ - "ϖ": [T: "Variante Pi"]                      	#  0x3d6	(en: 'pi', google: 'pi')
  - "ϗ": [T: "kai"]                              	#  0x3d7	(MathPlayer: 'variant kai')
  - "Ϙ": [T: "großes archaisches koppa"]        	#  0x3d8	(en: 'cap archaic koppa')
  - "ϙ": [T: "archaisches koppa"]               	#  0x3d9	(en: 'archaic koppa')
@@ -255,7 +255,7 @@
  - "ж": [T: "zhe"]                              	#  0x436
  - "з": [T: "ze"]                               	#  0x437
  - "и": [T: "i"]                                	#  0x438	(google: 'и')
- - "й": [T: "short i"]                          	#  0x439	(google: 'kurz ich')
+ - "й": [T: "kurzes i"]                         	#  0x439	(google: 'kurz ich')
  - "к": [T: "ka"]                               	#  0x43a
  - "л": [T: "el"]                               	#  0x43b
  - "м": [T: "em"]                               	#  0x43c
@@ -272,9 +272,9 @@
  - "ч": [T: "che"]                              	#  0x447
  - "ш": [T: "sha"]                              	#  0x448
  - "щ": [T: "shcha"]                            	#  0x449
- - "ъ": [T: "hard sign"]                        	#  0x44a	(google: 'hartes zeichen')
+ - "ъ": [T: "hartes Zeichen"]                   	#  0x44a	(google: 'hartes zeichen')
  - "ы": [T: "yeru"]                             	#  0x44b
- - "ь": [T: "soft sign"]                        	#  0x44c	(google: 'weiches zeichen')
+ - "ь": [T: "weiches Zeichen"]                  	#  0x44c	(google: 'weiches zeichen')
  - "э": [T: "e"]                                	#  0x44d	(google: 'э')
  - "ю": [T: "yu"]                               	#  0x44e
  - "я": [T: "ya"]                               	#  0x44f
@@ -282,10 +282,10 @@
  - "؇": [T: "arabisch-indische vierte wurzel"] 	#  0x607	(en: 'Arabic-Indic fourth root')
  - "؈": [T: "arabischer strahl"]               	#  0x608	(en: 'Arabic ray')
  - "‐": [T: "Bindestrich"]                      	#  0x2010	(en: 'hyphen', MathPlayer: 'minus', google: 'bindestrich')
- - "‑": [T: "Nicht brechender Bindestrich"]     	#  0x2011	(en: 'hyphen', google: 'bindestrich')
- - "‒": [T: "Abbildung Bindestrich"]            	#  0x2012	(en: 'figure dash', google: 'figur dash')
- - "–": [T: "en dash"]                          	#  0x2013	(SRE: 'En Dash')
- - "—": [T: "em dash"]                          	#  0x2014	(SRE: 'EM Dash')
+ - "‑": [T: "nicht-trennender Bindestrich"]     	#  0x2011	(en: 'hyphen', google: 'bindestrich')
+ - "‒": [T: "Figurenstrich"]                   	#  0x2012	(en: 'figure dash', google: 'figur dash')
+ - "–": [T: "Halbgeviertstrich"]               	#  0x2013	(SRE: 'En Dash')
+ - "—": [T: "Geviertstrich"]                    	#  0x2014	(SRE: 'EM Dash')
  - "―": [T: "Horizontale Linie"]                	#  0x2015	(en: 'horizontal bar', MathPlayer: 'horizontal bar', google: 'horizontale linie')
  - "‖": [T: "Doppelte vertikale Linie"]         	#  0x2016	(en: 'double vertical line', MathPlayer: 'double vertical bar', google: 'doppelte vertikale linie')
  - "†": [T: "Dolch"]                            	#  0x2020	(en: 'dagger', MathPlayer: 'dagger', google: 'dolch')
@@ -317,9 +317,9 @@
  - "′": [T: "Strich"]                           	#  0x2032	(en: 'prime', MathPlayer: 'strich', google: 'prime')
  - "″": [T: "zwei Striche"]                      	#  0x2033	(en: 'double prime', MathPlayer: 'zwei-strich', google: 'double prime')
  - "‴": [T: "drei Striche"]                      	#  0x2034	(en: 'triple prime', MathPlayer: 'drei-strich', google: 'triple prime')
- - "‵": [T: "strich invertiert"]                	#  0x2035	(en: 'reversed prime', MathPlayer: 'reversed prime', google: 'umgekehrt prime')
- - "‶": [T: "zwei Striche invertiert"]           	#  0x2036	(en: 'reversed double prime', MathPlayer: 'reversed double prime', google: 'umgekehrt doppelte prime')
- - "‷": [T: "drei Striche invertiert"]           	#  0x2037	(en: 'reversed triple prime', google: 'triple prime umgekehrt')
+ - "‵": [T: "umgekehrter Strich"]              	#  0x2035	(en: 'reversed prime', MathPlayer: 'reversed prime', google: 'umgekehrt prime')
+ - "‶": [T: "zwei umgekehrte Striche"]          	#  0x2036	(en: 'reversed double prime', MathPlayer: 'reversed double prime', google: 'umgekehrt doppelte prime')
+ - "‷": [T: "drei umgekehrte Striche"]          	#  0x2037	(en: 'reversed triple prime', google: 'triple prime umgekehrt')
  - "‸": [T: "Caret"]                            	#  0x2038	(en: 'to the', google: 'zum')
  - "‹": [T: "einfaches linkes Anführungszeichen"]	#  0x2039	(en: 'single left pointing angle quote mark', MathPlayer: 'single left pointing angle quote mark', google: 'single linke zitat angle -zitat marke')
  - "›": [T: "einfaches rechtes Anführungszeichen"]	#  0x203a	(en: 'single right pointing angle quote mark', MathPlayer: 'single right pointing angle quote mark', google: 'single rechts zeigewinkel zitatmarke')
@@ -337,9 +337,9 @@
  - "⁒": [T: "kommerzielles minuszeichen"]       	#  0x2052	(en: 'commercial minus sign')
  - "⁗": [T: "vier Striche"]                      	#  0x2057	(en: 'quadruple prime', MathPlayer: 'quadruple prime', google: 'vierfache prime')
  - "⁠": [T: ""]                                 	#  0x2060
- - "‵": [T: "strich invertiert"]                	#  0x2035	(en: 'reversed prime', MathPlayer: 'reversed prime', google: 'umgekehrt prime')
- - "‶": [T: "zwei Striche invertiert"]           	#  0x2036	(en: 'reversed double prime', MathPlayer: 'reversed double prime', google: 'umgekehrt doppelte prime')
- - "‷": [T: "drei Striche invertiert"]           	#  0x2037	(en: 'reversed triple prime', google: 'triple prime umgekehrt')
+ - "‵": [T: "umgekehrter Strich"]              	#  0x2035	(en: 'reversed prime', MathPlayer: 'reversed prime', google: 'umgekehrt prime')
+ - "‶": [T: "zwei umgekehrte Striche"]          	#  0x2036	(en: 'reversed double prime', MathPlayer: 'reversed double prime', google: 'umgekehrt doppelte prime')
+ - "‷": [T: "drei umgekehrte Striche"]          	#  0x2037	(en: 'reversed triple prime', google: 'triple prime umgekehrt')
  - "⁰": [T: "zur nullten Potenz"]               	#  0x2070	(en: 'to the zeroth power', google translation)
  - "ⁱ": [T: "zur i-ten Potenz"]                 	#  0x2071	(en: 'to the ith power', google: 'zur eihth -macht')
  - "⁴": [T: "zur vierten Potenz"]                	#  0x2074	(en: 'to the fourth power', google translation)
@@ -354,17 +354,17 @@
  - "⁽": [T: "Hochgestellte linke Klammer"]      	#  0x207d	(en: 'superscript left parenthesis', google: 'superscript links klammern')
  - "⁾": [T: "Hochgestellte rechte Klammer"]     	#  0x207e	(en: 'superscript right parenthesis', google: 'superscript right parenthesisthese')
  - "ⁿ": [T: "hochgestelltes n"]                 	#  0x207f	(en: 'to the ennth power', google: 'zur ahnten kraft')
- - "₀": [T: "unter null"]                       	#  0x2080	(en: 'sub zero', google translation)
- - "₁": [T: "sub eins"]                         	#  0x2081	(en: 'sub one', google translation)
- - "₂": [T: "sub zwei"]                         	#  0x2082	(en: 'sub two', google translation)
- - "₃": [T: "unter drei"]                       	#  0x2083	(en: 'sub three', google translation)
- - "₄": [T: "unter vier"]                       	#  0x2084	(en: 'sub four', google translation)
- - "₅": [T: "sub fünf"]                         	#  0x2085	(en: 'sub five', google translation)
- - "₆": [T: "sub sechs"]                        	#  0x2086	(en: 'sub six', google translation)
- - "₇": [T: "sub sieben"]                       	#  0x2087	(en: 'sub seven', google translation)
- - "₈": [T: "sub acht"]                           	#  0x2088	(en: 'sub eight', google translation)
- - "₉": [T: "sub neun"]                         	#  0x2089	(google translation)
- - "₊": [T: "Index Pluszeichen"]                	#  0x208a	(en: 'subscript plus sign', google: 'index plus -zeichen')
+ - "₀": [T: "tiefgestellte null"]                         	#  0x2080	(en: 'sub zero', google translation)
+ - "₁": [T: "tiefgestellte eins"]                         	#  0x2081	(en: 'sub one', google translation)
+ - "₂": [T: "tiefgestellte zwei"]                         	#  0x2082	(en: 'sub two', google translation)
+ - "₃": [T: "tiefgestellte drei"]                         	#  0x2083	(en: 'sub three', google translation)
+ - "₄": [T: "tiefgestellte vier"]                         	#  0x2084	(en: 'sub four', google translation)
+ - "₅": [T: "tiefgestellte fünf"]                         	#  0x2085	(en: 'sub five', google translation)
+ - "₆": [T: "tiefgestellte sechs"]                        	#  0x2086	(en: 'sub six', google translation)
+ - "₇": [T: "tiefgestellte sieben"]                       	#  0x2087	(en: 'sub seven', google translation)
+ - "₈": [T: "tiefgestellte acht"]                           	#  0x2088	(en: 'sub eight', google translation)
+ - "₉": [T: "tiefgestellte neun"]                         	#  0x2089	(google translation)
+ - "₊": [T: "Tiefgestelltes Pluszeichen"]                	#  0x208a	(en: 'subscript plus sign', google: 'index plus -zeichen')
  - "₋": [T: "Tiefgestelltes Minuszeichen"]             	#  0x208b	(en: 'subscript minus sign', google: 'index minuszeichen')
  - "₌": [T: "Tiefgestelltes Gleichheitszeichen"]	#  0x208c	(en: 'subscript equals sign', google: 'index gleicher bestandteil des zeichens')
  - "₍": [T: "Tiefgestellte linke Klammer"]      	#  0x208d	(en: 'subscript left parenthesis', google: 'untergangsklammern von klammern')
@@ -382,22 +382,22 @@
  - "ₛ": [T: "tiefgestelltes s"]                 	#  0x209b	(en: 'sub S', google: 'sub s')
  - "ₜ": [T: "tiefgestelltes t"]                 	#  0x209c	(en: 'sub T', google: 'sub t')
  - "₠": [T: "europäische Währungseinheiten"] 	#  0x20a0	(en: 'european currenty units', google translation)
- - "₡": [T: "colons"]                           	#  0x20a1	(google: 'kolons')
+ - "₡": [T: "Colón"]                            	#  0x20a1	(google: 'kolons')
  - "₢": [T: "cruzeiro"]                         	#  0x20a2
  - "₣": [T: "franc"]                            	#  0x20a3
  - "₤": [T: "lira"]                             	#  0x20a4
  - "₥": [T: "mills"]                            	#  0x20a5	(google: 'mühlen')
  - "₦": [T: "naira"]                            	#  0x20a6
  - "₧": [T: "peseta"]                           	#  0x20a7
- - "₨": [T: "rupees"]                           	#  0x20a8	(google: 'rupien')
+ - "₨": [T: "Rupien"]                           	#  0x20a8	(google: 'rupien')
  - "₩": [T: "won"]                              	#  0x20a9	(google: 'gewonnen')
- - "₪": [T: "new sheqels"]                      	#  0x20aa	(google: 'neue sheqels')
+ - "₪": [T: "neue Schekel"]                     	#  0x20aa	(google: 'neue sheqels')
  - "₫": [T: "dong"]                             	#  0x20ab
  - "€": [T: "euros"]                            	#  0x20ac	(google: 'euro')
  - "₭": [T: "kip"]                              	#  0x20ad	(google: 'pennen')
  - "₮": [T: "tugrik"]                           	#  0x20ae
  - "₯": [T: "drachma"]                          	#  0x20af	(google: 'drachme')
- - "₰": [T: "german pennies"]                   	#  0x20b0	(google: 'deutsche pennys')
+ - "₰": [T: "Deutscher Pfennig"]               	#  0x20b0	(google: 'deutsche pennys')
  - "₱": [T: "pesos"]                            	#  0x20b1
  - "₲": [T: "guaranis"]                         	#  0x20b2
  - "₳": [T: "australs"]                         	#  0x20b3	(google: 'österrale')
@@ -424,14 +424,14 @@
  - "⃝": [T: "umschließender Kreis als Verzierung"]     	#  0x20dd	(en: 'enclosing circle embellishment', google translation)
  - "⃞": [T: "umschließendes Quadrat als Verzierung"]   	#  0x20de	(en: 'enclosing square embellishment', google translation)
  - "⃟": [T: "umschließender Diamant als Verzierung"]   	#  0x20df	(en: 'enclosing diamond embellishment', google translation)
- - "⃠": [T: "schließen sie den kreis -rückstand verschönern"]	#  0x20e0	(en: 'enclosing circle backslash embellishment', google translation)
- - "⃡": [T: "left right arrow embellishment"]   	#  0x20e1	(en: 'left right arrow above embellishment', google: 'links rechts pfeil über verzierung')
+ - "⃠": [T: "einschließender Kreis mit Schrägstrich als Verzierung"]	#  0x20e0	(en: 'enclosing circle backslash embellishment', google translation)
+ - "⃡": [T: "Pfeil links-rechts über Verzierung"]	#  0x20e1	(en: 'left right arrow above embellishment', google: 'links rechts pfeil über verzierung')
  - "⃢": [T: "einschließende bildschirmverzierung"]	#  0x20e2	(en: 'enclosing screen embellishment', google translation)
  - "⃣": [T: "Umschließende Tastenkappenverzierung"]	#  0x20e3	(en: 'enclosing keycap embellishment', google translation)
  - "⃤": [T: "umschließende, nach oben zeigende Dreiecksverzierung"]	#  0x20e4	(en: 'enclosing upward pointing triangle embellishment', google translation)
  - "⃥": [T: "Umgekehrte Solidus-Überlagerung als Verzierung"]	#  0x20e5	(en: 'reverse solidus overlay embellishment', google translation)
  - "⃦": [T: "Doppelte vertikale Strichverzierung"] 	#  0x20e6	(en: 'double verticle stroke embellishment', google translation)
- - "⃧": [T: "rentensymbol verzierung"]          	#  0x20e7	(en: 'Verzierung mit Annuitätensymbol', google translation)
+ - "⃧": [T: "Annuitätensymbol-Verzierung"]      	#  0x20e7	(en: 'Verzierung mit Annuitätensymbol', google translation)
  - "⃨": [T: "Dreifach-Unterpunkt"]                	#  0x20e8	(en: 'triple underdot', google translation)
  - "⃩": [T: "breite brücke über verzierung"]    	#  0x20e9	(en: 'wide bridge above embellishment', google translation)
  - "⃪": [T: "Verzierung mit nach links zeigendem Pfeil"]	#  0x20ea	(en: 'leftwards arrow overlay embellishment', google translation)
@@ -444,12 +444,12 @@
  - "℄": [T: "mittelliniensymbol"]               	#  0x2104	(en: 'center line symbol', google translation)
  - "℅": [T: "im Auftrag von"]                          	#  0x2105	(google: 'pflege von')
  - "℆": [T: "cada una"]                         	#  0x2106	(google translation)
- - "ℇ": [T: "euler constant"]                   	#  0x2107	(en: 'euler's constant', google: 'eulers konstante')
+ - "ℇ": [T: "Euler-Konstante"]                  	#  0x2107	(en: 'euler's constant', google: 'eulers konstante')
  - "℈": [T: "skrupel"]                          	#  0x2108	(en: 'scruples', google translation)
- - "℉": [T: "degrees fahrenheit"]               	#  0x2109	(google: 'grad fahrenheit')
- - "ℊ": [T: "script g"]                         	#  0x210a	(google: 'skript g')
+ - "℉": [T: "Grad Fahrenheit"]                  	#  0x2109	(google: 'grad fahrenheit')
+ - "ℊ": [T: "Skript G"]                         	#  0x210a	(google: 'skript g')
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
-    - T: "script g"                             	# 	(en: 'fraktur', google: 'fraktur')
+    - T: "Fraktur"                              	# 	(en: 'fraktur', google: 'fraktur')
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
@@ -466,7 +466,7 @@
          else: [T: "Planck-Konstante über zwei Pi"]	# 	(en: 'reduced planck constant', MathPlayer: 'h bar', google: 'reduzierte planckkonstante')
 
  - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
-    - T: "Planck-Konstante über zwei Pi"        	# 	(en: 'script', MathPlayer: 'h bar', google: 'skript')
+    - T: "Skript"                               	# 	(en: 'script', MathPlayer: 'h bar', google: 'skript')
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
  - "ℓ": [T: "Schreibschrift l"]                 	#  0x2113	(en: 'script l', MathPlayer: 'script l', google: 'skript l')
@@ -475,10 +475,10 @@
  - "℥": [T: "Unze-Zeichen"]                     	#  0x2125	(en: 'ounces', MathPlayer: 'ounce sign', google: 'unzen')
  - "Ω": [T: "Ohm-Zeichen"]                      	#  0x2126	(en: 'ohms', MathPlayer: 'ohm sign', google: 'ohm')
  - "℧": [T: "Umgekehrtes Ohm-Zeichen"]          	#  0x2127	(en: 'mhos', MathPlayer: 'inverted ohm', google: 'mhos')
- - "℩": [T: "turned iota"]                      	#  0x2129	(google: 'drehte iota')
+ - "℩": [T: "gedrehtes Iota"]                   	#  0x2129	(google: 'drehte iota')
  - "K": [T: "Kelvin-Zeichen"]                   	#  0x212a	(en: 'kelvin', MathPlayer: 'degrees kelvin', google: 'kelvin')
  - "Å": [T: "Angstrom-Zeichen"]                 	#  0x212b	(en: 'angstroms', MathPlayer: 'angstroms', google: 'angstrome')
- - "ℯ": [T: "script e"]                         	#  0x212f	(google: 'skript e')
+ - "ℯ": [T: "Skript E"]                         	#  0x212f	(google: 'skript e')
 
    # coalesced some chars that use cap letters
  - "Ⅎ℺⅁⅂⅃⅄":                                    	#  0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144
@@ -492,7 +492,7 @@
         else: [T: "script e"]                   	# 	(en: 'turned sans-serif', google: 'drehte ohne serif')
     - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
 
- - "ℴ": [T: "script o"]                         	#  0x2134	(google: 'skript o')
+ - "ℴ": [T: "Skript O"]                         	#  0x2134	(google: 'skript o')
  - "ℵ": [T: "Alef-Symbol"]                      	#  0x2135	(en: 'first transfinite cardinal', MathPlayer: 'alef', google: 'erster transfinite kardinal')
  - "ℶ": [T: "Bet-Symbol"]                       	#  0x2136	(en: 'second transfinite cardinal', MathPlayer: 'bet', google: 'zweiter transfinite kardinal')
  - "ℷ": [T: "Gimel-Symbol"]                     	#  0x2137	(en: 'third transfinite cardinal', MathPlayer: 'gimel', google: 'dritter transfinite kardinal')
@@ -1742,17 +1742,17 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "ist"]                       	# 	(en: 'is', google translation)
-     - T: "Aufrecht"                            	# 	(en: 'perpendicular to', MathPlayer: 'perpendicular', google: 'senkrecht zu')
+     - T: "rechtwinklig"                            	# 	(en: 'perpendicular to', MathPlayer: 'perpendicular', google: 'senkrecht zu')
  - "⟃":                                         	#  0x27c3
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "ist"]                       	# 	(en: 'is', google translation)
-     - T: "Subset öffnen"                       	# 	(en: 'an open subset of', MathPlayer: 'open subset', google: 'eine offene teilmenge von')
+     - T: "offene Teilmenge von"                       	# 	(en: 'an open subset of', MathPlayer: 'open subset', google: 'eine offene teilmenge von')
  - "⟄":                                         	#  0x27c4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "ist"]                       	# 	(en: 'is', google translation)
-     - T: "Superset öffnen"                     	# 	(en: 'an open superset of', MathPlayer: 'open superset', google: 'ein offenes superet von')
+     - T: "offene Obermenge von"                     	# 	(en: 'an open superset of', MathPlayer: 'open superset', google: 'ein offenes superet von')
  - "⟅": [T: "Linker S-förmiger Taschenbegrenzer"]	#  0x27c5	(en: 'left s-shaped bag delimiter', MathPlayer: 'left s-shaped bag delimiter', google: 'links s-förmiger tasche gremiter')
  - "⟆": [T: "rechter S-förmiger Taschenbegrenzer"]	#  0x27c6	(en: 'right s-shaped bag delimiter', MathPlayer: 'right s-shaped bag delimiter', google: 'rechte s-förmige tasche grenzwerbung')
  - "⟇": [T: "Oder mit innerem Punkt"]           	#  0x27c7	(en: 'or with dot inside', MathPlayer: 'or with dot inside', google: 'oder mit punkt im inneren')
