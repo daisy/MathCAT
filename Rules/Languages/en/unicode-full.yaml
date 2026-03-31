@@ -346,7 +346,7 @@
  - "⁗": [t: "quadruple prime"]                     # 0x2057
  - "⁠": [t: ""]                                     # 0x2060
  - "⁰": [t: "to the zeroth power"]                 # 0x2070
- - "ⁱ": [t: "to the eihth power"]                  # 0x2071
+ - "ⁱ": [t: "to the i-th power"]                  # 0x2071
  - "⁴": [t: "to the fourth power"]                 # 0x2074
  - "⁵": [t: "to the fifth power"]                  # 0x2075
  - "⁶": [t: "to the sixth power"]                  # 0x2076
@@ -1581,7 +1581,7 @@
  - "★": [t: "black star"]                          # 0x2605
  - "☆": [t: "white star"]                          # 0x2606
  - "☉": [t: "sun"]                                 # 0x2609
- - "☌": [t: "conjuction"]                          # 0x260c
+ - "☌": [t: "conjunction"]                         # 0x260c
  - "☒": [t: "ballot box with x"]                   # 0x2612
  - "☽": [t: "waxing moon"]                         # 0x263d
  - "☾": [t: "waning moon"]                         # 0x263e

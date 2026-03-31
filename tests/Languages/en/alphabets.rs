@@ -392,6 +392,13 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn unicode_typo_regressions() -> Result<()> {
+  test("en", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "to the i-th power")?;
+  test("en", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;
+  Ok(())
+}
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("en", "SimpleSpeak", expr, "circled 1 comma, circled 9")?;
