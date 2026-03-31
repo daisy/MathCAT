@@ -178,7 +178,7 @@
           then: [ot: ""]
       - t: "дробь"      # phrase(the 'fraction' with 3 over 4)
   - x: "*[1]"
-  - t: "над"      # phrase(the fraction 3 'over' 4)
+  - t: "на"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       # very ugly!!! -- replicate nested ordinal fraction as they are an exception
@@ -207,7 +207,7 @@
   - ")"
   replace:
   - x: "*[1]"
-  - t: "над"      # phrase(the fraction 3 'over' 4)
+  - t: "на"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
