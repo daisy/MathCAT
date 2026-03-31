@@ -150,12 +150,12 @@ fn si_derived_1() -> Result<()> {
                 1 degree celsius, comma; 2 degrees celsius, comma, \
                 1 farad, comma, 2 farads, comma, \
                 1 gray, comma, 2 grays, comma, \
-                1 henry, comma, 2 henrys, comma, \
+                1 henry, comma, 2 henries, comma, \
                 1 hertz, comma, 2 hertz, comma, \
                 1 joule, comma, 2 joules, comma, \
                 1 katal, comma, 2 katals, comma, \
                 1 lumen, comma, 2 lumens, comma, \
-                1 lux, comma, 2 luxs")?;
+                1 lux, comma, 2 lux")?;
                 return Ok(());
 
 }
@@ -181,12 +181,12 @@ fn si_derived_1_with_prefixes() -> Result<()> {
                 1 yotta-coulomb, comma; 2 zetta-coulombs, comma; \
                 1 exa-farad, comma; 2 peta-farads, comma; \
                 1 tera-gray, comma; 2 giga-grays, comma; \
-                1 mega-henry, comma; 2 kilo-henrys, comma; \
+                1 mega-henry, comma; 2 kilo-henries, comma; \
                 1 deka-hertz, comma; 2 deci-hertz, comma; \
                 1 centi-joule, comma; 2 milli-joules, comma; \
                 1 micro-katal, comma; 2 nano-katals, comma; \
                 1 pico-lumen, comma; 2 femto-lumens, comma; \
-                1 atto-lux, comma; 2 zepto-luxs, comma; \
+                1 atto-lux, comma; 2 zepto-lux, comma; \
                 1 milli-degree celsius; comma; 2 micro-degrees celsius; comma; \
                 1 pico-degree celsius; comma; 2 nano-degrees celsius")?;
                 return Ok(());
@@ -427,6 +427,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">M</mi><mo>,</mo><mn>2</mn><mi intent=":unit">M</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">R</mi><mo>,</mo><mn>2</mn><mi intent=":unit">R</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">rpm</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rpm</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">fl dr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">fl dr</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">℧</mi><mo>,</mo><mn>2</mn><mi intent=":unit">℧</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dyn</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dyn</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
@@ -443,6 +444,7 @@ fn without_prefix_other() -> Result<()> {
                 1 molar, comma, 2 molars, comma, \
                 1 roentgen, comma; 2 roentgens, comma; \
                 1 revolution per minute, comma; 2 revolutions per minute, comma, \
+                1 fluid dram, comma; 2 fluid drams, comma, \
                 1 m-h-o, comma, 2 m-h-os, comma, \
                 1 dyne, comma, 2 dynes, comma, \
                 1 erg, comma, 2 ergs")?;

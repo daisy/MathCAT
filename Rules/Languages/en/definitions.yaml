@@ -232,7 +232,7 @@
     "tbl": "tablespoon",
 
     # liquid
-    "fl dr": "fluid drams",
+    "fl dr": "fluid dram",
     "fl oz": "fluid ounce",
     "gi": "gill",
     "cp": "cup", "cup": "cup",
@@ -273,7 +273,9 @@
     "board foot": "board feet",
     "degree celsius": "degrees celsius",
     "degree fahrenheit": "degrees fahrenheit",
+    "henry": "henries",
     "hertz": "hertz",
+    "lux": "lux",
     "siemens": "siemens",
     "revolution per minute": "revolutions per minute",
     "mile per hour": "miles per hour",
