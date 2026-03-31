@@ -36,8 +36,9 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@nightly
         with:
-          # cargo-fuzz defaults to -Z build-std for sanitizer builds
-          components: rust-src
+          # rust-src: cargo-fuzz defaults to -Z build-std for sanitizer builds
+          # llvm-tools-preview: needed for llvm-cov coverage reports
+          components: rust-src, llvm-tools-preview
 
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz
@@ -82,6 +83,51 @@ jobs:
           name: fuzz-crash-artifacts
           path: fuzz/artifacts/
           retention-days: 90
+          if-no-files-found: ignore
+
+      # --- Coverage report (weekly only, after successful fuzzing) ---
+      - name: Generate fuzz coverage data
+        if: github.event_name == 'schedule'
+        working-directory: fuzz
+        run: cargo fuzz coverage fuzz_target_1 corpus/fuzz_target_1
+
+      - name: Produce HTML coverage report
+        if: github.event_name == 'schedule'
+        working-directory: fuzz
+        run: |
+          # Locate the coverage binary and profdata produced by cargo-fuzz.
+          TARGET_DIR="target/x86_64-unknown-linux-gnu/coverage/x86_64-unknown-linux-gnu/release"
+          PROFDATA="coverage/fuzz_target_1/coverage.profdata"
+          BINARY=$(find "$TARGET_DIR" -name fuzz_target_1 -type f | head -1)
+
+          if [ -z "$BINARY" ] || [ ! -f "$PROFDATA" ]; then
+            echo "::warning::Could not locate coverage binary or profdata; skipping report."
+            exit 0
+          fi
+
+          # Use the llvm-cov / llvm-profdata shipped with the nightly toolchain.
+          LLVM_COV=$(find "$(rustc --print sysroot)" -name llvm-cov -type f | head -1)
+          if [ -z "$LLVM_COV" ]; then
+            echo "::warning::llvm-cov not found in toolchain; skipping HTML report."
+            exit 0
+          fi
+          LLVM_COV_DIR=$(dirname "$LLVM_COV")
+
+          mkdir -p coverage-report
+          "$LLVM_COV_DIR/llvm-cov" show "$BINARY" \
+            --instr-profile="$PROFDATA" \
+            --format=html \
+            --output-dir=coverage-report \
+            --ignore-filename-regex='(\.cargo|fuzz_targets|rustc)' \
+            --show-instantiations=false
+
+      - name: Upload coverage report
+        if: github.event_name == 'schedule'
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-coverage-report
+          path: fuzz/coverage-report/
+          retention-days: 30
           if-no-files-found: ignore
 
       # --- Corpus minimization (weekly only, after successful fuzzing) ---
