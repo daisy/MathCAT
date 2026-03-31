@@ -151,10 +151,11 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]+"#).unwrap()); // very limited namespace prefix match
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap()); // very limited namespace prefix match
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]+?);"#).unwrap());
 
+    // These have some length limits to avoid DOS attacks via long strings
+    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
+    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
+    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -165,6 +166,11 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
         let mathml_str = mathml_str.as_ref();
+        // Safety guard: Reject strings > 1MB to prevent DoS/Stack issues
+        if mathml_str.len() > 1024 * 1024 {
+            bail!("MathML string of size {} bytes exceeds length limit of 1MB", mathml_str.len());
+        }
+
         return MATHML_INSTANCE.with(|old_package| {
             static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
@@ -660,6 +666,16 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 /// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
 /// Convert the returned error from set_mathml, etc., to a useful string for display
 pub fn copy_mathml(mathml: Element) -> Element {
+    return copy_mathml_recursive(mathml, 0);
+}
+
+fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > 512 {
+        // Return the element as a leaf if it's too deep to prevent crash
+        return create_mathml_element(&mathml.document(), name(mathml));
+    }
+
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
     let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
@@ -712,10 +728,16 @@ fn add_ids(mathml: Element) -> Element {
         random_part.push_str("a1b2");      // needs to be at least four chars
     }
     let prefix = "M".to_string() + &time_part[time_part.len() - 3..] + &random_part[random_part.len() - 4..] + "-"; // begin with letter
-    add_ids_to_all(mathml, &prefix, 0);
+    add_ids_to_all(mathml, &prefix, 0, 0);
     return mathml;
 
-    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize) -> usize {
+    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize, depth: usize) -> usize {
+        // Safety: Prevent stack overflow on deeply nested MathML
+        if depth > 512 {
+            // Return the element as a leaf if it's too deep to prevent crash
+            return count;
+        }
+
         let mut count = count;
         if mathml.attribute("id").is_none() {
             mathml.set_attribute_value("id", (id_prefix.to_string() + &count.to_string()).as_str());
@@ -729,7 +751,7 @@ fn add_ids(mathml: Element) -> Element {
 
         for child in mathml.children() {
             let child = as_element(child);
-            count = add_ids_to_all(child, id_prefix, count);
+            count = add_ids_to_all(child, id_prefix, count, depth + 1);
         }
         return count;
     }
@@ -770,6 +792,15 @@ fn trim_doc(doc: &Document) {
 
 /// Not really meant to be public -- used by tests in some packages
 pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
+    trim_element_recursive(e, allow_structure_in_leaves, 0);
+}
+
+fn trim_element_recursive(e: Element, allow_structure_in_leaves: bool, depth: usize) {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > 512 {
+        return;
+    }
+
     // "<mtext>this is text</mtext" results in 3 text children
     // these are combined into one child as it makes code downstream simpler
 
@@ -787,7 +818,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
     for child in e.children() {
         match child {
             ChildOfElement::Element(c) => {
-                trim_element(c, allow_structure_in_leaves);
+                trim_element_recursive(c, allow_structure_in_leaves, depth + 1);
             }
             ChildOfElement::Text(t) => {
                 single_text += as_str!(t.text());
