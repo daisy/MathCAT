@@ -712,13 +712,13 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "in"]                 	# 	(google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "Mitglied von"]       	# 	(en: 'member of', google translation)
+                then: [T: "Element von"]        	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "Element von"]        	# 	(en: 'element of', google translation)
               - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "ist ein Mitglied von"]	# 	(en: 'is a member of', google translation)
+                then: [T: "ist ein Element von"]	# 	(en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "ist ein Element von"]	# 	(en: 'is an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
@@ -736,13 +736,13 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "nicht in"]           	# 	(en: 'not in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "nicht Mitglied von"] 	# 	(en: 'not member of', google translation)
+                then: [T: "kein Element von"]   	# 	(en: 'not member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "kein element von"]   	# 	(en: 'not element of', google translation)
+                then: [T: "kein Element von"]   	# 	(en: 'not element of', google translation)
               - else: [T: "nicht Element von"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "ist kein Mitglied von"]	# 	(en: 'is not a member of', google translation)
+                then: [T: "ist kein Element von"]	# 	(en: 'is not a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "ist kein Element von"]	# 	(en: 'is not an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
@@ -759,13 +759,13 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "in"]                 	# 	(google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "Mitglied von"]       	# 	(en: 'member of', google translation)
+                then: [T: "Element von"]        	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "Element von"]        	# 	(en: 'element of', google translation)
               - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "ist ein Mitglied von"]	# 	(en: 'is a member of', google translation)
+                then: [T: "ist ein Element von"]	# 	(en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "ist ein Element von"]	# 	(en: 'is an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
