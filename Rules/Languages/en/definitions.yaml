@@ -20,7 +20,7 @@
     "dimension-product": "infix=by",
     # "closed-interval": "other=closed-interval; from,to; end closed-interval",
     "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
-    "imaginary-part": "function=imaginary part, the imaginary part, the imaginary part",
+    "imaginary-part": "function=imaginary part: the imaginary part: the imaginary part",
     "least-common-multiple": "function=lcm: the lcm: the least common multiple",
     # "large-op": "infix=over || other=from,to",
     "limit": "prefix=limit as: the limit as: the limit as",
@@ -121,7 +121,7 @@
     "H": "henry",
     "Hz": "hertz",
     "J": "joule",
-    "kat": "kattel",
+    "kat": "katal",
     "lm": "lumen",
     "lx": "lux",
     "N": "newton",
@@ -142,7 +142,7 @@
     "u": "atomic mass unit",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "eV": "electronvolt",
     "rad": "radian",             # should only take negative powers
-    "sr": "sterradion",          # should only take negative powers      
+    "sr": "steradian",           # should only take negative powers
   
     # others that take a prefix
     "a": "annum",               # should only take positive powers
