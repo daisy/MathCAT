@@ -673,7 +673,7 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     // Safety: Prevent stack overflow on deeply nested MathML
     if depth > 512 {
         // Return the element as a leaf if it's too deep to prevent crash
-        return create_mathml_element(&mathml.document(), name(mathml));
+        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
     }
 
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
