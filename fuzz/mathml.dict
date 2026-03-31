@@ -9,160 +9,160 @@
 
 # --- Namespace & common XML ---
 "http://www.w3.org/1998/Math/MathML"
-xmlns
+"xmlns"
 "xml:lang"
 "xml:space"
 
 # --- Presentation elements (§3.1.8 + token + math; §3.1.3 table) ---
-math
-mrow
-a
-mi
-mn
-mo
-mtext
-mspace
-ms
-mglyph
-mfrac
-msqrt
-mroot
-mstyle
-merror
-mpadded
-mphantom
-mfenced
-menclose
-msub
-msup
-msubsup
-munder
-mover
-munderover
-mmultiscripts
-mprescripts
-none
-mtable
-mtr
-mtd
-maligngroup
-malignmark
-mstack
-mlongdiv
-msgroup
-msrow
-mscarries
-mscarry
-msline
-maction
+"math"
+"mrow"
+"a"
+"mi"
+"mn"
+"mo"
+"mtext"
+"mspace"
+"ms"
+"mglyph"
+"mfrac"
+"msqrt"
+"mroot"
+"mstyle"
+"merror"
+"mpadded"
+"mphantom"
+"mfenced"
+"menclose"
+"msub"
+"msup"
+"msubsup"
+"munder"
+"mover"
+"munderover"
+"mmultiscripts"
+"mprescripts"
+"none"
+"mtable"
+"mtr"
+"mtd"
+"maligngroup"
+"malignmark"
+"mstack"
+"mlongdiv"
+"msgroup"
+"msrow"
+"mscarries"
+"mscarry"
+"msline"
+"maction"
 
 # --- Attributes shared by all MathML elements (§2.1.6) ---
-id
-xref
-class
-style
-href
-intent
-arg
+"id"
+"xref"
+"class"
+"style"
+"href"
+"intent"
+"arg"
 
 # --- math element (§2.2.1) ---
-display
-maxwidth
-overflow
-altimg
-altimg-width
-altimg-height
-altimg-valign
-alttext
-cdgroup
+"display"
+"maxwidth"
+"overflow"
+"altimg"
+"altimg-width"
+"altimg-height"
+"altimg-valign"
+"alttext"
+"cdgroup"
 
 # --- Common presentation attributes (§3.1.9) ---
-mathcolor
-mathbackground
-scriptlevel
-displaystyle
-scriptsizemultiplier
-scriptminsize
-infixlinebreakstyle
-decimalcharacter
+"mathcolor"
+"mathbackground"
+"scriptlevel"
+"displaystyle"
+"scriptsizemultiplier"
+"scriptminsize"
+"infixlinebreakstyle"
+"decimalcharacter"
 
 # --- Token style (§3.2.2) ---
-mathvariant
-mathsize
-dir
+"mathvariant"
+"mathsize"
+"dir"
 
 # --- mglyph (§3.2.1.1) ---
-src
-width
-height
-valign
-alt
+"src"
+"width"
+"height"
+"valign"
+"alt"
 
 # --- ms (§3.2.8) ---
-lquote
-rquote
+"lquote"
+"rquote"
 
 # --- mo dictionary & linebreak (§3.2.5.2) ---
-form
-lspace
-rspace
-stretchy
-symmetric
-maxsize
-minsize
-largeop
-movablelimits
-accent
-fence
-separator
-linebreak
-lineleading
-linebreakstyle
-linebreakmultchar
-indentalign
-indentshift
-indenttarget
-indentalignfirst
-indentshiftfirst
-indentalignlast
-indentshiftlast
+"form"
+"lspace"
+"rspace"
+"stretchy"
+"symmetric"
+"maxsize"
+"minsize"
+"largeop"
+"movablelimits"
+"accent"
+"fence"
+"separator"
+"linebreak"
+"lineleading"
+"linebreakstyle"
+"linebreakmultchar"
+"indentalign"
+"indentshift"
+"indenttarget"
+"indentalignfirst"
+"indentshiftfirst"
+"indentalignlast"
+"indentshiftlast"
 
 # --- mfrac (§3.3.2) ---
-linethickness
-numalign
-denomalign
-bevelled
+"linethickness"
+"numalign"
+"denomalign"
+"bevelled"
 
 # --- mpadded (§3.3.6) ---
-voffset
+"voffset"
 
 # --- mfenced (§3.3.8) ---
-open
-close
-separators
+"open"
+"close"
+"separators"
 
 # --- menclose (§3.3.9) ---
-notation
+"notation"
 
 # --- maction (§3.7.1) ---
-actiontype
-selection
+"actiontype"
+"selection"
 
 # --- Named math spaces for lengths (§2.1.5.2) ---
-veryverythinmathspace
-verythinmathspace
-thinmathspace
-mediummathspace
-thickmathspace
-verythickmathspace
-veryverythickmathspace
-negativeveryverythinmathspace
-negativeverythinmathspace
-negativethinmathspace
-negativemediummathspace
-negativethickmathspace
-negativeverythickmathspace
-negativeveryverythickmathspace
+"veryverythinmathspace"
+"verythinmathspace"
+"thinmathspace"
+"mediummathspace"
+"thickmathspace"
+"verythickmathspace"
+"veryverythickmathspace"
+"negativeveryverythinmathspace"
+"negativeverythinmathspace"
+"negativethinmathspace"
+"negativemediummathspace"
+"negativethickmathspace"
+"negativeverythickmathspace"
+"negativeveryverythickmathspace"
 
 # --- Typical attribute values (enumerations & booleans) ---
 "true"
@@ -218,17 +218,17 @@ negativeveryverythickmathspace
 "stretched"
 
 # --- menclose notation keywords (§3.3.9) ---
-actuarial
-phasorangle
-box
-roundedbox
-circle
-updiagonalstrike
-downdiagonalstrike
-verticalstrike
-horizontalstrike
-northeastarrow
-madruwb
+"actuarial"
+"phasorangle"
+"box"
+"roundedbox"
+"circle"
+"updiagonalstrike"
+"downdiagonalstrike"
+"verticalstrike"
+"horizontalstrike"
+"northeastarrow"
+"madruwb"
 
 # --- Small structural fragments (UTF-8) ---
 "<math>"
