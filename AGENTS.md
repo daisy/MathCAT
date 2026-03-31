@@ -33,3 +33,12 @@ but add common mistakes of AI agents here instead.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
 - do not do any git commands unless explicitly asked for
 - Rust coverage is in `target/coverage/`.
+
+## Fuzzing (`fuzz/` + cargo-fuzz)
+- Install: `cargo install cargo-fuzz`, use a **nightly** toolchain (`rustup run nightly cargo fuzz …`).
+- **Dictionary:** `fuzz/mathml.dict` is passed to libFuzzer as `-dict=mathml.dict` (path relative to the `fuzz/` crate). It lists MathML 4 presentation elements and attributes to improve coverage.
+- **Harness:** `fuzz/fuzz_targets/fuzz_target_1.rs` calls `set_mathml`, then (on success) `get_spoken_text`, `get_braille` (with `""` and a lossy tail id), `do_navigate_command` with valid command names from `src/navigate.rs` `NAV_COMMANDS`, then speech/braille again.
+- **CI:** `.github/workflows/fuzz.yml` builds `fuzz_target_1` with default and `--features no-unsafe`, runs with `mathml.dict` and **`corpus/fuzz_target_1`** (repo: `fuzz/corpus/fuzz_target_1`). The corpus is **restored/saved via GitHub Actions cache** so inputs improve across runs. Push/PR: `-max_total_time=60` each; **weekly schedule: 3600s (1 hour) per configuration**. Weekly runs also **minimize the corpus** (`cargo fuzz cmin`) to keep the cache lean.
+- **Crash artifacts:** uploaded as GitHub Actions artifacts (90-day retention) on any fuzz failure. Download them from the failed workflow run's "Artifacts" section.
+- **Regression tests from crashes:** run `python PythonScripts/fuzz_to_test.py` (optionally pass artifact paths; defaults to `fuzz/artifacts/fuzz_target_1/`). This appends `#[test]` functions to `tests/fuzz_regressions.rs`, deduplicating by content hash. Tests call `set_mathml` + `get_spoken_text` + `get_braille` on the crash input.
+- **Windows:** prefer **WSL** for local `cargo fuzz` (ASAN/libFuzzer); CI runs on `ubuntu-latest`.

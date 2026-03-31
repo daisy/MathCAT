@@ -1,0 +1,263 @@
+# LibFuzzer dictionary for MathML presentation fuzzing.
+# Derived from W3C MathML 4.0 (presentation markup, esp. §3.1.3 Required Arguments
+# and §3.1.8 Summary, plus §2.1.6 / §2.2.1 / §3.1.9 / §3.2–3.3 attribute tables).
+# Spec: https://www.w3.org/TR/mathml4/
+#
+# Use with libFuzzer / cargo-fuzz, e.g. after -- :
+#   -dict=mathml.dict
+# (path is relative to the fuzz crate directory.)
+
+# --- Namespace & common XML ---
+"http://www.w3.org/1998/Math/MathML"
+xmlns
+"xml:lang"
+"xml:space"
+
+# --- Presentation elements (§3.1.8 + token + math; §3.1.3 table) ---
+math
+mrow
+a
+mi
+mn
+mo
+mtext
+mspace
+ms
+mglyph
+mfrac
+msqrt
+mroot
+mstyle
+merror
+mpadded
+mphantom
+mfenced
+menclose
+msub
+msup
+msubsup
+munder
+mover
+munderover
+mmultiscripts
+mprescripts
+none
+mtable
+mtr
+mtd
+maligngroup
+malignmark
+mstack
+mlongdiv
+msgroup
+msrow
+mscarries
+mscarry
+msline
+maction
+
+# --- Attributes shared by all MathML elements (§2.1.6) ---
+id
+xref
+class
+style
+href
+intent
+arg
+
+# --- math element (§2.2.1) ---
+display
+maxwidth
+overflow
+altimg
+altimg-width
+altimg-height
+altimg-valign
+alttext
+cdgroup
+
+# --- Common presentation attributes (§3.1.9) ---
+mathcolor
+mathbackground
+scriptlevel
+displaystyle
+scriptsizemultiplier
+scriptminsize
+infixlinebreakstyle
+decimalcharacter
+
+# --- Token style (§3.2.2) ---
+mathvariant
+mathsize
+dir
+
+# --- mglyph (§3.2.1.1) ---
+src
+width
+height
+valign
+alt
+
+# --- ms (§3.2.8) ---
+lquote
+rquote
+
+# --- mo dictionary & linebreak (§3.2.5.2) ---
+form
+lspace
+rspace
+stretchy
+symmetric
+maxsize
+minsize
+largeop
+movablelimits
+accent
+fence
+separator
+linebreak
+lineleading
+linebreakstyle
+linebreakmultchar
+indentalign
+indentshift
+indenttarget
+indentalignfirst
+indentshiftfirst
+indentalignlast
+indentshiftlast
+
+# --- mfrac (§3.3.2) ---
+linethickness
+numalign
+denomalign
+bevelled
+
+# --- mpadded (§3.3.6) ---
+voffset
+
+# --- mfenced (§3.3.8) ---
+open
+close
+separators
+
+# --- menclose (§3.3.9) ---
+notation
+
+# --- maction (§3.7.1) ---
+actiontype
+selection
+
+# --- Named math spaces for lengths (§2.1.5.2) ---
+veryverythinmathspace
+verythinmathspace
+thinmathspace
+mediummathspace
+thickmathspace
+verythickmathspace
+veryverythickmathspace
+negativeveryverythinmathspace
+negativeverythinmathspace
+negativethinmathspace
+negativemediummathspace
+negativethickmathspace
+negativeverythickmathspace
+negativeveryverythickmathspace
+
+# --- Typical attribute values (enumerations & booleans) ---
+"true"
+"false"
+"prefix"
+"infix"
+"postfix"
+"block"
+"inline"
+"ltr"
+"rtl"
+"linebreak"
+"scroll"
+"elide"
+"truncate"
+"scale"
+"left"
+"center"
+"right"
+"top"
+"middle"
+"bottom"
+"auto"
+"before"
+"after"
+"duplicate"
+"newline"
+"nobreak"
+"goodbreak"
+"badbreak"
+"thin"
+"medium"
+"thick"
+"small"
+"normal"
+"big"
+"italic"
+"bold"
+"bold-italic"
+"double-struck"
+"bold-fraktur"
+"script"
+"bold-script"
+"fraktur"
+"sans-serif"
+"bold-sans-serif"
+"sans-serif-italic"
+"sans-serif-bold-italic"
+"monospace"
+"initial"
+"tailed"
+"looped"
+"stretched"
+
+# --- menclose notation keywords (§3.3.9) ---
+actuarial
+phasorangle
+box
+roundedbox
+circle
+updiagonalstrike
+downdiagonalstrike
+verticalstrike
+horizontalstrike
+northeastarrow
+madruwb
+
+# --- Small structural fragments (UTF-8) ---
+"<math>"
+"</math>"
+"<mrow>"
+"</mrow>"
+"<mi>"
+"</mi>"
+"<mn>"
+"</mn>"
+"<mo>"
+"</mo>"
+"<mtext>"
+"</mtext>"
+"<mfrac>"
+"</mfrac>"
+"<msqrt>"
+"</msqrt>"
+"<mroot>"
+"</mroot>"
+"<mstyle>"
+"</mstyle>"
+"<mtable>"
+"</mtable>"
+"<mtr>"
+"</mtr>"
+"<mtd>"
+"</mtd>"
+"<mmultiscripts>"
+"</mmultiscripts>"
+"<mprescripts/>"
+"<none/>"
