@@ -13,7 +13,6 @@ on:
 
 # Paths are relative to the repo root (cache / mkdir). The fuzz crate lives in fuzz/.
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   FUZZ_CORPUS_ROOT: fuzz/corpus/fuzz_target_1
 
 jobs:
@@ -21,7 +20,7 @@ jobs:
     name: Build and fuzz (with MathML dict + corpus cache)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Ensure corpus directory exists
         run: mkdir -p "${{ env.FUZZ_CORPUS_ROOT }}"
@@ -79,7 +78,7 @@ jobs:
       # --- Crash artifact upload (on failure) ---
       - name: Upload crash artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: fuzz-crash-artifacts
           path: fuzz/artifacts/
