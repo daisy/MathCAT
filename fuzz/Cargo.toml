@@ -9,7 +9,7 @@ cargo-fuzz = true
 
 [profile.release]
 debug = 1
-panic = "abort"
+# panic = "abort" # also "unwind"
 
 [profile.dev]
 panic = "abort"
