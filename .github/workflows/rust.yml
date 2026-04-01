@@ -5,13 +5,15 @@ on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
+  # Until all marketplace actions ship Node 24 runtimes (see GitHub deprecation of Node 20).
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Build
       run: cargo build --verbose
     - name: Run tests
@@ -21,7 +23,7 @@ jobs:
     name: Build and Test (no-unsafe)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Build with no-unsafe
       run: cargo build --features no-unsafe --verbose
     - name: Run tests with no-unsafe
@@ -31,7 +33,7 @@ jobs:
     name: Clippy/Lint check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: run clippy
       run: cargo clippy
 
@@ -39,7 +41,7 @@ jobs:
     name: Clippy/Lint check (no-unsafe)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: run clippy with no-unsafe
       run: cargo clippy --features no-unsafe
 
@@ -47,7 +49,7 @@ jobs:
     name: zip up the rules directory
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Remove empty Rules directories
       run:  find Rules -type d -empty -delete
     - name: Remove test directory
@@ -78,7 +80,7 @@ jobs:
     steps:
     # download the previous build artifacts and put them in their proper places
     - name: download Rules.zip
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Rules.zip
     # put the files into the release

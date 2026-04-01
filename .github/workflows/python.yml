@@ -2,12 +2,15 @@ name: Python
 
 on: [push, pull_request]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     name: Python Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: astral-sh/setup-uv@v6
     - name: Run tests
       working-directory: PythonScripts
