@@ -50,7 +50,7 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then
             echo "seconds=3600" >> "$GITHUB_OUTPUT"
           else
-            echo "seconds=60" >> "$GITHUB_OUTPUT"
+            echo "seconds=7200" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build fuzz target (default)
