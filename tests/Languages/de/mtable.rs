@@ -1144,3 +1144,48 @@ fn single_line_with_label() -> Result<()> {
 return Ok(());
 
 */
+
+#[test]
+fn identity_matrix() -> Result<()> {
+    let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+    test("de", "SimpleSpeak", expr, "die 3 mal 3 identitätsmatrix")?;
+    Ok(())
+}
+
+#[test]
+fn identity_matrix_false_positive_negative_one() -> Result<()> {
+    let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>-1</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
+        expr, "die 2 mal 2 diagonalmatrix; spalte 1; 1; spalte 2; negativ 1")?;
+    Ok(())
+}
+
+#[test]
+fn identity_matrix_false_positive_zero_diagonal() -> Result<()> {
+    let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
+        expr, "die 2 mal 2 diagonalmatrix; spalte 1; 1")?;
+    Ok(())
+}

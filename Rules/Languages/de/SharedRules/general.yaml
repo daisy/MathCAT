@@ -571,13 +571,11 @@
 
 - name: identity-matrix
   tag: matrix
-  # select all the non-zero entries...if they are not on the diagonal, or are != 1
-  #   if there are any of them, then this isn't an identity matrix
+  # every diagonal entry must be a literal 1, and every off-diagonal entry must be a literal 0
   match:
-  - "count(*) = count(*[1]/*) and "
-  - "not( */*/*[not(self::m:mn and .= 0)]"
-  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*) or .!= 1]"
-  - "    )"
+  - "count(*) = count(*[1]/*) and " # matrix is square
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
   - T: "die"      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
