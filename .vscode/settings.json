@@ -297,6 +297,7 @@
         "nobreak",
         "nodeset",
         "nodetest",
+        "nonascii",
         "nonillionths",
         "northeastarrow",
         "northeastsouthwestarrow",
@@ -517,5 +518,4 @@
         "bzlib_private.h": "c",
         "stdlib.h": "c"
     },
-    
 }

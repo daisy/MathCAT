@@ -96,11 +96,11 @@
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
-      then: [{pause: short}]
+      then: [pause: short]
   - T: "genom"               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [{pause: short}]
+      then: [pause: short]
   - x: "*[2]"
   - pause: short
   - T: "slut division"          # phrase("start of fraction x over y 'end over'")
@@ -196,20 +196,50 @@
           - x: "*[last()]"
           # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
 
+# - name: default
+#   tag: munder
+#   match: "."
+#   replace:
+#   - test:
+#       if: "not(IsNode(*[1], 'leaf'))"
+#       then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
+#   - x: "*[1]"
+#   - pause: short
+#   - T: "med kommentar under"      # phrase(x 'with' z below it)
+#   - pause: short
+#   - x: "*[2]"
+#   - pause: short
+#   - T: "slut kommentar"      # phrase(x with z 'below' it)
+
 - name: default
   tag: munder
   match: "."
   replace:
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
-  - x: "*[1]"
-  - pause: short
-  - T: "med kommentar under"      # phrase(x 'with' z below it)
-  - pause: short
-  - x: "*[2]"
-  - pause: short
-  - T: "slut kommentar"      # phrase(x with z 'below' it)
+  - with:
+      variables:
+      # true if the comment contains ⏟ or ︸ (also if inside mrow or surrounded by whitespace)
+      - HasBrace: "contains(normalize-space(string(*[2])), '⏟') or contains(normalize-space(string(*[2])), '︸')"
+      replace:
+      - test:
+          if: "$HasBrace"
+          then:
+            # The base is always read
+            - x: "*[1]"
+            - pause: short
+            # Read the brace (good for navigation) but no framing phrases
+            - x: "*[2]"
+          else:
+            # Frame phrase in the beginning if the base is not leaf
+            - test:
+                if: "not(IsNode(*[1], 'leaf'))"
+                then: [T: "kommenterat uttryck"]
+            - x: "*[1]"
+            - pause: short
+            - T: "med kommentar under"
+            - pause: short
+            - x: "*[2]"
+            - pause: short
+            - T: "slut kommentar"
 
 - name: diacriticals
   tag: mover
@@ -274,12 +304,15 @@
           - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'nedsänkt', 'nedsänkt')"
           - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'upphöjt', 'upphöjt')"
           replace:
-          - test: # only bother announcing if there is more than one prescript
+          - test: # SWEDISH: announce prescripts regardless of how many
               if: "count($Prescripts) > 2"
               then:
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
               - T: "vänster index"      # phrase(in this equation certain 'prescripts' apply)
+              - pause: short
+              else:
+              - T: "vänster index"
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
@@ -334,6 +367,12 @@
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
               - T: "höger index"      # phrase(this material includes several 'postscripts')
+              - pause: short
+              else:
+              - test:
+                  if: "$Prescripts"
+                  then: [T: "och"]
+              - T: "höger index"
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -405,7 +444,9 @@
 
 - name: default
   tag: mtable
-  variables: [IsColumnSilent: false()]
+  variables:
+  - IsColumnSilent: "false()"
+  - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
   - T: "tabell med"      # phrase(the 'table with' 3 rows)
@@ -415,9 +456,9 @@
       then: [T: "rad"]      # phrase(the table with 1 'row')
       else: [T: "rader"]      # phrase(the table with 3 'rows')
   - T: "och"      # phrase(the table with 3 rows 'and' 4 columns)
-  - x: "count(*[1]/*)"
+  - x: "$NumColumns"
   - test:
-      if: "count(*[1]/*)=1"
+      if: "$NumColumns"
       then: [T: "kolumn"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "kolumner"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -433,16 +474,16 @@
   - T: "rad"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
-      if: .[self::m:mlabeledtr]
+      if: self::m:mlabeledtr
       then:
       - T: "med etiketten"      # phrase(the line 'with label' first equation)
       - x: "*[1]/*"
       - pause: short
   - pause: medium
   - test:
-      if: .[self::m:mlabeledtr]
-      then: [{x: "*[position()>1]"}]
-      else: {x: "*"}
+      if: self::m:mlabeledtr
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
 
 - name: default
   tag: mtd
@@ -455,16 +496,16 @@
       if: "not($IsColumnSilent)"
       then:
       - T: "kolumn"      # phrase(the first 'column' of the matrix)
-      - x: "count(preceding-sibling::*)+1"
+      - x: "count(preceding-sibling::*)+IfThenElse(parent::m:mlabeledtr, 0, 1)"
       - pause: medium
   - x: "*"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
-      then: {pause: short}
+      then: [pause: short]
     - else_if: count(../following-sibling::*) > 0
-      then: {pause: medium}
-      else: {pause: long}
+      then: [pause: medium]
+      else: [pause: long]
 
 
 - name: empty-box
@@ -606,8 +647,9 @@
   match: .
   replace:
   - x: "*[1]"
-  - T: "tillämpad på"      # phrase(the function sine 'applied to' x plus y)
-  - x: "*[2]"
+  - T: "av"
+  - pause: auto
+  - x: "*[position() > 1]"
 
 
 # Here are the intent hints that need to be handled: 'prefix' | 'infix' | 'postfix' | 'function' | 'silent'
@@ -631,7 +673,7 @@
   - x: "*"
   - test:
       if: "not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
-      then: [x: "SpeakBracketingIntentName(name(.), $Verbosity, 'prefix', 'end')"]
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'prefix', 'end')"]
   - test:
       if: "IsNode(., '2D')"
       then: [pause: short]
@@ -644,7 +686,7 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
-      then: [x: "SpeakBracketingIntentName(name(.), $Verbosity, 'postfix', 'start')"]
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'postfix', 'start')"]
   - x: "*"
   - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
 
@@ -655,7 +697,7 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
-      then: [x: "SpeakBracketingIntentName(name(.), $Verbosity, 'infix', 'start')"]
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'start')"]
   - test:
       if: "count(*) = 1"  # in cases such as continued-row, plus/minus might have just one child
       then:
@@ -668,7 +710,7 @@
           replace: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')", pause: auto]
   - test:
       if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
-      then: [x: "SpeakBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
   - test:
       if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
       then: [pause: short]
@@ -693,7 +735,7 @@
       # SWEDISH: After correspondence with a mathematician we have decided to not have any punctuation between variables, but a short pause. Length of pause needs to be tested.
   - test:
       if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
-      then: [x: "SpeakBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
   - test:
       if: "IsNode(., '2D')"
       then: [pause: short]

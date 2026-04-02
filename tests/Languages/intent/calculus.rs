@@ -1,10 +1,11 @@
 /// Tests for:
 /// *  calculus-related inference
 use crate::common::*;
+use anyhow::Result;
 
 
 #[test]
-fn laplacian() {
+fn laplacian() -> Result<()> {
   let mathml = r#"<math>
         <msup> <mo>∇</mo> <mn>2</mn> </msup>
         <mi>&#x3C8;</mi>
@@ -14,11 +15,13 @@ fn laplacian() {
         <mi data-from-mathml='mi'>ψ</mi>
       </laplacian>
    </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn laplacian_as_vector() {
+fn laplacian_as_vector() -> Result<()> {
   let mathml = r#"<math>
         <msup> <mover><mo>∇</mo><mo>&#x2192;</mo></mover> <mn>2</mn> </msup>
         <mi>&#x3C8;</mi>
@@ -28,22 +31,26 @@ fn laplacian_as_vector() {
         <mi data-from-mathml='mi'>ψ</mi>
       </laplacian>
    </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn laplacian_as_operator() {
+fn laplacian_as_operator() -> Result<()> {
   let mathml = r#"<math>
     <msup> <mo>𝛁</mo> <mn>2</mn> </msup>
     </math>"#;
   let intent = r#"<math data-from-mathml='math' >
       <laplacian data-from-mathml='msup' />
    </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_gradient() {
+fn simple_gradient() -> Result<()> {
   let mathml = r#"<math>
         <mi mathvariant="normal">∇</mi>
         <mi>f</mi>
@@ -53,11 +60,13 @@ fn simple_gradient() {
             <mi data-from-mathml='mi'>f</mi>
         </gradient>
     </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_bold_gradient() {
+fn simple_bold_gradient() -> Result<()> {
   let mathml = r#"<math>
         <mi mathvariant="bold">∇</mi>
         <mi>f</mi>
@@ -67,11 +76,13 @@ fn simple_bold_gradient() {
             <mi data-from-mathml='mi'>f</mi>
         </gradient>
        </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_div() {
+fn simple_div() -> Result<()> {
   let mathml = r#"<math>
         <mi mathvariant="normal">∇</mi>
         <mo>⋅</mo>
@@ -82,11 +93,13 @@ fn simple_div() {
         <mi data-from-mathml='mi' mathvariant='bold'>𝐟</mi>
     </divergence> 
    </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_curl() {
+fn simple_curl() -> Result<()> {
   let mathml = r#"<math>
         <mi mathvariant="normal">∇</mi>
         <mo>&#xD7;</mo>
@@ -97,11 +110,13 @@ fn simple_curl() {
             <mi data-from-mathml='mi' mathvariant='bold'>𝐟</mi>
         </curl>
     </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn curl_in_mrow() {
+fn curl_in_mrow() -> Result<()> {
   let mathml = r#"<math>
         <mi>r</mi>
         <mi mathvariant="normal">&#x2207;</mi>
@@ -119,11 +134,13 @@ fn curl_in_mrow() {
         </curl>
     </mrow>
     </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn gradient_vector() {
+fn gradient_vector() -> Result<()> {
   let mathml = r#"<math>
         <mover>
             <mi mathvariant="normal">&#x2207;</mi>
@@ -136,11 +153,13 @@ fn gradient_vector() {
             <mi data-from-mathml='mi'>f</mi>
         </gradient>
     </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
 
 #[test]
-fn curl_vector() {
+fn curl_vector() -> Result<()> {
   let mathml = r#"<math>
         <mover>
             <mi mathvariant="normal">&#x2207;</mi>
@@ -159,5 +178,7 @@ fn curl_vector() {
             </vector>
         </curl>
     </math>"#;
-    test_intent(mathml, intent, vec![]);
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+
 }
