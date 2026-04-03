@@ -858,7 +858,7 @@ fn likely_chem_equation(mathml: Element) -> isize {
 	// mrow -- check the children to see if we are likely to be a chemical equation
 
     // concentrations should either be unscripted or have a superscript that isn't a charge
-    // they occur in mrows or mfracs
+    // they occur in an mrow or mfrac
     if IsBracketed::is_bracketed(mathml, "[", "]", false, true) {
         let parent_name = name(get_parent(mathml));
         if parent_name == "mfrac" || parent_name == "mrow"  || parent_name == "math" || 
@@ -1703,7 +1703,7 @@ pub fn likely_chem_element(mathml: Element) -> isize {
     if as_text(mathml).trim().is_empty() {
         return 0;   // whitespace
     } else if is_chemical_element(mathml) {
-        // single letter = 1; single letter with mathvarinat="normal" = 2; double = 3 -- all elements are ASCII
+        // single letter = 1; single letter with mathvariant="normal" = 2; double = 3 -- all elements are ASCII
         return (if text.len() == 1 {
             if mathml.attribute_value("mathvariant").unwrap_or_default() == "normal" {2} else {1}
         } else {
