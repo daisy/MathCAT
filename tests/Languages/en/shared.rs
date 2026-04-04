@@ -210,6 +210,39 @@ fn presentation_mathml_in_semantics() -> Result<()> {
 }
 
 #[test]
+fn roman_like_superscript_identifier_is_not_chemistry() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>I</mi>
+        <mo>=</mo>
+        <mo>−</mo>
+        <mi>b</mi>
+        <mi>r</mi>
+        <mo>+</mo>
+        <msup>
+            <mi>z</mi>
+            <mi>I</mi>
+        </msup>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap i is equal to, negative b r, plus z to the cap i-th power")?;
+    Ok(())
+}
+
+#[test]
+fn roman_like_identifier_sequence_is_not_number() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>C</mi>
+        <mo>+</mo>
+        <mi>I</mi>
+        <mo>+</mo>
+        <mi>X</mi>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap c, plus cap i, plus cap x")?;
+    Ok(())
+}
+
+#[test]
 fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
