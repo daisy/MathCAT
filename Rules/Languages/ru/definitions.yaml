@@ -23,8 +23,8 @@
     "least-common-multiple": "function=нок:нок:наименьшее общее кратное",
     # "large-op": "infix=над || other=от,до",
     "limit": "prefix=придел при: придел при: придел при",
-    "lim-sup": "prefix=верхний предел при: верхний предел при: верхний предел при",
-    "lim-inf": "prefix=нижний предел при: нижний предел при: нижний предел при",
+    "lim-sup": "prefix=верхний придел при: верхний придел при: верхний придел при",
+    "lim-inf": "prefix=нижний придел при: нижний придел при: нижний придел при",
     "logarithm-with-base": "prefix=логарифм по основанию: логарифм по основанию: логарифм по основанию",
     "natural-logarithm": "function=l n: натуральный логарифм: натуральный логарифм",
     "minus": "infix=минус || prefix=отрицательное",
@@ -81,7 +81,7 @@
   }
 
 - OperatorIntentRenaming: {
-    "dimension-product": "by"
+    "dimension-product": "на"
   }
 
 - KnownWords: {
@@ -94,8 +94,8 @@
   }
 
 - SIPrefixes: {
-    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deka",
-    "d": "deci", "c": "centi", "m": "milli", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+"Q": "кветта", "R": "ронна", "Y": "иотта", "Z": "зетта", "E": "экса", "P": "пета", "T": "тера", "G": "гига", "M": "мега", "k": "кило", "h": "гекто", "da": "дека",
+    "d": "деци", "c": "санти", "m": "милли", "µ": "микро", "n": "нано", "p": "пико", "f": "фемто", "a": "атто", "z": "зепто", "y": "иокто", "r": "ронто", "q": "квекто"
   }
 
 # this is a list of all units that accept SIPrefixes
@@ -104,161 +104,161 @@
 #   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
 - SIUnits: {
     # base units
-    "A": "amp",
-    "cd": "candela",
-    "K": "kelvin", "K": "kelvin", # U+212A
-    "g": "gram",
-    "m": "metre",     # British spelling works for US also
-    "mol": "mole",
-    "s": "second", "sec": "second",  # "sec" not actually legal
+    "A": "ампер",
+    "cd": "кандела",
+    "K": "кельвин", "K": "кельвин", # U+212A
+    "g": "грамм",
+    "m": "метр",
+    "mol": "моль",
+    "s": "секунда", "sec": "секунда",  # "sec" не является официальным, но поддерживается
 
     # derived units
-    "Bq": "becquerel",
-    "C": "coulomb",
-    "°C": "degree celsius", "℃": "degree celsius", # should only take negative powers
-    "F": "farad",
-    "Gy": "gray",
-    "H": "henry",
-    "Hz": "hertz",
-    "J": "joule",
-    "kat": "kattel",
-    "lm": "lumen",
-    "lx": "lux",
-    "N": "newton",
-    "Ω": "ohm", "Ω": "ohm",       # Greek Cap letter, U+2126 OHM SIGN
-    "Pa": "pascal",
-    "S": "siemens",
-    "Sv": "sievert",
-    "T": "tesla",
-    "V": "volt",
-    "W": "watt",
-    "Wb": "weber",
+    "Bq": "беккерель",
+    "C": "кулон",
+    "°C": "градус Цельсия", "℃": "градус Цельсия", # должны использоваться только с отрицательными степенями
+    "F": "фарад",
+    "Gy": "грей",
+    "H": "генри",
+    "Hz": "герц",
+    "J": "джоуль",
+    "kat": "катал",
+    "lm": "люмен",
+    "lx": "люкс",
+    "N": "ньютон",
+    "Ω": "ом", "Ω": "ом",       # греческая заглавная буква Омега, U+2126 OHM SIGN
+    "Pa": "паскаль",
+    "S": "сименс",
+    "Sv": "зиверт",
+    "T": "тесла",
+    "V": "вольт",
+    "W": "ватт",
+    "Wb": "вебер",
 
     # accepted (plus a few variants) that take SI prefixes
-    "l": "litre", "L": "litre", "ℓ": "litre",  # Should only take negative powers; British spelling works for US also
-    "t": "metric ton",           # should only take positive powers
-    "Da": "dalton",
-    "Np": "neper",               # should only take negative powers
-    "u": "atomic mass unit",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
-    "eV": "electronvolt",
-    "rad": "radian",             # should only take negative powers
-    "sr": "sterradion",          # should only take negative powers      
+    "l": "литр", "L": "литр", "ℓ": "литр",  # должны использоваться только с отрицательными степенями
+    "t": "тонна",           # должна использоваться только с положительными степенями
+    "Da": "дальтон",
+    "Np": "непер",               # должен использоваться только с отрицательными степенями
+    "u": "атомная единица массы",     # 'u' правильно: https://en.wikipedia.org/wiki/Dalton_(unit)
+    "eV": "электронвольт",
+    "rad": "радиан",             # должен использоваться только с отрицательными степенями
+    "sr": "стерадиан",          # должен использоваться только с отрицательными степенями      
   
     # others that take a prefix
-    "a": "annum",               # should only take positive powers
-    "as": "arcsecond",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+    "a": "год",               # должен использоваться только с положительными степенями
+    "as": "угловая секунда",          # см. ru.wikipedia.org/wiki/Minute_and_second_of_arc
 
     # technically wrong, but used in practice with SI Units
-    "b": "bit",               # should only take positive powers
-    "B": "byte",              # should only take positive powers
-    "Bd": "baud",             # should only take positive powers
+    "b": "бит",               # должен использоваться только с положительными степенями
+    "B": "байт",              # должен использоваться только с положительными степенями
+    "Bd": "бод",              # должен использоваться только с положительными степенями
   }
 
 
 - UnitsWithoutPrefixes: {
     # time
-    "″": "second", "\"": "second",
-    "′": "minute", "'": "minute","min": "minute",
-    "h": "hour", "hr": "hour", "Hr": "hour",
-    "d": "day", "dy": "day",
-    "w": "week", "wk": "week",
-    "y": "year", "yr": "year",    
+    "″": "секунда", "\"": "секунда",
+    "′": "минута", "'": "минута","min": "минута",
+    "h": "час", "hr": "час", "Hr": "час",
+    "d": "день", "dy": "день",
+    "w": "неделя", "wk": "неделя",
+    "y": "год", "yr": "год",    
 
     # angles
-    "°": "degree", "deg": "degree", # should only take negative powers
-    "arcmin": "arcminute",
-    "amin": "arcminute",
-    "am": "arcminute",
-    "MOA": "arcminute",
-    "arcsec": "arcsecond",
-    "asec": "arcsecond",
+    "°": "градус", "deg": "градус", # должны использоваться только с отрицательными степенями
+    "arcmin": "угловая минута",
+    "amin": "угловая минута",
+    "am": "угловая минута",
+    "MOA": "угловая минута",
+    "arcsec": "угловая секунда",
+    "asec": "угловая секунда",
 
     # distance
-    "au": "astronomical unit", "AU": "astronomical unit",
-    "ltyr": "light year", "ly": "light year",
-    "pc": "parsec",
-    "Å": "angstrom", "Å": "angstrom",           # U+00C5 and U+212B
-    "fm": "fermi",
+    "au": "астрономическая единица", "AU": "астрономическая единица",
+    "ltyr": "световой год", "ly": "световой год",
+    "pc": "парсек",
+    "Å": "ангстрем", "Å": "ангстрем",           # U+00C5 и U+212B
+    "fm": "ферми",
 
     # others
-    "ha": "hectare",
-    # "B": "bel",    # "B" more commonly means bytes
-    "dB": "decibel", # already logarithmic, so not used with SI prefixes
+    "ha": "гектар",
+    # "B": "bel",    # "B" чаще означает байты
+    "dB": "децибел", # уже логарифмическая, поэтому не используется с приставками СИ
 
-    "amu": "atomic mass unit",
-    "atm": "atmosphere",
-    "bar": "bar",
-    "cal": "calorie",
-    "Ci": "curie",
-    "grad": "gradian",
-    "M": "molar",
-    "R": "roentgen",
-    "rpm": "revolution per minute",
-    "℧": "m-h-o",
-    "dyn": "dyne",
-    "erg": "erg",
+    "amu": "атомная единица массы",
+    "atm": "атмосфера",
+    "bar": "бар",
+    "cal": "калория",
+    "Ci": "кюри",
+    "grad": "градиан",
+    "M": "молярный",
+    "R": "рентген",
+    "rpm": "оборот в минуту",
+    "℧": "сименс (устаревшее)",
+    "dyn": "дина",
+    "erg": "эрг",
 
     # powers of 2 used with bits and bytes
-    "Kib": "kibi-bit", "Mib": "mebi-bit", "Gib": "gibi-bit", "Tib": "tebi-bit", "Pib": "pebi-bit", "Eib": "exbi-bit", "Zib": "zebi-bit", "Yib": "yobi-bit",
-    "KiB": "kibi-byte", "MiB": "mebi-byte", "GiB": "gibi-byte", "TiB": "tebi-byte", "PiB": "pebi-byte", "EiB": "exbi-byte", "ZiB": "zebi-byte", "YiB": "yobi-byte",
+    "Kib": "кибибит", "Mib": "мебибит", "Gib": "гибибит", "Tib": "тебибит", "Pib": "пебибит", "Eib": "эксбибит", "Zib": "зебибит", "Yib": "йобибит",
+    "KiB": "кибибайт", "MiB": "мебибайт", "GiB": "гибибайт", "TiB": "тебибайт", "PiB": "пебибайт", "EiB": "эксбибайт", "ZiB": "зебибайт", "YiB": "йобибайт",
   }
 
   # this will only be used if the language is English, so it can be empty for other countries
 - EnglishUnits: {
     # length
-    "in": "inch",
-    "ft": "foot",
-    "mi": "mile",
-    "rd": "rod",
-    "li": "link",
-    "ch": "chain",
+    "in": "дюйм",
+    "ft": "фут",
+    "mi": "миля",
+    "rd": "род",
+    "li": "линк",
+    "ch": "чейн",
 
     # area
-    "sq in": "square inch", "sq. in": "square inch", "sq. in.": "square inch",
-    "sq ft": "square foot", "sq. ft": "square foot", "sq. ft.": "square foot",
-    "sq yd": "square yard", "sq. yd": "square yard", "sq. yd.": "square yard",
-    "sq mi": "square mile", "sq. mi": "square mile", "sq. mi.": "square mile",
-    "ac": "acre",
-    "FBM": "board foot",
+    "sq in": "квадратный дюйм", "sq. in": "квадратный дюйм", "sq. in.": "квадратный дюйм",
+    "sq ft": "квадратный фут", "sq. ft": "квадратный фут", "sq. ft.": "квадратный фут",
+    "sq yd": "квадратный ярд", "sq. yd": "квадратный ярд", "sq. yd.": "квадратный ярд",
+    "sq mi": "квадратная миля", "sq. mi": "квадратная миля", "sq. mi.": "квадратная миля",
+    "ac": "акр",
+    "FBM": "доско-фут",
 
     # volume
-    "cu in": "cubic inch", "cu. in": "cubic inch", "cu. in.": "cubic inch",
-    "cu ft": "cubic foot", "cu. ft": "cubic foot", "cu. ft.": "cubic foot",
-    "cu yd": "cubic yard", "cu. yd": "cubic yard", "cu. yd.": "cubic yard",
-    "bbl": "barrel", "BBL": "barrel",
-    "pk": "peck",
-    "bu": "bushel",
-    "tsp": "teaspoon",
-    "tbl": "tablespoon",
+    "cu in": "кубический дюйм", "cu. in": "кубический дюйм", "cu. in.": "кубический дюйм",
+    "cu ft": "кубический фут", "cu. ft": "кубический фут", "cu. ft.": "кубический фут",
+    "cu yd": "кубический ярд", "cu. yd": "кубический ярд", "cu. yd.": "кубический ярд",
+    "bbl": "баррель", "BBL": "баррель",
+    "pk": "пек",
+    "bu": "бушель",
+    "tsp": "чайная ложка",
+    "tbl": "столовая ложка",
 
     # liquid
-    "fl dr": "fluid drams",
-    "fl oz": "fluid ounce",
-    "gi": "gill",
-    "cp": "cup", "cup": "cup",
-    "pt": "pint",
-    "qt": "quart",
-    "gal": "gallon",
+    "fl dr": "жидкая драхма",
+    "fl oz": "жидкая унция",
+    "gi": "джилл",
+    "cp": "чашка", "cup": "чашка",
+    "pt": "пинта",
+    "qt": "кварта",
+    "gal": "галлон",
 
     # weight
-    "gr": "grain",
-    "dr": "dram",
-    "oz": "ounce", "℥": "ounce",
-    "lb": "pound",
-    "cwt": "hundredweight",
-    "dwt": "pennyweight",
-    "oz t": "troy ounce",
-    "lb t": "troy pound",
+    "gr": "гран",
+    "dr": "драхма",
+    "oz": "унция", "℥": "унция",
+    "lb": "фунт",
+    "cwt": "центнер (английский)",
+    "dwt": "пеннивейт",
+    "oz t": "тройская унция",
+    "lb t": "тройский фунт",
 
     # energy
-    "hp": "horsepower",
-    "BTU": "BTU",
-    "°F": "degree fahrenheit", "℉": "degree fahrenheit",
+    "hp": "лошадиная сила",
+    "BTU": "БТЕ",
+    "°F": "градус Фаренгейта", "℉": "градус Фаренгейта",
 
     # other
-    "mph": "mile per hour",
-    "mpg": "mile per gallon",
-  }
+    "mph": "миля в час",
+    "mpg": "миля на галлон",
+      }
 
 - PluralForms: {
   # FIX: this needs to be flushed out
@@ -307,13 +307,13 @@
     ]
 
 - NumbersOrdinalOnes: [
-«нулевой», «первый», «второй», «третий», «четвертый», «пятый», «шестой», «седьмой», «восьмой», «девятый»,
+«нулевой», «первый», «второй», «третий», «четвёртый», «пятый», «шестой», «седьмой», «восьмой», «девятый»,
 «десятый», «одиннадцатый», «двенадцатый», «тринадцатый», «четырнадцатый», «пятнадцатый», «шестнадцатый»,
 «семнадцатый», «восемнадцатый», «девятнадцатый»
     ]
 
 - NumbersOrdinalPluralOnes: [
-«нулевые», «первые», «вторые», «третьи», «четвертые», «пятые», «шестые», «седьмые», «восьмые», «девятые»,
+«нулевые», «первые», «вторые», «третьи», «четвёртые», «пятые», «шестые», «седьмые», «восьмые», «девятые»,
 «десятые», «одиннадцатые», «двенадцатые», «тринадцатые», «четырнадцатые», «пятнадцатые», «шестнадцатые»,
 «семнадцатые», «восемнадцатые», «девятнадцатые»
     ]
@@ -367,10 +367,10 @@
       
 - NumbersOrdinalLarge: [
 "", "тысячная", "миллионная", "миллиардная", "триллионная", "квадриллионная",
-«квинтиллионный», «секстиллионный», «септиллионный», «октиллионный», «нониллионный»
+«квинтиллионная», «секстиллионная», «септиллионная», «октиллионная», «нониллионная»
     ]
       
 - NumbersOrdinalPluralLarge: [
 "", "тысячные", "миллионные", "миллиардные", "триллионные", "квадриллионные",
-«квинтиллионы», «секстиллионы», «септиллионы», «октиллионы», «нониллионы»
+«квинтиллионные», «секстиллионные», «септиллионные», «октиллионные», «нониллионные»
     ]
