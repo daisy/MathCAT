@@ -481,24 +481,29 @@
 # Some rules on mrows
 #
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
-  name: ClearSpeak-absolute-value
+- name: ClearSpeak-absolute-value
   tag: absolute-value
   match: "."
-  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', ', 'мощность', 'модуль')"]
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: ""]      # phrase('the' absolute value of 25)
-  - x: "$WordToSay"
-  - t: "из"      # phrase(the absolute value 'of' 25)
-  - x: "*[1]"
-  - test:
-      if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
-      then:
-      - pause: short
-      - t: "конец"      # phrase('end' absolute value)
-      - x: "$WordToSay"
-  - pause: short
+    - test:
+        if: "$Verbosity!='Terse'"
+        then: [t: ""]
+    - test:
+        if: "$ClearSpeak_AbsoluteValue = 'Cardinality'"
+        then: [t: "мощность"]
+        else: [t: "модуль"]
+    - t: из
+    - x: "*[1]"
+    - test:
+        if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
+        then:
+          - pause: short
+          - t: конец
+          - test:
+              if: "$ClearSpeak_AbsoluteValue = 'Cardinality'"
+              then: [t: "мощность"]
+              else: [t: "модуль"]
+    - pause: short
 
 - name: set
   tag: set

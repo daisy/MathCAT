@@ -568,8 +568,8 @@
             - else_if: "$NavCommand = 'MoveLineStart'"
               then: [t: "перемещение в начало строки"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
-              then: [t: ""перемещение в конец выражения"]                    # phrase('move to end of math')
-              else: [t: ""перемещение в конец строки"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              then: [t: "перемещение в конец выражения"]                    # phrase('move to end of math')
+              else: [t: "перемещение в конец строки"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
