@@ -9,6 +9,8 @@ mod Languages {
         mod ru;
     mod fi;
     mod sv;
+    mod nb;
+    mod de;
     mod vi {
         mod vi;
     }

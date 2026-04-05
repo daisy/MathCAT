@@ -1,6 +1,7 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 // The basic layout of the tests is:
 // 1. Sweep through all the SI prefixes
@@ -11,7 +12,7 @@ use crate::common::*;
 // These are broken into chunks so it is easier to see errors, when there are errors
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -62,11 +63,13 @@ fn prefix_sweep() {
                 zeptogramos coma, \
                 yoctogramos coma, \
                 rontogramos coma, \
-                quectogramos");
+                quectogramos")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -91,11 +94,13 @@ fn si_base() {
                 1 segundo, coma, 2 segundos, coma, \
                 1 segundo, coma, 2 segundos, coma, \
                 1 segundo, coma, 2 segundos, coma, \
-                1 segundo, coma, 2 segundos");
+                1 segundo, coma, 2 segundos")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -116,12 +121,14 @@ fn si_base_with_prefixes() {
                 1 hectómetro, coma, 2 dekámetros, coma, \
                 1 decimol, coma; 2 centimoles, coma; \
                 1 milisegundo, coma; 2 microsegundos, coma; \
-                1 nanosegundo, coma; 2 picosegundos");
+                1 nanosegundo, coma; 2 picosegundos")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -148,11 +155,13 @@ fn si_derived_1() {
 				1 julio, coma, 2 julios, coma, \
 				1 katal, coma, 2 katales, coma, \
 				1 lumen, coma, 2 lúmenes, coma, \
-                1 lux coma, 2 luxes");
+                1 lux coma, 2 luxes")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -179,11 +188,13 @@ fn si_derived_1_with_prefixes() {
                 1 picolumen, coma; 2 femtolúmenes, coma, \
                 1 attolux, coma, 2 zeptoluxes, coma; \
                 1 miligrado Celsius, coma; 2 microgrados Celsius, coma; \
-                1 picogrado Celsius, coma; 2 nanogrados Celsius");
+                1 picogrado Celsius, coma; 2 nanogrados Celsius")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -206,11 +217,13 @@ fn si_derived_2() {
                 1 tesla, coma, 2 teslas, coma, \
                 1 voltio, coma, 2 voltios, coma, \
                 1 vatio, coma, 2 vatios, coma, \
-                1 weber, coma, 2 weberes");
+                1 weber, coma, 2 weberes")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -233,12 +246,14 @@ fn si_derived_2_with_prefixes() {
                 1 dekatesla, coma; 2 hectoteslas, coma; \
                 1 kilovoltio, coma; 2 megavoltios, coma, \
                 1 gigavatio, coma; 2 teravatios, coma, \
-                1 petaweber, coma; 2 exaweberes");
+                1 petaweber, coma; 2 exaweberes")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -271,11 +286,13 @@ fn si_accepted() {
                 1 segundo de arco, coma; 2 segundos de arco, coma, \
                 1 bit coma, 2 bits, coma, \
                 1 byte, coma, 2 bytes, coma, \
-                1 baudio, coma, 2 baudios");
+                1 baudio, coma, 2 baudios")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -308,11 +325,13 @@ fn si_accepted_with_prefixes() {
 				1 zeptosegundo de arco, coma; 2 yoctosegundos de arco, coma, \
 				1 kilobit, coma, 2 megabits, coma, \
 				1 gigabyte, coma, 2 terabytes, coma; \
-                1 terabaudio, coma; 2 exabaudios");
+                1 terabaudio, coma; 2 exabaudios")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_time() {
+fn without_prefix_time() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -343,11 +362,13 @@ fn without_prefix_time() {
                 1 semana, coma, 2 semanas, coma, \
                 1 semana, coma, 2 semanas, coma, \
                 1 año, coma, 2 años, coma, \
-                1 año, coma, 2 años");
+                1 año, coma, 2 años")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -366,11 +387,13 @@ fn without_prefix_angles() {
                 1 minuto de arco, coma; 2 minutos de arco, coma; \
                 1 minuto de arco, coma; 2 minutos de arco, coma; \
                 1 segundo de arco, coma; 2 segundos de arco, coma; \
-                1 segundo de arco, coma; 2 segundos de arco");
+                1 segundo de arco, coma; 2 segundos de arco")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -385,11 +408,13 @@ fn without_prefix_distance() {
                 1 parsec, coma, 2 parsecs, coma, \
                 1 ángstrom, coma, 2 ángstroms, coma, \
                 1 ángstrom, coma, 2 ángstroms, coma, \
-                1 fermio, coma, 2 fermios");
+                1 fermio, coma, 2 fermios")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -420,11 +445,13 @@ fn without_prefix_other() {
                 1 revolución por minuto, coma; 2 revoluciones por minuto, coma, \
                 1 mho coma, 2 mhos, coma, \
                 1 dina, coma, 2 dinas, coma, \
-                1 ergio, coma, 2 ergios");
+                1 ergio, coma, 2 ergios")?;
+                return Ok(());
+
 }
 
 #[test]
-fn metro() {
+fn metro() -> Result<()> {
     // this is a special case in Spanish
     let expr = r#"<math>
                 <mn>1</mn><mi intent=":unit">m</mi><mo>,</mo>
@@ -449,11 +476,13 @@ fn metro() {
                 1 kilómetro, coma, 2 kilómetros, coma, \
                 1 hectómetro, coma, 2 hectómetros, coma, \
                 1 dekámetro, coma, 2 dekámetros, coma, \
-                1 milímetro, coma, 2 milímetros");
+                1 milímetro, coma, 2 milímetros")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -488,12 +517,14 @@ fn without_prefix_powers_of_2() {
                 1 pebibyte, coma, 2 pebibytes, coma, \
                 1 exbibyte, coma, 2 exbibytes, coma, \
                 1 zebibyte, coma, 2 zebibytes, coma, \
-                1 yobibyte, coma, 2 yobibytes");
+                1 yobibyte, coma, 2 yobibytes")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -506,12 +537,14 @@ fn si_other_numbers() {
         "10 litro, coma, 20 metros, coma; \
                 x milisegundos, coma; y microsegundos, coma, \
                 dekagramos coma; 1235 dekanewtons, coma; \
-                25 microsegundos, coma, 3234 moles");
+                25 microsegundos, coma, 3234 moles")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -519,6 +552,8 @@ fn test_mtext_inference() {
                 <mn>4.5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("es", "SimpleSpeak", expr, 
-        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 45 militeslas; cerrar corchetes");
+        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 45 militeslas; cerrar corchetes")?;
+        return Ok(());
+
 }
 

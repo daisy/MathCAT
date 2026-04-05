@@ -1,9 +1,10 @@
+#![allow(clippy::needless_return)]
 //! XPath underlies rule matching and speech generation. The version of xpath used is based on xpath 1.0
 //! and includes the ability to define functions and variables.
 //! The variables defined are all the preferences and also variables set in speech rules via the `variables` keyword.
 //! The function defined here are:
 //! * `IsNode(node, kind)`:  returns true if the node matches the "kind".
-//!    Valid values are "leaf", "2D", "simple", "common_fraction", "trig_name".
+//!   Valid values are "leaf", "2D", "simple", "common_fraction", "trig_name".
 //! * `ToOrdinal(number, fractional, plural)`: converts the number to an ordinal (e.g, third)
 //!   * `number` -- the number to translate
 //!   * `fractional` -- true if this is a fractional ordinal (e.g, "half")
@@ -11,11 +12,10 @@
 //! * `ToCommonFraction(mfrac)` -- converts the fraction to an ordinal version (e.g, 2 thirds)
 //! * `IsLargeOp(node)` -- returns true if the node is a large operator (e.g, integral or sum)
 //! * `IsBracketed(node, left, right, requires_comma)` -- returns true if the first/last element in the mrow match `left`/`right`.
-//!    If the optional `requires_comma` argument is given and is `true`, then there also must be a "," in the mrow (e.g., "f(x,y)")
+//!   If the optional `requires_comma` argument is given and is `true`, then there also must be a "," in the mrow (e.g., "f(x,y)")
 //! * `DEBUG(xpath)` -- _Very_ useful function for debugging speech rules.
-//!    This can be used to surround a whole or part of an xpath expression in a match or output.
-//!    The result will be printed to standard output and the result returned so that `DEBUG` does not affect the computation.    
-#![allow(clippy::needless_return)]
+//!   This can be used to surround a whole or part of an xpath expression in a match or output.
+//!   The result will be printed to standard output and the result returned so that `DEBUG` does not affect the computation.    
 
 use sxd_document::dom::{Element, ChildOfElement};
 use sxd_xpath::{Value, Context, context, function::*, nodeset::*};
@@ -23,6 +23,8 @@ use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
 use std::cell::{Ref, RefCell};
+use log::{debug, error, warn};
+use std::sync::LazyLock;
 use std::thread::LocalKey;
 use phf::phf_set;
 use sxd_xpath::function::Error as XPathError;
@@ -34,11 +36,10 @@ use crate::canonicalize::{as_element, name, get_parent, MATHML_FROM_NAME_ATTR};
 
 // @returns {String} -- the text of the (leaf) element otherwise an empty string
 fn get_text_from_element(e: Element) -> String {
-    if e.children().len() == 1 {
-        if let ChildOfElement::Text(t) = e.children()[0] {
+    if e.children().len() == 1 &&
+       let ChildOfElement::Text(t) = e.children()[0] {
             return t.text().to_string();
         }
-    }
     return "".to_string();
 }
 
@@ -56,7 +57,7 @@ fn get_text_from_COE(coe: &ChildOfElement) -> String {
 // Returns the node or an Error
 pub fn validate_one_node<'n>(nodes: Nodeset<'n>, func_name: &str) -> Result<Node<'n>, Error> {
     if nodes.size() == 0 {
-        return Err(Error::Other(format!("Missing argument for {}", func_name)));
+        return Err(Error::Other(format!("Missing argument for {func_name}")));
     } else if nodes.size() > 1 {
         return Err( Error::Other(format!("{} arguments for {}; expected 1 argument", nodes.size(), func_name)) );
     }
@@ -112,7 +113,7 @@ impl IsNode {
 
 
         // returns the element's text value
-        fn to_str(e: Element) -> &str {
+        fn to_str(e: Element<'_>) -> &str {
             // typically usage assumes 'e' is a leaf
             // bad MathML is the following isn't true
             if e.children().len() == 1 {
@@ -125,7 +126,7 @@ impl IsNode {
         }
 
         // same as 'to_str' but for ChildOfElement
-        fn coe_to_str(coe: ChildOfElement) -> &str {
+        fn coe_to_str(coe: ChildOfElement<'_>) -> &str {
             // typically usage assumes 'coe' is a leaf
             let element_node = coe.element();
             if let Some(e) = element_node {
@@ -206,7 +207,7 @@ impl IsNode {
                 }
                 if children.len() == 5 && 
                    ( (name(first_child) == "minus" && first_child.children().len() == 1 && !is_COE_tag(first_child.children()[0], "mn")) ||
-                     (name(first_child) == "mrow"     && !is_COE_tag(first_child.children()[1], "mn")) ) {
+                     (name(first_child) == "mrow"  && !is_COE_tag(first_child.children()[1], "mn")) ) {
                     return false;      // '-x y z' is too complicated () -- -2 x y is ok
                 }
             }
@@ -265,9 +266,7 @@ impl IsNode {
     // Returns true if 'frac' is a common fraction
     // In this case, the numerator and denominator can be no larger than 'num_limit' and 'denom_limit'
     fn is_common_fraction(frac: Element, num_limit: usize, denom_limit: usize) -> bool {
-        lazy_static! {
-            static ref ALL_DIGITS: Regex = Regex::new(r"\d+").unwrap();    // match one or more digits
-        }
+        static ALL_DIGITS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\d+").unwrap()); // match one or more digits
 
         if !is_tag(frac, "mfrac") &&  !is_tag(frac, "fraction"){
             return false;
@@ -330,7 +329,7 @@ static ALL_MATHML_ELEMENTS: phf::Set<&str> = phf_set!{
     "mstack", "mlongdiv", "msgroup", "msrow", "mscarries", "mscarry", "msline",
     "none", "mprescripts", "malignmark", "maligngroup",
     "math", "msqrt", "merror", "mpadded", "mphantom", "menclose", "mtd", "mstyle",
-    "mrow", "mfenced", "mtable", "mtr", "mlabeledtr",
+    "mrow", "a", "mfenced", "mtable", "mtr", "mlabeledtr",
 };
 
 static MATHML_LEAF_NODES: phf::Set<&str> = phf_set! {
@@ -381,7 +380,7 @@ impl Function for IsNode {
 
         let nodes = args.pop_nodeset()?;
         if nodes.size() == 0 {
-            return Err(Error::Other("Missing argument for IsNode".to_string() ));
+            return Ok (Value::Boolean(false));  // like xpath, don't make this an error
         };
         return Ok(
             Value::Boolean( 
@@ -410,11 +409,10 @@ impl Function for IsNode {
             let children = e.children();
             if children.is_empty() {
                 return true;
-            } else if children.len() == 1 {
-                if let ChildOfElement::Text(_) = children[0] {
+            } else if children.len() == 1 &&
+                      let ChildOfElement::Text(_) = children[0] {
                     return true;
                 }
-            }
             return false
         }
     }
@@ -449,9 +447,7 @@ impl ToOrdinal {
      * Returns the string representation of that number or an error message
      */
     fn convert(number: &str, fractional: bool, plural: bool) -> Option<String> {
-        lazy_static! {
-            static ref NO_DIGIT: Regex = Regex::new(r"[^\d]").unwrap();    // match anything except a digit
-        }
+        static NO_DIGIT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[^\d]").unwrap()); // match anything except a digit
         return SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             let numbers_large = definitions.get_vec("NumbersLarge")?;
@@ -482,11 +478,10 @@ impl ToOrdinal {
             }
 
             // first deal with the abnormalities of fractional ordinals (one half, etc). That simplifies what remains
-            if fractional {
-                if let Some(string) = ToOrdinal::compute_irregular_fractional_speech(&number, plural) {
+            if fractional &&
+               let Some(string) = ToOrdinal::compute_irregular_fractional_speech(&number, plural) {
                     return Some(string);
                 }
-            }
 
             // at this point, we only need to worry about singular/plural distinction
 
@@ -641,7 +636,7 @@ impl Function for ToOrdinal {
     {
         let mut args = Args(args);
         if let Err(e) = args.exactly(1).or_else(|_| args.exactly(3)) {
-            return Err( XPathError::Other(format!("ToOrdinal requires 1 or 3 args: {}", e)));
+            return Err( XPathError::Other(format!("ToOrdinal requires 1 or 3 args: {e}")));
         };
         let mut fractional = false;
         let mut plural = false;
@@ -753,7 +748,7 @@ struct BaseNode;
     /// Recursively find the base node
     /// The base node of a non scripted element is the element itself
     fn base_node(node: Element) -> Element {
-        let name = name(node);
+        let name = node.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(node));
         if ["msub", "msup", "msubsup", "munder", "mover", "munderover", "mmultiscripts"].contains(&name) {
             return BaseNode::base_node(as_element(node.children()[0]));
         } else {
@@ -808,8 +803,9 @@ struct IfThenElse;
 
 struct Debug;
 /**
- * Returns true if the node is a large op
- * @param(node)     -- node(s) to test -- should be an <mo>
+ * Prints it's argument along with the string that was evaluated
+ * @param(node)     -- node(s) to be evaluated/printed
+ * @param(string)   -- string showing what is being evaluated
  */
  impl Function for Debug {
 
@@ -822,7 +818,7 @@ struct Debug;
         args.exactly(2)?;
         let xpath_str = args.pop_string()?;
         let eval_result = &args[0];
-        debug!("  -- Debug: value of '{}' is ", xpath_str);
+        debug!("  -- Debug: value of '{xpath_str}' is ");
         match eval_result {
             Value::Nodeset(nodes) => {
                 if nodes.size() == 0 {
@@ -839,12 +835,12 @@ struct Debug;
                             match node {
                                 Node::Element(mathml) => debug!("#{}:\n{}",
                                         i, mml_to_string(*mathml)),
-                                _ => debug!("'{:?}'", node),
+                                _ => debug!("'{node:?}'"),
                             }   
                         })    
                 }
             },
-            _ => debug!("'{:?}'", eval_result),
+            _ => debug!("'{eval_result:?}'"),
         }
         return Ok( eval_result.clone() );
     }
@@ -932,14 +928,18 @@ impl IsBracketed {
         }
         let right = args.pop_string()?;
         let left = args.pop_string()?;
-        let node = validate_one_node(args.pop_nodeset()?, "IsBracketed")?;
-        if let Node::Element(e) = node {
-            return Ok( Value::Boolean( IsBracketed::is_bracketed(e, &left, &right, requires_comma, requires_mrow) ) );
+        return Ok( Value::Boolean(
+            match validate_one_node(args.pop_nodeset()?, "IsBracketed") {
+                Err(_) => false,  // be fault tolerant, like xpath,
+                Ok(node) => {
+                    if let Node::Element(e) = node {
+                        IsBracketed::is_bracketed(e, &left, &right, requires_comma, requires_mrow)
+                    } else {
+                        false
+                    }
+                }
+            }) );
         }
-
-        // FIX: should having a non-element be an error instead??
-        return Ok( Value::Boolean(false) );
-    }
 }
 
 pub struct IsInDefinition;
@@ -954,7 +954,7 @@ impl IsInDefinition {
             if let Some(hashmap) = definitions.borrow().get_hashmap(set_name) {
                 return Ok( hashmap.contains_key(test_str) );
             }
-            return Err( Error::Other( format!("\n  IsInDefinition: '{}' is not defined in definitions.yaml", set_name) ) );
+            return Err( Error::Other( format!("\n  IsInDefinition: '{set_name}' is not defined in definitions.yaml") ) );
         });
     }
 }
@@ -1030,7 +1030,7 @@ impl DefinitionValue {
                     Some(str) => str.clone(),
                 });
             }
-            return Err( Error::Other( format!("\n  DefinitionValue: '{}' is not defined in definitions.yaml", set_name) ) );
+            return Err( Error::Other( format!("\n  DefinitionValue: '{set_name}' is not defined in definitions.yaml") ) );
         });
     }
 }
@@ -1095,7 +1095,7 @@ impl DistanceFromLeaf {
         let mut distance = 1;
         loop {
             // debug!("distance={} -- element: {}", distance, mml_to_string(element));
-            if is_leaf(element) {
+            if MATHML_LEAF_NODES.contains(element.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(element))) {
                 return distance;
             }
             if treat_2d_elements_as_tokens && (IsNode::is_2D(element) || !IsNode::is_mathml(element)) {
@@ -1132,7 +1132,7 @@ impl Function for DistanceFromLeaf {
         }
 
         // FIX: should having a non-element be an error instead??
-        return Err(Error::Other(format!("DistanceFromLeaf: first arg '{:?}' is not a node", node)));
+        return Err(Error::Other(format!("DistanceFromLeaf: first arg '{node:?}' is not a node")));
     }
 }
 
@@ -1209,7 +1209,7 @@ impl Function for EdgeNode {
         }
 
         // FIX: should having a non-element be an error instead??
-        return Err(Error::Other(format!("EdgeNode: first arg '{:?}' is not a node", node)));
+        return Err(Error::Other(format!("EdgeNode: first arg '{node:?}' is not a node")));
     }
 }
 
@@ -1231,11 +1231,11 @@ impl Function for SpeakIntentName {
     }
 }
 
-pub struct SpeakBracketingIntentName;
-/// SpeakBracketingIntentName(name, verbosity, at_start_or_end)
+pub struct GetBracketingIntentName;
+/// GetBracketingIntentName(name, verbosity, at_start_or_end)
 ///   Returns a potentially empty string to use to bracket an intent expression (start foo... end foo)
 /// 
-impl SpeakBracketingIntentName {
+impl GetBracketingIntentName {
     fn bracketing_words(intent_name: &str, verbosity: &str, fixity: &str, at_start: bool) -> String {
         crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
@@ -1258,7 +1258,7 @@ impl SpeakBracketingIntentName {
                         1 => return speech[0].to_string(),
                         2 | 3 => {
                             if speech.len() == 2 {
-                                warn!("Intent '{}'  has only two ':' separated parts, but should have three", intent_name);
+                                warn!("Intent '{intent_name}'  has only two ':' separated parts, but should have three");
                                 speech.push(speech[1]);
                             }
                             let bracketing_words = match verbosity {
@@ -1279,7 +1279,7 @@ impl SpeakBracketingIntentName {
     }
 }
 
-impl Function for SpeakBracketingIntentName {
+impl Function for GetBracketingIntentName {
     fn evaluate<'d>(&self,
                         _context: &context::Evaluation<'_, 'd>,
                         args: Vec<Value<'d>>)
@@ -1289,12 +1289,48 @@ impl Function for SpeakBracketingIntentName {
         args.exactly(4)?;
         let start_or_end = args.pop_string()?;
         if start_or_end != "start" && start_or_end != "end" {
-            return Err( Error::Other("SpeakBracketingIntentName: first argument must be either 'start' or 'end'".to_string()) );
+            return Err( Error::Other("GetBracketingIntentName: first argument must be either 'start' or 'end'".to_string()) );
         }
         let fixity = args.pop_string()?;
         let verbosity = args.pop_string()?;
         let name = args.pop_string()?;
-        return Ok( Value::String(SpeakBracketingIntentName:: bracketing_words(&name, &verbosity, &fixity, start_or_end == "start")) );
+        return Ok( Value::String(GetBracketingIntentName:: bracketing_words(&name, &verbosity, &fixity, start_or_end == "start")) );
+    }
+}
+
+pub struct GetNavigationPartName;
+/// GetNavigationPartName(name, index)
+/// Returns the name to use to speak the part of a navigation expression (e.g., 'numerator', 'denominator', 'base', 'exponent', ...).
+/// If there is no match, an empty string is returned.
+/// 'index' is 0-based
+/// 
+impl GetNavigationPartName {
+    fn navigation_part_name(intent_name: &str, index: usize) -> String {
+        crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+            let definitions = definitions.borrow();
+            if let Some(navigation_names) = definitions.get_hashmap("NavigationParts") &&
+               let Some(nav_part_names) = navigation_names.get(intent_name) {
+                    // Split the pattern is: part [; part]*
+                    if let Some(part_name) = nav_part_names.trim().split(";").nth(index) {
+                        return part_name.trim().to_string();
+                    }
+                }
+            return "".to_string();
+        })
+    }
+}
+
+impl Function for GetNavigationPartName {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(2)?;
+        let index = args.pop_number()? as usize;
+        let name = args.pop_string()?;
+        return Ok( Value::String(GetNavigationPartName:: navigation_part_name(&name, index)) );
     }
 }
 
@@ -1307,10 +1343,8 @@ pub struct FontSizeGuess;
 // 		   returns original node match isn't found
 impl FontSizeGuess {
     pub fn em_from_value(value_with_unit: &str) -> f64 {
-        lazy_static! {
-            // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
-            static ref FONT_VALUE: Regex = Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|ppc|pt|ex|em|rem)").unwrap();
-        }
+        // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
+        static FONT_VALUE: LazyLock<Regex> = LazyLock::new(|| { Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|ppc|pt|ex|em|rem)").unwrap() });
         let cap = FONT_VALUE.captures(value_with_unit);
         if let Some(cap) = cap {
             if cap.len() == 3 {
@@ -1325,7 +1359,7 @@ impl FontSizeGuess {
                     "ex" => 0.5,
                     "em" => 1.0,
                     "rem" => 16.0/12.0,
-                    default => {debug!("unit='{}'", default); 10.0}
+                    default => {debug!("unit='{default}'"); 10.0}
                 };
                 // debug!("FontSizeGuess: {}->{}, val={}, multiplier={}", value_with_unit, value*multiplier, value, multiplier);
                 return cap[1].parse::<f64>().unwrap_or(0.0) * multiplier;
@@ -1396,7 +1430,8 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("DistanceFromLeaf", DistanceFromLeaf);
     context.set_function("EdgeNode", EdgeNode);
     context.set_function("SpeakIntentName", SpeakIntentName);
-    context.set_function("SpeakBracketingIntentName", SpeakBracketingIntentName);
+    context.set_function("GetBracketingIntentName", GetBracketingIntentName);
+    context.set_function("GetNavigationPartName", GetNavigationPartName);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??

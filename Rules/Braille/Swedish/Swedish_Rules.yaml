@@ -201,7 +201,7 @@
   match: "."
   replace:
    - test: 
-      if: "count(parent::*) > 1"
+      if: "../*[2]"   # more than one row
       then: [t: "⠠"]
    - t: ""
    - x: $RowStart
@@ -213,9 +213,9 @@
    - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
+      else: [x: "*"]
    - test: 
-      if: "count(parent::*) > 1"
+      if: "../*[2]"   # more than one row
       then: [t: "⠠"]
    - x: $RowEnd
 -

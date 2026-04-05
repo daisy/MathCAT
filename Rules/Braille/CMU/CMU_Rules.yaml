@@ -28,7 +28,7 @@
       - else_if: "contains(., '\u00A0')"
         then:   # treated as a number omission -- FIX: anything to look at to increase the odds of it being digits
         - t: "N"
-        - x: "translate(., '_\u00A0', '⠰')"  # note space is removed
+        - x: "BrailleChars(translate(., '_\u00A0', '\ue020'), 'CMU')"  # note space is removed
         else: [t: "⠰⠤⠆"]
   - t: ""
 
@@ -187,7 +187,7 @@
   match: "."
   replace:
    - test: 
-      if: "count(parent::*) > 1"
+      if: "../*[2]"   # more than one row
       then: [t: "⠠"]
    - t: ""
    - x: $RowStart
@@ -199,9 +199,9 @@
    - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
+      else: [x: "*"]
    - test: 
-      if: "count(parent::*) > 1"
+      if: "../*[2]"   # more than one row
       then: [t: "⠠"]
    - x: $RowEnd
 

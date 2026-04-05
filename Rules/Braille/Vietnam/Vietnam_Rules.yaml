@@ -164,9 +164,6 @@
    - test:
       if: "preceding-sibling::*"
       then: [t: "⣍"]
-   - test: 
-      if: "count(parent::*) > 1"
-      then: [t: "⠠"]
    - t: ""
    - x: $RowStart
    - test:
@@ -177,10 +174,7 @@
    - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
-   - test: 
-      if: "count(parent::*) > 1"
-      then: [t: "⠠"]
+      else: [x: "*"]
    - x: $RowEnd
 -
   name: default

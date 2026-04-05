@@ -1,1 +1,11 @@
-theme: jekyll-theme-cayman
+theme: jekyll-theme-cayman # GitHub Pages theme
+
+# jekyll-github-metadata needs this to resolve site.github.* variables locally;
+# GitHub Pages infers it from the environment, but local builds crash without it.
+repository: daisy/MathCAT
+
+exclude: [
+  README.md,      # developer docs, not part of the site
+  Gemfile,        # only needed for local builds
+  Gemfile.lock    # only needed for local builds
+]

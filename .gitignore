@@ -1,3 +1,5 @@
+.idea
+.DS_Store
 target
 build.rs.orig
 Python/libmathcat.pyd
@@ -50,3 +52,8 @@ src/speech-bak
 
 Rules/*/*/*.zip
 .vs
+
+# local caches when building Jekyll
+docs/_site
+docs/.jekyll-cache
+docs/Gemfile.lock

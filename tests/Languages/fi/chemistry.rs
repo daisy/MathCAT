@@ -1,47 +1,58 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn salt() {
+fn salt() -> Result<()> {
   let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso n a, iso c l");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso n a, iso c l")?;
+  return Ok(());
+
 }
 
 #[test]
-fn water() {
+fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso o");
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "iso h, ala 2 iso o");
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "iso h, alaindeksi 2, iso o");
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso o")?;
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "iso h, ala 2 iso o")?;
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "iso h, alaindeksi 2, iso o")?;
+  return Ok(());
+
 }
 
 #[test]
-fn carbon() {
+fn carbon() -> Result<()> {
   let expr = "<math><mi>C</mi></math>";     // not enough to trigger recognition
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso c");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso c")?;
+  return Ok(());
+
 }
 
 #[test]
-fn sulfate() {
+fn sulfate() -> Result<()> {
   let expr = "<math><mrow><msup>
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "auki hakasulku, iso s, iso o, ala 4; kiinni hakasulku ylä 2 miinus");
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "auki hakasulku, iso s, iso o, ala 4; kiinni hakasulku ylä 2 miinus")?;
+  return Ok(());
+
 }
 
 #[test]
-fn aluminum_sulfate() {
+fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso a l, 2, auki iso s, iso o, 4, kiinni 3");
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "iso a l, ala 2; auki sulku, iso s, iso o, ala 4; kiinni sulku ala 3");
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "iso a l, alaindeksi 2; auki sulku, iso s, iso o, alaindeksi 4; kiinni sulku alaindeksi 3");
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso a l, 2, auki iso s, iso o, 4, kiinni 3")?;
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "iso a l, ala 2; auki sulku, iso s, iso o, ala 4; kiinni sulku ala 3")?;
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "iso a l, alaindeksi 2; auki sulku, iso s, iso o, alaindeksi 4; kiinni sulku alaindeksi 3")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ethanol_bonds() {
+fn ethanol_bonds() -> Result<()> {
   let expr = "<math>
           <mrow>
               <mi>C</mi>
@@ -54,12 +65,14 @@ fn ethanol_bonds() {
               <mi>H</mi>
           </mrow>
       </math>";
-  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso c, iso h, 3 yksinkertainen sidos, iso c, iso h, 2 yksinkertainen sidos, iso o, iso h");
+  test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "iso c, iso h, 3 yksinkertainen sidos, iso c, iso h, 2 yksinkertainen sidos, iso o, iso h")?;
+
+  return Ok(());
 
 }
 
 #[test]
-fn dichlorine_hexoxide() {
+fn dichlorine_hexoxide() -> Result<()> {
   let expr = "<math><mrow>
       <msup>
         <mrow><mo>[</mo><mi>Cl</mi><msub><mi>O</mi><mn>2</mn></msub><mo>]</mo></mrow>
@@ -71,46 +84,54 @@ fn dichlorine_hexoxide() {
       </msup>
     </mrow></math>";
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], 
-    expr, "auki hakasulku, iso c l, iso o, 2; kiinni hakasulku plus; auki hakasulku, iso c l, iso o, 4; kiinni hakasulku miinus");
+    expr, "auki hakasulku, iso c l, iso o, 2; kiinni hakasulku plus; auki hakasulku, iso c l, iso o, 4; kiinni hakasulku miinus")?;
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-    expr, "auki hakasulku, iso c l, iso o, ala 2; kiinni hakasulku ylä plus; auki hakasulku, iso c l, iso o, ala 4; kiinni hakasulku ylä miinus");
+    expr, "auki hakasulku, iso c l, iso o, ala 2; kiinni hakasulku ylä plus; auki hakasulku, iso c l, iso o, ala 4; kiinni hakasulku ylä miinus")?;
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
-    expr, "auki hakasulku, iso c l, iso o, alaindeksi 2; kiinni hakasulku yläindeksi plus; auki hakasulku, iso c l, iso o, alaindeksi 4; kiinni hakasulku yläindeksi miinus");
+    expr, "auki hakasulku, iso c l, iso o, alaindeksi 2; kiinni hakasulku yläindeksi plus; auki hakasulku, iso c l, iso o, alaindeksi 4; kiinni hakasulku yläindeksi miinus")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn ethylene_with_bond() {
+fn ethylene_with_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso c, kaksinkertainen sidos, iso c, iso h, 2");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso c, kaksinkertainen sidos, iso c, iso h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ferric_chloride_aq() {
+fn ferric_chloride_aq() -> Result<()> {
   let expr = "<math><mrow>
         <mi>Fe</mi>
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso f e, iso c l, 3 vesiliuoksessa");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso f e, iso c l, 3 vesiliuoksessa")?;
+  return Ok(());
+
   }
 
 #[test]
-fn ethylene_with_colon_bond() {
+fn ethylene_with_colon_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso c, kaksinkertainen sidos, iso c, iso h, 2");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso h, 2 iso c, kaksinkertainen sidos, iso c, iso h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn beta_decay() {
+fn beta_decay() -> Result<()> {
   let expr = "<math>
       <mmultiscripts>
         <mtext>C</mtext>
@@ -137,15 +158,17 @@ fn beta_decay() {
       </mmultiscripts>
     </math>";
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e");
+      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e");
+      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e");
+      "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn mhchem_beta_decay() {
+fn mhchem_beta_decay() -> Result<()> {
   let expr = "<math>
       <mrow>
         <msubsup>
@@ -401,15 +424,17 @@ fn mhchem_beta_decay() {
       </mrow>
     </math>";
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e");
+      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e");
+      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e");
+      "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn hcl_na_yields() {
+fn hcl_na_yields() -> Result<()> {
     let expr = "<math> <mrow>
       <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
       <mo>&#x2192;</mo>
@@ -418,11 +443,13 @@ fn hcl_na_yields() {
       </mrow>
     </math>";
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, iso h, iso c l; plus 2 iso n a; reagoi; 2, iso n a, iso c l; plus iso h, alaindeksi 2");
+        "2, iso h, iso c l; plus 2 iso n a; reagoi; 2, iso n a, iso c l; plus iso h, alaindeksi 2")?;
+        return Ok(());
+
 }
 
 #[test]
-fn mhchem_so4_2plus() {
+fn mhchem_so4_2plus() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mrow>
@@ -463,14 +490,16 @@ fn mhchem_so4_2plus() {
       </msup>
     </mrow>
   </math>";
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso s; iso o, 4, 2 plus");
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "iso s; iso o, ala 4, ylä 2 plus");
-  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "iso s; iso o, alaindeksi 4, yläindeksi 2 plus");
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "iso s; iso o, 4, 2 plus")?;
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "iso s; iso o, ala 4, ylä 2 plus")?;
+  test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "iso s; iso o, alaindeksi 4, yläindeksi 2 plus")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn mhchem_hcl_aq_etc() {
+fn mhchem_hcl_aq_etc() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mn>2</mn>
@@ -553,13 +582,15 @@ fn mhchem_hcl_aq_etc() {
     </mrow>
   </math>";
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, iso h, iso c l, vesiliuoksessa; plus, 2, iso n a, kiinteä; muodostaa; 2, iso n a, iso c l, vesiliuoksessa; plus, iso h, 2, kaasu");
+      expr, "2, iso h, iso c l, vesiliuoksessa; plus, 2, iso n a, kiinteä; muodostaa; 2, iso n a, iso c l, vesiliuoksessa; plus, iso h, 2, kaasu")?;
+
+      return Ok(());
 
 }
 
 
 #[test]
-fn mhchem_barbed_equilibrium() {
+fn mhchem_barbed_equilibrium() -> Result<()> {
   let expr = "<math>
     <mrow data-mjx-texclass='ORD' data-chem-equation='14'>
       <mrow data-changed='added' data-chem-equation='3'>
@@ -619,13 +650,15 @@ fn mhchem_barbed_equilibrium() {
     </mrow>
   </math>";
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "iso h, 2, kaasu; plus; iso i, 2, kaasu; on tasapainossa 2, iso h, iso i, kaasu");
+      expr, "iso h, 2, kaasu; plus; iso i, 2, kaasu; on tasapainossa 2, iso h, iso i, kaasu")?;
+      return Ok(());
+
 }
 
 
 
 #[test]
-fn mhchem_roman_in_superscript() {
+fn mhchem_roman_in_superscript() -> Result<()> {
       let expr = "<math>
       <mrow>
         <mmultiscripts>
@@ -648,7 +681,9 @@ fn mhchem_roman_in_superscript() {
       </mrow>
     </math>";
   test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "iso f e, 2; iso f e, 3; iso o, 4");
+      expr, "iso f e, 2; iso f e, 3; iso o, 4")?;
+      return Ok(());
+
 }
 
 

@@ -5,18 +5,21 @@
 //! The implementation of the module is on hold until the MathML committee figures out how it wants to do this.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfElement};
 use crate::prefs::PreferenceManager;
 use crate::speech::SpeechRulesWithContext;
 use crate::canonicalize::{as_element, as_text, name, create_mathml_element, set_mathml_name, INTENT_ATTR, MATHML_FROM_NAME_ATTR};
 use crate::errors::*;
 use std::fmt;
+use std::sync::LazyLock;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::is_leaf;
 use regex::Regex;
 use phf::phf_set;
+use log::{debug, error, warn};
 
 const IMPLICIT_FUNCTION_NAME: &str = "apply-function";
+
 pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, mathml: Element<'c>) -> Result<Element<'m>> {
     match catch_errors_building_intent(rules_with_context, mathml) {
         Ok(intent) => return Ok(intent),
@@ -30,7 +33,7 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
                 mathml.remove_attribute(INTENT_ATTR);
                 // can't call intent_from_mathml() because we have already borrowed_mut -- we call a more internal version
                 let intent_tree =  match rules_with_context.match_pattern::<Element<'m>>(mathml)
-                                            .chain_err(|| "Pattern match/replacement failure!") {
+                                            .context("Pattern match/replacement failure!") {
                     Err(e) => Err(e),
                     Ok(intent) => {
                         intent.set_attribute_value(INTENT_ATTR, saved_intent_attr); //  so attr can be potentially be viewed later
@@ -47,8 +50,9 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
         if let Some(intent_str) = mathml.attribute_value(INTENT_ATTR) {
             // debug!("Before intent: {}", crate::pretty_print::mml_to_string(mathml));
             let mut lex_state = LexState::init(intent_str.trim())?;
-            let result = build_intent(rules_with_context, &mut lex_state, mathml)
-                        .chain_err(|| format!("occurs before '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str))?;
+            let mut intent_offset = 0;
+            let result = build_intent(rules_with_context, &mut lex_state, mathml, &mut intent_offset)
+                        .with_context(|| format!("occurs before '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str))?;
             if lex_state.token != Token::None {
                 bail!("Error in intent value: extra unparsed intent '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str);
             }
@@ -93,13 +97,12 @@ fn add_fixity(intent: Element) {
         let intent_name = name(intent);
         crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
-            if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) {
-                if let Some((fixity, _)) = definition.split_once("=") {
+            if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) &&
+                let Some((fixity, _)) = definition.split_once("=") {
                     let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
                     intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
                     // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
-                }
-            };
+                };
         });
     }
 }
@@ -183,7 +186,7 @@ pub fn add_fixity_children(intent: Element) -> Element {
         fn create_operator_element<'a>(intent_name: &str, fixity: &str, id: &str, id_inc: usize, doc: &Document<'a>) -> ChildOfElement<'a> {
             let intent_name = intent_speech_for_name(intent_name, &PreferenceManager::get().borrow().pref_to_string("NavMode"), fixity);
             let element = create_mathml_element(doc, &intent_name);
-            element.set_attribute_value("id", &format!("{}-{}",id, id_inc));
+            element.set_attribute_value("id", &format!("{id}-fixity-{id_inc}"));
             element.set_attribute_value(MATHML_FROM_NAME_ATTR, "mo");
             return ChildOfElement::Element(element);
         }
@@ -206,7 +209,7 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
                     1 => return operator_names[0].trim().to_string(),
                     2 | 3 => {
                         if operator_names.len() == 2 {
-                            warn!("Intent '{}' has only two operator names, but should have three", intent_name);
+                            warn!("Intent '{intent_name}' has only two operator names, but should have three");
                             operator_names.push(operator_names[1]);
                         }
                         let intent_word = match verbosity {
@@ -223,7 +226,7 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
                 }
             }
         };
-        return intent_name.replace(&['_', '-'], " ").trim().to_string();
+        return intent_name.replace(['_', '-'], " ").trim().to_string();
     })
 }
 
@@ -241,23 +244,24 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
 // property           := S ':' NCName
 // S                  := [ \t\n\r]*
 
-lazy_static! {
-    // The practical restrictions of NCName are that it cannot contain several symbol characters like
-    //  !, ", #, $, %, &, ', (, ), *, +, ,, /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~, and whitespace characters
-    //  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
-    // NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
-    //   We follow NC_NAME for the basic latin block, but then allow everything
-    static ref CONCEPT_OR_LITERAL: Regex = Regex::new(
-        r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
-    ).unwrap();
-    static ref PROPERTY: Regex = Regex::new(
-        r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
-    ).unwrap();
-    static ref ARG_REF: Regex = Regex::new(
-        r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
-    ).unwrap();
-    static ref NUMBER: Regex = Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap();
-}
+// The practical restrictions of NCName are that it cannot contain several symbol characters like
+//  !, ", #, $, %, &, ', (, ), *, +, ,, /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~, and whitespace characters
+//  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
+// NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
+//   We follow NC_NAME for the basic latin block, but then allow everything
+static CONCEPT_OR_LITERAL: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
+    ).unwrap()
+});
+static PROPERTY: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
+    ).unwrap()
+});
+static ARG_REF: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
+    ).unwrap()
+});
+static NUMBER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap());
 
 static TERMINALS_AS_U8: [u8; 3] = [b'(', b',', b')'];
 // static TERMINALS: [char; 3] = ['(', ',',')'];
@@ -277,11 +281,11 @@ impl fmt::Display for Token<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "{}",
             match self {
-                Token::Terminal(str) => format!("Terminal('{}')", str),
-                Token::Property(str) => format!("Property({})", str),
-                Token::ArgRef(str) => format!("ArgRef({})", str),
-                Token::ConceptOrLiteral(str) => format!("Literal({})", str),
-                Token::Number(str) => format!("Number({})", str),
+                Token::Terminal(str) => format!("Terminal('{str}')"),
+                Token::Property(str) => format!("Property({str})"),
+                Token::ArgRef(str) => format!("ArgRef({str})"),
+                Token::ConceptOrLiteral(str) => format!("Literal({str})"),
+                Token::Number(str) => format!("Number({str})"),
                 Token::None => "None".to_string(),
             }
         );
@@ -348,7 +352,7 @@ impl<'i> LexState<'i> {
         return Ok( () );
     }
 
-    fn get_next(&mut self) -> Result<&Token> {
+    fn get_next(&mut self) -> Result<&Token<'_>> {
         if self.remaining_str.is_empty() {
             self.token = Token::None;
         } else if TERMINALS_AS_U8.contains(&self.remaining_str.as_bytes()[0]) {
@@ -368,7 +372,8 @@ impl<'i> LexState<'i> {
 
 fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
                                          lex_state: &mut LexState<'b>,
-                                         mathml: Element<'c>) -> Result<Element<'m>> {
+                                         mathml: Element<'c>,
+                                         intent_offset: &mut u32) -> Result<Element<'m>> {
     // intent             := self-property-list | expression
     // self-property-list := property+ S    
     // expression         := S ( term property* | application ) S 
@@ -384,7 +389,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
     // debug!("  start build_intent: state: {}", lex_state);
     let doc = rules_with_context.get_document();
     let mut intent;
-    // debug!("    build_intent: start mathml name={}", name(mathml));
+    debug!("    build_intent: start mathml name={}, intent_offset={}", name(mathml), intent_offset);
     match lex_state.token {
         Token::Property(_) => {
             // We only have a property -- we want to keep this tag/element
@@ -398,7 +403,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
                 intent.set_attribute_value(INTENT_PROPERTY, &properties);
                 intent.set_attribute_value(MATHML_FROM_NAME_ATTR, name(mathml));
                 intent.set_attribute_value("id", mathml.attribute_value("id")
-                      .ok_or("no id on intent function name")?);
+                      .ok_or_else(|| anyhow!("no id on intent function name"))?);
             } else {
                 let saved_intent = mathml.attribute_value(INTENT_ATTR).unwrap();
                 mathml.remove_attribute(INTENT_ATTR);
@@ -419,7 +424,8 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
                 if word == mathml.attribute_value(INTENT_ATTR).unwrap_or_default() {name(mathml)} else {leaf_name});
             intent.set_text(word);       // '-' and '_' get removed by the rules.
             if let Some(id) = mathml.attribute_value("id") {
-                intent.set_attribute_value("id", id);
+                intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
+                *intent_offset += 1;
             }
             lex_state.get_next()?;
             if let Token::Property(_) = lex_state.token {
@@ -428,7 +434,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             }
         },
         Token::ArgRef(word) => {
-            intent = match find_arg(rules_with_context, &word[1..], mathml, true, false)? {
+            intent = match find_arg(rules_with_context, &word[1..], mathml, intent_offset, true, false)? {
                 Some(e) => {
                     lex_state.get_next()?;
                     e
@@ -443,7 +449,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
         _ => bail!("Illegal 'intent' syntax: found {}", lex_state.token),
     };
     if lex_state.is_terminal("(") {
-        intent = build_function(intent, rules_with_context, lex_state, mathml)?;
+        intent = build_function(intent, rules_with_context, lex_state, mathml, intent_offset)?;
     }
     // debug!("    end build_intent: state: {}     piece: {}", lex_state, mml_to_string(intent));
     add_fixity(intent);
@@ -482,7 +488,8 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
             function_name: Element<'m>,
             rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
             lex_state: &mut LexState<'b>,
-            mathml: Element<'c>) -> Result<Element<'m>> {
+            mathml: Element<'c>,
+            intent_offset: &mut u32) -> Result<Element<'m>> {
     // debug!("  start build_function: name: {}, state: {}", name(function_name), lex_state);
     // application := intent '(' arguments? S ')'  where 'function_name' is 'intent'
     assert!(lex_state.is_terminal("("));
@@ -494,7 +501,7 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
             // grammar requires at least one argument
             bail!("Illegal 'intent' syntax: missing argument for intent name '{}'", name(function_name));
         }
-        let children = build_arguments(rules_with_context, lex_state, mathml)?;
+        let children = build_arguments(rules_with_context, lex_state, mathml, intent_offset)?;
         function = lift_function_name(rules_with_context.get_document(), function, children);
 
         if !lex_state.is_terminal(")") {
@@ -514,18 +521,19 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
 fn build_arguments<'b, 'r, 'c, 's:'c, 'm:'c>(
             rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
             lex_state: &mut LexState<'b>,
-            mathml: Element<'c>) -> Result<Vec<Element<'m>>> {
+            mathml: Element<'c>,
+            intent_offset: &mut u32) -> Result<Vec<Element<'m>>> {
     // arguments := intent ( ',' intent )*' 
     // debug!("    start build_args state: {}", lex_state);
 
     // there is at least one arg
     let mut children = Vec::with_capacity(lex_state.remaining_str.len()/3 + 1);   // conservative estimate ('3' - "$x,");
-    children.push( build_intent(rules_with_context, lex_state, mathml)? );   // arg before ','
+    children.push( build_intent(rules_with_context, lex_state, mathml, intent_offset)? );   // arg before ','
     // debug!("  build_args: # children {};  state: {}", children.len(), lex_state);
 
     while lex_state.is_terminal(",") {
         lex_state.get_next()?;
-        children.push( build_intent(rules_with_context, lex_state, mathml)? );   // arg before ','
+        children.push( build_intent(rules_with_context, lex_state, mathml, intent_offset)? );   // arg before ','
         // debug!("    build_args, # children {};  state: {}", children.len(), lex_state);
     }
 
@@ -566,16 +574,22 @@ fn lift_function_name<'m>(doc: Document<'m>, function_name: Element<'m>, childre
 
 /// look for @arg=name in mathml
 /// if 'check_intent', then look at an @intent for this element (typically false for non-recursive calls)
-fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, name: &str, mathml: Element<'c>, skip_self: bool, no_check_inside: bool) -> Result<Option<Element<'m>>> {
+fn find_arg<'r, 'c, 's:'c, 'm:'c>(
+    rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
+    name: &str,
+    mathml: Element<'c>,
+    intent_offset: &mut u32,
+    skip_self: bool,
+    no_check_inside: bool) -> Result<Option<Element<'m>>> {
     // debug!("Looking for '{}' in\n{}", name, mml_to_string(mathml));
-    if !skip_self {
-        if let Some(arg_val) = mathml.attribute_value("arg") {
+    if !skip_self &&
+        let Some(arg_val) = mathml.attribute_value("arg") {
             // debug!("looking for '{}', found arg='{}'", name, arg_val);
             if name == arg_val {
                 // check to see if this mathml has an intent value -- if so the value is the value of its intent value
                 if let Some(intent_str) = mathml.attribute_value(INTENT_ATTR) {
                     let mut lex_state = LexState::init(intent_str.trim())?;
-                    return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml)? ) );
+                    return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml, intent_offset)? ) );
                 } else {
                     return Ok( Some( rules_with_context.match_pattern::<Element<'m>>(mathml)? ) );
                 }
@@ -583,7 +597,6 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
                 return Ok(None);       // don't look inside 'arg'
             }
         }
-    }
 
     if no_check_inside && mathml.attribute_value(INTENT_ATTR).is_some() {
         return Ok(None);           // don't look inside 'intent'
@@ -595,7 +608,7 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
 
     for child in mathml.children() {
         let child = as_element(child);
-        if let Some(element) = find_arg(rules_with_context, name, child, false, true)? {
+        if let Some(element) = find_arg(rules_with_context, name, child, intent_offset, false, true)? {
             return Ok( Some(element) );
         }
     }
@@ -607,25 +620,27 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
 mod tests {
     #[allow(unused_imports)]
     use crate::init_logger;
+    use log::debug;
     use sxd_document::parser;
 
 
     fn test_intent(mathml: &str, target: &str, intent_error_recovery: &str) -> bool {
 		use crate::interface::*;
+        use crate::pretty_print::mml_to_string;
 		// this forces initialization
         crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
         // crate::speech::SpeechRules::initialize_all_rules().unwrap();
-        set_preference("IntentErrorRecovery".to_string(), intent_error_recovery.to_string()).unwrap();
-        set_preference("SpeechStyle".to_string(), "SimpleSpeak".to_string()).unwrap();      // avoids possibility of "LiteralSpeak"
+        set_preference("IntentErrorRecovery", intent_error_recovery).unwrap();
+        set_preference("SpeechStyle", "SimpleSpeak").unwrap();      // avoids possibility of "LiteralSpeak"
         let package1 = &parser::parse(mathml).expect("Failed to parse test input");
         let mathml = get_element(package1);
         trim_element(mathml, false);
-        debug!("test:\n{}", crate::pretty_print::mml_to_string(mathml));
+        debug!("test:\n{}", mml_to_string(mathml));
         
         let package2 = &parser::parse(target).expect("Failed to parse target input");
         let target = get_element(package2);
         trim_element(target,true);
-        debug!("target:\n{}", crate::pretty_print::mml_to_string(target));
+        debug!("target:\n{}", mml_to_string(target));
 
         let result = match crate::speech::intent_from_mathml(mathml, package2.as_document()) {
             Ok(e) => e,
@@ -634,10 +649,10 @@ mod tests {
                 return false;       // could be intentional failure
             }
         };
-        debug!("result:\n{}", crate::pretty_print::mml_to_string(result));
-        match is_same_element(result, target) {
+        debug!("result:\n{}", mml_to_string(result));
+        match is_same_element(result, target, &[]) {
 			Ok(_) => return true,
-			Err(e) => panic!("{}", e),
+			Err(e) => panic!("{}:\nresult: {}target: {}", e, mml_to_string(result), mml_to_string(target)),
 		}
     }
 
