@@ -10,7 +10,7 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "из"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
+          then: [t: "от"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
       - test:
           if: "not(IsNode(*[1], 'leaf'))"
           then: [pause: short]
@@ -33,7 +33,7 @@
   tag: curl
   match: "count(*) = 1"
   replace:
-  - t: "керл"      # phrase(the 'curl of' a field)
+  - t: "ротор"      # phrase(the 'curl of' a field)
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "из"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"

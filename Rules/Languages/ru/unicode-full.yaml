@@ -2,621 +2,74 @@
 
 
  - "¢": [t: "центы"]                            	#  0xa2	(en: 'cents', google translation)
- - "£": [t: "фунт"]                             	#  0xa3	(en: 'pounds', google translation)
- - "¤": [t: "валютный знак"]                    	#  0xa4	(en: 'currency sign', google translation)
- - "¥": [t: "иена"]                             	#  0xa5	(en: 'yen', google translation)
- - "¦": [t: "сломанный бар"]                    	#  0xa6	(en: 'broken bar', google translation)
- - "§": [t: "раздел"]                           	#  0xa7	(en: 'section', google translation)
- - "¨": [t: "двойная точка"]                    	#  0xa8	(en: 'double dot', google translation)
+ - "£": [t: "фунты"]                             	#  0xa3	(en: 'pounds', google translation)
+ - "¤": [t: "знак валюты"]                    	#  0xa4	(en: 'currency sign', google translation)
+ - "¥": [t: "иены"]                             	#  0xa5	(en: 'yen', google translation)
+ - "¦": [t: "вертикальная пунктирная черта"]                    	#  0xa6	(en: 'broken bar', google translation)
+ - "§": [t: "параграф"]                           	#  0xa7	(en: 'section', google translation)
+ - "¨": [t: "две точки"]                    	#  0xa8	(en: 'double dot', google translation)
  - "©": [t: "авторское право"]                  	#  0xa9	(en: 'copyright', google translation)
- - "ª": [t: "женский орден -индикатор"]         	#  0xaa	(en: 'feminine ordinal indicator', google translation)
- - "¬": [t: "нет"]                              	#  0xac	(en: 'not', google translation)
- - "«": [t: "оценка с двойным углом."]          	#  0xab	(en: 'left-pointing double angle quote mark', google translation)
+ - "ª": [t: "женский порядковый индикатор"]         	#  0xaa	(en: 'feminine ordinal indicator', google translation)
+ - "¬": [t: "отрицание"]                              	#  0xac	(en: 'not', google translation)
+ - "«": [t: "левая двойная угловая кавычка"]          	#  0xab	(en: 'left-pointing double angle quote mark', google translation)
  - "¯":                                         	#  0xaf
      - test:
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
-        then: [t: "бар"]                        	# 	(en: 'bar', google translation)
+        then: [t: "черта"]                        	# 	(en: 'bar', google translation)
         else: [t: "линия"]                      	# 	(en: 'line', google translation)
- - "²": [t: "два"]                              	#  0xb2	(en: 'two', google translation)
- - "³": [t: "три"]                              	#  0xb3	(en: 'three', google translation)
- - "´": [t: "острый"]                           	#  0xb4	(en: 'acute', google translation)
+ - "²": [t: "в квадрате"]                              	#  0xb2	(en: 'two', google translation)
+ - "³": [t: "в кубе"]                              	#  0xb3	(en: 'three', google translation)
+ - "´": [t: "акут"]                           	#  0xb4	(en: 'acute', google translation)
  - "µ": [t: "микро"]                            	#  0xb5	(en: 'micro', google translation)
- - "¹": [t: "один"]                             	#  0xb9	(en: 'one', google translation)
- - "º": [t: "мужской орден -индикатор"]         	#  0xb9	(en: 'masculine ordinal indicator', google translation)
+ - "¹": [t: "в первой степени"]                             	#  0xb9	(en: 'one', google translation)
+ - "º": [t: "мужской порядковый индикатор"]         	#  0xb9	(en: 'masculine ordinal indicator', google translation)
  - "·":
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "раз"]                        	# 	(en: 'times', google translation)
-        else: [t: "умножить"]                   	# 	(en: 'dot')
+        then: [t: "умножить"]                        	# 	(en: 'times', google translation)
+        else: [t: "точка"]                   	# 	(en: 'dot')
  - "×":                                         	#  0xd7
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "раз"]                        	# 	(en: 'times', google translation)
+        then: [t: "умножить"]                        	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "к"]                      	# 	(en: 'by', google translation)
-            else: [t: "умножить"]               	# 	(en: 'cross')
+            then: [t: "на"]                      	# 	(en: 'by', google translation)
+            else: [t: "крестик"]               	# 	(en: 'cross')
  - "÷": [t: "разделить на"]                     	#  0xf7	(en: 'divided by')
  - "¡": [t: "перевернутый восклицательный знак"]	#  0xa1	(en: 'inverted exclamation mark', google translation)
- - "¶": [t: "абзац"]                            	#  0xb6	(en: 'paragraph mark', google translation)
- - "¿": [t: "перевернутый вопрос"]              	#  0xbf	(en: 'inverted question mark', google translation)
+ - "¶": [t: "знак абзаца"]                            	#  0xb6	(en: 'paragraph mark', google translation)
+ - "¿": [t: "перевёрнутый вопросительный знак"]              	#  0xbf	(en: 'inverted question mark', google translation)
 
- - "ʰ": [t: "модификатор маленький h"]          	#  0x2b0	(en: 'modifier small h', google translation)
- - "ʱ": [t: "модификатор маленький h с крючком"]	#  0x2b1	(en: 'modifier small h with hook', google translation)
- - "ʲ": [t: "модификатор small j"]              	#  0x2b2	(en: 'modifier small j', google translation)
- - "ʳ": [t: "модификатор маленький r"]          	#  0x2b3	(en: 'modifier small r', google translation)
- - "ʴ": [t: "модификатор маленький повернут r"] 	#  0x2b4	(en: 'modifier small turned r', google translation)
- - "ʵ": [t: "модификатор small turn r r с крючком"]	#  0x2b5	(en: 'modifier small turned r with hook', google translation)
+ - "ʰ": [t: "верхний индекс h"]          	#  0x2b0	(en: 'modifier small h', google translation)
+ - "ʱ": [t: "верхний индекс h с крючком"]	#  0x2b1	(en: 'modifier small h with hook', google translation)
+ - "ʲ": [t: "верхний индекс j"]              	#  0x2b2	(en: 'modifier small j', google translation)
+ - "ʳ": [t: "верхний индекс r"]          	#  0x2b3	(en: 'modifier small r', google translation)
+ - "ʴ": [t: "верхний индекс перевёрнутого r"] 	#  0x2b4	(en: 'modifier small turned r', google translation)
+ - "ʵ": [t: "верхний индекс перевёрнутого r с крючком"]	#  0x2b5	(en: 'modifier small turned r with hook', google translation)
  - "ʶ":                                         	#  0x2b6
-    - t: "модификатор маленький перевернутый"   	# 	(en: 'modifier small inverted', google translation)
+    - t: "верхний индекс перевёрнутой"   	# 	(en: 'modifier small inverted', google translation)
     - spell: "translate('R', 'R', 'R')"
 
- - "ʷ": [t: "модификатор маленький w"]          	#  0x2b7	(en: 'modifier small w', google translation)
- - "ʸ": [t: "модификатор маленький y"]          	#  0x2b8	(en: 'modifier small y', google translation)
- - "ʹ": [t: "модификатор prime"]                	#  0x2b9	(en: 'modifier prime', google translation)
- - "ʺ": [t: "модификатор double prime"]         	#  0x2ba	(en: 'modifier double prime', google translation)
- - "ʻ": [t: "модификатор стал запятой"]         	#  0x2bb	(en: 'modifier turned comma', google translation)
- - "ʼ": [t: "модификатор апостроф"]             	#  0x2bc	(en: 'modifier apostrophe', google translation)
- - "ʽ": [t: "модификатор обратный запятой"]     	#  0x2bd	(en: 'modifier reversed comma', google translation)
- - "ʾ": [t: "модификатор справа наполовину кольцо"]	#  0x2be	(en: 'modifier right half ring', google translation)
- - "ʿ": [t: "модификатор оставил половину кольца"]	#  0x2bf	(en: 'modifier left half ring', google translation)
- - "ˀ": [t: "модификатор глоттальная остановка"]	#  0x2c0	(en: 'modifier glottal stop', google translation)
- - "ˁ": [t: "модификатор поменял глоттальную остановку"]	#  0x2c1	(en: 'modifier reversed glottal stop', google translation)
- - "˂": [t: "модификатор левой стрелки"]        	#  0x2c2	(en: 'modifier left arrowhead', google translation)
- - "˃": [t: "модификатор правой стрелки"]       	#  0x2c3	(en: 'modifier right arrowhead', google translation)
- - "˄": [t: "модификатор вверх стрел"]          	#  0x2c4	(en: 'modifier up arrowhead', google translation)
- - "˅": [t: "модификатор вниз стрел"]           	#  0x2c5	(en: 'modifier down arrowhead', google translation)
- - "ˆ": [t: "модификатор объединенный акцент"]  	#  0x2c6	(en: 'modifier circumflex accent', google translation)
- - "ˇ": [t: "проверять"]                        	#  0x2c7	(en: 'check', google translation)
- - "ˈ": [t: "модификатор вертикальной линии"]   	#  0x2c8	(en: 'modifier vertical line', google translation)
- - "ˉ": [t: "модификатор макрон"]               	#  0x2c9	(en: 'modifier macron', google translation)
- - "ˊ": [t: "модификатор острый акцент"]        	#  0x2ca	(en: 'modifier acute accent', google translation)
- - "ˋ": [t: "модификатор могильный акцент"]     	#  0x2cb	(en: 'modifier grave accent', google translation)
- - "ˌ": [t: "модификатор низкой вертикальной линии"]	#  0x2cc	(en: 'modifier low vertical line', google translation)
- - "ˍ": [t: "модификатор низкий макрон"]        	#  0x2cd	(en: 'modifier low macron', google translation)
- - "ˎ": [t: "модификатор низкий могильный акцент"]	#  0x2ce	(en: 'modifier low grave accent', google translation)
- - "ˏ": [t: "модификатор низкий острый акцент"] 	#  0x2cf	(en: 'modifier low acute accent', google translation)
- - "ː": [t: "модификатор треугольная толстая кишка"]	#  0x2d0	(en: 'modifier triangular colon', google translation)
- - "ˑ": [t: "модификатор половина треугольной толстой кишки"]	#  0x2d1	(en: 'modifier half triangular colon', google translation)
- - "˒": [t: "модификатор центрирован правой половиной кольца"]	#  0x2d2	(en: 'modifier centered right half ring', google translation)
- - "˓": [t: "модификатор центральный левый половинный кольцо"]	#  0x2d3	(en: 'modifier centered left half ring', google translation)
- - "˔": [t: "модификатор вверх"]                	#  0x2d4	(en: 'modifier up tadck', google translation)
- - "˕": [t: "модификатор вниз"]                 	#  0x2d5	(en: 'modifier down tack', google translation)
- - "˖": [t: "модификатор плюс знак"]            	#  0x2d6	(en: 'modifier plus sign', google translation)
- - "˗": [t: "модификатор минус знак"]           	#  0x2d7	(en: 'modifier minus sign', google translation)
- - "˘": [t: "бреве"]                            	#  0x2d8	(en: 'breve', google translation)
- - "˙": [t: "точка"]                            	#  0x2d9	(en: 'dot', google translation)
- - "˚": [t: "кольцо выше"]                      	#  0x2da	(en: 'ring above', google translation)
- - "˛": [t: "огонек"]                           	#  0x2db	(en: 'ogonek', google translation)
- - "˜": [t: "маленькая тильда"]                 	#  0x2dc	(en: 'small tilde', google translation)
- - "˝": [t: "двойной острый акцент"]            	#  0x2dd	(en: 'double acute accent', google translation)
- - "˞": [t: "модификатор rhotic hook"]          	#  0x2de	(en: 'modifier rhotic hook', google translation)
- - "˟": [t: "модификатор cross accent"]         	#  0x2df	(en: 'modifier cross accent', google translation)
- - "ˠ": [t: "модификатор маленькой гамма"]      	#  0x2e0	(en: 'modifier small gamma', google translation)
- - "ˡ": [t: "модификатор маленький l"]          	#  0x2e1	(en: 'modifier small l', google translation)
- - "ˢ": [t: "модификатор маленький с"]          	#  0x2e2	(en: 'modifier small s', google translation)
- - "ˣ": [t: "модификатор маленький x"]          	#  0x2e3	(en: 'modifier small x', google translation)
- - "ˤ": [t: "модификатор небольшой обратной глоттальной остановки"]	#  0x2e4	(en: 'modifier small reversed glottal stop', google translation)
- - "˥": [t: "модификатор лишний тональный батончик"]	#  0x2e5	(en: 'modifier extra-high tone bar', google translation)
- - "˦": [t: "модификатор высокого тона"]        	#  0x2e6	(en: 'modifier high tone bar', google translation)
- - "˧": [t: "модификатор среднего тона"]        	#  0x2e7	(en: 'modifier mid tone bar', google translation)
- - "˨": [t: "модификатор с низким тоном"]       	#  0x2e8	(en: 'modifier low tone bar', google translation)
- - "˩": [t: "модификатор экстра-низко-тон"]     	#  0x2e9	(en: 'modifier extra-low tone bar', google translation)
- - "˪": [t: "модификатор инь, выходящий по тональной марке"]	#  0x2ea	(en: 'modifier yin departing tone mark', google translation)
- - "˫": [t: "модификатор ян уходящего тон"]     	#  0x2eb	(en: 'modifier yang departing tone mark', google translation)
- - "ˬ": [t: "модификатор голоса"]               	#  0x2ec	(en: 'modifier voicing', google translation)
- - "˭": [t: "модификатор бездиочный"]           	#  0x2ed	(en: 'modifier unaspirated', google translation)
- - "ˮ": [t: "модификатор двойной апостроф"]     	#  0x2ee	(en: 'modifier double apostrophe', google translation)
- - "˯": [t: "модификатор низкого вниз стрелы"]  	#  0x2ef	(en: 'modifier low down arrowhead', google translation)
- - "˰": [t: "модификатор низкий вверх стрел"]   	#  0x2f0	(en: 'modifier low up arrowhead', google translation)
- - "˱": [t: "модификатор низкий левый стрелок"] 	#  0x2f1	(en: 'modifier low left arrowhead', google translation)
- - "˲": [t: "модификатор низкого правого стрелка"]	#  0x2f2	(en: 'modifier low right arrowhead', google translation)
- - "˳": [t: "модификатор низкий кольцо"]        	#  0x2f3	(en: 'modifier low ring', google translation)
- - "˴": [t: "модификатор среднего могилы"]      	#  0x2f4	(en: 'modifier middle grave accent', google translation)
- - "˵": [t: "модификатор среднего двойного могилы"]	#  0x2f5	(en: 'modifier middle double grave accent', google translation)
- - "˶": [t: "модификатор среднего двойного острого акцента"]	#  0x2f6	(en: 'modifier middle double acute accent', google translation)
- - "˷": [t: "модификатор низкий тильде"]        	#  0x2f7	(en: 'modifier low tilde', google translation)
- - "˸": [t: "модификатор поднял толстую кишку"] 	#  0x2f8	(en: 'modifier raised colon', google translation)
- - "˹": [t: "модификатор начинается высокий тон"]	#  0x2f9	(en: 'modifier begin high tone', google translation)
- - "˺": [t: "модификатор заканчивает высокий тон"]	#  0x2fa	(en: 'modifier end high tone', google translation)
- - "˻": [t: "модификатор начинается с низким тоном"]	#  0x2fb	(en: 'modifier begin low tone', google translation)
- - "˼": [t: "модификатор заканчивается низким тоном"]	#  0x2fc	(en: 'modifier end low tone', google translation)
- - "˽": [t: "модификатор полка"]                	#  0x2fd	(en: 'modifier shelf', google translation)
- - "˾": [t: "модификатор открытая полка"]       	#  0x2fe	(en: 'modifier open shelf', google translation)
- - "˿": [t: "модификатор низкий левый стрелка"] 	#  0x2ff	(en: 'modifier low left arrow', google translation)
- - "̀": [t: "могильный акцент украшения"]       	#  0x300	(en: 'grave accent embellishment', google translation)
- - "́": [t: "острый акцентный украшение"]       	#  0x301	(en: 'acute accent embellishment', google translation)
- - "̂": [t: "окружающий акцент украшения"]      	#  0x302	(en: 'circumflex accent embellishment', google translation)
- - "̃": [t: "тильде украшает"]                  	#  0x303	(en: 'tilde embellishment', google translation)
- - "̄": [t: "макрон украшает"]                  	#  0x304	(en: 'macron embellishment', google translation)
- - "̅": [t: "вручительская варенья"]            	#  0x305	(en: 'overbar embellishment', google translation)
- - "̆": [t: "бреве украшения"]                  	#  0x306	(en: 'breve embellishment', google translation)
- - "̇": [t: "точка над украшением"]             	#  0x307	(en: 'dot above embellishment', google translation)
- - "̈": [t: "украшение диарезиса"]              	#  0x308	(en: 'diaeresis embellishment', google translation)
- - "̉": [t: "крючок над украшением"]            	#  0x309	(en: 'hook above embellishment', google translation)
- - "̊": [t: "кольцо над украшением"]            	#  0x30a	(en: 'ring above embellishment', google translation)
- - "̋": [t: "двойное острое акцентное украшение"]	#  0x30b	(en: 'double acute accent embellishment', google translation)
- - "̌": [t: "проверять"]                        	#  0x30c	(en: 'check', google translation)
- - "̍": [t: "вертикальная линия над украшением"]	#  0x30d	(en: 'vertical line above embellishment', google translation)
- - "̎": [t: "двойная вертикальная линия над украшением"]	#  0x30e	(en: 'double vertical line above embellishment', google translation)
- - "̏": [t: "двойной могильный акцент украшения"]	#  0x30f	(en: 'double grave accent embellishment', google translation)
- - "̐": [t: "кендрабинду украшает"]             	#  0x310	(en: 'candrabindu embellishment', google translation)
- - "̑": [t: "перевернутое украшение бреве"]     	#  0x311	(en: 'inverted breve embellishment', google translation)
- - "̒": [t: "повернут запятую над украшением"]  	#  0x312	(en: 'turned comma above embellishment', google translation)
- - "̓": [t: "запятая над украшением"]           	#  0x313	(en: 'comma above embellishment', google translation)
- - "̔": [t: "обратная запятая над украшением"]  	#  0x314	(en: 'reversed comma above embellishment', google translation)
- - "̕": [t: "запятая над правым украшением"]    	#  0x315	(en: 'comma above right embellishment', google translation)
- - "̖": [t: "могильный акцент ниже украшения"]  	#  0x316	(en: 'grave accent below embellishment', google translation)
- - "̗": [t: "острый акцент ниже украшения"]     	#  0x317	(en: 'acute accent below embellishment', google translation)
- - "̘": [t: "левая привязка под украшением"]    	#  0x318	(en: 'left tack below embellishment', google translation)
- - "̙": [t: "правая привязка под украшением"]   	#  0x319	(en: 'right tack below embellishment', google translation)
- - "̚": [t: "левый угол над украшением"]        	#  0x31a	(en: 'left angle above embellishment', google translation)
- - "̛": [t: "рога в украшении"]                 	#  0x31b	(en: 'horn embellishment', google translation)
- - "̜": [t: "полево половина кольца под украшением"]	#  0x31c	(en: 'left half ring below embellishment', google translation)
- - "̝": [t: "вверх по приукрашиванию"]          	#  0x31d	(en: 'up tack below embellishment', google translation)
- - "̞": [t: "вниз по привязке"]                 	#  0x31e	(en: 'down tack below embellishment', google translation)
- - "̟": [t: "плюс знак ниже украшения"]         	#  0x31f	(en: 'plus sign below embellishment', google translation)
- - "̠": [t: "знак минус ниже украшения"]        	#  0x320	(en: 'minus sign below embellishment', google translation)
- - "̡": [t: "палатализированный крюк под украшением"]	#  0x321	(en: 'palatalized hook below embellishment', google translation)
- - "̢": [t: "ретрофлексный крюк под украшением"]	#  0x322	(en: 'retroflex hook below embellishment', google translation)
- - "̣": [t: "точка ниже украшения"]             	#  0x323	(en: 'dot below embellishment', google translation)
- - "̤": [t: "диарезис ниже украшения"]          	#  0x324	(en: 'diaeresis below embellishment', google translation)
- - "̥": [t: "кольцо ниже украшения"]            	#  0x325	(en: 'ring below embellishment', google translation)
- - "̦": [t: "запятая ниже украшения"]           	#  0x326	(en: 'comma below embellishment', google translation)
- - "̧": [t: "седия украшения"]                  	#  0x327	(en: 'cedilla embellishment', google translation)
- - "̨": [t: "огонек украшает"]                  	#  0x328	(en: 'ogonek embellishment', google translation)
- - "̩": [t: "вертикальная линия под украшением"]	#  0x329	(en: 'vertical line below embellishment', google translation)
- - "̪": [t: "мост ниже украшения"]              	#  0x32a	(en: 'bridge below embellishment', google translation)
- - "̫": [t: "перевернутая двойная арка ниже украшения"]	#  0x32b	(en: 'inverted double arch below embellishment', google translation)
- - "̬": [t: "карон ниже украшения"]             	#  0x32c	(en: 'caron below embellishment', google translation)
- - "̭": [t: "окружающий акцент под украшением"] 	#  0x32d	(en: 'circumflex accent below embellishment', google translation)
- - "̮": [t: "бреве под украшением"]             	#  0x32e	(en: 'breve below embellishment', google translation)
- - "̯": [t: "перевернутый бреве под украшением"]	#  0x32f	(en: 'inverted breve below embellishment', google translation)
- - "̰": [t: "тильда ниже украшения"]            	#  0x330	(en: 'tilde below embellishment', google translation)
- - "̱": [t: "макрон ниже украшения"]            	#  0x331	(en: 'macron below embellishment', google translation)
- - "̲": [t: "низкая линия украшения"]           	#  0x332	(en: 'low line embellishment', google translation)
- - "̳": [t: "двойная низкая линейная украшения"]	#  0x333	(en: 'double low line embellishment', google translation)
- - "̴": [t: "тильде наложение украшений"]       	#  0x334	(en: 'tilde overlay embellishment', google translation)
- - "̵": [t: "краткое инсультное наложение"]     	#  0x335	(en: 'short stroke overlay embellishment', google translation)
- - "̶": [t: "длинное инсульт украшает"]         	#  0x336	(en: 'long stroke overlay embellishment', google translation)
- - "̷": [t: "короткое наложение solidus"]       	#  0x337	(en: 'short solidus overlay embellishment', google translation)
- - "̸": [t: "длинное наложение solidus"]        	#  0x338	(en: 'long solidus overlay embellishment', google translation)
- - "̹": [t: "правое половина кольца под украшением"]	#  0x339	(en: 'right half ring below embellishment', google translation)
- - "̺": [t: "перевернутый мост под украшением"] 	#  0x33a	(en: 'inverted bridge below embellishment', google translation)
- - "̻": [t: "квадрат ниже украшения"]           	#  0x33b	(en: 'square below embellishment', google translation)
- - "̼": [t: "seagull ниже украшения"]           	#  0x33c	(en: 'seagull below embellishment', google translation)
- - "̽": [t: "x выше украшения"]                 	#  0x33d	(en: 'x above embellishment', google translation)
- - "̾": [t: "вертикальное украшение тильды"]    	#  0x33e	(en: 'vertical tilde embellishment', google translation)
- - "̿": [t: "двойное оберное украшение"]        	#  0x33f	(en: 'double overline embellishment', google translation)
- - "̀": [t: "могильный тон марк украшения"]     	#  0x340	(en: 'grave tone mark embellishment', google translation)
- - "́": [t: "острый тонус марк украшения"]      	#  0x341	(en: 'acute tone mark embellishment', google translation)
- - "͆": [t: "мост выше"]                        	#  0x346	(en: 'bridge above', google translation)
-
- - "ΪΫϏ":                                       	#  0x3aa, 0x3ab, 0x3cf
-    - test: 
-        if: "$CapitalLetters_Beep"
-        then:
-        - audio:
-            value: "beep.mp4"
-            replace: []
-    - test: 
-        if: "$CapitalLetters_UseWord"
-        then_test:
-          if: "$SpeechOverrides_CapitalLetters = ''"
-          then_test:
-            if: "$Impairment = 'Blindness'"
-            then: [t: "пропусков"]              	# 	(en: 'cap', google translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
-    - t: "с диалитикой"                         	# 	(en: 'with dialytika', google translation)
- - "ϊ": [t: "йота с диалитикой"]                	#  0x3ca	(en: 'iota with dialytika')
- - "ϋ": [t: "ипсилон с диалитикой"]             	#  0x3cb	(en: 'upsilon with dialytika')
- - "ό": [t: "омикрон с тоносом"]                	#  0x3cc	(en: 'omicron with tonos')
- - "ύ": [t: "ипсилон с тоносом"]                	#  0x3cd	(en: 'upsilon with tonos')
- - "ώ": [t: "омега с тоносом"]                  	#  0x3ce	(en: 'omega with tonos')
- - "ϐ": [t: "бета"]                             	#  0x3d0	(en: 'beta')
- - "ϑ": [t: "тета"]                             	#  0x3d1	(en: 'theta')
- - "ϒ": [t: "ипсилон с крючком"]                	#  0x3d2	(en: 'upsilon with hook')
- - "ϓ": [t: "ипсилон с акутом и крючком"]       	#  0x3d3	(en: 'upsilon with acute and hook')
- - "ϔ": [t: "ипсилон с диэрезисом и крючком"]   	#  0x3d4	(en: 'upsilon with diaeresis and hook')
- - "ϕ": [t: "фи"]                               	#  0x3d5	(en: 'phi')
- - "ϖ": [t: "пи"]                               	#  0x3d6	(en: 'pi')
- - "ϗ": [t: "кай"]                              	#  0x3d7	(en: 'kai')
- - "Ϙ": [t: "верхний архаичный коппа"]          	#  0x3d8	(en: 'cap archaic koppa', google translation)
- - "ϙ": [t: "архаичная коппа"]                  	#  0x3d9	(en: 'archaic koppa')
- - "ϵ": [t: "полулунный эпсилон"]               	#  0x3f5	(en: 'epsilon')
- - "϶": [t: "обратный полулунный эпсилон"]      	#  0x3f6	(en: 'reversed epsilon')
- - "А-Я":                                       	#  0x410 - 0x42f
-    - test: 
-        if: "$CapitalLetters_Beep"
-        then:
-        - audio:
-            value: "beep.mp4"
-            replace: []
-    - test: 
-        if: "$CapitalLetters_UseWord"
-        then_test:
-          if: "$SpeechOverrides_CapitalLetters = ''"
-          then_test:
-            if: "$Impairment = 'Blindness'"
-            then: [t: "пропусков"]              	# 	(en: 'cap', google translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
- - "а": [t: "а"]                                	#  0x430	(en: 'a', google translation)
- - "б": [t: "быть"]                             	#  0x431	(en: 'be', google translation)
- - "в": [t: "вежливый"]                         	#  0x432	(en: 've', google translation)
- - "г": [t: "ghe"]                              	#  0x433	(google translation)
- - "д": [t: "де"]                               	#  0x434	(en: 'de', google translation)
- - "е": [t: "те"]                               	#  0x435	(en: 'ie', google translation)
- - "ж": [t: "же"]                               	#  0x436	(en: 'zhe', google translation)
- - "з": [t: "ze"]                               	#  0x437	(google translation)
- - "и": [t: "и"]                                	#  0x438	(en: 'i', google translation)
- - "й": [t: "короткий я"]                       	#  0x439	(en: 'short i', google translation)
- - "к": [t: "категория"]                        	#  0x43a	(en: 'ka', google translation)
- - "л": [t: "эль"]                              	#  0x43b	(en: 'el', google translation)
- - "м": [t: "эм"]                               	#  0x43c	(en: 'em', google translation)
- - "н": [t: "поступка"]                         	#  0x43d	(en: 'en', google translation)
- - "о": [t: "о"]                                	#  0x43e	(en: 'o', google translation)
- - "п": [t: "финиш"]                            	#  0x43f	(en: 'pe', google translation)
- - "р": [t: "эр"]                               	#  0x440	(en: 'er', google translation)
- - "с": [t: "эс"]                               	#  0x441	(en: 'es', google translation)
- - "т": [t: "театр"]                            	#  0x442	(en: 'te', google translation)
- - "у": [t: "у"]                                	#  0x443	(en: 'u', google translation)
- - "ф": [t: "эф"]                               	#  0x444	(en: 'ef', google translation)
- - "х": [t: "ха"]                               	#  0x445	(en: 'ha', google translation)
- - "ц": [t: "нога"]                             	#  0x446	(en: 'tse', google translation)
- - "ч": [t: "костюм"]                           	#  0x447	(en: 'che', google translation)
- - "ш": [t: "ша"]                               	#  0x448	(en: 'sha', google translation)
- - "щ": [t: "шша"]                              	#  0x449	(en: 'shcha', google translation)
- - "ъ": [t: "жесткий знак"]                     	#  0x44a	(en: 'hard sign', google translation)
- - "ы": [t: "еру"]                              	#  0x44b	(en: 'yeru', google translation)
- - "ь": [t: "мягкий знак"]                      	#  0x44c	(en: 'soft sign', google translation)
- - "э": [t: "э"]                                	#  0x44d	(en: 'e', google translation)
- - "ю": [t: "ю"]                                	#  0x44e	(en: 'yu', google translation)
- - "я": [t: "я"]                                	#  0x44f	(en: 'ya', google translation)
- - "؆": [t: "арабский корень куба"]             	#  0x606	(en: 'Arabic-Indic cube root', google translation)
- - "؇": [t: "арабский индикатор четвертый корень"]	#  0x607	(en: 'Arabic-Indic fourth root', google translation)
- - "؈": [t: "арабский рэй"]                     	#  0x608	(en: 'Arabic ray', google translation)
- - "‐": [t: "дефис"]                            	#  0x2010	(en: 'hyphen', google translation)
- - "‑": [t: "дефис"]                            	#  0x2011	(en: 'hyphen', google translation)
- - "‒": [t: "фигура dash"]                      	#  0x2012	(en: 'figure dash', google translation)
- - "–": [t: "en dash"]                          	#  0x2013	(google translation)
- - "—": [t: "em dash"]                          	#  0x2014	(google translation)
- - "―": [t: "горизонтальный батончик"]          	#  0x2015	(en: 'horizontal bar', google translation)
- - "‖": [t: "двойная вертикальная линия"]       	#  0x2016	(en: 'double vertical line', google translation)
- - "†": [t: "кинжал"]                           	#  0x2020	(en: 'dagger', google translation)
- - "‡": [t: "двойной кинжал"]                   	#  0x2021	(en: 'double dagger', google translation)
-
- - " - ": [t: "‡"]                              	#  0x2000 - 0x2007	(en: ' ', google translation)
-
- - "•":                                         	#  0x2022
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [t: "точка"]                      	# 	(en: 'dot', google translation)
-        else: [t: "пуля"]                       	# 	(en: 'bullet', google translation)
-
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [t: "точка точка точка"]            	# 	(en: 'dot dot dot', google translation)
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [t: "и так далее"]            	# 	(en: 'and so on', google translation)
-            else: [t: "и так далее"]            	# 	(en: 'and so on up to', google translation)
-
- - "‰": [t: "за мил"]                           	#  0x2030	(en: 'per mille', google translation)
- - "‱": [t: "за десять тысяч"]                  	#  0x2031	(en: 'per ten thousand', google translation)
- - "′": [t: "штрих"]                            	#  0x2032	(en: 'prime')
- - "″": [t: "двойной штрих"]                    	#  0x2033	(en: 'double prime')
- - "‴": [t: "тройной штрих"]                    	#  0x2034	(en: 'triple prime')
- - "‵": [t: "обратный штрих"]                   	#  0x2035	(en: 'reversed prime')
- - "‶": [t: "обратный двойной штрих"]           	#  0x2036	(en: 'reversed double prime')
- - "‷": [t: "обратный тройной штрих"]         	#  0x2037	(en: 'reversed triple prime', google translation)
- - "‸": [t: "в"]                                	#  0x2038	(en: 'to the', google translation)
- - "‹": [t: "одиночный левый угол угла цитата"] 	#  0x2039	(en: 'single left pointing angle quote mark', google translation)
- - "›": [t: "одиночный правый угол цитата цитата"]	#  0x203a	(en: 'single right pointing angle quote mark', google translation)
- - "‼": [t: "двойной фактор"]                   	#  0x203c	(en: 'double factorial', google translation)
- - "⁄": [t: "разделен на"]                      	#  0x2044	(en: 'divided by', google translation)
- - "⁅": [t: "левый квадратный кронштейн с перо"]	#  0x2045	(en: 'left square bracket with quill', google translation)
- - "⁆": [t: "правый квадратный кронштейн с перо"]	#  0x2046	(en: 'right square bracket with quill', google translation)
- - "※": [t: "справочная марка"]                 	#  0x203b	(en: 'reference mark', google translation)
- - "‿": [t: "под галстуком"]                    	#  0x203F	(en: 'under tie', google translation)
- - "⁀": [t: "галстук"]                          	#  0x2040	(en: 'tie', google translation)
- - "⁎": [t: "низкий звездочка"]                 	#  0x204e	(en: 'low asterisk', google translation)
- - "⁏": [t: "обратная точка с запятой"]               	#  0x204f	(en: 'reversed semicolon', google translation)
- - "⁐": [t: "закрыть"]                          	#  0x2050	(en: 'close up', google translation)
- - "⁑": [t: "две вертикальные звездочки"]       	#  0x2051	(en: 'two vertical asterisks', google translation)
- - "⁒": [t: "коммерческий минус знак"]          	#  0x2052	(en: 'commercial minus sign', google translation)
- - "⁗": [t: "четырехкратный prime"]             	#  0x2057	(en: 'quadruple prime', google translation)
- - "⁠": [t: ""]                                 	#  0x2060
- - "⁰": [t: "к нулевой степени"]                 	#  0x2070	(en: 'to the zeroth power', google translation)
- - "ⁱ": [t: "к силе эйхт"]                      	#  0x2071	(en: 'to the eihth power', google translation)
- - "⁴": [t: "к четвёртой степени"]                 	#  0x2074	(en: 'to the fourth power', google translation)
- - "⁵": [t: "к пятой степени"]                     	#  0x2075	(en: 'to the fifth power', google translation)
- - "⁶": [t: "к шестой степени"]                    	#  0x2076	(en: 'to the sixth power', google translation)
- - "⁷": [t: "к седьмой степении"]                 	#  0x2077	(en: 'to the seventh power', google translation)
- - "⁸": [t: "к восьмой степени"]                      	#  0x2078	(en: 'to the eighth power', google translation)
- - "⁹": [t: "к девятой степени"]                   	#  0x2079	(en: 'to the ninth power', google translation)
- - "⁺": [t: "superscript plus sign"]            	#  0x207a	(google translation)
- - "⁻": [t: "superscript минус"]                	#  0x207b	(en: 'superscript minus', google translation)
- - "⁼": [t: "superscript equals sign"]          	#  0x207c	(google translation)
- - "⁽": [t: "superscript left sakesisetise"]    	#  0x207d	(en: 'superscript left parenthesis', google translation)
- - "⁾": [t: "право скобок"]                     	#  0x207e	(en: 'superscript right parenthesis', google translation)
- - "ⁿ": [t: "к власти энн"]                     	#  0x207f	(en: 'to the ennth power', google translation)
- - "₀": [t: "суб -ноль"]                        	#  0x2080	(en: 'sub zero', google translation)
- - "₁": [t: "подставка"]                        	#  0x2081	(en: 'sub one', google translation)
- - "₂": [t: "подставка два"]                    	#  0x2082	(en: 'sub two', google translation)
- - "₃": [t: "подставка три"]                    	#  0x2083	(en: 'sub three', google translation)
- - "₄": [t: "подставка четверка"]               	#  0x2084	(en: 'sub four', google translation)
- - "₅": [t: "подставка пяти"]                   	#  0x2085	(en: 'sub five', google translation)
- - "₆": [t: "sub six"]                          	#  0x2086	(google translation)
- - "₇": [t: "sub seven"]                        	#  0x2087	(google translation)
- - "₈": [t: "саб"]                              	#  0x2088	(en: 'sub eight', google translation)
- - "₉": [t: "sub девять"]                       	#  0x2089	(en: 'sub nine', google translation)
- - "₊": [t: "подписк плюс знак"]                	#  0x208a	(en: 'subscript plus sign', google translation)
- - "₋": [t: "подписка минус знак"]              	#  0x208b	(en: 'subscript minus sign', google translation)
- - "₌": [t: "подписк равна значению"]           	#  0x208c	(en: 'subscript equals sign', google translation)
- - "₍": [t: "подписк остался в скобках"]        	#  0x208d	(en: 'subscript left parenthesis', google translation)
- - "₎": [t: "подписк право с клеса"]            	#  0x208e	(en: 'subscript right parenthesis', google translation)
- - "ₐ": [t: "подсуд а"]                         	#  0x2090	(en: 'sub A', google translation)
- - "ₑ": [t: "саб"]                              	#  0x2091	(en: 'sub E', google translation)
- - "ₒ": [t: "саб"]                              	#  0x2092	(en: 'sub O', google translation)
- - "ₓ": [t: "суб"]                              	#  0x2093	(en: 'sub X', google translation)
- - "ₕ": [t: "сабл"]                             	#  0x2095	(en: 'sub H', google translation)
- - "ₖ": [t: "суб"]                              	#  0x2096	(en: 'sub K', google translation)
- - "ₗ": [t: "сабл"]                             	#  0x2097	(en: 'sub L', google translation)
- - "ₘ": [t: "саб м"]                            	#  0x2098	(en: 'sub M', google translation)
- - "ₙ": [t: "суб"]                              	#  0x2099	(en: 'sub N', google translation)
- - "ₚ": [t: "суб -п"]                           	#  0x209a	(en: 'sub P', google translation)
- - "ₛ": [t: "sub s"]                            	#  0x209b	(en: 'sub S', google translation)
- - "ₜ": [t: "суб т"]                            	#  0x209c	(en: 'sub T', google translation)
- - "₠": [t: "европейская текущая единица"]      	#  0x20a0	(en: 'european currenty units', google translation)
- - "₡": [t: "колонс"]                           	#  0x20a1	(en: 'colons', google translation)
- - "₢": [t: "крузейро"]                         	#  0x20a2	(en: 'cruzeiro', google translation)
- - "₣": [t: "франк"]                            	#  0x20a3	(en: 'franc', google translation)
- - "₤": [t: "лира"]                             	#  0x20a4	(en: 'lira', google translation)
- - "₥": [t: "мельницы"]                         	#  0x20a5	(en: 'mills', google translation)
- - "₦": [t: "найра"]                            	#  0x20a6	(en: 'naira', google translation)
- - "₧": [t: "пезета"]                           	#  0x20a7	(en: 'peseta', google translation)
- - "₨": [t: "рупии"]                            	#  0x20a8	(en: 'rupees', google translation)
- - "₩": [t: "выиграл"]                          	#  0x20a9	(en: 'won', google translation)
- - "₪": [t: "новые шекели"]                     	#  0x20aa	(en: 'new sheqels', google translation)
- - "₫": [t: "донг"]                             	#  0x20ab	(en: 'dong', google translation)
- - "€": [t: "евро"]                             	#  0x20ac	(en: 'euros', google translation)
- - "₭": [t: "кип"]                              	#  0x20ad	(en: 'kip', google translation)
- - "₮": [t: "тугрик"]                           	#  0x20ae	(en: 'tugrik', google translation)
- - "₯": [t: "драхма"]                           	#  0x20af	(en: 'drachma', google translation)
- - "₰": [t: "немецкие копейки"]                 	#  0x20b0	(en: 'german pennies', google translation)
- - "₱": [t: "песо"]                             	#  0x20b1	(en: 'pesos', google translation)
- - "₲": [t: "гуаранис"]                         	#  0x20b2	(en: 'guaranis', google translation)
- - "₳": [t: "австралии"]                        	#  0x20b3	(en: 'australs', google translation)
- - "₴": [t: "гривния"]                          	#  0x20b4	(en: 'hryvnias', google translation)
- - "₵": [t: "седис"]                            	#  0x20b5	(en: 'cedis', google translation)
- - "₶": [t: "ливр турнуа"]                      	#  0x20b6	(en: 'livre tournois', google translation)
- - "₷": [t: "spesmilos"]                        	#  0x20b7	(google translation)
- - "₸": [t: "тенги"]                            	#  0x20b8	(en: 'tenges', google translation)
- - "₹": [t: "индийские рупии"]                  	#  0x20b9	(en: 'indian rupees', google translation)
- - "₺": [t: "турецкие лирас"]                   	#  0x20ba	(en: 'turkish liras', google translation)
- - "⃐": [t: "левый гарпун над украшением"]      	#  0x20d0	(en: 'left harpoon above embellishment', google translation)
- - "⃑": [t: "правый гарпун над украшением"]     	#  0x20d1	(en: 'right harpoon above embellishment', google translation)
- - "⃒": [t: "длинная вертикальная линия наложения"]	#  0x20d2	(en: 'long vertical line overlay embellishment', google translation)
- - "⃓": [t: "короткая вертикальная линия наложения"]	#  0x20d3	(en: 'short vertical line overlay embellishment', google translation)
- - "⃔": [t: "стрелка против часовой стрелки над украшением"]	#  0x20d4	(en: 'anticlockwise arrow above embellishment', google translation)
- - "⃕": [t: "стрелка по часовой стрелке над украшением"]	#  0x20d5	(en: 'clockwise arrow above embellishment', google translation)
- - "⃖": [t: "левая стрелка над украшением"]     	#  0x20d6	(en: 'left arrow above embellishment', google translation)
- - "⃗": [t: "правая стрелка над украшением"]    	#  0x20d7	(en: 'right arrow above embellishment', google translation)
- - "⃘": [t: "кольцо наложения украшения"]       	#  0x20d8	(en: 'ring overlay embellishment', google translation)
- - "⃙": [t: "по часовой стрелке приукрашивание"]	#  0x20d9	(en: 'clockwise ring overlay embellishment', google translation)
- - "⃚": [t: "окружающееся в борту с часовой стрельбой"]	#  0x20da	(en: 'anticlockwise ring overlay embellishment', google translation)
- - "⃛": [t: "тройная точка"]                    	#  0x20db	(en: 'triple dot', google translation)
- - "⃜": [t: "четырехкратная точка"]             	#  0x20dc	(en: 'quadruple dot', google translation)
- - "⃝": [t: "прилагая круговой украшение"]      	#  0x20dd	(en: 'enclosing circle embellishment', google translation)
- - "⃞": [t: "прилагая квадратные украшения"]    	#  0x20de	(en: 'enclosing square embellishment', google translation)
- - "⃟": [t: "прилагая алмазные украшения"]      	#  0x20df	(en: 'enclosing diamond embellishment', google translation)
- - "⃠": [t: "прилагая круговую обратную скользу"]	#  0x20e0	(en: 'enclosing circle backslash embellishment', google translation)
- - "⃡": [t: "стрелка влево справа над украшением"]	#  0x20e1	(en: 'left right arrow above embellishment', google translation)
- - "⃢": [t: "прилагая в кражу экрана"]          	#  0x20e2	(en: 'enclosing screen embellishment', google translation)
- - "⃣": [t: "приложение украшения keyuppercase"]	#  0x20e3	(en: 'enclosing keycap embellishment', google translation)
- - "⃤": [t: "прилагаясь вверх, указывающее треугольное украшение"]	#  0x20e4	(en: 'enclosing upward pointing triangle embellishment', google translation)
- - "⃥": [t: "обратное наложение solidus"]       	#  0x20e5	(en: 'reverse solidus overlay embellishment', google translation)
- - "⃦": [t: "двойное украшение инсульта"]       	#  0x20e6	(en: 'double verticle stroke embellishment', google translation)
- - "⃧": [t: "аннуитетный символ украшения"]     	#  0x20e7	(en: 'annuity symbol embellishment', google translation)
- - "⃨": [t: "тройной недостаточный родовой"]    	#  0x20e8	(en: 'triple underdot', google translation)
- - "⃩": [t: "широкий мост над украшением"]      	#  0x20e9	(en: 'wide bridge above embellishment', google translation)
- - "⃪": [t: "слева стрелка наложения"]          	#  0x20ea	(en: 'leftwards arrow overlay embellishment', google translation)
- - "⃫": [t: "длинное двойное наложение solidus"]	#  0x20eb	(en: 'long double solidus overlay embellishment', google translation)
- - "⃬": [t: "прямо гарпун с барб вниз по украшению"]	#  0x20ec	(en: 'rightwards harpoon with barb downwards embellishment', google translation)
- - "⃭": [t: "левый гарпун с барб вниз по украшению"]	#  0x20ed	(en: 'leftwards harpoon with barb downwards embellishment', google translation)
- - "⃮": [t: "левая стрелка ниже украшения"]     	#  0x20ee	(en: 'left arrow below embellishment', google translation)
- - "⃯": [t: "правая стрелка ниже украшения"]    	#  0x20ef	(en: 'right arrow below embellishment', google translation)
- - "⃰": [t: "звездочка над украшением"]         	#  0x20f0	(en: 'asterisk above embellishment', google translation)
- - "℄": [t: "символ центральной линии"]         	#  0x2104	(en: 'center line symbol', google translation)
- - "℅": [t: "заботиться о"]                     	#  0x2105	(en: 'care of', google translation)
- - "℆": [t: "када уна"]                         	#  0x2106	(en: 'cada una', google translation)
- - "ℇ": [t: "постоянная эйлера"]                	#  0x2107	(en: 'euler's constant', google translation)
- - "℈": [t: "смешивание"]                       	#  0x2108	(en: 'scruples', google translation)
- - "℉": [t: "степени фаренгейт"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
- - "ℊ": [t: "сценарий g"]                       	#  0x210a	(en: 'script g', google translation)
- - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
-    - t: "фрактур"                              	# 	(en: 'fraktur', google translation)
-    - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
-
- - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
-    - t: "двойной удар"                         	# 	(en: 'double struck', google translation)
-    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
-
- - "ℎ": [t: "планка постоянная"]                	#  0x210e	(en: 'planck constant', google translation)
- - "ℏ": [t: "h бар"]                            	#  0x210f	(en: 'h bar', google translation)
-
- - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
-    - t: "сценарий"                             	# 	(en: 'script', google translation)
-    - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
-
- - "ℓ": [t: "скрипт л"]                         	#  0x2113	(en: 'script l', google translation)
- - "℔": [t: "фунт"]                             	#  0x2114	(en: 'pounds', google translation)
- - "№": [t: "число"]                            	#  0x2116	(en: 'number', google translation)
- - "℥": [t: "унции"]                            	#  0x2125	(en: 'ounces', google translation)
- - "Ω": [t: "ом"]                               	#  0x2126	(en: 'ohms', google translation)
- - "℧": [t: "mhos"]                             	#  0x2127	(google translation)
- - "℩": [t: "повернута йота"]                   	#  0x2129	(en: 'turned iota', google translation)
- - "K": [t: "кельвин"]                          	#  0x212a	(en: 'kelvin', google translation)
- - "Å": [t: "ангстры"]                          	#  0x212b	(en: 'angstroms', google translation)
- - "ℯ": [t: "сценарий e"]                       	#  0x212f	(en: 'script e', google translation)
-
-   # coalesced some chars that use cap letters
- - "Ⅎ℺⅁⅂⅃⅄":                                    	#  0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144
-    - test:
-      - if: "'.' = '℺'"
-        then: [t: "вращается"]                  	# 	(en: 'rotated', google translation)
-      - else_if: "'.' = 'Ⅎ'"
-        then: [t: "перевернутый"]               	# 	(en: 'turned', google translation)
-      - else_if: "'.' = '⅃'"
-        then: [t: "обратный безэриф"]           	# 	(en: 'reversed sans-serif', google translation)
-        else: [t: "повернулся без зарисования"] 	# 	(en: 'turned sans-serif', google translation)
-    - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
-
- - "ℴ": [t: "сценарий o"]                       	#  0x2134	(en: 'script o', google translation)
- - "ℵ": [t: "первый трансфинит кардинал"]       	#  0x2135	(en: 'first transfinite cardinal', google translation)
- - "ℶ": [t: "второй трансфинит кардинал"]       	#  0x2136	(en: 'second transfinite cardinal', google translation)
- - "ℷ": [t: "третий трансфинит кардинал"]       	#  0x2137	(en: 'third transfinite cardinal', google translation)
- - "ℸ": [t: "четвертый трансфинит кардинал"]    	#  0x2138	(en: 'fourth transfinite cardinal', google translation)
- - "ℼ": [t: "двойной удар пи"]                  	#  0x213c	(en: 'double struck pi', google translation)
- - "ℽ": [t: "двойной удар гамма"]               	#  0x213d	(en: 'double struck gamma', google translation)
- - "⅀": [t: "двойное поражение n-ary summation"]	#  0x2140	(en: 'double struck n-ary summation', google translation)
- - "⅋": [t: "повернул амперс и"]                	#  0x214b	(en: 'turned ampersand', google translation)
- - "⅌": [t: "перемещение"]                      	#  0x214c	(en: 'per', google translation)
- - "ⅎ": [t: "повернулся ф"]                     	#  0x214e	(en: 'turned F', google translation)
- - "¼": [t: "одна четверть"]                    	#  0x00bc	(en: 'one quarter', google translation)
- - "½": [t: "половина"]                         	#  0x00bd	(en: 'one half', google translation)
- - "¾": [t: "три четверти"]                     	#  0x00be	(en: 'three quarters', google translation)
- - "⅐": [t: "один седьмой"]                     	#  0x2150	(en: 'one seventh', google translation)
- - "⅑": [t: "один девятый"]                     	#  0x2151	(en: 'one ninth', google translation)
- - "⅒": [t: "одна десятая"]                     	#  0x2152	(en: 'one tenth', google translation)
- - "⅓": [t: "треть"]                            	#  0x2153	(en: 'one third', google translation)
- - "⅔": [t: "две трети"]                        	#  0x2154	(en: 'two thirds', google translation)
- - "⅕": [t: "один пятый"]                       	#  0x2155	(en: 'one fifth', google translation)
- - "⅖": [t: "два пятых"]                        	#  0x2156	(en: 'two fifths', google translation)
- - "⅗": [t: "три пятых"]                        	#  0x2157	(en: 'three fifths', google translation)
- - "⅘": [t: "четыре пятых"]                     	#  0x2158	(en: 'four fifths', google translation)
- - "⅙": [t: "один шестой"]                      	#  0x2159	(en: 'one sixth', google translation)
- - "⅚": [t: "пять шестых"]                      	#  0x215a	(en: 'five sixths', google translation)
- - "⅛": [t: "один ат"]                          	#  0x215b	(en: 'one eighth', google translation)
- - "⅜": [t: "три афи"]                          	#  0x215c	(en: 'three eighths', google translation)
- - "⅝": [t: "пять ат"]                          	#  0x215d	(en: 'five eighths', google translation)
- - "⅞": [t: "семь ат"]                          	#  0x215e	(en: 'seven eighths', google translation)
- - "⅟": [t: "один"]                             	#  0x215f	(en: 'one over', google translation)
- - "Ⅰ": [t: "Ⅰ"]                                	#  0x2160	(en: 'I', google translation)
- - "Ⅱ": [t: "я i"]                              	#  0x2161	(en: 'I I', google translation)
- - "Ⅲ": [t: "я я я"]                            	#  0x2162	(en: 'I I I', google translation)
- - "Ⅳ": [t: "я v"]                              	#  0x2163	(en: 'I V', google translation)
- - "Ⅴ": [t: "Ⅴ"]                                	#  0x2164	(en: 'V', google translation)
- - "Ⅵ": [t: "v i"]                              	#  0x2165	(en: 'V I', google translation)
- - "Ⅶ": [t: "v i i"]                            	#  0x2166	(en: 'V I I', google translation)
- - "Ⅷ": [t: "v i i i"]                          	#  0x2167	(en: 'V I I I', google translation)
- - "Ⅸ": [t: "я x"]                              	#  0x2168	(en: 'I X', google translation)
- - "Ⅹ": [t: "Ⅹ"]                                	#  0x2169	(en: 'X', google translation)
- - "Ⅺ": [t: "x i"]                              	#  0x216a	(en: 'X I', google translation)
- - "Ⅻ": [t: "x i i"]                            	#  0x216b	(en: 'X I I', google translation)
- - "Ⅼ": [t: "Ⅼ"]                                	#  0x216c	(en: 'L', google translation)
- - "Ⅽ": [t: "Ⅽ"]                                	#  0x216d	(en: 'C', google translation)
- - "Ⅾ": [t: "Ⅾ"]                                	#  0x216e	(en: 'D', google translation)
- - "Ⅿ": [t: "Ⅿ"]                                	#  0x216f	(en: 'M', google translation)
- - "ⅰ": [t: "ⅰ"]                                	#  0x2170	(en: 'I', google translation)
- - "ⅱ": [t: "я i"]                              	#  0x2171	(en: 'I I', google translation)
- - "ⅲ": [t: "я я я"]                            	#  0x2172	(en: 'I I I', google translation)
- - "ⅳ": [t: "я v"]                              	#  0x2173	(en: 'I V', google translation)
- - "ⅴ": [t: "ⅴ"]                                	#  0x2174	(en: 'V', google translation)
- - "ⅵ": [t: "v i"]                              	#  0x2175	(en: 'V I', google translation)
- - "ⅶ": [t: "v i i"]                            	#  0x2176	(en: 'V I I', google translation)
- - "ⅷ": [t: "v i i i"]                          	#  0x2177	(en: 'V I I I', google translation)
- - "ⅸ": [t: "я x"]                              	#  0x2178	(en: 'I X', google translation)
- - "ⅹ": [t: "ⅹ"]                                	#  0x2179	(en: 'X', google translation)
- - "ⅺ": [t: "x i"]                              	#  0x217a	(en: 'X I', google translation)
- - "ⅻ": [t: "x i i"]                            	#  0x217b	(en: 'X I I', google translation)
- - "ⅼ": [t: "ⅼ"]                                	#  0x217c	(en: 'L', google translation)
- - "ⅽ": [t: "ⅽ"]                                	#  0x217d	(en: 'C', google translation)
- - "ⅾ": [t: "ⅾ"]                                	#  0x217e	(en: 'D', google translation)
- - "ⅿ": [t: "ⅿ"]                                	#  0x217f	(en: 'M', google translation)
- - "↉": [t: "нулевые трети"]                    	#  0x2189	(en: 'zero thirds', google translation)
- - "←": [t: "стрелка влево"]                    	#  0x2190	(en: 'leftwards arrow', google translation)
- - "↑": [t: "вверх стрелой"]                    	#  0x2191	(en: 'upwards arrow', google translation)
- - "→": [t: "стрелка вправо"]                   	#  0x2192	(en: 'rightwards arrow', google translation)
- - "↓": [t: "вниз стрелы"]                      	#  0x2193	(en: 'downwards arrow', google translation)
- - "↔": [t: "левая стрелка справа"]             	#  0x2194	(en: 'left right arrow', google translation)
- - "↕": [t: "вверх вниз стрел"]                 	#  0x2195	(en: 'up down arrow', google translation)
- - "↖": [t: "северо -западный стрелка"]         	#  0x2196	(en: 'north west arrow', google translation)
- - "↗":                                         	#  0x2197
-    - test:
-        if: "ancestor::*[2][self::m:limit]"
-        then: [t: "подходы снизу"]              	# 	(en: 'approaches from below', google translation)
-        else: [t: "северо -восточный стрела"]   	# 	(en: 'north east arrow', google translation)
-
- - "↘":                                         	#  0x2198
-    - test:
-        if: "ancestor::*[2][self::m:limit]"
-        then: [t: "подходы сверху"]             	# 	(en: 'approaches from above', google translation)
-        else: [t: "юго -восточная стрела"]      	# 	(en: 'south east arrow', google translation)
-
- - "↙": [t: "юго -западный стрелка"]            	#  0x2199	(en: 'south west arrow', google translation)
- - "↚": [t: "стрелка влево с ходом"]            	#  0x219a	(en: 'leftwards arrow with stroke', google translation)
- - "↛": [t: "стрелка вправо с ударом"]          	#  0x219b	(en: 'rightwards arrow with stroke', google translation)
- - "↜": [t: "левая волновая стрелка"]           	#  0x219c	(en: 'leftwards wave arrow', google translation)
- - "↝": [t: "правая волновая стрелка"]          	#  0x219d	(en: 'rightwards wave arrow', google translation)
- - "↞": [t: "слева две головы стрелы"]          	#  0x219e	(en: 'leftwards two headed arrow', google translation)
- - "↟": [t: "вверху две головные стрелы"]       	#  0x219f	(en: 'upwards two headed arrow', google translation)
- - "↠": [t: "права две головные стрелы"]        	#  0x21a0	(en: 'rightwards two headed arrow', google translation)
- - "↡": [t: "вниз по двум головным стрелкам"]   	#  0x21a1	(en: 'downwards two headed arrow', google translation)
- - "↢": [t: "стрелка влево с хвостом"]          	#  0x21a2	(en: 'leftwards arrow with tail', google translation)
- - "↣": [t: "стрелка вправо с хвостом"]         	#  0x21a3	(en: 'rightwards arrow with tail', google translation)
- - "↤": [t: "стрелка влево из бара"]            	#  0x21a4	(en: 'leftwards arrow from bar', google translation)
- - "↥": [t: "стрелка вверх от бара"]            	#  0x21a5	(en: 'upwards arrow from bar', google translation)
- - "↦": [t: "стрелка вправо из бара"]           	#  0x21a6	(en: 'rightwards arrow from bar', google translation)
- - "↧": [t: "стрелка вниз от бара"]             	#  0x21a7	(en: 'downwards arrow from bar', google translation)
- - "↨": [t: "вверх вниз стрел с базой"]         	#  0x21a8	(en: 'up down arrow with base', google translation)
- - "↩": [t: "стрелка влево с крючком"]          	#  0x21a9	(en: 'leftwards arrow with hook', google translation)
- - "↪": [t: "стрелка вправо с крючком"]         	#  0x21aa	(en: 'rightwards arrow with hook', google translation)
- - "↫": [t: "стрелка влево с петлей"]           	#  0x21ab	(en: 'leftwards arrow with loop', google translation)
- - "↬": [t: "стрелка вправо с петлей"]          	#  0x21ac	(en: 'rightwards arrow with loop', google translation)
- - "↭": [t: "левая стрелка правой волны"]       	#  0x21ad	(en: 'left right wave arrow', google translation)
- - "↮": [t: "левая стрелка вправо с ударом"]    	#  0x21ae	(en: 'left right arrow with stroke', google translation)
- - "↯": [t: "вниз zigzag arrow"]                	#  0x21af	(en: 'downwards zigzag arrow', google translation)
- - "↰": [t: "стрелка вверх с наконечником влево"]	#  0x21b0	(en: 'upwards arrow with tip leftwards', google translation)
- - "↱": [t: "стрелка вверх с наконечником вправо"]	#  0x21b1	(en: 'upwards arrow with tip rightwards', google translation)
- - "↲": [t: "стрелка вниз с наконечником слева"]	#  0x21b2	(en: 'downwards arrow with tip leftwards', google translation)
- - "↳": [t: "стрелка вниз с наконечником вправо"]	#  0x21b3	(en: 'downwards arrow with tip rightwards', google translation)
- - "↴": [t: "стрелка вправо с углом вниз"]      	#  0x21b4	(en: 'rightwards arrow with corner downwards', google translation)
- - "↵": [t: "стрелка вниз с углом налево"]      	#  0x21b5	(en: 'downwards arrow with corner leftwards', google translation)
- - "↶": [t: "стрелка в верхней части часовой стрелки"]	#  0x21b6	(en: 'anticlockwise top semicircle arrow', google translation)
- - "↷": [t: "верхняя стрелка по часовой стрелке"]	#  0x21b7	(en: 'clockwise top semicircle arrow', google translation)
- - "↸": [t: "северо -западный стрела до длинного бара"]	#  0x21b8	(en: 'north west arrow to long bar', google translation)
- - "↹": [t: "стрелка слева, чтобы пройти вправо, стрелу в бар"]	#  0x21b9	(en: 'leftwards arrow to bar over rightwards arrow to bar', google translation)
- - "↺": [t: "стрелка с открытым кругом"]        	#  0x21ba	(en: 'anticlockwise open circle arrow', google translation)
- - "↻": [t: "по часовой стрелке открытый круг стрелы"]	#  0x21bb	(en: 'clockwise open circle arrow', google translation)
- - "↼": [t: "оставил гарпун вверх"]             	#  0x21bc	(en: 'left harpoon up', google translation)
- - "↽": [t: "оставил гарпун вниз"]              	#  0x21bd	(en: 'left harpoon down', google translation)
- - "↾": [t: "вверх по гарпуне правильно"]       	#  0x21be	(en: 'up harpoon right', google translation)
- - "↿": [t: "вверх по гарпуне ушел"]            	#  0x21bf	(en: 'up harpoon left', google translation)
- - "⇀": [t: "правый гарпун вверх"]              	#  0x21c0	(en: 'right harpoon up', google translation)
- - "⇁": [t: "правый гарпун вниз"]               	#  0x21c1	(en: 'right harpoon down', google translation)
- - "⇂": [t: "вниз по гарпуне справа"]           	#  0x21c2	(en: 'down harpoon right', google translation)
- - "⇃": [t: "вниз по гарпуне ушел"]             	#  0x21c3	(en: 'down harpoon left', google translation)
- - "⇄": [t: "стрелка вправо над стрелкой влево"]	#  0x21c4	(en: 'rightwards arrow over leftwards arrow', google translation)
- - "⇅": [t: "вверх стрелка слева от стрелы вниз"]	#  0x21c5	(en: 'upwards arrow leftwards of downwards arrow', google translation)
- - "⇆": [t: "стрелка слева направо"]            	#  0x21c6	(en: 'leftwards arrow over rightwards arrow', google translation)
- - "⇇": [t: "левые парные стрелы"]              	#  0x21c7	(en: 'leftwards paired arrows', google translation)
- - "⇈": [t: "вверх парные стрелы"]              	#  0x21c8	(en: 'upwards paired arrows', google translation)
- - "⇉": [t: "правые парные стрелы"]             	#  0x21c9	(en: 'rightwards paired arrows', google translation)
- - "⇊": [t: "вниз в парных стрелках"]           	#  0x21ca	(en: 'downwards paired arrows', google translation)
- - "⇋": [t: "левый гарпун над правым гарпуном"] 	#  0x21cb	(en: 'left harpoon over right harpoon', google translation)
- - "⇌": [t: "правый гарпун над левым гарпуном"] 	#  0x21cc	(en: 'right harpoon over left harpoon', google translation)
+ - "ʷ": [t: "верхний индекс w"]          	#  0x2b7	(en: 'modifier small w', google translation)
+ - "ʸ": [t: "верхний индекс y"]          	#  0x2b8	(en: 'modifier small y', google translation)
+ - "ʹ": [t: "штрих"]                	#  0x2b9	(en: 'modifier prime', google translation)
+ - "ʺ": [t: "двойной штрих"]         	#  0x2ba	(en: 'modifier double prime', google translation)
+ - "ʻ": [t: "перевёрнутая запятая"]         	#  0x2bb	(en: 'modifier turned comma', google translation)
+ - "ʼ": [t: "апостроф"]             	#  0x2bc	(en: 'modifier apostrophe', google translation)
+ - "ʽ": [t: "перевёрнутый апостроф"]     	#  0x2bd	(en: 'modifier reversed comma', google translation)
+ - "ʾ": [t: "правое полукольцо"]	#  0x2be	(en: 'modifier right half ring', google translation)
+ - "ʿ": [t: "левое полукольцо"]	#  0x2bf	(en: 'modifier left half ring', google translation)
+ - "ˀ": [t: "гортанная смычка"]	#  0x2c0	(en: 'modifier glottal stop', google translation)
+ - "ˁ": [t: "перевёрнутая гортанная смычка"]	#  0x2c1	(en: 'modifier reversed glottal stop', google translation)
+ - "˂": [t: "левый наконечник стрелки"]        	#  0x2c2	(en: 'modifier left arrowhead', google translation)
+ - "˃": [t: "правый наконечник стрелки"]       	#  0x2c3	(en: 'modifier right arrowhead', google translation)
+ - "˄": [t: "верхний наконечник стрелки"]          	#  0x2c4	(en: 'modifier up arrowhead', google translation)
+ - "˅": [t: "нижний наконечник стрелки"]           	#  0x2c5	(en: 'modifier down arrowhead', google translation)
+ - "ˆ": [t: "циркумфлекс"]  	#  0x2c6	(en: 'modifier circumflex accent', google translation)
+ - "ˇ": [t: "гачек"]                        	#  0x2c7	(en: 'check', google translation)
+ - "ˈ": [t: "вертикальная черта"]   	#  0x2c8	(en: 'modifier vertical line', google translation)
+en: 'right harpoon over left harpoon', google translation)
  - "⇍": [t: "слева двойная стрелка с ходом"]    	#  0x21cd	(en: 'leftwards double arrow with stroke', google translation)
  - "⇎": [t: "левая правая двойная стрелка с ходом"]	#  0x21ce	(en: 'left right double arrow with stroke', google translation)
  - "⇏": [t: "права двойная стрелка с ходом"]    	#  0x21cf	(en: 'rightwards double arrow with stroke', google translation)
@@ -3644,3 +3097,544 @@
  - "￬": [t: "стрелка вниз"]                     	#  0xffec	(en: 'down arrow', google translation)
  - "￼": [t: "неизвестный или отсутствующий объект"]	#  0xfffc	(en: 'unknown or missing object', google translation)
  - "�": [t: "неизвестный или отсутствующий символ"]	#  0xfffd	(en: 'unknown or missing character', google translation)
+- "ˉ": [t: "макрон"]                              #  0x2c9 (en: 'modifier macron')
+- "ˊ": [t: "акут"]                                #  0x2ca (en: 'modifier acute accent')
+- "ˋ": [t: "гравис"]                              #  0x2cb (en: 'modifier grave accent')
+- "ˌ": [t: "нижняя вертикальная черта"]           #  0x2cc (en: 'modifier low vertical line')
+- "ˍ": [t: "нижний макрон"]                       #  0x2cd (en: 'modifier low macron')
+- "ˎ": [t: "нижний гравис"]                       #  0x2ce (en: 'modifier low grave accent')
+- "ˏ": [t: "нижний акут"]                         #  0x2cf (en: 'modifier low acute accent')
+- "ː": [t: "знак долготы"]                        #  0x2d0 (en: 'modifier triangular colon')
+- "ˑ": [t: "половинный знак долготы"]             #  0x2d1 (en: 'modifier half triangular colon')
+- "˒": [t: "центрированное правое полукольцо"]    #  0x2d2 (en: 'modifier centered right half ring')
+- "˓": [t: "центрированное левое полукольцо"]     #  0x2d3 (en: 'modifier centered left half ring')
+- "˔": [t: "верхний упор"]                        #  0x2d4 (en: 'modifier up tack')
+- "˕": [t: "нижний упор"]                         #  0x2d5 (en: 'modifier down tack')
+- "˖": [t: "верхний индекс плюс"]                 #  0x2d6 (en: 'modifier plus sign')
+- "˗": [t: "верхний индекс минус"]                #  0x2d7 (en: 'modifier minus sign')
+- "˘": [t: "бреве"]                               #  0x2d8 (en: 'breve')
+- "˙": [t: "точка сверху"]                        #  0x2d9 (en: 'dot')
+- "˚": [t: "кольцо сверху"]                       #  0x2da (en: 'ring above')
+- "˛": [t: "огонек"]                              #  0x2db (en: 'ogonek')
+- "˜": [t: "малая тильда"]                        #  0x2dc (en: 'small tilde')
+- "˝": [t: "двойной акут"]                        #  0x2dd (en: 'double acute accent')
+- "˞": [t: "ротический крюк"]                     #  0x2de (en: 'modifier rhotic hook')
+- "˟": [t: "перечёркивающий акцент"]              #  0x2df (en: 'modifier cross accent')
+- "ˠ": [t: "верхний индекс гаммы"]                #  0x2e0 (en: 'modifier small gamma')
+- "ˡ": [t: "верхний индекс l"]                    #  0x2e1 (en: 'modifier small l')
+- "ˢ": [t: "верхний индекс s"]                    #  0x2e2 (en: 'modifier small s')
+- "ˣ": [t: "верхний индекс x"]                    #  0x2e3 (en: 'modifier small x')
+- "ˤ": [t: "верхний индекс перевёрнутой гортанной смычки"] # 0x2e4 (en: 'modifier small reversed glottal stop')
+- "˥": [t: "сверхвысокий тон"]                    #  0x2e5 (en: 'modifier extra-high tone bar')
+- "˦": [t: "высокий тон"]                         #  0x2e6 (en: 'modifier high tone bar')
+- "˧": [t: "средний тон"]                         #  0x2e7 (en: 'modifier mid tone bar')
+- "˨": [t: "низкий тон"]                          #  0x2e8 (en: 'modifier low tone bar')
+- "˩": [t: "сверхнизкий тон"]                     #  0x2e9 (en: 'modifier extra-low tone bar')
+- "˪": [t: "знак тона инь"]                       #  0x2ea (en: 'modifier yin departing tone mark')
+- "˫": [t: "знак тона ян"]                        #  0x2eb (en: 'modifier yang departing tone mark')
+- "ˬ": [t: "звонкость"]                           #  0x2ec (en: 'modifier voicing')
+- "˭": [t: "непридыхательность"]                  #  0x2ed (en: 'modifier unaspirated')
+- "ˮ": [t: "двойной апостроф"]                    #  0x2ee (en: 'modifier double apostrophe')
+- "˯": [t: "нижний наконечник стрелки вниз"]      #  0x2ef (en: 'modifier low down arrowhead')
+- "˰": [t: "нижний наконечник стрелки вверх"]     #  0x2f0 (en: 'modifier low up arrowhead')
+- "˱": [t: "нижний наконечник стрелки влево"]     #  0x2f1 (en: 'modifier low left arrowhead')
+- "˲": [t: "нижний наконечник стрелки вправо"]    #  0x2f2 (en: 'modifier low right arrowhead')
+- "˳": [t: "нижнее кольцо"]                       #  0x2f3 (en: 'modifier low ring')
+- "˴": [t: "средний гравис"]                      #  0x2f4 (en: 'modifier middle grave accent')
+- "˵": [t: "средний двойной гравис"]              #  0x2f5 (en: 'modifier middle double grave accent')
+- "˶": [t: "средний двойной акут"]                #  0x2f6 (en: 'modifier middle double acute accent')
+- "˷": [t: "нижняя тильда"]                       #  0x2f7 (en: 'modifier low tilde')
+- "˸": [t: "верхнее двоеточие"]                   #  0x2f8 (en: 'modifier raised colon')
+- "˹": [t: "начало высокого тона"]                #  0x2f9 (en: 'modifier begin high tone')
+- "˺": [t: "конец высокого тона"]                 #  0x2fa (en: 'modifier end high tone')
+- "˻": [t: "начало низкого тона"]                 #  0x2fb (en: 'modifier begin low tone')
+- "˼": [t: "конец низкого тона"]                  #  0x2fc (en: 'modifier end low tone')
+- "˽": [t: "полка"]                               #  0x2fd (en: 'modifier shelf')
+- "˾": [t: "открытая полка"]                      #  0x2fe (en: 'modifier open shelf')
+- "˿": [t: "нижняя левая стрелка"]                #  0x2ff (en: 'modifier low left arrow')
+- "̀": [t: "комбинируемый гравис"]                 #  0x300 (en: 'grave accent embellishment')
+- "́": [t: "комбинируемый акут"]                   #  0x301 (en: 'acute accent embellishment')
+- "̂": [t: "комбинируемый циркумфлекс"]            #  0x302 (en: 'circumflex accent embellishment')
+- "̃": [t: "комбинируемая тильда"]                 #  0x303 (en: 'tilde embellishment')
+- "̄": [t: "комбинируемый макрон"]                 #  0x304 (en: 'macron embellishment')
+- "̅": [t: "комбинируемое надчёркивание"]          #  0x305 (en: 'overbar embellishment')
+- "̆": [t: "комбинируемое бреве"]                  #  0x306 (en: 'breve embellishment')
+- "̇": [t: "комбинируемая точка сверху"]           #  0x307 (en: 'dot above embellishment')
+- "̈": [t: "комбинируемый диэрезис"]               #  0x308 (en: 'diaeresis embellishment')
+- "̉": [t: "комбинируемый крючок сверху"]          #  0x309 (en: 'hook above embellishment')
+- "̊": [t: "комбинируемое кольцо сверху"]          #  0x30a (en: 'ring above embellishment')
+- "̋": [t: "комбинируемый двойной акут"]           #  0x30b (en: 'double acute accent embellishment')
+- "̌": [t: "комбинируемый гачек"]                  #  0x30c (en: 'check')
+- "̍": [t: "комбинируемая вертикальная линия сверху"] # 0x30d (en: 'vertical line above embellishment')
+- "̎": [t: "комбинируемая двойная вертикальная линия сверху"] # 0x30e (en: 'double vertical line above embellishment')
+- "̏": [t: "комбинируемый двойной гравис"]         #  0x30f (en: 'double grave accent embellishment')
+- "̐": [t: "комбинируемая чандрабинду"]            #  0x310 (en: 'candrabindu embellishment')
+- "̑": [t: "комбинируемое перевёрнутое бреве"]     #  0x311 (en: 'inverted breve embellishment')
+- "̒": [t: "комбинируемая перевёрнутая запятая сверху"] # 0x312 (en: 'turned comma above embellishment')
+- "̓": [t: "комбинируемая запятая сверху"]         #  0x313 (en: 'comma above embellishment')
+- "̔": [t: "комбинируемая перевёрнутая запятая сверху"] # 0x314 (en: 'reversed comma above embellishment')
+- "̕": [t: "комбинируемая запятая справа сверху"]  #  0x315 (en: 'comma above right embellishment')
+- "̖": [t: "комбинируемый гравис снизу"]           #  0x316 (en: 'grave accent below embellishment')
+- "̗": [t: "комбинируемый акут снизу"]             #  0x317 (en: 'acute accent below embellishment')
+- "̘": [t: "комбинируемый левый упор снизу"]       #  0x318 (en: 'left tack below embellishment')
+- "̙": [t: "комбинируемый правый упор снизу"]      #  0x319 (en: 'right tack below embellishment')
+- "̚": [t: "комбинируемый левый угол сверху"]      #  0x31a (en: 'left angle above embellishment')
+- "̛": [t: "комбинируемый рожок"]                  #  0x31b (en: 'horn embellishment')
+- "̜": [t: "комбинируемое левое полукольцо снизу"] #  0x31c (en: 'left half ring below embellishment')
+- "̝": [t: "комбинируемый верхний упор снизу"]     #  0x31d (en: 'up tack below embellishment')
+- "̞": [t: "комбинируемый нижний упор снизу"]      #  0x31e (en: 'down tack below embellishment')
+- "̟": [t: "комбинируемый знак плюс снизу"]        #  0x31f (en: 'plus sign below embellishment')
+- "̠": [t: "комбинируемый знак минус снизу"]       #  0x320 (en: 'minus sign below embellishment')
+- "̡": [t: "комбинируемый палатализованный крюк снизу"] # 0x321 (en: 'palatalized hook below embellishment')
+- "̢": [t: "комбинируемый ретрофлексный крюк снизу"] # 0x322 (en: 'retroflex hook below embellishment')
+- "̣": [t: "комбинируемая точка снизу"]            #  0x323 (en: 'dot below embellishment')
+- "̤": [t: "комбинируемый диэрезис снизу"]         #  0x324 (en: 'diaeresis below embellishment')
+- "̥": [t: "комбинируемое кольцо снизу"]           #  0x325 (en: 'ring below embellishment')
+- "̦": [t: "комбинируемая запятая снизу"]          #  0x326 (en: 'comma below embellishment')
+- "̧": [t: "комбинируемая седиль"]                 #  0x327 (en: 'cedilla embellishment')
+- "̨": [t: "комбинируемый огонек"]                 #  0x328 (en: 'ogonek embellishment')
+- "̩": [t: "комбинируемая вертикальная линия снизу"] # 0x329 (en: 'vertical line below embellishment')
+- "̪": [t: "комбинируемый мостик снизу"]           #  0x32a (en: 'bridge below embellishment')
+- "̫": [t: "комбинируемая перевёрнутая двойная арка снизу"] # 0x32b (en: 'inverted double arch below embellishment')
+- "̬": [t: "комбинируемый гачек снизу"]            #  0x32c (en: 'caron below embellishment')
+- "̭": [t: "комбинируемый циркумфлекс снизу"]      #  0x32d (en: 'circumflex accent below embellishment')
+- "̮": [t: "комбинируемое бреве снизу"]            #  0x32e (en: 'breve below embellishment')
+- "̯": [t: "комбинируемое перевёрнутое бреве снизу"] # 0x32f (en: 'inverted breve below embellishment')
+- "̰": [t: "комбинируемая тильда снизу"]           #  0x330 (en: 'tilde below embellishment')
+- "̱": [t: "комбинируемый макрон снизу"]           #  0x331 (en: 'macron below embellishment')
+- "̲": [t: "комбинируемое подчёркивание"]          #  0x332 (en: 'low line embellishment')
+- "̳": [t: "комбинируемое двойное подчёркивание"]  #  0x333 (en: 'double low line embellishment')
+- "̴": [t: "комбинируемая наложенная тильда"]      #  0x334 (en: 'tilde overlay embellishment')
+- "̵": [t: "комбинируемая короткая черта"]         #  0x335 (en: 'short stroke overlay embellishment')
+- "̶": [t: "комбинируемая длинная черта"]          #  0x336 (en: 'long stroke overlay embellishment')
+- "̷": [t: "комбинируемый короткий слэш"]          #  0x337 (en: 'short solidus overlay embellishment')
+- "̸": [t: "комбинируемый длинный слэш"]           #  0x338 (en: 'long solidus overlay embellishment')
+- "̹": [t: "комбинируемое правое полукольцо снизу"] # 0x339 (en: 'right half ring below embellishment')
+- "̺": [t: "комбинируемый перевёрнутый мостик снизу"] # 0x33a (en: 'inverted bridge below embellishment')
+- "̻": [t: "комбинируемый квадрат снизу"]          #  0x33b (en: 'square below embellishment')
+- "̼": [t: "комбинируемая чайка снизу"]            #  0x33c (en: 'seagull below embellishment')
+- "̽": [t: "комбинируемый икс сверху"]             #  0x33d (en: 'x above embellishment')
+- "̾": [t: "комбинируемая вертикальная тильда"]    #  0x33e (en: 'vertical tilde embellishment')
+- "̿": [t: "комбинируемое двойное надчёркивание"]  #  0x33f (en: 'double overline embellishment')
+- "̀": [t: "комбинируемый знак гравис-тона"]       #  0x340 (en: 'grave tone mark embellishment')
+- "́": [t: "комбинируемый знак акут-тона"]         #  0x341 (en: 'acute tone mark embellishment')
+- "͆": [t: "комбинируемый мостик сверху"]          #  0x346 (en: 'bridge above')
+
+- "ΪΫϏ":                                          #  0x3aa, 0x3ab, 0x3cf
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [t: "заглавная"]                #  (en: 'cap')
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
+    - t: " с диэрезисом"                          #  (en: 'with dialytika')
+- "ϊ": [t: "йота с диэрезисом"]                   #  0x3ca (en: 'iota with dialytika')
+- "ϋ": [t: "ипсилон с диэрезисом"]                #  0x3cb (en: 'upsilon with dialytika')
+- "ό": [t: "омикрон с ударением"]                 #  0x3cc (en: 'omicron with tonos')
+- "ύ": [t: "ипсилон с ударением"]                 #  0x3cd (en: 'upsilon with tonos')
+- "ώ": [t: "омега с ударением"]                   #  0x3ce (en: 'omega with tonos')
+- "ϐ": [t: "бета"]                                #  0x3d0 (en: 'beta')
+- "ϑ": [t: "тета"]                                #  0x3d1 (en: 'theta')
+- "ϒ": [t: "ипсилон с крючком"]                   #  0x3d2 (en: 'upsilon with hook')
+- "ϓ": [t: "ипсилон с акутом и крючком"]          #  0x3d3 (en: 'upsilon with acute and hook')
+- "ϔ": [t: "ипсилон с диэрезисом и крючком"]      #  0x3d4 (en: 'upsilon with diaeresis and hook')
+- "ϕ": [t: "фи"]                                  #  0x3d5 (en: 'phi')
+- "ϖ": [t: "пи"]                                  #  0x3d6 (en: 'pi')
+- "ϗ": [t: "кай"]                                 #  0x3d7 (en: 'kai')
+- "Ϙ": [t: "заглавная архаичная коппа"]           #  0x3d8 (en: 'cap archaic koppa')
+- "ϙ": [t: "архаичная коппа"]                     #  0x3d9 (en: 'archaic koppa')
+- "ϵ": [t: "эпсилон"]                             #  0x3f5 (en: 'epsilon')
+- "϶": [t: "обратный эпсилон"]                    #  0x3f6 (en: 'reversed epsilon')
+- "А-Я":                                          #  0x410 - 0x42f
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [t: "заглавная"]                #  (en: 'cap')
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
+- "а": [t: "а"]                                   #  0x430
+- "б": [t: "бэ"]                                  #  0x431
+- "в": [t: "вэ"]                                  #  0x432
+- "г": [t: "гэ"]                                  #  0x433
+- "д": [t: "дэ"]                                  #  0x434
+- "е": [t: "е"]                                   #  0x435
+- "ж": [t: "жэ"]                                  #  0x436
+- "з": [t: "зэ"]                                  #  0x437
+- "и": [t: "и"]                                   #  0x438
+- "й": [t: "и краткое"]                           #  0x439
+- "к": [t: "ка"]                                  #  0x43a
+- "л": [t: "эль"]                                 #  0x43b
+- "м": [t: "эм"]                                  #  0x43c
+- "н": [t: "эн"]                                  #  0x43d
+- "о": [t: "о"]                                   #  0x43e
+- "п": [t: "пэ"]                                  #  0x43f
+- "р": [t: "эр"]                                  #  0x440
+- "с": [t: "эс"]                                  #  0x441
+- "т": [t: "тэ"]                                  #  0x442
+- "у": [t: "у"]                                   #  0x443
+- "ф": [t: "эф"]                                  #  0x444
+- "х": [t: "ха"]                                  #  0x445
+- "ц": [t: "цэ"]                                  #  0x446
+- "ч": [t: "чэ"]                                  #  0x447
+- "ш": [t: "ша"]                                  #  0x448
+- "щ": [t: "ща"]                                  #  0x449
+- "ъ": [t: "твёрдый знак"]                        #  0x44a
+- "ы": [t: "ы"]                                   #  0x44b
+- "ь": [t: "мягкий знак"]                         #  0x44c
+- "э": [t: "э"]                                   #  0x44d
+- "ю": [t: "ю"]                                   #  0x44e
+- "я": [t: "я"]                                   #  0x44f
+- "؆": [t: "арабский кубический корень"]          #  0x606 (en: 'Arabic-Indic cube root')
+- "؇": [t: "арабский корень четвёртой степени"]   #  0x607 (en: 'Arabic-Indic fourth root')
+- "؈": [t: "арабский рай"]                        #  0x608 (en: 'Arabic ray')
+- "‐": [t: "дефис"]                               #  0x2010 (en: 'hyphen')
+- "‑": [t: "неразрывный дефис"]                   #  0x2011 (en: 'non-breaking hyphen')
+- "‒": [t: "цифровое тире"]                       #  0x2012 (en: 'figure dash')
+- "–": [t: "короткое тире"]                       #  0x2013 (en: 'en dash')
+- "—": [t: "длинное тире"]                        #  0x2014 (en: 'em dash')
+- "―": [t: "горизонтальная черта"]                #  0x2015 (en: 'horizontal bar')
+- "‖": [t: "двойная вертикальная линия"]          #  0x2016 (en: 'double vertical line')
+- "†": [t: "крестик"]                             #  0x2020 (en: 'dagger')
+- "‡": [t: "двойной крестик"]                     #  0x2021 (en: 'double dagger')
+
+- " - ": [t: ""]                                  #  0x2000 - 0x2007 (различные пробелы, не озвучиваются)
+
+- "•":                                            #  0x2022
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [t: "точка"]                        #  в химических формулах
+        else: [t: "маркер"]                       #  (en: 'bullet')
+
+- "…":                                            #  0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+            - "../*[1][.='…']"
+        then: [t: "многоточие"]                   #  (en: 'dot dot dot')
+        else_test:
+            if: "count(following-sibling::*) = 0"
+            then: [t: "и так далее"]              #  (en: 'and so on')
+            else: [t: "и так далее до"]           #  (en: 'and so on up to')
+
+- "‰": [t: "промилле"]                            #  0x2030 (en: 'per mille')
+- "‱": [t: "десять тысяч"]                        #  0x2031 (en: 'per ten thousand')
+- "′": [t: "штрих"]                               #  0x2032 (en: 'prime')
+- "″": [t: "двойной штрих"]                       #  0x2033 (en: 'double prime')
+- "‴": [t: "тройной штрих"]                       #  0x2034 (en: 'triple prime')
+- "‵": [t: "обратный штрих"]                      #  0x2035 (en: 'reversed prime')
+- "‶": [t: "обратный двойной штрих"]              #  0x2036 (en: 'reversed double prime')
+- "‷": [t: "обратный тройной штрих"]              #  0x2037 (en: 'reversed triple prime')
+- "‸": [t: "в степени"]                           #  0x2038 (en: 'to the')
+- "‹": [t: "левая одиночная угловая кавычка"]     #  0x2039 (en: 'single left-pointing angle quote mark')
+- "›": [t: "правая одиночная угловая кавычка"]    #  0x203a (en: 'single right-pointing angle quote mark')
+- "‼": [t: "двойной восклицательный знак"]        #  0x203c (en: 'double factorial')
+- "⁄": [t: "косая черта дроби"]                   #  0x2044 (en: 'fraction slash')
+- "⁅": [t: "левая квадратная скобка с пером"]     #  0x2045 (en: 'left square bracket with quill')
+- "⁆": [t: "правая квадратная скобка с пером"]    #  0x2046 (en: 'right square bracket with quill')
+- "※": [t: "знак ссылки"]                         #  0x203b (en: 'reference mark')
+- "‿": [t: "соединение снизу"]                    #  0x203F (en: 'under tie')
+- "⁀": [t: "соединение сверху"]                   #  0x2040 (en: 'tie')
+- "⁎": [t: "нижняя звёздочка"]                    #  0x204e (en: 'low asterisk')
+- "⁏": [t: "обратная точка с запятой"]            #  0x204f (en: 'reversed semicolon')
+- "⁐": [t: "сомкнуть"]                            #  0x2050 (en: 'close up')
+- "⁑": [t: "две вертикальные звёздочки"]          #  0x2051 (en: 'two vertical asterisks')
+- "⁒": [t: "коммерческий знак минус"]             #  0x2052 (en: 'commercial minus sign')
+- "⁗": [t: "четыре штриха"]                       #  0x2057 (en: 'quadruple prime')
+- "⁠": [t: ""]                                    #  0x2060 (невидимый соединитель)
+- "⁰": [t: "в степени ноль"]                      #  0x2070 (en: 'to the zeroth power')
+- "ⁱ": [t: "в степени i"]                         #  0x2071 (en: 'to the i-th power')
+- "⁴": [t: "в четвёртой степени"]                 #  0x2074 (en: 'to the fourth power')
+- "⁵": [t: "в пятой степени"]                     #  0x2075 (en: 'to the fifth power')
+- "⁶": [t: "в шестой степени"]                    #  0x2076 (en: 'to the sixth power')
+- "⁷": [t: "в седьмой степени"]                   #  0x2077 (en: 'to the seventh power')
+- "⁸": [t: "в восьмой степени"]                   #  0x2078 (en: 'to the eighth power')
+- "⁹": [t: "в девятой степени"]                   #  0x2079 (en: 'to the ninth power')
+- "⁺": [t: "верхний индекс плюс"]                 #  0x207a (en: 'superscript plus sign')
+- "⁻": [t: "верхний индекс минус"]                #  0x207b (en: 'superscript minus')
+- "⁼": [t: "верхний индекс равно"]                #  0x207c (en: 'superscript equals sign')
+- "⁽": [t: "верхний индекс левая скобка"]         #  0x207d (en: 'superscript left parenthesis')
+- "⁾": [t: "верхний индекс правая скобка"]        #  0x207e (en: 'superscript right parenthesis')
+- "ⁿ": [t: "в степени n"]                         #  0x207f (en: 'to the n-th power')
+- "₀": [t: "индекс ноль"]                         #  0x2080 (en: 'sub zero')
+- "₁": [t: "индекс один"]                         #  0x2081 (en: 'sub one')
+- "₂": [t: "индекс два"]                          #  0x2082 (en: 'sub two')
+- "₃": [t: "индекс три"]                          #  0x2083 (en: 'sub three')
+- "₄": [t: "индекс четыре"]                       #  0x2084 (en: 'sub four')
+- "₅": [t: "индекс пять"]                         #  0x2085 (en: 'sub five')
+- "₆": [t: "индекс шесть"]                        #  0x2086 (en: 'sub six')
+- "₇": [t: "индекс семь"]                         #  0x2087 (en: 'sub seven')
+- "₈": [t: "индекс восемь"]                       #  0x2088 (en: 'sub eight')
+- "₉": [t: "индекс девять"]                       #  0x2089 (en: 'sub nine')
+- "₊": [t: "индекс плюс"]                         #  0x208a (en: 'subscript plus sign')
+- "₋": [t: "индекс минус"]                        #  0x208b (en: 'subscript minus sign')
+- "₌": [t: "индекс равно"]                        #  0x208c (en: 'subscript equals sign')
+- "₍": [t: "индекс левая скобка"]                 #  0x208d (en: 'subscript left parenthesis')
+- "₎": [t: "индекс правая скобка"]                #  0x208e (en: 'subscript right parenthesis')
+- "ₐ": [t: "индекс a"]                            #  0x2090 (en: 'sub a')
+- "ₑ": [t: "индекс e"]                            #  0x2091 (en: 'sub e')
+- "ₒ": [t: "индекс o"]                            #  0x2092 (en: 'sub o')
+- "ₓ": [t: "индекс x"]                            #  0x2093 (en: 'sub x')
+- "ₕ": [t: "индекс h"]                            #  0x2095 (en: 'sub h')
+- "ₖ": [t: "индекс k"]                            #  0x2096 (en: 'sub k')
+- "ₗ": [t: "индекс l"]                            #  0x2097 (en: 'sub l')
+- "ₘ": [t: "индекс m"]                            #  0x2098 (en: 'sub m')
+- "ₙ": [t: "индекс n"]                            #  0x2099 (en: 'sub n')
+- "ₚ": [t: "индекс p"]                            #  0x209a (en: 'sub p')
+- "ₛ": [t: "индекс s"]                            #  0x209b (en: 'sub s')
+- "ₜ": [t: "индекс t"]                            #  0x209c (en: 'sub t')
+- "₠": [t: "евро"]                                #  0x20a0 (en: 'european currency unit') — устаревший, но пусть будет евро
+- "₡": [t: "колон"]                               #  0x20a1 (en: 'colon')
+- "₢": [t: "крузейро"]                            #  0x20a2 (en: 'cruzeiro')
+- "₣": [t: "франк"]                               #  0x20a3 (en: 'franc')
+- "₤": [t: "лира"]                                #  0x20a4 (en: 'lira')
+- "₥": [t: "милль"]                               #  0x20a5 (en: 'mill')
+- "₦": [t: "найра"]                               #  0x20a6 (en: 'naira')
+- "₧": [t: "песета"]                              #  0x20a7 (en: 'peseta')
+- "₨": [t: "рупия"]                               #  0x20a8 (en: 'rupee')
+- "₩": [t: "вона"]                                #  0x20a9 (en: 'won')
+- "₪": [t: "новый шекель"]                        #  0x20aa (en: 'new sheqel')
+- "₫": [t: "донг"]                                #  0x20ab (en: 'dong')
+- "€": [t: "евро"]                                #  0x20ac (en: 'euro')
+- "₭": [t: "кип"]                                 #  0x20ad (en: 'kip')
+- "₮": [t: "тугрик"]                              #  0x20ae (en: 'tugrik')
+- "₯": [t: "драхма"]                              #  0x20af (en: 'drachma')
+- "₰": [t: "пфенниг"]                             #  0x20b0 (en: 'german penny')
+- "₱": [t: "песо"]                                #  0x20b1 (en: 'peso')
+- "₲": [t: "гуарани"]                             #  0x20b2 (en: 'guarani')
+- "₳": [t: "аустраль"]                            #  0x20b3 (en: 'austral')
+- "₴": [t: "гривна"]                              #  0x20b4 (en: 'hryvnia')
+- "₵": [t: "седи"]                                #  0x20b5 (en: 'cedi')
+- "₶": [t: "ливр"]                                #  0x20b6 (en: 'livre tournois')
+- "₷": [t: "спесмило"]                            #  0x20b7 (en: 'spesmilo')
+- "₸": [t: "тенге"]                               #  0x20b8 (en: 'tenge')
+- "₹": [t: "индийская рупия"]                     #  0x20b9 (en: 'indian rupee')
+- "₺": [t: "турецкая лира"]                       #  0x20ba (en: 'turkish lira')
+- "⃐": [t: "комбинируемый левый гарпун сверху"]    #  0x20d0 (en: 'left harpoon above embellishment')
+- "⃑": [t: "комбинируемый правый гарпун сверху"]   #  0x20d1 (en: 'right harpoon above embellishment')
+- "⃒": [t: "комбинируемая длинная вертикальная черта"] # 0x20d2 (en: 'long vertical line overlay embellishment')
+- "⃓": [t: "комбинируемая короткая вертикальная черта"] # 0x20d3 (en: 'short vertical line overlay embellishment')
+- "⃔": [t: "комбинируемая стрелка против часовой стрелки"] # 0x20d4 (en: 'anticlockwise arrow above embellishment')
+- "⃕": [t: "комбинируемая стрелка по часовой стрелке"] # 0x20d5 (en: 'clockwise arrow above embellishment')
+- "⃖": [t: "комбинируемая стрелка влево сверху"]   #  0x20d6 (en: 'left arrow above embellishment')
+- "⃗": [t: "комбинируемая стрелка вправо сверху"]  #  0x20d7 (en: 'right arrow above embellishment')
+- "⃘": [t: "комбинируемое кольцо"]                 #  0x20d8 (en: 'ring overlay embellishment')
+- "⃙": [t: "комбинируемое кольцо по часовой стрелке"] # 0x20d9 (en: 'clockwise ring overlay embellishment')
+- "⃚": [t: "комбинируемое кольцо против часовой стрелки"] # 0x20da (en: 'anticlockwise ring overlay embellishment')
+- "⃛": [t: "комбинируемые три точки"]              #  0x20db (en: 'triple dot')
+- "⃜": [t: "комбинируемые четыре точки"]           #  0x20dc (en: 'quadruple dot')
+- "⃝": [t: "комбинируемый круг"]                   #  0x20dd (en: 'enclosing circle embellishment')
+- "⃞": [t: "комбинируемый квадрат"]                #  0x20de (en: 'enclosing square embellishment')
+- "⃟": [t: "комбинируемый ромб"]                   #  0x20df (en: 'enclosing diamond embellishment')
+- "⃠": [t: "комбинируемый круг с обратной косой"]  #  0x20e0 (en: 'enclosing circle backslash embellishment')
+- "⃡": [t: "комбинируемая стрелка влево-вправо сверху"] # 0x20e1 (en: 'left right arrow above embellishment')
+- "⃢": [t: "комбинируемый прямоугольник"]          #  0x20e2 (en: 'enclosing screen embellishment')
+- "⃣": [t: "комбинируемый значок клавиши"]         #  0x20e3 (en: 'enclosing keycap embellishment')
+- "⃤": [t: "комбинируемый треугольник вверх"]      #  0x20e4 (en: 'enclosing upward pointing triangle embellishment')
+- "⃥": [t: "комбинируемая обратная косая черта"]   #  0x20e5 (en: 'reverse solidus overlay embellishment')
+- "⃦": [t: "комбинируемая двойная вертикальная черта"] # 0x20e6 (en: 'double vertical stroke embellishment')
+- "⃧": [t: "комбинируемый символ аннуитета"]       #  0x20e7 (en: 'annuity symbol embellishment')
+- "⃨": [t: "комбинируемые три точки снизу"]        #  0x20e8 (en: 'triple underdot')
+- "⃩": [t: "комбинируемый широкий мостик сверху"]  #  0x20e9 (en: 'wide bridge above embellishment')
+- "⃪": [t: "комбинируемая левая стрелка"]          #  0x20ea (en: 'leftwards arrow overlay embellishment')
+- "⃫": [t: "комбинируемая длинная двойная косая"]  #  0x20eb (en: 'long double solidus overlay embellishment')
+- "⃬": [t: "комбинируемый правый гарпун вниз"]     #  0x20ec (en: 'rightwards harpoon with barb downwards embellishment')
+- "⃭": [t: "комбинируемый левый гарпун вниз"]      #  0x20ed (en: 'leftwards harpoon with barb downwards embellishment')
+- "⃮": [t: "комбинируемая левая стрелка снизу"]    #  0x20ee (en: 'left arrow below embellishment')
+- "⃯": [t: "комбинируемая правая стрелка снизу"]   #  0x20ef (en: 'right arrow below embellishment')
+- "⃰": [t: "комбинируемая звёздочка сверху"]       #  0x20f0 (en: 'asterisk above embellishment')
+- "℄": [t: "символ центровой линии"]              #  0x2104 (en: 'center line symbol')
+- "℅": [t: "вниманию"]                            #  0x2105 (en: 'care of')
+- "℆": [t: "каждая"]                              #  0x2106 (en: 'cada una')
+- "ℇ": [t: "постоянная Эйлера"]                   #  0x2107 (en: 'Euler's constant')
+- "℈": [t: "скрупул"]                             #  0x2108 (en: 'scruple')
+- "℉": [t: "градус Фаренгейта"]                   #  0x2109 (en: 'degree Fahrenheit')
+- "ℊ": [t: "рукописная g"]                        #  0x210a (en: 'script g')
+- "ℌℑℨℭ":                                         #  0x210c, 0x2111, 0x2128, 0x212d
+    - t: "готическое"                             #  (en: 'fraktur')
+    - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
+- "ℍℙℾℿ":                                         #  0x210d, 0x2119, 0x213e, 0x213f
+    - t: "двойное"                                #  (en: 'double struck')
+    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')"
+- "ℎ": [t: "постоянная Планка"]                   #  0x210e (en: 'Planck constant')
+- "ℏ": [t: "постоянная Планка с чертой"]          #  0x210f (en: 'h-bar')
+
+- "ℐℒ℘ℬℰℱℳ":                                      #  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
+    - t: "рукописное"                             #  (en: 'script')
+    - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
+
+- "ℓ": [t: "рукописная l"]                        #  0x2113 (en: 'script l')
+- "℔": [t: "фунт"]                                #  0x2114 (en: 'pound')
+- "№": [t: "номер"]                               #  0x2116 (en: 'numero')
+- "℥": [t: "унция"]                               #  0x2125 (en: 'ounce')
+- "Ω": [t: "ом"]                                  #  0x2126 (en: 'ohm')
+- "℧": [t: "сименс"]                              #  0x2127 (en: 'mho')
+- "℩": [t: "перевёрнутая йота"]                   #  0x2129 (en: 'turned iota')
+- "K": [t: "кельвин"]                             #  0x212a (en: 'kelvin')
+- "Å": [t: "ангстрем"]                            #  0x212b (en: 'angstrom')
+- "ℯ": [t: "рукописная e"]                        #  0x212f (en: 'script e')
+
+- "Ⅎ℺⅁⅂⅃⅄":                                       #  0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144
+    - test:
+      - if: "'.' = '℺'"
+        then: [t: "повёрнутое"]                    #  (en: 'rotated')
+      - else_if: "'.' = 'Ⅎ'"
+        then: [t: "перевёрнутое"]                  #  (en: 'turned')
+      - else_if: "'.' = '⅃'"
+        then: [t: "обратное без засечек"]          #  (en: 'reversed sans-serif')
+        else: [t: "повёрнутое без засечек"]        #  (en: 'turned sans-serif')
+    - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
+
+- "ℴ": [t: "рукописная o"]                        #  0x2134 (en: 'script o')
+- "ℵ": [t: "алеф"]                                #  0x2135 (en: 'alef')
+- "ℶ": [t: "бет"]                                 #  0x2136 (en: 'bet')
+- "ℷ": [t: "гимель"]                              #  0x2137 (en: 'gimel')
+- "ℸ": [t: "далет"]                               #  0x2138 (en: 'dalet')
+- "ℼ": [t: "двойное пи"]                          #  0x213c (en: 'double-struck pi')
+- "ℽ": [t: "двойная гамма"]                       #  0x213d (en: 'double-struck gamma')
+- "⅀": [t: "двойная сумма"]                       #  0x2140 (en: 'double-struck n-ary summation')
+- "⅋": [t: "перевёрнутый амперсанд"]              #  0x214b (en: 'turned ampersand')
+- "⅌": [t: "на"]                                  #  0x214c (en: 'per')
+- "ⅎ": [t: "перевёрнутая f"]                      #  0x214e (en: 'turned f')
+- "¼": [t: "одна четверть"]                       #  0x00bc (en: 'one quarter')
+- "½": [t: "одна вторая"]                         #  0x00bd (en: 'one half')
+- "¾": [t: "три четверти"]                        #  0x00be (en: 'three quarters')
+- "⅐": [t: "одна седьмая"]                        #  0x2150 (en: 'one seventh')
+- "⅑": [t: "одна девятая"]                        #  0x2151 (en: 'one ninth')
+- "⅒": [t: "одна десятая"]                        #  0x2152 (en: 'one tenth')
+- "⅓": [t: "одна треть"]                          #  0x2153 (en: 'one third')
+- "⅔": [t: "две трети"]                           #  0x2154 (en: 'two thirds')
+- "⅕": [t: "одна пятая"]                          #  0x2155 (en: 'one fifth')
+- "⅖": [t: "две пятых"]                           #  0x2156 (en: 'two fifths')
+- "⅗": [t: "три пятых"]                           #  0x2157 (en: 'three fifths')
+- "⅘": [t: "четыре пятых"]                        #  0x2158 (en: 'four fifths')
+- "⅙": [t: "одна шестая"]                         #  0x2159 (en: 'one sixth')
+- "⅚": [t: "пять шестых"]                         #  0x215a (en: 'five sixths')
+- "⅛": [t: "одна восьмая"]                        #  0x215b (en: 'one eighth')
+- "⅜": [t: "три восьмых"]                         #  0x215c (en: 'three eighths')
+- "⅝": [t: "пять восьмых"]                        #  0x215d (en: 'five eighths')
+- "⅞": [t: "семь восьмых"]                        #  0x215e (en: 'seven eighths')
+- "⅟": [t: "один"]                                #  0x215f (en: 'one over')
+- "Ⅰ": [t: "один"]                                #  0x2160 (римская цифра)
+- "Ⅱ": [t: "два"]                                 #  0x2161
+- "Ⅲ": [t: "три"]                                 #  0x2162
+- "Ⅳ": [t: "четыре"]                              #  0x2163
+- "Ⅴ": [t: "пять"]                                #  0x2164
+- "Ⅵ": [t: "шесть"]                               #  0x2165
+- "Ⅶ": [t: "семь"]                                #  0x2166
+- "Ⅷ": [t: "восемь"]                              #  0x2167
+- "Ⅸ": [t: "девять"]                              #  0x2168
+- "Ⅹ": [t: "десять"]                              #  0x2169
+- "Ⅺ": [t: "одиннадцать"]                         #  0x216a
+- "Ⅻ": [t: "двенадцать"]                          #  0x216b
+- "Ⅼ": [t: "пятьдесят"]                           #  0x216c
+- "Ⅽ": [t: "сто"]                                 #  0x216d
+- "Ⅾ": [t: "пятьсот"]                             #  0x216e
+- "Ⅿ": [t: "тысяча"]                              #  0x216f
+- "ⅰ": [t: "один"]                                #  0x2170
+- "ⅱ": [t: "два"]                                 #  0x2171
+- "ⅲ": [t: "три"]                                 #  0x2172
+- "ⅳ": [t: "четыре"]                              #  0x2173
+- "ⅴ": [t: "пять"]                                #  0x2174
+- "ⅵ": [t: "шесть"]                               #  0x2175
+- "ⅶ": [t: "семь"]                                #  0x2176
+- "ⅷ": [t: "восемь"]                              #  0x2177
+- "ⅸ": [t: "девять"]                              #  0x2178
+- "ⅹ": [t: "десять"]                              #  0x2179
+- "ⅺ": [t: "одиннадцать"]                         #  0x217a
+- "ⅻ": [t: "двенадцать"]                          #  0x217b
+- "ⅼ": [t: "пятьдесят"]                           #  0x217c
+- "ⅽ": [t: "сто"]                                 #  0x217d
+- "ⅾ": [t: "пятьсот"]                             #  0x217e
+- "ⅿ": [t: "тысяча"]                              #  0x217f
+- "↉": [t: "ноль третьих"]                        #  0x2189 (en: 'zero thirds')
+- "←": [t: "стрелка влево"]                       #  0x2190
+- "↑": [t: "стрелка вверх"]                       #  0x2191
+- "→": [t: "стрелка вправо"]                      #  0x2192
+- "↓": [t: "стрелка вниз"]                        #  0x2193
+- "↔": [t: "стрелка влево-вправо"]                #  0x2194
+- "↕": [t: "стрелка вверх-вниз"]                  #  0x2195
+- "↖": [t: "стрелка северо-запад"]                #  0x2196
+- "↗":                                            #  0x2197
+    - test:
+        if: "ancestor::*[2][self::m:limit]"
+        then: [t: "стремится снизу"]              #  (en: 'approaches from below')
+        else: [t: "стрелка северо-восток"]        #  0x2197
+- "↘":                                            #  0x2198
+    - test:
+        if: "ancestor::*[2][self::m:limit]"
+        then: [t: "стремится сверху"]             #  (en: 'approaches from above')
+        else: [t: "стрелка юго-восток"]           #  0x2198
+- "↙": [t: "стрелка юго-запад"]                   #  0x2199
+- "↚": [t: "стрелка влево с чертой"]              #  0x219a
+- "↛": [t: "стрелка вправо с чертой"]             #  0x219b
+- "↜": [t: "стрелка влево волнистая"]             #  0x219c
+- "↝": [t: "стрелка вправо волнистая"]            #  0x219d
+- "↞": [t: "стрелка влево с двумя головками"]     #  0x219e
+- "↟": [t: "стрелка вверх с двумя головками"]     #  0x219f
+- "↠": [t: "стрелка вправо с двумя головками"]    #  0x21a0
+- "↡": [t: "стрелка вниз с двумя головками"]      #  0x21a1
+- "↢": [t: "стрелка влево с хвостом"]             #  0x21a2
+- "↣": [t: "стрелка вправо с хвостом"]            #  0x21a3
+- "↤": [t: "стрелка влево от черты"]              #  0x21a4
+- "↥": [t: "стрелка вверх от черты"]              #  0x21a5
+- "↦": [t: "стрелка вправо от черты"]             #  0x21a6
+- "↧": [t: "стрелка вниз от черты"]               #  0x21a7
+- "↨": [t: "стрелка вверх-вниз с основанием"]     #  0x21a8
+- "↩": [t: "стрелка влево с крючком"]             #  0x21a9
+- "↪": [t: "стрелка вправо с крючком"]            #  0x21aa
+- "↫": [t: "стрелка влево с петлей"]              #  0x21ab
+- "↬": [t: "стрелка вправо с петлей"]             #  0x21ac
+- "↭": [t: "стрелка влево-вправо волнистая"]      #  0x21ad
+- "↮": [t: "стрелка влево-вправо с чертой"]       #  0x21ae
+- "↯": [t: "стрелка зигзаг вниз"]                 #  0x21af
+- "↰": [t: "стрелка вверх с наконечником влево"]  #  0x21b0
+- "↱": [t: "стрелка вверх с наконечником вправо"] #  0x21b1
+- "↲": [t: "стрелка вниз с наконечником влево"]   #  0x21b2
+- "↳": [t: "стрелка вниз с наконечником вправо"]  #  0x21b3
+- "↴": [t: "стрелка вправо с углом вниз"]         #  0x21b4
+- "↵": [t: "стрелка вниз с углом влево"]          #  0x21b5
+- "↶": [t: "полукруг против часовой стрелки сверху"] # 0x21b6
+- "↷": [t: "полукруг по часовой стрелке сверху"]  #  0x21b7
+- "↸": [t: "стрелка северо-запад к длинной черте"] # 0x21b8
+- "↹": [t: "стрелка влево к черте над стрелкой вправо к черте"] # 0x21b9
+- "↺": [t: "разомкнутый круг против часовой стрелки"] # 0x21ba
+- "↻": [t: "разомкнутый круг по часовой стрелке"] #  0x21bb
+- "↼": [t: "левый гарпун вверх"]                  #  0x21bc
+- "↽": [t: "левый гарпун вниз"]                   #  0x21bd
+- "↾": [t: "правый гарпун вверх"]                 #  0x21be
+- "↿": [t: "левый гарпун вверх"]                  #  0x21bf (дубль? в оригинале было 'up harpoon left')
+- "⇀": [t: "правый гарпун вверх"]                 #  0x21c0
+- "⇁": [t: "правый гарпун вниз"]                  #  0x21c1
+- "⇂": [t: "правый гарпун вниз"]                  #  0x21c2 (дубль? в оригинале 'down harpoon right')
+- "⇃": [t: "левый гарпун вниз"]                   #  0x21c3
+- "⇄": [t: "стрелка вправо над стрелкой влево"]   #  0x21c4
+- "⇅": [t: "стрелка вверх слева от стрелки вниз"] #  0x21c5
+- "⇆": [t: "стрелка влево над стрелкой вправо"]   #  0x21c6
+- "⇇": [t: "две стрелки влево"]                   #  0x21c7
+- "⇈": [t: "две стрелки вверх"]                   #  0x21c8
+- "⇉": [t: "две стрелки вправо"]                  #  0x21c9
+- "⇊": [t: "две стрелки вниз"]                    #  0x21ca
+- "⇋": [t: "левый гарпун над правым гарпуном"]    #  0x21cb
+- "⇌": [t: "правый гарпун над левым гарпуном"]    #  0x21cc

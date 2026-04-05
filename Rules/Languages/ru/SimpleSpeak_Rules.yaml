@@ -25,7 +25,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "минус"        # phrase(x 'minus' y)
+  - t: "минус"        # (en: 'minus')
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -34,17 +34,17 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]    # phrase('the' square root of x)
-  - t: "квадратный корень"      # phrase(the 'square root' of x)
+      then: [t: ""]  
+  - t: "квадратный корень"      # (en: 'square root')
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]   # phrase(the square root 'of' x)
+      then: [t: "из"]   # (en: 'of')
       else: [pause: short]
   - x: "*[1]"
   - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
       then: [pause: short]
-      else: [t: "end of root", pause: short]  # phrase(start the square root of x 'end of root')
+      else: [t: "конец корня", pause: short]  # (en: 'end of root')
 
 - name: default
   tag: root
@@ -52,31 +52,31 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]
+      then: [t: ""]
   - test:
       if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "квадратный корень"]        # phrase(the 'square root' of x)
+        then: [t: "квадратный корень"]        # (en: 'square root')
       - else_if: "*[2][.='3']"
-        then: [t: "корень куба"]        # phrase(the 'cube root' of x)
-      - else: [x: "ToOrdinal(*[2])", t: "корень"]      # phrase(the square 'root' of 25)
+        then: [t: "кубический корень"]        # (en: 'cube root')
+      - else: [x: "ToOrdinal(*[2])", t: "корень"]      # (en: 'root')
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
           then:
           - x: "*[2]"
-          - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
+          - pronounce: [{text: "-й"}, {ipa: "j"}, {sapi5: "th"}, {eloquence: "T"}]
           else: [x: "*[2]"]
-      - t: "корень"        # phrase(the square 'root' of)
+      - t: "корень"        # (en: 'root')
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]        # phrase(the square root 'of' x)
+      then: [t: "из"]        # (en: 'of')
   - x: "*[1]"
   - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
       then: [pause: short]
-      else: [t: "end of root", pause: short]      # phrase(start the fifth root of x 'end of root')
+      else: [t: "конец корня", pause: short]      # (en: 'end of root')
 
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
@@ -109,7 +109,7 @@
           BaseNode(*[1])[contains(@data-intent-property, ':unit') or (self::m:mrow and self::*[3][contains(@data-intent-property, ':unit')])]"
   replace:
   - x: "*[1]"
-  - t: "перемещение"      # phrase('5 meters 'per' second)
+  - t: "в"      # (en: 'per') — например, "метров в секунду"
   - x: "*[2]"
 
 - name: simple
@@ -122,7 +122,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "над"      # phrase(the fraction 3 'over' 4)
+  - t: "на"      # (en: 'over')
   - x: "*[2]"
   - pause: short
 
@@ -132,13 +132,13 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "фракция"]      # phrase(the 'fraction' 3 over 4)
+      then: [t: "дробь"]      # (en: 'fraction')
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "над"      # phrase(the fraction 3 'over' 4)
+  - t: "на"      # (en: 'over')
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -146,7 +146,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "конец фракции"]      # phrase(start 7 over 8 'end of fraction')
+      then: [t: "конец дроби"]      # (en: 'end of fraction')
   - pause: medium
 
 # rules for functions raised to a power
@@ -156,7 +156,7 @@
   tag: inverse-function
   match: "."
   replace:
-  - t: "обратный"      # phrase(the 'inverse' of f)
+  - t: "обратная"      # (en: 'inverse')
   - x: "*[1]"
 
 - name: function-squared-or-cubed
@@ -169,8 +169,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "квадрат"]      # phrase(5 'squared' equals 25)
-      else: [t: "кубик"]      # phrase(5 'cubed' equals 125)
+      then: [t: "в квадрате"]      # (en: 'squared')
+      else: [t: "в кубе"]      # (en: 'cubed')
 - name: function-power
   tag: power
   match:
@@ -178,13 +178,13 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # # phrase('the' fourth power of 10)
+      then: [t: ""]      
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
       then: [x: "ToOrdinal(*[2])"]
       else: [x: "*[2]"]
-  - t: "сила"      # phrase(the fourth 'power of' 2)
+  - t: "степень"      # (en: 'power')
   - pause: short
   - x: "*[1]"
 
@@ -197,15 +197,15 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "квадрат"]      # phrase(5 'squared' equals 25)
-      else: [t: "кубик"]      # phrase(5 'cubed' equals 125)
+      then: [t: "в квадрате"]      # (en: 'squared')
+      else: [t: "в кубе"]      # (en: 'cubed')
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "в"      # phrase(15 raised 'to the' second power equals 225)
+  - t: "в"      # (en: 'to the')
   - test:
       if: "*[2][.>0]"
       then: {x: "ToOrdinal(*[2])"}
@@ -217,23 +217,23 @@
   - "     *[1][self::m:mn][not(contains(., '.'))]]"
   replace:
   - x: "*[1]"
-  - t: "в"      # phrase(15 raised 'to the' second power equals 225)
+  - t: "в"      # (en: 'to the')
   - x: "*[2]"
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "в"      # phrase(15 raised 'to the' second power equals 225)
+  - t: "в"      # (en: 'to the')
   - x: "*[2]"
-  - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
+  - pronounce: [{text: "-й"}, {ipa: "j"}, {sapi5: "th"}, {eloquence: "T"}]
 
 - name: simple
   tag: power
   match: "IsNode(*[2], 'leaf')"
   replace:
   - x: "*[1]"
-  - t: "в"      # phrase(15 raised 'to the' second power equals 225)
+  - t: "в"      # (en: 'to the')
   - x: "*[2]"
 
 - name: nested
@@ -248,13 +248,13 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "поднято до"      # phrase(15 'raised to the' second power equals 225)
+  - t: "в степени"      # (en: 'raised to the')
   - x: "*[2]"
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
       then:
-      - t: "конец показателя"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+      - t: "конец степени"      # (en: 'end of exponent')
       - pause: short
       else:
       - pause: medium
@@ -264,9 +264,9 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "поднято до"      # phrase(15 'raised to the' second power equals 225)
+  - t: "в степени"      # (en: 'raised to the')
   - x: "*[2]"
-  - t: "власти"      # phrase(15 raised to the second 'power' equals 225)
+  - t: ""      
   - pause: short
 
 #
@@ -281,22 +281,22 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "а"]      # phrase('the' empty set)
-      - t: "пустым набором"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
+          then: [t: ""]      
+      - t: "пустое множество"      # (en: 'empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "а"]      # phrase('the' set of all integers)
-      - t: "набор всех"      # phrase(the 'set of all' positive integers less than 10)
+          then: [t: ""]
+      - t: "множество всех"      # (en: 'set of all')
       - x: "*[1]/*[1]"
-      - t: "так что"      # phrase(x 'such that' x is less than y)
+      - t: "таких, что"      # (en: 'such that')
       - x: "*[1]/*[3]"
       else:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "а"]      # phrase('the' set of integers)
-      - t: "набор"      # phrase(here is a 'set' of numbers)
+          then: [t: ""]
+      - t: "множество"      # (en: 'set')
       - x: "*[1]"
 
 - name: times
@@ -325,7 +325,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - t: "раз"      # phrase(7 'times' 5 equals 35)
+  - t: "умножить"      # (en: 'times')
 
 - name: no-say-parens
   tag: mrow
