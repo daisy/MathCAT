@@ -87,7 +87,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "фракция x "               # phrase("the fraction x 'over' y")
+  - t: "дробь x "               # phrase("the fraction x 'over' y")
   - x: "*[2]"
   - pause: short
 
@@ -101,7 +101,7 @@
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "фракция x "               # phrase("the fraction x 'over' y")
+  - t: "дробь x "               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -109,7 +109,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "начало фракции x над y "]          # phrase("start of fraction x over y 'end over'")
+      then: [t: "начало дроби x над y "]          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 
@@ -419,7 +419,7 @@
   - test:
       if: count(*)=1
       then: [t: "строкой"]      # phrase(the table with 1 'row')
-      else: [t: "рядами"]      # phrase(the table with 3 'rows')
+      else: [t: "строками"]      # phrase(the table with 3 'rows')
   - t: "и "      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "count(*[1]/*)"
   - test:
@@ -436,7 +436,7 @@
   match: "."
   replace:
   - pause: medium
-  - t: "ряд"      # phrase(the first 'row' of a matrix)
+  - t: "строка"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: .[self::m:mlabeledtr]
