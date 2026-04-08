@@ -378,3 +378,73 @@ cfg_if! {
         }
     }
 }
+
+/// compare with config at the top of the file
+#[cfg(all(test, not(any(target_family = "wasm", feature = "include-zip"))))]
+mod tests {
+    use super::*;
+    use std::fs::{self, File};
+    use std::io::Write;
+    use tempfile::Builder;
+
+    fn write_zip_file(dir: &Path, zip_name: &str, archived_file_name: &str, contents: &str) {
+        let zip_path = dir.join(zip_name);
+        let zip_file = File::create(zip_path).unwrap();
+        let mut zip = zip::write::ZipWriter::new(zip_file);
+        let options = zip::write::SimpleFileOptions::default();
+        zip.start_file(archived_file_name, options).unwrap();
+        zip.write_all(contents.as_bytes()).unwrap();
+        zip.finish().unwrap();
+    }
+
+    /// Verifies the normal extraction path: when a requested zip file exists,
+    /// `zip_extract_shim` unpacks it into the target directory and reports that
+    /// extraction occurred.
+    #[test]
+    fn zip_extract_shim_extracts_when_zip_exists() {
+        let yaml_path = "some/nested/path/rules.yaml";
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-success-").tempdir().unwrap();
+        write_zip_file(test_dir.path(), "en.zip", yaml_path, "hello");
+
+        let extracted: bool = zip_extract_shim(test_dir.path(), "en.zip").unwrap();
+        assert!(extracted); // zip was extracted
+        assert_eq!("hello", fs::read_to_string(test_dir.path().join(yaml_path)).unwrap());
+    }
+
+    /// Verifies the filesystem fallback path: if the zip is missing but YAML
+    /// files already exist, `zip_extract_shim` should not fail and should return
+    /// `false` to indicate that no extraction was needed.
+    #[test]
+    fn zip_extract_shim_returns_false_when_yaml_files_already_exist() {
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-fallback-").tempdir().unwrap();
+        fs::write(test_dir.path().join("foo.yaml"), "x: y").unwrap(); // dummy yaml
+
+        let extracted: bool = zip_extract_shim(test_dir.path(), "missing.zip").unwrap();
+        assert!(!extracted); // nothing was extracted
+    }
+
+    /// Verifies the hard error path: if neither the zip file nor any YAML files
+    /// are present, `zip_extract_shim` must return an error so callers can treat
+    /// the rules directory as invalid.
+    #[test]
+    fn zip_extract_shim_errors_when_zip_and_yaml_missing() {
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-error-").tempdir().unwrap();
+        let result: Result<bool> = zip_extract_shim(test_dir.path(), "missing.zip");
+
+        assert!(result.is_err()); // not true/false, but an error instead
+    }
+
+    /// Verifies both `read_to_string_shim` outcomes in one test run:
+    /// reading an existing file succeeds with exact contents, and reading a
+    /// missing file returns an error.
+    #[test]
+    fn read_to_string_shim_reads_file_and_reports_missing_file() {
+        let test_dir = Builder::new().prefix("mathcat-shim-read-").tempdir().unwrap();
+
+        let existing_file = test_dir.path().join("sample.yaml");
+        fs::write(&existing_file, "test-value").unwrap();
+
+        assert_eq!("test-value", read_to_string_shim(&existing_file).unwrap());
+        assert!(read_to_string_shim(&test_dir.path().join("does-not-exist.yaml")).is_err());
+    }
+}
