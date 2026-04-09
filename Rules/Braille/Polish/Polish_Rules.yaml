@@ -335,7 +335,7 @@
            *[2][(self::m:mfrac and
                  *[1][self::m:mn and translate(., '0123456789', '') = ''] and
                  *[2][self::m:mn and translate(., '0123456789', '') = '']) or
-                (parent::*[parent::m:msup] and (self::m:msub or self::m:subsup))
+                (parent::*[parent::m:msup or parent::m:msub or parent::m:msubsup] and (self::m:msub or self::m:msubsup))
                ]"
   replace: [x: "*[2]"]
   
@@ -516,10 +516,18 @@
   match: "*[3][translate(., \"′″‴⁗\",'')='']"
   replace:
   - x: "*[1]"
-  - x: "*[3]"
-  - t: "<⠡"
-  - x: "*[2]"
-  - t: ">⠱"
+  - test:
+      if: "*[2][self::m:mn and translate(., '0123456789', '') = '']"
+      then:
+      - t: "<⠡"
+      - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"
+      - t: ">⠱+"
+      - x: "*[3]"
+      else:
+      - x: "*[3]"
+      - t: "<⠡"
+      - x: "*[2]"
+      - t: ">⠱"
 
 -
   name: log-with-base
@@ -641,7 +649,7 @@
   # also, for some reason, the cap letters use superscripts first
   variables:
   - IsCapLetter: "BaseNode(*[1])[translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '']"
-  - BaseNeedsSuperscript: "self::m:msubsup and BaseNode(*[1])[self::m:mo or .='lim' or $IsCapLetter]"
+  - BaseNeedsSuperscript: "self::m:msubsup and (BaseNode(*[1])[self::m:mo or .='lim' or $IsCapLetter] or parent::m:mrow[parent::m:msup])"
   replace:
   - x: "*[1]"
   - test:
