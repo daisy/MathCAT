@@ -2123,7 +2123,7 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
         // Detailed projectors: p23 -- they end with a detailed close projector, so no remove rule
 
         // I don't see it mentioned, but it seems that the end of the expression is a terminator for simple and compound projectors
-        static ref REMOVE_CLOSE_INDICATORS_AT_END: Regex =Regex::new(r"(⠈?(>[^⠰])|(≫⠐.))$").unwrap();
+        static ref REMOVE_CLOSE_INDICATORS_AT_END: Regex =Regex::new(r"((⠈?(>[^⠰]))|(≫⠐.))+$").unwrap();
 
         // Also drop numbers close a projector, so we need to remove closing indicators before drop numbers (p22, f [only after scripts])
         // The close fraction indicator should NOT go away nor should a 'W' (used after lim, integral, etc)
@@ -2180,7 +2180,7 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
                             //    .replace("DC", "⠰")
                                .replace("}P⠂", "}⠠P⠂");       // special case: bottom of page 13
     debug!(" After substitution: '{}'", &result);
-    let result = REMOVE_CLOSE_INDICATORS_BEFORE_DROP_NUMBERS.replace_all(&result, "${1}");
+    let result = REMOVE_CLOSE_INDICATORS_BEFORE_DROP_NUMBERS.replace_all(&result, "${2}");
     let result = REMOVE_CLOSE_INDICATORS_AFTER_DROP_NUMBERS.replace_all(&result, "${1}");
     let result = REMOVE_SCRIPT_CLOSE_INDICATORS_BEFORE_COMMA.replace_all(&result, "P⠂W"); // FIX: doesn't need to be regex
     let result = REMOVE_SIMPLE_CLOSE_INDICATORS.replace_all(&result, "${3}");
@@ -2410,11 +2410,10 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                 // Text has separate rules: no state, and math restarts after it.
                 // Find the end of the text run, output it and reset the state
                 // no reason to keep 'T'/'t' in the output
-                if ch == 'T' {
-                    mode = BrailleMode::Letter;
-                    letter_mode = BrailleMode::Letter;
-                }
-                unit_mode = false;
+                // if ch == 'T' {
+                //     mode = BrailleMode::Letter;
+                //     letter_mode = BrailleMode::Letter;
+                // }
                 i += 1;
                 while i < chars.len() && chars[i] != 't' {
                     let ch = chars[i];
@@ -2467,7 +2466,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                     // drop whitespace before '/' (nothing to do)
                 } else if !use_long_fraction_form && i+1 < chars.len() && chars[i+1] == '>' {
                     // drop whitespace before '>' (nothing to do)
-                } else if ch == 'W' && 
+                } else if (ch == 'W' || ch == 'w') && 
                          (((projector_depth == 1 || projector_depth == 2) && bracket_nesting_depth == 0 && fraction_depth < 2) ||
                           (use_long_fraction_form && i > 0 && chars[i-1] == '⠫' && chars[i+1] == '>')) {  // factorial at end of fraction (p55_5)
                     result.push('⠈');               // substitute "filler" character
@@ -2497,7 +2496,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                             result.push('⠆');
                         } else {
                             let i_numerator_end = i+2 + chars[i+2..].iter().position(|&ch| ch == '/').unwrap_or(0);
-                            if chars[i+2..i_numerator_end].iter().filter(|&ch| matches!(ch, 'l' | 'L' | 'n' | 'N' | 'g' | 'G' | 'f' )).count() >= LONG_NUMERATOR {
+                            if chars[i+2..i_numerator_end].iter().filter(|&ch| matches!(ch, 'l' | 'L' | 'n' | 'N' | 'g' | 'G' | 'f' | 'U' | '𝐿' | '𝔹' | 'B' | 'I' )).count() >= LONG_NUMERATOR {
                                 result.push('⠆');
                             }
                         }
@@ -2534,7 +2533,8 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                         result.push('⠰');
                     }
                     fraction_depth = fraction_depths.pop();  // back to previous depth
-                    use_long_fraction_form= fraction_lengths.pop() > SHORT_FRACTION_MAX_LENGTH;  // back to previous depth
+                    use_long_fraction_form = fraction_lengths.pop() > SHORT_FRACTION_MAX_LENGTH
+                        || braille_level == BrailleLevel::Beginner;
                 } else if projector_depth == 1 || chars[i+1] == 'W' {   // 'W' for lim, integral, ... -- forces close
                     if i+2 < chars.len() && chars[i+2] == '+' {
                         // hack to force close terminator to avoid being deleted
@@ -2654,7 +2654,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
             if chars[i] == '<' && (any_start_indicator || chars[i+1] == '⠆') {
                 let i_start = i;
                 i += 1;
-                let (depths,has_whitespace) = depth_of_indicators(chars, &mut i, any_start_indicator, braille_level);
+                let (depths,_has_whitespace) = depth_of_indicators(chars, &mut i, any_start_indicator, braille_level);
                 // For non-advanced, if non fractions are long or if a fraction has whitespace (not counting space around "/"),
                 //   we use 0 which will force a longer form.
                 // Otherwise, we calculate the nesting depth which is one more than all the children
@@ -2704,7 +2704,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                         let i_start = *i;
                         *i += 1;
                         if any_start_indicator || chars[*i] == '⠆' {  // fraction start
-                            let (depths,has_whitespace) = depth_of_indicators(chars, i, any_start_indicator, braille_level);
+                            let (depths,_has_whitespace) = depth_of_indicators(chars, i, any_start_indicator, braille_level);
                             let mut new_depth = 0;
                             if braille_level == BrailleLevel::Advanced ||
                                !((any_start_indicator && depths.is_empty() && *i - i_start > MAX_CHARS_FOR_INTERMEDIATE) ||
