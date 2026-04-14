@@ -1044,20 +1044,58 @@ fn matrix_binomial() -> Result<()> {
 }
 
 #[test]
-fn matrix_simple_table() {
+fn matrix_simple_table() -> Result<()> {
   let expr = "<math>
-        <mtable intent=\":array\"><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+        <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-  let _ = test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2");
+  test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
 }
 
 #[test]
-fn matrix_span_table() {
-  let expr = "<math>
-        <mtable><mtr rowspan=\"1\"><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
-    </math>";
-  let _ = test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2");
+fn mtable_prefix_op() -> Result<()>{
+    // When a table is prefixed with a non-blank operator, assume it is something besides array intent
+    for (op, speech) in [("(", "open paren"),
+			 ("[", "open bracket"),
+			 ("|", "vertical line"),
+			 ("f", "f")] {
+	let expr = format!("<math>
+        <mo>{op}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>");
+	test("en", "ClearSpeak", &expr, &format!("{speech}, 2 lines; line 1; 3; line 2; 2"))?;
+    }
+    Ok(())
 }
+
+
+#[test]
+fn mtable_colspan_table() -> Result<()>{
+  let expr = "<math>
+        <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
+    </math>";
+  test("en", "ClearSpeak", expr, "table with 2 rows and 2 columns; row 1; column 1; 3; row 2; column 1; 2, column 2; 4")
+}
+
+#[test]
+fn bug_mtable_rowspan_colspan() -> Result<()>{
+  // Currently, the code correctly computes the number of rows and
+  // columns, but it does not correctly compute the column number whnen
+  // colspans are involved.
+  let expr = "<math>
+        <mtable>
+           <mtr>
+             <mtd rowspan=\"2\" colspan=\"2\"><mi>a</mi></mtd>
+             <mtd rowspan=\"2\"><mi>b</mi></mtd>
+             <mtd colspan=\"2\"><mi>c</mi></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mi>d</mi></mtd><mtd><mi>e</mi></mtd>
+           </mtr>
+        </mtable>
+    </math>";
+    test("en", "ClearSpeak", expr,
+	 "table with 2 rows and 5 columns; row 1; column 1; eigh, column 2; b, column 3; c; row 2; column 1; d, column 2; e")
+}
+
 
 
 #[test]
