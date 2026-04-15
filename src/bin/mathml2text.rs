@@ -18,6 +18,10 @@ fn get_rules_dir() -> String {
     return rules_path.as_os_str().to_str().unwrap().to_string();
 }
 
+fn resolve_rules_dir(rules_dir: Option<PathBuf>) -> PathBuf {
+    return rules_dir.unwrap_or_else(|| PathBuf::from(get_rules_dir()));
+}
+
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum OutputType {
     Text,
@@ -60,14 +64,15 @@ fn main() -> Result<()> {
 		"#.to_string()
     };
 
-    if let Err(e) = set_rules_dir(get_rules_dir()) {
+    let rules_dir = resolve_rules_dir(cli.rules_dir);
+    if let Err(e) = set_rules_dir(rules_dir.to_string_lossy()) {
 	panic!("Error: exiting -- {}", errors_to_string(&e));
     }
     debug!("Languages: {}", libmathcat::interface::get_supported_languages()?.join(", "));
 
     #[cfg(feature = "include-zip")]
     info!("***********include-zip is present**********");
-    info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
+    info!("Version = '{}' using Rules dir {}", get_version(), rules_dir.display());
     set_preference("Language", cli.language)?;
 
     set_preference("DecimalSeparator", "Auto").unwrap();
