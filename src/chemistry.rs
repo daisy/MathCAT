@@ -68,6 +68,8 @@ static CHEM_ELEMENT: &str = "data-chem-element";
 static CHEM_FORMULA_OPERATOR: &str = "data-chem-formula-op";
 static CHEM_EQUATION_OPERATOR: &str = "data-chem-equation-op";
 static CHEM_STATE: &str = "data-chem-state";
+/// Temporary storage for superscript Roman numerals, e.g. oxidation states, until chemistry is confirmed.
+static CHEM_ROMAN_NUMERAL_NUMBER: &str = "data-chem-roman-numeral-number";
 
 /// mark a new chem element that happened due to splitting a leaf
 pub static SPLIT_TOKEN: &str = "data-split";
@@ -483,6 +485,11 @@ fn get_marked_value(mathml: Element) -> Option<isize> {
 /// Recurse through all the children that have MAYBE_CHEMISTRY set
 fn set_marked_chemistry_attr(mathml: Element, chem: &str) {
     let tag_name = name(mathml);
+    if let Some(number) = mathml.attribute_value(CHEM_ROMAN_NUMERAL_NUMBER) {
+        let number = number.to_string();
+        mathml.set_attribute_value("data-number", &number);
+        mathml.remove_attribute(CHEM_ROMAN_NUMERAL_NUMBER);
+    }
     if let Some(maybe_attr) = mathml.attribute(MAYBE_CHEMISTRY) {
         maybe_attr.remove_from_parent();
 
@@ -554,6 +561,7 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
     mathml.remove_attribute(MAYBE_CHEMISTRY);
     if is_leaf(mathml) {
         // don't bother testing for the attr -- just remove and nothing bad happens if they aren't there
+        mathml.remove_attribute(CHEM_ROMAN_NUMERAL_NUMBER);
         mathml.remove_attribute(CHEM_FORMULA_OPERATOR);
         mathml.remove_attribute(CHEM_EQUATION_OPERATOR);
         mathml.remove_attribute(CHEMICAL_BOND);
@@ -624,7 +632,7 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
                 script_base.remove_attribute(MAYBE_CHEMISTRY);
                 script_base.remove_attribute(SPLIT_TOKEN);
                 mathml.replace_children(script_children);
-        
+
                 first_element_of_split.remove_from_parent();
                 return true;
             }
@@ -1007,7 +1015,7 @@ fn likely_chem_superscript(sup: Element) -> isize {
         }
         return if as_text(sup).len()==1 {1} else {2};
     } else if (sup_name == "mi" || sup_name == "mn" || sup_name=="mtext") && SMALL_UPPER_ROMAN_NUMERAL.is_match(as_text(sup)){
-        sup.set_attribute_value("data-number", small_roman_to_number(as_text(sup)));
+        sup.set_attribute_value(CHEM_ROMAN_NUMERAL_NUMBER, small_roman_to_number(as_text(sup)));
         sup.set_attribute_value(MAYBE_CHEMISTRY, "2");
         return 2;
     } else if sup_name == "mrow" {
