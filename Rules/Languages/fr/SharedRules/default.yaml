@@ -1,0 +1,414 @@
+---
+- name: default
+  tag: math
+  match: "."
+  replace:
+  - with:
+      variables:
+      - ClearSpeak_Fractions: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Fractions='Auto', 'EndFrac', $ClearSpeak_Fractions)"
+      - ClearSpeak_AbsoluteValue: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_AbsoluteValue='Auto', 'AbsEnd', $ClearSpeak_AbsoluteValue)"
+      - ClearSpeak_Roots: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Roots='Auto', 'RootEnd', $ClearSpeak_Roots)"
+      - ClearSpeak_Matrix: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Matrix='Auto', 'EndMatrix', $ClearSpeak_Matrix)"
+      - MatchingPause: false()
+      - IsColumnSilent: false()
+      replace:
+      - test:
+          if: "$MathRate = 100"
+          then: [x: "*"]
+          else:
+          - rate:
+              value: "$MathRate"
+              replace: [x: "*"]
+
+- name: empty-mrow
+  tag: mrow
+  match: "not(*)"
+  replace:
+  - t: " "
+
+- name: default
+  tag: mrow
+  match: "."
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [pause: auto]
+
+- name: default
+  tag: mn
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - x: "translate(., $BlockSeparators, '')"
+
+- name: default
+  tag: [mo, mtext]
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - x: "text()"
+
+- name: default
+  tag: mi
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "string-length(.) = 1 and text() != '_'"
+      then: [x: "text()"]
+    - else_if: "@data-chem-element"
+      then: [spell: "text()", pause: "short"]
+      else: [x: "translate(., '-_\u00A0', '  ')"]
+
+- name: default
+  tag: ms
+  match: "."
+  replace:
+  - t: "la chaîne"
+  - pause: short
+  - x: "text()"
+
+- name: default
+  tag: mstyle
+  match: "."
+  replace: [x: "*"]
+
+- name: literal-simple
+  tag: mfrac
+  match:
+  - "(IsNode(*[1],'leaf') and IsNode(*[2],'leaf')) and"
+  - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)"
+  replace:
+  - x: "*[1]"
+  - t: "sur"
+  - x: "*[2]"
+  - pause: short
+
+- name: literal-default
+  tag: mfrac
+  match: "."
+  replace:
+  - t: "début"
+  - pause: short
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1],'leaf'))"
+      then: [pause: short]
+  - t: "sur"
+  - test:
+      if: "not(IsNode(*[2],'leaf'))"
+      then: [pause: short]
+  - x: "*[2]"
+  - pause: short
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then: [t: "fin"]
+  - pause: medium
+
+- name: literal-default
+  tag: msqrt
+  match: "."
+  replace:
+  - t: "racine"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [t: "de"]
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
+      then: [t: "fin de racine", pause: medium]
+
+- name: literal-default
+  tag: mroot
+  match: "."
+  replace:
+  - t: "racine d'indice"
+  - x: "*[2]"
+  - pause: short
+  - t: "de"
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[2],'leaf'))"
+      then: [t: "fin de racine"]
+
+- name: simple-sub
+  tag: indexed-by
+  match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - pause: short
+
+- name: no-end-sub
+  tag: indexed-by
+  match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
+  replace:
+  - x: "*[1]"
+  - t: "indice"
+  - x: "*[2]"
+  - pause: short
+
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "indice"
+  - x: "*[2]"
+  - pause: short
+
+- name: literal
+  tag: msub
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"
+      then: [t: "indice"]
+  - x: "*[2]"
+
+- name: literal
+  tag: [msup, msubsup]
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "name(.)='msubsup'"
+      then:
+      - t: "indice"
+      - x: "*[2]"
+  - test:
+      if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
+      then:  [x: "*[last()]"]
+      else_test:
+          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then:
+          - t: "exposant"
+          - x: "*[last()]"
+          - test:
+              if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
+              then: [t: "fin d'exposant"]
+          else:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "exposant"]
+              else: [t: "super"]
+          - x: "*[last()]"
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "fin d'exposant"]
+              else: [t: "fin de super"]
+
+- name: default
+  tag: munder
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [t: "quantité"]
+  - x: "*[1]"
+  - t: "avec"
+  - x: "*[2]"
+  - t: "en dessous"
+
+- name: diacriticals
+  tag: mover
+  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: default
+  tag: mover
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [t: "quantité"]
+  - x: "*[1]"
+  - t: "avec"
+  - x: "*[2]"
+  - t: "au-dessus"
+
+- name: default
+  tag: munderover
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [t: "quantité"]
+  - x: "*[1]"
+  - t: "avec"
+  - x: "*[2]"
+  - t: "en dessous et"
+  - x: "*[3]"
+  - t: "au-dessus"
+
+- name: default
+  tag: mmultiscripts
+  match: "."
+  variables:
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)"
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$Prescripts"
+      then:
+      - with:
+          variables:
+          - PreSubscript: "IfThenElse($Verbosity='Verbose', 'pré-indice', 'pré-indice')"
+          - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'pré-exposant', 'pré-exposant')"
+          replace:
+          - test:
+              if: "count($Prescripts) > 2"
+              then:
+              - t: "avec"
+              - x: "count($Prescripts) div 2"
+              - t: "préscripts"
+              - pause: short
+          - test:
+              if: "not($Prescripts[1][self::m:none])"
+              then:
+              - x: "$PreSubscript"
+              - x: "$Prescripts[1]"
+          - test:
+              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
+              then: [t: "et"]
+          - test:
+              if: "not($Prescripts[2][self::m:none])"
+              then:
+              - x: "$PreSuperscript"
+              - x: "$Prescripts[2]"
+  - test:
+      if: "$Postscripts"
+      then:
+      - with:
+          variables:
+          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'indice', 'indice')"
+          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'exposant', 'exposant')"
+          replace:
+          - test:
+              if: "count($Postscripts) > 2"
+              then:
+              - test:
+                  if: "$Prescripts"
+                  then: [t: "et"]
+              - t: "avec"
+              - x: "count($Postscripts) div 2"
+              - t: "postscripts"
+              - pause: short
+          - test:
+              if: "not($Postscripts[1][self::m:none])"
+              then:
+              - x: "$PostSubscript"
+              - x: "$Postscripts[1]"
+          - test:
+              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
+              then: [t: "et"]
+          - test:
+              if: "not($Postscripts[2][self::m:none])"
+              then:
+              - x: "$PostSuperscript"
+              - x: "$Postscripts[2]"
+
+- name: apply-function
+  tag: "apply-function"
+  match: .
+  replace:
+  - x: "*[1]"
+  - t: "de"
+  - pause: auto
+  - x: "*[position() > 1]"
+
+- name: silent-intent
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  replace:
+  - x: "*"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: prefix-intent
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':prefix:')"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"
+  - x: "*"
+  - test:
+      if: "not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'prefix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: postfix-intent
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':postfix:')"
+  replace:
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'postfix', 'start')"]
+  - x: "*"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
+
+- name: infix-intent
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':infix:')"
+  replace:
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'start')"]
+  - test:
+      if: "count(*) = 1"
+      then:
+      - x: "SpeakIntentName(name(.), $Verbosity, 'infix')"
+      - pause: auto
+      - x: "*[1]"
+      else:
+      - insert:
+          nodes: "*"
+          replace: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')", pause: auto]
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: function-intent
+  tag: "*"
+  match: "count(*)>0"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - test:
+      if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
+           not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
+      then: [t: "de", pause: auto]
+  - insert:
+      nodes: "*"
+      replace:
+      - test:
+          if: "not(contains(@data-intent-property, ':literal:'))"
+          then: [x: "','"]
+      - pause: auto
+  - test:
+      if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: default-text
+  tag: "*"
+  match: "."
+  replace:
+  - x: "translate(name(), '-_', ' ')"

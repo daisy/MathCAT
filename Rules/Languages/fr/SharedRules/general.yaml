@@ -1,0 +1,152 @@
+---
+- name: sin
+  tag: mi
+  match: ".='sin'"
+  replace:
+  - bookmark: "@id"
+  - t: "sinus"
+
+- name: cos
+  tag: mi
+  match: ".='cos'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "cos"]
+      else: [t: "cosinus"]
+
+- name: tan
+  tag: mi
+  match: ".='tan' or .='tg'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "tan"]
+      else: [t: "tangente"]
+
+- name: sec
+  tag: mi
+  match: ".='sec'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "sec"]
+      else: [t: "sécante"]
+
+- name: csc
+  tag: mi
+  match: ".='csc'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "csc"]
+      else: [t: "cosécante"]
+
+- name: cot
+  tag: mi
+  match: ".='cot'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "cot"]
+      else: [t: "cotangente"]
+
+- name: sinh
+  tag: mi
+  match: ".='sinh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "sinh"]
+      else: [t: "sinus hyperbolique"]
+
+- name: cosh
+  tag: mi
+  match: ".='cosh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "cosh"]
+      else: [t: "cosinus hyperbolique"]
+
+- name: tanh
+  tag: mi
+  match: ".='tanh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "tanh"]
+      else: [t: "tangente hyperbolique"]
+
+- name: sech
+  tag: mi
+  match: ".='sech'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "sech"]
+      else: [t: "sécante hyperbolique"]
+
+- name: csch
+  tag: mi
+  match: ".='csch'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "csch"]
+      else: [t: "cosécante hyperbolique"]
+
+- name: coth
+  tag: mi
+  match: ".='coth'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "coth"]
+      else: [t: "cotangente hyperbolique"]
+
+- name: exponential
+  tag: mi
+  match: ".='exp'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "exp"]
+      else: [t: "exponentielle"]
+
+- name: covariance
+  tag: mi
+  match: ".='Cov'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "Cov"]
+      else: [t: "covariance"]
+
+- name: log
+  tag: mi
+  match: ".='log' or .='ln'"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "$Verbosity!='Terse'"
+      then: [t: "le"]
+  - test:
+    - if: ".= 'log'"
+      then: [t: "log"]
+    - else_if: "$Verbosity='Terse'"
+      then: [spell: "'ln'"]
+      else: [t: "logarithme naturel"]
