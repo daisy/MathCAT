@@ -472,11 +472,7 @@ pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
 
 // returns the marked attr value or None
 fn get_marked_value(mathml: Element) -> Option<i32> {
-    return if let Some(value) = mathml.attribute_value(MAYBE_CHEMISTRY) {
-        Some(value.parse().unwrap())
-    } else {
-        None
-    }
+    return mathml.attribute_value(MAYBE_CHEMISTRY).map(|value| value.parse().unwrap());
 }
 
 /// Sets the attr 'chem'
