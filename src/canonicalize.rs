@@ -3671,7 +3671,7 @@ impl CanonicalizeContext {
 			if state_likelihood > 0 {
 				right_sibling.set_attribute_value(MAYBE_CHEMISTRY, state_likelihood.to_string().as_str());
 				// at this point, we know both node and right_sibling are positive, so we have at least a maybe
-				if state_likelihood + node_chem_likelihood.unwrap().parse::<isize>().unwrap() > 2 {
+				if state_likelihood + node_chem_likelihood.unwrap().parse::<i32>().unwrap() > 2 {
 					return FunctionNameCertainty::False;
 				} else {
 					return FunctionNameCertainty::Maybe

@@ -51,9 +51,9 @@ use crate::errors::*;
 use std::sync::LazyLock;
 
 
-pub static NOT_CHEMISTRY: isize = -10000;  // should overwhelm any positive signal
-static NOT_CHEMISTRY_THRESHOLD: isize = -10000/2;  // value for testing -- that way some can be added to NOT_CHEMISTRY and still meet the test
-static CHEMISTRY_THRESHOLD: isize = 5;   // if this changes, change CHEMISTRY_THRESHOLD_STR
+pub static NOT_CHEMISTRY: i32 = -10000;  // should overwhelm any positive signal
+static NOT_CHEMISTRY_THRESHOLD: i32 = -10000/2;  // value for testing -- that way some can be added to NOT_CHEMISTRY and still meet the test
+static CHEMISTRY_THRESHOLD: i32 = 5;   // if this changes, change CHEMISTRY_THRESHOLD_STR
 
 
 /// this might be chemistry -- should only exist during canonicalization
@@ -471,12 +471,8 @@ pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
 }
 
 // returns the marked attr value or None
-fn get_marked_value(mathml: Element) -> Option<isize> {
-    if let Some(value) = mathml.attribute_value(MAYBE_CHEMISTRY) {
-        return Some(value.parse().unwrap());
-    } else {
-        return None;
-    }
+fn get_marked_value(mathml: Element) -> Option<i32> {
+    return mathml.attribute_value(MAYBE_CHEMISTRY).map(|value| value.parse().unwrap());
 }
 
 /// Sets the attr 'chem'
@@ -848,7 +844,7 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
 
 /// Looks at the children of the element and uses heuristics to decide whether this is a chemical equation.
 /// This assumes canonicalization of characters has happened
-fn likely_chem_equation(mathml: Element) -> isize {
+fn likely_chem_equation(mathml: Element) -> i32 {
     // mfrac -- could be a ratio of concentrations
     if name(mathml) != "mrow" && name(mathml) != "mtd" && name(mathml) != "mfrac" {
         return NOT_CHEMISTRY;
@@ -953,7 +949,7 @@ fn likely_chem_equation(mathml: Element) -> isize {
 
 
 /// could be a number, a state ("(l)", "(g)", etc), or a number followed by a state
-fn likely_chem_subscript(subscript: Element) -> isize {
+fn likely_chem_subscript(subscript: Element) -> i32 {
     let subscript_name = name(subscript);
     if  subscript_name == "mn" && !as_text(subscript).contains('.') {
         return 0;       // not really much chem info about an integer subscript
@@ -990,7 +986,7 @@ fn small_roman_to_number(text: &str) -> &str {
 
 }
 
-fn likely_chem_superscript(sup: Element) -> isize {
+fn likely_chem_superscript(sup: Element) -> i32 {
     // either one or more '+'s (or '-'s) or a number followed by +/-
     // also could be state (en.wikipedia.org/wiki/Nuclear_chemistry#PUREX_chemistry)
     // bullet is radical (en.wikipedia.org/wiki/Radical_(chemistry)#Depiction_in_chemical_reactions); mhchem uses dot operator
@@ -1055,7 +1051,7 @@ fn likely_chem_superscript(sup: Element) -> isize {
                     child.set_attribute_value(CHEM_FORMULA_OPERATOR, "1");   // value doesn't really matter
                 }
             }
-            let likely = 2*text.len() as isize;
+            let likely = 2*text.len() as i32;
             sup.set_attribute_value(MAYBE_CHEMISTRY, &likely.to_string());
             return likely;
         }
@@ -1069,7 +1065,7 @@ fn likely_chem_superscript(sup: Element) -> isize {
 /// * an operator that represents a bond
 /// * fences around a chemical formula
 /// * an mrow made up of only chemical formulas
-fn likely_chem_formula(mathml: Element) -> isize {
+fn likely_chem_formula(mathml: Element) -> i32 {
     // debug!("start likely_chem_formula:\n{}", mml_to_string(mathml));
     if let Some(value) = get_marked_value(mathml) {
         return value;       // already marked
@@ -1149,7 +1145,7 @@ fn likely_chem_formula(mathml: Element) -> isize {
 
     return likelihood;
 
-    fn likely_mrow_chem_formula(mrow: Element) -> isize {
+    fn likely_mrow_chem_formula(mrow: Element) -> i32 {
         // For parens, the only reason to add them is to group the children and then indicate that there is more than one molecule
         if IsBracketed::is_bracketed(mrow, "(", ")", false, false) ||
            IsBracketed::is_bracketed(mrow, "[", "]", false, false) {
@@ -1353,7 +1349,7 @@ fn is_generalized_salt(elements: &[&str]) -> bool {
 /// Note:  msubsup cleaning for an empty script hasn't happened and we consider an empty script a sign of attempting to vertically align sub/superscripts
 ///
 /// Note: 'mathml' is not necessarily canonicalized   
-pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
+pub fn likely_adorned_chem_formula(mathml: Element) -> i32 {
     if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts") {
         return NOT_CHEMISTRY;
     }
@@ -1519,7 +1515,7 @@ fn is_single_char_matching(leaf_text: &str, pred: impl Fn(char) -> bool) -> bool
     return false;
 }
 
-fn likely_chem_formula_operator(mathml: Element) -> isize {
+fn likely_chem_formula_operator(mathml: Element) -> i32 {
     // mostly from chenzhijin.com/en/article/Useful%20Unicode%20for%20Chemists (Arrows and Other)
     // also en.wikipedia.org/wiki/Chemical_formula#Condensed_formula
     #[derive(PartialEq, Eq)]
@@ -1608,7 +1604,7 @@ fn likely_chem_formula_operator(mathml: Element) -> isize {
 }
 
 /// This assumes canonicalization of characters has happened
-fn likely_chem_equation_operator(mathml: Element) -> isize {
+fn likely_chem_equation_operator(mathml: Element) -> i32 {
 
     fn is_chem_equation_operator(ch: char) -> bool {
         matches!(ch, '+' | '=' | '-' | '·' | '℃' | '°' | '‡' | '∆' | '×' | '\u{2062}')
@@ -1678,7 +1674,7 @@ static SMALL_UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(
 
 /// look for "(s), "(l)", "(g)", "(aq)" (could also use [...])
 /// this might be called before canonicalization, but in clean_chemistry_mrow, we made sure "( xxx )" is grouped properly
-pub fn likely_chem_state(mathml: Element) -> isize {
+pub fn likely_chem_state(mathml: Element) -> i32 {
     
     if IsBracketed::is_bracketed(mathml, "(", ")", false, false) ||
        IsBracketed::is_bracketed(mathml, "[", "]", false, false) {
@@ -1687,7 +1683,7 @@ pub fn likely_chem_state(mathml: Element) -> isize {
         if contents_name == "mi" || contents_name == "mtext" {
             let text = as_text(contents);
             if text == "s" || text == "l" ||text == "g" ||text == "aq" {
-                return text.len() as isize + 1;       // hack to count chars -- works because all are ASCII 
+                return text.len() as i32 + 1;       // hack to count chars -- works because all are ASCII 
             };
         }
      }
@@ -1695,7 +1691,7 @@ pub fn likely_chem_state(mathml: Element) -> isize {
 }
 
 /// Returns the likelihood that the arg is an element
-pub fn likely_chem_element(mathml: Element) -> isize {
+pub fn likely_chem_element(mathml: Element) -> i32 {
     static NUCLEAR_SYMBOLS: [&str; 6] = ["e", "p", "n", "α", "β","γ"];
 
     assert!(name(mathml) == "mi" || name(mathml) == "mtext", "{} is not 'mi' or 'mtext'", name(mathml));
@@ -1704,11 +1700,11 @@ pub fn likely_chem_element(mathml: Element) -> isize {
         return 0;   // whitespace
     } else if is_chemical_element(mathml) {
         // single letter = 1; single letter with mathvariant="normal" = 2; double = 3 -- all elements are ASCII
-        return (if text.len() == 1 {
+        return if text.len() == 1 {
             if mathml.attribute_value("mathvariant").unwrap_or_default() == "normal" {2} else {1}
         } else {
             3
-        }) as isize;
+        };
     } else if NUCLEAR_SYMBOLS.contains(&text) {
         return 0;
         // not much special about them;
