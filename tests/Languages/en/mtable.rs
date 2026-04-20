@@ -239,6 +239,44 @@ fn matrix_2x3() -> Result<()> {
 }
 
 #[test]
+fn augmented_matrix_2x3() -> Result<()> {
+    let expr = "
+    <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow>
+      <mrow><mo>[</mo>
+        <mtable columnlines='none solid'>
+          <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>4</mn>
+          </mtd>
+          </mtr>
+          <mtr>
+          <mtd>
+            <mn>0</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+          <mtd>
+            <mn>6</mn>
+          </mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow></mrow>
+    </math>
+                                ";
+    test("en", "ClearSpeak",  expr, "the 2 by 3 augmented matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 3 augmented matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
+    Ok(())
+}
+
+#[test]
 fn matrix_2x3_labeled() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
@@ -857,6 +895,45 @@ test_ClearSpeak("en", "ClearSpeak_Matrix", "EndMatrix",
         expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
                                                 row 2; column 1; b sub 2 1; column 2; b sub 2 2; end matrix")?;
     return Ok(());
+  }
+
+#[test]
+fn augmented_matrix_3x4_end_matrix() -> Result<()> {
+let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+  <mrow>
+    <mrow><mo>[</mo>
+      <mtable columnalign='right right right right' columnlines='none none solid'>
+        <mtr>
+          <mtd><mn>1</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mrow><mo>-</mo><mn>3</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>2</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+        </mtr>
+      </mtable>
+    <mo>]</mo></mrow>
+  </mrow>
+</math>";
+test_ClearSpeak("en", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, column 4; 3; \
+               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, column 4; 2; \
+               row 3; column 1; 2, column 2; 3, column 3; 2, column 4; negative 1; end matrix")?;
+    test("en", "SimpleSpeak",
+        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, column 4; 3; \
+               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, column 4; 2; \
+               row 3; column 1; 2, column 2; 3, column 3; 2, column 4; negative 1; end matrix")?;
+    Ok(())
   }
 
 
