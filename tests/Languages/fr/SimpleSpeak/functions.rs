@@ -19,6 +19,20 @@ fn simple_fraction() -> Result<()> {
 }
 
 #[test]
+fn common_fraction_localized() -> Result<()> {
+    let expr = "<math><mfrac><mn>3</mn><mn>4</mn></mfrac></math>";
+    test("fr", "SimpleSpeak", expr, "3 quarts")?;
+    Ok(())
+}
+
+#[test]
+fn common_fraction_singular_localized() -> Result<()> {
+    let expr = "<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>";
+    test("fr", "SimpleSpeak", expr, "1 demi")?;
+    Ok(())
+}
+
+#[test]
 fn square_root() -> Result<()> {
     // AI generated
     let expr = "<math><msqrt><mi>x</mi></msqrt></math>";

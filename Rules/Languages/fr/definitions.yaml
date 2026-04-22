@@ -1,0 +1,317 @@
+---
+- include: "../../definitions.yaml"
+
+# French overrides for language-dependent speech definitions. Anything omitted
+# here continues to fall back to the shared English defaults.
+
+- IntentMappings: {
+    "indexed-by": "infix= ; indice; fin d'indice: fin d'indice: fin d'indice",
+    "modified-variable": "silent= ",
+    "say-super": "infix=super: exposant: exposant",
+    "skip-super": "silent=",
+
+    "absolute-value": "function= ; valeur absolue: la valeur absolue de: la valeur absolue de; fin de valeur absolue",
+    "binomial": "infix=binôme; parmi; fin du binôme",
+    "dimension-product": "infix=par",
+    "greatest-common-divisor": "function=pgcd: le pgcd: le plus grand commun diviseur",
+    "imaginary-part": "function=partie imaginaire: la partie imaginaire: la partie imaginaire",
+    "least-common-multiple": "function=ppcm: le ppcm: le plus petit commun multiple",
+    "limit": "prefix=limite quand: la limite quand: la limite quand",
+    "lim-sup": "prefix=lim sup quand: la limite supérieure quand: la limite supérieure quand",
+    "lim-inf": "prefix=lim inf quand: la limite inférieure quand: la limite inférieure quand",
+    "logarithm-with-base": "prefix=log en base: le log en base: le log en base",
+    "natural-logarithm": "function=l n: logarithme naturel: logarithme naturel",
+    "minus": "infix=moins || prefix=négatif",
+    "plus": "infix=plus || prefix=positif",
+    "real-part": "function=la partie réelle",
+
+    "transpose": "postfix=transposée || function=transposée",
+    "norm": "function= ; norme: norme de: la norme de; fin de norme",
+    "trace": "function= ; trace : trace de: la trace de; fin de trace",
+    "dimension": "function= ; dimension : dimension de: la dimension de; fin de dimension",
+    "homomorphism": "function= ; homomorphisme : homomorphisme de: l'homomorphisme de; fin de l'homomorphisme",
+    "kernel": "function= ; noyau : noyau de: le noyau de; fin du noyau",
+    "vector": "function= ; vecteur || prefix=vecteur",
+    "cross-product": "infix=croix: produit vectoriel: produit vectoriel",
+    "dot-product": "infix=point: produit scalaire: point: produit scalaire",
+
+    "divergence": "function= ; div: divergence: divergence; fin de divergence",
+    "curl": "function= ; rotationnel: rotationnel: rotationnel; fin du rotationnel",
+    "gradient": "function= ; del: gradient: gradient; fin de gradient",
+    "laplacian": "function=laplacien",
+
+    "chemistry-concentration": "function= ; concentration: concentration de: la concentration de; fin de concentration",
+  }
+
+- TerseFunctionNames: {
+    "divergence", "gradient", "curl"
+  }
+
+- NavigationParts: {
+    "large-op": "base; borne inférieure; borne supérieure",
+    "mfrac": "numérateur; dénominateur",
+    "fraction": "numérateur; dénominateur",
+    "msqrt": "racine",
+    "square-root": "racine",
+    "mroot": "racine; indice de racine",
+    "root": "racine; indice de racine",
+    "msub": "base; indice",
+    "sub": "base; indice",
+    "logarithm-with-base": "base",
+    "indexed-by": "base; indice",
+    "msup": "base; exposant",
+    "say-super": "base; exposant",
+    "skip-super": "base; exposant",
+    "power": "base; exposant",
+    "msubsup": "base; indice; exposant",
+    "munder": "base; borne inférieure",
+    "mover": "base; borne supérieure",
+    "munderover": "base; borne inférieure; borne supérieure",
+
+    "in": "dans",
+    "out": "hors de",
+  }
+
+- SIPrefixes: {
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga",
+    "M": "mega", "k": "kilo", "h": "hecto", "da": "déca", "d": "déci", "c": "centi", "m": "milli", "µ": "micro",
+    "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+  }
+
+- SIUnits: {
+    "A": "ampère",
+    "cd": "candela",
+    "K": "kelvin", "K": "kelvin",
+    "g": "gramme",
+    "m": "mètre",
+    "mol": "mole",
+    "s": "seconde", "sec": "seconde",
+
+    "Bq": "becquerel",
+    "C": "coulomb",
+    "°C": "degré Celsius", "℃": "degré Celsius",
+    "F": "farad",
+    "Gy": "gray",
+    "H": "henry",
+    "Hz": "hertz",
+    "J": "joule",
+    "kat": "katal",
+    "lm": "lumen",
+    "lx": "lux",
+    "N": "newton",
+    "Ω": "ohm", "Ω": "ohm",
+    "Pa": "pascal",
+    "S": "siemens",
+    "Sv": "sievert",
+    "T": "tesla",
+    "V": "volt",
+    "W": "watt",
+    "Wb": "weber",
+
+    "l": "litre", "L": "litre", "ℓ": "litre",
+    "t": "tonne métrique",
+    "Da": "dalton",
+    "Np": "néper",
+    "u": "unité de masse atomique",
+    "eV": "électronvolt",
+    "rad": "radian",
+    "sr": "stéradian",
+
+    "a": "année",
+    "as": "seconde d'arc",
+
+    "b": "bit",
+    "B": "octet",
+    "Bd": "baud",
+  }
+
+- UnitsWithoutPrefixes: {
+    "″": "seconde", "\"": "seconde",
+    "′": "minute", "'": "minute", "min": "minute",
+    "h": "heure", "hr": "heure", "Hr": "heure",
+    "d": "jour", "dy": "jour",
+    "w": "semaine", "wk": "semaine",
+    "y": "année", "yr": "année",
+
+    "°": "degré", "deg": "degré",
+    "arcmin": "minute d'arc",
+    "amin": "minute d'arc",
+    "am": "minute d'arc",
+    "MOA": "minute d'arc",
+    "arcsec": "seconde d'arc",
+    "asec": "seconde d'arc",
+
+    "au": "unité astronomique", "AU": "unité astronomique",
+    "ltyr": "année-lumière", "ly": "année-lumière",
+    "pc": "parsec",
+    "Å": "ångström", "Å": "ångström",
+    "fm": "fermi",
+
+    "ha": "hectare",
+    "dB": "décibel",
+
+    "amu": "unité de masse atomique",
+    "atm": "atmosphère",
+    "bar": "bar",
+    "cal": "calorie",
+    "Ci": "curie",
+    "grad": "gradian",
+    "M": "molaire",
+    "R": "roentgen",
+    "rpm": "tour par minute",
+    "℧": "mho",
+    "dyn": "dyne",
+    "erg": "erg",
+
+    "Kib": "kibi-bit", "Mib": "mebi-bit", "Gib": "gibi-bit", "Tib": "tebi-bit", "Pib": "pebi-bit", "Eib": "exbi-bit", "Zib": "zebi-bit", "Yib": "yobi-bit",
+    "KiB": "kibi-octet", "MiB": "mebi-octet", "GiB": "gibi-octet", "TiB": "tebi-octet", "PiB": "pebi-octet", "EiB": "exbi-octet", "ZiB": "zebi-octet", "YiB": "yobi-octet",
+  }
+
+- EnglishUnits: {
+    "in": "pouce",
+    "ft": "pied",
+    "mi": "mille",
+    "rd": "perche",
+    "li": "chaînon",
+    "ch": "chaîne",
+
+    "sq in": "pouce carré", "sq. in": "pouce carré", "sq. in.": "pouce carré",
+    "sq ft": "pied carré", "sq. ft": "pied carré", "sq. ft.": "pied carré",
+    "sq yd": "yard carré", "sq. yd": "yard carré", "sq. yd.": "yard carré",
+    "sq mi": "mille carré", "sq. mi": "mille carré", "sq. mi.": "mille carré",
+    "ac": "acre",
+    "FBM": "board foot",
+
+    "cu in": "pouce cube", "cu. in": "pouce cube", "cu. in.": "pouce cube",
+    "cu ft": "pied cube", "cu. ft": "pied cube", "cu. ft.": "pied cube",
+    "cu yd": "yard cube", "cu. yd": "yard cube", "cu. yd.": "yard cube",
+    "bbl": "baril", "BBL": "baril",
+    "pk": "peck",
+    "bu": "boisseau",
+    "tsp": "cuillère à café",
+    "tbl": "cuillère à soupe",
+
+    "fl dr": "dram liquide",
+    "fl oz": "once liquide",
+    "gi": "gill",
+    "cp": "tasse", "cup": "tasse",
+    "pt": "pinte",
+    "qt": "quart",
+    "gal": "gallon",
+
+    "gr": "grain",
+    "dr": "dram",
+    "oz": "once", "℥": "once",
+    "lb": "livre",
+    "cwt": "hundredweight",
+    "dwt": "pennyweight",
+    "oz t": "once troy",
+    "lb t": "livre troy",
+
+    "hp": "cheval-vapeur",
+    "BTU": "BTU",
+    "°F": "degré Fahrenheit", "℉": "degré Fahrenheit",
+
+    "mph": "mille par heure",
+    "mpg": "mille par gallon",
+  }
+
+- CurrencySymbols: {
+    "$": "dollar", "¢": "cent", "€": "euro", "£": "livre", "₡": "colón", "₤": "lire", "₨": "roupie",
+    "₩": "won", "₪": "shekel", "₱": "peso", "₹": "roupie", "₺": "lire", "₿": "bitcoin"
+  }
+
+- PluralForms: {
+    "degré Celsius": "degrés Celsius",
+    "degré Fahrenheit": "degrés Fahrenheit",
+    "hertz": "hertz",
+    "lux": "lux",
+    "siemens": "siemens",
+    "seconde d'arc": "secondes d'arc",
+    "minute d'arc": "minutes d'arc",
+    "unité astronomique": "unités astronomiques",
+    "année-lumière": "années-lumière",
+    "unité de masse atomique": "unités de masse atomique",
+    "tour par minute": "tours par minute",
+    "pouce carré": "pouces carrés",
+    "pied carré": "pieds carrés",
+    "yard carré": "yards carrés",
+    "mille carré": "milles carrés",
+    "pouce cube": "pouces cubes",
+    "pied cube": "pieds cubes",
+    "yard cube": "yards cubes",
+    "once liquide": "onces liquides",
+    "cuillère à café": "cuillères à café",
+    "cuillère à soupe": "cuillères à soupe",
+    "degré": "degrés",
+    "mille par heure": "milles par heure",
+    "mille par gallon": "milles par gallon"
+  }
+
+- NumbersOnes: [
+        "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
+        "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+        "dix-sept", "dix-huit", "dix-neuf"
+    ]
+
+- NumbersOrdinalOnes: [
+        "zéroième", "premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième",
+        "dixième", "onzième", "douzième", "treizième", "quatorzième", "quinzième", "seizième",
+        "dix-septième", "dix-huitième", "dix-neuvième"
+    ]
+
+- NumbersOrdinalPluralOnes: [
+        "zéroièmes", "premiers", "deuxièmes", "troisièmes", "quatrièmes", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes",
+        "dixièmes", "onzièmes", "douzièmes", "treizièmes", "quatorzièmes", "quinzièmes", "seizièmes",
+        "dix-septièmes", "dix-huitièmes", "dix-neuvièmes"
+    ]
+
+- NumbersOrdinalFractionalOnes: [
+        "zéro", "premier", "demi", "tiers", "quart", "cinquième", "sixième", "septième", "huitième", "neuvième", "dixième"
+    ]
+
+- NumbersOrdinalFractionalPluralOnes: [
+        "zéros", "premiers", "demis", "tiers", "quarts", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes", "dixièmes"
+    ]
+
+- NumbersTens: [
+        "", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"
+    ]
+
+- NumbersOrdinalTens: [
+        "", "dixième", "vingtième", "trentième", "quarantième", "cinquantième", "soixantième", "soixante-dixième", "quatre-vingtième", "quatre-vingt-dixième"
+    ]
+
+- NumbersOrdinalPluralTens: [
+        "", "dixièmes", "vingtièmes", "trentièmes", "quarantièmes", "cinquantièmes", "soixantièmes", "soixante-dixièmes", "quatre-vingtièmes", "quatre-vingt-dixièmes"
+    ]
+
+- NumbersHundreds: [
+        "", "cent", "deux cent", "trois cent", "quatre cent", "cinq cent",
+        "six cent", "sept cent", "huit cent", "neuf cent"
+    ]
+
+- NumbersOrdinalHundreds: [
+        "", "centième", "deux centième", "trois centième", "quatre centième", "cinq centième",
+        "six centième", "sept centième", "huit centième", "neuf centième"
+    ]
+
+- NumbersOrdinalPluralHundreds: [
+        "", "centièmes", "deux centièmes", "trois centièmes", "quatre centièmes", "cinq centièmes",
+        "six centièmes", "sept centièmes", "huit centièmes", "neuf centièmes"
+    ]
+
+- NumbersLarge: [
+        "", "mille", "million", "milliard", "billion", "billiard",
+        "trillion", "trilliard", "quadrillion", "quadrilliard", "quintillion"
+    ]
+
+- NumbersOrdinalLarge: [
+        "", "millième", "millionième", "milliardième", "billionième", "billiardième",
+        "trillionième", "trilliardième", "quadrillionième", "quadrilliardième", "quintillionième"
+    ]
+
+- NumbersOrdinalPluralLarge: [
+        "", "millièmes", "millionièmes", "milliardièmes", "billionièmes", "billiardièmes",
+        "trillionièmes", "trilliardièmes", "quadrillionièmes", "quadrilliardièmes", "quintillionièmes"
+    ]
