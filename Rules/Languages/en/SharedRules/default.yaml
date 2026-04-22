@@ -419,22 +419,23 @@
                           - t: "end scripts"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
-  - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
+  - NumColumns: "CountTableColumns(.)"
+  - NumRows: "CountTableRows(.)"
   match: "."
   replace:
   - t: "table with"      # phrase(the 'table with' 3 rows)
-  - x: count(*)
+  - x: "$NumRows"
   - test:
-      if: count(*)=1
+      if: "$NumRows=1"
       then: [t: "row"]      # phrase(the table with 1 'row')
       else: [t: "rows"]      # phrase(the table with 3 'rows')
   - t: "and"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
+      if: "$NumColumns=1"
       then: [t: "column"]      # phrase(the table with 3 rows and 1 'column')
       else: [t: "columns"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
