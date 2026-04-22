@@ -3918,13 +3918,13 @@ mod tests {
         let answers= &[2, 3, 3, 3, 3, 4, 7, 8, 9, 9,   10, 13, 12, 14, 12, 15, 17, 19, 21, 10,   4, 23, 25, 4];
         let answers = answers.map(|num| format!("id-{}", num));
         debug!("\n*** Testing Nemeth ***");
-        for i in 0..braille.chars().count() {
+        for (i, answer) in answers.iter().enumerate() {
             debug!("\n===  i={}  ===", i);
             let instant = Instant::now();
             let (id, _offset) = crate::interface::get_navigation_node_from_braille_position(i)?;
             N_PROBES.with(|n| {debug!("test {:2} #probes = {}", i, n.borrow())});
             debug!("Time taken: {}ms", instant.elapsed().as_millis());
-            assert_eq!(answers[i], id, "\nNemeth test ith position={}", i);
+            assert_eq!(*answer, id, "\nNemeth test ith position={}", i);
         }
 
         set_preference("BrailleCode".to_string(), "UEB".to_string()).unwrap();
@@ -3932,13 +3932,13 @@ mod tests {
         let answers= &[0, 0, 0, 2, 3, 3, 3, 3, 4, 7,   7, 8, 9, 9, 10, 13, 12, 14, 14, 15,   15, 17, 17, 19, 19, 21, 10, 4, 4, 23,   23, 25, 25, 4, 0, 0];
         let answers = answers.map(|num| format!("id-{}", num));
         debug!("\n\n*** Testing UEB ***");
-        for i in 0..braille.chars().count() {
+        for (i, answer) in answers.iter().enumerate() {
             debug!("\n===  i={}  ===", i);
             let instant = Instant::now();
             let (id, _offset) = crate::interface::get_navigation_node_from_braille_position(i)?;
             N_PROBES.with(|n| {debug!("test {:2} #probes = {}", i, n.borrow())});
             debug!("Time taken: {}ms", instant.elapsed().as_millis());
-            assert_eq!(answers[i], id, "\nUEB test ith position={}", i);
+            assert_eq!(*answer, id, "\nUEB test ith position={}", i);
         }
         set_preference("BrailleCode".to_string(), "CMU".to_string()).unwrap();
         let braille = get_braille("".to_string())?;
@@ -3946,13 +3946,13 @@ mod tests {
         let answers = answers.map(|num| format!("id-{}", num));
         debug!("\n\n*** Testing CMU ***");
         debug!("Braille: {}", braille);
-        for i in 0..braille.chars().count() {
+        for (i, answer) in answers.iter().enumerate() {
             debug!("\n===  i={}  ===", i);
             let instant = Instant::now();
             let (id, _offset) = crate::interface::get_navigation_node_from_braille_position(i)?;
             N_PROBES.with(|n| {debug!("test {:2} #probes = {}", i, n.borrow())});
             debug!("Time taken: {}ms", instant.elapsed().as_millis());
-            assert_eq!(answers[i], id, "\nCMU test ith position={}", i);
+            assert_eq!(*answer, id, "\nCMU test ith position={}", i);
         }
         return Ok( () );
     }

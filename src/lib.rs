@@ -14,6 +14,7 @@
 //! 
 //! To get the MathML associated with the current navigation node, call [`get_navigation_mathml`].
 //! To just get the `id` and offset from the id of the current navigation node, call [`get_navigation_mathml_id`].
+#![allow(clippy::needless_return)]
 #![recursion_limit = "1024"]
 
 #[macro_use]

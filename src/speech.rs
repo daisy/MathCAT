@@ -584,8 +584,8 @@ struct Intent {
 
 impl fmt::Display for Intent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = if self.name.is_some() {
-            self.name.as_ref().unwrap().to_string()
+        let name = if let Some(ref n) = self.name {
+            n.to_string()
         } else {
             self.xpath.as_ref().unwrap().to_string()
         };

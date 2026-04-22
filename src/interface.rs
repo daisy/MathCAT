@@ -953,12 +953,12 @@ mod tests {
         let target_package = &parser::parse(target).expect("Failed to parse input");
         let target_doc = target_package.as_document();
         trim_doc(&target_doc);
-        debug!("target:\n{}", mml_to_string(get_element(&target_package)));
+        debug!("target:\n{}", mml_to_string(get_element(target_package)));
 
         let test_package = &parser::parse(test).expect("Failed to parse input");
         let test_doc = test_package.as_document();
         trim_doc(&test_doc);
-        debug!("test:\n{}", mml_to_string(get_element(&test_package)));
+        debug!("test:\n{}", mml_to_string(get_element(test_package)));
 
         match is_same_doc(&test_doc, &target_doc) {
             Ok(_) => return true,
@@ -1029,7 +1029,7 @@ mod tests {
         let package1 = &parser::parse(whitespace_str).expect("Failed to parse input");
         let doc1 = package1.as_document();
         trim_doc(&doc1);
-        debug!("doc1:\n{}", mml_to_string(get_element(&package1)));
+        debug!("doc1:\n{}", mml_to_string(get_element(package1)));
 
         let package2 = parser::parse(different_str).expect("Failed to parse input");
         let doc2 = package2.as_document();

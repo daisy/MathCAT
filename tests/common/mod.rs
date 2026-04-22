@@ -1,4 +1,6 @@
+#![allow(clippy::needless_return)]
 //!  Useful functionality for testing
+
 #[cfg(test)]
 
 use regex::Regex;

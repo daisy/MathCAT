@@ -1429,15 +1429,14 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
 
     let base = as_element(children[0]);
     let base_name = name(base);
-    if matches!(tag_name, "mover" | "munder" | "munderover") {
-        if base_name == "mo" && is_in_set(as_text(base), &CHEM_EQUATION_ARROWS) {
-            let mut script_likelihood = likely_chem_formula(as_element(children[1]));
-            if tag_name == "munderover" {
-                script_likelihood = script_likelihood.max(likely_chem_formula(as_element(children[2])));
-            }
-            if script_likelihood > 0 {
-                likelihood += script_likelihood + 2;    // FIX: tune this
-            }
+    if matches!(tag_name, "mover" | "munder" | "munderover") &&
+       base_name == "mo" && is_in_set(as_text(base), &CHEM_EQUATION_ARROWS) {
+        let mut script_likelihood = likely_chem_formula(as_element(children[1]));
+        if tag_name == "munderover" {
+            script_likelihood = script_likelihood.max(likely_chem_formula(as_element(children[2])));
+        }
+        if script_likelihood > 0 {
+            likelihood += script_likelihood + 2;    // FIX: tune this
         }
     }
 
@@ -1879,7 +1878,7 @@ mod chem_tests {
         use sxd_document::parser;
         use crate::interface::{get_element, trim_element};
 
-        let new_package = parser::parse(&test);
+        let new_package = parser::parse(test);
         if let Err(e) = new_package {
             panic!("Invalid MathML input:\n{}\nError is: {}", &test, &e.to_string());
         }
@@ -1997,13 +1996,13 @@ mod chem_tests {
             <msub><mi>H</mi><mn>4</mn></msub><mo>&#x2063;</mo>
             <msub><mrow> <mo>(</mo><mi>N</mi> <mo>&#x2063;</mo> <msub> <mi>H</mi> <mn>2</mn> </msub><mo>)</mo> </mrow><mn>2</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_order_ok(mathml)) );
+        assert!( parse_mathml_string(test, is_order_ok) );
         let test = r#"<mrow>
             <mi>Fe</mi><mo>&#x2063;</mo> 
             <mi>O</mi><mo>&#x2063;</mo> 
             <mrow> <mo>(</mo><mrow><mi>O</mi> <mo>&#x2063;</mo><mi>H</mi> </mrow><mo>)</mo> </mrow>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_order_ok(mathml)) );
+        assert!( parse_mathml_string(test, is_order_ok) );
         let test = r#"<mrow>  // R-4.4.3.3 -- Chain compound doesn't fit rules but should be accepted
                 <mi>Br</mi><mo>&#x2063;</mo> 
                 <mi>S</mi><mo>&#x2063;</mo> 
