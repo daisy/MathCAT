@@ -1,196 +1,237 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn complex() {
+fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>
                 </math>";
-    test("en", "ClearSpeak", expr, "the complex numbers");
+    test("en", "ClearSpeak", expr, "the complex numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn natural() {
+fn natural() -> Result<()> {
     let expr = "<math>
                     <mi>ℕ</mi>
                 </math>";
-    test("en", "ClearSpeak", expr, "the natural numbers");
+    test("en", "ClearSpeak", expr, "the natural numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn rationals() {
+fn rationals() -> Result<()> {
     let expr = "<math>
                     <mi>ℚ</mi>
                 </math>";
-    test("en", "ClearSpeak", expr, "the rational numbers");
+    test("en", "ClearSpeak", expr, "the rational numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn reals() {
+fn reals() -> Result<()> {
     let expr = "<math>
                     <mi>ℝ</mi>
                 </math>";
-    test("en", "ClearSpeak", expr, "the real numbers");
+    test("en", "ClearSpeak", expr, "the real numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn integers() {
+fn integers() -> Result<()> {
     let expr = "<math>
                     <mi>ℤ</mi>
                 </math>";
-    test("en", "ClearSpeak", expr, "the integers");
+    test("en", "ClearSpeak", expr, "the integers")?;
+    return Ok(());
+
 }
 
 
 
 #[test]
-fn msup_complex() {
+fn msup_complex() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℂ</mi>
                     <mn>2</mn>
                 </msup>
                 </math>";
-    test("en", "ClearSpeak", expr, "C 2");
+    test("en", "ClearSpeak", expr, "C 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_natural() {
+fn msup_natural() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℕ</mi>
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "N 2");
+    test("en", "ClearSpeak", expr, "N 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_rationals() {
+fn msup_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "Q 2");
+    test("en", "ClearSpeak", expr, "Q 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_reals() {
+fn msup_reals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℝ</mi>
                     <mn>3</mn>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "R 3");
+    test("en", "ClearSpeak", expr, "R 3")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_integers() {
+fn msup_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mn>4</mn>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "Z 4");
+    test("en", "ClearSpeak", expr, "Z 4")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_positive_integers() {
+fn msup_positive_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "the positive integers");
+    test("en", "ClearSpeak", expr, "the positive integers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_negative_integers() {
+fn msup_negative_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "the negative integers");
+    test("en", "ClearSpeak", expr, "the negative integers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_positive_rationals() {
+fn msup_positive_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "the positive rational numbers");
+    test("en", "ClearSpeak", expr, "the positive rational numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn msup_negative_rationals() {
+fn msup_negative_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("en", "ClearSpeak", expr, "the negative rational numbers");
+    test("en", "ClearSpeak", expr, "the negative rational numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn empty_set() {
+fn empty_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mo>}</mo>
             </math>";
-    test("en", "ClearSpeak", expr, "the empty set");
+    test("en", "ClearSpeak", expr, "the empty set")?;
+    return Ok(());
+
 }
 
 #[test]
-fn single_element_set() {
+fn single_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>12</mn><mo>}</mo>
             </math>";
-    test("en", "ClearSpeak", expr, "the set 12");
+    test("en", "ClearSpeak", expr, "the set 12")?;
+    return Ok(());
+
 }
 
 #[test]
-fn multiple_element_set() {
+fn multiple_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>5</mn> <mo>,</mo> <mn>10</mn>  <mo>,</mo> <mn>15</mn> <mo>}</mo>
             </math>";
-    test("en", "ClearSpeak", expr, "the set 5 comma 10 comma 15");
+    test("en", "ClearSpeak", expr, "the set 5 comma 10 comma 15")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_with_colon() {
+fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("en", "ClearSpeak", expr, "the set of all x such that x is greater than 2");
+    test("en", "ClearSpeak", expr, "the set of all x such that x is greater than 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn set_with_bar() {
+fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("en", "ClearSpeak", expr, "the set of all x such that x is greater than 2");
+    test("en", "ClearSpeak", expr, "the set of all x such that x is greater than 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn element_alone() {
+fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("en", "ClearSpeak", expr, "3 plus 2 i, is not a member of, the real numbers");
+    test("en", "ClearSpeak", expr, "3 plus 2 i, is not a member of, the real numbers")?;
+    return Ok(());
+
 }
 
 #[test]
-fn element_under_sum() {
+fn element_under_sum() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -202,11 +243,13 @@ fn element_under_sum() {
             </mfrac>
         </math>";
     test("en", "ClearSpeak", expr,
-                    "the sum over i is a member of the integers of; the fraction with numerator 1; and denominator i squared;");
+                    "the sum over i is a member of the integers of; the fraction with numerator 1; and denominator i squared;")?;
+                    return Ok(());
+
 }
 
 #[test]
-fn complicated_set_with_colon() {
+fn complicated_set_with_colon() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -220,11 +263,13 @@ fn complicated_set_with_colon() {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("en", "ClearSpeak", expr, "the set of all x in the integers such that 2 is less than x is less than 7");
+    test("en", "ClearSpeak", expr, "the set of all x in the integers such that 2 is less than x is less than 7")?;
+    return Ok(());
+
 }
 
 #[test]
-fn complicated_set_with_mtext() {
+fn complicated_set_with_mtext() -> Result<()> {
     // as of 8/5/21, parsing of "|" is problematic in the example, so <mrows> are needed for this test
     let expr = "<math>
         <mo>{</mo>
@@ -234,12 +279,14 @@ fn complicated_set_with_mtext() {
         <mo>}</mo>
         </math>";
     test("en", "ClearSpeak", expr, 
-            "the set of all x in the natural numbers such that x is an even number");
+            "the set of all x in the natural numbers such that x is an even number")?;
+            return Ok(());
+
 }
 
 
 #[test]
-fn set_with_bar_member() {
+fn set_with_bar_member() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -252,20 +299,24 @@ fn set_with_bar_member() {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "the set of all x member of the integers such that x is greater than 5");
+                expr, "the set of all x member of the integers such that x is greater than 5")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_alone_member() {
+fn element_alone_member() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "3 plus 2 i, is not a member of, the real numbers");
+                expr, "3 plus 2 i, is not a member of, the real numbers")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_under_sum_member() {
+fn element_under_sum_member() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -277,12 +328,14 @@ fn element_under_sum_member() {
             </mfrac>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "the sum over i is a member of the integers of; the fraction with numerator 1; and denominator i squared;");
+                expr, "the sum over i is a member of the integers of; the fraction with numerator 1; and denominator i squared;")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn set_with_bar_element() {
+fn set_with_bar_element() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -295,20 +348,24 @@ fn set_with_bar_element() {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "the set of all x element of the integers such that x is greater than 5");
+                expr, "the set of all x element of the integers such that x is greater than 5")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_alone_element() {
+fn element_alone_element() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "3 plus 2 i, is not an element of, the real numbers");
+                expr, "3 plus 2 i, is not an element of, the real numbers")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_under_sum_element() {
+fn element_under_sum_element() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -320,11 +377,13 @@ fn element_under_sum_element() {
             </mfrac>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "the sum over i is an element of the integers of; the fraction with numerator 1; and denominator i squared;");
+                expr, "the sum over i is an element of the integers of; the fraction with numerator 1; and denominator i squared;")?;
+                return Ok(());
+
 }
 
 #[test]
-fn set_with_bar_in() {
+fn set_with_bar_in() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -337,20 +396,24 @@ fn set_with_bar_in() {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "the set of all x in the integers such that x is greater than 5");
+                expr, "the set of all x in the integers such that x is greater than 5")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_alone_in() {
+fn element_alone_in() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 plus 2 i, is not in the real numbers");
+                expr, "3 plus 2 i, is not in the real numbers")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_under_sum_in() {
+fn element_under_sum_in() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -362,11 +425,13 @@ fn element_under_sum_in() {
             </mfrac>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "the sum over i is in the integers of; the fraction with numerator 1; and denominator i squared;");
+                expr, "the sum over i is in the integers of; the fraction with numerator 1; and denominator i squared;")?;
+                return Ok(());
+
 }
 
 #[test]
-fn set_with_bar_belongs() {
+fn set_with_bar_belongs() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -379,20 +444,24 @@ fn set_with_bar_belongs() {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "the set of all x belonging to the integers such that x is greater than 5");
+                expr, "the set of all x belonging to the integers such that x is greater than 5")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_alone_belongs() {
+fn element_alone_belongs() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "3 plus 2 i, does not belong to, the real numbers");
+                expr, "3 plus 2 i, does not belong to, the real numbers")?;
+                return Ok(());
+
 }
 
 #[test]
-fn element_under_sum_belongs() {
+fn element_under_sum_belongs() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -404,12 +473,14 @@ fn element_under_sum_belongs() {
             </mfrac>
         </math>";
     test_ClearSpeak("en", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "the sum over i belongs to the integers of; the fraction with numerator 1; and denominator i squared;");
+                expr, "the sum over i belongs to the integers of; the fraction with numerator 1; and denominator i squared;")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn set_member_woall() {
+fn set_member_woall() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -422,31 +493,39 @@ fn set_member_woall() {
             <mo>}</mo>
             </math>";
             test_ClearSpeak_prefs("en", vec![("ClearSpeak_SetMemberSymbol", "Member"), ("ClearSpeak_Sets", "woAll")],
-                expr, "the set of x member of the integers such that x is greater than 5");
+                expr, "the set of x member of the integers such that x is greater than 5")?;
+                return Ok(());
+
 }
 
 #[test]
-fn multiple_element_set_woall() {
+fn multiple_element_set_woall() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>5</mn> <mo>,</mo> <mn>10</mn>  <mo>,</mo> <mn>15</mn> <mo>}</mo>
             </math>";
-    test_ClearSpeak("en", "ClearSpeak_Sets", "woAll", expr, "the set 5 comma 10 comma 15");
+    test_ClearSpeak("en", "ClearSpeak_Sets", "woAll", expr, "the set 5 comma 10 comma 15")?;
+    return Ok(());
+
 }
 
 #[test]
-fn multiple_element_set_silent_bracket() {
+fn multiple_element_set_silent_bracket() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>5</mn> <mo>,</mo> <mn>10</mn>  <mo>,</mo> <mn>15</mn> <mo>}</mo>
             </math>";
-            test_ClearSpeak("en", "ClearSpeak_Sets", "SilentBracket", expr, "5 comma 10 comma 15");
+            test_ClearSpeak("en", "ClearSpeak_Sets", "SilentBracket", expr, "5 comma 10 comma 15")?;
+            return Ok(());
+
         }
 
 #[test]
-fn silent_bracket() {
+fn silent_bracket() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo>
             </math>";
             test_ClearSpeak("en", "ClearSpeak_Sets", "SilentBracket", expr,
-                    "the set of all x such that x is greater than 2");
+                    "the set of all x such that x is greater than 2")?;
+                    return Ok(());
+
         }
 

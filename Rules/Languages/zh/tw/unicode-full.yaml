@@ -293,7 +293,7 @@
             - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][text()='…']"
+            - "../*[1][.='…']"
         then: [T: "點點點"]                        	# 	(en: 'dot dot dot', google translation)
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
@@ -1440,6 +1440,10 @@
     - T: "圈圈"                                   	# 	(en: 'circled', google translation)
     - SPELL: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    - T: "黑圈圈"                                            #  (en: 'black circled', google translation)
+    - SPELL: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
     - T: "圈圈"                                   	# 	(en: 'circled', google translation)
     - SPELL: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -2428,6 +2432,20 @@
  - "㉞": [T: "圈圈內34"]                           	#  0x325e	(en: 'circled number thirty four', google translation)
  - "㉟": [T: "圈圈內35"]                           	#  0x325f	(en: 'circled number thirty five', google translation)
  - "㊱": [T: "圈圈內36"]                           	#  0x32b1	(en: 'circled number thirty six', google translation)
+ - "㊲": [T: "圈圈內37"]                           	#  0x32b2	(en: 'circled number thirty seven', GPT-5.4 translation)
+ - "㊳": [T: "圈圈內38"]                           	#  0x32b3	(en: 'circled number thirty eight', GPT-5.4 translation)
+ - "㊴": [T: "圈圈內39"]                           	#  0x32b4	(en: 'circled number thirty nine', GPT-5.4 translation)
+ - "㊵": [T: "圈圈內40"]                           	#  0x32b5	(en: 'circled number forty', GPT-5.4 translation)
+ - "㊶": [T: "圈圈內41"]                           	#  0x32b6	(en: 'circled number forty one', GPT-5.4 translation)
+ - "㊷": [T: "圈圈內42"]                           	#  0x32b7	(en: 'circled number forty two', GPT-5.4 translation)
+ - "㊸": [T: "圈圈內43"]                           	#  0x32b8	(en: 'circled number forty three', GPT-5.4 translation)
+ - "㊹": [T: "圈圈內44"]                           	#  0x32b9	(en: 'circled number forty four', GPT-5.4 translation)
+ - "㊺": [T: "圈圈內45"]                           	#  0x32ba	(en: 'circled number forty five', GPT-5.4 translation)
+ - "㊻": [T: "圈圈內46"]                           	#  0x32bb	(en: 'circled number forty six', GPT-5.4 translation)
+ - "㊼": [T: "圈圈內47"]                           	#  0x32bc	(en: 'circled number forty seven', GPT-5.4 translation)
+ - "㊽": [T: "圈圈內48"]                           	#  0x32bd	(en: 'circled number forty eight', GPT-5.4 translation)
+ - "㊾": [T: "圈圈內49"]                           	#  0x32be	(en: 'circled number forty nine', GPT-5.4 translation)
+ - "㊿": [T: "圈圈內50"]                           	#  0x32bf	(en: 'circled number fifty', GPT-5.4 translation)
  - "㋌": [T: "汞"]                                	#  0x32cc	(en: 'mercury', google translation)
  - "㋍": [t: "ergs"]                             	#  0x32cd	(google translation)
  - "㋎": [T: "電子伏特"]                             	#  0x32ce	(en: 'electron volts', google translation)

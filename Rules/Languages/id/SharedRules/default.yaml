@@ -9,14 +9,17 @@
       - ClearSpeak_Fractions: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Fractions='Auto', 'EndFrac', $ClearSpeak_Fractions)"
       - ClearSpeak_AbsoluteValue: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_AbsoluteValue='Auto', 'AbsEnd', $ClearSpeak_AbsoluteValue)"
       - ClearSpeak_Roots: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Roots='Auto', 'RootEnd', $ClearSpeak_Roots)"
+      - ClearSpeak_Matrix: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Matrix='Auto', 'EndMatrix', $ClearSpeak_Matrix)"
+      # should be set at mtable level, but unknown intents make that impossible to know
+      - IsColumnSilent: false()
       replace:
       - test:
           if: "$MathRate = 100"
-          then: [{x: "*"}]
+          then: [x: "*"]
           else:
           - rate:
               value: "$MathRate"
-              replace: [{x: "*"}]
+              replace: [x: "*"]
 
 - name: empty-mrow
   tag: mrow
@@ -30,15 +33,14 @@
   replace:
   - insert:
       nodes: "*"
-      replace: [{pause: auto}]
+      replace: [pause: auto]
 
 - name: default
   tag: mn
   match: "."
   replace:
   - bookmark: "@id"
-  # FIX: removing the digit block separators is likely locale dependent
-  - x: "translate(., ' ,`', '')"   # remove digit block separators
+  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -68,28 +70,26 @@
 - name: default
   tag: mstyle
   match: "."
-  replace: [{x: "*"}]
+  replace: [x: "*"]
 
 - name: simple-sub
-  tag: particular-value-of
-  # invisible comma -- want "x sub 1 1" without "end sub"
-  match: "IsNode(*[2], 'leaf') or *[2][self::m:mrow][*[2][text()='⁣']]"
+  tag: indexed-by
+  # invisible comma -- want "x 1 when subscript is an integer"
+  match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - pause: short
+
+- name: no-end-sub
+  tag: indexed-by
+  match: "IsNode(*[2], 'leaf') or *[2][self::m:mrow][*[2][.='⁣']]"
   replace:
   - x: "*[1]"
   - test:
       if: "$Verbosity!='Terse' or not(*[2][self::m:mn])" # just say "x 1" for terse vs "x sub 1"
-      then: [{T: 'indeks'}]
+      then: [T: 'indeks']
   - x: "*[2]"
-
-- name: default
-  tag: particular-value-of
-  match: "."
-  replace:
-  - x: "*[1]"
-  - T: 'indeks'
-  - x: "*[2]"
-  - T: 'akhir indeks'
-  - pause: short
 
 - name: default
   tag: msubsup
@@ -108,7 +108,7 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [{T: 'diubah'}]
+      then: [T: 'diubah']
   - x: "*[1]"
   - T: 'dengan'
   - x: "*[2]"
@@ -120,7 +120,7 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [{T: 'diubah'}]
+      then: [T: 'diubah']
   - x: "*[1]"
   - T: 'dengan'
   - x: "*[2]"
@@ -132,7 +132,7 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [{T: 'diubah'}]
+      then: [T: 'diubah']
   - T: 'dengan'
   - x: "*[1]"
   - pause: medium
@@ -177,7 +177,7 @@
               - x: "$Prescripts[1]"
           - test:
               if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
-              then: [{T: "dan"}]
+              then: [T: "dan"]
           - test:
               if: "not($Prescripts[2][self::m:none])"
               then:
@@ -194,7 +194,7 @@
                   - x: "$Prescripts[3]"
               - test:
                   if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [{T: "dan"}]
+                  then: [T: "dan"]
               - test:
                   if: "not($Prescripts[4][self::m:none])"
                   then:
@@ -219,7 +219,7 @@
               then:
               - test:
                   if: "$Prescripts"
-                  then: [{T: "dan"}]
+                  then: [T: "dan"]
               - T: "dengan"
               - x: "count($Postscripts) div 2"
               - T: "postskrip"
@@ -231,7 +231,7 @@
               - x: "$Postscripts[1]"
           - test:
               if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
-              then: [{T: "dan"}]
+              then: [T: "dan"]
           - test:
               if: "not($Postscripts[2][self::m:none])"
               then:
@@ -247,7 +247,7 @@
                   - x: "$Postscripts[3]"
               - test:
                   if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [{T: "dan"}]
+                  then: [T: "dan"]
               - test:
                   if: "not($Postscripts[4][self::m:none])"
                   then:
@@ -263,7 +263,7 @@
                       - x: "$Postscripts[5]"
                   - test:
                       if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [{T: "dan"}]
+                      then: [T: "dan"]
                   - test:
                       if: "not($Postscripts[6][self::m:none])"
                       then:
@@ -279,7 +279,7 @@
                           - x: "$Postscripts[7]"
                       - test:
                           if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [{T: "dan"}]
+                          then: [T: "dan"]
                       - test:
                           if: "not($Postscripts[8][self::m:none])"
                           then:
@@ -294,21 +294,23 @@
 
 - name: default
   tag: mtable
-  variables: [{IsColumnSilent: false()}]
+  variables:
+  - IsColumnSilent: "false()"
+  - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
   - T: 'tabel dengan'
   - x: count(*)
   - test:
       if: count(*)=1
-      then: {T: 'baris'}
-      else: {T: 'baris'}
+      then: [T: 'baris']
+      else: [T: 'baris']
   - T: dan
-  - x: "count(*[1]/*)"
+  - x: "$NumColumns"
   - test:
-      if: "count(*[1]/*)=1"
-      then: {T: 'kolom'}
-      else: {T: 'kolom'}
+      if: "$NumColumns"
+      then: [T: 'kolom']
+      else: [T: 'kolom']
   - pause: long
   - x: "*"
 
@@ -338,109 +340,109 @@
   replace:
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' box ')]"
-      then: [{T: kotak}, {pause: short}]
+      then: [T: kotak, pause: short]
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [{T: kotak bulat}, {pause: short}]
+      then: [T: kotak bulat, pause: short]
   - test:
       if: ".[contains(@notation,'circle')]"
-      then: [{T: lingkaran}, {pause: short}]
+      then: [T: lingkaran, pause: short]
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
       - T: baris aktif
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
-          then: [{T: kiri}, {pause: short}]
+          then: [T: kiri, pause: short]
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [{T: kanan}, {pause: short}]
+          then: [T: kanan, pause: short]
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [{T: atas}, {pause: short}]
+          then: [T: atas, pause: short]
       - test:
           if: ".[contains(@notation,'bottom')]"
-          then: [{T: bawah}, {pause: short}]
+          then: [T: bawah, pause: short]
   - test:
       if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
       then:
       - test:
           if: ".[contains(@notation,'updiagonalstrike') and contains(@notation,'downdiagonalstrike')]"
-          then: [{spell: x}, {pause: short}] # seems better to say 'x cross out' than 'up diagonal, down diagonal cross out'
+          then: [spell: x, pause: short] # seems better to say 'x cross out' than 'up diagonal, down diagonal cross out'
           else:
           - test:
               if: ".[contains(@notation,'updiagonalstrike')]"
-              then: [{T: diagonal ke atas}, {pause: short}]
+              then: [T: diagonal ke atas, pause: short]
           - test:
               if: ".[contains(@notation,'downdiagonalstrike')]"
-              then: [{T: diagonal ke bawah}, {pause: short}]
+              then: [T: diagonal ke bawah, pause: short]
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
-          then: [{T: vertikal}, {pause: short}]
+          then: [T: vertikal, pause: short]
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
-          then: [{T: horizontal}, {pause: short}]
+          then: [T: horizontal, pause: short]
       - T: mencoret
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
-      then: [{T: panah atas}, {pause: short}]
+      then: [T: panah atas, pause: short]
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
-      then: [{T: panah bawah}, {pause: short}]
+      then: [T: panah bawah, pause: short]
   - test:
       if: ".[contains(@notation,'leftarrow')]"
-      then: [{T: panah kiri}, {pause: short}]
+      then: [T: panah kiri, pause: short]
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
-      then: [{T: panah kanan}, {pause: short}]
+      then: [T: panah kanan, pause: short]
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
-      then: [{T: panah timur laut}, {pause: short}]
+      then: [T: panah timur laut, pause: short]
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
-      then: [{T: panah tenggara}, {pause: short}]
+      then: [T: panah tenggara, pause: short]
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
-      then: [{T: panah barat daya}, {pause: short}]
+      then: [T: panah barat daya, pause: short]
   - test:
       if: ".[contains(@notation,'northwestarrow')]"
-      then: [{T: panah barat laut}, {pause: short}]
+      then: [T: panah barat laut, pause: short]
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [{T: panah vertikal ujung ganda}, {pause: short}]
+      then: [T: panah vertikal ujung ganda, pause: short]
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [{T: panah horizontal ujung ganda}, {pause: short}]
+      then: [T: panah horizontal ujung ganda, pause: short]
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [{T: panah diagonal atas ujung ganda}, {pause: short}]
+      then: [T: panah diagonal atas ujung ganda, pause: short]
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [{T: panah diagonal bawah ujung ganda}, {pause: short}]
+      then: [T: panah diagonal bawah ujung ganda, pause: short]
   - test:
       if: ".[contains(@notation,'actuarial')]"
-      then: [{T: simbol aktuaria}, {pause: short}]
+      then: [T: simbol aktuaria, pause: short]
   - test:
       if: ".[contains(@notation,'madrub')]"
-      then: [{T: simbol faktorial arab}, {pause: short}]
+      then: [T: simbol faktorial arab, pause: short]
   - test:
       if: ".[contains(@notation,'phasorangle')]"
-      then: [{T: sudut fasor}, {pause: short}]
+      then: [T: sudut fasor, pause: short]
   - test:
       if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']" # default
-      then: [{T: simbol pembagian panjang}, {pause: short}]
+      then: [T: simbol pembagian panjang, pause: short]
   - test:
       if: ".[contains(@notation,'radical')]"
-      then: [{T: akar pangkat dua}, {pause: short}]
+      then: [T: akar pangkat dua, pause: short]
   - T: melampirkan
   - test:
-      if: "*[self::m:mtext and text()=' ']"
+      if: "*[self::m:mtext and .=' ']"
       then: [T: "beberapa ruang"]     # (en: "some space") otherwise there is complete silence
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
-      then: [{T: penutup akhir}]
+      then: [T: penutup akhir]
   - pause: short
 
 - name: semantics
@@ -457,54 +459,93 @@
 
 # Here are the intent hints that need to be handled: 'prefix' | 'infix' | 'postfix' | 'function' | 'silent'
 - name: silent-intent
-  # uncaught intent -- speak as arg1 arg2 ....
+  # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "contains(@data-intent-property, ':silent:') and count(*)>0"
+  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
   replace:
   - x: "*"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
 
 - name: prefix-intent
-  # uncaught intent -- speak as arg1 arg2 ....
+  # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "contains(@data-intent-property, ':prefix:') and count(*)>0"
+  match: "count(*)>0 and contains(@data-intent-property, ':prefix:')"
   replace:
-  - x: "translate(name(.), '-_', '  ')"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"
   - x: "*"
-  - pause: short
+  - test:
+      if: "not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'prefix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
 
 - name: postfix-intent
-  # uncaught intent -- speak as arg1 arg2 ....
+  # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "contains(@data-intent-property, ':postfix:') and count(*)>0"
+  match: "count(*)>0 and contains(@data-intent-property, ':postfix:')"
   replace:
-  - pause: short
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'postfix', 'start')"]
   - x: "*"
-  - x: "translate(name(.), '-_', '  ')"
-
+  - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
 
 - name: infix-intent
-  # uncaught intent -- speak as foo of arg1 comma arg2 ....
+  # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "contains(@data-intent-property, ':infix:') and count(*)>0"
+  match: "count(*)>0 and contains(@data-intent-property, ':infix:')"
   replace:
-  - pause: short
-  - insert:
-      nodes: "*"
-      replace: [x: "translate(name(.), '-_', '  ')", pause: auto]
-  - pause: short
-
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'start')"]
+  - test:
+      if: "count(*) = 1"  # in cases such as continued-row, plus/minus might have just one child
+      then:
+      - x: "SpeakIntentName(name(.), $Verbosity, 'infix')"
+      - pause: auto
+      - x: "*[1]"
+      else:
+      - insert:
+          nodes: "*"
+          replace: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')", pause: auto]
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
+      then: [pause: short]
+      else: [pause: auto]
 
 - name: function-intent
-  # uncaught intent -- speak as foo of arg1 comma arg2 ....
+  # uncaught intent -- speak as foo of arg1 comma arg2 .... The MathML spec requires arguments to functions
   tag: "*"
-  match: count(*)>0
+  match: "count(*)>0"
   replace:
-  - x: "translate(name(.), '-_', '  ')"
-  - T: ' '
-  - pause: short
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - test:
+      if: "not(contains(@data-intent-property, ':literal:')) and
+           not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
+      then: [T: "", pause: auto]      # phrase(sine 'of' 5)
   - insert:
       nodes: "*"
-      replace: [{T: 'koma'}, {pause: auto}]
+      replace:
+      - test:
+          if: "not(contains(@data-intent-property, ':literal:'))"
+          then: [x: "','"]
+      - pause: auto
+  - test:
+      if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
 
 - name: default-text
   # unknown leaf -- just speak the text -- could be a literal intent
