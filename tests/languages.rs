@@ -6,6 +6,7 @@ mod Languages {
     mod intent;
     mod zh;
     mod en;
+    mod hu;
     mod fi;
     mod sv;
     mod nb;
