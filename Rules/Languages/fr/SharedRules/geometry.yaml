@@ -1,0 +1,78 @@
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - t: "le segment de droite de"
+      - x: "*[1]"
+      - t: "à"
+      - x: "*[2]"
+      else:
+      - t: "segment"
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - t: "la demi-droite de"
+      - x: "*[1]"
+      - t: "à"
+      - x: "*[2]"
+      else:
+      - t: "demi-droite"
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-arc
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "l'"]
+  - t: "arc"
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - t: "la mesure de l'angle"
+      else:
+      - t: "mesure de l'angle"
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "le"]
+  - t: "point"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "de coordonnées"]
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [t: "virgule", pause: auto]
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [t: "fin du point"]

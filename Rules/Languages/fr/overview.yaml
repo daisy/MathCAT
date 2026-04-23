@@ -1,0 +1,103 @@
+---
+
+- name: overview-default
+  tag: [mfrac, fraction]
+  match: "."
+  replace:
+  - test:
+      if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
+      then:
+      - x: "*[1]"
+      - t: "sur"
+      - x: "*[2]"
+      else:
+      - t: "fraction"
+
+- name: overview-default
+  tag: [msqrt, "square-root"]
+  match: "."
+  replace:
+  - t: "racine carrée"
+  - test:
+      if: "IsNode(*[1], 'simple')"
+      then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [t: "de"]
+      - x: "*[1]"
+
+- name: overview-default
+  tag: [mroot, root]
+  match: "."
+  replace:
+  - test:
+      if: "*[2][self::m:mn]"
+      then_test:
+      - if: "*[2][.='2']"
+        then: [t: "racine carrée"]
+      - else_if: "*[2][.='3']"
+        then: [t: "racine cubique"]
+      - else:
+        - x: "*[2]"
+        - t: "ième racine"
+      else:
+      - x: "*[2]"
+      - t: "racine"
+  - test:
+      if: "IsNode(*[1], 'simple')"
+      then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [t: "de"]
+      - x: "*[1]"
+
+- name: matrix-override
+  tag: mrow
+  match:
+  - "*[2][self::m:mtable] and"
+  - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
+  replace:
+  - t: "la"
+  - x: count(*[2]/*)
+  - t: "par"
+  - x: count(*[2]/*[self::m:mtr][1]/*)
+  - test:
+      if: "*[1][.='|']"
+      then: [t: "déterminant"]
+      else: [t: "matrice"]
+
+- name: overview-default
+  tag: mtable
+  match: "."
+  replace:
+  - t: "la"
+  - x: count(*[2]/*)
+  - t: "par"
+  - x: count(*[2]/*[self::m:mtr][1]/*)
+  - t: "table"
+
+- name: short-mrow
+  tag: mrow
+  match: "count(*)<6"
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [pause: auto]
+
+- name: long-mrow
+  tag: mrow
+  match: "."
+  replace:
+  - x: "*[1]"
+  - pause: auto
+  - x: "*[2]"
+  - pause: auto
+  - x: "*[3]"
+  - pause: auto
+  - x: "*[4]"
+  - pause: auto
+  - x: "*[5]"
+  - pause: auto
+  - t: "et ainsi de suite"
+
+- include: "SimpleSpeak_Rules.yaml"
