@@ -840,7 +840,7 @@ impl CanonicalizeContext {
 			},
 			"mi" => {
 				let text = as_text(mathml);
-				if !text.trim().is_empty() && is_roman_number_match(text) && is_roman_numeral_number_context(mathml) {
+				if should_canonicalize_mi_as_roman_numeral(mathml, text) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
 					return Some(mathml);
@@ -1825,6 +1825,19 @@ impl CanonicalizeContext {
 
 		fn is_roman_number_match(text: &str) -> bool {
 			return UPPER_ROMAN_NUMERAL.is_match(text) || LOWER_ROMAN_NUMERAL.is_match(text);
+		}
+
+		/// Returns true when `<mi>` looks like a Roman numeral, appears in a numeric context,
+		/// and is either multi-letter or explicitly marked with Roman-numeral intent.
+		fn should_canonicalize_mi_as_roman_numeral(mathml: Element, text: &str) -> bool {
+			let trimmed = text.trim();
+			if trimmed.is_empty() || !is_roman_number_match(text) || !is_roman_numeral_number_context(mathml) {
+				return false;
+			}
+
+			return trimmed.len() > 1 ||
+				mathml.attribute_value(INTENT_ATTR)
+					.is_some_and(|s| s.contains("roman-numeral"));
 		}
 
 		/// Return true if 'element' (which is syntactically a roman numeral) is only inside mrows and
@@ -5969,6 +5982,45 @@ mod canonicalize_tests {
 			<mn data-roman-numeral='true' data-number='48'>XLVIII</mn> <mo>+</mo><mn data-roman-numeral='true' data-number='2026'>mmxxvi</mn>
 			</mrow></math>";
         // let target_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_multi_letter_mi() -> Result<()> {
+        let test_str = "<math>
+            <mi>IX</mi>
+            <mo>+</mo>
+            <mi>VIII</mi>
+            <mo>=</mo>
+            <mi>XVII</mi>
+        </math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='9'>IX</mn>
+				<mo>+</mo>
+				<mn data-roman-numeral='true' data-number='8'>VIII</mn>
+			</mrow>
+			<mo>=</mo>
+			<mn data-roman-numeral='true' data-number='17'>XVII</mn>
+			</mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_single_letter_mi_is_not_number() -> Result<()> {
+        // Regression test for https://github.com/daisy/MathCAT/issues/528
+        let test_str = "<math>
+            <mi>C</mi>
+            <mo>=</mo>
+            <mi>D</mi>
+        </math>";
+        let target_str = "<math>
+            <mrow data-changed='added'>
+                <mi>C</mi>
+                <mo>=</mo>
+                <mi>D</mi>
+            </mrow>
+        </math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
