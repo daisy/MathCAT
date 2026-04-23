@@ -1,5 +1,5 @@
 ---
-# Provide an overview/outline/description of the math
+# Provide an overview/outline/description of the math expression
 # MathPlayer just tried to shorten things like "mfrac" by just saying "fraction"
 #   For mrow, it say up to 5 operands and just say "and n more things" for the rest
 # This results in strings of varying length. Given human memory is about 7 words long,
