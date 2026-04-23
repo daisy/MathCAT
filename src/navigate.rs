@@ -415,20 +415,18 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                             };
                             if rate != "100" {
                                 match tts.as_str() {
-                                    "SSML" => {
-                                        if !cumulative_speech.starts_with("<prosody rate") {
+                                    "SSML"
+                                        if !cumulative_speech.starts_with("<prosody rate") => {
                                             cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", &rate, &cumulative_speech);
                                         }
-                                    }
-                                    "SAPI5" => {
-                                        if !cumulative_speech.starts_with("<rate speed") {
+                                    "SAPI5"
+                                        if !cumulative_speech.starts_with("<rate speed") => {
                                             cumulative_speech = format!(
                                                 "<rate speed='{:.1}'>{}</rate>",
                                                 10.0 * (0.01 * rate.parse::<f32>().unwrap_or(100.0)).log(3.0),
                                                 cumulative_speech
                                             );
                                         }
-                                    }
                                     _ => (),  // do nothing
                                 }
                             }
