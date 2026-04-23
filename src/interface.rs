@@ -258,9 +258,8 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
             }
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
-            } else {
-                return Ok(value);
             }
+            Ok(value)
         })
     }));
     return report_any_panic(result);
