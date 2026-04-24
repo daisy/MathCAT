@@ -1,0 +1,207 @@
+---
+# Some common German letters
+ - "ä": [t: "\\ddot𝐖a𝐖"]                 # 0xe4
+ - "ö": [t: "\\ddot𝐖o𝐖"]                 # 0xf6
+ - "ü": [t: "\\ddot𝐖u𝐖"]                 # 0xfc
+ - "Ä": [t: "\\ddot𝐖A𝐖"]                 # 0xc4
+ - "Ö": [t: "\\ddot𝐖O𝐖"]                 # 0xd6
+ - "Ü": [t: "\\ddot𝐖U𝐖"]                 # 0xdc
+ - "ß": [t: "ss"]                         # 0xdf (no defined macro for this)
+
+# some alphanumeric block chars in other positions
+ - "ℊ": [t: "cc𝐖c𝐖"]                      # 0x210a
+ - "ℋ": [t: "cc𝐖c𝐖"]                      # 0x210b
+ - "ℒ": [t: "cc𝐖L𝐖"]                      # 0x2112
+ - "ℓ": [t: "cc𝐖l𝐖"]                      # 0x2113
+ - "℘": [t: "cc𝐖P𝐖"]                      # 0x2118
+ - "ℛ": [t: "cc𝐖R𝐖"]                      # 0x211b
+ - "ℯ": [t: "cc𝐖e𝐖"]                      # 0x212f
+ - "ℰ": [t: "cc𝐖E𝐖"]                      # 0x2130
+ - "ℱ": [t: "cc𝐖F𝐖"]                      # 0x2131
+ - "ℳ": [t: "cc𝐖M𝐖"]                      # 0x2133
+ - "ℴ": [t: "cc𝐖o𝐖"]                      # 0x2134
+ - "ℌ": [t: "fr𝐖H𝐖"]                      # 0x210c
+ - "ℑ": [t: "fr𝐖I𝐖"]                      # 0x2111
+ - "ℜ": [t: "fr𝐖R𝐖"]                      # 0x211c
+ - "ℨ": [t: "fr𝐖Z𝐖"]                      # 0x2128
+ - "ℭ": [t: "fr𝐖C𝐖"]                      # 0x212d
+ - "ℍ": [t: "bbb𝐖H𝐖"]                     # 0x210d
+ - "ℙ": [t: "bbb𝐖P𝐖"]                     # 0x2119
+ - "ℎ": [t: "h"]                         # 0x210e
+
+ - "𝐀-𝐙":    # 0x1d400 - 0x1d419
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "𝐖"
+
+ - "𝐚-𝐳":    # 0x1d41a - 0x1d433
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+
+# consider italics as normal chars
+ - "𝘈-𝘡":    # 0x1d608 - 0x1d621
+    - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
+    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
+
+
+ - "𝑨-𝒁":    # 0x1d468 - 0x1d481
+    # - t: "bold italic"
+    - t: "bii𝐖"  # not part of official ASCIIMath
+    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+
+ - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
+    # - t: "bold italic"
+    - t: "bii𝐖"  # not part of official ASCIIMath
+    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
+    - t: "cc𝐖"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "𝐖"
+
+ - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
+    - t: "cc𝐖"
+    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+
+ - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - t: "fr𝐖"
+    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - t: "𝐖"
+
+ - "𝔞-𝔷":    # 0x1d51e - 0x1d537
+    - t: "fr𝐖"
+    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+
+
+ # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
+ # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
+ - "𝔸-𝕐":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - t: "bbb𝐖"
+    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "𝐖"
+
+ - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
+    - t: "bbb𝐖"
+    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+
+ - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
+    - t: "sf𝐖"
+    - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "𝐖"
+
+ - "𝖺-𝗓":    # 0x1d5ba - 0x1d5d3
+    - t: "sf𝐖"
+    - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+ 
+ - "𝙰-𝚉":    # 0x1d670 - 0x1d689
+    - t: "tt𝐖"
+    - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "𝐖"
+
+ - "𝚊-𝚣":    # 0x1d68a - 0x1d6a3
+    - t: "tt𝐖"
+    - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "𝐖"
+
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝛁": [t: "bb𝐖∇"]                          # 0x1d6c1
+
+ - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":    # 0x1D6DB - 0x1D6E1
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
+
+ - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
+    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝛼-𝜔":    # 0x1d6fc - 0x1d714
+    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝛻": [t: "∇"]                          # 0x1d6fb
+
+ - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":    # 0x1d715 - 0x1d71b
+      # - t: "italic"
+    - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
+
+ - "𝜜-𝜴":    # 0x1d71c - 0x1d734
+    # - t: "bold italic"
+    - t: "bii𝐖"
+    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
+    # - t: "bold italic"
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
+    # - t: "bold italic"
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
+
+ - "𝜵": [t: "bii𝐖∇"]                  # 0x1d735
+
+ - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "𝝰-𝞈":    # 0x1d770 - 0x1d788
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
+    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
+
+ - "𝝯": [t: "bb𝐖∇"]                          # 0x1d76f
+
+ - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
+    # - t: "bold italic"
+    - t: "bii𝐖"
+    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
+    # - t: "bold italic"
+    - t: "bii𝐖"
+    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
+    # - t: "bold italic"
+    - t: "bii𝐖"
+    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+
+ - "𝞩": [t: "bb𝐖∇"]                          # 0x1d7a9
+
+ - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
+    - t: "bb𝐖"
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+
+ - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
+    - t: "sf𝐖"
+    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+
+ - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
+    - t: "sf𝐖"
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+
+ - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff  
+    - t: "tt𝐖"
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+
+ - "ⅆ": [t: "d"]                # 0x2146
+ - "ⅇ": [t: "e"]                # 0x2147
+ - "ⅈ": [t: "i"]                # 0x2148

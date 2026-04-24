@@ -1,0 +1,294 @@
+/// Tests for fractions
+///   includes simple fractions and more complex fractions
+///   also tests mixed fractions (implicit and explicit)
+use crate::common::*;
+use anyhow::Result;
+
+#[test]
+fn common_fraction_half() -> Result<()> {
+    let expr = "<math>
+                    <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, "en halv")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_thirds() -> Result<()> {
+    let expr = "<math>
+                    <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, "2 tredjedelar")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_tenths() -> Result<()> {
+    let expr = "<math>
+                    <mfrac> <mn>17</mn> <mn>10</mn> </mfrac>
+                </math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "17 tiondelar")?;
+    return Ok(());
+
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn not_ClearSpeak_common_fraction_tenths() -> Result<()> {
+    let expr = "<math>
+                    <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
+                </math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, ", bråk, 89 genom 10, slut bråk")?;
+//    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "89 tenths");
+    return Ok(());
+}
+
+#[test]
+fn non_simple_fraction() -> Result<()> {
+    let expr = "
+    <math>
+        <mrow>
+        <mfrac>
+        <mrow>
+        <mi>x</mi><mo>+</mo><mi>y</mi></mrow>
+        <mrow>
+        <mi>x</mi><mo>-</mo><mi>y</mi></mrow>
+        </mfrac>
+        </mrow>
+    </math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "division med täljaren; x plus y; och nämnaren x minus y")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "division med täljaren; x plus y; och nämnaren x minus y")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Over")], expr, ", division, x plus y genom x minus y, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "FracOver")], expr, ", division, x plus y genom x minus y, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "General")], expr, "division med täljaren; x plus y; och nämnaren x minus y")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "EndFrac")], expr, "division med täljaren; x plus y; och nämnaren x minus y; slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "GeneralEndFrac")], expr, "division med täljaren; x plus y; och nämnaren x minus y; slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "OverEndFrac")], expr, ", division, x plus y genom x minus y, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Per")], expr, "x plus y per x minus y")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Verbose"),("ClearSpeak_Fractions", "Auto")], expr, "division med täljaren; x plus y; och nämnaren x minus y; slut division")?;
+    return Ok(());
+
+}
+
+
+#[test]
+fn mixed_number() -> Result<()> {
+    let expr = "<math>
+                    <mn>3</mn>
+                    <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, "3 och en halv")?;
+    return Ok(());
+
+}
+
+#[test]
+fn explicit_mixed_number() -> Result<()> {
+    let expr = "<math>
+                    <mn>3</mn>
+                    <mo>&#x2064;</mo>
+                    <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, "3 och en åttondel")?;
+    return Ok(());
+
+}
+
+#[test]
+fn mixed_number_big() -> Result<()> {
+    let expr = "<math>
+                    <mn>3</mn>
+                    <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, "3 och; bråk, 7 genom 83, slut bråk")?;
+    return Ok(());
+
+}
+
+#[test]
+fn simple_text() -> Result<()> {
+    let expr = "<math>
+    <mfrac> <mi>rise</mi> <mi>run</mi> </mfrac>
+                </math>";
+    test("sv", "ClearSpeak", expr, ", rise genom run")?;
+    return Ok(());
+
+}
+
+#[test]
+fn number_and_text() -> Result<()> {
+    let expr = "<math>
+            <mfrac>
+            <mrow>
+                <mn>2</mn><mtext>miles</mtext></mrow>
+            <mrow>
+                <mn>3</mn><mtext>gallons</mtext></mrow>
+            </mfrac>
+        </math>";
+    test("sv", "ClearSpeak", expr, ", 2 miles genom 3 gallons")?;
+    return Ok(());
+
+}
+
+
+#[test]
+fn nested_simple_fractions() -> Result<()> {
+    let expr = "<math>
+                <mrow>
+                <mfrac>
+                    <mrow>
+                    <mfrac>
+                        <mn>1</mn>
+                        <mn>2</mn>
+                    </mfrac>
+                    </mrow>
+                    <mrow>
+                    <mfrac>
+                        <mn>2</mn>
+                        <mn>3</mn>
+                    </mfrac>
+                    </mrow>
+                </mfrac>
+                </mrow>
+            </math>";
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, ", division, en halv genom 2 tredjedelar, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, ", division, en halv genom 2 tredjedelar, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, ", division; bråk, 1 genom 2, slut bråk, genom, bråk, 2 genom 3, slut bråk; slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
+    ", division; bråk, 1 genom 2, slut bråk, genom, bråk, 2 genom 3, slut bråk; slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
+    "division med täljaren division med täljaren 1; och nämnaren 2; och nämnaren division med täljaren 2; och nämnaren 3")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, ", division, en halv genom 2 tredjedelar, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
+    "division med täljaren division med täljaren 1; och nämnaren 2; slut division; och nämnaren division med täljaren 2; och nämnaren 3; slut division; slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,
+    ", division; bråk, 1 genom 2, slut bråk, genom, bråk, 2 genom 3, slut bråk; slut division")?;
+    return Ok(());
+
+}
+
+
+#[test]
+fn semi_nested_fraction() -> Result<()> {
+    let expr = "<math>
+                <mrow>
+                        <mfrac>
+                        <mrow>
+                        <mfrac>
+                        <mn>2</mn>
+                        <mn>3</mn>
+                        </mfrac>
+                        <mi>x</mi>
+                    </mrow>
+                    <mn>6</mn>
+                    </mfrac>
+                </mrow>
+                </math>";
+    test("sv", "ClearSpeak", expr, ", division, 2 tredjedelar x genom 6, slut division")?;
+    return Ok(());
+
+}
+
+#[test]
+fn general_nested_fraction() -> Result<()> {
+    let expr = "
+    <math>
+    <mrow>
+        <mfrac>
+        <mrow>
+        <mfrac>
+            <mn>10</mn>
+            <mi>n</mi>
+        </mfrac>
+        </mrow>
+        <mrow>
+        <mfrac>
+        <mn>2</mn>
+        <mi>n</mi>
+        </mfrac>
+        </mrow>
+        </mfrac>
+        </mrow>
+    </math>
+                    ";
+    test("sv", "ClearSpeak", expr, "division med täljaren; bråk, 10 genom n, slut bråk; och nämnaren, bråk, 2 genom n, slut bråk")?;
+    return Ok(());
+
+}
+
+#[test]
+fn complex_nested_fraction() -> Result<()> {
+    let expr = "
+    <math>
+    <mrow>
+        <mfrac>
+        <mrow>
+        <mfrac>
+            <mrow> <mi>n</mi> <mo>+</mo> <mn>10</mn> </mrow>
+            <mi>n</mi>
+        </mfrac>
+        </mrow>
+        <mrow>
+        <mfrac>
+        <mn>2</mn>
+        <mi>n</mi>
+        </mfrac>
+        </mrow>
+        </mfrac>
+        </mrow>
+    </math>
+                    ";
+    test("sv", "ClearSpeak", expr, "division med täljaren; division med täljaren; n plus 10; och nämnaren n; och nämnaren, bråk, 2 genom n, slut bråk")?;
+    return Ok(());
+
+}
+
+#[test]
+fn simple_function() -> Result<()> {
+    let expr = "<math><mfrac><mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mn>2</mn></mfrac></math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, ", division, f av x genom 2, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, ", division, f av x genom 2, slut division")?;
+    return Ok(());
+
+}
+
+#[test]
+fn function_over_function() -> Result<()> {
+    let expr = "<math><mfrac>
+            <mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
+            <mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
+        </mfrac></math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, ", division, f av x genom g av x, slut division")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, ", division, f av x genom g av x, slut division")?;
+    return Ok(());
+
+}
+
+#[test]
+fn non_simple_function_over_function() -> Result<()> {
+    let expr = "<math><mfrac>
+            <mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow>
+            <mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
+        </mfrac></math>";
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr,
+             "division med täljaren; f av, vänster-parentes; x plus 1; höger-parentes; och nämnaren g av x")?;
+    test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr,
+    "division med täljaren; f av, vänster-parentes; x plus 1; höger-parentes; och nämnaren g av x; slut division")?;
+    return Ok(());
+
+}
+
+#[test]
+fn binomial() -> Result<()> {
+    let expr = "<math>
+                    <mn>2</mn>
+                    <mo>(</mo>
+                    <mfrac linethickness='0'> <mn>7</mn> <mn>3</mn> </mfrac>
+                    <mo>)</mo>
+                </math>";
+    test("sv", "ClearSpeak", expr, "2 gånger 7 över 3")?;
+    return Ok(());
+
+}

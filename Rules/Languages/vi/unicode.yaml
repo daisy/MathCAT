@@ -2,7 +2,16 @@
  - "a-z": [T: "."]
 
  - "A-Z":
-    - x: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
+        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -13,6 +22,8 @@
           else: [x: "$SpeechOverrides_CapitalLetters"] 
 
  - "0-9": [T: "."]
+
+ - " ": [t: " "]                                 # 0x20
 
  - "!": [T: giai thừa]                           # 0x21
  - "\"": [T: nháy kép]                     # 0x22
@@ -44,7 +55,7 @@
                # speak "comma" when not adjacent to '…'
             - "( following-sibling::*[1][text()!= '…'] and preceding-sibling::*[1][text()!='…']  ) or "
                # except if expression starts with '…'
-            - " ../*[1][text()='…'] "
+            - " ../*[1][.='…'] "
         then: [T: phẩy]
         # else silent
 
@@ -91,14 +102,25 @@
         else: [T: ngoặc nhọn trái]                            
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" in side of sets is handled at the mrow level, same for 'sets'
-     - test:
-        - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [T: gạch đứng]
-        - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [T: sao cho]
-        - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
-          then: [T: sao cho] 
-        - else: [T: sao cho]                   
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [T: sao cho]  # given
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [T: sao cho]    # divides
+                  else: [T: gạch đứng]  # vertical line
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [T: gạch đứng]
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [T: sao cho]  # such that
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [T: sao cho]   # given
+            - else: [T: sao cho]   # divides                
 
  - "}":                                          # 0x7d
     - test:
@@ -202,7 +224,7 @@
             - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][text()='…']"
+            - "../*[1][.='…']"
         then: [T: chấm chấm chấm]
         else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
@@ -211,7 +233,16 @@
 
  - "⁡":                                          # 0x2061
     - test:
-        if: "$Verbosity!='Terse' and not(preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')])" 
+        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
+        if: "not(
+              ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
+                preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
+                                                   IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
+                                                   IsInDefinition(., 'TrigFunctionNames') )]
+              ) or
+              preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
+            )"
         then: [T: "của"]
  - "⁢": [T: ""]                                   # 0x2062
  - "⁣": [T: ""]                                   # 0x2063
@@ -295,8 +326,8 @@
  - "∂":                                          # 0x2202
       - test: 
          if: "$Verbosity='Terse'"
-         then: {T: phần}
-         else: {T: đạo hàm riêng}
+         then: [T: phần]
+         else: [T: đạo hàm riêng]
  - "∃": [T: tồn tại ít nhất]                        # 0x2203
  - "∄": [T: không tồn tại]                # 0x2204
  - "∅": [T: tập hợp rỗng]                           # 0x2205
@@ -305,11 +336,11 @@
     #     if: "$Verbosity!='Terse'"
      #    then: [T: "the"]
      - T: đen ta
- - "∇":                                          # 0x2207
-   #  - test: 
-    #     if: "$Verbosity!='Terse'"
-     #    then: [T: "the"]
-     - T: độ dốc của
+ - "∇":                                             #  0x2207
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "các"]                           #   (en: 'the')
+     - t: "độ dốc của"                              #   (en: 'gradient of')
  - "∈":                                          # 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -443,15 +474,15 @@
  - "≡":                                          # 0x2261
      - test: 
          if: "$Verbosity!='Terse'"
-         then: {T: trùng với}
+         then: [T: trùng với]
  - "≤": [T: nhỏ hơn hoặc bằng]                                         # 0x2264
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: nhỏ hơn hoặc bằng}
+         #then: [T: nhỏ hơn hoặc bằng]
  - "≥": [T: lớn hơn hoặc bằng]                                         # 0x2265
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: lớn hơn hoặc bằng}
+         #then: [T: lớn hơn hoặc bằng]
  - "≦": [T: nhỏ hơn hoặc bằng]             # 0x2266
  - "≧": [T: lớn hơn hoặc bằng]          # 0x2267
  - "≺": [T: precedes]                            # 0x227a
@@ -459,11 +490,11 @@
  - "⊂": [T: chứa trong]                                         # 0x2282
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: chứa trong}
+         #then: [T: chứa trong]
  - "⊃": [T: chứa]                                         # 0x2283
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: chứa}
+         #then: [T: chứa]
  - "⊄":                                          # 0x2284
    #  - test: 
     #     if: "$Verbosity!='Terse'"
@@ -477,8 +508,8 @@
  - "⊆": [T: chứa trong hoặc bằng]                                         # 0x2286
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: chứa trong}
+         #then: [T: chứa trong]
  - "⊇": [T: chứa hoặc bằng]                                         # 0x2287
      #- test: 
          #if: "$Verbosity!='Terse'"
-         #then: {T: chứa}
+         #then: [T: chứa]

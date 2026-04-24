@@ -46,6 +46,7 @@
  - "\ue00D": [t: "N⠐N⠙"]               # D 
  - "\ue00E": [t: "N⠐N⠑"]               # E 
  - "\ue00F": [t: "N⠐N⠋"]               # F 
+
 # leave room for the rest of the alphabet
  - "\ue01A": [t: "N⠨N⠁"]               # A 
  - "\ue01B": [t: "N⠨N⠃"]               # B 
@@ -53,6 +54,10 @@
  - "\ue01D": [t: "N⠨N⠙"]               # D 
  - "\ue01E": [t: "N⠨N⠑"]               # E 
  - "\ue01F": [t: "N⠨N⠋"]               # F 
+
+# Omission char -- there isn't a specific code point, so we use a private use area
+ - "\ue020": [t: "⠰"]        # omission (three dot 5s with letter indicator) 
+
 
  - "a": [t: "L⠁"]               # 0x61 
  - "b": [t: "L⠃"]               # 0x62 
@@ -488,15 +493,12 @@
 #  - "⇣": [t: "1⠳⠂⠩"]             # 0x21E3 (Downwards dashed arrow)
 #  - "⥂": [t: "⠸⠶"]               # 0x2942 (Rightwards arrow above short leftwards arrow (equilibrium, trend to the right))
 #  - "⥄": [t: "⠈⠸⠶"]              # 0x2944 (Short rightwards arrow above leftwards arrow (equilibrium, trend to the left))
-#  - "△": [t: "1⠫⠼⠉t"]            # 0x25B3 (Triangle)
-#  - "□": [t: "1⠫⠼⠙t"]            # 0x25A1 (Square)
 #  - "▤": [t: "⠨⠫⠼⠙t"]            # 0x25A4 (Square with horizontal fill)
 #  - "▥": [t: "⠨⠫⠼⠙t"]            # 0x25A5 (Square with vertical fill)
 #  - "▦": [t: "⠨⠫⠼⠙t"]            # 0x25A6 (Square with orthogonal crosshatch fill)
 #  - "▧": [t: "⠨⠫⠼⠙t"]            # 0x25A7 (Square with upper left to lower right fill)
 #  - "▨": [t: "⠨⠫⠼⠙t"]            # 0x25A8 (Square with upper right to lower left fill)
 #  - "▩": [t: "⠨⠫⠼⠙t"]            # 0x25A9 (Square with diagonal crosshatch fill)
-#  - "○": [t: "1⠫⠿t"]             # 0x25CB (Circle)
 #  - "◍": [t: "⠨⠫⠿t"]             # 0x25CD (Circle with vertical fill)
 #  - "▱": [t: "1⠫⠈⠼⠙t"]           # 0x25B1 (Parallelogram)
 #  - "▲": [t: "⠸⠫⠼⠉t"]            # 0x25B2 (Filled triangle)
@@ -538,41 +540,43 @@
 
  - " ":                        # 0x20 (Space)
      - test:
-        if: "self::m:mn"
-        then: [t: "N⠐"]
-        else: [t: "W"]
+        - if: "self::m:mn"
+          then: [t: "N⠄"]
+        - else_if: "@data-added='missing-content' or @data-empty-in-2D or @width > 1.1"
+          then: [t: "⠰⠤⠆"]       # omission
+        - else_if: "@width < 0.25"
+          then: [t: ""]       # tweaking space -- ignore
+          else: [t: "W"]      # space in text or wide enough space
  - " ":                        # 0xa0 (Non-breaking Space)
      - test:
         - if: "self::m:mn"
-          then: [t: "N⠐"]
-        - else_if: "following-sibling::*[1][@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']]"
-          then: [t: "𝐖"]
+          then: [t: "N⠄"]
           else: [t: "W"]
  - ",":                        # 0x2c (Comma)
      - test:
         if: "self::m:mn"
         then: [t: "N⠂"]
         else: [t: "W⠂"]
- - ".":                        # 0x2e (Period)
+ - ".":                        # 0x2e (Period) -- 2.3 says that if this is acting like a decimal separator, it should be brailled like "," 
      - test:
         if: "self::m:mn"
-        then: [t: "N⠄"]
+        then:
+        # presunme this is likely uses "," for a decimal separator, so just do a few checks
+        # 1. if there are < 3 chars after the first ".", then not a block separator
+        # 2. if there is a '.' or other likely block separator after the first '.', then not decimal separator
+        # likely other (complicated?) other tests that could be used
+        - with:
+            variables: [StringAfter: "substring-after(., '.')"]
+            replace:
+            - test:
+                if: "string-length($StringAfter) >= 3 and string-length($StringAfter)=string-length( translate($StringAfter, $BlockSeparators, '') )"
+                then: [t: "N⠄"]   # really is a block separator
+                else: [t: "N⠂"]   # treat as decimal separator
         else: [t: "W⠄"]
  - ":": [t: "⠐⠂"]              # 0x003A (Colon)
  - "-": [t: "⠤"]              # 0x2d (Minus sign or hyphen)
  - "⁡": [t: ""]                # 0x2061⁡ (invisible function apply)
-
- - "⁢":                         # 0x2062 (invisible times)
-    - test:
-        if: # GTM 9.3.3 (not very clear in rule, but the function name has to start with a lower case latin char ['no indicators'])
-        - "parent::m:mrow and "
-        - "preceding-sibling::*[1]["
-        - "           (self::m:mi and translate(., 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '') or "
-        - "           (self::m:mrow and translate(*[last()], 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '')] and"
-        - "  following::*[1][self::m:mrow and count(*)=3 and "   # look for function apply
-        - "     *[2][text()='⁡'] and *[1][self::m:mi and translate(., 'abcdefghijklmnopqrstuvwxyz', '') = '']]" 
-        then: [t: "W"]
-        else: [t: ""]
+ - "⁢": [t: ""]                # 0x2062 (invisible times)
  - "⁣": [t: ""]                 # 0x2063⁡ (invisible separator)
  - "⁤": [t: ""]                 # 0x2064 (invisible plus)
 
@@ -591,6 +595,7 @@
  - "↘": [t: "⠡⠂"]                # 0x2198 (flecha oblicua abajo-derecha)
  - "↗": [t: "⠌⠂"]                # 0x2197 (flecha arriba-derecha)
  - "↑": [t: "⠸⠁"]                # 0x2191 (flecha hacia arriba)
+ - "△": [t: "⠠⠾"]               # 0x25B3 (Triangle)
  - "▭": [t: "⠯⠽"]                # 0x25AD (rectángulo)
  - "□": [t: "⠸⠽"]                # 0x25A1 (cuadrado)
  - "⟺": [t: "⠪⠒⠕"]                # 0x27FA (doble implicación «si y solo si»)

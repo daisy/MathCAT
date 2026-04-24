@@ -3,7 +3,7 @@
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
-  match: "*[2][text()='+' or text()='-']"
+  match: "*[2][.='+' or .='-']"
   replace:
   #      if: "$Verbosity!='Terse'"
   #      then:
@@ -11,22 +11,22 @@
   - bookmark: "*[2]/@id"
     #   - test:
   - test:
-    - if: "*[2][text()='+']"
-      then: [{T: "dương"}]
-      else: [{T: "âm"}]
+    - if: "*[2][.='+']"
+      then: [T: "dương"]
+      else: [T: "âm"]
   - bookmark: "*[1]/@id"
   - test:
-    - if: "*[1][text()='ℂ']"
-      then: [{T: số phức}]
-    - else_if: "*[1][text()='ℕ']"
-      then: [{T: số tự nhiên}]
-    - else_if: "*[1][text()='ℚ']"
-      then: [{T: số hữu tỷ}]
-    - else_if: "*[1][text()='ℝ']"
-      then: [{T: số thực}]
-    - else_if: "*[1][text()='ℤ']"
-      then: [{T: số nguyên}]
-      else: [{x: "*[1][text()]"}] # shouldn't happen
+    - if: "*[1][.='ℂ']"
+      then: [T: số phức]
+    - else_if: "*[1][.='ℕ']"
+      then: [T: số tự nhiên]
+    - else_if: "*[1][.='ℚ']"
+      then: [T: số hữu tỷ]
+    - else_if: "*[1][.='ℝ']"
+      then: [T: số thực]
+    - else_if: "*[1][.='ℤ']"
+      then: [T: số nguyên]
+      else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
 
@@ -36,17 +36,17 @@
   replace:
   - bookmark: "*[1]/@id"
   - test:
-    - if: "*[1][text()='ℂ']"
-      then: [{T: "C"}]
-    - else_if: "*[1][text()='ℕ']"
-      then: [{T: "N"}]
-    - else_if: "*[1][text()='ℚ']"
-      then: [{T: "Q"}]
-    - else_if: "*[1][text()='ℝ']"
-      then: [{T: "R"}]
-    - else_if: "*[1][text()='ℤ']"
-      then: [{T: "Z"}]
-      else: [{x: "*[1][text()]"}] # shouldn't happen
+    - if: "*[1][.='ℂ']"
+      then: [T: "C"]
+    - else_if: "*[1][.='ℕ']"
+      then: [T: "N"]
+    - else_if: "*[1][.='ℚ']"
+      then: [T: "Q"]
+    - else_if: "*[1][.='ℝ']"
+      then: [T: "R"]
+    - else_if: "*[1][.='ℤ']"
+      then: [T: "Z"]
+      else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
 
@@ -56,17 +56,17 @@
   replace:
   - bookmark: "@id"
   - test:
-    - if: "text()='ℂ'"
-      then: [{T: số phức}]
-    - else_if: "text()='ℕ'"
-      then: [{T: số tự nhiên}]
-    - else_if: "text()='ℚ'"
-      then: [{T: số hữu tỷ}]
-    - else_if: "text()='ℝ'"
-      then: [{T: số thực}]
-    - else_if: "text()='ℤ'"
-      then: [{T: số nguyên}]
-      else: [{x: text()}] # shouldn't happen
+    - if: ".='ℂ'"
+      then: [T: số phức]
+    - else_if: ".='ℕ'"
+      then: [T: số tự nhiên]
+    - else_if: ".='ℚ'"
+      then: [T: số hữu tỷ]
+    - else_if: ".='ℝ'"
+      then: [T: số thực]
+    - else_if: ".='ℤ'"
+      then: [T: số nguyên]
+      else: [x: text()] # shouldn't happen
 
 - name: real-part
   tag: real-part
@@ -105,17 +105,9 @@
   - T: "trừ cùng biểu thức được tính tại"
   - x: "*[2]"
 
-- name: binomial
-  tag: binomial
-  match: "."
-  replace:
-  - x: "*[1]"
-  - T: chọn
-  - x: "*[2]"
-
 - name: permutation
-  tag: permutation-symbol
-  match: "."
+  tag: pochhammer
+  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
   - x: "*[2]"
   - T: hoán vị của
@@ -130,12 +122,12 @@
   #      - T: "the" 
   - test:
     - if: "name(.)='open-interval'"
-      then: [{T: "mở"}]
+      then: [T: "mở"]
     - else_if: "name(.)='open-closed-interval'"
-      then: [{T: "đóng mở"}]
+      then: [T: "đóng mở"]
     - else_if: "name(.)='closed-interval'"
-      then: [{T: "được đóng"}]
-      else: [{T: "mở đóng"}]  # closed-open-interval
+      then: [T: "được đóng"]
+      else: [T: "mở đóng"]  # closed-open-interval
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -161,51 +153,13 @@
   - T: "phẩy"
   - x: "*[2]"
 
-- name: absolute-value
-  tag: absolute-value
-  match: "."
-  replace:
-  - test:
-      if: "$Verbosity='Terse'"
-      then: [{T: "trị tuyệt đối"}]
-      else: [{T: "trị tuyệt đối của"}]
-  - x: "*[1]"
-  - test:
-      if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
-      then: [{pause: short}]
-      else: [{pause: short}, {T: hết trị tuyệt đối}, {pause: short}]
-
-- name: negative
-  tag: negative
-  match: "."
-  replace:
-  - bookmark: "./@id"
-  - T: "âm"
-  - x: "*[1]"
-
-- name: positive
-  tag: positive
-  match: "."
-  replace:
-  - bookmark: "./@id"
-  - T: "dương"
-  - x: "*[1]"
-
-- name: subscript
-  tag: sub
-  match: "."
-  replace:
-  - x: "*[1]"
-  - x: "*[2]"
-  - T: " "
-
 - name: bigop-both
   tag: large-op
   match: "count(*) = 3"
   replace:
   # - test:
   #     if: "$Verbosity!='Terse'"
-  #     then: [{T: the}]
+  #     then: [T: the]
   - x: "*[1]"
     #   - test: 
   - T: từ
@@ -214,7 +168,7 @@
   - x: "*[3]"
   - test:
       if: "following-sibling::*"
-      then: [{T: của}]
+      then: [T: của]
 
 - name: bigop-under
   tag: large-op
@@ -222,13 +176,13 @@
   replace:
   # - test:
   #     if: "$Verbosity!='Terse'"
-  #     then: [{T: the}]
+  #     then: [T: the]
   - x: "*[1]"
   - T: trên
   - x: "*[2]"
   - test:
       if: "following-sibling::*"
-      then: [{T: của}]
+      then: [T: của]
 
 - name: largeop
   tag: mrow
@@ -236,52 +190,10 @@
   replace:
   # - test:
   #     if: "$Verbosity!='Terse'"
-  #     then: [{T: the}]
+  #     then: [T: the]
   - x: "*[1]"
   - T: của
   - x: "*[2]"
-
-- name: limit
-  tag: limit
-  match: "."
-  replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [{T: lim}]
-      else: [{T: "lim"}]
-  - x: "*[2]"
-  - pause: short
-
-- name: vector
-  tag: modified-variable
-  match: "*[2][text()='→']"
-  replace:
-  - T: "véc tơ"
-  - x: "*[1]"
-
-- name: default
-
-  tag: modified-variable
-  match: "."
-  replace:
-  - x: "*[1]"
-  - x: "*[2]"
-  - pause: short
-
-- name: default
-  # handles single, double, etc., prime
-  tag: [skip-super, say-super]
-  match: "count(*)=2"
-  replace:
-  - x: "*[1]"
-  - test:
-      if: "name(.)='say-super'"
-      then_test:
-        if: "$Verbosity='Terse'"
-        then: {T: chỉ số trên}
-        else: {T: chỉ số trên}
-  - x: "*[2]"
-  - pause: short
 
 - name: msubsup-skip-super
   # handles single, double, etc., prime
@@ -291,16 +203,16 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: "chỉ số dưới"}
-      else: {T: "chỉ số dưới"}
+      then: [T: "chỉ số dưới"]
+      else: [T: "chỉ số dưới"]
   - x: "*[2]"
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then:
       - test:
           if: "$Verbosity='Terse'"
-          then: {T: "hết chỉ số dưới"}        # (en: "end sub")
-          else: {T: "hết chỉ số dưới"}              # (en: "end subscript")
+          then: [T: "hết chỉ số dưới"]        # (en: "end sub")
+          else: [T: "hết chỉ số dưới"]              # (en: "end subscript")
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -309,218 +221,259 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: {T: "chỉ số trên"}
-        else: {T: "chỉ số trên"}
+        then: [T: "chỉ số trên"]
+        else: [T: "chỉ số trên"]
   - x: "*[3]"
   - pause: short
 
+
+# the order of matching is
+# 1. does it match the base of an SI unit
+# 2. does it match an English unit (if in an English language)
+# 3. does it match an SI prefix followed by an SI that accepts SI prefixes
+# Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
+- name: unit
+  tag: unit
+  match: "."
+  variables:
+    # If the coefficient is singular, we don't add the plural ending. Finding the coefficient is tricky
+    # Normal case (A) "3m" (parents is mrow), but could also be (B) "3 m^2" (etc.) (parent is power/mrow)
+    # But it might be in a fraction as (C) "3 m/s" (parent is fraction/mrow) or (D) "3 m^2/s^2" (parent is power/fraction/mrow)
+    #   or even (E) {3 m^2}/s (parent is power/mrow)
+    # If in a fraction, only look in the numerator to find the coefficient
+    # Note: we have a special case for pseudo-scripts like "°" (degrees) which are not powers -- they are essentially "1^°"
+    # The following "IfThenElse" logic returns the mrow that potentially contains the coefficient, if it exists
+    # The tests are in the order A, B & E, C, D
+  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
+                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
+                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
+                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
+  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
+                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
+
+  - Prefix: "''"
+  - Word: "''"  
+  replace:
+  - bookmark: "@id"
+  - test:
+    # is the whole string match a SI Unit without a prefix?
+    - if: "DefinitionValue(., 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'SIUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'UnitsWithoutPrefixes') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'UnitsWithoutPrefixes')"]
+    - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+
+    # do the first two chars match "da" and the remainder match an SIUnit
+    - else_if: "string-length(.) >= 3 and 
+                substring(., 1, 2) = 'da' and
+                DefinitionValue(substring(., 3), 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables:
+        - Prefix: "DefinitionValue('da', 'Speech', 'SIPrefixes')"
+        - Word: "DefinitionValue(substring(., 3), 'Speech', 'SIUnits')"
+
+    # does the first char match a prefix and the remainder match an SIUnit
+    - else_if: "string-length(.) >= 2 and 
+                DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes') != ''  and
+                DefinitionValue(substring(., 2), 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables:
+        - Prefix: "DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes')"
+        - Word: "DefinitionValue(substring(., 2), 'Speech', 'SIUnits')"
+
+    # not a known unit -- just speak the text, possibly as a plural
+    - else:
+      - set_variables:
+        - Word: "text()"
+
+  # somewhat complicated logic to avoid spaces around "-" as in "centi-grams" vs "centi - grams" -- probably doesn't matter
+  - test:
+      if: "$Prefix = ''"
+      then:
+      - test:
+        - if: "$IsSingular"
+          # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
+          then: [x: "$Word"]
+        - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
+          then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
+          else: [x: "$Word"]
+      else:
+      - x: "$Prefix"
+      - ct: "-"
+      - test:
+        - if: "$IsSingular"
+          # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
+          then: [x: "concat('\uF8FE', $Word)"]
+        - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
+          then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
+          else: [x: "concat('\uF8FE', $Word)"]
+
+
 - name: sin
   tag: mi
-  match: "text()='sin'"
+  match: ".='sin'"
   replace:
   - bookmark: "@id"
   - T: "sin"
 - name: cos
   tag: mi
-  match: "text()='cos'"
+  match: ".='cos'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô sin}
-      else: {T: cô sin}
+      then: [T: cô sin]
+      else: [T: cô sin]
 - name: tan
   tag: mi
-  match: "text()='tan' or text()='tg'"
+  match: ".='tan' or .='tg'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: tang}
-      else: {T: tang}
+      then: [T: tang]
+      else: [T: tang]
 - name: sec
   tag: mi
-  match: "text()='sec'"
+  match: ".='sec'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: sin đảo}
-      else: {T: sin đảo}
+      then: [T: sin đảo]
+      else: [T: sin đảo]
 - name: csc
   tag: mi
-  match: "text()='csc'"
+  match: ".='csc'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô sin đảo}
-      else: {T: cô sin đảo}
+      then: [T: cô sin đảo]
+      else: [T: cô sin đảo]
 - name: cot
   tag: mi
-  match: "text()='cot'"
+  match: ".='cot'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô tang}
-      else: {T: cô tang}
+      then: [T: cô tang]
+      else: [T: cô tang]
 
 - name: sinh
   tag: mi
-  match: "text()='sinh'"
+  match: ".='sinh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: sin híp bơ bôn}
-      else: {T: sin híp bơ bôn}
+      then: [T: sin híp bơ bôn]
+      else: [T: sin híp bơ bôn]
 - name: cosh
   tag: mi
-  match: "text()='cosh'"
+  match: ".='cosh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô sin híp bơ bôn}
-      else: {T: cô sin híp bơ bôn}
+      then: [T: cô sin híp bơ bôn]
+      else: [T: cô sin híp bơ bôn]
 - name: tanh
   tag: mi
-  match: "text()='tanh'"
+  match: ".='tanh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: tang híp bơ bôn}
-      else: {T: tang híp bơ bôn}
+      then: [T: tang híp bơ bôn]
+      else: [T: tang híp bơ bôn]
 - name: sech
   tag: mi
-  match: "text()='sech'"
+  match: ".='sech'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: xê can híp bơ bôn}
-      else: {T: xê can híp bơ bôn}
+      then: [T: xê can híp bơ bôn]
+      else: [T: xê can híp bơ bôn]
 - name: csch
   tag: mi
-  match: "text()='csch'"
+  match: ".='csch'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô xê can híp bơ bôn}
-      else: {T: cô xê can híp bơ bôn}
+      then: [T: cô xê can híp bơ bôn]
+      else: [T: cô xê can híp bơ bôn]
 - name: coth
   tag: mi
-  match: "text()='coth'"
+  match: ".='coth'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {T: cô tang híp bơ bôn}
-      else: {T: cô tang híp bơ bôn}
+      then: [T: cô tang híp bơ bôn]
+      else: [T: cô tang híp bơ bôn]
 - name: arcsin
   tag: mi
-  match: "text()='arcsin'"
+  match: ".='arcsin'"
   replace:
   - bookmark: "@id"
   - T: "ạt sin"
 - name: arccos
   tag: mi
-  match: "text()='arccos'"
+  match: ".='arccos'"
   replace:
   - bookmark: "@id"
   - T: "ạt cô sin"
 - name: arctan
   tag: mi
-  match: "text()='arctan'"
+  match: ".='arctan'"
   replace:
   - bookmark: "@id"
   - T: "ạt tang"
 - name: arccot
   tag: mi
-  match: "text()='arccot'"
+  match: ".='arccot'"
   replace:
   - bookmark: "@id"
   - T: "ạt cô tang"
 
-- # handle both log and ln
-  name: log
-  tag: mrow
-  variables: [{log_is_simple: "IsNode(*[3],'simple')"}]
-  match:
-  - "count(*)=3 and"
-  - "*[1][self::m:mi][text()='log' or text()='ln'] and"
-  - "*[2][self::m:mo][text()='⁡']"
-  replace:
-  - bookmark: "*[1]/@id"
-  - test:
-      if: "$log_is_simple"
-      then_test:
-      - if: "*[1][text()='log']"
-        then: [{T: lóc}]
-      - else_if: "$Verbosity='Terse'"
-        then: [{T: lóc nơ be}]
-        else: [{T: lóc nơ be}]
-      else:
-      - test:
-          if: "$Verbosity!='Terse' and not(log_is_simple)"
-          then: {T: " "}
-      - test:
-        - if: "*[1][text()='log']"
-          then: [{T: lóc}]
-        - else_if: "$Verbosity='Terse'"
-          then: [{T: lóc nơ be}]
-          else: [{T: lóc nơ be}]
-      - T: của
-      - pause: short
-  - x: "*[3]"
-
-- name: log-base
-  tag: log-base
-  match: "."
+-
+  name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  tag: mi
+  match: ".= 'log' or .= 'ln'"
   replace:
   - bookmark: "@id"
-  - T: lóc cơ số
-    #   - test: 
-    #      if: "$Verbosity!='Terse'"
-    #      then: {T: the}
-  - x: "*[1]"
-
-- name: log-base-power
-  tag: log-base-power
-  match: "not(@data-intent-property)"
-  replace:
-  - bookmark: "@id"
-  - T: "lóc"   # log
-  - bookmark: "*[1]/@id"
   - test:
-      - if: "*[2][text()=2]"
-        then: [T: "bình phương"]     
-      - else_if: "*[2][text()=3]"
-        then: [T: "lập phương"]
-        else:
-        - T: mũ
-        - x: "*[2]"
-  - T: "cơ số"   # base
-  - x: "*[1]"   # supscript
-  - pause: short
-
+    - if: "$Verbosity!='Terse'"
+      then: [T: ""]      # phrase('the' logarithm function is used in mathematics)
+  - test:
+    - if: ".= 'log'"
+      then: [T: "lóc"]      # phrase(the 'log' function is used in mathematics)
+    - else_if: "$Verbosity='Terse'"
+      then: [T: "lóc nơ be"]
+      else: [T: "lóc nơ be"]      # phrase(the 'natural log' function is used in mathematics)
 
 - #   that eliminates the need for the if: else_if: ...
   name: multi-line
   # IDEA:  set a variable with the word to say for the row (e.g., RowLabel = Row/Case/Line/...)
-  tag: [cases, equations, lines]
+  tag: [piecewise, system-of-equations, lines]
   match: "."
+  variables: [IsColumnSilent: true()]
   replace:
   - x: "count(*)"
   - test:
-    - if: "self::m:cases"
-      then: [{T: "trường hợp"}]
-    - else_if: "self::m:equations"
-      then: [{T: "biểu thức"}]
-      else: [{T: "dòng"}]
+    - if: "self::m:piecewise"
+      then: [T: "trường hợp"]
+    - else_if: "self::m:system-of-equations"
+      then: [T: "biểu thức"]
+      else: [T: "dòng"]
     #- test:
     #- if: "count(*) > 1"
     #then: [ct: "s"]    # plural
@@ -529,14 +482,15 @@
 
 - name: default-multiline
   tag: [mtr, mlabeledtr]
-  match: "parent::m:cases or parent::m:equations or parent::m:lines"
+  match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
   replace:
+  - pause: medium
   - test:
-    - if: "parent::m:cases"
-      then: [{T: "trường hợp"}]
-    - else_if: "parent::m:equations"
-      then: [{T: "biểu thức"}]
-      else: [{T: "dòng"}]
+    - if: "parent::m:piecewise"
+      then: [T: "trường hợp"]
+    - else_if: "parent::m:system-of-equations"
+      then: [T: "biểu thức"]
+      else: [T: "dòng"]
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: .[self::m:mlabeledtr]
@@ -546,21 +500,21 @@
   - pause: medium
   - test:
       if: .[self::m:mlabeledtr]
-      then: [{x: "*[position()>1]"}]
-      else: {x: "*"}
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
 
 - name: default-multiline
   tag: mtd
-  match: "parent::*[parent::m:cases or parent::m:equations or parent::m:lines]"
+  match: "parent::*[parent::m:piecewise or parent::m:system-of-equations or parent::m:lines]"
   replace:
   - x: "*"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
-      then: {pause: short}
+      then: [pause: short]
     - else_if: count(../following-sibling::*) > 0
-      then: {pause: medium}
-      else: {pause: long}
+      then: [pause: medium]
+      else: [pause: long]
 
 # Matrix/Determinant rules
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
@@ -569,13 +523,13 @@
 - name: 1x1-matrix
 
   tag: [matrix, determinant]
-  variables: [{IsColumnSilent: true()}]
+  variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: {T: định thức}
-      else: {T: ma trận}
+      then: [T: định thức]
+      else: [T: ma trận]
     #   - OT: the
   - T: "1 1"
   - T: có đầu vào là
@@ -584,7 +538,7 @@
 # simpler reading methods for smaller matrices if the entries are simple
 - name: 2-or-3x1-matrix
   tag: matrix
-  variables: [{IsColumnSilent: true()}]
+  variables: [IsColumnSilent: true()]
   match:
   - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
   - "*[self::m:mtr][count(*) = 1] and " # one column
@@ -593,8 +547,8 @@
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {T: véc tơ}
-      else: {T: ma trận}
+      then: [T: véc tơ]
+      else: [T: ma trận]
     #   - T: the
   - x: count(*)
   - T: 1 cột
@@ -606,12 +560,12 @@
       - T: "kết thúc"
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: {T: véc tơ}
-          else: {T: ma trận}
+          then: [T: véc tơ]
+          else: [T: ma trận]
 
 - name: default-column-matrix
   tag: matrix
-  variables: [{IsColumnSilent: true()}]
+  variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
   #- T: the
@@ -619,17 +573,17 @@
   - T: nhân 1 cột
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {T: véc tơ}
-      else: {T: ma trận}
+      then: [T: véc tơ]
+      else: [T: ma trận]
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [{T: "hết ma trận"}]
+      then: [T: "hết ma trận"]
 
 - name: 1x2-or-3-matrix
   tag: matrix
-  variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"}]
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"]
   match:
   - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
   - count(*)=1  and # one row
@@ -641,8 +595,8 @@
   - T: "dòng"
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {T: véc tơ}
-      else: {T: ma trận}
+      then: [T: véc tơ]
+      else: [T: ma trận]
   - pause: long
   - x: "*/*"
   - test:
@@ -651,18 +605,18 @@
       - T: "hết"
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: {T: ma trận}
-          else: {T: véc tơ}
+          then: [T: ma trận]
+          else: [T: véc tơ]
 
 - name: default-row-matrix
   tag: matrix
-  variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"}]
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {T: véc tơ}
-      else: {T: ma trận}
+      then: [T: véc tơ]
+      else: [T: ma trận]
   - T: một nhân
   - x: "count(*/*)"
   - T: "dòng"
@@ -675,8 +629,8 @@
       - T: "hết"
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: {T: ma trận}
-          else: {T: véc tơ}
+          then: [T: ma trận]
+          else: [T: véc tơ]
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -684,13 +638,13 @@
   - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
   - (count(*)<=3 and count(*[1]/*)<=3) and # no bigger than a 3x3 matrix
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
-  variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"}]
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"]
   replace:
   #- T: the
   - test:
       if: "self::m:determinant"
-      then: {T: định thức}
-      else: {T: ma trận}
+      then: [T: định thức]
+      else: [T: ma trận]
   - x: count(*)
   - T: nhân
   - x: count(*[self::m:mtr][1]/*)
@@ -702,19 +656,19 @@
       - T: hết
       - test:
           if: "self::m:determinant"
-          then: {T: định thức}
-          else: {T: ma trận}
+          then: [T: định thức]
+          else: [T: ma trận]
 
 - name: default-matrix
   tag: [matrix, determinant]
-  variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"}]
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
   #- T: the
   - test:
       if: "self::m:determinant"
-      then: {T: định thức}
-      else: {T: ma trận}
+      then: [T: định thức]
+      else: [T: ma trận]
   - x: "count(*)"
   - T: nhân
   - x: "count(*[self::m:mtr][1]/*)"
@@ -726,40 +680,40 @@
       - T: hết
       - test:
           if: "self::m:determinant"
-          then: {T: định thức}
-          else: {T: ma trận}
+          then: [T: định thức]
+          else: [T: ma trận]
 
 - name: chemistry-msub
 
   tag: [chemical-formula]
-  match: "*[1][text()='msub']"
+  match: "*[1][.='msub']"
   replace:
   - x: "*[2]"
   - x: "*[3]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{T: "dưới"}]
+      then: [T: "dưới"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [{T: ""}]
+        then: [T: ""]
   #- x: "*[3]"
 
 - name: chemistry-msup
   tag: [chemical-formula]
-  match: "*[1][text()='msup']"
+  match: "*[1][.='msup']"
   replace:
   - x: "*[2]"
   - x: "*[3]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{T: "trên"}]
+      then: [T: "trên"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [{T: ""}]
+        then: [T: ""]
   #- x: "*[3]"
   - test:
-      if: "following-sibling::*[1][text()='+' or text()='-']" # a little lazy -- assumes chemistry superscripts end with + or -
-      then: [{pause: medium}]
+      if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
+      then: [pause: medium]
 
 - # Instead, we just deal with up to two prescripts and up to four postscripts (repeating blocks of similar code [UGLY!])
   # This hopefully covers all reasonable cases...
@@ -783,10 +737,10 @@
           - x: "$Prescripts[2]"
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{T: "trên"}]
+              then: [T: "trên"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [{T: ""}]
+                then: [T: ""]
           #- x: "$Prescripts[2]"
           - pause: "short"
       - test:
@@ -795,10 +749,10 @@
           - x: "$Prescripts[1]"
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{T: "dưới"}]
+              then: [T: "dưới"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [{T: ""}]
+                then: [T: ""]
           #- x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -810,10 +764,10 @@
               - x: "$Prescripts[4]"
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{T: "trên"}]
+                  then: [T: "trên"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [{T: ""}]
+                    then: [T: ""]
               #- x: "$Prescripts[4]"
               - pause: "short"
           - test:
@@ -822,10 +776,10 @@
               - x: "$Prescripts[3]"
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{T: "dưới"}]
+                  then: [T: "dưới"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [{T: ""}]
+                    then: [T: ""]
               #- x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -837,11 +791,11 @@
           then:
           - x: "$Postscripts[1]"
           - test:
-              if: "$Verbosity='Verbose'"
-              then: [{T: "dưới"}]
+              if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+              then: [T: "dưới"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [{T: ""}]
+                then: [T: ""]
           #- x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -849,11 +803,11 @@
           then:
           - x: "$Postscripts[2]"
           - test:
-              if: "$Verbosity='Verbose'"
-              then: [{T: "trên"}]
+              if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+              then: [T: "trên"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [{T: ""}]
+                then: [T: ""]
           #- x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -864,11 +818,11 @@
               then:
               - x: "$Postscripts[3]"
               - test:
-                  if: "$Verbosity='Verbose'"
-                  then: [{T: "dưới"}]
+                  if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                  then: [T: "dưới"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [{T: ""}]
+                    then: [T: ""]
               #- x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -876,11 +830,11 @@
               then:
               - x: "$Postscripts[4]"
               - test:
-                  if: "$Verbosity='Verbose'"
-                  then: [{T: "trên"}]
+                  if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                  then: [T: "trên"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [{T: ""}]
+                    then: [T: ""]
               #- x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -891,11 +845,11 @@
                   then:
                   - x: "$Postscripts[5]"
                   - test:
-                      if: "$Verbosity='Verbose'"
-                      then: [{T: "dưới"}]
+                      if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                      then: [T: "dưới"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [{T: ""}]
+                        then: [T: ""]
                   #- x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -903,11 +857,11 @@
                   then:
                   - x: "$Postscripts[6]"
                   - test:
-                      if: "$Verbosity='Verbose'"
-                      then: [{T: "trên"}]
+                      if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                      then: [T: "trên"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [{T: ""}]
+                        then: [T: ""]
                   #- x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -918,11 +872,11 @@
                       then:
                       - x: "$Postscripts[7]"
                       - test:
-                          if: "$Verbosity='Verbose'"
-                          then: [{T: "dưới"}]
+                          if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                          then: [T: "dưới"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [{T: ""}]
+                            then: [T: ""]
                       #- x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -930,16 +884,16 @@
                       then:
                       - x: "$Postscripts[8]"
                       - test:
-                          if: "$Verbosity='Verbose'"
-                          then: [{T: "trên"}]
+                          if: "$Verbosity='Verbose' and not(self::m:chemical-formula)"
+                          then: [T: "trên"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [{T: ""}]
+                            then: [T: ""]
                       #- x: "$Postscripts[8]"
                       - pause: "short"
       - test:
-          if: "$Postscripts[last()][not(self::m:none)] and following-sibling::*[1][text()='+' or text()='-']"
-          then: [{pause: medium}]
+          if: "$Postscripts[last()][not(self::m:none)] and following-sibling::*[1][.='+' or .='-']"
+          then: [pause: medium]
 
 - name: chemistry
 
@@ -964,12 +918,12 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: ".='s'"
-      then: [{T: "thể rắn"}]
+      then: [T: "thể rắn"]
     - else_if: ".='l'"
-      then: [{T: "thể lỏng"}]
+      then: [T: "thể lỏng"]
     - else_if: ".='g'"
-      then: [{T: "thể khí"}]
-      else: [{T: "thể lỏng"}] # (aq)
+      then: [T: "thể khí"]
+      else: [T: "thể lỏng"] # (aq)
   - pause: short
 
 - name: chemical-formula-operator-bond
@@ -979,15 +933,15 @@
   # FIX: this might be better/more efficient if in unicode.yaml
   - bookmark: "@id"
   - test:
-    - if: "text()='-' or text() = ':'"
-      then: [{T: "nối đơn"}]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
-    - else_if: "text()='=' or text() = '∷'"
-      then: [{T: "nối đôi"}]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
-    - else_if: "text()='≡'"
-      then: [{T: "nối ba"}]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
-    - else_if: "text()='≣'"
-      then: [{T: "nối bốn"}]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
-      else: [{x: "text()"}]
+    - if: ".='-' or .=':'"
+      then: [T: "nối đơn"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+    - else_if: ".='=' or .='∷'"
+      then: [T: "nối đôi"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
+    - else_if: ".='≡'"
+      then: [T: "nối ba"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+    - else_if: ".='≣'"
+      then: [T: "nối bốn"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
+      else: [x: "text()"]
 
 - name: chemical-formula-operator
   tag: chemical-formula-operator
@@ -1005,15 +959,15 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [{T: "cho ra"}]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [{T: "phản ứng cho ra"}]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='⮖'"
-      then: [{T: "mũi tên hai chiều"}]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='⭴'"
-      then: [{T: "mũi tên chiều bên trái"}]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='⭵'"
-      then: [{T: "mũi tên chiều bên phải"}]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
-      else: [x: "."]
+        then: [T: "cho ra"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [T: "phản ứng cho ra"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+      then: [T: "mũi tên hai chiều"]      # phrase(a reactant 'is in equilibrium with' a product)
+    - else_if: ".='🣓'" # U+1F8D3
+      then: [T: "mũi tên chiều bên trái"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+    - else_if: ".='🣒'" # U+1F8D2
+      then: [T: "mũi tên chiều bên phải"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      else: [x: "*"]
 
 - name: chemical-equation-operator
   tag: chemical-equation-operator
