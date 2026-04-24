@@ -1,5 +1,6 @@
 ---
- # Note to translators:
+
+# Note to translators:
  #   most languages don't have two ways to pronounce 'a' -- if not need, remove the rules and change "B-Z" to "A-Z"
  #   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
  - "a": 
@@ -71,7 +72,7 @@
             else: [t: "θαυμαστικό"]               	#  0x21	(en: 'exclamation point', google: 'θαυμαστικό')
         else: [t: "παραγοντικό"]                	#  0x21	(en: 'factorial')
           
- - \"": [t: "εισαγωγικά"]                	        #  0x22	(en: 'quotation mark', google: 'εισαγωγικά') 
+ - "\"": [t: "εισαγωγικά"]                	        #  0x22	(en: 'quotation mark', google: 'εισαγωγικά') 
  - "#": [t: "σύμβολο αριθμού"]                      #  0x23	(en: 'number', google: 'αριθμός')
  - "$": [t: "δολάριο"]                          	#  0x24	(en: 'dollars', google: 'δολάρια')
  - "%": [t: "τοις εκατό"]                       	#  0x25	(en: 'percent')
