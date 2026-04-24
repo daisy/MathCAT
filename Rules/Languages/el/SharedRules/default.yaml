@@ -62,7 +62,7 @@
   tag: ms
   match: "."
   replace:
-  - t: "the string"      # phrase('the string' is long)
+  - t: "η συμβολοσειρά"      # phrase('the string' is long) 
   - pause: short
   - x: "text()"
 
@@ -82,7 +82,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "το κλάσμα x "               # phrase("the fraction x 'over' y")
+  - t: "προς "               # phrase("the fraction x 'over' y")
   - x: "*[2]"
   - pause: short
 
@@ -90,19 +90,19 @@
   tag: mfrac
   match: "."
   replace:
-  - t: " έναρξη "              # phrase("'start'  fraction x over y end of fraction")
+  - t: " αρχή "              # phrase("'start'  fraction x over y end of fraction")
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [{pause: short}]
-  - t: "το κλάσμα x "               # phrase("the fraction x 'over' y")
+  - t: "προς "               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [{pause: short}]
   - x: "*[2]"
   - pause: short
-  - t: "έναρξη του κλάσματος x πάνω από το y "          # phrase("start of fraction x over y 'end over'")
+  - t: "τέλος κλάσματος"          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 
@@ -113,16 +113,16 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "η"]    # phrase("'the' root of x")
-  - t: "σύμβολο ρίζας"
+      then: [t: "η"]    # phrase("'the' root of x") 
+  - t: "ρίζα"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "η ρίζα του"]    # phrase("the root 'of' x")
+      then: [t: "του"]    # phrase("the root 'of' x") 
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1],'leaf'))"
-      then: [t: "ρίζα του x "] # phrase("root of x 'end root symbol'")
+      then: [t: "τέλος ρίζας"] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
 - name: structure-default
@@ -131,19 +131,19 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "η"]   # phrase("'the' root of x")
-  - t: "σύμβολο ρίζας"
-  - t: "η ρίζα του χ"      # phrase("the root of x 'with index' 5")
+      then: [t: "η"]   # phrase("'the' root of x") 
+  - t: "ρίζα του"
+  - t: "τάξης"      # phrase("the root of x 'with index' 5") 
   - x: "*[1]"
   - pause: short
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "η ρίζα του"]   # phrase("the root 'of' x")
+      then: [t: "του"]   # phrase("the root 'of' x")
   - x: "*[2]"
   - pause: short
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [t: "ρίζα του x "] # phrase("root of x 'end root symbol'")
+      then: [t: "τέλος ρίζας"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub
@@ -164,7 +164,7 @@
   - x: "*[1]"
   - t: "δείκτης"               # phrase(x 'sub' 2)
   - x: "*[2]"
-  - t: "τέλος του sub"           # phrase(x sub 2 'end of sub')
+  - t: "τέλος δείκτη"           # phrase(x sub 2 'end of sub')
   - pause: short
 
 
@@ -192,15 +192,15 @@
       else_test:
           if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"  # FIX: is this test necessary?
           then:
-          - t: "εκθέτης"      # phrase(x 'super' 2)
+          - t: "εκθέτης"      # phrase(x 'super' 2) # 
           - x: "*[last()]"
           - test:
               if: "not(IsNode(*[last()], 'simple'))"
-              then: [t: "end of super"]      # phrase(x super 2 'end of super')
+              then: [t: "τέλος εκθέτη"]      # phrase(x super 2 'end of super')
           else:
-          - t: "που ανυψώνεται στη "            # phrase(5 'raised to the' second power equals 25)
+          - t: "που υψώνεται στη "            # phrase(5 'raised to the' second power equals 25)
           - x: "*[last()]"
-          - t: "δύναμη"                    # phrase(5 raised to the second 'power' equals 25)
+          - t: "τέλος δύναμης"                    # phrase(5 raised to the second 'power' equals 25)
 
 - name: default
   tag: munder
@@ -208,11 +208,11 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [t: "τροποποιημένο"]      # phrase(phrase(x 'modified' with y above it)
+      then: [t: "τροποποιημένο"]      # phrase(phrase(x 'modified' with y above it) 
   - x: "*[1]"
   - t: "με"      # phrase(x 'with' z below it)
   - x: "*[2]"
-  - t: "κάτω"      # phrase(x with z 'below' it)
+  - t: "από κάτω"      # phrase(x with z 'below' it) 
 
 - name: diacriticals
   tag: mover
@@ -231,7 +231,7 @@
   - x: "*[1]"
   - t: "με"         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "πάνω από"        # phrase(x modified 'with' y above it)
+  - t: "από πάνω"        # phrase(x modified 'with' y above it) 
 
 - name: default
   tag: munderover
@@ -239,13 +239,13 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [t: "τροποποιηθεί"]      # phrase(the equation has been 'modified')
+      then: [t: "τροποποιημένο"]      # phrase(the equation has been 'modified')
   - x: "*[1]"
   - t: "με"         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "κάτω και"    # phrase(x modified with y 'below and' y above it)
+  - t: "από κάτω και"    # phrase(x modified with y 'below and' y above it) 
   - x: "*[3]"
-  - t: "παραπάνω"        # phrase(x modified with y 'above' it)
+  - t: "από πάνω"        # phrase(x modified with y 'above' it) 
 
 - name: default
   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
@@ -274,12 +274,13 @@
               then:
               - t: "με"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
-              - t: "συνταγογραφούμενα"      # phrase(in this equation certain 'prescripts' apply)
+              - t: "προαναγραφόμενες εκφράσεις"      # phrase(in this equation certain 'prescripts' apply) 
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
               then:
-              - x: "$PreSubscript"
+              - t: "προαναγραφόμενος δείκτης" #theodora. the translations were missing. the following line was #deleted so that the english word is not read.
+              #- x: "$PreSubscript"     
               - x: "$Prescripts[1]"
           - test:
               if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
@@ -287,7 +288,8 @@
           - test:
               if: "not($Prescripts[2][self::m:none])"
               then:
-              - x: "$PreSuperscript"
+              - t: "προαναγραφόμενος εκθέτης"
+              #- x: "$PreSuperscript"
               - x: "$Prescripts[2]"
           - pause: short
           - test:
@@ -296,7 +298,8 @@
               - test:
                   if: "not($Prescripts[3][self::m:none])"
                   then:
-                  - x: "$PreSubscript"
+                  - t: "προαναγραφόμενος εκθέτης"
+                  #- x: "$PreSubscript"
                   - x: "$Prescripts[3]"
               - test:
                   if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
@@ -304,14 +307,15 @@
               - test:
                   if: "not($Prescripts[4][self::m:none])"
                   then:
-                  - x: "$PreSuperscript"
+                  - t: "προαναγραφόμενος δείκτης"
+                  #- x: "$PreSuperscript"
                   - x: "$Prescripts[4]"
               - test:
                   if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
                   then:
-                  - t: "και εναλλασσόμενες συνταγές"      # phrase(in this case there are values 'and alternating prescripts')
+                  - t: "και εναλλάξ προαναγραφόμενες εκφράσεις"      # phrase(in this case there are values 'and alternating prescripts')  
                   - x: "$Prescripts[position() > 4]"
-                  - t: "τερματικά"      # phrase(This is where 'end prescripts' occurs)
+                  - t: "τέλος προαναγραφόμενων εκφράσεων"      # phrase(This is where 'end prescripts' occurs) 
   - test:
       if: "$Postscripts"
       then:
@@ -328,12 +332,13 @@
                   then: [t: "και "]      # phrase(10 is greater than 8 'and' less than 15)
               - t: "με"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
-              - t: "postscripts"      # phrase(this material includes several 'postscripts')
+              - t: "μεταναγραφόμενες εκφράσεις"      # phrase(this material includes several 'postscripts') 
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
               then:
-              - x: "$PostSubscript"
+              - t: "μεταναγραφόμενος δείκτης"
+              #- x: "$PostSubscript"
               - x: "$Postscripts[1]"
           - test:
               if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
@@ -341,7 +346,8 @@
           - test:
               if: "not($Postscripts[2][self::m:none])"
               then:
-              - x: "$PostSuperscript"
+              - t: "μεταναγραφόμενος εκθέτης"
+              #- x: "$PostSuperscript"
               - x: "$Postscripts[2]"
           - test:
               if: "count($Postscripts) > 2"
@@ -349,7 +355,8 @@
               - test:
                   if: "not($Postscripts[3][self::m:none])"
                   then:
-                  - x: "$PostSubscript"
+                  - t: "μεταναγραφόμενος δείκτης"
+                  #- x: "$PostSubscript"
                   - x: "$Postscripts[3]"
               - test:
                   if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
@@ -357,7 +364,8 @@
               - test:
                   if: "not($Postscripts[4][self::m:none])"
                   then:
-                  - x: "$PostSuperscript"
+                  - t: "μεταναγραφόμενος εκθέτης"
+                  #- x: "$PostSuperscript"
                   - x: "$Postscripts[4]"
               - test:
                   if: "count($Postscripts) > 4"
@@ -365,7 +373,8 @@
                   - test:
                       if: "not($Postscripts[5][self::m:none])"
                       then:
-                      - x: "$PostSubscript"
+                      - t: "μεταναγραφόμενος δείκτης"
+                      #- x: "$PostSubscript"
                       - x: "$Postscripts[5]"
                   - test:
                       if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
@@ -373,7 +382,8 @@
                   - test:
                       if: "not($Postscripts[6][self::m:none])"
                       then:
-                      - x: "$PostSuperscript"
+                      - t: "μεταναγραφόμενος εκθέτης"
+                      #- x: "$PostSuperscript"
                       - x: "$Postscripts[6]"
                   - test:
                       if: "count($Postscripts) > 6"
@@ -381,7 +391,8 @@
                       - test:
                           if: "not($Postscripts[7][self::m:none])"
                           then:
-                          - x: "$PostSubscript"
+                          - t: "μεταναγραφόμενος δείκτης"
+                          #- x: "$PostSubscript"
                           - x: "$Postscripts[7]"
                       - test:
                           if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
@@ -389,14 +400,15 @@
                       - test:
                           if: "not($Postscripts[8][self::m:none])"
                           then:
-                          - x: "$PostSuperscript"
+                          - t: "μεταναγραφόμενος εκθέτης"
+                          #- x: "$PostSuperscript"
                           - x: "$Postscripts[8]"
                       - test:
                           if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
                           then:
-                          - t: "και εναλλασσόμενα σενάρια"      # phrase(this situation involves complexities 'and alternating scripts')
+                          - t: "και εναλλάξ εκφράσεις"      # phrase(this situation involves complexities 'and alternating scripts') 
                           - x: "$Postscripts[position() > 8]"
-                          - t: "σενάρια άκρων"      # phrase(At this point 'end scripts' occurs)
+                          - t: "τέλος εκφράσεων"      # phrase(At this point 'end scripts' occurs) 
 
 - name: default
   tag: mtable
@@ -429,7 +441,7 @@
   - test:
       if: .[self::m:mlabeledtr]
       then:
-      - t: "με την ετικέτα"      # phrase(the line 'with label' first equation)
+      - t: "με ένδειξη"      # phrase(the line 'with label' first equation) 
       - x: "*[1]/*"
       - pause: short
   - pause: medium
@@ -467,7 +479,7 @@
   tag: menclose
   match: "@notation='box' and *[self::m:mtext and text()=' ']"
   replace:
-  - t: "κενό κουτί"      # phrase(the 'empty box' contains no values)
+  - t: "κενό κουτάκι"      # phrase(the 'empty box' contains no values) 
 
 - name: default
   # The ordering below is the order in which words come out when there is more than one value
@@ -477,10 +489,10 @@
   replace:
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' box ')]"
-      then: [t: "κουτί", pause: short]      # phrase(the 'box' around the expression)
+      then: [t: "κουτάκι", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [t: "στρογγυλό κουτί", pause: short]      # phrase(the 'round box' around the expression)
+      then: [t: "κυκλικό κουτάκι", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
       then: [t: "κύκλος", pause: short]      # phrase(the 'circle' around the expression)
@@ -493,10 +505,10 @@
           then: [t: "αριστερά", pause: short]      # phrase(line on 'left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [t: "right", pause: short]      # phrase(line on 'right' of the expression)
+          then: [t: "δεξιά", pause: short]      # phrase(line on 'right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [t: "μπλουζα", pause: short]      # phrase(line on 'top' of the expression)
+          then: [t: "πάνω", pause: short]      # phrase(line on 'top' of the expression)
       - test:
           if: ".[contains(@notation,'bottom')]"
           then: [t: "κάτω", pause: short]      # phrase(line on the 'bottom' of the expression)
@@ -515,24 +527,24 @@
               then: [t: "κάτω διαγώνια", pause: short]      # phrase(the line runs 'down diagonal')
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
-          then: [t: "κάθετη", pause: short]      # phrase(the line is  'vertical')
+          then: [t: "κάθετη", pause: short]      # phrase(the line is  'vertical') "
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
-          then: [t: "οριζόντια", pause: short]      # phrase(the line is 'horizontal')
-      - t: "να διαγράψετε"      # phrase(please 'cross out' the incorrect answer)
+          then: [t: "οριζόντια", pause: short]      # phrase(the line is 'horizontal') 
+      - t: "διαγραφή"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
-      then: [t: "βέλος", pause: short]      # phrase(direction is shown by the 'up arrow')
+      then: [t: "βέλος προς τα πάνω", pause: short]      # phrase(direction is shown by the 'up arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
-      then: [t: "βέλος κάτω", pause: short]      # phrase(the trend is shown by the 'down arrow')
+      then: [t: "βέλος προς τα κάτω", pause: short]      # phrase(the trend is shown by the 'down arrow')
   - test:
       if: ".[contains(@notation,'leftarrow')]"
       then: [t: "αριστερό βέλος", pause: short]      # phrase(the 'left arrow' indicates going back)
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
-      then: [t: "δεξιό βέλος", pause: short]      # phrase(the 'right arrow' indicates moving forward)
+      then: [t: "δεξί βέλος", pause: short]      # phrase(the 'right arrow' indicates moving forward)
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
       then: [t: "βορειοανατολικό βέλος", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
@@ -541,28 +553,28 @@
       then: [t: "νοτιοανατολικό βέλος", pause: short]      # phrase(direction is shown by the 'southeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
-      then: [t: "southwest arrow", pause: short]      # phrase(direction is shown by the 'southwest arrow')
+      then: [t: "νοτιοδυτικό βέλος", pause: short]      # phrase(direction is shown by the 'southwest arrow')
   - test:
       if: ".[contains(@notation,'northwestarrow')]"
-      then: [t: "βορειοδυτικό arrow", pause: short]      # phrase(direction is shown by the 'northwest arrow')
+      then: [t: "βορειοδυτικό βέλος", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [t: "διπλό τερματικό κατακόρυφο βέλος", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+      then: [t: "αμφίδρομο κάθετο βέλος", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [t: "διπλό τελικό οριζόντιο βέλος", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+      then: [t: "αμφίδρομο οριζόντιο βέλος", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [t: "διπλό κατέληξε στο διαγώνιο βέλος", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [t: "αμφίδρομο διαγώνιο βέλος", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [t: "διπλό τερματισμένο διαγώνιο βέλος", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+      then: [t: "αμφίδρομο διαγώνιο προς τα κάτω βέλος", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
   - test:
       if: ".[contains(@notation,'actuarial')]"
-      then: [t: "αναλογιστικό σύμβολο", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
+      then: [t: "αναλογιστικό σύμβολο", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity) 
   - test:
       if: ".[contains(@notation,'madrub')]"
-      then: [t: "αραβικό συμβόλαιο παράγοντα", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
+      then: [t: "σύμβολο αραβικού παραγοντικού", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
   - test:
       if: ".[contains(@notation,'phasorangle')]"
       then: [t: "γωνία φάσης", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
@@ -572,15 +584,15 @@
   - test:
       if: ".[contains(@notation,'radical')]"
       then: [t: "τετραγωνική ρίζα", pause: short]      # phrase(5 is the 'square root' of 25)
-  - t: "περικλείοντας"      # phrase(parentheses are 'enclosing' part of the equation)
+  - t: "περικλείει"      # phrase(parentheses are 'enclosing' part of the equation) 
   - test:
       if: "*[self::m:mtext and text()=' ']"
-      then: [t: "χώρος"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
+      then: [t: "άδεια περιοχή"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words) 
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
-      then: [t: "τελικού περιβλήματος"]      # phrase(reached the 'end enclosure' point)
-  - pause: short
+      then: [t: "τέλος περίκλεισης"]      # phrase(reached the 'end enclosure' point) 
+  - pause: short 
 
 - name: semantics
   tag: "semantics"
@@ -599,7 +611,7 @@
   match: .
   replace:
   - x: "*[1]"
-  - t: "εφαρμόζεται στο "      # phrase(the function sine 'applied to' x plus y)
+  - t: "εφαρμόζεται σε"      # phrase(the function sine 'applied to' x plus y)
   - x: "*[2]"
 
 
@@ -648,11 +660,11 @@
   match: count(*)>0
   replace:
   - x: "translate(name(.), '-_', '  ')"
-  - t: "of"      # phrase(sine 'of' 5)
+  - t: "του"      # phrase(sine 'of' 5)
   - pause: short
   - insert:
       nodes: "*"
-      replace: [t: "comma", pause: auto]      # phrase(f of x 'comma' y)
+      replace: [t: "κόμμα", pause: auto]      # phrase(f of x 'comma' y)
 
 - name: default-text
   # unknown leaf -- just speak the text -- could be a literal intent

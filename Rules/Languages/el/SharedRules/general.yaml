@@ -8,20 +8,20 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
+      - t: ""      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][text()='+']"
-      then: [{t: "θετικών"}]      # phrase(set of all 'positive' integers less than 10)
-      else: [{t: "αρνητικών"}]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [{t: "θετικοί"}]      # phrase(set of all 'positive' integers less than 10)
+      else: [{t: "αρνητικοί"}]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][text()='ℂ']"
-      then: [{t: "σύνθετοι αριθμοί"}]      # phrase('complex numbers' consist of two parts)
+      then: [{t: "μιγαδικοί αριθμοί"}]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][text()='ℕ']"
       then: [{t: "φυσικοί αριθμοί"}]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][text()='ℚ']"
-      then: [{t: "ορθολογικοί αριθμοί"}]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [{t: "ρητοί αριθμοί"}]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][text()='ℝ']"
       then: [{t: "πραγματικοί αριθμοί"}]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][text()='ℤ']"
@@ -48,6 +48,7 @@
       then: [{t: "z"}]      # phrase(the letter 'Z' may represent integers)
       else: [{x: "*[1][text()]"}] # shouldn't happen
   - bookmark: "*[2]/@id"
+  - t: "εις την"
   - x: "*[2]"
 
 - name: simple-number-sets
@@ -57,15 +58,15 @@
   - bookmark: "@id"
   - test:
     - if: "text()='ℂ'"
-      then: [{t: "σύνθετοι αριθμοί"}]      # phrase('the complex numbers' include 2 parts)
+      then: [{t: "οι μιγαδικοί αριθμοί"}]      # phrase('the complex numbers' include 2 parts)
     - else_if: "text()='ℕ'"
       then: [{t: "οι φυσικοί αριθμοί"}]      # phrase('the natural numbers' begin at 1)
     - else_if: "text()='ℚ'"
-      then: [{t: "ορθολογικοί αριθμοί"}]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [{t: "οι ρητοί αριθμοί"}]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: "text()='ℝ'"
-      then: [{t: "πραγματικοί αριθμοί"}]      # phrase('the real numbers' can be both positive and negative)
+      then: [{t: "οι πραγματικοί αριθμοί"}]      # phrase('the real numbers' can be both positive and negative)
     - else_if: "text()='ℤ'"
-      then: [{t: "ακέραιοι"}]      # phrase('the integers' are natural numbers above 0)
+      then: [{t: "οι ακέραιοι αριθμοί"}]      # phrase('the integers' are natural numbers above 0)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
@@ -89,7 +90,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "αξιολογείται στο"      # phrase(results were 'evaluated at' a given point)
+  - t: "εκτιμάται στο"      # phrase(results were 'evaluated at' a given point) 
   - pause: auto
   - x: "*[2]"
 
@@ -99,10 +100,10 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "αξιολογείται στο"      # phrase(results were 'evaluated at' this point)
+  - t: "εκτιμάται στο"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
-  - t: "μείον την ίδια έκφραση που αξιολογείται σε"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
+  - t: "μείον την ίδια έκφραση που εκτιμάται στο"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
   - x: "*[2]"
 
 - name: binomial
@@ -110,7 +111,7 @@
   match: "count(*)=2 and not(@data-intent-property)"
   replace:
   - x: "*[1]"
-  - t: "επιλέξετε"      # phrase(you can 'choose' a number at random)
+  - t: "ανά"      # phrase(you can 'choose' a number at random)   
   - x: "*[2]"
 
 - name: permutation
@@ -118,7 +119,7 @@
   match: "count(*)=2 and not(@data-intent-property)"
   replace:
   - x: "*[2]"
-  - t: "μεταβολές των τιμών"      # phrase(the solution  involves several 'permutations of' values)
+  - t: "μεταθέσεις των"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
 
 - name: intervals
@@ -128,18 +129,33 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
+      - t: "το"      # phrase('the' square root of 25 equals 5)
+  #- x: "translate(name(.),'-', ' ')"   
+  #theodora. the following lines are translations for intervals.
+  - test:
+       - if: "name(.)='closed-interval'"
+         then:  
+         - t: "κλειστό διάστημα"
+       - else_if: "name(.)='open-interval'"
+         then:
+         - t: "ανοιχτό διάστημα"
+       - else_if: "name(.)='open-closed-interval'"
+         then:
+         - t: "ανοιχτό κλειστό διάστημα"
+       - else_if: "name(.)='closed-open-interval'"
+         then:
+         - t: "κλειστό ανοιχτό διάστημα"
+ 
   - test:
       if: "$Verbosity!='Terse'"
       then:
       - t: "από"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[1]"
-      - t: "to"      # phrase(adding 6 'to' 6 equals  12)
+      - t: "ως"      # phrase(adding 6 'to' 6 equals  12) 
       - x: "*[2]"
       else:
       - x: "*[1]"
-      - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+      - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point) 
       - x: "*[2]"
 
 - name: default-point
@@ -149,10 +165,10 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
-  - t: "σημείο"      # phrase(a decimal 'point' indicates the fraction component of a number)
+      - t: ""      # phrase('the' square root of 25 equals 5)  #theodora. better leave it blank for now because "the" is context depended in greek and i am not sure what is referring to here.
+  - t: "τελεία"      # phrase(a decimal 'point' indicates the fraction component of a number) #theodora. a lot of issues occur in greek with points and commas in numbers.
   - x: "*[1]"
-  - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+  - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point) 
   - x: "*[2]"
 
 - name: absolute-value
@@ -167,14 +183,14 @@
   - test:
       if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
       then: [{pause: short}]
-      else: [{pause: short}, {t: "απόλυτης αξίας"}, {pause: short}]      # phrase(show 'end absolute value' position)
+      else: [{pause: short}, {t: "τέλος απόλυτης τιμής"}, {pause: short}]      # phrase(show 'end absolute value' position)
 
 - name: negative
   tag: negative
   match: "count(*)=1 and not(@data-intent-property)"
   replace:
   - bookmark: "./@id"
-  - t: "αρνητικοί"      # phrase('negative' numbers are those less than 0)
+  - t: "μείον"      # phrase('negative' numbers are those less than 0)
   - x: "*[1]"
 
 - name: positive
@@ -182,7 +198,7 @@
   match: "count(*)=1 and not(@data-intent-property)"
   replace:
   - bookmark: "./@id"
-  - t: "θετικό"      # phrase(multiplying two negatives results in a 'positive' number)
+  - t: "συν"      # phrase(multiplying two negatives results in a 'positive' number)
   - x: "*[1]"
 
 - name: subscript
@@ -197,8 +213,8 @@
       then:
       - test:
           if: "$Verbosity='Verbose'"
-          then: {t: "τελικού δείκτη"}      # phrase(this is the 'end subscript' position)
-          else: {t: "end sub"}      # phrase(this is the 'end sub' position)
+          then: {t: "τέλος δείκτη"}      # phrase(this is the 'end subscript' position)
+          else: {t: "τέλος δείκτη"}      # phrase(this is the 'end sub' position)
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -210,11 +226,11 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [{t: "ο"}]      # phrase('the' square root of 25 equals 5)
+      then: [{t: ""}]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - t: "από"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
-  - t: "to"      # phrase(adding 6 'to' 6 equals  12)
+  - t: "ως"      # phrase(adding 6 'to' 6 equals  12)
   - x: "*[3]"
   - test:
       if: "following-sibling::*"
@@ -226,9 +242,9 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [{t: "ο"}]      # phrase('the' square root of 25 equals 5)
+      then: [{t: ""}]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "πάνω από"      # phrase(2 'over' 3 equals two thirds)
+  - t: "πάνω από"      # phrase(2 'over' 3 equals two thirds)   #theodora. this expression is not the most suitable in greek for integrals, but it works.
   - x: "*[2]"
   - test:
       if: "following-sibling::*"
@@ -240,7 +256,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [{t: "ο"}]      # phrase('the' square root of 25 equals 5)
+      then: [{t: ""}]      # phrase('the' square root of 25 equals 5) #theodora. in greek "the" is depended on the following word and syntax of the sentence. it is better to leave it blank where multiple cases are needed. 
   - x: "*[1]"
   - t: "του"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
@@ -251,8 +267,8 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [{t: "το όριο ως"}]      # phrase('the limit as' indicated by this result)
-      else: [{t: "όριο ως"}]      # phrase(the 'limit as' indicated by this result)
+      then: [{t: "το όριο όταν"}]      # phrase('the limit as' indicated by this result)
+      else: [{t: "όριο όταν"}]      # phrase(the 'limit as' indicated by this result)
   - x: "*[2]"
   - pause: short
 
@@ -260,7 +276,7 @@
   tag: modified-variable
   match: "count(*)=2 and *[2][text()='→']"
   replace:
-  - t: "φορέας"      # phrase(the 'vector' reflects size and direction)
+  - t: "διάνυσμα"      # phrase(the 'vector' reflects size and direction)
   - x: "*[1]"
 
 - name: default
@@ -282,8 +298,8 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: {t: "σούπερ"}      # phrase(this is a 'super' set of numbers)
-        else: {t: "superscript"}      # phrase(a 'superscript' number indicates raised to a power)
+        then: {t: "στη"}      # phrase(this is a 'super' set of numbers)     
+        else: {t: "με εκθέτη"}      # phrase(a 'superscript' number indicates raised to a power)
   - x: "*[2]"
   - pause: short
 
@@ -295,7 +311,7 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: {t: "δείκτης"}      # phrase(a 'subscript' may be used to indicate an index)
+      then: {t: "με δείκτη"}      # phrase(a 'subscript' may be used to indicate an index)
       else: {t: "δείκτης"}      # phrase(the result is 'sub' optimal)
   - x: "*[2]"
   - test:
@@ -303,8 +319,8 @@
       then:
       - test:
           if: "$Verbosity='Verbose'"
-          then: {t: "τελικού δείκτη"}      # phrase(this is the 'end subscript' position)
-          else: {t: "end sub"}      # phrase(this is the 'end sub' position)
+          then: {t: "τέλος δείκτη"}      # phrase(this is the 'end subscript' position)
+          else: {t: "τέλος δείκτη"}      # phrase(this is the 'end sub' position)
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -313,11 +329,220 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Verbose'"
-        then: {t: "superscript"}      # phrase(a 'superscript' number indicates raised to a power)
-        else: {t: "σούπερ"}      # phrase(this is a 'super' set of numbers)
+        then: {t: "με εκθέτη"}      # phrase(a 'superscript' number indicates raised to a power)
+        else: {t: "στη"}      # phrase(this is a 'super' set of numbers) 
   - x: "*[3]"
   - pause: short
 
+
+############### greek to greek
+- name: ημ
+  tag: mi
+  match: "text()='ημ'"
+  replace:
+  - bookmark: "@id"
+  - t: "ημίτονο"      # phrase(the 'sine' of the angle)
+- name: συν
+  tag: mi
+  match: "text()='συν'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "συνημίτονο"}      # phrase('cos' is the abbreviation for cosine)
+      else: {t: "συνημίτονο"}      # phrase(find the 'cosine' in a right-angle triangle)
+- name: εφ
+  tag: mi
+  match: "text()='εφ' or text()='εφαπτ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "εφαπτομένη"}      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: {t: "εφαπτομένη"}      # phrase(a 'tangent' is a straight line that touches a curve)  
+- name: σφ
+  tag: mi
+  match: "text()='σφ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "συνεφαπτομένη"}      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: {t: "συνεφαπτομένη"}      # phrase(the 'cotangent' is the reciprocal of the tangent)
+- name: τεμ
+  tag: mi
+  match: "text()='τεμ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "τέμνουσα"}      # phrase(to 'seek' a solution)
+      else: {t: "τέμνουσα"}      # phrase(a 'secant' intersects a curve at two or more points)
+- name: στεμ
+  tag: mi
+  match: "text()='στεμ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "συντέμνουσα"}      # phrase(we will 'cosecant' a solution)   #theodora. how is this case different than the following line?
+      else: {t: "συντέμνουσα"}      # phrase(the 'cosecant' is the reciprocal of the secant)
+      
+      
+- name: ΕΚΠ
+  tag: mi
+  match: "text()='ΕΚΠ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "ελάχιστο κοινό πολλαπλάσιο"}      
+      else: {t: "ελάχιστο κοινό πολλαπλάσιο"}        
+      
+- name: ΜΚΔ
+  tag: mi
+  match: "text()='ΜΚΔ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "μέγιστος κοινός διαιρέτης"}      
+      else: {t: "μέγιστος κοινός διαιρέτης"}   
+
+ ############### non-existent english to greek 
+- name: gcd
+  tag: mi
+  match: "text()='max'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "greatest common denominator"}      
+      else: {t: "μέγιστος κοινός διαιρέτης"}  
+      
+- name: lcm
+  tag: mi
+  match: "text()='max'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "least common multiple"}      
+      else: {t: "ελάχιστο κοινό πολλαπλάσιο"}        
+ 
+- name: max
+  tag: mi
+  match: "text()='max'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "μαξ"}      
+      else: {t: "μέγιστο"}  
+
+- name: min
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "μιν"}      
+      else: {t: "ελάχιστο"}  
+
+- name: sgn
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "σάιν"}      
+      else: {t: "πρόσημο"}  
+      
+- name: arg
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "άργκιουμεντ"}      
+      else: {t: "όρισμα"}        
+
+- name: arc
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "αρκ"}      
+      else: {t: "τόξο"}     
+      
+- name: det
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "ντετ"}      
+      else: {t: "ορίζουσα΄"}     
+
+- name: grad
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "γκραντ"}      
+      else: {t: "κλίση"}     
+
+- name: ker
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "κέρνελ"}      
+      else: {t: "πυρήνας"}   
+
+- name: mod
+  tag: mi
+  match: "text()='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "μοντ"}      
+      else: {t: "μόντουλο"}         
+      
+############### non-existent english to english
+ 
+- name: sup
+  tag: mi
+  match: "text()='sup'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: {t: "σουπ"}      
+      else: {t: "σουπρέμουμ"}  
+
+#- name: inf
+  #tag: mi
+  #match: "text()='inf'"
+  #replace:
+  #- bookmark: "@id"
+  #- test:
+      #if: "$Verbosity='Terse'"
+      #then: {t: "inf"}      
+      #else: {t: "infimum"}        
+ 
+ ############### 
 - name: sin
   tag: mi
   match: "text()='sin'"
@@ -331,8 +556,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cos"}      # phrase('cos' is the abbreviation for cosine)
-      else: {t: "cosine"}      # phrase(find the 'cosine' in a right-angle triangle)
+      then: {t: "συνημίτονο"}      # phrase('cos' is the abbreviation for cosine)
+      else: {t: "συνημίτονο"}      # phrase(find the 'cosine' in a right-angle triangle)
 - name: tan
   tag: mi
   match: "text()='tan' or text()='tg'"
@@ -340,7 +565,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "μαύρισμα"}      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      then: {t: "εφαπτομένη"}      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
       else: {t: "εφαπτομένη"}      # phrase(a 'tangent' is a straight line that touches a curve)
 - name: sec
   tag: mi
@@ -349,8 +574,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "αναζητήσει"}      # phrase(to 'seek' a solution)
-      else: {t: "secant"}      # phrase(a 'secant' intersects a curve at two or more points)
+      then: {t: "τέμνουσα"}      # phrase(to 'seek' a solution)
+      else: {t: "τέμνουσα"}      # phrase(a 'secant' intersects a curve at two or more points)
 - name: csc
   tag: mi
   match: "text()='csc'"
@@ -358,8 +583,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cosecant"}      # phrase(we will 'cosecant' a solution)
-      else: {t: "cosecant"}      # phrase(the 'cosecant' is the reciprocal of the secant)
+      then: {t: "συντέμνουσα"}      # phrase(we will 'cosecant' a solution)   #theodora. how is this case different than the following line?
+      else: {t: "συντέμνουσα"}      # phrase(the 'cosecant' is the reciprocal of the secant)
 - name: cot
   tag: mi
   match: "text()='cot'"
@@ -367,8 +592,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cotangent"}      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: {t: "cotangent"}      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: {t: "συνεφαπτομένη"}      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: {t: "συνεφαπτομένη"}      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -377,8 +602,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "sinch"}      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: {t: "υπερβολικό ημιτονοειδές"}      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: {t: "υπερβολικό ημίτονο"}      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: {t: "υπερβολικό ημίτονο"}      # phrase(the 'hyperbolic sine' is used in mathematics)
 - name: cosh
   tag: mi
   match: "text()='cosh'"
@@ -386,7 +611,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cosh"}      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      then: {t: "υπερβολικό συνημίτονο"}      # phrase('cosh' is an abbreviation of hyperbolic cosine)
       else: {t: "υπερβολικό συνημίτονο"}      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
@@ -395,7 +620,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "tanch"}      # phrase('tanch' is shorthand for hyperbolic tangent)
+      then: {t: "υπερβολική εφαπτομένη"}      # phrase('tanch' is shorthand for hyperbolic tangent)
       else: {t: "υπερβολική εφαπτομένη"}      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
@@ -404,8 +629,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "sheck"}      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: {t: "hyperbolic secant"}      # phrase('hyperbolic secant' is a mathematical function)
+      then: {t: "υπερβολική τέμνουσα"}      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: {t: "υπερβολική τέμνουσα"}      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: "text()='csch'"
@@ -413,8 +638,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cosheck"}      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: {t: "hyperbolic cosecant"}      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: {t: "υπερβολική συντέμνουσα"}      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: {t: "υπερβολική συντέμνουσα"}      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: "text()='coth'"
@@ -422,8 +647,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: {t: "cotanch"}      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: {t: "υπερβολική cotangent"}      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: {t: "υπερβολική συνεφαπτομένη"}      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: {t: "υπερβολική συνεφαπτομένη"}      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 
 - # handle both log and ln
   name: log
@@ -439,20 +664,20 @@
       if: "$log_is_simple"
       then_test:
       - if: "*[1][text()='log']"
-        then: [{t: "log"}]      # phrase(the 'log' function is used in mathematics)
+        then: [{t: "λογάριθμος"}]      # phrase(the 'log' function is used in mathematics)
       - else_if: "$Verbosity='Terse'"
         then: [{spell: "'ln'"}]
-        else: [{t: "φυσικού log"}]      # phrase(the 'natural log' function is used in mathematics)
+        else: [{t: "φυσικός λογάριθμος"}]      # phrase(the 'natural log' function is used in mathematics)
       else:
       - test:
           if: "$Verbosity!='Terse' and not(log_is_simple)"
           then: {t: "ο"}      # phrase('the' square root of 25 equals 5)
       - test:
         - if: "*[1][text()='log']"
-          then: [{t: "log"}]      # phrase(the 'log' function is used in mathematics)
+          then: [{t: "λογάριθμος"}]      # phrase(the 'log' function is used in mathematics)
         - else_if: "$Verbosity='Terse'"
           then: [{spell: "'ln'"}]
-          else: [{t: "φυσικού log"}]      # phrase(the 'natural log' function is used in mathematics)
+          else: [{t: "φυσικός λογάριθμος"}]      # phrase(the 'natural log' function is used in mathematics)
       - t: "του"      # phrase(5 is the square root 'of' 25)
       - pause: short
   - x: "*[3]"
@@ -465,7 +690,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: {t: "ο"}      # phrase('the' square root of 25 equals 5)
-  - t: "βάση καταγραφής"      # phrase(the 'log base' is often base 10)
+  - t: "λογάριθμος με βάση"      # phrase(the 'log base' is often base 10)
   - x: "*[1]"
 
 - name: log-base-power
@@ -476,18 +701,18 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: {t: "ο"}      # phrase('the' square root of 25 equals 5)
-  - t: "βάση καταγραφής"      # phrase(the 'log base' is often base 10)
+  - t: "λογάριθμος με βάση"      # phrase(the 'log base' is often base 10)
   - x: "*[1]"
   - pause: medium
   - test:
       - if: "*[2][text()=2]"
-        then: [t: "εις το τετραγωνο"]     
+        then: [t: "στο τετραγωνο"]     
       - else_if: "*[2][text()=3]"
-        then: [t: "κόκκος αρωματικός"]
+        then: [t: "στον κύβο"]
         else:  # don't bother with special cases as this isn't likely to happen
-        - t: "ανυψώθηκε στο"      # phrase(x 'raised to the' second power)
+        - t: "υψωμένο στη"      # phrase(x 'raised to the' second power)
         - x: "*[2]"
-        - t: "δύναμη"      # phrase(x raised to the second 'power')
+        - t: "τέλος δύναμης"      # phrase(x raised to the second 'power')
   - pause: short
 
 - name: multi-line
@@ -503,13 +728,24 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:cases"
-      then: [{t: "περίπτωση"}]      # phrase(this is the first 'case' of three cases)
+      then: [{t: "περιπτώσεις"}]      # phrase(this is the first 'case' of three cases) #change
     - else_if: "self::m:equations"
-      then: [{t: "εξίσωση"}]      # phrase(this is the first 'equation' of three equations)
-      else: [{t: "γραμμή"}]      # phrase(this is the first 'line' of three lines)
+      then: [{t: "εξισώσεις"}]      # phrase(this is the first 'equation' of three equations)
+      else: [{t: "γραμμές"}]      # phrase(this is the first 'line' of three lines)
   - test:
-    - if: "$LineCount != 1"
-      then: [{ct: "μικρό"}] # plural
+    - if: "$LineCount = 1" 
+      then:
+        test:    
+        - if: "self::m:cases"
+          then: [{t: "περίπτωση"}] 
+        - else_if: "self::m:equations"
+          then: [{t: "εξίσωση"}] 
+        - else: [{t: "γραμμή"}]
+          
+ #  theodora. the previous was changed because the plural is formed individually in greek.  
+ # Singular: εξίσωση--> plural: εξισώσεις, singular: περίπτωση-->plural: περιπτώσεις, 
+ # singular: γραμμή--> plural: γραμμές
+ # i think it needs some checking to make sure its correct
   - pause: short
   - x: "*"
 
@@ -536,7 +772,7 @@
   - test:
       if: .[self::m:mlabeledtr]
       then:
-      - t: "με ετικέτα"      # phrase(the diagram is complete 'with label')
+      - t: "με ένδειξη"      # phrase(the diagram is complete 'with label')
       - x: "*[1]/*"
   - pause: medium
   - test:
@@ -573,14 +809,14 @@
   variables: [{IsColumnSilent: true()}]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - ot: "το"      # phrase('the' 1 by 1 matrix M)
-  - t: "1 με 1"      # phrase(the '1 by 1' matrix)
+  - ot: ""      # phrase('the' 1 by 1 matrix M)
+  - t: "ένα επί ένα"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: {t: "καθοριστικός παράγοντας"}      # phrase(the 2 by 2 'determinant'))
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "ορίζουσα"}      # phrase(the 2 by 2 'determinant'))
+      else: {t: "πίνακας"}      # phrase(the 2 by 2 'matrix')
       
-  - t: "με είσοδο"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - t: "με καταχώρηση"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
 
 # simpler reading methods for smaller matrices if the entries are simple
@@ -593,13 +829,13 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "το"      # phrase('the' 2 by 2 matrix M)
+  - t: ""      # phrase('the' 2 by 2 matrix M)
   - x: count(*)
-  - t: "με 1 στήλη"      # phrase(the 2 'by 1 column' matrix)
+  - t: "επί ένα"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {t: "διάνυσμα"}      # phrase(the 2 by 2 'vector')
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "διάνυσμα στήλη"}      # phrase(the 2 by 2 'vector')
+      else: {t: "πίνακας στήλη"}      # phrase(the 2 by 2 'matrix')  #theodora. in greek, the correct expression is "matrix column"  not "column matrix" and "vector column" not "column vector".
   - pause: long
   - x: "*/*"
   - test:
@@ -608,26 +844,26 @@
       - t: "τέλος"      # phrase('end' of matrix)
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: {t: "διάνυσμα"}      # phrase(the 2 column 'vector')
-          else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+          then: {t: "διανύσματος"}      # phrase(the 2 column 'vector')
+          else: {t: "πίνακα"}      # phrase(the 2 by 2 'matrix')
 
 - name: default-column-matrix
   tag: matrix
   variables: [{IsColumnSilent: true()}]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - t: "το"      # phrase('the' 2 by 2 matrix M)
+  - t: ""      # phrase('the' 2 by 2 matrix M)
   - x: "count(*)"
-  - t: "από 1 στήλης"      # phrase(the 2 'by 1 column' matrix)
+  - t: "επί ένα"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {t: "διάνυσμα"}      # phrase(the 2 column 'vector')
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "διάνυσμα στήλη"}      # phrase(the 2 column 'vector')  
+      else: {t: "πίνακας στήλη"}      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [{t: "τέλος της μήτρας"}]      # phrase(the 'end of matrix' has been reached)
+      then: [{t: "τέλος του πίνακα"}]      # phrase(the 'end of matrix' has been reached)
 
 - name: 1x2-or-3-matrix
   tag: matrix
@@ -638,13 +874,13 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "το 1 με"      # phrase('the 1 by' 2 matrix)
+  - t: "ένα επί"      # phrase('the 1 by' 2 matrix)
   - x: count(*/*)
-  - t: "row"      # phrase(the 1 by 4 'row' matrix)
+  #- t: "γραμμή"      # phrase(the 1 by 4 'row' matrix) theodora. In Greek, the correct order of words is "vector row" not "row vector" and "matrix row" not "row matrix". so, the full expressions were placed below and the "row" word was #deleted. 
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {t: "το διάνυσμα 1 με"}      # phrase('the 1 by' 2 row 'vector')
-      else: {t: "το 1 με"}      # phrase('the 1 by' 2 'matrix')
+      then: {t: "διάνυσμα γραμμή"}      # phrase('the 1 by' 2 row 'vector')  #
+      else: {t: "πίνακας γραμμή"}      # phrase('the 1 by' 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:
@@ -653,21 +889,21 @@
       - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
-          else: {t: "διάνυσμα"}      # phrase(the 2 by 1 'vector')
+          then: {t: "πίνακα"}      # phrase(the 2 by 2 'matrix')
+          else: {t: "διανύσματος"}      # phrase(the 2 by 1 'vector')
 
 - name: default-row-matrix
   tag: matrix
   variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"}]
   match: "count(*)=1" # one row
   replace:
-  - t: "το 1 με"      # phrase('the 1 by' 2 matrix)
+  - t: "ένα επί"      # phrase('the 1 by' 2 matrix)
   - x: "count(*/*)"
-  - t: "σειρά"      # phrase(the 1 by 2 'row' matrix)
+  #- t: "γραμμή"      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: {t: "διάνυσμα"}      # phrase(the 2 by 1 'vector')
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "διάνυσμα γραμμή"}      # phrase(the 2 by 1 'vector')
+      else: {t: "πίνακας γραμμή"}      # phrase(the 2 by 2 'matrix')
   - pause: long
   - pause: medium
   - x: "*/*" # select the cols (mtd)
@@ -677,8 +913,8 @@
       - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
-          else: {t: "διάνυσμα"}      # phrase(the 2 by 1 'vector')
+          then: {t: "πίνακα"}      # phrase(the 2 by 2 'matrix')
+          else: {t: "διανύσματος"}      # phrase(the 2 by 1 'vector')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -688,14 +924,14 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [{IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"}]
   replace:
-  - t: "το"      # phrase('the' 1 by 2 matrix M)
+  - t: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "by"      # phrase(the 1 'by' 2 matrix)
+  - t: "επί"      # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
   - test:
       if: "self::m:determinant"
-      then: {t: "καθοριστικός παράγοντας"}      # phrase(the 2 by 2 'determinant')
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "ορίζουσα"}      # phrase(the 2 by 2 'determinant')
+      else: {t: "πίνακας"}      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -704,22 +940,22 @@
       - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: {t: "καθοριστικός παράγοντας"}      # phrase(the 2 by 2 'determinant')
-          else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+          then: {t: "ορίζουσας"}      # phrase(the 2 by 2 'determinant')
+          else: {t: "πίνακα"}      # phrase(the 2 by 2 'matrix')
 
 - name: default-matrix
   tag: [matrix, determinant]
   variables: [{IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"}]
   match: "not(@data-intent-property)"
   replace:
-  - t: "το"      # phrase('the' 1 by 2 matrix M)
+  - t: ""      # phrase('the' 1 by 2 matrix M)
   - x: "count(*)"
-  - t: "by"      # phrase(the 1 'by' 2 matrix)
+  - t: "επί"      # phrase(the 1 'by' 2 matrix)
   - x: "count(*[self::m:mtr][1]/*)"
   - test:
       if: "self::m:determinant"
-      then: {t: "καθοριστικός παράγοντας"}      # phrase(the 2 by 2 'determinant')
-      else: {t: "matrix"}      # phrase(the 2 by 2 'matrix')
+      then: {t: "ορίζουσα"}      # phrase(the 2 by 2 'determinant')
+      else: {t: "πίνακας"}      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -728,8 +964,8 @@
       - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: {t: "καθοριστικός παράγοντας"}      # phrase(the 2 by 2 'determinant')
-          else: {t: "matrix"}      # phrase(the 2 by 2 'matrix's)
+          then: {t: "ορίζουσας"}      # phrase(the 2 by 2 'determinant')
+          else: {t: "πίνακα"}      # phrase(the 2 by 2 'matrix's)
 
 - name: chemistry-msub
 
@@ -739,7 +975,7 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{t: "subscript"}]      # phrase(H 'subscript' 2)
+      then: [{t: "με δείκτη"}]      # phrase(H 'subscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
         then: [{t: "δείκτης"}]      # phrase(H 'sub' 2)
@@ -752,7 +988,7 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+      then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
         then: [{t: "εκθέτης"}]      # phrase(H 'super' 2)
@@ -783,7 +1019,7 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+              then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
                 then: [{t: "εκθέτης"}]      # phrase(H 'super' 2)
@@ -794,7 +1030,7 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{t: "δείκτης"}]      # phrase(a 'subscript' may be used to indicate an index)
+              then: [{t: "με δείκτη"}]      # phrase(a 'subscript' may be used to indicate an index)
               else_test:
                 if: "$Verbosity='Medium'"
                 then: [{t: "δείκτης"}]      # phrase(here is a 'sub' total)
@@ -808,7 +1044,7 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+                  then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
                     then: [{t: "εκθέτης"}]      # phrase(H 'super' 2)
@@ -819,7 +1055,7 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{t: "subscript"}]      # phrase(H 'subscript' 2)
+                  then: [{t: "με δείκτη"}]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
                     then: [{t: "δείκτης"}]      # phrase(H 'sub' 2)
@@ -834,7 +1070,7 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{t: "subscript"}]      # phrase(phrase(H 'subscript' 2)
+              then: [{t: "με δείκτη"}]      # phrase(phrase(H 'subscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
                 then: [{t: "δείκτης"}]      # phrase(phrase(H 'sub' 2)
@@ -845,7 +1081,7 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+              then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
                 then: [{t: "εκθέτης"}]          # phrase(H 'super' 2)
@@ -859,7 +1095,7 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{t: "subscript"}]      # phrase(H 'subscript' 2)
+                  then: [{t: "με δείκτη"}]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
                     then: [{t: "δείκτης"}]          # phrase(H 'sub' 2)
@@ -870,7 +1106,7 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+                  then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
                     then: [{t: "εκθέτης"}]          # phrase(H 'super' 2)
@@ -884,7 +1120,7 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [{t: "subscript"}]    # phrase(H 'subscript' 2)
+                      then: [{t: "με δείκτη"}]    # phrase(H 'subscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
                         then: [{t: "δείκτης"}]        # phrase(H 'sub' 2)
@@ -895,7 +1131,7 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [{t: "superscript"}]  # phrase(H 'superscript' 2)
+                      then: [{t: "με εκθέτη"}]  # phrase(H 'superscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
                         then: [{t: "εκθέτης"}]      # phrase(H 'super' 2)
@@ -909,7 +1145,7 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [{t: "subscript"}]      # phrase(H 'subscript' 2)
+                          then: [{t: "με δείκτη"}]      # phrase(H 'subscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
                             then: [{t: "δείκτης"}]      # phrase(H 'sub' 2)
@@ -920,7 +1156,7 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [{t: "superscript"}]      # phrase(H 'superscript' 2)
+                          then: [{t: "με εκθέτη"}]      # phrase(H 'superscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
                             then: [{t: "εκθέτης"}]      # phrase(H 'super' 2)
@@ -969,7 +1205,7 @@
   - bookmark: "@id"
   - test:
     - if: "text()='-' or text() = ':'"
-      then: [{t: "ενιαίος δεσμός"}]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+      then: [{t: "απλός δεσμός"}]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
     - else_if: "text()='=' or text() = '∷'"
       then: [{t: "διπλός δεσμός"}]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: "text()='≡'"
@@ -994,14 +1230,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [{t: "φόρμες"}]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [{t: "αντιδρά στη μορφή"}]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [{t: "σχηματίζουν"}]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [{t: "αντιδρούν για να σχηματίσουν"}]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='⮖'"
       then: [{t: "είναι σε ισορροπία με"}]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='⭴'"
-      then: [{t: "είναι σε ισορροπία μεροληπτική προς τα αριστερά με το"}]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+      then: [{t: "είναι σε ισορροπία μετατοπισμένη προς τα αριστερά με το"}]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
     - else_if: ".='⭵'"
-      then: [{t: "είναι σε ισορροπία μεροληπτική προς τα δεξιά με το"}]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      then: [{t: "είναι σε ισορροπία μετατοπισμένη προς τα δεξιά με το"}]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "."]
 
 - name: chemical-equation-operator

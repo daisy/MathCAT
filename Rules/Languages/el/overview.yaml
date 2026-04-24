@@ -30,7 +30,7 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - t: "πάνω από"
+      - t: "προς"
       - x: "*[2]"
       else:
       - t: "κλάσμα"
@@ -66,7 +66,7 @@
           if: "*[2][self::m:mi][string-length(.)=1]"
           then:
           - x: "*[2]"
-          - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
+          - pronounce: [{text: "οστή"}]  
           else: {x: "*[2]"}
       - t: "ρίζα"
   - test:
@@ -83,14 +83,14 @@
   - "*[2][self::m:mtable] and"
   - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
   replace:
-  - t: "ο"
+  - t: ""
   - x: count(*[2]/*)
   - t: "με"
   - x: count(*[2]/*[self::m:mtr][1]/*)
   - test:
       if: "*[1][text()='|']" # just need to check the first bracket since we know it must be (, [, or |
-      then: {t: "καθοριστικός"}
-      else: {t: "μήτρα"}
+      then: {t: "ορίζουσα"}
+      else: {t: "πίνακας"}
 
 - name: default
   tag: mtable
@@ -100,7 +100,7 @@
   - x: count(*[2]/*)
   - t: "με"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - t: "τραπέζι"
+  - t: "πίνακας"
 
 - name: short-mrow
   tag: mrow

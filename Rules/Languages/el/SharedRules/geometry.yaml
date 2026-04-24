@@ -7,12 +7,12 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "το τμήμα γραμμής από"      # phrase('the line segment from' A to B)
+      - t: "ευθύγραμμο τμήμα από"      # phrase('the line segment from' A to B)
       - x: "*[1]"
-      - t: "σε"                         # phrase(the line segment from A 'to' B)
+      - t: "ως"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
       else:
-      - t: "τμήμα γραμμής"               # phrase(the 'line segment' A  B)
+      - t: "ευθύγραμμο τμήμα"               # phrase(the 'line segment' A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -23,12 +23,12 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "η ακτίνα από"             # phrase('the ray from' A to B)
+      - t: "το διάνυσμα από"             # phrase('the ray from' A to B)
       - x: "*[1]"
       - t: "σε"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
       else:
-      - t: "ray"                      # phrase(the 'ray'A  B)
+      - t: "διάνυσμα"                      # phrase(the 'ray'A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -38,7 +38,7 @@
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{t: "ο"}]            # phrase('the' arc A B C)
+      then: [{t: "το"}]            # phrase('the' arc A B C)
   - t: "τόξο"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"

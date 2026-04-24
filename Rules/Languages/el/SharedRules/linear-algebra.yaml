@@ -7,8 +7,8 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
-  - t: "καθοριστικός"      # phrase(the 'determinant' of a matrix)
+      - t: "η"      # phrase('the' square root of 25 equals 5)
+  - t: "ορίζουσα"      # phrase(the 'determinant' of a matrix)
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -16,7 +16,7 @@
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1], 'simple'))"
-      then: [t: "τέλος καθοριστικός παράγοντας"]      # phrase('end determinant' of a matrix)
+      then: [t: "τέλος ορίζουσας"]      # phrase('end determinant' of a matrix)
 
 - name: norm
   tag: norm
@@ -25,8 +25,8 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
-  - t: "κανόνας"      # phrase(the 'norm' can be a measure of distance)
+      - t: "η"      # phrase('the' square root of 25 equals 5)
+  - t: "νόρμα"      # phrase(the 'norm' can be a measure of distance)
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -34,7 +34,7 @@
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1], 'simple'))"
-      then: [t: "end norm"]      # phrase('end norm' that is a measure of distance)
+      then: [t: "τέλος νόρμας"]      # phrase('end norm' that is a measure of distance)
 
 
 - name: subscripted-norm
@@ -44,9 +44,9 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
+      - t: "η"      # phrase('the' square root of 25 equals 5)
   - x: "*[2]"
-  - t: "κανόνας"      # phrase(the 'norm' can be a measure of distance)
+  - t: "νόρμα"      # phrase(the 'norm' can be a measure of distance)
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -58,7 +58,7 @@
   match: "count(*)=1 and not(@data-intent-property)"
   replace:
   - x: "*[1]"
-  - t: "μεταφέρει"      # phrase(this will 'transpose' the values)
+  - t: "ανάστροφος"      # phrase(this will 'transpose' the values) 
 - name: trace
   tag: trace
   match: "not(@data-intent-property)"
@@ -66,7 +66,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
+      - t: "το"      # phrase('the' square root of 25 equals 5)
   - t: "ίχνος"      # phrase('trace' of a matrix)
   - test:
       if: "$Verbosity!='Terse'"
@@ -81,7 +81,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ο"      # phrase('the' square root of 25 equals 5)
+      - t: "η"      # phrase('the' square root of 25 equals 5)
   - t: "διάσταση"      # phrase(the 'dimension' of the matrix)
   - test:
       if: "$Verbosity!='Terse'"
