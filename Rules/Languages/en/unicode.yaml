@@ -377,7 +377,7 @@
  - "∆":                                          # 0x2206
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "laplacian of"
  - "∈":                                          # 0x2208
      - test:
@@ -471,7 +471,7 @@
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "square root of"
  - "∝":                                          # 0x221d
      - test: 

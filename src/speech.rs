@@ -924,35 +924,39 @@ impl ReplacementArray {
         // concatenation (removal of spaces) is saved for the top level because they otherwise are stripped at the wrong sometimes
         return Ok( replacement_strings.join(" ") );
 
-        fn is_repetitive<'a>(prev: &str, optional: &'a str) -> Option<&'a str> {
-            // OPTIONAL_INDICATOR surrounds the optional text
+        /// delete an optional text (in 'next') that is repetitive at the end of 'prev'
+        /// we do this by looking for the optional text marker, and if present, check for repetition at end of previous string
+        /// if repetitive, we delete the optional string
+        fn is_repetitive<'a>(prev: &str, next: &'a str) -> Option<&'a str> {
+            // OPTIONAL_INDICATOR optionally surrounds the end of 'prev'(ignoring trailing whitespace)
+            // OPTIONAL_INDICATOR surrounds the start of 'next'
             // minor optimization -- lots of short strings and the OPTIONAL_INDICATOR takes a few bytes, so skip the check for those strings
-            if optional.len() <=  2 * OPTIONAL_INDICATOR_LEN {
+            if next.len() <=  2 * OPTIONAL_INDICATOR_LEN {
                 return None;
             }
-            
+
             // should be exactly one match -- ignore more than one for now
-            match optional.find(OPTIONAL_INDICATOR) {
-                None => return None,
-                Some(start_index) => {
-                    let optional_word_start_slice = &optional[start_index + OPTIONAL_INDICATOR_LEN..];
-                    // now find the end
-                    match optional_word_start_slice.find(OPTIONAL_INDICATOR) {
-                        None => panic!("Internal error: missing end optional char -- text handling is corrupted!"),
-                        Some(end_index) => {
-                            let optional_word = &optional_word_start_slice[..end_index];
-                            // debug!("check if '{}' is repetitive",  optional_word);
-                            // debug!("   prev: '{}', next '{}'", prev, optional);
-                            let prev = prev.trim_end().as_bytes();
-                            if prev.len() > optional_word.len() &&
-                               &prev[prev.len()-optional_word.len()..] == optional_word.as_bytes() {
-                                return Some( optional_word_start_slice[optional_word.len() + OPTIONAL_INDICATOR_LEN..].trim_start() );
-                            } else {
-                                return None;
-                            }
-                        }
-                    }
-                }
+            let i_start = next.find(OPTIONAL_INDICATOR)?;
+            let start_repeat_word_in_next = &next[i_start + OPTIONAL_INDICATOR_LEN..];
+            let i_end = start_repeat_word_in_next.find(OPTIONAL_INDICATOR)
+                .unwrap_or_else(|| panic!("Internal error: missing end optional char -- text handling is corrupted!"));
+            let repeat_word = &start_repeat_word_in_next[..i_end];
+            // debug!("check if '{}' is repetitive, end_index={}", repeat_word, i_end);
+            // debug!("   prev: '{}', next '{}'", prev, next);
+
+            let prev_trimmed = prev.trim_end();
+            let ends_with_word = prev_trimmed.len() > repeat_word.len() && prev_trimmed.ends_with(repeat_word);
+            let ends_with_wrapped_word =
+                prev_trimmed
+                    .strip_suffix(OPTIONAL_INDICATOR)
+                    .and_then(|s| s.strip_suffix(repeat_word))
+                    .and_then(|s| s.strip_suffix(OPTIONAL_INDICATOR))
+                    .is_some();
+            if ends_with_word || ends_with_wrapped_word {
+                // debug!("  is repetitive");
+                Some(start_repeat_word_in_next[i_end + OPTIONAL_INDICATOR_LEN..].trim_start())  // remove repeat word and OPTIONAL_INDICATOR
+            } else {
+                None
             }
         }
     }
