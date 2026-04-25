@@ -4,6 +4,15 @@
 # French overrides for language-dependent speech definitions. Anything omitted
 # here continues to fall back to the shared English defaults.
 
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If no ":"s are used, the same speech is used for all forms
+# If bracketing words make sense, they are separated with ";"s
+# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
+# If there are multiple fixities (e.g., see transpose), they are separated with "||"
+#   for readability, spaces can be used around any of the delimiter characters
+# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+
 - IntentMappings: {
     "indexed-by": "infix= ; indice; fin d'indice: fin d'indice: fin d'indice",
     "modified-variable": "silent= ",
@@ -43,10 +52,12 @@
     "chemistry-concentration": "function= ; concentration: concentration de: la concentration de; fin de concentration",
   }
 
+# Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
     "divergence", "gradient", "curl"
   }
 
+# These are the parts of a formula that can be navigated to
 - NavigationParts: {
     "large-op": "base; borne inférieure; borne supérieure",
     "mfrac": "numérateur; dénominateur",
@@ -68,6 +79,8 @@
     "mover": "base; borne supérieure",
     "munderover": "base; borne inférieure; borne supérieure",
 
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
     "in": "dans",
     "out": "hors de",
   }
@@ -78,7 +91,12 @@
     "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
 - SIUnits: {
+    # base units
     "A": "ampère",
     "cd": "candela",
     "K": "kelvin", "K": "kelvin",
@@ -87,6 +105,7 @@
     "mol": "mole",
     "s": "seconde", "sec": "seconde",
 
+    # derived units
     "Bq": "becquerel",
     "C": "coulomb",
     "°C": "degré Celsius", "℃": "degré Celsius",
@@ -108,6 +127,7 @@
     "W": "watt",
     "Wb": "weber",
 
+    # accepted (plus a few variants) that take SI prefixes
     "l": "litre", "L": "litre", "ℓ": "litre",
     "t": "tonne métrique",
     "Da": "dalton",
@@ -117,9 +137,11 @@
     "rad": "radian",
     "sr": "stéradian",
 
+    # others that take a prefix
     "a": "année",
     "as": "seconde d'arc",
 
+    # technically wrong, but used in practice with SI Units
     "b": "bit",
     "B": "octet",
     "Bd": "baud",
@@ -170,6 +192,7 @@
 - EnglishUnits: {
     "in": "pouce",
     "ft": "pied",
+    "yd": verge,
     "mi": "mille",
     "rd": "perche",
     "li": "chaînon",
@@ -177,19 +200,19 @@
 
     "sq in": "pouce carré", "sq. in": "pouce carré", "sq. in.": "pouce carré",
     "sq ft": "pied carré", "sq. ft": "pied carré", "sq. ft.": "pied carré",
-    "sq yd": "yard carré", "sq. yd": "yard carré", "sq. yd.": "yard carré",
+    "sq yd": "verge carré", "sq. yd": "verge carré", "sq. yd.": "verge carré",
     "sq mi": "mille carré", "sq. mi": "mille carré", "sq. mi.": "mille carré",
     "ac": "acre",
     "FBM": "board foot",
 
     "cu in": "pouce cube", "cu. in": "pouce cube", "cu. in.": "pouce cube",
     "cu ft": "pied cube", "cu. ft": "pied cube", "cu. ft.": "pied cube",
-    "cu yd": "yard cube", "cu. yd": "yard cube", "cu. yd.": "yard cube",
+    "cu yd": "verge cube", "cu. yd": "verge cube", "cu. yd.": "verge cube",
     "bbl": "baril", "BBL": "baril",
     "pk": "peck",
     "bu": "boisseau",
     "tsp": "cuillère à café",
-    "tbl": "cuillère à soupe",
+    "tbl": "cuillère à table",
 
     "fl dr": "dram liquide",
     "fl oz": "once liquide",
@@ -203,7 +226,7 @@
     "dr": "dram",
     "oz": "once", "℥": "once",
     "lb": "livre",
-    "cwt": "hundredweight",
+    "cwt": "quintal",
     "dwt": "pennyweight",
     "oz t": "once troy",
     "lb t": "livre troy",
@@ -235,35 +258,59 @@
     "tour par minute": "tours par minute",
     "pouce carré": "pouces carrés",
     "pied carré": "pieds carrés",
-    "yard carré": "yards carrés",
+    "yard carré": "verges carrés",
     "mille carré": "milles carrés",
     "pouce cube": "pouces cubes",
     "pied cube": "pieds cubes",
-    "yard cube": "yards cubes",
+    "yard cube": "verges cubes",
     "once liquide": "onces liquides",
     "cuillère à café": "cuillères à café",
-    "cuillère à soupe": "cuillères à soupe",
+    "cuillère à soupe": "cuillères à table",
     "degré": "degrés",
     "mille par heure": "milles par heure",
     "mille par gallon": "milles par gallon"
   }
 
+# ----------------  Cardinal and Ordinal Numbers  --------------------------
+# The following definitions are used to convert numbers to words
+# The are mainly used for ordinals, of which there are two cases:
+# 1. Regular ordinals: first, second, third, ...
+# 2. Ordinals used in the denominator of fractions (e.g, one half, one third)
+#    When used in the denominator of fractions, a plural version might be
+#    used (e.g., two halves, two thirds)
+# Although a lot of languages are regular after a few entries, for generality,
+# the following lists should be filled out even though they are the same
+# or easily derived from others in many languages (e.g, an 's' is added for plurals).
+# The larger ordinal numbers (e.g, millionth) is used when there are only
+# '0's after that decimal place (e.g., 23000000).:w
+
+# All definitions start 0, 10, 100, etc.
+
+# TODO: does that belong here? (vingt-et-un, trente-et-un, etc.)
 - NumbersOnes: [
         "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
         "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
-        "dix-sept", "dix-huit", "dix-neuf"
+        "dix-sept", "dix-huit", "dix-neuf",
+        "vingt-et-un", "trente-et-un", "quarante-et-un", "cinquante-et-un", "soixante-et-un",
+        "soixante-et-onze", "quatre-vingt-un", "quatre-vingt-onze"
     ]
 
+# TODO: does that belong here? (vingt-et-unième, trente-et-unième, etc.)
 - NumbersOrdinalOnes: [
         "zéroième", "premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième",
         "dixième", "onzième", "douzième", "treizième", "quatorzième", "quinzième", "seizième",
-        "dix-septième", "dix-huitième", "dix-neuvième"
+        "dix-septième", "dix-huitième", "dix-neuvième",
+        "vingt-et-unième", "trente-et-unième", "quarante-et-unième", "cinquante-et-unième", "soixante-et-unième",
+        "soixante-et-onzième", "quatre-vingt-unième", "quatre-vingt-onzième"
     ]
 
+# TODO: does that belong here? (vingt-et-unièmes, trente-et-unièmes, etc.)
 - NumbersOrdinalPluralOnes: [
         "zéroièmes", "premiers", "deuxièmes", "troisièmes", "quatrièmes", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes",
         "dixièmes", "onzièmes", "douzièmes", "treizièmes", "quatorzièmes", "quinzièmes", "seizièmes",
-        "dix-septièmes", "dix-huitièmes", "dix-neuvièmes"
+        "dix-septièmes", "dix-huitièmes", "dix-neuvièmes",
+        "vingt-et-unièmes", "trente-et-unièmes", "quarante-et-unièmes", "cinquante-et-unièmes", "soixante-et-unièmes",
+        "soixante-et-onzièmes", "quatre-vingt-unièmes", "quatre-vingt-onzièmes"
     ]
 
 - NumbersOrdinalFractionalOnes: [
@@ -274,6 +321,7 @@
         "zéros", "premiers", "demis", "tiers", "quarts", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes", "dixièmes"
     ]
 
+# TODO: make a special case for belgian french (fr-BE) where soixante-dix -> septante, quatre-vingt -> octante,  quatre-vingt-dix -> nonante
 - NumbersTens: [
         "", "dix", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"
     ]
