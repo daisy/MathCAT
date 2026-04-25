@@ -1,8 +1,295 @@
 ---
-[
+- include: "../../definitions.yaml"
+
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If no ":"s are used, the same speech is used for all forms
+# If bracketing words make sense, they are separated with ";"s
+# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
+# If there are multiple fixities (e.g., see transpose), they are separated with "||"
+#   for readability, spaces can be used around any of the delimiter characters
+# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+- IntentMappings: {
+    "indexed-by": "infix= ; δείκτης κάτω; τέλος δείκτη κάτω: τέλος δείκτη κάτω: τέλος δείκτη κάτω",
+    "modified-variable": "silent= ",
+    "say-super": "infix=υπέρ: εκθέτης: εκθέτης",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+
+    "absolute-value": "function= ; απόλυτη τιμή: η απόλυτη τιμή: η απόλυτη τιμή; τέλος απόλυτης τιμής",
+    "binomial": "infix=διωνυμικός συντελεστής; επιλογή; τέλος διωνυμικού",
+    "dimension-product": "infix=επί",
+    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
+    "greatest-common-divisor": "function=μκδ: ο μέγιστος κοινός διαιρέτης: ο μέγιστος κοινός διαιρέτης",
+    "imaginary-part": "function=φανταστικό μέρος: το φανταστικό μέρος: το φανταστικό μέρος",
+    "least-common-multiple": "function=εκπ: το ελάχιστο κοινό πολλαπλάσιο: το ελάχιστο κοινό πολλαπλάσιο",
+    # "large-op": "infix=over || other=from,to",
+    "limit": "prefix=όριο καθώς: το όριο καθώς: το όριο καθώς",
+    "lim-sup": "prefix=lim sup καθώς: ανώ όριο καθώς: ανώ όριο καθώς",
+    "lim-inf": "prefix=lim inf καθώς: κάτω όριο καθώς: κάτω όριο καθώς",
+    "logarithm-with-base": "prefix=λογάριθμος με βάση: ο λογάριθμος με βάση: ο λογάριθμος με βάση",
+    "natural-logarithm": "function=φυσικός λογάριθμος: φυσικός λογάριθμος: φυσικός λογάριθμος",
+    "minus": "infix=μείον || prefix=αρνητικός",
+    "plus": "infix=συν || prefix=θετικός",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "real-part": "function=το πραγματικό μέρος",
+
+    "transpose": "postfix=μετάθεση || function=μετάθεση",
+    "norm": "function=; νόρμα: νόρμα: νόρμα; τέλος νόρμας",
+    "trace": "function= ; ίχνος: ίχνος: το ίχνος; τέλος ίχνους",
+    "dimension": "function=; διάσταση: διάσταση: η διάσταση; τέλος διάστασης",
+    "homomorphism": "function= ; ομομορφισμός: ομομορφισμός: ο ομομορφισμός; τέλος ομομορφισμού",
+    "kernel": "function= ; πυρήνας: πυρήνας: ο πυρήνας; τέλος πυρήνα",
+    "vector": "function= ; διάνυσμα || prefix=διάνυσμα",
+    "cross-product": "infix=εξωτερικό γινόμενο: εξωτερικό γινόμενο: εξωτερικό γινόμενο",
+    "dot-product": "infix=εσωτερικό γινόμενο: εσωτερικό γινόμενο: εσωτερικό γινόμενο",
+
+    "divergence": "function= ; απόκλιση: απόκλιση: απόκλιση; τέλος απόκλισης",
+    "curl": "function= ; στροβιλισμός; τέλος στροβιλισμού",
+    "gradient": "function= ; κλίση: κλίση: η κλίση; τέλος κλίσης",
+    "laplacian": "function=λαπλασιανός",   # speech engines don't do a good job with "laplacian"
+
+    "chemistry-concentration": "function= ; συγκέντρωση: συγκέντρωση του: η συγκέντρωση του; τέλος συγκέντρωσης",
+  }
+
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+- TerseFunctionNames: {
+    "divergence", "gradient", "curl"
+  }
+
+- NavigationParts: {
+    # These are the parts of a formula that can be navigated to
+    "large-op": "βάση; κάτω όριο; άνω όριο",
+    "mfrac": "αριθμητής; παρονομαστής",
+    "fraction": "αριθμητής; παρονομαστής",
+    "msqrt": "ρίζα",
+    "square-root": "ρίζα",
+    "mroot": "ρίζα; δείκτης ρίζας",
+    "root": "ρίζα; δείκτης ρίζας",
+    "msub": "βάση; δείκτης κάτω",
+    "sub": "βάση; δείκτης κάτω",
+    "logarithm-with-base": "βάση",
+    "indexed-by": "βάση; δείκτης κάτω",
+    "msup": "βάση; δείκτης πάνω",
+    "say-super": "βάση; δείκτης πάνω",
+    "skip-super": "βάση; δείκτης πάνω",
+    "power": "βάση; εκθέτης",
+    "msubsup": "βάση; δείκτης κάτω; δείκτης πάνω",
+    "munder": "βάση; κάτω όριο",
+    "mover": "βάση; άνω όριο",
+    "munderover": "βάση; κάτω όριο; άνω όριο",
+
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
+    "in": "σε",
+    "out": "έξω από",
+  }
+
+- KnownWords: {
+    # MathCAT will put together some runs of three or more mi's (a common mistake), but skips those in alphabetical order.
+    # This is a list of exceptions so that they do get put together. Don't list words with repeated letters.
+
+    # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
+    # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
+    "Abel", "aery", "ails", "airy", "amps", "ceil", "cents", "chop", "flux", "flow", "knot", "most"
+  }
+
+- SIPrefixes: {
+    "Q": "κουέττα", "R": "ροννά", "Y": "γιοττά", "Z": "ζεττά", "E": "εξά", "P": "πετά", "T": "τερά", "G": "γκίγκα", "M": "μέγα", "k": "κιλό", "h": "εκτό", "da": "δεκά",
+    "d": "δεσί", "c": "εκατοστό", "m": "χιλιοστό", "µ": "μικρό", "n": "νάνο", "p": "πικο", "f": "φεμτό", "a": "αττό", "z": "ζεπτό", "y": "γιοκτό", "r": "ροντό", "q": "κουεκτό"
+  }
+
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
+- SIUnits: {
+    # base units
+    "A": "αμπέρ",
+    "cd": "κάντελα",
+    "K": "κέλβιν", "K": "κέλβιν", # U+212A
+    "g": "γραμμάριο",
+    "m": "μέτρο",
+    "mol": "mol",
+    "s": "δευτερόλεπτο", "sec": "δευτερόλεπτο",  # "sec" not actually legal
+
+    # derived units
+    "Bq": "μπεκερέλ",
+    "C": "κουλόμπ",
+    "°C": "βαθμός Κελσίου", "℃": "βαθμός Κελσίου", # should only take negative powers
+    "F": "φαράντ",
+    "Gy": "γκρί",
+    "H": "ενρί",
+    "Hz": "χέρτζ",
+    "J": "τζουλ",
+    "kat": "κάταλ",
+    "lm": "λούμεν",
+    "lx": "λουξ",
+    "N": "νεύτον",
+    "Ω": "ωμ", "Ω": "ωμ",       # U+2126 OHM SIGN
+    "Pa": "πασκάλ",
+    "S": "σιμένς",
+    "Sv": "σίβερτ",
+    "T": "τέσλα",
+    "V": "βολτ",
+    "W": "βατ",
+    "Wb": "βέμπερ",
+
+    # accepted (plus a few variants) that take SI prefixes
+    "l": "λίτρο", "L": "λίτρο", "ℓ": "λίτρο",  # Should only take negative powers; British spelling works for US also
+    "t": "μετρικός τόνος",           # should only take positive powers
+    "Da": "ντάλτον",
+    "Np": "νέπερ",               # should only take negative powers
+    "u": "ατομική μονάδα μάζας",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
+    "eV": "ηλεκτρονιοβολτ",
+    "rad": "ακτίνιο",             # should only take negative powers
+    "sr": "στερακτίνιο",           # should only take negative powers
+
+    # others that take a prefix
+    "a": "έτος",               # should only take positive powers
+    "as": "δευτερόλεπτο τόξου",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+
+    # technically wrong, but used in practice with SI Units
+    "b": "μπιτ",               # should only take positive powers
+    "B": "μπάιτ",              # should only take positive powers
+    "Bd": "μπόντ",             # should only take positive powers
+  }
+
+
+- UnitsWithoutPrefixes: {
+    # time
+    "″": "δευτερόλεπτο", "\"": "δευτερόλεπτο",
+    "′": "λεπτό", "'": "λεπτό","min": "λεπτό",
+    "h": "ώρα", "hr": "ώρα", "Hr": "ώρα",
+    "d": "ημέρα", "dy": "ημέρα",
+    "w": "εβδομάδα", "wk": "εβδομάδα",
+    "y": "έτος", "yr": "έτος",
+
+    # angles
+    "°": "μοίρα", "deg": "μοίρα", # should only take negative powers
+    "arcmin": "λεπτό τόξου",
+    "amin": "λεπτό τόξου",
+    "am": "λεπτό τόξου",
+    "MOA": "λεπτό τόξου",
+    "arcsec": "δευτερόλεπτο τόξου",
+    "asec": "δευτερόλεπτο τόξου",
+
+    # distance
+    "au": "αστρονομική μονάδα", "AU": "αστρονομική μονάδα",
+    "ltyr": "έτος φωτός", "ly": "έτος φωτός",
+    "pc": "παρσέκ",
+    "Å": "άνγκστρομ", "Å": "άνγκστρομ",
+    "fm": "φέρμι",
+
+    # others
+    "ha": "εκτάριο",
+    # "B": "bel",    # "B" more commonly means bytes
+    "dB": "ντεσιμπέλ", # already logarithmic, so not used with SI prefixes
+
+    "amu": "ατομική μονάδα μάζας",
+    "atm": "ατμόσφαιρα",
+    "bar": "μπαρ",
+    "cal": "θερμίδα",
+    "Ci": "κιουρί",
+    "grad": "γκραντιάν",
+    "M": "μόλαρ",
+    "R": "ρέντγκεν",
+    "rpm": "στροφές ανά λεπτό",
+    "℧": "μ-χ-ο",
+    "dyn": "ντύν",
+    "erg": "έργκ",
+
+    # powers of 2 used with bits and bytes
+    "Kib": "κιμπι-μπιτ", "Mib": "μεμπι-μπιτ", "Gib": "γκιμπι-μπιτ", "Tib": "τεμπι-μπιτ", "Pib": "πεμπι-μπιτ", "Eib": "εξμπι-μπιτ", "Zib": "ζετμπι-μπιτ", "Yib": "γιοτμπι-μπιτ",
+    "KiB": "κιμπι-μπάιτ", "MiB": "μεμπι-μπάιτ", "GiB": "γκιμπι-μπάιτ", "TiB": "τεμπι-μπάιτ", "PiB": "πεμπι-μπάιτ", "EiB": "εξμπι-μπάιτ", "ZiB": "ζετμπι-μπάιτ", "YiB": "γιοτμπι-μπάιτ",
+  }
+
+  # this will only be used if the language is English, so it can be empty for other countries
+- EnglishUnits: {
+    # length
+    "in": "ίντσα",
+    "ft": "πόδι",
+    "mi": "μίλι",
+    "rd": "ροντ",
+    "li": "λίνκ",
+    "ch": "αλλυσίδα",
+
+    # area
+    "sq in": "τετραγωνική ίντσα", "sq. in": "τετραγωνική ίντσα", "sq. in.": "τετραγωνική ίντσα",
+    "sq ft": "τετραγωνικό πόδι", "sq. ft": "τετραγωνικό πόδι", "sq. ft.": "τετραγωνικό πόδι",
+    "sq yd": "τετραγωνική γιάρδα", "sq. yd": "τετραγωνική γιάρδα", "sq. yd.": "τετραγωνική γιάρδα",
+    "sq mi": "τετραγωνικό μίλι", "sq. mi": "τετραγωνικό μίλι", "sq. mi.": "τετραγωνικό μίλι",
+    "ac": "ακρέ",
+    "FBM": "πόδι σανίδας",
+
+    # volume
+    "cu in": "κυβική ίντσα", "cu. in": "κυβική ίντσα", "cu. in.": "κυβική ίντσα",
+    "cu ft": "κυβικό πόδι", "cu. ft": "κυβικό πόδι", "cu. ft.": "κυβικό πόδι",
+    "cu yd": "κυβική γιάρδα", "cu. yd": "κυβική γιάρδα", "cu. yd.": "κυβική γιάρδα",
+    "bbl": "βαρέλι", "BBL": "βαρέλι",
+    "pk": "πεκ",
+    "bu": "μπούσελ",
+    "tsp": "κουταλάκι του γλυκού",
+    "tbl": "κουταλιά της σούπας",
+
+    # liquid
+    "fl dr": "υγρό ντραμ",
+    "fl oz": "υγρή ουγγιά",
+    "gi": "γκιλ",
+    "cp": "φλιτζάνι", "cup": "φλιτζάνι",
+    "pt": "πίντα",
+    "qt": "κουάρτα",
+    "gal": "γαλόνι",
+
+    # weight
+    "gr": "κόκκος",
+    "dr": "νραμ",
+    "oz": "ουγγιά", "℥": "ουγγιά",
+    "lb": "λίβρα",
+    "cwt": "εκατοστόλιρο",
+    "dwt": "πένιγουέιτ",
+    "oz t": "τρόϊ ουγγιά",
+    "lb t": "τρόϊ λίβρα",
+
+    # energy
+    "hp": "ίππος",
+    "BTU": "BTU",
+    "°F": "βαθμός Φαρενάιτ", "℉": "βαθμός Φαρενάιτ",
+
+    # other
+    "mph": "μίλια ανά ώρα",
+    "mpg": "μίλια ανά γαλόνι",
+  }
+
+- CurrencySymbols: {
+    "$": "δολάριο", "¢": "σεντ", "€": "ευρώ", "£": "λίρα στερλίνα", "₡": "κολόν", "₤": "λίρα", "₨": "ρουπία",
+    "₩": "γουόν", "₪": "σέκελ", "₱": "πέσο", "₹": "ρουπία", "₺": "λίρα", "₿": "μπιτκόιν",
+    # could add more currencies...
+  }
+
+- PluralForms: {
+  # FIX: this needs to be flushed out
+    "ίντσα": "ίντσες", "τετραγωνική ίντσα": "τετραγωνικές ίντσες", "κυβική ίντσα": "κυβικές ίντσες",
+    "πόδι": "πόδια", "τετραγωνικό πόδι": "τετραγωνικά πόδια", "κυβικό πόδι": "κυβικά πόδια",
+    "πόδι σανίδας": "πόδια σανίδας",
+    "βαθμός Κελσίου": "βαθμοί Κελσίου",
+    "βαθμός Φαρενάιτ": "βαθμοί Φαρενάιτ",
+    "ενρί": "ενρί",
+    "χέρτζ": "χέρτζ",
+    "λουξ": "λουξ",
+    "σιμένς": "σιμένς",
+    "στροφές ανά λεπτό": "στροφές ανά λεπτό",
+    "μίλια ανά ώρα": "μίλια ανά ώρα",
+    "μίλια ανά γαλόνι": "μίλια ανά γαλόνι",
+    "κολόν": "κολόνες", "λίρα": "λίρες", "γουόν": "γουόν", "μπιτκόιν": "μπιτκόιν",
+    "μέτρο": "μέτρα", "γραμμάριο": "γραμμάρια", "λίτρο": "λίτρα", "δευτερόλεπτο": "δευτερόλεπτα"
+  }
+
 # Lines starting with "#" are a comment
 # Each definition in this file is of the form
-#   name: [ "...", "..." "..." ],
+#   name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
+
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
 # The following definitions are used to convert numbers to words
@@ -24,79 +311,78 @@
 
 # For English, a regular pattern starts at twenty
 
-# theodora. NumbersOrdinalOnes, NumbersOrdinalTens, NumbersOrdinalHundreds and NumbersOrdinalLarge 
-# are used in roots and powers, all feminine gendered in greek, so for now one case for ordinals is sufficient. 
-# however, if in the future these rules are applied elsewhere, adding more grammatical genders might 
-# be needed. 
-    NumbersOnes: [
-         "μηδέν", "ένα", "δύο", "τρία", "τέσσερα", "πέντε", "έξι", "επτά", "οκτώ", "εννιά",
-         "δέκα", "έντεκα", "δώδεκα", "δεκατρία", "δεκατέσσερα", "δεκαπέντε", "δεκαέξι",
-         "δεκαεπτά", "δεκαοκτώ", "δεκαεννέα"
-    ],
+# theodora. NumbersOrdinalOnes, NumbersOrdinalTens, NumbersOrdinalHundreds and NumbersOrdinalLarge
+# are used in roots and powers, all feminine gendered in greek, so for now one case for ordinals is sufficient.
+# however, if in the future these rules are applied elsewhere, adding more grammatical genders might
+# be needed.
+- NumbersOnes: [
+        "μηδέν", "ένα", "δύο", "τρία", "τέσσερα", "πέντε", "έξι", "επτά", "οκτώ", "εννιά",
+        "δέκα", "έντεκα", "δώδεκα", "δεκατρία", "δεκατέσσερα", "δεκαπέντε", "δεκαέξι",
+        "δεκαεπτά", "δεκαοκτώ", "δεκαεννέα"
+    ]
 
 #check again
-    NumbersOrdinalOnes: [
+- NumbersOrdinalOnes: [
          "μηδενική", "πρώτη", "δεύτερη", "τρίτη", "τέταρτη", "πέμπτη", "έκτη", "έβδομη", "όγδοη", "ένατη", "δέκατη", "ενδέκατη", "δωδέκατη", "δέκατη τρίτη", "δέκατη τέταρτη", "δέκατη πέμπτη", "δέκατη έκτη", "δέκατη έβδομη", "δέκατη όγδοοη", "δέκατη ένατη"
-    ],
- 
+    ]
+
 #check again
-    NumbersOrdinalPluralOnes: [
+- NumbersOrdinalPluralOnes: [
          "μηδενικοί", "πρώτοι", "δεύτεροι", "τρίτοι", "τέταρτοι", "πέμπτοι", "έκτοι", "έβδομοι", "όγδοοι", "ένατοι",
          "δέκατοι", "ενδέκατοι", "δωδέκατοι"
-    ],
+    ]
 
     # stop when regularity begins
-    NumbersOrdinalFractionalOnes: [
+- NumbersOrdinalFractionalOnes: [
          "μηδενικό", "πρώτο", "δεύτερο", "τρίτο", "τέταρτο", "πέμπτο", "έκτο", "έβδομο", "όγδοο", "ένατο", "δέκατο", "ενδέκατο", "δωδέκατο", "δέκατο τρίτο", "δέκατο τέταρτο", "δέκατο πέμπτο", "δέκατο έκτο", "δέκατο έβδομο", "δέκατο όγδοο", "δέκατο ένατο"
-    ],
+    ]
 
     # stop when regularity begins
-    NumbersOrdinalFractionalPluralOnes: [
+- NumbersOrdinalFractionalPluralOnes: [
          "μηδενικά", "πρώτα", "δεύτερα", "τρίτα", "τέταρτα", "πέμπτα", "έκτα", "έβδομα", "όγδοα", "ένατα", "δέκατα", "ενδέκατα", "δωδέκατα", "δέκατα τρίτα", "δέκατα τέταρτα", "δέκατα πέμπτα", "δέκατα έκτα", "δέκατα έβδομα", "δέκατα όγδοα", "δέκατα ένατα"
-    ],
+    ]
 
 
     # What to use for multiples of 10
-    NumbersTens: [
+- NumbersTens: [
          "", "δέκα", "είκοσι", "τριάντα", "σαράντα", "πενήντα", "εξήντα", "εβδομήντα", "ογδόντα", "ενενήντα"
-    ],
+    ]
 
 #check again
-    NumbersOrdinalTens: [
+- NumbersOrdinalTens: [
          "", "δέκατη", "εικοστή", "τριακοστή", "τεσσαρακοστή", "πεντηκοστή", "εξηκοστή", "εβδομηκοστή", "ογδοηκοστή", "ενενηκοστή"
-    ],
+    ]
 #check again
-    NumbersOrdinalPluralTens: [
+- NumbersOrdinalPluralTens: [
          "", "δέκατοι", "εικοστοί", "τριακοστοί", "τεσσαρακοστοί", "πεντηκοστοί", "εξηκοστοί", "εβδομηκοστοί", "ογδοηκοστοί", "ενενηκοστοί"
-    ],
+    ]
 
 
-    NumbersHundreds: [
+- NumbersHundreds: [
        "", "εκατό", "διακόσια", "τριακόσια", "τετρακόσια", "πεντακόσια", "εξακόσια", "επτακόσια", "οκτακόσια", "εννιακόσια"
-    ],
+    ]
 
 #check again
-    NumbersOrdinalHundreds: [
+- NumbersOrdinalHundreds: [
        "", "εκατοστή", "διακοσιοστή", "τριακοσιοστή", "τετρακοσιοστή", "πεντακοσιοστή",
          "εξακοσιοστή", "επτακοσιοστή", "οκτακοσιοστή", "εννιακοσιοστή"
-    ],
+    ]
 #check again
-    NumbersOrdinalPluralHundreds: [
+- NumbersOrdinalPluralHundreds: [
        "", "εκατοστοί", "διακοσιοστοί", "τριακοσιοστοί", "τετρακοσιοστοί", "πεντακοσιοστοί",
          "εξακοσιοστοί", "επτακοσιοστοί", "οκτακοσιοστοί", "εννιακοσιοστοί"
-    ],
-      
+    ]
+
 
     # At this point, hopefully the language is regular. If not, code needs to be written
-    NumbersLarge: [
+- NumbersLarge: [
          "", "χιλιάδες", "εκατομμύρια", "δισεκατομμύρια", "τρισεκατομμύρια", "τετράκις εκατομμύρια", "πεντάκις εκατομμύρια", "εξάκις εκατομμύρια", "επτάκις εκατομμύρια", "οκτάκις εκατομμύρια", "εννεάκις εκατομμύρια", "δεκάκις εκατομμύρια", "ενδεκάκις εκατομμύρια", "δωδεκάκις εκατομμύρια", "δεκατριάκις εκατομμύρια", "δεκατετράκις εκατομμύρια", "δεκαπεντάκις εκατομμύρια", "δεκαεξάκις εκατομμύρια", "δεκαεπτάκις εκατομμύρια", "δεκαοκτάκις εκατομμύρια", "δεκαεννεάκις εκατομμύρια", "εικοσάκις εκατομμύρια", "εικοσιάπαξ εκατομμύρια", "εικοσιδίς εκατομμύρια", "εικοσιτρίς εκατομμύρια", "εικοσιτετράκις εκατομμύρια", "εικοσιπεντάκις εκατομμύρια", "εικοσιεξάκις εκατομμύρια"
-    ],
-                                
-    NumbersOrdinalLarge: [
+    ]
+
+- NumbersOrdinalLarge: [
          "", "χιλιαστή", "εκατομμυριοστή", "δισεκατομμυριοστή", "τρισεκατομμυριοστή", "τετράκις εκατομμυριοστή", "πεντάκις εκατομμυριοστή", "εξάκις εκατομμυριοστή", "επτάκις εκατομμυριοστός", "οκτάκις εκατομμυριοστή", "εννεάκις εκατομμυριοστή", "δεκάκις εκατομμυριοστή", "ενδεκάκις εκατομμυριοστή", "δωδεκάκις εκατομμυριοστή", "δεκατριάκις εκατομμυριοστή", "δεκατετράκις εκατομμυριοστή", "δεκαπεντάκις εκατομμυριοστή", "δεκαεξάκις εκατομμυριοστή", "δεκαεπτάκις εκατομμυριοστή", "δεκαοκτάκις εκατομμυριοστή", "δεκαεννεάκις εκατομμυριοστή", "εικοσάκις εκατομμυριοστή", "εικοσιάπαξ εκατομμυριοστή", "εικοσιδίς εκατομμυριοστή", "εικοσιτρίς εκατομμυριοστή", "εικοσιτετράκις εκατομμυριοστή", "εικοσιπεντάκις εκατομμυριοστή", "εικοσιεξάκις εκατομμυριοστή"
-    ],
-      
-    NumbersOrdinalPluralLarge: [
+    ]
+
+- NumbersOrdinalPluralLarge: [
          "", "χιλιαστοί", "εκατομμυριοστοί", "δισεκατομμυριοστοί", "τρισεκατομμυριοστοί", "τετράκις εκατομμυριοστοί", "πεντάκις εκατομμυριοστοί", "εξάκις εκατομμυριοστοί", "επτάκις εκατομμυριοστοί", "οκτάκις εκατομμυριοστοί", "εννεάκις εκατομμυριοστοί", "δεκάκις εκατομμυριοστοί", "ενδεκάκις εκατομμυριοστοί", "δωδεκάκις εκατομμυριοστοί", "δεκατριάκις εκατομμυριοστοί", "δεκατετράκις εκατομμυριοστοί", "δεκαπεντάκις εκατομμυριοστοί", "δεκαεξάκις εκατομμυριοστοί", "δεκαεπτάκις εκατομμυριοστοί", "δεκαοκτάκις εκατομμυριοστοί", "δεκαεννεάκις εκατομμυριοστοί", "εικοσάκις εκατομμυριοστοί", "εικοσιάπαξ εκατομμυριοστοί", "εικοσιδίς εκατομμυριοστοί", "εικοσιτρίς εκατομμυριοστοί", "εικοσιτετράκις εκατομμυριοστοί", "εικοσιπεντάκις εκατομμυριοστοί", "εικοσιεξάκις εκατομμυριοστοί"
     ]
-]
