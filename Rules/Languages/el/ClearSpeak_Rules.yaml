@@ -1,5 +1,4 @@
 ---
----
 - name: pause
   tag: "!*"
   match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
