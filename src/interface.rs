@@ -192,6 +192,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
                 });
 
             if !error_message.is_empty() {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
                 bail!(error_message);
             }
             let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
@@ -205,6 +207,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 
             let new_package = parser::parse(&mathml_str);
             if let Err(e) = new_package {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
                 bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
             }
 
@@ -1318,5 +1322,19 @@ mod tests {
         let test = "<math><mtext>if&#xa0;<math> <msup><mi>n</mi><mn>2</mn></msup></math>&#xa0;is real</mtext></math>";
         let target = "<math><mrow><mtext>if&#xa0;</mtext><msup><mi>n</mi><mn>2</mn></msup><mtext>&#xa0;is real</mtext></mrow></math>";
         assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn old_mathml_cleared_on_error() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let good_mathml = "<math><mn>3</mn></math>";
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math><mi>&xabc;</mi></math>";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math>garbage";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
     }
 }
