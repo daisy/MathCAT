@@ -1306,11 +1306,10 @@ fn collect_elements(mrow: Element<'_>) -> Option<Vec<NameStr<'_>>> {
                     elements.push(as_text(base));
                 }   // else skip and let recursive likely_chem_formula call check the contents
             },
-            "mo" => {
-                if likely_chem_formula_operator(child) < 0 {
-                    return None;
-                }
+            "mo" if likely_chem_formula_operator(child) < 0 => {
+                return None;
             },
+            "mo" => (),
             _ => (),    // let loop in likely_chem_formula() deal with all the negatives
         }
     }

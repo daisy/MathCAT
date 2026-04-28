@@ -1165,25 +1165,21 @@ impl MyXPath {
                         i += 1;
                     },
                     '\'' => inside_quote = !inside_quote,
-                    '(' => {
-                        if !inside_quote {
-                            count += 1;
-                        }
+                    '(' if !inside_quote => {
+                        count += 1;
                         // FIX: it would be more efficient to spot "DEBUG" preceding this and recurse rather than matching the whole string and recursing
                     },
-                    ')' => {
-                        if !inside_quote {
-                            count -= 1;
-                            if count == 0 {
-                                let arg = &chars[1..i].iter().collect::<String>();
-                                let escaped_arg = arg.replace('"', "\\\"");
-                                // DEBUG(...) may be inside 'arg' -- recurse
-                                let processed_arg = MyXPath::add_debug_string_arg(arg)?;
+                    ')' if !inside_quote => {
+                        count -= 1;
+                        if count == 0 {
+                            let arg = &chars[1..i].iter().collect::<String>();
+                            let escaped_arg = arg.replace('"', "\\\"");
+                            // DEBUG(...) may be inside 'arg' -- recurse
+                            let processed_arg = MyXPath::add_debug_string_arg(arg)?;
 
-                                // DEBUG(...) may be in the remainder of the string -- recurse
-                                let processed_rest = MyXPath::add_debug_string_arg(&chars[i+1..].iter().collect::<String>())?;
-                                return Ok( format!("({processed_arg}, \"{escaped_arg}\"){processed_rest}") );
-                            }
+                            // DEBUG(...) may be in the remainder of the string -- recurse
+                            let processed_rest = MyXPath::add_debug_string_arg(&chars[i+1..].iter().collect::<String>())?;
+                            return Ok( format!("({processed_arg}, \"{escaped_arg}\"){processed_rest}") );
                         }
                     },
                     _ => (),
@@ -2092,7 +2088,7 @@ impl fmt::Display for SpeechRules {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "SpeechRules '{}'\n{})", self.name, self.pref_manager.borrow())?;
         let mut rules_vec: Vec<(&String, &Vec<Box<SpeechPattern>>)> = self.rules.iter().collect();
-        rules_vec.sort_by(|(tag_name1, _), (tag_name2, _)| tag_name1.cmp(tag_name2));
+        rules_vec.sort_by_key(|(tag_name, _)| *tag_name);
         for (tag_name, rules) in rules_vec {
             writeln!(f, "   {}: #patterns {}", tag_name, rules.len())?;
         };
