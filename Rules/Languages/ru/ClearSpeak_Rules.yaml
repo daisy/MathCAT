@@ -23,7 +23,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "минус"
+  - T: "минус"
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -32,26 +32,26 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: ""]
+      then: [T: ""]
   - test:
       if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
       - bookmark: "*[1]/@id"
       - test:
           if: parent::*[self::m:minus and count(*)=1]
-          then: [t: "отрицательный"]
-          else: [t: "положительный"]
-  - t: "квадратный корень"
+          then: [T: "отрицательный"]
+          else: [T: "положительный"]
+  - T: "квадратный корень"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]
+      then: [T: "из"]
       else: [pause: short]
   - x: "*[1]"
   - test:
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "конец корня"
+      - T: "конец корня"
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -72,16 +72,16 @@
           then: [bookmark: "parent/@id"]
       - test:
           if: parent::m:minus
-          then: [t: "отрицательный"]
-          else: [t: "положительный"]
+          then: [T: "отрицательный"]
+          else: [T: "положительный"]
   - test:
       if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "квадратный корень"]
+        then: [T: "квадратный корень"]
       - else_if: "*[2][.='3']"
-        then: [t: "кубический корень"]
-      - else: [x: "ToOrdinal(*[2])", t: "степени"]
+        then: [T: "кубический корень"]
+      - else: [x: "ToOrdinal(*[2])", T: "степени"]
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
@@ -89,16 +89,16 @@
           - x: "*[2]"
           - pronounce: [{text: "-й"}, {ipa: "j"}, {sapi5: "y"}, {eloquence: "Y"}]
           else: {x: "*[2]"}
-      - t: "корень"
+      - T: "корень"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]
+      then: [T: "из"]
   - x: "*[1]"
   - test:
       if: $ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
       - pause: short
-      - t: "конец корня"
+      - T: "конец корня"
       - pause: medium
       else_test:
         if: IsNode(*[1], 'simple')
@@ -118,8 +118,8 @@
       - bookmark: "@id"
       - test:
           if: "self::m:minus"
-          then: [t: "отрицательный"]
-          else: [t: "положительный"]
+          then: [T: "отрицательный"]
+          else: [T: "положительный"]
   - x: "*[1]"
 
 - name: per-fraction
@@ -129,7 +129,7 @@
           BaseNode(*[1])[contains(@data-intent-property, ':unit') or (self::m:mrow and self::*[3][contains(@data-intent-property, ':unit')])]"
   replace:
   - x: "*[1]"
-  - t: "в"
+  - T: "в"
   - x: "*[2]"
 
 - name: common-fraction
@@ -168,15 +168,15 @@
       - test:
           if: "$Verbosity!='Terse'"
           then: [ot: ""]
-      - t: "дробь"
+      - T: "дробь"
   - x: "*[1]"
-  - t: "деленное на"
+  - T: "делённое на"
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
       then:
       - pause: short
-      - t: "конец дроби"
+      - T: "конец дроби"
       - pause: short
 
 - name: fraction-over-text
@@ -197,13 +197,13 @@
   - ")"
   replace:
   - x: "*[1]"
-  - t: "деленное на"
+  - T: "делённое на"
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - t: "конец дроби"
+      - T: "конец дроби"
       - pause: short
 
 - name: default
@@ -211,20 +211,20 @@
   match: "."
   replace:
   - ot: ""
-  - t: "дробь: числитель"
+  - T: "дробь: числитель"
   - test:
       if: not(IsNode(*[1], 'simple'))
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - t: "знаменатель"
+  - T: "знаменатель"
   - x: "*[2]"
   - pause: long
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='GeneralEndFrac'"
       then:
       - pause: short
-      - t: "конец дроби"
+      - T: "конец дроби"
       - pause: short
 
 - name: ClearSpeak-function-inverse
@@ -233,11 +233,11 @@
   replace:
   - test:
       if: $ClearSpeak_Trig = 'TrigInverse'
-      then: [{x: "*[1]"}, {bookmark: "*[2]/@id"}, t: "обратное"]
+      then: [{x: "*[1]"}, {bookmark: "*[2]/@id"}, T: "обратное"]
       else_test:
         if: $ClearSpeak_Trig = 'ArcTrig'
-        then: [bookmark: "*[2]/@id", t: "арка", x: "*[1]"]
-        else: [bookmark: "*[2]/@id", t: "обратное", x: "*[1]"]
+        then: [bookmark: "*[2]/@id", T: "дуга", x: "*[1]"]
+        else: [bookmark: "*[2]/@id", T: "обратное", x: "*[1]"]
 
 - name: function-squared-or-cubed
   tag: power
@@ -249,8 +249,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.='2']"
-      then: [t: "в квадрате"]
-      else: [t: "в кубе"]
+      then: [T: "в квадрате"]
+      else: [T: "в кубе"]
 
 - name: function-power
   tag: power
@@ -265,7 +265,7 @@
       if: "*[2][self::m:mn][not(contains(., '.'))]"
       then: [x: "ToOrdinal(*[2])"]
       else: [x: "*[2]"]
-  - t: "степени"
+  - T: "степени"
   - pause: short
   - x: "*[1]"
 
@@ -276,18 +276,18 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "возведено в степень"
+  - T: "возведено в степень"
   - pause: short
   - x: "*[2]"
   - pause: medium
-  - t: "конец степени"
+  - T: "конец степени"
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - t: "возведено в степень"
+  - T: "возведено в степень"
   - x: "*[2]"
   - pause: short
 
@@ -297,7 +297,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "в квадрате"
+  - T: "в квадрате"
 
 - name: cubed
   tag: power
@@ -305,7 +305,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "в кубе"
+  - T: "в кубе"
 
 - name: simple-integer
   tag: power
@@ -315,11 +315,11 @@
   - test:
       if: "*[2][.>0]"
       then:
-      - t: "в"
+      - T: "в"
       - x: "ToOrdinal(*[2])"
-      - t: "степени"
+      - T: "степени"
       else:
-      - t: "в степени"
+      - T: "в степени"
       - x: "*[2]"
   - test:
       if: "$ClearSpeak_Exponents != 'Ordinal' and *[2][.>0]"
@@ -333,7 +333,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "в степени"
+  - T: "в степени"
   - x: "*[2]"
 
 - name: simple-var
@@ -341,7 +341,7 @@
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "в степени"
+  - T: "в степени"
   - x: "*[2]"
   - pronounce: [{text: "-й"}, {ipa: "j"}, {sapi5: "y"}, {eloquence: "Y"}]
 
@@ -360,8 +360,8 @@
   - x: "*[1]"
   - test:
       if: "*[2]/*[2][.='2']"
-      then: [t: "во вторую степень"]
-      else: [t: "в третью степень"]
+      then: [T: "во вторую степень"]
+      else: [T: "в третью степень"]
 
 - name: nested-negative-squared-or-cubed
   tag: power
@@ -380,8 +380,8 @@
   - x: "*[1]"
   - test:
       if: "*[2]/*[1]/*[2][.='2']"
-      then: [t: "во вторую степень"]
-      else: [t: "в третью степень"]
+      then: [T: "во вторую степень"]
+      else: [T: "в третью степень"]
 
 - name: nested-var-squared-or-cubed
   tag: power
@@ -402,8 +402,8 @@
   - x: "*[1]"
   - test:
       if: "*[2]/*[3]/*[2][.='2']"
-      then: [t: "во вторую степень"]
-      else: [t: "в третью степень"]
+      then: [T: "во вторую степень"]
+      else: [T: "в третью степень"]
 
 - name: nested-negative-var-squared-or-cubed
   tag: power
@@ -426,8 +426,8 @@
   - x: "*[1]"
   - test:
       if: "*[2]/*[3]/*[2][.='2']"
-      then: [t: "во вторую степень"]
-      else: [t: "в третью степень"]
+      then: [T: "во вторую степень"]
+      else: [T: "в третью степень"]
 
 - name: default-exponent-power
   tag: power
@@ -435,18 +435,18 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "возведено в степень"
+  - T: "возведено в степень"
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "конец степени"
+  - T: "конец степени"
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "в степени"
+  - T: "в степени"
   - x: "*[2]"
 
 - name: ClearSpeak-absolute-value
@@ -458,19 +458,19 @@
         then: [t: ""]
     - test:
         if: "$ClearSpeak_AbsoluteValue = 'Cardinality'"
-        then: [t: "мощность множества"]
-        else: [t: "модуль"]
-    - t: "из"
+        then: [T: "мощность множества"]
+        else: [T: "модуль"]
+    - T: "из"
     - x: "*[1]"
     - test:
         if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
         then:
           - pause: short
-          - t: "конец"
+          - T: "конец"
           - test:
               if: "$ClearSpeak_AbsoluteValue = 'Cardinality'"
-              then: [t: "мощности множества"]
-              else: [t: "модуля"]
+              then: [T: "мощности множества"]
+              else: [T: "модуля"]
     - pause: short
 
 - name: set
@@ -479,24 +479,24 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [t: "пустое множество"]
+      then: [T: "пустое множество"]
     - else_if: "count(*)=2"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [t: ""]
-      - t: "пустое множество"
+      - T: "пустое множество"
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [t: ""]
-      - t: "множество"
+      - T: "множество"
       - test:
           if: $ClearSpeak_Sets != 'woAll'
-          then: [t: "всех"]
+          then: [T: "всех"]
       - x: "*[1]/*[1]"
-      - t: "таких, что"
+      - T: "таких, что"
       - x: "*[1]/*[3]"
       else:
       - test:
@@ -505,7 +505,7 @@
           - test:
               if: "$Verbosity!='Terse'"
               then: [t: ""]
-          - t: "множество"
+          - T: "множество"
       - x: "*[1]"
 
 - name: ClearSpeak-intervals
@@ -515,9 +515,9 @@
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - t: "интервал от"
+  - T: "интервал от"
   - x: "*[1]"
-  - t: "до"
+  - T: "до"
   - x: "*[2]"
   - pause: short
   - test:
@@ -525,17 +525,17 @@
       then:
       - test:
           if: "starts-with(name(.), 'open')"
-          then: [t: "исключая"]
-          else: [t: "включая"]
+          then: [T: "исключая"]
+          else: [T: "включая"]
       - x: "*[1]"
   - test:
       if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
       then_test:
       - if: "name(.)='open-interval'"
-        then: [t: "и"]
+        then: [T: "и"]
       - else_if: "name(.)='closed-interval'"
-        then: [t: "и"]
-        else: [t: "но"]
+        then: [T: "и"]
+        else: [T: "но"]
   - test:
       if: not($is_intervals_end_infinity)
       then:
@@ -544,8 +544,8 @@
           then:
           - test:
               if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [t: "исключая"]
-              else: [t: "включая"]
+              then: [T: "исключая"]
+              else: [T: "включая"]
       - x: "*[2]"
 
 - name: binomial-frac-vector
@@ -554,9 +554,9 @@
   - "$ClearSpeak_Matrix = 'Combinatorics' and "
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
-  - t: "число сочетаний из"
+  - T: "число сочетаний из"
   - x: "*[1]/*[1]/*"
-  - t: "по"
+  - T: "по"
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
@@ -565,12 +565,12 @@
   variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - pause: medium
-  - t: "строка"
+  - T: "строка"
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: .[self::m:mlabeledtr]
       then:
-      - t: "с меткой"
+      - T: "с меткой"
       - x: "*[1]/*"
       - pause: short
   - pause: medium
@@ -591,21 +591,21 @@
       if: "$log_is_simple"
       then_test:
       - if: "*[1][.='log']"
-        then: [t: "логарифм"]
+        then: [T: "логарифм"]
       - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-        then: [t: "натуральный логарифм"]
-        else: [t: "натуральный логарифм"]
+        then: [T: "натуральный логарифм"]
+        else: [T: "натуральный логарифм"]
       else:
       - test:
           if: "$Verbosity!='Terse' and not(log_is_simple)"
-          then: [t: ""]
+          then: [T: ""]
       - test:
         - if: "*[1][.='log']"
-          then: [t: "логарифм"]
+          then: [T: "логарифм"]
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-          then: [t: "натуральный логарифм"]
-          else: [t: "натуральный логарифм"]
-      - t: "от"
+          then: [T: "натуральный логарифм"]
+          else: [T: "натуральный логарифм"]
+      - T: "от"
       - pause: short
   - x: "*[3]"
 
@@ -623,20 +623,20 @@
       - x: "$LineCount"
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "случай"]
+          then: [T: "случай"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'"
-          then: [t: "строка"]
+          then: [T: "строка"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "ограничение"]
+          then: [T: "ограничение"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "уравнение"]
+          then: [T: "уравнение"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "строка"]
+          then: [T: "строка"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "шаг"]
+          then: [T: "шаг"]
       - test:
         - if: "$LineCount != 1"
-          then: [ct: "ов"]
+          then: [CT: "ов"]
       - pause: short
   - x: "*"
   - pause: long
@@ -652,22 +652,22 @@
       - pause: medium
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "случае"]
+          then: [T: "случае"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
-          then: [t: "строке"]
+          then: [T: "строке"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "ограничении"]
+          then: [T: "ограничении"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "уравнении"]
+          then: [T: "уравнении"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "строке"]
+          then: [T: "строке"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "шаге"]
+          then: [T: "шаге"]
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
       - test:
           if: "self::m:mlabeledtr"
           then:
-          - t: "с меткой"
+          - T: "с меткой"
           - x: "*[1]/*"
   - test:
     - if: "$ClearSpeak_MultiLineLabel='None'"
@@ -688,14 +688,14 @@
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
       then: [t: ""]
-      else: [t: "умножить на"]
+      else: [T: "умножить на"]
 
 - name: no-times
   tag: mo
   match:
   - ".='⁢' and $ClearSpeak_ImpliedTimes = 'None'"
   replace:
-  - t: ""
+  - T: ""
 
 - name: ClearSpeak-times
   tag: mo
@@ -721,7 +721,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]"
   - " )"
   replace:
-  - t: "умножить на"
+  - T: "умножить на"
 
 - name: no-say-parens
   tag: mrow
