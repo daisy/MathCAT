@@ -38,6 +38,7 @@ env_logger = "0.11.9"
 cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
+html-escape = "0.2.13"
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 zip = { version = "8.2", default-features = false, features = ["deflate"] }

@@ -79,6 +79,7 @@ use strum_macros::{Display, EnumString};
 use regex::Regex;
 use std::sync::LazyLock;
 use sxd_xpath_no_unsafe::Value;
+use html_escape::encode_safe;
 
 const MIN_PAUSE:f64 = 50.0;         // ms -- avoids clutter of putting out pauses that probably can't be heard
 const PAUSE_SHORT:f64 = 200.0;  // ms
@@ -454,7 +455,9 @@ impl TTS {
             if result.is_empty() {
                 result += " ";
             }
-            result += &command.replacements.replace::<String>(rules_with_context, mathml)?;    
+            // need to sanitize string so that SSML is not injected into it via mtext, etc.
+            let speech = command.replacements.replace::<String>(rules_with_context, mathml)?;  
+            result += &encode_safe(&speech);
         }
 
         let end_tag = match self {
