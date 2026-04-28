@@ -23,6 +23,9 @@ use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
+/// Maximum depth to prevent stack overflow on deeply nested MathML
+pub const MAX_DEPTH: usize = 512;
+
 #[cfg(feature = "enable-logs")]
 use std::sync::Once;
 #[cfg(feature = "enable-logs")]
@@ -681,7 +684,7 @@ pub fn copy_mathml(mathml: Element) -> Element {
 
 fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     // Safety: Prevent stack overflow on deeply nested MathML
-    if depth > 512 {
+    if depth > MAX_DEPTH {
         // Return the element as a leaf if it's too deep to prevent crash
         return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
     }
@@ -1322,6 +1325,20 @@ mod tests {
         let test = "<math><mtext>if&#xa0;<math> <msup><mi>n</mi><mn>2</mn></msup></math>&#xa0;is real</mtext></math>";
         let target = "<math><mrow><mtext>if&#xa0;</mtext><msup><mi>n</mi><mn>2</mn></msup><mtext>&#xa0;is real</mtext></mrow></math>";
         assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn stack_overflow_protection() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let mut bad_mathml = String::from("<math>");
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("<msqrt><mi>n</mi>");
+        }
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("</msqrt>");
+        }
+        bad_mathml.push_str("</math>");
+        assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
     }
 
     #[test]
