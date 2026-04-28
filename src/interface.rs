@@ -703,7 +703,7 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml(child);
+        let new_child = copy_mathml_recursive(child, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
