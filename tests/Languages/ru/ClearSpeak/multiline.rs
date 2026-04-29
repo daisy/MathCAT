@@ -1,7 +1,9 @@
 use crate::common::*;
+use anyhow::Result;
+
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
   let expr = "<math>
     <mi>f</mi>
     <mrow>
@@ -25,11 +27,12 @@ fn case_1() {
                 случай 1; минус 1, если икс меньше 0; \
                 случай 2; 0, если икс равно 0; \
                 случай 3; 1, если икс больше 0"
-    )
+    )?;
+    return Ok(());
 }
 
 #[test]
-fn equation_auto() {
+fn equation_auto() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -41,11 +44,12 @@ fn equation_auto() {
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Auto", expr,
                 "2 строки; \
                 строка 1; икс плюс игрек равно 7; \
-                строка 2; 2 икс плюс 3 игрек равно 17");
+                строка 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_plus_at_start() {
+fn equation_plus_at_start() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -56,11 +60,12 @@ fn equation_plus_at_start() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 строки; \
                 строка 1; икс плюс игрек равно 7; \
-                строка 2; 2 икс, плюс 3 игрек, равно 17");
+                строка 2; 2 икс, плюс 3 игрек, равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_case() {
+fn equation_case() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -69,12 +74,13 @@ fn equation_case() {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Case", expr, 
-   "2 случая; случай 1; икс плюс игрек равно 7; случай 2; 2 икс плюс 3 игрек равно 17");
+   test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Case", expr,
+   "2 случая; случай 1; икс плюс игрек равно 7; случай 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_constraint() {
+fn equation_constraint() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -85,11 +91,12 @@ fn equation_constraint() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 ограничения; \
                 ограничение 1; икс плюс игрек равно 7; \
-                ограничение 2; 2 икс плюс 3 игрек равно 17");
+                ограничение 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_equation() {
+fn equation_equation() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -100,11 +107,12 @@ fn equation_equation() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 уравнения; \
                 уравнение 1; икс плюс игрек равно 7; \
-                уравнение 2; 2 икс плюс 3 игрек равно 17");
+                уравнение 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_line() {
+fn equation_line() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -115,11 +123,12 @@ fn equation_line() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Line", expr, "2 строки; \
                 строка 1; икс плюс игрек равно 7; \
-                строка 2; 2 икс плюс 3 игрек равно 17");
+                строка 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_none() {
+fn equation_none() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -131,11 +140,12 @@ fn equation_none() {
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "None", expr,
         "2 строки; \
                 икс плюс игрек равно 7; \
-                2 икс плюс 3 игрек равно 17");
+                2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_row() {
+fn equation_row() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -146,11 +156,12 @@ fn equation_row() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Row", expr, "2 строки; \
                 строка 1; икс плюс игрек равно 7; \
-                строка 2; 2 икс плюс 3 игрек равно 17");
+                строка 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_step() {
+fn equation_step() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -161,11 +172,12 @@ fn equation_step() {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Step", expr, "2 шага; \
                 шаг 1; икс плюс игрек равно 7; \
-                шаг 2; 2 икс плюс 3 игрек равно 17");
+                шаг 2; 2 икс плюс 3 игрек равно 17")?;
+    return Ok(());
 }
 
 #[test]
-fn continued_row() {
+fn continued_row() -> Result<()> {
   let expr = "<math>
   <mtable intent=':system-of-equations'>
    <mtr><mtd><mi>x</mi></mtd><mtd><mo>=</mo></mtd><mtd><mi>y</mi></mtd></mtr>
@@ -174,5 +186,6 @@ fn continued_row() {
   </mtable>
 </math>";
 test("ru", "SimpleSpeak", expr,
-     "2 уравнения; уравнение 1; икс равно игрек плюс 1; уравнение 2; игрек равно 1");
+     "2 уравнения; уравнение 1; икс равно игрек плюс 1; уравнение 2; игрек равно 1")?;
+    return Ok(());
 }

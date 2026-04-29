@@ -1,194 +1,216 @@
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn complex() {
+fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "комплексные числа");
+    test("ru", "SimpleSpeak", expr, "комплексные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn natural() {
+fn natural() -> Result<()> {
     let expr = "<math>
                     <mi>ℕ</mi>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "натуральные числа");
+    test("ru", "SimpleSpeak", expr, "натуральные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn rationals() {
+fn rationals() -> Result<()> {
     let expr = "<math>
                     <mi>ℚ</mi>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "рациональные числа");
+    test("ru", "SimpleSpeak", expr, "рациональные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn reals() {
+fn reals() -> Result<()> {
     let expr = "<math>
                     <mi>ℝ</mi>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "действительные числа");
+    test("ru", "SimpleSpeak", expr, "действительные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn integers() {
+fn integers() -> Result<()> {
     let expr = "<math>
                     <mi>ℤ</mi>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "целые числа");
+    test("ru", "SimpleSpeak", expr, "целые числа")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_complex() {
+fn msup_complex() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℂ</mi>
                     <mn>2</mn>
                 </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "цэ 2");
+    test("ru", "SimpleSpeak", expr, "цэ 2")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_natural() {
+fn msup_natural() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℕ</mi>
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "эн 2");
+    test("ru", "SimpleSpeak", expr, "эн 2")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_rationals() {
+fn msup_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "ку 2");
+    test("ru", "SimpleSpeak", expr, "ку 2")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_reals() {
+fn msup_reals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℝ</mi>
                     <mn>3</mn>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "эр 3");
+    test("ru", "SimpleSpeak", expr, "эр 3")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_integers() {
+fn msup_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mn>4</mn>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "зэт 4");
+    test("ru", "SimpleSpeak", expr, "зэт 4")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_positive_integers() {
+fn msup_positive_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "положительные целые числа");
+    test("ru", "SimpleSpeak", expr, "положительные целые числа")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_negative_integers() {
+fn msup_negative_integers() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℤ</mi>
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "отрицательные целые числа");
+    test("ru", "SimpleSpeak", expr, "отрицательные целые числа")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_positive_rationals() {
+fn msup_positive_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "положительные рациональные числа");
+    test("ru", "SimpleSpeak", expr, "положительные рациональные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn msup_negative_rationals() {
+fn msup_negative_rationals() -> Result<()> {
     let expr = "<math>
                 <msup>
                     <mi>ℚ</mi>
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("ru", "SimpleSpeak", expr, "отрицательные рациональные числа");
+    test("ru", "SimpleSpeak", expr, "отрицательные рациональные числа")?;
+    return Ok(());
 }
 
 #[test]
-fn empty_set() {
+fn empty_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mo>}</mo>
             </math>";
-    test("ru", "SimpleSpeak", expr, "пустое множество");
+    test("ru", "SimpleSpeak", expr, "пустое множество")?;
+    return Ok(());
 }
 
 #[test]
-fn single_element_set() {
+fn single_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>12</mn><mo>}</mo>
             </math>";
-    test("ru", "SimpleSpeak", expr, "множество 12");
+    test("ru", "SimpleSpeak", expr, "множество 12")?;
+    return Ok(());
 }
 
 #[test]
-fn multiple_element_set() {
+fn multiple_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>5</mn> <mo>,</mo> <mn>10</mn>  <mo>,</mo> <mn>15</mn> <mo>}</mo>
             </math>";
-    test("ru", "SimpleSpeak", expr, "множество 5 запятая, 10 запятая, 15");
+    test("ru", "SimpleSpeak", expr, "множество 5 запятая, 10 запятая, 15")?;
+    return Ok(());
 }
 
 #[test]
-fn set_with_colon() {
+fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("ru", "SimpleSpeak", expr, "множество всех x таких, что x больше 2");
+    test("ru", "SimpleSpeak", expr, "множество всех x таких, что x больше 2")?;
+    return Ok(());
 }
 
 #[test]
-fn set_with_bar() {
+fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("ru", "SimpleSpeak", expr, "множество всех икс таких, что икс больше 2");
+    test("ru", "SimpleSpeak", expr, "множество всех икс таких, что икс больше 2")?;
+    return Ok(());
 }
 
 #[test]
-fn element_alone() {
+fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("ru", "SimpleSpeak", expr, "3 плюс 2 и, не является элементом действительных чисел");
+    test("ru", "SimpleSpeak", expr, "3 плюс 2 и, не является элементом действительных чисел")?;
+    return Ok(());
 }
 
 #[test]
-fn element_under_sum() {
+fn element_under_sum() -> Result<()> {
     let expr = "<math>
             <munder>
                 <mo>∑</mo>
@@ -200,11 +222,12 @@ fn element_under_sum() {
             </mfrac>
         </math>";
     test("ru", "SimpleSpeak", expr,
-                    "сумма по i, являющемуся элементом целых чисел, от; дробь, числитель: 1, знаменатель: и в квадрате, конец дроби");
+                    "сумма по i, являющемуся элементом целых чисел, от; дробь, числитель: 1, знаменатель: и в квадрате, конец дроби")?;
+                    return Ok(());
 }
 
 #[test]
-fn complicated_set_with_colon() {
+fn complicated_set_with_colon() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
             <mi>x</mi>
@@ -218,11 +241,12 @@ fn complicated_set_with_colon() {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("ru", "SimpleSpeak", expr, "множество всех икс из целых чисел, таких что 2 меньше икс меньше 7");
+    test("ru", "SimpleSpeak", expr, "множество всех икс из целых чисел, таких что 2 меньше икс меньше 7")?;
+    return Ok(());
 }
 
 #[test]
-fn complicated_set_with_mtext() {
+fn complicated_set_with_mtext() -> Result<()> {
     let expr = "<math>
         <mo>{</mo>
         <mrow> <mi>x</mi><mo>∈</mo><mi>ℕ</mi></mrow>
@@ -231,5 +255,6 @@ fn complicated_set_with_mtext() {
         <mo>}</mo>
         </math>";
     test("ru", "SimpleSpeak", expr, 
-            "множество всех икс из натуральных чисел, таких что x — четное число");
+            "множество всех икс из натуральных чисел, таких что x — четное число")?;
+            return Ok(());
 }

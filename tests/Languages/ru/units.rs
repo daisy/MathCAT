@@ -2,6 +2,8 @@
 /// * модифицированная переменная
 use crate::common::*;
 
+use anyhow::Result;
+
 // Основная структура тестов:
 // 1. Проход по всем приставкам СИ
 // 2. Проход по каждой группе единиц СИ
@@ -11,7 +13,7 @@ use crate::common::*;
 // Они разбиты на части, чтобы легче было видеть ошибки, когда они есть.
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -62,11 +64,12 @@ fn prefix_sweep() {
          зепто-граммы, запятая, \
          иокто-граммы, запятая, \
          ронто-граммы, запятая, \
-         квекто-граммы");
+         квекто-граммы")?;
+         return Ok(());
 }
 
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -91,11 +94,12 @@ fn si_base() {
          1 секунда, запятая, 2 секунды, запятая, \
          1 секунда, запятая, 2 секунды, запятая, \
          1 секунда, запятая, 2 секунды, запятая, \
-         1 секунда, запятая, 2 секунды");
+         1 секунда, запятая, 2 секунды")?;
+         return Ok(());
 }
 
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -116,11 +120,12 @@ fn si_base_with_prefixes() {
          1 гекто-метр, запятая; 2 дека-метра, запятая; \
          1 деци-моль, запятая; 2 санти-моля, запятая; \
          1 милли-секунда, запятая; 2 микро-секунды, запятая; \
-         1 нано-секунда, запятая; 2 пико-секунды");
+         1 нано-секунда, запятая; 2 пико-секунды")?;
+         return Ok(());
 }
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -147,11 +152,12 @@ fn si_derived_1() {
          1 джоуль, запятая, 2 джоуля, запятая, \
          1 катал, запятая, 2 катала, запятая, \
          1 люмен, запятая, 2 люмена, запятая, \
-         1 люкс, запятая, 2 люкс");
+         1 люкс, запятая, 2 люкс")?;
+         return Ok(());
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -178,11 +184,12 @@ fn si_derived_1_with_prefixes() {
          1 пико-люмен, запятая; 2 фемто-люмена, запятая; \
          1 атто-люкс, запятая; 2 зепто-люкс, запятая; \
          1 милли-градус Цельсия; запятая; 2 микро-градуса Цельсия; запятая; \
-         1 пико-градус Цельсия; запятая; 2 нано-градуса Цельсия");
+         1 пико-градус Цельсия; запятая; 2 нано-градуса Цельсия")?;
+         return Ok(());
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -205,11 +212,12 @@ fn si_derived_2() {
          1 тесла, запятая, 2 теслы, запятая, \
          1 вольт, запятая, 2 вольта, запятая, \
          1 ватт, запятая, 2 ватта, запятая, \
-         1 вебер, запятая, 2 вебера");
+         1 вебер, запятая, 2 вебера")?;
+         return Ok(());
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -232,11 +240,12 @@ fn si_derived_2_with_prefixes() {
          1 дека-тесла, запятая; 2 гекто-теслы, запятая; \
          1 кило-вольт, запятая; 2 мега-вольта, запятая; \
          1 гига-ватт, запятая; 2 тера-ватта, запятая; \
-         1 пета-вебер, запятая; 2 экса-вебера");
+         1 пета-вебер, запятая; 2 экса-вебера")?;
+         return Ok(());
 }
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -269,11 +278,12 @@ fn si_accepted() {
          1 угловая секунда, запятая; 2 угловые секунды, запятая, \
          1 бит, запятая, 2 бита, запятая, \
          1 байт, запятая, 2 байта, запятая, \
-         1 бод, запятая, 2 бода");
+         1 бод, запятая, 2 бода")?;
+         return Ok(());
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -306,11 +316,12 @@ fn si_accepted_with_prefixes() {
          1 зепто-угловая секунда, запятая; 2 иокто-угловые секунды; запятая; \
          1 кило-бит, запятая; 2 мега-бита, запятая; \
          1 гига-байт, запятая; 2 тера-байта, запятая; \
-         1 тера-бод, запятая; 2 экса-бода");
+         1 тера-бод, запятая; 2 экса-бода")?;
+         return Ok(());
 }
 
 #[test]
-fn without_prefix_time() {
+fn without_prefix_time() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -341,11 +352,12 @@ fn without_prefix_time() {
          1 неделя, запятая, 2 недели, запятая, \
          1 неделя, запятая, 2 недели, запятая, \
          1 год, запятая, 2 года, запятая, \
-         1 год, запятая, 2 года");
+         1 год, запятая, 2 года")?;
+         return Ok(());
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -364,11 +376,12 @@ fn without_prefix_angles() {
          1 угловая минута, запятая; 2 угловые минуты, запятая, \
          1 угловая минута, запятая; 2 угловые минуты, запятая, \
          1 угловая секунда, запятая; 2 угловые секунды, запятая, \
-         1 угловая секунда, запятая; 2 угловые секунды");
+         1 угловая секунда, запятая; 2 угловые секунды")?;
+         return Ok(());
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -383,11 +396,12 @@ fn without_prefix_distance() {
          1 парсек, запятая, 2 парсека, запятая, \
          1 ангстрем, запятая; 2 ангстрема, запятая, \
          1 ангстрем, запятая; 2 ангстрема, запятая, \
-         1 ферми, запятая, 2 ферми");
+         1 ферми, запятая, 2 ферми")?;
+         return Ok(());
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -418,11 +432,12 @@ fn without_prefix_other() {
          1 оборот в минуту, запятая; 2 оборота в минуту, запятая, \
          1 эм-аш-о, запятая, 2 эм-аш-о, запятая, \
          1 дина, запятая, 2 дины, запятая, \
-         1 эрг, запятая, 2 эрга");
+         1 эрг, запятая, 2 эрга")?;
+         return Ok(());
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -457,11 +472,12 @@ fn without_prefix_powers_of_2() {
          1 пебибайт, запятая; 2 пебибайта, запятая, \
          1 эксбибайт, запятая; 2 эксбибайта, запятая, \
          1 зебибайт, запятая; 2 зебибайта, запятая, \
-         1 йобибайт, запятая; 2 йобибайта");
+         1 йобибайт, запятая; 2 йобибайта")?;
+         return Ok(());
 }
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -472,11 +488,12 @@ fn si_other_numbers() {
                             <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
     test("ru", "SimpleSpeak", expr,
         "1.0 литра, запятая; 2.0 метра, запятая; икс миллисекунд, запятая; игрек микросекунд, запятая, \
-         дека-граммы, запятая; 1235 дека-ньютонов; запятая; 2.5 микросекунды; запятая; 32.34 моля");
+         дека-граммы, запятая; 1235 дека-ньютонов; запятая; 2.5 микросекунды; запятая; 32.34 моля")?;
+         return Ok(());
 }
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -485,5 +502,6 @@ fn test_mtext_inference() {
             <mo>]</mo></math>"#;
     test("ru", "SimpleSpeak", expr,
         "открывающая квадратная скобка; 1 тонна, запятая; 2 пета-ампера, запятая, \
-         3 паскаля, запятая; 4.5 милли-теслы; закрывающая квадратная скобка");
+         3 паскаля, запятая; 4.5 милли-теслы; закрывающая квадратная скобка")?;
+         return Ok(());
 }
