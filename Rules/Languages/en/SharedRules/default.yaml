@@ -120,7 +120,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]    # phrase("'the' root of x")
+      then: [ot: "the"]    # phrase("'the' root of x")
   - t: "root"
   - test:
       if: "$Verbosity!='Terse'"
@@ -138,7 +138,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]   # phrase("'the' root of x")
+      then: [ot: "the"]   # phrase("'the' root of x")
   - t: "root with index" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short

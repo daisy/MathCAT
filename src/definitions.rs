@@ -325,13 +325,13 @@ mod tests {
             // Rule::DefinitionList
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
-                if let Err(e) = build_values(variable_def, true, &Path::new("")) {
+                if let Err(e) = build_values(variable_def, true, Path::new("")) {
                     bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", numbers))));
                 }
             }
             return Ok(vec![]);
         };
-        compile_rule(&numbers, defs_build_fn).unwrap();
+        compile_rule(numbers, defs_build_fn).unwrap();
         SPEECH_DEFINITIONS.with(|defs| {
             let defs = defs.borrow();
             let names = defs.get_vec("NumbersTens");
@@ -351,13 +351,13 @@ mod tests {
             // Rule::DefinitionList
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
-                if let Err(e) = build_values(variable_def, true, &Path::new("")) {
+                if let Err(e) = build_values(variable_def, true, Path::new("")) {
                     bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", likely_function_names))));
                 }
             }
             return Ok(vec![]);
         };
-        compile_rule(&likely_function_names, defs_build_fn).unwrap();
+        compile_rule(likely_function_names, defs_build_fn).unwrap();
         SPEECH_DEFINITIONS.with(|defs| {
             let defs = defs.borrow();
             let names = defs.get_hashset("LikelyFunctionNames");
@@ -376,13 +376,13 @@ mod tests {
             // Rule::DefinitionList
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
-                if let Err(e) = build_values(variable_def, true, &Path::new("")) {
+                if let Err(e) = build_values(variable_def, true, Path::new("")) {
                     bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", units))));
                 }
             }
             return Ok(vec![]);
         };
-        compile_rule(&units, defs_build_fn).unwrap();
+        compile_rule(units, defs_build_fn).unwrap();
         SPEECH_DEFINITIONS.with(|defs| {
             let defs = defs.borrow();
             let names = defs.get_hashmap("Units");

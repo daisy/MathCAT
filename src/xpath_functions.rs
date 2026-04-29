@@ -1453,7 +1453,7 @@ mod tests {
         crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
         let result = crate::definitions::read_definitions_file(true);
         if let Err(e) = result {
-            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{}", e.to_string());
+            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");
         }
     }
 

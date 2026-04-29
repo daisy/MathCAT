@@ -4,6 +4,7 @@ YAML file parsing functions.
 Handles parsing of rule files and unicode files to extract rule information.
 """
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -127,7 +128,7 @@ def parse_unicode_file(content: str, data: Any) -> list[RuleInfo]:
 
 def has_audit_ignore(content: str) -> bool:
     """Check if the rule content contains an audit-ignore comment"""
-    return "# audit-ignore" in content
+    return re.search(r"#\s*audit-ignore\b", content) is not None
 
 
 def find_untranslated_text_entries(node: Any) -> list[UntranslatedEntry]:
