@@ -159,7 +159,6 @@
 
     # other accepted units that don't take SI prefixes
     "ha": "公頃",
-    "Np": "奈培",
     "B": "貝爾",
     "dB": "分貝",
 
