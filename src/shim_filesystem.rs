@@ -340,14 +340,31 @@ cfg_if! {
             }
         }
         
+        /// Resolves the path to an absolute, canonical form using the OS.
+        /// If `canonicalize()` fails (e.g., ACCESS_DENIED in containers), falls back to:
+        ///   - returning the path as-is if it is already absolute,
+        ///   - prepending the current working directory if it is relative.
+        /// Note: the fallback does not resolve symlinks or normalize `..`/`.` segments.
         pub fn canonicalize_shim(path: &Path) -> std::io::Result<PathBuf> {
-            return path.canonicalize();
+            match path.canonicalize() {
+                Ok(p) => Ok(p),
+                Err(_) => {
+                    if path.is_absolute() {
+                        Ok(path.to_path_buf())
+                    } else {
+                        // Prepend cwd to make the relative path absolute.
+                        // unwrap_or_default yields an empty PathBuf if cwd is unavailable,
+                        // in which case the returned path will still be relative.
+                        Ok(std::env::current_dir().unwrap_or_default().join(path))
+                    }
+                }
+            }
         }
         
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
             let path = match path.canonicalize() {
                 Ok(path) => path,
-                Err(e) => bail!("Read error while trying to canonicalize in read_to_string_shim {}: {}", path.display(), e),
+                Err(_) => path.to_path_buf(),
             };
             debug!("Reading file '{}'", &path.display());
             match std::fs::read_to_string(&path) {
