@@ -259,9 +259,23 @@ impl PreferenceManager {
     /// 
     /// If rules_dir is an empty PathBuf, the existing rules_dir is used (an error if it doesn't exist)
     pub fn initialize(&mut self, rules_dir: PathBuf) -> Result<()> {
+        // Resolve the rules directory to an absolute, canonical path.
+        // If canonicalize() fails (e.g., ACCESS_DENIED in containers), fall back to:
+        //   - returning the path as-is if it is already absolute,
+        //   - prepending the current working directory if it is relative.
+        // Note: if current_dir() also fails, unwrap_or_default yields an empty PathBuf,
+        //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
         let rules_dir = match rules_dir.canonicalize() {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
+            Err(_e) => {
+                if rules_dir.is_absolute() {
+                    rules_dir
+                } else {
+                    std::env::current_dir()
+                        .unwrap_or_default()
+                        .join(&rules_dir)
+                }
+            },
             Ok(rules_dir) =>  rules_dir,
         };
 
