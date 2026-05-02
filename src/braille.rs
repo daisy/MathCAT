@@ -51,6 +51,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             "CMU" => cmu_cleanup(pref_manager, braille_string), 
             "Finnish" => finnish_cleanup(pref_manager, braille_string),
             "Swedish" => swedish_cleanup(pref_manager, braille_string),
+            "Polish" => polish_cleanup(pref_manager, braille_string),
             "LaTeX" => LaTeX_cleanup(pref_manager, braille_string),
             "ASCIIMath" => ASCIIMath_cleanup(pref_manager, braille_string),
             "ASCIIMath-fi" => ASCIIMath_cleanup(pref_manager, braille_string),
@@ -2159,7 +2160,6 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
         result
     };
     let result = SCRIPT_AFTER_DROP_NUMBERS.replace_all(&result, "${1}⠘");
-    debug!(" After remove close: '{}'", &result);
 
     let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
         match POLISH_INDICATOR_REPLACEMENTS.get(&cap[0]) {
