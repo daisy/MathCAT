@@ -138,6 +138,7 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
         set_preference("BrailleNavHighlight", "Off").unwrap();
         set_preference("BrailleCode", code).unwrap();
         set_preference("LaTeX_UseShortName", "false").unwrap();
+        set_preference("Polish_BrailleLevel".to_string(), "Advanced".to_string()).unwrap();
         // FIX: this shouldn't need to be done -- need to figure out how to get definitions set automatically
         // log::debug!("\nsetting Language");
         match code {
@@ -269,6 +270,7 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         set_preference("BrailleNavHighlight", "Off").unwrap();
         set_preference("BrailleCode", code).unwrap();
         set_preference("LaTeX_UseShortName", "false").unwrap();
+        set_preference("Polish_BrailleLevel".to_string(), "Advanced".to_string()).unwrap();
         // FIX: this shouldn't need to be done -- need to figure out how to get definitions set automatically
         // log::debug!("\nsetting Language");
         match code {
