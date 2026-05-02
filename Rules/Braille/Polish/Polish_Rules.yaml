@@ -136,7 +136,7 @@
   replace: 
   - t: "#"   # need to force a number sign between the numbers
   - x: "*[1]"
-  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"   # drop numbers for the numerator
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"   # drop numbers for the denominator
 
 -
   name: simple-number
@@ -144,7 +144,7 @@
   match: "$Polish_BrailleLevel = 'Advanced' and *[1][self::m:mn][translate(., '0123456789', '') = ''] and *[2][self::m:mn][translate(., '0123456789', '') = '']"
   replace:
   - x: "*[1]"
-  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"   # drop numbers for the numerator
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"   # drop numbers for the denominator
 
 - # simpler (more common?) case of the next rule (no whitespace)
   name: simple-fraction
