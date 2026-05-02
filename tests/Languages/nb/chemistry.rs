@@ -1,47 +1,58 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn salt() {
+fn salt() -> Result<()> {
   let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor n a, stor c l");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor n a, stor c l")?;
+  return Ok(());
+
 }
 
 #[test]
-fn water() {
+fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor o");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "stor h, senket 2, stor o");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "stor h, nedre indeks 2, stor o");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor o")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "stor h, senket 2, stor o")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "stor h, nedre indeks 2, stor o")?;
+  return Ok(());
+
 }
 
 #[test]
-fn carbon() {
+fn carbon() -> Result<()> {
   let expr = "<math><mi>C</mi></math>";     // not enough to trigger recognition
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor c");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor c")?;
+  return Ok(());
+
 }
 
 #[test]
-fn sulfate() {
+fn sulfate() -> Result<()> {
   let expr = "<math><mrow><msup>
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "start hakeparentes; stor s, stor o, senket 4; slutt hakeparentes hevet 2 minus");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "start hakeparentes; stor s, stor o, senket 4; slutt hakeparentes hevet 2 minus")?;
+  return Ok(());
+
 }
 
 #[test]
-fn aluminum_sulfate() {
+fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor a l, 2; startparentes; stor s, stor o, 4; sluttparentes 3");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "stor a l, senket 2; startparentes; stor s, stor o, senket 4; sluttparentes senket 3");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "stor a l, nedre indeks 2; startparentes; stor s, stor o, nedre indeks 4; sluttparentes nedre indeks 3");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor a l, 2; startparentes; stor s, stor o, 4; sluttparentes 3")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "stor a l, senket 2; startparentes; stor s, stor o, senket 4; sluttparentes senket 3")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "stor a l, nedre indeks 2; startparentes; stor s, stor o, nedre indeks 4; sluttparentes nedre indeks 3")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ethanol_bonds() {
+fn ethanol_bonds() -> Result<()> {
   let expr = "<math>
           <mrow>
               <mi>C</mi>
@@ -54,12 +65,14 @@ fn ethanol_bonds() {
               <mi>H</mi>
           </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor c, stor h, 3; enkeltbinding stor c, stor h, 2; enkeltbinding stor o, stor h");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "stor c, stor h, 3; enkeltbinding stor c, stor h, 2; enkeltbinding stor o, stor h")?;
+
+  return Ok(());
 
 }
 
 #[test]
-fn dichlorine_hexoxide() {
+fn dichlorine_hexoxide() -> Result<()> {
   let expr = "<math><mrow>
       <msup>
         <mrow><mo>[</mo><mi>Cl</mi><msub><mi>O</mi><mn>2</mn></msub><mo>]</mo></mrow>
@@ -72,48 +85,56 @@ fn dichlorine_hexoxide() {
     </mrow></math>";
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], 
     expr, "start hakeparentes; stor c l, stor o, 2; slutt hakeparentes pluss; \
-                          start hakeparentes; stor c l, stor o, 4; slutt hakeparentes minus");
+                          start hakeparentes; stor c l, stor o, 4; slutt hakeparentes minus")?;
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Medium")], 
     expr, "start hakeparentes; stor c l, stor o, senket 2; slutt hakeparentes hevet pluss; \
-                          start hakeparentes; stor c l, stor o, senket 4; slutt hakeparentes hevet minus");
+                          start hakeparentes; stor c l, stor o, senket 4; slutt hakeparentes hevet minus")?;
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
     expr, "start hakeparentes; stor c l, stor o, nedre indeks 2; slutt hakeparentes øvre indeks pluss; \
-                          start hakeparentes; stor c l, stor o, nedre indeks 4; slutt hakeparentes øvre indeks minus");
+                          start hakeparentes; stor c l, stor o, nedre indeks 4; slutt hakeparentes øvre indeks minus")?;
+                          return Ok(());
+
 }
 
 
 #[test]
-fn ethylene_with_bond() {
+fn ethylene_with_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor c, dobbeltbinding stor c, stor h, 2");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor c, dobbeltbinding stor c, stor h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ferric_chloride_aq() {
+fn ferric_chloride_aq() -> Result<()> {
   let expr = "<math><mrow>
         <mi>Fe</mi>
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor f e, stor c l, 3; løst i vann");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor f e, stor c l, 3; løst i vann")?;
+  return Ok(());
+
   }
 
 #[test]
-fn ethylene_with_colon_bond() {
+fn ethylene_with_colon_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor c, dobbeltbinding stor c, stor h, 2");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor h, 2, stor c, dobbeltbinding stor c, stor h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn beta_decay() {
+fn beta_decay() -> Result<()> {
   let expr = "<math>
       <mmultiscripts>
         <mtext>C</mtext>
@@ -140,15 +161,17 @@ fn beta_decay() {
       </mmultiscripts>
     </math>";
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e");
+      "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e");
+      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e");
+      "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn mhchem_beta_decay() {
+fn mhchem_beta_decay() -> Result<()> {
   let expr = "<math>
       <mrow>
         <msubsup>
@@ -404,15 +427,17 @@ fn mhchem_beta_decay() {
       </mrow>
     </math>";
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e");
+      "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e");
+      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e");
+      "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn hcl_na_yields() {
+fn hcl_na_yields() -> Result<()> {
     let expr = "<math> <mrow>
       <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
       <mo>&#x2192;</mo>
@@ -421,11 +446,13 @@ fn hcl_na_yields() {
       </mrow>
     </math>";
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, stor h, stor c l; pluss 2 stor n a; reaksjon danner; 2, stor n a, stor c l; pluss stor h, nedre indeks 2");
+        "2, stor h, stor c l; pluss 2 stor n a; reaksjon danner; 2, stor n a, stor c l; pluss stor h, nedre indeks 2")?;
+        return Ok(());
+
 }
 
 #[test]
-fn mhchem_so4_2plus() {
+fn mhchem_so4_2plus() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mrow>
@@ -466,14 +493,16 @@ fn mhchem_so4_2plus() {
       </msup>
     </mrow>
   </math>";
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor s; stor o, 4, 2 pluss");
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "stor s; stor o, senket 4, hevet 2 pluss");
-  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "stor s; stor o, nedre indeks 4, øvre indeks 2 pluss");
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "stor s; stor o, 4, 2 pluss")?;
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "stor s; stor o, senket 4, hevet 2 pluss")?;
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "stor s; stor o, nedre indeks 4, øvre indeks 2 pluss")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn mhchem_hcl_aq_etc() {
+fn mhchem_hcl_aq_etc() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mn>2</mn>
@@ -556,13 +585,15 @@ fn mhchem_hcl_aq_etc() {
     </mrow>
   </math>";
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, stor h, stor c l, løst i vann; pluss, 2, stor n a, fast; danner; 2, stor n a, stor c l, løst i vann; pluss, stor h, 2, gass");
+      expr, "2, stor h, stor c l, løst i vann; pluss, 2, stor n a, fast; danner; 2, stor n a, stor c l, løst i vann; pluss, stor h, 2, gass")?;
+
+      return Ok(());
 
 }
 
 
 #[test]
-fn mhchem_barbed_equilibrium() {
+fn mhchem_barbed_equilibrium() -> Result<()> {
   let expr = "<math>
     <mrow data-mjx-texclass='ORD' data-chem-equation='14'>
       <mrow data-changed='added' data-chem-equation='3'>
@@ -622,13 +653,15 @@ fn mhchem_barbed_equilibrium() {
     </mrow>
   </math>";
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "stor h, 2, gass; pluss; stor i, 2, gass; er i likevekt med 2, stor h, stor i, gass");
+      expr, "stor h, 2, gass; pluss; stor i, 2, gass; er i likevekt med 2, stor h, stor i, gass")?;
+      return Ok(());
+
 }
 
 
 
 #[test]
-fn mhchem_roman_in_superscript() {
+fn mhchem_roman_in_superscript() -> Result<()> {
       let expr = "<math>
       <mrow>
         <mmultiscripts>
@@ -651,12 +684,14 @@ fn mhchem_roman_in_superscript() {
       </mrow>
     </math>";
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "stor f e, 2; stor f e, 3; stor o, 4");
+      expr, "stor f e, 2; stor f e, 3; stor o, 4")?;
+      return Ok(());
+
 }
 
 
 #[test]
-fn dropped_msubsup_bug_358() {
+fn dropped_msubsup_bug_358() -> Result<()> {
       let expr = r#"<math>
           <mrow class="MJX-TeXAtom-ORD">
               <mrow class="MJX-TeXAtom-ORD">
@@ -726,7 +761,9 @@ fn dropped_msubsup_bug_358() {
           </mrow>
       </math>"#;
   test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, stor s, stor o, 2; pluss; stor o, 2, er i likevekt med 2, stor s, stor o, 3");
+      expr, "2, stor s, stor o, 2; pluss; stor o, 2, er i likevekt med 2, stor s, stor o, 3")?;
+      return Ok(());
+
 }
 
 

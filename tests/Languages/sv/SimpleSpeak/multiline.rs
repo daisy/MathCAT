@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
     // init_logger();
     let expr = "<math>
             <mrow>
@@ -33,11 +34,12 @@ fn case_1() {
     test("sv", "SimpleSpeak", expr, "f av x lika med; 3 fall; \
                 fall 1; minus 1 if x; är mindre än 0; \
                 fall 2; 0 if x, lika med 0; \
-                fall 3; 1 if x, är större än 0");
+                fall 3; 1 if x, är större än 0")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_1() {
+fn equation_1() -> Result<()> {
     // init_logger();
     let expr = "<math>
      <mrow>
@@ -73,5 +75,6 @@ fn equation_1() {
    ";
     test("sv", "SimpleSpeak", expr, "2 ekvationer; \
                 ekvation 1; x plus y lika med 7; \
-                ekvation 2; 2 x plus 3 y; lika med 17");
+                ekvation 2; 2 x plus 3 y; lika med 17")?;
+    return Ok(());
 }

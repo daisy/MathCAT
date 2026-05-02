@@ -240,7 +240,7 @@
   - intent:
       name: "evaluate"
       children:
-      - x: "*[1]/*[1]"
+      - x: "*[1]/*[2]"
       - x: "*[2]"
       - x: "*[3]"
 
@@ -309,7 +309,7 @@
           children:
           - intent:
               name: "logarithm-with-base"
-              attrs: "data-intent-property='concat(data-intent-property, \":prefix:\")'"
+              attrs: "data-intent-property='concat(data-intent-property, \":prefix:\")', id='concat(@id, \"-log-base\")'"
               children: [x: "*[2]"]  # grab the base
           - x: "*[3]"       # grab the exponent
 
@@ -387,9 +387,9 @@
           if: "*[1][self::m:mrow]"
           then_test:
               if: "*[2][self::m:mrow]"
-              then: [t: "\u1f8d2"]    # this is currently unassigned and may get used by UTC at some point (<=>)
-              else: [t: "\u1f8d4"]    # this is currently unassigned and may get used by UTC at some point (<<=>)
-          else: [t: "\u1f8d3"]        # this is currently unassigned and may get used by UTC at some point (<==>>)
+              then: [t: "🣑"]    # new in Unicode 17.0 (<=>) U+1F8D1
+              else: [t: "🣓"]    # new in Unicode 17.0  (<<=>) U+1F8D3
+          else: [t: "🣒"]        # new in Unicode 17.0  (<=>>) U+1F8D2
 
 -
   # need to include the name of the element so the rules know whether to say "sub" or "super"
@@ -487,7 +487,8 @@
   name: chemical-arrow-op
   tag: [mo]
   # FIX: this is a duplicate of the list in chemistry.rs. Probably should pull out and add to definitions.yaml
-  match: "@data-chem-equation-op and translate(., '→➔←⟶⟵⤻⇋⇌↿↾⇃⇂⥮⥯⇷⇸⤉⤈⥂⥄', '')=''"
+  # Note: the chars that don't probably display are 0x1f8d2 - 0x1f8d4 (Unicode 17 equilibrium arrows)
+  match: "@data-chem-equation-op and translate(., '→➔←⟶⟵⤻⇋⇌↿↾⇃⇂⥮⥯⇷⇸⤉⤈⥂⥄🣒🣓🣔', '')=''" 
   replace:
   - intent:
       name: "chemical-arrow-operator"
@@ -691,7 +692,7 @@
       children:
       - intent:
           name: "indexed-by"
-          attrs: "data-intent-property='concat(data-intent-property, \":infix:\")'"
+          attrs: "data-intent-property='concat(data-intent-property, \":infix:\")', id='concat(@id, \"-indexed-by\")'"
           children:
             - x: "*[1]"
             - x: "*[2]"
@@ -844,19 +845,19 @@
   match: "count(*) > 1 and
           ($TableProperty = 'piecewise' or $TableProperty = 'system-of-equations' or $TableProperty = 'lines') and
           (self::m:mlabeledtr or *[contains(@intent, ':equation-label')])"
+  variables: [Label: "*[contains(@intent, ':equation-label')]"]
   replace:
   - intent:
       name: "mlabeledtr"
       children:
-      - x: "*[contains(@intent, ':equation-label')]"
+      - x: "IfThenElse($Label, $Label, (*[1]))"
       - intent:
           name: "mtd"
-          attrs: "id=*[not(contains(@intent, ':equation-label'))][1]/*[1]/@id"
           children: 
           - intent:
               name: "mrow"
-              attrs: "id=*[not(contains(@intent, ':equation-label'))][1]/*[1]/@id"
-              children: [x: "*[not(contains(@intent, ':equation-label'))]"]
+              attrs: "id='concat(@id, \"-mrow\")'"
+              children: [x: "IfThenElse($Label, (*[not(contains(@intent, ':equation-label'))]), (*[position() > 1]))"]
 
 -
   # convert a mtr to a mlabeledtr

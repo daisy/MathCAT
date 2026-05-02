@@ -9,7 +9,7 @@
 use crate::errors::*;
 use std::rc::Rc;
 use std::cell::RefCell;
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfElement, Attribute};
 use sxd_document::QName;
 use phf::{phf_map, phf_set};
 use crate::xpath_functions::{IsBracketed, is_leaf, IsNode};
@@ -20,6 +20,9 @@ use std::fmt;
 use crate::chemistry::*;
 use unicode_script::Script;
 use roman_numerals_rs::RomanNumeral;
+use std::sync::LazyLock;
+use log::{debug};
+use bitflags::bitflags;
 
 // FIX: DECIMAL_SEPARATOR should be set by env, or maybe language
 const DECIMAL_SEPARATOR: &str = ".";
@@ -48,60 +51,58 @@ static AMBIGUOUS_OPERATORS: phf::Set<&str> = phf_set! {
 };
 
 // static vars used when canonicalizing
-lazy_static!{
-	// lowest priority operator so it is never popped off the stack
-	static ref LEFT_FENCEPOST: OperatorInfo = OperatorInfo{ op_type: OperatorTypes::LEFT_FENCE, priority: 0, next: &None };
+// lowest priority operator so it is never popped off the stack
+static LEFT_FENCEPOST: OperatorInfo = OperatorInfo{ op_type: OperatorTypes::LEFT_FENCE, priority: 0, next: &None };
 
-	static ref INVISIBLE_FUNCTION_APPLICATION: &'static OperatorInfo = OPERATORS.get("\u{2061}").unwrap();
-	static ref IMPLIED_TIMES: &'static OperatorInfo = OPERATORS.get("\u{2062}").unwrap();
-	static ref IMPLIED_INVISIBLE_COMMA: &'static OperatorInfo = OPERATORS.get("\u{2063}").unwrap();
-	static ref IMPLIED_INVISIBLE_PLUS: &'static OperatorInfo = OPERATORS.get("\u{2064}").unwrap();
+static INVISIBLE_FUNCTION_APPLICATION: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("\u{2061}").unwrap());
+static IMPLIED_TIMES: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("\u{2062}").unwrap());
+static IMPLIED_INVISIBLE_COMMA: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("\u{2063}").unwrap());
+static IMPLIED_INVISIBLE_PLUS: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("\u{2064}").unwrap());
 
-	// FIX: any other operators that should act the same (e.g, plus-minus and minus-plus)?
-	static ref PLUS: &'static OperatorInfo = OPERATORS.get("+").unwrap();
-	static ref MINUS: &'static OperatorInfo = OPERATORS.get("-").unwrap();
-	static ref PREFIX_MINUS: &'static OperatorInfo = MINUS.next.as_ref().unwrap();
+// FIX: any other operators that should act the same (e.g, plus-minus and minus-plus)?
+static PLUS: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("+").unwrap());
+static MINUS: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("-").unwrap());
+static PREFIX_MINUS: LazyLock<&'static OperatorInfo> = LazyLock::new(|| MINUS.next.as_ref().unwrap());
 
-	static ref TIMES_SIGN: &'static OperatorInfo = OPERATORS.get("×").unwrap();
+static TIMES_SIGN: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.get("×").unwrap());
 
-	// IMPLIED_TIMES_HIGH_PRIORITY -- used in trig functions for things like sin 2x cos 2x where want > function app priority
-	static ref IMPLIED_TIMES_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
-		op_type: OperatorTypes::INFIX, priority: 851, next: &None
-	};
-	// IMPLIED_SEPARATOR_HIGH_PRIORITY -- used for Geometry points like ABC
-	static ref IMPLIED_SEPARATOR_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
-		op_type: OperatorTypes::INFIX, priority: 901, next: &None
-	};
-	// IMPLIED_CHEMICAL_BOND -- used for implicit and explicit bonds
-	static ref IMPLIED_CHEMICAL_BOND: OperatorInfo = OperatorInfo{
-		op_type: OperatorTypes::INFIX, priority: 905, next: &None
-	};
-	static ref IMPLIED_PLUS_SLASH_HIGH_PRIORITY: OperatorInfo = OperatorInfo{	// (linear) mixed fraction 2 3/4
-		op_type: OperatorTypes::INFIX, priority: 881, next: &None
-	};
+// IMPLIED_TIMES_HIGH_PRIORITY -- used in trig functions for things like sin 2x cos 2x where want > function app priority
+static IMPLIED_TIMES_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 851, next: &None
+};
+// IMPLIED_SEPARATOR_HIGH_PRIORITY -- used for Geometry points like ABC
+static IMPLIED_SEPARATOR_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 901, next: &None
+};
+// IMPLIED_CHEMICAL_BOND -- used for implicit and explicit bonds
+static IMPLIED_CHEMICAL_BOND: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 905, next: &None
+};
+static IMPLIED_PLUS_SLASH_HIGH_PRIORITY: OperatorInfo = OperatorInfo{	// (linear) mixed fraction 2 3/4
+	op_type: OperatorTypes::INFIX, priority: 881, next: &None
+};
 
-	// Useful static defaults to have available if there is no character match
-	static ref DEFAULT_OPERATOR_INFO_PREFIX: &'static OperatorInfo = &OperatorInfo{
-		op_type: OperatorTypes::PREFIX, priority: 260, next: &None
-	};
-	static ref DEFAULT_OPERATOR_INFO_INFIX: &'static OperatorInfo = &OperatorInfo{
-		op_type: OperatorTypes::INFIX, priority: 260, next:& None
-	};
-	static ref DEFAULT_OPERATOR_INFO_POSTFIX: &'static OperatorInfo = &OperatorInfo{
-		op_type: OperatorTypes::POSTFIX, priority: 260, next: &None
-	};
+// Useful static defaults to have available if there is no character match
+static DEFAULT_OPERATOR_INFO_PREFIX: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::PREFIX, priority: 260, next: &None
+};
+static DEFAULT_OPERATOR_INFO_INFIX: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 260, next:& None
+};
+static DEFAULT_OPERATOR_INFO_POSTFIX: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::POSTFIX, priority: 260, next: &None
+};
 
-	// avoids having to use Option<OperatorInfo> in some cases
-	static ref ILLEGAL_OPERATOR_INFO: &'static OperatorInfo = &OperatorInfo{
-		op_type: OperatorTypes::INFIX, priority: 999, next: &None
-	};
+// avoids having to use Option<OperatorInfo> in some cases
+static ILLEGAL_OPERATOR_INFO: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 999, next: &None
+};
 
-	// used to tell if an operator is a relational operator
-	static ref EQUAL_PRIORITY: usize = OPERATORS.get("=").unwrap().priority;
+// used to tell if an operator is a relational operator
+static EQUAL_PRIORITY: LazyLock<usize> = LazyLock::new(|| OPERATORS.get("=").unwrap().priority);
 
-	// useful for detecting whitespace
-	static ref IS_WHITESPACE: Regex = Regex::new(r"^\s+$").unwrap();    // only Unicode whitespace
-}
+// useful for detecting whitespace
+static IS_WHITESPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s+$").unwrap());    // only Unicode whitespace
 
 // Operators are either PREFIX, INFIX, or POSTFIX, but can also have other properties such as LEFT_FENCE
 bitflags! {
@@ -282,11 +283,10 @@ impl<'a, 'op:'a> StackInfo<'a, 'op> {
 		let children = self.mrow.children();
 		for &child in children.iter().rev() {
 			let child = as_element(child);
-			if let Some(value) = child.attribute_value(CHANGED_ATTR) {
-				if value == "empty_content" {
+			if let Some(value) = child.attribute_value(CHANGED_ATTR)
+				&& value == "empty_content" {
 					continue;
 				}
-			}
 			return Some(child);
 		}
 		return None;
@@ -296,7 +296,7 @@ impl<'a, 'op:'a> StackInfo<'a, 'op> {
 		// debug!("  adding '{}' to mrow[{}], operator '{}/{}'",
 		// 		element_summary(child), self.mrow.children().len(), show_invisible_op_char(child_op.ch), child_op.op.priority);
 		self.mrow.append_child(child);
-		if ptr_eq(child_op.op, *ILLEGAL_OPERATOR_INFO) {
+		if ptr_eq(child_op.op, &ILLEGAL_OPERATOR_INFO) {
 			assert!(!self.is_operand); 	// should not have two operands in a row (ok to add whitespace)
 			self.is_operand = true;
 		} else {
@@ -382,7 +382,7 @@ pub fn replace_children<'a>(mathml: Element<'a>, replacements: Vec<Element<'a>>)
 pub fn get_presentation_element(element: Element) -> (usize, Element) {
 	assert_eq!(name(element), "semantics");
 	let children = element.children();
-	if let Some( (i, child) ) = children.iter().enumerate().find(|(_, &child)| 
+	if let Some( (i, child) ) = children.iter().enumerate().find(|&(_, &child)|
 			if let Some(encoding) = as_element(child).attribute_value("encoding") {
 				encoding == "MathML-Presentation"
 			} else {
@@ -403,7 +403,7 @@ pub fn get_presentation_element(element: Element) -> (usize, Element) {
 /// 2. normalize the characters
 /// 3. clean up "bad" MathML based on known output from some converters (TODO: still a work in progress)
 /// 4. the tree is "parsed" based on the mo (priority)/mi/mn's in an mrow
-///    *  this adds mrows mrows and some invisible operators (implied times, function app, ...)
+///    *  this adds mrows and some invisible operators (implied times, function app, ...)
 ///    * extra mrows are removed
 ///    * implicit mrows are turned into explicit mrows (e.g, there will be a single child of 'math')
 ///
@@ -445,12 +445,10 @@ static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
 	"mspace", "none", "mprescripts", "mglyph", "malignmark", "maligngroup", "msline",
 };
 
-lazy_static! {
-	// turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
-	// two cases because we don't want to have a match for 'Cl', etc.
-	static ref UPPER_ROMAN_NUMERAL: Regex = Regex::new(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$").unwrap();
-	static ref LOWER_ROMAN_NUMERAL: Regex = Regex::new(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$").unwrap();
-}
+// turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
+// two cases because we don't want to have a match for 'Cl', etc.
+static UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$").unwrap());
+static LOWER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$").unwrap());
 
 
 struct CanonicalizeContextPatterns {
@@ -565,17 +563,17 @@ impl CanonicalizeContext {
 			root.append_child(math_element);
 			mathml = root.children()[0].element().unwrap();
 		}
-		CanonicalizeContext::assure_mathml(mathml)?;
+		CanonicalizeContext::assure_mathml(mathml, 0)?;
 		let mathml = self.clean_mathml(mathml).unwrap();	// 'math' is never removed
 		self.assure_nary_tag_has_one_child(mathml);
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
 		let mut converted_mathml = self.canonicalize_mrows(mathml)
-				.chain_err(|| format!("while processing\n{}", mml_to_string(mathml)))?;
+				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
+		// debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
 		if !crate::chemistry::scan_and_mark_chemistry(converted_mathml) {
-			// debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
 			self.assure_nary_tag_has_one_child(converted_mathml);
 			converted_mathml = self.canonicalize_mrows(mathml)
-				.chain_err(|| format!("while processing\n{}", mml_to_string(mathml)))?;
+				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
 		}
 		debug!("\nMathML after canonicalize:\n{}", mml_to_string(converted_mathml));
 		return Ok(converted_mathml);
@@ -601,8 +599,11 @@ impl CanonicalizeContext {
 		}
 	}
 
-	/// Return an error is some element is not MathML (only look at first child of <semantics>) or if it has the wrong number of children
-	fn assure_mathml(mathml: Element) -> Result<()> {
+	/// Return an error if some element is not MathML (only look at first child of <semantics>) or if it has the wrong number of children
+	fn assure_mathml(mathml: Element, depth: usize) -> Result<()> {
+		if depth > crate::interface::MAX_DEPTH {
+			bail!("MathML is too deeply nested to process");
+		}
 		let n_children = mathml.children().len();
 		let element_name = name(mathml);
 		if is_leaf(mathml) {
@@ -624,23 +625,30 @@ impl CanonicalizeContext {
 				"munderover" | "msubsup" => if n_children != 3 {
 					bail!("{} should have 3 children:\n{}", element_name, mml_to_string(mathml));
 				},
-				"mmultiscripts" => {
-					let has_prescripts = mathml.children().iter()
-							.any(|&child| name(as_element(child)) == "mprescripts");
-					if has_prescripts ^ (n_children.is_multiple_of(2)) {
-						bail!("{} has the wrong number of children:\n{}", element_name, mml_to_string(mathml));
-					}
-				},
-				"mlongdiv" => if n_children < 3 {
-					bail!("{} should have at least 3 children:\n{}", element_name, mml_to_string(mathml));
-				},
 				_ => if n_children != 2 {
 					bail!("{} should have 2 children:\n{}", element_name, mml_to_string(mathml));
 				},
 			}
+		} else if matches!(element_name, "mtd" | "mtr" | "mlabeledtr")  {
+			let parent_name = name(get_parent(mathml));
+			if (element_name == "mtr" || element_name == "mlabeledtr") && parent_name != "mtable" {
+				bail!("Illegal MathML: {} is not a child of mtable. Parent is {}", element_name, mml_to_string(get_parent(mathml)));
+			} else if element_name == "mtd" && !(parent_name == "mtr" || parent_name == "mlabeledtr") {
+				bail!("Illegal MathML: mtd is not a child of {}. Parent is {}", parent_name, mml_to_string(get_parent(mathml)));
+			}
 		}
-		let children = mathml.children();
-		if element_name == "semantics" {
+		else if element_name == "mmultiscripts" {
+			let has_prescripts = mathml.children().iter()
+					.any(|&child| name(as_element(child)) == "mprescripts");
+			if has_prescripts ^ (n_children.is_multiple_of(2)) {
+				bail!("{} has the wrong number of children:\n{}", element_name, mml_to_string(mathml));
+			}
+		} else if element_name == "mlongdiv" {
+			if n_children < 3 {
+				bail!("{} should have at least 3 children:\n{}", element_name, mml_to_string(mathml));
+			}
+		} else if element_name == "semantics" {
+			let children = mathml.children();
 			if children.is_empty() {
 				return Ok( () );
 			} else {
@@ -654,19 +662,19 @@ impl CanonicalizeContext {
 						}
 					}
 				}
-				return CanonicalizeContext::assure_mathml(presentation_element);
+				return CanonicalizeContext::assure_mathml(presentation_element, depth + 1);
 			}
-		}
-		if !IsNode::is_mathml(mathml) {
+		} else if !IsNode::is_mathml(mathml) {
 			if element_name == "annotation-xml" {
 				bail!("'annotation-xml' element is not child of 'semantics' element");
 			} else {
 				bail!("'{}' is not a valid MathML element", element_name);
 			}
 		}
+
 		// valid MathML element and not a leaf -- check the children
-		for child in children {
-			CanonicalizeContext::assure_mathml( as_element(child) )?;
+		for child in mathml.children() {
+			CanonicalizeContext::assure_mathml( as_element(child), depth + 1)?;
 		}
 		return Ok( () );
 	}
@@ -727,7 +735,7 @@ impl CanonicalizeContext {
 	/// This function does some cleanup of MathML (mostly fixing bad MathML)
 	/// Unlike the main canonicalization routine, significant tree changes happen here
 	/// Changes to "good" MathML:
-	/// 1. mfenced -> mrow
+	/// 1. mfenced -> mrow, a => mrow
 	/// 2. mspace and mtext with only whitespace are canonicalized to a non-breaking space and merged in with 
 	///    an adjacent non-mo element unless in a required element position (need to keep for braille)
 	/// 
@@ -741,19 +749,20 @@ impl CanonicalizeContext {
 	/// Returns 'None' if the element should not be in the tree.
 	fn clean_mathml<'a>(&self, mathml: Element<'a>) -> Option<Element<'a>> {
 		// Note: this works bottom-up (clean the children first, then this element)
-		lazy_static! {
-			static ref IS_PRIME: Regex = Regex::new(r"['′″‴⁗]").unwrap();
+		static IS_PRIME: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"['′″‴⁗]").unwrap());
 
-			// Note: including intervening spaces in what is likely a symbol of omission preserves any notion of separate digits (e.g., "_ _ _")
-			static ref IS_UNDERSCORE: Regex = Regex::new(r"^[_\u{00A0}]+$").unwrap();
-        }
+		// Note: including intervening spaces in what is likely a symbol of omission preserves any notion of separate digits (e.g., "_ _ _")
+		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
 
 			
-		static CURRENCY_SYMBOLS: phf::Set<&str> = phf_set! {
-			"$", "¢", "€", "£", "₡", "₤", "₨", "₩", "₪", "₱", "₹", "₺", "₿", "zł", "gr" // could add more currencies...
-		};
-		
+		fn is_currency_symbol(ch: char) -> bool {
+			matches!(ch, '$' | '¢' | '€' | '£' | '₡' | '₤' | '₨' | '₩' | '₪' | '₱' | '₹' | '₺' | '₿')
+		}
 
+		fn contains_currency(s: &str) -> bool {
+			s.chars().any(is_currency_symbol)
+		}		
+		
 		// begin by cleaning up empty elements
 		// debug!("clean_mathml\n{}", mml_to_string(mathml));
 		let element_name = name(mathml);
@@ -763,7 +772,9 @@ impl CanonicalizeContext {
 			let parent = get_parent(mathml);
 			name(parent).to_string()
 		};
-		let parent_requires_child = ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(&parent_name);
+		let parent_requires_child = ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(&parent_name) ||
+										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable") ||
+										  parent_name == "mmultiscripts";
 
 		// handle empty leaves -- leaving it empty causes problems with the speech rules
 		if is_leaf(mathml) && !EMPTY_ELEMENTS.contains(element_name) && as_text(mathml).is_empty() {
@@ -773,7 +784,9 @@ impl CanonicalizeContext {
 		if mathml.children().is_empty() && !EMPTY_ELEMENTS.contains(element_name) {
 			if element_name == "mrow" && mathml.attribute(INTENT_ATTR).is_none() {
 				// if it is an empty mrow that doesn't need to be there, get rid of it. Otherwise, replace it with an mtext
-				if parent_name == "mmultiscripts" {	// MathML Core dropped "none" in favor of <mrow/>, but MathCAT is written with <none/>
+				if parent_name == "mmultiscripts" && !mathml.preceding_siblings().is_empty() {
+					// MathML Core dropped "none" in favor of <mrow/>, but MathCAT is written with <none/>
+					// Do substitutions for the scripts, not the base
 					set_mathml_name(mathml, "none");
 					return Some(mathml);
 				}
@@ -798,8 +811,7 @@ impl CanonicalizeContext {
 				if !text.trim().is_empty() && is_roman_number_match(text) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
-				}
-				if first_char == '-' || first_char == '\u{2212}' {
+				} else if matches!(first_char, '-' | '\u{2212}') {
 					let doc = mathml.document();
 					let mo = create_mathml_element(&doc, "mo");
 					let mn = create_mathml_element(&doc, "mn");
@@ -808,6 +820,21 @@ impl CanonicalizeContext {
 					set_mathml_name(mathml, "mrow");
 					mathml.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 					mathml.replace_children([mo,mn]);
+				} else if contains_currency(text) && let Some(result) = split_currency_symbol(mathml) {
+					return Some(result);
+				}
+				if let Some((idx, last_char)) = text.char_indices().next_back() {
+					// look for something like 12°
+					if is_pseudo_script_char(last_char) {
+						let doc = mathml.document();
+						let mn = create_mathml_element(&doc, "mn");
+						let mo = create_mathml_element(&doc, "mo");
+						mn.set_text(&text[..idx]);
+						mo.set_text(last_char.to_string().as_str());
+						set_mathml_name(mathml, "msup");
+						mathml.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+						mathml.replace_children([mn, mo]);
+					}
 				}
 				return Some(mathml);
 			},
@@ -858,6 +885,8 @@ impl CanonicalizeContext {
 						as_element(following_siblings[0]).remove_from_parent();
 					}
 					return Some(mathml);
+				} else if let Some(result) = split_apart_pseudo_scripts(mathml) {
+						return Some(result);
 				} else if let Some(result) = merge_arc_trig(mathml) {
 						return Some(result);
 				} else if IS_PRIME.is_match(text) {
@@ -880,18 +909,35 @@ impl CanonicalizeContext {
 
 				if let Some(result) = merge_arc_trig(mathml) {
 					return Some(result);
-				};
-			
-				if let Some(result) = split_points(mathml) {
+				} else if let Some(result) = split_points(mathml) {
 					return Some(result);
 				}
-				
+
 				let text = as_text(mathml);
 				if !text.trim().is_empty() && is_roman_number_match(text) && is_roman_numeral_number_context(mathml) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
 					return Some(mathml);
+				} else if text.chars().all(|c| c.is_ascii_digit() || matches!(c, '.' | ',' | ' ' | '\u{00A0}')) &&
+				          text.chars().any(|c| c.is_ascii_digit()){  // does it look like a number?
+					mathml.set_name("mn");
+					return Some(mathml);
+				} else if contains_currency(text) && let Some(result) = split_currency_symbol(mathml) {
+					return Some(result);
 				}
+				// common bug: trig functions, lim, etc., should be mi
+				if ["…", "⋯", "∞"].contains(&text) ||
+				   crate::definitions::SPEECH_DEFINITIONS.with(|definitions| 
+					if let Some(hashset) = definitions.borrow().get_hashset("FunctionNames") {
+						hashset.contains(text)
+					} else {
+						false
+					}
+				) {
+					set_mathml_name(mathml, "mi");
+					return Some(mathml);
+				}
+
 				// allow non-breaking whitespace to stay -- needed by braille
 				if IS_WHITESPACE.is_match(text) {
 					// normalize to just a single non-breaking space
@@ -931,6 +977,7 @@ impl CanonicalizeContext {
 							return Some(mathml);
 						},
 						"::" =>{mathml.set_text("∷");},
+						"│" => {mathml.set_text("|");},	// ASCII vertical bar
 						"|" | "||" => if let Some(result) = merge_vertical_bars(mathml) {
 							return Some(result);
 						} else {
@@ -954,15 +1001,19 @@ impl CanonicalizeContext {
 						mathml.set_text(&new_text);
 						return Some(mathml);
 					}
-					if CURRENCY_SYMBOLS.contains(text) {
-						set_mathml_name(mathml, "mi");
-						return Some(mathml);
+					if contains_currency(text) && let Some(result) = split_currency_symbol(mathml) {
+						return Some(result);
 					}
 					return Some(mathml);
 				});
 				// note: chemistry test is done later as part of another phase of chemistry cleanup
 			},
 			"mfenced" => {return self.clean_mathml( convert_mfenced_to_mrow(mathml) )},
+			"a" => {
+				// convert 'a' into 'mrow'
+				set_mathml_name(mathml, "mrow");
+				return self.clean_mathml(mathml);
+			}
 			"mstyle" | "mpadded" => {
 				// Throw out mstyle and mpadded -- to do this, we need to avoid mstyle being the arg of clean_mathml
 				// FIX: should probably push the attrs down to the children (set in 'self')
@@ -1066,6 +1117,7 @@ impl CanonicalizeContext {
 				// cleaning children can add or delete subsequent children, so we need to constantly update the children (and mathml)
 				let mut children = mathml.children();
 				let mut i = 0;
+
 				while i < children.len() {
 					if let Some(child) = children[i].element() {
 						match self.clean_mathml(child) {
@@ -1074,9 +1126,9 @@ impl CanonicalizeContext {
 								// don't increment 'i' because there is one less child now and so everything shifted left
 							},
 							Some(new_child) => {
+								// debug!("new_child (i={})\n{}", i, mml_to_string(new_child));
 								let new_child_name = name(new_child);
 								children = mathml.children();				// clean_mathml(child) may have changed following siblings
-								// debug!("new_child (i={})\n{}", i, mml_to_string(new_child));
 								children[i] = ChildOfElement::Element(new_child);
 								mathml.replace_children(children);
 								if (new_child_name == "mi" || new_child_name == "mtext") &&
@@ -1102,7 +1154,7 @@ impl CanonicalizeContext {
 								i += 1;
 							}
 						}
-						children = mathml.children();						// 'children' moved above, so need need new values
+						children = mathml.children();						// 'children' moved above, so need new values
 					} else {
 						// bad mathml such as '<annotation-xml> </annotation-xml>' -- don't add to new_children
 						i += 1;
@@ -1160,7 +1212,6 @@ impl CanonicalizeContext {
 
 				mathml.replace_children(children);
 				// debug!("clean_mathml: after loop\n{}", mml_to_string(mathml));
-
 				if element_name == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(element_name) {
 					clean_chemistry_mrow(mathml);
 				}
@@ -1234,18 +1285,16 @@ impl CanonicalizeContext {
 				return false;
 			}
 
-			if let Some(intent_value) = mathml.attribute_value(INTENT_ATTR) {
-				if intent_value != "ratio" || !intent_value.starts_with('_') {
+			if let Some(intent_value) = mathml.attribute_value(INTENT_ATTR)
+				&& (intent_value != "ratio" || !intent_value.starts_with('_')) {
 					return false;
 				}
-			}
 
-			if let Some(value) = mathml.attribute_value("data-mjx-texclass") {
-				if value ==  "PUNCT" {
+			if let Some(value) = mathml.attribute_value("data-mjx-texclass")
+				&& value ==  "PUNCT" {
 					mathml.remove_attribute("data-mjx-texclass");
 					mathml.set_attribute_value(SPACE_AFTER, "true");	// signal to at least Nemeth rules that this is punctuation
 				}
-			}
 
 			let preceding = mathml.preceding_siblings();
 			let following = mathml.following_siblings();
@@ -1258,28 +1307,24 @@ impl CanonicalizeContext {
 			   following.len() == 1 && name(following_child) == "mn" {
 				return true;
 			}
-			// only want want one "∷"
+			// only want one "∷"
 			let is_before = is_proportional_before_colon(preceding.iter().rev());
-			if let Some(is_before) = is_before {
-				if !is_before {
+			if let Some(is_before) = is_before
+				&& !is_before {
 					return false;
 				}
-			}
 			let is_before = is_before.is_some();		// move this to true/false (found/not found)
 			let is_after = is_proportional_before_colon(following.iter());
-			if let Some(is_after) = is_after {
-				if !is_after {
+			if let Some(is_after) = is_after
+				&& !is_after {
 					return false;
 				}
-			}
 			let is_after = is_after.is_some();		// move this to true/false (found/not found)
 			return is_before ^ is_after;
 
 			fn is_proportional_before_colon<'a>(siblings: impl Iterator<Item = &'a ChildOfElement<'a>>) -> Option<bool> {
 				// unparsed, so we look at relative priorities to make sure the proportional operator is really the next operator
-				lazy_static!{
-					static ref PROPORTIONAL_PRIORITY: usize = OPERATORS.get("∷").unwrap().priority;
-				}
+				static PROPORTIONAL_PRIORITY: LazyLock<usize> = LazyLock::new(|| OPERATORS.get("∷").unwrap().priority);
 				for sibling in siblings {
 					let child = as_element(*sibling);
 					if name(child) == "mo" {
@@ -1288,11 +1333,10 @@ impl CanonicalizeContext {
 							"∷" | "::" => return Some(true),		// "::" might not be canonicalized yet
 							"∶" => return Some(false),
 							_ => {
-								if let Some(op) = OPERATORS.get(text) {
-									if op.priority < *PROPORTIONAL_PRIORITY {
+								if let Some(op) = OPERATORS.get(text)
+									&& op.priority < *PROPORTIONAL_PRIORITY {
 										return None;		// no "∷"
 									}
-								}
 							},
 						}
 					}
@@ -1371,7 +1415,7 @@ impl CanonicalizeContext {
 		fn clean_chemistry_leaf(mathml: Element) -> Element {
 			if !(is_chemistry_off(mathml) || mathml.attribute(MAYBE_CHEMISTRY).is_some()) {
 				assert!(name(mathml)=="mi" || name(mathml)=="mtext");
-				// this is hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
+				// this is a hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
 				// FIX: come up with a less hacky way to prevent chem element misinterpretation
 				let text = as_text(mathml);
 				if text.len() > 2 && is_roman_number_match(text) {
@@ -1393,6 +1437,50 @@ impl CanonicalizeContext {
 			}
 			return mathml;
 		}
+
+
+		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
+		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
+			static IS_DEGREES_C_OR_F: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[°º][CF]").unwrap());
+
+			let text = as_text(mi);
+			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
+			if !text.chars().any(is_pseudo_script_char) || IS_DEGREES_C_OR_F.is_match(text) {
+				return None;
+			}
+
+			let document = mi.document();
+			// create pairs of text
+			let chars = text.chars();
+    		let next_chars = text.chars().skip(1);
+			let result = chars.zip(next_chars).map(|(a, b)|
+						if a.is_alphabetic() && is_pseudo_script_char(b) {
+							// create msup
+							let base = create_mathml_element(&document, "mi");
+							base.set_text(&a.to_string());
+							let script = create_mathml_element(&document, "mo");
+							script.set_text(&b.to_string());
+							let msup = create_mathml_element(&document, "msup");
+							msup.append_child(base);
+							msup.append_child(script);
+							msup
+						} else {
+							// create an mi "ab"
+							let new_mi = create_mathml_element(&document, "mi");
+							let mut new_mi_text = String::with_capacity(6);		// likely will fit almost all cases
+							new_mi_text.push(a);
+							new_mi_text.push(b);
+							new_mi.set_text(&new_mi_text);
+							new_mi
+						} )
+				.collect::<Vec<Element>>();
+			if result.len() == 1 {
+				return Some( result[0] );
+			} else {
+				return Some( replace_children(mi, result) );
+			}
+		}
+
 
 		/// If 'mathml' is a scripted element and has an mrow for a base,
 		///   attach any prescripts to the first element in mrow
@@ -1466,7 +1554,7 @@ impl CanonicalizeContext {
 			let n = children.len();
 			let i_mprescripts =
 				if let Some((i,_)) = children.iter().enumerate()
-					.find(|(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
+					.find(|&(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
 			let has_misplaced_mprescripts = i_mprescripts & 1 == 0;  // should be first, third, ... child
 			let mut has_proper_number_of_children = if i_mprescripts == n { n & 1 == 0} else { n & 1 != 0 }; // should be odd else even #
 			if has_misplaced_mprescripts || !has_proper_number_of_children || has_none_none_script_pair(&children) {
@@ -1495,7 +1583,7 @@ impl CanonicalizeContext {
 						i += 2;
 					}
 				}
-				if new_children.len() == 1 {
+				if new_children.len() <= 2 {  // base only, or base and </mprescripts>
 					mathml = as_element(new_children[0]);
 				} else {
 					mathml.replace_children(new_children);
@@ -1543,6 +1631,81 @@ impl CanonicalizeContext {
 				return mathml;
 			} else {
 				return as_element(children[0]);	// no scripts
+			}
+		}
+
+		/// Split off the currency symbol from the rest of the text and return an mrow with the result
+		/// Assumes it has already checked and that we have a leaf
+		fn split_currency_symbol(leaf: Element) -> Option<Element> {
+			assert!(is_leaf(leaf));
+			let text = as_text(leaf);
+			assert!(contains_currency(text));
+			let mut iter = text.chars();
+			match (iter.next(), iter.next()) {
+				(None, _) => return None,
+				(Some(_), None) => {  // 1 char
+					leaf.set_name("mi");
+					return Some(leaf);				}
+				(Some(_), Some(_)) => { // 2 or more chars
+					// WARNING: don't use 'leaf' in the mrow -- that detaches it from its parent and could shrink the number of children causing problems
+					if text.chars().any(|c| c.is_ascii_digit()) {		// might be a number with a currency symbol
+						leaf.set_name("mn");	// make sure we create an mn (might be one already)
+					}
+					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
+					if is_currency_symbol(first_ch.chars().next().unwrap()) {
+						let mrow = create_mathml_element(&leaf.document(), "mrow");
+						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
+						currency_symbol.set_text(first_ch);
+						mrow.append_child(currency_symbol);
+						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+						mrow.append_child(implied_times);
+						let currency_amount = create_mathml_element(&leaf.document(), name(leaf));
+						currency_amount.set_text(&text[first_ch.len()..]);
+						mrow.append_child(currency_amount);
+						return Some(mrow);
+					}
+					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
+					if is_currency_symbol(last_ch.chars().next().unwrap()) {
+						let mrow = create_mathml_element(&leaf.document(), "mrow");
+						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+						mrow.append_child(implied_times);
+						let currency_amount = create_mathml_element(&leaf.document(), name(leaf));
+						currency_amount.set_text(&text[..text.len()-last_ch.len()]);
+						mrow.append_child(currency_amount);
+						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
+						currency_symbol.set_text(last_ch);
+						mrow.append_child(currency_symbol);
+						return Some(mrow);
+					}
+					// try to find it in the middle
+					for (byte_idx, ch) in text.char_indices() {
+						if contains_currency(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
+							// get all the substrings
+							let first_part = &text[..byte_idx];
+							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
+							let second_part = &text[byte_idx + ch.len_utf8() ..];
+							let mrow = create_mathml_element(&leaf.document(), "mrow");
+							mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+							let first_part_element = create_mathml_element(&leaf.document(), name(leaf));
+							first_part_element.set_text(first_part);
+							mrow.append_child(first_part_element);
+							let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+							mrow.append_child(implied_times);
+							let currency_symbol_element = create_mathml_element(&leaf.document(), "mi");
+							currency_symbol_element.set_text(currency_symbol);
+							mrow.append_child(currency_symbol_element);
+							let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+							mrow.append_child(implied_times);
+							let second_part_element = create_mathml_element(&leaf.document(), name(leaf));
+							second_part_element.set_text(second_part);
+							mrow.append_child(second_part_element);
+							return Some(mrow);
+						}
+					}
+					return None
+				}
 			}
 		}
 
@@ -1792,40 +1955,62 @@ impl CanonicalizeContext {
 				return;
 			}
 
-			let mut i = 1;	// we look back at previous child if we detect appropriate mtext -- prev child will always exist
-			let mut previous_child = as_element(children[0]);
-			let mut is_previous_child_whitespace = name(previous_child) == "mtext" && as_text(previous_child) == "\u{00A0}";
+			let mut i = 0;
+			let mut previous_mtext_with_width: Option<Element<'_>> = None;  // prefer to spacing on previous mtext
+			let mut whitespace: Option<f64> = None;
 			while i < children.len() {
 				let child = as_element(children[i]);
 				let is_child_whitespace = name(child) == "mtext" && as_text(child) == "\u{00A0}";
-				// debug!("merge_whitespace: {}", mml_to_string(child));
-				if is_child_whitespace && is_previous_child_whitespace {
-					// grab the width of the previous and current child, add them together
-					let previous_width = previous_child.attribute_value("data-width").unwrap_or("0");
-					let child_width = child.attribute_value("data-width").unwrap_or("0");
-					let width = previous_width.parse::<f64>().unwrap_or(0.0)
-								   + child_width.parse::<f64>().unwrap_or(0.0);
-					// set the combined width on the previous child and remove the current child (don't inc 'i')
-					previous_child.set_attribute_value("data-width", &width.to_string());
-					children.remove(i);
-					// previous child is unchanged
-				} else if is_previous_child_whitespace {
+				// debug!("merge_whitespace: i={}, whitespace={:?}, mtext set={} {}",
+				// 		i, whitespace, previous_mtext_with_width.is_some(), mml_to_string(child));
+				if is_child_whitespace {
+					// update the running total of whitespace
+					let child_width = child.attribute_value("data-width").unwrap_or("0")
+																					.parse::<f64>().unwrap_or(0.0)	;
+					whitespace = match whitespace {
+						None => Some(child_width),
+						Some(w) => Some(w + child_width),
+					};
+					if children.len() == 1 {
+						i += 1;							// don't remove only child
+					} else {
+						children.remove(i);		// remove the current child (don't inc 'i')
+					}
+				} else if let Some(ws) = whitespace {
 					// done with sequence of whitespaces
-					child.set_attribute_value("data-previous-space-width", previous_child.attribute_value("data-width").unwrap());
-					children.remove(i-1);
-					previous_child = child;
-					is_previous_child_whitespace = false;
+					if let Some(prev_mtext) = previous_mtext_with_width {
+						// prefer to set on previous mtext
+						prev_mtext.set_attribute_value("data-following-space-width", (ws).to_string().as_str());
+						previous_mtext_with_width = None;
+					} else {
+						// if the space is significant, set it on the current child
+						child.set_attribute_value("data-previous-space-width", ws.to_string().as_str());
+						if name(child) == "mtext" {
+							previous_mtext_with_width = Some(child);
+						}
+					}
+					whitespace = None;
+					i += 1;
 				} else {
 					i += 1;
-					previous_child = child;
-					is_previous_child_whitespace = is_child_whitespace;
+					previous_mtext_with_width = None;
 				}
 			}
-			if children.len() > 1 && is_previous_child_whitespace {
-				// last child in mrow (= previous_child) is white space -- mark space *after*
-				let non_space_child = as_element(children[children.len()-2]);
-				non_space_child.set_attribute_value("data-following-space-width", previous_child.attribute_value("data-width").unwrap());
-				children.remove(children.len()-1);
+			// debug!("  after loop: whitespace={:?}, {}", whitespace, mml_to_string(as_element(children[children.len()-1])));
+			if let Some(mut ws) = whitespace {
+				// last child in mrow is white space -- mark with space *after*
+				if children.len() == 1 {
+					// only child -- check to see if we need to set the space-width
+					let child = as_element(children[0]);
+					let child_width = child.attribute_value("data-width").unwrap_or("0").parse::<f64>().unwrap_or(0.0);
+					if (child_width - ws).abs() > 0.001 {
+						ws += child_width;
+						child.set_attribute_value("data-following-space-width", ws.to_string().as_str());
+					}
+				} else {
+					let non_space_child = as_element(children[children.len()-1]);
+					non_space_child.set_attribute_value("data-following-space-width", ws.to_string().as_str());
+				}
 			}
 		}
 
@@ -1949,9 +2134,7 @@ impl CanonicalizeContext {
 		/// under some specific conditions (trying to be a little cautious).
 		/// The returned (mrow) element reuses the arg so tree siblings links remain correct.
 		fn split_points(leaf: Element) -> Option<Element> {
-			lazy_static!{
-				static ref IS_UPPERCASE: Regex = Regex::new(r"^[A-Z]+$").unwrap();
-			}
+			static IS_UPPERCASE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[A-Z]+$").unwrap());
 
 			if !IS_UPPERCASE.is_match(as_text(leaf)) {
 				return None;
@@ -2012,21 +2195,24 @@ impl CanonicalizeContext {
 		/// The returned (mi) element reuses 'mi'
 		fn merge_mi_sequence(mi: Element) -> Option<Element> {
 			// The best solution would be to use a dictionary of words, or maybe restricted to words in a formula,
-			//   but that would likely miss the words used in slope=run/rise
+			//   but that would likely miss the words used in slope=run/rise.
+			// It would also be really expensive since we would need a dictionary for each language.
 			// We shouldn't need to worry about trig names like "cos", but people sometimes forget to use "\cos"
 			// Hence, we check against the "FunctionNames" that get read on startup.
-			static VOWELS: phf::Set<char> = phf_set! {
-				'a', 'e', 'i', 'o', 'u', 'y',
-				'à',  'á',  'â',  'ã',  'ä',  'è',  'é',  'ê',  'ë',  'ì',  'í',  'î',  'ï', 
-				'ò',  'ó',  'ô',  'õ',  'ö',  'ú',  'Ù',  'û',  'ü',  'ý',  'ÿ',  
-				// Vietnamese
-				'ả', 'ạ', 'ă', 'ằ', 'ẳ', 'ẵ', 'ắ', 'ặ', 'ầ', 'ẩ', 'ẫ', 'ấ', 'ậ', 'ẻ', 'ẽ', 'ẹ', 'ề', 'ể', 'ễ', 'ế', 'ệ',
-				'ỉ', 'ĩ', 'ị', 'ỏ', 'ọ', 'ồ', 'ổ', 'ỗ', 'ố', 'ộ', 'ơ', 'ờ', 'ở', 'ỡ', 'ớ', 'ợ',
-				'ủ', 'ũ', 'ụ', 'ư', 'ừ', 'ử', 'ữ', 'ứ', 'ự', 'ỳ', 'ỷ', 'ỹ', 'ỵ', 
-			};
+			fn is_vowel(ch: char) -> bool {
+				matches!(ch,
+					'a' | 'e' | 'i' | 'o' | 'u' | 'y' |
+					'à' | 'á' | 'â' | 'ã' | 'ä' | 'è' | 'é' | 'ê' | 'ë' | 'ì' | 'í' | 'î' | 'ï' |
+					'ò' | 'ó' | 'ô' | 'õ' | 'ö' | 'ú' | 'Ù' | 'û' | 'ü' | 'ý' | 'ÿ' |
+					'ả' | 'ạ' | 'ă' | 'ằ' | 'ẳ' | 'ẵ' | 'ắ' | 'ặ' | 'ầ' | 'ẩ' | 'ẫ' | 'ấ' | 'ậ' | 'ẻ' | 'ẽ' | 'ẹ' | 'ề' | 'ể' | 'ễ' | 'ế' | 'ệ' |
+					'ỉ' | 'ĩ' | 'ị' | 'ỏ' | 'ọ' | 'ồ' | 'ổ' | 'ỗ' | 'ố' | 'ộ' | 'ơ' | 'ờ' | 'ở' | 'ỡ' | 'ớ' | 'ợ' |
+					'ủ' | 'ũ' | 'ụ' | 'ư' | 'ừ' | 'ử' | 'ữ' | 'ứ' | 'ự' | 'ỳ' | 'ỷ' | 'ỹ' | 'ỵ'
+				)
+			}
 			let parent = get_parent(mi);	// not canonicalized into mrows, so parent could be "math"
 			let parent_name = name(parent);
-			if as_text(mi).len() > 1 || !(parent_name == "mrow" || parent_name == "math") {
+			// don't merge if more than one char, or if not in an mrow (or implied on since we haven't normalized yet)
+			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") {
 				return None;
 			}
 			let mut text =  as_text(mi).to_string();
@@ -2076,15 +2262,21 @@ impl CanonicalizeContext {
 			// debug!("merge_mi_sequence: text={}", &text);
 			if let Some(answer) = crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
 				let definitions = definitions.borrow();
-				if definitions.get_hashset("FunctionNames").unwrap().contains(&text) {
+				let function_names = definitions.get_hashset("FunctionNames").unwrap();
+				// UEB seems to think "Sin" (etc) is used for "sin", so we move to lower case
+				// function name might be (wrongly) set to italic math alphanumeric chars, including bold italic
+				if let Some(ascii_text) = CanonicalizeContext::math_alphanumeric_to_ascii(&text)
+					&& function_names.contains(&ascii_text.to_lowercase()) {
+						return Some(merge_from_text(mi, &ascii_text, &following_mi_siblings));
+					}
+				if function_names.contains(&text) {
 					return Some(merge_from_text(mi, &text, &following_mi_siblings));
 				}
 				// unlike "FunctionNames", "KnownWords" might not exist
-				if let Some(word_map) = definitions.get_hashset("KnownWords") {
-					if word_map.contains(&text) {
+				if let Some(word_map) = definitions.get_hashset("KnownWords")
+					&& word_map.contains(&text) {
 						return Some(merge_from_text(mi, &text, &following_mi_siblings));
 					}
-				}
 				return None;
 			}) {
 				return answer;
@@ -2096,7 +2288,7 @@ impl CanonicalizeContext {
 			}
 			// If it is a word, it needs a vowel and it must be a letter
 			// FIX: this check needs to be internationalized to include accented vowels, other alphabets
-			if !text.chars().any(|ch| VOWELS.contains(&ch) || !ch.is_ascii_alphabetic()) {
+			if !text.chars().any(|ch| is_vowel(ch) || !ch.is_ascii_alphabetic()) {
 				return None;
 			}
 		
@@ -2136,6 +2328,7 @@ impl CanonicalizeContext {
 					while name(base) == "mrow" && base.children().len() == 1 {
 						// the base may be wrapped with mrows
 						base = as_element(base.children()[0]);
+						base.remove_attribute(SPLIT_TOKEN);
 					}
 					base.set_text(text);
 					return Some(last_child);
@@ -2145,9 +2338,6 @@ impl CanonicalizeContext {
 
 		// Check if start..end is a number
 		fn is_likely_a_number(context: &CanonicalizeContext, mrow: Element, children: &[ChildOfElement]) -> bool {
-			lazy_static! {
-				static ref IS_HEX_BLOCK: Regex = Regex::new("[a-eh-z]").unwrap();
-			}
 			// Note: the children of math_or_mrow aren't valid ('children' represents the current state)
 			let end = children.len();
 			// {
@@ -2243,11 +2433,10 @@ impl CanonicalizeContext {
 				return false;		// not at end
 			}
 			let parent = mrow.parent().unwrap().element();
-			if let Some(math) = parent {
-				if name(math) != "math" {
+			if let Some(math) = parent
+				&& name(math) != "math" {
 					return false;			// mrow inside something else -- not at end
 				}
-			}
 
 			let last_child = as_element(last_child);
 			// debug!("ignore_final_punctuation: last child={}", mml_to_string(last_child));
@@ -2328,14 +2517,13 @@ impl CanonicalizeContext {
 							degree_child = None;
 						},
 						text  => {
-							if let Some(degree_child) = degree_child {
-								if text == "C" || text == "F" {
+							if let Some(degree_child) = degree_child
+								&& (text == "C" || text == "F") {
 									// merge the degree child with the current child
 									degree_child.set_text(if text == "C" { "℃" } else { "℉" });
 									child.remove_from_parent();
 								}
 								// merge the degree child with the current child
-							}
 							degree_child = None;	
 						},
 					}
@@ -2505,7 +2693,7 @@ impl CanonicalizeContext {
 					'‴' => n_primes += 3,
 					'⁗' => n_primes += 4,
 					_ => {
-						eprint!("merge_prime_text: unexpected char '{ch}' found");
+						eprintln!("merge_prime_text: unexpected char '{ch}' found in prime text '{text}'");
 						return text.to_string();
 					}
 				}
@@ -2524,13 +2712,15 @@ impl CanonicalizeContext {
 			return result;
 		}
 
+		// from https://www.w3.org/TR/MathML3/chapter7.html#chars.pseudo-scripts
+		fn is_pseudo_script_char(ch: char) -> bool {
+			matches!(ch,
+				'\"' | '\'' | '*' | '`' | 'ª' | '°' | '²' | '³' | '´' | '¹' | 'º' |
+				'\u{2018}' | '\u{2019}' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '\u{201F}' |
+				'\u{2032}' | '\u{2033}' | '\u{2034}' | '\u{2035}' | '\u{2036}' | '\u{2037}' | '\u{2057}'
+			)
+		}
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
-			// from https://www.w3.org/TR/MathML3/chapter7.html#chars.pseudo-scripts
-			static PSEUDO_SCRIPTS: phf::Set<&str> = phf_set! {
-				"\"", "'", "*", "`", "ª", "°", "²", "³", "´", "¹", "º",
-				"‘", "’", "“", "”", "„", "‟",
-				"′", "″", "‴", "‵", "‶", "‷", "⁗",
-			};
 	
 			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(name(mrow)), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
 			let mut children = mrow.children();
@@ -2579,34 +2769,51 @@ impl CanonicalizeContext {
 			fn is_pseudo_script(child: Element) -> bool {
 				if name(child) == "mo" {
 					let text = as_text(child);
-					if PSEUDO_SCRIPTS.contains(as_text(child)) {
-						// don't script a pseudo-script
-						let preceding_siblings = child.preceding_siblings();
-						if !preceding_siblings.is_empty() {
-							let last_child = as_element(preceding_siblings[preceding_siblings.len()-1]);
-							if name(last_child) == "mo" && PSEUDO_SCRIPTS.contains(as_text(last_child)) {
-								return false;
+					if let Some(ch) = single_char(text)
+						&& is_pseudo_script_char(ch) {
+							// don't script a pseudo-script
+							let preceding_siblings = child.preceding_siblings();
+							if !preceding_siblings.is_empty() {
+								let last_child = as_element(preceding_siblings[preceding_siblings.len()-1]);
+								if name(last_child) == "mo" &&
+								   let Some(ch) = single_char(as_text(last_child))
+										&& is_pseudo_script_char(ch) {
+											return false;
+										}
 							}
-						}
-						if text == "*" {
-							// could be infix "*" -- this is a weak check to see if what follows is potentially an operand
-							let following_siblings = child.following_siblings();
-							if  following_siblings.is_empty() {
+							if text == "*" {
+								// could be infix "*" -- this is a weak check to see if what follows is potentially an operand
+								let following_siblings = child.following_siblings();
+								if  following_siblings.is_empty() {
+									return true;
+								}
+								let first_child = as_element(following_siblings[0]);
+								return name(first_child) != "mo" || ["(", "[", "{"].contains(&text);
+							} else {
 								return true;
 							}
-							let first_child = as_element(following_siblings[0]);
-							return name(first_child) != "mo" || ["(", "[", "{"].contains(&text);
-						} else {
-							return true;
 						}
-					}
 				}
 				return false;
+
+				/// An efficient method to get the char from a string if it is just one char or fail
+				fn single_char(text: &str) -> Option<char> {
+					let mut chars = text.chars();
+					let ch = chars.next();
+					if ch.is_none() || chars.next().is_some() {
+						return None;		// not one character
+					} else {
+						return ch;
+					}
+				}
 			}
 
 		}
 
 		fn handle_convert_to_mmultiscripts(children: &mut Vec<ChildOfElement>) {
+			if children.len() == 1 {
+				return;		// can't convert to mmultiscripts if there is nothing to attach an empty base to
+			}
   			let mut i = 0;
 			// convert_to_mmultiscripts changes 'children', so can't cache length
 			while i < children.len() {
@@ -2839,11 +3046,11 @@ impl CanonicalizeContext {
 			fn is_grouped_base(mrow_children: &[ChildOfElement]) -> Option<usize> {
 				// FIX: this really belongs in canonicalization pass, not the clean pass
 				let i_last = mrow_children.len()-1;
-				let last_child = as_element(mrow_children[i_last]);
+				let last_child = get_possible_embellished_node(as_element(mrow_children[i_last]));
 				if name(last_child) == "mo" &&
 				   CanonicalizeContext::find_operator(None, last_child, None, None, None).is_right_fence() {
 					for i_child in (0..i_last).rev() {
-						let child = as_element(mrow_children[i_child]);
+						let child = get_possible_embellished_node(as_element(mrow_children[i_child]));
 						if name(child) == "mo" &&
 						   CanonicalizeContext::find_operator(None, child, None, None, None).is_left_fence() {
 							// FIX: should make sure left and right match. Should also count for nested parens
@@ -2889,7 +3096,7 @@ impl CanonicalizeContext {
 							}
 							return Ok( mathml );
 						},
-						_ => panic!("Should have been an element or text in '{}'", tag_name),
+						_ => bail!("Should have been an element or text in '{}'", tag_name),
 					}
 				}
 				mathml.replace_children(new_children);
@@ -2930,8 +3137,9 @@ impl CanonicalizeContext {
 		return script;
 	}
 
+	/// Map names to start of Unicode alphanumeric blocks (Roman, digits, Greek)
+	/// Don't do this for function names -- for function names, map them back to ASCII
 	fn canonicalize_plane1<'a>(&self, mi: Element<'a>) -> Element<'a> {
-		// map names to start of Unicode alphanumeric blocks (Roman, digits, Greek)
 		// if the character shouldn't be mapped, use 0 -- don't use 'A' as ASCII and Greek aren't contiguous
 		static MATH_VARIANTS: phf::Map<&str, [u32; 3]> = phf_map! {
 			// "normal" -- nothing to do
@@ -2950,19 +3158,40 @@ impl CanonicalizeContext {
 			"monospace" => [0x1D670, 0x1D7F6, 0],
 		};
 
-		let variant = mi.attribute_value("mathvariant");
-		if variant.is_none() {
-			return mi;
-		}
+		return crate::definitions::SPEECH_DEFINITIONS.with(|defs| {
+			// names that are always function names (e.g, "sin" and "log")
+			let defs = defs.borrow();
+			let names = match defs.get_hashset("FunctionNames") {
+				Some(hs) => hs,
+				None => return mi,  // happens in some canonicalize tests but not in real use
+			};
 
-		let mi_text = as_text(mi);
-		let new_text = match MATH_VARIANTS.get(variant.unwrap()) {
-			None => mi_text.to_string(),
-			Some(start) => shift_text(mi_text, start),
-		};
-		// mi.remove_attribute("mathvariant");  // leave attr -- for Nemeth, there are italic digits etc that don't have Unicode points
-		mi.set_text(&new_text);
-		return mi;
+
+			let mi_text = as_text(mi);
+			let variant = mi.attribute_value("mathvariant");
+
+			if names.contains(mi_text) {
+				return mi;		// avoid mapping mathvariant for function names
+			}
+			// function name might be (wrongly) set to italic math alphanumeric chars, including bold italic
+			if let Some(ascii_text) = CanonicalizeContext::math_alphanumeric_to_ascii(mi_text)
+				&& names.contains(&ascii_text) {
+					mi.set_text(&ascii_text);
+					return mi
+				}
+
+			if variant.is_none() {
+				return mi;
+			}
+
+			let new_text = match MATH_VARIANTS.get(variant.unwrap()) {
+				None => mi_text.to_string(),
+				Some(start) => shift_text(mi_text, start),
+			};
+			// mi.remove_attribute("mathvariant");  // leave attr -- for Nemeth, there are italic digits etc that don't have Unicode points
+			mi.set_text(&new_text);
+			return mi;
+		});
 
 		fn shift_text(old_text: &str, char_mapping: &[u32; 3]) -> String {
 			// if there is no block for something, use 'a', 'A', 0 as that will be a no-op
@@ -3147,7 +3376,7 @@ impl CanonicalizeContext {
 					0x1D551u32 => 0x2124u32,
 				};
 								
-				return unsafe { char::from_u32_unchecked(
+				return unsafe { char::from_u32_unchecked(		// safe because the values are a char or from the table above
 					match EXCEPTIONS.get(&ch) {
 						None => ch,
 						Some(exception_value) => *exception_value,
@@ -3157,8 +3386,42 @@ impl CanonicalizeContext {
 		}
 	}
 
+	fn math_alphanumeric_to_ascii(input: &str) -> Option<String> {
+		let mut result = String::with_capacity(input.len());
+
+		for c in input.chars() {
+			let converted = match c {
+				// Standard ASCII
+				'a'..='z' | 'A'..='Z' => c,
+				
+				// Mathematical Bold (A-Z: U+1D400, a-z: U+1D41A)
+				'\u{1D400}'..='\u{1D419}' => ((c as u32 - 0x1D400) as u8 + b'A') as char,
+				'\u{1D41A}'..='\u{1D433}' => ((c as u32 - 0x1D41A) as u8 + b'a') as char,
+				
+				// Mathematical Italic (A-Z: U+1D434, a-z: U+1D44E)
+				// Note: 'h' is missing from this range (U+210E)
+				'\u{1D434}'..='\u{1D44D}' => ((c as u32 - 0x1D434) as u8 + b'A') as char,
+				'\u{1D44E}'..='\u{1D467}' => ((c as u32 - 0x1D44E) as u8 + b'a') as char,
+				
+				// Mathematical Bold Italic (A-Z: U+1D468, a-z: U+1D482)
+				'\u{1D468}'..='\u{1D481}' => ((c as u32 - 0x1D468) as u8 + b'A') as char,
+				'\u{1D482}'..='\u{1D49B}' => ((c as u32 - 0x1D482) as u8 + b'a') as char,
+
+				// Mathematical Sans-Serif (A-Z: U+1D5A0, a-z: U+1D5BA)
+				'\u{1D5A0}'..='\u{1D5B9}' => ((c as u32 - 0x1D5A0) as u8 + b'A') as char,
+				'\u{1D5BA}'..='\u{1D5D3}' => ((c as u32 - 0x1D5BA) as u8 + b'a') as char,
+
+				// If a character isn't a letter (or supported math letter), return None
+				_ => return None,
+			};
+			result.push(converted);
+		}
+
+		Some(result)
+	}
+
 	fn canonicalize_mo_text(&self, mo: Element) {
-		// lazy_static! {
+		// lazy_static! {    (NOTE: std::sync::LazyLock is now used instead)
 		// 	static ref IS_LIKELY_SCALAR_VARIABLE: Regex = Regex::new("[a-eh-z]").unwrap();
 		// }
 		
@@ -3193,28 +3456,9 @@ impl CanonicalizeContext {
 				_ => mo_text,
 			};
 		};
-		mo_text = match mo_text {
-			"\u{2212}" => "-",
-			// FIX: this needs to be after all expr the "|" has been fully canonicalized. At this point, any parent mrow/siblings is in flux
-			// "\u{007C}" => {  // vertical line -> divides
-			// if a number or variable (lower case single letter) precedes and follows "|", switch to divides (a bit questionable...)
-			// debug!("canonicalize_mo_text parent:\n{}", mml_to_string(parent));
-			// 	let precedes = mo.preceding_siblings();
-			// 	let follows = mo.following_siblings();
-			// 	if precedes.is_empty() || follows.is_empty() {
-			// 		"\u{007C}"
-			// 	} else {
-			// 		let before = as_element(precedes[0]);
-			// 		let after = as_element(follows[0]);
-			// 		let before_ok = name(before) == "mn" ||
-			// 				(name(before) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(before)));
-			// 		let after_ok = name(after) == "mn" ||
-			// 				(name(after) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(after)));
-			// 		if before_ok && after_ok {"\u{2224}"} else {"\u{007C}"}
-			// 	}
-			// },
-			_ => mo_text,
-		};
+		if mo_text == "\u{2212}" {
+			mo_text = "-";
+		}
 		mo.set_text(mo_text);
 	}
 	
@@ -3251,7 +3495,7 @@ impl CanonicalizeContext {
 		};	
 	
 		let found_op_info = if mo_node.attribute_value(CHEMICAL_BOND).is_some() {
-			Some(&*IMPLIED_CHEMICAL_BOND)
+			Some(&IMPLIED_CHEMICAL_BOND)
 		} else {
 			OPERATORS.get(as_text(mo_node))
 		};
@@ -3262,7 +3506,7 @@ impl CanonicalizeContext {
 	
 		let found_op_info = found_op_info.unwrap();
 		let matching_op_info = find_operator_info(found_op_info, op_type, form.is_some());
-		if ptr_eq(matching_op_info, *ILLEGAL_OPERATOR_INFO) {
+		if ptr_eq(matching_op_info, &ILLEGAL_OPERATOR_INFO) {
 			return op_not_in_operator_dictionary(op_type);
 		} else {
 			return matching_op_info;
@@ -3274,7 +3518,7 @@ impl CanonicalizeContext {
 			// if there isn't an obvious one, we have parsed the left, but not the right, so discount that
 		
 			// Trig functions have some special syntax
-			// We need to to treat '-' as prefix for things like "sin -2x"
+			// We need to treat '-' as prefix for things like "sin -2x"
 			// Need to be careful because (sin - cos)(x) needs an infix '-'
 			// Return either the prefix or infix version of the operator
 			if next_node.is_some() &&
@@ -3309,11 +3553,10 @@ impl CanonicalizeContext {
 			} else if let Some(next_op_info) = op_info.next {
 				if next_op_info.is_operator_type(op_type) {
 					return next_op_info;
-				} else if let Some(last_op_info) = next_op_info.next {
-					if last_op_info.is_operator_type(op_type) {
+				} else if let Some(last_op_info) = next_op_info.next
+					&& last_op_info.is_operator_type(op_type) {
 						return last_op_info;
 					}
-				}
 			}
 
 			// didn't find op_info that matches -- if type is not forced, then return first value (any is probably ok) 
@@ -3430,9 +3673,9 @@ impl CanonicalizeContext {
 				// debug!("   is postfix");
 				return postfix;
 			}
-		} else if operator_versions.infix.is_some() {
+		} else if let Some(infix) = operator_versions.infix {
 			// debug!("   is infix");
-			return operator_versions.infix.unwrap();	
+			return infix;	
 		}
 	
 		// nothing good to match
@@ -3456,7 +3699,7 @@ impl CanonicalizeContext {
 			if state_likelihood > 0 {
 				right_sibling.set_attribute_value(MAYBE_CHEMISTRY, state_likelihood.to_string().as_str());
 				// at this point, we know both node and right_sibling are positive, so we have at least a maybe
-				if state_likelihood + node_chem_likelihood.unwrap().parse::<isize>().unwrap() > 2 {
+				if state_likelihood + node_chem_likelihood.unwrap().parse::<i32>().unwrap() > 2 {
 					return FunctionNameCertainty::False;
 				} else {
 					return FunctionNameCertainty::Maybe
@@ -3582,7 +3825,7 @@ impl CanonicalizeContext {
 	
 			// Names like "Tr" are likely function names, single letter names like "M" or "J" are iffy
 			// This needs to be after the chemical state check above to rule out Cl(g), etc
-			// This would be better if if were part of 'likely_names' as "[A-Za-z]+", but reg exprs don't work in HashSets.
+			// This would be better if it were part of 'likely_names' as "[A-Za-z]+", but reg exprs don't work in HashSets.
 			// FIX: create our own struct and write appropriate traits for it and then it could work
 			let mut chars = base_name.chars();
 			let first_char = chars.next().unwrap();		// we know there is at least one byte in it, hence one char
@@ -3903,12 +4146,14 @@ impl CanonicalizeContext {
 				top_of_stack.add_child_to_mrow(current_child, current_op);
 				// debug!("shift_stack: after adding right fence to mrow:\n{}", mml_to_string(mrow));
 				new_current_op = OperatorPair::new();							// treat matched brackets as operand
-				new_current_child = mrow;	
+				new_current_child = mrow;
 				let children = mrow.children();
-				// debug!("looking for left fence: len={}, {:#?}", children.len(), self.find_operator(as_element(children[0]),None, None, Some(as_element(children[1])) ));
-				if children.len() == 2 && (name(as_element(children[0])) != "mo" ||
-				   !CanonicalizeContext::find_operator(Some(self), as_element(children[0]),
-								None, Some(as_element(children[0])), Some(mrow) ).is_left_fence()) {
+				let base_of_first_child = get_possible_embellished_node(as_element(children[0]));
+				// debug!("looking for left fence: len={}, {:#?}", children.len(), CanonicalizeContext::find_operator(Some(self), base_of_first_child, None, Some(as_element(children[0])), Some(mrow)));
+				if children.len() == 2 &&
+				   (name(base_of_first_child) != "mo" ||
+				    !CanonicalizeContext::find_operator(Some(self), base_of_first_child, None,
+														Some(as_element(children[0])), Some(mrow)).is_left_fence()) {
 					// the mrow did *not* start with an open (hence no push)
 					// since parser really wants balanced parens to keep stack state right, we do a push here
 					parse_stack.push( StackInfo::new(mrow.document()) );
@@ -4015,7 +4260,7 @@ impl CanonicalizeContext {
 			}
 			return false;
 		}
-		return ptr_eq(op_on_top.op, &*IMPLIED_TIMES_HIGH_PRIORITY);
+		return ptr_eq(op_on_top.op, &IMPLIED_TIMES_HIGH_PRIORITY);
 
 		fn is_trig(node: Element) -> bool {
 			let base_of_name = get_possible_embellished_node(node);
@@ -4125,17 +4370,17 @@ impl CanonicalizeContext {
 							base_of_child.remove_attribute("data-was-mo");
 							set_mathml_name(base_of_child, "mo");
 							let mut top_of_stack = parse_stack.pop().unwrap();
-							top_of_stack.add_child_to_mrow(current_child, OperatorPair{ ch: "\u{00A0}", op: &INVISIBLE_FUNCTION_APPLICATION});		// whitespace -- make part of mrow to keep out of parse
+							top_of_stack.add_child_to_mrow(current_child, OperatorPair{ ch: "\u{00A0}", op: *INVISIBLE_FUNCTION_APPLICATION});		// whitespace -- make part of mrow to keep out of parse
 							parse_stack.push(top_of_stack);
 							continue;
 						}
 						// consecutive operands -- add an invisible operator as appropriate
 						current_op = if likely_function_name == FunctionNameCertainty::True {
-									OperatorPair{ ch: "\u{2061}", op: &INVISIBLE_FUNCTION_APPLICATION }
+									OperatorPair{ ch: "\u{2061}", op: *INVISIBLE_FUNCTION_APPLICATION }
 								} else if self.is_mixed_fraction(previous_child, &children[i_child..])? {
-									OperatorPair{ ch: "\u{2064}", op: &IMPLIED_INVISIBLE_PLUS }
+									OperatorPair{ ch: "\u{2064}", op: *IMPLIED_INVISIBLE_PLUS }
 								} else if self.is_implied_comma(previous_child, current_child, mrow) {
-									OperatorPair{ch: "\u{2063}", op: &IMPLIED_INVISIBLE_COMMA }				  
+									OperatorPair{ch: "\u{2063}", op: *IMPLIED_INVISIBLE_COMMA }				  
 								} else if self.is_implied_chemical_bond(previous_child, current_child) {
 									OperatorPair{ch: "\u{2063}", op: &IMPLIED_CHEMICAL_BOND }				  
 								} else if self.is_implied_separator(previous_child, current_child) {
@@ -4143,15 +4388,14 @@ impl CanonicalizeContext {
 								} else if self.is_trig_arg(base_of_previous_child, base_of_child, &mut parse_stack) {
 									OperatorPair{ch: "\u{2062}", op: &IMPLIED_TIMES_HIGH_PRIORITY }				  
 								} else {
-									OperatorPair{ ch: "\u{2062}", op: &IMPLIED_TIMES }
+									OperatorPair{ ch: "\u{2062}", op: *IMPLIED_TIMES }
 								};
-						if let Some(attr_val) = base_of_child.attribute_value(CHANGED_ATTR) {
-							if attr_val == "data-was-mo" {
+						if let Some(attr_val) = base_of_child.attribute_value(CHANGED_ATTR)
+							&& attr_val == "data-was-mo" {
 								// it really should be an operator
 								base_of_child.remove_attribute(CHANGED_ATTR);
 								set_mathml_name(base_of_child, "mo");
 							}
-						}
 						if name(base_of_child) == "mo" {
 							current_op.ch = as_text(base_of_child);
 							// debug!("  Found whitespace op '{}'/{}", show_invisible_op_char(current_op.ch), current_op.op.priority);
@@ -4175,16 +4419,16 @@ impl CanonicalizeContext {
 				}
 			}
 	
-			if !ptr_eq(current_op.op, *ILLEGAL_OPERATOR_INFO) {
+			if !ptr_eq(current_op.op, &ILLEGAL_OPERATOR_INFO) {
 				if current_op.op.is_left_fence() || current_op.op.is_prefix() {
 					if top(&parse_stack).is_operand {
-						// will end up with operand operand -- need to choose operator associated with prev child
+						// will end up with duplicate operands -- need to choose operator associated with prev child
 						// we use the original input here because in this case, we need to look to the right of the ()s to deal with chemical states
 						let likely_function_name = self.is_function_name(as_element(children[i_child-1]), Some(&children[i_child..]));
 						let implied_operator = if likely_function_name== FunctionNameCertainty::True {
-								OperatorPair{ ch: "\u{2061}", op: &INVISIBLE_FUNCTION_APPLICATION }
+								OperatorPair{ ch: "\u{2061}", op: *INVISIBLE_FUNCTION_APPLICATION }
 							} else {
-								OperatorPair{ ch: "\u{2062}", op: &IMPLIED_TIMES }
+								OperatorPair{ ch: "\u{2062}", op: *IMPLIED_TIMES }
 							};
 						// debug!("  adding implied {}", if ptr_eq(implied_operator.op,*IMPLIED_TIMES) {"times"} else {"function apply"});
 	
@@ -4348,23 +4592,24 @@ fn show_invisible_op_char(ch: &str) -> &str {
 
 #[cfg(test)]
 mod canonicalize_tests {
-	use crate::are_strs_canonically_equal_with_locale;
+	use crate::errors::Result;
+	use crate::{are_strs_canonically_equal_result, are_strs_canonically_equal_with_locale};
 
 #[allow(unused_imports)]
 	use super::super::init_logger;
-	use super::super::{are_strs_canonically_equal, abs_rules_dir_path};
+	use super::super::abs_rules_dir_path;
     use super::*;
     use sxd_document::parser;
 
 
     #[test]
-    fn canonical_same() {
+    fn canonical_same() -> Result<()> {
         let target_str = "<math><mrow><mo>-</mo><mi>a</mi></mrow></math>";
-        assert!(are_strs_canonically_equal(target_str, target_str));
+        are_strs_canonically_equal_result(target_str, target_str, &[])
     }
 
 	#[test]
-    fn plane1_common() {
+    fn plane1_common() -> Result<()> {
         let test_str = "<math>
 				<mi mathvariant='normal'>sin</mi> <mo>,</mo>		<!-- shouldn't change -->
 				<mi mathvariant='italic'>bB4</mi> <mo>,</mo>		<!-- shouldn't change -->
@@ -4376,38 +4621,44 @@ mod canonicalize_tests {
 				<mi mathvariant='fraktur'>0yACHIRZ</mi> <mo>,</mo>	<!-- 0 stays as ASCII -->
 				<mi mathvariant='bold-fraktur'>nC</mi> <mo>,</mo>
 				<mi mathvariant='script'>ABEFHILMRegow</mi> <mo>,</mo>
-				<mi mathvariant='bold-script'>fG*</mi>				<!-- '*' shouldn't change -->
+				<msup>
+					<mi mathvariant='bold-script'>fG</mi>
+					<mo mathvariant='bold-script'>*</mo>				<!-- '*' shouldn't change -->
+				</msup>
 			</math>";
         let target_str = "<math>
-				<mrow data-changed='added'>
-					<mi mathvariant='normal'>sin</mi>
-					<mo >,</mo>
-					<mi mathvariant='italic'>bB4</mi>
-					<mo>,</mo>
-					<mi mathvariant='bold'>𝐚</mi>
-					<mo>,</mo>
-					<mi mathvariant='bold'>𝐙</mi>
-					<mo>,</mo>
-					<mn mathvariant='bold'>𝟏𝟗=𝟗</mn>
-					<mo>,</mo>
-					<mn mathvariant='double-struck'>𝟘𝟚𝟜𝟞𝟠𝟡</mn>
-					<mo>,</mo>
-					<mi mathvariant='double-struck'>𝕪𝕫ℂℍℕℙℚℝℤ</mi>
-					<mo>,</mo>
-					<mi mathvariant='fraktur'>0𝔶𝔄ℭℌℑℜℨ</mi>
-					<mo>,</mo>
-					<mi mathvariant='bold-fraktur'>𝖓𝕮</mi>
-					<mo>,</mo>
-					<mi mathvariant='script'>𝒜ℬℰℱℋℐℒℳℛℯℊℴ𝓌</mi>
-					<mo>,</mo>
-					<mi mathvariant='bold-script'>𝓯𝓖*</mi>
-				</mrow>
-			</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+			<mrow data-changed='added'>
+				<mi mathvariant='normal'>sin</mi>
+				<mo >,</mo>
+				<mi mathvariant='italic'>bB4</mi>
+				<mo>,</mo>
+				<mi mathvariant='bold'>𝐚</mi>
+				<mo>,</mo>
+				<mi mathvariant='bold'>𝐙</mi>
+				<mo>,</mo>
+				<mn mathvariant='bold'>𝟏𝟗=𝟗</mn>
+				<mo>,</mo>
+				<mn mathvariant='double-struck'>𝟘𝟚𝟜𝟞𝟠𝟡</mn>
+				<mo>,</mo>
+				<mi mathvariant='double-struck'>𝕪𝕫ℂℍℕℙℚℝℤ</mi>
+				<mo>,</mo>
+				<mi mathvariant='fraktur'>0𝔶𝔄ℭℌℑℜℨ</mi>
+				<mo>,</mo>
+				<mi mathvariant='bold-fraktur'>𝖓𝕮</mi>
+				<mo>,</mo>
+				<mi mathvariant='script'>𝒜ℬℰℱℋℐℒℳℛℯℊℴ𝓌</mi>
+				<mo>,</mo>
+				<msup>
+					<mi mathvariant='bold-script'>𝓯𝓖</mi>
+					<mo mathvariant='bold-script'>*</mo>				<!-- '*' shouldn't change -->
+				</msup>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn plane1_font_styles() {
+    fn plane1_font_styles() -> Result<()> {
         let test_str = "<math>
 				<mi mathvariant='sans-serif'>aA09=</mi> <mo>,</mo>			<!-- '=' shouldn't change -->
 				<mi mathvariant='bold-sans-serif'>zZ09</mi> <mo>,</mo>	
@@ -4428,11 +4679,11 @@ mod canonicalize_tests {
 					<mi mathvariant='monospace'>𝚊𝙰𝟶𝟿</mi>
 				</mrow>
 			</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn plane1_greek() {
+    fn plane1_greek() -> Result<()> {
         let test_str = "<math>
 				<mi mathvariant='normal'>ΑΩαω∇∂ϵ=</mi> <mo>,</mo>		<!-- shouldn't change -->
 				<mi mathvariant='italic'>ϴΑΩαω∇∂ϵ</mi> <mo>,</mo>
@@ -4462,11 +4713,11 @@ mod canonicalize_tests {
 					<mi mathvariant='bold-script'>𝚺𝛑</mi>
 				</mrow>
 			</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn plane1_greek_font_styles() {
+    fn plane1_greek_font_styles() -> Result<()> {
         let test_str = "<math>
 				<mi mathvariant='sans-serif'>ΑΩαω∇∂ϵ=</mi> <mo>,</mo>			<!-- '=' shouldn't change -->
 				<mi mathvariant='bold-sans-serif'>ϴ0ΑΩαω∇∂ϵ</mi> <mo>,</mo>	
@@ -4487,11 +4738,11 @@ mod canonicalize_tests {
 					<mi mathvariant='monospace'>𝚣ΑΩαω∇∂</mi>
 				</mrow>
 			</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
     #[test]
-    fn short_and_long_dash() {
+    fn short_and_long_dash() -> Result<()> {
         let test_str = "<math><mi>x</mi> <mo>=</mo> <mi>--</mi><mo>+</mo><mtext>----</mtext></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -4504,7 +4755,7 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
@@ -4517,9 +4768,69 @@ mod canonicalize_tests {
 		assert!(canonicalize(mathml).is_err());
     }
 
+    #[test]
+    fn illegal_mtd_element() {
+		use crate::interface::*;
+        let test_str = "<math>
+			<mtable>
+				<mtr>
+					<mtd>
+					<mtext></mtext>
+					</mtd>
+					<mrow>
+					<mi>E</mi>
+					<mo>=</mo>
+					<mrow>
+					<mtd>
+						<mi>m</mi>
+						<mo>⁢<!--INVISIBLE TIMES--></mo>
+						<msup>
+						<mi>c</mi>
+						<mn>2</mn>
+						</msup>
+						</mtd></mrow>
+					</mrow>
+					
+				</mtr>
+			</mtable>
+		</math>";
+        let package1 = &parser::parse(test_str).expect("Failed to parse test input");
+		let mathml = get_element(package1);
+		trim_element(mathml, false);
+		assert!(canonicalize(mathml).is_err());
+    }
+
 
     #[test]
-    fn mfenced_no_children() {
+    fn a_to_mrow() -> Result<()> {
+        let test_str = "<math>
+			<a href='https://www.example.com'>
+				<mo>(</mo>
+				<a href='#its_relative'>
+					<mi>x</mi>
+					<mo>,</mo>
+					<mi>y</mi>
+				</a>
+				<mo>)</mo>
+			</a>
+			</math>
+";
+        let target_str = " <math>
+			<mrow href='https://www.example.com'>
+				<mo>(</mo>
+				<mrow href='#its_relative'>
+				<mi>x</mi>
+				<mo>,</mo>
+				<mi>y</mi>
+				</mrow>
+				<mo>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_no_children() -> Result<()> {
         let test_str = "<math><mi>f</mi><mfenced><mrow/></mfenced></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -4531,11 +4842,11 @@ mod canonicalize_tests {
 				</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn mfenced_one_child() {
+    fn mfenced_one_child() -> Result<()> {
         let test_str = "<math><mi>f</mi><mfenced open='[' close=']'><mi>x</mi></mfenced></math>";
         let target_str = " <math>
 			<mrow data-changed='added'>
@@ -4548,11 +4859,11 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn mfenced_no_attrs() {
+    fn mfenced_no_attrs() -> Result<()> {
         let test_str = "<math><mi>f</mi><mfenced><mrow><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi></mrow></mfenced></math>";
         let target_str = " <math>
 			<mrow data-changed='added'>
@@ -4571,11 +4882,11 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn mfenced_with_separators() {
+    fn mfenced_with_separators() -> Result<()> {
         let test_str = "<math><mi>f</mi><mfenced separators=',;'><mi>x</mi><mi>y</mi><mi>z</mi><mi>a</mi></mfenced></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -4600,18 +4911,94 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn canonical_one_element_mrow_around_mrow() {
+    fn canonical_one_element_mrow_around_mrow() -> Result<()> {
         let test_str = "<math><mrow><mrow><mo>-</mo><mi>a</mi></mrow></mrow></math>";
         let target_str = "<math><mrow><mo>-</mo><mi>a</mi></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn mrow_with_intent_and_single_child() {
+    fn canonical_mtext_in_mtd_477() -> Result<()> {
+		// make sure mtext doesn't go away
+        let test_str = r#"<math>
+			<mtable>
+				<mtr>
+					<mtd>
+						<mstyle scriptlevel="0">
+							<mspace width="2em"/>
+						</mstyle>
+						<mstyle scriptlevel="0">
+							<mspace width="1em"/>
+						</mstyle>
+					</mtd>
+				</mtr>
+			</mtable>
+		</math>"#;
+        let target_str = r#"   <math>
+			<mtable>
+				<mtr>
+				<mtd>
+					<mtext data-width='1' data-following-space-width='4' scriptlevel='0' data-changed='added'> </mtext>
+				</mtd>
+				</mtr>
+			</mtable>
+		</math>"#;
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn canonical_mtext_in_mtr() -> Result<()> {
+		// make sure mtext doesn't go away
+        let test_str = "<math> <mtable> <mtr> <mtext> </mtext> </mtr> <mtr> <mtext> </mtext> </mtr> </mtable> </math>";
+        let target_str = "   <math>
+			<mtable>
+				<mtr>
+					<mtext data-changed='empty_content' data-width='0' data-empty-in-2D='true'> </mtext>
+				</mtr>
+				<mtr>
+					<mtext data-changed='empty_content' data-width='0' data-empty-in-2D='true'> </mtext>
+				</mtr>
+			</mtable>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn canonical_mtext_in_mtable() -> Result<()> {
+		// make sure mtext doesn't go away
+        let test_str = r"<math> <mtable> <mtr> <mtd> <mi>L</mi> </mtd> <mtd> <mrow> <mi>&lt;mi/&gt;</mi> <mo>=</mo> 
+		        <mrow> <mo>[</mo> <mtable> <mtext> </mtext> </mtable> <mo>]</mo> </mrow> </mrow> </mtd> </mtr> </mtable> </math>";
+        let target_str = r"<math>
+			<mtable>
+			<mtr>
+				<mtd>
+				<mi>L</mi>
+				</mtd>
+				<mtd>
+				<mrow>
+					<mi>&lt;mi/&gt;</mi>
+					<mo>=</mo>
+					<mrow>
+					<mo>[</mo>
+					<mtable>
+						<mtext data-changed='empty_content' data-width='0' data-empty-in-2D='true'> </mtext>
+					</mtable>
+					<mo>]</mo>
+					</mrow>
+				</mrow>
+				</mtd>
+			</mtr>
+			</mtable>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mrow_with_intent_and_single_child() -> Result<()> {
 		use crate::interface::*;
 		use sxd_document::parser;
 		use crate::canonicalize::canonicalize;
@@ -4631,10 +5018,11 @@ mod canonicalize_tests {
 		assert_eq!(first_child.children().len(), 1);
 		let mi = as_element(first_child.children()[0]);
 		assert_eq!(name(mi), "mi");
+		Ok(())
     }
 
     #[test]
-    fn empty_mrow_with_intent() {
+    fn empty_mrow_with_intent() -> Result<()> {
 		// we don't want to remove the mrow because the intent on the mi would reference itself
 		use crate::interface::*;
 		use sxd_document::parser;
@@ -4655,11 +5043,11 @@ mod canonicalize_tests {
 		assert_eq!(first_child.children().len(), 1);
 		let mtext = as_element(first_child.children()[0]);
 		assert_eq!(name(mtext), "mtext");
-
+		Ok(())
     }
 
     #[test]
-    fn mn_with_negative_sign() {
+    fn mn_with_negative_sign() -> Result<()> {
         let test_str = "<math><mfrac>
 				<mrow><mn>-1</mn></mrow>
 				<mn>−987</mn>
@@ -4668,28 +5056,44 @@ mod canonicalize_tests {
 			<mrow data-changed='added'><mo>-</mo><mn>1</mn></mrow>
 			<mrow data-changed='added'><mo>-</mo><mn>987</mn></mrow>
 			</mfrac></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn canonical_one_element_mrow_around_mo() {
+    fn mn_with_degree_sign() -> Result<()> {
+        let test_str = "<math> <mrow> <mi>cos</mi> <mo>⁡</mo> <mrow> <mo>(</mo> <mn>150°</mn> <mo>)</mo> </mrow> </mrow> </math>";
+        let target_str = "<math>
+			<mrow>
+				<mi>cos</mi> <mo>&#x2061;</mo>
+				<mrow>
+					<mo>(</mo>
+					<msup data-changed='added'> <mn>150</mn> <mo>°</mo> </msup>
+					<mo>)</mo>
+				</mrow>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn canonical_one_element_mrow_around_mo() -> Result<()> {
         let test_str = "<math><mrow><mrow><mo>-</mo></mrow><mi>a</mi></mrow></math>";
         let target_str = "<math><mrow><mo>-</mo><mi>a</mi></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn canonical_flat_to_times_and_plus() {
+    fn canonical_flat_to_times_and_plus() -> Result<()> {
         let test_str = "<math><mi>c</mi><mo>+</mo><mi>x</mi><mi>y</mi></math>";
         let target_str = "<math>
 		<mrow data-changed='added'><mi>c</mi><mo>+</mo>
 		  <mrow data-changed='added'><mi>x</mi><mo data-changed='added'>&#x2062;</mo><mi>y</mi></mrow>
 		</mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn canonical_prefix_and_infix() {
+    fn canonical_prefix_and_infix() -> Result<()> {
         let test_str = "<math><mrow><mo>-</mo><mi>a</mi><mo>-</mo><mi>b</mi></mrow></math>";
         let target_str = "<math>
 		<mrow>
@@ -4701,12 +5105,12 @@ mod canonicalize_tests {
 		  <mi>b</mi>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
 
     #[test]
-    fn canonical_prefix_implied_times_prefix() {
+    fn canonical_prefix_implied_times_prefix() -> Result<()> {
         let test_str = "<math><mrow><mo>∂</mo><mi>x</mi><mo>∂</mo><mi>y</mi></mrow></math>";
         let target_str = "<math>
 			<mrow>
@@ -4715,11 +5119,11 @@ mod canonicalize_tests {
 			<mrow data-changed='added'><mo>∂</mo><mi>y</mi></mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn function_with_single_arg() {
+    fn function_with_single_arg() -> Result<()> {
         let test_str = "<math><mrow>
 			<mi>sin</mi><mo>(</mo><mi>x</mi><mo>)</mo>
 			<mo>+</mo>
@@ -4760,11 +5164,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
 	#[test]
-	fn maybe_function() {
+	fn maybe_function() -> Result<()> {
 		let test_str = "<math>
 				<mrow>
 					<mi>P</mi>
@@ -4790,11 +5194,11 @@ mod canonicalize_tests {
 				</mrow>
 				</mrow>
 			</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
     #[test]
-    fn function_with_multiple_args() {
+    fn function_with_multiple_args() -> Result<()> {
         let test_str = "<math>
 		<mi>sin</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo>
 			<mo>+</mo>
@@ -4863,11 +5267,11 @@ mod canonicalize_tests {
 		</mrow>
 	  </mrow>
       </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn function_with_no_args() {
+    fn function_with_no_args() -> Result<()> {
         let test_str = "<math><mrow>
 		<mi>sin</mi><mi>x</mi>
 			<mo>+</mo>
@@ -4896,13 +5300,13 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 
 	}
 
 
     #[test]
-    fn function_call_vs_implied_times() {
+    fn function_call_vs_implied_times() -> Result<()> {
         let test_str = "<math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mi>y</mi></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -4914,11 +5318,11 @@ mod canonicalize_tests {
 			<mo data-changed='added'>&#x2062;</mo>
 			<mi>y</mi>		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn implied_plus() {
+    fn implied_plus() -> Result<()> {
         let test_str = "<math><mrow>
     <mn>2</mn><mfrac><mn>3</mn><mn>4</mn></mfrac>
     </mrow></math>";
@@ -4932,11 +5336,11 @@ mod canonicalize_tests {
 				</mfrac>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn implied_plus_linear() {
+    fn implied_plus_linear() -> Result<()> {
         let test_str = "<math><mrow>
 			<mn>2</mn><mspace width='0.278em'></mspace><mn>3</mn><mo>/</mo><mn>4</mn>
 			</mrow></math>";
@@ -4951,11 +5355,11 @@ mod canonicalize_tests {
 				</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn implied_plus_linear2() {
+    fn implied_plus_linear2() -> Result<()> {
         let test_str = "<math><mrow>
 			<mn>2</mn><mrow><mn>3</mn><mo>/</mo><mn>4</mn></mrow>
 			</mrow></math>";
@@ -4970,29 +5374,29 @@ mod canonicalize_tests {
 				</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn implied_comma() {
+    fn implied_comma() -> Result<()> {
         let test_str = "<math><msub><mi>b</mi><mrow><mn>1</mn><mn>2</mn></mrow></msub></math>";
         let target_str = "<math>
 			 <msub><mi>b</mi><mrow><mn>1</mn><mo data-changed='added'>&#x2063;</mo><mn>2</mn></mrow></msub>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn no_implied_comma() {
+    fn no_implied_comma() -> Result<()> {
         let test_str = "<math><mfrac><mi>b</mi><mrow><mn>1</mn><mn>2</mn></mrow></mfrac></math>";
         let target_str = "<math>
 			 <mfrac><mi>b</mi><mrow><mn>1</mn><mo data-changed='added'>&#x2062;</mo><mn>2</mn></mrow></mfrac>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn vertical_bars() {
+    fn vertical_bars() -> Result<()> {
         let test_str = "<math>
 		<mo>|</mo> <mi>x</mi> <mo>|</mo><mo>+</mo><mo>|</mo>
 		 <mi>a</mi><mo>+</mo><mn>1</mn> <mo>|</mo>
@@ -5016,12 +5420,12 @@ mod canonicalize_tests {
 		</mrow>
 	  </mrow>
 	 </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
 
     #[test]
-    fn vertical_bars_nested() {
+    fn vertical_bars_nested() -> Result<()> {
         let test_str = "<math><mo>|</mo><mi>x</mi><mo>|</mo><mi>y</mi><mo>|</mo><mi>z</mi><mo>|</mo></math>";
 	  let target_str = "<math>
 	  <mrow data-changed='added'>
@@ -5040,11 +5444,11 @@ mod canonicalize_tests {
 		</mrow>
 	  </mrow>
 	 </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn double_vertical_bars() {
+    fn double_vertical_bars() -> Result<()> {
     	let test_str = "<math><mrow><mo>||</mo><mi>x</mi><mo>||</mo><mo>||</mo><mi>y</mi><mo>||</mo></mrow></math>";
 		let target_str = "<math>
 			<mrow>
@@ -5053,29 +5457,29 @@ mod canonicalize_tests {
 				<mrow data-changed='added'><mo>‖</mo><mi>y</mi><mo>‖</mo></mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn double_vertical_bars_mo() {
+    fn double_vertical_bars_mo() -> Result<()> {
     	let test_str = "<math><mo>|</mo><mo>|</mo><mi>a</mi><mo>|</mo><mo>|</mo></math>";
 		let target_str = "<math><mrow data-changed='added'><mo>‖</mo><mi>a</mi><mo>‖</mo></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn no_double_vertical_bars_mo() {
+    fn no_double_vertical_bars_mo() -> Result<()> {
     	let test_str = "<math><mo>|</mo><mi>x</mi><mo>|</mo><mo>|</mo><mi>y</mi><mo>|</mo></math>";
 				let target_str = "<math>  <mrow data-changed='added'>
 				<mrow data-changed='added'><mo>|</mo><mi>x</mi><mo>|</mo></mrow>
 				<mo data-changed='added'>&#x2062;</mo>
 				<mrow data-changed='added'><mo>|</mo><mi>y</mi><mo>|</mo></mrow>
 			</mrow> </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn vertical_bar_such_that() {
+    fn vertical_bar_such_that() -> Result<()> {
         let test_str = "<math>
 				<mo>{</mo><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x2208;</mo><mi>S</mi><mo>}</mo>
             </math>";
@@ -5094,12 +5498,12 @@ mod canonicalize_tests {
 		  <mo>}</mo>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
 	#[ignore]  // need to figure out a test for this ("|" should have a precedence around ":" since that is an alternative notation for "such that", but "∣" is higher precedence)
-    fn vertical_bar_divides() {
+    fn vertical_bar_divides() -> Result<()> {
         let test_str = "<math>
 		<mi>x</mi><mo>+</mo><mi>y</mi> <mo>|</mo><mn>12</mn>
             </math>";
@@ -5114,12 +5518,12 @@ mod canonicalize_tests {
 				<mn>12</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
 
     #[test]
-    fn trig_mo() {
+    fn trig_mo() -> Result<()> {
         let test_str = "<math><mo>sin</mo><mi>x</mi>
 				<mo>+</mo><mo>cos</mo><mi>y</mi>
 				<mo>+</mo><munder><mo>lim</mo><mi>D</mi></munder><mi>y</mi>
@@ -5148,11 +5552,44 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn trig_mtext() -> Result<()> {
+        let test_str = "<math><mtext>sin</mtext><mi>x</mi>
+				<mo>+</mo><mtext>cos</mtext><mi>y</mi>
+				<mo>+</mo><munder><mtext>lim</mtext><mi>D</mi></munder><mi>y</mi>
+			</math>";
+        let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mi>sin</mi>
+			<mo data-changed='added'>&#x2061;</mo>
+			<mi>x</mi>
+		  </mrow>
+		  <mo>+</mo>
+		  <mrow data-changed='added'>
+			<mi>cos</mi>
+			<mo data-changed='added'>&#x2061;</mo>
+			<mi>y</mi>
+		  </mrow>
+		  <mo>+</mo>
+		  <mrow data-changed='added'>
+			<munder>
+			  <mi>lim</mi>
+			  <mi>D</mi>
+			</munder>
+			<mo data-changed='added'>&#x2061;</mo>
+			<mi>y</mi>
+		  </mrow>
+		</mrow>
+	   </math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 	
     #[test]
-    fn trig_negative_args() {
+    fn trig_negative_args() -> Result<()> {
         let test_str = "<math><mi>sin</mi><mo>-</mo><mn>2</mn><mi>π</mi><mi>x</mi></math>";
         let target_str = "<math>
 		<mrow data-changed='added'>
@@ -5170,11 +5607,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 	
     #[test]
-    fn not_trig_negative_args() {
+    fn not_trig_negative_args() -> Result<()> {
 		// this is here to make sure that only trig functions get the special treatment
         let test_str = "<math><mi>ker</mi><mo>-</mo><mn>2</mn><mi>π</mi><mi>x</mi></math>";
         let target_str = "<math>
@@ -5193,11 +5630,11 @@ mod canonicalize_tests {
 				<mi>x</mi>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn trig_args() {
+    fn trig_args() -> Result<()> {
         let test_str = "<math><mi>sin</mi><mn>2</mn><mi>π</mi><mi>x</mi></math>";
         let target_str = "<math>
 		<mrow data-changed='added'>
@@ -5212,11 +5649,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn not_trig_args() {
+    fn not_trig_args() -> Result<()> {
 		// this is here to make sure that only trig functions get the special treatment
         let test_str = "<math><mi>ker</mi><mn>2</mn><mi>π</mi><mi>x</mi></math>";
         let target_str = "<math>
@@ -5232,11 +5669,11 @@ mod canonicalize_tests {
 			<mi>x</mi>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn trig_trig() {
+    fn trig_trig() -> Result<()> {
         let test_str = "<math><mi>sin</mi><mi>x</mi><mi>cos</mi><mi>y</mi></math>";
         let target_str = "<math>
 		<mrow data-changed='added'>
@@ -5253,11 +5690,11 @@ mod canonicalize_tests {
 			</mrow>
 		</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
     #[test]
-    fn trig_function_composition() {
+    fn trig_function_composition() -> Result<()> {
         let test_str = "<math><mo>(</mo><mi>sin</mi><mo>-</mo><mi>cos</mi><mo>)</mo><mi>x</mi></math>";
         let target_str = "<math>
 		<mrow data-changed='added'>
@@ -5274,26 +5711,68 @@ mod canonicalize_tests {
 		  <mi>x</mi>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
     }
 
 	
 	#[test]
-    fn mtext_whitespace_string() {
+    fn currency_in_leaf_prefix() -> Result<()> {
+        let test_str = "<math><mn>$8.54</mn></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+			<mi>$</mi>
+			<mo data-changed='added'>&#x2062;</mo>
+			<mn>8.54</mn>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn currency_in_leaf_postfix() -> Result<()> {
+        let test_str = "<math><mn>188,23€</mn></math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>188,23</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi>€</mi>
+			</mrow>
+		</math>";
+   are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ",")
+}
+
+	#[test]
+    fn currency_in_leaf_infix() -> Result<()> {
+        let test_str = "<math><mn>1€23</mn></math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mn>1</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi>€</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>23</mn>
+			</mrow>
+		</math>";
+   are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ",")
+}
+	
+	#[test]
+    fn mtext_whitespace_string() -> Result<()> {
         let test_str = "<math><mi>t</mi><mtext>&#x00A0;&#x205F;</mtext></math>";
         let target_str = "<math><mi data-following-space-width='0.922'>t</mi></math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn mtext_whitespace_string_before() {
+    fn mtext_whitespace_string_before() -> Result<()> {
         let test_str = "<math><mtext>&#x00A0;&#x205F;</mtext><mi>t</mi></math>";
         let target_str = "<math><mi data-previous-space-width='0.922'>t</mi></math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn mtext_whitespace_1() {
+    fn mtext_whitespace_1() -> Result<()> {
         let test_str = "<math><mi>t</mi><mtext>&#x00A0;&#x205F;</mtext>
 				<mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></math>";
         let target_str = " <math>
@@ -5311,11 +5790,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
 	#[test]
-    fn mtext_whitespace_2() {
+    fn mtext_whitespace_2() -> Result<()> {
         let test_str = "<math><mi>f</mi><mtext>&#x00A0;&#x205F;</mtext>
 				<mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></math>";
         let target_str = " <math>
@@ -5333,11 +5812,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn remove_mtext_whitespace_3() {
+    fn remove_mtext_whitespace_3() -> Result<()> {
         let test_str = "<math><mi>t</mi>
 				<mrow><mtext>&#x2009;</mtext><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></math>";
         let target_str = "<math>
@@ -5355,11 +5834,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn do_not_remove_any_whitespace() {
+    fn do_not_remove_any_whitespace() -> Result<()> {
         let test_str = "<math><mfrac>
 					<mrow><mspace width='3em'/></mrow>
 					<mtext>&#x2009;</mtext>
@@ -5370,24 +5849,24 @@ mod canonicalize_tests {
 				<mtext data-width='0.167' data-empty-in-2D='true'> </mtext>
 			</mfrac>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn remove_mo_whitespace() {
+    fn remove_mo_whitespace() -> Result<()> {
         let test_str = "<math><mi>cos</mi><mo>&#xA0;</mo><mi>x</mi></math>";
         let target_str = "<math>
 				<mrow data-changed='added'>
 					<mi>cos</mi>
 					<mo data-changed='added'>&#x2061;</mo>
-					<mi data-previous-space-width='0.700'>x</mi>
+					<mi data-previous-space-width='0.7'>x</mi>
 				</mrow>
 	  		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn do_not_remove_some_whitespace() {
+    fn do_not_remove_some_whitespace() -> Result<()> {
         let test_str = "<math><mroot>
 					<mrow><mi>b</mi><mphantom><mi>y</mi></mphantom></mrow>
 					<mtext>&#x2009;</mtext>
@@ -5396,11 +5875,11 @@ mod canonicalize_tests {
 				<mi>b</mi>
 				<mtext data-empty-in-2D='true' data-width='0.167'>&#xA0;</mtext>
 			</mroot></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn remove_all_extra_elements() {
+    fn remove_all_extra_elements() -> Result<()> {
         let test_str = "<math><msqrt>
 					<mstyle> <mi>b</mi> </mstyle>
 					<mphantom><mi>y</mi></mphantom>
@@ -5410,25 +5889,25 @@ mod canonicalize_tests {
         let target_str = "<math><msqrt>
 				<mi data-following-space-width='3.167'>b</mi>
 			</msqrt></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn empty_content() {
+    fn empty_content() -> Result<()> {
         let test_str = "<math></math>";
         let target_str = " <math><mtext data-added='missing-content' data-width='0.700'> </mtext></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn empty_content_after_cleanup() {
+    fn empty_content_after_cleanup() -> Result<()> {
         let test_str = "<math><mrow><mphantom><mn>1</mn></mphantom></mrow></math>";
         let target_str = " <math><mtext data-added='missing-content' data-width='0'> </mtext></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn empty_content_fix_num_children() {
+    fn empty_content_fix_num_children() -> Result<()> {
         let test_str = "  <math><mfrac><menclose notation='box'><mrow/></menclose><mrow/></mfrac></math>";
         let target_str = "<math>
 		<mfrac>
@@ -5438,12 +5917,12 @@ mod canonicalize_tests {
 		  <mtext data-changed='empty_content' data-empty-in-2D='true' data-width='0'> </mtext>
 		</mfrac>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
 	#[test]
-    fn clean_semantics() {
+    fn clean_semantics() -> Result<()> {
 		// this comes from LateXML
         let test_str = "<math>
 				<semantics>
@@ -5462,11 +5941,11 @@ mod canonicalize_tests {
  &lt;/annotation-xml&gt;
 ' data-annotation-application_slash_x-tex='z' data-annotation-application_slash_x-llamapun='italic_z'>z</mi>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn clean_up_mi_operator() {
+    fn clean_up_mi_operator() -> Result<()> {
         let test_str = "<math><mrow><mi>∠</mi><mi>A</mi><mi>B</mi><mi>C</mi></mrow></math>";
         let target_str = " <math>
 				<mrow>
@@ -5480,12 +5959,12 @@ mod canonicalize_tests {
 				</mrow>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
 	#[test]
-    fn clean_up_arc() {
+    fn clean_up_arc() -> Result<()> {
         let test_str = "<math><mtext>arc&#xA0;</mtext><mi>cos</mi><mi>x</mi></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -5494,11 +5973,11 @@ mod canonicalize_tests {
 			<mi>x</mi>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn clean_up_arc_nospace() {
+    fn clean_up_arc_nospace() -> Result<()> {
         let test_str = "<math><mtext>arc</mtext><mi>cos</mi><mi>x</mi></math>";
         let target_str = "<math>
 			<mrow data-changed='added'>
@@ -5507,18 +5986,18 @@ mod canonicalize_tests {
 			<mi>x</mi>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn roman_numeral() {
+    fn roman_numeral() -> Result<()> {
         let test_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
 		// turns out there is no need to mark them as Roman Numerals -- thought that was need for braille
         let target_str = "<math><mrow>
 			<mn data-roman-numeral='true' data-number='48'>XLVIII</mn> <mo>+</mo><mn data-roman-numeral='true' data-number='2026'>mmxxvi</mn>
 			</mrow></math>";
         // let target_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	// #[test]
@@ -5528,19 +6007,19 @@ mod canonicalize_tests {
 	// 		<mrow data-changed='added'><mn data-roman-numeral='true'>vi</mn><mo>-</mo><mn mathvariant='normal' data-roman-numeral='true'>i</mn></mrow> 
 	// 		<mo>=</mo> <mn data-roman-numeral='true'>v</mn>
 	// 	</mrow> </math>";
-    //     assert!(are_strs_canonically_equal(test_str, target_str));
+    //     are_strs_canonically_equal_result(test_str, target_str, &[])
 	// }
 
 	#[test]
-    fn not_roman_numeral() {
+    fn not_roman_numeral() -> Result<()> {
         let test_str = "<math><mtext>cm</mtext></math>";
 		// shouldn't change
         let target_str = "<math><mtext>cm</mtext></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn digit_block_binary() {
+    fn digit_block_binary() -> Result<()> {
         let test_str = "<math><mo>(</mo><mn>0110</mn><mspace width=\"thickmathspace\"></mspace><mn>1110</mn><mspace width=\"thickmathspace\"></mspace><mn>0110</mn><mo>)</mo></math>";
         let target_str = " <math>
 				<mrow data-changed='added'>
@@ -5549,11 +6028,11 @@ mod canonicalize_tests {
 				<mo>)</mo>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn digit_block_decimal() {
+    fn digit_block_decimal() -> Result<()> {
         let test_str = "<math><mn>8</mn><mo>,</mo><mn>123</mn><mo>,</mo><mn>456</mn><mo>+</mo>
 								    <mn>4</mn><mo>.</mo><mn>32</mn></math>";
         let target_str = " <math>
@@ -5563,10 +6042,10 @@ mod canonicalize_tests {
 				<mn>4.32</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	#[test]
-    fn digit_block_comma() {
+    fn digit_block_comma() -> Result<()> {
         let test_str = "<math><mn>8</mn><mo>.</mo><mn>123</mn><mo>.</mo><mn>456</mn><mo>+</mo>
 								    <mn>4</mn><mo>,</mo><mn>32</mn></math>";
         let target_str = " <math>
@@ -5576,11 +6055,11 @@ mod canonicalize_tests {
 				<mn>4,32</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal_with_locale(test_str, target_str, ".", ", "));
+        are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ", ")
 	}
 
 	#[test]
-	fn digit_block_int() {
+	fn digit_block_int() -> Result<()> {
         let test_str = "<math><mn>12</mn><mo>,</mo><mn>345</mn><mo>+</mo>
 								    <mn>1</mn><mo>,</mo><mn>000</mn></math>";
         let target_str = " <math>
@@ -5590,11 +6069,11 @@ mod canonicalize_tests {
 				<mn>1,000</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-	fn digit_block_non_ascii_int() {
+	fn digit_block_non_ascii_int() -> Result<()> {
         let test_str = "<math><mn>𝟏𝟐</mn><mo>,</mo><mn>3𝟰𝟻</mn><mo>+</mo>
 								    <mn>𝟙</mn><mo>,</mo><mn>𝟬𝟬𝟬</mn></math>";
         let target_str = " <math>
@@ -5604,11 +6083,11 @@ mod canonicalize_tests {
 				<mn>𝟙,𝟬𝟬𝟬</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-	fn digit_block_int_dots() {
+	fn digit_block_int_dots() -> Result<()> {
         let test_str = "<math><mn>12</mn><mo>.</mo><mn>345</mn><mo>+</mo>
 								    <mn>1</mn><mo>.</mo><mn>000</mn></math>";
         let target_str = " <math>
@@ -5618,11 +6097,11 @@ mod canonicalize_tests {
 				<mn>1.000</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal_with_locale(test_str, target_str, ".", ", "));
+        are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ", ")
 	}
 
 	#[test]
-    fn digit_block_decimal_pt() {
+    fn digit_block_decimal_pt() -> Result<()> {
         let test_str = "<math><mn>8</mn><mo>,</mo><mn>123</mn><mo>.</mo>
 								<mo>+</mo><mn>4</mn><mo>.</mo>
 								<mo>+</mo><mo>.</mo><mn>01</mn></math>";
@@ -5635,77 +6114,77 @@ mod canonicalize_tests {
 				<mn>.01</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn number_with_decimal_pt() {
+    fn number_with_decimal_pt() -> Result<()> {
 		// this is output from WIRIS for "12.3"
         let test_str = "<math><mn>12</mn><mo>.</mo><mn>3</mn></math>";
         let target_str = "<math><mn>12.3</mn></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn number_with_comma_decimal_pt() {
+    fn number_with_comma_decimal_pt() -> Result<()> {
 		// this is output from WIRIS for "12.3"
         let test_str = "<math><mn>12</mn><mo>,</mo><mn>3</mn></math>";
         let target_str = "<math><mn>12,3</mn></math>";
-        assert!(are_strs_canonically_equal_with_locale(test_str, target_str, ".", ", "));
+        are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ", ")
 	}
 
 	#[test]
-    fn addition_with_decimal_point_at_end() {
+    fn addition_with_decimal_point_at_end() -> Result<()> {
 		// in this case, the trailing "." is probably a decimal point" -- testing special case combine the "."
 		// this comes from WIRIS
         let test_str = "<math><mn>1</mn><mo>.</mo><mn>3</mn><mo>+</mo><mn>2</mn><mo>.</mo></math>";
         let target_str = "<math><mrow data-changed='added'><mn>1.3</mn><mo>+</mo><mn>2.</mn></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn addition_with_decimal_point_at_end_and_comma_decimal_separator() {
+    fn addition_with_decimal_point_at_end_and_comma_decimal_separator() -> Result<()> {
 		// in this case, the trailing "." is probably a decimal point" -- testing special case combine the "."
 		// this comes from WIRIS
         let test_str = "<math><mn>1</mn><mo>,</mo><mn>3</mn><mo>+</mo><mn>2</mn><mo>,</mo></math>";
         let target_str = "<math><mrow data-changed='added'><mn>1,3</mn><mo>+</mo><mn>2,</mn></mrow></math>";
-        assert!(are_strs_canonically_equal_with_locale(test_str, target_str, ".", ", "));
+        are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ", ")
 	}
 
 	#[test]
-    fn sequence_with_period() {
+    fn sequence_with_period() -> Result<()> {
 		// in this case, we don't want "5." -- testing special case to avoid combining the period.
         let test_str = "<math><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo>.</mo></math>";
         let target_str = "<math><mrow data-changed='added'>
 				<mrow data-changed='added'><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>5</mn></mrow><mo>.</mo>
 			</mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn addition_decimal_pt() {
+    fn addition_decimal_pt() -> Result<()> {
         let test_str = "<math><mo>.</mo><mn>4</mn><mo>=</mo><mn>0</mn><mo>.</mo><mn>4</mn></math>";
         let target_str = "<math><mrow data-changed='added'><mn>.4</mn><mo>=</mo><mn>0.4</mn></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn fraction_decimal_pt() {
+    fn fraction_decimal_pt() -> Result<()> {
         let test_str = "<math><mfrac><mrow><mn>1</mn><mo>.</mo></mrow><mrow><mn>2</mn><mo>.</mo></mrow></mfrac></math>";
         let target_str = "<math><mfrac><mn>1.</mn><mn>2.</mn></mfrac></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn fraction_decimal_pt_no_split() {
+    fn fraction_decimal_pt_no_split() -> Result<()> {
 		// don't split off the '.'
         let test_str = "<math><mfrac><mn>1.</mn><mn>2.</mn></mfrac></math>";
         let target_str = "<math><mfrac><mn>1.</mn><mn>2.</mn></mfrac></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn not_digit_block_parens() {
+    fn not_digit_block_parens() -> Result<()> {
         let test_str = "<math><mo>(</mo><mn>451</mn><mo>,</mo><mn>231</mn><mo>)</mo></math>";
         let target_str = " <math> <mrow data-changed='added'>
 				<mo>(</mo>
@@ -5714,11 +6193,11 @@ mod canonicalize_tests {
 				</mrow>
 				<mo>)</mo>
 			</mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn not_digit_block_parens_mrow() {
+    fn not_digit_block_parens_mrow() -> Result<()> {
         let test_str = "<math><mo>(</mo><mrow><mn>451</mn><mo>,</mo><mn>231</mn></mrow><mo>)</mo></math>";
         let target_str = " <math> <mrow data-changed='added'>
 				<mo>(</mo>
@@ -5727,11 +6206,11 @@ mod canonicalize_tests {
 				</mrow>
 				<mo>)</mo>
 			</mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn not_digit_block_decimal() {
+    fn not_digit_block_decimal() -> Result<()> {
 		let test_str = "<math><mn>8</mn><mo>,</mo><mn>49</mn><mo>,</mo><mn>456</mn><mo>+</mo>
 								    <mn>4</mn><mtext> </mtext><mn>32</mn><mo>+</mo>
 									<mn>1</mn><mo>,</mo><mn>234</mn><mo>,</mo><mn>56</mn></math>";
@@ -5758,11 +6237,11 @@ mod canonicalize_tests {
 				<mn>56</mn>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn not_digit_block_ellipsis() {
+    fn not_digit_block_ellipsis() -> Result<()> {
         let test_str = "<math><mrow><mn>8</mn><mo>,</mo><mn>123</mn><mo>,</mo><mn>456</mn><mo>,</mo>
 								    <mi>…</mi></mrow></math>";
         let target_str = "<math>
@@ -5776,11 +6255,11 @@ mod canonicalize_tests {
 		  <mi>…</mi>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn not_digit_block_negative_numbers_euro() {
+    fn not_digit_block_negative_numbers_euro() -> Result<()> {
         let test_str = "<math><mrow>
 			<mo>-</mo><mn>1</mn><mo>,</mo>
 			<mo>-</mo><mn>2</mn><mo>,</mo>
@@ -5805,11 +6284,11 @@ mod canonicalize_tests {
 				<mo>,</mo>
 				<mi>…</mi>
 			</mrow></math>";
-    	assert!(are_strs_canonically_equal_with_locale(test_str, target_str, " .", ","));
+    	are_strs_canonically_equal_with_locale(test_str, target_str, &[], " .", ",")
 	}
 
 	#[test]
-    fn ellipsis() {
+    fn ellipsis() -> Result<()> {
         let test_str = "<math><mn>5</mn><mo>,</mo><mo>.</mo><mo>.</mo><mo>.</mo><mo>,</mo><mn>8</mn><mo>,</mo>
 				<mn>9</mn><mo>,</mo><mo>.</mo><mo>.</mo><mo>.</mo><mo>,</mo><mn>11</mn><mo>,</mo>
 				<mn>5</mn><mo>,</mo><mo>.</mo><mo>.</mo><mo>,</mo><mn>8</mn>
@@ -5819,23 +6298,23 @@ mod canonicalize_tests {
 			<mn>9</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>11</mn><mo>,</mo>
 			<mn>5</mn><mo>,</mo><mrow data-changed='added'><mo>.</mo><mo>.</mo></mrow>
 			<mo>,</mo><mn>8</mn></mrow></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
 	#[test]
-    fn no_merge_271() {
+    fn no_merge_271() -> Result<()> {
         let test_str = "<math><mrow><mo>{</mo>
 				<mrow><mn>2</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>6</mn></mrow>
 			<mo>}</mo></mrow></math>";
         let target_str = "<math><mrow><mo>{</mo>
 				<mrow><mn>2</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>6</mn></mrow>
 			<mo>}</mo></mrow></math>";
-    	assert!(are_strs_canonically_equal_with_locale(test_str, target_str, " .", ","));
+    	are_strs_canonically_equal_with_locale(test_str, target_str, &[], " .", ",")
 	}
 
 	#[test]
-    fn not_digit_block_271() {
+    fn not_digit_block_271() -> Result<()> {
         let test_str = "<math><mrow>
 				<mi>…</mi><mo>,</mo>
 				<mo>-</mo><mn>2</mn><mo>,</mo>
@@ -5851,11 +6330,11 @@ mod canonicalize_tests {
 			<mo>,</mo>
 			<mn>0</mn>
 			</mrow></math>";
-    	assert!(are_strs_canonically_equal_with_locale(test_str, target_str, " .", ","));
+    	are_strs_canonically_equal_with_locale(test_str, target_str, &[], " .", ",")
 	}
 
 	#[test]
-    fn merge_decimal_in_list_271() {
+    fn merge_decimal_in_list_271() -> Result<()> {
         let test_str = "<math><mi>x</mi><mo>,</mo><mn>2</mn><mo>.</mo><mn>5</mn><mi>g</mi><mo>,</mo><mn>3</mn></math>";
         let target_str = "<math> <mrow data-changed='added'>
 				<mi>x</mi>
@@ -5864,11 +6343,11 @@ mod canonicalize_tests {
 				<mo>,</mo>
 				<mn>3</mn>
 			</mrow> </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn primes_common() {
+    fn primes_common() -> Result<()> {
         let test_str = "<math><msup><mn>5</mn><mo>'</mo></msup>
 							<msup><mn>5</mn><mo>''</mo></msup>
 							<msup><mn>8</mn><mrow><mo>'</mo><mo>'</mo></mrow></msup></math>";
@@ -5890,11 +6369,11 @@ mod canonicalize_tests {
 				</msup>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn primes_uncommon() {
+    fn primes_uncommon() -> Result<()> {
         let test_str = "<math><msup><mn>5</mn><mo>''′</mo></msup>
 							<msup><mn>5</mn><mo>''''</mo></msup>
 							<msup><mn>8</mn><mrow><mo>′</mo><mo>⁗</mo></mrow></msup></math>";
@@ -5916,11 +6395,11 @@ mod canonicalize_tests {
 				</msup>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn merge_mi_test() {
+    fn merge_mi_test() -> Result<()> {
         let test_str = "<math>
 			<mi>c</mi><mi>o</mi><mi>s</mi><mo>=</mo>
 			<mi>w</mi><mi>x</mi><mi>y</mi><mi>z</mi><mo>+</mo>
@@ -5967,11 +6446,11 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn merge_mi_with_script_test() {
+    fn merge_mi_with_script_test() -> Result<()> {
         let test_str = "<math>
 			<mi>c</mi><mi>o</mi><msup><mi>s</mi><mn>2</mn></msup><mi>y</mi><mo>=</mo>
 			<mi>l</mi><mi>o</mi><msup><mi>g</mi><mn>2</mn></msup><mi>y</mi><mo>+</mo>
@@ -6011,11 +6490,11 @@ mod canonicalize_tests {
 					</mrow>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn merge_mi_with_script_bug_333_test() {
+    fn merge_mi_with_script_bug_333_test() -> Result<()> {
         let test_str = "<math>
 			<mi>l</mi><mi>o</mi><msub><mrow><mi>g</mi></mrow><mrow><mn>2</mn></mrow></msub><mo>=</mo>
 			<mi>l</mi><mi>i</mi><msub><mrow><mi>m</mi></mrow><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></msub>
@@ -6038,11 +6517,18 @@ mod canonicalize_tests {
 				</msub>
 				</mrow>
 			</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn parent_bug_94() {
+    fn merge_mi_bug_545() -> Result<()> {
+        let test_str = "<math><mi>S</mi><mi>I</mi><msup><mi>N</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+        let target_str = "<math><msup><mi mathvariant='normal'>SIN</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn parent_bug_94() -> Result<()> {
 		// This is a test to make sure the crash in the bug report doesn't happen.
 		// Note: in the bug, they behavior they would like is a single mn with content "0.02"
 		// However, TeX input "1 2 3" will produce three consecutive <mn>s, so merging <mn>s isn't good in general
@@ -6063,11 +6549,11 @@ mod canonicalize_tests {
 				<mn mathsize='normal' mathvariant='bold' data-changed='added'>0.02</mn>
 			</msqrt>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-	fn mstyle_merge_bug_272() {
+	fn mstyle_merge_bug_272() -> Result<()> {
         let test_str = r#"<math>
 			<msup>
 				<mstyle mathvariant="bold" mathsize="normal">
@@ -6084,12 +6570,12 @@ mod canonicalize_tests {
 			<mn mathsize='normal' mathvariant='bold'>𝟗</mn>
 			</msup>
 		</math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
 	#[test]
-	fn munder_mspace_bug_296() {
+	fn munder_mspace_bug_296() -> Result<()> {
 		// this was a "typo" bug that should have looking embellished base
         let test_str = r#"<math>
 			<mrow><mn>5</mn><mfrac><mn>9</mn><mrow><mn>10</mn></mrow></mfrac>
@@ -6106,11 +6592,19 @@ mod canonicalize_tests {
 					<mo stretchy='true'>¯</mo>
 				</munder>
 			</mrow></math>";
-		assert!(are_strs_canonically_equal(test_str, target_str));
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn lift_script() {
+	fn parse_scripted_open_paren_439() -> Result<()> {
+		// this was a "typo" bug that should have looking embellished base
+        let test_str = r#"<math><mrow><msub><mo>(</mo><mn>2</mn></msub><mo>)</mo></mrow></math>"#;
+    	let target_str = "<math><mrow><msub><mo>(</mo><mn>2</mn></msub><mo>)</mo></mrow></math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn lift_script() -> Result<()> {
         let test_str = "<math xmlns='http://www.w3.org/1998/Math/MathML' >
 		<mrow>
 		  <mstyle scriptlevel='0' displaystyle='true'>
@@ -6175,11 +6669,11 @@ mod canonicalize_tests {
 		  </mrow>
 		</msqrt>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn pseudo_scripts() {
+    fn pseudo_scripts() -> Result<()> {
         let test_str = "<math><mrow>
 				<mi>cos</mi><mn>30</mn><mo>°</mo>
 				<mi>sin</mi><mn>60</mn><mo>′</mo>
@@ -6199,18 +6693,25 @@ mod canonicalize_tests {
 		  </mrow>
 		</mrow>
 	   </math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn prescript_only() {
+    fn pseudo_scripts_in_mi() -> Result<()> {
+        let test_str = "<math><mrow><mi>p'</mi><mo>=</mo><mi>µ°C</mi></mrow></math>";
+        let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi>µ°C</mi></mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn prescript_only() -> Result<()> {
         let test_str = "<math><msub><mtext/><mn>92</mn></msub><mi>U</mi></math>";
         let target_str = "<math><mmultiscripts><mi>U</mi><mprescripts/> <mn>92</mn><none/> </mmultiscripts></math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn pre_and_postscript_only() {
+    fn pre_and_postscript_only() -> Result<()> {
         let test_str = "<math>
 			<msub><mrow/><mn>0</mn></msub>
 			<msub><mi>F</mi><mn>1</mn></msub>
@@ -6246,11 +6747,11 @@ mod canonicalize_tests {
 			</mrow>
 			</mrow>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn pointless_nones_in_mmultiscripts() {
+    fn pointless_nones_in_mmultiscripts() -> Result<()> {
         let test_str = "<math><mmultiscripts>
 				<mtext>C</mtext>
 				<none />
@@ -6267,11 +6768,31 @@ mod canonicalize_tests {
 		<mn>14</mn>
 		</mmultiscripts>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
-    fn empty_mrows_in_mmultiscripts_306() {
+    fn empty_mmultiscripts_485() -> Result<()> {
+        let test_str = "<math><mmultiscripts>   </mmultiscripts></math>";
+        let target_str = ""; // shouldn't get to the point of comparing because the input is illegal.
+        let err = are_strs_canonically_equal_result(test_str, target_str, &[])
+            .expect_err("empty mmultiscripts should be rejected");
+        assert!(
+            err.to_string().contains("mmultiscripts has the wrong number of children:\n <mmultiscripts></mmultiscripts>"),
+            "unexpected error message: {err}"
+        );
+        Ok(())
+	}
+
+	#[test]
+    fn empty_mmultiscripts_544() -> Result<()> {
+        let test_str = "<math><mmultiscripts><mrow/><mprescripts></mprescripts><mrow/><mrow/></mmultiscripts></math>";
+        let target_str = "<math> <mtext data-changed='empty_content' data-width='0'> </mtext></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn empty_mrows_in_mmultiscripts_306() -> Result<()> {
         let test_str = "<math display='block'>
 			<mmultiscripts intent='_permutation:prefix(_of,$k,_from,$n)'>
 				<mi>P</mi>
@@ -6292,13 +6813,13 @@ mod canonicalize_tests {
 				<mi arg='n'>n</mi>
 			</mmultiscripts>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
 	#[test]
 	#[ignore]	// this fails -- need to figure out grabbing base from previous or next child
-    fn tensor() {
+    fn tensor() -> Result<()> {
         let test_str = "<math>
 				<msub><mi>R</mi><mi>i</mi></msub>
 				<msup><mrow/><mi>j</mi></msup>
@@ -6318,7 +6839,82 @@ mod canonicalize_tests {
 				<none/>
 			</mmultiscripts>
 		</math>";
-        assert!(are_strs_canonically_equal(test_str, target_str));
+        are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
-}
 
+
+	#[test]
+    fn test_nonascii_function_name() -> Result<()> {
+        let test_str = r#"<math>
+				<mi mathvariant="bold-italic">x</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mrow>
+				<mi>𝒔𝒊𝒏</mi>
+				<mo>&#x2061;</mo>
+				<mrow><mi mathvariant="bold-italic">t</mi></mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</math>"#;
+		let target_str = r#"<math>
+			<mrow data-changed='added'>
+			<mi mathvariant='bold-italic'>𝒙</mi>
+			<mo>=</mo>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+				<mn>2</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mrow>
+					<mi>sin</mi>
+					<mo>&#x2061;</mo>
+					<mi mathvariant='bold-italic'>𝒕</mi>
+				</mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</mrow>
+			</mrow>
+		</math>"#;
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn test_nonascii_function_name_as_chars() -> Result<()> {
+        let test_str = r#"<math display="block">
+			<mi>&#x1D499;</mi>
+			<mo>=</mo>
+			<mrow>
+				<mrow>
+					<mi>&#x1D484;</mi>
+					<mi>&#x1D490;</mi>
+					<mi>&#x1D494;</mi>
+				</mrow>
+				<mo>&#x2061;</mo>
+				<mrow>
+					<mi>&#x1D495;</mi>
+				</mrow>
+			</mrow>
+			<mo>+</mo>
+			<mn>&#x1D7D0;</mn>
+		</math>"#;
+		let target_str = r#"<math display='block'>
+			<mrow data-changed='added'>
+				<mi>𝒙</mi>
+				<mo>=</mo>
+				<mrow data-changed='added'>
+					<mrow>
+					<mi>cos</mi>
+					<mo>&#x2061;</mo>
+					<mi>𝒕</mi>
+					</mrow>
+					<mo>+</mo>
+					<mn>𝟐</mn>
+				</mrow>
+			</mrow>
+		</math>"#;
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+
+}

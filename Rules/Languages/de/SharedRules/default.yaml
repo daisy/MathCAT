@@ -168,6 +168,15 @@
   - x: "*[2]"
   - pause: short
 
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "Index"               # phrase(x 'sub' 2)
+  - x: "*[2]"
+  - pause: short
+
 # otherwise let definitions/default infix handle it
 
 - name: literal
@@ -450,7 +459,7 @@
   - test:
       if: "self::m:mlabeledtr"
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
+      else: [x: "*"]
 
 - name: default
   tag: mtd

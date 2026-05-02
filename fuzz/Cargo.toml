@@ -1,0 +1,33 @@
+[package]
+name = "mathcat-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[profile.release]
+debug = 1
+# panic = "abort" # also "unwind"
+
+[profile.dev]
+panic = "abort"
+
+[dependencies]
+libfuzzer-sys = "0.4"
+yaml-rust = "0.4"
+
+[dependencies.mathcat]
+path = ".."
+
+[features]
+default = []
+# no-unsafe = ["mathcat/no-unsafe"]
+
+[[bin]]
+name = "fuzz_target_1"
+path = "fuzz_targets/fuzz_target_1.rs"
+test = false
+doc = false
+bench = false

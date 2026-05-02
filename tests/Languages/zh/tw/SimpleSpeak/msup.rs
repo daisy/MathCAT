@@ -2,58 +2,71 @@
 ///   simple superscripts
 ///   complex/nested superscripts
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn squared() {
+fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 平方");
+    test("zh-tw", "SimpleSpeak", expr, "x 平方")?;
+    return Ok(());
+
 }
 
 #[test]
-fn cubed() {
+fn cubed() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>3</mn> </msup>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 立方");
+    test("zh-tw", "SimpleSpeak", expr, "x 立方")?;
+    return Ok(());
+
 }
 
 #[test]
-    fn ordinal_power() {
+    fn ordinal_power() -> Result<()> {
         let expr = "<math>
                         <msup> <mi>x</mi> <mn>4</mn> </msup>
                     </math>";
-        test("zh-tw", "SimpleSpeak", expr, "x 的 4 次方");
+        test("zh-tw", "SimpleSpeak", expr, "x 的 4 次方")?;
+        return Ok(());
+
     }
 
 #[test]
-fn simple_mi_power() {
+fn simple_mi_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mi>n</mi> </msup>
                 </math>";
-  test("zh-tw", "SimpleSpeak", expr, "x 的 n 次方");
+  test("zh-tw", "SimpleSpeak", expr, "x 的 n 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn zero_power() {
+fn zero_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>0</mn> </msup>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 的 0 次方");
+    test("zh-tw", "SimpleSpeak", expr, "x 的 0 次方")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn decimal_power() {
+fn decimal_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2.0</mn> </msup>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 的 2.0 次方");
+    test("zh-tw", "SimpleSpeak", expr, "x 的 2.0 次方")?;
+    return Ok(());
+
 }
 
 #[test]
-fn non_simple_power() {
+fn non_simple_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -63,33 +76,39 @@ fn non_simple_power() {
       </msup>
       </mrow>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "3 的 y 加 2 次方");
+    test("zh-tw", "SimpleSpeak", expr, "3 的 y 加 2 次方")?;
+    return Ok(());
+
 }
 
 #[test]
-fn negative_power() {
+fn negative_power() -> Result<()> {
     let expr = "<math>
                     <msup>
                         <mi>x</mi>
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 的 負 2 次方");
+    test("zh-tw", "SimpleSpeak", expr, "x 的 負 2 次方")?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_fraction_power() {
+fn simple_fraction_power() -> Result<()> {
   let expr = "<math>
                   <msup>
                       <mi>x</mi> 
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("zh-tw", "SimpleSpeak", expr, "x 的 3 分之 1 次方");
+  test("zh-tw", "SimpleSpeak", expr, "x 的 3 分之 1 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_squared_power_with_coef() {
+fn nested_squared_power_with_coef() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -104,11 +123,13 @@ fn nested_squared_power_with_coef() {
       </msup>
       </mrow>
       </math>";
-  test("zh-tw", "SimpleSpeak", expr, "3 的 2 x 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "3 的 2 x 平方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_squared_power_with_neg_coef() {
+fn nested_squared_power_with_neg_coef() -> Result<()> {
     let expr = "<math>
     <mrow>
     <msup>
@@ -124,12 +145,14 @@ fn nested_squared_power_with_neg_coef() {
     </msup>
     </mrow>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "3 的 負 2 x 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "3 的 負 2 x 平方 次方")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn nested_cubed_power() {
+fn nested_cubed_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -139,11 +162,13 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "y 的 5 分之 4 立方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "y 的 5 分之 4 立方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_cubed_power_with_neg_base() {
+fn nested_cubed_power_with_neg_base() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -156,11 +181,13 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-  test("zh-tw", "SimpleSpeak", expr, "y 的 負 5 分之 4 立方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "y 的 負 5 分之 4 立方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_number_times_squared() {
+fn nested_number_times_squared() -> Result<()> {
     let expr = "<math>
         <mrow>
         <msup>
@@ -178,11 +205,13 @@ fn nested_number_times_squared() {
         </msup>
         </mrow>
         </math>";
-  test("zh-tw", "SimpleSpeak", expr, "e 的 2 分之 1 x 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "e 的 2 分之 1 x 平方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_negative_number_times_squared() {
+fn nested_negative_number_times_squared() -> Result<()> {
   let expr = "<math>
     <mrow>
     <msup>
@@ -200,11 +229,13 @@ fn nested_negative_number_times_squared() {
     </msup>
     </mrow>
     </math>";
-  test("zh-tw", "SimpleSpeak", expr, "e 的 負 2 分之 1 x 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "e 的 負 2 分之 1 x 平方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_expr_to_tenth() {
+fn nested_expr_to_tenth() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -219,11 +250,13 @@ fn nested_expr_to_tenth() {
       </msup>
       </mrow>
       </math>";
-  test("zh-tw", "SimpleSpeak", expr, "3 的 3 的 10 次方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "3 的 3 的 10 次方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_non_simple_squared_exp() {
+fn nested_non_simple_squared_exp() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -241,11 +274,13 @@ fn nested_non_simple_squared_exp() {
       </msup>
       </mrow>
       </math>";
-  test("zh-tw", "SimpleSpeak", expr, "3 的 左小括 x 加 1 右小括 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "3 的 左小括 x 加 1 右小括 平方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_simple_power() {
+fn nested_simple_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -255,11 +290,13 @@ fn nested_simple_power() {
       </msup>
     </msup>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 n 次方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 n 次方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_end_exponent_power() {
+fn nested_end_exponent_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -269,11 +306,13 @@ fn nested_end_exponent_power() {
       </msup>
     </msup>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 n 加 1 次方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 n 加 1 次方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_end_exponent_neg_power() {
+fn nested_end_exponent_neg_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -283,11 +322,13 @@ fn nested_end_exponent_neg_power() {
       </msup>
     </msup>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 負 3 次方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "t 的 5 分之 4 的 負 3 次方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_complex_power() {
+fn nested_complex_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -314,11 +355,13 @@ fn nested_complex_power() {
       </msup>
       </mrow>
       </math>";
-  test("zh-tw", "SimpleSpeak", expr, "e 的 負 2 分之 1 乘; 左小括, 分數 sigma 分之, x 減 mu 結束分數; 右小括 平方 次方");
+  test("zh-tw", "SimpleSpeak", expr, "e 的 負 2 分之 1 乘; 左小括, 分數 sigma 分之, x 減 mu 結束分數; 右小括 平方 次方")?;
+  return Ok(());
+
 }
 
 #[test]
-fn default_power() {
+fn default_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -328,5 +371,7 @@ fn default_power() {
       </mfrac>
     </msup>
   </math>";
-  test("zh-tw", "SimpleSpeak", expr, "t 的 分數 3 分之, b 加 1 結束分數; 次方");
+  test("zh-tw", "SimpleSpeak", expr, "t 的 分數 3 分之, b 加 1 結束分數; 次方")?;
+  return Ok(());
+
 }

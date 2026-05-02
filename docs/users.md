@@ -1,3 +1,8 @@
+---
+layout: default
+lang: en
+ref: users
+---
 # <img src="logo.png" style="position: relative; top: 16px; z-index: -1;" alt="MathCAT logo"> User Guide
 
 ## Advice on Choosing a Voice

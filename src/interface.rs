@@ -3,21 +3,27 @@
 #![allow(non_snake_case)]
 #![allow(clippy::needless_return)]
 use std::cell::RefCell;
+use std::sync::LazyLock;
 
 use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
 use regex::{Captures, Regex};
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
 use sxd_document::parser;
 use sxd_document::Package;
 
 use crate::canonicalize::{as_element, name};
 use crate::shim_filesystem::{find_all_dirs_shim, find_files_in_dir_that_ends_with_shim};
+use log::{debug, error};
 
 use crate::navigate::*;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
+use std::panic::{catch_unwind, AssertUnwindSafe};
+
+/// Maximum depth to prevent stack overflow on deeply nested MathML
+pub const MAX_DEPTH: usize = 512;
 
 #[cfg(feature = "enable-logs")]
 use std::sync::Once;
@@ -29,9 +35,6 @@ fn enable_logs() {
     INIT.call_once(||{
         #[cfg(target_os = "android")]
         {
-            extern crate log;
-            extern crate android_logger;
-            
             use log::*;
             use android_logger::*;
         
@@ -44,6 +47,58 @@ fn enable_logs() {
         }    
     });
 }
+
+// For getting a message from a panic
+thread_local! {
+    // Stores (Message, File, Line)
+    static PANIC_INFO: RefCell<Option<(String, String, u32)>> = const { RefCell::new(None) };
+}
+
+/// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
+pub fn init_panic_handler() {
+    use std::panic;
+
+    panic::set_hook(Box::new(|info| {
+        let location = info.location()
+            .map(|l| format!("{}:{}", l.file(), l.line()))
+            .unwrap_or_else(|| "unknown".to_string());
+
+        let payload = info.payload();
+        let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+            s.to_string()
+        } else if let Some(s) = payload.downcast_ref::<String>() {
+            s.clone()
+        } else {
+            "Unknown panic payload".to_string()
+        };
+
+        // Use try_with/try_borrow_mut to ensure the hook never panics itself
+        let _ = PANIC_INFO.try_with(|cell| {
+            if let Ok(mut slot) = cell.try_borrow_mut() {
+                *slot = Some((msg, location, 0));
+            }
+        });
+    }));
+}
+
+pub fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
+    match result {
+        Ok(val) => val,
+        Err(_) => {
+            // Retrieve the smuggled info
+            let details = PANIC_INFO.with(|cell| cell.borrow_mut().take());
+            
+            if let Some((msg, file, line)) = details {
+                Err(anyhow::anyhow!(
+                    "MathCAT crash! Please report the following information: '{}' at {}:{}",
+                    msg, file, line
+                ))
+            } else {
+                Err(anyhow::anyhow!("MathCAT crash! -- please report"))
+            }
+        }
+    }
+} 
 
 // wrap up some common functionality between the call from 'main' and AT
 fn cleanup_mathml(mathml: Element) -> Result<Element> {
@@ -66,20 +121,21 @@ fn init_mathml_instance() -> RefCell<Package> {
 
 /// Set the Rules directory
 /// IMPORTANT: this should be the very first call to MathCAT. If 'dir' is an empty string, the environment var 'MathCATRulesDir' is tried.
-pub fn set_rules_dir(dir: String) -> Result<()> {
+pub fn set_rules_dir(dir: impl AsRef<str>) -> Result<()> {
     enable_logs();
-    use std::path::PathBuf;
-    let dir = if dir.is_empty() {
-        std::env::var_os("MathCATRulesDir")
-            .unwrap_or_default()
-            .to_str()
-            .unwrap()
-            .to_string()
-    } else {
-        dir
-    };
-    let pref_manager = crate::prefs::PreferenceManager::get();
-    return pref_manager.borrow_mut().initialize(PathBuf::from(dir));
+    init_panic_handler();
+    let dir = dir.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        use std::path::PathBuf;
+        let dir_os = if dir.is_empty() {
+            std::env::var_os("MathCATRulesDir").unwrap_or_default()
+        } else {
+            std::ffi::OsString::from(&dir)
+        };
+        let pref_manager = crate::prefs::PreferenceManager::get();
+        pref_manager.borrow_mut().initialize(PathBuf::from(dir_os))
+    }));
+    return report_any_panic(result);
 }
 
 /// Returns the version number (from Cargo.toml) of the build
@@ -92,82 +148,101 @@ pub fn get_version() -> String {
 /// This will override any previous MathML that was set.
 /// This returns canonical MathML with 'id's set on any node that doesn't have an id.
 /// The ids can be used for sync highlighting if the `Bookmark` API preference is true.
-pub fn set_mathml(mathml_str: String) -> Result<String> {
+pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    lazy_static! {
-        // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
-        static ref MATHJAX_V2: Regex = Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap();
-        static ref MATHJAX_V3: Regex = Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap();
-        static ref NAMESPACE_DECL: Regex = Regex::new(r#"xmlns:[[:alpha:]]+"#).unwrap();     // very limited namespace prefix match
-        static ref PREFIX: Regex = Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap();     // very limited namespace prefix match
-        static ref HTML_ENTITIES: Regex = Regex::new(r#"&([a-zA-Z]+?);"#).unwrap();
-    }
+    // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
+    static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
+    static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
 
-    NAVIGATION_STATE.with(|nav_stack| {
-        nav_stack.borrow_mut().reset();
-    });
+    // Strip out processing instructions and comments -- these are not MathML and can cause DOS problems in the parser
+    static PROCESSING_INSTRUCTION: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"<\?[\s\S]{1,2048}\?>"#).unwrap());
+    static XML_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?s)"#).unwrap());
 
-    // We need the main definitions files to be read in so canonicalize can work.
-    // This call reads all of them for the current preferences, but that's ok since they will likely be used
-    crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
+    // These have some length limits to avoid DOS attacks via long strings
+    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
+    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
+    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        NAVIGATION_STATE.with(|nav_stack| {
+            nav_stack.borrow_mut().reset();
+        });
 
-    return MATHML_INSTANCE.with(|old_package| {
-        static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
+        // We need the main definitions files to be read in so canonicalize can work.
+        // This call reads all of them for the current preferences, but that's ok since they will likely be used
+        crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
-        let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
-                                                // need to deal with character data and convert to something the parser knows
-        let mathml_str =
-            HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
-                None => {
-                    error_message = format!("No entity named '{}'", &cap[0]);
-                    cap[0].to_string()
-                }
-                Some(&ch) => ch.to_string(),
-            });
-
-        if !error_message.is_empty() {
-            bail!(error_message);
-        }
-        let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
-        let mathml_str = MATHJAX_V3.replace_all(&mathml_str, "");
-
-        // the speech rules use the xpath "name" function and that includes the prefix
-        // getting rid of the prefix properly probably involves a recursive replacement in the tree
-        // if the prefix is used, it is almost certainly something like "m" or "mml", so this cheat will work.
-        let mathml_str = NAMESPACE_DECL.replace(&mathml_str, "xmlns"); // do this before the PREFIX replace!
-        let mathml_str = PREFIX.replace_all(&mathml_str, "$1");
-
-        let new_package = parser::parse(&mathml_str);
-        if let Err(e) = new_package {
-            bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+        let mathml_str = mathml_str.as_ref();
+        // Safety guard: Reject strings > 1MB to prevent DoS/Stack issues
+        if mathml_str.len() > 1024 * 1024 {
+            bail!("MathML string of size {} bytes exceeds length limit of 1MB", mathml_str.len());
         }
 
-        let new_package = new_package.unwrap();
-        let mathml = get_element(&new_package);
-        let mathml = cleanup_mathml(mathml)?;
-        let mathml_string = mml_to_string(mathml);
-        old_package.replace(new_package);
+        return MATHML_INSTANCE.with(|old_package| {
+            static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
-        return Ok(mathml_string);
-    });
+            let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
+                                                                     
+            let mathml_str = XML_COMMENT.replace_all(mathml_str, "");
+            let mathml_str = PROCESSING_INSTRUCTION.replace_all(&mathml_str, "");
+            // FIX: need to deal with character data and convert to something the parser knows
+            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+                    None => {
+                        error_message = format!("No entity named '{}'", &cap[0]);
+                        cap[0].to_string()
+                    }
+                    Some(&ch) => ch.to_string(),
+                });
+
+            if !error_message.is_empty() {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
+                bail!(error_message);
+            }
+            let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
+            let mathml_str = MATHJAX_V3.replace_all(&mathml_str, "");
+
+            // the speech rules use the xpath "name" function and that includes the prefix
+            // getting rid of the prefix properly probably involves a recursive replacement in the tree
+            // if the prefix is used, it is almost certainly something like "m" or "mml", so this cheat will work.
+            let mathml_str = NAMESPACE_DECL.replace(&mathml_str, "xmlns"); // do this before the PREFIX replace!
+            let mathml_str = PREFIX.replace_all(&mathml_str, "$1");
+
+            let new_package = parser::parse(&mathml_str);
+            if let Err(e) = new_package {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
+                bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+            }
+
+            let new_package = new_package.unwrap();
+            let mathml = get_element(&new_package);
+            let mathml = cleanup_mathml(mathml)?;
+            let mathml_string = mml_to_string(mathml);
+            old_package.replace(new_package);
+
+            return Ok(mathml_string);
+        });
+    }));
+
+    return report_any_panic(result);
 }
 
 /// Get the spoken text of the MathML that was set.
 /// The speech takes into account any AT or user preferences.
 pub fn get_spoken_text() -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let new_package = Package::new();
-        let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
-        debug!("Intent tree:\n{}", mml_to_string(intent));
-        let speech = crate::speech::speak_mathml(intent, "")?;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(speech);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let new_package = Package::new();
+            let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
+            debug!("Intent tree:\n{}", mml_to_string(intent));
+            let speech = crate::speech::speak_mathml(intent, "", 0)?;
+            return Ok(speech);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the spoken text for an overview of the MathML that was set.
@@ -175,35 +250,39 @@ pub fn get_spoken_text() -> Result<String> {
 /// Note: this implementation for is currently minimal and should not be used.
 pub fn get_overview_text() -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let speech = crate::speech::overview_mathml(mathml, "")?;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(speech);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = crate::speech::overview_mathml(mathml, "", 0)?;
+            return Ok(speech);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the value of the named preference.
 /// None is returned if `name` is not a known preference.
-pub fn get_preference(name: String) -> Result<String> {
+pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    use crate::prefs::NO_PREFERENCE;
-    return crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow();
-        let pref_manager = rules.pref_manager.borrow();
-        let mut value = pref_manager.pref_to_string(&name);
-        if value == NO_PREFERENCE {
-            value = pref_manager.pref_to_string(&name);
-        }
-        if value == NO_PREFERENCE {
-            bail!("No preference named '{}'", &name);
-        } else {
-            return Ok(value);
-        }
-    });
+    let name = name.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        use crate::prefs::NO_PREFERENCE;
+        crate::speech::SPEECH_RULES.with(|rules| {
+            let rules = rules.borrow();
+            let pref_manager = rules.pref_manager.borrow();
+            let mut value = pref_manager.pref_to_string(&name);
+            if value == NO_PREFERENCE {
+                value = pref_manager.pref_to_string(&name);
+            }
+            if value == NO_PREFERENCE {
+                bail!("No preference named '{}'", name);
+            } else {
+                return Ok(value);
+            }
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Set a MathCAT preference. The preference name should be a known preference name.
@@ -226,10 +305,18 @@ pub fn get_preference(name: String) -> Result<String> {
 /// A value can be overwritten by calling this function again with a different value.
 ///
 /// Be careful setting preferences -- these potentially override user settings, so only preferences that really need setting should be set.
-pub fn set_preference(name: String, value: String) -> Result<()> {
+pub fn set_preference(name: impl AsRef<str>, value: impl AsRef<str>) -> Result<()> {
     enable_logs();
-    // "LanguageAuto" allows setting the language dir without actually changing the value of "Language" from Auto
-    let mut value = value;
+    let name = name.as_ref().to_string();
+    let value = value.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        set_preference_impl(&name, &value)
+    }));
+    return report_any_panic(result);
+}
+
+fn set_preference_impl(name: &str, value: &str) -> Result<()> {
+    let mut value = value.to_string();
     if name == "Language" || name == "LanguageAuto" {
         // check the format
         if value != "Auto" {
@@ -274,14 +361,14 @@ pub fn set_preference(name: String, value: String) -> Result<()> {
         }
         let lower_case_value = value.to_lowercase();
         if lower_case_value == "true" || lower_case_value == "false" {
-            pref_manager.set_api_boolean_pref(&name, value.to_lowercase() == "true");
+            pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
         } else {
-            match name.as_str() {
+            match name {
                 "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
-                    pref_manager.set_api_float_pref(&name, to_float(&name, &value)?)
+                    pref_manager.set_api_float_pref(name, to_float(name, &value)?)
                 }
                 _ => {
-                    pref_manager.set_string_pref(&name, &value)?;
+                    pref_manager.set_string_pref(name, &value)?;
                 }
             }
         };
@@ -289,29 +376,30 @@ pub fn set_preference(name: String, value: String) -> Result<()> {
     })?;
 
     return Ok(());
+}
 
-    fn to_float(name: &str, value: &str) -> Result<f64> {
-        return match value.parse::<f64>() {
-            Ok(val) => Ok(val),
-            Err(_) => bail!("SetPreference: preference'{}'s value '{}' must be a float", name, value),
-        };
-    }
+fn to_float(name: &str, value: &str) -> Result<f64> {
+    return match value.parse::<f64>() {
+        Ok(val) => Ok(val),
+        Err(_) => bail!("SetPreference: preference'{}'s value '{}' must be a float", name, value),
+    };
 }
 
 /// Get the braille associated with the MathML that was set by [`set_mathml`].
 /// The braille returned depends upon the preference for the `code` preference (default `Nemeth`).
 /// If 'nav_node_id' is given, it is highlighted based on the value of `BrailleNavHighlight` (default: `EndPoints`)
-pub fn get_braille(nav_node_id: String) -> Result<String> {
+pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let braille = crate::braille::braille_mathml(mathml, &nav_node_id)?.0;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(braille);
-    });
+    let nav_node_id = nav_node_id.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let braille = crate::braille::braille_mathml(mathml, &nav_node_id)?.0;
+            return Ok(braille);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the braille associated with the current navigation focus of the MathML that was set by [`set_mathml`].
@@ -319,53 +407,56 @@ pub fn get_braille(nav_node_id: String) -> Result<String> {
 /// The returned braille is brailled as if the current navigation focus is the entire expression to be brailled.
 pub fn get_navigation_braille() -> Result<String> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let new_package = Package::new(); // used if we need to create a new tree
-        let new_doc = new_package.as_document();
-        let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
-            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                Err(e) => Err(e),
-                Ok((found, offset)) => {
-                    // get the MathML node and wrap it inside of a <math> element
-                    // if the offset is given, we need to get the character it references
-                    if offset == 0 {
-                        if name(found) == "math" {
-                            Ok(found)
-                        } else {
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let new_package = Package::new(); // used if we need to create a new tree
+            let new_doc = new_package.as_document();
+            let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
+                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                    Err(e) => Err(e),
+                    Ok((found, offset)) => {
+                        // get the MathML node and wrap it inside of a <math> element
+                        // if the offset is given, we need to get the character it references
+                        if offset == 0 {
+                            if name(found) == "math" {
+                                Ok(found)
+                            } else {
+                                let new_mathml = create_mathml_element(&new_doc, "math");
+                                new_mathml.append_child(copy_mathml(found));
+                                new_doc.root().append_child(new_mathml);
+                                Ok(new_mathml)
+                            }
+                        } else if !is_leaf(found) {
+                            bail!(
+                                "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
+                                offset,
+                                name(found)
+                            );
+                        } else if let Some(ch) = as_text(found).chars().nth(offset) {
+                            let internal_mathml = create_mathml_element(&new_doc, name(found));
+                            internal_mathml.set_text(&ch.to_string());
                             let new_mathml = create_mathml_element(&new_doc, "math");
-                            new_mathml.append_child(copy_mathml(found));
+                            new_mathml.append_child(internal_mathml);
                             new_doc.root().append_child(new_mathml);
                             Ok(new_mathml)
+                        } else {
+                            bail!(
+                                "Internal error: offset '{}' on leaf element '{}' doesn't exist",
+                                offset,
+                                mml_to_string(found)
+                            );
                         }
-                    } else if !is_leaf(found) {
-                        bail!(
-                            "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
-                            offset,
-                            name(found)
-                        );
-                    } else if let Some(ch) = as_text(found).chars().nth(offset) {
-                        let internal_mathml = create_mathml_element(&new_doc, name(found));
-                        internal_mathml.set_text(&ch.to_string());
-                        let new_mathml = create_mathml_element(&new_doc, "math");
-                        new_mathml.append_child(internal_mathml);
-                        new_doc.root().append_child(new_mathml);
-                        Ok(new_mathml)
-                    } else {
-                        bail!(
-                            "Internal error: offset '{}' on leaf element '{}' doesn't exist",
-                            offset,
-                            mml_to_string(found)
-                        );
                     }
-                }
-            };
-        })?;
+                };
+            })?;
 
-        let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
-        return Ok(braille);
-    });
+            let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
+            return Ok(braille);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a key code along with the modifier keys, the current node is moved accordingly (or value reported in some cases).
@@ -378,11 +469,15 @@ pub fn do_navigate_keypress(
     alt_key: bool,
     meta_key: bool,
 ) -> Result<String> {
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
-    });
+    enable_logs();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a navigation command, the current node is moved accordingly.
@@ -418,44 +513,56 @@ pub fn do_navigate_keypress(
 ///   `MoveTo0`, `MoveTo1`, `MoveTo2`, `MoveTo3`, `MoveTo4`, `MoveTo5`, `MoveTo6`, `MoveTo7`, `MoveTo8`, `MoveTo9`
 ///
 /// When done with Navigation, call with `Exit`
-pub fn do_navigate_command(command: String) -> Result<String> {
+pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    let command = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-    if command.is_none() {
-        bail!("Unknown command in call to DoNavigateCommand()");
-    };
-    let command = *command.unwrap();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return do_navigate_command_string(mathml, command);
-    });
+    let command = command.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
+        if cmd.is_none() {
+            bail!("Unknown command in call to DoNavigateCommand()");
+        };
+        let cmd = *cmd.unwrap();
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return do_navigate_command_string(mathml, cmd);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given an 'id' and an offset (for tokens), set the navigation node to that id.
 /// An error is returned if the 'id' doesn't exist
-pub fn set_navigation_node(id: String, offset: usize) -> Result<()> {
+pub fn set_navigation_node(id: impl AsRef<str>, offset: usize) -> Result<()> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return set_navigation_node_from_id(mathml, id, offset);
-    });
+    let id = id.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return set_navigation_node_from_id(mathml, &id, offset);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the MathML associated with the current (navigation) node and the offset (0-based) from that mathml (not yet implemented)
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml() -> Result<(String, usize)> {
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return NAVIGATION_STATE.with(|nav_stack| {
-            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                Err(e) => Err(e),
-                Ok((found, offset)) => Ok((mml_to_string(found), offset)),
-            };
-        });
-    });
+    enable_logs();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return NAVIGATION_STATE.with(|nav_stack| {
+                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                    Err(e) => Err(e),
+                    Ok((found, offset)) => Ok((mml_to_string(found), offset)),
+                };
+            });
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the `id` and `offset` (0-based) associated with the current (navigation) node.
@@ -463,95 +570,106 @@ pub fn get_navigation_mathml() -> Result<(String, usize)> {
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml_id() -> Result<(String, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return Ok(NAVIGATION_STATE.with(|nav_stack| {
-            return nav_stack.borrow().get_navigation_mathml_id(mathml);
-        }));
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return Ok(NAVIGATION_STATE.with(|nav_stack| {
+                return nav_stack.borrow().get_navigation_mathml_id(mathml);
+            }));
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the start and end braille character positions associated with the current (navigation) node.
 pub fn get_braille_position() -> Result<(usize, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let nav_node = get_navigation_mathml_id()?;
-        let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
-        return Ok((start, end));
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let nav_node = get_navigation_mathml_id()?;
+            let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
+            return Ok((start, end));
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a 0-based braille position, return the smallest MathML node enclosing it.
 /// This node might be a leaf with an offset.
 pub fn get_navigation_node_from_braille_position(position: usize) -> Result<(String, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return crate::braille::get_navigation_node_from_braille_position(mathml, position);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return crate::braille::get_navigation_node_from_braille_position(mathml, position);
+        })
+    }));
+    return report_any_panic(result);
 }
 
-pub fn get_supported_braille_codes() -> Vec<String> {
+pub fn get_supported_braille_codes() -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let braille_dir = rules_dir.join("Braille");
-    let mut braille_code_paths = Vec::new();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let braille_dir = rules_dir.join("Braille");
+        let mut braille_code_paths = Vec::new();
 
-    find_all_dirs_shim(&braille_dir, &mut braille_code_paths);
-    let mut braille_code_paths = braille_code_paths.iter()
-                    .map(|path| path.strip_prefix(&braille_dir).unwrap().to_string_lossy().to_string())
-                    .filter(|string_path| !string_path.is_empty() )
-                    .collect::<Vec<String>>();
-    braille_code_paths.sort();
+        find_all_dirs_shim(&braille_dir, &mut braille_code_paths);
+        let mut braille_code_paths = braille_code_paths.iter()
+                        .map(|path| path.strip_prefix(&braille_dir).unwrap().to_string_lossy().to_string())
+                        .filter(|string_path| !string_path.is_empty() )
+                        .collect::<Vec<String>>();
+        braille_code_paths.sort();
 
-    return braille_code_paths;
+        Ok(braille_code_paths)
+    }));
+    return report_any_panic(result);
  }
 
 /// Returns a Vec of all supported languages ("en", "es", ...)
-pub fn get_supported_languages() -> Vec<String> {
+pub fn get_supported_languages() -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let lang_dir = rules_dir.join("Languages");
-    let mut lang_paths = Vec::new();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let lang_dir = rules_dir.join("Languages");
+        let mut lang_paths = Vec::new();
 
-    find_all_dirs_shim(&lang_dir, &mut lang_paths);
-    let mut language_paths = lang_paths.iter()
-                    .map(|path| path.strip_prefix(&lang_dir).unwrap()
-                                              .to_string_lossy()
-                                              .replace(std::path::MAIN_SEPARATOR, "-")
-                                              .to_string())
-                    .filter(|string_path| !string_path.is_empty() )
-                    .collect::<Vec<String>>();
+        find_all_dirs_shim(&lang_dir, &mut lang_paths);
+        let mut language_paths = lang_paths.iter()
+                        .map(|path| path.strip_prefix(&lang_dir).unwrap()
+                                                  .to_string_lossy()
+                                                  .replace(std::path::MAIN_SEPARATOR, "-")
+                                                  .to_string())
+                        .filter(|string_path| !string_path.is_empty() )
+                        .collect::<Vec<String>>();
 
-    // make sure the 'zz' test dir isn't included (build.rs removes it, but for debugging is there)
-    language_paths.retain(|s| !s.starts_with("zz"));
-    language_paths.sort();
-    return language_paths;
+        // make sure the 'zz' test dir isn't included (build.rs removes it, but for debugging is there)
+        language_paths.retain(|s| !s.starts_with("zz"));
+        language_paths.sort();
+        Ok(language_paths)
+    }));
+    return report_any_panic(result);
  }
 
- pub fn get_supported_speech_styles(lang: String) -> Vec<String> {
+ pub fn get_supported_speech_styles(lang: impl AsRef<str>) -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let lang_dir = rules_dir.join("Languages").join(lang);
-    let mut speech_styles = find_files_in_dir_that_ends_with_shim(&lang_dir, "_Rules.yaml");
-    for file_name in &mut speech_styles {
-        file_name.truncate(file_name.len() - "_Rules.yaml".len())
-    }
-    speech_styles.sort();
-    // remove duplicates -- shouldn't be any, but just in case
-    let mut i = 1;
-    while i < speech_styles.len() {
-        if speech_styles[i-1] == speech_styles[i] {
-            speech_styles.remove(i);
-        } else {
-            i += 1;
+    let lang = lang.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let lang_dir = rules_dir.join("Languages").join(&lang);
+        let mut speech_styles = find_files_in_dir_that_ends_with_shim(&lang_dir, "_Rules.yaml");
+        for file_name in &mut speech_styles {
+            file_name.truncate(file_name.len() - "_Rules.yaml".len())
         }
-    }
-    return speech_styles;
+        speech_styles.sort();
+        speech_styles.dedup(); // remove duplicates -- shouldn't be any, but just in case
+        Ok(speech_styles)
+    }));
+    return report_any_panic(result);
  }
 
 // utility functions
@@ -560,6 +678,16 @@ pub fn get_supported_languages() -> Vec<String> {
 /// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
 /// Convert the returned error from set_mathml, etc., to a useful string for display
 pub fn copy_mathml(mathml: Element) -> Element {
+    return copy_mathml_recursive(mathml, 0);
+}
+
+fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > MAX_DEPTH {
+        // Return the element as a leaf if it's too deep to prevent crash
+        return create_mathml_element(&mathml.document(), name(mathml));
+    }
+
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
     let new_mathml = create_mathml_element(&mathml.document(), name(mathml));
@@ -568,17 +696,16 @@ pub fn copy_mathml(mathml: Element) -> Element {
     });
 
     // can't use is_leaf/as_text because this is also used with the intent tree
-    if children.len() == 1 {
-        if let Some(text) = children[0].text() {
+    if children.len() == 1 &&
+       let Some(text) = children[0].text() {
         new_mathml.set_text(text.text());
         return new_mathml;
         }
-    }
 
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml(child);
+        let new_child = copy_mathml_recursive(child, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -587,17 +714,11 @@ pub fn copy_mathml(mathml: Element) -> Element {
 
 pub fn errors_to_string(e: &Error) -> String {
     enable_logs();
-    let mut result = String::default();
-    let mut first_time = true;
-    for e in e.iter() {
-        if first_time {
-            result = format!("{e}\n");
-            first_time = false;
-        } else {
-            result += &format!("caused by: {e}\n");
-        }
+    let mut result = format!("{e}\n");
+    for cause in e.chain().skip(1) { // skips original error
+        result += &format!("caused by: {cause}\n");
     }
-    return result;
+    result
 }
 
 fn add_ids(mathml: Element) -> Element {
@@ -681,10 +802,8 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
     // these are combined into one child as it makes code downstream simpler
 
     // space, tab, newline, carriage return all get collapsed to a single space
-    const WHITESPACE: &[char] = &[' ', '\u{0009}', '\u{000A}', '\u{000D}'];
-    lazy_static! {
-        static ref WHITESPACE_MATCH: Regex = Regex::new(r#"[ \u{0009}\u{000A}\u{000D}]+"#).unwrap();
-    }
+    const WHITESPACE: &[char] = &[' ', '\u{0009}', '\u{000A}','\u{000C}', '\u{000D}'];
+    static WHITESPACE_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"[ \u{0009}\u{000A}\u{00C}\u{000D}]+"#).unwrap());
 
     if is_leaf(e) && (!allow_structure_in_leaves || IsNode::is_mathml(e)) {
         // Assume it is HTML inside of the leaf -- turn the HTML into a string
@@ -727,11 +846,15 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
 
     fn make_leaf_element(mathml_leaf: Element) {
         // MathML leaves like <mn> really shouldn't have non-textual content, but you could have embedded HTML
-        // Here, we take convert them to leaves by grabbing up all the text and making that the content
+        // Here, we convert them to leaves by grabbing up all the text and making that the content
         // Potentially, we leave them and let (default) rules do something, but it makes other parts of the code
         //   messier because checking the text of a leaf becomes Option<&str> rather than just &str
         let children = mathml_leaf.children();
         if children.is_empty() {
+            return;
+        }
+
+        if rewrite_and_flatten_embedded_mathml(mathml_leaf) {
             return;
         }
 
@@ -778,6 +901,65 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
             return text;
         }
     }
+
+    fn rewrite_and_flatten_embedded_mathml(mathml_leaf: Element) -> bool {
+        // first see if it can or needs to be rewritten
+        // this is likely rare, so we do a check and if true, to a second pass building the result
+        let mut needs_rewrite = false;
+        for child in mathml_leaf.children() {
+            if let Some(element) = child.element() {
+                if name(element) != "math" {
+                    return false; // something other than MathML as a child -- can't rewrite
+                }
+                needs_rewrite = true;
+            }
+        };
+
+        if !needs_rewrite {
+            return false;
+        }
+
+        // now do the rewrite, flatting out the mathml and returning an mrow with the children
+        let leaf_name = name(mathml_leaf);
+        let doc = mathml_leaf.document();
+        let mut new_children = Vec::new();
+        let mut is_last_mtext = false;
+        for child in mathml_leaf.children() {
+            if let Some(element) = child.element() {
+                trim_element(element, true);
+                new_children.append(&mut element.children());   // don't want 'math' wrapper
+                is_last_mtext = false;
+            } else if let Some(text) = child.text() {
+                // combine adjacent text nodes into single nodes
+                if is_last_mtext {
+                    let last_child = new_children.last_mut().unwrap().element().unwrap();
+                    let new_text = as_text(last_child).to_string() + text.text();
+                    last_child.set_text(&new_text);
+                } else {
+                    let new_leaf_node = create_mathml_element(&doc, leaf_name);
+                    new_leaf_node.set_text(text.text());
+                    new_children.push(ChildOfElement::Element(new_leaf_node));
+                    is_last_mtext = true;
+                }
+            }
+        };
+
+        // clean up whitespace in text nodes
+        for child in &mut new_children {    
+            if let Some(element) = child.element() && is_leaf(element) {
+                let text = as_text(element);
+                let cleaned_text = WHITESPACE_MATCH.replace_all(text, " ").trim_matches(WHITESPACE).to_string();
+                element.set_text(&cleaned_text);
+            }
+        }
+        
+        crate::canonicalize::set_mathml_name(mathml_leaf, "mrow");
+        mathml_leaf.clear_children();
+        mathml_leaf.append_children(new_children);
+
+        // debug!("rewrite_and_flatten_embedded_mathml: flattened\n'{}'", mml_to_string(mathml_leaf));
+        return true;
+    }
 }
 
 // used for testing trim
@@ -804,7 +986,7 @@ fn is_same_doc(doc1: &Document, doc2: &Document) -> Result<()> {
         match c1 {
             ChildOfRoot::Element(e1) => {
                 if let ChildOfRoot::Element(e2) = c2 {
-                    is_same_element(*e1, *e2)?;
+                    is_same_element(*e1, *e2, &[])?;
                 } else {
                     bail!("child #{}, first is element, second is something else", i);
                 }
@@ -838,7 +1020,7 @@ fn is_same_doc(doc1: &Document, doc2: &Document) -> Result<()> {
 /// returns Ok() if two Documents are equal or some info where they differ in the Err
 // Not really meant to be public -- used by tests in some packages
 #[allow(dead_code)]
-pub fn is_same_element(e1: Element, e2: Element) -> Result<()> {
+pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Result<()> {
     enable_logs();
     if name(e1) != name(e2) {
         bail!("Names not the same: {}, {}", name(e1), name(e2));
@@ -855,7 +1037,7 @@ pub fn is_same_element(e1: Element, e2: Element) -> Result<()> {
         );
     }
 
-    if let Err(e) = attrs_are_same(e1.attributes(), e2.attributes()) {
+    if let Err(e) = attrs_are_same(e1.attributes(), e2.attributes(), ignore_attrs) {
         bail!("In element {}, {}", name(e1), e);
     }
 
@@ -863,7 +1045,7 @@ pub fn is_same_element(e1: Element, e2: Element) -> Result<()> {
         match c1 {
             ChildOfElement::Element(child1) => {
                 if let ChildOfElement::Element(child2) = c2 {
-                    is_same_element(*child1, *child2)?;
+                    is_same_element(*child1, *child2, ignore_attrs)?;
                 } else {
                     bail!("{} child #{}, first is element, second is something else", name(e1), i);
                 }
@@ -904,7 +1086,13 @@ pub fn is_same_element(e1: Element, e2: Element) -> Result<()> {
     return Ok(());
 
     /// compares attributes -- '==' didn't seems to work
-    fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>) -> Result<()> {
+    fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
+        let attrs1 = attrs1.iter()
+                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .collect::<Vec<Attribute>>();
+        let attrs2 = attrs2.iter()
+                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .collect::<Vec<Attribute>>();
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
         }
@@ -950,15 +1138,15 @@ mod tests {
     use super::*;
 
     fn are_parsed_strs_equal(test: &str, target: &str) -> bool {
-        let target_package = &parser::parse(target).expect("Failed to parse input");
-        let target_doc = target_package.as_document();
-        trim_doc(&target_doc);
-        debug!("target:\n{}", mml_to_string(get_element(target_package)));
-
         let test_package = &parser::parse(test).expect("Failed to parse input");
         let test_doc = test_package.as_document();
         trim_doc(&test_doc);
         debug!("test:\n{}", mml_to_string(get_element(test_package)));
+
+        let target_package = &parser::parse(target).expect("Failed to parse input");
+        let target_doc = target_package.as_document();
+        trim_doc(&target_doc);
+        debug!("target:\n{}", mml_to_string(get_element(target_package)));
 
         match is_same_doc(&test_doc, &target_doc) {
             Ok(_) => return true,
@@ -1044,32 +1232,30 @@ mod tests {
         // this forces initialization
         set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
 
-        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>".to_string()).unwrap();
+        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>").unwrap();
         let converted_str =
-            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>".to_string()).unwrap();
+            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>").unwrap();
 
         // need to remove unique ids
-        lazy_static! {
-            static ref ID_MATCH: Regex = Regex::new(r#"id='.+?' "#).unwrap();
-        }
+        static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "normal entity test failed");
 
         let entity_str = set_mathml(
-            "<math data-quot=\"&quot;value&quot;\" data-apos='&apos;value&apos;'><mi>XXX</mi></math>".to_string(),
+            "<math data-quot=\"&quot;value&quot;\" data-apos='&apos;value&apos;'><mi>XXX</mi></math>",
         )
         .unwrap();
         let converted_str =
-            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>".to_string()).unwrap();
+            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>").unwrap();
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities quote test failed");
 
         let entity_str =
-            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>".to_string()).unwrap();
+            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>").unwrap();
         let converted_str =
-            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>".to_string())
+            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")
                 .unwrap();
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
@@ -1080,14 +1266,14 @@ mod tests {
     fn can_recover_from_invalid_set_rules_dir() {
         use std::env;
         // MathCAT will check the env var "MathCATRulesDir" as an override, so the following test might succeed if we don't override the env var
-        env::set_var("MathCATRulesDir", "MathCATRulesDir");
-        assert!(set_rules_dir("someInvalidRulesDir".to_string()).is_err());
+        unsafe { env::set_var("MathCATRulesDir", "MathCATRulesDir"); }   // safe because we are single threaded
+        assert!(set_rules_dir("someInvalidRulesDir").is_err());
         assert!(
             set_rules_dir(super::super::abs_rules_dir_path()).is_ok(),
             "\nset_rules_dir to '{}' failed",
             super::super::abs_rules_dir_path()
         );
-        assert!(set_mathml("<math><mn>1</mn></math>".to_string()).is_ok());
+        assert!(set_mathml("<math><mn>1</mn></math>").is_ok());
     }
 
     #[test]
@@ -1116,5 +1302,40 @@ mod tests {
         let test = "<math><mn>1</mn> <mtext>a<br/>bc</mtext> <mi>y</mi></math>";
         let target = "<math><mn>1</mn> <mtext>abc</mtext> <mi>y</mi></math>";
         assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn mathml_in_mtext() {
+        let test = "<math><mtext>if&#xa0;<math> <msup><mi>n</mi><mn>2</mn></msup></math>&#xa0;is real</mtext></math>";
+        let target = "<math><mrow><mtext>if&#xa0;</mtext><msup><mi>n</mi><mn>2</mn></msup><mtext>&#xa0;is real</mtext></mrow></math>";
+        assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn stack_overflow_protection() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let mut bad_mathml = String::from("<math>");
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("<msqrt><mi>n</mi>");
+        }
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("</msqrt>");
+        }
+        bad_mathml.push_str("</math>");
+        assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
+    }
+
+    #[test]
+    fn old_mathml_cleared_on_error() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let good_mathml = "<math><mn>3</mn></math>";
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math><mi>&xabc;</mi></math>";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math>garbage";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
     }
 }

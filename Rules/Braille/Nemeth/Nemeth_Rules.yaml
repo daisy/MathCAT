@@ -8,27 +8,36 @@
       variables: [MatchingWhitespace: "true()"]
       replace:
       - test:
-        - if: "@data-previous-space-width > 1.1"
-          then: [t: "⠿"]
-          # non-breaking space width; also avoid spaces added after commas in scripts (78_1)
-        - else_if: "@data-previous-space-width >= 0.7 and
-                    ($NewScriptContext='' or not(preceding-sibling::*[1][self::m:mo and .=',']))"
-          then: [t: "W"]
+          # ignore spaces at the beginning or end of math
+        - if: "not(parent::m:math) or preceding-sibling::*"
+          then:
+          - test:
+              # people sometimes use mtext for spaces around text -- see no_omission_for_spaces_in_middle()
+            - if: "@data-previous-space-width > 1.1 and not(self::m:mtext)"
+              then: [t: "⠿"]
+              # non-breaking space width; also avoid spaces added after commas in scripts (78_1)
+            - else_if: "@data-previous-space-width >= 0.7 and
+                        ($NewScriptContext='' or not(preceding-sibling::*[1][self::m:mo and .=',']))"
+              then: [t: "W"]
       - x: "."
       - test:
-        - if: "@data-following-space-width > 1.1"
-          then: [t: "⠿"]
-          # non-breaking space width; also avoid spaces added after commas in scripts (78_1)
-        - else_if: "@data-following-space-width >= 0.7 and
-                    ($NewScriptContext='' or not(self::m:mo and .=','))"
-          then: [t: "W"]
+          # ignore spaces at the beginning or end of math
+        - if: "not(parent::m:math) or following-sibling::*"
+          then:
+          - test:
+            - if: "@data-following-space-width > 1.1 and not(self::m:mtext)"
+              then: [t: "⠿"]
+              # non-breaking space width; also avoid spaces added after commas in scripts (78_1)
+            - else_if: "@data-following-space-width >= 0.7 and
+                        ($NewScriptContext='' or not(self::m:mo and .=','))"
+              then: [t: "W"]
 
 -
    name: omission-intent
    tag: "!*"
    match: "contains(@intent, ':blank')"
    replace: 
-   - t: "⠬"
+   - t: "⠿"
 
 -
    name: default
@@ -254,10 +263,13 @@
 # rule 57 -- there is no way to get this rule completely right because some require knowing what the omitted symbol should to get spacing right (e.g., 57(3): "7×2?14") 
 #  Here we pick off cases that seem likely and doable
 #  Note: '?' is sometimes used with mover/munder and '=' or other chars, so we need to make sure the parent is mrow
+#  Also, "?" is sometimes used to end a sentence, so we exclude that case (last token in <math> and not preceded by an operator)
 - name: omissions
   tag: [mo, mtext]
   match:
-  - "((.='?' or .='-?-') and parent::*[1][self::m:mrow]) or .='\u00A0'"
+  - "(( (.='?' and name(EdgeNode(., 'right', 'math'))!='math') or 
+        .='-?-') and parent::*[1][self::m:mrow]) or
+     (.='\u00A0' and @data-width > 0)"
   variables:
   # guess whether this needs spacing or not
   - IsComparisonOp: "not(

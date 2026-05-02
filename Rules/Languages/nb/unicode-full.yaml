@@ -268,7 +268,7 @@
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')", {pause: short}]
+        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')", pause: short]
  - "а": [T: "a"]                                    #  0x430    (google: 'а')
  - "б": [T: "be"]                                   #  0x431    (google: 'vara')
  - "в": [T: "ve"]                                   #  0x432
@@ -1444,6 +1444,11 @@
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "i sirkel"                                 #     (en: 'circled', google translation)
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    # switched order
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "i fylt sirkel"                                     #  (en: 'black circled', google translation)
+
  - "ⓐ-ⓩ":                                           #  0x24d0 - 0x24e9
     # SWEDISH: switched order
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -2460,6 +2465,20 @@
  - "㉞": [T: "trettifire i sirkel"]           #  0x325e    (en: 'circled number thirty four', google translation)
  - "㉟": [T: "trettifem i sirkel"]            #  0x325f    (en: 'circled number thirty five', google translation)
  - "㊱": [T: "trettiseks i sirkel"]            #  0x32b1    (en: 'circled number thirty six', google translation)
+ - "㊲": [T: "trettisju i sirkel"]            #  0x32b2    (en: 'circled number thirty seven', GPT-5.4 translation)
+ - "㊳": [T: "trettiåtte i sirkel"]           #  0x32b3    (en: 'circled number thirty eight', GPT-5.4 translation)
+ - "㊴": [T: "trettini i sirkel"]             #  0x32b4    (en: 'circled number thirty nine', GPT-5.4 translation)
+ - "㊵": [T: "førti i sirkel"]                #  0x32b5    (en: 'circled number forty', GPT-5.4 translation)
+ - "㊶": [T: "førtien i sirkel"]              #  0x32b6    (en: 'circled number forty one', GPT-5.4 translation)
+ - "㊷": [T: "førtito i sirkel"]              #  0x32b7    (en: 'circled number forty two', GPT-5.4 translation)
+ - "㊸": [T: "førtitre i sirkel"]             #  0x32b8    (en: 'circled number forty three', GPT-5.4 translation)
+ - "㊹": [T: "førtifire i sirkel"]            #  0x32b9    (en: 'circled number forty four', GPT-5.4 translation)
+ - "㊺": [T: "førtifem i sirkel"]             #  0x32ba    (en: 'circled number forty five', GPT-5.4 translation)
+ - "㊻": [T: "førtiseks i sirkel"]            #  0x32bb    (en: 'circled number forty six', GPT-5.4 translation)
+ - "㊼": [T: "førtisju i sirkel"]             #  0x32bc    (en: 'circled number forty seven', GPT-5.4 translation)
+ - "㊽": [T: "førtiåtte i sirkel"]            #  0x32bd    (en: 'circled number forty eight', GPT-5.4 translation)
+ - "㊾": [T: "førtini i sirkel"]              #  0x32be    (en: 'circled number forty nine', GPT-5.4 translation)
+ - "㊿": [T: "femti i sirkel"]                #  0x32bf    (en: 'circled number fifty', GPT-5.4 translation)
  - "㋌": [T: "kvikksølv"]                          #  0x32cc    (en: 'mercury', google translation)
  - "㋍": [T: "erg"]                                 #  0x32cd    (google translation)
  - "㋎": [T: "elektronvolt"]                        #  0x32ce    (en: 'electron volts', google translation)
@@ -3640,14 +3659,14 @@
             - if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                   if: "$DefaultToGiven"
-                  then: [{pause: short}, {T: "gitt"}]
+                  then: [pause: short, T: "gitt"]
                   else: [T: "vertikal strek"]
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [T: "vertikal strek"]
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [T: "slik at"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [{pause: short}, {T: "gitt"}] 
+              then: [pause: short, T: "gitt"] 
             - else: [T: "deler"]                   
  - "～": [T: "tilde"]                               # 0xff5e
  - "￢": [T: "ikke"]                                 # 0xffe2

@@ -1,7 +1,7 @@
 //! Preferences come from either the user or are programmatically set by the AT.
-//! The either source can set any preference, but users and AT typically set different preferences.
+//! Either source can set any preference, but users and AT typically set different preferences.
 //!
-//! User prefs are read in from a YAML file (prefs.yaml). The can be written by hand.
+//! User prefs are read in from a YAML file (prefs.yaml). They can be written by hand.
 //! In the future, there will hopefully be a nice UI that writes out the YAML file.
 //!
 //! AT prefs are set via the API given in the [crate::interface] module.
@@ -22,10 +22,11 @@
 use yaml_rust::{Yaml, YamlLoader};
 use crate::pretty_print::yaml_to_string;
 use crate::tts::TTS;
-extern crate dirs;
 use std::cell::RefCell;
 use std::rc::Rc;
+use log::{debug, error, warn};
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
 use crate::speech::{as_str_checked, RulesFor, FileAndTime};
 use std::collections::{HashMap, HashSet};
 use phf::phf_set;
@@ -35,9 +36,7 @@ use crate::errors::*;
 /// Use to indicate preference not found with Preference::to_string()
 pub static NO_PREFERENCE: &str = "\u{FFFF}";
 
-lazy_static! {
-    static ref DEFAULT_LANG: Yaml = Yaml::String("en".to_string());
-}
+static DEFAULT_LANG: LazyLock<Yaml> = LazyLock::new(|| Yaml::String("en".to_string()));
 
 
 // Preferences are recorded here
@@ -163,8 +162,8 @@ impl Preferences{
             for (yaml_name, yaml_value) in new_prefs {
                 let name = as_str_checked(yaml_name);
                 if let Err(e) = name {
-                    error!("{}", (&e.chain_err(||
-                        format!("name '{}' is not a string in file {}", yaml_to_string(yaml_name, 0), file_name))));
+                    error!("{}", e.context(
+                        format!("name '{}' is not a string in file {}", yaml_to_string(yaml_name, 0), file_name)));
                 } else {
                     match yaml_value {
                         Yaml::Hash(_) => add_prefs(map, yaml_value, &(name.unwrap().to_string() + "_"), file_name),
@@ -208,7 +207,7 @@ thread_local!{
 
 /// PreferenceManager keeps track of user and api prefs along with current files
 ///
-/// If one one the `FileAndTime` files changes while the program is running, the values will auto-update
+/// If one of the `FileAndTime` files changes while the program is running, the values will auto-update
 /// Among other things, that means that a UI that changes a user pref will be reflected the next time someone gets speech, braille, etc.
 //
 // Note: I experimented with PREF_MANAGER being a Result<PreferenceManager> in the case of no rule files,
@@ -262,7 +261,7 @@ impl PreferenceManager {
     pub fn initialize(&mut self, rules_dir: PathBuf) -> Result<()> {
         #[cfg(not(feature = "include-zip"))]
         let rules_dir = match rules_dir.canonicalize() {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e.to_string()),
+            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
             Ok(rules_dir) =>  rules_dir,
         };
 
@@ -476,7 +475,7 @@ impl PreferenceManager {
                     let language = lang.split_once('-').unwrap_or((lang, "")).0; // get the parent language
                     // debug!("unzip_files: trying again in parent language: {}", language);
                     PreferenceManager::unzip_files(path, language, default_lang)
-                                                .chain_err(|| format!("Couldn't open zip file {zip_file_string} in parent {language}: {e}."))?
+                                                .with_context(|| format!("Couldn't open zip file {zip_file_string} in parent {language}: {e}."))?
                 } else {
                     // maybe just regional dialects
                     let mut regional_dirs = Vec::new();
@@ -507,6 +506,8 @@ impl PreferenceManager {
 
     /// Set BlockSeparators and DecimalSeparators
     /// FIX: changing these values could change the parse, so we really should reparse the original expr, but that doesn't exist anymore (store the original string???)
+    ///
+    /// Note: DecimalSeparator is user-facing (can be Auto), DecimalSeparators is code-facing (always a char)
     fn set_separators(&mut self, language_country: &str) -> Result<()> {
         // This list was generated from https://en.wikipedia.org/wiki/Decimal_separator#Countries_using_decimal_point
         // The countries were then mapped to language(s) using https://en.wikipedia.org/wiki/List_of_official_languages_by_country_and_territory
@@ -578,12 +579,11 @@ impl PreferenceManager {
                     return Ok(path);
                 }
             };
-            if looking_for_style_file && alternative_style_file.is_none() {
-                if let Ok(alt_file_path) = find_any_style_file(os_path) {
+            if looking_for_style_file && alternative_style_file.is_none() &&
+               let Ok(alt_file_path) = find_any_style_file(os_path) {
                     // debug!("find_file: found alternative style file '{}'", alt_file_path.display());
                     alternative_style_file = Some(alt_file_path);
                 }
-            }
             if os_path.ends_with("Rules") {
                 // at root of Rules directory
                 break;
@@ -734,6 +734,13 @@ impl PreferenceManager {
             panic!("Internal error: set_string_pref called on invalid PreferenceManager -- error message\n{}", &self.error);
         };
 
+        // verify language, braille, and SpeechStyle because these are used as access into the file system
+        // should be an ascii string with only letters, dashes, and underscores
+        if matches!(key, "Language" | "BrailleCode" | "SpeechStyle") &&
+           !value.chars().all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '-')) {
+            bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
+        }
+        
         // don't do an update if the value hasn't changed
         let mut is_user_pref = true;
         if let Some(pref_value) = self.api_prefs.prefs.get(key) {
@@ -1077,15 +1084,15 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             // now test with the interface
             {
                 use crate::interface::{set_preference, get_preference};
-                set_preference("Language".to_string(), "zz".to_string()).unwrap();
-                set_preference("ClearSpeak_AbsoluteValue".to_string(), "Cardinality".to_string()).unwrap();
-                set_preference("Overview".to_string(), "true".to_string()).unwrap();
-                set_preference("BrailleCode".to_string(), "UEB".to_string()).unwrap();
-                assert_eq!(&get_preference("Language".to_string()).unwrap(), "zz");
-                assert_eq!(&get_preference("ClearSpeak_AbsoluteValue".to_string()).unwrap(), "Cardinality");
-                assert_eq!(&get_preference("Overview".to_string()).unwrap(), "true");
-                assert_eq!(&get_preference("BrailleCode".to_string()).unwrap(), "UEB");
-                assert!(&get_preference("X_Y_Z".to_string()).is_err());
+                set_preference("Language", "zz").unwrap();
+                set_preference("ClearSpeak_AbsoluteValue", "Cardinality").unwrap();
+                set_preference("Overview", "true").unwrap();
+                set_preference("BrailleCode", "UEB").unwrap();
+                assert_eq!(&get_preference("Language").unwrap(), "zz");
+                assert_eq!(&get_preference("ClearSpeak_AbsoluteValue").unwrap(), "Cardinality");
+                assert_eq!(&get_preference("Overview").unwrap(), "true");
+                assert_eq!(&get_preference("BrailleCode").unwrap(), "UEB");
+                assert!(&get_preference("X_Y_Z").is_err());
 
             }
         });
@@ -1098,14 +1105,14 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             let mut pref_manager = pref_manager.borrow_mut();
             pref_manager.initialize(abs_rules_dir_path()).unwrap();
         });
-        crate::interface::set_preference("Language".to_string(), "en".to_string()).unwrap();
-        crate::interface::set_preference("SpeechStyle".to_string(), "ClearSpeak".to_string()).unwrap();
+        crate::interface::set_preference("Language", "en").unwrap();
+        crate::interface::set_preference("SpeechStyle", "ClearSpeak").unwrap();
         PREF_MANAGER.with(|pref_manager| {
             let pref_manager = pref_manager.borrow_mut();
             assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.get_rule_file(&RulesFor::Speech)), PathBuf::from("Languages/en/ClearSpeak_Rules.yaml"));
         });
 
-        crate::interface::set_preference("Language".to_string(), "zz".to_string()).unwrap();
+        crate::interface::set_preference("Language", "zz").unwrap();
         PREF_MANAGER.with(|pref_manager| {
             let pref_manager = pref_manager.borrow_mut();
             assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.get_rule_file(&RulesFor::Speech)), PathBuf::from("Languages/zz/ClearSpeak_Rules.yaml"));
@@ -1144,11 +1151,22 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             assert_eq!(merged_prefs.get("Verbosity").unwrap().as_str().unwrap(), "Terse");
         });
 
-        crate::interface::set_preference("NavVerbosity".to_string(), "Terse".to_string()).unwrap();
+        crate::interface::set_preference("NavVerbosity", "Terse").unwrap();
         PREF_MANAGER.with(|pref_manager| {
             let pref_manager = pref_manager.borrow_mut();
             let merged_prefs = pref_manager.merge_prefs();
             assert_eq!(merged_prefs.get("NavVerbosity").unwrap().as_str().unwrap(), "Terse");
+        });
+    }
+
+    #[test]
+    fn test_illegal_pref_values() {
+        PREF_MANAGER.with(|pref_manager| {
+            let mut pref_manager = pref_manager.borrow_mut();
+            pref_manager.initialize(abs_rules_dir_path()).unwrap();
+            assert!(pref_manager.set_string_pref("Language", "../../../my/path").is_err());
+            assert!(pref_manager.set_string_pref("BrailleCode", "C:\\my\\path").is_err());
+            assert!(pref_manager.set_string_pref("SpeechStyle", "/my/path").is_err());
         });
     }
 
@@ -1165,7 +1183,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             assert_eq!(&pref_manager.pref_to_string("SpeechStyle"), "ClearSpeak");
             assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.speech.as_path()), PathBuf::from("Languages/zz/ClearSpeak_Rules.yaml"));
         });
-        interface::set_mathml("<math><mo>+</mo><mn>10</mn></math>".to_string()).unwrap();
+        interface::set_mathml("<math><mo>+</mo><mn>10</mn></math>").unwrap();
         assert_eq!(interface::get_spoken_text().unwrap(), "ClearSpeak positive from zz 10");
         
         let mut file_path = PathBuf::default();

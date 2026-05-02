@@ -2,11 +2,12 @@
 /// *  Linear Algebra related things including vector and matrix functions
 /// *  Some tests that are related are in the calculus test file.
 use crate::common::*;
+use anyhow::Result;
 
 
 
 #[test]
-fn dot_product_vec_arrow() {
+fn dot_product_vec_arrow() -> Result<()> {
   let mathml = r#"<math>
       <mrow>
         <mover>
@@ -33,11 +34,13 @@ fn dot_product_vec_arrow() {
       </vector>
     </mrow>
    </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn cross_product_vec_harpoon() {
+fn cross_product_vec_harpoon() -> Result<()> {
   let mathml = r#"<math>
       <mrow>
         <mover>
@@ -64,11 +67,13 @@ fn cross_product_vec_harpoon() {
       </vector>
     </mrow>
    </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn dot_product_bold_math_variant() {
+fn dot_product_bold_math_variant() -> Result<()> {
   let mathml = r#"<math>
       <mi mathvariant='bold'>x</mi>
       <mo>&#x22C5;</mo>
@@ -81,11 +86,13 @@ fn dot_product_bold_math_variant() {
       <mi data-from-mathml='mi' mathvariant='bold'>𝐲</mi>
     </mrow>
    </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn dot_product_nabla() {
+fn dot_product_nabla() -> Result<()> {
   let mathml = r#"<math>
   <mrow>
     <mover>
@@ -111,11 +118,13 @@ fn dot_product_nabla() {
         </gradient>
       </mrow>
     </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn cross_product_nabla() {
+fn cross_product_nabla() -> Result<()> {
   let mathml = r#"<math>
       <msup>
         <mi mathvariant="normal">&#x2207;</mi>
@@ -141,11 +150,13 @@ fn cross_product_nabla() {
         </vector>
       </mrow>
     </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn cross_product_hat() {
+fn cross_product_hat() -> Result<()> {
   let mathml = r#"<math>
   <mrow data-changed='added'>
     <mrow data-changed='added'>
@@ -186,11 +197,13 @@ fn cross_product_hat() {
         </modified-variable>
       </mrow>
     </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn magnetic_flux_dot_product() {
+fn magnetic_flux_dot_product() -> Result<()> {
   let mathml = r#"<math>
       <mrow data-changed='added'>
         <msub data-latex='\Phi_B'>
@@ -233,11 +246,13 @@ fn magnetic_flux_dot_product() {
         </mrow>
       </mrow>
     </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }
 
 #[test]
-fn magnetic_field_cross_product() {
+fn magnetic_field_cross_product() -> Result<()> {
   let mathml = r#"<math>
       <mrow data-changed='added'>
         <mrow data-changed='added'>
@@ -412,5 +427,7 @@ fn magnetic_field_cross_product() {
         </mrow>
       </mrow>
     </math>"#;
-  test_intent(mathml, intent, vec![]);
+  test_intent(mathml, intent, vec![])?;
+  return Ok(());
+
 }

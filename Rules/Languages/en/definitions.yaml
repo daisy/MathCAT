@@ -20,8 +20,8 @@
     "dimension-product": "infix=by",
     # "closed-interval": "other=closed-interval; from,to; end closed-interval",
     "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
-    "imaginary-part": "function=imaginary part, the imaginary part, the imaginary part",
-    "least-common-multiple": "function=lcm:the lcm:the least common multiple",
+    "imaginary-part": "function=imaginary part: the imaginary part: the imaginary part",
+    "least-common-multiple": "function=lcm: the lcm: the least common multiple",
     # "large-op": "infix=over || other=from,to",
     "limit": "prefix=limit as: the limit as: the limit as",
     "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
@@ -35,13 +35,13 @@
 
     "transpose": "postfix=transpose || function=transpose",
     "norm": "function=; norm: norm: norm; end norm",
-    "trace": "function=;trace : trace: the trace; end trace",
+    "trace": "function= ; trace : trace: the trace; end trace",
     "dimension": "function=; dimension : dimension: the dimension; end dimension",
     "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
     "kernel": "function= ; kernel : kernel: the kernel; end kernel",
     "vector": "function= ; vector || prefix=vector",
     "cross-product": "infix=cross: cross product: cross product",
-    "dot-product": "infix=dot: dot product: dot:dot product",
+    "dot-product": "infix=dot: dot product: dot: dot product",
 
     "divergence": "function= ; dihv: divergence: divergence; end divergence",
     "curl": "function= ; curl; end curl",
@@ -67,6 +67,8 @@
     "root": "root; root index",
     "msub": "base; subscript",
     "sub": "base; subscript",
+    "logarithm-with-base": "base",
+    "indexed-by": "base; subscript",
     "msup": "base; superscript",
     "say-super": "base; superscript",
     "skip-super": "base; superscript",
@@ -88,7 +90,7 @@
 
     # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
     # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
-    "Abel", "aery", "ails", "airy", "amps", "cents", "flux", "flow", "knot",
+    "Abel", "aery", "ails", "airy", "amps", "ceil", "cents", "chop", "flux", "flow", "knot", "most"
   }
 
 - SIPrefixes: {
@@ -119,7 +121,7 @@
     "H": "henry",
     "Hz": "hertz",
     "J": "joule",
-    "kat": "kattel",
+    "kat": "katal",
     "lm": "lumen",
     "lx": "lux",
     "N": "newton",
@@ -140,7 +142,7 @@
     "u": "atomic mass unit",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "eV": "electronvolt",
     "rad": "radian",             # should only take negative powers
-    "sr": "sterradion",          # should only take negative powers      
+    "sr": "steradian",           # should only take negative powers
   
     # others that take a prefix
     "a": "annum",               # should only take positive powers
@@ -230,7 +232,7 @@
     "tbl": "tablespoon",
 
     # liquid
-    "fl dr": "fluid drams",
+    "fl dr": "fluid dram",
     "fl oz": "fluid ounce",
     "gi": "gill",
     "cp": "cup", "cup": "cup",
@@ -258,6 +260,12 @@
     "mpg": "mile per gallon",
   }
 
+- CurrencySymbols: {
+    "$": "dollar", "¢": "cent", "€": "euro", "£": "pound", "₡": "colón", "₤": "lira", "₨": "rupee",
+    "₩": "won", "₪": "shekel", "₱": "peso", "₹": "rupee", "₺": "lira", "₿": "bitcoin",
+    # could add more currencies...
+  }
+
 - PluralForms: {
   # FIX: this needs to be flushed out
     "inch": "inches", "square inch": "square inches", "cubic inch": "cubic inches",
@@ -265,11 +273,14 @@
     "board foot": "board feet",
     "degree celsius": "degrees celsius",
     "degree fahrenheit": "degrees fahrenheit",
+    "henry": "henries",
     "hertz": "hertz",
+    "lux": "lux",
     "siemens": "siemens",
     "revolution per minute": "revolutions per minute",
     "mile per hour": "miles per hour",
     "mile per gallon": "miles per gallon",
+    "colón": "colones", "lira": "lire", "won": "won", "bitcoin": "bitcoin"
   }
 
 # Lines starting with "#" are a comment

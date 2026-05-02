@@ -96,11 +96,11 @@
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
-      then: [{pause: short}]
+      then: [pause: short]
   - T: "genom"               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [{pause: short}]
+      then: [pause: short]
   - x: "*[2]"
   - pause: short
   - T: "slut division"          # phrase("start of fraction x over y 'end over'")
@@ -196,20 +196,50 @@
           - x: "*[last()]"
           # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
 
+# - name: default
+#   tag: munder
+#   match: "."
+#   replace:
+#   - test:
+#       if: "not(IsNode(*[1], 'leaf'))"
+#       then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
+#   - x: "*[1]"
+#   - pause: short
+#   - T: "med kommentar under"      # phrase(x 'with' z below it)
+#   - pause: short
+#   - x: "*[2]"
+#   - pause: short
+#   - T: "slut kommentar"      # phrase(x with z 'below' it)
+
 - name: default
   tag: munder
   match: "."
   replace:
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
-  - x: "*[1]"
-  - pause: short
-  - T: "med kommentar under"      # phrase(x 'with' z below it)
-  - pause: short
-  - x: "*[2]"
-  - pause: short
-  - T: "slut kommentar"      # phrase(x with z 'below' it)
+  - with:
+      variables:
+      # true if the comment contains ⏟ or ︸ (also if inside mrow or surrounded by whitespace)
+      - HasBrace: "contains(normalize-space(string(*[2])), '⏟') or contains(normalize-space(string(*[2])), '︸')"
+      replace:
+      - test:
+          if: "$HasBrace"
+          then:
+            # The base is always read
+            - x: "*[1]"
+            - pause: short
+            # Read the brace (good for navigation) but no framing phrases
+            - x: "*[2]"
+          else:
+            # Frame phrase in the beginning if the base is not leaf
+            - test:
+                if: "not(IsNode(*[1], 'leaf'))"
+                then: [T: "kommenterat uttryck"]
+            - x: "*[1]"
+            - pause: short
+            - T: "med kommentar under"
+            - pause: short
+            - x: "*[2]"
+            - pause: short
+            - T: "slut kommentar"
 
 - name: diacriticals
   tag: mover
@@ -274,12 +304,15 @@
           - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'nedsänkt', 'nedsänkt')"
           - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'upphöjt', 'upphöjt')"
           replace:
-          - test: # only bother announcing if there is more than one prescript
+          - test: # SWEDISH: announce prescripts regardless of how many
               if: "count($Prescripts) > 2"
               then:
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
               - T: "vänster index"      # phrase(in this equation certain 'prescripts' apply)
+              - pause: short
+              else:
+              - T: "vänster index"
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
@@ -334,6 +367,12 @@
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
               - T: "höger index"      # phrase(this material includes several 'postscripts')
+              - pause: short
+              else:
+              - test:
+                  if: "$Prescripts"
+                  then: [T: "och"]
+              - T: "höger index"
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -443,8 +482,8 @@
   - pause: medium
   - test:
       if: self::m:mlabeledtr
-      then: [{x: "*[position()>1]"}]
-      else: {x: "*"}
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
 
 - name: default
   tag: mtd
@@ -463,10 +502,10 @@
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
-      then: {pause: short}
+      then: [pause: short]
     - else_if: count(../following-sibling::*) > 0
-      then: {pause: medium}
-      else: {pause: long}
+      then: [pause: medium]
+      else: [pause: long]
 
 
 - name: empty-box

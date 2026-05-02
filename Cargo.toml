@@ -1,64 +1,68 @@
 [package]
 name = "mathcat"
-version = "0.7.4-beta.1"
+version = "0.7.6-beta.3"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
 repository = "https://github.com/NSoiffer/MathCAT"
 homepage = "https://nsoiffer.github.io/MathCAT/"
 documentation = "https://nsoiffer.github.io/MathCAT/"
-edition = "2018"
+edition = "2024"
 exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", but then one can't run build.rs to build the zip file
 
 
 [features]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
+"tts" = [ "natural-tts" ]
 
-# FIX: temporary -- need to replace error-chain package which has been deprecated
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(has_error_description_deprecated)'] }
 
 [dependencies]
 sxd-document = "0.3"
 sxd-xpath = "0.4"
 yaml-rust = "0.4"
-lazy_static = "1.4"
+# yaml-rust = { version = "0.11", package = "yaml-rust2" }
 strum = "0.27.2"
 strum_macros = "0.27.2"
-error-chain = "0.12.4"
-regex = "1.12"
+anyhow = "1.0"
+regex = "1.10"
 dirs = "6.0"
-bitflags = "2.9.1"
-phf = { version = "0.11", features = ["macros"] }
-roman-numerals-rs = "3.1.0"
+bitflags = "2.10"
+phf = { version = "0.13", features = ["macros"] }
+roman-numerals-rs = "4.1.0"
 radix_fmt = "1.0"
 unicode-script = "0.5"
 log = "0.4"
 env_logger = "0.11.8"
 cfg-if = "1.0"
 fastrand = { version = "2.3.0" }
+clap = { version = "4.5.60", features = ["derive"] }
+html-escape = "0.2.13"
 
 [target.'cfg(target_family = "wasm")'.dependencies]
-zip = { version = "6.0", default-features = false, features = ["deflate"] }
+zip = { version = "8.2", default-features = false, features = ["deflate"] }
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-zip = { version = "6.0", default-features = false, features = ["bzip2"] }
+zip = { version = "8.2", default-features = false, features = ["bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
-
-
+natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
-error-chain = "0.12.4"
-[target.'cfg(target_family = "wasm")'.build-dependencies]
-zip = { version = "6.0", default-features = false, features = ["deflate"] }
-[target.'cfg(not(target_family = "wasm"))'.build-dependencies]
-zip = { version = "6.0", default-features = false, features = ["bzip2"] }
+# Build script needs both compression backends regardless of build host —
+# build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "mathml2text"
+path = "src/bin/mathml2text.rs"
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
 
 [profile.test]
 debug = true

@@ -1,6 +1,7 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 // The basic layout of the tests is:
 // 1. Sweep through all the SI prefixes
@@ -11,7 +12,7 @@ use crate::common::*;
 // These are broken into chunks so it is easier to see errors, when there are errors
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -39,11 +40,13 @@ fn prefix_sweep() {
         <mi intent=":unit">qg</mi>
         </math>"#;
     test("de", "SimpleSpeak", expr,
-        "quetta-gramms, komma ronna-gramms, komma yotta-gramms, komma zetta-gramms, komma exa-gramms, komma peta-gramms, komma tera-gramms, komma giga-gramms, komma mega-gramms, komma kilo-gramms, komma hekto-gramms, komma deka-gramms, komma dezi-gramms, komma zenti-gramms, komma milli-gramms, komma mikro-gramms, komma nano-gramms, komma piko-gramms, komma femto-gramms, komma atto-gramms, komma zepto-gramms, komma yocto-gramms, komma ronto-gramms, komma quecto-gramms");
+        "quetta-gramms, komma ronna-gramms, komma yotta-gramms, komma zetta-gramms, komma exa-gramms, komma peta-gramms, komma tera-gramms, komma giga-gramms, komma mega-gramms, komma kilo-gramms, komma hekto-gramms, komma deka-gramms, komma dezi-gramms, komma zenti-gramms, komma milli-gramms, komma mikro-gramms, komma nano-gramms, komma piko-gramms, komma femto-gramms, komma atto-gramms, komma zepto-gramms, komma yocto-gramms, komma ronto-gramms, komma quecto-gramms")?;
+        return Ok(());
+
 }
 
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -58,12 +61,14 @@ fn si_base() {
         <mn>1</mn><mi intent=":unit">sec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">sec</mi>
     </math>"#;
     test("de", "SimpleSpeak", expr,
-        "1 ampere, komma 2 amperes, komma 1 candela, komma 2 candelas, komma 1 kelvin, komma 2 kelvins, komma 1 kelvin, komma 2 kelvins, komma 1 gramm komma 2 gramms, komma 1 meter komma 2 meters, komma 1 mol komma 2 mols, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes");
+        "1 ampere, komma 2 amperes, komma 1 candela, komma 2 candelas, komma 1 kelvin, komma 2 kelvins, komma 1 kelvin, komma 2 kelvins, komma 1 gramm komma 2 gramms, komma 1 meter komma 2 meters, komma 1 mol komma 2 mols, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes")?;
+        return Ok(());
+
 }
 
 /*
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -76,12 +81,14 @@ fn si_base_with_prefixes() {
         <mn>1</mn><mi intent=":unit">nsec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">psec</mi>
     </math>"#;
     test("de", "SimpleSpeak", expr,
-        "1 quetta-ampere, komma, 2 ronna-amperes, komma 1 yotta-candela, komma, 2 zetta-candelas, komma 1 exa-kelvin, komma, 2 peta-kelvins, komma 1 tera-kelvin, komma, 2 giga-kelvins, komma 1 mega-gramm, komma, 2 kilo-gramms, komma 1 hekto-meter, komma, 2 deka-meters, komma 1 dezi-mol, komma, 2 zenti-mols, komma 1 milli-sekunde, komma, 2 mikro-sekundes, komma 1 nano-sekunde, komma, 2 piko-sekundes");
+        "1 quetta-ampere, komma, 2 ronna-amperes, komma 1 yotta-candela, komma, 2 zetta-candelas, komma 1 exa-kelvin, komma, 2 peta-kelvins, komma 1 tera-kelvin, komma, 2 giga-kelvins, komma 1 mega-gramm, komma, 2 kilo-gramms, komma 1 hekto-meter, komma, 2 deka-meters, komma 1 dezi-mol, komma, 2 zenti-mols, komma 1 milli-sekunde, komma, 2 mikro-sekundes, komma 1 nano-sekunde, komma, 2 piko-sekundes")?;
+        return Ok(());
+
 }
 
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -108,11 +115,13 @@ fn si_derived_1() {
                 1 joule, komma 2 joules, komma \
                 1 kattel, komma 2 kattels, komma \
                 1 lumen, komma 2 lumens, komma \
-                1 lux, komma 2 luxs");
+                1 lux, komma 2 luxs")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -139,11 +148,13 @@ fn si_derived_1_with_prefixes() {
                 1 pico-lumen, comma; 2 femto-lumens, comma; \
                 1 atto-lux, comma; 2 zepto-luxs, comma; \
                 1 milli-degree celsius; comma; 2 micro-degrees celsius; comma; \
-                1 pico-degree celsius; comma; 2 nano-degrees celsius");
+                1 pico-degree celsius; comma; 2 nano-degrees celsius")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -166,11 +177,13 @@ fn si_derived_2() {
                 1 tesla, komma 2 teslas, komma \
                 1 volt, komma 2 volts, komma \
                 1 watt, komma 2 watts, komma \
-                1 weber, komma 2 webers");
+                1 weber, komma 2 webers")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -193,12 +206,14 @@ fn si_derived_2_with_prefixes() {
                 1 deka-tesla, comma; 2 hekto-teslas, comma; \
                 1 kilo-volt, comma; 2 mega-volts, comma; \
                 1 giga-watt, comma; 2 tera-watts, comma; \
-                1 peta-weber, comma; 2 exa-webers");
+                1 peta-weber, comma; 2 exa-webers")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -231,11 +246,13 @@ fn si_accepted() {
                 1 arcsecond, comma; 2 arcseconds, komma \
                 1 bit, komma 2 bits, komma \
                 1 byte, komma 2 bytes, komma \
-                1 baud, komma 2 bauds");
+                1 baud, komma 2 bauds")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -254,11 +271,13 @@ fn si_accepted_with_prefixes() {
         <mn>1</mn><mi intent=":unit">TBd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EBd</mi>
     </math>"#;
     test("de", "SimpleSpeak", expr,
-        "1 quetta-liter, komma, 2 ronna-liters, komma 1 yotta-liter, komma, 2 zetta-liters, komma 1 exa-liter, komma, 2 peta-liters, komma 1 tera-tonne, komma, 2 giga-tonnes, komma 1 mega-dalton, komma, 2 kilo-daltons, komma 1 dezi-neper, komma, 2 zenti-nepers, komma, 1 hekto-atommasse-einheit; komma, 2 deka-atommasse-einheits; komma, 1 milli-elektronenvolt, komma, 2 mikro-elektronenvolts; komma 1 nano-radiant, komma, 2 piko-radiants, komma, 1 femto-steradiant, komma, 2 atto-steradiants, komma 1 giga-jahr, komma, 2 mega-jahrs, komma, 1 zepto-bogensekunde, komma, 2 yocto-bogensekundes; komma 1 kilo-bit, komma 2 mega-bits, komma 1 giga-byte, komma, 2 tera-bytes, komma 1 tera-baud, komma 2 exa-bauds");
+        "1 quetta-liter, komma, 2 ronna-liters, komma 1 yotta-liter, komma, 2 zetta-liters, komma 1 exa-liter, komma, 2 peta-liters, komma 1 tera-tonne, komma, 2 giga-tonnes, komma 1 mega-dalton, komma, 2 kilo-daltons, komma 1 dezi-neper, komma, 2 zenti-nepers, komma, 1 hekto-atommasse-einheit; komma, 2 deka-atommasse-einheits; komma, 1 milli-elektronenvolt, komma, 2 mikro-elektronenvolts; komma 1 nano-radiant, komma, 2 piko-radiants, komma, 1 femto-steradiant, komma, 2 atto-steradiants, komma 1 giga-jahr, komma, 2 mega-jahrs, komma, 1 zepto-bogensekunde, komma, 2 yocto-bogensekundes; komma 1 kilo-bit, komma 2 mega-bits, komma 1 giga-byte, komma, 2 tera-bytes, komma 1 tera-baud, komma 2 exa-bauds")?;
+        return Ok(());
+
 }
 
 #[test]
-fn without_prefix_time() {
+fn without_prefix_time() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -289,11 +308,13 @@ fn without_prefix_time() {
                 1 week, komma 2 weeks, komma \
                 1 week, komma 2 weeks, komma \
                 1 year, komma 2 years, komma \
-                1 year, komma 2 years");
+                1 year, komma 2 years")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -312,11 +333,13 @@ fn without_prefix_angles() {
                 1 arcminute, comma; 2 arcminutes, komma \
                 1 arcminute, comma; 2 arcminutes, komma \
                 1 arcsecond, comma; 2 arcseconds, komma \
-                1 arcsecond, comma; 2 arcseconds");
+                1 arcsecond, comma; 2 arcseconds")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -331,11 +354,13 @@ fn without_prefix_distance() {
                 1 parsec, komma 2 parsecs, komma \
                 1 angstrom, comma; 2 angstroms, komma \
                 1 angstrom, comma; 2 angstroms, komma \
-                1 fermi, komma 2 fermis");
+                1 fermi, komma 2 fermis")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -366,11 +391,13 @@ fn without_prefix_other() {
                 1 revolution per minute, comma; 2 revolutions per minute, komma \
                 1 m-h-o, komma 2 m-h-os, komma \
                 1 dyne, komma 2 dynes, komma \
-                1 erg, komma 2 ergs");
+                1 erg, komma 2 ergs")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -405,12 +432,14 @@ fn without_prefix_powers_of_2() {
                 1 pebi-byte, comma; 2 pebi-bytes, komma \
                 1 exbi-byte, comma; 2 exbi-bytes, komma \
                 1 zebi-byte, comma; 2 zebi-bytes, komma \
-                1 yobi-byte, comma; 2 yobi-bytes");
+                1 yobi-byte, comma; 2 yobi-bytes")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -421,12 +450,14 @@ fn si_other_numbers() {
                             <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
     test("de", "SimpleSpeak", expr,
         "1.0 litre, comma; 2.0 metres, comma; x milli-seconds, comma; y micro-seconds, komma \
-                deka-grams, comma; 1235 deka-newtons; comma; 2.5 micro-seconds; comma; 32.34 moles");
+                deka-grams, comma; 1235 deka-newtons; comma; 2.5 micro-seconds; comma; 32.34 moles")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -435,7 +466,9 @@ fn test_mtext_inference() {
             <mo>]</mo></math>"#;
     test("de", "SimpleSpeak", expr,
         "open bracket; 1 metric ton, comma; 2 peta-amps, komma \
-                3 pascals, comma; 4.5 milli-teslas; close bracket");
+                3 pascals, comma; 4.5 milli-teslas; close bracket")?;
+                return Ok(());
+
 }
 
 

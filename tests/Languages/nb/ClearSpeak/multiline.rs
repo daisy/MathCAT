@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
   let expr = "<math>
     <mi>f</mi>
     <mrow>
@@ -25,11 +26,12 @@ fn case_1() {
                 tilfelle 1; minus 1 if x er mindre enn 0; \
                 tilfelle 2; 0 if x er lik 0; \
                 tilfelle 3; 1 if x er større enn 0"
-    )
+    )?;
+    return Ok(());
 }
 
 #[test]
-fn equation_auto() {
+fn equation_auto() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -41,12 +43,13 @@ fn equation_auto() {
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Auto", expr,
                 "2 rader; \
                 rad 1; x pluss y er lik 7; \
-                rad 2; 2 x pluss 3 y; er lik 17");
+                rad 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 
 #[test]
-fn equation_plus_at_start() {
+fn equation_plus_at_start() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -57,11 +60,12 @@ fn equation_plus_at_start() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 rader; \
                 rad 1; x pluss y er lik 7; \
-                rad 2; 2 x, pluss 3 y, er lik 17");
+                rad 2; 2 x, pluss 3 y, er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_case() {
+fn equation_case() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -71,11 +75,12 @@ fn equation_case() {
     </math>
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Case", expr, 
-   "2 tilfeller; tilfelle 1; x pluss y er lik 7; tilfelle 2; 2 x pluss 3 y; er lik 17");
+   "2 tilfeller; tilfelle 1; x pluss y er lik 7; tilfelle 2; 2 x pluss 3 y; er lik 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_constraint() {
+fn equation_constraint() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -86,11 +91,12 @@ fn equation_constraint() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 betingelser; \
                 betingelse 1; x pluss y er lik 7; \
-                betingelse 2; 2 x pluss 3 y; er lik 17");
+                betingelse 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_equation() {
+fn equation_equation() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -101,11 +107,12 @@ fn equation_equation() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 likninger; \
                 likning 1; x pluss y er lik 7; \
-                likning 2; 2 x pluss 3 y; er lik 17");
+                likning 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_line() {
+fn equation_line() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -116,11 +123,12 @@ fn equation_line() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Line", expr, "2 rader; \
                 rad 1; x pluss y er lik 7; \
-                rad 2; 2 x pluss 3 y; er lik 17");
+                rad 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_none() {
+fn equation_none() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -130,11 +138,12 @@ fn equation_none() {
     </math>
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "None", expr,
-        "2; x pluss y er lik 7; 2 x pluss 3 y; er lik 17");
+        "2; x pluss y er lik 7; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_row() {
+fn equation_row() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -145,11 +154,12 @@ fn equation_row() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Row", expr, "2 rader; \
                 rad 1; x pluss y er lik 7; \
-                rad 2; 2 x pluss 3 y; er lik 17");
+                rad 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_step() {
+fn equation_step() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -160,18 +170,20 @@ fn equation_step() {
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "Step", expr, "2 steg; \
                 steg 1; x pluss y er lik 7; \
-                steg 2; 2 x pluss 3 y; er lik 17");
+                steg 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }
 
 #[test]
-fn continued_row() {
+fn continued_row() -> Result<()> {
   let expr = "<math>
-  <mtable intent=':system-of-equations'>
-   <mtr><mtd><mi>x</mi></mtd><mtd><mo>=</mo></mtd><mtd><mi>y</mi></mtd></mtr>
-   <mtr intent=':continued-row'><mtd/><mtd/><mtd><mrow><mo>+</mo><mn>1</mn></mrow></mtd></mtr>
-   <mtr><mtd><mi>y</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>1</mn></mtd></mtr>
-  </mtable>
-</math>";
-test("nb", "SimpleSpeak", expr,
-     "2 likninger; likning 1; x er lik y pluss 1; likning 2; y er lik 1");
+    <mtable intent=':system-of-equations'>
+    <mtr><mtd><mi>x</mi></mtd><mtd><mo>=</mo></mtd><mtd><mi>y</mi></mtd></mtr>
+    <mtr intent=':continued-row'><mtd/><mtd/><mtd><mrow><mo>+</mo><mn>1</mn></mrow></mtd></mtr>
+    <mtr><mtd><mi>y</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>1</mn></mtd></mtr>
+    </mtable>
+  </math>";
+  test("nb", "SimpleSpeak", expr,
+      "2 likninger; likning 1; x er lik y pluss 1; likning 2; y er lik 1")?;
+  return Ok(());
 }

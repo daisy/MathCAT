@@ -1,49 +1,60 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn salt() {
+fn salt() -> Result<()> {
   let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß n a, groß c l");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß n a, groß c l")?;
+  return Ok(());
+
 }
 
 #[test]
-fn water() {
+fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß o");
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "groß h, sub 2 groß o");
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "groß h, index 2, groß o");
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß o")?;
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "groß h, sub 2 groß o")?;
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "groß h, index 2, groß o")?;
+  return Ok(());
+
 }
 
 #[test]
-fn carbon() {
+fn carbon() -> Result<()> {
   let expr = "<math><mi>C</mi></math>";     // not enough to trigger recognition
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß c");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß c")?;
+  return Ok(());
+
 }
 
 #[test]
-fn sulfate() {
+fn sulfate() -> Result<()> {
   let expr = "<math><mrow><msup>
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "offene eckige klammer, groß s, groß o, sub 4; schließende eckige klammer super 2 minus");
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "offene eckige klammer, groß s, groß o, sub 4; schließende eckige klammer super 2 minus")?;
+  return Ok(());
+
 }
 
 
 /* // ignored below
 #[test]
-fn aluminum_sulfate() {
+fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß a l, 2, open groß s, groß o, 4, close 3");
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "groß a l, sub 2; open paren, groß s, groß o, sub 4; close paren sub 3");
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "groß a l, subscript 2; open paren, groß s, groß o, subscript 4; close paren subscript 3");
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß a l, 2, open groß s, groß o, 4, close 3")?;
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "groß a l, sub 2; open paren, groß s, groß o, sub 4; close paren sub 3")?;
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "groß a l, subscript 2; open paren, groß s, groß o, subscript 4; close paren subscript 3")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ethanol_bonds() {
+fn ethanol_bonds() -> Result<()> {
   let expr = "<math>
           <mrow>
               <mi>C</mi>
@@ -56,12 +67,14 @@ fn ethanol_bonds() {
               <mi>H</mi>
           </mrow>
       </math>";
-  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß c, groß h, 3 single bond groß c, groß h, 2 single bond groß o, groß h");
+  test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "groß c, groß h, 3 single bond groß c, groß h, 2 single bond groß o, groß h")?;
+
+  return Ok(());
 
 }
 
 #[test]
-fn dichlorine_hexoxide() {
+fn dichlorine_hexoxide() -> Result<()> {
   let expr = "<math><mrow>
       <msup>
         <mrow><mo>[</mo><mi>Cl</mi><msub><mi>O</mi><mn>2</mn></msub><mo>]</mo></mrow>
@@ -74,48 +87,56 @@ fn dichlorine_hexoxide() {
     </mrow></math>";
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
     expr, "open bracket, groß c l, groß o, 2, close bracket plus; \
-                          open bracket, groß c l, groß o, 4, close bracket minus");
+                          open bracket, groß c l, groß o, 4, close bracket minus")?;
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Medium")],
     expr, "open bracket, groß c l, groß o, sub 2; close bracket super plus; \
-                          open bracket, groß c l, groß o, sub 4; close bracket super minus");
+                          open bracket, groß c l, groß o, sub 4; close bracket super minus")?;
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")],
     expr, "open bracket, groß c l, groß o, subscript 2; close bracket superscript plus; \
-                          open bracket, groß c l, groß o, subscript 4; close bracket superscript minus");
+                          open bracket, groß c l, groß o, subscript 4; close bracket superscript minus")?;
+                          return Ok(());
+
 }
 
 
 #[test]
-fn ethylene_with_bond() {
+fn ethylene_with_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß c, double bond groß c, groß h, 2");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß c, double bond groß c, groß h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ferric_chloride_aq() {
+fn ferric_chloride_aq() -> Result<()> {
   let expr = "<math><mrow>
         <mi>Fe</mi>
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß f e, groß c l, 3 aqueous");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß f e, groß c l, 3 aqueous")?;
+  return Ok(());
+
   }
 
 #[test]
-fn ethylene_with_colon_bond() {
+fn ethylene_with_colon_bond() -> Result<()> {
   let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß c, double bond groß c, groß h, 2");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß h, 2 groß c, double bond groß c, groß h, 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn beta_decay() {
+fn beta_decay() -> Result<()> {
   let expr = "<math>
       <mmultiscripts>
         <mtext>C</mtext>
@@ -142,15 +163,17 @@ fn beta_decay() {
       </mmultiscripts>
     </math>";
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, groß c; forms, 14, 7, groß n; plus 0, negative 1, e");
+      "14, 6, groß c; forms, 14, 7, groß n; plus 0, negative 1, e")?;
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, groß c; reacts to form; super 14, sub 7, groß n; plus super 0, sub negative 1, e");
+      "super 14, sub 6, groß c; reacts to form; super 14, sub 7, groß n; plus super 0, sub negative 1, e")?;
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, groß c; reacts to form; superscript 14, subscript 7, groß n; plus, superscript 0, subscript negative 1, e");
+      "superscript 14, subscript 6, groß c; reacts to form; superscript 14, subscript 7, groß n; plus, superscript 0, subscript negative 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn mhchem_beta_decay() {
+fn mhchem_beta_decay() -> Result<()> {
   let expr = "<math>
       <mrow>
         <msubsup>
@@ -406,15 +429,17 @@ fn mhchem_beta_decay() {
       </mrow>
     </math>";
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, groß c; forms, 14, 7, groß n; plus 0, negative 1, e");
+      "14, 6, groß c; forms, 14, 7, groß n; plus 0, negative 1, e")?;
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, groß c; reacts to form; super 14, sub 7, groß n; plus super 0, sub negative 1, e");
+      "super 14, sub 6, groß c; reacts to form; super 14, sub 7, groß n; plus super 0, sub negative 1, e")?;
     test_prefs("de", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, groß c; reacts to form; superscript 14, subscript 7, groß n; plus, superscript 0, subscript negative 1, e");
+      "superscript 14, subscript 6, groß c; reacts to form; superscript 14, subscript 7, groß n; plus, superscript 0, subscript negative 1, e")?;
+      return Ok(());
+
 }
 
 #[test]
-fn hcl_na_yields() {
+fn hcl_na_yields() -> Result<()> {
     let expr = "<math> <mrow>
       <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
       <mo>&#x2192;</mo>
@@ -423,11 +448,13 @@ fn hcl_na_yields() {
       </mrow>
     </math>";
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, groß h, groß c l; plus 2 groß n a; reacts to form; 2, groß n a, groß c l; plus groß h, subscript 2");
+        "2, groß h, groß c l; plus 2 groß n a; reacts to form; 2, groß n a, groß c l; plus groß h, subscript 2")?;
+        return Ok(());
+
 }
 
 #[test]
-fn mhchem_so4_2plus() {
+fn mhchem_so4_2plus() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mrow>
@@ -468,14 +495,16 @@ fn mhchem_so4_2plus() {
       </msup>
     </mrow>
   </math>";
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß s; groß o, 4, 2 plus");
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "groß s; groß o, sub 4, super 2 plus");
-  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "groß s; groß o, subscript 4, superscript 2 plus");
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "groß s; groß o, 4, 2 plus")?;
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "groß s; groß o, sub 4, super 2 plus")?;
+  test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "groß s; groß o, subscript 4, superscript 2 plus")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn mhchem_hcl_aq_etc() {
+fn mhchem_hcl_aq_etc() -> Result<()> {
   let expr = "<math>
     <mrow>
       <mn>2</mn>
@@ -558,13 +587,15 @@ fn mhchem_hcl_aq_etc() {
     </mrow>
   </math>";
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, groß h, groß c l, aqueous; plus, 2, groß n a, solid; forms; 2, groß n a, groß c l, aqueous; plus, groß h, 2, gas");
+      expr, "2, groß h, groß c l, aqueous; plus, 2, groß n a, solid; forms; 2, groß n a, groß c l, aqueous; plus, groß h, 2, gas")?;
+
+      return Ok(());
 
 }
 
 
 #[test]
-fn mhchem_barbed_equilibrium() {
+fn mhchem_barbed_equilibrium() -> Result<()> {
   let expr = "<math>
     <mrow data-mjx-texclass='ORD' data-chem-equation='14'>
       <mrow data-changed='added' data-chem-equation='3'>
@@ -624,13 +655,15 @@ fn mhchem_barbed_equilibrium() {
     </mrow>
   </math>";
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "groß h, 2, gas; plus; groß i, 2, gas; is in equilibrium with, 2, groß h, groß i, gas");
+      expr, "groß h, 2, gas; plus; groß i, 2, gas; is in equilibrium with, 2, groß h, groß i, gas")?;
+      return Ok(());
+
 }
 
 
 
 #[test]
-fn mhchem_roman_in_superscript() {
+fn mhchem_roman_in_superscript() -> Result<()> {
       let expr = "<math>
       <mrow>
         <mmultiscripts>
@@ -653,12 +686,14 @@ fn mhchem_roman_in_superscript() {
       </mrow>
     </math>";
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "groß f e, 2; groß f e, 3; groß o, 4");
+      expr, "groß f e, 2; groß f e, 3; groß o, 4")?;
+      return Ok(());
+
 }
 
 
 #[test]
-fn dropped_msubsup_bug_358() {
+fn dropped_msubsup_bug_358() -> Result<()> {
       let expr = r#"<math>
           <mrow class="MJX-TeXAtom-ORD">
               <mrow class="MJX-TeXAtom-ORD">
@@ -728,7 +763,9 @@ fn dropped_msubsup_bug_358() {
           </mrow>
       </math>"#;
   test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, groß s, groß o, 2; plus; groß o, 2 is in equilibrium with, 2, groß s, groß o, 3");
+      expr, "2, groß s, groß o, 2; plus; groß o, 2 is in equilibrium with, 2, groß s, groß o, 3")?;
+      return Ok(());
+
 }
 
 

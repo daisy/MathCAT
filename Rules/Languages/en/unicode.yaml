@@ -224,12 +224,18 @@
         else: [t: "times"]
  - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "times"]
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then: [t: "times"]
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [t: "by"]
+          else: [t: "cross"]
         else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "by"]
-            else: [t: "cross"]
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [t: "cross"]
+            else: [t: "times"]
+
  - "÷": [t: "divided by"]                          # 0xf7
  - "̀": [t: "grave accent embellishment"]          # 0x300
  - "́": [t: "acute accent embellishment"]          # 0x301
@@ -349,16 +355,16 @@
     - t: "double-struck italic"
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
- - "←": [t: "leftwards arrow"]                     # 0x2190
- - "↑": [t: "upwards arrow"]                       # 0x2191
+ - "←": [t: "left arrow"]                     # 0x2190
+ - "↑": [t: "up arrow"]                       # 0x2191
  - "→":                                          # 0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [t: "approaches"]
         else: [t: "right arrow"]
 
- - "↓": [t: "downwards arrow"]                     # 0x2193
- - "⇒": [t: "rightwards double arrow"]             # 0x21d2
+ - "↓": [t: "down arrow"]                     # 0x2193
+ - "⇒": [t: "right double arrow"]             # 0x21d2
  - "∀": [t: "for all"]                             # 0x2200
  - "∂":                                          # 0x2202
      - test: 
@@ -371,7 +377,7 @@
  - "∆":                                          # 0x2206
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "laplacian of"
  - "∈":                                          # 0x2208
      - test:
@@ -465,7 +471,7 @@
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "square root of"
  - "∝":                                          # 0x221d
      - test: 
@@ -528,7 +534,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "is"]
-     - t:  "less than or equal to"
+     - t: "less than or equal to"
  - "≥":                                          # 0x2265
      - test: 
          if: "$Verbosity!='Terse'"

@@ -34,7 +34,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' square root of 25)
+      then: [ot: "the"]      # phrase('the' square root of 25)
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
@@ -65,7 +65,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase(6 is 'the' square root of 36)
+      then: [ot: "the"]      # phrase(6 is 'the' square root of 36)
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
@@ -262,7 +262,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' third power of 2)
+      then: [ot: "the"]      # phrase('the' third power of 2)
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
@@ -478,7 +478,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' absolute value of 25)
+      then: [ot: "the"]      # phrase('the' absolute value of 25)
   - x: "$WordToSay"
   - t: "of"      # phrase(the absolute value 'of' 25)
   - x: "*[1]"
@@ -611,7 +611,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [t: "the"]      # phrase('the' square root of 25)
+      then: [ot: "the"]      # phrase('the' square root of 25)
   - test:
     - if: ".='log'"
       then: [t: "log"]

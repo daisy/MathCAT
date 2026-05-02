@@ -6,16 +6,16 @@
 //! There is no escaping some implementation details.
 //! Because these definitions are stored in global variables, the variables need to be protected
 //!   in some way so they can be written at runtime when the files are read.
-//!   This is done by putting them in side of a lock (`thread_local`).
+//!   This is done by putting them inside of a lock (`thread_local`).
 //!
-//! Furthermore, it was necessary to use use `RefCell` and `Rc` to deal with interior mutability.
+//! Furthermore, it was necessary to use `RefCell` and `Rc` to deal with interior mutability.
 //! All of this means that a lock needs to be obtained _and_ the contents borrowed to access a definition.
 //!
 //! To minimize the global variable footprint, all of the definitions are put inside of a single global variable [`DEFINITIONS`].
 //!
-//! //! Note: some of the variable are `vec`s and some are `hashset`s.
+//! //! Note: some of the variables are `vec`s and some are `hashset`s.
 //! Numbers are typically vectors so that indexing a digit is easy.
-//! Others such a `functions_names` are a hashset because you just want to know if an `mi` is a known name or not.
+//! Others such as `functions_names` are a hashset because you just want to know if an `mi` is a known name or not.
 //! The functions `as_vec` and `as_hashset` should be used on the appropriate variable.
 //! ## Names
 //! The names of "variables" in the definition files use camel case (e.g., "FunctionNames"). In the code, to fit with rust
@@ -24,7 +24,6 @@
 //! See the struct [`Definitions`] for the variables that are read in.
 #![allow(clippy::needless_return)]
 
-extern crate yaml_rust;
 use yaml_rust::yaml::Hash;
 use yaml_rust::Yaml;
 use crate::errors::*;
@@ -143,7 +142,7 @@ pub fn read_definitions_file(use_speech_defs: bool) -> Result<Vec<PathBuf>> {
     let definitions = if use_speech_defs {&SPEECH_DEFINITIONS} else {&BRAILLE_DEFINITIONS};
     definitions.with( |defs| defs.borrow_mut().name_to_var_mapping.clear() );
     let mut new_files = vec![file_path.to_path_buf()];
-    let mut files_read = read_one_definitions_file(use_speech_defs, file_path).chain_err(|| format!("in file '{}", file_path.to_string_lossy()))?;
+    let mut files_read = read_one_definitions_file(use_speech_defs, file_path).with_context(|| format!("in file '{}", file_path.to_string_lossy()))?;
     new_files.append(&mut files_read);
 
     // merge the contents of `TrigFunctions` into a set that contains all the function names (from `AdditionalFunctionNames`).
@@ -186,7 +185,7 @@ use crate::speech::*;
 fn read_one_definitions_file(use_speech_defs: bool, path: &Path) -> Result<Vec<PathBuf>> {
     // read in the file contents   
     let definition_file_contents = read_to_string_shim(path)
-            .chain_err(|| format!("trying to read {}", path.to_str().unwrap()))?;
+            .with_context(|| format!("trying to read {}", path.to_str().unwrap()))?;
 
     // callback to do the work of building up the defined vectors/hashmaps (in 'build_values') from YAML
     let defs_build_fn = |variable_def_list: &Yaml| {
@@ -194,9 +193,9 @@ fn read_one_definitions_file(use_speech_defs: bool, path: &Path) -> Result<Vec<P
         // debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list));
         let mut files_read = vec![path.to_path_buf()];
         let vec = crate::speech::as_vec_checked(variable_def_list)
-                    .chain_err(||format!("in file {:?}", path.to_str()))?;
+                    .with_context(||format!("in file {:?}", path.to_str()))?;
         for variable_def in vec {
-            if let Some(mut added_files) = build_values(variable_def, use_speech_defs, path).chain_err(||format!("in file {:?}", path.to_str()))? {
+            if let Some(mut added_files) = build_values(variable_def, use_speech_defs, path).with_context(||format!("in file {:?}", path.to_str()))? {
                 files_read.append(&mut added_files);
             }
         }
@@ -205,7 +204,7 @@ fn read_one_definitions_file(use_speech_defs: bool, path: &Path) -> Result<Vec<P
 
     // Convert the file contents to YAML and call the callback
     return crate::speech::compile_rule(&definition_file_contents, defs_build_fn)
-        .chain_err(|| format!("In file '{}'", path.to_str().unwrap()));
+        .with_context(|| format!("In file '{}'", path.to_str().unwrap()));
 }
 
 /// Do the work of converting a single YAML def into the vec/hashset/hashmap
@@ -220,12 +219,12 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         bail!("Should only be one definition rule: {}", yaml_to_type(definition));
     }
     let (key, value) = dictionary.iter().next().unwrap();
-    let def_name = key.as_str().ok_or_else(|| format!("definition list name '{}' is not a string", yaml_to_type(key)))?;
+    let def_name = key.as_str().ok_or_else(|| anyhow!("definition list name '{}' is not a string", yaml_to_type(key)))?;
     if def_name == "include" {
         let do_include_fn = |new_file: &Path| {
             read_one_definitions_file(use_speech_defs, new_file)
         };
-        let include_file_name = value.as_str().ok_or_else(|| format!("definition list include name '{}' is not a string", yaml_to_type(value)))?;
+        let include_file_name = value.as_str().ok_or_else(|| anyhow!("definition list include name '{}' is not a string", yaml_to_type(value)))?;
         return Ok( Some(crate::speech::process_include(path, include_file_name, do_include_fn)?) );
     }
 
@@ -237,13 +236,13 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         //     Some(vec) => {
         //         result = Contains::Set( Rc::new( RefCell::new( get_set_values(vec)? ) ) );            },
         //     None => {
-        //         let dict = value.as_hash().ok_or_else(|| format!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
+        //         let dict = value.as_hash().ok_or_else(|| anyhow!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
         //         result = Contains::Map( Rc::new( RefCell::new( get_map_values(dict)
         //                     .chain_err(||format!("while reading value '{}'", def_name))? ) ) );
 
         //     },
         // }
-        let dict = value.as_hash().ok_or_else(|| format!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
+        let dict = value.as_hash().ok_or_else(|| anyhow!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
         if dict.is_empty() {
             result = Contains::Set( Rc::new( RefCell::new( HashSet::with_capacity(0) ) ) );
         } else {
@@ -251,16 +250,16 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
             let (_, entry_value) = dict.iter().next().unwrap();
             if entry_value.is_null() {
                 result = Contains::Set( Rc::new( RefCell::new( get_set_values(dict)
-                            .chain_err(||format!("while reading value '{def_name}'"))? ) ) );
+                            .with_context(||format!("while reading value '{def_name}'"))? ) ) );
             } else {
                 // peak and see if this is a set or a map
                 let (_, entry_value) = dict.iter().next().unwrap();
                 if entry_value.is_null() {
                     result = Contains::Set( Rc::new( RefCell::new( get_set_values(dict)
-                                .chain_err(||format!("while reading value '{def_name}'"))? ) ) );
+                                .with_context(||format!("while reading value '{def_name}'"))? ) ) );
                 } else {
                     result = Contains::Map( Rc::new( RefCell::new( get_map_values(dict)
-                                .chain_err(||format!("while reading value '{def_name}'"))? ) ) );
+                                .with_context(||format!("while reading value '{def_name}'"))? ) ) );
                 }
             }
         }
@@ -277,7 +276,7 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         let mut result = Vec::with_capacity(values.len());
         for yaml_value in values {
             let value = yaml_value.as_str()
-                .ok_or_else(|| format!("list entry '{}' is not a string", yaml_to_type(yaml_value)))?
+                .ok_or_else(|| anyhow!("list entry '{}' is not a string", yaml_to_type(yaml_value)))?
                 .to_string();
             result.push(value);
         }
@@ -288,7 +287,7 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         let mut result = HashSet::with_capacity(2*values.len());
         for (key, value) in values {
             let key = key.as_str()
-                .ok_or_else(|| format!("list entry '{}' is not a string", yaml_to_type(key)))?
+                .ok_or_else(|| anyhow!("list entry '{}' is not a string", yaml_to_type(key)))?
                 .to_string();
             if let Yaml::Null = value {
             } else {
@@ -303,10 +302,10 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         let mut result = HashMap::with_capacity(2*values.len());
         for (key, value) in values {
             let key = key.as_str()
-                .ok_or_else(|| format!("list entry '{}' is not a string", yaml_to_type(key)))?
+                .ok_or_else(|| anyhow!("list entry '{}' is not a string", yaml_to_type(key)))?
                 .to_string();
             let value = value.as_str()
-                .ok_or_else(|| format!("list entry '{}' is not a string", yaml_to_type(value)))?
+                .ok_or_else(|| anyhow!("list entry '{}' is not a string", yaml_to_type(value)))?
                 .to_string();
             result.insert(key, value);
         }
@@ -327,7 +326,7 @@ mod tests {
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
                 if let Err(e) = build_values(variable_def, true, Path::new("")) {
-                    bail!("{}", crate::interface::errors_to_string(&e.chain_err(||format!("in file {:?}", numbers))));
+                    bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", numbers))));
                 }
             }
             return Ok(vec![]);
@@ -353,7 +352,7 @@ mod tests {
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
                 if let Err(e) = build_values(variable_def, true, Path::new("")) {
-                    bail!("{}", crate::interface::errors_to_string(&e.chain_err(||format!("in file {:?}", likely_function_names))));
+                    bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", likely_function_names))));
                 }
             }
             return Ok(vec![]);
@@ -378,7 +377,7 @@ mod tests {
             //debug!("variable_def_list {} is\n{}", yaml_to_type(variable_def_list), yaml_to_string(variable_def_list, 0));
             for variable_def in variable_def_list.as_vec().unwrap() {
                 if let Err(e) = build_values(variable_def, true, Path::new("")) {
-                    bail!("{}", crate::interface::errors_to_string(&e.chain_err(||format!("in file {:?}", units))));
+                    bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", units))));
                 }
             }
             return Ok(vec![]);

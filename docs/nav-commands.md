@@ -1,3 +1,6 @@
+---
+layout: default
+---
 # MathCAT Navigation Commands and their Key Bindings
 
 There are two modes, each of which can set:
@@ -36,7 +39,7 @@ Note: while navigating an expression, "control+c" copies the math content of the
    </td>
    <td valign=top style='border:solid 1.0pt;border-left:none;
    padding:0in 5.4pt 0in 5.4pt'>
-   <b>+Cntrl+Shift</b>
+   <b>+Ctrl+Shift</b>
    </td>
   </tr>
  </thead>
@@ -301,7 +304,7 @@ Note: while navigating an expression, "control+c" copies the math content of the
 
 ## Navigation Modes
 
-MathCAT supports three different navigation modes: enhanced, simple, and character. The first two modes of navigation follow the semantics of what was read for the entire expression except if LiteralSpeech is selected. For example $|x+y| > 0$ will not read the vertical lines that are used for the absolute value notation, but instead will say "absolute value". Zooming in will move directly saying "x plus y". In contrast, character mode will read this as "vertical line", "x", "plus", "y" "vertical line", "is greater than", "zero" as you move through the expression.
+MathCAT supports three different navigation modes: enhanced, simple, and character. The first two modes of navigation follow the semantics of what was read for the entire expression except if LiteralSpeech is selected. For example $\vert x+y \rvert > 0$ will not read the vertical lines that are used for the absolute value notation, but instead will say "absolute value". Zooming in will move directly saying "x plus y". In contrast, character mode will read this as "vertical line", "x", "plus", "y" "vertical line", "is greater than", "zero" as you move through the expression.
 
 * _Enhanced mode_: navigation is by mathematically meaningful pieces (operators, delimiters, and operands)
 * _Simple mode_: this moves by words except when you get to a
@@ -319,7 +322,7 @@ MathCAT supports three different navigation modes: enhanced, simple, and charact
 ## Typical Use
 
 Typically, you will start at the first term of an expression and move right as needed.
-You might move up and down levels if needed. This done with the arrow keys.
+You might move up and down levels if needed. This is done with the arrow keys.
 `alt+ctrl+arrow` is used to move around tabular entries.
 
 <i>Backspace</i> will take you back to where you were, which

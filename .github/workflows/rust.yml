@@ -1,10 +1,6 @@
 name: Rust
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 
 env:
   CARGO_TERM_COLOR: always
@@ -56,8 +52,11 @@ jobs:
   pre-release:
     name: Pre Release
     continue-on-error: false
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # otherwise, job fails on pull requests, as GITHUB_TOKEN is not available
     needs: [zip-rules]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     # download the previous build artifacts and put them in their proper places
     - name: download Rules.zip
