@@ -49,10 +49,9 @@ natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
-[target.'cfg(target_family = "wasm")'.build-dependencies]
-zip = { version = "8.2", default-features = false, features = ["deflate"] }
-[target.'cfg(not(target_family = "wasm"))'.build-dependencies]
-zip = { version = "8.2", default-features = false, features = ["bzip2"] }
+# Build script needs both compression backends regardless of build host —
+# build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
 [lib]
 name = "libmathcat"
@@ -62,6 +61,8 @@ crate-type = ["rlib", "cdylib"]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
 
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
 
 [profile.test]
 debug = true

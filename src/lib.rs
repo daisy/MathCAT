@@ -1,3 +1,4 @@
+#![cfg_attr(coverage, feature(coverage_attribute))]
 #![allow(clippy::needless_return)]
 
 //! A library for generating speech and braille from MathML
