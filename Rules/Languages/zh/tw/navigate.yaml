@@ -1620,14 +1620,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - T: "符號"                                                # phrase(a mathematical 'character')
+      - T: "字元"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - T: "簡單的"                                                   # phrase(a 'simple' way to do something)
+      - T: "簡單"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - T: "增強的"                                                 # phrase(an 'enhanced' way to do something)
+      - T: "增強"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
   - T: "模式"                                                         # phrase(a simple 'mode' of use)
   - pause: long
@@ -1645,14 +1645,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - T: "簡單的"                                                 # phrase(an 'simple' way to do something)
+      - T: "簡單"                                                 # phrase(an 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - T: "增強的"                                               # phrase(an 'enhanced' way to do something)
+      - T: "增強"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - T: "符號"                                              # phrase(a mathematical 'character')
+      - T: "字元"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
   - T: "模式"                                                       # phrase(a simple 'mode' of use)
   - pause: long
