@@ -590,23 +590,22 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             // Speak/Overview of where we landed (if we are supposed to speak it) -- use intent, not nav_intent
             // Note: NavMode might have changed, so we need to recheck the mode to see if we use LiteralSpeak
             let literal_speak = nav_state.mode == "Character";
-            let node_speech = match speak(mathml, intent, &nav_position, literal_speak, use_read_rules) {
+            let node_speech_result = speak(mathml, intent, &nav_position, literal_speak, use_read_rules);
+            remove_literal_property(mathml, add_literal, properties);
+            let node_speech = match node_speech_result {
                 Ok(speech) => speech,
                 Err(e) => {
-                    remove_literal_property(mathml, add_literal, properties);
                     if e.to_string() == crate::speech::NAV_NODE_SPEECH_NOT_FOUND {
                         bail!("Internal error: With {}/{} in {} mode, can't {} from expression with id '{}' inside:\n{}",
                               rules.pref_manager.as_ref().borrow().pref_to_string("Language"),
                               rules.pref_manager.as_ref().borrow().pref_to_string("SpeechStyle"),
                               &nav_state.mode, nav_command, &nav_position.current_node, mml_to_string(if literal_speak {mathml} else {intent}));
-                    } else {
-                        return Err(e);
                     }
-                },
+                    return Err(e);
+                }
             };
-            remove_literal_property(mathml, add_literal, properties);
 
-            // debug!("node_speech: '{}'", node_speech);
+            // debug!("node_speech: '{}', speech: '{}'\n", node_speech, speech);
             if node_speech.is_empty() {
                 // try again in loop
                 return Ok( (speech, false));
@@ -1004,8 +1003,10 @@ mod tests {
         NAVIGATION_STATE.with(|nav_stack| {
             let (start_id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
             match do_navigate_command_string(mathml, command) {
-                Err(e) => panic!("\nStarting at '{}', '{} failed.\n{}",
-                                        start_id, command, &crate::interface::errors_to_string(&e)),
+                Err(e) => {
+                    panic!("\nStarting at '{}', '{} failed.\n{}",
+                                        start_id, command, &crate::interface::errors_to_string(&e))
+                },
                 Ok(nav_speech) => {
                     let nav_speech = nav_speech.trim_end_matches(&[' ', ',', ';']);
                     // debug!("Full speech: {}", nav_speech);
@@ -1317,7 +1318,6 @@ mod tests {
     
     #[test]
     fn move_to_start() -> Result<()> {
-        init_logger();
         let mathml_str = "<math id='math'><mfrac id='mfrac'>
                 <mrow id='num'><msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup><mo id='factorial'>!</mo></mrow>
                 <mi id='denom'>d</mi>

@@ -25,9 +25,13 @@ pub fn abs_rules_dir_path() -> String {
     if #[cfg(feature = "include-zip")] {
           "Rules".to_string()
     } else {
-        return std::env::current_exe().unwrap().parent().unwrap()
-                    .join("../../../Rules")
-                    .to_str().unwrap().to_string();
+        // Package root (works for `cargo test` and `cargo llvm-cov`, which uses
+        // target/llvm-cov-target/... so relative paths from current_exe() break).
+        return std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("Rules")
+            .to_str()
+            .expect("CARGO_MANIFEST_DIR and Rules path must be UTF-8")
+            .to_string();
         }
     }
 }

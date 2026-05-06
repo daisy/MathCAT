@@ -676,7 +676,7 @@
  - "∁":                                          # 0x2201
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "complement of"
  - "∂":                                          # 0x2202
      - test: 
@@ -770,17 +770,17 @@
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "square root of"
  - "∛":                                          # 0x221b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "cube root of"
  - "∜":                                          # 0x221c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "fourth root of"
  - "∝":                                          # 0x221d
      - test: 
@@ -893,7 +893,7 @@
  - "≏":                                          # 0x224f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "difference between"
  - "≐": [t: "approaches the limit"]                # 0x2250
  - "≑":                                          # 0x2251
@@ -1227,17 +1227,17 @@
  - "⋒":                                          # 0x22d2
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "double intersection of"
  - "⋓":                                          # 0x22d3
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "double union of"
  - "⋔":                                          # 0x22d4
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "proper intersection of"
  - "⋕":                                          # 0x22d5
      - test: 

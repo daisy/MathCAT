@@ -21,6 +21,14 @@ class TestHasAuditIgnore:
         """Ensure detects audit ignore comment."""
         assert has_audit_ignore("- name: foo\n  # audit-ignore\n  tag: bar")
 
+    def test_detects_audit_ignore_with_extra_spaces(self):
+        """Ensure detects audit ignore when the comment has extra spaces."""
+        assert has_audit_ignore("- name: foo\n  #    audit-ignore\n  tag: bar")
+
+    def test_detects_audit_ignore_with_tab_after_hash(self):
+        """Ensure detects audit ignore when the comment uses a tab after the hash."""
+        assert has_audit_ignore("- name: foo\n  #\taudit-ignore\n  tag: bar")
+
     def test_detects_inline_audit_ignore(self):
         """Ensure detects inline audit ignore."""
         assert has_audit_ignore("- name: foo  # audit-ignore")

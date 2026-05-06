@@ -734,6 +734,13 @@ impl PreferenceManager {
             panic!("Internal error: set_string_pref called on invalid PreferenceManager -- error message\n{}", &self.error);
         };
 
+        // verify language, braille, and SpeechStyle because these are used as access into the file system
+        // should be an ascii string with only letters, dashes, and underscores
+        if matches!(key, "Language" | "BrailleCode" | "SpeechStyle") &&
+           !value.chars().all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '-')) {
+            bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
+        }
+        
         // don't do an update if the value hasn't changed
         let mut is_user_pref = true;
         if let Some(pref_value) = self.api_prefs.prefs.get(key) {
@@ -1149,6 +1156,17 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             let pref_manager = pref_manager.borrow_mut();
             let merged_prefs = pref_manager.merge_prefs();
             assert_eq!(merged_prefs.get("NavVerbosity").unwrap().as_str().unwrap(), "Terse");
+        });
+    }
+
+    #[test]
+    fn test_illegal_pref_values() {
+        PREF_MANAGER.with(|pref_manager| {
+            let mut pref_manager = pref_manager.borrow_mut();
+            pref_manager.initialize(abs_rules_dir_path()).unwrap();
+            assert!(pref_manager.set_string_pref("Language", "../../../my/path").is_err());
+            assert!(pref_manager.set_string_pref("BrailleCode", "C:\\my\\path").is_err());
+            assert!(pref_manager.set_string_pref("SpeechStyle", "/my/path").is_err());
         });
     }
 

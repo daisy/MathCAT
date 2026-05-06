@@ -61,7 +61,7 @@ fn mroot_simple_pos_end_with_neg_root() -> Result<()> {
 
                 </math>";
     test_ClearSpeak("en", "ClearSpeak_Roots", "PosNegSqRoot", expr, 
-    "the negative cube root of x; minus the positive square root of x")?;
+    "the negative cube root of x; minus, the positive square root of x")?;
     return Ok(());
 
 }
@@ -158,6 +158,14 @@ fn simple_fraction_power() -> Result<()> {
                     </mroot>
                 </math>";
     test("en", "ClearSpeak", expr, "the 1 third root of x")?;
+    return Ok(());
+
+}
+
+#[test]
+fn no_double_the_532() -> Result<()> {
+    let expr = "<math><mroot><msqrt><mn>42</mn></msqrt><mn>3</mn></mroot></math>";
+    test("en", "ClearSpeak", expr, "the cube root of the square root of 42")?;
     return Ok(());
 
 }
