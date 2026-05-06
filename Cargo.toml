@@ -53,6 +53,9 @@ bitflags = "2.6"
 # build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
 zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
+[dev-dependencies]
+tempfile = "3.23"
+
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
