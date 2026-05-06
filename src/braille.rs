@@ -2143,6 +2143,7 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
                                                 .replace("}P⠂", "}⠠P⠂");   // bottom of p13 -- '},'
     debug!(" After dot6 punc:    '{}'", &result);
     let result = polish_remove_unneeded_mode_changes(&result);
+    eprintln!("AFTER mode changes: {:?}", &result);
     debug!(" After mode changes: '{}'", &result);
     let result = result.replace("nN", "")
                                .replace("BI", "B")
@@ -2231,6 +2232,7 @@ impl Projectors {
 }
 
 fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
+    eprintln!("POLISH RAW: {:?}", raw_braille);
     // The basic idea is that we stay in a mode until we encounter a character that requires a mode change
     // Some entries:
     //   lx  -- letter mode, followed by a letter
@@ -2432,7 +2434,9 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                     mode = BrailleMode::None;
                 }
                 unit_mode = false;
-                debug!("@{i}, ch=W, projector/frac depths={projector_depth}/{fraction_depth}, bracket_nesting_depth={bracket_nesting_depth}, use_long={use_long_fraction_form}");
+                eprintln!("W@{i} ch={:?} proj={projector_depth} frac={fraction_depth} bn={bracket_nesting_depth} use_long={use_long_fraction_form} next={:?}",
+                    ch,
+                    if i+1 < chars.len() { chars[i+1] } else { '?' });
                 if !use_long_fraction_form && fraction_depth == 1 && i+1 < chars.len() && chars[i+1] == '/' {
                     // drop whitespace before '/' (nothing to do)
                 } else if !use_long_fraction_form && i+1 < chars.len() && chars[i+1] == '>' {
