@@ -42,12 +42,12 @@
         then_test:
             if: "$Verbosity = 'Terse'"
             then: [t: "bang"]                   	#  0x21	(DeepL translation)
-            else: [t: "factorielle"]            	#  0x21	(en: 'exclamation point')
+            else: [t: "point d'exclamation"]        #  0x21	(en: 'exclamation point')
         else: [t: "factorielle"]                	#  0x21	(en: 'factorial')
           
- - "\"": [t: "barre oblique inversée"]          	#  0x22	(en: 'quotation mark')
+ - "\"": [t: "guillemet"]          	                #  0x22	(en: 'quotation mark')
  - "#": [t: "dièse"]                            	#  0x23	(en: 'number')
- - "$": [t: "dollars"]                          	#  0x24
+ - "$": [t: "dollar"]                          	    #  0x24
  - "%": [t: "pourcent"]                         	#  0x25	(en: 'percent')
  - "&": [t: "esperluette"]                      	#  0x26	(en: 'ampersand')
  - "'": [t: "apostrophe"]                       	#  0x27	(SRE: 'prime')
@@ -71,8 +71,8 @@
  - "*":                                         	#  0x2a
     test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
-        then: [t: "étoile"]                     	#  0x2a	(en: 'star', DeepL translation)
-        else: [t: "astérisque"]                 	#  0x2a	(en: 'times')
+        then: [t: "astérisque"]                     #  0x2a	(en: 'star', DeepL translation)
+        else: [t: "fois"]                 	        #  0x2a	(en: 'times')
  - "+": [t: "plus"]                             	#  0x2b	(MathPlayer: 'pluce')
  - ",":                                         	#  0x2c
     # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
@@ -86,7 +86,7 @@
                # except if expression starts with '…'
             - "../*[1][.='…'] "
         then:
-        - T: "comma"                            	#  	(en: 'comma', google translation)
+        - t: "virgule"                            	#  	(en: 'comma')
         - test:
             if: "$Verbosity != Terse"
             then: [pause: short]
@@ -102,7 +102,7 @@
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then: [t: "barre oblique"]              	#  0x2f	(en: 'slash', DeepL translation)
-        else: [t: "barre oblique"]              	#  0x2f	(en: 'divided by')
+        else: [t: "divisé par"]              	    #  0x2f	(en: 'divided by')
 
  - ":": [t: "deux points"]                      	#  0x3a	(en: 'colon')
  - ";": [t: "point virgule"]                    	#  0x3b	(en: 'semicolon')
@@ -127,19 +127,19 @@
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "parenthèse ouverte"]         	# 	(en: 'open bracket', DeepL translation)
+        then: [t: "crochet ouvrant"]         	    # 	(en: 'open bracket')
         else: [t: "crochet gauche"]             	# 	(en: 'left bracket', MathPlayer: 'crochet ouvrant', DeepL: 'parenthèse gauche')
  - "\\": [t: "crochet gauche"]                  	#  0x5c	(en: 'back slash', MathPlayer: 'crochet ouvrant', DeepL: 'barre oblique arrière')
  - "]":                                         	#  0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "parenthèse fermée"]          	# 	(en: 'close bracket', DeepL translation)
+        then: [t: "crochet fermant"]          	    # 	(en: 'close bracket')
         else: [t: "crochet droit"]              	# 	(en: 'right bracket', MathPlayer: 'crochet fermant', DeepL: 'parenthèse droite')
  - "^":                                         	#  0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
-        then: [t: "chapeau"]                    	# 	(en: 'hat', DeepL translation)
-        else: [t: "circonflexe"]                	# 	(en: 'caret')
+        then: [t: "accent circonflexe"]             # 	(en: 'hat')
+        else: [t: "accent circonflexe"]             # 	(en: 'caret')
  - "_": [t: "tiret bas"]                        	#  0x5f	(en: 'under bar')
  - "`": [t: "accent grave"]                     	#  0x60	(en: 'grave')
  - "{":                                         	#  0x7b
@@ -162,19 +162,19 @@
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
                   then: [t: "divise"]           	# 	(en: 'divides', DeepL translation)
-                  else: [t: "barre verticale"]  	# 	(en: 'vertical line')
+                  else: [t: "ligne verticale"]  	# 	(en: 'vertical line')
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [t: "ligne verticale"]      	# 	(en: 'vertical line', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [t: "tel que"]              	# 	(en: 'such that', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [t: "donné"]                	# 	(en: 'given', DeepL translation)
-            - else: [t: "barre verticale"]      	# 	(en: 'divides')
+            - else: [t: "divise"]      	            # 	(en: 'divides')
 
  - "}":                                         	#  0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "accolade"]                   	# 	(en: 'close brace', DeepL translation)
+        then: [t: "accolade fermée"]                # 	(en: 'close brace')
         else: [t: "accolade droite"]            	# 	(en: 'right brace', MathPlayer: 'accolade fermante')
 
  - "~": [t: "tilde"]                            	#  0x7e
@@ -185,7 +185,7 @@
         then: [t: "vide"]                       	#  want to say something for fraction (etc) with empty child	(en: 'empty', DeepL translation)
         else: [t: ""]                            
 
- - "¬": [t: "négation"]                         	#  0xac	(en: 'not')
+ - "¬": [t: "non"]                         	        #  0xac	(en: 'not')
  - "°": [t: "degrés"]                           	#  0xb0	(en: 'degrees')
  - "±": [t: "plus ou moins"]                    	#  0xb1	(en: 'plus or minus')
  - "´": [t: "accent aigu"]                      	#  0xb4	(en: 'acute')
@@ -193,7 +193,7 @@
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
         then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
-        else: [t: "point médian"]               	# 	(en: 'times')
+        else: [t: "fois"]               	        # 	(en: 'times')
  - "×":                                         	#  0xd7
     - test:
         if: "$SpeechStyle = 'ClearSpeak'"
@@ -205,7 +205,7 @@
           else: [t: "multiplié par"]            	# 	(en: 'cross')
         else_test:
             if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [t: "croix"]                  	# 	(en: 'cross', DeepL translation)
+            then: [t: "multiplié par"]              # 	(en: 'cross', DeepL translation)
             else: [t: "multiplié par"]          	# 	(en: 'times')
 
  - "÷": [t: "divisé par"]                       	#  0xf7	(en: 'divided by')
@@ -255,7 +255,7 @@
  - "ξ": [t: "xi"]                               	#  0x3be	(en: 'zai', DeepL: 'zai')
  - "ο": [t: "omicron"]                          	#  0x3bf
  - "π": [t: "pi"]                               	#  0x3c0
- - "ρ": [t: "rho"]                              	#  0x3c1
+ - "ρ": [t: "rhô"]                              	#  0x3c1
  - "ς": [t: "sigma final"]                      	#  0x3c2	(en: 'final sigma')
  - "σ": [t: "sigma"]                            	#  0x3c3
  - "τ": [t: "tau"]                              	#  0x3c4
@@ -264,13 +264,13 @@
  - "χ": [t: "chi"]                              	#  0x3c7
  - "ψ": [t: "psi"]                              	#  0x3c8
  - "ω": [t: "oméga"]                            	#  0x3c9	(en: 'omega')
- - "ϕ": [t: "phi droit"]                        	#  0x3d5	(en: 'phi', DeepL: 'phi')
- - "ϖ": [t: "pi cursif"]                        	#  0x3d6	(en: 'pi', DeepL: 'pi')
+ - "ϕ": [t: "phi"]                        	        #  0x3d5	(en: 'phi', DeepL: 'phi')
+ - "ϖ": [t: "pi"]                        	        #  0x3d6	(en: 'pi', DeepL: 'pi')
  - "ϵ": [t: "epsilon"]                          	#  0x3f5
- - "϶": [t: "epsilon lunaire réfléchi"]         	#  0x3f6	(en: 'reversed epsilon')
+ - "϶": [t: "epsilon inversé"]         	            #  0x3f6	(en: 'reversed epsilon')
 
- - "–": [t: "trait d'union insécable"]          	#  0x2013	(en: 'en dash')
- - "—": [t: "tiret numérique"]                  	#  0x2014	(en: 'em dash')
+ - "–": [t: "tirait demi-cadratin"]          	    #  0x2013	(en: 'en dash')
+ - "—": [t: "tiret cadratin"]                  	    #  0x2014	(en: 'em dash')
  - "―": [t: "barre horizontalle"]               	#  0x2015	(en: 'horizontal bar')
  - "‖": [t: "double ligne verticale"]           	#  0x2016	(en: 'double vertical line')
  - "…":                                         	#  0x2026
@@ -298,13 +298,13 @@
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [t: "de"]                         	# 	(en: 'of', DeepL translation)
+        then: [t: "de"]                            # 	(en: 'of', DeepL translation)
  - "⁢": [t: ""]                                 	#  0x2062
  - "⁣": [t: ""]                                 	#  0x2063
- - "⁤": [t: "plus"]                             	#  0x2064	(en: 'and', DeepL: 'et')
- - "′": [t: "prime"]                            	#  0x2032
- - "″": [t: "double prime"]                     	#  0x2033
- - "‴": [t: "triple prime"]                     	#  0x2034
+ - "⁤": [t: "et"]                             	    #  0x2064	(en: 'and', DeepL: 'et')
+ - "′": [t: "prime"]                               #  0x2032
+ - "″": [t: "double prime"]                        #  0x2033
+ - "‴": [t: "triple prime"]                        #  0x2034
 
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - t: "triple prime"                         	# 	(en: 'double-struck')
@@ -313,7 +313,7 @@
  - "℃": [t: "degré celsius"]                    	#  0x2103	(en: 'degrees celsius', DeepL: 'degrés celsius')
  - "℉": [t: "degré fahrenheit"]                 	#  0x2109	(en: 'degrees fahrenheit', DeepL: 'degrés fahrenheit')
  - "ℋℛℓ":                                       	#  0x210b
-    - t: "degré fahrenheit"                     	# 	(en: 'script', DeepL: 'script')
+    - t: "script"                     	# 	(en: 'script', DeepL: 'script')
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℎ": [t: "constante de planck"]              	#  0x210e	(en: 'planck constant')
  - "ℜ":                                         	#  0x211c
@@ -332,11 +332,11 @@
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "approche"]                   	# 	(en: 'approaches', DeepL translation)
-        else: [t: "flèche droite"]              	# 	(en: 'right arrow', MathPlayer: 'flèche vers la droite')
+        then: [t: "approches"]                   	# 	(en: 'approaches', DeepL translation)
+        else: [t: "flèche vers la droite"]          # 	(en: 'right arrow', MathPlayer: 'flèche vers la droite')
 
  - "↓": [t: "flèche vers le bas"]               	#  0x2193	(en: 'downwards arrow')
- - "⇒": [t: "double flèche vers la droite"]     	#  0x21d2	(en: 'rightwards double arrow', SRE: 'double flèche droite')
+ - "⇒": [t: "double flèche vers la droite"]        #  0x21d2	(en: 'rightwards double arrow', SRE: 'double flèche droite')
  - "∀": [t: "pour tous"]                        	#  0x2200	(en: 'for all')
  - "∂":                                         	#  0x2202
      - test: 
@@ -350,7 +350,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
-     - t: "incrément"                           	# 	(en: 'laplacian of')
+     - t: "laplacien de"                           	# 	(en: 'laplacian of')
  - "∈":                                         	#  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
