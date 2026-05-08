@@ -17,7 +17,7 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("fr", "SimpleSpeak", expr, "sinus de x plus cosinus de y plus tangente de z plus sécante de alpha, plus cosécante de phi droit, plus cotangente de phi")?;
+    test("fr", "SimpleSpeak", expr, "sinus de x plus cosinus de y plus tangente de z plus sécante de alpha, plus cosécante de phi, plus cotangente de phi")?;
     Ok(())
 }
 
@@ -32,7 +32,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     <mi>csch</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>coth</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("fr", "SimpleSpeak", expr, "sinus hyperbolique de x, plus cosinus hyperbolique de y, plus tangente hyperbolique de z, plus, sécante hyperbolique de alpha, plus, cosécante hyperbolique de phi droit; plus, cotangente hyperbolique de phi")?;
+    test("fr", "SimpleSpeak", expr, "sinus hyperbolique de x, plus cosinus hyperbolique de y, plus tangente hyperbolique de z, plus, sécante hyperbolique de alpha, plus, cosécante hyperbolique de phi, plus, cotangente hyperbolique de phi")?;
                                 Ok(())
 }
 
@@ -261,7 +261,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mo>&#x2212;</mo><mn>2</mn></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("fr", "SimpleSpeak", expr, "2 plus négatif 2")?;
+        test("fr", "SimpleSpeak", expr, "2 plus moins 2")?;
         Ok(())
     }
 
@@ -275,7 +275,7 @@ fn no_times_sqrt() -> Result<()> {
         <mo>)</mo></mrow>
         <mo>+</mo><mn>1</mn>
         </mrow></math>";
-        test("fr", "SimpleSpeak", expr, "négatif 2 x, plus 1")?;
+        test("fr", "SimpleSpeak", expr, "moins 2 x, plus 1")?;
         Ok(())
     }
 
@@ -322,7 +322,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "open interval de c comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'interval ouvert de c à d")?;
     Ok(())
 }
 

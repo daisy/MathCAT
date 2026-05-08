@@ -30,7 +30,7 @@
     "lim-inf": "prefix=lim inf quand: la limite inférieure quand: la limite inférieure quand",
     "logarithm-with-base": "prefix=log en base: le log en base: le log en base",
     "natural-logarithm": "function=l n: logarithme naturel: logarithme naturel",
-    "minus": "infix=moins || prefix=négatif",
+    "minus": "infix=moins || prefix=moins",
     "plus": "infix=plus || prefix=positif",
     "real-part": "function=la partie réelle",
 
