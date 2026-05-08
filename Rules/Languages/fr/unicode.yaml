@@ -438,12 +438,12 @@
  - "∑": [t: "sommation"]                        	#  0x2211	(en: 'sum')
  - "−": [t: "moins"]                            	#  0x2212	(en: 'minus')
  - "∓": [t: "moins ou plus"]                    	#  0x2213	(en: 'minus or plus', MathPlayer: 'moins-ou-plus')
- - "∗": [t: "opérateur astérisque"]             	#  0x2217	(en: 'times')
- - "∘": [t: "opérateur rond"]                   	#  0x2218	(en: 'composed with')
+ - "∗": [t: "fois"]             	                #  0x2217	(en: 'times')
+ - "∘": [t: "composé avec"]                   	    #  0x2218	(en: 'composed with')
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [t: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "racine carrée"                       	# 	(en: 'square root of')
  - "∝":                                         	#  0x221d
      - test: 
@@ -468,8 +468,8 @@
  - "∦":                                         	#  0x2226
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "non parallèle à"                     	# 	(en: 'not parallel to')
+         then: [t: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "pas parallèle à"                     	# 	(en: 'not parallel to')
  - "∧": [t: "et logique"]                       	#  0x2227	(en: 'and')
  - "∨": [t: "ou logique"]                       	#  0x2228	(en: 'or')
  - "∩": [t: "intersection"]                     	#  0x2229
@@ -484,8 +484,8 @@
          then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "rapport"                             	# 	(en: 'to')
  - "∷": [t: "proportion"]                       	#  0x2237	(en: 'as')
- - "∼": [t: "opérateur tilde"]                  	#  0x223c	(en: 'varies with')
- - "∽": [t: "opérateur tilde renversé"]         	#  0x223d	(en: 'reversed tilde')
+ - "∼": [t: "varie avec"]                  	        #  0x223c	(en: 'varies with')
+ - "∽": [t: "tilde renversé"]         	            #  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
@@ -495,7 +495,7 @@
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [t: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas égal à"                          	# 	(en: 'not equal to')
  - "≡":                                         	#  0x2261
      - test: 
@@ -512,8 +512,8 @@
          if: "$Verbosity!='Terse'"
          then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "plus grand ou égal à"                	# 	(en: 'greater than or equal to')
- - "≦": [t: "plus petit que par dessus égal à"] 	#  0x2266	(en: 'less than over equal to', MathPlayer: 'plus petit que par-dessus égal à', DeepL: 'inférieur à supérieur à égal à')
- - "≧": [t: "plus grand que par dessus égal à"] 	#  0x2267	(en: 'greater than over equal to', MathPlayer: 'plus grand que par-dessus égal à', DeepL: 'supérieur à égal à')
+ - "≦": [t: "plus petit que par-dessus égal à"] 	#  0x2266	(en: 'less than over equal to', MathPlayer: 'plus petit que par-dessus égal à', DeepL: 'inférieur à supérieur à égal à')
+ - "≧": [t: "plus grand que par-dessus égal à"] 	#  0x2267	(en: 'greater than over equal to', MathPlayer: 'plus grand que par-dessus égal à', DeepL: 'supérieur à égal à')
  - "≺": [t: "précède"]                          	#  0x227a	(en: 'precedes')
  - "≻": [t: "suit"]                             	#  0x227b	(en: 'succeeds')
  - "⊂":                                         	#  0x2282
@@ -529,12 +529,12 @@
  - "⊄":                                         	#  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [t: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas un sous-ensemble de"             	# 	(en: 'not a subset of', SRE: 'pas un sous ensemble de')
  - "⊅":                                         	#  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [t: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas un sur ensemble de"              	# 	(en: 'not a superset of', MathPlayer: 'pas un sur-ensemble de', DeepL: 'n'est pas un super-ensemble de')
  - "⊆":                                         	#  0x2286
      - test: 
