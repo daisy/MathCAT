@@ -1,37 +1,44 @@
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn transpose() {
+fn transpose() -> Result<()> {
   let expr = "<math> <msup><mi>M</mi><mi>T</mi></msup> </math>";
-  test("ru", "SimpleSpeak", expr, "эм большое транспонированная");
+  test("ru", "SimpleSpeak", expr, "эм большое транспонированная")?;
+  return Ok(());
 }
 
 #[test]
-fn trace() {
+fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "след от эм большое");
+  test("ru", "SimpleSpeak", expr, "след от эм большое")?;
+  return Ok(());
 }
 
 #[test]
-fn dimension() {
+fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "размерность эм большое");
+  test("ru", "SimpleSpeak", expr, "размерность эм большое")?;
+  return Ok(());
 }
 
 #[test]
-fn homomorphism() {
+fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("ru", "SimpleSpeak", expr, "гомоморфизм от эм большое");
+  test("ru", "SimpleSpeak", expr, "гомоморфизм от эм большое")?;
+  return Ok(());
 }
 
 #[test]
-fn kernel() {
+fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("ru", "SimpleSpeak", expr, "ядро от эль большое");
+  test("ru", "SimpleSpeak", expr, "ядро от эль большое")?;
+  return Ok(());
 }
 
 #[test]
-fn norm() {
+fn norm() -> Result<()> {
   let expr = "  <math>
     <mrow>
       <mo>∥</mo>
@@ -40,11 +47,12 @@ fn norm() {
     </mrow>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "норма от эф");
+  test("ru", "SimpleSpeak", expr, "норма от эф")?;
+  return Ok(());
 }
 
 #[test]
-fn norm_non_simple() {
+fn norm_non_simple() -> Result<()> {
   let expr = "  <math>
     <mrow>
       <mo>∥</mo>
@@ -55,11 +63,12 @@ fn norm_non_simple() {
     </mrow>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "норма от икс плюс игрек конец нормы");
+  test("ru", "SimpleSpeak", expr, "норма от икс плюс игрек конец нормы")?;
+  return Ok(());
 }
 
 #[test]
-fn norm_subscripted() {
+fn norm_subscripted() -> Result<()> {
   let expr = "  <math>
     <msub>
       <mrow>
@@ -71,11 +80,12 @@ fn norm_subscripted() {
     </msub>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "p-норма от эф");
+  test("ru", "SimpleSpeak", expr, "p-норма от эф")?;
+  return Ok(());
 }
 
 #[test]
-fn not_gradient() {
+fn not_gradient() -> Result<()> {
   // the nabla is at the end, so it can't be gradient because it doesn't operate on anything
   let expr = r#"<math>
   <mo>(</mo>
@@ -88,5 +98,6 @@ fn not_gradient() {
   <mi>a</mi>
 </math>
 "#;
-  test("ru", "SimpleSpeak", expr, "скобка открывается, бэ умножить на набла, скобка закрывается; умножить на а");
+  test("ru", "SimpleSpeak", expr, "скобка открывается, бэ умножить на набла, скобка закрывается; умножить на а")?;
+  return Ok(());
 }

@@ -1,12 +1,6 @@
 #![allow(non_snake_case)]
 
-use crate::common::*;
-use anyhow::Result;
-
 mod ClearSpeak {
-    use crate::common::*;
-    use anyhow::Result;
-
     mod functions;
     mod large_ops;
     mod menclose;
@@ -19,9 +13,6 @@ mod ClearSpeak {
 }
 
 mod SimpleSpeak {
-    use crate::common::*;
-    use anyhow::Result;
-
     mod functions;
     mod large_ops;
     // mod menclose;

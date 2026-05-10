@@ -1,7 +1,9 @@
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn matrix_1x1() {
+fn matrix_1x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -12,12 +14,13 @@ fn matrix_1x1() {
         <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица 1 на 1 с элементом 3");
-    test("ru", "SimpleSpeak", expr, "матрица 1 на 1 с элементом 3");
+    test("ru", "ClearSpeak",  expr, "матрица 1 на 1 с элементом 3")?;
+    test("ru", "SimpleSpeak", expr, "матрица 1 на 1 с элементом 3")?;
+    return Ok(());
 }
 
 #[test]
-fn determinant_1x1() {
+fn determinant_1x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -28,13 +31,14 @@ fn determinant_1x1() {
         <mo>|</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "определитель 1 на 1 с элементом 3");
-    test("ru", "SimpleSpeak", expr, "определитель 1 на 1 с элементом 3");
+    test("ru", "ClearSpeak",  expr, "определитель 1 на 1 с элементом 3")?;
+    test("ru", "SimpleSpeak", expr, "определитель 1 на 1 с элементом 3")?;
+    return Ok(());
 }
 
 
 #[test]
-fn matrix_1x2() {
+fn matrix_1x2() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -52,13 +56,14 @@ fn matrix_1x2() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица-строка 1 на 2; 3, 5");
-    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 2; 3, 5");
+    test("ru", "ClearSpeak",  expr, "матрица-строка 1 на 2; 3, 5")?;
+    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 2; 3, 5")?;
+    return Ok(());
 }
 
 
 #[test]
-fn matrix_1x3() {
+fn matrix_1x3() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -79,12 +84,13 @@ fn matrix_1x3() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak", expr, "матрица-строка 1 на 3; минус икс, 5, 12");
-    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 3; минус икс, 5, 12");
+    test("ru", "ClearSpeak", expr, "матрица-строка 1 на 3; минус икс, 5, 12")?;
+    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 3; минус икс, 5, 12")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_2x1_not_simple() {
+fn matrix_2x1_not_simple() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -107,11 +113,12 @@ fn matrix_2x1_not_simple() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak", expr, "матрица-столбец 2 на 1; строка 1; икс плюс 1; строка 2; икс минус 1");
-    test("ru", "SimpleSpeak", expr, "матрица-столбец 2 на 1; строка 1; икс плюс 1; строка 2; икс минус 1");
+    test("ru", "ClearSpeak", expr, "матрица-столбец 2 на 1; строка 1; икс плюс 1; строка 2; икс минус 1")?;
+    test("ru", "SimpleSpeak", expr, "матрица-столбец 2 на 1; строка 1; икс плюс 1; строка 2; икс минус 1")?;
+    return Ok(());
 }
 #[test]
-fn matrix_3x1_not_simple() {
+fn matrix_3x1_not_simple() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -147,15 +154,16 @@ fn matrix_3x1_not_simple() {
     test("ru", "SimpleSpeak", expr, "матрица-столбец 3 на 1; \
             строка 1; икс; \
             строка 2; а; \
-            строка 3; дробь, икс делить на, икс плюс 1, конец дроби");
+            строка 3; дробь, икс делить на, икс плюс 1, конец дроби")?;
     test("ru", "ClearSpeak",  expr, "матрица-столбец 3 на 1; \
             строка 1; икс; \
             строка 2; а; \
-            строка 3; дробь, числитель икс; знаменатель икс плюс 1");
+            строка 3; дробь, числитель икс; знаменатель икс плюс 1")?;
+            return Ok(());
 }
 
 #[test]
-fn determinant_2x2() {
+fn determinant_2x2() -> Result<()> {
     let expr = "<math>
       <mrow>
       <mrow><mo>|</mo>
@@ -180,12 +188,13 @@ fn determinant_2x2() {
         </mtable>
       <mo>|</mo></mrow></mrow>
                         </math>";
-    test("ru", "ClearSpeak",  expr, "определитель 2 на 2; строка 1; 2, 1; строка 2; 7, 5");
-    test("ru", "SimpleSpeak", expr, "определитель 2 на 2; строка 1; 2, 1; строка 2; 7, 5");
+    test("ru", "ClearSpeak",  expr, "определитель 2 на 2; строка 1; 2, 1; строка 2; 7, 5")?;
+    test("ru", "SimpleSpeak", expr, "определитель 2 на 2; строка 1; 2, 1; строка 2; 7, 5")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_2x3() {
+fn matrix_2x3() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -217,12 +226,13 @@ fn matrix_2x3() {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица 2 на 3; строка 1; 3, 1, 4; строка 2; 0, 2, 6");
-    test("ru", "SimpleSpeak", expr, "матрица 2 на 3; строка 1; 3, 1, 4; строка 2; 0, 2, 6");
+    test("ru", "ClearSpeak",  expr, "матрица 2 на 3; строка 1; 3, 1, 4; строка 2; 0, 2, 6")?;
+    test("ru", "SimpleSpeak", expr, "матрица 2 на 3; строка 1; 3, 1, 4; строка 2; 0, 2, 6")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_2x3_labeled() {
+fn matrix_2x3_labeled() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -259,14 +269,15 @@ fn matrix_2x3_labeled() {
                                 ";
     test("ru", "ClearSpeak",  expr,
         "матрица 2 на 3; строка 1 с меткой (3.1); столбец 2; 3, столбец 3; 1, столбец 4; 4; \
-                                   строка 2; столбец 1; 0, столбец 2; 2, столбец 3; 6");
+                                   строка 2; столбец 1; 0, столбец 2; 2, столбец 3; 6")?;
     test("ru", "SimpleSpeak", expr,
         "матрица 2 на 3; строка 1 с меткой (3.1); столбец 2; 3, столбец 3; 1, столбец 4; 4; \
-                                   строка 2; столбец 1; 0, столбец 2; 2, столбец 3; 6");
+                                   строка 2; столбец 1; 0, столбец 2; 2, столбец 3; 6")?;
+                                   return Ok(());
 }
 
 #[test]
-fn matrix_3x1() {
+fn matrix_3x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -290,12 +301,13 @@ fn matrix_3x1() {
         </mtable> <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица-столбец 3 на 1; 1; 2; 3");
-    test("ru", "SimpleSpeak", expr, "матрица-столбец 3 на 1; 1; 2; 3");
+    test("ru", "ClearSpeak",  expr, "матрица-столбец 3 на 1; 1; 2; 3")?;
+    test("ru", "SimpleSpeak", expr, "матрица-столбец 3 на 1; 1; 2; 3")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_4x1() {
+fn matrix_4x1() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -325,12 +337,13 @@ fn matrix_4x1() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4; 2");
-    test("ru", "SimpleSpeak", expr, "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4; 2");
+    test("ru", "ClearSpeak",  expr, "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4; 2")?;
+    test("ru", "SimpleSpeak", expr, "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4; 2")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_4x1_labeled() {
+fn matrix_4x1_labeled() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -364,13 +377,14 @@ fn matrix_4x1_labeled() {
     </math>
                                 ";
     test("ru", "ClearSpeak",  expr,
-        "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4 с меткой (3.1); 2");
+        "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4 с меткой (3.1); 2")?;
     test("ru", "SimpleSpeak", expr,
-        "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4 с меткой (3.1); 2");
+        "матрица-столбец 4 на 1; строка 1; 3; строка 2; 6; строка 3; 1; строка 4 с меткой (3.1); 2")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_1x4() {
+fn matrix_1x4() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -394,12 +408,13 @@ fn matrix_1x4() {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("ru", "ClearSpeak",  expr, "матрица-строка 1 на 4; столбец 1; 3, столбец 2; 6, столбец 3; 1, столбец 4; 2");
-    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 4; столбец 1; 3, столбец 2; 6, столбец 3; 1, столбец 4; 2");
+    test("ru", "ClearSpeak",  expr, "матрица-строка 1 на 4; столбец 1; 3, столбец 2; 6, столбец 3; 1, столбец 4; 2")?;
+    test("ru", "SimpleSpeak", expr, "матрица-строка 1 на 4; столбец 1; 3, столбец 2; 6, столбец 3; 1, столбец 4; 2")?;
+    return Ok(());
 }
 
 #[test]
-fn matrix_4x4() {
+fn matrix_4x4() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
       <mrow>
@@ -469,15 +484,17 @@ fn matrix_4x4() {
           строка 1; столбец 1; 0, столбец 2; 3, столбец 3; 4, столбец 4; 3; \
           строка 2; столбец 1; 2, столбец 2; 1, столбец 3; 0, столбец 4; 9; \
           строка 3; столбец 1; 3, столбец 2; 0, столбец 3; 2, столбец 4; 1; \
-          строка 4; столбец 1; 6, столбец 2; 2, столбец 3; 9, столбец 4; 0");
+          строка 4; столбец 1; 6, столбец 2; 2, столбец 3; 9, столбец 4; 0")?;
     test("ru", "SimpleSpeak", expr, "матрица 4 на 4; \
           строка 1; столбец 1; 0, столбец 2; 3, столбец 3; 4, столбец 4; 3; \
           строка 2; столбец 1; 2, столбец 2; 1, столбец 3; 0, столбец 4; 9; \
           строка 3; столбец 1; 3, столбец 2; 0, столбец 3; 2, столбец 4; 1; \
-          строка 4; столбец 1; 6, столбец 2; 2, столбец 3; 9, столбец 4; 0");}
+          строка 4; столбец 1; 6, столбец 2; 2, столбец 3; 9, столбец 4; 0")?;
+          return Ok(());
+}
 
 #[test]
-fn matrix_4x2() {
+fn matrix_4x2() -> Result<()> {
     let expr = "
     <math xmlns='http://www.w3.org/1998/Math/MathML'>
     <mrow>
@@ -525,51 +542,56 @@ fn matrix_4x2() {
               строка 2; столбец 1; 4, столбец 2; 2; \
               строка 3; столбец 1; 2, столбец 2; 1; \
               строка 4; столбец 1; 0, столбец 2; 5\
-    ");
+    ")?;
     test("ru", "SimpleSpeak", expr, "матрица 4 на 2; \
               строка 1; столбец 1; 1, столбец 2; 3; \
               строка 2; столбец 1; 4, столбец 2; 2; \
               строка 3; столбец 1; 2, столбец 2; 1; \
               строка 4; столбец 1; 0, столбец 2; 5\
-    ");}
+    ")?;
+    return Ok(());
+}
 
 // поместим тест для абсолютной величины сюда, так как он связан с определителем и слишком мал для отдельного файла
 #[test]
-fn simple_absolute_value() {
+fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
-  test("ru", "SimpleSpeak", expr, "абсолютная величина икс");
-  test("ru", "ClearSpeak",  expr, "абсолютная величина икс");
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "абсолютная величина икс");
+  test("ru", "SimpleSpeak", expr, "абсолютная величина икс")?;
+  test("ru", "ClearSpeak",  expr, "абсолютная величина икс")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "абсолютная величина икс")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "абсолютная величина икс, конец абсолютной величины");
+             expr, "абсолютная величина икс, конец абсолютной величины")?;
+             return Ok(());
 }
   
 #[test]
-fn absolute_value_plus_1() {
+fn absolute_value_plus_1() -> Result<()> {
 let expr = "<math>
     <mrow><mrow><mo>|</mo>
       <mrow><mi>x</mi><mo>+</mo><mn>1</mn> </mrow>
     <mo>|</mo></mrow></mrow>
   </math>";
-  test("ru", "ClearSpeak", expr, "абсолютная величина икс плюс 1");
+  test("ru", "ClearSpeak", expr, "абсолютная величина икс плюс 1")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "абсолютная величина икс плюс 1, конец абсолютной величины");
+             expr, "абсолютная величина икс плюс 1, конец абсолютной величины")?;
+             return Ok(());
 }
 
 #[test]
-fn simple_cardinality_value() {
+fn simple_cardinality_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "мощность заглавная эс");
+             "мощность заглавная эс")?;
+             return Ok(());
 }
   
 // Тестирование предпочтений
 #[test]
-fn simple_matrix_speak_col_num() {
+fn simple_matrix_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -587,11 +609,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("ru", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "матрица 2 на 2; строка 1; столбец 1; 2, столбец 2; 1; строка 2; столбец 1; 7, столбец 2; 5");
+        expr, "матрица 2 на 2; строка 1; столбец 1; 2, столбец 2; 1; строка 2; столбец 1; 7, столбец 2; 5")?;
+        return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_speak_col_num() {
+fn col_matrix_3x1_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -610,11 +633,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "матрица-столбец 3 на 1; строка 1; 1; строка 2; 2; строка 3; 3");
+        expr, "матрица-столбец 3 на 1; строка 1; 1; строка 2; 2; строка 3; 3")?;
+        return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_speak_col_num() {
+fn row_matrix_1x2_speak_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -627,11 +651,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "матрица-строка 1 на 2; столбец 1; 1, столбец 2; 2");
+        expr, "матрица-строка 1 на 2; столбец 1; 1, столбец 2; 2")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_2x2_speak_col_num() {
+fn matrix_2x2_speak_col_num() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -646,12 +671,13 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SpeakColNum",
         expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2");
+                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2")?;
+                                                return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_silent_col_num() {
+fn simple_matrix_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -669,11 +695,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("ru", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5");
+        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5")?;
+        return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_silent_col_num() {
+fn col_matrix_3x1_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -692,11 +719,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "матрица-столбец 3 на 1; 1; 2; 3");
+        expr, "матрица-столбец 3 на 1; 1; 2; 3")?;
+        return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_silent_col_num() {
+fn row_matrix_1x2_silent_col_num() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -709,11 +737,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "матрица-строка 1 на 2; 1, 2");
+        expr, "матрица-строка 1 на 2; 1, 2")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_2x2_silent_col_num() {
+fn matrix_2x2_silent_col_num() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -728,12 +757,13 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SilentColNum",
         expr, "матрица 2 на 2; строка 1; бэ нижний индекс 1 1; бэ нижний индекс 1 2; \
-                                                строка 2; бэ нижний индекс 2 1; бэ нижний индекс 2 2");
+                                                строка 2; бэ нижний индекс 2 1; бэ нижний индекс 2 2")?;
+                                                return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_end_matrix() {
+fn simple_matrix_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -751,11 +781,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5; конец матрицы");
+        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5; конец матрицы")?;
+        return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_end_matrix() {
+fn col_matrix_3x1_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -774,11 +805,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "матрица-столбец 3 на 1; 1; 2; 3; конец матрицы");
+        expr, "матрица-столбец 3 на 1; 1; 2; 3; конец матрицы")?;
+        return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_end_matrix() {
+fn row_matrix_1x2_end_matrix() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -791,11 +823,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "матрица-строка 1 на 2; 1, 2; конец матрицы");
+        expr, "матрица-строка 1 на 2; 1, 2; конец матрицы")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_2x2_end_matrix() {
+fn matrix_2x2_end_matrix() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -810,12 +843,13 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndMatrix",
         expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы");
+                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы")?;
+                                                return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_vector() {
+fn simple_matrix_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -833,11 +867,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("ru", "ClearSpeak_Matrix", "Vector",
-        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5");
+        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5")?;
+        return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_vector() {
+fn col_matrix_3x1_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -856,11 +891,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "Vector",
-        expr, "вектор-столбец 3 на 1; 1; 2; 3");
+        expr, "вектор-столбец 3 на 1; 1; 2; 3")?;
+        return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_vector() {
+fn row_matrix_1x2_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -873,11 +909,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "Vector",
-        expr, "вектор-строка 1 на 2; 1, 2");
+        expr, "вектор-строка 1 на 2; 1, 2")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_2x2_vector() {
+fn matrix_2x2_vector() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -892,12 +929,13 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "Vector",
         expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2");
+                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2")?;
+                                                return Ok(());
 }
 
 
 #[test]
-fn simple_matrix_end_vector() {
+fn simple_matrix_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -915,11 +953,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndVector",
-        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5; конец матрицы");
+        expr, "матрица 2 на 2; строка 1; 2, 1; строка 2; 7, 5; конец матрицы")?;
+        return Ok(());
 }
 
 #[test]
-fn col_matrix_3x1_end_vector() {
+fn col_matrix_3x1_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>(</mo>
@@ -938,11 +977,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndVector",
-        expr, "вектор-столбец 3 на 1; 1; 2; 3; конец вектора");
+        expr, "вектор-столбец 3 на 1; 1; 2; 3; конец вектора")?;
+        return Ok(());
 }
 
 #[test]
-fn row_matrix_1x2_end_vector() {
+fn row_matrix_1x2_end_vector() -> Result<()> {
 let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   <mrow>
     <mrow><mo>[</mo>
@@ -955,11 +995,12 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndVector",
-        expr, "вектор-строка 1 на 2; 1, 2; конец вектора");
+        expr, "вектор-строка 1 на 2; 1, 2; конец вектора")?;
+        return Ok(());
 }
 
 #[test]
-fn matrix_2x2_end_vector() {
+fn matrix_2x2_end_vector() -> Result<()> {
 let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     <mtable>
     <mtr>
@@ -974,33 +1015,36 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndVector",
         expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                 строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы");
+                                                 строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы")?;
+                                                 return Ok(());
 }
 
 
 
 #[test]
-fn matrix_binomial() {
+fn matrix_binomial() -> Result<()> {
   let expr = "<math>
       <mo>(</mo><mrow>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
       </mrow><mo>)</mo>
     </math>";
-  test_ClearSpeak("ru", "ClearSpeak_Matrix", "Combinatorics", expr, "число сочетаний из 3 по 2");
+  test_ClearSpeak("ru", "ClearSpeak_Matrix", "Combinatorics", expr, "число сочетаний из 3 по 2")?;
+  return Ok(());
 }
 
 #[test]
-fn matrix_times() {
+fn matrix_times() -> Result<()> {
   let expr = "<math>
     <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
   test("ru", "SimpleSpeak", expr,
-    "матрица 2 на 2; строка 1; 1, 2; строка 2; 3, 4; умножить на, матрица 2 на 2; строка 1; а, б; строка 2; цэ, дэ");
+    "матрица 2 на 2; строка 1; 1, 2; строка 2; 3, 4; умножить на, матрица 2 на 2; строка 1; а, б; строка 2; цэ, дэ")?;
+    return Ok(());
 }
 
 #[test]
-fn unknown_mtable_property() {
+fn unknown_mtable_property() -> Result<()> {
   let expr = "<math display='block'>
       <mtable intent=':system-of-equations:prefix($e1,$e1x)'>
         <mtr arg='e1'>
@@ -1033,12 +1077,13 @@ fn unknown_mtable_property() {
       </mtable>
     </math>";
     test("ru", "ClearSpeak",  expr,
-         "2 строки; строка 1; а равно b плюс цэ минус дэ; строка 2; плюс e минус f");
+         "2 строки; строка 1; а равно b плюс цэ минус дэ; строка 2; плюс e минус f")?;
+         return Ok(());
 }
 
 
 #[test]
-fn zero_matrix() {
+fn zero_matrix() -> Result<()> {
   let expr = "<math>
       <mo>[</mo>
       <mtable>
@@ -1048,11 +1093,12 @@ fn zero_matrix() {
       <mo>]</mo>
   </math>";
   test("ru", "SimpleSpeak", expr,
-    "нулевая матрица 2 на 2");
+    "нулевая матрица 2 на 2")?;
+    return Ok(());
 }
 
 #[test]
-fn identity_matrix() {
+fn identity_matrix() -> Result<()> {
   let expr = "<math>
       <mo>(</mo>
       <mtable>
@@ -1063,11 +1109,12 @@ fn identity_matrix() {
       <mo>)</mo>
   </math>";
   test("ru", "SimpleSpeak", expr,
-    "единичная матрица 3 на 3");
+    "единичная матрица 3 на 3")?;
+    return Ok(());
 }
 
 #[test]
-fn diagonal_matrix() {
+fn diagonal_matrix() -> Result<()> {
   let expr = "<math>
       <mo>(</mo>
       <mtable>
@@ -1078,7 +1125,8 @@ fn diagonal_matrix() {
       <mo>)</mo>
   </math>";
   test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "диагональная матрица 3 на 3; столбец 1; 2; столбец 2; 1; столбец 3; икс в квадрате");
+      expr, "диагональная матрица 3 на 3; столбец 1; 2; столбец 2; 1; столбец 3; икс в квадрате")?;
   // test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")],
-  //     expr, "диагональная матрица 3 на 3; строка 1, столбец 1, 2; строка 2, столбец 2, 1; строка 3, столбец 3, икс в квадрате");
+  //     expr, "диагональная матрица 3 на 3; строка 1, столбец 1, 2; строка 2, столбец 2, 1; строка 3, столбец 3, икс в квадрате")?;
+  return Ok(());
 }

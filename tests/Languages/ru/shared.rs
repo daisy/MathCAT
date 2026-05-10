@@ -2,8 +2,10 @@
 /// * модифицированная переменная
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn modified_vars() {
+fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
         <mover> <mi>b</mi> <mo>~</mo> </mover>
@@ -21,11 +23,12 @@ fn modified_vars() {
         </mrow> </math>";
     test("ru", "SimpleSpeak", expr, 
         "а гравис, б тильда, цэ брэвэ, б гачек, цэ гравис; плюс \
-            эр гачек; плюс икс точка, игрек точка, зет две точки, у три точки, вэ четыре точки; плюс икс циркумфлекс, плюс вектор тэ");
+            эр гачек; плюс икс точка, игрек точка, зет две точки, у три точки, вэ четыре точки; плюс икс циркумфлекс, плюс вектор тэ")?;
+            return Ok(());
 }
 
 #[test]
-fn limit() {
+fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -38,13 +41,14 @@ fn limit() {
             </mfrac>
             </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0, от, дроби, синус икс, делить на, икс, конец дроби");
+    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0, от, дроби, синус икс, делить на, икс, конец дроби")?;
     test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "предел при x стремящемся к 0, от; синус икс, делить на икс");
+            "предел при x стремящемся к 0, от; синус икс, делить на икс")?;
+            return Ok(());
 }
 
 #[test]
-fn limit_from_below() {
+fn limit_from_below() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -54,81 +58,92 @@ fn limit_from_below() {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0 снизу, от синус икс");
+    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0 снизу, от синус икс")?;
+    return Ok(());
 }
 
 #[test]
-fn binomial_mmultiscripts() {
+fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m");
+    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    return Ok(());
 }
 
 #[test]
-fn binomial_mmultiscripts_other() {
+fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m");
+    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    return Ok(());
 }
 
 #[test]
-fn binomial_subscript() {  // C_{n,k}
+fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m");
+    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    return Ok(());
 }
 
 #[test]
-fn permutation_mmultiscripts() {
+fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k");
+    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    return Ok(());
 }
 
 #[test]
-fn permutation_mmultiscripts_sup() {
+fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k");
+    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    return Ok(());
 }
 
 #[test]
-fn permutation_msubsup() {
+fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k");
+    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    return Ok(());
 }
 
 #[test]
-fn tensor_mmultiscripts() {
+fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l");
+            "заглавная эр с 4 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "заглавная эр с 4 индексами после, нижний i верхний j нижний k нижний l");
+            "заглавная эр с 4 индексами после, нижний i верхний j нижний k нижний l")?;
+            return Ok(());
 }
 
 #[test]
-fn huge_num_mmultiscripts() {
+fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами перед, перед нижний заглавная и, перед верхний заглавная джей и далее перед нижний заглавная ка перед нижний заглавная эль, и с 5 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l и далее нижний индекс m");
+            "заглавная эр с 4 индексами перед, перед нижний заглавная и, перед верхний заглавная джей и далее перед нижний заглавная ка перед нижний заглавная эль, и с 5 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l и далее нижний индекс m")?;
+            return Ok(());
 }
 
 #[test]
-fn prime() {
+fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
-    test("ru", "SimpleSpeak", expr, "икс штрих");
+    test("ru", "SimpleSpeak", expr, "икс штрих")?;
+    return Ok(());
 }
 
 #[test]
-fn given() {
+fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная пэ, открывающая круглая скобка, заглавная а при условии заглавная бэ, закрывающая круглая скобка");
-    test("ru", "ClearSpeak", expr,  "заглавная пэ, открывающая круглая скобка, заглавная а при условии заглавная бэ, закрывающая круглая скобка");
+    test("ru", "SimpleSpeak", expr, "заглавная пэ, открывающая круглая скобка, заглавная а при условии заглавная бэ, закрывающая круглая скобка")?;
+    test("ru", "ClearSpeak", expr,  "заглавная пэ, открывающая круглая скобка, заглавная а при условии заглавная бэ, закрывающая круглая скобка")?;
+    return Ok(());
 }
 
 #[test]
-fn simple_msubsup() {
+fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>
             <msubsup>
@@ -142,20 +157,22 @@ fn simple_msubsup() {
             </msubsup>
             </mstyle>
         </math>";
-    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i");
+    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i")?;
+    return Ok(());
 }
 
 #[test]
-fn non_simple_msubsup() {
+fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("ru", "SimpleSpeak", expr, "и нижний индекс j минус 2, в степени k");
-  test("ru", "ClearSpeak", expr, "и нижний индекс j минус 2, в степени k");
+  test("ru", "SimpleSpeak", expr, "и нижний индекс j минус 2, в степени k")?;
+  test("ru", "ClearSpeak", expr, "и нижний индекс j минус 2, в степени k")?;
   test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "и нижний индекс j минус 2, в степени k");
+          "и нижний индекс j минус 2, в степени k")?;
+          return Ok(());
 }
 
 #[test]
-fn presentation_mathml_in_semantics() {
+fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
         <semantics>
             <annotation encoding='application/x-tex'>{\\displaystyle x_k^i}</annotation>
@@ -172,11 +189,12 @@ fn presentation_mathml_in_semantics() {
             </annotation-xml>
         </semantics>
     </math>";
-    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i");
+    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i")?;
+    return Ok(());
 }
 
 #[test]
-fn ignore_period() {
+fn ignore_period() -> Result<()> {
     let expr = "<math>
     <semantics>
     <annotation encoding='application/x-tex'>{\\displaystyle x_k^i}</annotation>
@@ -215,17 +233,19 @@ fn ignore_period() {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("ru", "SimpleSpeak", expr, "заглавная пэ; открывающая круглая скобка, заглавная а и заглавная бэ; закрывающая круглая скобка; равно; заглавная пэ, открывающая круглая скобка, заглавная а пересечение заглавная бэ; закрывающая круглая скобка; равно, заглавная пэ от заглавной а, заглавная пэ от заглавной бэ");
+    test("ru", "SimpleSpeak", expr, "заглавная пэ; открывающая круглая скобка, заглавная а и заглавная бэ; закрывающая круглая скобка; равно; заглавная пэ, открывающая круглая скобка, заглавная а пересечение заглавная бэ; закрывающая круглая скобка; равно, заглавная пэ от заглавной а, заглавная пэ от заглавной бэ")?;
+    return Ok(());
 }
 
 #[test]
-fn ignore_mtext_period() {
+fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
-    test("ru", "SimpleSpeak", expr, "множество 2");
+    test("ru", "SimpleSpeak", expr, "множество 2")?;
+    return Ok(());
 }
 
 #[test]
-fn ignore_comma() {
+fn ignore_comma() -> Result<()> {
     let expr = "<math>
     <mrow>
       <mstyle displaystyle='true' scriptlevel='0'>
@@ -257,12 +277,13 @@ fn ignore_comma() {
       </mstyle>
     </mrow>
 </math>";
-    test("ru", "SimpleSpeak", expr, "фи от икс равно; цэ, e в степени минус аш в квадрате, икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "фи от икс равно; цэ, e в степени минус аш в квадрате, икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
 #[ignore] // issue #14
-fn ignore_period_and_space() {
+fn ignore_period_and_space() -> Result<()> {
     let expr = "<math>
       <mrow>
         <mstyle displaystyle='true' scriptlevel='0'>
@@ -296,11 +317,12 @@ fn ignore_period_and_space() {
         </mstyle>
       </mrow>
 </math>";
-    test("ru", "ClearSpeak", expr, "фи от икс равно; цэ, e в степени минус аш в квадрате икс в квадрате");
+    test("ru", "ClearSpeak", expr, "фи от икс равно; цэ, e в степени минус аш в квадрате икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn bug_199_2pi() {
+fn bug_199_2pi() -> Result<()> {
   let expr = "<math>
       <mrow>
         <mo stretchy=\"false\" form=\"prefix\">[</mo>
@@ -315,50 +337,57 @@ fn bug_199_2pi() {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("ru", "SimpleSpeak",expr, "полуинтервал от 0 до 2 пи");
+  test("ru", "SimpleSpeak",expr, "полуинтервал от 0 до 2 пи")?;
+  return Ok(());
 }
 
 #[test]
-fn caret_and_hat() {
+fn caret_and_hat() -> Result<()> {
   let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
-  test("ru", "SimpleSpeak",expr, "икс крышка 2 плюс игрек циркумфлекс");
+  test("ru", "SimpleSpeak",expr, "икс крышка 2 плюс игрек циркумфлекс")?;
+  return Ok(());
 }
 
 #[test]
-fn mn_with_space() {
+fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
-  test_prefs("ru", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567");
+  test_prefs("ru", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
+  return Ok(());
 }
 
 #[test]
-fn mn_with_block_and_decimal_separators() {
+fn mn_with_block_and_decimal_separators() -> Result<()> {
   let expr = "<math><mn>1,234.56</mn></math>";                                      
-  test_prefs("ru", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56");
+  test_prefs("ru", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56")?;
+  return Ok(());
 }
 
 #[test]
-fn divergence() {
+fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "див заглавная эф");
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "дивергенция заглавной эф");
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "див заглавная эф")?;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "дивергенция заглавной эф")?;
+  return Ok(());
 }
 
 #[test]
-fn curl() {
+fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ротор заглавная эф");
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "ротор заглавной эф");
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ротор заглавная эф")?;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "ротор заглавной эф")?;
+  return Ok(());
 }
 
 #[test]
-fn gradient() {
+fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "набла заглавная эф");
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "градиент заглавной эф");
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "набла заглавная эф")?;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "градиент заглавной эф")?;
+  return Ok(());
 }
 
 #[test]
-fn literal_speak() {
+fn literal_speak() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow data-changed='added'>
     <mover data-latex='\vec{A}'>
@@ -372,11 +401,12 @@ fn literal_speak() {
     </mover>
   </mrow>
  </math>"#; 
-  test("ru", "LiteralSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой");
+  test("ru", "LiteralSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой")?;
+  return Ok(());
 }
 
 #[test]
-fn literal_speak_with_name() {
+fn literal_speak_with_name() -> Result<()> {
   let expr = r#"<math intent='forced($x)'>
       <mrow arg="x">
         <mi>f</mi>
@@ -391,11 +421,12 @@ fn literal_speak_with_name() {
         </mrow>
       </mrow>
     </math>"#;
-  test("ru", "LiteralSpeak", expr, "форсид эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка");
+  test("ru", "LiteralSpeak", expr, "форсид эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка")?;
+  return Ok(());
 }
 
 #[test]
-fn literal_speak_with_property() {
+fn literal_speak_with_property() -> Result<()> {
   let expr = r#"<math intent=':prefix'>
       <mrow arg="x">
         <mi>f</mi>
@@ -410,11 +441,12 @@ fn literal_speak_with_property() {
         </mrow>
       </mrow>
     </math>"#; 
-  test("ru", "LiteralSpeak", expr, "эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка");
+  test("ru", "LiteralSpeak", expr, "эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка")?;
+  return Ok(());
 }
 
 #[test]
-fn literal_intent_property() {
+fn literal_intent_property() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow intent=":literal">
     <mover data-latex='\vec{A}'>
@@ -428,11 +460,12 @@ fn literal_intent_property() {
     </mover>
   </mrow>
  </math>"#; 
-  test("ru", "SimpleSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой");
+  test("ru", "SimpleSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой")?;
+  return Ok(());
 }
 
 #[test]
-fn literal_intent_property_with_name() {
+fn literal_intent_property_with_name() -> Result<()> {
   let expr = r#"<math intent='forced:literal($x)'>
       <mrow arg="x">
         <mi>f</mi>
@@ -447,5 +480,6 @@ fn literal_intent_property_with_name() {
         </mrow>
       </mrow>
     </math>"#; 
-  test("ru", "SimpleSpeak", expr, "форсид эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка");
+  test("ru", "SimpleSpeak", expr, "форсид эф, открывающая круглая скобка икс восклицательный знак, закрывающая круглая скобка")?;
+  return Ok(());
 }

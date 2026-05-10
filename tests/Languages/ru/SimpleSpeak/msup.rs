@@ -3,56 +3,64 @@
 ///   complex/nested superscripts
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn squared() {
+fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn cubed() {
+fn cubed() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>3</mn> </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в кубе");
+    test("ru", "SimpleSpeak", expr, "икс в кубе")?;
+    return Ok(());
 }
 
 #[test]
-fn ordinal_power() {
+fn ordinal_power() -> Result<()> {
     let expr = "<math>
                         <msup> <mi>x</mi> <mn>4</mn> </msup>
                     </math>";
-    test("ru", "SimpleSpeak", expr, "икс в четвёртой степени");
+    test("ru", "SimpleSpeak", expr, "икс в четвёртой степени")?;
+    return Ok(());
 }
 
 #[test]
-fn simple_mi_power() {
+fn simple_mi_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mi>n</mi> </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в степени эн");
+    test("ru", "SimpleSpeak", expr, "икс в степени эн")?;
+    return Ok(());
 }
 
 #[test]
-fn zero_power() {
+fn zero_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>0</mn> </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в нулевой степени");
+    test("ru", "SimpleSpeak", expr, "икс в нулевой степени")?;
+    return Ok(());
 }
 
 #[test]
-fn decimal_power() {
+fn decimal_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2.0</mn> </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в степени 2.0");
+    test("ru", "SimpleSpeak", expr, "икс в степени 2.0")?;
+    return Ok(());
 }
 
 #[test]
-fn non_simple_power() {
+fn non_simple_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -62,33 +70,36 @@ fn non_simple_power() {
       </msup>
       </mrow>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "3 в степени игрек плюс 2");
+    test("ru", "SimpleSpeak", expr, "3 в степени игрек плюс 2")?;
+    return Ok(());
 }
 
 #[test]
-fn negative_power() {
+fn negative_power() -> Result<()> {
     let expr = "<math>
                     <msup>
                         <mi>x</mi>
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "икс в степени минус 2");
+    test("ru", "SimpleSpeak", expr, "икс в степени минус 2")?;
+    return Ok(());
 }
 
 #[test]
-fn simple_fraction_power() {
+fn simple_fraction_power() -> Result<()> {
     let expr = "<math>
                   <msup>
                       <mi>x</mi> 
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-    test("ru", "SimpleSpeak", expr, "икс в степени одна третья");
+    test("ru", "SimpleSpeak", expr, "икс в степени одна третья")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_squared_power_with_coef() {
+fn nested_squared_power_with_coef() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -103,11 +114,12 @@ fn nested_squared_power_with_coef() {
       </msup>
       </mrow>
       </math>";
-    test("ru", "SimpleSpeak", expr, "3 в степени 2 икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "3 в степени 2 икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_squared_power_with_neg_coef() {
+fn nested_squared_power_with_neg_coef() -> Result<()> {
     let expr = "<math>
     <mrow>
     <msup>
@@ -123,11 +135,12 @@ fn nested_squared_power_with_neg_coef() {
     </msup>
     </mrow>
   </math>";
-    test("ru", "SimpleSpeak", expr, "3 в степени минус 2 икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "3 в степени минус 2 икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_cubed_power() {
+fn nested_cubed_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -137,11 +150,12 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "игрек в степени четыре пятых в кубе");
+    test("ru", "SimpleSpeak", expr, "игрек в степени четыре пятых в кубе")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_cubed_power_with_neg_base() {
+fn nested_cubed_power_with_neg_base() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -154,11 +168,12 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-    test("ru", "SimpleSpeak", expr, "игрек в степени минус четыре пятых в кубе");
+    test("ru", "SimpleSpeak", expr, "игрек в степени минус четыре пятых в кубе")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_number_times_squared() {
+fn nested_number_times_squared() -> Result<()> {
     let expr = "<math>
         <mrow>
         <msup>
@@ -176,11 +191,12 @@ fn nested_number_times_squared() {
         </msup>
         </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "e в степени одна вторая икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "e в степени одна вторая икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_negative_number_times_squared() {
+fn nested_negative_number_times_squared() -> Result<()> {
     let expr = "<math>
     <mrow>
     <msup>
@@ -198,11 +214,12 @@ fn nested_negative_number_times_squared() {
     </msup>
     </mrow>
     </math>";
-    test("ru", "SimpleSpeak", expr, "e в степени минус одна вторая икс в квадрате");
+    test("ru", "SimpleSpeak", expr, "e в степени минус одна вторая икс в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_expr_to_tenth() {
+fn nested_expr_to_tenth() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -217,11 +234,12 @@ fn nested_expr_to_tenth() {
       </msup>
       </mrow>
       </math>";
-    test("ru", "SimpleSpeak", expr, "3 в степени 3 в десятой степени");
+    test("ru", "SimpleSpeak", expr, "3 в степени 3 в десятой степени")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_non_simple_squared_exp() {
+fn nested_non_simple_squared_exp() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -239,11 +257,12 @@ fn nested_non_simple_squared_exp() {
       </msup>
       </mrow>
       </math>";
-    test("ru", "SimpleSpeak", expr, "3 в степени скобка открывается икс плюс 1, скобка закрывается в квадрате");
+    test("ru", "SimpleSpeak", expr, "3 в степени скобка открывается икс плюс 1, скобка закрывается в квадрате")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_simple_power() {
+fn nested_simple_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -253,11 +272,12 @@ fn nested_simple_power() {
       </msup>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени эн");
+    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени эн")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_end_exponent_power() {
+fn nested_end_exponent_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -267,13 +287,14 @@ fn nested_end_exponent_power() {
       </msup>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени n плюс 1, конец показателя");
+    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени n плюс 1, конец показателя")?;
     test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-               "тэ в степени четыре пятых в степени n плюс 1");
+               "тэ в степени четыре пятых в степени n плюс 1")?;
+               return Ok(());
 }
 
 #[test]
-fn nested_end_exponent_neg_power() {
+fn nested_end_exponent_neg_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -283,11 +304,12 @@ fn nested_end_exponent_neg_power() {
       </msup>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени минус 3, конец показателя");
+    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени минус 3, конец показателя")?;
+    return Ok(());
 }
 
 #[test]
-fn nested_complex_power() {
+fn nested_complex_power() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -315,11 +337,12 @@ fn nested_complex_power() {
       </mrow>
       </math>";
     test("ru", "SimpleSpeak", expr,
-         "e в степени минус одна вторая умножить на; скобка открывается, дробь, числитель: икс минус мю, знаменатель: сигма, конец дроби; скобка закрывается в квадрате");
+         "e в степени минус одна вторая умножить на; скобка открывается, дробь, числитель: икс минус мю, знаменатель: сигма, конец дроби; скобка закрывается в квадрате")?;
+         return Ok(());
 }
 
 #[test]
-fn default_power() {
+fn default_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -329,5 +352,6 @@ fn default_power() {
       </mfrac>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "тэ в степени дробь, числитель: бэ плюс 1, знаменатель: 3, конец дроби");
+    test("ru", "SimpleSpeak", expr, "тэ в степени дробь, числитель: бэ плюс 1, знаменатель: 3, конец дроби")?;
+    return Ok(());
 }

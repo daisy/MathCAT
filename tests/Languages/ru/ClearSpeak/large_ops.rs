@@ -1,7 +1,9 @@
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn sum_both() {
+fn sum_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>∑</mo>
@@ -10,11 +12,12 @@ fn sum_both() {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n");
+    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n")?;
+    return Ok(());
 }
 
 #[test]
-fn sum_under() {
+fn sum_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∑</mo>
@@ -22,11 +25,12 @@ fn sum_under() {
         </munder>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма по эс большое от i");
+    test("ru", "ClearSpeak", expr, "сумма по эс большое от i")?;
+    return Ok(());
 }
 
 #[test]
-fn sum_both_msubsup() {
+fn sum_both_msubsup() -> Result<()> {
     let expr = "<math>
         <msubsup>
             <mo>∑</mo>
@@ -35,11 +39,12 @@ fn sum_both_msubsup() {
         </msubsup>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n");
+    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n")?;
+    return Ok(());
 }
 
 #[test]
-fn sum_sub() {
+fn sum_sub() -> Result<()> {
     let expr = "<math>
         <msub>
             <mo>∑</mo>
@@ -47,20 +52,22 @@ fn sum_sub() {
         </msub>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма по эс большое от i");
+    test("ru", "ClearSpeak", expr, "сумма по эс большое от i")?;
+    return Ok(());
 }
 
 #[test]
-fn sum() {
+fn sum() -> Result<()> {
     let expr = "<math>
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма а с индексом i");
+    test("ru", "ClearSpeak", expr, "сумма а с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn product_both() {
+fn product_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>∏</mo>
@@ -69,11 +76,12 @@ fn product_both() {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение от n равно 1 до 10 от n");
+    test("ru", "ClearSpeak", expr, "произведение от n равно 1 до 10 от n")?;
+    return Ok(());
 }
 
 #[test]
-fn product_under() {
+fn product_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∏</mo>
@@ -81,20 +89,22 @@ fn product_under() {
         </munder>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение по эс большое от i");
+    test("ru", "ClearSpeak", expr, "произведение по эс большое от i")?;
+    return Ok(());
 }
 
 #[test]
-fn product() {
+fn product() -> Result<()> {
     let expr = "<math>
             <mo>∏</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение а с индексом i");
+    test("ru", "ClearSpeak", expr, "произведение а с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn intersection_both() {
+fn intersection_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>⋂</mo>
@@ -103,11 +113,12 @@ fn intersection_both() {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "пересечение от i равно 1 до 10 от; эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "пересечение от i равно 1 до 10 от; эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn intersection_under() {
+fn intersection_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>⋂</mo>
@@ -115,20 +126,22 @@ fn intersection_under() {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "пересечение по цэ большое от, эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "пересечение по цэ большое от, эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn intersection() {
+fn intersection() -> Result<()> {
     let expr = "<math>
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("ru", "ClearSpeak", expr, "пересечение эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "пересечение эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn union_both() {
+fn union_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>⋃</mo>
@@ -137,11 +150,12 @@ fn union_both() {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "объединение от i равно 1 до 10 от; эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "объединение от i равно 1 до 10 от; эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn union_under() {
+fn union_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>⋃</mo>
@@ -149,20 +163,22 @@ fn union_under() {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "объединение по цэ большое от, эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "объединение по цэ большое от, эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn union() {
+fn union() -> Result<()> {
     let expr = "<math>
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("ru", "ClearSpeak", expr, "объединение эс большое с индексом i");
+    test("ru", "ClearSpeak", expr, "объединение эс большое с индексом i")?;
+    return Ok(());
 }
 
 #[test]
-fn integral_both() {
+fn integral_both() -> Result<()> {
     let expr = "<math>
             <mrow>
                 <msubsup>
@@ -174,11 +190,12 @@ fn integral_both() {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("ru", "ClearSpeak", expr, "интеграл от 0 до 1 от, эф от икс; д икс");
+    test("ru", "ClearSpeak", expr, "интеграл от 0 до 1 от, эф от икс; д икс")?;
+    return Ok(());
 }
 
 #[test]
-fn integral_under() {
+fn integral_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∫</mo>
@@ -187,15 +204,17 @@ fn integral_under() {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("ru", "ClearSpeak", expr, "интеграл по действительным числам от; эф от икс д икс");
+    test("ru", "ClearSpeak", expr, "интеграл по действительным числам от; эф от икс д икс")?;
+    return Ok(());
 }
 
 #[test]
-fn integral() {
+fn integral() -> Result<()> {
     let expr = "<math>
             <mo>∫</mo>
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("ru", "ClearSpeak", expr, "интеграл от эф от икс д икс");
+    test("ru", "ClearSpeak", expr, "интеграл от эф от икс д икс")?;
+    return Ok(());
 }

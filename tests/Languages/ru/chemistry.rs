@@ -2,46 +2,53 @@
 /// * модифицированная переменная
 use crate::common::*;
 
+use anyhow::Result;
+
 #[test]
-fn salt() {
+fn salt() -> Result<()> {
     let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эн а, заглавная цэ эль");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эн а, заглавная цэ эль")?;
+    return Ok(());
 }
 
 #[test]
-fn water() {
+fn water() -> Result<()> {
     let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная о");
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "заглавная аш, нижний индекс 2 заглавная о");
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная аш, нижний индекс 2, заглавная о");
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная о")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "заглавная аш, нижний индекс 2 заглавная о")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная аш, нижний индекс 2, заглавная о")?;
+    return Ok(());
 }
 
 #[test]
-fn carbon() {
+fn carbon() -> Result<()> {
     let expr = "<math><mi>C</mi></math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная цэ");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная цэ")?;
+    return Ok(());
 }
 
 #[test]
-fn sulfate() {
+fn sulfate() -> Result<()> {
     let expr = "<math><mrow><msup>
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "открывающая квадратная скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс 2 минус");
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "открывающая квадратная скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс 2 минус")?;
+    return Ok(());
 }
 
 #[test]
-fn aluminum_sulfate() {
+fn aluminum_sulfate() -> Result<()> {
     let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная а эль, 2, открыть заглавная эс, заглавная о, 4, закрыть 3");
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "заглавная а эль, нижний индекс 2; открывающая круглая скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая круглая скобка, нижний индекс 3");
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная а эль, нижний индекс 2; открывающая круглая скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая круглая скобка, нижний индекс 3");
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная а эль, 2, открыть заглавная эс, заглавная о, 4, закрыть 3")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "заглавная а эль, нижний индекс 2; открывающая круглая скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая круглая скобка, нижний индекс 3")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная а эль, нижний индекс 2; открывающая круглая скобка, заглавная эс, заглавная о, нижний индекс 4; закрывающая круглая скобка, нижний индекс 3")?;
+    return Ok(());
 }
 
 #[test]
-fn ethanol_bonds() {
+fn ethanol_bonds() -> Result<()> {
     let expr = "<math>
           <mrow>
               <mi>C</mi>
@@ -54,11 +61,12 @@ fn ethanol_bonds() {
               <mi>H</mi>
           </mrow>
       </math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная цэ, заглавная аш, 3 одинарная связь заглавная цэ, заглавная аш, 2 одинарная связь заглавная о, заглавная аш");
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "заглавная цэ, заглавная аш, 3 одинарная связь заглавная цэ, заглавная аш, 2 одинарная связь заглавная о, заглавная аш")?;
+    return Ok(());
 }
 
 #[test]
-fn dichlorine_hexoxide() {
+fn dichlorine_hexoxide() -> Result<()> {
     let expr = "<math><mrow>
       <msup>
         <mrow><mo>[</mo><mi>Cl</mi><msub><mi>O</mi><mn>2</mn></msub><mo>]</mo></mrow>
@@ -70,45 +78,49 @@ fn dichlorine_hexoxide() {
       </msup>
     </mrow></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], 
-        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, 2, закрывающая квадратная скобка плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, 4, закрывающая квадратная скобка минус");
+        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, 2, закрывающая квадратная скобка плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, 4, закрывающая квадратная скобка минус")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 2; закрывающая квадратная скобка, верхний индекс плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс минус");
+        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 2; закрывающая квадратная скобка, верхний индекс плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс минус")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
-        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 2; закрывающая квадратная скобка, верхний индекс плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс минус");
+        expr, "открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 2; закрывающая квадратная скобка, верхний индекс плюс; открывающая квадратная скобка, заглавная цэ эль, заглавная о, нижний индекс 4; закрывающая квадратная скобка, верхний индекс минус")?;
+        return Ok(());
 }
 
 #[test]
-fn ethylene_with_bond() {
+fn ethylene_with_bond() -> Result<()> {
     let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная цэ, двойная связь заглавная цэ, заглавная аш, 2");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная цэ, двойная связь заглавная цэ, заглавная аш, 2")?;
+    return Ok(());
 }
 
 #[test]
-fn ferric_chloride_aq() {
+fn ferric_chloride_aq() -> Result<()> {
     let expr = "<math><mrow>
         <mi>Fe</mi>
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эф е, заглавная цэ эль, 3 водный");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эф е, заглавная цэ эль, 3 водный")?;
+    return Ok(());
 }
 
 #[test]
-fn ethylene_with_colon_bond() {
+fn ethylene_with_colon_bond() -> Result<()> {
     let expr = "<math><mrow>
           <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная цэ, двойная связь заглавная цэ, заглавная аш, 2");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная аш, 2 заглавная цэ, двойная связь заглавная цэ, заглавная аш, 2")?;
+    return Ok(());
 }
 
 #[test]
-fn beta_decay() {
+fn beta_decay() -> Result<()> {
     let expr = "<math>
       <mmultiscripts>
         <mtext>C</mtext>
@@ -135,15 +147,16 @@ fn beta_decay() {
       </mmultiscripts>
     </math>";
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-        "14, 6, заглавная цэ; образует, 14, 7, заглавная эн; плюс 0, минус 1, е");
+        "14, 6, заглавная цэ; образует, 14, 7, заглавная эн; плюс 0, минус 1, е")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс верхний индекс 0, нижний индекс минус 1, е");
+        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс верхний индекс 0, нижний индекс минус 1, е")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс, верхний индекс 0, нижний индекс минус 1, е");
+        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс, верхний индекс 0, нижний индекс минус 1, е")?;
+        return Ok(());
 }
 
 #[test]
-fn mhchem_beta_decay() {
+fn mhchem_beta_decay() -> Result<()> {
     let expr = "<math>
       <mrow>
         <msubsup>
@@ -399,15 +412,16 @@ fn mhchem_beta_decay() {
       </mrow>
     </math>";
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-        "14, 6, заглавная цэ; образует, 14, 7, заглавная эн; плюс 0, минус 1, е");
+        "14, 6, заглавная цэ; образует, 14, 7, заглавная эн; плюс 0, минус 1, е")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс верхний индекс 0, нижний индекс минус 1, е");
+        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс верхний индекс 0, нижний индекс минус 1, е")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс, верхний индекс 0, нижний индекс минус 1, е");
+        "верхний индекс 14, нижний индекс 6, заглавная цэ; реагирует с образованием; верхний индекс 14, нижний индекс 7, заглавная эн; плюс, верхний индекс 0, нижний индекс минус 1, е")?;
+        return Ok(());
 }
 
 #[test]
-fn hcl_na_yields() {
+fn hcl_na_yields() -> Result<()> {
     let expr = "<math> <mrow>
       <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
       <mo>&#x2192;</mo>
@@ -416,11 +430,12 @@ fn hcl_na_yields() {
       </mrow>
     </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, заглавная аш, заглавная цэ эль; плюс 2 заглавная эн а; реагирует с образованием; 2, заглавная эн а, заглавная цэ эль; плюс заглавная аш, нижний индекс 2");
+        "2, заглавная аш, заглавная цэ эль; плюс 2 заглавная эн а; реагирует с образованием; 2, заглавная эн а, заглавная цэ эль; плюс заглавная аш, нижний индекс 2")?;
+        return Ok(());
 }
 
 #[test]
-fn mhchem_so4_2plus() {
+fn mhchem_so4_2plus() -> Result<()> {
     let expr = "<math>
     <mrow>
       <mrow>
@@ -461,13 +476,14 @@ fn mhchem_so4_2plus() {
       </msup>
     </mrow>
   </math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эс; заглавная о, 4, 2 плюс");
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "заглавная эс; заглавная о, нижний индекс 4, верхний индекс 2 плюс");
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная эс; заглавная о, нижний индекс 4, верхний индекс 2 плюс");
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "заглавная эс; заглавная о, 4, 2 плюс")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "заглавная эс; заглавная о, нижний индекс 4, верхний индекс 2 плюс")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "заглавная эс; заглавная о, нижний индекс 4, верхний индекс 2 плюс")?;
+    return Ok(());
 }
 
 #[test]
-fn mhchem_hcl_aq_etc() {
+fn mhchem_hcl_aq_etc() -> Result<()> {
     let expr = "<math>
     <mrow>
       <mn>2</mn>
@@ -550,11 +566,12 @@ fn mhchem_hcl_aq_etc() {
     </mrow>
   </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-        expr, "2, заглавная аш, заглавная цэ эль, водный; плюс, 2, заглавная эн а, твердый; образует; 2, заглавная эн а, заглавная цэ эль, водный; плюс, заглавная аш, 2, газ");
+        expr, "2, заглавная аш, заглавная цэ эль, водный; плюс, 2, заглавная эн а, твердый; образует; 2, заглавная эн а, заглавная цэ эль, водный; плюс, заглавная аш, 2, газ")?;
+        return Ok(());
 }
 
 #[test]
-fn mhchem_barbed_equilibrium() {
+fn mhchem_barbed_equilibrium() -> Result<()> {
     let expr = "<math>
     <mrow data-mjx-texclass='ORD' data-chem-equation='14'>
       <mrow data-changed='added' data-chem-equation='3'>
@@ -614,11 +631,12 @@ fn mhchem_barbed_equilibrium() {
     </mrow>
   </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-        expr, "заглавная аш, 2, газ; плюс; заглавная и, 2, газ; находится в равновесии с, 2, заглавная аш, заглавная и, газ");
+        expr, "заглавная аш, 2, газ; плюс; заглавная и, 2, газ; находится в равновесии с, 2, заглавная аш, заглавная и, газ")?;
+        return Ok(());
 }
 
 #[test]
-fn mhchem_roman_in_superscript() {
+fn mhchem_roman_in_superscript() -> Result<()> {
     let expr = "<math>
       <mrow>
         <mmultiscripts>
@@ -641,11 +659,12 @@ fn mhchem_roman_in_superscript() {
       </mrow>
     </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-        expr, "заглавная эф е, 2; заглавная эф е, 3; заглавная о, 4");
+        expr, "заглавная эф е, 2; заглавная эф е, 3; заглавная о, 4")?;
+        return Ok(());
 }
 
 #[test]
-fn dropped_msubsup_bug_358() {
+fn dropped_msubsup_bug_358() -> Result<()> {
     let expr = r#"<math>
           <mrow class="MJX-TeXAtom-ORD">
               <mrow class="MJX-TeXAtom-ORD">
@@ -715,7 +734,8 @@ fn dropped_msubsup_bug_358() {
           </mrow>
       </math>"#;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-        expr, "2, заглавная эс, заглавная о, 2; плюс; заглавная о, 2 находится в равновесии с, 2, заглавная эс, заглавная о, 3");
+        expr, "2, заглавная эс, заглавная о, 2; плюс; заглавная о, 2 находится в равновесии с, 2, заглавная эс, заглавная о, 3")?;
+        return Ok(());
 }
 
 
