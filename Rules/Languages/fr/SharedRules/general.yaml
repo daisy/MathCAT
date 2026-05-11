@@ -118,21 +118,29 @@
   match: "count(*)=2"
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "la"      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
-  - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "de"      # phrase(subtracting 5 'from' 10 gives 5)
-      - x: "*[1]"
-      - t: "à"      # phrase(adding 6 'to' 6 equals  12)
-      - x: "*[2]"
-      else:
-      - x: "*[1]"
-      - t: "virgule"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
-      - x: "*[2]"
+    - if: "self::m:open-interval"
+      then_test:
+        if: "$Verbosity!='Terse'"
+        then: [t: "l'intervalle ouvert"]
+        else: [t: "intervalle ouvert"]
+    - else_if: "self::m:open-closed-interval"
+      then_test:
+        if: "$Verbosity!='Terse'"
+        then: [t: "l'intervalle ouvert fermé"]
+        else: [t: "intervalle ouvert fermé"]
+    - else_if: "self::m:closed-interval"
+      then_test:
+        if: "$Verbosity!='Terse'"
+        then: [t: "l'intervalle fermé"]
+        else: [t: "intervalle fermé"]
+      else_test:
+        if: "$Verbosity!='Terse'"
+        then: [t: "l'intervalle fermé ouvert"]      # closed-open-interval
+        else: [t: "intervalle fermé ouvert"]
+  - t: "de"      # phrase(the interval 'from' c to d)
+  - x: "*[1]"
+  - t: "à"      # phrase(the interval from c 'to' d)
+  - x: "*[2]"
 
 - name: default-point
   tag: point

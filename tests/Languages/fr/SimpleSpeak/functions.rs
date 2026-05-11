@@ -312,7 +312,6 @@ fn no_times_sqrt() -> Result<()> {
         Ok(())
     }
 
-
     // Tests for the four types of intervals in SimpleSpeak
     // AI generated
     #[test]
@@ -322,8 +321,9 @@ fn no_times_sqrt() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "l'interval ouvert de c à d")?;
-    Ok(())
+    test("fr", "SimpleSpeak",expr, "l'intervalle ouvert de c à d")?;
+    return Ok(());
+
 }
 
 // AI generated
@@ -334,7 +334,7 @@ fn no_times_sqrt() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
             <mo>)</mo></mrow>
         </math>";
-    test("fr", "SimpleSpeak", expr, "closed open interval de c comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'invervalle fermé ouvert fermé de c à d")?;
     Ok(())
 }
 
@@ -347,7 +347,7 @@ fn parens_interval_open_closed() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "open closed interval de c comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'intervalle ouvert fermé de c à d")?;
     Ok(())
 }
 
@@ -360,7 +360,7 @@ fn parens_interval_closed_closed() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
             <mo>]</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "closed interval de c comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'intervalle fermé de c à d")?;
     Ok(())
 }
 
@@ -372,7 +372,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mrow><mrow arg='start'><mo>-</mo> <mi>∞</mi></mrow><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "open interval de négatif infini comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'intervalle ouvert de moins infini à d")?;
     Ok(())
 }
 
@@ -384,7 +384,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mrow><mrow arg='start'><mo>-</mo> <mi>∞</mi></mrow><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("fr", "SimpleSpeak", expr, "open closed interval de négatif infini comma, d")?;
+    test("fr", "SimpleSpeak", expr, "l'intervalle ouvert fermé de moins infini à d")?;
     Ok(())
 }
 
