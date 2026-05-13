@@ -1,4 +1,19 @@
 ---
+- name: pause
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
+  replace:
+   - with:
+      variables: [MatchingPause: "true()"]
+      replace:
+      - test:
+        - if: "contains(@data-intent-property, ':pause-long')"
+          then: [pause: long]
+        - else_if: "contains(@data-intent-property, ':pause-short')"
+          then: [pause: short]
+          else: [pause: medium]
+      - x: "."
+
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
@@ -13,7 +28,7 @@
   - T: "minus"      # phrase(10 'minus' 4 equals 6)
   - x: "translate(text(), '-_', '')"
 
-- name: default
+- name: default  # audit-ignore
   tag: square-root
   match: "."
   replace:
@@ -40,7 +55,7 @@
       then: [pause: short]
       else: [pause: long]
 
-- name: default
+- name: default  # audit-ignore
   tag: root
   match: "."
   replace:
@@ -55,7 +70,7 @@
           then: [T: "negativa"]      # phrase(minus 6 is a 'negative' number)
           else: [T: "positiva"]      # phrase(10 is a 'positive' number)
   - test:
-      if: "*[2][self::m:mn]"
+      if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][.='2']"
         then: [T: "kvadratroten"]      # phrase(5 is the 'square root' of 25)
@@ -102,8 +117,8 @@
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
 
 # Units (e.g., meters per second)
-# SWEDISH: Added rule for t="time"
-- name: per-fraction
+# SWEDISH: Added rule for t="timme"
+- name: per-fraction  # audit-ignore
   tag: fraction
   match:
   - "$ClearSpeak_Fractions='Per' or"
@@ -121,7 +136,8 @@
        - x: "*[2]"
 
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
-- name: common-fraction
+# SWEDISH: changes made to accomodate fractions followed by neuter units (e.g. say "en tredjedels meter" instead of "ett tredjedels meter")
+- name: common-fraction  # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
@@ -179,7 +195,7 @@
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
 
-- name: fraction-over-simple
+- name: fraction-over-simple  # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Over' or $ClearSpeak_Fractions='FracOver' or $ClearSpeak_Fractions='OverEndFrac') or"
@@ -193,7 +209,7 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "bråk"]    # [ot: "the"]
+          then: [T: "bråk"]
       - pause: short
       else:
       - test:
@@ -249,7 +265,7 @@
       - T: "slut division"      # phrase(7 over 8 'end fraction')
       - pause: short
 
-- name: default
+- name: default  # audit-ignore
   tag: fraction
   match: "."
   replace:
@@ -307,7 +323,7 @@
       then: [T: "kvadrat"]      # phrase(25 equals 5 'squared')
       else: [T: "kubik"]      # phrase(625 equals 5 'cubed')
 
-- name: function-power
+- name: function-power  # audit-ignore
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -356,7 +372,7 @@
   - bookmark: "*[2]/@id"
   - T: "kubik"      # phrase(5 'cubed' equals 125)
 
-- name: simple-integer
+- name: simple-integer  # audit-ignore
   tag: power
   match: "*[2][self::m:mn][not(contains(., ','))]"
   replace:
@@ -366,7 +382,7 @@
   - x: "*[2]"
   - pause: short
 
-- name: simple-negative-integer
+- name: simple-negative-integer  # audit-ignore
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
@@ -379,7 +395,7 @@
   - x: "*[2]"
   - pause: short
 
-- name: simple-var
+- name: simple-var  # audit-ignore
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
@@ -398,7 +414,7 @@
 #   but the test cases all fall back to "raised to the exponent" when not "Auto"
 #   If these are allowed for non-Auto values, then you end up with "...power power...".
 - # [xxx]^n
-  name: nested-squared-or-cubed
+  name: nested-squared-or-cubed  # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -416,7 +432,7 @@
   - x: "*[2]"
 
 - # - [xxx]^n
-  name: nested-negative-squared-or-cubed
+  name: nested-negative-squared-or-cubed  # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -436,7 +452,7 @@
   - x: "*[2]"
 
 - # [xxx] var^n
-  name: nested-var-squared-or-cubed
+  name: nested-var-squared-or-cubed  # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -458,7 +474,7 @@
   - x: "*[2]"
 
 - # -[xxx] var^n
-  name: nested-negative-var-squared-or-cubed
+  name: nested-negative-var-squared-or-cubed  # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -505,13 +521,13 @@
 # Some rules on mrows
 #
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
-  name: ClearSpeak-absolute-value
+  name: ClearSpeak-absolute-value  # audit-ignore
   tag: absolute-value
   match: "."
   # SWEDISH: Differentiate between the initial and ending declaration of the terms.
   variables:
-  - WordToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Cardinality', 'kardinaliteten', 'absolutbeloppet')"
-  - EndToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Cardinality', 'kardinalitet', 'absolutbelopp')"
+  - WordToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Kardinaliteten', 'kardinaliteten', 'absolutbeloppet')"
+  - EndToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Kardinalitet', 'kardinalitet', 'absolutbelopp')"
   replace:
   - x: "$WordToSay"
   - T: "av"      # phrase(the absolute value 'of' 25)
@@ -524,7 +540,7 @@
       - x: "$EndToSay"
   - pause: short
 
-- name: set
+- name: set  # audit-ignore
   tag: set
   match: "."
   replace:
@@ -560,7 +576,7 @@
     # onto the [not] [including]... part
 
  # SWEDISH: rewrote the intervals function to better deal with Swedish convention of speaking intervals
-- name: ClearSpeak-intervals # avoid overriding with default "intervals" name
+- name: ClearSpeak-intervals # audit-ignore
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
   - is_intervals_end_infinity: "*[2][.='∞'or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
@@ -602,6 +618,7 @@
 - name: ClearSpeak-default
   tag: [mtr, mlabeledtr]
   match: "parent::m:matrix or parent::m:determinant"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - pause: medium
   - T: "rad"      # phrase(the first 'row' of a matrix)
@@ -614,12 +631,12 @@
       - pause: short
   - pause: medium
   - test:
-      if: .[self::m:mlabeledtr]
+      if: ".[self::m:mlabeledtr]"
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
-- # handle both log and ln
-  name: ClearSpeak-log
+- # handle both log and ln | SWEDISH: also handle lg
+  name: ClearSpeak-log # audit-ignore
   tag: mi
   match: ".='log' or .='lg' or .='ln'"
   variables: [log_is_simple: "IsNode(following-sibling::*[2],'simple')"]
@@ -630,10 +647,10 @@
       - if: ".='log'"
         then: [T: "logg"]      # phrase(the 'log' of x)
       - else_if: ".='lg'"
-        then: [spell: "'lg'"]      # phrase(the 'lg' of x)
+        then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
       - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
         then: [T: "naturliga logaritmen"]      # phrase(the 'natural log' of the product of 2 numbers)
-        else: [spell: "'ln'"]
+        else: [SPELL: "'ln'"]
       else:
       - test:
         - if: ".='log'"
@@ -647,20 +664,24 @@
           - test:
             - if: "$Verbosity='Verbose'"
               then: [T: "tio-logaritmen"]
-              else: [spell: "'lg'"]      # phrase(the 'lg' of x)
+              else: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
           then: [T: "naturliga logaritmen"]      # phrase(the 'natural log' of x)
-          else: [spell: "'ln'"]
+          else: [SPELL: "'ln'"]
 
-- name: ClearSpeak-multi-line
+- name: ClearSpeak-multi-line  # audit-ignore
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
-  variables: [IsColumnSilent: true()]
+  variables:
+    # Wikipedia has some tables where all the entire first column is empty (e.g., https://en.wikipedia.org/wiki/List_of_trigonometric_identities)
+  - LineCount: "count(*[not(contains(@data-intent-property, ':continued-row:'))])"
+  - NextLineIsContinuedRow: "false()"   # default value
+  - IsColumnSilent: true()
   replace:
-  - x: "count(*)"
   - test:
     - if: $ClearSpeak_MultiLineOverview = 'Auto'
       then:
+      - x: "$LineCount"
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then:
@@ -668,7 +689,7 @@
               - if: "count(*) > 1 and $ClearSpeak_MultiLineLabel != 'None'"
                 then: [T: "fall"]
                 else: [T: "fall"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
           then:
             - test:
               - if: "count(*) > 1 and $ClearSpeak_MultiLineLabel != 'None'"
@@ -705,39 +726,41 @@
 - name: ClearSpeak-default-multiline
   tag: [mtr, mlabeledtr]
   match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
-  - pause: medium
   - test:
-    - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-      then: [T: "fall"]      # phrase(in this  'case' x is not equal to y)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-      then: [T: "rad"]      # phrase(the straight 'line' between x and y)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-      then: [T: "avgränsning"]      # phrase(there is a 'constraint' on possible values)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-      then: [T: "ekvation"]      # phrase(the 'equation' pi r squared gives the area of a circle)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-      then: [T: "rad"]      # phrase(the values on the top 'row' are relevant)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-      then: [T: "steg"]      # phrase(this is a 'step' by step process)
-      # else 'None -- don't say anything'
-  - test:
-      if: "$ClearSpeak_MultiLineLabel != 'None'"
+      if: "not($LineCount=1 or $ClearSpeak_MultiLineLabel='None' or contains(@data-intent-property, ':continued-row:'))"
       then:
-      - x: "count(preceding-sibling::*)+1"
-      - test:
-          if: .[self::m:mlabeledtr]
-          then:
-          - T: "med etiketten"      # phrase(the item 'with label' complete)
-          - x: "*[1]/*"
       - pause: medium
+      - test:
+        - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+          then: [T: "fall"]      # phrase(in this  'case' x is not equal to y)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
+          then: [T: "rad"]      # phrase(the straight 'line' between x and y)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
+          then: [T: "avgränsning"]      # phrase(there is a 'constraint' on possible values)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
+          then: [T: "ekvation"]      # phrase(the 'equation' pi r squared gives the area of a circle)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
+          then: [T: "rad"]      # phrase(the values on the top 'row' are relevant)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
+          then: [T: "steg"]      # phrase(this is a 'step' by step process)
+          # else 'None -- don't say anything'
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
-      if: .[self::m:mlabeledtr]
+      if: "self::m:mlabeledtr"
+      then:
+      - T: "med etiketten"      # phrase(the diagram is complete 'with label')
+      - x: "*[1]/*"
+  - test:
+    - if: "$ClearSpeak_MultiLineLabel='None'"
+      then: [pause: xlong]   # need a very long pause with no line labels
+    - else_if: "not(contains(@data-intent-property, ':continued-row:'))"
+      then: [pause: medium]
+  - test:
+      if: "self::m:mlabeledtr"
       then: [x: "*[position()>1]"]
       else: [x: "*"]
-  - test:
-      if: "$ClearSpeak_MultiLineLabel != 'None'"
-      then: [pause: long]
 
 - name: ClearSpeak_Functions_None
   tag: mo
@@ -764,16 +787,21 @@
   # say "times" when invisible times is followed by parens or a superscript that has a base with parens or "|"s
   # if we aren't sure if it is times or not, don't say anything
   - ".='⁢' and (not(@data-function-guess) or $ClearSpeak_Functions = 'None') and"
-  - "not(ancestor-or-self::*[contains(@data-intent-property, ':structure:')]) and ("
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and ("
   - "  $ClearSpeak_ImpliedTimes = 'MoreImpliedTimes'"
   - " or "
   - "  following-sibling::*[1]["
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or "
+  # most of these aren't mentioned in ClearSpeak spec, but are (I think) expected uses of "times"
   - "    self::m:matrix or self::m:determinant or self::m:binomial or" # followed by parens
-  - "    ( (self::m:msup or self::m:msub or self::m:msubsup or self::m:power) and " # followed by msup, etc.
-  - "       *[1][self::m:mrow[IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')] or "
-  - "            self::m:matrix or self::m:determinant]" # base has parens
-  - "    )"
+  - "    self::m:square-root or self::m:msqrt or self::m:root or self::m:mroot or"
+  - "    (self::m:msub or self::m:msubsup or"
+  - "    ((self::m:msup or self::m:power) and not(IsNode(*[1], 'leaf') and *[2][self::m:mn and (.=2 or '.=3')]))) and " # followed by msup, etc.
+  - "     (*[1][self::m:mrow[IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')] or "
+  - "           self::m:matrix or self::m:determinant] or" # base has parens
+  - "      not(IsNode(*[2], 'simple')) or "
+  - "      (self::m:msubsup and not(IsNode(*[3], 'simple')))"
+  - "     )"
   - "  ]"
   # other possibility is the preceding element has parens (but not the following)
   # this is not mentioned in the ClearSpeak rules or examples but seems like it should say "times". E.g, |x| y
@@ -795,7 +823,8 @@
   - "not( $ClearSpeak_ImpliedTimes = 'None' and "
   - "     (preceding-sibling::*[1][.='⁢'] or following-sibling::*[1][.='⁢']) ) and "
   - "IsNode(*[2], 'simple') and"
-  - "not(ancestor-or-self::*[contains(@data-intent-property, ':structure:')])"
+  - "not(preceding-sibling::*[1][.='\u2062' and @data-function-guess]) and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   # missing clause: 'a positive fraction that is spoken as an ordinal
   #   (either by the Ordinal preference or by the default rules)'
   replace:
