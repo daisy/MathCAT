@@ -1190,7 +1190,7 @@
     - test: 
         if: "@data-chem-formula-op"
         then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
-        else: [t: "opérateur point"]            	# 	(en: 'times')
+        else: [t: "fois"]            	# 	(en: 'times')
 
  - "⋆": [t: "opérateur étoile"]                 	#  0x22c6	(en: 'times')
  - "⋇": [t: "divisé multiplié"]                 	#  0x22c7	(en: 'division times')

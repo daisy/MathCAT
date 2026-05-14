@@ -12,7 +12,7 @@ fn transpose() -> Result<()> {
 #[test]
 fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("fr", "SimpleSpeak", expr, "trace of cap m")?;
+  test("fr", "SimpleSpeak", expr, "trace de m majuscule")?;
   return Ok(());
 
 }
@@ -20,7 +20,7 @@ fn trace() -> Result<()> {
 #[test]
 fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("fr", "SimpleSpeak", expr, "dimension of cap m")?;
+  test("fr", "SimpleSpeak", expr, "dimension de m majuscule")?;
   return Ok(());
 
 }
@@ -28,7 +28,7 @@ fn dimension() -> Result<()> {
 #[test]
 fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("fr", "SimpleSpeak", expr, "homomorphism of cap m")?;
+  test("fr", "SimpleSpeak", expr, "homomorphisme de m majuscule")?;
   return Ok(());
 
 }
@@ -36,7 +36,7 @@ fn homomorphism() -> Result<()> {
 #[test]
 fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("fr", "SimpleSpeak", expr, "kernel of cap l")?;
+  test("fr", "SimpleSpeak", expr, "noyau de l majuscule")?;
   return Ok(());
 
 }
@@ -51,7 +51,7 @@ fn norm() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("fr", "SimpleSpeak", expr, "norm of f")?;
+  test("fr", "SimpleSpeak", expr, "norme de f")?;
   return Ok(());
 
 }
@@ -68,7 +68,7 @@ fn norm_non_simple() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("fr", "SimpleSpeak", expr, "norm of x plus y end norm")?;
+  test("fr", "SimpleSpeak", expr, "norme de x plus y fin de norme")?;
   return Ok(());
 
 }
@@ -86,7 +86,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("fr", "SimpleSpeak", expr, "p norm of f")?;
+  test("fr", "SimpleSpeak", expr, "p norme de f")?;
   return Ok(());
 
 }
@@ -105,7 +105,7 @@ fn not_gradient() -> Result<()> {
   <mi>a</mi>
 </math>
 "#;
-  test("fr", "SimpleSpeak", expr, "open paren, b times nahblah, close paren; times eigh")?;
+  test("fr", "SimpleSpeak", expr, "parenthèse gauche, b fois nabla, parenthèse droite; fois a")?;
   return Ok(());
 
 }
