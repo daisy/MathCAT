@@ -2,6 +2,7 @@
 
 mod SimpleSpeak {
     mod functions;
+    mod geometry;
 }
 
 mod shared;
