@@ -25,7 +25,7 @@ fn sum_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("fr", "SimpleSpeak", expr, "la sommation sur majuscule s de i")?;
+    test("fr", "SimpleSpeak", expr, "la sommation sur s majuscule de i")?;
     return Ok(());
 
 }
@@ -53,7 +53,7 @@ fn sum_sub() -> Result<()> {
         </msub>
         <mi>i</mi>
     </math>";
-    test("fr", "SimpleSpeak", expr, "la sommation sur majuscule s de i")?;
+    test("fr", "SimpleSpeak", expr, "la sommation sur s majuscule de i")?;
     return Ok(());
 
 }
@@ -93,7 +93,7 @@ fn product_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("fr", "SimpleSpeak", expr, "le produit sur majuscule s de i")?;
+    test("fr", "SimpleSpeak", expr, "le produit sur s majuscule de i")?;
     return Ok(());
 
 }
@@ -119,7 +119,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fr", "SimpleSpeak", expr, "l'intersection de i est égal à 1, à 10 de; majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'intersection de i est égal à 1, à 10 de; s majuscule indice i")?;
     return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fr", "SimpleSpeak", expr, "l'intersection sur majuscule c de; majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'intersection sur c majuscule de; s majuscule indice i")?;
     return Ok(());
 
 }
@@ -144,7 +144,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("fr", "SimpleSpeak", expr, "l'intersection de majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'intersection de s majuscule indice i")?;
     return Ok(());
 
 }
@@ -159,7 +159,7 @@ fn union_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fr", "SimpleSpeak", expr, "l'union de i est égal à 1, à 10 de; majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'union de i est égal à 1, à 10 de; s majuscule indice i")?;
     return Ok(());
 
 }
@@ -173,7 +173,7 @@ fn union_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fr", "SimpleSpeak", expr, "l'union sur majuscule c de, majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'union sur c majuscule de, s majuscule indice i")?;
     return Ok(());
 
 }
@@ -184,7 +184,7 @@ fn union() -> Result<()> {
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("fr", "SimpleSpeak", expr, "l'union de majuscule s indice i")?;
+    test("fr", "SimpleSpeak", expr, "l'union de s majuscule indice i")?;
     return Ok(());
 
 }

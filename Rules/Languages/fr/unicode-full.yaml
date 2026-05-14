@@ -199,6 +199,10 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
+    - t: "avec dialytika"                       	# 	(en: 'with dialytika', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -206,11 +210,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
-    - t: "avec dialytika"                       	# 	(en: 'with dialytika', DeepL translation)
+          else: [x: "$SpeechOverrides_CapitalLetters"]
  - "ϊ": [t: "iota tréma"]                       	#  0x3ca	(en: 'iota with dialytika')
  - "ϋ": [t: "upsilon tréma"]                    	#  0x3cb	(en: 'upsilon with dialytika')
  - "ό": [t: "omicron accent"]                   	#  0x3cc	(en: 'omicron with tonos')
@@ -235,6 +235,9 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -242,10 +245,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
+          else: [x: "$SpeechOverrides_CapitalLetters"]
  - "а": [t: "a"]                                	#  0x430	(DeepL: 'а')
  - "б": [t: "bé"]                               	#  0x431	(en: 'be', DeepL: 'être')
  - "в": [t: "vé"]                               	#  0x432	(en: 've', DeepL: 've')
@@ -3246,6 +3246,9 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [t: "ligature ae"]             	# 	(DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3253,10 +3256,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [t: "ligature ae"]             	# 	(DeepL translation)
+          else: [x: "$SpeechOverrides_CapitalLetters"]
  - "":                                         	#  0xf19b
     - test: 
         if: "$CapitalLetters_Beep"
@@ -3264,6 +3264,9 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [t: "s pointu"]                	# 	(en: 'sharp s', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3271,10 +3274,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [t: "s pointu"]                	# 	(en: 'sharp s', DeepL translation)
+          else: [x: "$SpeechOverrides_CapitalLetters"]
  - "":                                         	#  0xf19c
     - test: 
         if: "$CapitalLetters_Beep"
@@ -3282,6 +3282,9 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [t: "o avec trait"]            	# 	(en: 'o with stroke', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3289,10 +3292,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace: [t: "o avec trait"]            	# 	(en: 'o with stroke', DeepL translation)
+          else: [x: "$SpeechOverrides_CapitalLetters"]
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209

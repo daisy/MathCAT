@@ -6,7 +6,7 @@ use anyhow::Result;
 #[test]
 fn arc() -> Result<()> {
   let expr = "<math>  <mover><mrow><mi>B</mi><mi>C</mi></mrow><mo>⌒</mo></mover> </math>";
-  test("fr", "SimpleSpeak", expr, "arc majuscule b majuscule c")?;
+  test("fr", "SimpleSpeak", expr, "arc b majuscule c majuscule")?;
   return Ok(());
 
 }
@@ -14,7 +14,7 @@ fn arc() -> Result<()> {
 #[test]
 fn ray() -> Result<()> {
   let expr = "<math> <mover><mrow><mi>X</mi><mi>Y</mi></mrow><mo>&#xAF;</mo></mover> </math>";
-  test("fr", "SimpleSpeak", expr, "segment majuscule x majuscule y")?;
+  test("fr", "SimpleSpeak", expr, "segment x majuscule y majuscule")?;
   return Ok(());
 
 }
@@ -22,7 +22,7 @@ fn ray() -> Result<()> {
 #[test]
 fn arc_mtext() -> Result<()> {
   let expr = "<math> <mover><mtext>BC</mtext><mo>⌒</mo></mover> </math>";
-  test("fr", "SimpleSpeak", expr, "arc majuscule b majuscule c")?;
+  test("fr", "SimpleSpeak", expr, "arc b majuscule c majuscule")?;
   return Ok(());
 
 }
@@ -30,7 +30,7 @@ fn arc_mtext() -> Result<()> {
 #[test]
 fn ray_mtext() -> Result<()> {
   let expr = "<math> <mover><mtext>XY</mtext><mo>→</mo></mover> </math>";
-  test("fr", "SimpleSpeak", expr, "demi-droite majuscule x majuscule y")?;
+  test("fr", "SimpleSpeak", expr, "demi-droite x majuscule y majuscule")?;
   return Ok(());
 
 }

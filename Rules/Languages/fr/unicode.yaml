@@ -19,6 +19,10 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
+        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -26,11 +30,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+          else: [x: "$SpeechOverrides_CapitalLetters"]
 
  - "0-9": [t: "."]                              	# 	(en: '.', DeepL: 'A')
 
@@ -226,6 +226,10 @@
         - audio:
             value: "beep.mp4"
             replace: []
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
+        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -233,11 +237,7 @@
           then_test:
             if: "$Impairment = 'Blindness'"
             then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
-          else: [x: "$SpeechOverrides_CapitalLetters"] 
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
+          else: [x: "$SpeechOverrides_CapitalLetters"]
 
  - "α": [t: "alpha"]                            	#  0x3b1
  - "β": [t: "bêta"]                             	#  0x3b2	(en: 'beta')
