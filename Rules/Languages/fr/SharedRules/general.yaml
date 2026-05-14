@@ -161,7 +161,12 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "la"]      # phrase('the' square root of 25 equals 5)
+      then_test:
+      - if: "*[1][.='∏']"
+        then: [t: "le"]      # phrase('the' product) - masculine starting with consonant
+      - else_if: "*[1][contains('⋂∩⋃∪∫∬∭∮∯∰∱∲∳', .)]" # phrase('the' union/intersection/integral) - starting with vowel
+        then: [t: "l'"]
+      - else: [t: "la"]      # phrase('the' sum) - feminine starting with consonant
   - x: "*[1]"
   - t: "de"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
@@ -178,7 +183,12 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "la"]      # phrase('the' square root of 25 equals 5)
+      then_test:
+      - if: "*[1][.='∏']"
+        then: [t: "le"]      # phrase('the' product) - masculine starting with consonant
+      - else_if: "*[1][contains('⋂∩⋃∪∫∬∭∮∯∰∱∲∳', .)]" # phrase('the' union/intersection/integral) - starting with vowel
+        then: [t: "l'"]
+      - else: [t: "la"]      # phrase('the' sum) - feminine starting with consonant
   - x: "*[1]"
   - t: "sur"      # phrase(2 'over' 3 equals two thirds)
   - x: "*[2]"
@@ -192,7 +202,12 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "la"]      # phrase('the' square root of 25 equals 5)
+      then_test:
+      - if: "*[1][.='∏']"
+        then: [t: "le"]      # phrase('the' product) - masculine starting with consonant
+      - else_if: "*[1][contains('⋂∩⋃∪∫∬∭∮∯∰∱∲∳', .)]" # phrase('the' union/intersection/integral) - starting with vowel
+        then: [t: "l'"]
+      - else: [t: "la"]      # phrase('the' sum) - feminine starting with consonant
   - x: "*[1]"
   - t: "de"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"

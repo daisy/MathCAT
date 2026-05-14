@@ -498,7 +498,7 @@
  - "ℸ": [t: "dalèt"]                            	#  0x2138	(en: 'fourth transfinite cardinal')
  - "ℼ": [t: "pi ajouré"]                        	#  0x213c	(en: 'double struck pi', DeepL: 'double pi frappé')
  - "ℽ": [t: "gamma ajouré"]                     	#  0x213d	(en: 'double struck gamma', DeepL: 'double gamma frappé')
- - "⅀": [t: "sommation de la famille ajouré"]   	#  0x2140	(en: 'double struck n-ary summation', DeepL: 'somme n-aire doublement frappée')
+ - "⅀": [t: "sommation"]   	#  0x2140	(en: 'double struck n-ary summation', DeepL: 'somme n-aire doublement frappée')
  - "⅋": [t: "perluète culbutée"]                	#  0x214b	(en: 'turned ampersand', DeepL: 'esperluette tournée')
  - "⅌": [t: "symbole per"]                      	#  0x214c	(en: 'per', DeepL: 'per')
  - "ⅎ": [t: "minuscule f culbuté"]              	#  0x214e	(en: 'turned F', DeepL: 'tourné f')
@@ -800,17 +800,17 @@
  - "∤": [t: "n'est pas un diviseur de"]         	#  0x2224	(en: 'does not divide')
  - "∧": [t: "et logique"]                       	#  0x2227	(en: 'and')
  - "∨": [t: "ou logique"]                       	#  0x2228	(en: 'or')
- - "∩": [t: "intersection"]                     	#  0x2229
- - "∪": [t: "union"]                            	#  0x222a
- - "∫": [t: "intégrale"]                        	#  0x222b	(en: 'integral')
- - "∬": [t: "intégrale double"]                 	#  0x222c	(en: 'double integral')
- - "∭": [t: "intégrale triple"]                 	#  0x222d	(en: 'triple integral')
- - "∮": [t: "intégrale de contour"]             	#  0x222e	(en: 'contour integral')
- - "∯": [t: "intégrale de surface"]             	#  0x222f	(en: 'surface integral')
- - "∰": [t: "intégrale de volume"]              	#  0x2230	(en: 'volume integral')
- - "∱": [t: "intégrale en sens négatif"]        	#  0x2231	(en: 'clockwise integral')
- - "∲": [t: "intégrale de contour en sens négatif"]	#  0x2232	(en: 'clockwise contour integral')
- - "∳": [t: "intégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
+ - "∩": [t: "\uF8FEintersection"]                     	#  0x2229
+ - "∪": [t: "\uF8FEunion"]                            	#  0x222a
+ - "∫": [t: "\uF8FEintégrale"]                        	#  0x222b	(en: 'integral')
+ - "∬": [t: "\uF8FEintégrale double"]                 	#  0x222c	(en: 'double integral')
+ - "∭": [t: "\uF8FEintégrale triple"]                 	#  0x222d	(en: 'triple integral')
+ - "∮": [t: "\uF8FEintégrale de contour"]             	#  0x222e	(en: 'contour integral')
+ - "∯": [t: "\uF8FEintégrale de surface"]             	#  0x222f	(en: 'surface integral')
+ - "∰": [t: "\uF8FEintégrale de volume"]              	#  0x2230	(en: 'volume integral')
+ - "∱": [t: "\uF8FEintégrale en sens négatif"]        	#  0x2231	(en: 'clockwise integral')
+ - "∲": [t: "\uF8FEintégrale de contour en sens négatif"]	#  0x2232	(en: 'clockwise contour integral')
+ - "∳": [t: "\uF8FEintégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
  - "∴": [t: "par conséquent"]                   	#  0x2234	(en: 'therefore')
  - "∵": [t: "parce que"]                        	#  0x2235	(en: 'because')
  - "∶":                                         	#  0x2236
@@ -1181,10 +1181,10 @@
  - "⊽": [t: "non ou"]                           	#  0x22bd	(en: 'nor')
  - "⊾": [t: "angle droit avec arc"]             	#  0x22be	(en: 'right angle with arc')
  - "⊿": [t: "triangle rectangle"]               	#  0x22bf	(en: 'right triangle')
- - "⋀": [t: "et logique de la famille"]         	#  0x22c0	(en: 'logical and')
- - "⋁": [t: "ou logique de la famille"]         	#  0x22c1	(en: 'logical or')
- - "⋂": [t: "intersection de la famille"]       	#  0x22c2	(en: 'intersection')
- - "⋃": [t: "réunion de la famille"]            	#  0x22c3	(en: 'union')
+ - "⋀": [t: "et logique"]         	#  0x22c0	(en: 'logical and')
+ - "⋁": [t: "ou logique"]         	#  0x22c1	(en: 'logical or')
+ - "⋂": [t: "\uF8FEintersection"]       	#  0x22c2	(en: 'intersection')
+ - "⋃": [t: "\uF8FEunion"]            	#  0x22c3	(en: 'union')
  - "⋄": [t: "opérateur losange"]                	#  0x22c4	(en: 'diamond operator')
  - "⋅":                                         	#  0x22c5
     - test: 

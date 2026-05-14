@@ -473,11 +473,11 @@
  - "∧": [t: "et logique"]                       	#  0x2227	(en: 'and')
  - "∨": [t: "ou logique"]                       	#  0x2228	(en: 'or')
  - "∩": [t: "intersection"]                     	#  0x2229
- - "∪": [t: "union"]                            	#  0x222a
- - "∫": [t: "intégrale"]                        	#  0x222b	(en: 'integral')
- - "∬": [t: "intégrale double"]                 	#  0x222c	(en: 'double integral')
- - "∭": [t: "intégrale triple"]                 	#  0x222d	(en: 'triple integral')
- - "∮": [t: "intégrale de contour"]             	#  0x222e	(en: 'contour integral')
+ - "∪": [t: "\uF8FEunion"]                            	#  0x222a
+ - "∫": [t: "\uF8FEintégrale"]                        	#  0x222b	(en: 'integral')
+ - "∬": [t: "\uF8FEintégrale double"]                 	#  0x222c	(en: 'double integral')
+ - "∭": [t: "\uF8FEintégrale triple"]                 	#  0x222d	(en: 'triple integral')
+ - "∮": [t: "\uF8FEintégrale de contour"]             	#  0x222e	(en: 'contour integral')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
