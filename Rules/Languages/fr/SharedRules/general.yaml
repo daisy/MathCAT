@@ -527,13 +527,13 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [t: "case"]      # phrase(this is the first 'case' of three cases)
+      then: [t: "cas"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
       then: [t: "équation"]      # phrase(this is the first 'equation' of three equations)
       else: [t: "ligne"]      # phrase(this is the first 'line' of three lines)
   - test:
-    - if: "$LineCount != 1"
-      then: [ct: "s"] # plural
+    - if: "$LineCount != 1 and not(self::m:piecewise)" # 'cas' already ends with an 's', no need to add one when plural
+      then: [ct: "s"] # plural (not for 'cas' which is invariant)
   - pause: short
   - x: "*"
   - pause: long
@@ -549,7 +549,7 @@
       - pause: medium
       - test:
         - if: "parent::m:piecewise"
-          then: [t: "case"]     # phrase('case' 1 of 10 cases)
+          then: [t: "cas"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
           then: [t: "équation"] # phrase('equation' 1 of 10 equations)
           else: [t: "ligne"]     # phrase('line 1 of 10 lines)

@@ -7,6 +7,7 @@ mod SimpleSpeak {
     mod linear_algebra;
     mod mfrac;
     mod msup;
+    mod multiline;
 }
 
 mod shared;
