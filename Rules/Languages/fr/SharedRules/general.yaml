@@ -8,25 +8,25 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "la"      # phrase('the' square root of 25 equals 5)
-  - bookmark: "*[2]/@id"
-  - test:
-    - if: "*[2][.='+']"
-      then: [t: "positive"]      # phrase(set of all 'positive' integers less than 10)
-      else: [t: "negative"]      # phrase(set of all 'negative' integers less than minus 10)
+      - t: "les"      # phrase('the' real numbers)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "nombre complexe"]      # phrase('complex numbers' consist of two parts)
+      then: [t: "nombres complexes"]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "nombre naturel"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [t: "nombres naturels"]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "nombre rationel"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [t: "nombres rationnels"]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][.='ℝ']"
-      then: [t: "nombre réel"]      # phrase('real numbers' can be both positive and negative)
+      then: [t: "nombres réels"]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "nombre entier"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [t: "nombres entiers"]      # phrase(positive 'integers' are natural numbers above 0)
       else: [x: "*[1][text()]"] # shouldn't happen
+  - bookmark: "*[2]/@id"
+  - test:
+    - if: "*[2][.='+']"
+      then: [t: "positifs"]      # phrase(set of all 'positive' integers less than 10)
+      else: [t: "négatifs"]      # phrase(set of all 'negative' integers less than minus 10)
 
 - name: dimension-number-sets
   # should be single digit integer at this point (e.g, R^3)
@@ -60,7 +60,7 @@
     - else_if: ".='ℕ'"
       then: [t: "les nombres naturels"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
-      then: [t: "les nombres rationels"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [t: "les nombres rationnels"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
       then: [t: "les nombres réels"]      # phrase('the real numbers' can be both positive and negative)
     - else_if: ".='ℤ'"

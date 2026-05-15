@@ -8,6 +8,7 @@ mod SimpleSpeak {
     mod mfrac;
     mod msup;
     mod multiline;
+    mod sets;
 }
 
 mod shared;

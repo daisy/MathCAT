@@ -358,7 +358,7 @@
         - test:
             if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"	#  "the set x is an element of ..." sounds bad"
             then: [t: "est"]                    	# 	(en: 'is', DeepL translation)
-        - t: "appartient à"                     	# 	(en: 'an element of')
+        - t: "appartenant à"                     	# 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -383,9 +383,9 @@
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
         then:
-        - test: 
-            if: "$Verbosity!='Terse'"
-            then: [t: "est"]                    	# 	(en: 'is', DeepL translation)
+        # - test: 
+        #     if: "$Verbosity!='Terse'"
+        #     then: [t: "est"]                    	# 	(en: 'is', DeepL translation)
         - t: "n'appartient pas à"               	# 	(en: 'not an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
