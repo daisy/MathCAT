@@ -6,6 +6,7 @@ mod SimpleSpeak {
     mod large_ops;
     mod linear_algebra;
     mod mfrac;
+    mod msup;
 }
 
 mod shared;

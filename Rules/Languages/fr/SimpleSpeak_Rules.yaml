@@ -242,10 +242,8 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "élevé à la"
+  - t: "élevé à la puissance"
   - x: "*[2]"
-  - t: "puissance"
-  - pause: short
 
 - name: set
   tag: set
