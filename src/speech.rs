@@ -132,10 +132,13 @@ fn speak_rules(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>, math
         let new_package = Package::new();
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, new_package.as_document(), nav_node_id, nav_node_offset);
         let speech_string = nestable_speak_rules(& mut rules_with_context, mathml)?;
+        
         return Ok( rules.pref_manager.borrow().get_tts()
             .merge_pauses(remove_optional_indicators(
                 &speech_string.replace(CONCAT_STRING, "")
-                                    .replace(CONCAT_INDICATOR, "")                            
+                                   .replace(CONCAT_INDICATOR, "") 
+                                   .replace(POSTFIX_CONCAT_STRING, "")
+                                   .replace(POSTFIX_CONCAT_INDICATOR, "")                           
                             )
             .trim_start().trim_end_matches([' ', ',', ';'])) );
     });
@@ -241,6 +244,12 @@ pub const CONCAT_INDICATOR: &str = "\u{F8FE}";
 
 // This is the pattern that needs to be matched (and deleted)
 pub const CONCAT_STRING: &str = " \u{F8FE}";
+
+// a similar hack to delete a space afterward
+pub const POSTFIX_CONCAT_INDICATOR: &str = "\u{F8FF}";
+
+// This is the pattern that needs to be matched (and deleted)
+pub const POSTFIX_CONCAT_STRING: &str = "\u{F8FF} ";
 
 // a similar hack to potentially delete (repetitive) optional replacements
 // the OPTIONAL_INDICATOR is added by "ot:" before and after the optional string
@@ -446,6 +455,9 @@ impl Replacement {
             },
             "ct" | "CT" => {
                 return Ok( Replacement::Text( CONCAT_INDICATOR.to_string() + as_str_checked(value)? ) );
+            },
+            "tc" | "TC" => {
+                return Ok( Replacement::Text( as_str_checked(value)?.to_string() + POSTFIX_CONCAT_INDICATOR ) );
             },
             "ot" | "OT" => {
                 return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + as_str_checked(value)? + OPTIONAL_INDICATOR ) );
@@ -2774,7 +2786,17 @@ pub fn braille_replace_chars(str: &str, mathml: Element) -> Result<String> {
         let rules = rules.borrow();
         let new_package = Package::new();
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, new_package.as_document(), "", 0);
-        return rules_with_context.replace_chars(str, mathml);
+        return match rules_with_context.replace_chars(str, mathml) {
+            Ok(s) => Ok(
+                s.replace(CONCAT_STRING, "")
+                 .replace(CONCAT_INDICATOR, "") 
+                 .replace(POSTFIX_CONCAT_STRING, "")
+                 .replace(POSTFIX_CONCAT_INDICATOR, "")
+            ),
+            Err(e) => Err(e),
+        }                   
+
+
     })
 }
 

@@ -1,1054 +1,301 @@
 ---
- - "⋇": [t: "1⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [t: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
- - "ℏ": [t: "⠈⠒⠓"]              # 0x210F  (reduced Plank's constant)
- - "ⅆ": [t: "⠙"]                # 0x2146
- - "ⅇ": [t: "⠑"]                # 0x2147
- - "ⅈ": [t: "⠊"]                # 0x2148
- - "⨯": [t: "⠐⠦"]               # U+2A2F(VECTOR OR CROSS PRODUCT) -- make the same as 0x00D7 (Multiplication sign)
+ - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
+ - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
+ - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)
+ - "ⅆ": [tc: "⠙"]                # 0x2146
+ - "ⅇ": [tc: "⠑"]                # 0x2147
+ - "ⅈ": [tc: "⠊"]                # 0x2148
+ - "⨯": [tc: "⠐⠦"]               # U+2A2F(VECTOR OR CROSS PRODUCT) -- make the same as 0x00D7 (Multiplication sign)
 
  
- - "¼": [t: "#N⠁N⠌N⠙"]          # 0x00BC (Vulgar Fraction One Quarter)
- - "½": [t: "#N⠁N⠌N⠃"]          # 0x00BD (Vulgar Fraction One Half)
- - "¾": [t: "#N⠉N⠌N⠙"]          # 0x00BE (Vulgar Fraction Three Quarters)
- - "⅐": [t: "#N⠁N⠌N⠛"]          # 0x2150 (Vulgar Fraction One Seventh)
- - "⅑": [t: "#N⠁N⠌N⠊"]          # 0x2151 (Vulgar Fraction One Ninth)
- - "⅒": [t: "#N⠁N⠌N⠁N⠚"]        # 0x2152 (Vulgar Fraction One Tenth)
- - "⅓": [t: "#N⠁N⠌N⠉"]          # 0x2153 (Vulgar Fraction One Third)
- - "⅔": [t: "#N⠃N⠌N⠉"]          # 0x2154 (Vulgar Fraction Two Thirds)
- - "⅕": [t: "#N⠁N⠌N⠑"]          # 0x2155 (Vulgar Fraction One Fifth)
- - "⅖": [t: "#N⠃N⠌N⠑"]          # 0x2156 (Vulgar Fraction Two Fifths)
- - "⅗": [t: "#N⠉N⠌N⠑"]          # 0x2157 (Vulgar Fraction Three Fifths)
- - "⅘": [t: "#N⠙N⠌N⠑"]          # 0x2158 (Vulgar Fraction Four Fifths)
- - "⅙": [t: "#N⠁N⠌N⠋"]          # 0x2159 (Vulgar Fraction One Sixth)
- - "⅚": [t: "#N⠑N⠌N⠋"]          # 0x215A (Vulgar Fraction Five Sixths)
- - "⅛": [t: "#N⠁N⠌N⠓"]          # 0x215B (Vulgar Fraction One Eighth)
- - "⅜": [t: "#N⠉N⠌N⠓"]          # 0x215C (Vulgar Fraction Three Eighths)
- - "⅝": [t: "#N⠑N⠌N⠓"]          # 0x215D (Vulgar Fraction Five Eighths)
- - "⅞": [t: "#N⠛N⠌N⠓"]          # 0x215E (Vulgar Fraction Seven Eighths)
- - "↉": [t: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
+ - "¼": [tc: "#N⠁N⠌N⠙"]          # 0x00BC (Vulgar Fraction One Quarter)
+ - "½": [tc: "#N⠁N⠌N⠃"]          # 0x00BD (Vulgar Fraction One Half)
+ - "¾": [tc: "#N⠉N⠌N⠙"]          # 0x00BE (Vulgar Fraction Three Quarters)
+ - "⅐": [tc: "#N⠁N⠌N⠛"]          # 0x2150 (Vulgar Fraction One Seventh)
+ - "⅑": [tc: "#N⠁N⠌N⠊"]          # 0x2151 (Vulgar Fraction One Ninth)
+ - "⅒": [tc: "#N⠁N⠌N⠁N⠚"]        # 0x2152 (Vulgar Fraction One Tenth)
+ - "⅓": [tc: "#N⠁N⠌N⠉"]          # 0x2153 (Vulgar Fraction One Third)
+ - "⅔": [tc: "#N⠃N⠌N⠉"]          # 0x2154 (Vulgar Fraction Two Thirds)
+ - "⅕": [tc: "#N⠁N⠌N⠑"]          # 0x2155 (Vulgar Fraction One Fifth)
+ - "⅖": [tc: "#N⠃N⠌N⠑"]          # 0x2156 (Vulgar Fraction Two Fifths)
+ - "⅗": [tc: "#N⠉N⠌N⠑"]          # 0x2157 (Vulgar Fraction Three Fifths)
+ - "⅘": [tc: "#N⠙N⠌N⠑"]          # 0x2158 (Vulgar Fraction Four Fifths)
+ - "⅙": [tc: "#N⠁N⠌N⠋"]          # 0x2159 (Vulgar Fraction One Sixth)
+ - "⅚": [tc: "#N⠑N⠌N⠋"]          # 0x215A (Vulgar Fraction Five Sixths)
+ - "⅛": [tc: "#N⠁N⠌N⠓"]          # 0x215B (Vulgar Fraction One Eighth)
+ - "⅜": [tc: "#N⠉N⠌N⠓"]          # 0x215C (Vulgar Fraction Three Eighths)
+ - "⅝": [tc: "#N⠑N⠌N⠓"]          # 0x215D (Vulgar Fraction Five Eighths)
+ - "⅞": [tc: "#N⠛N⠌N⠓"]          # 0x215E (Vulgar Fraction Seven Eighths)
+ - "↉": [tc: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
 
- - "𝐚": [t: "BL⠁"]              # 0x1d41a 
- - "𝐛": [t: "BL⠃"]              # 0x1d41b 
- - "𝐜": [t: "BL⠉"]              # 0x1d41c 
- - "𝐝": [t: "BL⠙"]              # 0x1d41d 
- - "𝐞": [t: "BL⠑"]              # 0x1d41e 
- - "𝐟": [t: "BL⠋"]              # 0x1d41f 
- - "𝐠": [t: "BL⠛"]              # 0x1d420 
- - "𝐡": [t: "BL⠓"]              # 0x1d421 
- - "𝐢": [t: "BL⠊"]              # 0x1d422 
- - "𝐣": [t: "BL⠚"]              # 0x1d423 
- - "𝐤": [t: "BL⠅"]              # 0x1d424 
- - "𝐥": [t: "BL⠇"]              # 0x1d425 
- - "𝐦": [t: "BL⠍"]              # 0x1d426 
- - "𝐧": [t: "BL⠝"]              # 0x1d427 
- - "𝐨": [t: "BL⠕"]              # 0x1d428 
- - "𝐩": [t: "BL⠏"]              # 0x1d429 
- - "𝐪": [t: "BL⠟"]              # 0x1d42a 
- - "𝐫": [t: "BL⠗"]              # 0x1d42b 
- - "𝐬": [t: "BL⠎"]              # 0x1d42c 
- - "𝐭": [t: "BL⠞"]              # 0x1d42d 
- - "𝐮": [t: "BL⠥"]              # 0x1d42e 
- - "𝐯": [t: "BL⠧"]              # 0x1d42f 
- - "𝐰": [t: "BL⠺"]              # 0x1d430 
- - "𝐱": [t: "BL⠭"]              # 0x1d431 
- - "𝐲": [t: "BL⠽"]              # 0x1d432 
- - "𝐳": [t: "BL⠵"]              # 0x1d433 
 
- - "𝐀": [t: "BCL⠁"]             # 0x1d400 
- - "𝐁": [t: "BCL⠃"]             # 0x1d401 
- - "𝐂": [t: "BCL⠉"]             # 0x1d402 
- - "𝐃": [t: "BCL⠙"]             # 0x1d403 
- - "𝐄": [t: "BCL⠑"]             # 0x1d404 
- - "𝐅": [t: "BCL⠋"]             # 0x1d405 
- - "𝐆": [t: "BCL⠛"]             # 0x1d406 
- - "𝐇": [t: "BCL⠓"]             # 0x1d407 
- - "𝐈": [t: "BCL⠊"]             # 0x1d408 
- - "𝐉": [t: "BCL⠚"]             # 0x1d409 
- - "𝐊": [t: "BCL⠅"]             # 0x1d40a 
- - "𝐋": [t: "BCL⠇"]             # 0x1d40b 
- - "𝐌": [t: "BCL⠍"]             # 0x1d40c 
- - "𝐍": [t: "BCL⠝"]             # 0x1d40d 
- - "𝐎": [t: "BCL⠕"]             # 0x1d40e 
- - "𝐏": [t: "BCL⠏"]             # 0x1d40f 
- - "𝐐": [t: "BCL⠟"]             # 0x1d410 
- - "𝐑": [t: "BCL⠗"]             # 0x1d411 
- - "𝐒": [t: "BCL⠎"]             # 0x1d412 
- - "𝐓": [t: "BCL⠞"]             # 0x1d413 
- - "𝐔": [t: "BCL⠥"]             # 0x1d414 
- - "𝐕": [t: "BCL⠧"]             # 0x1d415 
- - "𝐖": [t: "BCL⠺"]             # 0x1d416 
- - "𝐗": [t: "BCL⠭"]             # 0x1d417 
- - "𝐘": [t: "BCL⠽"]             # 0x1d418 
- - "𝐙": [t: "BCL⠵"]             # 0x1d419 
 
-# don't mark these as italic
- - "𝑎": [t: "L⠁"]              # 0x1d44e 
- - "𝑏": [t: "L⠃"]              # 0x1d44f 
- - "𝑐": [t: "L⠉"]              # 0x1d450 
- - "𝑑": [t: "L⠙"]              # 0x1d451 
- - "𝑒": [t: "L⠑"]              # 0x1d452 
- - "𝑓": [t: "L⠋"]              # 0x1d453 
- - "𝑔": [t: "L⠛"]              # 0x1d454 
- - "𝑕": [t: "L⠓"]              # 0x1d455 
- - "𝑖": [t: "L⠊"]              # 0x1d456 
- - "𝑗": [t: "L⠚"]              # 0x1d457 
- - "𝑘": [t: "L⠅"]              # 0x1d458 
- - "𝑙": [t: "L⠇"]              # 0x1d459 
- - "𝑚": [t: "L⠍"]              # 0x1d45a 
- - "𝑛": [t: "L⠝"]              # 0x1d45b 
- - "𝑜": [t: "L⠕"]              # 0x1d45c 
- - "𝑝": [t: "L⠏"]              # 0x1d45d 
- - "𝑞": [t: "L⠟"]              # 0x1d45e 
- - "𝑟": [t: "L⠗"]              # 0x1d45f 
- - "𝑠": [t: "L⠎"]              # 0x1d460 
- - "𝑡": [t: "L⠞"]              # 0x1d461 
- - "𝑢": [t: "L⠥"]              # 0x1d462 
- - "𝑣": [t: "L⠧"]              # 0x1d463 
- - "𝑤": [t: "L⠺"]              # 0x1d464 
- - "𝑥": [t: "L⠭"]              # 0x1d465 
- - "𝑦": [t: "L⠽"]              # 0x1d466 
- - "𝑧": [t: "L⠵"]              # 0x1d467 
+ - "ℊ": [tc: "TL⠛⠁"]             # 0x210a (Script Small G)
+ - "ℋ": [tc: "TCL⠓⠁"]            # 0x210b (Script Capital H)
+ - "ℒ": [tc: "TCL⠇"]             # 0x2113 (Script Capital L)
+ - "ℓ": [tc: "TL⠇"]              # 0x2113 (Script Small L)
+ - "℘": [tc: "TCL⠏"]             # 0x2118 (Script Capital P)
+ - "ℛ": [tc: "TCL⠗"]             # 0x211B (Script Capital R)
+ - "ℯ": [tc: "TL⠑"]              # 0x212F (Script Small E)
+ - "ℰ": [tc: "TCL⠑"]             # 0x2130 (Script Capital E)
+ - "ℱ": [tc: "TCL⠋"]             # 0x2131 (Script Capital F)
+ - "ℳ": [tc: "TCL⠍"]             # 0x2133 (Script Capital M)
+ - "ℴ": [tc: "TL⠕"]              # 0x21334 (Script Small O)
+ - "ℌ": [tc: "DCL⠓"]             # 0x210C (Fraktur Capital H)
+ - "ℑ": [tc: "DCL⠊"]             # 0x2111 (Fraktur Capital I)
+ - "ℜ": [tc: "DCL⠗"]             # 0x211C (Fraktur Capital R)
+ - "ℨ": [tc: "DCL⠵"]             # 0x2128 (Fraktur Capital Z)
+ - "ℭ": [tc: "DCL⠉"]             # 0x22DC (Fraktur Capital C)
 
- - "𝐴": [t: "CL⠁"]             # 0x1d434 
- - "𝐵": [t: "CL⠃"]             # 0x1d435 
- - "𝐶": [t: "CL⠉"]             # 0x1d436 
- - "𝐷": [t: "CL⠙"]             # 0x1d437 
- - "𝐸": [t: "CL⠑"]             # 0x1d438 
- - "𝐹": [t: "CL⠋"]             # 0x1d439 
- - "𝐺": [t: "CL⠛"]             # 0x1d43a 
- - "𝐻": [t: "CL⠓"]             # 0x1d43b 
- - "𝐼": [t: "CL⠊"]             # 0x1d43c 
- - "𝐽": [t: "CL⠚"]             # 0x1d43d 
- - "𝐾": [t: "CL⠅"]             # 0x1d43e 
- - "𝐿": [t: "CL⠇"]             # 0x1d43f 
- - "𝑀": [t: "CL⠍"]             # 0x1d440 
- - "𝑁": [t: "CL⠝"]             # 0x1d441 
- - "𝑂": [t: "CL⠕"]             # 0x1d442 
- - "𝑃": [t: "CL⠏"]             # 0x1d443 
- - "𝑄": [t: "CL⠟"]             # 0x1d444 
- - "𝑅": [t: "CL⠗"]             # 0x1d445 
- - "𝑆": [t: "CL⠎"]             # 0x1d446 
- - "𝑇": [t: "CL⠞"]             # 0x1d447 
- - "𝑈": [t: "CL⠥"]             # 0x1d448 
- - "𝑉": [t: "CL⠧"]             # 0x1d449 
- - "𝑊": [t: "CL⠺"]             # 0x1d44a 
- - "𝑋": [t: "CL⠭"]             # 0x1d44b 
- - "𝑌": [t: "CL⠽"]             # 0x1d44c 
- - "𝑍": [t: "CL⠵"]             # 0x1d44d 
+ - "ℂ": [tc: "𝔹CL⠉"]             # 0x2102 
+ - "ℍ": [tc: "𝔹CL⠓"]             # 0x210d 
+ - "ℕ": [tc: "𝔹CL⠝"]             # 0x2115 
+ - "ℙ": [tc: "𝔹CL⠏"]             # 0x2119 
+ - "ℚ": [tc: "𝔹CL⠟"]             # 0x211a 
+ - "ℝ": [tc: "𝔹CL⠗"]             # 0x211d 
+ - "ℤ": [tc: "𝔹CL⠵"]             # 0x2124 
 
- - "𝒂": [t: "BIL⠁"]             # 0x1d482 
- - "𝒃": [t: "BIL⠃"]             # 0x1d483 
- - "𝒄": [t: "BIL⠉"]             # 0x1d484 
- - "𝒅": [t: "BIL⠙"]             # 0x1d485 
- - "𝒆": [t: "BIL⠑"]             # 0x1d486 
- - "𝒇": [t: "BIL⠋"]             # 0x1d487 
- - "𝒈": [t: "BIL⠛"]             # 0x1d488 
- - "𝒉": [t: "BIL⠓"]             # 0x1d489 
- - "𝒊": [t: "BIL⠊"]             # 0x1d48a 
- - "𝒋": [t: "BIL⠚"]             # 0x1d48b 
- - "𝒌": [t: "BIL⠅"]             # 0x1d48c 
- - "𝒍": [t: "BIL⠇"]             # 0x1d48d 
- - "𝒎": [t: "BIL⠍"]             # 0x1d48e 
- - "𝒏": [t: "BIL⠝"]             # 0x1d48f 
- - "𝒐": [t: "BIL⠕"]             # 0x1d490 
- - "𝒑": [t: "BIL⠏"]             # 0x1d491 
- - "𝒒": [t: "BIL⠟"]             # 0x1d492 
- - "𝒓": [t: "BIL⠗"]             # 0x1d493 
- - "𝒔": [t: "BIL⠎"]             # 0x1d494 
- - "𝒕": [t: "BIL⠞"]             # 0x1d495 
- - "𝒖": [t: "BIL⠥"]             # 0x1d496 
- - "𝒗": [t: "BIL⠧"]             # 0x1d497 
- - "𝒘": [t: "BIL⠺"]             # 0x1d498 
- - "𝒙": [t: "BIL⠭"]             # 0x1d499 
- - "𝒚": [t: "BIL⠽"]             # 0x1d49a 
- - "𝒛": [t: "BIL⠵"]             # 0x1d49b 
 
- - "𝑨": [t: "BICL⠁"]            # 0x1d468 
- - "𝑩": [t: "BICL⠃"]            # 0x1d469 
- - "𝑪": [t: "BICL⠉"]            # 0x1d46a 
- - "𝑫": [t: "BICL⠙"]            # 0x1d46b 
- - "𝑬": [t: "BICL⠑"]            # 0x1d46c 
- - "𝑭": [t: "BICL⠋"]            # 0x1d46d 
- - "𝑮": [t: "BICL⠛"]            # 0x1d46e 
- - "𝑯": [t: "BICL⠓"]            # 0x1d46f 
- - "𝑰": [t: "BICL⠊"]            # 0x1d470 
- - "𝑱": [t: "BICL⠚"]            # 0x1d471 
- - "𝑲": [t: "BICL⠅"]            # 0x1d472 
- - "𝑳": [t: "BICL⠇"]            # 0x1d473 
- - "𝑴": [t: "BICL⠍"]            # 0x1d474 
- - "𝑵": [t: "BICL⠝"]            # 0x1d475 
- - "𝑶": [t: "BICL⠕"]            # 0x1d476 
- - "𝑷": [t: "BICL⠏"]            # 0x1d477 
- - "𝑸": [t: "BICL⠟"]            # 0x1d478 
- - "𝑹": [t: "BICL⠗"]            # 0x1d479 
- - "𝑺": [t: "BICL⠎"]            # 0x1d47a 
- - "𝑻": [t: "BICL⠞"]            # 0x1d47b 
- - "𝑼": [t: "BICL⠥"]            # 0x1d47c 
- - "𝑽": [t: "BICL⠧"]            # 0x1d47d 
- - "𝑾": [t: "BICL⠺"]            # 0x1d47e 
- - "𝑿": [t: "BICL⠭"]            # 0x1d47f 
- - "𝒀": [t: "BICL⠽"]            # 0x1d480 
- - "𝒁": [t: "BICL⠵"]            # 0x1d481 
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - tc: "B"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "𝒶": [t: "TsL⠁"]             # 0x1d4b6 
- - "𝒷": [t: "TsL⠃"]             # 0x1d4b7 
- - "𝒸": [t: "TsL⠉"]             # 0x1d4b8 
- - "𝒹": [t: "TsL⠙"]             # 0x1d4b9 
- - "𝒺": [t: "TsL⠑"]             # 0x1d4ba 
- - "𝒻": [t: "TsL⠋"]             # 0x1d4bb 
- - "𝒼": [t: "TsL⠛"]             # 0x1d4bc 
- - "𝒽": [t: "TsL⠓"]             # 0x1d4bd 
- - "𝒾": [t: "TsL⠊"]             # 0x1d4be 
- - "𝒿": [t: "TsL⠚"]             # 0x1d4bf 
- - "𝓀": [t: "TsL⠅"]             # 0x1d4c0 
- - "𝓁": [t: "TsL⠇"]             # 0x1d4c1 
- - "𝓂": [t: "TsL⠍"]             # 0x1d4c2 
- - "𝓃": [t: "TsL⠝"]             # 0x1d4c3 
- - "𝓄": [t: "TsL⠕"]             # 0x1d4c4 
- - "𝓅": [t: "TsL⠏"]             # 0x1d4c5 
- - "𝓆": [t: "TsL⠟"]             # 0x1d4c6 
- - "𝓇": [t: "TsL⠗"]             # 0x1d4c7 
- - "𝓈": [t: "TsL⠎"]             # 0x1d4c8 
- - "𝓉": [t: "TsL⠞"]             # 0x1d4c9 
- - "𝓊": [t: "TsL⠥"]             # 0x1d4ca 
- - "𝓋": [t: "TsL⠧"]             # 0x1d4cb 
- - "𝓌": [t: "TsL⠺"]             # 0x1d4cc 
- - "𝓍": [t: "TsL⠭"]             # 0x1d4cd 
- - "𝓎": [t: "TsL⠽"]             # 0x1d4ce 
- - "𝓏": [t: "TsL⠵"]             # 0x1d4cf 
 
- - "𝒜": [t: "TsCL⠁"]            # 0x1d49c 
- - "𝒝": [t: "TsCL⠃"]            # 0x1d49d 
- - "𝒞": [t: "TsCL⠉"]            # 0x1d49e 
- - "𝒟": [t: "TsCL⠙"]            # 0x1d49f 
- - "𝒠": [t: "TsCL⠑"]            # 0x1d4a0 
- - "𝒡": [t: "TsCL⠋"]            # 0x1d4a1 
- - "𝒢": [t: "TsCL⠛"]            # 0x1d4a2 
- - "𝒣": [t: "TsCL⠓"]            # 0x1d4a3 
- - "𝒤": [t: "TsCL⠊"]            # 0x1d4a4 
- - "𝒥": [t: "TsCL⠚"]            # 0x1d4a5 
- - "𝒦": [t: "TsCL⠅"]            # 0x1d4a6 
- - "𝒧": [t: "TsCL⠇"]            # 0x1d4a7 
- - "𝒨": [t: "TsCL⠍"]            # 0x1d4a8 
- - "𝒩": [t: "TsCL⠝"]            # 0x1d4a9 
- - "𝒪": [t: "TsCL⠕"]            # 0x1d4aa 
- - "𝒫": [t: "TsCL⠏"]            # 0x1d4ab 
- - "𝒬": [t: "TsCL⠟"]            # 0x1d4ac 
- - "𝒭": [t: "TsCL⠗"]            # 0x1d4ad 
- - "𝒮": [t: "TsCL⠎"]            # 0x1d4ae 
- - "𝒯": [t: "TsCL⠞"]            # 0x1d4af 
- - "𝒰": [t: "TsCL⠥"]            # 0x1d4b0 
- - "𝒱": [t: "TsCL⠧"]            # 0x1d4b1 
- - "𝒲": [t: "TsCL⠺"]            # 0x1d4b2 
- - "𝒳": [t: "TsCL⠭"]            # 0x1d4b3 
- - "𝒴": [t: "TsCL⠽"]            # 0x1d4b4 
- - "𝒵": [t: "TsCL⠵"]            # 0x1d4b5 
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - tc: "BGL"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "ℊ": [t: "TL⠛⠁"]             # 0x210a (Script Small G)
- - "ℋ": [t: "TCL⠓⠁"]            # 0x210b (Script Capital H)
- - "ℒ": [t: "TCL⠇"]             # 0x2113 (Script Capital L)
- - "ℓ": [t: "TL⠇"]              # 0x2113 (Script Small L)
- - "℘": [t: "TCL⠏"]             # 0x2118 (Script Capital P)
- - "ℛ": [t: "TCL⠗"]             # 0x211B (Script Capital R)
- - "ℯ": [t: "TL⠑"]              # 0x212F (Script Small E)
- - "ℰ": [t: "TCL⠑"]             # 0x2130 (Script Capital E)
- - "ℱ": [t: "TCL⠋"]             # 0x2131 (Script Capital F)
- - "ℳ": [t: "TCL⠍"]             # 0x2133 (Script Capital M)
- - "ℴ": [t: "TL⠕"]              # 0x21334 (Script Small O)
- - "𝓪": [t: "BTsL⠁"]            # 0x1d4ea 
- - "𝓫": [t: "BTsL⠃"]            # 0x1d4eb 
- - "𝓬": [t: "BTsL⠉"]            # 0x1d4ec 
- - "𝓭": [t: "BTsL⠙"]            # 0x1d4ed 
- - "𝓮": [t: "BTsL⠑"]            # 0x1d4ee 
- - "𝓯": [t: "BTsL⠋"]            # 0x1d4ef 
- - "𝓰": [t: "BTsL⠛"]            # 0x1d4f0 
- - "𝓱": [t: "BTsL⠓"]            # 0x1d4f1 
- - "𝓲": [t: "BTsL⠊"]            # 0x1d4f2 
- - "𝓳": [t: "BTsL⠚"]            # 0x1d4f3 
- - "𝓴": [t: "BTsL⠅"]            # 0x1d4f4 
- - "𝓵": [t: "BTsL⠇"]            # 0x1d4f5 
- - "𝓶": [t: "BTsL⠍"]            # 0x1d4f6 
- - "𝓷": [t: "BTsL⠝"]            # 0x1d4f7 
- - "𝓸": [t: "BTsL⠕"]            # 0x1d4f8 
- - "𝓹": [t: "BTsL⠏"]            # 0x1d4f9 
- - "𝓺": [t: "BTsL⠟"]            # 0x1d4fa 
- - "𝓻": [t: "BTsL⠗"]            # 0x1d4fb 
- - "𝓼": [t: "BTsL⠎"]            # 0x1d4fc 
- - "𝓽": [t: "BTsL⠞"]            # 0x1d4fd 
- - "𝓾": [t: "BTsL⠥"]            # 0x1d4fe 
- - "𝓿": [t: "BTsL⠧"]            # 0x1d4ff 
- - "𝔀": [t: "BTsL⠺"]            # 0x1d500 
- - "𝔁": [t: "BTsL⠭"]            # 0x1d501 
- - "𝔂": [t: "BTsL⠽"]            # 0x1d502 
- - "𝔃": [t: "BTsL⠵"]            # 0x1d503 
 
- - "𝓐": [t: "BTsCL⠁"]           # 0x1d4d0 
- - "𝓑": [t: "BTsCL⠃"]           # 0x1d4d1 
- - "𝓒": [t: "BTsCL⠉"]           # 0x1d4d2 
- - "𝓓": [t: "BTsCL⠙"]           # 0x1d4d3 
- - "𝓔": [t: "BTsCL⠑"]           # 0x1d4d4 
- - "𝓕": [t: "BTsCL⠋"]           # 0x1d4d5 
- - "𝓖": [t: "BTsCL⠛"]           # 0x1d4d6 
- - "𝓗": [t: "BTsCL⠓"]           # 0x1d4d7 
- - "𝓘": [t: "BTsCL⠊"]           # 0x1d4d8 
- - "𝓙": [t: "BTsCL⠚"]           # 0x1d4d9 
- - "𝓚": [t: "BTsCL⠅"]           # 0x1d4da 
- - "𝓛": [t: "BTsCL⠇"]           # 0x1d4db 
- - "𝓜": [t: "BTsCL⠍"]           # 0x1d4dc 
- - "𝓝": [t: "BTsCL⠝"]           # 0x1d4dd 
- - "𝓞": [t: "BTsCL⠕"]           # 0x1d4de 
- - "𝓟": [t: "BTsCL⠏"]           # 0x1d4df 
- - "𝓠": [t: "BTsCL⠟"]           # 0x1d4e0 
- - "𝓡": [t: "BTsCL⠗"]           # 0x1d4e1 
- - "𝓢": [t: "BTsCL⠎"]           # 0x1d4e2 
- - "𝓣": [t: "BTsCL⠞"]           # 0x1d4e3 
- - "𝓤": [t: "BTsCL⠥"]           # 0x1d4e4 
- - "𝓥": [t: "BTsCL⠧"]           # 0x1d4e5 
- - "𝓦": [t: "BTsCL⠺"]           # 0x1d4e6 
- - "𝓧": [t: "BTsCL⠭"]           # 0x1d4e7 
- - "𝓨": [t: "BTsCL⠽"]           # 0x1d4e8 
- - "𝓩": [t: "BTsCL⠵"]           # 0x1d4e9 
+ - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - tc: "DC"
+    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝔞": [t: "DL⠁"]              # 0x1d51e 
- - "𝔟": [t: "DL⠃"]              # 0x1d51f 
- - "𝔠": [t: "DL⠉"]              # 0x1d520 
- - "𝔡": [t: "DL⠙"]              # 0x1d521 
- - "𝔢": [t: "DL⠑"]              # 0x1d522 
- - "𝔣": [t: "DL⠋"]              # 0x1d523 
- - "𝔤": [t: "DL⠛"]              # 0x1d524 
- - "𝔥": [t: "DL⠓"]              # 0x1d525 
- - "𝔦": [t: "DL⠊"]              # 0x1d526 
- - "𝔧": [t: "DL⠚"]              # 0x1d527 
- - "𝔨": [t: "DL⠅"]              # 0x1d528 
- - "𝔩": [t: "DL⠇"]              # 0x1d529 
- - "𝔪": [t: "DL⠍"]              # 0x1d52a 
- - "𝔫": [t: "DL⠝"]              # 0x1d52b 
- - "𝔬": [t: "DL⠕"]              # 0x1d52c 
- - "𝔭": [t: "DL⠏"]              # 0x1d52d 
- - "𝔮": [t: "DL⠟"]              # 0x1d52e 
- - "𝔯": [t: "DL⠗"]              # 0x1d52f 
- - "𝔰": [t: "DL⠎"]              # 0x1d530 
- - "𝔱": [t: "DL⠞"]              # 0x1d531 
- - "𝔲": [t: "DL⠥"]              # 0x1d532 
- - "𝔳": [t: "DL⠧"]              # 0x1d533 
- - "𝔴": [t: "DL⠺"]              # 0x1d534 
- - "𝔵": [t: "DL⠭"]              # 0x1d535 
- - "𝔶": [t: "DL⠽"]              # 0x1d536 
- - "𝔷": [t: "DL⠵"]              # 0x1d537 
+ - "𝔞-𝔷":    # 0x1d51e - 0x1d537
+    - tc: "D"
+    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    
+ - "𝕬-𝖅":    # 0x1D56C - 0x1D585
+    - tc: "BDC"
+    - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝔄": [t: "DCL⠁"]             # 0x1d504 
- - "𝔅": [t: "DCL⠃"]             # 0x1d505 
- - "𝔆": [t: "DCL⠉"]             # 0x1d506 
- - "𝔇": [t: "DCL⠙"]             # 0x1d507 
- - "𝔈": [t: "DCL⠑"]             # 0x1d508 
- - "𝔉": [t: "DCL⠋"]             # 0x1d509 
- - "𝔊": [t: "DCL⠛"]             # 0x1d50a 
- - "𝔋": [t: "DCL⠓"]             # 0x1d50b 
- - "𝔌": [t: "DCL⠊"]             # 0x1d50c 
- - "𝔍": [t: "DCL⠚"]             # 0x1d50d 
- - "𝔎": [t: "DCL⠅"]             # 0x1d50e 
- - "𝔏": [t: "DCL⠇"]             # 0x1d50f 
- - "𝔐": [t: "DCL⠍"]             # 0x1d510 
- - "𝔑": [t: "DCL⠝"]             # 0x1d511 
- - "𝔒": [t: "DCL⠕"]             # 0x1d512 
- - "𝔓": [t: "DCL⠏"]             # 0x1d513 
- - "𝔔": [t: "DCL⠟"]             # 0x1d514 
- - "𝔕": [t: "DCL⠗"]             # 0x1d515 
- - "𝔖": [t: "DCL⠎"]             # 0x1d516 
- - "𝔗": [t: "DCL⠞"]             # 0x1d517 
- - "𝔘": [t: "DCL⠥"]             # 0x1d518 
- - "𝔙": [t: "DCL⠧"]             # 0x1d519 
- - "𝔚": [t: "DCL⠺"]             # 0x1d51a 
- - "𝔛": [t: "DCL⠭"]             # 0x1d51b 
- - "𝔜": [t: "DCL⠽"]             # 0x1d51c 
- - "𝔝": [t: "DCL⠵"]             # 0x1d51d 
+ - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
+    - tc: "D"
+    - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "ℌ": [t: "DCL⠓"]             # 0x210C (Fraktur Capital H)
- - "ℑ": [t: "DCL⠊"]             # 0x2111 (Fraktur Capital I)
- - "ℜ": [t: "DCL⠗"]             # 0x211C (Fraktur Capital R)
- - "ℨ": [t: "DCL⠵"]             # 0x2128 (Fraktur Capital Z)
- - "ℭ": [t: "DCL⠉"]             # 0x22DC (Fraktur Capital C)
- - "𝕒": [t: "𝔹L⠁"]              # 0x1d552 
- - "𝕓": [t: "𝔹L⠃"]              # 0x1d553 
- - "𝕔": [t: "𝔹L⠉"]              # 0x1d554 
- - "𝕕": [t: "𝔹L⠙"]              # 0x1d555 
- - "𝕖": [t: "𝔹L⠑"]              # 0x1d556 
- - "𝕗": [t: "𝔹L⠋"]              # 0x1d557 
- - "𝕘": [t: "𝔹L⠛"]              # 0x1d558 
- - "𝕙": [t: "𝔹L⠓"]              # 0x1d559 
- - "𝕚": [t: "𝔹L⠊"]              # 0x1d55a 
- - "𝕛": [t: "𝔹L⠚"]              # 0x1d55b 
- - "𝕜": [t: "𝔹L⠅"]              # 0x1d55c 
- - "𝕝": [t: "𝔹L⠇"]              # 0x1d55d 
- - "𝕞": [t: "𝔹L⠍"]              # 0x1d55e 
- - "𝕟": [t: "𝔹L⠝"]              # 0x1d55f 
- - "𝕠": [t: "𝔹L⠕"]              # 0x1d560 
- - "𝕡": [t: "𝔹L⠏"]              # 0x1d561 
- - "𝕢": [t: "𝔹L⠟"]              # 0x1d562 
- - "𝕣": [t: "𝔹L⠗"]              # 0x1d563 
- - "𝕤": [t: "𝔹L⠎"]              # 0x1d564 
- - "𝕥": [t: "𝔹L⠞"]              # 0x1d565 
- - "𝕦": [t: "𝔹L⠥"]              # 0x1d566 
- - "𝕧": [t: "𝔹L⠧"]              # 0x1d567 
- - "𝕨": [t: "𝔹L⠺"]              # 0x1d568 
- - "𝕩": [t: "𝔹L⠭"]              # 0x1d569 
- - "𝕪": [t: "𝔹L⠽"]              # 0x1d56a 
- - "𝕫": [t: "𝔹L⠵"]              # 0x1d56b 
+ # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
+ # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
+ - "𝔸-𝕐":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - tc: "DC"
+    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝔸": [t: "𝔹CL⠁"]             # 0x1d538 
- - "𝔹": [t: "𝔹CL⠃"]             # 0x1d539 
- - "ℂ": [t: "𝔹CL⠉"]             # 0x2102 
- - "𝔻": [t: "𝔹CL⠙"]             # 0x1d53b 
- - "𝔼": [t: "𝔹CL⠑"]             # 0x1d53c 
- - "𝔽": [t: "𝔹CL⠋"]             # 0x1d53d 
- - "𝔾": [t: "𝔹CL⠛"]             # 0x1d53e 
- - "ℍ": [t: "𝔹CL⠓"]             # 0x210d 
- - "𝕀": [t: "𝔹CL⠊"]             # 0x1d540 
- - "𝕁": [t: "𝔹CL⠚"]             # 0x1d541 
- - "𝕂": [t: "𝔹CL⠅"]             # 0x1d542 
- - "𝕃": [t: "𝔹CL⠇"]             # 0x1d543 
- - "𝕄": [t: "𝔹CL⠍"]             # 0x1d544 
- - "ℕ": [t: "𝔹CL⠝"]             # 0x2115 
- - "𝕆": [t: "𝔹CL⠕"]             # 0x1d546 
- - "ℙ": [t: "𝔹CL⠏"]             # 0x2119 
- - "ℚ": [t: "𝔹CL⠟"]             # 0x211a 
- - "ℝ": [t: "𝔹CL⠗"]             # 0x211d 
- - "𝕊": [t: "𝔹CL⠎"]             # 0x1d54a 
- - "𝕋": [t: "𝔹CL⠞"]             # 0x1d54b 
- - "𝕌": [t: "𝔹CL⠥"]             # 0x1d54c 
- - "𝕍": [t: "𝔹CL⠧"]             # 0x1d54d 
- - "𝕎": [t: "𝔹CL⠺"]             # 0x1d54e 
- - "𝕏": [t: "𝔹CL⠭"]             # 0x1d54f 
- - "𝕐": [t: "𝔹CL⠽"]             # 0x1d550 
- - "ℤ": [t: "𝔹CL⠵"]             # 0x2124 
- - "𝖆": [t: "BDL⠁"]             # 0x1d586 
- - "𝖇": [t: "BDL⠃"]             # 0x1d587 
- - "𝖈": [t: "BDL⠉"]             # 0x1d588 
- - "𝖉": [t: "BDL⠙"]             # 0x1d589 
- - "𝖊": [t: "BDL⠑"]             # 0x1d58a 
- - "𝖋": [t: "BDL⠋"]             # 0x1d58b 
- - "𝖌": [t: "BDL⠛"]             # 0x1d58c 
- - "𝖍": [t: "BDL⠓"]             # 0x1d58d 
- - "𝖎": [t: "BDL⠊"]             # 0x1d58e 
- - "𝖏": [t: "BDL⠚"]             # 0x1d58f 
- - "𝖐": [t: "BDL⠅"]             # 0x1d590 
- - "𝖑": [t: "BDL⠇"]             # 0x1d591 
- - "𝖒": [t: "BDL⠍"]             # 0x1d592 
- - "𝖓": [t: "BDL⠝"]             # 0x1d593 
- - "𝖔": [t: "BDL⠕"]             # 0x1d594 
- - "𝖕": [t: "BDL⠏"]             # 0x1d595 
- - "𝖖": [t: "BDL⠟"]             # 0x1d596 
- - "𝖗": [t: "BDL⠗"]             # 0x1d597 
- - "𝖘": [t: "BDL⠎"]             # 0x1d598 
- - "𝖙": [t: "BDL⠞"]             # 0x1d599 
- - "𝖚": [t: "BDL⠥"]             # 0x1d59a 
- - "𝖛": [t: "BDL⠧"]             # 0x1d59b 
- - "𝖜": [t: "BDL⠺"]             # 0x1d59c 
- - "𝖝": [t: "BDL⠭"]             # 0x1d59d 
- - "𝖞": [t: "BDL⠽"]             # 0x1d59e 
- - "𝖟": [t: "BDL⠵"]             # 0x1d59f 
+ - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
+    - tc: "D"
+    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝕬": [t: "BDCL⠁"]            # 0x1d56c 
- - "𝕭": [t: "BDCL⠃"]            # 0x1d56d 
- - "𝕮": [t: "BDCL⠉"]            # 0x1d56e 
- - "𝕯": [t: "BDCL⠙"]            # 0x1d56f 
- - "𝕰": [t: "BDCL⠑"]            # 0x1d570 
- - "𝕱": [t: "BDCL⠋"]            # 0x1d571 
- - "𝕲": [t: "BDCL⠛"]            # 0x1d572 
- - "𝕳": [t: "BDCL⠓"]            # 0x1d573 
- - "𝕴": [t: "BDCL⠊"]            # 0x1d574 
- - "𝕵": [t: "BDCL⠚"]            # 0x1d575 
- - "𝕶": [t: "BDCL⠅"]            # 0x1d576 
- - "𝕷": [t: "BDCL⠇"]            # 0x1d577 
- - "𝕸": [t: "BDCL⠍"]            # 0x1d578 
- - "𝕹": [t: "BDCL⠝"]            # 0x1d579 
- - "𝕺": [t: "BDCL⠕"]            # 0x1d57a 
- - "𝕻": [t: "BDCL⠏"]            # 0x1d57b 
- - "𝕼": [t: "BDCL⠟"]            # 0x1d57c 
- - "𝕽": [t: "BDCL⠗"]            # 0x1d57d 
- - "𝕾": [t: "BDCL⠎"]            # 0x1d57e 
- - "𝕿": [t: "BDCL⠞"]            # 0x1d57f 
- - "𝖀": [t: "BDCL⠥"]            # 0x1d580 
- - "𝖁": [t: "BDCL⠧"]            # 0x1d581 
- - "𝖂": [t: "BDCL⠺"]            # 0x1d582 
- - "𝖃": [t: "BDCL⠭"]            # 0x1d583 
- - "𝖄": [t: "BDCL⠽"]            # 0x1d584 
- - "𝖅": [t: "BDCL⠵"]            # 0x1d585 
+ - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
+    - tc: "D"
+    - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
 
- - "𝖺": [t: "SL⠁"]              # 0x1d5ba 
- - "𝖻": [t: "SL⠃"]              # 0x1d5bb 
- - "𝖼": [t: "SL⠉"]              # 0x1d5bc 
- - "𝖽": [t: "SL⠙"]              # 0x1d5bd 
- - "𝖾": [t: "SL⠑"]              # 0x1d5be 
- - "𝖿": [t: "SL⠋"]              # 0x1d5bf 
- - "𝗀": [t: "SL⠛"]              # 0x1d5c0 
- - "𝗁": [t: "SL⠓"]              # 0x1d5c1 
- - "𝗂": [t: "SL⠊"]              # 0x1d5c2 
- - "𝗃": [t: "SL⠚"]              # 0x1d5c3 
- - "𝗄": [t: "SL⠅"]              # 0x1d5c4 
- - "𝗅": [t: "SL⠇"]              # 0x1d5c5 
- - "𝗆": [t: "SL⠍"]              # 0x1d5c6 
- - "𝗇": [t: "SL⠝"]              # 0x1d5c7 
- - "𝗈": [t: "SL⠕"]              # 0x1d5c8 
- - "𝗉": [t: "SL⠏"]              # 0x1d5c9 
- - "𝗊": [t: "SL⠟"]              # 0x1d5ca 
- - "𝗋": [t: "SL⠗"]              # 0x1d5cb 
- - "𝗌": [t: "SL⠎"]              # 0x1d5cc 
- - "𝗍": [t: "SL⠞"]              # 0x1d5cd 
- - "𝗎": [t: "SL⠥"]              # 0x1d5ce 
- - "𝗏": [t: "SL⠧"]              # 0x1d5cf 
- - "𝗐": [t: "SL⠺"]              # 0x1d5d0 
- - "𝗑": [t: "SL⠭"]              # 0x1d5d1 
- - "𝗒": [t: "SL⠽"]              # 0x1d5d2 
- - "𝗓": [t: "SL⠵"]              # 0x1d5d3 
+ # script chars in math alphabetic block and also MathType private use area
+ - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
+    - tc: "TsC"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyza')"
 
- - "𝖠": [t: "SCL⠁"]             # 0x1d5a0 
- - "𝖡": [t: "SCL⠃"]             # 0x1d5a1 
- - "𝖢": [t: "SCL⠉"]             # 0x1d5a2 
- - "𝖣": [t: "SCL⠙"]             # 0x1d5a3 
- - "𝖤": [t: "SCL⠑"]             # 0x1d5a4 
- - "𝖥": [t: "SCL⠋"]             # 0x1d5a5 
- - "𝖦": [t: "SCL⠛"]             # 0x1d5a6 
- - "𝖧": [t: "SCL⠓"]             # 0x1d5a7 
- - "𝖨": [t: "SCL⠊"]             # 0x1d5a8 
- - "𝖩": [t: "SCL⠚"]             # 0x1d5a9 
- - "𝖪": [t: "SCL⠅"]             # 0x1d5aa 
- - "𝖫": [t: "SCL⠇"]             # 0x1d5ab 
- - "𝖬": [t: "SCL⠍"]             # 0x1d5ac 
- - "𝖭": [t: "SCL⠝"]             # 0x1d5ad 
- - "𝖮": [t: "SCL⠕"]             # 0x1d5ae 
- - "𝖯": [t: "SCL⠏"]             # 0x1d5af 
- - "𝖰": [t: "SCL⠟"]             # 0x1d5b0 
- - "𝖱": [t: "SCL⠗"]             # 0x1d5b1 
- - "𝖲": [t: "SCL⠎"]             # 0x1d5b2 
- - "𝖳": [t: "SCL⠞"]             # 0x1d5b3 
- - "𝖴": [t: "SCL⠥"]             # 0x1d5b4 
- - "𝖵": [t: "SCL⠧"]             # 0x1d5b5 
- - "𝖶": [t: "SCL⠺"]             # 0x1d5b6 
- - "𝖷": [t: "SCL⠭"]             # 0x1d5b7 
- - "𝖸": [t: "SCL⠽"]             # 0x1d5b8 
- - "𝖹": [t: "SCL⠵"]             # 0x1d5b9 
+ - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
+    - tc: "Ts"
+    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝗮": [t: "BSL⠁"]             # 0x1d5ee 
- - "𝗯": [t: "BSL⠃"]             # 0x1d5ef 
- - "𝗰": [t: "BSL⠉"]             # 0x1d5f0 
- - "𝗱": [t: "BSL⠙"]             # 0x1d5f1 
- - "𝗲": [t: "BSL⠑"]             # 0x1d5f2 
- - "𝗳": [t: "BSL⠋"]             # 0x1d5f3 
- - "𝗴": [t: "BSL⠛"]             # 0x1d5f4 
- - "𝗵": [t: "BSL⠓"]             # 0x1d5f5 
- - "𝗶": [t: "BSL⠊"]             # 0x1d5f6 
- - "𝗷": [t: "BSL⠚"]             # 0x1d5f7 
- - "𝗸": [t: "BSL⠅"]             # 0x1d5f8 
- - "𝗹": [t: "BSL⠇"]             # 0x1d5f9 
- - "𝗺": [t: "BSL⠍"]             # 0x1d5fa 
- - "𝗻": [t: "BSL⠝"]             # 0x1d5fb 
- - "𝗼": [t: "BSL⠕"]             # 0x1d5fc 
- - "𝗽": [t: "BSL⠏"]             # 0x1d5fd 
- - "𝗾": [t: "BSL⠟"]             # 0x1d5fe 
- - "𝗿": [t: "BSL⠗"]             # 0x1d5ff 
- - "𝘀": [t: "BSL⠎"]             # 0x1d600 
- - "𝘁": [t: "BSL⠞"]             # 0x1d601 
- - "𝘂": [t: "BSL⠥"]             # 0x1d602 
- - "𝘃": [t: "BSL⠧"]             # 0x1d603 
- - "𝘄": [t: "BSL⠺"]             # 0x1d604 
- - "𝘅": [t: "BSL⠭"]             # 0x1d605 
- - "𝘆": [t: "BSL⠽"]             # 0x1d606 
- - "𝘇": [t: "BSL⠵"]             # 0x1d607 
+ # bold script chars in math alphabetic block
+ - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
+    - tc: "BTs"
+    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝗔": [t: "BSCL⠁"]            # 0x1d5d4 
- - "𝗕": [t: "BSCL⠃"]            # 0x1d5d5 
- - "𝗖": [t: "BSCL⠉"]            # 0x1d5d6 
- - "𝗗": [t: "BSCL⠙"]            # 0x1d5d7 
- - "𝗘": [t: "BSCL⠑"]            # 0x1d5d8 
- - "𝗙": [t: "BSCL⠋"]            # 0x1d5d9 
- - "𝗚": [t: "BSCL⠛"]            # 0x1d5da 
- - "𝗛": [t: "BSCL⠓"]            # 0x1d5db 
- - "𝗜": [t: "BSCL⠊"]            # 0x1d5dc 
- - "𝗝": [t: "BSCL⠚"]            # 0x1d5dd 
- - "𝗞": [t: "BSCL⠅"]            # 0x1d5de 
- - "𝗟": [t: "BSCL⠇"]            # 0x1d5df 
- - "𝗠": [t: "BSCL⠍"]            # 0x1d5e0 
- - "𝗡": [t: "BSCL⠝"]            # 0x1d5e1 
- - "𝗢": [t: "BSCL⠕"]            # 0x1d5e2 
- - "𝗣": [t: "BSCL⠏"]            # 0x1d5e3 
- - "𝗤": [t: "BSCL⠟"]            # 0x1d5e4 
- - "𝗥": [t: "BSCL⠗"]            # 0x1d5e5 
- - "𝗦": [t: "BSCL⠎"]            # 0x1d5e6 
- - "𝗧": [t: "BSCL⠞"]            # 0x1d5e7 
- - "𝗨": [t: "BSCL⠥"]            # 0x1d5e8 
- - "𝗩": [t: "BSCL⠧"]            # 0x1d5e9 
- - "𝗪": [t: "BSCL⠺"]            # 0x1d5ea 
- - "𝗫": [t: "BSCL⠭"]            # 0x1d5eb 
- - "𝗬": [t: "BSCL⠽"]            # 0x1d5ec 
- - "𝗭": [t: "BSCL⠵"]            # 0x1d5ed 
+ - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
+    - tc: "BTs"
+    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝘢": [t: "ISL⠁"]             # 0x1d622 
- - "𝘣": [t: "ISL⠃"]             # 0x1d623 
- - "𝘤": [t: "ISL⠉"]             # 0x1d624 
- - "𝘥": [t: "ISL⠙"]             # 0x1d625 
- - "𝘦": [t: "ISL⠑"]             # 0x1d626 
- - "𝘧": [t: "ISL⠋"]             # 0x1d627 
- - "𝘨": [t: "ISL⠛"]             # 0x1d628 
- - "𝘩": [t: "ISL⠓"]             # 0x1d629 
- - "𝘪": [t: "ISL⠊"]             # 0x1d62a 
- - "𝘫": [t: "ISL⠚"]             # 0x1d62b 
- - "𝘬": [t: "ISL⠅"]             # 0x1d62c 
- - "𝘭": [t: "ISL⠇"]             # 0x1d62d 
- - "𝘮": [t: "ISL⠍"]             # 0x1d62e 
- - "𝘯": [t: "ISL⠝"]             # 0x1d62f 
- - "𝘰": [t: "ISL⠕"]             # 0x1d630 
- - "𝘱": [t: "ISL⠏"]             # 0x1d631 
- - "𝘲": [t: "ISL⠟"]             # 0x1d632 
- - "𝘳": [t: "ISL⠗"]             # 0x1d633 
- - "𝘴": [t: "ISL⠎"]             # 0x1d634 
- - "𝘵": [t: "ISL⠞"]             # 0x1d635 
- - "𝘶": [t: "ISL⠥"]             # 0x1d636 
- - "𝘷": [t: "ISL⠧"]             # 0x1d637 
- - "𝘸": [t: "ISL⠺"]             # 0x1d638 
- - "𝘹": [t: "ISL⠭"]             # 0x1d639 
- - "𝘺": [t: "ISL⠽"]             # 0x1d63a 
- - "𝘻": [t: "ISL⠵"]             # 0x1d63b 
+ - "𝐀-𝐙":    # 0x1d400 - 0x1d419
+    - tc: "B"
+    - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝘈": [t: "ISCL⠁"]            # 0x1d608 
- - "𝘉": [t: "ISCL⠃"]            # 0x1d609 
- - "𝘊": [t: "ISCL⠉"]            # 0x1d60a 
- - "𝘋": [t: "ISCL⠙"]            # 0x1d60b 
- - "𝘌": [t: "ISCL⠑"]            # 0x1d60c 
- - "𝘍": [t: "ISCL⠋"]            # 0x1d60d 
- - "𝘎": [t: "ISCL⠛"]            # 0x1d60e 
- - "𝘏": [t: "ISCL⠓"]            # 0x1d60f 
- - "𝘐": [t: "ISCL⠊"]            # 0x1d610 
- - "𝘑": [t: "ISCL⠚"]            # 0x1d611 
- - "𝘒": [t: "ISCL⠅"]            # 0x1d612 
- - "𝘓": [t: "ISCL⠇"]            # 0x1d613 
- - "𝘔": [t: "ISCL⠍"]            # 0x1d614 
- - "𝘕": [t: "ISCL⠝"]            # 0x1d615 
- - "𝘖": [t: "ISCL⠕"]            # 0x1d616 
- - "𝘗": [t: "ISCL⠏"]            # 0x1d617 
- - "𝘘": [t: "ISCL⠟"]            # 0x1d618 
- - "𝘙": [t: "ISCL⠗"]            # 0x1d619 
- - "𝘚": [t: "ISCL⠎"]            # 0x1d61a 
- - "𝘛": [t: "ISCL⠞"]            # 0x1d61b 
- - "𝘜": [t: "ISCL⠥"]            # 0x1d61c 
- - "𝘝": [t: "ISCL⠧"]            # 0x1d61d 
- - "𝘞": [t: "ISCL⠺"]            # 0x1d61e 
- - "𝘟": [t: "ISCL⠭"]            # 0x1d61f 
- - "𝘠": [t: "ISCL⠽"]            # 0x1d620 
- - "𝘡": [t: "ISCL⠵"]            # 0x1d621 
+ - "𝐚-𝐳":    # 0x1d41a - 0x1d433
+    - tc: "B"
+    - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝙖": [t: "BILS⠁"]            # 0x1d656 
- - "𝙗": [t: "BILS⠃"]            # 0x1d657 
- - "𝙘": [t: "BILS⠉"]            # 0x1d658 
- - "𝙙": [t: "BILS⠙"]            # 0x1d659 
- - "𝙚": [t: "BILS⠑"]            # 0x1d65a 
- - "𝙛": [t: "BILS⠋"]            # 0x1d65b 
- - "𝙜": [t: "BILS⠛"]            # 0x1d65c 
- - "𝙝": [t: "BILS⠓"]            # 0x1d65d 
- - "𝙞": [t: "BILS⠊"]            # 0x1d65e 
- - "𝙟": [t: "BILS⠚"]            # 0x1d65f 
- - "𝙠": [t: "BILS⠅"]            # 0x1d660 
- - "𝙡": [t: "BILS⠇"]            # 0x1d661 
- - "𝙢": [t: "BILS⠍"]            # 0x1d662 
- - "𝙣": [t: "BILS⠝"]            # 0x1d663 
- - "𝙤": [t: "BILS⠕"]            # 0x1d664 
- - "𝙥": [t: "BILS⠏"]            # 0x1d665 
- - "𝙦": [t: "BILS⠟"]            # 0x1d666 
- - "𝙧": [t: "BILS⠗"]            # 0x1d667 
- - "𝙨": [t: "BILS⠎"]            # 0x1d668 
- - "𝙩": [t: "BILS⠞"]            # 0x1d669 
- - "𝙪": [t: "BILS⠥"]            # 0x1d66a 
- - "𝙫": [t: "BILS⠧"]            # 0x1d66b 
- - "𝙬": [t: "BILS⠺"]            # 0x1d66c 
- - "𝙭": [t: "BILS⠭"]            # 0x1d66d 
- - "𝙮": [t: "BILS⠽"]            # 0x1d66e 
- - "𝙯": [t: "BILS⠵"]            # 0x1d66f 
+ - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
+    # don't include italics
+    - tc: "C"
+    - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝘼": [t: "BILSC⠁"]           # 0x1d63c 
- - "𝘽": [t: "BILSC⠃"]           # 0x1d63d 
- - "𝘾": [t: "BILSC⠉"]           # 0x1d63e 
- - "𝘿": [t: "BILSC⠙"]           # 0x1d63f 
- - "𝙀": [t: "BILSC⠑"]           # 0x1d640 
- - "𝙁": [t: "BILSC⠋"]           # 0x1d641 
- - "𝙂": [t: "BILSC⠛"]           # 0x1d642 
- - "𝙃": [t: "BILSC⠓"]           # 0x1d643 
- - "𝙄": [t: "BILSC⠊"]           # 0x1d644 
- - "𝙅": [t: "BILSC⠚"]           # 0x1d645 
- - "𝙆": [t: "BILSC⠅"]           # 0x1d646 
- - "𝙇": [t: "BILSC⠇"]           # 0x1d647 
- - "𝙈": [t: "BILSC⠍"]           # 0x1d648 
- - "𝙉": [t: "BILSC⠝"]           # 0x1d649 
- - "𝙊": [t: "BILSC⠕"]           # 0x1d64a 
- - "𝙋": [t: "BILSC⠏"]           # 0x1d64b 
- - "𝙌": [t: "BILSC⠟"]           # 0x1d64c 
- - "𝙍": [t: "BILSC⠗"]           # 0x1d64d 
- - "𝙎": [t: "BILSC⠎"]           # 0x1d64e 
- - "𝙏": [t: "BILSC⠞"]           # 0x1d64f 
- - "𝙐": [t: "BILSC⠥"]           # 0x1d650 
- - "𝙑": [t: "BILSC⠧"]           # 0x1d651 
- - "𝙒": [t: "BILSC⠺"]           # 0x1d652 
- - "𝙓": [t: "BILSC⠭"]           # 0x1d653 
- - "𝙔": [t: "BILSC⠽"]           # 0x1d654 
- - "𝙕": [t: "BILSC⠵"]           # 0x1d655 
+ - "𝑎-𝑧":    # 0x1d44e - 0x1d467
+    # don't include italics
+    - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝚊": [t: "L⠁"]               # 0x1d68a 
- - "𝚋": [t: "L⠃"]               # 0x1d68b 
- - "𝚌": [t: "L⠉"]               # 0x1d68c 
- - "𝚍": [t: "L⠙"]               # 0x1d68d 
- - "𝚎": [t: "L⠑"]               # 0x1d68e 
- - "𝚏": [t: "L⠋"]               # 0x1d68f 
- - "𝚐": [t: "L⠛"]               # 0x1d690 
- - "𝚑": [t: "L⠓"]               # 0x1d691 
- - "𝚒": [t: "L⠊"]               # 0x1d692 
- - "𝚓": [t: "L⠚"]               # 0x1d693 
- - "𝚔": [t: "L⠅"]               # 0x1d694 
- - "𝚕": [t: "L⠇"]               # 0x1d695 
- - "𝚖": [t: "L⠍"]               # 0x1d696 
- - "𝚗": [t: "L⠝"]               # 0x1d697 
- - "𝚘": [t: "L⠕"]               # 0x1d698 
- - "𝚙": [t: "L⠏"]               # 0x1d699 
- - "𝚚": [t: "L⠟"]               # 0x1d69a 
- - "𝚛": [t: "L⠗"]               # 0x1d69b 
- - "𝚜": [t: "L⠎"]               # 0x1d69c 
- - "𝚝": [t: "L⠞"]               # 0x1d69d 
- - "𝚞": [t: "L⠥"]               # 0x1d69e 
- - "𝚟": [t: "L⠧"]               # 0x1d69f 
- - "𝚠": [t: "L⠺"]               # 0x1d6a0 
- - "𝚡": [t: "L⠭"]               # 0x1d6a1 
- - "𝚢": [t: "L⠽"]               # 0x1d6a2 
- - "𝚣": [t: "L⠵"]               # 0x1d6a3 
+ - "𝑨-𝒁":    # 0x1d468 - 0x1d481 
+    - tc: "BIC"
+    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝙰": [t: "CL⠁"]              # 0x1d670 
- - "𝙱": [t: "CL⠃"]              # 0x1d671 
- - "𝙲": [t: "CL⠉"]              # 0x1d672 
- - "𝙳": [t: "CL⠙"]              # 0x1d673 
- - "𝙴": [t: "CL⠑"]              # 0x1d674 
- - "𝙵": [t: "CL⠋"]              # 0x1d675 
- - "𝙶": [t: "CL⠛"]              # 0x1d676 
- - "𝙷": [t: "CL⠓"]              # 0x1d677 
- - "𝙸": [t: "CL⠊"]              # 0x1d678 
- - "𝙹": [t: "CL⠚"]              # 0x1d679 
- - "𝙺": [t: "CL⠅"]              # 0x1d67a 
- - "𝙻": [t: "CL⠇"]              # 0x1d67b 
- - "𝙼": [t: "CL⠍"]              # 0x1d67c 
- - "𝙽": [t: "CL⠝"]              # 0x1d67d 
- - "𝙾": [t: "CL⠕"]              # 0x1d67e 
- - "𝙿": [t: "CL⠏"]              # 0x1d67f 
- - "𝚀": [t: "CL⠟"]              # 0x1d680 
- - "𝚁": [t: "CL⠗"]              # 0x1d681 
- - "𝚂": [t: "CL⠎"]              # 0x1d682 
- - "𝚃": [t: "CL⠞"]              # 0x1d683 
- - "𝚄": [t: "CL⠥"]              # 0x1d684 
- - "𝚅": [t: "CL⠧"]              # 0x1d685 
- - "𝚆": [t: "CL⠺"]              # 0x1d686 
- - "𝚇": [t: "CL⠭"]              # 0x1d687 
- - "𝚈": [t: "CL⠽"]              # 0x1d688 
- - "𝚉": [t: "CL⠵"]              # 0x1d689 
+ - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
+    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝚤": [t: "L⠊"]               # 0x1d6a4 (dotless i)
- - "𝚥": [t: "L⠚"]               # 0x1d6a5 (dotless j)
- - "𝛂": [t: "BGL⠁"]             # 0x1d6c2 
- - "𝛃": [t: "BGL⠃"]             # 0x1d6c3 
- - "𝛄": [t: "BGL⠛"]             # 0x1d6c4 
- - "𝛅": [t: "BGL⠙"]             # 0x1d6c5 
- - "𝛆": [t: "BGL⠑"]             # 0x1d6c6 
- - "𝛇": [t: "BGL⠵"]             # 0x1d6c7 
- - "𝛈": [t: "BGL⠱ "]            # 0x1d6c8 
- - "𝛉": [t: "BGL⠹"]             # 0x1d6c9 
- - "𝛊": [t: "BGL⠊"]             # 0x1d6ca 
- - "𝛋": [t: "BGL⠅"]             # 0x1d6cb 
- - "𝛌": [t: "BGL⠇"]             # 0x1d6cc 
- - "𝛍": [t: "BGL⠍"]             # 0x1d6cd 
- - "𝛎": [t: "BGL⠝"]             # 0x1d6ce 
- - "𝛏": [t: "BGL⠭"]             # 0x1d6cf 
- - "𝛐": [t: "BGL⠕"]             # 0x1d6d0 
- - "𝛑": [t: "BGL⠏"]             # 0x1d6d1 
- - "𝛒": [t: "BGL⠗"]             # 0x1d6d2 
- - "𝛓": [t: "BGL⠎"]             # 0x1d6d3 
- - "𝛔": [t: "BGL⠞"]             # 0x1d6d4 
- - "𝛕": [t: "BGL⠥"]             # 0x1d6d5 
- - "𝛖": [t: "BGL⠋"]             # 0x1d6d6 
- - "𝛗": [t: "BGL⠯"]             # 0x1d6d7 
- - "𝛘": [t: "BGL⠽"]             # 0x1d6d8 
- - "𝛙": [t: "BGL⠺"]             # 0x1d6d9 
+ - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
+    - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "𝚨": [t: "BCGL⠁"]            # 0x1d6a8 
- - "𝚩": [t: "BCGL⠃"]            # 0x1d6a9 
- - "𝚪": [t: "BCGL⠛"]            # 0x1d6aa 
- - "𝚫": [t: "BCGL⠙"]            # 0x1d6ab 
- - "𝚬": [t: "BCGL⠑"]            # 0x1d6ac 
- - "𝚭": [t: "BCGL⠵"]            # 0x1d6ad 
- - "𝚮": [t: "BCGL⠱ "]           # 0x1d6ae 
- - "𝚯": [t: "BCGL⠹"]            # 0x1d6af 
- - "𝚰": [t: "BCGL⠊"]            # 0x1d6b0 
- - "𝚱": [t: "BCGL⠅"]            # 0x1d6b1 
- - "𝚲": [t: "BCGL⠇"]            # 0x1d6b2 
- - "𝚳": [t: "BCGL⠍"]            # 0x1d6b3 
- - "𝚴": [t: "BCGL⠝"]            # 0x1d6b4 
- - "𝚵": [t: "BCGL⠭"]            # 0x1d6b5 
- - "𝚶": [t: "BCGL⠕"]            # 0x1d6b6 
- - "𝚷": [t: "BCGL⠏"]            # 0x1d6b7 
- - "𝚸": [t: "BCGL⠗"]            # 0x1d6b8 
- - "𝚹": [t: "BCGL⠎"]            # 0x1d6b9 
- - "𝚺": [t: "BCGL⠞"]            # 0x1d6ba 
- - "𝚻": [t: "BCGL⠥"]            # 0x1d6bb 
- - "𝚼": [t: "BCGL⠋"]            # 0x1d6bc 
- - "𝚽": [t: "BCGL⠯"]            # 0x1d6bd 
- - "𝚾": [t: "BCGL⠽"]            # 0x1d6be 
- - "𝚿": [t: "BCGL⠺"]            # 0x1d6bf 
+ - "𝖺-𝗓":    # 0x1d5ba - 0x1d5d3
+    - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝛼": [t: "IGL⠁"]             # 0x1d6fc 
- - "𝛽": [t: "IGL⠃"]             # 0x1d6fd 
- - "𝛾": [t: "IGL⠛"]             # 0x1d6fe 
- - "𝛿": [t: "IGL⠙"]             # 0x1d6ff 
- - "𝜀": [t: "IGL⠑"]             # 0x1d700 
- - "𝜁": [t: "IGL⠵"]             # 0x1d701 
- - "𝜂": [t: "IGL⠱ "]            # 0x1d702 
- - "𝜃": [t: "IGL⠹"]             # 0x1d703 
- - "𝜄": [t: "IGL⠊"]             # 0x1d704 
- - "𝜅": [t: "IGL⠅"]             # 0x1d705 
- - "𝜆": [t: "IGL⠇"]             # 0x1d706 
- - "𝜇": [t: "IGL⠍"]             # 0x1d707 
- - "𝜈": [t: "IGL⠝"]             # 0x1d708 
- - "𝜉": [t: "IGL⠭"]             # 0x1d709 
- - "𝜊": [t: "IGL⠕"]             # 0x1d70a 
- - "𝜋": [t: "IGL⠏"]             # 0x1d70b 
- - "𝜌": [t: "IGL⠗"]             # 0x1d70c 
- - "𝜍": [t: "IGL⠎"]             # 0x1d70d 
- - "𝜎": [t: "IGL⠞"]             # 0x1d70e 
- - "𝜏": [t: "IGL⠥"]             # 0x1d70f 
- - "𝜐": [t: "IGL⠋"]             # 0x1d710 
- - "𝜑": [t: "IGL⠯"]             # 0x1d711 
- - "𝜒": [t: "IGL⠽"]             # 0x1d712 
- - "𝜓": [t: "IGL⠺"]             # 0x1d713 
+ - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "𝛢": [t: "ICGL⠁"]            # 0x1d6e2 
- - "𝛣": [t: "ICGL⠃"]            # 0x1d6e3 
- - "𝛤": [t: "ICGL⠛"]            # 0x1d6e4 
- - "𝛥": [t: "ICGL⠙"]            # 0x1d6e5 
- - "𝛦": [t: "ICGL⠑"]            # 0x1d6e6 
- - "𝛧": [t: "ICGL⠵"]            # 0x1d6e7 
- - "𝛨": [t: "ICGL⠱ "]           # 0x1d6e8 
- - "𝛩": [t: "ICGL⠹"]            # 0x1d6e9 
- - "𝛪": [t: "ICGL⠊"]            # 0x1d6ea 
- - "𝛫": [t: "ICGL⠅"]            # 0x1d6eb 
- - "𝛬": [t: "ICGL⠇"]            # 0x1d6ec 
- - "𝛭": [t: "ICGL⠍"]            # 0x1d6ed 
- - "𝛮": [t: "ICGL⠝"]            # 0x1d6ee 
- - "𝛯": [t: "ICGL⠭"]            # 0x1d6ef 
- - "𝛰": [t: "ICGL⠕"]            # 0x1d6f0 
- - "𝛱": [t: "ICGL⠏"]            # 0x1d6f1 
- - "𝛲": [t: "ICGL⠗"]            # 0x1d6f2 
- - "𝛳": [t: "ICGL⠎"]            # 0x1d6f3 
- - "𝛴": [t: "ICGL⠞"]            # 0x1d6f4 
- - "𝛵": [t: "ICGL⠥"]            # 0x1d6f5 
- - "𝛶": [t: "ICGL⠋"]            # 0x1d6f6 
- - "𝛷": [t: "ICGL⠯"]            # 0x1d6f7 
- - "𝛸": [t: "ICGL⠽"]            # 0x1d6f8 
- - "𝛹": [t: "ICGL⠺"]            # 0x1d6f9 
+ - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝜶": [t: "BIGL⠁"]            # 0x1d736 
- - "𝜷": [t: "BIGL⠃"]            # 0x1d737 
- - "𝜸": [t: "BIGL⠛"]            # 0x1d738 
- - "𝜹": [t: "BIGL⠙"]            # 0x1d739 
- - "𝜺": [t: "BIGL⠑"]            # 0x1d73a 
- - "𝜻": [t: "BIGL⠵"]            # 0x1d73b 
- - "𝜼": [t: "BIGL⠱ "]           # 0x1d73c 
- - "𝜽": [t: "BIGL⠹"]            # 0x1d73d 
- - "𝜾": [t: "BIGL⠊"]            # 0x1d73e 
- - "𝜿": [t: "BIGL⠅"]            # 0x1d73f 
- - "𝝀": [t: "BIGL⠇"]            # 0x1d740 
- - "𝝁": [t: "BIGL⠍"]            # 0x1d741 
- - "𝝂": [t: "BIGL⠝"]            # 0x1d742 
- - "𝝃": [t: "BIGL⠭"]            # 0x1d743 
- - "𝝄": [t: "BIGL⠕"]            # 0x1d744 
- - "𝝅": [t: "BIGL⠏"]            # 0x1d745 
- - "𝝆": [t: "BIGL⠗"]            # 0x1d746 
- - "𝝇": [t: "BIGL⠎"]            # 0x1d747 
- - "𝝈": [t: "BIGL⠞"]            # 0x1d748 
- - "𝝉": [t: "BIGL⠥"]            # 0x1d749 
- - "𝝊": [t: "BIGL⠋"]            # 0x1d74a 
- - "𝝋": [t: "BIGL⠯"]            # 0x1d74b 
- - "𝝌": [t: "BIGL⠽"]            # 0x1d74c 
- - "𝝍": [t: "BIGL⠺"]            # 0x1d74d 
+ - "𝘈-𝘡":    # 0x1d608 - 0x1d621
+    # - tc: "italic"
+    - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "𝜜": [t: "BICGL⠁"]           # 0x1d71c 
- - "𝜝": [t: "BICGL⠃"]           # 0x1d71d 
- - "𝜞": [t: "BICGL⠛"]           # 0x1d71e 
- - "𝜟": [t: "BICGL⠙"]           # 0x1d71f 
- - "𝜠": [t: "BICGL⠑"]           # 0x1d720 
- - "𝜡": [t: "BICGL⠵"]           # 0x1d721 
- - "𝜢": [t: "BICGL⠱ "]          # 0x1d722 
- - "𝜣": [t: "BICGL⠹"]           # 0x1d723 
- - "𝜤": [t: "BICGL⠊"]           # 0x1d724 
- - "𝜥": [t: "BICGL⠅"]           # 0x1d725 
- - "𝜦": [t: "BICGL⠇"]           # 0x1d726 
- - "𝜧": [t: "BICGL⠍"]           # 0x1d727 
- - "𝜨": [t: "BICGL⠝"]           # 0x1d728 
- - "𝜩": [t: "BICGL⠭"]           # 0x1d729 
- - "𝜪": [t: "BICGL⠕"]           # 0x1d72a 
- - "𝜫": [t: "BICGL⠏"]           # 0x1d72b 
- - "𝜬": [t: "BICGL⠗"]           # 0x1d72c 
- - "𝜭": [t: "BICGL⠎"]           # 0x1d72d 
- - "𝜮": [t: "BICGL⠞"]           # 0x1d72e 
- - "𝜯": [t: "BICGL⠥"]           # 0x1d72f 
- - "𝜰": [t: "BICGL⠋"]           # 0x1d730 
- - "𝜱": [t: "BICGL⠯"]           # 0x1d731 
- - "𝜲": [t: "BICGL⠽"]           # 0x1d732 
- - "𝜳": [t: "BICGL⠺"]           # 0x1d733 
+ - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
+      # - tc: "italic"
+    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝝰": [t: "BSGL⠁"]            # 0x1d770 
- - "𝝱": [t: "BSGL⠃"]            # 0x1d771 
- - "𝝲": [t: "BSGL⠛"]            # 0x1d772 
- - "𝝳": [t: "BSGL⠙"]            # 0x1d773 
- - "𝝴": [t: "BSGL⠑"]            # 0x1d774 
- - "𝝵": [t: "BSGL⠵"]            # 0x1d775 
- - "𝝶": [t: "BSGL⠱ "]           # 0x1d776 
- - "𝝷": [t: "BSGL⠹"]            # 0x1d777 
- - "𝝸": [t: "BSGL⠊"]            # 0x1d778 
- - "𝝹": [t: "BSGL⠅"]            # 0x1d779 
- - "𝝺": [t: "BSGL⠇"]            # 0x1d77a 
- - "𝝻": [t: "BSGL⠍"]            # 0x1d77b 
- - "𝝼": [t: "BSGL⠝"]            # 0x1d77c 
- - "𝝽": [t: "BSGL⠭"]            # 0x1d77d 
- - "𝝾": [t: "BSGL⠕"]            # 0x1d77e 
- - "𝝿": [t: "BSGL⠏"]            # 0x1d77f 
- - "𝞀": [t: "BSGL⠗"]            # 0x1d780 
- - "𝞁": [t: "BSGL⠎"]            # 0x1d781 
- - "𝞂": [t: "BSGL⠞"]            # 0x1d782 
- - "𝞃": [t: "BSGL⠥"]            # 0x1d783 
- - "𝞄": [t: "BSGL⠋"]            # 0x1d784 
- - "𝞅": [t: "BSGL⠯"]            # 0x1d785 
- - "𝞆": [t: "BSGL⠽"]            # 0x1d786 
- - "𝞇": [t: "BSGL⠺"]            # 0x1d787 
+ - "𝘼-𝙕":    # 0x1d63c - 0x1d655
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "𝝖": [t: "BSCGL⠁"]           # 0x1d756 
- - "𝝗": [t: "BSCGL⠃"]           # 0x1d757 
- - "𝝘": [t: "BSCGL⠛"]           # 0x1d758 
- - "𝝙": [t: "BSCGL⠙"]           # 0x1d759 
- - "𝝚": [t: "BSCGL⠑"]           # 0x1d75a 
- - "𝝛": [t: "BSCGL⠵"]           # 0x1d75b 
- - "𝝜": [t: "BSCGL⠱ "]          # 0x1d75c 
- - "𝝝": [t: "BSCGL⠹"]           # 0x1d75d 
- - "𝝞": [t: "BSCGL⠊"]           # 0x1d75e 
- - "𝝟": [t: "BSCGL⠅"]           # 0x1d75f 
- - "𝝠": [t: "BSCGL⠇"]           # 0x1d760 
- - "𝝡": [t: "BSCGL⠍"]           # 0x1d761 
- - "𝝢": [t: "BSCGL⠝"]           # 0x1d762 
- - "𝝣": [t: "BSCGL⠭"]           # 0x1d763 
- - "𝝤": [t: "BSCGL⠕"]           # 0x1d764 
- - "𝝥": [t: "BSCGL⠏"]           # 0x1d765 
- - "𝝦": [t: "BSCGL⠗"]           # 0x1d766 
- - "𝝧": [t: "BSCGL⠎"]           # 0x1d767 
- - "𝝨": [t: "BSCGL⠞"]           # 0x1d768 
- - "𝝩": [t: "BSCGL⠥"]           # 0x1d769 
- - "𝝪": [t: "BSCGL⠋"]           # 0x1d76a 
- - "𝝫": [t: "BSCGL⠯"]           # 0x1d76b 
- - "𝝬": [t: "BSCGL⠽"]           # 0x1d76c 
- - "𝝭": [t: "BSCGL⠺"]           # 0x1d76d 
+ - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝞪": [t: "BISGL⠁"]           # 0x1d7aa 
- - "𝞫": [t: "BISGL⠃"]           # 0x1d7ab 
- - "𝞬": [t: "BISGL⠛"]           # 0x1d7ac 
- - "𝞭": [t: "BISGL⠙"]           # 0x1d7ad 
- - "𝞮": [t: "BISGL⠑"]           # 0x1d7ae 
- - "𝞯": [t: "BISGL⠵"]           # 0x1d7af 
- - "𝞰": [t: "BISGL⠱ "]          # 0x1d7b0 
- - "𝞱": [t: "BISGL⠹"]           # 0x1d7b1 
- - "𝞲": [t: "BISGL⠊"]           # 0x1d7b2 
- - "𝞳": [t: "BISGL⠅"]           # 0x1d7b3 
- - "𝞴": [t: "BISGL⠇"]           # 0x1d7b4 
- - "𝞵": [t: "BISGL⠍"]           # 0x1d7b5 
- - "𝞶": [t: "BISGL⠝"]           # 0x1d7b6 
- - "𝞷": [t: "BISGL⠭"]           # 0x1d7b7 
- - "𝞸": [t: "BISGL⠕"]           # 0x1d7b8 
- - "𝞹": [t: "BISGL⠏"]           # 0x1d7b9 
- - "𝞺": [t: "BISGL⠗"]           # 0x1d7ba 
- - "𝞻": [t: "BISGL⠎"]           # 0x1d7bb 
- - "𝞼": [t: "BISGL⠞"]           # 0x1d7bc 
- - "𝞽": [t: "BISGL⠥"]           # 0x1d7bd 
- - "𝞾": [t: "BISGL⠋"]           # 0x1d7be 
- - "𝞿": [t: "BISGL⠯"]           # 0x1d7bf 
- - "𝟀": [t: "BISGL⠽"]           # 0x1d7c0 
- - "𝟁": [t: "BISGL⠺"]           # 0x1d7c1 
+ - "𝙰-𝚉":    # 0x1d670 - 0x1d689
+    - tc: "C"
+    - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝞐": [t: "BISCGL⠁"]          # 0x1d790 
- - "𝞑": [t: "BISCGL⠃"]          # 0x1d791 
- - "𝞒": [t: "BISCGL⠛"]          # 0x1d792 
- - "𝞓": [t: "BISCGL⠙"]          # 0x1d793 
- - "𝞔": [t: "BISCGL⠑"]          # 0x1d794 
- - "𝞕": [t: "BISCGL⠵"]          # 0x1d795 
- - "𝞖": [t: "BISCGL⠱ "]         # 0x1d796 
- - "𝞗": [t: "BISCGL⠹"]          # 0x1d797 
- - "𝞘": [t: "BISCGL⠊"]          # 0x1d798 
- - "𝞙": [t: "BISCGL⠅"]          # 0x1d799 
- - "𝞚": [t: "BISCGL⠇"]          # 0x1d79a 
- - "𝞛": [t: "BISCGL⠍"]          # 0x1d79b 
- - "𝞜": [t: "BISCGL⠝"]          # 0x1d79c 
- - "𝞝": [t: "BISCGL⠭"]          # 0x1d79d 
- - "𝞞": [t: "BISCGL⠕"]          # 0x1d79e 
- - "𝞟": [t: "BISCGL⠏"]          # 0x1d79f 
- - "𝞠": [t: "BISCGL⠗"]          # 0x1d7a0 
- - "𝞡": [t: "BISCGL⠎"]          # 0x1d7a1 
- - "𝞢": [t: "BISCGL⠞"]          # 0x1d7a2 
- - "𝞣": [t: "BISCGL⠥"]          # 0x1d7a3 
- - "𝞤": [t: "BISCGL⠋"]          # 0x1d7a4 
- - "𝞥": [t: "BISCGL⠯"]          # 0x1d7a5 
- - "𝞦": [t: "BISCGL⠽"]          # 0x1d7a6 
- - "𝞧": [t: "BISCGL⠺"]          # 0x1d7a7 
+ - "𝚊-𝚣":    # 0x1d68a - 0x1d6a3
+      - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "𝟎": [t: "BN⠚"]              # 0x1d7ce 
- - "𝟏": [t: "BN⠁"]              # 0x1d7cf 
- - "𝟐": [t: "BN⠃"]              # 0x1d7d0 
- - "𝟑": [t: "BN⠉"]              # 0x1d7d1 
- - "𝟒": [t: "BN⠙"]              # 0x1d7d2 
- - "𝟓": [t: "BN⠑"]              # 0x1d7d3 
- - "𝟔": [t: "BN⠋"]              # 0x1d7d4 
- - "𝟕": [t: "BN⠛"]              # 0x1d7d5 
- - "𝟖": [t: "BN⠓"]              # 0x1d7d6 
- - "𝟗": [t: "BN⠊"]              # 0x1d7d7 
+ - "𝚤𝚥":    # 0x1d6a4, 0x1d6a5
+      - spell: "translate('.', '𝚤𝚥', 'ij')"  # not sure what else these should be
 
- - "𝟘": [t: "𝔹N⠚"]              # 0x1d7d8 
- - "𝟙": [t: "𝔹N⠁"]              # 0x1d7d9 
- - "𝟚": [t: "𝔹N⠃"]              # 0x1d7da 
- - "𝟛": [t: "𝔹N⠉"]              # 0x1d7db 
- - "𝟜": [t: "𝔹N⠙"]              # 0x1d7dc 
- - "𝟝": [t: "𝔹N⠑"]              # 0x1d7dd 
- - "𝟞": [t: "𝔹N⠋"]              # 0x1d7de 
- - "𝟟": [t: "𝔹N⠛"]              # 0x1d7df 
- - "𝟠": [t: "𝔹N⠓"]              # 0x1d7e0 
- - "𝟡": [t: "𝔹N⠊"]              # 0x1d7e1 
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
- - "𝟢": [t: "SN⠚"]              # 0x1d7e2 
- - "𝟣": [t: "SN⠁"]              # 0x1d7e3 
- - "𝟤": [t: "SN⠃"]              # 0x1d7e4 
- - "𝟥": [t: "SN⠉"]              # 0x1d7e5 
- - "𝟦": [t: "SN⠙"]              # 0x1d7e6 
- - "𝟧": [t: "SN⠑"]              # 0x1d7e7 
- - "𝟨": [t: "SN⠋"]              # 0x1d7e8 
- - "𝟩": [t: "SN⠛"]              # 0x1d7e9 
- - "𝟪": [t: "SN⠓"]              # 0x1d7ea 
- - "𝟫": [t: "SN⠊"]              # 0x1d7eb 
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "𝟬": [t: "BSN⠚"]             # 0x1d7ec 
- - "𝟭": [t: "BSN⠁"]             # 0x1d7ed 
- - "𝟮": [t: "BSN⠃"]             # 0x1d7ee 
- - "𝟯": [t: "BSN⠉"]             # 0x1d7ef 
- - "𝟰": [t: "BSN⠙"]             # 0x1d7f0 
- - "𝟱": [t: "BSN⠑"]             # 0x1d7f1 
- - "𝟲": [t: "BSN⠋"]             # 0x1d7f2 
- - "𝟳": [t: "BSN⠛"]             # 0x1d7f3 
- - "𝟴": [t: "BSN⠓"]             # 0x1d7f4 
- - "𝟵": [t: "BSN⠊"]             # 0x1d7f5 
+ - "𝛁":                          # 0x1d6c1
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝜵', '∇')"
 
- - "𝟶": [t: "N⠚"]               # 0x1d7f6 
- - "𝟷": [t: "N⠁"]               # 0x1d7f7 
- - "𝟸": [t: "N⠃"]               # 0x1d7f8 
- - "𝟹": [t: "N⠉"]               # 0x1d7f9 
- - "𝟺": [t: "N⠙"]               # 0x1d7fa 
- - "𝟻": [t: "N⠑"]               # 0x1d7fb 
- - "𝟼": [t: "N⠋"]               # 0x1d7fc 
- - "𝟽": [t: "N⠛"]               # 0x1d7fd 
- - "𝟾": [t: "N⠓"]               # 0x1d7fe 
- - "𝟿": [t: "N⠊"]               # 0x1d7ff 
+ - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":    # 0x1D6DB - 0x1D6E1
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
+
+ - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
+    - tc: "IC"
+    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝛼-𝜔":    # 0x1d6fc - 0x1d714
+    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+
+ - "𝛻":                          # 0x1d6fb
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":    # 0x1d715 - 0x1d71b
+      # - tc: "italic"
+    - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
+
+ - "𝜜-𝜴":    # 0x1d71c - 0x1d734
+    # - tc: "bold italic"
+    - tc: 'BIC⠁'
+    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
+    - tc: "BI"
+    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
+    - tc: "BI"
+    - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εκθφρπ')"
+
+ - "𝜵":                 # 0x1d735
+    - tc: "BI"
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
+    - tc: "BSC"
+    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝝰-𝞈":    # 0x1d770 - 0x1d788
+    - tc: "BS"
+    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
+    - tc: "B"
+    - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
+
+ - "𝝯":                           # 0x1d76f
+    - tc: "B"
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
+    - tc: "B"
+    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+
+ - "𝞩": [tc: "B"]                          # 0x1d7a9
+
+ - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
+    - tc: "B"
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+
+ - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
+    - tc: "BS"
+    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+
+ - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
+    - tc: "S"
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+
+ - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+

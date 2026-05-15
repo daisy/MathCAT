@@ -328,16 +328,16 @@
   variables:
     # If the amount is singular, we don't add the plural ending.
   - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
     - if: "$IsSingular"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
-    - else_if: "DefinitionValue(*[1], 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'PluralForms')"]
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
       else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
-
 
 - name: sin
   tag: mi

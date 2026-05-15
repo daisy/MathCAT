@@ -427,7 +427,7 @@
 -
   name: chemical-element
   tag: [mi, mtext]
-  match: "@data-chem-element"
+  match: "@data-chem-element or contains(@data-intent-property, ':chemical-element:')"
   replace:
   - intent:
       name: "chemical-element"
