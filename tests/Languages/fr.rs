@@ -5,6 +5,7 @@ mod SimpleSpeak {
     mod geometry;
     mod large_ops;
     mod linear_algebra;
+    mod mfrac;
 }
 
 mod shared;
