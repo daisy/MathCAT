@@ -664,7 +664,6 @@ fn detailed_projectors_p23_1() -> Result<()> {
 
 #[test]
 fn detailed_projectors_p23_2() -> Result<()> {
-    init_logger();
     let expr = r#"<math><mi>u</mi><mo>=</mo><mroot><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msqrt><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn></msqrt><mo>+</mo><mn>8</mn></mrow><mn>3</mn></mroot></math>"#;
     test_braille("Polish", expr, "⠠⠥⠀⠶⠌⠒⠨⠩⠭⠬⠆⠀⠖⠐⠩⠭⠬⠆⠈⠖⠼⠁⠀⠖⠼⠓⠨⠱")?;
     return Ok(());
@@ -1927,7 +1926,6 @@ fn systems_of_equations_p45_1() -> Result<()> {
 
 #[test]
 fn matrices_p46_1() -> Result<()> {
-    init_logger();
     let expr = r#"<math><mi mathvariant="bold">W</mi><mo>=</mo><mfenced open="|" close="|"><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mo>-</mo><mn>1</mn></mtd></mtr></mtable></mfenced><mo>=</mo><mn>1</mn><mo>&#xB7;</mo><mo>(</mo><mo>-</mo><mn>1</mn><mo>)</mo><mo>-</mo><mn>2</mn><mo>&#xB7;</mo><mn>2</mn><mo>=</mo><mo>-</mo><mn>5</mn></math>"#;
     test_braille("Polish", expr, "⠻⠙⠑⠞⠣⠼⠁⠀⠼⠃⠰⠳⠼⠃⠀⠤⠼⠁⠜⠀⠶⠼⠁⠄⠣⠤⠼⠁⠜⠀⠤⠼⠃⠄⠼⠃⠀⠶⠤⠼⠑")?;
     return Ok(());
