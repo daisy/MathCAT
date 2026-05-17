@@ -2020,8 +2020,7 @@ impl CanonicalizeContext {
 			// If we find a comma that is not part of a number, don't form a number
 			//   (see https://github.com/NSoiffer/MathCAT/issues/271)
 			// Unfortunately, we can't do this in the loop below because we might discover the "not part of a number" after a number has been formed
-			let grandparent_of_mrow = if name(parent_mrow) == "math" {parent_mrow} else {get_parent(parent_mrow)};
-			let do_not_merge_comma = is_comma_not_part_of_a_number(children, grandparent_of_mrow);
+			let do_not_merge_comma = is_comma_not_part_of_a_number(children);
 			let mut i = 0;
 			while i < children.len() {		// length might change after a merge
 				// {
@@ -2109,20 +2108,16 @@ impl CanonicalizeContext {
 		}
 
 		/// Return true if we find a comma that doesn't have an <mn> on both sides
-		/// Also rule it out if it is a subscript (e.g., F_{1,2})
-		fn is_comma_not_part_of_a_number(children: &[ChildOfElement], parent_of_mrow: Element)-> bool {
+		fn is_comma_not_part_of_a_number(children: &[ChildOfElement])-> bool {
 			let n_children = children.len();
 			if n_children == 0 {
 				return false;
 			}
 			let mut previous_child = as_element(children[0]);
-			let name_of_parent_of_mrow = name(parent_of_mrow);
 			for i in 1..n_children {
 				let child = as_element(children[i]);
-				if name(child) == "mo" && as_text(child) == "," &&
-				   (name_of_parent_of_mrow == "msub" ||
-					(i+1 < n_children &&
-				   	(name(previous_child) != "mn" || name(as_element(children[i+1])) != "mn"))) {
+				if name(child) == "mo" && as_text(child) == "," && i+1 < n_children &&
+                   (name(previous_child) != "mn" || name(as_element(children[i+1])) != "mn") {
 					return true;
 				}
 				previous_child = child;
