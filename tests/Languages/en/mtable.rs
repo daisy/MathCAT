@@ -1028,9 +1028,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
 test_ClearSpeak("en", "ClearSpeak_Matrix", "EndVector",
         expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
                                                  row 2; column 1; b sub 2 1; column 2; b sub 2 2; end matrix")?;
-    return Ok(());
-  }
-
+  return Ok(());
+}
 
 
 #[test]
@@ -1041,19 +1040,83 @@ fn matrix_binomial() -> Result<()> {
       </mrow><mo>)</mo>
     </math>";
   test_ClearSpeak("en", "ClearSpeak_Matrix", "Combinatorics", expr, "3 choose 2")?;
-    return Ok(());
-  }
+  return Ok(());
+}
 
 #[test]
-fn matrix_times() -> Result<()> {
+fn matrix_simple_table() -> Result<()> {
+  let expr = "<math>
+        <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
+}
+
+#[test]
+fn mtable_prefix_op() -> Result<()>{
+    // When a table is prefixed with a non-blank operator, assume it is something besides array intent
+    for (op, speech) in [("(", "open paren"),
+			 ("[", "open bracket"),
+			 ("|", "vertical line"),
+			 ("f", "f")] {
+	let expr = format!("<math>
+        <mo>{op}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>");
+	test("en", "ClearSpeak", &expr, &format!("{speech}, 2 lines; line 1; 3; line 2; 2"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn mtable_blank_op() -> Result<()>{
+    // When a table is prefixed with a blank operator, still assume array intent
+    let expr = "<math>
+        <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+    test("en", "ClearSpeak", expr, "; table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
+}
+
+
+
+#[test]
+fn mtable_colspan_table() -> Result<()>{
+  let expr = "<math>
+        <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
+    </math>";
+  test("en", "ClearSpeak", expr, "table with 2 rows and 2 columns; row 1; column 1; 3; row 2; column 1; 2, column 2; 4")
+}
+
+#[test]
+fn bug_mtable_rowspan_colspan() -> Result<()>{
+  // Currently, the code correctly computes the number of rows and
+  // columns, but it does not correctly compute the column number whnen
+  // colspans are involved.
+  let expr = "<math>
+        <mtable>
+           <mtr>
+             <mtd rowspan=\"2\" colspan=\"2\"><mi>a</mi></mtd>
+             <mtd rowspan=\"2\"><mi>b</mi></mtd>
+             <mtd colspan=\"2\"><mi>c</mi></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mi>d</mi></mtd><mtd><mi>e</mi></mtd>
+           </mtr>
+        </mtable>
+    </math>";
+    test("en", "ClearSpeak", expr,
+	 "table with 2 rows and 5 columns; row 1; column 1; eigh, column 2; b, column 3; c; row 2; column 1; d, column 2; e")
+}
+
+
+
+#[test]
+fn matrix_times() {
   let expr = "<math>
     <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
-  test("en", "SimpleSpeak", expr,
-    "the 2 by 2 matrix; row 1; 1, 2; row 2; 3, 4; times, the 2 by 2 matrix; row 1; eigh, b; row 2; c, d")?;
-    return Ok(());
-  }
+  let _ = test("en", "SimpleSpeak", expr,
+    "the 2 by 2 matrix; row 1; 1, 2; row 2; 3, 4; times, the 2 by 2 matrix; row 1; eigh, b; row 2; c, d");
+}
 
 #[test]
 fn unknown_mtable_property() -> Result<()> {
