@@ -188,7 +188,7 @@ fn vertical_line_probability_given() -> Result<()> {
                 </mrow>
             </math>";
     test_ClearSpeak_prefs("ru", vec![("ClearSpeak_VerticalLine", "Given"), ("ClearSpeak_ImpliedTimes", "None")],
-                    expr, "пэ большое, открывается скобка, эй большое при условии бэ большое, закрывается скобка")?;
+                    expr, "пэ большое, скобка открывается, а большое при условии бэ большое, скобка закрывается")?;
                     return Ok(());
 }
 

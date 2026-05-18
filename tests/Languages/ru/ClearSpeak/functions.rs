@@ -250,7 +250,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("ru", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes", expr,
-        "скобка 2 умножить на икс закрывается в квадрате")?;
+        "скобка открывается 2 умножить на икс скобка закрывается в квадрате")?;
         return Ok(());
 }
 
