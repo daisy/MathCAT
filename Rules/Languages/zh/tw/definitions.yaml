@@ -86,7 +86,7 @@
     # base units
     "A": "安培",
     "cd": "燭光",
-    "K": "凱氏", "K": "凱氏", # U+212A
+    "K": "K", "K": "K", # U+212A
     "g": "克",
     "m": "米",     # British spelling works for US also
     "mol": "莫耳",
@@ -97,23 +97,23 @@
     "C": "庫侖",
     "°C": "攝氏度", "℃": "攝氏度",
     "F": "法拉",
-    "Gy": "格雷",
+    "Gy": "戈雷",
     "H": "亨利",
     "Hz": "赫茲",
     "J": "焦耳",
-    "kat": "kattel",
+    "kat": "卡塔爾",
     "lm": "流明",
     "lx": "勒克斯",
     "N": "牛頓",
     "Ω": "歐姆", "Ω": "歐姆",       # Greek Cap letter, U+2126 OHM SIGN
     "Pa": "帕",
     "rad": "弳",
-    "S": "西門子",
+    "S": "西門",
     "Sv": "西弗",
-    "sr": "sterradion",
+    "sr": "立弳",
     "T": "特士拉",
     "V": "伏特",
-    "W": "瓦特",
+    "W": "瓦",
     "Wb": "韋伯",
 
     # accepted (plus a few variants) that take SI prefixes
@@ -127,8 +127,8 @@
     
     # copy from english version by hjy
     # others that take a prefix
-    "a": "annum",               # should only take positive powers
-    "as": "弧秒",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+    "a": "年",               # should only take positive powers
+    "as": "角秒",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
 
     # Copy from english version by hjy
     # technically wrong, but used in practice with SI Units
@@ -140,25 +140,25 @@
 
 - UnitsWithoutPrefixes: {
     # time
+    "″": "秒", "\"": "秒",
     "′": "分", "'": "分","min": "分",
-    "h": "時", "hr": "時", "Hr": "時",
+    "h": "小時", "hr": "小時", "Hr": "小時",
     "d": "天", "dy": "天",
     "w": "週", "wk": "週",
     "y": "年", "yr": "年",    
 
     # angles (could be temperature)
     "°": "度", "deg": "度",
-    "arcmin": "弧分",
-    "amin": "弧分",
-    "am": "弧分",
-    "MOA": "弧分",
-    "arcsec": "弧秒",
-    "asec": "弧秒",
-    "as": "弧秒",
+    "arcmin": "角分",
+    "amin": "角分",
+    "am": "角分",
+    "MOA": "角分",
+    "arcsec": "角秒",
+    "asec": "角秒",
+    "as": "角秒",
 
     # other accepted units that don't take SI prefixes
     "ha": "公頃",
-    "Np": "奈培",
     "B": "貝爾",
     "dB": "分貝",
 
@@ -173,13 +173,13 @@
     "bar": "巴",
     "cal": "卡",
     "Ci": "居里",
-    "grad": "百分直角",
+    "grad": "百分度",
     "M": "體積莫耳濃度",
-    "R": "倫琴",
-    "rpm": "轉速每分鐘",
+    "R": "侖琴",
+    "rpm": "轉每分",
     "℧": "姆歐",
     "dyn": "達因",
-    "erg": "爾格",
+    "erg": "耳格",
     # copy from english version by hjy
     # powers of 2 used with bits and bytes
     "Kib": "kibi-位元", "Mib": "mebi-位元", "Gib": "gibi-位元", "Tib": "tebi-位元", "Pib": "pebi-位元", "Eib": "exbi-位元", "Zib": "zebi-位元", "Yib": "yobi-位元",
@@ -236,7 +236,7 @@
 
     # energy
     "hp": "馬力",
-    "BTU": "英熱單位",
+    "BTU": "BTU",
     "°F": "華氏度", "℉": "華氏度",
 
     # other
@@ -252,8 +252,8 @@
     "degree celsius": "攝氏度",
     "degree fahrenheit": "華氏度",
     "hertz": "赫茲",
-    "siemens": "西門子",
-    "revolution per minute": "轉速每分鐘",
+    "siemens": "西門",
+    "revolution per minute": "轉每分",
   }
 
 
