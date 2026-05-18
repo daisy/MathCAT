@@ -12,9 +12,11 @@
       - t: "до"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
       else:
-      - t: "линейный сегмент"               # phrase(the 'line segment' A  B)
-      - x: "*[1]"
-      - x: "*[2]"
+      - t: "отрезок"               # phrase(the 'line segment' A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - t: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - t: "большое"
 
 - name: geometry-ray
   tag: ray
@@ -28,9 +30,11 @@
       - t: "до"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
       else:
-      - t: "луча"                      # phrase(the 'ray'A  B)
-      - x: "*[1]"
-      - x: "*[2]"
+      - t: "луч"                      # phrase(the 'ray'A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - t: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - t: "большое"
 
 - name: geometry-arc
   tag: arc
@@ -40,8 +44,10 @@
       if: "$Verbosity='Verbose'"
       then: [t: "а"]            # phrase('the' arc A B C)
   - t: "дуга"                        # phrase(the 'arc' A B C)
-  - x: "*[1]"
-  - x: "*[2]"
+  - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - t: "большое"
+  - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - t: "большое"
 
 - name: measure-of-angle
   tag: measure-of-angle

@@ -22,12 +22,18 @@
   replace:
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "div"]             # phrase('div' is short for divergence) -- note OneCore voices spell out "div"
+      then: [t: "див"]             # phrase('div' is short for divergence)
       else: [t: "дивергенция"]      # phrase('divergence of' this function from the mean)
+  - test:
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [t: "заглавной"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
-  - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+      else: [x: "*[1]"]
 
 - name: curl
   tag: curl
@@ -35,12 +41,15 @@
   replace:
   - t: "ротор"      # phrase(the 'curl of' a field)
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "из"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [t: "заглавной"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
-  - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+      else: [x: "*[1]"]
 
 - name: gradient
   tag: gradient
@@ -49,8 +58,14 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "градиент"]      # phrase(the hill has a 'gradient of' five percent)
-      else: [t: "del"]      # phrase(the delete key is labeled 'del')
+      else: [t: "набла"]      # phrase(the delete key is labeled 'del')
+  - test:
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [t: "заглавной"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
-  - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Terse' and *[1][self::m:mi[contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text())]]"
+      then: [x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+      else: [x: "*[1]"]

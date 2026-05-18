@@ -2,11 +2,32 @@
  # Note to translators:
  #   most languages don't have two ways to pronounce 'a' -- if not need, remove the rules and change "B-Z" to "A-Z"
  #   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
- - "a-z": 
-    - test: 
-        if: "$TTS='none'"
-        then: [t: "."]                          	# 	(en: '.', google translation)
-        else: [spell: "'.'"]                       
+ - "a": [t: "а"]
+ - "b": [t: "бэ"]
+ - "c": [t: "цэ"]
+ - "d": [t: "дэ"]
+ - "e": [t: "е"]
+ - "f": [t: "эф"]
+ - "g": [t: "джи"]
+ - "h": [t: "аш"]
+ - "i": [t: "и"]
+ - "j": [t: "джей"]
+ - "k": [t: "ка"]
+ - "l": [t: "эль"]
+ - "m": [t: "эм"]
+ - "n": [t: "эн"]
+ - "o": [t: "о"]
+ - "p": [t: "пэ"]
+ - "q": [t: "ку"]
+ - "r": [t: "эр"]
+ - "s": [t: "эс"]
+ - "t": [t: "тэ"]
+ - "u": [t: "у"]
+ - "v": [t: "вэ"]
+ - "w": [t: "дабл-ю"]
+ - "x": [t: "икс"]
+ - "y": [t: "игрек"]
+ - "z": [t: "зет"]
 
  # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
  # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
@@ -26,12 +47,12 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "большая"]              	# 	(en: 'cap', google translation)
+            then: [t: "заглавная"]              	# 	(en: 'cap')
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+        replace: [x: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
 
  - "0-9": [t: "."]                              	# 	(en: '.', google translation)
 
@@ -54,27 +75,42 @@
  - "'": [t: "штрих"]                            	#  0x27	(en: 'apostrophe')
  - "(":                                         	#  0x28
     - test:
-        if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then_test:
-            if: "$Verbosity='Terse'"
-            then: [t: "скобка открывается"]                	#  0x28	(en: 'open', google translation)
-            else: [t: "открывающая круглая скобка"]        	#  0x28	(en: 'open paren', google translation)
-        else: [t: "левая круглая скобка"]               	#  0x28	(en: 'left paren', google translation)
+        if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[1][.='P'] or following-sibling::*[.='|' or .='∩' or contains(., 'and')]"
+        then: [t: "открывающая круглая скобка"]
+        else_test:
+          if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
+          then_test:
+              if: "$Verbosity='Terse'"
+              then: [t: "скобка открывается"]                	#  0x28	(en: 'open', google translation)
+              else: [t: "открывающая круглая скобка"]        	#  0x28	(en: 'open paren', google translation)
+          else: [t: "левая круглая скобка"]               	#  0x28	(en: 'left paren', google translation)
  - ")":                                         	#  0x29
     - test:
-        if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then_test:
-            if: "$Verbosity='Terse'"
-            then: [t: "скобка закрывается"]              	#  0x29	(en: 'close', google translation)
-            else: [t: "закрывающая круглая скобка"]         	#  0x29	(en: 'close paren', google translation)
-        else: [t: "правая круглая скобка"]          	#  0x29	(en: 'right paren', google translation)
+        if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[.='P' or .='|' or .='∩' or contains(., 'and')]"
+        then: [t: "закрывающая круглая скобка"]
+        else_test:
+          if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
+          then_test:
+              if: "$Verbosity='Terse'"
+              then: [t: "скобка закрывается"]              	#  0x29	(en: 'close', google translation)
+              else: [t: "закрывающая круглая скобка"]         	#  0x29	(en: 'close paren', google translation)
+          else: [t: "правая круглая скобка"]          	#  0x29	(en: 'right paren', google translation)
 
  - "*":                                         	#  0x2a
     test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
         then: [t: "звёздочка"]                     	#  0x2a	(en: 'star', google translation)
         else: [t: "умножить"]                        	#  0x2a	(en: 'times', google translation)
- - "+": [t: "плюс"]                             	#  0x2b	(en: 'plus')
+ - "+":                                         	#  0x2b
+    - test:
+        if: "preceding-sibling::*[1][name(.)='mover' or name(.)='modified-variable'] and
+             following-sibling::*[1][name(.)='mover' or name(.)='modified-variable'] and
+             not(following-sibling::*[1][name(.)='mover' and *[2][.='→']])"
+        then: [pause: medium]
+    - t: "плюс"                             	# 	(en: 'plus')
+    - test:
+        if: "$ClearSpeak_Functions='None' and following-sibling::*[1][self::m:mi] and not(ancestor::*[IsBracketed(., '(', ')')])"
+        then: [pause: short]
  - ",":                                         	#  0x2c
     # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
     # that this test is here and not with "…" is not ideal, but seems simplest
@@ -87,10 +123,14 @@
                # except if expression starts with '…'
             - "../*[1][.='…'] "
         then:
-        - T: "запятая"                            	#  	(en: 'comma', google translation)
         - test:
-            if: "$Verbosity != Terse"
+          - if: "preceding-sibling::*[1][self::m:mi] and following-sibling::*[1][self::m:mi]"
             then: [pause: short]
+            else:
+            - T: "запятая"                            	#  	(en: 'comma', google translation)
+            - test:
+                if: "$Verbosity != Terse"
+                then: [pause: short]
         # else silent
 
  - "-": [t: "минус"]                            	#  0x2d	(en: 'minus')
@@ -112,6 +152,12 @@
         if: "$Verbosity!='Terse'"
         then: [t: "равно"]                      	# 	(en: 'is equal to', google translation)
         else: [t: "равно"]                      	# 	(en: 'equals')
+    - test:
+      - if: "(following-sibling::*[1][.='c'] and following-sibling::*[2][.='\u2062']) or
+             (following-sibling::*[1][.='P'] and following-sibling::*[2][IsBracketed(., '(', ')')] and following-sibling::*[3][.='='])"
+        then: [pause: medium]
+      - else_if: "following-sibling::*[1][.='P'] and following-sibling::*[2][IsBracketed(., '(', ')')]"
+        then: [pause: short]
 
  - ">":                                         	#  0x3e
      - test: 
@@ -134,7 +180,7 @@
  - "^":                                         	#  0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
-        then: [t: "крышка"]                       	# 	(en: 'hat', google translation)
+        then: [t: "циркумфлекс"]                       	# 	(en: 'hat', google translation)
         else: [t: "крышка"]                    	# 	(en: 'caret', google translation)
  - "_": [t: "подчёркивание"]                        	#  0x5f	(en: 'under bar', google translation)
  - "`": [t: "гравис"]                           	#  0x60	(en: 'grave', google translation)
@@ -191,8 +237,8 @@
         then: [t: "умножить"]                        	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "к"]                      	# 	(en: 'by', google translation)
-            else: [t: "умножить"]               	# 	(en: 'cross')
+            then: [t: "на"]                      	# 	(en: 'by')
+            else: [t: "векторное произведение"]               	# 	(en: 'cross')
  - "÷": [t: "разделить на"]                     	#  0xf7	(en: 'divided by')
  - "̀": [t: "знак грависа"]       	#  0x300	(en: 'grave accent embellishment', google translation)
  - "́": [t: "акут"]       	#  0x301	(en: 'acute accent embellishment', google translation)
@@ -200,7 +246,7 @@
  - "̃": [t: "тильда"]                  	#  0x303	(en: 'tilde embellishment', google translation)
  - "̄": [t: "макрон"]                  	#  0x304	(en: 'macron embellishment', google translation)
  - "̅": [t: "надчёркивание"]            	#  0x305	(en: 'overbar embellishment', google translation)
- - "̆": [t: "бреве"]                            	#  0x306	(en: 'breve', google translation)
+ - "̆": [t: "брэвэ"]                            	#  0x306	(en: 'breve', google translation)
  - "̇": [t: "точка сверху"]             	#  0x307	(en: 'dot above embellishment', google translation)
 
    # Note: ClearSpeak has pref TriangleSymbol for "Δ", but that is wrong
@@ -217,12 +263,12 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "большая"]              	# 	(en: 'cap', google translation)
+            then: [t: "заглавная"]              	# 	(en: 'cap')
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
+        replace: [x: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
 
  - "α": [t: "альфа"]                            	#  0x3b1	(en: 'alpha')
  - "β": [t: "бета"]                             	#  0x3b2	(en: 'beta')
@@ -265,7 +311,7 @@
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
             - "../*[1][.='…']"
-        then: [t: "точка точка точка"]            	# 	(en: 'dot dot dot', google translation)
+        then: [t: "многоточие"]            	# 	(en: 'dot dot dot')
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
             then: [t: "и так далее"]            	# 	(en: 'and so on', google translation)
@@ -273,11 +319,14 @@
 
  - "⁡":                                         	#  0x2061
     - test:
-        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
-        if: "not($Verbosity='Terse' and preceding-sibling::*[1][IsInDefinition(., 'TrigFunctionNames')]) and not(preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')]) and
+        # skip saying "of" after trig functions, geometry shapes, or in :literal mode
+        if: "not(preceding-sibling::*[1][IsInDefinition(., 'TrigFunctionNames') or self::m:inverse-function or (self::m:power and IsInDefinition(*[1], 'TrigFunctionNames'))]) and not(preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')]) and
              not(@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
         then: [t: "от"]                         	# 	(en: 'of', google translation)
- - "⁢": [t: ""]                                 	#  0x2062
+ - "⁢":                                         	#  0x2062
+    - test:
+        if: "@data-function-guess and following-sibling::*[1][self::m:mrow and IsBracketed(., '(', ')')] and $ClearSpeak_Functions!='None'"
+        then: [pause: short]
  - "⁣": [t: ""]                                 	#  0x2063
  - "⁤": [t: "и"]                                	#  0x2064	(en: 'and', google translation)
  - "′": [t: "штрих"]                            	#  0x2032	(en: 'prime')
@@ -309,9 +358,12 @@
  - "↑": [t: "стрелка вверх"]                    	#  0x2191	(en: 'upwards arrow', google translation)
  - "→":                                         	#  0x2192
      - test:
-        if: "ancestor::*[2][self::m:limit]"
-        then: [t: "стремится к"]                    	# 	(en: 'approaches', google translation)
-        else: [t: "стрелка вправо"]             	# 	(en: 'right arrow', google translation)
+        if: "(parent::m:mover or parent::m:modified-variable) and ($SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+        then: [t: "со стрелкой"]
+        else_test:
+          if: "ancestor::*[2][self::m:limit]"
+          then: [t: "стремящемся к"]                    	# 	(en: 'approaches', google translation)
+          else: [t: "стрелка вправо"]             	# 	(en: 'right arrow', google translation)
 
  - "↓": [t: "стрелка вниз"]                      	#  0x2193	(en: 'downwards arrow', google translation)
  - "⇒": [t: "двойная стрелка вправо"]            	#  0x21d2	(en: 'rightwards double arrow', google translation)
@@ -320,7 +372,7 @@
      - test: 
          if: "$Verbosity='Terse'"
          then: [t: "частная производная"]                  	# 	(en: 'partial', google translation)
-         else: [t: "частный дифференциал"]      	# 	(en: 'partial derivative')
+         else: [t: "частная производная"]      	# 	(en: 'partial derivative')
  - "∃": [t: "существует"]                       	#  0x2203	(en: 'there exists')
  - "∄": [t: "не существует"]                    	#  0x2204	(en: 'there does not exist')
  - "∅": [t: "пустое множество"]                 	#  0x2205	(en: 'empty set')
@@ -411,9 +463,9 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "находится в"]        	# 	(en: 'is in', google translation)
               - else: [t: "малое принадлежит"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∏": [t: "эн-арное произведение"]            	#  0x220f	(en: 'product')
+ - "∏": [t: "произведение"]            	#  0x220f	(en: 'product')
  - "∐": [t: "эн-арный сомножитель"]             	#  0x2210	(en: 'co-product')
- - "∑": [t: "эн-арная сумма"]                   	#  0x2211	(en: 'sum')
+ - "∑": [t: "сумма"]                   	#  0x2211	(en: 'sum')
  - "−": [t: "минус"]                            	#  0x2212	(en: 'minus')
  - "∓": [t: "минус плюс"]                       	#  0x2213	(en: 'minus or plus')
  - "∗": [t: "звёздочка"]               	#  0x2217	(en: 'times')

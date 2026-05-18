@@ -1,5 +1,24 @@
 ---
 
+- name: capital-letter-as-big
+  tag: mi
+  match: "string-length(.)=1 and contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text()) and ancestor::*[self::m:large-op]"
+  replace:
+  - x: "translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - t: "большое"
+
+- name: leading-negative-plus
+  tag: mrow
+  match:
+  - "count(*)=3 and *[2][.='+'] and"
+  - "(*[1][self::m:minus] or"
+  - " *[1][self::m:mrow[IsBracketed(., '(', ')') and .//m:minus]])"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - x: "*[2]"
+  - x: "*[3]"
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -37,15 +56,15 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "c"]      # phrase(the letter 'C' used to represent complex number)
+      then: [t: "цэ"]      # phrase(the letter 'C' used to represent complex number)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "n"]      # phrase(the letter 'N' may represent natural numbers)
+      then: [t: "эн"]      # phrase(the letter 'N' may represent natural numbers)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "q"]      # phrase(the letter 'Q' may represent rational numbers)
+      then: [t: "ку"]      # phrase(the letter 'Q' may represent rational numbers)
     - else_if: "*[1][.='ℝ']"
-      then: [t: "r"]      # phrase(the letter 'R' may represent real numbers)
+      then: [t: "эр"]      # phrase(the letter 'R' may represent real numbers)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "z"]      # phrase(the letter 'Z' may represent integers)
+      then: [t: "зэт"]      # phrase(the letter 'Z' may represent integers)
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
@@ -89,7 +108,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "оценивается в"      # phrase(results were 'evaluated at' a given point)
+  - t: "вычисленное при"      # phrase(results were 'evaluated at' a given point)
   - pause: auto
   - x: "*[2]"
 
@@ -99,41 +118,115 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "оценивается в"      # phrase(results were 'evaluated at' this point)
+  - t: "вычисленное при"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
-  - t: "минус то же выражение, которое оценивается в"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
+  - t: "минус то же выражение, вычисленное при"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
   - x: "*[2]"
+
+- name: limit
+  tag: limit
+  match: "count(*)=1 and following-sibling::*"
+  replace:
+  - t: "предел при"
+  - x: "*[1]"
+  - pause: short
+  - t: "от"
+  - test:
+      if: "following-sibling::*[1][self::*[name()='fraction' or name()='mfrac'] or .//*[name()='fraction' or name()='mfrac']]"
+      then_test:
+        if: "$Impairment='LearningDisability'"
+        then: [pause: medium]
+        else: [pause: short]
+
+- name: limit
+  tag: limit
+  match: "count(*)=2"
+  replace:
+  - t: "предел при"
+  - x: "*[1]"
+  - pause: short
+  - t: "от"
+  - test:
+      if: "$Impairment='LearningDisability'"
+      then: [pause: medium]
+      else: [pause: short]
+  - x: "*[2]"
+
+- name: binomial
+  tag: binomial
+  match: "count(*)=2"
+  replace:
+  - t: "число сочетаний из"
+  - test:
+      if: "*[1][self::m:mrow and count(*)=3 and *[1][self::m:mi[.='n' or .='k']] and *[2][.='+'] and *[3][self::m:mn]]"
+      then:
+      - test:
+        - if: "*[1]/*[1][.='n']"
+          then: [t: "n"]
+        - else: [t: "k"]
+      - x: "*[1]/*[2]"
+      - x: "*[1]/*[3]"
+      else: [x: "*[1]"]
+  - t: "по"
+  - test:
+      if: "*[2][self::m:mrow and count(*)=3 and *[1][self::m:mi[.='n' or .='k']] and *[2][.='+'] and *[3][self::m:mn]]"
+      then:
+      - test:
+        - if: "*[2]/*[1][.='n']"
+          then: [t: "n"]
+        - else: [t: "k"]
+      - x: "*[2]/*[2]"
+      - x: "*[2]/*[3]"
+      else: [x: "*[2]"]
+  - test:
+      if: "not(IsNode(*[2], 'simple'))"
+      then: [t: "конец числа сочетаний"]
 
 - name: permutation
   # Not a default because the order of the args is reversed
   tag: pochhammer
   match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
-  - x: "*[2]"
-  - t: "перестановки значений"      # phrase(the solution  involves several 'permutations of' values)
+  - t: "число размещений из"
   - x: "*[1]"
+  - t: "по"
+  - x: "*[2]"
+
+- name: numeric-half-open-interval
+  tag: closed-open-interval
+  match: "count(*)=2 and *[1][self::m:mn] and *[2][.//m:mi[.='π'] or .='π']"
+  replace:
+  - t: "полуинтервал"
+  - t: "от"
+  - x: "*[1]"
+  - t: "до"
+  - x: "*[2]"
 
 - name: intervals
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "count(*)=2"
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "а"      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
+    - if: "name(.)='open-interval'"
+      then: [t: "открытый интервал"]
+    - else_if: "name(.)='closed-interval'"
+      then: [t: "закрытый интервал"]
+    - else_if: "name(.)='open-closed-interval'"
+      then: [t: "открыто-закрытый интервал"]
+      else: [t: "закрыто-открытый интервал"]
+  - t: "от"
   - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "от"      # phrase(subtracting 5 'from' 10 gives 5)
-      - x: "*[1]"
-      - t: "до"      # phrase(adding 6 'to' 6 equals  12)
-      - x: "*[2]"
-      else:
-      - x: "*[1]"
-      - t: "запятую"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
-      - x: "*[2]"
+      if: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
+      then: [t: "минус бесконечности"]
+      else: [x: "*[1]"]
+  - t: "до"
+  - test:
+    - if: "*[2][self::m:plus and count(*)=1 and *[1][.='∞']]"
+      then: [t: "плюс бесконечности"]
+    - else_if: "*[2][.='∞']"
+      then: [t: "бесконечности"]
+      else: [x: "*[2]"]
 
 - name: default-point
   tag: point
@@ -152,9 +245,6 @@
   tag: large-op
   match: "count(*) = 3"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - t: "от"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
@@ -162,31 +252,53 @@
   - x: "*[3]"
   - test:
       if: "following-sibling::*"
-      then: [t: "из"]      # phrase(the square root 'of' 25 equals 5)
+      then:
+      - t: "от"      # phrase(the square root 'of' 25 equals 5)
+      - test:
+        - if: "*[1][.='∫']"
+          then: [pause: short]
+        - else_if: "following-sibling::*[1][self::m:indexed-by or self::m:msub]"
+          then: [pause: medium]
 
 - name: bigop-under
   tag: large-op
   match: "count(*)=2"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "над"      # phrase(2 'over' 3 equals two thirds)
-  - x: "*[2]"
+  - t: "по"      # phrase(2 'over' 3 equals two thirds)
+  - test:
+      if: "*[1][.='∫'] and *[2][.='ℝ']"
+      then: [t: "действительным числам"]
+      else: [x: "*[2]"]
   - test:
       if: "following-sibling::*"
-      then: [t: "из"]      # phrase(the square root 'of' 25 equals 5)
+      then:
+      - t: "от"      # phrase(the square root 'of' 25 equals 5)
+      - test:
+        - if: "*[1][.='∫']"
+          then: [pause: medium]
+        - else_if: "following-sibling::*[1][self::m:indexed-by or self::m:msub]"
+          then: [pause: short]
+
+- name: integral-with-separated-differential
+  tag: mrow
+  match:
+  - "count(*)=5 and *[1][self::m:mrow[m:large-op]] and"
+  - "*[2][.='⁢'] and *[3][self::m:mi[.='d']] and *[4][.='⁢']"
+  replace:
+  - x: "*[1]"
+  - pause: medium
+  - x: "*[3]"
+  - x: "*[5]"
 
 - name: largeop
   tag: mrow
   match: "count(*)=2 and IsInDefinition(*[1], 'LargeOperators')"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "из"      # phrase(the square root 'of' 25 equals 5)
+  - test:
+      if: "*[1][.='∫']"
+      then: [t: "от"]      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
 - name: repeating-decimal
@@ -326,28 +438,19 @@
   match: ".='tan' or .='tg'"
   replace:
   - bookmark: "@id"
-  - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "тан"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [t: "касательная"]      # phrase(a 'tangent' is a straight line that touches a curve)
+  - t: "тангенс"
 - name: sec
   tag: mi
   match: ".='sec'"
   replace:
   - bookmark: "@id"
-  - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "искать"]      # phrase(to 'seek' a solution)
-      else: [t: "secant"]      # phrase(a 'secant' intersects a curve at two or more points)
+  - t: "секанс"
 - name: csc
   tag: mi
   match: ".='csc'"
   replace:
   - bookmark: "@id"
-  - test:
-      if: "$Verbosity='Terse'"
-      then: [t: "cosecant"]      # phrase(we will 'cosecant' a solution)
-      else: [t: "cosecant"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+  - t: "косеканс"
 - name: cot
   tag: mi
   match: ".='cot'"
@@ -355,8 +458,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "котангент"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [t: "котангент"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: [t: "котангенс"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [t: "котангенс"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -384,7 +487,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [t: "танч"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [t: "гиперболическая касательная"]      # phrase('hyperbolic tangent' is a mathematical function)
+      else: [t: "гиперболический тангенс"]      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -393,7 +496,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [t: "шек"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [t: "гиперболический секунд"]      # phrase('hyperbolic secant' is a mathematical function)
+      else: [t: "гиперболический секанс"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -402,7 +505,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [t: "coscheck"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [t: "гиперболический коскант"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      else: [t: "гиперболический косеканс"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -411,7 +514,102 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [t: "cotanch"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [t: "гиперболический котангент"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      else: [t: "гиперболический котангенс"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+
+- name: trig-name-sequence-canonical
+  tag: mrow
+  match:
+  - "count(*)=11 and *[1]/*[1][.='sin'] and *[3]/*[1][.='cos'] and *[5]/*[1][.='tan'] and "
+  - "*[7]/*[1][.='sec'] and *[9]/*[1][.='csc'] and *[11]/*[1][.='cot']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+  - x: "*[4]"
+  - x: "*[5]"
+  - x: "*[6]"
+  - x: "*[7]"
+  - pause: short
+  - x: "*[8]"
+  - x: "*[9]"
+  - pause: short
+  - x: "*[10]"
+  - x: "*[11]"
+
+- name: hyperbolic-trig-name-sequence-canonical
+  tag: mrow
+  match:
+  - "count(*)=11 and *[1]/*[1][.='sinh'] and *[3]/*[1][.='cosh'] and *[5]/*[1][.='tanh'] and "
+  - "*[7]/*[1][.='sech'] and *[9]/*[1][.='csch'] and *[11]/*[1][.='coth']"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - x: "*[2]"
+  - x: "*[3]"
+  - pause: short
+  - x: "*[4]"
+  - x: "*[5]"
+  - pause: short
+  - x: "*[6]"
+  - x: "*[7]"
+  - pause: short
+  - x: "*[8]"
+  - x: "*[9]"
+  - pause: short
+  - x: "*[10]"
+  - x: "*[11]"
+
+- name: trig-name-sequence
+  tag: mrow
+  match:
+  - "count(*)=23 and *[1][.='sin'] and *[5][.='cos'] and *[9][.='tan'] and "
+  - "*[13][.='sec'] and *[17][.='csc'] and *[21][.='cot']"
+  replace:
+  - x: "*[1]"
+  - x: "*[3]"
+  - x: "*[4]"
+  - x: "*[5]"
+  - x: "*[7]"
+  - x: "*[8]"
+  - x: "*[9]"
+  - x: "*[11]"
+  - x: "*[12]"
+  - x: "*[13]"
+  - x: "*[15]"
+  - pause: short
+  - x: "*[16]"
+  - x: "*[17]"
+  - x: "*[19]"
+  - pause: short
+  - x: "*[20]"
+  - x: "*[21]"
+  - x: "*[23]"
+
+- name: trig-name-sequence-no-apply
+  tag: mrow
+  match:
+  - "count(*)=17 and *[1][.='sin'] and *[4][.='cos'] and *[7][.='tan'] and "
+  - "*[10][.='sec'] and *[13][.='csc'] and *[16][.='cot']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+  - x: "*[4]"
+  - x: "*[5]"
+  - x: "*[6]"
+  - x: "*[7]"
+  - x: "*[8]"
+  - x: "*[9]"
+  - x: "*[10]"
+  - x: "*[11]"
+  - pause: short
+  - x: "*[12]"
+  - x: "*[13]"
+  - x: "*[14]"
+  - pause: short
+  - x: "*[15]"
+  - x: "*[16]"
+  - x: "*[17]"
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -419,8 +617,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "экс"]      # phrase('exp' means exponential function)
-      else: [t: "экспоненциальная"]      # phrase('exponential' function)
+      then: [t: "эксп"]      # phrase('exp' means exponential function)
+      else: [t: "экспонента"]      # phrase('exponential' function)
 - name: covariance
   tag: mi
   match: ".='Cov'"
@@ -428,8 +626,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "cov"]      # phrase('Cov' is shorthand for the covariance function)
-      else: [t: "ковариации"]      # phrase('covariance' function)
+      then: [t: "Cov"]      # phrase('Cov' is shorthand for the covariance function)
+      else: [t: "ковариация"]      # phrase('covariance' function)
 
 -
   name: log    # handle both log and ln (if in an mrow, 'intents' are used)
@@ -438,15 +636,11 @@
   replace:
   - bookmark: "@id"
   - test:
-    - if: "$Verbosity!='Terse'"
-      then: [t: "а"]      # phrase('the' logarithm function is used in mathematics)
-
-  - test:
     - if: ".= 'log'"
-      then: [t: "log"]      # phrase(the 'log' function is used in mathematics)
+      then: [t: "логарифм"]      # phrase(the 'log' function is used in mathematics)
     - else_if: "$Verbosity='Terse'"
-      then: [spell: "'ln'"]
-      else: [t: "natural log"]      # phrase(the 'natural log' function is used in mathematics)
+      then: [t: "эл эн"]
+      else: [t: "натуральный логарифм"]      # phrase(the 'natural log' function is used in mathematics)
 
 
 - name: multi-line
@@ -463,13 +657,19 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [t: "случай"]      # phrase(this is the first 'case' of three cases)
+      then_test:
+        if: "$LineCount = 1"
+        then: [t: "случай"]
+        else: [t: "случая"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
-      then: [t: "уравнение"]      # phrase(this is the first 'equation' of three equations)
-      else: [t: "линия"]      # phrase(this is the first 'line' of three lines)
-  - test:
-    - if: "$LineCount != 1"
-      then: [ct: "с"] # plural
+      then_test:
+        if: "$LineCount = 1"
+        then: [t: "уравнение"]
+        else: [t: "уравнения"]      # phrase(this is the first 'equation' of three equations)
+      else_test:
+        if: "$LineCount = 1"
+        then: [t: "строка"]
+        else: [t: "строки"]      # phrase(this is the first 'line' of three lines)
   - pause: short
   - x: "*"
   - pause: long
@@ -486,10 +686,10 @@
       - pause: medium
       - test:
         - if: "parent::m:piecewise"
-          then: [t: "дело"]     # phrase('case' 1 of 10 cases)
+          then: [t: "случай"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
           then: [t: "уравнение"] # phrase('equation' 1 of 10 equations)
-          else: [t: "линия"]     # phrase('line 1 of 10 lines)
+          else: [t: "строка"]     # phrase('line 1 of 10 lines)
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
@@ -538,14 +738,12 @@
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - ot: "the"      # phrase('the' 1 by 1 matrix M)
-  - t: "1 по 1"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
       then: [t: "определитель"]      # phrase(the 2 by 2 'determinant'))
       else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
-      
-  - t: "с входом"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - t: "1 на 1"      # phrase(the '1 by 1' matrix)
+  - t: "с элементом"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
 
 # simpler reading methods for special case matrices
@@ -554,11 +752,10 @@
   # select all the non-zero entries -- if there are none of them, then it is a zero matrix
   match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
-  - t: "the"      # phrase('the' 1 by 2 matrix M)
-  - x: count(*)
-  - t: "от"       # phrase(the 1 'by' 2 matrix)
-  - x: count(*[self::m:mtr][1]/*)
   - t: "нулевая матрица"   # phrase(the 2 by 2 'zero matrix')
+  - x: count(*)
+  - t: "на"       # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
   - pause: long
 
 - name: identity-matrix
@@ -571,11 +768,10 @@
   - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*) or .!= 1]"
   - "    )"
   replace:
-  - t: "the"      # phrase('the' 1 by 2 matrix M)
+  - t: "единичная матрица"   # phrase(the 2 by 2 'identity matrix')
   - x: count(*)
-  - t: "от"       # phrase(the 1 'by' 2 matrix)
+  - t: "на"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "матрица идентичности"   # phrase(the 2 by 2 'identity matrix')
   - pause: long
 
 - name: diagonal-matrix
@@ -588,11 +784,10 @@
   - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
   - "    )"
   replace:
-  - t: "матрица 1 на 2"      # phrase('the' 1 by 2 matrix)
-  - x: count(*)
-  - t: "от"       # phrase(the 1 'by' 2 matrix)
-  - x: count(*[self::m:mtr][1]/*)
   - t: "диагональная матрица"   # phrase(the 2 by 2 'diagonal matrix')
+  - x: count(*)
+  - t: "на"       # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
   - pause: long
   - insert:
       # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
@@ -612,13 +807,12 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "а"      # phrase('the' 2 by 2 matrix M)
-  - x: count(*)
-  - t: "на 1 столбец"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "вектор"]      # phrase(the 2 by 2 'vector')
-      else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "вектор-столбец"]
+      else: [t: "матрица-столбец"]
+  - x: count(*)
+  - t: "на 1"      # phrase(the 2 'by 1 column' matrix)
   - pause: long
   - x: "*/*"
   - test:
@@ -635,13 +829,12 @@
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - t: "а"      # phrase('the' 2 by 2 matrix M)
-  - x: "count(*)"
-  - t: "на 1 столбец"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "вектор"]      # phrase(the 2 column 'vector')
-      else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "вектор-столбец"]
+      else: [t: "матрица-столбец"]
+  - x: "count(*)"
+  - t: "на 1"      # phrase(the 2 'by 1 column' matrix)
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
@@ -657,13 +850,12 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "матрица 1 от"      # phrase('the 1 by' 2 matrix)
-  - x: count(*/*)
-  - t: "строк"      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "1 от"]      # phrase('the 1 by' 2 row 'vector')
-      else: [t: "1 от "]      # phrase('the 1 by' 2 'matrix')
+      then: [t: "вектор-строка"]
+      else: [t: "матрица-строка"]
+  - t: "1 на"      # phrase('the 1 by' 2 matrix)
+  - x: count(*/*)
   - pause: long
   - x: "*/*"
   - test:
@@ -680,13 +872,12 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
-  - t: "матрица 1 от"      # phrase('the 1 by' 2 matrix)
-  - x: "count(*/*)"
-  - t: "ряд"      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "вектор"]      # phrase(the 2 by 1 'vector')
-      else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "вектор-строка"]
+      else: [t: "матрица-строка"]
+  - t: "1 на"      # phrase('the 1 by' 2 matrix)
+  - x: "count(*/*)"
   - pause: long
   - pause: medium
   - x: "*/*" # select the cols (mtd)
@@ -707,14 +898,13 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
-  - t: "the"      # phrase('the' 1 by 2 matrix M)
-  - x: count(*)
-  - t: "от"      # phrase(the 1 'by' 2 matrix)
-  - x: count(*[self::m:mtr][1]/*)
   - test:
       if: "self::m:determinant"
       then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
       else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+  - x: count(*)
+  - t: "на"      # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
   - pause: long
   - x: "*"
   - test:
@@ -731,14 +921,13 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
-  - t: "the"      # phrase('the' 1 by 2 matrix M)
-  - x: "count(*)"
-  - t: "от"      # phrase(the 1 'by' 2 matrix)
-  - x: "count(*[self::m:mtr][1]/*)"
   - test:
       if: "self::m:determinant"
       then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
       else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+  - x: "count(*)"
+  - t: "на"      # phrase(the 1 'by' 2 matrix)
+  - x: "count(*[self::m:mtr][1]/*)"
   - pause: long
   - x: "*"
   - test:
@@ -757,10 +946,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "script"]      # phrase(H 'subscript' 2)
+      then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [t: "sub"]      # phrase(H 'sub' 2)
+        then: [t: "нижний индекс"]      # phrase(H 'sub' 2)
   - x: "*[3]"
 
 - name: dimension-by
@@ -778,10 +967,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "superscript"]      # phrase(H 'superscript' 2)
+      then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [t: "super"]      # phrase(H 'super' 2)
+        then: [t: "верхний индекс"]      # phrase(H 'super' 2)
   - x: "*[3]"
   - test:
       if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
@@ -809,10 +998,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "superscript"]      # phrase(H 'superscript' 2)
+              then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "super"]      # phrase(H 'super' 2)
+                then: [t: "верхний индекс"]      # phrase(H 'super' 2)
           - x: "$Prescripts[2]"
           - pause: "short"
       - test:
@@ -820,10 +1009,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "индекс"]      # phrase(a 'subscript' may be used to indicate an index)
+              then: [t: "нижний индекс"]      # phrase(a 'subscript' may be used to indicate an index)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "суб"]      # phrase(here is a 'sub' total)
+                then: [t: "нижний индекс"]      # phrase(here is a 'sub' total)
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -834,10 +1023,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "superscript"]      # phrase(H 'superscript' 2)
+                  then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "super"]      # phrase(H 'super' 2)
+                    then: [t: "верхний индекс"]      # phrase(H 'super' 2)
               - x: "$Prescripts[4]"
               - pause: "short"
           - test:

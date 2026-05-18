@@ -75,7 +75,7 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("ru", "ClearSpeak", expr, "секанс в четвертой степени икс")?;
+    test("ru", "ClearSpeak", expr, "секанс в четвёртой степени икс")?;
     return Ok(());
 }
 
