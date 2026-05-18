@@ -75,7 +75,7 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("ru", "ClearSpeak", expr, "секанс в четвертой степени икс")?;
+    test("ru", "ClearSpeak", expr, "секанс в четвёртой степени икс")?;
     return Ok(());
 }
 
@@ -250,7 +250,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("ru", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes", expr,
-        "скобка 2 умножить на икс закрывается в квадрате")?;
+        "скобка открывается 2 умножить на икс скобка закрывается в квадрате")?;
         return Ok(());
 }
 
