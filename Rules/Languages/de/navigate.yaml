@@ -124,12 +124,12 @@
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
                   then: [T: "index"]       # phrase(x with 'subscript' 2)
-                  else: [T: "superscript"]     # phrase(x with 'superscript' 2)
+                  else: [T: "hochgestellt"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
-                  then: [T: "pre-superscript"]    # phrase(x with 'pre-superscript' 2)
-                  else: [T: "pre-subscript"]      # phrase(x with 'pre-subscript' 2)
+                  then: [T: "prä-hochgestellt"]    # phrase(x with 'pre-superscript' 2)
+                  else: [T: "prä-index"]      # phrase(x with 'pre-subscript' 2)
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
@@ -761,7 +761,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "übergehen sie zur vorherigen spalte"                              # phrase('move to previous column' to the previous row in the table)
+      - T: "zur vorherigen spalte"                              # phrase('move to previous column' in the table)
       - pause: medium
   - T: "keine vorherige spalte"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]

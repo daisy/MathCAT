@@ -52,3 +52,8 @@ src/speech-bak
 
 Rules/*/*/*.zip
 .vs
+
+# local caches when building Jekyll
+docs/_site
+docs/.jekyll-cache
+docs/Gemfile.lock

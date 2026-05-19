@@ -1,0 +1,89 @@
+# Weekly LLVM source-based coverage for the whole workspace (`cargo llvm-cov`).
+# Produces an HTML report (artifact + optional commit to main/docs/llvm-cov/), and (on main)
+# commits HTML under docs/llvm-cov/ on branch main so GitHub Pages (main + /docs) serves
+# https://<org>.github.io/<repo>/llvm-cov/
+name: Test coverage
+
+on:
+  schedule:
+    # Monday 07:30 UTC — weekly; adjust if you want a different window.
+    - cron: "30 7 * * 1"
+  # Manual runs: same as schedule — artifact + push llvm-cov/ on main (see publish job `if`).
+  workflow_dispatch:
+
+concurrency:
+  group: coverage-${{ github.workflow }}
+  cancel-in-progress: false
+
+# Pushes commits to main (docs/llvm-cov/ only); [skip ci] avoids re-triggering this workflow.
+permissions:
+  contents: write
+
+jobs:
+  llvm-cov:
+    name: cargo llvm-cov
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: llvm-tools-preview
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-llvm-cov
+
+      - name: Generate coverage (HTML report)
+        run: |
+          cargo llvm-cov --workspace --html --output-dir llvm-cov-html
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: llvm-cov-html
+          path: llvm-cov-html/
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Job summary (stable links)
+        run: |
+          {
+            echo "### Test coverage (cargo-llvm-cov)"
+            echo ""
+            echo "**Stable links (same URL every week; pick the latest green run):**"
+            echo "- [Scheduled workflow runs](${{ github.server_url }}/${{ github.repository }}/actions/workflows/coverage.yml?query=event%3Aschedule)"
+            echo "- [All runs (incl. manual)](${{ github.server_url }}/${{ github.repository }}/actions/workflows/coverage.yml)"
+            echo ""
+            echo "**This run:** [artifacts and logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) — download **llvm-cov-html**, unzip, open \`index.html\`."
+            echo ""
+            echo "**Browsable site:** Pages must use branch **main** and folder **/docs**; coverage is then at **\`/llvm-cov/\`** (see repo README)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Commits only under docs/llvm-cov/ on main (keep_files preserves the rest of the branch).
+  publish-llvm-cov-to-main:
+    name: Publish HTML to main (docs/llvm-cov/)
+    needs: llvm-cov
+    # Same as schedule: on main for cron and workflow_dispatch (manual runs).
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: llvm-cov-html
+          path: llvm-cov-html
+
+      - name: Commit docs/llvm-cov/ on main for Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: main
+          publish_dir: ./llvm-cov-html
+          destination_dir: docs/llvm-cov
+          keep_files: true
+          user_name: github-actions
+          user_email: github-actions@github.com
+          # Avoid push → workflow → push loops when workflows trigger on push to main.
+          commit_message: "chore: refresh llvm-cov HTML report [skip ci]"
