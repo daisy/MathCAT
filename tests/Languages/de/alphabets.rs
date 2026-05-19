@@ -394,6 +394,8 @@ fn turned() -> Result<()> {
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("de", "SimpleSpeak", expr, "umkreiste 1 komma umkreiste 9")?;
+  let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
+  test("de", "SimpleSpeak", expr, "schwarz umkreiste eins, komma umkreiste nummer fünfzig")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("de", "SimpleSpeak", expr, "klammern 1 komma klammern 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";

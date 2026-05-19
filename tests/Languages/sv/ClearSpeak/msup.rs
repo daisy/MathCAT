@@ -118,7 +118,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </msup>
                 </math>";
-  test("sv", "ClearSpeak", expr, "x upphöjt till 1 tredjedel")?;
+  test("sv", "ClearSpeak", expr, "x upphöjt till en tredjedel")?;
   return Ok(());
 
 }
@@ -225,7 +225,7 @@ fn nested_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e upphöjt till 1 halv x kvadrat")?;
+  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e upphöjt till en halv x kvadrat")?;
   return Ok(());
 
 }
@@ -249,9 +249,9 @@ fn nested_negative_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e upphöjt till minus 1 halv x kvadrat")?;
-  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e upphöjt till exponenten, minus 1 halv x upphöjt till 2; slut exponent")?;
-  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e upphöjt till exponenten, minus 1 halv x upphöjt till 2; slut exponent")?;
+  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e upphöjt till minus en halv x kvadrat")?;
+  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e upphöjt till exponenten, minus en halv x upphöjt till 2; slut exponent")?;
+  test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e upphöjt till exponenten, minus en halv x upphöjt till 2; slut exponent")?;
   return Ok(());
 
 }
@@ -353,13 +353,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-  "e upphöjt till exponenten, minus 1 halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes kvadrat, slut exponent")?;
+  "e upphöjt till exponenten, minus en halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes kvadrat, slut exponent")?;
   test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-  "e upphöjt till exponenten, minus 1 halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
+  "e upphöjt till exponenten, minus en halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
   test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-  "e upphöjt till exponenten, minus 1 halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
+  "e upphöjt till exponenten, minus en halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
   test_prefs("sv", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-  "e upphöjt till exponenten, minus 1 halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
+  "e upphöjt till exponenten, minus en halv gånger; vänster-parentes; division med täljaren; x minus my; och nämnaren sigma; höger-parentes upphöjt till 2; slut exponent")?;
   return Ok(());
 
 }

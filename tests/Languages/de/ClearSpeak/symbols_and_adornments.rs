@@ -31,6 +31,14 @@ fn multiplication_cross() -> Result<()> {
 
 }
 
+// Added after a rule review found that `"` was incorrectly spoken as `backslash` in German.
+#[test]
+fn quotation_mark() -> Result<()> {
+    let expr = "<math><mo>&quot;</mo></math>";
+    test("de", "ClearSpeak", expr, "anführungszeichen")?;
+    Ok(())
+}
+
 #[test]
 fn ellipses_auto_start() -> Result<()> {
     let expr = "<math>

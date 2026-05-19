@@ -151,8 +151,8 @@ fn normal_ln() -> Result<()> {
 fn simple_natural_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_ClearSpeak("de", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "Natürliche Logarithmus x")?;
-        return Ok(());
+        "natürlicher Logarithmus x")?;
+        Ok(())
 
 }
 
@@ -161,8 +161,8 @@ fn simple_natural_log() -> Result<()> {
 fn natural_log() -> Result<()> {
     let expr = "<math><mi>ln</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
     test_ClearSpeak("de", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "der Natürliche Logarithmus von, klammer auf x plus y, klammer zu")?;
-        return Ok(());
+        "der natürliche Logarithmus von, klammer auf x plus y, klammer zu")?;
+        Ok(())
 
 }
 

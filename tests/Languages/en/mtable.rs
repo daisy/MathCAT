@@ -1126,6 +1126,36 @@ fn identity_matrix() -> Result<()> {
   }
 
 #[test]
+fn identity_matrix_false_positive_negative_one() -> Result<()> {
+  let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>-1</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "the 2 by 2 diagonal matrix; column 1; 1; column 2; negative 1")?;
+  Ok(())
+}
+
+#[test]
+fn identity_matrix_false_positive_zero_diagonal() -> Result<()> {
+  let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "the 2 by 2 diagonal matrix; column 1; 1")?;
+  Ok(())
+}
+
+#[test]
 fn diagonal_matrix() -> Result<()> {
   let expr = "<math>
       <mo>(</mo>

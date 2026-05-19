@@ -17,6 +17,7 @@ but add common mistakes of AI agents here instead.
 ## Translation Conventions
 - `t:` means untranslated or unverified.
 - `T:` means translated and verified.
+- don't demote from `T:` to `t:` unless instructed to.
 - tool for comparing rules across languages: `uv run --project PythonScripts audit-translations <language-code>`
 
 ## Python Tooling (`uv`)

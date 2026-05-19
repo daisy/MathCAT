@@ -196,20 +196,50 @@
           - x: "*[last()]"
           # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
 
+# - name: default
+#   tag: munder
+#   match: "."
+#   replace:
+#   - test:
+#       if: "not(IsNode(*[1], 'leaf'))"
+#       then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
+#   - x: "*[1]"
+#   - pause: short
+#   - T: "med kommentar under"      # phrase(x 'with' z below it)
+#   - pause: short
+#   - x: "*[2]"
+#   - pause: short
+#   - T: "slut kommentar"      # phrase(x with z 'below' it)
+
 - name: default
   tag: munder
   match: "."
   replace:
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
-  - x: "*[1]"
-  - pause: short
-  - T: "med kommentar under"      # phrase(x 'with' z below it)
-  - pause: short
-  - x: "*[2]"
-  - pause: short
-  - T: "slut kommentar"      # phrase(x with z 'below' it)
+  - with:
+      variables:
+      # true if the comment contains ⏟ or ︸ (also if inside mrow or surrounded by whitespace)
+      - HasBrace: "contains(normalize-space(string(*[2])), '⏟') or contains(normalize-space(string(*[2])), '︸')"
+      replace:
+      - test:
+          if: "$HasBrace"
+          then:
+            # The base is always read
+            - x: "*[1]"
+            - pause: short
+            # Read the brace (good for navigation) but no framing phrases
+            - x: "*[2]"
+          else:
+            # Frame phrase in the beginning if the base is not leaf
+            - test:
+                if: "not(IsNode(*[1], 'leaf'))"
+                then: [T: "kommenterat uttryck"]
+            - x: "*[1]"
+            - pause: short
+            - T: "med kommentar under"
+            - pause: short
+            - x: "*[2]"
+            - pause: short
+            - T: "slut kommentar"
 
 - name: diacriticals
   tag: mover

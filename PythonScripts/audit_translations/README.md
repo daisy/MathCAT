@@ -68,10 +68,9 @@ uv run --project PythonScripts audit-translations --list
 * `--list`: Displays all available languages.
   * Region variants are shown as `lang-region` (e.g., `zz-aa`) based on subdirectories under `Rules/Languages/<lang>`.
 * `--file`: Audits a single specific file instead of the whole directory.
-* `--format`: Output format (`rich`, `jsonl`). `--output` is honored only for `jsonl`; rich output always prints to the console.
 * `--rules-dir`: Override the Rules/Languages directory path.
 * `--only`: Filter issue types (comma-separated): `missing`, `untranslated`, `extra`, `diffs`, `all`.
-* `--verbose`: Show detailed output including English/translated snippets for rule differences (only affects rich format; default shows summary only).
+* `--verbose`: Show detailed output including English/translated snippets for rule differences.
 * **Summary Stats:** Provides a statistical summary after every run.
 
 **Examples:**
@@ -91,9 +90,6 @@ uv run audit-translations de
 
 # Audit only a specific file
 uv run audit-translations es --file SharedRules/default.yaml
-
-# Produce JSONL output for automation or AI workflows
-uv run audit-translations es --format jsonl --output es-issues.jsonl
 
 # Audit a regional variant (merges Rules/Languages/de and Rules/Languages/de/CH)
 uv run audit-translations de-CH

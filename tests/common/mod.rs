@@ -1,5 +1,5 @@
 //!  Useful functionality for testing
-#[cfg(test)]
+#![allow(clippy::needless_return)]
 
 use regex::Regex;
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -23,11 +23,15 @@ pub fn init_logger() {
 pub fn abs_rules_dir_path() -> String {
     cfg_if::cfg_if! {
     if #[cfg(feature = "include-zip")] {
-          return "Rules".to_string();
+          "Rules".to_string()
     } else {
-        return std::env::current_exe().unwrap().parent().unwrap()
-                    .join("../../../Rules")
-                    .to_str().unwrap().to_string();
+        // Package root (works for `cargo test` and `cargo llvm-cov`, which uses
+        // target/llvm-cov-target/... so relative paths from current_exe() break).
+        return std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("Rules")
+            .to_str()
+            .expect("CARGO_MANIFEST_DIR and Rules path must be UTF-8")
+            .to_string();
         }
     }
 }
@@ -37,7 +41,7 @@ pub fn abs_rules_dir_path() -> String {
 #[allow(dead_code)]     // used in testing
 fn strip_spaces(str: &str) -> String {
     static SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"  +").unwrap());
-    return String::from(SPACES.replace_all(str, " "));
+    String::from(SPACES.replace_all(str, " "))
 }
 
 #[allow(dead_code)]     // used in testing
@@ -83,7 +87,7 @@ pub fn test(language: &str, style: &str, mathml: &str, speech: &str) -> Result<(
         check_answer(mathml, speech, &format!("{}/{}", language, style));
         Ok(())
     }));
-    return report_any_panic(result);
+    report_any_panic(result)
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
@@ -102,7 +106,7 @@ pub fn test_prefs(language: &str, speech_style: &str, test_prefs: Vec<(&str, &st
         check_answer(mathml, speech, &format!("{}/{} with prefs {:#?}", language, speech_style, test_prefs));
         Ok(())
     }));
-    return report_any_panic(result);
+    report_any_panic(result)
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
@@ -111,7 +115,7 @@ pub fn test_prefs(language: &str, speech_style: &str, test_prefs: Vec<(&str, &st
 #[allow(non_snake_case)]
 pub fn test_ClearSpeak(language: &str, pref_name: &str, pref_value: &str, mathml: &str, speech: &str) -> Result<()> {
     let prefs = vec![(pref_name, pref_value)];
-    return test_prefs(language, "ClearSpeak", prefs, mathml, speech);
+    test_prefs(language, "ClearSpeak", prefs, mathml, speech)
 }
 
 // Compare the result of speaking the mathml input to the output 'speech'
@@ -119,7 +123,7 @@ pub fn test_ClearSpeak(language: &str, pref_name: &str, pref_value: &str, mathml
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
 pub fn test_ClearSpeak_prefs(language: &str, prefs: Vec<(&str, &str)>, mathml: &str, speech: &str) -> Result<()> {
-    return test_prefs(language, "ClearSpeak", prefs, mathml, speech);
+    test_prefs(language, "ClearSpeak", prefs, mathml, speech)
 }
 
 // Compare the result of brailling the mathml input to the output (Unicode) 'braille'
@@ -139,7 +143,7 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
-            "UEB" | "Nemeth" | _ => set_preference("Language", "en").unwrap(),
+            _ => set_preference("Language", "en").unwrap(),
         }
         if let Err(e) = set_mathml(mathml) {
             panic!("{}", errors_to_string(&e));
@@ -150,7 +154,7 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
         };
         Ok(())
     }));
-    return report_any_panic(result);
+    report_any_panic(result)
 }
 
 #[allow(dead_code)]     // used in testing
@@ -166,7 +170,7 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
-            "UEB" | "Nemeth" | _ => set_preference("Language", "en").unwrap(),
+            _ => set_preference("Language", "en").unwrap(),
         }
 
         set_preference("UseSpacesAroundAllOperators", "false").unwrap();         // makes testing simpler
@@ -183,7 +187,7 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
         };
         Ok(())
     }));
-    return report_any_panic(result);
+    report_any_panic(result)
 }
 
 #[allow(dead_code)]
@@ -247,10 +251,10 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
         for child in children {
             clean_attrs(child.element().unwrap());
         }
-        return mathml;
+        mathml
     }
 
-    return report_any_panic(result);
+    report_any_panic(result)
 }
 
 /// This is a prototype function to test whether 'from_braille' (or whatever gets called) is cannonically the same as 'mathml'
@@ -270,7 +274,7 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
-            "UEB" | "Nemeth" | _ => set_preference("Language", "en").unwrap(),
+            _ => set_preference("Language", "en").unwrap(),
         }
         if let Err(e) = set_mathml(mathml) {
             panic!("{}", errors_to_string(&e));
@@ -281,5 +285,5 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         assert!(libmathcat::are_strs_canonically_equal(mathml, braille, &["data-changed", "data-id-added"]));
         Ok(())
     }));
-    return report_any_panic(result);
+    report_any_panic(result)
 }

@@ -1463,6 +1463,10 @@
     - t: "encerclé"                             	# 	(en: 'circled', DeepL translation)
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    - t: "encerclé de noir"                                  #  (en: 'black circled', DeepL translation)
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
     - t: "encerclé"                             	# 	(en: 'circled', DeepL translation)
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -2496,6 +2500,20 @@
  - "㉞": [t: "encadré numéro trente-quatre"]     	#  0x325e	(en: 'circled number thirty four', DeepL translation)
  - "㉟": [t: "chiffre trente-cinq encerclé"]     	#  0x325f	(en: 'circled number thirty five', DeepL translation)
  - "㊱": [t: "numéro trente-six encerclé"]       	#  0x32b1	(en: 'circled number thirty six', DeepL translation)
+ - "㊲": [t: "numéro trente-sept encerclé"]      	#  0x32b2	(en: 'circled number thirty seven', GPT-5.4 translation)
+ - "㊳": [t: "numéro trente-huit encerclé"]      	#  0x32b3	(en: 'circled number thirty eight', GPT-5.4 translation)
+ - "㊴": [t: "numéro trente-neuf encerclé"]      	#  0x32b4	(en: 'circled number thirty nine', GPT-5.4 translation)
+ - "㊵": [t: "numéro quarante encerclé"]         	#  0x32b5	(en: 'circled number forty', GPT-5.4 translation)
+ - "㊶": [t: "numéro quarante et un encerclé"]   	#  0x32b6	(en: 'circled number forty one', GPT-5.4 translation)
+ - "㊷": [t: "numéro quarante-deux encerclé"]    	#  0x32b7	(en: 'circled number forty two', GPT-5.4 translation)
+ - "㊸": [t: "numéro quarante-trois encerclé"]   	#  0x32b8	(en: 'circled number forty three', GPT-5.4 translation)
+ - "㊹": [t: "numéro quarante-quatre encerclé"]  	#  0x32b9	(en: 'circled number forty four', GPT-5.4 translation)
+ - "㊺": [t: "numéro quarante-cinq encerclé"]    	#  0x32ba	(en: 'circled number forty five', GPT-5.4 translation)
+ - "㊻": [t: "numéro quarante-six encerclé"]     	#  0x32bb	(en: 'circled number forty six', GPT-5.4 translation)
+ - "㊼": [t: "numéro quarante-sept encerclé"]    	#  0x32bc	(en: 'circled number forty seven', GPT-5.4 translation)
+ - "㊽": [t: "numéro quarante-huit encerclé"]    	#  0x32bd	(en: 'circled number forty eight', GPT-5.4 translation)
+ - "㊾": [t: "numéro quarante-neuf encerclé"]    	#  0x32be	(en: 'circled number forty nine', GPT-5.4 translation)
+ - "㊿": [t: "numéro cinquante encerclé"]        	#  0x32bf	(en: 'circled number fifty', GPT-5.4 translation)
  - "㋌": [t: "mercure"]                          	#  0x32cc	(en: 'mercury', DeepL translation)
  - "㋍": [t: "ergs"]                             	#  0x32cd	(DeepL translation)
  - "㋎": [t: "électron-volts"]                   	#  0x32ce	(en: 'electron volts', DeepL translation)

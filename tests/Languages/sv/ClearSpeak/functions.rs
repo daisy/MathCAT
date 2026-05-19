@@ -419,7 +419,7 @@ fn explicit_times_none_superscript() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("sv", "ClearSpeak", expr, "2 plus 1 halv")?;
+        test("sv", "ClearSpeak", expr, "2 plus en halv")?;
         return Ok(());
 
     }

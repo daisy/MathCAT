@@ -278,3 +278,34 @@ fn mixed_fraction() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn lim_subscript_bug_523() -> Result<()> {
+    let expr = r#"<math xmlns="http://www.w3.org/1998/Math/MathML">
+        <mstyle displaystyle="true">
+            <munder>
+            <mo>lim</mo>
+            <mrow>
+                <mi>N</mi>
+                <mo>&#x2192;</mo>
+                <mo>&#x221E;</mo>
+            </mrow>
+            </munder>
+            <mrow>
+            <munderover>
+                <mo>&#x2211;</mo>
+                <mrow>
+                <mi>i</mi>
+                <mo>=</mo>
+                <mn>0</mn>
+                </mrow>
+                <mi>N</mi>
+            </munderover>
+            </mrow>
+        </mstyle>
+    </math>"#;
+    test_braille("ASCIIMath", expr, r#"lim_(N->oo) sum_(i=0)^N"#)?;
+    return Ok(());
+
+}
+

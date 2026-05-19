@@ -3138,20 +3138,20 @@
  - "㉞": [T: nomor dilingkari tiga puluh empat] # 0x325e
  - "㉟": [T: nomor dilingkari tiga puluh lima] # 0x325f
  - "㊱": [T: nomor dilingkari tiga puluh enam] # 0x32b1
- - "㉒": [T: nomor dilingkari tiga puluh tujuh] # 0x3252
- - "㉓": [T: nomor dilingkari tiga puluh delapan] # 0x3253
- - "㉔": [T: nomor dilingkari tiga puluh sembilan] # 0x3254
- - "㉕": [T: nomor dilingkari empat puluh] # 0x3255
- - "㉖": [T: nomor dilingkari empat puluh satu] # 0x3256
- - "㉗": [T: nomor dilingkari empat puluh dua] # 0x3257
- - "㉘": [T: nomor dilingkari empat puluh tiga] # 0x3258
- - "㉙": [T: nomor dilingkari empat puluh empat] # 0x3259
- - "㉚": [T: nomor dilingkari empat puluh lima] # 0x325a
- - "㉛": [T: nomor dilingkari empat puluh enam] # 0x325b
- - "㉜": [T: nomor dilingkari empat puluh tujuh] # 0x325c
- - "㉝": [T: nomor dilingkari empat puluh delapan] # 0x325d
- - "㉞": [T: nomor dilingkari empat puluh sembilan] # 0x325e
- - "㉟": [T: nomor dilingkari lima puluh] # 0x325f
+ - "㊲": [T: nomor dilingkari tiga puluh tujuh] # 0x32b2  (GPT-5.4 translation)
+ - "㊳": [T: nomor dilingkari tiga puluh delapan] # 0x32b3  (GPT-5.4 translation)
+ - "㊴": [T: nomor dilingkari tiga puluh sembilan] # 0x32b4  (GPT-5.4 translation)
+ - "㊵": [T: nomor dilingkari empat puluh] # 0x32b5  (GPT-5.4 translation)
+ - "㊶": [T: nomor dilingkari empat puluh satu] # 0x32b6  (GPT-5.4 translation)
+ - "㊷": [T: nomor dilingkari empat puluh dua] # 0x32b7  (GPT-5.4 translation)
+ - "㊸": [T: nomor dilingkari empat puluh tiga] # 0x32b8  (GPT-5.4 translation)
+ - "㊹": [T: nomor dilingkari empat puluh empat] # 0x32b9  (GPT-5.4 translation)
+ - "㊺": [T: nomor dilingkari empat puluh lima] # 0x32ba  (GPT-5.4 translation)
+ - "㊻": [T: nomor dilingkari empat puluh enam] # 0x32bb  (GPT-5.4 translation)
+ - "㊼": [T: nomor dilingkari empat puluh tujuh] # 0x32bc  (GPT-5.4 translation)
+ - "㊽": [T: nomor dilingkari empat puluh delapan] # 0x32bd  (GPT-5.4 translation)
+ - "㊾": [T: nomor dilingkari empat puluh sembilan] # 0x32be  (GPT-5.4 translation)
+ - "㊿": [T: nomor dilingkari lima puluh] # 0x32bf  (GPT-5.4 translation)
  - "㋌": [T: mercury] # 0x32cc
  - "㋍": [T: erg] # 0x32cd
  - "㋎": [T: elektron volt] # 0x32ce

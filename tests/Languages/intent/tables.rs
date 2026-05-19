@@ -313,5 +313,36 @@ fn lines() -> Result<()> {
         </math>";
     test_intent(mathml, intent, vec![])?;
     return Ok(());
-
 }
+
+
+#[test]
+fn mlabelledtr_bug_526() -> Result<()> {
+    let mathml = r#"<math><mtable>
+            <mlabeledtr>
+                <mtd>
+                <mtext>foo</mtext>
+                </mtd>
+                <mtd>
+                    <mi>m</mi>
+                </mtd>
+            </mlabeledtr>
+            </mtable></math>"#;
+    let intent = "<math data-from-mathml='math'>
+    <lines data-from-mathml='mtable'>
+      <mlabeledtr data-from-mathml='mlabeledtr'>
+        <TEMP_NAME>
+          <mtext data-from-mathml='mtext'>foo</mtext>
+        </TEMP_NAME>
+        <mtd data-from-mathml='mlabeledtr'>
+          <mrow data-from-mathml='mlabeledtr'>
+            <mi data-from-mathml='mi'>m</mi>
+          </mrow>
+        </mtd>
+      </mlabeledtr>
+    </lines>
+   </math>";
+    test_intent(mathml, intent, vec![])?;
+    return Ok(());
+}
+

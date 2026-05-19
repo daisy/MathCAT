@@ -630,7 +630,7 @@
       - if: "*[1][.='log']"
         then: [T: "log"]
       - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-        then: [T:  "Natürliche Logarithmus"]
+        then: [T:  "natürlicher Logarithmus"]
         else: [spell: "'ln'"]
       else:
       - test:
@@ -640,7 +640,7 @@
         - if: "*[1][.='log']"
           then: [T: "log"]
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-          then: [T: "Natürliche Logarithmus"]
+          then: [T: "natürliche Logarithmus"]
           else: [spell: "'ln'"]
       - T: "von"
       - pause: short
@@ -661,21 +661,36 @@
             - x: "$LineCount"
             - test:
                 - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-                  then: [t: "fall"]      # phrase(this is the first 'case' of three cases)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "fall"]
+                    else: [T: "fälle"]
                 - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
-                  then: [t: "zeile"]      # phrase(this is the first 'line' of three lines)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "zeile"]
+                    else: [T: "zeilen"]
                 - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-                  then: [t: "bedingung"]      # phrase(this is the first 'constraint' of three constraints)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "bedingung"]
+                    else: [T: "bedingungen"]
                 - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-                  then: [t: "gleichung"]      # phrase(this is the first 'equation' of three equations)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "gleichung"]
+                    else: [T: "gleichungen"]
                 - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-                  then: [t: "reihe"]      # phrase(this is the first 'row' of three rows)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "reihe"]
+                    else: [T: "reihen"]
                 - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-                  then: [t: "stufe"]      # phrase(this is the first 'step' of three steps)
+                  then_test:
+                    if: "$LineCount = 1"
+                    then: [T: "stufe"]
+                    else: [T: "stufen"]
                   # else 'None -- don't say anything'
-            - test:
-                - if: "$LineCount != 1"
-                  then: [ct: "s"] # plural      # phrase(shown by the letter 's')
             - pause: short
     - x: "*"
     - pause: long
@@ -707,7 +722,7 @@
     - test:
         if: "self::m:mlabeledtr"
         then:
-          - t: "with label"      # phrase(the diagram is complete 'with label')
+          - t: "mit Beschriftung"      # phrase(the diagram is complete 'with label')
           - x: "*[1]/*"
     - test:
         - if: "$ClearSpeak_MultiLineLabel='None'"

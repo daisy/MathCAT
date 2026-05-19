@@ -43,7 +43,7 @@ fn equation_auto() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("de", "ClearSpeak_MultiLineLabel", "Auto", expr,
-                "2 zeiles; zeile 1; x plus y, ist gleich 7; zeile 2; 2 x plus 3 y; ist gleich 17")?;
+                "2 zeilen; zeile 1; x plus y, ist gleich 7; zeile 2; 2 x plus 3 y; ist gleich 17")?;
    return Ok(());
 }
 

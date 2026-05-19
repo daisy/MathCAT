@@ -10,11 +10,11 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "attrs",
     "beautifulsoup4",
     "deepl",
     "googletrans",
     "html-table-extractor",
+    "jsonpath-ng>=1.8.0",
     "pyyaml",
     "rich",
     "ruamel.yaml",
@@ -24,7 +24,10 @@ dependencies = [
 audit-translations = "audit_translations.cli:main"
 
 [dependency-groups]
-dev = ["pytest"]
+dev = [
+    "pytest",
+    "ruff>=0.15.4",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.25,<0.10.0"]
@@ -33,3 +36,22 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "audit_translations"
 module-root = ""
+
+[tool.ruff]
+target-version = "py314"
+line-length = 130 # easier for some files. maybe decrease in the future
+
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes — unused imports, undefined names, etc.
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "I",    # isort — import ordering
+    "UP",   # pyupgrade — modernize syntax for target Python version
+    "B",    # flake8-bugbear — common bug patterns
+    "SIM",  # flake8-simplify — unnecessary complexity
+    "RUF",  # ruff-specific rules
+]
+
+[tool.ruff.format]
+docstring-code-format = true

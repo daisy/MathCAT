@@ -66,7 +66,7 @@ cfg_if! {
             // Here we gather up the zip files that were found and iterate over them non-recursively.
             // Note: there shouldn't be embedded zip files in these files (if there are, they won't be unzipped)
             let zip_files = FILES.with(|files| files.borrow().iter()
-                .filter_map(|(name, archive_path)| if name.ends_with(".zip") { Some((name.clone(), archive_path.clone())) } else { None } )
+                .filter_map(|(name, archive_path)| if name.ends_with(".zip") { Some((name.clone(), *archive_path)) } else { None } )
                 .collect::<Vec<_>>()
             );
             // debug!("Found {:?} embedded zip files", zip_files);
@@ -75,7 +75,7 @@ cfg_if! {
                 let mut inner_archive = get_zip_archive(bytes.as_slice())?;
                 // debug!("  internal zip file {} has {} files", zip_file_name, inner_archive.len());
                 let new_containing_dir = zip_file_name.rsplit_once("/").map(|(before, _)| before).unwrap_or("");
-                read_zip_file(&new_containing_dir, &mut inner_archive, Some(archive_path.main))?;
+                read_zip_file(new_containing_dir, &mut inner_archive, Some(archive_path.main))?;
             }
             // FILES.with(|files| {
             //     let files = files.borrow();
@@ -85,7 +85,7 @@ cfg_if! {
         }
 
         /// Get the bytes for a file in the zip archive (intended for embedded zip files)
-        fn get_bytes_from_index<'a>(archive: &mut ZipArchive<Cursor<&[u8]>>, index: usize) -> Result<Vec<u8>> {
+        fn get_bytes_from_index(archive: &mut ZipArchive<Cursor<&[u8]>>, index: usize) -> Result<Vec<u8>> {
             let mut file = archive.by_index(index)
                 .map_err(|e| anyhow!(format!("Error getting index={} from zip archive: {}", index, e)) )?;
             let mut contents = Vec::new();
@@ -144,14 +144,14 @@ cfg_if! {
             if FILES.with(|files| files.borrow().is_empty()) {
                 let _ignore_result = initialize_static_vars();
             }
-            return FILES.with(|files| files.borrow().contains_key(&canonicalize_path_separators(&path)) );
+            return FILES.with(|files| files.borrow().contains_key(&canonicalize_path_separators(path)) );
         }
         
         pub fn is_dir_shim(path: &Path) -> bool {
             if FILES.with(|files| files.borrow().is_empty()) {
                 let _ignore_result = initialize_static_vars();
             }
-            return DIRECTORIES.with(|dirs| dirs.borrow().contains(&canonicalize_path_separators(&path)) );
+            return DIRECTORIES.with(|dirs| dirs.borrow().contains(&canonicalize_path_separators(path)) );
         }
 
         /// Find files in 'dir' that end with 'ending' (e.g., "_Rules.yaml")
@@ -164,12 +164,12 @@ cfg_if! {
 
                 let dir_name = canonicalize_path_separators(dir);
                 for file_name in files.keys() {
-                    if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) {
-                        if file_name.ends_with(ending) {
-                            // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
-                            let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
-                            answer.push( file_name.to_string() );
-                        }
+                    if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) &&
+                       file_name.ends_with(ending)
+                    {
+                        // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
+                        let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
+                        answer.push(file_name.to_string());
                     }
                 }
                 // debug!("find_files_in_dir_that_ends_with_shim: in dir '{}' found {:?}", dir.display(), answer);

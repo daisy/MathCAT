@@ -4,92 +4,19 @@ CLI coverage tests for audit_translations.
 
 from __future__ import annotations
 
-import json
 import os
 import subprocess
 import sys
-from collections import Counter
 from pathlib import Path
 
 import pytest
 
 from .. import cli as audit_cli
-from ..auditor import console
+from ..renderer import console
 
 
 def fixture_rules_dir() -> Path:
     return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
-
-
-def parse_jsonl(output: str) -> list[dict]:
-    return [json.loads(line) for line in output.splitlines() if line.strip()]
-
-
-def assert_issue_counts(issues: list[dict]) -> None:
-    counts = Counter(issue["issue_type"] for issue in issues)
-    assert len(issues) == 19
-    assert counts["missing_rule"] == 4
-    assert counts["extra_rule"] == 3
-    assert counts["untranslated_text"] == 6
-    assert counts["rule_difference"] == 6
-
-
-def test_cli_main_jsonl_output_matches_fixture(capsys, monkeypatch) -> None:
-    """
-    Exercise the CLI entrypoint in-process by patching sys.argv.
-
-    This validates argparse wiring and output formatting without spawning a new process.
-    """
-    args = ["es", "--format", "jsonl", "--rules-dir", str(fixture_rules_dir())]
-
-    monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
-    audit_cli.main()
-    in_process_output = capsys.readouterr().out
-    assert_issue_counts(parse_jsonl(in_process_output))
-
-
-def test_cli_module_jsonl_output_matches_fixture() -> None:
-    """
-    Exercise the CLI via python -m audit_translations in a subprocess.
-
-    This validates module execution, environment wiring, and exit behavior.
-    """
-    args = ["es", "--format", "jsonl", "--rules-dir", str(fixture_rules_dir())]
-
-    python_scripts_dir = Path(__file__).resolve().parents[2]
-    env = os.environ.copy()
-    env["PYTHONPATH"] = os.pathsep.join(
-        [str(python_scripts_dir), env.get("PYTHONPATH", "")]
-    ).strip(os.pathsep)
-
-    result = subprocess.run(
-        [sys.executable, "-m", "audit_translations", *args],
-        capture_output=True,
-        text=True,
-        cwd=str(python_scripts_dir),
-        env=env,
-        check=True,
-    )
-    assert_issue_counts(parse_jsonl(result.stdout))
-
-
-def test_cli_main_jsonl_only_filters_issue_types(capsys, monkeypatch) -> None:
-    """
-    Ensure --only limits JSONL output to the requested categories.
-
-    Uses in-process CLI invocation so argparse parsing and filter plumbing
-    are both exercised without subprocess overhead.
-    """
-    args = ["es", "--format", "jsonl", "--rules-dir", str(fixture_rules_dir()), "--only", "missing,extra"]
-
-    monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
-    audit_cli.main()
-    issues = parse_jsonl(capsys.readouterr().out)
-
-    counts = Counter(issue["issue_type"] for issue in issues)
-    assert set(counts) == {"missing_rule", "extra_rule"}
-    assert counts["missing_rule"] == 4
-    assert counts["extra_rule"] == 3
 
 
 def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
@@ -234,9 +161,7 @@ def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
 
     python_scripts_dir = Path(__file__).resolve().parents[2]
     env = os.environ.copy()
-    env["PYTHONPATH"] = os.pathsep.join(
-        [str(python_scripts_dir), env.get("PYTHONPATH", "")]
-    ).strip(os.pathsep)
+    env["PYTHONPATH"] = os.pathsep.join([str(python_scripts_dir), env.get("PYTHONPATH", "")]).strip(os.pathsep)
     env["COLUMNS"] = "80"
 
     result = subprocess.run(

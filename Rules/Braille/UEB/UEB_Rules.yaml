@@ -271,7 +271,6 @@
    - x: "BrailleChars(., 'UEB')"
       
 -
-   # FIX: need to deal with all caps
    name: default
    tag: [mi, mtext]
    match: "."

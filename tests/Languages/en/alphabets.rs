@@ -51,6 +51,8 @@ fn parenthesized() -> Result<()> {
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
     test("en", "SimpleSpeak", expr, "circled cap eigh comma, circled cap z")?;
+    let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
+    test("en", "SimpleSpeak", expr, "black circled cap eigh, comma, black circled cap z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
     test("en", "SimpleSpeak", expr, "circled eigh comma, circled z")?;
     return Ok(());
@@ -390,9 +392,18 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn unicode_typo_regressions() -> Result<()> {
+  test("en", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "to the i-th power")?;
+  test("en", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;
+  Ok(())
+}
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("en", "SimpleSpeak", expr, "circled 1 comma, circled 9")?;
+  let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
+  test("en", "SimpleSpeak", expr, "black circled one comma, circled number fifty")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("en", "SimpleSpeak", expr, "parenthesized 1 comma, parenthesized 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";

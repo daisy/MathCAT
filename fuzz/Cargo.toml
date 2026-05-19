@@ -16,6 +16,7 @@ panic = "abort"
 
 [dependencies]
 libfuzzer-sys = "0.4"
+yaml-rust = "0.4"
 
 [dependencies.mathcat]
 path = ".."

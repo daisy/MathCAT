@@ -557,8 +557,8 @@ fn half_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">sek</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv sekund")?;
-    test("sv", "SimpleSpeak", expr, "1 halv sekund")?;
+    test("sv", "ClearSpeak", expr, "en halv sekund")?;
+    test("sv", "SimpleSpeak", expr, "en halv sekund")?;
     
     return Ok(());
 
@@ -573,8 +573,8 @@ fn half_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">l</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv liter")?;
-    test("sv", "SimpleSpeak", expr, "1 halv liter")?;
+    test("sv", "ClearSpeak", expr, "en halv liter")?;
+    test("sv", "SimpleSpeak", expr, "en halv liter")?;
     return Ok(());
 
 }
@@ -588,8 +588,8 @@ fn one_third_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">as</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 tredjedels bågsekund")?;
-    test("sv", "SimpleSpeak", expr, "1 tredjedels bågsekund")?;
+    test("sv", "ClearSpeak", expr, "en tredjedels bågsekund")?;
+    test("sv", "SimpleSpeak", expr, "en tredjedels bågsekund")?;
     return Ok(());
 
 }
@@ -603,8 +603,8 @@ fn one_third_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">m</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 tredjedels meter")?;
-    test("sv", "SimpleSpeak", expr, "1 tredjedels meter")?;
+    test("sv", "ClearSpeak", expr, "en tredjedels meter")?;
+    test("sv", "SimpleSpeak", expr, "en tredjedels meter")?;
     return Ok(());
 
 }
@@ -664,8 +664,8 @@ fn mixed_fraction__half_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "3 och 1 halv, minut")?;
-    test("sv", "SimpleSpeak", expr, "3 och 1 halv, minut")?;
+    test("sv", "ClearSpeak", expr, "3 och en halv, minut")?;
+    test("sv", "SimpleSpeak", expr, "3 och en halv, minut")?;
     return Ok(());
 
 }
@@ -680,8 +680,8 @@ fn mixed_fraction__half_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "3 och 1 halv, timme")?;
-    test("sv", "SimpleSpeak", expr, "3 och 1 halv, timme")?;
+    test("sv", "ClearSpeak", expr, "3 och en halv, timme")?;
+    test("sv", "SimpleSpeak", expr, "3 och en halv, timme")?;
     return Ok(());
 
 }
@@ -696,8 +696,8 @@ fn mixed_fractions_third_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, minut")?;
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, minut")?;
+    test("sv", "ClearSpeak", expr, "1 och en tredjedels, minut")?;
+    test("sv", "SimpleSpeak", expr, "1 och en tredjedels, minut")?;
     return Ok(());
 
 }
@@ -712,8 +712,8 @@ fn mixed_fractions_third_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, timme")?;
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, timme")?;
+    test("sv", "ClearSpeak", expr, "1 och en tredjedels, timme")?;
+    test("sv", "SimpleSpeak", expr, "1 och en tredjedels, timme")?;
     return Ok(());
 
 }
@@ -768,8 +768,8 @@ fn fraction_with_units_masculine_feminine_unit() -> Result<()> {
     <mfrac><mn>1</mn><mn>2</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">m</mi><mi mathvariant="normal" intent=":unit">sek</mi></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv meter per sekund")?;
-    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund")?;
+    test("sv", "ClearSpeak", expr, "en halv meter per sekund")?;
+    test("sv", "SimpleSpeak", expr, "en halv meter per sekund")?;
     return Ok(());
 
 }
@@ -884,8 +884,8 @@ fn half_neuter_unit_prefix() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">nsek</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv nano-sekund")?;
-    test("sv", "SimpleSpeak", expr, "1 halv nano-sekund")?;
+    test("sv", "ClearSpeak", expr, "en halv nano-sekund")?;
+    test("sv", "SimpleSpeak", expr, "en halv nano-sekund")?;
     return Ok(());
 
 }
@@ -914,8 +914,8 @@ fn mixed_fractions_third_masculine_feminine_unit_prefix() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">dN</mi>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 och 1 tredjedels, deci-newton")?;
-    test("sv", "SimpleSpeak", expr, "1 och 1 tredjedels, deci-newton")?;
+    test("sv", "ClearSpeak", expr, "1 och en tredjedels, deci-newton")?;
+    test("sv", "SimpleSpeak", expr, "1 och en tredjedels, deci-newton")?;
     return Ok(());
 
 }
@@ -969,8 +969,8 @@ fn acceleration_half() -> Result<()> {
     <mfrac><mn>1</mn><mn>2</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">m</mi><msup><mi mathvariant="normal" intent=":unit">s</mi><mn>2</mn></msup></mfrac>
 </math>"#;
-    test("sv", "ClearSpeak", expr, "1 halv meter per sekund kvadrat")?;
-    test("sv", "SimpleSpeak", expr, "1 halv meter per sekund kvadrat")?;
+    test("sv", "ClearSpeak", expr, "en halv meter per sekund kvadrat")?;
+    test("sv", "SimpleSpeak", expr, "en halv meter per sekund kvadrat")?;
     return Ok(());
 
 }

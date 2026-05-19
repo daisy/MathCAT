@@ -12,6 +12,12 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - uses: astral-sh/setup-uv@v6
+    - name: Run ruff lint
+      working-directory: PythonScripts
+      run: uv run ruff check audit_translations/
+    - name: Run ruff format check
+      working-directory: PythonScripts
+      run: uv run ruff format --check audit_translations/
     - name: Run tests
       working-directory: PythonScripts
       run: uv run pytest
