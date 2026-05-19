@@ -451,7 +451,6 @@ impl ToOrdinal {
             let pref_manager = pref_manager.borrow();
             let block_separators = pref_manager.pref_to_string("BlockSeparators");
             let decimal_separator = pref_manager.pref_to_string("DecimalSeparators");
-
             // check number validity (has digits, not a decimal)
             if number.is_empty() ||  number.contains(&decimal_separator) {
                 return Some(String::from(number));
@@ -1446,6 +1445,7 @@ mod tests {
 
     fn init_word_list() {
         crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        crate::interface::set_preference("Language", "en").unwrap();
         let result = crate::definitions::read_definitions_file(true);
         if let Err(e) = result {
             panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");
