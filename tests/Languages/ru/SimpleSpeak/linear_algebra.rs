@@ -80,7 +80,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "p-норма от эф")?;
+  test("ru", "SimpleSpeak", expr, "пэ-норма от эф")?;
   return Ok(());
 }
 

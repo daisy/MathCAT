@@ -271,7 +271,7 @@ fn binomial_non_simple_top() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из n плюс 7 по 3")?;
+    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из эн плюс 7 по 3")?;
     return Ok(());
 }
 
@@ -283,7 +283,7 @@ fn binomial_non_simple_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из 7 по k плюс 3 конец числа сочетаний")?;
+    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из 7 по ка плюс 3 конец числа сочетаний")?;
     return Ok(());
 }
 
@@ -295,6 +295,6 @@ fn binomial_non_simple_top_and_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из n плюс 7 по k плюс 3 конец числа сочетаний")?;
+    test("ru", "SimpleSpeak", expr, "2 умножить на, число сочетаний из эн плюс 7 по ка плюс 3 конец числа сочетаний")?;
     return Ok(());
 }

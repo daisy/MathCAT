@@ -52,7 +52,7 @@ fn menclose_updiagonalstrike() -> Result<()> {
     let expr = "<math>
                     <menclose notation='updiagonalstrike'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
                 </math>";
-    test("ru", "ClearSpeak", expr, "диагональ вверх, перечеркивание, содержащее три вторых конец")?;
+    test("ru", "ClearSpeak", expr, "диагональ вверх, перечёркивание, содержащее три вторых конец")?;
     return Ok(());
 }
 
@@ -61,7 +61,7 @@ fn menclose_downdiagonalstrike() -> Result<()> {
     let expr = "<math>
                     <menclose notation='downdiagonalstrike'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
                 </math>";
-    test("ru", "ClearSpeak", expr, "диагональ вниз, перечеркивание, содержащее три вторых конец")?;
+    test("ru", "ClearSpeak", expr, "диагональ вниз, перечёркивание, содержащее три вторых конец")?;
     return Ok(());
 }
 
@@ -70,7 +70,7 @@ fn menclose_cross_out() -> Result<()> {
     let expr = "<math>
                     <menclose notation='updiagonalstrike downdiagonalstrike'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
                 </math>";
-    test("ru", "ClearSpeak", expr, "икс, перечеркивание, содержащее три вторых конец")?;
+    test("ru", "ClearSpeak", expr, "икс, перечёркивание, содержащее три вторых конец")?;
     return Ok(());
 }
 
@@ -79,7 +79,7 @@ fn menclose_vertical_horizontal_strike() -> Result<()> {
     let expr = "<math>
                     <menclose notation='verticalstrike horizontalstrike'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
                 </math>";
-    test("ru", "ClearSpeak", expr, "вертикальная, горизонтальная, перечеркивание, содержащее три вторых конец")?;
+    test("ru", "ClearSpeak", expr, "вертикальная, горизонтальная, перечёркивание, содержащее три вторых конец")?;
     return Ok(());
 }
 

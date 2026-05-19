@@ -191,7 +191,7 @@ fn nested_number_times_squared() -> Result<()> {
         </msup>
         </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "e в степени одна вторая икс в квадрате")?;
+    test("ru", "SimpleSpeak", expr, "е в степени одна вторая икс в квадрате")?;
     return Ok(());
 }
 
@@ -214,7 +214,7 @@ fn nested_negative_number_times_squared() -> Result<()> {
     </msup>
     </mrow>
     </math>";
-    test("ru", "SimpleSpeak", expr, "e в степени минус одна вторая икс в квадрате")?;
+    test("ru", "SimpleSpeak", expr, "е в степени минус одна вторая икс в квадрате")?;
     return Ok(());
 }
 
@@ -289,7 +289,7 @@ fn nested_end_exponent_power() -> Result<()> {
   </math>";
     test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени n плюс 1, конец показателя")?;
     test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-               "тэ в степени четыре пятых в степени n плюс 1")?;
+               "тэ в степени четыре пятых в степени эн плюс 1")?;
                return Ok(());
 }
 
@@ -337,7 +337,7 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
     test("ru", "SimpleSpeak", expr,
-         "e в степени минус одна вторая умножить на; скобка открывается, дробь, числитель: икс минус мю, знаменатель: сигма, конец дроби; скобка закрывается в квадрате")?;
+         "е в степени минус одна вторая умножить на; скобка открывается, дробь, числитель: икс минус мю, знаменатель: сигма, конец дроби; скобка закрывается в квадрате")?;
          return Ok(());
 }
 

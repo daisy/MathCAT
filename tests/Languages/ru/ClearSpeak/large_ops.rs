@@ -12,7 +12,7 @@ fn sum_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n")?;
+    test("ru", "ClearSpeak", expr, "сумма от эн равно 1 до 10 от эн")?;
     return Ok(());
 }
 
@@ -25,7 +25,7 @@ fn sum_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма по эс большое от i")?;
+    test("ru", "ClearSpeak", expr, "сумма по эс большое от и")?;
     return Ok(());
 }
 
@@ -39,7 +39,7 @@ fn sum_both_msubsup() -> Result<()> {
         </msubsup>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма от n равно 1 до 10 от n")?;
+    test("ru", "ClearSpeak", expr, "сумма от эн равно 1 до 10 от эн")?;
     return Ok(());
 }
 
@@ -52,7 +52,7 @@ fn sum_sub() -> Result<()> {
         </msub>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма по эс большое от i")?;
+    test("ru", "ClearSpeak", expr, "сумма по эс большое от и")?;
     return Ok(());
 }
 
@@ -62,7 +62,7 @@ fn sum() -> Result<()> {
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "сумма а с индексом i")?;
+    test("ru", "ClearSpeak", expr, "сумма а с индексом и")?;
     return Ok(());
 }
 
@@ -76,7 +76,7 @@ fn product_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение от n равно 1 до 10 от n")?;
+    test("ru", "ClearSpeak", expr, "произведение от эн равно 1 до 10 от эн")?;
     return Ok(());
 }
 
@@ -89,7 +89,7 @@ fn product_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение по эс большое от i")?;
+    test("ru", "ClearSpeak", expr, "произведение по эс большое от и")?;
     return Ok(());
 }
 
@@ -99,7 +99,7 @@ fn product() -> Result<()> {
             <mo>∏</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "произведение а с индексом i")?;
+    test("ru", "ClearSpeak", expr, "произведение а с индексом и")?;
     return Ok(());
 }
 
@@ -113,7 +113,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "пересечение от i равно 1 до 10 от; эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "пересечение от и равно 1 до 10 от; эс большое с индексом и")?;
     return Ok(());
 }
 
@@ -126,7 +126,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "пересечение по цэ большое от, эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "пересечение по цэ большое от, эс большое с индексом и")?;
     return Ok(());
 }
 
@@ -136,7 +136,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("ru", "ClearSpeak", expr, "пересечение эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "пересечение эс большое с индексом и")?;
     return Ok(());
 }
 
@@ -150,7 +150,7 @@ fn union_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "объединение от i равно 1 до 10 от; эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "объединение от и равно 1 до 10 от; эс большое с индексом и")?;
     return Ok(());
 }
 
@@ -163,7 +163,7 @@ fn union_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("ru", "ClearSpeak", expr, "объединение по цэ большое от, эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "объединение по цэ большое от, эс большое с индексом и")?;
     return Ok(());
 }
 
@@ -173,7 +173,7 @@ fn union() -> Result<()> {
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("ru", "ClearSpeak", expr, "объединение эс большое с индексом i")?;
+    test("ru", "ClearSpeak", expr, "объединение эс большое с индексом и")?;
     return Ok(());
 }
 

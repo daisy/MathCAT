@@ -103,7 +103,7 @@ fn msup_integers() -> Result<()> {
                     <mn>4</mn>
                 </msup>
             </math>";
-    test("ru", "ClearSpeak", expr, "зэ 4")?;
+    test("ru", "ClearSpeak", expr, "зэт 4")?;
     return Ok(());
 }
 
@@ -187,7 +187,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("ru", "ClearSpeak", expr, "множество всех x таких, что x больше 2")?;
+    test("ru", "ClearSpeak", expr, "множество всех икс таких, что икс больше 2")?;
     return Ok(());
 }
 
@@ -196,7 +196,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("ru", "ClearSpeak", expr, "множество всех x таких, что x больше 2")?;
+    test("ru", "ClearSpeak", expr, "множество всех икс таких, что икс больше 2")?;
     return Ok(());
 }
 
@@ -205,7 +205,7 @@ fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("ru", "ClearSpeak", expr, "3 плюс 2 i, не принадлежит действительным числам")?;
+    test("ru", "ClearSpeak", expr, "3 плюс 2 и, не принадлежит действительным числам")?;
     return Ok(());
 }
 
@@ -222,7 +222,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("ru", "ClearSpeak", expr,
-                    "сумма по i, принадлежащему целым числам, от; дробь, числитель: 1; знаменатель: i в квадрате")?;
+                    "сумма по и, принадлежащему целым числам, от; дробь, числитель: 1; знаменатель: и в квадрате")?;
                     return Ok(());
 }
 
@@ -241,7 +241,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("ru", "ClearSpeak", expr, "множество всех x из целых чисел, таких что 2 меньше x меньше 7")?;
+    test("ru", "ClearSpeak", expr, "множество всех икс из целых чисел, таких что 2 меньше икс меньше 7")?;
     return Ok(());
 }
 
@@ -255,7 +255,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("ru", "ClearSpeak", expr, 
-            "множество всех x из натуральных чисел, таких что x — чётное число")?;
+            "множество всех икс из натуральных чисел, таких что икс — чётное число")?;
             return Ok(());
 }
 
@@ -273,7 +273,7 @@ fn set_with_bar_member() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "множество всех x, принадлежащих целым числам, таких что x больше 5")?;
+                expr, "множество всех икс, принадлежащих целым числам, таких что икс больше 5")?;
                 return Ok(());
 }
 
@@ -283,7 +283,7 @@ fn element_alone_member() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "3 плюс 2 i, не принадлежит действительным числам")?;
+                expr, "3 плюс 2 и, не принадлежит действительным числам")?;
                 return Ok(());
 }
 
@@ -300,7 +300,7 @@ fn element_under_sum_member() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "сумма по i, принадлежащему целым числам, от; дробь, числитель: 1; знаменатель: i в квадрате")?;
+                expr, "сумма по и, принадлежащему целым числам, от; дробь, числитель: 1; знаменатель: и в квадрате")?;
                 return Ok(());
 }
 
@@ -318,7 +318,7 @@ fn set_with_bar_element() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "множество всех x, являющихся элементами целых чисел, таких что x больше 5")?;
+                expr, "множество всех икс, являющихся элементами целых чисел, таких что икс больше 5")?;
                 return Ok(());
 }
 
@@ -328,7 +328,7 @@ fn element_alone_element() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "3 плюс 2 i, не является элементом действительных чисел")?;
+                expr, "3 плюс 2 и, не является элементом действительных чисел")?;
                 return Ok(());
 }
 
@@ -345,7 +345,7 @@ fn element_under_sum_element() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "сумма по i, являющемуся элементом целых чисел, от; дробь, числитель: 1; знаменатель: i в квадрате")?;
+                expr, "сумма по и, являющемуся элементом целых чисел, от; дробь, числитель: 1; знаменатель: и в квадрате")?;
                 return Ok(());
 }
 
@@ -363,7 +363,7 @@ fn set_with_bar_in() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "множество всех x из целых чисел, таких что x больше 5")?;
+                expr, "множество всех икс из целых чисел, таких что икс больше 5")?;
                 return Ok(());
 }
 
@@ -373,7 +373,7 @@ fn element_alone_in() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 плюс 2 i, не принадлежит действительным числам")?;
+                expr, "3 плюс 2 и, не принадлежит действительным числам")?;
                 return Ok(());
 }
 
@@ -390,7 +390,7 @@ fn element_under_sum_in() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "сумма по i из целых чисел, от; дробь, числитель: 1; знаменатель: i в квадрате")?;
+                expr, "сумма по и из целых чисел, от; дробь, числитель: 1; знаменатель: и в квадрате")?;
                 return Ok(());
 }
 
@@ -408,7 +408,7 @@ fn set_with_bar_belongs() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "множество всех x, входящих в целые числа, таких что x больше 5")?;
+                expr, "множество всех икс, входящих в целые числа, таких что икс больше 5")?;
                 return Ok(());
 }
 
@@ -418,7 +418,7 @@ fn element_alone_belongs() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "3 плюс 2 i, не входит в действительные числа")?;
+                expr, "3 плюс 2 и, не входит в действительные числа")?;
                 return Ok(());
 }
 
@@ -435,7 +435,7 @@ fn element_under_sum_belongs() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "сумма по i, входящему в целые числа, от; дробь, числитель: 1; знаменатель: i в квадрате")?;
+                expr, "сумма по и, входящему в целые числа, от; дробь, числитель: 1; знаменатель: и в квадрате")?;
                 return Ok(());
 }
 
@@ -453,7 +453,7 @@ fn set_member_woall() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak_prefs("ru", vec![("ClearSpeak_SetMemberSymbol", "Member"), ("ClearSpeak_Sets", "woAll")],
-                expr, "множество x, принадлежащих целым числам, таких что x больше 5")?;
+                expr, "множество икс, принадлежащих целым числам, таких что икс больше 5")?;
                 return Ok(());
 }
 
@@ -481,7 +481,7 @@ fn silent_bracket() -> Result<()> {
                 <mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo>
             </math>";
     test_ClearSpeak("ru", "ClearSpeak_Sets", "SilentBracket", expr,
-                    "множество всех x таких, что x больше 2")?;
+                    "множество всех икс таких, что икс больше 2")?;
                     return Ok(());
 }
 

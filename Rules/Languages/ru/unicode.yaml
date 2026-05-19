@@ -75,7 +75,7 @@
  - "'": [t: "штрих"]                            	#  0x27	(en: 'apostrophe')
  - "(":                                         	#  0x28
     - test:
-        if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[1][.='P'] or following-sibling::*[.='|' or .='∩' or contains(., 'and')]"
+      - if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[1][.='P'] or following-sibling::*[.='|' or .='∩' or contains(., 'and')]"
         then: [t: "открывающая круглая скобка"]
         else_test:
           if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -86,7 +86,7 @@
           else: [t: "левая круглая скобка"]               	#  0x28	(en: 'left paren', google translation)
  - ")":                                         	#  0x29
     - test:
-        if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[.='P' or .='|' or .='∩' or contains(., 'and')]"
+      - if: "$SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or @data-changed='added' or ancestor::*[@data-changed='added'] or preceding-sibling::*[.='P' or .='|' or .='∩' or contains(., 'and')]"
         then: [t: "закрывающая круглая скобка"]
         else_test:
           if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -206,7 +206,7 @@
               then: [t: "такой, что"]              	# 	(en: 'such that', google translation)
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [t: "при условии"]               	# 	(en: 'given', google translation)
-            - else: [t: "вертикальная черта"]   	# 	(en: 'divides')
+            - else: [t: "делит"]   	# 	(en: 'divides')
 
  - "}":                                         	#  0x7d
     - test:
@@ -234,7 +234,7 @@
  - "×":                                         	#  0xd7
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "умножить"]                        	# 	(en: 'times', google translation)
+        then: [t: "умножить на"]                        	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
             then: [t: "на"]                      	# 	(en: 'by')

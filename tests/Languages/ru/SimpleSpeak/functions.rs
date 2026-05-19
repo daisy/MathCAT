@@ -17,7 +17,7 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("ru", "SimpleSpeak", expr, "синус икс плюс косинус игрек плюс тангенс зет плюс секанс альфа, плюс косеканс фи, плюс котангенс фи")?;
+    test("ru", "SimpleSpeak", expr, "синус икс плюс косинус игрек плюс тангенс зэт плюс секанс альфа, плюс косеканс фи, плюс котангенс фи")?;
     return Ok(());
 }
 
@@ -33,7 +33,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     </mrow></math>";
     test("ru", "SimpleSpeak", expr, "гиперболический синус икс, плюс \
                                 гиперболический косинус игрек, плюс \
-                                гиперболический тангенс зет, плюс \
+                                гиперболический тангенс зэт, плюс \
                                 гиперболический секанс альфа, плюс \
                                 гиперболический косеканс фи, плюс \
                                 гиперболический котангенс фи")?;
@@ -64,14 +64,14 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("ru", "SimpleSpeak", expr, "секанс в четвертой степени икс")?;
+    test("ru", "SimpleSpeak", expr, "секанс в четвёртой степени икс")?;
     return Ok(());
 }
 
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("ru", "SimpleSpeak", expr, "гиперболический синус икс в степени n минус 1")?;
+    test("ru", "SimpleSpeak", expr, "гиперболический синус икс в степени эн минус 1")?;
     return Ok(());
 }
 

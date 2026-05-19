@@ -39,16 +39,16 @@ fn cap_cyrillic() -> Result<()> {
 #[test]
 fn parenthesized() -> Result<()> {
     let expr = "<math> <mi>⒜</mi><mo>,</mo><mi>⒵</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а в скобках, зет в скобках")?;
+    test("ru", "SimpleSpeak", expr, "а в скобках, зэт в скобках")?;
     return Ok(());
 }
 
 #[test]
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а в кружке, заглавная зет в кружке")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а в кружке, заглавная зэт в кружке")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а в кружке, зет в кружке")?;
+    test("ru", "SimpleSpeak", expr, "а в кружке, зэт в кружке")?;
     return Ok(());
 }
 
@@ -57,26 +57,26 @@ fn fraktur() -> Result<()> {
     let expr = "<math> <mi>𝔄</mi><mo>,</mo><mi>𝔜</mi></math>";
     test("ru", "SimpleSpeak", expr, "фрактурная заглавная а, фрактурная заглавная игрек")?;
     let expr = "<math> <mi>𝔞</mi><mo>,</mo><mi>𝔷</mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная а, фрактурная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная а, фрактурная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
     test("ru", "SimpleSpeak", expr, "фрактурная заглавная а, фрактурная заглавная игрек")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная а, фрактурная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная а, фрактурная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn bold_fraktur() -> Result<()> {
     let expr = "<math> <mi>𝕬</mi><mo>,</mo><mi>𝖅</mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная жирная заглавная а, фрактурная жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная жирная заглавная а, фрактурная жирная заглавная зэт")?;
     let expr = "<math> <mi>𝖆</mi><mo>,</mo><mi>𝖟</mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная жирная а, фрактурная жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная жирная а, фрактурная жирная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная жирная заглавная а, фрактурная жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная жирная заглавная а, фрактурная жирная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "фрактурная жирная а, фрактурная жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "фрактурная жирная а, фрактурная жирная зэт")?;
     return Ok(());
 }
 
@@ -85,14 +85,14 @@ fn double_struck() -> Result<()> {
     let expr = "<math> <mi>𝔸</mi><mo>,</mo><mi>𝕐</mi></math>";
     test("ru", "SimpleSpeak", expr, "двойная заглавная а, двойная заглавная игрек")?;
     let expr = "<math> <mi>𝕒</mi><mo>,</mo><mi>𝕫</mi></math>";
-    test("ru", "SimpleSpeak", expr, "двойная а, двойная зет")?;
+    test("ru", "SimpleSpeak", expr, "двойная а, двойная зэт")?;
     let expr = "<math> <mi>𝟘</mi><mo>,</mo><mi>𝟡</mi></math>";
     test("ru", "SimpleSpeak", expr, "двойной ноль, двойная девять")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
     test("ru", "SimpleSpeak", expr, "двойная заглавная а, двойная заглавная игрек")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "двойная а, двойная зет")?;
+    test("ru", "SimpleSpeak", expr, "двойная а, двойная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
     test("ru", "SimpleSpeak", expr, "двойной ноль, двойная девять")?;
     return Ok(());
@@ -101,126 +101,126 @@ fn double_struck() -> Result<()> {
 #[test]
 fn script() -> Result<()> {
     let expr = "<math> <mi>𝒜</mi><mo>,</mo><mi>𝒵</mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная заглавная а, рукописная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная заглавная а, рукописная заглавная зэт")?;
     let expr = "<math> <mi>𝒶</mi><mo>,</mo><mi>𝓏</mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная а, рукописная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная а, рукописная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная заглавная а, рукописная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная заглавная а, рукописная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная а, рукописная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная а, рукописная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn bold_script() -> Result<()> {
     let expr = "<math> <mi>𝓐</mi><mo>,</mo><mi>𝓩</mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная жирная заглавная а, рукописная жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная жирная заглавная а, рукописная жирная заглавная зэт")?;
     let expr = "<math> <mi>𝓪</mi><mo>,</mo><mi>𝔃</mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная жирная а, рукописная жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная жирная а, рукописная жирная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная жирная заглавная а, рукописная жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная жирная заглавная а, рукописная жирная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "рукописная жирная а, рукописная жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "рукописная жирная а, рукописная жирная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn bold() -> Result<()> {
     let expr = "<math> <mi>𝐀</mi><mo>,</mo><mi>𝐙</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi>𝐚</mi><mo>,</mo><mi>𝐳</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn italic() -> Result<()> {
     let expr = "<math> <mi>𝐴</mi><mo>,</mo><mi>𝑍</mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi>𝑎</mi><mo>,</mo><mi>𝑧</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     return Ok(());
 }
 
 #[test]
 fn sans_serif() -> Result<()> {
     let expr = "<math> <mi>𝖠</mi><mo>,</mo><mi>𝖹</mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi>𝖺</mi><mo>,</mo><mi>𝗓</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     return Ok(());
 }
 
 #[test]
 fn sans_serif_bold() -> Result<()> {
     let expr = "<math> <mi>𝗔</mi><mo>,</mo><mi>𝗭</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi>𝗮</mi><mo>,</mo><mi>𝘇</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn sans_serif_italic() -> Result<()> {
     let expr = "<math> <mi>𝘈</mi><mo>,</mo><mi>𝘡</mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi>𝘢</mi><mo>,</mo><mi>𝘻</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     return Ok(());
 }
 
 #[test]
 fn sans_serif_bold_italic() -> Result<()> {
     let expr = "<math> <mi>𝘼</mi><mo>,</mo><mi>𝙕</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi>𝙖</mi><mo>,</mo><mi>𝙯</mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная заглавная а, жирная заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "жирная а, жирная зет")?;
+    test("ru", "SimpleSpeak", expr, "жирная а, жирная зэт")?;
     return Ok(());
 }
 
 #[test]
 fn monospace() -> Result<()> {
     let expr = "<math> <mi>𝙰</mi><mo>,</mo><mi>𝚉</mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi>𝚊</mi><mo>,</mo><mi>𝚣</mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     // Версии из частной области MathType
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "а, зет")?;
+    test("ru", "SimpleSpeak", expr, "а, зэт")?;
     return Ok(());
 }
 
@@ -347,7 +347,7 @@ fn sans_serif_bold_italic_greek_others() -> Result<()> {
 #[test]
 fn pua_regular() -> Result<()> {
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зет")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а, заглавная зэт")?;
     return Ok(());
 }
 

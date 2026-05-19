@@ -25,7 +25,7 @@ fn multiplication_cross() -> Result<()> {
     let expr = "<math>
                     <mi>u</mi><mo>×</mo><mi>v</mi>
                 </math>";
-    test_ClearSpeak("ru", "ClearSpeak_MultSymbolX", "Cross", expr, "u векторное произведение v")?;
+    test_ClearSpeak("ru", "ClearSpeak_MultSymbolX", "Cross", expr, "u векторное произведение вэ")?;
     return Ok(());
 }
 
@@ -206,7 +206,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "Auto", expr,
-            "множество всех x таких, что x больше 0")?;
+            "множество всех икс таких, что икс больше 0")?;
             return Ok(());
 }
 
@@ -224,7 +224,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "множество всех x таких, что x больше 0")?;
+            "множество всех икс таких, что икс больше 0")?;
             return Ok(());
 }
 
@@ -242,7 +242,7 @@ fn vertical_line_set_given() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "Given", expr,
-            "множество всех x таких, что x больше 0")?;
+            "множество всех икс таких, что икс больше 0")?;
             return Ok(());
 }
 
@@ -264,7 +264,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "Auto", expr,
-        "множество всех x таких, что абсолютное значение x; больше 2")?;
+        "множество всех икс таких, что модуль икс; больше 2")?;
         return Ok(());
 }
 
@@ -287,7 +287,7 @@ fn vertical_line_evaluated_at() -> Result<()> {
             </msub>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "Auto", expr,
-        "эф от икс, вычисленное при, x равно 5")?;
+        "эф от икс, вычисленное при, икс равно 5")?;
         return Ok(());
 }
 
@@ -330,7 +330,7 @@ fn vertical_line_evaluated_at_divides() -> Result<()> {
             </msub>
         </math>";
     test_ClearSpeak("ru", "ClearSpeak_VerticalLine", "Divides", expr,
-        "эф от икс, вычисленное при, x равно 5")?;
+        "эф от икс, вычисленное при, икс равно 5")?;
         return Ok(());
 }
 

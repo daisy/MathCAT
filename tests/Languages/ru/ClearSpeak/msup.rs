@@ -209,7 +209,7 @@ fn nested_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e в степени одна вторая икс в квадрате")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "е в степени одна вторая икс в квадрате")?;
   return Ok(());
 }
 
@@ -232,10 +232,10 @@ fn nested_negative_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e в степени минус одна вторая икс в квадрате")?;
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e в степени (показатель: минус одна вторая икс во второй, конец показателя)")?;
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e в степени (показатель: минус одна вторая икс во второй степени, конец показателя)")?;
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e в степени (показатель: минус одна вторая икс в степени 2, конец показателя)")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "е в степени минус одна вторая икс в квадрате")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "е в степени (показатель: минус одна вторая икс во второй, конец показателя)")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "е в степени (показатель: минус одна вторая икс во второй степени, конец показателя)")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "е в степени (показатель: минус одна вторая икс в степени 2, конец показателя)")?;
   return Ok(());
 }
 
@@ -332,13 +332,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается в квадрате, конец показателя)")?;
+       "е в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается в квадрате, конец показателя)")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается во второй, конец показателя)")?;
+       "е в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается во второй, конец показателя)")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается во второй степени, конец показателя)")?;
+       "е в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается во второй степени, конец показателя)")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается в степени 2, конец показателя)")?;
+       "е в степени (показатель: минус одна вторая умножить на; скобка открывается; дробь, числитель: икс минус мю; знаменатель: сигма; скобка закрывается в степени 2, конец показателя)")?;
        return Ok(());
 }
 

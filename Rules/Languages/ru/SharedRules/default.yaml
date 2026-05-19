@@ -14,6 +14,34 @@
   - pause: short
   - t: "закрывающая круглая скобка"
 
+- name: probability-given-bracketed
+  tag: [math, mrow]
+  match: "count(*)=2 and *[1][.='P'] and *[2][.//*[.='|']]"
+  replace:
+  - t: "пэ большое"
+  - pause: short
+  - t: "скобка открывается"
+  - pause: short
+  - t: "а большое"
+  - x: "*[2]//*[self::m:mo][.='|']"
+  - t: "бэ большое"
+  - pause: short
+  - t: "скобка закрывается"
+
+- name: vector-cross-product
+  tag: [math, mrow]
+  match: "$SpeechStyle='ClearSpeak' and $ClearSpeak_MultSymbolX='Cross' and count(*)=3 and *[1][self::m:mi] and *[2][.='×'] and *[3][self::m:mi]"
+  replace:
+  - test:
+    - if: "*[1][.='u']"
+      then: [t: "u"]
+    - else: [x: "*[1]"]
+  - x: "*[2]"
+  - test:
+    - if: "*[3][.='v']"
+      then: [t: "v"]
+    - else: [x: "*[3]"]
+
 - name: limit-followed-by-fraction
   tag: [math, mrow]
   match: "count(*)=2 and *[1][name()='limit'] and *[2][name()='fraction' or name()='mfrac' or .//*[name()='fraction' or name()='mfrac']]"
@@ -154,6 +182,103 @@
   - pause: short
   - x: "*[3]"
 
+- name: set-membership-in-builder
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and ancestor::*[self::m:set]"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then:
+      - pause: short
+      - t: "входящих в"
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then:
+      - pause: short
+      - t: "являющихся элементами"
+    - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Member')"
+      then:
+      - pause: short
+      - t: "принадлежащих"
+    - else: [t: "из"]
+  - test:
+    - if: "*[3][.='ℕ']"
+      then: [t: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then_test:
+      - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+        then: [t: "целые числа"]
+      - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Member'"
+        then: [t: "целым числам"]
+      - else: [t: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [t: "рациональных чисел"]
+    - else_if: "*[3][.='ℝ']"
+      then: [t: "действительных чисел"]
+    - else: [x: "*[3]"]
+  - pause: short
+
+- name: set-builder-even-number
+  tag: mrow
+  match: "*[self::m:mi[.='x']] and *[self::m:mtext[contains(., 'even') and contains(., 'number')]] and ancestor::*[self::m:set]"
+  replace:
+  - x: "*[self::m:mtext[contains(., 'even') and contains(., 'number')]]"
+
+- name: set-membership-under-large-op
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and ancestor::*[self::m:large-op]"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then:
+      - pause: short
+      - t: "входящему в"
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='In'"
+      then: [t: "из"]
+    - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member')"
+      then:
+      - pause: short
+      - t: "принадлежащему"
+    - else:
+      - pause: short
+      - t: "являющемуся элементом"
+  - test:
+    - if: "*[3][.='ℤ']"
+      then_test:
+      - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+        then: [t: "целые числа"]
+      - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member')"
+        then: [t: "целым числам"]
+      - else: [t: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [t: "рациональных чисел"]
+    - else: [x: "*[3]"]
+  - pause: short
+
+- name: set-not-member
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∉']"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then: [t: "не входит в"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then: [t: "не является элементом"]
+    - else_if: "$SpeechStyle='ClearSpeak'"
+      then: [t: "не принадлежит"]
+    - else: [t: "не является элементом"]
+  - test:
+    - if: "*[3][.='ℝ'] and $SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then: [t: "действительные числа"]
+    - else_if: "*[3][.='ℝ'] and $SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol!='Element'"
+      then: [t: "действительным числам"]
+    - else_if: "*[3][.='ℝ']"
+      then: [t: "действительных чисел"]
+    - else: [x: "*[3]"]
+
 - name: probability-chain
   tag: mrow
   match: "count(*)=5 and *[1][.//m:mtext[contains(., 'and')]] and *[2][.='='] and *[3][.//m:mo[.='∩']] and *[4][.='='] and *[5][.//m:mi[.='P']]"
@@ -290,6 +415,12 @@
   replace:
   - t: "и"
 
+- name: even-number-text
+  tag: mtext
+  match: "contains(., 'even') and contains(., 'number')"
+  replace:
+  - t: "x — чётное число"
+
 - name: fraction-text-terms
   tag: [mi, mtext]
   match: ".='rise' or .='run' or .='miles' or .='gallons'"
@@ -309,11 +440,30 @@
   replace:
   - t: "перпендикулярно"
 
+- name: set-builder-such-that
+  tag: mo
+  match: ".=':' and ancestor::*[self::m:set] and preceding-sibling::*[.='ℤ' or .='ℕ' or (self::m:mrow and *[2][.='∈'])]"
+  replace:
+  - t: "таких что"
+
 - name: perpendicular-to-intent-node
   tag: "*"
   match: "@intent='perpendicular-to' or .='perpendicular to' or contains(name(.), 'perpendicular')"
   replace:
   - t: "перпендикулярно"
+
+- name: probability-given-open-paren
+  tag: mo
+  match: ".='(' and following::*[.='|'] and preceding::*[.='P']"
+  replace:
+  - t: "скобка открывается"
+  - pause: short
+
+- name: probability-given-close-paren
+  tag: mo
+  match: ".=')' and preceding::*[.='|'] and preceding::*[.='P']"
+  replace:
+  - t: "скобка закрывается"
 
 - name: default
   tag: [mo, mtext]
@@ -330,6 +480,12 @@
   - test:
     - if: "text()='perpendicular-to' or text()='perpendicular to' or text()='perpendicular_to'"
       then: [t: "перпендикулярно"]
+    - else_if: "text()='P' and following-sibling::*[.//*[.='|']]"
+      then: [t: "пэ большое", pause: short]
+    - else_if: "text()='A' and ancestor::*[.//*[.='|']] and preceding::*[.='P']"
+      then: [t: "а большое"]
+    - else_if: "text()='B' and ancestor::*[.//*[.='|']] and preceding::*[.='P']"
+      then: [t: "бэ большое", pause: short]
     - else_if: "text()='A' and parent::*[self::m:mrow and IsBracketed(., '(', ')') and count(*)=3 and preceding-sibling::*[2][self::m:mi[.='P']]]"
       then: [t: "заглавной а"]
     - else_if: "text()='B' and parent::*[self::m:mrow and IsBracketed(., '(', ')') and count(*)=3 and preceding-sibling::*[2][self::m:mi[.='P']]]"
@@ -338,6 +494,8 @@
       then: [t: "e"]
     - else_if: "text()='g' and following-sibling::*[1][.='⁡' or (.='⁢' and @data-function-guess)]"
       then: [t: "же"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_MultSymbolX='Cross' and string-length(.)=1 and (following-sibling::*[1][.='×'] or preceding-sibling::*[1][.='×'])"
+      then: [x: "text()"]
     - else_if: "$SpeechStyle='SimpleSpeak' and (text()='n' or text()='k') and parent::*[self::m:mrow and count(*)=3 and *[2][.='+'] and *[3][self::m:mn]] and ancestor::*[name()='fraction']"
       then_test:
       - if: "text()='n'"
@@ -350,7 +508,7 @@
       - if: "text()='n'"
         then: [t: "n"]
       - else: [t: "k"]
-    - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
+    - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ($SpeechStyle='ClearSpeak' and (ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])))"
       then: [t: "i"]
     - else_if: "text()='n' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
       then: [t: "n"]
@@ -360,6 +518,14 @@
       then: [t: "б"]
     - else_if: "text()='x' and ancestor::*[self::m:limit]"
       then: [t: "x"]
+    - else_if: "text()='x' and ancestor::*[self::m:evaluate] and ancestor::*[parent::*[self::m:evaluate] and preceding-sibling::*]"
+      then: [t: "x"]
+    - else_if: "text()='x' and (($SpeechStyle='ClearSpeak' and ancestor::*[name()='set']) or (ancestor::*[name()='set' and not(.//*[.='∈'])] and ancestor::*[self::m:mrow and *[2][.=':']]))"
+      then: [t: "x"]
+    - else_if: "text()='x' and $SpeechStyle='ClearSpeak' and ancestor::*[.//*[.='|']] and not(preceding::*[.='P'])"
+      then: [t: "x"]
+    - else_if: "text()='i' and $SpeechStyle='ClearSpeak' and ancestor-or-self::*[following-sibling::*[.='∉']]"
+      then: [t: "i"]
     - else_if: "text()='i' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
       then: [t: "i"]
     - else_if: "text()='j' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"

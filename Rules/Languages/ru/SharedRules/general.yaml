@@ -24,15 +24,11 @@
   tag: number-sets
   match: "count(*)=2 and *[2][.='+' or .='-']"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then:
-      - t: "а"      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][.='+']"
-      then: [t: "положительных"]      # phrase(set of all 'positive' integers less than 10)
-      else: [t: "отрицательных"]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [t: "положительные"]      # phrase(set of all 'positive' integers less than 10)
+      else: [t: "отрицательные"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
@@ -64,7 +60,11 @@
     - else_if: "*[1][.='ℝ']"
       then: [t: "эр"]      # phrase(the letter 'R' may represent real numbers)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "зэт"]      # phrase(the letter 'Z' may represent integers)
+      then:
+      - test:
+          if: "$SpeechStyle='ClearSpeak'"
+          then: [t: "зэ"]
+          else: [t: "зэт"]
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
@@ -117,7 +117,7 @@
   match: "count(*)=3"
   replace:
   - x: "*[1]"
-  - pause: auto
+  - pause: short
   - t: "вычисленное при"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
@@ -279,6 +279,8 @@
           then: [pause: medium]
         - else_if: "following-sibling::*[1][self::m:indexed-by or self::m:msub]"
           then: [pause: short]
+        - else_if: "following-sibling::*[1][self::m:fraction or self::m:mfrac]"
+          then: [pause: medium]
 
 - name: integral-with-separated-differential
   tag: mrow
@@ -413,10 +415,11 @@
         - if: "$IsSingular"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
+        - else_if: "$Word='грамм' and not(preceding-sibling::*[1][self::m:mn])"
+          then: [x: "concat('\uF8FE', 'граммы')"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)", ct: "с"]
-
     
 - name: sin
   tag: mi
