@@ -1711,7 +1711,7 @@ pub fn likely_chem_element(mathml: Element) -> i32 {
         } else {
             3
         };
-    } else if NUCLEAR_SYMBOLS.contains(&text) {
+    } else if NUCLEAR_SYMBOLS.contains(&as_str!(text)) {
         return 0;
         // not much special about them;
     } else {
