@@ -9,6 +9,7 @@ mod SimpleSpeak {
     mod msup;
     mod multiline;
     mod sets;
+    mod subscripts;
 }
 
 mod shared;
