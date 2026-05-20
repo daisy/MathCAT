@@ -205,7 +205,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("fr", "SimpleSpeak", expr, "l'ensemble de tous les x tel que x est supérieur à 2")?;
+    test("fr", "SimpleSpeak", expr, "ensemble de tous les x tel que x est supérieur à 2")?;
     return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("fr", "SimpleSpeak", expr, "l'ensemble de tous les x tel que x est supérieur à 2")?;
+    test("fr", "SimpleSpeak", expr, "ensemble de tous les x tel que x est supérieur à 2")?;
     return Ok(());
 
 }
@@ -243,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("fr", "SimpleSpeak", expr,
-                    "the sum over i is an element of the integers of; fraction, 1 over, i squared, end fraction")?;
+                    "la sommation sur i est un élément de, les nombres entiers de; fraction, 1 sur, i au carré, fin de fraction")?;
                     return Ok(());
 
 }
@@ -263,7 +263,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("fr", "SimpleSpeak", expr, "ensemble de tous les x appartenant aux nombres entiers tel que 2 est inférieur à x est inférieur à 7")?;
+    test("fr", "SimpleSpeak", expr, "ensemble de tous les x un élément de, les nombres entiers tel que 2 est inférieur à x est inférieur à 7")?;
     return Ok(());
 
 }
@@ -279,7 +279,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("fr", "SimpleSpeak", expr, 
-            "ensemble de tous les x appartenant à, les nombres naturels tel que x est un nombre pair")?;
+            "ensemble de tous les x un élément de, les nombres naturels tel que x est un nombre pair")?;
             return Ok(());
 
 }
