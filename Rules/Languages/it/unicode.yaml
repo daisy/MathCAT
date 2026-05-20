@@ -34,7 +34,7 @@
  - "!": [T: "fattoriale"]                        	#  0x21
  - "\"": [T: "barra inversa"]                   	#  0x22	(en: 'quotation mark')
  - "#": [T: "almohadilla"]                      	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
- - "$": [T: "dólar"]                            	#  0x24	(en: 'dollars')
+ - "$": [T: "dóllari"]                            	#  0x24	(en: 'dollars')
  - "%": [T: "porciento"]                        	#  0x25	(en: 'percent')
  - "&": [T: "e commerciale"]                        	#  0x26
  - "'": [T: "apostrofo"]                            	#  0x27	(en: 'apostrophe', MathPlayer: 'apóstrofo', google: 'apóstrofe')
@@ -96,7 +96,7 @@
  - "=":                                         	#  0x3d
     - test: 
         if: "$Verbosity!='Terse'"
-        then: [T: "è iuguale a"]                 	# 	(en: 'is equal to', google translation)
+        then: [T: "è uguale a"]                 	# 	(en: 'is equal to', google translation)
         else: [T: "uguale a"]                      	# 	(en: 'equals', google: 'iguales')
 
  - ">":                                         	#  0x3e
@@ -105,7 +105,7 @@
          then: [T: "è"]                        	# 	(en: 'is', google translation)
      - T: "maggiore di"                           	# 	(en: 'greater than')
  - "?": [T: "punto di domanda"]            	#  0x3f	(en: 'question mark', MathPlayer: 'cierra interrogación', google: 'signo de interrogación')
- - "@": [T: "arroba"]                           	#  0x40	(en: 'at sign')
+ - "@": [T: "chiocciola"]                           	#  0x40	(en: 'at sign')
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -129,9 +129,9 @@
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - test:
         - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [T: "barra vertical"]           	# 	(en: 'verticale line', google translation)
+          then: [T: "barra verticale"]           	# 	(en: 'verticale line', google translation)
         - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [T: "tal que"]                  	# 	(en: 'tale che', google translation)
+          then: [T: "tale che"]                  	# 	(en: 'tale che', google translation)
         - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
           then: [T: "dato"]                     	# 	(en: 'given', google translation)
         - else: [T: "barra verticale"]           	# 	(en: 'divides')
@@ -192,7 +192,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [T: "maiuscula"]              	# 	(en: 'cap', google translation)
+            then: [T: "maiuscola"]              	# 	(en: 'cap', google translation)
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -287,7 +287,7 @@
  - "K": [T: "gradi Kelvin"]                    	#  0x212a	(en: 'kelvin')
  - "Å": [T: "angstrom"]                         	#  0x212b	(en: 'angstroms')
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
-    - T: "angstrom in grassetto lavagna"                             	# 	(en: 'double-struck italic')
+    - T: "angstrom"                             	# 	(en: 'double-struck italic')
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
  - "←": [T: "freccia sinistra"]                 	#  0x2190	(en: 'leftwards arrow')
@@ -442,7 +442,7 @@
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
+         then: [T: "è"]                        	# 	(en: 'is', google translation)
      - T: "diverso da"                       	# 	(en: 'not equal to', MathPlayer: 'distinto de', google: 'no igual a')
  - "≡":                                         	#  0x2261
      - test: 

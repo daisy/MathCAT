@@ -27,8 +27,8 @@
     "lim-sup": "prefix=lim sup per: il limite superiore per: il limite superiore per",
     "lim-inf": "prefix=lim inf per: il limite inferiore per : il limite inferiore per",
     "logarithm-with-base": "prefix=log base: il logaritmo in base: il log in base",
-    "minus": "infix=meno || prefix=negativo",
-    "plus": "infix=più || prefix=positivo",
+    "minus": "infix=meno || prefix=meno",
+    "plus": "infix=più || prefix=più",
 
     "transpose": "postfix=trasposta || function=trasposta",
     "norm": "function=; regola: regola: la regola; fine regola",
@@ -37,7 +37,7 @@
     "homomorphism": "function= ; omomorfismo : omomorfismo di: l'omomorfismo di; fine omomorfismo",
     "kernel": "function= ; nucleo : nucleo di: il nucleo di; fine nucleo",
     "vector": "function= ; vettore || prefix=vettore",
-    "cross-product": "infix=vettoriale: prodoto verttoriale: prodotto vettoriale",
+    "cross-product": "infix=vettoriale: prodotto vettoriale: prodotto vettoriale",
     "dot-product": "infix=scalare: prodotto scalare: dot:prodotto scalare",
 
     "divergence": "function= ; div: divergenza: divergenza; fine divergenza",
