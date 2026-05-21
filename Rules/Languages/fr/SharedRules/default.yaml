@@ -191,15 +191,17 @@
               if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
               then: [t: "fin d'exposant"]
           else:
-          - test:
-              if: "$Verbosity='Verbose'"
-              then: [t: "exposant"]
-              else: [t: "super"]
+          - t: "exposant"
+        #   - test:
+        #       if: "$Verbosity='Verbose'"
+        #       then: [t: "exposant"]
+        #       else: [t: "super"]
           - x: "*[last()]"
-          - test:
-              if: "$Verbosity='Verbose'"
-              then: [t: "fin d'exposant"]
-              else: [t: "fin de super"]
+          - t: "fin d'exposant"
+        #   - test:
+        #       if: "$Verbosity='Verbose'"
+        #       then: [t: "fin d'exposant"]
+        #       else: [t: "fin de super"]
 
 - name: default
   tag: munder

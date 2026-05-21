@@ -244,10 +244,8 @@
           then: [pause: short]
   - test:
       if: "name(.)='say-super'"
-      then_test:
-        if: "$Verbosity='Verbose'"
-        then: [t: "exposant"]      # phrase(a 'superscript' number indicates raised to a power)
-        else: [t: "super"]      # phrase(this is a 'super' set of numbers)
+      then:
+      - t: "exposant"
   - x: "*[3]"
   - pause: short
 
@@ -866,22 +864,16 @@
           if: "not($Prescripts[2][self::m:none])"
           then:
           - test:
-              if: "$Verbosity='Verbose'"
+              if: "$Verbosity='Medium' or $Verbosity='Verbose'"
               then: [t: "exposant"]      # phrase(H 'superscript' 2)
-              else_test:
-                if: "$Verbosity='Medium'"
-                then: [t: "super"]      # phrase(H 'super' 2)
           - x: "$Prescripts[2]"
           - pause: "short"
       - test:
           if: "not($Prescripts[1][self::m:none])"
           then:
           - test:
-              if: "$Verbosity='Verbose'"
-              then: [t: "exposant"]      # phrase(a 'subscript' may be used to indicate an index)
-              else_test:
-                if: "$Verbosity='Medium'"
-                then: [t: "sous"]      # phrase(here is a 'sub' total)
+              if: "$Verbosity='Medium' or $Verbosity='Verbose'"
+              then: [t: "indice"]      # phrase(a 'subscript' may be used to indicate an index)
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -891,22 +883,16 @@
               if: "not($Prescripts[4][self::m:none])"
               then:
               - test:
-                  if: "$Verbosity='Verbose'"
+                  if: "$Verbosity='Medium' or $Verbosity='Verbose'"
                   then: [t: "exposant"]      # phrase(H 'superscript' 2)
-                  else_test:
-                    if: "$Verbosity='Medium'"
-                    then: [t: "super"]      # phrase(H 'super' 2)
               - x: "$Prescripts[4]"
               - pause: "short"
           - test:
               if: "not($Prescripts[3][self::m:none])"
               then:
               - test:
-                  if: "$Verbosity='Verbose'"
+                  if: "$Verbosity='Medium' or $Verbosity='Verbose'"
                   then: [t: "indice"]      # phrase(H 'subscript' 2)
-                  else_test:
-                    if: "$Verbosity='Medium'"
-                    then: [t: "sous"]      # phrase(H 'sub' 2)
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -917,22 +903,16 @@
           if: "not($Postscripts[1][self::m:none])"
           then:
           - test:
-              if: "$Verbosity='Verbose'"
-              then: [t: "subscript"]      # phrase(phrase(H 'subscript' 2)
-              else_test:
-                if: "$Verbosity='Medium'"
-                then: [t: "sous"]      # phrase(phrase(H 'sub' 2)
+              if: "$Verbosity='Medium' or $Verbosity='Verbose'"
+              then: [t: "indice"]      # phrase(phrase(H 'subscript' 2)
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
           if: "not($Postscripts[2][self::m:none])"
           then:
           - test:
-              if: "$Verbosity='Verbose'"
+              if: "$Verbosity='Medium' or $Verbosity='Verbose'"
               then: [t: "exposant"]      # phrase(H 'superscript' 2)
-              else_test:
-                if: "$Verbosity='Medium'"
-                then: [t: "super"]          # phrase(H 'super' 2)
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -942,22 +922,16 @@
               if: "not($Postscripts[3][self::m:none])"
               then:
               - test:
-                  if: "$Verbosity='Verbose'"
-                  then: [t: "exposant"]      # phrase(H 'subscript' 2)
-                  else_test:
-                    if: "$Verbosity='Medium'"
-                    then: [t: "sous"]          # phrase(H 'sub' 2)
+                  if: "$Verbosity='Medium' or $Verbosity='Verbose'"
+                  then: [t: "indice"]      # phrase(H 'subscript' 2)
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
               if: "not($Postscripts[4][self::m:none])"
               then:
               - test:
-                  if: "$Verbosity='Verbose'"
+                  if: "$Verbosity='Medium' or $Verbosity='Verbose'"
                   then: [t: "exposant"]      # phrase(H 'superscript' 2)
-                  else_test:
-                    if: "$Verbosity='Medium'"
-                    then: [t: "super"]          # phrase(H 'super' 2)
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -967,22 +941,16 @@
                   if: "not($Postscripts[5][self::m:none])"
                   then:
                   - test:
-                      if: "$Verbosity='Verbose'"
-                      then: [t: "exposant"]    # phrase(H 'subscript' 2)
-                      else_test:
-                        if: "$Verbosity='Medium'"
-                        then: [t: "sous"]        # phrase(H 'sub' 2)
+                      if: "$Verbosity='Medium' or $Verbosity='Verbose'"
+                      then: [t: "indice"]    # phrase(H 'subscript' 2)
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
                   if: "not($Postscripts[6][self::m:none])"
                   then:
                   - test:
-                      if: "$Verbosity='Verbose'"
+                      if: "$Verbosity='Medium' or $Verbosity='Verbose'"
                       then: [t: "exposant"]  # phrase(H 'superscript' 2)
-                      else_test:
-                        if: "$Verbosity='Medium'"
-                        then: [t: "sous"]      # phrase(H 'super' 2)
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -992,22 +960,16 @@
                       if: "not($Postscripts[7][self::m:none])"
                       then:
                       - test:
-                          if: "$Verbosity='Verbose'"
-                          then: [t: "exposant"]      # phrase(H 'subscript' 2)
-                          else_test:
-                            if: "$Verbosity='Medium'"
-                            then: [t: "sous"]      # phrase(H 'sub' 2)
+                          if: "$Verbosity='Medium' or $Verbosity='Verbose'"
+                          then: [t: "indice"]      # phrase(H 'subscript' 2)
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
                       if: "not($Postscripts[8][self::m:none])"
                       then:
                       - test:
-                          if: "$Verbosity='Verbose'"
+                          if: "$Verbosity='Medium' or $Verbosity='Verbose'"
                           then: [t: "exposant"]      # phrase(H 'superscript' 2)
-                          else_test:
-                            if: "$Verbosity='Medium'"
-                            then: [t: "sous"]      # phrase(H 'super' 2)
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:

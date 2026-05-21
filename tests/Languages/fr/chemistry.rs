@@ -128,7 +128,7 @@ fn ethylene_with_colon_bond() -> Result<()> {
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap h, 2 cap c, double bond cap c, cap h, 2")?;
+  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "h majuscule, 2 c majuscule; liaison double c majuscule, h majuscule, 2")?;
   return Ok(());
 
 }
@@ -161,11 +161,11 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, cap c; forms, 14, 7, cap n; plus 0, negative 1, e")?;
+      "14, 6, c majuscule; forment; 14, 7, n majuscule; plus 0, négatif 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, cap c; reacts to form; super 14, sub 7, cap n; plus super 0, sub negative 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice négatif 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, cap c; reacts to form; superscript 14, subscript 7, cap n; plus, superscript 0, subscript negative 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice négatif 1, e")?;
       return Ok(());
 
 }
@@ -427,11 +427,11 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, cap c; forms, 14, 7, cap n; plus 0, negative 1, e")?;
+      "14, 6, c majuscule; forment; 14, 7, n majuscule; plus 0, négatif 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, cap c; reacts to form; super 14, sub 7, cap n; plus super 0, sub negative 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice négatif 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, cap c; reacts to form; superscript 14, subscript 7, cap n; plus, superscript 0, subscript negative 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice négatif 1, e")?;
       return Ok(());
 
 }
@@ -446,7 +446,7 @@ fn hcl_na_yields() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, cap h, cap c l; plus 2 cap n eigh; reacts to form; 2, cap n eigh, cap c l; plus cap h, subscript 2")?;
+        "2, h majuscule, c majuscule l; plus 2 n majuscule a; réagissent pour former; 2, n majuscule a, c majuscule l; plus h majuscule, indice 2")?;
         return Ok(());
 
 }
@@ -493,9 +493,9 @@ fn mhchem_so4_2plus() -> Result<()> {
       </msup>
     </mrow>
   </math>";
-  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap s; cap o, 4, 2 plus")?;
-  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "cap s; cap o, sub 4, super 2 plus")?;
-  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "cap s; cap o, subscript 4, superscript 2 plus")?;
+  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "s majuscule; o majuscule, 4, 2 plus")?;
+  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "s majuscule; o majuscule, indice 4, exposant 2 plus")?;
+  test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "s majuscule; o majuscule, indice 4, exposant 2 plus")?;
   return Ok(());
 
 }
@@ -585,7 +585,7 @@ fn mhchem_hcl_aq_etc() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, cap h, cap c l, aqueous; plus, 2, cap n eigh, solid; forms; 2, cap n eigh, cap c l, aqueous; plus, cap h, 2, gas")?;
+      expr, "2, h majuscule, c majuscule l, aqueux; plus, 2, n majuscule a, solide; forment; 2, n majuscule a, c majuscule l, aqueux; plus, h majuscule, 2; gaz")?;
 
       return Ok(());
 
@@ -653,7 +653,7 @@ fn mhchem_barbed_equilibrium() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "cap h, 2, gas; plus; cap i, 2, gas; is in equilibrium with, 2, cap h, cap i, gas")?;
+      expr, "h majuscule, 2; gaz; plus; i majuscule, 2; gaz; est en équilibre avec, 2, h majuscule, i majuscule, gaz")?;
       return Ok(());
 
 }
@@ -684,7 +684,7 @@ fn mhchem_roman_in_superscript() -> Result<()> {
       </mrow>
     </math>";
   test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "cap f e, 2; cap f e, 3; cap o, 4")?;
+      expr, "f majuscule e, 2; f majuscule e, 3; o majuscule, 4")?;
       return Ok(());
 
 }
@@ -761,7 +761,7 @@ fn dropped_msubsup_bug_358() -> Result<()> {
           </mrow>
       </math>"#;
   test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, cap s, cap o, 2; plus; cap o, 2 is in equilibrium with, 2, cap s, cap o, 3")?;
+      expr, "2, s majuscule, o majuscule, 2; plus; o majuscule, 2 est en équilibre avec, 2, s majuscule, o majuscule, 3")?;
       return Ok(());
 
 }
