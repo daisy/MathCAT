@@ -817,11 +817,8 @@
   replace:
   - x: "*[2]"
   - test:
-      if: "$Verbosity='Verbose'"
+      if: "$Verbosity='Verbose' or $Verbosity='Medium'"
       then: [t: "indice"]      # phrase(H 'subscript' 2)
-      else_test:
-        if: "$Verbosity='Medium'"
-        then: [t: "sous"]      # phrase(H 'sub' 2)
   - x: "*[3]"
 
 - name: dimension-by
@@ -838,11 +835,11 @@
   replace:
   - x: "*[2]"
   - test:
-      if: "$Verbosity='Verbose'"
+      if: "$Verbosity='Verbose' or $Verbosity='Medium'"
       then: [t: "exposant"]      # phrase(H 'superscript' 2)
-      else_test:
-        if: "$Verbosity='Medium'"
-        then: [t: "super"]      # phrase(H 'super' 2)
+      # else_test:
+      #   if: "$Verbosity='Medium'"
+      #   then: [t: "super"]      # phrase(H 'super' 2)
   - x: "*[3]"
   - test:
       if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
@@ -1043,7 +1040,7 @@
       then: [t: "liquide"]      # phrase(water is a 'liquid')
     - else_if: ".='g'"
       then: [t: "gaz"]      # phrase(hydrogen is a 'gas' )
-      else: [t: "acqueuse"]      # phrase(an 'aqueous' solution is contained in water)
+      else: [t: "aqueux"]      # phrase(an 'aqueous' solution is contained in water)
   - pause: short
 
 - name: chemical-formula-operator-bond

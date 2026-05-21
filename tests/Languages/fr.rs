@@ -14,3 +14,4 @@ mod SimpleSpeak {
 
 mod shared;
 mod alphabets;
+mod chemistry;
