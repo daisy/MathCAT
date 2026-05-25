@@ -3801,14 +3801,14 @@
             - if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                   if: "$DefaultToGiven"
-                  then: [t: "donné"]            	# 	(en: 'given', DeepL translation)
+                  then: [t: "sachant"]            	# 	(en: 'given', DeepL translation)
                   else: [t: "barre verticale"]  	# 	(en: 'vertical line', DeepL: 'ligne verticale')
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [t: "ligne verticale"]      	# 	(en: 'vertical line', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [t: "tel que"]              	# 	(en: 'such that', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [t: "donné"]                	# 	(en: 'given', DeepL translation)
+              then: [t: "sachant"]                	# 	(en: 'given', DeepL translation)
             - else: [t: "barre verticale"]      	# 	(en: 'divides', DeepL: 'divise')
  - "～": [t: "tilde"]                            	#  0xff5e
  - "￢": [t: "négation"]                         	#  0xffe2	(en: 'not', DeepL: 'non')

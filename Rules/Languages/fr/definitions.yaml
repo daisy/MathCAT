@@ -46,7 +46,7 @@
 
     "divergence": "function= ; div: divergence: divergence; fin de divergence",
     "curl": "function= ; rotationnel: rotationnel: rotationnel; fin du rotationnel",
-    "gradient": "function= ; del: gradient: gradient; fin de gradient",
+    "gradient": "function= ; grad: gradient: gradient; fin de gradient",
     "laplacian": "function=laplacien",
 
     "chemistry-concentration": "function= ; concentration: concentration de: la concentration de; fin de concentration",

@@ -277,6 +277,29 @@
               then:
               - x: "$PreSuperscript"
               - x: "$Prescripts[2]"
+          - pause: short
+          - test:
+              if: "count($Prescripts) > 2"
+              then:
+              - test:
+                  if: "not($Prescripts[3][self::m:none])"
+                  then:
+                  - x: "$PreSubscript"
+                  - x: "$Prescripts[3]"
+              - test:
+                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
+                  then: [t: "et"]
+              - test:
+                  if: "not($Prescripts[4][self::m:none])"
+                  then:
+                  - x: "$PreSuperscript"
+                  - x: "$Prescripts[4]"
+              - test:
+                  if: "count($Prescripts) > 4"
+                  then:
+                  - t: "et préscripts alternés"
+                  - x: "$Prescripts[position() > 4]"
+                  - t: "fin préscripts"
   - test:
       if: "$Postscripts"
       then:
@@ -308,6 +331,60 @@
               then:
               - x: "$PostSuperscript"
               - x: "$Postscripts[2]"
+          - test:
+              if: "count($Postscripts) > 2"
+              then:
+              - test:
+                  if: "not($Postscripts[3][self::m:none])"
+                  then:
+                  - x: "$PostSubscript"
+                  - x: "$Postscripts[3]"
+              - test:
+                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
+                  then: [t: "et"]
+              - test:
+                  if: "not($Postscripts[4][self::m:none])"
+                  then:
+                  - x: "$PostSuperscript"
+                  - x: "$Postscripts[4]"
+              - test:
+                  if: "count($Postscripts) > 4"
+                  then:
+                  - test:
+                      if: "not($Postscripts[5][self::m:none])"
+                      then:
+                      - x: "$PostSubscript"
+                      - x: "$Postscripts[5]"
+                  - test:
+                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
+                      then: [t: "et"]
+                  - test:
+                      if: "not($Postscripts[6][self::m:none])"
+                      then:
+                      - x: "$PostSuperscript"
+                      - x: "$Postscripts[6]"
+                  - test:
+                      if: "count($Postscripts) > 6"
+                      then:
+                      - test:
+                          if: "not($Postscripts[7][self::m:none])"
+                          then:
+                          - x: "$PostSubscript"
+                          - x: "$Postscripts[7]"
+                      - test:
+                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
+                          then: [t: "et"]
+                      - test:
+                          if: "not($Postscripts[8][self::m:none])"
+                          then:
+                          - x: "$PostSuperscript"
+                          - x: "$Postscripts[8]"
+                      - test:
+                          if: "count($Postscripts) > 8"
+                          then:
+                          - t: "et scripts alternés"
+                          - x: "$Postscripts[position() > 8]"
+                          - t: "fin scripts"
 
 - name: default
   tag: mtable

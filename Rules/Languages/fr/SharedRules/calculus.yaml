@@ -49,7 +49,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "gradient de"]
-      else: [t: "del"]
+      else: [t: "grad"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
