@@ -48,9 +48,9 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [T: "完全縮小", pause: "medium"]
+        then: [T: "已完全縮小", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
-        then: [T: "完全放大", pause: "medium"]
+        then: [T: "已完全放大", pause: "medium"]
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
@@ -218,7 +218,7 @@
   replace:
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity != 'Terse'"
-      then: [T: "完全放大", pause: "long"]    # phrase('zoomed in all of the way')
+      then: [T: "已完全放大", pause: "long"]    # phrase('zoomed in all of the way')
   - test:
       if: "$ReadZoomLevel!=-1"
       then:
