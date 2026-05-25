@@ -192,16 +192,8 @@
               then: [t: "fin d'exposant"]
           else:
           - t: "exposant"
-        #   - test:
-        #       if: "$Verbosity='Verbose'"
-        #       then: [t: "exposant"]
-        #       else: [t: "super"]
           - x: "*[last()]"
           - t: "fin d'exposant"
-        #   - test:
-        #       if: "$Verbosity='Verbose'"
-        #       then: [t: "fin d'exposant"]
-        #       else: [t: "fin de super"]
 
 - name: default
   tag: munder

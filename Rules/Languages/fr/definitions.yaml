@@ -19,7 +19,7 @@
     "say-super": "infix=super: exposant: exposant",
     "skip-super": "silent=",
 
-    "absolute-value": "function= ; valeur absolue: la valeur absolue de: la valeur absolue de; fin de valeur absolue",
+    "absolute-value": "function= ; valeur absolue: la valeur absolue: la valeur absolue; fin de valeur absolue",
     "binomial": "infix=binôme; parmi; fin du binôme",
     "dimension-product": "infix=par",
     "greatest-common-divisor": "function=pgcd: le pgcd: le plus grand commun diviseur",

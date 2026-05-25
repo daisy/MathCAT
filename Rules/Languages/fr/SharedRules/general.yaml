@@ -599,14 +599,16 @@
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - ot: "the"      # phrase('the' 1 by 1 matrix M)
-  - t: "une par une"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: [t: "déterminant"]      # phrase(the 2 by 2 'determinant'))
+      then: [t: "le"]      # phrase('the' 1 by 1 determinant)
+      else: [t: "la"]      # phrase('the' 1 by 1 matrix M)
+  - test:
+      if: "self::m:determinant"
+      then: [t: "déterminant"]      # phrase(the 2 by 2 'determinant')
       else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
-      
-  - t: "avec entrée"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - t: "1 par 1"      # phrase(the '1 by 1' matrix)
+  - t: "avec l'élément"      # phrase(the 2 by 2 matrix 'containing the element' x)
   - x: "*[1]/*"
 
 # simpler reading methods for special case matrices
@@ -616,10 +618,10 @@
   match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
   - t: "la"      # phrase('the' 1 by 2 matrix M)
+  - t: "matrice zéro"   # phrase(the 2 by 2 'zero matrix')
   - x: count(*)
   - t: "par"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "matrice zéro"   # phrase(the 2 by 2 'zero matrix')
   - pause: long
 
 - name: identity-matrix
@@ -631,10 +633,10 @@
   - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
   - t: "la"      # phrase('the' 1 by 2 matrix M)
+  - t: "matrice identité"   # phrase(the 2 by 2 'identity matrix')
   - x: count(*)
   - t: "par"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "matrice identitée"   # phrase(the 2 by 2 'identity matrix')
   - pause: long
 
 - name: diagonal-matrix
@@ -648,10 +650,10 @@
   - "    )"
   replace:
   - t: "la"      # phrase('the' 1 by 2 matrix)
+  - t: "matrice diagonale"   # phrase(the 2 by 2 'diagonal matrix')
   - x: count(*)
   - t: "par"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "matrice diagonale"   # phrase(the 2 by 2 'diagonal matrix')
   - pause: long
   - insert:
       # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
@@ -671,13 +673,16 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "la"      # phrase('the' 2 by 2 matrix M)
-  - x: count(*)
-  - t: "par une colonne"      # phrase(the 2 'by 1 column' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "le"] # phrase('the' 2 by 2 vector) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [t: "vecteur"]      # phrase(the 2 by 2 'vector')
       else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
+  - x: count(*)
+  - t: "par 1 colonne"      # phrase(the 2 'by 1 column' matrix)
   - pause: long
   - x: "*/*"
   - test:
@@ -694,13 +699,16 @@
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - t: "la"      # phrase('the' 2 by 2 matrix M)
-  - x: "count(*)"
-  - t: "par 1 colonne"      # phrase(the 2 'by 1 column' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "le"] # phrase('the' 2 by 2 vector) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [t: "vecteur"]      # phrase(the 2 column 'vector')
       else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
+  - x: "count(*)"
+  - t: "par 1 colonne"      # phrase(the 2 'by 1 column' matrix)
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
@@ -716,13 +724,17 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "la 1 par"      # phrase('the 1 by' 2 matrix)
-  - x: count(*/*)
-  - t: "rangée"      # phrase(the 1 by 4 'row' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "le"] # phrase('the' 2 by 2 vector) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [t: "vecteur"]      # phrase('the 1 by' 2 row 'vector')
       else: [t: "matrice"]      # phrase('the 1 by' 2 'matrix')
+  - t: "1 par"      # phrase('the 1 by' 2 matrix)
+  - x: count(*/*)
+  - t: "rangée"      # phrase(the 1 by 4 'row' matrix)
   - pause: long
   - x: "*/*"
   - test:
@@ -739,13 +751,17 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
-  - t: "la 1 par"      # phrase('the 1 by' 2 matrix)
-  - x: "count(*/*)"
-  - t: "rangée"      # phrase(the 1 by 2 'row' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "le"] # phrase('the' 2 by 2 vector) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [t: "vecteur"]      # phrase(the 2 by 1 'vector')
       else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
+  - t: "1 par"      # phrase('the 1 by' 2 matrix)
+  - x: "count(*/*)"
+  - t: "rangée"      # phrase(the 1 by 2 'row' matrix)
   - pause: long
   - pause: medium
   - x: "*/*" # select the cols (mtd)
@@ -766,14 +782,17 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
-  - t: "la"      # phrase('the' 1 by 2 matrix M)
+  - test:
+      if: "self::m:determinant"
+      then: [t: "le"] # phrase('the' 2 by 2 determinant) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
+  - test:
+      if: "self::m:determinant"
+      then: [t: "déterminant"]      # phrase(the 2 by 2 'determinant')
+      else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
   - x: count(*)
   - t: "par"      # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - test:
-      if: "self::m:determinant"
-      then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -790,14 +809,17 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
-  - t: "the"      # phrase('the' 1 by 2 matrix M)
-  - x: "count(*)"
-  - t: "par"      # phrase(the 1 'by' 2 matrix)
-  - x: "count(*[self::m:mtr][1]/*)"
+  - test:
+      if: "self::m:determinant"
+      then: [t: "le"] # phrase('the' 2 by 2 determinant) - masculine
+      else: [t: "la"] # phrase('the' 2 by 2 matrix) - feminine
   - test:
       if: "self::m:determinant"
       then: [t: "déterminant"]      # phrase(the 2 by 2 'determinant')
       else: [t: "matrice"]      # phrase(the 2 by 2 'matrix')
+  - x: "count(*)"
+  - t: "par"      # phrase(the 1 'by' 2 matrix)
+  - x: "count(*[self::m:mtr][1]/*)"
   - pause: long
   - x: "*"
   - test:
