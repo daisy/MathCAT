@@ -429,3 +429,8 @@
     "", "tuhannesosaa", "miljoonasosaa", "miljardisosaa", "biljoonasosaa", "tuhannes biljoonasosaa",
     "triljoonasosaa", "tuhannes triljoonasosaa", "kvadriljoonasosaa", "tuhannes kvadriljoonasosaa", "kvintiljoonasosaa"
     ]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Pitkässäjaossa havaittu, mutta ei tuettu",
+    "ElementaryMathNotSupported": "Alkeistason matematiikka havaittu, mutta ei tuettu",
+  }

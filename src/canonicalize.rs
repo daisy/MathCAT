@@ -575,6 +575,7 @@ impl CanonicalizeContext {
 			converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
 		}
+		converted_mathml = Self::normalize_elem_math(converted_mathml);
 		debug!("\nMathML after canonicalize:\n{}", mml_to_string(converted_mathml));
 		return Ok(converted_mathml);
 	}
@@ -1023,11 +1024,15 @@ impl CanonicalizeContext {
 					return if parent_requires_child {Some( CanonicalizeContext::make_empty_element(mathml) )} else {None};
 				} else if children.len() == 1 {
 					let is_from_mhchem = element_name == "mpadded" && is_from_mhchem_hack(mathml);
+					let inherited_decimalpoint = mathml.attribute_value("decimalpoint").map(|s| s.to_string());
 					if let Some(new_mathml) = self.clean_mathml( as_element(children[0]) ) {
 						// "lift" the child up so all the links (e.g., siblings) are correct
 						mathml.replace_children(new_mathml.children());
 						set_mathml_name(mathml, name(new_mathml));
 						add_attrs(mathml, &new_mathml.attributes());
+						if let Some(decimalpoint) = inherited_decimalpoint {
+							mathml.set_attribute_value("decimalpoint", &decimalpoint);
+						}
 						return Some(mathml);
 					} else if parent_requires_child {
 						// need a placeholder -- make it empty mtext
@@ -4552,6 +4557,469 @@ pub fn get_possible_embellished_node(node: Element) -> Element {
 	return node;
 }		
 
+
+/// Elementary math (mstack/mlongdiv) preprocessing for speech rules.
+///
+/// This preprocessing step annotates the MathML tree with special attributes to facilitate
+/// later processing for speech/braille and navigation. The main roles of these attributes are:
+///
+/// - `data-decimalpoint`: Set on containers ("mstack"/"mlongdiv") and sometimes "mn" children,
+///   this records the decimal point character to use for parsing and formatting numbers. It helps
+///   downstream logic handle locale-specific or unconventional decimal separators.
+///
+/// - `data-operator`: Set on container ("mstack") if a stack operator ("+", "-", "*") is detected. 
+///   This guides semantic interpretation and rendering in stacked arithmetic expressions.
+///
+/// - `data-position`: Set on relevant elements to mark spatial position within the row or structure,
+///   supporting proper navigation and spoken descriptions of layout, such as carries or digits.
+///
+/// - `data-elem-column`: Used for multi-digit column layout to annotate children with their column 
+///   index (useful for highlighting, navigation, or precise speech descriptions of digit placement).
+///
+/// - (Additional: the function also coalesces adjacent "mn" elements in "mstack" for canonical structure,
+///   marks whole-number rows, and splits/expands row children for downstream analysis.)
+///
+/// Together, these annotations "flatten" msgroup structure, encode spatial metadata, and clarify
+/// element roles for further rules and output formats.
+impl CanonicalizeContext {
+	fn normalize_elem_math(mathml: Element) -> Element {
+		Self::normalize_elem_math_recursive(mathml);
+		return mathml;
+	}
+
+	fn normalize_elem_math_recursive(mathml: Element) {
+		for child in mathml.children() {
+			if let ChildOfElement::Element(child) = child {
+				Self::normalize_elem_math_recursive(child);
+			}
+		}
+		let element_name = name(mathml);
+		if element_name == "mstack" || element_name == "mlongdiv" {
+			let decimal_pt = mathml.attribute_value("decimalpoint").unwrap_or(".");
+			Self::normalize_elem_math_container(mathml, decimal_pt);
+		}
+	}
+
+	/// Normalizes a math container (`mstack` or `mlongdiv`) by annotating it and its children
+	/// for later math processing. This sets or updates the following attributes:
+	/// - `data-decimalpoint` (on container and sometimes on "mn" children)
+	/// - `data-operator` (on container, if a stack operator is detected)
+	/// 
+	/// Also coalesces consecutive "mn" elements for "mstack", and splits/expands row children
+	/// for flattened processing downstream.
+	fn normalize_elem_math_container(container: Element, decimal_pt: &str) {
+		// Set container's decimal point metadata for future speech/braille logic
+		container.set_attribute_value("data-decimalpoint", decimal_pt);
+
+		// If the container has a operator ("+", "-", "*"), store its kind in an attribute for easy access
+		if let Some(op) = Self::detect_stack_operator(container) {
+			container.set_attribute_value("data-operator", &op.to_string());
+		}
+
+		// For "mstack", merge adjacent "mn" children (carries, digits) for canonical structure
+		if name(container) == "mstack" {
+			Self::coalesce_consecutive_mstack_mn(container, decimal_pt);
+		}
+
+		// For "mlongdiv", skip first 3 non-row children 
+		let first_row = if name(container) == "mlongdiv" { 3 } else { 0 };
+		let old_children = container.children().to_vec();
+
+		// Identify, if present, a row containing a repeating decimal number (for digit splitting)
+		let repeat_digit_row = Self::repeating_decimal_number_row_index(container, &old_children, first_row);
+
+		let mut new_children: Vec<ChildOfElement> = Vec::new();
+		for (i, child) in old_children.iter().enumerate() {
+			// For skipped (pre-row) children, set decimal attribute on "mn" only
+			if i < first_row {
+				if let ChildOfElement::Element(el) = child && name(*el) == "mn" {
+					el.set_attribute_value("data-decimalpoint", decimal_pt); // mark digit columns
+				}
+				new_children.push(*child);
+				continue;
+			}
+			// Expand "row" children for downstream processing, handling repeating decimals if needed
+			if let ChildOfElement::Element(row) = child {
+				let split_digits = repeat_digit_row == Some(i);
+				new_children.extend(Self::process_elem_math_row(*row, 0, decimal_pt, split_digits));
+			}
+		}
+		// Replace children with normalized (flattened/expanded) set
+		container.replace_children(new_children);
+	}
+
+	/// Processes a MathML "row-like" element, flattening groupings and standardizing to msrow where needed.
+	/// Determines positioning, prepares for downstream parsing, and optionally splits repeating decimals.
+	fn process_elem_math_row<'a>(
+		row: Element<'a>,
+		start_position: i32,
+		decimal_pt: &str,
+		split_digits: bool,
+	) -> Vec<ChildOfElement<'a>> {
+		if name(row) == "msgroup" {
+			let shift = row.attribute_value("shift").and_then(|s| s.parse::<i32>().ok()).unwrap_or(0);
+			let group_position = Self::elem_math_row_position(row, start_position);
+			let mut result = Vec::new();
+			for (i, child) in row.children().iter().enumerate() {
+				if let ChildOfElement::Element(child) = child {
+					result.extend(Self::process_elem_math_row(
+						*child,
+						group_position + (i as i32) * shift,
+						decimal_pt,
+						false,
+					));
+				}
+			}
+			return result;
+		}
+
+		let row_position = Self::elem_math_row_position(row, start_position);
+		Self::set_data_position(row, row_position);
+
+		let target = if matches!(name(row), "msrow" | "msline" | "mscarries") {
+			row
+		} else {
+			let doc = row.document();
+			let msrow = create_mathml_element(&doc, "msrow");
+			msrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+			Self::set_data_position(msrow, row_position);
+			get_parent(row).remove_child(row);
+			msrow.append_child(row);
+			msrow
+		};
+
+		match name(target) {
+			"msrow" => Self::process_elem_math_msrow(target, row_position, decimal_pt, split_digits),
+			"mscarries" => Self::annotate_mscarries_columns(target, row_position),
+			_ => (),
+		}
+		return vec![ChildOfElement::Element(target)]
+	}
+
+	/// Determines the row's absolute position for mstack processing from its attributes or the given start position.
+	fn elem_math_row_position(row: Element, start_position: i32) -> i32 {
+		if let Some(pos) = row.attribute_value("data-position") && let Ok(p) = pos.parse::<i32>() {
+			return p;
+		}
+		if let Some(pos) = row.attribute_value("position") && let Ok(p) = pos.parse::<i32>() {
+			return start_position + p;
+		}
+		return start_position
+	}
+
+	fn set_data_position(row: Element, position: i32) {
+		row.set_attribute_value("data-position", &position.to_string());
+	}
+
+	/// Processes an <msrow> element for mstack handling.
+	/// - Sets "data-decimalpoint" on <msrow> and contained <mn>s.
+	/// - When `split_digits`, sets "data-repeating-decimal" on <msrow> and "data-repeating-decimal-digit" on generated <mn>s.
+	/// - Always marks <mn> with "data-decimalpoint"; also calls `mark_elem_math_mn_speech` which may set additional attributes.
+	/// - For non-longdiv, merges <mn> children and updates text; remaining <mn>s are removed.
+	/// - Sets "data-elem-column" on <mn>s to annotate mstack columns.
+	fn process_elem_math_msrow(msrow: Element, row_position: i32, decimal_pt: &str, split_digits: bool) {
+		msrow.set_attribute_value("data-decimalpoint", decimal_pt);
+		let mn_elements: Vec<Element> = msrow.children().iter().filter_map(|child| {
+			if let ChildOfElement::Element(el) = child && name(*el) == "mn" {
+				return Some(*el);
+			}
+			None
+		}).collect();
+		if mn_elements.len() == 1 {
+			let mn = mn_elements[0];
+			if split_digits {
+				Self::split_elem_math_mn_to_digits(msrow, mn, decimal_pt);
+				return;
+			}
+			mn.set_attribute_value("data-decimalpoint", decimal_pt);
+			Self::mark_elem_math_mn_speech(mn, decimal_pt);
+			return;
+		}
+		if mn_elements.len() > 1 && !is_in_longdiv(msrow) {
+			let mut text = String::new();
+			for mn in &mn_elements {
+				text.push_str(as_text(*mn).trim());
+			}
+			let first = mn_elements[0];
+			first.set_text(text.trim());
+			Self::mark_elem_math_mn_speech(first, decimal_pt);
+			for mn in &mn_elements[1..] {
+				msrow.remove_child(*mn);
+			}
+			return;
+		}
+		let n = mn_elements.len() as i32;
+		for (i, mn) in mn_elements.iter().enumerate() {
+			mn.set_attribute_value("data-decimalpoint", decimal_pt);
+			mn.set_attribute_value("data-elem-column", &(row_position + n - 1 - (i as i32)).to_string());
+		}
+
+		fn is_in_longdiv(el: Element) -> bool {
+			let mut node = el;
+			loop {
+				if name(node) == "mlongdiv" {
+					return true;
+				}
+				if name(node) == "math" || node.parent().is_none(){
+					return false;
+				}
+				node = get_parent(node);
+			}
+		}
+	}
+
+	/// Marks a <mn> element for speech processing.
+	/// Sets the "data-decimalpoint" attribute and marks either "data-elem-block-parts" or "data-elem-whole"
+	/// depending on whether the element represents a block-separated partial value.
+	fn mark_elem_math_mn_speech(mn: Element, decimal_pt: &str) {
+		mn.set_attribute_value("data-decimalpoint", decimal_pt);
+		if is_block_separated_partial(mn) {
+			mn.set_attribute_value("data-elem-block-parts", "true");
+		} else {
+			mn.set_attribute_value("data-elem-whole", "true");
+		}
+
+		/// Determines if the given <mn> element represents a block-separated partial value
+		/// based on its text content, row shift position, and the presence of a preceding <msline> in its mstack.
+		fn is_block_separated_partial(mn: Element) -> bool {
+			let text = as_text(mn);
+			if !text.contains(',') {
+				return false;
+			}
+			if let Some(pos) = msrow_shift_position(mn) && pos != 0 {
+				return true;
+			}
+			if !has_preceding_msline_in_mstack(mn) {
+				return false;
+			}
+			let parts: Vec<&str> = text.split(',').collect();
+			if parts.len() == 2 {
+				let before = parts[0].trim();
+				let after = parts[1].trim();
+				if before.len() <= 2 && after.len() <= 2 {
+					return true;
+				}
+				if after.len() <= 1 {
+					return true;
+				}
+			}
+			return false
+		}
+
+		fn msrow_shift_position(mn: Element) -> Option<i32> {
+			let msrow = find_ancestor_element(mn, "msrow")?;
+			return msrow.attribute_value("position")
+				.or(msrow.attribute_value("data-position"))
+				.and_then(|s| s.parse().ok())
+		}
+	
+		fn has_preceding_msline_in_mstack(mn: Element) -> bool {
+			let Some(mstack) = find_ancestor_element(mn, "mstack") else {
+				return false;
+			};
+			let mut passed = false;
+			for sibling in mstack.children() {
+				let ChildOfElement::Element(sib) = sibling else { continue; };
+				if element_contains(sib, mn) {
+					return passed;
+				}
+				if name(sib) == "msline" {
+					passed = true;
+				}
+			}
+			return false
+		}
+
+		fn element_contains(container: Element, target: Element) -> bool {
+			if container == target {
+				return true;
+			}
+			for child in container.children() {
+				if let ChildOfElement::Element(child) = child && element_contains(child, target) {
+					return true;
+				}
+			}
+			return false
+		}
+
+		fn find_ancestor_element<'a>(el: Element<'a>, tag: &str) -> Option<Element<'a>> {
+			let mut node = el;
+			loop {
+				if name(node) == tag {
+					return Some(node);
+				}
+				if name(node) == "math" || node.parent().is_none(){
+					return None;
+				}
+				node = get_parent(node);
+			}
+		}
+	}
+
+
+
+	fn row_has_single_mn(row: Element) -> bool {
+		if name(row) == "mn" {
+			return true;
+		}
+		if name(row) != "msrow" {
+			return false;
+		}
+		let mn_count = row.children().iter().filter(|child| {
+			matches!(child, ChildOfElement::Element(el) if name(*el) == "mn")
+		}).count();
+		return mn_count == 1
+	}
+
+	fn repeating_decimal_number_row_index(
+		container: Element,
+		children: &[ChildOfElement],
+		first_row: usize,
+	) -> Option<usize> {
+		if name(container) != "mstack" {
+			return None;
+		}
+		let rows: Vec<(usize, Element)> = children.iter().enumerate().filter_map(|(i, child)| {
+			if i < first_row {
+				return None;
+			}
+			if let ChildOfElement::Element(el) = child {
+				return Some((i, *el));
+			}
+			None
+		}).collect();
+		if rows.len() != 2 {
+			return None;
+		}
+		let (i0, r0) = rows[0];
+		let (i1, r1) = rows[1];
+		if name(r0) == "msline" && Self::row_has_single_mn(r1) {
+			return Some(i1);
+		}
+		if Self::row_has_single_mn(r0) && name(r1) == "msline" {
+			return Some(i0);
+		}
+		if Self::is_repeating_decimal_dots_row(r0) && Self::row_has_single_mn(r1) {
+			return Some(i1);
+		}
+		return None
+	}
+
+	fn elem_math_direct_row_children(container: Element) -> Vec<Element> {
+		container.children().iter().filter_map(|child| {
+			if let ChildOfElement::Element(el) = child {
+				return Some(*el);
+			}
+			None
+		}).collect()
+	}
+
+	fn is_repeating_decimal_dots_row(row: Element) -> bool {
+		if name(row) != "msrow" {
+			return false;
+		}
+		let cells: Vec<Element> = Self::elem_math_direct_row_children(row);
+		if cells.is_empty() {
+			return false;
+		}
+		let is_dot = |el: Element| name(el) == "mo" && as_text(el) == ".";
+		return is_dot(cells[0]) && is_dot(*cells.last().unwrap())
+	}
+
+	fn split_elem_math_mn_to_digits(msrow: Element, mn: Element, decimal_pt: &str) {
+		let text = as_text(mn);
+		msrow.set_attribute_value("data-repeating-decimal", "true");
+		msrow.remove_child(mn);
+		let doc = msrow.document();
+		for ch in text.chars() {
+			let digit_mn = create_mathml_element(&doc, "mn");
+			digit_mn.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+			digit_mn.set_attribute_value("data-decimalpoint", decimal_pt);
+			digit_mn.set_attribute_value("data-repeating-decimal-digit", "true");
+			digit_mn.set_text(ch.to_string().as_str());
+			msrow.append_child(digit_mn);
+		}
+	}
+
+	/// Annotates children of an <mscarries> element with their carry column position and marks the carry terminator type.
+	/// Sets "data-elem-carry-column" for each child. Final child sets "data-elem-carry-terminator" on <mscarries> if applicable.
+	fn annotate_mscarries_columns(mscarries: Element, row_position: i32) {
+		let children: Vec<Element> = mscarries.children().iter().filter_map(|child| {
+			if let ChildOfElement::Element(el) = child {
+				return Some(*el);
+			}
+			None
+		}).collect();
+		let n = children.len() as i32;
+		for (i, child) in children.iter().enumerate() {
+			child.set_attribute_value("data-elem-carry-column", &(n - 1 + row_position - (i as i32)).to_string());
+		}
+		if let Some(last) = children.last() {
+			if name(*last) == "mscarry" {
+				mscarries.set_attribute_value("data-elem-carry-terminator", "mscarry");
+			} else if name(*last) == "none" {
+				mscarries.set_attribute_value("data-elem-carry-terminator", "none");
+			}
+		}
+	}
+
+	/// Coalesces consecutive <mn> children into a single <mn> in an mstack container.
+	/// Merges their text, marks the result, and updates relevant attributes for MathML parsing.
+	fn coalesce_consecutive_mstack_mn(container: Element, decimal_pt: &str) {
+		let mut children =container.children();
+		let mut i = 0;
+		while i < children.len() {
+			let child = as_element(children[i]);
+			if name(child) != "mn" {
+				i += 1;
+				continue;
+			}
+			let mut j = i + 1;
+			while j < children.len() && name(as_element(children[j])) == "mn" {
+				j += 1;
+			}
+			if j > i + 1 {
+				let mut text = String::new();
+				for &mn_child_of_element in &children[i..j] {
+					text.push_str(as_text(as_element(mn_child_of_element)).trim());
+				}
+				child.set_text(text.trim());
+				child.set_attribute_value("data-decimalpoint", decimal_pt);
+				Self::mark_elem_math_mn_speech(child, decimal_pt);
+				for mn in &children[(i + 1)..j] {
+					container.remove_child(*mn);
+				}
+				children.drain((i + 1)..j);
+			}
+			i = j;
+		}
+	}
+
+	fn detect_stack_operator(container: Element) -> Option<char> {
+		return Self::detect_stack_operator_recursive(container)
+	}
+
+	fn detect_stack_operator_recursive(el: Element) -> Option<char> {
+		if name(el) == "msrow" {
+			for mo_child in el.children() {
+				if let ChildOfElement::Element(mo) = mo_child && name(mo) == "mo" {
+					let text = as_text(mo);
+					if let Some(ch) = text.chars().next() && matches!(ch, '+' | '-' | '−' | '×') {
+						return Some(ch);
+					}
+				}
+			}
+		}
+		for child in el.children() {
+			if let ChildOfElement::Element(child) = child &&
+			   let Some(op) = Self::detect_stack_operator_recursive(child) {
+					return Some(op);
+			}
+		}
+		return None
+	}
+}
+
 #[allow(dead_code)] // for debugging with println
 fn show_invisible_op_char(ch: &str) -> &str {
 	return match ch.chars().next().unwrap() {
@@ -6890,6 +7358,5 @@ mod canonicalize_tests {
 		</math>"#;
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
-
 
 }

@@ -193,8 +193,7 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math> <mn>1</mn> <mi>kg</mi> <msup> <mi intent=':unit'>sec</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> <msup> <mi intent='unit'>m</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> </math>
-
+<math><mlongdiv><mn>3</mn><mn>435</mn><mn>1306</mn></mlongdiv></math>
          "#;
   // let instant = Instant::now();
 
@@ -209,7 +208,7 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "UEB").unwrap();
+  set_preference("BrailleCode", "Nemeth").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();

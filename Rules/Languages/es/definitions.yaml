@@ -356,3 +356,8 @@
          "", "milésimas", "millonésimas", "mil millonésimas", "trillonésimas", "cuatrillonésimas",
          "quintillionésimas", "sextillones", "septillones", "octillionésimas", "nonillionésimas"
     ]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "División larga encontrada pero no compatible",
+    "ElementaryMathNotSupported": "Matemática elemental encontrada pero no compatible",
+  }

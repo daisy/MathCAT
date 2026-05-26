@@ -434,3 +434,8 @@
          "octodeciljondelar","octodeciljarddelar","novemdeciljondelar","novemdeciljarddelar","vigintiljondelar",
          "vigintiljarddelar","unvigintiljondelar","unvigintiljarddelar","centiljondelar","centiljarddelar"
     ]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Långdivision påträffad men stöds inte",
+    "ElementaryMathNotSupported": "Grundskolematte påträffad men stöds inte",
+  }

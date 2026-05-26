@@ -37,11 +37,11 @@ pub fn abs_rules_dir_path() -> String {
 }
 
 
-// Strip spaces from 'str' so comparison doesn't need to worry about spacing
+// Normalize speech text for comparison: collapse all whitespace (including newlines in r#"..."# literals).
 #[allow(dead_code)]     // used in testing
-fn strip_spaces(str: &str) -> String {
-    static SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"  +").unwrap());
-    String::from(SPACES.replace_all(str, " "))
+fn normalize_speech_text(str: &str) -> String {
+    static WHITESPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+").unwrap());
+    String::from(WHITESPACE.replace_all(str.trim(), " "))
 }
 
 #[allow(dead_code)]     // used in testing
@@ -52,7 +52,12 @@ fn check_answer(test: &str, target: &str, failure_message: &str) {
             panic!("{}", errors_to_string(&e));
         };
         match get_spoken_text() {
-            Ok(speech) => assert_eq!(target, strip_spaces(&speech), "\ntest with {} failed", failure_message),
+            Ok(speech) => assert_eq!(
+                normalize_speech_text(target),
+                normalize_speech_text(&speech),
+                "\ntest with {} failed",
+                failure_message
+            ),
             Err(e) => panic!("{}", errors_to_string(&e)),
         };
         Ok(())

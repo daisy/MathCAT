@@ -265,3 +265,8 @@
         "trillionste", "trilliardste", "quadrillionste", "quadrilliardste", "quintillionste"
     ]
 
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Lange Division gefunden, aber nicht unterstützt",
+    "ElementaryMathNotSupported": "Elementarmathematik gefunden, aber nicht unterstützt",
+  }
+

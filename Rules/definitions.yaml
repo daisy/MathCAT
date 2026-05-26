@@ -183,3 +183,8 @@
     "⫕", "⫖", "⫗", "⫘", "⋐", "⋑", "⋪", "⋫", "⋬", "⋭", "⊲", "⊳", "⊴", "⊵",
   }
 
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Long division encountered but not supported",
+    "ElementaryMathNotSupported": "Elementary math encountered but not supported",
+  }
+

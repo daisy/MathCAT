@@ -1,0 +1,707 @@
+---
+# Elementary math (mstack, mlongdiv, etc.) — converted from MathPlayer elementary-math-base.tdl + en/elementary-math.tdl
+#
+# Column phrase idiom (place names in ElemMathPlace, definitions.yaml):
+#   - t: "in the"
+#   - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+#   - t: "column"
+
+# --- repeating decimals ---
+
+- name: repeating-decimal-msline-over-mn
+  tag: mstack
+  match:
+  - "count(*)=2 and *[1][self::m:msline] and *[2][self::m:msrow] and"
+  - "count(*[2]/*)=count(*[2]/m:mn)"
+  variables:
+  - LineLength: "number(*[1]/@length)"
+  - DigitCount: "count(*[2]/m:mn)"
+  - NonRepeatEnd: "$DigitCount - $LineLength"
+  replace:
+  - bookmark: "@id"
+  - t: "the repeating decimal"
+  - pause: 200
+  - x: "*[2]/m:mn[position() <= $NonRepeatEnd]"
+  - pause: 100
+  - test:
+      if: "$LineLength=1"
+      then: [t: "followed by repeating digit"]
+      else: [t: "followed by repeating digits"]
+  - pause: 100
+  - x: "*[2]/m:mn[position() > $NonRepeatEnd]"
+  - pause: 100
+  - bookmark: "@id"
+  - pause: 400
+
+- name: repeating-decimal-msline-over-mn-reversed
+  tag: mstack
+  match: "count(*)=2 and *[2][self::m:msline] and *[1][self::m:msrow] and count(*[1]/*)=count(*[1]/m:mn)"
+  variables:
+  - LineLength: "number(*[2]/@length)"
+  - DigitCount: "count(*[1]/m:mn)"
+  - NonRepeatEnd: "$DigitCount - $LineLength"
+  replace:
+  - bookmark: "@id"
+  - t: "the repeating decimal"
+  - pause: 200
+  - x: "*[1]/m:mn[position() <= $NonRepeatEnd]"
+  - pause: 100
+  - test:
+      if: "$LineLength=1"
+      then: [t: "followed by repeating digit"]
+      else: [t: "followed by repeating digits"]
+  - pause: 100
+  - x: "*[1]/m:mn[position() > $NonRepeatEnd]"
+  - pause: 100
+  - bookmark: "@id"
+  - pause: 200
+
+- name: repeating-decimal-dots-over-mn
+  tag: mstack
+  match:
+  - "count(*)=2 and *[2][self::m:msrow] and count(*[2]/m:mn)>0 and"
+  - "*[1][self::m:mo][.='.'] or (*[1][self::m:msrow] and *[1]/*[1][.='.'] and *[1]/*[last()][.='.'])"
+  variables:
+  - DotCount: "count(*[1]/*)"
+  - DigitCount: "count(*[2]/m:mn)"
+  - NonRepeatEnd: "$DigitCount - $DotCount"
+  replace:
+  - bookmark: "@id"
+  - t: "the repeating decimal"
+  - pause: 200
+  - x: "*[2]/m:mn[position() <= $NonRepeatEnd]"
+  - pause: 100
+  - t: "followed by repeating digits"
+  - pause: 100
+  - x: "*[2]/m:mn[position() > $NonRepeatEnd]"
+  - pause: 100
+  - bookmark: "@id"
+  - pause: 200
+
+# --- mstack ---
+
+- name: mstack-default
+  tag: mstack
+  match: "."
+  variables:
+  - Operator: "@data-operator"
+  - StackAlign: "@stackalign"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "$StackAlign='center'"
+      then: [t: "centered"]
+    - else_if: "$StackAlign='left'"
+      then: [t: "left-aligned"]
+  - test:
+    - if: "$Operator='+'"
+      then:
+      - t: "addition problem"
+      - t: ";"
+    - else_if: "$Operator='-' or $Operator='−'"
+      then:
+      - t: "subtraction problem"
+      - t: ";"
+    - else_if: "$Operator='×'"
+      then:
+      - t: "multiplication problem"
+      - t: ";"
+      else: [t: "rows of numbers"]
+  - x: "*"
+  - pause: 500
+  - bookmark: "@id"
+  - test:
+      if: "$Operator=' ' or not($Operator)"
+      then: [t: "end of numbers"]
+      else: [t: "end of problem"]
+  - pause: 200
+
+# --- mlongdiv ---
+
+- name: mlongdiv-simple
+  tag: mlongdiv
+  match: "count(*)=3"
+  replace:
+  - bookmark: "@id"
+  - t: "long division problem"
+  - x: "*[3]"
+  - t: "divided by"
+  - x: "*[1]"
+  - test:
+      if: "name(*[2])!='none'"
+      then: [t: "equals"]
+  - x: "*[2]"
+  - pause: 100
+  - bookmark: "@id"
+  - t: "end long division"
+  - pause: 200
+
+- name: mlongdiv-full
+  tag: mlongdiv
+  match: "."
+  replace:
+  - bookmark: "@id"
+  # FIX: think about this as to whether this makes sense
+  - test:
+      if: "count(*) <= 10"
+      then:
+      - t: "long division problem"
+      - pause: 100
+  - x: "*[3]"
+  - pause: 100
+  - t: "divided by"
+  - x: "*[1]"
+  - pause: 100
+  - test:
+      if: "name(*[2])!='none'"
+      then: [t: "equals"]
+  - pause: 100
+  - x: "*[2]"
+  - pause: 600
+  - t: "here's why"
+  - pause: 300
+  - x: "*[position()>3]"
+  - bookmark: "@id"
+  - pause: 200
+  - t: "end long division"
+  - pause: 200
+
+- name: msgroup-normalized-away
+  tag: msgroup
+  match: "."
+  replace: []
+
+# --- mn in elementary math ---
+
+- name: elem-math-mn-decimal
+  tag: mn
+  match: "@data-decimalpoint and contains(., @data-decimalpoint) and string-length(.) - string-length(translate(., @data-decimalpoint, '')) = 1 and 
+          (@data-decimalpoint != $DecimalSeparators or @data-decimalpoint = ',') and
+          ((parent::*[self::m:mlongdiv] and count(preceding-sibling::*) < 3) or @data-elem-whole='true')"
+  variables:
+  - DecSep: "@data-decimalpoint"
+  replace:
+  - bookmark: "@id"
+  - x: "concat(translate(translate(substring-before(., $DecSep), ',', ' '), '\u00A0\u202F', ' '), $DecimalSeparators, translate(translate(substring-after(., $DecSep), ',', ' '), '\u00A0\u202F', ' '))"
+
+- name: elem-math-mn-elem-default
+  tag: mn
+  match: "((parent::*[self::m:mlongdiv] and count(preceding-sibling::*) < 3) or @data-elem-whole='true') and not(@data-elem-block-parts='true')"
+  replace:
+  - bookmark: "@id"
+  - x: "translate(translate(., $BlockSeparators, ''), '\u00A0\u202F', '')"
+
+- name: elem-math-mn-block-parts
+  tag: mn
+  match: "@data-elem-block-parts='true'"
+  replace:
+  - bookmark: "@id"
+  - x: "translate(translate(., ',', ' '), '\u00A0\u202F', ' ')"
+
+- name: elem-math-repeating-decimal-mn
+  tag: mn
+  match: "@data-repeating-decimal-digit='true'"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: ".='.' and @data-decimalpoint='.'"
+      then: [t: "point"]
+    - else_if: ".=',' and @data-decimalpoint=','"
+      then: [t: "comma"]
+    - else_if: ".=' '"
+      then: [t: "space"]
+    - else: [x: "translate(., $BlockSeparators, '')"]
+
+- name: elem-math-mn-in-mscarries
+  tag: mn
+  match: "parent::*[self::m:mscarries]"
+  variables:
+  - Column: "number(@data-elem-carry-column)"
+  - Crossout: "../@crossout and ../@crossout!='none'"
+  replace:
+  - test:
+    - if: "$Crossout"
+      then: [t: "crossout and carry"]
+      else: [t: "carry"]
+  - x: "translate(translate(., $BlockSeparators, ''), '\u00A0\u202F', '')"
+  - test:
+      if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - test:
+          if: "not($Crossout) and ../@location"
+          then: [pause: 100]
+      - t: "in the"
+      - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+      - test:
+        - if: "following-sibling::*[self::m:mn] and ../following-sibling::*[1][self::m:mscarries]"
+          then: [pause: 200]
+        - else_if: "following-sibling::*[self::m:mn]"
+          then: [pause: 200]
+        - else_if: "(../@position or ../@data-position) and . != ../m:mn[last()]"
+          then: [pause: 200]
+        - else_if: "not(following-sibling::*[self::m:mn]) and (../following-sibling::*[self::m:mn] or ../following-sibling::*[self::m:msrow])"
+          then: [pause: 200]
+        - else_if: "following-sibling::*[self::m:mscarry or self::m:menclose]"
+          then: [pause: 200]
+
+- name: msrow-longdiv-step-ab
+  tag: msrow
+  match:
+  - "parent::*[self::m:mlongdiv] and count(preceding-sibling::*) >= 3 and"
+  - "(count(preceding-sibling::*) - 3) - 3 * floor((count(preceding-sibling::*) - 3) div 3) = 0"
+  variables:
+  - RowPos: "number(@data-position)"
+  - PrevRowPos: "number(preceding-sibling::*[1]/@data-position)"
+  - DecimalPoint: "ancestor::m:mlongdiv/@data-decimalpoint"
+  - ResultText: "../*[2]"
+  - DigitPos: "IfThenElse($DecimalPoint!='' and contains($ResultText, $DecimalPoint),
+                  string-length(substring-before($ResultText, $DecimalPoint)) + 1 - $RowPos - 1,
+                  IfThenElse(contains($ResultText, '.'), string-length(substring-before($ResultText, '.')) + 1 - $RowPos - 1, string-length($ResultText) - $RowPos))"
+  replace:
+  - x: "../*[1]"
+  - t: "times"
+  - pause: 100
+  - x: "substring($ResultText, $DigitPos, 1)"
+  - test:
+      if: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+  - t: "equals"
+  - x: "translate(*[last()], $BlockSeparators, '')"
+  - test:
+    - if: "$RowPos=0"
+      then: []
+    - else_if: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+  - pause: 800
+  - x: "(preceding-sibling::*[1][self::m:mn] | preceding-sibling::*[1]/m:mn[1])[1]"
+  - test:
+    - if: "preceding-sibling::*[1][self::m:mn]"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue('0', 'Speech', 'ElemMathPlace')"
+      - t: "column"
+    - else_if: "DefinitionValue(string($PrevRowPos), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($PrevRowPos), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+  - pause: 100
+  - t: "minus"
+  - pause: 100
+  - x: "translate(*[last()], $BlockSeparators, '')"
+  - test:
+      if: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($RowPos), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+
+- name: msrow-longdiv-step-c
+  tag: msrow
+  match:
+  - "parent::*[self::m:mlongdiv] and count(preceding-sibling::*) >= 3 and"
+  - "(count(preceding-sibling::*) - 3) - 3 * floor((count(preceding-sibling::*) - 3) div 3) = 2"
+  variables:
+  - RowIndex: "count(preceding-sibling::*)"
+  - LinePos: "number(preceding-sibling::*[2]/@data-position)"
+  - HasMore: "$RowIndex < count(../*) - 1"
+  replace:
+  - x: "substring(*[1], 1, 1)"
+  - test:
+      if: "DefinitionValue(string($LinePos), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($LinePos), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+  - test:
+      if: "$HasMore"
+      then:
+      - pause: 1000
+      - t: "next step:"
+
+- name: msline-longdiv
+  tag: msline
+  match: "parent::*[self::m:mlongdiv]"
+  replace:
+  - t: "equals"
+
+# --- msrow / msline (general) ---
+
+- name: msrow-stack-trailing-operator
+  tag: msrow
+  match:
+  - "ancestor::m:mstack and not(ancestor::m:mlongdiv) and"
+  - "following-sibling::*[self::m:msline] and"
+  - "not(preceding-sibling::*[self::m:msline]) and"
+  - "not(*[self::m:none]) and not(*[self::m:mo][.='×']) and"
+  - "*[last()][self::m:mo] and (preceding-sibling::*[self::m:mn] or preceding-sibling::*[self::m:msrow])"
+  replace:
+  - x: "*[last()][self::m:mo]"
+  - x: "./*[self::m:mn]"
+
+- name: msrow-stack-leading-operator
+  tag: msrow
+  match:
+  - "ancestor::m:mstack and not(ancestor::m:mlongdiv) and"
+  - "following-sibling::*[self::m:msline] and"
+  - "not(preceding-sibling::*[self::m:msline]) and"
+  - "not(*[self::m:none]) and not(*[self::m:mo][.='×']) and"
+  - "*[1][self::m:mo] and (preceding-sibling::*[self::m:mn] or preceding-sibling::*[self::m:msrow])"
+  replace:
+  - x: "*[self::m:mo]"
+  - x: "./*[self::m:mn]"
+
+- name: msrow-stack-before-msline
+  tag: msrow
+  match:
+  - "ancestor::m:mstack and not(ancestor::m:mlongdiv) and"
+  - "following-sibling::*[self::m:msline] and"
+  - "not(preceding-sibling::*[self::m:msline]) and"
+  - "not(*[self::m:none]) and not(*[self::m:mo][.='×'])"
+  replace:
+  - x: "./*[self::m:mn]"
+  - test:
+      if: "*[self::m:mo] and following-sibling::*[self::m:msrow]"
+      then: [x: "*[self::m:mo]"]
+
+- name: msrow-operator-on-right
+  tag: msrow
+  match: "count(*) > 1 and *[last()][self::m:mo]"
+  replace:
+  - x: "*[last()]"
+  - x: "*[position()!=last()]"
+
+- name: msrow-default-zero-shift
+  tag: msrow
+  match:
+  - "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))=0"
+  variables:
+  - AfterMsline: "preceding-sibling::*[self::m:msline] or (preceding-sibling::*[self::m:msrow] and preceding-sibling::*[self::m:msrow]/preceding-sibling::*[self::m:msline])"
+  - BetweenMslines: "preceding-sibling::*[self::m:msline] and following-sibling::*[self::m:msline]"
+  - RowPos: "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))"
+  - IsLastPartialRow: "following-sibling::*[1][self::m:msline]"
+  - FollowingIsLastPartial: "following-sibling::*[1][self::m:msrow or self::m:mn][following-sibling::*[1][self::m:msline]]"
+  - FollowingRowPos: "number(IfThenElse(following-sibling::*[1]/@data-position, following-sibling::*[1]/@data-position, IfThenElse(following-sibling::*[1]/@position, following-sibling::*[1]/@position, 0)))"
+  - ShiftAmount: "IfThenElse($IsLastPartialRow, 0, IfThenElse($FollowingIsLastPartial, $FollowingRowPos, $RowPos + 1))"
+  replace:
+  - test:
+    - if: "$BetweenMslines and $IsLastPartialRow"
+      then:
+      - x: "*"
+      - t: ";"
+    - else_if: "$BetweenMslines"
+      then:
+      - x: "*"
+      - t: ","
+      - t: "shifted to the left"
+      - x: "$ShiftAmount"
+      - test:
+          if: "$ShiftAmount=1"
+          then: [t: "digit"]
+          else: [t: "digits"]
+      - test:
+        - if: "following-sibling::*[self::m:msrow or self::m:mn][following-sibling::*[self::m:msrow or self::m:mn]] or ./*[@data-elem-block-parts='true']"
+          then: [t: ";"]
+    - else_if: "$AfterMsline"
+      then:
+      - x: "*"
+      - t: ";"
+    - else: [x: "*"]
+
+- name: msrow-default-shifted
+  tag: msrow
+  match:
+  - "not(parent::*[self::m:mlongdiv]) and"
+  - "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))!=0"
+  variables:
+  - RowPos: "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))"
+  - AfterMsline: "preceding-sibling::*[self::m:msline] or (preceding-sibling::*[self::m:msrow] and preceding-sibling::*[self::m:msrow]/preceding-sibling::*[self::m:msline])"
+  - BetweenMslines: "preceding-sibling::*[self::m:msline] and following-sibling::*[self::m:msline]"
+  - IsLastPartialRow: "following-sibling::*[1][self::m:msline]"
+  - FollowingIsLastPartial: "following-sibling::*[1][self::m:msrow or self::m:mn][following-sibling::*[1][self::m:msline]]"
+  - FollowingRowPos: "number(IfThenElse(following-sibling::*[1]/@data-position, following-sibling::*[1]/@data-position, IfThenElse(following-sibling::*[1]/@position, following-sibling::*[1]/@position, 0)))"
+  - ShiftAmount: "IfThenElse($IsLastPartialRow, 0, IfThenElse($FollowingIsLastPartial, $FollowingRowPos, $RowPos + 1))"
+  replace:
+  - test:
+    - if: "$BetweenMslines and $IsLastPartialRow"
+      then:
+      - x: "*"
+      - t: ";"
+    - else_if: "$BetweenMslines"
+      then:
+      - x: "*"
+      - t: ","
+      - t: "shifted to the left"
+      - x: "$ShiftAmount"
+      - test:
+          if: "$ShiftAmount=1"
+          then: [t: "digit"]
+          else: [t: "digits"]
+      - test:
+        - if: "following-sibling::*[self::m:msrow or self::m:mn][following-sibling::*[self::m:msrow or self::m:mn]] or ./*[@data-elem-block-parts='true']"
+          then: [t: ";"]
+    - else_if: "$AfterMsline"
+      then:
+      - x: "*"
+      - t: ";"
+    - else:
+      - pause: 500
+      - t: "shifted to the left"
+      - x: "$RowPos"
+      - test:
+          if: "$RowPos=1"
+          then:
+          - t: "digit"
+          - t: ","
+          else: [t: "digits"]
+      - x: "*"
+      - t: ";"
+
+- name: msline-default-zero
+  tag: msline
+  match: "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))=0"
+  replace:
+  - test:
+    - if: "not(following-sibling::*) and preceding-sibling::*[1][self::m:msrow][*[self::m:none]]"
+      then: [t: ";"]
+    - else: [pause: 200]
+  - t: "equals"
+  - test:
+      if: "following-sibling::*[1][self::m:mscarries]"
+      then: [pause: 200]
+      else: [t: ";"]
+
+- name: msline-default-shifted
+  tag: msline
+  match: "not(parent::*[self::m:mlongdiv])"
+  variables:
+  - RowPos: "number(IfThenElse(@data-position, @data-position, IfThenElse(@position, @position, 0)))"
+  replace:
+  - pause: 200
+  - test:
+    - if: "$RowPos > 0"
+      then:
+      - t: "line shifted to the left"
+      - x: "$RowPos"
+      - test:
+          if: "$RowPos=1"
+          then: [t: "digit"]
+          else: [t: "digits"]
+    - else:
+      - t: "line shifted to the right"
+      - x: "-$RowPos"
+      - test:
+          if: "-$RowPos=1"
+          then: [t: "digit"]
+          else: [t: "digits"]
+  - pause: 100
+
+# --- carries ---
+
+- name: elem-math-none-in-msrow
+  tag: none
+  match: "parent::*[self::m:msrow]/ancestor::m:mstack"
+  replace: []
+
+- name: elem-math-empty-mrow
+  tag: mrow
+  match: "not(*) and (ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace: []
+
+- name: elem-math-empty-msrow
+  tag: msrow
+  match: "not(*) and (ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace: []
+
+- name: menclose-in-mscarries
+  tag: menclose
+  match: "parent::*[self::m:mscarries]"
+  variables:
+  - Column: "number(@data-elem-carry-column)"
+  replace:
+  - t: "carry"
+  - x: "m:mn"
+  - test:
+      if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+      - test:
+          if: "following-sibling::*[self::m:mn or self::m:mscarry or self::m:menclose]"
+          then: [pause: 200]
+
+- name: none-in-mscarries
+  tag: none
+  match:
+  - "parent::*[self::m:mscarries] and count(following-sibling::*) > 0 and"
+  - "(../@crossout and ../@crossout!='none') or count(preceding-sibling::*)=0"
+  variables:
+  - Column: "number(@data-elem-carry-column)"
+  replace:
+  - t: "crossout"
+  - test:
+      if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+      - test:
+          if: "following-sibling::*[self::m:mn or self::m:mscarry or self::m:menclose]"
+          then: [pause: 200]
+
+- name: none-in-mscarries-silent
+  tag: none
+  match: "parent::*[self::m:mscarries]"
+  replace: []
+
+- name: mscarry-empty-none
+  tag: mscarry
+  match: "parent::*[self::m:mscarries] and @crossout='none' and *[self::m:none]"
+  replace: []
+
+- name: mscarry-none-only-in-mscarries
+  tag: mscarry
+  match: "parent::*[self::m:mscarries] and *[self::m:none] and not(*[self::m:mn])"
+  variables:
+  - Column: "count(../m:*) - 1 + number(IfThenElse(../@data-position, ../@data-position, 0)) - count(preceding-sibling::*)"
+  - Crossout: "(@crossout and @crossout!='none') or (../@crossout and ../@crossout!='none')"
+  replace:
+  - test:
+      if: "$Crossout"
+      then:
+      - t: "crossout"
+      - test:
+          if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+          then:
+          - t: "in the"
+          - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+          - t: "column"
+          - test:
+              if: "following-sibling::*[self::m:mn or self::m:mscarry or self::m:menclose]"
+              then: [pause: 200]
+
+- name: mscarry-in-mscarries
+  tag: mscarry
+  match: "parent::*[self::m:mscarries]"
+  variables:
+  - Column: "count(../m:*) - 1 + number(IfThenElse(../@data-position, ../@data-position, 0)) - count(preceding-sibling::*)"
+  - Crossout: "(@crossout and @crossout!='none') or (../@crossout and ../@crossout!='none')"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "$Crossout"
+      then: [t: "crossout and carry"]
+      else: [t: "carry"]
+  - x: "translate(translate(*[1], $BlockSeparators, ''), '\u00A0\u202F', '')"
+  - test:
+      if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+      - test:
+          if: "following-sibling::*[self::m:mn or self::m:mscarry or self::m:menclose]"
+          then: [pause: 200]
+
+- name: none-in-mscarry
+  tag: none
+  match: "parent::*[self::m:mscarry]"
+  variables:
+  - Column: "number(@data-elem-carry-column)"
+  - Crossout: "((../@crossout and ../@crossout!='none') or (../../@crossout and ../../@crossout!='none')) and not(../@crossout='none')"
+  replace:
+  - test:
+      if: "$Crossout"
+      then:
+      - t: "crossout"
+      - test:
+          if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+          then:
+          - t: "in the"
+          - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+          - t: "column"
+
+- name: mscarry-content
+  tag: mscarry
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "(@crossout and @crossout!='none') or (../@crossout and ../@crossout!='none')"
+      then: [t: "crossout and carry"]
+      else: [t: "carry"]
+  - x: "*"
+
+- name: mscarries-default
+  tag: mscarries
+  match: "."
+  variables:
+  - Operator: "ancestor::m:mstack/@data-operator"
+  replace:
+  - x: "*"
+  - test:
+    - if: "following-sibling::*[1][self::m:mscarries] and ($Operator='-' or $Operator='−')"
+      then: [t: ";"]
+    - else_if: "following-sibling::*[1][self::m:mscarries] and $Operator='×'"
+      then:
+      - t: "next row"
+      - t: ";"
+    - else_if: "@data-elem-carry-terminator='mscarry'"
+      then: [pause: 200]
+    - else_if: "@data-elem-carry-terminator='none' and ($Operator='-' or $Operator='−' or $Operator='+')"
+      then: [t: ";"]
+    - else_if: "($Operator='-' or $Operator='−') and not(following-sibling::*[1][self::m:mscarries])"
+      then: [pause: 200]
+    - else_if: "$Operator='×' and not(following-sibling::*[1][self::m:mscarries]) and (following-sibling::*[self::m:mn] or following-sibling::*[self::m:msrow])"
+      then: [pause: 200]
+    - else_if: "$Operator='×' and not(following-sibling::*[1][self::m:mscarries]) and not(following-sibling::*[self::m:mn] or following-sibling::*[self::m:msrow])"
+      then: [t: ";"]
+    - else: [pause: 200]
+
+# --- per-digit mn in multi-column msrow ---
+
+- name: elem-math-mn-digit
+  tag: mn
+  match: "parent::m:msrow and (ancestor::m:mstack or ancestor::m:mlongdiv) and @data-elem-column and not(@data-elem-whole='true')"
+  variables:
+  - Column: "number(@data-elem-column)"
+  - DecimalPoint: "@data-decimalpoint"
+  - InLongdiv: "ancestor::m:mlongdiv"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: ".=',' and $DecimalPoint!=','"
+      then: [t: "comma"]
+    - else_if: ".='.' and $DecimalPoint!='.'"
+      then: [t: "dot"]
+    - else_if: ".=' '"
+      then: [t: "space"]
+    - else_if: ".!='.' or $DecimalPoint='.'"
+      then: [x: "translate(., $BlockSeparators, '')"]
+  - test:
+    - if: "not($InLongdiv)"
+      then: []
+    - else:
+      - pause: 100
+  - test:
+    - if: "not($InLongdiv)"
+      then: []
+    - else_if: "$Column=-1"
+      then: [t: "decimal point"]
+    - else_if: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace') != ''"
+      then:
+      - t: "in the"
+      - x: "DefinitionValue(string($Column), 'Speech', 'ElemMathPlace')"
+      - t: "column"
+    - else:
+      - t: "in the ten to the"
+      - x: "$Column"
+      - t: "column"

@@ -330,3 +330,8 @@
       "", "ngàn", "triệu", "tỉ", "ngàn tỉ", "quadrillionths",
       "quintillionths", "sextillionths", "septillionths", "octillionths", "nonillionths"
   ]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Gặp phép chia dài nhưng không được hỗ trợ",
+    "ElementaryMathNotSupported": "Gặp toán sơ cấp nhưng không được hỗ trợ",
+  }

@@ -1157,6 +1157,8 @@
   replace:
      - x: "*[1]" #/ FIX: should prioritize @encoding="MathML-Presentation" and @encoding="application/mathml-presentation+xml"
 
+- include: "../shared_rules.yaml"
+
 - name: default-children
   tag: "*"
   match: "*" # make sure there are children

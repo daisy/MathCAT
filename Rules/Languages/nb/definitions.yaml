@@ -462,3 +462,8 @@
          #"oktodesilliondeler","oktodesilliarddeler","novemdesilliondeler","novemdesilliarddeler","vigintilliondeler",
          #"vigintilliarddeler","unvigintilliondeler","unvigintilliarddeler","centilliondeler","centilliarddeler"
     #]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Langdivisjon funnet, men støttes ikke",
+    "ElementaryMathNotSupported": "Grunnleggende matematikk funnet, men støttes ikke",
+  }

@@ -383,3 +383,27 @@
         "", "thousandths", "millionths", "billionths", "trillionths", "quadrillionths",
         "quintillionths", "sextillionths", "septillionths", "octillionths", "nonillionths"
     ]
+
+# Elementary math column names (always plural in speech)
+- ElemMathPlace: {
+    "0": "ones",
+    "1": "tens",
+    "2": "hundreds",
+    "3": "thousands",
+    "4": "ten thousands",
+    "5": "hundred thousands",
+    "6": "millions",
+    "7": "ten millions",
+    "8": "hundred millions",
+    "9": "billions",
+    "-2": "tenths",
+    "-3": "hundredths",
+    "-4": "thousandths",
+    "-5": "ten thousandths",
+    "-6": "hundred thousandths",
+    "-7": "millionths",
+    "-8": "ten millionths",
+    "-9": "hundred millionths",
+    "-10": "billionths",
+    "-11": "ten billionths",
+  }

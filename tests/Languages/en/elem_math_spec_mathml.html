@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Elementary math spec MathML examples</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 56rem; margin: 2rem auto; padding: 0 1rem; }
+    section { margin: 2rem 0; padding-bottom: 1rem; border-bottom: 1px solid #ccc; }
+    h2 { font-size: 1.1rem; font-family: monospace; margin-bottom: 1rem; }
+    math { font-size: 1.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Elementary math spec MathML</h1>
+  <p>From <a href="https://w3c.github.io/mathml-polyfills/elem-math/index.html">W3C MathML polyfill elem-math tests</a>.</p>
+
+  <section id="addition_operator_left">
+    <h2>addition_operator_left</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mn>424</mn><msrow><mo>+</mo><none/><mn>33</mn></msrow><msline/></mstack></math>
+  </section>
+
+  <section id="addition_operator_right">
+    <h2>addition_operator_right</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mn>123</mn><msrow><mn>456</mn><mo>+</mo></msrow><msline/><mn>579</mn></mstack></math>
+  </section>
+
+  <section id="subtraction_borrow_above">
+    <h2>subtraction_borrow_above</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mscarries crossout="updiagonalstrike"><mn>2</mn><mn>12</mn><mscarry crossout="none"><none/></mscarry></mscarries><mn>2,327</mn><msrow><mo>-</mo><mn>1,156</mn></msrow><msline/><mn>1,171</mn></mstack></math>
+  </section>
+
+  <section id="subtraction_borrow_aboveleft">
+    <h2>subtraction_borrow_aboveleft</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mscarries location="nw"><none/><mscarry crossout="updiagonalstrike" location="n"><mn>2</mn></mscarry><mn>1</mn><none/></mscarries><mn>2,327</mn><msrow><mo>-</mo><mn>1,156</mn></msrow><msline/><mn>1,171</mn></mstack></math>
+  </section>
+
+  <section id="subtraction_borrow_swedish">
+    <h2>subtraction_borrow_swedish</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mscarries><mscarry crossout="updiagonalstrike"><none/></mscarry><menclose notation="bottom"><mn>10</mn></menclose></mscarries><mn>52</mn><msrow><mo>-</mo><mn>7</mn></msrow><msline/><mn>45</mn></mstack></math>
+  </section>
+
+  <section id="multiplication_simple">
+    <h2>multiplication_simple</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><msgroup><mn>123</mn><msrow><mo>&#xD7;</mo><mn>321</mn></msrow></msgroup><msline/><msgroup shift="1"><mn>123</mn><mn>246</mn><mn>369</mn></msgroup><msline/></mstack></math>
+  </section>
+
+  <section id="multiplication_carries">
+    <h2>multiplication_carries</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack><mscarries><mn>1</mn><mn>1</mn><none/></mscarries><mscarries><mn>1</mn><mn>1</mn><none/></mscarries><mn>1,234</mn><msrow><mo>&#xD7;</mo><mn>4,321</mn></msrow><msline/><mscarries position="2"><mn>1</mn><none/><mn>1</mn><mn>1</mn><mn>1</mn><none/><mn>1</mn></mscarries><msgroup shift="1"><mn>1,234</mn><mn>24,68</mn><mn>370,2</mn><msrow position="1"><mn>4,936</mn></msrow></msgroup><msline/><mn>5,332,114</mn></mstack></math>
+  </section>
+
+  <section id="repeating_decimal_line_over_3">
+    <h2>repeating_decimal_line_over_3</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack stackalign="right"><msline length="1"/><mn>0.3333</mn></mstack></math>
+  </section>
+
+  <section id="repeating_decimal_line_over_fraction">
+    <h2>repeating_decimal_line_over_fraction</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack stackalign="right"><msline length="6"/><mn>0.142857</mn></mstack></math>
+  </section>
+
+  <section id="repeating_decimal_line_under_fraction">
+    <h2>repeating_decimal_line_under_fraction</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack stackalign="right"><mn>0.142857</mn><msline length="6"/></mstack></math>
+  </section>
+
+  <section id="repeating_decimal_dots_over_fraction">
+    <h2>repeating_decimal_dots_over_fraction</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstack stackalign="right"><msrow><mo>.</mo><none/><none/><none/><none/><mo>.</mo></msrow><mn>0.142857</mn></mstack></math>
+  </section>
+
+  <section id="longdiv_lefttop">
+    <h2>longdiv_lefttop</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mlongdiv longdivstyle="lefttop"><mn>3</mn><mn>435.3</mn><mn>1306</mn><msgroup position="2" shift="-1"><msgroup><mn>12</mn><msline length="2"/></msgroup><msgroup><mn>10</mn><mn>9</mn><msline length="2"/></msgroup><msgroup><mn>16</mn><mn>15</mn><msline length="2"/><mn>1.0</mn></msgroup><msgroup position="-1"><mn>9</mn><msline length="3"/><mn>1</mn></msgroup></msgroup></mlongdiv></math>
+  </section>
+
+  <section id="longdiv_stackedrightright">
+    <h2>longdiv_stackedrightright</h2>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mstyle decimalpoint=","><mlongdiv longdivstyle="stackedrightright"><mn>3</mn><mn>435,3</mn><mn>1306</mn><msgroup position="2" shift="-1"><msgroup><mn>12</mn><msline length="2"/></msgroup><msgroup><mn>10</mn><mn>9</mn><msline length="2"/></msgroup><msgroup><mn>16</mn><mn>15</mn><msline length="2"/><mn>1,0</mn></msgroup><msgroup position="-1"><mn>9</mn><msline length="3"/><mn>1</mn></msgroup></msgroup></mlongdiv></mstyle></math>
+  </section>
+
+</body>
+</html>

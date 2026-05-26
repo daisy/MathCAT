@@ -2594,7 +2594,12 @@ impl BrailleChars {
         // 5: no relational operator may appear within the list
         // 6: the list must have at least 2 items.
         //       Items are separated by commas, can not have other punctuation (except ellipsis and dash)
-        let mut parent = get_parent(node); // safe since 'math' is always at root
+
+        // BrailleChars() on a string creates a temporary leaf not in the tree (e.g., BrailleMessages text)
+        if node.parent().is_none() {
+            return false;
+        }
+        let mut parent = get_parent(node);
         while name(parent) == "mrow" {
             if IsBracketed::is_bracketed(parent, "", "", true, false) {
                 for child in parent.children() {

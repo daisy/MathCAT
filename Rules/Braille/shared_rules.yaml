@@ -1,0 +1,20 @@
+---
+# Rules shared across braille codes (included from each {Code}_Rules.yaml)
+
+- name: elem-math-mlongdiv-unsupported
+  tag: mlongdiv
+  match: "."
+  replace:
+  - test:
+    - if: "$BrailleCode = 'LaTeX' or $BrailleCode = 'ASCIIMath'"
+      then: [x: "DefinitionValue('LongDivisionNotSupported', 'Speech', 'BrailleMessages')"]
+    - else: [x: "BrailleChars(DefinitionValue('LongDivisionNotSupported', 'Speech', 'BrailleMessages'), $BrailleCode)"]
+
+- name: elem-math-mstack-unsupported
+  tag: mstack
+  match: "."
+  replace:
+  - test:
+    - if: "$BrailleCode = 'LaTeX' or $BrailleCode = 'ASCIIMath'"
+      then: [x: "DefinitionValue('ElementaryMathNotSupported', 'Speech', 'BrailleMessages')"]
+    - else: [x: "BrailleChars(DefinitionValue('ElementaryMathNotSupported', 'Speech', 'BrailleMessages'), $BrailleCode)"]

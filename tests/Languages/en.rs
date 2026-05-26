@@ -26,6 +26,7 @@ mod SimpleSpeak {
     mod subscripts;
 }
 mod shared;
+mod elem_math;
 mod units;
 mod chemistry;
 mod alphabets;

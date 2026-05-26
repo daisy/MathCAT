@@ -345,3 +345,8 @@
         "", "ribu", "juta", "miliar", "triliun", "kuadriliun",
         "kuintiliun", "sekstiliun", "septiliun", "oktiliun", "noniliun"
     ]
+
+- BrailleMessages: {
+    "LongDivisionNotSupported": "Pembagian panjang ditemukan tetapi tidak didukung",
+    "ElementaryMathNotSupported": "Matematika dasar ditemukan tetapi tidak didukung",
+  }

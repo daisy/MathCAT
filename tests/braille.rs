@@ -3,6 +3,7 @@
 mod common;
 
 mod braille {
+    mod elem_math;
     mod Nemeth {
         mod rules;
         mod other;
