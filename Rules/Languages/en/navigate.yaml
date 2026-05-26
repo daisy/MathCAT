@@ -139,12 +139,46 @@
                   else: [t: "subscript"]      # phrase(x with 'pre-subscript' 2)
           - pause: "medium"
 
+- name: into-or-out-of-mstack
+  tag: [mstack, mlongdiv]
+  match: "$Move2D != ''"
+  replace:
+  - x: "$Move2D"
+  - t: "row"
+  - x: "count($Child2D/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+  - pause: medium
+
+- name: into-or-out-of-msrow
+  tag: msrow
+  match:
+  - "$Move2D != '' and (ancestor::m:mstack or ancestor::m:mlongdiv) and"
+  - "$Child2D/parent::*[1]/@id = @id"
+  replace:
+  - with:
+      variables:
+      - DigitCol: "IfThenElse($Child2D[self::m:mn] and string-length($Child2D) > 1, string-length($Child2D) - IfThenElse($NavNodeOffset >= 1, $NavNodeOffset, 1), IfThenElse($Child2D[self::m:mn and @data-elem-column], number($Child2D/@data-elem-column), -999))"
+      replace:
+      - test:
+          if: "$DigitCol >= 0 and DefinitionValue(string($DigitCol), 'Speech', 'ElemMathPlace') != ''"
+          then:
+          - x: "$Move2D"
+          - t: "the"
+          - x: "DefinitionValue(string($DigitCol), 'Speech', 'ElemMathPlace')"
+          - t: "column"
+          else:
+          - x: "$Move2D"
+          - t: "column"
+          - x: "count($Child2D/preceding-sibling::*)+1"
+      - pause: medium
+
 # Rules for speaking what happens when moving into or out of a notation
 - name: into-or-out-of-default
   tag: "*"
   # saying "out of row n" is not very useful, so skip it
   # match: "$Move2D != '' and @data-from-mathml and @data-from-mathml != name(.) and count(*)>1 and @data-from-mathml != 'mtable'"
-  match: "$Move2D != '' and not(self::m:math or @data-from-mathml = 'mtable' or  @data-from-mathml = 'mtd') "
+  match:
+  - "$Move2D != '' and not(self::m:math or @data-from-mathml = 'mtable' or @data-from-mathml = 'mtd' or"
+  - "self::m:mstack or self::m:mlongdiv or self::m:msrow)"
   replace:
   - with:
       variables:
@@ -235,6 +269,55 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - set_variables: [NavNode: "IfThenElse(count(*)=1, (*[1]/*[1]/@id), (*[1]/@id))"]
+
+# special case of zooming into elementary math -- announce row/column, then move to the first stack cell
+- name: zoom-in-mstack
+  tag: "*"
+  match: "$NavCommand = 'ZoomIn' and (name(.) = 'mstack' or name(.) = 'mlongdiv' or (count(*)=1 and *[1][@data-from-mathml='mstack']) or (count(*)=1 and *[1][@data-from-mathml='mlongdiv']))"
+  replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+      replace: [x: "."]
+  - with:
+      variables:
+      - FirstRow: "*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      - FirstCell: "IfThenElse($FirstRow[self::m:mn], ($FirstRow), IfThenElse($FirstRow/m:mn[1], ($FirstRow/m:mn[1]), ($FirstRow/*[self::m:mn or self::m:mo or self::m:none][1])))"
+      - Move2D: "'in'"
+      - Child2D: "$FirstRow"
+      replace: [x: "."]
+  - test:
+      if: "not(*[self::m:msrow or self::m:mscarries or self::m:mn][1][self::m:mn])"
+      then:
+      - with:
+          variables:
+          - FirstCell: "IfThenElse(*[self::m:msrow or self::m:mscarries or self::m:mn][1]/m:mn[1], (*[self::m:msrow or self::m:mscarries or self::m:mn][1]/m:mn[1]), (*[self::m:msrow or self::m:mscarries or self::m:mn][1]/*[self::m:mn or self::m:mo or self::m:none][1]))"
+          - DigitCol: "IfThenElse(string-length($FirstCell) > 1, string-length($FirstCell) - 1, IfThenElse($FirstCell/@data-elem-column, number($FirstCell/@data-elem-column), -999))"
+          replace:
+          - test:
+              if: "$DigitCol >= 0 and DefinitionValue(string($DigitCol), 'Speech', 'ElemMathPlace') != ''"
+              then:
+              - t: "in the"
+              - x: "DefinitionValue(string($DigitCol), 'Speech', 'ElemMathPlace')"
+              - t: "column"
+              - pause: short
+  - set_variables:
+    - NavNode: "IfThenElse(*[self::m:mn or self::m:msrow or self::m:mscarries][1][self::m:mn], (*[self::m:mn or self::m:msrow or self::m:mscarries][1]/@id), (*[self::m:mn or self::m:msrow or self::m:mscarries][1]/*[self::m:mn or self::m:mo or self::m:none or self::m:mscarry or self::m:menclose][1]/@id))"
+
+# zoom into the first place-value cell of an elementary math row
+- name: zoom-in-msrow
+  tag: msrow
+  match: "$NavCommand = 'ZoomIn' and (ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+      replace: [x: "."]
+  - with:
+      variables:
+      - FirstCell: "IfThenElse(*[self::m:mn][1], (*[self::m:mn][1]), (*[self::m:mo or self::m:none][1]))"
+      - Move2D: "'in'"
+      - Child2D: "$FirstCell"
+      replace: [x: "."]
+  - set_variables: [NavNode: "IfThenElse(*[self::m:mn][1], (*[self::m:mn][1]/@id), (*[self::m:mo or self::m:none][1]/@id))"]
 
 - name: zoom-in-mrow-in-math
   # zooming in only once is meaningless because 'math' has only a single child and it was spoken at the math level -- dig inside and do it again 
@@ -823,7 +906,7 @@
       variables: [MTD: "ancestor::m:mtd"]
       replace:
       - test:
-          if: "$MTD"
+        - if: "$MTD"
           then:
           - test:
               if: "$NavVerbosity = 'Verbose'"
@@ -840,7 +923,32 @@
               - x: "count($MTD[1]/preceding-sibling::*)+1"
               - pause: short
           - set_variables: [NavNode: "$MTD[1]/*[1]/@id"]
-          else:
+        - else_if: "ancestor::m:mstack or ancestor::m:mlongdiv"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "read current entry"                         # phrase('read current entry' in elem math stack)
+              - pause: medium
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"                                        # phrase(the 'row' in the stack)
+              - x: "count(../preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: short
+              - test:
+                - if: "parent::m:mscarries and @data-elem-carry-column"
+                  then:
+                  - t: "column"                                 # phrase(the 'column' in the stack)
+                  - x: "@data-elem-carry-column"
+                  - pause: short
+                - else_if: "parent::m:msrow"
+                  then:
+                  - t: "column"                                 # phrase(the 'column' in the stack)
+                  - x: "count(preceding-sibling::*)+1"
+                  - pause: short
+          - set_variables: [NavNode: "./@id", NavNodeOffset: "0"]
+        - else:
           - t: "not in table"                                   # phrase('not in table' or matrix)
           - pause: long
           - set_variables: [SpeakExpression: "'false'"]
@@ -863,207 +971,479 @@
 
 
 
-# # Rules for columnar math (mstack and mlongdiv) -- each row is an msrow or mscarries except for the start of mlongdiv
-# # FIX:  not dealing with different number of digits on different lines
-# # FIX:  not dealing with + (etc) on same line if they are on the right side (Dutch, others)
-# # FIX:  not dealing with intervening msline (say it and move on??)
-# # FIX:  not dealing with carries well
-# # FIX:  not dealing with navigation of first three children of mlongdiv
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         ($NavCommand="MovePrevious" || $NavCommand='MoveCellPrevious') && has_previous(match) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "previous";
-#       ::StartPosition = previous(match).dfs;
-#       ::EndPosition = previous(match).offset;
-#   };
+# Rules for columnar math (mstack and mlongdiv) -- converted from MathPlayer TDL
+# Deferred: uneven digit counts, operators on right, msline rows, mlongdiv prefix children, MoveColumnStart/End
 
-# # no previous child -- in first column -- don't move
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         ($NavCommand="MovePrevious" || $NavCommand='MoveCellPrevious' ) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "previous";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+# Coalesced multi-digit mn in msrow: horizontal cell moves use NavNodeOffset (canonicalize merges <mn>1</mn><mn>2</mn><mn>8</mn> into one mn)
+- name: elem-math-msrow-whole-mn-cell-next
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellNext' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv) and"
+  - "@data-elem-whole='true' and string-length(.) > 1 and"
+  - "$NavNodeOffset < string-length(.)"
+  replace:
+  - with:
+      variables: [Col: "string-length(.) - ($NavNodeOffset + 1)"]
+      replace:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move right"
+          - pause: short
+      - x: "substring(., $NavNodeOffset + 1, 1)"
+      - test:
+          if: "DefinitionValue(string($Col), 'Speech', 'ElemMathPlace') != ''"
+          then:
+          - t: "in the"
+          - x: "DefinitionValue(string($Col), 'Speech', 'ElemMathPlace')"
+          - t: "column"
+          - pause: medium
+      - set_variables: [NavNode: "./@id", NavNodeOffset: "$NavNodeOffset + 1", SpeakExpression: "'false'"]
 
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         ($NavCommand="MoveNext" || $NavCommand='MoveCellNext') && has_next(match) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "next";
-#       ::StartPosition = next(match).dfs;
-#       ::EndPosition = next(match).offset;
-#   };
+- name: elem-math-msrow-whole-mn-cell-previous
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellPrevious' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv) and"
+  - "@data-elem-whole='true' and string-length(.) > 1 and"
+  - "$NavNodeOffset > 1"
+  replace:
+  - with:
+      variables: [Col: "string-length(.) - ($NavNodeOffset - 1)"]
+      replace:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move left"
+          - pause: short
+      - x: "substring(., $NavNodeOffset - 1, 1)"
+      - test:
+          if: "DefinitionValue(string($Col), 'Speech', 'ElemMathPlace') != ''"
+          then:
+          - t: "in the"
+          - x: "DefinitionValue(string($Col), 'Speech', 'ElemMathPlace')"
+          - t: "column"
+          - pause: medium
+      - set_variables: [NavNode: "./@id", NavNodeOffset: "$NavNodeOffset - 1", SpeakExpression: "'false'"]
 
-# # no next child -- in first column -- don't move
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         ($NavCommand="MoveNext" || $NavCommand='MoveCellNext' ) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "next";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+- name: elem-math-msrow-cell-previous
+  tag: [mn, mo, none]
+  match:
+  - "$NavCommand='MoveCellPrevious' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - test:
+      if: "preceding-sibling::*"
+      then:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move left"                        # phrase('move left')
+          - pause: short
+      - test:
+          if: "preceding-sibling::*[1][self::m:none]"
+          then:
+          - set_variables: [NavNode: "preceding-sibling::*[1]/@id", NavNodeOffset: "0", SpeakExpression: "'false'"]
+          else:
+          - set_variables: [NavNode: "preceding-sibling::*[1]/@id", NavNodeOffset: "0"]
+      else:
+      - t: "no previous column"                 # phrase('no previous column' in the stack)
+      - set_variables: [SpeakExpression: "'false'"]
 
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         $NavCommand='MoveCellUp' && has_previous(^^match) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "up";
-#       ::StartPosition = ^^^match[index(^^match)-1][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[index(^^match)-1][-1][index(match)-count(^match)].offset;
-#   };
+- name: elem-math-msrow-cell-next
+  tag: [mn, mo, none]
+  match:
+  - "$NavCommand='MoveCellNext' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - test:
+      if: "following-sibling::*"
+      then:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move right"                     # phrase('move right')
+          - pause: short
+      - test:
+          if: "following-sibling::*[1][self::m:none]"
+          then:
+          - set_variables: [NavNode: "following-sibling::*[1]/@id", NavNodeOffset: "0", SpeakExpression: "'false'"]
+          else:
+          - set_variables: [NavNode: "following-sibling::*[1]/@id", NavNodeOffset: "0"]
+      else:
+      - t: "no next column"                  # phrase('no next column' in the stack)
+      - set_variables: [SpeakExpression: "'false'"]
 
-# # no previous child -- in first column -- don't move
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         $NavCommand='MoveCellUp' )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "up";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+- name: elem-math-msrow-cell-up
+  tag: [mn, mo, none]
+  match:
+  - "$NavCommand='MoveCellUp' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - with:
+      variables:
+      - DigitCol: "IfThenElse(self::m:mn and @data-elem-whole='true' and $NavNodeOffset >= 1, string-length(.) - $NavNodeOffset, IfThenElse(self::m:mn and @data-elem-column, number(@data-elem-column), -999))"
+      - RowCol: "count(preceding-sibling::*)+1"
+      - PrevRow: "../preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$PrevRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move up"                             # phrase('move up' to previous row in the stack)
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"                                 # phrase(the previous 'row' in the stack)
+              - x: "count($PrevRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: medium
+          - test:
+            - if: "$PrevRow[self::m:mscarries] and @data-elem-carry-column and $PrevRow/*[@data-elem-carry-column=number(@data-elem-carry-column)]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[@data-elem-carry-column=number(@data-elem-carry-column)]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:mscarries]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[1]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:msrow] and $DigitCol >= 0 and $PrevRow/m:mn[@data-elem-column=$DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$PrevRow/m:mn[@data-elem-column=$DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse(string-length($Target) > 1, string-length($Target) - $DigitCol, '0')"]
+            - else_if: "$PrevRow[self::m:msrow] and $DigitCol >= 0 and $PrevRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$PrevRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "string-length($Target) - $DigitCol"]
+            - else_if: "$PrevRow[self::m:msrow] and $DigitCol < 0 and $PrevRow/*[self::m:mn or self::m:mo or self::m:none][$RowCol]"
+              then:
+              - with:
+                  variables: [Target: "$PrevRow/*[self::m:mn or self::m:mo or self::m:none][$RowCol]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse($Target[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+            - else_if: "$PrevRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:mn] and $DigitCol >= 0 and string-length(.) > $DigitCol"
+              then:
+              - set_variables: [NavNode: "$PrevRow/@id", NavNodeOffset: "string-length($PrevRow) - $DigitCol"]
+            - else:
+              - set_variables: [NavNode: "$PrevRow/@id", NavNodeOffset: "IfThenElse($PrevRow[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+          else:
+          - t: "no previous row"                            # phrase('no previous row' in the stack)
+          - set_variables: [SpeakExpression: "'false'"]
 
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         $NavCommand='MoveCellDown' && has_next(^^match) )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "down";
-#       ::StartPosition = ^^^match[index(^^match)+1][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[index(^^match)+1][-1][index(match)-count(^match)].offset;
-#   };
+- name: elem-math-msrow-cell-down
+  tag: [mn, mo, none]
+  match:
+  - "$NavCommand='MoveCellDown' and parent::m:msrow and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - with:
+      variables:
+      - DigitCol: "IfThenElse(self::m:mn and @data-elem-whole='true' and $NavNodeOffset >= 1, string-length(.) - $NavNodeOffset, IfThenElse(self::m:mn and @data-elem-column, number(@data-elem-column), -999))"
+      - RowCol: "count(preceding-sibling::*)+1"
+      - NextRow: "../following-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$NextRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move down"                          # phrase('move down' to the next row in the stack)
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"                                # phrase(the next 'row' in the stack)
+              - x: "count($NextRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: medium
+          - test:
+            - if: "$NextRow[self::m:mscarries] and @data-elem-carry-column and $NextRow/*[@data-elem-carry-column=number(@data-elem-carry-column)]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[@data-elem-carry-column=number(@data-elem-carry-column)]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:mscarries]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[1]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:msrow] and $DigitCol >= 0 and $NextRow/m:mn[@data-elem-column=$DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$NextRow/m:mn[@data-elem-column=$DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse(string-length($Target) > 1, string-length($Target) - $DigitCol, '0')"]
+            - else_if: "$NextRow[self::m:msrow] and $DigitCol >= 0 and $NextRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$NextRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "string-length($Target) - $DigitCol"]
+            - else_if: "$NextRow[self::m:msrow] and $DigitCol < 0 and $NextRow/*[self::m:mn or self::m:mo or self::m:none][$RowCol]"
+              then:
+              - with:
+                  variables: [Target: "$NextRow/*[self::m:mn or self::m:mo or self::m:none][$RowCol]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse($Target[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+            - else_if: "$NextRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:mn] and $DigitCol >= 0 and string-length($NextRow) > $DigitCol"
+              then:
+              - set_variables: [NavNode: "$NextRow/@id", NavNodeOffset: "string-length($NextRow) - $DigitCol"]
+            - else:
+              - set_variables: [NavNode: "$NextRow/@id", NavNodeOffset: "IfThenElse($NextRow[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+          else:
+          - t: "no next row"                                # phrase('no next row' in the stack)
+          - set_variables: [SpeakExpression: "'false'"]
 
-# # no previous child -- in first column -- don't move
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#         $NavCommand='MoveCellDown' )
-# => MoveCell {
-#       ruleRef = name(^^match);
-#       wordRef = "down";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+- name: elem-math-stack-mn-cell-up
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellUp' and (parent::m:mstack or parent::m:mlongdiv) and"
+  - "not(parent::m:msrow) and not(parent::m:mscarries)"
+  replace:
+  - with:
+      variables:
+      - DigitCol: "IfThenElse(@data-elem-whole='true' and $NavNodeOffset >= 1, string-length(.) - $NavNodeOffset, IfThenElse(@data-elem-column, number(@data-elem-column), -999))"
+      - PrevRow: "../preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$PrevRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move up"
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"
+              - x: "count($PrevRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: medium
+          - test:
+            - if: "$PrevRow[self::m:mscarries]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[1]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:msrow] and $DigitCol >= 0 and $PrevRow/m:mn[@data-elem-column=$DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$PrevRow/m:mn[@data-elem-column=$DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse(string-length($Target) > 1, string-length($Target) - $DigitCol, '0')"]
+            - else_if: "$PrevRow[self::m:msrow] and $DigitCol >= 0 and $PrevRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$PrevRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "string-length($Target) - $DigitCol"]
+            - else_if: "$PrevRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:mn] and $DigitCol >= 0 and string-length($PrevRow) > $DigitCol"
+              then:
+              - set_variables: [NavNode: "$PrevRow/@id", NavNodeOffset: "string-length($PrevRow) - $DigitCol"]
+            - else:
+              - set_variables: [NavNode: "$PrevRow/@id", NavNodeOffset: "IfThenElse($PrevRow[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+          else:
+          - t: "no previous row"
+          - set_variables: [SpeakExpression: "'false'"]
 
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#           $NavCommand='MoveColumnStart' )
-# => MoveColStart {
-#       ruleRef = name(^^match);
-#       column = index(match);
-#       ::StartPosition = ^^^match[0][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[0][-1][index(match)-count(^match)].offset;
-#   };
+- name: elem-math-stack-mn-cell-down
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellDown' and (parent::m:mstack or parent::m:mlongdiv) and"
+  - "not(parent::m:msrow) and not(parent::m:mscarries)"
+  replace:
+  - with:
+      variables:
+      - DigitCol: "IfThenElse(@data-elem-whole='true' and $NavNodeOffset >= 1, string-length(.) - $NavNodeOffset, IfThenElse(@data-elem-column, number(@data-elem-column), -999))"
+      - NextRow: "../following-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$NextRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move down"
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"
+              - x: "count($NextRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: medium
+          - test:
+            - if: "$NextRow[self::m:mscarries]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[1]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:msrow] and $DigitCol >= 0 and $NextRow/m:mn[@data-elem-column=$DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$NextRow/m:mn[@data-elem-column=$DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "IfThenElse(string-length($Target) > 1, string-length($Target) - $DigitCol, '0')"]
+            - else_if: "$NextRow[self::m:msrow] and $DigitCol >= 0 and $NextRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol]"
+              then:
+              - with:
+                  variables: [Target: "$NextRow/m:mn[@data-elem-whole='true' and string-length(.) > $DigitCol][1]"]
+                  replace:
+                  - set_variables: [NavNode: "$Target/@id", NavNodeOffset: "string-length($Target) - $DigitCol"]
+            - else_if: "$NextRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:mn] and $DigitCol >= 0 and string-length($NextRow) > $DigitCol"
+              then:
+              - set_variables: [NavNode: "$NextRow/@id", NavNodeOffset: "string-length($NextRow) - $DigitCol"]
+            - else:
+              - set_variables: [NavNode: "$NextRow/@id", NavNodeOffset: "IfThenElse($NextRow[self::m:mn and @data-elem-whole='true' and string-length(.) > 1], '1', '0')"]
+          else:
+          - t: "no next row"
+          - set_variables: [SpeakExpression: "'false'"]
 
-# char ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#           $NavCommand='MoveColumnEnd' )
-# => MoveColEnd {
-#       ruleRef = name(^^match);
-#       column = index(match);
-#       ::StartPosition = ^^^match[count(^^^match)-1][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[count(^^^match)-1][-1][index(match)-count(^match)].offset;
-#   };
+- name: elem-math-stack-mn-cell-previous
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellPrevious' and (parent::m:mstack or parent::m:mlongdiv) and"
+  - "not(parent::m:msrow) and not(parent::m:mscarries)"
+  replace:
+  - t: "no previous column"
+  - set_variables: [SpeakExpression: "'false'"]
 
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         ($NavCommand="MovePrevious" || $NavCommand='MoveCellPrevious') && has_previous(match) )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "previous";
-#       ::StartPosition = previous(match).dfs;
-#       ::EndPosition = previous(match).offset;
-#   };
+- name: elem-math-stack-mn-cell-next
+  tag: mn
+  match:
+  - "$NavCommand='MoveCellNext' and (parent::m:mstack or parent::m:mlongdiv) and"
+  - "not(parent::m:msrow) and not(parent::m:mscarries)"
+  replace:
+  - t: "no next column"
+  - set_variables: [SpeakExpression: "'false'"]
 
-# # no previous child -- in first column -- don't move
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         ($NavCommand="MovePrevious" || $NavCommand='MoveCellPrevious') )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "previous";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+- name: elem-math-mscarries-cell-previous
+  tag: [mn, none, mscarry, menclose]
+  match:
+  - "$NavCommand='MoveCellPrevious' and parent::m:mscarries and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - test:
+      if: "preceding-sibling::*"
+      then:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move left"
+          - pause: short
+      - set_variables: [NavNode: "preceding-sibling::*[1]/@id", NavNodeOffset: "0"]
+      else:
+      - t: "no previous column"
+      - set_variables: [SpeakExpression: "'false'"]
 
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         ($NavCommand="MoveNext" || $NavCommand='MoveCellNext') && has_next(match) )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "next";
-#       ::StartPosition = next(match).dfs;
-#       ::EndPosition = next(match).offset;
-#   };
+- name: elem-math-mscarries-cell-next
+  tag: [mn, none, mscarry, menclose]
+  match:
+  - "$NavCommand='MoveCellNext' and parent::m:mscarries and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - test:
+      if: "following-sibling::*"
+      then:
+      - test:
+          if: "$NavVerbosity = 'Verbose'"
+          then:
+          - t: "move right"
+          - pause: short
+      - set_variables: [NavNode: "following-sibling::*[1]/@id", NavNodeOffset: "0"]
+      else:
+      - t: "no next column"
+      - set_variables: [SpeakExpression: "'false'"]
 
-# # no next child -- in last column -- don't move
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         ($NavCommand="MoveNext" || $NavCommand='MoveCellNext') )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "next";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
+- name: elem-math-mscarries-cell-up
+  tag: [mn, none, mscarry, menclose]
+  match:
+  - "$NavCommand='MoveCellUp' and parent::m:mscarries and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - with:
+      variables:
+      - Col: "number(@data-elem-carry-column)"
+      - PrevRow: "../preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$PrevRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move up"
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"
+              - x: "count($PrevRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: short
+              - t: "column"
+              - x: "$Col"
+              - pause: medium
+          - test:
+            - if: "$PrevRow[self::m:mscarries] and $PrevRow/*[@data-elem-carry-column=$Col]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[@data-elem-carry-column=$Col]/@id", NavNodeOffset: "0"]
+            - else_if: "$PrevRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$PrevRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else:
+              - set_variables: [NavNode: "$PrevRow/@id", NavNodeOffset: "0"]
+          else:
+          - t: "no previous row"
+          - set_variables: [SpeakExpression: "'false'"]
 
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         $NavCommand='MoveCellUp' && has_previous(^match) )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "up";
-#       ::StartPosition = ^^match[index(^match)-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^match[index(^match)-1][index(match)-count(^match)].offset;
-#   };
-
-# # no previous child -- in first row -- don't move
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         $NavCommand='MoveCellUp' )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "up";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
-
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         $NavCommand='MoveCellDown' && has_next(^match) )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "down";
-#       ::StartPosition = ^^match[index(^match)+1][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^match[index(^match)+1][-1][index(match)-count(^match)].offset;
-#   };
-
-# # no next child -- in last row -- don't move
-# any ? ( (name(match)=="mn" || name(match)=="none") &&
-#         has_parent(match) && name(^match)=="mscarries" &&
-#         $NavCommand='MoveCellDown' )
-# => MoveCell {
-#       ruleRef = name(^match);
-#       wordRef = "down";
-#       childIndex = -1;                   # key to know what to say for each notation
-#       ::SpeakAfterMove = false;
-#   };
-
-# mn ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#           $NavCommand='MoveColumnStart' )
-# => MoveColStart {
-#       ruleRef = name(^^match);
-#       column = index(match);
-#       ::StartPosition = ^^^match[0][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[0][-1][index(match)-count(^match)].offset;
-#   };
-
-# mn ? ( has_parent(match, 2) && name(^match)=="mn" && name(^^match)=="msrow" &&
-#           $NavCommand='MoveColumnEnd' )
-# => MoveColEnd {
-#       ruleRef = name(^^match);
-#       column = index(match);
-#       ::StartPosition = ^^^match[count(^^^match)-1][-1][index(match)-count(^match)].dfs;
-#       ::EndPosition = ^^^match[count(^^^match)-1][-1][index(match)-count(^match)].offset;
-#   };
+- name: elem-math-mscarries-cell-down
+  tag: [mn, none, mscarry, menclose]
+  match:
+  - "$NavCommand='MoveCellDown' and parent::m:mscarries and"
+  - "(ancestor::m:mstack or ancestor::m:mlongdiv)"
+  replace:
+  - with:
+      variables:
+      - Col: "number(@data-elem-carry-column)"
+      - NextRow: "../following-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn][1]"
+      replace:
+      - test:
+          if: "$NextRow"
+          then:
+          - test:
+              if: "$NavVerbosity = 'Verbose'"
+              then:
+              - t: "move down"
+              - pause: short
+          - test:
+              if: "$NavVerbosity != 'Terse'"
+              then:
+              - t: "row"
+              - x: "count($NextRow/preceding-sibling::*[self::m:msrow or self::m:mscarries or self::m:mn])+1"
+              - pause: short
+              - t: "column"
+              - x: "$Col"
+              - pause: medium
+          - test:
+            - if: "$NextRow[self::m:mscarries] and $NextRow/*[@data-elem-carry-column=$Col]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[@data-elem-carry-column=$Col]/@id", NavNodeOffset: "0"]
+            - else_if: "$NextRow[self::m:msrow]"
+              then:
+              - set_variables: [NavNode: "$NextRow/*[self::m:mn or self::m:mo or self::m:none][1]/@id", NavNodeOffset: "0"]
+            - else:
+              - set_variables: [NavNode: "$NextRow/@id", NavNodeOffset: "0"]
+          else:
+          - t: "no next row"
+          - set_variables: [SpeakExpression: "'false'"]
 
 
 
@@ -1077,10 +1457,35 @@
   - "$NavCommand='ReadCellCurrent'"
   replace:
   - test:
-      if: "ancestor::m:mtd"
+    - if: "ancestor::m:mtd"
       then:
       - x: "ancestor::m:mtd[1]" # try again on an mtd node
-      else:
+    - else_if: "ancestor::m:mstack or ancestor::m:mlongdiv or self::m:mstack or self::m:mlongdiv"
+      then:
+      - test:
+        - if: "$NavCommand='MoveColumnStart' or $NavCommand='MoveColumnEnd'"
+          then:
+          - t: "not in table"                                           # phrase('not in table' — MoveColumnStart/End not implemented)
+          - pause: long
+          - set_variables: [SpeakExpression: "'false'"]
+        - else_if: "ancestor::m:msrow"
+          then:
+          - x: "ancestor::m:msrow[1]/*[self::m:mn or self::m:mo or self::m:none][1]"
+        - else_if: "ancestor::m:mscarries"
+          then:
+          - x: "ancestor::m:mscarries[1]/*[self::m:mn or self::m:none or self::m:mscarry or self::m:menclose][1]"
+        - else_if: "self::m:msrow"
+          then:
+          - x: "./*[self::m:mn or self::m:mo or self::m:none][1]"
+        - else_if: "self::m:mscarries"
+          then:
+          - x: "./*[1]"
+        - else_if: "(self::m:mn or self::m:mo or self::m:none) and (parent::m:mstack or parent::m:mlongdiv)"
+          then:
+          - x: "."
+        - else:
+          - x: "(ancestor::m:mstack | ancestor::m:mlongdiv | self::m:mstack | self::m:mlongdiv)[1]/*[self::m:mn or self::m:msrow or self::m:mscarries][1]"
+    - else:
       - t: "not in table"                                               # phrase('not in table' or matrix)
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]

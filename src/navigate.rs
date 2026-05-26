@@ -1995,6 +1995,308 @@ mod tests {
             return Ok( () );
         });
     }
+
+    #[test]
+    fn move_cell_elem_math_addition() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mn id='nav-2'>424</mn>
+          <msrow id='nav-3'>
+            <mo id='nav-4'>+</mo>
+            <none id='nav-5'/>
+            <mn id='nav-6'>33</mn>
+          </msrow>
+          <msline id='nav-7'/>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "nav-2");
+            test_command("MoveCellDown", mathml, "nav-4");
+            test_command("MoveCellNext", mathml, "nav-5");
+            test_command("MoveCellNext", mathml, "nav-6");
+            test_command("MoveCellNext", mathml, "nav-6");
+            test_command("MoveCellNext", mathml, "nav-6");
+            assert_eq!("no next column", test_command("MoveCellNext", mathml, "nav-6").trim_end_matches(';'));
+            test_command("MoveCellPrevious", mathml, "nav-6");
+            test_command("MoveCellPrevious", mathml, "nav-5");
+            test_command("MoveCellPrevious", mathml, "nav-4");
+            assert_eq!("no previous column", test_command("MoveCellPrevious", mathml, "nav-4").trim_end_matches(';'));
+            test_command("MoveCellUp", mathml, "nav-2");
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_column() -> Result<()> {
+        let mathml_str = r#"<math display='block' id='M6qsyqqx-0' data-id-added='true'>
+            <mstack id='id-1'>
+                <msrow id='id-2'>
+                <mn data-elem-whole='true' id='id-3'>23</mn>
+                </msrow>
+                <msrow id='id-4'>
+                <mo id='id-5'>+</mo>
+                <mn data-elem-whole='true' id='id-6'>45</mn>
+                </msrow>
+                <msline id='id-7'></msline>
+                <msrow id='id-8'>
+                <mn data-elem-whole='true' id='id-9'>68</mn>
+                </msrow>
+            </mstack>
+            </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "id-3");
+            test_command("MoveCellNext", mathml, "id-3");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "id-3");
+                assert_eq!(offset, 1);
+            });
+            test_command("MoveCellNext", mathml, "id-3");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "id-3");
+                assert_eq!(offset, 2);
+            });
+            test_command("MoveCellDown", mathml, "id-6");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "id-6");
+                assert_eq!(offset, 2);
+            });
+            test_command("MoveCellPrevious", mathml, "id-6");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "id-6");
+                assert_eq!(offset, 1);
+            });
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_carries() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mscarries id='nav-c0' crossout='updiagonalstrike'>
+            <mn id='nav-c1'>2</mn>
+            <mn id='nav-c2'>12</mn>
+            <mscarry id='nav-c3' crossout='none'><none id='nav-c4'/></mscarry>
+          </mscarries>
+          <mn id='nav-2'>2327</mn>
+          <msrow id='nav-3'>
+            <mo id='nav-4'>-</mo>
+            <mn id='nav-5'>1156</mn>
+          </msrow>
+          <msline id='nav-6'/>
+          <mn id='nav-7'>1171</mn>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "nav-c1");
+            test_command("MoveCellNext", mathml, "nav-c2");
+            test_command("MoveCellNext", mathml, "nav-c3");
+            test_command("MoveCellPrevious", mathml, "nav-c2");
+            test_command("MoveCellDown", mathml, "nav-2");
+            test_command("MoveCellDown", mathml, "nav-4");
+            test_command("MoveCellUp", mathml, "nav-2");
+            test_command("MoveCellUp", mathml, "nav-c1");
+            assert_eq!("no previous row", test_command("MoveCellUp", mathml, "nav-c1").trim_end_matches(';'));
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn zoom_in_elem_math_row_column_speech() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <msrow id='nav-r1'><mn data-elem-whole='true' id='nav-2'>23</mn></msrow>
+          <msrow id='nav-r2'><mo id='nav-op'>+</mo><mn data-elem-whole='true' id='nav-3'>45</mn></msrow>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "nav-2");
+            assert!(speech.contains("row 1"), "expected row number when entering mstack, got: {speech}");
+            assert!(speech.contains("tens column"), "expected place-value column when entering msrow, got: {speech}");
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_from_mstack() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mn id='nav-2'>424</mn>
+          <msrow id='nav-3'>
+            <mo id='nav-4'>+</mo>
+            <none id='nav-5'/>
+            <mn id='nav-6'>33</mn>
+          </msrow>
+          <msline id='nav-7'/>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            NAVIGATION_STATE.with(|nav_stack| {
+                nav_stack.borrow_mut().push(NavigationPosition{
+                    current_node: "nav-1".to_string(),
+                    current_node_offset: 0
+                }, "None")
+            });
+            let speech = test_command("MoveCellDown", mathml, "nav-4");
+            assert!(!speech.contains("not in table"));
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_from_msrow() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mn id='nav-2'>424</mn>
+          <msrow id='nav-3'>  <mo id='nav-4'>+</mo> <none id='nav-5'/>  </msrow>
+          <msline id='nav-7'/>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            NAVIGATION_STATE.with(|nav_stack| {
+                nav_stack.borrow_mut().push(NavigationPosition{
+                    current_node: "nav-3".to_string(),
+                    current_node_offset: 0
+                }, "None")
+            });
+            let speech = test_command("MoveCellNext", mathml, "nav-5");
+            assert!(!speech.contains("not in table"));
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_key_press() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mn id='nav-2'>424</mn>
+          <msrow id='nav-3'>
+            <mo id='nav-4'>+</mo>
+            <none id='nav-5'/>
+            <mn id='nav-6'>33</mn>
+          </msrow>
+          <msline id='nav-7'/>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "nav-2");
+            test_command("MoveCellDown", mathml, "nav-4");
+            let speech = do_mathml_navigate_key_press(mathml, VK_RIGHT, false, true, false, false)?;
+            assert!(!speech.contains("not in table"));
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "nav-5");
+            });
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_horizontal_speech() -> Result<()> {
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <mscarries id='nav-c0' crossout='updiagonalstrike'>
+            <mn id='nav-c1'>2</mn>
+            <mn id='nav-c2'>12</mn>
+          </mscarries>
+          <mn id='nav-2'>2327</mn>
+          <msrow id='nav-3'>
+            <mo id='nav-4'>-</mo>
+            <mn id='nav-5'>1156</mn>
+          </msrow>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "nav-c1");
+            let speech = test_command("MoveCellNext", mathml, "nav-c2");
+            assert!(speech.contains("ones column"), "expected place-value column speech, got: {speech}");
+            assert!(!speech.contains("column 2"), "expected no numeric column index, got: {speech}");
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_cell_elem_math_coalesced_msrow_digits() -> Result<()> {
+        // canonicalize merges <mn>1</mn><mn>2</mn><mn>8</mn> into one mn; horizontal moves use NavNodeOffset
+        let mathml_str = r#"<math id='nav-0'>
+        <mstack id='nav-1'>
+          <msrow id='nav-r1'><mn id='nav-a'>8</mn><mn id='nav-b'>3</mn></msrow>
+          <msrow id='nav-r2'><mo id='nav-op'>+</mo><none id='nav-pad'/><mn id='nav-c'>4</mn><mn id='nav-d'>5</mn></msrow>
+          <msline id='nav-line'/>
+          <msrow id='nav-result'><mn id='nav-r'>1</mn><mn id='nav-s'>2</mn><mn id='nav-t'>8</mn></msrow>
+        </mstack>
+        </math>"#;
+        init_default_prefs(mathml_str, "Enhanced");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            NAVIGATION_STATE.with(|nav_stack| {
+                nav_stack.borrow_mut().push(NavigationPosition{
+                    current_node: "nav-r".to_string(),
+                    current_node_offset: 0
+                }, "None")
+            });
+            let speech = test_command("MoveCellNext", mathml, "nav-r");
+            assert!(speech.contains("hundreds column"), "expected hundreds column speech, got: {speech}");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (id, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(id, "nav-r");
+                assert_eq!(offset, 1);
+            });
+            let speech = test_command("MoveCellNext", mathml, "nav-r");
+            assert!(speech.contains("tens column"), "expected tens column speech, got: {speech}");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (_, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(offset, 2);
+            });
+            test_command("MoveCellNext", mathml, "nav-r");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (_, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(offset, 3);
+            });
+            assert_eq!("no next column", test_command("MoveCellNext", mathml, "nav-r").trim_end_matches(';'));
+            test_command("MoveCellPrevious", mathml, "nav-r");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (_, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(offset, 2);
+            });
+            test_command("MoveCellPrevious", mathml, "nav-r");
+            NAVIGATION_STATE.with(|nav_stack| {
+                let (_, offset) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                assert_eq!(offset, 1);
+            });
+            assert_eq!("no previous column", test_command("MoveCellPrevious", mathml, "nav-r").trim_end_matches(';'));
+            return Ok(());
+        });
+    }
     
     #[test]
     fn placemarker() -> Result<()> {
