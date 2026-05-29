@@ -141,12 +141,12 @@
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #NORWEGIAN: Changed decimal point to $DecimalSeparators
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #SWEDISH: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #SWEDISH: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
   variables:
-  - IsPlural: "DEBUG(not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064']))"     # '\u2064' is invisible plus and is used in mixed fractions
+  - IsPlural: "*[1]!=1"                                                                                                  # "DEBUG(not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064']))"     '\u2064' is invisible plus and is used in mixed fractions
     # set right level for the location of the common fraction/mixed fraction
-  - IsMixedFraction: "preceding-sibling::*[1][.='\u2064']"
+  - IsMixedFraction: "preceding-sibling::*[1][self::m:mo][.='\u2064']"
   - UnitSibling: "IfThenElse($IsMixedFraction, .., .)"
     # set the potential unit node -- otherwise set it to a empty node set (use a made up name)
   - UnitNodeLocation: "IfThenElse($UnitSibling/..[self::m:mrow and count(*)=3 and *[2][.='\u2062']],
