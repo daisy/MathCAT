@@ -24,8 +24,8 @@ mod braille {
         mod vi;
     }
 
-    mod Swedish {
-        mod swedish;
+    mod Russian {
+        mod russian;
     }
 
     mod LaTeX {

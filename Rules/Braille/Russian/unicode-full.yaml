@@ -1,0 +1,301 @@
+---
+ - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
+ - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
+ - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)
+ - "ⅆ": [tc: "⠙"]                # 0x2146
+ - "ⅇ": [tc: "⠑"]                # 0x2147
+ - "ⅈ": [tc: "⠊"]                # 0x2148
+ - "⨯": [tc: "⠐⠦"]               # U+2A2F(VECTOR OR CROSS PRODUCT) -- make the same as 0x00D7 (Multiplication sign)
+
+ 
+ - "¼": [tc: "#N⠁N⠌N⠙"]          # 0x00BC (Vulgar Fraction One Quarter)
+ - "½": [tc: "#N⠁N⠌N⠃"]          # 0x00BD (Vulgar Fraction One Half)
+ - "¾": [tc: "#N⠉N⠌N⠙"]          # 0x00BE (Vulgar Fraction Three Quarters)
+ - "⅐": [tc: "#N⠁N⠌N⠛"]          # 0x2150 (Vulgar Fraction One Seventh)
+ - "⅑": [tc: "#N⠁N⠌N⠊"]          # 0x2151 (Vulgar Fraction One Ninth)
+ - "⅒": [tc: "#N⠁N⠌N⠁N⠚"]        # 0x2152 (Vulgar Fraction One Tenth)
+ - "⅓": [tc: "#N⠁N⠌N⠉"]          # 0x2153 (Vulgar Fraction One Third)
+ - "⅔": [tc: "#N⠃N⠌N⠉"]          # 0x2154 (Vulgar Fraction Two Thirds)
+ - "⅕": [tc: "#N⠁N⠌N⠑"]          # 0x2155 (Vulgar Fraction One Fifth)
+ - "⅖": [tc: "#N⠃N⠌N⠑"]          # 0x2156 (Vulgar Fraction Two Fifths)
+ - "⅗": [tc: "#N⠉N⠌N⠑"]          # 0x2157 (Vulgar Fraction Three Fifths)
+ - "⅘": [tc: "#N⠙N⠌N⠑"]          # 0x2158 (Vulgar Fraction Four Fifths)
+ - "⅙": [tc: "#N⠁N⠌N⠋"]          # 0x2159 (Vulgar Fraction One Sixth)
+ - "⅚": [tc: "#N⠑N⠌N⠋"]          # 0x215A (Vulgar Fraction Five Sixths)
+ - "⅛": [tc: "#N⠁N⠌N⠓"]          # 0x215B (Vulgar Fraction One Eighth)
+ - "⅜": [tc: "#N⠉N⠌N⠓"]          # 0x215C (Vulgar Fraction Three Eighths)
+ - "⅝": [tc: "#N⠑N⠌N⠓"]          # 0x215D (Vulgar Fraction Five Eighths)
+ - "⅞": [tc: "#N⠛N⠌N⠓"]          # 0x215E (Vulgar Fraction Seven Eighths)
+ - "↉": [tc: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
+
+
+
+ - "ℊ": [tc: "TL⠛⠁"]             # 0x210a (Script Small G)
+ - "ℋ": [tc: "TCL⠓⠁"]            # 0x210b (Script Capital H)
+ - "ℒ": [tc: "TCL⠇"]             # 0x2113 (Script Capital L)
+ - "ℓ": [tc: "TL⠇"]              # 0x2113 (Script Small L)
+ - "℘": [tc: "TCL⠏"]             # 0x2118 (Script Capital P)
+ - "ℛ": [tc: "TCL⠗"]             # 0x211B (Script Capital R)
+ - "ℯ": [tc: "TL⠑"]              # 0x212F (Script Small E)
+ - "ℰ": [tc: "TCL⠑"]             # 0x2130 (Script Capital E)
+ - "ℱ": [tc: "TCL⠋"]             # 0x2131 (Script Capital F)
+ - "ℳ": [tc: "TCL⠍"]             # 0x2133 (Script Capital M)
+ - "ℴ": [tc: "TL⠕"]              # 0x21334 (Script Small O)
+ - "ℌ": [tc: "DCL⠓"]             # 0x210C (Fraktur Capital H)
+ - "ℑ": [tc: "DCL⠊"]             # 0x2111 (Fraktur Capital I)
+ - "ℜ": [tc: "DCL⠗"]             # 0x211C (Fraktur Capital R)
+ - "ℨ": [tc: "DCL⠵"]             # 0x2128 (Fraktur Capital Z)
+ - "ℭ": [tc: "DCL⠉"]             # 0x22DC (Fraktur Capital C)
+
+ - "ℂ": [tc: "𝔹CL⠉"]             # 0x2102 
+ - "ℍ": [tc: "𝔹CL⠓"]             # 0x210d 
+ - "ℕ": [tc: "𝔹CL⠝"]             # 0x2115 
+ - "ℙ": [tc: "𝔹CL⠏"]             # 0x2119 
+ - "ℚ": [tc: "𝔹CL⠟"]             # 0x211a 
+ - "ℝ": [tc: "𝔹CL⠗"]             # 0x211d 
+ - "ℤ": [tc: "𝔹CL⠵"]             # 0x2124 
+
+
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - tc: "B"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - tc: "BGL"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+
+ - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - tc: "DC"
+    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝔞-𝔷":    # 0x1d51e - 0x1d537
+    - tc: "D"
+    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    
+ - "𝕬-𝖅":    # 0x1D56C - 0x1D585
+    - tc: "BDC"
+    - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
+    - tc: "D"
+    - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
+
+ # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
+ # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
+ - "𝔸-𝕐":    # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - tc: "DC"
+    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
+    - tc: "D"
+    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
+    - tc: "D"
+    - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
+
+ # script chars in math alphabetic block and also MathType private use area
+ - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
+    - tc: "TsC"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyza')"
+
+ - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
+    - tc: "Ts"
+    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+
+ # bold script chars in math alphabetic block
+ - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
+    - tc: "BTs"
+    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
+    - tc: "BTs"
+    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝐀-𝐙":    # 0x1d400 - 0x1d419
+    - tc: "B"
+    - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝐚-𝐳":    # 0x1d41a - 0x1d433
+    - tc: "B"
+    - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
+    # don't include italics
+    - tc: "C"
+    - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝑎-𝑧":    # 0x1d44e - 0x1d467
+    # don't include italics
+    - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝑨-𝒁":    # 0x1d468 - 0x1d481 
+    - tc: "BIC"
+    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
+    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
+    - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝖺-𝗓":    # 0x1d5ba - 0x1d5d3
+    - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝘈-𝘡":    # 0x1d608 - 0x1d621
+    # - tc: "italic"
+    - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
+      # - tc: "italic"
+    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝘼-𝙕":    # 0x1d63c - 0x1d655
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝙰-𝚉":    # 0x1d670 - 0x1d689
+    - tc: "C"
+    - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝚊-𝚣":    # 0x1d68a - 0x1d6a3
+      - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝚤𝚥":    # 0x1d6a4, 0x1d6a5
+      - spell: "translate('.', '𝚤𝚥', 'ij')"  # not sure what else these should be
+
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝛁":                          # 0x1d6c1
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":    # 0x1D6DB - 0x1D6E1
+    - test:
+        if: "not($IgnoreBold)"
+        then: [tc: "B"]
+    - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
+
+ - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
+    - tc: "IC"
+    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝛼-𝜔":    # 0x1d6fc - 0x1d714
+    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+
+ - "𝛻":                          # 0x1d6fb
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":    # 0x1d715 - 0x1d71b
+      # - tc: "italic"
+    - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
+
+ - "𝜜-𝜴":    # 0x1d71c - 0x1d734
+    # - tc: "bold italic"
+    - tc: 'BIC⠁'
+    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
+    - tc: "BI"
+    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
+    - tc: "BI"
+    - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εκθφρπ')"
+
+ - "𝜵":                 # 0x1d735
+    - tc: "BI"
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
+    - tc: "BSC"
+    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝝰-𝞈":    # 0x1d770 - 0x1d788
+    - tc: "BS"
+    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
+    - tc: "B"
+    - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
+
+ - "𝝯":                           # 0x1d76f
+    - tc: "B"
+    - spell: "translate('.', '𝜵', '∇')"
+
+ - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+
+ - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
+    # - tc: "bold italic"
+    - test:
+        if: "$IgnoreBold"
+        then: [tc: I]
+        else: [tc: "BI"]
+    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+ - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
+    - tc: "B"
+    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+
+ - "𝞩": [tc: "B"]                          # 0x1d7a9
+
+ - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
+    - tc: "B"
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+
+ - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
+    - tc: "BS"
+    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+
+ - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
+    - tc: "S"
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+
+ - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+

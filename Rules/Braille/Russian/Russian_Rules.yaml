@@ -1,0 +1,317 @@
+---
+# Russian mathematical braille rules.
+
+-
+  name: whitespace
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingWhitespace) and (@data-previous-space-width >= 0.25 or @data-following-space-width >= 0.25)"
+  replace:
+  - with:
+      variables: [MatchingWhitespace: "true()"]
+      replace:
+      - test:
+        - if: "@data-previous-space-width > 1.1"
+          then: [t: "⠀"]
+        - else_if: "@data-previous-space-width >= 0.25"
+          then: [t: "W"]
+      - x: "."
+      - test:
+        - if: "@data-following-space-width > 1.1"
+          then: [t: "⠀"]
+        - else_if: "@data-following-space-width >= 0.25"
+          then: [t: "W"]
+
+-
+  name: omission-intent
+  tag: "!*"
+  match: "contains(@intent, ':blank')"
+  replace: [t: "⠀"]
+
+-
+  name: unicode-override
+  tag: "*"
+  match: "@data-unicode"
+  replace: [x: "@data-unicode"]
+
+-
+  name: default
+  tag: math
+  match: "."
+  variables:
+  - RowStart: "''"
+  - RowEnd: "''"
+  - MatchingWhitespace: "false()"
+  replace: [x: "*"]
+
+-
+  name: default
+  tag: [mrow, mstyle, semantics]
+  match: "."
+  replace: [x: "*[1] | *[position()>1]"]
+
+-
+  name: no-content
+  tag: [math, mrow]
+  match: "not(*)"
+  replace: [t: "⠀"]
+
+-
+  name: default
+  tag: msqrt
+  match: "."
+  replace:
+  - t: "⠩⠱"
+  - x: "*[1]"
+  - t: "⠹"
+
+-
+  name: default
+  tag: mroot
+  match: "."
+  replace:
+  - t: "⠩"
+  - x: "*[2]"
+  - t: "⠱"
+  - x: "*[1]"
+  - t: "⠹"
+
+-
+  name: default
+  tag: mfrac
+  match: "."
+  replace:
+  - t: "⠆"
+  - x: "*[1]"
+  - t: "⠀⠳"
+  - x: "*[2]"
+  - t: "⠰"
+
+-
+  name: binomial-frac
+  tag: mrow
+  match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][@linethickness=0]"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠉⠡"
+  - x: "*[2]/*[2]"
+  - t: "⠌"
+  - x: "*[2]/*[1]"
+  - x: "*[3]"
+
+-
+  name: binomial-table
+  tag: mrow
+  match: "IsBracketed(., '(', ')') and *[2][self::m:mtable][count(*)=2 and count(*[1])=1] and contains(@intent, 'binomial(')"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠉⠡"
+  - x: "*[2]/*[2]/*[1]/*[1]"
+  - t: "⠌"
+  - x: "*[2]/*[1]/*[1]/*[1]"
+  - x: "*[3]"
+
+-
+  name: default-matrix
+  tag: mrow
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "*[3]"
+  match:
+  - "*[2][self::m:mtable] and"
+  - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
+  replace: [x: "*[2]"]
+
+-
+  name: default
+  tag: mtable
+  match: "."
+  replace:
+  - t: "⠞⠃⠇"
+  - x: "*"
+
+-
+  name: default
+  tag: [mtr, mlabeledtr]
+  match: "."
+  replace:
+  - test:
+      if: "preceding-sibling::*"
+      then: [t: "⠨⠳"]
+  - x: $RowStart
+  - test:
+      if: .[self::m:mlabeledtr]
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
+  - x: $RowEnd
+
+-
+  name: default
+  tag: mtd
+  match: "."
+  replace:
+  - test:
+      if: "*"
+      then:
+      - test:
+          if: "preceding-sibling::*"
+          then: [t: "W"]
+      - x: "*"
+
+-
+  name: single-char-exceptions
+  tag: msup
+  match: "*[2][translate(., \"'*`ª°²³´¹º′″‴‵‶‷⁗\",'')='']"
+  replace: [x: "*"]
+
+-
+  name: default
+  tag: [msub, munder]
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: default
+  tag: [msup, mover]
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:mover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: default
+  tag: [msubsup, munderover]
+  match: "count(*)=3"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munderover"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "*[2]"
+  - test:
+      if: "self::m:munderover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - x: "*[3]"
+  - t: "⠱"
+
+-
+  name: default
+  tag: mmultiscripts
+  match: "."
+  replace: [x: "*"]
+
+-
+  name: default
+  tag: menclose
+  match: "."
+  replace:
+  - t: "⠣"
+  - x: "*"
+  - t: "⠜"
+
+-
+  name: default
+  tag: mo
+  match: "."
+  replace:
+  - x: "text()"
+
+-
+  name: default
+  tag: mn
+  match: "."
+  replace:
+  - x: "BrailleChars(., 'Russian')"
+
+-
+  name: functions
+  tag: mi
+  match: "IsInDefinition(., 'Speech', 'FunctionNames')"
+  replace:
+  - test:
+    - if: ".='arcsin'"
+      then: [t: "⠫⠁⠎"]
+    - else_if: ".='arccos'"
+      then: [t: "⠫⠁⠉"]
+    - else_if: ".='arctg' or .='arctan'"
+      then: [t: "⠫⠁⠞"]
+    - else_if: ".='arcctg' or .='arccotan' or .='arccot'"
+      then: [t: "⠫⠁⠉⠞"]
+    - else_if: ".='sin'"
+      then: [t: "⠫⠎"]
+    - else_if: ".='cos'"
+      then: [t: "⠫⠉"]
+    - else_if: ".='tg' or .='tan'"
+      then: [t: "⠫⠞"]
+    - else_if: ".='ctg' or .='cotan' or .='cot'"
+      then: [t: "⠫⠉⠞"]
+    - else_if: ".='log'"
+      then: [t: "⠫⠇"]
+    - else_if: ".='ln'"
+      then: [t: "⠫⠇⠝"]
+    - else_if: ".='lg'"
+      then: [t: "⠫⠇⠛"]
+    - else_if: ".='lim'"
+      then: [t: "⠫⠇⠍"]
+    - else_if: ".='min'"
+      then: [t: "⠫⠍⠝"]
+    - else_if: ".='max'"
+      then: [t: "⠫⠍⠭"]
+    - else_if: ".='exp'"
+      then: [t: "⠫⠑"]
+      else: [x: "BrailleChars(., 'Russian')"]
+
+-
+  name: default
+  tag: [mi, mtext]
+  match: "."
+  replace:
+  - x: "BrailleChars(., 'Russian')"
+
+-
+  name: default
+  tag: ms
+  match: "."
+  replace:
+  - test:
+      if: "string(@lquote)!=''"
+      then: [x: "@lquote"]
+      else: [t: "⠦"]
+  - x: "BrailleChars(., 'Russian')"
+  - test:
+      if: "string(@rquote)!=''"
+      then: [x: "@rquote"]
+      else: [t: "⠴"]
+
+-
+  name: default-children
+  tag: "*"
+  match: "*"
+  replace:
+  - x: "*"
+
+-
+  name: default-no-children
+  tag: "*"
+  match: "text()"
+  replace:
+  - x: "text()"
+
+-
+  name: default-no-text
+  tag: "*"
+  match: "."
+  replace: [t: ""]
