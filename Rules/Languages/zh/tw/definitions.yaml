@@ -48,23 +48,23 @@
   }
 
 - NavigationParts: {
-    "large-op": "基底; 下限; 上限",
+    "large-op": "基; 下限; 上限",
     "mfrac": "分子;分母",
     "fraction": "分子;分母",
     "msqrt": "根號",
     "square-root": "根號",
-    "mroot": "根號;根次數",
-    "root": "根號;根次數",
-    "msub": "基底;下標",
-    "sub": "基底;下標",
-    "msup": "基底;上標",
-    "say-super": "基底;上標",
-    "skip-super": "基底;上標",
-    "power": "基底;指數",
-    "msubsup": "基底;下標;上標",
-    "munder": "基底;下限",
-    "mover": "基底;上限",
-    "munderover": "基底;下限;上限",
+    "mroot": "根號;根指數",
+    "root": "根號;根指數",
+    "msub": "基;下標",
+    "sub": "基;下標",
+    "msup": "基;上標",
+    "say-super": "基;上標",
+    "skip-super": "基;上標",
+    "power": "底;指數",
+    "msubsup": "基;下標;上標",
+    "munder": "基;下限",
+    "mover": "基;上限",
+    "munderover": "基;下限;上限",
 
     # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
     # it's a hack to put them here, but at least they are grouped with the other navigation parts

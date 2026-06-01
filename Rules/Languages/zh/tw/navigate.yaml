@@ -124,7 +124,7 @@
           - x: "$Move2D"
           - test:
             - if: "$NumPrecedingSiblings=0"
-              then: [T: "基底"]                 # phrase(the 'base' of the power)
+              then: [T: "基"]                 # phrase(the 'base' of the power)
             - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # are we before mprescripts and hence are postscripts
               then:
               - test:   # in postscripts -- base shifts by one
@@ -668,7 +668,7 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - T: "移到上一格"                             # phrase('move up' to previous row in the table)
+              - T: "往上一格"                             # phrase('move up' to previous row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
@@ -704,7 +704,7 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - T: "移到下一格"                          # phrase('move down to the next row in the table)
+              - T: "往下一格"                          # phrase('move down to the next row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
@@ -1623,7 +1623,7 @@
         - else_if: "starts-with($NavCommand, 'MoveTo')"
           then: [T: "移到"]                              # phrase('move to' the next entry in table) 
           else: [T: "設定"]                                   # phrase('set' the value of the next entry in table) 
-      - T: "佔位符"                                     # phrase('placeholder' for the value)
+      - T: "書籤"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1635,7 +1635,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - T: "設定佔位符"                                 # phrase('set placeholder' to the value) 
+      - T: "設定書籤"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
@@ -1667,11 +1667,11 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - T: "已是最上層"                         # phrase('inside of nothing more') 
+      - T: "不在別的式子裡面"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - T: "上一層是"                                         # phrase('inside' a big expression) 
+      - T: "在後面式子裡面"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
@@ -1679,7 +1679,7 @@
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - T: "上一層是"                                           # phrase('inside' a big expression)
+  - T: "在後面式子裡面"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
