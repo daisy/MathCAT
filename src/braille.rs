@@ -50,6 +50,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             "CMU" => cmu_cleanup(pref_manager, braille_string), 
             "Finnish" => finnish_cleanup(pref_manager, braille_string),
             "Swedish" => swedish_cleanup(pref_manager, braille_string),
+            "Russian" => russian_cleanup(pref_manager, braille_string),
             "LaTeX" => LaTeX_cleanup(pref_manager, braille_string),
             "ASCIIMath" => ASCIIMath_cleanup(pref_manager, braille_string),
             "ASCIIMath-fi" => ASCIIMath_cleanup(pref_manager, braille_string),
@@ -2167,6 +2168,38 @@ fn swedish_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     return result.to_string();
 }
 
+fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
+    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([BCILNW#])").unwrap());
+    static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"⠀+").unwrap());
+
+    let mut raw_braille_without_repeated_number_indicators = String::with_capacity(raw_braille.len());
+    let mut previous_char_was_digit = false;
+    for ch in raw_braille.chars() {
+        if ch == 'N' && previous_char_was_digit {
+            previous_char_was_digit = false;
+            continue;
+        }
+        raw_braille_without_repeated_number_indicators.push(ch);
+        previous_char_was_digit = matches!(ch, '⠚' | '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊');
+    }
+
+    let result = REPLACE_INDICATORS.replace_all(&raw_braille_without_repeated_number_indicators, |cap: &Captures| {
+        match &cap[0] {
+            "B" => "⠸",
+            "C" => "⠠",
+            "I" => "⠨",
+            "L" => "",
+            "N" => "⠼",
+            "W" => "⠀",
+            "#" => "",
+            _ => "",
+        }
+    });
+    return COLLAPSE_SPACES.replace_all(&result, "⠀")
+                          .trim_matches('⠀')
+                          .to_string();
+}
+
 #[allow(non_snake_case)]
 fn LaTeX_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     static REMOVE_SPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r" ([\^_,;)\]}])").unwrap()); // '^', '_', ',', ';', ')', ']', '}'
@@ -2330,6 +2363,7 @@ impl BrailleChars {
             "Vietnam" => BrailleChars:: get_braille_vietnam_chars(node, text_range),
             "Swedish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
             "Finnish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
+            "Russian" => BrailleChars:: get_braille_ueb_chars(node, text_range),
             _ => return Err(sxd_xpath::function::Error::Other(format!("get_braille_chars: unknown braille code '{code}'")))
         };
         return match result {

@@ -24,6 +24,10 @@ mod braille {
         mod vi;
     }
 
+    mod Russian {
+        mod russian;
+    }
+
     mod LaTeX {
         mod augenbit;
         mod other;
