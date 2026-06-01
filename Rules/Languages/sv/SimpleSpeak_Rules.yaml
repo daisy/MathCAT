@@ -110,7 +110,7 @@
     # unit follows the fraction -- special cases
     - else:
       - test:
-        - if: "*[1]=1 or ($IsMixedFraction and preceding-sibling::*[2][.=1])"
+        - if: "*[1]=1" # or ($IsMixedFraction and preceding-sibling::*[2][.=1])"
           then: 
             - test:
                 if: "$NeuterUnitFollows"
