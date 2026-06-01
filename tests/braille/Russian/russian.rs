@@ -1214,3 +1214,24 @@ fn source_less_common_math_symbols_10() -> Result<()> {
 fn source_less_common_math_symbols_11() -> Result<()> {
     return test_russian_braille(r#"<math><mrow><mi>a</mi><mo>&#x2224;</mo><mi>b</mi></mrow></math>"#, "⠠⠁⠀⠼⠀⠃");
 }
+
+#[test]
+fn wikipedia_times_divide() -> Result<()> {
+    let expr = r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#;
+    test_braille("Russian", expr, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉")?;
+    return Ok(());
+}
+
+#[test]
+fn wikipedia_linear_parens() -> Result<()> {
+    let expr = r#"<math><mn>3</mn><mo>&#xB7;</mo><mo>(</mo><mn>9</mn><mo>&#x2212;</mo><mn>7</mn><mo>)</mo><mo>=</mo><mn>6</mn></math>"#;
+    test_braille("Russian", expr, "⠼⠉⠄⠣⠼⠊⠀⠤⠼⠛⠜⠀⠶⠼⠋")?;
+    return Ok(());
+}
+
+#[test]
+fn wikipedia_sqrt() -> Result<()> {
+    let expr = r#"<math><msqrt><mn>10000</mn></msqrt><mo>&lt;</mo><mn>101</mn></math>"#;
+    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠀⠪⠀⠼⠁⠚⠁")?;
+    return Ok(());
+}
