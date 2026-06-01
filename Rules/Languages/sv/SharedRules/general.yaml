@@ -288,7 +288,7 @@
                                     IsInDefinition(substring(., 2), 'Speech', 'NeuterUnits') != ''
                                   ) ]"  
   replace:
-  - x: "IfThenElse($NeuterUnitFollows, 'ett', 1)"
+  - x: "IfThenElse($NeuterUnitFollows, 'ett', 'en')"
 
 # the order of matching is
 # 1. does it match the base of an SI unit
