@@ -98,7 +98,7 @@
           (name(.)='mrow' or name(.) = 'mtr' or name(.) = 'mlabeledtr' or @data-from-mathml = 'mtable')"
   replace: []
 
-- name: into-or-out-of-mtr
+- name: into-or-out-of-mtr  # audit-ignore
   tag: [mtr, mlabeledtr]
   match: "$Move2D = 'i'" # Navigate into a 2D structure.
   replace:
