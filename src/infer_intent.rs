@@ -922,7 +922,6 @@ mod tests {
 
     #[test]
     fn intent_with_literals() -> Result<()> {
-        init_logger();
         let mathml = "<mrow intent='vector(1, 0.0, 0.1, -23, -0.1234, last)'>
                 <mi>x</mi>
             </mrow>";

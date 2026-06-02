@@ -79,10 +79,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: main
+          publish_branch: gh-pages
           publish_dir: ./llvm-cov-html
-          destination_dir: docs/llvm-cov
-          keep_files: true
+          keep_files: files
           user_name: github-actions
           user_email: github-actions@github.com
           # Avoid push → workflow → push loops when workflows trigger on push to main.

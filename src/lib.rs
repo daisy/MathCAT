@@ -105,7 +105,6 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     match crate::interface::report_any_panic(result) {
         Ok(()) => Ok(()),
         Err(e) => {
-            eprintln!("{}", e);
             Err(e)
         }
     }

@@ -1895,10 +1895,6 @@ impl CanonicalizeContext {
 			/// 'mo' should only be '+', '-', '=', ',', '.'  -- unlikely someone is doing anything sophisticated
 			fn is_roman_numeral_adjacent<'a, I>(siblings: I, must_be_upper_case: bool) -> bool
 					where I: Iterator<Item = &'a ChildOfElement<'a>> {		
-				static ROMAN_NUMERAL_OPERATORS: phf::Set<&str> = phf_set! {
-					"+", "-'", "=", "<", "≤", ">", "≥", 
-					// ",", ".",   // [c,d] triggers this if "," is present, so omitting it
-				};
 				let mut found_match = false;				// guard against no siblings
 				let mut last_was_roman_numeral = true;	// started at roman numeral
 				// debug!("start is_roman_numeral_adjacent");
@@ -1908,15 +1904,17 @@ impl CanonicalizeContext {
 					match name(maybe_roman_numeral) {
 						"mo" => {
 							if !last_was_roman_numeral {
+								debug!("maybe_roman_numeral (mo): not last was roman numeral");
 								return false;
 							}
 							let text = as_text(maybe_roman_numeral);
-							if !ROMAN_NUMERAL_OPERATORS.contains(text) {
+							// ",", "." omitted — [c,d] triggers this if "," is present
+							if !matches!(text, "+" | "-" | "=" | "<" | "≤" | ">" | "≥") {
 								return false;
 							}
 							last_was_roman_numeral = false;
 						},
-						"mi" | "mn" => {
+						"mi" | "mn" | "mtext" => {
 							if last_was_roman_numeral {
 								return false;		// no implicit multiplication (or whatever)
 							}
@@ -1928,7 +1926,7 @@ impl CanonicalizeContext {
 							found_match = true;
 							last_was_roman_numeral = true;
 						},
-						"mtext" | "mspace" | "mphantom" => {},
+						"mspace" | "mphantom" => {},
 						_ => {
 							return false;
 						}
@@ -6836,19 +6834,64 @@ mod canonicalize_tests {
         let target_str = "<math><mrow>
 			<mn data-roman-numeral='true' data-number='48'>XLVIII</mn> <mo>+</mo><mn data-roman-numeral='true' data-number='2026'>mmxxvi</mn>
 			</mrow></math>";
-        // let target_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
-	// #[test]
-    // fn roman_numeral_context() {
-    //     let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
-    //     let target_str = "<math> <mrow data-changed='added'>
-	// 		<mrow data-changed='added'><mn data-roman-numeral='true'>vi</mn><mo>-</mo><mn mathvariant='normal' data-roman-numeral='true'>i</mn></mrow> 
-	// 		<mo>=</mo> <mn data-roman-numeral='true'>v</mn>
-	// 	</mrow> </math>";
-    //     are_strs_canonically_equal_result(test_str, target_str, &[])
-	// }
+	#[test]
+    fn roman_numeral_multi_letter_mi() -> Result<()> {
+        let test_str = "<math>
+            <mi>IX</mi>
+            <mo>+</mo>
+            <mi>VIII</mi>
+            <mo>=</mo>
+            <mi>XVII</mi>
+        </math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='9'>IX</mn>
+				<mo>+</mo>
+				<mn data-roman-numeral='true' data-number='8'>VIII</mn>
+			</mrow>
+			<mo>=</mo>
+			<mn data-roman-numeral='true' data-number='17'>XVII</mn>
+			</mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_single_letter_mi_is_not_number() -> Result<()> {
+        // Regression test for https://github.com/daisy/MathCAT/issues/528
+        let test_str = "<math>
+            <mi>C</mi>
+            <mo>=</mo>
+            <mi>D</mi>
+        </math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='100'>C</mn>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='500'>D</mn>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_context() -> Result<()> {
+        let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='6'>vi</mn>
+				<mo>-</mo>
+				<mn mathvariant='normal' data-roman-numeral='true' data-number='1'>i</mn>
+				</mrow>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='5'>v</mn>
+			</mrow>
+		</math>";
+        return are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
 
 	#[test]
     fn not_roman_numeral() -> Result<()> {
