@@ -142,3 +142,16 @@ fn intent_prob_x() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn do_some_stuff_71() -> Result<()> {
+    let expr = "<math>
+    <mrow>
+        <mn>41</mn>
+        <mo>+</mo>
+        <mn>71</mn>
+    </mrow>
+    </math>";
+    test("fr", "SimpleSpeak", expr, "quarante et un plus soixante et onze")
+
+}

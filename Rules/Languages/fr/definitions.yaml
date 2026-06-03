@@ -286,31 +286,22 @@
 
 # All definitions start 0, 10, 100, etc.
 
-# TODO: does that belong here? (vingt-et-un, trente-et-un, etc.)
 - NumbersOnes: [
         "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
         "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
-        "dix-sept", "dix-huit", "dix-neuf",
-        "vingt-et-un", "trente-et-un", "quarante-et-un", "cinquante-et-un", "soixante-et-un",
-        "soixante-et-onze", "quatre-vingt-un", "quatre-vingt-onze"
+        "dix-sept", "dix-huit", "dix-neuf"
     ]
 
-# TODO: does that belong here? (vingt-et-unième, trente-et-unième, etc.)
 - NumbersOrdinalOnes: [
         "zéroième", "premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième",
         "dixième", "onzième", "douzième", "treizième", "quatorzième", "quinzième", "seizième",
-        "dix-septième", "dix-huitième", "dix-neuvième",
-        "vingt-et-unième", "trente-et-unième", "quarante-et-unième", "cinquante-et-unième", "soixante-et-unième",
-        "soixante-et-onzième", "quatre-vingt-unième", "quatre-vingt-onzième"
+        "dix-septième", "dix-huitième", "dix-neuvième"
     ]
 
-# TODO: does that belong here? (vingt-et-unièmes, trente-et-unièmes, etc.)
 - NumbersOrdinalPluralOnes: [
         "zéroièmes", "premiers", "deuxièmes", "troisièmes", "quatrièmes", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes",
         "dixièmes", "onzièmes", "douzièmes", "treizièmes", "quatorzièmes", "quinzièmes", "seizièmes",
-        "dix-septièmes", "dix-huitièmes", "dix-neuvièmes",
-        "vingt-et-unièmes", "trente-et-unièmes", "quarante-et-unièmes", "cinquante-et-unièmes", "soixante-et-unièmes",
-        "soixante-et-onzièmes", "quatre-vingt-unièmes", "quatre-vingt-onzièmes"
+        "dix-septièmes", "dix-huitièmes", "dix-neuvièmes"
     ]
 
 - NumbersOrdinalFractionalOnes: [
