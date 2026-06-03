@@ -226,6 +226,18 @@
 - "8": [t: "N⠓"]
 - "9": [t: "N⠊"]
 
+# Lowered digits used in denominators and integer scripts.
+- "\ue000": [t: "⠴"]
+- "\ue001": [t: "⠂"]
+- "\ue002": [t: "⠆"]
+- "\ue003": [t: "⠒"]
+- "\ue004": [t: "⠲"]
+- "\ue005": [t: "⠢"]
+- "\ue006": [t: "⠖"]
+- "\ue007": [t: "⠶"]
+- "\ue008": [t: "⠦"]
+- "\ue009": [t: "⠔"]
+
 # Russian literary braille letters for mtext and Cyrillic identifiers.
 - "а": [t: "⠁"]
 - "А": [t: "C⠁"]

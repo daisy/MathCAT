@@ -67,13 +67,50 @@
 -
   name: default
   tag: mroot
-  match: "."
+  match: "not(*[2][self::m:mn and translate(., '0123456789', '')=''])"
   replace:
   - t: "⠩"
   - x: "*[2]"
   - t: "⠱"
   - x: "*[1]"
   - t: "⠹"
+
+-
+  name: integer-index
+  tag: mroot
+  match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - t: "⠩"
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+  - t: "⠱"
+  - x: "*[1]"
+  - t: "⠹"
+
+-
+  name: simple-numeric
+  tag: mfrac
+  match:
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: simple-algebraic
+  tag: mfrac
+  match:
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789', '')='']) and"
+  - "(*[2][self::m:mi] or *[2][self::m:mn and translate(., '0123456789', '')=''])"
+  replace:
+  - x: "*[1]"
+  - t: "⠳"
+  - test:
+      if: "*[2][self::m:mn]"
+      then:
+      - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      else:
+      - x: "*[2]"
 
 -
   name: default
@@ -164,6 +201,18 @@
   replace: [x: "*"]
 
 -
+  name: integer
+  tag: [msub, munder]
+  match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
   name: default
   tag: [msub, munder]
   match: "."
@@ -175,6 +224,18 @@
       else: [t: "⠡"]
   - x: "*[2]"
   - t: "⠱"
+
+-
+  name: integer
+  tag: [msup, mover]
+  match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:mover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
 
 -
   name: default
