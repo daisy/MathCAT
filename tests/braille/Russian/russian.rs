@@ -11,14 +11,14 @@ fn numbers_and_operators() -> Result<()> {
 #[test]
 fn fraction() -> Result<()> {
     let expr = r#"<math><mfrac><mi>x</mi><mn>2</mn></mfrac></math>"#;
-    test_braille("Russian", expr, "⠆⠠⠭⠀⠳⠼⠃⠰")?;
+    test_braille("Russian", expr, "⠠⠭⠳⠆")?;
     return Ok(());
 }
 
 #[test]
 fn scripts_and_root() -> Result<()> {
     let expr = r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msqrt><mi>y</mi></msqrt></mrow></math>"#;
-    test_braille("Russian", expr, "⠠⠭⠌⠼⠃⠱⠀⠖⠩⠱⠠⠽⠹")?;
+    test_braille("Russian", expr, "⠠⠭⠌⠆⠀⠖⠩⠱⠽⠹")?;
     return Ok(());
 }
 
@@ -52,7 +52,23 @@ fn source_arithmetic_examples() -> Result<()> {
 #[test]
 fn nested_fraction_and_root() -> Result<()> {
     let expr = r#"<math><mfrac><mrow><mi>x</mi><mo>+</mo><msqrt><mfrac><mn>1</mn><mi>y</mi></mfrac></msqrt></mrow><mrow><mi>x</mi><mo>-</mo><mi>y</mi></mrow></mfrac></math>"#;
-    test_braille("Russian", expr, "⠆⠠⠭⠀⠖⠩⠱⠆⠼⠁⠀⠳⠠⠽⠰⠹⠀⠳⠭⠀⠤⠽⠰")?;
+    test_braille("Russian", expr, "⠆⠠⠭⠀⠖⠩⠱⠼⠁⠳⠠⠽⠹⠀⠳⠭⠀⠤⠽⠰")?;
+    return Ok(());
+}
+
+#[test]
+fn source_simple_fractions_scripts_roots() -> Result<()> {
+    let expr = r#"<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>"#;
+    test_braille("Russian", expr, "⠼⠁⠆")?;
+
+    let expr = r#"<math><mfrac><mi>a</mi><mn>3</mn></mfrac></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠳⠒")?;
+
+    let expr = r#"<math><msub><mi>b</mi><mn>7</mn></msub></math>"#;
+    test_braille("Russian", expr, "⠠⠃⠡⠶")?;
+
+    let expr = r#"<math><mroot><mi>x</mi><mn>3</mn></mroot></math>"#;
+    test_braille("Russian", expr, "⠩⠒⠱⠠⠭⠹")?;
     return Ok(());
 }
 
