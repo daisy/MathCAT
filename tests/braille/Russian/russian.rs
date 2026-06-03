@@ -11,14 +11,14 @@ fn numbers_and_operators() -> Result<()> {
 #[test]
 fn fraction() -> Result<()> {
     let expr = r#"<math><mfrac><mi>x</mi><mn>2</mn></mfrac></math>"#;
-    test_braille("Russian", expr, "⠆⠭⠀⠳⠼⠃⠰")?;
+    test_braille("Russian", expr, "⠆⠠⠭⠀⠳⠼⠃⠰")?;
     return Ok(());
 }
 
 #[test]
 fn scripts_and_root() -> Result<()> {
     let expr = r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msqrt><mi>y</mi></msqrt></mrow></math>"#;
-    test_braille("Russian", expr, "⠭⠌⠼⠃⠱⠀⠖⠩⠱⠽⠹")?;
+    test_braille("Russian", expr, "⠠⠭⠌⠼⠃⠱⠀⠖⠩⠱⠠⠽⠹")?;
     return Ok(());
 }
 
@@ -30,7 +30,7 @@ fn cyrillic_text() -> Result<()> {
 }
 
 #[test]
-fn wikipedia_linear_parens() -> Result<()> {
+fn wikipedia_linear_parens_flat() -> Result<()> {
     let expr = r#"<math><mrow><mn>3</mn><mo>&#x22C5;</mo><mrow><mo>(</mo><mn>9</mn><mo>-</mo><mn>7</mn><mo>)</mo></mrow><mo>=</mo><mn>6</mn></mrow></math>"#;
     test_braille("Russian", expr, "⠼⠉⠄⠣⠼⠊⠀⠤⠼⠛⠜⠀⠶⠼⠋")?;
     return Ok(());
@@ -52,7 +52,27 @@ fn source_arithmetic_examples() -> Result<()> {
 #[test]
 fn nested_fraction_and_root() -> Result<()> {
     let expr = r#"<math><mfrac><mrow><mi>x</mi><mo>+</mo><msqrt><mfrac><mn>1</mn><mi>y</mi></mfrac></msqrt></mrow><mrow><mi>x</mi><mo>-</mo><mi>y</mi></mrow></mfrac></math>"#;
-    test_braille("Russian", expr, "⠆⠭⠀⠖⠩⠱⠆⠼⠁⠀⠳⠽⠰⠹⠀⠳⠭⠀⠤⠽⠰")?;
+    test_braille("Russian", expr, "⠆⠠⠭⠀⠖⠩⠱⠆⠼⠁⠀⠳⠠⠽⠰⠹⠀⠳⠭⠀⠤⠽⠰")?;
+    return Ok(());
+}
+
+#[test]
+fn latin_alphabet_indicators() -> Result<()> {
+    let expr = r#"<math><mrow><mi>x</mi><mo>+</mo><mi>A</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>B</mi><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>A</mi><mo>+</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠀⠖⠨⠁⠀⠖⠠⠽⠀⠖⠨⠃⠀⠶⠠⠭⠀⠖⠽⠀⠖⠨⠁⠀⠖⠃")?;
+    return Ok(());
+}
+
+#[test]
+fn alphabet_indicators_after_numbers_and_greek() -> Result<()> {
+    let expr = r#"<math><mrow><mn>2</mn><mo>&#x22C5;</mo><mi>x</mi><mo>+</mo><mn>15</mn><mo>=</mo><mn>23</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠄⠠⠭⠀⠖⠼⠁⠑⠀⠶⠼⠃⠉")?;
+
+    let expr = r#"<math><mrow><mi>L</mi><mo>=</mo><mn>2</mn><mi>&#x3C0;</mi><mi>r</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠇⠀⠶⠼⠃⠰⠏⠠⠗")?;
+
+    let expr = r#"<math><mrow><mi>&#x3B1;</mi><mo>+</mo><mi>&#x3B2;</mi><mo>=</mo><mi>&#x391;</mi><mo>+</mo><mi>&#x392;</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠰⠁⠀⠖⠃⠀⠶⠸⠁⠀⠖⠃")?;
     return Ok(());
 }
 
@@ -73,6 +93,6 @@ fn wikipedia_linear_parens() -> Result<()> {
 #[test]
 fn wikipedia_sqrt() -> Result<()> {
     let expr = r#"<math><msqrt><mn>10000</mn></msqrt><mo>&lt;</mo><mn>101</mn></math>"#;
-    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠀⠪⠀⠼⠁⠚⠁")?;
+    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠹⠀⠪⠀⠼⠁⠚⠁")?;
     return Ok(());
 }
