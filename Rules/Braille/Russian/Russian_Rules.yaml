@@ -162,9 +162,7 @@
   name: default
   tag: mtable
   match: "."
-  replace:
-  - t: "⠞⠃⠇"
-  - x: "*"
+  replace: [x: "*"]
 
 -
   name: default
@@ -284,6 +282,30 @@
   - t: "⠜"
 
 -
+  name: chemical-formula-operator-bond
+  tag: mo
+  match: "@data-chemical-bond"
+  replace:
+  - test:
+    - if: ".='-' or .=':'"
+      then: [t: "⠤"]
+    - else_if: ".='=' or .='∷'"
+      then: [t: "⠦"]
+    - else_if: ".='≡'"
+      then: [t: "⠿"]
+      else: [x: "text()"]
+
+-
+  name: prefix-geometry-ops
+  tag: mo
+  match:
+  - "parent::*[count(*) = 2 and name()='mrow' and not(preceding-sibling::*)] and"
+  - "( .='∠' or .='△' or .='∪' )"
+  replace:
+  - x: "text()"
+  - t: "#"
+
+-
   name: default
   tag: mo
   match: "."
@@ -300,39 +322,41 @@
 -
   name: functions
   tag: mi
-  match: "IsInDefinition(., 'Speech', 'FunctionNames')"
+  match:
+  - "IsInDefinition(., 'Speech', 'FunctionNames') or"
+  - ".='tg' or .='ctg' or .='arctg' or .='arcctg'"
   replace:
   - test:
     - if: ".='arcsin'"
-      then: [t: "⠫⠁⠎"]
+      then: [t: "⠫⠁⠎#"]
     - else_if: ".='arccos'"
-      then: [t: "⠫⠁⠉"]
+      then: [t: "⠫⠁⠉#"]
     - else_if: ".='arctg' or .='arctan'"
-      then: [t: "⠫⠁⠞"]
+      then: [t: "⠫⠁⠞#"]
     - else_if: ".='arcctg' or .='arccotan' or .='arccot'"
-      then: [t: "⠫⠁⠉⠞"]
+      then: [t: "⠫⠁⠉⠞#"]
     - else_if: ".='sin'"
-      then: [t: "⠫⠎"]
+      then: [t: "⠫⠎#"]
     - else_if: ".='cos'"
-      then: [t: "⠫⠉"]
+      then: [t: "⠫⠉#"]
     - else_if: ".='tg' or .='tan'"
-      then: [t: "⠫⠞"]
+      then: [t: "⠫⠞#"]
     - else_if: ".='ctg' or .='cotan' or .='cot'"
-      then: [t: "⠫⠉⠞"]
+      then: [t: "⠫⠉⠞#"]
     - else_if: ".='log'"
-      then: [t: "⠫⠇"]
+      then: [t: "⠫⠇#"]
     - else_if: ".='ln'"
-      then: [t: "⠫⠇⠝"]
+      then: [t: "⠫⠇⠝#"]
     - else_if: ".='lg'"
-      then: [t: "⠫⠇⠛"]
+      then: [t: "⠫⠇⠛#"]
     - else_if: ".='lim'"
-      then: [t: "⠫⠇⠍"]
+      then: [t: "⠫⠇⠍#"]
     - else_if: ".='min'"
-      then: [t: "⠫⠍⠝"]
+      then: [t: "⠫⠍⠝#"]
     - else_if: ".='max'"
-      then: [t: "⠫⠍⠭"]
+      then: [t: "⠫⠍⠭#"]
     - else_if: ".='exp'"
-      then: [t: "⠫⠑"]
+      then: [t: "⠫⠑#"]
       else: [x: "BrailleChars(., 'Russian')"]
 
 -
