@@ -6,10 +6,12 @@
   replace:
   - with:
       variables:
-      - ClearSpeak_Fractions: "IFTHENELSE($Verbosity='Verbose' and $ClearSpeak_Fractions='Auto', 'EndFrac', $ClearSpeak_Fractions)"
-      - ClearSpeak_AbsoluteValue: "IFTHENELSE($Verbosity='Verbose' and $ClearSpeak_AbsoluteValue='Auto', 'AbsEnd', $ClearSpeak_AbsoluteValue)"
-      - ClearSpeak_Roots: "IFTHENELSE($Verbosity='Verbose' and $ClearSpeak_Roots='Auto', 'RootEnd', $ClearSpeak_Roots)"
-      - ClearSpeak_Matrix: "IFTHENELSE($Verbosity='Verbose' and $ClearSpeak_Matrix='Auto', 'EndMatrix', $ClearSpeak_Matrix)"
+      - ClearSpeak_Fractions: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Fractions='Auto', 'EndFrac', $ClearSpeak_Fractions)"
+      - ClearSpeak_AbsoluteValue: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_AbsoluteValue='Auto', 'AbsEnd', $ClearSpeak_AbsoluteValue)"
+      - ClearSpeak_Roots: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Roots='Auto', 'RootEnd', $ClearSpeak_Roots)"
+      - ClearSpeak_Matrix: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Matrix='Auto', 'EndMatrix', $ClearSpeak_Matrix)"
+
+      - MatchingPause: false()
       # should be set at mtable level, but unknown intents make that impossible to know
       - IsColumnSilent: false()
       replace:
@@ -55,9 +57,11 @@
   replace:
   - bookmark: "@id"
   - test:
-      if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
+    - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-      else: [x: "translate(., '-_', '  ')" ]   # from intent literals
+    - else_if: "@data-chem-element"                      # NavMode=Character needs this
+      then: [SPELL: "text()", pause: "short"]
+      else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
 - name: default
   tag: ms
@@ -108,7 +112,7 @@
   - pause: medium
 
 # not sure what really should be said for these since we should not assume they are square roots
-- name: literal-default
+- name: literal-default  # audit-ignore
   tag: msqrt
   match: "."
   replace:
@@ -120,7 +124,7 @@
       then: [T: "slut rot", pause: medium] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
-- name: literal-default
+- name: literal-default  # audit-ignore
   tag: mroot
   match: "."
   replace:
@@ -134,10 +138,11 @@
       if: "not(IsNode(*[2],'leaf'))"
       then: [T: "slut rot"] # phrase("root of x 'end root symbol'")
 
-- name: simple-sub
+- name: simple-sub  # audit-ignore
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
-  match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
+  # SWEDISH: want to skip announcing "index" not only when integer but also the index consists of one single character
+  match: "count(*)=2 and $Verbosity='Terse' and IsNode(*[2], 'leaf') and ( (*[2][self::m:mn and translate(., '.,', '')=.]) or string-length(*[2])=1 )"
   replace:
   - x: "*[1]"
   - x: "*[2]"
@@ -145,14 +150,12 @@
 
 - name: no-end-sub
   tag: indexed-by
-  # invisible comma -- want "x 1 when subscript is an integer"
-  match: "count(*)=2 and (IsNode(*[2], 'leaf') or *[2][self::m:mrow][*[2][.='⁣']])"
+  match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
-  - test:
-      if: "$Verbosity!='Terse' or not(*[2][self::m:mn])" # just say "x 1" for terse vs "x sub 1"
-      then: [T: "nedsänkt"]      # phrase(x 'sub' 2)
+  - T: "nedsänkt"               # phrase(x 'sub' 2)
   - x: "*[2]"
+  - pause: short
 
 - name: power-indexed-by
   tag: power-indexed-by
@@ -173,7 +176,7 @@
       then: [T: "nedsänkt"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
-- name: structure
+- name: literal
   tag: [msup, msubsup]
   match: "."
   replace:
@@ -187,34 +190,26 @@
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
       then:  [x: "*[last()]"]
       else_test:
-          if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"  # FIX: is this test necessary?
+          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
           then:
           - T: "upphöjt"      # phrase(x 'super' 2)
           - x: "*[last()]"
           - test:
-              if: "not(IsNode(*[last()], 'simple'))"
+              if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
               then: [T: "slut upphöjt"]      # phrase(x super 2 'end of super')
           else:
-          - T: "upphöjt till"            # phrase(5 'raised to the' second power equals 25)
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [T: "övre index"]
+              else: [T: "upphöjt"]
           - x: "*[last()]"
-          # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [T: "slut övre index"]
+              else: [T: "slut upphöjt"]
 
-# - name: default
-#   tag: munder
-#   match: "."
-#   replace:
-#   - test:
-#       if: "not(IsNode(*[1], 'leaf'))"
-#       then: [T: "kommenterat uttryck"]      # phrase(phrase(x 'modified' with y above it)
-#   - x: "*[1]"
-#   - pause: short
-#   - T: "med kommentar under"      # phrase(x 'with' z below it)
-#   - pause: short
-#   - x: "*[2]"
-#   - pause: short
-#   - T: "slut kommentar"      # phrase(x with z 'below' it)
-
-- name: default
+# SWEDISH: adapted the rule for less verbose speaking of expressions with a brace under them and then with something under the brace
+- name: default  # audit-ignore
   tag: munder
   match: "."
   replace:
@@ -246,7 +241,7 @@
 
 - name: diacriticals
   tag: mover
-  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^~→¯_', '')='']"
+  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
   replace:
   - x: "*[1]"
   - x: "*[2]"
@@ -285,11 +280,12 @@
   - pause: short
   - T: "slut kommentar"        # phrase(x modified with y 'above' it)
 
-- name: default
+- name: default  # audit-ignore
   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
   #   If there are more, we just dump them out without regard to sup/super :-(
   # FIX: this could use more special cases 
   # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  # SWEDISH: announce "left index" also if there are no right indexes
   tag: mmultiscripts
   match: "."
   variables:
@@ -374,9 +370,10 @@
               else:
               - test:
                   if: "$Prescripts"
-                  then: [T: "och"]
-              - T: "höger index"
-              - pause: short
+                  then:
+                  - T: "och"
+                  - T: "höger index"
+                  - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
               then:
@@ -461,7 +458,7 @@
   - T: "och"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "$NumColumns"
+      if: "NumColumns=1"
       then: [T: "kolumn"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "kolumner"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -719,7 +716,7 @@
       then: [pause: short]
       else: [pause: auto]
 
-- name: function-intent
+- name: function-intent  # audit-ignore
   # uncaught intent -- speak as foo of arg1 comma arg2 .... The MathML spec requires arguments to functions
   tag: "*"
   match: "count(*)>0"
