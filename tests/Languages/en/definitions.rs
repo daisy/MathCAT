@@ -691,7 +691,7 @@ fn geometry_prefix_tests() -> Result<()> {
     for (intent, expected) in tests {
         let expr = format!(
             "<math>
-                <mrow intent='{intent}($x)'>
+                <mrow intent='{intent}:function($x)'>
                     <mi arg='x'>x</mi>
                 </mrow>
             </math>"
@@ -923,6 +923,7 @@ fn infix_default_fixity_tests() -> Result<()> {
         ("list-separator", "x comma y"),
         ("maps-to", "x maps to y"),
         ("member-of", "x member of y"),
+        ("minus", "x minus y"),
         ("minus-or-plus", "x minus or plus y"),
         ("not-subset", "x not subset of y"),
         ("not-superset", "x not superset of y"),

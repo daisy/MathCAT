@@ -161,7 +161,6 @@
     "area":"function=area",
 
     "point":"prefix=point",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
-    "volume":"function=volume",
 
     ### Separators
     "time-separator":"infix=",
@@ -257,7 +256,8 @@
     "outer-product": "infix=outer product",
     "parallel-to": "infix=parallel to",
     "perpendicular": "infix=perpendicular to",
-    "plus": "infix=plus",
+    "plus": "infix=plus || prefix=positive", # Prefix not tested
+    "minus": "infix=minus || prefix=negative", # Prefix not tested
     "plus-or-minus": "infix=plus or minus",
     "precedes": "infix=precedes",
     "proportional": "infix=proportional to",
@@ -286,14 +286,14 @@
     "distance":"nofix=d; D: distance",
     "probability":"nofix=P: probability",
     "radius":"nofix=r: radius",
-    "volume":"nofix=V: volume",
+    "volume":"nofix=V: volume || function=volume",
     "exponential-e":"nofix=e",
     "imaginary-i":"nofix=i",
     "differential-d":"nofix=d",
     "golden-ratio":"nofix=golden ratio",
     
 
-    ## Other : Not tested
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
     "modified-variable": "silent= ",
     "say-super": "infix=super: superscript: superscript",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
@@ -301,13 +301,7 @@
     "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
     "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
     "logarithm-with-base": "prefix=log base: the log base: the log base",
-    "minus": "infix=minus || prefix=negative",
-    "plus": "infix=plus || prefix=positive",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "real-part": "function=the real part",
-
-    "transpose": "postfix=transpose || function=transpose",
-    "norm": "function=; norm: norm: norm; end norm",
     "trace": "function= ; trace : trace: the trace; end trace",
     "dimension": "function=; dimension : dimension: the dimension; end dimension",
     "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
