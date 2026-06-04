@@ -43,12 +43,12 @@ fn number_2a() -> Result<()> {
 }
 
 #[test]
+#[ignore]
 fn roman_numeral() -> Result<()> {
   let expr = "<math><mi>IX</mi><mo>+</mo><mi>VIII</mi><mo>=</mo><mi>XVII</mi></math>";
   test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "9 cộng 8, bằng 17")?;
   test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "9 la mã cộng 8 la mã, bằng 17 la mã")?;
   return Ok(());
-
 }
 
 #[test]

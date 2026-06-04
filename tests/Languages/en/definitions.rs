@@ -612,6 +612,32 @@ fn linear_algebra_tests() -> Result<()> {
 }
 
 #[test]
+fn nofix_set_tests() -> Result<()> {
+    let tests = vec![
+        ("set-of-integers", "ℤ", "set of all integers"),
+        ("set-of-reals", "ℝ", "set of all real numbers"),
+        ("set-of-rationals", "ℚ", "set of all rational numbers"),
+        ("set-of-natural-numbers", "ℕ", "set of all natural numbers"),
+        ("set-of-complex-numbers", "ℂ", "set of all complex numbers"),
+        ("set-of-primes", "ℙ", "set of all prime numbers"),
+    ];
+
+    for (intent, symbol, expected) in tests {
+        let expr = format!(
+            "<math>
+                <mi intent='{}:nofix'>{}</mi>
+            </math>",
+            intent,
+            symbol
+        );
+
+        test("en", "ClearSpeak", &expr, expected)?;
+    }
+
+    Ok(())
+}
+
+#[test]
 fn geometry_prefix_multi_value_tests() -> Result<()> {
     let tests = vec![
         ("line-segment", "line segment x y"),
@@ -619,17 +645,34 @@ fn geometry_prefix_multi_value_tests() -> Result<()> {
         ("line", "line x y"),
         ("ray", "ray x y"),
         ("arc", "arc x y"),
+        ("point", "point x y z"),
     ];
 
     for (intent, expected) in tests {
-        let expr = format!(
-            "<math>
-                <mrow intent='{intent}($x,$y)'>
-                    <mi arg='x'>x</mi>
-                    <mi arg='y'>y</mi>
-                </mrow>
-            </math>"
-        );
+        let expr = match intent{
+            "point" => {
+                format!(
+                    "<math>
+                        <mrow intent='{intent}($x,$y,$z)'>
+                            <mi arg='x'>x</mi>
+                            <mi arg='y'>y</mi>
+                            <mi arg='z'>z</mi>
+                        </mrow>
+                    </math>"
+                )
+            }
+
+            _ => { 
+                format!(
+                    "<math>
+                        <mrow intent='{intent}($x,$y)'>
+                            <mi arg='x'>x</mi>
+                            <mi arg='y'>y</mi>
+                        </mrow>
+                    </math>"
+                )
+            }
+        };
 
         test("en", "ClearSpeak", &expr, expected)?;
     }
@@ -944,6 +987,35 @@ fn postfix_default_fixity_tests() -> Result<()> {
                 </mrow>
             </math>",
             intent
+        );
+
+        test("en", "ClearSpeak", &expr, expected)?;
+    }
+
+    Ok(())
+}
+
+#[test]
+fn nofix_default_fixity_tests() -> Result<()> {
+    let tests = vec![
+        ("diameter", "d", "diameter"),
+        ("distance", "D", "distance"),
+        ("probability", "P", "probability"),
+        ("radius", "r", "radius"),
+        ("volume", "V", "volume"),
+        ("exponential-e", "e", "e"),
+        ("imaginary-i", "i", "i"),
+        ("differential-d", "d", "d"),
+        ("golden-ratio", "φ", "golden ratio"),
+    ];
+
+    for (intent, symbol, expected) in tests {
+        let expr = format!(
+            "<math>
+                <mi intent='{}:nofix'>{}</mi>
+            </math>",
+            intent,
+            symbol
         );
 
         test("en", "ClearSpeak", &expr, expected)?;

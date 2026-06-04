@@ -72,7 +72,7 @@ use sxd_document::dom::Element;
 use yaml_rust::Yaml;
 
 use std::fmt;
-use crate::speech::{SpeechRulesWithContext, MyXPath, TreeOrString};
+use crate::speech::{RulesFor, SpeechRulesWithContext, MyXPath, TreeOrString};
 use std::string::ToString;
 use std::str::FromStr;
 use strum_macros::{Display, EnumString};
@@ -267,6 +267,24 @@ pub enum TTS {
 //    Mac,
 }
 
+/// Escape literal text so user MathML (e.g. `mtext`) cannot inject SSML/SAPI markup.
+/// Applies only when generating speech (not braille) with SSML or SAPI5 output.
+/// Returns `s` unchanged when no escaping is needed (no allocation).
+pub fn escape_string_for_safety(s: String, rules_for: RulesFor, tts: &TTS) -> String {
+    if rules_for == RulesFor::Braille || (*tts != TTS::SSML && *tts != TTS::SAPI5) {
+        return s;
+    }
+    if !needs_xml_text_escape(&s) {
+        return s;
+    }
+    log::debug!("Escaping string for safety: {}", s);
+    return encode_safe(&s).into_owned();
+}
+
+fn needs_xml_text_escape(s: &str) -> bool {
+    return s.as_bytes().iter().any(|&b| b == b'&' || b == b'<' || b == b'>' || b == b'"');
+}
+
 impl TTS {
     /// Given the tts command ("pause", "rate", etc) and its value, build the TTS data structure for it.
     ///
@@ -455,16 +473,15 @@ impl TTS {
             if result.is_empty() {
                 result += " ";
             }
-            // need to sanitize string so that SSML is not injected into it via mtext, etc.
             let speech = command.replacements.replace::<String>(rules_with_context, mathml)?;  
-            result += &encode_safe(&speech);
+            result += &speech;
         }
 
         let end_tag = match self {
             TTS::None  => self.get_string_none(&command, prefs, false),
             TTS::SSML  => self.get_string_ssml(&command, prefs, false),
             TTS::SAPI5 => self.get_string_sapi5(&command, prefs, false),
-        };
+        };   
 
         if end_tag.is_empty() {
             return Ok( result ); // avoids adding in " "
@@ -759,4 +776,28 @@ mod tests {
         assert!(!output.contains("100ms"));
         assert!(output.contains("300ms"));
     }
+
+    /// Returns the same String allocation when escaping is not needed.
+    #[test]
+    fn escape_string_for_safety_no_alloc_when_clean() {
+        let input = "23".to_string();
+        let ptr = input.as_ptr();
+        let output = escape_string_for_safety(input, RulesFor::Speech, &TTS::SSML);
+        assert_eq!(output, "23");
+        assert_eq!(output.as_ptr(), ptr);
+        let output = escape_string_for_safety(output, RulesFor::Braille, &TTS::SSML);
+        assert_eq!(output, "23");
+        assert_eq!(output.as_ptr(), ptr);
+    }
+
+    #[test]
+    fn escape_string_for_safety_escapes_markup() {
+        let output = escape_string_for_safety(
+            "<break/>".to_string(),
+            RulesFor::Speech,
+            &TTS::SSML,
+        );
+        assert_eq!(output, "&lt;break&#x2F;&gt;");
+    }
+
 }

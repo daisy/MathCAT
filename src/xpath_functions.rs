@@ -46,11 +46,7 @@ fn get_text_from_element(e: Element) -> String {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn get_text_from_COE(coe: &ChildOfElement) -> String {
-    let element = coe.element();
-    return match element {
-        Some(e) => get_text_from_element(e),
-        None => "".to_string(),
-    };
+    coe.element().map_or_else(String::new, get_text_from_element)
 }
 
 // make sure that there is only one node in the NodeSet
@@ -73,8 +69,7 @@ fn is_tag(e: Element, name: &str) -> bool {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn is_COE_tag(coe: ChildOfElement, name: &str) -> bool {
-    let element = coe.element();
-    return element.is_some() && is_tag(element.unwrap(), name)
+    coe.element().is_some_and(|element| is_tag(element, name))
 }
 
 /// Should be an internal structure for implementation of the IsNode, but it was useful in one place in a separate module.
@@ -456,7 +451,6 @@ impl ToOrdinal {
             let pref_manager = pref_manager.borrow();
             let block_separators = pref_manager.pref_to_string("BlockSeparators");
             let decimal_separator = pref_manager.pref_to_string("DecimalSeparators");
-
             // check number validity (has digits, not a decimal)
             if number.is_empty() ||  number.contains(&decimal_separator) {
                 return Some(String::from(number));
@@ -1451,6 +1445,7 @@ mod tests {
 
     fn init_word_list() {
         crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        crate::interface::set_preference("Language", "en").unwrap();
         let result = crate::definitions::read_definitions_file(true);
         if let Err(e) = result {
             panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");

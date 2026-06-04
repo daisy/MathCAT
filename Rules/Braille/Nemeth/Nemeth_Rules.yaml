@@ -1161,7 +1161,7 @@
   tag: "*"
   match: "*" # make sure there are children
   replace:
-     - t: "unknown math m l element"
+     - x: "BrailleChars('unknown math m l element', 'Nemeth')"
      - x: "name(.)"
      - x: "*"
 - # at this point, we know there are no children -- might be no text
@@ -1169,12 +1169,12 @@
   tag: "*"
   match: "text()"
   replace:
-     - t: unknown math m l element
+     - x: "BrailleChars('unknown math m l element', 'Nemeth')"
      - x: "name(.)"
      - x: "text()"
 - name: default-no-text
   tag: "*"
   match: "."
   replace:
-     - t: "empty unknown math m l element"
+     - x: "BrailleChars('empty unknown math m l element', 'Nemeth')"
      - x: "name(.)"

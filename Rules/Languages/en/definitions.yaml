@@ -141,23 +141,18 @@
     "dimensional-product":"infix=by", # INFIX
 
 
-    ### Constants and Sets ### NOTE: Not tested, replace with proper variabless (aka get the proper Z or R)
-    "set-of-integers":"nofix=Z: set of all integers",
-    "set-of-reals":"nofix=R: set of all real numbers",
-    "set-of-rationals":"nofix=Q: set of all rational numbers",
-    "set-of-natural-numbers":"nofix=N: set of all natural numbers",
-    "set-of-complex-numbers":"nofix=C: set of all complex numbers",
-    "set-of-primes":"nofix=P: set of all prime numbers",
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ: set of all integers",
+    "set-of-reals":"nofix=ℝ: set of all real numbers",
+    "set-of-rationals":"nofix=ℚ: set of all rational numbers",
+    "set-of-natural-numbers":"nofix=ℕ: set of all natural numbers",
+    "set-of-complex-numbers":"nofix=ℂ: set of all complex numbers",
+    "set-of-primes":"nofix=ℙ: set of all prime numbers",
 
-    "exponential-e":"nofix=e",
-    "imaginary-i":"nofix=i",
-    "differential-d":"nofix=d",
-    "golden-ratio":"nofix=golden ratio",
-
-
+    
     ### Geometry
-    "line-segment":"prefix=line segment", # NOTE: check test
-    "directed-line-segment":"prefix=directed line segment", # NOTE: check test
+    "line-segment":"prefix=line segment",
+    "directed-line-segment":"prefix=directed line segment", 
     "line":"prefix=line",
     "ray":"prefix=ray",
     "arc":"prefix=arc",
@@ -165,7 +160,7 @@
     "length":"function=length",
     "area":"function=area",
 
-    # "point":"other=point",  ## NOTE: Has ??? for property, not tested
+    "point":"prefix=point",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
     "volume":"function=volume",
 
     ### Separators
@@ -288,9 +283,15 @@
 
     ## Default fixity nofix
     "diameter":"nofix=d: diameter",
+    "distance":"nofix=d; D: distance",
+    "probability":"nofix=P: probability",
+    "radius":"nofix=r: radius",
+    "volume":"nofix=V: volume",
+    "exponential-e":"nofix=e",
     "imaginary-i":"nofix=i",
     "differential-d":"nofix=d",
     "golden-ratio":"nofix=golden ratio",
+    
 
     ## Other : Not tested
     "modified-variable": "silent= ",
@@ -303,7 +304,10 @@
     "minus": "infix=minus || prefix=negative",
     "plus": "infix=plus || prefix=positive",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    
+    "real-part": "function=the real part",
+
+    "transpose": "postfix=transpose || function=transpose",
+    "norm": "function=; norm: norm: norm; end norm",
     "trace": "function= ; trace : trace: the trace; end trace",
     "dimension": "function=; dimension : dimension: the dimension; end dimension",
     "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
