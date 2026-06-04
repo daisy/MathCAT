@@ -6,7 +6,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// AI generated
+
 #[test]
 fn trig_names() -> Result<()> {
     let expr = "<math><mrow>
@@ -21,7 +21,7 @@ fn trig_names() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn hyperbolic_trig_names() -> Result<()> {
     let expr = "<math><mrow>
@@ -37,7 +37,7 @@ fn hyperbolic_trig_names() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn inverse_trig() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
@@ -45,7 +45,7 @@ fn inverse_trig() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn trig_squared() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mn>2</mn></msup><mi>x</mi></math>";
@@ -53,7 +53,7 @@ fn trig_squared() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn trig_cubed() -> Result<()> {
     let expr = "<math><msup><mi>tan</mi><mn>3</mn></msup><mi>x</mi></math>";
@@ -61,7 +61,7 @@ fn trig_cubed() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
@@ -70,7 +70,7 @@ fn trig_fourth() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
@@ -78,7 +78,7 @@ fn trig_power_other() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
@@ -86,7 +86,7 @@ fn simple_log() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
@@ -94,7 +94,7 @@ fn normal_log() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
@@ -102,7 +102,7 @@ fn simple_log_with_base() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
@@ -110,7 +110,7 @@ fn normal_log_with_base() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
@@ -120,7 +120,7 @@ fn normal_ln() -> Result<()> {
                 Ok(())
 }
 
-// AI generated
+
 #[test]
 fn simple_ln() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
@@ -130,7 +130,7 @@ fn simple_ln() -> Result<()> {
                 Ok(())
 }
 
-// AI generated
+
 #[test]
 fn other_names() -> Result<()> {
     let expr = "<math> <mrow><mi>Cov</mi><mi>x</mi></mrow> </math>";
@@ -142,7 +142,7 @@ fn other_names() -> Result<()> {
                 Ok(())
 }
 
-// AI generated
+
 #[test]
 fn explicit_function_call_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
@@ -151,7 +151,7 @@ fn explicit_function_call_with_parens() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn explicit_times_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
@@ -159,7 +159,7 @@ fn explicit_times_with_parens() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn explicit_function_call() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2061;</mo><mrow><mi>x</mi></mrow></mrow></math>";
@@ -167,7 +167,7 @@ fn explicit_function_call() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn explicit_times() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mi>x</mi></mrow></mrow></math>";
@@ -179,7 +179,7 @@ fn explicit_times() -> Result<()> {
 /*
     * Tests for times
     */
-// AI generated
+
 #[test]
 fn no_times_binomial() -> Result<()> {
     let expr = "<math><mrow><mi>x</mi> <mo>&#x2062;</mo> <mi>y</mi></mrow></math>";
@@ -187,7 +187,7 @@ fn no_times_binomial() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn times_following_paren() -> Result<()> {
     let expr = "<math><mrow>
@@ -198,7 +198,7 @@ fn times_following_paren() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn times_preceding_paren() -> Result<()> {
     let expr = "<math><mrow>
@@ -209,7 +209,7 @@ fn times_preceding_paren() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn no_times_sqrt() -> Result<()> {
     let expr = "<math><mrow>
@@ -226,7 +226,7 @@ fn no_times_sqrt() -> Result<()> {
 /*
     * Tests for parens
     */
-    // AI generated
+    
     #[test]
     fn no_parens_number() -> Result<()> {
         let expr = "<math><mrow>
@@ -239,7 +239,7 @@ fn no_times_sqrt() -> Result<()> {
         Ok(())
     }
 
-    // AI generated
+    
     #[test]
     fn no_parens_monomial() -> Result<()> {
         let expr = "<math><mrow>
@@ -252,7 +252,7 @@ fn no_times_sqrt() -> Result<()> {
         Ok(())
     }
 
-    // AI generated
+    
     #[test]
     fn no_parens_negative_number() -> Result<()> {
         let expr = "<math><mrow>
@@ -266,7 +266,7 @@ fn no_times_sqrt() -> Result<()> {
     }
 
 
-    // AI generated
+    
     #[test]
     fn no_parens_negative_number_with_var() -> Result<()> {
         let expr = "<math><mrow>
@@ -279,7 +279,7 @@ fn no_times_sqrt() -> Result<()> {
         Ok(())
     }
 
-    // AI generated
+    
     #[test]
     fn parens_superscript() -> Result<()> {
         let expr = "<math><mrow>
@@ -297,7 +297,7 @@ fn no_times_sqrt() -> Result<()> {
         Ok(())
     }
 
-    // AI generated
+    
     #[test]
     fn no_parens_fraction() -> Result<()> {
         let expr = "<math><mrow>
@@ -313,7 +313,7 @@ fn no_times_sqrt() -> Result<()> {
     }
 
     // Tests for the four types of intervals in SimpleSpeak
-    // AI generated
+    
     #[test]
     fn parens_interval_open_open() -> Result<()> {
         let expr = "<math> 
@@ -326,7 +326,7 @@ fn no_times_sqrt() -> Result<()> {
 
 }
 
-// AI generated
+
 #[test]
     fn parens_interval_closed_open() -> Result<()> {
         let expr = "<math> 
@@ -339,7 +339,7 @@ fn no_times_sqrt() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn parens_interval_open_closed() -> Result<()> {
     let expr = "<math> 
@@ -352,7 +352,7 @@ fn parens_interval_open_closed() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn parens_interval_closed_closed() -> Result<()> {
     let expr = "<math> 
@@ -364,7 +364,7 @@ fn parens_interval_closed_closed() -> Result<()> {
     Ok(())
 }
 
-    // AI generated
+    
     #[test]
     fn parens_interval_neg_infinity_open_open() -> Result<()> {
         let expr = "<math> 
@@ -376,7 +376,7 @@ fn parens_interval_closed_closed() -> Result<()> {
     Ok(())
 }
 
-    // AI generated
+    
     #[test]
     fn parens_interval_neg_infinity_open_closed() -> Result<()> {
         let expr = "<math> 

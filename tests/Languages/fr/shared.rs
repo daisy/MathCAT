@@ -3,7 +3,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// AI generated
+
 #[test]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
@@ -25,7 +25,7 @@ fn modified_vars() -> Result<()> {
             Ok(())
 }
 
-// AI generated
+
 #[test]
 fn limit() -> Result<()> {
     let expr = "<math>
@@ -45,7 +45,7 @@ fn limit() -> Result<()> {
             Ok(())
 }
 
-// AI generated
+
 #[test]
 fn limit_from_below() -> Result<()> {
     let expr = "<math>
@@ -62,7 +62,7 @@ fn limit_from_below() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
@@ -70,7 +70,7 @@ fn binomial_mmultiscripts() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
@@ -78,7 +78,7 @@ fn binomial_mmultiscripts_other() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
@@ -86,7 +86,7 @@ fn binomial_subscript() -> Result<()> {  // C_{n,k}
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
@@ -94,7 +94,7 @@ fn permutation_mmultiscripts() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
@@ -102,7 +102,7 @@ fn permutation_mmultiscripts_sup() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
@@ -110,7 +110,7 @@ fn permutation_msubsup() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
@@ -121,7 +121,7 @@ fn tensor_mmultiscripts() -> Result<()> {
             Ok(())
 }
 
-// AI generated
+
 #[test]
 fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
@@ -133,7 +133,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             Ok(())
 }
 
-// AI generated
+
 #[test]
 fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
@@ -141,7 +141,7 @@ fn prime() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
@@ -150,7 +150,7 @@ fn given() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn simple_msubsup() -> Result<()> {
     let expr = "<math>
@@ -170,7 +170,7 @@ fn simple_msubsup() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
@@ -180,7 +180,7 @@ fn non_simple_msubsup() -> Result<()> {
           Ok(())
 }
 
-// AI generated
+
 #[test]
 fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
@@ -203,7 +203,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
@@ -250,7 +250,7 @@ fn ignore_period() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
@@ -258,7 +258,7 @@ fn ignore_mtext_period() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 fn ignore_comma() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
@@ -297,7 +297,7 @@ fn ignore_comma() -> Result<()> {
     Ok(())
 }
 
-// AI generated
+
 #[test]
 #[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
@@ -340,7 +340,7 @@ fn ignore_period_and_space() -> Result<()> {
 }
 
 
-// AI generated
+
 #[test]
 fn bug_199_2pi() -> Result<()> {
   let expr = "<math>
@@ -361,7 +361,7 @@ fn bug_199_2pi() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn caret_and_hat() -> Result<()> {
   let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
@@ -369,7 +369,7 @@ fn caret_and_hat() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
@@ -377,7 +377,7 @@ fn mn_with_space() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn ignore_bold() -> Result<()> {
   let expr = r#"<math>
@@ -397,7 +397,7 @@ fn ignore_bold() -> Result<()> {
              Ok(())
 }
 
-// AI generated
+
 #[test]
 fn mn_with_block_and_decimal_separators() -> Result<()> {
   let expr = "<math><mn>1,234.56</mn></math>";                                       // may want to change this for another language
@@ -405,7 +405,7 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
@@ -414,7 +414,7 @@ fn divergence() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
@@ -424,7 +424,7 @@ fn curl() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
@@ -434,7 +434,7 @@ fn gradient() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_speak_perpendicular() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
@@ -454,7 +454,7 @@ fn literal_speak_perpendicular() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_speak_chars() -> Result<()> {
   let expr = r#"<math>
@@ -474,7 +474,7 @@ fn literal_speak_chars() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_speak_with_name() -> Result<()> {
   let expr = r#"<math intent='forcé($x)'>
@@ -495,7 +495,7 @@ fn literal_speak_with_name() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_speak_with_property() -> Result<()> {
   let expr = r#"<math intent=':prefix'>
@@ -516,7 +516,7 @@ fn literal_speak_with_property() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_intent_property() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
@@ -536,7 +536,7 @@ fn literal_intent_property() -> Result<()> {
   Ok(())
 }
 
-// AI generated
+
 #[test]
 fn literal_intent_property_with_name() -> Result<()> {
   let expr = r#"<math intent='forcé:literal($x)'>
