@@ -563,7 +563,7 @@ impl CanonicalizeContext {
 			root.append_child(math_element);
 			mathml = root.children()[0].element().unwrap();
 		}
-		CanonicalizeContext::assure_mathml(mathml)?;
+		CanonicalizeContext::assure_mathml(mathml, 0)?;
 		let mathml = self.clean_mathml(mathml).unwrap();	// 'math' is never removed
 		self.assure_nary_tag_has_one_child(mathml);
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
@@ -600,7 +600,10 @@ impl CanonicalizeContext {
 	}
 
 	/// Return an error if some element is not MathML (only look at first child of <semantics>) or if it has the wrong number of children
-	fn assure_mathml(mathml: Element) -> Result<()> {
+	fn assure_mathml(mathml: Element, depth: usize) -> Result<()> {
+		if depth > crate::interface::MAX_DEPTH {
+			bail!("MathML is too deeply nested to process");
+		}
 		let n_children = mathml.children().len();
 		let element_name = name(mathml);
 		if is_leaf(mathml) {
@@ -622,22 +625,11 @@ impl CanonicalizeContext {
 				"munderover" | "msubsup" => if n_children != 3 {
 					bail!("{} should have 3 children:\n{}", element_name, mml_to_string(mathml));
 				},
-				"mmultiscripts" => {
-					let has_prescripts = mathml.children().iter()
-							.any(|&child| name(as_element(child)) == "mprescripts");
-					if has_prescripts ^ (n_children.is_multiple_of(2)) {
-						bail!("{} has the wrong number of children:\n{}", element_name, mml_to_string(mathml));
-					}
-				},
-				"mlongdiv" => if n_children < 3 {
-					bail!("{} should have at least 3 children:\n{}", element_name, mml_to_string(mathml));
-				},
 				_ => if n_children != 2 {
 					bail!("{} should have 2 children:\n{}", element_name, mml_to_string(mathml));
 				},
 			}
-		}
-		if matches!(element_name, "mtd" | "mtr" | "mlabeledtr")  {
+		} else if matches!(element_name, "mtd" | "mtr" | "mlabeledtr")  {
 			let parent_name = name(get_parent(mathml));
 			if (element_name == "mtr" || element_name == "mlabeledtr") && parent_name != "mtable" {
 				bail!("Illegal MathML: {} is not a child of mtable. Parent is {}", element_name, mml_to_string(get_parent(mathml)));
@@ -645,8 +637,18 @@ impl CanonicalizeContext {
 				bail!("Illegal MathML: mtd is not a child of {}. Parent is {}", parent_name, mml_to_string(get_parent(mathml)));
 			}
 		}
-		let children = mathml.children();
-		if element_name == "semantics" {
+		else if element_name == "mmultiscripts" {
+			let has_prescripts = mathml.children().iter()
+					.any(|&child| name(as_element(child)) == "mprescripts");
+			if has_prescripts ^ (n_children.is_multiple_of(2)) {
+				bail!("{} has the wrong number of children:\n{}", element_name, mml_to_string(mathml));
+			}
+		} else if element_name == "mlongdiv" {
+			if n_children < 3 {
+				bail!("{} should have at least 3 children:\n{}", element_name, mml_to_string(mathml));
+			}
+		} else if element_name == "semantics" {
+			let children = mathml.children();
 			if children.is_empty() {
 				return Ok( () );
 			} else {
@@ -660,19 +662,19 @@ impl CanonicalizeContext {
 						}
 					}
 				}
-				return CanonicalizeContext::assure_mathml(presentation_element);
+				return CanonicalizeContext::assure_mathml(presentation_element, depth + 1);
 			}
-		}
-		if !IsNode::is_mathml(mathml) {
+		} else if !IsNode::is_mathml(mathml) {
 			if element_name == "annotation-xml" {
 				bail!("'annotation-xml' element is not child of 'semantics' element");
 			} else {
 				bail!("'{}' is not a valid MathML element", element_name);
 			}
 		}
+
 		// valid MathML element and not a leaf -- check the children
-		for child in children {
-			CanonicalizeContext::assure_mathml( as_element(child) )?;
+		for child in mathml.children() {
+			CanonicalizeContext::assure_mathml( as_element(child), depth + 1)?;
 		}
 		return Ok( () );
 	}
@@ -771,7 +773,8 @@ impl CanonicalizeContext {
 			name(parent).to_string()
 		};
 		let parent_requires_child = ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(&parent_name) ||
-										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable");
+										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable") ||
+										  parent_name == "mmultiscripts";
 
 		// handle empty leaves -- leaving it empty causes problems with the speech rules
 		if is_leaf(mathml) && !EMPTY_ELEMENTS.contains(element_name) && as_text(mathml).is_empty() {
@@ -781,7 +784,9 @@ impl CanonicalizeContext {
 		if mathml.children().is_empty() && !EMPTY_ELEMENTS.contains(element_name) {
 			if element_name == "mrow" && mathml.attribute(INTENT_ATTR).is_none() {
 				// if it is an empty mrow that doesn't need to be there, get rid of it. Otherwise, replace it with an mtext
-				if parent_name == "mmultiscripts" {	// MathML Core dropped "none" in favor of <mrow/>, but MathCAT is written with <none/>
+				if parent_name == "mmultiscripts" && !mathml.preceding_siblings().is_empty() {
+					// MathML Core dropped "none" in favor of <mrow/>, but MathCAT is written with <none/>
+					// Do substitutions for the scripts, not the base
 					set_mathml_name(mathml, "none");
 					return Some(mathml);
 				}
@@ -1112,6 +1117,7 @@ impl CanonicalizeContext {
 				// cleaning children can add or delete subsequent children, so we need to constantly update the children (and mathml)
 				let mut children = mathml.children();
 				let mut i = 0;
+
 				while i < children.len() {
 					if let Some(child) = children[i].element() {
 						match self.clean_mathml(child) {
@@ -1418,7 +1424,7 @@ impl CanonicalizeContext {
 		}
 
 
-		/// looks for pairs of (letter, pseudoscript) such as x' or p'q' all inside of a single token element
+		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
 		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
 			static IS_DEGREES_C_OR_F: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[°º][CF]").unwrap());
 
@@ -1562,7 +1568,7 @@ impl CanonicalizeContext {
 						i += 2;
 					}
 				}
-				if new_children.len() == 1 {
+				if new_children.len() <= 2 {  // base only, or base and </mprescripts>
 					mathml = as_element(new_children[0]);
 				} else {
 					mathml.replace_children(new_children);
@@ -1882,10 +1888,6 @@ impl CanonicalizeContext {
 			/// 'mo' should only be '+', '-', '=', ',', '.'  -- unlikely someone is doing anything sophisticated
 			fn is_roman_numeral_adjacent<'a, I>(siblings: I, must_be_upper_case: bool) -> bool
 					where I: Iterator<Item = &'a ChildOfElement<'a>> {		
-				static ROMAN_NUMERAL_OPERATORS: phf::Set<&str> = phf_set! {
-					"+", "-'", "=", "<", "≤", ">", "≥", 
-					// ",", ".",   // [c,d] triggers this if "," is present, so omitting it
-				};
 				let mut found_match = false;				// guard against no siblings
 				let mut last_was_roman_numeral = true;	// started at roman numeral
 				// debug!("start is_roman_numeral_adjacent");
@@ -1895,15 +1897,17 @@ impl CanonicalizeContext {
 					match name(maybe_roman_numeral) {
 						"mo" => {
 							if !last_was_roman_numeral {
+								debug!("maybe_roman_numeral (mo): not last was roman numeral");
 								return false;
 							}
 							let text = as_text(maybe_roman_numeral);
-							if !ROMAN_NUMERAL_OPERATORS.contains(text) {
+							// ",", "." omitted — [c,d] triggers this if "," is present
+							if !matches!(text, "+" | "-" | "=" | "<" | "≤" | ">" | "≥") {
 								return false;
 							}
 							last_was_roman_numeral = false;
 						},
-						"mi" | "mn" => {
+						"mi" | "mn" | "mtext" => {
 							if last_was_roman_numeral {
 								return false;		// no implicit multiplication (or whatever)
 							}
@@ -1915,7 +1919,7 @@ impl CanonicalizeContext {
 							found_match = true;
 							last_was_roman_numeral = true;
 						},
-						"mtext" | "mspace" | "mphantom" => {},
+						"mspace" | "mphantom" => {},
 						_ => {
 							return false;
 						}
@@ -2302,6 +2306,7 @@ impl CanonicalizeContext {
 					while name(base) == "mrow" && base.children().len() == 1 {
 						// the base may be wrapped with mrows
 						base = as_element(base.children()[0]);
+						base.remove_attribute(SPLIT_TOKEN);
 					}
 					base.set_text(text);
 					return Some(last_child);
@@ -3417,7 +3422,7 @@ impl CanonicalizeContext {
 			// FIX: MathType generates the wrong version of union and intersection ops (binary instead of unary)
 		} else if !is_base && (parent_name == "msup" || parent_name == "msubsup") {
 			mo_text = match mo_text {
-				"\u{00BA}"| "\u{2092}"| "\u{20D8}"| "\u{2218}" | "\u{25E6}" => "\u{00B0}",		// circle-like objects -> degree
+				"\u{00BA}"| "\u{2092}"| "\u{20D8}"| "\u{2218}" | "\u{25E6}" | "\u{02DA}" => "\u{00B0}",		// circle-like objects -> degree
 				_ => mo_text,
 			};
 		} else {
@@ -3429,28 +3434,9 @@ impl CanonicalizeContext {
 				_ => mo_text,
 			};
 		};
-		mo_text = match mo_text {
-			"\u{2212}" => "-",
-			// FIX: this needs to be after all expr the "|" has been fully canonicalized. At this point, any parent mrow/siblings is in flux
-			// "\u{007C}" => {  // vertical line -> divides
-			// if a number or variable (lower case single letter) precedes and follows "|", switch to divides (a bit questionable...)
-			// debug!("canonicalize_mo_text parent:\n{}", mml_to_string(parent));
-			// 	let precedes = mo.preceding_siblings();
-			// 	let follows = mo.following_siblings();
-			// 	if precedes.is_empty() || follows.is_empty() {
-			// 		"\u{007C}"
-			// 	} else {
-			// 		let before = as_element(precedes[0]);
-			// 		let after = as_element(follows[0]);
-			// 		let before_ok = name(before) == "mn" ||
-			// 				(name(before) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(before)));
-			// 		let after_ok = name(after) == "mn" ||
-			// 				(name(after) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(after)));
-			// 		if before_ok && after_ok {"\u{2224}"} else {"\u{007C}"}
-			// 	}
-			// },
-			_ => mo_text,
-		};
+		if mo_text == "\u{2212}" {
+			mo_text = "-";
+		}
 		mo.set_text(mo_text);
 	}
 	
@@ -3686,7 +3672,7 @@ impl CanonicalizeContext {
 			if state_likelihood > 0 {
 				right_sibling.set_attribute_value(MAYBE_CHEMISTRY, state_likelihood.to_string().as_str());
 				// at this point, we know both node and right_sibling are positive, so we have at least a maybe
-				if state_likelihood + node_chem_likelihood.unwrap().parse::<isize>().unwrap() > 2 {
+				if state_likelihood + node_chem_likelihood.unwrap().parse::<i32>().unwrap() > 2 {
 					return FunctionNameCertainty::False;
 				} else {
 					return FunctionNameCertainty::Maybe
@@ -5983,19 +5969,64 @@ mod canonicalize_tests {
         let target_str = "<math><mrow>
 			<mn data-roman-numeral='true' data-number='48'>XLVIII</mn> <mo>+</mo><mn data-roman-numeral='true' data-number='2026'>mmxxvi</mn>
 			</mrow></math>";
-        // let target_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
-	// #[test]
-    // fn roman_numeral_context() {
-    //     let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
-    //     let target_str = "<math> <mrow data-changed='added'>
-	// 		<mrow data-changed='added'><mn data-roman-numeral='true'>vi</mn><mo>-</mo><mn mathvariant='normal' data-roman-numeral='true'>i</mn></mrow> 
-	// 		<mo>=</mo> <mn data-roman-numeral='true'>v</mn>
-	// 	</mrow> </math>";
-    //     are_strs_canonically_equal_result(test_str, target_str, &[])
-	// }
+	#[test]
+    fn roman_numeral_multi_letter_mi() -> Result<()> {
+        let test_str = "<math>
+            <mi>IX</mi>
+            <mo>+</mo>
+            <mi>VIII</mi>
+            <mo>=</mo>
+            <mi>XVII</mi>
+        </math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='9'>IX</mn>
+				<mo>+</mo>
+				<mn data-roman-numeral='true' data-number='8'>VIII</mn>
+			</mrow>
+			<mo>=</mo>
+			<mn data-roman-numeral='true' data-number='17'>XVII</mn>
+			</mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_single_letter_mi_is_not_number() -> Result<()> {
+        // Regression test for https://github.com/daisy/MathCAT/issues/528
+        let test_str = "<math>
+            <mi>C</mi>
+            <mo>=</mo>
+            <mi>D</mi>
+        </math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='100'>C</mn>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='500'>D</mn>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_context() -> Result<()> {
+        let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='6'>vi</mn>
+				<mo>-</mo>
+				<mn mathvariant='normal' data-roman-numeral='true' data-number='1'>i</mn>
+				</mrow>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='5'>v</mn>
+			</mrow>
+		</math>";
+        return are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
 
 	#[test]
     fn not_roman_numeral() -> Result<()> {
@@ -6508,6 +6539,13 @@ mod canonicalize_tests {
 	}
 
 	#[test]
+    fn merge_mi_bug_545() -> Result<()> {
+        let test_str = "<math><mi>S</mi><mi>I</mi><msup><mi>N</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+        let target_str = "<math><msup><mi mathvariant='normal'>SIN</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
     fn parent_bug_94() -> Result<()> {
 		// This is a test to make sure the crash in the bug report doesn't happen.
 		// Note: in the bug, they behavior they would like is a single mn with content "0.02"
@@ -6754,9 +6792,20 @@ mod canonicalize_tests {
 	#[test]
     fn empty_mmultiscripts_485() -> Result<()> {
         let test_str = "<math><mmultiscripts>   </mmultiscripts></math>";
-        let target_str = " <math>
-			<mtext data-added='missing-content' data-width='0.700'> </mtext>
-		</math>";
+        let target_str = ""; // shouldn't get to the point of comparing because the input is illegal.
+        let err = are_strs_canonically_equal_result(test_str, target_str, &[])
+            .expect_err("empty mmultiscripts should be rejected");
+        assert!(
+            err.to_string().contains("mmultiscripts has the wrong number of children:\n <mmultiscripts></mmultiscripts>"),
+            "unexpected error message: {err}"
+        );
+        Ok(())
+	}
+
+	#[test]
+    fn empty_mmultiscripts_544() -> Result<()> {
+        let test_str = "<math><mmultiscripts><mrow/><mprescripts></mprescripts><mrow/><mrow/></mmultiscripts></math>";
+        let target_str = "<math> <mtext data-changed='empty_content' data-width='0'> </mtext></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 

@@ -1,6 +1,6 @@
 # MathCAT: Math Capable Assistive Technology
 
-<img src="logo.png" style="position: relative; top: 16px; z-index: -1; alt="The MathCAT logo with a cat sitting on the text "MathCAT"">
+<img src="logo.png" style="position: relative; top: 16px; z-index: -1;" alt="The MathCAT logo with a cat sitting on the text MathCAT">
 is a library that supports conversion of MathML to:
 
 

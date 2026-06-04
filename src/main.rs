@@ -194,12 +194,9 @@ fn main() {
 
   let expr = r#"
 <math>
-        <msub><mi mathvariant="normal">N</mi><mn>2</mn></msub>
-        <munderover><mo>&#x2192;</mo><mtext>Haber&#xA0;process</mtext><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub></munderover>
-        <mi mathvariant="normal">N</mi>
-        <msub><mi mathvariant="normal">H</mi><mn>3</mn></msub>
+    <mn data-from-mathml='mn' id='ID.0214'>𝟢</mn>
     </math>
-         "#;
+ "#;
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -239,10 +236,15 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  // match do_navigate_command("ZoomIn".to_string())  {
-  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
-  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  // }
+  match do_navigate_command("ZoomIn".to_string())  {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  }
+  match do_navigate_command("ZoomIn".to_string())  {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  }
+  info!("\n");
   // match do_navigate_command("ToggleZoomLockUp".to_string()) {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("ToggleZoomLockUp speech: '{speech}'"),

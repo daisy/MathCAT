@@ -22,6 +22,9 @@ use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
+/// Maximum depth to prevent stack overflow on deeply nested MathML
+pub const MAX_DEPTH: usize = 512;
+
 #[cfg(feature = "enable-logs")]
 use std::sync::Once;
 #[cfg(feature = "enable-logs")]
@@ -150,10 +153,15 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]+"#).unwrap()); // very limited namespace prefix match
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap()); // very limited namespace prefix match
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]+?);"#).unwrap());
 
+    // Strip out processing instructions and comments -- these are not MathML and can cause DOS problems in the parser
+    static PROCESSING_INSTRUCTION: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"<\?[\s\S]{1,2048}\?>"#).unwrap());
+    static XML_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?s)"#).unwrap());
+
+    // These have some length limits to avoid DOS attacks via long strings
+    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
+    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
+    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -164,13 +172,20 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
         let mathml_str = mathml_str.as_ref();
+        // Safety guard: Reject strings > 1MB to prevent DoS/Stack issues
+        if mathml_str.len() > 1024 * 1024 {
+            bail!("MathML string of size {} bytes exceeds length limit of 1MB", mathml_str.len());
+        }
+
         return MATHML_INSTANCE.with(|old_package| {
             static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
-                                                    // need to deal with character data and convert to something the parser knows
-            let mathml_str =
-                HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+                                                                     
+            let mathml_str = XML_COMMENT.replace_all(mathml_str, "");
+            let mathml_str = PROCESSING_INSTRUCTION.replace_all(&mathml_str, "");
+            // FIX: need to deal with character data and convert to something the parser knows
+            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
@@ -179,6 +194,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
                 });
 
             if !error_message.is_empty() {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
                 bail!(error_message);
             }
             let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
@@ -192,6 +209,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 
             let new_package = parser::parse(&mathml_str);
             if let Err(e) = new_package {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
                 bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
             }
 
@@ -323,38 +342,38 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
         }
     }
 
-    crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow_mut();
-        if let Some(error_string) = rules.get_error() {
+    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
+        if let Some(error_string) = rules.borrow().get_error() {
             bail!("{}", error_string);
         }
+        Ok(())
+    })?;
 
-        // we set the value even if it was the same as the old value because this might override a potentially changed future user value
-        let mut pref_manager = rules.pref_manager.borrow_mut();
-        if name == "LanguageAuto" {
-            let language_pref = pref_manager.pref_to_string("Language");
-            if language_pref != "Auto" {
-                bail!(
-                    "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
-                    language_pref
-                );
+    // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
+    let pref_manager = crate::prefs::PreferenceManager::get();
+    let mut pref_manager = pref_manager.borrow_mut();
+    if name == "LanguageAuto" {
+        let language_pref = pref_manager.pref_to_string("Language");
+        if language_pref != "Auto" {
+            bail!(
+                "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
+                language_pref
+            );
+        }
+    }
+    let lower_case_value = value.to_lowercase();
+    if lower_case_value == "true" || lower_case_value == "false" {
+        pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
+    } else {
+        match name {
+            "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
+                pref_manager.set_api_float_pref(name, to_float(name, &value)?)
+            }
+            _ => {
+                pref_manager.set_string_pref(name, &value)?;
             }
         }
-        let lower_case_value = value.to_lowercase();
-        if lower_case_value == "true" || lower_case_value == "false" {
-            pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
-        } else {
-            match name {
-                "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
-                    pref_manager.set_api_float_pref(name, to_float(name, &value)?)
-                }
-                _ => {
-                    pref_manager.set_string_pref(name, &value)?;
-                }
-            }
-        };
-        return Ok::<(), Error>(());
-    })?;
+    };
 
     return Ok(());
 }
@@ -659,6 +678,16 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 /// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
 /// Convert the returned error from set_mathml, etc., to a useful string for display
 pub fn copy_mathml(mathml: Element) -> Element {
+    return copy_mathml_recursive(mathml, 0);
+}
+
+fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > MAX_DEPTH {
+        // Return the element as a leaf if it's too deep to prevent crash
+        return create_mathml_element(&mathml.document(), name(mathml));
+    }
+
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
     let new_mathml = create_mathml_element(&mathml.document(), name(mathml));
@@ -676,7 +705,7 @@ pub fn copy_mathml(mathml: Element) -> Element {
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml(child);
+        let new_child = copy_mathml_recursive(child, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -1112,12 +1141,12 @@ mod tests {
         let test_package = &parser::parse(test).expect("Failed to parse input");
         let test_doc = test_package.as_document();
         trim_doc(&test_doc);
-        debug!("test:\n{}", mml_to_string(get_element(&test_package)));
+        debug!("test:\n{}", mml_to_string(get_element(test_package)));
 
         let target_package = &parser::parse(target).expect("Failed to parse input");
         let target_doc = target_package.as_document();
         trim_doc(&target_doc);
-        debug!("target:\n{}", mml_to_string(get_element(&target_package)));
+        debug!("target:\n{}", mml_to_string(get_element(target_package)));
 
         match is_same_doc(&test_doc, &target_doc) {
             Ok(_) => return true,
@@ -1188,7 +1217,7 @@ mod tests {
         let package1 = &parser::parse(whitespace_str).expect("Failed to parse input");
         let doc1 = package1.as_document();
         trim_doc(&doc1);
-        debug!("doc1:\n{}", mml_to_string(get_element(&package1)));
+        debug!("doc1:\n{}", mml_to_string(get_element(package1)));
 
         let package2 = parser::parse(different_str).expect("Failed to parse input");
         let doc2 = package2.as_document();
@@ -1280,5 +1309,142 @@ mod tests {
         let test = "<math><mtext>if&#xa0;<math> <msup><mi>n</mi><mn>2</mn></msup></math>&#xa0;is real</mtext></math>";
         let target = "<math><mrow><mtext>if&#xa0;</mtext><msup><mi>n</mi><mn>2</mn></msup><mtext>&#xa0;is real</mtext></mrow></math>";
         assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn stack_overflow_protection() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let mut bad_mathml = String::from("<math>");
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("<msqrt><mi>n</mi>");
+        }
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("</msqrt>");
+        }
+        bad_mathml.push_str("</math>");
+        assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
+    }
+
+    #[test]
+    fn old_mathml_cleared_on_error() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        let good_mathml = "<math><mn>3</mn></math>";
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math><mi>&xabc;</mi></math>";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
+        set_mathml(good_mathml).unwrap();
+        let bad_mathml = "<math>garbage";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text().unwrap() == "");
+    }
+
+
+
+    fn setup_speech_ssml() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        set_preference("Language", "en").unwrap();
+        set_preference("TTS", "SSML").unwrap();
+        set_preference("MathRate", "80").unwrap();
+        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+        set_preference("Verbosity", "Medium").unwrap();
+    }
+
+    #[test]
+    fn test_no_escaping() -> Result<()> {
+        setup_speech_ssml();
+        let expr = " <math>
+            <mfrac>
+                <mrow> <mi>x</mi><mo>+</mo><mi>y</mi> </mrow>
+                <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
+            </mfrac>
+        </math>";
+        set_mathml(&expr)?;
+        let speech = get_spoken_text()?;
+        // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
+        assert!(!speech.contains("&lt;"));
+        assert!(!speech.contains("&gt;"));
+        assert!(!speech.contains("&amp;lt;"));
+        return Ok(());
+    }
+
+    /// The attack payload must not pass through verbatim (rule-generated SSML may contain `<break`).
+    fn assert_ssml_attack_neutralized(speech: &str, illegal_ssml: &str) {
+        assert!(
+            !speech.contains(illegal_ssml),
+            "attack payload ({illegal_ssml}) appears verbatim in output: {speech}"
+        );
+        assert!(
+            !speech.contains(r#"time="5000ms""#) && !speech.contains("time='5000ms'"),
+            "attack break duration in output: {speech}"
+        );
+    }
+
+    /// SSML snippet an attacker might embed in MathML text or attributes.
+    const PAYLOAD: &str = r#"<break time="50000ms"/>"#;
+    /// Same bytes as `PAYLOAD`, entity-encoded so attribute values are well-formed XML.
+    const PAYLOAD_ATTR_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;";
+    /// Entity-encoded payload plus trailing literal text (well-formed in leaf element text).
+    const PAYLOAD_LEAF_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;note";
+
+    #[test]
+    /// User-supplied leaf text must not inject SSML when TTS is SSML.
+    fn leaf_text_ssml_attack_neutralized_in_speech() -> Result<()> {
+        setup_speech_ssml();
+        // Entity-encoded payload: valid XML through set_mathml (no CDATA), decodes to PAYLOAD + "note".
+        let mathml = format!(
+            r#"<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo>
+                           <mi>{PAYLOAD_LEAF_XML}</mi><mo>+</mo>
+                           <ms>{PAYLOAD_LEAF_XML}</ms><mo>+</mo>
+                           <mn>{PAYLOAD_LEAF_XML}</mn></mrow></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        let mathml = format!(
+            "<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo><mn>1</mn></mrow></math>"
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        return Ok(());
+    }
+
+    #[test]
+    /// Attribute values read via xpath must not inject SSML when TTS is SSML.
+    fn attribute_ssml_attack_neutralized_in_speech() -> Result<()> {
+        use crate::speech::{SpeechRulesWithContext, SPEECH_RULES};
+
+        setup_speech_ssml();
+        let mathml = format!(
+            r#"<math data-ssml-attack="{PAYLOAD_ATTR_XML}"><mn>x</mn></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+
+        // XPath Attribute nodes use replace_chars (same path as replace_nodes_string).
+        SPEECH_RULES.with(|rules| {
+            rules.borrow_mut().read_files()?;
+            let rules_ref = rules.borrow();
+            let package = parser::parse(&mathml)?;
+            let math = get_element(&package);
+            let attr = math
+                .attribute("data-ssml-attack")
+                .expect("data-ssml-attack attribute");
+            let work_package = Package::new();
+            let mut ctx =
+                SpeechRulesWithContext::new(&rules_ref, work_package.as_document(), "", 0);
+            let from_attr = ctx.replace_chars(attr.value(), math)?;
+            assert_ssml_attack_neutralized(&from_attr, PAYLOAD);
+            assert!(
+                from_attr.contains("&lt;"),
+                "attribute value should be XML-escaped for SSML: {from_attr}"
+            );
+            Ok::<(), Error>(())
+        })?;
+        return Ok(());
     }
 }

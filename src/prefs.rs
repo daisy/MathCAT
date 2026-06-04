@@ -734,6 +734,13 @@ impl PreferenceManager {
             panic!("Internal error: set_string_pref called on invalid PreferenceManager -- error message\n{}", &self.error);
         };
 
+        // verify language, braille, and SpeechStyle because these are used as access into the file system
+        // should be an ascii string with only letters, dashes, and underscores
+        if matches!(key, "Language" | "BrailleCode" | "SpeechStyle") &&
+           !value.chars().all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '-')) {
+            bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
+        }
+        
         // don't do an update if the value hasn't changed
         let mut is_user_pref = true;
         if let Some(pref_value) = self.api_prefs.prefs.get(key) {
@@ -781,16 +788,19 @@ impl PreferenceManager {
         let language_dir = self.rules_dir.to_path_buf().join("Languages");
         match changed_pref {
             "Language" => {
-                self.set_speech_files(&language_dir, changed_value, None)?
+                self.set_speech_files(&language_dir, changed_value, None)?;
+                crate::speech::invalidate_speech_language_caches();
             },
             "SpeechStyle" => {
                 let language = self.pref_to_string("Language");
                 let language = if language.as_str() == "Auto" {"en"} else {language.as_str()};       // avoid 'temp value dropped while borrowed' error
-                self.set_style_file(&language_dir, language, changed_value)?
+                self.set_style_file(&language_dir, language, changed_value)?;
+                crate::speech::invalidate_speech_style_caches();
             },
             "BrailleCode" => {
                 let braille_dir = self.rules_dir.to_path_buf().join("Braille");
-                self.set_braille_files(&braille_dir, changed_value)?
+                self.set_braille_files(&braille_dir, changed_value)?;
+                crate::speech::invalidate_braille_caches();
             },
             _ => (),
         }
@@ -904,6 +914,18 @@ mod tests {
     fn rel_path<'a>(rules_dir: &'a Path, path: &'a Path) -> &'a Path {
         let stripped_path = path.strip_prefix(rules_dir).unwrap();
         return stripped_path
+    }
+
+    fn speech_rule_files_cache_is_empty() -> bool {
+        crate::speech::SPEECH_RULES.with(|rules| rules.borrow().rule_files_cache_is_empty())
+    }
+
+    fn speech_definitions_files_cache_is_empty() -> bool {
+        crate::speech::SPEECH_RULES.with(|rules| rules.borrow().definitions_files_cache_is_empty())
+    }
+
+    fn speech_definitions_files_cache_path() -> PathBuf {
+        crate::speech::SPEECH_RULES.with(|rules| rules.borrow().definitions_files_cache_path())
     }
 
     #[test]
@@ -1114,17 +1136,48 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
     
     #[test]
     fn test_speech_style_change() {
+        use crate::speech::SPEECH_RULES;
+
         PREF_MANAGER.with(|pref_manager| {
             let mut pref_manager = pref_manager.borrow_mut();
             pref_manager.initialize(abs_rules_dir_path()).unwrap();
             pref_manager.set_user_prefs("Language", "en").unwrap();
             pref_manager.set_user_prefs("SpeechStyle", "ClearSpeak").unwrap();
             assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.get_rule_file(&RulesFor::Speech)), PathBuf::from("Languages/en/ClearSpeak_Rules.yaml"));
-
-            pref_manager.set_user_prefs("SpeechStyle", "SimpleSpeak").unwrap();
-            
-            assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.get_rule_file(&RulesFor::Speech)), PathBuf::from("Languages/en/SimpleSpeak_Rules.yaml"));
         });
+        SPEECH_RULES.with(|rules| rules.borrow_mut().read_files().unwrap());
+        assert!(!speech_rule_files_cache_is_empty());
+
+        PREF_MANAGER.with(|pref_manager| {
+            pref_manager.borrow_mut().set_user_prefs("SpeechStyle", "SimpleSpeak").unwrap();
+            assert_eq!(rel_path(&pref_manager.borrow().rules_dir, pref_manager.borrow().get_rule_file(&RulesFor::Speech)), PathBuf::from("Languages/en/SimpleSpeak_Rules.yaml"));
+        });
+        assert!(speech_rule_files_cache_is_empty());
+    }
+
+    #[test]
+    fn test_language_change_invalidates_definitions_caches() {
+        use crate::speech::SPEECH_RULES;
+
+        PREF_MANAGER.with(|pref_manager| {
+            pref_manager.borrow_mut().initialize(abs_rules_dir_path()).unwrap();
+            pref_manager.borrow_mut().set_user_prefs("Language", "nb").unwrap();
+        });
+        SPEECH_RULES.with(|rules| rules.borrow_mut().read_files().unwrap());
+        let nb_defs_path = speech_definitions_files_cache_path();
+        assert!(!speech_definitions_files_cache_is_empty());
+        assert!(nb_defs_path.to_string_lossy().contains("nb"));
+
+        PREF_MANAGER.with(|pref_manager| {
+            pref_manager.borrow_mut().set_user_prefs("Language", "en").unwrap();
+        });
+        assert!(speech_definitions_files_cache_is_empty());
+
+        SPEECH_RULES.with(|rules| rules.borrow_mut().read_files().unwrap());
+        let en_defs_path = speech_definitions_files_cache_path();
+        assert!(!speech_definitions_files_cache_is_empty());
+        assert!(en_defs_path.to_string_lossy().contains("en"));
+        assert_ne!(nb_defs_path, en_defs_path);
     }
 
     #[test]
@@ -1149,6 +1202,17 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             let pref_manager = pref_manager.borrow_mut();
             let merged_prefs = pref_manager.merge_prefs();
             assert_eq!(merged_prefs.get("NavVerbosity").unwrap().as_str().unwrap(), "Terse");
+        });
+    }
+
+    #[test]
+    fn test_illegal_pref_values() {
+        PREF_MANAGER.with(|pref_manager| {
+            let mut pref_manager = pref_manager.borrow_mut();
+            pref_manager.initialize(abs_rules_dir_path()).unwrap();
+            assert!(pref_manager.set_string_pref("Language", "../../../my/path").is_err());
+            assert!(pref_manager.set_string_pref("BrailleCode", "C:\\my\\path").is_err());
+            assert!(pref_manager.set_string_pref("SpeechStyle", "/my/path").is_err());
         });
     }
 
