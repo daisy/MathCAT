@@ -21,22 +21,22 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - t: "sur"
+      - T: "sur"
       - x: "*[2]"
       else:
-      - t: "fraction"
+      - T: "fraction"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
   match: "."
   replace:
-  - t: "racine carrée"
+  - T: "racine carrée"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "de"]
+          then: [T: "de"]
       - x: "*[1]"
 
 - name: overview-default
@@ -47,21 +47,21 @@
       if: "*[2][self::m:mn]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "racine carrée"]
+        then: [T: "racine carrée"]
       - else_if: "*[2][.='3']"
-        then: [t: "racine cubique"]
+        then: [T: "racine cubique"]
       - else:
         - x: "*[2]"
-        - t: "ième racine"
+        - T: "ième racine"
       else:
       - x: "*[2]"
-      - t: "racine"
+      - T: "racine"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "de"]
+          then: [T: "de"]
       - x: "*[1]"
 
 - name: matrix-override
@@ -70,24 +70,24 @@
   - "*[2][self::m:mtable] and"
   - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
   replace:
-  - t: "la"
+  - T: "la"
   - x: count(*[2]/*)
-  - t: "par"
+  - T: "par"
   - x: count(*[2]/*[self::m:mtr][1]/*)
   - test:
       if: "*[1][.='|']"
-      then: [t: "déterminant"]
-      else: [t: "matrice"]
+      then: [T: "déterminant"]
+      else: [T: "matrice"]
 
 - name: overview-default
   tag: mtable
   match: "."
   replace:
-  - t: "la"
+  - T: "la"
   - x: count(*[2]/*)
-  - t: "par"
+  - T: "par"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - t: "table"
+  - T: "table"
 
 - name: short-mrow
   tag: mrow
@@ -111,6 +111,6 @@
   - pause: auto
   - x: "*[5]"
   - pause: auto
-  - t: "et ainsi de suite"
+  - T: "et ainsi de suite"
 
 - include: "SimpleSpeak_Rules.yaml"
