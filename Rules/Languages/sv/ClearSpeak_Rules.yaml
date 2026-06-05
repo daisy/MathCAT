@@ -692,7 +692,7 @@
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
           then:
             - test:
-              - if: "count(*) > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "count(*) > 1"
                 then: [T: "rader"]      # phrase(this is the first 'line' of three lines)
                 else: [T: "rad"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
