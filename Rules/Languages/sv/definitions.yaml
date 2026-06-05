@@ -40,8 +40,8 @@
     "norm": "function=; normen; slut norm",
     "trace": "function=;spåret; slut spår",
     "dimension": "function=; dimensionen; slut dimension",
-    "homomorphism": "function= ; homomorfism; slut homomorfism",                                # doesn't fit function pattern
-    "kernel": "function= ; noll-rummet : noll-rummet till: noll-rummet till; slut noll-rummet", # doesn't fit function pattern
+    # "homomorphism": "function= ; homomorfism; slut homomorfism",                                # SWEDISH: doesn't fit function pattern
+    # "kernel": "function= ; noll-rummet : noll-rummet till: noll-rummet till; slut noll-rummet", # SWEDISH: doesn't fit function pattern
     "vector": "function= ; vektor: vektorn: vektorn || prefix=vektor: vektorn: vektorn",
     "cross-product": "infix=kryss: kryssprodukt: kryssprodukt",
     "dot-product": "infix=skalärt: skalärprodukt: skalärprodukt",
