@@ -76,8 +76,7 @@ def print_warnings(
     console.rule(style="cyan")
     console.print(f"[{style}]{icon}[/] [bold]{escape(display_name)}[/]")
     console.print(
-        f"  [dim]{source_label}: {result.english_rule_count} rules  →  "
-        f"{target_label}: {result.translated_rule_count} rules[/]"
+        f"  [dim]{source_label}: {result.english_rule_count} rules  →  {target_label}: {result.translated_rule_count} rules[/]"
     )
     console.rule(style="cyan")
 
