@@ -26,7 +26,7 @@
       - T: "av"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
 
-- name: homomorphism
+- name: homomorphism # audit-ignore
   # can't use IntentMappings because this doesn't fit the function pattern
   tag: homomorphism
   match: "count(*)=1"
@@ -44,7 +44,7 @@
       then: [pause: short]
       else: [pause: auto]
 
-- name: kernel
+- name: kernel # audit-ignore
   # can't use IntentMappings because this doesn't fit the function pattern
   tag: kernel
   match: "count(*)=1"
