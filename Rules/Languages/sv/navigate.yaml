@@ -56,37 +56,37 @@
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'zooma'"]]          # phrase('zoom' in to see more details)     
+            then: [set_variables: [Prefix: "'zooma'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'gå'"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'gå'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'läs'"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'läs'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'beskriv'"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'beskriv'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
             - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
+              - if: "substring($NavCommand, $CommandOffset) = 'In'"
                 then: [T: "in"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "\uF8FEat helt in"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
+                then: [T: "\uF8FEt helt in"]                     # phrase(zoom 'out all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
                 then: [T: "ut"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "\uF8FEat helt ut"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
+                then: [T: "\uF8FEt helt ut"]                     # phrase(zoom 'out all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
                 then: [T: "höger"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
                 then: [T: "vänster"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
                 then: [T: "nuvarande"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
                 then: [T: "till början av raden"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
                 then: [T: "till slutet av raden"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
