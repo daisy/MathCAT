@@ -2212,10 +2212,8 @@ static FRENCH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
 
 fn french_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     // FIX: need to implement this -- this is just a copy of the Vietnam code
-    lazy_static! {
-        // Empty bases are ok if they follow whitespace
-        static ref EMPTY_BASE: Regex = Regex::new(r"(^|[W𝐖w])E").unwrap();
-    }
+    // Empty bases are ok if they follow whitespace
+    static EMPTY_BASE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(^|[W𝐖w])E").unwrap());
     debug!("french_cleanup: start={}", raw_braille);
     // let result = typeface_to_word_mode(&raw_braille);
     // let result = capitals_to_word_mode(&result);
@@ -2238,7 +2236,7 @@ fn french_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> 
 
 
     let result = EMPTY_BASE.replace_all(&result, "$1");
-    let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
+    let result: Cow<'_, str> = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
         let matched_char = &cap[0];
         match matched_char {
             "𝔹" => &double_struck,
