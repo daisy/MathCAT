@@ -120,8 +120,15 @@
               # if it is a multiplication problem, then the second chunk will be addition, but it won't be marked as such
               - test:
                   if: "$Operator and $Child[self::m:msrow] and
-                       $Child/following-sibling::*[following-sibling::m:msline] and
-                       not($Child/following-sibling::*[1][self::m:msline])"
+                       (
+                         (
+                           $Child/following-sibling::*[following-sibling::m:msline] and
+                           not($Child/following-sibling::*[1][self::m:msline])
+                         )
+                         or
+                         not(child::m:msline)
+                       )"
+                  
                   then:
                   - pause: short
                   - test:

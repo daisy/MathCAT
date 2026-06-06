@@ -194,14 +194,10 @@ fn main() {
 
   let expr = r#"
 <math id='nav-0'>
-        <mstack id='row-1'>
-          <msrow id='row-r1'><mn id='mn-1'>8</mn></msrow>
-          <msrow id='row-r2'><mn id='mn-2'>13</mn></msrow>
-          <msrow id='row-r2'><mn id='mn-3'>462</mn></msrow>
-          <msrow id='row-plus'><mo id='row-op'>+</mo><none id='row-pad'/><mn id='row-plus-4'>4</mn><mn id='row-plus-5'>5</mn></msrow>
-          <msline id='row-line'/>
-          <msrow id='row-result'><mn id='row-r'>1</mn><mn id='row-s'>2</mn><mn id='row-t'>8</mn></msrow>
-        </mstack>
+<msup intent="_($base,$script)">
+  <mi arg="base">x</mi>
+  <mo arg="script">′</mo>
+</msup>
         </math>
                          "#;
   // let instant = Instant::now();
@@ -215,7 +211,7 @@ fn main() {
   #[cfg(feature = "include-zip")]
   info!("***********include-zip is present**********");
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
-  set_preference("Language", "en").unwrap();
+  set_preference("Language", "nb").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
   set_preference("BrailleCode", "Nemeth").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
