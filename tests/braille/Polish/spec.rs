@@ -3447,9 +3447,9 @@ fn reactions_p85_4() -> Result<()> {
 
 #[test]
 fn reactions_p85_5() -> Result<()> {
-    let expr = r#"<math><mi>Pb</mi><mo>+</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><msub><mi>SO</mi><mn>4</mn></msub><mo>&#x2192;</mo><mi>PbS</mi><msub><mn>0</mn><mn>4</mn></msub><mo>&#x2193;</mo><mo>+</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mo>&#x2191;</mo></math>"#;
+    let expr = r#"<math><mi>Pb</mi><mo>+</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><msub><mi>SO</mi><mn>4</mn></msub><mo>&#x2192;</mo><mi>PbS</mi><msub><mi>O</mi><mn>4</mn></msub><mo>&#x2193;</mo><mo>+</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mo>&#x2191;</mo></math>"#;
     // Corrected: spec is wrong for "Pb"
-    test_braille("Polish", expr, "⠨⠏⠃⠀⠖⠸⠓⠆⠎⠕⠲⠀⠒⠂⠨⠏⠃⠨⠎⠼⠚⠡⠲⠸⠒⠄⠖⠨⠓⠆⠸⠒⠁")?;
+    test_braille("Polish", expr, "⠨⠏⠃⠀⠖⠸⠓⠆⠎⠕⠲⠀⠒⠂⠨⠏⠃⠨⠎⠨⠕⠲⠸⠒⠄⠖⠨⠓⠆⠸⠒⠁")?;
     return Ok(());
 }
 
@@ -3473,6 +3473,7 @@ fn reactions_p86_2() -> Result<()> {
 
 #[test]
 fn reactions_p86_3() -> Result<()> {
+    init_logger();
     let expr = r#"<math><mi>HCOOH</mi>
         <mover><mo>⟷</mo><mrow><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mi mathvariant="normal">O</mi></mrow></mover>
         <msup><mi>HCOO</mi><mo>-</mo></msup><mo>+</mo><msup><mi mathvariant="normal">H</mi><mo>+</mo></msup></math>"#;
