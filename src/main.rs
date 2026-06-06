@@ -192,9 +192,11 @@ fn main() {
   //     </mrow>
   //   </math>";
 
-  let expr = r#"
-<math xmlns="http://www.w3.org/1998/Math/MathML"><mo>&#x27E8;</mo><mo>&#x1D713;</mo><mo>|</mo><mo>+</mo><mn>1</mn></math>
-                      "#;
+//   let expr = r#"
+// <math><mi>PbS</mi><msub><mn>0</mn><mn>4</mn></msub><mo>&#x2193;</mo><mo>+</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mo>&#x2191;</mo></math>
+//                       "#;
+let expr = r#"<math><msubsup><mover><mi>C</mi><mo>&#xAF;</mo></mover><mi>n</mi><mi>k</mi></msubsup><mo>=</mo><mfenced><mtable intent="binomial-coefficient($upper, $lower)"><mtr><mtd arg="upper"><mi>n</mi><mo>+</mo><mi>k</mi><mo>-</mo><mn>1</mn></mtd></mtr><mtr><mtd arg="lower"><mi>k</mi></mtd></mtr></mtable></mfenced></math>"#;
+
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -208,7 +210,7 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "UEB").unwrap();
+  set_preference("BrailleCode", "Polish").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
