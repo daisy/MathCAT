@@ -1,0 +1,20 @@
+name: Python
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: astral-sh/setup-uv@v6
+    - name: Run ruff lint
+      working-directory: PythonScripts
+      run: uv run ruff check audit_translations/
+    - name: Run ruff format check
+      working-directory: PythonScripts
+      run: uv run ruff format --check audit_translations/
+    - name: Run tests
+      working-directory: PythonScripts
+      run: uv run pytest

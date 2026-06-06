@@ -2,110 +2,129 @@
 ///   simple superscripts
 ///   complex/nested superscripts
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn squared() {
+fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x i andre");
-    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x opphøyd i 2");
-    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x opphøyd i 2");
-    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x opphøyd i 2");
+    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x i andre")?;
+    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x opphøyd i 2")?;
+    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x opphøyd i 2")?;
+    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x opphøyd i 2")?;
+
+    return Ok(());
 
 }
 
 #[test]
-fn cubed() {
+fn cubed() -> Result<()> {
   let expr = "<math>
                   <msup> <mi>x</mi> <mn>3</mn> </msup>
               </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x i tredje");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x opphøyd i 3");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x opphøyd i 3");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x opphøyd i 3");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x i tredje")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x opphøyd i 3")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x opphøyd i 3")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x opphøyd i 3")?;
+  return Ok(());
+
 }
 
 #[test]
-fn ordinal_power() {
+fn ordinal_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mn>5</mn> </msup>
               </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 5");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 5");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 5");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 5");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 5")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 5")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 5")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 5")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn zero_power() {
+fn zero_power() -> Result<()> {
   let expr = "<math>
                     <msup> <mn>3</mn> <mn>0</mn> </msup>
                 </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 0");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 0")?;
+  return Ok(());
+
 }
 
 #[test]
-fn simple_mi_power() {
+fn simple_mi_power() -> Result<()> {
   let expr = "<math>
                     <msup> <mn>4</mn> <mi>x</mi> </msup>
                 </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "4 opphøyd i x");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "4 opphøyd i x");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "4 opphøyd i x");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "4 opphøyd i x");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "4 opphøyd i x")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "4 opphøyd i x")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "4 opphøyd i x")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "4 opphøyd i x")?;
+  return Ok(());
+
 }
 
 #[test]
-fn decimal_power() {
+fn decimal_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mn>5,0</mn> </msup>
               </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 5,0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 5,0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 5,0");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 5,0");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 5,0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 5,0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 5,0")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 5,0")?;
+  return Ok(());
+
 }
 
 #[test]
-fn non_simple_power() {
+fn non_simple_power() -> Result<()> {
   let expr = "<math>
         <msup> <mn>3</mn>  <mrow> <mi>y</mi><mo>+</mo><mn>2</mn></mrow>  </msup>
     </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i y pluss 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i y pluss 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i y pluss 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i y pluss 2");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i y pluss 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i y pluss 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i y pluss 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i y pluss 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn negative_power() {
+fn negative_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mrow> <mo>-</mo> <mn>2</mn> </mrow> </msup>
               </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i minus 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i minus 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i minus 2");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i minus 2");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i minus 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i minus 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i minus 2")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i minus 2")?;
+  return Ok(());
+
 }
 
 #[test]
-fn simple_fraction_power() {
+fn simple_fraction_power() -> Result<()> {
   let expr = "<math>
                     <msup>
                         <mi>x</mi> 
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </msup>
                 </math>";
-  test("nb", "ClearSpeak", expr, "x opphøyd i 1 tredjedel");
+  test("nb", "ClearSpeak", expr, "x opphøyd i 1 tredjedel")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_squared_power_with_coef() {
+fn nested_squared_power_with_coef() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -120,15 +139,17 @@ fn nested_squared_power_with_coef() {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 2 x i andre");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 2 x i andre")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten, 2 x opphøyd i 2; slutt eksponent")?;
+
+  return Ok(());
 
 }
 
 #[test]
-fn nested_squared_power_with_neg_coef() {
+fn nested_squared_power_with_neg_coef() -> Result<()> {
     let expr = "<math>
       <mrow>
       <msup>
@@ -144,12 +165,14 @@ fn nested_squared_power_with_neg_coef() {
       </msup>
       </mrow>
     </math>";
-  test("nb", "ClearSpeak", expr, "3 opphøyd i minus 2 x i andre");
+  test("nb", "ClearSpeak", expr, "3 opphøyd i minus 2 x i andre")?;
+  return Ok(());
+
 }
 
 
 #[test]
-fn nested_cubed_power() {
+fn nested_cubed_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -159,11 +182,13 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-  test("nb", "ClearSpeak", expr, "y opphøyd i 4 femtedeler i tredje");
+  test("nb", "ClearSpeak", expr, "y opphøyd i 4 femtedeler i tredje")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_cubed_power_with_neg_base() {
+fn nested_cubed_power_with_neg_base() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>y</mi> 
@@ -176,11 +201,13 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-  test("nb", "ClearSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje");
+  test("nb", "ClearSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_number_times_squared() {
+fn nested_number_times_squared() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -198,11 +225,13 @@ fn nested_number_times_squared() {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e opphøyd i 1 halv x i andre");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e opphøyd i 1 halv x i andre")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_negative_number_times_squared() {
+fn nested_negative_number_times_squared() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -220,14 +249,16 @@ fn nested_negative_number_times_squared() {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e opphøyd i minus 1 halv x i andre");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e opphøyd i minus 1 halv x i andre")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e opphøyd i eksponenten, minus 1 halv x opphøyd i 2; slutt eksponent")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_expr_to_tenth() {
+fn nested_expr_to_tenth() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -242,15 +273,17 @@ fn nested_expr_to_tenth() {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
+
+  return Ok(());
 
 }
 
 #[test]
-fn nested_non_simple_squared_exp() {
+fn nested_non_simple_squared_exp() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -268,14 +301,16 @@ fn nested_non_simple_squared_exp() {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes i andre, slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent");
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent");
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes i andre, slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten; startparentes; x pluss 1; sluttparentes opphøyd i 2; slutt eksponent")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_default_power() {
+fn nested_default_power() -> Result<()> {
   let expr = "<math>
     <msup>
     <mi>t</mi> 
@@ -285,11 +320,13 @@ fn nested_default_power() {
     </msup>
   </msup>
 </math>";
-  test("nb", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femtedeler opphøyd i n; slutt eksponent");
+  test("nb", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femtedeler opphøyd i n; slutt eksponent")?;
+  return Ok(());
+
 }
 
 #[test]
-fn nested_complex_power() {
+fn nested_complex_power() -> Result<()> {
   let expr = "<math>
       <mrow>
       <msup>
@@ -317,17 +354,19 @@ fn nested_complex_power() {
       </mrow>
       </math>";
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes i andre, slutt eksponent");
+       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes i andre, slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent");
+       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent");
+       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent");
+       "e opphøyd i eksponenten, minus 1 halv ganger; startparentes; brøken med teller; x minus my; og nevner sigma; sluttparentes opphøyd i 2; slutt eksponent")?;
+       return Ok(());
+
 }
 
 #[test]
-fn default_power() {
+fn default_power() -> Result<()> {
     let expr = "<math>
       <msup>
       <mi>t</mi> 
@@ -337,5 +376,7 @@ fn default_power() {
       </mfrac>
     </msup>
   </math>";
-  test("nb", "ClearSpeak", expr, "t opphøyd i brøken med teller; b pluss 1; og nevner 3");
+  test("nb", "ClearSpeak", expr, "t opphøyd i brøken med teller; b pluss 1; og nevner 3")?;
+  return Ok(());
+
 }

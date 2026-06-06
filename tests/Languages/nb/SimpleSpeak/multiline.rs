@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
     let expr = "<math>
             <mrow>
             <mi>f</mi><mrow><mo>(</mo>
@@ -32,11 +33,12 @@ fn case_1() {
     test("nb", "SimpleSpeak", expr, "f av x er lik; 3 tilfeller; \
                 tilfelle 1; minus 1 if x; er mindre enn 0; \
                 tilfelle 2; 0 if x, er lik 0; \
-                tilfelle 3; 1 if x, er større enn 0");
+                tilfelle 3; 1 if x, er større enn 0")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_1() {
+fn equation_1() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -71,5 +73,6 @@ fn equation_1() {
    ";
     test("nb", "SimpleSpeak", expr, "2 likninger; \
                 likning 1; x pluss y er lik 7; \
-                likning 2; 2 x pluss 3 y; er lik 17");
+                likning 2; 2 x pluss 3 y; er lik 17")?;
+    return Ok(());
 }

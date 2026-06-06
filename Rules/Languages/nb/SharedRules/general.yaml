@@ -450,8 +450,8 @@
   - T: "sinus hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "sin hype"}                # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      #else: {T: "sinus hyperbolicus"}      # phrase(the 'hyperbolic sine' is used in mathematics) 
+      #then: [T: "sin hype"]                # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      #else: [T: "sinus hyperbolicus"]      # phrase(the 'hyperbolic sine' is used in mathematics) 
 
 - name: cosh
   tag: mi
@@ -461,8 +461,8 @@
   - T: "cosinus hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "cos hype"}                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      #else: {T: "cosinus hyperbolicus"}      # phrase(the 'hyperbolic cosine' is a mathematical function) 
+      #then: [T: "cos hype"]                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      #else: [T: "cosinus hyperbolicus"]      # phrase(the 'hyperbolic cosine' is a mathematical function) 
 
 - name: tanh
   tag: mi
@@ -472,8 +472,8 @@
   - T: "tangens hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "tan hype"}                  # phrase('tanch' is shorthand for hyperbolic tangent)
-      #else: {T: "tangens hyperbolicus"}      # phrase('hyperbolic tangent' is a mathematical function)
+      #then: [T: "tan hype"]                  # phrase('tanch' is shorthand for hyperbolic tangent)
+      #else: [T: "tangens hyperbolicus"]      # phrase('hyperbolic tangent' is a mathematical function)
 
 - name: sech
   tag: mi
@@ -483,8 +483,8 @@
   - T: "sekans hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "sec hype"}                   # phrase('sheck' is shorthand for hyperbolic secant)
-      #else: {T: "sekans hyperbolicus"}        # phrase('hyperbolic secant' is a mathematical function) 
+      #then: [T: "sec hype"]                   # phrase('sheck' is shorthand for hyperbolic secant)
+      #else: [T: "sekans hyperbolicus"]        # phrase('hyperbolic secant' is a mathematical function) 
 
 - name: csch
   tag: mi
@@ -494,8 +494,8 @@
   - T: "cosekans hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "cosec hype"}                   # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      #else: {T: "cosekans hyperbolicus"}        # phrase('hyperbolic cosecant' is a mathematical function) 
+      #then: [T: "cosec hype"]                   # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      #else: [T: "cosekans hyperbolicus"]        # phrase('hyperbolic cosecant' is a mathematical function) 
 
 - name: coth
   tag: mi
@@ -505,8 +505,8 @@
   - T: "cotangens hyperbolicus"
   #- test:
       #if: "$Verbosity='Terse'"
-      #then: {T: "cotan hype"}                  # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      #else: {T: "cotangens hyperbolicus"}      # phrase(the 'hyperbolic cotangent' is a mathematical function) 
+      #then: [T: "cotan hype"]                  # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      #else: [T: "cotangens hyperbolicus"]      # phrase(the 'hyperbolic cotangent' is a mathematical function) 
 
 # NORWEGIAN: Added this rule from English version
 - name: exponential
@@ -686,13 +686,11 @@
 
 - name: identity-matrix
   tag: matrix
-  # select all the non-zero entries...if they are not on the diagonal, or are != 1
-  #   if there are any of them, then this isn't an identity matrix
+  # every diagonal entry must be a literal 1, and every off-diagonal entry must be a literal 0
   match:
-  - "count(*) = count(*[1]/*) and "
-  - "not( */*/*[not(self::m:mn and .= 0)]"
-  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*) or .!= 1]"
-  - "    )"
+  - "count(*) = count(*[1]/*) and " # matrix is square
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
   - x: count(*)
   - T: "ganger"       # phrase(the 1 'by' 2 matrix)
@@ -1145,11 +1143,11 @@
         if: "$Verbosity='Terse'"
         then: [T: "danner"]      # phrase(hydrogen and oxygen 'forms' water )
         else: [T: "reaksjon danner"]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='\u1f8d2'"
+    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
       then: [T: "er i likevekt med"]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='\u1f8d4'"
+    - else_if: ".='🣓'" # U+1F8D3
       then: [T: "er i likevekt med, venstre"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='\u1f8d3'"
+    - else_if: ".='🣒'" # U+1F8D2
       then: [T: "er i likevekt med, høyre"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
