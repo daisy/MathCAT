@@ -1354,4 +1354,113 @@ mod tests {
         assert!(set_mathml(bad_mathml).is_err());
         assert!(get_spoken_text().unwrap() == "");
     }
+
+
+
+    fn setup_speech_ssml() {
+        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        set_preference("Language", "en").unwrap();
+        set_preference("TTS", "SSML").unwrap();
+        set_preference("MathRate", "80").unwrap();
+        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+        set_preference("Verbosity", "Medium").unwrap();
+    }
+
+    #[test]
+    fn test_no_escaping() -> Result<()> {
+        setup_speech_ssml();
+        let expr = " <math>
+            <mfrac>
+                <mrow> <mi>x</mi><mo>+</mo><mi>y</mi> </mrow>
+                <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
+            </mfrac>
+        </math>";
+        set_mathml(&expr)?;
+        let speech = get_spoken_text()?;
+        // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
+        assert!(!speech.contains("&lt;"));
+        assert!(!speech.contains("&gt;"));
+        assert!(!speech.contains("&amp;lt;"));
+        return Ok(());
+    }
+
+    /// The attack payload must not pass through verbatim (rule-generated SSML may contain `<break`).
+    fn assert_ssml_attack_neutralized(speech: &str, illegal_ssml: &str) {
+        assert!(
+            !speech.contains(illegal_ssml),
+            "attack payload ({illegal_ssml}) appears verbatim in output: {speech}"
+        );
+        assert!(
+            !speech.contains(r#"time="5000ms""#) && !speech.contains("time='5000ms'"),
+            "attack break duration in output: {speech}"
+        );
+    }
+
+    /// SSML snippet an attacker might embed in MathML text or attributes.
+    const PAYLOAD: &str = r#"<break time="50000ms"/>"#;
+    /// Same bytes as `PAYLOAD`, entity-encoded so attribute values are well-formed XML.
+    const PAYLOAD_ATTR_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;";
+    /// Entity-encoded payload plus trailing literal text (well-formed in leaf element text).
+    const PAYLOAD_LEAF_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;note";
+
+    #[test]
+    /// User-supplied leaf text must not inject SSML when TTS is SSML.
+    fn leaf_text_ssml_attack_neutralized_in_speech() -> Result<()> {
+        setup_speech_ssml();
+        // Entity-encoded payload: valid XML through set_mathml (no CDATA), decodes to PAYLOAD + "note".
+        let mathml = format!(
+            r#"<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo>
+                           <mi>{PAYLOAD_LEAF_XML}</mi><mo>+</mo>
+                           <ms>{PAYLOAD_LEAF_XML}</ms><mo>+</mo>
+                           <mn>{PAYLOAD_LEAF_XML}</mn></mrow></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        let mathml = format!(
+            "<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo><mn>1</mn></mrow></math>"
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        return Ok(());
+    }
+
+    #[test]
+    /// Attribute values read via xpath must not inject SSML when TTS is SSML.
+    fn attribute_ssml_attack_neutralized_in_speech() -> Result<()> {
+        use crate::speech::{SpeechRulesWithContext, SPEECH_RULES};
+
+        setup_speech_ssml();
+        let mathml = format!(
+            r#"<math data-ssml-attack="{PAYLOAD_ATTR_XML}"><mn>x</mn></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+
+        // XPath Attribute nodes use replace_chars (same path as replace_nodes_string).
+        SPEECH_RULES.with(|rules| {
+            rules.borrow_mut().read_files()?;
+            let rules_ref = rules.borrow();
+            let package = parser::parse(&mathml)?;
+            let math = get_element(&package);
+            let attr = math
+                .attribute("data-ssml-attack")
+                .expect("data-ssml-attack attribute");
+            let work_package = Package::new();
+            let mut ctx =
+                SpeechRulesWithContext::new(&rules_ref, work_package.as_document(), "", 0);
+            let from_attr = ctx.replace_chars(as_str!(attr.value()), math)?;
+            assert_ssml_attack_neutralized(&from_attr, PAYLOAD);
+            assert!(
+                from_attr.contains("&lt;"),
+                "attribute value should be XML-escaped for SSML: {from_attr}"
+            );
+            Ok::<(), Error>(())
+        })?;
+        return Ok(());
+    }
 }

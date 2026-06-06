@@ -744,7 +744,11 @@
   - test:
       if: "self::m:determinant"
       then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [t: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -768,7 +772,11 @@
   - test:
       if: "self::m:determinant"
       then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [t: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:

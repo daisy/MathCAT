@@ -47,11 +47,7 @@ fn get_text_from_element(e: Element) -> String {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn get_text_from_COE(coe: &ChildOfElement) -> String {
-    let element = coe.element();
-    return match element {
-        Some(e) => get_text_from_element(e),
-        None => "".to_string(),
-    };
+    coe.element().map_or_else(String::new, get_text_from_element)
 }
 
 // make sure that there is only one node in the NodeSet
@@ -72,9 +68,8 @@ fn is_tag(e: Element, tag_name: &str) -> bool {
 
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
-fn is_COE_tag(coe: ChildOfElement, tag_name: &str) -> bool {
-    let element = coe.element();
-    return element.is_some() && is_tag(element.unwrap(), tag_name)
+fn is_COE_tag(coe: ChildOfElement, name: &str) -> bool {
+    coe.element().is_some_and(|element| is_tag(element, name))
 }
 
 /// Should be an internal structure for implementation of the IsNode, but it was useful in one place in a separate module.

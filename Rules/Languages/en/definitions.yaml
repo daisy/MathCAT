@@ -32,6 +32,7 @@
     "plus": "infix=plus || prefix=positive",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
     "real-part": "function=the real part",
+    "set-of-integers": "nofix=set of all integers",
 
     "transpose": "postfix=transpose || function=transpose",
     "norm": "function=; norm: norm: norm; end norm",
