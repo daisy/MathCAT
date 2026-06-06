@@ -9,7 +9,7 @@
       replace:
       - test:
         - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-previous-space-width >= 0.25"  # BANA 5.3(a)
-          then: [t: "𝐖"]
+          then: [t: "W"]
         - else_if: "@data-previous-space-width > 1.1"
           then: [t: "⠬"]
         - else_if: "@data-previous-space-width >= 0.25"      # thickspace
@@ -17,7 +17,7 @@
       - x: "."
       - test:
         - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-following-space-width >= 0.25" # BANA 5.3(a)
-          then: [t: "𝐖"]
+          then: [t: "W"]
         - else_if: "@data-following-space-width > 1.1"
           then: [t: "⠬"]
         - else_if: "@data-following-space-width >= 0.25"      # thickspace
@@ -43,13 +43,9 @@
   match: .
   replace: 
   - t: "⠩"
-  - test:
-      if:  "NeedsToBeGrouped(*[1], 'Finnish', true())"
-      then:
-      - t: "("
-      - x: "*[1]"
-      - t: ")"
-      else: [x: "*[1]"]
+  - t: "⸨"
+  - x: "*[1]"
+  - t: "⸩"
 
 -
   name: default
@@ -60,13 +56,9 @@
   # index is first - no grouping needed due to "Zone Change" after it
   - x: "*[2]"
   - t: "Z"   # zone change
-  - test:
-      if: "NeedsToBeGrouped(*[1], 'Finnish', true())"
-      then:
-      - t: "("
-      - x: "*[1]"
-      - t: ")"
-      else: [x: "*[1]"]
+  - t: "⸨"
+  - x: "*[1]"
+  - t: "⸩"
         
                
 # Fraction rules
@@ -84,7 +76,7 @@
   replace: 
   - t: "#"   # need to force a number sign between the numbers
   - x: "*[1]"
-  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'CMU')"   # drop numbers for the numerator
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Finnish')"   # drop numbers for the numerator
 
 -
   name: simple-number
@@ -92,37 +84,41 @@
   match: "*[1][self::m:mn][not(contains(., '.,'))] and *[2][self::m:mn][not(contains(., '.,'))]"
   replace:
   - x: "*[1]"
-  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'CMU')"   # drop numbers for the numerator
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Finnish')"   # drop numbers for the numerator
 -
   name: default
   tag: mfrac
   match: "."
   replace:
   - test:
-      if:  "NeedsToBeGrouped(*[1], 'Finnish', true())"
+    # numerators allow invisible times without parens and apparently a few other things
+    # It seems prefix "-" and postfix "!" are allowed, but nothing specific so I'm restricting to leaf elements
+      if:
+      - "*[1][self::m:mrow and  "
+      - "     not(*[self::m:mo][.='\u2062']) and "
+      - "     not(count(*)=2 and *[IsNode(., 'leaf')])"
+      - "]"
       then:
       - t: "("
       - x: "*[1]"
       - t: ")"
-      else: [x: "*[1]"]
+      else:
+      - x: "*[1]"
   - t: "W⠌"
-  - test:
-      if: "NeedsToBeGrouped(*[2], 'Finnish', true())"
-      then:
-      - t: "("
-      - x: "*[2]"
-      - t: ")"
-      else: [x: "*[2]"]
+  - t: "⸨"
+  - x: "*[2]"
+  - t: "⸩"
+
 
 -
-   #GTM 14.3.3 (not sure what else vertical juxtaposition applies to)
+  # The value of @linethickness could be '0', '0px', '0em', '0.0', '0.0px', '0.0em', etc. Hence the translate(...)
    name: binomial-frac
    tag: mrow
-   match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][@linethickness=0]"
+   match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][number(translate(@linethickness, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ%', '')) = 0]"
    replace: 
    - x: "*[1]"
-   - x: "*[2]/*[1]"
-   - t: "⠰⠻"
+   - x: "(*[2]/*[1])"
+   - t: "⠯W"
    - x: "*[2]/*[2]"
    - x: "*[3]"
 
@@ -132,7 +128,7 @@
   replace:
      - x: "*[1]"
      - x: "*[2]/*[1]/*[1]/*[1]"
-     - t: "⠰⠻"
+     - t: "⠯W"
      - x: "*[2]/*[2]/*[1]/*[1]"
      - x: "*[3]"
 
@@ -200,11 +196,8 @@
       if: "*"
       then:
       - test: 
-         if: "preceding-sibling::*"
-         then_test:
-            if: "NeedsToBeGrouped(*[1], 'Finnish', true())"
-            then: [t: '𝐖']
-            else: [t: 'W']
+          if: "preceding-sibling::*"
+          then: [t: 'W']
       - x: "*"
       # else nothing to braille
 
@@ -223,6 +216,22 @@
   - RowEnd: "''"             # empty string -- it needs to be set
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
+
+# -
+#   # add parentheses to the argument of a large operator that has components whose main operator is an invisible times
+#   # this is done because of p49_summation_with_lower_upper_bounds and the integral above it.
+#   # Note: '/⧸' do not carry large op precedence, and so their grouping (and hance matching) is different and needs a seperate rule
+#     name: add-parens-to-large-operator-argument
+#     tag: mrow
+#     match:
+#     - "count(*) mod 2 = 1 and parent::*[self::m:mrow and count(*)=2] and"            # likely infix with potential large op parent
+#     - "*[position() mod 2 = 0][self::m:mo and .='\u2062'] and"        # all operators are invisible times (position is 1-based, so '= 0')
+#     - "DEBUG(preceding-sibling::*[1])[(self::m:msubsup or self::m:munderover or self::m:msub or self::m:munder) and "
+#     - "                        *[1][self::m:mo and translate(., '∫∬∭∮∑∏∐⋃⋂⋁⋀', '')='']]"  # large operators (slashes are for substitution)
+#     replace:
+#     - t: "("
+#     - x: "*"
+#     - t: ")"
 
 -
     name: empty-mrow
@@ -259,14 +268,29 @@
 
 
 -
-   name: default
-   tag: mn
-   match: "."
-   replace:
-   - x: "BrailleChars(., 'Finnish')"
-   - test:
-      if: "translate(., '0123456789', '') = ''"
-      then: [t: "W"]   # this is a number, so we need to signal the end of numeric mode
+  name: default
+  tag: mn
+  match: "."
+  replace:
+  - x: "BrailleChars(., 'Finnish')"
+  # - test:
+  #     if: "not( count(following-sibling::*) = 1 and following-sibling::*[1] = '!' ) and
+  #           not( count(following-sibling::*) = 2 and following-sibling::*[1] = '\u2062' and following-sibling::*[2] = '…' )"
+  #     if: "translate(., '0123456789', '') = ''"
+  #     then: [t: "W"]   # this is a number, so we need to signal the end of numeric mode
+  - test:
+      if: "not( count(following-sibling::*) = 1 and following-sibling::*[1] = '!' ) and
+            not( count(following-sibling::*) = 2 and following-sibling::*[1] = '\u2062' and following-sibling::*[2] = '…' )"
+      then_test:
+          # complicated test to see if we are in the denominator and the next char is ")"
+          # can't do this easily in braille.rs because looking for digit ')' needs to be in the denominator and
+          # that's hard to tell from a string without markers
+          if: "ancestor::*[preceding-sibling::* and
+                            self::m:mfrac[number(translate(@linethickness, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ%', '')) != 0]]
+                            [not(preceding-sibling::*[not(preceding-sibling::*) and ancestor::m:mfrac])] and
+               following::*[1] = ')'"
+          then: [t: "⠠"]
+          else: [t: "W"]   # this is a number, so we need to signal the end of numeric mode
       
 -
    # FIX: need to deal with all caps
@@ -310,10 +334,16 @@
   tag: [mover, munder]
   match: "*[2][string-length(.) = 1 and translate(., '_¯','')='']"
   replace: 
+  - t: "⸨"
   - x: "*[1]"
+  - t: "⸩"
   - test:
       if: "self::m:mover"
-      then: [t: "⠱"]
+      then:
+      - t: "⠱"
+      - test:
+          if: "*[1][.='arc']"
+          then: [t: "W"]
       else: [t: "⠤"]
 
 -
@@ -326,12 +356,10 @@
       then:
       - x: "*[1]"
       - t: "W"
-    - else_if: "NeedsToBeGrouped(*[1], 'Finnish', true())"
-      then:
-      - t: "("
+    - else:
+      - t: "⸨"
       - x: "*[1]"
-      - t: ")"
-      else: [x: "*[1]"]
+      - t: "⸩"
   - x: "*[2]"
 
 -
@@ -340,7 +368,7 @@
   match: "*[2][self::m:mn and .='2']"
   replace:
   - x: "*[1]"
-  - t: "↑W"
+  - t: "↗W"
 
 -
   # Chemistry has a special rule for numerical subscripts (note base is not necessarily a chemical element)
@@ -349,19 +377,14 @@
   match: "*[2][self::m:mn][not(contains(., '.,'))] and (*[1][@data-chem-element] or ancestor-or-self::*[@data-chem-formula])"
   replace:
   - x: "*[1]"
-  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'CMU')"   # drop numbers for the numerator
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Finnish')"   # drop numbers for the numerator
   - test:
       if: "self::m:msubsup"
       then:
-      - t: "↑"
-      - test:
-          - if: "NeedsToBeGrouped(*[3], 'Finnish', false())"
-            then:
-            - t: "("
-            - x: "*[3]"
-            - t: ")"
-            else:
-            - x: "*[3]" 
+      - t: "↗"
+      - t: "⸨"
+      - x: "*[3]"
+      - t: "⸩"
       - t: "W"
 
 -
@@ -374,40 +397,92 @@
   - t: "W〘"
   - x: "*[2]/*[2]"
 -
+  name: integral
+  tag: [msub, munder]
+  match: "*[1][translate(., '/⧸∫∬∭∮', '')=''] "
+  replace:
+  - x: "*[1]"
+  # the spec says these should be the same (p44) but the examples only treat integrals differently
+  - t: "↓⸨"
+  - x: "*[2]"
+  - t: "⸩Z"
+
+-
+  name: integral
+  tag: [msubsup, munderover]
+  match: "*[1][translate(., '/⧸∫∬∭∮', '')=''] "
+  replace:
+  - x: "*[1]"
+  - t: "↓⸨"
+  - x: "*[2]"
+  - t: "⸩↑⸨"
+  - x: "*[3]"
+  - t: "⸩Z"
+
+-
+  name: sum-product
+  tag: [msub, munder]
+  match: "*[1][translate(., '∑∏∐⋃⋂⋁⋀', '')='' or .='lim']"
+  replace:
+  - x: "*[1]"
+  # the spec says these should be the same (p44) but the examples only treat integrals differently (likey simple but brackets just in case)
+  - t: "↘⸨"
+  - x: "*[2]"
+  - t: "⸩Z"
+
+-
+  name: sum-product
+  tag: [msubsup, munderover]
+  match: "*[1][translate(., '∑∏∐⋃⋂⋁⋀', '')='' or .='lim']"
+  replace:
+  - x: "*[1]"
+  - t: "↘⸨"
+  - x: "*[2]"
+  - t: "⸩↑⸨"
+  - x: "*[3]"
+  - t: "⸩Z"
+
+-
+  name: log
+  tag: [msub]
+  match: "*[1][.='log']"
+  replace:
+  - x: "*[1]"
+  # the spec says subscript directly follows log without subscript indicator
+  - t: "⸨"
+  - x: "*[2]"
+  - t: "⸩Z"
+
+-
   name: default
   tag: [msub, msup, munder, mover]
   match: "."
   replace:
   - test:
-      if: "(self::m:munder or self::m:mover) and NeedsToBeGrouped(*[1], 'Finnish', true())"
+      if: "(self::m:munder or self::m:mover)"
       then:
-      - t: "("
+      - t: "⸨"
       - x: "*[1]"
-      - t: ")"
+      - t: "⸩"
       else:
       - x: "*[1]"
   - test:
       - if: "self::m:msup"
-        then: [t: "↑"]
-      - else_if: "self::m:msub"
-        then: [t: "↓"]
-      - else_if: "self::m:munder"
-        then: [t: "↓"]               # FIX: haven't found what is correct
-        else: [t: "↑"]  # mover      # FIX: haven't found what is correct
+        then: [t: "↗"]
+      - else_if: "self::m:msub or self::m:munder"
+        then: [t: "↘"]
+        else: [t: "↑"]
   - test:
       - if: "self::m:msup and *[2][.='2']"
         then: [t: ""]                # superscripts=2 don't include the '2'
-      - else_if: "NeedsToBeGrouped(*[2], 'Finnish', false())"
-        then:
-        - t: "("
+      - else:
+        - t: "⸨"
         - x: "*[2]"
-        - t: ")"
-        else:
-        - x: "*[2]" 
+        - t: "⸩"
   - test:
-      if: "self::m:msup or self::m:mover"
-      then: [t: "W"]
-      else: [t: "Z"]    # just a guess for munder -- couldn't find anything in the spec
+      - if: "(self::m:msub or self::m:munder) and following-sibling::*[1][.='\u2062']"
+        then: [t: "Z"]    # just a guess for munder -- couldn't find anything in the spec
+
 
 
 
@@ -416,32 +491,25 @@
   tag: [msubsup, mmultiscripts] # mmultiscripts with only sub/sup postscript
   match: "count(*)=3"    # catches mmultiscripts equiv
   replace:
-  - test:
-      if: "(self::m:munder or self::m:mover) and NeedsToBeGrouped(*[1], 'Finnish', true())"
-      then:
-      - t: "("
-      - x: "*[1]"
-      - t: ")"
-      else:
-      - x: "*[1]"
-  - t: "↓"
-  - test:
-      - if: "NeedsToBeGrouped(*[2], 'Finnish', false())"
-        then:
-        - t: "("
-        - x: "*[2]"
-        - t: ")"
-        else:
-        - x: "*[2]" 
-  - t: "↑"
-  - test:
-      - if: "NeedsToBeGrouped(*[3], 'Finnish', false())"
-        then:
-        - t: "("
-        - x: "*[3]"
-        - t: ")"
-        else:
-        - x: "*[3]" 
+  - t: "⸨"
+  - x: "*[1]"
+  - t: "⸩↘⸨"
+  - x: "*[2]"
+  - t: "⸩↗⸨"
+  - x: "*[3]"
+  - t: "⸩"
+
+-
+  name: default
+  tag: munderover
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "↘⸨"
+  - x: "*[2]"
+  - t: "⸩↗⸨"
+  - x: "*[3]"
+  - t: "⸩"
   - t: "Z"
 
 -
@@ -453,9 +521,9 @@
   - test:
       if: "not(*[3][self::m:none])"
       then:
-      - t: "↓"
+      - t: "↘"
       - x: "*[3]"
-  - t: "↑"
+  - t: "↗"
   - x: "*[4]"
   - x: "*[1]"
 
@@ -485,50 +553,34 @@
       - test:
           if: "not($Prescripts[1][self::m:none])"
           then:
-          - t: "1⠢"
-          - test:
-              if: "NeedsToBeGrouped($Prescripts[1], 'Finnish', true())"
-              then:
-              - t: "1⠣"
-              - x: "$Prescripts[1]"
-              - t: "1⠜"
-              else: [x: "$Prescripts[1]"]
+          - t: "↗"
+          - t: "⸨"
+          - x: "$Prescripts[1]"
+          - t: "⸩"
       - test:
           if: "not($Prescripts[2][self::m:none])"
           then:
-          - t: "1⠔"
-          - test:
-              if: "NeedsToBeGrouped($Prescripts[2], 'Finnish', false())"
-              then:
-              - t: "1⠣"
-              - x: "$Prescripts[2]"
-              - t: "1⠜"
-              else: [x: "$Prescripts[2]"]
+          - t: "↘"
+          - t: "⸨"
+          - x: "$Prescripts[2]"
+          - t: "⸩"
       - test:
          if: "count($Prescripts)>2"
          then:
          - test:
             if: "not($Prescripts[3][self::m:none])"
             then:
-            - t: "1⠢"
-            - test:
-                if: "NeedsToBeGrouped($Prescripts[3], 'Finnish', false())"
-                then:
-                - t: "1⠣"
-                - x: "$Prescripts[3]"
-                - t: "1⠜"
-                else: [x: "$Prescripts[3]"]
+            - t: "↗"
+            - t: "⸨"
+            - x: "$Prescripts[3]"
+            - t: "⸩"
          - test:
             if: "not($Prescripts[4][self::m:none])"
             then:
-            - t: "1⠔"
-            - test:
-                if: "NeedsToBeGrouped($Prescripts[4], 'Finnish', false())"
-                then:
-                - t: "1⠣"
-                - x: "$Prescripts[4]"
-                - t: "1⠜"
-                else: [x: "$Prescripts[4]"]
+            - t: "↘"
+            - t: "⸨"
+            - x: "$Prescripts[4]"
+            - t: "⸩"
          - test:
             if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
             then: [x: "$Prescripts[position() > 4]"]
@@ -540,105 +592,72 @@
       - test:
           if: "not($Postscripts[1][self::m:none])"
           then:
-          - t: "1⠢"
-          - test:
-              if: "NeedsToBeGrouped($Postscripts[1], 'Finnish', false())"
-              then:
-              - t: "1⠣"
-              - x: "$Postscripts[1]"
-              - t: "1⠜"
-              else: [x: "$Postscripts[1]"]
+          - t: "↗"
+          - t: "⸨"
+          - x: "$Postscripts[1]"
+          - t: "⸩"
       - test:
           if: "not($Postscripts[2][self::m:none])"
           then:
-          - t: "1⠔"
-          - test:
-              if: "NeedsToBeGrouped($Postscripts[2], 'Finnish', false())"
-              then:
-              - t: "1⠣"
-              - x: "$Postscripts[2]"
-              - t: "1⠜"
-              else: [x: "$Postscripts[2]"]
+          - t: "↘"
+          - t: "⸨"
+          - x: "$Postscripts[2]"
+          - t: "⸩"
       - test:
           if: "count($Postscripts)>2"
           then:
           - test:
               if: "not($Postscripts[3][self::m:none])"
               then:
-              - t: "1⠢"
-              - test:
-                  if: "NeedsToBeGrouped($Postscripts[3], 'Finnish', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Postscripts[3]"
-                  - t: "1⠜"
-                  else: [x: "$Postscripts[3]"]
+              - t: "↗"
+              - t: "⸨"
+              - x: "$Postscripts[3]"
+              - t: "⸩"
           - test:
               if: "not($Postscripts[4][self::m:none])"
               then:
-              - t: "1⠔"
-              - test:
-                  if: "NeedsToBeGrouped($Postscripts[4], 'Finnish', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Postscripts[4]"
-                  - t: "1⠜"
-                  else: [x: "$Postscripts[4]"]
+              - t: "↘"
+              - t: "⸨"
+              - x: "$Postscripts[4]"
+              - t: "⸩"
           - test:
               if: "count($Postscripts)>4"
               then:
               - test:
                   if: "not($Postscripts[5][self::m:none])"
                   then:
-                  - t: "1⠢"
-                  - test:
-                      if: "NeedsToBeGrouped($Postscripts[5], 'Finnish', false())"
-                      then:
-                      - t: "1⠣"
-                      - x: "$Postscripts[5]"
-                      - t: "1⠜"
-                      else: [x: "$Postscripts[5]"]
+                  - t: "↗"
+                  - t: "⸨"
+                  - x: "$Postscripts[5]"
+                  - t: "⸩"
               - test:
                   if: "not($Postscripts[6][self::m:none])"
                   then:
-                  - t: "1⠔"
-                  - test:
-                      if: "NeedsToBeGrouped($Postscripts[6], 'Finnish', false())"
-                      then:
-                      - t: "1⠣"
-                      - x: "$Postscripts[6]"
-                      - t: "1⠜"
-                      else: [x: "$Postscripts[6]"]
+                  - t: "↘"
+                  - t: "⸨"
+                  - x: "$Postscripts[6]"
+                  - t: "⸩"
               - test:
                   if: "count($Postscripts)>6"
                   then:
                   - test:
                       if: "not($Postscripts[7][self::m:none])"
                       then:
-                      - t: "1⠢"
-                      - test:
-                          if: "NeedsToBeGrouped($Postscripts[7], 'Finnish', false())"
-                          then:
-                          - t: "1⠣"
-                          - x: "$Postscripts[7]"
-                          - t: "1⠜"
-                          else: [x: "$Postscripts[7]"]
+                      - t: "↗"
+                      - t: "⸨"
+                      - x: "$Postscripts[7]"
+                      - t: "⸩"
                   - test:
                       if: "not($Postscripts[8][self::m:none])"
                       then:
-                      - t: "1⠔"
-                      - test:
-                          if: "NeedsToBeGrouped($Postscripts[8], 'Finnish', false())"
-                          then:
-                          - t: "1⠣"
-                          - x: "$Postscripts[8]"
-                          - t: "1⠜"
-                          else: [x: "$Postscripts[8]"]
+                      - t: "↘"
+                      - t: "⸨"
+                      - x: "$Postscripts[8]"
+                      - t: "⸩"
                   - test:
                       if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
                       then:
                       - x: "$Postscripts[position() > 8]"
-  - t: "#"   # signal end script/numeric mode
                   
 
 -
@@ -731,13 +750,9 @@
 #      if: ".[contains(@notation,'radical')]"
 #      then: [t: square root, pause: short]
 
-   - test:
-      if: "NeedsToBeGrouped(*[1], 'Finnish', false())"
-      then:
-      - t: "("
-      - x: "*[1]"
-      - t: ")"
-      else: [x: "*[1]"]
+   - t: "⸨"
+   - x: "*[1]"
+   - t: "⸩"
 
    # - test:
    #    if: "contains(@notation,'phasorangle')"  #FIX: what should this be???

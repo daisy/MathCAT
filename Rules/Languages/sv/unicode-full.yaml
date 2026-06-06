@@ -1229,10 +1229,11 @@
          then: [T: "är"]                            #     (en: 'is', google translation)
      - T: "varken en normal delgrupp av eller lika med"    #     (en: 'not a normal subgroup of nor is equal to')
  - "⋭": [T: "varken innehåller som normal delgrupp eller lika med"]    #  0x22ed    (en: 'does not contain as a normal subgroup nor is equal to')
- - "⋮": [T: "vertikal ellips"]                      #  0x22ee    (en: 'vertical ellipsis')
- - "⋯": [T: "halvhög horisontell ellips"]           #  0x22ef    (en: 'dot dot dot')
- - "⋰": [T: "diagonal ellips uppåt"]            #  0x22f0    (en: 'upwards diagonal ellipsis')
- - "⋱": [T: "diagonal ellips nedåt"]            #  0x22f1    (en: 'diagonal ellipsis')
+ # SWEDISH: Changing these ellipsis to "and so on" because that is how they are used in the vast majority of cases
+ - "⋮": [T: "och så vidare"]                      #  0x22ee    (en: 'vertical ellipsis')
+ - "⋯": [T: "och så vidare"]           #  0x22ef    (en: 'dot dot dot')
+ - "⋰": [T: "och så vidare"]            #  0x22f0    (en: 'upwards diagonal ellipsis')
+ - "⋱": [T: "och så vidare"]            #  0x22f1    (en: 'diagonal ellipsis')
  - "⋲": [T: "tillhör med långt horisontellt streck"]    #  0x22f2    (en: 'element of with long horizontal stroke')
  - "⋳": [T: "tillhör med vertikalt streck i slutet av horisontellt streck"]    #  0x22f3    (en: 'element of with vertical bar at end of horizontal stroke')
  - "⋴": [T: "tillhör med vertikalt streck i slutet av horisontellt streck"]    #  0x22f4    (en: 'element of with vertical bar at end of horizontal stroke')
@@ -1357,6 +1358,11 @@
     # SWEDISH: switched order
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "i cirkel"                                 #     (en: 'circled', google translation)
+
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    # SWEDISH: switched order
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "i fylld cirkel"                                    #  (en: 'black circled', google translation)
 
  - "ⓐ-ⓩ":                                           #  0x24d0 - 0x24e9
     # SWEDISH: switched order
@@ -2349,6 +2355,20 @@
  - "㉞": [T: "trettiofyra i cirkel"]           #  0x325e    (en: 'circled number thirty four', google translation)
  - "㉟": [T: "trettiofem i cirkel"]            #  0x325f    (en: 'circled number thirty five', google translation)
  - "㊱": [T: "trettiosex i cirkel"]            #  0x32b1    (en: 'circled number thirty six', google translation)
+ - "㊲": [T: "trettiosju i cirkel"]            #  0x32b2    (en: 'circled number thirty seven', GPT-5.4 translation)
+ - "㊳": [T: "trettioåtta i cirkel"]           #  0x32b3    (en: 'circled number thirty eight', GPT-5.4 translation)
+ - "㊴": [T: "trettionio i cirkel"]            #  0x32b4    (en: 'circled number thirty nine', GPT-5.4 translation)
+ - "㊵": [T: "fyrtio i cirkel"]                #  0x32b5    (en: 'circled number forty', GPT-5.4 translation)
+ - "㊶": [T: "fyrtioett i cirkel"]             #  0x32b6    (en: 'circled number forty one', GPT-5.4 translation)
+ - "㊷": [T: "fyrtiotvå i cirkel"]             #  0x32b7    (en: 'circled number forty two', GPT-5.4 translation)
+ - "㊸": [T: "fyrtiotre i cirkel"]             #  0x32b8    (en: 'circled number forty three', GPT-5.4 translation)
+ - "㊹": [T: "fyrtiofyra i cirkel"]            #  0x32b9    (en: 'circled number forty four', GPT-5.4 translation)
+ - "㊺": [T: "fyrtiofem i cirkel"]             #  0x32ba    (en: 'circled number forty five', GPT-5.4 translation)
+ - "㊻": [T: "fyrtiosex i cirkel"]             #  0x32bb    (en: 'circled number forty six', GPT-5.4 translation)
+ - "㊼": [T: "fyrtiosju i cirkel"]             #  0x32bc    (en: 'circled number forty seven', GPT-5.4 translation)
+ - "㊽": [T: "fyrtioåtta i cirkel"]            #  0x32bd    (en: 'circled number forty eight', GPT-5.4 translation)
+ - "㊾": [T: "fyrtionio i cirkel"]             #  0x32be    (en: 'circled number forty nine', GPT-5.4 translation)
+ - "㊿": [T: "femtio i cirkel"]                #  0x32bf    (en: 'circled number fifty', GPT-5.4 translation)
  - "㋌": [T: "kvicksilver"]                          #  0x32cc    (en: 'mercury', google translation)
  - "㋍": [T: "erg"]                                 #  0x32cd    (google translation)
  - "㋎": [T: "elektron-volt"]                        #  0x32ce    (en: 'electron volts', google translation)

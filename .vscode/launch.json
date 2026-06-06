@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "(Windows) Launch",
-            "type": "cppvsdbg", // "lldb",
+            "type": "lldb",
             "request": "launch",
             "program": "${workspaceRoot}/target/debug/mathcat.exe",
             "args": [],
@@ -16,7 +16,7 @@
         },
         {
             "name": "Run Test Debugger",
-            "type": "cppvsdbg", // "lldb",
+            "type": "lldb",
             "request": "launch",
             "program": "${workspaceRoot}/target/debug/mathcat.exe",
             "args": [],

@@ -24,6 +24,8 @@ use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
 use std::cell::{Ref, RefCell};
+use log::{debug, error, warn};
+use std::sync::LazyLock;
 use std::thread::LocalKey;
 use phf::phf_set;
 use crate::canonicalize::{as_element, name, get_parent, MATHML_FROM_NAME_ATTR};
@@ -34,22 +36,17 @@ use crate::canonicalize::{as_element, name, get_parent, MATHML_FROM_NAME_ATTR};
 
 // @returns {String} -- the text of the (leaf) element otherwise an empty string
 fn get_text_from_element(e: Element) -> String {
-    if e.children().len() == 1 {
-        if let ChildOfElement::Text(t) = e.children()[0] {
+    if e.children().len() == 1 &&
+       let ChildOfElement::Text(t) = e.children()[0] {
             return t.text().to_string();
         }
-    }
     return "".to_string();
 }
 
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn get_text_from_COE(coe: &ChildOfElement) -> String {
-    let element = coe.element();
-    return match element {
-        Some(e) => get_text_from_element(e),
-        None => "".to_string(),
-    };
+    coe.element().map_or_else(String::new, get_text_from_element)
 }
 
 // make sure that there is only one node in the NodeSet
@@ -72,8 +69,7 @@ fn is_tag(e: Element, name: &str) -> bool {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn is_COE_tag(coe: ChildOfElement, name: &str) -> bool {
-    let element = coe.element();
-    return element.is_some() && is_tag(element.unwrap(), name)
+    coe.element().is_some_and(|element| is_tag(element, name))
 }
 
 /// Should be an internal structure for implementation of the IsNode, but it was useful in one place in a separate module.
@@ -206,7 +202,7 @@ impl IsNode {
                 }
                 if children.len() == 5 && 
                    ( (name(first_child) == "minus" && first_child.children().len() == 1 && !is_COE_tag(first_child.children()[0], "mn")) ||
-                     (name(first_child) == "mrow"     && !is_COE_tag(first_child.children()[1], "mn")) ) {
+                     (name(first_child) == "mrow"  && !is_COE_tag(first_child.children()[1], "mn")) ) {
                     return false;      // '-x y z' is too complicated () -- -2 x y is ok
                 }
             }
@@ -265,9 +261,7 @@ impl IsNode {
     // Returns true if 'frac' is a common fraction
     // In this case, the numerator and denominator can be no larger than 'num_limit' and 'denom_limit'
     fn is_common_fraction(frac: Element, num_limit: usize, denom_limit: usize) -> bool {
-        lazy_static! {
-            static ref ALL_DIGITS: Regex = Regex::new(r"\d+").unwrap();    // match one or more digits
-        }
+        static ALL_DIGITS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\d+").unwrap()); // match one or more digits
 
         if !is_tag(frac, "mfrac") &&  !is_tag(frac, "fraction"){
             return false;
@@ -330,7 +324,7 @@ static ALL_MATHML_ELEMENTS: phf::Set<&str> = phf_set!{
     "mstack", "mlongdiv", "msgroup", "msrow", "mscarries", "mscarry", "msline",
     "none", "mprescripts", "malignmark", "maligngroup",
     "math", "msqrt", "merror", "mpadded", "mphantom", "menclose", "mtd", "mstyle",
-    "mrow", "mfenced", "mtable", "mtr", "mlabeledtr",
+    "mrow", "a", "mfenced", "mtable", "mtr", "mlabeledtr",
 };
 
 static MATHML_LEAF_NODES: phf::Set<&str> = phf_set! {
@@ -410,11 +404,10 @@ impl Function for IsNode {
             let children = e.children();
             if children.is_empty() {
                 return true;
-            } else if children.len() == 1 {
-                if let ChildOfElement::Text(_) = children[0] {
+            } else if children.len() == 1 &&
+                      let ChildOfElement::Text(_) = children[0] {
                     return true;
                 }
-            }
             return false
         }
     }
@@ -449,9 +442,7 @@ impl ToOrdinal {
      * Returns the string representation of that number or an error message
      */
     fn convert(number: &str, fractional: bool, plural: bool) -> Option<String> {
-        lazy_static! {
-            static ref NO_DIGIT: Regex = Regex::new(r"[^\d]").unwrap();    // match anything except a digit
-        }
+        static NO_DIGIT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[^\d]").unwrap()); // match anything except a digit
         return SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             let numbers_large = definitions.get_vec("NumbersLarge")?;
@@ -460,7 +451,6 @@ impl ToOrdinal {
             let pref_manager = pref_manager.borrow();
             let block_separators = pref_manager.pref_to_string("BlockSeparators");
             let decimal_separator = pref_manager.pref_to_string("DecimalSeparators");
-
             // check number validity (has digits, not a decimal)
             if number.is_empty() ||  number.contains(&decimal_separator) {
                 return Some(String::from(number));
@@ -482,11 +472,10 @@ impl ToOrdinal {
             }
 
             // first deal with the abnormalities of fractional ordinals (one half, etc). That simplifies what remains
-            if fractional {
-                if let Some(string) = ToOrdinal::compute_irregular_fractional_speech(&number, plural) {
+            if fractional &&
+               let Some(string) = ToOrdinal::compute_irregular_fractional_speech(&number, plural) {
                     return Some(string);
                 }
-            }
 
             // at this point, we only need to worry about singular/plural distinction
 
@@ -1313,14 +1302,13 @@ impl GetNavigationPartName {
     fn navigation_part_name(intent_name: &str, index: usize) -> String {
         crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
-            if let Some(navigation_names) = definitions.get_hashmap("NavigationParts") {
-                if let Some(nav_part_names) = navigation_names.get(intent_name) {
+            if let Some(navigation_names) = definitions.get_hashmap("NavigationParts") &&
+               let Some(nav_part_names) = navigation_names.get(intent_name) {
                     // Split the pattern is: part [; part]*
                     if let Some(part_name) = nav_part_names.trim().split(";").nth(index) {
                         return part_name.trim().to_string();
                     }
                 }
-            }
             return "".to_string();
         })
     }
@@ -1349,10 +1337,8 @@ pub struct FontSizeGuess;
 // 		   returns original node match isn't found
 impl FontSizeGuess {
     pub fn em_from_value(value_with_unit: &str) -> f64 {
-        lazy_static! {
-            // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
-            static ref FONT_VALUE: Regex = Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|ppc|pt|ex|em|rem)").unwrap();
-        }
+        // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
+        static FONT_VALUE: LazyLock<Regex> = LazyLock::new(|| { Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|ppc|pt|ex|em|rem)").unwrap() });
         let cap = FONT_VALUE.captures(value_with_unit);
         if let Some(cap) = cap {
             if cap.len() == 3 {
@@ -1450,71 +1436,6 @@ pub struct HackedEvaluation<'c, 'd: 'c> {
     pub namespaces: &'c Namespaces,
 }
 
-pub struct PatternMatchResult;
-impl PatternMatchResult {
-    fn unsafe_temp_hack_get_context<'d>(evaluation: &context::Evaluation<'_, 'd>) -> Context<'d> {
-        unsafe {
-            let evaluation = std::mem::transmute::<&context::Evaluation, &HackedEvaluation>(evaluation);
-            let functions: Functions = HashMap::with_capacity(evaluation.functions.capacity());
-            // the following doesn't work because we can't clone the function values
-            // for (key, val) in evaluation.functions {functions.insert(key.clone(), val.clone());};
-            let mut variables: Variables = HashMap::with_capacity(evaluation.variables.capacity());
-            for (key, val) in evaluation.variables {variables.insert(key.clone(), val.clone());};
-            let mut namespaces: Namespaces = HashMap::with_capacity(evaluation.variables.capacity());
-            for (key, val) in evaluation.namespaces {namespaces.insert(key.clone(), val.clone());};
-            let hacked_context = HackedContext {
-                functions,
-                variables,
-                namespaces,
-            };
-            let mut context = std::mem::transmute::<HackedContext, Context>(hacked_context);
-            register_core_functions(&mut context);
-            add_builtin_functions(&mut context);
-            context
-        }
-    }
-}
-/// PatternMatchResult("Braille" | "Speech", xpath)
-/// Returns the result of executing the xpath (speech or braille string)
-impl Function for PatternMatchResult {
-    fn evaluate<'d>(&self,
-                        context: &context::Evaluation<'_, 'd>,
-                        args: Vec<Value<'d>>)
-                        -> Result<Value<'d>, Error>
-    {
-        let mut args = Args(args);
-        args.exactly(2)?;
-        let braille_or_speech = args.pop_string()?.to_ascii_lowercase();
-        if braille_or_speech != "braille" && braille_or_speech != "speech" {
-            return Err(Error::Other(format!("PatternMatchResult (in rules): first arg '{}' is not 'Braille' or 'Speech'", braille_or_speech)));
-        }
-        let xpath = validate_one_node(args.pop_nodeset()?, "PatternMatchResult")?;
-        let mathml = match xpath {
-            Node::Element(e) => e,
-            _ => return Err(Error::Other(format!("PatternMatchResult (in rules): first arg '{}' is not 'Braille' or 'Speech'", braille_or_speech)))
-        };
-
-        debug!("PatternMatchRule: mathml\n{}", mml_to_string(mathml));
-        // FIX: this should be trivial, but sxd_xpath doesn't expose a xpath evaluation function on Evaluation, just on Context despite the implementation
-        //    of evaluate creating an Evaluation and then calling 'self.0.evaluate()'.
-        // Hopefully the package author fixes this (see https://github.com/shepmaster/sxd-xpath/issues/151) or I should fork the project and make
-        //    a build with the added functionality.
-        // Once a fix is made, Evaluation (not Context) should be passed around and the ContextStack modified to store an evaluation.
-        let context = PatternMatchResult::unsafe_temp_hack_get_context(context);
-        let result = if braille_or_speech == "braille" {
-            match crate::braille::braille_mathml_with_context(mathml, context) {
-                Err(e) => return Err(Error::Other(format!("PatternMatchResult: {}", e.description()))),
-                Ok(answer) => answer.0,
-            }
-        } else {
-            match crate::speech::speak_mathml(mathml, "") {
-                Err(e) => return Err(Error::Other(format!("PatternMatchResult: {}", e.description()))),
-                Ok(answer) => answer,
-            }
-        };
-        return Ok( Value::String(result) );
-    }
-}
 
 /// Add all the functions defined in this module to `context`.
 pub fn add_builtin_functions(context: &mut Context) {
@@ -1535,7 +1456,6 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("SpeakIntentName", SpeakIntentName);
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
-    context.set_function("PatternMatchResult", PatternMatchResult);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1555,9 +1475,10 @@ mod tests {
 
     fn init_word_list() {
         crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+        crate::interface::set_preference("Language", "en").unwrap();
         let result = crate::definitions::read_definitions_file(true);
         if let Err(e) = result {
-            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{}", e.to_string());
+            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");
         }
     }
 

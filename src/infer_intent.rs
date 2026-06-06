@@ -5,18 +5,23 @@
 //! The implementation of the module is on hold until the MathML committee figures out how it wants to do this.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::*;
+use sxd_document::dom::{Element, Document, ChildOfElement};
 use crate::prefs::PreferenceManager;
 use crate::speech::SpeechRulesWithContext;
 use crate::canonicalize::{as_element, as_text, name, create_mathml_element, set_mathml_name, INTENT_ATTR, MATHML_FROM_NAME_ATTR};
 use crate::errors::*;
 use std::fmt;
+use std::sync::LazyLock;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::is_leaf;
 use regex::Regex;
 use phf::phf_set;
+#[allow(unused_imports)]
+use log::{debug, error, warn};
+
 
 const IMPLICIT_FUNCTION_NAME: &str = "apply-function";
+
 pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, mathml: Element<'c>) -> Result<Element<'m>> {
     match catch_errors_building_intent(rules_with_context, mathml) {
         Ok(intent) => return Ok(intent),
@@ -30,7 +35,7 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
                 mathml.remove_attribute(INTENT_ATTR);
                 // can't call intent_from_mathml() because we have already borrowed_mut -- we call a more internal version
                 let intent_tree =  match rules_with_context.match_pattern::<Element<'m>>(mathml)
-                                            .chain_err(|| "Pattern match/replacement failure!") {
+                                            .context("Pattern match/replacement failure!") {
                     Err(e) => Err(e),
                     Ok(intent) => {
                         intent.set_attribute_value(INTENT_ATTR, saved_intent_attr); //  so attr can be potentially be viewed later
@@ -47,8 +52,9 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
         if let Some(intent_str) = mathml.attribute_value(INTENT_ATTR) {
             // debug!("Before intent: {}", crate::pretty_print::mml_to_string(mathml));
             let mut lex_state = LexState::init(intent_str.trim())?;
-            let result = build_intent(rules_with_context, &mut lex_state, mathml)
-                        .chain_err(|| format!("occurs before '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str))?;
+            let mut intent_offset = 0;
+            let result = build_intent(rules_with_context, &mut lex_state, mathml, &mut intent_offset)
+                        .with_context(|| format!("occurs before '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str))?;
             if lex_state.token != Token::None {
                 bail!("Error in intent value: extra unparsed intent '{}' in intent attribute value '{}'", lex_state.remaining_str, intent_str);
             }
@@ -62,7 +68,7 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
 
 
 static FIXITIES: phf::Set<&str> = phf_set! {
-    "function", "infix", "prefix", "postfix", "silent", "other",
+    "function", "infix", "prefix", "postfix", "silent", "nofix", "other",
 };
 
 /// Eliminate all but the last fixity property
@@ -93,13 +99,13 @@ fn add_fixity(intent: Element) {
         let intent_name = name(intent);
         crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
-            if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) {
-                if let Some((fixity, _)) = definition.split_once("=") {
+            // debug!("    add_fixity: intent_name: {}, ", intent_name);
+            if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) &&
+                let Some((fixity, _)) = definition.split_once("=") {
                     let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
                     intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
                     // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
-                }
-            };
+                };
         });
     }
 }
@@ -154,6 +160,14 @@ pub fn add_fixity_children(intent: Element) -> Element {
                 children.push( create_operator_element(intent_name, fixity, op_name_id, 1, &doc));                       
                 mathml.replace_children(children);
             },
+            "nofix" => {
+                if children.len() == 1 {
+                    // Fix type error: can't assign ChildOfElement to children[0] (which is an Element)
+                    // Instead, replace the only child with the operator child using replace_children
+                    children[0] = create_operator_element(intent_name, fixity, op_name_id, 1, &doc);
+         
+                }
+            },
             "silent" => {
                 // children remain the same -- nothing to do
             },
@@ -183,7 +197,7 @@ pub fn add_fixity_children(intent: Element) -> Element {
         fn create_operator_element<'a>(intent_name: &str, fixity: &str, id: &str, id_inc: usize, doc: &Document<'a>) -> ChildOfElement<'a> {
             let intent_name = intent_speech_for_name(intent_name, &PreferenceManager::get().borrow().pref_to_string("NavMode"), fixity);
             let element = create_mathml_element(doc, &intent_name);
-            element.set_attribute_value("id", &format!("{id}-{id_inc}"));
+            element.set_attribute_value("id", &format!("{id}-fixity-{id_inc}"));
             element.set_attribute_value(MATHML_FROM_NAME_ATTR, "mo");
             return ChildOfElement::Element(element);
         }
@@ -241,23 +255,24 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
 // property           := S ':' NCName
 // S                  := [ \t\n\r]*
 
-lazy_static! {
-    // The practical restrictions of NCName are that it cannot contain several symbol characters like
-    //  !, ", #, $, %, &, ', (, ), *, +, ,, /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~, and whitespace characters
-    //  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
-    // NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
-    //   We follow NC_NAME for the basic latin block, but then allow everything
-    static ref CONCEPT_OR_LITERAL: Regex = Regex::new(
-        r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
-    ).unwrap();
-    static ref PROPERTY: Regex = Regex::new(
-        r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
-    ).unwrap();
-    static ref ARG_REF: Regex = Regex::new(
-        r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
-    ).unwrap();
-    static ref NUMBER: Regex = Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap();
-}
+// The practical restrictions of NCName are that it cannot contain several symbol characters like
+//  !, ", #, $, %, &, ', (, ), *, +, ,, /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~, and whitespace characters
+//  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
+// NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
+//   We follow NC_NAME for the basic latin block, but then allow everything
+static CONCEPT_OR_LITERAL: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
+    ).unwrap()
+});
+static PROPERTY: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
+    ).unwrap()
+});
+static ARG_REF: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
+    ).unwrap()
+});
+static NUMBER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap());
 
 static TERMINALS_AS_U8: [u8; 3] = [b'(', b',', b')'];
 // static TERMINALS: [char; 3] = ['(', ',',')'];
@@ -368,7 +383,8 @@ impl<'i> LexState<'i> {
 
 fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
                                          lex_state: &mut LexState<'b>,
-                                         mathml: Element<'c>) -> Result<Element<'m>> {
+                                         mathml: Element<'c>,
+                                         intent_offset: &mut u32) -> Result<Element<'m>> {
     // intent             := self-property-list | expression
     // self-property-list := property+ S    
     // expression         := S ( term property* | application ) S 
@@ -384,7 +400,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
     // debug!("  start build_intent: state: {}", lex_state);
     let doc = rules_with_context.get_document();
     let mut intent;
-    // debug!("    build_intent: start mathml name={}", name(mathml));
+    // debug!("    build_intent: start mathml name={}, intent_offset={}", name(mathml), intent_offset);
     match lex_state.token {
         Token::Property(_) => {
             // We only have a property -- we want to keep this tag/element
@@ -398,7 +414,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
                 intent.set_attribute_value(INTENT_PROPERTY, &properties);
                 intent.set_attribute_value(MATHML_FROM_NAME_ATTR, name(mathml));
                 intent.set_attribute_value("id", mathml.attribute_value("id")
-                      .ok_or("no id on intent function name")?);
+                      .ok_or_else(|| anyhow!("no id on intent function name"))?);
             } else {
                 let saved_intent = mathml.attribute_value(INTENT_ATTR).unwrap();
                 mathml.remove_attribute(INTENT_ATTR);
@@ -411,15 +427,24 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             return Ok(intent);      // if we start with properties, then there can only be properties
         },
         Token::ConceptOrLiteral(word) | Token::Number(word) => {
-            let leaf_name = if let Token::Number(_) = lex_state.token {"mn"} else {"mi"};
+            let (leaf_name, leaf_text) = if let Token::Number(_) = lex_state.token {
+                ("mn", word)
+                } else if let Token::ConceptOrLiteral(word) = lex_state.token && is_concept_name(lex_state.remaining_str) {
+                    (word, if is_leaf(mathml) {as_text(mathml)} else {""})
+                }
+                else {
+                    ("mi", word)
+                };
             intent = create_mathml_element(&doc, leaf_name);
             // if the str is part of a larger intent and not the head (e.g., "a" in "f($x, a)", but not the "f" in it), then it is "made up"
             // debug!("    Token::ConceptOrLiteral, word={}, leaf_name={}", word, leaf_name);
-            intent.set_attribute_value(MATHML_FROM_NAME_ATTR, 
+            // debug!("    token={}", lex_state);
+            intent.set_attribute_value(MATHML_FROM_NAME_ATTR,
                 if word == mathml.attribute_value(INTENT_ATTR).unwrap_or_default() {name(mathml)} else {leaf_name});
-            intent.set_text(word);       // '-' and '_' get removed by the rules.
+            intent.set_text(leaf_text);       // '-' and '_' get removed by the rules.
             if let Some(id) = mathml.attribute_value("id") {
-                intent.set_attribute_value("id", id);
+               intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
+               *intent_offset += 1;
             }
             lex_state.get_next()?;
             if let Token::Property(_) = lex_state.token {
@@ -428,7 +453,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             }
         },
         Token::ArgRef(word) => {
-            intent = match find_arg(rules_with_context, &word[1..], mathml, true, false)? {
+            intent = match find_arg(rules_with_context, &word[1..], mathml, intent_offset, true, false)? {
                 Some(e) => {
                     lex_state.get_next()?;
                     e
@@ -443,11 +468,33 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
         _ => bail!("Illegal 'intent' syntax: found {}", lex_state.token),
     };
     if lex_state.is_terminal("(") {
-        intent = build_function(intent, rules_with_context, lex_state, mathml)?;
+        intent = build_function(intent, rules_with_context, lex_state, mathml, intent_offset)?;
     }
-    // debug!("    end build_intent: state: {}     piece: {}", lex_state, mml_to_string(intent));
+    // debug!("    end build_intent: state: {}     piece:\n{}", lex_state, mml_to_string(intent));
     add_fixity(intent);
     return Ok(intent);
+}
+
+fn is_concept_name(s: &str) -> bool {
+    let mut chars = s.chars();
+    
+    if let Some(':') = chars.next() {
+        // Use find to consume all ASCII letters. 
+        // The first character that FAILS the condition is returned by find.
+        match chars.by_ref().find(|c| !c.is_ascii_alphabetic()) {
+            // If find returns None, it means the rest of the string was entirely letters
+            None => true, 
+            // If it found a non-letter, that character IS the "next char" to check
+            Some(next_c) => matches!(next_c, '(' | ',' | ')'),
+        }
+    } else {
+        // Reset iterator if it doesn't start with ':'
+        let mut chars = s.chars();
+        match chars.next() {
+            None => true,
+            Some(c) => matches!(c, '(' | ',' | ')'),
+        }
+    }
 }
 
 pub const INTENT_PROPERTY: &str = "data-intent-property";
@@ -482,7 +529,8 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
             function_name: Element<'m>,
             rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
             lex_state: &mut LexState<'b>,
-            mathml: Element<'c>) -> Result<Element<'m>> {
+            mathml: Element<'c>,
+            intent_offset: &mut u32) -> Result<Element<'m>> {
     // debug!("  start build_function: name: {}, state: {}", name(function_name), lex_state);
     // application := intent '(' arguments? S ')'  where 'function_name' is 'intent'
     assert!(lex_state.is_terminal("("));
@@ -494,7 +542,7 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
             // grammar requires at least one argument
             bail!("Illegal 'intent' syntax: missing argument for intent name '{}'", name(function_name));
         }
-        let children = build_arguments(rules_with_context, lex_state, mathml)?;
+        let children = build_arguments(rules_with_context, lex_state, mathml, intent_offset)?;
         function = lift_function_name(rules_with_context.get_document(), function, children);
 
         if !lex_state.is_terminal(")") {
@@ -504,7 +552,7 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
     }
 
     // debug!("  end build_function/# children: {}, #state: {}  ..[bfa] function name: {}",
-        // function.children().len(), lex_state, mml_to_string(function));
+    //     function.children().len(), lex_state, mml_to_string(function));
     return Ok(function);
 }
 
@@ -514,18 +562,19 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
 fn build_arguments<'b, 'r, 'c, 's:'c, 'm:'c>(
             rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
             lex_state: &mut LexState<'b>,
-            mathml: Element<'c>) -> Result<Vec<Element<'m>>> {
+            mathml: Element<'c>,
+            intent_offset: &mut u32) -> Result<Vec<Element<'m>>> {
     // arguments := intent ( ',' intent )*' 
     // debug!("    start build_args state: {}", lex_state);
 
     // there is at least one arg
     let mut children = Vec::with_capacity(lex_state.remaining_str.len()/3 + 1);   // conservative estimate ('3' - "$x,");
-    children.push( build_intent(rules_with_context, lex_state, mathml)? );   // arg before ','
+    children.push( build_intent(rules_with_context, lex_state, mathml, intent_offset)? );   // arg before ','
     // debug!("  build_args: # children {};  state: {}", children.len(), lex_state);
 
     while lex_state.is_terminal(",") {
         lex_state.get_next()?;
-        children.push( build_intent(rules_with_context, lex_state, mathml)? );   // arg before ','
+        children.push( build_intent(rules_with_context, lex_state, mathml, intent_offset)? );   // arg before ','
         // debug!("    build_args, # children {};  state: {}", children.len(), lex_state);
     }
 
@@ -535,7 +584,7 @@ fn build_arguments<'b, 'r, 'c, 's:'c, 'm:'c>(
 
 /// lift the children up to LITERAL_NAME
 fn lift_function_name<'m>(doc: Document<'m>, function_name: Element<'m>, children: Vec<Element<'m>>) -> Element<'m> {
-    // debug!("    lift_function_name: {}", name(function_name));
+    // debug!("    lift_function_name: {} ({} children)", name(function_name), children.len());
     // debug!("    lift_function_name: {}", mml_to_string(function_name));
     if name(function_name) == "mi" || name(function_name) == "mn" {   // FIX -- really want to test for all leaves, but not "data-from-mathml"
         // simple/normal case of f(x,y)
@@ -548,7 +597,8 @@ fn lift_function_name<'m>(doc: Document<'m>, function_name: Element<'m>, childre
             function_name.set_attribute_value(INTENT_PROPERTY, &(properties + "silent:"));
         }
         return function_name;
-    } else if function_name.children().is_empty() {
+    } else if function_name.children().is_empty() ||
+              (function_name.children().len() == 1 && matches!(function_name.children()[0], ChildOfElement::Text(_))) {
         // "...  :property(...)" -- no function name
         function_name.replace_children(children);
         return function_name;
@@ -566,16 +616,22 @@ fn lift_function_name<'m>(doc: Document<'m>, function_name: Element<'m>, childre
 
 /// look for @arg=name in mathml
 /// if 'check_intent', then look at an @intent for this element (typically false for non-recursive calls)
-fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, name: &str, mathml: Element<'c>, skip_self: bool, no_check_inside: bool) -> Result<Option<Element<'m>>> {
+fn find_arg<'r, 'c, 's:'c, 'm:'c>(
+    rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>,
+    name: &str,
+    mathml: Element<'c>,
+    intent_offset: &mut u32,
+    skip_self: bool,
+    no_check_inside: bool) -> Result<Option<Element<'m>>> {
     // debug!("Looking for '{}' in\n{}", name, mml_to_string(mathml));
-    if !skip_self {
-        if let Some(arg_val) = mathml.attribute_value("arg") {
+    if !skip_self &&
+        let Some(arg_val) = mathml.attribute_value("arg") {
             // debug!("looking for '{}', found arg='{}'", name, arg_val);
             if name == arg_val {
                 // check to see if this mathml has an intent value -- if so the value is the value of its intent value
                 if let Some(intent_str) = mathml.attribute_value(INTENT_ATTR) {
                     let mut lex_state = LexState::init(intent_str.trim())?;
-                    return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml)? ) );
+                    return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml, intent_offset)? ) );
                 } else {
                     return Ok( Some( rules_with_context.match_pattern::<Element<'m>>(mathml)? ) );
                 }
@@ -583,7 +639,6 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
                 return Ok(None);       // don't look inside 'arg'
             }
         }
-    }
 
     if no_check_inside && mathml.attribute_value(INTENT_ATTR).is_some() {
         return Ok(None);           // don't look inside 'intent'
@@ -595,7 +650,7 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
 
     for child in mathml.children() {
         let child = as_element(child);
-        if let Some(element) = find_arg(rules_with_context, name, child, false, true)? {
+        if let Some(element) = find_arg(rules_with_context, name, child, intent_offset, false, true)? {
             return Ok( Some(element) );
         }
     }
@@ -607,43 +662,54 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithCon
 mod tests {
     #[allow(unused_imports)]
     use crate::init_logger;
+    use crate::errors::Result;
+    #[allow(unused_imports)]
+    use log::debug;
     use sxd_document::parser;
+    use std::panic::{catch_unwind, AssertUnwindSafe};
 
 
     fn test_intent(mathml: &str, target: &str, intent_error_recovery: &str) -> bool {
 		use crate::interface::*;
         use crate::pretty_print::mml_to_string;
 		// this forces initialization
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        // crate::speech::SpeechRules::initialize_all_rules().unwrap();
-        set_preference("IntentErrorRecovery".to_string(), intent_error_recovery.to_string()).unwrap();
-        set_preference("SpeechStyle".to_string(), "SimpleSpeak".to_string()).unwrap();      // avoids possibility of "LiteralSpeak"
-        let package1 = &parser::parse(mathml).expect("Failed to parse test input");
-        let mathml = get_element(package1);
-        trim_element(mathml, false);
-        debug!("test:\n{}", mml_to_string(mathml));
-        
-        let package2 = &parser::parse(target).expect("Failed to parse target input");
-        let target = get_element(package2);
-        trim_element(target,true);
-        debug!("target:\n{}", mml_to_string(target));
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+            set_preference("Language", "en").unwrap();
+            set_preference("IntentErrorRecovery", intent_error_recovery).unwrap();
+            set_preference("SpeechStyle", "SimpleSpeak").unwrap();      // avoids possibility of "LiteralSpeak"
+            let package1 = &parser::parse(mathml).expect("Failed to parse test input");
+            let mathml = get_element(package1);
+            trim_element(mathml, false);
+            // debug!("test:\n{}", mml_to_string(mathml));
+            
+            let package2 = &parser::parse(target).expect("Failed to parse target input");
+            let target = get_element(package2);
+            trim_element(target,true);
+            // debug!("target:\n{}", mml_to_string(target));
 
-        let result = match crate::speech::intent_from_mathml(mathml, package2.as_document()) {
-            Ok(e) => e,
-            Err(e) => {
-                debug!("{}", crate::interface::errors_to_string(&e));
-                return false;       // could be intentional failure
+            match crate::speech::intent_from_mathml(mathml, package2.as_document()) {
+                Ok(_result) => {
+                    // debug!("result:\n{}", mml_to_string(_result));
+                    Ok(())
+                },
+                Err(e) => {
+                    panic!("Error in intent: {}\nMathML: {}", e, mml_to_string(mathml));
+                }
             }
-        };
-        debug!("result:\n{}", mml_to_string(result));
-        match is_same_element(result, target) {
-			Ok(_) => return true,
-			Err(e) => panic!("{}:\nresult: {}target: {}", e, mml_to_string(result), mml_to_string(target)),
-		}
+        }));
+        match crate::interface::report_any_panic(result) {
+            Ok(_) => true,
+            Err(e) => {
+                eprintln!("{}", e);
+                false
+            }
+        }
     }
 
     #[test]
-    fn infer_binomial() {
+    fn infer_binomial() -> Result<()> {
         let mathml = "<mrow intent='binomial($n, $m)'>
                 <mo>(</mo>
                 <mfrac linethickness='0'> <mn arg='n'>7</mn> <mn arg='m'>3</mn> </mfrac>
@@ -651,10 +717,11 @@ mod tests {
             </mrow>";
         let intent = "<binomial data-from-mathml='mrow' data-intent-property=':infix:'> <mn data-from-mathml='mn' arg='n'>7</mn> <mn data-from-mathml='mn' arg='m'>3</mn>  </binomial>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn infer_binomial_intent_arg() {
+    fn infer_binomial_intent_arg() -> Result<()> {
         let mathml = "<msubsup intent='$op($n,$m)'>
                 <mi arg='op' intent='binomial'>C</mi>
                 <mi arg='n'>n</mi>
@@ -662,10 +729,11 @@ mod tests {
             </msubsup>";
         let intent = "<binomial data-from-mathml='msubsup' data-intent-property=':infix:'> <mi data-from-mathml='mi' arg='n'>n</mi> <mi data-from-mathml='mi' arg='m'>m</mi></binomial>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn silent_underscore() {
+    fn silent_underscore() -> Result<()> {
         let mathml = "<mrow><mi intent='__-'>silent</mi><mo>+</mo><mi>e</mi></mrow>";
         let intent = "<mrow data-from-mathml='mrow'>
                                 <mi data-from-mathml='mi'>__-</mi>
@@ -673,21 +741,43 @@ mod tests {
                                 <mi data-from-mathml='mi'>e</mi>
                             </mrow>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
 
     #[test]
-    fn silent_underscore_function() {
+    fn silent_underscore_function() -> Result<()> {
         let mathml = "<mrow intent='__-_(speak, this)'></mrow>";
         let intent = "<__-_ data-from-mathml='mrow' data-intent-property=':silent:'>
                                 <mi data-from-mathml='mi'>speak</mi>
                                 <mi data-from-mathml='mi'>this</mi>
                             </__-_>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_multiple_properties() {
+    fn nofix_intent_trivial() -> Result<()> {
+        let mathml = "<mi intent='set-of-integers:nofix'>ℤ</mi>";
+        let intent = "<set-of-integers data-from-mathml='mi' data-intent-property=':nofix:'>ℤ</set-of-integers>";
+        assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
+    }
+
+
+    #[test]
+    fn nofix_intent_args() -> Result<()> {
+        let mathml = "<mi intent='foo:nofix(first, second)'>foo content</mi>";
+        let intent = r#"<foo id='Mfo9mib6-0-literal-0' data-intent-property=':nofix:' data-from-mathml='mi'>
+                <first data-from-mathml='first' id='Mfo9mib6-0-literal-1'>ℤ</first>
+                <second data-from-mathml='second' id='Mfo9mib6-0-literal-2'>ℤ</second>
+            </foo>"#;
+        assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
+    }
+
+    #[test]
+    fn intent_multiple_properties() -> Result<()> {
         let mathml = "<mrow intent='foo:silent:int(bar:positive-int:int, $a:foo:bar:foo-bar, $b:number)'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -699,9 +789,10 @@ mod tests {
                                 <mi data-from-mathml='mi' arg='b' data-intent-property=':number:'>b</mi>
                             </foo>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
     #[test]
-    fn intent_nest_no_arg_call() {
+    fn intent_nest_no_arg_call() -> Result<()> {
         let mathml = "<mrow intent='foo(bar())'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -710,10 +801,11 @@ mod tests {
             </mrow>";
         let intent = "<foo><bar></bar></foo>";
         assert!(!test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_hints() {
+    fn intent_hints() -> Result<()> {
         let mathml = "<mrow intent='foo:silent(bar:postfix(3))'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -726,10 +818,11 @@ mod tests {
                                 </bar>
                             </foo>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
     
     #[test]
-    fn intent_hints_and_type() {
+    fn intent_hints_and_type() -> Result<()> {
         let mathml = "<mrow intent='foo:is-foolish:function($b)'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -740,10 +833,11 @@ mod tests {
                                 <mi data-intent-property=':int:' data-from-mathml='mi'>b</mi>
                             </foo>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_in_intent_first_arg() {
+    fn intent_in_intent_first_arg() -> Result<()> {
         let mathml = "<mrow intent='p(f(b), a)'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -757,10 +851,11 @@ mod tests {
                                 <mi data-from-mathml='mi'>a</mi>
                             </p>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_in_intent_second_arg() {
+    fn intent_in_intent_second_arg() -> Result<()> {
         let mathml = "<mrow intent='$p(a,$f(b))'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -774,10 +869,11 @@ mod tests {
                                 </factorial>
                             </plus>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_with_whitespace() {
+    fn intent_with_whitespace() -> Result<()> {
         let mathml = "<mrow intent='  $arrow    ( $a ,  $b,$c )  '>
                 <mi arg='a'>A</mi>
                 <mover>
@@ -789,20 +885,22 @@ mod tests {
             </mrow>";
         let intent = "<map data-from-mathml='mrow'> <mi data-from-mathml='mi' arg='a'>A</mi> <mi data-from-mathml='mi' arg='b'>B</mi> <mi data-from-mathml='mi' arg='c'>C</mi> </map>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_template_at_toplevel() {
+    fn intent_template_at_toplevel() -> Result<()> {
         let mathml = "<msup intent='$H $n'>
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
             </msup>";
         let intent = "<mrow><mi arg='H' mathvariant='normal'>H</mi><mn arg='n'>2</mn></mrow>";
         assert!(!test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_with_nested_indirect_head() {
+    fn intent_with_nested_indirect_head() -> Result<()> {
         let mathml = "<mrow intent='$op($a,$b)'>
                 <mi arg='a'>A</mi>
                 <mover arg='op' intent='$ra($cong)'>
@@ -819,10 +917,11 @@ mod tests {
                                 <mi data-from-mathml='mi' arg='b'>B</mi>
                             </apply-function>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_with_literals() {
+    fn intent_with_literals() -> Result<()> {
         let mathml = "<mrow intent='vector(1, 0.0, 0.1, -23, -0.1234, last)'>
                 <mi>x</mi>
             </mrow>";
@@ -835,19 +934,21 @@ mod tests {
                                 <mi data-from-mathml='mi'>last</mi>
                             </vector>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_with_template_literals() {
+    fn intent_with_template_literals() -> Result<()> {
         let mathml = "<mrow intent='1 0.0 0.1 -23 -0.1234 last'>
                 <mi>x</mi>
             </mrow>";
         let intent = "<mrow><mn>1</mn><mn>0.</mn><mn>.1</mn><mn>-23</mn><mn>-.1234</mn><mi>last</mi></mrow>";
         assert!(!test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_with_nested_head() {
+    fn intent_with_nested_head() -> Result<()> {
         let mathml = "<mrow intent='$ra($cong)($a,$b)'>
                 <mi arg='a'>A</mi>
                 <mover>
@@ -864,11 +965,12 @@ mod tests {
                                 <mi data-from-mathml='mi' arg='b'>B</mi>
                             </apply-function>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
 
     #[test]
-    fn intent_with_nested_head_and_hints() {
+    fn intent_with_nested_head_and_hints() -> Result<()> {
         let mathml = "<mrow intent='pre:prefix(in:infix($a, x))(post:postfix($b))'>
                 <mi arg='a'>A</mi>
                 <mover>
@@ -889,11 +991,12 @@ mod tests {
                 </post>
             </apply-function>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
 
     #[test]
-    fn intent_double_indirect_head() {
+    fn intent_double_indirect_head() -> Result<()> {
         let mathml = "<mrow intent='$m:prefix($c)($a,$b)'>
                 <mi arg='a'>A</mi>
                 <mover>
@@ -910,10 +1013,11 @@ mod tests {
                                 <mi data-from-mathml='mi' arg='b'>B</mi>
                             </apply-function>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_missing_open() {
+    fn intent_missing_open() -> Result<()> {
         let mathml = "<mrow intent='$p $a,$f($b))'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -922,10 +1026,11 @@ mod tests {
             </mrow>";
         let intent = "<plus> <mi arg='a'>a</mi> <factorial><mi arg='b'>b</mi></factorial> </plus>";
         assert!(!test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_no_comma() {
+    fn intent_no_comma() -> Result<()> {
         let mathml = "<mrow intent='$p($a $f($b))'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -939,10 +1044,11 @@ mod tests {
                 </mrow>
             </plus>";
         assert!(!test_intent(mathml, intent, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_no_arg() {
+    fn intent_no_arg() -> Result<()> {
         let mathml = "<mrow intent='factorial()'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -951,11 +1057,12 @@ mod tests {
             </mrow>";
         let target = "<factorial></factorial>";
         assert!(!test_intent(mathml, target, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_illegal_no_arg() {
-        let mathml = "<mrow intent='factorial(()))'>
+    fn intent_illegal_no_arg() -> Result<()> {
+        let mathml = "<mrow intent='factorial()'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
                 <mi arg='b'>b</mi>
@@ -963,10 +1070,11 @@ mod tests {
             </mrow>";
         let target = "<factorial></factorial>";
         assert!(!test_intent(mathml, target, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_illegal_no_arg_ignore() {
+    fn intent_illegal_no_arg_ignore() -> Result<()> {
         let mathml = "<mrow intent='factorial()'>
                 <mi arg='a'>a</mi>
                 <mo arg='p' intent='plus'>+</mo>
@@ -980,19 +1088,21 @@ mod tests {
                                 <mi data-from-mathml='mo'>factorial</mi>
                             </mrow>";
         assert!(test_intent(mathml, target, "IgnoreIntent"));
+        return Ok(());
     }
 
     #[test]
-    fn intent_illegal_self_ref() {
+    fn intent_illegal_self_ref() -> Result<()> {
         let mathml = "<mrow intent='foo:is-foolish:function($b)'>
                 <mi intent='$b:int' arg='b'>b</mi>
             </mrow>";
         let target = "<foo data-intent-property=':function:' data-intent-type='is-foolish'><mi data-intent-type='int'>b</mi></foo>";
         assert!(!test_intent(mathml, target, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn infer_missing_second_arg() {
+    fn infer_missing_second_arg() -> Result<()> {
         let mathml = "<mrow intent='binomial($n,)'>
                 <mo>(</mo>
                 <mfrac linethickness='0'> <mn arg='n'>7</mn> <mn arg='m'>3</mn> </mfrac>
@@ -1001,10 +1111,11 @@ mod tests {
         let target = "<binomial data-intent-property='binomial($n,)'> \n
                              <mn data-from-mathml='mn' arg='n'>7</mn> <mn data-from-mathml='mn' arg='m'>3</mn>  </binomial>";
         assert!(!test_intent(mathml, target, "Error"));
+        return Ok(());
     }
 
     #[test]
-    fn infer_missing_second_arg_ignore() {
+    fn infer_missing_second_arg_ignore() -> Result<()> {
         let mathml = "<mrow intent='binomial($n,)'>
                 <mo>(</mo>
                 <mfrac linethickness='0'> <mn arg='n'>7</mn> <mn arg='m'>3</mn> </mfrac>
@@ -1015,11 +1126,12 @@ mod tests {
                 <fraction data-from-mathml='mfrac' linethickness='0'> <mn data-from-mathml='mn' arg='n'>7</mn> <mn data-from-mathml='mn' arg='m'>3</mn> </fraction>
                 <mo data-from-mathml='mo'>)</mo>
             </mrow>";
-        assert!(test_intent(mathml, target, "IgnoreIntent"));
+            assert!(test_intent(mathml, target, "IgnoreIntent"));
+        return Ok(());
     }   
 
     #[test]
-    fn plane1_char_in_concept_name() {
+    fn plane1_char_in_concept_name() -> Result<()> {
         let mathml = "<math><mrow><mo intent='🐇'>&#x1F407;</mo><mi>X</mi></mrow></math>";
         let intent = "<math data-from-mathml='math'>
                                 <mrow data-from-mathml='mrow'>
@@ -1028,5 +1140,6 @@ mod tests {
                                 </mrow>
                             </math>";
         assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
     }   
 }

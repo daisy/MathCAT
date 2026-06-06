@@ -72,12 +72,14 @@ use sxd_document::dom::Element;
 use yaml_rust::Yaml;
 
 use std::fmt;
-use crate::speech::{SpeechRulesWithContext, MyXPath, TreeOrString};
+use crate::speech::{RulesFor, SpeechRulesWithContext, MyXPath, TreeOrString};
 use std::string::ToString;
 use std::str::FromStr;
 use strum_macros::{Display, EnumString};
 use regex::Regex;
+use std::sync::LazyLock;
 use sxd_xpath::Value;
+use html_escape::encode_safe;
 
 const MIN_PAUSE:f64 = 50.0;         // ms -- avoids clutter of putting out pauses that probably can't be heard
 const PAUSE_SHORT:f64 = 200.0;  // ms
@@ -153,10 +155,10 @@ impl Pronounce {
         let mut eloquence = "";
         // values should be an array with potential values for Pronounce
         let values = values.as_vec().ok_or_else(||
-                                        format!("'pronounce' value '{}' is not an array", yaml_to_type(values)))?;
+                                        anyhow!("'pronounce' value '{}' is not an array", yaml_to_type(values)))?;
         for key_value in values {
-            let key_value_hash = key_value.as_hash().ok_or_else(|| 
-                                        format!("pronounce value '{}' is not key/value pair", yaml_to_string(key_value, 0)))?;
+            let key_value_hash = key_value.as_hash().ok_or_else(||
+                                        anyhow!("pronounce value '{}' is not key/value pair", yaml_to_string(key_value, 0)))?;
             if key_value_hash.len() != 1 {
                 bail!("pronounce value {:?} is not a single key/value pair", key_value_hash);
             }
@@ -265,6 +267,24 @@ pub enum TTS {
 //    Mac,
 }
 
+/// Escape literal text so user MathML (e.g. `mtext`) cannot inject SSML/SAPI markup.
+/// Applies only when generating speech (not braille) with SSML or SAPI5 output.
+/// Returns `s` unchanged when no escaping is needed (no allocation).
+pub fn escape_string_for_safety(s: String, rules_for: RulesFor, tts: &TTS) -> String {
+    if rules_for == RulesFor::Braille || (*tts != TTS::SSML && *tts != TTS::SAPI5) {
+        return s;
+    }
+    if !needs_xml_text_escape(&s) {
+        return s;
+    }
+    log::debug!("Escaping string for safety: {}", s);
+    return encode_safe(&s).into_owned();
+}
+
+fn needs_xml_text_escape(s: &str) -> bool {
+    return s.as_bytes().iter().any(|&b| b == b'&' || b == b'<' || b == b'>' || b == b'"');
+}
+
 impl TTS {
     /// Given the tts command ("pause", "rate", etc) and its value, build the TTS data structure for it.
     ///
@@ -311,14 +331,14 @@ impl TTS {
                     Err(_) => {
                         // let's try as an xpath (e.g., could be '$CapitalLetters_Pitch')
                         TTSCommandValue::XPath(
-                            MyXPath::build(tts_value).chain_err(|| format!("while trying to evaluate value of '{tts_enum}:'"))?
+                            MyXPath::build(tts_value).with_context(|| format!("while trying to evaluate value of '{tts_enum}:'"))?
                         )
                     }
                 }
             },
             TTSCommand::Bookmark | TTSCommand::Spell => {
                 TTSCommandValue::XPath(
-                    MyXPath::build(values).chain_err(|| format!("while trying to evaluate value of '{tts_enum}:'"))?
+                    MyXPath::build(values).with_context(|| format!("while trying to evaluate value of '{tts_enum}:'"))?
                 )
             },
             TTSCommand::Pronounce => {
@@ -366,7 +386,7 @@ impl TTS {
             match command.value {
                 TTSCommandValue::XPath(xpath) => {
                     let value = xpath.evaluate(rules_with_context.get_context(), mathml)
-                        .chain_err(|| format!("in 'spell': can't evaluate xpath \"{}\"", &xpath.to_string()) )?;
+                        .with_context(|| format!("in 'spell': can't evaluate xpath \"{}\"", &xpath.to_string()) )?;
                     let value_string = match value {
                         Value::String(s) => s,
                         Value::Nodeset(nodes) if nodes.size() == 1 => {
@@ -416,16 +436,13 @@ impl TTS {
                 },
                 _ => bail!("Implementation error: found non-xpath value for spell"),
             }
-        } else if command.command == TTSCommand::Rate && self != &TTS::None {
-            if let TTSCommandValue::Number(number_value) = command.value {
-                if number_value == RATE_FROM_CONTEXT {
+        } else if command.command == TTSCommand::Rate && self != &TTS::None &&
+                  let TTSCommandValue::Number(number_value) = command.value &&
+                  number_value == RATE_FROM_CONTEXT {
                     // handle hack for $Rate -- need to look up in context
-                    let rate_from_context = crate::navigate::context_get_variable(rules_with_context.get_context(), "MathRate", mathml)?.1;
-                    assert!(rate_from_context.is_some());
-                    command.value = TTSCommandValue::Number(rate_from_context.unwrap());
+                    let rate_from_context = crate::navigate::context_get_variable(rules_with_context.get_context(), "MathRate", mathml)?.parse::<usize>().unwrap_or(100);
+                    command.value = TTSCommandValue::Number(rate_from_context as f64);
                 }
-            }
-        }
 
         // evaluate any xpath value now to simplify later code
         if let TTSCommandValue::XPath(xpath) = command.value {
@@ -456,14 +473,15 @@ impl TTS {
             if result.is_empty() {
                 result += " ";
             }
-            result += &command.replacements.replace::<String>(rules_with_context, mathml)?;    
+            let speech = command.replacements.replace::<String>(rules_with_context, mathml)?;  
+            result += &speech;
         }
 
         let end_tag = match self {
             TTS::None  => self.get_string_none(&command, prefs, false),
             TTS::SSML  => self.get_string_ssml(&command, prefs, false),
             TTS::SAPI5 => self.get_string_sapi5(&command, prefs, false),
-        };
+        };   
 
         if end_tag.is_empty() {
             return Ok( result ); // avoids adding in " "
@@ -596,9 +614,7 @@ impl TTS {
     /// The computation is based on the length of the speech strings (after removing tagging).
     /// There is a bias towards pausing more _after_ longer strings.
     pub fn compute_auto_pause(&self, prefs: &PreferenceManager, before: &str, after: &str) -> String {
-        lazy_static! {
-            static ref REMOVE_XML: Regex = Regex::new(r"<.+?>").unwrap();    // punctuation ending with a '.'
-        }
+        static REMOVE_XML: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<.+?>").unwrap()); // punctuation ending with a '.'
         let before_len;
         let after_len;
         match self {
@@ -654,10 +670,8 @@ impl TTS {
 
     fn merge_pauses_none(&self, str: &str) -> String {
         // punctuation used for pauses is ",", ";" 
-        lazy_static! {
-            static ref SPACES: Regex = Regex::new(r"\s+([;,])").unwrap();   // two or more pauses
-            static ref MULTIPLE_PAUSES: Regex = Regex::new(r"([,;][,;]+)").unwrap();   // two or more pauses
-        }
+        static SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+([;,])").unwrap()); // two or more pauses
+        static MULTIPLE_PAUSES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([,;][,;]+)").unwrap()); // two or more pauses
         // we reduce all sequences of two or more pauses to a single medium pause
         let merges_string = SPACES.replace_all(str, "$1").to_string();
         let merges_string = MULTIPLE_PAUSES.replace_all(&merges_string, ";").to_string();
@@ -681,20 +695,109 @@ impl TTS {
     }
 
     fn merge_pauses_sapi5(&self, str: &str) -> String {
-        lazy_static! {
-            static ref CONSECUTIVE_BREAKS: Regex = Regex::new(r"(<silence msec[^>]+?> *){2,}").unwrap();   // two or more pauses
-            static ref PAUSE_AMOUNT: Regex = Regex::new(r"msec=.*?(\d+)").unwrap();   // amount after 'time'
-        }
+        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<silence msec[^>]+?> *){2,}").unwrap()); // two or more pauses
+        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"msec=.*?(\d+)").unwrap()); // amount after 'time'
         let replacement = |amount: usize| format!("<silence msec=='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }
 
     fn merge_pauses_ssml(&self, str: &str) -> String {
-        lazy_static! {
-            static ref CONSECUTIVE_BREAKS: Regex = Regex::new(r"(<break time=[^>]+?> *){2,}").unwrap();   // two or more pauses
-            static ref PAUSE_AMOUNT: Regex = Regex::new(r"time=.*?(\d+)").unwrap();   // amount after 'time'
-        }
+        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<break time=[^>]+?> *){2,}").unwrap()); // two or more pauses
+        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"time=.*?(\d+)").unwrap()); // amount after 'time'
         let replacement = |amount: usize| format!("<break time='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use yaml_rust::YamlLoader;
+
+    #[test]
+    /// Verifies pronounce YAML builds and renders all supported fields.
+    fn pronounce_build_and_display() {
+        let yaml = YamlLoader::load_from_str(
+            r#"
+- text: "alpha"
+- ipa: "a"
+- sapi5: "b"
+- eloquence: "c"
+"#,
+        )
+        .unwrap();
+        let values = &yaml[0];
+        let rule = TTS::build("pronounce", values).unwrap();
+        let rendered = format!("{rule}");
+
+        assert!(rendered.contains("text: 'alpha'"));
+        assert!(rendered.contains("ipa: 'a'"));
+        assert!(rendered.contains("sapi5: 'b'"));
+        assert!(rendered.contains("eloquence: 'c'"));
+    }
+
+    #[test]
+    /// Ensures pronounce requires a text entry and rejects missing text.
+    fn pronounce_requires_text() {
+        let yaml = YamlLoader::load_from_str(
+            r#"
+- ipa: "a"
+"#,
+        )
+        .unwrap();
+        let values = &yaml[0];
+        let err = TTS::build("pronounce", values).unwrap_err();
+        assert!(err.to_string().contains("'text' key/value is required"));
+    }
+
+    #[test]
+    /// Coalesces adjacent punctuation pauses for the None engine.
+    fn merge_pauses_none_coalesces() {
+        let input = "a,,;b";
+        let output = TTS::None.merge_pauses(input);
+        assert!(!output.contains(",,"));
+        assert!(output.contains(";"));
+    }
+
+    #[test]
+    /// Uses the maximum pause when merging consecutive SSML breaks.
+    fn merge_pauses_ssml_keeps_max() {
+        let input = "<break time='100ms'/><break time='300ms'/>";
+        let output = TTS::SSML.merge_pauses(input);
+        assert!(!output.contains("100ms"));
+        assert!(output.contains("300ms"));
+    }
+
+    #[test]
+    /// Uses the maximum pause when merging consecutive SAPI5 breaks.
+    fn merge_pauses_sapi5_keeps_max() {
+        let input = "<silence msec=='100ms'/><silence msec=='300ms'/>";
+        let output = TTS::SAPI5.merge_pauses(input);
+        assert!(!output.contains("100ms"));
+        assert!(output.contains("300ms"));
+    }
+
+    /// Returns the same String allocation when escaping is not needed.
+    #[test]
+    fn escape_string_for_safety_no_alloc_when_clean() {
+        let input = "23".to_string();
+        let ptr = input.as_ptr();
+        let output = escape_string_for_safety(input, RulesFor::Speech, &TTS::SSML);
+        assert_eq!(output, "23");
+        assert_eq!(output.as_ptr(), ptr);
+        let output = escape_string_for_safety(output, RulesFor::Braille, &TTS::SSML);
+        assert_eq!(output, "23");
+        assert_eq!(output.as_ptr(), ptr);
+    }
+
+    #[test]
+    fn escape_string_for_safety_escapes_markup() {
+        let output = escape_string_for_safety(
+            "<break/>".to_string(),
+            RulesFor::Speech,
+            &TTS::SSML,
+        );
+        assert_eq!(output, "&lt;break&#x2F;&gt;");
+    }
+
 }

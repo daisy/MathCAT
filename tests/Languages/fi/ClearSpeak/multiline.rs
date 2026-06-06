@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
     // init_logger();
     let expr = "<math>
             <mrow>
@@ -31,11 +32,12 @@ fn case_1() {
         </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Auto", expr,
-                   "f arvolla x, on yhtä suuri kuin; 3 tapausta; tapaus 1; negatiivinen 1 jos x; on pienempi kuin 0; tapaus 2; 0 jos x, on yhtä suuri kuin 0; tapaus 3; 1 jos x, on suurempi kuin 0");
+                   "f arvolla x, on yhtä suuri kuin; 3 tapausta; tapaus 1; negatiivinen 1 jos x; on pienempi kuin 0; tapaus 2; 0 jos x, on yhtä suuri kuin 0; tapaus 3; 1 jos x, on suurempi kuin 0")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_auto() {
+fn equation_auto() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -45,11 +47,12 @@ fn equation_auto() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Auto", expr,
-                   "2 riviä; rivi 1; x plus y, on yhtä suuri kuin 7; rivi 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 riviä; rivi 1; x plus y, on yhtä suuri kuin 7; rivi 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_case() {
+fn equation_case() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -59,11 +62,12 @@ fn equation_case() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Case", expr,
-                   "2 tapausta; tapaus 1; x plus y, on yhtä suuri kuin 7; tapaus 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 tapausta; tapaus 1; x plus y, on yhtä suuri kuin 7; tapaus 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+    return Ok(());
 }
 
 #[test]
-fn equation_constraint() {
+fn equation_constraint() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -73,11 +77,12 @@ fn equation_constraint() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Constraint", expr,
-                   "2 ehtoa; ehto 1; x plus y, on yhtä suuri kuin 7; ehto 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 ehtoa; ehto 1; x plus y, on yhtä suuri kuin 7; ehto 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_equation() {
+fn equation_equation() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -87,11 +92,12 @@ fn equation_equation() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Equation", expr,
-                   "2 yhtälöä; yhtälö 1; x plus y, on yhtä suuri kuin 7; yhtälö 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 yhtälöä; yhtälö 1; x plus y, on yhtä suuri kuin 7; yhtälö 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_line() {
+fn equation_line() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -101,11 +107,12 @@ fn equation_line() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Line", expr,
-                   "2 riviä; rivi 1; x plus y, on yhtä suuri kuin 7; rivi 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 riviä; rivi 1; x plus y, on yhtä suuri kuin 7; rivi 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_none() {
+fn equation_none() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -115,11 +122,12 @@ fn equation_none() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "None", expr,
-                   "2; x plus y, on yhtä suuri kuin 7; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2; x plus y, on yhtä suuri kuin 7; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_row() {
+fn equation_row() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -129,11 +137,12 @@ fn equation_row() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Row", expr,
-                   "2 riviä; rivillä 1; x plus y, on yhtä suuri kuin 7; rivillä 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 riviä; rivillä 1; x plus y, on yhtä suuri kuin 7; rivillä 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }
 
 #[test]
-fn equation_step() {
+fn equation_step() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -143,5 +152,6 @@ fn equation_step() {
     </math>
    ";
    test_ClearSpeak("fi", "ClearSpeak_MultiLineLabel", "Step", expr,
-                   "2 vaihetta; vaihe 1; x plus y, on yhtä suuri kuin 7; vaihe 2; 2 x plus 3 y; on yhtä suuri kuin 17");
+                   "2 vaihetta; vaihe 1; x plus y, on yhtä suuri kuin 7; vaihe 2; 2 x plus 3 y; on yhtä suuri kuin 17")?;
+   return Ok(());
 }

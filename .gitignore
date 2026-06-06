@@ -17,6 +17,7 @@ src/*.bak
 *.sleepy
 *.txt
 *.zip
+llvm-cov/
 __pycache__
 PythonScripts/__pycache__
 PythonScripts/cachedir
@@ -52,3 +53,8 @@ src/speech-bak
 
 Rules/*/*/*.zip
 .vs
+
+# local caches when building Jekyll
+docs/_site
+docs/.jekyll-cache
+docs/Gemfile.lock

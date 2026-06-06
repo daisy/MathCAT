@@ -58,6 +58,7 @@
      - test:
         #  don't add whitespace when you have consecutive vars (taking into account pseudo scripts), or...
         #  if what follows is an opening bracket (any kind) or a 2D structure
+        #  of if multiplication is the only operator in the numerator of a fraction
         if: "@data-function-guess='true' or
              (preceding-sibling::*[1][self::m:mi or
                                      (self::m:msup and *[2][translate(., '*`ª°²³´¹º‘’“”‟′″‴‵‶‷⁗','')='']) or
@@ -65,8 +66,8 @@
               (following-sibling::*[1][self::m:mi or
                                       (self::m:mrow and *[1][self::m:mi])])
              ) or
-              preceding-sibling::*[1][self::m:mn] and following-sibling::*[1][self::m:mi and .='…'] or
-              preceding-sibling::*[1][self::m:mi and (.='$' or .='£')] and following-sibling::*[1][self::m:mn]
+              (preceding-sibling::*[1][self::m:mn] and following-sibling::*[1][self::m:mi and .='…']) or
+              (preceding-sibling::*[1][self::m:mi and (.='$' or .='£')] and following-sibling::*[1][self::m:mn])
             "
         then: [t: ""]
         else: [t: "W"]
@@ -467,6 +468,8 @@
      - test:
         - if: "@data-chemical-bond"
           then: [t: "W⠒⠒"]
+        - else_if: "ancestor::*[position()=2 and (self::m:msubsup or self::m:munderover)]"
+          then: [t: "⠢"]
           else: [t: "W⠶"]
 
  - ">": [T: "W⠱W"]               # 0x003E (greater than sign ( regular ))
@@ -563,9 +566,13 @@
  - "∥": [T: "W⠸⠸W"]                # 0x2225 (is parallel to)
  - "∦": [T: "W⠐⠸⠸W"]                # 0x2226 (is not parallel to)
  - "∧": [T: "W⠳⠩W"]                # 0x2227 (logical product (and, meet))
+ - "⋀": [T: "W⠳⠩W"]                # 0x22C0 (n-ary logical product (and, meet))
  - "∨": [T: "W⠳⠬W"]                # 0x2228 (logical sum (join,or))
+ - "⋁": [T: "W⠳⠬W"]                # 0x22C1  (N-ARY LOGICAL OR)
  - "∩": [T: "W⠳⠦"]                # 0x2229 (intersection sign ( cap ))
+ - "⋂": [T: "W⠳⠦"]                # 0x22C2 (n-ary intersection sign)
  - "∪": [T: "W⠳⠖"]                # 0x222A (union sign)
+ - "⋃": [T: "W⠳⠖"]                # 0x22C3 (n-ary union sign)
  - "∫": [T: "⠮"]                # 0x222B (single integral)
  - "∬": [T: "⠮⠮"]               # # 0x222C (double integral) FI: not in the specification
  - "∭": [T: "⠮⠮⠮"]              # 0x222D (triple integral) FI: not in the specification
@@ -606,3 +613,9 @@
  - "⌒": [T: "⠫⠁"]
  - "⪥": [T: "W⠱⠣W"]                # 0x2AA5 (greater than sign followed by less than sign)
  - "⫫": [T: "W⠼⠧W"]                # 0x2AEB (double up tack (conditionally independent))
+
+ # this are markers that get replaced in braille.rs
+ - "⦅": [T: "⦅"]                # multiplied by
+ - "⦆": [T: "⦆"]                # divided by
+ - "⸨": [T: "⸨"]                # potential grouping start
+ - "⸩": [T: "⸩"]                # potential grouping end

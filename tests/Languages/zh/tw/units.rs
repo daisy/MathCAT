@@ -1,6 +1,7 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 // The basic layout of the tests is:
 // 1. Sweep through all the SI prefixes
@@ -11,7 +12,7 @@ use crate::common::*;
 // These are broken into chunks so it is easier to see errors, when there are errors
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -62,12 +63,14 @@ fn prefix_sweep() {
                 介-克 逗號 \
                 攸-克 逗號 \
                 絨-克 逗號 \
-                匱-克");
+                匱-克")?;
+                return Ok(());
+
 }
 
 // 為什麼秒、克後面沒有暫停","，但公尺、安培等兩個字以上就會有","？
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -84,19 +87,21 @@ fn si_base() {
     test("zh-tw", "SimpleSpeak", expr, 
         "1 安培, 逗號 2 安培, 逗號 \
                 1 燭光, 逗號 2 燭光, 逗號 \
-                1 凱氏, 逗號 2 凱氏, 逗號 \
-                1 凱氏, 逗號 2 凱氏, 逗號 \
+                1 K 逗號 2 K 逗號 \
+                1 K 逗號 2 K 逗號 \
                 1 克 逗號 2 克 逗號 \
                 1 米 逗號 2 米 逗號 \
                 1 莫耳, 逗號 2 莫耳, 逗號 \
                 1 秒 逗號 2 秒 逗號 \
                 1 秒 逗號 2 秒 逗號 \
                 1 秒 逗號 2 秒 逗號 \
-                1 秒 逗號 2 秒");
+                1 秒 逗號 2 秒")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -111,18 +116,20 @@ fn si_base_with_prefixes() {
     test("zh-tw", "SimpleSpeak", expr, 
         "1 昆-安培, 逗號 2 羅-安培, 逗號 \
                 1 佑-燭光, 逗號 2 皆-燭光, 逗號 \
-                1 艾-凱氏, 逗號 2 拍-凱氏, 逗號 \
-                1 兆-凱氏, 逗號 2 吉-凱氏, 逗號 \
+                1 艾-K, 逗號 2 拍-K, 逗號 \
+                1 兆-K, 逗號 2 吉-K, 逗號 \
                 1 百萬-克, 逗號 2 千-克, 逗號 \
                 1 百-米, 逗號 2 十-米, 逗號 \
                 1 分-莫耳, 逗號 2 厘-莫耳, 逗號 \
                 1 毫-秒, 逗號 2 微-秒, 逗號 \
-                1 奈-秒, 逗號 2 皮-秒");
+                1 奈-秒, 逗號 2 皮-秒")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -143,17 +150,19 @@ fn si_derived_1() {
                 1 攝氏度, 逗號 2 攝氏度, 逗號 \
                 1 攝氏度, 逗號 2 攝氏度, 逗號 \
                 1 法拉, 逗號 2 法拉, 逗號 \
-                1 格雷, 逗號 2 格雷, 逗號 \
+                1 戈雷, 逗號 2 戈雷, 逗號 \
                 1 亨利, 逗號 2 亨利, 逗號 \
                 1 赫茲, 逗號 2 赫茲, 逗號 \
                 1 焦耳, 逗號 2 焦耳, 逗號 \
-                1 kattel, 逗號 2 kattel, 逗號 \
+                1 卡塔爾, 逗號 2 卡塔爾, 逗號 \
                 1 流明, 逗號 2 流明, 逗號 \
-                1 勒克斯, 逗號 2 勒克斯");
+                1 勒克斯, 逗號 2 勒克斯")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -172,19 +181,21 @@ fn si_derived_1_with_prefixes() {
         "1 昆-貝克, 逗號 2 羅-貝克, 逗號 \
                 1 佑-庫侖, 逗號 2 皆-庫侖, 逗號 \
                 1 艾-法拉, 逗號 2 拍-法拉, 逗號 \
-                1 兆-格雷, 逗號 2 吉-格雷, 逗號, \
+                1 兆-戈雷, 逗號 2 吉-戈雷, 逗號, \
                 1 百萬-亨利, 逗號 2 千-亨利, 逗號 \
                 1 十-赫茲, 逗號 2 分-赫茲, 逗號 \
-                1 厘-焦耳, 逗號 2 毫-焦耳, 逗號 \
-                1 微-kattel, 逗號 2 奈-kattel, 逗號 \
+                1 厘-焦耳, 逗號 2 毫-焦耳, 逗號, \
+                1 微-卡塔爾, 逗號, 2 奈-卡塔爾, 逗號 \
                 1 皮-流明, 逗號 2 飛-流明, 逗號, \
                 1 阿-勒克斯, 逗號, 2 介-勒克斯, 逗號, \
                 1 毫-攝氏度, 逗號, 2 微-攝氏度, 逗號, \
-                1 皮-攝氏度, 逗號, 2 奈-攝氏度");
+                1 皮-攝氏度, 逗號, 2 奈-攝氏度")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -202,16 +213,18 @@ fn si_derived_2() {
                 1 歐姆, 逗號 2 歐姆, 逗號 \
                 1 歐姆, 逗號 2 歐姆, 逗號 \
                 1 帕 逗號 2 帕 逗號 \
-                1 西門子, 逗號 2 西門子, 逗號 \
+                1 西門, 逗號 2 西門, 逗號 \
                 1 西弗, 逗號 2 西弗, 逗號 \
                 1 特士拉, 逗號 2 特士拉, 逗號 \
                 1 伏特, 逗號 2 伏特, 逗號 \
-                1 瓦特, 逗號 2 瓦特, 逗號 \
-                1 韋伯, 逗號 2 韋伯");
+                1 瓦 逗號 2 瓦 逗號 \
+                1 韋伯, 逗號 2 韋伯")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -228,18 +241,20 @@ fn si_derived_2_with_prefixes() {
         "1 匱-牛頓, 逗號 2 絨-牛頓, 逗號 \
                 1 攸-歐姆, 逗號 2 介-歐姆, 逗號 \
                 1 阿-歐姆, 逗號 2 飛-歐姆, 逗號 \
-                1 皮-帕, 逗號 2 奈-帕, 逗號, \
-                1 微-西門子, 逗號, 2 毫-西門子, 逗號 \
+                1 皮-帕, 逗號 2 奈-帕, 逗號 \
+                1 微-西門, 逗號 2 毫-西門, 逗號 \
                 1 厘-西弗, 逗號 2 分-西弗, 逗號, \
                 1 十-特士拉, 逗號, 2 百-特士拉, 逗號 \
                 1 千-伏特, 逗號, 2 百萬-伏特, 逗號 \
-                1 吉-瓦特, 逗號 2 兆-瓦特, 逗號 \
-                1 拍-韋伯, 逗號 2 艾-韋伯");
+                1 吉-瓦, 逗號 2 兆-瓦, 逗號 \
+                1 拍-韋伯, 逗號 2 艾-韋伯")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -267,16 +282,18 @@ fn si_accepted() {
                 1 原子質量單位, 逗號 2 原子質量單位, 逗號 \
                 1 電子伏特, 逗號 2 電子伏特, 逗號 \
                 1 弳 逗號 2 弳 逗號 \
-                1 sterradion, 逗號 2 sterradion, 逗號 \
-                1 annum, 逗號 2 annum, 逗號 \
-                1 弧秒, 逗號 2 弧秒, 逗號 \
+                1 立弳, 逗號 2 立弳, 逗號 \
+                1 年 逗號 2 年 逗號 \
+                1 角秒, 逗號 2 角秒, 逗號 \
                 1 位元, 逗號 2 位元, 逗號 \
                 1 位元組, 逗號 2 位元組, 逗號 \
-                1 鮑 逗號 2 鮑");
+                1 鮑 逗號 2 鮑")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -303,17 +320,19 @@ fn si_accepted_with_prefixes() {
                 1 分-奈培, 逗號 2 厘-奈培, 逗號, \
                 1 百-原子質量單位; 逗號, 2 十-原子質量單位; 逗號, \
                 1 毫-電子伏特, 逗號, 2 微-電子伏特, 逗號 \
-                1 奈-弳, 逗號 2 皮-弳, 逗號, \
-                1 飛-sterradion, 逗號, 2 阿-sterradion, 逗號 \
-                1 吉-annum, 逗號, 2 百萬-annum, 逗號 \
-                1 介-弧秒, 逗號 2 攸-弧秒, 逗號 \
+                1 奈-弳, 逗號 2 皮-弳, 逗號 \
+                1 飛-立弳, 逗號 2 阿-立弳, 逗號 \
+                1 吉-年, 逗號 2 百萬-年, 逗號 \
+                1 介-角秒, 逗號 2 攸-角秒, 逗號 \
                 1 千-位元, 逗號, 2 百萬-位元, 逗號, \
                 1 吉-位元組, 逗號, 2 兆-位元組, 逗號 \
-                1 兆-鮑, 逗號 2 艾-鮑");
+                1 兆-鮑, 逗號 2 艾-鮑")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_time() {
+fn without_prefix_time() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -336,19 +355,21 @@ fn without_prefix_time() {
                 1 分 逗號 2 分 逗號 \
                 1 分 逗號 2 分 逗號 \
                 1 分 逗號 2 分 逗號 \
-                1 時 逗號 2 時 逗號 \
-                1 時 逗號 2 時 逗號 \
-                1 時 逗號 2 時 逗號 \
+                1 小時, 逗號 2 小時, 逗號 \
+                1 小時, 逗號 2 小時, 逗號 \
+                1 小時, 逗號 2 小時, 逗號 \
                 1 天 逗號 2 天 逗號 \
                 1 天 逗號 2 天 逗號 \
                 1 週 逗號 2 週 逗號 \
                 1 週 逗號 2 週 逗號 \
                 1 年 逗號 2 年 逗號 \
-                1 年 逗號 2 年");
+                1 年 逗號 2 年")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -362,16 +383,18 @@ fn without_prefix_angles() {
     test("zh-tw", "SimpleSpeak", expr, 
         "1 度 逗號 2 度 逗號 \
                 1 度 逗號 2 度 逗號 \
-                1 弧分, 逗號 2 弧分, 逗號 \
-                1 弧分, 逗號 2 弧分, 逗號 \
-                1 弧分, 逗號 2 弧分, 逗號 \
-                1 弧分, 逗號 2 弧分, 逗號 \
-                1 弧秒, 逗號 2 弧秒, 逗號 \
-                1 弧秒, 逗號 2 弧秒");
+                1 角分, 逗號 2 角分, 逗號 \
+                1 角分, 逗號 2 角分, 逗號 \
+                1 角分, 逗號 2 角分, 逗號 \
+                1 角分, 逗號 2 角分, 逗號 \
+                1 角秒, 逗號 2 角秒, 逗號 \
+                1 角秒, 逗號 2 角秒")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -386,11 +409,13 @@ fn without_prefix_distance() {
                 1 秒差距, 逗號 2 秒差距, 逗號 \
                 1 埃 逗號 2 埃 逗號 \
                 1 埃 逗號 2 埃 逗號 \
-                1 費米, 逗號 2 費米");
+                1 費米, 逗號 2 費米")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -415,17 +440,19 @@ fn without_prefix_other() {
                 1 巴 逗號 2 巴 逗號 \
                 1 卡 逗號 2 卡 逗號 \
                 1 居里, 逗號 2 居里, 逗號 \
-                1 百分直角, 逗號 2 百分直角, 逗號 \
+                1 百分度, 逗號 2 百分度, 逗號 \
                 1 體積莫耳濃度, 逗號 2 體積莫耳濃度, 逗號 \
-                1 倫琴, 逗號 2 倫琴, 逗號 \
-                1 轉速每分鐘, 逗號 2 轉速每分鐘, 逗號 \
+                1 侖琴, 逗號 2 侖琴, 逗號 \
+                1 轉每分, 逗號 2 轉每分, 逗號 \
                 1 姆歐, 逗號 2 姆歐, 逗號 \
                 1 達因, 逗號 2 達因, 逗號 \
-                1 爾格, 逗號 2 爾格");
+                1 耳格, 逗號 2 耳格")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -460,12 +487,14 @@ fn without_prefix_powers_of_2() {
                 1 pebi-位元組, 逗號 2 pebi-位元組, 逗號 \
                 1 exbi-位元組, 逗號 2 exbi-位元組, 逗號 \
                 1 zebi-位元組, 逗號 2 zebi-位元組, 逗號 \
-                1 yobi-位元組, 逗號 2 yobi-位元組");
+                1 yobi-位元組, 逗號 2 yobi-位元組")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -476,12 +505,14 @@ fn si_other_numbers() {
                             <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
     test("zh-tw", "SimpleSpeak", expr, 
         "1.0 公升, 逗號 2.0 米, 逗號 x 毫-秒, 逗號 y 微-秒, 逗號 \
-                十-克 逗號, 1235 十-牛頓, 逗號 2.5 微-秒, 逗號 32.34 莫耳");
+                十-克 逗號, 1235 十-牛頓, 逗號 2.5 微-秒, 逗號 32.34 莫耳")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -490,5 +521,7 @@ fn test_mtext_inference() {
             <mo>]</mo></math>"#;
     test("zh-tw", "SimpleSpeak", expr, 
         "左中括; 1 公噸, 逗號 2 拍-安培, 逗號 \
-                3 帕 逗號, 4.5 毫-特士拉; 右中括");
+                3 帕 逗號, 4.5 毫-特士拉; 右中括")?;
+                return Ok(());
+
 }

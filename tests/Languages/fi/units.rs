@@ -1,6 +1,7 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 // The basic layout of the tests is:
 // 1. Sweep through all the SI prefixes
@@ -11,7 +12,7 @@ use crate::common::*;
 // These are broken into chunks so it is easier to see errors, when there are errors
 
 #[test]
-fn prefix_sweep() {
+fn prefix_sweep() -> Result<()> {
     let expr = r#"<math>
         <mi intent=":unit">Qg</mi><mo>,</mo>
         <mi intent=":unit">Rg</mi><mo>,</mo>
@@ -62,11 +63,13 @@ fn prefix_sweep() {
                 zepto-grammaa, pilkku, \
                 jokto-grammaa, pilkku, \
                 ronto-grammaa, pilkku; \
-                kvekto-grammaa");
+                kvekto-grammaa")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base() {
+fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">cd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">cd</mi><mo>,</mo>
@@ -91,11 +94,13 @@ fn si_base() {
                 1 sekunti, pilkku; 2 sekuntia, pilkku, \
                 1 sekunti, pilkku; 2 sekuntia, pilkku, \
                 1 sekunti, pilkku; 2 sekuntia, pilkku, \
-                1 sekunti, pilkku; 2 sekuntia");
+                1 sekunti, pilkku; 2 sekuntia")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_base_with_prefixes() {
+fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ycd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Zcd</mi><mo>,</mo>
@@ -116,12 +121,14 @@ fn si_base_with_prefixes() {
                 1 hehto-metri, pilkku; 2 deka-metriä, pilkku; \
                 1 desi-mooli, pilkku; 2 sentti-moolia, pilkku; \
                 1 milli-sekunti, pilkku; 2 mikro-sekuntia, pilkku; \
-                1 nano-sekunti, pilkku; 2 piko-sekuntia");
+                1 nano-sekunti, pilkku; 2 piko-sekuntia")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_derived_1() {
+fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">C</mi><mo>,</mo><mn>2</mn><mi intent=":unit">C</mi><mo>,</mo>
@@ -148,11 +155,13 @@ fn si_derived_1() {
                 1 joule, pilkku; 2 joulea, pilkku, \
                 1 kattel, pilkku, 2 kattelia, pilkku, \
                 1 lumen, pilkku, 2 lumenia, pilkku, \
-                1 luks, pilkku, 2 luksia");
+                1 luks, pilkku, 2 luksia")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_1_with_prefixes() {
+fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YC</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZC</mi><mo>,</mo>
@@ -179,11 +188,13 @@ fn si_derived_1_with_prefixes() {
                 1 piko-lumen, pilkku; 2 femto-lumenia, pilkku; \
                 1 atto-luks, pilkku; 2 zepto-luksia, pilkku; \
                 1 milli-aste celsiusta; pilkku; 2 mikro-astetta celsiusta; pilkku; \
-                1 piko-aste celsiusta; pilkku; 2 nano-astetta celsiusta");
+                1 piko-aste celsiusta; pilkku; 2 nano-astetta celsiusta")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2() {
+fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Ω</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Ω</mi><mo>,</mo>
@@ -206,11 +217,13 @@ fn si_derived_2() {
                 1 tesla, pilkku; 2 teslaa, pilkku, \
                 1 volt, pilkku, 2 volttia, pilkku, \
                 1 watti, pilkku, 2 wattia, pilkku, \
-                1 weber, pilkku, 2 weberiä");
+                1 weber, pilkku, 2 weberiä")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_derived_2_with_prefixes() {
+fn si_derived_2_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">qN</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rN</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">yΩ</mi><mo>,</mo><mn>2</mn><mi intent=":unit">zΩ</mi><mo>,</mo>
@@ -233,12 +246,14 @@ fn si_derived_2_with_prefixes() {
                 1 deka-tesla, pilkku; 2 hehto-teslaa, pilkku; \
                 1 kilo-volt, pilkku; 2 mega-volttia, pilkku; \
                 1 giga-watti, pilkku; 2 tera-wattia, pilkku; \
-                1 peta-weber, pilkku; 2 eksa-weberiä");
+                1 peta-weber, pilkku; 2 eksa-weberiä")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_accepted() {
+fn si_accepted() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">l</mi><mo>,</mo><mn>2</mn><mi intent=":unit">l</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">L</mi><mo>,</mo><mn>2</mn><mi intent=":unit">L</mi><mo>,</mo>
@@ -271,11 +286,13 @@ fn si_accepted() {
                 1 kaarisekunti, pilkku; 2 kaarisekuntia, pilkku, \
                 1 bitti, pilkku, 2 bittiä, pilkku, \
                 1 tavu, pilkku, 2 tavua, pilkku, \
-                1 baudi, pilkku; 2 baudia");
+                1 baudi, pilkku; 2 baudia")?;
+                return Ok(());
+
 }
 
 #[test]
-fn si_accepted_with_prefixes() {
+fn si_accepted_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Ql</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Rl</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">YL</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ZL</mi><mo>,</mo>
@@ -308,11 +325,13 @@ fn si_accepted_with_prefixes() {
                 1 zepto-kaarisekunti, pilkku; 2 jokto-kaarisekuntia; pilkku; \
                 1 kilo-bitti, pilkku; 2 mega-bittiä, pilkku; \
                 1 giga-tavu, pilkku; 2 tera-tavua, pilkku; \
-                1 tera-baudi, pilkku; 2 eksa-baudia");
+                1 tera-baudi, pilkku; 2 eksa-baudia")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_time() {
+fn without_prefix_time() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">″</mi><mo>,</mo><mn>2</mn><mi intent=":unit">″</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">&quot;</mi><mo>,</mo><mn>2</mn><mi intent=":unit">&quot;</mi><mo>,</mo>
@@ -343,11 +362,13 @@ fn without_prefix_time() {
                 1 viikko, pilkku; 2 viikkoa, pilkku, \
                 1 viikko, pilkku; 2 viikkoa, pilkku, \
                 1 vuosi, pilkku, 2 vuotta, pilkku, \
-                1 vuosi, pilkku, 2 vuotta");
+                1 vuosi, pilkku, 2 vuotta")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_angles() {
+fn without_prefix_angles() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">°</mi><mo>,</mo><mn>2</mn><mi intent=":unit">°</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">deg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">deg</mi><mo>,</mo>
@@ -366,11 +387,13 @@ fn without_prefix_angles() {
                 1 kaariminuutti, pilkku; 2 kaariminuuttia, pilkku; \
                 1 kaariminuutti, pilkku; 2 kaariminuuttia, pilkku; \
                 1 kaarisekunti, pilkku; 2 kaarisekuntia, pilkku; \
-                1 kaarisekunti, pilkku; 2 kaarisekuntia");
+                1 kaarisekunti, pilkku; 2 kaarisekuntia")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_distance() {
+fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">ltyr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ltyr</mi><mo>,</mo>
@@ -385,11 +408,13 @@ fn without_prefix_distance() {
                 1 parsek, pilkku, 2 parsekia, pilkku; \
                 1 ångström, pilkku; 2 ångströmiä, pilkku; \
                 1 ångström, pilkku; 2 ångströmiä, pilkku, \
-                1 fermi, pilkku, 2 fermiä");
+                1 fermi, pilkku, 2 fermiä")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_other() {
+fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dB</mi><mo>,</mo>
@@ -420,11 +445,13 @@ fn without_prefix_other() {
                 1 kierros minuutissa, pilkku; 2 kierrosta minuutissa, pilkku, \
                 1 mho, pilkku, 2 mhota, pilkku, \
                 1 dyne, pilkku, 2 dyneä, pilkku, \
-                1 ergi, pilkku, 2 ergiä");
+                1 ergi, pilkku, 2 ergiä")?;
+                return Ok(());
+
 }
 
 #[test]
-fn without_prefix_powers_of_2() {
+fn without_prefix_powers_of_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">Mib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Mib</mi><mo>,</mo>
@@ -459,12 +486,14 @@ fn without_prefix_powers_of_2() {
                 1 pebi-tavu, pilkku; 2 pebi-tavua, pilkku; \
                 1 eksbi-tavu, pilkku; 2 eksbi-tavua, pilkku; \
                 1 tsebi-tavu, pilkku; 2 tsebi-tavua, pilkku, \
-                1 jobi-tavu, pilkku; 2 jobi-tavua");
+                1 jobi-tavu, pilkku; 2 jobi-tavua")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn si_other_numbers() {
+fn si_other_numbers() -> Result<()> {
     let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
                             <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
@@ -475,12 +504,14 @@ fn si_other_numbers() {
                             <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test("fi", "SimpleSpeak", expr, 
         "1,0 litraa, pilkku, 2,0 metriä, pilkku; x milli-sekuntia, pilkku; y mikro-sekuntia, pilkku, \
-                deka-grammaa, pilkku; 1235 deka-newtonia, pilkku; 2,5 mikro-sekuntia; pilkku; 32,34 moolia");
+                deka-grammaa, pilkku; 1235 deka-newtonia, pilkku; 2,5 mikro-sekuntia; pilkku; 32,34 moolia")?;
+                return Ok(());
+
 }
 
 
 #[test]
-fn test_mtext_inference() {
+fn test_mtext_inference() -> Result<()> {
     let expr = r#"<math><mo>[</mo>
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
@@ -489,5 +520,7 @@ fn test_mtext_inference() {
             <mo>]</mo></math>"#;
     test("fi", "SimpleSpeak", expr, 
         "auki hakasulku; 1 tonni, pilkku; 2 peta-ampeeria, pilkku, \
-                3 pascalia, pilkku; 4,5 milli-teslaa; kiinni hakasulku");
+                3 pascalia, pilkku; 4,5 milli-teslaa; kiinni hakasulku")?;
+                return Ok(());
+
 }

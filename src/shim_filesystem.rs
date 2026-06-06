@@ -4,6 +4,10 @@
 
 use std::path::{Path, PathBuf};
 use crate::errors::*;
+use cfg_if::cfg_if;
+
+#[allow(unused_imports)]
+use log::{debug};
 
 
 // The zipped files are needed by WASM builds.
@@ -30,7 +34,7 @@ cfg_if! {
         use std::io::Read;
         use std::collections::{HashMap, HashSet};
         thread_local! {
-            // mapping the file names to whether they are are directory or a file
+            // mapping the file names to whether they are a directory or a file
             // Note: these are always stored with "/" as the path separator
             static DIRECTORIES: RefCell<HashSet<String>> = RefCell::new(HashSet::with_capacity(127));
             // if a file, we note whether it is in ZIPPED_RULE_FILES or the index of a zipped file within ZIPPED_RULE_FILES
@@ -62,7 +66,7 @@ cfg_if! {
             // Here we gather up the zip files that were found and iterate over them non-recursively.
             // Note: there shouldn't be embedded zip files in these files (if there are, they won't be unzipped)
             let zip_files = FILES.with(|files| files.borrow().iter()
-                .filter_map(|(name, archive_path)| if name.ends_with(".zip") { Some((name.clone(), archive_path.clone())) } else { None } )
+                .filter_map(|(name, archive_path)| if name.ends_with(".zip") { Some((name.clone(), *archive_path)) } else { None } )
                 .collect::<Vec<_>>()
             );
             // debug!("Found {:?} embedded zip files", zip_files);
@@ -71,7 +75,7 @@ cfg_if! {
                 let mut inner_archive = get_zip_archive(bytes.as_slice())?;
                 // debug!("  internal zip file {} has {} files", zip_file_name, inner_archive.len());
                 let new_containing_dir = zip_file_name.rsplit_once("/").map(|(before, _)| before).unwrap_or("");
-                read_zip_file(&new_containing_dir, &mut inner_archive, Some(archive_path.main))?;
+                read_zip_file(new_containing_dir, &mut inner_archive, Some(archive_path.main))?;
             }
             // FILES.with(|files| {
             //     let files = files.borrow();
@@ -81,12 +85,12 @@ cfg_if! {
         }
 
         /// Get the bytes for a file in the zip archive (intended for embedded zip files)
-        fn get_bytes_from_index<'a>(archive: &mut ZipArchive<Cursor<&[u8]>>, index: usize) -> Result<Vec<u8>> {
+        fn get_bytes_from_index(archive: &mut ZipArchive<Cursor<&[u8]>>, index: usize) -> Result<Vec<u8>> {
             let mut file = archive.by_index(index)
-                .map_err(|e| format!("Error getting index={} from zip archive: {}", index, e) )?;
+                .map_err(|e| anyhow!(format!("Error getting index={} from zip archive: {}", index, e)) )?;
             let mut contents = Vec::new();
             file.read_to_end(&mut contents)
-                .map_err(|e| format!("Error reading index={} from zip archive: {}", index, e) )?;
+                .map_err(|e| anyhow!(format!("Error reading index={} from zip archive: {}", index, e)) )?;
             return Ok(contents);
         }
         /// Unzip the zip file (given by zip_archive) and record the file and dir names
@@ -140,14 +144,14 @@ cfg_if! {
             if FILES.with(|files| files.borrow().is_empty()) {
                 let _ignore_result = initialize_static_vars();
             }
-            return FILES.with(|files| files.borrow().contains_key(&canonicalize_path_separators(&path)) );
+            return FILES.with(|files| files.borrow().contains_key(&canonicalize_path_separators(path)) );
         }
         
         pub fn is_dir_shim(path: &Path) -> bool {
             if FILES.with(|files| files.borrow().is_empty()) {
                 let _ignore_result = initialize_static_vars();
             }
-            return DIRECTORIES.with(|dirs| dirs.borrow().contains(&canonicalize_path_separators(&path)) );
+            return DIRECTORIES.with(|dirs| dirs.borrow().contains(&canonicalize_path_separators(path)) );
         }
 
         /// Find files in 'dir' that end with 'ending' (e.g., "_Rules.yaml")
@@ -160,12 +164,12 @@ cfg_if! {
 
                 let dir_name = canonicalize_path_separators(dir);
                 for file_name in files.keys() {
-                    if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) {
-                        if file_name.ends_with(ending) {
-                            // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
-                            let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
-                            answer.push( file_name.to_string() );
-                        }
+                    if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) &&
+                       file_name.ends_with(ending)
+                    {
+                        // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
+                        let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
+                        answer.push(file_name.to_string());
                     }
                 }
                 // debug!("find_files_in_dir_that_ends_with_shim: in dir '{}' found {:?}", dir.display(), answer);
@@ -244,7 +248,7 @@ cfg_if! {
                         file
                     },
                     Err(..) => {
-                        panic!("Didn't find {} in zip archive", file_name);
+                        bail!("Didn't find {} in zip archive", file_name);
                     }
                 };
 
@@ -274,7 +278,7 @@ cfg_if! {
             // file_name should be path name starting at Rules dir: e.g, "Rules/en/navigate.yaml"
             OVERRIDE_FILE_NAME.with(|name| *name.borrow_mut() = file_name.to_string().replace("/", "\\"));
             OVERRIDE_FILE_CONTENTS.with(|contents| *contents.borrow_mut() = file_contents.to_string());
-            crate::interface::set_rules_dir("Rules".to_string()).unwrap();       // force reinitialization after the change
+            crate::interface::set_rules_dir("Rules").unwrap();       // force reinitialization after the change
         }
     } else {
         pub fn is_file_shim(path: &Path) -> bool {
@@ -313,10 +317,9 @@ cfg_if! {
                     let path = entry.path();
                     if path.is_dir() {
                         // skip "SharedRules" directory
-                        if let Some(dir_name) = path.file_name() {
-                            if dir_name.to_str().unwrap_or_default() != "SharedRules" {
-                                find_all_dirs_shim(&path, found_dirs);
-                            }
+                        if let Some(dir_name) = path.file_name() &&
+                           dir_name.to_str().unwrap_or_default() != "SharedRules" {
+                            find_all_dirs_shim(&path, found_dirs);
                         }
                     } else {
                         let file_name = path.file_name().unwrap_or_default().to_str().unwrap_or_default();

@@ -1402,6 +1402,10 @@
     - T: "dentro de uncírculo"                              	# 	(en: 'circled', google translation)
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    - T: "dentro de un círculo negro"                        #  (en: 'black circled', google translation)
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
     - T: "dentro de un círculo"                              	# 	(en: 'circled', google translation)
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -2378,31 +2382,31 @@
  - "㉓": [T: "número veintitrés rodeado por un círculo"]         	#  0x3253	(en: 'circled number twenty three', google translation)
  - "㉔": [T: "número veinticuatro rodeado por un círculo"]     	#  0x3254	(en: 'circled number twenty four', google translation)
  - "㉕": [T: "número veinticinco rodeado por un círculo"]        	#  0x3255	(en: 'circled number twenty five', google translation)
- - "㉖": [T: "número veintisés rodeado por uncírculo"]       	#  0x3256	(en: 'circled number twenty six', google translation)
+ - "㉖": [T: "número veintiséis rodeado por un círculo"]     	#  0x3256	(en: 'circled number twenty six', GPT-5.4 fixed translation)
  - "㉗": [T: "número veintisiete rodeado por un círculo"]     	#  0x3257	(en: 'circled number twenty seven', google translation)
  - "㉘": [T: "número veintiocho rodeado por un círculo"]        	#  0x3258	(en: 'circled number twenty eight', google translation)
- - "㉙": [T: "número veintinueve rodeado por uncírculo"]   	#  0x3259	(en: 'circled number twenty nine', google translation)
+ - "㉙": [T: "número veintinueve rodeado por un círculo"]  	#  0x3259	(en: 'circled number twenty nine', GPT-5.4 fixed translation)
  - "㉚": [T: "número treinta rodeado por un círculo"]        	#  0x325a	(en: 'circled number thirty', google translation)
- - "㉛": [T: "número treinta y uno rodeado por uncírculo"]    	#  0x325b	(en: 'circled number thirty one', google translation)
+ - "㉛": [T: "número treinta y uno rodeado por un círculo"]   	#  0x325b	(en: 'circled number thirty one', GPT-5.4 fixed translation)
  - "㉜": [T: "número treinta y dos rodeado por un círculo"]  	#  0x325c	(en: 'circled number thirty two', google translation)
  - "㉝": [T: "número treinta y tres rodeado por un círculo"] 	#  0x325d	(en: 'circled number thirty three', google translation)
  - "㉞": [T: "número treinta y cuatro rodeado por un círculo"]	#  0x325e	(en: 'circled number thirty four', google translation)
  - "㉟": [T: "número treinta y cinco rodeado por un círculo"]	#  0x325f	(en: 'circled number thirty five', google translation)
  - "㊱": [T: "número treinta y seis rodeado por un círculo"] 	#  0x32b1	(en: 'circled number thirty six', google translation)
- - "㉒": [T: "número treinta y siete rodeado por un círculo"]	#  0x3252	(en: 'circled number thirty seven', google translation)
- - "㉓": [T: "número treinta y ocho rodeado por un círculo"]     	#  0x3253	(en: 'circled number thirty eight', google translation)
- - "㉔": [T: "número treinta y nueve rodeado por un círculo"]	#  0x3254	(en: 'circled number thirty nine', google translation)
- - "㉕": [T: "número cuarenta rodeado por un círculo"]       	#  0x3255	(en: 'circled number forty', google translation)
- - "㉖": [T: "número cuarenta y uno rodeado por un círculo"]   	#  0x3256	(en: 'circled number forty one', google translation)
- - "㉗": [T: "número cuarenta y dos rodeado por un círculo"] 	#  0x3257	(en: 'circled number forty two', google translation)
- - "㉘": [T: "número cuarenta y tres rodeado por un círculo"]	#  0x3258	(en: 'circled number forty three', google translation)
- - "㉙": [T: "número cuarenta y cuatro rodeado por un círculo"]	#  0x3259	(en: 'circled number forty four', google translation)
- - "㉚": [T: "número cuarenta y cinco rodeado por un círculo"]	#  0x325a	(en: 'circled number forty five', google translation)
- - "㉛": [T: "número cuarenta y seis rodeado por un círculo"]	#  0x325b	(en: 'circled number forty six', google translation)
- - "㉜": [T: "número cuarenta y siete rodeado por un círculo"]	#  0x325c	(en: 'circled number forty seven', google translation)
- - "㉝": [T: "número cuarenta y ocho rodeado por un círculo"]    	#  0x325d	(en: 'circled number forty eight', google translation)
- - "㉞": [T: "número cuarenta y nueve rodeado por un círculo"]	#  0x325e	(en: 'circled number forty nine', google translation)
- - "㉟": [T: "número cincuenta rodeado por un círculo"]          	#  0x325f	(en: 'circled number fifty', google translation)
+ - "㊲": [T: "número treinta y siete rodeado por un círculo"]	#  0x32b2	(en: 'circled number thirty seven', GPT-5.4 translation)
+ - "㊳": [T: "número treinta y ocho rodeado por un círculo"]    	#  0x32b3	(en: 'circled number thirty eight', GPT-5.4 translation)
+ - "㊴": [T: "número treinta y nueve rodeado por un círculo"]	#  0x32b4	(en: 'circled number thirty nine', GPT-5.4 translation)
+ - "㊵": [T: "número cuarenta rodeado por un círculo"]       	#  0x32b5	(en: 'circled number forty', GPT-5.4 translation)
+ - "㊶": [T: "número cuarenta y uno rodeado por un círculo"]  	#  0x32b6	(en: 'circled number forty one', GPT-5.4 translation)
+ - "㊷": [T: "número cuarenta y dos rodeado por un círculo"] 	#  0x32b7	(en: 'circled number forty two', GPT-5.4 translation)
+ - "㊸": [T: "número cuarenta y tres rodeado por un círculo"]	#  0x32b8	(en: 'circled number forty three', GPT-5.4 translation)
+ - "㊹": [T: "número cuarenta y cuatro rodeado por un círculo"]	#  0x32b9	(en: 'circled number forty four', GPT-5.4 translation)
+ - "㊺": [T: "número cuarenta y cinco rodeado por un círculo"]	#  0x32ba	(en: 'circled number forty five', GPT-5.4 translation)
+ - "㊻": [T: "número cuarenta y seis rodeado por un círculo"]	#  0x32bb	(en: 'circled number forty six', GPT-5.4 translation)
+ - "㊼": [T: "número cuarenta y siete rodeado por un círculo"]	#  0x32bc	(en: 'circled number forty seven', GPT-5.4 translation)
+ - "㊽": [T: "número cuarenta y ocho rodeado por un círculo"]  	#  0x32bd	(en: 'circled number forty eight', GPT-5.4 translation)
+ - "㊾": [T: "número cuarenta y nueve rodeado por un círculo"]	#  0x32be	(en: 'circled number forty nine', GPT-5.4 translation)
+ - "㊿": [T: "número cincuenta rodeado por un círculo"]       	#  0x32bf	(en: 'circled number fifty', GPT-5.4 translation)
  - "㋌": [T: "mercurio"]                         	#  0x32cc	(en: 'mercury', google translation)
  - "㋍": [T: "ergs"]                             	#  0x32cd	(google translation)
  - "㋎": [T: "electronvoltios"]                 	#  0x32ce	(en: 'electron volts', google translation)
@@ -3669,7 +3673,4 @@
  - "﹨": [T: "división entera"]                  	#  0xfe68	(en: 'integer divide')
  - "￼": [T: "objeto desconocido o faltante"]    	#  0xfffc	(en: 'unknown or missing object', google translation)
  - "�": [T: "caracter desconocido o faltante"]  	#  0xfffd	(en: 'unknown or missing character', google: 'personaje desconocido o faltante')
-
-
-
 
