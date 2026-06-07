@@ -236,11 +236,11 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  match do_navigate_command("ZoomIn".to_string())  {
+  match do_navigate_command("ZoomIn")  {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
     Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
   }
-  match do_navigate_command("ZoomIn".to_string())  {
+  match do_navigate_command("ZoomIn")  {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
     Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
   }
