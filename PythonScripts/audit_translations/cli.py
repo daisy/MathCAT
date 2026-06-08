@@ -17,17 +17,19 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(
-        description="Audit MathCAT translation files against English originals",
+        description="Audit MathCAT translation files against a source language",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
     uv run audit-translations es
+    uv run audit-translations nb --source sv
     uv run audit-translations de --file SharedRules/default.yaml
     uv run audit-translations --list
         """,
     )
 
     parser.add_argument("language", nargs="?", help="Language code to audit (e.g., 'es', 'de', 'fi')")
+    parser.add_argument("--source", default="en", help="Source/reference language code (default: 'en')")
     parser.add_argument("--file", dest="specific_file", help="Audit only a specific file (e.g., 'SharedRules/default.yaml')")
     parser.add_argument("--list", action="store_true", help="List available languages")
     parser.add_argument("--rules-dir", help="Override Rules/Languages directory path")
@@ -68,6 +70,7 @@ Examples:
                 args.rules_dir,
                 issue_filter,
                 args.verbose,
+                args.source,
             )
         except AuditError as exc:
             console.print(f"\n[red]✗ Error:[/] {exc}")

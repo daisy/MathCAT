@@ -2,18 +2,18 @@
 │ MathCAT Translation Audit: ES                                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-  Comparing against English (en) reference files
+  Comparing against en reference files
   Files to check: 1
 
 ────────────────────────────────────────────────────────────────────────────────
 ⚠ SharedRules/calculus.yaml
-  English: 4 rules  →  Translated: 3 rules
+  en: 4 rules  →  es: 3 rules
 ────────────────────────────────────────────────────────────────────────────────
 
   ≠ Rule Issues [13] (grouped by rule and issue type)
       • laplacian (laplacian)
           Missing in Translation [1]
-              • (line 4 in English)
+              • (line 4 in en)
       • divergence (divergence)
           Untranslated Text [3]
               • (line 10 es) "divergence"
