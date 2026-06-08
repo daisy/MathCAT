@@ -49,7 +49,7 @@
     "divergence": "function= ; div: divergens: divergens; slut divergens",
     "curl": "function= ; rotation; slut rotation",
     "gradient": "function= ; grad: gradient: gradient; slut gradient",
-    "laplacian": "function=laplacian",   # speech engines don't do a good job with "laplacian" (swedish ones might)
+    "laplacian": "function=laplacianen",   # speech engines don't do a good job with "laplacian" (swedish ones might)
   
     "chemistry-concentration": "function= ; koncentration: koncentrationen av: koncentrationen av; slut koncentration",
 }
