@@ -23,7 +23,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "moins"
+  - T: "moins"
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -32,17 +32,17 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "la"]
-  - t: "racine carrée"
+      then: [T: "la"]
+  - T: "racine carrée"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "de"]
+      then: [T: "de"]
       else: [pause: short]
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1], 'leaf')) and $Impairment = 'Blindness'"
-      then: [t: "fin de racine", pause: medium]
+      then: [T: "fin de racine", pause: medium]
 
 - name: default
   tag: root
@@ -50,28 +50,28 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "la"]
+      then: [T: "la"]
   - test:
       if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "racine carrée"]
+        then: [T: "racine carrée"]
       - else_if: "*[2][.='3']"
-        then: [t: "racine cubique"]
+        then: [T: "racine cubique"]
       - else:
         - x: "*[2]"
-        - t: "ième racine"
+        - T: "ième racine"
       else:
       - x: "*[2]"
-      - t: "racine"
+      - T: "racine"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "de"]
+      then: [T: "de"]
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1], 'leaf')) and $Impairment = 'Blindness'"
-      then: [t: "fin de racine", pause: medium]
+      then: [T: "fin de racine", pause: medium]
 
 - name: common-fraction
   tag: fraction
@@ -103,7 +103,7 @@
   - "BaseNode(*[2])[contains(@data-intent-property, ':unit')] "
   replace:
   - x: "*[1]"
-  - t: "par"
+  - T: "par"
   - x: "*[2]"
 
 - name: simple
@@ -113,7 +113,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)"
   replace:
   - x: "*[1]"
-  - t: "sur"
+  - T: "sur"
   - x: "*[2]"
   - pause: short
 
@@ -123,13 +123,13 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "fraction"]
+      then: [T: "fraction"]
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "sur"
+  - T: "sur"
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -137,14 +137,14 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "fin de fraction"]
+      then: [T: "fin de fraction"]
   - pause: medium
 
 - name: inverse-function
   tag: inverse-function
   match: "."
   replace:
-  - t: "inverse"
+  - T: "inverse"
   - x: "*[1]"
 
 - name: function-squared-or-cubed
@@ -157,8 +157,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "au carré"]
-      else: [t: "au cube"]
+      then: [T: "au carré"]
+      else: [T: "au cube"]
 
 - name: function-power
   tag: power
@@ -167,7 +167,7 @@
   replace:
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - t: "puissance de"
+  - T: "puissance de"
   - pause: short
   - x: "*[1]"
 
@@ -179,15 +179,15 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "au carré"]
-      else: [t: "au cube"]
+      then: [T: "au carré"]
+      else: [T: "au cube"]
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "à la"
+  - T: "à la"
   - x: "*[2]"
 
 - name: simple-negative-integer
@@ -197,7 +197,7 @@
   - "     *[1][self::m:mn][not(contains(., '.'))]]"
   replace:
   - x: "*[1]"
-  - t: "à la"
+  - T: "à la"
   - x: "*[2]"
 
 - name: simple-var
@@ -205,7 +205,7 @@
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "à la"
+  - T: "à la"
   - x: "*[2]"
   - pronounce: [text: "-ième", ipa: "jɛm", sapi5: "ième", eloquence: "ième"]
 
@@ -214,7 +214,7 @@
   match: "IsNode(*[2], 'leaf')"
   replace:
   - x: "*[1]"
-  - t: "à la"
+  - T: "à la"
   - x: "*[2]"
 
 - name: nested
@@ -226,13 +226,13 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "élevé à la"
+  - T: "élevé à la"
   - x: "*[2]"
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
       then:
-      - t: "fin d'exposant"
+      - T: "fin d'exposant"
       - pause: short
       else:
       - pause: medium
@@ -242,10 +242,8 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "élevé à la"
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - t: "puissance"
-  - pause: short
 
 - name: set
   tag: set
@@ -254,15 +252,15 @@
   - test:
     - if: "count(*)=0"
       then:
-      - t: "ensemble vide"
+      - T: "ensemble vide"
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - t: "ensemble de tous les"
+      - T: "ensemble de tous les"
       - x: "*[1]/*[1]"
-      - t: "tel que"
+      - T: "tel que"
       - x: "*[1]/*[3]"
       else:
-      - t: "ensemble"
+      - T: "ensemble"
       - x: "*[1]"
 
 - name: times
@@ -288,7 +286,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]"
   - " )"
   replace:
-  - t: "fois"
+  - T: "fois"
 
 - name: no-say-parens
   tag: mrow

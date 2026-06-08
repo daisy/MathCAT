@@ -4,13 +4,13 @@
   tag: laplacian
   match: "count(*) <= 1"
   replace:
-  - t: "laplacien"
+  - T: "laplacien"
   - test:
       if: "count(*) = 1"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "de"]
+          then: [T: "de"]
       - test:
           if: "not(IsNode(*[1], 'leaf'))"
           then: [pause: short]
@@ -22,8 +22,8 @@
   replace:
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "div"]
-      else: [t: "divergence de"]
+      then: [T: "div"]
+      else: [T: "divergence de"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -33,10 +33,10 @@
   tag: curl
   match: "count(*) = 1"
   replace:
-  - t: "rotationnel"
+  - T: "rotationnel"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "de"]
+      then: [T: "de"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -48,8 +48,8 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "gradient de"]
-      else: [t: "del"]
+      then: [T: "gradient de"]
+      else: [T: "grad"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]

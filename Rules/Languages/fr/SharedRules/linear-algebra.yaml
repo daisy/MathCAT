@@ -7,16 +7,16 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "le"
-  - t: "déterminant"
+      - T: "le"
+  - T: "déterminant"
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "de"
+      - T: "de"
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
-      then: [t: "fin du déterminant"]
+      then: [T: "fin du déterminant"]
 
 - name: subscripted-norm
   tag: subscripted-norm
@@ -25,11 +25,11 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "la"
+      - T: "la"
   - x: "*[2]"
-  - t: "norme"
+  - T: "norme"
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "de"
+      - T: "de"
   - x: "*[1]"
