@@ -33,7 +33,7 @@ MathCAT uses a number of heuristics that try to repair poor MathML and put it in
 MathCAT is under active development. DAISY is actively participating in the development effort, and contributions are welcome. MathCAT is open source, and the [GitHub repository is available here](https://github.com/daisy/MathCAT). [NVDA-specific problems with the MathCAT add-on can be reported here](https://github.com/daisy/MathCATForPython/issues).
 
 * MathCAT currently supports speech and navigation for
-English, German, Spanish, Finnish, Indonesian, Norwegian, Swedish, Vietnamese, and Chinese (Traditional).
+English, German, Spanish, Finnish, Indonesian, Norwegian, Russian, Swedish, Vietnamese, and Chinese (Traditional).
 * MathCAT's braille support includes Nemeth, UEB, CMU, Vietnamese, German/Austrian LaTeX and ASCIIMath.
 * An [NVDA add-on](https://addons.nvda-project.org/addons/MathCAT.en.html) exists. It should be usable as a MathPlayer replacement for those using the English version or one of the supported translations. As of NVDA 2026.1, MathCAT is built into NVDA and no download is needed.
 
