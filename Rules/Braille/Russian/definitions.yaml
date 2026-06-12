@@ -1,2 +1,10 @@
 ---
 - include: "../definitions.yaml"
+
+- RussianFunctionBraille: {
+    "arcsin": "\uE100", "arccos": "\uE101", "arctg": "\uE102", "arctan": "\uE102",
+    "arcctg": "\uE103", "arccotan": "\uE103", "arccot": "\uE103",
+    "sin": "\uE104", "cos": "\uE105", "tg": "\uE106", "tan": "\uE106", "ctg": "\uE107", "cotan": "\uE107", "cot": "\uE107",
+    "log": "\uE108", "ln": "\uE109", "lg": "\uE10A",
+    "lim": "\uE10B", "min": "\uE10C", "max": "\uE10D", "exp": "\uE10E"
+  }

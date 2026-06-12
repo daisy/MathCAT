@@ -322,42 +322,9 @@
 -
   name: functions
   tag: mi
-  match:
-  - "IsInDefinition(., 'Speech', 'FunctionNames') or"
-  - ".='tg' or .='ctg' or .='arctg' or .='arcctg'"
+  match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
   replace:
-  - test:
-    - if: ".='arcsin'"
-      then: [t: "⠫⠁⠎#"]
-    - else_if: ".='arccos'"
-      then: [t: "⠫⠁⠉#"]
-    - else_if: ".='arctg' or .='arctan'"
-      then: [t: "⠫⠁⠞#"]
-    - else_if: ".='arcctg' or .='arccotan' or .='arccot'"
-      then: [t: "⠫⠁⠉⠞#"]
-    - else_if: ".='sin'"
-      then: [t: "⠫⠎#"]
-    - else_if: ".='cos'"
-      then: [t: "⠫⠉#"]
-    - else_if: ".='tg' or .='tan'"
-      then: [t: "⠫⠞#"]
-    - else_if: ".='ctg' or .='cotan' or .='cot'"
-      then: [t: "⠫⠉⠞#"]
-    - else_if: ".='log'"
-      then: [t: "⠫⠇#"]
-    - else_if: ".='ln'"
-      then: [t: "⠫⠇⠝#"]
-    - else_if: ".='lg'"
-      then: [t: "⠫⠇⠛#"]
-    - else_if: ".='lim'"
-      then: [t: "⠫⠇⠍#"]
-    - else_if: ".='min'"
-      then: [t: "⠫⠍⠝#"]
-    - else_if: ".='max'"
-      then: [t: "⠫⠍⠭#"]
-    - else_if: ".='exp'"
-      then: [t: "⠫⠑#"]
-      else: [x: "BrailleChars(., 'Russian')"]
+  - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
 
 -
   name: default
