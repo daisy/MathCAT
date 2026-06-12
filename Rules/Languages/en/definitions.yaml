@@ -169,8 +169,8 @@
     "fenced-group":"function=fenced-group", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function= ; the pair; and", # Needs to be tested, test converts "and" to "comma,"
-    #"indexed-by": "infix= ; sub; end sub: end sub: end subscript",
-    "indexed-by": "infix= ; indexed by; ",
+    "indexed-by": "infix= ; sub; end sub: end sub: end subscript",
+    # "indexed-by": "infix= ; indexed by; ",
     
     "highlight":"postfix=highlighted",
     "least-common-denominator":"function=least common denominator",
