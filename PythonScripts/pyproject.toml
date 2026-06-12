@@ -33,6 +33,9 @@ dev = [
 requires = ["uv_build>=0.9.25,<0.10.0"]
 build-backend = "uv_build"
 
+[tool.uv]
+exclude-newer = "1 week"
+
 [tool.uv.build-backend]
 module-name = "audit_translations"
 module-root = ""
