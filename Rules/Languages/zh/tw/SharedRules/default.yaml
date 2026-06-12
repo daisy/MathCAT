@@ -131,17 +131,17 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: ""]   # phrase("'the' root of x")
+  - T: "根指數"      # phrase("the root of x 'with index' 5")
+  - x: "*[2]"
   - T: "根號"
-  - T: "開方次數"      # phrase("the root of x 'with index' 5")
-  - x: "*[1]"
   - pause: short
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: ""]   # phrase("the root 'of' x")
-  - x: "*[2]"
+  - x: "*[1]"
   - pause: short
   - test:
-      if: "not(IsNode(*[2],'leaf'))"
+      if: "not(IsNode(*[1],'leaf'))"
       then: [T: "結束根號"] # phrase("root of x 'end root symbol'")
 
 
@@ -406,7 +406,7 @@
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
-  - T: "表"      # phrase(the 'table with' 3 rows)
+  - T: "表格有"      # phrase(the 'table with' 3 rows)
   - x: count(*)
   - test:
       if: count(*)=1
