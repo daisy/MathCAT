@@ -60,7 +60,7 @@
     # "derivative":"function=the derivative; with respect to", # Property ???
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
-    "limit": "prefix=limit as",
+    "limit": "prefix=limit as:the limit as",
     "tends-to":"infix=tends to",
     "tends-to-from-above":"infix=tends to from above",
     "tends-to-from-below":"infix=tends to from below",
@@ -192,8 +192,8 @@
     ### Other
     ## Default fixity function
     "curl": "function=curl",
-    "divergence": "function=divergence",
-    "gradient": "function=gradient",
+    "divergence": "function=div:divergence",
+    "gradient": "function=del:gradient",
     "laplacian": "function=laplacian",
 
     ## Default fixity prefix
@@ -312,7 +312,7 @@
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
-    "divergence", "gradient", "curl"
+    "divergence", "del:gradient", "curl"
   }
 
 - NavigationParts: {
