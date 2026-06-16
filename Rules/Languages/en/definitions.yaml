@@ -1,7 +1,7 @@
 ---
 - include: "../../definitions.yaml"
 
-# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function||nofix||silent fixity
 # If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
 # If no ":"s are used, the same speech is used for all forms
 # If bracketing words make sense, they are separated with ";"s
@@ -10,51 +10,309 @@
 #   for readability, spaces can be used around any of the delimiter characters
 # Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
 - IntentMappings: {
+    "binomial": "infix=binomial; choose; end binomial",
+
+    ### Functions and Inverses
+    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
+    # "closed-interval":"function=closed interval between; and", #NOTE: Check test, does not follow this pattern
+    #"closed-open-interval":"function=interval between; included and",
+    #"open-closed-interval":"function=interval between; and included",
+    #"open-interval":"function=open interval between; and",
+    "inverse":"function=inverse || postfix=inverse", 
+
+    "domain": "function= ; domain",
+    "codomain": "function= ; codomain",
+
+    "image":"function=image", 
+    #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
+    "mixed-fraction":"infix=and", # NOTE: in website says function, but follow infix speech pattern.
+    "quotient":"function=integer part; divided by", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
+    "evaluated-at":"infix=evaluated at",
+    "remainder":"function=the remainder; divided by",
+
+    "max":"function=max",
+    "min":"function=min",
+
+    "power":"infix=to the power",
+    "root":"function=root",
+
+    "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
+    "least-common-multiple":"function=lcm: the lcm: the least common multiple", # In webpage typo "lest common"
+
+    "absolute-value": "function= ; absolute value: the absolute value: the absolute value; end absolute value",
+    "complex-conjugate":"function=complex conjugate",
+    "complex-arg":"function=arg",
+    "real-part": "function=the real part",
+    "imaginary-part": "function=imaginary part: the imaginary part: the imaginary part",
+
+    "polar-coordinate":"function=polar coordinate; comma",
+    "spherical-coordinate":"function=spherical coordinate; comma; comma",
+    "cartesian-coordinate":"function=cartesian coordinate; comma",
+    "coordinate":"function=coordinate; comma",
+    "floor":"function=floor",
+    "ceiling":"function=ceiling",
+    "round":"function=rounded-value",
+    "fractional-part":"function=fractional part",
+
+
+    ### Calculus
+    # "definite-integral":"function=integral over || function=integral from; to", # Property ???
+    # "derivative":"function=the derivative; with respect to", # Property ???
+    # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
+
+    "limit": "prefix=limit as:the limit as",
+    "tends-to":"infix=tends to",
+    "tends-to-from-above":"infix=tends to from above",
+    "tends-to-from-below":"infix=tends to from below",
+
+
+    ### Sets
+    "set": "function= ; set: the set",
+    "set-difference":"function=set difference; and || infix=minus", # NOTE: not tested
+    "complement":"function=complement",
+    #"empty-set":"nofix=empty set",
+    "cardinality":"function=cardinality", # NOTE: does not have a defined speech template in website
+    "list":"function=list",
+    "tuple": "function= ; tuple: the tuple",
+
+
+    ### Sequence and Series
+    "sum":"function= ; sum over : sum ; ", #: sum over : sum from; to",
+    "product":"function=product || function=product over || function=product from; to",
+
+
+    ### Elementary classical functions
+    "sine":"function=sin: sine",
+    "cosine":"function=cos: cosine",
+    "tangent":"function=tan: tangent",
+    "secant":"function=seech: secant",
+    "cosecant":"function=co-seech: cosecant",
+    "cotangent":"function=co-tan: cotangent",
+
+    "arcsine":"function=arcsine",
+    "arccosine":"function=arccosine",
+    "arctangent":"function=arctangent",
+    "arcsecant":"function=arcsecant",
+    "arccosecant":"function=arc-cosecant",
+    "arccotangent":"function=arc-cotangent",
+
+    "hyperbolic-sine":"function=shine",
+    "hyperbolic-cosine":"function=cosh",
+    "hyperbolic-tangent":"function=tanch",
+    "hyperbolic-secant":"function=sech",
+    "hyperbolic-cosecant":"function=cosech",
+    "hyperbolic-cotangent":"function=coth",
+
+    "arc-hyperbolic-sine":"function=arc shine",
+    "arc-hyperbolic-cosine":"function=arc cosh",
+    "arc-hyperbolic-tangent":"function=arc tanch",
+    "arc-hyperbolic-secant":"function=arc sech",
+    "arc-hyperbolic-cosecant":"function=arc cosech",
+    "arc-hyperbolic-cotangent":"function=arc coth",
+
+    "exponential":"function=exponential",
+    "natural-logarithm": "function=l n: natural log: natural log",
+    "logarithm":"function=log", ##Check arity 2 
+
+
+    ### Statistics and Probability
+    "mean":"function=mean", 
+    "standard-deviation":"function=standard deviation",
+    "variance":"function=variance",
+    "median":"function=median",
+    "mode":"function=mode",
+
+    "conditional-probability":"function=probability; given", # NOTE: Check test
+
+
+    ### Linear Algebra
+    "vector": "function= ; vector || prefix=vector", # prefix not tested, also prefix not on webpage
+    "matrix":"function=matrix", # NOTE: Failing test, recheck
+    "determinant":"function=determinant",
+    "adjugate":"function=adjugate",
+    "magnitude":"function=magnitude",
+    "norm": "function=; norm: norm: norm; end norm",
+    "span":"function=span",
+
+    "unit-vector":"prefix=unit vector",
+
+    "identity-matrix":"nofix=identity matrix", # NOTE: no function specified
+    "transpose":"function=transpose || postfix=transpose", # postfix needs testing
+    "dimensional-product":"infix=by", # INFIX
+
+
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ: set of all integers",
+    "set-of-reals":"nofix=ℝ: set of all real numbers",
+    "set-of-rationals":"nofix=ℚ: set of all rational numbers",
+    "set-of-natural-numbers":"nofix=ℕ: set of all natural numbers",
+    "set-of-complex-numbers":"nofix=ℂ: set of all complex numbers",
+    "set-of-primes":"nofix=ℙ: set of all prime numbers",
+
+    
+    ### Geometry
+    "line-segment":"prefix=line segment",
+    "directed-line-segment":"prefix=directed line segment", 
+    "line":"prefix=line",
+    "ray":"prefix=ray",
+    "arc":"prefix=arc",
+
+    "length":"function=length",
+    "area":"function=area",
+
+    "point":"prefix=point",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+
+    ### Separators
+    "time-separator":"infix=",
+
+    ### General Concepts 
+    "fenced-group":"function=fenced-group", # appears both under general concepts and grouping
+     # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
+    "ordered-pair": "function= ; the pair; and", # Needs to be tested, test converts "and" to "comma,"
     "indexed-by": "infix= ; sub; end sub: end sub: end subscript",
+    # "indexed-by": "infix= ; indexed by; ",
+    
+    "highlight":"postfix=highlighted",
+    "least-common-denominator":"function=least common denominator",
+    "rate":"infix=per",
+    "translation":"function= translation by; comma", # NOTE: not tested, changes "translation" -> "comma" in test
+    "constraint":"infix= ; with constraint; ", 
+    
+    "binomial-coefficient":"infix=choose",
+    "pochhammer":"function=permutation",
+    "permutation-cycle":"function=permutation cycle",
+    "embellished-name":"infix=with annotation",
+
+    ### Grouping
+    "annotation":"infix= ; which is ;",              # NOTE: Follows the same order as indexed-by, in site listed as function. Should it be infix?
+    "braced-group":"function=grouped; end grouped",  # NOTE: not tested, site is missing "of" keyword function introduces
+    #"repeating-decimal":"function=repeating decimal", # NOTE: BREAKS TEST. Check again. Site is missing "of" keyword function introduces.
+
+
+    ### Other
+    ## Default fixity function
+    "curl": "function=curl",
+    "divergence": "function=div:divergence",
+    "gradient": "function=del:gradient",
+    "laplacian": "function=laplacian",
+
+    ## Default fixity prefix
+    "angle": "prefix=angle",
+    "angle-measure": "prefix=angle measure",
+    "change": "prefix=change in",
+    "for-all": "prefix=for all",
+    "measured-angle": "prefix=measured angle",
+    "not": "prefix=not",
+    "number-of": "prefix=number of",
+    "partial-derivative": "prefix=partial",
+    "right-angle": "prefix=right angle",
+    "square-root-of": "prefix=square root of",
+    "there-does-not-exist": "prefix=there does not exist",
+    "there-exists": "prefix=there exists",
+
+
+    ## Default fixity infix
+    "and": "infix=and",
+    "applied-to": "infix=applied to",
+    "approximately": "infix=approximately",
+    "congruent": "infix=congruent to",
+    "cartesian-product": "infix=cartesian product",
+    "composed-with": "infix=composed with",
+    "cross-product": "infix=cross: cross product: cross product",
+    "defined-as": "infix=defined as",
+    "divided-by": "infix=divided by",
+    "divides": "infix=divides",
+    "does-not-belong-to": "infix=does not belong to",
+    "does-not-divide": "infix=does not divide",
+    "dot-product": "infix=dot product",
+    "downwards-diagonal-ellipsis": "infix=downwards diagonal ellipsis",
+    "direct-product": "infix=direct product",
+    "element-of": "infix=element of",
+    "ellipsis": "infix=ellipsis",
+    "equals": "infix=equals",
+    "equivalent-to": "infix=equivalent to",
+    "evaluates-to": "infix=evaluates to",
+    "given": "infix=given",
+    "greater-than": "infix=greater than",
+    "greater-than-or-equal-to": "infix=greater than or equal to",
+    "identically-equals": "infix=identically equals",
+    "if-and-only-if": "infix=if and only if",
+    "implies": "infix=implies",
+    "inner-product": "infix=inner product",
+    "intersection": "infix=intersection",
+    "less-than": "infix=less than",
+    "less-than-or-equal-to": "infix=less than or equal to",
+    "list-separator": "infix=comma",
+    "maps-to": "infix=maps to",
+    "member-of": "infix=member of",
+    "minus-or-plus": "infix=minus or plus",
+    "not-subset": "infix=not subset of",
+    "not-superset": "infix=not superset of",
+    "not-equal-to": "infix=not equal to",
+    "not-member-of": "infix=not member of",
+    "not-parallel-to": "infix=not parallel to",
+    "obtained-from": "infix=obtained from",
+    "or": "infix=or",
+    "outer-product": "infix=outer product",
+    "parallel-to": "infix=parallel to",
+    "perpendicular": "infix=perpendicular to",
+    "plus": "infix=plus || prefix=positive", # Prefix not tested
+    "minus": "infix=minus || prefix=negative", # Prefix not tested
+    "plus-or-minus": "infix=plus or minus",
+    "precedes": "infix=precedes",
+    "proportional": "infix=proportional to",
+    "range-separator": "infix=through",
+    "ratio": "infix=ratio",
+    "similar": "infix=similar to",
+    "subset": "infix=subset of",
+    "subset-or-equal": "infix=subset or equal to",
+    "succeeds": "infix=succeeds",
+    "such-that": "infix=such that",
+    "superset": "infix=superset of",
+    "superset-or-equal": "infix=superset or equal to",
+    "tilde": "infix=tilde",
+    "times": "infix=times",
+    "union": "infix=union",
+    "upwards-diagonal-ellipsis": "infix=upwards diagonal ellipsis",
+    "vertical-ellipsis": "infix=vertical ellipsis",
+    "xor": "infix=exclusive or",
+
+    ## Default fixity postfix
+    "factorial": "postfix=factorial",
+    "percent": "postfix=percent",
+
+    ## Default fixity nofix
+    "diameter":"nofix=d: diameter",
+    "distance":"nofix=d; D: distance",
+    "probability":"nofix=P: probability",
+    "radius":"nofix=r: radius",
+    "volume":"nofix=V: volume || function=volume",
+    "exponential-e":"nofix=e",
+    "imaginary-i":"nofix=i",
+    "differential-d":"nofix=d",
+    "golden-ratio":"nofix=golden ratio",
+    
+
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
     "modified-variable": "silent= ",
     "say-super": "infix=super: superscript: superscript",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
-
-    "absolute-value": "function= ; absolute value: the absolute value: the absolute value; end absolute value",
-    "binomial": "infix=binomial; choose; end binomial",
-    "dimension-product": "infix=by",
-    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
-    "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
-    "imaginary-part": "function=imaginary part: the imaginary part: the imaginary part",
-    "least-common-multiple": "function=lcm: the lcm: the least common multiple",
     # "large-op": "infix=over || other=from,to",
-    "limit": "prefix=limit as: the limit as: the limit as",
     "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
     "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
     "logarithm-with-base": "prefix=log base: the log base: the log base",
-    "natural-logarithm": "function=l n: natural log: natural log",
-    "minus": "infix=minus || prefix=negative",
-    "plus": "infix=plus || prefix=positive",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "real-part": "function=the real part",
-    "set-of-integers": "nofix=set of all integers",
-
-    "transpose": "postfix=transpose || function=transpose",
-    "norm": "function=; norm: norm: norm; end norm",
     "trace": "function= ; trace : trace: the trace; end trace",
     "dimension": "function=; dimension : dimension: the dimension; end dimension",
     "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
     "kernel": "function= ; kernel : kernel: the kernel; end kernel",
-    "vector": "function= ; vector || prefix=vector",
-    "cross-product": "infix=cross: cross product: cross product",
-    "dot-product": "infix=dot: dot product: dot: dot product",
-
-    "divergence": "function= ; dihv: divergence: divergence; end divergence",
-    "curl": "function= ; curl; end curl",
-    "gradient": "function= ; del: gradient: gradient; end gradient",
-    "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
-
+    
     "chemistry-concentration": "function= ; concentration: concentration of: the concentration of; end concentration",
   }
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
-    "divergence", "gradient", "curl"
+    "divergence", "del:gradient", "curl"
   }
 
 - NavigationParts: {

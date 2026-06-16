@@ -1,7 +1,7 @@
 """
 MathCAT Translation Audit Tool
 
-Compares English YAML rule files with translated versions to identify translation
+Compares source YAML rule files with translated versions to identify translation
 gaps and issues. This tool helps translators ensure their translations are complete
 and properly formatted.
 

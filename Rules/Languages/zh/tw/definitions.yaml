@@ -48,28 +48,28 @@
   }
 
 - NavigationParts: {
-    "large-op": "base; lower limit; upper limit",
-    "mfrac": "numerator;denominator",
-    "fraction": "numerator;denominator",
-    "msqrt": "root",
-    "square-root": "root",
-    "mroot": "root;root index",
-    "root": "root;root index",
-    "msub": "base;subscript",
-    "sub": "base;subscript",
-    "msup": "base;superscript",
-    "say-super": "base;superscript",
-    "skip-super": "base;superscript",
-    "power": "base;exponent",
-    "msubsup": "base;subscript;superscript",
-    "munder": "base;under limit",
-    "mover": "base;upper limit",
-    "munderover": "base;under limit;upper limit",
+    "large-op": "基底; 下限; 上限",
+    "mfrac": "分子;分母",
+    "fraction": "分子;分母",
+    "msqrt": "根號",
+    "square-root": "根號",
+    "mroot": "根號;根指數",
+    "root": "根號;根指數",
+    "msub": "基底;下標",
+    "sub": "基底;下標",
+    "msup": "基底;上標",
+    "say-super": "基底;上標",
+    "skip-super": "基底;上標",
+    "power": "基底;指數",
+    "msubsup": "基底;下標;上標",
+    "munder": "基底;下限",
+    "mover": "基底;上限",
+    "munderover": "基底;下限;上限",
 
     # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
     # it's a hack to put them here, but at least they are grouped with the other navigation parts
-    "in": "in",
-    "out": "out of",
+    "in": "進入",
+    "out": "離開",
   }
 
 
@@ -90,7 +90,7 @@
     "g": "克",
     "m": "米",     # British spelling works for US also
     "mol": "莫耳",
-    "s": "秒", "″": "秒", "\"": "秒", "sec": "秒",  # "sec" not actually legal
+    "s": "秒", "sec": "秒",  # "sec" not actually legal
 
     # derived units
     "Bq": "貝克",
