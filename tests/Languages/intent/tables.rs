@@ -33,7 +33,7 @@ fn matrix_mtable_intent() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <matrix data-from-mathml='mtable' data-intent-property=':matrix:'>
+                        <matrix data-from-mathml='mtable' data-intent-property=':matrix:function:'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>
@@ -57,7 +57,7 @@ fn matrix_mrow_intent() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <matrix data-from-mathml='mtable' arg='t' data-intent-property=':matrix:'>
+                        <matrix data-from-mathml='mtable' arg='t' data-intent-property=':matrix:function:'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>
@@ -105,7 +105,7 @@ fn determinant_not_matrix() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <determinant data-from-mathml='mtable' data-intent-property=':determinant:'>
+                        <determinant data-from-mathml='mtable' data-intent-property=':determinant:function:'>'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>

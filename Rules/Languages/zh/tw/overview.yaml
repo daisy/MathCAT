@@ -44,7 +44,7 @@
   tag: mroot
   match: "."
   replace:
-  - T: "根號"
+  - T: ""
   - x: "*[1]"
   - test:
       if: "IsNode(*[1], 'simple')"
@@ -94,7 +94,7 @@
   - x: count(*[2]/*)
   - T: "乘"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - T: "表"
+  - T: "表格"
 
 - name: short-mrow
   tag: mrow

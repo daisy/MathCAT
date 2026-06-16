@@ -13,6 +13,7 @@ import pytest
 
 from .. import cli as audit_cli
 from ..renderer import console
+from .conftest import strip_ansi
 
 
 def fixture_rules_dir() -> Path:
@@ -33,7 +34,7 @@ def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
 
@@ -44,6 +45,26 @@ def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     assert "Condition Differences" not in output
     assert "Variable Differences" not in output
     assert "Structure Differences" not in output
+
+
+def test_cli_main_accepts_source_language(capsys, monkeypatch) -> None:
+    """
+    Ensure --source changes the reference language without changing target semantics.
+    """
+    args = ["en", "--source", "es", "--rules-dir", str(fixture_rules_dir()), "--file", "overview.yaml"]
+
+    old_width = console.width
+    console.width = 80
+    try:
+        monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
+        audit_cli.main()
+        output = strip_ansi(capsys.readouterr().out)
+    finally:
+        console.width = old_width
+
+    assert "Comparing against es reference files" in output
+    assert "es:" in output
+    assert "en:" in output
 
 
 def test_cli_main_rich_output_groups_by_rule_and_type(capsys, monkeypatch) -> None:
@@ -61,7 +82,7 @@ def test_cli_main_rich_output_groups_by_rule_and_type(capsys, monkeypatch) -> No
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
 
@@ -93,7 +114,7 @@ def test_cli_main_rich_output_matches_grouped_golden(capsys, monkeypatch) -> Non
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
 
@@ -110,7 +131,7 @@ def test_cli_main_requires_language_or_list(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
     assert "Please specify a language code or use --list" in output
@@ -127,7 +148,7 @@ def test_cli_main_rejects_unknown_only_token(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
     assert "Unknown issue types: bogus" in output
@@ -144,10 +165,10 @@ def test_cli_main_reports_missing_region_directory(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
-    assert "Region directory not found" in output
+    assert "Target region directory not found" in output
 
 
 def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
@@ -173,7 +194,7 @@ def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
         check=True,
     )
 
-    output = result.stdout
+    output = strip_ansi(result.stdout)
     assert "≠ Rule Issues [13] (grouped by rule and issue type)" in output
     assert "• laplacian (laplacian)" in output
     assert "• divergence (divergence)" in output

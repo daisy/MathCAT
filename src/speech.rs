@@ -146,6 +146,7 @@ fn speak_rules(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>, math
     fn nestable_speak_rules<'c, 's:'c, 'm:'c>(rules_with_context: &mut SpeechRulesWithContext<'c, 's, 'm>, mathml: Element<'c>) -> Result<String> {
         let mut speech_string = rules_with_context.match_pattern::<String>(mathml)
                     .context("Pattern match/replacement failure!")?;
+        // debug!("Speech string: {}", speech_string);
         // Note: [[...]] is added around a matching child, but if the "id" is on 'mathml', the whole string is used
         if !rules_with_context.nav_node_id.is_empty() {
             // See https://github.com/NSoiffer/MathCAT/issues/174 for why we can just start the speech at the nav node
@@ -328,6 +329,10 @@ pub trait TreeOrString<'c, 'm:'c, T> {
     fn replace_nodes<'s:'c, 'r>(rules: &'r mut SpeechRulesWithContext<'c, 's,'m>, nodes: Vec<Node<'c>>, mathml: Element<'c>) -> Result<T>;
     fn highlight_braille(braille: T, highlight_style: String) -> T;
     fn mark_nav_speech(speech: T) -> T;
+    /// Sanitize xpath-derived literal text before it becomes speech (not used for intent/braille trees).
+    fn sanitize_xpath_string(s: String, _rules_with_context: &SpeechRulesWithContext<'c, '_, 'm>) -> String {
+        return s;
+    }
 }
 
 impl<'c, 'm:'c> TreeOrString<'c, 'm, String> for String {
@@ -358,6 +363,8 @@ impl<'c, 'm:'c> TreeOrString<'c, 'm, String> for String {
     fn mark_nav_speech(speech: String) -> String {
         return SpeechRulesWithContext::mark_nav_speech(speech);
     }
+
+    // SSML/SAPI escaping is applied in replace_chars; xpath literals go through that path.
 }
 
 impl<'c, 'm:'c> TreeOrString<'c, 'm, Element<'m>> for Element<'m> {
@@ -2083,6 +2090,15 @@ impl FilesAndTimes {
         }
     }
 
+    /// Mark cached files as stale so the next `read_files()` reloads them.
+    pub fn invalidate(&mut self) {
+        self.ft.clear();
+    }
+
+    pub fn is_valid(&self) -> bool {
+        self.ft.is_empty()
+    }
+
     pub fn as_path(&self) -> &Path {
         assert!(!self.ft.is_empty());
         return &self.ft[0].file;
@@ -2204,6 +2220,46 @@ thread_local!{
 
     pub static BRAILLE_RULES: RefCell<SpeechRules> =
             RefCell::new( SpeechRules::new(RulesFor::Braille, false) );
+}
+
+/// Invalidate speech caches whose paths change when `Language` changes.
+pub fn invalidate_speech_language_caches() {
+    SPEECH_DEFINITION_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    SPEECH_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    SPEECH_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    INTENT_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    SPEECH_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    OVERVIEW_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    NAVIGATION_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+/// Invalidate caches whose paths change when `SpeechStyle` changes.
+pub fn invalidate_speech_style_caches() {
+    SPEECH_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+/// Invalidate braille caches whose paths change when `BrailleCode` changes.
+pub fn invalidate_braille_caches() {
+    BRAILLE_DEFINITION_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+#[cfg(test)]
+// Used for testing the cache is invalidated when the language changes in prefs.rs
+impl SpeechRules {
+    pub(crate) fn rule_files_cache_is_empty(&self) -> bool {
+        self.rule_files.is_valid()
+    }
+
+    pub(crate) fn definitions_files_cache_is_empty(&self) -> bool {
+        self.definitions_files.borrow().is_valid()
+    }
+
+    pub(crate) fn definitions_files_cache_path(&self) -> PathBuf {
+        self.definitions_files.borrow().as_path().to_path_buf()
+    }
 }
 
 impl SpeechRules {
@@ -2396,6 +2452,14 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
         return self.speech_rules;
     }
 
+    pub fn escape_string_for_safety(&self, s: String) -> String {
+        return crate::tts::escape_string_for_safety(
+            s,
+            self.speech_rules.name,
+            &self.speech_rules.pref_manager.borrow().get_tts(),
+        );
+    }
+
     pub fn get_context(&mut self) -> &mut sxd_xpath::Context<'c> {
         return &mut self.context_stack.base;
     }
@@ -2515,15 +2579,15 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
       if let Some(id) = mathml.attribute_value("id") &&
          self.nav_node_id == id {
         let offset = mathml.attribute_value(crate::navigate::ID_OFFSET).unwrap_or("0");
-        debug!("nav_node_adjust: id/name='{}/{}' offset?='{}'", id, name(mathml),
-               self.nav_node_offset.to_string().as_str() == offset
-        );
+        // debug!("nav_node_adjust: id/name='{}/{}' offset?='{}'", id, name(mathml),
+        //        self.nav_node_offset.to_string().as_str() == offset
+        // );
         if is_leaf(mathml) || self.nav_node_offset.to_string().as_str() == offset {
           if self.speech_rules.name == RulesFor::Braille {
             let highlight_style =  self.speech_rules.pref_manager.borrow().pref_to_string("BrailleNavHighlight");
             return T::highlight_braille(speech, highlight_style);
           } else {
-            debug!("nav_node_adjust: id='{}' offset='{}/{}'", id, self.nav_node_offset, offset);
+            // debug!("nav_node_adjust: id='{}' offset='{}/{}'", id, self.nav_node_offset, offset);
             return T::mark_nav_speech(speech)
           }
         }
@@ -2595,7 +2659,7 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
     fn mark_nav_speech(speech: String) -> String {
         // add unique markers (since speech is mostly ascii letters and digits, most any symbol will do)
         // it's a bug (but happened during intent generation), we might have identical id's, choose innermost one
-        debug!("mark_nav_speech: adding [[ {} ]] ", &speech);
+        // debug!("mark_nav_speech: adding [[ {} ]] ", &speech);
         if !speech.contains("[[") {
             return "[[".to_string() + &speech + "]]";
         } else {
@@ -2686,7 +2750,7 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
             };
             let matched = match node {
                 Node::Element(n) => self.match_pattern::<String>(n)?,
-                Node::Text(t) =>  self.replace_chars(t.text(), mathml)?,
+                Node::Text(t) => self.replace_chars(t.text(), mathml)?,
                 Node::Attribute(attr) => self.replace_chars(attr.value(), mathml)?,
                 _ => bail!("replace_nodes: found unexpected node type!!!"),
             };
@@ -2698,6 +2762,13 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
     /// Lookup unicode "pronunciation" of char.
     /// Note: TTS is not supported here (not needed and a little less efficient)
     pub fn replace_chars(&'r mut self, str: &str, mathml: Element<'c>) -> Result<String> {
+        if is_quoted_string(str) {  // quoted string -- already translated (set in get_braille_chars)
+            return Ok(unquote_string(str).to_string());
+        }
+        self.replace_chars_escaping_xml_chars(str, mathml)
+    }
+
+    fn replace_chars_escaping_xml_chars(&'r mut self, str: &str, mathml: Element<'c>) -> Result<String> {
         let chars = str.chars().collect::<Vec<char>>();
         let rules = self.speech_rules;
         // handled in match_pattern -- temporarily leaving as comments in case something is missed and needed here
@@ -2714,24 +2785,22 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
         //         return Ok( ch.to_string() );
         //     }
         // }
-        if is_quoted_string(str) {  // quoted string -- already translated (set in get_braille_chars)
-            return Ok(unquote_string(str).to_string());
-        }
         // in a string, avoid "a" -> "eigh", "." -> "point", etc
         if rules.translate_single_chars_only {
             if chars.len() == 1 {
-                return self.replace_single_char(chars[0], mathml)
+                return self.replace_single_char(chars[0], mathml);
             } else {
-                // more than one char -- fix up non-breaking space
-                return Ok(str.replace('\u{00A0}', " ").replace(['\u{2061}', '\u{2062}', '\u{2063}', '\u{2064}'], ""))
+                // more than one char -- user literal (e.g. mtext); fix up non-breaking space
+                let s = str.replace('\u{00A0}', " ").replace(['\u{2061}', '\u{2062}', '\u{2063}', '\u{2064}'], "");
+                return Ok(self.escape_string_for_safety(s));
             }
-        };
+        }
 
         let result = chars.iter()
             .map(|&ch| self.replace_single_char(ch, mathml))
             .collect::<Result<Vec<String>>>()?
             .join("");
-        return Ok( result );
+        return Ok(result);
     }
 
     fn replace_single_char(&'r mut self, ch: char, mathml: Element<'c>) -> Result<String> {
@@ -2757,7 +2826,7 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
               self.translate_count = 0;     // not in loop
               // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
               if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
-                return Ok(String::from(ch));   // no replacement, so just return the char and hope for the best
+                return Ok(self.escape_string_for_safety(String::from(ch)));
               } else { // braille -- must turn into braille dots
                 // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
                 let ch_as_int = ch as u32;

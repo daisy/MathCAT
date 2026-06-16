@@ -42,11 +42,18 @@
 -
   name: roman_numeral
   tag: [mi, mn, mtext]
-  match: "@data-number"
-  replace: 
-  - intent:
-      name: mn
-      children: [x: "@data-number"]
+  match: "@data-roman-numeral"
+  replace:
+  - test:
+      if: "../@data-chem-formula"
+      then:
+      - intent:
+          name: mn
+          children: [x: "@data-number"]
+      else:
+      - intent:
+          name: mi
+          children: [x: "text()"]
 
 -
   name: positive-or-negative

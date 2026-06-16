@@ -930,7 +930,7 @@
    tag: "*"
    match: "*"    # make sure there are children
    replace: 
-   - t: "unknown math m l element"
+   - x: "BrailleChars('unknown math m l element', 'Swedish')"
    - x: "name(.)"
    - x: "*"
 
@@ -940,7 +940,7 @@
    tag: "*"
    match: "text()"
    replace: 
-   - t: unknown math m l element
+   - x: "BrailleChars('unknown math m l element', 'Swedish')"
    - x: "name(.)"
    - x: "text()"
 
@@ -949,5 +949,5 @@
    tag: "*"
    match: "."
    replace: 
-    - t: "empty unknown math m l element"
+    - x: "BrailleChars('empty unknown math m l element', 'Swedish')"
     - x: "name(.)"

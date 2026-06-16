@@ -1021,11 +1021,15 @@ mod tests {
     }
 
     fn init_default_prefs(mathml: &str, nav_mode_default: &str) {
+        init_prefs(mathml, nav_mode_default, "en");
+    }
+
+    fn init_prefs(mathml: &str, nav_mode_default: &str, language: &str) {
         set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
         set_preference("NavMode", nav_mode_default).unwrap();
         set_preference("NavVerbosity", "Verbose").unwrap();
         set_preference("AutoZoomOut", "True").unwrap();
-        set_preference("Language", "en").unwrap();
+        set_preference("Language", language).unwrap();
         set_preference("SpeechStyle", "SimpleSpeak").unwrap();
         set_preference("Verbosity", "Medium").unwrap();
         set_preference("Overview", "False").unwrap();
@@ -1153,6 +1157,34 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             test_command("ZoomInAll", mathml, "base");
+            return Ok( () );
+        });
+    }
+
+    #[test]
+    fn zoom_speech_ru() -> Result<()> {
+        let mathml_str = "<math id='math'><mfrac id='mfrac'>
+                <msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup>
+                <mi id='denom'>d</mi>
+            </mfrac></math>";
+        init_prefs(mathml_str, "Enhanced", "ru");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "msup");
+            assert_eq!("переход внутрь; в числитель; бэ в квадрате", speech);
+            let speech = test_command("ZoomIn", mathml, "base");
+            assert_eq!("переход внутрь; в основание; бэ", speech);
+            let speech = test_command("ZoomIn", mathml, "base");
+            assert_eq!("достигнута максимальная детализация; бэ", speech);
+            let speech = test_command("ZoomOut", mathml, "msup");
+            assert_eq!("переход наружу; из основания; бэ в квадрате", speech);
+            let speech = test_command("ZoomInAll", mathml, "base");
+            assert_eq!("переход к максимальной детализации; в основание; бэ", speech);
+            let speech = test_command("ZoomOutAll", mathml, "mfrac");
+            assert_eq!("переход к выражению целиком; из основания; из числителя; дробь, числитель: бэ в квадрате, знаменатель: дэ, конец дроби", speech);
+            let speech = test_command("ZoomOutAll", mathml, "mfrac");
+            assert_eq!("выражение уже показано целиком; дробь, числитель: бэ в квадрате, знаменатель: дэ, конец дроби", speech);
             return Ok( () );
         });
     }
@@ -1729,6 +1761,35 @@ mod tests {
             assert_eq!("move left; in denominator; y", test_command("MovePrevious", mathml, "id-4"));
             assert_eq!("move left; in numerator; x", test_command("MovePrevious", mathml, "id-3"));
 
+            return Ok( () );
+        });
+    }
+
+    #[test]
+    fn move_char_speech_ru() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+                <mrow id='id-1'>
+                <mfrac id='id-2'>
+                    <mi id='id-3'>x</mi>
+                    <mi id='id-4'>y</mi>
+                </mfrac>
+                <mo id='id-5'>&#x2062;</mo>
+                <msqrt id='id-6'><mi id='id-7'>z</mi></msqrt>
+                </mrow>
+            </math>";
+        init_prefs(mathml_str, "Character", "ru");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "id-3");
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq!("перемещение вправо; в знаменатель; игрек", speech);
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq!("перемещение вправо; из знаменателя; в подкоренное выражение; зэт", speech);
+            let speech = test_command("MovePrevious", mathml, "id-4");
+            assert_eq!("перемещение влево; из подкоренного выражения; в знаменатель; игрек", speech);
+            let speech = test_command("MovePrevious", mathml, "id-3");
+            assert_eq!("перемещение влево; в числитель; икс", speech);
             return Ok( () );
         });
     }
@@ -2507,6 +2568,46 @@ mod tests {
             assert_eq!(speech, "read current; fraction, b plus 1, over 3, end fraction");
             let speech = test_command("DescribeCurrent", mathml, "frac");
             assert_eq!(speech, "describe current; fraction");
+            return Ok( () );
+        });
+    }
+
+    #[test]
+    fn describe_nested_fraction_ru() -> Result<()> {
+        let mathml_str = "<math id='math'>
+            <mfrac id='frac'>
+                <mrow id='num'>
+                    <mi id='x1'>x</mi>
+                    <mo id='plus'>+</mo>
+                    <msqrt id='sqrt'>
+                        <mfrac id='inner-frac'>
+                            <mn id='one'>1</mn>
+                            <mi id='y1'>y</mi>
+                        </mfrac>
+                    </msqrt>
+                </mrow>
+                <mrow id='den'>
+                    <mi id='x2'>x</mi>
+                    <mo id='minus'>-</mo>
+                    <mi id='y2'>y</mi>
+                </mrow>
+            </mfrac>
+        </math>";
+        init_prefs(mathml_str, "Enhanced", "ru");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "");
+            assert_eq!("переход внутрь; в числитель; икс  плюс, квадратный корень из 1 разделить на игрек, конец корня", speech);
+            match do_navigate_command_string(mathml, "DescribeCurrent") {
+                Ok(speech) => {
+                    let speech = speech.trim_end_matches(&[' ', ',', ';']).to_string();
+                    assert_eq!("описать текущее; икс  плюс, квадратный корень из 1 разделить на игрек", speech);
+                },
+                Err(e) => {
+                    panic!("DescribeCurrent failed: {}", crate::interface::errors_to_string(&e));
+                },
+            };
             return Ok( () );
         });
     }

@@ -18,6 +18,7 @@ src/*.bak
 *.sleepy
 *.txt
 *.zip
+llvm-cov/
 __pycache__
 PythonScripts/__pycache__
 PythonScripts/cachedir

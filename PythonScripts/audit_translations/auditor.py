@@ -1,7 +1,7 @@
 """
 Auditing and comparison logic.
 
-Contains functions for comparing English and translated files,
+Contains functions for comparing source and translated files,
 and for performing full language audits.
 """
 
@@ -60,7 +60,7 @@ def compare_files(
     translated_region_path: Path | None = None,
     english_region_path: Path | None = None,
 ) -> ComparisonResult:
-    """Compare English and translated YAML files"""
+    """Compare source and translated YAML files"""
 
     def load_rules(path: Path | None) -> list[RuleInfo]:
         if path and path.exists():
@@ -95,14 +95,14 @@ def compare_files(
     include_extra = include_all or "extra" in issue_filter
     include_diffs = include_all or "diffs" in issue_filter
 
-    # Find missing rules (in English but not in translation)
+    # Find missing rules (in source but not in translation)
     missing_rules = []
     if include_missing:
         for key, rule in english_by_key.items():
             if key not in translated_by_key:
                 missing_rules.append(rule)
 
-    # Find extra rules (in translation but not in English)
+    # Find extra rules (in translation but not in source)
     extra_rules = []
     if include_extra:
         for key, rule in translated_by_key.items():
@@ -142,29 +142,35 @@ def audit_language(
     rules_dir: str | None = None,
     issue_filter: set[str] | None = None,
     verbose: bool = False,
+    source_language: str = "en",
 ) -> int:
     """Audit translations for a specific language. Returns total issue count."""
     rules_dir_path = get_rules_dir(rules_dir)
-    english_dir = rules_dir_path / "en"
 
-    base_language, region = split_language_into_base_and_region(language)
-    translated_dir = rules_dir_path / base_language
-    translated_region_dir = translated_dir / region if region else None
-    english_region_dir = english_dir / region if region else None
+    source_base_language, source_region = split_language_into_base_and_region(source_language)
+    source_dir = rules_dir_path / source_base_language
+    source_region_dir = source_dir / source_region if source_region else None
 
-    if not english_dir.exists():
-        raise AuditError(f"English rules directory not found: {english_dir}")
+    target_base_language, target_region = split_language_into_base_and_region(language)
+    translated_dir = rules_dir_path / target_base_language
+    translated_region_dir = translated_dir / target_region if target_region else None
+
+    if not source_dir.exists():
+        raise AuditError(f"Source rules directory not found: {source_dir}")
+
+    if source_region and not (source_region_dir and source_region_dir.exists()):
+        raise AuditError(f"Source region directory not found: {source_region_dir}")
 
     if not translated_dir.exists():
-        raise AuditError(f"Translation directory not found: {translated_dir}")
+        raise AuditError(f"Target rules directory not found: {translated_dir}")
 
-    if region and not (translated_region_dir and translated_region_dir.exists()):
-        raise AuditError(f"Region directory not found: {translated_region_dir}")
+    if target_region and not (translated_region_dir and translated_region_dir.exists()):
+        raise AuditError(f"Target region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
-    files = [specific_file] if specific_file else get_yaml_files(english_dir, english_region_dir)
+    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir)
 
-    print_audit_header(language, len(files))
+    print_audit_header(language, len(files), source_language)
 
     total_issues = 0
     total_missing = 0
@@ -175,13 +181,13 @@ def audit_language(
     files_ok = 0
 
     for file_name in files:
-        english_path = english_dir / file_name
+        english_path = source_dir / file_name
         translated_path = translated_dir / file_name
         translated_region_path = translated_region_dir / file_name if translated_region_dir else None
-        english_region_path = english_region_dir / file_name if english_region_dir else None
+        english_region_path = source_region_dir / file_name if source_region_dir else None
 
         if not english_path.exists():
-            console.print(f"\n[yellow]⚠ Warning:[/] English file not found: {english_path}")
+            console.print(f"\n[yellow]⚠ Warning:[/] Source file not found: {english_path}")
             continue
 
         result = compare_files(
@@ -193,7 +199,7 @@ def audit_language(
         )
 
         if result.has_issues:
-            issues = print_warnings(result, file_name, verbose, language)
+            issues = print_warnings(result, file_name, verbose, language, source_language)
             if issues > 0:
                 files_with_issues += 1
             total_issues += issues
