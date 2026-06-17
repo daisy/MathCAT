@@ -2492,256 +2492,59 @@
  - "ﬂ": [t: "\\fl𝐖"]                     # 0xfb02
  - "ﬃ": [t: "\\ffi𝐖"]                    # 0xfb03
  - "ﬄ": [t: "\\ffl𝐖"]                    # 0xfb04
- - "𝐀": [t: "\\mathbf𝐖A𝐖"]               # 0x1d400
- - "𝐁": [t: "\\mathbf𝐖B𝐖"]               # 0x1d401
- - "𝐂": [t: "\\mathbf𝐖C𝐖"]               # 0x1d402
- - "𝐃": [t: "\\mathbf𝐖D𝐖"]               # 0x1d403
- - "𝐄": [t: "\\mathbf𝐖E𝐖"]               # 0x1d404
- - "𝐅": [t: "\\mathbf𝐖F𝐖"]               # 0x1d405
- - "𝐆": [t: "\\mathbf𝐖G𝐖"]               # 0x1d406
- - "𝐇": [t: "\\mathbf𝐖H𝐖"]               # 0x1d407
- - "𝐈": [t: "\\mathbf𝐖I𝐖"]               # 0x1d408
- - "𝐉": [t: "\\mathbf𝐖J𝐖"]               # 0x1d409
- - "𝐊": [t: "\\mathbf𝐖K𝐖"]               # 0x1d40a
- - "𝐋": [t: "\\mathbf𝐖L𝐖"]               # 0x1d40b
- - "𝐌": [t: "\\mathbf𝐖M𝐖"]               # 0x1d40c
- - "𝐍": [t: "\\mathbf𝐖N𝐖"]               # 0x1d40d
- - "𝐎": [t: "\\mathbf𝐖O𝐖"]               # 0x1d40e
- - "𝐏": [t: "\\mathbf𝐖P𝐖"]               # 0x1d40f
- - "𝐐": [t: "\\mathbf𝐖Q𝐖"]               # 0x1d410
- - "𝐑": [t: "\\mathbf𝐖R𝐖"]               # 0x1d411
- - "𝐒": [t: "\\mathbf𝐖S𝐖"]               # 0x1d412
- - "𝐓": [t: "\\mathbf𝐖T𝐖"]               # 0x1d413
- - "𝐔": [t: "\\mathbf𝐖U𝐖"]               # 0x1d414
- - "𝐕": [t: "\\mathbf𝐖V𝐖"]               # 0x1d415
- - "𝐖": [t: "\\mathbf𝐖W𝐖"]               # 0x1d416
- - "𝐗": [t: "\\mathbf𝐖X𝐖"]               # 0x1d417
- - "𝐘": [t: "\\mathbf𝐖Y𝐖"]               # 0x1d418
- - "𝐙": [t: "\\mathbf𝐖Z𝐖"]               # 0x1d419
- - "𝐚": [t: "\\mathbf𝐖a𝐖"]               # 0x1d41a
- - "𝐛": [t: "\\mathbf𝐖b𝐖"]               # 0x1d41b
- - "𝐜": [t: "\\mathbf𝐖c𝐖"]               # 0x1d41c
- - "𝐝": [t: "\\mathbf𝐖d𝐖"]               # 0x1d41d
- - "𝐞": [t: "\\mathbf𝐖e𝐖"]               # 0x1d41e
- - "𝐟": [t: "\\mathbf𝐖f𝐖"]               # 0x1d41f
- - "𝐠": [t: "\\mathbf𝐖g𝐖"]               # 0x1d420
- - "𝐡": [t: "\\mathbf𝐖h𝐖"]               # 0x1d421
- - "𝐢": [t: "\\mathbf𝐖i𝐖"]               # 0x1d422
- - "𝐣": [t: "\\mathbf𝐖j𝐖"]               # 0x1d423
- - "𝐤": [t: "\\mathbf𝐖k𝐖"]               # 0x1d424
- - "𝐥": [t: "\\mathbf𝐖l𝐖"]               # 0x1d425
- - "𝐦": [t: "\\mathbf𝐖m𝐖"]               # 0x1d426
- - "𝐧": [t: "\\mathbf𝐖n𝐖"]               # 0x1d427
- - "𝐨": [t: "\\mathbf𝐖o𝐖"]               # 0x1d428
- - "𝐩": [t: "\\mathbf𝐖p𝐖"]               # 0x1d429
- - "𝐪": [t: "\\mathbf𝐖q𝐖"]               # 0x1d42a
- - "𝐫": [t: "\\mathbf𝐖r𝐖"]               # 0x1d42b
- - "𝐬": [t: "\\mathbf𝐖s𝐖"]               # 0x1d42c
- - "𝐭": [t: "\\mathbf𝐖t𝐖"]               # 0x1d42d
- - "𝐮": [t: "\\mathbf𝐖u𝐖"]               # 0x1d42e
- - "𝐯": [t: "\\mathbf𝐖v𝐖"]               # 0x1d42f
- - "𝐰": [t: "\\mathbf𝐖w𝐖"]               # 0x1d430
- - "𝐱": [t: "\\mathbf𝐖x𝐖"]               # 0x1d431
- - "𝐲": [t: "\\mathbf𝐖y𝐖"]               # 0x1d432
- - "𝐳": [t: "\\mathbf𝐖z𝐖"]               # 0x1d433
+
+ - "𝐀-𝐙":    # 0x1d400 - 0x1d419
+     - tc: "\\mathbf𝐖;𝐖"
+     - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+
+ - "𝐚-𝐳":    # 0x1d41a - 0x1d433
+     - tc: "\\mathbf𝐖;𝐖"
+     - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
 # don't mark these as italic
- - "𝐴": [t: "A"]              # 0x1d434
- - "𝐵": [t: "B"]              # 0x1d435
- - "𝐶": [t: "C"]              # 0x1d436
- - "𝐷": [t: "D"]              # 0x1d437
- - "𝐸": [t: "E"]              # 0x1d438
- - "𝐹": [t: "F"]              # 0x1d439
- - "𝐺": [t: "G"]              # 0x1d43a
- - "𝐻": [t: "H"]              # 0x1d43b
- - "𝐼": [t: "I"]              # 0x1d43c
- - "𝐽": [t: "J"]              # 0x1d43d
- - "𝐾": [t: "K"]              # 0x1d43e
- - "𝐿": [t: "L"]              # 0x1d43f
- - "𝑀": [t: "M"]              # 0x1d440
- - "𝑁": [t: "N"]              # 0x1d441
- - "𝑂": [t: "O"]              # 0x1d442
- - "𝑃": [t: "P"]              # 0x1d443
- - "𝑄": [t: "Q"]              # 0x1d444
- - "𝑅": [t: "R"]              # 0x1d445
- - "𝑆": [t: "S"]              # 0x1d446
- - "𝑇": [t: "T"]              # 0x1d447
- - "𝑈": [t: "U"]              # 0x1d448
- - "𝑉": [t: "V"]              # 0x1d449
- - "𝑊": [t: "W"]              # 0x1d44a
- - "𝑋": [t: "X"]              # 0x1d44b
- - "𝑌": [t: "Y"]              # 0x1d44c
- - "𝑍": [t: "Z"]              # 0x1d44d
- - "𝑎": [t: "a"]              # 0x1d44e
- - "𝑏": [t: "b"]              # 0x1d44f
- - "𝑐": [t: "c"]              # 0x1d450
- - "𝑑": [t: "d"]              # 0x1d451
- - "𝑒": [t: "e"]              # 0x1d452
- - "𝑓": [t: "f"]              # 0x1d453
- - "𝑔": [t: "g"]              # 0x1d454
- - "𝑖": [t: "i"]              # 0x1d456
- - "𝑗": [t: "j"]              # 0x1d457
- - "𝑘": [t: "k"]              # 0x1d458
- - "𝑙": [t: "l"]              # 0x1d459
- - "𝑚": [t: "m"]              # 0x1d45a
- - "𝑛": [t: "n"]              # 0x1d45b
- - "𝑜": [t: "o"]              # 0x1d45c
- - "𝑝": [t: "p"]              # 0x1d45d
- - "𝑞": [t: "q"]              # 0x1d45e
- - "𝑟": [t: "r"]              # 0x1d45f
- - "𝑠": [t: "s"]              # 0x1d460
- - "𝑡": [t: "t"]              # 0x1d461
- - "𝑢": [t: "u"]              # 0x1d462
- - "𝑣": [t: "v"]              # 0x1d463
- - "𝑤": [t: "w"]              # 0x1d464
- - "𝑥": [t: "x"]              # 0x1d465
- - "𝑦": [t: "y"]              # 0x1d466
- - "𝑧": [t: "z"]              # 0x1d467
- - "𝑨": [t: "\\mathbit𝐖A𝐖"]              # 0x1d468
- - "𝑩": [t: "\\mathbit𝐖B𝐖"]              # 0x1d469
- - "𝑪": [t: "\\mathbit𝐖C𝐖"]              # 0x1d46a
- - "𝑫": [t: "\\mathbit𝐖D𝐖"]              # 0x1d46b
- - "𝑬": [t: "\\mathbit𝐖E𝐖"]              # 0x1d46c
- - "𝑭": [t: "\\mathbit𝐖F𝐖"]              # 0x1d46d
- - "𝑮": [t: "\\mathbit𝐖G𝐖"]              # 0x1d46e
- - "𝑯": [t: "\\mathbit𝐖H𝐖"]              # 0x1d46f
- - "𝑰": [t: "\\mathbit𝐖I𝐖"]              # 0x1d470
- - "𝑱": [t: "\\mathbit𝐖J𝐖"]              # 0x1d471
- - "𝑲": [t: "\\mathbit𝐖K𝐖"]              # 0x1d472
- - "𝑳": [t: "\\mathbit𝐖L𝐖"]              # 0x1d473
- - "𝑴": [t: "\\mathbit𝐖M𝐖"]              # 0x1d474
- - "𝑵": [t: "\\mathbit𝐖N𝐖"]              # 0x1d475
- - "𝑶": [t: "\\mathbit𝐖O𝐖"]              # 0x1d476
- - "𝑷": [t: "\\mathbit𝐖P𝐖"]              # 0x1d477
- - "𝑸": [t: "\\mathbit𝐖Q𝐖"]              # 0x1d478
- - "𝑹": [t: "\\mathbit𝐖R𝐖"]              # 0x1d479
- - "𝑺": [t: "\\mathbit𝐖S𝐖"]              # 0x1d47a
- - "𝑻": [t: "\\mathbit𝐖T𝐖"]              # 0x1d47b
- - "𝑼": [t: "\\mathbit𝐖U𝐖"]              # 0x1d47c
- - "𝑽": [t: "\\mathbit𝐖V𝐖"]              # 0x1d47d
- - "𝑾": [t: "\\mathbit𝐖W𝐖"]              # 0x1d47e
- - "𝑿": [t: "\\mathbit𝐖X𝐖"]              # 0x1d47f
- - "𝒀": [t: "\\mathbit𝐖Y𝐖"]              # 0x1d480
- - "𝒁": [t: "\\mathbit𝐖Z𝐖"]              # 0x1d481
- - "𝒂": [t: "\\mathbit𝐖a𝐖"]              # 0x1d482
- - "𝒃": [t: "\\mathbit𝐖b𝐖"]              # 0x1d483
- - "𝒄": [t: "\\mathbit𝐖c𝐖"]              # 0x1d484
- - "𝒅": [t: "\\mathbit𝐖d𝐖"]              # 0x1d485
- - "𝒆": [t: "\\mathbit𝐖e𝐖"]              # 0x1d486
- - "𝒇": [t: "\\mathbit𝐖f𝐖"]              # 0x1d487
- - "𝒈": [t: "\\mathbit𝐖g𝐖"]              # 0x1d488
- - "𝒉": [t: "\\mathbit𝐖h𝐖"]              # 0x1d489
- - "𝒊": [t: "\\mathbit𝐖i𝐖"]              # 0x1d48a
- - "𝒋": [t: "\\mathbit𝐖j𝐖"]              # 0x1d48b
- - "𝒌": [t: "\\mathbit𝐖k𝐖"]              # 0x1d48c
- - "𝒍": [t: "\\mathbit𝐖l𝐖"]              # 0x1d48d
- - "𝒎": [t: "\\mathbit𝐖m𝐖"]              # 0x1d48e
- - "𝒏": [t: "\\mathbit𝐖n𝐖"]              # 0x1d48f
- - "𝒐": [t: "\\mathbit𝐖o𝐖"]              # 0x1d490
- - "𝒑": [t: "\\mathbit𝐖p𝐖"]              # 0x1d491
- - "𝒒": [t: "\\mathbit𝐖q𝐖"]              # 0x1d492
- - "𝒓": [t: "\\mathbit𝐖r𝐖"]              # 0x1d493
- - "𝒔": [t: "\\mathbit𝐖s𝐖"]              # 0x1d494
- - "𝒕": [t: "\\mathbit𝐖t𝐖"]              # 0x1d495
- - "𝒖": [t: "\\mathbit𝐖u𝐖"]              # 0x1d496
- - "𝒗": [t: "\\mathbit𝐖v𝐖"]              # 0x1d497
- - "𝒘": [t: "\\mathbit𝐖w𝐖"]              # 0x1d498
- - "𝒙": [t: "\\mathbit𝐖x𝐖"]              # 0x1d499
- - "𝒚": [t: "\\mathbit𝐖y𝐖"]              # 0x1d49a
- - "𝒛": [t: "\\mathbit𝐖z𝐖"]              # 0x1d49b
- - "𝒜": [t: "\\mathscr𝐖A𝐖"]              # 0x1d49c
- - "𝒞": [t: "\\mathscr𝐖C𝐖"]              # 0x1d49e
- - "𝒟": [t: "\\mathscr𝐖D𝐖"]              # 0x1d49f
- - "𝒢": [t: "\\mathscr𝐖G𝐖"]              # 0x1d4a2
- - "𝒥": [t: "\\mathscr𝐖J𝐖"]              # 0x1d4a5
- - "𝒦": [t: "\\mathscr𝐖K𝐖"]              # 0x1d4a6
- - "𝒩": [t: "\\mathscr𝐖N𝐖"]              # 0x1d4a9
+ - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
+     - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝑎-𝑔":    # 0x1d44e - 0x1d454
+     - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔', 'abcdefg')"
+
+# Note: Missing h in original file, should it be here? #0x1d455
+
+ - "𝑖-𝑧":    # 0x1d456 - 0x1d467
+     - spell: "translate('.', '𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'ijklmnopqrstuvwxyz')"
+
+ - "𝑨-𝒁":    # 0x1d468 - 0x1d481
+     - tc: "\\mathbit𝐖;𝐖"
+     - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
+     - tc: "\\mathbit𝐖;𝐖"
+     - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝒜-𝒩":    # 0x1d49c - 0x1d4b5
+     - tc: "\\mathscr𝐖;𝐖"
+     - spell: "translate('.', '𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩', 'ABCDEFGHIJKLMN')"
+
+ - "𝒬-𝒵":    # 0x1d49c - 0x1d4b5
+     - tc: "\\mathscr𝐖;𝐖"
+     - spell: "translate('.', '𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'QRSTUVWXYZ')"
+
  - "𝒪": [t: "\\mathcal𝐖O𝐖"]              # 0x1d4aa
  - "𝒫": [t: "\\mathcal𝐖P𝐖"]              # 0x1d4ab
- - "𝒬": [t: "\\mathscr𝐖Q𝐖"]              # 0x1d4ac
- - "𝒮": [t: "\\mathscr𝐖S𝐖"]              # 0x1d4ae
- - "𝒯": [t: "\\mathscr𝐖T𝐖"]              # 0x1d4af
- - "𝒰": [t: "\\mathscr𝐖U𝐖"]              # 0x1d4b0
- - "𝒱": [t: "\\mathscr𝐖V𝐖"]              # 0x1d4b1
- - "𝒲": [t: "\\mathscr𝐖W𝐖"]              # 0x1d4b2
- - "𝒳": [t: "\\mathscr𝐖X𝐖"]              # 0x1d4b3
- - "𝒴": [t: "\\mathscr𝐖Y𝐖"]              # 0x1d4b4
- - "𝒵": [t: "\\mathscr𝐖Z𝐖"]              # 0x1d4b5
- - "𝒶": [t: "\\mathscr𝐖a𝐖"]              # 0x1d4b6
- - "𝒷": [t: "\\mathscr𝐖b𝐖"]              # 0x1d4b7
- - "𝒸": [t: "\\mathscr𝐖c𝐖"]              # 0x1d4b8
- - "𝒹": [t: "\\mathscr𝐖d𝐖"]              # 0x1d4b9
- - "𝒻": [t: "\\mathscr𝐖f𝐖"]              # 0x1d4bb
- - "𝒽": [t: "\\mathscr𝐖h𝐖"]              # 0x1d4bd
- - "𝒾": [t: "\\mathscr𝐖i𝐖"]              # 0x1d4be
- - "𝒿": [t: "\\mathscr𝐖j𝐖"]              # 0x1d4bf
- - "𝓀": [t: "\\mathscr𝐖k𝐖"]              # 0x1d4c0
- - "𝓁": [t: "\\mathscr𝐖l𝐖"]              # 0x1d4c1
- - "𝓂": [t: "\\mathscr𝐖m𝐖"]              # 0x1d4c2
- - "𝓃": [t: "\\mathscr𝐖n𝐖"]              # 0x1d4c3
- - "𝓅": [t: "\\mathscr𝐖p𝐖"]              # 0x1d4c5
- - "𝓆": [t: "\\mathscr𝐖q𝐖"]              # 0x1d4c6
- - "𝓇": [t: "\\mathscr𝐖r𝐖"]              # 0x1d4c7
- - "𝓈": [t: "\\mathscr𝐖s𝐖"]              # 0x1d4c8
- - "𝓉": [t: "\\mathscr𝐖t𝐖"]              # 0x1d4c9
- - "𝓊": [t: "\\mathscr𝐖u𝐖"]              # 0x1d4ca
- - "𝓋": [t: "\\mathscr𝐖v𝐖"]              # 0x1d4cb
- - "𝓌": [t: "\\mathscr𝐖w𝐖"]              # 0x1d4cc
- - "𝓍": [t: "\\mathscr𝐖x𝐖"]              # 0x1d4cd
- - "𝓎": [t: "\\mathscr𝐖y𝐖"]              # 0x1d4ce
- - "𝓏": [t: "\\mathscr𝐖z𝐖"]              # 0x1d4cf
- - "𝓐": [t: "\\mathbcal𝐖A𝐖"]             # 0x1d4d0
- - "𝓑": [t: "\\mathbcal𝐖B𝐖"]             # 0x1d4d1
- - "𝓒": [t: "\\mathbcal𝐖C𝐖"]             # 0x1d4d2
- - "𝓓": [t: "\\mathbcal𝐖D𝐖"]             # 0x1d4d3
- - "𝓔": [t: "\\mathbcal𝐖E𝐖"]             # 0x1d4d4
- - "𝓕": [t: "\\mathbcal𝐖F𝐖"]             # 0x1d4d5
- - "𝓖": [t: "\\mathbcal𝐖G𝐖"]             # 0x1d4d6
- - "𝓗": [t: "\\mathbcal𝐖H𝐖"]             # 0x1d4d7
- - "𝓘": [t: "\\mathbcal𝐖I𝐖"]             # 0x1d4d8
- - "𝓙": [t: "\\mathbcal𝐖J𝐖"]             # 0x1d4d9
- - "𝓚": [t: "\\mathbcal𝐖K𝐖"]             # 0x1d4da
- - "𝓛": [t: "\\mathbcal𝐖L𝐖"]             # 0x1d4db
- - "𝓜": [t: "\\mathbcal𝐖M𝐖"]             # 0x1d4dc
- - "𝓝": [t: "\\mathbcal𝐖N𝐖"]             # 0x1d4dd
- - "𝓞": [t: "\\mathbcal𝐖O𝐖"]             # 0x1d4de
- - "𝓟": [t: "\\mathbcal𝐖P𝐖"]             # 0x1d4df
- - "𝓠": [t: "\\mathbcal𝐖Q𝐖"]             # 0x1d4e0
- - "𝓡": [t: "\\mathbcal𝐖R𝐖"]             # 0x1d4e1
- - "𝓢": [t: "\\mathbcal𝐖S𝐖"]             # 0x1d4e2
- - "𝓣": [t: "\\mathbcal𝐖T𝐖"]             # 0x1d4e3
- - "𝓤": [t: "\\mathbcal𝐖U𝐖"]             # 0x1d4e4
- - "𝓥": [t: "\\mathbcal𝐖V𝐖"]             # 0x1d4e5
- - "𝓦": [t: "\\mathbcal𝐖W𝐖"]             # 0x1d4e6
- - "𝓧": [t: "\\mathbcal𝐖X𝐖"]             # 0x1d4e7
- - "𝓨": [t: "\\mathbcal𝐖Y𝐖"]             # 0x1d4e8
- - "𝓩": [t: "\\mathbcal𝐖Z𝐖"]             # 0x1d4e9
- - "𝓪": [t: "\\mathbcal𝐖a𝐖"]             # 0x1d4ea
- - "𝓫": [t: "\\mathbcal𝐖b𝐖"]             # 0x1d4eb
- - "𝓬": [t: "\\mathbcal𝐖c𝐖"]             # 0x1d4ec
- - "𝓭": [t: "\\mathbcal𝐖d𝐖"]             # 0x1d4ed
- - "𝓮": [t: "\\mathbcal𝐖e𝐖"]             # 0x1d4ee
- - "𝓯": [t: "\\mathbcal𝐖f𝐖"]             # 0x1d4ef
- - "𝓰": [t: "\\mathbcal𝐖g𝐖"]             # 0x1d4f0
- - "𝓱": [t: "\\mathbcal𝐖h𝐖"]             # 0x1d4f1
- - "𝓲": [t: "\\mathbcal𝐖i𝐖"]             # 0x1d4f2
- - "𝓳": [t: "\\mathbcal𝐖j𝐖"]             # 0x1d4f3
- - "𝓴": [t: "\\mathbcal𝐖k𝐖"]             # 0x1d4f4
- - "𝓵": [t: "\\mathbcal𝐖l𝐖"]             # 0x1d4f5
- - "𝓶": [t: "\\mathbcal𝐖m𝐖"]             # 0x1d4f6
- - "𝓷": [t: "\\mathbcal𝐖n𝐖"]             # 0x1d4f7
- - "𝓸": [t: "\\mathbcal𝐖o𝐖"]             # 0x1d4f8
- - "𝓹": [t: "\\mathbcal𝐖p𝐖"]             # 0x1d4f9
- - "𝓺": [t: "\\mathbcal𝐖q𝐖"]             # 0x1d4fa
- - "𝓻": [t: "\\mathbcal𝐖r𝐖"]             # 0x1d4fb
- - "𝓼": [t: "\\mathbcal𝐖s𝐖"]             # 0x1d4fc
- - "𝓽": [t: "\\mathbcal𝐖t𝐖"]             # 0x1d4fd
- - "𝓾": [t: "\\mathbcal𝐖u𝐖"]             # 0x1d4fe
- - "𝓿": [t: "\\mathbcal𝐖v𝐖"]             # 0x1d4ff
- - "𝔀": [t: "\\mathbcal𝐖w𝐖"]             # 0x1d500
- - "𝔁": [t: "\\mathbcal𝐖x𝐖"]             # 0x1d501
- - "𝔂": [t: "\\mathbcal𝐖y𝐖"]             # 0x1d502
- - "𝔃": [t: "\\mathbcal𝐖z𝐖"]             # 0x1d503
+
+ - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
+     - tc: "\\mathscr𝐖;𝐖"
+     - spell: "translate('.', '𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+
+ - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
+     - tc: "\\mathbcal𝐖;𝐖"
+     - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+ - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
+     - tc: "\\mathbcal𝐖;𝐖"
+     - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+
  - "𝔄": [t: "\\mathfrak𝐖A𝐖"]             # 0x1d504
  - "𝔅": [t: "\\mathfrak𝐖B𝐖"]             # 0x1d505
  - "𝔇": [t: "\\mathfrak𝐖D𝐖"]             # 0x1d507
