@@ -116,7 +116,7 @@ fn normal_ln() -> Result<()> {
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "l n av; startparentes; x pluss y; sluttparentes")?;
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "den naturlige logaritmen av; startparentes; x pluss y; sluttparentes")?;
+                expr, "l n av; startparentes; x pluss y; sluttparentes")?;
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")],
                 expr, "den naturlige logaritmen av; startparentes; x pluss y; sluttparentes")?;
                 return Ok(());

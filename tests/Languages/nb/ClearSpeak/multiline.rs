@@ -138,7 +138,7 @@ fn equation_none() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("nb", "ClearSpeak_MultiLineLabel", "None", expr,
-        "2; x pluss y er lik 7; 2 x pluss 3 y; er lik 17")?;
+        "2 rader; x pluss y er lik 7; 2 x pluss 3 y; er lik 17")?;
     return Ok(());
 }
 
