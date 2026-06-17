@@ -1,9 +1,10 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn modified_vars() {
+fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
         <mover> <mi>b</mi> <mo>~</mo> </mover>
@@ -19,11 +20,13 @@ fn modified_vars() {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("sv", "SimpleSpeak", expr, 
-        "a grav accent, b tilde, c hake, b hake, c grav accent; plus; x prick, y prick, z prick prick, u trippel prick; v fyra prickar; plus x hatt, plus vektorn t");
+        "a grav accent, b tilde, c hake, b hake, c grav accent; plus; x prick, y prick, z prick prick, u trippel prick; v fyra prickar; plus x hatt, plus vektorn t")?;
+        return Ok(());
+
 }
 
 #[test]
-fn limit() {
+fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -36,11 +39,13 @@ fn limit() {
             </mfrac>
             </mrow>
         </math>";
-    test("sv", "SimpleSpeak", expr, "gränsvärdet då x går mot 0, av, division, sinus av x, genom x, slut division");
+    test("sv", "SimpleSpeak", expr, "gränsvärdet då x går mot 0, av, division, sinus av x, genom x, slut division")?;
+    return Ok(());
+
 }
 
 #[test]
-fn limit_from_below() {
+fn limit_from_below() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -50,71 +55,89 @@ fn limit_from_below() {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("sv", "SimpleSpeak", expr, "gränsvärdet då x går vänsterifrån mot 0, av sinus av x");
+    test("sv", "SimpleSpeak", expr, "gränsvärdet då x går vänsterifrån mot 0, av sinus av x")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn binomial_mmultiscripts() {
+fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("sv", "SimpleSpeak", expr, "n över m");
+    test("sv", "SimpleSpeak", expr, "n över m")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn permutation_mmultiscripts() {
+fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n");
+    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_mmultiscripts_sup() {
+fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n");
+    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_msubsup() {
+fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n");
+    test("sv", "SimpleSpeak", expr, "antalet permutationer av k element ur n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn tensor_mmultiscripts() {
+fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l");
+            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l")?;
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l");
+            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l")?;
+            return Ok(());
+
 }
 
 #[test]
-fn huge_num_mmultiscripts() {
+fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "versal r med 4 vänster index, nedsänkt versal i, upphöjt versal j och resterande vänster index versal k none versal l none slut vänster index och med 5 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l och resterande höger index m none slut index");
+            "versal r med 4 vänster index, nedsänkt versal i, upphöjt versal j och resterande vänster index versal k none versal l none slut vänster index och med 5 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l och resterande höger index m none slut index")?;
+            return Ok(());
+
 }
 
 #[test]
-fn prime() {
+fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
-    test("sv", "SimpleSpeak", expr, "x prim");
+    test("sv", "SimpleSpeak", expr, "x prim")?;
+    return Ok(());
+
 }
 
 #[test]
-fn given() {
+fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("sv", "SimpleSpeak", expr, "versal p; vänster-parentes; versal a givet versal b; höger-parentes");
-    test("sv", "ClearSpeak", expr,  "versal p; vänster-parentes; versal a givet versal b; höger-parentes");
+    test("sv", "SimpleSpeak", expr, "versal p; vänster-parentes; versal a givet versal b; höger-parentes")?;
+    test("sv", "ClearSpeak", expr,  "versal p; vänster-parentes; versal a givet versal b; höger-parentes")?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_msubsup() {
+fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>
             <msubsup>
@@ -128,18 +151,22 @@ fn simple_msubsup() {
             </msubsup>
             </mstyle>
         </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i");
+    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn non_simple_msubsup() {
+fn non_simple_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-    test("sv", "SimpleSpeak", expr, "i nedsänkt j minus 2 slut nedsänkt, upphöjt till k");
-    test("sv", "ClearSpeak", expr, "i nedsänkt j minus 2 slut nedsänkt, upphöjt till k");
+    test("sv", "SimpleSpeak", expr, "i nedsänkt j minus 2 slut nedsänkt, upphöjt till k")?;
+    test("sv", "ClearSpeak", expr, "i nedsänkt j minus 2 slut nedsänkt, upphöjt till k")?;
+    return Ok(());
+
 }
 
 #[test]
-fn presentation_mathml_in_semantics() {
+fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
         <semantics>
             <annotation encoding='application/x-tex'>{\\displaystyle x_k^i}</annotation>
@@ -156,11 +183,13 @@ fn presentation_mathml_in_semantics() {
             </annotation-xml>
         </semantics>
     </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i");
+    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_period() {
+fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <semantics>
@@ -200,17 +229,21 @@ fn ignore_period() {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("sv", "SimpleSpeak", expr, "versal p; vänster-parentes; versal a and versal b; höger-parentes; lika med; versal p; vänster-parentes; versal a snittet versal b; höger-parentes; lika med; versal p av versal a, versal p av versal b");
+    test("sv", "SimpleSpeak", expr, "versal p; vänster-parentes; versal a and versal b; höger-parentes; lika med; versal p; vänster-parentes; versal a snittet versal b; höger-parentes; lika med; versal p av versal a, versal p av versal b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_mtext_period() {
+fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
-    test("sv", "SimpleSpeak", expr, "mängden 2");
+    test("sv", "SimpleSpeak", expr, "mängden 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_comma() {
+fn ignore_comma() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <mrow>
@@ -243,12 +276,14 @@ fn ignore_comma() {
       </mstyle>
     </mrow>
 </math>";
-    test("sv", "SimpleSpeak", expr, "fi av x lika med; c gånger, e upphöjt till minus h kvadrat x kvadrat");
+    test("sv", "SimpleSpeak", expr, "fi av x lika med; c gånger, e upphöjt till minus h kvadrat x kvadrat")?;
+    return Ok(());
+
 }
 
 #[test]
 #[ignore] // issue #14
-fn ignore_period_and_space() {
+fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
       <mrow>
@@ -283,18 +318,24 @@ fn ignore_period_and_space() {
         </mstyle>
       </mrow>
 </math>";
-    test("sv", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power");
+    test("sv", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mn_with_space() {
+fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
-  test_prefs("sv", "SimpleSpeak", vec![("DecimalSeparators",","), ("BlockSeparators", " .")], expr, "1234567");
+  test_prefs("sv", "SimpleSpeak", vec![("DecimalSeparators",","), ("BlockSeparators", " .")], expr, "1234567")?;
+  return Ok(());
+
 }
 
 #[test]
-fn mn_with_block_and_decimal_separators() {
+fn mn_with_block_and_decimal_separators() -> Result<()> {
   let expr = "<math><mn>1.234,56</mn></math>";                                       // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", ","), ("BlockSeparators", " .")], expr, "1234,56");
+  test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", ","), ("BlockSeparators", " .")], expr, "1234,56")?;
+  return Ok(());
+
 }

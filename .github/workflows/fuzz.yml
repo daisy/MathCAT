@@ -1,0 +1,94 @@
+# Fuzzing on Linux (libFuzzer). Uses fuzz/mathml.dict for structured MathML tokens.
+# Corpus is cached between runs so libFuzzer can accumulate interesting inputs over time.
+# Crash artifacts are uploaded on failure for reproduction and regression test generation.
+name: Fuzz
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Weekly long run (1 hour per configuration); corpus is cached between runs.
+    - cron: "0 12 * * 1"
+
+# Paths are relative to the repo root (cache / mkdir). The fuzz crate lives in fuzz/.
+env:
+  FUZZ_CORPUS_ROOT: fuzz/corpus/fuzz_target_1
+
+jobs:
+  fuzz:
+    name: Build and fuzz (with MathML dict + corpus cache)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Ensure corpus directory exists
+        run: mkdir -p "${{ env.FUZZ_CORPUS_ROOT }}"
+
+      # Restore latest corpus; unique key each run so we always save an updated snapshot after fuzzing.
+      - name: Restore fuzz corpus
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.FUZZ_CORPUS_ROOT }}
+          key: fuzz-corpus-fuzz_target_1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            fuzz-corpus-fuzz_target_1-${{ runner.os }}-
+
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          # rust-src: cargo-fuzz defaults to -Z build-std for sanitizer builds
+          components: rust-src
+
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz
+
+      - name: Set fuzz duration (weekly = 1h, manual = 30m, else smoke = 60s)
+        id: fuzztime
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "seconds=3600" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "seconds=1800" >> "$GITHUB_OUTPUT"
+          else
+            echo "seconds=60" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build fuzz target (default)
+        working-directory: fuzz
+        run: cargo fuzz build fuzz_target_1
+
+      # - name: Build fuzz target (no-unsafe)
+      #   working-directory: fuzz
+      #   run: cargo fuzz build --features no-unsafe fuzz_target_1
+
+      # Corpus path is relative to the fuzz crate directory (matches default cargo-fuzz layout).
+      - name: Fuzz (default, dictionary + corpus)
+        working-directory: fuzz
+        run: >-
+          cargo fuzz run fuzz_target_1 corpus/fuzz_target_1 --
+          -max_total_time=${{ steps.fuzztime.outputs.seconds }}
+          -dict=mathml.dict
+
+      # - name: Fuzz (no-unsafe, dictionary + corpus)
+      #   working-directory: fuzz
+      #   run: >-
+      #     cargo fuzz run --features no-unsafe fuzz_target_1 corpus/fuzz_target_1 --
+      #     -max_total_time=${{ steps.fuzztime.outputs.seconds }}
+      #     -dict=mathml.dict
+
+      # --- Crash artifact upload (on failure) ---
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: fuzz-crash-artifacts
+          path: fuzz/artifacts/
+          retention-days: 90
+          if-no-files-found: ignore
+
+      # --- Corpus minimization (weekly only, after successful fuzzing) ---
+      - name: Minimize corpus
+        if: github.event_name == 'schedule'
+        working-directory: fuzz
+        run: |
+          cargo fuzz cmin fuzz_target_1 corpus/fuzz_target_1 -- -dict=mathml.dict

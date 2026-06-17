@@ -1,9 +1,10 @@
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn modified_vars() {
+fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
         <mover> <mi>b</mi> <mo>~</mo> </mover>
@@ -19,11 +20,13 @@ fn modified_vars() {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("fi", "SimpleSpeak", expr, 
-        "a gravis, b tilde, c lyhyysmerkki, b hattu, c gravis; plus; x piste, y piste, z piste piste, u kolmoispiste, v nelinkertainen piste; plus x hattu, plus vektori t");
+        "a gravis, b tilde, c lyhyysmerkki, b hattu, c gravis; plus; x piste, y piste, z piste piste, u kolmoispiste, v nelinkertainen piste; plus x hattu, plus vektori t")?;
+        return Ok(());
+
 }
 
 #[test]
-fn limit() {
+fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -36,11 +39,13 @@ fn limit() {
             </mfrac>
             </mrow>
         </math>";
-    test("fi", "SimpleSpeak", expr, "raja-arvo kun x lähestyy 0; arvolla, murtoluku, sini arvolla x, per x, loppu murtoluku");
+    test("fi", "SimpleSpeak", expr, "raja-arvo kun x lähestyy 0; arvolla, murtoluku, sini arvolla x, per x, loppu murtoluku")?;
+    return Ok(());
+
 }
 
 #[test]
-fn limit_from_below() {
+fn limit_from_below() -> Result<()> {
     let expr = "<math>
             <munder>
             <mo>lim</mo>
@@ -50,71 +55,89 @@ fn limit_from_below() {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("fi", "SimpleSpeak", expr, "raja-arvo kun x lähestyy alhaalta 0; arvolla sini arvolla x");
+    test("fi", "SimpleSpeak", expr, "raja-arvo kun x lähestyy alhaalta 0; arvolla sini arvolla x")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn binomial_mmultiscripts() {
+fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("fi", "SimpleSpeak", expr, "n yli m");
+    test("fi", "SimpleSpeak", expr, "n yli m")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn permutation_mmultiscripts() {
+fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("fi", "SimpleSpeak", expr, "k permutaatio n");
+    test("fi", "SimpleSpeak", expr, "k permutaatio n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_mmultiscripts_sup() {
+fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("fi", "SimpleSpeak", expr, "k permutaatio n");
+    test("fi", "SimpleSpeak", expr, "k permutaatio n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn permutation_msubsup() {
+fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("fi", "SimpleSpeak", expr, "k permutaatio n");
+    test("fi", "SimpleSpeak", expr, "k permutaatio n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn tensor_mmultiscripts() {
+fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "iso r jolla on 4 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l");
+            "iso r jolla on 4 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l")?;
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "iso r jolla on 4 jälkikirjoitusta, ala i ylä j ala k ala l");
+            "iso r jolla on 4 jälkikirjoitusta, ala i ylä j ala k ala l")?;
+            return Ok(());
+
 }
 
 #[test]
-fn huge_num_mmultiscripts() {
+fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "iso r 4 etumäärettä, etualaindeksi iso i, etuyläindeksi iso j ja vaihtelevat etumääreet iso k none iso l none loppu etumääreet ja jolla on 5 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l ja vaihtelevia määreitä m none loppu määreet");
+            "iso r 4 etumäärettä, etualaindeksi iso i, etuyläindeksi iso j ja vaihtelevat etumääreet iso k none iso l none loppu etumääreet ja jolla on 5 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l ja vaihtelevia määreitä m none loppu määreet")?;
+            return Ok(());
+
 }
 
 #[test]
-fn prime() {
+fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
-    test("fi", "SimpleSpeak", expr, "x pilkku");
+    test("fi", "SimpleSpeak", expr, "x pilkku")?;
+    return Ok(());
+
 }
 
 #[test]
-fn given() {
+fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("fi", "SimpleSpeak", expr, "iso p, auki sulku, iso a ehdolla iso b, kiinni sulku");
-    test("fi", "ClearSpeak", expr,  "iso p, auki sulku, iso a ehdolla iso b, kiinni sulku");
+    test("fi", "SimpleSpeak", expr, "iso p, auki sulku, iso a ehdolla iso b, kiinni sulku")?;
+    test("fi", "ClearSpeak", expr,  "iso p, auki sulku, iso a ehdolla iso b, kiinni sulku")?;
+    return Ok(());
+
 }
 
 #[test]
-fn simple_msubsup() {
+fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>
             <msubsup>
@@ -128,18 +151,22 @@ fn simple_msubsup() {
             </msubsup>
             </mstyle>
         </math>";
-    test("fi", "ClearSpeak", expr, "x ala k potenssiin i");
+    test("fi", "ClearSpeak", expr, "x ala k potenssiin i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn non_simple_msubsup() {
+fn non_simple_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-    test("fi", "SimpleSpeak", expr, "i ala j miinus 2 loppu ala, potenssiin k");
-    test("fi", "ClearSpeak", expr, "i ala j miinus 2 loppu ala, potenssiin k");
+    test("fi", "SimpleSpeak", expr, "i ala j miinus 2 loppu ala, potenssiin k")?;
+    test("fi", "ClearSpeak", expr, "i ala j miinus 2 loppu ala, potenssiin k")?;
+    return Ok(());
+
 }
 
 #[test]
-fn presentation_mathml_in_semantics() {
+fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
         <semantics>
             <annotation encoding='application/x-tex'>{\\displaystyle x_k^i}</annotation>
@@ -156,11 +183,13 @@ fn presentation_mathml_in_semantics() {
             </annotation-xml>
         </semantics>
     </math>";
-    test("fi", "ClearSpeak", expr, "x ala k potenssiin i");
+    test("fi", "ClearSpeak", expr, "x ala k potenssiin i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_period() {
+fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <semantics>
@@ -200,17 +229,21 @@ fn ignore_period() {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("fi", "SimpleSpeak", expr, "iso p; auki sulku, iso a and iso b; kiinni sulku; on yhtä suuri kuin; iso p, auki sulku, iso a leikkaus iso b, kiinni sulku; on yhtä suuri kuin; iso p arvolla iso a; iso p arvolla iso b");
+    test("fi", "SimpleSpeak", expr, "iso p; auki sulku, iso a and iso b; kiinni sulku; on yhtä suuri kuin; iso p, auki sulku, iso a leikkaus iso b, kiinni sulku; on yhtä suuri kuin; iso p arvolla iso a; iso p arvolla iso b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_mtext_period() {
+fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
-    test("fi", "SimpleSpeak", expr, "joukko 2");
+    test("fi", "SimpleSpeak", expr, "joukko 2")?;
+    return Ok(());
+
 }
 
 #[test]
-fn ignore_comma() {
+fn ignore_comma() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
     <mrow>
@@ -243,12 +276,14 @@ fn ignore_comma() {
       </mstyle>
     </mrow>
 </math>";
-    test("fi", "SimpleSpeak", expr, "suora fii arvolla x, on yhtä suuri kuin; c kertaa, e potenssiin negatiivinen h toiseen, x toiseen");
+    test("fi", "SimpleSpeak", expr, "suora fii arvolla x, on yhtä suuri kuin; c kertaa, e potenssiin negatiivinen h toiseen, x toiseen")?;
+    return Ok(());
+
 }
 
 #[test]
 #[ignore] // issue #14
-fn ignore_period_and_space() {
+fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
       <mrow>
@@ -283,20 +318,24 @@ fn ignore_period_and_space() {
         </mstyle>
       </mrow>
 </math>";
-    test("fi", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power");
+    test("fi", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn mn_with_space() {
+fn mn_with_space() -> Result<()> {
     let expr = "<math><mn>1 234 567</mn></math>";
-    test("fi", "SimpleSpeak", expr, "1234567");
+    test("fi", "SimpleSpeak", expr, "1234567")?;
+    return Ok(());
+
 }
 
 /// Tests for expressions that appear in the Finnish matriculation exams (FinME)
 
 #[test]
-fn FinME_difference_quotinent() {
+fn FinME_difference_quotinent() -> Result<()> {
   let expr = "<math>
   <mrow>
     <mrow>
@@ -370,12 +409,14 @@ fn FinME_difference_quotinent() {
     </mfrac>
   </mrow>
 </math>";
-test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h");
-test("fi", "SimpleSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku, f arvolla x, miinus f arvolla a, per, x miinus a, loppu murtoluku; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku, f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a, per h, loppu murtoluku");
+test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h")?;
+test("fi", "SimpleSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku, f arvolla x, miinus f arvolla a, per, x miinus a, loppu murtoluku; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku, f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a, per h, loppu murtoluku")?;
+return Ok(());
+
 }
 
 #[test]
-fn FinME_Quadratic_equation() {
+fn FinME_Quadratic_equation() -> Result<()> {
     let expr ="<math>
     <mi>x</mi>
     <mo>=</mo>
@@ -402,12 +443,14 @@ fn FinME_Quadratic_equation() {
     </mfrac>
   </math>
   ";
-    test("fi", "ClearSpeak", expr ,"x on yhtä suuri kuin; murtoluku osoittaja; negatiivinen b plus-miinus; neliöjuuri b toiseen miinus 4 a b; ja nimittäjä 2 a");
-    test("fi", "SimpleSpeak", expr, "x on yhtä suuri kuin; murtoluku, negatiivinen b plus-miinus; neliöjuuri b toiseen miinus 4 a b loppu juuri; per, 2 a, loppu murtoluku")
+    test("fi", "ClearSpeak", expr ,"x on yhtä suuri kuin; murtoluku osoittaja; negatiivinen b plus-miinus; neliöjuuri b toiseen miinus 4 a b; ja nimittäjä 2 a")?;
+    test("fi", "SimpleSpeak", expr, "x on yhtä suuri kuin; murtoluku, negatiivinen b plus-miinus; neliöjuuri b toiseen miinus 4 a b loppu juuri; per, 2 a, loppu murtoluku")?;
+    return Ok(());
+
 }
 
 #[test]
-fn FinME_normal_distribution_e() {
+fn FinME_normal_distribution_e() -> Result<()> {
     let expr = "<math>
     <mrow>
       <msup>
@@ -441,12 +484,14 @@ fn FinME_normal_distribution_e() {
       </msup>
     </mrow>
   </math>";
-  test("fi", "ClearSpeak", expr, "e potenssiin, negatiivinen 1 kahdesosa, kertaa; auki sulku; murtoluku osoittaja; x miinus myy; ja nimittäjä sigma; kiinni sulku toiseen, loppu potenssi");
-  test("fi", "SimpleSpeak", expr, "e potenssiin negatiivinen 1 kahdesosa, kertaa; auki sulku; murtoluku, x miinus myy, per sigma, loppu murtoluku; kiinni sulku toiseen");
+  test("fi", "ClearSpeak", expr, "e potenssiin, negatiivinen 1 kahdesosa, kertaa; auki sulku; murtoluku osoittaja; x miinus myy; ja nimittäjä sigma; kiinni sulku toiseen, loppu potenssi")?;
+  test("fi", "SimpleSpeak", expr, "e potenssiin negatiivinen 1 kahdesosa, kertaa; auki sulku; murtoluku, x miinus myy, per sigma, loppu murtoluku; kiinni sulku toiseen")?;
+  return Ok(());
+
 }
 
 #[test]
-fn FinME_triangle_inequality() {
+fn FinME_triangle_inequality() -> Result<()> {
     let expr = "<math>
     <mo>|</mo>
     <mrow>
@@ -475,12 +520,14 @@ fn FinME_triangle_inequality() {
     <mo>|</mo>
   </math>
     ";
-    test("fi", "ClearSpeak", expr, "itseisarvo itseisarvo a, miinus itseisarvo b; on pienempi tai yhtä suuri kuin; itseisarvo a plus b; on pienempi tai yhtä suuri kuin; itseisarvo a, plus itseisarvo b");
-    test("fi", "SimpleSpeak", expr, "itseisarvo itseisarvo a, miinus itseisarvo b; loppu itseisarvo; on pienempi tai yhtä suuri kuin; itseisarvo a plus b, loppu itseisarvo; on pienempi tai yhtä suuri kuin; itseisarvo a, plus itseisarvo b");
+    test("fi", "ClearSpeak", expr, "itseisarvo itseisarvo a, miinus itseisarvo b; on pienempi tai yhtä suuri kuin; itseisarvo a plus b; on pienempi tai yhtä suuri kuin; itseisarvo a, plus itseisarvo b")?;
+    test("fi", "SimpleSpeak", expr, "itseisarvo itseisarvo a, miinus itseisarvo b; loppu itseisarvo; on pienempi tai yhtä suuri kuin; itseisarvo a plus b, loppu itseisarvo; on pienempi tai yhtä suuri kuin; itseisarvo a, plus itseisarvo b")?;
+    return Ok(());
+
 }
 
 #[test]
-fn FinME_arithmetic_sum() {
+fn FinME_arithmetic_sum() -> Result<()> {
     let expr="<math>
     <msub>
       <mi>a</mi>
@@ -519,12 +566,14 @@ fn FinME_arithmetic_sum() {
     </mrow>
   </math>
     ";
-    test("fi", "ClearSpeak", expr, "a ala 1 plus a ala 2 plus piste piste piste plus a ala n; on yhtä suuri kuin; n; murtoluku osoittaja; a ala 1 plus a ala 2; ja nimittäjä 2");
-    test("fi", "SimpleSpeak", expr, "a ala 1 plus a ala 2 plus piste piste piste plus a ala n; on yhtä suuri kuin; n; murtoluku, a ala 1 plus a ala 2, per 2, loppu murtoluku")
+    test("fi", "ClearSpeak", expr, "a ala 1 plus a ala 2 plus piste piste piste plus a ala n; on yhtä suuri kuin; n; murtoluku osoittaja; a ala 1 plus a ala 2; ja nimittäjä 2")?;
+    test("fi", "SimpleSpeak", expr, "a ala 1 plus a ala 2 plus piste piste piste plus a ala n; on yhtä suuri kuin; n; murtoluku, a ala 1 plus a ala 2, per 2, loppu murtoluku")?;
+    return Ok(());
+
 }
 
 #[test]
-fn FinME_geometric_sum() {
+fn FinME_geometric_sum() -> Result<()> {
     let expr ="
     <math>
       <msub>
@@ -592,13 +641,15 @@ fn FinME_geometric_sum() {
       </mfrac>
     </math>
     ";
-    test("fi", "ClearSpeak", expr, "iso s ala n on yhtä suuri kuin; a ala 1 plus a ala 1 q plus a ala 1 q toiseen, plus piste piste piste plus, a ala 1 q potenssiin n miinus 1; on yhtä suuri kuin; a ala 1 kertaa; murtoluku osoittaja; 1 miinus q potenssiin n; ja nimittäjä 1 miinus q");
-    test("fi", "SimpleSpeak", expr, "iso s ala n on yhtä suuri kuin; a ala 1 plus a ala 1 q plus a ala 1 q toiseen, plus piste piste piste plus, a ala 1 kertaa q potenssiin n miinus 1; on yhtä suuri kuin; a ala 1 kertaa; murtoluku, 1 miinus q potenssiin n, per, 1 miinus q, loppu murtoluku")
+    test("fi", "ClearSpeak", expr, "iso s ala n on yhtä suuri kuin; a ala 1 plus a ala 1 q plus a ala 1 q toiseen, plus piste piste piste plus, a ala 1 q potenssiin n miinus 1; on yhtä suuri kuin; a ala 1 kertaa; murtoluku osoittaja; 1 miinus q potenssiin n; ja nimittäjä 1 miinus q")?;
+    test("fi", "SimpleSpeak", expr, "iso s ala n on yhtä suuri kuin; a ala 1 plus a ala 1 q plus a ala 1 q toiseen, plus piste piste piste plus, a ala 1 kertaa q potenssiin n miinus 1; on yhtä suuri kuin; a ala 1 kertaa; murtoluku, 1 miinus q potenssiin n, per, 1 miinus q, loppu murtoluku")?;
+    return Ok(());
+
 }
 
 
 #[test]
-fn FinME_absolute_value_defition() {
+fn FinME_absolute_value_defition() -> Result<()> {
     let expr ="<math>
     <mrow>
       <mo>|</mo>
@@ -630,12 +681,13 @@ fn FinME_absolute_value_defition() {
       </mrow>
     </mrow>
   </math>";
-  test("fi", "ClearSpeak", expr, "itseisarvo a; on yhtä suuri kuin; 2 tapausta; tapaus 1; a jos a; on suurempi tai yhtä suuri kuin 0; tapaus 2; negatiivinen a jos a; on pienempi kuin 0");
-  test("fi", "SimpleSpeak", expr, "itseisarvo a; on yhtä suuri kuin; 2 tapausta; tapaus 1; a jos a; on suurempi tai yhtä suuri kuin 0; tapaus 2; negatiivinen a jos a; on pienempi kuin 0")
+  test("fi", "ClearSpeak", expr, "itseisarvo a; on yhtä suuri kuin; 2 tapausta; tapaus 1; a jos a; on suurempi tai yhtä suuri kuin 0; tapaus 2; negatiivinen a jos a; on pienempi kuin 0")?;
+  test("fi", "SimpleSpeak", expr, "itseisarvo a; on yhtä suuri kuin; 2 tapausta; tapaus 1; a jos a; on suurempi tai yhtä suuri kuin 0; tapaus 2; negatiivinen a jos a; on pienempi kuin 0")?;
+  return Ok(());
 }
 
 #[test]
-fn FinME_mroot_msup_rule() {
+fn FinME_mroot_msup_rule() -> Result<()> {
     let expr = "<math>
     <mrow>
       <msup>
@@ -665,12 +717,13 @@ fn FinME_mroot_msup_rule() {
       </msup>
     </mrow>
   </math>";
-  test("fi", "ClearSpeak", expr, "a potenssiin m per n, on yhtä suuri kuin, nnes juuri a potenssiin m; on yhtä suuri kuin; auki sulku nnes juuri a; kiinni sulku potenssiin m");
-  test("fi", "SimpleSpeak", expr, "a potenssiin m per n; on yhtä suuri kuin, nnes juuri a potenssiin m loppu juuri; on yhtä suuri kuin; auki sulku nnes juuri a; kiinni sulku potenssiin m")
+  test("fi", "ClearSpeak", expr, "a potenssiin m per n, on yhtä suuri kuin, nnes juuri a potenssiin m; on yhtä suuri kuin; auki sulku nnes juuri a; kiinni sulku potenssiin m")?;
+  test("fi", "SimpleSpeak", expr, "a potenssiin m per n; on yhtä suuri kuin, nnes juuri a potenssiin m loppu juuri; on yhtä suuri kuin; auki sulku nnes juuri a; kiinni sulku potenssiin m")?;
+  return Ok(());
 }
 
 #[test]
-fn FinME_newton_binomial() {
+fn FinME_newton_binomial() -> Result<()> {
     let expr = "<math>
     <mrow>
       <msup>
@@ -761,12 +814,13 @@ fn FinME_newton_binomial() {
       </msup>
     </mrow>
   </math>";
-  test("fi", "ClearSpeak", expr, "auki sulku a plus b, kiinni sulku potenssiin n; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; n yli k a potenssiin n miinus k, b potenssiin k; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; murtoluku osoittaja; n kertoma; ja nimittäjä k kertoma, auki sulku n miinus k, kiinni sulku; kertoma; a potenssiin n miinus k, b potenssiin k");
-  test("fi", "SimpleSpeak", expr, "auki sulku a plus b, kiinni sulku potenssiin n; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; n yli k kertaa a potenssiin n miinus k, b potenssiin k; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; murtoluku, n kertoma, per, k kertoma, auki sulku n miinus k, kiinni sulku; kertoma, loppu murtoluku; kertaa a potenssiin n miinus k, b potenssiin k")
+  test("fi", "ClearSpeak", expr, "auki sulku a plus b, kiinni sulku potenssiin n; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; n yli k a potenssiin n miinus k, b potenssiin k; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; murtoluku osoittaja; n kertoma; ja nimittäjä k kertoma, auki sulku n miinus k, kiinni sulku; kertoma; a potenssiin n miinus k, b potenssiin k")?;
+  test("fi", "SimpleSpeak", expr, "auki sulku a plus b, kiinni sulku potenssiin n; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; n yli k kertaa a potenssiin n miinus k, b potenssiin k; on yhtä suuri kuin; summa käy, luvusta k on yhtä suuri kuin 0, lukuun n; murtoluku, n kertoma, per, k kertoma, auki sulku n miinus k, kiinni sulku; kertoma, loppu murtoluku; kertaa a potenssiin n miinus k, b potenssiin k")?;
+  return Ok(());
 }
 
 #[test]
-fn FinME_secant_algorithm() {
+fn FinME_secant_algorithm() -> Result<()> {
     let expr ="<math>
     <mrow>
       <msub>
@@ -838,12 +892,13 @@ fn FinME_secant_algorithm() {
       <mo>)</mo>
     </mrow>
   </math>";
-  test("fi", "ClearSpeak", expr, "x ala n plus 1 loppu ala; on yhtä suuri kuin; x ala n miinus; murtoluku osoittaja; x ala n miinus, x ala n miinus 1 loppu ala; ja nimittäjä f arvolla, auki sulku x ala n kiinni sulku; miinus; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; f arvolla, auki sulku x ala n kiinni sulku");
-  test("fi", "SimpleSpeak", expr, "x ala n plus 1 loppu ala; on yhtä suuri kuin; x ala n miinus; murtoluku, x ala n miinus, x ala n miinus 1 loppu ala; per, f arvolla, auki sulku x ala n kiinni sulku; miinus; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku, loppu murtoluku; f arvolla, auki sulku x ala n kiinni sulku");
+  test("fi", "ClearSpeak", expr, "x ala n plus 1 loppu ala; on yhtä suuri kuin; x ala n miinus; murtoluku osoittaja; x ala n miinus, x ala n miinus 1 loppu ala; ja nimittäjä f arvolla, auki sulku x ala n kiinni sulku; miinus; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; f arvolla, auki sulku x ala n kiinni sulku")?;
+  test("fi", "SimpleSpeak", expr, "x ala n plus 1 loppu ala; on yhtä suuri kuin; x ala n miinus; murtoluku, x ala n miinus, x ala n miinus 1 loppu ala; per, f arvolla, auki sulku x ala n kiinni sulku; miinus; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku, loppu murtoluku; f arvolla, auki sulku x ala n kiinni sulku")?;
+  return Ok(());
 }
 
 #[test]
-fn Fin_ME_law_of_sines() {
+fn Fin_ME_law_of_sines() -> Result<()> {
     let expr = "<math>
     <mfrac>
       <mi>a</mi>
@@ -872,366 +927,373 @@ fn Fin_ME_law_of_sines() {
       </mrow>
     </mfrac>
   </math>";
-  test("fi", "ClearSpeak", expr, "a per sini alfa, on yhtä suuri kuin, b per sini beeta, on yhtä suuri kuin, c per sini gamma");
-  test("fi", "SimpleSpeak", expr, "murtoluku, a per, sini arvolla alfa, loppu murtoluku; on yhtä suuri kuin; murtoluku, b per, sini arvolla beeta, loppu murtoluku; on yhtä suuri kuin; murtoluku, c per, sini arvolla gamma, loppu murtoluku");
+  test("fi", "ClearSpeak", expr, "a per sini alfa, on yhtä suuri kuin, b per sini beeta, on yhtä suuri kuin, c per sini gamma")?;
+  test("fi", "SimpleSpeak", expr, "murtoluku, a per, sini arvolla alfa, loppu murtoluku; on yhtä suuri kuin; murtoluku, b per, sini arvolla beeta, loppu murtoluku; on yhtä suuri kuin; murtoluku, c per, sini arvolla gamma, loppu murtoluku")?;
+  return Ok(());
 }
 
 #[test]
-fn FinME_vectors() {
-let expr = "<math>
-<mrow>
+fn FinME_vectors() -> Result<()> {
+  let expr = "<math>
   <mrow>
-    <mover>
-      <mi>v</mi>
-      <mo>→</mo>
-    </mover>
-  </mrow>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <msub>
-    <mi>x</mi>
-    <mn>1</mn>
-  </msub>
-  <mrow>
-    <mover>
-      <mi>i</mi>
-      <mo>→</mo>
-    </mover>
-  </mrow>
-  <mo>+</mo>
-</mrow>
-<mrow>
-  <msub>
-    <mi>y</mi>
-    <mn>1</mn>
-  </msub>
-  <mrow>
-    <mover>
-      <mi>j</mi>
-      <mo>→</mo>
-    </mover>
-  </mrow>
-</mrow>
-</math>";
-test("fi", "ClearSpeak", expr, "vektori v, on yhtä suuri kuin; x ala 1 vektori i; plus; y ala 1 vektori j");
-test("fi", "SimpleSpeak", expr, "vektori v, on yhtä suuri kuin; x ala 1 vektori i; plus; y ala 1 vektori j");
-}
-
-#[test]
-fn FinME_compound_derivate_rule() {
-let expr = "<math>
-<mrow>
-  <mrow>
-    <mi>D</mi>
+    <mrow>
+      <mover>
+        <mi>v</mi>
+        <mo>→</mo>
+      </mover>
+    </mrow>
+    <mo>=</mo>
   </mrow>
   <mrow>
-    <mo>(</mo>
-    <mi>g</mi>
-    <mo>∘</mo>
-    <mi>f</mi>
-    <mo>)</mo>
-  </mrow>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <mrow>
-    <mi>D</mi>
-  </mrow>
-  <mi>g</mi>
-  <mo>(</mo>
-  <mi>f</mi>
-  <mo>(</mo>
-  <mi>x</mi>
-  <mo>)</mo>
-  <mo>)</mo>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <msup>
-    <mi>g</mi>
-    <mo>′</mo>
-  </msup>
-  <mo>(</mo>
-  <mi>f</mi>
-  <mo>(</mo>
-  <mi>x</mi>
-  <mo>)</mo>
-  <mo>)</mo>
-  <msup>
-    <mi>f</mi>
-    <mo>′</mo>
-  </msup>
-  <mo>(</mo>
-  <mi>x</mi>
-  <mo>)</mo>
-</mrow>
-</math>";
-test("fi", "ClearSpeak", expr, "iso d, auki sulku g yhdistetty f, kiinni sulku; on yhtä suuri kuin; iso d, g arvolla f arvolla x; on yhtä suuri kuin; g pilkku, arvolla f arvolla x; f pilkku, arvolla x");
-test("fi", "SimpleSpeak", expr, "iso d, auki sulku g yhdistetty f, kiinni sulku; on yhtä suuri kuin; iso d, g arvolla f arvolla x; on yhtä suuri kuin; g pilkku, arvolla f arvolla x; f pilkku, arvolla x");
-}
-
-#[test]
-fn FinME_integration_in_parts() {
-let expr = "<math>
-<mrow>
-  <mo>∫</mo>
-  <msup>
-    <mi>f</mi>
-    <mo>′</mo>
-  </msup>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mi>g</mi>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mtext>&#x2009;</mtext>
-  <mi>d</mi>
-  <mi>x</mi>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <mi>f</mi>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mi>g</mi>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mo>−</mo>
-</mrow>
-<mrow>
-  <mo>∫</mo>
-  <msup>
-    <mi>g</mi>
-    <mo>′</mo>
-  </msup>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mi>f</mi>
-  <mrow>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-  <mtext>&#x2009;</mtext>
-  <mi>d</mi>
-  <mi>x</mi>
-</mrow>
-</math>";
-test("fi", "ClearSpeak", expr, "integraali f pilkku, arvolla x, g arvolla x, d x; on yhtä suuri kuin; f arvolla x, g arvolla x; miinus; integraali g pilkku, arvolla x, f arvolla x, d x");
-test("fi", "SimpleSpeak", expr, "integraali f pilkku, arvolla x, g arvolla x, d x; on yhtä suuri kuin; f arvolla x, g arvolla x; miinus; integraali g pilkku, arvolla x, f arvolla x, d x");
-}
-
-#[test]
-fn FinME_simpsons_rule() {
-let expr = "<math>
-<mrow>
-  <msubsup>
-    <mo>∫</mo>
-    <mi>a</mi>
-    <mi>b</mi>
-  </msubsup>
-  <mi>f</mi>
-  <mo>(</mo>
-  <mi>x</mi>
-  <mo>)</mo>
-  <mtext>&#x2009;</mtext>
-  <mi>d</mi>
-  <mi>x</mi>
-  <mo>≈</mo>
-</mrow>
-<mrow>
-  <mfrac>
-    <mi>h</mi>
-    <mn>3</mn>
-  </mfrac>
-  <mrow>
-    <mo>(</mo>
-    <mi>f</mi>
-    <mo>(</mo>
-    <msub>
-      <mi>x</mi>
-      <mn>0</mn>
-    </msub>
-    <mo>)</mo>
-    <mo>+</mo>
-    <mn>4</mn>
-    <mi>f</mi>
-    <mo>(</mo>
     <msub>
       <mi>x</mi>
       <mn>1</mn>
     </msub>
-    <mo>)</mo>
+    <mrow>
+      <mover>
+        <mi>i</mi>
+        <mo>→</mo>
+      </mover>
+    </mrow>
     <mo>+</mo>
-    <mn>2</mn>
-    <mi>f</mi>
-    <mo>(</mo>
+  </mrow>
+  <mrow>
     <msub>
-      <mi>x</mi>
-      <mn>2</mn>
+      <mi>y</mi>
+      <mn>1</mn>
     </msub>
-    <mo>)</mo>
-    <mo>+</mo>
-    <mn>4</mn>
+    <mrow>
+      <mover>
+        <mi>j</mi>
+        <mo>→</mo>
+      </mover>
+    </mrow>
+  </mrow>
+  </math>";
+  test("fi", "ClearSpeak", expr, "vektori v, on yhtä suuri kuin; x ala 1 vektori i; plus; y ala 1 vektori j")?;
+  test("fi", "SimpleSpeak", expr, "vektori v, on yhtä suuri kuin; x ala 1 vektori i; plus; y ala 1 vektori j")?;
+  return Ok(());
+}
+
+#[test]
+fn FinME_compound_derivate_rule() -> Result<()> {
+  let expr = "<math>
+  <mrow>
+    <mrow>
+      <mi>D</mi>
+    </mrow>
+    <mrow>
+      <mo>(</mo>
+      <mi>g</mi>
+      <mo>∘</mo>
+      <mi>f</mi>
+      <mo>)</mo>
+    </mrow>
+    <mo>=</mo>
+  </mrow>
+  <mrow>
+    <mrow>
+      <mi>D</mi>
+    </mrow>
+    <mi>g</mi>
+    <mo>(</mo>
     <mi>f</mi>
     <mo>(</mo>
-    <msub>
+    <mi>x</mi>
+    <mo>)</mo>
+    <mo>)</mo>
+    <mo>=</mo>
+  </mrow>
+  <mrow>
+    <msup>
+      <mi>g</mi>
+      <mo>′</mo>
+    </msup>
+    <mo>(</mo>
+    <mi>f</mi>
+    <mo>(</mo>
+    <mi>x</mi>
+    <mo>)</mo>
+    <mo>)</mo>
+    <msup>
+      <mi>f</mi>
+      <mo>′</mo>
+    </msup>
+    <mo>(</mo>
+    <mi>x</mi>
+    <mo>)</mo>
+  </mrow>
+  </math>";
+  test("fi", "ClearSpeak", expr, "iso d, auki sulku g yhdistetty f, kiinni sulku; on yhtä suuri kuin; iso d, g arvolla f arvolla x; on yhtä suuri kuin; g pilkku, arvolla f arvolla x; f pilkku, arvolla x")?;
+  test("fi", "SimpleSpeak", expr, "iso d, auki sulku g yhdistetty f, kiinni sulku; on yhtä suuri kuin; iso d, g arvolla f arvolla x; on yhtä suuri kuin; g pilkku, arvolla f arvolla x; f pilkku, arvolla x")?;
+  return Ok(());
+}
+
+#[test]
+fn FinME_integration_in_parts() -> Result<()> {
+  let expr = "<math>
+  <mrow>
+    <mo>∫</mo>
+    <msup>
+      <mi>f</mi>
+      <mo>′</mo>
+    </msup>
+    <mrow>
+      <mo>(</mo>
       <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mi>g</mi>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mtext>&#x2009;</mtext>
+    <mi>d</mi>
+    <mi>x</mi>
+    <mo>=</mo>
+  </mrow>
+  <mrow>
+    <mi>f</mi>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mi>g</mi>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mo>−</mo>
+  </mrow>
+  <mrow>
+    <mo>∫</mo>
+    <msup>
+      <mi>g</mi>
+      <mo>′</mo>
+    </msup>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mi>f</mi>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mtext>&#x2009;</mtext>
+    <mi>d</mi>
+    <mi>x</mi>
+  </mrow>
+  </math>";
+  test("fi", "ClearSpeak", expr, "integraali f pilkku, arvolla x, g arvolla x, d x; on yhtä suuri kuin; f arvolla x, g arvolla x; miinus; integraali g pilkku, arvolla x, f arvolla x, d x")?;
+  test("fi", "SimpleSpeak", expr, "integraali f pilkku, arvolla x, g arvolla x, d x; on yhtä suuri kuin; f arvolla x, g arvolla x; miinus; integraali g pilkku, arvolla x, f arvolla x, d x")?;
+  return Ok(());
+}
+
+#[test]
+fn FinME_simpsons_rule() -> Result<()> {
+let expr = "<math>
+  <mrow>
+    <msubsup>
+      <mo>∫</mo>
+      <mi>a</mi>
+      <mi>b</mi>
+    </msubsup>
+    <mi>f</mi>
+    <mo>(</mo>
+    <mi>x</mi>
+    <mo>)</mo>
+    <mtext>&#x2009;</mtext>
+    <mi>d</mi>
+    <mi>x</mi>
+    <mo>≈</mo>
+  </mrow>
+  <mrow>
+    <mfrac>
+      <mi>h</mi>
       <mn>3</mn>
-    </msub>
-    <mo>)</mo>
-    <mo>+</mo>
-    <mo>⋯</mo>
-    <mo>+</mo>
-    <mn>4</mn>
-    <mi>f</mi>
+    </mfrac>
+    <mrow>
+      <mo>(</mo>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mn>0</mn>
+      </msub>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mn>4</mn>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mn>1</mn>
+      </msub>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mn>2</mn>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msub>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mn>4</mn>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mn>3</mn>
+      </msub>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mo>⋯</mo>
+      <mo>+</mo>
+      <mn>4</mn>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mrow>
+          <mi>n</mi>
+          <mo>−</mo>
+          <mn>1</mn>
+        </mrow>
+      </msub>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mi>f</mi>
+      <mo>(</mo>
+      <msub>
+        <mi>x</mi>
+        <mi>n</mi>
+      </msub>
+      <mo>)</mo>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+  </math>";
+  test("fi", "ClearSpeak", expr, "integraali, alaraja a, yläraja b; f arvolla x, d x; on likimäärin yhtä suuri kuin; h per 3 kertaa; auki sulku; f arvolla, auki sulku x ala 0 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 1 kiinni sulku; plus, 2, f arvolla, auki sulku x ala 2 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 3 kiinni sulku; plus piste piste piste plus; 4; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; plus, f arvolla, auki sulku x ala n kiinni sulku; kiinni sulku")?;
+  test("fi", "SimpleSpeak", expr, "integraali, alaraja a, yläraja b; f arvolla x, d x; on likimäärin yhtä suuri kuin; h per 3, kertaa; auki sulku; f arvolla, auki sulku x ala 0 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 1 kiinni sulku; plus, 2, f arvolla, auki sulku x ala 2 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 3 kiinni sulku; plus piste piste piste plus; 4; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; plus, f arvolla, auki sulku x ala n kiinni sulku; kiinni sulku")?;
+  return Ok(());
+}
+
+#[test]
+fn FinME_binomials_cumulative_function() -> Result<()> {
+  let expr = "<math>
+  <mrow>
+    <mi>P</mi>
+    <mo>&#x2061;</mo>
     <mo>(</mo>
-    <msub>
-      <mi>x</mi>
+    <mi>X</mi>
+    <mo>≤</mo>
+    <mi>k</mi>
+    <mo>)</mo>
+    <mo>=</mo>
+  </mrow>
+  <mrow>
+    <msubsup>
+      <mo>∑</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>0</mn>
+      </mrow>
+      <mrow>
+        <mo>|</mo>
+        <mi>k</mi>
+        <mo>|</mo>
+      </mrow>
+    </msubsup>
+    <mrow>
+      <mo>(</mo>
+      <mfrac linethickness='0'>
+        <mi>n</mi>
+        <mi>i</mi>
+      </mfrac>
+      <mo>)</mo>
+    </mrow>
+    <msup>
+      <mi>p</mi>
+      <mi>i</mi>
+    </msup>
+    <mo>(</mo>
+    <mn>1</mn>
+    <mo>−</mo>
+    <mi>p</mi>
+    <msup>
+      <mo>)</mo>
       <mrow>
         <mi>n</mi>
         <mo>−</mo>
-        <mn>1</mn>
+        <mi>i</mi>
       </mrow>
-    </msub>
-    <mo>)</mo>
-    <mo>+</mo>
-    <mi>f</mi>
-    <mo>(</mo>
-    <msub>
-      <mi>x</mi>
-      <mi>n</mi>
-    </msub>
-    <mo>)</mo>
-    <mo>)</mo>
+    </msup>
   </mrow>
-</mrow>
-</math>";
-test("fi", "ClearSpeak", expr, "integraali, alaraja a, yläraja b; f arvolla x, d x; on likimäärin yhtä suuri kuin; h per 3 kertaa; auki sulku; f arvolla, auki sulku x ala 0 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 1 kiinni sulku; plus, 2, f arvolla, auki sulku x ala 2 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 3 kiinni sulku; plus piste piste piste plus; 4; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; plus, f arvolla, auki sulku x ala n kiinni sulku; kiinni sulku");
-test("fi", "SimpleSpeak", expr, "integraali, alaraja a, yläraja b; f arvolla x, d x; on likimäärin yhtä suuri kuin; h per 3, kertaa; auki sulku; f arvolla, auki sulku x ala 0 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 1 kiinni sulku; plus, 2, f arvolla, auki sulku x ala 2 kiinni sulku; plus, 4, f arvolla, auki sulku x ala 3 kiinni sulku; plus piste piste piste plus; 4; f arvolla; auki sulku, x ala n miinus 1 loppu ala; kiinni sulku; plus, f arvolla, auki sulku x ala n kiinni sulku; kiinni sulku");
+  </math>";
+  test("fi", "ClearSpeak",  expr, "iso p arvolla; auki sulku, iso x on pienempi tai yhtä suuri kuin k; kiinni sulku; on yhtä suuri kuin; summa käy, luvusta i on yhtä suuri kuin 0, lukuun itseisarvo k; n yli i p potenssiin i kertaa; auki sulku 1 miinus p, kiinni sulku potenssiin n miinus i")?;
+  test("fi", "SimpleSpeak", expr, "iso p arvolla; auki sulku, iso x on pienempi tai yhtä suuri kuin k; kiinni sulku; on yhtä suuri kuin; summa käy, luvusta i on yhtä suuri kuin 0, lukuun itseisarvo k; n yli i p potenssiin i kertaa; auki sulku 1 miinus p, kiinni sulku potenssiin n miinus i")?;
+  return Ok(());
 }
 
 #[test]
-fn FinME_binomials_cumulative_function() {
-let expr = "<math>
-<mrow>
-  <mi>P</mi>
-  <mo>&#x2061;</mo>
-  <mo>(</mo>
-  <mi>X</mi>
-  <mo>≤</mo>
-  <mi>k</mi>
-  <mo>)</mo>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <msubsup>
-    <mo>∑</mo>
-    <mrow>
-      <mi>i</mi>
-      <mo>=</mo>
-      <mn>0</mn>
-    </mrow>
-    <mrow>
-      <mo>|</mo>
-      <mi>k</mi>
-      <mo>|</mo>
-    </mrow>
-  </msubsup>
+fn FinME_standard_normal_disributon_cumul() -> Result<()> {
+  let expr = "<math>
   <mrow>
+    <mrow>
+      <mi>Φ</mi>
+    </mrow>
     <mo>(</mo>
-    <mfrac linethickness='0'>
-      <mi>n</mi>
-      <mi>i</mi>
-    </mfrac>
-    <mo>)</mo>
-  </mrow>
-  <msup>
-    <mi>p</mi>
-    <mi>i</mi>
-  </msup>
-  <mo>(</mo>
-  <mn>1</mn>
-  <mo>−</mo>
-  <mi>p</mi>
-  <msup>
-    <mo>)</mo>
-    <mrow>
-      <mi>n</mi>
-      <mo>−</mo>
-      <mi>i</mi>
-    </mrow>
-  </msup>
-</mrow>
-</math>";
-test("fi", "ClearSpeak",  expr, "iso p arvolla; auki sulku, iso x on pienempi tai yhtä suuri kuin k; kiinni sulku; on yhtä suuri kuin; summa käy, luvusta i on yhtä suuri kuin 0, lukuun itseisarvo k; n yli i p potenssiin i kertaa; auki sulku 1 miinus p, kiinni sulku potenssiin n miinus i");
-test("fi", "SimpleSpeak", expr, "iso p arvolla; auki sulku, iso x on pienempi tai yhtä suuri kuin k; kiinni sulku; on yhtä suuri kuin; summa käy, luvusta i on yhtä suuri kuin 0, lukuun itseisarvo k; n yli i p potenssiin i kertaa; auki sulku 1 miinus p, kiinni sulku potenssiin n miinus i");
-}
-
-#[test]
-fn FinME_standard_normal_disributon_cumul() {
-let expr = "<math>
-<mrow>
-  <mrow>
-    <mi>Φ</mi>
-  </mrow>
-  <mo>(</mo>
-  <mi>x</mi>
-  <mo>)</mo>
-  <mo>=</mo>
-</mrow>
-<mrow>
-  <mfrac>
-    <mn>1</mn>
-    <msqrt>
-      <mrow>
-        <mn>2</mn>
-        <mi>π</mi>
-      </mrow>
-    </msqrt>
-  </mfrac>
-  <msubsup>
-    <mo>∫</mo>
-    <mrow>
-      <mo>−</mo>
-      <mi>∞</mi>
-    </mrow>
     <mi>x</mi>
-  </msubsup>
-  <msup>
-    <mi>e</mi>
-    <mrow>
-      <mo>−</mo>
-      <mfrac>
-        <msup>
-          <mi>t</mi>
+    <mo>)</mo>
+    <mo>=</mo>
+  </mrow>
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <msqrt>
+        <mrow>
           <mn>2</mn>
-        </msup>
-        <mn>2</mn>
-      </mfrac>
-    </mrow>
-  </msup>
-  <mtext>&#x2009;</mtext>
-  <mi>d</mi>
-  <mi>x</mi>
-</mrow>
-</math>";
-test("fi", "ClearSpeak", expr, "iso fii arvolla x, on yhtä suuri kuin; murtoluku osoittaja 1; ja nimittäjä neliöjuuri 2 pii; integraali, alaraja negatiivinen ääretön, yläraja x; e potenssiin negatiivinen murtoluku osoittaja; t toiseen; ja nimittäjä 2; d x");
-test("fi", "SimpleSpeak", expr, "iso fii arvolla x, on yhtä suuri kuin; murtoluku, 1 per, neliöjuuri 2 pii loppu juuri; loppu murtoluku; integraali, alaraja negatiivinen ääretön, yläraja x; e potenssiin negatiivinen murtoluku, t toiseen, per 2, loppu murtoluku; d x");
+          <mi>π</mi>
+        </mrow>
+      </msqrt>
+    </mfrac>
+    <msubsup>
+      <mo>∫</mo>
+      <mrow>
+        <mo>−</mo>
+        <mi>∞</mi>
+      </mrow>
+      <mi>x</mi>
+    </msubsup>
+    <msup>
+      <mi>e</mi>
+      <mrow>
+        <mo>−</mo>
+        <mfrac>
+          <msup>
+            <mi>t</mi>
+            <mn>2</mn>
+          </msup>
+          <mn>2</mn>
+        </mfrac>
+      </mrow>
+    </msup>
+    <mtext>&#x2009;</mtext>
+    <mi>d</mi>
+    <mi>x</mi>
+  </mrow>
+  </math>";
+  test("fi", "ClearSpeak", expr, "iso fii arvolla x, on yhtä suuri kuin; murtoluku osoittaja 1; ja nimittäjä neliöjuuri 2 pii; integraali, alaraja negatiivinen ääretön, yläraja x; e potenssiin negatiivinen murtoluku osoittaja; t toiseen; ja nimittäjä 2; d x")?;
+  test("fi", "SimpleSpeak", expr, "iso fii arvolla x, on yhtä suuri kuin; murtoluku, 1 per, neliöjuuri 2 pii loppu juuri; loppu murtoluku; integraali, alaraja negatiivinen ääretön, yläraja x; e potenssiin negatiivinen murtoluku, t toiseen, per 2, loppu murtoluku; d x")?;
+  return Ok(());
 }

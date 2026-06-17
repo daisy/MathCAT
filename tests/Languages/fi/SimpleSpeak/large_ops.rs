@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn sum_both() {
+fn sum_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>∑</mo>
@@ -10,11 +11,13 @@ fn sum_both() {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "summa käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n");
+    test("fi", "SimpleSpeak", expr, "summa käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sum_under() {
+fn sum_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∑</mo>
@@ -22,10 +25,12 @@ fn sum_under() {
         </munder>
         <mi>i</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "summa yli iso s, i");
+    test("fi", "SimpleSpeak", expr, "summa yli iso s, i")?;
+    return Ok(());
+
 }
 #[test]
-fn sum_both_msubsup() {
+fn sum_both_msubsup() -> Result<()> {
     let expr = "<math>
         <msubsup>
             <mo>∑</mo>
@@ -34,11 +39,13 @@ fn sum_both_msubsup() {
         </msubsup>
         <mi>n</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "summa käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n");
+    test("fi", "SimpleSpeak", expr, "summa käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sum_sub() {
+fn sum_sub() -> Result<()> {
     let expr = "<math>
         <msub>
             <mo>∑</mo>
@@ -46,20 +53,24 @@ fn sum_sub() {
         </msub>
         <mi>i</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "summa yli iso s, i");
+    test("fi", "SimpleSpeak", expr, "summa yli iso s, i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn sum() {
+fn sum() -> Result<()> {
     let expr = "<math>
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "summa a ala i");
+    test("fi", "SimpleSpeak", expr, "summa a ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn product_both() {
+fn product_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>∏</mo>
@@ -68,11 +79,13 @@ fn product_both() {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "tulo käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n");
+    test("fi", "SimpleSpeak", expr, "tulo käy, luvusta n on yhtä suuri kuin 1, lukuun 10; n")?;
+    return Ok(());
+
 }
 
 #[test]
-fn product_under() {
+fn product_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∏</mo>
@@ -80,20 +93,24 @@ fn product_under() {
         </munder>
         <mi>i</mi>
     </math>";
-    test("fi", "SimpleSpeak", expr, "tulo yli iso s, i");
+    test("fi", "SimpleSpeak", expr, "tulo yli iso s, i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn product() {
+fn product() -> Result<()> {
     let expr = "<math>
             <mo>∏</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "tulo a ala i");
+    test("fi", "SimpleSpeak", expr, "tulo a ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn intersection_both() {
+fn intersection_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>⋂</mo>
@@ -102,11 +119,13 @@ fn intersection_both() {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "monikkoleikkaus käy, luvusta i on yhtä suuri kuin 1, lukuun 10; iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkoleikkaus käy, luvusta i on yhtä suuri kuin 1, lukuun 10; iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn intersection_under() {
+fn intersection_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>⋂</mo>
@@ -114,20 +133,24 @@ fn intersection_under() {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "monikkoleikkaus yli iso c; iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkoleikkaus yli iso c; iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn intersection() {
+fn intersection() -> Result<()> {
     let expr = "<math>
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("fi", "SimpleSpeak", expr, "monikkoleikkaus iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkoleikkaus iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn union_both() {
+fn union_both() -> Result<()> {
     let expr = "<math>
         <munderover>
             <mo>⋃</mo>
@@ -136,11 +159,13 @@ fn union_both() {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "monikkounioni käy, luvusta i on yhtä suuri kuin 1, lukuun 10; iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkounioni käy, luvusta i on yhtä suuri kuin 1, lukuun 10; iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn union_under() {
+fn union_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>⋃</mo>
@@ -148,20 +173,24 @@ fn union_under() {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("fi", "SimpleSpeak", expr, "monikkounioni yli iso c; iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkounioni yli iso c; iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn union() {
+fn union() -> Result<()> {
     let expr = "<math>
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("fi", "SimpleSpeak", expr, "monikkounioni iso s ala i");
+    test("fi", "SimpleSpeak", expr, "monikkounioni iso s ala i")?;
+    return Ok(());
+
 }
 
 #[test]
-fn integral_both() {
+fn integral_both() -> Result<()> {
     let expr = "<math>
             <mrow>
                 <msubsup>
@@ -173,11 +202,13 @@ fn integral_both() {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("fi", "SimpleSpeak", expr, "integraali, alaraja 0, yläraja 1; f arvolla x; d x");
+    test("fi", "SimpleSpeak", expr, "integraali, alaraja 0, yläraja 1; f arvolla x; d x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn integral_under() {
+fn integral_under() -> Result<()> {
     let expr = "<math>
         <munder>
             <mo>∫</mo>
@@ -186,15 +217,19 @@ fn integral_under() {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("fi", "SimpleSpeak", expr, "integraali yli reaaliluvut; f arvolla x, d x");
+    test("fi", "SimpleSpeak", expr, "integraali yli reaaliluvut; f arvolla x, d x")?;
+    return Ok(());
+
 }
 
 #[test]
-fn integral() {
+fn integral() -> Result<()> {
     let expr = "<math>
             <mo>∫</mo>
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("fi", "SimpleSpeak", expr, "integraali f arvolla x, d x");
+    test("fi", "SimpleSpeak", expr, "integraali f arvolla x, d x")?;
+    return Ok(());
+
 }

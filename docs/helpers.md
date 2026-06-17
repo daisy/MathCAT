@@ -6,7 +6,7 @@ This page is a work-in-progress.
 ## Getting Started
 If you plan to work on MathCAT development, you need to make use of github:
 1. Fork the MathCAT repo at `github.com/NSoiffer/MathCAT`
-2. Clone the the forked copy so you have a local copy to work on.
+2. Clone the forked copy so you have a local copy to work on.
 3. Checkout the branch I create for your work (typically the country code for your translation) and work in that branch.
 
 If you are unfamiliar with these steps, a simple search will turn up lots of places that describe how to do them. They are simple, so don't get put off by your unfamiliarity.
@@ -25,11 +25,11 @@ Note: The MathCAT settings dialog looks for files named `XXX_Rules.yaml` and add
 These files have auto-generated initial translations. Even though they are translated, `t:` (see below) is used, not the upper case `T:`. This is because each translation should be verified to be correct and when verified, then change to the uppercase version.
 See below for more comments about the auto translations.
 
-    * In some languages it doesn't make sense to says "_the_ square root of x" (and maybe "of"). If that is the case, just change those to empty strings.
+    * In some languages it doesn't make sense to say "_the_ square root of x" (and maybe "of"). If that is the case, just change those to empty strings.
     * Some languages, the word order changes -- feel free to move the words around, but pay attention to the indentation.
     Indentation is meaningful in YAML. 
     * In some languages, you may want to add words that aren't in the English version, perhaps before or after existing phrases. Feel free to add them -- they can be conditionally added using `test` if needed. Please contact @NSoiffer if you need help with this.
-    * Pausing between words/phrases can greatly help make understandable. The pausing is choosen based on English. You should adjust pauses based on what sounds good in speech synthesizers for your language. It is very simple to add, remove, or change the amount of pauses. All pauses are scaled to the current speech rate.
+    * Pausing between words/phrases can greatly help make speech understandable. The pausing is chosen based on English. You should adjust pauses based on what sounds good in speech synthesizers for your language. It is very simple to add, remove, or change the amount of pauses. All pauses are scaled to the current speech rate.
 3. The unicode files (`unicode.yaml` and `unicode-full.yaml`). These contain characters like `<` and `∫`.
     * You should start with translating `unicode.yaml`. These represent the vast majority of math symbols used. Currently the list is based on experience as to which are the most commonly used Unicode symbols, but I plan to make use of statistics from actual books to refine the list even further. There are about 270 characters to translate in `unicode.yaml`, although ~50 of them are Greek letters (which is hopefully simple).
     Just like the speech rule files, these files have auto-generated initial translations and the translations should be verified and the `t:` changed to `T:`.
@@ -81,15 +81,15 @@ If SRE and MathPlayer agree, or if only one of SRE or MathPlayer has a translati
  - "!": [t: "factorielle"]                      	#  0x21	(en: 'factorial')
 ```
 
-If the MathPlayer and SRE translations disagree, then the translations that agrees with the google translation will be chosen and the other translation included in a comment. For example:
+If the MathPlayer and SRE translations disagree, then the translation that agrees with the google translation will be chosen and the other translation included in a comment. For example:
 ```
         else: [t: "parenthèse gauche"]          	# 	(en: 'left paren', MathPlayer: 'parenthèse ouvrante')
 ```
-If none of the translations agree, than one of the translations is picked and the other translations are in comment. For example:
+If none of the translations agree, then one of the translations is picked and the other translations are in a comment. For example:
 ```
             else: [t: "parenthèse gauche"]      	# 	(en: 'open paren', MathPlayer: 'parenthèse ouvrante', google: 'parenthèse ouverte')
 ```
-Finally, if there there is no translation, then the google translation is given and is marked with a comment "google translation". There is a significant chance that this is not a good translation so pay special attention to those. Here is an example where there is only a google translation
+Finally, if there is no translation, then the google translation is given and is marked with a comment "google translation". There is a significant chance that this is not a good translation so pay special attention to those. Here is an example where there is only a google translation
 ```
           then: [t: "ligne verticale"]          	# 	(en: 'vertical line', google translation)
 ```
@@ -104,7 +104,7 @@ Once you've done some translations and want to try them out, you can do so immed
 5. If there is an error (often you won't hear speech), open NVDA's log (in NVDA's "Tools" submenu). The error should be listed there. The error messages are explained below.
 6. When you make a change, MathCAT should notice the file is changed and reload it. There is currently a bug that this is not done for files that are `include`d in from a file (e.g., all those in the Shared directory). If you make a change to one of those files, either reload MathCAT (NVDA Tools:Reload Plugins) or restart NVDA.
 
-Translating the settings dialog: this is a separate process from translating the speech. This done by volunteers that do other addon translations also. See [this mailing list](https://groups.io/g/nvda-translations) for more info.
+Translating the settings dialog: this is a separate process from translating the speech. This is done by volunteers that do other addon translations also. See [this mailing list](https://groups.io/g/nvda-translations) for more info.
 
 ### Automatic tests for your translation
 Testing is very important! MathCAT is written in Rust and has a large number of automated tests. These tests take advantage of the builtin Rust test system. Hence, to write and verify your own tests, you need to [download and install Rust](https://www.rust-lang.org/tools/install). You do not need to know Rust -- you will simply change some strings from what they are in English to what you think they should be in your language.
@@ -163,7 +163,7 @@ These tools will look for untranslated and translated text.
 If you want support for a new braille language, you probably need to start from scratch unless the language is similar to an existing braille language.
 You will need to create three `.yaml` files in `Rules\Braille\your-braille-language`. This should mirror the files that are in the other braille directories:
 1. xxx_Rules.yaml -- where 'xxx' is the name of your new braille language. These will contain the rules that translate MathML to braille
-2. unicode.yaml -- this is a translation of the more common braille characters. Use `Nemeth\unicode.yaml` as a starting point for the the translation. Convert the `t: xxx` into what is appropriate for your language. You likely need to delete some logic or maybe add some of your own for characters that might be represented differently based on context. For example, in Nemeth, a "," is represented differently if it is part of a number.
+2. unicode.yaml -- this is a translation of the more common braille characters. Use `Nemeth\unicode.yaml` as a starting point for the translation. Convert the `t: xxx` into what is appropriate for your language. You likely need to delete some logic or maybe add some of your own for characters that might be represented differently based on context. For example, in Nemeth, a "," is represented differently if it is part of a number.
 3. unicode-full.yaml -- this is the rest of the character translations.
 
 The reason for two separate unicode files is that having a shorter file for the most common characters means startup takes less time. The goal of that file is to capture 99.99% of the characters used.
@@ -411,7 +411,7 @@ Note: all YAML files begin with "---". That indicates the beginning of a "docume
 
 Note: for "pause", the "auto" value will calculate a pausing amount based on the complexity of the surrounding parts. The more complex they are, the longer the pause (up to a limit). The basic idea is that you want to give the listener time to digest and separate out the two parts when one or both are more complicated.
 
-In addition to having a named rule, the speech rule file supports including other speech rules files. This lets various speech speech rule styles share common features. Inclusion is done via an entry in place of a speech rule:
+In addition to having a named rule, the speech rule file supports including other speech rules files. This lets various speech rule styles share common features. Inclusion is done via an entry in place of a speech rule:
 ```
   -include: file_name
 ```

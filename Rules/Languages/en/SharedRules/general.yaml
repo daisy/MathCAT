@@ -154,7 +154,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "the"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - t: "from"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
@@ -171,7 +171,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "the"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - t: "over"      # phrase(2 'over' 3 equals two thirds)
   - x: "*[2]"
@@ -185,7 +185,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "the"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - t: "of"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
@@ -321,7 +321,24 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)", ct: "s"]
 
-    
+# need to reverse the order of speech: $ 3 -> 3 dollars
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+    # If the amount is singular, we don't add the plural ending.
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
+
 - name: sin
   tag: mi
   match: ".='sin'"
@@ -455,7 +472,7 @@
   - bookmark: "@id"
   - test:
     - if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' logarithm function is used in mathematics)
+      then: [ot: "the"]      # phrase('the' logarithm function is used in mathematics)
   - test:
     - if: ".= 'log'"
       then: [t: "log"]      # phrase(the 'log' function is used in mathematics)
@@ -578,13 +595,11 @@
 
 - name: identity-matrix
   tag: matrix
-  # select all the non-zero entries...if they are not on the diagonal, or are != 1
-  #   if there are any of them, then this isn't an identity matrix
+  # every diagonal entry must be a literal 1, and every off-diagonal entry must be a literal 0
   match:
-  - "count(*) = count(*[1]/*) and "
-  - "not( */*/*[not(self::m:mn and .= 0)]"
-  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*) or .!= 1]"
-  - "    )"
+  - "count(*) = count(*[1]/*) and " # matrix is square
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
   - t: "the"      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
@@ -729,7 +744,11 @@
   - test:
       if: "self::m:determinant"
       then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [t: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -753,7 +772,11 @@
   - test:
       if: "self::m:determinant"
       then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [t: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matrix"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:

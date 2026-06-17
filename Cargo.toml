@@ -1,6 +1,6 @@
 [package]
 name = "mathcat"
-version = "0.7.6-beta.1"
+version = "0.7.6-beta.5"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
@@ -15,6 +15,8 @@ exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", bu
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "rule-coverage" = []
+"tts" = [ "natural-tts" ]
+
 
 [dependencies]
 sxd-document = "0.3"
@@ -35,26 +37,33 @@ log = "0.4"
 env_logger = "0.11.8"
 cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
+clap = { version = "4.5.60", features = ["derive"] }
+html-escape = "0.2.13"
 
 [target.'cfg(target_family = "wasm")'.dependencies]
-zip = { version = "7.0", default-features = false, features = ["deflate"] }
+zip = { version = "8.2", default-features = false, features = ["deflate"] }
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-zip = { version = "7.0", default-features = false, features = ["bzip2"] }
+zip = { version = "8.2", default-features = false, features = ["bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
-
-
+natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
-[target.'cfg(target_family = "wasm")'.build-dependencies]
-zip = { version = "7.0", default-features = false, features = ["deflate"] }
-[target.'cfg(not(target_family = "wasm"))'.build-dependencies]
-zip = { version = "7.0", default-features = false, features = ["bzip2"] }
+# Build script needs both compression backends regardless of build host —
+# build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "mathml2text"
+path = "src/bin/mathml2text.rs"
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
 
 [profile.test]
 debug = true

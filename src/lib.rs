@@ -1,3 +1,4 @@
+#![cfg_attr(coverage, feature(coverage_attribute))]
 #![allow(clippy::needless_return)]
 
 //! A library for generating speech and braille from MathML
@@ -43,6 +44,7 @@ mod chemistry;
 
 pub mod shim_filesystem; // really just for override_file_for_debugging_rules, but the config seems to throw it off
 pub use interface::*;
+use crate::errors::{bail, Result};
 
 #[cfg(test)]
 pub fn init_logger() {
@@ -61,42 +63,61 @@ pub fn abs_rules_dir_path() -> String {
     if #[cfg(feature = "include-zip")] {
           return "Rules".to_string();
     } else {
-        return std::env::current_exe().unwrap().parent().unwrap()
-                    .join("../../../Rules")
-                    .to_str().unwrap().to_string();
+        // Package root (see tests/common/mod.rs `abs_rules_dir_path` for rationale).
+        return std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("Rules")
+            .to_str()
+            .expect("CARGO_MANIFEST_DIR and Rules path must be UTF-8")
+            .to_string();
         }
     }
 }
 
-pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> bool {
+pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> Result<()> {
     use crate::{interface::*, pretty_print::mml_to_string};
     use sxd_document::parser;
     use crate::canonicalize::canonicalize;
-    // this forces initialization
-    crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
-    crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
-    set_preference("Language", "en").unwrap();
-    set_preference("BlockSeparators", block_separators).unwrap();
-    set_preference("DecimalSeparators", decimal_separators).unwrap();
-    
-    let package1 = &parser::parse(test).expect("Failed to parse test input");
-    let mathml = get_element(package1);
-    trim_element(mathml, false);
-    // debug!("test:\n{}", mml_to_string(mathml));
-    let mathml_test = canonicalize(mathml).unwrap();
-   
-    let package2 = &parser::parse(target).expect("Failed to parse target input");
-    let mathml_target = get_element(package2);
-    trim_element(mathml_target, false);
-    // debug!("target:\n{}", mml_to_string(mathml_target));
+    use std::panic::{catch_unwind, AssertUnwindSafe};
 
-    match is_same_element(mathml_test, mathml_target, ignore_attrs) {
-        Ok(_) => return true,
-        Err(e) => panic!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target)),
+    crate::interface::init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        // this forces initialization
+        crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
+        set_preference("Language", "en").unwrap();
+        set_preference("BlockSeparators", block_separators).unwrap();
+        set_preference("DecimalSeparators", decimal_separators).unwrap();
+        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
+
+        let package1 = &parser::parse(test).expect("Failed to parse test input");
+        let mathml = get_element(package1);
+        trim_element(mathml, false);
+        let mathml_test = canonicalize(mathml).unwrap();
+
+        let package2 = &parser::parse(target).expect("Failed to parse target input");
+        let mathml_target = get_element(package2);
+        trim_element(mathml_target, false);
+
+        match is_same_element(mathml_test, mathml_target, ignore_attrs) {
+            Ok(_) => Ok( () ),
+            Err(e) => {
+                bail!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target));
+            },
+        }
+    }));
+    match crate::interface::report_any_panic(result) {
+        Ok(()) => Ok(()),
+        Err(e) => {
+            Err(e)
+        }
     }
 }
 
 /// sets locale to be US standard
 pub fn are_strs_canonically_equal(test: &str, target: &str, ignore_attrs: &[&str]) -> bool {
-    return are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".");
+    are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".").is_ok()
+}
+
+/// Like `are_strs_canonically_equal` but returns `Result` for use in `#[test]` functions that return `Result<()>`.
+pub fn are_strs_canonically_equal_result(test: &str, target: &str, ignore_attrs: &[&str]) -> Result<()> {
+    are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".")
 }

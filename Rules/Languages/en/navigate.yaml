@@ -212,7 +212,6 @@
 
 # ********* ZoomIn  ***************
 - name: zoom-in-leaf
-
   tag: "*"
   match: "($NavCommand = 'ZoomIn' or $NavCommand = 'ZoomInAll') and IsNode(., 'leaf')"
   replace:

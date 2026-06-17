@@ -5,9 +5,9 @@
 
 When using MathCAT, the general ordering of calls is:
 1. The location of the MathCAT `Rules` directory is set [SetRulesDir]
-1. Whatever preferences the AT needs to set, it is done with calls to [`SetPreference`]. Typically the `Language` and `TTS` engine to use (if any -- strongly recommended) are given. 
-2. The MathML is sent over via [`SetMathML`].
-3. AT calls to get the speech [`GetSpokenText`] and calls [`GetBraille`] to get the (Unicode) braille. If the id of a node is given, then the corresponding braille cells will be highlighted.
+2. Whatever preferences the AT needs to set, it is done with calls to [`SetPreference`]. Typically the `Language` and `TTS` engine to use (if any -- strongly recommended) are given. 
+3. The MathML is sent over via [`SetMathML`].
+4. AT calls to get the speech [`GetSpokenText`] and calls [`GetBraille`] to get the (Unicode) braille. If the id of a node is given, then the corresponding braille cells will be highlighted.
 
 Navigation can be done via calls to either:
 * [`DoNavigateKeyPress`] (takes key events as input)

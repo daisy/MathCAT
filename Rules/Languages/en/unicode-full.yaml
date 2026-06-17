@@ -346,7 +346,7 @@
  - "⁗": [t: "quadruple prime"]                     # 0x2057
  - "⁠": [t: ""]                                     # 0x2060
  - "⁰": [t: "to the zeroth power"]                 # 0x2070
- - "ⁱ": [t: "to the eihth power"]                  # 0x2071
+ - "ⁱ": [t: "to the i-th power"]                  # 0x2071
  - "⁴": [t: "to the fourth power"]                 # 0x2074
  - "⁵": [t: "to the fifth power"]                  # 0x2075
  - "⁶": [t: "to the sixth power"]                  # 0x2076
@@ -676,7 +676,7 @@
  - "∁":                                          # 0x2201
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "complement of"
  - "∂":                                          # 0x2202
      - test: 
@@ -770,17 +770,17 @@
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "square root of"
  - "∛":                                          # 0x221b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "cube root of"
  - "∜":                                          # 0x221c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "fourth root of"
  - "∝":                                          # 0x221d
      - test: 
@@ -893,7 +893,7 @@
  - "≏":                                          # 0x224f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "difference between"
  - "≐": [t: "approaches the limit"]                # 0x2250
  - "≑":                                          # 0x2251
@@ -1227,17 +1227,17 @@
  - "⋒":                                          # 0x22d2
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "double intersection of"
  - "⋓":                                          # 0x22d3
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "double union of"
  - "⋔":                                          # 0x22d4
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "proper intersection of"
  - "⋕":                                          # 0x22d5
      - test: 
@@ -1459,6 +1459,10 @@
     - t: "circled"
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    - t: "black circled"
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
  - "ⓐ-ⓩ":                                         # 0x24d0 - 0x24e9
     - t: "circled"
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -1577,7 +1581,7 @@
  - "★": [t: "black star"]                          # 0x2605
  - "☆": [t: "white star"]                          # 0x2606
  - "☉": [t: "sun"]                                 # 0x2609
- - "☌": [t: "conjuction"]                          # 0x260c
+ - "☌": [t: "conjunction"]                         # 0x260c
  - "☒": [t: "ballot box with x"]                   # 0x2612
  - "☽": [t: "waxing moon"]                         # 0x263d
  - "☾": [t: "waning moon"]                         # 0x263e
@@ -2492,6 +2496,20 @@
  - "㉞": [t: "circled number thirty four"]          # 0x325e
  - "㉟": [t: "circled number thirty five"]          # 0x325f
  - "㊱": [t: "circled number thirty six"]           # 0x32b1
+ - "㊲": [t: "circled number thirty seven"]         # 0x32b2  (GPT-5.4 translation)
+ - "㊳": [t: "circled number thirty eight"]         # 0x32b3  (GPT-5.4 translation)
+ - "㊴": [t: "circled number thirty nine"]          # 0x32b4  (GPT-5.4 translation)
+ - "㊵": [t: "circled number forty"]                # 0x32b5  (GPT-5.4 translation)
+ - "㊶": [t: "circled number forty one"]            # 0x32b6  (GPT-5.4 translation)
+ - "㊷": [t: "circled number forty two"]            # 0x32b7  (GPT-5.4 translation)
+ - "㊸": [t: "circled number forty three"]          # 0x32b8  (GPT-5.4 translation)
+ - "㊹": [t: "circled number forty four"]           # 0x32b9  (GPT-5.4 translation)
+ - "㊺": [t: "circled number forty five"]           # 0x32ba  (GPT-5.4 translation)
+ - "㊻": [t: "circled number forty six"]            # 0x32bb  (GPT-5.4 translation)
+ - "㊼": [t: "circled number forty seven"]          # 0x32bc  (GPT-5.4 translation)
+ - "㊽": [t: "circled number forty eight"]          # 0x32bd  (GPT-5.4 translation)
+ - "㊾": [t: "circled number forty nine"]           # 0x32be  (GPT-5.4 translation)
+ - "㊿": [t: "circled number fifty"]                # 0x32bf  (GPT-5.4 translation)
  - "㋌": [t: "mercury"]                             # 0x32cc
  - "㋍": [t: "ergs"]                                # 0x32cd
  - "㋎": [t: "electron volts"]                      # 0x32ce
@@ -3664,7 +3682,8 @@
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
+
 
  - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff  
     - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"

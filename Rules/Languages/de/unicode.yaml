@@ -43,7 +43,7 @@
             else: [T: "ausrufezeichen"]           	#  0x21	(en: 'exclamation point')
         else: [T: "fakultät"]                   	#  0x21	(en: 'factorial')
           
- - "\"": [T: "backslash"]        	#  0x22	(en: 'quotation mark') #backslash??
+ - "\"": [T: "anführungszeichen"]	#  0x22	(en: 'quotation mark')
  - "#": [T: "nummernzeichen"]                   	#  0x23	(en: 'number')
  - "$": [T: "dollar"]                           	#  0x24	(en: 'dollars')
  - "%": [T: "prozent"]                          	#  0x25	(en: 'percent')
