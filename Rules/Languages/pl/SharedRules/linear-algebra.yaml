@@ -1,0 +1,321 @@
+---
+
+# Indeks normy operatorowej ‖·‖_{p→q}: mrow[p, →, q] jako dziecko subscripted-norm.
+# Emitowany przez x: w regule subscripted-norm (nawigowalny); tu nadajemy mowe "od p do q"
+# (→ czyta sie "do" dzieki regule unicode w kontekscie subscripted-norm).
+- name: norm-operator-index
+  tag: mrow
+  match: "parent::*[self::m:subscripted-norm] and *[2][self::m:mo and .='→']"
+  replace:
+  - T: "od"
+  - x: "*[1]"
+  - x: "*[2]"      # → -> "do"
+  - x: "*[3]"
+
+# Litera F jako indeks normy Frobeniusa: emitowana przez x: (nawigowalna),
+# a tutaj nadajemy jej wlasciwa wymowe "Frobeniusa" zamiast "wielka f".
+- name: norm-index-frobenius
+  tag: mi
+  match: ".='F' and parent::*[self::m:subscripted-norm]"
+  replace:
+  - T: "Frobeniusa"      # phrase(the 'Frobenius' norm)
+
+- name: scalar-determinant
+  tag: determinant
+  match: "count(*)=1 and not(*[1][self::m:mtr])"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' square root of 25 equals 5)
+  - T: "wyznacznik"      # phrase(the 'determinant' of a matrix)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: "z"      # phrase(systems 'of' linear equations)
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
+      then: [t: "koniec wyznacznika"]      # phrase('end determinant' of a matrix)
+
+
+- name: subscripted-norm
+  tag: subscripted-norm
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' square root of 25 equals 5)
+  - test:
+      if: "*[2][.='∞']"
+      then:
+      - T: "norma"
+      - x: "*[2]"      # ∞ -> "nieskończoność"; emisja czyni indeks nawigowalnym (marker [[...]])
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(systems 'of' linear equations)
+      - x: "*[1]"
+      else:
+      - test:
+          if: "*[2][self::m:mrow and *[2][self::m:mo and .='→']]"
+          then:
+          - T: "norma"
+          - x: "*[2]"      # caly mrow indeksu p→q emitowany (nawigowalny); mowa "od p do q" nizej
+          else:
+          - test:
+            - if: "*[2][.='F']"
+              then:
+              - T: "norma"
+              - x: "*[2]"      # F -> "Frobeniusa" (regula mi kontekstowa); emisja = nawigowalny
+            - else_if: "*[2][.='*' or .='∗']"
+              then:
+              - T: "norma"
+              - x: "*[2]"      # * -> "gwiazdkowa" (regula mo kontekstowa); emisja = nawigowalny
+            - else:
+              - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+              - x: "*[2]"
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(systems 'of' linear equations)
+      - x: "*[1]"
+
+- name: word-open-subscripted-norm
+  tag: mo
+  match: ".='∥' and following-sibling::*[self::m:mo[.='∥'] or ((self::m:indexed-by or self::m:msub or self::m:msubsup) and *[1][self::m:mo and .='∥']) or ((self::m:power or self::m:msup) and *[1][(self::m:indexed-by or self::m:msub or self::m:msubsup) and *[1][self::m:mo and .='∥']])][1][not(self::m:mo)]"
+  variables:
+  - ClosingNorm: "following-sibling::*[self::m:mo[.='∥'] or ((self::m:indexed-by or self::m:msub or self::m:msubsup) and *[1][self::m:mo and .='∥']) or ((self::m:power or self::m:msup) and *[1][(self::m:indexed-by or self::m:msub or self::m:msubsup) and *[1][self::m:mo and .='∥']])][1]"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' norm can be a measure of distance)
+  - test:
+      if: "($ClosingNorm[self::m:power or self::m:msup] and $ClosingNorm/*[1]/*[2][.='∞']) or (not($ClosingNorm[self::m:power or self::m:msup]) and $ClosingNorm/*[2][.='∞'])"
+      then:
+      - T: "norma nieskończoności"      # phrase(the infinity norm can be a measure of distance)
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+      else:
+      - test:
+          if: "$ClosingNorm[self::m:power or self::m:msup] and $ClosingNorm/*[1]/*[2][self::m:mrow and *[2][self::m:mo and .='→']]"
+          then:
+          - T: "norma od"
+          - x: "$ClosingNorm/*[1]/*[2]/*[1]"
+          - T: "do"
+          - test:
+              if: "$ClosingNorm/*[1]/*[2]/*[3][.='∞']"
+              then:
+              - T: "nieskończoności"
+              else:
+              - x: "$ClosingNorm/*[1]/*[2]/*[3]"
+          else:
+          - test:
+              if: "not($ClosingNorm[self::m:power or self::m:msup]) and $ClosingNorm/*[2][self::m:mrow and *[2][self::m:mo and .='→']]"
+              then:
+              - T: "norma od"
+              - x: "$ClosingNorm/*[2]/*[1]"
+              - T: "do"
+              - test:
+                  if: "$ClosingNorm/*[2]/*[3][.='∞']"
+                  then:
+                  - T: "nieskończoności"
+                  else:
+                  - x: "$ClosingNorm/*[2]/*[3]"
+              else:
+              - test:
+                  if: "$ClosingNorm[self::m:power or self::m:msup]"
+                  then:
+                  - test:
+                    - if: "$ClosingNorm/*[1]/*[2][.='F']"
+                      then:
+                      - T: "norma Frobeniusa"
+                    - else_if: "$ClosingNorm/*[1]/*[2][.='*' or .='∗']"
+                      then:
+                      - T: "norma gwiazdkowa"
+                    - else:
+                      - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+                      - x: "$ClosingNorm/*[1]/*[2]"
+                  else:
+                  - test:
+                    - if: "$ClosingNorm/*[2][.='F']"
+                      then:
+                      - T: "norma Frobeniusa"
+                    - else_if: "$ClosingNorm/*[2][.='*' or .='∗']"
+                      then:
+                      - T: "norma gwiazdkowa"
+                    - else:
+                      - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+                      - x: "$ClosingNorm/*[2]"
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+
+- name: word-close-subscripted-powered-norm
+  tag: [power, msubsup, msup]
+  match: "(self::m:msubsup[*[1][self::m:mo and .='∥']] or (self::m:power | self::m:msup)[*[1][(self::m:indexed-by or self::m:msub or self::m:msubsup) and *[1][self::m:mo and .='∥']]]) and preceding-sibling::*[self::m:mo and .='∥']"
+  replace:
+  - test:
+      if: "self::m:msubsup"
+      then:
+      - test:
+        - if: "*[3][self::m:mn][.='2']"
+          then: [T: "do kwadratu"]      # phrase(x 'squared' equals 49)
+        - else_if: "*[3][self::m:mn][.='3']"
+          then: [T: "do sześcianu"]      # phrase(x 'cubed' equals 125)
+        - else:
+          - T: "do potęgi"      # phrase(x raised 'to the power' 4)
+          - x: "*[3]"
+      else:
+      - test:
+        - if: "*[2][self::m:mn][.='2']"
+          then: [T: "do kwadratu"]      # phrase(x 'squared' equals 49)
+        - else_if: "*[2][self::m:mn][.='3']"
+          then: [T: "do sześcianu"]      # phrase(x 'cubed' equals 125)
+        - else:
+          - T: "do potęgi"      # phrase(x raised 'to the power' 4)
+          - x: "*[2]"
+
+- name: word-close-subscripted-norm
+  tag: [indexed-by, msub]
+  match: "*[1][self::m:mo and .='∥'] and preceding-sibling::*[self::m:mo and .='∥']"
+  replace:
+  - T: ""
+
+- name: word-open-norm
+  tag: mo
+  match: ".='∥' and following-sibling::*[self::m:mo and .='∥']"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' norm can be a measure of distance)
+  - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: "z"      # phrase(the norm 'of' x)
+
+- name: word-close-norm
+  tag: mo
+  match: ".='∥' and preceding-sibling::*[self::m:mo and .='∥']"
+  replace:
+  - T: ""
+
+- name: word-leading-subscripted-norm
+  tag: mrow
+  match: "count(*)>3 and *[1][self::m:mo and .='∥'] and *[position()>2][(self::m:indexed-by or self::m:msub) and *[1][self::m:mo and .='∥']]"
+  variables:
+  - ClosingNorm: "*[(self::m:indexed-by or self::m:msub) and *[1][self::m:mo and .='∥']][1]"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' norm can be a measure of distance)
+  - test:
+      if: "$ClosingNorm/*[2][.='∞']"
+      then:
+      - T: "norma nieskończoności"      # phrase(the infinity norm can be a measure of distance)
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+      else:
+      - test:
+          if: "$ClosingNorm/*[2][self::m:mrow and *[2][self::m:mo and .='→']]"
+          then:
+          - T: "norma od"
+          - x: "$ClosingNorm/*[2]/*[1]"
+          - T: "do"
+          - test:
+              if: "$ClosingNorm/*[2]/*[3][.='∞']"
+              then:
+              - T: "nieskończoności"
+              else:
+              - x: "$ClosingNorm/*[2]/*[3]"
+          else:
+          - test:
+            - if: "$ClosingNorm/*[2][.='F']"
+              then:
+              - T: "norma Frobeniusa"
+            - else_if: "$ClosingNorm/*[2][.='*' or .='∗']"
+              then:
+              - T: "norma gwiazdkowa"
+            - else:
+              - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+              - x: "$ClosingNorm/*[2]"
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+  - x: "$ClosingNorm/preceding-sibling::*[not(self::m:mo and .='∥')]"
+  - x: "$ClosingNorm/following-sibling::*"
+
+- name: word-subscripted-norm
+  tag: mrow
+  match: "count(*)>2 and *[1][self::m:mo and .='∥'] and *[last()][(self::m:indexed-by or self::m:msub) and *[1][self::m:mo and .='∥']]"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' norm can be a measure of distance)
+  - test:
+      if: "*[last()]/*[2][.='∞']"
+      then:
+      - T: "norma nieskończoności"      # phrase(the infinity norm can be a measure of distance)
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+      else:
+      - test:
+          if: "*[last()]/*[2][self::m:mrow and *[2][self::m:mo and .='→']]"
+          then:
+          - T: "norma od"
+          - x: "*[last()]/*[2]/*[1]"
+          - T: "do"
+          - test:
+              if: "*[last()]/*[2]/*[3][.='∞']"
+              then:
+              - T: "nieskończoności"
+              else:
+              - x: "*[last()]/*[2]/*[3]"
+          else:
+          - test:
+            - if: "*[last()]/*[2][.='F']"
+              then:
+              - T: "norma Frobeniusa"
+            - else_if: "*[last()]/*[2][.='*' or .='∗']"
+              then:
+              - T: "norma gwiazdkowa"
+            - else:
+              - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+              - x: "*[last()]/*[2]"
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - T: "z"      # phrase(the norm 'of' x)
+  - x: "*[position()>1 and position()<last()]"
+
+- name: word-leading-norm
+  tag: mrow
+  match: "count(*)>3 and *[1][self::m:mo and .='∥'] and *[position()>2][self::m:mo and .='∥']"
+  variables:
+  - ClosingNorm: "*[self::m:mo and .='∥' and preceding-sibling::*][1]"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' norm can be a measure of distance)
+  - T: "norma"      # phrase(the 'norm' can be a measure of distance)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: "z"      # phrase(the norm 'of' x)
+  - x: "$ClosingNorm/preceding-sibling::*[not(self::m:mo and .='∥')]"
+  - x: "$ClosingNorm/following-sibling::*"
