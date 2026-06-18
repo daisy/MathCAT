@@ -1,5 +1,9 @@
 #![allow(non_snake_case)]
 
+mod ClearSpeak {
+    mod functions;
+}
+
 mod SimpleSpeak {
     mod functions;
     mod geometry;

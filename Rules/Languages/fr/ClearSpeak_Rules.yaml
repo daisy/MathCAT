@@ -236,11 +236,11 @@
   replace:
   - test:
       if: "$ClearSpeak_Trig = 'TrigInverse'"
-      then: [x: "*[1]", bookmark: "*[2]/@id", T: "l'inverse"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+      then: [x: "*[1]", bookmark: "*[2]/@id", T: "inverse"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
       else_test:
         if: "$ClearSpeak_Trig = 'ArcTrig'"
         then: [bookmark: "*[2]/@id", T: "arc", x: "*[1]"]      # phrase(the 'arc' of a circle)
-        else: [bookmark: "*[2]/@id", T: "l'inverse", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+        else: [x: "*[1]", bookmark: "*[2]/@id", T: "inverse"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
 - name: function-squared-or-cubed
   tag: power
@@ -263,12 +263,17 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase('the' third power of 2)
-  - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - T: "puissance de"      # phrase(the third 'power of' 6)
+      then:
+      - bookmark: "*[2]/@id"
+      - x: "ToOrdinal(*[2])"
+      - T: "puissance"      # phrase(the third 'power' of 6)
+      else:
+      - T: "puissance"      # phrase(the third 'power' of 6)
+      - bookmark: "*[2]/@id"
+      - x: "*[2]"
+  - T: "de" # phrase(the third power 'of' 6)
   - pause: short
   - x: "*[1]"
 
@@ -536,7 +541,7 @@
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - T: "l'invervalle de"      # phrase('the interval from' a to b)
+  - T: "l'intervalle de"      # phrase('the interval from' a to b)
   - x: "*[1]"
   - T: "à"      # phrase(the interval from a 'to' b)
   - x: "*[2]"
@@ -546,8 +551,8 @@
       then:
       - test:
           if: "starts-with(name(.), 'open')"
-          then: [T: "sans"]      # phrase(the interval from a to b 'not' including b)
-      - T: "inclure"      # phrase(the interval from a to b not 'including' b)
+          then: [T: "n'incluant pas"]      # phrase(the interval from a to b 'not including' b)
+          else: [T: "incluant"]            # phrase(the interval from a to b 'including' b)
       - x: "*[1]"
     # logic to deal with [not] arg #1
   - test:
@@ -568,8 +573,8 @@
           then:
           - test:
               if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [T: "n'"]      # phrase(the interval 'not' including a)
-          - T: "incluant pas"      # phrase(the interval not 'including' a)
+              then: [T: "n'incluant pas"]      # phrase(the interval 'not including' a)
+              else: [T: "incluant"]            # phrase(the interval 'including' a)
       - x: "*[2]"
 
     # onto the [not] [including]... part
@@ -611,7 +616,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [T: "la"]      # phrase('the' square root of 25)
+      then: [T: "le"]      # phrase('the' square root of 25)
   - test:
     - if: ".='log'"
       then: [T: "logarithme"]
