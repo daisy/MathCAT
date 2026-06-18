@@ -2,6 +2,7 @@
 
 mod ClearSpeak {
     mod functions;
+    mod large_ops;
 }
 
 mod SimpleSpeak {
