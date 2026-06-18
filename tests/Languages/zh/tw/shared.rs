@@ -151,7 +151,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 下標 k 的 i 次方")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 下標 k, 的 i 次方")?;
     return Ok(());
 
 }
@@ -182,7 +182,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 下標 k 的 i 次方")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 下標 k, 的 i 次方")?;
     return Ok(());
 
 }

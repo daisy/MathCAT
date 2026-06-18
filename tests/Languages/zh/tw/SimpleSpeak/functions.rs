@@ -102,7 +102,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("zh-tw", "SimpleSpeak", expr, "log 底 b, x")?;
+    test("zh-tw", "SimpleSpeak", expr, "log 底數 b, x")?;
     return Ok(());
 
 }
@@ -110,7 +110,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("zh-tw", "SimpleSpeak", expr, "log 底 b; 左小括 x 加 y 右小括")?;
+    test("zh-tw", "SimpleSpeak", expr, "log 底數 b; 左小括 x 加 y 右小括")?;
     return Ok(());
 
 }
