@@ -95,6 +95,8 @@
     LaTeX:
       UseShortName: false   # Use the short form for the latex (e.g., "~a" instead of "\alpha")
 
+    French:
+      UseShortForm: false   # Use the short form for trig functions and other abbreviations
 
   Other:
     # Note: DecimalSeparator is user-facing (can be Auto), DecimalSeparators is code-facing (always a char)

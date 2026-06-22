@@ -1,2 +1,20 @@
 ---
 - include: "../definitions.yaml"
+
+- AbbreviationsForGrouping: {
+     "arg", "Card", "rot",
+     "arcsin", "arccos", "arctan", "arccotan",
+     "ch", "sh", "th",
+  }
+
+- ShortForms: {
+  # p51 -- short forms for trig functions
+  # This uses a hack of private space chars that are then mapped to braille chars via unicode.yaml.
+  # We need to do this because otherwise it tries to translate the short form.
+  #  ⠬ -> \ue000
+  #  ⠨ -> \ue001
+  #  ⠮ -> \ue002
+  #  ⠘ -> \ue003
+      "sin": "\ue000", cos: "\ue001\ue000", tan: "\ue002", "cotan": "\ue001\ue002",
+      arcsin: "\ue003\ue000", arccos: "\ue003\ue001\ue002", arctan: "\ue003\ue002", arccotan: "\ue003\ue001\ue002",
+  }

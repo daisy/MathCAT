@@ -37,7 +37,7 @@ fn equilibrium_III_5_2() -> Result<()> {
     let expr= r#"<math><mn>2</mn><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mi mathvariant="normal">O</mi>
         <munderover><mo>&#x21CC;</mo><mrow><mo>(</mo><mn>2</mn><mo>)</mo></mrow><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow></munderover
         ><msub><mi mathvariant="normal">H</mi><mn>3</mn></msub><msup><mi mathvariant="normal">O</mi><mo>+</mo></msup><mo>+</mo><msup><mi>OH</mi><mo>-</mo></msup></math>"#;
-    test_braille("French", expr, " ⠣⠨⠓⠣⠨⠕⠰⠸⠻⠆⠢⠢⠦⠣⠴⠈⠈⠦⠡⠴⠨⠓⠩⠨⠕⠈⠰⠖⠆⠖⠨⠕⠨⠓⠈⠰⠤⠆")?;
+    test_braille("French", expr, "⠣⠨⠓⠣⠨⠕⠰⠸⠻⠆⠢⠢⠦⠣⠴⠈⠈⠦⠡⠴⠨⠓⠩⠨⠕⠈⠰⠖⠆⠖⠨⠕⠨⠓⠈⠰⠤⠆")?;
     return Ok(());
 }
 
@@ -49,6 +49,6 @@ fn equilibrium_III_5_3() -> Result<()> {
                     <mi mathvariant="normal">R</mi><mo>-</mo><mi>CO</mi><mo>-</mo><mi mathvariant="normal">O</mi><mo>-</mo>
                     <mi mathvariant="normal">R</mi><mo>'</mo><mo>+</mo>
                             <msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mi mathvariant="normal">O</mi></math>"#;
-    test_braille("French", expr, " ⠨⠗⠤⠨⠉⠨⠕⠤⠨⠕⠤⠨⠓⠖⠨⠗⠄⠤⠨⠕⠨⠓  ⠸⠻⠨⠢⠰⠓⠽⠙⠗⠕⠇⠽⠎⠑⠆⠨⠔⠈⠰⠑⠎⠞⠗⠊⠋⠊⠉⠁⠞⠊⠕⠝⠆⠨⠗⠤⠨⠉⠨⠕⠤⠨⠕⠤⠨⠗⠄⠖⠨⠓⠢⠣⠨⠕")?;
+    test_braille("French", expr, "⠨⠗⠤⠨⠉⠨⠕⠤⠨⠕⠤⠨⠓⠖⠨⠗⠄⠤⠨⠕⠨⠓  ⠸⠻⠨⠢⠰⠓⠽⠙⠗⠕⠇⠽⠎⠑⠆⠨⠔⠈⠰⠑⠎⠞⠗⠊⠋⠊⠉⠁⠞⠊⠕⠝⠆⠨⠗⠤⠨⠉⠨⠕⠤⠨⠕⠤⠨⠗⠄⠖⠨⠓⠢⠣⠨⠕")?;
     return Ok(());
 }

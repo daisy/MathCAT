@@ -1,7 +1,7 @@
 ---
  
- - "⇌": [t: "⠸⠻"]                    # 0x21CC (Rightwards harpoon over leftwards harpoon (equilibrium))
-#  - "⥂": [t: ""]               # 0x2942 (Rightwards arrow above short leftwards arrow (equilibrium, trend to the right))
+ - "⇌": [t: "⠸⠻"]             # 0x21CC (Rightwards harpoon over leftwards harpoon (equilibrium))
+#  - "⥂": [t: ""]              # 0x2942 (Rightwards arrow above short leftwards arrow (equilibrium, trend to the right))
 #  - "⥄": [t: ""]              # 0x2944 (Short rightwards arrow above leftwards arrow (equilibrium, trend to the left))
 
 # Mappings for some new Unicode chemistry arrows/symbols

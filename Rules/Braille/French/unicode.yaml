@@ -42,7 +42,22 @@
  - "w": [t: "L⠺"]               # 0x77 
  - "x": [t: "L⠭"]               # 0x78 
  - "y": [t: "L⠽"]               # 0x79 
- - "z": [t: "L⠵"]               # 0x7a 
+ - "z": [t: "L⠵"]               # 0x7a
+
+ - "ç": [t: "L⠯"]               # 0x282f
+ - "é": [t: "L⠿"]               # 0x283f
+ - "à": [t: "L⠷"]               # 0x2837
+ - "è": [t: "L⠮"]               # 0x282e
+ - "ù": [t: "L⠾"]               # 0x283e
+ - "â": [t: "L⠡"]               # 0x2821
+ - "ê": [t: "L⠣"]               # 0x2823
+ - "î": [t: "L⠩"]               # 0x2829
+ - "ô": [t: "L⠹"]               # 0x2839
+ - "û": [t: "L⠱"]               # 0x2831
+ - "ë": [t: "L⠫"]               # 0x282b
+ - "ï": [t: "L⠻"]               # 0x283b
+ - "ü": [t: "L⠳"]               # 0x2833
+ - "œ": [t: "L⠪"]               # 0x282a
 
  - "A": [t: "CL⠁"]              # 0x41 
  - "B":                         # 0x42 
@@ -190,6 +205,7 @@
  - "%": [t: "⠐⠬"]               # 0x0025 (percent sign)
  - "(": [t: "⠦"]                # 0x0028 (left parenthesis)
  - ")": [t: "⠴"]                # 0x0029 (right parenthesis)
+ - "*": [t: "⠐⠔"]                # 0x002A (asterisk)
  - "+": [t: "⠖"]                # 0x002B (regular plus)
  - ",": [t: "⠂"]                # 0x002C (comma)
  - "-": [t: "⠤"]                # 0x002D (regular minus)
@@ -206,11 +222,13 @@
  - "8": [t: "N⠳"]                # 0x0038 (digit eight)
  - "9": [t: "N⠪"]                # 0x0039 (digit nine)
  - ":": [t: "⠒"]                # 0x003A (colon)
+ - ";": [t: "⠆"]                # 0x003B (semicolon)
  - "<": [t: "⠐⠣"]                # 0x003C (less than sign)
  - "=": [t: "⠶"]                # 0x003D (regular equals sign)
  - ">": [t: "⠐⠜"]                # 0x003E (greater than sign ( regular ))
  - "[": [t: "⠷"]                # 0x005B (left square bracket)
  - "]": [t: "⠾"]                # 0x005D (right square bracket)
+ - "^": [t: "⠘⠒"]                # 0x005E (caret)
  - "{":                          # 0x007B ( left curly brace)
     - test:
         if: "following-sibling::*[1][self::m:mtable]"
@@ -221,8 +239,9 @@
         else: [t: "⠨⠦"]   # regular brace
  - "|": [t: "⠿"]                # 0x007C (vertical bar)
  - "}": [t: "⠨⠴"]                # 0x007D (right curly brace)
- - "~": [t: "⠘⠶"]                # 0x007E (simple tilde (is related to, is similar))
+ - "~": [t: "⠐⠸⠒"]                # 0x007E (simple tilde (is related to, is similar))
  - "¢": [t: "⠉"]                # 0x00A2 (cent)
+ - "¯": [t: "⠸⠒"]                # 0x00AF (bar)
  - "°": [t: "⠐⠕"]                # 0x00B0 (degree sign)
  - "±": [t: "⠖⠤"]                # 0x00B1 (plus or minus)
  - "¼": [t: "⠡⠌⠹"]                # 0x00BC (vulgar fraction one quarter)
@@ -233,6 +252,7 @@
  - "ב": [t: "⠘⠘⠃"]                # 0x05D1 (  beth)
  - "ג": [t: "⠘⠘⠛"]                # 0x05D2 (gimel)
  - "ד": [t: "⠘⠘⠙"]                # 0x05D3 (daleth)
+ - "◌̌": [t: "⠸⠘⠒"]                # 0x030C (combing caron)
  - "‖": [t: "⠘⠿"]                # 0x2016 (double vertical bar)
  - "‰": [t: "⠐⠬⠬"]                # 0x2030 (per mille sign)
  - "′": [t: "⠄"]                # 0x2032 (prime)
@@ -243,7 +263,17 @@
  - "ℵ": [t: "⠘⠘⠁"]                # 0x2135 (alef)
  - "←": [t: "⠸⠪"]                # 0x2190 (left pointing arrow)
  - "↑": [t: "⠘⠻"]                # 0x2191 (arrow pointing up)
- - "→": [t: "⠸⠱"]                # 0x2192 (left pointing arrow)
+ - "→":                           # 0x2192 (right pointing arrow)
+     - test:
+        if: "parent::m:mover and not(following-sibling::*)"
+        then: [t: "⠨⠒"]
+        else: [t: "⠸⠱"]
+ - "⇀":                           # 0x2192 (right pointing arrow)
+     - test:
+        if: "parent::m:mover and not(following-sibling::*)"
+        then: [t: "⠨⠒"]
+        else: [t: "⠸⠱"]
+
  - "↓": [t: "⠨⠻"]                # 0x2193 (arrow pointing down)
  - "↔": [t: "⠐⠻"]                # 0x2194 (horizontal two-way arrow)
  - "↖": [t: "⠘⠪"]                # 0x2196 (north west arrow)
@@ -275,7 +305,9 @@
  - "∓": [t: "⠤⠖"]                # 0x2213 (minus or plus)
  - "∘": [t: "⠸⠼"]                # 0x2218 (hollow dot)
  - "∞": [t: "⠘⠉"]                # 0x221E (infinity)
- - "∥": [t: "⠸⠳"]                # 0x2225 (is parallel to)
+ - "⋯": [t: "⠲⠲⠲"]                # 0x22EF (horizontal ellipsis)
+ - "∥": [t: "⠘⠿"]                # 0x2225 (is parallel to, but French braille uses this for magnitude, etc)
+ - "⫽": [t: "⠸⠳"]                # 0x2A7D (DOUBLE SOLIDUS OPERATOR, but French braille uses this for parallel to sign)
  - "∧": [t: "⠘⠔"]                # 0x2227 (logical product (and, meet))
  - "∨": [t: "⠘⠢"]                # 0x2228 (logical sum (join,or))
  - "∩": [t: "⠘⠖"]                # 0x2229 (intersection sign ( cap ))
@@ -308,10 +340,18 @@
  - "⊕": [t: "⠨⠖"]                # 0x2295 (circle with interior plus sign (exclusive or, direct sum, diletion))
  - "⊗": [t: "⠨⠔"]                # 0x2297 (circle with interior cross (tensor product))
  - "⊥": [t: "⠘⠳"]                # 0x22A5 (is perpendicular to)
- - "⋅": [t: "⠔⠔"]                # 0x22C5 (dot,and times)
+ - "⋅": [t: "⠔⠔"]                 # 0x22C5 (dot,and times)
  - "⌄": [t: "⠸⠘⠒"]                # 0x2304 (inverted caret)
+ - "⌣": [t: "⠈⠈⠈"]               # 0x2323 (smile)
  - "⏜": [t: "⠈⠒"]                # 0x23DC (arc concave upward)
  - "△": [t: "⠨⠘⠙"]                # 0x25B3 (increment (laplacian Delta)  )
  - "✕": [t: "⠐⠐⠔"]                # 0x2715 (multiplication X)
  - "⟧": [t: "⠨⠾"]                # 0x27E7 (right barred bracket)
  - "⪥": [t: "⠐⠜⠐⠣"]                # 0x2AA5 (greater than sign followed by less than sign)
+ - "⫽": [t: "⠸⠳"]                # 0x2A7D (DOUBLE SOLIDUS OPERATOR)
+
+# Private space chars used for short forms for trig functions
+ - "\ue000": [t: "L⠬"]
+ - "\ue001": [t: "L⠨"]
+ - "\ue002": [t: "L⠮"]
+ - "\ue003": [t: "L⠘"]
