@@ -108,7 +108,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [T: "slut"]          # phrase("start of fraction x over y 'end over'")
+      then: [T: "slut bråk"]          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 # not sure what really should be said for these since we should not assume they are square roots
