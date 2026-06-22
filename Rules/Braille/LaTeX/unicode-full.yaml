@@ -2494,14 +2494,13 @@
  - "ﬄ": [t: "\\ffl𝐖"]                    # 0xfb04
 
  - "𝐀-𝐙":    # 0x1d400 - 0x1d419
-     - tc: "\\mathbf𝐖;𝐖"
+     - tc: "\\mathbf𝐖"
      - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-
-
+     - tc: "𝐖"
  - "𝐚-𝐳":    # 0x1d41a - 0x1d433
-     - tc: "\\mathbf𝐖;𝐖"
+     - tc: "\\mathbf𝐖"
      - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
-
+     - tc: "𝐖"
 # don't mark these as italic
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
      - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
@@ -2515,631 +2514,133 @@
      - spell: "translate('.', '𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'ijklmnopqrstuvwxyz')"
 
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
-     - tc: "\\mathbit𝐖;𝐖"
+     - tc: "\\mathbit𝐖"
      - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "W"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
-     - tc: "\\mathbit𝐖;𝐖"
+     - tc: "\\mathbit𝐖"
      - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "W"
 
  - "𝒜-𝒩":    # 0x1d49c - 0x1d4b5
-     - tc: "\\mathscr𝐖;𝐖"
+     - tc: "\\mathscr𝐖"
      - spell: "translate('.', '𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩', 'ABCDEFGHIJKLMN')"
+     - tc: "W"
 
  - "𝒬-𝒵":    # 0x1d49c - 0x1d4b5
-     - tc: "\\mathscr𝐖;𝐖"
+     - tc: "\\mathscr𝐖"
      - spell: "translate('.', '𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'QRSTUVWXYZ')"
+     - tc: "W"
 
  - "𝒪": [t: "\\mathcal𝐖O𝐖"]              # 0x1d4aa
  - "𝒫": [t: "\\mathcal𝐖P𝐖"]              # 0x1d4ab
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
-     - tc: "\\mathscr𝐖;𝐖"
+     - tc: "\\mathscr𝐖"
      - spell: "translate('.', '𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
-
+     - tc: "𝐖"
  - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
-     - tc: "\\mathbcal𝐖;𝐖"
+     - tc: "\\mathbcal𝐖"
      - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-
+     - tc: "𝐖"
  - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
-     - tc: "\\mathbcal𝐖;𝐖"
+     - tc: "\\mathbcal𝐖"
      - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
 
- - "𝔄": [t: "\\mathfrak𝐖A𝐖"]             # 0x1d504
- - "𝔅": [t: "\\mathfrak𝐖B𝐖"]             # 0x1d505
- - "𝔇": [t: "\\mathfrak𝐖D𝐖"]             # 0x1d507
- - "𝔈": [t: "\\mathfrak𝐖E𝐖"]             # 0x1d508
- - "𝔉": [t: "\\mathfrak𝐖F𝐖"]             # 0x1d509
- - "𝔊": [t: "\\mathfrak𝐖G𝐖"]             # 0x1d50a
- - "𝔍": [t: "\\mathfrak𝐖J𝐖"]             # 0x1d50d
- - "𝔎": [t: "\\mathfrak𝐖K𝐖"]             # 0x1d50e
- - "𝔏": [t: "\\mathfrak𝐖L𝐖"]             # 0x1d50f
- - "𝔐": [t: "\\mathfrak𝐖M𝐖"]             # 0x1d510
- - "𝔑": [t: "\\mathfrak𝐖N𝐖"]             # 0x1d511
- - "𝔒": [t: "\\mathfrak𝐖O𝐖"]             # 0x1d512
- - "𝔓": [t: "\\mathfrak𝐖P𝐖"]             # 0x1d513
- - "𝔔": [t: "\\mathfrak𝐖Q𝐖"]             # 0x1d514
- - "𝔖": [t: "\\mathfrak𝐖S𝐖"]             # 0x1d516
- - "𝔗": [t: "\\mathfrak𝐖T𝐖"]             # 0x1d517
- - "𝔘": [t: "\\mathfrak𝐖U𝐖"]             # 0x1d518
- - "𝔙": [t: "\\mathfrak𝐖V𝐖"]             # 0x1d519
- - "𝔚": [t: "\\mathfrak𝐖W𝐖"]             # 0x1d51a
- - "𝔛": [t: "\\mathfrak𝐖X𝐖"]             # 0x1d51b
- - "𝔜": [t: "\\mathfrak𝐖Y𝐖"]             # 0x1d51c
- - "𝔞": [t: "\\mathfrak𝐖a𝐖"]             # 0x1d51e
- - "𝔟": [t: "\\mathfrak𝐖b𝐖"]             # 0x1d51f
- - "𝔠": [t: "\\mathfrak𝐖c𝐖"]             # 0x1d520
- - "𝔡": [t: "\\mathfrak𝐖d𝐖"]             # 0x1d521
- - "𝔢": [t: "\\mathfrak𝐖e𝐖"]             # 0x1d522
- - "𝔣": [t: "\\mathfrak𝐖f𝐖"]             # 0x1d523
- - "𝔤": [t: "\\mathfrak𝐖g𝐖"]             # 0x1d524
- - "𝔥": [t: "\\mathfrak𝐖h𝐖"]             # 0x1d525
- - "𝔦": [t: "\\mathfrak𝐖i𝐖"]             # 0x1d526
- - "𝔧": [t: "\\mathfrak𝐖j𝐖"]             # 0x1d527
- - "𝔨": [t: "\\mathfrak𝐖k𝐖"]             # 0x1d528
- - "𝔩": [t: "\\mathfrak𝐖l𝐖"]             # 0x1d529
- - "𝔪": [t: "\\mathfrak𝐖m𝐖"]             # 0x1d52a
- - "𝔫": [t: "\\mathfrak𝐖n𝐖"]             # 0x1d52b
- - "𝔬": [t: "\\mathfrak𝐖o𝐖"]             # 0x1d52c
- - "𝔭": [t: "\\mathfrak𝐖p𝐖"]             # 0x1d52d
- - "𝔮": [t: "\\mathfrak𝐖q𝐖"]             # 0x1d52e
- - "𝔯": [t: "\\mathfrak𝐖r𝐖"]             # 0x1d52f
- - "𝔰": [t: "\\mathfrak𝐖s𝐖"]             # 0x1d530
- - "𝔱": [t: "\\mathfrak𝐖t𝐖"]             # 0x1d531
- - "𝔲": [t: "\\mathfrak𝐖u𝐖"]             # 0x1d532
- - "𝔳": [t: "\\mathfrak𝐖v𝐖"]             # 0x1d533
- - "𝔴": [t: "\\mathfrak𝐖w𝐖"]             # 0x1d534
- - "𝔵": [t: "\\mathfrak𝐖x𝐖"]             # 0x1d535
- - "𝔶": [t: "\\mathfrak𝐖y𝐖"]             # 0x1d536
- - "𝔷": [t: "\\mathfrak𝐖z𝐖"]             # 0x1d537
- - "𝔸":                                  # 0x1d538
+ - "𝔄-𝔜":    # 0x1d504 - 0x1d51c
+     - tc: "\\mathfrak𝐖"
+     - spell: "translate('.', '𝔄𝔅𝔇𝔈𝔉𝔊𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABDEFGJKLMNOPQSTUVWXY')"
+     - tc: "𝐖"
+ - "𝔞-𝔷":    # 0x1d51e - 0x1d537
+     - tc: "\\mathfrak𝐖"
+     - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝔸-𝔹":    # 0x1d538 - 0x1d539 (A B)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\A"]
-         else: [t: "\\mathbb𝐖A𝐖"]
- - "𝔹":                                  # 0x1d539
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝔸𝔹', 'AB')"
+     - tc: "𝐖"
+ - "𝔻-𝔾":    # 0x1d53b - 0x1d53e (D E F G)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\B"]
-         else: [t: "\\mathbb𝐖B𝐖"]
- - "𝔻":                                  # 0x1d53b
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝔻𝔼𝔽𝔾', 'DEFG')"
+     - tc: "𝐖"
+ - "𝕀-𝕄":    # 0x1d540 - 0x1d544 (I J K L M)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\D"]
-         else: [t: "\\mathbb𝐖D𝐖"]
- - "𝔼":                                  # 0x1d53c
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝕀𝕁𝕂𝕃𝕄', 'IJKLM')"
+     - tc: "𝐖"
+ - "𝕆":                                  # 0x1d546 (O)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\E"]
-         else: [t: "\\mathbb𝐖E𝐖"]
- - "𝔽":                                  # 0x1d53d
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝕆', 'O')"
+     - tc: "𝐖"
+ - "𝕊-𝕐":    # 0x1d54a - 0x1d550 (S T U V W X Y)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\F"]
-         else: [t: "\\mathbb𝐖F𝐖"]
- - "𝔾":                                  # 0x1d53e
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'STUVWXY')"
+     - tc: "𝐖"
+ - "𝕒-𝕫":    # 0x1d552 - 0x1d56b (a-z)
      - test:
          if: "$LaTeX_UseShortName"
-         then: [t: "\\G"]
-         else: [t: "\\mathbb𝐖G𝐖"]
- - "𝕀":                                  # 0x1d540
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\I"]
-         else: [t: "\\mathbb𝐖I𝐖"]
- - "𝕁":                                  # 0x1d541
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\J"]
-         else: [t: "\\mathbb𝐖J𝐖"]
- - "𝕂":                                  # 0x1d542
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\K"]
-         else: [t: "\\mathbb𝐖K𝐖"]
- - "𝕃":                                  # 0x1d543
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\L"]
-         else: [t: "\\mathbb𝐖L𝐖"]
- - "𝕄":                                  # 0x1d544
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\M"]
-         else: [t: "\\mathbb𝐖M𝐖"]
- - "𝕆":                                  # 0x1d546
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\O"]
-         else: [t: "\\mathbb𝐖O𝐖"]
- - "𝕊":                                  # 0x1d54a
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\S"]
-         else: [t: "\\mathbb𝐖S𝐖"]
- - "𝕋":                                  # 0x1d54b
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\T"]
-         else: [t: "\\mathbb𝐖T𝐖"]
- - "𝕌":                                  # 0x1d54c
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\U"]
-         else: [t: "\\mathbb𝐖U𝐖"]
- - "𝕍":                                  # 0x1d54d
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\V"]
-         else: [t: "\\mathbb𝐖V𝐖"]
- - "𝕎":                                  # 0x1d54e
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\W"]
-         else: [t: "\\mathbb𝐖W𝐖"]
- - "𝕏":                                  # 0x1d54f
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\X"]
-         else: [t: "\\mathbb𝐖X𝐖"]
- - "𝕐":                                  # 0x1d550
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\Y"]
-         else: [t: "\\mathbb𝐖Y𝐖"]
- - "𝕒":                                  # 0x1d552
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\a"]
-         else: [t: "\\mathbb𝐖a𝐖"]
- - "𝕓":                                  # 0x1d553
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\b"]
-         else: [t: "\\mathbb𝐖b𝐖"]
- - "𝕔":                                  # 0x1d554
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\c"]
-         else: [t: "\\mathbb𝐖c𝐖"]
- - "𝕕":                                  # 0x1d555
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\d"]
-         else: [t: "\\mathbb𝐖d𝐖"]
- - "𝕖":                                  # 0x1d556
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\e"]
-         else: [t: "\\mathbb𝐖e𝐖"]
- - "𝕗":                                  # 0x1d557
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\f"]
-         else: [t: "\\mathbb𝐖f𝐖"]
- - "𝕘":                                  # 0x1d558
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\g"]
-         else: [t: "\\mathbb𝐖g𝐖"]
- - "𝕙":                                  # 0x1d559
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\h"]
-         else: [t: "\\mathbb𝐖h𝐖"]
- - "𝕚":                                  # 0x1d55a
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\i"]
-         else: [t: "\\mathbb𝐖i𝐖"]
- - "𝕛":                                  # 0x1d55b
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\j"]
-         else: [t: "\\mathbb𝐖j𝐖"]
- - "𝕜":                                  # 0x1d55c
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\k"]
-         else: [t: "\\mathbb𝐖k𝐖"]
- - "𝕝":                                  # 0x1d55d
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\l"]
-         else: [t: "\\mathbb𝐖l𝐖"]
- - "𝕞":                                  # 0x1d55e
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\m"]
-         else: [t: "\\mathbb𝐖m𝐖"]
- - "𝕟":                                  # 0x1d55f
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\n"]
-         else: [t: "\\mathbb𝐖n𝐖"]
- - "𝕠":                                  # 0x1d560
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\o"]
-         else: [t: "\\mathbb𝐖o𝐖"]
- - "𝕡":                                  # 0x1d561
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\p"]
-         else: [t: "\\mathbb𝐖p𝐖"]
- - "𝕢":                                  # 0x1d562
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\q"]
-         else: [t: "\\mathbb𝐖q𝐖"]
- - "𝕣":                                  # 0x1d563
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\r"]
-         else: [t: "\\mathbb𝐖r𝐖"]
- - "𝕤":                                  # 0x1d564
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\s"]
-         else: [t: "\\mathbb𝐖s𝐖"]
- - "𝕥":                                  # 0x1d565
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\t"]
-         else: [t: "\\mathbb𝐖t𝐖"]
- - "𝕦":                                  # 0x1d566
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\u"]
-         else: [t: "\\mathbb𝐖u𝐖"]
- - "𝕧":                                  # 0x1d567
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\v"]
-         else: [t: "\\mathbb𝐖v𝐖"]
- - "𝕨":                                  # 0x1d568
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\w"]
-         else: [t: "\\mathbb𝐖w𝐖"]
- - "𝕩":                                  # 0x1d569
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\x"]
-         else: [t: "\\mathbb𝐖x𝐖"]
- - "𝕪":                                  # 0x1d56a
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\y"]
-         else: [t: "\\mathbb𝐖y𝐖"]
- - "𝕫":                                  # 0x1d56b
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "\\z"]
-         else: [t: "\\mathbb𝐖z𝐖"]
- - "𝕬": [t: "\\mathbfrak𝐖A𝐖"]            # 0x1d56c
- - "𝕭": [t: "\\mathbfrak𝐖B𝐖"]            # 0x1d56d
- - "𝕮": [t: "\\mathbfrak𝐖C𝐖"]            # 0x1d56e
- - "𝕯": [t: "\\mathbfrak𝐖D𝐖"]            # 0x1d56f
- - "𝕰": [t: "\\mathbfrak𝐖E𝐖"]            # 0x1d570
- - "𝕱": [t: "\\mathbfrak𝐖F𝐖"]            # 0x1d571
- - "𝕲": [t: "\\mathbfrak𝐖G𝐖"]            # 0x1d572
- - "𝕳": [t: "\\mathbfrak𝐖H𝐖"]            # 0x1d573
- - "𝕴": [t: "\\mathbfrak𝐖I𝐖"]            # 0x1d574
- - "𝕵": [t: "\\mathbfrak𝐖J𝐖"]            # 0x1d575
- - "𝕶": [t: "\\mathbfrak𝐖K𝐖"]            # 0x1d576
- - "𝕷": [t: "\\mathbfrak𝐖L𝐖"]            # 0x1d577
- - "𝕸": [t: "\\mathbfrak𝐖M𝐖"]            # 0x1d578
- - "𝕹": [t: "\\mathbfrak𝐖N𝐖"]            # 0x1d579
- - "𝕺": [t: "\\mathbfrak𝐖O𝐖"]            # 0x1d57a
- - "𝕻": [t: "\\mathbfrak𝐖P𝐖"]            # 0x1d57b
- - "𝕼": [t: "\\mathbfrak𝐖Q𝐖"]            # 0x1d57c
- - "𝕽": [t: "\\mathbfrak𝐖R𝐖"]            # 0x1d57d
- - "𝕾": [t: "\\mathbfrak𝐖S𝐖"]            # 0x1d57e
- - "𝕿": [t: "\\mathbfrak𝐖T𝐖"]            # 0x1d57f
- - "𝖀": [t: "\\mathbfrak𝐖U𝐖"]            # 0x1d580
- - "𝖁": [t: "\\mathbfrak𝐖V𝐖"]            # 0x1d581
- - "𝖂": [t: "\\mathbfrak𝐖W𝐖"]            # 0x1d582
- - "𝖃": [t: "\\mathbfrak𝐖X𝐖"]            # 0x1d583
- - "𝖄": [t: "\\mathbfrak𝐖Y𝐖"]            # 0x1d584
- - "𝖅": [t: "\\mathbfrak𝐖Z𝐖"]            # 0x1d585
- - "𝖆": [t: "\\mathbfrak𝐖a𝐖"]            # 0x1d586
- - "𝖇": [t: "\\mathbfrak𝐖b𝐖"]            # 0x1d587
- - "𝖈": [t: "\\mathbfrak𝐖c𝐖"]            # 0x1d588
- - "𝖉": [t: "\\mathbfrak𝐖d𝐖"]            # 0x1d589
- - "𝖊": [t: "\\mathbfrak𝐖e𝐖"]            # 0x1d58a
- - "𝖋": [t: "\\mathbfrak𝐖f𝐖"]            # 0x1d58b
- - "𝖌": [t: "\\mathbfrak𝐖g𝐖"]            # 0x1d58c
- - "𝖍": [t: "\\mathbfrak𝐖h𝐖"]            # 0x1d58d
- - "𝖎": [t: "\\mathbfrak𝐖i𝐖"]            # 0x1d58e
- - "𝖏": [t: "\\mathbfrak𝐖j𝐖"]            # 0x1d58f
- - "𝖐": [t: "\\mathbfrak𝐖k𝐖"]            # 0x1d590
- - "𝖑": [t: "\\mathbfrak𝐖l𝐖"]            # 0x1d591
- - "𝖒": [t: "\\mathbfrak𝐖m𝐖"]            # 0x1d592
- - "𝖓": [t: "\\mathbfrak𝐖n𝐖"]            # 0x1d593
- - "𝖔": [t: "\\mathbfrak𝐖o𝐖"]            # 0x1d594
- - "𝖕": [t: "\\mathbfrak𝐖p𝐖"]            # 0x1d595
- - "𝖖": [t: "\\mathbfrak𝐖q𝐖"]            # 0x1d596
- - "𝖗": [t: "\\mathbfrak𝐖r𝐖"]            # 0x1d597
- - "𝖘": [t: "\\mathbfrak𝐖s𝐖"]            # 0x1d598
- - "𝖙": [t: "\\mathbfrak𝐖t𝐖"]            # 0x1d599
- - "𝖚": [t: "\\mathbfrak𝐖u𝐖"]            # 0x1d59a
- - "𝖛": [t: "\\mathbfrak𝐖v𝐖"]            # 0x1d59b
- - "𝖜": [t: "\\mathbfrak𝐖w𝐖"]            # 0x1d59c
- - "𝖝": [t: "\\mathbfrak𝐖x𝐖"]            # 0x1d59d
- - "𝖞": [t: "\\mathbfrak𝐖y𝐖"]            # 0x1d59e
- - "𝖟": [t: "\\mathbfrak𝐖z𝐖"]            # 0x1d59f
- - "𝖠": [t: "\\mathsf𝐖A𝐖"]               # 0x1d5a0
- - "𝖡": [t: "\\mathsf𝐖B𝐖"]               # 0x1d5a1
- - "𝖢": [t: "\\mathsf𝐖C𝐖"]               # 0x1d5a2
- - "𝖣": [t: "\\mathsf𝐖D𝐖"]               # 0x1d5a3
- - "𝖤": [t: "\\mathsf𝐖E𝐖"]               # 0x1d5a4
- - "𝖥": [t: "\\mathsf𝐖F𝐖"]               # 0x1d5a5
- - "𝖦": [t: "\\mathsf𝐖G𝐖"]               # 0x1d5a6
- - "𝖧": [t: "\\mathsf𝐖H𝐖"]               # 0x1d5a7
- - "𝖨": [t: "\\mathsf𝐖I𝐖"]               # 0x1d5a8
- - "𝖩": [t: "\\mathsf𝐖J𝐖"]               # 0x1d5a9
- - "𝖪": [t: "\\mathsf𝐖K𝐖"]               # 0x1d5aa
- - "𝖫": [t: "\\mathsf𝐖L𝐖"]               # 0x1d5ab
- - "𝖬": [t: "\\mathsf𝐖M𝐖"]               # 0x1d5ac
- - "𝖭": [t: "\\mathsf𝐖N𝐖"]               # 0x1d5ad
- - "𝖮": [t: "\\mathsf𝐖O𝐖"]               # 0x1d5ae
- - "𝖯": [t: "\\mathsf𝐖P𝐖"]               # 0x1d5af
- - "𝖰": [t: "\\mathsf𝐖Q𝐖"]               # 0x1d5b0
- - "𝖱": [t: "\\mathsf𝐖R𝐖"]               # 0x1d5b1
- - "𝖲": [t: "\\mathsf𝐖S𝐖"]               # 0x1d5b2
- - "𝖳": [t: "\\mathsf𝐖T𝐖"]               # 0x1d5b3
- - "𝖴": [t: "\\mathsf𝐖U𝐖"]               # 0x1d5b4
- - "𝖵": [t: "\\mathsf𝐖V𝐖"]               # 0x1d5b5
- - "𝖶": [t: "\\mathsf𝐖W𝐖"]               # 0x1d5b6
- - "𝖷": [t: "\\mathsf𝐖X𝐖"]               # 0x1d5b7
- - "𝖸": [t: "\\mathsf𝐖Y𝐖"]               # 0x1d5b8
- - "𝖹": [t: "\\mathsf𝐖Z𝐖"]               # 0x1d5b9
- - "𝖺": [t: "\\mathsf𝐖a𝐖"]               # 0x1d5ba
- - "𝖻": [t: "\\mathsf𝐖b𝐖"]               # 0x1d5bb
- - "𝖼": [t: "\\mathsf𝐖c𝐖"]               # 0x1d5bc
- - "𝖽": [t: "\\mathsf𝐖d𝐖"]               # 0x1d5bd
- - "𝖾": [t: "\\mathsf𝐖e𝐖"]               # 0x1d5be
- - "𝖿": [t: "\\mathsf𝐖f𝐖"]               # 0x1d5bf
- - "𝗀": [t: "\\mathsf𝐖g𝐖"]               # 0x1d5c0
- - "𝗁": [t: "\\mathsf𝐖h𝐖"]               # 0x1d5c1
- - "𝗂": [t: "\\mathsf𝐖i𝐖"]               # 0x1d5c2
- - "𝗃": [t: "\\mathsf𝐖j𝐖"]               # 0x1d5c3
- - "𝗄": [t: "\\mathsf𝐖k𝐖"]               # 0x1d5c4
- - "𝗅": [t: "\\mathsf𝐖l𝐖"]               # 0x1d5c5
- - "𝗆": [t: "\\mathsf𝐖m𝐖"]               # 0x1d5c6
- - "𝗇": [t: "\\mathsf𝐖n𝐖"]               # 0x1d5c7
- - "𝗈": [t: "\\mathsf𝐖o𝐖"]               # 0x1d5c8
- - "𝗉": [t: "\\mathsf𝐖p𝐖"]               # 0x1d5c9
- - "𝗊": [t: "\\mathsf𝐖q𝐖"]               # 0x1d5ca
- - "𝗋": [t: "\\mathsf𝐖r𝐖"]               # 0x1d5cb
- - "𝗌": [t: "\\mathsf𝐖s𝐖"]               # 0x1d5cc
- - "𝗍": [t: "\\mathsf𝐖t𝐖"]               # 0x1d5cd
- - "𝗎": [t: "\\mathsf𝐖u𝐖"]               # 0x1d5ce
- - "𝗏": [t: "\\mathsf𝐖v𝐖"]               # 0x1d5cf
- - "𝗐": [t: "\\mathsf𝐖w𝐖"]               # 0x1d5d0
- - "𝗑": [t: "\\mathsf𝐖x𝐖"]               # 0x1d5d1
- - "𝗒": [t: "\\mathsf𝐖y𝐖"]               # 0x1d5d2
- - "𝗓": [t: "\\mathsf𝐖z𝐖"]               # 0x1d5d3
- - "𝗔": [t: "\\mathsfbf𝐖A𝐖"]             # 0x1d5d4
- - "𝗕": [t: "\\mathsfbf𝐖B𝐖"]             # 0x1d5d5
- - "𝗖": [t: "\\mathsfbf𝐖C𝐖"]             # 0x1d5d6
- - "𝗗": [t: "\\mathsfbf𝐖D𝐖"]             # 0x1d5d7
- - "𝗘": [t: "\\mathsfbf𝐖E𝐖"]             # 0x1d5d8
- - "𝗙": [t: "\\mathsfbf𝐖F𝐖"]             # 0x1d5d9
- - "𝗚": [t: "\\mathsfbf𝐖G𝐖"]             # 0x1d5da
- - "𝗛": [t: "\\mathsfbf𝐖H𝐖"]             # 0x1d5db
- - "𝗜": [t: "\\mathsfbf𝐖I𝐖"]             # 0x1d5dc
- - "𝗝": [t: "\\mathsfbf𝐖J𝐖"]             # 0x1d5dd
- - "𝗞": [t: "\\mathsfbf𝐖K𝐖"]             # 0x1d5de
- - "𝗟": [t: "\\mathsfbf𝐖L𝐖"]             # 0x1d5df
- - "𝗠": [t: "\\mathsfbf𝐖M𝐖"]             # 0x1d5e0
- - "𝗡": [t: "\\mathsfbf𝐖N𝐖"]             # 0x1d5e1
- - "𝗢": [t: "\\mathsfbf𝐖O𝐖"]             # 0x1d5e2
- - "𝗣": [t: "\\mathsfbf𝐖P𝐖"]             # 0x1d5e3
- - "𝗤": [t: "\\mathsfbf𝐖Q𝐖"]             # 0x1d5e4
- - "𝗥": [t: "\\mathsfbf𝐖R𝐖"]             # 0x1d5e5
- - "𝗦": [t: "\\mathsfbf𝐖S𝐖"]             # 0x1d5e6
- - "𝗧": [t: "\\mathsfbf𝐖T𝐖"]             # 0x1d5e7
- - "𝗨": [t: "\\mathsfbf𝐖U𝐖"]             # 0x1d5e8
- - "𝗩": [t: "\\mathsfbf𝐖V𝐖"]             # 0x1d5e9
- - "𝗪": [t: "\\mathsfbf𝐖W𝐖"]             # 0x1d5ea
- - "𝗫": [t: "\\mathsfbf𝐖X𝐖"]             # 0x1d5eb
- - "𝗬": [t: "\\mathsfbf𝐖Y𝐖"]             # 0x1d5ec
- - "𝗭": [t: "\\mathsfbf𝐖Z𝐖"]             # 0x1d5ed
- - "𝗮": [t: "\\mathsfbf𝐖a𝐖"]             # 0x1d5ee
- - "𝗯": [t: "\\mathsfbf𝐖b𝐖"]             # 0x1d5ef
- - "𝗰": [t: "\\mathsfbf𝐖c𝐖"]             # 0x1d5f0
- - "𝗱": [t: "\\mathsfbf𝐖d𝐖"]             # 0x1d5f1
- - "𝗲": [t: "\\mathsfbf𝐖e𝐖"]             # 0x1d5f2
- - "𝗳": [t: "\\mathsfbf𝐖f𝐖"]             # 0x1d5f3
- - "𝗴": [t: "\\mathsfbf𝐖g𝐖"]             # 0x1d5f4
- - "𝗵": [t: "\\mathsfbf𝐖h𝐖"]             # 0x1d5f5
- - "𝗶": [t: "\\mathsfbf𝐖i𝐖"]             # 0x1d5f6
- - "𝗷": [t: "\\mathsfbf𝐖j𝐖"]             # 0x1d5f7
- - "𝗸": [t: "\\mathsfbf𝐖k𝐖"]             # 0x1d5f8
- - "𝗹": [t: "\\mathsfbf𝐖l𝐖"]             # 0x1d5f9
- - "𝗺": [t: "\\mathsfbf𝐖m𝐖"]             # 0x1d5fa
- - "𝗻": [t: "\\mathsfbf𝐖n𝐖"]             # 0x1d5fb
- - "𝗼": [t: "\\mathsfbf𝐖o𝐖"]             # 0x1d5fc
- - "𝗽": [t: "\\mathsfbf𝐖p𝐖"]             # 0x1d5fd
- - "𝗾": [t: "\\mathsfbf𝐖q𝐖"]             # 0x1d5fe
- - "𝗿": [t: "\\mathsfbf𝐖r𝐖"]             # 0x1d5ff
- - "𝘀": [t: "\\mathsfbf𝐖s𝐖"]             # 0x1d600
- - "𝘁": [t: "\\mathsfbf𝐖t𝐖"]             # 0x1d601
- - "𝘂": [t: "\\mathsfbf𝐖u𝐖"]             # 0x1d602
- - "𝘃": [t: "\\mathsfbf𝐖v𝐖"]             # 0x1d603
- - "𝘄": [t: "\\mathsfbf𝐖w𝐖"]             # 0x1d604
- - "𝘅": [t: "\\mathsfbf𝐖x𝐖"]             # 0x1d605
- - "𝘆": [t: "\\mathsfbf𝐖y𝐖"]             # 0x1d606
- - "𝘇": [t: "\\mathsfbf𝐖z𝐖"]             # 0x1d607
- - "𝘈": [t: "\\mathsfsl𝐖A𝐖"]             # 0x1d608
- - "𝘉": [t: "\\mathsfsl𝐖B𝐖"]             # 0x1d609
- - "𝘊": [t: "\\mathsfsl𝐖C𝐖"]             # 0x1d60a
- - "𝘋": [t: "\\mathsfsl𝐖D𝐖"]             # 0x1d60b
- - "𝘌": [t: "\\mathsfsl𝐖E𝐖"]             # 0x1d60c
- - "𝘍": [t: "\\mathsfsl𝐖F𝐖"]             # 0x1d60d
- - "𝘎": [t: "\\mathsfsl𝐖G𝐖"]             # 0x1d60e
- - "𝘏": [t: "\\mathsfsl𝐖H𝐖"]             # 0x1d60f
- - "𝘐": [t: "\\mathsfsl𝐖I𝐖"]             # 0x1d610
- - "𝘑": [t: "\\mathsfsl𝐖J𝐖"]             # 0x1d611
- - "𝘒": [t: "\\mathsfsl𝐖K𝐖"]             # 0x1d612
- - "𝘓": [t: "\\mathsfsl𝐖L𝐖"]             # 0x1d613
- - "𝘔": [t: "\\mathsfsl𝐖M𝐖"]             # 0x1d614
- - "𝘕": [t: "\\mathsfsl𝐖N𝐖"]             # 0x1d615
- - "𝘖": [t: "\\mathsfsl𝐖O𝐖"]             # 0x1d616
- - "𝘗": [t: "\\mathsfsl𝐖P𝐖"]             # 0x1d617
- - "𝘘": [t: "\\mathsfsl𝐖Q𝐖"]             # 0x1d618
- - "𝘙": [t: "\\mathsfsl𝐖R𝐖"]             # 0x1d619
- - "𝘚": [t: "\\mathsfsl𝐖S𝐖"]             # 0x1d61a
- - "𝘛": [t: "\\mathsfsl𝐖T𝐖"]             # 0x1d61b
- - "𝘜": [t: "\\mathsfsl𝐖U𝐖"]             # 0x1d61c
- - "𝘝": [t: "\\mathsfsl𝐖V𝐖"]             # 0x1d61d
- - "𝘞": [t: "\\mathsfsl𝐖W𝐖"]             # 0x1d61e
- - "𝘟": [t: "\\mathsfsl𝐖X𝐖"]             # 0x1d61f
- - "𝘠": [t: "\\mathsfsl𝐖Y𝐖"]             # 0x1d620
- - "𝘡": [t: "\\mathsfsl𝐖Z𝐖"]             # 0x1d621
- - "𝘢": [t: "\\mathsfsl𝐖a𝐖"]             # 0x1d622
- - "𝘣": [t: "\\mathsfsl𝐖b𝐖"]             # 0x1d623
- - "𝘤": [t: "\\mathsfsl𝐖c𝐖"]             # 0x1d624
- - "𝘥": [t: "\\mathsfsl𝐖d𝐖"]             # 0x1d625
- - "𝘦": [t: "\\mathsfsl𝐖e𝐖"]             # 0x1d626
- - "𝘧": [t: "\\mathsfsl𝐖f𝐖"]             # 0x1d627
- - "𝘨": [t: "\\mathsfsl𝐖g𝐖"]             # 0x1d628
- - "𝘩": [t: "\\mathsfsl𝐖h𝐖"]             # 0x1d629
- - "𝘪": [t: "\\mathsfsl𝐖i𝐖"]             # 0x1d62a
- - "𝘫": [t: "\\mathsfsl𝐖j𝐖"]             # 0x1d62b
- - "𝘬": [t: "\\mathsfsl𝐖k𝐖"]             # 0x1d62c
- - "𝘭": [t: "\\mathsfsl𝐖l𝐖"]             # 0x1d62d
- - "𝘮": [t: "\\mathsfsl𝐖m𝐖"]             # 0x1d62e
- - "𝘯": [t: "\\mathsfsl𝐖n𝐖"]             # 0x1d62f
- - "𝘰": [t: "\\mathsfsl𝐖o𝐖"]             # 0x1d630
- - "𝘱": [t: "\\mathsfsl𝐖p𝐖"]             # 0x1d631
- - "𝘲": [t: "\\mathsfsl𝐖q𝐖"]             # 0x1d632
- - "𝘳": [t: "\\mathsfsl𝐖r𝐖"]             # 0x1d633
- - "𝘴": [t: "\\mathsfsl𝐖s𝐖"]             # 0x1d634
- - "𝘵": [t: "\\mathsfsl𝐖t𝐖"]             # 0x1d635
- - "𝘶": [t: "\\mathsfsl𝐖u𝐖"]             # 0x1d636
- - "𝘷": [t: "\\mathsfsl𝐖v𝐖"]             # 0x1d637
- - "𝘸": [t: "\\mathsfsl𝐖w𝐖"]             # 0x1d638
- - "𝘹": [t: "\\mathsfsl𝐖x𝐖"]             # 0x1d639
- - "𝘺": [t: "\\mathsfsl𝐖y𝐖"]             # 0x1d63a
- - "𝘻": [t: "\\mathsfsl𝐖z𝐖"]             # 0x1d63b
- - "𝘼": [t: "\\mathsfbfsl𝐖A𝐖"]           # 0x1d63c
- - "𝘽": [t: "\\mathsfbfsl𝐖B𝐖"]           # 0x1d63d
- - "𝘾": [t: "\\mathsfbfsl𝐖C𝐖"]           # 0x1d63e
- - "𝘿": [t: "\\mathsfbfsl𝐖D𝐖"]           # 0x1d63f
- - "𝙀": [t: "\\mathsfbfsl𝐖E𝐖"]           # 0x1d640
- - "𝙁": [t: "\\mathsfbfsl𝐖F𝐖"]           # 0x1d641
- - "𝙂": [t: "\\mathsfbfsl𝐖G𝐖"]           # 0x1d642
- - "𝙃": [t: "\\mathsfbfsl𝐖H𝐖"]           # 0x1d643
- - "𝙄": [t: "\\mathsfbfsl𝐖I𝐖"]           # 0x1d644
- - "𝙅": [t: "\\mathsfbfsl𝐖J𝐖"]           # 0x1d645
- - "𝙆": [t: "\\mathsfbfsl𝐖K𝐖"]           # 0x1d646
- - "𝙇": [t: "\\mathsfbfsl𝐖L𝐖"]           # 0x1d647
- - "𝙈": [t: "\\mathsfbfsl𝐖M𝐖"]           # 0x1d648
- - "𝙉": [t: "\\mathsfbfsl𝐖N𝐖"]           # 0x1d649
- - "𝙊": [t: "\\mathsfbfsl𝐖O𝐖"]           # 0x1d64a
- - "𝙋": [t: "\\mathsfbfsl𝐖P𝐖"]           # 0x1d64b
- - "𝙌": [t: "\\mathsfbfsl𝐖Q𝐖"]           # 0x1d64c
- - "𝙍": [t: "\\mathsfbfsl𝐖R𝐖"]           # 0x1d64d
- - "𝙎": [t: "\\mathsfbfsl𝐖S𝐖"]           # 0x1d64e
- - "𝙏": [t: "\\mathsfbfsl𝐖T𝐖"]           # 0x1d64f
- - "𝙐": [t: "\\mathsfbfsl𝐖U𝐖"]           # 0x1d650
- - "𝙑": [t: "\\mathsfbfsl𝐖V𝐖"]           # 0x1d651
- - "𝙒": [t: "\\mathsfbfsl𝐖W𝐖"]           # 0x1d652
- - "𝙓": [t: "\\mathsfbfsl𝐖X𝐖"]           # 0x1d653
- - "𝙔": [t: "\\mathsfbfsl𝐖Y𝐖"]           # 0x1d654
- - "𝙕": [t: "\\mathsfbfsl𝐖Z𝐖"]           # 0x1d655
- - "𝙖": [t: "\\mathsfbfsl𝐖a𝐖"]           # 0x1d656
- - "𝙗": [t: "\\mathsfbfsl𝐖b𝐖"]           # 0x1d657
- - "𝙘": [t: "\\mathsfbfsl𝐖c𝐖"]           # 0x1d658
- - "𝙙": [t: "\\mathsfbfsl𝐖d𝐖"]           # 0x1d659
- - "𝙚": [t: "\\mathsfbfsl𝐖e𝐖"]           # 0x1d65a
- - "𝙛": [t: "\\mathsfbfsl𝐖f𝐖"]           # 0x1d65b
- - "𝙜": [t: "\\mathsfbfsl𝐖g𝐖"]           # 0x1d65c
- - "𝙝": [t: "\\mathsfbfsl𝐖h𝐖"]           # 0x1d65d
- - "𝙞": [t: "\\mathsfbfsl𝐖i𝐖"]           # 0x1d65e
- - "𝙟": [t: "\\mathsfbfsl𝐖j𝐖"]           # 0x1d65f
- - "𝙠": [t: "\\mathsfbfsl𝐖k𝐖"]           # 0x1d660
- - "𝙡": [t: "\\mathsfbfsl𝐖l𝐖"]           # 0x1d661
- - "𝙢": [t: "\\mathsfbfsl𝐖m𝐖"]           # 0x1d662
- - "𝙣": [t: "\\mathsfbfsl𝐖n𝐖"]           # 0x1d663
- - "𝙤": [t: "\\mathsfbfsl𝐖o𝐖"]           # 0x1d664
- - "𝙥": [t: "\\mathsfbfsl𝐖p𝐖"]           # 0x1d665
- - "𝙦": [t: "\\mathsfbfsl𝐖q𝐖"]           # 0x1d666
- - "𝙧": [t: "\\mathsfbfsl𝐖r𝐖"]           # 0x1d667
- - "𝙨": [t: "\\mathsfbfsl𝐖s𝐖"]           # 0x1d668
- - "𝙩": [t: "\\mathsfbfsl𝐖t𝐖"]           # 0x1d669
- - "𝙪": [t: "\\mathsfbfsl𝐖u𝐖"]           # 0x1d66a
- - "𝙫": [t: "\\mathsfbfsl𝐖v𝐖"]           # 0x1d66b
- - "𝙬": [t: "\\mathsfbfsl𝐖w𝐖"]           # 0x1d66c
- - "𝙭": [t: "\\mathsfbfsl𝐖x𝐖"]           # 0x1d66d
- - "𝙮": [t: "\\mathsfbfsl𝐖y𝐖"]           # 0x1d66e
- - "𝙯": [t: "\\mathsfbfsl𝐖z𝐖"]           # 0x1d66f
- - "𝙰": [t: "\\mathtt𝐖A𝐖"]               # 0x1d670
- - "𝙱": [t: "\\mathtt𝐖B𝐖"]               # 0x1d671
- - "𝙲": [t: "\\mathtt𝐖C𝐖"]               # 0x1d672
- - "𝙳": [t: "\\mathtt𝐖D𝐖"]               # 0x1d673
- - "𝙴": [t: "\\mathtt𝐖E𝐖"]               # 0x1d674
- - "𝙵": [t: "\\mathtt𝐖F𝐖"]               # 0x1d675
- - "𝙶": [t: "\\mathtt𝐖G𝐖"]               # 0x1d676
- - "𝙷": [t: "\\mathtt𝐖H𝐖"]               # 0x1d677
- - "𝙸": [t: "\\mathtt𝐖I𝐖"]               # 0x1d678
- - "𝙹": [t: "\\mathtt𝐖J𝐖"]               # 0x1d679
- - "𝙺": [t: "\\mathtt𝐖K𝐖"]               # 0x1d67a
- - "𝙻": [t: "\\mathtt𝐖L𝐖"]               # 0x1d67b
- - "𝙼": [t: "\\mathtt𝐖M𝐖"]               # 0x1d67c
- - "𝙽": [t: "\\mathtt𝐖N𝐖"]               # 0x1d67d
- - "𝙾": [t: "\\mathtt𝐖O𝐖"]               # 0x1d67e
- - "𝙿": [t: "\\mathtt𝐖P𝐖"]               # 0x1d67f
- - "𝚀": [t: "\\mathtt𝐖Q𝐖"]               # 0x1d680
- - "𝚁": [t: "\\mathtt𝐖R𝐖"]               # 0x1d681
- - "𝚂": [t: "\\mathtt𝐖S𝐖"]               # 0x1d682
- - "𝚃": [t: "\\mathtt𝐖T𝐖"]               # 0x1d683
- - "𝚄": [t: "\\mathtt𝐖U𝐖"]               # 0x1d684
- - "𝚅": [t: "\\mathtt𝐖V𝐖"]               # 0x1d685
- - "𝚆": [t: "\\mathtt𝐖W𝐖"]               # 0x1d686
- - "𝚇": [t: "\\mathtt𝐖X𝐖"]               # 0x1d687
- - "𝚈": [t: "\\mathtt𝐖Y𝐖"]               # 0x1d688
- - "𝚉": [t: "\\mathtt𝐖Z𝐖"]               # 0x1d689
- - "𝚊": [t: "\\mathtt𝐖a𝐖"]               # 0x1d68a
- - "𝚋": [t: "\\mathtt𝐖b𝐖"]               # 0x1d68b
- - "𝚌": [t: "\\mathtt𝐖c𝐖"]               # 0x1d68c
- - "𝚍": [t: "\\mathtt𝐖d𝐖"]               # 0x1d68d
- - "𝚎": [t: "\\mathtt𝐖e𝐖"]               # 0x1d68e
- - "𝚏": [t: "\\mathtt𝐖f𝐖"]               # 0x1d68f
- - "𝚐": [t: "\\mathtt𝐖g𝐖"]               # 0x1d690
- - "𝚑": [t: "\\mathtt𝐖h𝐖"]               # 0x1d691
- - "𝚒": [t: "\\mathtt𝐖i𝐖"]               # 0x1d692
- - "𝚓": [t: "\\mathtt𝐖j𝐖"]               # 0x1d693
- - "𝚔": [t: "\\mathtt𝐖k𝐖"]               # 0x1d694
- - "𝚕": [t: "\\mathtt𝐖l𝐖"]               # 0x1d695
- - "𝚖": [t: "\\mathtt𝐖m𝐖"]               # 0x1d696
- - "𝚗": [t: "\\mathtt𝐖n𝐖"]               # 0x1d697
- - "𝚘": [t: "\\mathtt𝐖o𝐖"]               # 0x1d698
- - "𝚙": [t: "\\mathtt𝐖p𝐖"]               # 0x1d699
- - "𝚚": [t: "\\mathtt𝐖q𝐖"]               # 0x1d69a
- - "𝚛": [t: "\\mathtt𝐖r𝐖"]               # 0x1d69b
- - "𝚜": [t: "\\mathtt𝐖s𝐖"]               # 0x1d69c
- - "𝚝": [t: "\\mathtt𝐖t𝐖"]               # 0x1d69d
- - "𝚞": [t: "\\mathtt𝐖u𝐖"]               # 0x1d69e
- - "𝚟": [t: "\\mathtt𝐖v𝐖"]               # 0x1d69f
- - "𝚠": [t: "\\mathtt𝐖w𝐖"]               # 0x1d6a0
- - "𝚡": [t: "\\mathtt𝐖x𝐖"]               # 0x1d6a1
- - "𝚢": [t: "\\mathtt𝐖y𝐖"]               # 0x1d6a2
- - "𝚣": [t: "\\mathtt𝐖z𝐖"]               # 0x1d6a3
- - "𝚨": [t: "\\mathbf{\\Alpha}"]         # 0x1d6a8
- - "𝚩": [t: "\\mathbf{\\Beta}"]          # 0x1d6a9
- - "𝚪": [t: "\\mathbf{\\Gamma}"]         # 0x1d6aa
- - "𝚫": [t: "\\mathbf{\\Delta}"]         # 0x1d6ab
- - "𝚬": [t: "\\mathbf{\\Epsilon}"]       # 0x1d6ac
- - "𝚭": [t: "\\mathbf{\\Zeta}"]          # 0x1d6ad
- - "𝚮": [t: "\\mathbf{\\Eta}"]           # 0x1d6ae
- - "𝚯": [t: "\\mathbf{\\Theta}"]         # 0x1d6af
- - "𝚰": [t: "\\mathbf{\\Iota}"]          # 0x1d6b0
- - "𝚱": [t: "\\mathbf{\\Kappa}"]         # 0x1d6b1
- - "𝚲": [t: "\\mathbf{\\Lambda}"]        # 0x1d6b2
+         then: [tc: "\\mathbb𝐖"]
+     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝕬-𝖅":    # 0x1d56c - 0x1d585
+     - tc: "\\mathbfrak𝐖"
+     - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝐖"
+ - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
+     - tc: "\\mathbfrak𝐖"
+     - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
+     - tc: "\\mathsf𝐖"
+     - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝐖"
+ - "𝖺-𝗓":    # 0x1d5ba - 0x1d5d3
+     - tc: "\\mathsf𝐖"
+     - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
+     - tc: "\\mathsfbf𝐖"
+     - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝐖"
+ - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
+     - tc: "\\mathsfbf𝐖"
+     - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝘈-𝘡":    # 0x1d608 - 0x1d621
+     - tc: "\\mathsfsl𝐖"
+     - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝐖"
+ - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
+     - tc: "\\mathsfsl𝐖"
+     - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝘼-𝙯":    # 0x1d63c - 0x1d66f
+     - tc: "\\mathsfbfsl𝐖"
+     - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝙰-𝚉":    # 0x1d670 - 0x1d689
+     - tc: "\\mathtt𝐖"
+     - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝐖"
+ - "𝚊-𝚣":    # 0x1d68a - 0x1d6a3
+     - tc: "\\mathtt𝐖"
+     - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "𝐖"
+ - "𝚨-𝚲":    # 0x1d6a8 - 0x1d6b2
+    - tc: "\\mathbf𝐖"
+    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞ')"
+    - tc: "𝐖"
  - "𝚳": [t: "\\mathbf𝐖M𝐖"]               # 0x1d6b3
  - "𝚴": [t: "\\N"]                       # 0x1d6b4
  - "𝚵": [t: "\\mathbf{\\Xi}"]            # 0x1d6b5
@@ -3148,42 +2649,21 @@
          if: "$LaTeX_UseShortName"
          then: [t: "~O"]
          else: [t: "\\O"]
- - "𝚷": [t: "\\mathbf{\\Pi}"]            # 0x1d6b7
- - "𝚸": [t: "\\mathbf{\\Rho}"]           # 0x1d6b8
- - "𝚹": [t: "\\mathbf{\\vartheta}"]      # 0x1d6b9
- - "𝚺": [t: "\\mathbf{\\Sigma}"]         # 0x1d6ba
- - "𝚻": [t: "\\mathbf{\\Tau}"]           # 0x1d6bb
- - "𝚼": [t: "\\mathbf{\\Upsilon}"]       # 0x1d6bc
- - "𝚽": [t: "\\mathbf{\\Phi}"]           # 0x1d6bd
- - "𝚾": [t: "\\mathbf{\\Chi}"]           # 0x1d6be
- - "𝚿": [t: "\\mathbf{\\Psi}"]           # 0x1d6bf
+ - "𝚷-𝚿":    # 0x1d6b7 - 0x1d6bf
+    - tc: "\\mathbf𝐖"
+    - spell: "translate('.', '𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿', 'ΠΡ΢ΣΤΥΦΧΨ')"
+    - tc: "𝐖"
  - "𝛀": [t: "\\mathbf{\\Omega}"]         # 0x1d6c0
  - "𝛁": [t: "\\mathbf{\\nabla}"]         # 0x1d6c1
- - "𝛂": [t: "\\mathbf{\\alpha}"]         # 0x1d6c2
- - "𝛃": [t: "\\mathbf{\\beta}"]          # 0x1d6c3
- - "𝛄": [t: "\\mathbf{\\gamma}"]         # 0x1d6c4
- - "𝛅": [t: "\\mathbf{\\delta}"]         # 0x1d6c5
- - "𝛆": [t: "\\mathbf{\\epsilon}"]       # 0x1d6c6
- - "𝛇": [t: "\\mathbf{\\zeta}"]          # 0x1d6c7
- - "𝛈": [t: "\\mathbf{\\eta}"]           # 0x1d6c8
- - "𝛉": [t: "\\mathbf{\\theta}"]         # 0x1d6c9
- - "𝛊": [t: "\\mathbf{\\iota}"]          # 0x1d6ca
- - "𝛋": [t: "\\mathbf{\\kappa}"]         # 0x1d6cb
- - "𝛌": [t: "\\mathbf{\\lambda}"]        # 0x1d6cc
- - "𝛍": [t: "\\mathbf{\\mu}"]            # 0x1d6cd
- - "𝛎": [t: "\\mathbf{\\nu}"]            # 0x1d6ce
- - "𝛏": [t: "\\mathbf{\\xi}"]            # 0x1d6cf
+ - "𝛂-𝛏":    # 0x1d6c2 - 0x1d6cf
+    - tc: "\\mathbf𝐖"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏', 'αβγδεζηθικλμνξ')"
+    - tc: "𝐖"
  - "𝛐": [t: "\\mathbf𝐖o𝐖"]               # 0x1d6d0
- - "𝛑": [t: "\\mathbf{\\pi}"]            # 0x1d6d1
- - "𝛒": [t: "\\mathbf{\\rho}"]           # 0x1d6d2
- - "𝛓": [t: "\\mathbf{\\varsigma}"]      # 0x1d6d3
- - "𝛔": [t: "\\mathbf{\\sigma}"]         # 0x1d6d4
- - "𝛕": [t: "\\mathbf{\\tau}"]           # 0x1d6d5
- - "𝛖": [t: "\\mathbf{\\upsilon}"]       # 0x1d6d6
- - "𝛗": [t: "\\mathbf{\\phi}"]           # 0x1d6d7
- - "𝛘": [t: "\\mathbf{\\chi}"]           # 0x1d6d8
- - "𝛙": [t: "\\mathbf{\\psi}"]           # 0x1d6d9
- - "𝛚": [t: "\\mathbf{\\omega}"]         # 0x1d6da
+ - "𝛑-𝛚":    # 0x1d6d1 - 0x1d6da
+    - tc: "\\mathbf𝐖"
+    - spell: "translate('.', '𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'πρςστυφχψω')"
+    - tc: "𝐖"
  - "𝛛": [t: "\\partial𝐖"]                # 0x1d6db
  - "𝛜": [t: "\\mathbf{\\varepsilon}"]    # 0x1d6dc
  - "𝛝": [t: "\\mathbf{\\vartheta}"]      # 0x1d6dd
@@ -3191,65 +2671,21 @@
  - "𝛟": [t: "\\mathbf{\\phi}"]           # 0x1d6df
  - "𝛠": [t: "\\mathbf{\\varrho}"]        # 0x1d6e0
  - "𝛡": [t: "\\mathbf{\\varpi}"]         # 0x1d6e1
- - "𝛢": [t: "\\mathmit{\\Alpha}"]        # 0x1d6e2
- - "𝛣": [t: "\\mathmit{\\Beta}"]         # 0x1d6e3
- - "𝛤": [t: "\\mathmit{\\Gamma}"]        # 0x1d6e4
- - "𝛥": [t: "\\mathmit{\\Delta}"]        # 0x1d6e5
- - "𝛦": [t: "\\mathmit{\\Epsilon}"]      # 0x1d6e6
- - "𝛧": [t: "\\mathmit{\\Zeta}"]         # 0x1d6e7
- - "𝛨": [t: "\\mathmit{\\Eta}"]          # 0x1d6e8
- - "𝛩": [t: "\\mathmit{\\Theta}"]        # 0x1d6e9
- - "𝛪": [t: "\\mathmit{\\Iota}"]         # 0x1d6ea
- - "𝛫": [t: "\\mathmit{\\Kappa}"]        # 0x1d6eb
- - "𝛬": [t: "\\mathmit{\\Lambda}"]       # 0x1d6ec
- - "𝛭": [t: "\\mathmit𝐖M𝐖"]              # 0x1d6ed
- - "𝛮": [t: "\\N"]                       # 0x1d6ee
- - "𝛯": [t: "\\mathmit{\\Xi}"]           # 0x1d6ef
+ - "𝛢-𝛯":    # 0x1d6e2 - 0x1d6ef (Alpha - Xi)
+    - tc: "\mathmit"
+    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞ')"
  - "𝛰":                                  # 0x1d6f0
      - test:
          if: "$LaTeX_UseShortName"
          then: [t: "~O"]
          else: [t: "\\O"]
- - "𝛱": [t: "\\mathmit{\\Pi}"]           # 0x1d6f1
- - "𝛲": [t: "\\mathmit{\\Rho}"]          # 0x1d6f2
- - "𝛳": [t: "\\mathmit{\\vartheta}"]     # 0x1d6f3
- - "𝛴": [t: "\\mathmit{\\Sigma}"]        # 0x1d6f4
- - "𝛵": [t: "\\mathmit{\\Tau}"]          # 0x1d6f5
- - "𝛶": [t: "\\mathmit{\\Upsilon}"]      # 0x1d6f6
- - "𝛷": [t: "\\mathmit{\\Phi}"]          # 0x1d6f7
- - "𝛸": [t: "\\mathmit{\\Chi}"]          # 0x1d6f8
- - "𝛹": [t: "\\mathmit{\\Psi}"]          # 0x1d6f9
- - "𝛺": [t: "\\mathmit{\\Omega}"]        # 0x1d6fa
+ - "𝛱-𝛺":    # 0x1d6f1 - 0x1d6fa (Pi - Omega)
+    - tc: "\\mathmit"
+    - spell: "translate('.', '𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΠΡΣΤΥΦΧΨΩ')"
  - "𝛻": [t: "\\mathmit{\\nabla}"]        # 0x1d6fb
- - "𝛼": [t: "\\mathmit{\\alpha}"]        # 0x1d6fc
- - "𝛽": [t: "\\mathmit{\\beta}"]         # 0x1d6fd
- - "𝛾": [t: "\\mathmit{\\gamma}"]        # 0x1d6fe
- - "𝛿": [t: "\\mathmit{\\delta}"]        # 0x1d6ff
- - "𝜀": [t: "\\mathmit{\\epsilon}"]      # 0x1d700
- - "𝜁": [t: "\\mathmit{\\zeta}"]         # 0x1d701
- - "𝜂": [t: "\\mathmit{\\eta}"]          # 0x1d702
- - "𝜃": [t: "\\mathmit{\\theta}"]        # 0x1d703
- - "𝜄":                                  # 0x1d704
-     - test:
-         if: "$LaTeX_UseShortName"
-         then: [t: "~i"]
-         else: [t: "\\iota𝐖"]
- - "𝜅": [t: "\\mathmit{\\kappa}"]        # 0x1d705
- - "𝜆": [t: "\\mathmit{\\lambda}"]       # 0x1d706
- - "𝜇": [t: "\\mathmit{\\mu}"]           # 0x1d707
- - "𝜈": [t: "\\mathmit{\\nu}"]           # 0x1d708
- - "𝜉": [t: "\\mathmit{\\xi}"]           # 0x1d709
- - "𝜊": [t: "\\mathmit𝐖o𝐖"]              # 0x1d70a
- - "𝜋": [t: "\\mathmit{\\pi}"]           # 0x1d70b
- - "𝜌": [t: "\\mathmit{\\rho}"]          # 0x1d70c
- - "𝜍": [t: "\\mathmit{\\varsigma}"]     # 0x1d70d
- - "𝜎": [t: "\\mathmit{\\sigma}"]        # 0x1d70e
- - "𝜏": [t: "\\mathmit{\\tau}"]          # 0x1d70f
- - "𝜐": [t: "\\mathmit{\\upsilon}"]      # 0x1d710
- - "𝜑": [t: "\\mathmit{\\phi}"]          # 0x1d711
- - "𝜒": [t: "\\mathmit{\\chi}"]          # 0x1d712
- - "𝜓": [t: "\\mathmit{\\psi}"]          # 0x1d713
- - "𝜔": [t: "\\mathmit{\\omega}"]        # 0x1d714
+ - "𝛼-𝜔":    # 0x1d6fc - 0x1d714 (alpha - omega)
+    - tc: "\\mathmit"
+    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
  - "𝜕": [t: "\\partial𝐖"]                # 0x1d715
  - "𝜖": [t: "\\in𝐖"]                     # 0x1d716
  - "𝜗": [t: "\\mathmit{\\vartheta}"]     # 0x1d717
@@ -3257,61 +2693,21 @@
  - "𝜙": [t: "\\mathmit{\\phi}"]          # 0x1d719
  - "𝜚": [t: "\\mathmit{\\varrho}"]       # 0x1d71a
  - "𝜛": [t: "\\mathmit{\\varpi}"]        # 0x1d71b
- - "𝜜": [t: "\\mathbit{\\Alpha}"]        # 0x1d71c
- - "𝜝": [t: "\\mathbit{\\Beta}"]         # 0x1d71d
- - "𝜞": [t: "\\mathbit{\\Gamma}"]        # 0x1d71e
- - "𝜟": [t: "\\mathbit{\\Delta}"]        # 0x1d71f
- - "𝜠": [t: "\\mathbit{\\Epsilon}"]      # 0x1d720
- - "𝜡": [t: "\\mathbit{\\Zeta}"]         # 0x1d721
- - "𝜢": [t: "\\mathbit{\\Eta}"]          # 0x1d722
- - "𝜣": [t: "\\mathbit{\\Theta}"]        # 0x1d723
- - "𝜤": [t: "\\mathbit{\\Iota}"]         # 0x1d724
- - "𝜥": [t: "\\mathbit{\\Kappa}"]        # 0x1d725
- - "𝜦": [t: "\\mathbit{\\Lambda}"]       # 0x1d726
- - "𝜧": [t: "\\mathbit𝐖M𝐖"]              # 0x1d727
- - "𝜨": [t: "\\mathbit𝐖N𝐖"]              # 0x1d728
- - "𝜩": [t: "\\mathbit{\\Xi}"]           # 0x1d729
+ - "𝜜-𝜩":    # 0x1d71c - 0x1d729 (Alpha - Xi)
+    - tc: "\\mathbit"
+    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞ')"
  - "𝜪":                                  # 0x1d72a
      - test:
          if: "$LaTeX_UseShortName"
          then: [t: "~O"]
          else: [t: "\\O"]
- - "𝜫": [t: "\\mathbit{\\Pi}"]           # 0x1d72b
- - "𝜬": [t: "\\mathbit{\\Rho}"]          # 0x1d72c
- - "𝜭": [t: "\\mathbit𝐖O𝐖"]              # 0x1d72d
- - "𝜮": [t: "\\mathbit{\\Sigma}"]        # 0x1d72e
- - "𝜯": [t: "\\mathbit{\\Tau}"]          # 0x1d72f
- - "𝜰": [t: "\\mathbit{\\Upsilon}"]      # 0x1d730
- - "𝜱": [t: "\\mathbit{\\Phi}"]          # 0x1d731
- - "𝜲": [t: "\\mathbit{\\Chi}"]          # 0x1d732
- - "𝜳": [t: "\\mathbit{\\Psi}"]          # 0x1d733
- - "𝜴": [t: "\\mathbit{\\Omega}"]        # 0x1d734
+ - "𝜫-𝜴":    # 0x1d72b - 0x1d734 (Pi - Omega)
+    - tc: "\\mathbit"
+    - spell: "translate('.', '𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΠΡΣΤΥΦΧΨΩ')"
  - "𝜵": [t: "\\mathbit{\\nabla}"]        # 0x1d735
- - "𝜶": [t: "\\mathbit{\\alpha}"]        # 0x1d736
- - "𝜷": [t: "\\mathbit{\\beta}"]         # 0x1d737
- - "𝜸": [t: "\\mathbit{\\gamma}"]        # 0x1d738
- - "𝜹": [t: "\\mathbit{\\delta}"]        # 0x1d739
- - "𝜺": [t: "\\mathbit{\\epsilon}"]      # 0x1d73a
- - "𝜻": [t: "\\mathbit{\\zeta}"]         # 0x1d73b
- - "𝜼": [t: "\\mathbit{\\eta}"]          # 0x1d73c
- - "𝜽": [t: "\\mathbit{\\theta}"]        # 0x1d73d
- - "𝜾": [t: "\\mathbit{\\iota}"]         # 0x1d73e
- - "𝜿": [t: "\\mathbit{\\kappa}"]        # 0x1d73f
- - "𝝀": [t: "\\mathbit{\\lambda}"]       # 0x1d740
- - "𝝁": [t: "\\mathbit{\\mu}"]           # 0x1d741
- - "𝝂": [t: "\\mathbit{\\nu}"]           # 0x1d742
- - "𝝃": [t: "\\mathbit{\\xi}"]           # 0x1d743
- - "𝝄": [t: "\\mathbit𝐖o𝐖"]              # 0x1d744
- - "𝝅": [t: "\\mathbit{\\pi}"]           # 0x1d745
- - "𝝆": [t: "\\mathbit{\\rho}"]          # 0x1d746
- - "𝝇": [t: "\\mathbit{\\varsigma}"]     # 0x1d747
- - "𝝈": [t: "\\mathbit{\\sigma}"]        # 0x1d748
- - "𝝉": [t: "\\mathbit{\\tau}"]          # 0x1d749
- - "𝝊": [t: "\\mathbit{\\upsilon}"]      # 0x1d74a
- - "𝝋": [t: "\\mathbit{\\phi}"]          # 0x1d74b
- - "𝝌": [t: "\\mathbit{\\chi}"]          # 0x1d74c
- - "𝝍": [t: "\\mathbit{\\psi}"]          # 0x1d74d
- - "𝝎": [t: "\\mathbit{\\omega}"]        # 0x1d74e
+ - "𝜶-𝜴":    # 0x1d736 - 0x1d74e (alpha - omega)
+    - tc: "\\mathbit"
+    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
  - "𝝏": [t: "\\partial𝐖"]                # 0x1d74f
  - "𝝐": [t: "\\in𝐖"]                     # 0x1d750
  - "𝝑": [t: "\\mathbit{\\vartheta}"]     # 0x1d751
@@ -3319,17 +2715,9 @@
  - "𝝓": [t: "\\mathbit{\\phi}"]          # 0x1d753
  - "𝝔": [t: "\\mathbit{\\varrho}"]       # 0x1d754
  - "𝝕": [t: "\\mathbit{\\varpi}"]        # 0x1d755
- - "𝝖": [t: "\\mathsfbf{\\Alpha}"]       # 0x1d756
- - "𝝗": [t: "\\mathsfbf{\\Beta}"]        # 0x1d757
- - "𝝘": [t: "\\mathsfbf{\\Gamma}"]       # 0x1d758
- - "𝝙": [t: "\\mathsfbf{\\Delta}"]       # 0x1d759
- - "𝝚": [t: "\\mathsfbf{\\Epsilon}"]     # 0x1d75a
- - "𝝛": [t: "\\mathsfbf{\\Zeta}"]        # 0x1d75b
- - "𝝜": [t: "\\mathsfbf{\\Eta}"]         # 0x1d75c
- - "𝝝": [t: "\\mathsfbf{\\Theta}"]       # 0x1d75d
- - "𝝞": [t: "\\mathsfbf{\\Iota}"]        # 0x1d75e
- - "𝝟": [t: "\\mathsfbf{\\Kappa}"]       # 0x1d75f
- - "𝝠": [t: "\\mathsfbf{\\Lambda}"]      # 0x1d760
+ - "𝝖-𝝠":    # 0x1d756 - 0x1d760 (Alpha - Lambda)
+    - tc: "\\mathsfbf"
+    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠', 'ΑΒΓΔΕΖΗΘΙΚΛ')"
  - "𝝡": [t: "\\mathsfbf𝐖M𝐖"]             # 0x1d761
  - "𝝢": [t: "\\mathsfbf𝐖N𝐖"]             # 0x1d762
  - "𝝣": [t: "\\mathsfbf{\\Xi}"]          # 0x1d763
@@ -3338,41 +2726,16 @@
          if: "$LaTeX_UseShortName"
          then: [t: "~O"]
          else: [t: "\\O"]
- - "𝝥": [t: "\\mathsfbf{\\Pi}"]          # 0x1d765
- - "𝝦": [t: "\\mathsfbf{\\Rho}"]         # 0x1d766
- - "𝝧": [t: "\\mathsfbf{\\vartheta}"]    # 0x1d767
- - "𝝨": [t: "\\mathsfbf{\\Sigma}"]       # 0x1d768
- - "𝝩": [t: "\\mathsfbf{\\Tau}"]         # 0x1d769
- - "𝝪": [t: "\\mathsfbf{\\Upsilon}"]     # 0x1d76a
- - "𝝫": [t: "\\mathsfbf{\\Phi}"]         # 0x1d76b
- - "𝝬": [t: "\\mathsfbf{\\Chi}"]         # 0x1d76c
- - "𝝭": [t: "\\mathsfbf{\\Psi}"]         # 0x1d76d
- - "𝝮": [t: "\\mathsfbf{\\Omega}"]       # 0x1d76e
- - "𝝯": [t: "\\mathsfbf{\\nabla}"]       # 0x1d76f
- - "𝝰": [t: "\\mathsfbf{\\alpha}"]       # 0x1d770
- - "𝝱": [t: "\\mathsfbf{\\beta}"]        # 0x1d771
- - "𝝲": [t: "\\mathsfbf{\\gamma}"]       # 0x1d772
- - "𝝳": [t: "\\mathsfbf{\\delta}"]       # 0x1d773
- - "𝝴": [t: "\\mathsfbf{\\epsilon}"]     # 0x1d774
- - "𝝵": [t: "\\mathsfbf{\\zeta}"]        # 0x1d775
- - "𝝶": [t: "\\mathsfbf{\\eta}"]         # 0x1d776
- - "𝝷": [t: "\\mathsfbf{\\theta}"]       # 0x1d777
- - "𝝸": [t: "\\mathsfbf{\\iota}"]        # 0x1d778
- - "𝝹": [t: "\\mathsfbf{\\kappa}"]       # 0x1d779
- - "𝝺": [t: "\\mathsfbf{\\lambda}"]      # 0x1d77a
- - "𝝻": [t: "\\mathsfbf{\\mu}"]          # 0x1d77b
- - "𝝼": [t: "\\mathsfbf{\\nu}"]          # 0x1d77c
- - "𝝽": [t: "\\mathsfbf{\\xi}"]          # 0x1d77d
+ - "𝝥-𝝰":    # 0x1d765 - 0x1d76f
+    - tc: "\\mathsfbf"
+    - spell: "translate('.', '𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮𝝯', 'ΠΡΣΤΥΦΧΨΩ∇')"
+ - "𝝱-𝝽":    # 0x1d770 - 0x1d77d
+    - tc: "\\mathsfbf"
+    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽', 'αβγδεζηθικλμνξ')"
  - "𝝾": [t: "\\mathsfbf𝐖o𝐖"]             # 0x1d77e
- - "𝝿": [t: "\\mathsfbf{\\pi}"]          # 0x1d77f
- - "𝞀": [t: "\\mathsfbf{\\rho}"]         # 0x1d780
- - "𝞁": [t: "\\mathsfbf{\\varsigma}"]    # 0x1d781
- - "𝞂": [t: "\\mathsfbf{\\sigma}"]       # 0x1d782
- - "𝞃": [t: "\\mathsfbf{\\tau}"]         # 0x1d783
- - "𝞄": [t: "\\mathsfbf{\\upsilon}"]     # 0x1d784
- - "𝞅": [t: "\\mathsfbf{\\phi}"]         # 0x1d785
- - "𝞆": [t: "\\mathsfbf{\\chi}"]         # 0x1d786
- - "𝞇": [t: "\\mathsfbf{\\psi}"]         # 0x1d787
+ - "𝝿-𝞇":    # 0x1d77f - 0x1d787 (pi - psi)
+    - tc: "\\mathsfbf"
+    - spell: "translate('.', '𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇', 'πρςστυφχψ')"
  - "𝞈": [t: "\\mathsfbf{\\omega}"]       # 0x1d788
  - "𝞉": [t: "\\partial𝐖"]                # 0x1d789
  - "𝞊": [t: "\\mathsfbf{\\varepsilon}"]  # 0x1d78a
@@ -3381,17 +2744,9 @@
  - "𝞍": [t: "\\mathsfbf{\\phi}"]         # 0x1d78d
  - "𝞎": [t: "\\mathsfbf{\\varrho}"]      # 0x1d78e
  - "𝞏": [t: "\\mathsfbf{\\varpi}"]       # 0x1d78f
- - "𝞐": [t: "\\mathsfbfsl{\\Alpha}"]     # 0x1d790
- - "𝞑": [t: "\\mathsfbfsl{\\Beta}"]      # 0x1d791
- - "𝞒": [t: "\\mathsfbfsl{\\Gamma}"]     # 0x1d792
- - "𝞓": [t: "\\mathsfbfsl{\\Delta}"]     # 0x1d793
- - "𝞔": [t: "\\mathsfbfsl{\\Epsilon}"]   # 0x1d794
- - "𝞕": [t: "\\mathsfbfsl{\\Zeta}"]      # 0x1d795
- - "𝞖": [t: "\\mathsfbfsl{\\Eta}"]       # 0x1d796
- - "𝞗": [t: "\\mathsfbfsl{\\vartheta}"]  # 0x1d797
- - "𝞘": [t: "\\mathsfbfsl{\\Iota}"]      # 0x1d798
- - "𝞙": [t: "\\mathsfbfsl{\\Kappa}"]     # 0x1d799
- - "𝞚": [t: "\\mathsfbfsl{\\Lambda}"]    # 0x1d79a
+ - "𝞐-𝞚":    # 0x1d790 - 0x1d79a (Alpha - Lambda)
+    - tc: "\\mathsfbfsl"
+    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚', 'ΑΒΓΔΕΖΗΘΙΚΛ')"
  - "𝞛": [t: "\\mathsfbfsl𝐖M𝐖"]           # 0x1d79b
  - "𝞜": [t: "\\mathsfbfsl𝐖N𝐖"]           # 0x1d79c
  - "𝞝": [t: "\\mathsfbfsl{\\Xi}"]        # 0x1d79d
@@ -3400,40 +2755,17 @@
          if: "$LaTeX_UseShortName"
          then: [t: "~O"]
          else: [t: "\\O"]
- - "𝞟": [t: "\\mathsfbfsl{\\Pi}"]        # 0x1d79f
- - "𝞠": [t: "\\mathsfbfsl{\\Rho}"]       # 0x1d7a0
- - "𝞡": [t: "\\mathsfbfsl{\\vartheta}"]  # 0x1d7a1
- - "𝞢": [t: "\\mathsfbfsl{\\Sigma}"]     # 0x1d7a2
- - "𝞣": [t: "\\mathsfbfsl{\\Tau}"]       # 0x1d7a3
- - "𝞤": [t: "\\mathsfbfsl{\\Upsilon}"]   # 0x1d7a4
- - "𝞥": [t: "\\mathsfbfsl{\\Phi}"]       # 0x1d7a5
- - "𝞦": [t: "\\mathsfbfsl{\\Chi}"]       # 0x1d7a6
- - "𝞧": [t: "\\mathsfbfsl{\\Psi}"]       # 0x1d7a7
- - "𝞨": [t: "\\mathsfbfsl{\\Omega}"]     # 0x1d7a8
+ - "𝞟-𝞨":    # 0x1d79f - 0x1d7a8 (Pi - Omega)
+    - tc: "\\mathsfbfsl"
+    - spell: "translate('.', '𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΠΡΣΤΥΦΧΨΩ')"
  - "𝞩": [t: "\\mathsfbfsl{\\nabla}"]     # 0x1d7a9
- - "𝞪": [t: "\\mathsfbfsl{\\alpha}"]     # 0x1d7aa
- - "𝞫": [t: "\\mathsfbfsl{\\beta}"]      # 0x1d7ab
- - "𝞬": [t: "\\mathsfbfsl{\\gamma}"]     # 0x1d7ac
- - "𝞭": [t: "\\mathsfbfsl{\\delta}"]     # 0x1d7ad
- - "𝞮": [t: "\\mathsfbfsl{\\epsilon}"]   # 0x1d7ae
- - "𝞯": [t: "\\mathsfbfsl{\\zeta}"]      # 0x1d7af
- - "𝞰": [t: "\\mathsfbfsl{\\eta}"]       # 0x1d7b0
- - "𝞱": [t: "\\mathsfbfsl{\\vartheta}"]  # 0x1d7b1
- - "𝞲": [t: "\\mathsfbfsl{\\iota}"]      # 0x1d7b2
- - "𝞳": [t: "\\mathsfbfsl{\\kappa}"]     # 0x1d7b3
- - "𝞴": [t: "\\mathsfbfsl{\\lambda}"]    # 0x1d7b4
- - "𝞵": [t: "\\mathsfbfsl{\\mu}"]        # 0x1d7b5
- - "𝞶": [t: "\\mathsfbfsl{\\nu}"]        # 0x1d7b6
- - "𝞷": [t: "\\mathsfbfsl{\\xi}"]        # 0x1d7b7
+ - "𝞪-𝞷":    # 0x1d7aa - 0x1d7b7 (alpha - xi)
+    - tc: "\\mathsfbfsl"
+    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷', 'αβγδεζηθικλμνξ')"
  - "𝞸": [t: "\\mathsfbfsl𝐖o𝐖"]           # 0x1d7b8
- - "𝞹": [t: "\\mathsfbfsl{\\pi}"]        # 0x1d7b9
- - "𝞺": [t: "\\mathsfbfsl{\\rho}"]       # 0x1d7ba
- - "𝞻": [t: "\\mathsfbfsl{\\varsigma}"]  # 0x1d7bb
- - "𝞼": [t: "\\mathsfbfsl{\\sigma}"]     # 0x1d7bc
- - "𝞽": [t: "\\mathsfbfsl{\\tau}"]       # 0x1d7bd
- - "𝞾": [t: "\\mathsfbfsl{\\upsilon}"]   # 0x1d7be
- - "𝞿": [t: "\\mathsfbfsl{\\phi}"]       # 0x1d7bf
- - "𝟀": [t: "\\mathsfbfsl{\\chi}"]       # 0x1d7c0
+ - "𝞹-𝟀":    # 0x1d7b9 - 0x1d7c0 (pi - chi)
+    - tc: "\\mathsfbfsl"
+    - spell: "translate('.', '𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀', 'πρςστυφχ')"
  - "𝟁": [t: "\\mathsfbfsl{\\psi}"]       # 0x1d7c1
  - "𝟂": [t: "\\mathsfbfsl{\\omega}"]     # 0x1d7c2
  - "𝟃": [t: "\\partial𝐖"]                # 0x1d7c3
@@ -3443,55 +2775,25 @@
  - "𝟇": [t: "\\mathsfbfsl{\\phi}"]       # 0x1d7c7
  - "𝟈": [t: "\\mathsfbfsl{\\varrho}"]    # 0x1d7c8
  - "𝟉": [t: "\\mathsfbfsl{\\varpi}"]     # 0x1d7c9
- - "𝟎": [t: "\\mathbf𝐖0𝐖"]               # 0x1d7ce
- - "𝟏": [t: "\\mathbf𝐖1𝐖"]               # 0x1d7cf
- - "𝟐": [t: "\\mathbf𝐖2𝐖"]               # 0x1d7d0
- - "𝟑": [t: "\\mathbf𝐖3𝐖"]               # 0x1d7d1
- - "𝟒": [t: "\\mathbf𝐖4𝐖"]               # 0x1d7d2
- - "𝟓": [t: "\\mathbf𝐖5𝐖"]               # 0x1d7d3
- - "𝟔": [t: "\\mathbf𝐖6𝐖"]               # 0x1d7d4
- - "𝟕": [t: "\\mathbf𝐖7𝐖"]               # 0x1d7d5
- - "𝟖": [t: "\\mathbf𝐖8𝐖"]               # 0x1d7d6
- - "𝟗": [t: "\\mathbf𝐖9𝐖"]               # 0x1d7d7
- - "𝟘": [t: "\\mathbb𝐖0𝐖"]               # 0x1d7d8
- - "𝟙": [t: "\\mathbb𝐖1𝐖"]               # 0x1d7d9
- - "𝟚": [t: "\\mathbb𝐖2𝐖"]               # 0x1d7da
- - "𝟛": [t: "\\mathbb𝐖3𝐖"]               # 0x1d7db
- - "𝟜": [t: "\\mathbb𝐖4𝐖"]               # 0x1d7dc
- - "𝟝": [t: "\\mathbb𝐖5𝐖"]               # 0x1d7dd
- - "𝟞": [t: "\\mathbb𝐖6𝐖"]               # 0x1d7de
- - "𝟟": [t: "\\mathbb𝐖7𝐖"]               # 0x1d7df
- - "𝟠": [t: "\\mathbb𝐖8𝐖"]               # 0x1d7e0
- - "𝟡": [t: "\\mathbb𝐖9𝐖"]               # 0x1d7e1
- - "𝟢": [t: "\\mathsf𝐖0𝐖"]               # 0x1d7e2
- - "𝟣": [t: "\\mathsf𝐖1𝐖"]               # 0x1d7e3
- - "𝟤": [t: "\\mathsf𝐖2𝐖"]               # 0x1d7e4
- - "𝟥": [t: "\\mathsf𝐖3𝐖"]               # 0x1d7e5
- - "𝟦": [t: "\\mathsf𝐖4𝐖"]               # 0x1d7e6
- - "𝟧": [t: "\\mathsf𝐖5𝐖"]               # 0x1d7e7
- - "𝟨": [t: "\\mathsf𝐖6𝐖"]               # 0x1d7e8
- - "𝟩": [t: "\\mathsf𝐖7𝐖"]               # 0x1d7e9
- - "𝟪": [t: "\\mathsf𝐖8𝐖"]               # 0x1d7ea
- - "𝟫": [t: "\\mathsf𝐖9𝐖"]               # 0x1d7eb
- - "𝟬": [t: "\\mathsfbf𝐖0𝐖"]             # 0x1d7ec
- - "𝟭": [t: "\\mathsfbf𝐖1𝐖"]             # 0x1d7ed
- - "𝟮": [t: "\\mathsfbf𝐖2𝐖"]             # 0x1d7ee
- - "𝟯": [t: "\\mathsfbf𝐖3𝐖"]             # 0x1d7ef
- - "𝟰": [t: "\\mathsfbf𝐖4𝐖"]             # 0x1d7f0
- - "𝟱": [t: "\\mathsfbf𝐖5𝐖"]             # 0x1d7f1
- - "𝟲": [t: "\\mathsfbf𝐖6𝐖"]             # 0x1d7f2
- - "𝟳": [t: "\\mathsfbf𝐖7𝐖"]             # 0x1d7f3
- - "𝟴": [t: "\\mathsfbf𝐖8𝐖"]             # 0x1d7f4
- - "𝟵": [t: "\\mathsfbf𝐖9𝐖"]             # 0x1d7f5
- - "𝟶": [t: "\\mathtt𝐖0𝐖"]               # 0x1d7f6
- - "𝟷": [t: "\\mathtt𝐖1𝐖"]               # 0x1d7f7
- - "𝟸": [t: "\\mathtt𝐖2𝐖"]               # 0x1d7f8
- - "𝟹": [t: "\\mathtt𝐖3𝐖"]               # 0x1d7f9
- - "𝟺": [t: "\\mathtt𝐖4𝐖"]               # 0x1d7fa
- - "𝟻": [t: "\\mathtt𝐖5𝐖"]               # 0x1d7fb
- - "𝟼": [t: "\\mathtt𝐖6𝐖"]               # 0x1d7fc
- - "𝟽": [t: "\\mathtt𝐖7𝐖"]               # 0x1d7fd
- - "𝟾": [t: "\\mathtt𝐖8𝐖"]               # 0x1d7fe
- - "𝟿": [t: "\\mathtt𝐖9𝐖"]               # 0x1d7ff
+ - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7 (bold digits 0-9)
+    - tc: "\\mathbf𝐖"
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+    - tc: "𝐖"
+ - "𝟘-𝟡":    # 0x1d7d9 - 0x1d7e1
+     - tc: "\\mathbb𝐖"
+     - spell: "translate('.', '0𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
+     - tc: "𝐖"
+ - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb
+     - tc: "\\mathsf𝐖"
+     - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
+     - tc: "𝐖"
+ - "𝟬-𝟵":    # 0x1d7ec - 0x1d7f5
+     - tc: "\\mathsfbf𝐖"
+     - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+     - tc: "𝐖"
+ - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff
+     - tc: "\\mathtt𝐖"
+     - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+     - tc: "𝐖"
  - "𞻰": [t: "\\arabicmaj𝐖"]              # 0x1eef0
  - "𞻱": [t: "\\arabichad𝐖"]              # 0x1eef1
