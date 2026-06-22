@@ -3687,12 +3687,6 @@
         then: [t: "жирная"]
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
- - "-":    # 0xf52e - 0xf537  (old MathType)
-    - test:
-        if: "not($IgnoreBold)"
-        then: [t: "жирная"]
-    - spell: "translate('.', '', '0123456789')"
-
  - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
     - test:
         if: "not($IgnoreBold)"
