@@ -2307,11 +2307,11 @@ fn french_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     // let result = capitals_to_word_mode(&result);
 
     // check to see if math modifier and code change indicator are needed at start (p8)
-    let result = if raw_braille.starts_with("P") {
+    let result = if let Some(stripped) = raw_braille.strip_prefix("P") {
         let prefix = if raw_braille.contains("o") { "⠠⠄" } else { "⠠" };
-        let mut new_string = String::with_capacity(raw_braille.len() - 1 + prefix.len());
+        let mut new_string = String::with_capacity(stripped.len() + prefix.len());
         new_string.push_str(prefix);
-        new_string.push_str(&raw_braille[1..]);
+        new_string.push_str(stripped);
         new_string
     } else {
         raw_braille
