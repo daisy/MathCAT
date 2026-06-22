@@ -868,8 +868,8 @@ impl IsBracketed {
             return false;
         }
 
-        if !left.is_empty() && get_text_from_COE(&children[0]) != left ||
-           !right.is_empty() && get_text_from_COE(&children[children.len()-1]) != right {
+        if (!left.is_empty() && get_text_from_COE(&children[0]) != left) ||
+           (!right.is_empty() && get_text_from_COE(&children[children.len()-1]) != right) {
             // left or right don't match
             return false;
         }
