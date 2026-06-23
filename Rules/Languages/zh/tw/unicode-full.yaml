@@ -325,12 +325,12 @@
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then: [t: "double exclamation point"]      # 0x203c
-        else: [t: "雙階乘"]              # 0x203c
+        else: [T: "雙階乘"]              # 0x203c
  - "⁄":                                            # 0x2044
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then: [t: "large slash"]      # 0x203c
-        else: [t: "除以"]              # 0x203c
+        else: [T: "除以"]              # 0x203c
  - "⁅": [T: "帶毛左中括號"]                       	#  0x2045	(en: 'left square bracket with quill', google translation)
  - "⁆": [T: "帶毛右中括號"]                         	#  0x2046	(en: 'right square bracket with quill', google translation)
  - "※": [t: "reference mark"]                     # 0x203b
@@ -456,7 +456,7 @@
     - SPELL: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
-    - t: "空心"
+    - T: "雙線"
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
  - "ℎ": [T: "普朗克常數"]                            	#  0x210e	(en: 'planck constant', google translation)
@@ -494,9 +494,9 @@
  - "ℶ": [T: "第二transfinite cardinal"]                          	#  0x2136	(en: 'second transfinite cardinal', google translation)
  - "ℷ": [T: "第三transfinite cardinal"]                         	#  0x2137	(en: 'third transfinite cardinal', google translation)
  - "ℸ": [T: "第四transfinite cardinal"]                          	#  0x2138	(en: 'fourth transfinite cardinal', google translation)
- - "ℼ": [T: "空心pi"]                             	#  0x213c	(en: 'double struck pi', google translation)
- - "ℽ": [T: "空心伽瑪"]                             	#  0x213d	(en: 'double struck gamma', google translation)
- - "⅀": [T: "空心總和"]                      	#  0x2140	(en: 'double struck n-ary summation', google translation)
+ - "ℼ": [T: "雙線pi"]                             	#  0x213c	(en: 'double struck pi', google translation)
+ - "ℽ": [T: "雙線伽瑪"]                             	#  0x213d	(en: 'double struck gamma', google translation)
+ - "⅀": [T: "雙線總和"]                      	#  0x2140	(en: 'double struck n-ary summation', google translation)
  - "⅋": [T: "轉向ampersand"]                        	#  0x214b	(en: 'turned ampersand', google translation)
  - "⅌": [T: "每"]                                	#  0x214c	(en: 'per', google translation)
  - "ⅎ": [T: "翻身f"]                                	#  0x214e	(en: 'turned F', google translation)
@@ -552,8 +552,8 @@
  - "ⅾ": [T: "d"]                                	#  0x217e	(en: 'D', google translation)
  - "ⅿ": [T: "m"]                                	#  0x217f	(en: 'M', google translation)
  - "↉": [T: "三分之0"]                              	#  0x2189	(en: 'zero thirds', google translation)
- - "↔": [T: "左右雙箭頭"]                           	#  0x2194	(en: 'left right arrow')
- - "↕": [T: "上下雙箭頭"]                             	#  0x2195	(en: 'up down arrow', google translation)
+ - "↔": [T: "左右箭頭"]                           	#  0x2194	(en: 'left right arrow')
+ - "↕": [T: "上下箭頭"]                             	#  0x2195	(en: 'up down arrow', google translation)
  - "↖": [T: "左上箭頭"]                             	#  0x2196	(en: 'north west arrow', google translation)
  - "↗":                                         	#  0x2197
     - test:
@@ -580,15 +580,15 @@
  - "↣": [T: "有尾巴右箭頭"]                        	#  0x21a3	(en: 'rightwards arrow with tail', google translation)
  - "↤": [T: "左箭頭尾直線"]                           	#  0x21a4	(en: 'leftwards arrow from bar', google translation)
  - "↥": [T: "向上箭頭尾直線"]                          	#  0x21a5	(en: 'upwards arrow from bar', google translation)
- - "↦": [T: "右箭頭的箭頭"]                           	#  0x21a6	(en: 'rightwards arrow from bar', google translation)
+ - "↦": [T: "右箭頭尾直線"]                           	#  0x21a6	(en: 'rightwards arrow from bar', google translation)
  - "↧": [T: "向下箭頭尾直線"]                          	#  0x21a7	(en: 'downwards arrow from bar', google translation)
- - "↨": [T: "上下雙箭頭有底線"]                           	#  0x21a8	(en: 'up down arrow with base', google translation)
+ - "↨": [T: "上下箭頭有底線"]                           	#  0x21a8	(en: 'up down arrow with base', google translation)
  - "↩": [T: "帶鉤向左箭頭"]                          	#  0x21a9	(en: 'leftwards arrow with hook', google translation)
  - "↪": [T: "帶鉤向右箭頭"]                            	#  0x21aa	(en: 'rightwards arrow with hook', google translation)
  - "↫": [T: "帶環左箭頭"]                          	#  0x21ab	(en: 'leftwards arrow with loop', google translation)
  - "↬": [T: "帶環右箭頭"]                          	#  0x21ac	(en: 'rightwards arrow with loop', google translation)
  - "↭": [T: "左右波浪箭頭"]                            	#  0x21ad	(en: 'left right wave arrow', google translation)
- - "↮": [T: "帶撇左右雙箭頭"]                          	#  0x21ae	(en: 'left right arrow with stroke', google translation)
+ - "↮": [T: "帶撇左右箭頭"]                          	#  0x21ae	(en: 'left right arrow with stroke', google translation)
  - "↯": [T: "向下曲折箭頭"]                           	#  0x21af	(en: 'downwards zigzag arrow', google translation)
  - "↰": [T: "向上轉左箭頭"]                        	#  0x21b0	(en: 'upwards arrow with tip leftwards', google translation)
  - "↱": [T: "向上轉右箭頭"]                      	#  0x21b1	(en: 'upwards arrow with tip rightwards', google translation)
@@ -596,80 +596,80 @@
  - "↳": [T: "向下轉右箭頭"]                        	#  0x21b3	(en: 'downwards arrow with tip rightwards', google translation)
  - "↴": [T: "向右轉下箭頭"]                        	#  0x21b4	(en: 'rightwards arrow with corner downwards', google translation)
  - "↵": [T: "下轉左箭頭"]                         	#  0x21b5	(en: 'downwards arrow with corner leftwards', google translation)
- - "↶": [T: "逆時針往左半圓箭頭"]                       	#  0x21b6	(en: 'anticlockwise top semicircle arrow', google translation)
- - "↷": [T: "順時針往右半圓箭頭"]                        	#  0x21b7	(en: 'clockwise top semicircle arrow', google translation)
- - "↸": [t: "左上箭頭到橫線"]                          	#  0x21b8	(en: 'north west arrow to long bar', google translation)
- - "↹": [t: "上方左箭頭到豎線下方右箭頭到豎線"]                     	#  0x21b9	(en: 'leftwards arrow to bar over rightwards arrow to bar', google translation)
- - "↺": [t: "逆時針開放圓箭頭"]                         	#  0x21ba	(en: 'anticlockwise open circle arrow', google translation)
- - "↻": [t: "順時針開放圓箭頭"]                         	#  0x21bb	(en: 'clockwise open circle arrow', google translation)
- - "↼": [t: "向左魚叉尖朝上"]                           	#  0x21bc	(en: 'left harpoon up', google translation)
- - "↽": [t: "向左魚叉尖朝下"]                            	#  0x21bd	(en: 'left harpoon down', google translation)
- - "↾": [t: "向上魚叉尖朝右"]                            	#  0x21be	(en: 'up harpoon right', google translation)
- - "↿": [t: "向上魚叉尖朝左"]                            	#  0x21bf	(en: 'up harpoon left', google translation)
- - "⇀": [t: "向量"]                               	#  0x21c0	(en: 'right harpoon up')
- - "⇁": [t: "向右魚叉尖朝下"]                            	#  0x21c1	(en: 'right harpoon down', google translation)
- - "⇂": [t: "向下魚叉尖朝右"]                            	#  0x21c2	(en: 'down harpoon right', google translation)
- - "⇃": [t: "向下魚叉尖朝左"]                               	#  0x21c3	(en: 'down harpoon left', google translation)
- - "⇄": [t: "上方右箭頭下方左箭頭"]                         	#  0x21c4	(en: 'rightwards arrow over leftwards arrow', google translation)
- - "⇅": [t: "左方向上右方向下箭頭"]                         	#  0x21c5	(en: 'upwards arrow leftwards of downwards arrow', google translation)
- - "⇆": [t: "上方向左下方向右箭頭"]                         	#  0x21c6	(en: 'leftwards arrow over rightwards arrow', google translation)
- - "⇇": [t: "向左成對箭頭"]                            	#  0x21c7	(en: 'leftwards paired arrows', google translation)
- - "⇈": [t: "向上成對箭頭"]                          	#  0x21c8	(en: 'upwards paired arrows', google translation)
- - "⇉": [t: "向右成對箭頭"]                          	#  0x21c9	(en: 'rightwards paired arrows', google translation)
- - "⇊": [t: "向下成對箭頭"]                          	#  0x21ca	(en: 'downwards paired arrows', google translation)
- - "⇋": [t: "上方向左下方向右魚叉"]                       	#  0x21cb	(en: 'left harpoon over right harpoon', google translation)
- - "⇌": [t: "上方向右下方向左魚叉"]                         	#  0x21cc	(en: 'right harpoon over left harpoon', google translation)
- - "⇍": [t: "帶撇向左粗箭頭"]                           	#  0x21cd	(en: 'leftwards double arrow with stroke', google translation)
- - "⇎": [t: "帶撇左右粗箭頭"]                         	#  0x21ce	(en: 'left right double arrow with stroke', google translation)
- - "⇏": [t: "帶撇向右粗箭頭"]                         	#  0x21cf	(en: 'rightwards double arrow with stroke', google translation)
- - "⇐": [t: "向左粗箭頭"]                             	#  0x21d0	(en: 'leftwards double arrow', google translation)
- - "⇑": [t: "向上粗箭頭"]                            	#  0x21d1	(en: 'upwards double arrow', google translation)
- - "⇒": [t: "向右粗箭頭"]                            	#  0x21d2	(en: 'rightwards double arrow', google translation)
- - "⇓": [t: "向下粗箭頭"]                            	#  0x21d3	(en: 'downwards double arrow', google translation)
- - "⇔": [t: "左右粗箭頭"]                            	#  0x21d4	(en: 'left right double arrow', google translation)
- - "⇕": [t: "上下粗箭頭"]                          	#  0x21d5	(en: 'up down double arrow', google translation)
- - "⇖": [t: "左上粗箭頭"]                            	#  0x21d6	(en: 'north west double arrow', google translation)
- - "⇗": [t: "右上粗箭頭"]                            	#  0x21d7	(en: 'north east double arrow', google translation)
- - "⇘": [t: "右下粗箭頭"]                            	#  0x21d8	(en: 'south east double arrow', google translation)
- - "⇙": [t: "左下粗箭頭"]                            	#  0x21d9	(en: 'south west double arrow', google translation)
- - "⇚": [t: "向左重箭頭"]                            	#  0x21da	(en: 'leftwards triple arrow', google translation)
- - "⇛": [t: "向右重箭頭"]                           	#  0x21db	(en: 'rightwards triple arrow', google translation)
- - "⇜": [t: "向左花箭頭"]                              	#  0x21dc	(en: 'leftwards squiggle arrow', google translation)
- - "⇝": [t: "向右花箭頭"]                           	#  0x21dd	(en: 'rightwards squiggle arrow', google translation)
- - "⇞": [t: "雙撇向上箭頭"]                          	#  0x21de	(en: 'upwards arrow with double stroke', google translation)
- - "⇟": [t: "雙撇向下箭頭"]                          	#  0x21df	(en: 'downwards arrow with double stroke', google translation)
- - "⇠": [t: "向左虛線箭頭"]                               	#  0x21e0	(en: 'leftwards dashed arrow', google translation)
- - "⇡": [t: "向上虛線箭頭"]                           	#  0x21e1	(en: 'upwards dashed arrow', google translation)
- - "⇢": [t: "向右虛線箭頭"]                           	#  0x21e2	(en: 'rightwards dashed arrow', google translation)
- - "⇣": [t: "向下虛線箭頭"]                           	#  0x21e3	(en: 'downwards dashed arrow', google translation)
- - "⇤": [t: "向左箭頭到豎線"]                          	#  0x21e4	(en: 'leftwards arrow to bar', google translation)
- - "⇥": [t: "向右箭頭到豎線"]                           	#  0x21e5	(en: 'rightwards arrow to bar', google translation)
- - "⇦": [t: "左白箭頭"]                             	#  0x21e6	(en: 'leftwards white arrow', google translation)
- - "⇧": [t: "向上空心箭頭"]                           	#  0x21e7	(en: 'upwards white arrow', google translation)
- - "⇨": [t: "向右空心箭頭"]                           	#  0x21e8	(en: 'rightwards white arrow', google translation)
- - "⇩": [t: "向下空心箭頭"]                           	#  0x21e9	(en: 'downwards white arrow', google translation)
- - "⇪": [t: "起頭橫線向上空心箭頭"]                       	#  0x21ea	(en: 'upwards white arrow from bar', google translation)
- - "⇫": [t: "有座向上空心箭頭"]                        	#  0x21eb	(en: 'upwards white arrow on pedestal', google translation)
- - "⇬": [t: "有座向上空心橫線箭頭"]               	#  0x21ec	(en: 'upwards white arrow on pedestal with horizontal bar', google translation)
- - "⇭": [t: "有座向上中心豎線空心箭頭"]               	#  0x21ed	(en: 'upwards white arrow on pedestal with vertical bar', google translation)
- - "⇮": [t: "向上空心雙箭頭"]                          	#  0x21ee	(en: 'upwards white double arrow', google translation)
- - "⇯": [t: "有座向上空心雙箭頭"]                      	#  0x21ef	(en: 'upwards white double arrow on pedestal', google translation)
- - "⇰": [t: "有座向空心箭頭"]                        	#  0x21f0	(en: 'rightwards white arrow from wall', google translation)
- - "⇱": [t: "左上箭頭到拐角"]                          	#  0x21f1	(en: 'north west arrow to corner', google translation)
- - "⇲": [t: "右下箭頭到拐角"]                          	#  0x21f2	(en: 'south east arrow to corner', google translation)
- - "⇳": [t: "上下空心箭頭"]                          	#  0x21f3	(en: 'up down white arrow', google translation)
- - "⇴": [t: "右箭頭有小圓圈"]                          	#  0x21f4	(en: 'right arrow with small circle', google translation)
- - "⇵": [t: "左方向下右方向上箭頭"]                         	#  0x21f5	(en: 'downwards arrow leftwards of upwards arrow', google translation)
- - "⇶": [t: "三個向右箭頭"]                           	#  0x21f6	(en: 'three rightwards arrows', google translation)
- - "⇷": [t: "左箭頭帶有垂直衝程"]                        	#  0x21f7	(en: 'leftwards arrow with vertical stroke', google translation)
- - "⇸": [t: "垂直中風的右箭頭"]                         	#  0x21f8	(en: 'rightwards arrow with vertical stroke', google translation)
- - "⇹": [t: "左右箭頭帶有豎線"]                       	#  0x21f9	(en: 'left right arrow with vertical stroke', google translation)
- - "⇺": [t: "向左箭頭帶有二豎線"]                       	#  0x21fa	(en: 'leftwards arrow with double vertical stroke', google translation)
- - "⇻": [t: "向右箭頭帶有二豎線"]                      	#  0x21fb	(en: 'rightwards arrow with double vertical stroke', google translation)
- - "⇼": [t: "左右箭頭帶有二豎線"]                      	#  0x21fc	(en: 'left right arrow with double vertical stroke', google translation)
- - "⇽": [t: "向左開頭箭頭"]                            	#  0x21fd	(en: 'leftwards open headed arrow', google translation)
- - "⇾": [t: "向右開頭箭頭"]                            	#  0x21fe	(en: 'rightwards open headed arrow', google translation)
- - "⇿": [t: "左右開頭箭頭"]                           	#  0x21ff	(en: 'left right open headed arrow', google translation)
+ - "↶": [T: "逆時針上半圓箭頭"]                       	#  0x21b6	(en: 'anticlockwise top semicircle arrow', google translation)
+ - "↷": [T: "順時針上半圓箭頭"]                        	#  0x21b7	(en: 'clockwise top semicircle arrow', google translation)
+ - "↸": [T: "左上箭頭到橫線"]                          	#  0x21b8	(en: 'north west arrow to long bar', google translation)
+ - "↹": [T: "上方左箭頭到豎線下方右箭頭到豎線"]                     	#  0x21b9	(en: 'leftwards arrow to bar over rightwards arrow to bar', google translation)
+ - "↺": [T: "逆時針圓箭頭"]                         	#  0x21ba	(en: 'anticlockwise open circle arrow', google translation)
+ - "↻": [T: "順時針圓箭頭"]                         	#  0x21bb	(en: 'clockwise open circle arrow', google translation)
+ - "↼": [T: "向左魚叉尖朝上"]                           	#  0x21bc	(en: 'left harpoon up', google translation)
+ - "↽": [T: "向左魚叉尖朝下"]                            	#  0x21bd	(en: 'left harpoon down', google translation)
+ - "↾": [T: "向上魚叉尖朝右"]                            	#  0x21be	(en: 'up harpoon right', google translation)
+ - "↿": [T: "向上魚叉尖朝左"]                            	#  0x21bf	(en: 'up harpoon left', google translation)
+ - "⇀": [T: "向右魚叉尖朝上"]                               	#  0x21c0	(en: 'right harpoon up')
+ - "⇁": [T: "向右魚叉尖朝下"]                            	#  0x21c1	(en: 'right harpoon down', google translation)
+ - "⇂": [T: "向下魚叉尖朝右"]                            	#  0x21c2	(en: 'down harpoon right', google translation)
+ - "⇃": [T: "向下魚叉尖朝左"]                               	#  0x21c3	(en: 'down harpoon left', google translation)
+ - "⇄": [T: "上方右箭頭下方左箭頭"]                         	#  0x21c4	(en: 'rightwards arrow over leftwards arrow', google translation)
+ - "⇅": [T: "左方向上右方向下箭頭"]                         	#  0x21c5	(en: 'upwards arrow leftwards of downwards arrow', google translation)
+ - "⇆": [T: "上方向左下方向右箭頭"]                         	#  0x21c6	(en: 'leftwards arrow over rightwards arrow', google translation)
+ - "⇇": [T: "向左成對箭頭"]                            	#  0x21c7	(en: 'leftwards paired arrows', google translation)
+ - "⇈": [T: "向上成對箭頭"]                          	#  0x21c8	(en: 'upwards paired arrows', google translation)
+ - "⇉": [T: "向右成對箭頭"]                          	#  0x21c9	(en: 'rightwards paired arrows', google translation)
+ - "⇊": [T: "向下成對箭頭"]                          	#  0x21ca	(en: 'downwards paired arrows', google translation)
+ - "⇋": [T: "上方向左下方向右魚叉"]                       	#  0x21cb	(en: 'left harpoon over right harpoon', google translation)
+ - "⇌": [T: "上方向右下方向左魚叉"]                         	#  0x21cc	(en: 'right harpoon over left harpoon', google translation)
+ - "⇍": [T: "帶撇向左粗箭頭"]                           	#  0x21cd	(en: 'leftwards double arrow with stroke', google translation)
+ - "⇎": [T: "帶撇左右粗箭頭"]                         	#  0x21ce	(en: 'left right double arrow with stroke', google translation)
+ - "⇏": [T: "帶撇向右粗箭頭"]                         	#  0x21cf	(en: 'rightwards double arrow with stroke', google translation)
+ - "⇐": [T: "向左粗箭頭"]                             	#  0x21d0	(en: 'leftwards double arrow', google translation)
+ - "⇑": [T: "向上粗箭頭"]                            	#  0x21d1	(en: 'upwards double arrow', google translation)
+ - "⇒": [T: "向右粗箭頭"]                            	#  0x21d2	(en: 'rightwards double arrow', google translation)
+ - "⇓": [T: "向下粗箭頭"]                            	#  0x21d3	(en: 'downwards double arrow', google translation)
+ - "⇔": [T: "左右粗箭頭"]                            	#  0x21d4	(en: 'left right double arrow', google translation)
+ - "⇕": [T: "上下粗箭頭"]                          	#  0x21d5	(en: 'up down double arrow', google translation)
+ - "⇖": [T: "左上粗箭頭"]                            	#  0x21d6	(en: 'north west double arrow', google translation)
+ - "⇗": [T: "右上粗箭頭"]                            	#  0x21d7	(en: 'north east double arrow', google translation)
+ - "⇘": [T: "右下粗箭頭"]                            	#  0x21d8	(en: 'south east double arrow', google translation)
+ - "⇙": [T: "左下粗箭頭"]                            	#  0x21d9	(en: 'south west double arrow', google translation)
+ - "⇚": [T: "向左重箭頭"]                            	#  0x21da	(en: 'leftwards triple arrow', google translation)
+ - "⇛": [T: "向右重箭頭"]                           	#  0x21db	(en: 'rightwards triple arrow', google translation)
+ - "⇜": [T: "向左波浪箭頭"]                              	#  0x21dc	(en: 'leftwards squiggle arrow', google translation)
+ - "⇝": [T: "向右波浪箭頭"]                           	#  0x21dd	(en: 'rightwards squiggle arrow', google translation)
+ - "⇞": [T: "雙撇向下箭頭"]                          	#  0x21de	(en: 'upwards arrow with double stroke', google translation)
+ - "⇟": [T: "雙撇向上箭頭"]                          	#  0x21df	(en: 'downwards arrow with double stroke', google translation)
+ - "⇠": [T: "向左虛線箭頭"]                               	#  0x21e0	(en: 'leftwards dashed arrow', google translation)
+ - "⇡": [T: "向上虛線箭頭"]                           	#  0x21e1	(en: 'upwards dashed arrow', google translation)
+ - "⇢": [T: "向右虛線箭頭"]                           	#  0x21e2	(en: 'rightwards dashed arrow', google translation)
+ - "⇣": [T: "向下虛線箭頭"]                           	#  0x21e3	(en: 'downwards dashed arrow', google translation)
+ - "⇤": [T: "向左箭頭到豎線"]                          	#  0x21e4	(en: 'leftwards arrow to bar', google translation)
+ - "⇥": [T: "向右箭頭到豎線"]                           	#  0x21e5	(en: 'rightwards arrow to bar', google translation)
+ - "⇦": [T: "左白箭頭"]                             	#  0x21e6	(en: 'leftwards white arrow', google translation)
+ - "⇧": [T: "向上白箭頭"]                           	#  0x21e7	(en: 'upwards white arrow', google translation)
+ - "⇨": [T: "向右白箭頭"]                           	#  0x21e8	(en: 'rightwards white arrow', google translation)
+ - "⇩": [T: "向下白箭頭"]                           	#  0x21e9	(en: 'downwards white arrow', google translation)
+ - "⇪": [t: "起頭橫線向上白箭頭"]                       	#  0x21ea	(en: 'upwards white arrow from bar', google translation)
+ - "⇫": [t: "有座向上白心箭頭"]                        	#  0x21eb	(en: 'upwards white arrow on pedestal', google translation)
+ - "⇬": [t: "有座向上白橫線箭頭"]               	#  0x21ec	(en: 'upwards white arrow on pedestal with horizontal bar', google translation)
+ - "⇭": [t: "有座向上中心豎線白箭頭"]               	#  0x21ed	(en: 'upwards white arrow on pedestal with vertical bar', google translation)
+ - "⇮": [t: "向上白雙箭頭"]                          	#  0x21ee	(en: 'upwards white double arrow', google translation)
+ - "⇯": [t: "有座向上白雙箭頭"]                      	#  0x21ef	(en: 'upwards white double arrow on pedestal', google translation)
+ - "⇰": [T: "有座向右白箭頭"]                        	#  0x21f0	(en: 'rightwards white arrow from wall', google translation)
+ - "⇱": [T: "左上箭頭到拐角"]                          	#  0x21f1	(en: 'north west arrow to corner', google translation)
+ - "⇲": [T: "右下箭頭到拐角"]                          	#  0x21f2	(en: 'south east arrow to corner', google translation)
+ - "⇳": [T: "上下白箭頭"]                          	#  0x21f3	(en: 'up down white arrow', google translation)
+ - "⇴": [T: "右箭頭有小圓圈"]                          	#  0x21f4	(en: 'right arrow with small circle', google translation)
+ - "⇵": [T: "左向下右向上箭頭"]                         	#  0x21f5	(en: 'downwards arrow leftwards of upwards arrow', google translation)
+ - "⇶": [T: "三個向右箭頭"]                           	#  0x21f6	(en: 'three rightwards arrows', google translation)
+ - "⇷": [T: "左箭頭帶有豎線"]                        	#  0x21f7	(en: 'leftwards arrow with vertical stroke', google translation)
+ - "⇸": [T: "右箭頭帶有豎線"]                         	#  0x21f8	(en: 'rightwards arrow with vertical stroke', google translation)
+ - "⇹": [T: "左右箭頭帶有豎線"]                       	#  0x21f9	(en: 'left right arrow with vertical stroke', google translation)
+ - "⇺": [T: "向左箭頭帶有二豎線"]                       	#  0x21fa	(en: 'leftwards arrow with double vertical stroke', google translation)
+ - "⇻": [T: "向右箭頭帶有二豎線"]                      	#  0x21fb	(en: 'rightwards arrow with double vertical stroke', google translation)
+ - "⇼": [T: "左右箭頭帶有二豎線"]                      	#  0x21fc	(en: 'left right arrow with double vertical stroke', google translation)
+ - "⇽": [T: "向左中空箭頭"]                            	#  0x21fd	(en: 'leftwards open headed arrow', google translation)
+ - "⇾": [T: "向右中空箭頭"]                            	#  0x21fe	(en: 'rightwards open headed arrow', google translation)
+ - "⇿": [T: "左右中空箭頭"]                           	#  0x21ff	(en: 'left right open headed arrow', google translation)
  - "∀": [T: "對所有的"]                             	#  0x2200	(en: 'for all')
  - "∁":                                         	#  0x2201
      - test: 
@@ -724,7 +724,7 @@
         - test:
             if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
             then: [t: ""]
-        - t: "屬於"
+        - T: "屬於"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -1491,31 +1491,31 @@
  - "▨": [t: "正方形內填充正斜線"]                      	#  0x25a8	(en: 'square with upper right to lower left fill', google translation)
  - "▩": [t: "正方形內填充正反斜線"]                    	#  0x25a9	(en: 'square with diagonal crosshatch fill', google translation)
  - "▪": [T: "黑小方塊"]                            	#  0x25aa	(en: 'black small square', google translation)
- - "▫": [T: "小方塊"]                            	#  0x25ab	(en: 'white small square', google translation)
- - "▬": [T: "黑小矩形"]                             	#  0x25ac	(en: 'black rectangle', google translation)
- - "▭": [T: "矩形"]                             	#  0x25ad	(en: 'white rectangle', google translation)
- - "▮": [T: "黑垂直矩形"]                           	#  0x25ae	(en: 'black vertical rectangle', google translation)
- - "▯": [T: "垂直矩形"]                           	#  0x25af	(en: 'white vertical rectangle', google translation)
+ - "▫": [T: "白小方塊"]                            	#  0x25ab	(en: 'white small square', google translation)
+ - "▬": [T: "黑矩形"]                             	#  0x25ac	(en: 'black rectangle', google translation)
+ - "▭": [T: "白矩形"]                             	#  0x25ad	(en: 'white rectangle', google translation)
+ - "▮": [T: "黑豎矩形"]                           	#  0x25ae	(en: 'black vertical rectangle', google translation)
+ - "▯": [T: "白豎矩形"]                           	#  0x25af	(en: 'white vertical rectangle', google translation)
  - "▰": [T: "黑平行四邊形"]                          	#  0x25b0	(en: 'black parallelogram', google translation)
- - "▱": [T: "平行四邊形"]                          	#  0x25b1	(en: 'white parallelogram', google translation)
+ - "▱": [T: "白平行四邊形"]                          	#  0x25b1	(en: 'white parallelogram', google translation)
  - "▲": [T: "黑三角形"]                          	#  0x25b2	(en: 'black up pointing triangle', google translation)
- - "△": [T: "三角形"]                          	#  0x25b3	(en: 'white up pointing triangle', google translation)
+ - "△": [T: "白三角形"]                          	#  0x25b3	(en: 'white up pointing triangle', google translation)
  - "▴": [T: "黑小三角形"]                         	#  0x25b4	(en: 'black up pointing small triangle', google translation)
- - "▵": [T: "小三角形"]                         	#  0x25b5	(en: 'white up pointing small triangle', google translation)
+ - "▵": [T: "白小三角形"]                         	#  0x25b5	(en: 'white up pointing small triangle', google translation)
  - "▶": [T: "黑向右三角形"]                         	#  0x25b6	(en: 'black right pointing triangle', google translation)
- - "▷": [T: "向右三角形"]                          	#  0x25b7	(en: 'white right pointing triangle', google translation)
+ - "▷": [T: "白向右三角形"]                          	#  0x25b7	(en: 'white right pointing triangle', google translation)
  - "▸": [T: "黑向右小三角形"]                        	#  0x25b8	(en: 'black right pointing small triangle', google translation)
  - "▹": [T: "向右小三角形"]                        	#  0x25b9	(en: 'white right pointing small triangle', google translation)
  - "►": [t: "黑色指右指針"]                          	#  0x25ba	(en: 'black right pointing pointer', google translation)
  - "▻": [t: "白色指右指針"]                         	#  0x25bb	(en: 'white right pointing pointer', google translation)
  - "▼": [T: "黑倒三角形"]                          	#  0x25bc	(en: 'black down pointing triangle', google translation)
- - "▽": [T: "倒三角形"]                          	#  0x25bd	(en: 'white down pointing triangle', google translation)
+ - "▽": [T: "白倒三角形"]                          	#  0x25bd	(en: 'white down pointing triangle', google translation)
  - "▾": [T: "黑倒小三角形"]                         	#  0x25be	(en: 'black down pointing small triangle', google translation)
- - "▿": [T: "倒小三角形"]                        	#  0x25bf	(en: 'white down pointing small triangle', google translation)
+ - "▿": [T: "白倒小三角形"]                        	#  0x25bf	(en: 'white down pointing small triangle', google translation)
  - "◀": [T: "黑向左三角形"]                          	#  0x25c0	(en: 'black left pointing triangle', google translation)
- - "◁": [T: "向左三角形"]                          	#  0x25c1	(en: 'white left pointing triangle', google translation)
+ - "◁": [T: "白向左三角形"]                          	#  0x25c1	(en: 'white left pointing triangle', google translation)
  - "◂": [T: "黑向左小三角形"]                        	#  0x25c2	(en: 'black left pointing small triangle', google translation)
- - "◃": [T: "向左小三角形"]                        	#  0x25c3	(en: 'white left pointing small triangle', google translation)
+ - "◃": [T: "白向左小三角形"]                        	#  0x25c3	(en: 'white left pointing small triangle', google translation)
  - "◄": [t: "黑色指左指針"]                          	#  0x25c4	(en: 'black left pointing pointer', google translation)
  - "◅": [t: "白色指左指針"]                          	#  0x25c5	(en: 'white left pointing pointer', google translation)
  - "◆": [t: "黑鑽石"]                             	#  0x25c6	(en: 'black diamond', google translation)
@@ -1523,9 +1523,9 @@
  - "◈": [t: "白鑽石含黑小鑽石"]                      	#  0x25c8	(en: 'white diamond containing black small diamond', google translation)
  - "◉": [t: "魚眼"]                               	#  0x25c9	(en: 'fisheye', google translation)
  - "◊": [t: "白菱形"]                               	#  0x25ca	(en: 'lozenge', google translation)
- - "○": [t: "白色圓圈"]                             	#  0x25cb	(en: 'white circle', google translation)
+ - "○": [t: "白圓圈"]                             	#  0x25cb	(en: 'white circle', google translation)
  - "◌": [t: "虛線圓圈"]                             	#  0x25cc	(en: 'dotted circle', google translation)
- - "◍": [t: "用垂直填充圓圈"]                          	#  0x25cd	(en: 'circle with vertical fill', google translation)
+ - "◍": [t: "用豎線填充圓圈"]                          	#  0x25cd	(en: 'circle with vertical fill', google translation)
  - "◎": [t: "靶心"]                               	#  0x25ce	(en: 'bullseye', google translation)
  - "●": [t: "黑色圓圈"]                             	#  0x25cf	(en: 'black circle', google translation)
  - "◐": [t: "圓內左半黑"]                          	#  0x25d0	(en: 'circle with left half black', google translation)
@@ -1533,23 +1533,23 @@
  - "◒": [t: "圓內下半黑"]                            	#  0x25d2	(en: 'circle with lower half black', google translation)
  - "◓": [t: "圓內上半黑"]                          	#  0x25d3	(en: 'circle with upper half black', google translation)
  - "◔": [t: "圓內右上黑"]                          	#  0x25d4	(en: 'circle with upper right quadrant black', google translation)
- - "◕": [t: "圓內左上白"]                      	#  0x25d5	(en: 'circle with all but upper left quadrant black', google translation)
+ - "◕": [t: "圓內左上黑"]                      	#  0x25d5	(en: 'circle with all but upper left quadrant black', google translation)
  - "◖": [t: "左半圓黑"]                            	#  0x25d6	(en: 'left half black circle', google translation)
  - "◗": [t: "右半圓黑"]                             	#  0x25d7	(en: 'right half black circle', google translation)
- - "◘": [t: "inverse bullet"]                               	#  0x25d8	(en: 'inverse bullet', google translation)
- - "◙": [t: "inverse white circle"]                            	#  0x25d9	(en: 'inverse white circle', google translation)
- - "◚": [t: "上半部逆白色圓圈"]                         	#  0x25da	(en: 'upper half inverse white circle', google translation)
- - "◛": [t: "下半部逆白色圓圈"]                         	#  0x25db	(en: 'lower half inverse white circle', google translation)
+ - "◘": [t: "標靶反白"]                               	#  0x25d8	(en: 'inverse bullet', google translation)
+ - "◙": [t: "白圓圈反白"]                            	#  0x25d9	(en: 'inverse white circle', google translation)
+ - "◚": [t: "圓圈反白上半部"]                         	#  0x25da	(en: 'upper half inverse white circle', google translation)
+ - "◛": [t: "圓圈反白下半部"]                         	#  0x25db	(en: 'lower half inverse white circle', google translation)
  - "◜": [t: "左上圓弧"]                          	#  0x25dc	(en: 'upper left quadrant circular arc', google translation)
  - "◝": [t: "右上圓弧"]                          	#  0x25dd	(en: 'upper right quadrant circular arc', google translation)
  - "◞": [t: "右下圓弧"]                          	#  0x25de	(en: 'lower right quadrant circular arc', google translation)
  - "◟": [t: "左下圓弧"]                          	#  0x25df	(en: 'lower left quadrant circular arc', google translation)
  - "◠": [t: "上半圓弧"]                              	#  0x25e0	(en: 'upper half circle', google translation)
  - "◡": [t: "下半圈弧"]                              	#  0x25e1	(en: 'lower half circle', google translation)
- - "◢": [t: "黑色右下三角"]                           	#  0x25e2	(en: 'black lower right triangle', google translation)
- - "◣": [t: "黑色左下三角"]                           	#  0x25e3	(en: 'black lower left triangle', google translation)
- - "◤": [t: "黑色左上三角"]                           	#  0x25e4	(en: 'black upper left triangle', google translation)
- - "◥": [t: "黑色右上三角"]                           	#  0x25e5	(en: 'black upper right triangle', google translation)
+ - "◢": [t: "黑色右下三角形"]                           	#  0x25e2	(en: 'black lower right triangle', google translation)
+ - "◣": [t: "黑色左下三角形"]                           	#  0x25e3	(en: 'black lower left triangle', google translation)
+ - "◤": [t: "黑色左上三角形"]                           	#  0x25e4	(en: 'black upper left triangle', google translation)
+ - "◥": [t: "黑色右上三角形"]                           	#  0x25e5	(en: 'black upper right triangle', google translation)
  - "◦": [t: "合成"]                               	#  0x25e6	(en: 'composition', google translation)
  - "◧": [t: "正方形內左半黑"]                           	#  0x25e7	(en: 'square with left half black', google translation)
  - "◨": [t: "正方形內右半黑"]                         	#  0x25e8	(en: 'square with right half black', google translation)
@@ -1568,14 +1568,14 @@
  - "◵": [t: "白圓圈左下象限"]                        	#  0x25f5	(en: 'white circle with lower left quadrant', google translation)
  - "◶": [t: "白圓圈右下象限"]                        	#  0x25f6	(en: 'white circle with lower right quadrant', google translation)
  - "◷": [t: "白圓圈右上象限"]                        	#  0x25f7	(en: 'white circle with upper right quadrant', google translation)
- - "◸": [t: "左上三角"]                             	#  0x25f8	(en: 'upper left triangle', google translation)
- - "◹": [t: "右上三角"]                             	#  0x25f9	(en: 'upper right triangle', google translation)
- - "◺": [t: "左下三角"]                             	#  0x25fa	(en: 'lower left triangle', google translation)
+ - "◸": [t: "左上三角形"]                             	#  0x25f8	(en: 'upper left triangle', google translation)
+ - "◹": [t: "右上三角形"]                             	#  0x25f9	(en: 'upper right triangle', google translation)
+ - "◺": [t: "左下三角形"]                             	#  0x25fa	(en: 'lower left triangle', google translation)
  - "◻": [t: "白中方塊"]                           	#  0x25fb	(en: 'white medium square', google translation)
  - "◼": [t: "黑中方塊"]                           	#  0x25fc	(en: 'black medium square', google translation)
  - "◽": [t: "黑中小型方塊"]                         	#  0x25fd	(en: 'white medium small square', google translation)
  - "◾": [t: "白中小型方塊"]                         	#  0x25fe	(en: 'black medium small square', google translation)
- - "◿": [t: "右下三角"]                             	#  0x25ff	(en: 'lower right triangle', google translation)
+ - "◿": [t: "右下三角形"]                             	#  0x25ff	(en: 'lower right triangle', google translation)
  - "★": [t: "black star"]                          # 0x2605
  - "☆": [t: "white star"]                          # 0x2606
  - "☉": [t: "sun"]                                 # 0x2609
@@ -2329,70 +2329,70 @@
  - "⬘": [t: "鑽石上半黑色"]                           	#  0x2b18	(en: 'diamond with top half black', google translation)
  - "⬙": [t: "鑽石與下半部分"]                          	#  0x2b19	(en: 'diamond with bottom half black', google translation)
  - "⬚": [t: "盒子"]                               	#  0x2b1a	(en: 'box', google translation)
- - "⬛": [t: "黑色大正方形"]                           	#  0x2b1b	(en: 'black large square', google translation)
- - "⬜": [t: "白色大正方形"]                           	#  0x2b1c	(en: 'white large square', google translation)
- - "⬝": [t: "黑色非常小的正方形"]                        	#  0x2b1d	(en: 'black very small square', google translation)
- - "⬞": [t: "白色非常小的正方形"]                        	#  0x2b1e	(en: 'white very small square', google translation)
- - "⬟": [t: "黑色五角大樓"]                           	#  0x2b1f	(en: 'black pentagon', google translation)
- - "⬠": [t: "白五角大樓"]                            	#  0x2b20	(en: 'white pentagon', google translation)
- - "⬡": [t: "白色六角形"]                            	#  0x2b21	(en: 'white hexagon', google translation)
- - "⬢": [t: "黑色六角形"]                            	#  0x2b22	(en: 'black hexagon', google translation)
- - "⬣": [t: "水平黑色六角形"]                          	#  0x2b23	(en: 'horizontal black hexagon', google translation)
+ - "⬛": [t: "黑大正方形"]                           	#  0x2b1b	(en: 'black large square', google translation)
+ - "⬜": [t: "白大正方形"]                           	#  0x2b1c	(en: 'white large square', google translation)
+ - "⬝": [t: "黑極小正方形"]                        	#  0x2b1d	(en: 'black very small square', google translation)
+ - "⬞": [t: "白極小正方形"]                        	#  0x2b1e	(en: 'white very small square', google translation)
+ - "⬟": [t: "黑五角形"]                           	#  0x2b1f	(en: 'black pentagon', google translation)
+ - "⬠": [t: "白五角形"]                            	#  0x2b20	(en: 'white pentagon', google translation)
+ - "⬡": [t: "白六角形"]                            	#  0x2b21	(en: 'white hexagon', google translation)
+ - "⬢": [t: "黑六角形"]                            	#  0x2b22	(en: 'black hexagon', google translation)
+ - "⬣": [t: "水平黑六角形"]                          	#  0x2b23	(en: 'horizontal black hexagon', google translation)
  - "⬤": [t: "黑色大圓圈"]                            	#  0x2b24	(en: 'black large circle', google translation)
- - "⬥": [t: "黑色中鑽"]                             	#  0x2b25	(en: 'black medium diamond', google translation)
- - "⬦": [t: "白色中型鑽石"]                           	#  0x2b26	(en: 'white medium diamond', google translation)
- - "⬧": [t: "黑色中型潤滑油"]                          	#  0x2b27	(en: 'black medium lozenge', google translation)
- - "⬨": [t: "白色中型潤滑脂"]                          	#  0x2b28	(en: 'white medium lozenge', google translation)
- - "⬩": [t: "黑色小鑽石"]                            	#  0x2b29	(en: 'black small diamond', google translation)
- - "⬪": [t: "黑色的小烤"]                            	#  0x2b2a	(en: 'black small lozenge', google translation)
- - "⬫": [t: "白色小烤"]                             	#  0x2b2b	(en: 'white small lozenge', google translation)
- - "⬬": [t: "黑色水平橢圓"]                           	#  0x2b2c	(en: 'black horizontal ellipse', google translation)
- - "⬭": [t: "白色水平橢圓"]                           	#  0x2b2d	(en: 'white horizontal ellipse', google translation)
- - "⬮": [t: "黑色垂直橢圓"]                           	#  0x2b2e	(en: 'black vertical ellipse', google translation)
- - "⬯": [t: "白色垂直橢圓"]                           	#  0x2b2f	(en: 'white vertical ellipse', google translation)
+ - "⬥": [t: "黑中鑽"]                             	#  0x2b25	(en: 'black medium diamond', google translation)
+ - "⬦": [t: "白中鑽"]                           	#  0x2b26	(en: 'white medium diamond', google translation)
+ - "⬧": [t: "黑中菱形"]                          	#  0x2b27	(en: 'black medium lozenge', google translation)
+ - "⬨": [t: "白中菱形"]                          	#  0x2b28	(en: 'white medium lozenge', google translation)
+ - "⬩": [t: "黑小鑽"]                            	#  0x2b29	(en: 'black small diamond', google translation)
+ - "⬪": [t: "黑小菱形"]                            	#  0x2b2a	(en: 'black small lozenge', google translation)
+ - "⬫": [t: "白小菱形"]                             	#  0x2b2b	(en: 'white small lozenge', google translation)
+ - "⬬": [t: "黑橫擺橢圓"]                           	#  0x2b2c	(en: 'black horizontal ellipse', google translation)
+ - "⬭": [t: "白橫擺橢圓"]                           	#  0x2b2d	(en: 'white horizontal ellipse', google translation)
+ - "⬮": [t: "黑豎擺橢圓"]                           	#  0x2b2e	(en: 'black vertical ellipse', google translation)
+ - "⬯": [t: "白豎擺橢圓"]                           	#  0x2b2f	(en: 'white vertical ellipse', google translation)
  - "⬰": [t: "左箭頭有小圓圈"]                          	#  0x2b30	(en: 'left arrow with small circle', google translation)
- - "⬱": [t: "三個左箭頭"]                            	#  0x2b31	(en: 'three leftwards arrows', google translation)
- - "⬲": [t: "左箭頭帶有圓圈"]                          	#  0x2b32	(en: 'left arrow with circled plus', google translation)
- - "⬳": [t: "長左彎曲箭頭"]                           	#  0x2b33	(en: 'long leftwards squiggle arrow', google translation)
- - "⬴": [t: "左兩個帶有垂直衝程的頭箭頭"]                    	#  0x2b34	(en: 'leftwards two headed arrow with vertical stroke', google translation)
- - "⬵": [t: "左兩個帶有雙垂直衝程的頭箭頭"]                   	#  0x2b35	(en: 'leftwards two headed arrow with double vertical stroke', google translation)
- - "⬶": [t: "從酒吧左下有兩個頭箭頭"]                      	#  0x2b36	(en: 'leftwards two headed arrow from bar', google translation)
- - "⬷": [t: "左兩個頭三翼箭頭"]                         	#  0x2b37	(en: 'leftwards two headed triple dash arrow', google translation)
- - "⬸": [t: "左箭頭帶有虛線"]                          	#  0x2b38	(en: 'leftwards arrow with dotted stem', google translation)
- - "⬹": [t: "左箭頭，帶有垂直衝程"]                       	#  0x2b39	(en: 'leftwards arrow with tail with vertical stroke', google translation)
- - "⬺": [t: "左箭頭，帶有雙垂直衝程"]                      	#  0x2b3a	(en: 'leftwards arrow with tail with double vertical stroke', google translation)
- - "⬻": [t: "向左兩個帶有尾巴的頭箭頭"]                     	#  0x2b3b	(en: 'leftwards two headed arrow with tail', google translation)
- - "⬼": [t: "向左兩個頭箭頭，帶有垂直衝程"]                   	#  0x2b3c	(en: 'leftwards two headed arrow with tail with vertical stroke', google translation)
- - "⬽": [t: "左兩個頭箭，帶有雙垂直行程"]                    	#  0x2b3d	(en: 'leftwards two headed arrow with tail with double vertical stroke', google translation)
+ - "⬱": [t: "三重箭頭"]                            	#  0x2b31	(en: 'three leftwards arrows', google translation)
+ - "⬲": [t: "左箭頭有圓圈加號"]                          	#  0x2b32	(en: 'left arrow with circled plus', google translation)
+ - "⬳": [t: "長左波浪箭頭"]                           	#  0x2b33	(en: 'long leftwards squiggle arrow', google translation)
+ - "⬴": [t: "左雙箭頭帶有豎線"]                    	#  0x2b34	(en: 'leftwards two headed arrow with vertical stroke', google translation)
+ - "⬵": [t: "左雙箭頭雙豎線"]                   	#  0x2b35	(en: 'leftwards two headed arrow with double vertical stroke', google translation)
+ - "⬶": [t: "從豎線出發往左雙箭頭"]                      	#  0x2b36	(en: 'leftwards two headed arrow from bar', google translation)
+ - "⬷": [t: "左雙箭頭虛線有箭尾"]                         	#  0x2b37	(en: 'leftwards two headed triple dash arrow', google translation)
+ - "⬸": [t: "左箭頭帶有虛線箭身"]                          	#  0x2b38	(en: 'leftwards arrow with dotted stem', google translation)
+ - "⬹": [t: "左箭頭帶有豎線箭尾"]                       	#  0x2b39	(en: 'leftwards arrow with tail with vertical stroke', google translation)
+ - "⬺": [t: "左箭頭雙豎線箭尾"]                      	#  0x2b3a	(en: 'leftwards arrow with tail with double vertical stroke', google translation)
+ - "⬻": [t: "左雙箭頭帶有箭尾"]                     	#  0x2b3b	(en: 'leftwards two headed arrow with tail', google translation)
+ - "⬼": [t: "向左雙箭頭帶有豎線箭尾"]                   	#  0x2b3c	(en: 'leftwards two headed arrow with tail with vertical stroke', google translation)
+ - "⬽": [t: "向左雙箭頭雙豎線箭尾"]                    	#  0x2b3d	(en: 'leftwards two headed arrow with tail with double vertical stroke', google translation)
  - "⬾": [t: "向左箭頭穿過x"]                          	#  0x2b3e	(en: 'leftwards arrow through x', google translation)
  - "⬿": [t: "箭頭直接向左指向"]                         	#  0x2b3f	(en: 'wave arrow pointing directly left', google translation)
- - "⭀": [t: "等於向左箭頭上方的標誌"]                      	#  0x2b40	(en: 'equals sign above leftwards arrow', google translation)
- - "⭁": [t: "向左箭頭上方反向tilde操作員"]                 	#  0x2b41	(en: 'reverse tilde operator above leftwards arrow', google translation)
- - "⭂": [t: "反向上方的左箭頭幾乎等於"]                     	#  0x2b42	(en: 'leftwards arrow above reverse almost equal to', google translation)
- - "⭃": [t: "向右箭頭大於大於"]                         	#  0x2b43	(en: 'rightwards arrow through greater than', google translation)
+ - "⭀": [t: "向左箭頭上方有等號"]                      	#  0x2b40	(en: 'equals sign above leftwards arrow', google translation)
+ - "⭁": [t: "向左箭頭上方有tilde"]                 	#  0x2b41	(en: 'reverse tilde operator above leftwards arrow', google translation)
+ - "⭂": [t: "左箭頭下方有逆向幾乎等於"]                     	#  0x2b42	(en: 'leftwards arrow above reverse almost equal to', google translation)
+ - "⭃": [t: "向右箭頭貫穿大於大於"]                         	#  0x2b43	(en: 'rightwards arrow through greater than', google translation)
  - "⭄": [t: "向右箭頭穿過超集"]                         	#  0x2b44	(en: 'rightwards arrow through superset', google translation)
- - "⭅": [t: "左四倍箭頭"]                            	#  0x2b45	(en: 'leftwards quadruple arrow', google translation)
+ - "⭅": [t: "向左四重箭頭"]                            	#  0x2b45	(en: 'leftwards quadruple arrow', google translation)
  - "⭆": [t: "向右四倍箭頭"]                           	#  0x2b46	(en: 'rightwards quadruple arrow', google translation)
- - "⭇": [t: "向右箭頭上方反向tilde操作員"]                 	#  0x2b47	(en: 'reverse tilde operator above rightwards arrow', google translation)
- - "⭈": [t: "反向上方的右箭頭幾乎等於"]                     	#  0x2b48	(en: 'rightwards arrow above reverse almost equal to', google translation)
- - "⭉": [t: "tilde操作員在左上方箭頭上方"]                 	#  0x2b49	(en: 'tilde operator above leftwards arrow', google translation)
- - "⭊": [t: "左箭頭幾乎等於"]                          	#  0x2b4a	(en: 'leftwards arrow above almost equal to', google translation)
- - "⭋": [t: "反向tilde操作員上方的左箭頭"]                 	#  0x2b4b	(en: 'leftwards arrow above reverse tilde operator', google translation)
- - "⭌": [t: "右箭頭上方的箭頭操作員上方"]                    	#  0x2b4c	(en: 'rightwards arrow above reverse tilde operator', google translation)
- - "⭐": [t: "白色中等星星"]                           	#  0x2b50	(en: 'white medium star', google translation)
- - "⭑": [t: "黑色小星星"]                            	#  0x2b51	(en: 'black small star', google translation)
- - "⭒": [t: "白色的小星星"]                           	#  0x2b52	(en: 'white small star', google translation)
- - "⭓": [t: "黑色右指向五角大樓"]                        	#  0x2b53	(en: 'black right pointing pentagon', google translation)
- - "⭔": [t: "白色右指向五角大樓"]                        	#  0x2b54	(en: 'white right pointing pentagon', google translation)
- - "⭕": [t: "沉重的大圓圈"]                           	#  0x2b55	(en: 'heavy large circle', google translation)
- - "⭖": [t: "內部有橢圓形的重橢圓形"]                      	#  0x2b56	(en: 'heavy oval with oval inside', google translation)
- - "⭗": [t: "內部有圓圈的重圓"]                         	#  0x2b57	(en: 'heavy circle with circle inside', google translation)
- - "⭘": [t: "沉重的圓圈"]                            	#  0x2b58	(en: 'heavy circle', google translation)
- - "⭙": [t: "沉重盤旋的鹽鹽"]                          	#  0x2b59	(en: 'heavy circled saltire', google translation)
+ - "⭇": [t: "向右箭頭上方有tilde"]                 	#  0x2b47	(en: 'reverse tilde operator above rightwards arrow', google translation)
+ - "⭈": [t: "右箭頭下方有幾乎等於"]                     	#  0x2b48	(en: 'rightwards arrow above reverse almost equal to', google translation)
+ - "⭉": [t: "左箭頭上方有tilde"]                 	#  0x2b49	(en: 'tilde operator above leftwards arrow', google translation)
+ - "⭊": [t: "左箭頭下方有幾乎等於"]                          	#  0x2b4a	(en: 'leftwards arrow above almost equal to', google translation)
+ - "⭋": [t: "左箭頭下方有tilde"]                 	#  0x2b4b	(en: 'leftwards arrow above reverse tilde operator', google translation)
+ - "⭌": [t: "右箭頭下方有tilde"]                    	#  0x2b4c	(en: 'rightwards arrow above reverse tilde operator', google translation)
+ - "⭐": [t: "白中星星"]                           	#  0x2b50	(en: 'white medium star', google translation)
+ - "⭑": [t: "黑小星星"]                            	#  0x2b51	(en: 'black small star', google translation)
+ - "⭒": [t: "白小星星"]                           	#  0x2b52	(en: 'white small star', google translation)
+ - "⭓": [t: "黑向右五角形"]                        	#  0x2b53	(en: 'black right pointing pentagon', google translation)
+ - "⭔": [t: "白向右五角形"]                        	#  0x2b54	(en: 'white right pointing pentagon', google translation)
+ - "⭕": [t: "粗大圓"]                           	#  0x2b55	(en: 'heavy large circle', google translation)
+ - "⭖": [t: "雙重橢圓形"]                      	#  0x2b56	(en: 'heavy oval with oval inside', google translation)
+ - "⭗": [t: "雙重圓"]                         	#  0x2b57	(en: 'heavy circle with circle inside', google translation)
+ - "⭘": [t: "粗圓"]                            	#  0x2b58	(en: 'heavy circle', google translation)
+ - "⭙": [t: "粗十字圓"]                          	#  0x2b59	(en: 'heavy circled saltire', google translation)
  - "⸀": [t: "直角替代標記"]                           	#  0x2e00	(en: 'right angle substitution marker', google translation)
  - "⸁": [t: "直角虛線替代標記"]                         	#  0x2e01	(en: 'right angle dotted substitution marker', google translation)
  - "⸂": [t: "左替代括號"]                            	#  0x2e02	(en: 'left substitution bracket', google translation)
- - "⸃": [t: "正確的替換括號"]                          	#  0x2e03	(en: 'right substitution bracket', google translation)
+ - "⸃": [t: "右替代括號"]                          	#  0x2e03	(en: 'right substitution bracket', google translation)
  - "⸄": [t: "左虛線替代括號"]                          	#  0x2e04	(en: 'left dotted substitution bracket', google translation)
  - "⸅": [t: "右虛線替代括號"]                          	#  0x2e05	(en: 'right dotted substitution bracket', google translation)
  - "⸆": [t: "提出的插值標記"]                          	#  0x2e06	(en: 'raised interpolation marker', google translation)
@@ -3163,28 +3163,28 @@
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf080 - 0xf098
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝕒-𝕫":                                       	#  0x1d552 - 0x1d56b
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":                                       	#  0xf09a - 0xf0b3
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝟘-𝟡":                                       	#  0x1d7d8 - 0x1d7e1
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
  - "-":                                       	#  0xf0c0 - 0xf0c9
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '', '0123456789')"
 
- - "": [T: "空心nabla"]                          	#  0xf0ca	(en: 'double struck nabla', google translation)
- - "": [T: "空心歐拉常數"]                           	#  0xf0cb	(en: 'double struck euler constant', google translation)
+ - "": [T: "雙線nabla"]                          	#  0xf0ca	(en: 'double struck nabla', google translation)
+ - "": [T: "雙線歐拉常數"]                           	#  0xf0cb	(en: 'double struck euler constant', google translation)
  
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":                                       	#  0x1d49c - 0x1d4b5
@@ -3208,27 +3208,27 @@
         if: "not($IgnoreBold)"
         then: [t: "粗草體"]
         else: [t: "草體"]
-    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf140 - 0xf159
     - test:
         if: "not($IgnoreBold)"
         then: [t: "粗草體"]
         else: [t: "草體"]
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝓪-𝔃":                                       	#  0x1d4ea - 0x1d503
     - test:
         if: "not($IgnoreBold)"
         then: [t: "粗草體"]
         else: [t: "草體"]
-    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":                                       	#  0xf15a - 0xf173
     - test:
         if: "not($IgnoreBold)"
         then: [t: "粗草體"]
         else: [t: "草體"]
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf180 - 0xf199
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" 
@@ -3290,16 +3290,16 @@
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
 
  - "-":                                       	#  0xf220 - 0xf236
-    - t: "空心"
+    - t: "雙線"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
- - "": [T: "空心final sigma"]                        	#  0xf237	(en: 'double struck final sigma', google translation)
- - "": [T: "空心rho"]                            	#  0xf250	(en: 'double struck rho', google translation)
- - "": [T: "空心phi"]                            	#  0xf251	(en: 'double struck phi', google translation)
+ - "": [T: "雙線final sigma"]                        	#  0xf237	(en: 'double struck final sigma', google translation)
+ - "": [T: "雙線rho"]                            	#  0xf250	(en: 'double struck rho', google translation)
+ - "": [T: "雙線phi"]                            	#  0xf251	(en: 'double struck phi', google translation)
  - "𝐀-𝐙":                                       	#  0x1d400 - 0x1d419
     - test:
         if: "not($IgnoreBold)"
