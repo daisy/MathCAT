@@ -1403,7 +1403,7 @@
  - "⏠": [t: "top tortoise shell bracket"]          # 0x23e0
  - "⏡": [t: "bottom tortoise shell bracket"]        # 0x23e1
  - "⏢": [t: "white trapezium"]                    # 0x23e2
- - "⏣": [t: "benzene right with circle"]          # 0x23e3
+ - "⏣": [t: "benzene ring with circle"]          # 0x23e3
  - "⏤": [t: "straightness"]                       # 0x23e4
  - "⏥": [t: "flatness"]                           # 0x23e5
  - "⏦":                                           # 0x23e6
@@ -1617,7 +1617,7 @@
  - "⚆": [t: "white circle with dot right"]       # 0x2686
  - "⚇": [t: "white circle wiht two dots"]        # 0x2687
  - "⚈": [t: "black circle with dot right"]       # 0x2688
- - "⚉": [t: "black circle wiht two dots"]        # 0x2689
+ - "⚉": [t: "black circle with two dots"]        # 0x2689
  - "⚪": [t: "medium white circle"]              # 0x26aa
  - "⚫": [t: "medium black circle"]              # 0x26ab
  - "⚬": [t: "medium small white circle"]          # 0x26ac

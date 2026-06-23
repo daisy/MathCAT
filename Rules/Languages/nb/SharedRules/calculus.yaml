@@ -1,6 +1,20 @@
 ---
 
-- name: divergence
+- name: laplacian
+  tag: laplacian
+  match: "count(*) <= 1"   # can be on ∇^2 or on enclosing mrow
+  replace:
+  - T: "laplas"      # phrase('laplacian' of x) # Norwegian: "laplace" is not pronounced correctly
+  - test:
+      if: "count(*) = 1"
+      then:
+      - T: "av"
+      - test:
+          if: "not(IsNode(*[1], 'leaf'))"
+          then: [pause: short]
+      - x: "*[1]"
+
+- name: divergence      # audit-ignore
   tag: divergence
   match: "count(*) = 1"
   replace:
@@ -13,7 +27,7 @@
       then: [pause: short]
   - x: "*[1]"
 
-- name: curl
+- name: curl        # audit-ignore
   tag: curl
   match: "count(*) = 1"
   replace:
@@ -26,7 +40,7 @@
       then: [pause: short]
   - x: "*[1]"
 
-- name: gradient
+- name: gradient        # audit-ignore
   tag: gradient
   match: "count(*) = 1"
   replace:
@@ -35,3 +49,4 @@
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
   - x: "*[1]"
+

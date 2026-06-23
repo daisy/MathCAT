@@ -101,11 +101,12 @@ fn add_fixity(intent: Element) {
             let definitions = definitions.borrow();
             // debug!("    add_fixity: intent_name: {}, ", intent_name);
             if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) &&
-                let Some((fixity, _)) = definition.split_once("=") {
-                    let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
-                    intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
-                    // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
-                };
+               let Some((fixity, _)) = definition.split_once("=") &&
+               fixity != "nofix" {
+                        let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
+                        intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
+                        // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
+                    }
         });
     }
 }
@@ -140,6 +141,7 @@ pub fn add_fixity_children(intent: Element) -> Element {
         let properties = mathml.attribute_value(INTENT_PROPERTY).unwrap_or_default();
         let fixity = properties.rsplit(':').find(|&property| FIXITIES.contains(property)).unwrap_or_default();
         let intent_name = name(mathml);
+        // debug!("add_fixity_child:  fixity '{}', intent_name '{}'", fixity, intent_name);
     
         let op_name_id = mathml.attribute_value("id").unwrap_or("new-id");
         match fixity {
