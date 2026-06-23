@@ -1,15 +1,16 @@
 ---
- - "a-z": 
+ # Separate rule for "a" not needed in Swedish
+ - "a-z":       # audit-ignore
     - test: 
         if: "$TTS='none'"
         then: [T: "."]                            #  (en: '.', google translation)
-        else: [spell: "'.'"]                       
+        else: [SPELL: "'.'"]                       
 
  # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
  # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
  # Also, if a user can see the screen, they probably don't need to hear "cap", but if they specified an override, they must want to hear the override.
             
- - "A-Z":
+ - "A-Z":       # audit-ignore
     - test: 
         if: "$CapitalLetters_Beep"
         then:
@@ -27,14 +28,16 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+        replace: [SPELL: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
 
  - "0-9": [T: "."]                               #  (en: '.', google: 'A')
 
+ - " ": [T: " "]                     # 0x20
+
  - "!":                                          #  0x21
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"
-        then_test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then_test: 
             if: "$Verbosity = 'Terse'"
             then: [T: "utropstecken"]            #  0x21 (en: 'bang', google translation)
             else: [T: "utropstecken"]            #  0x21 (en: 'exclamation point')
@@ -95,7 +98,11 @@
         if: "parent::*[1][self::m:mn]"
         then: [T: "punkt"]                       #  (en: 'point', google translation)
         else: [T: "prick"]                       #  (en: 'dot')
- - "/": [T: "delat med"]                         #  0x2f (en: 'divided by')
+ - "/":                                          #  0x2f (en: 'divided by')
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "snedstreck"]                        # 0x2f
+        else: [T: "delat med"]                   # 0x2f
  - ":": [T: "kolon"]                             #  0x3a (en: 'colon')
  - ";": [T: "semikolon"]                         #  0x3b (en: 'semicolon')
  - "<":                                          #  0x3c
@@ -103,7 +110,7 @@
          if: "$Verbosity!='Terse'"
          then: [T: "är"]                         #  (en: 'is', google translation)
      - T: "mindre än"                            #  (en: 'less than')
- - "=":                                          #  0x3d
+ - "=":                                          # audit-ignore 0x3d
      # SWEDISH: We remove "är" from all occurrences of = after consulting our mathematician advisor.
      - T: "lika med"                             #  (en: 'equals', MathPlayer: 'lika med', google: 'lika')
 
@@ -127,7 +134,11 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "slut hak-parentes"]           #  (en: 'close bracket', google translation)
         else: [T: "höger hak-parentes"]           #  (en: 'right bracket')
- - "^": [T: "hatt"]                        #  0x5e (en: 'hat')
+ - "^":                                #  0x5e (en: 'hat')
+    - test:
+        if: "parent::m:modified-variable or parent::m:mover"
+        then: [T: "hatt"]
+        else: [T: "cirkumflex"]
  - "_": [T: "understreck"]                       #  0x5f (en: 'under bar', MathPlayer: 'streck under', google: 'under bar')
  - "`": [T: "grav accent"]                       #  0x60 (en: 'grave')
  - "{":                                          #  0x7b
@@ -142,16 +153,18 @@
         variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
         replace:
         - test:
-            - if: "$SpeechStyle != 'ClearSpeak'"
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [T: "lodstreck"]
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
                   then: [T: "givet"]     # given
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
                   then: [T: "delar"]    # divides
-                  else: [T: "lodstreckl"]  # vertical line
+                  else: [T: "lodstreck"]  # vertical line
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
-              then: [T: "lodstreckl"]   # vertical line
+              then: [T: "lodstreck"]   # vertical line
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [T: "sådana att"]   # such that
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
@@ -168,7 +181,8 @@
  - "~": [T: "tilde"]                             #  0x7e
  - " ":                                          #  0xa0
     - test:
-        if: "@data-empty-in-2D and ../../../../*[name(.)!='equations']"
+        # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
+        if: "@data-empty-in-2D and not(ancestor::*[self::m:piecewise or self::m:system-of-equations or self::m:lines])"
         then: [T: "tom"]                       #  want to say something for fraction (etc) with empty child (en: 'empty', google translation)
         else: [T: ""]                            
 
@@ -178,17 +192,22 @@
  - "´": [T: "akut accent"]                       #  0xb4 (en: 'acute')
  - "·":                                          #  0xB7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [T: "gånger"]                       #  (en: 'times', google translation)
-        else: [T: "halvhög punkt"]               #  (en: 'dot', MathPlayer: 'mellanpunkt', google: 'punkt')
- - "×":                                          #  0xd7
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        then: [T: "halvhög punkt"]                       
+        else: [T: "gånger"]               
+ - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [T: "gånger"]                       #  (en: 'times', google translation)
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then: [T: "gånger"]
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [T: "gånger"]
+          else: [T: "kryss"]
         else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [T: "gånger"]                   #  (en: 'by', google translation)
-            else: [T: "kryss"]                  #  (en: 'cross')
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [T: "kryss"]
+            else: [T: "gånger"]
  - "÷": [T: "delat med"]                          #  0xf7 (en: 'divided by')
  - "̀": [T: "grav accent"]                #  0x300 (en: 'grave accent embellishment', google: 'allvarlig accentutsmyckning')
  - "́": [T: "akut accent"]            #  0x301 (en: 'acute accent embellishment', google: 'akut accentutsmyckning')
@@ -218,7 +237,7 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
+        replace: [SPELL: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
 
  - "α": [T: "alfa"]                              #  0x3b1 (en: 'alpha')
  - "β": [T: "beta"]                              #  0x3b2
@@ -270,14 +289,8 @@
  - "⁡":                                          # 0x2061
     - test:
         # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
-        # log is treated differently than trig functions
-        # Note: this differs from 'en' because the ClearSpeak and default rules are different from 'en'
         if: "not(
-              ( ( $SpeechStyle='ClearSpeak' or preceding-sibling::*[1][.='log' or .='ln' or .='lg'] and
-                  IfThenElse(IsNode(following-sibling::*[1],'simple'),
-                                   true(),
-                                   $SpeechStyle='ClearSpeak' and $Verbosity!='Verbose')
-                ) and
+              ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
                 preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
                                                    IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
                                                    IsInDefinition(., 'TrigFunctionNames') )]
@@ -285,7 +298,7 @@
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [T: "av"]                          #  (en: 'of', google translation)
+        then: [T: "av"]
  - "⁢": [T: ""]                                  #  0x2062
  - "⁣": [T: ""]                                  #  0x2063
  - "⁤": [T: "och"]                              #  0x2064 (en: 'and', google: 'och')
@@ -294,7 +307,7 @@
  - "‴": [T: "tris"]                              #  0x2034 (en: 'triple prime')
 
  - "ℂℕℚℝℤ":                                      #  here we rely on this running through the table again to speak "cap xxx"
-    - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+    - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
     - T: "med dubbelstreck"                          #  (en: 'double-struck')
     # SWEDISH: Changed the order of words.
 
@@ -302,17 +315,17 @@
  - "℉": [T: "grader fahrenheit"]                 #  0x2109 (en: 'degrees fahrenheit')
  - "ℋℛℓ":                                        #  0x210b
     - T: "skrivstilt"                        #  (en: 'script', google: 'manus')
-    - spell: "translate('.', 'ℋℛℓ', 'HRl')"
+    - SPELL: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℎ": [T: "plancks konstant"]                   #  0x210e
  - "ℜ":                                          #  0x211c
     - T: "fraktur"                       #  (en: 'fraktur', google: 'fraktur')
-    - spell: "'R'"
+    - SPELL: "'R'"
 
  - "Ω": [T: "ohm"]                               #  0x2126 (en: 'ohms')
  - "K": [T: "grader kelvin"]                     #  0x212a (en: 'kelvin')
  - "Å": [T: "ångström"]                         #  0x212b
  - "ⅆⅇⅈⅉ":                                       #  0x2146-9
-    - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+    - SPELL: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
     - T: "med dubbelstreck kursiv"                     #  (en: 'double-struck italic')
 
  - "←": [T: "vänster-pil"]                    #  0x2190 (en: 'leftwards arrow')
@@ -326,13 +339,13 @@
  - "↓": [T: "nedåt-pil"]                         #  0x2193 (en: 'downwards arrow')
  - "⇒": [T: "medför"]                 #  0x21d2 (en: 'rightwards double arrow')
  - "∀": [T: "för alla"]                          #  0x2200 (en: 'for all')
- - "∂": [T: "dell"]                                         #  0x2202
+ - "∂": [T: "dell"]                           # audit-ignore 0x2202
      # SWEDISH: This is only refered to as "del" in Swedish, but we write "dell" for correct pronounciation.
  - "∃": [T: "det finns"]                     #  0x2203 (en: 'there exists')
  - "∄": [T: "det finns inte"]                #  0x2204 (en: 'there does not exist')
  - "∅": [T: "tomma mängden"]                     #  0x2205 (en: 'empty set')
- - "∆": [T: "laplacianen av"]                     # 0x2206 (en: 'laplacian of')
- - "∈":                                          #  0x2208
+ - "∆": [T: "laplacianen av"]                     # audit-ignore 0x2206 (en: 'laplacian of')
+ - "∈":                                          # audit-ignore 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
         then: [T: "tillhörande"]              #  (en: 'an element of', google translation)
@@ -353,7 +366,7 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "är i"]                #  (en: 'is in', google translation)
               - else: [T: "tillhör"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
- - "∉":                                          #  0x2209
+ - "∉":                                          # audit-ignore 0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -375,7 +388,7 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "är inte i"]           #  (en: 'is not in', google translation)
               - else: [T: "tillhör inte"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
- - "∊":                                          #  0x220a
+ - "∊":                                          # audit-ignore 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
         then: [T: "tillhörande"]           #  (en: 'is an element of', google translation)
@@ -403,7 +416,7 @@
  - "∓": [T: "minus plus"]                        #  0x2213 (en: 'minus or plus')
  - "∗": [T: "gånger"]                      #  0x2217 (en: 'times')
  - "∘": [T: "och"]                               #  0x2218 (en: 'composed with')
- - "√": [T: "kvadratroten ur"]                    #  0x221a (en: 'square root of')
+ - "√": [T: "kvadratroten ur"]                    # audit-ignore 0x221a (en: 'square root of')
  - "∝":                                          #  0x221d
      - test: 
          if: "$Verbosity!='Terse'"
@@ -416,10 +429,14 @@
  - "∣": [T: "delar"]                             #  0x2223 (en: 'divides')
  - "∤": [T: "delar inte"]                        #  0x2224 (en: 'does not divide')
  - "∥":                                          #  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "är"]                         #  (en: 'is', google translation)
-     - T: "parallell med"                       #  (en: 'parallel to')
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [T: "dubbelt lodstreck"]
+         else:
+         - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "är"]
+         - T: "parallell med"
  - "∦":                                          #  0x2226
      - test: 
          if: "$Verbosity!='Terse'"
@@ -433,19 +450,19 @@
  - "∬": [T: "dubbel-integralen"]                   #  0x222c (en: 'double integral')
  - "∭": [T: "trippel-integralen"]                  #  0x222d (en: 'triple integral')
  - "∮": [T: "kurvintegralen"]                      #  0x222e (en: 'contour integral')
- - "∶":                                          #  0x2236
+ - "∶":                                          # audit-ignore 0x2236
      - T: "till"                            #  (en: 'to')
  - "∷": [T: "som"]                        #  0x2237 (en: 'as', MathPlayer: 'proportion', google: 'som')
  - "∼": [T: "är proportionell mot"]                      #  0x223c (en: 'varies with')
  - "∽": [T: "spegelvänd tilde"]                     #  0x223d (en: 'reversed tilde')
- - "∾":                                          #  0x223e
+ - "∾":                                          # audit-ignore 0x223e
      # SWEDISH: Could not find any examples of how this character is used and what specific meaning it has. In ClearSpeak rules, it is
      #          translated as "omvänt långdraget s".
      - T: "omvänt långdraget s"                  #  (en: 'most positive', MathPlayer: 'inverted lazy s', google: 'mest positiva')
  - "∿": [T: "sinuskurva"]                        #  0x223f (en: 'sine wave')
- - "≠":                                          #  0x2260
+ - "≠":                                          # audit-ignore 0x2260
      - T: "inte lika med"                        #  (en: 'not equal to')
- - "≡":                                          #  0x2261
+ - "≡":                                          # audit-ignore 0x2261
      - T: "identisk med"                         #  (en: 'identical to')
  - "≤":                                          #  0x2264
      - test: 
@@ -457,12 +474,12 @@
          if: "$Verbosity!='Terse'"
          then: [T: "är"]                         #  (en: 'is', google translation)
      - T: "större än eller lika med"             #  (en: 'greater than or equal to')
- - "≦": # [t: "mindre än över lika med"]           #  0x2266 (en: 'less than over equal to')
+ - "≦":                                          # audit-ignore 0x2266 (en: 'less than over equal to')
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "är"]                         #  (en: 'is', google translation)
      - T:  "mindre än eller lika med"
- - "≧": # [t: "större än över lika med"]           #  0x2267 (en: 'greater than over equal to')
+ - "≧":                                          # audit-ignore 0x2267 (en: 'greater than over equal to')
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "är"]                         #  (en: 'is', google translation)

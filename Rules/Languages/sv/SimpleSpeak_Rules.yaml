@@ -1,4 +1,18 @@
 ---
+- name: pause
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
+  replace:
+   - with:
+      variables: [MatchingPause: "true()"]
+      replace:
+      - test:
+        - if: "contains(@data-intent-property, ':pause-long')"
+          then: [pause: long]
+        - else_if: "contains(@data-intent-property, ':pause-short')"
+          then: [pause: short]
+          else: [pause: medium]
+      - x: "."
 
 - name: intent-literal-silent
   tag: [mi, mo, mn]
@@ -14,7 +28,7 @@
   - T: "minus"        # phrase(x 'minus' y)
   - x: "translate(text(), '-_', '')"
 
-- name: default
+- name: default # audit-ignore
   tag: square-root
   match: "."
   replace:
@@ -29,7 +43,7 @@
       then: [pause: short]
       else: [T: "slut rot", pause: short]  # phrase(start the square root of x 'end of root')
 
-- name: default
+- name: default # audit-ignore
   tag: root
   match: "."
   replace:
@@ -56,16 +70,16 @@
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
-- name: common-fraction
+- name: common-fraction # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #NORWEGIAN: Changed decimal point to $DecimalSeparators
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #SWEDISH: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #SWEDISH: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
   variables:
-  - IsPlural: "DEBUG(not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064']))"     # '\u2064' is invisible plus and is used in mixed fractions
+  - IsPlural: "*[1]!=1"                                                                                                  # "DEBUG(not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064']))"     '\u2064' is invisible plus and is used in mixed fractions
     # set right level for the location of the common fraction/mixed fraction
-  - IsMixedFraction: "preceding-sibling::*[1][.='\u2064']"
+  - IsMixedFraction: "preceding-sibling::*[1][self::m:mo][.='\u2064']"
   - UnitSibling: "IfThenElse($IsMixedFraction, .., .)"
     # set the potential unit node -- otherwise set it to a empty node set (use a made up name)
   - UnitNodeLocation: "IfThenElse($UnitSibling/..[self::m:mrow and count(*)=3 and *[2][.='\u2062']],
@@ -96,7 +110,7 @@
     # unit follows the fraction -- special cases
     - else:
       - test:
-        - if: "*[1]=1 or ($IsMixedFraction and preceding-sibling::*[2][.=1])"
+        - if: "*[1]=1" # or ($IsMixedFraction and preceding-sibling::*[2][.=1])"
           then: 
             - test:
                 if: "$NeuterUnitFollows"
@@ -113,10 +127,11 @@
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
+#SWEDISH: The common-fraction-mixed-number rule that is in the English rules is covered by our common-fraction rule.
 
 # Units (e.g., meters per second, m^2/s^2, (3m^2)/s)
-#NORWEGIAN: Added rule for t="time"
-- name: per-fraction
+#SWEDISH: Added rule for t="time"
+- name: per-fraction # audit-ignore
   tag: fraction
   match:
   - "BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
@@ -128,7 +143,7 @@
   - T: "per"      # phrase('5 meters 'per' second)
   - test: 
       if: "*[2]='t'"
-      then: [T: "time"]
+      then: [T: "timme"]
       else: 
        - x: "*[2]"
 
@@ -150,7 +165,9 @@
   tag: fraction
   match: "."
   replace:
-  - T: "division"      # phrase(the 'fraction' 3 over 4)
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then: [T: "division"]      # phrase(the 'fraction' 3 over 4)
   - pause: short
   - x: "*[1]"
   - test:
@@ -162,7 +179,9 @@
       then: [pause: short]
   - x: "*[2]"
   - pause: short
-  - T: "slut division"      # phrase(start 7 over 8 'end of fraction')
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then: [T: "slut division"]      # phrase(start 7 over 8 'end of fraction')
   - pause: medium
 
 # rules for functions raised to a power
@@ -188,7 +207,7 @@
       then: [T: "kvadrat"]      # phrase(5 'squared' equals 25)
       else: [T: "kubik"]      # phrase(5 'cubed' equals 125)
 
-- name: function-power
+- name: function-power # audit-ignore
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -211,7 +230,7 @@
       then: [T: "kvadrat"]      # phrase(5 'squared' equals 25)
       else: [T: "kubik"]      # phrase(5 'cubed' equals 125)
 
-- name: simple-integer
+- name: simple-integer # audit-ignore
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
@@ -231,7 +250,7 @@
   - x: "*[2]"
   - pause: short
 
-- name: simple-var
+- name: simple-var # audit-ignore
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
@@ -264,7 +283,13 @@
   - T: "upphöjt till"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
   - pause: short
-  - T: "slut exponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then:
+      - T: "slut exponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+      - pause: short
+      else:
+      - pause: medium
 
 - name: default
   tag: power
@@ -277,7 +302,7 @@
 #
 # Some rules on mrows
 #
-- name: set
+- name: set # audit-ignore
   tag: set
   match: "."
   replace:
