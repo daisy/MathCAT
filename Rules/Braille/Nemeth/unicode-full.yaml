@@ -96,7 +96,7 @@
 
  - "𝝒-𝝕":    # 0x1d752 - 0x1d755
      - tc: "BIGL"
-     - spell: "translate('.', '𝝒𝝓𝝔𝝕', 'γδϵζ')"
+     - spell: "translate('.', '𝝒𝝓𝝔𝝕', 'κφρπ')"
 
   # --- Nemeth Default Alphabet bold-script chars. ---
 
@@ -472,40 +472,35 @@
      - tc: "SBGCL"
      - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
- - "α-𝞀":    # 0x1d770 - 0x1d780
+ - "𝝰-𝞀":    # 0x1d770 - 0x1d780
      - tc: "SBGL"
      - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀', 'αβγδεζηθικλμνξοπρ')"
  
- - "𝝯":                           # 0x1d76f
-    - tc: "SBGL"
-    - spell: "translate('.', '𝜵', '∇')"
+ - "𝝯": [tc: "SBGL⠫"]            # 0x1d76f
 
  - "𝞁": [tc: "SBVL⠎"]            # 0x1d781
 
- - "𝞂": [tc: "SBGL⠎"]            # 0x1d782
- - "𝞃": [tc: "SBGL⠞"]            # 0x1d783
- - "𝞄": [tc: "SBGL⠥"]            # 0x1d784
+ - "𝞂-𝞄":    # 0x1d782 - 0x1d784
+     - tc: "SBGL"
+     - spell: "translate('.', '𝞂𝞃𝞄', 'στυ')"
 
  - "𝞅": [tc: "SBVL⠋"]            # 0x1d785
 
- - "𝞆": [tc: "SBGL⠯"]            # 0x1d786
- - "𝞇": [tc: "SBGL⠽"]            # 0x1d787
- - "𝞈": [tc: "SBGL⠺"]            # 0x1d788
+ - "𝞆-𝞈":    # 0x1d786 - 0x1d788
+     - tc: "SBGL"
+     - spell: "translate('.', '𝞆𝞇𝞈', 'χψω')"
 
  - "𝞉": [tc: "⠠⠨⠸⠈⠙"]            # 0x1d789
-
  - "𝞊": [tc: "SBGL⠑"]            # 0x1d78a
-
  - "𝞋": [tc: "SBVL⠹"]            # 0x1d78b
 
- - "𝞌": [tc: "SBGL⠅"]            # 0x1d78c
- - "𝞍": [tc: "SBGL⠋"]            # 0x1d78d
- - "𝞎": [tc: "SBGL⠗"]            # 0x1d78e
- - "𝞏": [tc: "SBGL⠏"]            # 0x1d78f
+ - "𝞌-𝞏":    # 0x1d78c - 0x1d78f
+     - tc: "SBGL"
+     - spell: "translate('.', '𝞌𝞍𝞎𝞏', 'κφρπ')"
 
  - "𝟬-𝟵":    # 0x1d7ec - 0x1d7f5
      - tc: "SBN"
-     - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"
+     - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
 
   # --- Nemeth Default Alphabet sans-serif-bold-italic chars. ---
 
@@ -521,9 +516,11 @@
      - tc: "SBIGCL"
      - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
- - "𝞩-𝞺":    # 0x1d7a9 - 0x1d7ba
+ - "𝞩": [t: "SBIGL⠫"]           # 0x1d7a9
+
+ - "𝞪-𝞺":    # 0x1d7aa - 0x1d7ba
      - tc: "SBIGL"
-     - spell: "translate('.', '𝞩𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+     - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺', 'αβγδεζηθικλμνξοπρ')"
 
  - "𝞻": [t: "SBIVL⠎"]           # 0x1d7bb
  - "𝞼": [t: "SBIGL⠎"]           # 0x1d7bc
