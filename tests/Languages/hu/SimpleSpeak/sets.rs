@@ -7,7 +7,7 @@ fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "the complex numbers")?;
+    test("hu", "SimpleSpeak", expr, "a komplex számok halmaza")?;
     return Ok(());
 
 }
@@ -18,7 +18,7 @@ fn natural() -> Result<()> {
     let expr = "<math>
                     <mi>ℕ</mi>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "the natural numbers")?;
+    test("hu", "SimpleSpeak", expr, "a természetes számok halmaza")?;
     return Ok(());
 
 }
@@ -29,7 +29,7 @@ fn rationals() -> Result<()> {
     let expr = "<math>
                     <mi>ℚ</mi>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "the rational numbers")?;
+    test("hu", "SimpleSpeak", expr, "a racionális számok halmaza")?;
     return Ok(());
 
 }
@@ -40,7 +40,7 @@ fn reals() -> Result<()> {
     let expr = "<math>
                     <mi>ℝ</mi>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "the real numbers")?;
+    test("hu", "SimpleSpeak", expr, "a valós számok halmaza")?;
     return Ok(());
 
 }
@@ -51,7 +51,7 @@ fn integers() -> Result<()> {
     let expr = "<math>
                     <mi>ℤ</mi>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "the integers")?;
+    test("hu", "SimpleSpeak", expr, "az egész számok halmaza")?;
     return Ok(());
 
 }
@@ -67,7 +67,7 @@ fn msup_complex() -> Result<()> {
                     <mn>2</mn>
                 </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "C 2")?;
+    test("hu", "SimpleSpeak", expr, "komplex számhalmaz 2")?;
     return Ok(());
 
 }
@@ -81,7 +81,7 @@ fn msup_natural() -> Result<()> {
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "N 2")?;
+    test("hu", "SimpleSpeak", expr, "természetes számhalmaz 2")?;
     return Ok(());
 
 }
@@ -95,7 +95,7 @@ fn msup_rationals() -> Result<()> {
                     <mn>2</mn>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "Q 2")?;
+    test("hu", "SimpleSpeak", expr, "racionális számhalmaz 2")?;
     return Ok(());
 
 }
@@ -109,7 +109,7 @@ fn msup_reals() -> Result<()> {
                     <mn>3</mn>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "R 3")?;
+    test("hu", "SimpleSpeak", expr, "valós számhalmaz 3")?;
     return Ok(());
 
 }
@@ -123,7 +123,7 @@ fn msup_integers() -> Result<()> {
                     <mn>4</mn>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "Z 4")?;
+    test("hu", "SimpleSpeak", expr, "egész számhalmaz 4")?;
     return Ok(());
 
 }
@@ -137,7 +137,7 @@ fn msup_positive_integers() -> Result<()> {
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the positive integers")?;
+    test("hu", "SimpleSpeak", expr, "pozitív egész számok")?;
     return Ok(());
 
 }
@@ -151,7 +151,7 @@ fn msup_negative_integers() -> Result<()> {
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the negative integers")?;
+    test("hu", "SimpleSpeak", expr, "negatív egész számok")?;
     return Ok(());
 
 }
@@ -165,7 +165,7 @@ fn msup_positive_rationals() -> Result<()> {
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the positive rational numbers")?;
+    test("hu", "SimpleSpeak", expr, "pozitív racionális számok")?;
     return Ok(());
 
 }
@@ -179,7 +179,7 @@ fn msup_negative_rationals() -> Result<()> {
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the negative rational numbers")?;
+    test("hu", "SimpleSpeak", expr, "negatív racionális számok")?;
     return Ok(());
 
 }
@@ -190,7 +190,7 @@ fn empty_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mo>}</mo>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the empty set")?;
+    test("hu", "SimpleSpeak", expr, "az üres halmaz")?;
     return Ok(());
 
 }
@@ -201,7 +201,7 @@ fn single_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>12</mn><mo>}</mo>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the set 12")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 12 halmaz")?;
     return Ok(());
 
 }
@@ -212,7 +212,7 @@ fn multiple_element_set() -> Result<()> {
     let expr = "<math>
                 <mo>{</mo> <mn>5</mn> <mo>,</mo> <mn>10</mn>  <mo>,</mo> <mn>15</mn> <mo>}</mo>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the set 5 comma, 10 comma, 15")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 5 vessző, 10 vessző, 15 halmaz")?;
     return Ok(());
 
 }
@@ -223,7 +223,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the set of all x such that x is greater than 2")?;
+    test("hu", "SimpleSpeak", expr, "x melyekre teljesül, hogy minden x nagyobb, mint 2")?;
     return Ok(());
 
 }
@@ -234,7 +234,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the set of all x such that x is greater than 2")?;
+    test("hu", "SimpleSpeak", expr, "x melyekre teljesül, hogy minden x nagyobb, mint 2")?;
     return Ok(());
 
 }
@@ -245,7 +245,7 @@ fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("hu", "SimpleSpeak", expr, "3 plus 2 i, is not an element of, the real numbers")?;
+    test("hu", "SimpleSpeak", expr, "3 plusz 2 i, nem eleme ennek:, a valós számok halmaza")?;
     return Ok(());
 
 }
@@ -264,7 +264,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("hu", "SimpleSpeak", expr,
-                    "the sum over i is an element of the integers of; fraction, 1 over, i squared, end fraction")?;
+                    "összeg alatta i eleme ennek:, az egész számok halmaza; tört, 1 per, i a négyzeten, tört vége")?;
                     return Ok(());
 
 }
@@ -285,7 +285,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("hu", "SimpleSpeak", expr, "the set of all x an element of the integers such that 2 is less than x is less than 7")?;
+    test("hu", "SimpleSpeak", expr, "x eleme ennek:, az egész számok halmaza melyekre teljesül, hogy minden 2 kisebb, mint x kisebb, mint 7")?;
     return Ok(());
 
 }
@@ -298,11 +298,11 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>{</mo>
         <mrow> <mi>x</mi><mo>∈</mo><mi>ℕ</mi></mrow>
         <mo>|</mo>
-        <mrow><mi>x</mi> <mtext>&#x00A0;is&#x00A0;an&#x00A0;even&#x00A0;number</mtext> </mrow>
+        <mrow><mi>x</mi> <mtext>&#x00A0;egy&#x00A0;páros&#x00A0;szám</mtext> </mrow>
         <mo>}</mo>
         </math>";
     test("hu", "SimpleSpeak", expr, 
-            "the set of all x an element of the natural numbers such that x is an even number")?;
+            "x eleme ennek:, a természetes számok halmaza melyekre teljesül, hogy minden x egy páros szám")?;
             return Ok(());
 
 }

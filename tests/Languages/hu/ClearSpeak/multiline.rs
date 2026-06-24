@@ -16,18 +16,15 @@ fn case_1() -> Result<()> {
     <mrow>
       <mo stretchy='true'>{</mo>
       <mtable>
-        <mtr><mtd><mo>-</mo><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr>
-        <mtr><mtd><mn>0</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr>
-        <mtr><mtd><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mo>-</mo><mn>1</mn></mtd><mtd><mtext>ha</mtext></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mtext>ha</mtext></mtd><mtd><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mtext>ha</mtext></mtd><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr>
       </mtable>
     </mrow>
   </math>
    ";
   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Auto", expr,
-    "f of x is equal to; 3 cases; \
-                case 1; negative 1 if x is less than 0; \
-                case 2; 0 if x is equal to 0; \
-                case 3; 1 if x is greater than 0"
+    "f x egyenlő; 3 eset; 1 . eset; negatív 1 ha x kisebb, mint 0; 2 . eset; 0 ha x egyenlő 0; 3 . eset; 1 ha x nagyobb, mint 0"
     )?;
     return Ok(());
 }
@@ -44,9 +41,7 @@ fn equation_auto() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Auto", expr,
-                "2 lines; \
-                line 1; x plus y, is equal to 7; \
-                line 2; 2 x plus 3 y; is equal to 17")?;
+                "2 sor; 1 . sor; x plusz y, egyenlő 7; 2 . sor; 2 x plusz 3 y; egyenlő 17")?;
     return Ok(());
 }
 
@@ -62,9 +57,7 @@ fn equation_plus_at_start() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 lines; \
-                line 1; x plus y is equal to 7; \
-                line 2; 2 x, plus 3 y, is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 sor; 1 . sor; x plusz y egyenlő 7; 2 . sor; 2 x, plusz 3 y, egyenlő 17")?;
     return Ok(());
 }
 
@@ -80,7 +73,7 @@ fn equation_case() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Case", expr, 
-   "2 cases; case 1; x plus y, is equal to 7; case 2; 2 x plus 3 y; is equal to 17")?;
+   "2 eset; 1 . eset; x plusz y, egyenlő 7; 2 . eset; 2 x plusz 3 y; egyenlő 17")?;
     return Ok(());
 }
 
@@ -95,9 +88,7 @@ fn equation_constraint() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 constraints; \
-                constraint 1; x plus y, is equal to 7; \
-                constraint 2; 2 x plus 3 y; is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 feltétel; 1 . feltétel; x plusz y, egyenlő 7; 2 . feltétel; 2 x plusz 3 y; egyenlő 17")?;
    return Ok(());
 }
 
@@ -112,9 +103,7 @@ fn equation_equation() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 equations; \
-                equation 1; x plus y, is equal to 7; \
-                equation 2; 2 x plus 3 y; is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 egyenlet; 1 . egyenlet; x plusz y, egyenlő 7; 2 . egyenlet; 2 x plusz 3 y; egyenlő 17")?;
    return Ok(());
 }
 
@@ -129,9 +118,7 @@ fn equation_line() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Line", expr, "2 lines; \
-                line 1; x plus y, is equal to 7; \
-                line 2; 2 x plus 3 y; is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Line", expr, "2 sor; 1 . sor; x plusz y, egyenlő 7; 2 . sor; 2 x plusz 3 y; egyenlő 17")?;
     return Ok(());
 }
 
@@ -147,9 +134,7 @@ fn equation_none() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "None", expr,
-        "2 lines; \
-                x plus y, is equal to 7; \
-                2 x plus 3 y; is equal to 17")?;
+        "2 sor; x plusz y, egyenlő 7; 2 x plusz 3 y; egyenlő 17")?;
    return Ok(());
 }
 
@@ -164,9 +149,7 @@ fn equation_row() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Row", expr, "2 rows; \
-                row 1; x plus y, is equal to 7; \
-                row 2; 2 x plus 3 y; is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Row", expr, "2 sor; 1 . sor; x plusz y, egyenlő 7; 2 . sor; 2 x plusz 3 y; egyenlő 17")?;
    return Ok(());
 }
 
@@ -181,9 +164,7 @@ fn equation_step() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Step", expr, "2 steps; \
-                step 1; x plus y, is equal to 7; \
-                step 2; 2 x plus 3 y; is equal to 17")?;
+   test_ClearSpeak("hu", "ClearSpeak_MultiLineLabel", "Step", expr, "2 lépés; 1 . lépés; x plusz y, egyenlő 7; 2 . lépés; 2 x plusz 3 y; egyenlő 17")?;
    return Ok(());
 }
 
@@ -198,6 +179,6 @@ fn continued_row() -> Result<()> {
   </mtable>
 </math>";
 test("hu", "SimpleSpeak", expr,
-     "2 equations; equation 1; x is equal to y plus 1; equation 2; y is equal to 1")?;
+     "2 egyenlet; egyenlet 1; x egyenlő y plusz 1; egyenlet 2; y egyenlő 1")?;
     return Ok(());
 }

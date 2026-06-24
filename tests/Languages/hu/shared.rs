@@ -22,8 +22,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("hu", "SimpleSpeak", expr, 
-        "eigh grave, b tilde, c breve, b check, c grave; plus \
-            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
+        "a súlyozott, b tilde, c rövid, b ellenőrzés, c súlyozott; plusz, r hacsek karakter mint repülő ékezet, plusz; x pont, y pont, z dupla pont, u hármas pont, v négyes pont; plusz x kalap, plusz vektor kezdete t")?;
             return Ok(());
 
 }
@@ -43,9 +42,9 @@ fn limit() -> Result<()> {
             </mfrac>
             </mrow>
         </math>";
-    test("hu", "SimpleSpeak", expr, "the limit as x approaches 0, of, fraction, sine of x, over x, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "határérték x megközelítések 0; tört, szinusz x, per x, tört vége")?;
     test_prefs("hu", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "the limit as x approaches 0, of; sine of x, over x")?;
+            "határérték x megközelítések 0; szinusz x, per x")?;
             return Ok(());
 
 }
@@ -62,7 +61,7 @@ fn limit_from_below() -> Result<()> {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("hu", "SimpleSpeak", expr, "the limit as x approaches from below 0, of sine of x")?;
+    test("hu", "SimpleSpeak", expr, "határérték x alulról közelít 0; szinusz x")?;
     return Ok(());
 
 }
@@ -72,7 +71,7 @@ fn limit_from_below() -> Result<()> {
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("hu", "SimpleSpeak", expr, "n choose m")?;
+    test("hu", "SimpleSpeak", expr, "n a m")?;
     return Ok(());
 
 }
@@ -81,7 +80,7 @@ fn binomial_mmultiscripts() -> Result<()> {
 #[test]
 fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("hu", "SimpleSpeak", expr, "n choose m")?;
+    test("hu", "SimpleSpeak", expr, "n a m")?;
     return Ok(());
 
 }
@@ -90,7 +89,7 @@ fn binomial_mmultiscripts_other() -> Result<()> {
 #[test]
 fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
-    test("hu", "SimpleSpeak", expr, "n choose m")?;
+    test("hu", "SimpleSpeak", expr, "n a m")?;
     return Ok(());
 
 }
@@ -99,7 +98,7 @@ fn binomial_subscript() -> Result<()> {  // C_{n,k}
 #[test]
 fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("hu", "SimpleSpeak", expr, "k permutations of n")?;
+    test("hu", "SimpleSpeak", expr, "k permutációja n")?;
     return Ok(());
 
 }
@@ -108,7 +107,7 @@ fn permutation_mmultiscripts() -> Result<()> {
 #[test]
 fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("hu", "SimpleSpeak", expr, "k permutations of n")?;
+    test("hu", "SimpleSpeak", expr, "k permutációja n")?;
     return Ok(());
 
 }
@@ -117,7 +116,7 @@ fn permutation_mmultiscripts_sup() -> Result<()> {
 #[test]
 fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("hu", "SimpleSpeak", expr, "k permutations of n")?;
+    test("hu", "SimpleSpeak", expr, "k permutációja n")?;
     return Ok(());
 
 }
@@ -129,9 +128,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 postscripts, subscript i superscript j subscript k subscript l")?;
+            "nagy r posskriptek 4, subscript i superscript j subscript k subscript l")?;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "cap r with 4 postscripts, sub i super j sub k sub l")?;
+            "nagy r posskriptek 4, sub i super j sub k sub l")?;
             return Ok(());
 
 }
@@ -144,7 +143,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 prescripts, pre subscript cap i, pre superscript cap j and alternating prescripts cap k none cap l none end prescripts and with 5 postscripts, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts")?;
+            "nagy r preskriptek 4, pre subscript nagy i, pre superscript nagy j és váltakozó preskriptek nagy k none nagy l none preskriptek vége és posskriptek 5, subscript i superscript j subscript k subscript l és váltakozó szkriptek m none szkriptek vége")?;
             return Ok(());
 
 }
@@ -153,7 +152,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
 #[test]
 fn prime() -> Result<()> {
     let expr = "<math> <msup><mi>x</mi><mo >&#x2032;</mo></msup> </math>";
-    test("hu", "SimpleSpeak", expr, "x prime")?;
+    test("hu", "SimpleSpeak", expr, "x prím")?;
     return Ok(());
 
 }
@@ -162,8 +161,8 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("hu", "SimpleSpeak", expr, "cap p, open paren, cap eigh given cap b, close paren")?;
-    test("hu", "ClearSpeak", expr,  "cap p, open paren, cap eigh given cap b, close paren")?; // not good, but follows the spec
+    test("hu", "SimpleSpeak", expr, "nagy p; nyitott zárójel, nagy a adott nagy b, zárt zárójel")?;
+    test("hu", "ClearSpeak", expr,  "nagy p; nyitott zárójel, nagy a adott nagy b, zárt zárójel")?; // not good, but follows the spec
     return Ok(());
 
 }
@@ -184,7 +183,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("hu", "ClearSpeak", expr, "x sub k, to the i-th power")?;
+    test("hu", "ClearSpeak", expr, "x alsó index k, a(z) i-edik hatványon")?;
     return Ok(());
 
 }
@@ -193,10 +192,10 @@ fn simple_msubsup() -> Result<()> {
 #[test]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("hu", "SimpleSpeak", expr, "i sub j minus 2 end sub, to the k-th")?;
-  test("hu", "ClearSpeak", expr, "i sub j minus 2 end sub, to the k-th power")?;
+  test("hu", "SimpleSpeak", expr, "i alsó index j mínusz 2 alsó index vége, a(z) k-edik hatványon")?;
+  test("hu", "ClearSpeak", expr, "i alsó index j mínusz 2 alsó index vége, a(z) k-edik hatványon")?;
   test_prefs("hu", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "i sub j minus 2, to the k-th")?;
+          "i alsó index j mínusz 2, a(z) k-edik hatványon")?;
           return Ok(());
 
 }
@@ -220,7 +219,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("hu", "ClearSpeak", expr, "x sub k, to the i-th power")?;
+    test("hu", "ClearSpeak", expr, "x alsó index k, a(z) i-edik hatványon")?;
     return Ok(());
 
 }
@@ -240,7 +239,7 @@ fn ignore_period() -> Result<()> {
           <mi>A</mi>
           <mrow>
             <mstyle displaystyle='false' scriptlevel='0'>
-              <mtext>&nbsp;and&nbsp;</mtext>
+              <mtext>&nbsp;és&nbsp;</mtext>
             </mstyle>
           </mrow>
           <mi>B</mi>
@@ -267,7 +266,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("hu", "SimpleSpeak", expr, "cap p; open paren, cap eigh and cap b; close paren; is equal to; cap p, open paren, cap eigh intersection cap b; close paren; is equal to, cap p of cap eigh, cap p of cap b")?;
+    test("hu", "SimpleSpeak", expr, "nagy p; nyitott zárójel, nagy a és nagy b; zárt zárójel; egyenlő; nagy p; nyitott zárójel, nagy a metszéspont nagy b; zárt zárójel; egyenlő, nagy p nagy a, nagy p nagy b")?;
     return Ok(());
 
 }
@@ -276,7 +275,7 @@ fn ignore_period() -> Result<()> {
 #[test]
 fn ignore_mtext_period() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>{</mo><mn>2</mn><mo>}</mo></mrow><mtext>.</mtext></mrow></math>";
-    test("hu", "SimpleSpeak", expr, "the set 2")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 halmaz")?;
     return Ok(());
 
 }
@@ -316,7 +315,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("hu", "SimpleSpeak", expr, "phi of x is equal to; c times, e raised to the negative h squared, x squared power")?;
+    test("hu", "SimpleSpeak", expr, "phi x egyenlő; c szorozva; e emelve a következő kitevőre:, negatív h a négyzeten, x a négyzeten, kitevő vége")?;
     return Ok(());
 
 }
@@ -382,7 +381,7 @@ fn bug_199_2pi() -> Result<()> {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("hu", "SimpleSpeak",expr, "the closed open interval from 0 to 2 pi")?;
+  test("hu", "SimpleSpeak",expr, "0 től 2 pí ig terjedő intervallum, tartalmazza a 0 elemet de nem tartalmazza a 2 pí elemet")?;
   return Ok(());
 
 }
@@ -391,7 +390,7 @@ fn bug_199_2pi() -> Result<()> {
 #[test]
 fn caret_and_hat() -> Result<()> {
   let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
-  test("hu", "SimpleSpeak",expr, "x caret 2 plus y hat")?;
+  test("hu", "SimpleSpeak",expr, "x fölfelényíl 2, plusz y kalap")?;
   return Ok(());
 
 }
@@ -421,9 +420,9 @@ fn ignore_bold() -> Result<()> {
 				<mn>1</mn>
 			</math>"#; 
   test_prefs("hu", "SimpleSpeak", vec![("IgnoreBold", "false")],
-             expr, "bold x is equal to, 2 sine of bold t, minus 1")?;
+             expr, "félkövér x egyenlő, 2 szinusz félkövér t; mínusz 1")?;
   test_prefs("hu", "SimpleSpeak", vec![("IgnoreBold", "true")],
-             expr, "x is equal to, 2 sine of t, minus 1")?;
+             expr, "x egyenlő, 2 szinusz t, mínusz 1")?;
              return Ok(());
 
 }
@@ -441,8 +440,8 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
 #[test]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "dihv cap f")?;
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of cap f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "eltérés nagy f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "eltérés nagy f")?;
   return Ok(());
 
 }
@@ -452,8 +451,8 @@ fn divergence() -> Result<()> {
 fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "curl cap f")?;
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "curl of cap f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "rotáció nagy f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "rotáció nagy f")?;
   return Ok(());
 
 }
@@ -463,8 +462,8 @@ fn curl() -> Result<()> {
 fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "del cap f")?;
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradient of cap f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "gradiens nagy f")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradiens nagy f")?;
   return Ok(());
 
 }
@@ -485,7 +484,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, perpendicular to, nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -506,7 +505,7 @@ fn literal_speak_chars() -> Result<()> {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("hu", "LiteralSpeak", expr, "vertical line; x cross, y dot z slash 2; plus eigh; double vertical line, b plus x exclamation point; vertical line")?;
+  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y pont z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
   return Ok(());
 
 }
@@ -528,7 +527,7 @@ fn literal_speak_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#;
-  test("hu", "LiteralSpeak", expr, "forced f, left paren x exclamation point, right paren")?;
+  test("hu", "LiteralSpeak", expr, "forced f, bal zárójel, x felkiáltójel, jobb zárójel")?;
   return Ok(());
 
 }
@@ -550,7 +549,7 @@ fn literal_speak_with_property() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("hu", "LiteralSpeak", expr, "f, left paren x exclamation point, right paren")?;
+  test("hu", "LiteralSpeak", expr, "f, bal zárójel, x felkiáltójel, jobb zárójel")?;
   return Ok(());
 
 }
@@ -571,7 +570,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, perpendicular to, nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -593,7 +592,7 @@ fn literal_intent_property_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("hu", "SimpleSpeak", expr, "forced f, open paren x exclamation point, close paren")?;
+  test("hu", "SimpleSpeak", expr, "forced f, nyitott zárójel, x felkiáltójel, zárt zárójel")?;
   return Ok(());
 
 }

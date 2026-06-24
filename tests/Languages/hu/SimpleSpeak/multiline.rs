@@ -13,28 +13,25 @@ fn case_1() -> Result<()> {
             <mtr>
                 <mtd>
                 <mrow>
-                <mo>&#x2212;</mo><mn>1</mn><mtext>&#x00A0;if&#x00A0;</mtext><mi>x</mi><mo>&#x003C;</mo><mn>0</mn></mrow>
+                <mo>&#x2212;</mo><mn>1</mn><mtext>&#x00A0;ha&#x00A0;</mtext><mi>x</mi><mo>&#x003C;</mo><mn>0</mn></mrow>
                 </mtd>
             </mtr>
             <mtr>
                 <mtd>
                 <mrow>
-                <mn>0</mn><mtext>&#x00A0;if&#x00A0;</mtext><mi>x</mi><mo>=</mo><mn>0</mn></mrow>
+                <mn>0</mn><mtext>&#x00A0;ha&#x00A0;</mtext><mi>x</mi><mo>=</mo><mn>0</mn></mrow>
                 </mtd>
             </mtr>
             <mtr>
                 <mtd>
                 <mrow>
-                <mn>1</mn><mtext>&#x00A0;if&#x00A0;</mtext><mi>x</mi><mo>&#x003E;</mo><mn>0</mn></mrow>
+                <mn>1</mn><mtext>&#x00A0;ha&#x00A0;</mtext><mi>x</mi><mo>&#x003E;</mo><mn>0</mn></mrow>
                 </mtd>
             </mtr>
             </mtable></mrow> </mrow></mrow>
         </math>
    ";
-    test("hu", "SimpleSpeak", expr, "f of x is equal to; 3 cases; \
-                case 1; negative 1 if x; is less than 0; \
-                case 2; 0 if x, is equal to 0; \
-                case 3; 1 if x, is greater than 0")?;
+    test("hu", "SimpleSpeak", expr, "f x egyenlő; 3 eset; eset 1; negatív 1 ha x; kisebb, mint 0; eset 2; 0 ha x, egyenlő 0; eset 3; 1 ha x, nagyobb, mint 0")?;
     return Ok(());
 }
 
@@ -73,8 +70,6 @@ fn equation_1() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-    test("hu", "SimpleSpeak", expr, "2 equations; \
-                equation 1; x plus y, is equal to 7; \
-                equation 2; 2 x plus 3 y; is equal to 17")?;
+    test("hu", "SimpleSpeak", expr, "2 egyenlet; egyenlet 1; x plusz y, egyenlő 7; egyenlet 2; 2 x plusz 3 y; egyenlő 17")?;
     return Ok(());
 }

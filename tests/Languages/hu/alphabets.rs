@@ -8,11 +8,11 @@ use anyhow::Result;
 #[test]
 fn special_alphabet_chars() -> Result<()> {
   let expr = "<math> <mi>ℌ</mi><mo>,</mo><mi>ℭ</mi></math>";
-  test("hu", "SimpleSpeak", expr, "fraktur cap h comma, fraktur cap c")?;
+  test("hu", "SimpleSpeak", expr, "fraktur nagy h vessző, fraktur nagy c")?;
   let expr = "<math> <mi>ℍ</mi><mo>,</mo><mi>ℿ</mi></math>";
-  test("hu", "SimpleSpeak", expr, "double struck cap h, comma, double struck cap pi")?;
+  test("hu", "SimpleSpeak", expr, "dupla leütésű nagy h, vessző; dupla leütésű nagy pí")?;
   let expr = "<math> <mi>ℐ</mi><mo>,</mo><mi>ℳ</mi></math>";
-  test("hu", "SimpleSpeak", expr, "script cap i comma, script cap m")?;
+  test("hu", "SimpleSpeak", expr, "script nagy i vessző, script nagy m")?;
   return Ok(());
 
 }
@@ -21,14 +21,14 @@ fn special_alphabet_chars() -> Result<()> {
 #[test]
 fn greek() -> Result<()> {
     let expr = "<math> <mi>Α</mi><mo>,</mo><mi>Ω</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap alpha comma, cap omega")?;
+    test("hu", "SimpleSpeak", expr, "nagy alfa vessző, nagy omega")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
-    test("hu", "SimpleSpeak", expr, "alpha comma, omega")?;
+    test("hu", "SimpleSpeak", expr, "alfa vessző, omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck cap delta, comma, double struck cap upsilon")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű nagy delta, vessző; dupla leütésű nagy üpszilon")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
-    test("hu", "SimpleSpeak", expr, "alpha comma, omega")?;
+    test("hu", "SimpleSpeak", expr, "alfa vessző, omega")?;
     return Ok(());
 
 }
@@ -37,7 +37,7 @@ fn greek() -> Result<()> {
 #[test]
 fn cap_cyrillic() -> Result<()> {
     let expr = "<math> <mi>А</mi><mo>,</mo><mi>Я</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap a comma, cap ya")?;
+    test("hu", "SimpleSpeak", expr, "nagybetű а vessző, nagybetű ya")?;
     return Ok(());
 
 }
@@ -46,7 +46,7 @@ fn cap_cyrillic() -> Result<()> {
 #[test]
 fn parenthesized() -> Result<()> {
     let expr = "<math> <mi>⒜</mi><mo>,</mo><mi>⒵</mi></math>";
-    test("hu", "SimpleSpeak", expr, "parenthesized eigh comma, parenthesized z")?;
+    test("hu", "SimpleSpeak", expr, "zárójeles a vessző, zárójeles z")?;
     return Ok(());
 
 }
@@ -55,11 +55,11 @@ fn parenthesized() -> Result<()> {
 #[test]
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
-    test("hu", "SimpleSpeak", expr, "circled cap eigh comma, circled cap z")?;
+    test("hu", "SimpleSpeak", expr, "bekarikázott nagy a, vessző, bekarikázott nagy z")?;
     let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
-    test("hu", "SimpleSpeak", expr, "black circled cap eigh, comma, black circled cap z")?;
+    test("hu", "SimpleSpeak", expr, "fekete körrel jelölt nagy a, vessző; fekete körrel jelölt nagy z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
-    test("hu", "SimpleSpeak", expr, "circled eigh comma, circled z")?;
+    test("hu", "SimpleSpeak", expr, "bekarikázott a vessző, bekarikázott z")?;
     return Ok(());
 
 }
@@ -68,14 +68,14 @@ fn circled() -> Result<()> {
 #[test]
 fn fraktur() -> Result<()> {
     let expr = "<math> <mi>𝔄</mi><mo>,</mo><mi>𝔜</mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur cap eigh comma, fraktur cap y")?;
+    test("hu", "SimpleSpeak", expr, "fraktur nagy a vessző, fraktur nagy y")?;
     let expr = "<math> <mi>𝔞</mi><mo>,</mo><mi>𝔷</mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur eigh comma, fraktur z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur a vessző, fraktur z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur cap eigh comma, fraktur cap y")?;
+    test("hu", "SimpleSpeak", expr, "fraktur nagy a vessző, fraktur nagy y")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur eigh comma, fraktur z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur a vessző, fraktur z")?;
     return Ok(());
 
 }
@@ -84,14 +84,14 @@ fn fraktur() -> Result<()> {
 #[test]
 fn bold_fraktur() -> Result<()> {
     let expr = "<math> <mi>𝕬</mi><mo>,</mo><mi>𝖅</mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur bold cap eigh, comma, fraktur bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur félkövér nagy a, vessző; fraktur félkövér nagy z")?;
     let expr = "<math> <mi>𝖆</mi><mo>,</mo><mi>𝖟</mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur bold eigh comma, fraktur bold z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur félkövér a, vessző, fraktur félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur bold cap eigh, comma, fraktur bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur félkövér nagy a, vessző; fraktur félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "fraktur bold eigh comma, fraktur bold z")?;
+    test("hu", "SimpleSpeak", expr, "fraktur félkövér a, vessző, fraktur félkövér z")?;
     return Ok(());
 
 }
@@ -100,18 +100,18 @@ fn bold_fraktur() -> Result<()> {
 #[test]
 fn double_struck() -> Result<()> {
     let expr = "<math> <mi>𝔸</mi><mo>,</mo><mi>𝕐</mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck cap eigh, comma, double struck cap y")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű nagy a, vessző; dupla leütésű nagy y")?;
     let expr = "<math> <mi>𝕒</mi><mo>,</mo><mi>𝕫</mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck eigh comma, double struck z")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű a, vessző, dupla leütésű z")?;
     let expr = "<math> <mi>𝟘</mi><mo>,</mo><mi>𝟡</mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck 0 comma, double struck 9")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű 0, vessző, dupla leütésű 9")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck cap eigh, comma, double struck cap y")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű nagy a, vessző; dupla leütésű nagy y")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck eigh comma, double struck z")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű a, vessző, dupla leütésű z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "double struck 0 comma, double struck 9")?;
+    test("hu", "SimpleSpeak", expr, "dupla leütésű 0, vessző, dupla leütésű 9")?;
     return Ok(());
 
 }
@@ -120,14 +120,14 @@ fn double_struck() -> Result<()> {
 #[test]
 fn script() -> Result<()> {
     let expr = "<math> <mi>𝒜</mi><mo>,</mo><mi>𝒵</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script cap eigh comma, script cap z")?;
+    test("hu", "SimpleSpeak", expr, "script nagy a vessző, script nagy z")?;
     let expr = "<math> <mi>𝒶</mi><mo>,</mo><mi>𝓏</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script eigh comma, script z")?;
+    test("hu", "SimpleSpeak", expr, "script a vessző, script z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script cap eigh comma, script cap z")?;
+    test("hu", "SimpleSpeak", expr, "script nagy a vessző, script nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script eigh comma, script z")?;
+    test("hu", "SimpleSpeak", expr, "script a vessző, script z")?;
     return Ok(());
 
 }
@@ -136,14 +136,14 @@ fn script() -> Result<()> {
 #[test]
 fn bold_script() -> Result<()> {
     let expr = "<math> <mi>𝓐</mi><mo>,</mo><mi>𝓩</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script bold cap eigh, comma, script bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "script félkövér nagy a, vessző; script félkövér nagy z")?;
     let expr = "<math> <mi>𝓪</mi><mo>,</mo><mi>𝔃</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script bold eigh comma, script bold z")?;
+    test("hu", "SimpleSpeak", expr, "script félkövér a, vessző, script félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script bold cap eigh, comma, script bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "script félkövér nagy a, vessző; script félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script bold eigh comma, script bold z")?;
+    test("hu", "SimpleSpeak", expr, "script félkövér a, vessző, script félkövér z")?;
     return Ok(());
 
 }
@@ -152,14 +152,14 @@ fn bold_script() -> Result<()> {
 #[test]
 fn bold() -> Result<()> {
     let expr = "<math> <mi>𝐀</mi><mo>,</mo><mi>𝐙</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi>𝐚</mi><mo>,</mo><mi>𝐳</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     return Ok(());
 
 }
@@ -168,14 +168,14 @@ fn bold() -> Result<()> {
 #[test]
 fn italic() -> Result<()> {
     let expr = "<math> <mi>𝐴</mi><mo>,</mo><mi>𝑍</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi>𝑎</mi><mo>,</mo><mi>𝑧</mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     return Ok(());
 
 }
@@ -184,14 +184,14 @@ fn italic() -> Result<()> {
 #[test]
 fn sans_serif() -> Result<()> {
   let expr = "<math> <mi>𝖠</mi><mo>,</mo><mi>𝖹</mi></math>";
-  test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+  test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
   let expr = "<math> <mi>𝖺</mi><mo>,</mo><mi>𝗓</mi></math>";
-  test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+  test("hu", "SimpleSpeak", expr, "a vessző, z")?;
   // MathType private space versions
   let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-  test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+  test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
   let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-  test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+  test("hu", "SimpleSpeak", expr, "a vessző, z")?;
   return Ok(());
 
 }
@@ -200,14 +200,14 @@ fn sans_serif() -> Result<()> {
 #[test]
 fn sans_serif_bold() -> Result<()> {
     let expr = "<math> <mi>𝗔</mi><mo>,</mo><mi>𝗭</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi>𝗮</mi><mo>,</mo><mi>𝘇</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     return Ok(());
 
 }
@@ -216,14 +216,14 @@ fn sans_serif_bold() -> Result<()> {
 #[test]
 fn sans_serif_italic() -> Result<()> {
     let expr = "<math> <mi>𝘈</mi><mo>,</mo><mi>𝘡</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi>𝘢</mi><mo>,</mo><mi>𝘻</mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     return Ok(());
 
 }
@@ -232,14 +232,14 @@ fn sans_serif_italic() -> Result<()> {
 #[test]
 fn sans_serif_bold_italic() -> Result<()> {
     let expr = "<math> <mi>𝘼</mi><mo>,</mo><mi>𝙕</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi>𝙖</mi><mo>,</mo><mi>𝙯</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap eigh comma, bold cap z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy a, vessző, félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold eigh comma, bold z")?;
+    test("hu", "SimpleSpeak", expr, "félkövér a vessző, félkövér z")?;
     return Ok(());
 
 }
@@ -248,14 +248,14 @@ fn sans_serif_bold_italic() -> Result<()> {
 #[test]
 fn monospace() -> Result<()> {
     let expr = "<math> <mi>𝙰</mi><mo>,</mo><mi>𝚉</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi>𝚊</mi><mo>,</mo><mi>𝚣</mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+    test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "eigh comma, z")?;
+    test("hu", "SimpleSpeak", expr, "a vessző, z")?;
     return Ok(());
 
 }
@@ -265,14 +265,14 @@ fn monospace() -> Result<()> {
 #[test]
 fn bold_greek() -> Result<()> {
     let expr = "<math> <mi>𝚨</mi><mo>,</mo><mi>𝛀</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi>𝛂</mi><mo>,</mo><mi>𝛚</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     return Ok(());
 
 }
@@ -281,10 +281,10 @@ fn bold_greek() -> Result<()> {
 #[test]
 fn bold_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝛛</mi><mo>,</mo><mi>𝛡</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     return Ok(());
 
 }
@@ -294,14 +294,14 @@ fn bold_greek_others() -> Result<()> {
 #[test]
 fn italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝛢</mi><mo>,</mo><mi>𝛺</mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap alpha comma, cap omega")?;
+    test("hu", "SimpleSpeak", expr, "nagy alfa vessző, nagy omega")?;
     let expr = "<math> <mi>𝛼</mi><mo>,</mo><mi>𝜔</mi></math>";
-    test("hu", "SimpleSpeak", expr, "alpha comma, omega")?;
+    test("hu", "SimpleSpeak", expr, "alfa vessző, omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "cap alpha comma, cap omega")?;
+    test("hu", "SimpleSpeak", expr, "nagy alfa vessző, nagy omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "alpha comma, omega")?;
+    test("hu", "SimpleSpeak", expr, "alfa vessző, omega")?;
     return Ok(());
 
 }
@@ -310,10 +310,10 @@ fn italic_greek() -> Result<()> {
 #[test]
 fn italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝜕</mi><mo>,</mo><mi>𝜛</mi></math>";
-    test("hu", "SimpleSpeak", expr, "partial derivative comma, pi")?;
+    test("hu", "SimpleSpeak", expr, "parciális derivált, vessző, pí")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "partial derivative comma, pi")?;
+    test("hu", "SimpleSpeak", expr, "parciális derivált, vessző, pí")?;
     return Ok(());
 
 }
@@ -322,14 +322,14 @@ fn italic_greek_others() -> Result<()> {
 #[test]
 fn bold_italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝜜</mi><mo>,</mo><mi>𝜴</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi>𝜶</mi><mo>,</mo><mi>𝝎</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     return Ok(());
 
 }
@@ -338,10 +338,10 @@ fn bold_italic_greek() -> Result<()> {
 #[test]
 fn bold_italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝝏</mi><mo>,</mo><mi>𝝕</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     return Ok(());
 
 }
@@ -350,14 +350,14 @@ fn bold_italic_greek_others() -> Result<()> {
 #[test]
 fn sans_serif_bold_greek() -> Result<()> {
     let expr = "<math> <mi>𝝖</mi><mo>,</mo><mi>𝝮</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi>𝝰</mi><mo>,</mo><mi>𝞈</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     return Ok(());
 
 }
@@ -366,10 +366,10 @@ fn sans_serif_bold_greek() -> Result<()> {
 #[test]
 fn sans_serif_bold_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝞉</mi><mo>,</mo><mi>𝞏</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     return Ok(());
 
 }
@@ -378,14 +378,14 @@ fn sans_serif_bold_greek_others() -> Result<()> {
 #[test]
 fn sans_serif_bold_italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝞐</mi><mo>,</mo><mi>𝞨</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi>𝞪</mi><mo>,</mo><mi>𝟂</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold cap alpha comma, bold cap omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér nagy alfa, vessző, félkövér nagy omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold alpha comma, bold omega")?;
+    test("hu", "SimpleSpeak", expr, "félkövér alfa vessző, félkövér omega")?;
     return Ok(());
 
 }
@@ -394,10 +394,10 @@ fn sans_serif_bold_italic_greek() -> Result<()> {
 #[test]
 fn sans_serif_bold_italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝟃</mi><mo>,</mo><mi>𝟉</mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "bold partial derivative, comma, bold pi")?;
+    test("hu", "SimpleSpeak", expr, "félkövér parciális derivált, vessző, félkövér pí")?;
     return Ok(());
 
 }
@@ -406,7 +406,7 @@ fn sans_serif_bold_italic_greek_others() -> Result<()> {
 #[test]
 fn pua_regular() -> Result<()> {
   let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-  test("hu", "SimpleSpeak", expr, "cap eigh comma, cap z")?;
+  test("hu", "SimpleSpeak", expr, "nagy a vessző, nagy z")?;
   return Ok(());
 
 }
@@ -415,7 +415,7 @@ fn pua_regular() -> Result<()> {
 #[test]
 fn turned() -> Result<()> {
     let expr = "<math> <mi>Ⅎ</mi><mo>,</mo><mi>⅄</mi></math>";
-    test("hu", "SimpleSpeak", expr, "turned cap f comma, turned sans-serif cap y")?;
+    test("hu", "SimpleSpeak", expr, "fordított nagy f, vessző; fordított talpatlan nagy y")?;
     return Ok(());
 
   }
@@ -423,8 +423,8 @@ fn turned() -> Result<()> {
 // AI generated
 #[test]
 fn unicode_typo_regressions() -> Result<()> {
-  test("hu", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "to the i-th power")?;
-  test("hu", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;
+  test("hu", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "i-edik hatványig")?;
+  test("hu", "SimpleSpeak", "<math><mi>☌</mi></math>", "összekapcsolás")?;
   Ok(())
 }
 
@@ -432,15 +432,15 @@ fn unicode_typo_regressions() -> Result<()> {
 #[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
-  test("hu", "SimpleSpeak", expr, "circled 1 comma, circled 9")?;
+  test("hu", "SimpleSpeak", expr, "bekarikázott 1 vessző, bekarikázott 9")?;
   let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
-  test("hu", "SimpleSpeak", expr, "black circled one comma, circled number fifty")?;
+  test("hu", "SimpleSpeak", expr, "fekete bekarikázott egy, vessző; bekarikázott szám ötven")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
-  test("hu", "SimpleSpeak", expr, "parenthesized 1 comma, parenthesized 9")?;
+  test("hu", "SimpleSpeak", expr, "zárójeles 1 vessző, zárójeles 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";
-  test("hu", "SimpleSpeak", expr, "1 with period comma, 9 with period")?;
+  test("hu", "SimpleSpeak", expr, "1 ponttal vessző, 9 ponttal")?;
   let expr = "<math> <mi>⓵</mi><mo>,</mo><mi>⓽</mi></math>";
-  test("hu", "SimpleSpeak", expr, "double circled 1 comma, double circled 9")?;
+  test("hu", "SimpleSpeak", expr, "dupla bekarikázott 1, vessző, dupla bekarikázott 9")?;
   return Ok(());
 
 }
