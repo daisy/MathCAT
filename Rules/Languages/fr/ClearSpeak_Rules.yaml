@@ -35,15 +35,15 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase('the' square root of 25)
+  - T: "racine carrée"      # phrase(8 is the 'square root' of 64)
   - test:
-      if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
+    - if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - bookmark: "*[1]/@id"
       - test:
           if: "parent::*[self::m:minus and count(*)=1]"
-          then: [T: "négatif"]      # phrase(minus 4 is a 'negative' number)
-          else: [T: "positif"]      # phrase(10 is a 'positive' number)
-  - T: "racine carrée"      # phrase(8 is the 'square root' of 64)
+          then: [T: "négative"]      # phrase(minus 4 is a 'negative' number)
+          else: [T: "positive"]      # phrase(10 is a 'positive' number)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(the square root 'of' 5)
@@ -67,6 +67,22 @@
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase(6 is 'the' square root of 36)
   - test:
+      if: "*[2][self::m:mn and not(contains(., '.'))]"
+      then_test:
+      - if: "*[2][.='2']"
+        then: [T: "racine carrée"]      # phrase(5 is the 'square root' of 25)
+      - else_if: "*[2][.='3']"
+        then: [T: "racine cubique"]      # phrase(5 is the 'cube root' of 625)
+      - else: [T: "racine", x: "ToOrdinal(*[2])"]      # phrase(the square 'root' of 25)
+      else:
+      - T: "racine"      # phrase(the square 'root' of 36)
+      - test:
+          if: "*[2][self::m:mi][string-length(.)=1]"
+          then:
+          - x: "*[2]"
+          - pronounce: [text: "-ième", ipa: "jɛm", sapi5: "ieme", eloquence: "ieme"]
+          else: [x: "*[2]"]
+  - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - test:
@@ -74,24 +90,8 @@
           then: [bookmark: "parent/@id"]
       - test:
           if: "parent::m:minus"
-          then: [T: "négatif"]      # phrase(minus 6 is a 'negative' number)
-          else: [T: "positif"]      # phrase(10 is a 'positive' number)
-  - test:
-      if: "*[2][self::m:mn and not(contains(., '.'))]"
-      then_test:
-      - if: "*[2][.='2']"
-        then: [T: "racine carrée"]      # phrase(5 is the 'square root' of 25)
-      - else_if: "*[2][.='3']"
-        then: [T: "racine cubique"]      # phrase(5 is the 'cube root' of 625)
-      - else: [x: "ToOrdinal(*[2])", T: "racine"]      # phrase(the square 'root' of 25)
-      else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-ième", ipa: "jɛm", sapi5: "ieme", eloquence: "ieme"]
-          else: [x: "*[2]"]
-      - T: "racine"      # phrase(the square 'root' of 36)
+          then: [T: "négative"]      # phrase(minus 6 is a 'negative' number)
+          else: [T: "positive"]      # phrase(10 is a 'positive' number)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(the square root 'of' 36)

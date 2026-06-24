@@ -5,6 +5,7 @@ mod ClearSpeak {
     mod large_ops;
     mod menclose;
     mod mfrac;
+    mod mroot;
 }
 
 mod SimpleSpeak {
