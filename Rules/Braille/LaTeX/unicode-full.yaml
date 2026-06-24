@@ -2501,17 +2501,14 @@
      - tc: "\\mathbf𝐖"
      - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
      - tc: "𝐖"
+
 # don't mark these as italic
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
      - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "𝑎-𝑔":    # 0x1d44e - 0x1d454
-     - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔', 'abcdefg')"
+ - "𝑎-𝑧":    # 0x1d44e - 0x1d467
+     - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
 
-# Note: Missing h in original file, should it be here? #0x1d455
-
- - "𝑖-𝑧":    # 0x1d456 - 0x1d467
-     - spell: "translate('.', '𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'ijklmnopqrstuvwxyz')"
 
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
      - tc: "\\mathbit𝐖"
@@ -2705,7 +2702,7 @@
     - tc: "\\mathbit"
     - spell: "translate('.', '𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΠΡΣΤΥΦΧΨΩ')"
  - "𝜵": [t: "\\mathbit{\\nabla}"]        # 0x1d735
- - "𝜶-𝜴":    # 0x1d736 - 0x1d74e (alpha - omega)
+ - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
     - tc: "\\mathbit"
     - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
  - "𝝏": [t: "\\partial𝐖"]                # 0x1d74f

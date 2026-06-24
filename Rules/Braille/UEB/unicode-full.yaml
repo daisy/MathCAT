@@ -29,7 +29,6 @@
  - "↉": [tc: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
 
 
-
  - "ℊ": [tc: "TL⠛⠁"]             # 0x210a (Script Small G)
  - "ℋ": [tc: "TCL⠓⠁"]            # 0x210b (Script Capital H)
  - "ℒ": [tc: "TCL⠇"]             # 0x2113 (Script Capital L)
@@ -99,7 +98,7 @@
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
     - tc: "TsC"
-    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyza')"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
     - tc: "Ts"
