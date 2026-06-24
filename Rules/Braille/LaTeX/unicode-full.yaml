@@ -2672,7 +2672,7 @@
  - "𝛠": [t: "\\mathbf{\\varrho}"]        # 0x1d6e0
  - "𝛡": [t: "\\mathbf{\\varpi}"]         # 0x1d6e1
  - "𝛢-𝛯":    # 0x1d6e2 - 0x1d6ef (Alpha - Xi)
-    - tc: "\mathmit"
+    - tc: "\\mathmit"
     - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞ')"
  - "𝛰":                                  # 0x1d6f0
      - test:
