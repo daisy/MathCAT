@@ -223,6 +223,25 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 }
 
 #[test]
+fn source_chemical_reactions_and_charges() -> Result<()> {
+    let expr = r#"<math intent=":chemical-equation"><mrow><mn>2</mn><mi>HCl</mi><mo>+</mo><mn>2</mn><mi>Na</mi><mo>&#x2192;</mo><mn>2</mn><mi>NaCl</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠨⠓⠉⠠⠇⠀⠖⠼⠃⠨⠝⠠⠁⠀⠒⠕⠼⠃⠨⠝⠠⠁⠨⠉⠠⠇⠀⠖⠨⠓⠡⠆")?;
+
+    let expr = r#"<math intent=":chemical-equation"><mrow><msub><mi>H</mi><mn>2</mn></msub><mo>(</mo><mi>g</mi><mo>)</mo><mo>+</mo><msub><mi>I</mi><mn>2</mn></msub><mo>(</mo><mi>g</mi><mo>)</mo><mo>&#x21CC;</mo><mn>2</mn><mi>HI</mi><mo>(</mo><mi>g</mi><mo>)</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠓⠡⠆⠣⠠⠛⠜⠀⠖⠨⠊⠡⠆⠣⠠⠛⠜⠀⠒⠕⠀⠦⠶⠼⠃⠨⠓⠊⠣⠠⠛⠜")?;
+
+    let expr = r#"<math intent=":chemical-equation"><mrow><mn>2</mn><mi>Al</mi><mo>&#x2192;</mo><mn>2</mn><msup><mi>Al</mi><mrow><mn>3</mn><mo>+</mo></mrow></msup><mo>+</mo><mn>6</mn><msup><mi>e</mi><mo>-</mo></msup></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠨⠁⠠⠇⠀⠒⠕⠼⠃⠨⠁⠠⠇⠌⠒⠖⠀⠖⠼⠋⠠⠑⠌⠤")?;
+
+    let expr = r#"<math><msubsup><mi>SO</mi><mn>4</mn><mrow><mn>2</mn><mo>-</mo></mrow></msubsup></math>"#;
+    test_braille("Russian", expr, "⠨⠎⠕⠡⠲⠌⠆⠤")?;
+
+    let expr = r#"<math><msup><msub><mi>HPO</mi><mn>4</mn></msub><mrow><mo>-</mo><mo>-</mo></mrow></msup></math>"#;
+    test_braille("Russian", expr, "⠨⠓⠏⠕⠡⠲⠌⠆⠤")?;
+    return Ok(());
+}
+
+#[test]
 fn source_gost_logic_arrows() -> Result<()> {
     let expr = r#"<math><mrow><mi>A</mi><mo>&#x21D2;</mo><mi>B</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠀⠶⠜⠃")?;

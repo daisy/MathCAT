@@ -224,6 +224,15 @@
   replace: [x: "*"]
 
 -
+  name: chemistry-mhchem-equilibrium-arrow
+  tag: mover
+  match:
+  - "*[1][substring(., 1, 1)='↽'] and"
+  - "*[2][substring(., string-length(), 1)='⇀']"
+  replace:
+  - t: "⠀⠒⠕⠀⠦⠶"
+
+-
   name: vector-arrow
   tag: mover
   match:
@@ -284,6 +293,59 @@
   - t: "⠱"
 
 -
+  name: chemistry-repeated-charge
+  tag: msup
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or"
+  - " *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "*[2][self::m:mrow and count(*) > 1 and not(*[not(self::m:mo[.='+' or .='-' or .='−'])])]"
+  replace:
+  - x: "*[1]"
+  - t: "⠌"
+  - x: "BrailleChars(translate(string(count(*[2]/*)), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+  - test:
+      if: "*[2]/*[1][.='+']"
+      then: [t: "⠖"]
+      else: [t: "⠤"]
+
+-
+  name: chemistry-charge
+  tag: msup
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or"
+  - " *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "*[2][translate(., '+-−0123456789 ', '')=''] and"
+  - "*[2][contains(., '+') or contains(., '-') or contains(., '−')]"
+  replace:
+  - x: "*[1]"
+  - t: "⠌"
+  - test:
+    - if: "*[2][translate(., '+ ', '')='']"
+      then:
+      - test:
+          if: "string-length(translate(normalize-space(*[2]), ' ', '')) > 1"
+          then:
+          - x: "BrailleChars(translate(string(string-length(translate(normalize-space(*[2]), ' ', ''))), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠖"
+    - else_if: "*[2][translate(., '-− ', '')='']"
+      then:
+      - test:
+          if: "string-length(translate(normalize-space(*[2]), ' ', '')) > 1"
+          then:
+          - x: "BrailleChars(translate(string(string-length(translate(normalize-space(*[2]), ' ', ''))), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠤"
+    - else_if: "*[2][translate(substring(., 1, string-length(.) - 1), '0123456789', '')='' and substring(., string-length(.), 1)='+']"
+      then:
+      - x: "BrailleChars(translate(substring(*[2], 1, string-length(*[2]) - 1), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠖"
+    - else_if: "*[2][translate(substring(., 1, string-length(.) - 1), '0123456789', '')='' and (substring(., string-length(.), 1)='-' or substring(., string-length(.), 1)='−')]"
+      then:
+      - x: "BrailleChars(translate(substring(*[2], 1, string-length(*[2]) - 1), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠤"
+    - else:
+      - x: "*[2]"
+
+-
   name: integer
   tag: [msup, mover]
   match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
@@ -340,6 +402,52 @@
       - t: "⠱"
 
 -
+  name: chemistry-charge-with-subscript
+  tag: msubsup
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or"
+  - " *[1][self::m:mi or self::m:mtext or self::m:mrow]) and"
+  - "*[3][translate(., '+-−0123456789', '')=''] and"
+  - "*[3][contains(., '+') or contains(., '-') or contains(., '−')]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "*[2][self::m:mn and translate(., '0123456789', '')='']"
+      then:
+      - t: "⠡"
+      - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      else:
+      - t: "⠡"
+      - x: "*[2]"
+      - t: "⠱"
+  - t: "⠌"
+  - test:
+    - if: "*[3][translate(., '+', '')='']"
+      then:
+      - test:
+          if: "string-length(*[3]) > 1"
+          then:
+          - x: "BrailleChars(translate(string(string-length(*[3])), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠖"
+    - else_if: "*[3][translate(., '-−', '')='']"
+      then:
+      - test:
+          if: "string-length(*[3]) > 1"
+          then:
+          - x: "BrailleChars(translate(string(string-length(*[3])), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠤"
+    - else_if: "*[3][translate(substring(., 1, string-length(.) - 1), '0123456789', '')='' and substring(., string-length(.), 1)='+']"
+      then:
+      - x: "BrailleChars(translate(substring(*[3], 1, string-length(*[3]) - 1), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠖"
+    - else_if: "*[3][translate(substring(., 1, string-length(.) - 1), '0123456789', '')='' and (substring(., string-length(.), 1)='-' or substring(., string-length(.), 1)='−')]"
+      then:
+      - x: "BrailleChars(translate(substring(*[3], 1, string-length(*[3]) - 1), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      - t: "⠤"
+    - else:
+      - x: "*[3]"
+
+-
   name: default
   tag: [msubsup, munderover]
   match: "count(*)=3"
@@ -385,6 +493,37 @@
     - else_if: ".='≡'"
       then: [t: "⠿"]
       else: [x: "text()"]
+
+-
+  name: chemical-reaction-operator
+  tag: mo
+  match:
+  - "(@data-chem-equation-op or ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "translate(., '+-=→⟶←⟵⇌⥂⥄↑↓', '')=''"
+  replace:
+  - test:
+    - if: ".='+'"
+      then: [t: "⠀⠖"]
+    - else_if: ".='-'"
+      then: [t: "⠀⠤"]
+    - else_if: ".='='"
+      then: [t: "⠀⠶"]
+    - else_if: ".='→' or .='⟶'"
+      then: [t: "⠀⠒⠕"]
+    - else_if: ".='←' or .='⟵'"
+      then: [t: "⠀⠦⠶"]
+    - else_if: ".='⇌'"
+      then: [t: "⠀⠒⠕⠀⠦⠶"]
+    - else_if: ".='⥂'"
+      then: [t: "⠀⠒⠕⠀⠦⠶"]
+    - else_if: ".='⥄'"
+      then: [t: "⠀⠦⠶⠀⠒⠕"]
+    - else_if: ".='↑'"
+      then: [t: "⠀⠰⠌"]
+    - else_if: ".='↓'"
+      then: [t: "⠀⠘⠡"]
+    - else:
+      - x: "text()"
 
 -
   name: prefix-geometry-ops
