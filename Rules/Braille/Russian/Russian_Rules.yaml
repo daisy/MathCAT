@@ -40,8 +40,15 @@
   variables:
   - RowStart: "''"
   - RowEnd: "''"
+  - InSystemLeftBrace: "false()"
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
+
+-
+  name: system-left-brace-opener
+  tag: mo
+  match: "not(preceding-sibling::*) and following-sibling::*[1][self::m:mtable] and count(../*)=2"
+  replace: [t: ""]
 
 -
   name: default
@@ -148,6 +155,16 @@
   - x: "*[3]"
 
 -
+  name: system-left-brace-table
+  tag: mtable
+  variables:
+  - InSystemLeftBrace: "true()"
+  - RowStart: "''"
+  - RowEnd: "''"
+  match: "not(following-sibling::*) and count(../*)=2"
+  replace: [x: "*"]
+
+-
   name: default-matrix
   tag: mrow
   variables:
@@ -172,7 +189,15 @@
   - test:
       if: "preceding-sibling::*"
       then: [t: "⠨⠳"]
-  - x: $RowStart
+  - test:
+    - if: "$InSystemLeftBrace and not(preceding-sibling::*)"
+      then: [t: "⠏⠀"]
+    - else_if: "$InSystemLeftBrace and not(following-sibling::*)"
+      then: [t: "⠧⠀"]
+    - else_if: "$InSystemLeftBrace"
+      then: [t: "⠇⠀"]
+    - else:
+      - x: $RowStart
   - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
