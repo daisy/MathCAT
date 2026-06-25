@@ -94,6 +94,17 @@
   - t: "⠹"
 
 -
+  name: nested-fraction
+  tag: mfrac
+  match: "parent::m:mfrac"
+  replace:
+  - t: "⠆"
+  - x: "*[1]"
+  - t: "⠀⠳"
+  - x: "*[2]"
+  - t: "⠰"
+
+-
   name: simple-numeric
   tag: mfrac
   match:
@@ -268,6 +279,41 @@
   - x: "*[1]"
 
 -
+  name: signed-integer-number
+  tag: [msub, munder]
+  match: "*[2][self::m:mn and (substring(., 1, 1)='-' or substring(., 1, 1)='−' or substring(., 1, 1)='+') and translate(substring(., 2), '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - test:
+      if: "substring(*[2], 1, 1)='+'"
+      then: [t: "⠖"]
+      else: [t: "⠤"]
+  - x: "BrailleChars(translate(substring(*[2], 2), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: signed-integer
+  tag: [msub, munder]
+  match:
+  - "*[2][self::m:mrow and count(*)=2 and"
+  - " *[1][self::m:mo][.='-' or .='−' or .='+'] and"
+  - " *[2][self::m:mn and translate(., '0123456789', '')='']]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - test:
+      if: "*[2]/*[1][.='+']"
+      then: [t: "⠖"]
+      else: [t: "⠤"]
+  - x: "BrailleChars(translate(*[2]/*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
   name: integer
   tag: [msub, munder]
   match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
@@ -289,8 +335,46 @@
       if: "self::m:munder"
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
+  - test:
+      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      then: [t: "⠐"]
   - x: "*[2]"
   - t: "⠱"
+
+-
+  name: signed-integer-number
+  tag: [msup, mover]
+  match: "*[2][self::m:mn and (substring(., 1, 1)='-' or substring(., 1, 1)='−' or substring(., 1, 1)='+') and translate(substring(., 2), '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:mover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - test:
+      if: "substring(*[2], 1, 1)='+'"
+      then: [t: "⠖"]
+      else: [t: "⠤"]
+  - x: "BrailleChars(translate(substring(*[2], 2), '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: signed-integer
+  tag: [msup, mover]
+  match:
+  - "*[2][self::m:mrow and count(*)=2 and"
+  - " *[1][self::m:mo][.='-' or .='−' or .='+'] and"
+  - " *[2][self::m:mn and translate(., '0123456789', '')='']]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:mover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - test:
+      if: "*[2]/*[1][.='+']"
+      then: [t: "⠖"]
+      else: [t: "⠤"]
+  - x: "BrailleChars(translate(*[2]/*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
 
 -
   name: chemistry-repeated-charge
@@ -457,6 +541,9 @@
       if: "self::m:munderover"
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
+  - test:
+      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      then: [t: "⠐"]
   - x: "*[2]"
   - test:
       if: "self::m:munderover"
