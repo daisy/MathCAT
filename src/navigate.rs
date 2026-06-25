@@ -48,9 +48,9 @@ pub static NAV_COMMANDS: phf::Set<&str> = phf_set! {
 };
 
 #[derive(Clone, PartialEq, Debug)]
-struct NavigationPosition {
-    current_node: String,           // id of current node
-    current_node_offset: usize,     // for leaves, char offset in leaf (default = 0), otherwise id for artificial intent node
+pub struct NavigationPosition {
+    pub current_node: String,           // id of current node
+    pub current_node_offset: usize,     // for leaves, char offset in leaf (default = 0), otherwise id for artificial intent node
 }
 
 impl fmt::Display for NavigationPosition {
@@ -146,7 +146,7 @@ impl NavigationState {
     }
 
 
-    fn push(&mut self, position: NavigationPosition, command: &'static str) {
+    pub fn push(&mut self, position: NavigationPosition, command: &'static str) {
         self.position_stack.push(position);
         self.command_stack.push(command);
     }
@@ -361,7 +361,7 @@ pub fn do_mathml_navigate_key_press(mathml: Element,
     return do_navigate_command_and_param(mathml, command, param);
 }
 
-fn do_navigate_command_and_param(mathml: Element, command: NavigationCommand, param: NavigationParam) -> Result<String> {
+pub fn do_navigate_command_and_param(mathml: Element, command: NavigationCommand, param: NavigationParam) -> Result<String> {
     return do_navigate_command_string(mathml, navigation_command_string(command, param));
 }
 
@@ -710,7 +710,7 @@ const VK_ESCAPE: usize = 0x1B;
 
 // Utilities that returns one of four commands/params based on shift/control key combinations
 
-enum NavigationCommand {
+pub enum NavigationCommand {
     Move,
     Zoom,
     MoveLastLocation,
@@ -726,7 +726,7 @@ enum NavigationCommand {
 }
 
 #[derive(PartialEq, PartialOrd, Clone, Copy)]
-enum NavigationParam {
+pub enum NavigationParam {
     Placemarker0,
     Placemarker1,
     Placemarker2,
