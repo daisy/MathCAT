@@ -156,6 +156,18 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x2225;</mo><mi>C</mi><mi>D</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠃⠸⠸⠨⠉⠙")?;
 
+    let expr = r#"<math><mrow><mover accent="true"><mi>a</mi><mo stretchy="true">&#x2192;</mo></mover><mo>=</mo><mn>2</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠒⠂⠀⠶⠼⠃")?;
+
+    let expr = r#"<math><mrow><mover accent="true"><mrow><mi>A</mi><mi>B</mi></mrow><mo stretchy="true">&#x2192;</mo></mover><mo>+</mo><mover accent="true"><mrow><mi>B</mi><mi>C</mi></mrow><mo stretchy="true">&#x2192;</mo></mover><mo>=</mo><mover accent="true"><mrow><mi>A</mi><mi>C</mi></mrow><mo stretchy="true">&#x2192;</mo></mover></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠨⠒⠂⠀⠖⠃⠉⠨⠒⠂⠀⠶⠁⠉⠨⠒⠂")?;
+
+    let expr = r#"<math><mrow><mover accent="true"><mrow><mi>K</mi><mi>L</mi></mrow><mo stretchy="true">&#xAF;</mo></mover><mo>=</mo><mn>4</mn><mo>&#x22C5;</mo><mover accent="true"><mrow><mi>P</mi><mi>Q</mi></mrow><mo stretchy="true">&#xAF;</mo></mover></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠅⠇⠨⠒⠀⠶⠼⠙⠄⠨⠏⠟⠨⠒")?;
+
+    let expr = r#"<math><mrow><mover accent="true"><mrow><mi>E</mi><mi>F</mi></mrow><mo stretchy="true">&#x23DC;</mo></mover><mo>=</mo><mover accent="true"><mrow><mi>K</mi><mi>L</mi></mrow><mo stretchy="true">&#x23DC;</mo></mover></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠜⠨⠑⠋⠀⠶⠸⠜⠨⠅⠇")?;
+
     let expr = r#"<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠣⠠⠁⠀⠃⠨⠳⠉⠀⠙⠜")?;
 
