@@ -284,6 +284,37 @@
   - t: "⠱"
 
 -
+  name: large-op-limits
+  tag: [msubsup, munderover]
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mo][translate(., '∫∬∭∮∑∏', '')='']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munderover"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - test:
+      if: "*[2][self::m:mn and translate(., '0123456789', '')='']"
+      then:
+      - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      else:
+      - x: "*[2]"
+      - t: "⠱"
+  - test:
+      if: "self::m:munderover"
+      then: [t: "⠨⠌"]
+      else: [t: "⠌"]
+  - test:
+      if: "*[3][self::m:mn and translate(., '0123456789', '')='']"
+      then:
+      - x: "BrailleChars(translate(*[3], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+      else:
+      - x: "*[3]"
+      - t: "⠱"
+
+-
   name: default
   tag: [msubsup, munderover]
   match: "count(*)=3"
@@ -341,6 +372,20 @@
   - t: "#"
 
 -
+  name: operator-functions
+  tag: mo
+  match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
+  replace:
+  - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
+
+-
+  name: div-operator-function
+  tag: mo
+  match: "contains(., 'div')"
+  replace:
+  - t: "⠫⠙⠊⠧#"
+
+-
   name: default
   tag: mo
   match: "."
@@ -365,10 +410,17 @@
 
 -
   name: functions
-  tag: mi
+  tag: [mi, mtext]
   match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
   replace:
   - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
+
+-
+  name: div-function
+  tag: [mi, mo, mtext]
+  match: "contains(., 'div')"
+  replace:
+  - t: "⠫⠙⠊⠧#"
 
 -
   name: default

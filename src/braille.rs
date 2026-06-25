@@ -2196,6 +2196,7 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
             _ => "",
         }
     });
+    let result = result.replace("⠠⠙⠊⠧", "⠫⠙⠊⠧");
     return COLLAPSE_SPACES.replace_all(&result, "⠀")
                           .trim_matches('⠀')
                           .to_string();
