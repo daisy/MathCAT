@@ -2183,7 +2183,8 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
         previous_char_was_digit = matches!(ch, '⠚' | '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊');
     }
 
-    let result = REPLACE_INDICATORS.replace_all(&raw_braille_without_repeated_number_indicators, |cap: &Captures| {
+    let result = add_russian_alphabet_indicators(&raw_braille_without_repeated_number_indicators);
+    let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
         match &cap[0] {
             "B" => "⠸",
             "C" => "⠠",
@@ -2198,6 +2199,33 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
     return COLLAPSE_SPACES.replace_all(&result, "⠀")
                           .trim_matches('⠀')
                           .to_string();
+
+    fn add_russian_alphabet_indicators(raw_braille: &str) -> String {
+        let mut result = String::with_capacity(raw_braille.len());
+        let mut alphabet_mode = None;
+        for ch in raw_braille.chars() {
+            match ch {
+                'l' | 'u' | 'g' | 'v' => {
+                    if alphabet_mode != Some(ch) {
+                        result.push_str(match ch {
+                            'l' => "⠠",  // Latin lowercase: dots 6
+                            'u' => "⠨",  // Latin uppercase: dots 4-6
+                            'g' => "⠰",  // Greek lowercase: dots 5-6
+                            'v' => "⠸",  // Greek uppercase: dots 4-5-6
+                            _ => unreachable!(),
+                        });
+                        alphabet_mode = Some(ch);
+                    }
+                },
+                'C' | 'N' | '#' => {
+                    alphabet_mode = None;
+                    result.push(ch);
+                },
+                _ => result.push(ch),
+            }
+        }
+        return result;
+    }
 }
 
 #[allow(non_snake_case)]
