@@ -32,7 +32,7 @@ mod canonicalize;
 mod infer_intent;
 pub mod speech;
 mod braille;
-mod navigate;
+pub mod navigate;
 mod prefs;
 mod tts;
 mod xpath_functions;
