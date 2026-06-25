@@ -525,3 +525,17 @@ fn test_mtext_inference() -> Result<()> {
                 return Ok(());
 
 }
+    #[test]
+    fn infer_unit() -> Result<()> {
+        let expr = r#"<math>
+            <mn>3</mn><mi mathvariant="normal">m</mi><mo>,</mo>
+            <mn>1</mn><mi>km</mi><mo>,</mo>
+            <mn>3</mn><mtext>m</mtext><mo>,</mo>
+            <mfrac><mn>3</mn><mn>10</mn></mfrac><mi mathvariant="normal">F</mi><mo>,</mo>
+            <msub><mi>m</mi><mi>min</mi></msub>
+            </math>"#;
+        test("zh-tw", "SimpleSpeak", expr, 
+            "3 米 逗號 1 千-米, 逗號 3 米 逗號 10 分之 3 法拉, 逗號, m 下標 min 結束下標")?;
+            return Ok(());
+
+    }
