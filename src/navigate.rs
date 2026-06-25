@@ -11,7 +11,7 @@ use sxd_document::Package;
 use std::fmt;
 use crate::canonicalize::{name, get_parent};
 use crate::pretty_print::mml_to_string;
-use crate::speech::{NAVIGATION_RULES, CONCAT_INDICATOR, CONCAT_STRING, SpeechRules, SpeechRulesWithContext};
+use crate::speech::{NAVIGATION_RULES, CONCAT_INDICATOR, CONCAT_STRING, SpeechRules, SpeechRulesWithContext, remove_optional_indicators, intent_from_mathml, overview_mathml, NAV_NODE_SPEECH_NOT_FOUND, speak_mathml};
 use crate::infer_intent::add_fixity_children;
 use crate::interface::copy_mathml;
 #[cfg(not(target_family = "wasm"))]
@@ -19,6 +19,7 @@ use std::time::Instant;
 use crate::errors::*;
 use phf::phf_set;
 use log::{debug};
+use crate::xpath_functions::is_leaf;
 
 pub const ID_OFFSET: &str = "data-id-offset";
 
@@ -249,7 +250,7 @@ fn convert_last_char_to_number(str: &str) -> usize {
 fn get_node_by_id<'a>(mathml: Element<'a>, pos: &NavigationPosition) -> Option<Element<'a>> {
     if let Some(mathml_id) = mathml.attribute_value("id") &&
        mathml_id == pos.current_node.as_str() &&
-        (crate::xpath_functions::is_leaf(mathml) || 
+        (is_leaf(mathml) ||
         mathml.attribute_value(ID_OFFSET).unwrap_or("0") == pos.current_node_offset.to_string()) {
         return Some(mathml);
     }
@@ -330,7 +331,7 @@ pub fn context_get_variable<'c>(context: &sxd_xpath::Context<'c>, var_name: &str
                         .enumerate()
                         .for_each(|(i, node)| {
                             match node {
-                                sxd_xpath::nodeset::Node::Element(mathml) =>
+                                Node::Element(mathml) =>
                                     error_message += &format!("#{}:\n{}",i, mml_to_string(*mathml)),
                                 _ => error_message += &format!("'{node:?}'"),
                             }   
@@ -431,7 +432,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                                 }
                             }
                                                 return Ok( rules.pref_manager.borrow().get_tts()
-                                            .merge_pauses(crate::speech::remove_optional_indicators(
+                                            .merge_pauses(remove_optional_indicators(
                                                 &cumulative_speech.replace(CONCAT_STRING, "")
                                                                     .replace(CONCAT_INDICATOR, "")                            
                                                             )
@@ -482,7 +483,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         let (intent, nav_intent) = if add_literal {
             (mathml, mathml)
         } else {
-            let intent = crate::speech::intent_from_mathml(mathml, rules_with_context.get_document())?;
+            let intent = intent_from_mathml(mathml, rules_with_context.get_document())?;
             (intent, add_fixity_children(copy_mathml(intent)))
         };
 
@@ -537,7 +538,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         let raw_speech_string = rules_with_context.match_pattern::<String>(start_node)
                     .context("Pattern match/replacement failure during math navigation!")?;
         let speech = rules.pref_manager.borrow().get_tts()
-                    .merge_pauses(crate::speech::remove_optional_indicators(
+                    .merge_pauses(remove_optional_indicators(
                         &raw_speech_string.replace(CONCAT_STRING, "")
                                                 .replace(CONCAT_INDICATOR, "")                            
                                     )
@@ -595,7 +596,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             let node_speech = match node_speech_result {
                 Ok(speech) => speech,
                 Err(e) => {
-                    if e.to_string() == crate::speech::NAV_NODE_SPEECH_NOT_FOUND {
+                    if e.to_string() == NAV_NODE_SPEECH_NOT_FOUND {
                         bail!("Internal error: With {}/{} in {} mode, can't {} from expression with id '{}' inside:\n{}",
                               rules.pref_manager.as_ref().borrow().pref_to_string("Language"),
                               rules.pref_manager.as_ref().borrow().pref_to_string("SpeechStyle"),
@@ -672,10 +673,10 @@ fn speak(mathml: Element, intent: Element, nav_position: &NavigationPosition, li
         // By speaking the non-intent tree, we are certain to speak on the next try
         if !literal_speak && get_node_by_id(intent, nav_position).is_some() {
                 // debug!("speak: nav_node_id={}, intent=\n{}", nav_node_id, mml_to_string(intent));
-            match crate::speech::speak_mathml(intent, &nav_position.current_node, nav_position.current_node_offset) {
+            match speak_mathml(intent, &nav_position.current_node, nav_position.current_node_offset) {
                 Ok(speech) => return Ok(speech),
                 Err(e) => {
-                    if e.to_string() != crate::speech::NAV_NODE_SPEECH_NOT_FOUND {
+                    if e.to_string() != NAV_NODE_SPEECH_NOT_FOUND {
                         return Err(e);
                     }
                     // else could be something like '3' in 'x^3' ("cubed")
@@ -683,12 +684,12 @@ fn speak(mathml: Element, intent: Element, nav_position: &NavigationPosition, li
             }
         }
         // debug!("speak (literal): nav_node_id={}, mathml=\n{}", nav_node_id, mml_to_string(mathml));
-        let speech = crate::speech::speak_mathml(mathml,
+        let speech = speak_mathml(mathml,
                 &nav_position.current_node, nav_position.current_node_offset);
         // debug!("speech from speak: {:?}", speech);
         return speech;
     } else {
-        return crate::speech::overview_mathml(mathml, &nav_position.current_node, nav_position.current_node_offset);
+        return overview_mathml(mathml, &nav_position.current_node, nav_position.current_node_offset);
     }
 }
 
