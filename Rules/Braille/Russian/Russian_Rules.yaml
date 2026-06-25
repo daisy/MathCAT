@@ -199,6 +199,41 @@
   replace: [x: "*"]
 
 -
+  name: vector-arrow
+  tag: mover
+  match:
+  - "*[2][translate(., '→⟶⇀⃗', '')=''] and"
+  - "string-length(translate(normalize-space(*[1]), ' ', '')) > 0"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "string-length(translate(normalize-space(*[1]), ' ', '')) > 1"
+      then: [t: "⠨⠒⠂"]
+      else: [t: "⠒⠂"]
+
+-
+  name: vector-bar
+  tag: mover
+  match:
+  - "*[2][translate(., '¯‾_￣', '')=''] and"
+  - "string-length(translate(normalize-space(*[1]), ' ', '')) > 0"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "string-length(translate(normalize-space(*[1]), ' ', '')) > 1"
+      then: [t: "⠨⠒"]
+      else: [t: "⠒"]
+
+-
+  name: geometry-arc
+  tag: mover
+  match: "*[2][translate(., '⌒⏜︵', '')='']"
+  replace:
+  - t: "⠸⠜"
+  - t: "#"
+  - x: "*[1]"
+
+-
   name: integer
   tag: [msub, munder]
   match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
