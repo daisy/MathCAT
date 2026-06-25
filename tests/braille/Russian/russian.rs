@@ -256,6 +256,108 @@ fn script_grouping_power_subscript_follow() -> Result<()> {
 }
 
 #[test]
+fn script_grouping_regressions() -> Result<()> {
+    let cases = vec![
+        ("sup_x", r#"<math><msup><mi>a</mi><mi>x</mi></msup></math>"#),
+        ("sup_zero", r#"<math><msup><mi>x</mi><mn>0</mn></msup></math>"#),
+        ("sup_ten", r#"<math><msup><mi>x</mi><mn>10</mn></msup></math>"#),
+        ("sup_minus_x", r#"<math><msup><mi>a</mi><mrow><mo>-</mo><mi>x</mi></mrow></msup></math>"#),
+        ("sup_minus_2", r#"<math><msup><mi>a</mi><mrow><mo>-</mo><mn>2</mn></mrow></msup></math>"#),
+        ("sup_x_plus_1", r#"<math><msup><mi>a</mi><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></msup></math>"#),
+        ("sup_sub_x2", r#"<math><msup><mi>a</mi><msub><mi>x</mi><mn>2</mn></msub></msup></math>"#),
+        ("sup_nested", r#"<math><msup><mi>a</mi><msup><mi>x</mi><mn>2</mn></msup></msup></math>"#),
+        ("sup_frac", r#"<math><msup><mi>a</mi><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></math>"#),
+        ("sup_sqrt", r#"<math><msup><mi>a</mi><msqrt><mi>x</mi></msqrt></msup></math>"#),
+        ("sup_follow_letter", r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mi>y</mi></mrow></math>"#),
+        ("sup_follow_number", r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mn>3</mn></mrow></math>"#),
+        ("sub_x", r#"<math><msub><mi>a</mi><mi>x</mi></msub></math>"#),
+        ("sub_zero", r#"<math><msub><mi>x</mi><mn>0</mn></msub></math>"#),
+        ("sub_ten", r#"<math><msub><mi>x</mi><mn>10</mn></msub></math>"#),
+        ("sub_minus_x", r#"<math><msub><mi>a</mi><mrow><mo>-</mo><mi>x</mi></mrow></msub></math>"#),
+        ("sub_minus_2", r#"<math><msub><mi>a</mi><mrow><mo>-</mo><mn>2</mn></mrow></msub></math>"#),
+        ("sub_x_plus_1", r#"<math><msub><mi>a</mi><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></msub></math>"#),
+        ("sub_nested", r#"<math><msub><mi>a</mi><msub><mi>x</mi><mn>2</mn></msub></msub></math>"#),
+        ("sub_follow_letter", r#"<math><mrow><msub><mi>x</mi><mn>2</mn></msub><mi>y</mi></mrow></math>"#),
+        ("sub_follow_number", r#"<math><mrow><msub><mi>x</mi><mn>2</mn></msub><mn>3</mn></mrow></math>"#),
+        ("subsup_numeric", r#"<math><msubsup><mi>x</mi><mn>1</mn><mn>2</mn></msubsup></math>"#),
+        ("subsup_i_n", r#"<math><msubsup><mi>x</mi><mi>i</mi><mi>n</mi></msubsup></math>"#),
+        ("subsup_grouped_sub", r#"<math><msubsup><mi>x</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></msubsup></math>"#),
+        ("subsup_grouped_sup", r#"<math><msubsup><mi>x</mi><mn>0</mn><mrow><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msubsup></math>"#),
+        ("subsup_nested_sup", r#"<math><msubsup><mi>x</mi><mn>0</mn><msup><mi>n</mi><mn>2</mn></msup></msubsup></math>"#),
+        ("negative_base_sup", r#"<math><msup><mrow><mo>-</mo><mi>x</mi></mrow><mn>2</mn></msup></math>"#),
+        ("paren_base_sup", r#"<math><msup><mrow><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></math>"#),
+        ("frac_base_sup", r#"<math><msup><mfrac><mn>1</mn><mi>x</mi></mfrac><mn>2</mn></msup></math>"#),
+        ("root_base_sup", r#"<math><msup><msqrt><mi>x</mi></msqrt><mn>2</mn></msup></math>"#),
+        ("sup_on_function", r#"<math><mrow><msup><mi>sin</mi><mn>2</mn></msup><mi>x</mi></mrow></math>"#),
+        ("log_sub_sup", r#"<math><mrow><msubsup><mi>log</mi><mn>2</mn><mn>3</mn></msubsup><mi>x</mi></mrow></math>"#),
+        ("root_index_group", r#"<math><mroot><mi>x</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></mroot></math>"#),
+        ("root_index_sub", r#"<math><mroot><mi>x</mi><msub><mi>n</mi><mn>2</mn></msub></mroot></math>"#),
+        ("frac_num_group", r#"<math><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi></mfrac></math>"#),
+        ("frac_den_group", r#"<math><mfrac><mi>x</mi><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac></math>"#),
+        ("nested_frac", r#"<math><mfrac><mfrac><mn>1</mn><mi>x</mi></mfrac><mfrac><mn>1</mn><mi>y</mi></mfrac></mfrac></math>"#),
+        ("sup_after_fraction", r#"<math><msup><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac><mn>2</mn></msup></math>"#),
+        ("sub_after_fraction", r#"<math><msub><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac><mi>i</mi></msub></math>"#),
+        ("tensor_like", r#"<math><mrow><msubsup><mi>T</mi><mi>i</mi><mi>j</mi></msubsup><msubsup><mi>x</mi><mi>j</mi><mi>k</mi></msubsup></mrow></math>"#),
+        ("pre_negative_power", r#"<math><mrow><mn>2</mn><msup><mi>x</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></mrow></math>"#),
+        ("power_of_power_follow", r#"<math><mrow><msup><msup><mi>x</mi><mn>2</mn></msup><mn>3</mn></msup><mi>y</mi></mrow></math>"#),
+        ("subscripted_power_follow", r#"<math><mrow><msup><msub><mi>x</mi><mn>2</mn></msub><mn>3</mn></msup><mi>y</mi></mrow></math>"#),
+        ("power_subscript_follow", r#"<math><mrow><msub><msup><mi>x</mi><mn>2</mn></msup><mn>3</mn></msub><mi>y</mi></mrow></math>"#),
+    ];
+
+    let expected = std::collections::HashMap::from([
+        ("sup_x", "⠠⠁⠌⠭⠱"),
+        ("sup_zero", "⠠⠭⠌⠴"),
+        ("sup_ten", "⠠⠭⠌⠂⠴"),
+        ("sup_minus_x", "⠠⠁⠌⠀⠤⠭⠱"),
+        ("sup_minus_2", "⠠⠁⠌⠤⠆"),
+        ("sup_x_plus_1", "⠠⠁⠌⠭⠀⠖⠼⠁⠱"),
+        ("sup_sub_x2", "⠠⠁⠌⠭⠡⠆⠱"),
+        ("sup_nested", "⠠⠁⠌⠭⠌⠆⠱"),
+        ("sup_frac", "⠠⠁⠌⠼⠁⠆⠱"),
+        ("sup_sqrt", "⠠⠁⠌⠩⠱⠭⠹⠱"),
+        ("sup_follow_letter", "⠠⠭⠌⠆⠽"),
+        ("sup_follow_number", "⠠⠭⠌⠆⠼⠉"),
+        ("sub_x", "⠠⠁⠡⠭⠱"),
+        ("sub_zero", "⠠⠭⠡⠴"),
+        ("sub_ten", "⠠⠭⠡⠂⠴"),
+        ("sub_minus_x", "⠠⠁⠡⠀⠤⠭⠱"),
+        ("sub_minus_2", "⠠⠁⠡⠤⠆"),
+        ("sub_x_plus_1", "⠠⠁⠡⠐⠭⠀⠖⠼⠁⠱"),
+        ("sub_nested", "⠠⠁⠡⠭⠡⠆⠱"),
+        ("sub_follow_letter", "⠠⠭⠡⠆⠽"),
+        ("sub_follow_number", "⠠⠭⠡⠆⠼⠉"),
+        ("subsup_numeric", "⠠⠭⠡⠼⠁⠌⠼⠃⠱"),
+        ("subsup_i_n", "⠠⠭⠡⠊⠌⠝⠱"),
+        ("subsup_grouped_sub", "⠠⠭⠡⠐⠊⠀⠖⠼⠁⠌⠼⠃⠱"),
+        ("subsup_grouped_sup", "⠠⠭⠡⠼⠚⠌⠠⠝⠀⠤⠼⠁⠱"),
+        ("subsup_nested_sup", "⠠⠭⠡⠼⠚⠌⠠⠝⠌⠆⠱"),
+        ("negative_base_sup", "⠤⠠⠭⠌⠆"),
+        ("paren_base_sup", "⠣⠠⠭⠀⠖⠼⠁⠜⠌⠆"),
+        ("frac_base_sup", "⠼⠁⠳⠠⠭⠌⠆"),
+        ("root_base_sup", "⠩⠱⠠⠭⠹⠌⠆"),
+        ("sup_on_function", "⠫⠎⠌⠆⠠⠭"),
+        ("log_sub_sup", "⠫⠇⠡⠼⠃⠌⠼⠉⠱⠠⠭"),
+        ("root_index_group", "⠩⠠⠝⠀⠖⠼⠁⠱⠠⠭⠹"),
+        ("root_index_sub", "⠩⠠⠝⠡⠆⠱⠭⠹"),
+        ("frac_num_group", "⠆⠠⠭⠀⠖⠼⠁⠀⠳⠠⠽⠰"),
+        ("frac_den_group", "⠆⠠⠭⠀⠳⠽⠀⠖⠼⠁⠰"),
+        ("nested_frac", "⠆⠆⠼⠁⠀⠳⠠⠭⠰⠀⠳⠆⠼⠁⠀⠳⠠⠽⠰⠰"),
+        ("sup_after_fraction", "⠆⠠⠭⠀⠖⠼⠁⠀⠳⠠⠽⠀⠤⠼⠁⠰⠌⠆"),
+        ("sub_after_fraction", "⠆⠠⠭⠀⠖⠼⠁⠀⠳⠠⠽⠀⠤⠼⠁⠰⠡⠠⠊⠱"),
+        ("tensor_like", "⠨⠞⠡⠠⠊⠌⠚⠱⠭⠡⠚⠌⠅⠱"),
+        ("pre_negative_power", "⠼⠃⠠⠭⠌⠤⠂"),
+        ("power_of_power_follow", "⠠⠭⠌⠆⠌⠒⠽"),
+        ("subscripted_power_follow", "⠠⠭⠡⠆⠌⠒⠽"),
+        ("power_subscript_follow", "⠠⠭⠌⠆⠡⠒⠽"),
+    ]);
+
+    for (label, expr) in cases {
+        test_braille("Russian", expr, expected[label])?;
+    }
+    return Ok(());
+}
+
+#[test]
 fn numbers_and_operators() -> Result<()> {
     return test_russian_braille(r#"<math><mrow><mn>5</mn><mo>+</mo><mn>12</mn><mo>=</mo><mn>17</mn></mrow></math>"#, "⠼⠑⠀⠖⠼⠁⠃⠀⠶⠼⠁⠛");
 }
