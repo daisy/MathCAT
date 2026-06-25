@@ -142,6 +142,7 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
         // log::debug!("\nsetting Language");
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
+            "French" => set_preference("Language", "fr").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
             _ => set_preference("Language", "en").unwrap(),
         }
@@ -169,6 +170,7 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
         // log::debug!("\nsetting Language");
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
+            "French" => set_preference("Language", "fr").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
             _ => set_preference("Language", "en").unwrap(),
         }
@@ -273,6 +275,7 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         // log::debug!("\nsetting Language");
         match code {
             "Vietnam" => set_preference("Language", "vi").unwrap(),
+            "French" => set_preference("Language", "fr").unwrap(),
             "CMU" => set_preference("Language", "es").unwrap(),
             _ => set_preference("Language", "en").unwrap(),
         }

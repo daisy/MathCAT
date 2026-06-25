@@ -7,6 +7,35 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn binomial_nk_01() -> Result<()> {
+    let expr= r#"<math><mrow><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo></mrow></math>"#;
+    test_braille("French", expr, "⠘⠦⠝⠠⠜⠅⠘⠴")?;
+    return Ok(());
+}
+
+#[test]
+fn binomial_5_2_02() -> Result<()> {
+    let expr= r#"<math><mrow><mo>(</mo><mfrac linethickness="0"><mn>5</mn><mn>2</mn></mfrac><mo>)</mo></mrow></math>"#;
+    test_braille("French", expr, "⠘⠦⠱⠠⠜⠣⠘⠴")?;
+    return Ok(());
+}
+
+#[test]
+fn binomial_symmetry_03() -> Result<()> {
+    let expr= r#"<math><mrow><mrow><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo></mrow><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mrow><mi>n</mi><mo>−</mo><mi>k</mi></mrow></mfrac><mo>)</mo></mrow></mrow></math>"#;
+    test_braille("French", expr, "⠘⠦⠝⠠⠜⠅⠘⠴⠶⠘⠦⠝⠠⠜⠝⠤⠅⠘⠴")?;
+    return Ok(());
+}
+
+#[test]
+fn binomial_pascal_04() -> Result<()> {
+    let expr= r#"<math><mrow><mrow><mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo></mrow><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>)</mo></mrow><mo>+</mo><mrow><mo>(</mo><mfrac linethickness="0"><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mi>k</mi></mfrac><mo>)</mo></mrow></mrow></math>"#;
+    test_braille("French", expr, "⠘⠦⠝⠠⠜⠅⠘⠴⠶⠘⠦⠝⠤⠡⠠⠜⠅⠤⠡⠘⠴⠖⠘⠦⠝⠤⠡⠠⠜⠅⠘⠴")?;
+    return Ok(());
+}
+
+
+#[test]
 fn set_of_elements_6_4_01() -> Result<()> {
     let expr= r#"<math><mrow><mi>E</mi><mo>=</mo><mrow><mo>{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo>}</mo></mrow></mrow></math>"#;
     test_braille("French", expr, "⠨⠑⠶⠨⠦⠁⠂⠃⠂⠉⠂⠙⠨⠴")?;
@@ -246,14 +275,18 @@ fn sub_mixt_0_9_4_02() -> Result<()> {
 
 #[test]
 fn choose_9_4_03() -> Result<()> {
-    let expr= r#"<math><mrow><msubsup><mi>∁</mi><mi>m</mi><mi>p</mi></msubsup><mo>=</mo><msubsup><mi>∁</mi><mi>m</mi><mrow><mi>m</mi><mo>−</mo><mi>p</mi></mrow></msubsup></mrow></math>"#;
+    let expr= r#"<math><mrow><msubsup><mi>C</mi><mi>m</mi><mi>p</mi></msubsup><mo>=</mo><msubsup><mi>C</mi><mi>m</mi><mrow><mi>m</mi><mo>−</mo><mi>p</mi></mrow></msubsup></mrow></math>"#;
     test_braille("French", expr, "⠨⠉⠢⠍⠈⠏⠶⠨⠉⠢⠍⠈⠰⠍⠤⠏⠆")?;
     return Ok(());
 }
 
 #[test]
 fn sub_sup_mixed_formulaq_9_4_04() -> Result<()> {
-    let expr= r#"<math><msup><msub><mi>a</mi><msup><mrow><mi>m</mi><mo>+</mo><mi>n</mi></mrow><mo>′</mo></msup></msub><mrow><mi>p</mi><mo>+</mo><mi>q</mi></mrow></msup></math>"#;
+    let expr= r#"<math><msubsup>
+                    <msup><mi>a</mi><mo>′'</mo></msup>
+                    <mrow><mi>m</mi><mo>+</mo><mi>n</mi></mrow>
+                    <mrow><mi>p</mi><mo>+</mo><mi>q</mi></mrow>
+                </msubsup></math>"#;
     test_braille("French", expr, "⠁⠄⠄⠢⠰⠍⠖⠝⠆⠈⠰⠏⠖⠟⠆")?;
     return Ok(());
 }
@@ -273,7 +306,7 @@ fn left_sup_9_5_01() -> Result<()> {
 }
 
 #[test]
-fn lef_sub_9_5_02() -> Result<()> {
+fn left_sub_9_5_02() -> Result<()> {
     let expr= r#"<math><mrow><msubsup><mi></mi><mn>2</mn><mrow></mrow></msubsup><mi>w</mi></mrow></math>"#;
     test_braille("French", expr, "⠢⠣⠺")?;
     return Ok(());
@@ -281,7 +314,7 @@ fn lef_sub_9_5_02() -> Result<()> {
 
 #[test]
 fn left_right_sup_9_5_03() -> Result<()> {
-    let expr= r#"<math><mmultiscripts><mi>A</mi><mprescripts/><mrow/><mi>t</mi></mmultiscripts><mmultiscripts><mi>B</mi><mprescripts/><mrow/><mi>t</mi></mmultiscripts></math>"#;
+    let expr: &str= r#"<math><mmultiscripts><mi>A</mi><mprescripts/><mrow/><mi>t</mi></mmultiscripts><mmultiscripts><mi>B</mi><mprescripts/><mrow/><mi>t</mi></mmultiscripts></math>"#;
     test_braille("French", expr, "⠰⠈⠞⠨⠁⠆⠰⠈⠞⠨⠃⠆")?;
     return Ok(());
 }
@@ -336,8 +369,8 @@ fn square_formula_3_10_05() -> Result<()> {
 
 #[test]
 fn function_from_r_to_r_11_01() -> Result<()> {
-    let expr= r#"<math><mrow><mi>f</mi><mo>:</mo><mi>ℝ</mi><mo>→</mo><mrow><mi>ℝ</mi><mo mathvariant="double-struck">,</mo><mspace width="0.222em"></mspace></mrow><mspace width="0.222em"></mspace><mi>x</mi><mo>↦</mo><mi>y</mi><mo>=</mo><mfrac><mn>1</mn><mi>x</mi></mfrac></mrow></math>"#;
-    test_braille("French", expr, "⠒⠨⠨⠗⠸⠱⠨⠨⠗⠭⠐⠱⠽⠶⠡⠌⠭")?;
+    let expr= r#"<math><mrow><mi>f</mi><mo>:</mo><mi>ℝ</mi><mo>→</mo><mrow><mi>ℝ</mi><mo>,</mo><mspace width="0.222em"/></mrow><mspace width="0.222em"/><mi>x</mi><mo>↦</mo><mi>y</mi><mo>=</mo><mfrac><mn>1</mn><mi>x</mi></mfrac></mrow></math>"#;
+    test_braille("French", expr, "⠋⠒⠨⠨⠗⠸⠱⠨⠨⠗⠭⠐⠱⠽⠶⠡⠌⠭")?;
     return Ok(());
 }
 
@@ -486,7 +519,7 @@ fn limit_x_tends_1_14_2_01_corrected() -> Result<()> {
 
 #[test]
 fn limit_x_tends_and_x_lt_1_14_2_02_corrected_1() -> Result<()> {
-    let expr= r#"<math><mrow><msub><mi>lim</mi><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>x</mi><mo>→</mo><mn>4</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>x</mi><mo>&gt;</mo><mn>4</mn></mtd></mtr></mtable></msub><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>−</mi><mi>∞</mi></mrow></math>"#;
+    let expr= r#"<math><mrow><munder><mi>lim</mi><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>x</mi><mo>→</mo><mn>4</mn></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>x</mi><mo>&gt;</mo><mn>4</mn></mtd></mtr></mtable></munder><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>−</mi><mi>∞</mi></mrow></math>"#;
     test_braille("French", expr, "⠇⠊⠍⠢⠢⠰⠭⠸⠱⠹⠂⠭⠐⠜⠹⠆⠋⠦⠭⠴⠶⠤⠘⠉")?;
     return Ok(());
 }
@@ -554,14 +587,14 @@ fn integral_from_to_2_14_4_03() -> Result<()> {
 
 #[test]
 fn integral_over_curve_14_4_04() -> Result<()> {
-    let expr= r#"<math><mrow><msubsup><mo>∫</mo><mrow><mo stretchy="false">(</mo><mi>C</mi><mo stretchy="false">)</mo></mrow><mrow></mrow></msubsup><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi></mrow><mspace width="0.167em"></mspace></mrow></math>"#;
+    let expr= r#"<math><mrow><msubsup><mo>∫</mo><mrow><mo stretchy="false">(</mo><mi>C</mi><mo stretchy="false">)</mo></mrow><mrow></mrow></msubsup><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi></mrow><mspace width="0.27em"></mspace></mrow></math>"#;
     test_braille("French", expr, "⠯⠢⠦⠨⠉⠴⠋⠦⠭⠴⠙⠭")?;
     return Ok(());
 }
 
 #[test]
 fn integral_double_over_surface_14_4_05() -> Result<()> {
-    let expr= r#"<math><mrow><msubsup><mo>∯</mo><mi>S</mi><mrow></mrow></msubsup><mrow><mspace width="0.167em"></mspace><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi><mi>d</mi><mi>y</mi></mrow></mrow></math>"#;
+    let expr= r#"<math><mrow><msubsup><mo>∯</mo><mi>S</mi><mrow></mrow></msubsup><mrow><mspace width="0.27em"></mspace><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false">)</mo><mi>d</mi><mi>x</mi><mi>d</mi><mi>y</mi></mrow></mrow></math>"#;
     test_braille("French", expr, "⠨⠯⠯⠢⠨⠎⠋⠦⠭⠂⠽⠴⠙⠭⠙⠽")?;
     return Ok(());
 }
@@ -603,7 +636,8 @@ fn cos_of_sum_2_14_6_01b() -> Result<()> {
 #[test]
 fn cosh_sinh_14_7_01() -> Result<()> {
     let expr= r#"<math><mrow><msup><mrow><mi>cosh</mi></mrow><mn>2</mn></msup><mi>x</mi><mo>−</mo><msup><mrow><mi>sinh</mi></mrow><mn>2</mn></msup><mi>x</mi><mo>=</mo><mn>1</mn></mrow></math>"#;
-    test_braille("French", expr, "⠉⠓⠈⠣⠰⠭⠆⠤⠎⠓⠈⠣⠰⠭⠆⠶⠡")?;
+    test_braille_prefs("French", vec![("French_UseShortForm", "true")], expr, "⠉⠓⠈⠣⠰⠭⠆⠤⠎⠓⠈⠣⠰⠭⠆⠶⠡")?;
+
     return Ok(());
 }
 
@@ -616,7 +650,7 @@ fn exists_element_of_15_01() -> Result<()> {
 
 #[test]
 fn set_formula_15_02() -> Result<()> {
-    let expr= r#"<math><mrow><mo>∀</mo><mi>ε</mi><mo>&gt;</mo><mn>0</mn><mspace width="0.167em"></mspace><mo>∃</mo><mi>η</mi><mo>&gt;</mo><mn>0</mn><mspace width="0.167em"></mspace><mo>:</mo><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>η</mi><mspace width="0.167em"></mspace><mo>⇒</mo><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>ε</mi></mrow></math>"#;
+    let expr= r#"<math><mrow><mo>∀</mo><mi>ε</mi><mo>&gt;</mo><mn>0</mn><mspace width="0.40em"></mspace><mo>∃</mo><mi>η</mi><mo>&gt;</mo><mn>0</mn><mspace width="0.167em"></mspace><mo>:</mo><mspace width="0.40em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>η</mi><mspace width="0.40em"></mspace><mo>⇒</mo><mspace width="0.40em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi>ε</mi></mrow></math>"#;
     test_braille("French", expr, "⠸⠌⠘⠑⠐⠜⠼⠀⠸⠡⠘⠓⠐⠜⠼⠒⠀⠿⠭⠢⠣⠤⠭⠢⠡⠿⠘⠣⠘⠓⠀⠒⠂⠀⠿⠋⠦⠭⠢⠣⠴⠤⠋⠦⠭⠢⠡⠴⠿⠘⠣⠘⠑")?;
     return Ok(());
 }

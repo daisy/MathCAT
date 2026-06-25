@@ -144,7 +144,7 @@
  - "δ": [t: "GL⠙"]              # 0x3b4 
  - "ε": [t: "GL⠑"]              # 0x3b5 
  - "ζ": [t: "GL⠵"]              # 0x3b6 
- - "η": [t: "GL⠱"]             # 0x3b7 
+ - "η": [t: "GL⠓"]              # 0x3b7 
  - "θ": [t: "GL⠹"]              # 0x3b8 
  - "ι": [t: "GL⠊"]              # 0x3b9 
  - "κ": [t: "GL⠅"]              # 0x3ba 
@@ -203,8 +203,17 @@
 
  - "!": [t: "⠸⠔"]               # 0x0021 (factorial)
  - "%": [t: "⠐⠬"]               # 0x0025 (percent sign)
- - "(": [t: "⠦"]                # 0x0028 (left parenthesis)
- - ")": [t: "⠴"]                # 0x0029 (right parenthesis)
+ - "(":                          # 0x0028 (left parenthesis)
+     - test:
+        if: "parent::m:mrow/*[self::m:mtable]"
+        then: [t: "⠘⠦"]
+        else: [t: "⠦"]
+ - ")":                          # 0x0029 (right parenthesis)
+     - test:
+        if: "parent::m:mrow/*[self::m:mtable]"
+        then: [t: "⠘⠴"]
+        else: [t: "⠴"]
+ 
  - "*": [t: "⠐⠔"]                # 0x002A (asterisk)
  - "+": [t: "⠖"]                # 0x002B (regular plus)
  - ",": [t: "⠂"]                # 0x002C (comma)
@@ -226,20 +235,30 @@
  - "<": [t: "⠐⠣"]                # 0x003C (less than sign)
  - "=": [t: "⠶"]                # 0x003D (regular equals sign)
  - ">": [t: "⠐⠜"]                # 0x003E (greater than sign ( regular ))
- - "[": [t: "⠷"]                # 0x005B (left square bracket)
- - "]": [t: "⠾"]                # 0x005D (right square bracket)
+ - "[":                         # 0x005B (left square bracket)
+     - test:
+        if: "parent::m:mrow/*[self::m:mtable]"
+        then: [t: "⠘⠷"]
+        else: [t: "⠷"]
+ - "]":                          # 0x005B (left square bracket)
+     - test:
+        if: "parent::m:mrow/*[self::m:mtable]"
+        then: [t: "⠘⠾"]
+        else: [t: "⠾"]
  - "^": [t: "⠘⠒"]                # 0x005E (caret)
  - "{":                          # 0x007B ( left curly brace)
     - test:
-        if: "following-sibling::*[1][self::m:mtable]"
-        then_test:
-            if: "count(following-sibling::*[1]/*) = 1"
-            then: [t: "⠨⠦"]
-            else: [t: "⠸⠦"]
+        if: "parent::m:mrow/*[self::m:mtable] or (following-sibling::*[1][self::m:mtable] and count(following-sibling::*[1]/*) = 1)"
+        then: [t: "⠸⠦"]
         else: [t: "⠨⠦"]   # regular brace
  - "|": [t: "⠿"]                # 0x007C (vertical bar)
- - "}": [t: "⠨⠴"]                # 0x007D (right curly brace)
+ - "}":                          # 0x007D (right curly brace))
+     - test:
+        if: "parent::m:mrow/*[self::m:mtable]"
+        then: [t: "⠸⠴"]
+        else: [t: "⠨⠴"]
  - "~": [t: "⠐⠸⠒"]                # 0x007E (simple tilde (is related to, is similar))
+ - " ": [t: "W"]                # 0x00A0 (non-breaking space)
  - "¢": [t: "⠉"]                # 0x00A2 (cent)
  - "¯": [t: "⠸⠒"]                # 0x00AF (bar)
  - "°": [t: "⠐⠕"]                # 0x00B0 (degree sign)
@@ -348,7 +367,6 @@
  - "✕": [t: "⠐⠐⠔"]                # 0x2715 (multiplication X)
  - "⟧": [t: "⠨⠾"]                # 0x27E7 (right barred bracket)
  - "⪥": [t: "⠐⠜⠐⠣"]                # 0x2AA5 (greater than sign followed by less than sign)
- - "⫽": [t: "⠸⠳"]                # 0x2A7D (DOUBLE SOLIDUS OPERATOR)
 
 # Private space chars used for short forms for trig functions
  - "\ue000": [t: "L⠬"]

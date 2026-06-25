@@ -1,27 +1,19 @@
 ---
-# -
-#   name: whitespace-omission
-#   tag: "!*"
-#   match: "not(self::m:math) and not($MatchingWhitespace) and (@data-previous-space-width >= 0.25 or @data-following-space-width >= 0.25)"
-#   replace:
-#    - with:
-#       variables: [MatchingWhitespace: "true()"]
-#       replace:
-#       - test:
-#         - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-previous-space-width >= 0.25"  # BANA 5.3(a)
-#           then: [t: "𝐖"]
-#         - else_if: "@data-previous-space-width > 1.1"
-#           then: [t: "⠬"]
-#         - else_if: "@data-previous-space-width >= 0.25"      # thickspace
-#           then: [t: "W"]
-#       - x: "."
-#       - test:
-#         - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-following-space-width >= 0.25" # BANA 5.3(a)
-#           then: [t: "𝐖"]
-#         - else_if: "@data-following-space-width > 1.1"
-#           then: [t: "⠬"]
-#         - else_if: "@data-following-space-width >= 0.25"      # thickspace
-#           then: [t: "W"]
+-
+  name: whitespace-omission
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingWhitespace) and (@data-previous-space-width >= 0.35 or @data-following-space-width >= 0.35)"
+  replace:
+   - with:
+      variables: [MatchingWhitespace: "true()"]
+      replace:
+      - test:
+        - if: "@class='MathML-unit' or BaseNode(.)[@class='MathML-unit'] or @data-previous-space-width >= 0.35"  # BANA 5.3(a)
+          then: [t: "W"]
+      - x: "."
+      - test:
+        - if: "@class='MathML-unit' or BaseNode(.)[@class='MathML-unit'] or @data-following-space-width >= 0.35" # BANA 5.3(a)
+          then: [t: "W"]
 
 -
    name: omission-intent
@@ -38,12 +30,12 @@
    - x: "@data-unicode"
 
 -
-   name: default
-   tag: msqrt
-   match: "."
-   replace: 
-   - t: "⠜"
-   - test:
+  name: default
+  tag: msqrt
+  match: "."
+  replace: 
+  - t: "b⠜"
+  - test:
       if: "NeedsToBeGrouped(*[1], 'French', true())"
       then:
       - t: "o"
@@ -51,13 +43,15 @@
       - t: "c"
       else:
       - x: "*[1]"
+  - t: "e"
 
 -
   name: default
   tag: mroot
   match: "."
   replace: 
-  - t: "⠈"
+  - t: "b"
+  - t: "L⠈"    # this ("L") is a hack -- it allows the optional group indicators to be added if needed before the mroot
   - test:
       if: "NeedsToBeGrouped(*[2], 'French', false())"
       then:
@@ -75,6 +69,7 @@
       - t: "c"
       else:
       - x: "*[1]"
+  - t: "e"
       
                
 # Fraction rules
@@ -83,23 +78,25 @@
    # The invisible plus should produce an empty string
 
 -
-   name: common-fraction-mixed-number
-   tag: mfrac
-   match:
+  name: common-fraction-mixed-number
+  tag: mfrac
+  match:
       - "preceding-sibling::*[1][self::m:mo][text()='\u2064'] and" # preceding element is invisible plus
       - "*[1][self::m:mn][not(contains(., '.'))]   and" 
       - "*[2][self::m:mn][not(contains(., '.'))]"
-   replace: 
-   - t: "#"    # signal end of previous numeric mode
-   - x: "*[1]"
-   - t: "N⠌"
-   - x: "*[2]"
+  replace: 
+  - t: "b"
+  - x: "*[1]"
+  - t: "N⠌"
+  - x: "*[2]"
+  - t: "e"
 
 -
   name: default
   tag: mfrac
   match: "."
   replace:
+  - t: "b"
   - test:
       if: "NeedsToBeGrouped(*[1], 'French', true())"
       then:
@@ -117,26 +114,13 @@
       - t: "c"
       else:
       - x: "*[2]"
-
-#
-# Matrix/Determinant rules
-# matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
-# we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
--
-  name: default-matrix
-  tag: mrow
-  variables:
-    - RowStart: "*[1]"
-    - RowEnd: "*[3]"
-  match:
-    - "*[2][self::m:mtable] and"
-    - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
-  replace: [x: "*[2]"]
+  - t: "e"
 -
   name: default-mtable
   tag: mtable
   match: "."
-  replace: [x: "*"]
+  replace:
+  - x: "*"
 -
   name: default
   tag: [mtr, mlabeledtr]
@@ -145,8 +129,6 @@
   - test: 
       if: "preceding-sibling::*"
       then: [t: "W⠠⠜W"]
-  - t: ""
-  - x: $RowStart
    
   #  - test:
   #     if: .[self::m:mlabeledtr]
@@ -157,15 +139,9 @@
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: {x: "*"}
-  - x: $RowEnd
-
-
--
-  name: empty
-  tag: mtd
-  match: ".=''"
-  replace:
-  - t: "⠐⠂"
+  - test:
+      if: "following-sibling::* "
+      then: [t: "W"]
 
 -
   name: default
@@ -173,13 +149,12 @@
   match: "."
   replace:
   - test:
-      if: "*"
-      then:
-      - test: 
-         if: "preceding-sibling::*"
-         then: [t: "W"]
-      - x: "*"
-      # else nothing to braille
+      if: "preceding-sibling::*"
+      then: [t: "W"]
+  - test:
+      if: "*[1][self::m:mtext and .=' ']"  # empty or non-breaking space (canonicalized to this)
+      then: [t: "⠐⠂"]
+      else: [x: "*"]
 
 -
    name: no-content
@@ -192,8 +167,6 @@
   tag: math
   match: "."
   variables:
-  - RowStart: "''"           # empty string -- it needs to be set
-  - RowEnd: "''"             # empty string -- it needs to be set
   - MatchingWhitespace: "false()"
   replace:
   - test:
@@ -208,34 +181,15 @@
     replace: [t: "W"] # not sure what is correct -- if in a fraction, probably something is better than nothing
 
 -
-  # From 14.5, 14.6, and 14.7 -- need to add block indicators around the argument unless it has parens
-  name: trig-functions
-  tag: mrow
-  match: "count(*)=3 and *[2]='\u2061' and
-          (IsInDefinition(BaseNode(*[1]), 'Braille', 'TrigFunctionNames') or BaseNode(*[1]) = 'lim') and not(IsBracketed(*[3], '(', ')'))"
-  replace:
-  - x: "*[1]"
-  - test:
-      # p51 -- use short form for (some) trig functions; always group unless short form and no grouping needed
-      if: "not($French_UseShortForm and IsInDefinition(BaseNode(*[1]), 'Braille', 'ShortForms')) or
-           NeedsToBeGrouped(*[3], 'French', true())"
-      then:
-      - t: "o"
-      - x: "*[3]"
-      - t: "c"
-      else:
-      - x: "*[3]"
-
-# -
-#    name: binomial-frac
-#    tag: mrow
-#    match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][@linethickness=0]"
-#    replace: 
-#    - x: "*[1]"
-#    - x: "*[2]/*[1]"
-#    - t: "⠰⠻"
-#    - x: "*[2]/*[2]"
-#    - x: "*[3]"
+   name: binomial-frac
+   tag: mrow
+   match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][@linethickness=0]"
+   replace: 
+   - t: "⠘⠦"   # large left parenthesis
+   - x: "*[2]/*[1]"
+   - t: "⠠⠜"
+   - x: "*[2]/*[2]"
+   - t: "⠘⠴"   # large right parenthesis
 
 # - name: binomial-table
 #   tag: mrow
@@ -263,18 +217,39 @@
   - x: "*[2]/*[last()-2]"
   - x: "*[2]/*[last()]"
 
+# -
+#   # From 14.5, 14.6, and 14.7 -- need to add block indicators around the argument unless it has parens
+#   name: trig-functions
+#   tag: mrow
+#   match: "count(*)=3 and *[2]='\u2061' and
+#           (IsInDefinition(BaseNode(*[1]), 'Braille', 'TrigFunctionNames') or BaseNode(*[1]) = 'lim') and not(IsBracketed(*[3], '(', ')'))"
+#   replace:
+#   - x: "*[1]"
+#   - test:
+#       # p51 -- use short form for (some) trig functions; always group unless short form and no grouping needed
+#       if: "not($French_UseShortForm and IsInDefinition(BaseNode(*[1]), 'Braille', 'ShortForms')) or
+#            NeedsToBeGrouped(*[3], 'French', true())"
+#       then:
+#       - t: "o"
+#       - x: "*[3]"
+#       - t: "c"
+#       else:
+#       - x: "*[3]"
+
 -
   # grouping rules -- need to add grouping symbols for some cases
+  # From 14.5, 14.6, and 14.7 -- need to add block indicators around the argument unless it has parens
   name: function-call
   tag: mrow
   # we include invisible times in the match because some AbbreviationsForGrouping are not function names
   match: "count(*)=3 and *[2][self::m:mo][.='\u2061'or .='\u2062'] and
           not(*[3][self::m:mrow][IsBracketed(., '(', ')') or IsBracketed(., '[', ']')]) and
-          *[1][self::m:mi][IsInDefinition(., 'Braille', 'TrigFunctionNames') or IsInDefinition(., 'Braille', 'AbbreviationsForGrouping')]"
+          BaseNode(*[1])[self::m:mi][not($French_UseShortForm and IsInDefinition(., 'Braille', 'ShortForms')) and
+                                     (IsInDefinition(., 'Braille', 'TrigFunctionNames') or IsInDefinition(., 'Braille', 'AbbreviationsForGrouping'))]"
   replace:
   - x: "*[1]"
   - t: "o"
-  - x: "DEBUG(*[3])"
+  - x: "*[3]"
   - t: "c"
   
 -
@@ -327,7 +302,14 @@
    replace:
    - test:
       if: "$French_UseShortForm and IsInDefinition(., 'Braille', 'ShortForms')"
-      then: [x: "BrailleChars(DefinitionValue(., 'Braille', 'ShortForms'), 'French')"]
+      then:
+      - with:
+          variables: [Replacement: "DefinitionValue(., 'Braille', 'ShortForms')"]
+          replace:
+          - test:
+              if: "translate(substring($Replacement, 1, 1), 'abcdefghijklmnopqrstuvwxyz', '')=''"
+              then: [x: "BrailleChars($Replacement, 'French')"]
+              else: [x: "$Replacement"]
       else: [x: "BrailleChars(., 'French')"]
 
 -
@@ -371,38 +353,6 @@
   - x: "*[1]"
 
 -
-  name: single-char-exceptions    # GTM 12
-  tag: [mover, munder]
-  match: "*[2][string-length(.) = 1 and translate(., '_¯→.·˙~^⌄⌒','')='']"
-  replace: 
-  - test:
-      if: "self::m:munder"
-      then: [t: "⠨"]
-  - test:
-    - if: "*[2][text()='_' or text()='¯']"
-      then: [t: "⠸⠒"]
-    - else_if: "*[2][text()='→']"
-      then: [t: "⠨⠒"]
-    - else_if: "*[2][text()='.' or text()='·' or text()='˙']"
-      then: [t: "⠂"]      # FIX: couldn't find an example
-    - else_if: "*[2][text()='~']"
-      then: [t: "⠐⠸⠒"]
-    - else_if: "*[2][text()='^']"
-      then: [t: "⠘⠒"]
-    - else_if: "*[2][text()='⌄']"
-      then: [t: "⠸⠘⠒"]
-      else: [t: "⠈⠒"]    # arc/⌒
-  # The examples in 12.1 never group the base, but this seems dubious. Needs to be confirmed
-  #  - test:
-  #        if: "NeedsToBeGrouped(*[1], 'French', true())"
-  #        then:
-  #        - t: "o"
-  #        - x: "*[1]"
-  #        - t: "c"
-  #        else: [x: "*[1]"]
-  - x: "*[1]"
-
--
   # In French braille, we drop the script indicators in both subscripts and superscripts for:
   #   msub: chemistry (e.g., H20)
   #   msup: primes
@@ -435,6 +385,7 @@
    tag: [msub, msup, munder, mover]
    match: "."
    replace:
+   - t: "b"
    - test:
          if: "(self::m:munder or self::m:mover) and NeedsToBeGrouped(*[1], 'French', true())"
          then:
@@ -451,13 +402,13 @@
         then: [t: "⠢⠢"]
         else: [t: "⠈⠈"]  # mover
    - test:
-      if: "DEBUG(NeedsToBeGrouped(*[2], 'French', false()))"
+      if: "NeedsToBeGrouped(*[2], 'French', false())"
       then:
       - t: "o"
       - x: "*[2]"
       - t: "c"
       else: [x: "*[2]"]
-   - t: "#"   # signal end script/numeric mode
+   - t: "e"
 
 
 
@@ -476,7 +427,7 @@
       then: [t: "⠢⠢"]
       else: [t: "⠢"]
   - test:
-      if: "DEBUG(NeedsToBeGrouped(*[2], 'French', false()))"
+      if: "NeedsToBeGrouped(*[2], 'French', false())"
       then:
       - t: "o"
       - x: "*[2]"
@@ -504,6 +455,7 @@
   tag: mmultiscripts
   match: "count(*)=4 and *[2][self::m:mprescripts] and @data-chem-formula"
   replace:
+  - t: "b"
   - x: "*[1]"
   - test:
       if: "not(*[3][self::m:none])"
@@ -527,7 +479,7 @@
           - x: "*[4]"
           - t: "c"
           else: [x: "*[4]"]
-
+  - t: "e"
 -
    name: default
    tag: mmultiscripts
@@ -538,6 +490,10 @@
    - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
    - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
    replace:
+   - test:
+        if: "$Prescripts"
+        then: [t: "o"]
+        else: [t: "b"]
    - test:
       if: "$Prescripts"
       then:
@@ -697,8 +653,10 @@
                   if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
                   then:
                   - x: "$Postscripts[position() > 8]"
-   - t: "#"   # signal end script/numeric mode
-                  
+   - test:
+        if: "$Prescripts"
+        then: [t: "c"]
+        else: [t: "e"]
 
 -
   # Note: @notation can contain more than one value

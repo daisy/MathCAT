@@ -2295,33 +2295,175 @@ static FRENCH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "s" => "⠆",     // typeface single char indicator
     "o" => "⠰",     // Opening group indicator
     "c" => "⠆",     // Closing group indicator
+    "b" => "⠰",     // Optional opening group indicator
+    "e" => "⠆",     // Optional closing group indicator
     "P" => "⠠⠄",     // Math modifier and code change indicator
-    "#" => "",      // signals end of script
 };
+
+/// Remove optional group indicators `b`/`e` when not needed; promote to mandatory `o`/`c` when they are.
+/// Optional pairs nest like parentheses. Resolve outer pairs before inner ones.
+/// A pair is kept when its content ends with a letter/number (`L`/`N` + braille) before `e`, and a
+/// letter/number follows the next `b` (or directly) after `e`.
+fn remove_optional_group_indicators(braille: &str) -> String {
+    let chars: Vec<char> = braille.chars().collect();
+    let mut stack: Vec<usize> = Vec::new();
+    let mut pairs: Vec<(usize, usize)> = Vec::new();
+
+    for (i, &ch) in chars.iter().enumerate() {
+        if ch == 'b' {
+            stack.push(i);
+        } else if ch == 'e' {
+            if let Some(b_idx) = stack.pop() {
+                pairs.push((b_idx, i));
+            }
+        }
+    }
+
+    let mut convert_to_oc = vec![false; chars.len()];
+    let mut remove = vec![false; chars.len()];
+
+    for (b_idx, e_idx) in pairs.into_iter().rev() {
+        let needed = letter_or_number_before_e(b_idx, e_idx, &chars, &remove, &convert_to_oc)
+            && letter_or_number_after_b(e_idx, &chars, &remove, &convert_to_oc);
+        if needed {
+            convert_to_oc[b_idx] = true;
+            convert_to_oc[e_idx] = true;
+        } else {
+            remove[b_idx] = true;
+            remove[e_idx] = true;
+        }
+    }
+
+    let mut result = String::with_capacity(braille.len());
+    for (i, &ch) in chars.iter().enumerate() {
+        if remove[i] {
+            continue;
+        }
+        if convert_to_oc[i] {
+            result.push(if ch == 'b' { 'o' } else { 'c' });
+        } else {
+            result.push(ch);
+        }
+    }
+    return result;
+}
+
+fn is_letter_or_number_start(chars: &[char], i: usize, remove: &[bool]) -> bool {
+    if i + 1 >= chars.len() || remove[i] {
+        return false;
+    }
+    if chars[i] != 'L' && chars[i] != 'N' {
+        return false;
+    }
+    return !remove[i + 1] && !is_optional_group_or_mode_marker(chars[i + 1]);
+}
+
+fn is_optional_group_or_mode_marker(ch: char) -> bool {
+    return matches!(ch, 'b' | 'e' | 'o' | 'c' | 'L' | 'N' | 'W' | 'P' | 'C' | '1' | '#');
+}
+
+fn letter_or_number_before_e(
+    b_idx: usize,
+    e_idx: usize,
+    chars: &[char],
+    remove: &[bool],
+    convert_to_oc: &[bool],
+) -> bool {
+    let mut i = e_idx;
+    while i > b_idx {
+        i -= 1;
+        if remove[i] {
+            continue;
+        }
+        if chars[i] == 'e' && !convert_to_oc[i] {
+            continue;
+        }
+        if chars[i] == 'e' && convert_to_oc[i] {
+            continue;
+        }
+        if chars[i] == 'L' || chars[i] == 'N' {
+            return true;
+        }
+        if i > b_idx {
+            let mut j = i;
+            loop {
+                if j <= b_idx {
+                    return false;
+                }
+                j -= 1;
+                if remove[j] {
+                    continue;
+                }
+                if chars[j] == 'e' && !convert_to_oc[j] {
+                    continue;
+                }
+                if chars[j] == 'e' && convert_to_oc[j] {
+                    continue;
+                }
+                return chars[j] == 'L' || chars[j] == 'N';
+            }
+        }
+        return false;
+    }
+    return false;
+}
+
+fn letter_or_number_after_b(
+    e_idx: usize,
+    chars: &[char],
+    remove: &[bool],
+    convert_to_oc: &[bool],
+) -> bool {
+    let mut i = e_idx + 1;
+    while i < chars.len() {
+        if remove[i] {
+            i += 1;
+            continue;
+        }
+        if chars[i] == 'e' && convert_to_oc[i] {
+            i += 1;
+            continue;
+        }
+        if chars[i] == 'b' {
+            return is_letter_or_number_start(chars, i + 1, remove);
+        }
+        return is_letter_or_number_start(chars, i, remove);
+    }
+    return false;
+}
 
 fn french_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     // FIX: need to implement this -- this is just a copy of the Vietnam code
-    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([1SB𝔹TILDGC𝐶NWsc#oc])").unwrap());
+    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([1SB𝔹TILDGC𝐶NWscocbe])").unwrap());
     debug!("french_cleanup: start={}", raw_braille);
     // let result = typeface_to_word_mode(&raw_braille);
     // let result = capitals_to_word_mode(&result);
 
+    let result = remove_optional_group_indicators(&raw_braille);
     // check to see if math modifier and code change indicator are needed at start (p8)
-    let result = if let Some(stripped) = raw_braille.strip_prefix("P") {
-        let prefix = if raw_braille.contains("o") { "⠠⠄" } else { "⠠" };
+    let result = if let Some(stripped) = result.strip_prefix('P') {
+        let prefix = if result.contains('o') { "⠠⠄" } else { "⠠" };
         let mut new_string = String::with_capacity(stripped.len() + prefix.len());
         new_string.push_str(prefix);
         new_string.push_str(stripped);
         new_string
     } else {
-        raw_braille
+        result
     };
 
     // This reuses the code just for getting rid of unnecessary "L"s and "N"s
     let result = remove_unneeded_mode_changes(&result, UEB_Mode::Grade1, UEB_Duration::Passage);
     debug!("   after removing mode changes={}", &result);
 
-    let result: Cow<'_, str> = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
+    // remove any grouping pair at the start or end -- we ensure they are a pair but making sure there is no "o" inside the string
+    let result = if result.starts_with('o') && result.ends_with('c') && !result[1..result.len() - 1].contains('o') {
+        // Remove the first and last characters by slicing
+        &result[1..result.len() - 1]
+    } else {
+        &result
+    };
+
+    let result: Cow<'_, str> = REPLACE_INDICATORS.replace_all(result, |cap: &Captures| {
         match FRENCH_INDICATOR_REPLACEMENTS.get(&cap[0]) {
                 None => {error!("REPLACE_INDICATORS and FRENCH_INDICATOR_REPLACEMENTS are not in sync: missing '{}'", &cap[0]); ""},
                 Some(&ch) => ch,
@@ -2376,7 +2518,7 @@ fn ASCIIMath_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String)
 
 /************** Braille xpath functionality ***************/
 use crate::canonicalize::{as_element, as_text, name};
-use crate::xpath_functions::{is_leaf, validate_one_node, IsBracketed};
+use crate::xpath_functions::{IsBracketed, is_leaf, validate_one_node};
 use std::result::Result as StdResult;
 use sxd_document::dom::ParentOfChild;
 use sxd_xpath::function::Error as XPathError;
@@ -3027,21 +3169,19 @@ impl NeedsToBeGrouped {
         // French rules are from p26: Blocks (also mentioned elsewhere in the spec)
         // if we have a "- xxx", we treat the MathML as if it were just "xxx".
         //   apparently, based on function_partial_derivative_14_1_04, the same goes for '∂' -- generalizing to all prefix ops...
+        // Grouping is also needed if what follows (w/o regard to structure) is a digit or letter.
         // use crate::xpath_functions::IsInDefinition;
-        let mut children = mathml.children();
+        let children = mathml.children();
         let mathml = if name(mathml) == "mrow" && children.len() == 2 &&
                                      name(as_element(children[0])) == "mo" {    // assuming it is a prefix op since it starts an mrow
-            let operand_child = as_element(children[1]);
-            children = operand_child.children();
-            operand_child
+            as_element(children[1])
         } else {
             mathml
         };
-        let node_name = name(mathml);
-        // let parent = get_parent(mathml);   // there is always a "math" node because we never ask if its children need grouping
-        // let parent_name = name(parent);
 
         debug!("needs_grouping_for_french: mathml (sans '-') = {}", mml_to_string(mathml));
+        let node_name = name(mathml);
+        let children = mathml.children();
         match node_name {
             "mn" | "mi" | "mtext" => {
                 return as_text(mathml).contains(char::is_whitespace);
@@ -3375,5 +3515,19 @@ mod tests {
         let braille = get_braille("")?;
         assert_eq!("⠭⠔⠝", braille, "Grade1");
         return Ok( () );
+    }
+
+    #[test]
+    fn french_remove_optional_group_indicators() {
+        assert_eq!(remove_optional_group_indicators("bLxe+"), "Lx+");
+        assert_eq!(remove_optional_group_indicators("bLxeLy"), "oLxcLy");
+        assert_eq!(remove_optional_group_indicators("bLxbe+NeLz"), "oLx+NcLz");
+        // inner e is followed by outer e, then L — resolve outer pair first
+        assert_eq!(remove_optional_group_indicators("bbLx+NeeLy"), "ooLx+NccLy");
+        // adjacent pairs: second is removed first, then first sees L after it
+        assert_eq!(
+            remove_optional_group_indicators("bL⠈N⠹⠜L⠁ebL⠈N⠩⠜L⠃e"),
+            "oL⠈N⠹⠜L⠁cL⠈N⠩⠜L⠃"
+        );
     }
 }
