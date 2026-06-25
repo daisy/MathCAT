@@ -313,6 +313,15 @@
   - x: "text()"
 
 -
+  name: decimal-comma
+  tag: mn
+  match: "contains(., ',') and translate(., '0123456789,', '')=''"
+  replace:
+  - x: "BrailleChars(substring-before(., ','), 'Russian')"
+  - t: "⠂"
+  - x: "BrailleChars(translate(substring-after(., ','), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
   name: default
   tag: mn
   match: "."

@@ -73,6 +73,22 @@ fn source_simple_fractions_scripts_roots() -> Result<()> {
 }
 
 #[test]
+fn source_gost_numbers_fractions_and_sets() -> Result<()> {
+    let expr = r#"<math><mn>0,56</mn></math>"#;
+    test_braille("Russian", expr, "⠼⠚⠂⠑⠋")?;
+
+    let expr = r#"<math><mrow><mn>2</mn><mo>/</mo><mn>3</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠠⠌⠼⠉")?;
+
+    let expr = r#"<math><mrow><mo>[</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>]</mo><mo>\</mo><mo>{</mo><mn>4</mn><mo>}</mo><mo>=</mo><mo>[</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠷⠼⠁⠠⠂⠼⠙⠾⠀⠰⠤⠪⠼⠙⠕⠀⠶⠷⠼⠁⠠⠂⠼⠙⠜")?;
+
+    let expr = r#"<math><mrow><mn>36,6</mn><mo>&#x2103;</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠉⠋⠂⠋⠨⠴⠨⠉")?;
+    return Ok(());
+}
+
+#[test]
 fn latin_alphabet_indicators() -> Result<()> {
     let expr = r#"<math><mrow><mi>x</mi><mo>+</mo><mi>A</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>B</mi><mo>=</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>A</mi><mo>+</mo><mi>B</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠠⠭⠀⠖⠨⠁⠀⠖⠠⠽⠀⠖⠨⠃⠀⠶⠠⠭⠀⠖⠽⠀⠖⠨⠁⠀⠖⠃")?;
@@ -135,7 +151,7 @@ fn source_functions_logs_derivatives() -> Result<()> {
 #[test]
 fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mo>&#x2220;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>=</mo><mn>15</mn><mo>&#xB0;</mo><mn>30</mn><mo>&#x2032;</mo><mn>12</mn><mo>&#x2033;</mo></mrow></math>"#;
-    test_braille("Russian", expr, "⠸⠪⠨⠁⠃⠉⠀⠶⠼⠁⠑⠨⠴⠼⠉⠚⠔⠼⠁⠃⠔⠔")?;
+    test_braille("Russian", expr, "⠸⠪⠨⠁⠃⠉⠀⠶⠼⠁⠑⠨⠴⠼⠉⠚⠨⠔⠼⠁⠃⠨⠔⠔")?;
 
     let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x2225;</mo><mi>C</mi><mi>D</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠃⠸⠸⠨⠉⠙")?;
@@ -148,5 +164,18 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 
     let expr = r#"<math><mrow><msub><mi>H</mi><mn>2</mn></msub><mi>C</mi><mo>=</mo><mi>C</mi><msub><mi>H</mi><mn>2</mn></msub></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠓⠡⠆⠉⠦⠉⠓⠡⠆")?;
+    return Ok(());
+}
+
+#[test]
+fn source_gost_logic_arrows() -> Result<()> {
+    let expr = r#"<math><mrow><mi>A</mi><mo>&#x21D2;</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠶⠜⠃")?;
+
+    let expr = r#"<math><mrow><mi>B</mi><mo>&#x21D0;</mo><mi>A</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠃⠀⠦⠶⠁")?;
+
+    let expr = r#"<math><mrow><mi>C</mi><mo>&#x21D4;</mo><mi>D</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠉⠀⠦⠶⠜⠙")?;
     return Ok(());
 }
