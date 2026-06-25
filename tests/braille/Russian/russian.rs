@@ -1270,8 +1270,42 @@ fn source_functions_logs_derivatives() -> Result<()> {
     let expr = r#"<math><mrow><msub><mi>log</mi><mi>x</mi></msub><mi>y</mi><mo>&#x22C5;</mo><msub><mi>log</mi><mi>y</mi></msub><mi>x</mi><mo>=</mo><mn>1</mn></mrow></math>"#;
     test_braille("Russian", expr, "⠫⠇⠡⠠⠭⠱⠽⠄⠫⠇⠡⠠⠽⠱⠭⠀⠶⠼⠁")?;
 
+    let expr = r#"<math><mrow><mi>sh</mi><mi>x</mi><mo>+</mo><mi>ch</mi><mi>x</mi><mo>=</mo><mi>sinh</mi><mi>x</mi><mo>+</mo><mi>cosh</mi><mi>x</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠎⠓⠠⠭⠀⠖⠫⠉⠓⠠⠭⠀⠶⠫⠎⠓⠠⠭⠀⠖⠫⠉⠓⠠⠭")?;
+
+    let expr = r#"<math><mrow><mi>th</mi><mi>x</mi><mo>&#x22C5;</mo><mi>cth</mi><mi>x</mi><mo>=</mo><mn>1</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠞⠓⠠⠭⠄⠫⠉⠞⠓⠠⠭⠀⠶⠼⠁")?;
+
+    let expr = r#"<math><mrow><mi>arg</mi><mi>z</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>sgn</mi><mi>x</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠁⠗⠛⠠⠵⠀⠶⠼⠚⠠⠂⠫⠎⠛⠝⠠⠭")?;
+
+    let expr = r#"<math><mrow><mi>det</mi><mi>A</mi><mo>+</mo><mi>rank</mi><mi>A</mi><mo>=</mo><mi>rg</mi><mi>A</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠙⠑⠞⠨⠁⠀⠖⠫⠗⠁⠝⠅⠨⠁⠀⠶⠫⠗⠛⠨⠁")?;
+
+    let expr = r#"<math><mrow><mi>Re</mi><mi>z</mi><mo>+</mo><mi>Im</mi><mi>z</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠗⠑⠠⠵⠀⠖⠫⠊⠍⠠⠵")?;
+
+    let expr = r#"<math><mrow><mi>grad</mi><mi>&#x3C6;</mi><mo>+</mo><mi>rot</mi><mi>F</mi><mo>+</mo><mi>div</mi><mi>F</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠛⠗⠁⠙⠰⠋⠀⠖⠫⠗⠕⠞⠨⠋⠀⠖⠫⠙⠊⠧⠨⠋")?;
+
+    let expr = r#"<math><mrow><mi>gcd</mi><mrow><mo>(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>)</mo></mrow><mo>=</mo><mi>lcm</mi><mrow><mo>(</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo>)</mo></mrow></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠛⠉⠙⠣⠠⠁⠠⠂⠃⠜⠀⠶⠫⠇⠉⠍⠣⠠⠉⠠⠂⠙⠜")?;
+
     let expr = r#"<math><mrow><msup><mi>y</mi><mo>&#x2032;</mo></msup><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>"#;
     test_braille("Russian", expr, "⠠⠽⠔⠣⠭⠜⠀⠶⠋⠣⠭⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn source_large_operator_limits() -> Result<()> {
+    let expr = r#"<math><mrow><msubsup><mo>&#x222B;</mo><mn>1</mn><mn>4</mn></msubsup><msup><mi>x</mi><mn>2</mn></msup><mi>d</mi><mi>x</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠮⠡⠂⠌⠲⠠⠭⠌⠆⠙⠭")?;
+
+    let expr = r#"<math><mrow><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>a</mi><mi>i</mi></msub></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠎⠨⠡⠠⠊⠀⠶⠼⠁⠱⠨⠌⠠⠝⠱⠁⠡⠊⠱")?;
+
+    let expr = r#"<math><mrow><msubsup><mo>&#x220F;</mo><mn>0</mn><mi>n</mi></msubsup><msub><mi>b</mi><mi>k</mi></msub></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠏⠡⠴⠌⠠⠝⠱⠃⠡⠅⠱")?;
     return Ok(());
 }
 
