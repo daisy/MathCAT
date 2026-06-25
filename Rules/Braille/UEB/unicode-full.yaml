@@ -1,24 +1,6 @@
 ---
-
- - " ": [t: "W"]                # 0x2000
- - " ": [t: "W"]                # 0x2001
- - " ": [t: "W"]                # 0x2002
- - " ": [t: "W"]                # 0x2003
- - " ": [t: "W"]                # 0x2004
- - " ": [t: "W"]                # 0x2005
- - " ": [t: "W"]                # 0x2006
- - " ": [t: "W"]                # 0x2007
- - " ": [t: "W"]                # 0x2008
- - " ": [t: "W"]                # 0x2009
- - " ": [t: "W"]                # 0x200a
- - "​": [t: "W"]                # 0x200b
- - " ": [t: "W"]                # 0x2028
- - " ": [t: "W"]                # 0x2029
- - " ": [t: "W"]                # 0x202f
- - " ": [t: "W"]                # 0x205f
- - "﻿": [t: "W"]                # 0xfeff
-
- 
+ - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
+ - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
  - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)
  - "ⅆ": [tc: "⠙"]                # 0x2146
  - "ⅇ": [tc: "⠑"]                # 0x2147
@@ -44,150 +26,9 @@
  - "⅜": [tc: "#N⠉N⠌N⠓"]          # 0x215C (Vulgar Fraction Three Eighths)
  - "⅝": [tc: "#N⠑N⠌N⠓"]          # 0x215D (Vulgar Fraction Five Eighths)
  - "⅞": [tc: "#N⠛N⠌N⠓"]          # 0x215E (Vulgar Fraction Seven Eighths)
- - "↉": [tc: "#N⠚N⠌N⠉"]          # 0x2189 (Vulgar Fraction Zero Thirds)
+ - "↉": [tc: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
 
- # --- UEB_Additions1 (ordered by Unicode; Å/–/≣ remain in unicode.yaml) ---
- - "`": [t: "⠨⠡"]               # 0x0060
- - "¡": [t: "⠘⠰⠖"]              # 0x00A1
- - "§": [t: "⠘⠎"]               # 0x00A7
- - "­": [t: "⠤"]                # 0x00AD (soft hyphen)
- - "®": [t: "⠘⠗"]               # 0x00AE
- - "¯": [t: "⠱"]                # 0x00AF
- - "²":                           # 0x00B2
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠼⠃"]
-        else: [t: "1⠔⠼⠃"]
- - "³":                           # 0x00B3
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠼⠉"]
-        else: [t: "1⠔⠼⠉"]
- - "¶": [t: "⠘⠏"]               # 0x00B6
- - "¹":                           # 0x00B9
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠼⠁"]
-        else: [t: "1⠔⠼⠁"]
- - "¿": [t: "⠘⠰⠦"]              # 0x00BF
- - "À": [t: "CA⠘⠡L⠁"]             # 0x00C0
- - "Á": [t: "CA⠘⠌L⠁"]             # 0x00C1
- - "Â": [t: "CA⠘⠩L⠁"]             # 0x00C2
- - "Ã": [t: "CA⠘⠻L⠁"]             # 0x00C3
- - "Ä": [t: "CA⠘⠒L⠁"]             # 0x00C4
- - "Æ": [t: "C⠁⠠⠘⠖⠑"]          # 0x00C6
- - "Ç": [t: "CA⠘⠯L⠉"]             # 0x00C7
- - "È": [t: "CA⠘⠡L⠑"]             # 0x00C8
- - "É": [t: "CA⠘⠌L⠑"]             # 0x00C9
- - "Ê": [t: "CA⠘⠩L⠑"]             # 0x00CA
- - "Ë": [t: "CA⠘⠒L⠑"]             # 0x00CB
- - "Ì": [t: "CA⠘⠡L⠊"]             # 0x00CC
- - "Í": [t: "CA⠘⠌L⠊"]             # 0x00CD
- - "Î": [t: "CA⠘⠩L⠊"]             # 0x00CE
- - "Ï": [t: "CA⠘⠒L⠊"]             # 0x00CF
- - "Ð": [t: "C⠼⠫"]              # 0x00D0
- - "Ñ": [t: "CA⠘⠻L⠝"]             # 0x00D1
- - "Ò": [t: "CA⠘⠡L⠕"]             # 0x00D2
- - "Ó": [t: "CA⠘⠌L⠕"]             # 0x00D3
- - "Ô": [t: "CA⠘⠩L⠕"]             # 0x00D4
- - "Õ": [t: "CA⠘⠻L⠕"]             # 0x00D5
- - "Ö": [t: "CA⠘⠒L⠕"]             # 0x00D6
- - "Ø": [t: "CA⠈⠡L⠕"]             # 0x00D8
- - "Ù": [t: "CA⠘⠡L⠥"]             # 0x00D9
- - "Ú": [t: "CA⠘⠌L⠥"]             # 0x00DA
- - "Û": [t: "CA⠘⠩L⠥"]             # 0x00DB
- - "Ü": [t: "CA⠘⠒L⠥"]             # 0x00DC
- - "Ý": [t: "CA⠘⠌L⠽"]             # 0x00DD
- - "Þ": [t: "C⠼⠮"]              # 0x00DE
- - "ß": [t: "⠨⠮"]               # 0x00DF
- - "à": [t: "A⠘⠡L⠁"]              # 0x00E0
- - "á": [t: "A⠘⠌L⠁"]              # 0x00E1
- - "â": [t: "A⠘⠩L⠁"]              # 0x00E2
- - "ã": [t: "A⠘⠻L⠁"]              # 0x00E3
- - "ä": [t: "A⠘⠒L⠁"]              # 0x00E4
- - "å": [t: "A⠘⠫L⠁"]              # 0x00E5
- - "æ": [t: "⠁⠘⠖⠑"]             # 0x00E6
- - "ç": [t: "A⠘⠯L⠉"]              # 0x00E7
- - "è": [t: "A⠘⠡L⠑"]              # 0x00E8
- - "é": [t: "A⠘⠌L⠑"]              # 0x00E9
- - "ê": [t: "A⠘⠩L⠑"]              # 0x00EA
- - "ë": [t: "A⠘⠒L⠑"]              # 0x00EB
- - "ì": [t: "A⠘⠡L⠊"]              # 0x00EC
- - "í": [t: "A⠘⠌L⠊"]              # 0x00ED
- - "î": [t: "A⠘⠩L⠊"]              # 0x00EE
- - "ï": [t: "A⠘⠒L⠊"]              # 0x00EF
- - "ð": [t: "⠼⠫"]               # 0x00F0
- - "ñ": [t: "A⠘⠻L⠝"]              # 0x00F1
- - "ò": [t: "A⠘⠡L⠕"]              # 0x00F2
- - "ó": [t: "A⠘⠌L⠕"]              # 0x00F3
- - "ô": [t: "A⠘⠩L⠕"]              # 0x00F4
- - "õ": [t: "A⠘⠻L⠕"]              # 0x00F5
- - "ö": [t: "A⠘⠒L⠕"]              # 0x00F6
- - "ø": [t: "A⠈⠡L⠕"]              # 0x00F8
- - "ù": [t: "A⠘⠡L⠥"]              # 0x00F9
- - "ú": [t: "A⠘⠌L⠥"]              # 0x00FA
- - "û": [t: "A⠘⠩L⠥"]              # 0x00FB
- - "ü": [t: "A⠘⠒L⠥"]              # 0x00FC
- - "ý": [t: "A⠘⠌L⠽"]              # 0x00FD
- - "þ": [t: "⠼⠮"]               # 0x00FE
- - "ÿ": [t: "A⠘⠒L⠽"]              # 0x00FF
- - "Ÿ": [t: "CA⠘⠒L⠽"]             # 0x0178
- - "ʹ": [t: "⠶"]                # 0x02B9
- - "ʺ": [t: "⠶⠶"]               # 0x02BA
- - "˜": [t: "⠈⠔"]               # 0x02DC
- - "ẞ": [t: "C⠨⠮"]              # 0x1E9E
- - "‑": [t: "⠤"]                # 0x2011 (non-breaking hyphen)
- - "‒": [t: "⠤"]                # 0x2012 (figure dash)
- - "—": [t: "P⠠⠤"]              # 0x2014 (em dash)
- - "•": [t: "⠸⠲"]              # 0x2022
- - "․": [t: "⠲"]                # 0x2024
- - "‥": [t: "⠲⠲"]               # 0x2025
- - "‼": [t: "⠖⠖"]               # 0x203C
- - "‾": [t: "⠱"]                # 0x203E
- - "⁇": [t: "⠦⠦"]               # 0x2047
- - "⁈": [t: "⠦⠖"]               # 0x2048
- - "⁉": [t: "⠖⠦"]               # 0x2049
- - "⁗": [t: "⠶⠶⠶⠶"]             # 0x2057
- - "⁰":                           # 0x2070
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠼⠚"]
-        else: [t: "1⠔⠼⠚"]
- - "ⁱ":                           # 0x2071
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠊"]
-        else: [t: "1⠔⠊"]
- - "⁴-⁹":                         # 0x2074 - 0x2079
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠼"]
-        else: [t: "1⠔⠼"]
-    - spell: "translate('.', '⁴⁵⁶⁷⁸⁹', '⠙⠑⠋⠛⠓⠊')"
- - "⁺-⁾":                         # 0x207A - 0x207E
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠐"]
-        else: [t: "1⠔⠐"]
-    - spell: "translate('.', '⁺⁻⁼⁽⁾', '⠖⠤⠶⠣⠜')"
- - "ⁿ":                           # 0x207F
-    - test:
-        if: "(parent::m:msup or parent::m:msubsup) and not(following-sibling::*)"
-        then: [t: "⠝"]
-        else: [t: "1⠔⠝"]
- - "₀-₉":                         # 0x2080 - 0x2089
-    - test:
-        if: "(parent::m:msub or parent::m:msubsup) and count(preceding-sibling::*) = 1"
-        then: [t: "⠼"]
-        else: [t: "1⠢⠼"]
-    - spell: "translate('.', '₀₁₂₃₄₅₆₇₈₉', '⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊')"
- - "₊-₎":                         # 0x208A - 0x208E
-    - test:
-        if: "(parent::m:msub or parent::m:msubsup) and count(preceding-sibling::*) = 1"
-        then: [t: "⠐"]
-        else: [t: "1⠢⠐"]
-    - spell: "translate('.', '₊₋₌₍₎', '⠖⠤⠶⠣⠜')"
- - "™": [t: "⠘⠞"]               # 0x2122
+
 
  - "ℊ": [tc: "TL⠛⠁"]             # 0x210a (Script Small G)
  - "ℋ": [tc: "TCL⠓⠁"]            # 0x210b (Script Capital H)
@@ -213,6 +54,16 @@
  - "ℚ": [tc: "𝔹CL⠟"]             # 0x211a 
  - "ℝ": [tc: "𝔹CL⠗"]             # 0x211d 
  - "ℤ": [tc: "𝔹CL⠵"]             # 0x2124 
+
+
+ - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
+    - tc: "B"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+
+
+ - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
+    - tc: "BGL"
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
 
  - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
@@ -248,7 +99,7 @@
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
     - tc: "TsC"
-    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyz')"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyza')"
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
     - tc: "Ts"
