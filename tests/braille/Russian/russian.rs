@@ -205,6 +205,15 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠣⠠⠁⠀⠃⠨⠳⠉⠀⠙⠜")?;
 
+    let expr = r#"<math><mrow><mo>{</mo><mtable><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>+</mo><mn>3</mn><mi>z</mi><mo>=</mo><mn>2</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi><mo>+</mo><mn>2</mn><mi>z</mi><mo>=</mo><mn>5</mn></mrow></mtd></mtr></mtable></mrow></math>"#;
+    test_braille("Russian", expr, "⠏⠀⠠⠭⠀⠖⠽⠀⠖⠵⠀⠶⠼⠁⠨⠳⠇⠀⠠⠭⠀⠖⠼⠃⠠⠽⠀⠖⠼⠉⠠⠵⠀⠶⠼⠃⠨⠳⠧⠀⠠⠭⠀⠖⠼⠉⠠⠽⠀⠖⠼⠃⠠⠵⠀⠶⠼⠑")?;
+
+    let expr = r#"<math><mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mrow><mo>{</mo><mtable><mtr><mtd><mn>0</mn></mtd><mtd><mrow><mi>x</mi><mo>&lt;</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mi>x</mi></mtd><mtd><mrow><mi>x</mi><mo>&#x2265;</mo><mn>0</mn></mrow></mtd></mtr></mtable></mrow></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠋⠣⠭⠜⠀⠶⠏⠀⠼⠚⠀⠠⠭⠀⠪⠀⠼⠚⠨⠳⠧⠀⠠⠭⠀⠭⠀⠕⠶⠼⠚")?;
+
+    let expr = r#"<math><mrow><mo>|</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo>|</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠁⠀⠃⠨⠳⠉⠀⠙⠸")?;
+
     let expr = r#"<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>"#;
     test_braille("Russian", expr, "⠨⠓⠡⠆⠕")?;
 
