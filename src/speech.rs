@@ -2823,18 +2823,21 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
             unicode = rules.unicode_full.borrow();
             replacements = unicode.get( &ch_as_u32 );
             if replacements.is_none() {
-              self.translate_count = 0;     // not in loop
-              // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
-              if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
-                return Ok(self.escape_string_for_safety(String::from(ch)));
-              } else { // braille -- must turn into braille dots
-                // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
-                let ch_as_int = ch as u32;
-                let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
-                return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                self.translate_count = 0;     // not in loop
+                // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
+                if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
+                  return Ok(self.escape_string_for_safety(String::from(ch)));
+                } else {
+                  let ch_as_int = ch as u32;
+                  if '\u{2800}' <= ch && ch <= '\u{28ff}' {   // braille -- leave as braille
+                      return Ok(self.escape_string_for_safety(String::from(ch)));
+                  } else {                                    // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
+                      let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
+                      return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                  }
+                }
               }
-            }
-        };
+          };
 
         // map across all the parts of the replacement, collect them up into a Vec, and then concat them together
         let result = replacements.unwrap()
