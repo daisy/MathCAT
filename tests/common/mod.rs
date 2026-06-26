@@ -132,6 +132,10 @@ fn language_for_braille_code(code: &str) -> &'static str {
     match code {
         "Vietnam" => "vi",
         "CMU" => "es",
+        "Swedish" => "sv",
+        "Finnish" => "fi",
+        "French" => "fr",
+        "Russian" => "ru",
         _ => "en",
     }
 }
