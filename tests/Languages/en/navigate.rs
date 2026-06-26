@@ -18,6 +18,7 @@ mod tests {
 
     #[allow(unused_imports)]
     #[test]
+    //Do not copy the Russian tests into language-specific tests
     fn zoom_speech_ru() -> Result<()> {
         let mathml_str = "<math id='math'><mfrac id='mfrac'>
                 <msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup>
@@ -335,6 +336,7 @@ mod tests {
     }
 
     #[test]
+    //Do not copy the Russian tests into language-specific tests
     fn move_char_speech_ru() -> Result<()> {
         let mathml_str = "<math display='block' id='id-0'>
                 <mrow id='id-1'>
@@ -1011,6 +1013,7 @@ mod tests {
     }
 
     #[test]
+    //Do not copy the Russian tests into language-specific tests
     fn describe_nested_fraction_ru() -> Result<()> {
         let mathml_str = "<math id='math'>
             <mfrac id='frac'>
