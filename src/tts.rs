@@ -174,7 +174,7 @@ impl Pronounce {
             }
         }
         if text.is_empty() {
-            bail!("'text' key/value is required for 'pronounce' -- it is used is the speech engine is unknown.")
+            bail!("'text' key/value is required for 'pronounce' -- it can not be an empty string.")
         }
         return Ok( Pronounce{
             text: text.to_string(),
