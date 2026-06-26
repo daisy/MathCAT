@@ -1,8 +1,9 @@
 use libmathcat::navigate::{do_navigate_command_string, NAVIGATION_STATE};
 use libmathcat::{
-    abs_rules_dir_path, errors_to_string, set_mathml,
+    abs_rules_dir_path, errors_to_string, init_panic_handler, report_any_panic, set_mathml,
     set_preference, set_rules_dir,
 };
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use sxd_document::dom::Element;
 
 #[cfg(test)]
@@ -10,24 +11,43 @@ use sxd_document::dom::Element;
 /// Returns the speech from the command
 pub fn test_command(command: &'static str, mathml: Element, result_id: &str) -> String {
     // debug!("\nCommand: {}", command);
-    NAVIGATION_STATE.with(|nav_stack| {
-        let (start_id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
-        match do_navigate_command_string(mathml, command) {
-            Err(e) => {
-                panic!("\nStarting at '{}', '{} failed.\n{}",
-                       start_id, command, &errors_to_string(&e))
-            },
-            Ok(nav_speech) => {
-                let nav_speech = nav_speech.trim_end_matches(&[' ', ',', ';']);
-                // debug!("Full speech: {}", nav_speech);
-                if !result_id.is_empty() {
-                    let (id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
-                    assert_eq!(result_id, id, "\nStarting at '{}', '{} failed.", start_id, command);
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        NAVIGATION_STATE.with(|nav_stack| {
+            let (start_id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+            match do_navigate_command_string(mathml, command) {
+                Err(e) => {
+                    panic!(
+                        "\nStarting at '{}', '{} failed.\n{}",
+                        start_id,
+                        command,
+                        errors_to_string(&e)
+                    )
                 }
-                return nav_speech.to_string();
+                Ok(nav_speech) => {
+                    let nav_speech = nav_speech.trim_end_matches(&[' ', ',', ';']);
+                    // debug!("Full speech: {}", nav_speech);
+                    if !result_id.is_empty() {
+                        let (id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
+                        assert_eq!(
+                            result_id, id,
+                            "\nStarting at '{}', '{} failed.",
+                            start_id, command
+                        );
+                    }
+                    Ok(nav_speech.to_string())
+                }
             }
-        };
-    })
+        })
+    }));
+    match report_any_panic(result) {
+        Ok(nav_speech) => nav_speech,
+        Err(e) => {
+            let msg = e.to_string();
+            println!("{}", msg);
+            panic!("{}", msg);
+        }
+    }
 }
 
 pub fn init_default_prefs(mathml: &str, nav_mode_default: &str) {
