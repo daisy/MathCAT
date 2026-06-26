@@ -1918,8 +1918,10 @@ impl UnicodeDef {
 
             for ch in first..last+1 {
                 let ch_as_str = char::from_u32(ch).unwrap().to_string();
-                unicode_table.insert(ch, ReplacementArray::build(&substitute_ch(replacements, &ch_as_str))
-                                        .with_context(|| format!("In definition of char: '{def_range}'"))?.replacements);
+                if unicode_table.insert(ch, ReplacementArray::build(&substitute_ch(replacements, &ch_as_str))
+                                        .with_context(|| format!("In definition of char: '{def_range}'"))?.replacements).is_some() {
+                    error!("*** Character '{}' (0x{:X}) is repeated", char::from_u32(ch).unwrap(), ch);
+                }
             };
 
             return Ok(None)
@@ -2166,7 +2168,7 @@ impl<'c, 's:'c, 'm:'c> fmt::Display for SpeechRulesWithContext<'c, 's,'m> {
 thread_local!{
     /// SPEECH_UNICODE_SHORT is shared among several rules, so "RC" is used
     static SPEECH_UNICODE_SHORT: UnicodeTable =
-        Rc::new( RefCell::new( HashMap::with_capacity(500) ) );
+        Rc::new( RefCell::new( HashMap::with_capacity(700) ) );
         
     /// SPEECH_UNICODE_FULL is shared among several rules, so "RC" is used
     static SPEECH_UNICODE_FULL: UnicodeTable =
@@ -2178,7 +2180,7 @@ thread_local!{
         
     /// BRAILLE_UNICODE_FULL is shared among several rules, so "RC" is used
     static BRAILLE_UNICODE_FULL: UnicodeTable =
-        Rc::new( RefCell::new( HashMap::with_capacity(5000) ) );
+        Rc::new( RefCell::new( HashMap::with_capacity(4000) ) );
 
     /// SPEECH_DEFINITION_FILES_AND_TIMES is shared among several rules, so "RC" is used
     static SPEECH_DEFINITION_FILES_AND_TIMES: FilesAndTimesShared =
@@ -2818,6 +2820,15 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
                 info!("*** Loading full unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
                 rules.unicode_full.borrow_mut().clear();
                 rules.unicode_full_files.borrow_mut().set_files_and_times(rules.read_unicode(None, false)?);
+                // when debugging, run a check across the short and full tables to ensure no characters are repeated
+                if cfg!(debug_assertions) {
+                    let unicode_full = rules.unicode_full.borrow();
+                    for ch in unicode.keys() {
+                        if unicode_full.get(ch).is_some() {
+                            error!("*** Character '{}' (0x{:X}) is repeated in both short and full unicode tables", char::from_u32(*ch).unwrap(), *ch as u32);
+                        }
+                    }
+                }
                 info!("# Unicode defs = {}/{}", rules.unicode_short.borrow().len(), rules.unicode_full.borrow().len());
             }
             unicode = rules.unicode_full.borrow();
