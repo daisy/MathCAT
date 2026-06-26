@@ -61,8 +61,8 @@
    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝔄-𝔝": # 0x1d504 - 0x1d51d
-   - tc: "DC"
-   - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - tc: "D"
+   - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGJKLMNOPQSTUVWXY')"
 
  - "ℌ": [t: "DCL⠓"]             # 0x210C (Fraktur Capital H)
  - "ℑ": [t: "DCL⠊"]             # 0x2111 (Fraktur Capital I)
@@ -73,7 +73,7 @@
    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝔸-𝕐": # 0x1d538 - 0x1d550 (blackboard bold capitals, excluding special number sets)
-   - tc: "DC"
+   - tc: "D"
    - spell: "translate('.', '𝔸𝔹𝔻𝔼𝔽𝔾𝕀𝕁𝕂𝕃𝕄𝕆𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRST')"
 
  - "ℂ": [t: "⠸⠉"]                # 0x2102 (números complejos)

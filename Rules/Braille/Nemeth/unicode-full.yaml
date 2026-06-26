@@ -12,14 +12,14 @@
 
   # --- Nemeth Default Alphabet bold chars. ---
  - "𝐀-𝐙":    # 0x1d400 - 0x1d419
-     - tc: "BEC"
+     - tc: "BE"
      - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
  - "𝐚-𝐳":    # 0x1d41a - 0x1d433
      - tc: "BE"
      - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
-     - tc: "BGC"
+     - tc: "BG"
      - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
  - "𝛂-𝛒":    # 0x1d6c2 - 0x1d6d2
@@ -46,48 +46,48 @@
  - "𝛡": [tc: "BGL⠏"]             # 0x1d6e1
 
  - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7
-     - tc: "BN"
+     - tc: "B"
      - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
   # --- Nemeth Default Alphabet bold-fraktur chars. ---
 
  - "𝕬-𝖅":    # 0x1d56c - 0x1d585
-     - tc: "BDCL"
+     - tc: "BD"
      - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
-     - tc: "BDL"
+     - tc: "BD"
      - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
 
   # --- Nemeth Default Alphabet bold-italic chars. ---
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
-     - tc: "BIECL"
+     - tc: "BIE"
      - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
-     - tc: "BIEL"
+     - tc: "BIE"
      - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝜜-𝜴":    # 0x1d71c - 0x1d734
-     - tc: "BIGCL"
+     - tc: "BIG"
      - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
  - "𝜵": [tc: "BIGL⠫"]            # 0x1d735
 
  - "𝜶-𝝆":    # 0x1d736 - 0x1d746
-     - tc: "BIGL"
+     - tc: "BIG"
      - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆', 'αβγδεζηθικλμνξοπρ')"
 
  - "𝝇": [tc: "BIVL⠎"]            # 0x1d747
 
  - "𝝈-𝝊":    # 0x1d748 - 0x1d74a
-     - tc: "BIGL"
+     - tc: "BIG"
      - spell: "translate('.', '𝝈𝝉𝝊', 'στυ')"
 
  - "𝝋": [tc: "BIVL⠋"]            # 0x1d74b
 
  - "𝝌-𝝎":    # 0x1d74c - 0x1d74e
-     - tc: "BIGL"
+     - tc: "BIG"
      - spell: "translate('.', '𝝌𝝍𝝎', 'χψω')"
 
  - "𝝏": [tc: "BVL⠙"]             # 0x1d74f
@@ -95,32 +95,51 @@
  - "𝝑": [tc: "BIVL⠹"]            # 0x1d751
 
  - "𝝒-𝝕":    # 0x1d752 - 0x1d755
-     - tc: "BIGL"
+     - tc: "BIG"
      - spell: "translate('.', '𝝒𝝓𝝔𝝕', 'κφρπ')"
 
   # --- Nemeth Default Alphabet bold-script chars. ---
 
  - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
-     - tc: "BTECL"
+     - tc: "BTE"
      - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
-     - tc: "BTEL"
+     - tc: "BTE"
      - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝚤-𝚥":    # 0x1d6a4 - 0x1d6a5
-     - tc: "L"
+     - tc: ""
      - spell: "translate('.', '𝚤𝚥', '⠊⠚')"
 
 # Russian Alphabet (from Nemeth book) 
 # NOTE: is this translation needed?
  - "А-Я":    # 0x410 - 0x42f
-     - tc: "UC"
-     - spell: "translate('.', 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ', 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ')"
+     - tc: "U"
+     - spell: "translate('.', 'АБВГДЕЗИЙКЛМНОПРСТУФЭ', 'ABVGDEZIYKLMNOPRSTUFE')"
 
  - "а-я":    # 0x430 - 0x44f
      - tc: "U"
-     - spell: "translate('.', 'абвгдежзиклмнопрстуфхцчшщыэюя', 'абвгдежзиклмнопрстуфхцчшщыэюя')"
+     - spell: "translate('.', 'абвгдезийклмнопрстуфэ', 'abvgdeziylkmnoprstufye')"
+
+ - "ж": [t: "U⠚"]               # 0x436
+ - "Ж": [t: "UC⠚"]              # 0x416
+ - "х": [t: "U⠓"]               # 0x445
+ - "Х": [t: "UC⠓"]              # 0x425
+ - "ц": [t: "U⠉"]               # 0x446
+ - "Ц": [t: "UC⠉"]              # 0x426
+ - "ч": [t: "U⠟"]               # 0x447
+ - "Ч": [t: "UC⠟"]              # 0x427
+ - "ш": [t: "U⠱"]               # 0x448
+ - "Ш": [t: "UC⠱"]              # 0x428
+ - "щ": [t: "U⠭"]               # 0x449
+ - "Щ": [t: "UC⠭"]              # 0x429
+ - "ы": [t: "U⠮"]               # 0x44b
+ - "Ы": [t: "UC⠮"]              # 0x42b
+ - "ю": [t: "U⠳"]               # 0x44e
+ - "Ю": [t: "UC⠳"]              # 0x42e
+ - "я": [t: "U⠫"]               # 0x44f
+ - "Я": [t: "UC⠫"]              # 0x42f
 
   # --- Nemeth Default Alphabet circled chars. ---
  
@@ -217,8 +236,8 @@
 
   # --- Nemeth Default Alphabet double-struck chars. ---
  - "𝔸-𝕐":    # 0x1d538 - 0x1d550 (partial, excludes ℂ ℍ ℕ ℙ ℚ ℝ ℤ)
-     - tc: "𝔹ECL"
-     - spell: "translate('.', '𝔸𝔹𝔻𝔼𝔽𝔾𝕀𝕁𝕂𝕃𝕄𝕆𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "𝔹E"
+     - spell: "translate('.', '𝔸𝔹𝔻𝔼𝔽𝔾𝕀𝕁𝕂𝕃𝕄𝕆𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABDEFGIJKLMOSTUVWXY')"
 
  - "ℂ": [tc: "𝔹ECL⠉"]   # 0x2102
  - "ℍ": [tc: "𝔹ECL⠓"]   # 0x210d
@@ -229,18 +248,18 @@
  - "ℤ": [tc: "𝔹ECL⠵"]   # 0x2124
 
  - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
-     - tc: "𝔹EL"
+     - tc: "𝔹E"
      - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
-     - tc: "𝔹N"
+     - tc: "𝔹"
      - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
 
 
   # --- Nemeth Default Alphabet fraktur chars. ---
 
  - "𝔄-𝔜":    # 0x1d504 - 0x1d51c
-     - tc: "DCL"
+     - tc: "D"
      - spell: "translate('.', '𝔄𝔅𝔇𝔈𝔉𝔊𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABDEFGJKLMNOPQSTUVWXY')"
 
  - "ℭ": [tc: "DCL⠉"]   # 0x212d
@@ -250,41 +269,41 @@
  - "ℨ": [tc: "DCL⠵"]   # 0x2128
 
  - "𝔞-𝔷":    # 0x1d51e - 0x1d537
-     - tc: "DL"
+     - tc: "D"
      - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
 
   # --- Nemeth Default Alphabet fullwidth chars. ---
 
  - "Ａ-Ｚ":    # 0xff21 - 0xff3a
-     - tc: "CL"
+     - tc: ""
      - spell: "translate('.', 'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "ａ-ｚ":    # 0xff41 - 0xff5a
-     - tc: "L"
+     - tc: ""
      - spell: "translate('.', 'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "０-９":    # 0xff10 - 0xff19
-     - tc: "N"
+     - tc: ""
      - spell: "translate('.', '０１２３４５６７８９', '0123456789')"
 
   # --- Nemeth Default Alphabet italic chars -- treat as non-italic. ---
 
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
-     - tc: "ECL"
+     - tc: "E"
      - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝑎-𝑧":    # 0x1d44e - 0x1d467
-     - tc: "EL"
+     - tc: "E"
      - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
-     - tc: "IGCL"
+     - tc: "IG"
      - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
  - "𝛻": [tc: "IGL⠫"]             # 0x1d6fb
 
  - "𝛼-𝜌":    # 0x1d6fc - 0x1d70c
-     - tc: "IGL"
+     - tc: "IG"
      - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌', 'αβγδεζηθικλμνξοπρ')"
  - "𝜍": [tc: "IVL⠎"]             # 0x1d70d
 
@@ -312,15 +331,15 @@
   # --- Nemeth Default Alphabet monospace chars. ---
 
  - "𝙰-𝚉":    # 0x1d670 - 0x1d689
-     - tc: "CL"
+     - tc: ""
      - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝚊-𝚣":    # 0x1d68a - 0x1d6a3
-     - tc: "L"
+     - tc: ""
      - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff
-     - tc: "N"
+     - tc: ""
      - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
 
@@ -448,32 +467,32 @@
 
   # --- Nemeth Default Alphabet sans-serif chars. ---
  - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
-     - tc: "SECL"
+     - tc: "SE"
      - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖺-𝗓":    # 0x1d5ba - 0x1d5d3
-     - tc: "SEL"
+     - tc: "SE"
      - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb
-     - tc: "SN"
+     - tc: "S"
      - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
 
   # --- Nemeth Default Alphabet sans-serif-bold chars. ---
  - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
-     - tc: "SBECL"
+     - tc: "SBE"
      - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
-     - tc: "SBEL"
+     - tc: "SBE"
      - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
-     - tc: "SBGCL"
+     - tc: "SBG"
      - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
  - "𝝰-𝞀":    # 0x1d770 - 0x1d780
-     - tc: "SBGL"
+     - tc: "SBG"
      - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀', 'αβγδεζηθικλμνξοπρ')"
  
  - "𝝯": [tc: "SBGL⠫"]            # 0x1d76f
@@ -481,13 +500,13 @@
  - "𝞁": [tc: "SBVL⠎"]            # 0x1d781
 
  - "𝞂-𝞄":    # 0x1d782 - 0x1d784
-     - tc: "SBGL"
+     - tc: "SBG"
      - spell: "translate('.', '𝞂𝞃𝞄', 'στυ')"
 
  - "𝞅": [tc: "SBVL⠋"]            # 0x1d785
 
  - "𝞆-𝞈":    # 0x1d786 - 0x1d788
-     - tc: "SBGL"
+     - tc: "SBG"
      - spell: "translate('.', '𝞆𝞇𝞈', 'χψω')"
 
  - "𝞉": [tc: "⠠⠨⠸⠈⠙"]            # 0x1d789
@@ -495,31 +514,31 @@
  - "𝞋": [tc: "SBVL⠹"]            # 0x1d78b
 
  - "𝞌-𝞏":    # 0x1d78c - 0x1d78f
-     - tc: "SBGL"
+     - tc: "SBG"
      - spell: "translate('.', '𝞌𝞍𝞎𝞏', 'κφρπ')"
 
  - "𝟬-𝟵":    # 0x1d7ec - 0x1d7f5
-     - tc: "SBN"
+     - tc: "SB"
      - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
 
   # --- Nemeth Default Alphabet sans-serif-bold-italic chars. ---
 
  - "𝘼-𝙕":    # 0x1d63c - 0x1d655
-     - tc: "SBIECL"
+     - tc: "SBIE"
      - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
-     - tc: "SBIEL"
+     - tc: "SBIE"
      - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
-     - tc: "SBIGCL"
+     - tc: "SBIG"
      - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
  - "𝞩": [t: "SBIGL⠫"]           # 0x1d7a9
 
  - "𝞪-𝞺":    # 0x1d7aa - 0x1d7ba
-     - tc: "SBIGL"
+     - tc: "SBIG"
      - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺', 'αβγδεζηθικλμνξοπρ')"
 
  - "𝞻": [t: "SBIVL⠎"]           # 0x1d7bb
@@ -543,21 +562,34 @@
 
   # --- Nemeth Default Alphabet sans-serif-italic chars. ---
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
-     - tc: "SIECL"
+     - tc: "SIE"
      - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
-     - tc: "SIEL"
+     - tc: "SIE"
      - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
   # --- Nemeth Default Alphabet script chars. ---
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
-     - tc: "TECL"
-     - spell: "translate('.', '𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+     - tc: "TE"
+     - spell: "translate('.', '𝒜𝒞𝒟𝒢𝒥𝒦𝒩𝒪𝒫𝒬𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ACDGJKNOPQSTUVWXYZ')"
+
+ - "ℬ": [t: "TECL⠃"]            # 0x212c
+ - "ℰ": [t: "TECL⠑"]            # 0x2130
+ - "ℱ": [t: "TECL⠋"]            # 0x2131
+ - "ℋ": [t: "TECL⠓"]            # 0x210b
+ - "ℐ": [t: "TECL⠊"]            # 0x2110
+ - "ℒ": [t: "TECL⠇"]            # 0x2112
+ - "ℳ": [t: "TECL⠍"]            # 0x2133
+ - "ℛ": [t: "TECL⠗"]            # 0x211b
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
-     - tc: "TEL"
-     - spell: "translate('.', '𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+     - tc: "TE"
+     - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒻𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdfhijklmnpqrstuvwxyz')"
+
+ - "ℯ": [t: "TEL⠑"]             # 0x212f
+ - "ℊ": [t: "TEL⠛"]             # 0x210a
+ - "ℴ": [t: "TEL⠕"]             # 0x2134
 
   # --- Nemeth Default Alphabet squared chars. ---
 
