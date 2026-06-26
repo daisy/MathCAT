@@ -1878,72 +1878,133 @@ mod chem_tests {
 
 #[allow(unused_imports)]
 	use super::super::init_logger;
-	use crate::errors::Result;
+	use crate::errors::{bail, Result};
 	use super::super::are_strs_canonically_equal_result;
+    use crate::interface::{get_element, init_panic_handler, report_any_panic, trim_element};
+    use sxd_document::parser;
+    use std::panic::{catch_unwind, AssertUnwindSafe};
     use super::*;
 
-    fn parse_mathml_string<F>(test: &str, test_mathml: F) -> bool
-            where F: Fn(Element) -> bool {
-        use sxd_document::parser;
-        use crate::interface::{get_element, trim_element};
+    fn chem_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
 
-        
-        let test = if test.starts_with("<math") {test} else {&format!("<math>{}</math>", test)};
-        let new_package = parser::parse(test);
-        if let Err(e) = new_package {
-            panic!("Invalid MathML input:\n{}\nError is: {}", &test, &e.to_string());
-        }
-
-        let new_package = new_package.unwrap();
+    fn with_parsed_mrow<F, R>(test: &str, f: F) -> Result<R>
+    where
+        F: FnOnce(Element) -> Result<R>,
+    {
+        let wrapped;
+        let math_str = if test.starts_with("<math") {
+            test
+        } else {
+            wrapped = format!("<math>{}</math>", test);
+            &wrapped
+        };
+        let new_package = parser::parse(math_str)
+            .map_err(|e| anyhow::anyhow!("Invalid MathML input:\n{math_str}\nError is: {e}"))?;
         let mut mathml = get_element(&new_package);
         trim_element(mathml, false);
         mathml = as_element(mathml.children()[0]);
-        return test_mathml(mathml);
+        return f(mathml);
+    }
+
+    fn collect_elements_or_err<'a>(mrow: Element<'a>, test: &str) -> Result<Vec<&'a str>> {
+        collect_elements(mrow).ok_or_else(|| {
+            anyhow::anyhow!("collect_elements returned None for test input:\n{test}")
+        })
+    }
+
+    fn assert_chem_elements(test: &str, expected: bool, check: impl Fn(&[&str]) -> bool) -> Result<()> {
+        let actual = with_parsed_mrow(test, |mrow| {
+            let elements = collect_elements_or_err(mrow, test)?;
+            return Ok(check(&elements));
+        })?;
+        if actual != expected {
+            bail!("chemistry check failed for:\n{test}\nexpected: {expected}, got: {actual}");
+        }
+        return Ok( () );
+    }
+
+    fn assert_chem_elements_on_child(
+        test: &str,
+        child_index: usize,
+        expected: bool,
+        check: impl Fn(&[&str]) -> bool,
+    ) -> Result<()> {
+        let actual = with_parsed_mrow(test, |mrow| {
+            let child = as_element(mrow.children()[child_index]);
+            let elements = collect_elements_or_err(child, test)?;
+            return Ok(check(&elements));
+        })?;
+        if actual != expected {
+            bail!("chemistry check failed for:\n{test}\nexpected: {expected}, got: {actual}");
+        }
+        return Ok( () );
+    }
+
+    fn assert_chem_property(test: &str, expected: bool, check: impl Fn(Element) -> bool) -> Result<()> {
+        let actual = with_parsed_mrow(test, |mrow| Ok(check(mrow)))?;
+        if actual != expected {
+            bail!("chemistry check failed for:\n{test}\nexpected: {expected}, got: {actual}");
+        }
+        return Ok( () );
     }
 
     #[test]
-    fn test_noble_element() {
+    fn test_noble_element() -> Result<()> {
+        return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
-        let test = "<mrow> <mi>Na</mi> <mo>&#x2063;</mo> <mi>Cl</mi> </mrow>"; // 
-        assert!( !parse_mathml_string(test, |mathml| has_noble_element( &collect_elements(mathml).unwrap() )) );
-        let test = "<mrow> <mi>Ar</mi> <mo>&#x2063;</mo> <mi>Cl</mi> </mrow>"; // 
-        assert!( parse_mathml_string(test, |mathml| has_noble_element( &collect_elements(mathml).unwrap() )) );
-        let test = "<mrow> <mi>Ne</mi> </mrow>"; // 
-        assert!( parse_mathml_string(test, |mathml| has_noble_element( &collect_elements(mathml).unwrap() )) );
+        let test = "<mrow> <mi>Na</mi> <mo>&#x2063;</mo> <mi>Cl</mi> </mrow>";
+        assert_chem_elements(test, false, has_noble_element)?;
+        let test = "<mrow> <mi>Ar</mi> <mo>&#x2063;</mo> <mi>Cl</mi> </mrow>";
+        assert_chem_elements(test, true, has_noble_element)?;
+        let test = "<mrow> <mi>Ne</mi> </mrow>";
+        assert_chem_elements(test, true, has_noble_element)?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn test_alphabetical_order() {
+    fn test_alphabetical_order() -> Result<()> {
+        return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
         let test = r#"<mrow>  
             <msub><mi>C</mi><mn>6</mn></msub><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>14</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_alphabetical( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_alphabetical)?;
         let test = r#"<mrow>  
              <msub><mi>C</mi><mn>6</mn></msub><mo>&#x2063;</mo> 
              <msub><mi>H</mi><mn>12</mn></msub><mo>&#x2063;</mo>
              <msub><mi>O</mi><mn>6</mn></msub>
               </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_alphabetical( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_alphabetical)?;
         let test = "<mrow> <mi>B</mi> <mo>&#x2063;</mo> <mi>C</mi> <mo>&#x2063;</mo> <mi>O</mi></mrow>"; // "C" should be first
-        assert!( !parse_mathml_string(test, |mathml| is_alphabetical( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, false, is_alphabetical)?;
         let test = "<mrow> <mi>P</mi> <mo>&#x2063;</mo> <mi>B</mi> <mo>&#x2063;</mo> <mi>O</mi></mrow>"; // not alphabetical
-        assert!( !parse_mathml_string(test, |mathml| is_alphabetical( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, false, is_alphabetical)?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn test_is_structural() {
+    fn test_is_structural() -> Result<()> {
+        return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
         let test = r#"<mrow>  
             <msub><mi>C</mi><mn>6</mn></msub><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>14</mn></msub>
              </mrow>"#;
-        assert!( !parse_mathml_string(test, |mathml| is_structural( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, false, is_structural)?;
         let test = "<mrow> <mi>B</mi> <mo>&#x2063;</mo> <mi>C</mi> <mo>&#x2063;</mo> <mi>O</mi></mrow>";
-        assert!( !parse_mathml_string(test, |mathml| is_structural( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, false, is_structural)?;
         let test = "<mrow> <mi>H</mi> <mo>&#x2063;</mo> <mi>O</mi> <mo>&#x2063;</mo> <mi>H</mi></mrow>";
-        assert!( parse_mathml_string(test, |mathml| is_structural( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_structural)?;
         let test = "<mrow data-chem-formula='9'>
                 <mmultiscripts data-chem-formula='1'>
                 <mi mathvariant='normal' data-chem-element='1'>H</mi>
@@ -1961,28 +2022,31 @@ mod chem_tests {
                 <none></none>
                 </mmultiscripts>
             </mrow>";
-        assert!( parse_mathml_string(test, |mathml| is_structural( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_structural)?;
+        return Ok( () );
+        });
     }
 
 
     #[test]
-    fn test_electronegativity_order() {
+    fn test_electronegativity_order() -> Result<()> {
+        return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
         let test = r#"<mrow>  
             <mi>N</mi><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>3</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_ordered_by_electronegativity( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
         let test = r#"<mrow>  
             <mi>O</mi><mo>&#x2063;</mo> 
             <msub><mi>F</mi><mn>2</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_ordered_by_electronegativity( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
         let test = r#"<mrow>  
             <msub><mi>Rb</mi><mn>15</mn></msub><mo>&#x2063;</mo> 
             <msub><mi>Hg</mi><mn>16</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_ordered_by_electronegativity( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
         let test = r#" 
             <mrow><msup>
                 <mo>[</mo>
@@ -1991,104 +2055,119 @@ mod chem_tests {
                 <mo>]</mo>
                 <mrow><mn>8</mn><mo>-</mo></mrow>
             </msup></mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_ordered_by_electronegativity( &collect_elements(as_element(mathml.children()[0])).unwrap() )) );
+        assert_chem_elements_on_child(test, 0, true, is_ordered_by_electronegativity)?;
         let test = r#"<mrow>  
                 <mi>Si</mi><mo>&#x2063;</mo> 
                 <msub><mi>H</mi><mn>2</mn></msub>
                 <mi>Br</mi><mo>&#x2063;</mo> 
                 <mi>Cl</mi>
                 </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| is_ordered_by_electronegativity( &collect_elements(mathml).unwrap() )) );
+        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn test_order() {
+    fn test_order() -> Result<()> {
+        return chem_test(|| {
         let test = r#"<mrow>  
             <msub><mi>C</mi><mn>2</mn></msub><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>4</mn></msub><mo>&#x2063;</mo>
             <msub><mrow> <mo>(</mo><mi>N</mi> <mo>&#x2063;</mo> <msub> <mi>H</mi> <mn>2</mn> </msub><mo>)</mo> </mrow><mn>2</mn></msub>
              </mrow>"#;
-        assert!( parse_mathml_string(test, is_order_ok) );
+        assert_chem_property(test, true, is_order_ok)?;
         let test = r#"<mrow>
             <mi>Fe</mi><mo>&#x2063;</mo> 
             <mi>O</mi><mo>&#x2063;</mo> 
             <mrow> <mo>(</mo><mrow><mi>O</mi> <mo>&#x2063;</mo><mi>H</mi> </mrow><mo>)</mo> </mrow>
              </mrow>"#;
-        assert!( parse_mathml_string(test, is_order_ok) );
+        assert_chem_property(test, true, is_order_ok)?;
         let test = r#"<mrow>  // R-4.4.3.3 -- Chain compound doesn't fit rules but should be accepted
                 <mi>Br</mi><mo>&#x2063;</mo> 
                 <mi>S</mi><mo>&#x2063;</mo> 
                 <mi>C</mi><mo>&#x2063;</mo> 
                 <mi>N</mi>
                 </mrow>"#;
-        assert!( parse_mathml_string(test, |mathml| likely_chem_formula(mathml)==5) );
+        assert_chem_property(test, true, |mathml| likely_chem_formula(mathml) == 5)?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn test_simple_double_bond() {
+    fn test_simple_double_bond() -> Result<()> {
+        return chem_test(|| {
         let test1 = r#"<mrow><mi>C</mi><mo>=</mo><mi>C</mi></mrow>"#;
-        assert!( parse_mathml_string(test1, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD) ); // just under threshold
+        assert_chem_property(test1, true, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD)?; // just under threshold
         let test2 = r#"<mrow><mi>C</mi><mo>∷</mo><mi>O</mi></mrow>"#;
-        assert!( parse_mathml_string(test2, |mathml| likely_chem_formula(mathml)==CHEMISTRY_THRESHOLD) );
+        assert_chem_property(test2, true, |mathml| likely_chem_formula(mathml) == CHEMISTRY_THRESHOLD)?;
         let test3 = r#"<mrow><mi>N</mi><mo>=</mo><mi>N</mi></mrow>"#;
-        assert!( parse_mathml_string(test3, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD) ); // just under threshold
+        assert_chem_property(test3, true, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD)?; // just under threshold
         let test4 = r#"<mrow><mi>Sn</mi><mo>=</mo><mi>Sn</mi></mrow>"#;
-        assert!( parse_mathml_string(test4, |mathml| likely_chem_formula(mathml) == 8) );
+        assert_chem_property(test4, true, |mathml| likely_chem_formula(mathml) == 8)?;
         let test5 = r#"<mrow><mi>O</mi><mo>=</mo><mi>S</mi></mrow>"#;
-        assert!( parse_mathml_string(test5, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD) );  // just under threshold
+        assert_chem_property(test5, true, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD)?;  // just under threshold
         let test10 = r#"<mrow><mi>K</mi><mo>=</mo><mi>K</mi></mrow>"#;
-        assert!( parse_mathml_string(test10, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY) );
+        assert_chem_property(test10, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
         let test11 = r#"<mrow><mi>C</mi><mo>=</mo><mi>K</mi></mrow>"#;
-        assert!( parse_mathml_string(test11, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY) );
+        assert_chem_property(test11, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn test_double_bond() {
+    fn test_double_bond() -> Result<()> {
+        return chem_test(|| {
         let test1 = r#"<mrow><mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mo>=</mo><mi>C</mi></mrow>"#;
-        assert!( parse_mathml_string(test1, |mathml| likely_chem_formula(mathml)==8) );
+        assert_chem_property(test1, true, |mathml| likely_chem_formula(mathml) == 8)?;
         let test2 = r#"<mrow><mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mo>=</mo>
         <mi>C</mi><mi>H</mi><mi>R</mi></mrow>"#;
-        assert!( parse_mathml_string(test2, |mathml| likely_chem_formula(mathml)==12) );
+        assert_chem_property(test2, true, |mathml| likely_chem_formula(mathml) == 12)?;
         let test3 = r#"<mrow><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mi mathvariant='normal'>C</mi><mo>=</mo>
                 <mi>C</mi><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub></mrow>"#;
-        assert!( parse_mathml_string(test3, |mathml| likely_chem_formula(mathml)==11) );
+        assert_chem_property(test3, true, |mathml| likely_chem_formula(mathml) == 11)?;
         let test4 = r#"<mrow><mi>H</mi><mo>-</mo><mi>N</mi><mo>=</mo><mi>N</mi><mo>-</mo><mi>H</mi></mrow>"#;
-        assert!( parse_mathml_string(test4, |mathml| likely_chem_formula(mathml)==10) );
+        assert_chem_property(test4, true, |mathml| likely_chem_formula(mathml) == 10)?;
         let test10 = r#"<mrow><mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>3</mn></msub><mo>=</mo><mi>C</mi></mrow>"#;
-        assert!( parse_mathml_string(test10, |mathml| likely_chem_formula(mathml)==NOT_CHEMISTRY) );
+        assert_chem_property(test10, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
+        return Ok( () );
+        });
     }
 
     #[test]
     #[ignore]   // It would be good to say "not chemistry" for this, but there aren't rules for that at the moment
-    fn test_water_bond() {
+    fn test_water_bond() -> Result<()> {
+        return chem_test(|| {
         let test11 = r#"<mrow><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mi mathvariant='normal'>O</mi><mo>=</mo><mi>O</mi></mrow>"#;
-        assert!( parse_mathml_string(test11, |mathml| {println!("val={}", likely_chem_formula(mathml)); likely_chem_formula(mathml)==8}) );
-        // assert!( parse_mathml_string(test11, |mathml| likely_chem_formula(mathml)==NOT_CHEMISTRY) );
+        assert_chem_property(test11, true, |mathml| likely_chem_formula(mathml) == 8)?;
+        return Ok( () );
+        });
     }
 
 
     #[test]
-    fn test_triple_bond() {
+    fn test_triple_bond() -> Result<()> {
+        return chem_test(|| {
         let test1 = r#"<mrow><mi>C</mi><mo>≡</mo><mi>C</mi></mrow>"#;
-        assert!( parse_mathml_string(test1, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD) );
+        assert_chem_property(test1, true, |mathml| likely_chem_formula(mathml) < CHEMISTRY_THRESHOLD)?;
         let test2 = r#"<mrow><mi>C</mi><mo>:::</mo><mi>O</mi></mrow>"#;
-        assert!( parse_mathml_string(test2, |mathml| likely_chem_formula(mathml)==CHEMISTRY_THRESHOLD) );
+        assert_chem_property(test2, true, |mathml| likely_chem_formula(mathml) == CHEMISTRY_THRESHOLD)?;
         let test3 = r#"<mrow><mi>H</mi><mo>-</mo><mi>C</mi><mo>≡</mo><mi>C</mi><mo>-</mo><mi>H</mi></mrow>"#;
-        assert!( parse_mathml_string(test3, |mathml| likely_chem_formula(mathml)==10) );
+        assert_chem_property(test3, true, |mathml| likely_chem_formula(mathml) == 10)?;
         let test4 = r#"<mrow><mi>H</mi><mo>-</mo><mi>C</mi><mo>≡</mo><mi>C</mi><mo>-</mo><mi>H</mi></mrow>"#;
-        assert!( parse_mathml_string(test4, |mathml| likely_chem_formula(mathml)==10) );
+        assert_chem_property(test4, true, |mathml| likely_chem_formula(mathml) == 10)?;
         let test5 = r#"<mrow><mi>N</mi><mo>-</mo><mi>C</mi><mo>≡</mo><mi>C</mi><mo>-</mo><mi>N</mi></mrow>"#;
-        assert!( parse_mathml_string(test5, |mathml| likely_chem_formula(mathml)==10) );
+        assert_chem_property(test5, true, |mathml| likely_chem_formula(mathml) == 10)?;
         let test6 = r#"<mrow><mi>H</mi><mo>-</mo><mi>C</mi><mo>≡</mo>
             <mi>C</mi><mo>-</mo><mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>3</mn></msub></mrow>"#; // 1-Propyne
-        assert!( parse_mathml_string(test6, |mathml| likely_chem_formula(mathml)==14) );
-        // assert!( parse_mathml_string(test6, |mathml| {println!("val={}", likely_chem_formula(mathml)); likely_chem_formula(mathml)==10}) );
+        assert_chem_property(test6, true, |mathml| likely_chem_formula(mathml) == 14)?;
         let test10 = r#"<mrow><mi>O</mi><mo>:::</mo><mi>S</mi></mrow>"#;
-        assert!( parse_mathml_string(test10, |mathml| likely_chem_formula(mathml)==NOT_CHEMISTRY) );
+        assert_chem_property(test10, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
         let test11 = r#"<mrow><mi>Pb</mi><mo>≡</mo><mi>Pb</mi></mrow>"#;
-        assert!( parse_mathml_string(test11, |mathml| likely_chem_formula(mathml)==NOT_CHEMISTRY) );
+        assert_chem_property(test11, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
         let test12 = r#"<mrow><mi>C</mi><mo>≡</mo><mi>K</mi></mrow>"#;
-        assert!( parse_mathml_string(test12, |mathml| likely_chem_formula(mathml)==NOT_CHEMISTRY) );
+        assert_chem_property(test12, true, |mathml| likely_chem_formula(mathml) == NOT_CHEMISTRY)?;
+        return Ok( () );
+        });
     }
 
     #[test]

@@ -1609,22 +1609,31 @@ pub fn add_builtin_functions(context: &mut Context) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::errors::Result;
+    use crate::interface::{get_element, init_panic_handler, report_any_panic, trim_element};
     use sxd_document::parser;
-    use crate::interface::{trim_element, get_element};
+    use std::panic::{catch_unwind, AssertUnwindSafe};
 
+    fn xpath_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
 
-    fn init_word_list() {
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        crate::interface::set_preference("Language", "en").unwrap();
-        let result = crate::definitions::read_definitions_file(true);
-        if let Err(e) = result {
-            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");
-        }
+    fn init_word_list() -> Result<()> {
+        crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+        crate::interface::set_preference("Language", "en")?;
+        crate::definitions::read_definitions_file(true)?;
+        return Ok( () );
     }
 
     #[test]
-    fn ordinal_one_digit() {
-        init_word_list();
+    fn ordinal_one_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("zeroth", ToOrdinal::convert("0", false, false).unwrap());
         assert_eq!("second", ToOrdinal::convert("2", false, false).unwrap());
         assert_eq!("ninth", ToOrdinal::convert("9", false, false).unwrap());
@@ -1641,11 +1650,14 @@ mod tests {
         assert_eq!("halves", ToOrdinal::convert("2", true, true).unwrap());
         assert_eq!("halves", ToOrdinal::convert("002", true, true).unwrap());
         assert_eq!("ninths", ToOrdinal::convert("9", true, true).unwrap());
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn ordinal_two_digit() {
-        init_word_list();
+    fn ordinal_two_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("tenth", ToOrdinal::convert("10", false, false).unwrap());
         assert_eq!("seventeenth", ToOrdinal::convert("17", false, false).unwrap());
         assert_eq!("thirty second", ToOrdinal::convert("32", false, false).unwrap());
@@ -1668,11 +1680,14 @@ mod tests {
         assert_eq!("nineteenths", ToOrdinal::convert("19", true, true).unwrap());
         assert_eq!("twentieths", ToOrdinal::convert("20", true, true).unwrap());
         assert_eq!("nineteenths", ToOrdinal::convert("𝟏𝟗", true, true).unwrap());
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn ordinal_three_digit() {
-        init_word_list();
+    fn ordinal_three_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("one hundred first", ToOrdinal::convert("101", false, false).unwrap());
         assert_eq!("two hundred tenth", ToOrdinal::convert("210", false, false).unwrap());
         assert_eq!("four hundred thirty second", ToOrdinal::convert("432", false, false).unwrap());
@@ -1691,10 +1706,13 @@ mod tests {
         assert_eq!("seven hundredths", ToOrdinal::convert("700", true, true).unwrap());
         assert_eq!("one hundredths", ToOrdinal::convert("100", true, true).unwrap());
         assert_eq!("eight hundred seventeenths", ToOrdinal::convert("817", true, true).unwrap());
+        return Ok( () );
+        });
     }
     #[test]
-    fn ordinal_large() {
-        init_word_list();
+    fn ordinal_large() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("one thousandth", ToOrdinal::convert("1000", false, false).unwrap());
         assert_eq!("two thousand one hundredth", ToOrdinal::convert("2100", false, false).unwrap());
         assert_eq!("thirty thousandth", ToOrdinal::convert("30000", false, false).unwrap());
@@ -1713,89 +1731,101 @@ mod tests {
         assert_eq!("nine billion eight hundred seventy six million five hundred forty three thousand two hundred tenths", ToOrdinal::convert("9876543210", true, true).unwrap());
         assert_eq!("nine billion five hundred forty three thousand two hundred tenths", ToOrdinal::convert("9000543210", true, true).unwrap());
         assert_eq!("zeroth", ToOrdinal::convert("00000", false, false).unwrap());
+        return Ok( () );
+        });
     }
 
 
-    fn test_is_simple(message: &'static str, mathml_str: &'static str) {
+    fn test_is_simple(message: &'static str, mathml_str: &'static str) -> Result<()> {
 		// this forces initialization
 		crate::speech::SPEECH_RULES.with(|_| true);
         let package = parser::parse(mathml_str)
-        .expect("failed to parse XML");
+        .map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         assert!(IsNode::is_simple(mathml), "{}", message);
+        return Ok( () );
     }
 
-    fn test_is_not_simple(message: &'static str, mathml_str: &'static str) {
+    fn test_is_not_simple(message: &'static str, mathml_str: &'static str) -> Result<()> {
 		// this forces initialization
 		crate::speech::SPEECH_RULES.with(|_| true);
         let package = parser::parse(mathml_str)
-        .expect("failed to parse XML");
+        .map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         assert!(!IsNode::is_simple(mathml), "{}", message);
+        return Ok( () );
     }
     #[test]
-    fn is_simple() {
-        test_is_simple("single variable", "<mi>x</mi>");
-        test_is_simple("single number", "<mn>1.2</mn>");
-        test_is_simple("negative number", "<mrow><mo>-</mo><mn>10</mn></mrow>");
-        test_is_simple("negative variable", "<mrow><mo>-</mo><mi>x</mi></mrow>");
-        test_is_simple("ordinal fraction", "<mfrac><mn>3</mn><mn>4</mn></mfrac>");
-        test_is_simple("x y", "<mrow><mi>x</mi><mo>&#x2062;</mo><mi>y</mi></mrow>");
+    fn is_simple() -> Result<()> {
+        return xpath_test(|| {
+        test_is_simple("single variable", "<mi>x</mi>")?;
+        test_is_simple("single number", "<mn>1.2</mn>")?;
+        test_is_simple("negative number", "<mrow><mo>-</mo><mn>10</mn></mrow>")?;
+        test_is_simple("negative variable", "<mrow><mo>-</mo><mi>x</mi></mrow>")?;
+        test_is_simple("ordinal fraction", "<mfrac><mn>3</mn><mn>4</mn></mfrac>")?;
+        test_is_simple("x y", "<mrow><mi>x</mi><mo>&#x2062;</mo><mi>y</mi></mrow>")?;
         test_is_simple("negative two vars", 
-                "<mrow><mrow><mo>-</mo><mi>x</mi></mrow><mo>&#x2062;</mo><mi>y</mi></mrow>");
+                "<mrow><mrow><mo>-</mo><mi>x</mi></mrow><mo>&#x2062;</mo><mi>y</mi></mrow>")?;
         test_is_simple("-2 x y", 
                 "<mrow><mrow><mo>-</mo><mn>2</mn></mrow>
-                             <mo>&#x2062;</mo><mi>x</mi><mo>&#x2062;</mo><mi>z</mi></mrow>");
-        test_is_simple("sin x", "<mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow>");
-        test_is_simple("f(x)", "<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow>");
+                             <mo>&#x2062;</mo><mi>x</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
+        test_is_simple("sin x", "<mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow>")?;
+        test_is_simple("f(x)", "<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow>")?;
         test_is_simple("f(x+y)",
          "<mrow><mi>f</mi><mo>&#x2061;</mo>\
-            <mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></mrow>");
-        
+            <mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></mrow>")?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn is_not_simple() {
-        test_is_not_simple("multi-char variable", "<mi>rise</mi>");
-        test_is_not_simple("large ordinal fraction", "<mfrac><mn>30</mn><mn>4</mn></mfrac>");
-        test_is_not_simple("fraction with var in numerator", "<mfrac><mi>x</mi><mn>4</mn></mfrac>");
-        test_is_not_simple("square root", "<msqrt><mi>x</mi></msqrt>");
-        test_is_not_simple("subscript", "<msub><mi>x</mi><mn>4</mn></msub>");
+    fn is_not_simple() -> Result<()> {
+        return xpath_test(|| {
+        test_is_not_simple("multi-char variable", "<mi>rise</mi>")?;
+        test_is_not_simple("large ordinal fraction", "<mfrac><mn>30</mn><mn>4</mn></mfrac>")?;
+        test_is_not_simple("fraction with var in numerator", "<mfrac><mi>x</mi><mn>4</mn></mfrac>")?;
+        test_is_not_simple("square root", "<msqrt><mi>x</mi></msqrt>")?;
+        test_is_not_simple("subscript", "<msub><mi>x</mi><mn>4</mn></msub>")?;
         test_is_not_simple("-x y z", 
                 "<mrow><mrow><mo>-</mo><mi>x</mi></mrow>
-                            <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>");
+                            <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
         test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
-                    "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>");
-                   
+                    "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>")?;
+        return Ok( () );
+        });
     }
 
-    fn check_table_dims(mathml: &str, dims: (usize, usize)) {
-        let package = parser::parse(mathml).expect("failed to parse XML");
+    fn check_table_dims(mathml: &str, dims: (usize, usize)) -> Result<()> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math_elem = get_element(&package);
         let child = as_element(math_elem.children()[0]);
         assert!(CountTableDims::new().count_table_dims(child) == Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64))));
+        return Ok( () );
     }
 
     #[test]
-    fn table_dim() {
-        check_table_dims("<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>", (1, 1));
-        check_table_dims("<math><mtable><mtr><mtd colspan=\"3\">a</mtd><mtd>b</mtd></mtr><mtr><mtd></mtd></mtr></mtable></math>", (2, 4));
+    fn table_dim() -> Result<()> {
+        return xpath_test(|| {
+        check_table_dims("<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>", (1, 1))?;
+        check_table_dims("<math><mtable><mtr><mtd colspan=\"3\">a</mtd><mtd>b</mtd></mtr><mtr><mtd></mtd></mtr></mtable></math>", (2, 4))?;
 
-        check_table_dims("<math><mtable><mlabeledtr><mtd>label</mtd><mtd>a</mtd><mtd>b</mtd></mlabeledtr><mtr><mtd>c</mtd><mtd>d</mtd></mtr></mtable></math>", (2, 2));
+        check_table_dims("<math><mtable><mlabeledtr><mtd>label</mtd><mtd>a</mtd><mtd>b</mtd></mlabeledtr><mtr><mtd>c</mtd><mtd>d</mtd></mtr></mtable></math>", (2, 2))?;
         // extended rows beyond the `mtr`s do *not* count towards the row count.
-        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr></mtable></math>", (1, 1));
+        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr></mtable></math>", (1, 1))?;
 
         check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr>
-<mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3));
-
+<mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3))?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn at_left_edge() {
+    fn at_left_edge() -> Result<()> {
+        return xpath_test(|| {
         let mathml = "<math><mfrac><mrow><mn>30</mn><mi>x</mi></mrow><mn>4</mn></mfrac></math>";
-        let package = parser::parse(mathml).expect("failed to parse XML");
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         let fraction = as_element(mathml.children()[0]);
@@ -1805,12 +1835,15 @@ mod tests {
 
         let mi = as_element(as_element(fraction.children()[0]).children()[1]);
         assert_eq!(EdgeNode::edge_node(mi, true, "2D"), None);
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn at_right_edge() {
+    fn at_right_edge() -> Result<()> {
+        return xpath_test(|| {
         let mathml = "<math><mrow><mfrac><mn>4</mn><mrow><mn>30</mn><mi>x</mi></mrow></mfrac><mo>.</mo></mrow></math>";
-        let package = parser::parse(mathml).expect("failed to parse XML");
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         let fraction = as_element(as_element(mathml.children()[0]).children()[0]);
@@ -1821,5 +1854,7 @@ mod tests {
 
         let mn = as_element(as_element(fraction.children()[1]).children()[0]);
         assert_eq!(EdgeNode::edge_node(mn, true, "2D"), None);
+        return Ok( () );
+        });
     }
 }

@@ -945,7 +945,7 @@ impl ReplacementArray {
                 let after = if i+1 == replacement_strings.len() {""} else {&replacement_strings[i+1]};
                 replacement_strings[i] = replacement_strings[i].replace(
                     PAUSE_AUTO_STR,
-                    &rules_with_context.speech_rules.pref_manager.borrow().get_tts().compute_auto_pause(&rules_with_context.speech_rules.pref_manager.borrow(), before, after));
+                    &rules_with_context.speech_rules.pref_manager.borrow().get_tts().compute_auto_pause(&rules_with_context.speech_rules.pref_manager.borrow(), before, after)?);
             }
         }
 
