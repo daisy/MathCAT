@@ -214,13 +214,13 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            set_preference("NavMode", "Enhanced").unwrap();
+            set_preference("NavMode", "Enhanced")?;
             debug!("Enhanced mode");
             do_commands(mathml)?;
-            set_preference("NavMode", "Simple").unwrap();
+            set_preference("NavMode", "Simple")?;
             debug!("Simple mode");
             do_commands(mathml)?;
-            set_preference("NavMode", "Character").unwrap();
+            set_preference("NavMode", "Character")?;
             debug!("Character mode");
             assert_eq_with_panic_handler(
                 "zoom in; in base; x",
@@ -1057,7 +1057,7 @@ mod tests {
             // let speech = test_command("ZoomOut", mathml, "id-1");
             // assert_eq_with_panic_handler("zoom out; open paren n over k, close paren", speech)?;
 
-            set_preference("NavMode", "Simple").unwrap();
+            set_preference("NavMode", "Simple")?;
             debug!("Simple mode");
             let speech = test_command("ZoomIn", mathml, "id-4");
             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
@@ -1068,7 +1068,7 @@ mod tests {
             let speech = test_command("ZoomOut", mathml, "id-1-literal-0");
             assert_eq_with_panic_handler("zoom out; out of part 2; n choose k", speech)?;
 
-            set_preference("NavMode", "Enhanced").unwrap();
+            set_preference("NavMode", "Enhanced")?;
             debug!("Enhanced mode");
             let speech = test_command("ZoomIn", mathml, "id-4");
             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
