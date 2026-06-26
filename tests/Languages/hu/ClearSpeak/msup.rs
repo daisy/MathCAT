@@ -10,10 +10,10 @@ fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x squared")?;
-    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x to the second")?;
-    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x to the second power")?;
-    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x raised to the power 2")?;
+    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x a négyzeten")?;
+    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x a(z) második hatványon")?;
+    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x a(z) második hatványon")?;
+    test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x a következő hatványra emelve: 2")?;
 
     return Ok(());
 
@@ -25,10 +25,10 @@ fn cubed() -> Result<()> {
   let expr = "<math>
                   <msup> <mi>x</mi> <mn>3</mn> </msup>
               </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x cubed")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x to the third")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x to the third power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x raised to the power 3")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "x a köbön")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "x a(z) harmadik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "x a(z) harmadik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "x a következő hatványra emelve: 3")?;
   return Ok(());
 
 }
@@ -39,10 +39,10 @@ fn ordinal_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mn>5</mn> </msup>
               </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 to the fifth power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 to the fifth")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 to the fifth power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the power 5")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 a(z) ötödik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 a(z) ötödik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 a(z) ötödik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő hatványra emelve: 5")?;
   return Ok(());
 
 }
@@ -54,10 +54,10 @@ fn zero_power() -> Result<()> {
   let expr = "<math>
                     <msup> <mn>3</mn> <mn>0</mn> </msup>
                 </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 to the 0 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 to the 0")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 to the 0 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the power 0")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 a(z) nulladik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 a(z) nulladik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 a(z) nulladik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő hatványra emelve: 0")?;
   return Ok(());
 
 }
@@ -68,10 +68,10 @@ fn simple_mi_power() -> Result<()> {
   let expr = "<math>
                     <msup> <mn>4</mn> <mi>x</mi> </msup>
                 </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "4 to the x-th power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "4 to the x-th")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "4 to the x-th power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "4 raised to the power x")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "4 a(z) x-edik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "4 a(z) x-edik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "4 a(z) x-edik hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "4 a következő hatványra emelve: x")?;
   return Ok(());
 
 }
@@ -82,10 +82,10 @@ fn decimal_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mn>5.0</mn> </msup>
               </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 raised to the 50 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 raised to the 50 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 raised to the 50 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the power 50")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 a(z) 50 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 a(z) 50 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 a(z) 50 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő hatványra emelve: 50")?;
   return Ok(());
 
 }
@@ -96,10 +96,10 @@ fn non_simple_power() -> Result<()> {
   let expr = "<math>
         <msup> <mn>3</mn>  <mrow> <mi>y</mi><mo>+</mo><mn>2</mn></mrow>  </msup>
     </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 raised to the y plus 2 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 raised to the y plus 2 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 raised to the y plus 2 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the power y plus 2")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 a(z) y plusz 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 a(z) y plusz 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 a(z) y plusz 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő hatványra emelve: y plusz 2")?;
   return Ok(());
 
 }
@@ -110,10 +110,10 @@ fn negative_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mrow> <mo>-</mo> <mn>2</mn> </mrow> </msup>
               </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 to the negative 2 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 to the negative 2")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 to the negative 2 power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the power negative 2")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 a negatív 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 a negatív 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 a negatív 2 hatványon")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő hatványra emelve: negatív 2")?;
   return Ok(());
 
 }
@@ -127,7 +127,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </msup>
                 </math>";
-  test("hu", "ClearSpeak", expr, "x raised to the 1 third power")?;
+  test("hu", "ClearSpeak", expr, "x a(z) 1 harmad hatványon")?;
   return Ok(());
 
 }
@@ -149,10 +149,10 @@ fn nested_squared_power_with_coef() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 raised to the 2 x squared power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 raised to the exponent, 2 x to the second, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 raised to the exponent, 2 x to the second power, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the exponent, 2 x raised to the power 2; end exponent")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 emelve a(z) 2 x a négyzeten hatványra")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 emelve a következő kitevőre:, 2 x a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 emelve a következő kitevőre:, 2 x a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő kitevőre emelve:, 2, x a következő hatványra emelve: 2; kitevő vége")?;
 
   return Ok(());
 
@@ -176,7 +176,7 @@ fn nested_squared_power_with_neg_coef() -> Result<()> {
       </msup>
       </mrow>
     </math>";
-  test("hu", "ClearSpeak", expr, "3 raised to the negative 2 x squared power")?;
+  test("hu", "ClearSpeak", expr, "3 emelve a negatív 2 x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -194,7 +194,7 @@ fn nested_cubed_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("hu", "ClearSpeak", expr, "y raised to the 4 fifths cubed power")?;
+  test("hu", "ClearSpeak", expr, "y emelve a(z) 4 ötöd a köbön hatványra")?;
   return Ok(());
 
 }
@@ -214,7 +214,7 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("hu", "ClearSpeak", expr, "y raised to the negative 4 fifths cubed power")?;
+  test("hu", "ClearSpeak", expr, "y a(z) negatív 4 ötöd a köbön hatványon")?;
   return Ok(());
 
 }
@@ -239,7 +239,7 @@ fn nested_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e raised to the 1 half x squared power")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e emelve a(z) 1 ketted x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -264,10 +264,10 @@ fn nested_negative_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e raised to the negative 1 half x squared power")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e raised to the exponent, negative 1 half x to the second, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e raised to the exponent, negative 1 half x to the second power, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e raised to the exponent, negative 1 half x raised to the power 2; end exponent")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e emelve a negatív 1 ketted x a négyzeten hatványra")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e emelve a következő kitevőre:, negatív 1 ketted x a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e emelve a következő kitevőre:, negatív 1 ketted x a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e a következő kitevőre emelve:, negatív 1 ketted, x a következő hatványra emelve: 2; kitevő vége")?;
   return Ok(());
 
 }
@@ -289,10 +289,10 @@ fn nested_expr_to_tenth() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 raised to the exponent, 3 to the tenth power, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 raised to the exponent, 3 to the tenth, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 raised to the exponent, 3 to the tenth power, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the exponent, 3 raised to the power 10; end exponent")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 emelve a következő kitevőre:, 3 a(z) tizedik hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 emelve a következő kitevőre:, 3 a(z) tizedik hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 emelve a következő kitevőre:, 3 a(z) tizedik hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő kitevőre emelve:, 3 a következő hatványra emelve: 10; kitevő vége")?;
 
   return Ok(());
 
@@ -318,10 +318,10 @@ fn nested_non_simple_squared_exp() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 raised to the exponent, open paren x plus 1, close paren squared, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 raised to the exponent, open paren x plus 1, close paren to the second, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 raised to the exponent, open paren x plus 1, close paren to the second power, end exponent")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 raised to the exponent, open paren x plus 1, close paren raised to the power 2; end exponent")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 emelve a következő kitevőre:, nyitott zárójel, x plusz 1, zárt zárójel a négyzeten, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 emelve a következő kitevőre:, nyitott zárójel, x plusz 1, zárt zárójel a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 emelve a következő kitevőre:, nyitott zárójel, x plusz 1, zárt zárójel a(z) második hatványon, kitevő vége")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 a következő kitevőre emelve:, nyitott zárójel, x plusz 1, zárt zárójel a következő hatványra emelve: 2; kitevő vége")?;
   return Ok(());
 
 }
@@ -338,7 +338,7 @@ fn nested_default_power() -> Result<()> {
     </msup>
   </msup>
 </math>";
-  test("hu", "ClearSpeak", expr, "t raised to the exponent, 4 fifths to the n-th power, end exponent")?;
+  test("hu", "ClearSpeak", expr, "t emelve a következő kitevőre:, 4 ötöd a(z) n-edik hatványon, kitevő vége")?;
   return Ok(());
 
 }
@@ -373,13 +373,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e raised to the exponent, negative 1 half times; open paren; the fraction with numerator; x minus mu; and denominator sigma; close paren squared, end exponent")?;
+       "e emelve a következő kitevőre:, negatív 1 ketted szorozva; nyitott zárójel; a tört, melynek számlálója; x mínusz mű; nevezője pedig szigma; zárt zárójel a négyzeten, kitevő vége")?;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e raised to the exponent, negative 1 half times; open paren; the fraction with numerator; x minus mu; and denominator sigma; close paren to the second, end exponent")?;
+       "e emelve a következő kitevőre:, negatív 1 ketted szorozva; nyitott zárójel; a tört, melynek számlálója; x mínusz mű; nevezője pedig szigma; zárt zárójel a(z) második hatványon, kitevő vége")?;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e raised to the exponent, negative 1 half times; open paren; the fraction with numerator; x minus mu; and denominator sigma; close paren to the second power, end exponent")?;
+       "e emelve a következő kitevőre:, negatív 1 ketted szorozva; nyitott zárójel; a tört, melynek számlálója; x mínusz mű; nevezője pedig szigma; zárt zárójel a(z) második hatványon, kitevő vége")?;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e raised to the exponent, negative 1 half times; open paren; the fraction with numerator; x minus mu; and denominator sigma; close paren raised to the power 2; end exponent")?;
+       "e a következő kitevőre emelve:, negatív 1 ketted szorozva; nyitott zárójel; a tört, melynek számlálója; x mínusz mű; nevezője pedig szigma; zárt zárójel a következő hatványra emelve: 2; kitevő vége")?;
        return Ok(());
 
 }
@@ -396,7 +396,7 @@ fn default_power() -> Result<()> {
       </mfrac>
     </msup>
   </math>";
-  test("hu", "ClearSpeak", expr, "t raised to the fraction with numerator; b plus 1; and denominator 3; power")?;
+  test("hu", "ClearSpeak", expr, "t a(z) a tört, melynek számlálója; b plusz 1; nevezője pedig 3; hatványon")?;
   return Ok(());
 
 }

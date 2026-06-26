@@ -14,8 +14,8 @@ fn matrix_1x1() -> Result<()> {
         <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 1 by 1 matrix with entry 3")?;
-    test("hu", "SimpleSpeak", expr, "the 1 by 1 matrix with entry 3")?;
+    test("hu", "ClearSpeak",  expr, "a(z) egy-szer-egyes mátrix eleme: 3")?;
+    test("hu", "SimpleSpeak", expr, "a(z) egy-szer-egyes mátrix eleme: 3")?;
     return Ok(());
 
 }
@@ -33,8 +33,8 @@ fn determinant_1x1() -> Result<()> {
         <mo>|</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 1 by 1 determinant with entry 3")?;
-    test("hu", "SimpleSpeak", expr, "the 1 by 1 determinant with entry 3")?;
+    test("hu", "ClearSpeak",  expr, "a(z) egy-szer-egyes determináns eleme: 3")?;
+    test("hu", "SimpleSpeak", expr, "a(z) egy-szer-egyes determináns eleme: 3")?;
     return Ok(());
 
 }
@@ -60,8 +60,8 @@ fn matrix_1x2() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 1 by 2 row matrix; 3, 5")?;
-    test("hu", "SimpleSpeak", expr, "the 1 by 2 row matrix; 3, 5")?;
+    test("hu", "ClearSpeak",  expr, "az 1-szer 2 -es sor mátrix; 3, 5")?;
+    test("hu", "SimpleSpeak", expr, "az 1-szer 2 -es sor mátrix; 3, 5")?;
     return Ok(());
 
 }
@@ -90,8 +90,8 @@ fn matrix_1x3() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak", expr, "the 1 by 3 row matrix; negative x, 5, 12")?;
-    test("hu", "SimpleSpeak", expr, "the 1 by 3 row matrix; negative x, 5, 12")?;
+    test("hu", "ClearSpeak", expr, "az 1-szer 3 -es sor mátrix; negatív x, 5, 12")?;
+    test("hu", "SimpleSpeak", expr, "az 1-szer 3 -es sor mátrix; negatív x, 5, 12")?;
     return Ok(());
 
 }
@@ -121,8 +121,8 @@ fn matrix_2x1_not_simple() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak", expr, "the 2 by 1 column matrix; row 1; x plus 1; row 2; x minus 1")?;
-    test("hu", "SimpleSpeak", expr, "the 2 by 1 column matrix; row 1; x plus 1; row 2; x minus 1")?;
+    test("hu", "ClearSpeak", expr, "a(z) 2 x 1-es oszlop mátrix; 1 . sor; x plusz 1; 2 . sor; x mínusz 1")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 1-es oszlop mátrix; 1 . sor; x plusz 1; 2 . sor; x mínusz 1")?;
     return Ok(());
 
 }
@@ -161,14 +161,8 @@ fn matrix_3x1_not_simple() -> Result<()> {
         </mtable>
       <mo>)</mo></mrow></mrow>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the 3 by 1 column matrix; \
-            row 1; x; \
-            row 2; eigh; \
-            row 3; fraction, x over, x plus 1, end fraction")?;
-    test("hu", "ClearSpeak",  expr, "the 3 by 1 column matrix; \
-            row 1; x; \
-            row 2; eigh; \
-            row 3; the fraction with numerator x; and denominator x plus 1")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 3 x 1-es oszlop mátrix; 1 . sor; x; 2 . sor; a; 3 . sor; tört, x per, x plusz 1, tört vége")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 3 x 1-es oszlop mátrix; 1 . sor; x; 2 . sor; a; 3 . sor; a tört, melynek számlálója x; nevezője pedig x plusz 1")?;
             return Ok(());
 
 }
@@ -200,8 +194,8 @@ fn determinant_2x2() -> Result<()> {
         </mtable>
       <mo>|</mo></mrow></mrow>
                         </math>";
-    test("hu", "ClearSpeak",  expr, "the 2 by 2 determinant; row 1; 2, 1; row 2; 7, 5")?;
-    test("hu", "SimpleSpeak", expr, "the 2 by 2 determinant; row 1; 2, 1; row 2; 7, 5")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 2 x 2 determináns; 1 . sor; 2, 1; 2 . sor; 7, 5")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 2 determináns; 1 . sor; 2, 1; 2 . sor; 7, 5")?;
     return Ok(());
 
 }
@@ -240,8 +234,8 @@ fn matrix_2x3() -> Result<()> {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 2 by 3 matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
-    test("hu", "SimpleSpeak", expr, "the 2 by 3 matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 2 x 3 mátrix; 1 . sor; 3, 1, 4; 2 . sor; 0, 2, 6")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 3 mátrix; 1 . sor; 3, 1, 4; 2 . sor; 0, 2, 6")?;
     return Ok(());
 
 }
@@ -284,11 +278,9 @@ fn matrix_2x3_labeled() -> Result<()> {
     </math>
                                 ";
     test("hu", "ClearSpeak",  expr,
-        "the 2 by 3 matrix; row 1 with label (3.1); column 1; 3, column 2; 1, column 3; 4; \
-                                   row 2; column 1; 0, column 2; 2, column 3; 6")?;
+        "a(z) 2 x 3 mátrix; 1 . sor címkéje: (3.1); oszlop 1; 3, oszlop 2; 1, oszlop 3; 4; 2 . sor; oszlop 1; 0, oszlop 2; 2, oszlop 3; 6")?;
     test("hu", "SimpleSpeak", expr,
-        "the 2 by 3 matrix; row 1 with label (3.1); column 1; 3, column 2; 1, column 3; 4; \
-                                   row 2; column 1; 0, column 2; 2, column 3; 6")?;
+        "a(z) 2 x 3 mátrix; 1 . sor címkéje: (3.1); oszlop 1; 3, oszlop 2; 1, oszlop 3; 4; 2 . sor; oszlop 1; 0, oszlop 2; 2, oszlop 3; 6")?;
                                    return Ok(());
 
 }
@@ -319,8 +311,8 @@ fn matrix_3x1() -> Result<()> {
         </mtable> <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 3 by 1 column matrix; 1; 2; 3")?;
-    test("hu", "SimpleSpeak", expr, "the 3 by 1 column matrix; 1; 2; 3")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 3 x 1-es oszlop mátrix; 1; 2; 3")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 3 x 1-es oszlop mátrix; 1; 2; 3")?;
     return Ok(());
 
 }
@@ -357,8 +349,8 @@ fn matrix_4x1() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 4 by 1 column matrix; row 1; 3; row 2; 6; row 3; 1; row 4; 2")?;
-    test("hu", "SimpleSpeak", expr, "the 4 by 1 column matrix; row 1; 3; row 2; 6; row 3; 1; row 4; 2")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 4 x 1-es oszlop mátrix; 1 . sor; 3; 2 . sor; 6; 3 . sor; 1; 4 . sor; 2")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 4 x 1-es oszlop mátrix; 1 . sor; 3; 2 . sor; 6; 3 . sor; 1; 4 . sor; 2")?;
     return Ok(());
 
 }
@@ -399,9 +391,9 @@ fn matrix_4x1_labeled() -> Result<()> {
     </math>
                                 ";
     test("hu", "ClearSpeak",  expr,
-        "the 4 by 1 column matrix; row 1; 3; row 2; 6; row 3; 1; row 4 with label (3.1); 2")?;
+        "a(z) 4 x 1-es oszlop mátrix; 1 . sor; 3; 2 . sor; 6; 3 . sor; 1; 4 . sor címkéje: (3.1); 2")?;
     test("hu", "SimpleSpeak", expr,
-        "the 4 by 1 column matrix; row 1; 3; row 2; 6; row 3; 1; row 4 with label (3.1); 2")?;
+        "a(z) 4 x 1-es oszlop mátrix; 1 . sor; 3; 2 . sor; 6; 3 . sor; 1; 4 . sor címkéje: (3.1); 2")?;
         return Ok(());
 
 }
@@ -432,8 +424,8 @@ fn matrix_1x4() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 1 by 4 row matrix; column 1; 3, column 2; 6, column 3; 1, column 4; 2")?;
-    test("hu", "SimpleSpeak", expr, "the 1 by 4 row matrix; column 1; 3, column 2; 6, column 3; 1, column 4; 2")?;
+    test("hu", "ClearSpeak",  expr, "az 1-szer 4 -es sor mátrix; oszlop 1; 3, oszlop 2; 6, oszlop 3; 1, oszlop 4; 2")?;
+    test("hu", "SimpleSpeak", expr, "az 1-szer 4 -es sor mátrix; oszlop 1; 3, oszlop 2; 6, oszlop 3; 1, oszlop 4; 2")?;
     return Ok(());
 
 }
@@ -506,16 +498,8 @@ fn matrix_4x4() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
                                 ";
-    test("hu", "ClearSpeak",  expr, "the 4 by 4 matrix; \
-          row 1; column 1; 0, column 2; 3, column 3; 4, column 4; 3; \
-          row 2; column 1; 2, column 2; 1, column 3; 0, column 4; 9; \
-          row 3; column 1; 3, column 2; 0, column 3; 2, column 4; 1; \
-          row 4; column 1; 6, column 2; 2, column 3; 9, column 4; 0")?;
-    test("hu", "SimpleSpeak", expr, "the 4 by 4 matrix; \
-          row 1; column 1; 0, column 2; 3, column 3; 4, column 4; 3; \
-          row 2; column 1; 2, column 2; 1, column 3; 0, column 4; 9; \
-          row 3; column 1; 3, column 2; 0, column 3; 2, column 4; 1; \
-          row 4; column 1; 6, column 2; 2, column 3; 9, column 4; 0")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 4 x 4 mátrix; 1 . sor; oszlop 1; 0, oszlop 2; 3, oszlop 3; 4, oszlop 4; 3; 2 . sor; oszlop 1; 2, oszlop 2; 1, oszlop 3; 0, oszlop 4; 9; 3 . sor; oszlop 1; 3, oszlop 2; 0, oszlop 3; 2, oszlop 4; 1; 4 . sor; oszlop 1; 6, oszlop 2; 2, oszlop 3; 9, oszlop 4; 0")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 4 x 4 mátrix; 1 . sor; oszlop 1; 0, oszlop 2; 3, oszlop 3; 4, oszlop 4; 3; 2 . sor; oszlop 1; 2, oszlop 2; 1, oszlop 3; 0, oszlop 4; 9; 3 . sor; oszlop 1; 3, oszlop 2; 0, oszlop 3; 2, oszlop 4; 1; 4 . sor; oszlop 1; 6, oszlop 2; 2, oszlop 3; 9, oszlop 4; 0")?;
     return Ok(());
 }
 
@@ -564,18 +548,8 @@ fn matrix_4x2() -> Result<()> {
       <mo>)</mo></mrow></mrow>
     </math>
       ";
-    test("hu", "ClearSpeak",  expr, "the 4 by 2 matrix; \
-              row 1; column 1; 1, column 2; 3; \
-              row 2; column 1; 4, column 2; 2; \
-              row 3; column 1; 2, column 2; 1; \
-              row 4; column 1; 0, column 2; 5\
-    ")?;
-    test("hu", "SimpleSpeak", expr, "the 4 by 2 matrix; \
-              row 1; column 1; 1, column 2; 3; \
-              row 2; column 1; 4, column 2; 2; \
-              row 3; column 1; 2, column 2; 1; \
-              row 4; column 1; 0, column 2; 5\
-    ")?;
+    test("hu", "ClearSpeak",  expr, "a(z) 4 x 2 mátrix; 1 . sor; oszlop 1; 1, oszlop 2; 3; 2 . sor; oszlop 1; 4, oszlop 2; 2; 3 . sor; oszlop 1; 2, oszlop 2; 1; 4 . sor; oszlop 1; 0, oszlop 2; 5")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 4 x 2 mátrix; 1 . sor; oszlop 1; 1, oszlop 2; 3; 2 . sor; oszlop 1; 4, oszlop 2; 2; 3 . sor; oszlop 1; 2, oszlop 2; 1; 4 . sor; oszlop 1; 0, oszlop 2; 5")?;
     return Ok(());
 }
 
@@ -586,11 +560,11 @@ fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
-  test("hu", "SimpleSpeak", expr, "the absolute value of x")?;
-  test("hu", "ClearSpeak",  expr, "the absolute value of x")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "absolute value of x")?;
+  test("hu", "SimpleSpeak", expr, "az abszolút érték x")?;
+  test("hu", "ClearSpeak",  expr, "x abszolút értéke")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "x abszolút értéke")?;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "the absolute value of x, end absolute value")?;
+             expr, "x abszolút értéke, vége az abszolút értéknek")?;
   return Ok(());
 }
   
@@ -602,9 +576,9 @@ let expr = "<math>
       <mrow><mi>x</mi><mo>+</mo><mn>1</mn> </mrow>
     <mo>|</mo></mrow></mrow>
   </math>";
-  test("hu", "ClearSpeak", expr, "the absolute value of x plus 1")?;
+  test("hu", "ClearSpeak", expr, "x plusz 1 abszolút értéke")?;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "absolute value of x plus 1, end absolute value")?;
+             expr, "x plusz 1 abszolút értéke, vége az abszolút értéknek")?;
   return Ok(());
 }
 
@@ -615,7 +589,7 @@ fn simple_cardinality_value() -> Result<()> {
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "the cardinality of cap s")?;
+             "nagy s számossága")?;
     return Ok(());
 }
   
@@ -640,7 +614,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("hu", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "the 2 by 2 matrix; row 1; column 1; 2, column 2; 1; row 2; column 1; 7, column 2; 5")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; oszlop 1; 2, oszlop 2; 1; 2 . sor; oszlop 1; 7, oszlop 2; 5")?;
     return Ok(());
 }
 
@@ -665,7 +639,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "the 3 by 1 column matrix; row 1; 1; row 2; 2; row 3; 3")?;
+        expr, "a(z) 3 x 1-es oszlop mátrix; 1 . sor; 1; 2 . sor; 2; 3 . sor; 3")?;
     return Ok(());
 }
 
@@ -684,7 +658,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "the 1 by 2 row matrix; column 1; 1, column 2; 2")?;
+        expr, "az 1-szer 2 -es sor mátrix; oszlop 1; 1, oszlop 2; 2")?;
     return Ok(());
 }
 
@@ -704,8 +678,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
-                                                row 2; column 1; b sub 2 1; column 2; b sub 2 2")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; oszlop 1; b alsó index 1 láthatatlan elválasztó 1; oszlop 2; b alsó index 1 láthatatlan elválasztó 2; 2 . sor; oszlop 1; b alsó index 2 láthatatlan elválasztó 1; oszlop 2; b alsó index 2 láthatatlan elválasztó 2")?;
     return Ok(());
 }
 
@@ -730,7 +703,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("hu", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "the 2 by 2 matrix; row 1; 2, 1; row 2; 7, 5")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; 2, 1; 2 . sor; 7, 5")?;
     return Ok(());
 }
 
@@ -755,7 +728,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "the 3 by 1 column matrix; 1; 2; 3")?;
+        expr, "a(z) 3 x 1-es oszlop mátrix; 1; 2; 3")?;
     return Ok(());
 }
 
@@ -774,7 +747,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "the 1 by 2 row matrix; 1, 2")?;
+        expr, "az 1-szer 2 -es sor mátrix; 1, 2")?;
     return Ok(());
 }
 
@@ -794,8 +767,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "the 2 by 2 matrix; row 1; b sub 1 1; b sub 1 2; \
-                                                row 2; b sub 2 1; b sub 2 2")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; b alsó index 1 láthatatlan elválasztó 1; b alsó index 1 láthatatlan elválasztó 2; 2 . sor; b alsó index 2 láthatatlan elválasztó 1; b alsó index 2 láthatatlan elválasztó 2")?;
     return Ok(());
   }
 
@@ -820,7 +792,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "the 2 by 2 matrix; row 1; 2, 1; row 2; 7, 5; end matrix")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; 2, 1; 2 . sor; 7, 5; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -845,7 +817,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "the 3 by 1 column matrix; 1; 2; 3; end matrix")?;
+        expr, "a(z) 3 x 1-es oszlop mátrix; 1; 2; 3; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -864,7 +836,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "the 1 by 2 row matrix; 1, 2; end matrix")?;
+        expr, "az 1-szer 2 -es sor mátrix; 1, 2; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -884,8 +856,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
-                                                row 2; column 1; b sub 2 1; column 2; b sub 2 2; end matrix")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; oszlop 1; b alsó index 1 láthatatlan elválasztó 1; oszlop 2; b alsó index 1 láthatatlan elválasztó 2; 2 . sor; oszlop 1; b alsó index 2 láthatatlan elválasztó 1; oszlop 2; b alsó index 2 láthatatlan elválasztó 2; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -910,7 +881,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("hu", "ClearSpeak_Matrix", "Vector",
-        expr, "the 2 by 2 matrix; row 1; 2, 1; row 2; 7, 5")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; 2, 1; 2 . sor; 7, 5")?;
     return Ok(());
   }
 
@@ -935,7 +906,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "Vector",
-        expr, "the 3 by 1 column vector; 1; 2; 3")?;
+        expr, "a(z) 3 x 1-es oszlop vektor; 1; 2; 3")?;
     return Ok(());
   }
 
@@ -954,7 +925,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "Vector",
-        expr, "the 1 by 2 row vector; 1, 2")?;
+        expr, "az 1-szer 2 -es sor vektor; 1, 2")?;
     return Ok(());
   }
 
@@ -974,8 +945,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "Vector",
-        expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
-                                                row 2; column 1; b sub 2 1; column 2; b sub 2 2")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; oszlop 1; b alsó index 1 láthatatlan elválasztó 1; oszlop 2; b alsó index 1 láthatatlan elválasztó 2; 2 . sor; oszlop 1; b alsó index 2 láthatatlan elválasztó 1; oszlop 2; b alsó index 2 láthatatlan elválasztó 2")?;
     return Ok(());
   }
 
@@ -1000,7 +970,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndVector",
-        expr, "the 2 by 2 matrix; row 1; 2, 1; row 2; 7, 5; end matrix")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; 2, 1; 2 . sor; 7, 5; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -1025,7 +995,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndVector",
-        expr, "the 3 by 1 column vector; 1; 2; 3; end vector")?;
+        expr, "a(z) 3 x 1-es oszlop vektor; 1; 2; 3; vége a vektornak")?;
     return Ok(());
   }
 
@@ -1044,7 +1014,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>]</mo></mrow></mrow>
   </math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndVector",
-        expr, "the 1 by 2 row vector; 1, 2; end vector")?;
+        expr, "az 1-szer 2 -es sor vektor; 1, 2; vége a vektornak")?;
     return Ok(());
   }
 
@@ -1064,8 +1034,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndVector",
-        expr, "the 2 by 2 matrix; row 1; column 1; b sub 1 1; column 2; b sub 1 2; \
-                                                 row 2; column 1; b sub 2 1; column 2; b sub 2 2; end matrix")?;
+        expr, "a(z) 2 x 2 mátrix; 1 . sor; oszlop 1; b alsó index 1 láthatatlan elválasztó 1; oszlop 2; b alsó index 1 láthatatlan elválasztó 2; 2 . sor; oszlop 1; b alsó index 2 láthatatlan elválasztó 1; oszlop 2; b alsó index 2 láthatatlan elválasztó 2; vége a mátrixnak")?;
     return Ok(());
   }
 
@@ -1079,7 +1048,7 @@ fn matrix_binomial() -> Result<()> {
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
       </mrow><mo>)</mo>
     </math>";
-  test_ClearSpeak("hu", "ClearSpeak_Matrix", "Combinatorics", expr, "3 choose 2")?;
+  test_ClearSpeak("hu", "ClearSpeak_Matrix", "Combinatorics", expr, "3 alatt a 2")?;
     return Ok(());
   }
 
@@ -1091,7 +1060,7 @@ fn matrix_times() -> Result<()> {
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
   test("hu", "SimpleSpeak", expr,
-    "the 2 by 2 matrix; row 1; 1, 2; row 2; 3, 4; times, the 2 by 2 matrix; row 1; eigh, b; row 2; c, d")?;
+    "a(z) 2 x 2 mátrix; 1 . sor; 1, 2; 2 . sor; 3, 4; szorozva; a(z) 2 x 2 mátrix; 1 . sor; a, b; 2 . sor; c, d")?;
     return Ok(());
   }
 
@@ -1130,7 +1099,7 @@ fn unknown_mtable_property() -> Result<()> {
       </mtable>
     </math>";
     test("hu", "ClearSpeak",  expr,
-         "2 lines; line 1; eigh is equal to, b plus c minus d; line 2; plus e minus f")?;
+         "2 sor; 1 . sor; a egyenlő, b plusz c mínusz d; 2 . sor; plusz e mínusz f")?;
     return Ok(());
   }
 
@@ -1147,7 +1116,7 @@ fn zero_matrix() -> Result<()> {
       <mo>]</mo>
   </math>";
   test("hu", "SimpleSpeak", expr,
-    "the 2 by 2 zero matrix")?;
+    "a(z) 2 x 2 zérusmátrix")?;
     return Ok(());
   }
 
@@ -1164,7 +1133,7 @@ fn identity_matrix() -> Result<()> {
       <mo>)</mo>
   </math>";
   test("hu", "SimpleSpeak", expr,
-    "the 3 by 3 identity matrix")?;
+    "a(z) 3 x 3 egységmátrix")?;
     return Ok(());
   }
 
@@ -1180,7 +1149,7 @@ fn identity_matrix_false_positive_negative_one() -> Result<()> {
       <mo>]</mo>
   </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "the 2 by 2 diagonal matrix; column 1; 1; column 2; negative 1")?;
+      expr, "a(z) 2 x 2 diagonális mátrix; oszlop 1; 1; oszlop 2; negatív 1")?;
   Ok(())
 }
 
@@ -1196,7 +1165,7 @@ fn identity_matrix_false_positive_zero_diagonal() -> Result<()> {
       <mo>]</mo>
   </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "the 2 by 2 diagonal matrix; column 1; 1")?;
+      expr, "a(z) 2 x 2 diagonális mátrix; oszlop 1; 1")?;
   Ok(())
 }
 
@@ -1213,7 +1182,7 @@ fn diagonal_matrix() -> Result<()> {
       <mo>)</mo>
   </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "the 3 by 3 diagonal matrix; column 1; 2; column 2; 1; column 3; x squared")?;
+      expr, "a(z) 3 x 3 diagonális mátrix; oszlop 1; 2; oszlop 2; 1; oszlop 3; x a négyzeten")?;
   // test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")],
   //     expr, "the 3 by 3 diagonal matrix; row 1, column 1, 2; row 2, column 2, 1; row 3, column 3, x squared");
     return Ok(());
@@ -1231,8 +1200,8 @@ fn single_line_with_label() -> Result<()> {
   </mtable>
   </math>"#;
   test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")],
-      expr, "1 line, with label 2; b equals 2")?;
+      expr, "1 sor, címkével: 2; b egyenlő 2")?;
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "1 equation, with label 2; b equals 2")?;
+      expr, "1 egyenlet, címkével 2; b egyenlő 2")?;
     return Ok(());
   }

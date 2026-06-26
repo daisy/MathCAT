@@ -10,7 +10,7 @@ fn squared() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2</mn> </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "x squared")?;
+    test("hu", "SimpleSpeak", expr, "x a négyzeten")?;
     return Ok(());
 
 }
@@ -21,7 +21,7 @@ fn cubed() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>3</mn> </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "x cubed")?;
+    test("hu", "SimpleSpeak", expr, "x a köbön")?;
     return Ok(());
 
 }
@@ -32,7 +32,7 @@ fn cubed() -> Result<()> {
         let expr = "<math>
                         <msup> <mi>x</mi> <mn>4</mn> </msup>
                     </math>";
-        test("hu", "SimpleSpeak", expr, "x to the fourth")?;
+        test("hu", "SimpleSpeak", expr, "x a(z) negyedik hatványon")?;
         return Ok(());
 
     }
@@ -43,7 +43,7 @@ fn simple_mi_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mi>n</mi> </msup>
                 </math>";
-  test("hu", "SimpleSpeak", expr, "x to the n-th")?;
+  test("hu", "SimpleSpeak", expr, "x a(z) n-edik hatványon")?;
   return Ok(());
 
 }
@@ -54,7 +54,7 @@ fn zero_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>0</mn> </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "x to the 0")?;
+    test("hu", "SimpleSpeak", expr, "x a(z) nulladik hatványon")?;
     return Ok(());
 
 }
@@ -66,7 +66,7 @@ fn decimal_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2.0</mn> </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "x to the 20")?;
+    test("hu", "SimpleSpeak", expr, "x a(z) 20 hatványon")?;
     return Ok(());
 
 }
@@ -83,7 +83,7 @@ fn non_simple_power() -> Result<()> {
       </msup>
       </mrow>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "3 raised to the y plus 2 power")?;
+    test("hu", "SimpleSpeak", expr, "3 a(z) y plusz 2 hatványon")?;
     return Ok(());
 
 }
@@ -97,7 +97,7 @@ fn negative_power() -> Result<()> {
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "x to the negative 2")?;
+    test("hu", "SimpleSpeak", expr, "x a negatív 2 hatványon")?;
     return Ok(());
 
 }
@@ -111,7 +111,7 @@ fn simple_fraction_power() -> Result<()> {
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("hu", "SimpleSpeak", expr, "x raised to the 1 third power")?;
+  test("hu", "SimpleSpeak", expr, "x a(z) 1 harmad hatványon")?;
   return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn nested_squared_power_with_coef() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("hu", "SimpleSpeak", expr, "3 raised to the 2 x squared power")?;
+  test("hu", "SimpleSpeak", expr, "3 emelve a(z) 2 x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -156,7 +156,7 @@ fn nested_squared_power_with_neg_coef() -> Result<()> {
     </msup>
     </mrow>
   </math>";
-  test("hu", "SimpleSpeak", expr, "3 raised to the negative 2 x squared power")?;
+  test("hu", "SimpleSpeak", expr, "3 emelve a negatív 2 x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -174,7 +174,7 @@ fn nested_cubed_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("hu", "SimpleSpeak", expr, "y raised to the 4 fifths cubed power")?;
+  test("hu", "SimpleSpeak", expr, "y emelve a(z) 4 ötöd a köbön hatványra")?;
   return Ok(());
 
 }
@@ -194,7 +194,7 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("hu", "SimpleSpeak", expr, "y raised to the negative 4 fifths cubed power")?;
+  test("hu", "SimpleSpeak", expr, "y a(z) negatív 4 ötöd a köbön hatványon")?;
   return Ok(());
 
 }
@@ -219,7 +219,7 @@ fn nested_number_times_squared() -> Result<()> {
         </msup>
         </mrow>
         </math>";
-  test("hu", "SimpleSpeak", expr, "e raised to the 1 half x squared power")?;
+  test("hu", "SimpleSpeak", expr, "e emelve a(z) 1 ketted x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -244,7 +244,7 @@ fn nested_negative_number_times_squared() -> Result<()> {
     </msup>
     </mrow>
     </math>";
-  test("hu", "SimpleSpeak", expr, "e raised to the negative 1 half x squared power")?;
+  test("hu", "SimpleSpeak", expr, "e emelve a negatív 1 ketted, x a négyzeten hatványra")?;
   return Ok(());
 
 }
@@ -266,7 +266,7 @@ fn nested_expr_to_tenth() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("hu", "SimpleSpeak", expr, "3 raised to the 3 to the tenth power")?;
+  test("hu", "SimpleSpeak", expr, "3 emelve a következő kitevőre:, 3 a(z) tizedik hatványon, kitevő vége")?;
   return Ok(());
 
 }
@@ -291,7 +291,7 @@ fn nested_non_simple_squared_exp() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("hu", "SimpleSpeak", expr, "3 raised to the open paren x plus 1, close paren squared power")?;
+  test("hu", "SimpleSpeak", expr, "3 emelve a következő kitevőre:, nyitott zárójel, x plusz 1, zárt zárójel a négyzeten, kitevő vége")?;
   return Ok(());
 
 }
@@ -308,7 +308,7 @@ fn nested_simple_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("hu", "SimpleSpeak", expr, "t raised to the 4 fifths to the n-th power")?;
+  test("hu", "SimpleSpeak", expr, "t emelve a következő kitevőre:, 4 ötöd a(z) n-edik hatványon, kitevő vége")?;
   return Ok(());
 
 }
@@ -325,9 +325,9 @@ fn nested_end_exponent_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("hu", "SimpleSpeak", expr, "t raised to the 4 fifths raised to the n plus 1 power; end exponent")?;
+  test("hu", "SimpleSpeak", expr, "t emelve a következő kitevőre:, 4 ötöd a(z) n plusz 1 hatványon, kitevő vége")?;
   test_prefs("hu", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-  "t raised to the 4 fifths raised to the n plus 1 power")?;
+  "t emelve a következő kitevőre:, 4 ötöd a(z) n plusz 1 hatványon, kitevő vége")?;
   return Ok(());
 
 }
@@ -344,7 +344,7 @@ fn nested_end_exponent_neg_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("hu", "SimpleSpeak", expr, "t raised to the 4 fifths to the negative 3, end exponent")?;
+  test("hu", "SimpleSpeak", expr, "t emelve a következő kitevőre:, 4 ötöd a negatív 3 hatványon, kitevő vége")?;
   return Ok(());
 
 }
@@ -378,7 +378,7 @@ fn nested_complex_power() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("hu", "SimpleSpeak", expr, "e raised to the negative 1 half times; open paren, fraction, x minus mu, over sigma, end fraction; close paren squared power")?;
+  test("hu", "SimpleSpeak", expr, "e emelve a következő kitevőre:, negatív 1 ketted, szorozva; nyitott zárójel; tört, x mínusz mű, per szigma, tört vége; zárt zárójel a négyzeten, kitevő vége")?;
   return Ok(());
 
 }
@@ -395,7 +395,7 @@ fn default_power() -> Result<()> {
       </mfrac>
     </msup>
   </math>";
-  test("hu", "SimpleSpeak", expr, "t raised to the fraction, b plus 1, over 3, end fraction; power")?;
+  test("hu", "SimpleSpeak", expr, "t a(z) tört, b plusz 1, per 3, tört vége; hatványon")?;
   return Ok(());
 
 }

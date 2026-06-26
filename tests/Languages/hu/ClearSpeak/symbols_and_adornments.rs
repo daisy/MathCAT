@@ -7,7 +7,7 @@ fn multiplication() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn><mo>×</mo><mn>3</mn>
                 </math>";
-    test("hu", "ClearSpeak", expr, "2 times 3")?;
+    test("hu", "ClearSpeak", expr, "2 szorozva 3")?;
     return Ok(());
 
 }
@@ -18,7 +18,7 @@ fn multiplication_by() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn><mo>×</mo><mn>3</mn>
                 </math>";
-    test_ClearSpeak("hu", "ClearSpeak_MultSymbolX", "By", expr, "2 by 3")?;
+    test_ClearSpeak("hu", "ClearSpeak_MultSymbolX", "By", expr, "2 szorozva 3")?;
     return Ok(());
 
 }
@@ -29,7 +29,7 @@ fn multiplication_cross() -> Result<()> {
     let expr = "<math>
                     <mi>u</mi><mo>×</mo><mi>v</mi>
                 </math>";
-    test_ClearSpeak("hu", "ClearSpeak_MultSymbolX", "Cross", expr, "u cross v")?;
+    test_ClearSpeak("hu", "ClearSpeak_MultSymbolX", "Cross", expr, "u kereszt v")?;
     return Ok(());
 
 }
@@ -41,7 +41,7 @@ fn ellipses_auto_start() -> Result<()> {
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-    test("hu", "ClearSpeak", expr, "dot dot dot comma, negative 2 comma, negative 1 comma, 0")?;
+    test("hu", "ClearSpeak", expr, "pont pont pont vessző, negatív 2 vessző, negatív 1 vessző, 0")?;
     return Ok(());
 
 }
@@ -58,7 +58,7 @@ fn ellipses_auto_end() -> Result<()> {
             <mo>,</mo>
             <mi>…</mi>
         </math>";
-    test_ClearSpeak("hu", "ClearSpeak_Ellipses", "Auto", expr, "1 comma, 2 comma, 3 comma, dot dot dot")?;
+    test_ClearSpeak("hu", "ClearSpeak_Ellipses", "Auto", expr, "1 vessző, 2 vessző, 3 vessző, pont pont pont")?;
     return Ok(());
 
 }
@@ -80,7 +80,7 @@ fn ellipses_auto_middle() -> Result<()> {
             </mrow>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_Ellipses", "Auto", expr,
-            "1 comma, 2 comma, 3 comma, dot dot dot comma, 20")?;
+            "1 vessző, 2 vessző, 3 vessző, pont pont pont vessző, 20")?;
             return Ok(());
 
 }
@@ -94,7 +94,7 @@ fn ellipses_auto_both() -> Result<()> {
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("hu", "ClearSpeak_Ellipses", "Auto", expr,
-            "dot dot dot comma, negative 2 comma, negative 1 comma, 0 comma, 1 comma, 2 comma, dot dot dot")?;
+            "pont pont pont vessző, negatív 2 vessző, negatív 1 vessző, 0 vessző, 1 vessző, 2 vessző, pont pont pont")?;
             return Ok(());
 
 }
@@ -106,7 +106,7 @@ fn ellipses_and_so_on_start() -> Result<()> {
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-        test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr, "dot dot dot comma, negative 2 comma, negative 1 comma, 0")?;
+        test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr, "pont pont pont vessző, negatív 2 vessző, negatív 1 vessző, 0")?;
         return Ok(());
 
 }
@@ -123,7 +123,7 @@ fn ellipses_and_so_on_end() -> Result<()> {
             <mo>,</mo>
             <mi>…</mi>
         </math>";
-    test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr, "1 comma, 2 comma, 3 and so on")?;
+    test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr, "1 vessző, 2 vessző, 3 és így tovább")?;
     return Ok(());
 
 }
@@ -145,7 +145,7 @@ fn ellipses_and_so_on_middle() -> Result<()> {
             </mrow>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr,
-            "1 comma, 2 comma, 3 and so on up to 20")?;
+            "1 vessző, 2 vessző, 3, és így tovább egészen az alábbi értékig:; 20")?;
             return Ok(());
 
 }
@@ -159,7 +159,7 @@ fn ellipses_and_so_on_both() -> Result<()> {
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("hu", "ClearSpeak_Ellipses", "AndSoOn", expr,
-            "dot dot dot comma, negative 2 comma, negative 1 comma, 0 comma, 1 comma, 2 comma, dot dot dot")?;
+            "pont pont pont vessző, negatív 2 vessző, negatív 1 vessző, 0 vessző, 1 vessző, 2 vessző, pont pont pont")?;
             return Ok(());
 
 }
@@ -171,7 +171,7 @@ fn vertical_line_auto() -> Result<()> {
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-            "3 divides 6")?;
+            "3 osztja 6")?;
             return Ok(());
 
 }
@@ -183,7 +183,7 @@ fn vertical_line_divides() -> Result<()> {
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Divides", expr,
-            "3 divides 6")?;
+            "3 osztja 6")?;
             return Ok(());
 
 }
@@ -194,7 +194,7 @@ fn vertical_line_divides() -> Result<()> {
             <mn>3</mn><mo>|</mo><mn>6</mn>
         </math>";
         test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Given", expr,
-                "3 given 6")?;
+                "3 adott 6")?;
                 return Ok(());
 
     }
@@ -214,7 +214,7 @@ fn vertical_line_divides() -> Result<()> {
                 </mrow>
             </math>";
         test_ClearSpeak_prefs("hu", vec![("ClearSpeak_VerticalLine", "Given"), ("ClearSpeak_ImpliedTimes", "None")]
-                        , expr, "cap p, open paren, cap eigh given cap b, close paren")?;
+                        , expr, "nagy p; nyitott zárójel, nagy a adott nagy b, zárt zárójel")?;
                         return Ok(());
     }
 
@@ -233,7 +233,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-            "the set of all x such that x is greater than 0")?;
+            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -254,7 +254,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "the set of all x such that x is greater than 0")?;
+            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -275,7 +275,7 @@ fn vertical_line_set_given() -> Result<()> {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Given", expr,
-            "the set of all x such that x is greater than 0")?;
+            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -299,7 +299,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-        "the set of all x such that the absolute value of x; is greater than 2")?;
+        "x melyekre teljesül, hogy minden x abszolút értéke; nagyobb, mint 2")?;
         return Ok(());
 
 }
@@ -324,7 +324,7 @@ fn vertical_line_evaluated_at() -> Result<()> {
             </msub>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-        "f of x evaluated at, x is equal to 5")?;
+        "f x helyettesítve, x egyenlő 5")?;
         return Ok(());
 
 }
@@ -346,7 +346,7 @@ fn vertical_line_evaluated_at_both() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-        "x squared plus x, evaluated at 1 minus the same expression evaluated at 0")?;
+        "x a négyzeten plusz x, behelyettesítve a(z) 1 értékét, levonva belőle a korábbi kifejezéssel azonos eredményt, behelyettesítve a(z) 0 értéket")?;
         return Ok(());
 
 }
@@ -370,7 +370,7 @@ fn vertical_line_evaluated_at_divides() -> Result<()> {
             </msub>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Divides", expr,
-        "f of x evaluated at, x is equal to 5")?;
+        "f x helyettesítve, x egyenlő 5")?;
         return Ok(());
 
 }
@@ -392,7 +392,7 @@ fn vertical_line_evaluated_at_both_given() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Given", expr,
-        "x squared plus x, evaluated at 1 minus the same expression evaluated at 0")?;
+        "x a négyzeten plusz x, behelyettesítve a(z) 1 értékét, levonva belőle a korábbi kifejezéssel azonos eredményt, behelyettesítve a(z) 0 értéket")?;
         return Ok(());
 
 }

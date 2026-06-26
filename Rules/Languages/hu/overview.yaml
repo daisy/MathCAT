@@ -13,7 +13,7 @@
 #   That might mean that at the top level, we may want to allow the first few children to expand
 
 
-- name: overview-default
+- name: overview-default # audit-ignore
   tag: [mfrac, fraction]
   match: "."
   replace:
@@ -21,22 +21,25 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - t: "per"
+      - T: "per"
       - x: "*[2]"
       else:
-      - t: "tört"
+      - T: "tört"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
   match: "."
   replace:
-  - t: "négyzetgyök"
+  - T: "négyzetgyök"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [T: ""]
       - x: "*[1]"
 
-- name: overview-default
+- name: overview-default # audit-ignore
   tag: [mroot, root]
   match: "."
   replace:
@@ -44,19 +47,19 @@
       if: "*[2][self::m:mn]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "négyzetgyök"]
+        then: [T: "négyzetgyök"]
       - else_if: "*[2][.='3']"
-        then: [t: "köbgyök"]
+        then: [T: "köbgyök"]
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", t: "gyök"]
+        then: [x: "ToOrdinal(*[2])", T: "gyök"]
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
           then:
           - x: "*[2]"
-          - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
+          - pronounce: [text: "", ipa: "θ", sapi5: "", eloquence: "T"]
           else: [x: "*[2]"]
-      - t: "gyök"
+      - T: "gyök"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
@@ -69,21 +72,21 @@
   - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
   replace:
   - x: count(*[2]/*)
-  - t: "szer"
+  - T: "szer"
   - x: count(*[2]/*[self::m:mtr][1]/*)
   - test:
       if: "*[1][.='|']" # just need to check the first bracket since we know it must be (, [, or |
-      then: [t: "determináns"]
-      else: [t: "mátrix"]
+      then: [T: "determináns"]
+      else: [T: "mátrix"]
 
-- name: overview-default
+- name: overview-default # audit-ignore
   tag: mtable
   match: "."
   replace:
   - x: count(*[2]/*)
-  - t: "szer"
+  - T: "szer"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - t: "táblázat"
+  - T: "táblázat"
 
 - name: short-mrow
   tag: mrow
@@ -107,6 +110,6 @@
   - pause: auto
   - x: "*[5]"
   - pause: auto
-  - t: "és így tovább"
+  - T: "és így tovább"
 
 - include: "SimpleSpeak_Rules.yaml"

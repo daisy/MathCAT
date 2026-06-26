@@ -1,106 +1,106 @@
 ---
 
 
- - "¢": [t: "centiméter"]                       	#  0xa2	(en: 'cents', DeepL translation)
- - "£": [t: "font"]                             	#  0xa3	(en: 'pounds', DeepL translation)
- - "¤": [t: "valuta jel"]                       	#  0xa4	(en: 'currency sign', DeepL translation)
- - "¥": [t: "jen"]                              	#  0xa5	(en: 'yen', DeepL translation)
- - "¦": [t: "szaggatott sáv"]                   	#  0xa6	(en: 'broken bar', DeepL translation)
- - "§": [t: "szakasz"]                          	#  0xa7	(en: 'section', DeepL translation)
- - "¨": [t: "dupla pont"]                       	#  0xa8	(en: 'double dot', DeepL translation)
- - "©": [t: "copyright"]                        	#  0xa9	(DeepL translation)
- - "ª": [t: "női rendjelző"]                    	#  0xaa	(en: 'feminine ordinal indicator', DeepL translation)
- - "¬": [t: "nem"]                              	#  0xac	(en: 'not', DeepL translation)
- - "«": [t: "balra mutató kettős szögletes idézőjel"]	#  0xab	(en: 'left-pointing double angle quote mark', DeepL translation)
+ - "¢": [T: "centiméter"]                       	#  0xa2	(en: 'cents', DeepL translation)
+ - "£": [T: "font"]                             	#  0xa3	(en: 'pounds', DeepL translation)
+ - "¤": [T: "valuta jel"]                       	#  0xa4	(en: 'currency sign', DeepL translation)
+ - "¥": [T: "jen"]                              	#  0xa5	(en: 'yen', DeepL translation)
+ - "¦": [T: "szaggatott sáv"]                   	#  0xa6	(en: 'broken bar', DeepL translation)
+ - "§": [T: "szakasz"]                          	#  0xa7	(en: 'section', DeepL translation)
+ - "¨": [T: "dupla pont"]                       	#  0xa8	(en: 'double dot', DeepL translation)
+ - "©": [T: "szerzői jog"]                        	#  0xa9	(DeepL translation)
+ - "ª": [T: "női rendjelző"]                    	#  0xaa	(en: 'feminine ordinal indicator', DeepL translation)
+ - "¬": [T: "nem"]                              	#  0xac	(en: 'not', DeepL translation)
+ - "«": [T: "balra mutató kettős szögletes idézőjel"]	#  0xab	(en: 'left-pointing double angle quote mark', DeepL translation)
  - "¯":                                         	#  0xaf
      - test:
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
-        then: [t: "sáv"]                        	# 	(en: 'bar', DeepL translation)
-        else: [t: "vonal"]                      	# 	(en: 'line', DeepL translation)
- - "²": [t: "kettő"]                            	#  0xb2	(en: 'two', DeepL translation)
- - "³": [t: "három"]                            	#  0xb3	(en: 'three', DeepL translation)
- - "´": [t: "hegyes"]                           	#  0xb4	(en: 'acute', DeepL translation)
- - "µ": [t: "mikro"]                            	#  0xb5	(en: 'micro', DeepL translation)
- - "¹": [t: "egy"]                              	#  0xb9	(en: 'one', DeepL translation)
- - "º": [t: "hímnemű ordinális jelző"]          	#  0xb9	(en: 'masculine ordinal indicator', DeepL translation)
+        then: [T: "sáv"]                        	# 	(en: 'bar', DeepL translation)
+        else: [T: "vonal"]                      	# 	(en: 'line', DeepL translation)
+ - "²": [T: "kettő"]                            	#  0xb2	(en: 'two', DeepL translation)
+ - "³": [T: "három"]                            	#  0xb3	(en: 'three', DeepL translation)
+ - "´": [T: "éles ékezet"]                           	#  0xb4	(en: 'acute', DeepL translation)
+ - "µ": [T: "mikro"]                            	#  0xb5	(en: 'micro', DeepL translation)
+ - "¹": [T: "egy"]                              	#  0xb9	(en: 'one', DeepL translation)
+ - "º": [T: "hímnemű ordinális jelző"]          	#  0xb9	(en: 'masculine ordinal indicator', DeepL translation)
  - "·":
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "idők"]                       	# 	(en: 'times', DeepL translation)
-        else: [t: "pont"]                       	# 	(en: 'dot', DeepL translation)
+        then: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
+        else: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
  - "×":                                         	#  0xd7
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "idők"]                       	# 	(en: 'times', DeepL translation)
+        then: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "by"]                     	# 	(DeepL translation)
-            else: [t: "kereszt"]                	# 	(en: 'cross', DeepL translation)
- - "÷": [t: "osztva"]                           	#  0xf7	(en: 'divided by', DeepL translation)
- - "¡": [t: "fordított felkiáltójel"]           	#  0xa1	(en: 'inverted exclamation mark', DeepL translation)
- - "¶": [t: "bekezdésjelzés"]                   	#  0xb6	(en: 'paragraph mark', DeepL translation)
- - "¿": [t: "fordított kérdőjel"]               	#  0xbf	(en: 'inverted question mark', DeepL translation)
+            then: [T: "szorozva"]                     	# 	(DeepL translation)
+            else: [T: "kereszt"]                	# 	(en: 'cross', DeepL translation)
+ - "÷": [T: "osztva"]                           	#  0xf7	(en: 'divided by', DeepL translation)
+ - "¡": [T: "fordított felkiáltójel"]           	#  0xa1	(en: 'inverted exclamation mark', DeepL translation)
+ - "¶": [T: "bekezdésjelző"]                   	#  0xb6	(en: 'paragraph mark', DeepL translation)
+ - "¿": [T: "fordított kérdőjel"]               	#  0xbf	(en: 'inverted question mark', DeepL translation)
 
- - "ʰ": [t: "módosító kis h"]                   	#  0x2b0	(en: 'modifier small h', DeepL translation)
- - "ʱ": [t: "módosító kis h horoggal"]          	#  0x2b1	(en: 'modifier small h with hook', DeepL translation)
- - "ʲ": [t: "módosító kis j"]                   	#  0x2b2	(en: 'modifier small j', DeepL translation)
- - "ʳ": [t: "módosító kis r"]                   	#  0x2b3	(en: 'modifier small r', DeepL translation)
- - "ʴ": [t: "módosító kis fordított r"]         	#  0x2b4	(en: 'modifier small turned r', DeepL translation)
- - "ʵ": [t: "módosító kis fordított r horoggal"]	#  0x2b5	(en: 'modifier small turned r with hook', DeepL translation)
+ - "ʰ": [T: "módosító kis h"]                   	#  0x2b0	(en: 'modifier small h', DeepL translation)
+ - "ʱ": [T: "módosító kis h horoggal"]          	#  0x2b1	(en: 'modifier small h with hook', DeepL translation)
+ - "ʲ": [T: "módosító kis j"]                   	#  0x2b2	(en: 'modifier small j', DeepL translation)
+ - "ʳ": [T: "módosító kis r"]                   	#  0x2b3	(en: 'modifier small r', DeepL translation)
+ - "ʴ": [T: "módosító kis fordított r"]         	#  0x2b4	(en: 'modifier small turned r', DeepL translation)
+ - "ʵ": [T: "módosító kis fordított r horoggal"]	#  0x2b5	(en: 'modifier small turned r with hook', DeepL translation)
  - "ʶ":                                         	#  0x2b6
-    - t: "módosító kis fordított"               	# 	(en: 'modifier small inverted', DeepL translation)
-    - spell: "translate('R', 'R', 'R')"
+    - T: "módosító kis fordított a"               	# 	(en: 'modifier small inverted', DeepL translation)
+    - SPELL: "translate('R', 'R', 'R')"
 
- - "ʷ": [t: "módosító kis w"]                   	#  0x2b7	(en: 'modifier small w', DeepL translation)
- - "ʸ": [t: "módosító kis y"]                   	#  0x2b8	(en: 'modifier small y', DeepL translation)
- - "ʹ": [t: "modifier prime"]                   	#  0x2b9	(DeepL translation)
- - "ʺ": [t: "módosító kettős prím"]             	#  0x2ba	(en: 'modifier double prime', DeepL translation)
- - "ʻ": [t: "módosító fordított vessző"]        	#  0x2bb	(en: 'modifier turned comma', DeepL translation)
- - "ʼ": [t: "módosító aposztróf"]               	#  0x2bc	(en: 'modifier apostrophe', DeepL translation)
- - "ʽ": [t: "módosító fordított vessző"]        	#  0x2bd	(en: 'modifier reversed comma', DeepL translation)
- - "ʾ": [t: "módosító jobb fél gyűrű"]          	#  0x2be	(en: 'modifier right half ring', DeepL translation)
- - "ʿ": [t: "módosító bal fél gyűrű"]           	#  0x2bf	(en: 'modifier left half ring', DeepL translation)
- - "ˀ": [t: "módosító glottal stop"]            	#  0x2c0	(en: 'modifier glottal stop', DeepL translation)
- - "ˁ": [t: "módosító fordított glottal stop"]  	#  0x2c1	(en: 'modifier reversed glottal stop', DeepL translation)
- - "˂": [t: "módosító bal oldali nyílhegy"]     	#  0x2c2	(en: 'modifier left arrowhead', DeepL translation)
- - "˃": [t: "módosító jobb oldali nyílhegy"]    	#  0x2c3	(en: 'modifier right arrowhead', DeepL translation)
- - "˄": [t: "módosító felfelé mutató nyílhegy"] 	#  0x2c4	(en: 'modifier up arrowhead', DeepL translation)
- - "˅": [t: "módosító lefelé nyílhegy"]         	#  0x2c5	(en: 'modifier down arrowhead', DeepL translation)
- - "ˆ": [t: "módosító circumflex ékezet"]       	#  0x2c6	(en: 'modifier circumflex accent', DeepL translation)
- - "ˇ": [t: "ellenőrzés"]                       	#  0x2c7	(en: 'check', DeepL translation)
- - "ˈ": [t: "módosító függőleges vonal"]        	#  0x2c8	(en: 'modifier vertical line', DeepL translation)
- - "ˉ": [t: "módosító makron"]                  	#  0x2c9	(en: 'modifier macron', DeepL translation)
- - "ˊ": [t: "módosító hegyes ékezet"]           	#  0x2ca	(en: 'modifier acute accent', DeepL translation)
- - "ˋ": [t: "módosító súlyos ékezet"]           	#  0x2cb	(en: 'modifier grave accent', DeepL translation)
- - "ˌ": [t: "módosító alacsony függőleges vonal"]	#  0x2cc	(en: 'modifier low vertical line', DeepL translation)
- - "ˍ": [t: "módosító alacsony makron"]         	#  0x2cd	(en: 'modifier low macron', DeepL translation)
- - "ˎ": [t: "módosító alacsony súlyos ékezet"]  	#  0x2ce	(en: 'modifier low grave accent', DeepL translation)
- - "ˏ": [t: "módosító alacsony hegyes ékezet"]  	#  0x2cf	(en: 'modifier low acute accent', DeepL translation)
- - "ː": [t: "módosító háromszögű kettőspont"]   	#  0x2d0	(en: 'modifier triangular colon', DeepL translation)
- - "ˑ": [t: "módosító fél háromszög alakú kettőspont"]	#  0x2d1	(en: 'modifier half triangular colon', DeepL translation)
- - "˒": [t: "módosító középen jobb oldali félgyűrűvel"]	#  0x2d2	(en: 'modifier centered right half ring', DeepL translation)
- - "˓": [t: "módosító középen bal oldali félgyűrű"]	#  0x2d3	(en: 'modifier centered left half ring', DeepL translation)
- - "˔": [t: "módosító fel tadck"]               	#  0x2d4	(en: 'modifier up tadck', DeepL translation)
- - "˕": [t: "módosító lefelé tack"]             	#  0x2d5	(en: 'modifier down tack', DeepL translation)
- - "˖": [t: "módosító plusz jel"]               	#  0x2d6	(en: 'modifier plus sign', DeepL translation)
- - "˗": [t: "módosító mínusz jel"]              	#  0x2d7	(en: 'modifier minus sign', DeepL translation)
- - "˘": [t: "breve"]                            	#  0x2d8	(DeepL translation)
- - "˙": [t: "pont"]                             	#  0x2d9	(en: 'dot', DeepL translation)
- - "˚": [t: "gyűrű felett"]                     	#  0x2da	(en: 'ring above', DeepL translation)
- - "˛": [t: "ogonek"]                           	#  0x2db	(DeepL translation)
- - "˜": [t: "kis tilde"]                        	#  0x2dc	(en: 'small tilde', DeepL translation)
- - "˝": [t: "kettős hegyes ékezet"]             	#  0x2dd	(en: 'double acute accent', DeepL translation)
- - "˞": [t: "módosító rótikus horog"]           	#  0x2de	(en: 'modifier rhotic hook', DeepL translation)
- - "˟": [t: "módosító kereszt ékezet"]          	#  0x2df	(en: 'modifier cross accent', DeepL translation)
- - "ˠ": [t: "módosító kis gamma"]               	#  0x2e0	(en: 'modifier small gamma', DeepL translation)
- - "ˡ": [t: "módosító kis l"]                   	#  0x2e1	(en: 'modifier small l', DeepL translation)
- - "ˢ": [t: "módosító kis s"]                   	#  0x2e2	(en: 'modifier small s', DeepL translation)
- - "ˣ": [t: "módosító small x"]                 	#  0x2e3	(en: 'modifier small x', DeepL translation)
- - "ˤ": [t: "módosító kis fordított glottal stop"]	#  0x2e4	(en: 'modifier small reversed glottal stop', DeepL translation)
- - "˥": [t: "módosító extra magas hangsáv"]     	#  0x2e5	(en: 'modifier extra-high tone bar', DeepL translation)
- - "˦": [t: "módosító magas hangsáv"]           	#  0x2e6	(en: 'modifier high tone bar', DeepL translation)
- - "˧": [t: "módosító középtónusú sáv"]         	#  0x2e7	(en: 'modifier mid tone bar', DeepL translation)
- - "˨": [t: "módosító alacsony hangsáv"]        	#  0x2e8	(en: 'modifier low tone bar', DeepL translation)
+ - "ʷ": [T: "módosító kis w"]                   	#  0x2b7	(en: 'modifier small w', DeepL translation)
+ - "ʸ": [T: "módosító kis y"]                   	#  0x2b8	(en: 'modifier small y', DeepL translation)
+ - "ʹ": [T: "módosító prím"]                   	#  0x2b9	(DeepL translation)
+ - "ʺ": [T: "módosító kettős prím"]             	#  0x2ba	(en: 'modifier double prime', DeepL translation)
+ - "ʻ": [T: "módosító fordított vessző"]        	#  0x2bb	(en: 'modifier turned comma', DeepL translation)
+ - "ʼ": [T: "módosító aposztróf"]               	#  0x2bc	(en: 'modifier apostrophe', DeepL translation)
+ - "ʽ": [T: "módosító fordított vessző"]        	#  0x2bd	(en: 'modifier reversed comma', DeepL translation)
+ - "ʾ": [T: "módosító jobb fél gyűrű"]          	#  0x2be	(en: 'modifier right half ring', DeepL translation)
+ - "ʿ": [T: "módosító bal fél gyűrű"]           	#  0x2bf	(en: 'modifier left half ring', DeepL translation)
+ - "ˀ": [T: "módosító glottal stop"]            	#  0x2c0	(en: 'modifier glottal stop', DeepL translation)
+ - "ˁ": [T: "módosító fordított glottal stop"]  	#  0x2c1	(en: 'modifier reversed glottal stop', DeepL translation)
+ - "˂": [T: "módosító bal oldali nyílhegy"]     	#  0x2c2	(en: 'modifier left arrowhead', DeepL translation)
+ - "˃": [T: "módosító jobb oldali nyílhegy"]    	#  0x2c3	(en: 'modifier right arrowhead', DeepL translation)
+ - "˄": [T: "konjunkció"] 	#  0x2c4	(en: 'modifier up arrowhead', DeepL translation)
+ - "˅": [T: "diszjunkció"]         	#  0x2c5	(en: 'modifier down arrowhead', DeepL translation)
+ - "ˆ": [T: "kalap karakter mint repülő ékezet"]       	#  0x2c6	(en: 'modifier circumflex accent', DeepL translation)
+ - "ˇ": [T: "hacsek karakter mint repülő ékezet"]                       	#  0x2c7	(en: 'check', DeepL translation)
+ - "ˈ": [T: "módosító függőleges vonal"]        	#  0x2c8	(en: 'modifier vertical line', DeepL translation)
+ - "ˉ": [T: "módosító makron"]                  	#  0x2c9	(en: 'modifier macron', DeepL translation)
+ - "ˊ": [T: "vessző mint éles ékezet"]           	#  0x2ca	(en: 'modifier acute accent', DeepL translation)
+ - "ˋ": [T: "módosító súlyos ékezet"]           	#  0x2cb	(en: 'modifier grave accent', DeepL translation)
+ - "ˌ": [T: "módosító alacsony függőleges vonal"]	#  0x2cc	(en: 'modifier low vertical line', DeepL translation)
+ - "ˍ": [T: "módosító alacsony makron"]         	#  0x2cd	(en: 'modifier low macron', DeepL translation)
+ - "ˎ": [T: "módosító alacsony súlyos ékezet"]  	#  0x2ce	(en: 'modifier low grave accent', DeepL translation)
+ - "ˏ": [T: "módosító alacsony hegyes ékezet"]  	#  0x2cf	(en: 'modifier low acute accent', DeepL translation)
+ - "ː": [T: "módosító háromszögű kettőspont"]   	#  0x2d0	(en: 'modifier triangular colon', DeepL translation)
+ - "ˑ": [T: "módosító fél háromszög alakú kettőspont"]	#  0x2d1	(en: 'modifier half triangular colon', DeepL translation)
+ - "˒": [T: "módosító középen jobb oldali félgyűrűvel"]	#  0x2d2	(en: 'modifier centered right half ring', DeepL translation)
+ - "˓": [T: "módosító középen bal oldali félgyűrű"]	#  0x2d3	(en: 'modifier centered left half ring', DeepL translation)
+ - "˔": [T: "módosító fel tadck"]               	#  0x2d4	(en: 'modifier up tadck', DeepL translation)
+ - "˕": [T: "módosító lefelé tack"]             	#  0x2d5	(en: 'modifier down tack', DeepL translation)
+ - "˖": [T: "módosító plusz jel"]               	#  0x2d6	(en: 'modifier plus sign', DeepL translation)
+ - "˗": [T: "módosító mínusz jel"]              	#  0x2d7	(en: 'modifier minus sign', DeepL translation)
+ - "˘": [T: "breve"]                            	#  0x2d8	(DeepL translation)
+ - "˙": [T: "pont"]                             	#  0x2d9	(en: 'dot', DeepL translation)
+ - "˚": [T: "gyűrű felett"]                     	#  0x2da	(en: 'ring above', DeepL translation)
+ - "˛": [T: "ogonek"]                           	#  0x2db	(DeepL translation)
+ - "˜": [T: "kis tilde"]                        	#  0x2dc	(en: 'small tilde', DeepL translation)
+ - "˝": [T: "kettős hegyes ékezet"]             	#  0x2dd	(en: 'double acute accent', DeepL translation)
+ - "˞": [T: "módosító rótikus horog"]           	#  0x2de	(en: 'modifier rhotic hook', DeepL translation)
+ - "˟": [T: "módosító kereszt ékezet"]          	#  0x2df	(en: 'modifier cross accent', DeepL translation)
+ - "ˠ": [T: "módosító kis gamma"]               	#  0x2e0	(en: 'modifier small gamma', DeepL translation)
+ - "ˡ": [T: "módosító kis l"]                   	#  0x2e1	(en: 'modifier small l', DeepL translation)
+ - "ˢ": [T: "módosító kis es"]                   	#  0x2e2	(en: 'modifier small s', DeepL translation)
+ - "ˣ": [T: "módosító kis x"]                 	#  0x2e3	(en: 'modifier small x', DeepL translation)
+ - "ˤ": [T: "módosító kis fordított glottal stop"]	#  0x2e4	(en: 'modifier small reversed glottal stop', DeepL translation)
+ - "˥": [T: "módosító extra magas hangsáv"]     	#  0x2e5	(en: 'modifier extra-high tone bar', DeepL translation)
+ - "˦": [T: "módosító magas hangsáv"]           	#  0x2e6	(en: 'modifier high tone bar', DeepL translation)
+ - "˧": [T: "módosító középtónusú sáv"]         	#  0x2e7	(en: 'modifier mid tone bar', DeepL translation)
+ - "˨": [T: "módosító alacsony hangsáv"]        	#  0x2e8	(en: 'modifier low tone bar', DeepL translation)
  - "˩": [t: "módosító extra alacsony tónusú sáv"]	#  0x2e9	(en: 'modifier extra-low tone bar', DeepL translation)
  - "˪": [t: "módosító yin távozó hangjelzés"]   	#  0x2ea	(en: 'modifier yin departing tone mark', DeepL translation)
  - "˫": [t: "módosító jang távozó hangjelzés"]  	#  0x2eb	(en: 'modifier yang departing tone mark', DeepL translation)
@@ -309,8 +309,8 @@
         then: [t: "pont pont pont pont"]        	# 	(en: 'dot dot dot', DeepL translation)
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "és így tovább"]          	# 	(en: 'and so on', DeepL translation)
-            else: [t: "és így tovább egészen"]  	# 	(en: 'and so on up to', DeepL translation)
+            then: [T: "és így tovább"]          	# 	(en: 'and so on', DeepL translation)
+            else: [T: "és így tovább egészen az alábbi értékig:"]  	# 	(en: 'and so on up to', DeepL translation)
 
  - "‰": [t: "per mille"]                        	#  0x2030	(DeepL translation)
  - "‱": [t: "per tízezer"]                      	#  0x2031	(en: 'per ten thousand', DeepL translation)
@@ -458,7 +458,7 @@
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
  - "ℎ": [t: "planck-állandó"]                   	#  0x210e	(en: 'planck constant', DeepL translation)
@@ -485,10 +485,10 @@
       - if: "'.' = '℺'"
         then: [t: "forgatott"]                  	# 	(en: 'rotated', DeepL translation)
       - else_if: "'.' = 'Ⅎ'"
-        then: [t: "fordított"]                  	# 	(en: 'turned', DeepL translation)
+        then: [T: "fordított"]                  	# 	(en: 'turned', DeepL translation)
       - else_if: "'.' = '⅃'"
-        then: [t: "fordított sans-serif"]       	# 	(en: 'reversed sans-serif', DeepL translation)
-        else: [t: "fordított sans-serif"]       	# 	(en: 'turned sans-serif', DeepL translation)
+        then: [T: "fordított talpatlan"]       	# 	(en: 'reversed sans-serif', DeepL translation)
+        else: [T: "fordított talpatlan"]       	# 	(en: 'turned sans-serif', DeepL translation)
     - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
 
  - "ℴ": [t: "írás o"]                           	#  0x2134	(en: 'script o', DeepL translation)
@@ -1185,10 +1185,10 @@
  - "⋅":                                         	#  0x22c5
     - test: 
         if: "@data-chem-formula-op"
-        then: [t: "pont"]                       	# 	(en: 'dot', DeepL translation)
-        else: [t: "idők"]                       	# 	(en: 'times', DeepL translation)
+        then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
+        else: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
 
- - "⋆": [t: "idők"]                             	#  0x22c6	(en: 'times', DeepL translation)
+ - "⋆": [T: "szorozva"]                             	#  0x22c6	(en: 'times', DeepL translation)
  - "⋇": [t: "osztás idő"]                       	#  0x22c7	(en: 'division times', DeepL translation)
  - "⋈": [t: "masni"]                            	#  0x22c8	(en: 'bowtie', DeepL translation)
  - "⋉":                                         	#  0x22c9
@@ -1403,7 +1403,7 @@
  - "⏠": [t: "felső teknőspáncélos konzol"]      	#  0x23e0	(en: 'top tortoise shell bracket', DeepL translation)
  - "⏡": [t: "alsó teknőspáncélos zárójel"]      	#  0x23e1	(en: 'bottom tortoise shell bracket', DeepL translation)
  - "⏢": [t: "fehér trapéz"]                     	#  0x23e2	(en: 'white trapezium', DeepL translation)
- - "⏣": [t: "benzol jobbra körrel"]             	#  0x23e3	(en: 'benzene right with circle', DeepL translation)
+ - "⏣": [T: "benzolgyűrű körrel"]             	#  0x23e3	(en: 'benzene right with circle', DeepL translation)
  - "⏤": [t: "egyenesség"]                       	#  0x23e4	(en: 'straightness', DeepL translation)
  - "⏥": [t: "laposság"]                         	#  0x23e5	(en: 'flatness', DeepL translation)
  - "⏦":                                         	#  0x23e6
@@ -1411,9 +1411,9 @@
      - t: "jelenlegi"                           	# 	(en: 'current', DeepL translation)
  - "⏧": [t: "elektromos kereszteződés"]         	#  0x23e7	(en: 'electrical intersection', DeepL translation)
  - "①-⑨":                                       	#  0x2460 - 0x2469
-    - t: "bekarikázva"                          	# 	(en: 'circled', DeepL translation)
+    - T: "bekarikázott"                          	# 	(en: 'circled', DeepL translation)
     - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
- - "⑩": [t: "bekarikázott tízes"]               	#  0x2469	(en: 'circled ten', DeepL translation)
+ - "⑩": [T: "bekarikázott tízes"]               	#  0x2469	(en: 'circled ten', DeepL translation)
  - "⑪": [t: "bekarikázott tizenegy"]            	#  0x246a	(en: 'circled eleven', DeepL translation)
  - "⑫": [t: "bekarikázott tizenkettő"]          	#  0x246b	(en: 'circled twelve', DeepL translation)
  - "⑬": [t: "bekarikázott tizenhármas"]         	#  0x246c	(en: 'circled thirteen', DeepL translation)
@@ -1456,36 +1456,36 @@
     - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "Ⓐ-ⓩ":                                       	#  0x24b6 - 0x24cf
-    - t: "bekarikázva"                          	# 	(en: 'circled', DeepL translation)
+    - T: "bekarikázott"                          	# 	(en: 'circled', DeepL translation)
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "🅐-🅩":                                       	#  0x1f150 - 0x1f169
-    - t: "fekete bekarikázva"                   	# 	(en: 'black circled', DeepL translation)
+    - T: "fekete körrel jelölt"                   	# 	(en: 'black circled', DeepL translation)
     - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
-    - t: "bekarikázva"                          	# 	(en: 'circled', DeepL translation)
+    - T: "bekarikázott"                          	# 	(en: 'circled', DeepL translation)
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
  - "⓪": [t: "bekarikázott nulla"]               	#  0x24ea	(en: 'circled zero', DeepL translation)
- - "⓫": [t: "fekete kör alakú tizenegyes"]      	#  0x24eb	(en: 'black circled eleven', DeepL translation)
- - "⓬": [t: "fekete bekarikázott tizenkettő"]   	#  0x24ec	(en: 'black circled twelve', DeepL translation)
- - "⓭": [t: "fekete bekarikázott tizenhárom"]   	#  0x24ed	(en: 'black circled thirteen', DeepL translation)
- - "⓮": [t: "fekete karikázott tizennégy"]      	#  0x24ee	(en: 'black circled fourteen', DeepL translation)
- - "⓯": [t: "fekete karikázott tizenöt"]        	#  0x24ef	(en: 'black circled fifteen', DeepL translation)
- - "⓰": [t: "fekete karikázott tizenhat"]       	#  0x24f0	(en: 'black circled sixteen', DeepL translation)
- - "⓱": [t: "fekete karikázott tizenhét"]       	#  0x24f1	(en: 'black circled seventeen', DeepL translation)
- - "⓲": [t: "fekete karikázott tizenegyes"]     	#  0x24f2	(en: 'black circled eighteen', DeepL translation)
- - "⓳": [t: "fekete bekarikázott tizenkilenc"]  	#  0x24f3	(en: 'black circled nineteen', DeepL translation)
+ - "⓫": [T: "fekete kör alakú tizenegyes"]      	#  0x24eb	(en: 'black circled eleven', DeepL translation)
+ - "⓬": [T: "fekete bekarikázott tizenkettő"]   	#  0x24ec	(en: 'black circled twelve', DeepL translation)
+ - "⓭": [T: "fekete bekarikázott tizenhárom"]   	#  0x24ed	(en: 'black circled thirteen', DeepL translation)
+ - "⓮": [T: "fekete bekarikázott tizennégy"]      	#  0x24ee	(en: 'black circled fourteen', DeepL translation)
+ - "⓯": [T: "fekete bekarikázott tizenöt"]        	#  0x24ef	(en: 'black circled fifteen', DeepL translation)
+ - "⓰": [T: "fekete bekarikázott tizenhat"]       	#  0x24f0	(en: 'black circled sixteen', DeepL translation)
+ - "⓱": [T: "fekete bekarikázott tizenhét"]       	#  0x24f1	(en: 'black circled seventeen', DeepL translation)
+ - "⓲": [T: "fekete karikázott tizenegyes"]     	#  0x24f2	(en: 'black circled eighteen', DeepL translation)
+ - "⓳": [T: "fekete bekarikázott tizenkilenc"]  	#  0x24f3	(en: 'black circled nineteen', DeepL translation)
  - "⓴": [t: "fekete bekarikázott húszas"]       	#  0x24f4	(en: 'black circled twenty', DeepL translation)
  - "⓵-⓽":                                       	#  0x24f5 - 0x24fe
-    - t: "dupla bekarikázott"                   	# 	(en: 'double circled', DeepL translation)
+    - T: "dupla bekarikázott"                   	# 	(en: 'double circled', DeepL translation)
     - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
- - "⓾": [t: "dupla bekarikázott tízes"]         	#  0x24fe	(en: 'double circled ten', DeepL translation)
- - "⓿": [t: "fekete bekarikázott nulla"]        	#  0x24ff	(en: 'black circled zero', DeepL translation)
- - "■": [t: "fekete négyzet"]                   	#  0x25a0	(en: 'black square', DeepL translation)
- - "□": [t: "fehér négyzet"]                    	#  0x25a1	(en: 'white square', DeepL translation)
- - "▢": [t: "fehér négyzet lekerekített sarkokkal"]	#  0x25a2	(en: 'white square with rounded corners', DeepL translation)
- - "▣": [t: "fehér négyzet, amely kis fekete négyzetet tartalmaz"]	#  0x25a3	(en: 'white square containing small black square', DeepL translation)
+ - "⓾": [T: "dupla bekarikázott tízes"]         	#  0x24fe	(en: 'double circled ten', DeepL translation)
+ - "⓿": [T: "fekete bekarikázott nulla"]        	#  0x24ff	(en: 'black circled zero', DeepL translation)
+ - "■": [T: "fekete négyzet"]                   	#  0x25a0	(en: 'black square', DeepL translation)
+ - "□": [T: "fehér négyzet"]                    	#  0x25a1	(en: 'white square', DeepL translation)
+ - "▢": [T: "fehér négyzet lekerekített sarkokkal"]	#  0x25a2	(en: 'white square with rounded corners', DeepL translation)
+ - "▣": [T: "fehér négyzet, amely kis fekete négyzetet tartalmaz"]	#  0x25a3	(en: 'white square containing small black square', DeepL translation)
  - "▤": [t: "négyzet vízszintes kitöltéssel"]   	#  0x25a4	(en: 'square with horizontal fill', DeepL translation)
  - "▥": [t: "négyzet függőleges kitöltéssel"]   	#  0x25a5	(en: 'square with vertical fill', DeepL translation)
  - "▦": [t: "négyzet ortogonális kereszthúzással kitöltve"]	#  0x25a6	(en: 'square with orthogonal crosshatch fill', DeepL translation)
@@ -1617,11 +1617,11 @@
  - "⚆": [t: "fehér kör jobbra ponttal"]         	#  0x2686	(en: 'white circle with dot right', DeepL translation)
  - "⚇": [t: "fehér kör két ponttal"]            	#  0x2687	(en: 'white circle wiht two dots', DeepL translation)
  - "⚈": [t: "fekete kör jobbra mutató ponttal"] 	#  0x2688	(en: 'black circle with dot right', DeepL translation)
- - "⚉": [t: "fekete kör két ponttal"]           	#  0x2689	(en: 'black circle wiht two dots', DeepL translation)
- - "⚪": [t: "közepes fehér kör"]                	#  0x26aa	(en: 'medium white circle', DeepL translation)
- - "⚫": [t: "közepes fekete kör"]               	#  0x26ab	(en: 'medium black circle', DeepL translation)
- - "⚬": [t: "közepes kis fehér kör"]            	#  0x26ac	(en: 'medium small white circle', DeepL translation)
- - "⚲": [t: "neutrális"]                        	#  0x26b2	(en: 'neuter', DeepL translation)
+ - "⚉": [T: "fekete kör két ponttal"]           	#  0x2689	(en: 'black circle wiht two dots', DeepL translation)
+ - "⚪": [T: "közepes fehér kör"]                	#  0x26aa	(en: 'medium white circle', DeepL translation)
+ - "⚫": [T: "közepes fekete kör"]               	#  0x26ab	(en: 'medium black circle', DeepL translation)
+ - "⚬": [T: "közepes kis fehér kör"]            	#  0x26ac	(en: 'medium small white circle', DeepL translation)
+ - "⚲": [T: "neutrális"]                        	#  0x26b2	(en: 'neuter', DeepL translation)
  - "✓": [t: "pipa"]                             	#  0x2713	(en: 'check mark', DeepL translation)
  - "✠": [t: "máltai kereszt"]                   	#  0x2720	(en: 'maltese cross', DeepL translation)
  - "✪": [t: "bekarikázott fehér csillag"]       	#  0x272a	(en: 'circled white star', DeepL translation)
@@ -3165,24 +3165,24 @@
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf080 - 0xf098
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝕒-𝕫":                                       	#  0x1d552 - 0x1d56b
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":                                       	#  0xf09a - 0xf0b3
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝟘-𝟡":                                       	#  0x1d7d8 - 0x1d7e1
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
  - "-":                                       	#  0xf0c0 - 0xf0c9
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '', '0123456789')"
 
  - "": [t: "dupla leütött nahblah"]            	#  0xf0ca	(en: 'double struck nahblah', DeepL translation)
@@ -3292,11 +3292,11 @@
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
 
  - "-":                                       	#  0xf220 - 0xf236
-    - t: "kettős ütés"                          	# 	(en: 'double struck', DeepL translation)
+    - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "": [t: "dupla áthúzott végső szigma"]      	#  0xf237	(en: 'double struck final sigma', DeepL translation)
@@ -3665,12 +3665,6 @@
         if: "not($IgnoreBold)"
         then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
-
- - "-":                                       	#  0xf52e - 0xf537  (old MathType)
-    - test:
-        if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', '0123456789')"
 
  - "𝟬-𝟵":                                       	#  0x1D7EC - 0x1D7F5
     - test:

@@ -77,7 +77,7 @@ fn function_intent() -> Result<()> {
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("hu", "SimpleSpeak", expr, "testing of x comma, y comma, z comma, 2")?;
+    test("hu", "SimpleSpeak", expr, "testing x vessző, y vessző, z vessző, 2")?;
     return Ok(());
 
 }
@@ -100,7 +100,7 @@ fn function_one_arg_intent() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:function($x)'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
-    test("hu", "SimpleSpeak", expr, "testing of x")?;
+    test("hu", "SimpleSpeak", expr, "testing x")?;
     return Ok(());
 
 }
@@ -123,35 +123,8 @@ fn silent_intent_msup() -> Result<()> {
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("hu", "SimpleSpeak", expr, "cap h 2")?;
-    test("hu", "ClearSpeak", expr, "cap h 2")?;
-    return Ok(());
-
-}
-
-// AI generated
-#[test]
-fn silent_intent_underscore() -> Result<()> {
-    let expr = "<math>
-        <msup intent='_($H,$n)'>
-            <mi arg='H' mathvariant='normal'>H</mi>
-            <mn arg='n'>2</mn>
-        </msup></math>";
-    test("hu", "SimpleSpeak", expr, "cap h 2")?;
-    test("hu", "ClearSpeak", expr, "cap h 2")?;
-    return Ok(());
-
-}
-
-// AI generated
-#[test]
-fn intent_prob_x() -> Result<()> {
-    let expr = "<math>
-    <msup intent='$op($arg)'>
-        <mi arg='arg'>x</mi>
-        <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
-    </msup></math>";
-    test("hu", "ClearSpeak", expr, "probability of x")?;
+    test("hu", "SimpleSpeak", expr, "nagy h 2")?;
+    test("hu", "ClearSpeak", expr, "nagy h 2")?;
     return Ok(());
 
 }

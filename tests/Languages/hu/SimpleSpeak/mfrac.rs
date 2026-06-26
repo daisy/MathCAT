@@ -10,7 +10,7 @@ fn common_fraction_half() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "1 half")?;
+    test("hu", "SimpleSpeak", expr, "1 ketted")?;
     return Ok(());
 
 }
@@ -21,7 +21,7 @@ fn common_fraction_thirds() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "2 thirds")?;
+    test("hu", "SimpleSpeak", expr, "2 harmad")?;
     return Ok(());
 
 }
@@ -32,7 +32,7 @@ fn common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>17</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "17 tenths")?;
+    test("hu", "SimpleSpeak", expr, "17 tized")?;
     return Ok(());
 
 }
@@ -44,7 +44,7 @@ fn not_SimpleSpeak_common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "89 over 10")?;
+    test("hu", "SimpleSpeak", expr, "89 per 10")?;
     return Ok(());
 
 }
@@ -63,7 +63,7 @@ fn non_simple_fraction() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x plus y, over, x minus y, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x plusz y, per, x mínusz y, tört vége")?;
     return Ok(());
 
 }
@@ -82,7 +82,7 @@ fn nested_fraction() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x plus, fraction, 1 over y, end fraction; over, x minus y, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x plusz, tört, 1 per y, tört vége; per, x mínusz y, tört vége")?;
     return Ok(());
 
 }
@@ -102,7 +102,7 @@ fn deeply_nested_fraction_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x plus, the square root of 1 over y; end root; over, x minus y, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x plusz, a négyzetgyöke ennek: 1 per y; gyök vége; per, x mínusz y, tört vége")?;
     return Ok(());
 
 }
@@ -121,7 +121,7 @@ fn deeply_nested_fraction_mrow_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x plus, the square root of 2 plus 1 over y; end root; over, x minus y, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x plusz, a négyzetgyöke ennek: 2 plusz 1 per y; gyök vége; per, x mínusz y, tört vége")?;
     return Ok(());
 
 }
@@ -140,7 +140,7 @@ fn numerator_simple_fraction() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x over, x minus y, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x per, x mínusz y, tört vége")?;
     return Ok(());
 
 }
@@ -156,7 +156,7 @@ fn denominator_simple_fraction() -> Result<()> {
         </mfrac>
     </math>
                             ";
-    test("hu", "SimpleSpeak", expr, "fraction, x minus y, over x, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, x mínusz y, per x, tört vége")?;
     return Ok(());
 
 }
@@ -175,7 +175,7 @@ fn frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("hu", "SimpleSpeak", expr, "62 miles per hour")?;
+    test("hu", "SimpleSpeak", expr, "62 mérföld per óra")?;
     return Ok(());
 
 }
@@ -193,7 +193,7 @@ fn singular_frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("hu", "SimpleSpeak", expr, "1 gallon per mile")?;
+    test("hu", "SimpleSpeak", expr, "1 gallon per mérföld")?;
     return Ok(());
 
 }
@@ -211,7 +211,7 @@ fn number_in_numerator_with_units() -> Result<()> {
             <mi intent=':unit'>mi</mi>
         </mfrac>
     </math>";
-    test("hu", "SimpleSpeak", expr, "3 gallons per mile")?;
+    test("hu", "SimpleSpeak", expr, "3 gallon per mérföld")?;
     return Ok(());
 
 }
@@ -226,7 +226,7 @@ fn units_with_powers() -> Result<()> {
             <msup> <mi intent=':unit'>s</mi><mn>2</mn> </msup>
         </mfrac>
     </math>";
-    test("hu", "SimpleSpeak", expr, "3 metres per second squared")?;
+    test("hu", "SimpleSpeak", expr, "3 méter per másodperc a négyzeten")?;
     return Ok(());
 
 }
@@ -239,7 +239,7 @@ fn mixed_number() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "3 and 1 half")?;
+    test("hu", "SimpleSpeak", expr, "3 és 1 ketted")?;
     return Ok(());
 
 }
@@ -252,7 +252,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "3 and 1 eighth")?;
+    test("hu", "SimpleSpeak", expr, "3 és 1 nyolcad")?;
     return Ok(());
 
 }
@@ -264,7 +264,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "3 and 7 eighty thirds")?;
+    test("hu", "SimpleSpeak", expr, "3 és 7 kilenc harmad")?;
     return Ok(());
 
 }
@@ -275,7 +275,7 @@ fn simple_text() -> Result<()> {
     let expr = "<math>
     <mfrac> <mi>rise</mi> <mi>run</mi> </mfrac>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "rise over run")?;
+    test("hu", "SimpleSpeak", expr, "rise per run")?;
     return Ok(());
 
 }
@@ -286,12 +286,12 @@ fn number_and_text() -> Result<()> {
     let expr = "<math>
             <mfrac>
             <mrow>
-                <mn>2</mn><mtext>miles</mtext></mrow>
+                <mn>2</mn><mtext>mérföld</mtext></mrow>
             <mrow>
-                <mn>3</mn><mtext>gallons</mtext></mrow>
+                <mn>3</mn><mtext>gallon</mtext></mrow>
             </mfrac>
         </math>";
-    test("hu", "SimpleSpeak", expr, "fraction, 2 miles, over, 3 gallons, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, 2 mérföld, per, 3 gallon, tört vége")?;
     return Ok(());
 
 }
@@ -318,7 +318,7 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test("hu", "SimpleSpeak", expr, "fraction, 1 half, over, 2 thirds, end fraction")?;
+    test("hu", "SimpleSpeak", expr, "tört, 1 ketted, per, 2 harmad, tört vége")?;
     return Ok(());
 
 }
@@ -332,7 +332,7 @@ fn binomial() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "2 times 7 choose 3")?;
+    test("hu", "SimpleSpeak", expr, "2 szorozva 7 a 3")?;
     return Ok(());
 
 }
@@ -346,7 +346,7 @@ fn binomial_non_simple_top() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "2 times, binomial n plus 7 choose 3")?;
+    test("hu", "SimpleSpeak", expr, "2 szorozva, binomiális kezdete n plusz 7 a 3")?;
     return Ok(());
 
 }
@@ -360,7 +360,7 @@ fn binomial_non_simple_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "2 times, 7 choose k plus 3 end binomial")?;
+    test("hu", "SimpleSpeak", expr, "2 szorozva, 7 a k plusz 3 binomiális vége")?;
     return Ok(());
 
 }
@@ -374,7 +374,7 @@ fn binomial_non_simple_top_and_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("hu", "SimpleSpeak", expr, "2 times, binomial n plus 7 choose k plus 3 end binomial")?;
+    test("hu", "SimpleSpeak", expr, "2 szorozva; binomiális kezdete n plusz 7 a k plusz 3 binomiális vége")?;
     return Ok(());
 
 }

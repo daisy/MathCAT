@@ -27,7 +27,7 @@
   tag: mrow
   match: "not(*)"
   replace:
-  - t: " " # say nothing -- placeholder
+  - T: " " # say nothing -- placeholder
 
 - name: default
   tag: mrow
@@ -42,7 +42,10 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  - test:
+    - if: "@data-roman-numeral" 
+      then: [SPELL: "text()", pause: "short"]
+      else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -59,15 +62,15 @@
   - test:
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-    - else_if: "@data-chem-element"                      # NavMode=Character needs this
-      then: [spell: "text()", pause: "short"]
+    - else_if: "@data-chem-element or @data-roman-numeral"                     # NavMode=Character needs this
+      then: [SPELL: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
 - name: default
   tag: ms
   match: "."
   replace:
-  - t: "the string"      # phrase('the string' is long)
+  - T: "a karakterlánc"      # phrase('the string' is long)
   - pause: short
   - x: "text()"
 
@@ -87,7 +90,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "over"               # phrase("the fraction x 'over' y")
+  - T: "per"               # phrase("the fraction x 'over' y")
   - x: "*[2]"
   - pause: short
 
@@ -95,13 +98,13 @@
   tag: mfrac
   match: "."
   replace:
-  - t: "start"              # phrase("'start'  fraction x over y end of fraction")
+  - T: "Tört kezdete"              # phrase("'start'  fraction x over y end of fraction")
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "over"               # phrase("the fraction x 'over' y")
+  - T: "per"               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -109,7 +112,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "end"]          # phrase("start of fraction x over y 'end over'")
+      then: [T: "tört vége"]          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 
@@ -120,16 +123,16 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]    # phrase("'the' root of x")
-  - t: "root"
+      then: [T: ""]    # phrase("'the' root of x")
+  - T: "gyöke"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "of"]    # phrase("the root 'of' x")
+      then: [T: ""]    # phrase("the root 'of' x")
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
-      then: [t: "end root", pause: medium] # phrase("root of x 'end root symbol'")
+      then: [T: "gyök vége", pause: medium] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
 - name: literal-default
@@ -138,16 +141,16 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]   # phrase("'the' root of x")
-  - t: "root with index" # phrase("the 'root with index' 3 of 5")
+      then: [T: ""]   # phrase("'the' root of x")
+  - T: "gyök indexszel" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short
-  - t: "of"              # phrase("the root 'of' x")
+  - T: ""              # phrase("the root 'of' x")
   - x: "*[2]"
   - pause: short
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [t: "end root symbol"] # phrase("root of x 'end root symbol'")
+      then: [T: "gyök vége"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub
@@ -164,7 +167,7 @@
   match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
-  - t: "sub"               # phrase(x 'sub' 2)
+  - T: "alsó index"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -173,7 +176,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "sub"               # phrase(x 'sub' 2)
+  - T: "alsó index"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -186,7 +189,7 @@
   - x: "*[1]"
   - test:
       if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"  # just say "x 1" for terse vs "x sub 1"
-      then: [t: "sub"]      # phrase(x 'sub' 2)
+      then: [T: "alsó index"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
 
@@ -198,7 +201,7 @@
   - test:
       if: "name(.)='msubsup'"
       then:
-      - t: "sub"          # phrase(x 'sub' 2)
+      - T: "alsó index"          # phrase(x 'sub' 2)
       - x: "*[2]"
   - test:
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
@@ -206,21 +209,21 @@
       else_test:
           if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
           then:
-          - t: "super"      # phrase(x 'super' 2)
+          - T: "alsó index"      # phrase(x 'super' 2)
           - x: "*[last()]"
           - test:
               if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
-              then: [t: "end super"]      # phrase(x super 2 'end of super')
+              then: [T: "felső index vége"]      # phrase(x super 2 'end of super')
           else:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "superscript"]
-              else: [t: "super"]
+              then: [T: "felső index"]
+              else: [T: "felső index"]
           - x: "*[last()]"
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "end superscript"]
-              else: [t: "end super"]
+              then: [T: "felső index vége"]
+              else: [T: "felső index vége"]
 
 - name: default
   tag: munder
@@ -228,11 +231,11 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [t: "quantity"]      # phrase(phrase(x 'quantity' with y above it)
+      then: [T: "mennyiség"]      # phrase(phrase(x 'quantity' with y above it)
   - x: "*[1]"
-  - t: "with"      # phrase(x 'with' z below it)
+  - T: ","      # phrase(x 'with' z below it)
   - x: "*[2]"
-  - t: "below"      # phrase(x with z 'below' it)
+  - T: "alatt"      # phrase(x with z 'below' it)
 
 - name: diacriticals
   tag: mover
@@ -247,11 +250,11 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [t: "quantity"]      # phrase(phrase(the 'quantity' x plus 1 with y above it)
+      then: [T: "mennyiség"]      # phrase(phrase(the 'quantity' x plus 1 with y above it)
   - x: "*[1]"
-  - t: "with"         # phrase(x modified 'with' y above it)
+  - T: ","         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "above"        # phrase(x modified 'with' y above it)
+  - T: "felett"        # phrase(x modified 'with' y above it)
 
 - name: default
   tag: munderover
@@ -259,13 +262,13 @@
   replace:
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
-      then: [t: "quantity"]      # phrase(the 'quantity' x plus 1 with y above it)
+      then: [T: "mennyiség"]      # phrase(the 'quantity' x plus 1 with y above it)
   - x: "*[1]"
-  - t: "with"         # phrase(x modified 'with' y above it)
+  - T: ","         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "below and"    # phrase(x modified with y 'below and' y above it)
+  - T: "alatta és"    # phrase(x modified with y 'below and' y above it)
   - x: "*[3]"
-  - t: "above"        # phrase(x modified with y 'above' it)
+  - T: "felett"        # phrase(x modified with y 'above' it)
 
 - name: default
   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
@@ -292,9 +295,8 @@
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"
               then:
-              - t: "with"      # phrase(substitute x 'with' y)
+              - T: "preskriptek"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
-              - t: "prescripts"      # phrase(in this equation certain 'prescripts' apply)
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
@@ -303,7 +305,7 @@
               - x: "$Prescripts[1]"
           - test:
               if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
-              then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
+              then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
               if: "not($Prescripts[2][self::m:none])"
               then:
@@ -320,7 +322,7 @@
                   - x: "$Prescripts[3]"
               - test:
                   if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [t: "and"]      # phrase(10 is grater than 8 'and' less than 15)
+                  then: [T: "és"]      # phrase(10 is grater than 8 'and' less than 15)
               - test:
                   if: "not($Prescripts[4][self::m:none])"
                   then:
@@ -329,9 +331,9 @@
               - test:
                   if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
                   then:
-                  - t: "and alternating prescripts"      # phrase(in this case there are values 'and alternating prescripts')
+                  - T: "és váltakozó preskriptek"      # phrase(in this case there are values 'and alternating prescripts')
                   - x: "$Prescripts[position() > 4]"
-                  - t: "end prescripts"      # phrase(This is where 'end prescripts' occurs)
+                  - T: "preskriptek vége"      # phrase(This is where 'end prescripts' occurs)
   - test:
       if: "$Postscripts"
       then:
@@ -345,10 +347,9 @@
               then:
               - test:
                   if: "$Prescripts"
-                  then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
-              - t: "with"      # phrase(substitute x 'with' y)
+                  then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
+              - T: "posskriptek"      # phrase(this material includes several 'postscripts')
               - x: "count($Postscripts) div 2"
-              - t: "postscripts"      # phrase(this material includes several 'postscripts')
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -357,7 +358,7 @@
               - x: "$Postscripts[1]"
           - test:
               if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
-              then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
+              then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
               if: "not($Postscripts[2][self::m:none])"
               then:
@@ -373,7 +374,7 @@
                   - x: "$Postscripts[3]"
               - test:
                   if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
+                  then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
               - test:
                   if: "not($Postscripts[4][self::m:none])"
                   then:
@@ -389,7 +390,7 @@
                       - x: "$Postscripts[5]"
                   - test:
                       if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
+                      then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
                   - test:
                       if: "not($Postscripts[6][self::m:none])"
                       then:
@@ -405,7 +406,7 @@
                           - x: "$Postscripts[7]"
                       - test:
                           if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [t: "and"]      # phrase(10 is less than 15 'and' greater than 5)
+                          then: [T: "és"]      # phrase(10 is less than 15 'and' greater than 5)
                       - test:
                           if: "not($Postscripts[8][self::m:none])"
                           then:
@@ -414,29 +415,30 @@
                       - test:
                           if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
                           then:
-                          - t: "and alternating scripts"      # phrase(this situation involves complexities 'and alternating scripts')
+                          - T: "és váltakozó szkriptek"      # phrase(this situation involves complexities 'and alternating scripts')
                           - x: "$Postscripts[position() > 8]"
-                          - t: "end scripts"      # phrase(At this point 'end scripts' occurs)
+                          - T: "szkriptek vége"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
-  - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
+  - NumColumns: "CountTableColumns(.)"
+  - NumRows: "CountTableRows(.)"
   match: "."
   replace:
-  - t: "table with"      # phrase(the 'table with' 3 rows)
-  - x: count(*)
+  - T: "táblázat"      # phrase(the 'table with' 3 rows)
+  - x: "$NumRows"
   - test:
-      if: count(*)=1
-      then: [t: "row"]      # phrase(the table with 1 'row')
-      else: [t: "rows"]      # phrase(the table with 3 'rows')
-  - t: "and"      # phrase(the table with 3 rows 'and' 4 columns)
+      if: "$NumRows=1"
+      then: [T: "sorral"]      # phrase(the table with 1 'row')
+      else: [T: "sorral"]      # phrase(the table with 3 'rows')
+  - T: "és"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
-      then: [t: "column"]      # phrase(the table with 3 rows and 1 'column')
-      else: [t: "columns"]      # phrase(the table with 3 rows and 4 'columns')
+      if: "$NumColumns=1"
+      then: [T: "oszloppal"]      # phrase(the table with 3 rows and 1 'column')
+      else: [T: "oszloppal"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
   - x: "*"
 
@@ -447,12 +449,12 @@
   match: "."
   replace:
   - pause: medium
-  - t: "row"      # phrase(the first 'row' of a matrix)
+  - T: "sor"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: "self::m:mlabeledtr"
       then:
-      - t: "with label"      # phrase(the line 'with label' first equation)
+      - T: "címkével"      # phrase(the line 'with label' first equation)
       - x: "*[1]/*"
       - pause: short
   - pause: medium
@@ -471,7 +473,7 @@
       #   if: not($IsColumnSilent) and ($ClearSpeak_Matrix = 'SpeakColNum' or count(preceding-sibling::*) != 0)
       if: "not($IsColumnSilent)"
       then:
-      - t: "column"      # phrase(the first 'column' of the matrix)
+      - T: "oszlop"      # phrase(the first 'column' of the matrix)
       - x: "count(preceding-sibling::*)+IfThenElse(parent::m:mlabeledtr, 0, 1)"
       - pause: medium
   - x: "*"
@@ -490,7 +492,7 @@
   tag: menclose
   match: "@notation='box' and *[self::m:mtext and .=' ']"
   replace:
-  - t: "empty box"      # phrase(the 'empty box' contains no values)
+  - T: "üres doboz"      # phrase(the 'empty box' contains no values)
 
 - name: default
   # The ordering below is the order in which words come out when there is more than one value
@@ -500,109 +502,109 @@
   replace:
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' box ')]"
-      then: [t: "box", pause: short]      # phrase(the 'box' around the expression)
+      then: [T: "doboz", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [t: "round box", pause: short]      # phrase(the 'round box' around the expression)
+      then: [T: "kerek doboz", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
-      then: [t: "circle", pause: short]      # phrase(the 'circle' around the expression)
+      then: [T: "kör", pause: short]      # phrase(the 'circle' around the expression)
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
-      - t: "line on"      # phrase(draw a straight 'line' on the page)
+      - T: "vonal"      # phrase(draw a straight 'line' on the page)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
-          then: [t: "left", pause: short]      # phrase(line on 'left' of the expression)
+          then: [T: "balra", pause: short]      # phrase(line on 'left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [t: "right", pause: short]      # phrase(line on 'right' of the expression)
+          then: [T: "jobbra", pause: short]      # phrase(line on 'right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [t: "top", pause: short]      # phrase(line on 'top' of the expression)
+          then: [T: "felső", pause: short]      # phrase(line on 'top' of the expression)
       - test:
           if: ".[contains(@notation,'bottom')]"
-          then: [t: "bottom", pause: short]      # phrase(line on the 'bottom' of the expression)
+          then: [T: "alsó", pause: short]      # phrase(line on the 'bottom' of the expression)
   - test:
       if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
       then:
       - test:
           if: ".[contains(@notation,'updiagonalstrike') and contains(@notation,'downdiagonalstrike')]"
-          then: [spell: "'x'", pause: short] # seems better to say 'x cross out' than 'up diagonal, down diagonal cross out'
+          then: [SPELL: "'x'", pause: short] # seems better to say 'x cross out' than 'up diagonal, down diagonal cross out'
           else:
           - test:
               if: ".[contains(@notation,'updiagonalstrike')]"
-              then: [t: "up diagonal", pause: short]      # phrase(the line runs 'up diagonal')
+              then: [T: "átlósan felfelé", pause: short]      # phrase(the line runs 'up diagonal')
           - test:
               if: ".[contains(@notation,'downdiagonalstrike')]"
-              then: [t: "down diagonal", pause: short]      # phrase(the line runs 'down diagonal')
+              then: [T: "átlósan lefelé", pause: short]      # phrase(the line runs 'down diagonal')
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
-          then: [t: "vertical", pause: short]      # phrase(the line is  'vertical')
+          then: [T: "függőleges", pause: short]      # phrase(the line is  'vertical')
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
-          then: [t: "horizontal", pause: short]      # phrase(the line is 'horizontal')
-      - t: "cross out"      # phrase(please 'cross out' the incorrect answer)
+          then: [T: "vízszintes", pause: short]      # phrase(the line is 'horizontal')
+      - T: "kihúzva"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
-      then: [t: "up arrow", pause: short]      # phrase(direction is shown by the 'up arrow')
+      then: [T: "felfelé nyíl", pause: short]      # phrase(direction is shown by the 'up arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
-      then: [t: "down arrow", pause: short]      # phrase(the trend is shown by the 'down arrow')
+      then: [T: "lefelé nyíl", pause: short]      # phrase(the trend is shown by the 'down arrow')
   - test:
       if: ".[contains(@notation,'leftarrow')]"
-      then: [t: "left arrow", pause: short]      # phrase(the 'left arrow' indicates going back)
+      then: [T: "balra nyíl", pause: short]      # phrase(the 'left arrow' indicates going back)
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
-      then: [t: "right arrow", pause: short]      # phrase(the 'right arrow' indicates moving forward)
+      then: [T: "jobbra nyíl", pause: short]      # phrase(the 'right arrow' indicates moving forward)
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
-      then: [t: "northeast arrow", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
+      then: [T: "északkeleti nyíl", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
-      then: [t: "southeast arrow", pause: short]      # phrase(direction is shown by the 'southeast arrow')
+      then: [T: "délkeleti nyíl", pause: short]      # phrase(direction is shown by the 'southeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
-      then: [t: "southwest arrow", pause: short]      # phrase(direction is shown by the 'southwest arrow')
+      then: [T: "délnyugati nyíl", pause: short]      # phrase(direction is shown by the 'southwest arrow')
   - test:
       if: ".[contains(@notation,'northwestarrow')]"
-      then: [t: "northwest arrow", pause: short]      # phrase(direction is shown by the 'northwest arrow')
+      then: [T: "északnyugati nyíl", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [t: "double ended vertical arrow", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+      then: [T: "kétvégű függőleges nyíl", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [t: "double ended horizontal arrow", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+      then: [T: "kétvégű vízszintes nyíl", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [t: "double ended up diagonal arrow", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [T: "dupla végű átlós nyíl", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [t: "double ended down diagonal arrow", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+      then: [T: "kétvégű lefelé mutató átlós nyíl", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
   - test:
       if: ".[contains(@notation,'actuarial')]"
-      then: [t: "actuarial symbol", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
+      then: [T: "aktuárius szimbólum", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
   - test:
       if: ".[contains(@notation,'madrub')]"
-      then: [t: "arabic factorial symbol", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
+      then: [T: "arab faktoriális szimbólum", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
   - test:
       if: ".[contains(@notation,'phasorangle')]"
-      then: [t: "phasor angle", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
+      then: [T: "fázisszög", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
   - test:
       if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']" # default
-      then: [t: "long division symbol", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
+      then: [T: "hosszú osztásjel", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
   - test:
       if: ".[contains(@notation,'radical')]"
-      then: [t: "square root", pause: short]      # phrase(5 is the 'square root' of 25)
-  - t: "enclosing"      # phrase(parentheses are 'enclosing' part of the equation)
+      then: [T: "négyzetgyök", pause: short]      # phrase(5 is the 'square root' of 25)
+  - T: "kezdet:"      # phrase(parentheses are 'enclosing' part of the equation)
   - test:
       if: "*[self::m:mtext and .=' ']"
-      then: [t: "space"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
+      then: [T: "szóköz"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
-      then: [t: "end enclosure"]      # phrase(reached the 'end enclosure' point)
+      then: [T: "végpont vége"]      # phrase(reached the 'end enclosure' point)
   - pause: short
 
 - name: semantics
@@ -622,12 +624,12 @@
   match: .
   replace:
   - x: "*[1]"
-  - t: "of"      # phrase(the sine 'of' x )
+  - T: ""      # phrase(the sine 'of' x )
   - pause: auto
   - x: "*[position() > 1]"
  
 # Here are the intent hints that need to be handled: 'prefix' | 'infix' | 'postfix' | 'function' | 'silent'
-- name: silent-intent
+- name: silent-intent # audit-ignore
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
   match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
@@ -652,6 +654,13 @@
       if: "IsNode(., '2D')"
       then: [pause: short]
       else: [pause: auto]
+
+- name: nofix-intent # audit-ignore
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: postfix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
@@ -699,7 +708,7 @@
   - test:
       if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
            not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
-      then: [t: "of", pause: auto]      # phrase(sine 'of' 5)
+      then: [T: "", pause: auto]      # phrase(sine 'of' 5)
   - insert:
       nodes: "*"
       replace:

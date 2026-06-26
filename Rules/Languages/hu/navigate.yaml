@@ -48,15 +48,15 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [t: "zoomed out all of the way", pause: "medium"]
+        then: [T: "teljesen kinagyítva", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
         then:
         - test:
           - if: "string-length(.) = 1"
-            then: [t: "zoomed in all of the way"]       # phrase('zoomed in all of the way')
+            then: [T: "teljesen ráközelített"]       # phrase('zoomed in all of the way')
           - else_if: "$NavNodeOffset = 0"
-            then: [t: "zoomed in to first character"]   # phrase('zoomed in to first character')
-            else: [t: "zoomed to character"]          # phrase('zoomed in to character')
+            then: [T: "ráközelített az első karakterre"]   # phrase('zoomed in to first character')
+            else: [T: "karakterre nagyítva"]          # phrase('zoomed in to character')
         - pause: "medium"
         else:
         - test:
@@ -74,25 +74,25 @@
             - x: "$Prefix"
             - test:
               - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
-                then: [t: "in"]                                  # phrase(zoom 'in' to see more details)
+                then: [T: "ban"]                                  # phrase(zoom 'in' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEed in all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [T: "Teljesen betáplálva"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
-                then: [t: "out"]                                 # phrase(zoom 'out' to see more details)
+                then: [T: "ki"]                                 # phrase(zoom 'out' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEed out all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [T: "teljes táblázat megjelenítése\uF8FEe ki egészen"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
-                then: [t: "right"]                               # phrase(move to the 'right')
+                then: [T: "jobbra"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
-                then: [t: "left"]                                # phrase(move to the 'left')
+                then: [T: "balra"]                                # phrase(move to the 'left')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
-                then: [t: "current"]                                 # phrase(who is the 'current' president)
+                then: [T: "jelenlegi"]                                 # phrase(who is the 'current' president)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
-                then: [t: "to start of line"]                                 # phrase(move 'to start of line')
+                then: [T: "a sor elejére"]                                 # phrase(move 'to start of line')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
-                then: [t: "to end of line"]                                 # phrase(move 'to end of line')
+                then: [T: "a sor végére"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -107,7 +107,7 @@
   tag: [mtr, mlabeledtr]
   match: "$Move2D = 'in'"
   replace:
-  - t: "column"
+  - T: "oszlop"
   - x: "count($Child2D/preceding-sibling::*)+1"
   - pause: "medium"
 
@@ -125,18 +125,18 @@
           - x: "$Move2D"
           - test:
             - if: "$NumPrecedingSiblings=0"
-              then: [t: "base"]                 # phrase(the 'base' of the power)
+              then: [T: "alapja"]                 # phrase(the 'base' of the power)
             - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # are we before mprescripts and hence are postscripts
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [t: "pre-subscript"]       # phrase(x with 'subscript' 2)
-                  else: [t: "pre-superscript"]     # phrase(x with 'superscript' 2)
+                  then: [T: "alsó index kezdete"]       # phrase(x with 'subscript' 2)
+                  else: [T: "Felső index kezdete"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
-                  then: [t: "superscript"]    # phrase(x with 'pre-superscript' 2)
-                  else: [t: "subscript"]      # phrase(x with 'pre-subscript' 2)
+                  then: [T: "felső index"]    # phrase(x with 'pre-superscript' 2)
+                  else: [T: "alsó index"]      # phrase(x with 'pre-subscript' 2)
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
@@ -160,7 +160,7 @@
             if: "$NavVerbosity = 'Verbose'"
             then: [x: "translate(name(.), '-_', ' ')"]      # e.g., "in absolute value"
           else:
-          - t: "part"         # phrase(the 'part' of the expression)
+          - T: "része"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
       - pause: "medium"
 
@@ -183,19 +183,19 @@
       then:
       - test:
         - if: "$PreviousNavCommand = 'ZoomIn'"
-          then: [t: "undo zoom in"]                       # phrase('undo zoom in')
+          then: [T: "nagyítás visszavonása"]                       # phrase('undo zoom in')
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
-          then: [t: "undo zoom out"]                      # phrase('undo zoom out')
+          then: [T: "kicsinyítés visszavonása"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [t: "undo zooming in all of the way"]        # phrase('undo zooming in all of the way')
+          then: [T: "a teljes nagyítás visszavonása"]        # phrase('undo zooming in all of the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [t: "undo zooming out all of the way"]       # phrase('undo zooming out all of the way')
+          then: [T: "a teljes kicsinyítés visszavonása"]       # phrase('undo zooming out all of the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
-          then: [t: "undo move left"]                     # phrase('undo move left')
+          then: [T: "balra mozgatás visszavonása"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
-          then: [t: "undo move right"]                    # phrase('undo move right')
+          then: [T: "Jobbra mozgatás visszavonása"]                    # phrase('undo move right')
         - else_if: "$PreviousNavCommand = 'None'"
-          then: [t: "no previous command"]                # phrase('no previous command')
+          then: [T: "nincs előző parancs"]                # phrase('no previous command')
       - pause: "medium"
   - set_variables: [NavNode: "@id"]
 
@@ -473,7 +473,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   # we need to speak it here
-  # - t: "row"                                                  # phrase(the first 'row' of the matrix)
+  - T: "sor"                                                  # phrase(the first 'row' of the matrix)
   #   # if we let the speech rules speak the row, it is given just the MathML for the row, so the row # will always be '1'
   # - x: "count(../preceding-sibling::*)+1"
   # - pause: medium
@@ -524,12 +524,12 @@
           then:
           - test:
             - if: "$NavCommand = 'MoveStart'"
-              then: [t: "move to start of math"]                  # phrase('move to start of math')
+              then: [T: "ugrás a matematikai blokk elejére"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [t: "move to start of line"]                  # phrase('move to start of line')
+              then: [T: "Ugrás a sor elejére"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
-              then: [t: "move to end of math"]                    # phrase('move to end of math')
-              else: [t: "move to end of line"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              then: [T: "ugrás a matematikai blokk végére"]                    # phrase('move to end of math')
+              else: [T: "ugrás a sor végére"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -569,8 +569,8 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [t: "move to start of line"]                                # phrase('move to start of line')
-          else: [t: "move to end of line"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          then: [T: "ugrás a sor elejére"]                                # phrase('move to start of line')
+          else: [T: "ugrás a sor végére"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"
@@ -606,7 +606,7 @@
   - "$NavCommand='MoveColumnStart' or $NavCommand='MoveColumnEnd' or"
   - "$NavCommand='ReadCellCurrent'"
   replace:
-  - t: "not in table"                               # phrase('not in table')
+  - T: "nincs a táblázatban"                               # phrase('not in table')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -620,12 +620,12 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "move left"                        # phrase('move left')
+          - T: "balra lépés"                        # phrase('move left')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - t: "column"                           # phrase(the first 'column' of the table)
+          - T: "oszlop"                           # phrase(the first 'column' of the table)
           - x: "count(preceding-sibling::*)"
           - pause: medium
       - test:
@@ -637,7 +637,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/*[1]/@id"]
       else:
-      - t: "no previous column"                 # phrase('no previous column' in the table)
+      - T: "nincs előző oszlop"                 # phrase('no previous column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -650,12 +650,12 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "move right"                     # phrase('move right')
+          - T: "Jobbra lépés"                     # phrase('move right')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - t: "column"                         # phrase(the first 'column' in the table)
+          - T: "oszlop"                         # phrase(the first 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: medium
       - test:
@@ -667,7 +667,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/*[1]/@id"]
       else:
-      - t: "no next column"                  # phrase('no next column' in the table)
+      - T: "nincs következő oszlop"                  # phrase('no next column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -683,15 +683,15 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "move up"                             # phrase('move up' to previous row in the table)
+              - T: "mozgás felfelé"                             # phrase('move up' to previous row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "row"                                 # phrase(the previous 'row' in the table)
+              - T: "sor"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
               - pause: short
-              - t: "column"                              # phrase(the previous 'column' in the table)
+              - T: "oszlop"                              # phrase(the previous 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -703,7 +703,7 @@
               else:
               - set_variables: [NavNode: "../preceding-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - t: "no previous row"                            # phrase('no previous row' in the table)
+      - T: "nincs előző sor"                            # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -719,15 +719,15 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "move down"                          # phrase('move down' to the next row in the table)
+              - T: "mozgás lefelé"                          # phrase('move down' to the next row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "row"                                # phrase(the next 'row' in the table)
+              - T: "sor"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
               - pause: short
-              - t: "column"                             # phrase(the next 'column' in the table)
+              - T: "oszlop"                             # phrase(the next 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -739,7 +739,7 @@
               else:
               - set_variables: [NavNode: "../following-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - t: "no next row"                                # phrase('no next row' in the table)
+      - T: "nincs következő sor"                                # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -749,7 +749,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "move to previous row"                              # phrase('move to previous row' in the table)
+      - T: "mozgás az előző sorra"                              # phrase('move to previous row' in the table)
       - pause: medium
   - test:
       if: "preceding-sibling::*"
@@ -763,7 +763,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
       else:
-      - t: "no previous row"                          # phrase('no previous row' in the table)
+      - T: "nincs előző sor"                          # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -773,7 +773,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "move to next row"                          # phrase('move to next row' in the table)
+      - T: "mozgás a következő sorra"                          # phrase('move to next row' in the table)
       - pause: medium
   - test:
       if: "following-sibling::*"
@@ -787,7 +787,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/@id"]
       else:
-      - t: "no next row"                          # phrase('no next row' in the table)
+      - T: "nincs következő sor"                          # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-previous
@@ -798,9 +798,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "move to previous column"                              # phrase('move to previous column' in the table)
+      - T: "mozgás az előző oszlopra"                              # phrase('move to previous column' in the table)
       - pause: medium
-  - t: "no previous column"                          # phrase('no previous column' in the table)
+  - T: "nincs előző oszlop"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -811,9 +811,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "move to next column"                              # phrase('move to next column' in the table)
+      - T: "mozgás a következő oszlopra"                              # phrase('move to next column' in the table)
       - pause: medium
-  - t: "no next column"                          # phrase('no next row' in the table)
+  - T: "nincs következő oszlop"                          # phrase('no next row' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: default-read-cell
@@ -829,20 +829,20 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "read current entry"                         # phrase('read current entry' in the table)
+              - T: "az aktuális elem felolvasása"                         # phrase('read current entry' in the table)
               - pause: medium
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "row"                                        # phrase(the previous 'row' in the table)
+              - T: "sor"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
               - pause: short
-              - t: "column"                                     # phrase(the previous 'column' in the table)
+              - T: "oszlop"                                     # phrase(the previous 'column' in the table)
               - x: "count($MTD[1]/preceding-sibling::*)+1"
               - pause: short
           - set_variables: [NavNode: "$MTD[1]/*[1]/@id"]
           else:
-          - t: "not in table"                                   # phrase('not in table' or matrix)
+          - T: "nincs a táblázatban"                                   # phrase('not in table' or matrix)
           - pause: long
           - set_variables: [SpeakExpression: "'false'"]
 
@@ -1082,7 +1082,7 @@
       then:
       - x: "ancestor::m:mtd[1]" # try again on an mtd node
       else:
-      - t: "not in table"                                               # phrase('not in table' or matrix)
+      - T: "nincs a táblázatban"                                               # phrase('not in table' or matrix)
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
 
@@ -1159,7 +1159,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "cannot move right"                              # phrase('cannot move right')
+      - T: "nem tud jobbra mozogni"                              # phrase('cannot move right')
       - pause: medium
   - with:
       variables:
@@ -1180,16 +1180,16 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "cannot"                                          # phrase('cannot' move right in expression)
+      - T: "nem tud"                                          # phrase('cannot' move right in expression)
       - test:
         - if: "$NavCommand = 'MoveNext'"
-          then: [t: "move"]                                  # phrase('move' to next entry in table)     
+          then: [T: "mozogni"]                                  # phrase('move' to next entry in table)     
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [t: "read"]                                  # phrase('read' next entry in table)     
-          else: [t: "describe"]                              # phrase('describe' next entry in table)     
-      - t: "right"                              # phrase(move 'right')
+          then: [T: "olvasni"]                                  # phrase('read' next entry in table)     
+          else: [T: "leírni"]                              # phrase('describe' next entry in table)     
+      - T: "jobbra"                              # phrase(move 'right')
       - pause: short
-  - t: "end of math"                              # phrase(move 'end of math')
+  - T: "matematematikai blokk vége"                              # phrase(move 'end of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1234,7 +1234,7 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "column"                                       # phrase(the previous 'column' in the table)
+          - T: "oszlop"                                       # phrase(the previous 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: short
       - test:
@@ -1377,7 +1377,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose' and $NavCommand = 'MovePrevious'"
       then:
-      - t: "cannot move left"                                   # phrase('cannot move left' in expression)
+      - T: "nem tud balra mozogni"                                   # phrase('cannot move left' in expression)
       - pause: medium
   - with:
       variables:
@@ -1394,7 +1394,7 @@
   - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious') and"
   - "(self::m:math or name(EdgeNode(., 'left', 'math'))='math')"
   replace:
-  - t: "start of math"                                              # phrase('start of math')
+  - T: "matematikai blokk kezdete"                                              # phrase('start of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1407,7 +1407,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "cannot move left"                      # phrase('cannot move left')
+      - T: "nem tud balra mozogni"                      # phrase('cannot move left')
       - pause: short
   - with:
       variables: [Move2D: "'start of'", Child2D: "."]
@@ -1503,7 +1503,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "column"                               # phrase(the first 'column' in the table)
+      - T: "oszlop"                               # phrase(the first 'column' in the table)
       - x: "count(preceding-sibling::*)"
       - pause: short
   - test:
@@ -1589,16 +1589,16 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "character"                                                # phrase(a mathematical 'character')
+      - T: "karakter"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "simple"                                                   # phrase(a 'simple' way to do something)
+      - T: "egyszerű"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - t: "enhanced"                                                 # phrase(an 'enhanced' way to do something)
+      - T: "továbbfejlesztett"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
-  - t: "mode"                                                         # phrase(a simple 'mode' of use)
+  - T: "mód"                                                         # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1614,16 +1614,16 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "simple"                                                 # phrase(a 'simple' way to do something)
+      - T: "egyszerű"                                                 # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "enhanced"                                               # phrase(an 'enhanced' way to do something)
+      - T: "továbbfejlesztett"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - t: "character"                                              # phrase(a mathematical 'character')
+      - T: "karakter"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
-  - t: "mode"                                                       # phrase(a simple 'mode' of use)
+  - T: "mód"                                                       # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1639,14 +1639,13 @@
   - test:
       if: "$Overview = 'true'"
       then:
-      - t: "speak expression after move"                # phrase('speak expression after move')
+      - T: "a kifejezés felolvasása mozgás után"                # phrase('speak expression after move')
       - pause: long
       - set_variables: [Overview: "'false'"]
       else:
-      - t: "overview of expression after move"          # phrase('overview of expression after move')
+      - T: "a kifejezés áttekintése mozgás után"          # phrase('overview of expression after move')
       - pause: long
       - set_variables: [Overview: "'true'"]
-
 - name: current
   tag: "*"
   match: "$NavCommand = 'ReadCurrent' or $NavCommand = 'DescribeCurrent'"
@@ -1656,9 +1655,9 @@
       then:
       - test:
         - if: "$NavCommand = 'ReadCurrent'"
-          then: [t: "read"]                                  # phrase('read' next entry in table) 
-          else: [t: "describe"]                              # phrase('describe' next entry in table)     
-      - t: "current"                                         # phrase('current' entry in table)
+          then: [T: "olvassa"]                                  # phrase('read' next entry in table) 
+          else: [T: "írja le"]                              # phrase('describe' next entry in table)     
+      - T: "jelenlegi"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 
@@ -1676,13 +1675,13 @@
       then:
       - test:
         - if: "starts-with($NavCommand, 'Read')"
-          then: [t: "read"]                                  # phrase('read' next entry in table)     
+          then: [T: "olvassa el"]                                  # phrase('read' next entry in table)     
         - else_if: "starts-with($NavCommand, 'Describe')"
-          then: [t: "describe"]                              # phrase('describe' next entry in table)     
+          then: [T: "írja le"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
-          then: [t: "move to "]                              # phrase('move to' the next entry in table) 
-          else: [t: "set"]                                   # phrase('set' the value of the next entry in table) 
-      - t: "placeholder"                                     # phrase('placeholder' for the value)
+          then: [T: "ugrás a következő elemre "]                              # phrase('move to' the next entry in table) 
+          else: [T: "beállítja"]                                   # phrase('set' the value of the next entry in table) 
+      - T: "helyjelző"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1694,7 +1693,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - t: "set placeholder"                                 # phrase('set placeholder' to the value) 
+      - T: "helyjelző beállítása"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
@@ -1726,11 +1725,11 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - t: "inside of nothing more"                         # phrase('inside of nothing more') 
+      - T: "nincs több belső elem"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - t: "inside"                                         # phrase('inside' a big expression) 
+      - T: "belül egy nagy kifejezés"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
@@ -1738,7 +1737,7 @@
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - t: "inside"                                           # phrase('inside' a big expression)
+  - T: "belül"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"

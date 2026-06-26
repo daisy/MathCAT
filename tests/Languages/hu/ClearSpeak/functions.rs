@@ -17,7 +17,7 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("hu", "ClearSpeak", expr, "sine x plus cosine y plus tangent z plus secant alpha, plus cosecant phi, plus cotangent phi")?;
+    test("hu", "ClearSpeak", expr, "szinusz x plusz koszinusz y, plusz tangens z plusz szekáns alfa, plusz koszekáns phi, plusz kotangens fí")?;
     return Ok(());
 
 }
@@ -33,12 +33,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     <mi>csch</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>coth</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("hu", "ClearSpeak", expr, "hyperbolic sine of x, plus \
-                                hyperbolic cosine of y, plus \
-                                hyperbolic tangent of z, plus \
-                                hyperbolic secant of alpha, plus \
-                                hyperbolic cosecant of phi, plus \
-                                hyperbolic cotangent of phi")?;
+    test("hu", "ClearSpeak", expr, "hiperbolikus szinusz, x, plusz hiperbolikus koszinusz, y, plusz hiperbolikus tangens, z, plusz, hiperbolikus szekáns, alfa, plusz, hiperbolikus koszekáns, phi, plusz, hiperbolikus kotangens, fí")?;
                                 return Ok(());
 
 }
@@ -48,7 +43,7 @@ fn hyperbolic_trig_names() -> Result<()> {
 #[test]
 fn inverse_trig() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("hu", "ClearSpeak", expr, "inverse sine of x")?;
+    test("hu", "ClearSpeak", expr, "inverz szinusz x")?;
     return Ok(());
 
 }
@@ -58,7 +53,7 @@ fn inverse_trig() -> Result<()> {
 fn inverse_trig_trig_inverse() -> Result<()> {
     let expr = "<math><msup><mi>tan</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
     test_ClearSpeak("hu", "ClearSpeak_Trig", "TrigInverse",expr,
-        "tangent inverse of x")?;
+        "tangens inverz x")?;
         return Ok(());
 
 }
@@ -68,7 +63,7 @@ fn inverse_trig_trig_inverse() -> Result<()> {
 fn inverse_trig_arc() -> Result<()> {
     let expr = "<math><msup><mi>cosh</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
     test_ClearSpeak("hu", "ClearSpeak_Trig", "ArcTrig",expr,
-        "arc hyperbolic cosine of x")?;
+        "arkusz hiperbolikus koszinusz, x")?;
         return Ok(());
 
 }
@@ -77,7 +72,49 @@ fn inverse_trig_arc() -> Result<()> {
 #[test]
 fn trig_squared() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mn>2</mn></msup><mi>x</mi></math>";
-    test("hu", "ClearSpeak", expr, "sine squared of x")?;
+    test("hu", "ClearSpeak", expr, "szinusz x a négyzeten")?;
+    return Ok(());
+
+}
+
+#[test]
+fn trig_squared2() -> Result<()> {
+    let expr = "<math><msup><mi>sin</mi><mn>2</mn></msup><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
+    test("hu", "ClearSpeak", expr, "szinusz, nyitott zárójel x plusz y zárt zárójel a négyzeten")?;
+    return Ok(());
+
+}
+
+#[test]
+fn fifth_sinus_expression() -> Result<()> {
+    let expr = "<math><msup><mi>sin</mi><mn>5</mn></msup><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo>
+</math>";
+    test("hu", "ClearSpeak", expr, "szinusz, nyitott zárójel x plusz y zárt zárójel a(z) ötödik hatványon")?;
+    return Ok(());
+
+}
+
+#[test]
+fn letter_exponent_combined_sinus_expression() -> Result<()> {
+    let expr = "<math><msup><mi>sin</mi><mi>n</mi></msup><mi>x</mi></math>";
+    test("hu", "ClearSpeak", expr, "szinusz, x, a(z) n hatványon")?;
+    return Ok(());
+
+}
+
+#[test]
+fn combined_sinus_expression() -> Result<()> {
+    let expr = "<math><msup><mi>sin</mi><mn>3</mn></msup><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
+    test("hu", "ClearSpeak", expr, "szinusz, nyitott zárójel x plusz y zárt zárójel a köbön")?;
+    return Ok(());
+
+}
+
+// AI generated
+#[test]
+fn trig_first() -> Result<()> {
+    let expr = "<math><msup><mi>tan</mi><mn>3</mn></msup><mn>1</mn></math>";
+    test("hu", "ClearSpeak", expr, "tangens 1 a köbön")?;
     return Ok(());
 
 }
@@ -86,7 +123,15 @@ fn trig_squared() -> Result<()> {
 #[test]
 fn trig_cubed() -> Result<()> {
     let expr = "<math><msup><mi>tan</mi><mn>3</mn></msup><mi>x</mi></math>";
-    test("hu", "ClearSpeak", expr, "tangent cubed of x")?;
+    test("hu", "ClearSpeak", expr, "tangens x a köbön")?;
+    return Ok(());
+
+}
+
+#[test]
+fn trig_tangent_test2() -> Result<()> {
+    let expr = "<math><msup><mi>tan</mi><mn>4</mn></msup><mi>x</mi></math>";
+    test("hu", "ClearSpeak", expr, "tangens; x, a(z) negyedik hatványon")?;
     return Ok(());
 
 }
@@ -95,7 +140,7 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("hu", "ClearSpeak", expr, "the fourth power of, secant of x")?;
+    test("hu", "ClearSpeak", expr, "szekáns; x, a(z) negyedik hatványon")?;
     return Ok(());
 
 }
@@ -105,7 +150,7 @@ fn trig_fourth() -> Result<()> {
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("hu", "ClearSpeak", expr, "the n minus 1 power of, hyperbolic sine of x")?;
+    test("hu", "ClearSpeak", expr, "hiperbolikus szinusz; x, a(z) n mínusz 1 hatványon")?;
     return Ok(());
 
 }
@@ -114,7 +159,7 @@ fn trig_power_other() -> Result<()> {
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
-    test("hu", "ClearSpeak", expr, "log x")?;
+    test("hu", "ClearSpeak", expr, "logaritmus x")?;
     return Ok(());
 
 }
@@ -123,7 +168,7 @@ fn simple_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "the log of, open paren x plus y, close paren")?;
+    test("hu", "ClearSpeak", expr, "a logaritmus, nyitott zárójel, x plusz y, zárt zárójel")?;
     return Ok(());
 
 }
@@ -132,7 +177,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("hu", "ClearSpeak", expr, "the log base b, of x")?;
+test("hu", "ClearSpeak", expr, "alap logaritmus b; x")?;
     return Ok(());
 
 }
@@ -141,7 +186,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "the log base b, of, open paren x plus y, close paren")?;
+    test("hu", "ClearSpeak", expr, "alap logaritmus b; nyitott zárójel, x plusz y, zárt zárójel")?;
     return Ok(());
 
 }
@@ -159,7 +204,7 @@ fn simple_ln() -> Result<()> {
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "the l n of, open paren x plus y, close paren")?;
+    test("hu", "ClearSpeak", expr, "a l n, nyitott zárójel, x plusz y, zárt zárójel")?;
     return Ok(());
 
 }
@@ -170,7 +215,7 @@ fn normal_ln() -> Result<()> {
 fn simple_natural_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_ClearSpeak("hu", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "natural log x")?;
+        "természetes alapú logaritmus, x")?;
         return Ok(());
 
 }
@@ -181,7 +226,7 @@ fn simple_natural_log() -> Result<()> {
 fn natural_log() -> Result<()> {
     let expr = "<math><mi>ln</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
     test_ClearSpeak("hu", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "the natural log of, open paren x plus y, close paren")?;
+        "a természetes alapú logaritmus; nyitott zárójel, x plusz y, zárt zárójel")?;
         return Ok(());
 
 }
@@ -191,7 +236,7 @@ fn natural_log() -> Result<()> {
 #[test]
 fn explicit_function_call_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "t of x")?;
+    test("hu", "ClearSpeak", expr, "t x")?;
     return Ok(());
 
 }
@@ -201,7 +246,7 @@ fn explicit_function_call_with_parens() -> Result<()> {
 #[test]
 fn explicit_times_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "t times x")?;
+    test("hu", "ClearSpeak", expr, "t szorozva x")?;
     return Ok(());
 
 }
@@ -210,7 +255,7 @@ fn explicit_times_with_parens() -> Result<()> {
 #[test]
 fn explicit_function_call() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2061;</mo><mrow><mi>x</mi></mrow></mrow></math>";
-    test("hu", "ClearSpeak", expr, "t of x")?;
+    test("hu", "ClearSpeak", expr, "t x")?;
     return Ok(());
 
 }
@@ -234,7 +279,7 @@ fn test_functions_none_pref() -> Result<()> {
     <mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Functions", "None",expr,
-        "the log of, open paren x plus y, close paren; plus, f times, open paren x plus y, close paren")?;
+        "a logaritmus, nyitott zárójel, x plusz y, zárt zárójel; plusz; f szorozva, nyitott zárójel, x plusz y, zárt zárójel")?;
         return Ok(());
 
 }
@@ -246,7 +291,7 @@ fn test_functions_none_pref_multiple_args() -> Result<()> {
         <mi>B</mi> <mrow><mo>(</mo> <mrow> <mn>2</mn><mo>,</mo><mn>6</mn></mrow> <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Functions", "None",expr,
-        "cap b times, open paren 2 comma, 6, close paren")?;
+        "nagy b szorozva, nyitott zárójel, 2 vessző, 6, zárt zárójel")?;
         return Ok(());
 
 }
@@ -271,7 +316,7 @@ fn times_following_paren() -> Result<()> {
         <mn>2</mn>
         <mrow>  <mo>(</mo> <mn>3</mn>  <mo>)</mo> </mrow>
         </mrow></math>";
-    test("hu", "ClearSpeak", expr, "2 times 3")?;
+    test("hu", "ClearSpeak", expr, "2 szorozva 3")?;
     return Ok(());
 
 }
@@ -283,7 +328,7 @@ fn times_preceding_paren() -> Result<()> {
         <mrow>  <mo>(</mo> <mn>2</mn>  <mo>)</mo> </mrow>
         <mn>3</mn>
         </mrow></math>";
-    test("hu", "ClearSpeak", expr, "2 times 3")?;
+    test("hu", "ClearSpeak", expr, "2 szorozva 3")?;
     return Ok(());
 
 }
@@ -297,7 +342,7 @@ fn times_sqrt() -> Result<()> {
         <mo>=</mo>
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
-    test("hu", "ClearSpeak", expr, "the square root of eigh; times the square root of b; is equal to, the square root of eigh b")?;
+    test("hu", "ClearSpeak", expr, "négyzetgyök a; szorozva négyzetgyök b; egyenlő, négyzetgyök a b")?;
     return Ok(());
 
 }
@@ -317,7 +362,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("hu", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr,
-        "open paren 2 times x, close paren squared")?;
+        "nyitott zárójel, 2 szorozva x, zárt zárójel a négyzeten")?;
         return Ok(());
 
 }
@@ -326,7 +371,7 @@ fn more_implied_times() -> Result<()> {
 #[test]
 fn explicit_times_more_implied_times() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mi>x</mi></mrow></mrow></math>";
-    test_ClearSpeak("hu", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr, "t times x")?;
+    test_ClearSpeak("hu", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr, "t szorozva x")?;
     return Ok(());
 
 }
@@ -336,7 +381,7 @@ fn explicit_times_more_implied_times() -> Result<()> {
 fn explicit_times_none_simple_right() -> Result<()> {
     let expr = "<math><mn>2</mn><mo>[</mo><mn>3</mn> <mo>]</mo></math>";
     test_ClearSpeak("hu", "ClearSpeak_ImpliedTimes", "None",
-        expr, "2, open bracket 3 close bracket")?;
+        expr, "2, nyitott zárójel 3 zárójel")?;
         return Ok(());
 
 }
@@ -346,7 +391,7 @@ fn explicit_times_none_simple_right() -> Result<()> {
 fn explicit_times_none_simple_left() -> Result<()> {
     let expr = "<math><mo>(</mo><mn>2</mn><mo>&#x2212;</mo><mn>1</mn><mo>)</mo><mi>x</mi></math>";
     test_ClearSpeak("hu", "ClearSpeak_ImpliedTimes", "None",
-        expr, "open paren 2 minus 1, close paren; x")?;
+        expr, "nyitott zárójel, 2 mínusz 1, zárt zárójel; x")?;
         return Ok(());
 
 }
@@ -366,7 +411,7 @@ fn explicit_times_none_superscript() -> Result<()> {
     </math>";
     test_ClearSpeak_prefs("hu", 
         vec![("ClearSpeak_ImpliedTimes", "None"), ("ClearSpeak_Functions", "None")],
-        expr, "f open paren x close paren; is equal to; x squared, open paren x plus 1, close paren")?;
+        expr, "f, nyitott zárójel x zárt zárójel; egyenlő; x a négyzeten, nyitott zárójel, x plusz 1, zárt zárójel")?;
         return Ok(());
 
 }
@@ -382,7 +427,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
         <mi>x</mi>
         </mrow></math>";
-        test("hu", "ClearSpeak", expr, "25 times x")?;
+        test("hu", "ClearSpeak", expr, "25 szorozva x")?;
         return Ok(());
 
     }
@@ -395,7 +440,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("hu", "ClearSpeak", expr, "b, open paren x y close paren")?;
+        test("hu", "ClearSpeak", expr, "b, nyitott zárójel, x y zárt zárójel")?;
         return Ok(());
 
     }
@@ -408,7 +453,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mo>&#x2212;</mo><mn>2</mn></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("hu", "ClearSpeak", expr, "2 plus negative 2")?;
+        test("hu", "ClearSpeak", expr, "2 plusz negatív 2")?;
         return Ok(());
 
     }
@@ -423,7 +468,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         </mrow>
         <mo>+</mo><mn>1</mn>
         </mrow></math>";
-        test("hu", "ClearSpeak", expr, "negative 2 x, plus 1")?;
+        test("hu", "ClearSpeak", expr, "negatív 2 x, plusz 1")?;
         return Ok(());
 
     }
@@ -441,7 +486,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         </msup>
         </mrow>
     </mrow></math>";
-        test("hu", "ClearSpeak", expr, "open paren 2 x close paren squared")?;
+        test("hu", "ClearSpeak", expr, "nyitott zárójel, 2 x zárt zárójel a négyzeten")?;
         return Ok(());
 
     }
@@ -456,7 +501,7 @@ fn explicit_times_none_superscript() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("hu", "ClearSpeak", expr, "2 plus 1 half")?;
+        test("hu", "ClearSpeak", expr, "2 plusz 1 ketted")?;
         return Ok(());
 
     }
@@ -471,7 +516,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval",expr,
-    "the interval from c to d, not including c or d")?;
+    "c től d ig terjedő intervallum, nem tartalmazza a c elemet vagy d elemet")?;
     return Ok(());
 
 }
@@ -485,7 +530,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from c to d, including c but not including d")?;
+    "c től d ig terjedő intervallum, tartalmazza a c elemet de nem tartalmazza a d elemet")?;
     return Ok(());
 
 }
@@ -500,7 +545,7 @@ fn parens_interval_open_closed() -> Result<()> {
     <mo>]</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from c to d, not including c but including d")?;
+    "c től d ig terjedő intervallum, nem tartalmazza a c elemet de tartalmazza a d elemet")?;
     return Ok(());
 
 }
@@ -515,7 +560,7 @@ fn parens_interval_closed_closed() -> Result<()> {
     <mo>]</mo></mrow>
 </math>";
 test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-"the interval from c to d, including c and d")?;
+"c től d ig terjedő intervallum, tartalmazza a c elemet és d elemet")?;
 return Ok(());
 
 }
@@ -528,7 +573,7 @@ return Ok(());
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from negative infinity to d, not including d")?;
+    "negatív végtelen től d ig terjedő intervallum, nem tartalmazza a d elemet")?;
     return Ok(());
 
 }
@@ -541,7 +586,7 @@ return Ok(());
         <mo>]</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from negative infinity to d, including d")?;
+    "negatív végtelen től d ig terjedő intervallum, tartalmazza a d elemet")?;
     return Ok(());
 
 }
@@ -556,7 +601,7 @@ fn parens_interval_open_open_infinity() -> Result<()> {
     <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from c to infinity, not including c")?;
+    "c től végtelen ig terjedő intervallum, nem tartalmazza a c elemet")?;
     return Ok(());
 
 }
@@ -571,7 +616,7 @@ fn parens_interval_closed_open_infinity() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-"the interval from c to infinity, including c")?;
+"c től végtelen ig terjedő intervallum, tartalmazza a c elemet")?;
 return Ok(());
 
 }
@@ -585,7 +630,7 @@ fn parens_interval_neg_infinity_to_infinity() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from negative infinity to infinity")?;
+    "negatív végtelen től végtelen ig terjedő intervallum")?;
     return Ok(());
 
 }
@@ -599,7 +644,7 @@ fn parens_interval_neg_infinity_to_pos_infinity() -> Result<()> {
     <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "the interval from negative infinity to positive infinity")?;
+    "negatív végtelen től pozitív végtelen ig terjedő intervallum")?;
     return Ok(());
 
 }

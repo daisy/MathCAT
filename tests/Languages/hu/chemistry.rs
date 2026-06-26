@@ -7,7 +7,7 @@ use anyhow::Result;
 #[test]
 fn salt() -> Result<()> {
   let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap n eigh, cap c l")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy n a; láthatatlan elválasztó, nagy c l")?;
   return Ok(());
 
 }
@@ -16,9 +16,9 @@ fn salt() -> Result<()> {
 #[test]
 fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "cap h, 2 cap o")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "cap h, sub 2 cap o")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "cap h, subscript 2, cap o")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "nagy h, 2, láthatatlan elválasztó, nagy o")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "nagy h, alsó index 2, láthatatlan elválasztó, nagy o")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "nagy h, alsó index 2, láthatatlan elválasztó, nagy o")?;
   return Ok(());
 
 }
@@ -27,7 +27,7 @@ fn water() -> Result<()> {
 #[test]
 fn carbon() -> Result<()> {
   let expr = "<math><mi>C</mi></math>";     // not enough to trigger recognition
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap c")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy c")?;
   return Ok(());
 
 }
@@ -39,7 +39,7 @@ fn sulfate() -> Result<()> {
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "open bracket, cap s, cap o, sub 4; close bracket super 2 minus")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "nyitott zárójel; nagy s; láthatatlan elválasztó, nagy o, alsó index 4; zárójel felső index 2 mínusz")?;
   return Ok(());
 
 }
@@ -49,9 +49,9 @@ fn sulfate() -> Result<()> {
 fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "cap eigh l, 2, open cap s, cap o, 4, close 3")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "cap eigh l, sub 2; open paren, cap s, cap o, sub 4; close paren sub 3")?;
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "cap eigh l, subscript 2; open paren, cap s, cap o, subscript 4; close paren subscript 3")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "nagy a l, 2, láthatatlan elválasztó; nyitott zárójel; nagy s; láthatatlan elválasztó, nagy o, 4; zárt zárójel 3")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "nagy a l, alsó index 2, láthatatlan elválasztó; nyitott zárójel; nagy s; láthatatlan elválasztó, nagy o, alsó index 4; zárt zárójel alsó index 3")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "nagy a l, alsó index 2, láthatatlan elválasztó; nyitott zárójel; nagy s; láthatatlan elválasztó, nagy o, alsó index 4; zárt zárójel alsó index 3")?;
   return Ok(());
 
 }
@@ -71,7 +71,7 @@ fn ethanol_bonds() -> Result<()> {
               <mi>H</mi>
           </mrow>
       </math>";
-  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "cap c, cap h, 3 single bond cap c, cap h, 2 single bond cap o, cap h")?;
+  test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "nagy c; láthatatlan elválasztó, nagy h, 3 egyes kötés nagy c; láthatatlan elválasztó, nagy h, 2 egyes kötés nagy o; láthatatlan elválasztó, nagy h")?;
 
   return Ok(());
 
@@ -91,14 +91,11 @@ fn dichlorine_hexoxide() -> Result<()> {
       </msup>
     </mrow></math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], 
-    expr, "open bracket, cap c l, cap o, 2, close bracket plus; \
-                          open bracket, cap c l, cap o, 4, close bracket minus")?;
+    expr, "nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, 2; zárójel plusz; láthatatlan elválasztó; nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, 4; zárójel mínusz")?;
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-    expr, "open bracket, cap c l, cap o, sub 2; close bracket super plus; \
-                          open bracket, cap c l, cap o, sub 4; close bracket super minus")?;
+    expr, "nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, alsó index 2; zárójel felső index plusz; láthatatlan elválasztó; nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, alsó index 4; zárójel felső index mínusz")?;
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
-    expr, "open bracket, cap c l, cap o, subscript 2; close bracket superscript plus; \
-                          open bracket, cap c l, cap o, subscript 4; close bracket superscript minus")?;
+    expr, "nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, alsó index 2; zárójel felső index plusz; láthatatlan elválasztó; nyitott zárójel; nagy c l; láthatatlan elválasztó, nagy o, alsó index 4; zárójel felső index mínusz")?;
                           return Ok(());
 
 }
@@ -112,7 +109,7 @@ fn ethylene_with_bond() -> Result<()> {
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap h, 2 cap c, double bond cap c, cap h, 2")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy h, 2, láthatatlan elválasztó, nagy c, kettős kötés nagy c; láthatatlan elválasztó, nagy h, 2")?;
   return Ok(());
 
 }
@@ -125,7 +122,7 @@ fn ferric_chloride_aq() -> Result<()> {
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap f e, cap c l, 3 aqueous")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy f e; láthatatlan elválasztó, nagy c l, 3, láthatatlan elválasztó, vizes oldat")?;
   return Ok(());
 
   }
@@ -138,7 +135,7 @@ fn ethylene_with_colon_bond() -> Result<()> {
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap h, 2 cap c, double bond cap c, cap h, 2")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy h, 2, láthatatlan elválasztó, nagy c, kettős kötés nagy c; láthatatlan elválasztó, nagy h, 2")?;
   return Ok(());
 
 }
@@ -172,11 +169,11 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, cap c; forms, 14, 7, cap n; plus 0, negative 1, e")?;
+      "14, 6, nagy c; keletkezik; 14, 7, nagy n; plusz 0, negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, cap c; reacts to form; super 14, sub 7, cap n; plus super 0, sub negative 1, e")?;
+      "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, cap c; reacts to form; superscript 14, subscript 7, cap n; plus, superscript 0, subscript negative 1, e")?;
+      "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
       return Ok(());
 
 }
@@ -439,11 +436,11 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, cap c; forms, 14, 7, cap n; plus 0, negative 1, e")?;
+      "14, 6, nagy c; keletkezik; 14, 7, nagy n; plusz 0, negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, cap c; reacts to form; super 14, sub 7, cap n; plus super 0, sub negative 1, e")?;
+      "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superscript 14, subscript 6, cap c; reacts to form; superscript 14, subscript 7, cap n; plus, superscript 0, subscript negative 1, e")?;
+      "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
       return Ok(());
 
 }
@@ -459,7 +456,7 @@ fn hcl_na_yields() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, cap h, cap c l; plus 2 cap n eigh; reacts to form; 2, cap n eigh, cap c l; plus cap h, subscript 2")?;
+        "2, nagy h; láthatatlan elválasztó, nagy c l; plusz 2 nagy n a; reakcióba lép, és keletkezik; 2, nagy n a; láthatatlan elválasztó, nagy c l; plusz nagy h, alsó index 2")?;
         return Ok(());
 
 }
@@ -507,9 +504,9 @@ fn mhchem_so4_2plus() -> Result<()> {
       </msup>
     </mrow>
   </math>";
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "cap s; cap o, 4, 2 plus")?;
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "cap s; cap o, sub 4, super 2 plus")?;
-  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "cap s; cap o, subscript 4, superscript 2 plus")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nagy s; láthatatlan elválasztó, nagy o, 4, 2 plusz")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "nagy s; láthatatlan elválasztó; nagy o, alsó index 4, felső index 2 plusz")?;
+  test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "nagy s; láthatatlan elválasztó; nagy o, alsó index 4, felső index 2 plusz")?;
   return Ok(());
 
 }
@@ -600,7 +597,7 @@ fn mhchem_hcl_aq_etc() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, cap h, cap c l, aqueous; plus, 2, cap n eigh, solid; forms; 2, cap n eigh, cap c l, aqueous; plus, cap h, 2, gas")?;
+      expr, "2; nagy h; láthatatlan elválasztó, nagy c l; láthatatlan elválasztó, vizes oldat; plusz; 2, nagy n a; láthatatlan elválasztó, szilárd; keletkezik; 2; nagy n a; láthatatlan elválasztó, nagy c l; láthatatlan elválasztó, vizes oldat; plusz, nagy h, 2; láthatatlan elválasztó, gáz")?;
 
       return Ok(());
 
@@ -669,7 +666,7 @@ fn mhchem_barbed_equilibrium() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "cap h, 2, gas; plus; cap i, 2, gas; is in equilibrium with, 2, cap h, cap i, gas")?;
+      expr, "nagy h, 2; láthatatlan elválasztó, gáz; plusz; nagy i, 2; láthatatlan elválasztó, gáz; egyensúlyban van a következővel:, 2; nagy h; láthatatlan elválasztó, nagy i; láthatatlan elválasztó, gáz")?;
       return Ok(());
 
 }
@@ -701,7 +698,7 @@ fn mhchem_roman_in_superscript() -> Result<()> {
       </mrow>
     </math>";
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "cap f e, 2; cap f e, 3; cap o, 4")?;
+      expr, "nagy f e, 2; láthatatlan elválasztó, nagy f e, 3; láthatatlan elválasztó, nagy o, 4")?;
       return Ok(());
 
 }
@@ -779,7 +776,7 @@ fn dropped_msubsup_bug_358() -> Result<()> {
           </mrow>
       </math>"#;
   test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, cap s, cap o, 2; plus; cap o, 2 is in equilibrium with, 2, cap s, cap o, 3")?;
+      expr, "2, nagy s; láthatatlan elválasztó, nagy o, 2; plusz; nagy o, 2 egyensúlyban van a következővel:, 2, nagy s; láthatatlan elválasztó, nagy o, 3")?;
       return Ok(());
 
 }

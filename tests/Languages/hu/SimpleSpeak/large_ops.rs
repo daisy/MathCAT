@@ -12,7 +12,7 @@ fn sum_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the sum from n is equal to 1, to 10 of n")?;
+    test("hu", "SimpleSpeak", expr, "összeg ettől: n egyenlő 1, eddig: 10 értéke: n")?;
     return Ok(());
 
 }
@@ -27,7 +27,7 @@ fn sum_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the sum over cap s of i")?;
+    test("hu", "SimpleSpeak", expr, "összeg alatta nagy s i")?;
     return Ok(());
 
 }
@@ -42,7 +42,7 @@ fn sum_both_msubsup() -> Result<()> {
         </msubsup>
         <mi>n</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the sum from n is equal to 1, to 10 of n")?;
+    test("hu", "SimpleSpeak", expr, "összeg ettől: n egyenlő 1, eddig: 10 értéke: n")?;
     return Ok(());
 
 }
@@ -57,7 +57,7 @@ fn sum_sub() -> Result<()> {
         </msub>
         <mi>i</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the sum over cap s of i")?;
+    test("hu", "SimpleSpeak", expr, "összeg alatta nagy s i")?;
     return Ok(());
 
 }
@@ -69,7 +69,7 @@ fn sum() -> Result<()> {
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the sum of eigh sub i")?;
+    test("hu", "SimpleSpeak", expr, "összeg a alsó index i")?;
     return Ok(());
 
 }
@@ -85,7 +85,7 @@ fn product_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the product from n is equal to 1, to 10 of n")?;
+    test("hu", "SimpleSpeak", expr, "produktum ettől: n egyenlő 1, eddig: 10 értéke: n")?;
     return Ok(());
 
 }
@@ -100,7 +100,7 @@ fn product_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the product over cap s of i")?;
+    test("hu", "SimpleSpeak", expr, "produktum alatta nagy s i")?;
     return Ok(());
 
 }
@@ -112,7 +112,7 @@ fn product() -> Result<()> {
             <mo>∏</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the product of eigh sub i")?;
+    test("hu", "SimpleSpeak", expr, "produktum a alsó index i")?;
     return Ok(());
 
 }
@@ -128,7 +128,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the intersection from i is equal to 1, to 10 of; cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "kereszteződés ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -143,7 +143,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the intersection over cap c of, cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "kereszteződés alatta nagy c, nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -155,7 +155,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the intersection of cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "kereszteződés nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -171,7 +171,7 @@ fn union_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the union from i is equal to 1, to 10 of; cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "unió ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -186,7 +186,7 @@ fn union_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "the union over cap c of, cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "unió alatta nagy c, nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -198,7 +198,7 @@ fn union() -> Result<()> {
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the union of cap s sub i")?;
+    test("hu", "SimpleSpeak", expr, "unió nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -217,7 +217,7 @@ fn integral_both() -> Result<()> {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "SimpleSpeak", expr, "the integral from 0, to 1 of, f of x; d x")?;
+    test("hu", "SimpleSpeak", expr, "integrál ettől: 0, eddig: 1 értéke:; f x; d x")?;
     return Ok(());
 
 }
@@ -233,7 +233,7 @@ fn integral_under() -> Result<()> {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "SimpleSpeak", expr, "the integral over the real numbers of; f of x d x")?;
+    test("hu", "SimpleSpeak", expr, "integrál alatta a valós számok halmaza; f x d x")?;
     return Ok(());
 
 }
@@ -246,7 +246,7 @@ fn integral() -> Result<()> {
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("hu", "SimpleSpeak", expr, "the integral of f of x d x")?;
+    test("hu", "SimpleSpeak", expr, "integrál f x d x")?;
     return Ok(());
 
 }
