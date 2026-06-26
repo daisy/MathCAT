@@ -11,7 +11,6 @@
 # Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
 - IntentMappings: {
     "indexed-by": "infix= alsó index kezdete; alsó index; alsó index vége: alsó index vége: alsó index vége",
-    "modified-variable": "silent= ",
     "say-super": "infix=felső index: felső index: felső index",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
 
@@ -55,32 +54,21 @@
     "lim-sup": "prefix=lim-sup: a határérték, amely nagyobb, mint: a határérték, amely nagyobb, mint",
     "lim-inf": "prefix=lim inf mint: az alsó határérték, mint: a határérték alsó határértéke, mint",
     "logarithm-with-base": "prefix=alap logaritmus: alap logaritmus: alap logaritmus",
-    "natural-logarithm": "function=l n: természetes logaritmus: természetes logaritmus",
-    "minus": "infix=minusz || prefix=negatív",
-    "plus": "infix=plusz || prefix=pozitív",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
     "real-part": "function=az igazi rész",
-    "perpendicular": "infix=merőleges",
-    "transpose": "postfix=transzponált || function=transzponált",
-    "norm": "function=; normalizálás: normalizálás: normalizálás; normalizálás vége",
     "trace": "function= ; nyom : nyom: a nyom; nyom vége",
     "dimension": "function=; dimenzió : dimenzió: a dimenzió; dimenzió vége",
     "homomorphism": "function= ; homomorfizmus : homomorfizmus: a homomorfizmus; homomorfizmus vége",
     "kernel": "function= ; kernel : kernel: a kernel; kernel vége",
-    "vector": "function= ; vektor || prefix=vektor",
-    "cross-product": "infix=kereszt: keresztszorzat: keresztszorzat",
-    "dot-product": "infix=pont: skaláris szorzat: pont: skaláris szorzat",
+    "dot-product": "infix=skaláris szorzat: skaláris szorzat: skaláris szorzat: skaláris szorzat",
 
-    "divergence": "function= ; dihv: divergencia: divergencia; divergencia vége",
-    "curl": "function= ; rotáció; rotáció vége",
-    "gradient": "function= ; del: gradiens: gradiens; gradiens vége",
-    "laplacian": "function=laplaciáns",   # speech engines don't do a good job with "laplacian"
+    #"divergence": "function= ; dihv: divergencia: divergencia; divergencia vége",
+    #"laplacian": "function=laplaciáns",   # speech engines don't do a good job with "laplacian"
 
     "chemistry-concentration": "function= ; koncentráció: koncentrációja ennek: a koncentrációja; koncentráció vége",
     ### Calculus
     "definite-integral":"function=integrál felett || function=integrál innen:; ide:", # Property ???
     "derivative":"function=a deriváltja; mely erre vonatkozik:", # Property ???
-    "partial-derivative":"function=parciális derivált", ## Note, included with infix, but separately under calculus tab has ??? for functionality
     "tends-to":"infix=általában",
     "tends-to-from-above":"infix=általában alulról indul",
 
@@ -130,7 +118,7 @@
     "median":"function=medián",
     "mode":"function=mód",
     "conditional-probability":"function=valószínűség; adott", # NOTE: Check test
-    "probability":"nofix=V: valószínűség",
+
 
     ### Linear Algebra
     "vector": "function= ; vektor || prefix=vektor kezdete", # prefix not tested, also prefix not on webpage
@@ -176,7 +164,6 @@
     "fenced-group":"function=bekerített csoport", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function= ; a pár; és", # Needs to be tested, test converts "and" to "comma,"
-    "indexed-by": "infix= ; alsó index; alsó index vége: alsó index vége: alsó index vége",
     "highlight":"postfix=kiemelt",
     "least-common-denominator":"function=legkisebb közös nevező",
     "rate":"infix=per",
@@ -222,7 +209,6 @@
     "divides": "infix=osztja",
     "does-not-belong-to": "infix=nem tartozik hozzá",
     "does-not-divide": "infix=nem osztja",
-    "dot-product": "infix=pont produktum",
     "downwards-diagonal-ellipsis": "infix=lefelé mutató átlós ellipszis",
     "direct-product": "infix=direkt produktum",
     "element-of": "infix=eleme",
