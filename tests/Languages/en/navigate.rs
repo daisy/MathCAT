@@ -61,7 +61,7 @@ mod tests {
           <mn id='id-9'>4</mn>
         </mrow>
        </math>";
-        init_default_prefs(mathml_str, "Character");
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -91,7 +91,7 @@ mod tests {
                 <mi id='id-6'>x</mi>a
             </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -119,7 +119,7 @@ mod tests {
                 <mi id='id-7'>x</mi>
             </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -140,7 +140,7 @@ mod tests {
     fn zoom_msubsup() -> Result<()> {
         // msubsup is trickier because it creates an intent within an intent, so offsets need to be handled properly
         let mathml_str = "<math id='math'><msubsup id='msubsup'><mi id='base'>𝑥</mi><mn id='sub'>1</mn><mn id='sup'>2</mn></msubsup></math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -190,7 +190,7 @@ mod tests {
                 </mrow>
             </mmultiscripts>
             </math>";
-        init_default_prefs(mathml_str, "Character");
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -228,7 +228,7 @@ mod tests {
                 </mrow>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Character");
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -278,7 +278,7 @@ mod tests {
             </mrow>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Simple");
+        init_prefs(mathml_str, "Simple", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -320,7 +320,7 @@ mod tests {
                 <mi id='id-6'>z</mi>
                 </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Character");
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -373,7 +373,7 @@ mod tests {
                     </mfrac>
                 </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Character");
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -410,7 +410,7 @@ mod tests {
           </mrow>
         </mrow>
        </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -441,8 +441,8 @@ mod tests {
           </mrow>
         </mrow>
        </math>";
-        init_default_prefs(mathml_str, "Simple");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Simple", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -512,7 +512,7 @@ mod tests {
           </mtr>
         </mtable>
        </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -543,8 +543,8 @@ mod tests {
                 <msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup>
                 <mi id='denom'>d</mi>
             </mfrac></math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -592,7 +592,7 @@ mod tests {
                 <mn id='id-19'>1</mn>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -632,7 +632,7 @@ mod tests {
         return Ok(());
 
         fn test_mode(mathml_str: &str, mode: &str) -> Result<()> {
-            init_default_prefs(mathml_str, mode);
+            init_prefs(mathml_str, mode, "en");
             set_preference("AutoZoomOut", "False")?;
             return MATHML_INSTANCE.with(|package_instance| {
                 debug!("--- Testing mode {mode} ---");
@@ -693,7 +693,7 @@ mod tests {
             <mo id='close'>]</mo>
             </mrow>
         </math>"#;
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -728,7 +728,7 @@ mod tests {
                 </msub>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -758,8 +758,8 @@ mod tests {
             <mo id='close'>|</mo>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -796,8 +796,8 @@ mod tests {
           </mtable>
         </mrow>
        </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -834,8 +834,8 @@ mod tests {
                 <mn id='id-9'>2</mn>
             </msup>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -859,8 +859,8 @@ mod tests {
                     <mo id='id-6'>)</mo>
                     </mrow>
                 </math>";
-        init_default_prefs(mathml_str, "Character");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Character", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -929,7 +929,7 @@ mod tests {
                 <mo id='id-25'>)</mo>
             </mrow>
         </math>"#;
-        init_default_prefs(mathml_str, "Simple");
+        init_prefs(mathml_str, "Simple", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -960,8 +960,8 @@ mod tests {
                     </mrow>
                 </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "ClearSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -996,8 +996,8 @@ mod tests {
                 <mn id='3'>3</mn>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1063,8 +1063,8 @@ mod tests {
                 <mn>7</mn>
             </mrow>
         </math>";
-        init_default_prefs(mathml_str, "Enhanced");
         set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+        init_prefs(mathml_str, "Enhanced", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1087,8 +1087,8 @@ mod tests {
                 <mi id='id-4'>y</mi>
             </mrow>
             </math>";
-        init_default_prefs(mathml_str, "Simple");
         set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+        init_prefs(mathml_str, "Simple", "en");
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
