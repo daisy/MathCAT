@@ -10,8 +10,8 @@ use log::debug;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::test_navigate;
-    use crate::Languages::navigate::{init_default_prefs, init_prefs, test_command};
+    use crate::common::assert_eq_with_panic_handler;
+    use crate::Languages::navigate::{init_prefs, test_command};
     use libmathcat::errors::Result;
     use libmathcat::navigate::{do_navigate_command_string, NavigationPosition, NAVIGATION_STATE};
     use libmathcat::{errors_to_string, get_element, set_preference, MATHML_INSTANCE};
@@ -66,16 +66,43 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            assert_eq!("zoomed in all of the way; 1", test_command("ZoomInAll", mathml, "id-2"));
-            assert_eq!("move right; plus", test_command("MoveNext", mathml, "id-3"));
-            assert_eq!("move right; in base; x", test_command("MoveNext", mathml, "id-5"));
-            assert_eq!("move right; in subscript; 2", test_command("MoveNext", mathml, "id-6"));
-            assert_eq!("move right; in superscript; 3", test_command("MoveNext", mathml, "id-7"));
-            assert_eq!("move right; out of superscript; plus", test_command("MoveNext", mathml, "id-8"));
-            assert_eq!("move left; in superscript; 3", test_command("MovePrevious", mathml, "id-7"));
-            assert_eq!("move left; in subscript; 2", test_command("MovePrevious", mathml, "id-6"));
-            assert_eq!("move left; in base; x", test_command("MovePrevious", mathml, "id-5"));
-            assert_eq!("move left; out of base; plus", test_command("MovePrevious", mathml, "id-3"));
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; 1",
+                test_command("ZoomInAll", mathml, "id-2"),
+            )?;
+            assert_eq_with_panic_handler("move right; plus", test_command("MoveNext", mathml, "id-3"))?;
+            assert_eq_with_panic_handler(
+                "move right; in base; x",
+                test_command("MoveNext", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; in subscript; 2",
+                test_command("MoveNext", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; in superscript; 3",
+                test_command("MoveNext", mathml, "id-7"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; out of superscript; plus",
+                test_command("MoveNext", mathml, "id-8"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in superscript; 3",
+                test_command("MovePrevious", mathml, "id-7"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in subscript; 2",
+                test_command("MovePrevious", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in base; x",
+                test_command("MovePrevious", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; out of base; plus",
+                test_command("MovePrevious", mathml, "id-3"),
+            )?;
 
             return Ok(());
         });
@@ -96,13 +123,31 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            assert_eq!("zoom in; the log base 2", test_command("ZoomIn", mathml, "id-2"));
-            assert_eq!("zoom in; in base; 2", test_command("ZoomIn", mathml, "id-4"));
-            assert_eq!("zoomed in all of the way; 2", test_command("ZoomIn", mathml, "id-4"));
+            assert_eq_with_panic_handler(
+                "zoom in; the log base 2",
+                test_command("ZoomIn", mathml, "id-2"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom in; in base; 2",
+                test_command("ZoomIn", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; 2",
+                test_command("ZoomInAll", mathml, "id-4"),
+            )?;
             debug!("Now zooming out");
-            assert_eq!("zoom out; out of base; the log base 2", test_command("ZoomOut", mathml, "id-2"));
-            assert_eq!("zoom out; the log base 2, of x", test_command("ZoomOut", mathml, "id-1"));
-            assert_eq!("zoomed out all of the way; the log base 2, of x", test_command("ZoomOut", mathml, "id-1"));
+            assert_eq_with_panic_handler(
+                "zoom out; out of base; the log base 2",
+                test_command("ZoomOut", mathml, "id-2"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom out; the log base 2, of x",
+                test_command("ZoomOut", mathml, "id-1"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; the log base 2, of x",
+                test_command("ZoomOut", mathml, "id-1"),
+            )?;
             return Ok(());
         });
     }
@@ -124,15 +169,39 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            assert_eq!("zoom in; the log base 2, cubed", test_command("ZoomIn", mathml, "id-2"));
-            assert_eq!("zoom in; in base; the log base 2", test_command("ZoomIn", mathml, "id-2-log-base"));
-            assert_eq!("zoom in; in base; 2", test_command("ZoomIn", mathml, "id-4"));
-            assert_eq!("zoomed in all of the way; 2", test_command("ZoomIn", mathml, "id-4"));
+            assert_eq_with_panic_handler(
+                "zoom in; the log base 2, cubed",
+                test_command("ZoomIn", mathml, "id-2"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom in; in base; the log base 2",
+                test_command("ZoomIn", mathml, "id-2-log-base"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom in; in base; 2",
+                test_command("ZoomIn", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; 2",
+                test_command("ZoomIn", mathml, "id-4"),
+            )?;
             debug!("Now zooming out");
-            assert_eq!("zoom out; out of base; the log base 2", test_command("ZoomOut", mathml, "id-2-log-base"));
-            assert_eq!("zoom out; out of base; the log base 2, cubed", test_command("ZoomOut", mathml, "id-2"));
-            assert_eq!("zoom out; the log base 2, cubed of x", test_command("ZoomOut", mathml, "id-1"));
-            assert_eq!("zoomed out all of the way; the log base 2, cubed of x", test_command("ZoomOut", mathml, "id-1"));
+            assert_eq_with_panic_handler(
+                "zoom out; out of base; the log base 2",
+                test_command("ZoomOut", mathml, "id-2-log-base"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom out; out of base; the log base 2, cubed",
+                test_command("ZoomOut", mathml, "id-2"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom out; the log base 2, cubed of x",
+                test_command("ZoomOut", mathml, "id-1"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; the log base 2, cubed of x",
+                test_command("ZoomOut", mathml, "id-1"),
+            )?;
             return Ok(());
         });
     }
@@ -153,19 +222,43 @@ mod tests {
             do_commands(mathml)?;
             set_preference("NavMode", "Character").unwrap();
             debug!("Character mode");
-            assert_eq!("zoom in; in base; x", test_command("ZoomIn", mathml, "base"));
-            assert_eq!("zoom out; out of base; x sub 1 super 2 end super", test_command("ZoomOut", mathml, "msubsup"));
+            assert_eq_with_panic_handler(
+                "zoom in; in base; x",
+                test_command("ZoomIn", mathml, "base"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoom out; out of base; x sub 1 super 2 end super",
+                test_command("ZoomOut", mathml, "msubsup"),
+            )?;
             return Ok(());
 
             /// Enhanced and Simple mode should behave the same
             fn do_commands(mathml: Element) -> Result<()> {
-                assert_eq!("zoom in; in base; x sub 1", test_command("ZoomIn", mathml, "msubsup-indexed-by"));
-                assert_eq!("zoom in; in base; x", test_command("ZoomIn", mathml, "base"));
-                assert_eq!("zoomed in all of the way; x", test_command("ZoomIn", mathml, "base"));
+                assert_eq_with_panic_handler(
+                    "zoom in; in base; x sub 1",
+                    test_command("ZoomIn", mathml, "msubsup-indexed-by"),
+                )?;
+                assert_eq_with_panic_handler(
+                    "zoom in; in base; x",
+                    test_command("ZoomIn", mathml, "base"),
+                )?;
+                assert_eq_with_panic_handler(
+                    "zoomed in all of the way; x",
+                    test_command("ZoomIn", mathml, "base"),
+                )?;
                 debug!("Now zooming out");
-                assert_eq!("zoom out; out of base; x sub 1", test_command("ZoomOut", mathml, "msubsup-indexed-by"));
-                assert_eq!("zoom out; out of base; x sub 1, squared", test_command("ZoomOut", mathml, "msubsup"));
-                assert_eq!("zoomed out all of the way; x sub 1, squared", test_command("ZoomOut", mathml, "msubsup"));
+                assert_eq_with_panic_handler(
+                    "zoom out; out of base; x sub 1",
+                    test_command("ZoomOut", mathml, "msubsup-indexed-by"),
+                )?;
+                assert_eq_with_panic_handler(
+                    "zoom out; out of base; x sub 1, squared",
+                    test_command("ZoomOut", mathml, "msubsup"),
+                )?;
+                assert_eq_with_panic_handler(
+                    "zoomed out all of the way; x sub 1, squared",
+                    test_command("ZoomOut", mathml, "msubsup"),
+                )?;
                 return Ok(());
             }
         });
@@ -195,18 +288,54 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            assert_eq!("zoomed in all of the way; in base; open bracket", test_command("ZoomInAll", mathml, "id-3"));
-            assert_eq!("move right; in base; cap c o", test_command("MoveNext", mathml, "id-5"));
-            assert_eq!("move right; in subscript; 6", test_command("MoveNext", mathml, "id-6"));
-            assert_eq!("move right; out of subscript; close bracket", test_command("MoveNext", mathml, "id-8"));
-            assert_eq!("move right; in superscript; 3", test_command("MoveNext", mathml, "id-11"));
-            assert_eq!("move right; plus", test_command("MoveNext", mathml, "id-12"));
-            assert_eq!("cannot move right, end of math", test_command("MoveNext", mathml, "id-12"));
-            assert_eq!("move left; 3", test_command("MovePrevious", mathml, "id-11"));
-            assert_eq!("move left; in base; close bracket", test_command("MovePrevious", mathml, "id-8"));
-            assert_eq!("move left; in subscript; 6", test_command("MovePrevious", mathml, "id-6"));
-            assert_eq!("move left; in base; cap c o", test_command("MovePrevious", mathml, "id-5"));
-            assert_eq!("move left; out of base; open bracket", test_command("MovePrevious", mathml, "id-3"));
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in base; open bracket",
+                test_command("ZoomInAll", mathml, "id-3"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; in base; cap c o",
+                test_command("MoveNext", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; in subscript; 6",
+                test_command("MoveNext", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; out of subscript; close bracket",
+                test_command("MoveNext", mathml, "id-8"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; in superscript; 3",
+                test_command("MoveNext", mathml, "id-11"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; plus",
+                test_command("MoveNext", mathml, "id-12"),
+            )?;
+            assert_eq_with_panic_handler(
+                "cannot move right, end of math",
+                test_command("MoveNext", mathml, "id-12"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; 3",
+                test_command("MovePrevious", mathml, "id-11"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in base; close bracket",
+                test_command("MovePrevious", mathml, "id-8"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in subscript; 6",
+                test_command("MovePrevious", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in base; cap c o",
+                test_command("MovePrevious", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; out of base; open bracket",
+                test_command("MovePrevious", mathml, "id-3"),
+            )?;
 
             return Ok(());
         });
@@ -326,10 +455,22 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             test_command("ZoomInAll", mathml, "id-3");
-            assert_eq!("move right; in denominator; y", test_command("MoveNext", mathml, "id-4"));
-            assert_eq!("move right; out of denominator; z", test_command("MoveNext", mathml, "id-6"));
-            assert_eq!("move left; in denominator; y", test_command("MovePrevious", mathml, "id-4"));
-            assert_eq!("move left; in numerator; x", test_command("MovePrevious", mathml, "id-3"));
+            assert_eq_with_panic_handler(
+                "move right; in denominator; y",
+                test_command("MoveNext", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; out of denominator; z",
+                test_command("MoveNext", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in denominator; y",
+                test_command("MovePrevious", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; in numerator; x",
+                test_command("MovePrevious", mathml, "id-3"),
+            )?;
 
             return Ok(());
         });
@@ -380,16 +521,34 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             test_command("ZoomInAll", mathml, "id-3");
-            assert_eq!("zoomed in to first character; t", test_command("ZoomIn", mathml, "id-3"));
-            assert_eq!("move right; o", test_command("MoveNext", mathml, "id-3"));
-            assert_eq!("move right; p", test_command("MoveNext", mathml, "id-3"));
-            assert_eq!("move right; in denominator; αβγ", test_command("MoveNext", mathml, "id-4"));
-            assert_eq!("zoomed in to first character; alpha", test_command("ZoomIn", mathml, "id-4"));
-            assert_eq!("move right; beta", test_command("MoveNext", mathml, "id-4"));
-            assert_eq!("move right; gamma", test_command("MoveNext", mathml, "id-4"));
-            assert_eq!("cannot move right, end of math", test_command("MoveNext", mathml, "id-4"));
-            assert_eq!("move left; beta", test_command("MovePrevious", mathml, "id-4"));
-            assert_eq!("zoom out; αβγ", test_command("ZoomOut", mathml, "id-4"));
+            assert_eq_with_panic_handler(
+                "zoomed in to first character; t",
+                test_command("ZoomIn", mathml, "id-3"),
+            )?;
+            assert_eq_with_panic_handler("move right; o", test_command("MoveNext", mathml, "id-3"))?;
+            assert_eq_with_panic_handler("move right; p", test_command("MoveNext", mathml, "id-3"))?;
+            assert_eq_with_panic_handler(
+                "move right; in denominator; αβγ",
+                test_command("MoveNext", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "zoomed in to first character; alpha",
+                test_command("ZoomIn", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler("move right; beta", test_command("MoveNext", mathml, "id-4"))?;
+            assert_eq_with_panic_handler(
+                "move right; gamma",
+                test_command("MoveNext", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "cannot move right, end of math",
+                test_command("MoveNext", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; beta",
+                test_command("MovePrevious", mathml, "id-4"),
+            )?;
+            assert_eq_with_panic_handler("zoom out; αβγ", test_command("ZoomOut", mathml, "id-4"))?;
 
             return Ok(());
         });
@@ -417,10 +576,19 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             test_command("ZoomIn", mathml, "id-2");
-            assert_eq!("move right; times", test_command("MoveNext", mathml, "id-3"));
-            assert_eq!("move right; 1 minus x", test_command("MoveNext", mathml, "id-6"));
-            assert_eq!("move left; times", test_command("MovePrevious", mathml, "id-3"));
-            assert_eq!("move left; 2", test_command("MovePrevious", mathml, "id-2"));
+            assert_eq_with_panic_handler(
+                "move right; times",
+                test_command("MoveNext", mathml, "id-3"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move right; 1 minus x",
+                test_command("MoveNext", mathml, "id-6"),
+            )?;
+            assert_eq_with_panic_handler(
+                "move left; times",
+                test_command("MovePrevious", mathml, "id-3"),
+            )?;
+            assert_eq_with_panic_handler("move left; 2", test_command("MovePrevious", mathml, "id-2"))?;
 
             return Ok(());
         });
@@ -449,10 +617,16 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             test_command("ZoomIn", mathml, "id-2");
-            assert_eq!("move right; open paren", test_command("MoveNext", mathml, "id-5"));
-            assert_eq!("move right; 1", test_command("MoveNext", mathml, "id-7"));
-            assert_eq!("move left; open paren", test_command("MovePrevious", mathml, "id-5"));
-            assert_eq!("move left; 2", test_command("MovePrevious", mathml, "id-2"));
+            assert_eq_with_panic_handler(
+                "move right; open paren",
+                test_command("MoveNext", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler("move right; 1", test_command("MoveNext", mathml, "id-7"))?;
+            assert_eq_with_panic_handler(
+                "move left; open paren",
+                test_command("MovePrevious", mathml, "id-5"),
+            )?;
+            assert_eq_with_panic_handler("move left; 2", test_command("MovePrevious", mathml, "id-2"))?;
 
             return Ok(());
         });
@@ -525,9 +699,9 @@ mod tests {
             test_command("MoveCellDown", mathml, "nav-20");
             test_command("MoveCellDown", mathml, "nav-27");
             let speech = test_command("MoveCellDown", mathml, "nav-39");
-            assert_eq!(speech, "move down, row 4, column 3; 2 minus y");
+            assert_eq_with_panic_handler("move down, row 4, column 3; 2 minus y", speech)?;
             let speech = test_command("MoveCellDown", mathml, "nav-39");
-            assert_eq!(speech, "no next row");
+            assert_eq_with_panic_handler("no next row", speech)?;
             test_command("MoveCellPrevious", mathml, "nav-35");
             test_command("ZoomIn", mathml, "nav-36");
             test_command("MoveCellUp", mathml, "nav-25");
@@ -559,7 +733,7 @@ mod tests {
             // WhereAmIAll doesn't change the stack
             let speech = test_command("WhereAmIAll", mathml, "exp");
             // should be 2 "inside" strings corresponding to steps to the root
-            assert_eq!(speech, "2; inside; b squared; inside; the fraction with numerator; b squared; and denominator d");
+            assert_eq_with_panic_handler("2; inside; b squared; inside; the fraction with numerator; b squared; and denominator d", speech)?;
             return Ok(());
         });
     }
@@ -646,32 +820,32 @@ mod tests {
                     "Enhanced" => {
                         test_command("MoveNext", mathml, "id-10");
                         let speech = test_command("ZoomIn", mathml, "id-11");
-                        assert_eq!(speech, "zoom in; in root; b squared minus 4");  // only one arg, so don't say "in root"
+                        assert_eq_with_panic_handler("zoom in; in root; b squared minus 4", speech)?;  // only one arg, so don't say "in root"
                         let speech = test_command("ZoomIn", mathml, "id-12");
-                        assert_eq!(speech, "zoom in; b squared");  // only one arg, so don't say "in root"
+                        assert_eq_with_panic_handler("zoom in; b squared", speech)?;  // only one arg, so don't say "in root"
                         let speech = test_command("ZoomIn", mathml, "id-13");
-                        assert_eq!(speech, "zoom in; in base; b");
+                        assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
                     },
                     "Simple" => {
                         test_command("MoveNext", mathml, "id-10");
                         let speech = test_command("ZoomIn", mathml, "id-12");
-                        assert_eq!(speech, "zoom in; in root; b squared");
+                        assert_eq_with_panic_handler("zoom in; in root; b squared", speech)?;
                         let speech = test_command("ZoomIn", mathml, "id-13");
-                        assert_eq!(speech, "zoom in; in base; b");
+                        assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
                     },
                     _ => { // "Character"
                         let speech = test_command("MoveNext", mathml, "id-13");
-                        assert_eq!(speech, "move right; in root; in base; b");
+                        assert_eq_with_panic_handler("move right; in root; in base; b", speech)?;
                     }
                 }
                 let squared_speech = if mode == "Character" { "b super 2 end super" } else { "b squared" };
                 let sqrt_speech = if mode == "Character" { "root" } else { "square root" };
                 let speech = test_command("ZoomOut", mathml, "id-12");
-                assert_eq!(speech, format!("zoom out; out of base; {squared_speech}"));
+                assert_eq_with_panic_handler(&format!("zoom out; out of base; {squared_speech}"), speech)?;
                 let speech = test_command("ZoomOut", mathml, "id-11");
-                assert_eq!(speech, format!("zoom out; {squared_speech} minus 4"));
+                assert_eq_with_panic_handler(&format!("zoom out; {squared_speech} minus 4"), speech)?;
                 let speech = test_command("ZoomOut", mathml, "id-10");
-                assert_eq!(speech, format!("zoom out; out of root; the {sqrt_speech} of {squared_speech} minus 4, end root", ));
+                assert_eq_with_panic_handler(&format!("zoom out; out of root; the {sqrt_speech} of {squared_speech} minus 4, end root"), speech)?;
                 return Ok(());
             });
         }
@@ -701,13 +875,16 @@ mod tests {
             let mathml = get_element(&package_instance);
             test_command("ZoomIn", mathml, "row-1");
             let speech = test_command("MoveNext", mathml, "row-2");
-            assert_eq!(speech, "move right; row 2; 5, negative 6");
+            assert_eq_with_panic_handler("move right; row 2; 5, negative 6", speech)?;
             let speech = test_command("ZoomIn", mathml, "id-13");
-            assert_eq!(speech, "zoom in; column 1; 5");
+            assert_eq_with_panic_handler("zoom in; column 1; 5", speech)?;
             let speech = test_command("ZoomOut", mathml, "row-2");
-            assert_eq!(speech, "zoom out; row 2; 5, negative 6");
+            assert_eq_with_panic_handler("zoom out; row 2; 5, negative 6", speech)?;
             let speech = test_command("ZoomOut", mathml, "table");
-            assert_eq!(speech, "zoom out; the 2 by 2 matrix; row 1; 9, negative 13; row 2; 5, negative 6");
+            assert_eq_with_panic_handler(
+                "zoom out; the 2 by 2 matrix; row 1; 9, negative 13; row 2; 5, negative 6",
+                speech,
+            )?;
             return Ok(());
         });
     }
@@ -737,7 +914,7 @@ mod tests {
             test_command("ZoomIn", mathml, "id-2");
             let speech = test_command("MoveNext", mathml, "id-6");
             // tables need to check their parent for proper speech
-            assert_eq!(speech, "move right; cap s");
+            assert_eq_with_panic_handler("move right; cap s", speech)?;
             return Ok(());
         });
     }
@@ -766,17 +943,17 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "row-1");
-            assert_eq!(speech, "zoom in; row 1; 9, negative 13");
+            assert_eq_with_panic_handler("zoom in; row 1; 9, negative 13", speech)?;
             let speech = test_command("MoveNext", mathml, "row-2");
-            assert_eq!(speech, "move right; row 2; 5, negative 6");
+            assert_eq_with_panic_handler("move right; row 2; 5, negative 6", speech)?;
             let speech = test_command("MoveNext", mathml, "row-2");
-            assert_eq!(speech, "cannot move right, end of math");
+            assert_eq_with_panic_handler("cannot move right, end of math", speech)?;
             let speech = test_command("ZoomIn", mathml, "id-13");
-            assert_eq!(speech, "zoom in; column 1; 5");
+            assert_eq_with_panic_handler("zoom in; column 1; 5", speech)?;
             let speech = test_command("MoveNext", mathml, "row2-negative");
-            assert_eq!(speech, "move right; column 2, negative 6");
+            assert_eq_with_panic_handler("move right; column 2, negative 6", speech)?;
             let speech = test_command("ZoomOutAll", mathml, "table");
-            assert_eq!(speech, "zoomed out all of the way; the 2 by 2 determinant; row 1; 9, negative 13; row 2; 5, negative 6");
+            assert_eq_with_panic_handler("zoomed out all of the way; the 2 by 2 determinant; row 1; 9, negative 13; row 2; 5, negative 6", speech)?;
             return Ok(());
         });
     }
@@ -805,16 +982,16 @@ mod tests {
             let mathml = get_element(&package_instance);
             test_command("ZoomIn", mathml, "row-1");
             let speech = test_command("MovePrevious", mathml, "row-1");
-            assert_eq!(speech, "move left; start of math");
+            assert_eq_with_panic_handler("move left; start of math", speech)?;
             let speech = test_command("MoveNext", mathml, "row-2");
-            assert_eq!(speech, "move right; case 2; positive x comma; if x, is greater than or equal to 0");
+            assert_eq_with_panic_handler("move right; case 2; positive x comma; if x, is greater than or equal to 0", speech)?;
             let speech = test_command("ZoomOut", mathml, "table");
-            assert_eq!(speech, "zoom out; 2 cases; case 1; negative x comma; if x is less than 0; case 2; positive x comma; if x, is greater than or equal to 0");
+            assert_eq_with_panic_handler("zoom out; 2 cases; case 1; negative x comma; if x is less than 0; case 2; positive x comma; if x, is greater than or equal to 0", speech)?;
             let speech = test_command("ZoomIn", mathml, "row-1");
-            assert_eq!(speech, "zoom in; case 1; negative x comma; if x is less than 0");
             set_preference("NavMode", "Character").unwrap();
+            assert_eq_with_panic_handler("zoom in; case 1; negative x comma; if x is less than 0", speech)?;
             let speech = test_command("MovePrevious", mathml, "open");
-            assert_eq!(speech, "move left; open brace");
+            assert_eq_with_panic_handler("move left; open brace", speech)?;
             return Ok(());
         });
     }
@@ -842,9 +1019,9 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "id-4");
-            assert_eq!(speech, "zoom in; in base; 2 x");
+            assert_eq_with_panic_handler("zoom in; in base; 2 x", speech)?;
             let speech = test_command("MoveNext", mathml, "id-9");
-            assert_eq!(speech, "move right; in exponent; 2");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
             return Ok(());
         });
     }
@@ -868,39 +1045,39 @@ mod tests {
             let mathml = get_element(&package_instance);
             debug!("Character mode");
             let speech = test_command("MoveStart", mathml, "id-2");
-            assert_eq!(speech, "move to start of math; open paren");
+            assert_eq_with_panic_handler("move to start of math; open paren", speech)?;
             let speech = test_command("MoveNext", mathml, "id-4");
             // I'm not keen on the use of numerator/denominator here, but character mode turns off intent
-            assert_eq!(speech, "move right; in numerator; n");
+            assert_eq_with_panic_handler("move right; in numerator; n", speech)?;
             let speech = test_command("MoveNext", mathml, "id-5");
-            assert_eq!(speech, "move right; in denominator; k");
+            assert_eq_with_panic_handler("move right; in denominator; k", speech)?;
             debug!("before zoom out");
             let speech = test_command("ZoomOut", mathml, "id-3");
-            assert_eq!(speech, "zoom out; out of denominator; n over k");
+            assert_eq_with_panic_handler("zoom out; out of denominator; n over k", speech)?;
             // let speech = test_command("ZoomOut", mathml, "id-1");
-            // assert_eq!(speech, "zoom out; open paren n over k, close paren");
+            // assert_eq_with_panic_handler("zoom out; open paren n over k, close paren", speech)?;
 
             set_preference("NavMode", "Simple").unwrap();
             debug!("Simple mode");
             let speech = test_command("ZoomIn", mathml, "id-4");
-            assert_eq!(speech, "zoom in; in part 1; n");
+            assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
             let speech = test_command("MoveNext", mathml, "id-5");
-            assert_eq!(speech, "move right; in part 2; k");
+            assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
             let speech = test_command("MoveNext", mathml, "id-5");
-            assert_eq!(speech, "cannot move right, end of math");
+            assert_eq_with_panic_handler("cannot move right, end of math", speech)?;
             let speech = test_command("ZoomOut", mathml, "id-1-literal-0");
-            assert_eq!(speech, "zoom out; out of part 2; n choose k");
+            assert_eq_with_panic_handler("zoom out; out of part 2; n choose k", speech)?;
 
             set_preference("NavMode", "Enhanced").unwrap();
             debug!("Enhanced mode");
             let speech = test_command("ZoomIn", mathml, "id-4");
-            assert_eq!(speech, "zoom in; in part 1; n");
+            assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
             let speech = test_command("MoveNext", mathml, "id-5");
-            assert_eq!(speech, "move right; in part 2; k");
+            assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
             let speech = test_command("MoveNext", mathml, "id-5");
-            assert_eq!(speech, "cannot move right, end of math");
+            assert_eq_with_panic_handler("cannot move right, end of math", speech)?;
             let speech = test_command("ZoomOut", mathml, "id-1-literal-0");
-            assert_eq!(speech, "zoom out; out of part 2; n choose k");
+            assert_eq_with_panic_handler("zoom out; out of part 2; n choose k", speech)?;
 
             return Ok(());
         });
@@ -936,15 +1113,15 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "id-3-literal-1");
-            assert_eq!(speech, "zoom in; 1");
+            assert_eq_with_panic_handler("zoom in; 1", speech)?;
             let speech = test_command("MoveNext", mathml, "id-3-literal-2");
-            assert_eq!(speech, "move right; 2");
+            assert_eq_with_panic_handler("move right; 2", speech)?;
             let speech = test_command("MoveNext", mathml, "id-3-literal-3");
-            assert_eq!(speech, "move right; 3");
+            assert_eq_with_panic_handler("move right; 3", speech)?;
             let speech = test_command("MoveNext", mathml, "id-3-literal-3");
-            assert_eq!(speech, "cannot move right, end of math");
+            assert_eq_with_panic_handler("cannot move right, end of math", speech)?;
             let speech = test_command("ZoomOut", mathml, "id-3-literal-0");
-            assert_eq!(speech, "zoom out; diagonal 1 2 3");
+            assert_eq_with_panic_handler("zoom out; diagonal 1 2 3", speech)?;
 
             return Ok(());
         });
@@ -968,20 +1145,20 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "2");
-            assert_eq!(speech, "zoom in; 2");
+            assert_eq_with_panic_handler("zoom in; 2", speech)?;
             let speech = test_command("MoveNext", mathml, "abs");
-            assert_eq!(speech, "move right; the absolute value of x");
+            assert_eq_with_panic_handler("move right; the absolute value of x", speech)?;
             let speech = test_command("ZoomIn", mathml, "x");
-            assert_eq!(speech, "zoom in; in absolute value; x");
+            assert_eq_with_panic_handler("zoom in; in absolute value; x", speech)?;
             let speech = test_command("MoveNext", mathml, "x");
-            assert_eq!(speech, "cannot move right, end of math");
-            set_preference("NavMode", "Character").unwrap();
+            assert_eq_with_panic_handler("cannot move right, end of math", speech)?;
+            set_preference("NavMode", "Character")?;
             let speech = test_command("MoveNext", mathml, "end");
-            assert_eq!(speech, "move right; vertical line");
+            assert_eq_with_panic_handler("move right; vertical line", speech)?;
             let speech = test_command("MoveLineStart", mathml, "2");
-            assert_eq!(speech, "move to start of line; 2");
+            assert_eq_with_panic_handler("move to start of line; 2", speech)?;
             let speech = test_command("MoveNext", mathml, "start");
-            assert_eq!(speech, "move right; vertical line");
+            assert_eq_with_panic_handler("move right; vertical line", speech)?;
             return Ok(());
         });
     }
@@ -1005,9 +1182,12 @@ mod tests {
             let mathml = get_element(&package_instance);
             test_command("ZoomIn", mathml, "frac");
             let speech = test_command("ReadCurrent", mathml, "frac");
-            assert_eq!(speech, "read current; fraction, b plus 1, over 3, end fraction");
+            assert_eq_with_panic_handler(
+                "read current; fraction, b plus 1, over 3, end fraction",
+                speech,
+            )?;
             let speech = test_command("DescribeCurrent", mathml, "frac");
-            assert_eq!(speech, "describe current; fraction");
+            assert_eq_with_panic_handler("describe current; fraction", speech)?;
             return Ok(());
         });
     }
@@ -1072,11 +1252,17 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomOutAll", mathml, "mrow");
-            assert_eq!(speech, "zoomed out all of the way; 1 plus 2 plus 3 plus 4 plus 5 plus 6 plus 7");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; 1 plus 2 plus 3 plus 4 plus 5 plus 6 plus 7",
+                speech,
+            )?;
             let speech = test_command("ReadCurrent", mathml, "mrow");
-            assert_eq!(speech, "read current; 1 plus 2 plus 3 plus 4 plus 5 plus 6 plus 7");
+            assert_eq_with_panic_handler(
+                "read current; 1 plus 2 plus 3 plus 4 plus 5 plus 6 plus 7",
+                speech,
+            )?;
             let speech = test_command("DescribeCurrent", mathml, "mrow");
-            assert_eq!(speech, "describe current; 1 plus 2 plus 3 and so on");
+            assert_eq_with_panic_handler("describe current; 1 plus 2 plus 3 and so on", speech)?;
             return Ok(());
         });
     }
@@ -1096,11 +1282,11 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "id-2");
-            assert_eq!(speech, "zoom in; x");
+            assert_eq_with_panic_handler("zoom in; x", speech)?;
             let speech = test_command("ToggleZoomLockUp", mathml, "id-2");
-            assert_eq!(speech, "enhanced mode; x");
+            assert_eq_with_panic_handler("enhanced mode; x", speech)?;
             let speech = test_command("ReadNext", mathml, "id-2");
-            assert_eq!(speech, "read right; y");
+            assert_eq_with_panic_handler("read right; y", speech)?;
             return Ok(());
         });
     }
