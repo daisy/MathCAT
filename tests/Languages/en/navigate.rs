@@ -1290,4 +1290,27 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn zoom_in_simple_frac() -> Result<()> {
+        let mathml_str = "<math id='id-0'>
+            <mfrac id='id-1'>
+                <mi id='id-2'>x</mi>
+                <mi id='id-3'>y</mi>
+            </mfrac>
+            </math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in numerator; x", speech)?;
+            let speech = test_command("ToggleZoomLockUp", mathml, "id-2");
+            assert_eq_with_panic_handler("enhanced mode; x", speech)?;
+            let speech = test_command("ReadNext", mathml, "id-2");
+            assert_eq_with_panic_handler("read right; in denominator; y", speech)?;
+            return Ok(());
+        });
+    }
 }
