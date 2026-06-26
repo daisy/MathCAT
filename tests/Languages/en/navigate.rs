@@ -611,8 +611,8 @@ mod tests {
           </mrow>
         </mrow>
        </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -719,8 +719,8 @@ mod tests {
                 <msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup>
                 <mi id='denom'>d</mi>
             </mfrac></math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -937,8 +937,8 @@ mod tests {
             <mo id='close'>|</mo>
             </mrow>
         </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -975,8 +975,8 @@ mod tests {
           </mtable>
         </mrow>
        </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -988,8 +988,8 @@ mod tests {
             let speech = test_command("ZoomOut", mathml, "table");
             assert_eq_with_panic_handler("zoom out; 2 cases; case 1; negative x comma; if x is less than 0; case 2; positive x comma; if x, is greater than or equal to 0", speech)?;
             let speech = test_command("ZoomIn", mathml, "row-1");
-            set_preference("NavMode", "Character").unwrap();
             assert_eq_with_panic_handler("zoom in; case 1; negative x comma; if x is less than 0", speech)?;
+            set_preference("NavMode", "Character")?;
             let speech = test_command("MovePrevious", mathml, "open");
             assert_eq_with_panic_handler("move left; open brace", speech)?;
             return Ok(());
@@ -1013,8 +1013,8 @@ mod tests {
                 <mn id='id-9'>2</mn>
             </msup>
         </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1038,8 +1038,8 @@ mod tests {
                     <mo id='id-6'>)</mo>
                     </mrow>
                 </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1139,8 +1139,8 @@ mod tests {
                     </mrow>
                 </mrow>
             </math>";
-        set_preference("SpeechStyle", "ClearSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1175,8 +1175,8 @@ mod tests {
                 <mn id='3'>3</mn>
             </mrow>
         </math>";
-        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1246,8 +1246,8 @@ mod tests {
                 <mn>7</mn>
             </mrow>
         </math>";
-        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
         init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -1276,8 +1276,8 @@ mod tests {
                 <mi id='id-4'>y</mi>
             </mrow>
             </math>";
-        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
         init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
