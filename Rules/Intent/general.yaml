@@ -42,11 +42,18 @@
 -
   name: roman_numeral
   tag: [mi, mn, mtext]
-  match: "@data-number"
-  replace: 
-  - intent:
-      name: mn
-      children: [x: "@data-number"]
+  match: "@data-roman-numeral"
+  replace:
+  - test:
+      if: "../@data-chem-formula"
+      then:
+      - intent:
+          name: mn
+          children: [x: "@data-number"]
+      else:
+      - intent:
+          name: mi
+          children: [x: "text()"]
 
 -
   name: positive-or-negative
@@ -427,7 +434,7 @@
 -
   name: chemical-element
   tag: [mi, mtext]
-  match: "@data-chem-element"
+  match: "@data-chem-element or contains(@data-intent-property, ':chemical-element:')"
   replace:
   - intent:
       name: "chemical-element"
@@ -801,6 +808,20 @@
           name: "system-of-equations"
           children:
           - x: "*"
+-
+  name: mtable-array-property
+  tag: mtable
+  match: "count(*) > 0 and ((@frame='solid' or @frame='dashed') or child::*[@rowspan] or child::*/child::*[@rowspan or @colspan or @columnspan] or  not(preceding-sibling::*[1][self::m:mo and text() != '\u2062']))"
+  replace:
+  - with:
+      variables:
+      - TableProperty: "'array'"
+      replace:
+      - intent:
+          name: "array"
+          children:
+          - x: "*"
+
 
 -
   name: mtable-lines-property

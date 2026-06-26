@@ -1,0 +1,469 @@
+---
+- include: "../../definitions.yaml"
+
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If only one ":" is used, it the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If no ":"s are used, the same speech is used for all forms
+# If bracketing words make sense, they are separated with ";"s
+# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
+# If there are multiple fixities (e.g., see transpose), they are separated with "||
+#   for readability, spaces can be used around any of the delimiter characters
+# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+- IntentMappings: {
+    "indexed-by": "infix= ; с индексом; конец индекса: с индексом: с индексом",
+    "modified-variable": "silent= ",
+    "say-super": "infix=верхний индекс: верхний индекс: верхний индекс",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+
+    "absolute-value": "function= ; модуль: модуль: модуль; конец модуля",
+    "binomial": "infix=число сочетаний из; по; конец числа сочетаний",
+    # "closed-interval": "other=closed-interval; от,до; end closed-interval",
+    "greatest-common-divisor": "function=нод: нод: наибольший общий делитель",
+    "imaginary-part": "function=мнимая часть, мнимая часть, мнимая часть",
+    "least-common-multiple": "function=нок:нок:наименьшее общее кратное",
+    # "large-op": "infix=над || other=от,до",
+    "limit": "prefix=предел при: предел при: предел при",
+    "lim-sup": "prefix=верхний предел при: верхний предел при: верхний предел при",
+    "lim-inf": "prefix=нижний предел при: нижний предел при: нижний предел при",
+    "logarithm-with-base": "prefix=логарифм по основанию: логарифм по основанию: логарифм по основанию",
+    "natural-logarithm": "function=эл эн: натуральный логарифм: натуральный логарифм",
+    "minus": "infix=минус || prefix=минус",
+    "plus": "infix=плюс || prefix=плюс",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "real-part": "function=действительная часть",
+
+    "transpose": "postfix=транспонирование || function=транспонированная",
+    "norm": "function=; норма: норма: норма; конец нормы",
+    "trace": "function=;след : след: след; конец следа",
+    "dimension": "function=; размерность : размерность: размерность; конец размерности",
+    "homomorphism": "function= ; гомоморфизм : гомоморфизм: гомоморфизм; конец гомоморфизма",
+    "kernel": "function= ; ядро : ядро: ядро; конец ядра",
+    "vector": "function= ; вектор || prefix=вектор",
+    "cross-product": "infix=векторное произведение: векторное произведение: векторное произведение",
+    "dot-product": "infix=скалярное произведение: скалярное произведение: скалярное произведение",
+    "perpendicular-to": "infix=перпендикулярно",
+    "perpendicular to": "infix=перпендикулярно",
+    "perpendicular_to": "infix=перпендикулярно",
+    "forced": "prefix=форсид",
+
+    "divergence": "function= ; дивергенция: дивергенция: дивергенция; конец дивергенции",
+    "curl": "function= ; ротор; конец ротора",
+    "gradient": "function= ; градиент: градиент: градиент; конец градиента",
+    "laplacian": "function=лапласиан",   # speech engines don't do a good job with "laplacian"
+
+    "chemistry-concentration": "function= ; концентрация: концентрация: концентрация; конец концентрации",
+  }
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+
+- TerseFunctionNames: {
+    "divergence", "gradient", "curl"
+  }
+
+- NavigationParts: {
+    "large-op": "основание; нижний предел; верхний предел",
+    "mfrac": "числитель; знаменатель",
+    "fraction": "числитель; знаменатель",
+    "msqrt": "подкоренное выражение",
+    "square-root": "подкоренное выражение",
+    "mroot": "подкоренное выражение; показатель корня",
+    "root": "подкоренное выражение; показатель корня",
+    "msub": "основание; нижний индекс",
+    "sub": "основание; нижний индекс",
+    "msup": "основание; верхний индекс",
+    "say-super": "основание; верхний индекс",
+    "skip-super": "основание; верхний индекс",
+    "power": "основание; показатель степени",
+    "msubsup": "основание; нижний индекс; верхний индекс",
+    "munder": "основание; нижний предел",
+    "mover": "основание; верхний предел",
+    "munderover": "основание; нижний предел; верхний предел",
+
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
+    "in": "в",
+    "out": "из",
+    "out of": "из",
+    "end of": "конец",
+    "start of": "начало",
+  }
+
+- OperatorIntentRenaming: {
+    "dimension-product": "на",
+    "perpendicular-to": "перпендикулярно",
+    "perpendicular to": "перпендикулярно",
+    "perpendicular_to": "перпендикулярно"
+  }
+
+- KnownWords: {
+    # MathCAT will put together some runs of three or more mi's (a common mistake), but skips those in alphabetical order.
+    # This is a list of exceptions so that they do get put together. Don't list words with repeated letters.
+
+    # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
+    # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
+    "Abel", "aery", "ails", "airy", "amps", "cents", "flux", "flow", "knot",
+  }
+
+- SIPrefixes: {
+"Q": "кветта", "R": "ронна", "Y": "иотта", "Z": "зетта", "E": "экса", "P": "пета", "T": "тера", "G": "гига", "M": "мега", "k": "кило", "h": "гекто", "da": "дека",
+    "d": "деци", "c": "санти", "m": "милли", "µ": "микро", "n": "нано", "p": "пико", "f": "фемто", "a": "атто", "z": "зепто", "y": "иокто", "r": "ронто", "q": "квекто"
+  }
+
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
+- SIUnits: {
+    # base units
+    "A": "ампер",
+    "cd": "кандела",
+    "K": "кельвин", "K": "кельвин", # U+212A
+    "g": "грамм",
+    "m": "метр",
+    "mol": "моль",
+    "s": "секунда", "sec": "секунда",  # "sec" не является официальным, но поддерживается
+
+    # derived units
+    "Bq": "беккерель",
+    "C": "кулон",
+    "°C": "градус Цельсия", "℃": "градус Цельсия", # должны использоваться только с отрицательными степенями
+    "F": "фарад",
+    "Gy": "грей",
+    "H": "генри",
+    "Hz": "герц",
+    "J": "джоуль",
+    "kat": "катал",
+    "lm": "люмен",
+    "lx": "люкс",
+    "N": "ньютон",
+    "Ω": "ом", "Ω": "ом",       # греческая заглавная буква Омега, U+2126 OHM SIGN
+    "Pa": "паскаль",
+    "S": "сименс",
+    "Sv": "зиверт",
+    "T": "тесла",
+    "V": "вольт",
+    "W": "ватт",
+    "Wb": "вебер",
+
+    # accepted (plus a few variants) that take SI prefixes
+    "l": "литр", "L": "литр", "ℓ": "литр",  # должны использоваться только с отрицательными степенями
+    "t": "тонна",           # должна использоваться только с положительными степенями
+    "Da": "дальтон",
+    "Np": "непер",               # должен использоваться только с отрицательными степенями
+    "u": "атомная единица массы",     # 'u' правильно: https://en.wikipedia.org/wiki/Dalton_(unit)
+    "eV": "электронвольт",
+    "rad": "радиан",             # должен использоваться только с отрицательными степенями
+    "sr": "стерадиан",          # должен использоваться только с отрицательными степенями      
+  
+    # others that take a prefix
+    "a": "год",               # должен использоваться только с положительными степенями
+    "as": "угловая секунда",          # см. ru.wikipedia.org/wiki/Minute_and_second_of_arc
+
+    # technically wrong, but used in practice with SI Units
+    "b": "бит",               # должен использоваться только с положительными степенями
+    "B": "байт",              # должен использоваться только с положительными степенями
+    "Bd": "бод",              # должен использоваться только с положительными степенями
+  }
+
+
+- UnitsWithoutPrefixes: {
+    # time
+    "″": "секунда", "\"": "секунда",
+    "′": "минута", "'": "минута","min": "минута",
+    "h": "час", "hr": "час", "Hr": "час",
+    "d": "день", "dy": "день",
+    "w": "неделя", "wk": "неделя",
+    "y": "год", "yr": "год",    
+
+    # angles
+    "°": "градус", "deg": "градус", # должны использоваться только с отрицательными степенями
+    "arcmin": "угловая минута",
+    "amin": "угловая минута",
+    "am": "угловая минута",
+    "MOA": "угловая минута",
+    "arcsec": "угловая секунда",
+    "asec": "угловая секунда",
+
+    # distance
+    "au": "астрономическая единица", "AU": "астрономическая единица",
+    "ltyr": "световой год", "ly": "световой год",
+    "pc": "парсек",
+    "Å": "ангстрем", "Å": "ангстрем",           # U+00C5 и U+212B
+    "fm": "ферми",
+
+    # others
+    "ha": "гектар",
+    # "B": "bel",    # "B" чаще означает байты
+    "dB": "децибел", # уже логарифмическая, поэтому не используется с приставками СИ
+
+    "amu": "атомная единица массы",
+    "atm": "атмосфера",
+    "bar": "бар",
+    "cal": "калория",
+    "Ci": "кюри",
+    "grad": "град",
+    "M": "моляр",
+    "R": "рентген",
+    "rpm": "оборот в минуту",
+    "℧": "эм-аш-о",
+    "dyn": "дина",
+    "erg": "эрг",
+
+    # powers of 2 used with bits and bytes
+    "Kib": "кибибит", "Mib": "мебибит", "Gib": "гибибит", "Tib": "тебибит", "Pib": "пебибит", "Eib": "эксбибит", "Zib": "зебибит", "Yib": "йобибит",
+    "KiB": "кибибайт", "MiB": "мебибайт", "GiB": "гибибайт", "TiB": "тебибайт", "PiB": "пебибайт", "EiB": "эксбибайт", "ZiB": "зебибайт", "YiB": "йобибайт",
+  }
+
+  # this will only be used if the language is English, so it can be empty for other countries
+- EnglishUnits: {
+    # length
+    "in": "дюйм",
+    "ft": "фут",
+    "mi": "миля",
+    "rd": "род",
+    "li": "линк",
+    "ch": "чейн",
+
+    # area
+    "sq in": "квадратный дюйм", "sq. in": "квадратный дюйм", "sq. in.": "квадратный дюйм",
+    "sq ft": "квадратный фут", "sq. ft": "квадратный фут", "sq. ft.": "квадратный фут",
+    "sq yd": "квадратный ярд", "sq. yd": "квадратный ярд", "sq. yd.": "квадратный ярд",
+    "sq mi": "квадратная миля", "sq. mi": "квадратная миля", "sq. mi.": "квадратная миля",
+    "ac": "акр",
+    "FBM": "доско-фут",
+
+    # volume
+    "cu in": "кубический дюйм", "cu. in": "кубический дюйм", "cu. in.": "кубический дюйм",
+    "cu ft": "кубический фут", "cu. ft": "кубический фут", "cu. ft.": "кубический фут",
+    "cu yd": "кубический ярд", "cu. yd": "кубический ярд", "cu. yd.": "кубический ярд",
+    "bbl": "баррель", "BBL": "баррель",
+    "pk": "пек",
+    "bu": "бушель",
+    "tsp": "чайная ложка",
+    "tbl": "столовая ложка",
+
+    # liquid
+    "fl dr": "жидкая драхма",
+    "fl oz": "жидкая унция",
+    "gi": "джилл",
+    "cp": "чашка", "cup": "чашка",
+    "pt": "пинта",
+    "qt": "кварта",
+    "gal": "галлон",
+
+    # weight
+    "gr": "гран",
+    "dr": "драхма",
+    "oz": "унция", "℥": "унция",
+    "lb": "фунт",
+    "cwt": "центнер (английский)",
+    "dwt": "пеннивейт",
+    "oz t": "тройская унция",
+    "lb t": "тройский фунт",
+
+    # energy
+    "hp": "лошадиная сила",
+    "BTU": "БТЕ",
+    "°F": "градус Фаренгейта", "℉": "градус Фаренгейта",
+
+    # other
+    "mph": "миля в час",
+    "mpg": "миля на галлон",
+      }
+
+- FractionNumerators: {
+    "1": "одна", "2": "две", "3": "три", "4": "четыре", "5": "пять",
+    "6": "шесть", "7": "семь", "8": "восемь", "9": "девять",
+    "10": "десять", "11": "одиннадцать", "12": "двенадцать",
+    "13": "тринадцать", "14": "четырнадцать", "15": "пятнадцать",
+    "16": "шестнадцать", "17": "семнадцать", "18": "восемнадцать",
+    "19": "девятнадцать", "89": "восемьдесят девять"
+  }
+
+- PluralForms: {
+  # FIX: this needs to be flushed out
+    "ампер": "ампера",
+    "кандела": "канделы",
+    "кельвин": "кельвина",
+    "грамм": "грамма",
+    "метр": "метра",
+    "моль": "моля",
+    "секунда": "секунды",
+    "литр": "литра",
+    "тонна": "тонны",
+    "дальтон": "дальтона",
+    "непер": "непера",
+    "атомная единица массы": "атомные единицы массы",
+    "электронвольт": "электронвольта",
+    "радиан": "радиана",
+    "стерадиан": "стерадиана",
+    "год": "года",
+    "угловая секунда": "угловые секунды",
+    "бит": "бита",
+    "байт": "байта",
+    "бод": "бода",
+    "беккерель": "беккереля",
+    "кулон": "кулона",
+    "градус Цельсия": "градуса Цельсия",
+    "фарад": "фарада",
+    "грей": "грея",
+    "генри": "генри",
+    "герц": "герца",
+    "джоуль": "джоуля",
+    "катал": "катала",
+    "люмен": "люмена",
+    "люкс": "люкс",
+    "ньютон": "ньютона",
+    "ом": "ома",
+    "паскаль": "паскаля",
+    "сименс": "сименс",
+    "зиверт": "зиверта",
+    "тесла": "теслы",
+    "вольт": "вольта",
+    "ватт": "ватта",
+    "вебер": "вебера",
+    "миля": "мили",
+    "галлон": "галлона",
+    "градус": "градуса",
+    "угловая минута": "угловые минуты",
+    "астрономическая единица": "астрономические единицы",
+    "световой год": "световых года",
+    "парсек": "парсека",
+    "ангстрем": "ангстрема",
+    "ферми": "ферми",
+    "гектар": "гектара",
+    "децибел": "децибела",
+    "атмосфера": "атмосферы",
+    "бар": "бара",
+    "калория": "калории",
+    "кюри": "кюри",
+    "град": "града",
+    "моляр": "моляра",
+    "рентген": "рентгена",
+    "оборот в минуту": "оборота в минуту",
+    "эм-аш-о": "эм-аш-о",
+    "дина": "дины",
+    "эрг": "эрга",
+    "кибибит": "кибибита", "мебибит": "мебибита", "гибибит": "гибибита", "тебибит": "тебибита",
+    "пебибит": "пебибита", "эксбибит": "эксбибита", "зебибит": "зебибита", "йобибит": "йобибита",
+    "кибибайт": "кибибайта", "мебибайт": "мебибайта", "гибибайт": "гибибайта", "тебибайт": "тебибайта",
+    "пебибайт": "пебибайта", "эксбибайт": "эксбибайта", "зебибайт": "зебибайта", "йобибайт": "йобибайта",
+    "час": "часа",
+    "день": "дня",
+    "неделя": "недели",
+    "минута": "минуты",
+    "inch": "inches", "square inch": "square inches", "cubic inch": "cubic inches",
+    "foot": "feet", "square foot": "square feet", "cubic foot": "cubic feet",
+    "board foot": "board feet",
+    "degree celsius": "degrees celsius",
+    "degree fahrenheit": "degrees fahrenheit",
+    "hertz": "hertz",
+    "siemens": "siemens",
+    "revolution per minute": "revolutions per minute",
+    "mile per hour": "miles per hour",
+    "mile per gallon": "miles per gallon",
+  }
+
+# Lines starting with "#" are a comment
+# Each definition in this file is of the form
+# - name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
+
+
+# ----------------  Cardinal and Ordinal Numbers  --------------------------
+# The following definitions are used to convert numbers to words
+# The are mainly used for ordinals, of which there are two cases:
+# 1. Regular ordinals: first, second, third, ...
+# 2. Ordinals used in the denominator of fractions (e.g, one half, one third)
+#    When used in the denominator of fractions, a plural version might be
+#    used (e.g., two halves, two thirds)
+# Although a lot of languages are regular after a few entries, for generality,
+# the following lists should be filled out even though they are the same
+# or easily derived from others in many languages (e.g, an 's' is added for plurals).
+# The larger ordinal numbers (e.g, millionth) is used when there are only
+# '0's after that decimal place (e.g., 23000000).:w
+
+# All definitions start 0, 10, 100, etc.
+
+# The definitions for the "ones" should extend until a regular pattern begins
+#   The minimum length is 10.
+
+# For English, a regular pattern starts at twenty
+- NumbersOnes: [
+"ноль", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять",
+"десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать",
+"семнадцать", "восемнадцать", "девятнадцать"
+    ]
+
+- NumbersOrdinalOnes: [
+"нулевой", "первой", "второй", "третьей", "четвёртой", "пятой", "шестой", "седьмой", "восьмой", "девятой",
+"десятой", "одиннадцатой", "двенадцатой", "тринадцатой", "четырнадцатой", "пятнадцатой", "шестнадцатой",
+"семнадцатой", "восемнадцатой", "девятнадцатой"
+    ]
+
+- NumbersOrdinalPluralOnes: [
+"нулевые", "первые", "вторые", "третьи", "четвёртые", "пятые", "шестые", "седьмые", "восьмые", "девятые",
+"десятые", "одиннадцатые", "двенадцатые", "тринадцатые", "четырнадцатые", "пятнадцатые", "шестнадцатые",
+"семнадцатые", "восемнадцатые", "девятнадцатые"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalOnes: [
+"нулевая", "первая", "вторая", "третья", "четвёртая", "пятая", "шестая", "седьмая", "восьмая", "девятая",
+"десятая", "одиннадцатая", "двенадцатая", "тринадцатая", "четырнадцатая", "пятнадцатая", "шестнадцатая",
+"семнадцатая", "восемнадцатая", "девятнадцатая"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralOnes: [
+"нулевых", "первых", "вторых", "третьих", "четвёртых", "пятых", "шестых", "седьмых", "восьмых", "девятых",
+"десятых", "одиннадцатых", "двенадцатых", "тринадцатых", "четырнадцатых", "пятнадцатых", "шестнадцатых",
+"семнадцатых", "восемнадцатых", "девятнадцатых"
+    ]
+
+
+    # What to use for multiples of 10
+- NumbersTens: [
+"", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    ]
+
+- NumbersOrdinalTens: [
+"", "десятой", "двадцатой", "тридцатой", "сороковой", "пятидесятой", "шестидесятой", "семидесятой", "восьмидесятой", "девяностой"
+    ]
+
+- NumbersOrdinalPluralTens: [
+"", "десятые", "двадцатые", "тридцатые", "сороковые", "пятидесятые", "шестидесятые", "семидесятые", "восьмидесятые", "девяностые"
+    ]
+
+
+- NumbersHundreds: [
+"", "сто", "двести", "триста", "четыреста", "пятьсот",
+"шестьсот", "семьсот", "восемьсот", "девятьсот"
+    ]
+
+- NumbersOrdinalHundreds: [
+"", "сотой", "двухсотой", "трёхсотой", "четырёхсотой", "пятисотой",
+"шестисотой", "семисотой", "восьмисотой", "девятисотой"
+    ]
+
+- NumbersOrdinalPluralHundreds: [
+"", "сотые", "двухсотые", "трёхсотые", "четырёхсотые", "пятисотые",
+"шестисотые", "семисотые", "восьмисотые", "девятисотые"
+    ]
+      
+
+    # At this point, hopefully the language is regular. If not, code needs to be written
+- NumbersLarge: [
+"", "тысяча", "миллион", "миллиард", "триллион", "квадриллион",
+        "квинтиллион", "секстиллион", "септиллион", "октиллион", "нониллион",
+    ]
+      
+- NumbersOrdinalLarge: [
+"", "тысячной", "миллионной", "миллиардной", "триллионной", "квадриллионной",
+"квинтиллионной", "секстиллионной", "септиллионной", "октиллионной", "нониллионной"
+    ]
+      
+- NumbersOrdinalPluralLarge: [
+"", "тысячные", "миллионные", "миллиардные", "триллионные", "квадриллионные",
+"квинтиллионные", "секстиллионные", "септиллионные", "октиллионные", "нониллионные"
+    ]

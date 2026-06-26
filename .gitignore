@@ -17,6 +17,7 @@ src/*.bak
 *.sleepy
 *.txt
 *.zip
+llvm-cov/
 __pycache__
 PythonScripts/__pycache__
 PythonScripts/cachedir
@@ -36,7 +37,6 @@ PythonScripts/encrypt.py
 PythonScripts/intent-coverage.py
 PythonScripts/PythonScripts.zip
 PythonScripts/google-defs.yaml
-BrailleDocs
 
 src/errors.rs
 src/pattern.pest
@@ -57,3 +57,5 @@ Rules/*/*/*.zip
 docs/_site
 docs/.jekyll-cache
 docs/Gemfile.lock
+
+docs/nb_of_norway/

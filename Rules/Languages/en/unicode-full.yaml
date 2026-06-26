@@ -1403,7 +1403,7 @@
  - "⏠": [t: "top tortoise shell bracket"]          # 0x23e0
  - "⏡": [t: "bottom tortoise shell bracket"]        # 0x23e1
  - "⏢": [t: "white trapezium"]                    # 0x23e2
- - "⏣": [t: "benzene right with circle"]          # 0x23e3
+ - "⏣": [t: "benzene ring with circle"]          # 0x23e3
  - "⏤": [t: "straightness"]                       # 0x23e4
  - "⏥": [t: "flatness"]                           # 0x23e5
  - "⏦":                                           # 0x23e6
@@ -1617,7 +1617,7 @@
  - "⚆": [t: "white circle with dot right"]       # 0x2686
  - "⚇": [t: "white circle wiht two dots"]        # 0x2687
  - "⚈": [t: "black circle with dot right"]       # 0x2688
- - "⚉": [t: "black circle wiht two dots"]        # 0x2689
+ - "⚉": [t: "black circle with two dots"]        # 0x2689
  - "⚪": [t: "medium white circle"]              # 0x26aa
  - "⚫": [t: "medium black circle"]              # 0x26ab
  - "⚬": [t: "medium small white circle"]          # 0x26ac
@@ -3666,12 +3666,6 @@
         then: [t: "bold"]
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
- - "-":    # 0xf52e - 0xf537  (old MathType)
-    - test:
-        if: "not($IgnoreBold)"
-        then: [t: "bold"]
-    - spell: "translate('.', '', '0123456789')"
-
  - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
     - test:
         if: "not($IgnoreBold)"
@@ -3682,7 +3676,8 @@
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
+
 
  - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff  
     - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"

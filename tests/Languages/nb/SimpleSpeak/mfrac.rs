@@ -354,3 +354,27 @@ fn binomial_non_simple_top_and_bottom() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn mixed_number_one() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>1</mn>
+    <mfrac><mn>2</mn><mn>3</mn></mfrac>
+</math>"#;
+    test("nb", "SimpleSpeak", expr, "1 og 2 tredjedeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn mixed_number_two() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>2</mn>
+    <mfrac><mn>4</mn><mn>4</mn></mfrac>
+</math>"#;
+    test("nb", "SimpleSpeak", expr, "2 og 4 fjerdedeler")?;
+    return Ok(());
+
+}

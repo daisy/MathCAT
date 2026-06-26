@@ -175,6 +175,7 @@ Translators:
 * German -- Nazli Andjic, Robert Graf and Paul Libbrecht (IU International University of Applied Sciences)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
 * Norwegian -- Marthe Gjelstad, National Library of Norway, Kvile
+* Russian -- Danil Kostenkov
 * Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development) and María Allo Roldán
 * Swedish -- Tim Arborealis Lötberg, Swedish Agency for Accessible Media (MTM) and Anders Eklund, SPSM
 * Vietnamese -- Dang Hoai Phúc and Trang Pham

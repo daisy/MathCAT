@@ -611,7 +611,7 @@
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
   replace:
   - x: "*"
   - test:

@@ -7,6 +7,7 @@ mod Languages {
     mod zh;
     mod en;
     mod hu;
+    mod ru;
     mod fi;
     mod sv;
     mod nb;

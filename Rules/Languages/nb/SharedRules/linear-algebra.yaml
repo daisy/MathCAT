@@ -1,5 +1,5 @@
 ---
-- name: scalar-determinant
+- name: scalar-determinant    # audit-ignore
   tag: determinant
   match: "count(*)=1 and not(*[1][self::m:mtr])"
   replace:
@@ -11,7 +11,7 @@
       if: "not(IsNode(*[1], 'simple'))"
       then: [T: "slutt determinant"]      # phrase('end determinant' of a matrix)
 
-- name: subscripted-norm
+- name: subscripted-norm    # audit-ignore
   tag: subscripted-norm
   match: "count(*)=2"
   replace:
@@ -21,7 +21,7 @@
   - T: "til"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
 
-- name: homomorphism
+- name: homomorphism    # audit-ignore
   # can't use IntentMappings because this doesn't fit the function pattern
   tag: homomorphism
   match: "count(*)=1"
@@ -40,7 +40,7 @@
       else: [pause: auto]
 
 # NORWEGIAN: Removed test for Verbosity
-- name: kernel
+- name: kernel    # audit-ignore
   # can't use IntentMappings because this doesn't fit the function pattern
   tag: kernel
   match: "count(*)=1"
@@ -57,7 +57,7 @@
       else: [pause: auto]
 
 # NORWEGIAN: Kept these rules here, cause we say "dimensjonen til" and "normen til" instead of "dimensjonen av" and "normen av".
-- name: dimension
+- name: dimension   # audit-ignore
   tag: dimension
   match: "count(*)=1"
   replace:
@@ -65,7 +65,7 @@
   - T: "til"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
 
-- name: norm
+- name: norm    # audit-ignore
   tag: norm
   match: "count(*)=1"
   replace:
