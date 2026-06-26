@@ -3,6 +3,7 @@
 mod common;
 
 mod Languages {
+    mod navigate;
     mod intent;
     mod zh;
     mod en;
