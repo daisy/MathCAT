@@ -477,14 +477,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='merőleges'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, perpendicular to, nagy b jobbra nyíl")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -513,7 +513,7 @@ fn literal_speak_chars() -> Result<()> {
 // AI generated
 #[test]
 fn literal_speak_with_name() -> Result<()> {
-  let expr = r#"<math intent='forced($x)'>
+  let expr = r#"<math intent='kényszerített($x)'>
       <mrow arg="x">
         <mi>f</mi>
         <mo data-changed='added'>&#x2061;</mo>
@@ -527,7 +527,7 @@ fn literal_speak_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#;
-  test("hu", "LiteralSpeak", expr, "forced f, bal zárójel, x felkiáltójel, jobb zárójel")?;
+  test("hu", "LiteralSpeak", expr, "kényszerített f, bal zárójel, x felkiáltójel, jobb zárójel")?;
   return Ok(());
 
 }
@@ -563,14 +563,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='merőleges'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, perpendicular to, nagy b jobbra nyíl")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -578,7 +578,7 @@ fn literal_intent_property() -> Result<()> {
 // AI generated
 #[test]
 fn literal_intent_property_with_name() -> Result<()> {
-  let expr = r#"<math intent='forced:literal($x)'>
+  let expr = r#"<math intent='kényszerített:literal($x)'>
       <mrow arg="x">
         <mi>f</mi>
         <mo data-changed='added'>&#x2061;</mo>
@@ -592,7 +592,7 @@ fn literal_intent_property_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("hu", "SimpleSpeak", expr, "forced f, nyitott zárójel, x felkiáltójel, zárt zárójel")?;
+  test("hu", "SimpleSpeak", expr, "kényszerített f, nyitott zárójel, x felkiáltójel, zárt zárójel")?;
   return Ok(());
 
 }
