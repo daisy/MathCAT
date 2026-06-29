@@ -128,7 +128,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "kereszteződés ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
+    test("hu", "SimpleSpeak", expr, "metszet ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -143,7 +143,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "SimpleSpeak", expr, "kereszteződés alatta nagy c, nagy s alsó index i")?;
+    test("hu", "SimpleSpeak", expr, "metszet alatta nagy c, nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -155,7 +155,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("hu", "SimpleSpeak", expr, "kereszteződés nagy s alsó index i")?;
+    test("hu", "SimpleSpeak", expr, "metszet nagy s alsó index i")?;
     return Ok(());
 
 }
