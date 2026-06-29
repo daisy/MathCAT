@@ -337,8 +337,29 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mo>&#x2220;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>=</mo><mn>15</mn><mo>&#xB0;</mo><mn>30</mn><mo>&#x2032;</mo><mn>12</mn><mo>&#x2033;</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠸⠪⠨⠁⠃⠉⠀⠶⠼⠁⠑⠨⠴⠼⠉⠚⠨⠔⠼⠁⠃⠨⠔⠔")?;
 
+    let expr = r#"<math><mrow><mo>&#x25B3;</mo><msub><mi>A</mi><mn>1</mn></msub><msub><mi>B</mi><mn>1</mn></msub><msub><mi>C</mi><mn>1</mn></msub></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠙⠨⠁⠡⠂⠃⠡⠂⠉⠡⠂")?;
+
+    let expr = r#"<math><mrow><mn>2</mn><mo>&#x2220;</mo><mi>A</mi><mi>B</mi><mi>C</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠄⠸⠪⠨⠁⠃⠉")?;
+
+    let expr = r#"<math><mrow><mn>3</mn><mo>&#x25B3;</mo><mi>A</mi><mi>B</mi><mi>C</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠉⠄⠸⠙⠨⠁⠃⠉")?;
+
+    let expr = r#"<math><mrow><mn>4</mn><mo>&#x222A;</mo><mi>E</mi><mi>F</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠙⠄⠸⠜⠨⠑⠋")?;
+
+    let expr = r#"<math><mrow><mo>&#x25B3;</mo><mi>K</mi><mi>L</mi><mi>M</mi><mo>&#x223C;</mo><mo>&#x25B3;</mo><mi>P</mi><mi>Q</mi><mi>R</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠙⠨⠅⠇⠍⠀⠢⠸⠙⠨⠏⠟⠗")?;
+
     let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x2225;</mo><mi>C</mi><mi>D</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠃⠸⠸⠨⠉⠙")?;
+
+    let expr = r#"<math><mrow><mi>a</mi><mo>&#x22A5;</mo><mi>b</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠼⠄⠃")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x22A5;</mo><mi>C</mi><mi>D</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠼⠄⠉⠙")?;
 
     let expr = r#"<math><mrow><mover accent="true"><mi>a</mi><mo stretchy="true">&#x2192;</mo></mover><mo>=</mo><mn>2</mn></mrow></math>"#;
     test_braille("Russian", expr, "⠠⠁⠒⠂⠀⠶⠼⠃")?;

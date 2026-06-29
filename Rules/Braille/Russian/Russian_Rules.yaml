@@ -51,6 +51,34 @@
   replace: [t: ""]
 
 -
+  name: canonical-prefix-geometry-op
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][(self::m:mo or self::m:mi) and (.='∠' or .='△' or .='∪')] and"
+  - "*[2][self::m:mo and .='⁡']"
+  replace:
+  - test:
+    - if: "*[1][.='∪']"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "*[1]/text()"
+  - t: "#"
+  - x: "*[3]"
+
+-
+  name: geometry-prefix-after-canonical-multiplier
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mrow and *[1][(self::m:mo or self::m:mi) and (.='∠' or .='△' or .='∪')]]"
+  replace:
+  - x: "*[1]"
+  - t: "⠄"
+  - x: "*[3]"
+
+-
   name: periodic-decimal-row
   tag: mrow
   match:
@@ -1006,6 +1034,22 @@
       then: [t: "⠀⠘⠡"]
     - else:
       - x: "text()"
+
+-
+  name: geometry-prefix-after-multiplier
+  tag: mo
+  match:
+  - "(.='∠' or .='△' or .='∪') and"
+  - "preceding-sibling::*[1][not(self::m:mo)] and"
+  - "following-sibling::*[1][self::m:mi or self::m:msub or self::m:mrow]"
+  replace:
+  - t: "⠄"
+  - test:
+    - if: ".='∪'"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "text()"
+  - t: "#"
 
 -
   name: prefix-geometry-ops
