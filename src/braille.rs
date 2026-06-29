@@ -2171,6 +2171,9 @@ fn swedish_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
 fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([BCILNW#])").unwrap());
     static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"⠀+").unwrap());
+    static PERIODIC_DECIMAL_NUM_INDICATOR: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"(N[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠂[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]*⠣)N([⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠜)").unwrap()
+    });
 
     let mut raw_braille_without_repeated_number_indicators = String::with_capacity(raw_braille.len());
     let mut previous_char_was_digit = false;
@@ -2183,7 +2186,9 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
         previous_char_was_digit = matches!(ch, '⠚' | '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊');
     }
 
-    let result = add_russian_alphabet_indicators(&raw_braille_without_repeated_number_indicators);
+    let raw_braille_without_periodic_number_indicator = PERIODIC_DECIMAL_NUM_INDICATOR
+        .replace_all(&raw_braille_without_repeated_number_indicators, "$1$2");
+    let result = add_russian_alphabet_indicators(&raw_braille_without_periodic_number_indicator);
     let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
         match &cap[0] {
             "B" => "⠸",

@@ -51,6 +51,77 @@
   replace: [t: ""]
 
 -
+  name: periodic-decimal-row
+  tag: mrow
+  match:
+  - "count(*)=4 and"
+  - "*[1][self::m:mn and contains(., ',') and translate(., '0123456789,', '')=''] and"
+  - "*[2][self::m:mo and .='('] and"
+  - "*[3][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[4][self::m:mo and .=')']"
+  replace:
+  - x: "*[1]"
+  - t: "⠣"
+  - x: "BrailleChars(translate(string(*[3]), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠜"
+
+-
+  name: mixed-number-simple-fraction-with-invisible-times
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mfrac] and"
+  - "*[3]/*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[3]/*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "#"
+  - x: "*[3]"
+
+-
+  name: mixed-number-simple-fraction
+  tag: mrow
+  match:
+  - "count(*)=2 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mfrac] and"
+  - "*[2]/*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2]/*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "#"
+  - x: "*[2]"
+
+-
+  name: mixed-number-with-arithmetic-fraction-with-invisible-times
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mfrac] and"
+  - "not(*[3]/*[1][self::m:mn and translate(., '0123456789', '')=''] and *[3]/*[2][self::m:mn and translate(., '0123456789', '')=''])"
+  replace:
+  - x: "*[1]"
+  - t: "⠐"
+  - x: "*[3]"
+
+-
+  name: mixed-number-with-arithmetic-fraction
+  tag: mrow
+  match:
+  - "count(*)=2 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mfrac] and"
+  - "not(*[2]/*[1][self::m:mn and translate(., '0123456789', '')=''] and *[2]/*[2][self::m:mn and translate(., '0123456789', '')=''])"
+  replace:
+  - x: "*[1]"
+  - t: "⠐"
+  - x: "*[2]"
+
+-
   name: default
   tag: [mrow, mstyle, semantics]
   match: "."
@@ -966,6 +1037,29 @@
   match: "."
   replace:
   - x: "text()"
+
+-
+  name: periodic-decimal-period-digits
+  tag: mn
+  match:
+  - "translate(., '0123456789', '')='' and"
+  - "preceding-sibling::*[1][self::m:mo and .='('] and"
+  - "following-sibling::*[1][self::m:mo and .=')'] and"
+  - "preceding-sibling::*[2][self::m:mn and contains(., ',')]"
+  replace:
+  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
+  name: periodic-decimal
+  tag: mn
+  match: "contains(., ',') and substring-after(., '(') != '' and substring-before(substring-after(., '('), ')') != ''"
+  replace:
+  - x: "BrailleChars(substring-before(., ','), 'Russian')"
+  - t: "⠂"
+  - x: "BrailleChars(translate(substring-before(substring-after(., ','), '('), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠣"
+  - x: "BrailleChars(translate(substring-before(substring-after(., '('), ')'), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠜"
 
 -
   name: decimal-comma
