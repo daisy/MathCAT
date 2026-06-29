@@ -41,6 +41,7 @@
   - RowStart: "''"
   - RowEnd: "''"
   - InSystemLeftBrace: "false()"
+  - InChemElementGroup: "false()"
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
 
@@ -49,6 +50,19 @@
   tag: mo
   match: "not(preceding-sibling::*) and following-sibling::*[1][self::m:mtable] and count(../*)=2"
   replace: [t: ""]
+
+-
+  name: chemistry-single-letter-element-group
+  tag: mrow
+  match:
+  - "(@data-chem-formula or ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "count(*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1 and"
+  - "count(*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) = count(*[self::m:mi[@data-chem-element='1']])"
+  replace:
+  - t: "⠸"
+  - with:
+      variables: [InChemElementGroup: "true()"]
+      replace: [x: "*"]
 
 -
   name: canonical-prefix-geometry-op
@@ -347,6 +361,45 @@
   - "*[2][substring(., string-length(), 1)='⇀']"
   replace:
   - t: "⠀⠒⠕⠀⠦⠶"
+
+-
+  name: chemistry-reaction-arrow-above
+  tag: mover
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠌"
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: chemistry-reaction-arrow-below
+  tag: munder
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠡"
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: chemistry-reaction-arrow-above-and-below
+  tag: munderover
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠡"
+  - x: "*[2]"
+  - t: "⠱"
+  - t: "⠨⠌"
+  - x: "*[3]"
+  - t: "⠱"
 
 -
   name: vector-arrow
@@ -1132,6 +1185,13 @@
   match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
   replace:
   - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
+
+-
+  name: chemistry-single-letter-element-in-group
+  tag: mi
+  match: "$InChemElementGroup and @data-chem-element='1'"
+  replace:
+  - x: "translate(BrailleChars(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'Russian'), 'l', '')"
 
 -
   name: div-function
