@@ -280,6 +280,31 @@ fn alphabet_indicators_after_numbers_and_greek() -> Result<()> {
 }
 
 #[test]
+fn source_typeform_and_mathvariant_indicators() -> Result<()> {
+    let expr = r#"<math><mi mathvariant="bold">x</mi></math>"#;
+    test_braille("Russian", expr, "⠻⠠⠭⠻")?;
+
+    let expr = r#"<math><mi mathvariant="italic">y</mi></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠽⠸")?;
+
+    let expr = r#"<math><mi mathvariant="bold-italic">z</mi></math>"#;
+    test_braille("Russian", expr, "⠻⠸⠠⠵⠸⠻")?;
+
+    let expr = r#"<math><mi mathvariant="bold">AB</mi></math>"#;
+    test_braille("Russian", expr, "⠻⠨⠁⠃⠻")?;
+
+    let expr = r#"<math><mrow><mi mathvariant="bold">x</mi><mo>+</mo><mi>y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠻⠠⠭⠻⠀⠖⠽")?;
+
+    let expr = r#"<math><mi>&#x1D431;</mi></math>"#;
+    test_braille("Russian", expr, "⠻⠠⠭⠻")?;
+
+    let expr = r#"<math><mi>&#x1D465;</mi></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠭⠸")?;
+    return Ok(());
+}
+
+#[test]
 fn wikipedia_times_divide() -> Result<()> {
     let expr = r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#;
     test_braille("Russian", expr, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉")?;

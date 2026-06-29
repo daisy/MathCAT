@@ -2169,7 +2169,7 @@ fn swedish_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
 }
 
 fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
-    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([BCILNW#])").unwrap());
+    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([LNW#])").unwrap());
     static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"⠀+").unwrap());
     static PERIODIC_DECIMAL_NUM_INDICATOR: LazyLock<Regex> = LazyLock::new(|| {
         Regex::new(r"(N[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠂[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]*⠣)N([⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠜)").unwrap()
@@ -2188,12 +2188,11 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
 
     let raw_braille_without_periodic_number_indicator = PERIODIC_DECIMAL_NUM_INDICATOR
         .replace_all(&raw_braille_without_repeated_number_indicators, "$1$2");
-    let result = add_russian_alphabet_indicators(&raw_braille_without_periodic_number_indicator);
+    let result = add_russian_typeform_indicators(&raw_braille_without_periodic_number_indicator);
+    let result = add_russian_alphabet_indicators(&result);
     let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
         match &cap[0] {
-            "B" => "⠸",
-            "C" => "⠠",
-            "I" => "⠨",
+            "C" => "⠨",
             "L" => "",
             "N" => "⠼",
             "W" => "⠀",
@@ -2206,12 +2205,111 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
                           .trim_matches('⠀')
                           .to_string();
 
+    fn add_russian_typeform_indicators(raw_braille: &str) -> String {
+        let mut result = String::with_capacity(raw_braille.len());
+        let mut active_typeforms: Vec<char> = Vec::with_capacity(2);
+        let mut pending_typeforms: Vec<char> = Vec::with_capacity(2);
+        let mut previous_was_capital_marker = false;
+
+        for ch in raw_braille.chars() {
+            if is_russian_typeform_marker(ch) {
+                if !pending_typeforms.contains(&ch) {
+                    pending_typeforms.push(ch);
+                }
+                previous_was_capital_marker = false;
+                continue;
+            }
+            if matches!(ch, 's' | 'w' | 'e') && (!pending_typeforms.is_empty() || !active_typeforms.is_empty()) {
+                continue;
+            }
+
+            if is_russian_token_start(ch) {
+                if !previous_was_capital_marker {
+                    close_inactive_typeforms(&mut result, &mut active_typeforms, &pending_typeforms);
+                }
+                for &typeform in &pending_typeforms {
+                    if !active_typeforms.contains(&typeform) {
+                        result.push_str(russian_typeform_indicator(typeform));
+                        active_typeforms.push(typeform);
+                    }
+                }
+                pending_typeforms.clear();
+            } else if !pending_typeforms.is_empty() {
+                close_inactive_typeforms(&mut result, &mut active_typeforms, &pending_typeforms);
+                for &typeform in &pending_typeforms {
+                    if !active_typeforms.contains(&typeform) {
+                        result.push_str(russian_typeform_indicator(typeform));
+                        result.push_str(russian_typeform_indicator(typeform));
+                    }
+                }
+                pending_typeforms.clear();
+            } else if !active_typeforms.is_empty() && !is_russian_token_body(ch) {
+                close_all_typeforms(&mut result, &mut active_typeforms);
+            }
+
+            result.push(ch);
+            previous_was_capital_marker = ch == 'C';
+        }
+
+        close_all_typeforms(&mut result, &mut active_typeforms);
+        return result;
+    }
+
+    fn is_russian_typeform_marker(ch: char) -> bool {
+        matches!(ch, 'B' | 'I' | 'T' | 'D' | 'S' | '𝔹')
+    }
+
+    fn is_russian_token_start(ch: char) -> bool {
+        matches!(ch, 'l' | 'u' | 'g' | 'v' | 'L' | 'N' | 'C')
+    }
+
+    fn is_russian_token_body(ch: char) -> bool {
+        ('\u{2801}'..='\u{28ff}').contains(&ch)
+    }
+
+    fn close_inactive_typeforms(result: &mut String, active_typeforms: &mut Vec<char>, pending_typeforms: &[char]) {
+        let mut i = active_typeforms.len();
+        while i > 0 {
+            i -= 1;
+            if !pending_typeforms.contains(&active_typeforms[i]) {
+                let typeform = active_typeforms.remove(i);
+                result.push_str(russian_typeform_indicator(typeform));
+            }
+        }
+    }
+
+    fn close_all_typeforms(result: &mut String, active_typeforms: &mut Vec<char>) {
+        while let Some(typeform) = active_typeforms.pop() {
+            result.push_str(russian_typeform_indicator(typeform));
+        }
+    }
+
+    fn russian_typeform_indicator(typeform: char) -> &'static str {
+        match typeform {
+            'B' => "⠻",                         // ГОСТ Р 58511: жирный шрифт, точки 12456.
+            'I' | 'T' | 'D' | 'S' | '𝔹' => "⠸", // ГОСТ Р 58511: курсив/шрифтовое выделение, точки 456.
+            _ => "",
+        }
+    }
+
     fn add_russian_alphabet_indicators(raw_braille: &str) -> String {
         let mut result = String::with_capacity(raw_braille.len());
         let mut alphabet_mode = None;
+        let mut capital_marker_pending = false;
         for ch in raw_braille.chars() {
             match ch {
+                'C' => {
+                    if alphabet_mode != Some('u') {
+                        result.push_str("⠨");
+                        alphabet_mode = Some('u');
+                    }
+                    capital_marker_pending = true;
+                },
+                'l' if capital_marker_pending => {
+                    capital_marker_pending = false;
+                },
                 'l' | 'u' | 'g' | 'v' => {
+                    capital_marker_pending = false;
                     if alphabet_mode != Some(ch) {
                         result.push_str(match ch {
                             'l' => "⠠",  // Latin lowercase: dots 6
@@ -2223,11 +2321,15 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
                         alphabet_mode = Some(ch);
                     }
                 },
-                'C' | 'N' | '#' => {
+                'N' | '#' => {
+                    capital_marker_pending = false;
                     alphabet_mode = None;
                     result.push(ch);
                 },
-                _ => result.push(ch),
+                _ => {
+                    capital_marker_pending = false;
+                    result.push(ch);
+                },
             }
         }
         return result;
@@ -2397,7 +2499,7 @@ impl BrailleChars {
             "Vietnam" => BrailleChars:: get_braille_vietnam_chars(node, text_range),
             "Swedish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
             "Finnish" => BrailleChars:: get_braille_ueb_chars(node, text_range),    // FIX: need to figure out what to implement
-            "Russian" => BrailleChars:: get_braille_ueb_chars(node, text_range),
+            "Russian" => BrailleChars:: get_braille_russian_chars(node, text_range),
             _ => return Err(sxd_xpath::function::Error::Other(format!("get_braille_chars: unknown braille code '{code}'")))
         };
         return match result {
@@ -2532,6 +2634,41 @@ impl BrailleChars {
         });
         // debug!("get_braille_ueb_chars: '{}'", &result);
         return Ok(result.to_string())
+    }
+
+    fn get_braille_russian_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
+        let text = BrailleChars::substring(as_text(node), &text_range);
+        let braille_chars = braille_replace_chars(&text, node)?;
+        let Some(math_variant) = node.attribute_value("mathvariant") else {
+            return Ok(braille_chars);
+        };
+
+        let mut prefix = String::new();
+        let mut suffix = String::new();
+        if math_variant.contains("bold") && !braille_chars.contains('B') {
+            prefix.push_str("⠻");
+            suffix.insert_str(0, "⠻");
+        }
+        if math_variant.contains("italic") && !braille_chars.contains('I') {
+            prefix.push_str("⠸");
+            suffix.insert_str(0, "⠸");
+        }
+        let has_typeface_marker = braille_chars.contains('T')
+            || braille_chars.contains('D')
+            || braille_chars.contains('S')
+            || braille_chars.contains('𝔹');
+        if !has_typeface_marker {
+            let typeface = match math_variant {
+                "double-struck" | "script" | "fraktur" | "sans-serif" => Some("⠸"),
+                _ => None,
+            };
+            if let Some(indicator) = typeface {
+                prefix.push_str(indicator);
+                suffix.insert_str(0, indicator);
+            }
+        }
+
+        return Ok(prefix + &braille_chars + &suffix);
     }
 
     fn get_braille_cmu_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
