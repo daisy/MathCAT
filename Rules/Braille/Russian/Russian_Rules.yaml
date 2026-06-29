@@ -1040,7 +1040,7 @@
   tag: mo
   match:
   - "(.='∠' or .='△' or .='∪') and"
-  - "preceding-sibling::*[1][not(self::m:mo)] and"
+  - "preceding-sibling::*[1][self::m:mn] and"
   - "following-sibling::*[1][self::m:mi or self::m:msub or self::m:mrow]"
   replace:
   - t: "⠄"
@@ -1055,10 +1055,15 @@
   name: prefix-geometry-ops
   tag: mo
   match:
-  - "parent::*[count(*) = 2 and name()='mrow' and not(preceding-sibling::*)] and"
+  - "not(preceding-sibling::*) and"
+  - "following-sibling::*[1][self::m:mi or self::m:msub or self::m:mrow] and"
   - "( .='∠' or .='△' or .='∪' )"
   replace:
-  - x: "text()"
+  - test:
+    - if: ".='∪'"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "text()"
   - t: "#"
 
 -
