@@ -214,6 +214,27 @@ fn source_gost_numbers_fractions_and_sets() -> Result<()> {
     let expr = r#"<math><mrow><mo>[</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>]</mo><mo>\</mo><mo>{</mo><mn>4</mn><mo>}</mo><mo>=</mo><mo>[</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠷⠼⠁⠠⠂⠼⠙⠾⠀⠰⠤⠪⠼⠙⠕⠀⠶⠷⠼⠁⠠⠂⠼⠙⠜")?;
 
+    let expr = r#"<math><mrow><mi>x</mi><mo>&#x2208;</mo><mi>A</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠀⠐⠪⠀⠨⠁")?;
+
+    let expr = r#"<math><mrow><mi>x</mi><mo>&#x2209;</mo><mi>A</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠘⠪⠨⠁")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mo>&#x2282;</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠯⠀⠃")?;
+
+    let expr = r#"<math><mrow><mi>D</mi><mo>&#x2284;</mo><mi>E</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠙⠈⠯⠑")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mo>&#x2229;</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠰⠲⠃")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mo>&#x222A;</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠰⠴⠃")?;
+
+    let expr = r#"<math><mrow><mo>(</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo>]</mo><mo>&#x2229;</mo><mo>[</mo><mn>7</mn><mo>,</mo><mi>&#x221E;</mi><mo>)</mo><mo>=</mo><mi>&#x2205;</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠣⠼⠉⠠⠂⠼⠑⠾⠀⠰⠲⠷⠼⠛⠠⠂⠻⠜⠀⠶⠈⠴")?;
+
     let expr = r#"<math><mrow><mn>36,6</mn><mo>&#x2103;</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠼⠉⠋⠂⠋⠨⠴⠨⠉")?;
     return Ok(());
@@ -468,5 +489,11 @@ fn source_gost_logic_arrows() -> Result<()> {
 
     let expr = r#"<math><mrow><mi>C</mi><mo>&#x21D4;</mo><mi>D</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠉⠀⠦⠶⠜⠙")?;
+
+    let expr = r#"<math><mrow><mi>&#x2200;</mi><mi>x</mi><mo>:</mo><mi>P</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠄⠠⠭⠀⠲⠨⠏⠣⠠⠭⠜")?;
+
+    let expr = r#"<math><mrow><mi>&#x2203;</mi><mi>x</mi><mo>:</mo><mi>P</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠢⠠⠭⠀⠲⠨⠏⠣⠠⠭⠜")?;
     return Ok(());
 }
