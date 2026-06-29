@@ -211,6 +211,12 @@
       - x: $RowStart
   - test:
       if: .[self::m:mlabeledtr]
+      then:
+      - t: "⠍⠑⠞⠅⠁⠀⠎⠞⠗⠕⠅⠊⠀⠲"
+      - x: "*[1]/*"
+      - t: "W"
+  - test:
+      if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: [x: "*"]
   - x: $RowEnd
@@ -279,6 +285,211 @@
   - x: "*[1]"
 
 -
+  name: exact-over-label-no-indicator
+  tag: mover
+  match:
+  - "DefinitionValue(*[2], 'Braille', 'RussianExactOverLabelMarksWithoutIndicator') != '' and"
+  - "string-length(*[2]) = 1"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianExactOverLabelMarksWithoutIndicator')"
+
+-
+  name: exact-over-label-repeated
+  tag: mover
+  match:
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠘"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-over-label
+  tag: mover
+  match: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠘"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-under-label-repeated
+  tag: munder
+  match:
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠰"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-under-label
+  tag: munder
+  match: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠰"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: upper-right-label-no-indicator-repeated
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator') != ''"
+  replace:
+  - x: "*[1]"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+
+-
+  name: upper-right-label-no-indicator
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator') != ''"
+  replace:
+  - x: "*[1]"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+
+-
+  name: upper-right-label-repeated
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠨"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: upper-right-label
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠨"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: lower-right-label-repeated
+  tag: msub
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠸"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: lower-right-label
+  tag: msub
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠸"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
   name: signed-integer-number
   tag: [msub, munder]
   match: "*[2][self::m:mn and (substring(., 1, 1)='-' or substring(., 1, 1)='−' or substring(., 1, 1)='+') and translate(substring(., 2), '0123456789', '')='']"
@@ -324,6 +535,32 @@
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
   - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: integer-sequence
+  tag: [msub, munder]
+  match:
+  - "*[2][not(self::m:mn) and translate(normalize-space(.), '0123456789⁣', '')='' and"
+  - " not(.//m:mo[.=',' or .='،'])]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "BrailleChars(translate(normalize-space(*[2]), '0123456789⁣', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: infinity-index
+  tag: [msub, munder]
+  match: "*[2][.='∞']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "*[2]"
 
 -
   name: default
@@ -451,6 +688,9 @@
       if: "self::m:mover"
       then: [t: "⠨⠌"]
       else: [t: "⠌"]
+  - test:
+      if: "*[2][self::m:mfrac[not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))]]"
+      then: [t: "⠐"]
   - x: "*[2]"
   - t: "⠱"
 
@@ -553,10 +793,94 @@
   - t: "⠱"
 
 -
+  name: left-labels
+  tag: mmultiscripts
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "count(m:mprescripts/preceding-sibling::*) = 1 and"
+  - "(m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''] or"
+  - " m:mprescripts/following-sibling::*[2][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''])"
+  replace:
+  - test:
+      if: "m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != '']"
+      then:
+      - t: "⠸"
+      - x: "DefinitionValue(m:mprescripts/following-sibling::*[1], 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "m:mprescripts/following-sibling::*[2][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != '']"
+      then:
+      - t: "⠨"
+      - x: "DefinitionValue(m:mprescripts/following-sibling::*[2], 'Braille', 'RussianLabelMarks')"
+  - x: "*[1]"
+
+-
   name: default
   tag: mmultiscripts
   match: "."
-  replace: [x: "*"]
+  variables:
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)"
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) - count($Prescripts))]"
+  replace:
+  - test:
+      if: "$Prescripts"
+      then:
+      - test:
+          if: "not($Prescripts[1][self::m:none])"
+          then:
+          - t: "⠡"
+          - test:
+            - if: "$Prescripts[1][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Prescripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Prescripts[1]"
+          - test:
+              if: "not($Prescripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[1][.='∞'])"
+              then: [t: "⠱"]
+      - test:
+          if: "not($Prescripts[2][self::m:none])"
+          then:
+          - t: "⠌"
+          - test:
+            - if: "$Prescripts[2][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Prescripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Prescripts[2]"
+          - test:
+              if: "not($Prescripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[2][.='∞'])"
+              then: [t: "⠱"]
+  - x: "*[1]"
+  - test:
+      if: "$Postscripts"
+      then:
+      - test:
+          if: "not($Postscripts[1][self::m:none])"
+          then:
+          - t: "⠡"
+          - test:
+            - if: "$Postscripts[1][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[1]"
+          - test:
+              if: "not($Postscripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[1][.='∞'])"
+              then: [t: "⠱"]
+      - test:
+          if: "not($Postscripts[2][self::m:none])"
+          then:
+          - t: "⠌"
+          - test:
+            - if: "$Postscripts[2][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[2]"
+          - test:
+              if: "not($Postscripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[2][.='∞'])"
+              then: [t: "⠱"]
 
 -
   name: default

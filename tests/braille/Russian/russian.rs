@@ -13,12 +13,15 @@ fn script_grouping_regressions() -> Result<()> {
         ("sup_sub_x2", r#"<math><msup><mi>a</mi><msub><mi>x</mi><mn>2</mn></msub></msup></math>"#),
         ("sup_nested", r#"<math><msup><mi>a</mi><msup><mi>x</mi><mn>2</mn></msup></msup></math>"#),
         ("sup_frac", r#"<math><msup><mi>a</mi><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></math>"#),
+        ("sup_complex_frac", r#"<math><msup><mi>a</mi><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi></mfrac></msup></math>"#),
         ("sup_sqrt", r#"<math><msup><mi>a</mi><msqrt><mi>x</mi></msqrt></msup></math>"#),
         ("sup_follow_letter", r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mi>y</mi></mrow></math>"#),
         ("sup_follow_number", r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mn>3</mn></mrow></math>"#),
         ("sub_x", r#"<math><msub><mi>a</mi><mi>x</mi></msub></math>"#),
         ("sub_zero", r#"<math><msub><mi>x</mi><mn>0</mn></msub></math>"#),
         ("sub_ten", r#"<math><msub><mi>x</mi><mn>10</mn></msub></math>"#),
+        ("sub_digits_sequence", r#"<math><msub><mi>D</mi><mrow><mn>1</mn><mn>3</mn></mrow></msub></math>"#),
+        ("sub_infinity", r#"<math><msub><mi>t</mi><mi>&#x221E;</mi></msub></math>"#),
         ("sub_minus_x", r#"<math><msub><mi>a</mi><mrow><mo>-</mo><mi>x</mi></mrow></msub></math>"#),
         ("sub_minus_2", r#"<math><msub><mi>a</mi><mrow><mo>-</mo><mn>2</mn></mrow></msub></math>"#),
         ("sub_x_plus_1", r#"<math><msub><mi>a</mi><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></msub></math>"#),
@@ -44,6 +47,9 @@ fn script_grouping_regressions() -> Result<()> {
         ("sup_after_fraction", r#"<math><msup><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac><mn>2</mn></msup></math>"#),
         ("sub_after_fraction", r#"<math><msub><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac><mi>i</mi></msub></math>"#),
         ("tensor_like", r#"<math><mrow><msubsup><mi>T</mi><mi>i</mi><mi>j</mi></msubsup><msubsup><mi>x</mi><mi>j</mi><mi>k</mi></msubsup></mrow></math>"#),
+        ("mmultiscripts_left_sub", r#"<math><mmultiscripts><mi>F</mi><mprescripts/><mi>k</mi><none/></mmultiscripts></math>"#),
+        ("mmultiscripts_left_sup", r#"<math><mmultiscripts><mi>W</mi><mprescripts/><none/><mn>4</mn></mmultiscripts></math>"#),
+        ("mmultiscripts_both_sides", r#"<math><mmultiscripts><mi>T</mi><mi>i</mi><mi>j</mi><mprescripts/><mi>r</mi><mi>s</mi></mmultiscripts></math>"#),
         ("pre_negative_power", r#"<math><mrow><mn>2</mn><msup><mi>x</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></mrow></math>"#),
         ("power_of_power_follow", r#"<math><mrow><msup><msup><mi>x</mi><mn>2</mn></msup><mn>3</mn></msup><mi>y</mi></mrow></math>"#),
         ("subscripted_power_follow", r#"<math><mrow><msup><msub><mi>x</mi><mn>2</mn></msub><mn>3</mn></msup><mi>y</mi></mrow></math>"#),
@@ -60,12 +66,15 @@ fn script_grouping_regressions() -> Result<()> {
         ("sup_sub_x2", "⠠⠁⠌⠭⠡⠆⠱"),
         ("sup_nested", "⠠⠁⠌⠭⠌⠆⠱"),
         ("sup_frac", "⠠⠁⠌⠼⠁⠆⠱"),
+        ("sup_complex_frac", "⠠⠁⠌⠐⠆⠭⠀⠖⠼⠁⠀⠳⠠⠽⠰⠱"),
         ("sup_sqrt", "⠠⠁⠌⠩⠱⠭⠹⠱"),
         ("sup_follow_letter", "⠠⠭⠌⠆⠽"),
         ("sup_follow_number", "⠠⠭⠌⠆⠼⠉"),
         ("sub_x", "⠠⠁⠡⠭⠱"),
         ("sub_zero", "⠠⠭⠡⠴"),
         ("sub_ten", "⠠⠭⠡⠂⠴"),
+        ("sub_digits_sequence", "⠨⠙⠡⠂⠒"),
+        ("sub_infinity", "⠠⠞⠡⠻"),
         ("sub_minus_x", "⠠⠁⠡⠀⠤⠭⠱"),
         ("sub_minus_2", "⠠⠁⠡⠤⠆"),
         ("sub_x_plus_1", "⠠⠁⠡⠐⠭⠀⠖⠼⠁⠱"),
@@ -91,6 +100,9 @@ fn script_grouping_regressions() -> Result<()> {
         ("sup_after_fraction", "⠆⠠⠭⠀⠖⠼⠁⠀⠳⠠⠽⠀⠤⠼⠁⠰⠌⠆"),
         ("sub_after_fraction", "⠆⠠⠭⠀⠖⠼⠁⠀⠳⠠⠽⠀⠤⠼⠁⠰⠡⠠⠊⠱"),
         ("tensor_like", "⠨⠞⠡⠠⠊⠌⠚⠱⠭⠡⠚⠌⠅⠱"),
+        ("mmultiscripts_left_sub", "⠡⠠⠅⠱⠨⠋"),
+        ("mmultiscripts_left_sup", "⠌⠲⠨⠺"),
+        ("mmultiscripts_both_sides", "⠡⠠⠗⠱⠌⠎⠱⠨⠞⠡⠠⠊⠱⠌⠚⠱"),
         ("pre_negative_power", "⠼⠃⠠⠭⠌⠤⠂"),
         ("power_of_power_follow", "⠠⠭⠌⠆⠌⠒⠽"),
         ("subscripted_power_follow", "⠠⠭⠡⠆⠌⠒⠽"),
@@ -107,6 +119,23 @@ fn script_grouping_regressions() -> Result<()> {
 fn numbers_and_operators() -> Result<()> {
     let expr = r#"<math><mrow><mn>5</mn><mo>+</mo><mn>12</mn><mo>=</mo><mn>17</mn></mrow></math>"#;
     test_braille("Russian", expr, "⠼⠑⠀⠖⠼⠁⠃⠀⠶⠼⠁⠛")?;
+    return Ok(());
+}
+
+#[test]
+fn percent_and_special_marks() -> Result<()> {
+    let expr = r#"<math><mrow><mn>25</mn><mo>%</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠑⠼⠍⠴")?;
+
+    let expr = r#"<math><mn>0,56</mn></math>"#;
+    test_braille("Russian", expr, "⠼⠚⠂⠑⠋")?;
+    return Ok(());
+}
+
+#[test]
+fn labeled_table_rows() -> Result<()> {
+    let expr = r#"<math><mtable><mlabeledtr><mtd><mtext>(1)</mtext></mtd><mtd><mi>x</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>0</mn></mtd></mlabeledtr></mtable></math>"#;
+    test_braille("Russian", expr, "⠍⠑⠞⠅⠁⠀⠎⠞⠗⠕⠅⠊⠀⠲⠣⠼⠁⠜⠀⠠⠭⠀⠶⠀⠼⠚")?;
     return Ok(());
 }
 
@@ -321,6 +350,52 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 
     let expr = r#"<math><mrow><msub><mi>H</mi><mn>2</mn></msub><mi>C</mi><mo>=</mo><mi>C</mi><msub><mi>H</mi><mn>2</mn></msub></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠓⠡⠆⠉⠦⠉⠓⠡⠆")?;
+    return Ok(());
+}
+
+#[test]
+fn source_label_marks() -> Result<()> {
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>~</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠢")?;
+
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>^</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠲")?;
+
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>&#x02C7;</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠰⠔")?;
+
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>&#x2217;</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠘⠆")?;
+
+    let expr = r#"<math><msup><mi>x</mi><mo>&#x2032;</mo></msup></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠔")?;
+
+    let expr = r#"<math><munder accentunder="true"><mi>x</mi><mo>~</mo></munder></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠰⠢")?;
+
+    let expr = r#"<math><msup><mi>x</mi><mo>&#x2217;</mo></msup></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠆")?;
+
+    let expr = r#"<math><msup><mi>x</mi><mo>&#x2218;</mo></msup></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠨⠴")?;
+
+    let expr = r#"<math><msub><mi>x</mi><mo>&#x25A1;</mo></msub></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠸⠶")?;
+
+    let expr = r#"<math><msub><mi>x</mi><mo>&#x00D7;</mo></msub></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠸⠦")?;
+
+    let expr = r#"<math><msup><mi>x</mi><mrow><mo>&#x2217;</mo><mo>&#x2217;</mo></mrow></msup></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠆⠆")?;
+
+    let expr = r#"<math><mover accent="true"><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>~</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠯⠠⠭⠀⠖⠽⠽⠢")?;
+
+    let expr = r#"<math><mmultiscripts><mi>x</mi><mprescripts/><mo>&#x25A1;</mo><none/></mmultiscripts></math>"#;
+    test_braille("Russian", expr, "⠸⠶⠠⠭")?;
+
+    let expr = r#"<math><mmultiscripts><mi>x</mi><mprescripts/><none/><mo>&#x2217;</mo></mmultiscripts></math>"#;
+    test_braille("Russian", expr, "⠨⠆⠠⠭")?;
     return Ok(());
 }
 
