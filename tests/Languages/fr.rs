@@ -6,6 +6,7 @@ mod ClearSpeak {
     mod menclose;
     mod mfrac;
     mod mroot;
+    mod msup;
 }
 
 mod SimpleSpeak {

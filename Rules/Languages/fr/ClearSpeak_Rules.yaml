@@ -317,23 +317,42 @@
 
 - name: simple-integer
   tag: power
-  match: "*[2][self::m:mn][not(contains(., '.'))]"
+  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"
   replace:
   - x: "*[1]"
-  - T: "à la"      # phrase(2 raised 'to the' power 7)
+  - test:
+      if: "$ClearSpeak_Exponents = 'Ordinal' and *[2][.>0]"
+      then: [T: "au"]      # phrase(x 'au' deuxième)
+      else: [T: "à la"]    # phrase(2 raised 'à la' puissance or deuxième puissance)
   - test:
       if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
+      then:
+      - x: "ToOrdinal(*[2])"
+      - test:
+          if: "$ClearSpeak_Exponents != 'Ordinal'"
+          then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      else:
+      - test:
+          if: "$ClearSpeak_Exponents != 'Ordinal'"
+          then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      - x: "*[2]"
+
+- name: simple-decimal
+  tag: power
+  match: "*[2][self::m:mn][contains(., $DecimalSeparators)]"
+  replace:
+  - x: "*[1]"
   - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      if: "$ClearSpeak_Exponents = 'AfterPower'"
+      then: [T: "à la puissance de"]      # phrase(x 'raised to the power' 5.0)
+      else: [T: "à la puissance"]      # phrase(x 'raised to the power' 5.0)
+  - x: "*[2]"
 
 - name: simple-negative-integer
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and "
-  - "     *[1][self::m:mn][not(contains(., '.'))]"
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"
   - "    ]"
   replace:
   - x: "*[1]"
