@@ -14,11 +14,37 @@ fn silent_intent() -> Result<()> {
 
 }
 
+#[test]
+fn silent_intent_underscore() -> Result<()> {
+    let expr = "<math>
+        <msup intent='_($H,$n)'>
+            <mi arg='H' mathvariant='normal'>H</mi>
+            <mn arg='n'>2</mn>
+        </msup></math>";
+    test("hu", "SimpleSpeak", expr, "nagy h vessző, 2")?;
+    test("hu", "ClearSpeak", expr, "nagy h vessző, 2")?;
+    return Ok(());
+
+}
+
+#[test]
+fn intent_prob_x() -> Result<()> {
+    init_logger();
+    let expr = "<math>
+    <msup intent='$op($arg)'>
+        <mi arg='arg'>x</mi>
+        <mi arg='op' intent='valószínűség' mathvariant='normal'>P</mi>
+    </msup></math>";
+    test("hu", "ClearSpeak", expr, "valószínűség x")?;
+    return Ok(());
+
+}
+
 // AI generated
 #[test]
 fn prefix_intent() -> Result<()> {
-    let expr = r#"<math><msup intent='testing:prefix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
-    test("hu", "SimpleSpeak", expr, "testing x")?;
+    let expr = r#"<math><msup intent='tesztelés:prefix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
+    test("hu", "SimpleSpeak", expr, "tesztelés x")?;
     return Ok(());
 
 }
@@ -72,12 +98,12 @@ fn infix_intent_one_arg() -> Result<()> {
 // AI generated
 #[test]
 fn function_intent() -> Result<()> {
-    let expr = r#"<math><mrow intent='testing:function($x, $y, $z, 2)'>
+    let expr = r#"<math><mrow intent='teszteljük:function($x, $y, $z, 2)'>
         <mi arg='x'>x</mi>
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("hu", "SimpleSpeak", expr, "testing x vessző, y vessző, z vessző, 2")?;
+    test("hu", "SimpleSpeak", expr, "teszteljük x vessző, y vessző, z vessző, 2")?;
     return Ok(());
 
 }
