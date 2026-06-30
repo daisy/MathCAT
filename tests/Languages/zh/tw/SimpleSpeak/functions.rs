@@ -102,7 +102,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("zh-tw", "SimpleSpeak", expr, "log 底 b, x")?;
+    test("zh-tw", "SimpleSpeak", expr, "log 底數 b, x")?;
     return Ok(());
 
 }
@@ -110,7 +110,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("zh-tw", "SimpleSpeak", expr, "log 底 b; 左小括 x 加 y 右小括")?;
+    test("zh-tw", "SimpleSpeak", expr, "log 底數 b; 左小括 x 加 y 右小括")?;
     return Ok(());
 
 }
@@ -145,6 +145,22 @@ fn simple_ln_terse() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "l n x")?;
+                return Ok(());
+
+}
+
+#[test]
+fn other_names() -> Result<()> {
+    let expr = "<math> <mrow><mi>Cov</mi><mi>x</mi></mrow> </math>";
+    test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "Cov x")?;
+    test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "covariance x")?;
+    let expr = "<math> <mrow><mi>exp</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow> </math>";
+    test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "exp x")?;
+    test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "exponential x")?;
                 return Ok(());
 
 }
@@ -225,7 +241,7 @@ fn no_times_sqrt() -> Result<()> {
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
     test("zh-tw", "SimpleSpeak", expr, 
-            "根號 a, 根號 b; 等於, 根號 a b 結束根號")?;
+            "根號 a, 乘 根號 b; 等於, 根號 a b 結束根號")?;
             return Ok(());
 
 }
@@ -254,7 +270,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("zh-tw", "SimpleSpeak", expr, "b x y")?;
+        test("zh-tw", "SimpleSpeak", expr, "b, 左小括 x y 右小括")?;
         return Ok(());
 
     }

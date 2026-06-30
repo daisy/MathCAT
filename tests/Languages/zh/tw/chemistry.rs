@@ -690,3 +690,80 @@ fn mhchem_roman_in_superscript() -> Result<()> {
 }
 
 
+#[test]
+fn dropped_msubsup_bug_358() -> Result<()> {
+      let expr = r#"<math>
+          <mrow class="MJX-TeXAtom-ORD">
+              <mrow class="MJX-TeXAtom-ORD">
+                <mn>2</mn>
+                <mspace width="thinmathspace"></mspace>
+                <msubsup>
+                  <mtext>SO</mtext>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mn>2</mn>
+                  </mrow>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mspace width="0pt" height="0pt" depth=".2em"></mspace>
+                  </mrow>
+                </msubsup>
+                <mo>+</mo>
+                <msubsup>
+                  <mtext>O</mtext>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mn>2</mn>
+                  </mrow>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mspace width="0pt" height="0pt" depth=".2em"></mspace>
+                  </mrow>
+                </msubsup>
+                <mrow class="MJX-TeXAtom-REL">
+                  <mover>
+                    <mrow class="MJX-TeXAtom-OP MJX-fixedlimits">
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mpadded height="0" depth="0">
+                          <mrow class="MJX-TeXAtom-ORD">
+                            <mo stretchy="false">↽<!-- ↽ --></mo>
+                          </mrow>
+                          <mspace width="negativethinmathspace"></mspace>
+                          <mspace width="negativethinmathspace"></mspace>
+                          <mrow class="MJX-TeXAtom-ORD">
+                            <mo>−<!-- − --></mo>
+                          </mrow>
+                        </mpadded>
+                      </mrow>
+                    </mrow>
+                    <mrow class="MJX-TeXAtom-ORD">
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mrow class="MJX-TeXAtom-ORD">
+                            <mo>−<!-- − --></mo>
+                          </mrow>
+                          <mspace width="negativethinmathspace"></mspace>
+                          <mspace width="negativethinmathspace"></mspace>
+                          <mrow class="MJX-TeXAtom-ORD">
+                            <mo stretchy="false">⇀<!-- ⇀ --></mo>
+                          </mrow>
+                        </mrow>
+                    </mrow>
+                  </mover>
+                </mrow>
+                <mn>2</mn>
+                <mspace width="thinmathspace"></mspace>
+                <msubsup>
+                  <mtext>SO</mtext>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mn>3</mn>
+                  </mrow>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mspace width="0pt" height="0pt" depth=".2em"></mspace>
+                  </mrow>
+                </msubsup>
+              </mrow>
+          </mrow>
+      </math>"#;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "2, 大寫 s, 大寫 o, 2; 加; 大寫 o, 2 左右平衡 2, 大寫 s, 大寫 o, 3")?;
+      return Ok(());
+
+}
+
+

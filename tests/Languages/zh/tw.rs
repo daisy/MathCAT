@@ -23,6 +23,7 @@ mod SimpleSpeak {
     mod geometry;
     mod linear_algebra;
     mod multiline;
+    mod subscripts;
 }
 mod shared;
 mod chemistry;
