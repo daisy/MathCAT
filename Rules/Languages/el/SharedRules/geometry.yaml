@@ -38,7 +38,7 @@
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{t: "το"}]            # phrase('the' arc A B C)
+      then: [t: "το"]            # phrase('the' arc A B C)
   - t: "τόξο"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
@@ -57,3 +57,23 @@
   - x: "*[2]"
   - x: "*[3]"
 
+#new
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "το"]      # phrase('the' point at 1, 2)
+  - t: "σημείο"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "στο"]      # phrase('the' point at 1, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [t: "κόμμα", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [t: "τέλος σημείου"]      # phrase(start point, 'end point')

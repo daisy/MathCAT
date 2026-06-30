@@ -48,16 +48,9 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [t: "πλήρης σμίκρυνση", pause: "medium"]
+        then: [t: "πλήρης μεγέθυνση", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
-        then:
-        - test:
-          - if: "string-length(.) = 1"
-            then: [t: "μεγεθύνθηκε πλήρως"]       # phrase('zoomed in all of the way')
-          - else_if: "$NavNodeOffset = 0"
-            then: [t: "μεγέθυνση στον πρώτο χαρακτήρα"]   # phrase('zoomed in to first character')
-            else: [t: "μεγέθυνση σε χαρακτήρα"]          # phrase('zoomed in to character')
-        - pause: "medium"
+        then: [t: "πλήρης μεγέθυνση", pause: "medium"]
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
@@ -74,21 +67,21 @@
             - x: "$Prefix"
             - test:
               - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
-                then: [t: "σε"]                                  # phrase(zoom 'in' to see more details)
+                then: [t: "εντός"]                                  # phrase(zoom 'in' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEed in all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [t: "\uF8FEed πλήρως"]              #theodora. check       # phrase(zoom 'out all the way' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
-                then: [t: "έξω"]                                 # phrase(zoom 'out' to see more details)
+                then: [t: "εκτός"]                                 # phrase(zoom 'out' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEed out all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [t: "\uF8FEed πλήρως"]             #theodora. check        # phrase(zoom 'out all the way' to see more details)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
                 then: [t: "δεξιά"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
                 then: [t: "αριστερά"]                                # phrase(move to the 'left')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
-                then: [t: "τρέχων"]                                 # phrase(who is the 'current' president)
+                then: [t: "τρέχον"]                                 # phrase(who is the 'current' president)
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
                 then: [t: "στην αρχή της γραμμής"]                                 # phrase(move 'to start of line')
               - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
@@ -105,7 +98,7 @@
 
 - name: into-or-out-of-mtr
   tag: [mtr, mlabeledtr]
-  match: "$Move2D = 'σε'"
+  match: "$Move2D = 'in'"
   replace:
   - t: "στήλη"
   - x: "count($Child2D/preceding-sibling::*)+1"
@@ -130,8 +123,8 @@
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [t: "προδείκτης"]       # phrase(x with 'subscript' 2)
-                  else: [t: "προεκθέτης"]     # phrase(x with 'superscript' 2)
+                  then: [t: "προτεταγμένος δείκτης"]       # phrase(x with 'subscript' 2)
+                  else: [t: "προτεταγμένος εκθέτης"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
@@ -187,9 +180,9 @@
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
           then: [t: "αναίρεση σμίκρυνσης"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [t: "αναίρεση πλήρους μεγέθυνσης"]        # phrase('undo zooming in all of the way')
+          then: [t: "αναίρεση πλήρους μεγέθυνσης"]        # phrase('undo zooming in all the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [t: "αναίρεση πλήρους σμίκρυνσης"]       # phrase('undo zooming out all of the way')
+          then: [t: "αναίρεση πλήρους σμίκρυνσης"]       # phrase('undo zooming out all the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
           then: [t: "αναίρεση μετακίνησης αριστερά"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
@@ -212,19 +205,18 @@
 
 # ********* ZoomIn  ***************
 - name: zoom-in-leaf
+
   tag: "*"
   match: "($NavCommand = 'ZoomIn' or $NavCommand = 'ZoomInAll') and IsNode(., 'leaf')"
   replace:
-  - with:
-      variables: [SayCommand: "string($NavVerbosity != 'Terse')"]
-      replace: [x: "."]
   - test:
-      if: "$ReadZoomLevel !=-1"
+      if: "$MatchCounter = 0 and $NavVerbosity != 'Terse'"
+      then: [t: "πλήρως μεγεθυσμένο", pause: "long"]    # phrase('zoomed in all of the way')
+  - test:
+      if: "$ReadZoomLevel!=-1"
       then:
       - set_variables: [ReadZoomLevel: "0"]
-  - set_variables:
-      - NavNode: "@id"
-      - NavNodeOffset: "IfThenElse(string-length(.) > 1 and $MatchCounter = 1 and $NavNodeOffset = 0, '1', '0')"
+  - set_variables: [NavNode: "@id"]
 
 # special case of zooming into a table -- move to the first row (if only one row, first column)
 - name: zoom-in-table
@@ -234,7 +226,12 @@
   - with:
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
-  - set_variables: [NavNode: "IfThenElse(count(*)=1, (*[1]/*[1]/@id), (*[1]/@id))"]
+  - test:
+      if: "count(*)=1"
+      then: 
+      - set_variables: [NavNode: "*[1]/*[1]/@id"]
+      else:
+      - set_variables: [NavNode: "*[1]/@id"]
 
 - name: zoom-in-mrow-in-math
   # zooming in only once is meaningless because 'math' has only a single child and it was spoken at the math level -- dig inside and do it again 
@@ -248,6 +245,7 @@
 
 - # For msqrt and menclose, if the single child isn't an mrow, don't zoom in
   name: zoom-in-again
+  # If there is only one child, this isn't an interesting move -- zoom in again
   tag: "*"
   match:
   - "($NavCommand = 'ZoomIn' or "
@@ -260,10 +258,10 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "not(*[1][self::m:mrow or @data-from-mathml='mrow'])"
+      if: "name(*[1]) != 'mrow'"
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "IfThenElse($NavCommand = 'MovePreviousZoom', (*[last()]), (*[1]))"]   # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "IfThenElse(count(*)=0, $Move2D, $Move2D)"]   # phrase('in' the denominator)
           replace: [x: "IfThenElse($NavCommand = 'MovePreviousZoom', 1, $Child2D)"]
   - test:
       if: "$NavCommand = 'MovePreviousZoom'"
@@ -281,23 +279,20 @@
     - if: "self::m:mtr or self::m:mlabeledtr"
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[1]/*[1]"]   # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]/*[1]"]   # phrase('in' the denominator)
           replace: [x: "."]
       - set_variables: [NavNode: "*[1]/*[1]/@id"] # skip mtd
     - else_if: "*[1][self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]" # auto zoom
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[1]"]   # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]   # phrase('in' the denominator)
           replace: [x: "."]
       - set_variables: [NavNode: "*[1]/*[2]/@id"]        # skip parens/brackets
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[1]"]        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]        # phrase('in' the denominator)
           replace: [x: "."]
-      # "(...)" to get around some weird parse bug"
-      - set_variables: 
-          - NavNode: "*[1]/@id"
-          - NavNodeOffset: "IfThenElse(*[1]/@data-id-offset, (*[1]/@data-id-offset), '0')"
+      - set_variables: [NavNode: "*[1]/@id"]
 
 
 - name: zoom-in-simple
@@ -308,14 +303,11 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "$MatchCounter > 1 and IsNode(., '2D')"
-      then:
-      - set_variables:       # time to stop, not going "in" to next thing, so before "Move2D"
-          - NavNode: "@id"
-          - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
+      if: "DEBUG($MatchCounter) > 1 and IsNode(., '2D') "
+      then: [set_variables: [NavNode: "@id"]]   # time to stop, not going "in" to next thing, so before "Move2D"
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[1]"]        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]        # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[1]"
 
@@ -328,7 +320,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'σε'", Child2D: "*[1]"]          # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]          # phrase('in' the denominator)
       replace: [x: "."]
   - test:
       if: "$NavMode = 'Simple'"
@@ -358,7 +350,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'σε'", Child2D: "*[1]"]              # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]              # phrase('in' the denominator)
       replace: [x: "."]
   - x: "*[1]"
 
@@ -367,7 +359,7 @@
   match: "$NavCommand = 'ZoomOut' or $NavCommand = 'ZoomOutAll'"
   replace:
   - with:
-      variables: [SayCommand: "string($NavVerbosity != 'Terse')"]
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - set_variables: [NavNode: "*[1]/@id"] # no-op for $NavCommand = 'ZoomOut'
 
@@ -384,7 +376,7 @@
   tag: "*"
   match:
   - "($NavCommand = 'ZoomOut' or $NavCommand = 'ZoomOutAll') and"
-  - "parent::m:math"
+  - "parent::m:math "
   replace:
   - x: ".." # let math rule deal with it
 
@@ -396,7 +388,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'έξω από'", Child2D: "."]
+      variables: [Move2D: "'out of'", Child2D: "."]
       replace: [x: ".."]
   - x: ".."
 
@@ -410,15 +402,12 @@
   - "$NavMode = 'Enhanced'"
   replace:
   - with:
-      variables: [Move2D: "'σε'", Child2D: "*[1]"]            # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]            # phrase('in' the denominator)
       replace: [x: "."]
   - test:
     - if: "count(*)> 1 or IsNode(., 'leaf') or
            @data-from-mathml='msqrt' or self::m:msqrt or @data-from-mathml='menclose' or self::m:menclose"
-      then:
-      - set_variables:
-          - NavNode: "@id"
-          - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
+      then: [set_variables: [NavNode: "@id"]]
       else: [x: "*[1]"]
 
 - name: move-next-zoom-not-enhanced
@@ -431,14 +420,12 @@
       if: "IsNode(., 'leaf') or $ReadZoomLevel >= DistanceFromLeaf(., false, $NavMode!='Character')"
       then:
       # - with:
-      #     variables: [Move2D: "'σε'", Child2D: "following-sibling::*[1]"]    # phrase('in' the denominator)
+      #     variables: [Move2D: "'in'", Child2D: "following-sibling::*[1]"]    # phrase('in' the denominator)
       #     replace: [x: ".."]
-      - set_variables:
-          - NavNode: "@id"
-          - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
+      - set_variables: [NavNode: "@id"]
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[1]"]                        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]                        # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[1]"
 
@@ -452,19 +439,19 @@
       if: "$ReadZoomLevel >= DistanceFromLeaf(., true, $NavMode!='Character')"
       then:
       # - with:
-      #     variables: [Move2D: "'σε'", Child2D: "preceding-sibling::*[1]"]     # phrase('in' the denominator)
+      #     variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]     # phrase('in' the denominator)
       #     replace: [x: ".."]
-      - set_variables:
-          - NavNode: "@id"
-          - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
+      - set_variables: [NavNode: "@id"]
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "*[last()]"]                     # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[last()]"]                     # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[last()]"
 
 # ********* ZoomOut  ***************
 - name: zoom-out-default
+
+
   tag: mtd
   match: "$Move2D = '' and ($NavCommand = 'ZoomOut')"
   replace:
@@ -472,13 +459,11 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   # we need to speak it here
-  # - t: "row"                                                  # phrase(the first 'row' of the matrix)
+  # - t: "γραμμή"                                                  # phrase(the first 'row' of the matrix)
   #   # if we let the speech rules speak the row, it is given just the MathML for the row, so the row # will always be '1'
   # - x: "count(../preceding-sibling::*)+1"
   # - pause: medium
-  - set_variables:
-      - NavNode: "../@id"
-      - NavNodeOffset: "IfThenElse(../@data-id-offset, ../@data-id-offset, '0')"
+  - set_variables: [NavNode: "../@id"]
 
 - name: zoom-out
   # a row around a single element -- these might duplicate the position/offset, so we jump an extra level here  
@@ -489,15 +474,11 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-    - if: "$NavNodeOffset > 0 and IsNode(., 'leaf')"  # Inside leaf -- just reset offset, intent offset doesn't change
-      then:
-      - set_variables: [NavNodeOffset: "0"]
-      # NavNode remains the same
-    - else_if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
+      if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
       then: [x: ".."] # auto-zoom: move out a level and retry
       else:
       - with:
-          variables: [Move2D: "'έξω από'", Child2D: "."]   # phrase('out of' the denominator)
+          variables: [Move2D: "'out of'", Child2D: "."]
           replace: [x: ".."]
       - test:
           if: "parent::m:mtd"
@@ -506,9 +487,7 @@
           - test:
               if: "$ReadZoomLevel!=-1"
               then: [set_variables: [ReadZoomLevel: "DistanceFromLeaf(.., true, $NavMode!='Character')"]]
-          - set_variables:
-              - NavNode: "../@id"
-              - NavNodeOffset: "IfThenElse(../@data-id-offset, ../@data-id-offset, '0')"
+          - set_variables: [NavNode: "../@id"]
 
 # ********* MoveStart/End  ***************
 - name: math-move-to-start-or-end
@@ -568,7 +547,7 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [t: "μετακίνηση στην αρχή της γραμμής"]                                # phrase('move to start of line')
+          then: [t: "ετακίνηση στην αρχή της γραμμής"]                                # phrase('move to start of line')
           else: [t: "μετακίνηση στο τέλος της γραμμής"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
@@ -605,7 +584,7 @@
   - "$NavCommand='MoveColumnStart' or $NavCommand='MoveColumnEnd' or"
   - "$NavCommand='ReadCellCurrent'"
   replace:
-  - t: "δεν υπάρχει στον πίνακα"                               # phrase('not in table')
+  - t: "όχι στον πίνακα"                               # phrase('not in table')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -718,7 +697,7 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "μετακίνηση προς τα κάτω"                          # phrase('move down' to the next row in the table)
+              - t: "μετακίνηση προς τα κάτω"                          # phrase('move down to the next row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
@@ -748,7 +727,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "μετακίνηση προς τα επάνω"                              # phrase('move to previous row' in the table)
+      - t: "μετακίνηση στην προηγούμενη γραμμή"                              # phrase('move to previous row' to the previous row in the table)
       - pause: medium
   - test:
       if: "preceding-sibling::*"
@@ -772,7 +751,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "μετακίνηση προς τα κάτω"                          # phrase('move to next row' in the table)
+      - t: "μετακίνηση στην επόμενη γραμμή"                          # phrase('move to next row' to the next row in the table)
       - pause: medium
   - test:
       if: "following-sibling::*"
@@ -797,7 +776,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "μετακίνηση στην προηγούμενη στήλη"                              # phrase('move to previous column' in the table)
+      - t: "μετακίνηση στην προηγούμενη στήλη"                              # phrase('move to previous column' to the previous row in the table)
       - pause: medium
   - t: "δεν υπάρχει προηγούμενη στήλη"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]
@@ -810,7 +789,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "μετακίνηση στην επόμενη στήλη"                              # phrase('move to next column' in the table)
+      - t: "μετακίνηση στην επόμενη στήλη"                              # phrase('move up' to the previous row in the table)
       - pause: medium
   - t: "δεν υπάρχει επόμενη στήλη"                          # phrase('no next row' in the table)
   - set_variables: [SpeakExpression: "'false'"]
@@ -1087,28 +1066,6 @@
 
 # ========  Move/Read/Describe Next rules =================
 
-
-- name: move-next-character
-  tag: [mn, mi, mtext]
-  match: 
-  - "($NavCommand = 'MoveNext' or $NavCommand = 'ReadNext' or $NavCommand = 'DescribeNext' or $NavCommand = 'MoveNextZoom') and"
-  - "$NavNodeOffset > 0 and"
-  - "($NavNodeOffset < string-length(.) or name(EdgeNode(., 'right', 'math'))!='math')" # not at edge of math
-  replace:
-  - test:
-      if: "$NavNodeOffset < string-length(.)"
-      then:
-      - with:
-          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
-          replace: [x: "."]
-      - set_variables: [NavNodeOffset: "$NavNodeOffset + 1"]
-      else:
-      - with:
-          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
-          replace: [x: "."]
-      - set_variables: [NavNodeOffset: "0"]
-      - x: "."
-
 # skip 'none'
 - name: move-next-none
   tag: [none, mprescripts]
@@ -1125,11 +1082,33 @@
           then: [x: "$Following"]
           else:
           - with:
-              variables: [Move2D: "'σε'", Child2D: "$Following"]        # phrase('in' the denominator)
+              variables: [Move2D: "'in'", Child2D: "$Following"]        # phrase('in' the denominator)
               replace: [x: ".."]
           - with:
               variables: [NavCommand: "'MoveNextZoom'"]
               replace: [x: "$Following"]
+
+# skip 'none'
+- name: move-previous-none
+  tag: [none, mprescripts]
+  match: 
+  - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MovePreviousZoom') and"
+  - "parent::*[1][name(.)='mmultiscripts'] and preceding-sibling::*"
+  replace:
+  - with:
+      variables: [Preceding: "preceding-sibling::*[1]"]
+      replace:
+      # two 'none's in a row -- move over and try again; one 'none', zoom in on preceding 
+      - test:
+          if: "$Preceding[name(.)='none']"
+          then: [x: "$Preceding"]
+          else:
+          - with:
+              variables: [Move2D: "'in'", Child2D: "$Preceding"]          # phrase('in' the denominator)
+              replace: [x: ".."]
+          - with:
+              variables: [NavCommand: "'MovePreviousZoom'"]
+              replace: [x: "$Preceding"]
 
 
 
@@ -1184,7 +1163,7 @@
         - if: "$NavCommand = 'MoveNext'"
           then: [t: "μετακίνηση"]                                  # phrase('move' to next entry in table)     
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [t: "ανάγνωση"]                                  # phrase('read' next entry in table)     
+          then: [t: "ανάγνωση"] #theodora. check                                  # phrase('read' next entry in table)     
           else: [t: "περιγραφή"]                              # phrase('describe' next entry in table)     
       - t: "δεξιά"                              # phrase(move 'right')
       - pause: short
@@ -1211,11 +1190,11 @@
       if: "following-sibling::*"
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "."]             # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "."]             # phrase('in' the denominator)
           replace: [x: ".."]
       else:
       - with:
-          variables: [Move2D: "'έξω από'", Child2D: "."]
+          variables: [Move2D: "'out of'", Child2D: "."]
           replace: [x: ".."]
   - x: ".."
 
@@ -1296,12 +1275,12 @@
       if: "preceding-sibling::* and following-sibling::*[1][name(.)='none']"
       then:
       - with:
-          variables: [Move2D: "'έξω από'", Child2D: "."]
+          variables: [Move2D: "'out of'", Child2D: "."]
           replace: [x: ".."]
       - x: "following-sibling::*[1]"
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "following-sibling::*[1]"]       # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "following-sibling::*[1]"]       # phrase('in' the denominator)
           replace: [x: ".."]
       - with:
           variables: [NavCommand: "'MoveNextZoom'"]
@@ -1322,34 +1301,11 @@
           if: "IsNode(.., '2D') or not(IsNode(.., 'mathml'))"
           then:
           - with:
-              variables: [Move2D: "'σε'", Child2D: "following-sibling::*[1]"]           # phrase('in' the denominator)
+              variables: [Move2D: "'in'", Child2D: "following-sibling::*[1]"]           # phrase('in' the denominator)
               replace: [x: ".."]
       - set_variables: [NavNode: "following-sibling::*[1]/@id"]
 
 # ========  Move/Read/Describe Previous rules =================
-
-# skip 'none'
-- name: move-previous-none
-  tag: [none, mprescripts]
-  match: 
-  - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MovePreviousZoom') and"
-  - "parent::*[1][name(.)='mmultiscripts'] and preceding-sibling::*"
-  replace:
-  - with:
-      variables: [Preceding: "preceding-sibling::*[1]"]
-      replace:
-      # two 'none's in a row -- move over and try again; one 'none', zoom in on preceding 
-      - test:
-          if: "$Preceding[name(.)='none']"
-          then: [x: "$Preceding"]
-          else:
-          - with:
-              variables: [Move2D: "'σε'", Child2D: "$Preceding"]          # phrase('in' the denominator)
-              replace: [x: ".."]
-          - with:
-              variables: [NavCommand: "'MovePreviousZoom'"]
-              replace: [x: "$Preceding"]
-
 
 # skip invisible chars except for Enhanced mode when "times" should be read
 - name: move-previous-invisible
@@ -1393,7 +1349,7 @@
   - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious') and"
   - "(self::m:math or name(EdgeNode(., 'left', 'math'))='math')"
   replace:
-  - t: "αρχή μαθηματικών"                                              # phrase('start of math')
+  - t: "έναρξη μαθηματικών"                                              # phrase('start of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1414,27 +1370,6 @@
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
-- name: move-prev-character
-  tag: [mn, mi, mtext]
-  match: 
-  - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MovePreviousZoom') and"
-  - "$NavNodeOffset > 0 and"
-  - "($NavNodeOffset > 1 or name(EdgeNode(., 'left', 'math'))!='math')" # not at edge of math
-  replace:
-  - test:
-      if: "$NavNodeOffset > 1"
-      then:
-      - with:
-          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
-          replace: [x: "."]
-      - set_variables: [NavNodeOffset: "$NavNodeOffset - 1"]
-      else:
-      - with:
-          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
-          replace: [x: "."]
-      - set_variables: [NavNodeOffset: "0"]
-      - x: "."
-
 - name: move-previous-auto-zoom-up-one-level
   # Last child or in auto-zoom'd in-- move up a level and try again 
   # Note: we've already checked the for the case where we are at an edge and should not AutoZoomOut
@@ -1454,11 +1389,11 @@
       if: "preceding-sibling::*"
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "."]             # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "."]             # phrase('in' the denominator)
           replace: [x: ".."]
       else:
       - with:
-          variables: [Move2D: "'έξω από'", Child2D: "."]
+          variables: [Move2D: "'out of'", Child2D: "."]
           replace: [x: ".."]
   - x: ".."
 
@@ -1484,7 +1419,7 @@
       if: "not(parent::m:mrow)"
       then:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "preceding-sibling::*[1]"]         # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]         # phrase('in' the denominator)
           replace: [x: ".."]
   - set_variables: [NavNode: "preceding-sibling::*[1]/*[2]/@id"]
 
@@ -1548,12 +1483,12 @@
       if: "count(preceding-sibling::*) > 2 and preceding-sibling::*[1][name(.)='none']"
       then:
       - with:
-          variables: [Move2D: "'έξω από'", Child2D: "."]
+          variables: [Move2D: "'out of'", Child2D: "."]
           replace: [x: ".."]
       - x: "preceding-sibling::*[1]"          # skip over 'none'
       else:
       - with:
-          variables: [Move2D: "'σε'", Child2D: "preceding-sibling::*[1]"]               # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]               # phrase('in' the denominator)
           replace: [x: ".."]
       - with:
           variables: [NavCommand: "'MovePreviousZoom'"]
@@ -1574,7 +1509,7 @@
           if: "IsNode(.., '2D') or not(IsNode(.., 'mathml'))"
           then:
           - with:
-              variables: [Move2D: "'σε'", Child2D: "preceding-sibling::*[1]"]           # phrase('in' the denominator)
+              variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]           # phrase('in' the denominator)
               replace: [x: ".."]
       - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
 
@@ -1588,14 +1523,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "χαρακτήρας"                                                # phrase(a mathematical 'character')
+      - t: "χαρακτήρα"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "απλός"                                                   # phrase(a 'simple' way to do something)
+      - t: "απλή"                                      #theodora. check             # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - t: "ενισχυμένος"                                                 # phrase(an 'enhanced' way to do something)
+      - t: "ενισχυμένη"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
   - t: "λειτουργία"                                                         # phrase(a simple 'mode' of use)
   - pause: long
@@ -1613,14 +1548,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "απλός"                                                 # phrase(a 'simple' way to do something)
+      - t: "απλού"                                                 # phrase(an 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "ενισχυμένος"                                               # phrase(an 'enhanced' way to do something)
+      - t: "ενισχυμένου"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - t: "χαρακτήρας"                                              # phrase(a mathematical 'character')
+      - t: "χαρακτήρα"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
   - t: "λειτουργία"                                                       # phrase(a simple 'mode' of use)
   - pause: long
@@ -1638,11 +1573,11 @@
   - test:
       if: "$Overview = 'true'"
       then:
-      - t: "απόδοση έκφρασης μετά τη μετακίνηση"                # phrase('speak expression after move')
+      - t: "εκφώνηση της έκφρασης μετά την μετακίνηση"                # phrase('speak expression after move')
       - pause: long
       - set_variables: [Overview: "'false'"]
       else:
-      - t: "επισκόπηση έκφρασης μετά τη μετακίνηση"          # phrase('overview of expression after move')
+      - t: "επισκόπηση της έκφρασης μετά την μετακίνηση"          # phrase('overview of expression after move')
       - pause: long
       - set_variables: [Overview: "'true'"]
 
@@ -1657,7 +1592,7 @@
         - if: "$NavCommand = 'ReadCurrent'"
           then: [t: "ανάγνωση"]                                  # phrase('read' next entry in table) 
           else: [t: "περιγραφή"]                              # phrase('describe' next entry in table)     
-      - t: "τρέχων"                                         # phrase('current' entry in table)
+      - t: "current"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 
@@ -1679,9 +1614,9 @@
         - else_if: "starts-with($NavCommand, 'Describe')"
           then: [t: "περιγραφή"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
-          then: [t: "μετακίνηση στο "]                              # phrase('move to' the next entry in table) 
+          then: [t: "μετακίνηση"]                              # phrase('move to' the next entry in table) 
           else: [t: "ορισμός"]                                   # phrase('set' the value of the next entry in table) 
-      - t: "δεσμευτικό θέσης"                                     # phrase('placeholder' for the value)
+      - t: "κενής θέσης"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1693,7 +1628,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - t: "ορισμός δεσμευτικού θέσης"                                 # phrase('set placeholder' to the value) 
+      - t: "ορισμός κενής θέσης"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
@@ -1725,11 +1660,11 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - t: "εντός χωρίς τίποτα παραπάνω"                         # phrase('inside of nothing more') 
+      - t: "μέσα σε τίποτα περισσότερο"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - t: "εντός"                                         # phrase('inside' a big expression) 
+      - t: "μέσα σε"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
@@ -1737,7 +1672,7 @@
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - t: "εντός"                                           # phrase('inside' a big expression)
+  - t: "μέσα σε"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"

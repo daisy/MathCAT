@@ -1,8 +1,7 @@
 ---
-
 # Note to translators:
- #   most languages don't have two ways to pronounce 'a' -- if not need, remove the rules and change "B-Z" to "A-Z"
- #   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
+#   most languages don't have two ways to pronounce 'a' -- if not need, remove the rules and change "B-Z" to "A-Z"
+#   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
  - "a": 
     - test: 
         if: "$TTS='none'"
@@ -11,12 +10,12 @@
  - "b-z": 
     - test: 
         if: "$TTS='none'"
-        then: [t: "a"]                          	# 	(en: '.', google translation)
+        then: [t: "."]                          	# 	(en: '.', google translation)
         else: [spell: "'.'"]                       
 
- # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
- # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
- # Also, if a user can see the screen, they probably don't need to hear "cap", but if they specified an override, they must want to hear the override.
+# Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
+# screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
+# Also, if a user can see the screen, they probably don't need to hear "cap", but if they specified an override, they must want to hear the override.
 
  - "A":
     - test: 
@@ -63,16 +62,17 @@
 
  - "0-9": [t: "."]                     	# 	(en: '.', google: 'A') #theodora. is this replacing dots with commas in decimals for greek?
 
+ - " ": [t: " "]                     # 0x20                                           
  - "!":                                         	#  0x21
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then_test:
             if: "$Verbosity = 'Terse'"
             then: [t: "πάταγος"]                	#  0x21	(en: 'bang', google translation) 
             else: [t: "θαυμαστικό"]               	#  0x21	(en: 'exclamation point', google: 'θαυμαστικό')
         else: [t: "παραγοντικό"]                	#  0x21	(en: 'factorial')
           
- - "\"": [t: "εισαγωγικά"]                	        #  0x22	(en: 'quotation mark', google: 'εισαγωγικά') 
+ - \"": [t: "εισαγωγικά"]                	        #  0x22	(en: 'quotation mark', google: 'εισαγωγικά') 
  - "#": [t: "σύμβολο αριθμού"]                      #  0x23	(en: 'number', google: 'αριθμός')
  - "$": [t: "δολάριο"]                          	#  0x24	(en: 'dollars', google: 'δολάρια')
  - "%": [t: "τοις εκατό"]                       	#  0x25	(en: 'percent')
@@ -101,7 +101,7 @@
         then: [t: "αστερίσκος"]                     	#  0x2a	(en: 'star', google translation)
         else: [t: "επί"]                        	#  0x2a	(en: 'times', google: 'φορές')
  - "+": [t: "συν"]                              	#  0x2b	(en: 'plus')
- - ",":                                         	#  0x2c  
+ - ",":                                          # 0x2c
     # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
     # that this test is here and not with "…" is not ideal, but seems simplest
      test:
@@ -111,19 +111,28 @@
                # speak "comma" when not adjacent to '…'
             - "( following-sibling::*[1][text()!= '…'] and preceding-sibling::*[1][text()!='…']  ) or "
                # except if expression starts with '…'
-            - "../*[1][text()='…'] "
-        then: [t: "κόμμα"]                      	# 	(en: 'comma', google translation) 
+            - "../*[1][.='…'] "
+        then:
+        - T: "κόμμα"                         # 	(en: 'comma', google translation)
+        - test:
+            if: "$Verbosity != Terse"
+            then: [pause: short]
         # else silent
 
- - "-": [t: "μείον"]                            	#  0x2d	(en: 'minus')
- - ".":                                         	#  0x2e
+ - "-": [t: "μείον"]                               # 0x2d
+ - ".":                                          # 0x2e
     - test:
         if: "parent::*[1][self::m:mn]"
-        then: [t: "σημείο"]                     	# 	(en: 'point', google translation)
-        else: [t: "τελεία"]                     	# 	(en: 'dot', google translation)
- - "/": [t: "κάθετος"]                          	#  0x2f	(en: 'divided by', google: 'διαιρείται από')
+        then: [t: "σημείο"]
+        else: [t: "τελεία"]
+ - "/":                                           # 0x2f
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [t: "κάθετος"]                        # 0x2f
+        else: [t: "διαιρείται από"]                   # 0x2f
+
  - ":": [t: "άνω κάτω τελεία"]                   	#  0x3a	(en: 'colon', google: 'άνω κάτω τελεία')
- - ";": [t: "ερωτηματικό"]                      	#  0x3b	(en: 'semicolon', google: 'άνω τελεία')
+ - ";": [t: "ελληνικό ερωτηματικό"]                      	#  0x3b	(en: 'semicolon', google: 'άνω τελεία')
  - "<":                                         	#  0x3c
      - test: 
          if: "$Verbosity!='Terse'"
@@ -132,7 +141,7 @@
  - "=":                                         	#  0x3d
     - test: 
         if: "$Verbosity!='Terse'"
-        then: [t: "είναι ίσο με"]               	# 	(en: 'is equal to', google translation)
+        then: [t: "ισούται με"]               	# 	(en: 'is equal to', google translation)
         else: [t: "ισούται με"]                 	# 	(en: 'equals', google translation)
 
  - ">":                                         	#  0x3e
@@ -140,7 +149,7 @@
          if: "$Verbosity!='Terse'"
          then: [t: "είναι"]                     	# 	(en: 'is', google translation)
      - t: "μεγαλύτερο από"                      	# 	(en: 'greater than', google: 'μεγαλύτερος από')
- - "?": [t: "λατινικό ερωτηματικό"]             	#  0x3f	(en: 'question mark', google: 'ερωτηματικό')
+ - "?": [t: "αγγλικό ερωτηματικό"]             	#  0x3f	(en: 'question mark', google: 'ερωτηματικό')
  - "@": [t: "σύμβολο at"]                       	#  0x40	(en: 'at sign', google: 'στο σημείο')
  - "[":                                         	#  0x5b
     - test:
@@ -153,9 +162,13 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [t: "κλείνει αγκύλη"]          	# 	(en: 'close bracket', google translation)
         else: [t: "δεξιά αγκύλη"]               	# 	(en: 'right bracket', google: 'δεξιά βραχίονα')
- - "^": [t: "καπέλο"]              	#  0x5e	(en: 'hat', google: 'καπέλο')
- - "_": [t: "κάτω παύλα"]                       	#  0x5f	(en: 'under bar', google: 'κάτω από το μπαρ')
- - "`": [t: "βαρεία"]                           	#  0x60	(en: 'grave', google: 'τάφος')
+ - "^":                                           # 0x5e
+    - test:
+        if: "parent::m:modified-variable or parent::m:mover"
+        then: [t: "καπέλο"]
+        else: [t: "καπέλο"]    
+ - "_": [t: "κάτω παύλα"]                          # 0x5f
+ - "`": [t: "βαρεία"]                              # 0x60                                                        
  - "{":                                         	#  0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -163,14 +176,28 @@
         else: [t: "αριστερό άγκιστρο"]          	# 	(en: 'left brace', google: 'αριστερό στήριγμα')
  - "|":                                         	#  0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
-     - test:
-        - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [t: "κάθετη γραμμή"]            	# 	(en: 'vertical line', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [t: "τέτοια ώστε"]                     	# 	(en: 'such that', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
-          then: [t: "δοσμένων"]                	# 	(en: 'given', google translation)
-        - else: [t: "διαιρεί"]            	# 	(en: 'divides', google: 'χωρίζει')
+    # new / changed
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [t: "κάθετη γραμμη"]
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [t: "δεδομένου"]
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [t: "διαιρεί"]
+                  else: [t: "κάθετη γραμμη"]
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [t: "κάθετη γραμμή"]                                          
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [t: "τέτοια ώστε"]                     	# 	(en: 'such that', google translation)
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [t: "δεδομένου"]                	# 	(en: 'given', google translation)
+            - else: [t: "διαιρεί"]            	# 	(en: 'divides', google: 'χωρίζει')
 
  - "}":                                         	#  0x7d
     - test:
@@ -191,17 +218,23 @@
  - "´": [t: "οξεία"]                            	#  0xb4	(en: 'acute', google: 'οξύς')
  - "·":                                         	#  0xB7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "φορές"]                      	# 	(en: 'times', google translation)
-        else: [t: "τελεία"]           	# 	(en: 'dot', google: 'τελεία')
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        then: [t: "τελεία"]                      	# 	(en: 'times', google translation)
+        else: [t: "φορές"]           	# 	(en: 'dot', google: 'τελεία')
  - "×":                                         	#  0xd7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "φορές"]                      	# 	(en: 'times', google translation)
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then: [t: "επί"]                      	# 	(en: 'times', google translation)
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [t: "επί"]
+          else: [t: "πολλαπλασιασμός"]
         else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "επί"]                     	# 	(en: 'by', google translation)
-            else: [t: "σύμβολο πολλαπλασιασμού"]   # 	(en: 'cross', google: 'σταυρός')
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [t: "σύμβολο πολλαπλασιασμού"]
+            else: [t: "επί"]
+
  - "÷": [t: "διά"]                              	#  0xf7	(en: 'divided by', google: 'διαιρείται από')
  - "̀": [t: "καλλωπιστικός τόνος βαρεία"]              	  #  0x300	(en: 'grave accent embellishment', google: 'grave accent excellishing')
  - "́": [t: "καλλωπιστικός τόνος οξεία"]               	#  0x301	(en: 'acute accent embellishment', google: 'οξεία διακοσμητική προφορά')
@@ -252,17 +285,18 @@
  - "ρ": [t: "ρ"]                                	#  0x3c1	(en: 'rho', google: 'rho')
  - "ς": [t: "μικρό σίγμα"]                                	#  0x3c2	(en: 'final sigma', google: 'τελική sigma')
  - "σ": [t: "σίγμα"]                                	#  0x3c3	(en: 'sigma', google: 'sigma')
- - "τ": [t: "ταύ"]                                	#  0x3c4	(en: 'tau', google: 'tau')
+ - "τ": [t: "τάαφ"]                                	#  0x3c4	(en: 'tau', google: 'tau')
  - "υ": [t: "ύψιλον"]                                	#  0x3c5	(en: 'upsilon', google: 'ύψιλο')
  - "φ": [t: "φ"]                                	#  0x3c6	(en: 'phi', google: 'phi')
  - "χ": [t: "χ"]                                	#  0x3c7	(en: 'chi', google: 'τσι')
  - "ψ": [t: "ψ"]                                	#  0x3c8	(en: 'psi', google: 'psi')
  - "ω": [t: "ωμέγα"]                                	#  0x3c9	(en: 'omega', google: 'ωμέγα')
- - "ϕ": [t: "παραλλαγή του φι"]                     	#  0x3d5	(en: 'phi', google: 'phi')
- - "ϖ": [t: "παραλλαγή του πι"]                  	#  0x3d6	(en: 'pi', google: 'πι')
+ - "ϕ": [t: "παραλλαγή του φ"]                     	#  0x3d5	(en: 'phi', google: 'phi')
+ - "ϖ": [t: "παραλλαγή του π"]                  	#  0x3d6	(en: 'pi', google: 'πι')
  - "ϵ": [t: "παραλλαγή του έψιλον"]                                	#  0x3f5	(en: 'epsilon', google: 'έψιλο')
  - "϶": [t: "ανεστραμμένο έψιλον"]                   	#  0x3f6	(en: 'reversed epsilon', google: 'αντιστρέψιμο epsilon')
 
+ 
  - "–": [t: "μικρή παύλα"]                          	#  0x2013
  - "—": [t: "μεγάλη παύλα"]                          	#  0x2014
  - "―": [t: "οριζόντια παύλα"]                  	#  0x2015	(en: 'horizontal bar')
@@ -273,17 +307,25 @@
             - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][text()='…']"
-        then: [t: "τρεις τελείες"]                	# 	(google translation)
+            - "../*[1][.='…']"
+        then: [t: "αποσιωπητικά"]                	# 	(google translation)
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "και λοιπά"]       	# 	(en: 'and so on', google translation)
-            else: [t: "και ούτω καθεξής"]   	# 	(en: 'and so on up to', google: 'και ούτω καθεξής')
+            then: [t: "και ούτω καθεξής"]       	# 	(en: 'and so on', google translation)
+            else: [t: "και ούτω καθεξής ως"]   	# 	(en: 'and so on up to', google: 'και ούτω καθεξής')
 
  - "⁡":                                         	#  0x2061
     - test:
-        if: "$Verbosity!='Terse' and not(preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')]) and
-             not(@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':structure:')])"
+        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
+        if: "not(
+              ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
+                preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
+                                                   IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
+                                                   IsInDefinition(., 'TrigFunctionNames') )]
+              ) or
+              preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
+            )"
         then: [t: "του"]                        	# 	(en: 'of', google translation) 
         # theodora. depending on the following word and syntax of a sentence, the word "of" 
         # has multiple translations in Greek. this is okay for now. 
@@ -296,17 +338,17 @@
  - "‴": [t: "τριπλή παράγωγος"]                     	#  0x2034
 
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
-    - t: "triple prime"                         	# 	(en: 'double-struck', google: 'διπλό χτύπημα')
+    - t: "διπλή γραφή"                         	# 	(en: 'double-struck', google: 'διπλό χτύπημα')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [t: "βαθμοί κελσίου"]                  	#  0x2103	(en: 'degrees celsius', google: 'βαθμοί κελσίου')
  - "℉": [t: "βαθμοί φάρεναϊτ"]               	#  0x2109	(en: 'degrees fahrenheit', google: 'βαθμοί φάρεναϊτ')
  - "ℋℛℓ":                                       	#  0x210b
-    - t: "βαθμούς Fahrenheit"                   	# 	(en: 'script', google: 'γραφή')
+    - t: "καλλιγραφικό"                   	# 	(en: 'script', google: 'γραφή')
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℎ": [t: "σταθερά του Πλάνκ"]               	#  0x210e	(en: 'planck constant', google: 'planck σταθερά')
  - "ℜ":                                         	#  0x211c
-    - t: "φρακτουρ κεφαλαίο άρ"                  	# 	(en: 'fraktur', google: 'fraktur')
+    - t: "φράκτουρ"                  	# 	(en: 'fraktur', google: 'fraktur')
     - spell: "'R'"
 
  - "Ω": [t: "ωμ"]                               	#  0x2126	(en: 'ohms', google: 'ohms')
@@ -331,48 +373,62 @@
      - test: 
          if: "$Verbosity='Terse'"
          then: [t: "μερικό"]                   	# 	(en: 'partial', google translation)
-         else: [t: "διαφορικό"]                 	# 	(en: 'partial derivative', google: 'μερικό παράγωγο')
+         else: [t: "μερικό διαφορικό"]                 	# 	(en: 'partial derivative', google: 'μερικό παράγωγο')
  - "∃": [t: "υπάρχει"]                          	#  0x2203	(en: 'there exists')
  - "∄": [t: "δεν υπάρχει"]                      	#  0x2204	(en: 'there does not exist')
  - "∅": [t: "κενό σύνολο"]                      	#  0x2205	(en: 'empty set', google: 'άδειο σετ')
  - "∆":                                         	#  0x2206
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "ο"]                         	# 	(en: 'the', google translation)
-     - t: "τελεστής δέλτα"                      	# 	(en: 'laplacian of', google: 'laplacian του')
- - "∇":                                         	#  0x2207
+         then:
+         - test:
+             if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
+             then: [t: "τη"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+             else: [t: "η"]
+ #        then: [t: "η"]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
+     - t: "λαπλασιανή"                      	# 	(en: 'laplacian of', google: 'laplacian του')
+ - "∇":                                   	#  0x2207
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "το"]                         	# 	(en: 'the', google translation)
+         then: [t: "το"]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "ανάδελτα"                            	# 	(en: 'gradient of', google: 'κλίση του')
- - "∈":                                         	#  0x2208
+ - "∈":        #new / changed                                 	#  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "ένα στοιχείο του"]           	# 	(en: 'an element of', google translation)
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [t: ""] # ???
+            else: [t: "που"] # ???
+        - t: "ανήκει"                  # -- ένα στοιχείο του                                                                                                      
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "σε"]                 	# 	(en: 'in', google translation)
+                then: [t: "ανήκει"]                 	# 	(en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "στοιχείο του"]              	# 	(en: 'member of', google translation)
+                then: [t: "ανήκει"]              	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "στοιχείο του"]       	# 	(en: 'element of', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
+                then: [t: "ανήκει"]       	# 	(en: 'element of', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "είναι στοιχείο του"]    	# 	(en: 'is a member of', google translation)
+              - if: $ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Auto' 
+                then: [t: "ανήκει"]    	# 	(en: 'is a member of', google translation) -- είναι στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "είναι ένα στοιχείο του"]	# 	(en: 'is an element of', google translation)
+                then: [t: "ανήκει"]	# 	(en: 'is an element of', google translation) -- είναι ένα στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "είναι εντός του"]         	# 	(en: 'is in', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
+                then: [t: "ανήκει"]         	# 	(en: 'is in', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
  - "∉":                                         	#  0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "δεν είναι ένα στοιχείο του"] 	# 	(en: 'is not an element of', google translation)
+        then:
+        - test: 
+            if: "$Verbosity!='Terse'"
+            then: [t: "δεν ανήκει"] # όχι στοιχείο του 
+            else: [t: "δεν ανήκει"] # theodora. check         -- δεν είναι στοιχείο του                                                                                           
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -380,41 +436,45 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "δεν ανήκει"]           	# 	(en: 'not in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "όχι στοιχείο του"]      	# 	(en: 'not member of', google translation)
+                then: [t: "δεν ανήκει"]      	# 	(en: 'not member of', google translation) -- όχι στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "όχι στοιχείο του"]   	# 	(en: 'not element of', google translation)
-              - else: [t: "δεν ανήκει στο"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to', google: 'δεν ανήκει σε')
+                then: [t: "δεν ανήκει"]   	# 	(en: 'not element of', google translation) -- όχι στοιχείο του
+              - else: [t: "δεν ανήκει"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to', google: 'δεν ανήκει σε')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "δεν είναι στοιχείο του"]	# 	(en: 'is not a member of', google translation)
+                then: [t: "δεν ανήκει"]	# 	(en: 'is not a member of', google translation) -- δεν είναι στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "δεν είναι ένα στοιχείο του"]	# 	(en: 'is not an element of', google translation)
+                then: [t: "δεν ανήκει"]	# 	(en: 'is not an element of', google translation) -- δεν είναι ένα στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "δεν ανήκει στο"]     	# 	(en: 'is not in', google translation)
-              - else: [t: "δεν ανήκει στο"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to', google: 'δεν ανήκει')
+                then: [t: "δεν ανήκει"]     	# 	(en: 'is not in', google translation)
+              - else: [t: "δεν ανήκει"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to', google: 'δεν ανήκει')
  - "∊":                                         	#  0x220a
      - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "είναι ένα στοιχείο του"]     	# 	(en: 'is an element of', google translation)
+        if: "$SpeechStyle != 'ClearSpeak'"                                          
+        then:
+        - test: 
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [t: ""] # ???
+        - t: "ανήκει"             
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "σε"]                 	# 	(en: 'in', google translation)
+                then: [t: "ανήκει"]                 	# 	(en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "στοιχείο του"]              	# 	(en: 'member of', google translation)
+                then: [t: "ανήκει στο"]              	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "στοιχείο του"]       	# 	(en: 'element of', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
+                then: [t: "ανήκει στο"]       	# 	(en: 'element of', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "είναι στοιχείο του"]    	# 	(en: 'is a member of', google translation)
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "ανήκει"]    	# 	(en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "είναι ένα στοιχείο του"]	# 	(en: 'is an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "είναι μέσα"]         	# 	(en: 'is in', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
+                then: [t: "ανήκει στο"]	# 	(en: 'is an element of', google translation) -- είναι ένα στοιχείο του
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "ανήκει στο"]         	# 	(en: 'is in', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
  - "∏": [t: "γινόμενο"]                         	#  0x220f	(en: 'product', google: 'προϊόν')
  - "∐": [t: "συνγινόμενο"]                      	#  0x2210	(en: 'co-product', google: 'συμπαραγωγή')
  - "∑": [t: "άθροισμα"]                         	#  0x2211	(en: 'sum')
@@ -425,7 +485,7 @@
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "τετραγωνική ρίζα"                    	# 	(en: 'square root of', google: 'τετραγωνική ρίζα του')
  - "∝":                                         	#  0x221d
      - test: 
@@ -438,12 +498,16 @@
  - "∡": [t: "γωνία με τόξο εντός της"]                      	#  0x2221	(en: 'measured angle', google: 'μετρούμενη γωνία')
  - "∣": [t: "διαιρεί"]                          	#  0x2223	(en: 'divides', google: 'χωρίζει')
  - "∤": [t: "δεν διαιρεί"]                      	#  0x2224	(en: 'does not divide', google: 'δεν χωρίζει')
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "είναι"]                     	# 	(en: 'is', google translation)
-     - t: "παράλληλο προς"                       	# 	(en: 'parallel to', google: 'παράλληλο προς')
- - "∦":                                         	#  0x2226
+ - "∥":                                           # 0x2225
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [t: "διπλή κάθετη γραμμή"]
+         else:
+         - test:
+              if: "$Verbosity!='Terse'"
+              then: [t: "έίναι"]
+         - t: "παράλληλο προς"                                            
+ - "∦":                                         	#  0x2226                                                                                                                            
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "δεν είναι παράλληλο στο"]                     	# 	(en: 'is', google translation)
@@ -465,11 +529,12 @@
  - "∷": [t: "σύμβολο αναλογίας"]                    #  0x2237	(en: 'as', google: 'όπως και')
  - "∼": [t: "κυματοειδής γραμμή"]                       	#  0x223c	(en: 'varies with', google: 'ποικίλλει με')
  - "∽": [t: "ανεστραμμένη κυματοειδής γραμμή"]         	#  0x223d	(en: 'reversed tilde', google: 'αντιστράφηκε tilde')
- - "∾":                                         	#  0x223e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "είναι"]                     	# 	(en: 'is', google translation)
-     - t: "ανεστραμμένο s"               	        # 	(en: 'most positive', google: 'το πιο θετικό')
+# new 
+# - "∾":                                          # 0x223e
+#     - test: 
+#         if: "$Verbosity!='Terse'"
+#         then: [t: "είναι"]
+#     - t: "most positive"
  - "∿": [t: "ημιτονοειδές κύμα"]                	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 
@@ -490,13 +555,14 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "είναι"]                     	# 	(en: 'is', google translation)
-     - t: "μεγαλύτερο ή ίσο από"                	# 	(en: 'greater than or equal to', google: 'μεγαλύτερο ή ίσο με')
- - "≦": [t: "μικρότερο από  πάνω από ίσον"]     	#  0x2266	(en: 'less than over equal to', google: 'λιγότερο από πάνω από ίσο με')
- - "≧": [t: "μεγαλύτερο από  πάνω από ίσον"]    	#  0x2267	(en: 'greater than over equal to', google: 'μεγαλύτερη από ό, τι ισούται με')
+     - t: "μεγαλύτερο από ή ίσο με"                	# 	(en: 'greater than or equal to', google: 'μεγαλύτερο ή ίσο με')
+ - "≦": [t: "μικρότερο από πάνω από ίσον"]     	#  0x2266	(en: 'less than over equal to', google: 'λιγότερο από πάνω από ίσο με')
+ - "≧": [t: "μεγαλύτερο από πάνω από ίσον"]    	#  0x2267	(en: 'greater than over equal to', google: 'μεγαλύτερη από ό, τι ισούται με')
  - "≺": [t: "προηγείται του"]                   	#  0x227a	(en: 'precedes', google: 'προηγείται')
  - "≻": [t: "έπεται του"]                    	#  0x227b	(en: 'succeeds', google: 'επιτυγχάνει')
  - "⊂":                                         	#  0x2282
      - test: 
+         if: "$Verbosity!='Terse'"
          if: "$Verbosity!='Terse'"
          then: [t: "είναι ένα"]                 	# 	(en: 'is a', google translation)
      - t: "υποσύνολο του"                        	# 	(en: 'subset of', google: 'υποσύνολο του')

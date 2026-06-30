@@ -31,12 +31,15 @@
  - "×":                                         	#  0xd7
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "φορές"]                      	# 	(en: 'times', google translation)
+        then: [t: "επί"]                      	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
             then: [t: "επί"]                     	# 	(en: 'by', google translation)
             else: [t: "σταυρός"]                  	# 	(en: 'cross', google: 'σταυρός')
  - "÷": [t: "διά"]                              	#  0xf7	(en: 'divided by', google: 'διαιρείται από')
+ - "¡": [t: "ανεστραμμένο ερωτηματικό"]           # 0xa1
+ - "¶": [t: "σημάδι παραγράφου"]                      # 0xb6
+ - "¿": [t: "ανεστραμμένο αγγλικό ερωτηματικό"]              # 0xbf
  - "ʰ": [t: "τροποποιητής μικρό h"]            	#  0x2b0	(en: 'modifier small h', google translation)
  - "ʱ": [t: "τροποποιητής μικρό h με γάντζο"]   	#  0x2b1	(en: 'modifier small h with hook', google translation)
  - "ʲ": [t: "τροποποιητής μικρό j"]             	#  0x2b2	(en: 'modifier small j', google translation)
@@ -216,9 +219,11 @@
  - "ϒ": [t: "κεφαλαίο καλλιγραφικό ύψιλον"]      	#  0x3d2	(en: 'upsilon with hook', google: 'upsilon με γάντζο')
  - "ϓ": [t: "κεφαλαίο καλλιγραφικό ύψηλον με οξεία"]      	#  0x3d3	(en: 'upsilon with acute and hook', google translation)
  - "ϔ": [t: "κεφαλαίο καλλιγραφικό ύψιλον με διαλυτικά"]    	#  0x3d4	(en: 'upsilon with diaeresis and hook', google translation)
- - "ϕ": [t: "φι"]                     	#  0x3d5	(en: 'phi', google: 'phi')
- - "ϖ": [t: "παραλλαγή του πι"]                  	#  0x3d6	(en: 'pi', google: 'πι')
+ - "ϕ": [t: "φ"]                     	#  0x3d5	(en: 'phi', google: 'phi')
+ - "ϖ": [t: "παραλλαγή του π"]                  	#  0x3d6	(en: 'pi', google: 'πι')
  - "ϗ": [t: "παραλλαγή του κάππα"]                	#  0x3d7	(en: 'kai', google: 'κάι')
+ - "Ϙ": [t: "κεφαλαίο αρχαϊκό κάππα"]                   # 0x3d8
+ - "ϙ": [t: "αρχαϊκό κάππα"]                       # 0x3d9
  - "ϵ": [t: παραλλαγή του έψιλον"]                                	#  0x3f5	(en: 'epsilon', google: 'έψιλο')
  - "϶": [t: "ανεστραμμένο έψιλον"]                   	#  0x3f6	(en: 'reversed epsilon', google: 'αντιστρέψιμο epsilon')
  - "А-Я":                                       	#  0x410 - 0x42f
@@ -271,6 +276,9 @@
  - "э": [t: "ε"]                                	#  0x44d	(google: 'э')
  - "ю": [t: "γιού"]                               	#  0x44e
  - "я": [t: "γιά"]                               	#  0x44f	(google: 'ναι')
+ - "؆": [t: "αραβο-ινδική κυβική ρίζα"]              # 0x606
+ - "؇": [t: "αραβο-ινδική ρίζα τέταρτης τάξης"]            # 0x607
+ - "؈": [t: "αραβική ακτίνα"]                          # 0x608
  - "‐": [t: "ενωτικό"]                            	#  0x2010	(en: 'hyphen', google: 'ενωτικό')
  - "‑": [t: "ενωτικό"]                          	#  0x2011	(en: 'hyphen', google translation)
  - "‒": [t: "παύλα αριθμών"]                      	#  0x2012	(en: 'figure dash', google translation)
@@ -281,6 +289,7 @@
  - "†": [t: "οβελίσκος"]                          	#  0x2020	(en: 'dagger', google: 'στιλέτο')
  - "‡": [t: "διπλός οβελίσκος"]                    	#  0x2021	(en: 'double dagger', google: 'διπλό μαχαίρι')
 
+ - " - ": [t: " "]                                 # 0x2000 - 0x2007            
  - "•":                                         	#  0x2022
     - test: 
         if: "@data-chem-formula-op"
@@ -293,12 +302,12 @@
             - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][text()='…']"
-        then: [t: "τρεις τελείες"]                	# 	(google translation)
+            - "../*[1][.='…']"
+        then: [t: "αποσιωπητικά"]                	# 	(google translation)
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "αποσιωπητικά"]       	# 	(en: 'and so on', google translation)
-            else: [t: "και ούτω καθεξής"]   	# 	(en: 'and so on up to', google: 'και ούτω καθεξής')
+            then: [t: "και ούτω καθεξής"]       	# 	(en: 'and so on', google translation)
+            else: [t: "και ούτω καθεξής ως"]   	# 	(en: 'and so on up to', google: 'και ούτω καθεξής')
 
  - "‰": [t: "ποσοστό επί τοις χιλίους"]                   	#  0x2030	(en: 'per mille', google: 'ανά χιλιοστό')
  - "‱": [t: "ποσοστό επί τοις δεκάκις χιλίοις"]            	#  0x2031	(en: 'per ten thousand', google: 'ανά δέκα χιλιάδες')
@@ -315,10 +324,18 @@
  - "⁄": [t: "διαιρείται από"]                            	#  0x2044	(en: 'divided by', google: 'διαιρείται από')
  - "⁅": [t: "αριστερή τετραγωνική αγκύλη με παύλα"]	#  0x2045	(en: 'left square bracket with quill', google translation)
  - "⁆": [t: "δεξιά τετραγωνική αγκύλη με παύλα"]	#  0x2046	(en: 'right square bracket with quill', google translation)
- - "⁗": [t: "τετραπλή παράγωγος"]                  	#  0x2057	(google: 'τετραπλή πρωταρχική')
+ - "※": [t: "σημαδι αναφοράς"]                     # 0x203b
+ - "‿": [t: "τόξο σύνδεσης κάτω από"]                          # 0x203F
+ - "⁀": [t: "τόξο σύνδεσης"]                                # 0x2040
+ - "⁎": [t: "αστερίσκος χαμηλά"]                        # 0x204e
+ - "⁏": [t: "ανεστραμμένο ελληνικό ερωτηματικό"]                  # 0x204f
+ - "⁐": [t: "κλείσιμο κενού"]                           # 0x2050
+ - "⁑": [t: "κάθετα διατεταγμένοι αστερίσκοι"]              # 0x2051
+ - "⁒": [t: "εμπορισκό σύμβολο μείον"]               # 0x2052
+ - "⁗": [t: "τετραπλή παράγωγος"]                  	#  0x2057	(google: 'τετραπλή πρωταρχική')                                                             
  - "⁠": [t: ""]                                 	#  0x2060
  - "⁰": [t: "στη μηδενική δύναμη"]            	#  0x2070	(en: 'to the zeroth power', google translation)
- - "ⁱ": [t: "εις το i"]                     	#  0x2071	(en: 'to the eihth power', google translation)
+ - "ⁱ": [t: "εις την i οστή δύναμη"]                     	#  0x2071	(en: 'to the eihth power', google translation)
  - "⁴": [t: "στην τέταρτη δύναμη"]              	#  0x2074	(en: 'to the fourth power', google translation)
  - "⁵": [t: "στην πέμπτη δύναμη"]               	#  0x2075	(en: 'to the fifth power', google translation)
  - "⁶": [t: "στην έκτη δύναμη"]                 	#  0x2076	(en: 'to the sixth power', google translation)
@@ -347,7 +364,7 @@
  - "₍": [t: "δείκτης αριστερή παρένθεση"]       	#  0x208d	(en: 'subscript left parenthesis', google translation)
  - "₎": [t: "δείκτης δεξιά παρένθεση"]           	#  0x208e	(en: 'subscript right parenthesis', google translation)
  - "ₐ": [t: "δείκτης αγγλικό a"]                            	#  0x2090	(en: 'sub A', google translation)
- - "ₑ": [t: "δείκτης αγγλικό i"]                        	#  0x2091	(en: 'sub E', google translation)
+ - "ₑ": [t: "δείκτης αγγλικό e"]                        	#  0x2091	(en: 'sub E', google translation)
  - "ₒ": [t: "δείκτης αγγλικό o"]                              	#  0x2092	(en: 'sub O', google translation)
  - "ₓ": [t: "δείκτης αγγλικό x"]                        	#  0x2093	(en: 'sub X', google translation)
  - "ₕ": [t: "δείκτης αγγλικό h"]                            	#  0x2095	(en: 'sub H', google translation)
@@ -412,12 +429,12 @@
  - "⃨": [t: "τριπλή τελεία κάτω από"]                  	#  0x20e8	(en: 'triple underdot', google translation)
  - "⃩": [t: "καλλωπιστική πλατιά γέφυρα πάνω από"]	#  0x20e9	(en: 'wide bridge above embellishment', google translation)
  - "⃪": [t: "καλλωπιστικό βέλος που επικαλύπτει"]	#  0x20ea	(en: 'leftwards arrow overlay embellishment', google translation)
- - "⃫": [t: "καλλωπιστικός μεγάλος διπλός σόλιδος που επικαλύπτει"]	#  0x20eb	(en: 'long double solidus overlay embellishment', google translation)
- - "⃬": [t: "καλλωπιστική μύτη βέλους προς τα δεξιά κάτω από"]	#  0x20ec	(en: 'rightwards harpoon with barb downwards embellishment', google translation)
+ - "⃫": [t: "καλλωπιστικός μεγάλος διπλός σόλιδος που επικαλύπτει"] #  0x20eb	(en: 'long double solidus overlay embellishment', google translation)
+ - "⃬": [t: "καλλωπιστική μύτη βέλους προς τα δεξιά κάτω από"] #  0x20ec	(en: 'rightwards harpoon with barb downwards embellishment', google translation)
  - "⃭": [t: "καλλωπιστική κάτω μύτη βέλους προς τα αριστερά κάτω από"]	#  0x20ed	(en: 'leftwards harpoon with barb downwards embellishment', google translation)
- - "⃮": [t: "καλλωπιστικό βέλος προς τα αριστερά κάτω από"]	#  0x20ee	(en: 'left arrow below embellishment', google translation)
+ - "⃮": [t: "καλλωπιστικό βέλος προς τα αριστερά κάτω από"] #  0x20ee	(en: 'left arrow below embellishment', google translation)
  - "⃯": [t: "καλλωπιστικό βέλος προς τα δεξιά κάτω από"]	#  0x20ef	(en: 'right arrow below embellishment', google translation)
- - "⃰": [t: "καλλωπιστικός αστερίσκος πάνω από"]	#  0x20f0	(en: 'asterisk above embellishment', google translation)
+ - "⃰": [t: "καλλωπιστικός αστερίσκος πάνω από"]  #  0x20f0	(en: 'asterisk above embellishment', google translation)
  - "℄": [t: "σύμβολο κεντρικής γραμμής"]        	#  0x2104	(en: 'center line symbol', google translation)
  - "℅": [t: "υπόψιν"]                          	#  0x2105	(google: 'φροντίδα του')
  - "℆": [t: "το καθένα"]                         	#  0x2106	(google translation)
@@ -426,21 +443,23 @@
  - "℉": [t: "βαθμοί Φαρενάιτ"]               	#  0x2109	(en: 'degrees fahrenheit', google: 'βαθμοί φάρεναϊτ')
  - "ℊ": [t: "καλλιγραφικό g"]                   	#  0x210a	(en: 'script g', google: 'σενάριο g')
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
-    - t: "καλλιγραφικό g"                       	# 	(en: 'fraktur', google: 'fraktur')
+    - t: "φράκτουρ"                       	# 	(en: 'fraktur', google: 'fraktur')
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
+ 
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+    - t: "με διπλή γραφή"             	# 	(en: 'double struck', google translation)
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
  - "ℎ": [t: "σταθερά του Πλάνκ"]               	#  0x210e	(en: 'planck constant', google: 'planck σταθερά')
- - "ℏ":                                         	#  0x210f
-     - test: 
-         if: "($Verbosity='Terse')"
-         then: [t: "h με παύλα"]                     	# 	(google translation)
-         else: [t: "h με παύλα"]                	# 	(en: 'reduced planck constant', google: 'μειωμένη σταθερά planck')
+ - "ℏ": [t: "h με παύλα"]                             
+ #- "ℏ":                                         	#  0x210f
+ #    - test: 
+ #        if: "($Verbosity='Terse')"
+ #        then: [t: "h με παύλα"]                     	# 	(google translation)
+ #        else: [t: "h με παύλα"]                	# 	(en: 'reduced planck constant', google: 'μειωμένη σταθερά planck')
 
  - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
     - t: "καλλιγραφικό"                           	# 	(en: 'script', google: 'γραφή')
@@ -477,9 +496,12 @@
  - "ℼ": [t: "πι με διπλή γραφή"]                 	#  0x213c	(en: 'double struck pi', google translation)
  - "ℽ": [t: "γάμμα με διπλή γραφή"]              	#  0x213d	(en: 'double struck gamma', google translation)
  - "⅀": [t: "νιοστό άθροισμα με διπλή γραμμή"]     	#  0x2140	(en: 'double struck n-ary summation', google translation)
- - "⅋": [t: "ανάποδο ampersand"]                 	#  0x214b	(en: 'turned ampersand', google translation)
+ - "⅋": [t: "ανάποδο άμπερσαντ"]                 	#  0x214b	(en: 'turned ampersand', google translation)
  - "⅌": [t: "ανά"]                              	#  0x214c	(en: 'per', google translation)
  - "ⅎ": [t: "ανάποδο κεφαλαίο f"]                 	#  0x214e	(en: 'turned F', google translation)
+ - "¼": [t: "ένα τέταρτο"]                         # 0x00bc
+ - "½": [t: "μισό"]                            # 0x00bd
+ - "¾": [t: "τρία τέταρτα"]                      # 0x00be
  - "⅐": [t: "ένα έβδομο"]                       	#  0x2150	(en: 'one seventh', google translation)
  - "⅑": [t: "ένα ένατο"]                        	#  0x2151	(en: 'one ninth', google translation)
  - "⅒": [t: "ένα δέκατο"]                       	#  0x2152	(en: 'one tenth', google translation)
@@ -525,8 +547,8 @@
  - "ⅺ": [t: "λατινικός μικρός αριθμός έντεκα"]                              	#  0x217a	(en: 'X I', google translation)
  - "ⅻ": [t: "λατινικός μικρός αριθμός δώδεκα"]                              	#  0x217b	(en: 'X I I', google translation)
  - "ⅼ": [t: "λατινικός μικρός αριθμός πενήντα"]                                	#  0x217c	(en: 'L', google translation)
- - "ⅽ": [t: "λατινικός μικρός αριθμός εκατό"]                                	#  0x217d	(en: 'C', google translation)
- - "ⅾ": [t: "λατινικός μικρός αριθμός πεντακόσια"]                                	#  0x217e	(en: 'D', google translation)
+ - "ⅽ": [t: "λατινικός μικρhhός αριθμός εκατό"]                                	#  0x217d	(en: 'C', google translation)
+ - "ⅾ": [t: "λατινικός μικρόςHhh αριθμός πεντακόσια"]                                	#  0x217e	(en: 'D', google translation)
  - "ⅿ": [t: "λατινικός μικρός αριθμός χίλια"]                                	#  0x217f	(en: 'M', google translation)
  - "↉": [t: "μηδεν τρίτα"]                   	#  0x2189	(en: 'zero thirds', google translation)
  - "←": [t: "βέλος προς τα αριστερά"]           	#  0x2190	(en: 'leftwards arrow', google: 'βέλος αριστερά')
@@ -656,95 +678,103 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "το"]                         	# 	(en: 'the', google translation)
-     - t: "συμπλήρωμα"                          	# 	(en: 'complement of', google: 'συμπλήρωμα του')
+     - t: "συμπλήρωμα"                         	# 	(en: 'complement of', google: 'συμπλήρωμα του')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
          then: [t: "μερικό"]                   	# 	(en: 'partial', google translation)
-         else: [t: "μερική παράγωγος"]                 	# 	(en: 'partial derivative', google: 'μερικό παράγωγο')
+         else: [t: "μερικό διαφορικό"]                 	# 	(en: 'partial derivative', google: 'μερικό παράγωγο')
  - "∃": [t: "υπάρχει"]                          	#  0x2203	(en: 'there exists')
  - "∄": [t: "δεν υπάρχει"]                      	#  0x2204	(en: 'there does not exist')
  - "∅": [t: "κενό σύνολο"]                      	#  0x2205	(en: 'empty set', google: 'άδειο σετ')
+ # new /changed
  - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "ο"]                         	# 	(en: 'the', google translation)
-     - t: "τελεστής δέλτα"                      	# 	(en: 'laplacian of', google: 'laplacian του')
- - "∇":                                         	#  0x2207
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "ο"]                         	# 	(en: 'the', google translation)
-     - t: "τελεστής ανάδελτα"                            	# 	(en: 'gradient of', google: 'κλίση του')
- - "∈":                                         	#  0x2208
      - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "είναι στοιχείο του"]           	# 	(en: 'an element of', google translation)
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "σε"]                 	# 	(en: 'in', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "στοιχείο του"]              	# 	(en: 'member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "στοιχείο του"]       	# 	(en: 'element of', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "είναι στοιχείο του"]    	# 	(en: 'is a member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "είναι στοιχείο του"]	# 	(en: 'is an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "είναι εντός του"]         	# 	(en: 'is in', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
+         if: "following-sibling::*"
+                                                                                                               
+                                                                                                                                 
+         then_test:
+            if: "$Verbosity!='Terse'"
+            then: [t: "η λαπλασιανή του"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
+            else: [t: "λαπλασιανή"]
+         else: [t: "λαπλασιανή"]
+
+ - "∇": [t: "ανάδελτα"]                           # 0x2207
+ # check. theodora. the english version has the 22208 rules removed 
+ #- "∈":                                         	#  0x2208 
+ #    - test:
+ #       if: "$SpeechStyle != 'ClearSpeak'"
+ #       then: [t: "είναι στοιχείο του"]           	# 	(en: 'an element of', google translation)
+ #       # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+ #       else_test:
+ #           if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+ #           then_test:
+ #             - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+ #               then: [t: "σε"]                 	# 	(en: 'in', google translation)
+ #             - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+ #               then: [t: "στοιχείο του"]              	# 	(en: 'member of', google translation)
+ #             - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+ #               then: [t: "στοιχείο του"]       	# 	(en: 'element of', google translation)
+ #             - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
+ #           else_test:
+ #             - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+ #               then: [t: "είναι στοιχείο του"]    	# 	(en: 'is a member of', google translation)
+ #             - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+ #               then: [t: "είναι στοιχείο του"]	# 	(en: 'is an element of', google translation)
+ #             - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+ #               then: [t: "είναι εντός του"]         	# 	(en: 'is in', google translation)
+ #             - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
  - "∉":                                         	#  0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "δεν είναι στοιχείο του"] 	# 	(en: 'is not an element of', google translation)
+        then: [t: "δεν ανήκει"] 	# 	(en: 'is not an element of', google translation) -- δεν είναι στοιχείο του
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "όχι εντός του"]           	# 	(en: 'not in', google translation)
+                then: [t: "δεν ανήκει"]           	# 	(en: 'not in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "όχι στοιχείο του"]      	# 	(en: 'not member of', google translation)
+                then: [t: "δεν ανήκει στο"]      	# 	(en: 'not member of', google translation) -- όχι στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "όχι στοιχείο του"]   	# 	(en: 'not element of', google translation)
-              - else: [t: "δεν ανήκει στο"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to', google: 'δεν ανήκει σε')
+                then: [t: "δεν ανήκει στο"]   	# 	(en: 'not element of', google translation) -- όχι στοιχείο του
+              - else: [t: "δεν ανήκει"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to', google: 'δεν ανήκει σε')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "δεν είναι στοιχείο του"]	# 	(en: 'is not a member of', google translation)
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "δεν ανήκει"]	# 	(en: 'is not a member of', google translation) -- δεν είναι στοιχείο του
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "δεν είναι στοιχείο του"]	# 	(en: 'is not an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "δεν είναι εντός του"]     	# 	(en: 'is not in', google translation)
-              - else: [t: "δεν ανήκει στο"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to', google: 'δεν ανήκει')
+                then: [t: "δεν ανήκει"]	# 	(en: 'is not an element of', google translation) -- δεν είναι στοιχείο του
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "δεν ανήκει στο"]     	# 	(en: 'is not in', google translation)
+              - else: [t: "δεν ανήκει"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to', google: 'δεν ανήκει')
  - "∊":                                         	#  0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "είναι στοιχείο του"]     	# 	(en: 'is an element of', google translation)
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
+            then: [t: ""] #???
+        - t: "ανήκει"        #        -- ένα στοιχείο του                                                                                                         
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "εντός του"]                 	# 	(en: 'in', google translation)
+                then: [t: "ανήκει"]                 	# 	(en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "στοιχείο του"]              	# 	(en: 'member of', google translation)
+                then: [t: "ανήκει"]              	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "στοιχείο του"]       	# 	(en: 'element of', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
+                then: [t: "ανήκει"]       	# 	(en: 'element of', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to', google: 'ανήκει σε')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "είναι στοιχείο του"]    	# 	(en: 'is a member of', google translation)
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "ανήκει"]    	# 	(en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "είναι στοιχείο του"]	# 	(en: 'is an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "είναι εντός του"]         	# 	(en: 'is in', google translation)
-              - else: [t: "ανήκει στο"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
+                then: [t: "ανήκει"]	# 	(en: 'is an element of', google translation) -- είναι στοιχείο του
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "ανήκει"]         	# 	(en: 'is in', google translation)
+              - else: [t: "ανήκει"]         	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'ανήκει στον')
  - "∋": [t: "περιέχει"]                     	#  0x220b	(en: 'contains the member', google: 'περιέχει το μέλος')
  - "∌": [t: "δεν περιέχει"]                 	#  0x220c	(en: 'does not contain the member', google: 'δεν περιέχει το μέλος')
  - "∍": [t: "περιέχει"]                     	#  0x220d	(en: 'contains the member', google: 'περιέχει το μέλος')
@@ -768,17 +798,17 @@
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "τετραγωνική ρίζα"                    	# 	(en: 'square root of', google: 'τετραγωνική ρίζα του')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "κυβική ρίζα"                         	# 	(en: 'cube root of', google: 'ρίζα κύβου του')
  - "∜":                                         	#  0x221c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "τέταρτη ρίζα"                        	# 	(en: 'fourth root of', google: 'τέταρτη ρίζα του')
  - "∝":                                         	#  0x221d
      - test: 
@@ -891,7 +921,7 @@
  - "≏":                                         	#  0x224f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "διαφορά μεταξύ"                      	# 	(en: 'difference between')
  - "≐": [t: "προσεγγίζει το όριο"]              	#  0x2250	(en: 'approaches the limit')
  - "≑":                                         	#  0x2251
@@ -1107,15 +1137,15 @@
  - "⊒": [t: "τετραγωνικό σύμβολο αρχικό του ή ίσο με"]      	#  0x2292	(en: 'square original of or equal to', google: 'τετραγωνικό πρωτότυπο ή ίσο με')
  - "⊓": [t: "τετραγωνικό σύμβολο τομής"]                  	#  0x2293	(en: 'square cap', google: 'τετραγωνική κεφαλαία')
  - "⊔": [t: "τετραγωνικό σύμβολο ένωσης"]                       	#  0x2294	(google: 'τετράγωνο κύπελλο')
- - "⊕": [t: "κύκλος με συν"]                      	#  0x2295	(en: 'circled plus', google: 'circled plus')
- - "⊖": [t: "κύκλος με μείον"]                     	#  0x2296	(en: 'circled minus', google: 'μείον μείον')
- - "⊗": [t: "κύκλος με επί"]                     	#  0x2297	(en: 'circled times', google: 'περιστρεφόμενες φορές')
- - "⊘": [t: "κύκλος με διαγώνιο"]                     	#  0x2298	(en: 'circled slash', google: 'κύκλιση')
- - "⊙": [t: "κύκλος με τελεία"]                       	#  0x2299	(en: 'circled dot operator', google: 'circled dot operator')
- - "⊚": [t: "κύκλος με δακτύλιο"]                      	#  0x229a	(en: 'circled ring', google: 'δακτύλιος')
- - "⊛": [t: "κύκλος με αστερίσκο"]                  	#  0x229b	(en: 'circled asterisk', google: 'περιστρεφόμενος αστερίσκος')
- - "⊜": [t: "κύκλος με ίσον"]                    	#  0x229c	(en: 'circled equals', google: 'ο κύκλος ισούται')
- - "⊝": [t: "κύκλος με παύλα"]                      	#  0x229d	(en: 'circled dash', google: 'circled dash')
+ - "⊕": [t: "κυκλωμένο συν"]                      	#  0x2295	(en: 'circled plus', google: 'circled plus')
+ - "⊖": [t: "κυκλωμένο μείον"]                     	#  0x2296	(en: 'circled minus', google: 'μείον μείον')
+ - "⊗": [t: "κυκλωμένο επί"]                     	#  0x2297	(en: 'circled times', google: 'περιστρεφόμενες φορές')
+ - "⊘": [t: "κυκλωμένη διαγώνιος"]                     	#  0x2298	(en: 'circled slash', google: 'κύκλιση')
+ - "⊙": [t: "κυκλωμένη τελεία"]                       	#  0x2299	(en: 'circled dot operator', google: 'circled dot operator')
+ - "⊚": [t: "κυκλωμένος δακτύλιος"]                      	#  0x229a	(en: 'circled ring', google: 'δακτύλιος')
+ - "⊛": [t: "κυκλωμένος αστερίσκος"]                  	#  0x229b	(en: 'circled asterisk', google: 'περιστρεφόμενος αστερίσκος')
+ - "⊜": [t: "κυκλωμένο ίσον"]                    	#  0x229c	(en: 'circled equals', google: 'ο κύκλος ισούται')
+ - "⊝": [t: "κυκλωμένη παύλα"]                      	#  0x229d	(en: 'circled dash', google: 'circled dash')
  - "⊞": [t: "τετράγωνο με συν"]                      	#  0x229e	(en: 'squared plus', google: 'squared plus')
  - "⊟": [t: "τετράγωνο με μείον"]                     	#  0x229f	(en: 'squared minus', google: 'τετράγωνο μείον')
  - "⊠": [t: "τετράγωνο με επί"]                     	#  0x22a0	(en: 'squared times', google: 'τετραγωνισμένοι χρόνοι')
@@ -1193,10 +1223,10 @@
  - "⋇": [t: "διαίρεση φορές"]                   	#  0x22c7	(google: 'τρόφους διαίρεσης')
  - "⋈": [t: "σύζευξη"]                           	#  0x22c8	(google: 'παπιγιό')
  - "⋉":                                         	#  0x22c9
-    - test: 
-        if: "$Verbosity!='Terse'"
-        then: [t: "είναι"]                      	# 	(en: 'is', google translation)
-    - t: "ημιευθύ γινόμενο με αριστερά κανονικό παράγοντα"	# 	(en: 'the left normal factor semidirect product of', google: 'το αριστερό κανονικό παράγοντα semidirect προϊόν του')
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "είναι"]                      	# 	(en: 'is', google translation)
+     - t: "ημιευθύ γινόμενο με αριστερά κανονικό παράγοντα"	# 	(en: 'the left normal factor semidirect product of', google: 'το αριστερό κανονικό παράγοντα semidirect προϊόν του')
  - "⋊":                                         	#  0x22ca
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1228,17 +1258,17 @@
  - "⋒":                                         	#  0x22d2
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "διπλή τομή"                 	# 	(en: 'double intersection of', google: 'διπλή διασταύρωση του')
  - "⋓":                                         	#  0x22d3
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "διπλή ένωση"                        	# 	(en: 'double union of', google: 'διπλή ένωση του')
  - "⋔":                                         	#  0x22d4
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "η"]                         	# 	(en: 'the', google translation)
+         then: [t: ""]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
      - t: "γνήσια τομή του"                           	# 	(en: 'proper intersection of', google: 'σωστή διασταύρωση του')
  - "⋕":                                         	#  0x22d5
      - test: 
@@ -1286,7 +1316,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "είναι"]                     	# 	(en: 'is', google translation)
-     - t: "ίσο με ή έπεται"                	# 	(google: 'ίσο ή πετυχαίνει')
+     - t: "ίσο με ή έπεται από"                	# 	(google: 'ίσο ή πετυχαίνει')
  - "⋠": [t: "δεν προηγείται ή ισούται με"]      	#  0x22e0	(en: 'does not precede nor is equal to', google: 'δεν προηγείται ούτε είναι ίσο με')
  - "⋡": [t: "δεν έπεται ή ισούται με"]      	#  0x22e1	(en: 'does not succeed nor is equal to', google: 'δεν επιτυγχάνει ούτε είναι ίση με')
  - "⋢": [t: "όχι τετράγωνικό σύμβολο εικόνα του ή ίσον με"]	#  0x22e2	(en: 'not square image of or equal to', google: 'όχι τετραγωνική εικόνα ή ίση με')
@@ -1318,8 +1348,8 @@
          else: [t: "όχι κανονική υποομάδα του ούτε ισούται με"]
      - t: "όχι κανονική υποομάδα του ή ίσον με" 	# 	(en: 'not a normal subgroup of nor is equal to', google: 'δεν είναι μια κανονική υποομάδα nor είναι ίση με') 
  - "⋭": [t: "δεν περιέχει ως κανονική υποομάδα ούτε ισούται με"]	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to', google: 'δεν περιέχει ως κανονική υποομάδα ούτε είναι ίση με')
- - "⋮": [t: "κάθετα αποσιωπητικά"]              	#  0x22ee	(en: 'vertical ellipsis', google: 'κατακόρυφη ελλειψία')
- - "⋯": [t: "οριζόντια αποσιωπητικά"]	#  0x22ef	(en: 'dot dot dot', google: 'dot dot dot')
+ - "⋮": [t: "κατακόρυφα αποσιωπητικά"]              	#  0x22ee	(en: 'vertical ellipsis', google: 'κατακόρυφη ελλειψία')
+ - "⋯": [t: "αποσιωπητικά"]	#  0x22ef	(en: 'dot dot dot', google: 'dot dot dot')
  - "⋰": [t: "διαγώνια αποσιωπητικά προς τα πάνω δεξιά"] 	#  0x22f0	(en: 'upwards diagonal ellipsis', google: 'προς τα πάνω διαγώνια ελλειψία')
  - "⋱": [t: "διαγώνια αποσιωπητικά προς τα κάτω δεξιά"] 	#  0x22f1	(en: 'diagonal ellipsis', google: 'διαγώνια ελλειψία')
  - "⋲": [t: "στοιχείο του με οριζόντια διαγραφή"]	#  0x22f2	(google: 'στοιχείο με μακρύ οριζόντιο εγκεφαλικό επεισόδιο')
@@ -1390,10 +1420,28 @@
  - "⌳": [t: "κλίση"]                            	#  0x2333	(en: 'slope', google translation)
  - "⌴": [t: "διευρυμένο διαμέτρημα"]                      	#  0x2334	(google translation)
  - "⌵": [t: "διευρυμένη οπή"]     	#  0x2335	(en: 'countersink', google translation)
- - "⍰": [t: "ερωτιματικό εντός κουτιού"]              	#  0x2370	(en: 'unknown box', google: 'άγνωστο πλαίσιο')
+ - "⌶": [t: "apl i beam"]                         # 0x2336
+ - "⌽": [t: "apl circle stile"]                   # 0x233d
+ - "⌿": [t: "apl slash bar"]                      # 0x233f
+ - "⍰": [t: "ερωτηματικό εντός κουτιού"]              	#  0x2370	(en: 'unknown box', google: 'άγνωστο πλαίσιο')
+ - "⍼": [t: "δεξιά γωνία με βέλος ζιγκ ζαγκ προς τα κάτω"]       # 0x237c
+ - "⎔": [t: "εξάγωνο"]                            # 0x2394
  - "⎕": [t: "κουτί"]                            	#  0x2395	(en: 'box', google translation)
- - "⏞": [t: "άνω άγκιστρο"]                	#  0x23DE	(en: 'top brace', google: 'κορυφαίο στήριγμα')
- - "⏟": [t: "κάτω άγκιστρο"]             	#  0x23DF	(en: 'bottom brace', google: 'κάτω στήριγμα')
+ - "⎶": [t: "κάτω τετραγωνική αγκύλη πάνω από άνω τετραγωνική αγκύλη"] # 0x23b6
+ - "⏜": [t: "άνω παρένθεση"]                           # 0x23dc
+ - "⏝": [t: "κάτω παρένθεση"]                        # 0x23dd
+ - "⏞": [t: "άνω άγκιστρο"]                           # 0x23de
+ - "⏟": [t: "κάτω άγκιστρο"]                        # 0x23df
+ - "⏠": [t: "άνω αγκύλη σαν καύκαλο χελώνας"]          # 0x23e0
+ - "⏡": [t: "κάτω αγκύλη σαν καύκαλο χελώνας"]        # 0x23e1
+ - "⏢": [t: "λευκό τραπέζιο"]                    # 0x23e2
+ - "⏣": [t: "δακτύλιος βενζολίου με κύκλο"]          # 0x23e3
+ - "⏤": [t: "ευθύτητα"]                       # 0x23e4
+ - "⏥": [t: "επιπεδότητα"]                           # 0x23e5
+ - "⏦":                                           # 0x23e6
+     - spell: "εναλλασσόμενο"
+     - t: "ρεύμα"
+ - "⏧": [t: "ηλεκτρική διασταύρωση"]            # 0x23e7                                                                                    
  - "①-⑨":                                       	#  0x2460 - 0x2469
     - t: "κυκλωμένο"                 	# 	(en: 'circled', google: 'περιστρέφεται')
     - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
@@ -1442,7 +1490,10 @@
  - "Ⓐ-Ⓩ":
     - t: "κυκλωμένο"                        	# 	(en: 'circled', google translation)
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-
+ - "🅐-🅩":                                         # 0x1f150 - 0x1f169
+    - t: "μαύρο κυκλωμένο"
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ 
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
     - t: "κυκλωμένο"                        	# 	(en: 'circled', google translation)
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -1558,6 +1609,28 @@
  - "◽": [t: "λευκό μεσαίο τετράγωνο"]              	#  0x25fd	(en: 'white medium small square', google: 'λευκό μεσαίο μικρό τετράγωνο')
  - "◾": [t: "μαύρο μικρομεσαίο τετράγωνο"]              	#  0x25fe	(en: 'black medium small square', google: 'μαύρο μεσαίο μικρό τετράγωνο')
  - "◿": [t: "κάτω δεξιά ορθογώνιο"]             	#  0x25ff	(google: 'κάτω δεξιό τρίγωνο')
+ - "★": [t: "μαύρο αστέρι"]                          # 0x2605
+ - "☆": [t: "λευκό αστέρι"]                          # 0x2606
+ - "☉": [t: "ήλιος"]                                 # 0x2609
+ - "☌": [t: "σύνοδος"]                          # 0x260c
+ - "☒": [t: "κουτί με χι"]                   # 0x2612
+ - "☽": [t: "φεγγαρι που γεμίζει"]                         # 0x263d
+ - "☾": [t: "φεγγάρι που αδειάζει"]                         # 0x263e
+ - "☿": [t: "ερμής"]                             # 0x263f
+ - "♀": [t: "θηλυκό"]                              # 0x2640
+ - "♁": [t: "γη"]                               # 0x2641
+ - "♂": [t: "αρσενικό"]                                # 0x2642
+ - "♃": [t: "Δίας"]                            # 0x2643
+ - "♄": [t: "Κρόνος"]                             # 0x2644
+ - "♅": [t: "Ουρανός"]                             # 0x2645
+ - "♆": [t: "Ποσειδώνας"]                           # 0x2646
+ - "♇": [t: "Πλούτωνας"]                             # 0x2647
+ - "♈": [t: "Κριός"]                           # 0x2648
+ - "♉": [t: "Ταύρος"]                          # 0x2649
+ - "♩": [t: "ένα τέταρτο"]                      # 0x2669
+ - "♭": [t: "ύφεση"]                              # 0x266d
+ - "♮": [t: "αναίρεση"]                           # 0x266e
+ - "♯": [t: "δίεση"]                             # 0x266f
  - "♠": [t: "μαύρο μπαστούνι"]                 	#  0x2660	(google: 'μαύρο κοστούμι φτυάρι')
  - "♡": [t: "λευκή καρδιά"]                 	#  0x2661	(google: 'λευκό κοστούμι καρδιάς')
  - "♢": [t: "λευκό διαμάντι"]               	#  0x2662	(google: 'λευκό κοστούμι διαμαντιών')
@@ -1566,6 +1639,24 @@
  - "♥": [t: "μαύρη καρδιά"]                 	#  0x2665	(google: 'μαύρο κοστούμι καρδιάς')
  - "♦": [t: "μαύρο διαμάντι"]               	#  0x2666	(google: 'μαύρο κοστούμι διαμαντιών')
  - "♧": [t: "λευκό τριφύλλι"]                  	#  0x2667	(google: 'λευκό κοστούμι')
+ - "⚀": [t: "ζἀρι πλευρά 1"]                        # 0x2680
+ - "⚁": [t: "ζάρι πλευρά 2"]                        # 0x2681
+ - "⚂": [t: "ζάρι πλευρά 3"]                        # 0x2682
+ - "⚃": [t: "ζάρι πλευρά 4"]                        # 0x2683
+ - "⚄": [t: "ζάρι πλευρά 5"]                        # 0x2684
+ - "⚅": [t: "ζάρι πλευρά 6"]                        # 0x2685
+ - "⚆": [t: "λευκός κύκλος με δεξιά κουκκίδα"]       # 0x2686
+ - "⚇": [t: "λευκός κύκλος με δύο κουκκίδες"]        # 0x2687
+ - "⚈": [t: "μαύρος κύκλος με δεξιά κουκκίδα"]       # 0x2688
+ - "⚉": [t: "μαύρος κύκλος με δύο κουκκίδες"]        # 0x2689
+ - "⚪": [t: "μεσαίος λευκός κύκλος"]              # 0x26aa
+ - "⚫": [t: "μεσαίος μαύρος κύκλος"]              # 0x26ab
+ - "⚬": [t: "μεσαίος μικρός λευκός κύκλος"]          # 0x26ac
+ - "⚲": [t: "ουδέτερο"]                            # 0x26b2
+ - "✓": [t: "σημάδι τσεκ"]                        # 0x2713
+ - "✠": [t: "σταυρός της Μάλτας"]                     # 0x2720
+ - "✪": [t: "κυκλωμένο λευκό αστέρι"]                # 0x272a
+ - "✶": [t: "εξάκτινο μαύρο αστέρι"]            # 0x2736
  - "❨": [t: "διακοσμητική μεσαία αριστερή παρενθέση"]	#  0x2768	(en: 'medium left parentheses ornament', google translation)
  - "❩": [t: "διακοσμητική μεσαία δεξιά παρενθέση"]  	#  0x2769	(en: 'medium right parentheses ornament', google translation)
  - "❪": [t: "διακοσμητική μεσαία πεπλατυσμένη αριστερή παρένθεση"]	#  0x276a	(en: 'medium flattened left parentheses ornament', google translation)
@@ -1611,7 +1702,7 @@
  - "➒": [t: "κυκλωμένο μαύρο εννιά χωρίς σέριφ"]    	#  0x2792	(en: 'black circled sans serif nine', google translation)
  - "➓": [t: "κυκλωμένο μαύρο δέκα χωρίς σέριφ"]     	#  0x2793	(en: 'black circled sans serif ten', google translation)
  - "➔": [t: "έντονο βέλος προς τα δεξιά με πλατειά μύτη"]           	#  0x2794	(en: 'heavy wide-headed rightwards arrow', google translation)
- - "➕": [t: "΄έντονο σύμβολο συν"]                  	#  0x2795	(en: 'heavy plus sign', google translation)
+ - "➕": [t: "έντονο σύμβολο συν"]                  	#  0x2795	(en: 'heavy plus sign', google translation)
  - "➖": [t: "έντονο σύμβολο μείον"]                	#  0x2796	(en: 'heavy minus sign', google translation)
  - "➗": [t: "έντονο σύμβολο διαίρεσης"]              	#  0x2797	(en: 'heavy division sign', google translation)
  - "➘": [t: "έντονο νοτιοανατολικό βέλος"]	#  0x2798	(en: 'heavy south east arrow', google translation)
@@ -2031,7 +2122,12 @@
  - "⨬": [t: "σύμβολο μείον με ανερχόμενες τελείες"]	#  0x2a2c	(en: 'minus sign with rising dots', google translation)
  - "⨭": [t: "σύμβολο συν μέσα σε αριστερό ημικύκλιο"]    	#  0x2a2d	(google: 'plus συνδεθείτε στον αριστερό μισό κύκλο')
  - "⨮": [t: "σύμβολο συν μέσα σε δεξί ημικύκλιο"]   	#  0x2a2e	(google: 'επιπλέον, υπογράψτε το δεξί μισό κύκλο')
- - "⨯": [t: "διανυσματικό ή εξωτερικό γινόμενο"]          	#  0x2a2f	(en: 'cross product', google: 'σταυροί προϊόν')
+#new / changed
+ - "⨯":                                             # 0x2a2f
+      - test: 
+         if: "$Verbosity='Terse'"
+         then: [t: "επί"]
+         else: [t: "διανυσματικό γινόμενο"]
  - "⨰": [t: "σύμβολο πολλαπλασιασμού με τελεία από πάνω"]	#  0x2a30	(google: 'σημάδι πολλαπλασιασμού με κουκκίδα παραπάνω')
  - "⨱": [t: "σύμβολο πολλαπλασιασμού με παύλα από κάτω"]	#  0x2a31	(google: 'σημάδι πολλαπλασιασμού με underbar')
  - "⨲": [t: "ημιευθύ γινόμενο με κλειστό κάτω μέρος"]	#  0x2a32	(en: 'semidirect product with bottom closed', google translation)
@@ -2047,6 +2143,7 @@
  - "⨼": [t: "εσωτερικό γινόμενο"]                 	#  0x2a3c	(google: 'εσωτερικό προϊόν')
  - "⨽": [t: "εσωτερικό γινόμενο δεξιάς πλευράς"]       	#  0x2a3d	(en: 'righthand interior product', google translation)
  - "⨿": [t: "αμάγαλμα ή συνγινόμενο"]        	#  0x2a3f	(google: 'συγχώνευση ή συνωμοσία')
+ - "⨾": [t: "σημειογραφία ζεντ σύνθεση σχέσεων"]    # 0x2a3e
  - "⩀": [t: "τομή με τελεία"]            	#  0x2a40	(google: 'διασταύρωση με κουκκίδα')
  - "⩁": [t: "ένωση με σύμβολο μείον"]         	#  0x2a41	(en: 'union with minus sign', google translation)
  - "⩂": [t: "ένωση με παύλα από πάνω"]               	#  0x2a42	(google: 'ένωση με overbar')
@@ -2425,17 +2522,31 @@
  - "㉘": [t: "κυκλωμένος αριθμός εικοσιοκτώ"]         	#  0x3258	(en: 'circled number twenty eight', google translation)
  - "㉙": [t: "κυκλωμένος αριθμός εικοσιεννέα"]       	#  0x3259	(google translation)
  - "㉚": [t: "κυκλωμένος αριθμός τριάντα"]           	#  0x325a	(en: 'circled number thirty', google translation)
- - "㉛": [t: "κυκλωμένος αριθμός τριανταένα"]           	#  0x325b	(en: 'circled number thirty one', google translation)
- - "㉜": [t: "κυκλωμένος αριθμός τριανταδύο"]      	#  0x325c	(en: 'circled number thirty two', google translation)
- - "㉝": [t: "κυκλωμένος αριθμός τριαντατρία"]      	#  0x325d	(en: 'circled number thirty three', google translation)
- - "㉞": [t: "κυκλωμένος αριθμός τριαντατέσσερα"]   	#  0x325e	(en: 'circled number thirty four', google translation)
- - "㉟": [t: "κυκλωμένος αριθμός τριανταπέντε"]     	#  0x325f	(en: 'circled number thirty five', google translation)
- - "㊱": [t: "κυκλωμένος αριθμός τριανταέξι"]      	#  0x32b1	(en: 'circled number thirty six', google translation)
+ - "㉛": [t: "κυκλωμένος αριθμός τριαντα ένα"]           	#  0x325b	(en: 'circled number thirty one', google translation)
+ - "㉜": [t: "κυκλωμένος αριθμός τριαντα δύο"]      	#  0x325c	(en: 'circled number thirty two', google translation)
+ - "㉝": [t: "κυκλωμένος αριθμός τριαντα τρία"]      	#  0x325d	(en: 'circled number thirty three', google translation)
+ - "㉞": [t: "κυκλωμένος αριθμός τριαντα τέσσερα"]   	#  0x325e	(en: 'circled number thirty four', google translation)
+ - "㉟": [t: "κυκλωμένος αριθμός τριαντα πέντε"]     	#  0x325f	(en: 'circled number thirty five', google translation)
+ - "㊱": [t: "κυκλωμένος αριθμός τριαντα έξι"]      	#  0x32b1	(en: 'circled number thirty six', google translation)
+ - "㊲": [t: "κυκλωμένος αριθμός τριάντα επτά"]         # 0x32b2  (GPT-5.4 translation)
+ - "㊳": [t: "κυκλωμένος αριθμός τριάντα οκτώ"]         # 0x32b3  (GPT-5.4 translation)
+ - "㊴": [t: "κυκλωμένος αριθμός τριάντα εννιά"]          # 0x32b4  (GPT-5.4 translation)
+ - "㊵": [t: "κυκλωμένος αριθμός σαράντα"]                # 0x32b5  (GPT-5.4 translation)
+ - "㊶": [t: "κυκλωμένος αριθμός σαράντα ένα"]            # 0x32b6  (GPT-5.4 translation)
+ - "㊷": [t: "κυκλωμένος αριθμός σαράντα δύο"]            # 0x32b7  (GPT-5.4 translation)
+ - "㊸": [t: "κυκλωμένος αριθμός σαράντα τρία"]          # 0x32b8  (GPT-5.4 translation)
+ - "㊹": [t: "κυκλωμένος αριθμός σαράντα τέσσερα"]           # 0x32b9  (GPT-5.4 translation)
+ - "㊺": [t: "κυκλωμένος αριθμός σαράντα πέντε"]           # 0x32ba  (GPT-5.4 translation)
+ - "㊻": [t: "κυκλωμένος αριθμός σαράντα έξι"]            # 0x32bb  (GPT-5.4 translation)
+ - "㊼": [t: "κυκλωμένος αριθμός σαράντα επτά"]          # 0x32bc  (GPT-5.4 translation)
+ - "㊽": [t: "κυκλωμένος αριθμός σαράντα οκτώ"]          # 0x32bd  (GPT-5.4 translation)
+ - "㊾": [t: "κυκλωμένος αριθμός σαράντα εννιά"]           # 0x32be  (GPT-5.4 translation)
+ - "㊿": [t: "κυκλωμένος αριθμός πενήντα"]                # 0x32bf  (GPT-5.4 translation)
  - "㋌": [t: "υδράργυρος"]                            	#  0x32cc	(en: 'mercury', google translation)
- - "㋍": [t: "εργκ"]                             	#  0x32cd	(google translation)
+ - "㋍": [t: "εργ"]                             	#  0x32cd	(google translation)
  - "㋎": [t: "ηλεκτρονιοβόλτ"]                   	#  0x32ce	(google translation)
  - "㋏": [t: "σήμα περιορισμένης ευθύνης"]       	#  0x32cf	(en: 'limited liability sign', google translation)
- - "㍱": [t: "εκατοπασκάλ"]                     	#  0x3371	(google translation)
+ - "㍱": [t: "εκτοπασκάλ"]                     	#  0x3371	(google translation)
  - "㍲": [t: "Ντάλτον"]                          	#  0x3372	(google translation)
  - "㍳": [t: "αστρονομικές μονάδες"]             	#  0x3373	(en: 'astronomical units', google translation)
  - "㍴": [t: "μπαρ"]                             	#  0x3374	(en: 'bars', google translation)
@@ -2444,7 +2555,7 @@
  - "㍷": [t: "δεκάμετρα"]                       	#  0x3377	(en: 'decimeters', google translation)
  - "㍸": [t: "τετραγωνικά δεκάμετρα"]           	#  0x3378	(en: 'decimeters squared', google translation)
  - "㍹": [t: "κυβικά δεκάμετρα"]                     	#  0x3379	(en: 'decimeters cubed', google translation)
- - "㍺": [t: "άι γιους"]                	#  0x337a	(en: 'instrumental units', google translation)
+ - "㍺": [t: "άι γιου"]                	#  0x337a	(en: 'instrumental units', google translation)
  - "㎀": [t: "πικοαμπέρ"]                         	#  0x3380	(google translation)
  - "㎁": [t: "νανοαμπέρ"]                        	#  0x3381	(en: 'nanoamps', google translation)
  - "㎂": [t: "μικροαμπέρ"]                    	#  0x3382	(en: 'microamps', google translation)
@@ -2461,11 +2572,11 @@
  - "㎍": [t: "μικρογραμμάρια"]                   	#  0x338d	(en: 'micrograms', google translation)
  - "㎎": [t: "χιλιοστόγραμμα"]                   	#  0x338e	(en: 'milligrams', google translation)
  - "㎏": [t: "κιλά"]                             	#  0x338f	(en: 'kilograms', google translation)
- - "㎐": [t: "χέρτζ"]                            	#  0x3390	(en: 'hertz', google translation)
- - "㎑": [t: "κιλοχέρτζ"]                        	#  0x3391	(google translation)
- - "㎒": [t: "μεγαχέρτζ"]                        	#  0x3392	(google translation)
- - "㎓": [t: "γιγαχέρτζ"]                        	#  0x3393	(en: 'gigahertz', google translation)
- - "㎔": [t: "τεραχέρντζ"]                        	#  0x3394	(google translation)
+ - "㎐": [t: "χέρτς"]                            	#  0x3390	(en: 'hertz', google translation)
+ - "㎑": [t: "κιλοχέρτς"]                        	#  0x3391	(google translation)
+ - "㎒": [t: "μεγαχέρτς"]                        	#  0x3392	(google translation)
+ - "㎓": [t: "γιγαχέρτς"]                        	#  0x3393	(en: 'gigahertz', google translation)
+ - "㎔": [t: "τεραχέρντς"]                        	#  0x3394	(google translation)
  - "㎕": [t: "μικρολίτρα"]                       	#  0x3395	(en: 'microliters', google translation)
  - "㎖": [t: "χιλιοστόλιτρα"]                    	#  0x3396	(en: 'milliliters', google translation)
  - "㎗": [t: "δεκατόλιτρα"]                      	#  0x3397	(en: 'deciliters', google translation)
@@ -2565,7 +2676,7 @@
  - "": [t: "σχεδόν ίσο με μείον"]              	#  0xe91f	(en: 'almost equal to minus', google translation)
  - "": [t: "διπλή τετράγωνική ένωση"]          	#  0xe920	(en: 'double square cup', google translation)
  - "": [t: "διπλή τετράγωνική τομή"]         	#  0xe921	(en: 'double square cap', google translation)
- - "": [t: "μικρότερο από, ίσον ή μεγαλύτερο από΄"]	#  0xe922	(en: 'less than equal to or greater than', google translation)
+ - "": [t: "μικρότερο από, ίσον ή μεγαλύτερο από"]	#  0xe922	(en: 'less than equal to or greater than', google translation)
  - "": [t: "κυματοειδής γραμμή με τελεία"]                	#  0xe924	(en: 'tilde with dot', google translation)
  - "": [t: "κυματοειδής γραμμή με δύο τελείες"]             	#  0xe925	(en: 'tilde with two dots', google translation)
  - "": [t: "μικρότερο από, μεγαλύτερο από ή ίσο με"]	#  0xe926	(en: 'less than greater than or equal to', google translation)
@@ -3021,7 +3132,7 @@
  - " ": [t: ""]                                 	#  0x205f
  - "": [t: ""]                                 	#  0xef04
  - "": [t: ""]                                 	#  0xef05
- - " ": [t: ""]                                 	#  0x2003
+
  - "": [t: ""]                                 	#  0xef06
  - "": [t: ""]                                 	#  0xef07
  - "": [t: ""]                                 	#  0xef08
@@ -3075,44 +3186,48 @@
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
+    - t: "διπλής γραφής"
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation) 
- #theodora. in greek, it sounds better to say the letter/number first, followed by the 
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation) 
+ # theodora. check all double struck-με διπλή γραφή.again in greek, it sounds better to say the letter/number first, followed by the 
  # expression "double-struck", so the order was changed here. the same is true for the following 
  # lines dealing with double-struck letters.
 
  - "-":                                       	#  0xf080 - 0xf098
+    - t: "διπλής γραφής"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: " με διπλή γραφή"]             	# 	(en: 'double struck', google translation) 
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: " με διπλή γραφή"]             	# 	(en: 'double struck', google translation) 
     
 
  - "𝕒-𝕫":                                       	#  0x1d552 - 0x1d56b
+    - t: "διπλής γραφής"
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
     
- - "-":                                       	#  0xf09a - 0xf0b3
+ - "-":    # 0xf09a - 0xf0b3
+    - t: "διπλής γραφής"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
-    
- - "𝟘-𝟡":                                       	#  0x1d7d8 - 0x1d7e1
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# (en: 'double struck', google translation)
+ - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
+    - t: "διπλής γραφής"
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
-    
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)    
  - "-":                                       	#  0xf0c0 - 0xf0c9
+    - t: "διπλής γραφής"                                                                            
     - spell: "translate('.', '', '0123456789')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
     
 
  - "": [t: "ανάδελτα με διπλή γραφή"]              	#  0xf0ca	(en: 'double struck nabla', google translation)
@@ -3210,17 +3325,19 @@
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209
+    - t: "διπλής γραφής"                        
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
     
 
  - "-":                                       	#  0xf220 - 0xf236
+    - t: "διπλης γραφής"                                                                                                                                                            
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
+ #   - test: 
+ #        if: "$Verbosity!='Terse'"
+ #        then: [t: "με διπλή γραφή"]             	# 	(en: 'double struck', google translation)
     
 
  - "": [t: "τελικό σίγμα με διπλή γραφή"]       	#  0xf237	(en: 'double struck final sigma', google translation)
@@ -3260,12 +3377,12 @@
 
  - "𝑨-𝒁":                                       	#  0x1d468 - 0x1d481
     # - t: "bold italic"
-    - t: "έντονο"                             	# 	(en: 'bold', google translation)
+    - t: "έντονο πλάγιο"                             	# 	(en: 'bold', google translation)
     - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf2c8 - 0xf2e1
     # - t: "bold italic"
-    - t: "έντονο"                             	# 	(en: 'bold', google translation)
+    - t: "έντονο πλάγιο"                             	# 	(en: 'bold', google translation)
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":                                       	#  0x1d482 - 0x1d49b
@@ -3437,7 +3554,7 @@
 
  - "":                                   	#  0xf422 - 0xf43a
     # - t: "bold italic" # theodora. bold italic = έντονο πλάγιο
-    - t: "΄έντονο"                             	# 	(en: 'bold', google translation)
+    - t: "έντονο"                             	# 	(en: 'bold', google translation)
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜵": [t: "έντονο πλάγιο ανάδελτα"]             	#  0x1d735	(en: 'bold italic nabla', google translation)
@@ -3499,89 +3616,33 @@
     - t: "έντονο"                             	# 	(en: 'bold', google translation)
     - spell: "translate('.', '', '∂εθκφρπ')"
 
- - "": [t: "έντονο ανάδελτα"]                    	#  0xf509	(en: 'bold nabla', google translation)
- - "𝞩": [t: "έντονο ανάδελτα"]                    	#  0x1d7a9	(en: 'bold nabla', google translation)
+ - "": [t: "έντονο ανάδελτα"]                          # 0xf509
+ - "𝞩": [t: "έντονο ανάδελτα"]                          # 0x1d7a9
 
- - "": [t: "έντονο μηδέν"]                    	#  0xf52e	(en: 'bold zero', google translation)
- - "𝟎": [t: "έντονο μηδέν"]                    	#  0x1d7ce	(en: 'bold zero', google translation)
- - "": [t: "έντονο ένα"]                          	#  0xf52f	(en: 'bold one', google translation)
- - "𝟏": [t: "έντονο ένα"]                          	#  0x1d7cf	(en: 'bold one', google translation)
- - "": [t: "έντονο δύο"]                       	#  0xf530	(en: 'bold two', google translation)
- - "𝟐": [t: "έντονο δύο"]                       	#  0x1d7d0	(en: 'bold two', google translation)
- - "": [t: "έντονο τρία"]                      	#  0xf531	(en: 'bold three', google translation)
- - "𝟑": [t: "έντονο τρία"]                      	#  0x1d7d1	(en: 'bold three', google translation)
- - "": [t: "έντονο τέσσερα"]                   	#  0xf532	(en: 'bold four', google translation)
- - "𝟒": [t: "έντονο τέσσερα"]                   	#  0x1d7d2	(en: 'bold four', google translation)
- - "": [t: "έντονο πέντε"]                     	#  0xf533	(en: 'bold five', google translation)
- - "𝟓": [t: "έντονο πέντε"]                     	#  0x1d7d3	(en: 'bold five', google translation)
- - "": [t: "έντονο έξι"]                          	#  0xf534	(en: 'bold six', google translation)
- - "𝟔": [t: "έντονο έξι"]                          	#  0x1d7d4	(en: 'bold six', google translation)
- - "": [t: "έντονο επτά"]                      	#  0xf535	(en: 'bold seven', google translation)
- - "𝟕": [t: "έντονο επτά"]                      	#  0x1d7d5	(en: 'bold seven', google translation)
- - "": [t: "έντονο οκτώ"]                          	#  0xf536	(en: 'bold eight', google translation)
- - "𝟖": [t: "έντονο οκτώ"]                          	#  0x1d7d6	(en: 'bold eight', google translation)
- - "": [t: "έντονο εννέα"]                    	#  0xf537	(en: 'bold nine', google translation)
- - "𝟗": [t: "έντονο εννέα"]                    	#  0x1d7d7	(en: 'bold nine', google translation)
- - "": [t: "μηδέν"]                            	#  0xf542	(en: 'zero', google translation)
- - "𝟢": [t: "μηδέν"]                            	#  0x1d7e2	(en: 'zero', google translation)
- - "": [t: "ένα"]                             	#  0xf543	(en: 'one', google translation)
- - "𝟣": [t: "ένα"]                             	#  0x1d7e3	(en: 'one', google translation)
- - "": [t: "δύο"]                              	#  0xf544	(en: 'two', google translation)
- - "𝟤": [t: "δύο"]                              	#  0x1d7e4	(en: 'two', google translation)
- - "": [t: "τρία"]                             	#  0xf545	(en: 'three', google translation)
- - "𝟥": [t: "τρία"]                             	#  0x1d7e5	(en: 'three', google translation)
- - "": [t: "τέσσερα"]                          	#  0xf546	(en: 'four', google translation)
- - "𝟦": [t: "τέσσερα"]                          	#  0x1d7e6	(en: 'four', google translation)
- - "": [t: "πέντε"]                            	#  0xf547	(en: 'five', google translation)
- - "𝟧": [t: "πέντε"]                            	#  0x1d7e7	(en: 'five', google translation)
- - "": [t: "έξι"]                              	#  0xf548	(en: 'six', google translation)
- - "𝟨": [t: "έξι"]                              	#  0x1d7e8	(en: 'six', google translation)
- - "": [t: "επτά"]                             	#  0xf549	(en: 'seven', google translation)
- - "𝟩": [t: "επτά"]                             	#  0x1d7e9	(en: 'seven', google translation)
- - "": [t: "οκτώ"]                              	#  0xf54a	(en: 'eight', google translation)
- - "𝟪": [t: "οκτώ"]                              	#  0x1d7ea	(en: 'eight', google translation)
- - "": [t: "εννέα"]                            	#  0xf54b	(en: 'nine', google translation)
- - "𝟫": [t: "εννέα"]                            	#  0x1d7eb	(en: 'nine', google translation)
- - "": [t: "έντονο μηδέν"]                    	#  0xf54c	(en: 'bold zero', google translation)
- - "𝟬": [t: "έντονο μηδέν"]                    	#  0x1d7ec	(en: 'bold zero', google translation)
- - "": [t: "έντονο ένα"]                          	#  0xf54d	(en: 'bold one', google translation)
- - "𝟭": [t: "έντονο ένα"]                          	#  0x1d7ed	(en: 'bold one', google translation)
- - "": [t: "έντονο δύο"]                       	#  0xf54e	(en: 'bold two', google translation)
- - "𝟮": [t: "έντονο δύο"]                       	#  0x1d7ee	(en: 'bold two', google translation)
- - "": [t: "έντονο τρία"]                      	#  0xf54f	(en: 'bold three', google translation)
- - "𝟯": [t: "έντονο τρία"]                      	#  0x1d7ef	(en: 'bold three', google translation)
- - "": [t: "έντονο τέσσερα"]                   	#  0xf550	(en: 'bold four', google translation)
- - "𝟰": [t: "έντονο τέσσερα"]                   	#  0x1d7f0	(en: 'bold four', google translation)
- - "": [t: "έντονο πέντε"]                     	#  0xf551	(en: 'bold five', google translation)
- - "𝟱": [t: "έντονο πέντε"]                     	#  0x1d7f1	(en: 'bold five', google translation)
- - "": [t: "έντονο έξι"]                          	#  0xf552	(en: 'bold six', google translation)
- - "𝟲": [t: "έντονο έξι"]                          	#  0x1d7f2	(en: 'bold six', google translation)
- - "": [t: "έντονο επτά"]                      	#  0xf553	(en: 'bold seven', google translation)
- - "𝟳": [t: "έντονο επτά"]                      	#  0x1d7f3	(en: 'bold seven', google translation)
- - "": [t: "έντονο οκτώ"]                          	#  0xf554	(en: 'bold eight', google translation)
- - "𝟴": [t: "έντονο οκτώ"]                          	#  0x1d7f4	(en: 'bold eight', google translation)
- - "": [t: "έντονο εννέα"]                    	#  0xf555	(en: 'bold nine', google translation)
- - "𝟵": [t: "έντονο εννέα"]                    	#  0x1d7f5	(en: 'bold nine', google translation)
- - "": [t: "μηδέν"]                            	#  0xf556	(en: 'zero', google translation)
- - "𝟶": [t: "μηδέν"]                            	#  0x1d7f6	(en: 'zero', google translation)
- - "": [t: "ένας"]                             	#  0xf557	(en: 'one', google translation)
- - "𝟷": [t: "ένας"]                             	#  0x1d7f7	(en: 'one', google translation)
- - "": [t: "δύο"]                              	#  0xf558	(en: 'two', google translation)
- - "𝟸": [t: "δύο"]                              	#  0x1d7f8	(en: 'two', google translation)
- - "": [t: "τρία"]                             	#  0xf559	(en: 'three', google translation)
- - "𝟹": [t: "τρία"]                             	#  0x1d7f9	(en: 'three', google translation)
- - "": [t: "τέσσερα"]                          	#  0xf55a	(en: 'four', google translation)
- - "𝟺": [t: "τέσσερα"]                          	#  0x1d7fa	(en: 'four', google translation)
- - "": [t: "πέντε"]                            	#  0xf55b	(en: 'five', google translation)
- - "𝟻": [t: "πέντε"]                            	#  0x1d7fb	(en: 'five', google translation)
- - "": [t: "έξι"]                              	#  0xf55c	(en: 'six', google translation)
- - "𝟼": [t: "έξι"]                              	#  0x1d7fc	(en: 'six', google translation)
- - "": [t: "επτά"]                             	#  0xf55d	(en: 'seven', google translation)
- - "𝟽": [t: "επτά"]                             	#  0x1d7fd	(en: 'seven', google translation)
- - "": [t: "οκτώ"]                              	#  0xf55e	(en: 'eight', google translation)
- - "𝟾": [t: "οκτώ"]                              	#  0x1d7fe	(en: 'eight', google translation)
- - "": [t: "εννέα"]                            	#  0xf55f	(en: 'nine', google translation)
- - "𝟿": [t: "εννέα"]                            	#  0x1d7ff	(en: 'nine', google translation)
+ - "-":    # 0xf52e - 0xf537  (old MathType)
+    - t: "bold"
+    - spell: "translate('.', '', '0123456789')"
+
+ - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
+    - t: "bold"
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+
+ - "-":    # 0xf52e - 0xf537  (old MathType)
+    - t: "bold"
+    - spell: "translate('.', '', '0123456789')"
+
+ - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
+    - t: "bold"
+    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+
+ - "-":    # 0xf556 - 0xf55f  (old MathType)
+    - spell: "translate('.', '', '0123456789')"
+
+ - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+
+ - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff  
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
  - "": [t: "άγνωστος χαρακτήρας"]              	#  0xf700	(en: 'unknown character', google translation)
  - "": [t: "κάτω δεξιά και κάτω αριστερά τρίγωνα"]	#  0xf726	(en: 'lower right and lower left triangles', google translation)
  - "": [t: "επέκταση οριζόντιων αποσιωπητικών"]    	#  0xf72d	(en: 'horizontal ellipsis extender', google translation)
@@ -3612,13 +3673,14 @@
  - "": [t: "μέσο δεξιά άγκιστρο"]              	#  0xf8fd	(en: 'right brace mid', google translation)
  - "": [t: "κάτω δεξιά άγκιστρο"]                    	#  0xf8fe	(en: 'right brace bottom', google translation)
  - "": [t: "λογότυπο της apple"]               	#  0xf8ff	(en: 'apple logo', google translation)
- - "ﬀ": [t: "λιγατούρα f f"]                      	#  0xfb00	(en: 'ff', google: 'ff')
- - "ﬁ": [t: "λιγατούρα f i"]                      	#  0xfb01	(en: 'fi', google: 'fi')
- - "ﬂ": [t: "λιγατούρα f l"]                      	#  0xfb02	(en: 'fl', google: 'fl')
- - "ﬃ": [t: "λιγατούρα f f i"]                     	#  0xfb03	(en: 'ffi', google: 'ffi')
- - "ﬄ": [t: "λιγατούρα f f l"]                     	#  0xfb04	(en: 'ffl', google: 'ffl')
- - "ﬅ": [t: "λιγατούρα f t"]                               	#  0xfb05	(google translation)
- - "ﬆ": [t: "λιγατούρα s t"]                               	#  0xfb06	(google translation)
+ - "ﬀ": [t: "f f"]                      	#  0xfb00	(en: 'ff', google: 'ff')
+ - "ﬁ": [t: "f i"]                      	#  0xfb01	(en: 'fi', google: 'fi')
+ - "ﬂ": [t: "f l"]                      	#  0xfb02	(en: 'fl', google: 'fl')
+ - "ﬃ": [t: "f f i"]                     	#  0xfb03	(en: 'ffi', google: 'ffi')
+ - "ﬄ": [t: "f f l"]                     	#  0xfb04	(en: 'ffl', google: 'ffl')
+ - "ﬅ": [t: "f t"]                               	#  0xfb05	(google translation)
+ - "ﬆ": [t: "s t"]                               	#  0xfb06	(google translation)
+ - "﬩": [t: "εβραϊκό εναλλακτικό συν"]      # 0xfb29 
  - "︠": [t: "καλλωπιστική αριστερά μισή λιγατούρα"]	#  0xfe20	(en: 'ligature left half embellishment', google translation)
  - "︡": [t: "καλλωπιστική δεξιά μισή λιγατούρα"]  	#  0xfe21	(en: 'ligature right half embellishment', google translation)
  - "︢": [t: "καλλωπιστική αριστερά μισή διπλή κυματιστή γραμμή"]	#  0xfe22	(en: 'double tilde left half embellishment', google translation)
@@ -3632,6 +3694,10 @@
  - "︸": [t: "άγκιστρο προς τα κάτω"]              	#  0xfe38	(en: 'under brace', google: 'κάτω από το στήριγμα')
  - "︿": [t: "γωνιακή αγκύλη προς τα πάνω"]               	#  0xfe3f	(google: 'πάνω από γωνιακό βραχίονα')
  - "﹀": [t: "γωνιακή αγκύλη προς τα κάτω"]              	#  0xfe40	(google: 'κάτω από γωνιακό βραχίονα')
- - "﹨": [t: "διαίρεση ακεραίων"]                   	#  0xfe68	(google: 'ακέραιος διαιρέτης')
- - "￼": [t: "άγνωστο ή λείπον αντικείμενο"]     	#  0xfffc	(en: 'unknown or missing object', google translation)
- - "�": [t: "άγνωστος ή λείπων χαρακτήρας"]     	#  0xfffd	(google: 'άγνωστος ή λείπει χαρακτήρας')
+ - "﹡": [t: "μικρός αστερίσκος"]                      # 0xfe61
+ - "﹢": [t: "μικρό συν"]                          # 0xfe62
+ - "﹣": [t: "μικρό μείον"]                         # 0xfe63
+ - "﹤": [t: "μικρό μικρότερο από"]                     # 0xfe64
+ - "﹥": [t: "μικρό μεγαλύτερο από"]                  # 0xfe65
+ - "﹦": [t: "μικρό ίσον"]                        # 0xfe66
+ - "＋": [t: "σύμβολο ίσον"]                         # 0xff0b
