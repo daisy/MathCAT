@@ -1393,8 +1393,8 @@
  - "⎔": [t: "hexagon"]                            # 0x2394
  - "⎕": [T: "盒子"]                               	#  0x2395	(en: 'box', google translation)
  - "⎶": [t: "bottom square bracket over top square bracket"] # 0x23b6
- - "⏜": [t: "top paren"]                           # 0x23dc
- - "⏝": [t: "bottom paren"]                        # 0x23dd
+ - "⏜": [T: "頂小括"]                           # 0x23dc
+ - "⏝": [T: "底小括"]                        # 0x23dd
  - "⏞": [T: "頂大括"]                             	#  0x23DE	(en: 'top brace', google translation)
  - "⏟": [T: "底大括"]                               	#  0x23DF	(en: 'bottom brace', google translation)
  - "⏠": [t: "top tortoise shell bracket"]          # 0x23e0

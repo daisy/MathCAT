@@ -336,6 +336,10 @@
     "munder": "基底;下限",
     "mover": "基底;上限",
     "munderover": "基底;下限;上限",
+    "absolute-value":"絕對值",
+    "minus":"減號",
+    "vector":"向量",
+    "magnitude":"magnitude",
 
     # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
     # it's a hack to put them here, but at least they are grouped with the other navigation parts

@@ -55,8 +55,8 @@
           - if: "string-length(.) = 1"
             then: [T: "已完全放大"]       # phrase('zoomed in all of the way')
           - else_if: "$NavNodeOffset = 0"
-            then: [T: "放大第一字元"]   # phrase('zoomed in to first character')
-            else: [T: "放大字元"]          # phrase('zoomed in to character')
+            then: [T: "放大到第一字元"]   # phrase('zoomed in to first character')
+            else: [T: "放大到字元"]          # phrase('zoomed in to character')
         - pause: "medium"
         else:
         - test:

@@ -151,7 +151,7 @@
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "大於"                                  	# 	(en: 'greater than')
  - "?": [T: "問號"]                               	#  0x3f	(en: 'question mark', google translation)
- - "@": [T: "在標誌"]                              	#  0x40	(en: 'at sign', google translation)
+ - "@": [T: "小老鼠"]                              	#  0x40	(en: 'at sign', google translation)
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -511,7 +511,7 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "比"                                   	# 	(en: 'to')
- - "∷": [T: "當成"]                               	#  0x2237	(en: 'as')
+ - "∷": [T: "如同"]                               	#  0x2237	(en: 'as')
  - "∼": [T: "相似"]                              	#  0x223c	(en: 'varies with')
  - "∽": [T: "反波浪符"]                             #  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
