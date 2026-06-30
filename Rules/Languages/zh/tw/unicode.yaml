@@ -76,7 +76,7 @@
  - "\"": [T: "引號"]                              	#  0x22	(en: 'quotation mark', google translation)
  - "#": [T: "數字"]                               	#  0x23	(en: 'number', google translation)
  - "$": [T: "美元"]                               	#  0x24	(en: 'dollars', google translation)
- - "%": [T: "百分點"]                               	#  0x25	(en: 'percent', google translation)
+ - "%": [T: "百分比"]                               	#  0x25	(en: 'percent', google translation)
  - "&": [T: "ampersand"]                           	#  0x26	(en: 'ampersand', google translation)
  - "'": [T: "單引號"]                              	#  0x27	(en: 'apostrophe')
  - "(":                                         	#  0x28
@@ -503,7 +503,7 @@
  - "∩": [T: "交集"]                               	#  0x2229	(en: 'intersection')
  - "∪": [T: "聯集"]                               	#  0x222a	(en: 'union')
  - "∫": [T: "積分"]                               	#  0x222b	(en: 'integral')
- - "∬": [T: "雙重積分"]                             	#  0x222c	(en: 'double integral')
+ - "∬": [T: "二重積分"]                             	#  0x222c	(en: 'double integral')
  - "∭": [T: "三重積分"]                             	#  0x222d	(en: 'triple integral')
  - "∮": [T: "輪廓積分"]                             	#  0x222e	(en: 'contour integral')
  - "∶":                                         	#  0x2236

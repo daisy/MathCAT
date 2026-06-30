@@ -4,7 +4,7 @@ use anyhow::Result;
 #[test]
 fn transpose() -> Result<()> {
   let expr = "<math> <msup><mi>M</mi><mi>T</mi></msup> </math>";
-  test("zh-tw", "SimpleSpeak", expr, "大寫 m 的 轉置")?;
+  test("zh-tw", "SimpleSpeak", expr, "大寫 m transpose")?;
   return Ok(());
 
 }
@@ -12,7 +12,7 @@ fn transpose() -> Result<()> {
 #[test]
 fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("zh-tw", "SimpleSpeak", expr, "大寫 m 的 跡")?;
+  test("zh-tw", "SimpleSpeak", expr, "trace 大寫 m")?;
   return Ok(());
 
 }
@@ -20,7 +20,7 @@ fn trace() -> Result<()> {
 #[test]
 fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("zh-tw", "SimpleSpeak", expr, "大寫 m 的 維數")?;
+  test("zh-tw", "SimpleSpeak", expr, "dimension 大寫 m")?;
   return Ok(());
 
 }
@@ -28,7 +28,7 @@ fn dimension() -> Result<()> {
 #[test]
 fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("zh-tw", "SimpleSpeak", expr, "大寫 m 的 同態")?;
+  test("zh-tw", "SimpleSpeak", expr, "homomorphism 大寫 m")?;
   return Ok(());
 
 }
@@ -36,7 +36,7 @@ fn homomorphism() -> Result<()> {
 #[test]
 fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("zh-tw", "SimpleSpeak", expr, "大寫 l 的 核")?;
+  test("zh-tw", "SimpleSpeak", expr, "kernel 大寫 l")?;
   return Ok(());
 
 }
@@ -51,7 +51,7 @@ fn norm() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("zh-tw", "SimpleSpeak", expr, "f 的 範數")?;
+  test("zh-tw", "SimpleSpeak", expr, "norm f")?;
   return Ok(());
 
 }
@@ -68,7 +68,7 @@ fn norm_non_simple() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("zh-tw", "SimpleSpeak", expr, "x 加 y 的 範數")?;
+  test("zh-tw", "SimpleSpeak", expr, "norm x 加 y 結束 norm")?;
   return Ok(());
 
 }
@@ -86,7 +86,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("zh-tw", "SimpleSpeak", expr, "f 的 p 範數")?;
+  test("zh-tw", "SimpleSpeak", expr, "p norm f")?;
   return Ok(());
 
 }

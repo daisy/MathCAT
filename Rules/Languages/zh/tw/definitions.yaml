@@ -131,13 +131,13 @@
     "determinant":"function=determinant",
     "adjugate":"function=adjugate",
     "magnitude":"function=magnitude",
-    "norm": "function=; norm: norm: norm; end norm",
+    "norm": "function=; norm: norm: norm; 結束 norm",
     "span":"function=span",
 
     "unit-vector":"prefix=unit vector",
 
     "identity-matrix":"nofix=identity matrix", # NOTE: no function specified
-    "transpose":"function=transpose || postfix=transpose", # postfix needs testing
+    "transpose":"function=transpose || postfix= transpose", # postfix needs testing
     "dimensional-product":"infix=by", # INFIX
 
 
@@ -302,10 +302,10 @@
     "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
     "logarithm-with-base": "prefix=log 底數",        #"prefix=log base: the log base: the log base",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "trace": "function= ; trace : trace: the trace; end trace",
-    "dimension": "function=; dimension : dimension: the dimension; end dimension",
-    "homomorphism": "function= ; homomorphism : homomorphism: the homomorphism; end homomorphism",
-    "kernel": "function= ; kernel : kernel: the kernel; end kernel",
+    "trace": "function= ; trace : trace: trace; 結束 trace",
+    "dimension": "function=; dimension : dimension: dimension; 結束 dimension",
+    "homomorphism": "function= ; homomorphism : homomorphism: homomorphism; 結束 homomorphism",
+    "kernel": "function= ; kernel : kernel: kernel; 結束 kernel",
     
     "chemistry-concentration": "function= ; concentration: concentration of: the concentration of; end concentration",
   }
