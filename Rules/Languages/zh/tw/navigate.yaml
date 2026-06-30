@@ -1172,7 +1172,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'終點'"
       - Child2D: "$EdgeNode/*[last()]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -1367,7 +1367,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'終點'"
       - Child2D: "$EdgeNode/*[1]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -1396,7 +1396,7 @@
       - T: "無法移到上一項"                      # phrase('cannot move left')
       - pause: short
   - with:
-      variables: [Move2D: "'start of'", Child2D: "."]
+      variables: [Move2D: "'開頭'", Child2D: "."]
       replace: [x: "."]
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
