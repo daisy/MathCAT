@@ -28,6 +28,19 @@
   replace: [t: "⠀"]
 
 -
+  name: omitted-digit-in-number
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][contains(@intent, ':blank')] and"
+  - "*[3][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠬"
+  - x: "BrailleChars(translate(*[3], '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
   name: unicode-override
   tag: "*"
   match: "@data-unicode"
@@ -42,6 +55,7 @@
   - RowEnd: "''"
   - InSystemLeftBrace: "false()"
   - InChemElementGroup: "false()"
+  - InColumnArithmetic: "false()"
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
 
@@ -170,6 +184,22 @@
   replace: [x: "*[1] | *[position()>1]"]
 
 -
+  name: mspace
+  tag: mspace
+  match: "@linebreak='newline' or @linebreak='indentingnewline'"
+  replace:
+  - test:
+    - if: "string(@width) != '' or @data-previous-space-width >= 0.25 or @data-following-space-width >= 0.25"
+      then: [t: "⠠"]
+    - else: [t: "⠐"]
+
+-
+  name: mspace
+  tag: mspace
+  match: "."
+  replace: [t: "W"]
+
+-
   name: no-content
   tag: [math, mrow]
   match: "not(*)"
@@ -228,16 +258,38 @@
   - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
 
 -
+  name: simple-algebraic-negative-integer-denominator
+  tag: mfrac
+  match:
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mo and (.='-' or .='−')] and *[2][self::m:mn and translate(., '0123456789', '')='']]"
+  replace:
+  - x: "*[1]"
+  - t: "⠳⠤"
+  - x: "BrailleChars(translate(*[2]/*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: simple-algebraic-negative-decimal-denominator
+  tag: mfrac
+  match:
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mo and (.='-' or .='−')] and *[2][self::m:mn and contains(., ',') and translate(., '0123456789,', '')='']]"
+  replace:
+  - x: "*[1]"
+  - t: "⠳⠤"
+  - x: "*[2]/*[2]"
+
+-
   name: simple-algebraic
   tag: mfrac
   match:
-  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789', '')='']) and"
-  - "(*[2][self::m:mi] or *[2][self::m:mn and translate(., '0123456789', '')=''])"
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "(*[2][self::m:mi] or *[2][self::m:mn and translate(., '0123456789,', '')=''])"
   replace:
   - x: "*[1]"
   - t: "⠳"
   - test:
-      if: "*[2][self::m:mn]"
+      if: "*[2][self::m:mn and translate(., '0123456789', '')='']"
       then:
       - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
       else:
@@ -277,6 +329,16 @@
   - t: "⠌"
   - x: "*[2]/*[1]/*[1]/*[1]"
   - x: "*[3]"
+
+-
+  name: column-arithmetic-table
+  tag: mtable
+  variables:
+  - InColumnArithmetic: "true()"
+  - RowStart: "''"
+  - RowEnd: "''"
+  match: "contains(@intent, ':column-arithmetic')"
+  replace: [x: "*"]
 
 -
   name: system-left-brace-table
@@ -725,7 +787,7 @@
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
   - test:
-      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      if: "*[2][self::m:mrow[m:mo[.='+'] or m:mfrac] or self::m:mfrac]"
       then: [t: "⠐"]
   - x: "*[2]"
   - t: "⠱"
@@ -817,6 +879,21 @@
       - t: "⠤"
     - else:
       - x: "*[2]"
+
+-
+  name: trig-function-integer-power-before-complex-fraction
+  tag: msup
+  match:
+  - "DefinitionValue(*[1], 'Braille', 'RussianFunctionBraille') != '' and"
+  - "*[2][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "(following-sibling::*[1][self::m:mfrac and not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))] or"
+  - " following-sibling::*[1][self::m:mo and (.='⁡' or .='⁢' or .='⁣' or .='⁤')]"
+  - "   [following-sibling::*[1][self::m:mfrac and not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))]])"
+  replace:
+  - x: "*[1]"
+  - t: "⠌"
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+  - t: "⠐"
 
 -
   name: integer
@@ -924,6 +1001,24 @@
       - x: "*[3]"
 
 -
+  name: mixed-subscript-before-superscript
+  tag: msubsup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "*[2][self::m:mrow[m:mn and (m:mi or m:mtext) and not(m:mo[not(.='⁡' or .='⁢' or .='⁣' or .='⁤')])]]"
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - test:
+      if: "*[2][m:mo[.='+'] or m:mfrac]"
+      then: [t: "⠐"]
+  - x: "*[2]"
+  - t: "⠱"
+  - t: "⠌"
+  - x: "*[3]"
+  - t: "⠱"
+
+-
   name: default
   tag: [msubsup, munderover]
   match: "count(*)=3"
@@ -934,7 +1029,7 @@
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
   - test:
-      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      if: "*[2][self::m:mrow[m:mo[.='+'] or m:mfrac] or self::m:mfrac]"
       then: [t: "⠐"]
   - x: "*[2]"
   - test:
@@ -1120,6 +1215,31 @@
   - t: "#"
 
 -
+  name: column-arithmetic-operator
+  tag: mo
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - "(.='+' or .='-' or .='−' or .='×' or .='⋅' or .='·')"
+  replace:
+  - test:
+    - if: ".='+'"
+      then: [t: "⠖"]
+    - else_if: ".='-' or .='−'"
+      then: [t: "⠤"]
+    - else: [t: "⠦"]
+
+-
+  name: column-arithmetic-result-line
+  tag: mo
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - ".='='"
+  replace:
+  - t: "⠶"
+
+-
   name: operator-functions
   tag: mo
   match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
@@ -1139,6 +1259,16 @@
   match: "."
   replace:
   - x: "text()"
+
+-
+  name: column-arithmetic-continuation-number
+  tag: mn
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - "translate(., '0123456789', '')=''"
+  replace:
+  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
 
 -
   name: periodic-decimal-period-digits
