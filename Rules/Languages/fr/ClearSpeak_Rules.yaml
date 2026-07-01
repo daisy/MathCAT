@@ -284,7 +284,7 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - T: "à la puissance de"      # phrase(5 'raised to the exponent' x plus 1)
+  - T: "élevé à l'exposant"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
@@ -295,7 +295,7 @@
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - T: "à la puissance de"      # phrase(x is 'raised to the power' 4)
+  - T: "élevé à la puissance"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
   - pause: short
 
@@ -356,11 +356,13 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "à la"      # phrase(2 raised 'to the' power 7)
-  - x: "*[2]"
   - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+    - if: "$ClearSpeak_Exponents = 'AfterPower'"
+      then: [T: "élevé à la puissance"]      # phrase(3 'raised to the power' negative 2)
+    - else_if: "$ClearSpeak_Exponents = 'Ordinal'"
+      then: [T: "à la"]      # phrase(3 'to the' negative 2)
+      else: [T: "à la puissance"]      # phrase(3 'to the power' negative 2)
+  - x: "*[2]"
 
 - name: simple-var
   tag: power
@@ -397,9 +399,8 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
@@ -418,9 +419,8 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -441,9 +441,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -466,9 +465,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -487,9 +485,8 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"      # phrase(x 'raised to the power')
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows
