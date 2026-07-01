@@ -668,8 +668,8 @@
           then: [T: "étape"]      # phrase(this is the first 'step' of three steps)
           # else 'None -- don't say anything'
       - test:
-        - if: "$LineCount != 1"
-          then: [CT: "s"] # plural      # phrase(shown by the letter 's')
+        - if: "$LineCount != 1 and not(($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case')"
+          then: [CT: "s"] # plural (but not for 'cas' which is invariable in French)
       - pause: short
   - x: "*"
   - pause: long
