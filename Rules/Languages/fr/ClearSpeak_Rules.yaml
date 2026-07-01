@@ -35,15 +35,15 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase('the' square root of 25)
+  - T: "racine carrée"      # phrase(8 is the 'square root' of 64)
   - test:
-      if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
+    - if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - bookmark: "*[1]/@id"
       - test:
           if: "parent::*[self::m:minus and count(*)=1]"
-          then: [T: "négatif"]      # phrase(minus 4 is a 'negative' number)
-          else: [T: "positif"]      # phrase(10 is a 'positive' number)
-  - T: "racine carrée"      # phrase(8 is the 'square root' of 64)
+          then: [T: "négative"]      # phrase(minus 4 is a 'negative' number)
+          else: [T: "positive"]      # phrase(10 is a 'positive' number)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(the square root 'of' 5)
@@ -67,6 +67,22 @@
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase(6 is 'the' square root of 36)
   - test:
+      if: "*[2][self::m:mn and not(contains(., '.'))]"
+      then_test:
+      - if: "*[2][.='2']"
+        then: [T: "racine carrée"]      # phrase(5 is the 'square root' of 25)
+      - else_if: "*[2][.='3']"
+        then: [T: "racine cubique"]      # phrase(5 is the 'cube root' of 625)
+      - else: [T: "racine", x: "ToOrdinal(*[2])"]      # phrase(the square 'root' of 25)
+      else:
+      - T: "racine"      # phrase(the square 'root' of 36)
+      - test:
+          if: "*[2][self::m:mi][string-length(.)=1]"
+          then:
+          - x: "*[2]"
+          - pronounce: [text: "-ième", ipa: "jɛm", sapi5: "ieme", eloquence: "ieme"]
+          else: [x: "*[2]"]
+  - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - test:
@@ -74,24 +90,8 @@
           then: [bookmark: "parent/@id"]
       - test:
           if: "parent::m:minus"
-          then: [T: "négatif"]      # phrase(minus 6 is a 'negative' number)
-          else: [T: "positif"]      # phrase(10 is a 'positive' number)
-  - test:
-      if: "*[2][self::m:mn and not(contains(., '.'))]"
-      then_test:
-      - if: "*[2][.='2']"
-        then: [T: "racine carrée"]      # phrase(5 is the 'square root' of 25)
-      - else_if: "*[2][.='3']"
-        then: [T: "racine cubique"]      # phrase(5 is the 'cube root' of 625)
-      - else: [x: "ToOrdinal(*[2])", T: "racine"]      # phrase(the square 'root' of 25)
-      else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-ième", ipa: "jɛm", sapi5: "ieme", eloquence: "ieme"]
-          else: [x: "*[2]"]
-      - T: "racine"      # phrase(the square 'root' of 36)
+          then: [T: "négative"]      # phrase(minus 6 is a 'negative' number)
+          else: [T: "positive"]      # phrase(10 is a 'positive' number)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(the square root 'of' 36)
@@ -236,11 +236,11 @@
   replace:
   - test:
       if: "$ClearSpeak_Trig = 'TrigInverse'"
-      then: [x: "*[1]", bookmark: "*[2]/@id", T: "l'inverse"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+      then: [x: "*[1]", bookmark: "*[2]/@id", T: "inverse"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
       else_test:
         if: "$ClearSpeak_Trig = 'ArcTrig'"
         then: [bookmark: "*[2]/@id", T: "arc", x: "*[1]"]      # phrase(the 'arc' of a circle)
-        else: [bookmark: "*[2]/@id", T: "l'inverse", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+        else: [x: "*[1]", bookmark: "*[2]/@id", T: "inverse"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
 - name: function-squared-or-cubed
   tag: power
@@ -263,12 +263,17 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "la"]      # phrase('the' third power of 2)
-  - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - T: "puissance de"      # phrase(the third 'power of' 6)
+      then:
+      - bookmark: "*[2]/@id"
+      - x: "ToOrdinal(*[2])"
+      - T: "puissance"      # phrase(the third 'power' of 6)
+      else:
+      - T: "puissance"      # phrase(the third 'power' of 6)
+      - bookmark: "*[2]/@id"
+      - x: "*[2]"
+  - T: "de" # phrase(the third power 'of' 6)
   - pause: short
   - x: "*[1]"
 
@@ -279,7 +284,7 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - T: "à la puissance de"      # phrase(5 'raised to the exponent' x plus 1)
+  - T: "élevé à l'exposant"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
@@ -290,7 +295,7 @@
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - T: "à la puissance de"      # phrase(x is 'raised to the power' 4)
+  - T: "élevé à la puissance"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
   - pause: short
 
@@ -312,31 +317,52 @@
 
 - name: simple-integer
   tag: power
-  match: "*[2][self::m:mn][not(contains(., '.'))]"
+  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"
   replace:
   - x: "*[1]"
-  - T: "à la"      # phrase(2 raised 'to the' power 7)
+  - test:
+      if: "$ClearSpeak_Exponents = 'Ordinal' and *[2][.>0]"
+      then: [T: "au"]      # phrase(x 'au' deuxième)
+      else: [T: "à la"]    # phrase(2 raised 'à la' puissance or deuxième puissance)
   - test:
       if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
+      then:
+      - x: "ToOrdinal(*[2])"
+      - test:
+          if: "$ClearSpeak_Exponents != 'Ordinal'"
+          then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      else:
+      - test:
+          if: "$ClearSpeak_Exponents != 'Ordinal'"
+          then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      - x: "*[2]"
+
+- name: simple-decimal
+  tag: power
+  match: "*[2][self::m:mn][contains(., $DecimalSeparators)]"
+  replace:
+  - x: "*[1]"
   - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+      if: "$ClearSpeak_Exponents = 'AfterPower'"
+      then: [T: "à la puissance de"]      # phrase(x 'raised to the power' 5.0)
+      else: [T: "à la puissance"]      # phrase(x 'raised to the power' 5.0)
+  - x: "*[2]"
 
 - name: simple-negative-integer
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and "
-  - "     *[1][self::m:mn][not(contains(., '.'))]"
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "à la"      # phrase(2 raised 'to the' power 7)
-  - x: "*[2]"
   - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "puissance"]      # phrase(2 raised to the 'power' 7)
+    - if: "$ClearSpeak_Exponents = 'AfterPower'"
+      then: [T: "élevé à la puissance"]      # phrase(3 'raised to the power' negative 2)
+    - else_if: "$ClearSpeak_Exponents = 'Ordinal'"
+      then: [T: "à la"]      # phrase(3 'to the' negative 2)
+      else: [T: "à la puissance"]      # phrase(3 'to the power' negative 2)
+  - x: "*[2]"
 
 - name: simple-var
   tag: power
@@ -373,9 +399,8 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
@@ -394,9 +419,8 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -417,9 +441,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -442,9 +465,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -463,9 +485,8 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "élevé à la"      # phrase(x 'raised to the' second power)
+  - T: "élevé à la puissance"      # phrase(x 'raised to the power')
   - x: "*[2]"
-  - T: "puissance"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows
@@ -501,14 +522,14 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "l'"]      # phrase('the' empty set)
-      - T: "ensemble vide"      # phrase(the 'empty set')
+          then: [T: "l'ensemble vide"]      # phrase('the empty set')
+          else: [T: "ensemble vide"]      # phrase('empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "l'"]      # phrase('the' set of all integers)
-      - T: "ensemble de"      # phrase(this is a 'set of' numbers)
+          then: [T: "l'ensemble de"]      # phrase('the set of' all integers)
+          else: [T: "ensemble de"]      # phrase(this is a 'set of' numbers)
       - test:
           if: "$ClearSpeak_Sets != 'woAll'"
           then: [T: "tous"]      # phrase(the set of 'all' integers)
@@ -521,8 +542,8 @@
           then:
           - test:
               if: "$Verbosity!='Terse'"
-              then: [T: "l'"]      # phrase('the' set of integers)
-          - T: "ensemble"      # phrase(this is a 'set' of integers)
+              then: [T: "l'ensemble"]      # phrase('the set' of integers)
+              else: [T: "ensemble"]      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 - # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
@@ -536,7 +557,7 @@
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - T: "l'invervalle de"      # phrase('the interval from' a to b)
+  - T: "l'intervalle de"      # phrase('the interval from' a to b)
   - x: "*[1]"
   - T: "à"      # phrase(the interval from a 'to' b)
   - x: "*[2]"
@@ -546,8 +567,8 @@
       then:
       - test:
           if: "starts-with(name(.), 'open')"
-          then: [T: "sans"]      # phrase(the interval from a to b 'not' including b)
-      - T: "inclure"      # phrase(the interval from a to b not 'including' b)
+          then: [T: "n'incluant pas"]      # phrase(the interval from a to b 'not including' b)
+          else: [T: "incluant"]            # phrase(the interval from a to b 'including' b)
       - x: "*[1]"
     # logic to deal with [not] arg #1
   - test:
@@ -568,8 +589,8 @@
           then:
           - test:
               if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [T: "n'"]      # phrase(the interval 'not' including a)
-          - T: "incluant pas"      # phrase(the interval not 'including' a)
+              then: [T: "n'incluant pas"]      # phrase(the interval 'not including' a)
+              else: [T: "incluant"]            # phrase(the interval 'including' a)
       - x: "*[2]"
 
     # onto the [not] [including]... part
@@ -611,7 +632,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [T: "la"]      # phrase('the' square root of 25)
+      then: [T: "le"]      # phrase('the' square root of 25)
   - test:
     - if: ".='log'"
       then: [T: "logarithme"]
@@ -647,8 +668,8 @@
           then: [T: "étape"]      # phrase(this is the first 'step' of three steps)
           # else 'None -- don't say anything'
       - test:
-        - if: "$LineCount != 1"
-          then: [CT: "s"] # plural      # phrase(shown by the letter 's')
+        - if: "$LineCount != 1 and not(($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case')"
+          then: [CT: "s"] # plural (but not for 'cas' which is invariable in French)
       - pause: short
   - x: "*"
   - pause: long

@@ -88,7 +88,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - T: "évalués à"      # phrase(results were 'evaluated at' a given point)
+  - T: "évalué à"      # phrase(results were 'evaluated at' a given point)
   - pause: auto
   - x: "*[2]"
 
@@ -98,7 +98,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - T: "évalués à"      # phrase(results were 'evaluated at' this point)
+  - T: "évalué à"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
   - T: "moins la même expression évaluée à"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)

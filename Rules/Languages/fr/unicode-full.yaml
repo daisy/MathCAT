@@ -311,7 +311,7 @@
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
             then: [t: "et ainsi de suite"]      	# 	(en: 'and so on', DeepL translation)
-            else: [t: "points de suspension"]   	# 	(en: 'and so on up to')
+            else: [t: "et ainsi de suite jusqu'à"]   	# 	(en: 'and so on up to')
 
  - "‰": [t: "symbole pour mille"]               	#  0x2030	(en: 'per mille')
  - "‱": [t: "symbole pour dix mille"]           	#  0x2031	(en: 'per ten thousand')

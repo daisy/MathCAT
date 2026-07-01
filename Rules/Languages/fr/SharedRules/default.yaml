@@ -477,19 +477,18 @@
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
-      - T: "line on"      # phrase(draw a straight 'line' on the page)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
-          then: [T: "gauche", pause: short]      # phrase(line on 'left' of the expression)
+          then: [T: "ligne à gauche", pause: short]      # phrase('line on left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [T: "droite", pause: short]      # phrase(line on 'right' of the expression)
+          then: [T: "ligne à droite", pause: short]      # phrase('line on right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [T: "dessus", pause: short]      # phrase(line on 'top' of the expression)
+          then: [T: "ligne au dessus", pause: short]      # phrase('line on top' of the expression)
       - test:
           if: ".[contains(@notation,'bottom')]"
-          then: [T: "dessous", pause: short]      # phrase(line on the 'bottom' of the expression)
+          then: [T: "ligne en dessous", pause: short]      # phrase('line on the bottom' of the expression)
   - test:
       if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
       then:
@@ -509,7 +508,7 @@
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
           then: [T: "horizontale", pause: short]      # phrase(the line is 'horizontal')
-      - T: "cross out"      # phrase(please 'cross out' the incorrect answer)
+      - T: "barré"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
@@ -562,7 +561,7 @@
   - test:
       if: ".[contains(@notation,'radical')]"
       then: [T: "racine carrée", pause: short]      # phrase(5 is the 'square root' of 25)
-  - T: "enclosing"      # phrase(parentheses are 'enclosing' part of the equation)
+  - T: "contenant"      # phrase(parentheses are 'enclosing' part of the equation)
   - test:
       if: "*[self::m:mtext and .=' ']"
       then: [T: "espace"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)

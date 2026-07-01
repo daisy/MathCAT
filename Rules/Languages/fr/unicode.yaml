@@ -284,7 +284,7 @@
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
             then: [T: "et ainsi de suite"]      	# 	(en: 'and so on', DeepL translation)
-            else: [T: "points de suspension"]   	# 	(en: 'and so on up to')
+            else: [T: "et ainsi de suite jusqu'à"]   	# 	(en: 'and so on up to')
 
  - "⁡":                                         	#  0x2061
     - test:
@@ -364,12 +364,12 @@
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "en"]                 	# 	(en: 'in', DeepL translation)
+                then: [T: "dans"]                 	# 	(en: 'in', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "membre de"]          	# 	(en: 'member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "élément de"]         	# 	(en: 'element of', DeepL translation)
-              - else: [T: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+              - else: [T: "appartenant à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "est membre de"]      	# 	(en: 'is a member of', DeepL translation)

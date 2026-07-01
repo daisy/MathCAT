@@ -293,13 +293,13 @@
     ]
 
 - NumbersOrdinalOnes: [
-        "zéroième", "premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième",
+        "zéroième", "et unième", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième",
         "dixième", "onzième", "douzième", "treizième", "quatorzième", "quinzième", "seizième",
         "dix-septième", "dix-huitième", "dix-neuvième"
     ]
 
 - NumbersOrdinalPluralOnes: [
-        "zéroièmes", "premiers", "deuxièmes", "troisièmes", "quatrièmes", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes",
+        "zéroièmes", "et unièmes", "deuxièmes", "troisièmes", "quatrièmes", "cinquièmes", "sixièmes", "septièmes", "huitièmes", "neuvièmes",
         "dixièmes", "onzièmes", "douzièmes", "treizièmes", "quatorzièmes", "quinzièmes", "seizièmes",
         "dix-septièmes", "dix-huitièmes", "dix-neuvièmes"
     ]
