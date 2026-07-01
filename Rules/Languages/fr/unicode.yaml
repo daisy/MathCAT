@@ -364,12 +364,12 @@
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "en"]                 	# 	(en: 'in', DeepL translation)
+                then: [T: "dans"]                 	# 	(en: 'in', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "membre de"]          	# 	(en: 'member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "élément de"]         	# 	(en: 'element of', DeepL translation)
-              - else: [T: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+              - else: [T: "appartenant à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "est membre de"]      	# 	(en: 'is a member of', DeepL translation)

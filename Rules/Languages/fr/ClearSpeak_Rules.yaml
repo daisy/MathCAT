@@ -522,14 +522,14 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "l'"]      # phrase('the' empty set)
-      - T: "ensemble vide"      # phrase(the 'empty set')
+          then: [T: "l'ensemble vide"]      # phrase('the empty set')
+          else: [T: "ensemble vide"]      # phrase('empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "l'"]      # phrase('the' set of all integers)
-      - T: "ensemble de"      # phrase(this is a 'set of' numbers)
+          then: [T: "l'ensemble de"]      # phrase('the set of' all integers)
+          else: [T: "ensemble de"]      # phrase(this is a 'set of' numbers)
       - test:
           if: "$ClearSpeak_Sets != 'woAll'"
           then: [T: "tous"]      # phrase(the set of 'all' integers)
@@ -542,8 +542,8 @@
           then:
           - test:
               if: "$Verbosity!='Terse'"
-              then: [T: "l'"]      # phrase('the' set of integers)
-          - T: "ensemble"      # phrase(this is a 'set' of integers)
+              then: [T: "l'ensemble"]      # phrase('the set' of integers)
+              else: [T: "ensemble"]      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 - # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
