@@ -9,6 +9,7 @@ mod ClearSpeak {
     mod msup;
     mod multiline;
     mod sets;
+    mod symbols_and_adornments;
 }
 
 mod SimpleSpeak {
