@@ -2300,7 +2300,7 @@ fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -
             match ch {
                 'C' => {
                     if alphabet_mode != Some('u') {
-                        result.push_str("⠨");
+                        result.push('⠨');
                         alphabet_mode = Some('u');
                     }
                     capital_marker_pending = true;
@@ -2646,12 +2646,12 @@ impl BrailleChars {
         let mut prefix = String::new();
         let mut suffix = String::new();
         if math_variant.contains("bold") && !braille_chars.contains('B') {
-            prefix.push_str("⠻");
-            suffix.insert_str(0, "⠻");
+            prefix.push('⠻');
+            suffix.insert(0, '⠻');
         }
         if math_variant.contains("italic") && !braille_chars.contains('I') {
-            prefix.push_str("⠸");
-            suffix.insert_str(0, "⠸");
+            prefix.push('⠸');
+            suffix.insert(0, '⠸');
         }
         let has_typeface_marker = braille_chars.contains('T')
             || braille_chars.contains('D')
