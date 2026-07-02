@@ -28,6 +28,19 @@
   replace: [t: "⠀"]
 
 -
+  name: omitted-digit-in-number
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][contains(@intent, ':blank')] and"
+  - "*[3][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠬"
+  - x: "BrailleChars(translate(*[3], '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
   name: unicode-override
   tag: "*"
   match: "@data-unicode"
@@ -41,6 +54,8 @@
   - RowStart: "''"
   - RowEnd: "''"
   - InSystemLeftBrace: "false()"
+  - InChemElementGroup: "false()"
+  - InColumnArithmetic: "false()"
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
 
@@ -51,10 +66,138 @@
   replace: [t: ""]
 
 -
+  name: chemistry-single-letter-element-group
+  tag: mrow
+  match:
+  - "(@data-chem-formula or ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "count(*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1 and"
+  - "count(*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) = count(*[self::m:mi[@data-chem-element='1']])"
+  replace:
+  - t: "⠸"
+  - with:
+      variables: [InChemElementGroup: "true()"]
+      replace: [x: "*"]
+
+-
+  name: canonical-prefix-geometry-op
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][(self::m:mo or self::m:mi) and (.='∠' or .='△' or .='∪')] and"
+  - "*[2][self::m:mo and .='⁡']"
+  replace:
+  - test:
+    - if: "*[1][.='∪']"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "*[1]/text()"
+  - t: "#"
+  - x: "*[3]"
+
+-
+  name: geometry-prefix-after-canonical-multiplier
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mrow and *[1][(self::m:mo or self::m:mi) and (.='∠' or .='△' or .='∪')]]"
+  replace:
+  - x: "*[1]"
+  - t: "⠄"
+  - x: "*[3]"
+
+-
+  name: periodic-decimal-row
+  tag: mrow
+  match:
+  - "count(*)=4 and"
+  - "*[1][self::m:mn and contains(., ',') and translate(., '0123456789,', '')=''] and"
+  - "*[2][self::m:mo and .='('] and"
+  - "*[3][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[4][self::m:mo and .=')']"
+  replace:
+  - x: "*[1]"
+  - t: "⠣"
+  - x: "BrailleChars(translate(string(*[3]), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠜"
+
+-
+  name: mixed-number-simple-fraction-with-invisible-times
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mfrac] and"
+  - "*[3]/*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[3]/*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "#"
+  - x: "*[3]"
+
+-
+  name: mixed-number-simple-fraction
+  tag: mrow
+  match:
+  - "count(*)=2 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mfrac] and"
+  - "*[2]/*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2]/*[2][self::m:mn and translate(., '0123456789', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "#"
+  - x: "*[2]"
+
+-
+  name: mixed-number-with-arithmetic-fraction-with-invisible-times
+  tag: mrow
+  match:
+  - "count(*)=3 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mo and (.='⁢' or .='⁤')] and"
+  - "*[3][self::m:mfrac] and"
+  - "not(*[3]/*[1][self::m:mn and translate(., '0123456789', '')=''] and *[3]/*[2][self::m:mn and translate(., '0123456789', '')=''])"
+  replace:
+  - x: "*[1]"
+  - t: "⠐"
+  - x: "*[3]"
+
+-
+  name: mixed-number-with-arithmetic-fraction
+  tag: mrow
+  match:
+  - "count(*)=2 and"
+  - "*[1][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "*[2][self::m:mfrac] and"
+  - "not(*[2]/*[1][self::m:mn and translate(., '0123456789', '')=''] and *[2]/*[2][self::m:mn and translate(., '0123456789', '')=''])"
+  replace:
+  - x: "*[1]"
+  - t: "⠐"
+  - x: "*[2]"
+
+-
   name: default
   tag: [mrow, mstyle, semantics]
   match: "."
   replace: [x: "*[1] | *[position()>1]"]
+
+-
+  name: mspace
+  tag: mspace
+  match: "@linebreak='newline' or @linebreak='indentingnewline'"
+  replace:
+  - test:
+    - if: "string(@width) != '' or @data-previous-space-width >= 0.25 or @data-following-space-width >= 0.25"
+      then: [t: "⠠"]
+    - else: [t: "⠐"]
+
+-
+  name: mspace
+  tag: mspace
+  match: "."
+  replace: [t: "W"]
 
 -
   name: no-content
@@ -115,16 +258,38 @@
   - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
 
 -
+  name: simple-algebraic-negative-integer-denominator
+  tag: mfrac
+  match:
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mo and (.='-' or .='−')] and *[2][self::m:mn and translate(., '0123456789', '')='']]"
+  replace:
+  - x: "*[1]"
+  - t: "⠳⠤"
+  - x: "BrailleChars(translate(*[2]/*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: simple-algebraic-negative-decimal-denominator
+  tag: mfrac
+  match:
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mo and (.='-' or .='−')] and *[2][self::m:mn and contains(., ',') and translate(., '0123456789,', '')='']]"
+  replace:
+  - x: "*[1]"
+  - t: "⠳⠤"
+  - x: "*[2]/*[2]"
+
+-
   name: simple-algebraic
   tag: mfrac
   match:
-  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789', '')='']) and"
-  - "(*[2][self::m:mi] or *[2][self::m:mn and translate(., '0123456789', '')=''])"
+  - "(*[1][self::m:mi] or *[1][self::m:mn and translate(., '0123456789,', '')='']) and"
+  - "(*[2][self::m:mi] or *[2][self::m:mn and translate(., '0123456789,', '')=''])"
   replace:
   - x: "*[1]"
   - t: "⠳"
   - test:
-      if: "*[2][self::m:mn]"
+      if: "*[2][self::m:mn and translate(., '0123456789', '')='']"
       then:
       - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
       else:
@@ -164,6 +329,16 @@
   - t: "⠌"
   - x: "*[2]/*[1]/*[1]/*[1]"
   - x: "*[3]"
+
+-
+  name: column-arithmetic-table
+  tag: mtable
+  variables:
+  - InColumnArithmetic: "true()"
+  - RowStart: "''"
+  - RowEnd: "''"
+  match: "contains(@intent, ':column-arithmetic')"
+  replace: [x: "*"]
 
 -
   name: system-left-brace-table
@@ -211,6 +386,12 @@
       - x: $RowStart
   - test:
       if: .[self::m:mlabeledtr]
+      then:
+      - t: "⠍⠑⠞⠅⠁⠀⠎⠞⠗⠕⠅⠊⠀⠲"
+      - x: "*[1]/*"
+      - t: "W"
+  - test:
+      if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: [x: "*"]
   - x: $RowEnd
@@ -242,6 +423,45 @@
   - "*[2][substring(., string-length(), 1)='⇀']"
   replace:
   - t: "⠀⠒⠕⠀⠦⠶"
+
+-
+  name: chemistry-reaction-arrow-above
+  tag: mover
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠌"
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: chemistry-reaction-arrow-below
+  tag: munder
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠡"
+  - x: "*[2]"
+  - t: "⠱"
+
+-
+  name: chemistry-reaction-arrow-above-and-below
+  tag: munderover
+  match:
+  - "(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')] or @data-chem-equation-op) and"
+  - "*[1][self::m:mo and translate(., '→⟶←⟵⇌⥂⥄↑↓', '')='']"
+  replace:
+  - x: "*[1]"
+  - t: "⠨⠡"
+  - x: "*[2]"
+  - t: "⠱"
+  - t: "⠨⠌"
+  - x: "*[3]"
+  - t: "⠱"
 
 -
   name: vector-arrow
@@ -277,6 +497,211 @@
   - t: "⠸⠜"
   - t: "#"
   - x: "*[1]"
+
+-
+  name: exact-over-label-no-indicator
+  tag: mover
+  match:
+  - "DefinitionValue(*[2], 'Braille', 'RussianExactOverLabelMarksWithoutIndicator') != '' and"
+  - "string-length(*[2]) = 1"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianExactOverLabelMarksWithoutIndicator')"
+
+-
+  name: exact-over-label-repeated
+  tag: mover
+  match:
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠘"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-over-label
+  tag: mover
+  match: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠘"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-under-label-repeated
+  tag: munder
+  match:
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠰"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: exact-under-label
+  tag: munder
+  match: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - test:
+      if: "*[1][self::m:mrow or self::m:mfrac or self::m:msqrt or self::m:mroot or self::m:mtable]"
+      then:
+      - t: "⠯"
+      - x: "*[1]"
+      - t: "⠽"
+      else:
+      - x: "*[1]"
+  - t: "⠰"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: upper-right-label-no-indicator-repeated
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator') != ''"
+  replace:
+  - x: "*[1]"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+
+-
+  name: upper-right-label-no-indicator
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator') != ''"
+  replace:
+  - x: "*[1]"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianUpperRightLabelMarksWithoutIndicator')"
+
+-
+  name: upper-right-label-repeated
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠨"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: upper-right-label
+  tag: msup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "not(*[2][contains(., '+') or contains(., '-') or contains(., '−')] and"
+  - "    *[1][self::m:mi or self::m:mtext or self::m:mrow or self::m:msub or self::m:mmultiscripts]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠨"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
+
+-
+  name: lower-right-label-repeated
+  tag: msub
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "string-length(*[2]) <= 3 and"
+  - "translate(*[2], substring(*[2], 1, 1), '') = '' and"
+  - "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠸"
+  - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 1"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "string-length(*[2]) > 2"
+      then:
+      - x: "DefinitionValue(substring(*[2], 1, 1), 'Braille', 'RussianLabelMarks')"
+
+-
+  name: lower-right-label
+  tag: msub
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks') != ''"
+  replace:
+  - x: "*[1]"
+  - t: "⠸"
+  - x: "DefinitionValue(*[2], 'Braille', 'RussianLabelMarks')"
 
 -
   name: signed-integer-number
@@ -326,6 +751,32 @@
   - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
 
 -
+  name: integer-sequence
+  tag: [msub, munder]
+  match:
+  - "*[2][not(self::m:mn) and translate(normalize-space(.), '0123456789⁣', '')='' and"
+  - " not(.//m:mo[.=',' or .='،'])]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "BrailleChars(translate(normalize-space(*[2]), '0123456789⁣', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+
+-
+  name: infinity-index
+  tag: [msub, munder]
+  match: "*[2][.='∞']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:munder"
+      then: [t: "⠨⠡"]
+      else: [t: "⠡"]
+  - x: "*[2]"
+
+-
   name: default
   tag: [msub, munder]
   match: "."
@@ -336,7 +787,7 @@
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
   - test:
-      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      if: "*[2][self::m:mrow[m:mo[.='+'] or m:mfrac] or self::m:mfrac]"
       then: [t: "⠐"]
   - x: "*[2]"
   - t: "⠱"
@@ -430,6 +881,21 @@
       - x: "*[2]"
 
 -
+  name: trig-function-integer-power-before-complex-fraction
+  tag: msup
+  match:
+  - "DefinitionValue(*[1], 'Braille', 'RussianFunctionBraille') != '' and"
+  - "*[2][self::m:mn and translate(., '0123456789', '')=''] and"
+  - "(following-sibling::*[1][self::m:mfrac and not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))] or"
+  - " following-sibling::*[1][self::m:mo and (.='⁡' or .='⁢' or .='⁣' or .='⁤')]"
+  - "   [following-sibling::*[1][self::m:mfrac and not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))]])"
+  replace:
+  - x: "*[1]"
+  - t: "⠌"
+  - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+  - t: "⠐"
+
+-
   name: integer
   tag: [msup, mover]
   match: "*[2][self::m:mn and translate(., '0123456789', '')='']"
@@ -451,6 +917,9 @@
       if: "self::m:mover"
       then: [t: "⠨⠌"]
       else: [t: "⠌"]
+  - test:
+      if: "*[2][self::m:mfrac[not((*[1][self::m:mi or self::m:mn]) and (*[2][self::m:mi or self::m:mn]))]]"
+      then: [t: "⠐"]
   - x: "*[2]"
   - t: "⠱"
 
@@ -532,6 +1001,24 @@
       - x: "*[3]"
 
 -
+  name: mixed-subscript-before-superscript
+  tag: msubsup
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "*[2][self::m:mrow[m:mn and (m:mi or m:mtext) and not(m:mo[not(.='⁡' or .='⁢' or .='⁣' or .='⁤')])]]"
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - test:
+      if: "*[2][m:mo[.='+'] or m:mfrac]"
+      then: [t: "⠐"]
+  - x: "*[2]"
+  - t: "⠱"
+  - t: "⠌"
+  - x: "*[3]"
+  - t: "⠱"
+
+-
   name: default
   tag: [msubsup, munderover]
   match: "count(*)=3"
@@ -542,7 +1029,7 @@
       then: [t: "⠨⠡"]
       else: [t: "⠡"]
   - test:
-      if: "*[2][self::m:mrow[m:mo[.='+']] or self::m:mfrac]"
+      if: "*[2][self::m:mrow[m:mo[.='+'] or m:mfrac] or self::m:mfrac]"
       then: [t: "⠐"]
   - x: "*[2]"
   - test:
@@ -553,10 +1040,94 @@
   - t: "⠱"
 
 -
+  name: left-labels
+  tag: mmultiscripts
+  match:
+  - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
+  - "count(m:mprescripts/preceding-sibling::*) = 1 and"
+  - "(m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''] or"
+  - " m:mprescripts/following-sibling::*[2][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''])"
+  replace:
+  - test:
+      if: "m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != '']"
+      then:
+      - t: "⠸"
+      - x: "DefinitionValue(m:mprescripts/following-sibling::*[1], 'Braille', 'RussianLabelMarks')"
+  - test:
+      if: "m:mprescripts/following-sibling::*[2][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != '']"
+      then:
+      - t: "⠨"
+      - x: "DefinitionValue(m:mprescripts/following-sibling::*[2], 'Braille', 'RussianLabelMarks')"
+  - x: "*[1]"
+
+-
   name: default
   tag: mmultiscripts
   match: "."
-  replace: [x: "*"]
+  variables:
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)"
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) - count($Prescripts))]"
+  replace:
+  - test:
+      if: "$Prescripts"
+      then:
+      - test:
+          if: "not($Prescripts[1][self::m:none])"
+          then:
+          - t: "⠡"
+          - test:
+            - if: "$Prescripts[1][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Prescripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Prescripts[1]"
+          - test:
+              if: "not($Prescripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[1][.='∞'])"
+              then: [t: "⠱"]
+      - test:
+          if: "not($Prescripts[2][self::m:none])"
+          then:
+          - t: "⠌"
+          - test:
+            - if: "$Prescripts[2][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Prescripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Prescripts[2]"
+          - test:
+              if: "not($Prescripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[2][.='∞'])"
+              then: [t: "⠱"]
+  - x: "*[1]"
+  - test:
+      if: "$Postscripts"
+      then:
+      - test:
+          if: "not($Postscripts[1][self::m:none])"
+          then:
+          - t: "⠡"
+          - test:
+            - if: "$Postscripts[1][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[1]"
+          - test:
+              if: "not($Postscripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[1][.='∞'])"
+              then: [t: "⠱"]
+      - test:
+          if: "not($Postscripts[2][self::m:none])"
+          then:
+          - t: "⠌"
+          - test:
+            - if: "$Postscripts[2][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[2]"
+          - test:
+              if: "not($Postscripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[2][.='∞'])"
+              then: [t: "⠱"]
 
 -
   name: default
@@ -613,14 +1184,60 @@
       - x: "text()"
 
 -
+  name: geometry-prefix-after-multiplier
+  tag: mo
+  match:
+  - "(.='∠' or .='△' or .='∪') and"
+  - "preceding-sibling::*[1][self::m:mn] and"
+  - "following-sibling::*[1][self::m:mi or self::m:msub or self::m:mrow]"
+  replace:
+  - t: "⠄"
+  - test:
+    - if: ".='∪'"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "text()"
+  - t: "#"
+
+-
   name: prefix-geometry-ops
   tag: mo
   match:
-  - "parent::*[count(*) = 2 and name()='mrow' and not(preceding-sibling::*)] and"
+  - "not(preceding-sibling::*) and"
+  - "following-sibling::*[1][self::m:mi or self::m:msub or self::m:mrow] and"
   - "( .='∠' or .='△' or .='∪' )"
   replace:
-  - x: "text()"
+  - test:
+    - if: ".='∪'"
+      then: [t: "⠸⠜"]
+    - else:
+      - x: "text()"
   - t: "#"
+
+-
+  name: column-arithmetic-operator
+  tag: mo
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - "(.='+' or .='-' or .='−' or .='×' or .='⋅' or .='·')"
+  replace:
+  - test:
+    - if: ".='+'"
+      then: [t: "⠖"]
+    - else_if: ".='-' or .='−'"
+      then: [t: "⠤"]
+    - else: [t: "⠦"]
+
+-
+  name: column-arithmetic-result-line
+  tag: mo
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - ".='='"
+  replace:
+  - t: "⠶"
 
 -
   name: operator-functions
@@ -644,6 +1261,39 @@
   - x: "text()"
 
 -
+  name: column-arithmetic-continuation-number
+  tag: mn
+  match:
+  - "$InColumnArithmetic and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - "translate(., '0123456789', '')=''"
+  replace:
+  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
+  name: periodic-decimal-period-digits
+  tag: mn
+  match:
+  - "translate(., '0123456789', '')='' and"
+  - "preceding-sibling::*[1][self::m:mo and .='('] and"
+  - "following-sibling::*[1][self::m:mo and .=')'] and"
+  - "preceding-sibling::*[2][self::m:mn and contains(., ',')]"
+  replace:
+  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+
+-
+  name: periodic-decimal
+  tag: mn
+  match: "contains(., ',') and substring-after(., '(') != '' and substring-before(substring-after(., '('), ')') != ''"
+  replace:
+  - x: "BrailleChars(substring-before(., ','), 'Russian')"
+  - t: "⠂"
+  - x: "BrailleChars(translate(substring-before(substring-after(., ','), '('), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠣"
+  - x: "BrailleChars(translate(substring-before(substring-after(., '('), ')'), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - t: "⠜"
+
+-
   name: decimal-comma
   tag: mn
   match: "contains(., ',') and translate(., '0123456789,', '')=''"
@@ -665,6 +1315,13 @@
   match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
   replace:
   - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
+
+-
+  name: chemistry-single-letter-element-in-group
+  tag: mi
+  match: "$InChemElementGroup and @data-chem-element='1'"
+  replace:
+  - x: "translate(BrailleChars(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'Russian'), 'l', '')"
 
 -
   name: div-function
