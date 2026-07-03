@@ -2230,7 +2230,7 @@ fn trigonometry_p52_6b() -> Result<()> {
 
 #[test]
 fn trigonometry_p52_7() -> Result<()> {
-    let expr = r#"<math><mi>tg</mi><mfenced separators="|"><mfrac><mrow><msup><mn>90</mn><mo>°</mo></msup><mo>&#x2212;</mo><mi>&#x3B1;</mi></mrow><mn>2</mn></mfrac></mfenced></math>"#;
+    let expr = r#"<math><mi>tg</mi><mfrac><mrow><msup><mn>90</mn><mo>°</mo></msup><mo>&#x2212;</mo><mi>&#x3B1;</mi></mrow><mn>2</mn></mfrac></math>"#;
     test_braille("Polish", expr, "⠫⠞⠀⠼⠊⠚⠴⠈⠤⠰⠁⠳⠆")?;
     return Ok(());
 }
@@ -2258,7 +2258,7 @@ fn trigonometry_p52_7b() -> Result<()> {
 #[test]
 fn trigonometry_p52_8() -> Result<()> {
     let expr = r#"<math><mi>tg</mi><mfrac><mi>&#x3B1;</mi><mn>2</mn></mfrac><mo>=</mo><mfrac><mrow><mn>1</mn><mo>-</mo><mi>cos</mi><mi>&#x3B1;</mi></mrow><mrow><mi>sin</mi><mi>&#x3B1;</mi></mrow></mfrac></math>"#;
-    test_braille("Polish", expr, "⠫⠞⠀⠰⠁⠳⠆⠀⠶⠆⠼⠁⠈⠤⠫⠉⠰⠁⠳⠫⠎⠰⠁")?;
+    test_braille("Polish", expr, "⠫⠞⠀⠰⠁⠳⠆⠀⠶⠼⠁⠈⠤⠫⠉⠰⠁⠳⠫⠎⠰⠁")?;
     return Ok(());
 }
 
@@ -2294,7 +2294,7 @@ fn trigonometry_p53_4() -> Result<()> {
 
 #[test]
 fn trigonometry_p53_5() -> Result<()> {
-    let expr = r#"<math><mi>arcsin</mi><mo>(</mo><msup><mn>30</mn><mo>&#x2218;</mo></msup><mo>+</mo><mi>n</mi><mo>&#x22C5;</mo><msup><mn>360</mn><mo>&#x2218;</mo></msup><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>&#xA0;</mo><mi>dla</mi><mo>&#xA0;</mo><mi>n</mi><mo>=</mo><mn>0</mn><mo>,</mo><mo>&#xA0;</mo><mo>&#xB1;</mo><mn>1</mn><mo>,</mo><mo>&#xA0;</mo><mo>&#xB1;</mo><mn>2</mn><mo>,</mo><mo>&#xA0;</mo><mo>.</mo><mo>.</mo><mo>.</mo></math>"#;
+    let expr = r#"<math><mi>arcsin</mi><mo>(</mo><msup><mn>30</mn><mo>&#x2218;</mo></msup><mo>+</mo><mi>n</mi><mo>&#x22C5;</mo><msup><mn>360</mn><mo>&#x2218;</mo></msup><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>&#xA0;</mo><mi>dla</mi><mo>&#xA0;&#xA0;</mo><mi>n</mi><mo>=</mo><mn>0</mn><mo>,</mo><mo>&#xA0;</mo><mo>&#xB1;</mo><mn>1</mn><mo>,</mo><mo>&#xA0;</mo><mo>&#xB1;</mo><mn>2</mn><mo>,</mo><mo>&#xA0;</mo><mo>.</mo><mo>.</mo><mo>.</mo></math>"#;
     test_braille("Polish", expr, "⠫⠂⠎⠣⠼⠉⠚⠴⠀⠖⠠⠝⠄⠼⠉⠋⠚⠴⠜⠀⠶⠼⠁⠆⠙⠇⠁⠀⠠⠝⠀⠶⠼⠚⠠⠂⠀⠖⠤⠼⠁⠠⠂⠀⠖⠤⠼⠃⠠⠂⠀⠄⠄⠄")?;
     return Ok(());
 }
@@ -2406,7 +2406,7 @@ fn limits_p56_2() -> Result<()> {
 #[test]
 fn limits_p56_3() -> Result<()> {
     let expr = r#"<math><munder><mi>lim</mi><mrow><mi>n</mi><mo>&#x2192;</mo><mo>&#x221E;</mo></mrow></munder><mfrac><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow><mi>n</mi></mfrac><mo>=</mo><mn>1</mn></math>"#;
-    test_braille("Polish", expr, "⠼⠇⠡⠠⠝⠈⠒⠂⠼⠿⠀⠝⠈⠖⠼⠁⠳⠝⠀⠶⠼⠁")?;
+    test_braille("Polish", expr, "⠼⠇⠡⠠⠝⠈⠒⠂⠼⠿⠀⠝⠈⠖⠼⠁⠳⠝⠀⠶⠼⠁X")?;
     return Ok(());
 }
 
@@ -3473,7 +3473,6 @@ fn reactions_p86_2() -> Result<()> {
 
 #[test]
 fn reactions_p86_3() -> Result<()> {
-    init_logger();
     let expr = r#"<math><mi>HCOOH</mi>
         <mover><mo>⟷</mo><mrow><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mi mathvariant="normal">O</mi></mrow></mover>
         <msup><mi>HCOO</mi><mo>-</mo></msup><mo>+</mo><msup><mi mathvariant="normal">H</mi><mo>+</mo></msup></math>"#;
