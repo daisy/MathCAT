@@ -2139,7 +2139,6 @@ static POLISH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     // "S" => "XXX",    // sans-serif -- from prefs
     "B" => "⠨",     // bold
     "𝔹" => "⠨",     // blackboard -- spec only shows some upper case versions (encoded as 𝔹Lx) -- this is just a guess 
-    // "T" => "⠈",     // script
     "I" => "⠸",     // italic 
     "𝒍" => "⠠",     // Lower case Roman letter left in to assist in locating letters
     "l" => "⠠",     // Forced output of Lower case Roman letter left in to assist in locating letters
@@ -2160,7 +2159,6 @@ static POLISH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "u" => "",      // signal end of unit mode (it could be several chars long)
     "w" => "⠀",     // whitespace after function name
     "W" => "⠀",     // whitespace"
-    "𝐖"=> "",       // whitespace for mode changes only (0xb7 -- multiplication dot)
     "P" => "",       // signal next char is punctuation
     "p" => "",       // pseudo-script "optional" character representation where we can delete the first char sometimes (° and ′)
     "!" => "⠫W",    // '!' is either punctuation or factorial -- we use the default of factorial and a regex will change it to punctuation when needed
@@ -2255,8 +2253,12 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     static NUMBER_DOT6_PUNCTUATION: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"([Nn].(>[^⠰]|≫⠐.)*|⠯⠕)(P.)").unwrap());
 
+    // Also eed to add dot-6 between whitespace and a lowercase roman letter
+    static WHITESPACE_DOT6_LETTER: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"(W[l𝒍])(.)").unwrap());
+
     static REPLACE_INDICATORS: LazyLock<Regex> =
-        LazyLock::new(|| Regex::new(r"([B𝔹IREDgGVH𝒍lL𝐿𝐶MnNUuwW𝐖Pp!(\[{)\]}#</>≪≫])").unwrap());
+        LazyLock::new(|| Regex::new(r"([B𝔹IREDgGVH𝒍lL𝐿𝐶MnNUuwWPp!(\[{)\]}#</>≪≫])").unwrap());
 
     let braille_level = BrailleLevel::from(&PreferenceManager::get().borrow().pref_to_string("Polish_BrailleLevel"));
 
@@ -2277,6 +2279,7 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     let result = REPEATING_DECIMAL_COMMA.replace_all(&result, "${1}N⠂${2}");
     let result = NUMBER_DOT6_PUNCTUATION.replace_all(&result, "${1}⠠${3}")
                                                 .replace("}P⠂", "}⠠P⠂");   // bottom of p13 -- '},'
+    // let result = WHITESPACE_DOT6_LETTER.replace_all(&result, "${1}⠠${2}");
     debug!(" After dot6 punc:    '{}'", &result);
     let result = polish_remove_unneeded_mode_changes(&result);
     eprintln!("AFTER mode changes: {:?}", &result);
@@ -2364,6 +2367,10 @@ impl Projectors {
     fn pop(&mut self) -> usize {
                 self.depth_stack.pop().unwrap_or_default();  // back to previous depth
                 return self.depth_stack[self.depth_stack.len()-1];
+    }
+
+    fn depth(&self) -> usize {
+        return self.depth_stack.len();
     }
 }
 
@@ -2565,12 +2572,12 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                 result.push(ch);
                 i += 1;
             },
-            'W' | '𝐖' | 'w' => {
+            'W' | 'w' => {
                 if mode == BrailleMode::Number {
                     mode = BrailleMode::None;
                 }
                 unit_mode = false;
-                eprintln!("W@{i} ch={:?} proj={projector_depth} frac={fraction_depth} bn={bracket_nesting_depth} use_long={use_long_fraction_form} next={:?}",
+                eprintln!("W@{i} ch={:?} proj={projector_depth}, frac={fraction_depth} bn={bracket_nesting_depth} use_long={use_long_fraction_form} next={:?}",
                     ch,
                     if i+1 < chars.len() { chars[i+1] } else { '?' });
                 if !use_long_fraction_form && fraction_depth == 1 && i+1 < chars.len() && chars[i+1] == '/' {
@@ -2587,7 +2594,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                 i += 1;
             },
             '<' => {
-                // debug!("@<: i={i}, depth={projector_depth}, {projector_depths}, use_long={use_long_fraction_form}");
+                eprintln!("@<: i={i}, depth={projector_depth}, {projector_depths}, use_long={use_long_fraction_form}");
                  // group felt should always announce internal fractions except numeric ones (they aren't marked with '<')
                 let parent_fraction_depth = fraction_depth; 
                 projector_depth = projector_depths.push();

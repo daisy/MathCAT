@@ -10,11 +10,11 @@
       replace:
       - test:
         - if: "@data-previous-space-width >= 0.8" 
-          then: [t: "𝐖"]
+          then: [t: "W"]
       - x: "."
       - test:
         - if: "@data-following-space-width >= 0.8" 
-          then: [t: "𝐖"]
+          then: [t: "W"]
 
 -
   name: omissions
@@ -416,13 +416,13 @@
       else:
       - test:
           # words have different rules from math. Guessing that strings of length 4 or more are words
-          if: "self::m:mtext and string-length(.) > 3"
-          then: [t: "T"] 
-      - x: "BrailleChars(., 'Polish')"   # also deals with "dot after 'arc'"
-      - test:
-          if: "self::m:mtext and string-length(.) > 3"
-          then: [t: "t"] 
-      
+          if: "self::m:mtext and (IsInDefinition(., 'Braille', 'MathWords') or string-length(.) > 3)"
+          then:
+          - t: "T"
+          - x: "BrailleChars(., 'Polish')"   # also deals with "dot after 'arc'"
+          - t: "t"
+          else:
+          - x: "BrailleChars(., 'Polish')"   # also deals with "dot after 'arc'"      
 
 
 -
