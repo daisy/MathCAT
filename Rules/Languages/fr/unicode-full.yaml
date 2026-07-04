@@ -49,7 +49,7 @@
  - "ʵ": [t: "modificateur petit r tourné avec crochet"]	#  0x2b5	(en: 'modifier small turned r with hook', DeepL translation)
  - "ʶ":                                         	#  0x2b6
     - spell: "translate('R', 'R', 'R')"
-    - t: "modificateur petit inversé"           	# 	(en: 'modifier small inverted', DeepL translation)
+    - T: "modificateur petit inversé"           	# 	(en: 'modifier small inverted', DeepL translation)
 
 
  - "ʷ": [t: "modificateur petit w"]             	#  0x2b7	(en: 'modifier small w', DeepL translation)
@@ -202,8 +202,8 @@
             replace: []
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
-    - t: "avec dialytika"                       	# 	(en: 'with dialytika', DeepL translation)
+        replace: [SPELL: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
+    - T: "avec dialytika"                       	# 	(en: 'with dialytika', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -238,7 +238,7 @@
             replace: []
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
+        replace: [SPELL: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -310,8 +310,8 @@
         then: [t: "point point point"]          	# 	(en: 'dot dot dot', DeepL translation)
         else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "et ainsi de suite"]      	# 	(en: 'and so on', DeepL translation)
-            else: [t: "et ainsi de suite jusqu'à"]   	# 	(en: 'and so on up to')
+            then: [T: "et ainsi de suite"]      	# 	(en: 'and so on', DeepL translation)
+            else: [T: "et ainsi de suite jusqu'à"]   	# 	(en: 'and so on up to')
 
  - "‰": [t: "symbole pour mille"]               	#  0x2030	(en: 'per mille')
  - "‱": [t: "symbole pour dix mille"]           	#  0x2031	(en: 'per ten thousand')
@@ -456,11 +456,11 @@
  - "ℊ": [t: "g ronde minuscule"]                	#  0x210a	(en: 'script g', DeepL: 'script g')
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
-    - t: "gothique"                    	# 	(en: 'fraktur', DeepL: 'fraktur')
+    - T: "gothique"                    	# 	(en: 'fraktur', DeepL: 'fraktur')
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
-    - t: "double barre"                    	# 	(en: 'double struck', DeepL: 'double barre')
+    - T: "double barre"                    	# 	(en: 'double struck', DeepL: 'double barre')
 
 
  - "ℎ": [t: "constante de planck"]              	#  0x210e	(en: 'planck constant')
@@ -468,7 +468,7 @@
 
  - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
-    - t: "script"      	# 	(en: 'script')
+    - T: "script"      	# 	(en: 'script')
 
  - "ℓ": [t: "l minuscule en script"]            	#  0x2113	(en: 'script l', MathPlayer: 'l ronde minuscule', DeepL: 'script l')
  - "℔": [t: "symbole l b barré"]                	#  0x2114	(en: 'pounds', DeepL: 'livres')
@@ -483,15 +483,15 @@
 
    # coalesced some chars that use cap letters
  - "Ⅎ℺⅁⅂⅃⅄":                                    	#  0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144
-    - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
+    - SPELL: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
     - test:
       - if: "'.' = '℺'"
         then: [t: "tourné"]                     	# 	(en: 'rotated', DeepL translation)
       - else_if: "'.' = 'Ⅎ'"
         then: [t: "tourné"]                     	# 	(en: 'turned', DeepL translation)
       - else_if: "'.' = '⅃'"
-        then: [t: "tourné sans-serif"]         	# 	(en: 'reversed sans-serif', DeepL translation)
-        else: [t: "tourné sans-serif"]          	# 	(en: 'turned sans-serif', DeepL: 'tourné sans empattement')
+        then: [T: "tourné sans-serif"]         	# 	(en: 'reversed sans-serif', DeepL translation)
+        else: [T: "tourné sans-serif"]          	# 	(en: 'turned sans-serif', DeepL: 'tourné sans empattement')
 
  - "ℴ": [t: "o ronde minuscule"]                	#  0x2134	(en: 'script o', DeepL: 'script o')
  - "ℵ": [t: "alef"]                             	#  0x2135	(en: 'first transfinite cardinal')
@@ -500,7 +500,7 @@
  - "ℸ": [t: "dalèt"]                            	#  0x2138	(en: 'fourth transfinite cardinal')
  - "ℼ": [t: "pi ajouré"]                        	#  0x213c	(en: 'double struck pi', DeepL: 'double pi frappé')
  - "ℽ": [t: "gamma ajouré"]                     	#  0x213d	(en: 'double struck gamma', DeepL: 'double gamma frappé')
- - "⅀": [t: "sommation"]   	#  0x2140	(en: 'double struck n-ary summation', DeepL: 'somme n-aire doublement frappée')
+ - "⅀": [T: "sommation"]   	#  0x2140	(en: 'double struck n-ary summation', DeepL: 'somme n-aire doublement frappée')
  - "⅋": [t: "perluète culbutée"]                	#  0x214b	(en: 'turned ampersand', DeepL: 'esperluette tournée')
  - "⅌": [t: "symbole per"]                      	#  0x214c	(en: 'per', DeepL: 'per')
  - "ⅎ": [t: "minuscule f culbuté"]              	#  0x214e	(en: 'turned F', DeepL: 'tourné f')
@@ -802,17 +802,17 @@
  - "∤": [t: "n'est pas un diviseur de"]         	#  0x2224	(en: 'does not divide')
  - "∧": [t: "et logique"]                       	#  0x2227	(en: 'and')
  - "∨": [t: "ou logique"]                       	#  0x2228	(en: 'or')
- - "∩": [t: "\uF8FEintersection"]                     	#  0x2229
- - "∪": [t: "\uF8FEunion"]                            	#  0x222a
- - "∫": [t: "\uF8FEintégrale"]                        	#  0x222b	(en: 'integral')
- - "∬": [t: "\uF8FEintégrale double"]                 	#  0x222c	(en: 'double integral')
- - "∭": [t: "\uF8FEintégrale triple"]                 	#  0x222d	(en: 'triple integral')
- - "∮": [t: "\uF8FEintégrale de contour"]             	#  0x222e	(en: 'contour integral')
- - "∯": [t: "\uF8FEintégrale de surface"]             	#  0x222f	(en: 'surface integral')
- - "∰": [t: "\uF8FEintégrale de volume"]              	#  0x2230	(en: 'volume integral')
- - "∱": [t: "\uF8FEintégrale en sens négatif"]        	#  0x2231	(en: 'clockwise integral')
- - "∲": [t: "\uF8FEintégrale de contour en sens négatif"]	#  0x2232	(en: 'clockwise contour integral')
- - "∳": [t: "\uF8FEintégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
+ - "∩": [T: "\uF8FEintersection"]                     	#  0x2229
+ - "∪": [T: "\uF8FEunion"]                            	#  0x222a
+ - "∫": [T: "\uF8FEintégrale"]                        	#  0x222b	(en: 'integral')
+ - "∬": [T: "\uF8FEintégrale double"]                 	#  0x222c	(en: 'double integral')
+ - "∭": [T: "\uF8FEintégrale triple"]                 	#  0x222d	(en: 'triple integral')
+ - "∮": [T: "\uF8FEintégrale de contour"]             	#  0x222e	(en: 'contour integral')
+ - "∯": [T: "\uF8FEintégrale de surface"]             	#  0x222f	(en: 'surface integral')
+ - "∰": [T: "\uF8FEintégrale de volume"]              	#  0x2230	(en: 'volume integral')
+ - "∱": [T: "\uF8FEintégrale en sens négatif"]        	#  0x2231	(en: 'clockwise integral')
+ - "∲": [T: "\uF8FEintégrale de contour en sens négatif"]	#  0x2232	(en: 'clockwise contour integral')
+ - "∳": [T: "\uF8FEintégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
  - "∴": [t: "par conséquent"]                   	#  0x2234	(en: 'therefore')
  - "∵": [t: "parce que"]                        	#  0x2235	(en: 'because')
  - "∶":                                         	#  0x2236
@@ -1183,16 +1183,16 @@
  - "⊽": [t: "non ou"]                           	#  0x22bd	(en: 'nor')
  - "⊾": [t: "angle droit avec arc"]             	#  0x22be	(en: 'right angle with arc')
  - "⊿": [t: "triangle rectangle"]               	#  0x22bf	(en: 'right triangle')
- - "⋀": [t: "et logique"]         	#  0x22c0	(en: 'logical and')
- - "⋁": [t: "ou logique"]         	#  0x22c1	(en: 'logical or')
- - "⋂": [t: "\uF8FEintersection"]       	#  0x22c2	(en: 'intersection')
- - "⋃": [t: "\uF8FEunion"]            	#  0x22c3	(en: 'union')
+ - "⋀": [T: "et logique"]         	#  0x22c0	(en: 'logical and')
+ - "⋁": [T: "ou logique"]         	#  0x22c1	(en: 'logical or')
+ - "⋂": [T: "\uF8FEintersection"]       	#  0x22c2	(en: 'intersection')
+ - "⋃": [T: "\uF8FEunion"]            	#  0x22c3	(en: 'union')
  - "⋄": [t: "opérateur losange"]                	#  0x22c4	(en: 'diamond operator')
  - "⋅":                                         	#  0x22c5
     - test: 
         if: "@data-chem-formula-op"
         then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
-        else: [t: "fois"]            	# 	(en: 'times')
+        else: [T: "fois"]            	# 	(en: 'times')
 
  - "⋆": [t: "opérateur étoile"]                 	#  0x22c6	(en: 'times')
  - "⋇": [t: "divisé multiplié"]                 	#  0x22c7	(en: 'division times')
@@ -1418,7 +1418,7 @@
  - "⏧": [t: "intersection électrique"]          	#  0x23e7	(en: 'electrical intersection', DeepL translation)
  - "①-⑨":                                       	#  0x2460 - 0x2469
     - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
-    - t: "encerclé"                             	# 	(en: 'circled', DeepL translation)
+    - T: "encerclé"                             	# 	(en: 'circled', DeepL translation)
  - "⑩": [t: "encerclé dix"]                     	#  0x2469	(en: 'circled ten', DeepL translation)
  - "⑪": [t: "encerclé onze"]                    	#  0x246a	(en: 'circled eleven', DeepL translation)
  - "⑫": [t: "encerclé douze"]                   	#  0x246b	(en: 'circled twelve', DeepL translation)
@@ -1431,7 +1431,7 @@
  - "⑳": [t: "encerclé vingt"]                   	#  0x2473	(en: 'circled twenty', DeepL translation)
  - "⑴-⑼":                                       	#  0x2474 - 0x247d
     - spell: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
-    - t: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
+    - T: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
  - "⑽": [t: "dix entre parenthèses"]            	#  0x247d	(en: 'parenthesized ten', DeepL translation)
  - "⑾": [t: "onze entre parenthèses"]           	#  0x247e	(en: 'parenthesized eleven', DeepL translation)
  - "⑿": [t: "parenthèse-histhésée douze"]       	#  0x247f	(en: 'parenthesized twelve', DeepL translation)
@@ -1459,37 +1459,37 @@
  - "⒛": [t: "vingt avec point"]                 	#  0x249b	(en: 'twenty with period', DeepL translation)
  - "⒜-⒵":                                       	#  0x249c - 0x24b5
     - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
+    - T: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
 
 
  - "Ⓐ-ⓩ":                                       	#  0x24b6 - 0x24cf
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "encerclé"                             	# 	(en: 'circled', DeepL translation)
+    - T: "encerclé"                             	# 	(en: 'circled', DeepL translation)
 
 
  - "🅐-🅩":                                         # 0x1f150 - 0x1f169
     - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "encerclé de noir"                                  #  (en: 'black circled', DeepL translation)
+    - T: "encerclé de noir"                                  #  (en: 'black circled', DeepL translation)
 
 
  - "ⓐ-ⓩ":                                       	#  0x24d0 - 0x24e9
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "encerclé"                             	# 	(en: 'circled', DeepL translation)
+    - T: "encerclé"                             	# 	(en: 'circled', DeepL translation)
 
- - "⓪": [t: "zéro encerclé"]                    	#  0x24ea	(en: 'circled zero', DeepL translation)
+ - "⓪": [T: "zéro encerclé"]                    	#  0x24ea	(en: 'circled zero', DeepL translation)
  - "⓫": [t: "onze encerclé de noir"]            	#  0x24eb	(en: 'black circled eleven', DeepL translation)
- - "⓬": [t: "douze encerclé de noir"]              	#  0x24ec	(en: 'black circled twelve', DeepL translation)
- - "⓭": [t: "treize encerclé de noir"]             	#  0x24ed	(en: 'black circled thirteen', DeepL translation)
- - "⓮": [t: "quatorze encerclé de noir"]         	#  0x24ee	(en: 'black circled fourteen', DeepL translation)
- - "⓯": [t: "quinze encerclé de noir"]           	#  0x24ef	(en: 'black circled fifteen', DeepL translation)
- - "⓰": [t: "seize encerclé de noir"]              	#  0x24f0	(en: 'black circled sixteen', DeepL translation)
- - "⓱": [t: "dix-sept encerclé de noir"]           	#  0x24f1	(en: 'black circled seventeen', DeepL translation)
- - "⓲": [t: "atéroïde encerclé de noir"]           	#  0x24f2	(en: 'black circled eighteen', DeepL translation)
- - "⓳": [t: "dix-neuf encerclé de noir"]           	#  0x24f3	(en: 'black circled nineteen', DeepL translation)
- - "⓴": [t: "vingt encerclé de noir"]          	    #  0x24f4	(en: 'black circled twenty', DeepL translation)
+ - "⓬": [T: "douze encerclé de noir"]              	#  0x24ec	(en: 'black circled twelve', DeepL translation)
+ - "⓭": [T: "treize encerclé de noir"]             	#  0x24ed	(en: 'black circled thirteen', DeepL translation)
+ - "⓮": [T: "quatorze encerclé de noir"]         	#  0x24ee	(en: 'black circled fourteen', DeepL translation)
+ - "⓯": [T: "quinze encerclé de noir"]           	#  0x24ef	(en: 'black circled fifteen', DeepL translation)
+ - "⓰": [T: "seize encerclé de noir"]              	#  0x24f0	(en: 'black circled sixteen', DeepL translation)
+ - "⓱": [T: "dix-sept encerclé de noir"]           	#  0x24f1	(en: 'black circled seventeen', DeepL translation)
+ - "⓲": [T: "atéroïde encerclé de noir"]           	#  0x24f2	(en: 'black circled eighteen', DeepL translation)
+ - "⓳": [T: "dix-neuf encerclé de noir"]           	#  0x24f3	(en: 'black circled nineteen', DeepL translation)
+ - "⓴": [T: "vingt encerclé de noir"]          	    #  0x24f4	(en: 'black circled twenty', DeepL translation)
  - "⓵-⓽":                                       	#  0x24f5 - 0x24fe
     - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
-    - t: "double encerclé"                      	# 	(en: 'double circled', DeepL translation)
+    - T: "double encerclé"                      	# 	(en: 'double circled', DeepL translation)
 
  - "⓾": [t: "double cercle de dix"]             	#  0x24fe	(en: 'double circled ten', DeepL translation)
  - "⓿": [t: "zéro encerclé de noir"]            	#  0x24ff	(en: 'black circled zero', DeepL translation)
@@ -1651,36 +1651,36 @@
  - "❳": [t: "crochet de fantaisie droit maigre en écaille"]	#  0x2773	(en: 'light right tortoise shell bracket ornament', DeepL: 'ornement de support en écaille de tortue léger et droit')
  - "❴": [t: "accolade de fantaisie gauche moyenne"]	#  0x2774	(en: 'medium left brace ornament', DeepL: 'ornement d'accolade moyen gauche')
  - "❵": [t: "accolade de fantaisie droite moyenne"]	#  0x2775	(en: 'medium right brace ornament', DeepL: 'accolade moyenne droite ornement')
- - "❶": [t: "un encerclé de noir"]                 	#  0x2776	(en: 'black circled one', DeepL translation)
- - "❷": [t: "deux encerclé de noir"]           	#  0x2777	(en: 'black circled two', DeepL translation)
- - "❸": [t: "trois encerclé de noir"]              	#  0x2778	(en: 'black circled three', DeepL translation)
- - "❹": [t: "quatre encerclé de noir"]             	#  0x2779	(en: 'black circled four', DeepL translation)
- - "❺": [t: "cinq encerclé de noir"]               	#  0x277a	(en: 'black circled five', DeepL translation)
- - "❻": [t: "six encerclé de noir"]                	#  0x277b	(en: 'black circled six', DeepL translation)
- - "❼": [t: "sept encerclé de noir"]            	#  0x277c	(en: 'black circled seven', DeepL translation)
- - "❽": [t: "huit encerclé de noir"]	            #  0x277d	(en: 'black circled eight', DeepL translation)
- - "❾": [t: "neuf encerclé de noir"]               	#  0x277e	(en: 'black circled nine', DeepL translation)
- - "❿": [t: "dix encerclé de noir"]             	#  0x277f	(en: 'black circled ten', DeepL translation)
- - "➀": [t: "un encerclé sans serif"]           	#  0x2780	(en: 'circled sans serif one', DeepL translation)
- - "➁": [t: "deux encerclé sans serif"]         	#  0x2781	(en: 'circled sans serif two', DeepL translation)
- - "➂": [t: "trois encerclé sans serif"]        	#  0x2782	(en: 'circled sans serif three', DeepL translation)
- - "➃": [t: "quatre encerclé sans serif"]       	#  0x2783	(en: 'circled sans serif four', DeepL translation)
- - "➄": [t: "cinq encerclé sans serif"]         	#  0x2784	(en: 'circled sans serif five', DeepL translation)
- - "➅": [t: "six encerclé sans serif"]          	#  0x2785	(en: 'circled sans serif six', DeepL translation)
- - "➆": [t: "sept encerclé sans serif"]   	#  0x2786	(en: 'circled sans serif seven', DeepL translation)
- - "➇": [t: "huit encerclé sans serif"]            	#  0x2787	(en: 'circled sans serif eight', DeepL translation)
- - "➈": [t: "neuf encerclé sans serif"]         	#  0x2788	(en: 'circled sans serif nine', DeepL translation)
- - "➉": [t: "dix encerclé sans serif"]          	#  0x2789	(en: 'circled sans serif ten', DeepL translation)
- - "➊": [t: "un encerclé de noir sans serif"]      	#  0x278a	(en: 'black circled sans serif one', DeepL translation)
- - "➋": [t: "deux encerclé de nori sans serif"]    	#  0x278b	(en: 'black circled sans serif two', DeepL translation)
- - "➌": [t: "trois encerclé de noir sans serif"]   	#  0x278c	(en: 'black circled sans serif three', DeepL translation)
- - "➍": [t: "quatre encerclé de noir sans serif"]  	#  0x278d	(en: 'black circled sans serif four', DeepL translation)
- - "➎": [t: "cinq encerclé de noir sans serif"]    	#  0x278e	(en: 'black circled sans serif five', DeepL translation)
- - "➏": [t: "six encerclé de noir sans serif"]     	#  0x278f	(en: 'black circled sans serif six', DeepL translation)
- - "➐": [t: "sept encerclé de noir sans serif"]    	#  0x2790	(en: 'black circled sans serif seven', DeepL translation)
- - "➑": [t: "huit encerclé de noir sans serif"]      	#  0x2791	(en: 'black circled sans serif eight', DeepL translation)
- - "➒": [t: "neuf encerclé de noir sans serif"]	#  0x2792	(en: 'black circled sans serif nine', DeepL translation)
- - "➓": [t: "dix encerclé de noir sans serif"]	#  0x2793	(en: 'black circled sans serif ten', DeepL translation)
+ - "❶": [T: "un encerclé de noir"]                 	#  0x2776	(en: 'black circled one', DeepL translation)
+ - "❷": [T: "deux encerclé de noir"]           	#  0x2777	(en: 'black circled two', DeepL translation)
+ - "❸": [T: "trois encerclé de noir"]              	#  0x2778	(en: 'black circled three', DeepL translation)
+ - "❹": [T: "quatre encerclé de noir"]             	#  0x2779	(en: 'black circled four', DeepL translation)
+ - "❺": [T: "cinq encerclé de noir"]               	#  0x277a	(en: 'black circled five', DeepL translation)
+ - "❻": [T: "six encerclé de noir"]                	#  0x277b	(en: 'black circled six', DeepL translation)
+ - "❼": [T: "sept encerclé de noir"]            	#  0x277c	(en: 'black circled seven', DeepL translation)
+ - "❽": [T: "huit encerclé de noir"]	            #  0x277d	(en: 'black circled eight', DeepL translation)
+ - "❾": [T: "neuf encerclé de noir"]               	#  0x277e	(en: 'black circled nine', DeepL translation)
+ - "❿": [T: "dix encerclé de noir"]             	#  0x277f	(en: 'black circled ten', DeepL translation)
+ - "➀": [T: "un encerclé sans serif"]           	#  0x2780	(en: 'circled sans serif one', DeepL translation)
+ - "➁": [T: "deux encerclé sans serif"]         	#  0x2781	(en: 'circled sans serif two', DeepL translation)
+ - "➂": [T: "trois encerclé sans serif"]        	#  0x2782	(en: 'circled sans serif three', DeepL translation)
+ - "➃": [T: "quatre encerclé sans serif"]       	#  0x2783	(en: 'circled sans serif four', DeepL translation)
+ - "➄": [T: "cinq encerclé sans serif"]         	#  0x2784	(en: 'circled sans serif five', DeepL translation)
+ - "➅": [T: "six encerclé sans serif"]          	#  0x2785	(en: 'circled sans serif six', DeepL translation)
+ - "➆": [T: "sept encerclé sans serif"]   	#  0x2786	(en: 'circled sans serif seven', DeepL translation)
+ - "➇": [T: "huit encerclé sans serif"]            	#  0x2787	(en: 'circled sans serif eight', DeepL translation)
+ - "➈": [T: "neuf encerclé sans serif"]         	#  0x2788	(en: 'circled sans serif nine', DeepL translation)
+ - "➉": [T: "dix encerclé sans serif"]          	#  0x2789	(en: 'circled sans serif ten', DeepL translation)
+ - "➊": [T: "un encerclé de noir sans serif"]      	#  0x278a	(en: 'black circled sans serif one', DeepL translation)
+ - "➋": [T: "deux encerclé de nori sans serif"]    	#  0x278b	(en: 'black circled sans serif two', DeepL translation)
+ - "➌": [T: "trois encerclé de noir sans serif"]   	#  0x278c	(en: 'black circled sans serif three', DeepL translation)
+ - "➍": [T: "quatre encerclé de noir sans serif"]  	#  0x278d	(en: 'black circled sans serif four', DeepL translation)
+ - "➎": [T: "cinq encerclé de noir sans serif"]    	#  0x278e	(en: 'black circled sans serif five', DeepL translation)
+ - "➏": [T: "six encerclé de noir sans serif"]     	#  0x278f	(en: 'black circled sans serif six', DeepL translation)
+ - "➐": [T: "sept encerclé de noir sans serif"]    	#  0x2790	(en: 'black circled sans serif seven', DeepL translation)
+ - "➑": [T: "huit encerclé de noir sans serif"]      	#  0x2791	(en: 'black circled sans serif eight', DeepL translation)
+ - "➒": [T: "neuf encerclé de noir sans serif"]	#  0x2792	(en: 'black circled sans serif nine', DeepL translation)
+ - "➓": [T: "dix encerclé de noir sans serif"]	#  0x2793	(en: 'black circled sans serif ten', DeepL translation)
  - "➔": [t: "flèche grasse vers la droite à pointe large"]	#  0x2794	(en: 'heavy wide-headed rightwards arrow', DeepL: 'flèche lourde à tête large vers la droite')
  - "➕": [t: "plus gras"]                        	#  0x2795	(en: 'heavy plus sign', DeepL: 'signe plus lourd')
  - "➖": [t: "moins gras"]                       	#  0x2796	(en: 'heavy minus sign', DeepL: 'signe moins lourd')
@@ -3133,44 +3133,44 @@
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔄-𝔜":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
     - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - T: "gothique"                              	# 	(DeepL translation)
 
  - "-":                                       	#  0xf000 - 0xf018
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - T: "gothique"                              	# 	(DeepL translation)
 
  - "𝔞-𝔷":                                       	#  0x1d51e - 0x1d537
     - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - T: "gothique"                              	# 	(DeepL translation)
 
  - "-":                                       	#  0xf01a - 0xf033
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - T: "gothique"                              	# 	(DeepL translation)
     
  - "𝕬-𝖅":                                       	#  0x1D56C - 0x1D585
-    - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - SPELL: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf040 - 0xf059
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "𝖆-𝖟":                                       	#  0x1d586 - 0x1d59f
-    - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - SPELL: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf05a - 0xf073
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "gothique"                              	# 	(DeepL translation)
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3180,24 +3180,24 @@
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf080 - 0xf098
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "𝕒-𝕫":                                       	#  0x1d552 - 0x1d56b            	
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "double barre"        # 	(en: 'double struck', DeepL translation)
+    - T: "double barre"        # 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf09a - 0xf0b3
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "𝟘-𝟡":                                       	#  0x1d7d8 - 0x1d7e1
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf0c0 - 0xf0c9
     - spell: "translate('.', '', '0123456789')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
- - "": [t: "double barre nahblah"]            	#  0xf0ca	(en: 'double struck nahblah', DeepL translation)
+ - "": [T: "double barre nahblah"]            	#  0xf0ca	(en: 'double struck nahblah', DeepL translation)
  - "": [t: "constante d'euler doublement frappée"]	#  0xf0cb	(en: 'double struck euler constant', DeepL translation)
  
  # script chars in math alphabetic block and also MathType private use area
@@ -3212,11 +3212,11 @@
     - t: "script"                               	# 	(DeepL translation)
  - "-":                                       	#  0xf11a - 0xf133
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "script"                               	# 	(DeepL translation)
+    - T: "script"                               	# 	(DeepL translation)
 
  # bold script chars in math alphabetic block and also MathType private use area
  - "𝓐-𝓩":                                       	#  0x1d4d0 - 0x1d4e9
-    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - t: "script"                               	# 	(DeepL translation)
 
     - test:
@@ -3225,7 +3225,7 @@
 
 
  - "-":                                       	#  0xf140 - 0xf159
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - t: "script"                               	# 	(DeepL translation)
 
     - test:
@@ -3234,7 +3234,7 @@
 
 
  - "𝓪-𝔃":                                       	#  0x1d4ea - 0x1d503
-    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
     - t: "script"                               	# 	(DeepL translation)
 
     - test:
@@ -3242,7 +3242,7 @@
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf15a - 0xf173
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - t: "script"                               	# 	(DeepL translation)
 
     - test:
@@ -3262,7 +3262,7 @@
             replace: []
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "ligature ae"]             	# 	(DeepL translation)
+        replace: [T: "ligature ae"]             	# 	(DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3280,7 +3280,7 @@
             replace: []
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "s pointu"]                	# 	(en: 'sharp s', DeepL translation)
+        replace: [T: "s pointu"]                	# 	(en: 'sharp s', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3298,7 +3298,7 @@
             replace: []
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "o avec trait"]            	# 	(en: 'o with stroke', DeepL translation)
+        replace: [T: "o avec trait"]            	# 	(en: 'o with stroke', DeepL translation)
     - test: 
         if: "$CapitalLetters_UseWord"
         then_test:
@@ -3311,36 +3311,36 @@
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
  - "-":                                       	#  0xf220 - 0xf236
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
-    - t: "double barre"                        	# 	(en: 'double struck', DeepL translation)
+    - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
- - "": [t: "double barre final sigma"]        	#  0xf237	(en: 'double struck final sigma', DeepL translation)
+ - "": [T: "double barre final sigma"]        	#  0xf237	(en: 'double struck final sigma', DeepL translation)
  - "": [t: "double rho frappé"]                	#  0xf250	(en: 'double struck rho', DeepL translation)
  - "": [t: "phi doublement frappé"]            	#  0xf251	(en: 'double struck phi', DeepL translation)
  - "𝐀-𝐙":                                       	#  0x1d400 - 0x1d419
-    - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf260 - 0xf279
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝐚-𝐳":                                       	#  0x1d41a - 0x1d433
-    - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf27a - 0xf293
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3360,14 +3360,14 @@
 
  - "𝑨-𝒁":                                       	#  0x1d468 - 0x1d481
     # - t: "bold italic"
-    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf2c8 - 0xf2e1
     # - t: "bold italic"
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3375,14 +3375,14 @@
 
  - "𝒂-𝒛":                                       	#  0x1d482 - 0x1d49b
     # - t: "bold italic"
-    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf2e2 - 0xf2fb
     # - t: "bold italic"
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3401,26 +3401,26 @@
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  
  - "𝗔-𝗭":                                       	#  0x1d5d4 - 0x1d5ed
-    - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf334 - 0xf34d
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝗮-𝘇":                                       	#  0x1d5ee - 0x1d607
-    - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf34e - 0xf367
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3442,14 +3442,14 @@
 
  - "𝘼-𝙕":                                       	#  0x1d63c - 0x1d655
     # - t: "bold italic"
-    - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf39c - 0xf3b5
     # - t: "bold italic"
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3457,14 +3457,14 @@
 
  - "𝙖-𝙯":                                       	#  0x1d656 - 0x1d66f
     # - t: "bold italic"
-    - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf3b6 - 0xf3cf
     # - t: "bold italic"
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3487,26 +3487,26 @@
  - "𝚥": [t: "dotless j"]                        	#  0x1d6a5
 
  - "𝚨-𝛀":                                       	#  0x1d6a8 - 0x1d6c0
-    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf408 - 0xf420
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝛂-𝛚":                                       	#  0x1d6c2 - 0x1d6da
-    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf422 - 0xf43a
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3516,13 +3516,13 @@
  - "𝛁": [t: "symbole mathématique gras nabla"]  	#  0x1d6c1	(en: 'bold nahblah', DeepL: 'gras nahblah')
 
  - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":                                   	#  0x1D6DB - 0x1D6E1
-    - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
+    - SPELL: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xF43C - 0xF441
-    - spell: "translate('.', '', '∂εθκφρπ')"
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3557,14 +3557,14 @@
 
  - "𝜜-𝜴":                                       	#  0x1d71c - 0x1d734
     # - t: "bold italic"
-    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf47c - 0xf494
     # - t: "bold italic"
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3572,14 +3572,14 @@
 
  - "𝜶-𝝎":                                       	#  0x1d736 - 0x1d74e
     # - t: "bold italic"
-    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf496 - 0xf4ae
     # - t: "bold italic"
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3587,14 +3587,14 @@
 
  - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":                                   	#  0x1d74f - 0x1d755
     # - t: "bold italic"
-    - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
+    - SPELL: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf422 - 0xf43a
     # - t: "bold italic"
-    - spell: "translate('.', '', '∂εθκφρπ')"
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3604,38 +3604,38 @@
  - "": [t: "gras italique nahblah"]            	#  0xf495	(en: 'bold italic nahblah', DeepL translation)
 
  - "𝝖-𝝮":                                       	#  0x1d756 - 0x1d76e
-    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
  - "-":                                       	#  0xf4b6 - 0xf4ce
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝝰-𝞈":                                       	#  0x1d770 - 0x1d788
-    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf4d0 - 0xf4e8
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":                                   	#  0x1d789 - 0x1d78f
-    - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
+    - SPELL: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf4e9 - 0xf4ef
-    - spell: "translate('.', '', '∂εθκφρπ')"
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3646,14 +3646,14 @@
 
  - "𝞐-𝞨":                                       	#  0x1d790 - 0x1d7a8
     # - t: "bold italic"
-    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf4f0 - 0xf508
     # - t: "bold italic"
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3661,14 +3661,14 @@
 
  - "𝞪-𝟂":                                       	#  0x1d7aa - 0x1d7c2
     # - t: "bold italic"
-    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf50a - 0xf522
     # - t: "bold italic"
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3676,14 +3676,14 @@
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":                                   	#  0x1d7c3 - 0x1d7c9
     # - t: "bold italic"
-    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+    - SPELL: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf523 - 0xf529
     # - t: "bold italic"
-    - spell: "translate('.', '', '∂εθκφρπ')"
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3693,27 +3693,27 @@
  - "𝞩": [t: "symbole mathématique sans empattement italique gras nabla"]	#  0x1d7a9	(en: 'bold nahblah', DeepL: 'gras nahblah')
 
  - "-":                                       	#  0xf52e - 0xf537  (old MathType)
-    - spell: "translate('.', '', '0123456789')"
+    - SPELL: "translate('.', '', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝟎-𝟗":                                       	#  0x1d7ce - 0x1d7d7
-    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+    - SPELL: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf52e - 0xf537  (old MathType)
-    - spell: "translate('.', '', '0123456789')"
+    - SPELL: "translate('.', '', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝟬-𝟵":                                       	#  0x1D7EC - 0x1D7F5
-    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+    - SPELL: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
@@ -3801,14 +3801,14 @@
             - if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                   if: "$DefaultToGiven"
-                  then: [t: "sachant"]            	# 	(en: 'given', DeepL translation)
+                  then: [T: "sachant"]            	# 	(en: 'given', DeepL translation)
                   else: [t: "barre verticale"]  	# 	(en: 'vertical line', DeepL: 'ligne verticale')
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [t: "ligne verticale"]      	# 	(en: 'vertical line', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [t: "tel que"]              	# 	(en: 'such that', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [t: "sachant"]                	# 	(en: 'given', DeepL translation)
+              then: [T: "sachant"]                	# 	(en: 'given', DeepL translation)
             - else: [t: "barre verticale"]      	# 	(en: 'divides', DeepL: 'divise')
  - "～": [t: "tilde"]                            	#  0xff5e
  - "￢": [t: "négation"]                         	#  0xffe2	(en: 'not', DeepL: 'non')
