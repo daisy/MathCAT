@@ -256,11 +256,13 @@
  - "‐": [T: "kötőjel"]                          	#  0x2010	(en: 'hyphen', DeepL translation)
  - "‑": [T: "kötőjel"]                          	#  0x2011	(en: 'hyphen', DeepL translation)
  - "‒": [T: "számjeles kötőjel"]                	#  0x2012	(en: 'figure dash', DeepL translation)
+ - "–": [T: "en kötőjel"]                       	#  0x2013	(en: 'en dash', DeepL translation)
+ - "—": [T: "em kötőjel"]                       	#  0x2014	(en: 'em dash', DeepL translation)
+ - "―": [T: "vízszintes sáv"]                   	#  0x2015	(en: 'horizontal bar', DeepL translation)
+ - "‖": [T: "dupla függőleges vonal"]           	#  0x2016	(en: 'double vertical line', DeepL translation)
  - "†": [T: "tőr"]                              	#  0x2020	(en: 'dagger', DeepL translation)
  - "‡": [T: "dupla tőr"]                        	#  0x2021	(en: 'double dagger', DeepL translation)
-
- - " - ": [T: "‡"]                              	#  0x2000 - 0x2007	(en: ' ', DeepL translation)
-
+ - " - ": [T: " "]                                 # 0x2000 - 0x2007
  - "•":                                         	#  0x2022
     - test: 
         if: "@data-chem-formula-op"
@@ -269,6 +271,8 @@
 
  - "‰": [T: "ezrelék"]                        	#  0x2030	(DeepL translation)
  - "‱": [T: "per tízezer"]                      	#  0x2031	(en: 'per ten thousand', DeepL translation)
+ - "′": [T: "prím"]                             	#  0x2032	(en: 'prime', DeepL translation)
+ - "″": [T: "dupla prím"]                       	#  0x2033	(en: 'double prime', DeepL translation)
  - "‴": [T: "hármas ikerprím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
  - "‵": [T: "fordított prím"]                   	#  0x2035	(en: 'reversed prime', DeepL translation)
  - "‶": [T: "fordított dupla prím"]         	#  0x2036	(en: 'reversed double prime', DeepL translation)
@@ -404,6 +408,7 @@
  - "℆": [T: "egyből"]                         	#  0x2106	(DeepL translation)
  - "ℇ": [T: "euler-állandó"]                    	#  0x2107	(en: 'euler's constant', DeepL translation)
  - "℈": [T: "skrupulusok"]                      	#  0x2108	(en: 'scruples', DeepL translation)
+ - "℉": [T: "fahrenheit fok"]                   	#  0x2109	(en: 'degrees fahrenheit', DeepL translation)
  - "ℊ": [T: "alsó index g"]                           	#  0x210a	(en: 'script g', DeepL translation)
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
     - T: "fraktur"                              	# 	(DeepL translation)
@@ -413,6 +418,7 @@
     - T: "dupla leütésű"                          	# 	(en: 'double struck', DeepL translation)
     - SPELL: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
+ - "ℎ": [T: "planck-állandó"]                   	#  0x210e	(en: 'planck constant', DeepL translation)
  - "ℏ": [T: "h bar"]                            	#  0x210f	(DeepL translation)
 
  - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
@@ -424,6 +430,11 @@
  - "℥": [T: "unciák"]                           	#  0x2125	(en: 'ounces', DeepL translation)
  - "℧": [T: "mhos"]                             	#  0x2127	(DeepL translation)
  - "℩": [T: "fordított jota"]                   	#  0x2129	(en: 'turned iota', DeepL translation)
+ - "Ω": [T: "ohm"]                              	#  0x2126	(en: 'ohms', DeepL translation)
+ - "℧": [T: "mhos"]                             	#  0x2127	(DeepL translation)
+ - "℩": [T: "fordított jota"]                   	#  0x2129	(en: 'turned iota', DeepL translation)
+ - "K": [T: "kelvin"]                           	#  0x212a	(DeepL translation)
+ - "Å": [T: "angström"]                         	#  0x212b	(en: 'angstroms', DeepL translation)
  - "ℯ": [T: "alsó index e"]                           	#  0x212f	(en: 'script e', DeepL translation)
 
    # coalesced some chars that use cap letters
@@ -624,15 +635,23 @@
          if: "$Verbosity!='Terse'"
          then: [T: "a(z)"]                         	# 	(en: 'the', DeepL translation)
      - T: "kiegészítése"                        	# 	(en: 'complement of', DeepL translation)
+ - "∃": [T: "létezik"]                          	#  0x2203	(en: 'there exists', DeepL translation)
+ - "∄": [T: "nem létezik"]                      	#  0x2204	(en: 'there does not exist', DeepL translation)
+ - "∅": [T: "üres halmaz"]                     	#  0x2205	(en: 'empty set', DeepL translation)
  - "∇": [T: "nahblah"]                          	#  0x2207	(DeepL translation)
  - "∋": [T: "tagként tartalmazza"]              	#  0x220b	(en: 'contains the member', DeepL translation)
  - "∌": [T: "tagként nem tartalmazza"]          	#  0x220c	(en: 'does not contain the member', DeepL translation)
  - "∍": [T: "részben tagként tartalmazza"]              	#  0x220d	(en: 'contains the member', DeepL translation)
  - "∎": [T: "bizonyítás vége"]                	#  0x220e	(en: 'end of proof', DeepL translation)
+ - "∏": [T: "produktum"]                           	#  0x220f	(en: 'product', DeepL translation)
+ - "∑": [T: "összeg"]                              	#  0x2211	(DeepL translation)
+ - "−": [T: "mínusz"]                           	#  0x2212	(en: 'minus', DeepL translation)
+ - "∓": [T: "mínusz vagy plusz"]                	#  0x2213	(en: 'minus or plus', DeepL translation)
  - "∔": [T: "pontozott plusz"]                       	#  0x2214	(en: 'dot plus', DeepL translation)
  - "∕": [T: "osztva"]                           	#  0x2215	(en: 'divided by', DeepL translation)
  - "∖": [T: "halmaz mínusz"]                	#  0x2216	(en: 'set minus', DeepL translation)
  - "∗": [T: "csillag operátor"]                             	#  0x2217	(en: 'times', DeepL translation)
+ - "∘": [T: "gyűrű operátor"]                     	#  0x2218	(en: 'composed with', DeepL translation)
  - "∙":                                         	#  0x2219
     - test: 
         if: "@data-chem-formula-op"
@@ -650,6 +669,21 @@
          then: [T: "a(z)"]                         	# 	(en: 'the', DeepL translation)
      - T: "negyedik gyöke"                      	# 	(en: 'fourth root of', DeepL translation)
  - "∢": [T: "gömbszög"]                         	#  0x2222	(en: 'spherical angle', DeepL translation)
+ - "∞": [T: "végtelen"]                         	#  0x221e	(en: 'infinity', DeepL translation)
+ - "∟": [T: "derékszög"]                        	#  0x221f	(en: 'right angle', DeepL translation)
+ - "∠": [T: "szög"]                             	#  0x2220	(en: 'angle', DeepL translation)
+ - "∡": [T: "mért szög"]                        	#  0x2221	(en: 'measured angle', DeepL translation)
+ - "∢": [T: "gömbszög"]                         	#  0x2222	(en: 'spherical angle', DeepL translation)
+ - "∣": [T: "osztója"]                           	#  0x2223	(en: 'divides', DeepL translation)
+ - "∤": [T: "nem osztója"]                       	#  0x2224	(en: 'does not divide', DeepL translation)
+ - "∧": [T: "logikai és"]                               	#  0x2227	(en: 'and', DeepL translation)
+ - "∨": [T: "logikai vagy"]                             	#  0x2228	(en: 'or', DeepL translation)
+ - "∩": [T: "metszéspont"]                    	#  0x2229	(en: 'intersection', DeepL translation)
+ - "∪": [T: "unió"]                             	#  0x222a	(en: 'union', DeepL translation)
+ - "∫": [T: "integrált"]                        	#  0x222b	(en: 'integral', DeepL translation)
+ - "∬": [T: "kettős integrál"]                  	#  0x222c	(en: 'double integral', DeepL translation)
+ - "∭": [T: "hármas integrál"]                  	#  0x222d	(en: 'triple integral', DeepL translation)
+ - "∮": [T: "kontúr integrál"]                   	#  0x222e	(en: 'contour integral', DeepL translation)
  - "∯": [T: "felszíni integrál"]                	#  0x222f	(en: 'surface integral', DeepL translation)
  - "∰": [T: "térfogati integrál"]               	#  0x2230	(en: 'volume integral', DeepL translation)
  - "∱": [T: "az óramutató járásával megegyező integrál"]	#  0x2231	(en: 'clockwise integral', DeepL translation)
@@ -670,6 +704,9 @@
          if: "$Verbosity!='Terse'"
          then: [T: "a(z)"]                        	# 	(en: 'is', DeepL translation)
      - T: "homotetikus"                       	# 	(en: 'homothetic to', DeepL translation)
+ - "∼": [T: "változik"]                         	#  0x223c	(en: 'varies with', DeepL translation)
+ - "∽": [T: "fordított tilde"]                  	#  0x223d	(en: 'reversed tilde', DeepL translation)
+ - "∿": [T: "szinuszhullám"]                    	#  0x223f	(en: 'sine wave', DeepL translation)
  - "≀": [T: "koszorú szorzat"]                   	#  0x2240	(en: 'wreath product', DeepL translation)
  - "≁": [T: "nem tilde"]                        	#  0x2241	(en: 'not tilde', DeepL translation)
  - "≂": [T: "mínusz tilde"]                     	#  0x2242	(en: 'minus tilde', DeepL translation)
@@ -872,6 +909,8 @@
          if: "$Verbosity!='Terse'"
          then: [T: "a(z)"]                        	# 	(en: 'is', DeepL translation)
      - T: "se nem nagyobb, se nem kisebb"       	# 	(en: 'neither greater than nor less than', DeepL translation)
+ - "≺": [T: "megelőzi"]                         	#  0x227a	(en: 'precedes', DeepL translation)
+ - "≻": [T: "követi"]                          	#  0x227b	(en: 'succeeds', DeepL translation)
  - "≼": [T: "megelőzi vagy egyenlő"]            	#  0x227c	(en: 'precedes or is equal to', DeepL translation)
  - "≽": [T: "követi vagy egyenlő"]             	#  0x227d	(en: 'succeeds or is equal to', DeepL translation)
  - "≾": [T: "megelőzi vagy egyenértékű"]        	#  0x227e	(en: 'precedes or is equivalent to', DeepL translation)
