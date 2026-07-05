@@ -286,6 +286,18 @@ fn source_gost_numbers_fractions_and_sets() -> Result<()> {
     let expr = r#"<math><mrow><mn>25</mn><mtext>кг</mtext></mrow></math>"#;
     test_braille("Russian", expr, "⠼⠃⠑⠅⠛")?;
 
+    let expr = r#"<math><mrow><mn>5</mn><mtext>м</mtext><mspace width="1em"/><mn>30</mn><mtext>см</mtext></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠑⠍⠀⠼⠉⠚⠎⠍")?;
+
+    let expr = r#"<math><mrow><mn>12</mn><msup><mtext>м</mtext><mn>2</mn></msup></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠁⠃⠍⠌⠆")?;
+
+    let expr = r#"<math><mrow><mn>9,8</mn><mtext>м</mtext><mo>/</mo><msup><mtext>с</mtext><mn>2</mn></msup></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠊⠂⠓⠍⠠⠌⠎⠌⠆")?;
+
+    let expr = r#"<math><mrow><mn>15</mn><mtext>Н</mtext><mo>&#x22C5;</mo><mtext>м</mtext></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠁⠑⠨⠝⠄⠍")?;
+
     let expr = r#"<math><mrow><mn>12</mn><mo intent=":blank">?</mo><mn>4</mn></mrow></math>"#;
     test_braille("Russian", expr, "⠼⠁⠃⠬⠙")?;
 
@@ -544,6 +556,12 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 
     let expr = r#"<math><mrow><mover accent="true"><mrow><mi>E</mi><mi>F</mi></mrow><mo stretchy="true">&#x23DC;</mo></mover><mo>=</mo><mover accent="true"><mrow><mi>K</mi><mi>L</mi></mrow><mo stretchy="true">&#x23DC;</mo></mover></mrow></math>"#;
     test_braille("Russian", expr, "⠸⠜⠨⠑⠋⠀⠶⠸⠜⠨⠅⠇")?;
+
+    let expr = r#"<math><mrow><mover accent="true"><mrow><mi>A</mi><mi>B</mi></mrow><mo stretchy="true">&#x2194;</mo></mover><mo>&#x2225;</mo><munder accentunder="true"><mrow><mi>C</mi><mi>D</mi></mrow><mo stretchy="true">&#x2194;</mo></munder></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠨⠒⠂⠂⠸⠸⠨⠉⠙⠰⠨⠒⠂⠂")?;
+
+    let expr = r#"<math><mrow><munder accentunder="true"><mrow><mi>A</mi><mi>B</mi></mrow><mo stretchy="true">&#x2192;</mo></munder><mo>=</mo><munder accentunder="true"><mrow><mi>K</mi><mi>L</mi></mrow><mo stretchy="true">&#xAF;</mo></munder></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠰⠨⠒⠂⠀⠶⠅⠇⠰⠨⠒")?;
 
     let expr = r#"<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠣⠠⠁⠀⠃⠨⠳⠉⠀⠙⠜")?;
