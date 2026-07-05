@@ -205,6 +205,9 @@ fn source_arithmetic_examples() -> Result<()> {
 
     let expr = r#"<math><mtable intent=":column-arithmetic"><mtr><mtd><mn>327</mn></mtd></mtr><mtr><mtd><mrow><mo>&#xD7;</mo><mn>548</mn></mrow></mtd></mtr><mtr><mtd><mn>2616</mn></mtd></mtr><mtr><mtd><mn>1308</mn></mtd></mtr><mtr><mtd><mrow><mo>=</mo><mn>179196</mn></mrow></mtd></mtr></mtable></math>"#;
     test_braille("Russian", expr, "⠼⠉⠃⠛⠨⠳⠦⠑⠙⠓⠨⠳⠃⠋⠁⠋⠨⠳⠁⠉⠚⠓⠨⠳⠶⠁⠛⠊⠁⠊⠋")?;
+
+    let expr = r#"<math><mtable intent=":long-division"><mtr><mtd><mn>2982</mn></mtd><mtd><mo>&#xF7;</mo></mtd><mtd><mn>14</mn></mtd><mtd><mo>=</mo></mtd><mtd><mn>213</mn></mtd></mtr><mtr><mtd><mn>28</mn></mtd></mtr><mtr><mtd><mn>18</mn></mtd></mtr><mtr><mtd><mn>14</mn></mtd></mtr><mtr><mtd><mn>42</mn></mtd></mtr><mtr><mtd><mn>42</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd></mtr></mtable></math>"#;
+    test_braille("Russian", expr, "⠼⠃⠊⠓⠃⠀⠴⠀⠼⠁⠙⠀⠶⠀⠼⠃⠁⠉⠨⠳⠃⠓⠨⠳⠁⠓⠨⠳⠁⠙⠨⠳⠙⠃⠨⠳⠙⠃⠨⠳⠚")?;
     return Ok(());
 }
 
@@ -560,6 +563,15 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mover accent="true"><mrow><mi>A</mi><mi>B</mi></mrow><mo stretchy="true">&#x2194;</mo></mover><mo>&#x2225;</mo><munder accentunder="true"><mrow><mi>C</mi><mi>D</mi></mrow><mo stretchy="true">&#x2194;</mo></munder></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠃⠨⠒⠂⠂⠸⠸⠨⠉⠙⠰⠨⠒⠂⠂")?;
 
+    let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x2192;</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠨⠒⠂")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#xAF;</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠨⠒")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mi>B</mi><mo>&#x2194;</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠃⠨⠒⠂⠂")?;
+
     let expr = r#"<math><mrow><munder accentunder="true"><mrow><mi>A</mi><mi>B</mi></mrow><mo stretchy="true">&#x2192;</mo></munder><mo>=</mo><munder accentunder="true"><mrow><mi>K</mi><mi>L</mi></mrow><mo stretchy="true">&#xAF;</mo></munder></mrow></math>"#;
     test_braille("Russian", expr, "⠨⠁⠃⠰⠨⠒⠂⠀⠶⠅⠇⠰⠨⠒")?;
 
@@ -568,6 +580,9 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 
     let expr = r#"<math><mrow><mo>{</mo><mtable><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mi>y</mi><mo>+</mo><mi>z</mi><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>+</mo><mn>3</mn><mi>z</mi><mo>=</mo><mn>2</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi><mo>+</mo><mn>2</mn><mi>z</mi><mo>=</mo><mn>5</mn></mrow></mtd></mtr></mtable></mrow></math>"#;
     test_braille("Russian", expr, "⠏⠀⠠⠭⠀⠖⠽⠀⠖⠵⠀⠶⠼⠁⠨⠳⠇⠀⠠⠭⠀⠖⠼⠃⠠⠽⠀⠖⠼⠉⠠⠵⠀⠶⠼⠃⠨⠳⠧⠀⠠⠭⠀⠖⠼⠉⠠⠽⠀⠖⠼⠃⠠⠵⠀⠶⠼⠑")?;
+
+    let expr = r#"<math><mrow><mtable><mtr><mtd><mrow><mn>1</mn><mtext>ваза</mtext><mo>-</mo><mn>5</mn><mtext>цветов</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mn>2</mn><mtext>ваза</mtext><mo>-</mo><mn>3</mn><mtext>цветка</mtext></mrow></mtd></mtr><mtr><mtd><mrow><mn>3</mn><mtext>ваза</mtext><mo>-</mo><mo>?</mo><mtext>цветов</mtext></mrow></mtd></mtr></mtable><mo>}</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠁⠺⠁⠵⠁⠀⠤⠼⠑⠉⠺⠑⠞⠕⠺⠀⠹⠨⠳⠼⠃⠺⠁⠵⠁⠀⠤⠼⠉⠉⠺⠑⠞⠅⠁⠀⠸⠨⠳⠼⠉⠺⠁⠵⠁⠀⠤⠠⠢⠉⠺⠑⠞⠕⠺⠀⠼")?;
 
     let expr = r#"<math><mtable><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mi>y</mi><mo>=</mo><mn>7</mn></mrow></mtd></mtr><mtr><mtd><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi><mo>=</mo><mn>17</mn></mrow></mtd></mtr></mtable></math>"#;
     test_braille("Russian", expr, "⠠⠭⠀⠖⠽⠀⠶⠼⠛⠨⠳⠼⠃⠠⠭⠀⠖⠼⠉⠠⠽⠀⠶⠼⠁⠛")?;
@@ -697,5 +712,42 @@ fn source_gost_logic_arrows() -> Result<()> {
 
     let expr = r#"<math><mrow><mi>&#x2203;</mi><mi>x</mi><mo>:</mo><mi>P</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow></math>"#;
     test_braille("Russian", expr, "⠫⠢⠠⠭⠀⠲⠨⠏⠣⠠⠭⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn source_less_common_math_symbols() -> Result<()> {
+    let expr = r#"<math><mrow><mn>3</mn><mo>&#xB1;</mo><mn>2</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠉⠀⠖⠤⠼⠃")?;
+
+    let expr = r#"<math><mrow><mi>x</mi><mo>&#x2248;</mo><mi>y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠀⠢⠢⠽")?;
+
+    let expr = r#"<math><mrow><mi>a</mi><mo>&#x2260;</mo><mi>b</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠀⠾⠃")?;
+
+    let expr = r#"<math><mrow><mi>x</mi><mo>&#x2264;</mo><mn>1</mn><mo>&#x2264;</mo><mi>y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠀⠪⠶⠼⠁⠀⠪⠶⠠⠽")?;
+
+    let expr = r#"<math><mrow><mi>y</mi><mo>&#x2265;</mo><mn>0</mn></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠽⠀⠕⠶⠼⠚")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mo>&#x2234;</mo><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠠⠡⠀⠃")?;
+
+    let expr = r#"<math><mrow><mi>B</mi><mo>&#x2235;</mo><mi>A</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠃⠀⠈⠌⠀⠁")?;
+
+    let expr = r#"<math><mrow><mi>&#x2202;</mi><mi>f</mi><mo>/</mo><mi>&#x2202;</mi><mi>x</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠹⠠⠋⠠⠌⠹⠭")?;
+
+    let expr = r#"<math><mrow><mi>&#x2207;</mi><mi>f</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠫⠴⠠⠋")?;
+
+    let expr = r#"<math><mrow><mi>a</mi><mo>&#x2223;</mo><mi>b</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠸⠃")?;
+
+    let expr = r#"<math><mrow><mi>a</mi><mo>&#x2224;</mo><mi>b</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠁⠀⠼⠀⠃")?;
     return Ok(());
 }
