@@ -12,7 +12,7 @@ fn special_alphabet_chars() -> Result<()> {
   let expr = "<math> <mi>ℍ</mi><mo>,</mo><mi>ℿ</mi></math>";
   test("hu", "SimpleSpeak", expr, "dupla leütésű nagy h, vessző; dupla leütésű nagy pí")?;
   let expr = "<math> <mi>ℐ</mi><mo>,</mo><mi>ℳ</mi></math>";
-  test("hu", "SimpleSpeak", expr, "script nagy i vessző, script nagy m")?;
+  test("hu", "SimpleSpeak", expr, "alsó index nagy i, vessző, alsó index nagy m")?;
   return Ok(());
 
 }
@@ -37,7 +37,7 @@ fn greek() -> Result<()> {
 #[test]
 fn cap_cyrillic() -> Result<()> {
     let expr = "<math> <mi>А</mi><mo>,</mo><mi>Я</mi></math>";
-    test("hu", "SimpleSpeak", expr, "nagybetű а vessző, nagybetű ya")?;
+    test("hu", "SimpleSpeak", expr, "nagy а vessző, nagy ciril ya")?;
     return Ok(());
 
 }
@@ -120,14 +120,14 @@ fn double_struck() -> Result<()> {
 #[test]
 fn script() -> Result<()> {
     let expr = "<math> <mi>𝒜</mi><mo>,</mo><mi>𝒵</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script nagy a vessző, script nagy z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index nagy a, vessző, alsó index nagy z")?;
     let expr = "<math> <mi>𝒶</mi><mo>,</mo><mi>𝓏</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script a vessző, script z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index a vessző, alsó index z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script nagy a vessző, script nagy z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index nagy a, vessző, alsó index nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script a vessző, script z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index a vessző, alsó index z")?;
     return Ok(());
 
 }
@@ -136,14 +136,14 @@ fn script() -> Result<()> {
 #[test]
 fn bold_script() -> Result<()> {
     let expr = "<math> <mi>𝓐</mi><mo>,</mo><mi>𝓩</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script félkövér nagy a, vessző; script félkövér nagy z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index félkövér nagy a, vessző; alsó index félkövér nagy z")?;
     let expr = "<math> <mi>𝓪</mi><mo>,</mo><mi>𝔃</mi></math>";
-    test("hu", "SimpleSpeak", expr, "script félkövér a, vessző, script félkövér z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index félkövér a, vessző; alsó index félkövér z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script félkövér nagy a, vessző; script félkövér nagy z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index félkövér nagy a, vessző; alsó index félkövér nagy z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("hu", "SimpleSpeak", expr, "script félkövér a, vessző, script félkövér z")?;
+    test("hu", "SimpleSpeak", expr, "alsó index félkövér a, vessző; alsó index félkövér z")?;
     return Ok(());
 
 }
@@ -434,7 +434,7 @@ fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("hu", "SimpleSpeak", expr, "bekarikázott 1 vessző, bekarikázott 9")?;
   let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
-  test("hu", "SimpleSpeak", expr, "fekete bekarikázott egy, vessző; bekarikázott szám ötven")?;
+  test("hu", "SimpleSpeak", expr, "fekete bekarikázott egy, vessző; bekarikázott ötvenes szám")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("hu", "SimpleSpeak", expr, "zárójeles 1 vessző, zárójeles 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";
