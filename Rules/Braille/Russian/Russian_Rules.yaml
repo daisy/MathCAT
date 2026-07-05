@@ -1284,9 +1284,13 @@
   tag: mmultiscripts
   match:
   - "not(ancestor::*[@data-chem-equation or contains(@intent, ':chemical-equation')]) and"
-  - "count(m:mprescripts/preceding-sibling::*) = 1 and"
+  - "count(m:mprescripts/preceding-sibling::*) >= 1 and"
   - "(m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''] or"
   - " m:mprescripts/following-sibling::*[2][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != ''])"
+  variables:
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)"
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) - count($Prescripts))]"
   replace:
   - test:
       if: "m:mprescripts/following-sibling::*[1][not(self::m:none) and DefinitionValue(., 'Braille', 'RussianLabelMarks') != '']"
@@ -1299,6 +1303,35 @@
       - t: "⠨"
       - x: "DefinitionValue(m:mprescripts/following-sibling::*[2], 'Braille', 'RussianLabelMarks')"
   - x: "*[1]"
+  - test:
+      if: "$Postscripts"
+      then:
+      - test:
+          if: "not($Postscripts[1][self::m:none])"
+          then:
+          - t: "⠡"
+          - test:
+            - if: "$Postscripts[1][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[1]"
+          - test:
+              if: "not($Postscripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[1][.='∞'])"
+              then: [t: "⠱"]
+      - test:
+          if: "not($Postscripts[2][self::m:none])"
+          then:
+          - t: "⠌"
+          - test:
+            - if: "$Postscripts[2][self::m:mn and translate(., '0123456789', '')='']"
+              then:
+              - x: "BrailleChars(translate($Postscripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+            - else:
+              - x: "$Postscripts[2]"
+          - test:
+              if: "not($Postscripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[2][.='∞'])"
+              then: [t: "⠱"]
 
 -
   name: default
