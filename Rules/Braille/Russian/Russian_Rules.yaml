@@ -2,6 +2,45 @@
 # Russian mathematical braille rules.
 
 -
+  name: flat-vector-arrow-postfix-operator
+  tag: mo
+  match:
+  - "not(following-sibling::*) and"
+  - "translate(., '→⟶⇀⃗', '')='' and"
+  - "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 0"
+  replace:
+  - test:
+      if: "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1 or string-length(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])][1]) > 1"
+      then: [t: "⠨⠒⠂"]
+      else: [t: "⠒⠂"]
+
+-
+  name: flat-vector-bar-postfix-operator
+  tag: mo
+  match:
+  - "not(following-sibling::*) and"
+  - "translate(., '¯‾_￣', '')='' and"
+  - "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 0"
+  replace:
+  - test:
+      if: "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1 or string-length(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])][1]) > 1"
+      then: [t: "⠨⠒"]
+      else: [t: "⠒"]
+
+-
+  name: flat-geometry-line-double-arrow-postfix-operator
+  tag: mo
+  match:
+  - "not(following-sibling::*) and"
+  - "translate(., '↔⟷', '')='' and"
+  - "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 0"
+  replace:
+  - test:
+      if: "count(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1 or string-length(preceding-sibling::*[not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])][1]) > 1"
+      then: [t: "⠨⠒⠂⠂"]
+      else: [t: "⠒⠂⠂"]
+
+-
   name: whitespace
   tag: "!*"
   match: "not(self::m:math) and not($MatchingWhitespace) and (@data-previous-space-width >= 0.25 or @data-following-space-width >= 0.25)"
@@ -41,6 +80,75 @@
   - x: "BrailleChars(translate(*[3], '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
 
 -
+  name: flat-vector-arrow-postfix-math
+  tag: math
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '→⟶⇀⃗', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  variables:
+  - RowStart: "''"
+  - RowEnd: "''"
+  - InSystemLeftBrace: "false()"
+  - InSystemRightBrace: "false()"
+  - InChemElementGroup: "false()"
+  - InColumnArithmetic: "false()"
+  - InLongDivision: "false()"
+  - MatchingWhitespace: "false()"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒⠂"]
+      else: [t: "⠒⠂"]
+
+-
+  name: flat-vector-bar-postfix-math
+  tag: math
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '¯‾_￣', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  variables:
+  - RowStart: "''"
+  - RowEnd: "''"
+  - InSystemLeftBrace: "false()"
+  - InSystemRightBrace: "false()"
+  - InChemElementGroup: "false()"
+  - InColumnArithmetic: "false()"
+  - InLongDivision: "false()"
+  - MatchingWhitespace: "false()"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒"]
+      else: [t: "⠒"]
+
+-
+  name: flat-geometry-line-double-arrow-postfix-math
+  tag: math
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '↔⟷', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  variables:
+  - RowStart: "''"
+  - RowEnd: "''"
+  - InSystemLeftBrace: "false()"
+  - InSystemRightBrace: "false()"
+  - InChemElementGroup: "false()"
+  - InColumnArithmetic: "false()"
+  - InLongDivision: "false()"
+  - MatchingWhitespace: "false()"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒⠂⠂"]
+      else: [t: "⠒⠂⠂"]
+
+-
   name: unicode-override
   tag: "*"
   match: "@data-unicode"
@@ -54,8 +162,10 @@
   - RowStart: "''"
   - RowEnd: "''"
   - InSystemLeftBrace: "false()"
+  - InSystemRightBrace: "false()"
   - InChemElementGroup: "false()"
   - InColumnArithmetic: "false()"
+  - InLongDivision: "false()"
   - MatchingWhitespace: "false()"
   replace: [x: "*"]
 
@@ -63,6 +173,12 @@
   name: system-left-brace-opener
   tag: mo
   match: "not(preceding-sibling::*) and following-sibling::*[1][self::m:mtable] and count(../*)=2"
+  replace: [t: ""]
+
+-
+  name: system-right-brace-closer
+  tag: mo
+  match: "not(following-sibling::*) and preceding-sibling::*[1][self::m:mtable] and count(../*)=2"
   replace: [t: ""]
 
 -
@@ -105,6 +221,48 @@
   - x: "*[1]"
   - t: "⠄"
   - x: "*[3]"
+
+-
+  name: flat-vector-arrow-postfix
+  tag: mrow
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '→⟶⇀⃗', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒⠂"]
+      else: [t: "⠒⠂"]
+
+-
+  name: flat-vector-bar-postfix
+  tag: mrow
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '¯‾_￣', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒"]
+      else: [t: "⠒"]
+
+-
+  name: flat-geometry-line-double-arrow-postfix
+  tag: mrow
+  match:
+  - "count(*) >= 2 and"
+  - "*[last()][self::m:mo and translate(., '↔⟷', '')=''] and"
+  - "not(*[position() < last()][not(self::m:mi or self::m:msub or self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])])"
+  replace:
+  - x: "*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]"
+  - test:
+      if: "count(*[position() < last() and not(self::m:mo[.='⁡' or .='⁢' or .='⁣' or .='⁤'])]) > 1"
+      then: [t: "⠨⠒⠂⠂"]
+      else: [t: "⠒⠂⠂"]
 
 -
   name: periodic-decimal-row
@@ -331,6 +489,16 @@
   - x: "*[3]"
 
 -
+  name: long-division-table
+  tag: mtable
+  variables:
+  - InLongDivision: "true()"
+  - RowStart: "''"
+  - RowEnd: "''"
+  match: "contains(@intent, ':long-division') or contains(@intent, ':angle-division')"
+  replace: [x: "*"]
+
+-
   name: column-arithmetic-table
   tag: mtable
   variables:
@@ -338,6 +506,16 @@
   - RowStart: "''"
   - RowEnd: "''"
   match: "contains(@intent, ':column-arithmetic')"
+  replace: [x: "*"]
+
+-
+  name: system-right-brace-table
+  tag: mtable
+  variables:
+  - InSystemRightBrace: "true()"
+  - RowStart: "''"
+  - RowEnd: "''"
+  match: "not(preceding-sibling::*) and count(../*)=2"
   replace: [x: "*"]
 
 -
@@ -394,6 +572,13 @@
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: [x: "*"]
+  - test:
+    - if: "$InSystemRightBrace and not(preceding-sibling::*)"
+      then: [t: "⠀⠹"]
+    - else_if: "$InSystemRightBrace and not(following-sibling::*)"
+      then: [t: "⠀⠼"]
+    - else_if: "$InSystemRightBrace"
+      then: [t: "⠀⠸"]
   - x: $RowEnd
 
 -
@@ -1270,6 +1455,15 @@
   - t: "#"
 
 -
+  name: long-division-angle-operator
+  tag: mo
+  match:
+  - "$InLongDivision and"
+  - "(.='÷' or .='⟌')"
+  replace:
+  - t: "⠴"
+
+-
   name: column-arithmetic-operator
   tag: mo
   match:
@@ -1314,6 +1508,16 @@
   match: "."
   replace:
   - x: "text()"
+
+-
+  name: long-division-continuation-number
+  tag: mn
+  match:
+  - "$InLongDivision and"
+  - "ancestor::m:mtr[preceding-sibling::*] and"
+  - "translate(., '0123456789', '')=''"
+  replace:
+  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
 
 -
   name: column-arithmetic-continuation-number
