@@ -413,6 +413,31 @@ fn source_typeform_and_mathvariant_indicators() -> Result<()> {
 }
 
 #[test]
+fn source_gost_58511_typeform_layout_indicators() -> Result<()> {
+    let expr = r#"<math><mrow><mi mathvariant="bold">x</mi><mi mathvariant="bold">y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠻⠠⠭⠽⠻")?;
+
+    let expr = r#"<math><mrow><mi mathvariant="italic">a</mi><mi mathvariant="italic">b</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠁⠸⠸⠃⠸")?;
+
+    let expr = r#"<math><mrow><mi mathvariant="bold-italic">x</mi><mi mathvariant="bold-italic">y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠻⠸⠠⠭⠽⠸⠻")?;
+
+    let expr = r#"<math><mi mathvariant="sans-serif">x</mi></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠭⠸")?;
+
+    let expr = r#"<math><mstyle mathsize="small"><mi>x</mi></mstyle></math>"#;
+    test_braille("Russian", expr, "⠠⠭")?;
+
+    let expr = r#"<math><mrow><mi>A</mi><mspace width="0.5em"/><mi>B</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠨⠁⠀⠃")?;
+
+    let expr = r#"<math><mrow><mi>x</mi><mtext>при</mtext><mi>y</mi></mrow></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠏⠗⠊⠽")?;
+    return Ok(());
+}
+
+#[test]
 fn wikipedia_times_divide() -> Result<()> {
     let expr = r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#;
     test_braille("Russian", expr, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉")?;
@@ -618,8 +643,17 @@ fn source_label_marks() -> Result<()> {
     let expr = r#"<math><mover accent="true"><mi>x</mi><mo>&#x2217;</mo></mover></math>"#;
     test_braille("Russian", expr, "⠠⠭⠘⠆")?;
 
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>?</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠘⠠⠢")?;
+
+    let expr = r#"<math><mover accent="true"><mi>x</mi><mo>&#x2190;</mo></mover></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠘⠦⠶")?;
+
     let expr = r#"<math><msup><mi>x</mi><mo>&#x2032;</mo></msup></math>"#;
     test_braille("Russian", expr, "⠠⠭⠔")?;
+
+    let expr = r#"<math><msup><mi>x</mi><mo>&#x2190;</mo></msup></math>"#;
+    test_braille("Russian", expr, "⠠⠭⠨⠦⠶")?;
 
     let expr = r#"<math><munder accentunder="true"><mi>x</mi><mo>~</mo></munder></math>"#;
     test_braille("Russian", expr, "⠠⠭⠰⠢")?;
@@ -653,6 +687,15 @@ fn source_label_marks() -> Result<()> {
 
     let expr = r#"<math><mrow><mi>a</mi><mo>&#x2370;</mo><mmultiscripts><mi>x</mi><mprescripts/><none/><mo>&#x25A1;</mo></mmultiscripts></mrow></math>"#;
     test_braille("Russian", expr, "⠠⠁⠐⠨⠶⠭")?;
+
+    let expr = r#"<math><mmultiscripts><mi>x</mi><mn>1</mn><none/><mprescripts/><mo>&#x2217;</mo><none/></mmultiscripts></math>"#;
+    test_braille("Russian", expr, "⠸⠆⠠⠭⠡⠂")?;
+
+    let expr = r#"<math><mmultiscripts><mi>x</mi><mi>n</mi><mn>2</mn><mprescripts/><none/><mo>&#x2190;</mo></mmultiscripts></math>"#;
+    test_braille("Russian", expr, "⠨⠦⠶⠠⠭⠡⠝⠱⠌⠆")?;
+
+    let expr = r#"<math><mmultiscripts><mn>7</mn><mi>i</mi><mn>3</mn><mprescripts/><mo>?</mo><none/></mmultiscripts></math>"#;
+    test_braille("Russian", expr, "⠸⠠⠢⠼⠛⠡⠠⠊⠱⠌⠒")?;
 
     let expr = r#"<math><msubsup><mover accent="true"><mi>x</mi><mo>~</mo></mover><mn>1</mn><mn>2</mn></msubsup></math>"#;
     test_braille("Russian", expr, "⠠⠭⠢⠡⠼⠁⠌⠼⠃⠱")?;
