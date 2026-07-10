@@ -2345,3 +2345,12 @@ fn column_3_by_1_matrix_accusative() -> Result<()> {
     "κεφαλαίο άλφα, ισούται με; 3 επί ένα πίνακα-στήλη; 1; 2; 3")?;
     return Ok(());
   }
+#[test]
+fn log_with_base_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi><mo>=</mo><msub><mi>log</mi><mi>&#x3B2;</mi></msub><mfenced><mi>&#x3B1;</mi></mfenced></math>";
+  test("el", "SimpleSpeak", expr,
+    "x ισούται με; το λογάριθμο με βάση βήτα; του άλφα")?;
+    return Ok(());
+  }
+  // theodora. fails Now reads: x ισούται με; ο λογάριθμος με βάση βήτα; του άλφα
+  //the old log with base and log base power don't work so we can't introduce rules for accisative like plain log or ln
