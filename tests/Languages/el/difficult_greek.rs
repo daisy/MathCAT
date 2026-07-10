@@ -1841,10 +1841,9 @@ fn twentythree() -> Result<()> {
     </msqrt>
     </mrow>
     </math>"#;
-    test("el", "ClearSpeak", expr, "η τετραγωνική ρίζα του 1 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν αποσιωπητικά, τέλος ρίζας, τέλος ρίζας, τέλος ρίζας, τέλος ρίζας")?;
+    test("el", "ClearSpeak", expr, "η τετραγωνική ρίζα του 1 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν αποσιωπητικά")?;
     return Ok(());
-    //theodora. fails. Now reads: η τετραγωνική ρίζα του 1 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν τρεις τελείες
-    // it's not understood where each root ends
+    //theodora. fails. Now reads: η τετραγωνική ρίζα του 1 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν; η τετραγωνική ρίζα του 2 συν αποσιωπητικά
 }
 #[test]
 fn twentyfour() -> Result<()> {
@@ -1892,9 +1891,9 @@ fn twentyfour() -> Result<()> {
     <mn>1</mn>
     </mrow>
     </math>"#;
-    test("el", "ClearSpeak", expr, "εφαπτομένη του; ανοίγει παρένθεση, 22.5 μοίρες; κλείνει παρένθεση; ισούται με; το κλάσμα με αριθμητή; η τετραγωνική ρίζα του 2 μείον, η τετραγωνική ρίζα του 2; και παρονομαστή η τετραγωνική ρίζα του 2 συν, η τετραγωνική ρίζα του 2; ισούται με; η τετραγωνική ρίζα του 2; μείον 1")?;
+    test("el", "ClearSpeak", expr, "εφαπτομένη του; ανοίγει παρένθεση, 22.5 μοίρες; κλείνει παρένθεση; ισούται με; το κλάσμα με αριθμητή; η τετραγωνική ρίζα του 2 μείον, η τετραγωνική ρίζα του 2; και παρονομαστή η τετραγωνική ρίζα του 2 συν, η τετραγωνική ρίζα του 2; ισούται με; την τετραγωνική ρίζα του 2; μείον 1")?;
     return Ok(());
-    //theodora. 22.5 --> 225
+    //theodora. 22.5 --> 225 also fails accusative rule
 }
 #[test]
 fn twentyfive() -> Result<()> {
@@ -2067,7 +2066,7 @@ fn test_root_after_operator_frac_nominative() -> Result<()> {
 }
 
 #[test]
-fn test_root_after_operator_frac_nominative2() -> Result<()> {
+fn test_root_after_operator_frac_accusative2() -> Result<()> {
     let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mfrac><mn>1</mn><mi>y</mi></mfrac><mo>=</mo><msqrt><mn>2</mn></msqrt></math>";
     test("el", "ClearSpeak", expr, "x στο τετράγωνο, συν 1 προς y; ισούται με, την τετραγωνική ρίζα του 2")?;
     return Ok(());
@@ -2250,6 +2249,14 @@ fn diagonal_matrix_accusative() -> Result<()> {
     return Ok(());
 }
 #[test]
+fn diagonal_matrix_accusative_2() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>]</mo></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με; τον 2 επί 2 διαγώνιο πίνακα; στήλη 1; 1; στήλη 2; 2")?;
+    return Ok(());
+  }
+
+#[test]
 fn diagonal_matrix_nominative() -> Result<()> { 
     let expr = r#"<math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo>(</mo><mtable><mtr><mtd><msub><mi>&#x3A5;</mi><mn>1</mn></msub></mtd></mtr><mtr><mtd><msub><mi>&#x3A5;</mi><mn>2</mn></msub></mtd></mtr></mtable><mo>)</mo></mrow><mo>=</mo><mn>2</mn><mo>(</mo><mtable><mtr><mtd><mi>&#x3A7;</mi></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mi>&#x3A7;</mi></mtd></mtr></mtable><mo>)</mo></math>"#;
     test("el", "ClearSpeak", expr, "2 επί ένα πίνακας-στήλη; γραμμή 1; κεφαλαίο ύψιλον δείκτης 1; γραμμή 2; κεφαλαίο ύψιλον δείκτης 2; ισούται με; 2; ο 2 επί 2 διαγώνιος πίνακας; στήλη 1; κεφαλαίο χ; στήλη 2; κεφαλαίο χ")?;
@@ -2295,11 +2302,46 @@ fn union_real_numbers_munder() -> Result<()> { //
     return Ok(());
 
   }
-    #[test]
+#[test]
 fn intersection_munder() -> Result<()> { //
     let expr = r#"<math xmlns="http://www.w3.org/1998/Math/MathML"><munder><mo>&#x2229;</mo><mrow><mi>a</mi><mo>&#x2208;</mo><mi mathvariant="normal">&#x211D;</mi></mrow></munder><mi>a</mi><mo>+</mo><mi>b</mi></math>"#;
-    // TODO: add expected speech
     test("el", "ClearSpeak", expr, "τομή για a ανήκει, στους πραγματικούς αριθμούς; a συν b")?;
     return Ok(());
   }
-  
+#[test]
+fn zero_matrix_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mo>[</mo><mtable><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo>]</mo></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με, τον 2 επί 2 μηδενικό πίνακα")?;
+    return Ok(());
+  }
+
+#[test]
+fn identity_matrix_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με, τον 2 επί 2 μοναδιαίο πίνακα")?;
+    return Ok(());
+  }
+
+#[test]
+fn column_2_by_1_matrix_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mfenced><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable></mfenced></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με; 2 επί ένα πίνακα-στήλη; 1; 2")?;
+    return Ok(());
+  }
+#[test]
+fn row_matrix_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable></mfenced></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με; ένα επί 2 πίνακα-γραμμή; 1, 2")?;
+    return Ok(());
+  }
+#[test]
+fn column_3_by_1_matrix_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>&#x391;</mi><mo>=</mo><mfenced><mtable><mtr><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd></mtr></mtable></mfenced></math>";
+  test("el", "SimpleSpeak", expr,
+    "κεφαλαίο άλφα, ισούται με; 3 επί ένα πίνακα-στήλη; 1; 2; 3")?;
+    return Ok(());
+  }

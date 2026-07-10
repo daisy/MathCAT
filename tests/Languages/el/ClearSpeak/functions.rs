@@ -215,7 +215,7 @@ fn test_functions_none_pref() -> Result<()> {
 }
 
 #[test]
-fn stest_functions_none_pref_multiple_arg() -> Result<()> {
+fn test_functions_none_pref_multiple_arg() -> Result<()> {
     let expr = "<math><mi>B</mi><mrow><mo>(</mo> <mrow> <mn>2</mn><mo>,</mo><mn>6</mn></mrow> <mo>)</mo></mrow>
      </math>";
     test_ClearSpeak("el", "ClearSpeak_Functions", "None",expr,

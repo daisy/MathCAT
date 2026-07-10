@@ -33,14 +33,17 @@
   tag: square-root
   match: "."
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then:
+  - with:
+  #theodora. added rule for reading greek accusative after an operator e.g "ισούται με"
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
       - test:
-          if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-          then: [t: "την"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
-          else: [t: "η"]
-#      then: [t: "η"]      # phrase('the' square root of 25) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "την"]
+              else: [t: "η"] 
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
@@ -69,13 +72,17 @@
   tag: root
   match: "."
   replace:
-  - test:
-    - if: "$Verbosity!='Terse'"
-      then:
+  #theodora. added rule for reading greek accusative after an operator e.g. "ισούται με"
+  - with:
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
       - test:
-          if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-          then: [t: "την"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
-          else: [t: "η"]        
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "την"]
+              else: [t: "η"]        
 #      then: [t: "η"]
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
@@ -494,17 +501,18 @@
 #
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
   name: ClearSpeak-absolute-value
-  tag: absolute-value
+  tag: absolute-value  
   match: "."
-  # theodora.added WordToSayGen
-  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικός αριθμός', 'απόλυτη τιμή')", WordToSayGen: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικού αριθμού', 'απόλυτης τιμής')", WordToSayAcc: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικό αριθμό', 'απόλυτη τιμή')"]
+  # added WordToSayGen
+  #theodora. added rule for reading greek accusative after an operator "ισούται με". generally seems to work or not interfere
+  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικός αριθμός', 'απόλυτη τιμή')", WordToSayGen: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικού αριθμού', 'απόλυτης τιμής')", WordToSayAcc: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'πληθικό αριθμό', 'απόλυτη τιμή')" , IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: ""]
+      then: [t: ""]   #theodora. left blank for now but it needs rules for different cases
   - test:
-      if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-      then:   #theodora. added rule for reading greek accusative after an operator "ισούται με". generally seems to work or not interfere
+      if: "$IsAccusative"
+      then:
       - x: "$WordToSayAcc"
       else:
       - x: "$WordToSay"
@@ -671,44 +679,36 @@
                                     
   replace:
   - bookmark: "@id"
-  - test:
-    - if: "ancestor::m:mrow[1]/preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')] and $Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [t: "το"]   #theodora = το όχι τον για να πιάνει και τον λογάριθμο και το l n. πάνω μπορέι να χρειαστεί να προσθέσω κι άλλα σύμβολα που τελειώνουν με "με" ή "από"
-    - else_if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then:  [t: "ο"] #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
-  
-#      if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
- #     then: [t: "ο"]      # phrase('the' square root of 25)
-  - test:
+  # theodora. rule for accusative after an operator e.g. "ισούται με"
+  - with:
+      variables: [IsAccusative: "ancestor::m:mrow[1]/preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
+      - test:
+        - if: "$IsAccusative and $Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
+          then: [t: "το"]    #theodora = το όχι τον για να πιάνει και τον λογάριθμο και το l n.
+        - else_if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
+          then: [t: "ο"]
+      - test:
                           
                 
-    - if: ".='log'"
-      then:
-      - test:
-        - if: "ancestor::m:mrow[1]/preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-          then: [t: "λογάριθμο"]
-          else: [t: "λογάριθμος"]
-    - else:
-      - test:
-        - if: "$ClearSpeak_Log != 'LnAsNaturalLog'"
-          then: [spell: "'ln'"]
-        - else_if: "ancestor::m:mrow[1]/preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-          then: [t: "φυσικό λογάριθμο"]
-          else: [t: "φυσικός λογάριθμος"]
+        - if: ".='log'"
+          then:
+          - test:
+            - if: "$IsAccusative"
+              then: [t: "λογάριθμο"]
+              else: [t: "λογάριθμος"]
+        - else:
+          - test:
+            - if: "$ClearSpeak_Log != 'LnAsNaturalLog'"
+              then: [spell: "'ln'"]
+            - else_if: "$IsAccusative"
+              then: [t: "φυσικό λογάριθμο"]
+              else: [t: "φυσικός λογάριθμος"]
       
-
+#      if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
+ #     then: [t: "ο"]      # phrase('the' square root of 25)
 #      then: [t: "λογάριθμος"]
-#    - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
-                                                                                                                       
-                               
-           
-             
-                                                          
-                                                                
-             
-                                  
-                                             
-                                                     
+#    - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"                                              
 #      then: [t: "φυσικός λογάριθμος"]      # phrase(the 'natural log' of x)
 #      else: [spell: "'ln'"]
                                                          

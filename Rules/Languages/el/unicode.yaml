@@ -378,15 +378,18 @@
  - "∄": [t: "δεν υπάρχει"]                      	#  0x2204	(en: 'there does not exist')
  - "∅": [t: "κενό σύνολο"]                      	#  0x2205	(en: 'empty set', google: 'άδειο σετ')
  - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then:
-         - test:
-             if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-             then: [t: "τη"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
-             else: [t: "η"]
+    - with:
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"] 
+      replace:
+      - test: 
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
+              then: [t: "τη"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+              else: [t: "η"]
  #        then: [t: "η"]                         	# 	(en: 'the', google translation) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
-     - t: "λαπλασιανή"                      	# 	(en: 'laplacian of', google: 'laplacian του')
+      - t: "λαπλασιανή"                      	# 	(en: 'laplacian of', google: 'laplacian του')
  - "∇":                                   	#  0x2207
      - test: 
          if: "$Verbosity!='Terse'"

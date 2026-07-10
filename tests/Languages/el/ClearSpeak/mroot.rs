@@ -54,6 +54,15 @@ fn msqrt_simple_pos_end_with_neg_root() -> Result<()> {
 }
 
 #[test]
+fn msqrt_simple_pos_end_with_neg_root_2() -> Result<()> {
+    let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi><mo>=</mo><msqrt><mi>x</mi></msqrt><mo>-</mo><mroot><mi>x</mi><mn>3</mn></mroot></math>";
+    test_ClearSpeak("el", "ClearSpeak_Roots", "PosNegSqRootEnd", expr, 
+    "η μείον τετραγωνική ρίζα του x, τέλος ρίζας; μείον, η συν κυβική ρίζα του x, τέλος ρίζας")?;
+    return Ok(());
+
+}
+
+#[test]
 fn mroot_simple_pos_end_with_neg_root() -> Result<()> {
     let expr = "<math>
                     <mo>-</mo> <mroot> <mi>x</mi> <mn>3</mn></mroot>

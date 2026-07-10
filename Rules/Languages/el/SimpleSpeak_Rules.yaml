@@ -32,13 +32,17 @@
   tag: square-root
   match: "."
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then:
+  #theodora. added rule for reading greek accusative after an operator "ισούται με"
+  - with:
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:     
       - test:
-          if: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡')]"
-          then: [t: "την"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
-          else: [t: "η"]
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "την"]
+              else: [t: "η"]
 #      then: [t: "η"]    # phrase('the' square root of x) #theodora. not sure articles should be kept in greek. The current rules don't allow for creating cases for accusative, nominative etc. so it is easier to remove for now
   - t: "τετραγωνική ρίζα"      # phrase(the 'square root' of x)
   - test:
