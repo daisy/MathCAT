@@ -455,353 +455,353 @@
  - "℉": [T: "degré fahrenheit"]                 	#  0x2109	(en: 'degrees fahrenheit', DeepL: 'degrés fahrenheit')
  - "ℊ": [T: "g ronde minuscule"]                	#  0x210a	(en: 'script g', DeepL: 'script g')
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
-    - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
+    - SPELL: "translate('.', 'ℌℑℨℭ', 'HIZC')"
     - T: "gothique"                    	# 	(en: 'fraktur', DeepL: 'fraktur')
 
  - "ℍℙℾℿ":                                      	#  0x210d, 0x2119, 0x213e, 0x213f
-    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
+    - SPELL: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
     - T: "double barre"                    	# 	(en: 'double struck', DeepL: 'double barre')
 
 
- - "ℎ": [t: "constante de planck"]              	#  0x210e	(en: 'planck constant')
- - "ℏ": [t: "constante de planck sur deux pi"]  	#  0x210f	(en: 'h bar')
+ - "ℎ": [T: "constante de planck"]              	#  0x210e	(en: 'planck constant')
+ - "ℏ": [T: "constante de planck sur deux pi"]  	#  0x210f	(en: 'h bar')
 
  - "ℐℒ℘ℬℰℱℳ":                                   	#  0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
-    - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
+    - SPELL: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
     - T: "script"      	# 	(en: 'script')
 
- - "ℓ": [t: "l minuscule en script"]            	#  0x2113	(en: 'script l', MathPlayer: 'l ronde minuscule', DeepL: 'script l')
- - "℔": [t: "symbole l b barré"]                	#  0x2114	(en: 'pounds', DeepL: 'livres')
- - "№": [t: "symbole numéro"]                   	#  0x2116	(en: 'number')
- - "℥": [t: "symbole once"]                     	#  0x2125	(en: 'ounces')
- - "Ω": [t: "ohm"]                              	#  0x2126	(en: 'ohms')
- - "℧": [t: "ohm culbuté"]                      	#  0x2127	(en: 'mhos')
- - "℩": [t: "iota culbuté"]                     	#  0x2129	(en: 'turned iota', DeepL: 'tourné iota')
- - "K": [t: "degré kelvin"]                     	#  0x212a	(en: 'kelvin')
- - "Å": [t: "angstroms"]                        	#  0x212b
- - "ℯ": [t: "e ronde minuscule"]                	#  0x212f	(en: 'script e', DeepL: 'script e')
+ - "ℓ": [T: "l minuscule script"]            	#  0x2113	(en: 'script l', MathPlayer: 'l ronde minuscule', DeepL: 'script l')
+ - "℔": [T: "symbole l b barré"]                	#  0x2114	(en: 'pounds', DeepL: 'livres')
+ - "№": [T: "symbole numéro"]                   	#  0x2116	(en: 'number')
+ - "℥": [T: "symbole once"]                     	#  0x2125	(en: 'ounces')
+ - "Ω": [T: "ohm"]                              	#  0x2126	(en: 'ohms')
+ - "℧": [T: "ohm culbuté"]                      	#  0x2127	(en: 'mhos')
+ - "℩": [T: "iota culbuté"]                     	#  0x2129	(en: 'turned iota', DeepL: 'tourné iota')
+ - "K": [T: "degré kelvin"]                     	#  0x212a	(en: 'kelvin')
+ - "Å": [T: "angstroms"]                        	#  0x212b
+ - "ℯ": [T: "e ronde minuscule"]                	#  0x212f	(en: 'script e', DeepL: 'script e')
 
    # coalesced some chars that use cap letters
  - "Ⅎ℺⅁⅂⅃⅄":                                    	#  0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144
     - SPELL: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
     - test:
       - if: "'.' = '℺'"
-        then: [t: "tourné"]                     	# 	(en: 'rotated', DeepL translation)
+        then: [T: "tourné"]                     	# 	(en: 'rotated', DeepL translation)
       - else_if: "'.' = 'Ⅎ'"
-        then: [t: "tourné"]                     	# 	(en: 'turned', DeepL translation)
+        then: [T: "tourné"]                     	# 	(en: 'turned', DeepL translation)
       - else_if: "'.' = '⅃'"
         then: [T: "tourné sans-serif"]         	# 	(en: 'reversed sans-serif', DeepL translation)
         else: [T: "tourné sans-serif"]          	# 	(en: 'turned sans-serif', DeepL: 'tourné sans empattement')
 
- - "ℴ": [t: "o ronde minuscule"]                	#  0x2134	(en: 'script o', DeepL: 'script o')
- - "ℵ": [t: "alef"]                             	#  0x2135	(en: 'first transfinite cardinal')
- - "ℶ": [t: "bèt"]                              	#  0x2136	(en: 'second transfinite cardinal')
- - "ℷ": [t: "guimel"]                           	#  0x2137	(en: 'third transfinite cardinal')
- - "ℸ": [t: "dalèt"]                            	#  0x2138	(en: 'fourth transfinite cardinal')
- - "ℼ": [t: "pi ajouré"]                        	#  0x213c	(en: 'double struck pi', DeepL: 'double pi frappé')
- - "ℽ": [t: "gamma ajouré"]                     	#  0x213d	(en: 'double struck gamma', DeepL: 'double gamma frappé')
+ - "ℴ": [T: "o ronde minuscule"]                	#  0x2134	(en: 'script o', DeepL: 'script o')
+ - "ℵ": [T: "alef"]                             	#  0x2135	(en: 'first transfinite cardinal')
+ - "ℶ": [T: "bèt"]                              	#  0x2136	(en: 'second transfinite cardinal')
+ - "ℷ": [T: "guimel"]                           	#  0x2137	(en: 'third transfinite cardinal')
+ - "ℸ": [T: "dalèt"]                            	#  0x2138	(en: 'fourth transfinite cardinal')
+ - "ℼ": [T: "pi ajouré"]                        	#  0x213c	(en: 'double struck pi', DeepL: 'double pi frappé')
+ - "ℽ": [T: "gamma ajouré"]                     	#  0x213d	(en: 'double struck gamma', DeepL: 'double gamma frappé')
  - "⅀": [T: "sommation"]   	#  0x2140	(en: 'double struck n-ary summation', DeepL: 'somme n-aire doublement frappée')
- - "⅋": [t: "perluète culbutée"]                	#  0x214b	(en: 'turned ampersand', DeepL: 'esperluette tournée')
- - "⅌": [t: "symbole per"]                      	#  0x214c	(en: 'per', DeepL: 'per')
- - "ⅎ": [t: "minuscule f culbuté"]              	#  0x214e	(en: 'turned F', DeepL: 'tourné f')
- - "¼": [t: "un quart"]                         	#  0x00bc	(en: 'one quarter')
- - "½": [t: "un demi"]                          	#  0x00bd	(en: 'one half')
- - "¾": [t: "trois quarts"]                     	#  0x00be	(en: 'three quarters')
- - "⅐": [t: "un septième"]                      	#  0x2150	(en: 'one seventh')
- - "⅑": [t: "un neuvième"]                      	#  0x2151	(en: 'one ninth', DeepL: 'une neuvième')
- - "⅒": [t: "un dixième"]                       	#  0x2152	(en: 'one tenth')
- - "⅓": [t: "un tiers"]                         	#  0x2153	(en: 'one third')
- - "⅔": [t: "deux tiers"]                       	#  0x2154	(en: 'two thirds')
- - "⅕": [t: "un cinquième"]                     	#  0x2155	(en: 'one fifth')
- - "⅖": [t: "deux cinquièmes"]                  	#  0x2156	(en: 'two fifths')
- - "⅗": [t: "trois cinquièmes"]                 	#  0x2157	(en: 'three fifths')
- - "⅘": [t: "quatre cinquièmes"]                	#  0x2158	(en: 'four fifths')
- - "⅙": [t: "un sixième"]                       	#  0x2159	(en: 'one sixth')
- - "⅚": [t: "cinq sixièmes"]                    	#  0x215a	(en: 'five sixths')
- - "⅛": [t: "un huitième"]                      	#  0x215b	(en: 'one eighth')
- - "⅜": [t: "trois huitièmes"]                  	#  0x215c	(en: 'three eighths')
- - "⅝": [t: "cinq huitièmes"]                   	#  0x215d	(en: 'five eighths')
- - "⅞": [t: "sept huitièmes"]                   	#  0x215e	(en: 'seven eighths')
- - "⅟": [t: "numérateur un"]                    	#  0x215f	(en: 'one over', DeepL: 'un au-dessus')
- - "Ⅰ": [t: "Ⅰ"]                                	#  0x2160	(en: 'I', DeepL translation)
- - "Ⅱ": [t: "i i"]                              	#  0x2161	(en: 'I I', DeepL translation)
- - "Ⅲ": [t: "i i i"]                            	#  0x2162	(en: 'I I I', DeepL translation)
- - "Ⅳ": [t: "i v"]                              	#  0x2163	(en: 'I V', DeepL translation)
- - "Ⅴ": [t: "Ⅴ"]                                	#  0x2164	(en: 'V', DeepL translation)
- - "Ⅵ": [t: "v i"]                              	#  0x2165	(en: 'V I', DeepL translation)
- - "Ⅶ": [t: "v i i"]                            	#  0x2166	(en: 'V I I', DeepL translation)
- - "Ⅷ": [t: "v i i i"]                          	#  0x2167	(en: 'V I I I', DeepL translation)
- - "Ⅸ": [t: "i x"]                              	#  0x2168	(en: 'I X', DeepL translation)
- - "Ⅹ": [t: "Ⅹ"]                                	#  0x2169	(en: 'X', DeepL translation)
- - "Ⅺ": [t: "x i"]                              	#  0x216a	(en: 'X I', DeepL translation)
- - "Ⅻ": [t: "x i i"]                            	#  0x216b	(en: 'X I I', DeepL translation)
- - "Ⅼ": [t: "Ⅼ"]                                	#  0x216c	(en: 'L', DeepL translation)
- - "Ⅽ": [t: "Ⅽ"]                                	#  0x216d	(en: 'C', DeepL translation)
- - "Ⅾ": [t: "Ⅾ"]                                	#  0x216e	(en: 'D', DeepL translation)
- - "Ⅿ": [t: "Ⅿ"]                                	#  0x216f	(en: 'M', DeepL translation)
- - "ⅰ": [t: "ⅰ"]                                	#  0x2170	(en: 'I', DeepL translation)
- - "ⅱ": [t: "i i"]                              	#  0x2171	(en: 'I I', DeepL translation)
- - "ⅲ": [t: "i i i"]                            	#  0x2172	(en: 'I I I', DeepL translation)
- - "ⅳ": [t: "i v"]                              	#  0x2173	(en: 'I V', DeepL translation)
- - "ⅴ": [t: "ⅴ"]                                	#  0x2174	(en: 'V', DeepL translation)
- - "ⅵ": [t: "v i"]                              	#  0x2175	(en: 'V I', DeepL translation)
- - "ⅶ": [t: "v i i"]                            	#  0x2176	(en: 'V I I', DeepL translation)
- - "ⅷ": [t: "v i i i"]                          	#  0x2177	(en: 'V I I I', DeepL translation)
- - "ⅸ": [t: "i x"]                              	#  0x2178	(en: 'I X', DeepL translation)
- - "ⅹ": [t: "ⅹ"]                                	#  0x2179	(en: 'X', DeepL translation)
- - "ⅺ": [t: "x i"]                              	#  0x217a	(en: 'X I', DeepL translation)
- - "ⅻ": [t: "x i i"]                            	#  0x217b	(en: 'X I I', DeepL translation)
- - "ⅼ": [t: "ⅼ"]                                	#  0x217c	(en: 'L', DeepL translation)
- - "ⅽ": [t: "ⅽ"]                                	#  0x217d	(en: 'C', DeepL translation)
- - "ⅾ": [t: "ⅾ"]                                	#  0x217e	(en: 'D', DeepL translation)
- - "ⅿ": [t: "ⅿ"]                                	#  0x217f	(en: 'M', DeepL translation)
- - "↉": [t: "zero tiers"]                       	#  0x2189	(en: 'zero thirds', DeepL: 'zéro tiers')
- - "←": [t: "flèche vers la gauche"]            	#  0x2190	(en: 'leftwards arrow', SRE: 'flèche gauche')
- - "↑": [t: "flèche vers le haut"]              	#  0x2191	(en: 'upwards arrow')
- - "→": [t: "flèche vers la droite"]            	#  0x2192	(en: 'rightwards arrow', SRE: 'flèche droite')
- - "↓": [t: "flèche vers le bas"]               	#  0x2193	(en: 'downwards arrow')
- - "↔": [t: "flèche bilatérale"]                	#  0x2194	(en: 'left right arrow')
- - "↕": [t: "flèche haut et bas"]               	#  0x2195	(en: 'up down arrow')
- - "↖": [t: "flèche nord-ouest"]                	#  0x2196	(en: 'north west arrow', SRE: 'flèche nord ouest')
+ - "⅋": [T: "esperluette culbutée"]                	#  0x214b	(en: 'turned ampersand', DeepL: 'esperluette tournée')
+ - "⅌": [T: "symbole per"]                      	#  0x214c	(en: 'per', DeepL: 'per')
+ - "ⅎ": [T: "f minuscule culbuté"]              	#  0x214e	(en: 'turned F', DeepL: 'tourné f')
+ - "¼": [T: "un quart"]                         	#  0x00bc	(en: 'one quarter')
+ - "½": [T: "un demi"]                          	#  0x00bd	(en: 'one half')
+ - "¾": [T: "trois quarts"]                     	#  0x00be	(en: 'three quarters')
+ - "⅐": [T: "un septième"]                      	#  0x2150	(en: 'one seventh')
+ - "⅑": [T: "un neuvième"]                      	#  0x2151	(en: 'one ninth', DeepL: 'une neuvième')
+ - "⅒": [T: "un dixième"]                       	#  0x2152	(en: 'one tenth')
+ - "⅓": [T: "un tiers"]                         	#  0x2153	(en: 'one third')
+ - "⅔": [T: "deux tiers"]                       	#  0x2154	(en: 'two thirds')
+ - "⅕": [T: "un cinquième"]                     	#  0x2155	(en: 'one fifth')
+ - "⅖": [T: "deux cinquièmes"]                  	#  0x2156	(en: 'two fifths')
+ - "⅗": [T: "trois cinquièmes"]                 	#  0x2157	(en: 'three fifths')
+ - "⅘": [T: "quatre cinquièmes"]                	#  0x2158	(en: 'four fifths')
+ - "⅙": [T: "un sixième"]                       	#  0x2159	(en: 'one sixth')
+ - "⅚": [T: "cinq sixièmes"]                    	#  0x215a	(en: 'five sixths')
+ - "⅛": [T: "un huitième"]                      	#  0x215b	(en: 'one eighth')
+ - "⅜": [T: "trois huitièmes"]                  	#  0x215c	(en: 'three eighths')
+ - "⅝": [T: "cinq huitièmes"]                   	#  0x215d	(en: 'five eighths')
+ - "⅞": [T: "sept huitièmes"]                   	#  0x215e	(en: 'seven eighths')
+ - "⅟": [T: "numérateur un"]                    	#  0x215f	(en: 'one over', DeepL: 'un au-dessus')
+ - "Ⅰ": [T: "Ⅰ"]                                	#  0x2160	(en: 'I', DeepL translation)
+ - "Ⅱ": [T: "i i"]                              	#  0x2161	(en: 'I I', DeepL translation)
+ - "Ⅲ": [T: "i i i"]                            	#  0x2162	(en: 'I I I', DeepL translation)
+ - "Ⅳ": [T: "i v"]                              	#  0x2163	(en: 'I V', DeepL translation)
+ - "Ⅴ": [T: "Ⅴ"]                                	#  0x2164	(en: 'V', DeepL translation)
+ - "Ⅵ": [T: "v i"]                              	#  0x2165	(en: 'V I', DeepL translation)
+ - "Ⅶ": [T: "v i i"]                            	#  0x2166	(en: 'V I I', DeepL translation)
+ - "Ⅷ": [T: "v i i i"]                          	#  0x2167	(en: 'V I I I', DeepL translation)
+ - "Ⅸ": [T: "i x"]                              	#  0x2168	(en: 'I X', DeepL translation)
+ - "Ⅹ": [T: "Ⅹ"]                                	#  0x2169	(en: 'X', DeepL translation)
+ - "Ⅺ": [T: "x i"]                              	#  0x216a	(en: 'X I', DeepL translation)
+ - "Ⅻ": [T: "x i i"]                            	#  0x216b	(en: 'X I I', DeepL translation)
+ - "Ⅼ": [T: "Ⅼ"]                                	#  0x216c	(en: 'L', DeepL translation)
+ - "Ⅽ": [T: "Ⅽ"]                                	#  0x216d	(en: 'C', DeepL translation)
+ - "Ⅾ": [T: "Ⅾ"]                                	#  0x216e	(en: 'D', DeepL translation)
+ - "Ⅿ": [T: "Ⅿ"]                                	#  0x216f	(en: 'M', DeepL translation)
+ - "ⅰ": [T: "ⅰ"]                                	#  0x2170	(en: 'I', DeepL translation)
+ - "ⅱ": [T: "i i"]                              	#  0x2171	(en: 'I I', DeepL translation)
+ - "ⅲ": [T: "i i i"]                            	#  0x2172	(en: 'I I I', DeepL translation)
+ - "ⅳ": [T: "i v"]                              	#  0x2173	(en: 'I V', DeepL translation)
+ - "ⅴ": [T: "ⅴ"]                                	#  0x2174	(en: 'V', DeepL translation)
+ - "ⅵ": [T: "v i"]                              	#  0x2175	(en: 'V I', DeepL translation)
+ - "ⅶ": [T: "v i i"]                            	#  0x2176	(en: 'V I I', DeepL translation)
+ - "ⅷ": [T: "v i i i"]                          	#  0x2177	(en: 'V I I I', DeepL translation)
+ - "ⅸ": [T: "i x"]                              	#  0x2178	(en: 'I X', DeepL translation)
+ - "ⅹ": [T: "ⅹ"]                                	#  0x2179	(en: 'X', DeepL translation)
+ - "ⅺ": [T: "x i"]                              	#  0x217a	(en: 'X I', DeepL translation)
+ - "ⅻ": [T: "x i i"]                            	#  0x217b	(en: 'X I I', DeepL translation)
+ - "ⅼ": [T: "ⅼ"]                                	#  0x217c	(en: 'L', DeepL translation)
+ - "ⅽ": [T: "ⅽ"]                                	#  0x217d	(en: 'C', DeepL translation)
+ - "ⅾ": [T: "ⅾ"]                                	#  0x217e	(en: 'D', DeepL translation)
+ - "ⅿ": [T: "ⅿ"]                                	#  0x217f	(en: 'M', DeepL translation)
+ - "↉": [T: "zéro tiers"]                       	#  0x2189	(en: 'zero thirds', DeepL: 'zéro tiers')
+ - "←": [T: "flèche vers la gauche"]            	#  0x2190	(en: 'leftwards arrow', SRE: 'flèche gauche')
+ - "↑": [T: "flèche vers le haut"]              	#  0x2191	(en: 'upwards arrow')
+ - "→": [T: "flèche vers la droite"]            	#  0x2192	(en: 'rightwards arrow', SRE: 'flèche droite')
+ - "↓": [T: "flèche vers le bas"]               	#  0x2193	(en: 'downwards arrow')
+ - "↔": [T: "flèche bilatérale"]                	#  0x2194	(en: 'left right arrow')
+ - "↕": [T: "flèche haut et bas"]               	#  0x2195	(en: 'up down arrow')
+ - "↖": [T: "flèche nord-ouest"]                	#  0x2196	(en: 'north west arrow', SRE: 'flèche nord ouest')
  - "↗":                                         	#  0x2197
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "approche par le bas"]        	# 	(en: 'approaches from below', DeepL translation)
-        else: [t: "flèche nord-est"]            	# 	(en: 'north east arrow', SRE: 'flèche nord est')
+        then: [T: "approche par le bas"]        	# 	(en: 'approaches from below', DeepL translation)
+        else: [T: "flèche nord-est"]            	# 	(en: 'north east arrow', SRE: 'flèche nord est')
 
  - "↘":                                         	#  0x2198
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "approche par le haut"]       	# 	(en: 'approaches from above', DeepL translation)
-        else: [t: "flèche sud-est"]             	# 	(en: 'south east arrow', SRE: 'flèche sud est')
+        then: [T: "approche par le haut"]       	# 	(en: 'approaches from above', DeepL translation)
+        else: [T: "flèche sud-est"]             	# 	(en: 'south east arrow', SRE: 'flèche sud est')
 
- - "↙": [t: "flèche sud-ouest"]                 	#  0x2199	(en: 'south west arrow', SRE: 'flèche sud ouest')
- - "↚": [t: "flèche barrée gauche"]             	#  0x219a	(en: 'leftwards arrow with stroke', MathPlayer: 'flèche barrée vers la gauche', DeepL: 'flèche gauche avec trait')
- - "↛": [t: "flèche barrée droite"]             	#  0x219b	(en: 'rightwards arrow with stroke', MathPlayer: 'flèche barrée vers la droite', DeepL: 'flèche vers la droite avec trait')
- - "↜": [t: "flèche ondulée vers la gauche"]    	#  0x219c	(en: 'leftwards wave arrow', SRE: 'flèche ondulée gauche')
- - "↝": [t: "flèche ondulée vers la droite"]    	#  0x219d	(en: 'rightwards wave arrow', SRE: 'flèche ondulée droite')
- - "↞": [t: "flèche à deux pointes gauche"]     	#  0x219e	(en: 'leftwards two headed arrow', MathPlayer: 'flèche à deux pointes vers la gauche', DeepL: 'flèche à deux têtes vers la gauche')
- - "↟": [t: "flèche à deux pointes vers le haut"]	#  0x219f	(en: 'upwards two headed arrow')
- - "↠": [t: "flèche à deux pointes droite"]     	#  0x21a0	(en: 'rightwards two headed arrow', MathPlayer: 'flèche à deux pointes vers la droite', DeepL: 'vers la droite flèche à deux têtes')
- - "↡": [t: "flèche à deux pointes vers le bas"]	#  0x21a1	(en: 'downwards two headed arrow')
- - "↢": [t: "flèche empennée gauche"]           	#  0x21a2	(en: 'leftwards arrow with tail', MathPlayer: 'flèche empennée vers la gauche', DeepL: 'flèche gauche avec queue')
- - "↣": [t: "flèche empennée droite"]           	#  0x21a3	(en: 'rightwards arrow with tail', MathPlayer: 'flèche empennée vers la droite', DeepL: 'flèche droite avec empennage')
- - "↤": [t: "flèche d'un taquet gauche"]        	#  0x21a4	(en: 'leftwards arrow from bar', MathPlayer: 'flèche d'un taquet vers la gauche', DeepL: 'flèche vers la gauche à partir de la barre')
- - "↥": [t: "flèche d'un taquet vers le haut"]  	#  0x21a5	(en: 'upwards arrow from bar')
- - "↦": [t: "flèche d'un taquet droite"]        	#  0x21a6	(en: 'rightwards arrow from bar', MathPlayer: 'flèche d'un taquet vers la droite', DeepL: 'flèche vers la droite à partir d'une barre')
- - "↧": [t: "flèche d'un taquet vers le bas"]   	#  0x21a7	(en: 'downwards arrow from bar')
- - "↨": [t: "flèche haut bas sur base"]         	#  0x21a8	(en: 'up down arrow with base', MathPlayer: 'flèche haut-bas sur base', DeepL: 'flèche haut-bas avec base')
- - "↩": [t: "flèche avec crochet gauche"]       	#  0x21a9	(en: 'leftwards arrow with hook', MathPlayer: 'flèche vers la gauche avec crochet', DeepL: 'flèche gauche avec crochet')
- - "↪": [t: "flèche vers la droite avec crochet"]	#  0x21aa	(en: 'rightwards arrow with hook', SRE: 'flèche avec crochet droite')
- - "↫": [t: "flèche vers la gauche avec boucle"]	#  0x21ab	(en: 'leftwards arrow with loop', SRE: 'flèche avec boucle gauche')
- - "↬": [t: "flèche vers la droite avec boucle"]	#  0x21ac	(en: 'rightwards arrow with loop', SRE: 'flèche avec boucle droite')
- - "↭": [t: "flèche ondulée bilatérale"]        	#  0x21ad	(en: 'left right wave arrow')
- - "↮": [t: "flèche barrée bilatérale"]         	#  0x21ae	(en: 'left right arrow with stroke')
- - "↯": [t: "flèche vers le bas en zigzag"]     	#  0x21af	(en: 'downwards zigzag arrow')
- - "↰": [t: "flèche vers le haut avec pointe vers la gauche"]	#  0x21b0	(en: 'upwards arrow with tip leftwards', SRE: 'flèche vers le haut avec pointe gauche')
- - "↱": [t: "flèche vers le haut avec pointe vers la droite"]	#  0x21b1	(en: 'upwards arrow with tip rightwards', SRE: 'flèche vers le haut avec pointe droite')
- - "↲": [t: "flèche vers le bas avec pointe vers la gauche"]	#  0x21b2	(en: 'downwards arrow with tip leftwards', SRE: 'flèche vers le bas avec pointe gauche')
- - "↳": [t: "flèche vers le bas avec pointe vers la droite"]	#  0x21b3	(en: 'downwards arrow with tip rightwards', SRE: 'flèche vers le bas avec pointe droite')
- - "↴": [t: "flèche vers la droite avec coin vers le bas"]	#  0x21b4	(en: 'rightwards arrow with corner downwards', SRE: 'flèche vers le bas avec coin droit')
- - "↵": [t: "flèche vers le bas avec coin vers la gauche"]	#  0x21b5	(en: 'downwards arrow with corner leftwards', SRE: 'flèche vers le bas avec coin gauche')
- - "↶": [t: "flèche semi circulaire en sens positif"]	#  0x21b6	(en: 'anticlockwise top semicircle arrow', MathPlayer: 'flèche semi-circulaire en sens positif', DeepL: 'flèche du demi-cercle supérieur dans le sens inverse des aiguilles d'une montre')
- - "↷": [t: "flèche semi circulaire en sens négatif"]	#  0x21b7	(en: 'clockwise top semicircle arrow', MathPlayer: 'flèche semi-circulaire en sens négatif', DeepL: 'flèche du demi-cercle supérieur dans le sens des aiguilles d'une montre')
- - "↸": [t: "flèche nord ouest vers une barre horizontale longue"]	#  0x21b8	(en: 'north west arrow to long bar', MathPlayer: 'flèche nord-ouest jusqu'à une barre longue', DeepL: 'flèche nord-ouest vers la barre longue')
- - "↹": [t: "flèche gauche vers un taquet sur flèche droite vers un taquet"]	#  0x21b9	(en: 'leftwards arrow to bar over rightwards arrow to bar', MathPlayer: 'flèche vers la gauche jusqu'à un taquet par-dessus flèche vers la droite jusqu'à un taquet', DeepL: 'flèche gauche vers la barre sur flèche droite vers la barre')
- - "↺": [t: "flèche en sens positif à cercle ouvert"]	#  0x21ba	(en: 'anticlockwise open circle arrow')
- - "↻": [t: "flèche en sens négatif à cercle ouvert"]	#  0x21bb	(en: 'clockwise open circle arrow')
- - "↼": [t: "harpon gauche avec dent dressée"]  	#  0x21bc	(en: 'left harpoon up', MathPlayer: 'harpon vers la gauche avec dent vers le haut', DeepL: 'harpon gauche en haut')
- - "↽": [t: "harpon gauche avec dent baissée"]  	#  0x21bd	(en: 'left harpoon down', MathPlayer: 'harpon vers la gauche avec dent vers bas', DeepL: 'harpon gauche en bas')
- - "↾": [t: "harpon vers le haut avec dent droite"]	#  0x21be	(en: 'up harpoon right', MathPlayer: 'harpon vers le haut avec dent vers la droite', DeepL: 'harpon vers le haut à droite')
- - "↿": [t: "harpon vers le haut avec dent gauche"]	#  0x21bf	(en: 'up harpoon left', MathPlayer: 'harpon vers le haut avec dent vers la gauche', DeepL: 'harpon vers le haut à gauche')
- - "⇀": [t: "harpon droit avec dent dressée"]   	#  0x21c0	(en: 'right harpoon up', MathPlayer: 'harpon vers la droite avec dent vers le haut', DeepL: 'harpon droit vers le haut')
- - "⇁": [t: "harpon droit avec dent baissée"]   	#  0x21c1	(en: 'right harpoon down', MathPlayer: 'harpon vers la droite avec dent vers le bas', DeepL: 'à droite harpon vers le bas')
- - "⇂": [t: "harpon vers le bas avec dent droite"]	#  0x21c2	(en: 'down harpoon right', MathPlayer: 'harpon vers le bas avec dent vers la droite', DeepL: 'harpon vers le bas à droite')
- - "⇃": [t: "harpon vers le bas avec dent gauche"]	#  0x21c3	(en: 'down harpoon left', MathPlayer: 'harpon vers le bas avec dent vers la gauche', DeepL: 'harpon vers le bas à gauche')
- - "⇄": [t: "flèche vers le haut par dessus flèche gauche"]	#  0x21c4	(en: 'rightwards arrow over leftwards arrow', MathPlayer: 'flèche vers le haut par-dessus flèche vers la gauche', DeepL: 'flèche vers la droite au-dessus de la flèche vers la gauche')
- - "⇅": [t: "flèche vers le haut à gauche d'une flèche vers le bas"]	#  0x21c5	(en: 'upwards arrow leftwards of downwards arrow')
- - "⇆": [t: "flèche gauche par dessus flèche droite"]	#  0x21c6	(en: 'leftwards arrow over rightwards arrow', MathPlayer: 'flèche vers la gauche par-dessus flèche vers la droite', DeepL: 'flèche vers la gauche sur flèche vers la droite')
- - "⇇": [t: "paire de flèches gauche"]          	#  0x21c7	(en: 'leftwards paired arrows', MathPlayer: 'paire de flèches vers la gauche', DeepL: 'flèches jumelées vers la gauche')
- - "⇈": [t: "paire de flèches vers le haut"]    	#  0x21c8	(en: 'upwards paired arrows')
- - "⇉": [t: "paire de flèches droite"]          	#  0x21c9	(en: 'rightwards paired arrows', MathPlayer: 'paire de flèches vers la droite', DeepL: 'flèches jumelées vers la droite')
- - "⇊": [t: "paire de flèches vers le bas"]     	#  0x21ca	(en: 'downwards paired arrows')
- - "⇋": [t: "harpon gauche par dessus harpon droit"]	#  0x21cb	(en: 'left harpoon over right harpoon', MathPlayer: 'harpon vers la gauche par-dessus harpon vers la droite', DeepL: 'harpon gauche sur harpon droit')
- - "⇌": [t: "harpon droit par dessus harpon gauche"]	#  0x21cc	(en: 'right harpoon over left harpoon', MathPlayer: 'harpon vers la droite par-dessus harpon vers la gauche', DeepL: 'harpon droit sur harpon gauche')
- - "⇍": [t: "double flèche barrée gauche"]      	#  0x21cd	(en: 'leftwards double arrow with stroke', MathPlayer: 'double flèche barrée vers la gauche', DeepL: 'flèche double gauche avec trait')
- - "⇎": [t: "double flèche barrée bilatérale"]  	#  0x21ce	(en: 'left right double arrow with stroke')
- - "⇏": [t: "double flèche barrée droite"]      	#  0x21cf	(en: 'rightwards double arrow with stroke', MathPlayer: 'double flèche barrée vers la droite', DeepL: 'flèche double droite avec trait')
- - "⇐": [t: "double flèche gauche"]             	#  0x21d0	(en: 'leftwards double arrow', MathPlayer: 'double flèche vers la gauche', DeepL: 'flèche double vers la gauche')
- - "⇑": [t: "double flèche vers le haut"]       	#  0x21d1	(en: 'upwards double arrow')
- - "⇒": [t: "double flèche droite"]             	#  0x21d2	(en: 'implies', MathPlayer: 'double flèche vers la droite', DeepL: 'implique')
- - "⇓": [t: "double flèche vers le bas"]        	#  0x21d3	(en: 'downwards double arrow')
- - "⇔": [t: "double flèche bilatérale"]         	#  0x21d4	(en: 'if and only if')
- - "⇕": [t: "double flèche haut bas"]           	#  0x21d5	(en: 'up down double arrow', MathPlayer: 'double flèche haut-bas', DeepL: 'haut-bas double flèche')
- - "⇖": [t: "double flèche nord ouest"]         	#  0x21d6	(en: 'north west double arrow', MathPlayer: 'double flèche nord-ouest', DeepL: 'flèche double nord-ouest')
- - "⇗": [t: "double flèche nord est"]           	#  0x21d7	(en: 'north east double arrow', MathPlayer: 'double flèche nord-est', DeepL: 'flèche double nord-est')
- - "⇘": [t: "double flèche sud est"]            	#  0x21d8	(en: 'south east double arrow', MathPlayer: 'double flèche sud-est', DeepL: 'flèche double sud-est')
- - "⇙": [t: "double flèche sud ouest"]          	#  0x21d9	(en: 'south west double arrow', MathPlayer: 'double flèche sud-ouest', DeepL: 'flèche double sud-ouest')
- - "⇚": [t: "triple flèche gauche"]             	#  0x21da	(en: 'leftwards triple arrow', MathPlayer: 'triple flèche vers la gauche', DeepL: 'flèche triple vers la gauche')
- - "⇛": [t: "triple flèche droite"]             	#  0x21db	(en: 'rightwards triple arrow', MathPlayer: 'triple flèche vers la droite', DeepL: 'vers la droite triple flèche')
- - "⇜": [t: "flèche en tire bouchon gauche"]    	#  0x21dc	(en: 'leftwards squiggle arrow', MathPlayer: 'flèche vers la gauche en tire-bouchon', DeepL: 'flèche gribouillée vers la gauche')
- - "⇝": [t: "flèche en tire bouchon droite"]    	#  0x21dd	(en: 'rightwards squiggle arrow', MathPlayer: 'flèche vers la droite en tire-bouchon', DeepL: 'flèche vers la droite avec gribouillis')
- - "⇞": [t: "flèche vers le haut avec double barre"]	#  0x21de	(en: 'upwards arrow with double stroke')
- - "⇟": [t: "flèche vers le bas avec double barre"]	#  0x21df	(en: 'downwards arrow with double stroke')
- - "⇠": [t: "flèche pointillée gauche"]         	#  0x21e0	(en: 'leftwards dashed arrow', MathPlayer: 'flèche pointillée vers la gauche', DeepL: 'flèche en pointillé vers la gauche')
- - "⇡": [t: "flèche pointillée vers le haut"]   	#  0x21e1	(en: 'upwards dashed arrow')
- - "⇢": [t: "flèche pointillée droite"]         	#  0x21e2	(en: 'rightwards dashed arrow', MathPlayer: 'flèche pointillée vers la droite', DeepL: 'flèche en pointillé vers la droite')
- - "⇣": [t: "flèche pointillée vers le bas"]    	#  0x21e3	(en: 'downwards dashed arrow')
- - "⇤": [t: "flèche gauche vers un taquet"]     	#  0x21e4	(en: 'leftwards arrow to bar', MathPlayer: 'flèche vers la gauche jusqu'à un taquet', DeepL: 'flèche gauche vers la barre')
- - "⇥": [t: "flèche droite vers un taquet"]     	#  0x21e5	(en: 'rightwards arrow to bar', MathPlayer: 'flèche vers la droite jusqu'à un taquet', DeepL: 'flèche vers la droite jusqu'à la barre')
- - "⇦": [t: "flèche blanche vers la gauche"]    	#  0x21e6	(en: 'leftwards white arrow', SRE: 'flèche blanche gauche')
- - "⇧": [t: "flèche blanche vers le haut"]      	#  0x21e7	(en: 'upwards white arrow')
- - "⇨": [t: "flèche blanche vers la droite"]    	#  0x21e8	(en: 'rightwards white arrow', SRE: 'flèche blanche droite')
- - "⇩": [t: "flèche blanche vers le bas"]       	#  0x21e9	(en: 'downwards white arrow')
- - "⇪": [t: "flèche blanche vers le haut à partir d'un taquet"]	#  0x21ea	(en: 'upwards white arrow from bar')
- - "⇫": [t: "flèche blanche vers le haut sur socle"]	#  0x21eb	(en: 'upwards white arrow on pedestal', DeepL: 'flèche blanche vers le haut sur un socle')
- - "⇬": [t: "flèche blanche vers le haut sur socle et trait horizontal"]	#  0x21ec	(en: 'upwards white arrow on pedestal with horizontal bar', DeepL: 'flèche blanche vers le haut sur socle avec barre horizontale')
- - "⇭": [t: "flèche blanche vers le haut sur socle et barre verticale"]	#  0x21ed	(en: 'upwards white arrow on pedestal with vertical bar', DeepL: 'flèche blanche vers le haut sur un socle avec une barre verticale')
- - "⇮": [t: "double flèche blanche vers le haut"]	#  0x21ee	(en: 'upwards white double arrow', DeepL: 'flèche double blanche vers le haut')
- - "⇯": [t: "double flèche blanche vers le haut sur socle"]	#  0x21ef	(en: 'upwards white double arrow on pedestal', DeepL: 'double flèche blanche vers le haut sur un socle')
- - "⇰": [t: "flèche blanche vers la droite appuyée sur mur"]	#  0x21f0	(en: 'rightwards white arrow from wall', DeepL: 'vers la droite flèche blanche du mur')
- - "⇱": [t: "flèche nord ouest en encoignure"]  	#  0x21f1	(en: 'north west arrow to corner', DeepL: 'flèche nord-ouest à l'angle')
- - "⇲": [t: "flèche sud est en encoignure"]     	#  0x21f2	(en: 'south east arrow to corner', DeepL: 'flèche sud-est vers le coin')
- - "⇳": [t: "flèche blanche vers le haut et le bas"]	#  0x21f3	(en: 'up down white arrow', DeepL: 'flèche blanche haut-bas')
- - "⇴": [t: "flèche vers la droite à petit cercle"]	#  0x21f4	(en: 'right arrow with small circle', DeepL: 'flèche droite avec petit cercle')
- - "⇵": [t: "flèche descendante à gauche d'une flèche montante"]	#  0x21f5	(en: 'downwards arrow leftwards of upwards arrow')
- - "⇶": [t: "trois flèches vers la droite"]     	#  0x21f6	(en: 'three rightwards arrows')
- - "⇷": [t: "flèche vers la gauche barrée verticalement"]	#  0x21f7	(en: 'leftwards arrow with vertical stroke', DeepL: 'flèche vers la gauche avec trait vertical')
- - "⇸": [t: "flèche vers la droite barrée verticalement"]	#  0x21f8	(en: 'rightwards arrow with vertical stroke', DeepL: 'flèche vers la droite avec trait vertical')
- - "⇹": [t: "flèche vers la droite et la gauche barrée verticalement"]	#  0x21f9	(en: 'left right arrow with vertical stroke', DeepL: 'flèche gauche droite avec trait vertical')
- - "⇺": [t: "flèche vers la gauche barrée deux fois verticalement"]	#  0x21fa	(en: 'leftwards arrow with double vertical stroke', DeepL: 'flèche vers la gauche avec double trait vertical')
- - "⇻": [t: "flèche vers la droite barrée deux fois verticalement"]	#  0x21fb	(en: 'rightwards arrow with double vertical stroke', DeepL: 'flèche vers la droite avec double trait vertical')
- - "⇼": [t: "flèche bilatérale barrée deux fois verticalement"]	#  0x21fc	(en: 'left right arrow with double vertical stroke', DeepL: 'flèche gauche droite avec double trait vertical')
- - "⇽": [t: "flèche à tête creuse gauche"]      	#  0x21fd	(en: 'leftwards open headed arrow', MathPlayer: 'flèche à tête creuse vers la gauche', DeepL: 'flèche ouverte vers la gauche')
- - "⇾": [t: "flèche à tête creuse droite"]      	#  0x21fe	(en: 'rightwards open headed arrow', MathPlayer: 'flèche à tête creuse vers la droite', DeepL: 'flèche ouverte vers la droite')
- - "⇿": [t: "flèche à tête creuse bilatérale"]  	#  0x21ff	(en: 'left right open headed arrow')
- - "∀": [t: "pour tous"]                        	#  0x2200	(en: 'for all')
+ - "↙": [T: "flèche sud-ouest"]                 	#  0x2199	(en: 'south west arrow', SRE: 'flèche sud ouest')
+ - "↚": [T: "flèche barrée gauche"]             	#  0x219a	(en: 'leftwards arrow with stroke', MathPlayer: 'flèche barrée vers la gauche', DeepL: 'flèche gauche avec trait')
+ - "↛": [T: "flèche barrée droite"]             	#  0x219b	(en: 'rightwards arrow with stroke', MathPlayer: 'flèche barrée vers la droite', DeepL: 'flèche vers la droite avec trait')
+ - "↜": [T: "flèche ondulée vers la gauche"]    	#  0x219c	(en: 'leftwards wave arrow', SRE: 'flèche ondulée gauche')
+ - "↝": [T: "flèche ondulée vers la droite"]    	#  0x219d	(en: 'rightwards wave arrow', SRE: 'flèche ondulée droite')
+ - "↞": [T: "flèche à deux pointes gauche"]     	#  0x219e	(en: 'leftwards two headed arrow', MathPlayer: 'flèche à deux pointes vers la gauche', DeepL: 'flèche à deux têtes vers la gauche')
+ - "↟": [T: "flèche à deux pointes vers le haut"]	#  0x219f	(en: 'upwards two headed arrow')
+ - "↠": [T: "flèche à deux pointes droite"]     	#  0x21a0	(en: 'rightwards two headed arrow', MathPlayer: 'flèche à deux pointes vers la droite', DeepL: 'vers la droite flèche à deux têtes')
+ - "↡": [T: "flèche à deux pointes vers le bas"]	#  0x21a1	(en: 'downwards two headed arrow')
+ - "↢": [T: "flèche empennée gauche"]           	#  0x21a2	(en: 'leftwards arrow with tail', MathPlayer: 'flèche empennée vers la gauche', DeepL: 'flèche gauche avec queue')
+ - "↣": [T: "flèche empennée droite"]           	#  0x21a3	(en: 'rightwards arrow with tail', MathPlayer: 'flèche empennée vers la droite', DeepL: 'flèche droite avec empennage')
+ - "↤": [T: "flèche d'un taquet gauche"]        	#  0x21a4	(en: 'leftwards arrow from bar', MathPlayer: 'flèche d'un taquet vers la gauche', DeepL: 'flèche vers la gauche à partir de la barre')
+ - "↥": [T: "flèche d'un taquet vers le haut"]  	#  0x21a5	(en: 'upwards arrow from bar')
+ - "↦": [T: "flèche d'un taquet droite"]        	#  0x21a6	(en: 'rightwards arrow from bar', MathPlayer: 'flèche d'un taquet vers la droite', DeepL: 'flèche vers la droite à partir d'une barre')
+ - "↧": [T: "flèche d'un taquet vers le bas"]   	#  0x21a7	(en: 'downwards arrow from bar')
+ - "↨": [T: "flèche haut bas sur base"]         	#  0x21a8	(en: 'up down arrow with base', MathPlayer: 'flèche haut-bas sur base', DeepL: 'flèche haut-bas avec base')
+ - "↩": [T: "flèche avec crochet gauche"]       	#  0x21a9	(en: 'leftwards arrow with hook', MathPlayer: 'flèche vers la gauche avec crochet', DeepL: 'flèche gauche avec crochet')
+ - "↪": [T: "flèche vers la droite avec crochet"]	#  0x21aa	(en: 'rightwards arrow with hook', SRE: 'flèche avec crochet droite')
+ - "↫": [T: "flèche vers la gauche avec boucle"]	#  0x21ab	(en: 'leftwards arrow with loop', SRE: 'flèche avec boucle gauche')
+ - "↬": [T: "flèche vers la droite avec boucle"]	#  0x21ac	(en: 'rightwards arrow with loop', SRE: 'flèche avec boucle droite')
+ - "↭": [T: "flèche ondulée bilatérale"]        	#  0x21ad	(en: 'left right wave arrow')
+ - "↮": [T: "flèche barrée bilatérale"]         	#  0x21ae	(en: 'left right arrow with stroke')
+ - "↯": [T: "flèche vers le bas en zigzag"]     	#  0x21af	(en: 'downwards zigzag arrow')
+ - "↰": [T: "flèche vers le haut avec pointe vers la gauche"]	#  0x21b0	(en: 'upwards arrow with tip leftwards', SRE: 'flèche vers le haut avec pointe gauche')
+ - "↱": [T: "flèche vers le haut avec pointe vers la droite"]	#  0x21b1	(en: 'upwards arrow with tip rightwards', SRE: 'flèche vers le haut avec pointe droite')
+ - "↲": [T: "flèche vers le bas avec pointe vers la gauche"]	#  0x21b2	(en: 'downwards arrow with tip leftwards', SRE: 'flèche vers le bas avec pointe gauche')
+ - "↳": [T: "flèche vers le bas avec pointe vers la droite"]	#  0x21b3	(en: 'downwards arrow with tip rightwards', SRE: 'flèche vers le bas avec pointe droite')
+ - "↴": [T: "flèche vers la droite avec coin vers le bas"]	#  0x21b4	(en: 'rightwards arrow with corner downwards', SRE: 'flèche vers le bas avec coin droit')
+ - "↵": [T: "flèche vers le bas avec coin vers la gauche"]	#  0x21b5	(en: 'downwards arrow with corner leftwards', SRE: 'flèche vers le bas avec coin gauche')
+ - "↶": [T: "flèche semi circulaire en sens positif"]	#  0x21b6	(en: 'anticlockwise top semicircle arrow', MathPlayer: 'flèche semi-circulaire en sens positif', DeepL: 'flèche du demi-cercle supérieur dans le sens inverse des aiguilles d'une montre')
+ - "↷": [T: "flèche semi circulaire en sens négatif"]	#  0x21b7	(en: 'clockwise top semicircle arrow', MathPlayer: 'flèche semi-circulaire en sens négatif', DeepL: 'flèche du demi-cercle supérieur dans le sens des aiguilles d'une montre')
+ - "↸": [T: "flèche nord ouest vers une barre horizontale longue"]	#  0x21b8	(en: 'north west arrow to long bar', MathPlayer: 'flèche nord-ouest jusqu'à une barre longue', DeepL: 'flèche nord-ouest vers la barre longue')
+ - "↹": [T: "flèche gauche vers un taquet sur flèche droite vers un taquet"]	#  0x21b9	(en: 'leftwards arrow to bar over rightwards arrow to bar', MathPlayer: 'flèche vers la gauche jusqu'à un taquet par-dessus flèche vers la droite jusqu'à un taquet', DeepL: 'flèche gauche vers la barre sur flèche droite vers la barre')
+ - "↺": [T: "flèche en sens positif à cercle ouvert"]	#  0x21ba	(en: 'anticlockwise open circle arrow')
+ - "↻": [T: "flèche en sens négatif à cercle ouvert"]	#  0x21bb	(en: 'clockwise open circle arrow')
+ - "↼": [T: "harpon gauche avec dent vers le haut"]  	#  0x21bc	(en: 'left harpoon up', MathPlayer: 'harpon vers la gauche avec dent vers le haut', DeepL: 'harpon gauche en haut')
+ - "↽": [T: "harpon gauche avec dent vers le bas"]  	#  0x21bd	(en: 'left harpoon down', MathPlayer: 'harpon vers la gauche avec dent vers bas', DeepL: 'harpon gauche en bas')
+ - "↾": [T: "harpon vers le haut avec dent vers la droite"]	#  0x21be	(en: 'up harpoon right', MathPlayer: 'harpon vers le haut avec dent vers la droite', DeepL: 'harpon vers le haut à droite')
+ - "↿": [T: "harpon vers le haut avec dent vers la gauche"]	#  0x21bf	(en: 'up harpoon left', MathPlayer: 'harpon vers le haut avec dent vers la gauche', DeepL: 'harpon vers le haut à gauche')
+ - "⇀": [T: "harpon droit avec dent vers le haut"]   	#  0x21c0	(en: 'right harpoon up', MathPlayer: 'harpon vers la droite avec dent vers le haut', DeepL: 'harpon droit vers le haut')
+ - "⇁": [T: "harpon droit avec dent vers le bas"]   	#  0x21c1	(en: 'right harpoon down', MathPlayer: 'harpon vers la droite avec dent vers le bas', DeepL: 'à droite harpon vers le bas')
+ - "⇂": [T: "harpon vers le bas avec dent vers la droite"]	#  0x21c2	(en: 'down harpoon right', MathPlayer: 'harpon vers le bas avec dent vers la droite', DeepL: 'harpon vers le bas à droite')
+ - "⇃": [T: "harpon vers le bas avec dent vers la gauche"]	#  0x21c3	(en: 'down harpoon left', MathPlayer: 'harpon vers le bas avec dent vers la gauche', DeepL: 'harpon vers le bas à gauche')
+ - "⇄": [T: "flèche vers la droite par dessus flèche vers la gauche"]	#  0x21c4	(en: 'rightwards arrow over leftwards arrow', MathPlayer: 'flèche vers le haut par-dessus flèche vers la gauche', DeepL: 'flèche vers la droite au-dessus de la flèche vers la gauche')
+ - "⇅": [T: "flèche vers le haut à gauche d'une flèche vers le bas"]	#  0x21c5	(en: 'upwards arrow leftwards of downwards arrow')
+ - "⇆": [T: "flèche vers la gauche par dessus flèche vers la droite"]	#  0x21c6	(en: 'leftwards arrow over rightwards arrow', MathPlayer: 'flèche vers la gauche par-dessus flèche vers la droite', DeepL: 'flèche vers la gauche sur flèche vers la droite')
+ - "⇇": [T: "paire de flèches vers la gauche"]          	#  0x21c7	(en: 'leftwards paired arrows', MathPlayer: 'paire de flèches vers la gauche', DeepL: 'flèches jumelées vers la gauche')
+ - "⇈": [T: "paire de flèches vers le haut"]    	#  0x21c8	(en: 'upwards paired arrows')
+ - "⇉": [T: "paire de flèches vers la droite"]          	#  0x21c9	(en: 'rightwards paired arrows', MathPlayer: 'paire de flèches vers la droite', DeepL: 'flèches jumelées vers la droite')
+ - "⇊": [T: "paire de flèches vers le bas"]     	#  0x21ca	(en: 'downwards paired arrows')
+ - "⇋": [T: "harpon gauche par dessus harpon droit"]	#  0x21cb	(en: 'left harpoon over right harpoon', MathPlayer: 'harpon vers la gauche par-dessus harpon vers la droite', DeepL: 'harpon gauche sur harpon droit')
+ - "⇌": [T: "harpon droit par dessus harpon gauche"]	#  0x21cc	(en: 'right harpoon over left harpoon', MathPlayer: 'harpon vers la droite par-dessus harpon vers la gauche', DeepL: 'harpon droit sur harpon gauche')
+ - "⇍": [T: "double flèche barrée gauche"]      	#  0x21cd	(en: 'leftwards double arrow with stroke', MathPlayer: 'double flèche barrée vers la gauche', DeepL: 'flèche double gauche avec trait')
+ - "⇎": [T: "double flèche barrée bilatérale"]  	#  0x21ce	(en: 'left right double arrow with stroke')
+ - "⇏": [T: "double flèche barrée droite"]      	#  0x21cf	(en: 'rightwards double arrow with stroke', MathPlayer: 'double flèche barrée vers la droite', DeepL: 'flèche double droite avec trait')
+ - "⇐": [T: "double flèche vers la gauche"]             	#  0x21d0	(en: 'leftwards double arrow', MathPlayer: 'double flèche vers la gauche', DeepL: 'flèche double vers la gauche')
+ - "⇑": [T: "double flèche vers le haut"]       	#  0x21d1	(en: 'upwards double arrow')
+ - "⇒": [T: "double flèche vers la droite"]             	#  0x21d2	(en: 'implies', MathPlayer: 'double flèche vers la droite', DeepL: 'implique')
+ - "⇓": [T: "double flèche vers le bas"]        	#  0x21d3	(en: 'downwards double arrow')
+ - "⇔": [T: "double flèche bilatérale"]         	#  0x21d4	(en: 'if and only if')
+ - "⇕": [T: "double flèche haut bas"]           	#  0x21d5	(en: 'up down double arrow', MathPlayer: 'double flèche haut-bas', DeepL: 'haut-bas double flèche')
+ - "⇖": [T: "double flèche nord ouest"]         	#  0x21d6	(en: 'north west double arrow', MathPlayer: 'double flèche nord-ouest', DeepL: 'flèche double nord-ouest')
+ - "⇗": [T: "double flèche nord est"]           	#  0x21d7	(en: 'north east double arrow', MathPlayer: 'double flèche nord-est', DeepL: 'flèche double nord-est')
+ - "⇘": [T: "double flèche sud est"]            	#  0x21d8	(en: 'south east double arrow', MathPlayer: 'double flèche sud-est', DeepL: 'flèche double sud-est')
+ - "⇙": [T: "double flèche sud ouest"]          	#  0x21d9	(en: 'south west double arrow', MathPlayer: 'double flèche sud-ouest', DeepL: 'flèche double sud-ouest')
+ - "⇚": [T: "triple flèche gauche"]             	#  0x21da	(en: 'leftwards triple arrow', MathPlayer: 'triple flèche vers la gauche', DeepL: 'flèche triple vers la gauche')
+ - "⇛": [T: "triple flèche droite"]             	#  0x21db	(en: 'rightwards triple arrow', MathPlayer: 'triple flèche vers la droite', DeepL: 'vers la droite triple flèche')
+ - "⇜": [T: "flèche en tire bouchon gauche"]    	#  0x21dc	(en: 'leftwards squiggle arrow', MathPlayer: 'flèche vers la gauche en tire-bouchon', DeepL: 'flèche gribouillée vers la gauche')
+ - "⇝": [T: "flèche en tire bouchon droite"]    	#  0x21dd	(en: 'rightwards squiggle arrow', MathPlayer: 'flèche vers la droite en tire-bouchon', DeepL: 'flèche vers la droite avec gribouillis')
+ - "⇞": [T: "flèche vers le haut avec double barre"]	#  0x21de	(en: 'upwards arrow with double stroke')
+ - "⇟": [T: "flèche vers le bas avec double barre"]	#  0x21df	(en: 'downwards arrow with double stroke')
+ - "⇠": [T: "flèche pointillée vers la gauche"]         	#  0x21e0	(en: 'leftwards dashed arrow', MathPlayer: 'flèche pointillée vers la gauche', DeepL: 'flèche en pointillé vers la gauche')
+ - "⇡": [T: "flèche pointillée vers le haut"]   	#  0x21e1	(en: 'upwards dashed arrow')
+ - "⇢": [T: "flèche pointillée vers la droite"]         	#  0x21e2	(en: 'rightwards dashed arrow', MathPlayer: 'flèche pointillée vers la droite', DeepL: 'flèche en pointillé vers la droite')
+ - "⇣": [T: "flèche pointillée vers le bas"]    	#  0x21e3	(en: 'downwards dashed arrow')
+ - "⇤": [T: "flèche gauche vers un taquet"]     	#  0x21e4	(en: 'leftwards arrow to bar', MathPlayer: 'flèche vers la gauche jusqu'à un taquet', DeepL: 'flèche gauche vers la barre')
+ - "⇥": [T: "flèche droite vers un taquet"]     	#  0x21e5	(en: 'rightwards arrow to bar', MathPlayer: 'flèche vers la droite jusqu'à un taquet', DeepL: 'flèche vers la droite jusqu'à la barre')
+ - "⇦": [T: "flèche blanche vers la gauche"]    	#  0x21e6	(en: 'leftwards white arrow', SRE: 'flèche blanche gauche')
+ - "⇧": [T: "flèche blanche vers le haut"]      	#  0x21e7	(en: 'upwards white arrow')
+ - "⇨": [T: "flèche blanche vers la droite"]    	#  0x21e8	(en: 'rightwards white arrow', SRE: 'flèche blanche droite')
+ - "⇩": [T: "flèche blanche vers le bas"]       	#  0x21e9	(en: 'downwards white arrow')
+ - "⇪": [T: "flèche blanche vers le haut à partir d'un taquet"]	#  0x21ea	(en: 'upwards white arrow from bar')
+ - "⇫": [T: "flèche blanche vers le haut sur socle"]	#  0x21eb	(en: 'upwards white arrow on pedestal', DeepL: 'flèche blanche vers le haut sur un socle')
+ - "⇬": [T: "flèche blanche vers le haut sur socle et trait horizontal"]	#  0x21ec	(en: 'upwards white arrow on pedestal with horizontal bar', DeepL: 'flèche blanche vers le haut sur socle avec barre horizontale')
+ - "⇭": [T: "flèche blanche vers le haut sur socle et barre verticale"]	#  0x21ed	(en: 'upwards white arrow on pedestal with vertical bar', DeepL: 'flèche blanche vers le haut sur un socle avec une barre verticale')
+ - "⇮": [T: "double flèche blanche vers le haut"]	#  0x21ee	(en: 'upwards white double arrow', DeepL: 'flèche double blanche vers le haut')
+ - "⇯": [T: "double flèche blanche vers le haut sur socle"]	#  0x21ef	(en: 'upwards white double arrow on pedestal', DeepL: 'double flèche blanche vers le haut sur un socle')
+ - "⇰": [T: "flèche blanche vers la droite appuyée sur mur"]	#  0x21f0	(en: 'rightwards white arrow from wall', DeepL: 'vers la droite flèche blanche du mur')
+ - "⇱": [T: "flèche nord ouest en encoignure"]  	#  0x21f1	(en: 'north west arrow to corner', DeepL: 'flèche nord-ouest à l'angle')
+ - "⇲": [T: "flèche sud est en encoignure"]     	#  0x21f2	(en: 'south east arrow to corner', DeepL: 'flèche sud-est vers le coin')
+ - "⇳": [T: "flèche blanche vers le haut et le bas"]	#  0x21f3	(en: 'up down white arrow', DeepL: 'flèche blanche haut-bas')
+ - "⇴": [T: "flèche vers la droite à petit cercle"]	#  0x21f4	(en: 'right arrow with small circle', DeepL: 'flèche droite avec petit cercle')
+ - "⇵": [T: "flèche vers le bas à gauche d'une flèche vers le haut"]	#  0x21f5	(en: 'downwards arrow leftwards of upwards arrow')
+ - "⇶": [T: "trois flèches vers la droite"]     	#  0x21f6	(en: 'three rightwards arrows')
+ - "⇷": [T: "flèche vers la gauche barrée verticalement"]	#  0x21f7	(en: 'leftwards arrow with vertical stroke', DeepL: 'flèche vers la gauche avec trait vertical')
+ - "⇸": [T: "flèche vers la droite barrée verticalement"]	#  0x21f8	(en: 'rightwards arrow with vertical stroke', DeepL: 'flèche vers la droite avec trait vertical')
+ - "⇹": [T: "flèche vers la droite et la gauche barrée verticalement"]	#  0x21f9	(en: 'left right arrow with vertical stroke', DeepL: 'flèche gauche droite avec trait vertical')
+ - "⇺": [T: "flèche vers la gauche barrée deux fois verticalement"]	#  0x21fa	(en: 'leftwards arrow with double vertical stroke', DeepL: 'flèche vers la gauche avec double trait vertical')
+ - "⇻": [T: "flèche vers la droite barrée deux fois verticalement"]	#  0x21fb	(en: 'rightwards arrow with double vertical stroke', DeepL: 'flèche vers la droite avec double trait vertical')
+ - "⇼": [T: "flèche bilatérale barrée deux fois verticalement"]	#  0x21fc	(en: 'left right arrow with double vertical stroke', DeepL: 'flèche gauche droite avec double trait vertical')
+ - "⇽": [T: "flèche à tête creuse vers la gauche"]      	#  0x21fd	(en: 'leftwards open headed arrow', MathPlayer: 'flèche à tête creuse vers la gauche', DeepL: 'flèche ouverte vers la gauche')
+ - "⇾": [T: "flèche à tête creuse vers la droite"]      	#  0x21fe	(en: 'rightwards open headed arrow', MathPlayer: 'flèche à tête creuse vers la droite', DeepL: 'flèche ouverte vers la droite')
+ - "⇿": [T: "flèche à tête creuse bilatérale"]  	#  0x21ff	(en: 'left right open headed arrow')
+ - "∀": [T: "pour tous"]                        	#  0x2200	(en: 'for all')
  - "∁":                                         	#  0x2201
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
      - t: "complément"                          	# 	(en: 'complement of')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
-         then: [t: "partiel"]                   	# 	(en: 'partial', DeepL translation)
-         else: [t: "dérivée partielle"]         	# 	(en: 'partial derivative', DeepL: 'dérivé partiel')
- - "∃": [t: "il existe"]                        	#  0x2203	(en: 'there exists')
- - "∄": [t: "il n'existe pas"]                  	#  0x2204	(en: 'there does not exist')
- - "∅": [t: "ensemble vide"]                    	#  0x2205	(en: 'empty set')
+         then: [T: "partielle"]                   	# 	(en: 'partial', DeepL translation)
+         else: [T: "dérivée partielle"]         	# 	(en: 'partial derivative', DeepL: 'dérivé partiel')
+ - "∃": [T: "il existe"]                        	#  0x2203	(en: 'there exists')
+ - "∄": [T: "il n'existe pas"]                  	#  0x2204	(en: 'there does not exist')
+ - "∅": [T: "ensemble vide"]                    	#  0x2205	(en: 'empty set')
  - "∆":                                         	#  0x2206
      - test:
          if: "following-sibling::*"
          then_test:
             if: "$Verbosity!='Terse'"
-            then: [t: "le lahplahsien de"]      	#  "LahPlahsian" sounds better than "laplacian" in speech engines tested	(en: 'the LahPlahsian of', DeepL translation)
-            else: [t: "incrément"]              	# 	(en: 'LahPlahsian')
-         else: [t: "incrément"]                 	# 	(en: 'LahPlahsian')
+            then: [T: "le lahplahsien de"]      	#  "LahPlahsian" sounds better than "laplacian" in speech engines tested	(en: 'the LahPlahsian of', DeepL translation)
+            else: [T: "incrément"]              	# 	(en: 'LahPlahsian')
+         else: [T: "incrément"]                 	# 	(en: 'LahPlahsian')
 
- - "∇": [t: "nabla"]                            	#  0x2207	(en: 'nahblah', DeepL: 'nahblah')
+ - "∇": [T: "nabla"]                            	#  0x2207	(en: 'nahblah', DeepL: 'nahblah')
  - "∉":                                         	#  0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "n'est pas un élément de"]    	# 	(en: 'is not an element of', DeepL translation)
+        then: [T: "n'est pas un élément de"]    	# 	(en: 'is not an element of', DeepL translation)
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "pas dans"]           	# 	(en: 'not in', DeepL translation)
+                then: [T: "pas dans"]           	# 	(en: 'not in', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "pas membre de"]      	# 	(en: 'not member of', DeepL translation)
+                then: [T: "pas membre de"]      	# 	(en: 'not member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "pas élément de"]     	# 	(en: 'not element of', DeepL translation)
-              - else: [t: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
+                then: [T: "pas élément de"]     	# 	(en: 'not element of', DeepL translation)
+              - else: [T: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "n'est pas membre de"]	# 	(en: 'is not a member of', DeepL translation)
+                then: [T: "n'est pas membre de"]	# 	(en: 'is not a member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "n'est pas un élément de"]	# 	(en: 'is not an element of', DeepL translation)
+                then: [T: "n'est pas un élément de"]	# 	(en: 'is not an element of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "n'est pas dans"]     	# 	(en: 'is not in', DeepL translation)
-              - else: [t: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
+                then: [T: "n'est pas dans"]     	# 	(en: 'is not in', DeepL translation)
+              - else: [T: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
  - "∊":                                         	#  0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
         then:
         - test:
             if: "$Verbosity!='Terse' and not(parent::m:set)"	#  "the set x is an element of ..." sounds bad
-            then: [t: "est"]                    	# 	(en: 'is', DeepL translation)
+            then: [T: "est"]                    	# 	(en: 'is', DeepL translation)
         - t: "appartient à"                     	# 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "en"]                 	# 	(en: 'in', DeepL translation)
+                then: [T: "en"]                 	# 	(en: 'in', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "membre de"]          	# 	(en: 'member of', DeepL translation)
+                then: [T: "membre de"]          	# 	(en: 'member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "élément de"]         	# 	(en: 'element of', DeepL translation)
-              - else: [t: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+                then: [T: "élément de"]         	# 	(en: 'element of', DeepL translation)
+              - else: [T: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "est un membre de"]   	# 	(en: 'is a member of', DeepL translation)
+                then: [T: "est un membre de"]   	# 	(en: 'is a member of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "est un élément de"]  	# 	(en: 'is an element of', DeepL translation)
+                then: [T: "est un élément de"]  	# 	(en: 'is an element of', DeepL translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "est dans"]           	# 	(en: 'is in', DeepL translation)
-              - else: [t: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∋": [t: "contient comme élément"]           	#  0x220b	(en: 'contains the member')
- - "∌": [t: "ne contient pas comme élément"]    	#  0x220c	(en: 'does not contain the member')
- - "∍": [t: "contient comme élément"]           	#  0x220d	(en: 'contains the member')
- - "∎": [t: "ce qu'il fallait démontrer"]       	#  0x220e	(en: 'end of proof')
- - "∏": [t: "produit"]                          	#  0x220f	(en: 'product')
- - "∐": [t: "coproduit"]                        	#  0x2210	(en: 'coproduct')
- - "∑": [t: "sommation"]                        	#  0x2211	(en: 'sum')
- - "−": [t: "moins"]                            	#  0x2212	(en: 'minus')
- - "∓": [t: "moins ou plus"]                    	#  0x2213	(en: 'minus or plus', MathPlayer: 'moins-ou-plus')
- - "∔": [t: "plus pointé"]                      	#  0x2214	(en: 'dot plus')
- - "∕": [t: "division"]                         	#  0x2215	(en: 'divided by')
- - "∖": [t: "différence d'ensembles"]           	#  0x2216	(en: 'set minus')
- - "∗": [t: "opérateur astérisque"]             	#  0x2217	(en: 'times')
- - "∘": [t: "opérateur rond"]                   	#  0x2218	(en: 'composed with')
+                then: [T: "est dans"]           	# 	(en: 'is in', DeepL translation)
+              - else: [T: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+ - "∋": [T: "contient comme élément"]           	#  0x220b	(en: 'contains the member')
+ - "∌": [T: "ne contient pas comme élément"]    	#  0x220c	(en: 'does not contain the member')
+ - "∍": [T: "contient comme élément"]           	#  0x220d	(en: 'contains the member')
+ - "∎": [T: "ce qu'il fallait démontrer"]       	#  0x220e	(en: 'end of proof')
+ - "∏": [T: "produit"]                          	#  0x220f	(en: 'product')
+ - "∐": [T: "coproduit"]                        	#  0x2210	(en: 'coproduct')
+ - "∑": [T: "sommation"]                        	#  0x2211	(en: 'sum')
+ - "−": [T: "moins"]                            	#  0x2212	(en: 'minus')
+ - "∓": [T: "moins ou plus"]                    	#  0x2213	(en: 'minus or plus', MathPlayer: 'moins-ou-plus')
+ - "∔": [T: "plus pointé"]                      	#  0x2214	(en: 'dot plus')
+ - "∕": [T: "division"]                         	#  0x2215	(en: 'divided by')
+ - "∖": [T: "différence d'ensembles"]           	#  0x2216	(en: 'set minus')
+ - "∗": [T: "opérateur astérisque"]             	#  0x2217	(en: 'times')
+ - "∘": [T: "opérateur rond"]                   	#  0x2218	(en: 'composed with')
  - "∙":                                         	#  0x2219
     - test: 
         if: "@data-chem-formula-op"
-        then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
-        else: [t: "point médian"]               	# 	(en: 'times')
+        then: [T: "point"]                      	# 	(en: 'dot', DeepL translation)
+        else: [T: "fois"]               	# 	(en: 'times')
 
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "racine carrée"                       	# 	(en: 'square root of')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "racine cubique"                      	# 	(en: 'cube root of')
  - "∜":                                         	#  0x221c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "racine quatrième"                    	# 	(en: 'fourth root of')
  - "∝":                                         	#  0x221d
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "proportionnel à"                     	# 	(en: 'proportional to')
- - "∞": [t: "infini"]                           	#  0x221e	(en: 'infinity')
- - "∟": [t: "angle droit"]                      	#  0x221f	(en: 'right angle')
- - "∠": [t: "angle"]                            	#  0x2220
- - "∡": [t: "angle mesuré"]                     	#  0x2221	(en: 'measured angle')
- - "∢": [t: "angle sphérique"]                  	#  0x2222	(en: 'spherical angle')
- - "∣": [t: "est un diviseur de"]               	#  0x2223	(en: 'divides')
- - "∤": [t: "n'est pas un diviseur de"]         	#  0x2224	(en: 'does not divide')
- - "∧": [t: "et logique"]                       	#  0x2227	(en: 'and')
- - "∨": [t: "ou logique"]                       	#  0x2228	(en: 'or')
+ - "∞": [T: "infini"]                           	#  0x221e	(en: 'infinity')
+ - "∟": [T: "angle droit"]                      	#  0x221f	(en: 'right angle')
+ - "∠": [T: "angle"]                            	#  0x2220
+ - "∡": [T: "angle mesuré"]                     	#  0x2221	(en: 'measured angle')
+ - "∢": [T: "angle sphérique"]                  	#  0x2222	(en: 'spherical angle')
+ - "∣": [T: "est un diviseur de"]               	#  0x2223	(en: 'divides')
+ - "∤": [T: "n'est pas un diviseur de"]         	#  0x2224	(en: 'does not divide')
+ - "∧": [T: "et logique"]                       	#  0x2227	(en: 'and')
+ - "∨": [T: "ou logique"]                       	#  0x2228	(en: 'or')
  - "∩": [T: "\uF8FEintersection"]                     	#  0x2229
  - "∪": [T: "\uF8FEunion"]                            	#  0x222a
  - "∫": [T: "\uF8FEintégrale"]                        	#  0x222b	(en: 'integral')
@@ -810,653 +810,653 @@
  - "∮": [T: "\uF8FEintégrale de contour"]             	#  0x222e	(en: 'contour integral')
  - "∯": [T: "\uF8FEintégrale de surface"]             	#  0x222f	(en: 'surface integral')
  - "∰": [T: "\uF8FEintégrale de volume"]              	#  0x2230	(en: 'volume integral')
- - "∱": [T: "\uF8FEintégrale en sens négatif"]        	#  0x2231	(en: 'clockwise integral')
- - "∲": [T: "\uF8FEintégrale de contour en sens négatif"]	#  0x2232	(en: 'clockwise contour integral')
- - "∳": [T: "\uF8FEintégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
- - "∴": [t: "par conséquent"]                   	#  0x2234	(en: 'therefore')
- - "∵": [t: "parce que"]                        	#  0x2235	(en: 'because')
+ - "∱": [T: "\uF8FEintégrale en sens horaire"]        	#  0x2231	(en: 'clockwise integral')
+ - "∲": [T: "\uF8FEintégrale de contour en sens horaire"]	#  0x2232	(en: 'clockwise contour integral')
+ - "∳": [T: "\uF8FEintégrale de contour en sens antihoraire"]	#  0x2233	(en: 'anticlockwise contour integral')
+ - "∴": [T: "par conséquent"]                   	#  0x2234	(en: 'therefore')
+ - "∵": [T: "parce que"]                        	#  0x2235	(en: 'because')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "rapport"                             	# 	(en: 'to')
- - "∷": [t: "proportion"]                       	#  0x2237	(en: 'as')
- - "∸": [t: "moins pointé"]                     	#  0x2238	(en: 'dot minus')
- - "∹": [t: "excès"]                            	#  0x2239	(en: 'has excess compared to')
+ - "∷": [T: "proportion"]                       	#  0x2237	(en: 'as')
+ - "∸": [T: "moins pointé"]                     	#  0x2238	(en: 'dot minus')
+ - "∹": [T: "excès"]                            	#  0x2239	(en: 'has excess compared to')
  - "∺":                                         	#  0x223a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "proportion géométrique"              	# 	(en: 'geometrically proportional to')
  - "∻":                                         	#  0x223b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "homothétique"                        	# 	(en: 'homothetic to')
- - "∼": [t: "opérateur tilde"]                  	#  0x223c	(en: 'varies with')
- - "∽": [t: "opérateur tilde renversé"]         	#  0x223d	(en: 'reversed tilde')
+ - "∼": [T: "opérateur tilde"]                  	#  0x223c	(en: 'varies with')
+ - "∽": [T: "opérateur tilde renversé"]         	#  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "s couché renversé"                   	# 	(en: 'most positive')
- - "∿": [t: "sinusoïde"]                        	#  0x223f	(en: 'sine wave')
- - "≀": [t: "produit couronne"]                 	#  0x2240	(en: 'wreath product')
- - "≁": [t: "non tilde"]                        	#  0x2241	(en: 'not tilde')
- - "≂": [t: "moins tilde"]                      	#  0x2242	(en: 'minus tilde')
+ - "∿": [T: "sinusoïde"]                        	#  0x223f	(en: 'sine wave')
+ - "≀": [T: "produit couronne"]                 	#  0x2240	(en: 'wreath product')
+ - "≁": [T: "non tilde"]                        	#  0x2241	(en: 'not tilde')
+ - "≂": [T: "moins tilde"]                      	#  0x2242	(en: 'minus tilde')
  - "≃":                                         	#  0x2243
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "asymptotiquement égal à"             	# 	(en: 'asymptotically equal to')
  - "≄":                                         	#  0x2244
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "non asymptotiquement égal à"         	# 	(en: 'not asymptotically equal to')
  - "≅":                                         	#  0x2245
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "approximativement égal à"            	# 	(en: 'congruent to')
  - "≆":                                         	#  0x2246
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "approximativement mais non strictement égal à"	# 	(en: 'approximately but not actually equal to')
  - "≇":                                         	#  0x2247
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "ni approximativement ni strictement égal à"	# 	(en: 'not congruent to')
  - "≈":                                         	#  0x2248
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "presque égal à"                      	# 	(en: 'approximately equal to')
  - "≉":                                         	#  0x2249
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "non presque égal à"                  	# 	(en: 'not approximately equal to')
  - "≊":                                         	#  0x224a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "presque égal ou égal à"              	# 	(en: 'approximately equal or equal to')
- - "≋": [t: "triple tilde"]                     	#  0x224b
- - "≌": [t: "entièrement égal à"]               	#  0x224c	(en: 'are all equal to')
+ - "≋": [T: "triple tilde"]                     	#  0x224b
+ - "≌": [T: "entièrement égal à"]               	#  0x224c	(en: 'are all equal to')
  - "≍":                                         	#  0x224d
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "équivalent à"                        	# 	(en: 'equivalent to')
  - "≎":                                         	#  0x224e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "géométriquement équivalent à"        	# 	(en: 'geometrically equivalent to')
  - "≏":                                         	#  0x224f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "différence entre"                    	# 	(en: 'difference between')
- - "≐": [t: "tend vers la limite"]              	#  0x2250	(en: 'approaches the limit')
+ - "≐": [T: "tend vers la limite"]              	#  0x2250	(en: 'approaches the limit')
  - "≑":                                         	#  0x2251
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "géométriquement égal à"              	# 	(en: 'geometrically equal to')
  - "≒":                                         	#  0x2252
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "approximativement égal à ou image de"	# 	(en: 'approximately equal to or the image of')
  - "≓":                                         	#  0x2253
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est le"]                    	# 	(en: 'is the', DeepL translation)
-     - t: "image de ou approximativement égal à"	# 	(en: 'image of or approximately equal to')
- - "≔": [t: "deux-points égal"]                 	#  0x2254	(en: 'colon equals', SRE: 'deux points égal')
- - "≕": [t: "égal deux points"]                 	#  0x2255	(en: 'equals colon', MathPlayer: 'égal deux-points', DeepL: 'égal colon')
- - "≖": [t: "rond dans égal"]                   	#  0x2256	(en: 'ring in equal to')
+         then: [T: "est l'"]                    	# 	(en: 'is the', DeepL translation)
+     - t: "\uF8FEimage de ou approximativement égal à"	# 	(en: 'image of or approximately equal to')
+ - "≔": [T: "deux-points égal"]                 	#  0x2254	(en: 'colon equals', SRE: 'deux points égal')
+ - "≕": [T: "égal deux points"]                 	#  0x2255	(en: 'equals colon', MathPlayer: 'égal deux-points', DeepL: 'égal colon')
+ - "≖": [T: "rond dans égal"]                   	#  0x2256	(en: 'ring in equal to')
  - "≗":                                         	#  0x2257
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "égal avec rond en chef"              	# 	(en: 'approximately equal to')
- - "≘": [t: "correspond à"]                     	#  0x2258	(en: 'corresponds to')
- - "≙": [t: "estime"]                           	#  0x2259	(en: 'estimates')
+ - "≘": [T: "correspond à"]                     	#  0x2258	(en: 'corresponds to')
+ - "≙": [T: "estime"]                           	#  0x2259	(en: 'estimates')
  - "≚":                                         	#  0x225a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "équiangulaire à"                     	# 	(en: 'equiangular to')
- - "≛": [t: "égal avec étoile en chef"]         	#  0x225b	(en: 'star equals')
- - "≜": [t: "égal delta"]                       	#  0x225c	(en: 'delta equals')
- - "≝": [t: "égal par définition à"]            	#  0x225d	(en: 'is defined to be')
+ - "≛": [T: "égal avec étoile en chef"]         	#  0x225b	(en: 'star equals')
+ - "≜": [T: "égal delta"]                       	#  0x225c	(en: 'delta equals')
+ - "≝": [T: "égal par définition à"]            	#  0x225d	(en: 'is defined to be')
  - "≞":                                         	#  0x225e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "mesuré par"                          	# 	(en: 'measured by')
- - "≟": [t: "égalité en doute"]                 	#  0x225f	(en: 'has an unknown relationship with')
+ - "≟": [T: "égalité en doute"]                 	#  0x225f	(en: 'has an unknown relationship with')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas égal à"                          	# 	(en: 'not equal to')
  - "≡":                                         	#  0x2261
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "identique à"                         	# 	(en: 'identical to')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "non identique à"                     	# 	(en: 'not identical to')
  - "≣":                                         	#  0x2263
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "strictement équivalent à"            	# 	(en: 'strictly equivalent to')
- - "≦": [t: "plus petit que par dessus égal à"] 	#  0x2266	(en: 'less than over equal to', MathPlayer: 'plus petit que par-dessus égal à', DeepL: 'inférieur à égal à')
- - "≧": [t: "plus grand que par dessus égal à"] 	#  0x2267	(en: 'greater than over equal to', MathPlayer: 'plus grand que par-dessus égal à', DeepL: 'plus grand que sur égal à')
+ - "≦": [T: "inférieur à sur égal à"] 	#  0x2266	(en: 'less than over equal to', MathPlayer: 'plus petit que par-dessus égal à', DeepL: 'inférieur à égal à')
+ - "≧": [T: "supérieur à sur égal à"] 	#  0x2267	(en: 'greater than over equal to', MathPlayer: 'plus grand que par-dessus égal à', DeepL: 'plus grand que sur égal à')
  - "≨":                                         	#  0x2268
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus petit mais pas égal à"          	# 	(en: 'less than but not equal to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "inférieur mais pas égal à"          	# 	(en: 'less than but not equal to')
  - "≩":                                         	#  0x2269
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus grand mais pas égal à"          	# 	(en: 'greater than but not equal to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "supérieur mais pas égal à"          	# 	(en: 'greater than but not equal to')
  - "≪":                                         	#  0x226a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "beaucoup plus petit que"             	# 	(en: 'much less than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "très inférieur à"             	# 	(en: 'much less than')
  - "≫":                                         	#  0x226b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "beaucoup plus grand que"             	# 	(en: 'much greater than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "très supérieur à"             	# 	(en: 'much greater than')
  - "≬":                                         	#  0x226c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "entre"                               	# 	(en: 'between')
  - "≭":                                         	#  0x226d
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "non équivalent à"                    	# 	(en: 'not equivalent to')
  - "≮":                                         	#  0x226e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas plus petit que"                  	# 	(en: 'not less than')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "pas inférieur à"                  	# 	(en: 'not less than')
  - "≯":                                         	#  0x226f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas plus grand que"                  	# 	(en: 'not greater than')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "pas supérieur à"                  	# 	(en: 'not greater than')
  - "≰":                                         	#  0x2270
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus petit ni égal à"             	# 	(en: 'neither less than nor equal to')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni inférieur ni égal à"             	# 	(en: 'neither less than nor equal to')
  - "≱":                                         	#  0x2271
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus grand ni égal à"             	# 	(en: 'neither greater than nor equal to')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni supérieur ni égal à"             	# 	(en: 'neither greater than nor equal to')
  - "≲":                                         	#  0x2272
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus petit ou équivalent à"          	# 	(en: 'less than or equivalent to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "inférieur ou équivalent à"          	# 	(en: 'less than or equivalent to')
  - "≳":                                         	#  0x2273
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus grand ou équivalent à"          	# 	(en: 'greater than or equivalent to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "supérieur ou équivalent à"          	# 	(en: 'greater than or equivalent to')
  - "≴":                                         	#  0x2274
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus petit ni équivalent à"       	# 	(en: 'neither less than nor equivalent to')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni inférieur ni équivalent à"       	# 	(en: 'neither less than nor equivalent to')
  - "≵":                                         	#  0x2275
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus grand ni équivalent à"       	# 	(en: 'neither greater than nor equivalent to')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni supérieur ni équivalent à"       	# 	(en: 'neither greater than nor equivalent to')
  - "≶":                                         	#  0x2276
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus petit ou plus grand que"        	# 	(en: 'less than or greater than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "inférieur ou supérieur à"        	# 	(en: 'less than or greater than')
  - "≷":                                         	#  0x2277
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus grand ou plus petit que"        	# 	(en: 'greater than or less than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "supérieur ou inférieur à"        	# 	(en: 'greater than or less than')
  - "≸":                                         	#  0x2278
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus petit ni plus grand que"     	# 	(en: 'neither less than nor greater than')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni inférieur ni supérieur à"     	# 	(en: 'neither less than nor greater than')
  - "≹":                                         	#  0x2279
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni plus grand ni plus petit que"     	# 	(en: 'neither greater than nor less than')
- - "≺": [t: "précède"]                          	#  0x227a	(en: 'precedes')
- - "≻": [t: "suit"]                             	#  0x227b	(en: 'succeeds')
- - "≼": [t: "précède ou est égal à"]            	#  0x227c	(en: 'precedes or is equal to')
- - "≽": [t: "suit ou est égal à"]               	#  0x227d	(en: 'succeeds or is equal to')
- - "≾": [t: "précède ou est équivalent à"]      	#  0x227e	(en: 'precedes or is equivalent to')
- - "≿": [t: "suit ou est équivalent à"]         	#  0x227f	(en: 'succeeds or is equivalent to')
- - "⊀": [t: "ne précède pas"]                   	#  0x2280	(en: 'does not precede')
- - "⊁": [t: "ne suit pas"]                      	#  0x2281	(en: 'does not succeed')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni supérieur ni inférieur à"     	# 	(en: 'neither greater than nor less than')
+ - "≺": [T: "précède"]                          	#  0x227a	(en: 'precedes')
+ - "≻": [T: "suit"]                             	#  0x227b	(en: 'succeeds')
+ - "≼": [T: "précède ou est égal à"]            	#  0x227c	(en: 'precedes or is equal to')
+ - "≽": [T: "suit ou est égal à"]               	#  0x227d	(en: 'succeeds or is equal to')
+ - "≾": [T: "précède ou est équivalent à"]      	#  0x227e	(en: 'precedes or is equivalent to')
+ - "≿": [T: "suit ou est équivalent à"]         	#  0x227f	(en: 'succeeds or is equivalent to')
+ - "⊀": [T: "ne précède pas"]                   	#  0x2280	(en: 'does not precede')
+ - "⊁": [T: "ne suit pas"]                      	#  0x2281	(en: 'does not succeed')
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
+         then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
      - t: "sous-ensemble de"                    	# 	(en: 'subset of', SRE: 'sous ensemble de')
  - "⊃":                                         	#  0x2283
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
+         then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
      - t: "sur-ensemble de"                     	# 	(en: 'superset of', SRE: 'sur ensemble de')
  - "⊄":                                         	#  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas un sous-ensemble de"             	# 	(en: 'not a subset of', SRE: 'pas un sous ensemble de')
  - "⊅":                                         	#  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas un sur-ensemble de"              	# 	(en: 'not a superset of', SRE: 'pas un sur ensemble de')
  - "⊆":                                         	#  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sous ensemble ou égal à"             	# 	(en: 'subset of or equal to', MathPlayer: 'sous-ensemble ou égal à', DeepL: 'sous-ensemble de ou égal à')
+         then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
+     - t: "sous ensemble de ou égal à"             	# 	(en: 'subset of or equal to', MathPlayer: 'sous-ensemble ou égal à', DeepL: 'sous-ensemble de ou égal à')
  - "⊇":                                         	#  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sur ensemble ou égal à"              	# 	(en: 'superset of or equal to', MathPlayer: 'sur-ensemble ou égal à', DeepL: 'superposé ou égal à')
+         then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
+     - t: "sur ensemble de ou égal à"              	# 	(en: 'superset of or equal to', MathPlayer: 'sur-ensemble ou égal à', DeepL: 'superposé ou égal à')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni un sous ensemble ni égal à"       	# 	(en: 'neither a subset of nor equal to', MathPlayer: 'ni un sous-ensemble ni égal à', DeepL: 'ni un sous-ensemble de ni égal à')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni un sous ensemble de ni égal à"       	# 	(en: 'neither a subset of nor equal to', MathPlayer: 'ni un sous-ensemble ni égal à', DeepL: 'ni un sous-ensemble de ni égal à')
  - "⊉":                                         	#  0x2289
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni un sur ensemble ni égal à"        	# 	(en: 'neither a superset of nor equal to', MathPlayer: 'ni un sur-ensemble ni égal à', DeepL: 'ni un surensemble de, ni égal à')
- - "⊊": [t: "sous ensemble mais pas égal à"]    	#  0x228a	(en: 'subset of with not equal to', MathPlayer: 'sous-ensemble mais pas égal à', DeepL: 'sous-ensemble de avec non égal à')
- - "⊋": [t: "sur ensemble mais pas égal à"]     	#  0x228b	(en: 'superset of with not equal to', MathPlayer: 'sur-ensemble mais pas égal à', DeepL: 'superposition de avec non égal à')
- - "⊌": [t: "multiensemble"]                    	#  0x228c	(en: 'multiset')
- - "⊍": [t: "multiplication de multiensemble"]  	#  0x228d	(en: 'multiset multiplication')
- - "⊎": [t: "union de multiensemble"]           	#  0x228e	(en: 'multiset union')
- - "⊏": [t: "image carrée de"]                  	#  0x228f	(en: 'square image of')
- - "⊐": [t: "original carré de"]                	#  0x2290	(en: 'square original of')
- - "⊑": [t: "image carrée ou égal à"]           	#  0x2291	(en: 'square image of or equal to')
- - "⊒": [t: "original carré ou égal à"]         	#  0x2292	(en: 'square original of or equal to')
- - "⊓": [t: "chapeau carré"]                    	#  0x2293	(en: 'square cap')
- - "⊔": [t: "coupe carrée"]                     	#  0x2294	(en: 'square cup')
- - "⊕": [t: "plus cerclé"]                      	#  0x2295	(en: 'circled plus')
- - "⊖": [t: "moins cerclé"]                     	#  0x2296	(en: 'circled minus')
- - "⊗": [t: "multiplié par cerclé"]             	#  0x2297	(en: 'circled times')
- - "⊘": [t: "barre oblique de division cerclée"]	#  0x2298	(en: 'circled slash')
- - "⊙": [t: "opérateur point cerclé"]           	#  0x2299	(en: 'circled dot operator')
- - "⊚": [t: "opérateur rond cerclé"]            	#  0x229a	(en: 'circled ring')
- - "⊛": [t: "opérateur astérisque cerclé"]      	#  0x229b	(en: 'circled asterisk')
- - "⊜": [t: "égal cerclé"]                      	#  0x229c	(en: 'circled equals')
- - "⊝": [t: "tiret cerclé"]                     	#  0x229d	(en: 'circled dash')
- - "⊞": [t: "plus encadré"]                     	#  0x229e	(en: 'squared plus')
- - "⊟": [t: "moins encadré"]                    	#  0x229f	(en: 'squared minus')
- - "⊠": [t: "multiplié par encadré"]            	#  0x22a0	(en: 'squared times')
- - "⊡": [t: "opérateur point encadré"]          	#  0x22a1	(en: 'squared dot operator')
- - "⊢": [t: "taquet droit"]                     	#  0x22a2	(en: 'proves')
- - "⊣": [t: "taquet gauche"]                    	#  0x22a3	(en: 'does not yield')
- - "⊤": [t: "taquet vers le bas"]               	#  0x22a4	(en: 'top')
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni un sur ensemble de ni égal à"        	# 	(en: 'neither a superset of nor equal to', MathPlayer: 'ni un sur-ensemble ni égal à', DeepL: 'ni un surensemble de, ni égal à')
+ - "⊊": [T: "sous ensemble de mais pas égal à"]    	#  0x228a	(en: 'subset of with not equal to', MathPlayer: 'sous-ensemble mais pas égal à', DeepL: 'sous-ensemble de avec non égal à')
+ - "⊋": [T: "sur ensemble de mais pas égal à"]     	#  0x228b	(en: 'superset of with not equal to', MathPlayer: 'sur-ensemble mais pas égal à', DeepL: 'superposition de avec non égal à')
+ - "⊌": [T: "multiensemble"]                    	#  0x228c	(en: 'multiset')
+ - "⊍": [T: "multiplication de multiensemble"]  	#  0x228d	(en: 'multiset multiplication')
+ - "⊎": [T: "union de multiensemble"]           	#  0x228e	(en: 'multiset union')
+ - "⊏": [T: "image carrée de"]                  	#  0x228f	(en: 'square image of')
+ - "⊐": [T: "original carré de"]                	#  0x2290	(en: 'square original of')
+ - "⊑": [T: "image carrée de ou égal à"]           	#  0x2291	(en: 'square image of or equal to')
+ - "⊒": [T: "original carré de ou égal à"]         	#  0x2292	(en: 'square original of or equal to')
+ - "⊓": [T: "chapeau carré"]                    	#  0x2293	(en: 'square cap')
+ - "⊔": [T: "coupe carrée"]                     	#  0x2294	(en: 'square cup')
+ - "⊕": [T: "plus cerclé"]                      	#  0x2295	(en: 'circled plus')
+ - "⊖": [T: "moins cerclé"]                     	#  0x2296	(en: 'circled minus')
+ - "⊗": [T: "multiplié par cerclé"]             	#  0x2297	(en: 'circled times')
+ - "⊘": [T: "barre oblique de division cerclée"]	#  0x2298	(en: 'circled slash')
+ - "⊙": [T: "opérateur point cerclé"]           	#  0x2299	(en: 'circled dot operator')
+ - "⊚": [T: "opérateur rond cerclé"]            	#  0x229a	(en: 'circled ring')
+ - "⊛": [T: "opérateur astérisque cerclé"]      	#  0x229b	(en: 'circled asterisk')
+ - "⊜": [T: "égal cerclé"]                      	#  0x229c	(en: 'circled equals')
+ - "⊝": [T: "tiret cerclé"]                     	#  0x229d	(en: 'circled dash')
+ - "⊞": [T: "plus encadré"]                     	#  0x229e	(en: 'squared plus')
+ - "⊟": [T: "moins encadré"]                    	#  0x229f	(en: 'squared minus')
+ - "⊠": [T: "multiplié par encadré"]            	#  0x22a0	(en: 'squared times')
+ - "⊡": [T: "opérateur point encadré"]          	#  0x22a1	(en: 'squared dot operator')
+ - "⊢": [T: "taquet droit"]                     	#  0x22a2	(en: 'proves')
+ - "⊣": [T: "taquet gauche"]                    	#  0x22a3	(en: 'does not yield')
+ - "⊤": [T: "taquet vers le bas"]               	#  0x22a4	(en: 'top')
  - "⊥":                                         	#  0x22a5
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "taquet vers le haut"                 	# 	(en: 'bottom')
- - "⊦": [t: "assertion"]                        	#  0x22a6	(en: 'reduces to')
- - "⊧": [t: "modélise"]                         	#  0x22a7	(en: 'models')
+ - "⊦": [T: "assertion"]                        	#  0x22a6	(en: 'reduces to')
+ - "⊧": [T: "modélise"]                         	#  0x22a7	(en: 'models')
  - "⊨":                                         	#  0x22a8
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "vrai"                                	# 	(en: 'true')
- - "⊩": [t: "oblige"]                           	#  0x22a9	(en: 'forces')
- - "⊪": [t: "barre verticale triple avec tourniquet à droite"]	#  0x22aa	(en: 'triple vertical bar right turnstile')
- - "⊫": [t: "barre verticale double avec tourniquet à droite double"]	#  0x22ab	(en: 'double vertical bar double right turnstile')
- - "⊬": [t: "ne prouve pas"]                    	#  0x22ac	(en: 'does not prove')
+ - "⊩": [T: "oblige"]                           	#  0x22a9	(en: 'forces')
+ - "⊪": [T: "barre verticale triple avec tourniquet à droite"]	#  0x22aa	(en: 'triple vertical bar right turnstile')
+ - "⊫": [T: "barre verticale double avec tourniquet à droite double"]	#  0x22ab	(en: 'double vertical bar double right turnstile')
+ - "⊬": [T: "ne prouve pas"]                    	#  0x22ac	(en: 'does not prove')
  - "⊭":                                         	#  0x22ad
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas vrai"                            	# 	(en: 'not true')
- - "⊮": [t: "n'oblige pas"]                     	#  0x22ae	(en: 'does not force')
- - "⊯": [t: "non barre verticale double avec tourniquet à droite double"]	#  0x22af	(en: 'negated double vertical bar double right turnstile', MathPlayer: 'non-barre verticale double avec tourniquet à droite double', DeepL: 'négation double barre verticale double tourniquet droit')
- - "⊰": [t: "précède sous relation"]            	#  0x22b0	(en: 'precedes under relation')
- - "⊱": [t: "suit sous relation"]               	#  0x22b1	(en: 'succeeds under relation')
+ - "⊮": [T: "n'oblige pas"]                     	#  0x22ae	(en: 'does not force')
+ - "⊯": [T: "non barre verticale double avec tourniquet à droite double"]	#  0x22af	(en: 'negated double vertical bar double right turnstile', MathPlayer: 'non-barre verticale double avec tourniquet à droite double', DeepL: 'négation double barre verticale double tourniquet droit')
+ - "⊰": [T: "précède sous relation"]            	#  0x22b0	(en: 'precedes under relation')
+ - "⊱": [T: "suit sous relation"]               	#  0x22b1	(en: 'succeeds under relation')
  - "⊲":                                         	#  0x22b2
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "sous groupe normal de"               	# 	(en: 'a normal subgroup of', MathPlayer: 'sous-groupe normal de', DeepL: 'un sous-groupe normal de')
- - "⊳": [t: "contient comme sous groupe normal"]	#  0x22b3	(en: 'contains as a normal subgroup', MathPlayer: 'contient comme sous-groupe normal', DeepL: 'contient un sous-groupe normal')
+ - "⊳": [T: "contient comme sous groupe normal"]	#  0x22b3	(en: 'contains as a normal subgroup', MathPlayer: 'contient comme sous-groupe normal', DeepL: 'contient un sous-groupe normal')
  - "⊴":                                         	#  0x22b4
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "sous groupe normal ou égal à"        	# 	(en: 'a normal subgroup of or equal to', MathPlayer: 'sous-groupe normal ou égal à', DeepL: 'un sous-groupe normal de ou égal à')
- - "⊵": [t: "contient comme sous-groupe normal ou égal à"]	#  0x22b5	(en: 'contains as a normal subgroup or equal to', SRE: 'contient comme sous groupe normal ou égal à')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "sous groupe normal de ou égal à"        	# 	(en: 'a normal subgroup of or equal to', MathPlayer: 'sous-groupe normal ou égal à', DeepL: 'un sous-groupe normal de ou égal à')
+ - "⊵": [T: "contient comme sous-groupe normal de ou égal à"]	#  0x22b5	(en: 'contains as a normal subgroup or equal to', SRE: 'contient comme sous groupe normal ou égal à')
  - "⊶":                                         	#  0x22b6
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "original de"                         	# 	(en: 'the original of')
  - "⊷":                                         	#  0x22b7
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "image de"                            	# 	(en: 'an image of')
- - "⊸": [t: "multijection"]                     	#  0x22b8	(en: 'multimap')
- - "⊹": [t: "matrice hermitienne conjuguée"]    	#  0x22b9	(en: 'hermitian conjugate matrix')
- - "⊺": [t: "intercale"]                        	#  0x22ba	(en: 'intercalate')
- - "⊻": [t: "ou exclusif"]                      	#  0x22bb	(en: 'xor')
- - "⊼": [t: "non et"]                           	#  0x22bc	(en: 'nand')
- - "⊽": [t: "non ou"]                           	#  0x22bd	(en: 'nor')
- - "⊾": [t: "angle droit avec arc"]             	#  0x22be	(en: 'right angle with arc')
- - "⊿": [t: "triangle rectangle"]               	#  0x22bf	(en: 'right triangle')
+ - "⊸": [T: "multijection"]                     	#  0x22b8	(en: 'multimap')
+ - "⊹": [T: "matrice hermitienne conjuguée"]    	#  0x22b9	(en: 'hermitian conjugate matrix')
+ - "⊺": [T: "intercale"]                        	#  0x22ba	(en: 'intercalate')
+ - "⊻": [T: "ou exclusif"]                      	#  0x22bb	(en: 'xor')
+ - "⊼": [T: "non et"]                           	#  0x22bc	(en: 'nand')
+ - "⊽": [T: "non ou"]                           	#  0x22bd	(en: 'nor')
+ - "⊾": [T: "angle droit avec arc"]             	#  0x22be	(en: 'right angle with arc')
+ - "⊿": [T: "triangle rectangle"]               	#  0x22bf	(en: 'right triangle')
  - "⋀": [T: "et logique"]         	#  0x22c0	(en: 'logical and')
  - "⋁": [T: "ou logique"]         	#  0x22c1	(en: 'logical or')
  - "⋂": [T: "\uF8FEintersection"]       	#  0x22c2	(en: 'intersection')
  - "⋃": [T: "\uF8FEunion"]            	#  0x22c3	(en: 'union')
- - "⋄": [t: "opérateur losange"]                	#  0x22c4	(en: 'diamond operator')
+ - "⋄": [T: "opérateur losange"]                	#  0x22c4	(en: 'diamond operator')
  - "⋅":                                         	#  0x22c5
     - test: 
         if: "@data-chem-formula-op"
-        then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
+        then: [T: "point"]                      	# 	(en: 'dot', DeepL translation)
         else: [T: "fois"]            	# 	(en: 'times')
 
- - "⋆": [t: "opérateur étoile"]                 	#  0x22c6	(en: 'times')
- - "⋇": [t: "divisé multiplié"]                 	#  0x22c7	(en: 'division times')
- - "⋈": [t: "nœud papillon"]                    	#  0x22c8	(en: 'bowtie')
+ - "⋆": [T: "opérateur étoile"]                 	#  0x22c6	(en: 'times')
+ - "⋇": [T: "divisé multiplié"]                 	#  0x22c7	(en: 'division times')
+ - "⋈": [T: "nœud papillon"]                    	#  0x22c8	(en: 'bowtie')
  - "⋉":                                         	#  0x22c9
     - test: 
         if: "$Verbosity!='Terse'"
-        then: [t: "est"]                        	# 	(en: 'is', DeepL translation)
+        then: [T: "est"]                        	# 	(en: 'is', DeepL translation)
     - t: "produit semi direct à gauche de facteur normal"	# 	(en: 'the left normal factor semidirect product of', MathPlayer: 'produit semi-direct à gauche de facteur normal', DeepL: 'le facteur normal gauche produit semi-direct de')
  - "⋊":                                         	#  0x22ca
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "produit semi direct à droite de facteur normal"	# 	(en: 'the right normal factor semidirect product of', MathPlayer: 'produit semi-direct à droite de facteur normal', DeepL: 'le facteur normal droit produit semi-direct de')
  - "⋋":                                         	#  0x22cb
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "produit semi direct à gauche"        	# 	(en: 'the left semidirect product of', MathPlayer: 'produit semi-direct à gauche', DeepL: 'le produit semi-direct gauche de')
  - "⋌":                                         	#  0x22cc
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "produit semi direct à droite"        	# 	(en: 'the right semidirect product of', MathPlayer: 'produit semi-direct à droite', DeepL: 'le produit semi-direct droit de')
- - "⋍": [t: "moins tilde renversé"]             	#  0x22cd	(en: 'reversed tilde equals')
- - "⋎": [t: "ou logique recourbé"]              	#  0x22ce	(en: 'curly logical or')
- - "⋏": [t: "et logique recourbé"]              	#  0x22cf	(en: 'curly logical and')
+ - "⋍": [T: "égal tilde renversé"]             	#  0x22cd	(en: 'reversed tilde equals')
+ - "⋎": [T: "ou logique recourbé"]              	#  0x22ce	(en: 'curly logical or')
+ - "⋏": [T: "et logique recourbé"]              	#  0x22cf	(en: 'curly logical and')
  - "⋐":                                         	#  0x22d0
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "sous ensemble double"                	# 	(en: 'a double subset of', MathPlayer: 'sous-ensemble double', DeepL: 'un double sous-ensemble de')
  - "⋑":                                         	#  0x22d1
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "sur ensemble double"                 	# 	(en: 'a double superset of', MathPlayer: 'sur-ensemble double', DeepL: 'un double superset de')
  - "⋒":                                         	#  0x22d2
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
      - t: "intersection double"                 	# 	(en: 'double intersection of')
  - "⋓":                                         	#  0x22d3
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
      - t: "union double"                        	# 	(en: 'double union of')
  - "⋔":                                         	#  0x22d4
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
+         then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
      - t: "fourche"                             	# 	(en: 'proper intersection of')
  - "⋕":                                         	#  0x22d5
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "égal et parallèle à"                 	# 	(en: 'equal to and parallel to')
- - "⋖": [t: "plus petit que pointé"]            	#  0x22d6	(en: 'less than with dot')
- - "⋗": [t: "plus grand que pointé"]            	#  0x22d7	(en: 'greater than with dot')
+ - "⋖": [T: "inférieur à avec point"]            	#  0x22d6	(en: 'less than with dot')
+ - "⋗": [T: "supérieur à avec point"]            	#  0x22d7	(en: 'greater than with dot')
  - "⋘":                                         	#  0x22d8
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "considérablement plus petit que"     	# 	(en: 'very much less than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "considérablement inférieur à"     	# 	(en: 'very much less than')
  - "⋙":                                         	#  0x22d9
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "considérablement plus grand que"     	# 	(en: 'very much greater than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "considérablement supérieur à"     	# 	(en: 'very much greater than')
  - "⋚":                                         	#  0x22da
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus petit ou égal ou plus grand que"	# 	(en: 'less than equal to or greater than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "inférieur ou égal ou supérieur à"	# 	(en: 'less than equal to or greater than')
  - "⋛":                                         	#  0x22db
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus grand ou égal ou plus petit que"	# 	(en: 'greater than equal to or less than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "supérieur ou égal ou inférieur à"	# 	(en: 'greater than equal to or less than')
  - "⋜":                                         	#  0x22dc
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal ou plus petit que"              	# 	(en: 'equal to or less than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "égal ou inférieur à"              	# 	(en: 'equal to or less than')
  - "⋝":                                         	#  0x22dd
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal à deux lignes ou supérieur à"   	# 	(en: 'equal to or greater than')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "égal ou supérieur à"   	# 	(en: 'equal to or greater than')
  - "⋞":                                         	#  0x22de
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "égal ou précède"                     	# 	(en: 'equal to or precedes')
  - "⋟":                                         	#  0x22df
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "égal ou suit"                        	# 	(en: 'equal to or succeeds')
- - "⋠": [t: "ni précédant ni égal à"]           	#  0x22e0	(en: 'does not precede nor is equal to')
- - "⋡": [t: "ni suivant ni égal à"]             	#  0x22e1	(en: 'does not succeed nor is equal to')
- - "⋢": [t: "ni image carrée ni égal à"]        	#  0x22e2	(en: 'not square image of or equal to')
- - "⋣": [t: "ni original carré ni égal à"]      	#  0x22e3	(en: 'not square original of or equal to')
- - "⋤": [t: "image carré ou différent de"]      	#  0x22e4	(en: 'square image of or not equal to')
- - "⋥": [t: "original carré ou différent de"]   	#  0x22e5	(en: 'square original of or not equal to')
+ - "⋠": [T: "ni précédant ni égal à"]           	#  0x22e0	(en: 'does not precede nor is equal to')
+ - "⋡": [T: "ni suivant ni égal à"]             	#  0x22e1	(en: 'does not succeed nor is equal to')
+ - "⋢": [T: "ni image carrée de ni égal à"]        	#  0x22e2	(en: 'not square image of or equal to')
+ - "⋣": [T: "ni original carré de ni égal à"]      	#  0x22e3	(en: 'not square original of or equal to')
+ - "⋤": [T: "image carré ou différent de"]      	#  0x22e4	(en: 'square image of or not equal to')
+ - "⋥": [T: "original carré ou différent de"]   	#  0x22e5	(en: 'square original of or not equal to')
  - "⋦":                                         	#  0x22e6
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus petit mais non équivalent à"    	# 	(en: 'less than but not equivalent to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "inférieur mais non équivalent à"    	# 	(en: 'less than but not equivalent to')
  - "⋧":                                         	#  0x22e7
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "plus grand mais non équivalent à"    	# 	(en: 'greater than but not equivalent to')
- - "⋨": [t: "précédant mais non équivalent à"]  	#  0x22e8	(en: 'precedes but is not equivalent to')
- - "⋩": [t: "suivant mais non équivalent à"]    	#  0x22e9	(en: 'succeeds but is not equivalent to')
+         then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "supérieur mais non équivalent à"    	# 	(en: 'greater than but not equivalent to')
+ - "⋨": [T: "précédant mais non équivalent à"]  	#  0x22e8	(en: 'precedes but is not equivalent to')
+ - "⋩": [T: "suivant mais non équivalent à"]    	#  0x22e9	(en: 'succeeds but is not equivalent to')
  - "⋪":                                         	#  0x22ea
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
      - t: "pas un sous groupe normal de"        	# 	(en: 'not a normal subgroup of', MathPlayer: 'pas un sous-groupe normal de', DeepL: 'n'est pas un sous-groupe normal de')
- - "⋫": [t: "ne contient pas comme sous groupe normal"]	#  0x22eb	(en: 'does not contain as a normal subgroup', MathPlayer: 'ne contient pas comme sous-groupe normal', DeepL: 'ne contient pas de sous-groupe normal')
+ - "⋫": [T: "ne contient pas comme sous groupe normal"]	#  0x22eb	(en: 'does not contain as a normal subgroup', MathPlayer: 'ne contient pas comme sous-groupe normal', DeepL: 'ne contient pas de sous-groupe normal')
  - "⋬":                                         	#  0x22ec
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni sous groupe normal ni égal à"     	# 	(en: 'not a normal subgroup of nor is equal to', MathPlayer: 'ni sous-groupe normal ni égal à', DeepL: 'n'est pas un sous-groupe normal de ni est égal à')
- - "⋭": [t: "ni égal ni contenant comme sous  groupe normal"]	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to', MathPlayer: 'ni égal ni contenant comme sous- groupe normal', DeepL: 'ne contient pas de sous-groupe normal et n'est pas égal à')
- - "⋮": [t: "trois points suspendus"]           	#  0x22ee	(en: 'vertical ellipsis')
- - "⋯": [t: "trois points médians"]             	#  0x22ef	(en: 'dot dot dot')
- - "⋰": [t: "trois points diagonaux vers le coin haut à droite"]	#  0x22f0	(en: 'upwards diagonal ellipsis')
- - "⋱": [t: "trois points diagonaux vers le coin bas à droite"]	#  0x22f1	(en: 'diagonal ellipsis')
- - "⋲": [t: "appartient à avec long trait horizontal"]	#  0x22f2	(en: 'element of with long horizontal stroke')
- - "⋳": [t: "appartient à avec barre verticale au bout du trait horizontal"]	#  0x22f3	(en: 'element of with vertical bar at end of horizontal stroke')
- - "⋴": [t: "petit appartient à avec barre verticale au bout du trait horizontal"]	#  0x22f4	(en: 'element of with vertical bar at end of horizontal stroke')
- - "⋵": [t: "appartient à avec point en chef"]  	#  0x22f5	(en: 'element of with dot above')
- - "⋶": [t: "appartient à avec trait en chef"]  	#  0x22f6	(en: 'element of with overbar')
- - "⋷": [t: "petit appartient à avec trait en chef"]	#  0x22f7	(en: 'element of with overbar')
- - "⋸": [t: "appartient à avec trait souscrit"] 	#  0x22f8	(en: 'element of with underbar')
- - "⋹": [t: "appartient à avec deux traits horizontaux"]	#  0x22f9	(en: 'element of with two horizontal strokes')
- - "⋺": [t: "contient avec long trait horizontal"]	#  0x22fa	(en: 'contains with long horizontal stroke')
- - "⋻": [t: "contient avec barre verticale au bout du trait horizontal"]	#  0x22fb	(en: 'contains with vertical bar at end of horizontal stroke')
- - "⋼": [t: "petit contient avec barre verticale au bout du trait horizontal"]	#  0x22fc	(en: 'contains with vertical bar at end of horizontal stroke')
- - "⋽": [t: "contient avec trait en chef"]      	#  0x22fd	(en: 'contains with overbar')
- - "⋾": [t: "petit contient avec trait en chef"]	#  0x22fe	(en: 'contains with overbar')
- - "⋿": [t: "appartient à un sac en notation z"]	#  0x22ff	(en: 'z notation bag membership')
- - "⌀": [t: "diamètre"]                         	#  0x2300	(en: 'diameter')
- - "⌁": [t: "flèche électrique"]                	#  0x2301	(en: 'electric arrow')
- - "⌂": [t: "maison"]                           	#  0x2302	(en: 'house')
- - "⌃": [t: "pointe de flèche vers le haut"]    	#  0x2303	(en: 'up arrowhead', DeepL: 'flèche vers le haut')
- - "⌄": [t: "pointe de flèche vers le bas"]     	#  0x2304	(en: 'down arrowhead', DeepL: 'flèche vers le bas')
- - "⌅": [t: "projective"]                       	#  0x2305
- - "⌆": [t: "perspective"]                      	#  0x2306
- - "⌇": [t: "ligne ondulée"]                    	#  0x2307	(en: 'wavy line')
- - "⌈": [t: "plafond à gauche"]                 	#  0x2308	(en: 'left ceiling')
- - "⌉": [t: "plafond à droite"]                 	#  0x2309	(en: 'right ceiling')
- - "⌊": [t: "plancher à gauche"]                	#  0x230a	(en: 'left floor')
- - "⌋": [t: "plancher à droite"]                	#  0x230b	(en: 'right floor')
- - "⌌": [t: "repère sud est"]                   	#  0x230c	(en: 'bottom right crop', MathPlayer: 'repère sud-est', DeepL: 'coupe en bas à droite')
- - "⌍": [t: "repère sud ouest"]                 	#  0x230d	(en: 'bottom left crop', MathPlayer: 'repère sud-ouest', DeepL: 'coupe en bas à gauche')
- - "⌎": [t: "repère nord est"]                  	#  0x230e	(en: 'top right crop', MathPlayer: 'repère nord-est', DeepL: 'coupe en haut à droite')
- - "⌏": [t: "repère nord ouest"]                	#  0x230f	(en: 'top left crop', MathPlayer: 'repère nord-ouest', DeepL: 'coupe en haut à gauche')
- - "⌐": [t: "négation réfléchi"]                	#  0x2310	(en: 'reversed not sign', MathPlayer: 'signe négation réfléchi', DeepL: 'signe "non" inversé')
- - "⌑": [t: "pastille carrée"]                  	#  0x2311	(en: 'square lozenge', DeepL: 'losange carré')
- - "⌒": [t: "arc"]                              	#  0x2312
- - "⌓": [t: "segment"]                          	#  0x2313
- - "⌔": [t: "secteur"]                          	#  0x2314	(en: 'sector')
- - "⌕": [t: "enregistreur téléphonique"]        	#  0x2315	(en: 'telephone recorder')
- - "⌖": [t: "repère de calage"]                 	#  0x2316	(en: 'position indicator crosshairs', DeepL: 'indicateur de position réticule')
- - "⌗": [t: "viewdata square"]                  	#  0x2317	(DeepL translation)
- - "⌘": [t: "symbole de point d'intérêt"]       	#  0x2318	(en: 'place of interest sign', DeepL: 'signe de centre d'intérêt')
- - "⌙": [t: "tourne pas signe"]                 	#  0x2319	(en: 'turned not sign', DeepL translation)
- - "⌚": [t: "montre"]                           	#  0x231a	(en: 'watch')
- - "⌛": [t: "sablier"]                          	#  0x231b	(en: 'hourglass', DeepL translation)
- - "⌜": [t: "coin nord ouest"]                  	#  0x231c	(en: 'top left corner', MathPlayer: 'coin nord-ouest', DeepL: 'coin supérieur gauche')
- - "⌝": [t: "coin nord est"]                    	#  0x231d	(en: 'top right corner', MathPlayer: 'coin nord-est', DeepL: 'coin supérieur droit')
- - "⌞": [t: "coin sud ouest"]                   	#  0x231e	(en: 'bottom left corner', MathPlayer: 'coin sud-ouest', DeepL: 'coin inférieur gauche')
- - "⌟": [t: "coin sud est"]                     	#  0x231f	(en: 'bottom right corner', MathPlayer: 'coin sud-est', DeepL: 'coin inférieur droit')
- - "⌠": [t: "moitié supérieure d'intégrale"]    	#  0x2320	(en: 'top half integral')
- - "⌡": [t: "moitié inférieure d'intégrale"]    	#  0x2321	(en: 'bottom half integral')
- - "⌢": [t: "moue"]                             	#  0x2322	(en: 'frown', DeepL: 'froncement de sourcils')
- - "⌣": [t: "sourire"]                          	#  0x2323	(en: 'smile')
- - "⌤": [t: "pointe de flèche vers le haut entre deux traits horizontaux"]	#  0x2324	(en: 'up arrowhead between two horizontal bars', DeepL: 'flèche vers le haut entre deux barres horizontales')
- - "⌥": [t: "clé d'option"]                     	#  0x2325	(en: 'option key', DeepL translation)
- - "⌦": [t: "effacer à droite"]                 	#  0x2326	(en: 'erase to the right', DeepL translation)
- - "⌧": [t: "x dans un rectangle"]              	#  0x2327	(en: 'x in a rectangle box', DeepL translation)
- - "⌨": [t: "clavier"]                          	#  0x2328	(en: 'keyboard', DeepL translation)
- - "〈": [t: "chevron gauche"]                   	#  0x2329	(en: 'left pointing angle bracket', MathPlayer: 'chevron vers la gauche', DeepL: 'équerre pointant vers la gauche')
- - "〉": [t: "chevron droite"]                   	#  0x232a	(en: 'right pointing angle bracket', MathPlayer: 'chevron vers la droite', DeepL: 'équerre droite')
- - "⌫": [t: "effacer vers la gauche"]           	#  0x232b	(en: 'erase to the left', DeepL translation)
- - "⌬": [t: "anneau de benzène"]                	#  0x232c	(en: 'benzene ring', DeepL translation)
- - "⌭": [t: "cylindricité"]                     	#  0x232d	(en: 'cylindricity')
- - "⌮": [t: "profil hors-tout"]                 	#  0x232e	(en: 'all around profile', DeepL: 'profil tout autour')
- - "⌯": [t: "symétrie"]                         	#  0x232f	(en: 'symmetry', DeepL translation)
- - "⌰": [t: "dépassement total"]                	#  0x2330	(en: 'total runout', DeepL translation)
- - "⌱": [t: "dimension origine"]                	#  0x2331	(en: 'dimension origin', DeepL translation)
- - "⌲": [t: "conique"]                          	#  0x2332	(en: 'conical taper', DeepL translation)
- - "⌳": [t: "pente"]                            	#  0x2333	(en: 'slope', DeepL translation)
- - "⌴": [t: "alésage"]                          	#  0x2334	(en: 'counterbore', DeepL translation)
- - "⌵": [t: "fraise"]                           	#  0x2335	(en: 'countersink', DeepL translation)
- - "⌶": [t: "symbole de fonction apl rail"]     	#  0x2336	(en: 'apl i beam', DeepL: 'apl i beam')
- - "⌽": [t: "symbole de fonction apl fuseau"]   	#  0x233d	(en: 'apl circle stile', DeepL: 'cercle apl stile')
- - "⌿": [t: "symbole de fonction apl cotice barré"]	#  0x233f	(en: 'apl slash bar', DeepL: 'barre oblique apl')
- - "⍰": [t: "symbole de fonction apl quadrat info"]	#  0x2370	(en: 'unknown box', DeepL: 'case inconnue')
- - "⍼": [t: "angle droit avec flèche en zigzag vers le bas"]	#  0x237c	(en: 'right angle with downwards zigzag arrow')
- - "⎔": [t: "hexagone"]                         	#  0x2394	(en: 'hexagon', DeepL translation)
- - "⎕": [t: "boîte"]                            	#  0x2395	(en: 'box', DeepL translation)
- - "⎶": [t: "crochet verticaux en défilé"]      	#  0x23b6	(en: 'bottom square bracket over top square bracket', DeepL: 'équerre inférieure sur équerre supérieure')
- - "⏜": [t: "parenthèse supérieure"]            	#  0x23dc	(en: 'top paren')
- - "⏝": [t: "parenthèse inférieure"]            	#  0x23dd	(en: 'bottom paren')
- - "⏞": [t: "accolade supérieure"]              	#  0x23de	(en: 'top brace')
- - "⏟": [t: "accolade inférieure"]              	#  0x23df	(en: 'bottom brace')
- - "⏠": [t: "crochet en écaille supérieur"]     	#  0x23e0	(en: 'top tortoise shell bracket')
- - "⏡": [t: "crochet en écaille inférieur"]     	#  0x23e1	(en: 'bottom tortoise shell bracket')
- - "⏢": [t: "trapèze blanc"]                    	#  0x23e2	(en: 'white trapezium', DeepL translation)
- - "⏣": [t: "benzène droit avec cercle"]        	#  0x23e3	(en: 'benzene right with circle', DeepL translation)
- - "⏤": [t: "rectitude"]                        	#  0x23e4	(en: 'straightness', DeepL translation)
- - "⏥": [t: "planéité"]                         	#  0x23e5	(en: 'flatness', DeepL translation)
+         then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
+     - t: "ni sous groupe normal de ni égal à"     	# 	(en: 'not a normal subgroup of nor is equal to', MathPlayer: 'ni sous-groupe normal ni égal à', DeepL: 'n'est pas un sous-groupe normal de ni est égal à')
+ - "⋭": [T: "ni égal ni contenant comme sous groupe normal"]	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to', MathPlayer: 'ni égal ni contenant comme sous- groupe normal', DeepL: 'ne contient pas de sous-groupe normal et n'est pas égal à')
+ - "⋮": [T: "trois points suspendus"]           	#  0x22ee	(en: 'vertical ellipsis')
+ - "⋯": [T: "trois points médians"]             	#  0x22ef	(en: 'dot dot dot')
+ - "⋰": [T: "trois points diagonaux vers le coin haut à droite"]	#  0x22f0	(en: 'upwards diagonal ellipsis')
+ - "⋱": [T: "trois points diagonaux vers le coin bas à droite"]	#  0x22f1	(en: 'diagonal ellipsis')
+ - "⋲": [T: "appartient à avec long trait horizontal"]	#  0x22f2	(en: 'element of with long horizontal stroke')
+ - "⋳": [T: "appartient à avec barre verticale au bout du trait horizontal"]	#  0x22f3	(en: 'element of with vertical bar at end of horizontal stroke')
+ - "⋴": [T: "petit appartient à avec barre verticale au bout du trait horizontal"]	#  0x22f4	(en: 'element of with vertical bar at end of horizontal stroke')
+ - "⋵": [T: "appartient à avec point en chef"]  	#  0x22f5	(en: 'element of with dot above')
+ - "⋶": [T: "appartient à avec trait en chef"]  	#  0x22f6	(en: 'element of with overbar')
+ - "⋷": [T: "petit appartient à avec trait en chef"]	#  0x22f7	(en: 'element of with overbar')
+ - "⋸": [T: "appartient à avec trait souscrit"] 	#  0x22f8	(en: 'element of with underbar')
+ - "⋹": [T: "appartient à avec deux traits horizontaux"]	#  0x22f9	(en: 'element of with two horizontal strokes')
+ - "⋺": [T: "contient avec long trait horizontal"]	#  0x22fa	(en: 'contains with long horizontal stroke')
+ - "⋻": [T: "contient avec barre verticale au bout du trait horizontal"]	#  0x22fb	(en: 'contains with vertical bar at end of horizontal stroke')
+ - "⋼": [T: "petit contient avec barre verticale au bout du trait horizontal"]	#  0x22fc	(en: 'contains with vertical bar at end of horizontal stroke')
+ - "⋽": [T: "contient avec trait en chef"]      	#  0x22fd	(en: 'contains with overbar')
+ - "⋾": [T: "petit contient avec trait en chef"]	#  0x22fe	(en: 'contains with overbar')
+ - "⋿": [T: "appartient à un sac en notation z"]	#  0x22ff	(en: 'z notation bag membership')
+ - "⌀": [T: "diamètre"]                         	#  0x2300	(en: 'diameter')
+ - "⌁": [T: "flèche électrique"]                	#  0x2301	(en: 'electric arrow')
+ - "⌂": [T: "maison"]                           	#  0x2302	(en: 'house')
+ - "⌃": [T: "pointe de flèche vers le haut"]    	#  0x2303	(en: 'up arrowhead', DeepL: 'flèche vers le haut')
+ - "⌄": [T: "pointe de flèche vers le bas"]     	#  0x2304	(en: 'down arrowhead', DeepL: 'flèche vers le bas')
+ - "⌅": [T: "projective"]                       	#  0x2305
+ - "⌆": [T: "perspective"]                      	#  0x2306
+ - "⌇": [T: "ligne ondulée"]                    	#  0x2307	(en: 'wavy line')
+ - "⌈": [T: "plafond à gauche"]                 	#  0x2308	(en: 'left ceiling')
+ - "⌉": [T: "plafond à droite"]                 	#  0x2309	(en: 'right ceiling')
+ - "⌊": [T: "plancher à gauche"]                	#  0x230a	(en: 'left floor')
+ - "⌋": [T: "plancher à droite"]                	#  0x230b	(en: 'right floor')
+ - "⌌": [T: "repère sud est"]                   	#  0x230c	(en: 'bottom right crop', MathPlayer: 'repère sud-est', DeepL: 'coupe en bas à droite')
+ - "⌍": [T: "repère sud ouest"]                 	#  0x230d	(en: 'bottom left crop', MathPlayer: 'repère sud-ouest', DeepL: 'coupe en bas à gauche')
+ - "⌎": [T: "repère nord est"]                  	#  0x230e	(en: 'top right crop', MathPlayer: 'repère nord-est', DeepL: 'coupe en haut à droite')
+ - "⌏": [T: "repère nord ouest"]                	#  0x230f	(en: 'top left crop', MathPlayer: 'repère nord-ouest', DeepL: 'coupe en haut à gauche')
+ - "⌐": [T: "négation réfléchi"]                	#  0x2310	(en: 'reversed not sign', MathPlayer: 'signe négation réfléchi', DeepL: 'signe "non" inversé')
+ - "⌑": [T: "pastille carrée"]                  	#  0x2311	(en: 'square lozenge', DeepL: 'losange carré')
+ - "⌒": [T: "arc"]                              	#  0x2312
+ - "⌓": [T: "segment"]                          	#  0x2313
+ - "⌔": [T: "secteur"]                          	#  0x2314	(en: 'sector')
+ - "⌕": [T: "enregistreur téléphonique"]        	#  0x2315	(en: 'telephone recorder')
+ - "⌖": [T: "repère de calage"]                 	#  0x2316	(en: 'position indicator crosshairs', DeepL: 'indicateur de position réticule')
+ - "⌗": [T: "carré de visualisation"]                  	#  0x2317	(DeepL translation)
+ - "⌘": [T: "symbole de point d'intérêt"]       	#  0x2318	(en: 'place of interest sign', DeepL: 'signe de centre d'intérêt')
+ - "⌙": [T: "signe négation culbuté"]                 	#  0x2319	(en: 'turned not sign', DeepL translation)
+ - "⌚": [T: "montre"]                           	#  0x231a	(en: 'watch')
+ - "⌛": [T: "sablier"]                          	#  0x231b	(en: 'hourglass', DeepL translation)
+ - "⌜": [T: "coin nord ouest"]                  	#  0x231c	(en: 'top left corner', MathPlayer: 'coin nord-ouest', DeepL: 'coin supérieur gauche')
+ - "⌝": [T: "coin nord est"]                    	#  0x231d	(en: 'top right corner', MathPlayer: 'coin nord-est', DeepL: 'coin supérieur droit')
+ - "⌞": [T: "coin sud ouest"]                   	#  0x231e	(en: 'bottom left corner', MathPlayer: 'coin sud-ouest', DeepL: 'coin inférieur gauche')
+ - "⌟": [T: "coin sud est"]                     	#  0x231f	(en: 'bottom right corner', MathPlayer: 'coin sud-est', DeepL: 'coin inférieur droit')
+ - "⌠": [T: "moitié supérieure d'intégrale"]    	#  0x2320	(en: 'top half integral')
+ - "⌡": [T: "moitié inférieure d'intégrale"]    	#  0x2321	(en: 'bottom half integral')
+ - "⌢": [T: "moue"]                             	#  0x2322	(en: 'frown', DeepL: 'froncement de sourcils')
+ - "⌣": [T: "sourire"]                          	#  0x2323	(en: 'smile')
+ - "⌤": [T: "pointe de flèche vers le haut entre deux traits horizontaux"]	#  0x2324	(en: 'up arrowhead between two horizontal bars', DeepL: 'flèche vers le haut entre deux barres horizontales')
+ - "⌥": [T: "touche option"]                     	#  0x2325	(en: 'option key', DeepL translation)
+ - "⌦": [T: "effacer vers la droite"]                 	#  0x2326	(en: 'erase to the right', DeepL translation)
+ - "⌧": [T: "x dans un rectangle"]              	#  0x2327	(en: 'x in a rectangle box', DeepL translation)
+ - "⌨": [T: "clavier"]                          	#  0x2328	(en: 'keyboard', DeepL translation)
+ - "〈": [T: "chevron pointant à gauche"]                   	#  0x2329	(en: 'left pointing angle bracket', MathPlayer: 'chevron vers la gauche', DeepL: 'équerre pointant vers la gauche')
+ - "〉": [T: "chevron pointant à droite"]                   	#  0x232a	(en: 'right pointing angle bracket', MathPlayer: 'chevron vers la droite', DeepL: 'équerre droite')
+ - "⌫": [T: "effacer vers la gauche"]           	#  0x232b	(en: 'erase to the left', DeepL translation)
+ - "⌬": [T: "anneau de benzène"]                	#  0x232c	(en: 'benzene ring', DeepL translation)
+ - "⌭": [T: "cylindricité"]                     	#  0x232d	(en: 'cylindricity')
+ - "⌮": [T: "profil hors-tout"]                 	#  0x232e	(en: 'all around profile', DeepL: 'profil tout autour')
+ - "⌯": [T: "symétrie"]                         	#  0x232f	(en: 'symmetry', DeepL translation)
+ - "⌰": [T: "dépassement total"]                	#  0x2330	(en: 'total runout', DeepL translation)
+ - "⌱": [T: "dimension origine"]                	#  0x2331	(en: 'dimension origin', DeepL translation)
+ - "⌲": [T: "rétrécissement conique"]                          	#  0x2332	(en: 'conical taper', DeepL translation)
+ - "⌳": [T: "pente"]                            	#  0x2333	(en: 'slope', DeepL translation)
+ - "⌴": [T: "alésage"]                          	#  0x2334	(en: 'counterbore', DeepL translation)
+ - "⌵": [T: "fraisage"]                           	#  0x2335	(en: 'countersink', DeepL translation)
+ - "⌶": [T: "symbole de fonction apl rail"]     	#  0x2336	(en: 'apl i beam', DeepL: 'apl i beam')
+ - "⌽": [T: "symbole de fonction apl fuseau"]   	#  0x233d	(en: 'apl circle stile', DeepL: 'cercle apl stile')
+ - "⌿": [T: "symbole de fonction apl cotice barré"]	#  0x233f	(en: 'apl slash bar', DeepL: 'barre oblique apl')
+ - "⍰": [T: "symbole de fonction apl quadrat info"]	#  0x2370	(en: 'unknown box', DeepL: 'case inconnue')
+ - "⍼": [T: "angle droit avec flèche en zigzag vers le bas"]	#  0x237c	(en: 'right angle with downwards zigzag arrow')
+ - "⎔": [T: "hexagone"]                         	#  0x2394	(en: 'hexagon', DeepL translation)
+ - "⎕": [T: "boîte"]                            	#  0x2395	(en: 'box', DeepL translation)
+ - "⎶": [T: "crocher inférieur sur crochet supérieur"]      	#  0x23b6	(en: 'bottom square bracket over top square bracket', DeepL: 'équerre inférieure sur équerre supérieure')
+ - "⏜": [T: "parenthèse supérieure"]            	#  0x23dc	(en: 'top paren')
+ - "⏝": [T: "parenthèse inférieure"]            	#  0x23dd	(en: 'bottom paren')
+ - "⏞": [T: "accolade supérieure"]              	#  0x23de	(en: 'top brace')
+ - "⏟": [T: "accolade inférieure"]              	#  0x23df	(en: 'bottom brace')
+ - "⏠": [T: "crochet en écaille supérieur"]     	#  0x23e0	(en: 'top tortoise shell bracket')
+ - "⏡": [T: "crochet en écaille inférieur"]     	#  0x23e1	(en: 'bottom tortoise shell bracket')
+ - "⏢": [T: "trapèze blanc"]                    	#  0x23e2	(en: 'white trapezium', DeepL translation)
+ - "⏣": [T: "anneau de benzène avec cercle"]        	#  0x23e3	(en: 'benzene right with circle', DeepL translation)
+ - "⏤": [T: "rectitude"]                        	#  0x23e4	(en: 'straightness', DeepL translation)
+ - "⏥": [T: "planéité"]                         	#  0x23e5	(en: 'flatness', DeepL translation)
  - "⏦":                                         	#  0x23e6
-     - spell: "ac"
+     - SPELL: "ac"
      - t: "courant"                             	# 	(en: 'current', DeepL translation)
- - "⏧": [t: "intersection électrique"]          	#  0x23e7	(en: 'electrical intersection', DeepL translation)
+ - "⏧": [T: "intersection électrique"]          	#  0x23e7	(en: 'electrical intersection', DeepL translation)
  - "①-⑨":                                       	#  0x2460 - 0x2469
-    - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
+    - SPELL: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
     - T: "encerclé"                             	# 	(en: 'circled', DeepL translation)
- - "⑩": [t: "encerclé dix"]                     	#  0x2469	(en: 'circled ten', DeepL translation)
- - "⑪": [t: "encerclé onze"]                    	#  0x246a	(en: 'circled eleven', DeepL translation)
- - "⑫": [t: "encerclé douze"]                   	#  0x246b	(en: 'circled twelve', DeepL translation)
- - "⑬": [t: "encerclé treize"]                  	#  0x246c	(en: 'circled thirteen', DeepL translation)
- - "⑭": [t: "encerclé quatorze"]                	#  0x246d	(en: 'circled fourteen', DeepL translation)
- - "⑮": [t: "quinze encerclés"]                 	#  0x246e	(en: 'circled fifteen', DeepL translation)
- - "⑯": [t: "encadré seize"]                    	#  0x246f	(en: 'circled sixteen', DeepL translation)
- - "⑰": [t: "encerclé dix-sept"]                	#  0x2470	(en: 'circled seventeen', DeepL translation)
- - "⑱": [t: "ateen encerclé"]                   	#  0x2471	(en: 'circled eighteen', DeepL translation)
- - "⑳": [t: "encerclé vingt"]                   	#  0x2473	(en: 'circled twenty', DeepL translation)
+ - "⑩": [T: "dix encerclé"]                     	#  0x2469	(en: 'circled ten', DeepL translation)
+ - "⑪": [T: "onze encerclé"]                    	#  0x246a	(en: 'circled eleven', DeepL translation)
+ - "⑫": [T: "douze encerclé"]                   	#  0x246b	(en: 'circled twelve', DeepL translation)
+ - "⑬": [T: "treize encerclé"]                  	#  0x246c	(en: 'circled thirteen', DeepL translation)
+ - "⑭": [T: "quatorze encerclé"]                	#  0x246d	(en: 'circled fourteen', DeepL translation)
+ - "⑮": [T: "quinze encerclé"]                 	#  0x246e	(en: 'circled fifteen', DeepL translation)
+ - "⑯": [T: "seize encerclé"]                    	#  0x246f	(en: 'circled sixteen', DeepL translation)
+ - "⑰": [T: "dix-sept encerclé"]                	#  0x2470	(en: 'circled seventeen', DeepL translation)
+ - "⑱": [T: "dix-huit encerclé"]                   	#  0x2471	(en: 'circled eighteen', DeepL translation)
+ - "⑳": [T: "vingt encerclé"]                   	#  0x2473	(en: 'circled twenty', DeepL translation)
  - "⑴-⑼":                                       	#  0x2474 - 0x247d
-    - spell: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
+    - SPELL: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
     - T: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
- - "⑽": [t: "dix entre parenthèses"]            	#  0x247d	(en: 'parenthesized ten', DeepL translation)
- - "⑾": [t: "onze entre parenthèses"]           	#  0x247e	(en: 'parenthesized eleven', DeepL translation)
- - "⑿": [t: "parenthèse-histhésée douze"]       	#  0x247f	(en: 'parenthesized twelve', DeepL translation)
- - "⒀": [t: "entre parenthèses treize"]         	#  0x2480	(en: 'parenthesized thirteen', DeepL translation)
- - "⒁": [t: "quatorze entre parenthèses"]       	#  0x2481	(en: 'parenthesized fourteen', DeepL translation)
- - "⒂": [t: "parenthèse-réflexe quinze"]        	#  0x2482	(en: 'parenthesized fifteen', DeepL translation)
- - "⒃": [t: "seize entre parenthèses"]          	#  0x2483	(en: 'parenthesized sixteen', DeepL translation)
- - "⒄": [t: "dix-sept entre parenthèses"]       	#  0x2484	(en: 'parenthesized seventeen', DeepL translation)
- - "⒅": [t: "point entre parenthèses"]          	#  0x2485	(en: 'parenthesized eighteen', DeepL translation)
- - "⒆": [t: "dix-neuf entre parenthèses"]       	#  0x2486	(en: 'parenthesized nineteen', DeepL translation)
- - "⒇": [t: "vingt entre parenthèses"]          	#  0x2487	(en: 'parenthesized twenty', DeepL translation)
+ - "⑽": [T: "dix entre parenthèses"]            	#  0x247d	(en: 'parenthesized ten', DeepL translation)
+ - "⑾": [T: "onze entre parenthèses"]           	#  0x247e	(en: 'parenthesized eleven', DeepL translation)
+ - "⑿": [T: "douze entre parenthèses"]       	#  0x247f	(en: 'parenthesized twelve', DeepL translation)
+ - "⒀": [T: "treize entre parenthèses"]         	#  0x2480	(en: 'parenthesized thirteen', DeepL translation)
+ - "⒁": [T: "quatorze entre parenthèses"]       	#  0x2481	(en: 'parenthesized fourteen', DeepL translation)
+ - "⒂": [T: "quinze entre parenthèses"]        	#  0x2482	(en: 'parenthesized fifteen', DeepL translation)
+ - "⒃": [T: "seize entre parenthèses"]          	#  0x2483	(en: 'parenthesized sixteen', DeepL translation)
+ - "⒄": [T: "dix-sept entre parenthèses"]       	#  0x2484	(en: 'parenthesized seventeen', DeepL translation)
+ - "⒅": [T: "dix-huit entre parenthèses"]          	#  0x2485	(en: 'parenthesized eighteen', DeepL translation)
+ - "⒆": [T: "dix-neuf entre parenthèses"]       	#  0x2486	(en: 'parenthesized nineteen', DeepL translation)
+ - "⒇": [T: "vingt entre parenthèses"]          	#  0x2487	(en: 'parenthesized twenty', DeepL translation)
  - "⒈-⒐":                                       	#  0x2488 - 0x2491
-    - spell: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
+    - SPELL: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
     - t: "avec point"                           	# 	(en: 'with period', DeepL translation)
- - "⒑": [t: "dix avec point"]                   	#  0x2491	(en: 'ten with period', DeepL translation)
- - "⒒": [t: "onze avec point"]                  	#  0x2492	(en: 'eleven with period', DeepL translation)
- - "⒓": [t: "douze avec point"]                 	#  0x2493	(en: 'twelve with period', DeepL translation)
- - "⒔": [t: "treize avec point"]                	#  0x2494	(en: 'thirteen with period', DeepL translation)
- - "⒕": [t: "quatorze avec point"]              	#  0x2495	(en: 'fourteen with period', DeepL translation)
- - "⒖": [t: "quinze avec point"]                	#  0x2496	(en: 'fifteen with period', DeepL translation)
- - "⒗": [t: "seize avec point"]                 	#  0x2497	(en: 'sixteen with period', DeepL translation)
- - "⒘": [t: "dix-sept avec point"]              	#  0x2498	(en: 'seventeen with period', DeepL translation)
- - "⒙": [t: "dix-sept avec point"]              	#  0x2499	(en: 'eighteen with period', DeepL translation)
- - "⒚": [t: "dix-neuf avec point"]              	#  0x249a	(en: 'nineteen with period', DeepL translation)
- - "⒛": [t: "vingt avec point"]                 	#  0x249b	(en: 'twenty with period', DeepL translation)
+ - "⒑": [T: "dix avec point"]                   	#  0x2491	(en: 'ten with period', DeepL translation)
+ - "⒒": [T: "onze avec point"]                  	#  0x2492	(en: 'eleven with period', DeepL translation)
+ - "⒓": [T: "douze avec point"]                 	#  0x2493	(en: 'twelve with period', DeepL translation)
+ - "⒔": [T: "treize avec point"]                	#  0x2494	(en: 'thirteen with period', DeepL translation)
+ - "⒕": [T: "quatorze avec point"]              	#  0x2495	(en: 'fourteen with period', DeepL translation)
+ - "⒖": [T: "quinze avec point"]                	#  0x2496	(en: 'fifteen with period', DeepL translation)
+ - "⒗": [T: "seize avec point"]                 	#  0x2497	(en: 'sixteen with period', DeepL translation)
+ - "⒘": [T: "dix-sept avec point"]              	#  0x2498	(en: 'seventeen with period', DeepL translation)
+ - "⒙": [T: "dix-huit avec point"]              	#  0x2499	(en: 'eighteen with period', DeepL translation)
+ - "⒚": [T: "dix-neuf avec point"]              	#  0x249a	(en: 'nineteen with period', DeepL translation)
+ - "⒛": [T: "vingt avec point"]                 	#  0x249b	(en: 'twenty with period', DeepL translation)
  - "⒜-⒵":                                       	#  0x249c - 0x24b5
     - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "entre parenthèses"                    	# 	(en: 'parenthesized', DeepL translation)
