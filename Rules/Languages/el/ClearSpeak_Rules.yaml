@@ -34,8 +34,13 @@
   match: "."
   replace:
   - with:
-  #theodora. added rule for reading greek accusative after an operator e.g "ισούται με"
-      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  #theodora. added rule for reading greek accusative after an operator e.g "ισούται με". 
+     # variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      variables: [
+        IsRelOp: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]",
+        IsParentAfterPlusMinus: "parent::*[self::m:mrow][preceding-sibling::*[1][self::m:mo and (.='-' or .='−' or .='+')]][preceding-sibling::*[2][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]]",
+        IsAccusative: "$IsRelOp or $IsParentAfterPlusMinus"
+      ]
       replace:
       - test:
           if: "$Verbosity!='Terse'"
@@ -236,11 +241,16 @@
   tag: fraction
   match: "."
   replace:
-  - ot: "το"      # phrase(5 is 'the' square toot of 25)
-  - t: "κλάσμα με αριθμητή"      # phrase(the 'fraction with numerator' 6)
   - test:
-      if: "not(IsNode(*[1], 'simple'))"
-      then: [pause: medium]
+      if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫'] or *[1][self::m:mo[.='∫']]]"   # preceding-sibling::*[1][.='∫']
+      then:
+      - t: "κλάσματος με αριθμητή"   #theodora. genitive rule in greek for fraction "η τετραγωνική ρίζα του κλάσματος" 
+      else:
+      - ot: "το"      # phrase(5 is 'the' square toot of 25)
+      - t: "κλάσμα με αριθμητή"      # phrase(the 'fraction with numerator' 6)
+      - test:
+          if: "not(IsNode(*[1], 'simple'))"
+          then: [pause: medium]
   - x: "*[1]"
   - pause: medium
   - t: "και παρονομαστή"      # phrase(the fraction with numerator 5 'and denominator' 8)

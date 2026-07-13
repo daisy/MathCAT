@@ -2034,7 +2034,7 @@ fn twentysix() -> Result<()> {
 
 // Some rules for Greek nominative, accusative, genitive
 #[test]
-fn test_sup_set_with_curly_braces_accusative() -> Result<()> {
+fn test_sup_set_with_curly_braces_genitive() -> Result<()> {
     let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>sup</mi><mo>{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>}</mo></math>";
     test("el", "ClearSpeak", expr, "σουπρέμουμ του, συνόλου 1 κόμμα, 2 κόμμα, 3")?;
     return Ok(());
@@ -2354,3 +2354,63 @@ fn log_with_base_accusative() -> Result<()> {
   }
   // theodora. fails Now reads: x ισούται με; ο λογάριθμος με βάση βήτα; του άλφα
   //the old log with base and log base power don't work so we can't introduce rules for accisative like plain log or ln
+
+#[test]
+fn minus_root_after_operator_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi><mo>=</mo><mo>+</mo><msqrt><mi>y</mi></msqrt></math>";
+  test("el", "SimpleSpeak", expr,
+    "x ισούται με; συν την τετραγωνική ρίζα του y")?;
+    return Ok(());
+  }
+  //theodora. fails: Now reads: x ισούται με, συν η τετραγωνική ρίζα του y
+  //the accusative rule where there is a -+ before the root fails. 
+
+#[test]
+fn abs_value_after_operator_accusative() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>y</mi><mo>=</mo><mo>|</mo><mi>x</mi><mo>|</mo></math>";
+  test("el", "SimpleSpeak", expr,
+    "y ισούται με; την απόλυτη τιμή του x")?;
+    return Ok(());
+}
+#[test]
+fn square_root_with_fraction_genitive_clearspeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msqrt><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></msqrt></math>";
+  test("el", "ClearSpeak", expr,
+    "η τετραγωνική ρίζα του κλάσματος με αριθμητή x συν 3; και παρονομαστή y")?;
+    return Ok(());
+}
+#[test]
+fn square_root_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msqrt><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></msqrt></math>";
+  test("el", "SimpleSpeak", expr,
+    "η τετραγωνική ρίζα του κλάσματος, x συν 3, προς y, τέλος κλάσματος; τέλος ρίζας")?;
+    return Ok(());
+}
+#[test]
+fn integral_with_fraction_genitive_clearspeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mo>&#x222B;</mo><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></math>";
+  test("el", "ClearSpeak", expr,
+    "ολοκλήρωμα του κλάσματος με αριθμητή x συν 3; και παρονομαστή y")?;
+    return Ok(());
+}
+#[test]
+fn integral_with_underover_with_fraction_genitive_clearspeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mo>&#x222B;</mo><mi>&#x3B1;</mi><mi>&#x3B2;</mi></msubsup><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></math>";
+  test("el", "ClearSpeak", expr,
+    "ολοκλήρωμα από άλφα ως βήτα του; κλάσματος με αριθμητή x συν 3; και παρονομαστή y")?;
+    return Ok(());
+}
+#[test]
+fn integral_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mo>&#x222B;</mo><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></math>";
+  test("el", "SimpleSpeak", expr,
+    "ολοκλήρωμα του κλάσματος, x συν 3, προς y, τέλος κλάσματος")?;
+    return Ok(());
+}
+#[test]
+fn integral_with_underover_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mo>&#x222B;</mo><mi>&#x3B1;</mi><mi>&#x3B2;</mi></msubsup><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></math>";
+  test("el", "SimpleSpeak", expr,
+    "ολοκλήρωμα από άλφα ως βήτα του; κλάσματος, x συν 3, προς y, τέλος κλάσματος")?;
+    return Ok(());
+}

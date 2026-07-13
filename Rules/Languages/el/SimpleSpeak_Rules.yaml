@@ -34,7 +34,12 @@
   replace:
   #theodora. added rule for reading greek accusative after an operator "ισούται με"
   - with:
-      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+#      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      variables: [
+        IsRelOp: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]",
+        IsParentAfterPlusMinus: "parent::*[self::m:mrow][preceding-sibling::*[1][self::m:mo and (.='-' or .='−' or .='+')]][preceding-sibling::*[2][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]]",
+        IsAccusative: "$IsRelOp or $IsParentAfterPlusMinus"
+      ] 
       replace:     
       - test:
           if: "$Verbosity!='Terse'"
@@ -148,7 +153,13 @@
   replace:
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "κλάσμα"]         # phrase(the 'fraction' 3 over 4)
+      then:
+      - test:
+          if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫'] or *[1][self::m:mo[.='∫']]]"
+          then:
+          - t: "κλάσματος"    #theodora. #theodora. genitive rule in greek for fraction "η τετραγωνική ρίζα του κλάσματος" 
+          else: 
+          - t: "κλάσμα"         # phrase(the 'fraction' 3 over 4)
   - pause: short
   - x: "*[1]"
   - test:

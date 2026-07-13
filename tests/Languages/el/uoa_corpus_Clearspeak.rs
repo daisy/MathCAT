@@ -1217,7 +1217,7 @@ fn uoa_corpus_033() -> Result<()> { //
   </math>"#;
     test("el", "ClearSpeak", expr, "η τετραγωνική ρίζα του κλάσματος με αριθμητή βήτα; και παρονομαστή γάμμα συν δέλτα; μείον έψιλον")?;
     return Ok(());
-    //theodora. fails, needs genitive Now reads: η τετραγωνική ρίζα του τo κλάσμα με αριθμητή βήτα; και παρονομαστή γάμμα συν δέλτα; μείον έψιλον
+
 }
 
 #[test]
@@ -11295,7 +11295,7 @@ fn uoa_corpus_332() -> Result<()> { //
   </math>"#;
     test("el", "ClearSpeak", expr, "η τετραγωνική ρίζα του κλάσματος με αριθμητή βήτα; και παρονομαστή c συν d; μείον έψιλον")?;
     return Ok(());
-    //theodora. fails. Needs genitive
+  
 }
 
 #[test]

@@ -305,19 +305,30 @@
   - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point) 
   - x: "*[2]"
 
+#theodora. this is a possible rule that could potentially solve the accusative but no longer works
 #- name: absolute-value
 #  tag: absolute-value
 #  match: "count(*)=1 and not(@data-intent-property)"
+#  variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
 #  replace:
 #  - test:
 #      if: "$Verbosity='Terse'"
-#      then: [t: "απόλυτη τιμή"]      # phrase(the 'absolute value' of a number represents its distance from 0)
-#      else: [t: "η απόλυτη τιμή του"]      # phrase('the absolute value of' a number represents its distance from 0)
-#  - x: "*[1]"
-#  - test:
-#      if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
-#      then: [pause: short]
-#      else: [pause: short}, [t: "τέλος απόλυτης τιμής"], {pause: short]      # phrase(show 'end absolute value' position)
+#      then: [t: "απόλυτη τιμή"]
+#      else:
+#      - test:
+ #         if: "$IsAccusative"
+#          then: [t: "την απόλυτη τιμή του"]
+#          else: [t: "η απόλυτη τιμή του"]           
+ ##     then: [t: "απόλυτη τιμή"]      # phrase(the 'absolute value' of a number represents its distance from 0)
+ ##     else: [t: "η απόλυτη τιμή του"]      # phrase('the absolute value of' a number represents its distance from 0)
+ # - x: "*[1]"
+ # - test:
+ #     if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
+ #     then: [pause: short]
+ #     else: 
+ #     - pause: short
+ #     - t: "τέλος απόλυτης τιμής"
+ #     - pause: short    # phrase(show 'end absolute value' position)
 #
 #- name: negative
 #  tag: negative
