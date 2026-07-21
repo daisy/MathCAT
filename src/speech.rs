@@ -1334,14 +1334,14 @@ impl SpeechPattern  {
                             Err(e) => return Err(
                                 e.context(
                                     format!("tag name '{}' is not a string in:\n{}",
-                                        &yaml_to_string(&tag_array.as_vec().unwrap()[i], 0),
-                                        &yaml_to_string(dict, 1)))
+                                        yaml_to_string(&tag_array.as_vec().unwrap()[i], 0),
+                                        yaml_to_string(dict, 1)))
                             ),
                             Ok(str) => tag_names.push(str),
                         };
                     }
                 } else {
-                    bail!("Errors trying to find 'tag' in:\n{}", &yaml_to_string(dict, 1));
+                    bail!("Errors trying to find 'tag' in:\n{}", yaml_to_string(dict, 1));
                 }
             }
         }
@@ -1350,7 +1350,7 @@ impl SpeechPattern  {
             if dict.is_null() {
                 bail!("Error trying to find 'name': empty value (two consecutive '-'s?");
             } else {
-                bail!("Errors trying to find 'name' in:\n{}", &yaml_to_string(dict, 1));
+                bail!("Errors trying to find 'name' in:\n{}", yaml_to_string(dict, 1));
             };
         };
         let pattern_name = pattern_name.unwrap().to_string();
@@ -2137,7 +2137,7 @@ impl fmt::Display for SpeechRules {
         for (tag_name, rules) in rules_vec {
             writeln!(f, "   {}: #patterns {}", tag_name, rules.len())?;
         };
-        return writeln!(f, "   {}+{} unicode entries", &self.unicode_short.borrow().len(), &self.unicode_full.borrow().len());
+        return writeln!(f, "   {}+{} unicode entries", self.unicode_short.borrow().len(), self.unicode_full.borrow().len());
     }
 }
 
@@ -2158,7 +2158,7 @@ pub struct SpeechRulesWithContext<'c, 's:'c, 'm:'c> {
 impl<'c, 's:'c, 'm:'c> fmt::Display for SpeechRulesWithContext<'c, 's,'m> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "SpeechRulesWithContext \n{})", self.speech_rules)?;
-        return writeln!(f, "   {} context entries, nav node id '({}, {})'", &self.context_stack, self.nav_node_id, self.nav_node_offset);
+        return writeln!(f, "   {} context entries, nav node id '({}, {})'", self.context_stack, self.nav_node_id, self.nav_node_offset);
     }
 }
 
