@@ -776,6 +776,8 @@ impl CanonicalizeContext {
 										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable") ||
 										  parent_name == "mmultiscripts";
 
+		propagate_inherited_mathvariant(mathml);
+
 		// handle empty leaves -- leaving it empty causes problems with the speech rules
 		if is_leaf(mathml) && !EMPTY_ELEMENTS.contains(element_name) && as_text(mathml).is_empty() {
 			return if parent_requires_child {Some( CanonicalizeContext::make_empty_element(mathml) )} else {None};
@@ -4486,6 +4488,34 @@ pub fn add_attrs<'a>(mathml: Element<'a>, attrs: &[Attribute]) -> Element<'a> {
 		mathml.set_attribute_value(attr.name(), attr.value());
 	}
 	return mathml;
+}
+
+fn propagate_inherited_mathvariant(mathml: Element) {
+	if is_leaf(mathml) {
+		return;
+	}
+
+	let Some(mathvariant) = mathml.attribute_value("mathvariant") else {
+		return;
+	};
+
+	propagate_mathvariant_to_children(mathml, mathvariant);
+}
+
+fn propagate_mathvariant_to_children(mathml: Element, inherited_mathvariant: &str) {
+	for child in mathml.children() {
+		let child = as_element(child);
+		let child_mathvariant = match child.attribute_value("mathvariant") {
+			Some(value) => value,
+			None => {
+				child.set_attribute_value("mathvariant", inherited_mathvariant);
+				inherited_mathvariant
+			},
+		};
+		if !is_leaf(child) {
+			propagate_mathvariant_to_children(child, child_mathvariant);
+		}
+	}
 }
 
 
