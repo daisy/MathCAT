@@ -386,7 +386,7 @@ impl TTS {
             match command.value {
                 TTSCommandValue::XPath(xpath) => {
                     let value = xpath.evaluate(rules_with_context.get_context(), mathml)
-                        .with_context(|| format!("in 'spell': can't evaluate xpath \"{}\"", &xpath.to_string()) )?;
+                        .with_context(|| format!("in 'spell': can't evaluate xpath \"{}\"", xpath) )?;
                     let value_string = match value {
                         Value::String(s) => s,
                         Value::Nodeset(nodes) if nodes.size() == 1 => {
@@ -397,14 +397,14 @@ impl TTS {
                                 if crate::xpath_functions::is_leaf(el) {
                                     crate::canonicalize::as_text(el).to_string()
                                 } else {
-                                    bail!("in 'spell': value returned from xpath '{}' does not evaluate to a string",  &xpath.to_string());
+                                    bail!("in 'spell': value returned from xpath '{}' does not evaluate to a string",  xpath);
                                 }
                             } else {
                                 bail!("in 'spell': value returned from xpath '{}' does not evaluate to a string, it is {} nodes",
-                                        &xpath.to_string(), nodes.size());
+                                        xpath, nodes.size());
                             }
                         },
-                        _ => bail!("in 'spell': value returned from xpath '{}' does not evaluate to a string",  &xpath.to_string()),
+                        _ => bail!("in 'spell': value returned from xpath '{}' does not evaluate to a string",  xpath),
                     };
                     // Chemistry wants to spell elements like "Na". But we also have the issue of capitalization (SpeechOverrides_CapitalLetters)
                     //   so the "N" need to use that. The logic for that is already in unicode.yaml. We could replicate that here.
@@ -562,7 +562,7 @@ impl TTS {
             TTSCommand::Voice =>if is_start_tag {format!("<voice required=\"Name={}\">", command.value.get_string())} else {String::from("</prosody>")},
             TTSCommand::Spell =>if is_start_tag {format!("<spell>{}", command.value.get_string())} else {String::from("</spell>")},
             TTSCommand::Pronounce =>if is_start_tag {
-                    format!("<pron sym='{}'>{}", &command.value.get_pronounce().sapi5, &command.value.get_pronounce().text)
+                    format!("<pron sym='{}'>{}", command.value.get_pronounce().sapi5, command.value.get_pronounce().text)
                 } else {
                     String::from("</pron>")
                 },
@@ -597,7 +597,7 @@ impl TTS {
             TTSCommand::Voice =>if is_start_tag {format!("<voice required='{}'>", command.value.get_string())} else {String::from("</voice>")},
             TTSCommand::Spell =>if is_start_tag {format!("<say-as interpret-as='characters'>{}", command.value.get_string())} else {String::from("</say-as>")},
             TTSCommand::Pronounce =>if is_start_tag {
-                format!("<phoneme alphabet='ipa' ph='{}'>{}", &command.value.get_pronounce().ipa, &command.value.get_pronounce().text)
+                format!("<phoneme alphabet='ipa' ph='{}'>{}", command.value.get_pronounce().ipa, command.value.get_pronounce().text)
             } else {
                 String::from("</phoneme>")
             },
