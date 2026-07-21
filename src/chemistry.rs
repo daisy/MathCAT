@@ -1890,7 +1890,7 @@ mod chem_tests {
         let test = if test.starts_with("<math") {test} else {&format!("<math>{}</math>", test)};
         let new_package = parser::parse(test);
         if let Err(e) = new_package {
-            panic!("Invalid MathML input:\n{}\nError is: {}", &test, &e.to_string());
+            panic!("Invalid MathML input:\n{}\nError is: {}", test, e);
         }
 
         let new_package = new_package.unwrap();

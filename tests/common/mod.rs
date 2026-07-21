@@ -215,7 +215,7 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
 
         let new_package = parser::parse(mathml);
         if let Err(e) = new_package {
-            panic!("Invalid MathML:\n{}\nError is: {}", &mathml, &e.to_string());
+            panic!("Invalid MathML:\n{}\nError is: {}", mathml, e);
         }
 
         let new_package = new_package.unwrap();
