@@ -3012,7 +3012,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
                 let start_main_file = rules.borrow().unicode_short_files.borrow().ft[0].clone();
 
                 // open the file, read all the contents, then write them back so the time changes
-                let contents = std::fs::read(&start_main_file.file).unwrap_or_else(|_| panic!("Failed to read file {} during test", start_main_file.file.to_string_lossy()));
+                let contents = std::fs::read(&start_main_file.file).unwrap_or_else(|_| panic!("Failed to read file {} during test", &start_main_file.file.to_string_lossy()));
                 std::fs::write(start_main_file.file, contents).unwrap();
                 std::thread::sleep(Duration::from_millis(5));       // pause a little to make sure the time changes
 

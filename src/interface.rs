@@ -1531,7 +1531,7 @@ mod tests {
                 <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
             </mfrac>
         </math>";
-        set_mathml(&expr)?;
+        set_mathml(expr)?;
         let speech = get_spoken_text()?;
         // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
         assert!(!speech.contains("&lt;"));
