@@ -1252,7 +1252,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             let pref_manager = pref_manager.borrow();
             if let Some(file_name) = pref_manager.user_prefs_file.as_ref().unwrap().debug_get_file() {
                 file_path = PathBuf::from(file_name);
-                contents = fs::read(&file_path).expect(&format!("Failed to write file {} during test", file_name));
+                contents = fs::read(&file_path).unwrap_or_else(|_| panic!("Failed to write file {} during test", file_name));
                 let changed_contents = String::from_utf8(contents.clone()).unwrap()
                                 .replace("SpeechStyle: ClearSpeak", "SpeechStyle: SimpleSpeak");
                 fs::write(&file_path, changed_contents).unwrap();

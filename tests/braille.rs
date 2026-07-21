@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(clippy::needless_return)]
 
 mod common;
 

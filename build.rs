@@ -44,7 +44,7 @@ fn zip_dir(rules_dir: &Path, archive_zip: &mut ZipWriter<File>, options: SimpleF
                 let zip_file = match File::create(&zipped_dir_file_name) {
                     Ok(file) => file,
                     Err(e) => return Err(std::io::Error::other(
-                                                    format!("build.rs couldn't create {:?}: {}", &zip_name, e))),
+                                                    format!("build.rs couldn't create {:?}: {}", zip_name, e))),
                 };
                 let mut zip = ZipWriter::new(zip_file);
                 let n_files_in_zip = zip_entry(&mut zip, &entry_path, &PathBuf::from("."), options)?;
@@ -160,7 +160,7 @@ fn main() {
         let rules_out_dir = PathBuf::from(&out_dir).join("Rules");
 
         if  std::env::set_current_dir(&out_dir).is_err() {
-            println!("cargo::warning=couldn't change to directory '{}'", &out_dir.display());
+            println!("cargo::warning=couldn't change to directory '{}'", out_dir.display());
             return;
         }
         let archive_path = PathBuf::from("rules.zip");     // A zip file containing all the zip files.
@@ -179,7 +179,7 @@ fn main() {
         // println!("cargo::warning=rules directory '{:?}'", &rules_dir.to_string_lossy());
         let archive_zip_file = match File::create(&archive_path) {
             Ok(file) => file,
-            Err(e) => panic!("build.rs couldn't create {:?}: {}", &archive_path.to_str(), e),
+        Err(e) => panic!("build.rs couldn't create {:?}: {}", archive_path.to_str(), e),
         };
 
         let mut archive_zip = ZipWriter::new(archive_zip_file);

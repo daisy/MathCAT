@@ -1008,7 +1008,7 @@ mod tests {
                                         start_id, command, &crate::interface::errors_to_string(&e))
                 },
                 Ok(nav_speech) => {
-                    let nav_speech = nav_speech.trim_end_matches(&[' ', ',', ';']);
+                    let nav_speech = nav_speech.trim_end_matches([' ', ',', ';']);
                     // debug!("Full speech: {}", nav_speech);
                     if !result_id.is_empty() {
                         let (id, _) = nav_stack.borrow().get_navigation_mathml_id(mathml);
@@ -2601,7 +2601,7 @@ mod tests {
             assert_eq!("переход внутрь; в числитель; икс  плюс, квадратный корень из 1 разделить на игрек, конец корня", speech);
             match do_navigate_command_string(mathml, "DescribeCurrent") {
                 Ok(speech) => {
-                    let speech = speech.trim_end_matches(&[' ', ',', ';']).to_string();
+                    let speech = speech.trim_end_matches([' ', ',', ';']).to_string();
                     assert_eq!("описать текущее; икс  плюс, квадратный корень из 1 разделить на игрек", speech);
                 },
                 Err(e) => {
