@@ -417,7 +417,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                                 match tts.as_str() {
                                     "SSML"
                                         if !cumulative_speech.starts_with("<prosody rate") => {
-                                            cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", &rate, &cumulative_speech);
+                                            cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
                                         }
                                     "SAPI5"
                                         if !cumulative_speech.starts_with("<rate speed") => {
@@ -599,7 +599,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                         bail!("Internal error: With {}/{} in {} mode, can't {} from expression with id '{}' inside:\n{}",
                               rules.pref_manager.as_ref().borrow().pref_to_string("Language"),
                               rules.pref_manager.as_ref().borrow().pref_to_string("SpeechStyle"),
-                              &nav_state.mode, nav_command, &nav_position.current_node, mml_to_string(if literal_speak {mathml} else {intent}));
+                              nav_state.mode, nav_command, nav_position.current_node, mml_to_string(if literal_speak {mathml} else {intent}));
                     }
                     return Err(e);
                 }
