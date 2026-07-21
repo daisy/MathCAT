@@ -144,7 +144,10 @@ fn source_general_math_text_rules() -> Result<()> {
 #[test]
 fn percent_and_special_marks() -> Result<()> {
     let expr = r#"<math><mrow><mn>25</mn><mo>%</mo></mrow></math>"#;
-    test_braille("Russian", expr, "⠼⠃⠑⠼⠍⠴")?;
+    test_braille("Russian", expr, "⠼⠃⠑⠼⠴")?;
+
+    let expr = r#"<math><mrow><mn>12</mn><mo>&#x2030;</mo></mrow></math>"#;
+    test_braille("Russian", expr, "⠼⠁⠃⠼⠴⠴")?;
 
     let expr = r#"<math><mn>0,56</mn></math>"#;
     test_braille("Russian", expr, "⠼⠚⠂⠑⠋")?;
