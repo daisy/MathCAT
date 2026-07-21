@@ -366,10 +366,10 @@ cfg_if! {
                 Ok(path) => path,
                 Err(_) => path.to_path_buf(),
             };
-            debug!("Reading file '{}'", &path.display());
+            debug!("Reading file '{}'", path.display());
             match std::fs::read_to_string(&path) {
                 Ok(str) => return Ok(str),
-                Err(e) => bail!("Read error while trying to read {}: {}", &path.display(), e),
+                Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
             }
         }
 
