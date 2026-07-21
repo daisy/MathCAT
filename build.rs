@@ -179,7 +179,7 @@ fn main() {
         // println!("cargo::warning=rules directory '{:?}'", &rules_dir.to_string_lossy());
         let archive_zip_file = match File::create(&archive_path) {
             Ok(file) => file,
-            Err(e) => panic!("build.rs couldn't create {:?}: {}", archive_path.to_str(), e),
+        Err(e) => panic!("build.rs couldn't create {:?}: {}", archive_path.to_str(), e),
         };
 
         let mut archive_zip = ZipWriter::new(archive_zip_file);
