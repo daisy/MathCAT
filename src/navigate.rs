@@ -1005,7 +1005,7 @@ mod tests {
             match do_navigate_command_string(mathml, command) {
                 Err(e) => {
                     panic!("\nStarting at '{}', '{} failed.\n{}",
-                                        start_id, command, &crate::interface::errors_to_string(&e))
+                                        start_id, command, crate::interface::errors_to_string(&e))
                 },
                 Ok(nav_speech) => {
                     let nav_speech = nav_speech.trim_end_matches([' ', ',', ';']);
