@@ -242,7 +242,7 @@
   match: "."
   replace:
   - test:
-      if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫'] or *[1][self::m:mo[.='∫']]]"   # preceding-sibling::*[1][.='∫']
+      if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫' or .='∑'] or *[1][self::m:mo[.='∫' or .='∑']]] or ancestor::*[1][@data-intent-property=':function:']"   # preceding-sibling::*[1][.='∫']
       then:
       - t: "κλάσματος με αριθμητή"   #theodora. genitive rule in greek for fraction "η τετραγωνική ρίζα του κλάσματος" 
       else:

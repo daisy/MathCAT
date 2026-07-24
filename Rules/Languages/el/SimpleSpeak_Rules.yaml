@@ -155,7 +155,7 @@
       if: "$Impairment = 'Blindness'"
       then:
       - test:
-          if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫'] or *[1][self::m:mo[.='∫']]]"
+          if: "parent::*[@data-from-mathml='msqrt'] or preceding-sibling::*[1][self::m:mo[.='∫' or .='∑'] or *[1][self::m:mo[.='∫' or .='∑']]] or ancestor::*[1][@data-intent-property=':function:']"
           then:
           - t: "κλάσματος"    #theodora. #theodora. genitive rule in greek for fraction "η τετραγωνική ρίζα του κλάσματος" 
           else: 

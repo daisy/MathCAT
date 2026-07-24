@@ -2371,6 +2371,7 @@ fn abs_value_after_operator_accusative() -> Result<()> {
   test("el", "SimpleSpeak", expr,
     "y ισούται με; την απόλυτη τιμή του x")?;
     return Ok(());
+    //theodora. fails. can't introduce accusative rules for abs value
 }
 #[test]
 fn square_root_with_fraction_genitive_clearspeak() -> Result<()> {
@@ -2412,5 +2413,42 @@ fn integral_with_underover_with_fraction_genitive_simplespeak() -> Result<()> {
   let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mo>&#x222B;</mo><mi>&#x3B1;</mi><mi>&#x3B2;</mi></msubsup><mfrac><mrow><mi>x</mi><mo>+</mo><mn>3</mn></mrow><mi>y</mi></mfrac></math>";
   test("el", "SimpleSpeak", expr,
     "ολοκλήρωμα από άλφα ως βήτα του; κλάσματος, x συν 3, προς y, τέλος κλάσματος")?;
+    return Ok(());
+}
+#[test]
+fn sum_with_underover_with_fraction_genitive_clearspeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><munderover><mo>&#x2211;</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo>&#x221E;</mo></munderover><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>3</mn></mfrac></math>";
+  test("el", "ClearSpeak", expr,
+    "άθροισμα από n ισούται με 1 ως άπειρο του; κλάσματος με αριθμητή x συν 1; και παρονομαστή 3")?;
+    return Ok(());
+}
+#[test]
+fn sum_with_underover_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><munderover><mo>&#x2211;</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mo>&#x221E;</mo></munderover><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>3</mn></mfrac></math>";
+  test("el", "SimpleSpeak", expr,
+    "άθροισμα από n ισούται με 1 ως άπειρο του; κλάσματος, x συν 1, προς 3, τέλος κλάσματος")?;
+    return Ok(());
+}
+#[test]
+fn absolute_value_with_fraction_genitive_clearspeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mo>|</mo><mfrac><mrow><mi>&#x3C7;</mi><mo>+</mo><mn>1</mn></mrow><mn>3</mn></mfrac><mo>|</mo></math>";
+  test("el", "ClearSpeak", expr,
+    "απόλυτη τιμή του κλάσματος με αριθμητή χ συν 1; και παρονομαστή 3")?;
+    return Ok(());
+}
+
+#[test]
+fn absolute_value_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mo>|</mo><mfrac><mrow><mi>&#x3C7;</mi><mo>+</mo><mn>1</mn></mrow><mn>3</mn></mfrac><mo>|</mo></math>";
+  test("el", "SimpleSpeak", expr,
+    "η απόλυτη τιμή του κλάσματος, χ συν 1, προς 3, τέλος κλάσματος; τέλος απόλυτης τιμής")?;
+    return Ok(());
+}
+//Δεν έχουν λυθεί
+#[test]
+fn lim_with_fraction_genitive_simplespeak() -> Result<()> {
+  let expr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><munder><mi>lim</mi><mrow><mi>x</mi><mo>&#x2192;</mo><mo>&#x221E;</mo></mrow></munder><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>3</mn></mfrac></math>";
+  test("el", "SimpleSpeak", expr,
+    "το όριο όταν x προσεγγίζει, άπειρο; του; κλάσματος, χ συν 1, προς 3, τέλος κλάσματος; τέλος απόλυτης τιμής")?;
     return Ok(());
 }
