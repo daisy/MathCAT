@@ -217,7 +217,7 @@ fn integral_both() -> Result<()> {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "ClearSpeak", expr, "integrál ettől: 0, eddig: 1 értéke:; f x; d x")?;
+    test("hu", "ClearSpeak", expr, "integrált ettől: 0, eddig: 1 értéke:; f x; d x")?;
     return Ok(());
 
 }
@@ -233,7 +233,7 @@ fn integral_under() -> Result<()> {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "ClearSpeak", expr, "integrál alatta a valós számok halmaza; f x d x")?;
+    test("hu", "ClearSpeak", expr, "integrált alatta a valós számok halmaza; f x d x")?;
     return Ok(());
 
 }
@@ -246,7 +246,7 @@ fn integral() -> Result<()> {
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("hu", "ClearSpeak", expr, "integrál f x d x")?;
+    test("hu", "ClearSpeak", expr, "integrált f x d x")?;
     return Ok(());
 
 }
