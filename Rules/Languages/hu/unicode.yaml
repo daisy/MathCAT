@@ -545,3 +545,8 @@
          if: "$Verbosity!='Terse'"
          then: [T: "egy"]                      	# 	(DeepL translation)
      - T: "szuperhalmaza vagy egyenlő"           	# 	(en: 'superset of or equal to', DeepL translation)
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "⇒": [T: "dupla jobbranyíl"]          	#  0x21d2	(en: 'right double arrow', DeepL translation)
+ - "∐": [T: "diszjunkt unió"]                       	#  0x2210	(en: 'co-product', DeepL translation)
+
