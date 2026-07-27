@@ -41,7 +41,7 @@ fn grade1_1_7_3a_squared() -> Result<()> {
 
 #[test]
 fn grade1_1_7_3a_arrow_infinity() -> Result<()> {
-    let expr = "<math><mi>x</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></math>";
+    let expr = "<math><mi>x</mi><mo>→</mo><mi>∞</mi></math>";
     test_braille("UEB", expr, "⠰⠭⠀⠰⠳⠕⠀⠼⠿")?;
     return Ok(());
 }
@@ -69,9 +69,9 @@ fn grade1_1_7_3b_subscripts_abc() -> Result<()> {
 fn grade1_1_7_3b_factorise_chain() -> Result<()> {
     // "Factorise:" stripped -- see file header note on lead-in text
     let expr = "<math>
-        <mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>4</mn><mo>;</mo>
-        <mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>2</mn><mi>x</mi><mo>;</mo>
-        <mi>y</mi><mo>=</mo><mi>x</mi><mo>&#x2212;</mo><msup><mi>x</mi><mn>2</mn></msup><mo>.</mo>
+        <mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mo>;</mo>
+        <mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><mi>x</mi><mo>;</mo>
+        <mi>y</mi><mo>=</mo><mi>x</mi><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo>.</mo>
     </math>";
     test_braille("UEB", expr,
         "⠰⠰⠰⠽⠀⠐⠶⠀⠭⠔⠼⠃⠐⠤⠼⠙⠆⠀⠽⠀⠐⠶⠀⠭⠔⠼⠃⠐⠤⠼⠃⠭⠆⠀⠽⠀⠐⠶⠀⠭⠐⠤⠭⠔⠼⠃⠲⠰⠄")?;
@@ -191,14 +191,14 @@ fn grade1_1_7_9_10_coordinate_xi2_yi2() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_11_b_bar() -> Result<()> {
-    let expr = "<math><mover><mi mathvariant='normal'>B</mi><mo>&#xAF;</mo></mover></math>";
+    let expr = "<math><mover><mi mathvariant='normal'>B</mi><mo>¯</mo></mover></math>";
     test_braille("UEB", expr, "⠠⠃⠰⠱")?;
     return Ok(());
 }
 
 #[test]
 fn grade1_1_7_9_12_m_leftright_arrow() -> Result<()> {
-    let expr = "<math><mover><mi mathvariant='normal'>M</mi><mo>&#x2194;</mo></mover></math>";
+    let expr = "<math><mover><mi mathvariant='normal'>M</mi><mo>↔</mo></mover></math>";
     test_braille("UEB", expr, "⠠⠍⠨⠔⠰⠳⠺⠗⠕")?;
     return Ok(());
 }
@@ -206,7 +206,7 @@ fn grade1_1_7_9_12_m_leftright_arrow() -> Result<()> {
 #[test]
 fn grade1_1_7_9_13_az_leftright_arrow() -> Result<()> {
     let expr = "<math><mover><mrow><mi mathvariant='normal'>A</mi><mi mathvariant='normal'>Z</mi></mrow>
-                <mo>&#x2194;</mo></mover></math>";
+                <mo>↔</mo></mover></math>";
     // [rather than] ⠰⠣⠠⠠⠁⠵⠰⠜⠨⠔⠰⠳⠺⠗⠕
     test_braille("UEB", expr, "⠰⠰⠣⠠⠠⠁⠵⠜⠨⠔⠳⠺⠗⠕")?;
     return Ok(());
@@ -232,7 +232,7 @@ fn grade1_1_7_9_16_chem_h2_o2_reaction() -> Result<()> {
     let expr = "<math>
         <mn>2</mn><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mo>(</mo><mi>g</mi><mo>)</mo>
         <mo>+</mo><msub><mi mathvariant='normal'>O</mi><mn>2</mn></msub><mo>(</mo><mi>g</mi><mo>)</mo>
-        <mo>&#x2192;</mo>
+        <mo>→</mo>
         <mn>2</mn><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub><mi mathvariant='normal'>O</mi><mo>(</mo><mi>l</mi><mo>)</mo>
     </math>";
     test_braille("UEB", expr,
@@ -250,7 +250,7 @@ fn grade1_1_7_9_17_y_eq_mx_c() -> Result<()> {
 #[test]
 fn grade1_1_7_9_18_a_eq_pi_r_sq() -> Result<()> {
     let expr = "<math><mi mathvariant='normal'>A</mi><mo>=</mo>
-                <mi mathvariant='normal'>&#x3C0;</mi><msup><mi>r</mi><mn>2</mn></msup></math>";
+                <mi mathvariant='normal'>π</mi><msup><mi>r</mi><mn>2</mn></msup></math>";
     test_braille("UEB", expr, "⠠⠁⠀⠐⠶⠀⠨⠏⠗⠰⠔⠼⠃")?;
     return Ok(());
 }
@@ -265,8 +265,8 @@ fn grade1_1_7_9_19_e_eq_mc2() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_20_perfect_square() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn>
-                <mo>=</mo><msup><mrow><mo>(</mo><mi>x</mi><mo>&#x2212;</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></math>";
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn>
+                <mo>=</mo><msup><mrow><mo>(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></math>";
     test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠤⠼⠃⠭⠐⠖⠼⠁⠀⠐⠶⠀⠐⠣⠭⠐⠤⠼⠁⠐⠜⠔⠼⠃")?;
     return Ok(());
 }
@@ -274,7 +274,7 @@ fn grade1_1_7_9_20_perfect_square() -> Result<()> {
 #[test]
 fn grade1_1_7_9_21_xn_alternating() -> Result<()> {
     let expr = "<math><msub><mi>x</mi><mi>n</mi></msub><mo>=</mo><mn>1</mn><mo>+</mo>
-                <mfrac><msup><mrow><mo>(</mo><mo>&#x2212;</mo><mn>1</mn><mo>)</mo></mrow><mi>n</mi></msup><mi>n</mi></mfrac></math>";
+                <mfrac><msup><mrow><mo>(</mo><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mi>n</mi></msup><mi>n</mi></mfrac></math>";
     test_braille("UEB", expr, "⠭⠰⠢⠝⠀⠐⠶⠀⠼⠁⠐⠖⠷⠐⠤⠼⠁⠔⠝⠨⠌⠝⠾")?;
     return Ok(());
 }
@@ -291,8 +291,8 @@ fn grade1_1_7_9_22_xn_exponential() -> Result<()> {
 fn grade1_1_7_9_23_quadratic_formula() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>=</mo>
         <mfrac>
-            <mrow><mo>&#x2212;</mo><mi>b</mi><mo>&#xB1;</mo>
-                <msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt>
+            <mrow><mo>−</mo><mi>b</mi><mo>±</mo>
+                <msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt>
             </mrow>
             <mrow><mn>2</mn><mi>a</mi></mrow>
         </mfrac>
@@ -303,7 +303,7 @@ fn grade1_1_7_9_23_quadratic_formula() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_24_x_sqrt_sintheta() -> Result<()> {
-    let expr = "<math><mi>x</mi><msqrt><mi>sin</mi><mo>&#x2061;</mo><mi>&#x3B8;</mi></msqrt></math>";
+    let expr = "<math><mi>x</mi><msqrt><mi>sin</mi><mo>&#x2061;</mo><mi>θ</mi></msqrt></math>";
     // [rather than] ⠭⠰⠩⠎⠔⠨⠹⠰⠬
     test_braille("UEB", expr, "⠰⠰⠭⠩⠎⠊⠝⠨⠹⠬")?;
     return Ok(());
@@ -327,14 +327,14 @@ fn grade1_1_7_9_26_w_eq_fs() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_27_work_eq_force_times_distance() -> Result<()> {
-    let expr = "<math><mtext>work</mtext><mo>=</mo><mtext>force</mtext><mo>&#xD7;</mo><mtext>distance</mtext></math>";
+    let expr = "<math><mtext>work</mtext><mo>=</mo><mtext>force</mtext><mo>×</mo><mtext>distance</mtext></math>";
     test_braille("UEB", expr, "⠐⠺⠀⠐⠶⠀⠿⠉⠑⠐⠦⠙⠊⠌⠨⠑")?;
     return Ok(());
 }
 
 #[test]
 fn grade1_1_7_9_28_therefore_force() -> Result<()> {
-    let expr = "<math><mo>&#x2234;</mo><mtext>force</mtext><mo>=</mo>
+    let expr = "<math><mo>∴</mo><mtext>force</mtext><mo>=</mo>
                 <mfrac><mtext>work</mtext><mtext>distance</mtext></mfrac></math>";
     test_braille("UEB", expr, "⠰⠠⠡⠀⠿⠉⠑⠀⠐⠶⠀⠰⠷⠐⠺⠨⠌⠙⠊⠌⠨⠑⠰⠾")?;
     return Ok(());
@@ -343,8 +343,8 @@ fn grade1_1_7_9_28_therefore_force() -> Result<()> {
 #[test]
 fn grade1_1_7_9_29_acceleration() -> Result<()> {
     let expr = "<math><mtext>acceleration</mtext><mo>=</mo>
-                <mfrac><mrow><mi mathvariant='normal'>&#x394;</mi><mtext>speed</mtext></mrow>
-                       <mrow><mi mathvariant='normal'>&#x394;</mi><mtext>time</mtext></mrow></mfrac></math>";
+                <mfrac><mrow><mi mathvariant='normal'>Δ</mi><mtext>speed</mtext></mrow>
+                       <mrow><mi mathvariant='normal'>Δ</mi><mtext>time</mtext></mrow></mfrac></math>";
     test_braille("UEB", expr, "⠁⠒⠑⠇⠻⠁⠰⠝⠀⠐⠶⠀⠰⠷⠠⠨⠙⠎⠏⠑⠫⠨⠌⠠⠨⠙⠐⠞⠰⠾")?;
     return Ok(());
 }
@@ -367,7 +367,7 @@ fn grade1_1_7_9_31_frequency_slash() -> Result<()> {
 fn grade1_1_7_9_32_vcone() -> Result<()> {
     let expr = "<math><msub><mi mathvariant='normal'>V</mi><mtext>cone</mtext></msub><mo>=</mo>
                 <mfrac><mn>1</mn><mn>3</mn></mfrac>
-                <mi mathvariant='normal'>&#x3C0;</mi><msup><mi>r</mi><mn>2</mn></msup><mi>h</mi></math>";
+                <mi mathvariant='normal'>π</mi><msup><mi>r</mi><mn>2</mn></msup><mi>h</mi></math>";
     // [rather than] ⠠⠧⠰⠢⠰⠣⠉⠐⠕⠰⠜⠀⠐⠶⠀⠼⠁⠌⠉⠨⠏⠗⠔⠼⠃⠰⠓
     test_braille("UEB", expr, "⠰⠰⠠⠧⠢⠣⠉⠕⠝⠑⠜⠀⠐⠶⠀⠼⠁⠌⠉⠨⠏⠗⠔⠼⠃⠰⠓")?;
     return Ok(());
@@ -376,7 +376,7 @@ fn grade1_1_7_9_32_vcone() -> Result<()> {
 #[test]
 fn grade1_1_7_9_33_v_integral() -> Result<()> {
     let expr = "<math><mi mathvariant='normal'>V</mi><mo>=</mo>
-                <mo>&#x222B;</mo><mi mathvariant='normal'>&#x3C0;</mi>
+                <mo>∫</mo><mi mathvariant='normal'>π</mi>
                 <msup><mi>y</mi><mn>2</mn></msup><mi>d</mi><mi>x</mi></math>";
     // [rather than] ⠰⠰⠰⠠⠧⠀⠐⠶⠀⠮⠨⠏⠽⠔⠼⠃⠰⠙⠭⠰⠄
     test_braille("UEB", expr, "⠰⠠⠧⠀⠐⠶⠀⠰⠰⠮⠨⠏⠽⠔⠼⠃⠰⠙⠭")?;
@@ -385,8 +385,8 @@ fn grade1_1_7_9_33_v_integral() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_34_period() -> Result<()> {
-    let expr = "<math><mtext>period</mtext><mo>=</mo><mn>2</mn><mi mathvariant='normal'>&#x3C0;</mi>
-                <msqrt><mfrac><mrow><mi>l</mi><mi>cos</mi><mo>&#x2061;</mo><mi>&#x3B1;</mi></mrow><mi>g</mi></mfrac></msqrt></math>";
+    let expr = "<math><mtext>period</mtext><mo>=</mo><mn>2</mn><mi mathvariant='normal'>π</mi>
+                <msqrt><mfrac><mrow><mi>l</mi><mi>cos</mi><mo>&#x2061;</mo><mi>α</mi></mrow><mi>g</mi></mfrac></msqrt></math>";
     test_braille("UEB", expr, "⠏⠻⠊⠕⠙⠀⠐⠶⠀⠼⠃⠨⠏⠩⠷⠇⠀⠰⠰⠉⠕⠎⠨⠁⠨⠌⠛⠾⠬")?;
     return Ok(());
 }
@@ -429,7 +429,7 @@ fn grade1_1_7_9_38_four_subscripts() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_39_power_multiplication() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>&#xD7;</mo><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo>
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>×</mo><msup><mi>x</mi><mn>3</mn></msup><mo>=</mo>
                 <msup><mi>x</mi><mrow><mn>2</mn><mo>+</mo><mn>3</mn></mrow></msup><mo>=</mo>
                 <msup><mi>x</mi><mn>5</mn></msup></math>";
     test_braille("UEB", expr, "⠰⠰⠰⠭⠔⠼⠃⠐⠦⠭⠔⠼⠉⠀⠐⠶⠀⠭⠔⠣⠼⠃⠐⠖⠼⠉⠜⠀⠐⠶⠀⠭⠔⠼⠑⠰⠄")?;
@@ -438,7 +438,7 @@ fn grade1_1_7_9_39_power_multiplication() -> Result<()> {
 
 #[test]
 fn grade1_1_7_9_40_b_arrow_c() -> Result<()> {
-    let expr = "<math><mi mathvariant='normal'>B</mi><mo>&#x2192;</mo><mi mathvariant='normal'>C</mi></math>";
+    let expr = "<math><mi mathvariant='normal'>B</mi><mo>→</mo><mi mathvariant='normal'>C</mi></math>";
     // [rather than] ⠰⠠⠃⠀⠰⠳⠕⠀⠰⠠⠉
     test_braille("UEB", expr, "⠰⠰⠰⠠⠃⠀⠳⠕⠀⠠⠉⠰⠄")?;
     return Ok(());
@@ -457,7 +457,7 @@ fn grade1_1_7_9_42_methane_chlorine() -> Result<()> {
     let expr = "<math>
         <mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>4</mn></msub>
         <mo>+</mo><mn>4</mn><msub><mi mathvariant='normal'>Cl</mi><mn>2</mn></msub>
-        <mo>&#x2192;</mo>
+        <mo>→</mo>
         <mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>Cl</mi><mn>4</mn></msub>
         <mo>+</mo><mn>4</mn><mi mathvariant='normal'>H</mi><mi mathvariant='normal'>Cl</mi>
     </math>";
@@ -470,10 +470,10 @@ fn grade1_1_7_9_42_methane_chlorine() -> Result<()> {
 fn grade1_1_7_9_43_carbon_decay() -> Result<()> {
     let expr = "<math>
         <mmultiscripts><mi mathvariant='normal'>C</mi><mprescripts/><mn>6</mn><mn>14</mn></mmultiscripts>
-        <mo>&#x2192;</mo>
+        <mo>→</mo>
         <mmultiscripts><mi mathvariant='normal'>N</mi><mprescripts/><mn>7</mn><mn>14</mn></mmultiscripts>
         <mo>+</mo>
-        <mmultiscripts><mi>&#x3B2;</mi><mprescripts/><mrow><mo>-</mo><mn>1</mn></mrow><mn>0</mn></mmultiscripts>
+        <mmultiscripts><mi>β</mi><mprescripts/><mrow><mo>-</mo><mn>1</mn></mrow><mn>0</mn></mmultiscripts>
     </math>";
     test_braille("UEB", expr,
         "⠰⠰⠰⠢⠼⠋⠔⠼⠁⠙⠠⠉⠀⠳⠕⠀⠢⠼⠛⠔⠼⠁⠙⠠⠝⠐⠖⠢⠣⠐⠤⠼⠁⠜⠔⠼⠚⠨⠃⠰⠄")?;
