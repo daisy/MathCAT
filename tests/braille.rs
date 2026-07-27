@@ -13,6 +13,8 @@ mod braille {
     }
     mod UEB {
         mod iceb;
+        mod ice_2026;
+        mod bana;
         mod other;
     }
 
