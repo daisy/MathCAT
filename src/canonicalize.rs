@@ -969,7 +969,11 @@ impl CanonicalizeContext {
 								return Some(result);
 							}
 						},
-						"..." => {mathml.set_text("…");},  // name might need to change -- checked below
+						"..." => {
+							if name(get_parent(mathml)) != "mover" {
+								mathml.set_text("…");
+							}  // name might need to change -- checked below
+						},
 						":" => {
 							if is_ratio(mathml) {
 								mathml.set_text("∶");	// ratio U+2236
@@ -1865,7 +1869,7 @@ impl CanonicalizeContext {
 			// if roman numeral is in superscript and we get here, then it had a chemical element base, so we accept it
 			// note: you never has a state = I; if two letters, it must be 'II'.
 			if text.len() > 2  || 
-			   ((name(parent) =="msup" || name(parent) == "mmultiscripts") && text.len()==2 && text==[b'I',b'I']) {
+			   ((name(parent) =="msup" || name(parent) == "mmultiscripts") && text.len()==2 && text==*b"II") {
 				return true;
 			} else {
 				let is_upper_case = text[0].is_ascii_uppercase();	// safe since we know it is a roman numeral

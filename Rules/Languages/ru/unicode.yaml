@@ -300,23 +300,6 @@
  - "ϵ": [t: "эпсилон"]               	#  0x3f5	(en: 'epsilon')
  - "϶": [t: "обратный эпсилон"]      	#  0x3f6	(en: 'reversed epsilon')
 
- - "–": [t: "короткое тире"]                          	#  0x2013	(google translation)
- - "—": [t: "длинное тире"]                          	#  0x2014	(google translation)
- - "―": [t: "горизонтальная черта"]          	#  0x2015	(en: 'horizontal bar', google translation)
- - "‖": [t: "двойная вертикальная черта"]       	#  0x2016	(en: 'double vertical line', google translation)
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [t: "многоточие"]            	# 	(en: 'dot dot dot')
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [t: "и так далее"]            	# 	(en: 'and so on', google translation)
-            else: [t: "и так далее до"]            	# 	(en: 'and so on up to', google translation)
-
  - "⁡":                                         	#  0x2061
     - test:
         # skip saying "of" after trig functions, geometry shapes, or in :literal mode
@@ -329,27 +312,18 @@
         then: [pause: short]
  - "⁣": [t: ""]                                 	#  0x2063
  - "⁤": [t: "и"]                                	#  0x2064	(en: 'and', google translation)
- - "′": [t: "штрих"]                            	#  0x2032	(en: 'prime')
- - "″": [t: "двойной штрих"]                    	#  0x2033	(en: 'double prime')
- - "‴": [t: "тройной штрих"]                    	#  0x2034	(en: 'triple prime')
-
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - t: "двойное"                        	# 	(en: 'double-struck')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [t: "градусы цельсия"]               	#  0x2103	(en: 'degrees celsius', google translation)
- - "℉": [t: "градусы фаренгейта"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
  - "ℋℛℓ":                                       	#  0x210b
     - t: "рукописное"                             	# 	(en: 'script', google translation)
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
- - "ℎ": [t: "постоянная Планка"]                	#  0x210e	(en: 'planck constant', google translation)
  - "ℜ":                                         	#  0x211c
     - t: "готическая"                              	# 	(en: 'fraktur', google translation)
     - spell: "'R'"
 
- - "Ω": [t: "ом"]                               	#  0x2126	(en: 'ohms', google translation)
- - "K": [t: "кельвин"]                          	#  0x212a	(en: 'kelvin', google translation)
- - "Å": [t: "ангстрем"]                          	#  0x212b	(en: 'angstroms', google translation)
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
     - t: "двойной курсив"                	# 	(en: 'double-struck italic', google translation)
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
@@ -366,21 +340,6 @@
           else: [t: "стрелка вправо"]             	# 	(en: 'right arrow', google translation)
 
  - "↓": [t: "стрелка вниз"]                      	#  0x2193	(en: 'downwards arrow', google translation)
- - "⇒": [t: "двойная стрелка вправо"]            	#  0x21d2	(en: 'rightwards double arrow', google translation)
- - "∀": [t: "для всех"]                         	#  0x2200	(en: 'for all')
- - "∂":                                         	#  0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [t: "частная производная"]                  	# 	(en: 'partial', google translation)
-         else: [t: "частная производная"]      	# 	(en: 'partial derivative')
- - "∃": [t: "существует"]                       	#  0x2203	(en: 'there exists')
- - "∄": [t: "не существует"]                    	#  0x2204	(en: 'there does not exist')
- - "∅": [t: "пустое множество"]                 	#  0x2205	(en: 'empty set')
- - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: ""]                         	# 	(en: 'the', google translation)
-     - t: "инкремент"                           	# 	(en: 'laplacian of')
  - "∈":                                         	#  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -408,6 +367,50 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "находится в"]        	# 	(en: 'is in', google translation)
               - else: [t: "принадлежит"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+ - "∥":                                         	#  0x2225
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: ""]                  	# 	(en: 'is', google translation)
+     - t: "параллельно"                         	# 	(en: 'parallel to')
+ - "∦":                                         	#  0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: ""]                  	# 	(en: 'is', google translation)
+     - t: "не параллельно"                      	# 	(en: 'not parallel to')
+ - "≤":                                         	#  0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: ""]                  	# 	(en: 'is', google translation)
+     - t:  "меньше или равно"
+ - "≥":                                         	#  0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: ""]                  	# 	(en: 'is', google translation)
+     - t: "больше или равно"                    	# 	(en: 'greater than or equal to')
+
+ # --- restored complex short definitions (prefer over unicode-full) ---
+ - "…":                                         	#  0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [t: "многоточие"]            	# 	(en: 'dot dot dot')
+        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [t: "и так далее"]            	# 	(en: 'and so on', google translation)
+            else: [t: "и так далее до"]            	# 	(en: 'and so on up to', google translation)
+ - "∂":                                         	#  0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [t: "частная производная"]                  	# 	(en: 'partial', google translation)
+         else: [t: "частная производная"]      	# 	(en: 'partial derivative')
+ - "∆":                                         	#  0x2206
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: ""]                         	# 	(en: 'the', google translation)
+     - t: "инкремент"                           	# 	(en: 'laplacian of')
  - "∉":                                         	#  0x2209
     # rule is identical to 0x2208
      - test:
@@ -463,13 +466,6 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "находится в"]        	# 	(en: 'is in', google translation)
               - else: [t: "малое принадлежит"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∏": [t: "произведение"]            	#  0x220f	(en: 'product')
- - "∐": [t: "эн-арный сомножитель"]             	#  0x2210	(en: 'co-product')
- - "∑": [t: "сумма"]                   	#  0x2211	(en: 'sum')
- - "−": [t: "минус"]                            	#  0x2212	(en: 'minus')
- - "∓": [t: "минус плюс"]                       	#  0x2213	(en: 'minus or plus')
- - "∗": [t: "звёздочка"]               	#  0x2217	(en: 'times')
- - "∘": [t: "композиция"]                           	#  0x2218	(en: 'composed with')
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -480,44 +476,16 @@
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
      - t: "пропорционально"                     	# 	(en: 'proportional to')
- - "∞": [t: "бесконечность"]                    	#  0x221e	(en: 'infinity')
- - "∟": [t: "прямой угол"]                      	#  0x221f	(en: 'right angle')
- - "∠": [t: "угол"]                             	#  0x2220	(en: 'angle')
- - "∡": [t: "измеренный угол"]                   	#  0x2221	(en: 'measured angle')
- - "∣": [t: "делит"]                            	#  0x2223	(en: 'divides')
- - "∤": [t: "не делит"]                         	#  0x2224	(en: 'does not divide')
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t: "параллельно"                         	# 	(en: 'parallel to')
- - "∦":                                         	#  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t: "не параллельно"                      	# 	(en: 'not parallel to')
- - "∧": [t: "логическое и"]                     	#  0x2227	(en: 'and')
- - "∨": [t: "логическое или"]                   	#  0x2228	(en: 'or')
- - "∩": [t: "пересечение"]                      	#  0x2229	(en: 'intersection')
- - "∪": [t: "объединение"]                      	#  0x222a	(en: 'union')
- - "∫": [t: "интеграл"]                         	#  0x222b	(en: 'integral')
- - "∬": [t: "двойной интеграл"]                 	#  0x222c	(en: 'double integral')
- - "∭": [t: "тройной интеграл"]                 	#  0x222d	(en: 'triple integral')
- - "∮": [t: "интеграл по контуру"]              	#  0x222e	(en: 'contour integral')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
      - t: "отношение"                           	# 	(en: 'to')
- - "∷": [t: "пропорция"]                        	#  0x2237	(en: 'as')
- - "∼": [t: "тильда"]                           	#  0x223c	(en: 'varies with')
- - "∽": [t: "обратная тильда"]                  	#  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
      - t: "изогнутая эс"              	# 	(en: 'most positive')
- - "∿": [t: "синусоидальная волна"]             	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
@@ -528,20 +496,6 @@
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
      - t: "тождественно равно"                  	# 	(en: 'identical to')
- - "≤":                                         	#  0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t:  "меньше или равно"
- - "≥":                                         	#  0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t: "больше или равно"                    	# 	(en: 'greater than or equal to')
- - "≦": [t: "меньше над равно"]                 	#  0x2266	(en: 'less than over equal to')
- - "≧": [t: "больше над равно"]                 	#  0x2267	(en: 'greater than over equal to')
- - "≺": [t: "предшествует"]                     	#  0x227a	(en: 'precedes')
- - "≻": [t: "следует за"]                       	#  0x227b	(en: 'succeeds')
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -572,3 +526,23 @@
          if: "$Verbosity!='Terse'"
          then: [t: ""]                	# 	(en: 'is a', google translation)
      - t: "надмножество или равно"              	# 	(en: 'superset of or equal to')
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "‖": [t: "двойная вертикальная черта"]       	#  0x2016	(en: 'double vertical line', google translation)
+ - "℉": [t: "градусы фаренгейта"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
+ - "Ω": [t: "ом"]                               	#  0x2126	(en: 'ohms', google translation)
+ - "Å": [t: "ангстрем"]                          	#  0x212b	(en: 'angstroms', google translation)
+ - "⇒": [t: "двойная стрелка вправо"]            	#  0x21d2	(en: 'rightwards double arrow', google translation)
+ - "∐": [t: "эн-арный сомножитель"]             	#  0x2210	(en: 'co-product')
+ - "∓": [t: "минус плюс"]                       	#  0x2213	(en: 'minus or plus')
+ - "∗": [t: "звёздочка"]               	#  0x2217	(en: 'times')
+ - "∘": [t: "композиция"]                           	#  0x2218	(en: 'composed with')
+ - "∧": [t: "логическое и"]                     	#  0x2227	(en: 'and')
+ - "∨": [t: "логическое или"]                   	#  0x2228	(en: 'or')
+ - "∮": [t: "интеграл по контуру"]              	#  0x222e	(en: 'contour integral')
+ - "∷": [t: "пропорция"]                        	#  0x2237	(en: 'as')
+ - "∼": [t: "тильда"]                           	#  0x223c	(en: 'varies with')
+ - "∿": [t: "синусоидальная волна"]             	#  0x223f	(en: 'sine wave')
+ - "≦": [t: "меньше над равно"]                 	#  0x2266	(en: 'less than over equal to')
+ - "≧": [t: "больше над равно"]                 	#  0x2267	(en: 'greater than over equal to')
+ - "≻": [t: "следует за"]                       	#  0x227b	(en: 'succeeds')

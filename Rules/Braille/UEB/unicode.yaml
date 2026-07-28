@@ -256,8 +256,6 @@
  - "⊞": [t: "1⠫⠼⠙⠪⠐⠖t"]         # 0x229E (Squared plus)
  - "⊟": [t: "1⠫⠼⠙⠪⠐⠤t"]         # 0x229F (Squared minus)
  - "⊠": [t: "1⠫⠼⠙⠪⠐⠦t"]         # 0x22A0 (Squared times)
- - "⋇": [t: "1⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)
  - "˙": [t: "1⠲"]               # 0x02D9 ( Dot Above)
  - "¨": [t: "1⠲⠲"]              # 0x00A8 ( Diaeresis/Double Dot Above )
  - "©": [t: "⠘⠉"]               # 0xa9 (Copyright)
@@ -453,7 +451,6 @@
  - "γ": [t: "GL⠛"]              # 0x3b3 
  - "δ": [t: "GL⠙"]              # 0x3b4 
  - "ε": [t: "GL⠑"]              # 0x3b5 
- - "ϵ": [t: "GL⠑"]              # 0x3f5 \varepsilon
  - "ζ": [t: "GL⠵"]              # 0x3b6 
  - "η": [t: "GL⠱"]             # 0x3b7 
  - "θ": [t: "GL⠹"]              # 0x3b8 
@@ -474,6 +471,14 @@
  - "χ": [t: "GL⠯"]              # 0x3c7 
  - "ψ": [t: "GL⠽"]              # 0x3c8 
  - "ω": [t: "GL⠺"]              # 0x3c9 
+
+ - "ϑ": [t: "GL⠹"]              # 0x3d1
+ - "ϵ": [t: "GL⠑"]              # 0x3f5 \varepsilon
+ - "ϰ": [t: "GL⠅"]              # 0x3f0
+ - "ϕ": [t: "GL⠋"]              # 0x3d5
+ - "ϱ": [t: "GL⠗"]              # 0x3f1
+ - "ϖ": [t: "GL⠏"]              # 0x3d6
+ - "Ϝ": [t: "GL⠧"]              # 0x3d7
 
  - "Α": [t: "CGL⠁"]             # 0x391 
  - "Β": [t: "CGL⠃"]             # 0x392 
@@ -506,3 +511,7 @@
  - "∆": [t: "CGL⠙"]             # 0x2206 (Increment (capital Greek delta))
  - "∏": [t: "CGL⠏"]             # 0x220F (Product (capital Greek pi))
  - "∑": [t: "CGL⠎"]             # 0x2211 (Sum (capital Greek sigma))
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "⋇": [t: "1⠌⠯⠦"]             # 0x22C7 (Division times)
+ - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)

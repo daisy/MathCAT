@@ -195,8 +195,8 @@ fn augenbit1_5_7 () -> Result<()> {
             <mo>=</mo>
             <mn>1</mn><mrow><mo>/</mo></mrow><mn>6</mn>
         </mrow></math>"#;
-    test_braille_prefs("LaTeX", vec![("LaTeX_UseShortName", "false" )], expr, r"0,1\overline{6} =1/6")?;
-    test_braille_prefs("LaTeX", vec![("LaTeX_UseShortName", "true")], expr, r"0,1\ol{6} =1/6")?;
+    test_braille_prefs("LaTeX", vec![("LaTeX_UseShortName", "false" )], expr, r"0,1 \overline{6} =1/6")?;
+    test_braille_prefs("LaTeX", vec![("LaTeX_UseShortName", "true")], expr, r"0,1 \ol{6} =1/6")?;
     return Ok(());
 
 }

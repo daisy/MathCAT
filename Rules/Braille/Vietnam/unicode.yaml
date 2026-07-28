@@ -242,8 +242,6 @@
  - "⊞": [t: "⠫⠼⠙⠪⠐⠖t"]         # 0x229E (Squared plus)
  - "⊟": [t: "⠫⠼⠙⠪⠐⠤t"]         # 0x229F (Squared minus)
  - "⊠": [t: "⠫⠼⠙⠪⠐⠦t"]         # 0x22A0 (Squared times)
- - "⋇": [t: "⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)
  - "˙": [t: "⠲"]               # 0x02D9 ( Dot Above)
  - "¨": [t: "⠲⠲"]              # 0x00A8 ( Diaeresis/Double Dot Above)
  - "©": [t: "⠘⠉"]               # 0xa9 (Copyright)

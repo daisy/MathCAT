@@ -211,7 +211,7 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
             if let Err(e) = new_package {
                 // Clear stale state so subsequent API calls do not return previous user's data (security issue)
                 old_package.replace(parser::parse("<math></math>").unwrap());
-                bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+                bail!("Invalid MathML input:\n{}\nError is: {}", mathml_str, e);
             }
 
             let new_package = new_package.unwrap();
@@ -1137,6 +1137,16 @@ mod tests {
     use super::super::init_logger;
     use super::*;
 
+    fn interface_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        use std::panic::{catch_unwind, AssertUnwindSafe};
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
+
     fn are_parsed_strs_equal(test: &str, target: &str) -> bool {
         let test_package = &parser::parse(test).expect("Failed to parse input");
         let test_doc = test_package.as_document();
@@ -1228,13 +1238,13 @@ mod tests {
     }
 
     #[test]
-    fn test_entities() {
-        // this forces initialization
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn test_entities() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
 
-        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>").unwrap();
+        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>")?;
         let converted_str =
-            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>").unwrap();
+            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>")?;
 
         // need to remove unique ids
         static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
@@ -1244,26 +1254,27 @@ mod tests {
 
         let entity_str = set_mathml(
             "<math data-quot=\"&quot;value&quot;\" data-apos='&apos;value&apos;'><mi>XXX</mi></math>",
-        )
-        .unwrap();
+        )?;
         let converted_str =
-            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>").unwrap();
+            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities quote test failed");
 
         let entity_str =
-            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>").unwrap();
+            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>")?;
         let converted_str =
-            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")
-                .unwrap();
+            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities <,>,& test failed");
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn can_recover_from_invalid_set_rules_dir() {
+    fn can_recover_from_invalid_set_rules_dir() -> Result<()> {
+        return interface_test(|| {
         use std::env;
         // MathCAT will check the env var "MathCATRulesDir" as an override, so the following test might succeed if we don't override the env var
         unsafe { env::set_var("MathCATRulesDir", "MathCATRulesDir"); }   // safe because we are single threaded
@@ -1274,6 +1285,8 @@ mod tests {
             super::super::abs_rules_dir_path()
         );
         assert!(set_mathml("<math><mn>1</mn></math>").is_ok());
+        return Ok( () );
+        });
     }
 
     #[test]
@@ -1312,8 +1325,9 @@ mod tests {
     }
 
     #[test]
-    fn stack_overflow_protection() {
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn stack_overflow_protection() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
         let mut bad_mathml = String::from("<math>");
         for _ in 0..MAX_DEPTH+1 {
             bad_mathml.push_str("<msqrt><mi>n</mi>");
@@ -1323,36 +1337,43 @@ mod tests {
         }
         bad_mathml.push_str("</math>");
         assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn old_mathml_cleared_on_error() {
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn old_mathml_cleared_on_error() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
         let good_mathml = "<math><mn>3</mn></math>";
-        set_mathml(good_mathml).unwrap();
+        set_mathml(good_mathml)?;
         let bad_mathml = "<math><mi>&xabc;</mi></math>";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text().unwrap() == "");
-        set_mathml(good_mathml).unwrap();
+        assert!(get_spoken_text()? == "");
+        set_mathml(good_mathml)?;
         let bad_mathml = "<math>garbage";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text().unwrap() == "");
+        assert!(get_spoken_text()? == "");
+        return Ok( () );
+        });
     }
 
 
 
-    fn setup_speech_ssml() {
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        set_preference("Language", "en").unwrap();
-        set_preference("TTS", "SSML").unwrap();
-        set_preference("MathRate", "80").unwrap();
-        set_preference("SpeechStyle", "SimpleSpeak").unwrap();
-        set_preference("Verbosity", "Medium").unwrap();
+    fn setup_speech_ssml() -> Result<()> {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
+        set_preference("Language", "en")?;
+        set_preference("TTS", "SSML")?;
+        set_preference("MathRate", "80")?;
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        set_preference("Verbosity", "Medium")?;
+        return Ok( () );
     }
 
     #[test]
     fn test_no_escaping() -> Result<()> {
-        setup_speech_ssml();
+        return interface_test(|| {
+        setup_speech_ssml()?;
         let expr = " <math>
             <mfrac>
                 <mrow> <mi>x</mi><mo>+</mo><mi>y</mi> </mrow>
@@ -1366,6 +1387,7 @@ mod tests {
         assert!(!speech.contains("&gt;"));
         assert!(!speech.contains("&amp;lt;"));
         return Ok(());
+        });
     }
 
     /// The attack payload must not pass through verbatim (rule-generated SSML may contain `<break`).
@@ -1390,7 +1412,8 @@ mod tests {
     #[test]
     /// User-supplied leaf text must not inject SSML when TTS is SSML.
     fn leaf_text_ssml_attack_neutralized_in_speech() -> Result<()> {
-        setup_speech_ssml();
+        return interface_test(|| {
+        setup_speech_ssml()?;
         // Entity-encoded payload: valid XML through set_mathml (no CDATA), decodes to PAYLOAD + "note".
         let mathml = format!(
             r#"<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo>
@@ -1410,14 +1433,16 @@ mod tests {
         assert_ssml_attack_neutralized(&speech, PAYLOAD);
         assert!(speech.contains("note") || speech.contains("&lt;"));
         return Ok(());
+        });
     }
 
     #[test]
     /// Attribute values read via xpath must not inject SSML when TTS is SSML.
     fn attribute_ssml_attack_neutralized_in_speech() -> Result<()> {
+        return interface_test(|| {
         use crate::speech::{SpeechRulesWithContext, SPEECH_RULES};
 
-        setup_speech_ssml();
+        setup_speech_ssml()?;
         let mathml = format!(
             r#"<math data-ssml-attack="{PAYLOAD_ATTR_XML}"><mn>x</mn></math>"#
         );
@@ -1446,5 +1471,6 @@ mod tests {
             Ok::<(), Error>(())
         })?;
         return Ok(());
+        });
     }
 }

@@ -10,7 +10,6 @@
  - "¨": [t: "tréma"]                            	#  0xa8	(en: 'double dot')
  - "©": [t: "copyright"]                        	#  0xa9
  - "ª": [t: "indicateur ordinal féminin"]       	#  0xaa	(en: 'feminine ordinal indicator')
- - "¬": [t: "négation"]                         	#  0xac	(en: 'not')
  - "«": [t: "guillemet chevron pointant gauche"]	#  0xab	(en: 'left-pointing double angle quote mark', MathPlayer: 'guillemet chevron pointant vers la gauche', DeepL: 'guillemet à double angle pointant vers la gauche')
  - "¯":                                         	#  0xaf
      - test:
@@ -19,24 +18,9 @@
         else: [t: "macron"]                     	# 	(en: 'line')
  - "²": [t: "au carré"]                         	#  0xb2	(en: 'two', MathPlayer: 'exposant deux', DeepL: 'deux')
  - "³": [t: "cubique"]                          	#  0xb3	(en: 'three', MathPlayer: 'exposant trois', DeepL: 'trois')
- - "´": [t: "accent aigu"]                      	#  0xb4	(en: 'acute')
  - "µ": [t: "symbole micro"]                    	#  0xb5	(en: 'micro')
  - "¹": [t: "exposant un"]                      	#  0xb9	(en: 'one', DeepL: 'un')
  - "º": [t: "indicateur ordinal masculin"]      	#  0xb9	(en: 'masculine ordinal indicator')
- - "·":
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "fois"]                       	# 	(en: 'times', DeepL translation)
-        else: [t: "point médian"]               	# 	(en: 'dot')
- - "×":                                         	#  0xd7
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "fois"]                       	# 	(en: 'times', DeepL translation)
-        else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "par"]                    	# 	(en: 'by', DeepL translation)
-            else: [t: "multiplié par"]          	# 	(en: 'cross')
- - "÷": [t: "divisé par"]                       	#  0xf7	(en: 'divided by')
  - "¡": [t: "point d'exclamation renversé"]     	#  0xa1	(en: 'inverted exclamation mark')
  - "¶": [t: "fin de paragraphe"]                	#  0xb6	(en: 'paragraph mark')
  - "¿": [t: "point d'interrogation renversé"]   	#  0xbf	(en: 'inverted question mark')
@@ -124,14 +108,6 @@
  - "˽": [t: "modificateur tablette"]            	#  0x2fd	(en: 'modifier shelf', DeepL translation)
  - "˾": [t: "modificateur étagère ouverte"]     	#  0x2fe	(en: 'modifier open shelf', DeepL translation)
  - "˿": [t: "modificateur flèche gauche basse"] 	#  0x2ff	(en: 'modifier low left arrow', DeepL translation)
- - "̀": [t: "diacritique accent grave"]         	#  0x300	(en: 'grave accent embellishment', DeepL: 'accent grave')
- - "́": [t: "diacritique accent aigu"]          	#  0x301	(en: 'acute accent embellishment', DeepL: 'accent aigu embelli')
- - "̂": [t: "diacritique accent circonflexe"]   	#  0x302	(en: 'circumflex accent embellishment', DeepL: 'accent circonflexe fioriture')
- - "̃": [t: "diacritique tilde"]                	#  0x303	(en: 'tilde embellishment', DeepL: 'tilde enjoliveur')
- - "̄": [t: "diacritique macron"]               	#  0x304	(en: 'macron embellishment', DeepL: 'macron embellissement')
- - "̅": [t: "diacritique tiret haut"]           	#  0x305	(en: 'overbar embellishment', DeepL: 'emblème de la barre supérieure')
- - "̆": [t: "diacritique brève"]                	#  0x306	(en: 'breve embellishment', DeepL: 'brève fioriture')
- - "̇": [t: "diacritique point en chef"]        	#  0x307	(en: 'dot above embellishment', DeepL: 'point au-dessus de la fioriture')
  - "̈": [t: "diacritique tréma"]                	#  0x308	(en: 'diaeresis embellishment', DeepL: 'embellissement du tréma')
  - "̉": [t: "crochet au-dessus de l'ornement"]  	#  0x309	(en: 'hook above embellishment', DeepL translation)
  - "̊": [t: "diacritique crochet en chef"]      	#  0x30a	(en: 'ring above embellishment', DeepL: 'anneau au-dessus de l'ornement')
@@ -221,13 +197,9 @@
  - "ϒ": [t: "upsilon crochet"]                  	#  0x3d2	(en: 'upsilon with hook', DeepL: 'upsilon avec crochet')
  - "ϓ": [t: "upsilon accent crochet"]           	#  0x3d3	(en: 'upsilon with acute and hook')
  - "ϔ": [t: "upsilon tréma crochet"]            	#  0x3d4	(en: 'upsilon with diaeresis and hook')
- - "ϕ": [t: "phi droit"]                        	#  0x3d5	(en: 'phi', DeepL: 'phi')
- - "ϖ": [t: "pi cursif"]                        	#  0x3d6	(en: 'pi', DeepL: 'pi')
  - "ϗ": [t: "ligature kai"]                     	#  0x3d7	(en: 'kai')
  - "Ϙ": [t: "koppa archaïque"]                  	#  0x3d8	(en: 'cap archaic koppa', DeepL: 'majuscule archaïque koppa')
  - "ϙ": [t: "koppa"]                            	#  0x3d9	(en: 'archaic koppa', DeepL: 'archaïque koppa')
- - "ϵ": [t: "epsilon"]                          	#  0x3f5
- - "϶": [t: "epsilon lunaire réfléchi"]         	#  0x3f6	(en: 'reversed epsilon')
  - "А-Я":                                       	#  0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -298,19 +270,6 @@
         if: "@data-chem-formula-op"
         then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
         else: [t: "puce"]                       	# 	(en: 'bullet')
-
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [t: "point point point"]          	# 	(en: 'dot dot dot', DeepL translation)
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [t: "et ainsi de suite"]      	# 	(en: 'and so on', DeepL translation)
-            else: [t: "points de suspension"]   	# 	(en: 'and so on up to')
 
  - "‰": [t: "symbole pour mille"]               	#  0x2030	(en: 'per mille')
  - "‱": [t: "symbole pour dix mille"]           	#  0x2031	(en: 'per ten thousand')
@@ -468,7 +427,6 @@
     - t: "constante de planck sur deux pi"      	# 	(en: 'script')
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
- - "ℓ": [t: "l minuscule en script"]            	#  0x2113	(en: 'script l', MathPlayer: 'l ronde minuscule', DeepL: 'script l')
  - "℔": [t: "symbole l b barré"]                	#  0x2114	(en: 'pounds', DeepL: 'livres')
  - "№": [t: "symbole numéro"]                   	#  0x2116	(en: 'number')
  - "℥": [t: "symbole once"]                     	#  0x2125	(en: 'ounces')
@@ -556,7 +514,6 @@
  - "↉": [t: "zero tiers"]                       	#  0x2189	(en: 'zero thirds', DeepL: 'zéro tiers')
  - "←": [t: "flèche vers la gauche"]            	#  0x2190	(en: 'leftwards arrow', SRE: 'flèche gauche')
  - "↑": [t: "flèche vers le haut"]              	#  0x2191	(en: 'upwards arrow')
- - "→": [t: "flèche vers la droite"]            	#  0x2192	(en: 'rightwards arrow', SRE: 'flèche droite')
  - "↓": [t: "flèche vers le bas"]               	#  0x2193	(en: 'downwards arrow')
  - "↔": [t: "flèche bilatérale"]                	#  0x2194	(en: 'left right arrow')
  - "↕": [t: "flèche haut et bas"]               	#  0x2195	(en: 'up down arrow')
@@ -630,7 +587,6 @@
  - "⇏": [t: "double flèche barrée droite"]      	#  0x21cf	(en: 'rightwards double arrow with stroke', MathPlayer: 'double flèche barrée vers la droite', DeepL: 'flèche double droite avec trait')
  - "⇐": [t: "double flèche gauche"]             	#  0x21d0	(en: 'leftwards double arrow', MathPlayer: 'double flèche vers la gauche', DeepL: 'flèche double vers la gauche')
  - "⇑": [t: "double flèche vers le haut"]       	#  0x21d1	(en: 'upwards double arrow')
- - "⇒": [t: "double flèche droite"]             	#  0x21d2	(en: 'implies', MathPlayer: 'double flèche vers la droite', DeepL: 'implique')
  - "⇓": [t: "double flèche vers le bas"]        	#  0x21d3	(en: 'downwards double arrow')
  - "⇔": [t: "double flèche bilatérale"]         	#  0x21d4	(en: 'if and only if')
  - "⇕": [t: "double flèche haut bas"]           	#  0x21d5	(en: 'up down double arrow', MathPlayer: 'double flèche haut-bas', DeepL: 'haut-bas double flèche')
@@ -682,75 +638,10 @@
          if: "$Verbosity!='Terse'"
          then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
      - t: "complément"                          	# 	(en: 'complement of')
- - "∂":                                         	#  0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [t: "partiel"]                   	# 	(en: 'partial', DeepL translation)
-         else: [t: "dérivée partielle"]         	# 	(en: 'partial derivative', DeepL: 'dérivé partiel')
  - "∃": [t: "il existe"]                        	#  0x2203	(en: 'there exists')
  - "∄": [t: "il n'existe pas"]                  	#  0x2204	(en: 'there does not exist')
  - "∅": [t: "ensemble vide"]                    	#  0x2205	(en: 'empty set')
- - "∆":                                         	#  0x2206
-     - test:
-         if: "following-sibling::*"
-         then_test:
-            if: "$Verbosity!='Terse'"
-            then: [t: "le lahplahsien de"]      	#  "LahPlahsian" sounds better than "laplacian" in speech engines tested	(en: 'the LahPlahsian of', DeepL translation)
-            else: [t: "incrément"]              	# 	(en: 'LahPlahsian')
-         else: [t: "incrément"]                 	# 	(en: 'LahPlahsian')
-
  - "∇": [t: "nabla"]                            	#  0x2207	(en: 'nahblah', DeepL: 'nahblah')
- - "∉":                                         	#  0x2209
-    # rule is identical to 0x2208
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "n'est pas un élément de"]    	# 	(en: 'is not an element of', DeepL translation)
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "pas dans"]           	# 	(en: 'not in', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "pas membre de"]      	# 	(en: 'not member of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "pas élément de"]     	# 	(en: 'not element of', DeepL translation)
-              - else: [t: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "n'est pas membre de"]	# 	(en: 'is not a member of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "n'est pas un élément de"]	# 	(en: 'is not an element of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "n'est pas dans"]     	# 	(en: 'is not in', DeepL translation)
-              - else: [t: "n'appartient pas à"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
- - "∊":                                         	#  0x220a
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test:
-            if: "$Verbosity!='Terse' and not(parent::m:set)"	#  "the set x is an element of ..." sounds bad
-            then: [t: "est"]                    	# 	(en: 'is', DeepL translation)
-        - t: "appartient à"                     	# 	(en: 'an element of')
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "en"]                 	# 	(en: 'in', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "membre de"]          	# 	(en: 'member of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "élément de"]         	# 	(en: 'element of', DeepL translation)
-              - else: [t: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "est un membre de"]   	# 	(en: 'is a member of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "est un élément de"]  	# 	(en: 'is an element of', DeepL translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "est dans"]           	# 	(en: 'is in', DeepL translation)
-              - else: [t: "appartient à"]       	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
  - "∋": [t: "contient comme élément"]           	#  0x220b	(en: 'contains the member')
  - "∌": [t: "ne contient pas comme élément"]    	#  0x220c	(en: 'does not contain the member')
  - "∍": [t: "contient comme élément"]           	#  0x220d	(en: 'contains the member')
@@ -771,11 +662,6 @@
         then: [t: "point"]                      	# 	(en: 'dot', DeepL translation)
         else: [t: "point médian"]               	# 	(en: 'times')
 
- - "√":                                         	#  0x221a
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
-     - t: "racine carrée"                       	# 	(en: 'square root of')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
@@ -786,11 +672,6 @@
          if: "$Verbosity!='Terse'"
          then: [t: "le"]                        	# 	(en: 'the', DeepL translation)
      - t: "racine quatrième"                    	# 	(en: 'fourth root of')
- - "∝":                                         	#  0x221d
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "proportionnel à"                     	# 	(en: 'proportional to')
  - "∞": [t: "infini"]                           	#  0x221e	(en: 'infinity')
  - "∟": [t: "angle droit"]                      	#  0x221f	(en: 'right angle')
  - "∠": [t: "angle"]                            	#  0x2220
@@ -813,11 +694,6 @@
  - "∳": [t: "intégrale de contour en sens positif"]	#  0x2233	(en: 'anticlockwise contour integral')
  - "∴": [t: "par conséquent"]                   	#  0x2234	(en: 'therefore')
  - "∵": [t: "parce que"]                        	#  0x2235	(en: 'because')
- - "∶":                                         	#  0x2236
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "rapport"                             	# 	(en: 'to')
  - "∷": [t: "proportion"]                       	#  0x2237	(en: 'as')
  - "∸": [t: "moins pointé"]                     	#  0x2238	(en: 'dot minus')
  - "∹": [t: "excès"]                            	#  0x2239	(en: 'has excess compared to')
@@ -833,11 +709,6 @@
      - t: "homothétique"                        	# 	(en: 'homothetic to')
  - "∼": [t: "opérateur tilde"]                  	#  0x223c	(en: 'varies with')
  - "∽": [t: "opérateur tilde renversé"]         	#  0x223d	(en: 'reversed tilde')
- - "∾":                                         	#  0x223e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "s couché renversé"                   	# 	(en: 'most positive')
  - "∿": [t: "sinusoïde"]                        	#  0x223f	(en: 'sine wave')
  - "≀": [t: "produit couronne"]                 	#  0x2240	(en: 'wreath product')
  - "≁": [t: "non tilde"]                        	#  0x2241	(en: 'not tilde')
@@ -939,16 +810,6 @@
          then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
      - t: "mesuré par"                          	# 	(en: 'measured by')
  - "≟": [t: "égalité en doute"]                 	#  0x225f	(en: 'has an unknown relationship with')
- - "≠":                                         	#  0x2260
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas égal à"                          	# 	(en: 'not equal to')
- - "≡":                                         	#  0x2261
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "identique à"                         	# 	(en: 'identical to')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1059,36 +920,6 @@
  - "≿": [t: "suit ou est équivalent à"]         	#  0x227f	(en: 'succeeds or is equivalent to')
  - "⊀": [t: "ne précède pas"]                   	#  0x2280	(en: 'does not precede')
  - "⊁": [t: "ne suit pas"]                      	#  0x2281	(en: 'does not succeed')
- - "⊂":                                         	#  0x2282
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sous-ensemble de"                    	# 	(en: 'subset of', SRE: 'sous ensemble de')
- - "⊃":                                         	#  0x2283
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sur-ensemble de"                     	# 	(en: 'superset of', SRE: 'sur ensemble de')
- - "⊄":                                         	#  0x2284
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas un sous-ensemble de"             	# 	(en: 'not a subset of', SRE: 'pas un sous ensemble de')
- - "⊅":                                         	#  0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas un sur-ensemble de"              	# 	(en: 'not a superset of', SRE: 'pas un sur ensemble de')
- - "⊆":                                         	#  0x2286
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sous ensemble ou égal à"             	# 	(en: 'subset of or equal to', MathPlayer: 'sous-ensemble ou égal à', DeepL: 'sous-ensemble de ou égal à')
- - "⊇":                                         	#  0x2287
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sur ensemble ou égal à"              	# 	(en: 'superset of or equal to', MathPlayer: 'sur-ensemble ou égal à', DeepL: 'superposé ou égal à')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -3051,11 +2882,8 @@
  - "": [t: "digamma"]                          	#  0xed03	(DeepL translation)
  - "ϝ": [t: "digamma"]                          	#  0x3dd
  - "": [t: ""]                                	#  0xed10	(en: 'd', DeepL translation)
- - "ⅆ": [t: "d ajouré en italique"]             	#  0x2146	(en: 'd', MathPlayer: 'd ajouré minuscule italique', DeepL: 'ⅆ')
  - "": [t: ""]                                	#  0xed11	(en: 'e', DeepL translation)
- - "ⅇ": [t: "e ajouré en italique"]             	#  0x2147	(en: 'e', MathPlayer: 'e ajouré minuscule italique', DeepL: 'ⅇ')
  - "": [t: ""]                                	#  0xed12	(en: 'i', DeepL translation)
- - "ⅈ": [t: "i ajouré en italique"]             	#  0x2148	(en: 'i', MathPlayer: 'i ajouré minuscule italique', DeepL: 'ⅈ')
  - "": [t: ""]                                	#  0xed13	(en: 'j', DeepL translation)
  - "ⅅ":
     - spell: "translate('.', 'ⅅ', 'DD')"       	#  0xed16, 0x2145
@@ -3669,12 +3497,6 @@
         if: "not($IgnoreBold)"
         then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
-
- - "-":                                       	#  0xf52e - 0xf537  (old MathType)
-    - test:
-        if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', '0123456789')"
 
  - "𝟬-𝟵":                                       	#  0x1D7EC - 0x1D7F5
     - test:

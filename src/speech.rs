@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
 use std::sync::LazyLock;
+use std::fmt::Debug;
 use sxd_document::dom::{ChildOfElement, Document, Element};
 use sxd_document::{Package, QName};
 use sxd_xpath::context::Evaluation;
@@ -321,7 +322,7 @@ pub fn process_include<F>(current_file: &Path, new_file_name: &str, mut read_new
 
 /// As the name says, TreeOrString is either a Tree (Element) or a String
 /// It is used to share code during pattern matching
-pub trait TreeOrString<'c, 'm:'c, T> {
+pub trait TreeOrString<'c, 'm:'c, T: Debug> : Debug {
     fn from_element(e: Element<'m>) -> Result<T>;
     fn from_string(s: String, doc: Document<'m>) -> Result<T>;
     fn replace_tts<'s:'c, 'r>(tts: &TTS, command: &TTSCommandRule, prefs: &PreferenceManager, rules_with_context: &'r mut SpeechRulesWithContext<'c, 's,'m>, mathml: Element<'c>) -> Result<T>;
@@ -513,7 +514,7 @@ struct InsertChildren {
 #[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for InsertChildren {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        return write!(f, "InsertChildren:\n  nodes {}\n  replacements {}", self.xpath, &self.replacements);
+        return write!(f, "InsertChildren:\n  nodes {}\n  replacements {}", self.xpath, self.replacements);
     }
 }
 
@@ -551,7 +552,7 @@ impl InsertChildren {
     //    This is slower than the alternatives, but reuses a bunch of code and hence is less complicated.
     fn replace<'c, 's:'c, 'm: 'c, T:TreeOrString<'c, 'm, T>>(&self, rules_with_context: &mut SpeechRulesWithContext<'c, 's,'m>, mathml: Element<'c>) -> Result<T> {
         let result = self.xpath.evaluate(&rules_with_context.context_stack.base, mathml)
-                .with_context(||format!("in '{}' replacing after pattern match", &self.xpath.rc.string) )?;
+                .with_context(||format!("in '{}' replacing after pattern match", self.xpath.rc.string) )?;
         match result {
             Value::Nodeset(nodes) => {
                 if nodes.size() == 0 {
@@ -615,7 +616,7 @@ impl fmt::Display for Intent {
         return write!(f, "intent: {}: {},  attrs='{}'>\n      children: {}",
                         if self.name.is_some() {"name"} else {"xpath-name"}, name,
                         self.attrs,
-                        &self.children);
+                        self.children);
     }
 }
 
@@ -666,7 +667,7 @@ impl Intent {
                     result.set_attribute_value(MATHML_FROM_NAME_ATTR, name(mathml));
                     set_mathml_name(result, intent_name.as_str())
                 },
-                _ => bail!("'xpath-name' value '{}' was not a string", &my_xpath),
+                _ => bail!("'xpath-name' value '{}' was not a string", my_xpath),
             }
         }
         if self.name.is_none() && self.xpath.is_none() {
@@ -745,7 +746,7 @@ struct With {
 #[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for With {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        return write!(f, "with:\n      variables: {}\n      replace: {}", &self.variables, &self.replacements);
+        return write!(f, "with:\n      variables: {}\n      replace: {}", self.variables, self.replacements);
     }
 }
 
@@ -791,7 +792,7 @@ struct SetVariables {
 #[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for SetVariables {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        return write!(f, "SetVariables: variables {}", &self.variables);
+        return write!(f, "SetVariables: variables {}", self.variables);
     }
 }
 
@@ -823,7 +824,7 @@ struct TranslateExpression {
 #[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for TranslateExpression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        return write!(f, "speak: {}", &self.xpath);
+        return write!(f, "speak: {}", self.xpath);
     }
 }
 
@@ -944,7 +945,7 @@ impl ReplacementArray {
                 let after = if i+1 == replacement_strings.len() {""} else {&replacement_strings[i+1]};
                 replacement_strings[i] = replacement_strings[i].replace(
                     PAUSE_AUTO_STR,
-                    &rules_with_context.speech_rules.pref_manager.borrow().get_tts().compute_auto_pause(&rules_with_context.speech_rules.pref_manager.borrow(), before, after));
+                    &rules_with_context.speech_rules.pref_manager.borrow().get_tts().compute_auto_pause(&rules_with_context.speech_rules.pref_manager.borrow(), before, after)?);
             }
         }
 
@@ -1104,11 +1105,11 @@ impl MyXPath {
         let compiled_xpath = factory.build(&xpath_with_debug_info)
                         .with_context(|| format!(
                             "Could not compile XPath for pattern:\n{}{}",
-                            &xpath, more_details(xpath)))?;
+                            xpath, more_details(xpath)))?;
         return match compiled_xpath {
             Some(xpath) => Ok(xpath),
             None => bail!("Problem compiling Xpath for pattern:\n{}{}",
-                            &xpath, more_details(xpath)),
+                            xpath, more_details(xpath)),
         };
 
         
@@ -1243,7 +1244,7 @@ impl MyXPath {
         }
         
         let result = self.evaluate(&rules_with_context.context_stack.base, mathml)
-                .with_context(|| format!("in '{}' replacing after pattern match", &self.rc.string) )?;
+                .with_context(|| format!("in '{}' replacing after pattern match", self.rc.string) )?;
         let string = match result {
                 Value::Nodeset(nodes) => {
                     if nodes.size() == 0 {
@@ -1334,14 +1335,14 @@ impl SpeechPattern  {
                             Err(e) => return Err(
                                 e.context(
                                     format!("tag name '{}' is not a string in:\n{}",
-                                        &yaml_to_string(&tag_array.as_vec().unwrap()[i], 0),
-                                        &yaml_to_string(dict, 1)))
+                                        yaml_to_string(&tag_array.as_vec().unwrap()[i], 0),
+                                        yaml_to_string(dict, 1)))
                             ),
                             Ok(str) => tag_names.push(str),
                         };
                     }
                 } else {
-                    bail!("Errors trying to find 'tag' in:\n{}", &yaml_to_string(dict, 1));
+                    bail!("Errors trying to find 'tag' in:\n{}", yaml_to_string(dict, 1));
                 }
             }
         }
@@ -1350,7 +1351,7 @@ impl SpeechPattern  {
             if dict.is_null() {
                 bail!("Error trying to find 'name': empty value (two consecutive '-'s?");
             } else {
-                bail!("Errors trying to find 'name' in:\n{}", &yaml_to_string(dict, 1));
+                bail!("Errors trying to find 'name' in:\n{}", yaml_to_string(dict, 1));
             };
         };
         let pattern_name = pattern_name.unwrap().to_string();
@@ -1917,8 +1918,10 @@ impl UnicodeDef {
 
             for ch in first..last+1 {
                 let ch_as_str = char::from_u32(ch).unwrap().to_string();
-                unicode_table.insert(ch, ReplacementArray::build(&substitute_ch(replacements, &ch_as_str))
-                                        .with_context(|| format!("In definition of char: '{def_range}'"))?.replacements);
+                if unicode_table.insert(ch, ReplacementArray::build(&substitute_ch(replacements, &ch_as_str))
+                                        .with_context(|| format!("In definition of char: '{def_range}'"))?.replacements).is_some() {
+                    error!("*** Character '{}' (0x{:X}) is repeated", char::from_u32(ch).unwrap(), ch);
+                }
             };
 
             return Ok(None)
@@ -2137,7 +2140,7 @@ impl fmt::Display for SpeechRules {
         for (tag_name, rules) in rules_vec {
             writeln!(f, "   {}: #patterns {}", tag_name, rules.len())?;
         };
-        return writeln!(f, "   {}+{} unicode entries", &self.unicode_short.borrow().len(), &self.unicode_full.borrow().len());
+        return writeln!(f, "   {}+{} unicode entries", self.unicode_short.borrow().len(), self.unicode_full.borrow().len());
     }
 }
 
@@ -2158,14 +2161,14 @@ pub struct SpeechRulesWithContext<'c, 's:'c, 'm:'c> {
 impl<'c, 's:'c, 'm:'c> fmt::Display for SpeechRulesWithContext<'c, 's,'m> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "SpeechRulesWithContext \n{})", self.speech_rules)?;
-        return writeln!(f, "   {} context entries, nav node id '({}, {})'", &self.context_stack, self.nav_node_id, self.nav_node_offset);
+        return writeln!(f, "   {} context entries, nav node id '({}, {})'", self.context_stack, self.nav_node_id, self.nav_node_offset);
     }
 }
 
 thread_local!{
     /// SPEECH_UNICODE_SHORT is shared among several rules, so "RC" is used
     static SPEECH_UNICODE_SHORT: UnicodeTable =
-        Rc::new( RefCell::new( HashMap::with_capacity(500) ) );
+        Rc::new( RefCell::new( HashMap::with_capacity(700) ) );
         
     /// SPEECH_UNICODE_FULL is shared among several rules, so "RC" is used
     static SPEECH_UNICODE_FULL: UnicodeTable =
@@ -2177,7 +2180,7 @@ thread_local!{
         
     /// BRAILLE_UNICODE_FULL is shared among several rules, so "RC" is used
     static BRAILLE_UNICODE_FULL: UnicodeTable =
-        Rc::new( RefCell::new( HashMap::with_capacity(5000) ) );
+        Rc::new( RefCell::new( HashMap::with_capacity(4000) ) );
 
     /// SPEECH_DEFINITION_FILES_AND_TIMES is shared among several rules, so "RC" is used
     static SPEECH_DEFINITION_FILES_AND_TIMES: FilesAndTimesShared =
@@ -2817,23 +2820,35 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
                 info!("*** Loading full unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
                 rules.unicode_full.borrow_mut().clear();
                 rules.unicode_full_files.borrow_mut().set_files_and_times(rules.read_unicode(None, false)?);
+                // when debugging, run a check across the short and full tables to ensure no characters are repeated
+                if cfg!(debug_assertions) {
+                    let unicode_full = rules.unicode_full.borrow();
+                    for ch in unicode.keys() {
+                        if unicode_full.get(ch).is_some() {
+                            error!("*** Character '{}' (0x{:X}) is repeated in both short and full unicode tables", *ch, *ch);
+                        }
+                    }
+                }
                 info!("# Unicode defs = {}/{}", rules.unicode_short.borrow().len(), rules.unicode_full.borrow().len());
             }
             unicode = rules.unicode_full.borrow();
             replacements = unicode.get( &ch_as_u32 );
             if replacements.is_none() {
-              self.translate_count = 0;     // not in loop
-              // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
-              if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
-                return Ok(self.escape_string_for_safety(String::from(ch)));
-              } else { // braille -- must turn into braille dots
-                // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
-                let ch_as_int = ch as u32;
-                let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
-                return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                self.translate_count = 0;     // not in loop
+                // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
+                if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
+                  return Ok(self.escape_string_for_safety(String::from(ch)));
+                } else {
+                  let ch_as_int = ch as u32;
+                  if ('\u{2800}'..='\u{28ff}').contains(&ch) {   // braille -- leave as braille
+                      return Ok(self.escape_string_for_safety(String::from(ch)));
+                  } else {                                    // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
+                      let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
+                      return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                  }
+                }
               }
-            }
-        };
+          };
 
         // map across all the parts of the replacement, collect them up into a Vec, and then concat them together
         let result = replacements.unwrap()

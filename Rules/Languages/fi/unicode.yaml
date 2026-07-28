@@ -247,23 +247,6 @@
  - "ϵ": [T: "epsilon"]                          	#  0x3f5
  - "϶": [T: "käännetty epsilon"]                	#  0x3f6	(en: 'reversed epsilon', google: 'kääntynyt epsilon')
 
- - "–": [T: "lyhyt ajatusviiva"]                	#  0x2013	(en: 'en dash', google: 'fi dash')
- - "—": [T: "pitkä ajatusviiva"]                	#  0x2014	(en: 'em dash', google: 'em dash')
- - "―": [T: "vaakaviiva"]                      	    #  0x2015	(en: 'horizontal bar', google: 'vaakasuora viiva')
- - "‖": [T: "kaksinkertainen pystyviiva"]       	#  0x2016	(en: 'double vertical line', google: 'kaksinkertainen pystysuora viiva')
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [T: "piste piste piste"]              # 	(google translation)
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [T: "ja niin edelleen"]       	# 	(en: 'and so on', google translation)
-            else: [T: "ja niin edelleen kunnes"]      	# 	(en: 'and so on up to', google: 'ja niin edelleen'); possibly obsolete if-else
-
  - "⁡":                                          # 0x2061
     - test:
         # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
@@ -282,50 +265,66 @@
  - "⁢": [T: ""]                                 	#  0x2062 # invisible 'times', fi: should this have a value?
  - "⁣": [T: ""]                                 	#  0x2063 # invisible 'separator', fi: should this have a value?
  - "⁤": [T: "ja"]                               	#  0x2064	(en: 'and', google translation)
- - "′": [T: "pilkku"]    	#  0x2032	(en: 'prime', google: 'ensisijainen')
- - "″": [T: "pilkku pilkku"]	#  0x2033	(en: 'double prime', google: 'kaksinkertainen prime')
- - "‴": [T: "pilkku pilkku pilkku"]	#  0x2034	(en: 'triple prime', google: 'kolminkertainen')
-
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "kaksoisviivainen"	# 	(en: 'double-struck', google: 'kaksinkertainen') # not satisfied
     - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [T: "astetta celsiusta"]                	#  0x2103	(en: 'degrees celsius', google: 'celsius astetta')
- - "℉": [T: "astetta fahrenheitia"]             	#  0x2109	(en: 'degrees fahrenheit', google: 'fahrenheit-astetta')
  - "ℋℛℓ":                                       	#  0x210b
     - T: "skripti"                 	# 	(en: 'script', google: 'käsikirjoitus') # not satisfied
     - SPELL: "translate('.', 'ℋℛℓ', 'HRl')"
- - "ℎ": [T: "planckin vakio"]                   	#  0x210e	(en: 'planck constant', google: 'planck constant')
  - "ℜ":                                         	#  0x211c
     - T: "fraktuura iso r"                      	# 	(en: 'fraktur', google: 'fraktur')
     - SPELL: "'R'"
 
- - "Ω": [T: "ohmia"]                            	#  0x2126	(en: 'ohms', google: 'ohmit')
- - "K": [T: "astetta kelviniä"]                 	#  0x212a	(en: 'kelvin', google: 'kelvin')
- - "Å": [T: "ångströmiä"]                       	#  0x212b	(en: 'angstroms', google: 'angstroms')
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
     - T: "kaksoisviivainen kursiivi"                           	# 	(en: 'double-struck italic', google: 'kaksinkertainen kursivoitu')
     - SPELL: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
- - "←": [T: "nuoli vasemmalle"]                 	#  0x2190	(en: 'leftwards arrow', google: 'vasen nuoli')
- - "↑": [T: "nuoli ylös"]                       	#  0x2191	(en: 'upwards arrow', google: 'ylöspäin nuoli')
+ - "∥":                                         	#  0x2225
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "on"]                        	# 	(en: 'is', google translation)
+     - T: "yhdensuuntainen"                   	    # 	(en: 'parallel to', google: 'samansuuntainen')
+ - "∦":                                         	#  0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                        	    # 	(en: 'is', google translation)
+     - T: "ei ole yhdensuuntainen"              	# 	(en: 'not parallel to', google: 'ei rinnakkain')
+ - "≤":                                         	#  0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "on"]                        	# 	(en: 'is', google translation)
+     - T:  "pienempi tai yhtä suuri kuin"
+ - "≥":                                         	#  0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "on"]                        	# 	(en: 'is', google translation)
+     - T: "suurempi tai yhtä suuri kuin"         	# 	(en: 'greater than or equal to', google: 'suurempi tai yhtä suuri kuin')
+
+ # --- restored complex short definitions (prefer over unicode-full) ---
+ - "…":                                         	#  0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [T: "piste piste piste"]              # 	(google translation)
+        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [T: "ja niin edelleen"]       	# 	(en: 'and so on', google translation)
+            else: [T: "ja niin edelleen kunnes"]      	# 	(en: 'and so on up to', google: 'ja niin edelleen'); possibly obsolete if-else
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [T: "lähestyy"]            	        # 	(en: 'approaches', google translation)
         else: [T: "nuoli oikealle"]             	# 	(en: 'right arrow', google: 'oikea nuoli')
-
- - "↓": [T: "nuoli alas"]                       	#  0x2193	(en: 'downwards arrow', google: 'alaspäin nuoli')
- - "⇒": [T: "kaksiviivainen nuoli oikealle"]    	#  0x21d2	(en: 'rightwards double arrow', google: 'oikealla kaksinkertaisella nuolella')
- - "∀": [T: "kaikille"]                         	#  0x2200	(en: 'for all')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
          then: [T: "osittaisderivaatta"]                	# 	(en: 'partial', google translation) # might be other possibilities
          else: [T: "osittaisderivaatta"]        	# 	(en: 'partial derivative', google: 'osittainen johdannainen')
- - "∃": [T: "on olemassa"]                      	#  0x2203	(en: 'there exists')
- - "∄": [T: "ei ole olemassa"]                  	#  0x2204	(en: 'there does not exist', google: 'ei ole')
- - "∅": [T: "tyhjä joukko"]                     	#  0x2205	(en: 'empty set', google: 'tyhjä sarja')
  - "∆":                                         	#  0x2206
      - test: 
          if: "$Verbosity!='Terse'"
@@ -401,13 +400,6 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "kuuluu"]          	# 	(en: 'is in', google translation)
               - else: [T: "kuuluu joukkoon"]	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', google: 'kuuluu')
- - "∏": [T: "tulo"]                             	#  0x220f	(en: 'product', google: 'tuote')
- - "∐": [T: "kotulo"]                        	#  0x2210	(en: 'co-product', google: 'yhteistuote')
- - "∑": [T: "summa"]                            	#  0x2211	(en: 'sum')
- - "−": [T: "miinus"]                           	#  0x2212	(en: 'minus')
- - "∓": [T: "miinus-plus"]                  	    #  0x2213	(en: 'minus or plus')
- - "∗": [T: "kertaa"]             	            #  0x2217	(en: 'times', google: 'ajat')
- - "∘": [T: "yhdistetty"]                	#  0x2218	(en: 'composed with', google: 'koostuu') #fi: is this composite function?
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -418,44 +410,16 @@
          if: "$Verbosity!='Terse'"
          then: [T: "on"]                        	# 	(en: 'is', google translation)
      - T: "verrannollinen"                   	    # 	(en: 'proportional to', google: 'suhteessa')
- - "∞": [T: "ääretön"]                          	#  0x221e	(en: 'infinity')
- - "∟": [T: "suora kulma"]                      	#  0x221f	(en: 'right angle', google: 'oikea kulma')
- - "∠": [T: "kulma"]                            	#  0x2220	(en: 'angle')
- - "∡": [T: "mitattu kulma"]                    	#  0x2221	(en: 'measured angle')
- - "∣": [T: "jakaa"]                            	#  0x2223	(en: 'divides')
- - "∤": [T: "ei jaa"]                           	#  0x2224	(en: 'does not divide')
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "on"]                        	# 	(en: 'is', google translation)
-     - T: "yhdensuuntainen"                   	    # 	(en: 'parallel to', google: 'samansuuntainen')
- - "∦":                                         	#  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                        	    # 	(en: 'is', google translation)
-     - T: "ei ole yhdensuuntainen"              	# 	(en: 'not parallel to', google: 'ei rinnakkain')
- - "∧": [T: "looginen ja"]                      	#  0x2227	(en: 'and', google: 'ja') # should there be logic for "logical and" and "logical or"?
- - "∨": [T: "looginen tai"]                     	#  0x2228	(en: 'or', google: 'tai')
- - "∩": [T: "leikkaus"]                         	#  0x2229	(en: 'intersection', google: 'risteys')
- - "∪": [T: "yhdiste"]                          	#  0x222a	(en: 'union', google: 'liitto')
- - "∫": [T: "integraali"]                       	#  0x222b	(en: 'integral', google: 'olennainen')
- - "∬": [T: "kaksoisintegraali"]                	#  0x222c	(en: 'double integral', google: 'kaksinkertainen integraali')
- - "∭": [T: "kolmoisintegraali"]                	#  0x222d	(en: 'triple integral', google: 'kolminkertainen integraali')
- - "∮": [T: "suljettu polkuintegraali"]         	#  0x222e	(en: 'contour integral', google: 'muoto -integraali')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                        	    # 	(en: 'is', google translation)
      - T: "suhde"                               	# 	(en: 'to', google: 'to')
- - "∷": [T: "kuten"]                         	#  0x2237	(en: 'as', google: 'kuten')
- - "∼": [T: "jakautunut"]                	        #  0x223c	(en: 'varies with', google: 'vaihtelee')
- - "∽": [T: "käännetty tilde"]                  	#  0x223d	(en: 'reversed tilde', google: 'kääntynyt tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                        	# 	(en: 'is', google translation)
      - T: "käännetty kaatunut S-kirjain"        	# 	(en: 'most positive', google: 'positiivisin') # fi: no good translation
- - "∿": [T: "sinikäyrä"]                        	#  0x223f	(en: 'sine wave', google: 'siniaalto')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
@@ -466,20 +430,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: "on"]                        	    # 	(en: 'is', google translation)
      - T: "identtinen"                       	# 	(en: 'identical to', google: 'yhtäläinen')
- - "≤":                                         	#  0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "on"]                        	# 	(en: 'is', google translation)
-     - T:  "pienempi tai yhtä suuri kuin"
- - "≥":                                         	#  0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "on"]                        	# 	(en: 'is', google translation)
-     - T: "suurempi tai yhtä suuri kuin"         	# 	(en: 'greater than or equal to', google: 'suurempi tai yhtä suuri kuin')
- - "≦": [T: "pienempi tai yhtä suuri kuin"]  	#  0x2266	(en: 'less than over equal to', google: 'vähemmän kuin yli yhtä suuri kuin') # based on https://jkorpela.fi/merkkien-nimet.html#, the meaning is the same as with =< 
- - "≧": [T: "suurempi tai yhtä suuri kuin"]  	#  0x2267	(en: 'greater than over equal to', google: 'suurempi kuin yli yhtä suuri kuin')
- - "≺": [T: "edeltää"]                          	#  0x227a	(en: 'precedes')
- - "≻": [T: "seuraa"]                           	#  0x227b	(en: 'succeeds', google: 'onnistuu')
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -510,3 +460,23 @@
          if: "$Verbosity!='Terse'"
          then: [T: "on"]                        	    # 	(en: 'is a', google translation)
      - T: "ylijoukko tai yhtä kuin" 	# 	(en: 'superset of or equal to', google: 'superset tai yhtä suuri kuin')
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "―": [T: "vaakaviiva"]                      	    #  0x2015	(en: 'horizontal bar', google: 'vaakasuora viiva')
+ - "′": [T: "pilkku"]    	#  0x2032	(en: 'prime', google: 'ensisijainen')
+ - "″": [T: "pilkku pilkku"]	#  0x2033	(en: 'double prime', google: 'kaksinkertainen prime')
+ - "‴": [T: "pilkku pilkku pilkku"]	#  0x2034	(en: 'triple prime', google: 'kolminkertainen')
+ - "K": [T: "astetta kelviniä"]                 	#  0x212a	(en: 'kelvin', google: 'kelvin')
+ - "⇒": [T: "kaksiviivainen nuoli oikealle"]    	#  0x21d2	(en: 'rightwards double arrow', google: 'oikealla kaksinkertaisella nuolella')
+ - "∀": [T: "kaikille"]                         	#  0x2200	(en: 'for all')
+ - "∘": [T: "yhdistetty"]                	#  0x2218	(en: 'composed with', google: 'koostuu') #fi: is this composite function?
+ - "∧": [T: "looginen ja"]                      	#  0x2227	(en: 'and', google: 'ja') # should there be logic for "logical and" and "logical or"?
+ - "∨": [T: "looginen tai"]                     	#  0x2228	(en: 'or', google: 'tai')
+ - "∪": [T: "yhdiste"]                          	#  0x222a	(en: 'union', google: 'liitto')
+ - "∮": [T: "suljettu polkuintegraali"]         	#  0x222e	(en: 'contour integral', google: 'muoto -integraali')
+ - "∷": [T: "kuten"]                         	#  0x2237	(en: 'as', google: 'kuten')
+ - "∼": [T: "jakautunut"]                	        #  0x223c	(en: 'varies with', google: 'vaihtelee')
+ - "∽": [T: "käännetty tilde"]                  	#  0x223d	(en: 'reversed tilde', google: 'kääntynyt tilde')
+ - "∿": [T: "sinikäyrä"]                        	#  0x223f	(en: 'sine wave', google: 'siniaalto')
+ - "≦": [T: "pienempi tai yhtä suuri kuin"]  	#  0x2266	(en: 'less than over equal to', google: 'vähemmän kuin yli yhtä suuri kuin') # based on https://jkorpela.fi/merkkien-nimet.html#, the meaning is the same as with =< 
+ - "≧": [T: "suurempi tai yhtä suuri kuin"]  	#  0x2267	(en: 'greater than over equal to', google: 'suurempi kuin yli yhtä suuri kuin')

@@ -22,7 +22,7 @@ fn modified_vars() -> Result<()> {
         </mrow> </math>";
     test("en", "SimpleSpeak", expr, 
         "eigh grave, b tilde, c breve, b check, c grave; plus \
-            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
+            r check, plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
             return Ok(());
 
 }
@@ -409,6 +409,17 @@ fn caret_and_hat() -> Result<()> {
 }
 
 #[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+  test("en", "SimpleSpeak",expr, "x dot, plus x double dot, plus x triple dot")?;
+  return Ok(());
+}
+
+#[test]
 fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
   test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
@@ -490,7 +501,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }
@@ -572,7 +583,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }
