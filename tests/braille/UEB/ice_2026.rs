@@ -86,6 +86,33 @@ fn grade1_1_7_3b_factorise_chain() -> Result<()> {
     return Ok(());
 }
 
+// 1.7.4 -- just the 3 quadratic equations themselves, tested standalone (see file header note
+// on why the numbered-list-as-one-passage structure isn't included). Tested alone rather than
+// inside a passage, each needs its own inline grade 1 symbol indicator before the first x^2
+// (per 1.7.3(a)) -- the source's in-passage braille omits it because the surrounding passage
+// already covers it, so this expected value is derived from that rule, not copied verbatim.
+
+#[test]
+fn grade1_1_7_4_quadratic_1() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mi>x</mi><mo>−</mo><mn>2</mn><mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠤⠭⠐⠤⠼⠃⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_4_quadratic_2() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>x</mi><mo>−</mo><mn>3</mn><mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠤⠼⠙⠭⠐⠤⠼⠉⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_4_quadratic_3() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠤⠼⠁⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+}
+
 // 1.7.5 words which form part of a technical expression
 
 #[test]
@@ -495,5 +522,51 @@ fn grade1_1_7_9_44_reliability() -> Result<()> {
                 <mo>=</mo><mi>p</mi></math>";
     test_braille("UEB", expr,
         "⠗⠑⠇⠊⠁⠃⠊⠇⠰⠽⠀⠐⠶⠀⠰⠰⠰⠷⠝⠥⠍⠃⠑⠗⠀⠕⠋⠀⠋⠁⠥⠇⠞⠎⠨⠌⠞⠕⠞⠁⠇⠀⠝⠥⠍⠃⠑⠗⠀⠕⠋⠀⠊⠞⠑⠍⠎⠾⠀⠐⠶⠀⠏⠰⠄")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_9_45_law_of_indices_a0() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mn>0</mn></msup><mo>=</mo><mn>1</mn></math>";
+    test_braille("UEB", expr, "⠁⠰⠔⠼⠚⠀⠐⠶⠀⠼⠁")?;
+    return Ok(());
+}
+
+// The remaining 4 laws are extrapolated from two confirmed anchors (bana2025_5_13's x^-1=1/x,
+// bana2025_5_14's a^n*a^m=a^(n+m)), using two hypotheses that aren't independently verified:
+// (1) 2+ distinct letters in one symbols-sequence -> word tier, not just symbol tier, and
+// (2) a negative sign inside an exponent escalates to word tier even with only 1 letter present.
+// Treat any failure here with suspicion of the *expected* value, not just the implementation --
+// unlike the quadratics/law-of-a^0 tests, these aren't independently confirmed from source.
+
+#[test]
+fn grade1_1_7_9_46_law_of_indices_power_of_power() -> Result<()> {
+    let expr = "<math><msup><mrow><mo>(</mo><msup><mi>a</mi><mi>m</mi></msup><mo>)</mo></mrow><mi>n</mi></msup><mo>=</mo>
+                <msup><mi>a</mi><mrow><mi>m</mi><mi>n</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠐⠣⠁⠔⠍⠐⠜⠔⠝⠀⠐⠶⠀⠰⠰⠁⠔⠣⠍⠝⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_9_47_law_of_indices_division() -> Result<()> {
+    let expr = "<math><mfrac><msup><mi>a</mi><mi>m</mi></msup><msup><mi>a</mi><mi>n</mi></msup></mfrac><mo>=</mo>
+                <msup><mi>a</mi><mrow><mi>m</mi><mo>−</mo><mi>n</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠷⠁⠔⠍⠨⠌⠁⠔⠝⠾⠀⠐⠶⠀⠰⠰⠁⠔⠣⠍⠐⠤⠝⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_9_48_law_of_indices_negative_power() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mrow><mo>−</mo><mi>m</mi></mrow></msup><mo>=</mo>
+                <mfrac><mn>1</mn><msup><mi>a</mi><mi>m</mi></msup></mfrac></math>";
+    test_braille("UEB", expr, "⠰⠰⠁⠔⠣⠐⠤⠍⠜⠀⠐⠶⠀⠰⠰⠷⠼⠁⠨⠌⠁⠔⠍⠾")?;
+    return Ok(());
+}
+
+#[test]
+fn grade1_1_7_9_49_law_of_indices_root() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mfrac><mn>1</mn><mi>n</mi></mfrac></msup><mo>=</mo>
+                <mroot><mi>a</mi><mi>n</mi></mroot></math>";
+    test_braille("UEB", expr, "⠰⠰⠁⠔⠷⠼⠁⠨⠌⠝⠾⠀⠐⠶⠀⠰⠰⠩⠔⠝⠁⠬")?;
     return Ok(());
 }
