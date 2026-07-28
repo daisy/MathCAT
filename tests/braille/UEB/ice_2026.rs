@@ -13,10 +13,18 @@
 //   Words that are integral to the expression itself (e.g. "speed =", "Coordinate (x, y)",
 //   "Assume g =") are kept, consistent with how existing tests (e.g. fraction_6_4_6,
 //   expr_3_1_8) treat such labels.
-// - The 1.7.4 example showing a grade 1 passage indicator placed on *separate lines* across
-//   a multi-line list of exercises is not testable here: MathCAT's get_braille() returns a
-//   single continuous string with no concept of physical print line breaks, which is what
-//   that example is specifically about.
+// - The 1.7.4 example (a numbered list of 3 exercises sharing one grade 1 passage, each on its
+//   own print line) is not included. Two attempts at representing it as a single MathML
+//   expression were tried and rejected: flat sibling <mn>/<mo> nodes separated by "&#xA0;"
+//   produce plausible-looking braille, but the *speech* output ("...is equal to; 0 2 dot x
+//   squared...") proves MathCAT doesn't actually see 3 separate expressions there -- the
+//   passing braille was likely accidental. Wrapping each exercise in its own <mtr> of an
+//   <mtable> gives correct, unambiguous speech, but <mtable> triggers MathCAT's
+//   matrix/system-of-equations braille formatting (extra "⠠⠠" row-separator indicators not
+//   present in the source). There's no existing precedent elsewhere in this repo's tests for
+//   representing "a numbered list of separate exercises" as one MathML expression, and neither
+//   attempt faithfully reproduced the source, so this example is left untested rather than
+//   testing a misrepresentation of it.
 // - The combined "Laws of indices" passage (page 11-12) is not included: it is one grade 1
 //   passage spanning six separate equations across multiple print lines, and the correct
 //   braille for any individual law depends on that surrounding passage context, which can't
