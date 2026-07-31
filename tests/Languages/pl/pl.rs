@@ -1255,3 +1255,88 @@ fn rownoleglosc_nie_jest_norma() -> Result<()> {
     test("pl", "ClearSpeak", expr, "a jest równoległe do b")?;
     Ok(())
 }
+
+// --- Polska odmiana liczebnika w układach wielowierszowych -------------------
+// Cecha specyficzna dla polskiego: rzeczownik po liczbie odmienia się przez
+// liczbę: 1 -> pojedyncza, 2-4 (oprócz 12-14) -> mianownik l.mn. (paucal),
+// pozostałe -> dopełniacz l.mn. Zwykłe kopiowanie reguł z angielskiego (sufiks
+// "s") dawało "2 równanies" / "5 równania" - te testy pilnują poprawnych form.
+
+// Buduje układ N równań (mtable z N wierszami "x = i").
+fn uklad_rownan(n: usize) -> String {
+    let mut wiersze = String::new();
+    for i in 1..=n {
+        wiersze.push_str(&format!(
+            "<mtr><mtd><mrow><mi>x</mi></mrow></mtd><mtd><mo>=</mo></mtd><mtd><mn>{i}</mn></mtd></mtr>"
+        ));
+    }
+    format!("<math><mrow><mtable>{wiersze}</mtable></mrow></math>")
+}
+
+#[test]
+fn simplespeak_uklad_dwa_rownania_paucal() -> Result<()> {
+    // 2 -> "równania" (mianownik l.mn.)
+    test("pl", "SimpleSpeak", &uklad_rownan(2),
+        "2 równania; równanie 1; x równa się 1; równanie 2; x równa się 2")?;
+    Ok(())
+}
+
+#[test]
+fn simplespeak_uklad_piec_rownan_dopelniacz() -> Result<()> {
+    // 5 -> "równań" (dopełniacz l.mn.), NIE "równania"
+    let mowa = get_spoken_text_for(&uklad_rownan(5), "SimpleSpeak");
+    assert!(mowa.starts_with("5 równań;"), "oczekiwano '5 równań;', było: {mowa}");
+    Ok(())
+}
+
+#[test]
+fn simplespeak_uklad_dwanascie_rownan_wyjatek() -> Result<()> {
+    // 12 -> dopełniacz "równań" (wyjątek 12-14, mimo końcówki 2)
+    let mowa = get_spoken_text_for(&uklad_rownan(12), "SimpleSpeak");
+    assert!(mowa.starts_with("12 równań;"), "oczekiwano '12 równań;', było: {mowa}");
+    Ok(())
+}
+
+#[test]
+fn simplespeak_uklad_dwadziescia_dwa_rownania_paucal() -> Result<()> {
+    // 22 -> "równania" (końcówka 2, poza zakresem 12-14)
+    let mowa = get_spoken_text_for(&uklad_rownan(22), "SimpleSpeak");
+    assert!(mowa.starts_with("22 równania;"), "oczekiwano '22 równania;', było: {mowa}");
+    Ok(())
+}
+
+#[test]
+fn clearspeak_uklad_przypadki_odmiana() -> Result<()> {
+    // ClearSpeak, etykieta Case: 5 -> "przypadków", 12 -> "przypadków"
+    for (n, forma) in [(5usize, "5 przypadków;"), (12, "12 przypadków;")] {
+        let mowa = get_spoken_text_cs(&uklad_rownan(n), "Case");
+        assert!(mowa.starts_with(forma), "oczekiwano '{forma}', było: {mowa}");
+    }
+    Ok(())
+}
+
+#[test]
+fn clearspeak_uklad_linie_dopelniacz() -> Result<()> {
+    // ClearSpeak, etykieta Line: 5 -> "linii" (dopełniacz), NIE "linie"
+    let mowa = get_spoken_text_cs(&uklad_rownan(5), "Line");
+    assert!(mowa.starts_with("5 linii;"), "oczekiwano '5 linii;', było: {mowa}");
+    Ok(())
+}
+
+// Pomocnicze: zwróć wypowiedź dla danego MathML/stylu (spójne prefy testowe).
+fn get_spoken_text_for(mathml: &str, style: &str) -> String {
+    set_rules_dir(abs_rules_dir_path()).unwrap();
+    set_preference("Language", "pl").unwrap();
+    set_preference("SpeechStyle", style).unwrap();
+    set_mathml(mathml).unwrap();
+    get_spoken_text().unwrap().split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn get_spoken_text_cs(mathml: &str, label: &str) -> String {
+    set_rules_dir(abs_rules_dir_path()).unwrap();
+    set_preference("Language", "pl").unwrap();
+    set_preference("SpeechStyle", "ClearSpeak").unwrap();
+    set_preference("ClearSpeak_MultiLineLabel", label).unwrap();
+    set_mathml(mathml).unwrap();
+    get_spoken_text().unwrap().split_whitespace().collect::<Vec<_>>().join(" ")
+}

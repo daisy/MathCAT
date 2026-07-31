@@ -168,6 +168,6 @@ fn continued_row() -> Result<()> {
   </mtable>
 </math>";
 test("pl", "SimpleSpeak", expr,
-     "2 równanies; równanie 1; x równa się y plus 1; równanie 2; y równa się 1")?;
+     "2 równania; równanie 1; x równa się y plus 1; równanie 2; y równa się 1")?;
     return Ok(());
 }

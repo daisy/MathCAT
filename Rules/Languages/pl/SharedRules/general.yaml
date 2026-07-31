@@ -544,15 +544,32 @@
   - IsColumnSilent: true()
   replace:
   - x: "$LineCount"
+  # Polish plural declension of the counted noun: 1 -> singular; 2-4 (but not
+  # 12-14) -> paucal; otherwise genitive plural. Applied per row-type.
   - test:
-    - if: "self::m:piecewise"
-      then: [t: "przypadek"]      # phrase(this is the first 'case' of three cases)
-    - else_if: "self::m:system-of-equations"
-      then: [t: "równanie"]      # phrase(this is the first 'equation' of three equations)
-      else: [t: "linia"]      # phrase(this is the first 'line' of three lines)
-  - test:
-    - if: "$LineCount != 1"
-      then: [ct: "s"] # plural
+    - if: "$LineCount = 1"
+      then:
+      - test:
+        - if: "self::m:piecewise"
+          then: [t: "przypadek"]      # phrase(this is the first 'case' of three cases)
+        - else_if: "self::m:system-of-equations"
+          then: [t: "równanie"]      # phrase(this is the first 'equation' of three equations)
+          else: [t: "linia"]      # phrase(this is the first 'line' of three lines)
+    - else_if: "($LineCount mod 10 = 2 or $LineCount mod 10 = 3 or $LineCount mod 10 = 4) and not($LineCount mod 100 = 12 or $LineCount mod 100 = 13 or $LineCount mod 100 = 14)"
+      then:
+      - test:
+        - if: "self::m:piecewise"
+          then: [t: "przypadki"]      # phrase(there are 'two cases' to consider)
+        - else_if: "self::m:system-of-equations"
+          then: [t: "równania"]      # phrase(there are 'two equations' to solve)
+          else: [t: "linie"]      # phrase(there are 'two lines' shown)
+    - else:
+      - test:
+        - if: "self::m:piecewise"
+          then: [t: "przypadków"]      # phrase(there are 'five cases' to consider)
+        - else_if: "self::m:system-of-equations"
+          then: [t: "równań"]      # phrase(there are 'five equations' to solve)
+          else: [t: "linii"]      # phrase(there are 'five lines' shown)
   - pause: short
   - x: "*"
   - pause: long

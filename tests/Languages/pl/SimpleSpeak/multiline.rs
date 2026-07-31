@@ -30,7 +30,7 @@ fn case_1() -> Result<()> {
             </mtable></mrow> </mrow></mrow>
         </math>
    ";
-    test("pl", "SimpleSpeak", expr, "f z x równa się; 3 przypadeks; przypadek 1; minus 1 if x; jest mniejsze niż 0; przypadek 2; 0 if x, równa się 0; przypadek 3; 1 if x, jest większe niż 0")?;
+    test("pl", "SimpleSpeak", expr, "f z x równa się; 3 przypadki; przypadek 1; minus 1 if x; jest mniejsze niż 0; przypadek 2; 0 if x, równa się 0; przypadek 3; 1 if x, jest większe niż 0")?;
     return Ok(());
 }
 
@@ -68,6 +68,6 @@ fn equation_1() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-    test("pl", "SimpleSpeak", expr, "2 równanies; równanie 1; x plus y, równa się 7; równanie 2; 2 x plus 3 y; równa się 17")?;
+    test("pl", "SimpleSpeak", expr, "2 równania; równanie 1; x plus y, równa się 7; równanie 2; 2 x plus 3 y; równa się 17")?;
     return Ok(());
 }

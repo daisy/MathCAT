@@ -631,36 +631,59 @@
   - LineCount: "count(*[not(contains(@data-intent-property, ':continued-row:'))])"
   - NextLineIsContinuedRow: "false()"   # default value
   - IsColumnSilent: true()
+  # Polish plural declension category of $LineCount: singular (1), paucal (2-4
+  # except 12-14 -> nominative plural), otherwise genitive plural.
+  - Paucal: "($LineCount mod 10 = 2 or $LineCount mod 10 = 3 or $LineCount mod 10 = 4) and not($LineCount mod 100 = 12 or $LineCount mod 100 = 13 or $LineCount mod 100 = 14)"
+  - IsCase: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+  - IsLine: "not($IsCase) and ($ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None')"
   replace:
   - test:
     - if: "$ClearSpeak_MultiLineOverview = 'Auto'"
       then:
       - x: "$LineCount"
       - test:
-        - if: "$LineCount != 1 and (($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case')"
-          then: [t: "przypadki"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$LineCount != 1 and ($ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None')"
-          then: [t: "linie"]      # phrase(this is the first 'line' of three lines)
-        - else_if: "$LineCount != 1 and $ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "warunki"]      # phrase(this is the first 'constraint' of three constraints)
-        - else_if: "$LineCount != 1 and $ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "równania"]      # phrase(this is the first 'equation' of three equations)
-        - else_if: "$LineCount != 1 and $ClearSpeak_MultiLineLabel = 'Row'"
-          then: [T: "wiersze"]      # phrase(this is the first 'row' of three rows)
-        - else_if: "$LineCount != 1 and $ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "kroki"]      # phrase(this is the first 'step' of three steps)
-        - else_if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "przypadek"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
-          then: [t: "linia"]      # phrase(this is the first 'line' of three lines)
+        - if: "$IsCase"
+          then_test:
+            - if: "$LineCount = 1"
+              then: [t: "przypadek"]      # phrase(this is the first 'case' of three cases)
+            - else_if: "$Paucal"
+              then: [t: "przypadki"]      # phrase(there are 'two cases' to consider)
+              else: [t: "przypadków"]      # phrase(there are 'five cases' to consider)
+        - else_if: "$IsLine"
+          then_test:
+            - if: "$LineCount = 1"
+              then: [t: "linia"]      # phrase(this is the first 'line' of three lines)
+            - else_if: "$Paucal"
+              then: [t: "linie"]      # phrase(there are 'two lines' shown)
+              else: [t: "linii"]      # phrase(there are 'five lines' shown)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "warunek"]      # phrase(this is the first 'constraint' of three constraints)
+          then_test:
+            - if: "$LineCount = 1"
+              then: [t: "warunek"]      # phrase(this is the first 'constraint' of three constraints)
+            - else_if: "$Paucal"
+              then: [t: "warunki"]      # phrase(there are 'two constraints' to satisfy)
+              else: [t: "warunków"]      # phrase(there are 'five constraints' to satisfy)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "równanie"]      # phrase(this is the first 'equation' of three equations)
+          then_test:
+            - if: "$LineCount = 1"
+              then: [t: "równanie"]      # phrase(this is the first 'equation' of three equations)
+            - else_if: "$Paucal"
+              then: [t: "równania"]      # phrase(there are 'two equations' to solve)
+              else: [t: "równań"]      # phrase(there are 'five equations' to solve)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [T: "wiersz"]      # phrase(this is the first 'row' of three rows)
+          then_test:
+            - if: "$LineCount = 1"
+              then: [T: "wiersz"]      # phrase(this is the first 'row' of three rows)
+            - else_if: "$Paucal"
+              then: [T: "wiersze"]      # phrase(there are 'two rows' shown)
+              else: [T: "wierszy"]      # phrase(there are 'five rows' shown)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "krok"]      # phrase(this is the first 'step' of three steps)
+          then_test:
+            - if: "$LineCount = 1"
+              then: [t: "krok"]      # phrase(this is the first 'step' of three steps)
+            - else_if: "$Paucal"
+              then: [t: "kroki"]      # phrase(there are 'two steps' to follow)
+              else: [t: "kroków"]      # phrase(there are 'five steps' to follow)
           # else 'None -- don't say anything'
       - pause: short
   - x: "*"
