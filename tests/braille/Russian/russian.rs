@@ -217,13 +217,13 @@ fn source_typeform_and_mathvariant_indicators() -> Result<()> {
     let expr = r#"<math><mi>&#x1D465;</mi></math>"#;
     test_braille("Russian", expr, "⠸⠠⠭⠸")?;
 
-    let expr = r#"<math><mstyle mathvariant="bold"><mi>x</mi></mstyle></math>"#;
+    let expr = r#"<math><mrow><mi mathvariant="bold">x</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠻⠠⠭⠻")?;
 
-    let expr = r#"<math><mstyle mathvariant="bold"><mrow><mi>x</mi><mi>y</mi></mrow></mstyle></math>"#;
+    let expr = r#"<math><mrow><mi mathvariant="bold">x</mi><mi mathvariant="bold">y</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠻⠠⠭⠽⠻")?;
 
-    let expr = r#"<math><mstyle mathvariant="bold"><mi mathvariant="italic">y</mi></mstyle></math>"#;
+    let expr = r#"<math><mrow><mi mathvariant="italic">y</mi></mrow></math>"#;
     test_braille("Russian", expr, "⠸⠠⠽⠸")?;
     return Ok(());
 }
