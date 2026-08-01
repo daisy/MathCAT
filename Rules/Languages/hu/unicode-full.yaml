@@ -273,7 +273,7 @@
  - "‱": [T: "per tízezer"]                      	#  0x2031	(en: 'per ten thousand', DeepL translation)
  - "′": [T: "prím"]                             	#  0x2032	(en: 'prime', DeepL translation)
  - "″": [T: "dupla prím"]                       	#  0x2033	(en: 'double prime', DeepL translation)
- - "‴": [T: "hármas ikerprím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
+ - "‴": [T: "hármas prím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
  - "‵": [T: "fordított prím"]                   	#  0x2035	(en: 'reversed prime', DeepL translation)
  - "‶": [T: "fordított dupla prím"]         	#  0x2036	(en: 'reversed double prime', DeepL translation)
  - "‷": [T: "fordított hármas prím"]            	#  0x2037	(en: 'reversed triple prime', DeepL translation)
@@ -629,7 +629,7 @@
  - "⇽": [T: "bal nyitott fejű nyíl"]            	#  0x21fd	(en: 'left open headed arrow', DeepL translation)
  - "⇾": [T: "jobbra nyitott fejű nyíl"]         	#  0x21fe	(en: 'right open headed arrow', DeepL translation)
  - "⇿": [T: "bal jobb nyitott fejű nyíl"] 	#  0x21ff	(en: 'left right open headed arrow', DeepL translation)
- - "∀": [T: "mindenki számára"]                 	#  0x2200	(en: 'for all', DeepL translation)
+ - "∀": [T: "minden"]                 	#  0x2200	(en: 'for all', DeepL translation)
  - "∁":                                         	#  0x2201
      - test: 
          if: "$Verbosity!='Terse'"
@@ -691,7 +691,7 @@
  - "∳": [T: "az óramutató járásával ellentétes irányú kontúr integrál"]	#  0x2233	(en: 'anticlockwise contour integral', DeepL translation)
  - "∴": [T: "azért"]                            	#  0x2234	(en: 'therefore', DeepL translation)
  - "∵": [T: "mert"]                             	#  0x2235	(en: 'because', DeepL translation)
- - "∷": [T: "mint"]                             	#  0x2237	(en: 'as', DeepL translation)
+ - "∷": [T: "arány"]                             	#  0x2237	(en: 'as', DeepL translation)
  - "∸": [T: "pontozott mínusz"]                      	#  0x2238	(en: 'dot minus', DeepL translation)
  - "∹": [T: "többletet tartalmaz ahhoz képest,"]  	#  0x2239	(en: 'has excess compared to', DeepL translation)
  - "∺":                                         	#  0x223a
@@ -817,7 +817,7 @@
          if: "$Verbosity!='Terse'"
          then: [T: "a(z)"]                        	# 	(en: 'is', DeepL translation)
      - T: "szigorúan egyenértékű"               	# 	(en: 'strictly equivalent to', DeepL translation)
- - "≦": [T: "kisebb az egyenlőségjel fölött"]	#  0x2266	(en: 'less than over equal to', DeepL translation)
+ - "≦": [T: "kisebb, mint egyenlő"]	#  0x2266	(en: 'less than over equal to', DeepL translation)
  - "≧": [T: "nagyobb, mint egyenlő"]            	#  0x2267	(en: 'greater than over equal to', DeepL translation)
  - "≨":                                         	#  0x2268
      - test: 

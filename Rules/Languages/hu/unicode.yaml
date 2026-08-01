@@ -437,7 +437,7 @@
  - "∑": [T: "összeg"]                              	#  0x2211	(DeepL translation)
  - "−": [T: "mínusz"]                           	#  0x2212	(en: 'minus', DeepL translation)
  - "∓": [T: "mínusz vagy plusz"]                	#  0x2213	(en: 'minus or plus', DeepL translation)
- - "∗": [T: "csillag operátortimes"]                            	#  0x2217	(DeepL translation)
+ - "∗": [T: "csillag operátor"]                            	#  0x2217	(DeepL translation)
  - "∘": [T: "gyűrű operátor"]                        	#  0x2218	(en: 'composed with', DeepL translation)
  - "√":                                         	#  0x221a
      - test: 
@@ -512,7 +512,7 @@
          then: [T: ""]                       	# 	(en: 'is', DeepL translation)
      - T: "nagyobb vagy egyenlő"                	# 	(en: 'greater than or equal to', DeepL translation)
  - "≦": [T: "kisebb, mint egyenlő"]             	#  0x2266	(en: 'less than over equal to', DeepL translation)
- - "≧": [T: "nagyobb, mint az egyenlő"]         	#  0x2267	(en: 'greater than over equal to', DeepL translation)
+ - "≧": [T: "nagyobb, mint egyenlő"]         	#  0x2267	(en: 'greater than over equal to', DeepL translation)
  - "≺": [T: "megelőzi"]                         	#  0x227a	(en: 'precedes', DeepL translation)
  - "≻": [T: "követi"]                          	#  0x227b	(en: 'succeeds', DeepL translation)
  - "⊂":                                         	#  0x2282
