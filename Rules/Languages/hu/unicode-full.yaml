@@ -3442,139 +3442,139 @@
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":                                       	#  0xf4f0 - 0xf508
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝞪-𝟂":                                       	#  0x1d7aa - 0x1d7c2
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":                                       	#  0xf50a - 0xf522
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":                                   	#  0x1d7c3 - 0x1d7c9
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
 
  - "":                                   	#  0xf523 - 0xf529
     # - t: "bold italic"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', '∂εθκφρπ')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
 
- - "": [t: "merész nahblah"]                   	#  0xf509	(en: 'bold nahblah', DeepL translation)
- - "𝞩": [t: "merész nahblah"]                   	#  0x1d7a9	(en: 'bold nahblah', DeepL translation)
+ - "": [T: "félkövér nahblah"]                   	#  0xf509	(en: 'bold nahblah', DeepL translation)
+ - "𝞩": [T: "félkövér nahblah"]                   	#  0x1d7a9	(en: 'bold nahblah', DeepL translation)
 
  - "-":                                       	#  0xf52e - 0xf537  (old MathType)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '', '0123456789')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '', '0123456789')"
 
  - "𝟎-𝟗":                                       	#  0x1d7ce - 0x1d7d7
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
  - "𝟬-𝟵":                                       	#  0x1D7EC - 0x1D7F5
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
-    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+        then: [T: "félkövér"]                   	# 	(en: 'bold', DeepL translation)
+    - SPELL: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
 
  - "-":                                       	#  0xf556 - 0xf55f  (old MathType)
-    - spell: "translate('.', '', '0123456789')"
+    - SPELL: "translate('.', '', '0123456789')"
 
  - "𝟢-𝟫":                                       	#  0x1d7e2 - 0x1d7eb
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - SPELL: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
  - "𝟶-𝟿":                                       	#  0x1d7f6 - 0x1d7ff
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - SPELL: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
 
- - "": [t: "ismeretlen karakter"]              	#  0xf700	(en: 'unknown character', DeepL translation)
- - "": [t: "jobb alsó és bal alsó háromszög"]  	#  0xf726	(en: 'lower right and lower left triangles', DeepL translation)
- - "": [t: "vízszintes ellipszis kiterjesztő"] 	#  0xf72d	(en: 'horizontal ellipsis extender', DeepL translation)
- - "": [t: "középvonal vízszintes ellipszis meghosszabbító"]	#  0xf72e	(en: 'midline horizontal ellipsis extender', DeepL translation)
- - "": [t: "radikális hosszabbító"]            	#  0xf8e5	(en: 'radical extender', DeepL translation)
- - "": [t: "függőleges nyíl meghosszabbítása"] 	#  0xf8e6	(en: 'vertical arrow extender', DeepL translation)
- - "": [t: "vízszintes nyíl meghosszabbító"]   	#  0xf8e7	(en: 'horizontal arrow extender', DeepL translation)
- - "": [t: "bejegyzett jel sans serif"]        	#  0xf8e8	(en: 'registered sign sans serif', DeepL translation)
- - "": [t: "copyright jel sans serif"]         	#  0xf8e9	(en: 'copyright sign sans serif', DeepL translation)
- - "": [t: "védjegy jele sans serif"]          	#  0xf8ea	(en: 'trade mark sign sans serif', DeepL translation)
- - "": [t: "bal zárójel felső"]                	#  0xf8eb	(en: 'left paren top', DeepL translation)
- - "": [t: "bal zárójel hosszabbító"]          	#  0xf8ec	(en: 'left paren extender', DeepL translation)
- - "": [t: "bal zárójel alul"]                 	#  0xf8ed	(en: 'left paren bottom', DeepL translation)
- - "": [t: "bal oldali zárójel tetején"]       	#  0xf8ee	(en: 'left bracket top', DeepL translation)
- - "": [t: "bal zárójel hosszabbító"]          	#  0xf8ef	(en: 'left bracket extender', DeepL translation)
- - "": [t: "bal konzol alul"]                  	#  0xf8f0	(en: 'left bracket bottom', DeepL translation)
- - "": [t: "bal oldali merevítő felső"]        	#  0xf8f1	(en: 'left brace top', DeepL translation)
- - "": [t: "bal oldali zárójel középen"]       	#  0xf8f2	(en: 'left brace mid', DeepL translation)
- - "": [t: "bal szögletes szögletes szöglet alul"]	#  0xf8f3	(en: 'left brace bottom', DeepL translation)
- - "": [t: "merevítő hosszabbító"]             	#  0xf8f4	(en: 'brace extender', DeepL translation)
- - "": [t: "integrál kiterjesztő"]             	#  0xf8f5	(en: 'integral extender', DeepL translation)
- - "": [t: "jobb oldali zárójel felül"]        	#  0xf8f6	(en: 'right paren top', DeepL translation)
- - "": [t: "jobb oldali zárójel hosszabbító"]  	#  0xf8f7	(en: 'right paren extender', DeepL translation)
- - "": [t: "jobb alsó zárójel"]                	#  0xf8f8	(en: 'right paren bottom', DeepL translation)
- - "": [t: "jobb zárójel fent"]                	#  0xf8f9	(en: 'right bracket top', DeepL translation)
- - "": [t: "jobb oldali zárójel hosszabbító"]  	#  0xf8fa	(en: 'right bracket extender', DeepL translation)
- - "": [t: "jobb oldali zárójel alul"]         	#  0xf8fb	(en: 'right bracket bottom', DeepL translation)
- - "": [t: "jobb oldali merevítő felül"]       	#  0xf8fc	(en: 'right brace top', DeepL translation)
- - "": [t: "jobb oldali zárójel középen"]      	#  0xf8fd	(en: 'right brace mid', DeepL translation)
- - "": [t: "jobb oldali merevítő alul"]        	#  0xf8fe	(en: 'right brace bottom', DeepL translation)
- - "": [t: "alma logó"]                        	#  0xf8ff	(en: 'apple logo', DeepL translation)
- - "ﬀ": [t: "ff"]                               	#  0xfb00	(DeepL translation)
- - "ﬁ": [t: "fi"]                               	#  0xfb01	(DeepL translation)
- - "ﬂ": [t: "fl"]                               	#  0xfb02	(DeepL translation)
- - "ﬃ": [t: "ffi"]                              	#  0xfb03	(DeepL translation)
- - "ﬄ": [t: "ffl"]                              	#  0xfb04	(DeepL translation)
- - "ﬅ": [t: "ft"]                               	#  0xfb05	(DeepL translation)
- - "ﬆ": [t: "st"]                               	#  0xfb06	(DeepL translation)
- - "﬩": [t: "héber betű alternatív plusz"]      	#  0xfb29	(en: 'hebrew letter alternative plus', DeepL translation)
- - "︠": [t: "ligatúra bal fél díszítés"]        	#  0xfe20	(en: 'ligature left half embellishment', DeepL translation)
- - "︡": [t: "ligatúra jobb fél díszítés"]       	#  0xfe21	(en: 'ligature right half embellishment', DeepL translation)
- - "︢": [t: "dupla tilde balra fél díszítés"]   	#  0xfe22	(en: 'double tilde left half embellishment', DeepL translation)
- - "︣": [t: "dupla tilde jobb oldali fél díszítés"]	#  0xfe23	(en: 'double tilde right half embellishment', DeepL translation)
- - "︤": [t: "makron bal fél díszítés"]          	#  0xfe24	(en: 'macron left half embellishment', DeepL translation)
- - "︥": [t: "makron jobb oldali fél díszítés"]  	#  0xfe25	(en: 'macron right half embellishment', DeepL translation)
- - "︦": [t: "összekötő makron díszítés"]        	#  0xfe26	(en: 'conjoining macron embellishment', DeepL translation)
- - "︵": [t: "zárójel felett"]                   	#  0xfe35	(en: 'over paren', DeepL translation)
- - "︶": [t: "zárójel alatt"]                    	#  0xfe36	(en: 'under paren', DeepL translation)
- - "︷": [t: "zárójel fölött"]                   	#  0xfe37	(en: 'over brace', DeepL translation)
- - "︸": [t: "zárójel alatt"]                    	#  0xfe38	(en: 'under brace', DeepL translation)
- - "︿": [t: "szögletes zárójel fölött"]         	#  0xfe3f	(en: 'over angle bracket', DeepL translation)
- - "﹀": [t: "szögletes zárójel alatt"]          	#  0xfe40	(en: 'under angle bracket', DeepL translation)
- - "﹡": [t: "kis csillag"]                      	#  0xfe61	(en: 'small asterisk', DeepL translation)
- - "﹢": [t: "kis plusz"]                        	#  0xfe62	(en: 'small plus', DeepL translation)
- - "﹣": [t: "kis mínusz"]                       	#  0xfe63	(en: 'small minus', DeepL translation)
- - "﹤": [t: "kis kevesebb, mint"]               	#  0xfe64	(en: 'small less than', DeepL translation)
- - "﹥": [t: "kicsi nagyobb, mint"]              	#  0xfe65	(en: 'small greater than', DeepL translation)
- - "﹦": [t: "kis egyenlő"]                      	#  0xfe66	(en: 'small equals', DeepL translation)
- - "＋": [t: "teljes szélességű plusz jel"]      	#  0xff0b	(en: 'fullwidth plus sign', DeepL translation)
- - "＜": [t: "kisebb, mint"]                     	#  0xff1c	(en: 'less than', DeepL translation)
- - "＝": [t: "egyenlő"]                          	#  0xff1d	(en: 'equals', DeepL translation)
- - "＞": [t: "nagyobb, mint"]                    	#  0xff1e	(en: 'greater than', DeepL translation)
- - "＼": [t: "visszacsúszó"]                     	#  0xff3c	(en: 'backslash', DeepL translation)
- - "＾": [t: "kalap"]                            	#  0xff3e	(en: 'hat', DeepL translation)
+ - "": [T: "ismeretlen karakter"]              	#  0xf700	(en: 'unknown character', DeepL translation)
+ - "": [T: "jobb alsó és bal alsó háromszög"]  	#  0xf726	(en: 'lower right and lower left triangles', DeepL translation)
+ - "": [T: "vízszintes ellipszis-hosszabbító"] 	#  0xf72d	(en: 'horizontal ellipsis extender', DeepL translation)
+ - "": [T: "középvonalú vízszintes ellipszis-hosszabbító"]	#  0xf72e	(en: 'midline horizontal ellipsis extender', DeepL translation)
+ - "": [T: "radikális hosszabbító"]            	#  0xf8e5	(en: 'radical extender', DeepL translation)
+ - "": [T: "függőleges nyílhosszabbító"] 	#  0xf8e6	(en: 'vertical arrow extender', DeepL translation)
+ - "": [T: "vízszintes nyílhosszabbító"]   	#  0xf8e7	(en: 'horizontal arrow extender', DeepL translation)
+ - "": [T: "talpatlan bejegyzett jel"]        	#  0xf8e8	(en: 'registered sign sans serif', DeepL translation)
+ - "": [T: "talpatlan copyright jel"]         	#  0xf8e9	(en: 'copyright sign sans serif', DeepL translation)
+ - "": [T: "talpatlan védjegyjel"]          	#  0xf8ea	(en: 'trade mark sign sans serif', DeepL translation)
+ - "": [T: "bal felső zárójel"]                	#  0xf8eb	(en: 'left paren top', DeepL translation)
+ - "": [T: "bal zárójel-hosszabbító"]          	#  0xf8ec	(en: 'left paren extender', DeepL translation)
+ - "": [T: "bal alsó zárójel"]                 	#  0xf8ed	(en: 'left paren bottom', DeepL translation)
+ - "": [T: "bal felső zárójel"]       	#  0xf8ee	(en: 'left bracket top', DeepL translation)
+ - "": [T: "bal zárójel-hosszabbító"]          	#  0xf8ef	(en: 'left bracket extender', DeepL translation)
+ - "": [T: "bal alsó zárójel"]                  	#  0xf8f0	(en: 'left bracket bottom', DeepL translation)
+ - "": [T: "bal felső szögletes zárójel"]        	#  0xf8f1	(en: 'left brace top', DeepL translation)
+ - "": [T: "bal középső szögletes zárójel"]       	#  0xf8f2	(en: 'left brace mid', DeepL translation)
+ - "": [T: "bal alsó szögletes zárójel"]	#  0xf8f3	(en: 'left brace bottom', DeepL translation)
+ - "": [T: "szögletes zárójel-hosszabbító"]             	#  0xf8f4	(en: 'brace extender', DeepL translation)
+ - "": [T: "integrál-hosszabbító"]             	#  0xf8f5	(en: 'integral extender', DeepL translation)
+ - "": [T: "jobb felső zárójel"]        	#  0xf8f6	(en: 'right paren top', DeepL translation)
+ - "": [T: "jobb zárójel-hosszabbító"]  	#  0xf8f7	(en: 'right paren extender', DeepL translation)
+ - "": [T: "jobb alsó zárójel"]                	#  0xf8f8	(en: 'right paren bottom', DeepL translation)
+ - "": [T: "jobb felső zárójel"]                	#  0xf8f9	(en: 'right bracket top', DeepL translation)
+ - "": [T: "jobb zárójel-hosszabbító"]  	#  0xf8fa	(en: 'right bracket extender', DeepL translation)
+ - "": [T: "jobb alsó zárójel"]         	#  0xf8fb	(en: 'right bracket bottom', DeepL translation)
+ - "": [T: "jobb felső szögletes zárójel"]       	#  0xf8fc	(en: 'right brace top', DeepL translation)
+ - "": [T: "jobb középső szögletes zárójel"]      	#  0xf8fd	(en: 'right brace mid', DeepL translation)
+ - "": [T: "jobb alsó szögletes zárójel"]        	#  0xf8fe	(en: 'right brace bottom', DeepL translation)
+ - "": [T: "alma logó"]                        	#  0xf8ff	(en: 'apple logo', DeepL translation)
+ - "ﬀ": [T: "ff"]                               	#  0xfb00	(DeepL translation)
+ - "ﬁ": [T: "fi"]                               	#  0xfb01	(DeepL translation)
+ - "ﬂ": [T: "fl"]                               	#  0xfb02	(DeepL translation)
+ - "ﬃ": [T: "ffi"]                              	#  0xfb03	(DeepL translation)
+ - "ﬄ": [T: "ffl"]                              	#  0xfb04	(DeepL translation)
+ - "ﬅ": [T: "ft"]                               	#  0xfb05	(DeepL translation)
+ - "ﬆ": [T: "st"]                               	#  0xfb06	(DeepL translation)
+ - "﬩": [T: "héber betű, alternatív pluszjellel"]      	#  0xfb29	(en: 'hebrew letter alternative plus', DeepL translation)
+ - "︠": [T: "ligatúra bal oldali díszítés"]        	#  0xfe20	(en: 'ligature left half embellishment', DeepL translation)
+ - "︡": [T: "ligatúra jobb oldali díszítés"]       	#  0xfe21	(en: 'ligature right half embellishment', DeepL translation)
+ - "︢": [T: "dupla tilde bal oldali díszítés"]   	#  0xfe22	(en: 'double tilde left half embellishment', DeepL translation)
+ - "︣": [T: "dupla tilde jobb oldali díszítés"]	#  0xfe23	(en: 'double tilde right half embellishment', DeepL translation)
+ - "︤": [T: "makron bal oldali díszítés"]          	#  0xfe24	(en: 'macron left half embellishment', DeepL translation)
+ - "︥": [T: "makron jobb oldali díszítés"]  	#  0xfe25	(en: 'macron right half embellishment', DeepL translation)
+ - "︦": [T: "összefüggő makron díszítés"]        	#  0xfe26	(en: 'conjoining macron embellishment', DeepL translation)
+ - "︵": [T: "zárójel felett"]                   	#  0xfe35	(en: 'over paren', DeepL translation)
+ - "︶": [T: "zárójel alatt"]                    	#  0xfe36	(en: 'under paren', DeepL translation)
+ - "︷": [T: "szögletes zárójel felett"]                   	#  0xfe37	(en: 'over brace', DeepL translation)
+ - "︸": [T: "szögletes zárójel alatt"]                    	#  0xfe38	(en: 'under brace', DeepL translation)
+ - "︿": [T: "szögletes zárójel felett"]         	#  0xfe3f	(en: 'over angle bracket', DeepL translation)
+ - "﹀": [T: "szögletes zárójel alatt"]          	#  0xfe40	(en: 'under angle bracket', DeepL translation)
+ - "﹡": [T: "kis csillag"]                      	#  0xfe61	(en: 'small asterisk', DeepL translation)
+ - "﹢": [T: "kis plusz"]                        	#  0xfe62	(en: 'small plus', DeepL translation)
+ - "﹣": [T: "kis mínusz"]                       	#  0xfe63	(en: 'small minus', DeepL translation)
+ - "﹤": [T: "kicsit kevesebb, mint"]               	#  0xfe64	(en: 'small less than', DeepL translation)
+ - "﹥": [T: "kicsit nagyobb, mint"]              	#  0xfe65	(en: 'small greater than', DeepL translation)
+ - "﹦": [T: "kis egyenlő"]                      	#  0xfe66	(en: 'small equals', DeepL translation)
+ - "＋": [T: "teljes szélességű plusz jel"]      	#  0xff0b	(en: 'fullwidth plus sign', DeepL translation)
+ - "＜": [T: "kisebb, mint"]                     	#  0xff1c	(en: 'less than', DeepL translation)
+ - "＝": [T: "egyenlő"]                          	#  0xff1d	(en: 'equals', DeepL translation)
+ - "＞": [T: "nagyobb, mint"]                    	#  0xff1e	(en: 'greater than', DeepL translation)
+ - "＼": [T: "fordított perjel"]                     	#  0xff3c	(en: 'backslash', DeepL translation)
+ - "＾": [T: "kalap"]                            	#  0xff3e	(en: 'hat', DeepL translation)
  - "｜":                                         	#  0xff5c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -3584,42 +3584,42 @@
             - if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                   if: "$DefaultToGiven"
-                  then: [t: "adott"]            	# 	(en: 'given', DeepL translation)
-                  else: [t: "függőleges vonal"] 	# 	(en: 'vertical line', DeepL translation)
+                  then: [T: "adott"]            	# 	(en: 'given', DeepL translation)
+                  else: [T: "függőleges vonal"] 	# 	(en: 'vertical line', DeepL translation)
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
-              then: [t: "függőleges vonal"]     	# 	(en: 'vertical line', DeepL translation)
+              then: [T: "függőleges vonal"]     	# 	(en: 'vertical line', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-              then: [t: "olyan, hogy"]          	# 	(en: 'such that', DeepL translation)
+              then: [T: "úgy, hogy"]          	# 	(en: 'such that', DeepL translation)
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [t: "adott"]                	# 	(en: 'given', DeepL translation)
-            - else: [t: "osztja"]               	# 	(en: 'divides', DeepL translation)
- - "～": [t: "tilde"]                            	#  0xff5e	(DeepL translation)
- - "￢": [t: "nem"]                              	#  0xffe2	(en: 'not', DeepL translation)
- - "￩": [t: "bal nyíl"]                         	#  0xffe9	(en: 'left arrow', DeepL translation)
- - "￪": [t: "felfelé mutató nyíl"]              	#  0xffea	(en: 'up arrow', DeepL translation)
- - "￫": [t: "jobbra mutató nyíl"]               	#  0xffeb	(en: 'right arrow', DeepL translation)
- - "￬": [t: "lefelé mutató nyíl"]               	#  0xffec	(en: 'down arrow', DeepL translation)
- - "￼": [t: "ismeretlen vagy hiányzó tárgy"]    	#  0xfffc	(en: 'unknown or missing object', DeepL translation)
- - "�": [t: "ismeretlen vagy hiányzó karakter"] 	#  0xfffd	(en: 'unknown or missing character', DeepL translation)
+              then: [T: "adott"]                	# 	(en: 'given', DeepL translation)
+            - else: [T: "osztja"]               	# 	(en: 'divides', DeepL translation)
+ - "～": [T: "tilde"]                            	#  0xff5e	(DeepL translation)
+ - "￢": [T: "nem"]                              	#  0xffe2	(en: 'not', DeepL translation)
+ - "￩": [T: "balra nyíl"]                         	#  0xffe9	(en: 'left arrow', DeepL translation)
+ - "￪": [T: "felfelé nyíl"]              	#  0xffea	(en: 'up arrow', DeepL translation)
+ - "￫": [T: "jobbra nyíl"]               	#  0xffeb	(en: 'right arrow', DeepL translation)
+ - "￬": [T: "lefelé nyíl"]               	#  0xffec	(en: 'down arrow', DeepL translation)
+ - "￼": [T: "ismeretlen vagy hiányzó tárgy"]    	#  0xfffc	(en: 'unknown or missing object', DeepL translation)
+ - "�": [T: "ismeretlen vagy hiányzó karakter"] 	#  0xfffd	(en: 'unknown or missing character', DeepL translation)
 
- - "🣑": [t: "egyensúlyban van"]                 	#  0x1F8D1	(en: 'is in equilibrium with', DeepL translation)
- - "🣒": [t: "egyensúlyban van, jobbra torzítva a"]	#  0x1F8D2	(en: 'is in equilibrium biased to the right with', DeepL translation)
- - "🣓": [t: "egyensúlyi helyzetben van balra ferdített bal oldallal"]	#  0x1F8D3	(en: 'is in equilibrium biased to the left with', DeepL translation)
+ - "🣑": [T: "egyensúlyban van"]                 	#  0x1F8D1	(en: 'is in equilibrium with', DeepL translation)
+ - "🣒": [T: "egyensúlyban van, jobbra torzítva a(z)"]	#  0x1F8D2	(en: 'is in equilibrium biased to the right with', DeepL translation)
+ - "🣓": [T: "egyensúlyban van, balra torzítva a(z)"]	#  0x1F8D3	(en: 'is in equilibrium biased to the left with', DeepL translation)
 
 # MathJax v4 has adopted these PUA values for some partial chem bonds that aren't in Unicode
- - "\uE410": [t: "részleges kötés "]            	#  0xe410	(en: 'partial bond ', DeepL translation)
- - "\uE411": [t: "kettős részleges kötés "]     	#  0xe411	(en: 'double partial bond ', DeepL translation)
- - "\uE412": [t: "hármas részleges kötés "]     	#  0xe412	(en: 'triple partial bond ', DeepL translation)
+ - "\uE410": [T: "részleges kötés "]            	#  0xe410	(en: 'partial bond ', DeepL translation)
+ - "\uE411": [T: "kettős részleges kötés "]     	#  0xe411	(en: 'double partial bond ', DeepL translation)
+ - "\uE412": [T: "hármas részleges kötés "]     	#  0xe412	(en: 'triple partial bond ', DeepL translation)
 
 # MathJax v4 also adopted these PUA values for some arrows thar are in Unicode
 # Hopefully these will be exported properly in future versions of MathJax
- - "\uE428": [spell: "'⟵'"]                     	#  0xe428  defer to def of arrow
- - "\uE429": [spell: "'⟶'"]                     	#  0xe429  defer to def of arrow
- - "\uE42A": [spell: "'⟷'"]                     	#  0xe42a  defer to def of arrow
- - "\uE408": [spell: "'🣑'"]                     	#  0xe408  defer to def of arrow
- - "\uE409": [spell: "'🣒'"]                     	#  0xe409  defer to def of arrow
- - "\uE40A": [spell: "'🣓'"]                     	#  0xe40a  defer to def of arrow
- - "\uE42B": [spell: "'⇄'"]                     	#  0xe42b  defer to def of arrow
- - "\uE42C": [spell: "'←'"]                     	#  0xe42c  defer to def of arrow
- - "\uE42D": [spell: "'→'"]                     	#  0xe42d  defer to def of arrow
- - "\uE42E": [spell: "'⇄'"]                     	#  0xe42e  defer to def of arrow
+ - "\uE428": [SPELL: "'⟵'"]                     	#  0xe428  defer to def of arrow
+ - "\uE429": [SPELL: "'⟶'"]                     	#  0xe429  defer to def of arrow
+ - "\uE42A": [SPELL: "'⟷'"]                     	#  0xe42a  defer to def of arrow
+ - "\uE408": [SPELL: "'🣑'"]                     	#  0xe408  defer to def of arrow
+ - "\uE409": [SPELL: "'🣒'"]                     	#  0xe409  defer to def of arrow
+ - "\uE40A": [SPELL: "'🣓'"]                     	#  0xe40a  defer to def of arrow
+ - "\uE42B": [SPELL: "'⇄'"]                     	#  0xe42b  defer to def of arrow
+ - "\uE42C": [SPELL: "'←'"]                     	#  0xe42c  defer to def of arrow
+ - "\uE42D": [SPELL: "'→'"]                     	#  0xe42d  defer to def of arrow
+ - "\uE42E": [SPELL: "'⇄'"]                     	#  0xe42e  defer to def of arrow
