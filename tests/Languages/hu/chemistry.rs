@@ -169,7 +169,7 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, nagy c; keletkezik, 14, 7, nagy n; plusz 0, negatív 1, e")?;
+      "14, 6, nagy c; keletkezik; 14, 7, nagy n; plusz 0, negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
       "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
@@ -436,7 +436,7 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, nagy c; keletkezik, 14, 7, nagy n; plusz 0, negatív 1, e")?;
+      "14, 6, nagy c; keletkezik; 14, 7, nagy n; plusz 0, negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
       "felső index 14, alsó index 6, nagy c; reakcióba lép, és keletkezik; felső index 14, alsó index 7, nagy n; plusz, felső index 0, alsó index negatív 1, e")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
