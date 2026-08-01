@@ -2467,27 +2467,11 @@ impl CanonicalizeContext {
 				let child = as_element(child_as_element);
 				mn_text.push_str(as_text(child));
 			}
-			let mn_text = if mn_text.contains('.') { normalize_math_digits(&mn_text) } else { mn_text };
 			let child = as_element(children[start]);
 			set_mathml_name(child, "mn");
 			child.set_text(&mn_text);
 
 			children.drain(start+1..end);
-		}
-
-		fn normalize_math_digits(text: &str) -> String {
-			text.chars().map(|ch| {
-				let code = ch as u32;
-				let digit = match code {
-					0x1D7CE..=0x1D7D7 => Some(code - 0x1D7CE),
-					0x1D7D8..=0x1D7E1 => Some(code - 0x1D7D8),
-					0x1D7E2..=0x1D7EB => Some(code - 0x1D7E2),
-					0x1D7EC..=0x1D7F5 => Some(code - 0x1D7EC),
-					0x1D7F6..=0x1D7FF => Some(code - 0x1D7F6),
-					_ => None,
-				};
-				digit.and_then(|digit| char::from_digit(digit, 10)).unwrap_or(ch)
-			}).collect()
 		}
 
 		
