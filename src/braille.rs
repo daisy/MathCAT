@@ -1,7 +1,8 @@
 #![allow(clippy::needless_return)]
 use strum_macros::Display;
-use sxd_document::dom::{Element, ChildOfElement};
-use sxd_document::Package;
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::as_str;
 use crate::definitions::SPEECH_DEFINITIONS;
 use crate::errors::*;
 use crate::pretty_print::mml_to_string;
@@ -236,8 +237,8 @@ trait BrailleCode: Sync {
 
     /// Whether `mathml` needs grouping indicators around it. Default: the code doesn't use grouping.
     fn needs_grouping(&self, _mathml: Element, _is_base: bool) -> StdResult<bool, XPathError> {
-        return Err(XPathError::Other(format!(
-            "NeedsToBeGrouped: braille code arg '{}' is not a known code ('UEB', 'CMU', or 'Swedish')", self.name())));
+        return Err(XPathError::Other { what: format!(
+            "NeedsToBeGrouped: braille code arg '{}' is not a known code ('UEB', 'CMU', or 'Swedish')", self.name()) });
     }
 
     // --- navigation-highlight knobs (UEB-like defaults; override per code as needed) ---
@@ -450,7 +451,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
             None => bail!("'id' is not present on mathml: {}", mml_to_string(node)),
         };
         N_PROBES.with(|n| {*n.borrow_mut() += 1});
-        let (braille, char_start, char_end) = braille_mathml(mathml, node_id)?;
+        let (braille, char_start, char_end) = braille_mathml(mathml, as_str!(node_id))?;
         let mut status = None;
         // debug!("find_navigation_node ({}, id={}): highlight=[{}, {});  target={}", name(node), node_id, char_start, char_end, target_position);
         if is_leaf(node) {
@@ -517,7 +518,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
                     return Ok(status);
                 },
                 SearchStatus::LookInParent => {
-                    let (_, start, end) = braille_mathml(mathml, node_id)?;
+                    let (_, start, end) = braille_mathml(mathml, as_str!(node_id))?;
                     // debug!("  parent ({}) braille: start/end={}/{};  target_position={}", name(node), start, end, target_position);
                     if start <= target_position && target_position < end {
                         // debug!("  ..found: id={}", node_id);
@@ -563,7 +564,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
         return BRAILLE_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             let comparison_operators = definitions.get_hashset("ComparisonOperators").unwrap();
-            return comparison_operators.contains(as_text(node));
+            return comparison_operators.contains(as_str!(as_text(node)));
         });        
     }
 
@@ -597,7 +598,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
 
     fn estimate_braille_chars(child: ChildOfElement, n_number_indicator: usize) -> usize {
         let node = as_element(child);
-        let leaf_name = name(node);
+        let leaf_name = as_str!(name(node));
         if is_leaf(node) {
             let text = as_text(node);
             // len() is close since mn's probably have ASCII digits and lower case vars are common (count as) and other chars need extra braille chars
@@ -2477,10 +2478,10 @@ fn ASCIIMath_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String)
 use crate::canonicalize::{as_element, as_text, name};
 use crate::xpath_functions::{is_leaf, validate_one_node, IsBracketed};
 use std::result::Result as StdResult;
-use sxd_document::dom::ParentOfChild;
-use sxd_xpath::function::Error as XPathError;
-use sxd_xpath::function::{Args, Function};
-use sxd_xpath::{context, nodeset::*, Value};
+use sxd_document_no_unsafe::dom::ParentOfChild;
+use sxd_xpath_no_unsafe::function::Error as XPathError;
+use sxd_xpath_no_unsafe::function::{Args, Function};
+use sxd_xpath_no_unsafe::{context, nodeset::*, Value};
 
 pub struct NemethNestingChars;
 const NEMETH_FRAC_LEVEL: &str = "data-nemeth-frac-level";    // name of attr where value is cached
@@ -2505,7 +2506,7 @@ impl NemethNestingChars {
             max_value += repeat_char;
             node.set_attribute_value(NEMETH_FRAC_LEVEL, &max_value);
             return max_value;
-        } else if FIRST_CHILD_ONLY.contains(&name) {
+        } else if FIRST_CHILD_ONLY.contains(&as_str!(name)) {
             // only look at the base -- ignore scripts/index
             return NemethNestingChars::nemeth_frac_value(as_element(children[0]), repeat_char);
         } else {
@@ -2540,11 +2541,11 @@ impl NemethNestingChars {
                 if let ParentOfChild::Element(e) =  parent_of_child {
                     parent = e;
                 } else {
-                    return Err( sxd_xpath::function::Error::Other("Internal error in nemeth_root_value: didn't find 'math' tag".to_string()) );
+                    return Err( sxd_xpath_no_unsafe::function::Error::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
                 }
             }
         }
-        return Err( XPathError::Other("Internal error in nemeth_root_value: didn't find 'math' tag".to_string()) );
+        return Err( XPathError::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
     }
 }
 
@@ -2575,7 +2576,7 @@ impl Function for NemethNestingChars {
             } else if name == "msqrt" || name == "mroot" {
                 return Ok( Value::String( NemethNestingChars::nemeth_root_value(el, &repeat_char)? ) );
             } else {
-                return Err(XPathError::Other(format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name)));
+                return Err(XPathError::Other { what: format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name) });
             }
         } else {
             // not an element, so nothing to do
@@ -2592,11 +2593,11 @@ impl BrailleChars {
     fn get_braille_chars(node: Element, code: &str, text_range: Option<Range<usize>>) -> StdResult<String, XPathError> {
         let result = match get_braille_code(code) {
             Some(braille_code) => braille_code.get_braille_chars(node, text_range),
-            None => return Err(sxd_xpath::function::Error::Other(format!("get_braille_chars: unknown braille code '{code}'"))),
+            None => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: format!("get_braille_chars: unknown braille code '{code}'") }),
         };
         return match result {
             Ok(string) => Ok(make_quoted_string(string)),
-            Err(err) => return Err(sxd_xpath::function::Error::Other(err.to_string())),
+            Err(err) => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: err.to_string() }),
         }
     }
 
@@ -2608,7 +2609,8 @@ impl BrailleChars {
         static PICK_APART_CHAR: LazyLock<Regex> = LazyLock::new(|| {
             Regex::new(r"(?P<face>[SB𝔹TIR]*)(?P<lang>[EDGVHU]?)(?P<cap>C?)(?P<letter>L?)(?P<num>[N]?)(?P<char>.)").unwrap()
         });
-        let math_variant = node.attribute_value("mathvariant");
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
         let  attr_typeface = match math_variant {
             None => "R",
             Some(variant) => match variant {
@@ -2621,7 +2623,7 @@ impl BrailleChars {
                 _ => "R",       // normal and unknown
             },
         };
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let braille_chars = braille_replace_chars(&text, node)?;
         // debug!("Nemeth chars: text='{}', braille_chars='{}'", &text, &braille_chars);
         
@@ -2630,7 +2632,7 @@ impl BrailleChars {
         // also true (sort of) for capitalization -- if all caps, use double cap in front (assume abbr or Roman Numeral)
         
         // we only care about this for numbers and identifiers/text, so we filter for only those
-        let node_name = name(node);
+        let node_name = as_str!(name(node));
         let is_in_enclosed_list = node_name != "mo" && BrailleChars::is_in_enclosed_list(node);
         let is_mn_in_enclosed_list = is_in_enclosed_list && node_name == "mn";
         let mut typeface = "R".to_string();     // assumption is "R" and if attr or letter is different, something happens
@@ -2683,8 +2685,9 @@ impl BrailleChars {
             Regex::new(r"(?P<bold>B??)(?P<italic>I??)(?P<face>[S𝔹TD]??)s??(?P<cap>C??)(?P<greek>G??)(?P<char>[NL].)").unwrap()
         });
     
-        let math_variant = node.attribute_value("mathvariant");
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let mut braille_chars = braille_replace_chars(&text, node)?;
 
         // debug!("get_braille_ueb_chars: before/after unicode.yaml: '{}'/'{}'", text, braille_chars);
@@ -2728,11 +2731,12 @@ impl BrailleChars {
     }
 
     fn get_braille_russian_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let braille_chars = braille_replace_chars(&text, node)?;
-        let Some(math_variant) = node.attribute_value("mathvariant") else {
+        let Some(raw_math_variant) = node.attribute_value("mathvariant") else {
             return Ok(braille_chars);
         };
+        let math_variant = as_str!(raw_math_variant);
 
         let mut prefix = String::new();
         let mut suffix = String::new();
@@ -2771,8 +2775,9 @@ impl BrailleChars {
             Regex::new(r"(?P<bold>B??)(?P<italic>I??)(?P<face>[S𝔹TD]??)s??(?P<cap>C??)(?P<greek>G??)(?P<char>[NL].)").unwrap()
         });
     
-        let math_variant = node.attribute_value("mathvariant");
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let text = add_separator(text);
 
         let braille_chars = braille_replace_chars(&text, node)?;
@@ -2905,12 +2910,13 @@ impl BrailleChars {
         return false;
 
         fn child_meets_conditions(node: Element) -> bool {
-            let name = name(node);
+            let name = as_str!(name(node));
             return match name {
                 "mi" | "mn" => true,
                 "mo"  => !crate::canonicalize::is_relational_op(node),
                 "mtext" => {
-                    let text = as_text(node).trim();
+                    let raw_text = as_text(node);
+                    let text = as_str!(raw_text).trim();
                     return text=="?" || text=="-?-" || text.is_empty();   // various forms of "fill in missing content" (see also Nemeth_RULEs.yaml, "omissions")
                 },
                 "mrow" => {
@@ -2971,7 +2977,7 @@ impl Function for BrailleChars {
         use crate::canonicalize::create_mathml_element;
         let mut args = Args(args);
         if let Err(e) = args.exactly(2).or_else(|_| args.exactly(4)) {
-            return Err( XPathError::Other(format!("BrailleChars requires 2 or 4 args: {e}")));
+            return Err( XPathError::Other { what: format!("BrailleChars requires 2 or 4 args: {e}") });
         };
 
         let range = if args.len() == 4 {
@@ -3003,7 +3009,7 @@ impl Function for BrailleChars {
         };
 
         if !is_leaf(node) {
-            return Err( XPathError::Other(format!("BrailleChars called on non-leaf element '{}'", mml_to_string(node))) );
+            return Err( XPathError::Other { what: format!("BrailleChars called on non-leaf element '{}'", mml_to_string(node)) } );
         }
         return Ok( Value::String( BrailleChars::get_braille_chars(node, &braille_code, range)? ) );
     }
@@ -3014,7 +3020,7 @@ impl NeedsToBeGrouped {
     // ordinals often have an irregular start (e.g., "half") before becoming regular.
     // if the number is irregular, return the ordinal form, otherwise return 'None'.
     fn needs_grouping_for_cmu(element: Element, _is_base: bool) -> bool {
-        let node_name = name(element);
+        let node_name = as_str!(name(element));
         let children = element.children();
         if node_name == "mrow" {
             // check for bracketed exprs
@@ -3069,10 +3075,11 @@ impl NeedsToBeGrouped {
     /// FIX: what needs to be implemented?
     fn needs_grouping_for_finnish(mathml: Element, is_base: bool) -> bool {
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
-        if mathml.attribute_value("data-roman-numeral").is_some() {
-            node_name = "mi";           // roman numerals don't follow number rules
-        }
+        let node_name = if mathml.attribute_value("data-roman-numeral").is_some() {
+            "mi"           // roman numerals don't follow number rules
+        } else {
+            as_str!(name(mathml))
+        };
 
         // FIX: the leaf rules are from UEB -- check the Swedish rules
         match node_name {
@@ -3100,7 +3107,7 @@ impl NeedsToBeGrouped {
                 }
             },
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -3160,15 +3167,16 @@ impl NeedsToBeGrouped {
     // if the number is irregular, return the ordinal form, otherwise return 'None'.
     fn needs_grouping_for_swedish(mathml: Element, is_base: bool) -> bool {
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
-        if mathml.attribute_value("data-roman-numeral").is_some() {
-            node_name = "mi";           // roman numerals don't follow number rules
-        }
+        let node_name = if mathml.attribute_value("data-roman-numeral").is_some() {
+            "mi"           // roman numerals don't follow number rules
+        } else {
+            as_str!(name(mathml))
+        };
 
         match node_name {
             "mn" => return false,
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -3227,10 +3235,11 @@ impl NeedsToBeGrouped {
         // 8. If none of the foregoing apply, the item is simply the [this element's] individual symbol.
 
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
-        if mathml.attribute_value("data-roman-numeral").is_some() {
-            node_name = "mi";           // roman numerals don't follow number rules
-        }
+        let node_name = if mathml.attribute_value("data-roman-numeral").is_some() {
+            "mi"           // roman numerals don't follow number rules
+        } else {
+            as_str!(name(mathml))
+        };
         match node_name {
             "mn" => {   
                 if !is_base {
@@ -3256,7 +3265,7 @@ impl NeedsToBeGrouped {
                 }
             },
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -3309,12 +3318,12 @@ impl Function for NeedsToBeGrouped {
         if let Node::Element(e) = node {
             let answer = match get_braille_code(&braille_code) {
                 Some(code) => code.needs_grouping(e, is_base)?,
-                None => return Err(XPathError::Other(format!("NeedsToBeGrouped: braille code arg '{braille_code:?}' is not a known code ('UEB', 'CMU', or 'Swedish')"))),
+                None => return Err(XPathError::Other { what: format!("NeedsToBeGrouped: braille code arg '{braille_code:?}' is not a known code ('UEB', 'CMU', or 'Swedish')") }),
             };
             return Ok( Value::Boolean( answer ) );
         }
 
-        return Err(XPathError::Other(format!("NeedsToBeGrouped: first arg '{node:?}' is not a node")));
+        return Err(XPathError::Other { what: format!("NeedsToBeGrouped: first arg '{node:?}' is not a node") });
     }
 }
     
