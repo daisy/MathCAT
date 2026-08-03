@@ -68,7 +68,7 @@
 #![allow(clippy::needless_return)]
 
 use crate::{errors::*, prefs::PreferenceManager, speech::ReplacementArray};
-use sxd_document::dom::Element;
+use sxd_document_no_unsafe::dom::Element;
 use yaml_rust::Yaml;
 
 use std::fmt;
@@ -78,7 +78,7 @@ use std::str::FromStr;
 use strum_macros::{Display, EnumString};
 use regex::Regex;
 use std::sync::LazyLock;
-use sxd_xpath::Value;
+use sxd_xpath_no_unsafe::Value;
 use html_escape::encode_safe;
 
 const MIN_PAUSE:f64 = 50.0;         // ms -- avoids clutter of putting out pauses that probably can't be heard

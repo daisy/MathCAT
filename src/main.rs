@@ -35,41 +35,41 @@ fn main() {
       .format_level(false)
       .init();
 
-//    let expr = r#"
-//    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-//    <mrow>
-//      <msup>
-//        <mi>e</mi>
-//        <mrow>
-//          <mo>&#x2212;</mo>
-//          <mfrac>
-//            <mn>1</mn>
-//            <mn>2</mn>
-//          </mfrac>
-//          <msup>
-//            <mrow>
-//              <mrow>
-//                <mo>(</mo>
-//                <mrow>
-//                  <mfrac>
-//                    <mrow>
-//                      <mi>x</mi>
-//                      <mo>&#x2212;</mo>
-//                      <mi>&#x03BC;</mi>
-//                    </mrow>
-//                    <mi>&#x03C3;</mi>
-//                  </mfrac>
-//                </mrow>
-//                <mo>)</mo>
-//              </mrow>
-//            </mrow>
-//            <mn>2</mn>
-//          </msup>
-//        </mrow>
-//      </msup>
-//    </mrow>
-//  </math>
-// "#;
+   let expr = r#"
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+   <mrow>
+     <msup>
+       <mi>e</mi>
+       <mrow>
+         <mo>&#x2212;</mo>
+         <mfrac>
+           <mn>1</mn>
+           <mn>2</mn>
+         </mfrac>
+         <msup>
+           <mrow>
+             <mrow>
+               <mo>(</mo>
+               <mrow>
+                 <mfrac>
+                   <mrow>
+                     <mi>x</mi>
+                     <mo>&#x2212;</mo>
+                     <mi>&#x03BC;</mi>
+                   </mrow>
+                   <mi>&#x03C3;</mi>
+                 </mfrac>
+               </mrow>
+               <mo>)</mo>
+             </mrow>
+           </mrow>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+     </msup>
+   </mrow>
+ </math>
+"#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
   //       <mi arg='base'>x</mi>
@@ -305,7 +305,7 @@ let expr = r#"<math><msubsup><mover><mi>C</mi><mo>&#xAF;</mo></mover><mi>n</mi><
   // info!("#xpath = {}; duplicates = {}", xpath_counts.0, xpath_counts.1);
   // info!("Time taken (second time for speech + braille): {}ms", instant.elapsed().as_millis());
   // debug!("Hashmap sizes:\n{}", libmathcat::speech::SpeechRules::print_sizes());
-  timing_test(expr, 000);
+  timing_test(expr, 5000);
 
 }
 
@@ -331,45 +331,45 @@ fn timing_test(expr: &str, n_loops: usize) {
   }
   info!("Time taken (time for set, speech, {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 
-  let instant = Instant::now();
-  for _ in 0..n_loops {
-    if let Err(e) = set_mathml(expr) {
-      eprintln!("Error: exiting -- {}", errors_to_string(&e));
-    };
-  }
-  info!("Time taken (time for set averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
+  // let instant = Instant::now();
+  // for _ in 0..n_loops {
+  //   if let Err(e) = set_mathml(expr) {
+  //     eprintln!("Error: exiting -- {}", errors_to_string(&e));
+  //   };
+  // }
+  // info!("Time taken (time for set averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 
-  let instant = Instant::now();
-  for _ in 0..n_loops {
-    match get_spoken_text() {
-      Ok(_) =>( ),
-      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
-    }
-  }
-  info!("Time taken (time for get_spoken_text() averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
+  // let instant = Instant::now();
+  // for _ in 0..n_loops {
+  //   match get_spoken_text() {
+  //     Ok(_) =>( ),
+  //     Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
+  //   }
+  // }
+  // info!("Time taken (time for get_spoken_text() averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 
-  set_preference("BrailleCode", "UEB").unwrap();
-  get_braille("").unwrap();
-  let instant = Instant::now();
-  for _ in 0..n_loops {
-    match get_braille("") {
-      Ok(_) => (),
-      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
-    }
-  }
-  info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
+  // set_preference("BrailleCode", "UEB").unwrap();
+  // get_braille("").unwrap();
+  // let instant = Instant::now();
+  // for _ in 0..n_loops {
+  //   match get_braille("") {
+  //     Ok(_) => (),
+  //     Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
+  //   }
+  // }
+  // info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 
-    if let Err(e) = set_mathml(expr) {
-      eprintln!("Error: exiting -- {}", errors_to_string(&e));
-    };
-  set_preference("BrailleCode", "Nemeth").unwrap();
-  get_braille("").unwrap();
-  let instant = Instant::now();
-  for _ in 0..n_loops {
-    match get_braille("") {
-      Ok(_) => (),
-      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);} ,
-    }
-  }
-  info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
+  //   if let Err(e) = set_mathml(expr) {
+  //     eprintln!("Error: exiting -- {}", errors_to_string(&e));
+  //   };
+  // set_preference("BrailleCode", "Nemeth").unwrap();
+  // get_braille("").unwrap();
+  // let instant = Instant::now();
+  // for _ in 0..n_loops {
+  //   match get_braille("") {
+  //     Ok(_) => (),
+  //     Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);} ,
+  //   }
+  // }
+  // info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 }
