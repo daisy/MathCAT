@@ -465,9 +465,9 @@
       else: [t: "covariance"]      # phrase('covariance' function)
 
 -
-  name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
   tag: mi
-  match: ".='log' or .='ln'"
+  match: ".='log' or .='Log' or .='ln'"
   replace:
   - bookmark: "@id"
   - test:
@@ -476,6 +476,8 @@
   - test:
     - if: ".= 'log'"
       then: [t: "log"]      # phrase(the 'log' function is used in mathematics)
+    - else_if: ".= 'Log'"
+      then: [t: "principal value log"]
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
       else: [t: "natural log"]      # phrase(the 'natural log' function is used in mathematics)

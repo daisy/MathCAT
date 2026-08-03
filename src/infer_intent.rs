@@ -276,7 +276,7 @@ static ARG_REF: LazyLock<Regex> = LazyLock::new(|| {
 });
 static NUMBER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap());
 
-static TERMINALS_AS_U8: [u8; 3] = [b'(', b',', b')'];
+static TERMINALS_AS_U8: [u8; 3] = *b"(,)";
 // static TERMINALS: [char; 3] = ['(', ',',')'];
 
 // 'i -- "i" for the lifetime of the INTENT_ATTR string

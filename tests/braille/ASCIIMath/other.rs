@@ -306,6 +306,17 @@ fn lim_subscript_bug_523() -> Result<()> {
     </math>"#;
     test_braille("ASCIIMath", expr, r#"lim_(N->oo) sum_(i=0)^N"#)?;
     return Ok(());
+}
 
+
+#[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+    test_braille("ASCIIMath",expr, "dot x+ddot x+overset(...)(x)")?;
+  return Ok(());
 }
 

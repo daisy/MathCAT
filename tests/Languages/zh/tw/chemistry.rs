@@ -163,9 +163,9 @@ fn beta_decay() -> Result<()> {
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, 大寫 c; 形成, 14, 7, 大寫 n; 加 0, 負 1, e")?;
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加, 上標 0, 下標 負 1, e")?;
+      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加 上標 0, 下標 負 1, e")?;
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加, 上標 0, 下標 負 1, e")?;
+      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加 上標 0, 下標 負 1, e")?;
       return Ok(());
 
 }
@@ -429,9 +429,9 @@ fn mhchem_beta_decay() -> Result<()> {
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, 大寫 c; 形成, 14, 7, 大寫 n; 加 0, 負 1, e")?;
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加, 上標 0, 下標 負 1, e")?;
+      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加 上標 0, 下標 負 1, e")?;
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加, 上標 0, 下標 負 1, e")?;
+      "上標 14, 下標 6, 大寫 c; 反應形成; 上標 14, 下標 7, 大寫 n; 加 上標 0, 下標 負 1, e")?;
       return Ok(());
 
 }

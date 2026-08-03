@@ -481,14 +481,16 @@
          - x: "*[2]"
    - test:
       # emit level indicator if something follows or the closest non-mrow is an element with a close tag [80(a)]
-      # if: "count(following-sibling::*) > 0 or ancestor::*[name() != 'mrow'][1]/.[self::m:mfrac or self::m:msqrt or self::m:mroot]"
-      if: "not( (parent::m:msubsup and count(following-sibling::*)=1) or following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]] )" # first child is likely invisible times
-      then_test:
-         if: "$OldScriptContext != ''"
-         then: [x: "$OldScriptContext"]
-         else_test:
-            if: "not( parent::*[self::m:msubsup] )" # msupsup will generate baseline indicator
-            then: [t: "b"]
+      # if a left script follows, add the multipurpose indicator ("b")
+      - if: "not( (parent::m:msubsup and count(following-sibling::*)=1) )"
+        then_test:
+            if: "$OldScriptContext != ''"
+            then: [x: "$OldScriptContext"]
+            else_test:
+                if: "not(parent::m:msubsup)" # msupsup will generate baseline indicator
+                then: [t: "b"]
+      - else_if: "following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]]" # first child is likely invisible times"
+        then: [t: "m"]
 
 -
   # From the chemistry guide, move the state from the subscript to after the script (5.3.2)
@@ -528,11 +530,15 @@
    - t: "M" # multipurpose indicator prevents the 'letter digit' substitution (177.2) from kicking in
    - x: "*[2]"
    - test:
-      if: "count(following-sibling::*) > 0 or (position() = 1 and parent::*[IsNode(., 'scripted')])"
-      then_test:
-        if: "position() = 1 and parent::*[IsNode(., 'scripted')]"
-        then: [t: "b"]
-        else: [t: "M"]
+     - if: "following-sibling::* or (position() = 1 and parent::*[IsNode(., 'scripted')])"
+       then_test:
+          if: "position() = 1 and parent::*[IsNode(., 'scripted')]"
+          then: [t: "b"]
+          else_test:
+              if: "following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]]"
+              then: [t: "m"]
+              else: [t: "M"]
+
 
 - name: default
   tag: msub
@@ -547,11 +553,13 @@
              - x: "*[2]"
      - test:
           # emit level indicator if something follows or the closest non-mrow is an element with a close tag [80(a)]
-          if: "not( (parent::m:msubsup and count(following-sibling::*)=1) or following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]] )" # first child is likely invisible times
+        - if: "not( (parent::m:msubsup and count(following-sibling::*)=1))"
           then_test:
              if: "$OldScriptContext !=''"
              then: [x: "$OldScriptContext"]
              else: [t: "b"]
+        - else_if: "following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]]" # first child is likely invisible times"
+          then: [t: "m"]
 
 - # primes don't get a superscript indicator and come before the subscript
    name: skip-super
