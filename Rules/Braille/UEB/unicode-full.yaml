@@ -1,6 +1,24 @@
 ---
- - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
+
+ - " ": [t: "W"]                # 0x2000
+ - " ": [t: "W"]                # 0x2001
+ - " ": [t: "W"]                # 0x2002
+ - " ": [t: "W"]                # 0x2003
+ - " ": [t: "W"]                # 0x2004
+ - " ": [t: "W"]                # 0x2005
+ - " ": [t: "W"]                # 0x2006
+ - " ": [t: "W"]                # 0x2007
+ - " ": [t: "W"]                # 0x2008
+ - " ": [t: "W"]                # 0x2009
+ - " ": [t: "W"]                # 0x200a
+ - "​": [t: "W"]                # 0x200b
+ - " ": [t: "W"]                # 0x2028
+ - " ": [t: "W"]                # 0x2029
+ - " ": [t: "W"]                # 0x202f
+ - " ": [t: "W"]                # 0x205f
+ - "﻿": [t: "W"]                # 0xfeff
+
+ 
  - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)
  - "ⅆ": [tc: "⠙"]                # 0x2146
  - "ⅇ": [tc: "⠑"]                # 0x2147
@@ -29,7 +47,6 @@
  - "↉": [tc: "#N⠚N⠌N⠑"]          # 0x2189 (Vulgar Fraction Zero Thirds)
 
 
-
  - "ℊ": [tc: "TL⠛⠁"]             # 0x210a (Script Small G)
  - "ℋ": [tc: "TCL⠓⠁"]            # 0x210b (Script Capital H)
  - "ℒ": [tc: "TCL⠇"]             # 0x2113 (Script Capital L)
@@ -54,16 +71,6 @@
  - "ℚ": [tc: "𝔹CL⠟"]             # 0x211a 
  - "ℝ": [tc: "𝔹CL⠗"]             # 0x211d 
  - "ℤ": [tc: "𝔹CL⠵"]             # 0x2124 
-
-
- - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
-    - tc: "B"
-    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
-
-
- - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
-    - tc: "BGL"
-    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
 
  - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
@@ -99,7 +106,7 @@
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
     - tc: "TsC"
-    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyza')"
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
     - tc: "Ts"

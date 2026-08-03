@@ -10,7 +10,6 @@
  - "¨": [T: "double dot"]                               	#  0xa8	(en: 'double dot', google translation)
  - "©": [T: "版權"]                               	#  0xa9	(en: 'copyright', google translation)
  - "ª": [t: "feminine ordinal indicator"]                           	#  0xaa	(en: 'feminine ordinal indicator', google translation)
- - "¬": [T: "非"]                               	#  0xac	(en: 'not', google translation)
  - "«": [t: "left-pointing double angle quote mark"]                         	#  0xab	(en: 'left-pointing double angle quote mark', google translation)
  - "¯":                                         	#  0xaf
      - test:
@@ -19,24 +18,9 @@
         else: [T: "橫線"]                         	# 	(en: 'line')
  - "²": [T: "二"]                                	#  0xb2	(en: 'two', google translation)
  - "³": [T: "三"]                                	#  0xb3	(en: 'three', google translation)
- - "´": [t: "acute"]                               	#  0xb4	(en: 'acute', google translation)
  - "µ": [T: "微"]                                	#  0xb5	(en: 'micro', google translation)
  - "¹": [T: "一"]                                	#  0xb9	(en: 'one', google translation)
  - "º": [t: "masculine ordinal indicator"]                           	#  0xb9	(en: 'masculine ordinal indicator', google translation)
- - "·":
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [T: "乘"]                         	# 	(en: 'times', google translation)
-        else: [T: "內積"]                         	# 	(en: 'dot')
- - "×":                                         	#  0xd7
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [T: "乘"]                         	# 	(en: 'times', google translation)
-        else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [T: "乘"]                     	# 	(en: 'by', google translation)
-            else: [T: "乘"]                     	# 	(en: 'cross')
- - "÷": [T: "除以"]                               	#  0xf7	(en: 'divided by')
  - "ʰ": [t: "modifier small h"]                            	#  0x2b0	(en: 'modifier small h', google translation)
  - "ʱ": [t: "modifier small h with hook"]                        	#  0x2b1	(en: 'modifier small h with hook', google translation)
  - "ʲ": [t: "modifier small j"]                            	#  0x2b2	(en: 'modifier small j', google translation)
@@ -120,14 +104,6 @@
  - "˽": [t: "modifier shelf"]                              	#  0x2fd	(en: 'modifier shelf', google translation)
  - "˾": [t: "modifier open shelf"]                          	#  0x2fe	(en: 'modifier open shelf', google translation)
  - "˿": [t: "modifier low left arrow"]                          	#  0x2ff	(en: 'modifier low left arrow', google translation)
- - "̀": [t: "grave accent embellishment"]                          	#  0x300	(en: 'grave accent embellishment', google translation)
- - "́": [t: "acute accent embellishment"]                           	#  0x301	(en: 'acute accent embellishment', google translation)
- - "̂": [t: "circumflex accent embellishment"]                         	#  0x302	(en: 'circumflex accent embellishment', google translation)
- - "̃": [t: "tilde embellishment"]                          	#  0x303	(en: 'tilde embellishment', google translation)
- - "̄": [t: "macron embellishment"]                            	#  0x304	(en: 'macron embellishment', google translation)
- - "̅": [t: "overbar embellishment"]                            	#  0x305	(en: 'overbar embellishment', google translation)
- - "̆": [t: "breve embellishment"]                            	#  0x306	(en: 'breve embellishment', google translation)
- - "̇": [t: "dot above embellishment"]                             	#  0x307	(en: 'dot above embellishment', google translation)
  - "̈": [t: "diaeresis embellishment"]                             	#  0x308	(en: 'diaeresis embellishment', google translation)
  - "̉": [t: "hook above embellishment"]                           	#  0x309	(en: 'hook above embellishment', google translation)
  - "̊": [t: "ring above embellishment"]                           	#  0x30a	(en: 'ring above embellishment', google translation)
@@ -216,11 +192,7 @@
  - "ϒ": [t: "upsilon with hook"]                	#  0x3d2	(en: 'upsilon with hook')
  - "ϓ": [t: "upsilon with acute and hook"]      	#  0x3d3	(en: 'upsilon with acute and hook')
  - "ϔ": [t: "upsilon with diaeresis and hook"]  	#  0x3d4	(en: 'upsilon with diaeresis and hook')
- - "ϕ": [T: "phi"]                              	#  0x3d5	(en: 'phi')
- - "ϖ": [t: "pi"]                               	#  0x3d6	(en: 'pi')
  - "ϗ": [t: "kai"]                              	#  0x3d7	(en: 'kai')
- - "ϵ": [T: "epsilon"]                   	#  0x3f5	(en: 'epsilon')
- - "϶": [t: "reversed epsilon"]          	#  0x3f6	(en: 'reversed epsilon')
  - "А-Я":                                       	#  0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -274,9 +246,6 @@
  - "‐": [T: "連字符"]                              	#  0x2010	(en: 'hyphen', google translation)
  - "‑": [T: "連字符"]                              	#  0x2011	(en: 'hyphen', google translation)
  - "‒": [t: "圖破折號"]                             	#  0x2012	(en: 'figure dash', google translation)
- - "–": [t: "en dash"]                          	#  0x2013	(google translation)
- - "—": [t: "em dash"]                          	#  0x2014	(google translation)
- - "―": [T: "橫線"]                               	#  0x2015	(en: 'horizontal bar', google translation)
  - "‖": [T: "雙垂直線"]                             	#  0x2016	(en: 'double vertical line', google translation)
  - "†": [t: "dagger"]                               	#  0x2020	(en: 'dagger', google translation)
  - "‡": [t: "double dagger"]                              	#  0x2021	(en: 'double dagger', google translation)
@@ -286,19 +255,6 @@
         if: "@data-chem-formula-op"
         then: [T: "dot"]                          	# 	(en: 'dot', google translation)
         else: [T: "bullet"]                         	# 	(en: 'bullet', google translation)
-
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [T: "點點點"]                        	# 	(en: 'dot dot dot', google translation)
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [T: "等等"]                     	# 	(en: 'and so on', google translation)
-            else: [T: "等等"]                     	# 	(en: 'and so on up to', google translation)
 
  - "‰": [T: "千分"]                              	#  0x2030	(en: 'per mille', google translation)
  - "‱": [T: "萬分"]                               	#  0x2031	(en: 'per ten thousand', google translation)
@@ -446,7 +402,6 @@
     - T: "草體"                                   	# 	(en: 'script', google translation)
     - SPELL: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
- - "ℓ": [T: "草體l"]                              	#  0x2113	(en: 'script l', google translation)
  - "℔": [T: "磅"]                                	#  0x2114	(en: 'pounds', google translation)
  - "№": [T: "數字"]                               	#  0x2116	(en: 'number', google translation)
  - "℥": [T: "盎司"]                               	#  0x2125	(en: 'ounces', google translation)
@@ -531,7 +486,6 @@
  - "↉": [T: "三分之0"]                              	#  0x2189	(en: 'zero thirds', google translation)
  - "←": [T: "左箭頭"]                              	#  0x2190	(en: 'leftwards arrow', google translation)
  - "↑": [T: "向上箭頭"]                             	#  0x2191	(en: 'upwards arrow', google translation)
- - "→": [T: "右箭頭"]                              	#  0x2192	(en: 'rightwards arrow')
  - "↓": [T: "向下箭頭"]                             	#  0x2193	(en: 'downwards arrow', google translation)
  - "↔": [T: "左右雙箭頭"]                           	#  0x2194	(en: 'left right arrow')
  - "↕": [T: "上下雙箭頭"]                             	#  0x2195	(en: 'up down arrow', google translation)
@@ -605,7 +559,6 @@
  - "⇏": [t: "帶撇向右粗箭頭"]                         	#  0x21cf	(en: 'rightwards double arrow with stroke', google translation)
  - "⇐": [t: "向左粗箭頭"]                             	#  0x21d0	(en: 'leftwards double arrow', google translation)
  - "⇑": [t: "向上粗箭頭"]                            	#  0x21d1	(en: 'upwards double arrow', google translation)
- - "⇒": [t: "向右粗箭頭"]                            	#  0x21d2	(en: 'rightwards double arrow', google translation)
  - "⇓": [t: "向下粗箭頭"]                            	#  0x21d3	(en: 'downwards double arrow', google translation)
  - "⇔": [t: "左右粗箭頭"]                            	#  0x21d4	(en: 'left right double arrow', google translation)
  - "⇕": [t: "上下粗箭頭"]                          	#  0x21d5	(en: 'up down double arrow', google translation)
@@ -651,100 +604,19 @@
  - "⇽": [t: "向左開頭箭頭"]                            	#  0x21fd	(en: 'leftwards open headed arrow', google translation)
  - "⇾": [t: "向右開頭箭頭"]                            	#  0x21fe	(en: 'rightwards open headed arrow', google translation)
  - "⇿": [t: "左右開頭箭頭"]                           	#  0x21ff	(en: 'left right open headed arrow', google translation)
- - "∀": [T: "對所有的"]                             	#  0x2200	(en: 'for all')
  - "∁":                                         	#  0x2201
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'the', google translation)
      - T: "補集"                                  	# 	(en: 'complement of')
- - "∂":                                         	#  0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [T: "偏微分"]                       	# 	(en: 'partial', google translation)
-         else: [T: "偏微分"]                       	# 	(en: 'partial derivative')
  - "∃": [T: "存在"]                               	#  0x2203	(en: 'there exists')
  - "∄": [T: "不存在"]                              	#  0x2204	(en: 'there does not exist')
  - "∅": [T: "空集合"]                              	#  0x2205	(en: 'empty set')
- - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'the', google translation)
-     - T: "變化量"                                 	# 	(en: 'laplacian of')
  - "∇":                                         	#  0x2207
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'the', google translation)
      - T: "梯度"                                  	# 	(en: 'gradient of')
- - "∈":                                         	#  0x2208
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "屬於"]                       	# 	(en: 'an element of', google translation)
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "在"]                  	# 	(en: 'in', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "成員"]                 	# 	(en: 'member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "元素"]                 	# 	(en: 'element of', google translation)
-              - else: [T: "屬於"]                 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "是"]                  	# 	(en: 'is a member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "是一個元素"]              	# 	(en: 'is an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "在"]                  	# 	(en: 'is in', google translation)
-              - else: [T: "屬於"]                 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∉":                                         	#  0x2209
-    # rule is identical to 0x2208
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "不屬於"]                     	# 	(en: 'is not an element of', google translation)
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "不在"]                 	# 	(en: 'not in', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "不是成員"]               	# 	(en: 'not member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "不是"]                 	# 	(en: 'not element of', google translation)
-              - else: [T: "不屬於"]                	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "不是成員"]               	# 	(en: 'is not a member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "不是一個元素"]             	# 	(en: 'is not an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "不在"]                 	# 	(en: 'is not in', google translation)
-              - else: [T: "不屬於"]                	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
- - "∊":                                         	#  0x220a
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "屬於"]                      	# 	(en: 'is an element of', google translation)
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "在"]                  	# 	(en: 'in', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "成員"]                 	# 	(en: 'member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "元素"]                 	# 	(en: 'element of', google translation)
-              - else: [T: "屬於"]                 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "是"]                  	# 	(en: 'is a member of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "是一個元素"]              	# 	(en: 'is an element of', google translation)
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "在"]                  	# 	(en: 'is in', google translation)
-              - else: [T: "屬於"]                 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
  - "∋": [T: "包含"]                             	#  0x220b	(en: 'contains the member')
  - "∌": [T: "不包含"]                            	#  0x220c	(en: 'does not contain the member')
  - "∍": [T: "包含"]                             	#  0x220d	(en: 'contains the member')
@@ -765,11 +637,6 @@
         then: [T: "dot"]                          	# 	(en: 'dot', google translation)
         else: [T: "乘"]                          	# 	(en: 'times')
 
- - "√":                                         	#  0x221a
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'the', google translation)
-     - T: "開平方根"                                 	# 	(en: 'square root of')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
@@ -780,11 +647,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'the', google translation)
      - T: "開四次方根"                                	# 	(en: 'fourth root of')
- - "∝":                                         	#  0x221d
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "正比於"                                 	# 	(en: 'proportional to')
  - "∞": [T: "無限大"]                               	#  0x221e	(en: 'infinity')
  - "∟": [T: "直角"]                               	#  0x221f	(en: 'right angle')
  - "∠": [T: "角"]                                	#  0x2220	(en: 'angle')
@@ -792,8 +654,6 @@
  - "∢": [T: "球面角"]                              	#  0x2222	(en: 'spherical angle')
  - "∣": [T: "整除"]                                	#  0x2223	(en: 'divides')
  - "∤": [T: "不整除"]                               	#  0x2224	(en: 'does not divide')
- - "∧": [T: "邏輯與"]                              	#  0x2227	(en: 'and')
- - "∨": [T: "邏輯或"]                              	#  0x2228	(en: 'or')
  - "∩": [T: "交集"]                               	#  0x2229	(en: 'intersection')
  - "∪": [T: "聯集"]                               	#  0x222a	(en: 'union')
  - "∫": [T: "積分"]                               	#  0x222b	(en: 'integral')
@@ -807,11 +667,6 @@
  - "∳": [T: "逆時針輪廓積分"]                          	#  0x2233	(en: 'anticlockwise contour integral')
  - "∴": [T: "所以"]                               	#  0x2234	(en: 'therefore')
  - "∵": [T: "因為"]                               	#  0x2235	(en: 'because')
- - "∶":                                         	#  0x2236
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "比"                                   	# 	(en: 'to')
  - "∷": [T: "當成"]                               	#  0x2237	(en: 'as')
  - "∸": [T: "點負號"]                              	#  0x2238	(en: 'dot minus')
  - "∹": [T: "超出"]                               	#  0x2239	(en: 'has excess compared to')
@@ -827,11 +682,6 @@
      - T: "同位"                                  	# 	(en: 'homothetic to')
  - "∼": [T: "波浪符"]                              	#  0x223c	(en: 'varies with')
  - "∽": [T: "反波浪符"]                             	#  0x223d	(en: 'reversed tilde')
- - "∾":                                         	#  0x223e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "正無限大"                               	# 	(en: 'most positive')
  - "∿": [T: "正弦波型"]                             	#  0x223f	(en: 'sine wave')
  - "≀": [t: "wreath product"]                               	#  0x2240	(en: 'wreath product')
  - "≁": [t: "not tilde"]                             	#  0x2241	(en: 'not tilde')
@@ -933,16 +783,6 @@
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "測量"                                 	# 	(en: 'measured by')
  - "≟": [T: "問號等於"]                             	#  0x225f	(en: 'has an unknown relationship with')
- - "≠":                                         	#  0x2260
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "不等於"                                 	# 	(en: 'not equal to')
- - "≡":                                         	#  0x2261
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "恆等於"                                 	# 	(en: 'identical to')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -953,8 +793,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "完全等於"                                	# 	(en: 'strictly equivalent to')
- - "≦": [T: "小於等於"]                             	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "大於等於"]                             	#  0x2267	(en: 'greater than over equal to')
  - "≨":                                         	#  0x2268
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1053,36 +891,6 @@
  - "≿": [T: "後於或等價於"]                           	#  0x227f	(en: 'succeeds or is equivalent to')
  - "⊀": [T: "不先於"]                              	#  0x2280	(en: 'does not precede')
  - "⊁": [T: "不後於"]                              	#  0x2281	(en: 'does not succeed')
- - "⊂":                                         	#  0x2282
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is a', google translation)
-     - T: "包含於"                                 	# 	(en: 'subset of')
- - "⊃":                                         	#  0x2283
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is a', google translation)
-     - T: "包含"                                  	# 	(en: 'superset of')
- - "⊄":                                         	#  0x2284
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "不包含於"                                	# 	(en: 'not a subset of')
- - "⊅":                                         	#  0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "不包含"                                 	# 	(en: 'not a superset of')
- - "⊆":                                         	#  0x2286
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is a', google translation)
-     - T: "包含於或等於"                              	# 	(en: 'subset of or equal to')
- - "⊇":                                         	#  0x2287
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is a', google translation)
-     - T: "包含或等於"                               	# 	(en: 'superset of or equal to')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -2983,11 +2791,8 @@
  - "": [t: "digamma"]                          	#  0xed03	(google translation)
  - "ϝ": [t: "Diggmma"]                          	#  0x3dd	(en: 'digamma')
  - "": [T: "d"]                                	#  0xed10	(en: 'd', google translation)
- - "ⅆ": [T: "d"]                                	#  0x2146	(en: 'd', google translation)
  - "": [T: "e"]                                	#  0xed11	(en: 'e', google translation)
- - "ⅇ": [T: "e"]                                	#  0x2147	(en: 'e', google translation)
  - "": [T: "i"]                                	#  0xed12	(en: 'i', google translation)
- - "ⅈ": [T: "i"]                                	#  0x2148	(en: 'i', google translation)
  - "": [T: "j"]                                	#  0xed13	(en: 'j', google translation)
  - "ⅅ":
     - SPELL: "translate('.', 'ⅅ', 'DD')"       	#  0xed16, 0x2145

@@ -29,6 +29,10 @@ mod braille {
         mod russian;
     }
 
+    mod Swedish {
+        mod swedish;
+    }
+
     mod LaTeX {
         mod augenbit;
         mod other;
