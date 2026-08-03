@@ -151,6 +151,9 @@ fn zip_entry<W: Write + Seek>(
 /// Zip up each language and braille dir
 /// Note: regional variations (including zh-cn and zh-tw) are zipped together into one zip file
 fn main() {
+    println!("cargo::rerun-if-changed=build.rs");
+    println!("cargo::rerun-if-changed=Rules");
+
     // This doesn't work because the build claims OUT_DIR is not defined(?)
     // let archive = PathBuf::from(concat!(env!("OUT_DIR"),"/rules.zip"));
     if std::env::var("CARGO_FEATURE_INCLUDE_ZIP").is_ok() {
@@ -179,7 +182,7 @@ fn main() {
         // println!("cargo::warning=rules directory '{:?}'", &rules_dir.to_string_lossy());
         let archive_zip_file = match File::create(&archive_path) {
             Ok(file) => file,
-        Err(e) => panic!("build.rs couldn't create {:?}: {}", archive_path.to_str(), e),
+            Err(e) => panic!("build.rs couldn't create {:?}: {}", archive_path.to_str(), e),
         };
 
         let mut archive_zip = ZipWriter::new(archive_zip_file);
@@ -198,10 +201,5 @@ fn main() {
         if let Err(e) = archive_zip.finish() {
             panic!("Error in zip.finish(): {}", e);
         }
-        println!("cargo::rerun-if-changed=Rules");
-    } else {
-        // Without include-zip, Rules are loaded at runtime from disk and must not
-        // re-run this script (or slow the build) on every yaml edit.
-        println!("cargo::rerun-if-changed=build.rs");
     }
 }
