@@ -23,7 +23,7 @@ path = ".."
 
 [features]
 default = []
-# no-unsafe = ["mathcat/no-unsafe"]
+no-unsafe = ["mathcat/no-unsafe"]
 
 [[bin]]
 name = "fuzz_target_1"

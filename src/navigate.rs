@@ -3,11 +3,10 @@
 #![allow(clippy::needless_return)]
 
 use std::cell::{Ref, RefCell, RefMut};
-use sxd_xpath::context::Evaluation;
-use sxd_xpath::Value;
-use sxd_document::dom::Element;
-use sxd_document::Package;
-
+use sxd_xpath_no_unsafe::context::Evaluation;
+use sxd_xpath_no_unsafe::Value;
+use sxd_document_no_unsafe::dom::Element;
+use sxd_document_no_unsafe::Package;
 use std::fmt;
 use crate::canonicalize::{name, get_parent};
 use crate::pretty_print::mml_to_string;
@@ -189,7 +188,7 @@ impl NavigationState {
         }
     }
 
-    fn init_navigation_context(&self, context: &mut sxd_xpath::Context, command: &'static str,
+    fn init_navigation_context(&self, context: &mut sxd_xpath_no_unsafe::Context, command: &'static str,
                                nav_state_top: Option<(&NavigationPosition, &'static str)>) {
         context.set_variable("NavCommand", command);
 
@@ -250,7 +249,7 @@ fn get_node_by_id<'a>(mathml: Element<'a>, pos: &NavigationPosition) -> Option<E
     if let Some(mathml_id) = mathml.attribute_value("id") &&
        mathml_id == pos.current_node.as_str() &&
         (crate::xpath_functions::is_leaf(mathml) || 
-        mathml.attribute_value(ID_OFFSET).unwrap_or("0") == pos.current_node_offset.to_string()) {
+        mathml.attribute_value(ID_OFFSET).as_deref().unwrap_or("0") == pos.current_node_offset.to_string()) {
         return Some(mathml);
     }
 
@@ -286,24 +285,25 @@ pub fn set_navigation_node_from_id(mathml: Element, id: &str, offset: usize) -> 
 
 /// Get's the Nav Node from the context, with some exceptions such as Toggle commands where it isn't set.
 /// Note: mathml can be any node. It isn't really used but some Element needs to be part of Evaluate().
-pub fn get_nav_node<'c>(context: &sxd_xpath::Context<'c>, var_name: &str, mathml: Element<'c>, start_node: Element<'c>, command: &str, nav_mode: &str) -> Result<String> {
-    let start_id = start_node.attribute_value("id").unwrap_or_default();
+pub fn get_nav_node<'c>(context: &sxd_xpath_no_unsafe::Context<'c>, var_name: &str, mathml: Element<'c>, start_node: Element<'c>, command: &str, nav_mode: &str) -> Result<String> {
+    let raw_start_id = start_node.attribute_value("id");
+    let start_id = raw_start_id.as_deref().unwrap_or_default();
     if command.starts_with("Toggle") {
         return Ok( start_id.to_string() );
     } else {
         return context_get_variable(context, var_name, mathml)
                 .with_context(|| format!("When trying to {} starting at id={} in {} mode",
-                                                command, start_node.attribute_value("id").unwrap_or_default(), nav_mode));
+                                                command, start_node.attribute_value("id").as_deref().unwrap_or_default(), nav_mode));
     }
 }
 
 // FIX: think of a better place to put this, and maybe a better interface
 /// Note: mathml can be any node. It isn't really used but some Element needs to be part of Evaluate().
 /// If the context variable has String, Number, or Boolean xpath value, return it as a string. Otherwise it is an error
-pub fn context_get_variable<'c>(context: &sxd_xpath::Context<'c>, var_name: &str, mathml: Element<'c>) -> Result<String> {
+pub fn context_get_variable<'c>(context: &sxd_xpath_no_unsafe::Context<'c>, var_name: &str, mathml: Element<'c>) -> Result<String> {
     // This is slightly roundabout because Context doesn't expose a way to get the values.
     // Instead, we create an "Evaluation", which is just one level of indirection.
-    use sxd_xpath::nodeset::Node;
+    use sxd_xpath_no_unsafe::nodeset::Node;
     let evaluation = Evaluation::new(context, Node::Element(mathml));
     return match evaluation.value_of(var_name.into()) {
         Some(value) => match value {
@@ -330,7 +330,7 @@ pub fn context_get_variable<'c>(context: &sxd_xpath::Context<'c>, var_name: &str
                         .enumerate()
                         .for_each(|(i, node)| {
                             match node {
-                                sxd_xpath::nodeset::Node::Element(mathml) =>
+                                sxd_xpath_no_unsafe::nodeset::Node::Element(mathml) =>
                                     error_message += &format!("#{}:\n{}",i, mml_to_string(*mathml)),
                                 _ => error_message += &format!("'{node:?}'"),
                             }   
@@ -344,7 +344,7 @@ pub fn context_get_variable<'c>(context: &sxd_xpath::Context<'c>, var_name: &str
 }
 
 /// Wrapper around context_get_variable to get an integer variable
-fn context_get_int_variable<'c>(context: &sxd_xpath::Context<'c>, var_name: &str, mathml: Element<'c>) -> Result<usize> {
+fn context_get_int_variable<'c>(context: &sxd_xpath_no_unsafe::Context<'c>, var_name: &str, mathml: Element<'c>) -> Result<usize> {
     let value = context_get_variable(context, var_name, mathml)?;
     return match value.parse::<usize>() {
         Ok(i) => Ok(i),
@@ -487,8 +487,9 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         };
 
         let mut properties = "";
+        let raw_properties = mathml.attribute_value("data-intent-property");
         if add_literal {
-            properties  = mathml.attribute_value("data-intent-property").unwrap_or_default();
+            properties  = raw_properties.as_deref().unwrap_or_default();
             if properties.contains(":literal:") {
                 add_literal = false;
             } else {
@@ -508,8 +509,8 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                     found_node = get_parent(found_node);
                     // debug!("found_node:\n{}", mml_to_string(found_node));
                     let temp_pos = NavigationPosition {
-                        current_node: found_node.attribute_value("id").unwrap_or_default().to_string().clone(),
-                        current_node_offset: found_node.attribute_value(ID_OFFSET).unwrap_or_default().parse::<usize>().unwrap_or_default(),
+                        current_node: found_node.attribute_value("id").as_deref().unwrap_or_default().to_string().clone(),
+                        current_node_offset: found_node.attribute_value(ID_OFFSET).as_deref().unwrap_or_default().parse::<usize>().unwrap_or_default(),
                     };
                     if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
                         found_node = intent_node;

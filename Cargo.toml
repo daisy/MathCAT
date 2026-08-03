@@ -15,25 +15,26 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
+"no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
 
 
 [dependencies]
-sxd-document = "0.3"
-sxd-xpath = "0.4"
+sxd-document-no-unsafe = "0.4.2"
+sxd-xpath-no-unsafe = "0.5.1"
 yaml-rust = "0.4"
 # yaml-rust = { version = "0.11", package = "yaml-rust2" }
-strum = "0.27.2"
-strum_macros = "0.27.2"
+strum = "0.28"
+strum_macros = "0.28"
 anyhow = "1.0"
-regex = "1.10"
+regex = "1.12.3"
 dirs = "6.0"
-bitflags = "2.10"
+bitflags = "2.11"
 phf = { version = "0.13", features = ["macros"] }
 roman-numerals-rs = "4.1.0"
 radix_fmt = "1.0"
 unicode-script = "0.5"
 log = "0.4"
-env_logger = "0.11.8"
+env_logger = "0.11.9"
 cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
