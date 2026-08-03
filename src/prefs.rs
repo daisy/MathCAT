@@ -1283,31 +1283,31 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
         use std::fs;
         use std::thread::sleep;
         use std::time::Duration;
-
-        let test_rules = test_rules_dir_with_prefs();
-        let prefs_file = test_rules.path().join("prefs.yaml");
-
-        let mut pref_manager = PreferenceManager::default();
-        pref_manager.set_rules_dir(test_rules.path()).unwrap();
-        pref_manager.user_prefs_file = Some(crate::speech::FileAndTime::new_with_time(test_rules.path().join("no-user-prefs.yaml")));
-        pref_manager.set_preference_files().unwrap();
-        pref_manager.api_prefs.prefs.insert("Language".to_string(), Yaml::String("zz".to_string()));
-        pref_manager.api_prefs.prefs.insert("SpeechStyle".to_string(), Yaml::String("ClearSpeak".to_string()));
-        assert_eq!(&pref_manager.pref_to_string("Language"), "zz");
-        pref_manager.set_all_files(test_rules.path()).unwrap();
-
-        assert_eq!(&pref_manager.pref_to_string("SpeechStyle"), "ClearSpeak");
-        assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.speech.as_path()), PathBuf::from("Languages/zz/ClearSpeak_Rules.yaml"));
-
-        let changed_contents = fs::read_to_string(&prefs_file).unwrap()
-            .replace("SpeechStyle: ClearSpeak", "SpeechStyle: SimpleSpeak");
-        fs::write(&prefs_file, changed_contents).unwrap();
-        sleep(Duration::from_millis(5));  // make sure the time changes enough to be recognized
-
-        pref_manager.set_preference_files().unwrap();
-        pref_manager.api_prefs.prefs.remove("SpeechStyle");
-        assert_eq!(&pref_manager.pref_to_string("SpeechStyle"), "SimpleSpeak");
-        assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.speech.as_path()), PathBuf::from("Languages/zz/SimpleSpeak_Rules.yaml"));
+        use crate::interface;
+        PREF_MANAGER.with(|pref_manager| {
+            let mut pref_manager = pref_manager.borrow_mut();
+            pref_manager.initialize(abs_rules_dir_path()).unwrap();
+            assert_eq!(&pref_manager.pref_to_string("SpeechStyle"), "ClearSpeak");
+            assert_eq!(rel_path(&pref_manager.rules_dir, pref_manager.speech.as_path()), PathBuf::from("Languages/zz/ClearSpeak_Rules.yaml"));
+        });
+        interface::set_mathml("<math><mo>+</mo><mn>10</mn></math>").unwrap();
+        assert_eq!(interface::get_spoken_text().unwrap(), "ClearSpeak positive from zz 10");
+        
+        let mut file_path = PathBuf::default();
+        let mut contents = vec![];
+        PREF_MANAGER.with(|pref_manager| {
+            let pref_manager = pref_manager.borrow();
+            if let Some(file_name) = pref_manager.user_prefs_file.as_ref().unwrap().debug_get_file() {
+                file_path = PathBuf::from(file_name);
+                contents = fs::read(&file_path).unwrap_or_else(|_| panic!("Failed to write file {} during test", file_name));
+                let changed_contents = String::from_utf8(contents.clone()).unwrap()
+                                .replace("SpeechStyle: ClearSpeak", "SpeechStyle: SimpleSpeak");
+                fs::write(&file_path, changed_contents).unwrap();
+                sleep(Duration::from_millis(5));  // make sure the time changes enough to be recognized
+            }
+        });
+        assert_eq!(interface::get_spoken_text().unwrap(), "SimpleSpeak positive from zz 10");
+        fs::write(&file_path, contents).unwrap();
     }
 
 }}
