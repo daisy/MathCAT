@@ -81,10 +81,10 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     let result = catch_unwind(AssertUnwindSafe(|| {
         // this forces initialization
         crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
-        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
         set_preference("Language", "en").unwrap();
         set_preference("BlockSeparators", block_separators).unwrap();
         set_preference("DecimalSeparators", decimal_separators).unwrap();
+        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
 
         let package1 = &parser::parse(test).expect("Failed to parse test input");
         let mathml = get_element(package1);
@@ -105,7 +105,6 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     match crate::interface::report_any_panic(result) {
         Ok(()) => Ok(()),
         Err(e) => {
-            eprintln!("{}", e);
             Err(e)
         }
     }

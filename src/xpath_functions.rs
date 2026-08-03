@@ -22,7 +22,7 @@ use sxd_xpath::{Value, Context, context, function::*, nodeset::*};
 use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
-use std::cell::{Ref, RefCell};
+use std::{cell::{Ref, RefCell}, collections::HashMap};
 use log::{debug, error, warn};
 use std::sync::LazyLock;
 use std::thread::LocalKey;
@@ -46,11 +46,7 @@ fn get_text_from_element(e: Element) -> String {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn get_text_from_COE(coe: &ChildOfElement) -> String {
-    let element = coe.element();
-    return match element {
-        Some(e) => get_text_from_element(e),
-        None => "".to_string(),
-    };
+    coe.element().map_or_else(String::new, get_text_from_element)
 }
 
 // make sure that there is only one node in the NodeSet
@@ -73,8 +69,7 @@ fn is_tag(e: Element, name: &str) -> bool {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn is_COE_tag(coe: ChildOfElement, name: &str) -> bool {
-    let element = coe.element();
-    return element.is_some() && is_tag(element.unwrap(), name)
+    coe.element().is_some_and(|element| is_tag(element, name))
 }
 
 /// Should be an internal structure for implementation of the IsNode, but it was useful in one place in a separate module.
@@ -333,7 +328,7 @@ static ALL_MATHML_ELEMENTS: phf::Set<&str> = phf_set!{
 };
 
 static MATHML_LEAF_NODES: phf::Set<&str> = phf_set! {
-	"mi", "mo", "mn", "mtext", "ms", "mspace", "mglyph",
+    "mi", "mo", "mn", "mtext", "ms", "mspace", "mglyph",
     "none", "annotation", "ci", "cn", "csymbol",    // content could be inside an annotation-xml (faster to allow here than to check lots of places)
 };
 
@@ -456,7 +451,6 @@ impl ToOrdinal {
             let pref_manager = pref_manager.borrow();
             let block_separators = pref_manager.pref_to_string("BlockSeparators");
             let decimal_separator = pref_manager.pref_to_string("DecimalSeparators");
-
             // check number validity (has digits, not a decimal)
             if number.is_empty() ||  number.contains(&decimal_separator) {
                 return Some(String::from(number));
@@ -1413,6 +1407,174 @@ impl Function for ReplaceAll {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum CTDRowType {
+    Normal,
+    Labeled,
+    Implicit,
+}
+
+/// A single-use structure for computing the proper dimensions of an
+/// `mtable`.
+struct CountTableDims {
+    num_rows: usize,
+    num_cols: usize,
+    /// map from number of remaining in extra row-span to number of
+    /// columns with that value.
+    extended_cells: HashMap<usize, usize>,
+    /// rowspan=0 cells extend for the rest of the table, however
+    /// long that may be as determined by all other finite cells.
+    permanent_cols: usize,
+}
+
+impl CountTableDims {
+
+    fn new() -> CountTableDims {
+        Self { num_rows: 0, num_cols: 0, extended_cells: HashMap::new(), permanent_cols: 0 }
+    }
+
+    /// Returns the number of columns the cell contributes to the
+    /// current row. Also updates `extended_cells` as appropriate.
+    fn process_cell_in_row<'d>(&mut self, mtd: Element<'d>, is_first: bool, row_type: CTDRowType) -> usize {
+        // Rows can only contain `mtd`s.  If this is not an `mtd`, we will just skip it.
+        if name(mtd) != "mtd" {
+            return 0;
+        }
+
+        // Add the contributing columns, taking colspan into account. Don't contribute if
+        // this is the first element of a labeled row.
+        let colspan = mtd.attribute_value("colspan")
+            .or_else(|| mtd.attribute_value("columnspan"))
+            .map_or(1, |e| e.parse::<usize>().unwrap_or(1));
+        if row_type == CTDRowType::Labeled && is_first {
+            // This is a label for the row and does not contibute to
+            // the size of the table. NOTE: Can this label have a
+            // non-trivial rowspan? If so, can it otherwise extend the
+            // size of the table?
+            return 0;
+        }
+
+        let rowspan = mtd.attribute_value("rowspan").map_or(1, |e| {
+            e.parse::<usize>().unwrap_or(1)
+        });
+
+        if rowspan > 1 {
+            *self.extended_cells.entry(rowspan).or_default() += colspan;
+        } else if rowspan == 0 {
+            self.permanent_cols += colspan;
+        }
+
+        colspan
+    }
+
+    /// Update the number of rows, and update the extended cells.
+    /// Returns the total number of columns accross all extended
+    /// cells.
+    fn next_row(&mut self) -> usize {
+        self.num_rows += 1;
+        let mut ext_cols = 0;
+        self.extended_cells = self.extended_cells.iter().filter(|&(k, _)| *k > 1).map(|(k, v)| {
+            ext_cols += *v;
+            (k-1, *v)
+        }).collect();
+        ext_cols
+    }
+
+    /// For an `mtable` element, count the number of rows and columns in the table.
+    ///
+    /// This function is relatively permissive. Non-`mtr` rows are
+    /// ignored. The number of columns is determined only from the first
+    /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
+    fn count_table_dims<'d>(mut self, e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
+        for child in e.children() {
+            let ChildOfElement::Element(row) = child else {
+                continue
+            };
+
+            // Each child of mtable should be an mtr or mlabeledtr. According to the spec, though,
+            // bare `mtd`s should also be treated as having an implicit wrapping `<mtr>`.
+            // Other elements should be ignored.
+            let row_name = name(row);
+
+            let row_type = match row_name {
+		"mlabeledtr" => CTDRowType::Labeled,
+		"mtr" => CTDRowType::Normal,
+		"mtd" => CTDRowType::Implicit,
+		_ => continue
+            };
+
+            let ext_cols = self.next_row();
+
+            let mut num_cols_in_row = 0;
+            match row_type {
+                CTDRowType::Normal | CTDRowType::Labeled => {
+                    let mut first_elem = true;
+                    for row_child in row.children() {
+                        let ChildOfElement::Element(mtd) = row_child else  {
+                            continue;
+                        };
+
+                        num_cols_in_row += self.process_cell_in_row(mtd, first_elem, row_type);
+                        first_elem= false;
+                    }
+                }
+                CTDRowType::Implicit => {
+                    num_cols_in_row += self.process_cell_in_row(row, true, row_type)
+                }
+            }
+            // update the number of columns based on this row.
+            self.num_cols = self.num_cols.max(num_cols_in_row + ext_cols + self.permanent_cols);
+        }
+
+        // At this point, the number of columns is correct. If we have
+        // any leftover rows from rowspan extended cells, we need to
+        // account for them here.
+        //
+        // NOTE: It does not appear that renderers respect these extra
+        // columns, so we will not use them.
+        let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
+
+        Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)))
+    }
+
+    fn evaluate<'d>(self, fn_name: &str,
+                        args: Vec<Value<'d>>) -> Result<(Value<'d>, Value<'d>), Error> {
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let element = args.pop_nodeset()?;
+        let node = validate_one_node(element, fn_name)?;
+        if let Node::Element(e) = node {
+            if is_tag(e, "mtable") {
+                return self.count_table_dims(e);
+            } else {
+                return Err(Error::Other(format!("Input element was a <{}>, not an <mtable>",
+                                                e.name().local_part())));
+            }
+        }
+
+        Err( Error::Other("Could not count dimensions of non-Element.".to_string()) )
+    }
+}
+
+struct CountTableRows;
+impl Function for CountTableRows {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        CountTableDims::new().evaluate("CountTableRows", args).map(|a| a.0)
+    }
+}
+
+struct CountTableColumns;
+impl Function for CountTableColumns {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        CountTableDims::new().evaluate("CountTableColumns", args).map(|a| a.1)
+    }
+}
+
+
 /// Add all the functions defined in this module to `context`.
 pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("NestingChars", crate::braille::NemethNestingChars);
@@ -1432,6 +1594,8 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("SpeakIntentName", SpeakIntentName);
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
+    context.set_function("CountTableRows", CountTableRows);
+    context.set_function("CountTableColumns", CountTableColumns);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1445,21 +1609,31 @@ pub fn add_builtin_functions(context: &mut Context) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::errors::Result;
+    use crate::interface::{get_element, init_panic_handler, report_any_panic, trim_element};
     use sxd_document::parser;
-    use crate::interface::{trim_element, get_element};
+    use std::panic::{catch_unwind, AssertUnwindSafe};
 
+    fn xpath_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
 
-    fn init_word_list() {
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        let result = crate::definitions::read_definitions_file(true);
-        if let Err(e) = result {
-            panic!("unable to read 'Rules/Languages/en/definitions.yaml\n{e}");
-        }
+    fn init_word_list() -> Result<()> {
+        crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+        crate::interface::set_preference("Language", "en")?;
+        crate::definitions::read_definitions_file(true)?;
+        return Ok( () );
     }
 
     #[test]
-    fn ordinal_one_digit() {
-        init_word_list();
+    fn ordinal_one_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("zeroth", ToOrdinal::convert("0", false, false).unwrap());
         assert_eq!("second", ToOrdinal::convert("2", false, false).unwrap());
         assert_eq!("ninth", ToOrdinal::convert("9", false, false).unwrap());
@@ -1476,11 +1650,14 @@ mod tests {
         assert_eq!("halves", ToOrdinal::convert("2", true, true).unwrap());
         assert_eq!("halves", ToOrdinal::convert("002", true, true).unwrap());
         assert_eq!("ninths", ToOrdinal::convert("9", true, true).unwrap());
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn ordinal_two_digit() {
-        init_word_list();
+    fn ordinal_two_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("tenth", ToOrdinal::convert("10", false, false).unwrap());
         assert_eq!("seventeenth", ToOrdinal::convert("17", false, false).unwrap());
         assert_eq!("thirty second", ToOrdinal::convert("32", false, false).unwrap());
@@ -1503,11 +1680,14 @@ mod tests {
         assert_eq!("nineteenths", ToOrdinal::convert("19", true, true).unwrap());
         assert_eq!("twentieths", ToOrdinal::convert("20", true, true).unwrap());
         assert_eq!("nineteenths", ToOrdinal::convert("𝟏𝟗", true, true).unwrap());
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn ordinal_three_digit() {
-        init_word_list();
+    fn ordinal_three_digit() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("one hundred first", ToOrdinal::convert("101", false, false).unwrap());
         assert_eq!("two hundred tenth", ToOrdinal::convert("210", false, false).unwrap());
         assert_eq!("four hundred thirty second", ToOrdinal::convert("432", false, false).unwrap());
@@ -1526,10 +1706,13 @@ mod tests {
         assert_eq!("seven hundredths", ToOrdinal::convert("700", true, true).unwrap());
         assert_eq!("one hundredths", ToOrdinal::convert("100", true, true).unwrap());
         assert_eq!("eight hundred seventeenths", ToOrdinal::convert("817", true, true).unwrap());
+        return Ok( () );
+        });
     }
     #[test]
-    fn ordinal_large() {
-        init_word_list();
+    fn ordinal_large() -> Result<()> {
+        return xpath_test(|| {
+        init_word_list()?;
         assert_eq!("one thousandth", ToOrdinal::convert("1000", false, false).unwrap());
         assert_eq!("two thousand one hundredth", ToOrdinal::convert("2100", false, false).unwrap());
         assert_eq!("thirty thousandth", ToOrdinal::convert("30000", false, false).unwrap());
@@ -1548,68 +1731,101 @@ mod tests {
         assert_eq!("nine billion eight hundred seventy six million five hundred forty three thousand two hundred tenths", ToOrdinal::convert("9876543210", true, true).unwrap());
         assert_eq!("nine billion five hundred forty three thousand two hundred tenths", ToOrdinal::convert("9000543210", true, true).unwrap());
         assert_eq!("zeroth", ToOrdinal::convert("00000", false, false).unwrap());
+        return Ok( () );
+        });
     }
 
 
-    fn test_is_simple(message: &'static str, mathml_str: &'static str) {
+    fn test_is_simple(message: &'static str, mathml_str: &'static str) -> Result<()> {
 		// this forces initialization
 		crate::speech::SPEECH_RULES.with(|_| true);
         let package = parser::parse(mathml_str)
-        .expect("failed to parse XML");
+        .map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         assert!(IsNode::is_simple(mathml), "{}", message);
+        return Ok( () );
     }
 
-    fn test_is_not_simple(message: &'static str, mathml_str: &'static str) {
+    fn test_is_not_simple(message: &'static str, mathml_str: &'static str) -> Result<()> {
 		// this forces initialization
 		crate::speech::SPEECH_RULES.with(|_| true);
         let package = parser::parse(mathml_str)
-        .expect("failed to parse XML");
+        .map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         assert!(!IsNode::is_simple(mathml), "{}", message);
+        return Ok( () );
     }
     #[test]
-    fn is_simple() {
-        test_is_simple("single variable", "<mi>x</mi>");
-        test_is_simple("single number", "<mn>1.2</mn>");
-        test_is_simple("negative number", "<mrow><mo>-</mo><mn>10</mn></mrow>");
-        test_is_simple("negative variable", "<mrow><mo>-</mo><mi>x</mi></mrow>");
-        test_is_simple("ordinal fraction", "<mfrac><mn>3</mn><mn>4</mn></mfrac>");
-        test_is_simple("x y", "<mrow><mi>x</mi><mo>&#x2062;</mo><mi>y</mi></mrow>");
+    fn is_simple() -> Result<()> {
+        return xpath_test(|| {
+        test_is_simple("single variable", "<mi>x</mi>")?;
+        test_is_simple("single number", "<mn>1.2</mn>")?;
+        test_is_simple("negative number", "<mrow><mo>-</mo><mn>10</mn></mrow>")?;
+        test_is_simple("negative variable", "<mrow><mo>-</mo><mi>x</mi></mrow>")?;
+        test_is_simple("ordinal fraction", "<mfrac><mn>3</mn><mn>4</mn></mfrac>")?;
+        test_is_simple("x y", "<mrow><mi>x</mi><mo>&#x2062;</mo><mi>y</mi></mrow>")?;
         test_is_simple("negative two vars", 
-                "<mrow><mrow><mo>-</mo><mi>x</mi></mrow><mo>&#x2062;</mo><mi>y</mi></mrow>");
+                "<mrow><mrow><mo>-</mo><mi>x</mi></mrow><mo>&#x2062;</mo><mi>y</mi></mrow>")?;
         test_is_simple("-2 x y", 
                 "<mrow><mrow><mo>-</mo><mn>2</mn></mrow>
-                             <mo>&#x2062;</mo><mi>x</mi><mo>&#x2062;</mo><mi>z</mi></mrow>");
-        test_is_simple("sin x", "<mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow>");
-        test_is_simple("f(x)", "<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow>");
+                             <mo>&#x2062;</mo><mi>x</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
+        test_is_simple("sin x", "<mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow>")?;
+        test_is_simple("f(x)", "<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow>")?;
         test_is_simple("f(x+y)",
          "<mrow><mi>f</mi><mo>&#x2061;</mo>\
-            <mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></mrow>");
-        
+            <mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></mrow>")?;
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn is_not_simple() {
-        test_is_not_simple("multi-char variable", "<mi>rise</mi>");
-        test_is_not_simple("large ordinal fraction", "<mfrac><mn>30</mn><mn>4</mn></mfrac>");
-        test_is_not_simple("fraction with var in numerator", "<mfrac><mi>x</mi><mn>4</mn></mfrac>");
-        test_is_not_simple("square root", "<msqrt><mi>x</mi></msqrt>");
-        test_is_not_simple("subscript", "<msub><mi>x</mi><mn>4</mn></msub>");
+    fn is_not_simple() -> Result<()> {
+        return xpath_test(|| {
+        test_is_not_simple("multi-char variable", "<mi>rise</mi>")?;
+        test_is_not_simple("large ordinal fraction", "<mfrac><mn>30</mn><mn>4</mn></mfrac>")?;
+        test_is_not_simple("fraction with var in numerator", "<mfrac><mi>x</mi><mn>4</mn></mfrac>")?;
+        test_is_not_simple("square root", "<msqrt><mi>x</mi></msqrt>")?;
+        test_is_not_simple("subscript", "<msub><mi>x</mi><mn>4</mn></msub>")?;
         test_is_not_simple("-x y z", 
                 "<mrow><mrow><mo>-</mo><mi>x</mi></mrow>
-                            <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>");
+                            <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
         test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
-                    "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>");
-                   
+                    "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>")?;
+        return Ok( () );
+        });
+    }
+
+    fn check_table_dims(mathml: &str, dims: (usize, usize)) -> Result<()> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
+        let math_elem = get_element(&package);
+        let child = as_element(math_elem.children()[0]);
+        assert!(CountTableDims::new().count_table_dims(child) == Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64))));
+        return Ok( () );
     }
 
     #[test]
-    fn at_left_edge() {
+    fn table_dim() -> Result<()> {
+        return xpath_test(|| {
+        check_table_dims("<math><mtable><mtr><mtd>a</mtd></mtr></mtable></math>", (1, 1))?;
+        check_table_dims("<math><mtable><mtr><mtd colspan=\"3\">a</mtd><mtd>b</mtd></mtr><mtr><mtd></mtd></mtr></mtable></math>", (2, 4))?;
+
+        check_table_dims("<math><mtable><mlabeledtr><mtd>label</mtd><mtd>a</mtd><mtd>b</mtd></mlabeledtr><mtr><mtd>c</mtd><mtd>d</mtd></mtr></mtable></math>", (2, 2))?;
+        // extended rows beyond the `mtr`s do *not* count towards the row count.
+        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr></mtable></math>", (1, 1))?;
+
+        check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr>
+<mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3))?;
+        return Ok( () );
+        });
+    }
+
+    #[test]
+    fn at_left_edge() -> Result<()> {
+        return xpath_test(|| {
         let mathml = "<math><mfrac><mrow><mn>30</mn><mi>x</mi></mrow><mn>4</mn></mfrac></math>";
-        let package = parser::parse(mathml).expect("failed to parse XML");
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         let fraction = as_element(mathml.children()[0]);
@@ -1619,12 +1835,15 @@ mod tests {
 
         let mi = as_element(as_element(fraction.children()[0]).children()[1]);
         assert_eq!(EdgeNode::edge_node(mi, true, "2D"), None);
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn at_right_edge() {
+    fn at_right_edge() -> Result<()> {
+        return xpath_test(|| {
         let mathml = "<math><mrow><mfrac><mn>4</mn><mrow><mn>30</mn><mi>x</mi></mrow></mfrac><mo>.</mo></mrow></math>";
-        let package = parser::parse(mathml).expect("failed to parse XML");
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let mathml = get_element(&package);
         trim_element(mathml, false);
         let fraction = as_element(as_element(mathml.children()[0]).children()[0]);
@@ -1635,5 +1854,7 @@ mod tests {
 
         let mn = as_element(as_element(fraction.children()[1]).children()[0]);
         assert_eq!(EdgeNode::edge_node(mn, true, "2D"), None);
+        return Ok( () );
+        });
     }
 }

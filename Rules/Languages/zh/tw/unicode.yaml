@@ -273,10 +273,48 @@
  - "ϵ": [T: "epsilon"]                   	        #  0x3f5	(en: 'epsilon')
  - "϶": [T: "reversed epsilon"]          	        #  0x3f6	(en: 'reversed epsilon')
 
- - "–": [T: "en dash"]                          	#  0x2013	(google translation)
- - "—": [T: "em dash"]                          	#  0x2014	(google translation)
- - "―": [T: "單槓"]                               	#  0x2015	(en: 'horizontal bar', google translation)
- - "‖": [T: "雙垂直線"]                              #  0x2016	(en: 'double vertical line', google translation)
+ - "⁡": [T: ""]                                  	# 	(en: 'of', google translation)
+ - "⁢": [t: ""]                                 	#  0x2062
+ - "⁣": [t: ""]                                 	#  0x2063
+ - "⁤": [T: "又"]                                	#  0x2064	(en: 'and', google translation)(3 又 1/2)
+ - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
+    - T: "空心"                         	# 	(en: 'double-struck')
+    - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+
+ - "℃": [T: "攝氏度"]                            	#  0x2103	(en: 'degrees celsius', google translation)
+ - "ℋℛℓ":                                       	#  0x210b
+    - T: "草體"                                   	# 	(en: 'script', google translation)
+    - SPELL: "translate('.', 'ℋℛℓ', 'HRl')"
+ - "ℜ":                                         	#  0x211c
+    - T: "fraktur"                              	# 	(google translation)
+    - SPELL: "'R'"
+
+ - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
+    - T: "空心斜體"                                 	# 	(en: 'double-struck italic', google translation)
+    - SPELL: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+
+ - "∥":                                         	#  0x2225
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                         	# 	(en: 'is', google translation)
+     - T: "平行"                                  	# 	(en: 'parallel to')
+ - "∦":                                         	#  0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                         	# 	(en: 'is', google translation)
+     - T: "不平行"                                 	# 	(en: 'not parallel to')
+ - "≤":                                         	#  0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                         	# 	(en: 'is', google translation)
+     - T:  "小於或等於"
+ - "≥":                                         	#  0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                         	# 	(en: 'is', google translation)
+     - T: "大於或等於"                               	# 	(en: 'greater than or equal to')
+
+ # --- restored complex short definitions (prefer over unicode-full) ---
  - "…":                                         	#  0x2026
     test:
         if:
@@ -289,55 +327,16 @@
             if: "count(following-sibling::*) = 0"
             then: [T: "等等"]                     	# 	(en: 'and so on', google translation)
             else: [T: "等等"]                     	# 	(en: 'and so on up to', google translation)
-
- - "⁡": [T: ""]                                  	# 	(en: 'of', google translation)
- - "⁢": [t: ""]                                 	#  0x2062
- - "⁣": [t: ""]                                 	#  0x2063
- - "⁤": [T: "又"]                                	#  0x2064	(en: 'and', google translation)(3 又 1/2)
- - "′": [T: "prime"]                            	#  0x2032
- - "″": [T: "double prime"]                     	#  0x2033
- - "‴": [T: "triple prime"]                     	#  0x2034
-
- - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
-    - T: "空心"                         	# 	(en: 'double-struck')
-    - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
-
- - "℃": [T: "攝氏度"]                            	#  0x2103	(en: 'degrees celsius', google translation)
- - "℉": [T: "華氏度"]                              	#  0x2109	(en: 'degrees fahrenheit', google translation)
- - "ℋℛℓ":                                       	#  0x210b
-    - T: "草體"                                   	# 	(en: 'script', google translation)
-    - SPELL: "translate('.', 'ℋℛℓ', 'HRl')"
- - "ℎ": [T: "普朗克常數"]                            	#  0x210e	(en: 'planck constant', google translation)
- - "ℜ":                                         	#  0x211c
-    - T: "fraktur"                              	# 	(google translation)
-    - SPELL: "'R'"
-
- - "Ω": [T: "歐姆"]                               	#  0x2126	(en: 'ohms', google translation)
- - "K": [T: "kelvin"]                              	#  0x212a	(en: 'kelvin', google translation)
- - "Å": [T: "angstroms"]                           	#  0x212b	(en: 'angstroms', google translation)
- - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
-    - T: "空心斜體"                                 	# 	(en: 'double-struck italic', google translation)
-    - SPELL: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
-
- - "←": [T: "左箭頭"]                              	#  0x2190	(en: 'leftwards arrow', google translation)
- - "↑": [T: "向上箭頭"]                             	#  0x2191	(en: 'upwards arrow', google translation)
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [T: "趨近"]                         	# 	(en: 'approaches', google translation)
         else: [T: "右箭頭"]                        	# 	(en: 'right arrow')
-
- - "↓": [T: "向下箭頭"]                             	#  0x2193	(en: 'downwards arrow', google translation)
- - "⇒": [T: "向右雙箭頭"]                            	#  0x21d2	(en: 'rightwards double arrow', google translation)
- - "∀": [T: "對所有"]                             	#  0x2200	(en: 'for all')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
          then: [T: "偏微分"]                       	# 	(en: 'partial', google translation)
          else: [T: "偏微分"]                       	# 	(en: 'partial derivative')
- - "∃": [T: "存在"]                               	#  0x2203	(en: 'there exists')
- - "∄": [T: "不存在"]                              	#  0x2204	(en: 'there does not exist')
- - "∅": [T: "空集合"]                              	#  0x2205	(en: 'empty set')
  - "∆":                                         	#  0x2206
      - test: 
          if: "$Verbosity!='Terse'"
@@ -413,13 +412,6 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "在"]                  	# 	(en: 'is in', google translation)
               - else: [T: "屬於"]                 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∏": [T: "積"]                             	#  0x220f	(en: 'product')
- - "∐": [T: "餘積"]                             	#  0x2210	(en: 'co-product')
- - "∑": [T: "和"]                                	#  0x2211	(en: 'sum')
- - "−": [T: "減"]                                	#  0x2212	(en: 'minus')
- - "∓": [T: "減加號"]                              	#  0x2213	(en: 'minus or plus')
- - "∗": [T: "乘"]                               	#  0x2217	(en: 'times', google translation)
- - "∘": [T: "合成"]                               	#  0x2218	(en: 'composed with')
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -430,44 +422,16 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "正比於"                                 	# 	(en: 'proportional to')
- - "∞": [T: "無限大"]                               	#  0x221e	(en: 'infinity')
- - "∟": [T: "直角"]                               	#  0x221f	(en: 'right angle')
- - "∠": [T: "角"]                                	#  0x2220	(en: 'angle')
- - "∡": [T: "測量角"]                              	#  0x2221	(en: 'measured angle')
- - "∣": [T: "整除"]                                	#  0x2223	(en: 'divides')
- - "∤": [T: "不整除"]                               	#  0x2224	(en: 'does not divide')
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "平行"                                  	# 	(en: 'parallel to')
- - "∦":                                         	#  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "不平行"                                 	# 	(en: 'not parallel to')
- - "∧": [T: "且"]                              	#  0x2227	(en: 'and')
- - "∨": [T: "或"]                              	#  0x2228	(en: 'or')
- - "∩": [T: "交集"]                               	#  0x2229	(en: 'intersection')
- - "∪": [T: "聯集"]                               	#  0x222a	(en: 'union')
- - "∫": [T: "積分"]                               	#  0x222b	(en: 'integral')
- - "∬": [T: "雙重積分"]                             	#  0x222c	(en: 'double integral')
- - "∭": [T: "三重積分"]                             	#  0x222d	(en: 'triple integral')
- - "∮": [T: "輪廓積分"]                             	#  0x222e	(en: 'contour integral')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "比"                                   	# 	(en: 'to')
- - "∷": [T: "當成"]                               	#  0x2237	(en: 'as')
- - "∼": [T: "波浪符"]                              	#  0x223c	(en: 'varies with')
- - "∽": [T: "反波浪符"]                             #  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "正無限大"                               	# 	(en: 'most positive')
- - "∿": [T: "正弦波型"]                             	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
@@ -478,20 +442,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                         	# 	(en: 'is', google translation)
      - T: "全等於"                                 	# 	(en: 'identical to')
- - "≤":                                         	#  0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T:  "小於或等於"
- - "≥":                                         	#  0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                         	# 	(en: 'is', google translation)
-     - T: "大於或等於"                               	# 	(en: 'greater than or equal to')
- - "≦": [T: "小於或等於"]                             	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "大於或等於"]                             	#  0x2267	(en: 'greater than over equal to')
- - "≺": [T: "先於"]                               	#  0x227a	(en: 'precedes')
- - "≻": [T: "後於"]                               	#  0x227b	(en: 'succeeds')
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -522,3 +472,14 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                       	# 	(en: 'is a', google translation)
      - T: "包含或等於"                               	# 	(en: 'superset of or equal to')
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "–": [T: "en dash"]                          	#  0x2013	(google translation)
+ - "—": [T: "em dash"]                          	#  0x2014	(google translation)
+ - "―": [T: "單槓"]                               	#  0x2015	(en: 'horizontal bar', google translation)
+ - "⇒": [T: "向右雙箭頭"]                            	#  0x21d2	(en: 'rightwards double arrow', google translation)
+ - "∀": [T: "對所有"]                             	#  0x2200	(en: 'for all')
+ - "∧": [T: "且"]                              	#  0x2227	(en: 'and')
+ - "∨": [T: "或"]                              	#  0x2228	(en: 'or')
+ - "≦": [T: "小於或等於"]                             	#  0x2266	(en: 'less than over equal to')
+ - "≧": [T: "大於或等於"]                             	#  0x2267	(en: 'greater than over equal to')

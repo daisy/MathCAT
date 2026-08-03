@@ -1,0 +1,135 @@
+---
+
+- name: scalar-determinant
+  tag: determinant
+  match: "count(*)=1 and not(*[1][self::m:mtr])"
+  replace:
+  - with:
+  #theodora. added rule for greek accusative after operators e.g. "ισούται με την ορίζουσα"
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "την"]
+              else: [t: "η"]
+  - t: "ορίζουσα"      # phrase(the 'determinant' of a matrix)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: "του"      # phrase(systems 'of' linear equations)
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
+      then: [t: "τέλος ορίζουσας"]      # phrase('end determinant' of a matrix)
+
+
+- name: subscripted-norm
+  tag: subscripted-norm
+  match: "count(*)=2"
+  replace:
+    #theodora. added rule for greek accusative after operators e.g. "ισούται με την νόρμα"
+  - with:
+      variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "την"]
+              else: [t: "η"] 
+  - x: "*[2]"
+  - t: "νόρμα"      # phrase(the 'norm' can be a measure of distance)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: "του"      # phrase(systems 'of' linear equations)
+  - x: "*[1]"
+
+#- name: norm
+#  tag: norm
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity='Verbose'"
+#      then:
+#      - t: "η"      # phrase('the' square root of 25 equals 5)
+#  - t: "νόρμα"      # phrase(the 'norm' can be a measure of distance)
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then:
+#      - t: "του"      # phrase(this is the mean 'of' the data)
+#  - x: "*[1]"
+#  - test:
+#      if: "not(IsNode(*[1], 'simple'))"
+#      then: [t: "τέλος νόρμας"]      # phrase('end norm' that is a measure of distance)
+
+#- name: transpose
+#  tag: transpose
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - x: "*[1]"
+#  - t: "ανάστροφος"      # phrase(this will 'transpose' the values) 
+#- name: trace
+#  tag: trace
+#  match: "not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity='Verbose'"
+#      then:
+#      - t: "το"      # phrase('the' square root of 25 equals 5)
+#  - t: "ίχνος"      # phrase('trace' of a matrix)
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then:
+#      - t: "του"      # phrase(systems 'of' linear equations)
+#  - x: "*[1]"
+
+#- name: dimension
+#  tag: dimension
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity='Verbose'"
+#      then:
+#      - t: "η"      # phrase('the' square root of 25 equals 5)
+#  - t: "διάσταση"      # phrase(the 'dimension' of the matrix)
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then:
+#      - t: "του"      # phrase(systems 'of' linear equations)
+#  - x: "*[1]"
+
+#- name: homomorphism
+#  tag: homomorphism
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity='Verbose'"
+#      then:
+#      - t: "ο"      # phrase('the' square root of 25 equals 5)
+#  - t: "ομομορφισμός"      # phrase('homomorphism' indicates similarity of form)
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then:
+#      - t: "του"      # phrase(systems 'of' linear equations)
+#  - x: "*[1]"
+
+#- name: kernel
+#  tag: kernel
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity='Verbose'"
+#      then:
+#      - t: "ο"      # phrase('the' square root of 25 equals 5)
+#  - t: "πυρήνας"      # phrase(this is the 'kernel' of the function)
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then:
+#      - t: "του"      # phrase(systems 'of' linear equations)
+#  - x: "*[1]"
+

@@ -1,15 +1,15 @@
 # MathCAT Translation Audit Tool
 
-This tool compares English YAML rule files with translated versions to identify translation gaps and formatting issues. It assists translators in ensuring their translations are complete, consistent, and properly formatted.
+This tool compares YAML rule files from a source language with translated versions to identify translation gaps and formatting issues. It assists translators in ensuring their translations are complete, consistent, and properly formatted.
 
 ### 🔍 Detection Capabilities
 
 The tool analyzes rule files to detect the following issues:
 
-* **Missing Rules:** Rules present in the master English file but missing in the target translation.
-* **Extra Rules:** Rules present in the translation but absent in English (flagged as potentially intentional language-specific additions).
+* **Missing Rules:** Rules present in the source file but missing in the target translation.
+* **Extra Rules:** Rules present in the target translation but absent in the source (flagged as potentially intentional language-specific additions).
 * **Untranslated Text:** Detects text keys that still use **lowercase** formatting, indicating they haven't been verified or translated yet.
-* **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between English and the translation.
+* **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
 
 Add `# audit-ignore` to a rule block to suppress auditing that rule.
 
@@ -57,20 +57,23 @@ The tool automatically adjusts its matching logic based on the file type:
 **Syntax:**
 ```bash
 uv run audit-translations <language> [--file <specific_file>]
+uv run audit-translations <language> --source <source-language>
 uv run audit-translations --list
 
 # If running from the repo root, point uv at the project:
 uv run --project PythonScripts audit-translations <language>
+uv run --project PythonScripts audit-translations <language> --source <source-language>
 uv run --project PythonScripts audit-translations --list
 ```
 
 **Convenience Features:**
 * `--list`: Displays all available languages.
   * Region variants are shown as `lang-region` (e.g., `zz-aa`) based on subdirectories under `Rules/Languages/<lang>`.
+* `--source`: Sets the source/reference language. Defaults to `en`.
 * `--file`: Audits a single specific file instead of the whole directory.
 * `--rules-dir`: Override the Rules/Languages directory path.
 * `--only`: Filter issue types (comma-separated): `missing`, `untranslated`, `extra`, `diffs`, `all`.
-* `--verbose`: Show detailed output including English/translated snippets for rule differences.
+* `--verbose`: Show detailed output including source/target snippets for rule differences.
 * **Summary Stats:** Provides a statistical summary after every run.
 
 **Examples:**
@@ -88,19 +91,23 @@ uv run audit-translations es
 # Audit German translations
 uv run audit-translations de
 
+# Compare Norwegian Bokmal against Swedish instead of English
+uv run audit-translations nb --source sv
+
 # Audit only a specific file
 uv run audit-translations es --file SharedRules/default.yaml
 
 # Audit a regional variant (merges Rules/Languages/de and Rules/Languages/de/CH)
 uv run audit-translations de-CH
 
-# Show detailed output with English/translated snippets for rule differences
+# Show detailed output with source/target snippets for rule differences
 uv run audit-translations es --verbose
 ```
 
 **Running from the repo root (without `cd PythonScripts`):**
 ```bash
 uv run --project PythonScripts audit-translations es
+uv run --project PythonScripts audit-translations nb --source sv
 uv run --project PythonScripts audit-translations --list
 ```
 

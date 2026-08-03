@@ -72,5 +72,15 @@ fn menclose_horiz_and_vert_arrows() -> Result<()> {
     </menclose></math>"#;
     test_braille("LaTeX", expr, r"\overwrite{\overwrite{\overwrite{\overwrite{x}{\longleftarrow}}{\longrightarrow}}{\uparrow}}{\downarrow}")?;
     return Ok(());
+}
 
+#[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+    test_braille("LaTeX",expr, r"\dot{x} + \ddot{x} + \overset{...}{x}")?;
+  return Ok(());
 }

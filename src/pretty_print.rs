@@ -36,7 +36,7 @@ pub fn format_element(e: Element, indent: usize) -> String {
                 .map(|c| if let ChildOfElement::Text(t) = c {t.text()} else {""})
                 .collect::<Vec<&str>>()
                 .join("");
-        return format!("{}{}</{}{}>\n", answer, &handle_special_chars(&content), namespace, e.name().local_part());
+        return format!("{}{}</{}{}>\n", answer, handle_special_chars(&content), namespace, e.name().local_part());
         // for child in children {
         //     if let ChildOfElement::Text(t) = child {
         //         return format!("{}{}</{}{}>\n", answer, &make_invisible_chars_visible(t.text()), namespace, e.name().local_part());
@@ -60,7 +60,7 @@ pub fn format_element(e: Element, indent: usize) -> String {
 pub fn format_attrs(attrs: &[Attribute]) -> String {
     let mut result = String::new();
     for attr in attrs {
-        result += format!(" {}='{}'", attr.name().local_part(), &handle_special_chars(attr.value())).as_str();
+        result += format!(" {}='{}'", attr.name().local_part(), handle_special_chars(attr.value())).as_str();
     }
     result
 }

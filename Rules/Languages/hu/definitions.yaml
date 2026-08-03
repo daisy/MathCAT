@@ -1,0 +1,615 @@
+---
+- include: "../../definitions.yaml"
+
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If no ":"s are used, the same speech is used for all forms
+# If bracketing words make sense, they are separated with ";"s
+# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
+# If there are multiple fixities (e.g., see transpose), they are separated with "||"
+#   for readability, spaces can be used around any of the delimiter characters
+# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+- IntentMappings: {
+    "indexed-by": "infix= alsó index kezdete; alsó index; alsó index vége: alsó index vége: alsó index vége",
+    "say-super": "infix=felső index: felső index: felső index",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+
+    "absolute-value": "function= ; abszolút érték: az abszolút érték: az abszolút érték; abszolút érték vége",
+    "binomial": "infix=binomiális kezdete; a; binomiális vége",
+    "dimension-product": "infix=by",
+    ### Functions and Inverses
+    # "closed-interval": "other=zárt intervallum; -tól,be; zárt intervallum vége",
+    # "closed-interval":"function=closed interval between; and", #NOTE: Check test, does not follow
+    #"closed-open-interval":"function=interval between; included and",
+    #"open-closed-interval":"function=interval between; and included",
+    #"open-interval":"function=open interval between; and",
+    "inverse":"function=inverse || postfix=inverse", 
+    "domain": "function= ; domén",
+    "codomain": "function= ; kodomán",
+    "image":"function=image", 
+    #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
+    "mixed-fraction":"infix=and", # NOTE: in website says function, but follow infix speech pattern.
+    "greatest-common-divisor": "function=gcd: a GCD: a legnagyobb közös osztó",
+    "quotient":"function=szám rész; osztva ezzel:", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
+    "evaluated-at":"infix=értékelték",
+    "remainder":"function=a maradék; osztva ezzel:",
+    "max":"function=max",
+    "min":"function=min",
+    "power":"infix=a hatványra",
+    "root":"function=root",
+    "imaginary-part": "function=képzeletbeli rész: a képzeletbeli rész: a képzeletbeli rész",
+    "least-common-multiple": "function=lcm: a legkisebb közös többszörös: a legkisebb közös többszörös",
+    "complex-conjugate":"function=Komplex konjugált",
+    "complex-arg":"function=argumentum",
+    "polar-coordinate":"function=poláris koordináta; vessző",
+    "spherical-coordinate":"function=gömb koordináta; vessző; vessző",
+    "cartesian-coordinate":"function=derékszögű koordináta; vessző",
+    "coordinate":"function=koordináta; vessző",
+    "floor":"function=lépcső",
+    "ceiling":"function=mennyezet",
+    "round":"function=kerekített érték",
+    "fractional-part":"function=tört rész",
+    # "large-op": "infix=over || other=from,to",
+    "limit": "prefix=határérték: határérték: határérték",
+    "lim-sup": "prefix=lim-sup: a határérték, amely nagyobb, mint: a határérték, amely nagyobb, mint",
+    "lim-inf": "prefix=lim inf mint: az alsó határérték, mint: a határérték alsó határértéke, mint",
+    "logarithm-with-base": "prefix=alap logaritmus: alap logaritmus: alap logaritmus",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "real-part": "function=az igazi rész",
+    "trace": "function= ; nyom : nyom: a nyom; nyom vége",
+    "dimension": "function=; dimenzió : dimenzió: a dimenzió; dimenzió vége",
+    "homomorphism": "function= ; homomorfizmus : homomorfizmus: a homomorfizmus; homomorfizmus vége",
+    "kernel": "function= ; kernel : kernel: a kernel; kernel vége",
+    "dot-product": "infix=skaláris szorzat: skaláris szorzat: skaláris szorzat: skaláris szorzat",
+
+    #"divergence": "function= ; dihv: divergencia: divergencia; divergencia vége",
+    #"laplacian": "function=laplaciáns",   # speech engines don't do a good job with "laplacian"
+
+    "chemistry-concentration": "function= ; koncentráció: koncentrációja ennek: a koncentrációja; koncentráció vége",
+    ### Calculus
+    "definite-integral":"function=integrál felett || function=integrál innen:; ide:", # Property ???
+    "derivative":"function=a deriváltja; mely erre vonatkozik:", # Property ???
+    "tends-to":"infix=általában",
+    "tends-to-from-above":"infix=általában alulról indul",
+
+    ### Sets
+    "set": "function= ; halmaz: a halmaz",
+    "complement":"function=komplemens",
+    "empty-set":"nofix=üres halmaz",
+    "cardinality":"function=számosság", # NOTE: does not have a defined speech template in website
+    "list":"function=lista",
+    "tuple": "function= ; tuple: a tuple",
+    ### Sequence and Series
+    "sum":"function= ; összegzés : összeg ; ", #: sum over : sum from; to",
+    "product":"function=produktum || function=produktum vége || function=produktum innen:; ide:",
+
+    ### Elementary classical functions
+    "sine":"function=szinusz: szinusz",
+    "cosine":"function=koszinusz: koszinusz",
+    "tangent":"function=tangens: tangens",
+    "secant":"function=szekáns: szekáns",
+    "cosecant":"function=koszekáns: koszekáns",
+    "cotangent":"function=kotangens: kotangens",
+    "arcsine":"function=arkusz szinusz",
+    #"arccosine":"function=arkusz koszinusz",
+    "arctangent":"function=arkusz tangens",
+    "arcsecant":"function=arkusz szekáns",
+    "arccosecant":"function=arkusz koszekáns",
+    "arccotangent":"function=arkusz kotangens",
+    "hyperbolic-sine":"function=hiperbolikus szinusz",
+    "hyperbolic-cosine":"function=hiperbolikus koszinusz",
+    "hyperbolic-tangent":"function=hiperbolikus tangenstanch",
+    "hyperbolic-secant":"function=sech",
+    "hyperbolic-cosecant":"function=cosech",
+    "hyperbolic-cotangent":"function=coth",
+    "arc-hyperbolic-sine":"function=arc shine",
+    "arc-hyperbolic-cosine":"function=arc cosh",
+    "arc-hyperbolic-tangent":"function=arc tanch",
+    "arc-hyperbolic-secant":"function=arc sech",
+    "arc-hyperbolic-cosecant":"function=arc cosech",
+    "arc-hyperbolic-cotangent":"function=arc coth",
+    "exponential":"function=exponenciális",
+    "natural-logarithm": "function=l n: természetes alapú logaritmus: természetes alapú logaritmus",
+    "logarithm":"function=logaritmus", ##Check arity 2 
+    ### Statistics and Probability
+    "mean":"function=jelentése", 
+    "standard-deviation":"function=szórás",
+    "variance":"function=variencia",
+    "median":"function=medián",
+    "mode":"function=mód",
+    "conditional-probability":"function=valószínűség; adott", # NOTE: Check test
+
+
+    ### Linear Algebra
+    "vector": "function= ; vektor || prefix=vektor kezdete", # prefix not tested, also prefix not on webpage
+    "matrix":"function=mátrix", # NOTE: Failing test, recheck
+    "determinant":"function=determináns",
+    "adjugate":"function=adjugált",
+    "magnitude":"function=nagyságrend",
+    "norm": "function=; normalizálás: normalizálás: normalizálás; normalizálás vége",
+    "span":"function=fesztávolság",
+
+    "unit-vector":"prefix=egységvektor",
+
+    "identity-matrix":"nofix=identitásmátrix", # NOTE: no function specified
+    "transpose":"function=transzponált || postfix=transzponált", # postfix needs testing
+    "dimensional-product":"infix=a(z)", # INFIX
+
+
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ: az összes egész szám halmaza",
+    "set-of-reals":"nofix=ℝ: az összes valós szám halmaza",
+    "set-of-rationals":"nofix=ℚ: az összes racionális szám halmaza",
+    "set-of-natural-numbers":"nofix=ℕ: az összes természetes szám halmaza",
+    "set-of-complex-numbers":"nofix=ℂ: az összes komplex szám halmaza",
+    "set-of-primes":"nofix=ℙ: az összes prímszám halmaza",
+
+
+    ### Geometry
+    "line-segment":"prefix=line segment",
+    "directed-line-segment":"prefix=irányított vonalszakasz", 
+    "line":"prefix=vonal",
+    "ray":"prefix=sugár",
+    "arc":"prefix=arkusz",
+
+    "length":"function=hossz",
+    "area":"function=terület",
+
+    "point":"prefix=pont",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+
+    ### Separators
+    "time-separator":"infix=",
+
+    ### General Concepts 
+    "fenced-group":"function=bekerített csoport", # appears both under general concepts and grouping
+     # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
+    "ordered-pair": "function= ; a pár; és", # Needs to be tested, test converts "and" to "comma,"
+    "highlight":"postfix=kiemelt",
+    "least-common-denominator":"function=legkisebb közös nevező",
+    "rate":"infix=per",
+    "constraint":"infix= ; korlátozással; ", 
+
+    "binomial-coefficient":"infix=választ",
+    "pochhammer":"function=permutáció",
+    "permutation-cycle":"function=permutációs ciklus",
+    "embellished-name":"infix=jegyzetekkel",
+
+    ### Other
+    ## Default fixity function
+    "curl": "function=rotáció",
+    "divergence": "function=eltérés:eltérés",
+    "gradient": "function=gradiens:gradiens",
+    "laplacian": "function=laplaciánus",
+
+    ## Default fixity prefix
+    "angle": "prefix=szög",
+    "angle-measure": "prefix=szögmérés",
+    "change": "prefix=változás",
+    "for-all": "prefix=mindenkinek",
+    "measured-angle": "prefix=mért szög",
+    "not": "prefix=nem",
+    "number-of": "prefix=száma",
+    "partial-derivative": "prefix=parciális derivált",
+    "right-angle": "prefix=derékszög",
+    "square-root-of": "prefix=négyzetgyöke",
+    "there-does-not-exist": "prefix=nem létezik",
+    "there-exists": "prefix=létezik",
+
+
+    ## Default fixity infix
+    "and": "infix=és",
+    "applied-to": "infix=alkalmazva erre",
+    "approximately": "infix=hozzávetőlegesen",
+    "congruent": "infix=egybeesik",
+    "cartesian-product": "infix=derékszögű szorzat",
+    "composed-with": "infix=komponálva",
+    "cross-product": "infix=kereszt szorzata: kereszt szorzata: kereszt szorzata",
+    "defined-as": "infix=definiálva",
+    "divided-by": "infix=osztva",
+    "divides": "infix=osztja",
+    "does-not-belong-to": "infix=nem tartozik hozzá",
+    "does-not-divide": "infix=nem osztja",
+    "downwards-diagonal-ellipsis": "infix=lefelé mutató átlós ellipszis",
+    "direct-product": "infix=direkt produktum",
+    "element-of": "infix=eleme",
+    "ellipsis": "infix=ellipszis",
+    "equals": "infix=egyenlő",
+    "equivalent-to": "infix=egyenértékű ezzel",
+    "evaluates-to": "infix=értéke",
+    "given": "infix=adott",
+    "greater-than": "infix=nagyobb, mint",
+    "greater-than-or-equal-to": "infix=nagyobb vagy egyenlő, mint",
+    "identically-equals": "infix=teljesen egyenlő",
+    "if-and-only-if": "infix=akkor és csak akkor, ha",
+    "implies": "infix=utal",
+    "inner-product": "infix=belső produktum",
+    "intersection": "infix=keresztezi",
+    "less-than": "infix=kisebb, mint",
+    "less-than-or-equal-to": "infix=kisebb vagy egyenlő, mint",
+    "list-separator": "infix=vessző",
+    "maps-to": "infix=megfelel ennek",
+    "member-of": "infix=tagja",
+    "minus-or-plus": "infix=mínusz vagy plusz",
+    "not-subset": "infix=nem részhalmaza",
+    "not-superset": "infix=nem szuperhalmaz",
+    "not-equal-to": "infix=nem egyenlő",
+    "not-member-of": "infix=nem tagja",
+    "not-parallel-to": "infix=nem párhuzamos",
+    "obtained-from": "infix=származó",
+    "or": "infix=vagy",
+    "outer-product": "infix=külső produktum",
+    "parallel-to": "infix=párhuzamos",
+    "perpendicular": "infix=merőleges",
+    "plus": "infix=plusz || prefix=pozitív", # Prefix not tested
+    "minus": "infix=mínusz || prefix=negatív", # Prefix not tested
+    "plus-or-minus": "infix=plusz vagy mínusz",
+    "precedes": "infix=megelőzi",
+    "proportional": "infix=arányos",
+    "range-separator": "infix=keresztül",
+    "ratio": "infix=hányados",
+    "similar": "infix=hasonló",
+    "subset": "infix=részhalmaza",
+    "subset-or-equal": "infix=részhalmaza vagy egyenlő",
+    "succeeds": "infix=sikerül",
+    "such-that": "infix=úgy, hogy",
+    "superset": "infix=szuperhalmaza",
+    "superset-or-equal": "infix=szuperhalmaz vagy egyenlő",
+    "tilde": "infix=tilde",
+    "times": "infix=szorzata",
+    "union": "infix=unió",
+    "upwards-diagonal-ellipsis": "infix=felfelé átlós ellipszis",
+    "vertical-ellipsis": "infix=függőleges ellipszis",
+    "xor": "infix=kizárólagos vagy",
+
+    ## Default fixity postfix
+    "factorial": "postfix=faktoriális",
+    "percent": "postfix=százalék",
+
+    ## Default fixity nofix
+    "diameter":"nofix=átmérő: átmérő",
+    "distance":"nofix=távolság; távolság: távolság",
+    "probability":"nofix=P: valószínűség",
+    "radius":"nofix=r: sugár",
+    "volume":"nofix=V: hangerő || function=",
+    "exponential-e":"nofix=e",
+    "imaginary-i":"nofix=i",
+    "differential-d":"nofix=d",
+    "golden-ratio":"nofix=aranymetszés",
+
+
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
+    "modified-variable": "silent= "
+  }
+
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+- TerseFunctionNames: {
+    "divergens", "gradiens", "rotáció"
+  }
+
+- NavigationParts: {
+    # These are the parts of a formula that can be navigated to
+    "large-op": "base; lower limit; upper limit",
+    "mfrac": "numerator; denominator",
+    "fraction": "numerator; denominator",
+    "msqrt": "root",
+    "square-root": "root",
+    "mroot": "root; root index",
+    "root": "root; root index",
+    "msub": "base; subscript",
+    "sub": "base; subscript",
+    "logarithm-with-base": "base",
+    "indexed-by": "base; subscript",
+    "msup": "base; superscript",
+    "say-super": "base; superscript",
+    "skip-super": "base; superscript",
+    "power": "base; exponent",
+    "msubsup": "base; subscript; superscript",
+    "munder": "base; under limit",
+    "mover": "base; upper limit",
+    "munderover": "base; under limit; upper limit",
+
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
+    "in": "in",
+    "out": "out of",
+  }
+
+- KnownWords: {
+    # MathCAT will put together some runs of three or more mi's (a common mistake), but skips those in alphabetical order.
+    # This is a list of exceptions so that they do get put together. Don't list words with repeated letters.
+
+    # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
+    # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
+    "Abel", "fészkelő", "ails", "levegős", "amps", "ceil", "cent", "szelet", "fényáram", "folyik", "csomó", "több"
+  }
+
+- SIPrefixes: {
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kiló", "h": "hektó", "da": "deka",
+    "d": "deci", "c": "centi", "m": "milli", "µ": "mikro", "n": "nano", "p": "pikó", "f": "femto", "a": "atto", "z": "zepto", "y": "yokto", "r": "ronto", "q": "quecto"
+  }
+
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
+- SIUnits: {
+    # base units
+    "A": "amper",
+    "cd": "kandela",
+    "K": "kelvin", "K": "kelvin", # U+212A
+    "g": "gram",
+    "m": "méter",     # British spelling works for US also
+    "mol": "mol",
+    "s": "másodperc", "sec": "másodperc",  # "sec" not actually legal
+
+    # derived units
+    "Bq": "becquerel",
+    "C": "Coulomb",
+    "°C": "Celsius fok", "℃": "Celsius fok", # should only take negative powers
+    "F": "farád",
+    "Gy": "gray",
+    "H": "henry",
+    "Hz": "hertz",
+    "J": "joule",
+    "kat": "katal",
+    "lm": "lumen",
+    "lx": "lux",
+    "N": "newton",
+    "Ω": "ohm", "Ω": "ohm",       # Greek Cap letter, U+2126 OHM SIGN
+    "Pa": "pascal",
+    "S": "siemens",
+    "Sv": "sievert",
+    "T": "tesla",
+    "V": "volt",
+    "W": "watt",
+    "Wb": "weber",
+
+    # accepted (plus a few variants) that take SI prefixes
+    "l": "liter", "L": "liter", "ℓ": "liter",  # Should only take negative powers; British spelling works for US also
+    "t": "metrikus tonna",           # should only take positive powers
+    "Da": "dalton",
+    "Np": "neper",               # should only take negative powers
+    "u": "atomtömegegység",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
+    "eV": "elektronvolt",
+    "rad": "radián",             # should only take negative powers
+    "sr": "szteradián",           # should only take negative powers
+  
+    # others that take a prefix
+    "a": "év",               # should only take positive powers
+    "as": "ívmásodperc",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+
+    # technically wrong, but used in practice with SI Units
+    "b": "bit",               # should only take positive powers
+    "B": "byte",              # should only take positive powers
+    "Bd": "baud",             # should only take positive powers
+  }
+
+
+- UnitsWithoutPrefixes: {
+    # time
+    "″": "másodperc", "\"": "másodperc",
+    "′": "perc", "'": "perc","min": "perc",
+    "h": "óra", "hr": "óra", "Hr": "óra",
+    "d": "nap", "dy": "nap",
+    "w": "hét", "wk": "hét",
+    "y": "év", "yr": "év",    
+
+    # angles
+    "°": "fok", "deg": "fok", # should only take negative powers
+    "arcmin": "ívperc",
+    "amin": "ívperc",
+    "am": "ívperc",
+    "MOA": "ívperc",
+    "arcsec": "ívmásodperc",
+    "asec": "ívmásodperc",
+
+    # distance
+    "au": "csillagászati egység", "AU": "csillagászati egység",
+    "ltyr": "fényév", "ly": "fényév",
+    "pc": "parszek",
+    "Å": "angström", "Å": "angström",           # U+00C5 and U+212B
+    "fm": "fermi",
+
+    # others
+    "ha": "hektár",
+    # "B": "bel",    # "B" more commonly means bytes
+    "dB": "decibel", # already logarithmic, so not used with SI prefixes
+
+    "amu": "atomikus tömeg",
+    "atm": "atmoszféra",
+    "bar": "bár",
+    "cal": "kalória",
+    "Ci": "curie",
+    "grad": "gradiens",
+    "M": "mól",
+    "R": "röntgen",
+    "rpm": "fordulat per perc",
+    "℧": "m-h-o",
+    "dyn": "dyn",
+    "erg": "erg",
+
+    # powers of 2 used with bits and bytes
+    "Kib": "kibi-bit", "Mib": "mebi-bit", "Gib": "gibi-bit", "Tib": "tebi-bit", "Pib": "pebi-bit", "Eib": "exbi-bit", "Zib": "zebi-bit", "Yib": "yobi-bit",
+    "KiB": "kibi-byte", "MiB": "mebi-byte", "GiB": "gibi-byte", "TiB": "tebi-byte", "PiB": "pebi-byte", "EiB": "exbi-byte", "ZiB": "zebi-byte", "YiB": "yobi-byte",
+  }
+
+  # this will only be used if the language is English, so it can be empty for other countries
+- EnglishUnits: {
+    # length
+    "in": "hüvelyk",
+    "ft": "láb",
+    "mi": "mérföld",
+    "rd": "rúd",
+    "li": "link",
+    "ch": "lánc",
+
+    # area
+    "sq in": "négyzethüvelyk", "sq. in": "négyzethüvelyk", "sq. in.": "négyzethüvelyk",
+    "sq ft": "négyzetláb", "sq. ft": "négyzetláb", "sq. ft.": "négyzetláb",
+    "sq yd": "négyzetméter", "sq. yd": "négyzetméter", "sq. yd.": "négyzetméter",
+    "sq mi": "négyzetmérföld", "sq. mi": "négyzetmérföld", "sq. mi.": "négyzetmérföld",
+    "ac": "hold",
+    "FBM": "deszkaláb",
+
+    # volume
+    "cu in": "köbhüvelyk", "cu. in": "köbhüvelyk", "cu. in.": "köbhüvelyk",
+    "cu ft": "köbláb", "cu. ft": "köbláb", "cu. ft.": "köbláb",
+    "cu yd": "köbyard", "cu. yd": "köbyard", "cu. yd.": "köbyard",
+    "bbl": "hordó", "BBL": "hordó",
+    "pk": "csipet",
+    "bu": "véka",
+    "tsp": "teáskanál",
+    "tbl": "evőkanál",
+
+    # liquid
+    "fl dr": "folyadékdróm",
+    "fl oz": "folyadék uncia",
+    "gi": "gill",
+    "cp": "csésze", "cup": "csésze",
+    "pt": "pint",
+    "qt": "quart",
+    "gal": "gallon",
+
+    # weight
+    "gr": "gabona",
+    "dr": "dram",
+    "oz": "uncia", "℥": "uncia",
+    "lb": "font",
+    "cwt": "százfontos",
+    "dwt": "filléres",
+    "oz t": "troy uncia",
+    "lb t": "troy font",
+
+    # energy
+    "hp": "lóerő",
+    "BTU": "BTU",
+    "°F": "Fahrenheit fok", "℉": "Fahrenheit fok",
+
+    # other
+    "mph": "mérföld per óra",
+    "mpg": "mérföld per gallon",
+  }
+
+- CurrencySymbols: {
+    "$": "dollár", "¢": "cent", "€": "euró", "£": "font", "₡": "colón", "₤": "font", "₨": "rúpia",
+    "₩": "won", "₪": "sékel", "₱": "pezó", "₹": "rúpia", "₺": "líra", "₿": "bitcoin",
+    # could add more currencies...
+  }
+
+- PluralForms: {
+  # FIX: this needs to be flushed out
+    "inch": "hüvelyk", "square inch": "négyzet hüvelyk", "cubic inch": "köbhüvelyk",
+    "foot": "láb", "square foot": "négyzetláb", "cubic foot": "köbláb",
+    "board foot": "láb",
+    "degree celsius": "celsius fok",
+    "degree fahrenheit": "fahrenheit fok",
+    "henry": "henri",
+    "hertz": "hertz",
+    "lux": "lux",
+    "siemens": "siemens",
+    "revolution per minute": "fordulat percenként",
+    "mile per hour": "mérföld óránként",
+    "mile per gallon": "mérföld/gallon",
+    "colón": "colonok", "lira": "líra", "won": "won", "bitcoin": "bitcoin"
+  }
+
+# Lines starting with "#" are a comment
+# Each definition in this file is of the form
+# - name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
+
+
+# ----------------  Cardinal and Ordinal Numbers  --------------------------
+# The following definitions are used to convert numbers to words
+# The are mainly used for ordinals, of which there are two cases:
+# 1. Regular ordinals: first, second, third, ...
+# 2. Ordinals used in the denominator of fractions (e.g, one half, one third)
+#    When used in the denominator of fractions, a plural version might be
+#    used (e.g., two halves, two thirds)
+# Although a lot of languages are regular after a few entries, for generality,
+# the following lists should be filled out even though they are the same
+# or easily derived from others in many languages (e.g, an 's' is added for plurals).
+# The larger ordinal numbers (e.g, millionth) is used when there are only
+# '0's after that decimal place (e.g., 23000000).:w
+
+# All definitions start 0, 10, 100, etc.
+
+# The definitions for the "ones" should extend until a regular pattern begins
+#   The minimum length is 10.
+
+# For English, a regular pattern starts at twenty
+- NumbersOnes: [
+        "nulla", "egy", "kettő", "három", "négy", "öt", "hat", "hét", "nyolc", "kilenc",
+        "tíz", "tizenegy", "tizenkettő", "tizenhárom", "tizennégy", "tizenöt", "tizenhat",
+        "tizenhét", "tizennyolc", "tizenkilenc", "húsz", "huszonegy", "huszonkettő", "huszonhárom", "huszonnégy", "huszonöt", "huszonhat", "huszonhét", "huszonnyolc", "huszonkilenc", "harminc", "harmincegy", "harminckettő", "harminchárom", "harmincnégy", "harmincöt", "harminchat", "harminchét", "harmincnyolc", "harminckilenc", "negyven", "negyvenegy", "negyvenkettő", "negyvenhárom", "negyvennégy", "negyvenöt", "negyvenhat", "negyvenhét", "negyvennyolc", "negyvenkilenc", "ötven", "ötvenegy", "ötvenkettő", "ötvenhárom", "ötvennégy", "ötvenöt", "ötvenhat", "ötvenhét", "ötvennyolc", "ötvenkilenc", "hatvan", "hatvanegy", "hatvankettő", "hatvanhárom", "hatvannégy", "hatvanöt", "hatvanhat", "hatvanhét", "hatvannyolc", "hatvankilenc", "hetven", "hetvenegy", "hetvenkettő", "hetvenhárom", "hetvennégy", "hetvenöt", "hetvenhat", "hetvenhét", "hetvennyolc", "hetvenkilenc", "nyolcvan", "nyolcvanegy", "nyolcvankettő", "nyolcvanhárom", "nyolcvannégy", "nyolcvanöt", "nyolcvanhat", "nyolcvanhét", "nyolcvannyolc", "nyolcvankilenc", "kilencven", "kilencvenegy", "kilencvenkettő", "kilencvenhárom", "kilencvennégy", "kilencvenöt", "kilencvenhat", "kilencvenhét", "kilencvennyolc", "kilencvenkilenc", "száz"
+    ]
+
+- NumbersOrdinalOnes: [
+        "nulladik", "első", "második", "harmadik", "negyedik", "ötödik", "hatodik", "hetedik", "nyolcadik", "kilencedik",
+        "tizedik", "tizenegyedik", "tizenkettedik", "tizenharmadik", "tizennegyedik", "tizenötödik", "tizenhatodik",
+        "tizenhetedik", "tizennyolcadik", "tizenkilencedik", "huszadik", "huszonegyedik", "huszonkettedik", "huszonharmadik", "huszonnegyedik", "huszonötödik", "huszonhatodik", "huszonhetedik", "huszonnyolcadik", "huszonkilencedik", "harmincadik", "harmincegyedik", "harminckettedik", "harmincharmadik", "harmincnegyedik", "harmincötödik", "harminchatodik", "harminchetedik", "harmincnyolcadik", "harminckilencedik", "negyvenedik", "negyvenegyedik", "negyvenkettedik", "negyvenharmadik", "negyvennegyedik", "negyvenötödik", "negyvenhatodik", "negyvenhetedik", "negyvennyolcadik", "negyvenkilencedik", "ötvenedik", "ötvenegyedik", "ötvenkettedik", "ötvenharmadik", "ötvennegyedik", "ötvenötödik", "ötvenhatodik", "ötvenhetedik", "ötvennyolcadik", "ötvenkilencedik", "hatvanadik", "hatvanegyedik", "hatvankettedik", "hatvanharmadik", "hatvannegyedik", "hatvanötödik", "hatvanhatodik", "hatvanhetedik", "hatvannyolcadik", "hatvankilencedik", "hetvenedik", "hetvenegyedik", "hetvenkettedik", "hetvenharmadik", "hetvennegyedik", "hetvenötödik", "hetvenhatodik", "hetvenhetedik", "hetvennyolcadik", "hetvenkilencedik", "nyolcvanadik", "nyolcvanegyedik", "nyolcvankettedik", "nyolcvanharmadik", "nyolcvannegyedik", "nyolcvanötödik", "nyolcvanhatodik", "nyolcvanhetedik", "nyolcvannyolcadik", "nyolcvankilencedik", "kilencvenedik", "kilencvenegyedik", "kilencvenkettedik", "kilencvenharmadik", "kilencvennegyedik", "kilencvenötödik", "kilencvenhatodik", "kilencvenhetedik", "kilencvennyolcadik", "kilencvenkilencedik", "századik"
+    ]
+
+- NumbersOrdinalPluralOnes: [
+        "nulladik", "első", "ketted", "harmad", "negyed", "ötöd", "hatod", "heted", "nyolcad", "kilenced",
+        "tized", "tizenegyed", "tizenketted", "tizenharmad", "tizennegyed", "tizenötöd", "tizenhatod",
+        "tizenheted", "tizennyolcad", "tizenkilenced"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalOnes: [
+        "nulladik", "egyed", "ketted", "harmad", "negyed", "ötöd", "hatod", "heted", "nyolcad", "kilenced", "tized", "tizenegyed", "tizenketted", "tizenharmad", "tizennegyed", "tizenötöd", "tizenhatod", "tizenheted", "tizennyolcad", "tizenkilenced", "huszad"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralOnes: [
+        "nullad", "egyed", "ketted", "harmad", "negyed", "ötöd", "hatod", "heted", "nyolcad", "kilenced", "tized", "tizenegyed", "tizenketted", "tizenharmad", "tizennegyed", "tizenötöd", "tizenhatod", "tizenheted", "tizennyolcad", "tizenkilenced", "huszad"
+    ]
+
+
+    # What to use for multiples of 10
+- NumbersTens: [
+        "egy", "kettő", "három", "négy", "öt", "hat", "hét", "nyolc", "kilenc", "tíz", "húsz", "harminc", "negyven", "ötven", "hatvan", "hetven", "nyolcvan", "kilencven", "száz", "száztíz", "százhúsz", "százharminc", "száznegyven", "százötven", "százhatvan", "százhetven", "száznyolcvan", "százkilencven", "kétszáz", "kétszáztíz", "kétszázhúsz", "kétszázharminc", "kétszáznegyven", "kétszázötven", "kétszázhatvan", "kétszázhetven", "kétszáznyolcvan", "kétszázkilencven", "háromszáz", "háromszáztíz", "háromszázhúsz", "háromszázharminc", "háromszáznegyven", "háromszázötven", "háromszázhatvan", "háromszázhetven", "háromszáznyolcvan", "háromszázkilencven", "négyszáz", "négyszáztíz", "négyszázhúsz", "négyszázharminc", "négyszáznegyven", "négyszázötven", "négyszázhatvan", "négyszázhetven", "négyszáznyolcvan", "négyszázkilencven", "ötszáz", "ötszáztíz", "ötszázhúsz", "ötszázharminc", "ötszáznegyven", "ötszázötven", "ötszázhatvan", "ötszázhetven", "ötszáznyolcvan", "ötszázkilencven", "hatszáz", "hatszáztíz", "hatszázhúsz", "hatszázharminc", "hatszáznegyven", "hatszázötven", "hatszázhatvan", "hatszázhetven", "hatszáznyolcvan", "hatszázkilencven", "hétszáz", "hétszáztíz", "hétszázhúsz", "hétszázharminc", "hétszáznegyven", "hétszázötven", "hétszázhatvan", "hétszázhetven", "hétszáznyolcvan", "hétszázkilencven", "nyolcszáz", "nyolcszáztíz", "nyolcszázhúsz", "nyolcszázharminc", "nyolcszáznegyven", "nyolcszázötven", "nyolcszázhatvan", "nyolcszázhetven", "nyolcszáznyolcvan", "nyolcszázkilencven", "kilencszáz", "kilencszáz10", "kilencszázhúsz", "kilencszázharminc", "kilencszáznegyven", "kilencszázötven", "kilencszázhatvan", "kilencszázhetven", "kilencszáznyolcvan", "kilencszázkilencven"
+    ]
+
+- NumbersOrdinalTens: [
+        "", "tizedik", "huszadik", "harmincadik", "negyvenedik", "ötvenedik", "hatvanadik", "hetvenedik", "nyolcvanadik", "kilencvenedik"
+    ]
+
+- NumbersOrdinalPluralTens: [
+        "", "tizedek", "huszadok", "harmincadok", "negyvenedikek", "ötvenedikek", "hatvanadikok", "hetvenedikek", "nyolcvanadikak", "kilencvenedekikek"
+    ]
+
+
+- NumbersHundreds: [
+      "", "száz", "kétszáz", "háromszáz", "négyszáz", "ötszáz",
+        "hatszáz", "hétszáz", "nyolcszáz", "kilencszáz"
+    ]
+
+- NumbersOrdinalHundreds: [
+      "", "századik", "kétszázadik", "háromszázadik", "négyszázadik", "ötszázadik",
+        "hatszázadik", "hétszázadik", "nyolcszázadik", "kilencszázadik"
+    ]
+
+- NumbersOrdinalPluralHundreds: [
+      "", "századikak", "kétszázadikak", "háromszázadikak", "négyszázadikak", "ötszázadikak",
+        "hatszázadikak", "hétszázadikak", "nyolcszázadikak", "kilencszázadikak"
+    ]
+      
+
+    # At this point, hopefully the language is regular. If not, code needs to be written
+- NumbersLarge: [
+        "", "ezer", "millió", "milliárd", "billió", "kvadrillió",
+        "kvintillió", "szextillon", "septillion", "oktilió", "nemmilliárd",
+    ]
+      
+- NumbersOrdinalLarge: [
+        "", "ezredik", "milliomodik", "milliárdodik", "billiódik", "kvadrilliódik",
+        "kvintilliódik", "szextillonidik", "septillionodik", "oktillionodik", "nonmilliomodrészedik"
+    ]
+      
+- NumbersOrdinalPluralLarge: [
+        "", "ezredek", "milliomodok", "milliárdod", "billiórészek", "kvadrilliószoros",
+        "kvintilliószoros", "szextillonrész", "septiliódiumok", "oktilliomodok", "nonilliószoros"
+    ]

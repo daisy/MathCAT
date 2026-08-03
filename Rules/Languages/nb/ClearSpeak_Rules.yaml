@@ -28,7 +28,7 @@
   - T: "minus"      # phrase(10 'minus' 4 equals 6)
   - x: "translate(text(), '-_', '')"
 
-- name: default
+- name: default   #audit-ignore
   tag: square-root
   match: "."
   replace:
@@ -55,7 +55,7 @@
       then: [pause: short]
       else: [pause: long]
 
-- name: default
+- name: default   # audit-ignore
   tag: root
   match: "."
   replace:
@@ -70,7 +70,7 @@
           then: [T: "den negative"]      # phrase(minus 6 is a 'negative' number)
           else: [T: "den positive"]      # phrase(10 is a 'positive' number)
   - test:
-      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
+      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]" # NORWEGIAN: Changed decimal point to $DecimalSeparators
       then_test:
       - if: "*[2][.='2']"
         then: [T: "kvadratroten"]      # phrase(5 is the 'square root' of 25)
@@ -115,10 +115,10 @@
 
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
-       
+    
 # Units (e.g., meters per second)
 # NORWEGIAN: Added rule for t="time"
-- name: per-fraction
+- name: per-fraction    # audit-ignore
   tag: fraction
   match:
   - "$ClearSpeak_Fractions='Per' or"
@@ -136,14 +136,14 @@
        - x: "*[2]"
 
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
-- name: common-fraction
+- name: common-fraction  # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #NORWEGIAN: Changed decimal point to $DecimalSeparators
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    # NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             # NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
   variables:
-  - IsPlural: "not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064'])"     # '\u2064' is invisible plus and is used in mixed fractions
+  - IsPlural: "not(*[1]=1)"
     # set right level for the location of the common fraction/mixed fraction
   - IsMixedFraction: "preceding-sibling::*[1][.='\u2064']"
   - UnitSibling: "IfThenElse($IsMixedFraction, .., .)"
@@ -173,7 +173,7 @@
     # unit follows the fraction -- special cases
     - else:
       - test:
-          if: "$NeuterUnitFollows and (*[1]=1 or ($IsMixedFraction and preceding-sibling::*[2][.=1]))"
+          if: "$NeuterUnitFollows and *[1]=1"
           then: [T: "ett"]
           else: [x: "*[1]"]
       - test:
@@ -186,9 +186,8 @@
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
-
-#NORWEGIAN: Changed to English version, but changed decimal point to $DecimalSeparators 
-- name: fraction-over-simple
+# NORWEGIAN: Changed to English version, but changed decimal point to $DecimalSeparators 
+- name: fraction-over-simple    # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Over' or $ClearSpeak_Fractions='FracOver' or $ClearSpeak_Fractions='OverEndFrac') or"
@@ -212,9 +211,11 @@
       - pause: short
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
+      else: 
+      - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
-  name: fraction-over-text
+  name: fraction-over-text    # audit-ignore
   tag: fraction
   match:
   - "not($ClearSpeak_Fractions='General' or $ClearSpeak_Fractions='GeneralEndFrac') and"
@@ -241,8 +242,10 @@
       - pause: short
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
+      else: 
+      - pause: short
 
-#NORWEGIAN: Changed to English version
+# NORWEGIAN: Changed to English version
 - name: default
   tag: fraction
   match: "."
@@ -278,7 +281,6 @@
         then: [bookmark: "*[2]/@id", T: "arcus", x: "*[1]"]      # phrase(the 'buelenge' of a circle)
         else: [bookmark: "*[2]/@id", T: "invers", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
-
 - name: function-squared-or-cubed
   tag: power
   match:
@@ -292,7 +294,8 @@
       then: [T: "i andre"]      # phrase(25 equals 5 'squared')
       else: [T: "i tredje"]      # phrase(625 equals 5 'cubed')
 
-- name: function-power
+# The following element is invisible function application. Used for expressions like sin^n x.
+- name: function-power    # audit-ignore
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -341,30 +344,33 @@
   - bookmark: "*[2]/@id"
   - T: "i tredje"      # phrase(5 'cubed' equals 125)
 
-- name: simple-integer
+# Norwegian: Changed to longer pause at the end.
+- name: simple-integer    # audit-ignore
   tag: power
-  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   replace:
   - x: "*[1]"
   - T: "opphøyd i"                 
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
-- name: simple-negative-integer
+# Norwegian: Changed to longer pause at the end.
+- name: simple-negative-integer    # audit-ignore
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
-  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"       #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"       # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "    ]"
   replace:
   - x: "*[1]"
   - T: "opphøyd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
-- name: simple-var
+# Norwegian: Changed to longer pause at the end.
+- name: simple-var    # audit-ignore
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
@@ -372,7 +378,7 @@
   - T: "opphøyd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -383,7 +389,8 @@
 #   but the test cases all fall back to "raised to the exponent" when not "Auto"
 #   If these are allowed for non-Auto values, then you end up with "...power power...".
 - # [xxx]^n
-  name: nested-squared-or-cubed
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
+  name: nested-squared-or-cubed   # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -391,7 +398,7 @@
   - "     *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   # base is mn, mi, common fraction ([xxx] case)
   - "     *[1][self::m:mn or self::m:mi or "
-  - "          self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                   #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "          self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                   # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                        *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "         ]"
   - "    ]"
@@ -399,9 +406,16 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # - [xxx]^n
-  name: nested-negative-squared-or-cubed
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
+  name: nested-negative-squared-or-cubed    # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -410,7 +424,7 @@
   - "                *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3"
   # base is mn, mi, common fraction ([xxx] case)
   - "                *[1][self::m:mn or self::m:mi or "
-  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                      #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                      # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                                   *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "               ]"
   - "          ]"
@@ -419,9 +433,16 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # [xxx] var^n
-  name: nested-var-squared-or-cubed
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
+  name: nested-var-squared-or-cubed   # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -433,7 +454,7 @@
   - "       *[2][self::m:mo][.='⁢'] and " # invisible times
   # base is mn, or common fraction ([xxx] case)
   - "       *[1][self::m:mn or "
-  - "            self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                         #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "            self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                         # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                          *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "           ]"
   - "      ]"
@@ -441,9 +462,16 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # -[xxx] var^n
-  name: nested-negative-var-squared-or-cubed
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
+  name: nested-negative-var-squared-or-cubed    # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -456,7 +484,7 @@
   - "       *[1][self::m:minus and count(*)=1 and "
   # base is mn, or common fraction ([xxx] case)
   - "            *[1][self::m:mn or "
-  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                     #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                     # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                                  *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "                ]"
   - "           ]"
@@ -465,6 +493,12 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - name: default-exponent-power
   tag: power
@@ -478,19 +512,26 @@
   - pause: short
   - T: "slutt eksponent"      # phrase(and now 'end exponent' has been reached)
 
-- name: default
+# Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
+- name: default   # audit-ignore
   tag: power
   match: "."
   replace:
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 #
 # Some rules on mrows
 #
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
-  name: ClearSpeak-absolute-value
+  name: ClearSpeak-absolute-value   # audit-ignore
   tag: absolute-value
   match: "."
   # SWEDISH/NORWEGIAN: Differentiate between the initial and ending declaration of the terms.
@@ -509,7 +550,7 @@
       - x: "$EndToSay"
   - pause: short
 
-- name: set
+- name: set   # audit-ignore
   tag: set
   match: "."
   replace:
@@ -546,7 +587,7 @@
 
  # SWEDISH/NORWEGIAN: rewrote the intervals function to better deal with Swedish/Norwegian convention of speaking intervals
  # NORWEGIAN: Removed test for verbosity, cause you should always say "det åpne" etc.
-- name: ClearSpeak-intervals # avoid overriding with default "intervals" name
+- name: ClearSpeak-intervals # avoid overriding with default "intervals" name # audit-ignore
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
   - is_intervals_end_infinity: "*[2][.='∞'or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
@@ -602,23 +643,23 @@
       else: [x: "*"]
 
 - # handle both log and ln
-  name: ClearSpeak-log
+  name: ClearSpeak-log    # audit-ignore
   tag: mi
   variables: [log_is_simple: "IsNode(following-sibling::*[2],'simple')"] # skip function apply
   match: ".='log' or .='ln' or .='lg'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "IsNode(following-sibling::*[2],'simple')"
+      if: "$log_is_simple"
       then:
       - test:
         - if: ".='log'"
           then: [T: "log"]      # phrase(the 'log' of x)
         - else_if: ".='lg'"
-          then: [spell: "'lg'"]      # phrase(the 'lg' of x)
-        - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
+          then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
+        - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of the product of 2 numbers)
-          else: [spell: "'ln'"]
+          else: [SPELL: "'ln'"]
       else:
       - test:
         - if: ".='log'"
@@ -632,13 +673,12 @@
           - test:
             - if: "$Verbosity='Verbose'"
               then: [T: "tier-logaritmen"]
-              else: [spell: "'lg'"]      # phrase(the 'lg' of x)
+              else: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
-          else: [spell: "'ln'"]
+          else: [SPELL: "'ln'"]
 
-#NORWEGIAN: Changed to English version
-- name: ClearSpeak-multi-line
+- name: ClearSpeak-multi-line   # audit-ignore
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
   variables:
@@ -654,44 +694,44 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "tilfeller"]
                 else: [T: "tilfelle"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'  or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "rader"]      # phrase(this is the first 'line' of three lines)
                 else: [T: "rad"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "betingelser"]      # phrase(this is the first 'constraint' of three constraints)
                 else: [T: "betingelse"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "likninger"]      # phrase(this is the first 'equation' of three equations)
                 else: [T: "likning"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "rader"]      # phrase(this is the first 'row' of three rows)
                 else: [T: "rad"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "steg"]      # phrase(this is the first 'step' of three steps)
                 else: [T: "steg"]      # phrase(this is the first 'step' of three steps)
           # SWEDISH/NORWEGIAN: Every expression had to be inflected separately.
       - pause: short
   - x: "*"
 
-#NORWEGIAN: Changed from Swedish to English version
+# NORWEGIAN: Changed from Swedish to English version
 - name: ClearSpeak-default-multiline
   tag: [mtr, mlabeledtr]
   match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
@@ -731,7 +771,7 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
-- name: ClearSpeak_Functions_None
+- name: ClearSpeak_Functions_None   # audit-ignore
   tag: mo
   match:
   - ".='⁡' and $ClearSpeak_Functions = 'None' and"

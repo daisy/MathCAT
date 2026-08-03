@@ -211,7 +211,7 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
             if let Err(e) = new_package {
                 // Clear stale state so subsequent API calls do not return previous user's data (security issue)
                 old_package.replace(parser::parse("<math></math>").unwrap());
-                bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+                bail!("Invalid MathML input:\n{}\nError is: {}", mathml_str, e);
             }
 
             let new_package = new_package.unwrap();
@@ -342,38 +342,38 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
         }
     }
 
-    crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow_mut();
-        if let Some(error_string) = rules.get_error() {
+    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
+        if let Some(error_string) = rules.borrow().get_error() {
             bail!("{}", error_string);
         }
+        Ok(())
+    })?;
 
-        // we set the value even if it was the same as the old value because this might override a potentially changed future user value
-        let mut pref_manager = rules.pref_manager.borrow_mut();
-        if name == "LanguageAuto" {
-            let language_pref = pref_manager.pref_to_string("Language");
-            if language_pref != "Auto" {
-                bail!(
-                    "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
-                    language_pref
-                );
+    // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
+    let pref_manager = crate::prefs::PreferenceManager::get();
+    let mut pref_manager = pref_manager.borrow_mut();
+    if name == "LanguageAuto" {
+        let language_pref = pref_manager.pref_to_string("Language");
+        if language_pref != "Auto" {
+            bail!(
+                "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
+                language_pref
+            );
+        }
+    }
+    let lower_case_value = value.to_lowercase();
+    if lower_case_value == "true" || lower_case_value == "false" {
+        pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
+    } else {
+        match name {
+            "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
+                pref_manager.set_api_float_pref(name, to_float(name, &value)?)
+            }
+            _ => {
+                pref_manager.set_string_pref(name, &value)?;
             }
         }
-        let lower_case_value = value.to_lowercase();
-        if lower_case_value == "true" || lower_case_value == "false" {
-            pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
-        } else {
-            match name {
-                "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
-                    pref_manager.set_api_float_pref(name, to_float(name, &value)?)
-                }
-                _ => {
-                    pref_manager.set_string_pref(name, &value)?;
-                }
-            }
-        };
-        return Ok::<(), Error>(());
-    })?;
+    };
 
     return Ok(());
 }
@@ -1137,6 +1137,16 @@ mod tests {
     use super::super::init_logger;
     use super::*;
 
+    fn interface_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        use std::panic::{catch_unwind, AssertUnwindSafe};
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
+
     fn are_parsed_strs_equal(test: &str, target: &str) -> bool {
         let test_package = &parser::parse(test).expect("Failed to parse input");
         let test_doc = test_package.as_document();
@@ -1228,13 +1238,13 @@ mod tests {
     }
 
     #[test]
-    fn test_entities() {
-        // this forces initialization
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn test_entities() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
 
-        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>").unwrap();
+        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>")?;
         let converted_str =
-            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>").unwrap();
+            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>")?;
 
         // need to remove unique ids
         static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
@@ -1244,26 +1254,27 @@ mod tests {
 
         let entity_str = set_mathml(
             "<math data-quot=\"&quot;value&quot;\" data-apos='&apos;value&apos;'><mi>XXX</mi></math>",
-        )
-        .unwrap();
+        )?;
         let converted_str =
-            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>").unwrap();
+            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities quote test failed");
 
         let entity_str =
-            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>").unwrap();
+            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>")?;
         let converted_str =
-            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")
-                .unwrap();
+            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities <,>,& test failed");
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn can_recover_from_invalid_set_rules_dir() {
+    fn can_recover_from_invalid_set_rules_dir() -> Result<()> {
+        return interface_test(|| {
         use std::env;
         // MathCAT will check the env var "MathCATRulesDir" as an override, so the following test might succeed if we don't override the env var
         unsafe { env::set_var("MathCATRulesDir", "MathCATRulesDir"); }   // safe because we are single threaded
@@ -1274,6 +1285,8 @@ mod tests {
             super::super::abs_rules_dir_path()
         );
         assert!(set_mathml("<math><mn>1</mn></math>").is_ok());
+        return Ok( () );
+        });
     }
 
     #[test]
@@ -1312,8 +1325,9 @@ mod tests {
     }
 
     #[test]
-    fn stack_overflow_protection() {
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn stack_overflow_protection() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
         let mut bad_mathml = String::from("<math>");
         for _ in 0..MAX_DEPTH+1 {
             bad_mathml.push_str("<msqrt><mi>n</mi>");
@@ -1323,19 +1337,140 @@ mod tests {
         }
         bad_mathml.push_str("</math>");
         assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn old_mathml_cleared_on_error() {
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn old_mathml_cleared_on_error() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
         let good_mathml = "<math><mn>3</mn></math>";
-        set_mathml(good_mathml).unwrap();
+        set_mathml(good_mathml)?;
         let bad_mathml = "<math><mi>&xabc;</mi></math>";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text().unwrap() == "");
-        set_mathml(good_mathml).unwrap();
+        assert!(get_spoken_text()? == "");
+        set_mathml(good_mathml)?;
         let bad_mathml = "<math>garbage";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text().unwrap() == "");
+        assert!(get_spoken_text()? == "");
+        return Ok( () );
+        });
+    }
+
+
+
+    fn setup_speech_ssml() -> Result<()> {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
+        set_preference("Language", "en")?;
+        set_preference("TTS", "SSML")?;
+        set_preference("MathRate", "80")?;
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        set_preference("Verbosity", "Medium")?;
+        return Ok( () );
+    }
+
+    #[test]
+    fn test_no_escaping() -> Result<()> {
+        return interface_test(|| {
+        setup_speech_ssml()?;
+        let expr = " <math>
+            <mfrac>
+                <mrow> <mi>x</mi><mo>+</mo><mi>y</mi> </mrow>
+                <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
+            </mfrac>
+        </math>";
+        set_mathml(&expr)?;
+        let speech = get_spoken_text()?;
+        // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
+        assert!(!speech.contains("&lt;"));
+        assert!(!speech.contains("&gt;"));
+        assert!(!speech.contains("&amp;lt;"));
+        return Ok(());
+        });
+    }
+
+    /// The attack payload must not pass through verbatim (rule-generated SSML may contain `<break`).
+    fn assert_ssml_attack_neutralized(speech: &str, illegal_ssml: &str) {
+        assert!(
+            !speech.contains(illegal_ssml),
+            "attack payload ({illegal_ssml}) appears verbatim in output: {speech}"
+        );
+        assert!(
+            !speech.contains(r#"time="5000ms""#) && !speech.contains("time='5000ms'"),
+            "attack break duration in output: {speech}"
+        );
+    }
+
+    /// SSML snippet an attacker might embed in MathML text or attributes.
+    const PAYLOAD: &str = r#"<break time="50000ms"/>"#;
+    /// Same bytes as `PAYLOAD`, entity-encoded so attribute values are well-formed XML.
+    const PAYLOAD_ATTR_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;";
+    /// Entity-encoded payload plus trailing literal text (well-formed in leaf element text).
+    const PAYLOAD_LEAF_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;note";
+
+    #[test]
+    /// User-supplied leaf text must not inject SSML when TTS is SSML.
+    fn leaf_text_ssml_attack_neutralized_in_speech() -> Result<()> {
+        return interface_test(|| {
+        setup_speech_ssml()?;
+        // Entity-encoded payload: valid XML through set_mathml (no CDATA), decodes to PAYLOAD + "note".
+        let mathml = format!(
+            r#"<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo>
+                           <mi>{PAYLOAD_LEAF_XML}</mi><mo>+</mo>
+                           <ms>{PAYLOAD_LEAF_XML}</ms><mo>+</mo>
+                           <mn>{PAYLOAD_LEAF_XML}</mn></mrow></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        let mathml = format!(
+            "<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo><mn>1</mn></mrow></math>"
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        return Ok(());
+        });
+    }
+
+    #[test]
+    /// Attribute values read via xpath must not inject SSML when TTS is SSML.
+    fn attribute_ssml_attack_neutralized_in_speech() -> Result<()> {
+        return interface_test(|| {
+        use crate::speech::{SpeechRulesWithContext, SPEECH_RULES};
+
+        setup_speech_ssml()?;
+        let mathml = format!(
+            r#"<math data-ssml-attack="{PAYLOAD_ATTR_XML}"><mn>x</mn></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+
+        // XPath Attribute nodes use replace_chars (same path as replace_nodes_string).
+        SPEECH_RULES.with(|rules| {
+            rules.borrow_mut().read_files()?;
+            let rules_ref = rules.borrow();
+            let package = parser::parse(&mathml)?;
+            let math = get_element(&package);
+            let attr = math
+                .attribute("data-ssml-attack")
+                .expect("data-ssml-attack attribute");
+            let work_package = Package::new();
+            let mut ctx =
+                SpeechRulesWithContext::new(&rules_ref, work_package.as_document(), "", 0);
+            let from_attr = ctx.replace_chars(attr.value(), math)?;
+            assert_ssml_attack_neutralized(&from_attr, PAYLOAD);
+            assert!(
+                from_attr.contains("&lt;"),
+                "attribute value should be XML-escaped for SSML: {from_attr}"
+            );
+            Ok::<(), Error>(())
+        })?;
+        return Ok(());
+        });
     }
 }

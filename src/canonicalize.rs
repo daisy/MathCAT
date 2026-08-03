@@ -969,7 +969,11 @@ impl CanonicalizeContext {
 								return Some(result);
 							}
 						},
-						"..." => {mathml.set_text("…");},  // name might need to change -- checked below
+						"..." => {
+							if name(get_parent(mathml)) != "mover" {
+								mathml.set_text("…");
+							}  // name might need to change -- checked below
+						},
 						":" => {
 							if is_ratio(mathml) {
 								mathml.set_text("∶");	// ratio U+2236
@@ -1865,7 +1869,7 @@ impl CanonicalizeContext {
 			// if roman numeral is in superscript and we get here, then it had a chemical element base, so we accept it
 			// note: you never has a state = I; if two letters, it must be 'II'.
 			if text.len() > 2  || 
-			   ((name(parent) =="msup" || name(parent) == "mmultiscripts") && text.len()==2 && text==[b'I',b'I']) {
+			   ((name(parent) =="msup" || name(parent) == "mmultiscripts") && text.len()==2 && text==*b"II") {
 				return true;
 			} else {
 				let is_upper_case = text[0].is_ascii_uppercase();	// safe since we know it is a roman numeral
@@ -1888,10 +1892,6 @@ impl CanonicalizeContext {
 			/// 'mo' should only be '+', '-', '=', ',', '.'  -- unlikely someone is doing anything sophisticated
 			fn is_roman_numeral_adjacent<'a, I>(siblings: I, must_be_upper_case: bool) -> bool
 					where I: Iterator<Item = &'a ChildOfElement<'a>> {		
-				static ROMAN_NUMERAL_OPERATORS: phf::Set<&str> = phf_set! {
-					"+", "-'", "=", "<", "≤", ">", "≥", 
-					// ",", ".",   // [c,d] triggers this if "," is present, so omitting it
-				};
 				let mut found_match = false;				// guard against no siblings
 				let mut last_was_roman_numeral = true;	// started at roman numeral
 				// debug!("start is_roman_numeral_adjacent");
@@ -1901,15 +1901,17 @@ impl CanonicalizeContext {
 					match name(maybe_roman_numeral) {
 						"mo" => {
 							if !last_was_roman_numeral {
+								debug!("maybe_roman_numeral (mo): not last was roman numeral");
 								return false;
 							}
 							let text = as_text(maybe_roman_numeral);
-							if !ROMAN_NUMERAL_OPERATORS.contains(text) {
+							// ",", "." omitted — [c,d] triggers this if "," is present
+							if !matches!(text, "+" | "-" | "=" | "<" | "≤" | ">" | "≥") {
 								return false;
 							}
 							last_was_roman_numeral = false;
 						},
-						"mi" | "mn" => {
+						"mi" | "mn" | "mtext" => {
 							if last_was_roman_numeral {
 								return false;		// no implicit multiplication (or whatever)
 							}
@@ -1921,7 +1923,7 @@ impl CanonicalizeContext {
 							found_match = true;
 							last_was_roman_numeral = true;
 						},
-						"mtext" | "mspace" | "mphantom" => {},
+						"mspace" | "mphantom" => {},
 						_ => {
 							return false;
 						}
@@ -2364,6 +2366,24 @@ impl CanonicalizeContext {
 			// If surrounded by fences, and commas are used, leave as is (e.g, "{1,234}")
 			if !text.contains(',') {
 				return true;		// not comma separated
+			}
+
+			// Comma-separated short values in subscripts are almost always index lists (e.g. D_{1,3}).
+			// Longer groups (e.g. 1,234) are thousands/decimals and should still merge.
+			// FIX: this could be extended to mmultiscripts, but that's a lot of work for little gain.
+			// parent_mrow may be <math> (no parent) when merge_number_blocks runs on the root.
+			if let Some(container) = mrow.parent().and_then(|n| n.element()) {
+				let container_name = name(container);
+				if matches!(container_name, "msub" | "msubsup")
+					&& mrow.preceding_siblings().len() == 1
+					&& text.split(',')
+						.all(|part| {
+							let digits = part.chars().filter(|c| c.is_ascii_digit()).count();
+							digits > 0 && digits <= 2
+						})
+				{
+					return false;
+				}
 			}
 
 			// We have already checked for whitespace as separators, so it must be a comma. Just check the fences.
@@ -3424,7 +3444,7 @@ impl CanonicalizeContext {
 			// FIX: MathType generates the wrong version of union and intersection ops (binary instead of unary)
 		} else if !is_base && (parent_name == "msup" || parent_name == "msubsup") {
 			mo_text = match mo_text {
-				"\u{00BA}"| "\u{2092}"| "\u{20D8}"| "\u{2218}" | "\u{25E6}" => "\u{00B0}",		// circle-like objects -> degree
+				"\u{00BA}"| "\u{2092}"| "\u{20D8}"| "\u{2218}" | "\u{25E6}" | "\u{02DA}" => "\u{00B0}",		// circle-like objects -> degree
 				_ => mo_text,
 			};
 		} else {
@@ -4489,7 +4509,6 @@ pub fn add_attrs<'a>(mathml: Element<'a>, attrs: &[Attribute]) -> Element<'a> {
 	}
 	return mathml;
 }
-
 
 pub fn name(node: Element<'_>) -> &str {
 	return node.name().local_part();
@@ -5971,19 +5990,64 @@ mod canonicalize_tests {
         let target_str = "<math><mrow>
 			<mn data-roman-numeral='true' data-number='48'>XLVIII</mn> <mo>+</mo><mn data-roman-numeral='true' data-number='2026'>mmxxvi</mn>
 			</mrow></math>";
-        // let target_str = "<math><mrow><mtext>XLVIII</mtext> <mo>+</mo><mn>mmxxvi</mn></mrow></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
-	// #[test]
-    // fn roman_numeral_context() {
-    //     let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
-    //     let target_str = "<math> <mrow data-changed='added'>
-	// 		<mrow data-changed='added'><mn data-roman-numeral='true'>vi</mn><mo>-</mo><mn mathvariant='normal' data-roman-numeral='true'>i</mn></mrow> 
-	// 		<mo>=</mo> <mn data-roman-numeral='true'>v</mn>
-	// 	</mrow> </math>";
-    //     are_strs_canonically_equal_result(test_str, target_str, &[])
-	// }
+	#[test]
+    fn roman_numeral_multi_letter_mi() -> Result<()> {
+        let test_str = "<math>
+            <mi>IX</mi>
+            <mo>+</mo>
+            <mi>VIII</mi>
+            <mo>=</mo>
+            <mi>XVII</mi>
+        </math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='9'>IX</mn>
+				<mo>+</mo>
+				<mn data-roman-numeral='true' data-number='8'>VIII</mn>
+			</mrow>
+			<mo>=</mo>
+			<mn data-roman-numeral='true' data-number='17'>XVII</mn>
+			</mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_single_letter_mi_is_not_number() -> Result<()> {
+        // Regression test for https://github.com/daisy/MathCAT/issues/528
+        let test_str = "<math>
+            <mi>C</mi>
+            <mo>=</mo>
+            <mi>D</mi>
+        </math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='100'>C</mn>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='500'>D</mn>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_context() -> Result<()> {
+        let test_str = "<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+				<mn data-roman-numeral='true' data-number='6'>vi</mn>
+				<mo>-</mo>
+				<mn mathvariant='normal' data-roman-numeral='true' data-number='1'>i</mn>
+				</mrow>
+				<mo>=</mo>
+				<mn data-roman-numeral='true' data-number='5'>v</mn>
+			</mrow>
+		</math>";
+        return are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
 
 	#[test]
     fn not_roman_numeral() -> Result<()> {
@@ -6889,6 +6953,24 @@ mod canonicalize_tests {
 			</mrow>
 		</math>"#;
         are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn subscript_short_comma_list_not_merged_but_thousands_are() -> Result<()> {
+		// With comma as decimal separator, short subscript lists like D_{1,3} are indexes, not decimals.
+		let test_str = "<math><msub><mi>D</mi><mrow><mn>1</mn><mo>,</mo><mn>3</mn></mrow></msub></math>";
+		let target_str = "<math><msub><mi>D</mi><mrow><mn>1</mn><mo>,</mo><mn>3</mn></mrow></msub></math>";
+		are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ",")?;
+
+		// Longer groups in a subscript are still merged (thousands / long decimals), e.g. a_{1,234}.
+		let test_str = "<math><msub><mi>a</mi><mrow><mn>1</mn><mo>,</mo><mn>234</mn></mrow></msub></math>";
+		let target_str = "<math><msub><mi>a</mi><mn>1,234</mn></msub></math>";
+		are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ",")?;
+
+		// Same thousands case with comma as a block separator.
+		let test_str = "<math><msub><mi>a</mi><mrow><mn>1</mn><mo>,</mo><mn>234</mn></mrow></msub></math>";
+		let target_str = "<math><msub><mi>a</mi><mn>1,234</mn></msub></math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 
