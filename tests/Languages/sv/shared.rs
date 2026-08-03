@@ -282,7 +282,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -318,7 +317,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("sv", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    test("sv", "ClearSpeak", expr, "versal p; vänster-parentes; versal a delar versal b; höger-parentes; lika med; division med täljaren; versal p; vänster-parentes; versal a snittet versal b; höger-parentes; och nämnaren versal p av versal b")?;
     return Ok(());
 
 }
