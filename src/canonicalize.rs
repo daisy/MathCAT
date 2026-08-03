@@ -3098,9 +3098,7 @@ impl CanonicalizeContext {
 				return Ok( mathml );
 			},
 			"mn" => {
-				if mathml.attribute_value(CHANGED_ATTR) != Some(ADDED_ATTR_VALUE) && !as_text(mathml).contains('.') {
-					self.canonicalize_plane1(mathml);
-				}
+				self.canonicalize_plane1(mathml);
 				return Ok( mathml );
 			},
 			"mrow" => {
@@ -5537,10 +5535,9 @@ mod canonicalize_tests {
     }
 
     #[test]
-	#[ignore]  // need to figure out a test for this ("|" should have a precedence around ":" since that is an alternative notation for "such that", but "∣" is higher precedence)
     fn vertical_bar_divides() -> Result<()> {
         let test_str = "<math>
-				<mi>x</mi><mo>+</mo><mi>y</mi> <mo>|</mo><mn>12</mn>
+		<mi>x</mi><mo>+</mo><mi>y</mi> <mo>|</mo><mn>12</mn>
             </math>";
         let target_str = "<math>
 				<mrow data-changed='added'>
@@ -5549,7 +5546,7 @@ mod canonicalize_tests {
 					<mo>+</mo>
 					<mi>y</mi>
 				</mrow>
-				<mo>∣<!--divides--></mo>
+				<mo>|</mo>
 				<mn>12</mn>
 				</mrow>
 			</math>";
@@ -6914,7 +6911,7 @@ mod canonicalize_tests {
 				<mi> j </mi>
 				<mi> k </mi>
 				<none/>
-				<mi> l </mi>
+				<mi data-chem-state='true'> l </mi>
 				<none/>
 			</mmultiscripts>
 		</math>";
