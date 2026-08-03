@@ -299,7 +299,6 @@ fn ignore_comma() -> Result<()> {
 
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -335,7 +334,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("fr", "ClearSpeak", expr, "majuscule p; parenthèse gauche, majuscule a est un diviseur de, majuscule b; parenthèse droite; est égal à; fraction, majuscule p; parenthèse gauche, majuscule a intersection majuscule b; parenthèse droite, sur, majuscule p de majuscule b, fin de fraction")?;
+    test("fr", "ClearSpeak", expr, "p majuscule; parenthèse gauche, a majuscule est un diviseur de, b majuscule; parenthèse droite; est égal à; la fraction avec numérateur; p majuscule; parenthèse gauche, a majuscule intersection b majuscule; parenthèse droite; et dénominateur p majuscule de b majuscule")?;
     Ok(())
 }
 

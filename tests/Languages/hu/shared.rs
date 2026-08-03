@@ -322,7 +322,6 @@ fn ignore_comma() -> Result<()> {
 
 // AI generated
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://hu.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -358,7 +357,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("hu", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    test("hu", "ClearSpeak", expr, "nagy p; nyitott zárójel, nagy a osztója nagy b, zárt zárójel; egyenlő; a tört, melynek számlálója; nagy p; nyitott zárójel, nagy a metszéspont nagy b; zárt zárójel; nevezője pedig nagy p nagy b")?;
     return Ok(());
 
 }

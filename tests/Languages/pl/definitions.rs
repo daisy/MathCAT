@@ -711,14 +711,12 @@ fn geometry_prefix_tests() -> Result<()> {
 
 #[test]
 fn separator_tests() -> Result<()> {
-  let expr = format!(
-        "<math>
+  let expr = "<math>
             <mrow intent='time-separator($x,$y)'>
                 <mi arg='x'>x</mi>
                 <mi arg='y'>y</mi>
             </mrow>
-        </math>"
-    );
+        </math>".to_string();
 
     test("pl", "ClearSpeak", &expr, "x y")?;
     Ok(())

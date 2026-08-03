@@ -1125,7 +1125,7 @@ fn matrix_simple_table() -> Result<()> {
   let expr = "<math>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-  test("en", "ClearSpeak", expr, "table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
+  test("en", "ClearSpeak", expr, "array of; row 1; column 1; 3; comma; row 2; column 1; 2")
 }
 
 #[test]
@@ -1149,7 +1149,7 @@ fn mtable_blank_op() -> Result<()>{
     let expr = "<math>
         <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-    test("en", "ClearSpeak", expr, "; table with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
+    test("en", "ClearSpeak", expr, "; array of; row 1; column 1; 3; comma; row 2; column 1; 2")
 }
 
 
@@ -1159,7 +1159,7 @@ fn mtable_colspan_table() -> Result<()>{
   let expr = "<math>
         <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
     </math>";
-  test("en", "ClearSpeak", expr, "table with 2 rows and 2 columns; row 1; column 1; 3; row 2; column 1; 2, column 2; 4")
+  test("en", "ClearSpeak", expr, "array of; row 1; column 1; 3; comma; row 2; column 1; 2, column 2; 4")
 }
 
 #[test]
@@ -1180,7 +1180,7 @@ fn bug_mtable_rowspan_colspan() -> Result<()>{
         </mtable>
     </math>";
     test("en", "ClearSpeak", expr,
-	 "table with 2 rows and 5 columns; row 1; column 1; eigh, column 2; b, column 3; c; row 2; column 1; d, column 2; e")
+	 "array of; row 1; column 1; eigh, column 2; b, column 3; c; comma; row 2; column 1; d, column 2; e")
 }
 
 
