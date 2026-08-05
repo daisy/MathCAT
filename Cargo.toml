@@ -14,6 +14,7 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 [features]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
+"rule-coverage" = []
 "tts" = [ "natural-tts" ]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
 
