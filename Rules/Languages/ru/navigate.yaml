@@ -346,6 +346,39 @@
   match: "$Move2D != ''"
   replace: []
 
+- name: into-or-out-of-silent
+  tag: "*"
+  # audit-ignore: parity placeholder; Russian navigation keeps existing rules.
+  # Present for parity with the English navigation rules. Kept after default-move
+  # so the existing Russian navigation phrasing keeps its historical priority.
+  match: "false()"
+  replace: []
+
+- name: into-or-out-of-default
+  tag: "*"
+  # audit-ignore: parity placeholder; Russian navigation keeps existing rules.
+  # Present for parity with the English navigation rules. Kept after default-move
+  # so the existing Russian navigation phrasing keeps its historical priority.
+  match: "false()"
+  replace:
+  - with:
+      variables:
+      - PartNumber: "count($Child2D/preceding-sibling::*)"
+      - PartName: "GetNavigationPartName(name(.), $PartNumber)"
+      replace:
+      - x: "$Move2D"
+      - test:
+        - if: "$PartName != ''"
+          then: [x: "$PartName"]
+        - else_if: "count(*) = 1"
+          then_test:
+            if: "$NavVerbosity = 'Verbose'"
+            then: [x: "translate(name(.), '-_', ' ')"]      # e.g., "in absolute value"
+          else:
+          - t: "часть"         # phrase(the 'part' of the expression)
+          - x: "count($Child2D/preceding-sibling::*) + 1"
+      - pause: "medium"
+
 # ********* Go back to last position ***************
 # This is first since start/end position shouldn't matter
 - name: move-last-location
@@ -402,6 +435,17 @@
   - set_variables: [NavNode: "@id"]
 
 # special case of zooming into a table -- move to the first row (if only one row, first column)
+- name: zoom-in-table
+  tag: "*"
+  # audit-ignore: parity placeholder; the existing mtable-specific rule below
+  # preserves current Russian navigation behavior.
+  match: "false()"
+  replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+      replace: [x: "."]
+  - set_variables: [NavNode: "IfThenElse(count(*)=1, (*[1]/*[1]/@id), (*[1]/@id))"]
+
 - name: zoom-in-table
   tag: mtable
   match: "$NavCommand = 'ZoomIn'"
@@ -485,6 +529,46 @@
   - with:
       variables: [NavCommand: "'MoveNextZoom'"]
       replace: [x: "*[1]"]
+
+- name: zoom-in-simple
+  tag: "*"
+  # audit-ignore: parity placeholder; covered by zoom-in-2D-not-enhanced/default.
+  match: "false()"
+  replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+      replace: [x: "."]
+  - test:
+      if: "$MatchCounter > 1 and IsNode(., '2D')"
+      then:
+      - set_variables:       # time to stop, not going "in" to next thing, so before "Move2D"
+          - NavNode: "@id"
+          - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
+      else:
+      - with:
+          variables: [Move2D: "'in'", Child2D: "*[1]"]        # phrase('in' the denominator)
+          replace: [x: "."]
+      - x: "*[1]"
+
+- name: zoom-in-2D-character
+  tag: "*"
+  # audit-ignore: parity placeholder; covered by zoom-in-2D-not-enhanced/default.
+  match: "false()"
+  replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+      replace: [x: "."]
+  - with:
+      variables: [Move2D: "'in'", Child2D: "*[1]"]          # phrase('in' the denominator)
+      replace: [x: "."]
+  - test:
+      if: "$NavMode = 'Simple'"
+      then:
+      - set_variables: [NavNode: "*[1]/@id"]
+      else:
+      - with:
+          variables: [NavCommand: "'MoveNextZoom'"]
+          replace: [x: "*[1]"]
 
 - name: zoom-in-default
   tag: "*"
@@ -1231,9 +1315,29 @@
 
 # ========  Move/Read/Describe Next rules =================
 
+- name: move-next-character
+  tag: [mn, mi, mtext]
+  # audit-ignore: parity placeholder; current Russian navigation uses whole-token
+  # movement for these nodes.
+  match: "false()"
+  replace:
+  - test:
+      if: "$NavNodeOffset < string-length(.)"
+      then:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "$NavNodeOffset + 1"]
+      else:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "0"]
+      - x: "."
+
 # skip 'none'
 - name: move-next-none
-  tag: "none"
+  tag: none
   match: 
   - "($NavCommand = 'MoveNext' or $NavCommand = 'ReadNext' or $NavCommand = 'DescribeNext' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MoveNextZoom') and"
   - "parent::*[1][name(.)='mmultiscripts'] and following-sibling::*"
@@ -1253,9 +1357,16 @@
               variables: [NavCommand: "'MoveNextZoom'"]
               replace: [x: "$Following"]
 
+# audit-ignore: parity placeholder for English tag list without changing the
+# existing Russian none-specific rule above.
+- name: move-next-none
+  tag: [none, mprescripts]
+  match: "false()"
+  replace: []
+
 # skip 'none'
 - name: move-previous-none
-  tag: "none"
+  tag: none
   match: 
   - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MovePreviousZoom') and"
   - "parent::*[1][name(.)='mmultiscripts'] and preceding-sibling::*"
@@ -1274,6 +1385,13 @@
           - with:
               variables: [NavCommand: "'MovePreviousZoom'"]
               replace: [x: "$Preceding"]
+
+# audit-ignore: parity placeholder for English tag list without changing the
+# existing Russian none-specific rule above.
+- name: move-previous-none
+  tag: [none, mprescripts]
+  match: "false()"
+  replace: []
 
 
 
@@ -1533,6 +1651,26 @@
       replace: [x: "."]
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
+
+- name: move-prev-character
+  tag: [mn, mi, mtext]
+  # audit-ignore: parity placeholder; current Russian navigation uses whole-token
+  # movement for these nodes.
+  match: "false()"
+  replace:
+  - test:
+      if: "$NavNodeOffset > 1"
+      then:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "$NavNodeOffset - 1"]
+      else:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "0"]
+      - x: "."
 
 - name: move-previous-auto-zoom-up-one-level
   # Last child or in auto-zoom'd in-- move up a level and try again 

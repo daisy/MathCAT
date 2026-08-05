@@ -62,7 +62,7 @@
   - test:
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-    - else_if: "@data-chem-element or @data-roman-numeral"                     # NavMode=Character needs this
+    - else_if: "@data-chem-element > 0 or @data-roman-numeral"                      # NavMode=Character needs this
       then: [SPELL: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
@@ -237,12 +237,26 @@
   - x: "*[2]"
   - T: "alatt"      # phrase(x with z 'below' it)
 
+# FIX: this only works for up to four dots (which is realistically all we need)
+- name: dot-over
+  tag: modified-variable
+  match: "*[1][self::m:mi] and (*[2][translate(., '.', '')=''])"
+  replace:
+  - x: "*[1]"
+  - x: "IfThenElse(string-length(*[2])=1, 'pont',
+        IfThenElse(string-length(*[2])=2, 'pont pont',
+        IfThenElse(string-length(*[2])=3, 'pont pont pont', 'pont pont pont pont')
+        ))"
+  - pause: short
+
+# FIX: the 'translate' list is a little different from 'modified-variable', so we also include 'mover' (unify?)
 - name: diacriticals
-  tag: mover
+  tag: [mover, modified-variable]
   match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
   replace:
   - x: "*[1]"
   - x: "*[2]"
+  - pause: short
 
 - name: default
   tag: mover

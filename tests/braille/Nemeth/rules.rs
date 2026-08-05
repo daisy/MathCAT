@@ -477,7 +477,7 @@ fn punct_37_17_1() -> Result<()> {
 fn punct_38_1_2() -> Result<()> {
     let expr = "<math><mo>’</mo><mn>49</mn></math>";
     // Corrected: the green book has the quote mark encoded as if the character was a double quote (”), but this seems like a typo 
-    test_braille("Nemeth", expr, "⠴⠠⠼⠲⠔")?;
+    test_braille("Nemeth", expr, "⠠⠴⠼⠲⠔")?;
     return Ok(());
 }
 
@@ -763,7 +763,6 @@ fn left_sup_75_12() -> Result<()> {
 
 #[test]
 fn left_sub_14_104() -> Result<()> {
-    init_logger();
     // Right Subscript Followed by Left Subscript
     let expr = "<math><msub><mi>P</mi><mi>b</mi></msub><mmultiscripts><mi>Q</mi><mprescripts/><mi>c</mi><none/></mmultiscripts></math>";
     test_braille("Nemeth", expr, "⠠⠏⠰⠃⠐⠰⠉⠐⠠⠟")?;
@@ -2114,7 +2113,7 @@ fn ms() -> Result<()> {
     let expr = "<math><ms>a string</ms><mo>,</mo><ms lquote='‘' rquote='’'>another string</ms></math>";
     // Not 100% sure this is the right output -- I am a little skeptical of "⠄⠄" being the braille for '"'
     // Note: no punct indicator after word (see 38_4_8)
-    test_braille("Nemeth", expr, "⠄⠄⠁⠀⠎⠞⠗⠊⠝⠛⠄⠄⠠⠀⠸⠠⠦⠁⠝⠕⠞⠓⠑⠗⠀⠎⠞⠗⠊⠝⠛⠴⠠")?;
+    test_braille("Nemeth", expr, "⠄⠄⠁⠀⠎⠞⠗⠊⠝⠛⠄⠄⠠⠀⠸⠠⠦⠁⠝⠕⠞⠓⠑⠗⠀⠎⠞⠗⠊⠝⠛⠠⠴")?;
     return Ok(());
 }
 

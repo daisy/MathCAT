@@ -552,6 +552,9 @@
  - "ⅾ": [T: "d"]                                	#  0x217e	(en: 'D', google translation)
  - "ⅿ": [T: "m"]                                	#  0x217f	(en: 'M', google translation)
  - "↉": [T: "三分之0"]                              	#  0x2189	(en: 'zero thirds', google translation)
+ - "←": [T: "左箭頭"]                              	#  0x2190	(en: 'leftwards arrow', google translation)
+ - "↑": [T: "向上箭頭"]                             	#  0x2191	(en: 'upwards arrow', google translation)
+ - "↓": [T: "向下箭頭"]                             	#  0x2193	(en: 'downwards arrow', google translation)
  - "↔": [T: "左右箭頭"]                           	#  0x2194	(en: 'left right arrow')
  - "↕": [T: "上下箭頭"]                             	#  0x2195	(en: 'up down arrow', google translation)
  - "↖": [T: "左上箭頭"]                             	#  0x2196	(en: 'north west arrow', google translation)
@@ -791,7 +794,7 @@
  - "∢": [T: "球面角"]                              	#  0x2222	(en: 'spherical angle')
  - "∣": [T: "整除"]                                	#  0x2223	(en: 'divides')
  - "∤": [T: "不整除"]                               	#  0x2224	(en: 'does not divide')
- - "∧": [T: "邏輯與"]                              	#  0x2227	(en: 'and')
+ - "∧": [T: "邏輯且"]                              	#  0x2227	(en: 'and')
  - "∨": [T: "邏輯或"]                              	#  0x2228	(en: 'or')
  - "∩": [T: "交集"]                               	#  0x2229	(en: 'intersection')
  - "∪": [T: "聯集"]                               	#  0x222a	(en: 'union')
@@ -1453,9 +1456,9 @@
     - T: "括號圍繞"                                	# 	(en: 'parenthesized', google translation)
     - SPELL: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "Ⓐ-ⓩ":                                         # 0x24b6 - 0x24cf
-    - t: "圈圈"
-    - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "Ⓐ-Ⓩ":
+    - T: "圈圈"                                   	# 	(en: 'circled', google translation)
+    - SPELL: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "🅐-🅩":                                         # 0x1f150 - 0x1f169
     - T: "黑圈圈"                                            #  (en: 'black circled', google translation)
@@ -1533,7 +1536,7 @@
  - "◒": [t: "圓內下半黑"]                            	#  0x25d2	(en: 'circle with lower half black', google translation)
  - "◓": [t: "圓內上半黑"]                          	#  0x25d3	(en: 'circle with upper half black', google translation)
  - "◔": [t: "圓內右上黑"]                          	#  0x25d4	(en: 'circle with upper right quadrant black', google translation)
- - "◕": [t: "圓內左上黑"]                      	#  0x25d5	(en: 'circle with all but upper left quadrant black', google translation)
+ - "◕": [t: "圓內缺左上"]                      	#  0x25d5	(en: 'circle with all but upper left quadrant black', google translation)
  - "◖": [t: "左半圓黑"]                            	#  0x25d6	(en: 'left half black circle', google translation)
  - "◗": [t: "右半圓黑"]                             	#  0x25d7	(en: 'right half black circle', google translation)
  - "◘": [t: "標靶反白"]                               	#  0x25d8	(en: 'inverse bullet', google translation)
@@ -2021,7 +2024,7 @@
  - "⧨": [t: "向下指向三角形，左半黑"]                      	#  0x29e8	(en: 'down pointing triangle with left half black', google translation)
  - "⧩": [t: "向下指向三角形，右半黑"]                      	#  0x29e9	(en: 'down pointing triangle with right half black', google translation)
  - "⧪": [t: "黑色鑽石和下箭"]                          	#  0x29ea	(en: 'black diamond with down arrow', google translation)
- - "⧫": [t: "黑色片"]                              	#  0x29eb	(en: 'black lozenge', google translation)
+ - "⧫": [t: "黑菱形"]                              	#  0x29eb	(en: 'black lozenge', google translation)
  - "⧬": [t: "圓圈和向下箭頭"]                        	#  0x29ec	(en: 'white circle with down arrow', google translation)
  - "⧭": [t: "黑色圓圈和向下箭頭"]                        	#  0x29ed	(en: 'black circle with down arrow', google translation)
  - "⧮": [t: "錯誤的白色廣場"]                          	#  0x29ee	(en: 'error-barred white square', google translation)
@@ -2088,7 +2091,7 @@
  - "⨫": [t: "減去點落點"]                            	#  0x2a2b	(en: 'minus sign with falling dots', google translation)
  - "⨬": [t: "減去點升高的點數"]                         	#  0x2a2c	(en: 'minus sign with rising dots', google translation)
  - "⨭": [t: "加上左半圓圈"]                           	#  0x2a2d	(en: 'plus sign in left half circle', google translation)
- - "⨮": [t: "加上右半圈登錄"]                          	#  0x2a2e	(en: 'plus sign in right half circle', google translation)
+ - "⨮": [t: "加上右半圓圈"]                          	#  0x2a2e	(en: 'plus sign in right half circle', google translation)
  - "⨯":                                                # 0x2a2f
       - test: 
          if: "$Verbosity='Terse'"
@@ -2106,8 +2109,8 @@
  - "⨹": [t: "加上三角形的簽名"]                         	#  0x2a39	(en: 'plus sign in triangle', google translation)
  - "⨺": [t: "減去三角形"]                            	#  0x2a3a	(en: 'minus sign in triangle', google translation)
  - "⨻": [t: "三角形中的乘法標誌"]                        	#  0x2a3b	(en: 'multiplication sign in triangle', google translation)
- - "⨼": [t: "內部產品"]                             	#  0x2a3c	(en: 'interior product', google translation)
- - "⨽": [t: "右內部產品"]                            	#  0x2a3d	(en: 'righthand interior product', google translation)
+ - "⨼": [t: "內部乘積"]                             	#  0x2a3c	(en: 'interior product', google translation)
+ - "⨽": [t: "右內部乘積"]                            	#  0x2a3d	(en: 'righthand interior product', google translation)
  - "⨾": [t: "z notation relational composition"]    # 0x2a3e
  - "⨿": [t: "合併或合併"]                            	#  0x2a3f	(en: 'amalgamation or coproduct', google translation)
  - "⩀": [t: "與點的交點"]                            	#  0x2a40	(en: 'intersection with dot', google translation)
@@ -2297,9 +2300,9 @@
  - "⫸": [t: "三重築巢大於"]                           	#  0x2af8	(en: 'triple nested greater than', google translation)
  - "⫹": [t: "雙線傾斜小於或等於"]                        	#  0x2af9	(en: 'double line slanted less than or equal to', google translation)
  - "⫺": [t: "雙線傾斜大於或等於"]                        	#  0x2afa	(en: 'double line slanted greater than or equal to', google translation)
- - "⫻": [t: "三固體二元關係"]                          	#  0x2afb	(en: 'triple solidus binary relation', google translation)
- - "⫼": [t: "大三重垂直桿操作員"]                        	#  0x2afc	(en: 'large triple vertical bar operator', google translation)
- - "⫽": [t: "雙固體操作員"]                           	#  0x2afd	(en: 'double solidus operator', google translation)
+ - "⫻": [t: "三斜線二元關係"]                          	#  0x2afb	(en: 'triple solidus binary relation', google translation)
+ - "⫼": [t: "大三重垂直桿運算子"]                        	#  0x2afc	(en: 'large triple vertical bar operator', google translation)
+ - "⫽": [t: "雙斜線運算子"]                           	#  0x2afd	(en: 'double solidus operator', google translation)
  - "⫾": [t: "垂直條"]                            	#  0x2afe	(en: 'white vertical bar', google translation)
  - "⫿": [t: "垂直條"]                            	#  0x2aff	(en: 'white vertical bar', google translation)
  - "⬀": [t: "東北白色箭頭"]                           	#  0x2b00	(en: 'north east white arrow', google translation)
@@ -2477,7 +2480,7 @@
  - "㉌": [t: "黑色廣場上的五十個圓圈"]                      	#  0x324c	(en: 'circled number fifty on black square', google translation)
  - "㉍": [t: "在黑色廣場上盤旋六十"]                       	#  0x324d	(en: 'circled number sixty on black square', google translation)
  - "㉎": [t: "在黑色廣場上盤旋七十"]                       	#  0x324e	(en: 'circled number seventy on black square', google translation)
- - "㉏": [t: "在黑色廣場上盤旋的數字"]                      	#  0x324f	(en: 'circled number eighty on black square', google translation)
+ - "㉏": [t: "在黑色廣場上盤旋八十"]                      	#  0x324f	(en: 'circled number eighty on black square', google translation)
  - "㉑": [T: "圈圈21"]                           	#  0x3251	(en: 'circled number twenty one', google translation)
  - "㉒": [T: "圈圈22"]                           	#  0x3252	(en: 'circled number twenty two', google translation)
  - "㉓": [T: "圈圈23"]                            	#  0x3253	(en: 'circled number twenty three', google translation)
@@ -3098,6 +3101,7 @@
  - " ": [t: ""]                                 	#  0x205f
  - "": [t: ""]                                 	#  0xef04
  - "": [t: ""]                                 	#  0xef05
+ - " ": [t: ""]                                 	#  0x2003
  - "": [t: ""]                                 	#  0xef06
  - "": [t: ""]                                 	#  0xef07
  - "": [t: ""]                                 	#  0xef08
@@ -3655,7 +3659,7 @@
  - "-":    # 0xf52e - 0xf537  (old MathType)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "bold"]
+        then: [t: "粗體"]
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
@@ -3797,3 +3801,4 @@
  - "\uE42C": [spell: "'←'"]                       # 0xe42c  defer to def of arrow 
  - "\uE42D": [spell: "'→'"]                       # 0xe42d  defer to def of arrow 
  - "\uE42E": [spell: "'⇄'"]                       # 0xe42e  defer to def of arrow 
+ - "﹨": [T: "整數除以"]                             	#  0xfe68	(en: 'integer divide', google translation)

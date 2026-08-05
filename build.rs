@@ -199,5 +199,9 @@ fn main() {
             panic!("Error in zip.finish(): {}", e);
         }
         println!("cargo::rerun-if-changed=Rules");
+    } else {
+        // Without include-zip, Rules are loaded at runtime from disk and must not
+        // re-run this script (or slow the build) on every yaml edit.
+        println!("cargo::rerun-if-changed=build.rs");
     }
 }

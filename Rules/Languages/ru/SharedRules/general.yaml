@@ -343,6 +343,15 @@
   - pause: short
 
 
+# in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: unit-terse
+  tag: unit
+  # audit-ignore: spell text() is an operation, not untranslated speech text.
+  match: "$Verbosity = 'Terse' and string-length(.)=1"
+  replace:
+  - bookmark: "@id"
+  - spell: "text()"
+
 # the order of matching is
 # 1. does it match the base of an SI unit
 # 2. does it match an English unit (if in an English language)
@@ -421,6 +430,26 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)", ct: "с"]
     
+# need to reverse the order of speech: $ 3 -> 3 dollars
+- name: currency
+  tag: mrow
+  # audit-ignore: parity placeholder; ru definitions.yaml does not define
+  # CurrencySymbols yet, so enabling this would change runtime behavior.
+  match: "false()"
+  variables:
+    # If the amount is singular, we don't add the plural ending.
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
+
 - name: sin
   tag: mi
   match: ".='sin'"

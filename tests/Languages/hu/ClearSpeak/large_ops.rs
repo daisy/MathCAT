@@ -128,7 +128,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "ClearSpeak", expr, "kereszteződés ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
+    test("hu", "ClearSpeak", expr, "metszet ettől: i egyenlő 1, eddig: 10 értéke:; nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -143,7 +143,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("hu", "ClearSpeak", expr, "kereszteződés alatta nagy c, nagy s alsó index i")?;
+    test("hu", "ClearSpeak", expr, "metszet alatta nagy c, nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -155,7 +155,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("hu", "ClearSpeak", expr, "kereszteződés nagy s alsó index i")?;
+    test("hu", "ClearSpeak", expr, "metszet nagy s alsó index i")?;
     return Ok(());
 
 }
@@ -217,7 +217,7 @@ fn integral_both() -> Result<()> {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "ClearSpeak", expr, "integrál ettől: 0, eddig: 1 értéke:; f x; d x")?;
+    test("hu", "ClearSpeak", expr, "integrált ettől: 0, eddig: 1 értéke:; f x; d x")?;
     return Ok(());
 
 }
@@ -233,7 +233,7 @@ fn integral_under() -> Result<()> {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("hu", "ClearSpeak", expr, "integrál alatta a valós számok halmaza; f x d x")?;
+    test("hu", "ClearSpeak", expr, "integrált alatta a valós számok halmaza; f x d x")?;
     return Ok(());
 
 }
@@ -246,7 +246,7 @@ fn integral() -> Result<()> {
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("hu", "ClearSpeak", expr, "integrál f x d x")?;
+    test("hu", "ClearSpeak", expr, "integrált f x d x")?;
     return Ok(());
 
 }

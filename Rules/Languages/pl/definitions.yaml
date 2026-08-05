@@ -1,0 +1,618 @@
+---
+- include: "../../definitions.yaml"
+
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here.
+# Polish entries below are source-level speech strings used by MathCAT.
+- IntentMappings: {
+    "binomial": "infix=symbol newtona; po; koniec symbolu newtona",
+
+    "inverse":"function=odwrotność || postfix=odwrotność", 
+
+    "domain": "function=dziedzina",
+    "codomain": "function=przeciwdziedzina",
+
+    "image":"function=obraz", 
+    "mixed-fraction":"infix=i",
+    "quotient":"function=część całkowita; podzielone przez",
+    "evaluated-at":"infix=obliczone w",
+    "remainder":"function=reszta; podzielone przez",
+
+    "max":"function=maksimum",
+    "min":"function=minimum",
+
+    "power":"infix=do potęgi",
+    "root":"function=pierwiastek",
+
+    "greatest-common-divisor": "function=nwd: największy wspólny dzielnik: największy wspólny dzielnik",
+    "least-common-multiple":"function=nww: najmniejsza wspólna wielokrotność: najmniejsza wspólna wielokrotność",
+
+    "absolute-value": "function=; wartość bezwzględna: wartość bezwzględna: wartość bezwzględna; koniec wartości bezwzględnej",
+    "complex-conjugate":"function=sprzężenie zespolone",
+    "complex-arg":"function=arg",
+    "real-part": "function=część rzeczywista",
+    "imaginary-part": "function=część urojona: część urojona: część urojona",
+
+    "polar-coordinate":"function=współrzędna biegunowa; przecinek",
+    "spherical-coordinate":"function=współrzędna sferyczna; przecinek; przecinek",
+    "cartesian-coordinate":"function=współrzędna kartezjańska; przecinek",
+    "coordinate":"function=współrzędna; przecinek",
+    "floor":"function=podłoga",
+    "ceiling":"function=sufit",
+    "round":"function=zaokrąglenie",
+    "fractional-part":"function=część ułamkowa",
+
+
+    ### Calculus
+    "limit": "prefix=granica gdy",
+    "tends-to":"infix=dąży do",
+    "tends-to-from-above":"infix=dąży do z prawej",
+    "tends-to-from-below":"infix=dąży do z lewej",
+
+
+    ### Sets
+    "set": "function=; zbiór: zbiór",
+    "set-difference":"function=różnica zbiorów; i || infix=minus", # NOTE: not tested
+    "complement":"function=dopełnienie",
+    "cardinality":"function=moc zbioru",
+    "list":"function=lista",
+    "tuple": "function=; krotka: krotka",
+
+
+    ### Sequence and Series
+    "sum":"function=; suma po: suma; ",
+    "product":"function=iloczyn || function=iloczyn po || function=iloczyn od; do",
+
+
+    ### Elementary classical functions
+    "sine":"function=sin: sinus",
+    "cosine":"function=cos: cosinus",
+    "tangent":"function=tan: tangens",
+    "secant":"function=sec: sekans",
+    "cosecant":"function=cosec: kosekans",
+    "cotangent":"function=cot: cotangens",
+
+    "arcsine":"function=arcus sinus",
+    "arccosine":"function=arcus cosinus",
+    "arctangent":"function=arcus tangens",
+    "arcsecant":"function=arcus sekans",
+    "arccosecant":"function=arcus kosekans",
+    "arccotangent":"function=arcus cotangens",
+
+    "hyperbolic-sine":"function=sinus hiperboliczny",
+    "hyperbolic-cosine":"function=cosinus hiperboliczny",
+    "hyperbolic-tangent":"function=tangens hiperboliczny",
+    "hyperbolic-secant":"function=sekans hiperboliczny",
+    "hyperbolic-cosecant":"function=kosekans hiperboliczny",
+    "hyperbolic-cotangent":"function=cotangens hiperboliczny",
+
+    "arc-hyperbolic-sine":"function=arcus sinus hiperboliczny",
+    "arc-hyperbolic-cosine":"function=arcus cosinus hiperboliczny",
+    "arc-hyperbolic-tangent":"function=arcus tangens hiperboliczny",
+    "arc-hyperbolic-secant":"function=arcus sekans hiperboliczny",
+    "arc-hyperbolic-cosecant":"function=arcus kosekans hiperboliczny",
+    "arc-hyperbolic-cotangent":"function=arcus cotangens hiperboliczny",
+
+    "exponential":"function=funkcja wykładnicza",
+    "natural-logarithm": "function=L N: logarytm naturalny: logarytm naturalny",
+    "logarithm":"function=logarytm", ##Check arity 2 
+
+
+    ### Statistics and Probability
+    "mean":"function=średnia", 
+    "standard-deviation":"function=odchylenie standardowe",
+    "variance":"function=wariancja",
+    "median":"function=mediana",
+    "mode":"function=dominanta",
+
+    "conditional-probability":"function=prawdopodobieństwo; pod warunkiem", # NOTE: Check test
+
+
+    ### Linear Algebra
+    "vector": "function=; wektor || prefix=wektor", # prefix not tested, also prefix not on webpage
+    "matrix":"function=macierz", # NOTE: Failing test, recheck
+    "array":"function=tablica",
+    "determinant":"function=wyznacznik",
+    "adjugate":"function=macierz dopełnień algebraicznych",
+    "magnitude":"function=długość",
+    "norm": "function=; norma: norma: norma; koniec normy",
+    "span":"function=powłoka liniowa",
+
+    "unit-vector":"prefix=wektor jednostkowy",
+
+    "identity-matrix":"nofix=macierz jednostkowa", # NOTE: no function specified
+    "transpose":"function=transpozycja || postfix=transponowane",
+    "dimensional-product":"infix=na", # INFIX
+
+
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ: zbiór liczb całkowitych",
+    "set-of-reals":"nofix=ℝ: zbiór liczb rzeczywistych",
+    "set-of-rationals":"nofix=ℚ: zbiór liczb wymiernych",
+    "set-of-natural-numbers":"nofix=ℕ: zbiór liczb naturalnych",
+    "set-of-complex-numbers":"nofix=ℂ: zbiór liczb zespolonych",
+    "set-of-primes":"nofix=ℙ: zbiór liczb pierwszych",
+
+    
+    ### Geometry
+    "line-segment":"prefix=odcinek",
+    "directed-line-segment":"prefix=odcinek skierowany", 
+    "line":"prefix=linia",
+    "ray":"prefix=półprosta",
+    "arc":"prefix=łuk",
+
+    "length":"function=długość",
+    "area":"function=pole",
+
+    "point":"prefix=punkt",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+
+    ### Separators
+    "time-separator":"infix=",
+
+    ### General Concepts 
+    "fenced-group":"function=grupa w nawiasach",
+    "ordered-pair": "function=; para; i",
+    "indexed-by": "infix=; indeks dolny; koniec indeksu dolnego",
+    
+    "highlight":"postfix=podświetlone",
+    "least-common-denominator":"function=najmniejszy wspólny mianownik",
+    "rate":"infix=na",
+    "translation":"function=przesunięcie o; przecinek",
+    "constraint":"infix=; przy warunku; ", 
+    
+    "binomial-coefficient":"infix=po",
+    "pochhammer":"function=symbol Pochhammera",
+    "permutation-cycle":"function=cykl permutacji",
+    "embellished-name":"infix=z oznaczeniem",
+
+    ### Grouping
+    "annotation":"infix=; czyli ;",
+    "braced-group":"function=grupa w nawiasach klamrowych; koniec grupy",
+
+
+    ### Other
+    ## Default fixity function
+    "curl": "function=rotacja",
+    "divergence": "function=dywergencja",
+    "gradient": "function=gradient",
+    "laplacian": "function=laplasjan",
+
+    ## Default fixity prefix
+    "angle": "prefix=kąt",
+    "angle-measure": "prefix=miara kąta",
+    "change": "prefix=zmiana",
+    "for-all": "prefix=dla każdego",
+    "measured-angle": "prefix=kąt mierzony",
+    "not": "prefix=nie",
+    "number-of": "prefix=liczba",
+    "partial-derivative": "prefix=cząstkowe",
+    "right-angle": "prefix=kąt prosty",
+    "square-root-of": "prefix=pierwiastek kwadratowy z",
+    "there-does-not-exist": "prefix=nie istnieje",
+    "there-exists": "prefix=istnieje",
+
+
+    ## Default fixity infix
+    "and": "infix=i",
+    "applied-to": "infix=zastosowane do",
+    "approximately": "infix=w przybliżeniu",
+    "congruent": "infix=przystające do",
+    "cartesian-product": "infix=iloczyn kartezjański",
+    "composed-with": "infix=złożone z",
+    "cross-product": "infix=krzyż: iloczyn wektorowy: iloczyn wektorowy",
+    "defined-as": "infix=zdefiniowane jako",
+    "divided-by": "infix=podzielone przez",
+    "divides": "infix=dzieli",
+    "does-not-belong-to": "infix=nie należy do",
+    "does-not-divide": "infix=nie dzieli",
+    "dot-product": "infix=iloczyn skalarny",
+    "downwards-diagonal-ellipsis": "infix=ukośny wielokropek w dół",
+    "direct-product": "infix=iloczyn prosty",
+    "element-of": "infix=należy do",
+    "ellipsis": "infix=wielokropek",
+    "equals": "infix=równa się",
+    "equivalent-to": "infix=równoważne",
+    "evaluates-to": "infix=ma wartość",
+    "given": "infix=pod warunkiem",
+    "greater-than": "infix=większe niż",
+    "greater-than-or-equal-to": "infix=większe lub równe",
+    "identically-equals": "infix=tożsamościowo równe",
+    "if-and-only-if": "infix=wtedy i tylko wtedy gdy",
+    "implies": "infix=implikuje",
+    "inner-product": "infix=iloczyn wewnętrzny",
+    "intersection": "infix=część wspólna",
+    "less-than": "infix=mniejsze niż",
+    "less-than-or-equal-to": "infix=mniejsze lub równe",
+    "list-separator": "infix=przecinek",
+    "maps-to": "infix=przekształca na",
+    "member-of": "infix=element zbioru",
+    "minus-or-plus": "infix=minus lub plus",
+    "not-subset": "infix=nie jest podzbiorem",
+    "not-superset": "infix=nie jest nadzbiorem",
+    "not-equal-to": "infix=nie równa się",
+    "not-member-of": "infix=nie jest elementem zbioru",
+    "not-parallel-to": "infix=nierównoległe do",
+    "obtained-from": "infix=otrzymane z",
+    "or": "infix=lub",
+    "outer-product": "infix=iloczyn zewnętrzny",
+    "parallel-to": "infix=równoległe do",
+    "perpendicular": "infix=prostopadłe do",
+    "plus": "infix=plus || prefix=plus",
+    "minus": "infix=minus || prefix=minus",
+    "plus-or-minus": "infix=plus minus",
+    "precedes": "infix=poprzedza",
+    "proportional": "infix=proporcjonalne do",
+    "range-separator": "infix=do",
+    "ratio": "infix=stosunek",
+    "similar": "infix=podobne do",
+    "subset": "infix=podzbiór",
+    "subset-or-equal": "infix=podzbiór lub równy",
+    "succeeds": "infix=następuje po",
+    "such-that": "infix=taki że",
+    "superset": "infix=nadzbiór",
+    "superset-or-equal": "infix=nadzbiór lub równy",
+    "tilde": "infix=tylda",
+    "times": "infix=razy",
+    "union": "infix=suma zbiorów",
+    "upwards-diagonal-ellipsis": "infix=ukośny wielokropek w górę",
+    "vertical-ellipsis": "infix=wielokropek pionowy",
+    "xor": "infix=albo",
+
+    ## Default fixity postfix
+    "factorial": "postfix=silnia",
+    "percent": "postfix=procent",
+
+    ## Default fixity nofix
+    "diameter":"nofix=d: średnica",
+    "distance":"nofix=d; D: odległość",
+    "probability":"nofix=P: prawdopodobieństwo",
+    "radius":"nofix=r: promień",
+    "volume":"nofix=V: objętość || function=objętość",
+    "exponential-e":"nofix=e",
+    "imaginary-i":"nofix=i",
+    "differential-d":"nofix=d",
+    "golden-ratio":"nofix=złota proporcja",
+    
+
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
+    "modified-variable": "silent=",
+    "say-super": "infix=indeks górny: indeks górny: indeks górny",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+    # "large-op": "infix=przez|| other=od,do",
+    "lim-sup": "prefix=lim sup gdy: granica górna gdy: granica górna gdy",
+    "lim-inf": "prefix=lim inf gdy: granica dolna gdy: granica dolna gdy",
+    "limit-sup": "prefix=lim sup gdy: granica górna gdy: granica górna gdy",
+    "limit-inf": "prefix=lim inf gdy: granica dolna gdy: granica dolna gdy",
+    "logarithm-with-base": "prefix=log podstawa: logarytm o podstawie: logarytm o podstawie",
+    "trace": "function=; ślad: ślad: ślad; koniec śladu",
+    "dimension": "function=; wymiar: wymiar: wymiar; koniec wymiaru",
+    "homomorphism": "function=; homomorfizm: homomorfizm: homomorfizm; koniec homomorfizmu",
+    "kernel": "function=; jądro: jądro: jądro; koniec jądra",
+    
+    "chemistry-concentration": "function=; stężenie: stężenie: stężenie; koniec stężenia",
+  }
+
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+- TerseFunctionNames: {
+    "divergence", "gradient", "curl"
+  }
+
+- NavigationParts: {
+    # These are the parts of a formula that can be navigated to.
+    # Nazwy w DOPELNIACZU, bo trafiaja do konstrukcji "do <czesc>" / "z <czesc>"
+    # (np. "do licznika", "z mianownika"). Patrz regula into-or-out-of-default w navigate.yaml.
+    "large-op": "podstawy; dolnej granicy; górnej granicy",
+    "mfrac": "licznika; mianownika",
+    "fraction": "licznika; mianownika",
+    "msqrt": "pierwiastka",
+    "square-root": "pierwiastka",
+    "mroot": "pierwiastka; stopnia pierwiastka",
+    "root": "pierwiastka; stopnia pierwiastka",
+    "msub": "podstawy; indeksu dolnego",
+    "sub": "podstawy; indeksu dolnego",
+    "logarithm-with-base": "podstawy",
+    "indexed-by": "podstawy; indeksu dolnego",
+    "msup": "podstawy; wykładnika",
+    "say-super": "podstawy; wykładnika",
+    "skip-super": "podstawy; wykładnika",
+    "power": "podstawy; wykładnika",
+    "msubsup": "podstawy; indeksu dolnego; wykładnika",
+    "munder": "podstawy; dolnej granicy",
+    "mover": "podstawy; górnej granicy",
+    "munderover": "podstawy; dolnej granicy; górnej granicy",
+
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
+    "in": "do",
+    "out": "z",
+  }
+
+- KnownWords: {
+    "sin", "cos", "tan", "cot", "sec", "cosec", "log", "lim", "arg", "mod", "det", "min", "max"
+  }
+
+- SIPrefixes: {
+    "Q": "kwetta", "R": "ronna", "Y": "jotta", "Z": "zetta", "E": "eksa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hekto", "da": "deka",
+    "d": "decy", "c": "centy", "m": "mili", "µ": "mikro", "n": "nano", "p": "piko", "f": "femto", "a": "atto", "z": "zepto", "y": "jokto", "r": "ronto", "q": "kwekto"
+  }
+
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
+- SIUnits: {
+    # base units
+    "A": "amper",
+    "cd": "kandela",
+    "K": "kelwin", "K": "kelwin", # U+212A
+    "g": "gram",
+    "m": "metr",
+    "mol": "mol",
+    "s": "sekunda", "sec": "sekunda",
+
+    # derived units
+    "Bq": "bekerel",
+    "C": "kulomb",
+    "°C": "stopień Celsjusza", "℃": "stopień Celsjusza", # should only take negative powers
+    "F": "farad",
+    "Gy": "grej",
+    "H": "henr",
+    "Hz": "herce",
+    "J": "dżul",
+    "kat": "katal",
+    "lm": "lumen",
+    "lx": "luks",
+    "N": "niuton",
+    "Ω": "om", "Ω": "om",       # Greek Cap letter, U+2126 OHM SIGN
+    "Pa": "paskal",
+    "S": "siemens",
+    "Sv": "siwert",
+    "T": "tesla",
+    "V": "wolt",
+    "W": "wat",
+    "Wb": "weber",
+
+    # accepted (plus a few variants) that take SI prefixes
+    "l": "litr", "L": "litr", "ℓ": "litr",
+    "t": "tona",
+    "Da": "dalton",
+    "Np": "neper",               # should only take negative powers
+    "u": "jednostka masy atomowej",
+    "eV": "elektronowolt",
+    "rad": "radian",
+    "sr": "steradian",
+  
+    # others that take a prefix
+    "a": "rok",
+    "as": "sekunda łuku",
+
+    # technically wrong, but used in practice with SI Units
+    "b": "bit",
+    "B": "bajt",
+    "Bd": "bod",
+  }
+
+
+- UnitsWithoutPrefixes: {
+    # time
+    "″": "sekunda", "\"": "sekunda",
+    "′": "minuta", "'": "minuta","min": "minuta",
+    "h": "godzina", "hr": "godzina", "Hr": "godzina",
+    "d": "dzień", "dy": "dzień",
+    "w": "tydzień", "wk": "tydzień",
+    "y": "rok", "yr": "rok",    
+
+    # angles
+    "°": "stopień", "deg": "stopień", # should only take negative powers
+    "arcmin": "minuta łuku",
+    "amin": "minuta łuku",
+    "am": "minuta łuku",
+    "MOA": "minuta łuku",
+    "arcsec": "sekunda łuku",
+    "asec": "sekunda łuku",
+
+    # distance
+    "au": "jednostka astronomiczna", "AU": "jednostka astronomiczna",
+    "ltyr": "rok świetlny", "ly": "rok świetlny",
+    "pc": "parsek",
+    "Å": "angstrem", "Å": "angstrem",           # U+00C5 and U+212B
+    "fm": "fermi",
+
+    # others
+    "ha": "hektar",
+    # "B": "bel",    # "B" more commonly means bytes
+    "dB": "decybel", # already logarithmic, so not used with SI prefixes
+
+    "amu": "jednostka masy atomowej",
+    "atm": "atmosfera",
+    "bar": "bar",
+    "cal": "kaloria",
+    "Ci": "kiur",
+    "grad": "grad",
+    "M": "molowy",
+    "R": "rentgen",
+    "rpm": "obrót na minutę",
+    "℧": "M h o",
+    "dyn": "dyna",
+    "erg": "erg",
+
+    # powers of 2 used with bits and bytes
+    "Kib": "kibibit", "Mib": "mebibit", "Gib": "gibibit", "Tib": "tebibit", "Pib": "pebibit", "Eib": "eksbibit", "Zib": "zebibit", "Yib": "jobibit",
+    "KiB": "kibibajt", "MiB": "mebibajt", "GiB": "gibibajt", "TiB": "tebibajt", "PiB": "pebibajt", "EiB": "eksbibajt", "ZiB": "zebibajt", "YiB": "jobibajt",
+  }
+
+  # this will only be used if the language is English, so it can be empty for other countries
+- EnglishUnits: {
+    # length
+    "in": "cal",
+    "ft": "stopa",
+    "mi": "mila",
+    "rd": "pręt",
+    "li": "ogniwo",
+    "ch": "łańcuch",
+
+    # area
+    "sq in": "cal kwadratowy", "sq. in": "cal kwadratowy", "sq. in.": "cal kwadratowy",
+    "sq ft": "stopa kwadratowa", "sq. ft": "stopa kwadratowa", "sq. ft.": "stopa kwadratowa",
+    "sq yd": "jard kwadratowy", "sq. yd": "jard kwadratowy", "sq. yd.": "jard kwadratowy",
+    "sq mi": "mila kwadratowa", "sq. mi": "mila kwadratowa", "sq. mi.": "mila kwadratowa",
+    "ac": "akr",
+    "FBM": "stopa deskowa",
+
+    # volume
+    "cu in": "cal sześcienny", "cu. in": "cal sześcienny", "cu. in.": "cal sześcienny",
+    "cu ft": "stopa sześcienna", "cu. ft": "stopa sześcienna", "cu. ft.": "stopa sześcienna",
+    "cu yd": "jard sześcienny", "cu. yd": "jard sześcienny", "cu. yd.": "jard sześcienny",
+    "bbl": "baryłka", "BBL": "baryłka",
+    "pk": "pek",
+    "bu": "buszel",
+    "tsp": "łyżeczka",
+    "tbl": "łyżka stołowa",
+
+    # liquid
+    "fl dr": "drachma płynu",
+    "fl oz": "uncja płynu",
+    "gi": "gill",
+    "cp": "kubek", "cup": "kubek",
+    "pt": "pinta",
+    "qt": "kwarta",
+    "gal": "galon",
+
+    # weight
+    "gr": "gran",
+    "dr": "drachma",
+    "oz": "uncja", "℥": "uncja",
+    "lb": "funt",
+    "cwt": "cetnar",
+    "dwt": "pennyweight",
+    "oz t": "uncja trojańska",
+    "lb t": "funt trojański",
+
+    # energy
+    "hp": "konie mechaniczne",
+    "BTU": "btu",
+    "°F": "stopień Fahrenheita", "℉": "stopień Fahrenheita",
+
+    # other
+    "mph": "mila na godzinę",
+    "mpg": "mila na galon",
+  }
+
+- CurrencySymbols: {
+    "$": "dolar", "¢": "cent", "€": "euro", "£": "funt", "₡": "colon", "₤": "lir", "₨": "rupia",
+    "₩": "won", "₪": "szekel", "₱": "peso", "₹": "rupia", "₺": "lir", "₿": "bitcoin",
+    # could add more currencies...
+  }
+
+- PluralForms: {
+  # FIX: this needs to be flushed out
+    "cal": "cale", "cal kwadratowy": "cale kwadratowe", "cal sześcienny": "cale sześcienne",
+    "stopa": "stopy", "stopa kwadratowa": "stopy kwadratowe", "stopa sześcienna": "stopy sześcienne",
+    "stopa deskowa": "stopy deskowe",
+    "stopień": "stopnie",
+    "stopień Celsjusza": "stopnie Celsjusza",
+    "stopień Fahrenheita": "stopnie Fahrenheita",
+    "degree celsius": "stopnie Celsjusza",
+    "degree fahrenheit": "stopnie Fahrenheita",
+    "henr": "henry",
+    "wolt": "wolty",
+    "wat": "waty",
+    "hertz": "herce",
+    "luks": "luksy",
+    "siemens": "siemens",
+    "obrót na minutę": "obroty na minutę",
+    "mila na godzinę": "mile na godzinę",
+    "mila na galon": "mile na galon",
+    "colon": "colony", "lir": "liry", "won": "wony", "bitcoin": "bitcoiny"
+  }
+
+# Lines starting with "#" are a comment
+# Each definition in this file is of the form
+# - name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
+
+
+# ----------------  Cardinal and Ordinal Numbers  --------------------------
+# The following definitions are used to convert numbers to words
+# The are mainly used for ordinals, of which there are two cases:
+# 1. Regular ordinals: first, second, third, ...
+# 2. Ordinals used in the denominator of fractions (e.g, one half, one third)
+#    When used in the denominator of fractions, a plural version might be
+#    used (e.g., two halves, two thirds)
+# Although a lot of languages are regular after a few entries, for generality,
+# the following lists should be filled out even though they are the same
+# or easily derived from others in many languages (e.g, an 's' is added for plurals).
+# The larger ordinal numbers (e.g, millionth) is used when there are only
+# '0's after that decimal place (e.g., 23000000).:w
+
+# All definitions start 0, 10, 100, etc.
+
+# The definitions for the "ones" should extend until a regular pattern begins
+#   The minimum length is 10.
+
+# For English, a regular pattern starts at twenty
+- NumbersOnes: [
+        "zero", "jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć",
+        "dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "piętnaście", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"
+    ]
+
+- NumbersOrdinalOnes: [
+        "zerowej", "pierwszej", "drugiej", "trzeciej", "czwartej", "piątej", "szóstej", "siódmej", "ósmej", "dziewiątej",
+        "dziesiątej", "jedenastej", "dwunastej", "trzynastej", "czternastej", "piętnastej", "szesnastej", "siedemnastej", "osiemnastej", "dziewiętnastej"
+    ]
+
+- NumbersOrdinalPluralOnes: [
+        "zerowych", "pierwszych", "drugich", "trzecich", "czwartych", "piątych", "szóstych", "siódmych", "ósmych", "dziewiątych",
+        "dziesiątych", "jedenastych", "dwunastych", "trzynastych", "czternastych", "piętnastych", "szesnastych", "siedemnastych", "osiemnastych", "dziewiętnastych"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalOnes: [
+        "zero", "pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralOnes: [
+        "zera", "pierwsze", "drugie", "trzecie", "czwarte", "piąte", "szóste", "siódme", "ósme", "dziewiąte", "dziesiąte"
+    ]
+
+
+    # What to use for multiples of 10
+- NumbersTens: [
+        "", "dziesięć", "dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt", "sześćdziesiąt", "siedemdziesiąt", "osiemdziesiąt", "dziewięćdziesiąt"
+    ]
+
+- NumbersOrdinalTens: [
+        "", "dziesiątej", "dwudziestej", "trzydziestej", "czterdziestej", "pięćdziesiątej", "sześćdziesiątej", "siedemdziesiątej", "osiemdziesiątej", "dziewięćdziesiątej"
+    ]
+
+- NumbersOrdinalPluralTens: [
+        "", "dziesiątych", "dwudziestych", "trzydziestych", "czterdziestych", "pięćdziesiątych", "sześćdziesiątych", "siedemdziesiątych", "osiemdziesiątych", "dziewięćdziesiątych"
+    ]
+
+
+- NumbersHundreds: [
+        "", "sto", "dwieście", "trzysta", "czterysta", "pięćset", "sześćset", "siedemset", "osiemset", "dziewięćset"
+    ]
+
+- NumbersOrdinalHundreds: [
+        "", "setnej", "dwusetnej", "trzysetnej", "czterysetnej", "pięćsetnej", "sześćsetnej", "siedemsetnej", "osiemsetnej", "dziewięćsetnej"
+    ]
+
+- NumbersOrdinalPluralHundreds: [
+        "", "setnych", "dwusetnych", "trzysetnych", "czterysetnych", "pięćsetnych", "sześćsetnych", "siedemsetnych", "osiemsetnych", "dziewięćsetnych"
+    ]
+      
+
+    # At this point, hopefully the language is regular. If not, code needs to be written
+- NumbersLarge: [
+        "", "tysiąc", "milion", "miliard", "bilion", "biliard", "trylion", "tryliard", "kwadrylion", "kwadryliard"
+    ]
+      
+- NumbersOrdinalLarge: [
+        "", "tysięcznej", "milionowej", "miliardowej", "bilionowej", "biliardowej", "trylionowej", "tryliardowej", "kwadrylionowej", "kwadryliardowej"
+    ]
+      
+- NumbersOrdinalPluralLarge: [
+        "", "tysięcznych", "milionowych", "miliardowych", "bilionowych", "biliardowych", "trylionowych", "tryliardowych", "kwadrylionowych", "kwadryliardowych"
+    ]

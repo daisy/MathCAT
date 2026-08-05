@@ -1,10 +1,5 @@
 ---
- - "a": 
-    - test: 
-        if: "$TTS='none'"
-        then: [T: "a"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
-        else: [SPELL: "'a'"]                         #    AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
- - "b-z": 
+ - "a-z": # audit-ignore
     - test: 
         if: "$TTS='none'"
         then: [T: "."]                          
@@ -16,30 +11,7 @@
  #   screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
  # Also, if a user can see the screen, they probably don't need to hear "cap", but if they specified an override, they must want to hear the override.
  # Some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
- - "A":
-    - test: 
-        if: "$CapitalLetters_Beep"
-        then:
-        - audio:
-            value: "beep.mp4"
-            replace: []
-    - test: 
-        if: "$CapitalLetters_UseWord"
-        then_test:
-          if: "$SpeechOverrides_CapitalLetters = ''"
-          then_test:
-            if: "$Impairment = 'Blindness'"
-            then: [T: "nagy"]
-          else: [x: "$SpeechOverrides_CapitalLetters"]
-    - pitch:
-        value: "$CapitalLetters_Pitch"
-        replace:
-        - test:
-            if: "$TTS='none'"
-            then: [T: "a"]
-            else: [SPELL: "'a'"]
-
- - "B-Z":
+ - "A-Z": # audit-ignore
     - test: 
         if: "$CapitalLetters_Beep"
         then:
@@ -57,7 +29,7 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [SPELL: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
+        replace: [SPELL: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
 
  - "0-9": [T: "."]                              	# 	(en: '.', DeepL translation)
 
@@ -296,6 +268,19 @@
  - "ϵ": [T: "holdkóros epszilon"]                          	#  0x3f5	(DeepL translation)
  - "϶": [T: "félhold alakú tükrözött görög epszilon"]                	#  0x3f6	(en: 'reversed epsilon', DeepL translation)
 
+ - "…":                                         	#  0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [T: "pont pont pont"]        	# 	(en: 'dot dot dot', DeepL translation)
+        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [T: "és így tovább"]          	# 	(en: 'and so on', DeepL translation)
+            else: [T: "és így tovább egészen az alábbi értékig:"]  	# 	(en: 'and so on up to', DeepL translation)
+
  - "⁡":                                         	#  0x2061
     - test:
         # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
@@ -312,6 +297,8 @@
  - "⁢": [T: ""]                                 	#  0x2062
  - "⁣": [T: "láthatatlan elválasztó"]                                 	#  0x2063
  - "⁤": [T: "és"]                               	#  0x2064	(en: 'and', DeepL translation)
+ - "‴": [T: "hármas prím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
+
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "duplán leütött"                       	# 	(en: 'double-struck', DeepL translation)
     - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
@@ -337,6 +324,17 @@
         else: [T: "jobbra nyíl"]         	# 	(en: 'right arrow', DeepL translation)
 
  - "↓": [T: "lefelé nyíl"]               	#  0x2193	(en: 'down arrow', DeepL translation)
+ - "⇒": [T: "dupla jobbranyíl"]          	#  0x21d2	(en: 'right double arrow', DeepL translation)
+ - "∂":                                         	#  0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [T: "részleges"]                 	# 	(en: 'partial', DeepL translation)
+         else: [T: "parciális derivált"]       	# 	(en: 'partial derivative', DeepL translation)
+ - "∆":                                         	#  0x2206
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "a"]                         	# 	(en: 'the', DeepL translation)
+     - T: "növekménye"                          	# 	(en: 'laplacian of', DeepL translation)
  - "∈":                                         	#  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -364,54 +362,6 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "benne van ebben:"]          	# 	(en: 'is in', DeepL translation)
               - else: [T: "ebbe a halmazba tartozik:"]           	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', DeepL translation)
- - "∥":                                         	#  0x2225
-     - test:
-         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-         then: [T: "dupla függőleges vonal"]    	# 	(en: 'double vertical line', DeepL translation)
-         else:
-         - test:
-              if: "$Verbosity!='Terse'"
-              then: [T: "van"]                  	# 	(en: 'is', DeepL translation)
-         - T: "párhuzamos"                      	# 	(en: 'parallel to', DeepL translation)
- - "∦":                                         	#  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "van"]                       	# 	(en: 'is', DeepL translation)
-     - T: "nem párhuzamos"                      	# 	(en: 'not parallel to', DeepL translation)
- - "≤":                                         	#  0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is', DeepL translation)
-     - T: "kisebb vagy egyenlő"                 	# 	(en: 'less than or equal to', DeepL translation)
- - "≥":                                         	#  0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]                       	# 	(en: 'is', DeepL translation)
-     - T: "nagyobb vagy egyenlő"                	# 	(en: 'greater than or equal to', DeepL translation)
-
- # --- restored complex short definitions (prefer over unicode-full) ---
- - "…":                                         	#  0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [T: "pont pont pont"]        	# 	(en: 'dot dot dot', DeepL translation)
-        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [T: "és így tovább"]          	# 	(en: 'and so on', DeepL translation)
-            else: [T: "és így tovább egészen az alábbi értékig:"]  	# 	(en: 'and so on up to', DeepL translation)
- - "∂":                                         	#  0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [T: "részleges"]                 	# 	(en: 'partial', DeepL translation)
-         else: [T: "parciális derivált"]       	# 	(en: 'partial derivative', DeepL translation)
- - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "a"]                         	# 	(en: 'the', DeepL translation)
-     - T: "növekménye"                          	# 	(en: 'laplacian of', DeepL translation)
  - "∉":                                         	#  0x2209
     # rule is identical to 0x2208
      - test:
@@ -467,6 +417,8 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "benne van ebben:"]          	# 	(en: 'is in', DeepL translation)
               - else: [T: "ebbe a halmazba tartozik:"]           	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', DeepL translation)
+ - "∐": [T: "diszjunkt unió"]                       	#  0x2210	(en: 'co-product', DeepL translation)
+ - "∗": [T: "csillag operátortimes"]                            	#  0x2217	(DeepL translation)
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -477,11 +429,26 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                       	# 	(en: 'is', DeepL translation)
      - T: "arányos"                             	# 	(en: 'proportional to', DeepL translation)
+ - "∥":                                         	#  0x2225
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [T: "dupla függőleges vonal"]    	# 	(en: 'double vertical line', DeepL translation)
+         else:
+         - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "van"]                  	# 	(en: 'is', DeepL translation)
+         - T: "párhuzamos"                      	# 	(en: 'parallel to', DeepL translation)
+ - "∦":                                         	#  0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "van"]                       	# 	(en: 'is', DeepL translation)
+     - T: "nem párhuzamos"                      	# 	(en: 'not parallel to', DeepL translation)
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "van"]                       	# 	(en: 'is', DeepL translation)
      - T: "hogy"                                  	# 	(DeepL translation)
+ - "∷": [T: "arány"]                               	#  0x2237	(DeepL translation)
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
@@ -497,6 +464,18 @@
          if: "$Verbosity!='Terse'"
          then: [T: "van"]                       	# 	(en: 'is', DeepL translation)
      - T: "azonos"                              	# 	(en: 'identical to', DeepL translation)
+ - "≤":                                         	#  0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                       	# 	(en: 'is', DeepL translation)
+     - T: "kisebb vagy egyenlő"                 	# 	(en: 'less than or equal to', DeepL translation)
+ - "≥":                                         	#  0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: ""]                       	# 	(en: 'is', DeepL translation)
+     - T: "nagyobb vagy egyenlő"                	# 	(en: 'greater than or equal to', DeepL translation)
+ - "≦": [T: "kisebb, mint egyenlő"]             	#  0x2266	(en: 'less than over equal to', DeepL translation)
+ - "≧": [T: "nagyobb, mint az egyenlő"]         	#  0x2267	(en: 'greater than over equal to', DeepL translation)
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -529,49 +508,6 @@
      - T: "szuperhalmaza vagy egyenlő"           	# 	(en: 'superset of or equal to', DeepL translation)
 
  # --- restored short definitions that differ from unicode-full ---
- - "–": [T: "en kötőjel"]                       	#  0x2013	(en: 'en dash', DeepL translation)
- - "—": [T: "em kötőjel"]                       	#  0x2014	(en: 'em dash', DeepL translation)
- - "―": [T: "vízszintes sáv"]                   	#  0x2015	(en: 'horizontal bar', DeepL translation)
- - "‖": [T: "dupla függőleges vonal"]           	#  0x2016	(en: 'double vertical line', DeepL translation)
- - "′": [T: "prím"]                             	#  0x2032	(en: 'prime', DeepL translation)
- - "″": [T: "dupla prím"]                       	#  0x2033	(en: 'double prime', DeepL translation)
- - "‴": [T: "hármas prím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
- - "℉": [T: "fahrenheit fok"]                   	#  0x2109	(en: 'degrees fahrenheit', DeepL translation)
- - "ℎ": [T: "planck-állandó"]                   	#  0x210e	(en: 'planck constant', DeepL translation)
- - "Ω": [T: "ohm"]                              	#  0x2126	(en: 'ohms', DeepL translation)
- - "K": [T: "kelvin"]                           	#  0x212a	(DeepL translation)
- - "Å": [T: "angström"]                         	#  0x212b	(en: 'angstroms', DeepL translation)
  - "⇒": [T: "dupla jobbranyíl"]          	#  0x21d2	(en: 'right double arrow', DeepL translation)
- - "∀": [T: "minden"]                      	#  0x2200	(en: 'for all', DeepL translation)
- - "∃": [T: "létezik"]                          	#  0x2203	(en: 'there exists', DeepL translation)
- - "∄": [T: "nem létezik"]                      	#  0x2204	(en: 'there does not exist', DeepL translation)
- - "∅": [T: "üres halmaz"]                     	#  0x2205	(en: 'empty set', DeepL translation)
- - "∏": [T: "produktum"]                           	#  0x220f	(en: 'product', DeepL translation)
  - "∐": [T: "diszjunkt unió"]                       	#  0x2210	(en: 'co-product', DeepL translation)
- - "∑": [T: "összeg"]                              	#  0x2211	(DeepL translation)
- - "−": [T: "mínusz"]                           	#  0x2212	(en: 'minus', DeepL translation)
- - "∓": [T: "mínusz vagy plusz"]                	#  0x2213	(en: 'minus or plus', DeepL translation)
- - "∗": [T: "csillag operátortimes"]                            	#  0x2217	(DeepL translation)
- - "∘": [T: "gyűrű operátor"]                        	#  0x2218	(en: 'composed with', DeepL translation)
- - "∞": [T: "végtelen"]                         	#  0x221e	(en: 'infinity', DeepL translation)
- - "∟": [T: "derékszög"]                        	#  0x221f	(en: 'right angle', DeepL translation)
- - "∠": [T: "szög"]                             	#  0x2220	(en: 'angle', DeepL translation)
- - "∡": [T: "mért szög"]                        	#  0x2221	(en: 'measured angle', DeepL translation)
- - "∣": [T: "osztója"]                           	#  0x2223	(en: 'divides', DeepL translation)
- - "∤": [T: "nem osztója"]                         	#  0x2224	(en: 'does not divide', DeepL translation)
- - "∧": [T: "logikai és"]                               	#  0x2227	(en: 'and', DeepL translation)
- - "∨": [T: "logikai vagy"]                             	#  0x2228	(en: 'or', DeepL translation)
- - "∩": [T: "metszéspont"]                      	#  0x2229	(en: 'intersection', DeepL translation)
- - "∪": [T: "unió"]                             	#  0x222a	(en: 'union', DeepL translation)
- - "∫": [T: "integrál"]                         	#  0x222b	(en: 'integral', DeepL translation)
- - "∬": [T: "kettős integrál"]                  	#  0x222c	(en: 'double integral', DeepL translation)
- - "∭": [T: "hármas integrál"]                  	#  0x222d	(en: 'triple integral', DeepL translation)
- - "∮": [T: "kontúr integrál"]                  	#  0x222e	(en: 'contour integral', DeepL translation)
- - "∷": [T: "arány"]                               	#  0x2237	(DeepL translation)
- - "∼": [T: "változik"]                         	#  0x223c	(en: 'varies with', DeepL translation)
- - "∽": [T: "fordított tilde"]                  	#  0x223d	(en: 'reversed tilde', DeepL translation)
- - "∿": [T: "szinuszhullám"]                    	#  0x223f	(en: 'sine wave', DeepL translation)
- - "≦": [T: "kisebb, mint egyenlő"]             	#  0x2266	(en: 'less than over equal to', DeepL translation)
- - "≧": [T: "nagyobb, mint az egyenlő"]         	#  0x2267	(en: 'greater than over equal to', DeepL translation)
- - "≺": [T: "megelőzi"]                         	#  0x227a	(en: 'precedes', DeepL translation)
- - "≻": [T: "követi"]                          	#  0x227b	(en: 'succeeds', DeepL translation)
+

@@ -9,9 +9,10 @@ use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
 use regex::{Captures, Regex};
-use sxd_document::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
-use sxd_document::parser;
-use sxd_document::Package;
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::parser;
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::{as_str, as_qname};
 
 use crate::canonicalize::{as_element, name};
 use crate::shim_filesystem::{find_all_dirs_shim, find_files_in_dir_that_ends_with_shim};
@@ -55,47 +56,68 @@ thread_local! {
 }
 
 /// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
+///
+/// Installed once. Under `#[cfg(test)]` the previous hook (cargo's) is chained so assert failures
+/// still print normally; production stays silent and relies on [`report_any_panic`].
 pub fn init_panic_handler() {
     use std::panic;
+    use std::sync::Once;
 
-    panic::set_hook(Box::new(|info| {
-        let location = info.location()
-            .map(|l| format!("{}:{}", l.file(), l.line()))
-            .unwrap_or_else(|| "unknown".to_string());
+    static INSTALL: Once = Once::new();
+    INSTALL.call_once(|| {
+        let previous = panic::take_hook();
+        panic::set_hook(Box::new(move |info| {
+            let location = info.location()
+                .map(|l| format!("{}:{}", l.file(), l.line()))
+                .unwrap_or_else(|| "unknown".to_string());
 
-        let payload = info.payload();
-        let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
-            s.to_string()
-        } else if let Some(s) = payload.downcast_ref::<String>() {
-            s.clone()
-        } else {
-            "Unknown panic payload".to_string()
-        };
+            let payload = info.payload();
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                s.to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "Unknown panic payload".to_string()
+            };
 
-        // Use try_with/try_borrow_mut to ensure the hook never panics itself
-        let _ = PANIC_INFO.try_with(|cell| {
-            if let Ok(mut slot) = cell.try_borrow_mut() {
-                *slot = Some((msg, location, 0));
+            // Use try_with/try_borrow_mut to ensure the hook never panics itself
+            let _ = PANIC_INFO.try_with(|cell| {
+                if let Ok(mut slot) = cell.try_borrow_mut() {
+                    *slot = Some((msg, location, 0));
+                }
+            });
+
+            // cargo test (and other previous hooks) still print; production ATs do not want that spam.
+            if cfg!(test) {
+                previous(info);
             }
-        });
-    }));
+        }));
+    });
 }
 
 pub fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
     match result {
         Ok(val) => val,
-        Err(_) => {
-            // Retrieve the smuggled info
-            let details = PANIC_INFO.with(|cell| cell.borrow_mut().take());
-            
-            if let Some((msg, file, line)) = details {
-                Err(anyhow::anyhow!(
+        Err(payload) => {
+            // Prefer details captured by the hook (includes file:line).
+            if let Some((msg, file, line)) = PANIC_INFO.with(|cell| cell.borrow_mut().take()) {
+                return Err(anyhow::anyhow!(
                     "MathCAT crash! Please report the following information: '{}' at {}:{}",
                     msg, file, line
-                ))
-            } else {
-                Err(anyhow::anyhow!("MathCAT crash! -- please report"))
+                ));
             }
+            // Fallback: catch_unwind always provides the payload even if the hook did not run.
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                (*s).to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                return Err(anyhow::anyhow!("MathCAT crash! -- please report"));
+            };
+            Err(anyhow::anyhow!(
+                "MathCAT crash! Please report the following information: '{}'",
+                msg
+            ))
         }
     }
 } 
@@ -435,7 +457,7 @@ pub fn get_navigation_braille() -> Result<String> {
                                 name(found)
                             );
                         } else if let Some(ch) = as_text(found).chars().nth(offset) {
-                            let internal_mathml = create_mathml_element(&new_doc, name(found));
+                            let internal_mathml = create_mathml_element(&new_doc, as_str!(name(found)));
                             internal_mathml.set_text(&ch.to_string());
                             let new_mathml = create_mathml_element(&new_doc, "math");
                             new_mathml.append_child(internal_mathml);
@@ -685,20 +707,20 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     // Safety: Prevent stack overflow on deeply nested MathML
     if depth > MAX_DEPTH {
         // Return the element as a leaf if it's too deep to prevent crash
-        return create_mathml_element(&mathml.document(), name(mathml));
+        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
     }
 
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
-    let new_mathml = create_mathml_element(&mathml.document(), name(mathml));
+    let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
     mathml.attributes().iter().for_each(|attr| {
-        new_mathml.set_attribute_value(attr.name(), attr.value());
+        new_mathml.set_attribute_value(as_qname!(attr.name()), as_str!(attr.value()));
     });
 
     // can't use is_leaf/as_text because this is also used with the intent tree
     if children.len() == 1 &&
        let Some(text) = children[0].text() {
-        new_mathml.set_text(text.text());
+        new_mathml.set_text(as_str!(text.text()));
         return new_mathml;
         }
 
@@ -740,10 +762,16 @@ fn add_ids(mathml: Element) -> Element {
         random_part.push_str("a1b2");      // needs to be at least four chars
     }
     let prefix = "M".to_string() + &time_part[time_part.len() - 3..] + &random_part[random_part.len() - 4..] + "-"; // begin with letter
-    add_ids_to_all(mathml, &prefix, 0);
+    add_ids_to_all(mathml, &prefix, 0, 0);
     return mathml;
 
-    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize) -> usize {
+    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize, depth: usize) -> usize {
+        // Safety: Prevent stack overflow on deeply nested MathML
+        if depth > 512 {
+            // Return the element as a leaf if it's too deep to prevent crash
+            return count;
+        }
+
         let mut count = count;
         if mathml.attribute("id").is_none() {
             mathml.set_attribute_value("id", (id_prefix.to_string() + &count.to_string()).as_str());
@@ -757,7 +785,7 @@ fn add_ids(mathml: Element) -> Element {
 
         for child in mathml.children() {
             let child = as_element(child);
-            count = add_ids_to_all(child, id_prefix, count);
+            count = add_ids_to_all(child, id_prefix, count, depth + 1);
         }
         return count;
     }
@@ -798,6 +826,15 @@ fn trim_doc(doc: &Document) {
 
 /// Not really meant to be public -- used by tests in some packages
 pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
+    trim_element_recursive(e, allow_structure_in_leaves, 0);
+}
+
+fn trim_element_recursive(e: Element, allow_structure_in_leaves: bool, depth: usize) {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > 512 {
+        return;
+    }
+
     // "<mtext>this is text</mtext" results in 3 text children
     // these are combined into one child as it makes code downstream simpler
 
@@ -815,10 +852,10 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
     for child in e.children() {
         match child {
             ChildOfElement::Element(c) => {
-                trim_element(c, allow_structure_in_leaves);
+                trim_element_recursive(c, allow_structure_in_leaves, depth + 1);
             }
             ChildOfElement::Text(t) => {
-                single_text += t.text();
+                single_text += as_str!(t.text());
                 e.remove_child(child);
             }
             _ => {
@@ -864,7 +901,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
             let child_text = match child {
                 ChildOfElement::Element(child) => {
                     if name(child) == "mglyph" {
-                        child.attribute_value("alt").unwrap_or("").to_string()
+                        child.attribute_value("alt").as_deref().unwrap_or("").to_string()
                     } else {
                         gather_text(child)
                     }
@@ -893,7 +930,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
                     ChildOfElement::Element(child) => {
                         text += &gather_text(child);
                     }
-                    ChildOfElement::Text(t) => text += t.text(),
+                    ChildOfElement::Text(t) => text += as_str!(t.text()),
                     _ => (),
                 }
             }
@@ -933,11 +970,11 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
                 // combine adjacent text nodes into single nodes
                 if is_last_mtext {
                     let last_child = new_children.last_mut().unwrap().element().unwrap();
-                    let new_text = as_text(last_child).to_string() + text.text();
+                    let new_text = as_str!(as_text(last_child)).to_string() + as_str!(text.text());
                     last_child.set_text(&new_text);
                 } else {
-                    let new_leaf_node = create_mathml_element(&doc, leaf_name);
-                    new_leaf_node.set_text(text.text());
+                    let new_leaf_node = create_mathml_element(&doc, as_str!(leaf_name));
+                    new_leaf_node.set_text(as_str!(text.text()));
                     new_children.push(ChildOfElement::Element(new_leaf_node));
                     is_last_mtext = true;
                 }
@@ -947,7 +984,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
         // clean up whitespace in text nodes
         for child in &mut new_children {    
             if let Some(element) = child.element() && is_leaf(element) {
-                let text = as_text(element);
+                let text = as_str!(as_text(element));
                 let cleaned_text = WHITESPACE_MATCH.replace_all(text, " ").trim_matches(WHITESPACE).to_string();
                 element.set_text(&cleaned_text);
             }
@@ -1088,10 +1125,10 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
     /// compares attributes -- '==' didn't seems to work
     fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
         let attrs1 = attrs1.iter()
-                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
                 .collect::<Vec<Attribute>>();
         let attrs2 = attrs2.iter()
-                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
                 .collect::<Vec<Attribute>>();
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
@@ -1100,14 +1137,14 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
         for attr1 in attrs1 {
             if let Some(found_attr2) = attrs2
                 .iter()
-                .find(|&attr2| attr1.name().local_part() == attr2.name().local_part())
+                .find(|&attr2| as_qname!(attr1.name()).local_part() == as_qname!(attr2.name()).local_part())
             {
                 if attr1.value() == found_attr2.value() {
                     continue;
                 } else {
                     bail!(
                         "Attribute named {} has differing values:\n  '{}'\n  '{}'",
-                        attr1.name().local_part(),
+                        as_qname!(attr1.name()).local_part(),
                         attr1.value(),
                         found_attr2.value()
                     );
@@ -1123,7 +1160,7 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
         return Ok(());
 
         fn print_attr(attr: &Attribute) -> String {
-            return format!("@{}='{}'", attr.name().local_part(), attr.value());
+            return format!("@{}='{}'", as_qname!(attr.name()).local_part(), attr.value());
         }
         fn print_attrs(attrs: &[Attribute]) -> String {
             return attrs.iter().map(print_attr).collect::<Vec<String>>().join(", ");
@@ -1462,7 +1499,7 @@ mod tests {
             let work_package = Package::new();
             let mut ctx =
                 SpeechRulesWithContext::new(&rules_ref, work_package.as_document(), "", 0);
-            let from_attr = ctx.replace_chars(attr.value(), math)?;
+            let from_attr = ctx.replace_chars(as_str!(attr.value()), math)?;
             assert_ssml_attack_neutralized(&from_attr, PAYLOAD);
             assert!(
                 from_attr.contains("&lt;"),

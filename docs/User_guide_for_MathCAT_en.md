@@ -39,6 +39,7 @@ You can choose between the following settings for speech. Below each setting you
   - \[English (en)\]
   - Spanish (es)
   - Indonesian (id)
+  - Russian (ru)
   - Swedish (sv)
   - Vietnamese (vi)
   - Chinese, traditional (zh-tw)

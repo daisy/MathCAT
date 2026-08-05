@@ -1,7 +1,8 @@
 #![allow(clippy::needless_return)]
 use strum_macros::Display;
-use sxd_document::dom::{Element, ChildOfElement};
-use sxd_document::Package;
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::as_str;
 use crate::definitions::SPEECH_DEFINITIONS;
 use crate::errors::*;
 use crate::pretty_print::mml_to_string;
@@ -58,7 +59,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             }
         );
     });
-
+    
     /// highlight with dots 7 & 8 based on the highlight style
     /// both the start and stop points will be extended to deal with indicators such as capitalization
     /// if 'fill_range' is true, the interior will be highlighted
@@ -236,8 +237,8 @@ trait BrailleCode: Sync {
 
     /// Whether `mathml` needs grouping indicators around it. Default: the code doesn't use grouping.
     fn needs_grouping(&self, _mathml: Element, _is_base: bool) -> StdResult<bool, XPathError> {
-        return Err(XPathError::Other(format!(
-            "NeedsToBeGrouped: braille code arg '{}' is not a known code ('UEB', 'CMU', or 'Swedish')", self.name())));
+        return Err(XPathError::Other { what: format!(
+            "NeedsToBeGrouped: braille code arg '{}' is not a known code ('UEB', 'CMU', or 'Swedish')", self.name()) });
     }
 
     // --- navigation-highlight knobs (UEB-like defaults; override per code as needed) ---
@@ -263,6 +264,7 @@ fn get_braille_code(code: &str) -> Option<&'static dyn BrailleCode> {
         "Vietnam" => &Vietnam,
         "CMU" => &Cmu,
         "Finnish" => &Finnish,
+        "Russian" => &Russian,
         "Swedish" => &Swedish,
         "LaTeX" => &LaTeX,
         "ASCIIMath" => &AsciiMath,
@@ -275,6 +277,7 @@ struct Ueb;
 struct Vietnam;
 struct Cmu;
 struct Finnish;
+struct Russian;
 struct Swedish;
 #[allow(non_camel_case_types)]
 struct LaTeX;
@@ -340,6 +343,12 @@ impl BrailleCode for Finnish {
     fn cleanup(&self, pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String { finnish_cleanup(pref_manager, raw_braille) }
     fn get_braille_chars(&self, node: Element, text_range: Option<Range<usize>>) -> Result<String> { BrailleChars::get_braille_ueb_chars(node, text_range) }    // FIX: need to figure out what to implement
     fn needs_grouping(&self, mathml: Element, is_base: bool) -> StdResult<bool, XPathError> { Ok(NeedsToBeGrouped::needs_grouping_for_finnish(mathml, is_base)) }
+}
+
+impl BrailleCode for Russian {
+    fn name(&self) -> &'static str { "Russian" }
+    fn cleanup(&self, pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String { russian_cleanup(pref_manager, raw_braille) }
+    fn get_braille_chars(&self, node: Element, text_range: Option<Range<usize>>) -> Result<String> { BrailleChars::get_braille_russian_chars(node, text_range) }    // FIX: need to figure out what to implement
 }
 
 impl BrailleCode for Swedish {
@@ -437,7 +446,8 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
     /// find the navigation node that most tightly encapsulates the target position (0-based)
     /// 'node' is the current node we are on inside of 'mathml'
     fn find_navigation_node<'e>(mathml: Element<'e>, node: Element<'e>, target_position: usize) -> Result<SearchState<'e>> {
-        let node_id = match node.attribute_value("id") {
+        let raw_node_id = node.attribute_value("id");
+        let node_id = match raw_node_id.as_deref() {
             Some(id) => id,
             None => bail!("'id' is not present on mathml: {}", mml_to_string(node)),
         };
@@ -555,7 +565,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
         return BRAILLE_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             let comparison_operators = definitions.get_hashset("ComparisonOperators").unwrap();
-            return comparison_operators.contains(as_text(node));
+            return comparison_operators.contains(as_str!(as_text(node)));
         });        
     }
 
@@ -589,7 +599,7 @@ pub fn get_navigation_node_from_braille_position(mathml: Element, position: usiz
 
     fn estimate_braille_chars(child: ChildOfElement, n_number_indicator: usize) -> usize {
         let node = as_element(child);
-        let leaf_name = name(node);
+        let leaf_name = as_str!(name(node));
         if is_leaf(node) {
             let text = as_text(node);
             // len() is close since mn's probably have ASCII digits and lower case vars are common (count as) and other chars need extra braille chars
@@ -2258,6 +2268,174 @@ fn swedish_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     return result.to_string();
 }
 
+fn russian_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
+    static REPLACE_INDICATORS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([LNW#])").unwrap());
+    static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"⠀+").unwrap());
+    static PERIODIC_DECIMAL_NUM_INDICATOR: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"(N[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠂[⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]*⠣)N([⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊]+⠜)").unwrap()
+    });
+
+    let mut raw_braille_without_repeated_number_indicators = String::with_capacity(raw_braille.len());
+    let mut previous_char_was_digit = false;
+    for ch in raw_braille.chars() {
+        if ch == 'N' && previous_char_was_digit {
+            previous_char_was_digit = false;
+            continue;
+        }
+        raw_braille_without_repeated_number_indicators.push(ch);
+        previous_char_was_digit = matches!(ch, '⠚' | '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊');
+    }
+
+    let raw_braille_without_periodic_number_indicator = PERIODIC_DECIMAL_NUM_INDICATOR
+        .replace_all(&raw_braille_without_repeated_number_indicators, "$1$2");
+    let result = add_russian_typeform_indicators(&raw_braille_without_periodic_number_indicator);
+    let result = add_russian_alphabet_indicators(&result);
+    let result = REPLACE_INDICATORS.replace_all(&result, |cap: &Captures| {
+        match &cap[0] {
+            "C" => "⠨",
+            "L" => "",
+            "N" => "⠼",
+            "W" => "⠀",
+            "#" => "",
+            _ => "",
+        }
+    });
+    let result = result.replace("⠠⠙⠊⠧", "⠫⠙⠊⠧");
+    return COLLAPSE_SPACES.replace_all(&result, "⠀")
+                          .trim_matches('⠀')
+                          .to_string();
+
+    fn add_russian_typeform_indicators(raw_braille: &str) -> String {
+        let mut result = String::with_capacity(raw_braille.len());
+        let mut active_typeforms: Vec<char> = Vec::with_capacity(2);
+        let mut pending_typeforms: Vec<char> = Vec::with_capacity(2);
+        let mut previous_was_capital_marker = false;
+
+        for ch in raw_braille.chars() {
+            if is_russian_typeform_marker(ch) {
+                if !pending_typeforms.contains(&ch) {
+                    pending_typeforms.push(ch);
+                }
+                previous_was_capital_marker = false;
+                continue;
+            }
+            if matches!(ch, 's' | 'w' | 'e') && (!pending_typeforms.is_empty() || !active_typeforms.is_empty()) {
+                continue;
+            }
+
+            if is_russian_token_start(ch) {
+                if !previous_was_capital_marker {
+                    close_inactive_typeforms(&mut result, &mut active_typeforms, &pending_typeforms);
+                }
+                for &typeform in &pending_typeforms {
+                    if !active_typeforms.contains(&typeform) {
+                        result.push_str(russian_typeform_indicator(typeform));
+                        active_typeforms.push(typeform);
+                    }
+                }
+                pending_typeforms.clear();
+            } else if !pending_typeforms.is_empty() {
+                close_inactive_typeforms(&mut result, &mut active_typeforms, &pending_typeforms);
+                for &typeform in &pending_typeforms {
+                    if !active_typeforms.contains(&typeform) {
+                        result.push_str(russian_typeform_indicator(typeform));
+                        result.push_str(russian_typeform_indicator(typeform));
+                    }
+                }
+                pending_typeforms.clear();
+            } else if !active_typeforms.is_empty() && !is_russian_token_body(ch) {
+                close_all_typeforms(&mut result, &mut active_typeforms);
+            }
+
+            result.push(ch);
+            previous_was_capital_marker = ch == 'C';
+        }
+
+        close_all_typeforms(&mut result, &mut active_typeforms);
+        return result;
+    }
+
+    fn is_russian_typeform_marker(ch: char) -> bool {
+        matches!(ch, 'B' | 'I' | 'T' | 'D' | 'S' | '𝔹')
+    }
+
+    fn is_russian_token_start(ch: char) -> bool {
+        matches!(ch, 'l' | 'u' | 'g' | 'v' | 'L' | 'N' | 'C')
+    }
+
+    fn is_russian_token_body(ch: char) -> bool {
+        ('\u{2801}'..='\u{28ff}').contains(&ch)
+    }
+
+    fn close_inactive_typeforms(result: &mut String, active_typeforms: &mut Vec<char>, pending_typeforms: &[char]) {
+        let mut i = active_typeforms.len();
+        while i > 0 {
+            i -= 1;
+            if !pending_typeforms.contains(&active_typeforms[i]) {
+                let typeform = active_typeforms.remove(i);
+                result.push_str(russian_typeform_indicator(typeform));
+            }
+        }
+    }
+
+    fn close_all_typeforms(result: &mut String, active_typeforms: &mut Vec<char>) {
+        while let Some(typeform) = active_typeforms.pop() {
+            result.push_str(russian_typeform_indicator(typeform));
+        }
+    }
+
+    fn russian_typeform_indicator(typeform: char) -> &'static str {
+        match typeform {
+            'B' => "⠻",                         // ГОСТ Р 58511: жирный шрифт, точки 12456.
+            'I' | 'T' | 'D' | 'S' | '𝔹' => "⠸", // ГОСТ Р 58511: курсив/шрифтовое выделение, точки 456.
+            _ => "",
+        }
+    }
+
+    fn add_russian_alphabet_indicators(raw_braille: &str) -> String {
+        let mut result = String::with_capacity(raw_braille.len());
+        let mut alphabet_mode = None;
+        let mut capital_marker_pending = false;
+        for ch in raw_braille.chars() {
+            match ch {
+                'C' => {
+                    if alphabet_mode != Some('u') {
+                        result.push('⠨');
+                        alphabet_mode = Some('u');
+                    }
+                    capital_marker_pending = true;
+                },
+                'l' if capital_marker_pending => {
+                    capital_marker_pending = false;
+                },
+                'l' | 'u' | 'g' | 'v' => {
+                    capital_marker_pending = false;
+                    if alphabet_mode != Some(ch) {
+                        result.push_str(match ch {
+                            'l' => "⠠",  // Latin lowercase: dots 6
+                            'u' => "⠨",  // Latin uppercase: dots 4-6
+                            'g' => "⠰",  // Greek lowercase: dots 5-6
+                            'v' => "⠸",  // Greek uppercase: dots 4-5-6
+                            _ => unreachable!(),
+                        });
+                        alphabet_mode = Some(ch);
+                    }
+                },
+                'N' | '#' => {
+                    capital_marker_pending = false;
+                    alphabet_mode = None;
+                    result.push(ch);
+                },
+                _ => {
+                    capital_marker_pending = false;
+                    result.push(ch);
+                },
+            }
+        }
+        return result;
+    }
+}
+
 #[allow(non_snake_case)]
 fn LaTeX_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     static REMOVE_SPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r" ([\^_,;)\]}])").unwrap()); // '^', '_', ',', ';', ')', ']', '}'
@@ -2301,10 +2479,10 @@ fn ASCIIMath_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String)
 use crate::canonicalize::{as_element, as_text, name};
 use crate::xpath_functions::{is_leaf, validate_one_node, IsBracketed};
 use std::result::Result as StdResult;
-use sxd_document::dom::ParentOfChild;
-use sxd_xpath::function::Error as XPathError;
-use sxd_xpath::function::{Args, Function};
-use sxd_xpath::{context, nodeset::*, Value};
+use sxd_document_no_unsafe::dom::ParentOfChild;
+use sxd_xpath_no_unsafe::function::Error as XPathError;
+use sxd_xpath_no_unsafe::function::{Args, Function};
+use sxd_xpath_no_unsafe::{context, nodeset::*, Value};
 
 pub struct NemethNestingChars;
 const NEMETH_FRAC_LEVEL: &str = "data-nemeth-frac-level";    // name of attr where value is cached
@@ -2329,7 +2507,7 @@ impl NemethNestingChars {
             max_value += repeat_char;
             node.set_attribute_value(NEMETH_FRAC_LEVEL, &max_value);
             return max_value;
-        } else if FIRST_CHILD_ONLY.contains(&name) {
+        } else if FIRST_CHILD_ONLY.contains(&as_str!(name)) {
             // only look at the base -- ignore scripts/index
             return NemethNestingChars::nemeth_frac_value(as_element(children[0]), repeat_char);
         } else {
@@ -2364,11 +2542,11 @@ impl NemethNestingChars {
                 if let ParentOfChild::Element(e) =  parent_of_child {
                     parent = e;
                 } else {
-                    return Err( sxd_xpath::function::Error::Other("Internal error in nemeth_root_value: didn't find 'math' tag".to_string()) );
+                    return Err( sxd_xpath_no_unsafe::function::Error::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
                 }
             }
         }
-        return Err( XPathError::Other("Internal error in nemeth_root_value: didn't find 'math' tag".to_string()) );
+        return Err( XPathError::Other { what: "Internal error in nemeth_root_value: didn't find 'math' tag".to_string() } );
     }
 }
 
@@ -2399,7 +2577,7 @@ impl Function for NemethNestingChars {
             } else if name == "msqrt" || name == "mroot" {
                 return Ok( Value::String( NemethNestingChars::nemeth_root_value(el, &repeat_char)? ) );
             } else {
-                return Err(XPathError::Other(format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name)));
+                return Err(XPathError::Other { what: format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name) });
             }
         } else {
             // not an element, so nothing to do
@@ -2416,11 +2594,11 @@ impl BrailleChars {
     fn get_braille_chars(node: Element, code: &str, text_range: Option<Range<usize>>) -> StdResult<String, XPathError> {
         let result = match get_braille_code(code) {
             Some(braille_code) => braille_code.get_braille_chars(node, text_range),
-            None => return Err(sxd_xpath::function::Error::Other(format!("get_braille_chars: unknown braille code '{code}'"))),
+            None => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: format!("get_braille_chars: unknown braille code '{code}'") }),
         };
         return match result {
             Ok(string) => Ok(make_quoted_string(string)),
-            Err(err) => return Err(sxd_xpath::function::Error::Other(err.to_string())),
+            Err(err) => return Err(sxd_xpath_no_unsafe::function::Error::Other { what: err.to_string() }),
         }
     }
 
@@ -2432,7 +2610,8 @@ impl BrailleChars {
         static PICK_APART_CHAR: LazyLock<Regex> = LazyLock::new(|| {
             Regex::new(r"(?P<face>[SB𝔹TIR]*)(?P<lang>[EDGVHU]?)(?P<cap>C?)(?P<letter>L?)(?P<num>[N]?)(?P<char>.)").unwrap()
         });
-        let math_variant = node.attribute_value("mathvariant");
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
         let  attr_typeface = match math_variant {
             None => "R",
             Some(variant) => match variant {
@@ -2445,7 +2624,7 @@ impl BrailleChars {
                 _ => "R",       // normal and unknown
             },
         };
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let braille_chars = braille_replace_chars(&text, node)?;
         // debug!("Nemeth chars: text='{}', braille_chars='{}'", &text, &braille_chars);
         
@@ -2507,8 +2686,9 @@ impl BrailleChars {
             Regex::new(r"(?P<bold>B??)(?P<italic>I??)(?P<face>[S𝔹TD]??)s??(?P<cap>C??)(?P<greek>G??)(?P<char>[NL].)").unwrap()
         });
     
-        let math_variant = node.attribute_value("mathvariant");
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let mut braille_chars = braille_replace_chars(&text, node)?;
 
         // debug!("get_braille_ueb_chars: before/after unicode.yaml: '{}'/'{}'", text, braille_chars);
@@ -2551,6 +2731,42 @@ impl BrailleChars {
         return Ok(result.to_string())
     }
 
+    fn get_braille_russian_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
+        let braille_chars = braille_replace_chars(&text, node)?;
+        let Some(raw_math_variant) = node.attribute_value("mathvariant") else {
+            return Ok(braille_chars);
+        };
+        let math_variant = as_str!(raw_math_variant);
+
+        let mut prefix = String::new();
+        let mut suffix = String::new();
+        if math_variant.contains("bold") && !braille_chars.contains('B') {
+            prefix.push('⠻');
+            suffix.insert(0, '⠻');
+        }
+        if math_variant.contains("italic") && !braille_chars.contains('I') {
+            prefix.push('⠸');
+            suffix.insert(0, '⠸');
+        }
+        let has_typeface_marker = braille_chars.contains('T')
+            || braille_chars.contains('D')
+            || braille_chars.contains('S')
+            || braille_chars.contains('𝔹');
+        if !has_typeface_marker {
+            let typeface = match math_variant {
+                "double-struck" | "script" | "fraktur" | "sans-serif" => Some("⠸"),
+                _ => None,
+            };
+            if let Some(indicator) = typeface {
+                prefix.push_str(indicator);
+                suffix.insert_str(0, indicator);
+            }
+        }
+
+        return Ok(prefix + &braille_chars + &suffix);
+    }
+
     fn get_braille_cmu_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
         // In CMU, we need to replace spaces used for number blocks with "."
         // For other numbers, we need to add "." to create digit blocks
@@ -2560,8 +2776,9 @@ impl BrailleChars {
             Regex::new(r"(?P<bold>B??)(?P<italic>I??)(?P<face>[S𝔹TD]??)s??(?P<cap>C??)(?P<greek>G??)(?P<char>[NL].)").unwrap()
         });
     
-        let math_variant = node.attribute_value("mathvariant");
-        let text = BrailleChars::substring(as_text(node), &text_range);
+        let raw_math_variant = node.attribute_value("mathvariant");
+        let math_variant = raw_math_variant.as_deref();
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let text = add_separator(text);
 
         let braille_chars = braille_replace_chars(&text, node)?;
@@ -2694,13 +2911,14 @@ impl BrailleChars {
         return false;
 
         fn child_meets_conditions(node: Element) -> bool {
-            let name = name(node);
+            let name = as_str!(name(node));
             return match name {
                 "mi" | "mn" => true,
                 "mo"  => !crate::canonicalize::is_relational_op(node),
                 "mtext" => {
-                    let text = as_text(node).trim();
-                    return text=="?" || text=="-?-" || text.is_empty();   // various forms of "fill in missing content" (see also Nemeth_RULEs.yaml, "omissions")
+                    let raw_text = as_text(node);
+                    let text = raw_text.trim();
+                    return text=="?" || text=="-?-" || text.is_empty();
                 },
                 "mrow" => {
                     if IsBracketed::is_bracketed(node, "", "", false, false) {
@@ -2715,7 +2933,7 @@ impl BrailleChars {
                     true      
                 },
                 "menclose" => {
-                    if let Some(notation) = node.attribute_value("notation") {
+                    if let Some(notation) = node.attribute_value("notation").as_deref() {
                         if notation != "bottom" || notation != "box" {
                             return false;
                         }
@@ -2760,7 +2978,7 @@ impl Function for BrailleChars {
         use crate::canonicalize::create_mathml_element;
         let mut args = Args(args);
         if let Err(e) = args.exactly(2).or_else(|_| args.exactly(4)) {
-            return Err( XPathError::Other(format!("BrailleChars requires 2 or 4 args: {e}")));
+            return Err( XPathError::Other { what: format!("BrailleChars requires 2 or 4 args: {e}") });
         };
 
         let range = if args.len() == 4 {
@@ -2792,7 +3010,7 @@ impl Function for BrailleChars {
         };
 
         if !is_leaf(node) {
-            return Err( XPathError::Other(format!("BrailleChars called on non-leaf element '{}'", mml_to_string(node))) );
+            return Err( XPathError::Other { what: format!("BrailleChars called on non-leaf element '{}'", mml_to_string(node)) } );
         }
         return Ok( Value::String( BrailleChars::get_braille_chars(node, &braille_code, range)? ) );
     }
@@ -2858,7 +3076,7 @@ impl NeedsToBeGrouped {
     /// FIX: what needs to be implemented?
     fn needs_grouping_for_finnish(mathml: Element, is_base: bool) -> bool {
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
+        let mut node_name = as_str!(name(mathml));
         if mathml.attribute_value("data-roman-numeral").is_some() {
             node_name = "mi";           // roman numerals don't follow number rules
         }
@@ -2889,7 +3107,7 @@ impl NeedsToBeGrouped {
                 }
             },
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -2949,7 +3167,7 @@ impl NeedsToBeGrouped {
     // if the number is irregular, return the ordinal form, otherwise return 'None'.
     fn needs_grouping_for_swedish(mathml: Element, is_base: bool) -> bool {
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
+        let mut node_name = as_str!(name(mathml));
         if mathml.attribute_value("data-roman-numeral").is_some() {
             node_name = "mi";           // roman numerals don't follow number rules
         }
@@ -2957,7 +3175,7 @@ impl NeedsToBeGrouped {
         match node_name {
             "mn" => return false,
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -3016,7 +3234,7 @@ impl NeedsToBeGrouped {
         // 8. If none of the foregoing apply, the item is simply the [this element's] individual symbol.
 
         use crate::xpath_functions::IsInDefinition;
-        let mut node_name = name(mathml);
+        let mut node_name = as_str!(name(mathml));
         if mathml.attribute_value("data-roman-numeral").is_some() {
             node_name = "mi";           // roman numerals don't follow number rules
         }
@@ -3045,7 +3263,7 @@ impl NeedsToBeGrouped {
                 }
             },
             "mi" | "mo" | "mtext" => {
-                let text = as_text(mathml);
+                let text = as_str!(as_text(mathml));
                 let parent = get_parent(mathml);   // there is always a "math" node
                 let parent_name = name(parent);   // there is always a "math" node
                 if is_base && (parent_name == "msub" || parent_name == "msup" || parent_name == "msubsup") && !text.contains([' ', '\u{00A0}']) {
@@ -3098,12 +3316,12 @@ impl Function for NeedsToBeGrouped {
         if let Node::Element(e) = node {
             let answer = match get_braille_code(&braille_code) {
                 Some(code) => code.needs_grouping(e, is_base)?,
-                None => return Err(XPathError::Other(format!("NeedsToBeGrouped: braille code arg '{braille_code:?}' is not a known code ('UEB', 'CMU', or 'Swedish')"))),
+                None => return Err(XPathError::Other { what: format!("NeedsToBeGrouped: braille code arg '{braille_code:?}' is not a known code ('UEB', 'CMU', or 'Swedish')") }),
             };
             return Ok( Value::Boolean( answer ) );
         }
 
-        return Err(XPathError::Other(format!("NeedsToBeGrouped: first arg '{node:?}' is not a node")));
+        return Err(XPathError::Other { what: format!("NeedsToBeGrouped: first arg '{node:?}' is not a node") });
     }
 }
     

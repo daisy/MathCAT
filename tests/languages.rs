@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(clippy::doc_lazy_continuation, clippy::module_inception, clippy::needless_return)]
 
 mod common;
 
@@ -9,9 +10,11 @@ mod Languages {
     mod hu;
     mod ru;
     mod fi;
+    mod pl;
     mod sv;
     mod nb;
     mod de;
+    mod fr;
     mod vi {
         mod vi;
     }

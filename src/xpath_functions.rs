@@ -17,8 +17,9 @@
 //!   This can be used to surround a whole or part of an xpath expression in a match or output.
 //!   The result will be printed to standard output and the result returned so that `DEBUG` does not affect the computation.    
 
-use sxd_document::dom::{Element, ChildOfElement};
-use sxd_xpath::{Value, Context, context, function::*, nodeset::*};
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
+use sxd_document_no_unsafe::{as_str, as_qname};
+use sxd_xpath_no_unsafe::{Value, Context, context, function::*, nodeset::*};
 use crate::definitions::{Definitions, SPEECH_DEFINITIONS, BRAILLE_DEFINITIONS};
 use regex::Regex;
 use crate::pretty_print::mml_to_string;
@@ -27,7 +28,7 @@ use log::{debug, error, warn};
 use std::sync::LazyLock;
 use std::thread::LocalKey;
 use phf::phf_set;
-use sxd_xpath::function::Error as XPathError;
+use sxd_xpath_no_unsafe::function::Error as XPathError;
 use crate::canonicalize::{as_element, name, get_parent, MATHML_FROM_NAME_ATTR};
 
 // useful utility functions
@@ -53,17 +54,16 @@ fn get_text_from_COE(coe: &ChildOfElement) -> String {
 // Returns the node or an Error
 pub fn validate_one_node<'n>(nodes: Nodeset<'n>, func_name: &str) -> Result<Node<'n>, Error> {
     if nodes.size() == 0 {
-        return Err(Error::Other(format!("Missing argument for {func_name}")));
+        return Err(Error::Other { what: format!("Missing argument for {func_name}") });
     } else if nodes.size() > 1 {
-        return Err( Error::Other(format!("{} arguments for {}; expected 1 argument", nodes.size(), func_name)) );
+        return Err( Error::Other { what: format!("{} arguments for {}; expected 1 argument", nodes.size(), func_name) } );
     }
     return Ok( nodes.iter().next().unwrap() );
 }
 
 // Return true if the element's name is 'name'
-fn is_tag(e: Element, name: &str) -> bool {
-    // need to check name before the fallback of where the name came from
-    return e.name().local_part() == name || e.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or_default() == name;
+fn is_tag(e: Element, tag_name: &str) -> bool {
+    return name(e) == tag_name || e.attribute_value(MATHML_FROM_NAME_ATTR).as_deref().unwrap_or_default() == tag_name;
 }
 
 #[allow(non_snake_case)]
@@ -108,32 +108,27 @@ impl IsNode {
 
 
         // returns the element's text value
-        fn to_str(e: Element<'_>) -> &str {
-            // typically usage assumes 'e' is a leaf
-            // bad MathML is the following isn't true
+        fn to_str(e: Element<'_>) -> String {
             if e.children().len() == 1 {
                 let text_node = e.children()[0];
                 if let Some(t) = text_node.text() {
-                    return t.text();
+                    return t.text().to_string();
                 }
             }               
-            return "";
+            return String::new();
         }
 
-        // same as 'to_str' but for ChildOfElement
-        fn coe_to_str(coe: ChildOfElement<'_>) -> &str {
-            // typically usage assumes 'coe' is a leaf
+        fn coe_to_str(coe: ChildOfElement<'_>) -> String {
             let element_node = coe.element();
-            if let Some(e) = element_node {
-                // bad MathML is the following isn't true
-                if e.children().len() == 1 {
-                    let text_node = e.children()[0];
-                    if let Some(t) = text_node.text() {
-                        return t.text();
-                    }
+            if let Some(e) = element_node
+                && e.children().len() == 1
+            {
+                let text_node = e.children()[0];
+                if let Some(t) = text_node.text() {
+                    return t.text().to_string();
                 }
-            }               
-            return "";
+            }
+            return String::new();
         }
 
         // returns true if the string is just a single *char* (which can be multiple bytes)
@@ -147,7 +142,7 @@ impl IsNode {
             if is_tag(elem, "mn")  {
                 return true;
             }
-            if is_tag(elem, "mi") && is_single_char(to_str(elem)) {
+            if is_tag(elem, "mi") && is_single_char(&to_str(elem)) {
                 // "simple" only if it is a single char (which can be multiple bytes)
                 return true;
             }
@@ -299,20 +294,20 @@ impl IsNode {
 
     pub fn is_mathml(elem: Element) -> bool {
         // doesn't check MATHML_FROM_NAME_ATTR because we are interested in if it is an intent.
-        return ALL_MATHML_ELEMENTS.contains(name(elem));
+        return ALL_MATHML_ELEMENTS.contains(as_str!(name(elem)));
     }
 
     #[allow(non_snake_case)]
     pub fn is_2D(elem: Element) -> bool {
-        return MATHML_2D_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
+        return MATHML_2D_NODES.contains(as_str!(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem))));
     }
 
     pub fn is_scripted(elem: Element) -> bool {
-        return MATHML_SCRIPTED_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
+        return MATHML_SCRIPTED_NODES.contains(as_str!(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem))));
     }
 
     pub fn is_modified(elem: Element) -> bool {
-        return MATHML_MODIFIED_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
+        return MATHML_MODIFIED_NODES.contains(as_str!(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem))));
     }
     }
 
@@ -351,7 +346,7 @@ static MATHML_SCRIPTED_NODES: phf::Set<&str> = phf_set! {
 };
 
 pub fn is_leaf(element: Element) -> bool {
-    return MATHML_LEAF_NODES.contains(name(element));
+    return MATHML_LEAF_NODES.contains(as_str!(name(element)));
 }
 
 impl Function for IsNode {
@@ -370,7 +365,7 @@ impl Function for IsNode {
         //                .chain_err(|e| format!("Second arg to is_leaf is not a string: {}", e.to_string()))?;
         match kind.as_str() {
             "simple" | "leaf" | "common_fraction" | "2D" | "modified" | "scripted" | "mathml" => (), 
-            _ => return Err( Error::Other(format!("Unknown argument value '{}' for IsNode",  kind.as_str())) ),
+            _ => return Err( Error::Other { what: format!("Unknown argument value '{}' for IsNode",  kind.as_str()) } ),
         };
 
         let nodes = args.pop_nodeset()?;
@@ -630,7 +625,7 @@ impl Function for ToOrdinal {
     {
         let mut args = Args(args);
         if let Err(e) = args.exactly(1).or_else(|_| args.exactly(3)) {
-            return Err( XPathError::Other(format!("ToOrdinal requires 1 or 3 args: {e}")));
+            return Err( XPathError::Other { what: format!("ToOrdinal requires 1 or 3 args: {e}") });
         };
         let mut fractional = false;
         let mut plural = false;
@@ -641,7 +636,7 @@ impl Function for ToOrdinal {
         let node = validate_one_node(args.pop_nodeset()?, "ToOrdinal")?;
         return match node {
             Node::Text(t) =>  Ok( Value::String(
-                match ToOrdinal::convert(t.text(), fractional, plural) {
+                match ToOrdinal::convert(as_str!(t.text()), fractional, plural) {
                     None => t.text().to_string(),
                     Some(ord) => ord,
                 } ) ),
@@ -672,7 +667,7 @@ impl Function for ToCommonFraction {
         let node = validate_one_node(args.pop_nodeset()?, "ToCommonFraction")?;
         if let Node::Element(frac) = node {
             if !IsNode::is_common_fraction(frac, usize::MAX, usize::MAX) {
-                return Err( Error::Other( format!("ToCommonFraction -- argument is not an 'mfrac': {}': ", mml_to_string(frac))) );
+                return Err( Error::Other { what: format!("ToCommonFraction -- argument is not an 'mfrac': {}': ", mml_to_string(frac)) } );
             }
     
             // everything has been verified, so we can just get the pieces and ignore potential error results
@@ -689,7 +684,7 @@ impl Function for ToCommonFraction {
 
             return Ok( Value::String( answer ) )
         } else {
-            return Err( Error::Other( "ToCommonFraction -- argument is not an element".to_string()) );
+            return Err( Error::Other { what: "ToCommonFraction -- argument is not an element".to_string() } );
         }
     }
 }
@@ -742,7 +737,7 @@ struct BaseNode;
     /// Recursively find the base node
     /// The base node of a non scripted element is the element itself
     fn base_node(node: Element) -> Element {
-        let name = node.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(node));
+        let name = as_str!(node.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(node)));
         if ["msub", "msup", "msubsup", "munder", "mover", "munderover", "mmultiscripts"].contains(&name) {
             return BaseNode::base_node(as_element(node.children()[0]));
         } else {
@@ -766,7 +761,7 @@ struct BaseNode;
             return Ok( Value::Nodeset(node_set) );
         } else {
             // xpath is something besides an element, so no match
-            return Err( Error::Other("Argument other than a node given to BaseNode".to_string()) );
+            return Err( Error::Other { what: "Argument other than a node given to BaseNode".to_string() } );
         }
     }
 }
@@ -948,7 +943,7 @@ impl IsInDefinition {
             if let Some(hashmap) = definitions.borrow().get_hashmap(set_name) {
                 return Ok( hashmap.contains_key(test_str) );
             }
-            return Err( Error::Other( format!("\n  IsInDefinition: '{set_name}' is not defined in definitions.yaml") ) );
+            return Err( Error::Other { what: format!("\n  IsInDefinition: '{set_name}' is not defined in definitions.yaml") } );
         });
     }
 }
@@ -976,7 +971,7 @@ impl IsInDefinition {
             match args.pop_string()?.as_str() {
                 "Speech" => &SPEECH_DEFINITIONS,
                 "Braille" => &BRAILLE_DEFINITIONS,
-                _ => return Err( Error::Other("IsInDefinition:: second argument must be either 'Speech' or 'Braille'".to_string()) )
+                _ => return Err( Error::Other { what: "IsInDefinition:: second argument must be either 'Speech' or 'Braille'".to_string() } )
             }
         } else {
             &SPEECH_DEFINITIONS
@@ -1006,7 +1001,7 @@ impl IsInDefinition {
                     }
                 }
             },
-            _ => Err( Error::Other("IsInDefinition:: neither a node nor a string is passed for first argument".to_string()) ),
+            _ => Err( Error::Other { what: "IsInDefinition:: neither a node nor a string is passed for first argument".to_string() } ),
         }
     }
 }
@@ -1024,7 +1019,7 @@ impl DefinitionValue {
                     Some(str) => str.clone(),
                 });
             }
-            return Err( Error::Other( format!("\n  DefinitionValue: '{set_name}' is not defined in definitions.yaml") ) );
+            return Err( Error::Other { what: format!("\n  DefinitionValue: '{set_name}' is not defined in definitions.yaml") } );
         });
     }
 }
@@ -1049,7 +1044,7 @@ impl DefinitionValue {
         let definitions = match args.pop_string()?.as_str() {
             "Speech" => &SPEECH_DEFINITIONS,
             "Braille" => &BRAILLE_DEFINITIONS,
-            _ => return Err( Error::Other("IsInDefinition:: second argument must be either 'Speech' or 'Braille'".to_string()) )
+            _ => return Err( Error::Other { what: "IsInDefinition:: second argument must be either 'Speech' or 'Braille'".to_string() } )
         };
         match &args[0] {
             Value::String(str) => return match DefinitionValue::definition_value(str, definitions, &set_name) {
@@ -1076,7 +1071,7 @@ impl DefinitionValue {
                     }
                 }
             },
-            _ => Err( Error::Other("DefinitionValue:: neither a node nor a string is passed for first argument".to_string()) ),
+            _ => Err( Error::Other { what: "DefinitionValue:: neither a node nor a string is passed for first argument".to_string() } ),
         }
     }
 }
@@ -1089,7 +1084,7 @@ impl DistanceFromLeaf {
         let mut distance = 1;
         loop {
             // debug!("distance={} -- element: {}", distance, mml_to_string(element));
-            if MATHML_LEAF_NODES.contains(element.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(element))) {
+            if MATHML_LEAF_NODES.contains(as_str!(element.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(element)))) {
                 return distance;
             }
             if treat_2d_elements_as_tokens && (IsNode::is_2D(element) || !IsNode::is_mathml(element)) {
@@ -1126,7 +1121,7 @@ impl Function for DistanceFromLeaf {
         }
 
         // FIX: should having a non-element be an error instead??
-        return Err(Error::Other(format!("DistanceFromLeaf: first arg '{node:?}' is not a node")));
+        return Err(Error::Other { what: format!("DistanceFromLeaf: first arg '{node:?}' is not a node") });
     }
 }
 
@@ -1203,7 +1198,7 @@ impl Function for EdgeNode {
         }
 
         // FIX: should having a non-element be an error instead??
-        return Err(Error::Other(format!("EdgeNode: first arg '{node:?}' is not a node")));
+        return Err(Error::Other { what: format!("EdgeNode: first arg '{node:?}' is not a node") });
     }
 }
 
@@ -1283,7 +1278,7 @@ impl Function for GetBracketingIntentName {
         args.exactly(4)?;
         let start_or_end = args.pop_string()?;
         if start_or_end != "start" && start_or_end != "end" {
-            return Err( Error::Other("GetBracketingIntentName: first argument must be either 'start' or 'end'".to_string()) );
+            return Err( Error::Other { what: "GetBracketingIntentName: first argument must be either 'start' or 'end'".to_string() } );
         }
         let fixity = args.pop_string()?;
         let verbosity = args.pop_string()?;
@@ -1494,7 +1489,7 @@ impl CountTableDims {
             // Each child of mtable should be an mtr or mlabeledtr. According to the spec, though,
             // bare `mtd`s should also be treated as having an implicit wrapping `<mtr>`.
             // Other elements should be ignored.
-            let row_name = name(row);
+            let row_name = as_str!(name(row));
 
             let row_type = match row_name {
 		"mlabeledtr" => CTDRowType::Labeled,
@@ -1547,12 +1542,12 @@ impl CountTableDims {
             if is_tag(e, "mtable") {
                 return self.count_table_dims(e);
             } else {
-                return Err(Error::Other(format!("Input element was a <{}>, not an <mtable>",
-                                                e.name().local_part())));
+                return Err(Error::Other { what: format!("Input element was a <{}>, not an <mtable>",
+                                                as_qname!(e.name()).local_part()) });
             }
         }
 
-        Err( Error::Other("Could not count dimensions of non-Element.".to_string()) )
+        Err( Error::Other { what: "Could not count dimensions of non-Element.".to_string() } )
     }
 }
 
@@ -1611,7 +1606,7 @@ mod tests {
     use super::*;
     use crate::errors::Result;
     use crate::interface::{get_element, init_panic_handler, report_any_panic, trim_element};
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
     fn xpath_test<F>(f: F) -> Result<()>

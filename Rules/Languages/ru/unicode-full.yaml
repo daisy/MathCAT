@@ -10,6 +10,7 @@
  - "¨": [t: "две точки"]                          # 0xa8
  - "©": [t: "авторское право"]                           # 0xa9
  - "ª": [t: "указатель женского рода"]          # 0xaa
+ - "¬": [t: "не"]                                 # 0xac
  - "«": [t: "левая двойная угловая кавычка"] # 0xab
  - "¯":                                            # 0xaf
      - test:
@@ -18,9 +19,24 @@
         else: [t: "линия"]
  - "²": [t: "два"]                                 # 0xb2
  - "³": [t: "три"]                               # 0xb3
+ - "´": [t: "акут"]                               # 0xb4
  - "µ": [t: "микро"]                               # 0xb5
  - "¹": [t: "один"]                                 # 0xb9
  - "º": [t: "указатель мужского рода"]                                 # 0xb9
+ - "·":
+    - test:
+        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
+        then: [t: "умножить"]
+        else: [t: "точка"]
+ - "×":                                          # 0xd7
+    - test:
+        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
+        then: [t: "умножить"]
+        else_test:
+            if: $ClearSpeak_MultSymbolX = 'By'
+            then: [t: "умножить на"]
+            else: [t: "крест"]
+ - "÷": [t: "разделить на"]                          # 0xf7
  - "¡": [t: "перевёрнутый восклицательный знак"]           # 0xa1
  - "¶": [t: "знак абзаца"]                      # 0xb6
  - "¿": [t: "перевёрнутый вопросительный знак"]              # 0xbf
@@ -108,6 +124,14 @@
  - "˽": [t: "модификатор полка"]                      # 0x2fd
  - "˾": [t: "модификатор открытая полка"]                 # 0x2fe
  - "˿": [t: "модификатор нижняя левая стрелка"]             # 0x2ff
+ - "̀": [t: "гравис"]          # 0x300
+ - "́": [t: "акут"]          # 0x301
+ - "̂": [t: "циркумфлекс"]     # 0x302
+ - "̃": [t: "тильда"]                 # 0x303
+ - "̄": [t: "макрон"]                # 0x304
+ - "̅": [t: "надчеркивание"]               # 0x305
+ - "̆": [t: "брэвэ"]                 # 0x306
+ - "̇": [t: "точка сверху"]             # 0x307
  - "̈": [t: "две точки"]             # 0x308
  - "̉": [t: "крюк сверху"]            # 0x309
  - "̊": [t: "кольцо сверху"]            # 0x30a
@@ -197,9 +221,13 @@
  - "ϒ": [t: "ипсилон с крюком"]                   # 0x3d2
  - "ϓ": [t: "ипсилон с акутом и крюком"]         # 0x3d3
  - "ϔ": [t: "ипсилон с диерезисом и крюком"]     # 0x3d4
+ - "ϕ": [t: "фи"]                                 # 0x3d5
+ - "ϖ": [t: "пи"]                                  # 0x3d6
  - "ϗ": [t: "кай"]                                 # 0x3d7
  - "Ϙ": [t: "заглавная архаическая коппа"]                   # 0x3d8
  - "ϙ": [t: "архаическая коппа"]                       # 0x3d9
+ - "ϵ": [t: "эпсилон"]                             # 0x3f5
+ - "϶": [t: "обратный эпсилон"]                    # 0x3f6
  - "А-Я":                                          # 0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -259,6 +287,7 @@
  - "–": [t: "короткое тире"]                             # 0x2013
  - "—": [t: "длинное тире"]                             # 0x2014
  - "―": [t: "горизонтальная черта"]                      # 0x2015
+ - "‖": [t: "двойная вертикальная линия"]                # 0x2016
  - "†": [t: "крестик"]                              # 0x2020
  - "‡": [t: "двойной крестик"]                       # 0x2021
 
@@ -269,6 +298,19 @@
         if: "@data-chem-formula-op"
         then: [t: "точка"]
         else: [t: "буллит"]
+
+ - "…":                                          # 0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [t: "точка точка точка"]
+        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [t: "и так далее"]
+            else: [t: "и так далее вплоть до"]
 
  - "‰": [t: "промилле"]                           # 0x2030
  - "‱": [t: "на десять тысяч"]                    # 0x2031
@@ -409,6 +451,7 @@
  - "℆": [t: "каждая"]                            # 0x2106
  - "ℇ": [t: "постоянная Эйлера"]                  # 0x2107
  - "℈": [t: "скрупулы"]                            # 0x2108
+ - "℉": [t: "градусы Фаренгейта"]                  # 0x2109
  - "ℊ": [t: "рукописная g"]                            # 0x210a
  - "ℌℑℨℭ":                                # 0x210c, 0x2111, 0x2128, 0x212d
     - t: "фрактурная"
@@ -425,12 +468,15 @@
     - t: "рукописная"
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
+ - "ℓ": [t: "рукописная l"]                            # 0x2113
  - "℔": [t: "фунты"]                              # 0x2114
  - "№": [t: "номер"]                              # 0x2116
  - "℥": [t: "унции"]                              # 0x2125
+ - "Ω": [t: "омы"]                                # 0x2126
  - "℧": [t: "сименсы"]                                # 0x2127
  - "℩": [t: "перевёрнутая йота"]                         # 0x2129
  - "K": [t: "кельвин"]                              # 0x212a
+ - "Å": [t: "ангстремы"]                           # 0x212b
  - "ℯ": [t: "рукописная e"]                            # 0x212f
 
    # coalesced some chars that use cap letters
@@ -587,6 +633,7 @@
  - "⇏": [t: "правая двойная стрелка со штрихом"] # 0x21cf
  - "⇐": [t: "левая двойная стрелка"]              # 0x21d0
  - "⇑": [t: "верхняя двойная стрелка"]                # 0x21d1
+ - "⇒": [t: "следует"]             # 0x21d2
  - "⇓": [t: "нижняя двойная стрелка"]              # 0x21d3
  - "⇔": [t: "тогда и только тогда"]             # 0x21d4
  - "⇕": [t: "двойная стрелка вверх-вниз"]                # 0x21d5
@@ -638,26 +685,100 @@
          if: "$Verbosity!='Terse'"
          then: [ot: "the"]
      - t: "дополнение"
+ - "∂":                                          # 0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [t: "частная"]
+         else: [t: "частная производная"]
  - "∃": [t: "существует"]                        # 0x2203
  - "∄": [t: "не существует"]                # 0x2204
  - "∅": [t: "пустое множество"]                           # 0x2205
+ - "∆":                                          # 0x2206
+     - test:
+         if: "following-sibling::*"
+         then_test:
+            if: "$Verbosity!='Terse'"
+            then: [t: "лапласиан от"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
+            else: [t: "лапласиан"]
+         else: [t: "лапласиан"]
+
  - "∇": [t: "набла"]                           # 0x2207
+ - "∉":                                          # 0x2209
+    # rule is identical to 0x2208
+     - test:
+        if: "$SpeechStyle != 'ClearSpeak'"
+        then: [t: "не является элементом"]
+        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+        else_test:
+            if: "../../self::m:set or ../../../self::m:set" # inside a set
+            then_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "не в"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "не является членом"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [t: "не является элементом"]
+              - else: [t: "не принадлежит"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+            else_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "не является членом"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [t: "не является элементом"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "не находится в"]
+              - else: [t: "не принадлежит"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+ - "∊":                                          # 0x220a
+     - test:
+        if: "$SpeechStyle != 'ClearSpeak'"
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
+            then: [t: "является"]
+        - t: "элементом"
+        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+        else_test:
+            if: "../../self::m:set or ../../../self::m:set" # inside a set
+            then_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "в"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "член"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [t: "элемент"]
+              - else: [t: "принадлежит"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+            else_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [t: "является членом"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [t: "является элементом"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+                then: [t: "находится в"]
+              - else: [t: "принадлежит"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∋": [t: "содержит член"]                 # 0x220b
  - "∌": [t: "не содержит член"]         # 0x220c
  - "∍": [t: "содержит член"]                 # 0x220d
  - "∎": [t: "конец доказательства"]                        # 0x220e
  - "∏": [t: "произведение"]                             # 0x220f
+ - "∐": [t: "копроизведение"]                           # 0x2210
  - "∑": [t: "сумма"]                                 # 0x2211
  - "−": [t: "минус"]                               # 0x2212
+ - "∓": [t: "минус или плюс"]                       # 0x2213
  - "∔": [t: "точка плюс"]                            # 0x2214
  - "∕": [t: "разделить на"]                          # 0x2215
  - "∖": [t: "разность множеств"]                           # 0x2216
+ - "∗": [t: "умножить"]                               # 0x2217
+ - "∘": [t: "композиция с"]                       # 0x2218
  - "∙":                                            # 0x2219
     - test: 
         if: "@data-chem-formula-op"
         then: [t: "точка"]
         else: [t: "умножить"]
 
+ - "√":                                          # 0x221a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [ot: "the"]
+     - t: "квадратный корень из"
  - "∛":                                          # 0x221b
      - test: 
          if: "$Verbosity!='Terse'"
@@ -668,6 +789,11 @@
          if: "$Verbosity!='Terse'"
          then: [ot: "the"]
      - t: "корень четвёртой степени из"
+ - "∝":                                          # 0x221d
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "пропорционально"
  - "∞": [t: "бесконечность"]                          # 0x221e
  - "∟": [t: "прямой угол"]                         # 0x221f
  - "∠": [t: "угол"]                               # 0x2220
@@ -675,11 +801,14 @@
  - "∢": [t: "сферический угол"]                     # 0x2222
  - "∣": [t: "делит"]                              # 0x2223
  - "∤": [t: "не делит"]                      # 0x2224
+ - "∧": [t: "и"]                                 # 0x2227
+ - "∨": [t: "или"]                                  # 0x2228
  - "∩": [t: "пересечение"]                        # 0x2229
  - "∪": [t: "объединение"]                               # 0x222a
  - "∫": [t: "интеграл"]                            # 0x222b
  - "∬": [t: "двойной интеграл"]                     # 0x222c
  - "∭": [t: "тройной интеграл"]                     # 0x222d
+ - "∮": [t: "контурный интеграл"]                    # 0x222e
  - "∯": [t: "поверхностный интеграл"]                    # 0x222f
  - "∰": [t: "объёмный интеграл"]                     # 0x2230
  - "∱": [t: "интеграл по часовой"]                  # 0x2231
@@ -687,6 +816,12 @@
  - "∳": [t: "контурный интеграл против часовой"]      # 0x2233
  - "∴": [t: "следовательно"]                           # 0x2234
  - "∵": [t: "потому что"]                             # 0x2235
+ - "∶":                                          # 0x2236
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "к"
+ - "∷": [t: "как"]                                  # 0x2237
  - "∸": [t: "точка минус"]                           # 0x2238
  - "∹": [t: "имеет избыток по сравнению с"]              # 0x2239
  - "∺":                                          # 0x223a
@@ -699,7 +834,14 @@
          if: "$Verbosity!='Terse'"
          then: [t: "является"]
      - t: "гомотетично"
+ - "∼": [t: "изменяется с"]                         # 0x223c
  - "∽": [t: "обратная тильда"]                      # 0x223d
+ - "∾":                                          # 0x223e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "наиболее положительным"
+ - "∿": [t: "синусоида"]                           # 0x223f
  - "≀": [t: "венок"]                      # 0x2240
  - "≁": [t: "не тильда"]                           # 0x2241
  - "≂": [t: "минус тильда"]                         # 0x2242
@@ -800,6 +942,16 @@
          then: [t: "является"]
      - t: "измеряется"
  - "≟": [t: "имеет неизвестное отношение с"]    # 0x225f
+ - "≠":                                          # 0x2260
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "не равно"
+ - "≡":                                          # 0x2261
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "тождественно равно"
  - "≢":                                          # 0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -810,6 +962,8 @@
          if: "$Verbosity!='Terse'"
          then: [t: "является"]
      - t: "строго эквивалентно"
+ - "≦": [t: "меньше или равно"]             # 0x2266  (less than over equal to) фактически ≤
+ - "≧": [t: "больше или равно"]          # 0x2267  (greater than over equal to) фактически ≥
  - "≨":                                          # 0x2268
      - test: 
          if: "$Verbosity!='Terse'"
@@ -901,12 +1055,43 @@
          then: [t: "является"]
      - t: "ни больше, ни меньше"
  - "≺": [t: "предшествует"]                            # 0x227a
+ - "≻": [t: "следует"]                            # 0x227b
  - "≼": [t: "предшествует или равно"]             # 0x227c
  - "≽": [t: "следует или равно"]             # 0x227d
  - "≾": [t: "предшествует или эквивалентно"]        # 0x227e
  - "≿": [t: "следует или эквивалентно"]        # 0x227f
  - "⊀": [t: "не предшествует"]                    # 0x2280
  - "⊁": [t: "не следует"]                    # 0x2281
+ - "⊂":                                          # 0x2282
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "подмножеством"
+ - "⊃":                                          # 0x2283
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "надмножеством"
+ - "⊄":                                          # 0x2284
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "не подмножеством"
+ - "⊅":                                          # 0x2285
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "не надмножеством"
+ - "⊆":                                          # 0x2286
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "подмножеством или равно"
+ - "⊇":                                          # 0x2287
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "является"]
+     - t: "надмножеством или равно"
  - "⊈":                                          # 0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -2877,8 +3062,11 @@
  - "": [t: "дигамма"]                             # 0xed03
  - "ϝ": [t: "дигамма"]                             # 0x3dd
  - "": [t: "d"]                                   # 0xed10
+ - "ⅆ": [t: "d"]                                   # 0x2146
  - "": [t: "e"]                                   # 0xed11
+ - "ⅇ": [t: "e"]                                   # 0x2147
  - "": [t: "i"]                                   # 0xed12
+ - "ⅈ": [t: "i"]                                   # 0x2148
  - "": [t: "j"]                                   # 0xed13
  - "ⅅ":
     - spell: "translate('.', 'ⅅ', 'DD')"                                         # 0xed16, 0x2145
@@ -3498,6 +3686,12 @@
         if: "not($IgnoreBold)"
         then: [t: "жирная"]
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+
+ - "-":    # 0xf52e - 0xf537  (old MathType)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "жирная"]
+    - spell: "translate('.', '', '0123456789')"
 
  - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
     - test:

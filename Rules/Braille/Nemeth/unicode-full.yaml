@@ -225,7 +225,8 @@
  - "ℚ": [tc: "𝔹ECL⠟"]   # 0x211a
  - "ℝ": [tc: "𝔹ECL⠗"]   # 0x211d
  - "ℤ": [tc: "𝔹ECL⠵"]   # 0x2124
-
+ - "Ω": [t: "CGL⠺"]             # 0x2126 (Ohm sign (capital Greek omega))
+ 
  - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
      - tc: "𝔹E"
      - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
@@ -1056,6 +1057,7 @@
  - " ": [t: "W"]                # 0x2029
  - " ": [t: "W"]                # 0x202f
  - " ": [t: "W"]                # 0x205f
+ - "₣": [t: "⠈⠋"]               # 0x20A3 (French franc sign 
  - "₦": [t: "⠈⠝"]               # 0x2046 (Naira sign)
  - "₩": [t: "⠈⠺"]               # 0x20A9 (Won sign)
  - "€": [t: "⠈⠑"]               # 0x20AC (Euro sign)
@@ -1093,12 +1095,13 @@
 
 
  - "‘": [t: "P⠠⠦"]               # 0x2018 (Left single quotation mark)
- - "’": [t: "P⠴⠠"]               # 0x2019 (Right single quotation mark)
+ - "’": [t: "P⠠⠴"]               # 0x2019 (Right single quotation mark)
  - "“": [t: "P⠦"]                # 0x201C (Left double quotation mark)
  - "”": [t: "P⠴"]                # 0x201D (Right double quotation mark)
  - "‰": [t: "`00"]
  - "ℏ": [t: "⠈⠓"]               # 0x210F (Planck constant over two pi)
  - "ℓ": [t: "TE⠇"]               # 0x2113 (Script small l (differs from 1d4c1: 4-56-123))
+ - "℘": [tc: "TCL⠏"]             # 0x2118 (Script Capital P) 
 #  - "ℝ": [t: ""]                 # 0x211D (Double-struck capital R (no nemeth double struck))
 #  - "ⅆ": [t: ""]                 # 0x2146 (Double-struck italic small d)
 #  - "ⅇ": [t: ""]                 # 0x2147 (Double-struck italic small e)

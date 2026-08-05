@@ -57,11 +57,12 @@ jobs:
         working-directory: fuzz
         run: cargo fuzz build fuzz_target_1
 
-      # - name: Build fuzz target (no-unsafe)
-      #   working-directory: fuzz
-      #   run: cargo fuzz build --features no-unsafe fuzz_target_1
+      - name: Build fuzz target (no-unsafe)
+        working-directory: fuzz
+        run: cargo fuzz build --features no-unsafe fuzz_target_1
 
       # Corpus path is relative to the fuzz crate directory (matches default cargo-fuzz layout).
+      # Both configurations share the same corpus so interesting inputs improve both modes.
       - name: Fuzz (default, dictionary + corpus)
         working-directory: fuzz
         run: >-
@@ -69,12 +70,12 @@ jobs:
           -max_total_time=${{ steps.fuzztime.outputs.seconds }}
           -dict=mathml.dict
 
-      # - name: Fuzz (no-unsafe, dictionary + corpus)
-      #   working-directory: fuzz
-      #   run: >-
-      #     cargo fuzz run --features no-unsafe fuzz_target_1 corpus/fuzz_target_1 --
-      #     -max_total_time=${{ steps.fuzztime.outputs.seconds }}
-      #     -dict=mathml.dict
+      - name: Fuzz (no-unsafe, dictionary + corpus)
+        working-directory: fuzz
+        run: >-
+          cargo fuzz run --features no-unsafe fuzz_target_1 corpus/fuzz_target_1 --
+          -max_total_time=${{ steps.fuzztime.outputs.seconds }}
+          -dict=mathml.dict
 
       # --- Crash artifact upload (on failure) ---
       - name: Upload crash artifacts
