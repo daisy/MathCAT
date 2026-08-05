@@ -623,7 +623,7 @@
       - test:
           if: "starts-with(name(.), 'open')"
           then: [T: "nem"]      # phrase(the interval from a to b 'not' including b)
-      - T: "tartalmazza a"      # phrase(the interval from a to b not 'including' b)
+      - T: "tartalmazza a(z)"      # phrase(the interval from a to b not 'including' b)
       - x: "*[1]"
       - T: "elemet"
     # logic to deal with [not] arg #1
@@ -647,7 +647,7 @@
               if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
               then: [T: "nem"]      # phrase(the interval 'not' including a)
           - T: "tartalmazza"      # phrase(the interval not 'including' a)
-          - T: "a"
+          - T: "a(z)"
       - x: "*[2]"
       - T: "elemet"
     # onto the [not] [including]... part
