@@ -381,7 +381,7 @@ fn bug_199_2pi() -> Result<()> {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("hu", "SimpleSpeak",expr, "0 től 2 pí ig terjedő intervallum, tartalmazza a 0 elemet de nem tartalmazza a 2 pí elemet")?;
+  test("hu", "SimpleSpeak",expr, "0 től 2 pí ig terjedő intervallum, tartalmazza a(z) 0 elemet de nem tartalmazza a(z) 2 pí elemet")?;
   return Ok(());
 
 }

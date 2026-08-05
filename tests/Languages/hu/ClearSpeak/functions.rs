@@ -516,7 +516,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval",expr,
-    "c től d ig terjedő intervallum, nem tartalmazza a c elemet vagy d elemet")?;
+    "c től d ig terjedő intervallum, nem tartalmazza a(z) c elemet vagy d elemet")?;
     return Ok(());
 
 }
@@ -530,7 +530,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "c től d ig terjedő intervallum, tartalmazza a c elemet de nem tartalmazza a d elemet")?;
+    "c től d ig terjedő intervallum, tartalmazza a(z) c elemet de nem tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -545,7 +545,7 @@ fn parens_interval_open_closed() -> Result<()> {
     <mo>]</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "c től d ig terjedő intervallum, nem tartalmazza a c elemet de tartalmazza a d elemet")?;
+    "c től d ig terjedő intervallum, nem tartalmazza a(z) c elemet de tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -560,7 +560,7 @@ fn parens_interval_closed_closed() -> Result<()> {
     <mo>]</mo></mrow>
 </math>";
 test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-"c től d ig terjedő intervallum, tartalmazza a c elemet és d elemet")?;
+"c től d ig terjedő intervallum, tartalmazza a(z) c elemet és d elemet")?;
 return Ok(());
 
 }
@@ -573,7 +573,7 @@ return Ok(());
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "negatív végtelen től d ig terjedő intervallum, nem tartalmazza a d elemet")?;
+    "negatív végtelen től d ig terjedő intervallum, nem tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -586,7 +586,7 @@ return Ok(());
         <mo>]</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "negatív végtelen től d ig terjedő intervallum, tartalmazza a d elemet")?;
+    "negatív végtelen től d ig terjedő intervallum, tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -601,7 +601,7 @@ fn parens_interval_open_open_infinity() -> Result<()> {
     <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-    "c től végtelen ig terjedő intervallum, nem tartalmazza a c elemet")?;
+    "c től végtelen ig terjedő intervallum, nem tartalmazza a(z) c elemet")?;
     return Ok(());
 
 }
@@ -616,7 +616,7 @@ fn parens_interval_closed_open_infinity() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_Paren", "Interval ",expr,
-"c től végtelen ig terjedő intervallum, tartalmazza a c elemet")?;
+"c től végtelen ig terjedő intervallum, tartalmazza a(z) c elemet")?;
 return Ok(());
 
 }
