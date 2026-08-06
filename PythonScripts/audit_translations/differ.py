@@ -1,7 +1,7 @@
 """
 Rule diffing logic.
 
-Compares English and translated rules to find fine-grained structural differences.
+Compares source and translated rules to find fine-grained structural differences.
 """
 
 from .extractors import (

@@ -1,0 +1,1718 @@
+---
+
+# number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
+- name: pos-neg-number-sets
+  tag: number-sets
+  match: "count(*)=2 and *[2][.='+' or .='-']"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: "οι"      # phrase('the' square root of 25 equals 5)
+  - bookmark: "*[2]/@id"
+  - test:
+    - if: "*[2][.='+']"
+      then: [t: "θετικοί"]      # phrase(set of all 'positive' integers less than 10)
+      else: [t: "αρνητικοί"]      # phrase(set of all 'negative' integers less than minus 10)
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[1][.='ℂ']"
+      then: [t: "μιγαδικοί αριθμοί"]      # phrase('complex numbers' consist of two parts)
+    - else_if: "*[1][.='ℕ']"
+      then: [t: "φυσικοί αριθμοί"]      # phrase('natural numbers' are numbers from 1 to infinity)
+    - else_if: "*[1][.='ℚ']"
+      then: [t: "ρητοί αριθμοί"]      # phrase('rational numbers' are the fraction of 2 integers)
+    - else_if: "*[1][.='ℝ']"
+      then: [t: "πραγματικοί αριθμοί"]      # phrase('real numbers' can be both positive and negative)
+    - else_if: "*[1][.='ℤ']"
+      then: [t: "ακέραιοι αριθμοί"]      # phrase(positive 'integers' are natural numbers above 0)
+      else: [x: "*[1][text()]"] # shouldn't happen
+      
+- name: dimension-number-sets
+
+  # should be single digit integer at this point (e.g, R^3)
+  tag: number-sets
+  match: "count(*)=2"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[1][.='ℂ']"
+      then: [t: "c"]      # phrase(the letter 'C' used to represent complex number)
+    - else_if: "*[1][.='ℕ']"
+      then: [t: "n"]      # phrase(the letter 'N' may represent natural numbers)
+    - else_if: "*[1][.='ℚ']"
+      then: [t: "q"]      # phrase(the letter 'Q' may represent rational numbers)
+    - else_if: "*[1][.='ℝ']"
+      then: [t: "r"]      # phrase(the letter 'R' may represent real numbers)
+    - else_if: "*[1][.='ℤ']"
+      then: [t: "z"]      # phrase(the letter 'Z' may represent integers)
+      else: [x: "*[1][text()]"] # shouldn't happen
+  - bookmark: "*[2]/@id"
+#  - t: "εις την"
+  - x: "*[2]"
+      
+- name: simple-number-sets
+  tag: number-sets
+  match: "count(*)=0"
+  replace:
+  - bookmark: "@id"
+  - test:
+  
+      # κάτω από ολοκλήρωμα
+    #- if: "parent::m:munder and ../*[1][.='∫']"  
+    #- if: "parent::*[self::m:munder][*[1][.='∫']]"
+    - if: "preceding-sibling::*[1][.='∫']"
+      then:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "των μιγαδικών αριθμών"]
+        - else_if: ".='ℕ'"
+          then: [t: "των φυσικών αριθμών"]
+        - else_if: ".='ℚ'"
+          then: [t: "των ρητών αριθμών"]
+        - else_if: ".='ℝ'"
+          then: [t: "των πραγματικών αριθμών"]
+        - else_if: ".='ℤ'"
+          then: [t: "των ακεραίων αριθμών"]
+        - else: [x: "text()"]  
+  
+      # μετά από (δεν) υπάρχει
+    - else_if: "preceding-sibling::*[1][self::m:mo][.='∈' or .='∉']"
+      then:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "στους μιγαδικούς αριθμούς"]
+        - else_if: ".='ℕ'"
+          then: [t: "στους φυσικούς αριθμούς"]
+        - else_if: ".='ℚ'"
+          then: [t: "στους ρητούς αριθμούς"]
+        - else_if: ".='ℝ'"
+          then: [t: "στους πραγματικούς αριθμούς"]
+        - else_if: ".='ℤ'"
+          then: [t: "στους ακέραιους αριθμούς"]
+          #theodora. when unions and intersections have R, C, Q, etc as a condition below them
+    - else_if: "parent::*[self::m:munder][*[1][self::m:mo][.='∪' or .='∩']]"
+      then:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "τους μιγαδικούς αριθμούς"]
+        - else_if: ".='ℕ'"
+          then: [t: "τους φυσικούς αριθμούς"]
+        - else_if: ".='ℚ'"
+          then: [t: "τους ρητούς αριθμούς"]
+        - else_if: ".='ℝ'"
+          then: [t: "τους πραγματικούς αριθμούς"]
+        - else_if: ".='ℤ'"
+          then: [t: "τους ακέραιους αριθμούς"]          
+        #theodora. wanted to add logic to read "ανήκει στο for Member and Element (see unicode)" but it was causing problems so commented out
+#          then:
+#            - test:
+#                if: "../../self::m:set or ../../../self::m:set"
+#                then: [t: "σέ"]
+#                else: 
+#                  - test: 
+#                      if: "$ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Element'"
+#                      then: [t: "σύνολο των μιγαδικών"]
+#                      else: [t: "στους μιγαδικούς αριθμούς"]
+#        - else_if: ".='ℕ'"
+#          then:
+#            - test:
+#                if: "../../self::m:set or ../../../self::m:set"
+#                then: [t: "έν"]
+#                else: 
+#                  - test: 
+#                      if: "$ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Element'"
+#                      then: [t: "σύνολο των φυσικών"]
+#                      else: [t: "στους φυσικούς αριθμούς"]
+#        - else_if: ".='ℚ'"
+#          then:
+#            - test:
+#                if: "../../self::m:set or ../../../self::m:set"
+#                then: [t: "κιού"]
+#                else: 
+#                  - test: 
+#                      if: "$ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Element'"
+#                      then: [t: "σύνολο των ρητών"]
+#                      else: [t: "στους ρητούς αριθμούς"]
+#        - else_if: ".='ℝ'"
+#          then:
+#            - test:
+#                if: "../../self::m:set or ../../../self::m:set"
+#                then: [t: "άρ"]
+#                else: 
+#                  - test: 
+#                      if: "$ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Element'"
+#                      then: [t: "σύνολο των πραγματικών"]
+#                      else: [t: "στους πραγματικούς αριθμούς"]
+#        - else_if: ".='ℤ'"
+#          then:
+#            - test:
+#                if: "../../self::m:set or ../../../self::m:set"
+#                then: [t: "ζέντ"]
+#                else: 
+#                  - test: 
+#                      if: "$ClearSpeak_SetMemberSymbol = 'Member' or $ClearSpeak_SetMemberSymbol = 'Element'"
+#                      then: [t: "σύνολο των ακεραίων"]
+#                      else: [t: "στους ακέραιους αριθμούς"]
+        - else: [x: "text()"]
+      #theodora. ίδια λογική για το (δεν) είναι υποσύνολο , (δεν) είναι υπερσύνολο, (δεν) είναι υποσύνολο η ίσον με, (δεν) είναι υπερσύνολο η ίσο με
+    - else_if: "preceding-sibling::*[1][self::m:mo][.='⊂' or .='⊄' or .='⊃' or .='⊅' or .='⊏' or .='⊐' or .='⊷' or .='⊶' or .='⋪' or .='⋔']"
+      then:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "συνόλου των μιγαδικών αριθμών"]
+        - else_if: ".='ℕ'"
+          then: [t: "συνόλου των φυσικών αριθμών"]
+        - else_if: ".='ℚ'"
+          then: [t: "συνόλου των ρητών αριθμών"]
+        - else_if: ".='ℝ'"
+          then: [t: "συνόλου των πραγματικών αριθμών"]
+        - else_if: ".='ℤ'"
+          then: [t: "συνόλου των  ακέραιων αριθμών"]        
+        - else: [x: "text()"]
+          #theodora. ίδια λογική (δεν) είναι υποσύνολο η ίσον με, (δεν) είναι υπερσύνολο η ίσο με
+    - else_if: "preceding-sibling::*[1][self::m:mo][.='⊆' or .='⊈' or .='⊇' or .='⊉' or .='⊊' or .='⊋' or .='⊑' or .='⊒' or .='⊴' or .='⊵' or .='⋢' or .='⋣' or .='⋤' or .='⋥' or .='⋬' or .='⋭'  or .='⫑' or .='⫒' or .='⫉' or .='⫊' or .='⫋' or .='⫌']"
+      then:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "τους μιγαδικούς αριθμούς"]
+        - else_if: ".='ℕ'"
+          then: [t: "τους φυσικούς αριθμούς"]
+        - else_if: ".='ℚ'"
+          then: [t: "τους ρητούς αριθμούς"]
+        - else_if: ".='ℝ'"
+          then: [t: "τους πραγματικούς αριθμούς"]
+        - else_if: ".='ℤ'"
+          then: [t: "τους ακέραιους αριθμούς"]        
+        - else: [x: "text()"]        
+      
+      #μόνο του
+    - else:
+      - test:
+        - if: ".='ℂ'"
+          then: [t: "οι μιγαδικοί αριθμοί"]  # phrase('the complex numbers' include 2 parts)
+        - else_if: ".='ℕ'"
+          then: [t: "οι φυσικοί αριθμοί"] # phrase('the natural numbers' begin at 1)
+        - else_if: ".='ℚ'"
+          then: [t: "οι ρητοί αριθμοί"] # phrase('the rational numbers' are the fraction of 2 integers)
+        - else_if: ".='ℝ'"
+          then: [t: "οι πραγματικοί αριθμοί"] # phrase('the real numbers' can be both positive and negative)
+        - else_if: ".='ℤ'"
+          then: [t: "οι ακέραιοι αριθμοί"] # phrase('the integers' are natural numbers above 0)
+        - else: [x: "text()"]      # shouldn't happen
+
+- name: real-part
+  tag: real-part
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - t: "πραγματικό μέρος"      # phrase('the real part' of a complex number does not include the imaginary part)
+
+- name: imaginary-part
+  tag: imaginary-part
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - t: "φανταστικό μέρος"      # phrase('the imaginary part' is part of a complex number)
+
+# rules on scripted vertical bars ('evaluated at')
+- name: evaluated-at-2
+  tag: evaluate
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - pause: auto
+  - t: "υπολογισμένο για"      # phrase(results were 'evaluated at' a given point) 
+  - pause: auto
+  - x: "*[2]"
+
+- name: evaluated-at-3
+  tag: evaluate
+  match: "count(*)=3"
+  replace:
+  - x: "*[1]"
+  - pause: auto
+  - t: "υπολογισμένο για"      # phrase(results were 'evaluated at' this point)
+  - pause: auto
+  - x: "*[3]"
+  - t: "μείον την ίδια έκφραση υπολογισμένη στο"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
+  - x: "*[2]"
+
+#- name: binomial
+#  tag: binomial
+#  match: "count(*)=2 and not(@data-intent-property)"
+#  replace:
+#  - x: "*[1]"
+#  - t: "ανά"      # phrase(you can 'choose' a number at random)   
+#  - x: "*[2]"
+
+- name: permutation
+#  tag: permutation-symbol
+  # Not a default because the order of the args is reversed
+  tag: pochhammer
+  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
+  replace:
+  - x: "*[2]"
+  - t: "μεταθέσεις των"      # phrase(the solution  involves several 'permutations of' values)
+  - x: "*[1]"
+
+- name: intervals
+  tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: "το"      # phrase('the' square root of 25 equals 5)
+  #- x: "translate(name(.),'-', ' ')"   
+  #theodora. the following lines are translations for intervals.
+  - test:
+       - if: "name(.)='closed-interval'"
+         then:  
+         - t: "κλειστό διάστημα"
+       - else_if: "name(.)='open-interval'"
+         then:
+         - t: "ανοιχτό διάστημα"
+       - else_if: "name(.)='open-closed-interval'"
+         then:
+         - t: "ανοιχτό κλειστό διάστημα"
+       - else_if: "name(.)='closed-open-interval'"
+         then:
+         - t: "κλειστό ανοιχτό διάστημα"
+ 
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: "από"      # phrase(subtracting 5 'from' 10 gives 5)
+      - x: "*[1]"
+      - t: "ως"      # phrase(adding 6 'to' 6 equals  12)
+      - x: "*[2]"
+      else:
+      - x: "*[1]"
+      - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+      - x: "*[2]"
+
+- name: default-point
+  tag: point
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - t: ""      # phrase('the' square root of 25 equals 5)  #theodora. better leave it blank for now because "the" is context depended in greek and i am not sure what is referring to here.
+  - t: "τελεία"      # phrase(a decimal 'point' indicates the fraction component of a number) #theodora. a lot of issues occur in greek with points and commas in numbers.
+  - x: "*[1]"
+  - t: "κόμμα"      # phrase(use a 'comma' to divide large numbers or as a decimal point) 
+  - x: "*[2]"
+
+#theodora. this is a possible rule that could potentially solve the accusative but no longer works
+#- name: absolute-value
+#  tag: absolute-value
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+#  replace:
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "απόλυτη τιμή"]
+#      else:
+#      - test:
+ #         if: "$IsAccusative"
+#          then: [t: "την απόλυτη τιμή του"]
+#          else: [t: "η απόλυτη τιμή του"]           
+ ##     then: [t: "απόλυτη τιμή"]      # phrase(the 'absolute value' of a number represents its distance from 0)
+ ##     else: [t: "η απόλυτη τιμή του"]      # phrase('the absolute value of' a number represents its distance from 0)
+ # - x: "*[1]"
+ # - test:
+ #     if: "IsNode(*[1], 'leaf') or $Impairment != 'Blindness'"
+ #     then: [pause: short]
+ #     else: 
+ #     - pause: short
+ #     - t: "τέλος απόλυτης τιμής"
+ #     - pause: short    # phrase(show 'end absolute value' position)
+#
+#- name: negative
+#  tag: negative
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - bookmark: "./@id"
+#  - t: "μείον"      # phrase('negative' numbers are those less than 0)
+#  - x: "*[1]"
+#
+#- name: positive
+#  tag: positive
+#  match: "count(*)=1 and not(@data-intent-property)"
+#  replace:
+#  - bookmark: "./@id"
+#  - t: "συν"      # phrase(multiplying two negatives results in a 'positive' number)
+#  - x: "*[1]"
+#
+#- name: subscript
+#  tag: sub
+#  match: "count(*)=2 and not(@data-intent-property)"
+#  replace:
+#  - x: "*[1]"
+#  - t: "δείκτης"      # phrase(the subscripted variable a 'sub' i)
+#  - x: "*[2]"
+#  - test:
+#      if: "DEBUG(not(IsNode(*[2],'leaf')))"
+#      then:
+#      - test:
+#          if: "$Verbosity='Verbose'"
+#          then: [t: "τέλος δείκτη"]      # phrase(this is the 'end subscript' position)
+#          else: [t: "τέλος δείκτη"]      # phrase(this is the 'end sub' position)
+#      - pause: short
+#      else_test:
+#          if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
+#          then: [pause: short]
+
+- name: bigop-both
+  tag: large-op
+  match: "count(*) = 3"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [t: ""]      # phrase('the' square root of 25 equals 5)
+  - x: "*[1]"
+  - t: "από"      # phrase(subtracting 5 'from' 10 gives 5)
+  - x: "*[2]"
+  - t: "ως"      # phrase(adding 6 'to' 6 equals  12)
+  - x: "*[3]"
+  - test:
+      if: "following-sibling::*"
+      then: [t: "του"]      # phrase(the square root 'of' 25 equals 5)
+
+- name: bigop-under
+  tag: large-op
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [t: ""]      # phrase('the' square root of 25 equals 5)
+  - x: "*[1]"
+  - test:
+    - if: "*[1][.='∫'] and *[2][self::m:mrow]"
+      then: [t: "για"]
+    - else_if: "*[1][.='∫']"  
+      then: [t: "επί του συνόλου"]
+    - else:
+      - t: "για"
+  - x: "*[2]"
+  - test:
+      if: "following-sibling::*"
+      then: [t: "του"]      # phrase(the square root 'of' 25 equals 5)
+
+- name: largeop
+  tag: mrow
+  match: "count(*)=2 and IsInDefinition(*[1], 'LargeOperators')"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [t: ""]      # phrase('the' square root of 25 equals 5) #theodora. in greek "the" is depended on the following word and syntax of the sentence. it is better to leave it blank where multiple cases are needed. 
+  - x: "*[1]"
+  - t: "του"      # phrase(the square root 'of' 25 equals 5)
+  - x: "*[2]"
+
+#- name: limit
+#  tag: limit
+#  match: "count(*)=2 and not(@data-intent-property)"
+#  replace:
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then: [t: "το όριο όταν"]      # phrase('the limit as' indicated by this result)
+#      else: [t: "όριο όταν"]      # phrase(the 'limit as' indicated by this result)
+#  - x: "*[2]"
+#  - pause: short
+
+#- name: vector
+#  tag: modified-variable
+#  match: "count(*)=2 and *[2][text()='→']"
+#  replace:
+#  - t: "διάνυσμα"      # phrase(the 'vector' reflects size and direction)
+#  - x: "*[1]"
+#
+#- name: default
+#
+#  tag: modified-variable
+#  match: "count(*)=2 and not(@data-intent-property)"
+#  replace:
+#  - x: "*[1]"
+#  - x: "*[2]"
+#  - pause: short
+#
+#- name: default
+#  # handles single, double, etc., prime
+#  tag: [skip-super, say-super]
+#  match: "count(*)=2"
+#  replace:
+#  - x: "*[1]"
+#  - test:
+#      if: "name(.)='say-super'"
+#      then_test:
+#        if: "$Verbosity='Terse'"
+#        then: [t: "στη"]      # phrase(this is a 'super' set of numbers)     
+#        else: [t: "με εκθέτη"]      # phrase(a 'superscript' number indicates raised to a power)
+#  - x: "*[2]"
+#  - pause: short
+
+- name: repeating-decimal
+  tag: repeating-decimal
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "with repeating digits"      # phrase('with repeating digits')
+  - spell: "*[2]"
+
+- name: msubsup-skip-super
+  # handles single, double, etc., prime
+  tag: [skip-super, say-super]
+  match: "count(*)=3"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "με δείκτη"]      # phrase(a 'subscript' may be used to indicate an index)
+      else: [t: "δείκτης"]      # phrase(the result is 'sub' optimal)
+  - x: "*[2]"
+  - test:
+      if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
+      then:
+      - test:
+          if: "$Verbosity='Verbose'"
+          then: [t: "τέλος δείκτη"]      # phrase(this is the 'end subscript' position)
+          else: [t: "τέλος δείκτη"]      # phrase(this is the 'end sub' position)
+      - pause: short
+      else_test:
+          if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
+          then: [pause: short]
+  - test:
+      if: "name(.)='say-super'"
+      then_test:
+        if: "$Verbosity='Verbose'"
+        then: [t: "με εκθέτη"]      # phrase(a 'superscript' number indicates raised to a power)
+        else: [t: "στην"]      # phrase(this is a 'super' set of numbers) 
+  - x: "*[3]"
+  - pause: short
+
+# in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: unit-terse
+  tag: unit
+  match: "$Verbosity = 'Terse' and string-length(.)=1"
+  replace:
+  - bookmark: "@id"
+  - spell: "text()"
+
+# the order of matching is
+# 1. does it match the base of an SI unit
+# 2. does it match an English unit (if in an English language)
+# 3. does it match an SI prefix followed by an SI that accepts SI prefixes
+# Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
+- name: unit
+  tag: unit
+  match: "."
+  variables:
+    # If the coefficient is singular, we don't add the plural ending. Finding the coefficient is tricky
+    # Normal case (A) "3m" (parents is mrow), but could also be (B) "3 m^2" (etc.) (parent is power/mrow)
+    # But it might be in a fraction as (C) "3 m/s" (parent is fraction/mrow) or (D) "3 m^2/s^2" (parent is power/fraction/mrow)
+    #   or even (E) {3 m^2}/s (parent is power/mrow)
+    # If in a fraction, only look in the numerator to find the coefficient
+    # Note: we have a special case for pseudo-scripts like "°" (degrees) which are not powers -- they are essentially "1^°"
+    # The following "IfThenElse" logic returns the mrow that potentially contains the coefficient, if it exists
+    # The tests are in the order A, B & E, C, D
+  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
+                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
+                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
+                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
+  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
+                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
+  - Prefix: "''"
+  - Word: "''"  
+  replace:
+  - bookmark: "@id"
+  - test:
+    # is the whole string match a SI Unit without a prefix?
+    - if: "DefinitionValue(., 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'SIUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'UnitsWithoutPrefixes') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'UnitsWithoutPrefixes')"]
+    - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+
+    # do the first two chars match "da" and the remainder match an SIUnit
+    - else_if: "string-length(.) >= 3 and 
+                substring(., 1, 2) = 'da' and
+                DefinitionValue(substring(., 3), 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables:
+        - Prefix: "DefinitionValue('da', 'Speech', 'SIPrefixes')"
+        - Word: "DefinitionValue(substring(., 3), 'Speech', 'SIUnits')"
+
+    # does the first char match a prefix and the remainder match an SIUnit
+    - else_if: "string-length(.) >= 2 and 
+                DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes') != ''  and
+                DefinitionValue(substring(., 2), 'Speech', 'SIUnits') != ''"
+      then:
+      - set_variables:
+        - Prefix: "DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes')"
+        - Word: "DefinitionValue(substring(., 2), 'Speech', 'SIUnits')"
+
+    # not a known unit -- just speak the text, possibly as a plural
+    - else:
+      - set_variables:
+        - Word: "text()"
+
+  # somewhat complicated logic to avoid spaces around "-" as in "centi-grams" vs "centi - grams" -- probably doesn't matter
+  - test:
+      if: "$Prefix = ''"
+      then:
+      - test:
+        - if: "$IsSingular"
+          # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
+          then: [x: "$Word"]
+        - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
+          then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
+          else: [x: "$Word", ct: "s"]
+      else:
+      - x: "$Prefix"
+      - ct: "-"
+      - test:
+        - if: "$IsSingular"
+          # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
+          then: [x: "concat('\uF8FE', $Word)"]
+        - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
+          then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
+          else: [x: "concat('\uF8FE', $Word)", ct: "s"]
+
+  
+# theodora  
+############### greek to greek
+#- name: ημ
+#  tag: mi
+#  match: "text()='ημ'"
+#  replace:
+#  - bookmark: "@id"
+#  - t: "ημίτονο"      # phrase(the 'sine' of the angle)
+#- name: συν
+#  tag: mi
+#  match: "text()='συν'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "συνημίτονο"]      # phrase('cos' is the abbreviation for cosine)
+#      else: [t: "συνημίτονο"]      # phrase(find the 'cosine' in a right-angle triangle)
+#- name: εφ
+#  tag: mi
+#  match: "text()='εφ' or text()='εφαπτ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "εφαπτομένη"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+#      else: [t: "εφαπτομένη"]      # phrase(a 'tangent' is a straight line that touches a curve)  
+#- name: σφ
+#  tag: mi
+#  match: "text()='σφ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "συνεφαπτομένη"]      # phrase(find the 'cotangent' in a right-angle triangle)
+#      else: [t: "συνεφαπτομένη"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+#- name: τεμ
+#  tag: mi
+#  match: "text()='τεμ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "τέμνουσα"]      # phrase(to 'seek' a solution)
+#      else: [t: "τέμνουσα"]      # phrase(a 'secant' intersects a curve at two or more points)
+#- name: στεμ
+#  tag: mi
+#  match: "text()='στεμ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "συντέμνουσα"]      # phrase(we will 'cosecant' a solution)   #theodora. how is this case different than the following line?
+#      else: [t: "συντέμνουσα"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+#      
+#      
+#- name: ΕΚΠ
+#  tag: mi
+#  match: "text()='ΕΚΠ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "ελάχιστο κοινό πολλαπλάσιο"]      
+#      else: [t: "ελάχιστο κοινό πολλαπλάσιο"]        
+#      
+#- name: ΜΚΔ
+#  tag: mi
+#  match: "text()='ΜΚΔ'"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity='Terse'"
+#      then: [t: "μέγιστος κοινός διαιρέτης"]      
+#      else: [t: "μέγιστος κοινός διαιρέτης"]   
+
+# theodora  
+ ############### non-existent english to greek 
+- name: gcd
+  tag: mi
+  match: ".='μκδ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "μέγιστος κοινός διαιρέτης"]      
+      else: [t: "μέγιστος κοινός διαιρέτης"]  
+      
+- name: lcm
+  tag: mi
+  match: ".='εκπ'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "ελάχιστο κοινό πολλαπλάσιο"]      
+      else: [t: "ελάχιστο κοινό πολλαπλάσιο"]        
+ 
+- name: max
+  tag: mi
+  match: "text()='max'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "μαξ"]      
+      else: [t: "μέγιστο"]  
+
+- name: min
+  tag: mi
+  match: ".='min'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "μιν"]      
+      else: [t: "ελάχιστο"]  
+
+- name: sgn
+  tag: mi
+  match: ".='sgn'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "σάιν"]      
+      else: [t: "πρόσημο"]  
+      
+- name: arg
+  tag: mi
+  match: ".='arg'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "άργκιουμεντ"]      
+      else: [t: "όρισμα"]        
+
+- name: arc
+  tag: mi
+  match: ".='arc'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "τόξο"]      
+      else: [t: "τόξο"]     
+      
+- name: det
+  tag: mi
+  match: ".='det'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "ντετ"]      
+      else: [t: "ορίζουσα"]     
+
+- name: grad
+  tag: mi
+  match: ".='grad'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "γκραντ"]      
+      else: [t: "κλίση"]     
+
+- name: ker
+  tag: mi
+  match: ".='ker'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "πυρήνας"]      
+      else: [t: "πυρήνας"]   
+      
+- name: limsup
+  tag: mi
+  match: ".='limsup'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "ανώτατο όριο"]      
+      else: [t: "ανώτατο όριο"]
+
+- name: liminf
+  tag: mi
+  match: ".='liminf'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "κατώτατο όριο"]      
+      else: [t: "κατώτατο όριο"]      
+################# non-existent english to english
+#theodora. needed for proper pronounciation, otherwise doesn't sound good.
+- name: mod
+  tag: mi
+  match: "text()='mod'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "μοντ"]      
+      else: [t: "μόντουλο"]     
+
+- name: sup
+  tag: mi
+  match: ".='sup'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "σουπ"]      
+      else: [t: "σουπρέμουμ"]
+
+- name: infimum   #theodora. inf cannot be used, it produces parsing errors
+  tag: mi
+  match: ".='inf'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "ινφ"]
+      else: [t: "ινφίμουμ"]
+#####################
+- name: sin
+  tag: mi
+  match: ".='sin'"
+  replace:
+  - bookmark: "@id"
+  - t: "ημίτονο"      # phrase(the 'sine' of the angle)
+- name: cos
+  tag: mi
+  match: ".='cos'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "συνημίτονο"]      # phrase('cos' is the abbreviation for cosine)
+      else: [t: "συνημίτονο"]      # phrase(find the 'cosine' in a right-angle triangle)
+- name: tan
+  tag: mi
+  match: ".='tan' or .='tg'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "εφαπτομένη"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: [t: "εφαπτομένη"]      # phrase(a 'tangent' is a straight line that touches a curve)
+- name: sec
+  tag: mi
+  match: ".='sec'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "τέμνουσα"]      # phrase(to 'seek' a solution)  
+      else: [t: "τέμνουσα"]      # phrase(a 'secant' intersects a curve at two or more points)
+- name: csc
+  tag: mi
+  match: ".='csc'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "συντέμνουσα"]      # phrase(we will 'cosecant' a solution) 
+      else: [t: "συντέμνουσα"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+- name: cot
+  tag: mi
+  match: ".='cot'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "συνεφαπτομένη"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [t: "συνεφαπτομένη"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+
+- name: sinh
+  tag: mi
+  match: ".='sinh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολικό ημίτονο"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [t: "υπερβολικό ημίτονο"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+- name: cosh
+  tag: mi
+  match: ".='cosh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολικό συνημίτονο"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [t: "υπερβολικό συνημίτονο"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+- name: tanh
+  tag: mi
+  match: ".='tanh'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολική εφαπτομένη"]      # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [t: "υπερβολική εφαπτομένη"]      # phrase('hyperbolic tangent' is a mathematical function)
+- name: sech
+  tag: mi
+  match: ".='sech'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολική τέμνουσα"]      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [t: "υπερβολική τέμνουσα"]      # phrase('hyperbolic secant' is a mathematical function)
+- name: csch
+  tag: mi
+  match: ".='csch'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολική συντέμνουσα"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [t: "υπερβολική συντέμνουσα"]      # phrase('hyperbolic cosecant' is a mathematical function)
+- name: coth
+  tag: mi
+  match: ".='coth'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "υπερβολική συνεφαπτομένη"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [t: "υπερβολική συνεφαπτομένη"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+- name: exponential
+  tag: mi
+  match: ".='exp'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "εκθετική"]      # phrase('exp' means exponential function)
+      else: [t: "εκθετική"]      # phrase('exponential' function)
+- name: covariance
+  tag: mi
+  match: ".='Cov'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [t: "συνδιακύμανση"]      # phrase('Cov' is shorthand for the covariance function)
+      else: [t: "συνδιακύμανση"]      # phrase('covariance' function)
+
+#- # handle both log and ln
+#  name: log
+#  tag: mrow
+#  variables: [log_is_simple: "IsNode(*[3],'simple')"]
+#  match:
+#  - "count(*)=3 and"
+#  - "*[1][self::m:mi][text()='log' or text()='ln'] and"
+#  - "*[2][self::m:mo][text()='⁡']"
+#  replace:
+#  - bookmark: "*[1]/@id"
+#  - test:
+#      if: "$log_is_simple"
+#      then_test:
+#      - if: "*[1][text()='log']"
+#        then: [t: "λογάριθμος"]      # phrase(the 'log' function is used in mathematics)
+#      - else_if: "$Verbosity='Terse'"
+#        then: [spell: "'ln'"]
+#        else: [t: "φυσικός λογάριθμος"]      # phrase(the 'natural log' function is used in mathematics)
+#      else:
+#      - test:
+#          if: "$Verbosity!='Terse' and not(log_is_simple)"
+#          then: [t: "ο"]      # phrase('the' square root of 25 equals 5)
+#      - test:
+#        - if: "*[1][text()='log']"
+#          then: [t: "λογάριθμος"]      # phrase(the 'log' function is used in mathematics)
+#        - else_if: "$Verbosity='Terse'"
+#          then: [spell: "'ln'"]
+#          else: [t: "φυσικός λογάριθμος"]      # phrase(the 'natural log' function is used in mathematics)
+#      - t: "του"      # phrase(5 is the square root 'of' 25)
+#      - pause: short
+#  - x: "*[3]"
+
+#- name: log-base
+#  tag: log-base
+#  match: "not(@data-intent-property)"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then: [t: "ο"]      # phrase('the' square root of 25 equals 5)
+#  - t: "λογάριθμος με βάση"      # phrase(the 'log base' is often base 10)
+#  - x: "*[1]"
+  
+
+
+#- name: log-base-power
+#  tag: log-base-power
+#  match: "not(@data-intent-property)"
+#  replace:
+#  - bookmark: "@id"
+#  - test:
+#      if: "$Verbosity!='Terse'"
+#      then: [t: "ο"]      # phrase('the' square root of 25 equals 5)
+#  - t: "λογάριθμος με βάση"      # phrase(the 'log base' is often base 10)
+#  - x: "*[1]"
+#  - pause: medium
+#  - test:
+#      - if: "*[2][text()=2]"
+#        then: [t: "στο τετραγωνο"]     
+#      - else_if: "*[2][text()=3]"
+#        then: [t: "στον κύβο"]
+#        else:  # don't bother with special cases as this isn't likely to happen
+#        - t: "υψωμένο στη"      # phrase(x 'raised to the' second power)
+#        - x: "*[2]"
+#        - t: "τέλος δύναμης"      # phrase(x raised to the second 'power')
+#  - pause: short
+
+- name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  tag: mi
+  match: ".='log' or .='ln'"
+  replace:
+  - bookmark: "@id"
+   # theodora. rule for accusative after an operator e.g. "ισούται με"
+  - with:
+      variables: [IsAccusative: "ancestor::m:mrow[1]/preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+      replace:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then:
+          - test:
+              if: "$IsAccusative"
+              then: [t: "το"]   #theodora. "το" για να πιάνει και το φυσικό λογάριθμο
+              else: [t: "ο"]
+      - test:
+        - if: ".='log'"
+          then:
+          - test:
+            - if: "$IsAccusative"
+              then: [t: "λογάριθμο"]
+              else: [t: "λογάριθμος"]
+        - else:
+          - test:
+            - if: "$Verbosity='Terse'"
+              then: [spell: "'ln'"]
+            - else_if: "$IsAccusative"
+              then: [t: "φυσικό λογάριθμο"]
+              else: [t: "φυσικός λογάριθμος"]
+#    - if: "$Verbosity!='Terse'"
+#      then: [t: "ο"]      # phrase('the' logarithm function is used in mathematics)
+#      then: [t: "λογάριθμος"]      # phrase(the 'log' function is used in mathematics)
+#    - else_if: "$Verbosity='Terse'"
+#      then: [spell: "'ln'"]
+#      else: [t: "φυσικός λογάριθμος"]      # phrase(the 'natural log' function is used in mathematics)
+
+
+- name: multi-line
+  #   that eliminates the need for the if: else_if: ...
+  # IDEA:  set a variable with the word to say for the row (e.g., RowLabel = Row/Case/Line/...)
+  tag: [piecewise, system-of-equations, lines]
+  match: "."
+  variables:
+    # Wikipedia has some tables where all the entire first column is empty (e.g., https://en.wikipedia.org/wiki/List_of_trigonometric_identities)
+  - LineCount: "count(*[not(contains(@data-intent-property, ':continued-row:'))])"
+  - NextLineIsContinuedRow: "false()"   # default value
+  - IsColumnSilent: true()
+  replace:
+  - x: "$LineCount"
+  - test:
+    - if: "self::m:piecewise"
+      then: 
+        - test:
+          - if: "$LineCount = 1" 
+            then: [t: "περίπτωση"] # phrase(this is the first 'case' of three cases) #change
+            else:  [t: "περιπτώσεις"] # plural
+          
+    - else_if: "self::m:system-of-equations"
+      then: 
+        - test:
+          - if: "$LineCount = 1" 
+            then: [t: "εξίσωση"]    # phrase(this is the first 'equation' of three equations)
+            else:  [t: "εξισώσεις"] # plural
+          
+    - else: 
+      - test:
+          if: "$LineCount = 1" 
+          then: [t: "γραμμή"]    # phrase(this is the first 'line' of three lines)
+          else:  [t: "γραμμές"]  # plural
+  - pause: short
+  - x: "*"
+  - pause: long
+
+
+- name: default-multiline
+  tag: [mtr, mlabeledtr]
+  match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
+  replace:
+  - test:
+      if: "not($LineCount=1 or contains(@data-intent-property, ':continued-row:'))"
+      then:
+      - pause: medium
+      - test:
+        - if: "parent::m:piecewise"
+          then: [t: "περίπτωση"]     # phrase('case' 1 of 10 cases)
+        - else_if: "parent::m:system-of-equations"
+          then: [t: "εξίσωση"] # phrase('equation' 1 of 10 equations)
+          else: [t: "γραμμή"]     # phrase('line 1 of 10 lines)
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
+  - test:
+      if: "self::m:mlabeledtr"
+      then:
+      - t: "με ένδειξη"      # phrase(the diagram is complete 'with label')
+      - x: "*[1]/*"
+  - test:
+      if: "not(contains(@data-intent-property, ':continued-row:'))"
+      then: [pause: medium]
+  - test:
+      if: "self::m:mlabeledtr"
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
+
+- name: default-multiline
+  tag: mtd
+  match: "parent::*[parent::m:piecewise or parent::m:system-of-equations or parent::m:lines]"
+  variables: [LongPause: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultiLinePausesBetweenColumns = 'Long'"]
+  replace:
+  - test:
+      if: "IsInDefinition(*[1], 'ComparisonOperators')"
+      then: [pause: short]
+  - test:
+      if: "*[1][@data-added!='missing-content']"
+      then: [x: "*"]
+  - test:
+    # no pause after each element; medium pause if last element in a row; long pause for last element in matrix unless ClearSpeak override
+    - if: "count(following-sibling::*) = 0 and not($NextLineIsContinuedRow)"
+      then_test:
+          if: "count(../following-sibling::*) > 0"
+          then_test:
+              if: "$LongPause"
+              then: [pause: long]
+              else: [pause: medium]
+      else_test:
+          if: "IsInDefinition(*[1], 'ComparisonOperators')"
+          then: [pause: short]
+          else: [pause: auto]
+
+# Matrix/Determinant rules
+# matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
+# the pausing logic is pushed down to the <mtd>
+# the rules either speak the <mtr>s (to get "row n") or the <mtd>s. "column n" spoken if $IsColumnSilent is false
+- name: 1x1-matrix
+  tag: [matrix, determinant]
+  variables: [IsColumnSilent: "true()", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
+  replace:
+  - ot: ""      # phrase('the' 1 by 1 matrix M). 
+  - t: "ένα επί ένα"      # phrase(the '1 by 1' matrix)
+  - test:
+      if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
+      then: [t: "ορίζουσα"]      # phrase(the 2 by 2 'determinant'))
+      else:
+      - test:
+          if: "$IsAccusative"   #theodora. added rules for accusative.
+          then: [t: "πίνακα"]
+          else: [t: "πίνακας"]
+#      else: [t: "πίνακας"]      # phrase(the 2 by 2 'matrix')
+      
+  - t: "με καταχώρηση"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - x: "*[1]/*"
+
+# simpler reading methods for special case matrices
+- name: zero-matrix
+  tag: matrix
+  variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  # select all the non-zero entries -- if there are none of them, then it is a zero matrix
+  match: "not( */*/*[not(self::m:mn and .= 0)] )"
+  replace:
+  - test:
+      if: "$IsAccusative"
+      then: [t: "τον"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+      else: [t: "ο"]
+#  - t: "ο"      # phrase('the' 1 by 2 matrix M)
+  - x: count(*)
+  - t: "επί"       # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
+  - test:
+      if: "$IsAccusative"
+      then: [t: "μηδενικό πίνακα"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+      else: [t: "μηδενικός πίνακας"]
+#  - t: "μηδενικός πίνακας"   # phrase(the 2 by 2 'zero matrix')
+  - pause: long
+
+- name: identity-matrix
+  tag: matrix
+  variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  # select all the non-zero entries...if they are not on the diagonal, or are != 1
+  #   if there are any of them, then this isn't an identity matrix
+  match:
+  - "count(*) = count(*[1]/*) and " # matrix is square
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
+  
+  replace:
+  - test:
+      if: "$IsAccusative"
+      then: [t: "τον"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+      else: [t: "ο"]
+#  - t: "ο"      # phrase('the' 1 by 2 matrix M)
+  - x: count(*)
+  - t: "επί"       # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
+  - test:
+      if: "$IsAccusative"
+      then: [t: "μοναδιαίο πίνακα"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+      else: [t: "μοναδιαίος πίνακας"]
+#  - t: "μοναδιαίος πίνακας"   # phrase(the 2 by 2 'identity matrix')
+  - pause: long
+
+- name: diagonal-matrix
+  tag: matrix
+  #theodora. rule for reading greek accusative
+  variables: [IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  # select all the non-zero entries...if they are not on the diagonal
+  #   if there are any of them, then this isn't an identity matrix
+  match:
+  - "count(*) = count(*[1]/*) and "
+  - "not( */*/*[not(self::m:mn and .= 0)]"
+  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
+  - "    )"
+  replace:
+  - test:
+      if: "$IsAccusative"
+      then: [t: "τον"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+      else: [t: "ο"]
+#  - t: "ο"      # phrase('the' 1 by 2 matrix)
+  - x: count(*)
+  - t: "επί"       # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
+  - test:
+      if: "$IsAccusative"
+      then: [t: "διαγώνιο πίνακα"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+      else: [t: "διαγώνιος πίνακας"]
+#  - t: "διαγώνιος πίνακας"   # phrase(the 2 by 2 'diagonal matrix')
+  - pause: long
+  - insert:
+      # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
+      # there seems to be an xpath bug -- without the parens, the match fails for the
+      #   test Languages::en::mtable::diagonal_matrix due to match failure (the third matching element seems to be missing)
+      nodes: "(*/*/*[not(self::m:mn and .= 0)]/..)"
+      replace: [pause: auto]
+  - pause: long
+
+# simpler reading methods for smaller matrices if the entries are simple
+- name: 2-or-3x1-matrix
+  tag: matrix
+  variables: [IsColumnSilent: "true()", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]" ]
+  match:
+  - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
+  - "*[self::m:mtr][count(*) = 1] and " # one column
+  - count(*)<=3 and # at least two rows
+  - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
+  replace:
+  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - x: count(*)
+  - t: "επί ένα"      # phrase(the 2 'by 1 column' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "διάνυσμα-στήλη"]      # phrase(the 2 by 2 'vector')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα-στήλη"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας-στήλη"]
+#      else: [t: "πίνακας-στήλη"]      # phrase(the 2 by 2 'matrix')  #theodora. in greek, the correct expression is "matrix column"  not "column matrix" and "vector column" not "column vector".
+  - pause: long
+  - x: "*/*"
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then:
+      - t: "τέλος"      # phrase('end' of matrix)
+      - test:
+          if: $ClearSpeak_Matrix = 'EndVector'
+          then: [t: "διανύσματος"]      # phrase(the 2 column 'vector')
+          else: [t: "πίνακα"]      # phrase(the 2 by 2 'matrix')
+
+- name: default-column-matrix
+  tag: matrix
+  variables: [IsColumnSilent: "true()", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  match: "*[self::m:mtr][count(*) = 1]"
+  replace:
+  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - x: "count(*)"
+  - t: "επί ένα"      # phrase(the 2 'by 1 column' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "διάνυσμα-στήλη"]      # phrase(the 2 column 'vector')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα-στήλη"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας-στήλη"]  
+#      else: [t: "πίνακας-στήλη"]      # phrase(the 2 by 2 'matrix')
+  - pause: long
+  - x: "*" # select the rows (mtr)
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "τέλος του πίνακα"]      # phrase(the 'end of matrix' has been reached)
+
+- name: 1x2-or-3-matrix
+  tag: matrix
+  variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  match:
+  - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
+  - count(*)=1  and # one row
+  - count(*[1]/*)<=3 and # at least two cols
+  - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
+  replace:
+  - t: "ένα επί"      # phrase('the 1 by' 2 matrix)
+  - x: count(*/*)
+  #- t: "γραμμή"      # phrase(the 1 by 4 'row' matrix) theodora. In Greek, the correct order of words is "vector row" not "row vector" and "matrix row" not "row matrix". so, the full expressions were placed below and the "row" word was #deleted. 
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "διάνυσμα-γραμμή"]      # phrase('the 1 by' 2 row 'vector')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα-γραμμή"]   #theodora. added rule for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας-γραμμή"]     
+#      else: [t: "πίνακας-γραμμή"]      # phrase('the 1 by' 2 'matrix')
+  - pause: long
+  - x: "*/*"
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then:
+      - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
+      - test:
+          if: $ClearSpeak_Matrix = 'EndMatrix'
+          then: [t: "πίνακα"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "διανύσματος"]      # phrase(the 2 by 1 'vector')
+
+- name: default-row-matrix
+  tag: matrix
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  match: "count(*)=1" # one row
+  replace:
+  - t: "ένα επί"      # phrase('the 1 by' 2 matrix)
+  - x: "count(*/*)"
+  #- t: "γραμμή"      # phrase(the 1 by 2 'row' matrix)
+  - test:
+      if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
+      then: [t: "διάνυσμα-γραμμή"]      # phrase(the 2 by 1 'vector')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα-γραμμή"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας-γραμμή"]    
+#      else: [t: "πίνακας-γραμμή"]      # phrase(the 2 by 2 'matrix')
+  - pause: long
+  - pause: medium
+  - x: "*/*" # select the cols (mtd)
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then:
+      - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
+      - test:
+          if: $ClearSpeak_Matrix = 'EndMatrix'
+          then: [t: "πίνακα"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "διανύσματος"]      # phrase(the 2 by 1 'vector')
+
+- name: simple-small-matrix
+  tag: [matrix, determinant]
+  match:
+  - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
+  - (count(*)<=3 and count(*[1]/*)<=3) and # no bigger than a 3x3 matrix
+  - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
+  variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  replace:
+  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - x: count(*)
+  - t: "επί"      # phrase(the 1 'by' 2 matrix)
+  - x: count(*[self::m:mtr][1]/*)
+  - test:
+      if: "self::m:determinant"
+      then: [t: "ορίζουσα"]      # phrase(the 2 by 2 'determinant')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας"]
+#      else: [t: "πίνακας"]      # phrase(the 2 by 2 'matrix')
+  - pause: long
+  - x: "*"
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then:
+      - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
+      - test:
+          if: "self::m:determinant"
+          then: [t: "ορίζουσας"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "πίνακα"]      # phrase(the 2 by 2 'matrix')
+
+- name: default-matrix
+  tag: [matrix, determinant]
+  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'", IsAccusative: "preceding-sibling::*[1][self::m:mo and (.='=' or .='<' or .='>' or .='≤' or .='≥' or .='≰' or .='≱' or .='≮' or .='≯' or .='≝' or .='≡' or .='≃' or .='≄' or .='≅' or .='≆' or .='≇' or .='≈' or .='≉' or .='≊' or .='≢' or .='≨' or .='≩' or .='≞' or .='≪' or .='≫' or .='⫹' or .='⫺' or .='≼' or .='≽' or .='⋠' or .='⋡' or .='∷' or .='∺' or .='≍' or .='≎' or .='≑' or .='≓' or .='≘' or .='≟' or .='≣' or .='≭' or .='≳' or .='≲' or .='⋦' or .='⋧' or .='⋨' or .='⋩' or .='⟚' or .='⩰' or .='⪬' or .='⪭' or .='⪵' or .='⪶' or .='⪷' or .='⪸' or .='⪹' or .='⪺' or .='≶' or .='≷' or .='≸' or .='≹' or .='⋘' or .='⋙' or .='⋚' or .='⋛' or .='⋜' or .='⋝' or .='⋞' or .='⋟' or .='⪝' or .='⪞' or .='⪙' or .='⪚' or .='⪛' or .='⪜' or .='⪡' or .='⪢' or .='⪤' or .='⪥' or .='⪪' or .='⪫' or .='⫷' or .='⫸')]"]
+  match: "."
+  replace:
+  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - x: "count(*)"
+  - t: "επί"      # phrase(the 1 'by' 2 matrix)
+  - x: "count(*[self::m:mtr][1]/*)"
+  - test:
+      if: "self::m:determinant"
+      then: [t: "ορίζουσα"]      # phrase(the 2 by 2 'determinant')
+      else:
+      - test:
+          if: "$IsAccusative"
+          then: [t: "πίνακα"]   #theodora. added logic for reading greek accusative after an operator "ισούται με"
+          else: [t: "πίνακας"]
+#      else: [t: "πίνακας"]      # phrase(the 2 by 2 'matrix')          
+  - pause: long
+  - x: "*"
+  - test:
+      if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
+      then:
+      - t: "τέλος"      # phrase(the 'end' of matrix has been reached)
+      - test:
+          if: "self::m:determinant"
+          then: [t: "ορίζουσας"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "πίνακα"]      # phrase(the 2 by 2 'matrix's)
+
+- name: chemistry-msub
+
+  tag: [chemical-formula]
+  match: "*[1][.='msub']"
+  replace:
+  - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "κάτω δείκτης"]      # phrase(H 'subscript' 2)
+      else_test:
+        if: "$Verbosity='Medium'"
+        then: [t: "κάτω"]      # phrase(H 'sub' 2)
+  - x: "*[3]"
+
+- name: dimension-by
+  tag: mrow
+  match: dimension-product
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [t: "by", pause: auto]      # phrase(3 'by' 5 matrix)
+
+- name: chemistry-msup
+  tag: [chemical-formula]
+  match: "count(*)=3 and *[1][.='msup']"
+  replace:
+  - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+      else_test:
+        if: "$Verbosity='Medium'"
+        then: [t: "άνω"]      # phrase(H 'super' 2)
+  - x: "*[3]"
+  - test:
+      if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
+      then: [pause: medium]
+
+-
+  # There currently is no way to do sub/super for n-ary number of args
+  # Instead, we just deal with up to two prescripts and up to four postscripts (repeating blocks of similar code [UGLY!])
+  # This hopefully covers all reasonable cases...
+  name: chemistry-scripts
+  tag: [chemical-formula, chemical-nuclide]
+  variables:
+  # computing the number of postscripts is messy because of <mprescripts> being optionally present -- we use "mod" to get the count right
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+  match: . # should only be msubsup or mmultiscripts at this point
+  replace:
+  - test:
+      if: "$Prescripts" # we have at least one pre sub/super 
+      then:
+      # nuclide: speak the superscript first
+      - test:
+          if: "not($Prescripts[2][self::m:none])"
+          then:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+              else_test:
+                if: "$Verbosity='Medium'"
+                then: [t: "άνω"]      # phrase(H 'super' 2)
+          - x: "$Prescripts[2]"
+          - pause: "short"
+      - test:
+          if: "not($Prescripts[1][self::m:none])"
+          then:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "κάτω δείκτης"]      # phrase(a 'subscript' may be used to indicate an index)
+              else_test:
+                if: "$Verbosity='Medium'"
+                then: [t: "κάτω"]      # phrase(here is a 'sub' total)
+          - x: "$Prescripts[1]"
+          - pause: "short"
+      - test:
+          if: "count($Prescripts) > 2" # can this happen for chemistry??? we allow for one *extra* pre sub/super pair
+          then:
+          - test:
+              if: "not($Prescripts[4][self::m:none])"
+              then:
+              - test:
+                  if: "$Verbosity='Verbose'"
+                  then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+                  else_test:
+                    if: "$Verbosity='Medium'"
+                    then: [t: "άνω"]      # phrase(H 'super' 2)
+              - x: "$Prescripts[4]"
+              - pause: "short"
+          - test:
+              if: "not($Prescripts[3][self::m:none])"
+              then:
+              - test:
+                  if: "$Verbosity='Verbose'"
+                  then: [t: "κάτω δείκτης"]      # phrase(H 'subscript' 2)
+                  else_test:
+                    if: "$Verbosity='Medium'"
+                    then: [t: "κάτω"]      # phrase(H 'sub' 2)
+              - x: "$Prescripts[3]"
+              - pause: "short"
+  - x: "*[1]" # base
+  - test:
+      if: "$Postscripts"
+      then:
+      - test:
+          if: "not($Postscripts[1][self::m:none])"
+          then:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "κάτω δείκτης"]      # phrase(phrase(H 'subscript' 2)
+              else_test:
+                if: "$Verbosity='Medium'"
+                then: [t: "κάτω"]      # phrase(phrase(H 'sub' 2)
+          - x: "$Postscripts[1]"
+          - pause: "short"
+      - test:
+          if: "not($Postscripts[2][self::m:none])"
+          then:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+              else_test:
+                if: "$Verbosity='Medium'"
+                then: [t: "άνω"]          # phrase(H 'super' 2)
+          - x: "$Postscripts[2]"
+          - pause: "short"
+      - test:
+          if: "count($Postscripts) > 2"
+          then:
+          - test:
+              if: "not($Postscripts[3][self::m:none])"
+              then:
+              - test:
+                  if: "$Verbosity='Verbose'"
+                  then: [t: "κάτω δείκτης"]      # phrase(H 'subscript' 2)
+                  else_test:
+                    if: "$Verbosity='Medium'"
+                    then: [t: "κάτω"]          # phrase(H 'sub' 2)
+              - x: "$Postscripts[3]"
+              - pause: "short"
+          - test:
+              if: "not($Postscripts[4][self::m:none])"
+              then:
+              - test:
+                  if: "$Verbosity='Verbose'"
+                  then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+                  else_test:
+                    if: "$Verbosity='Medium'"
+                    then: [t: "άνω"]          # phrase(H 'super' 2)
+              - x: "$Postscripts[4]"
+              - pause: "short"
+          - test:
+              if: "count($Postscripts) > 4"
+              then:
+              - test:
+                  if: "not($Postscripts[5][self::m:none])"
+                  then:
+                  - test:
+                      if: "$Verbosity='Verbose'"
+                      then: [t: "κάτω δείκτης"]    # phrase(H 'subscript' 2)
+                      else_test:
+                        if: "$Verbosity='Medium'"
+                        then: [t: "κάτω"]        # phrase(H 'sub' 2)
+                  - x: "$Postscripts[5]"
+                  - pause: "short"
+              - test:
+                  if: "not($Postscripts[6][self::m:none])"
+                  then:
+                  - test:
+                      if: "$Verbosity='Verbose'"
+                      then: [t: "άνω δείκτης"]  # phrase(H 'superscript' 2)
+                      else_test:
+                        if: "$Verbosity='Medium'"
+                        then: [t: "άνω"]      # phrase(H 'super' 2)
+                  - x: "$Postscripts[6]"
+                  - pause: "short"
+              - test:
+                  if: "count($Postscripts) > 6"
+                  then:
+                  - test:
+                      if: "not($Postscripts[7][self::m:none])"
+                      then:
+                      - test:
+                          if: "$Verbosity='Verbose'"
+                          then: [t: "κάτω δείκτης"]      # phrase(H 'subscript' 2)
+                          else_test:
+                            if: "$Verbosity='Medium'"
+                            then: [t: "κάτω"]      # phrase(H 'sub' 2)
+                      - x: "$Postscripts[7]"
+                      - pause: "short"
+                  - test:
+                      if: "not($Postscripts[8][self::m:none])"
+                      then:
+                      - test:
+                          if: "$Verbosity='Verbose'"
+                          then: [t: "άνω δείκτης"]      # phrase(H 'superscript' 2)
+                          else_test:
+                            if: "$Verbosity='Medium'"
+                            then: [t: "άνω"]      # phrase(H 'super' 2)
+                      - x: "$Postscripts[8]"
+                      - pause: "short"
+      - test:
+          if: "$Postscripts[last()][not(self::m:none)] and following-sibling::*[1][.='+' or .='-']"
+          then: [pause: medium]
+
+- name: chemistry
+  tag: chemical-equation
+  match: "."
+  replace:
+  - x: "*"
+
+- name: chemical-element
+  tag: chemical-element
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - spell: text()
+  - pause: short
+
+- name: chemical-state
+  tag: chemical-state
+  match: "count(*)=1"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: ".='s'"
+      then: [t: "στερεό"]      # phrase(Boron is a 'solid' in its natural state)
+    - else_if: ".='l'"
+      then: [t: "υγρό"]      # phrase(water is a 'liquid')
+    - else_if: ".='g'"
+      then: [t: "αέριο"]      # phrase(hydrogen is a 'gas' )
+      else: [t: "υδατικό"]      # phrase(an 'aqueous' solution is contained in water)
+  - pause: short
+
+- name: chemical-formula-operator-bond
+  tag: chemical-formula-operator
+  match: "@data-chemical-bond"
+  replace:
+  # FIX: this might be better/more efficient if in unicode.yaml
+  - bookmark: "@id"
+  - test:
+    - if: ".='-' or .=':'"
+      then: [t: "απλός δεσμός"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+    - else_if: ".='=' or .='∷'"
+      then: [t: "διπλός δεσμός"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
+    - else_if: ".='≡'"
+      then: [t: "τριπλός δεσμός"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+    - else_if: ".='≣'"
+      then: [t: "τετραπλός δεσμός"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
+      else: [x: "text()"]
+
+- name: chemical-formula-operator
+  tag: chemical-formula-operator
+  match: "."
+  replace:
+    x: "text()"
+
+- name: chemical-arrow-operator
+  tag: chemical-arrow-operator
+  match: "."
+  replace:
+  # FIX: this might be better/more efficient if in unicode.yaml
+  - bookmark: "@id"
+  - test:
+    - if: ".='→' or .='⟶'"
+      then_test:
+        if: "$Verbosity='Terse'"
+        then: [t: "σχηματίζουν"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [t: "αντιδρούν για να σχηματίσουν"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+    - else_if: ".='⇌' or .='\u1f8d2'"
+      then: [t: "είναι σε ισορροπία με"]      # phrase(a reactant 'is in equilibrium with' a product)
+    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+      then: [t: "είναι σε ισορροπία μετατοπισμένη προς τα αριστερά με το"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+    - else_if: ".='🣒'" # U+1F8D2
+      then: [t: "είναι σε ισορροπία μετατοπισμένη προς τα δεξιά με το"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      else: [x: "*"]
+
+- name: chemical-equation-operator
+  tag: chemical-equation-operator
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - x: "text()"
+
+- name: none
+  tag: none
+  match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
+  replace:
+  - t: "" # don't say anything
+
+- name: ignore-intent-wrapper
+  tag: intent-wrapper
+  match: "."
+  replace:
+  - x: "*"

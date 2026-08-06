@@ -133,49 +133,23 @@
 
   # --- Nemeth Default Characters math_symbols chars. ---
  - "`": [t: "⠈"]                # 0x60
- - "≟": [t: "⠐⠨⠅⠣⠸⠦⠻"]       # 0x225f
- - "≠": [t: "⠌⠨⠅"]             # 0x2260
- - "≡":                         # 0x2261
-    - test:
-        if: "@data-chemical-bond"
-        then: [t: "⠸⠿⠻"]
-        else: [t: "⠸⠇"]
-
- - "≤": [t: "⠐⠅⠱"]              # 0x2264
- - "≥": [t: "⠨⠂⠱"]              # 0x2265
- - "⊂": [t: "⠸⠐⠅"]              # 0x2282
- - "⊃": [t: "⠸⠨⠂"]              # 0x2283
- - "⊄": [t: "⠌⠸⠐⠅"]             # 0x2284
- - "⊅": [t: "⠌⠸⠨⠂"]             # 0x2285
- - "⊆": [t: "⠸⠐⠅⠱"]             # 0x2286
- - "⊇": [t: "⠸⠨⠂⠱"]             # 0x2287
- - "⊥": [t: "⠫⠏"]               # 0x22a5
- - "⋀": [t: "⠈⠩"]               # 0x22c0
- - "⋁": [t: "⠈⠬"]               # 0x22c1
- - "⋂": [t: "⠨⠩"]               # 0x22c2
- - "⋃": [t: "⠨⠬"]               # 0x22c3
- - "⋜": [t: "⠱⠐⠅"]              # 0x22dc
- - "⋝": [t: "⠱⠨⠂"]              # 0x22dd
  - "⋮":                           # 0x22ee
     - test:   # if we have a triple bond represented by "⋮⋮", the we output the triple bond for the first but not the second
         if: "@data-chemical-bond and (preceding-sibling::*[1] = '⋮' or following-sibling::*[1] = '⋮')"
         then_test:
             if: "following-sibling::*[1] = '⋮'"
             then: [t: "⠨⠹"]      # output only the first of the two chars
-        else: [t: "⠣⠄⠄⠄"]
+        else: [t: "⠩⠄⠄"]
  - "⋯": [t: "⠄⠄⠄"]              # 0x22ef
- - "⋰": [t: "⠘⠄⠄⠄"]             # 0x22f0
- - "⋱": [t: "⠰⠄⠄⠄"]             # 0x22f1
+ - "⋰": [t: "⠘⠄⠄"]             # 0x22f0
+ - "⋱": [t: "⠰⠄⠄"]             # 0x22f1
+ - "≡":                         # 0x2261
+    - test:
+        if: "@data-chemical-bond"
+        then: [t: "⠸⠿⠻"]
+        else: [t: "⠸⠇"]
 
   # --- Nemeth Default Characters rest chars. ---
- - "←": [t: "⠫⠪⠒⠒"]             # 0x2190
- - "ⅆ": [t: "⠙"]                # 0x2146
- - "ⅇ": [t: "⠑"]                # 0x2147
- - "ⅈ": [t: "⠊"]                # 0x2148
-
-
- # overwrites from MS
-   # space inside of numbers has special treatment
  - " ":                        # 0x20 (space)
     - test:
         if: "self::m:mn"
@@ -256,7 +230,9 @@
           then: [t: "𝑁⠨"]      # example 8c(4) -- lone "." is not considered numeric, but not a period
           else: [t: "N⠨"]
         else_test:
-          if: "preceding-sibling::*[1][@data-roman-numeral or
+        - if: "parent::m:mover and preceding-sibling::*"
+          then: [t: "⠡"]
+        - else_if: "preceding-sibling::*[1][@data-roman-numeral or
                   (name(.)='mrow' and *[last()][@data-roman-numeral])]"
           then: [t: "𝐏⠲"]
           else: [t: "P⠲"]
@@ -366,9 +342,6 @@
           - "  )"
           - ")"
         then: [t: "W"]
- - "‰": [t: "`00"]
- - "′": [t: "⠄"]                # 0x2032 (Prime)
- - "″": [t: "⠄⠄"]               # 0x2033 (Double prime)
  - "⁡":                          # 0x2061⁡ (invisible function apply)
     # add a space if name doesn't have brackets after it or is in FunctionNames list 
     - test:
@@ -385,24 +358,17 @@
         else: [t: ""]
  - "⁤": [t: ""]                 # 0x2064
 
- - "ℏ": [t: "⠈⠓"]               # 0x210F (Planck constant over two pi)
- - "ℓ": [t: "TE⠇"]               # 0x2113 (Script small l (differs from 1d4c1: 4-56-123))
  - "→":                           # 0x2192 (Rightwards arrow)
      - test:                      # Rule 96 -- uncontracted form if base of under/over
         if: "not(preceding-sibling::*) and parent::*[self::m:mover or self::m:munder or self::m:munderover]"
         then: [t: "⠫⠒⠒⠕"]        # uncontracted version
         else: [t: "⠫⠕"]        # contracted version
- - "∀": [t: "⠈⠯"]               # 0x2200 (For all)
  - "∂": [t: "⠈⠙"]               # 0x2202 (Partial differential)
- - "∃": [t: "⠈⠿"]               # 0x2203 (There exists)
- - "∄": [t: "⠌⠈⠿"]              # 0x2204 (There does not exist)
- - "∅": [t: "⠸⠴"]               # 0x2205 (Empty set)
- - "∏": [t: "GCL⠏"]              # 0x220F (N-ary product)
- - "∑": [t: "GCL⠎"]              # 0x2211 (N-ary summation)
  - "∆": [t: "GCL⠙"]              # 2206
 
- - "∞": [t: "⠠⠿"]               # 0x221E (Infinity)
- - "∣": [t: "⠳"]              # 0x2223 (Divides)
- - "∫": [t: "⠮"]                # 0x222B (Integral)
  - "℃": [t: "⠘⠨⠡⠀⠰⠠⠉"]          # 0x2103 (Degrees Celsius)
  - "℉": [t: "⠘⠨⠡⠀⠰⠠⠋"]          # 0x2109 (Degrees Fahrenheit)
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "∏": [t: "GCL⠏"]              # 0x220F (N-ary product)
+ - "∑": [t: "GCL⠎"]              # 0x2211 (N-ary summation)

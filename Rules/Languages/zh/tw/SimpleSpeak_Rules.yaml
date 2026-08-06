@@ -36,7 +36,7 @@
   tag: root
   match: "."
   replace:
-  - T: "根號"
+  - T: ""
   - x: "*[1]"
   - test:
       if: "$Verbosity!='Terse'"

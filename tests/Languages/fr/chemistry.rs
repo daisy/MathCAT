@@ -163,9 +163,9 @@ fn beta_decay() -> Result<()> {
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, c majuscule; forment, 14, 7, n majuscule; plus 0, moins 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice moins 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus exposant 0, indice moins 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice moins 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus exposant 0, indice moins 1, e")?;
       return Ok(());
 
 }
@@ -429,9 +429,9 @@ fn mhchem_beta_decay() -> Result<()> {
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, c majuscule; forment, 14, 7, n majuscule; plus 0, moins 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice moins 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus exposant 0, indice moins 1, e")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus, exposant 0, indice moins 1, e")?;
+      "exposant 14, indice 6, c majuscule; réagissent pour former; exposant 14, indice 7, n majuscule; plus exposant 0, indice moins 1, e")?;
       return Ok(());
 
 }

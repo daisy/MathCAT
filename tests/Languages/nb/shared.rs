@@ -297,7 +297,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("nb", "SimpleSpeak", expr, "fi av x er lik, c ganger, e opphøyd i minus h i andre x i andre")?;
+    test("nb", "SimpleSpeak", expr, "fi av x er lik; c ganger, e opphøyd i minus h i andre x i andre, slutt eksponent")?;
     return Ok(());
 
 }
@@ -379,6 +379,28 @@ fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
   test_prefs("nb", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
   return Ok(());
+
+}
+
+#[test]
+fn ignore_bold() -> Result<()> {
+  let expr = r#"<math>
+				<mi mathvariant="bold-italic">x</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mrow>
+				<mi>𝒔𝒊𝒏</mi>
+				<mo>&#x2061;</mo>
+				<mrow><mi mathvariant="bold-italic">t</mi></mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</math>"#; 
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "false")],
+             expr, "fet x er lik, 2 sinus av fet t, minus 1")?;
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "true")],
+             expr, "x er lik, 2 sinus av t, minus 1")?;
+             return Ok(());
 
 }
 

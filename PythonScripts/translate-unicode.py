@@ -219,16 +219,10 @@ def gather_words_in_char_def(
 ) -> set[str]:
 
     def gather_words_for_text(
-        ch: str,
-        en_text: str,
-        lang: str,
-        mathplayer: dict[str, str],
-        sre: dict[str, str],
-        access8: dict[str, str],
-        words_to_translate: set[str],
-    ) -> None:
-        mp_trans = mathplayer.get(ch, '')
-        sre_trans = sre.get(ch, '')
+            ch: str, en_text: str, lang: str, mathplayer: dict, sre: dict, access8: dict, words_to_translate: set):
+        mp_trans = mathplayer[ch] if ch in mathplayer else ''
+        sre_trans = sre[ch] if ch in sre else ''
+        access8_trans = access8[ch] if ch in access8 else ''
         # don't bother do the translation if mp and sre agree
         # print("mp_trans/sre_trans: '{}/{}'".format(mp_trans,sre_trans))
         if mp_trans != sre_trans or mp_trans == '':     # note: ch == '' => mp_trans == ''
@@ -436,7 +430,6 @@ def get_sre_unicode_dict(path: str, lang: str) -> dict[str, str]:
         print(f"SRE not present: lang={lang}")
         lang_parts = lang.split('-')
         return {} if len(lang_parts) == 1 else get_sre_unicode_dict(path, lang_parts[0])
-
 
 # entries we care about look like char ? (unicode == 0x2212) => string{text="menos";};
 # or char ? (unicode == 0x004E) => string{text= "n"+(::target_group!="Blind" ? "" : " majuscule");};;

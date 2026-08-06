@@ -6,10 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from ..auditor import compare_files, get_yaml_files, list_languages
+from ..auditor import audit_language, compare_files, get_yaml_files, list_languages
 from ..line_resolver import resolve_diff_lines
 from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
 from ..renderer import console, print_warnings
+from .conftest import strip_ansi
 
 
 @pytest.fixture()
@@ -234,6 +235,73 @@ def test_compare_files_skips_untranslated_and_diffs_when_audit_ignored(tmp_path)
     assert result.rule_differences == []
 
 
+def test_audit_language_uses_configurable_source_language(tmp_path, fixed_console_width) -> None:
+    """
+    Ensure non-English source comparisons remain directional.
+
+    Source rules define missing items and source-side snippets. Target rules
+    define extra items and target-only untranslated text.
+    """
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "sv"
+    target_dir = rules_dir / "nb"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+
+    (source_dir / "sample.yaml").write_text(
+        """- name: common-rule
+  tag: mo
+  match: "self::m:mo"
+  replace:
+    - T: "source"
+- name: source-only
+  tag: mi
+  match: "."
+  replace:
+    - T: "source only"
+""",
+        encoding="utf-8",
+    )
+    (target_dir / "sample.yaml").write_text(
+        """- name: common-rule
+  tag: mo
+  match: "self::m:mi"
+  replace:
+    - t: "target"
+- name: target-only
+  tag: mi
+  match: "."
+  replace:
+    - T: "target only"
+""",
+        encoding="utf-8",
+    )
+
+    with console.capture() as capture:
+        total_issues = audit_language(
+            "nb",
+            specific_file="sample.yaml",
+            rules_dir=str(rules_dir),
+            verbose=True,
+            source_language="sv",
+        )
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 4
+    assert "Comparing against sv reference files" in output
+    assert "sv: 2 rules  →  nb: 2 rules" in output
+    assert "Missing in Translation [1]" in output
+    assert "(line 6 in sv)" in output
+    assert "Extra in Translation [1]" in output
+    assert "(line 6 in nb)" in output
+    assert "Untranslated Text [1]" in output
+    assert '(line 5 nb) "target"' in output
+    assert "Match Pattern Differences [1]" in output
+    assert "(line 3 sv, 3 nb)" in output
+    assert "sv: self::m:mo" in output
+    assert "nb: self::m:mi" in output
+
+
 def test_get_yaml_files_includes_region(tmp_path) -> None:
     """
     Ensures get_yaml_files merges base and region file lists.
@@ -273,7 +341,7 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
 
     with console.capture() as capture:
         list_languages(str(rules_dir))
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "zz" in output
     assert "zz-aa" in output
@@ -298,7 +366,7 @@ def test_list_languages_ignores_sharedrules_as_region(tmp_path) -> None:
 
     with console.capture() as capture:
         list_languages(str(rules_dir))
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "zz-aa" in output
     assert "zz-SharedRules" not in output
@@ -320,7 +388,7 @@ def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> 
 
     with console.capture() as capture:
         print_warnings(result, "structure_diff.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output == golden_path.read_text(encoding="utf-8")
 
@@ -341,7 +409,7 @@ def test_print_warnings_includes_snippets_when_verbose(fixed_console_width) -> N
 
     with console.capture() as capture:
         print_warnings(result, "structure_diff.yaml", verbose=True)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output == golden_path.read_text(encoding="utf-8")
 
@@ -511,7 +579,7 @@ def test_print_warnings_shows_misaligned_structures() -> None:
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "structure_misaligned.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     # Misaligned structure differences should be rendered.
     assert "Rule structure differs" in output, "Expected misaligned structure differences to be shown in display"
@@ -538,7 +606,7 @@ def test_print_warnings_still_shows_missing_else() -> None:
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "structure_missing_else.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     # CRITICAL: This legitimate difference should appear in output
     assert "Rule structure differs" in output, "Expected missing else block to be shown in output"
@@ -597,7 +665,7 @@ def test_print_warnings_groups_multiple_subgroups_for_single_rule(fixed_console_
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "grouped.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output.count("• grouped-rule (mi)") == 1
     assert "Untranslated Text [2]" in output
@@ -648,7 +716,7 @@ def test_print_warnings_groups_missing_and_extra_by_rule(fixed_console_width) ->
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "mixed.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output.count("• missing-rule (mn)") == 1
     assert output.count("• extra-rule (mo)") == 1
@@ -692,13 +760,13 @@ def test_print_warnings_verbose_shows_snippets_only_for_differences(fixed_consol
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "verbose.yaml", verbose=True)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "Missing in Translation [1]" in output
     assert "Untranslated Text [1]" in output
     assert "Match Pattern Differences [1]" in output
-    assert output.count("en:") == 1
-    assert output.count("tr:") == 1
+    assert output.count("                  en:") == 1
+    assert output.count("                  tr:") == 1
     assert "en-snippet" in output
     assert "tr-snippet" in output
     assert issues_count == 3

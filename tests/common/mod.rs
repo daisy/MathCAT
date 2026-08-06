@@ -25,9 +25,13 @@ pub fn abs_rules_dir_path() -> String {
     if #[cfg(feature = "include-zip")] {
           "Rules".to_string()
     } else {
-        return std::env::current_exe().unwrap().parent().unwrap()
-                    .join("../../../Rules")
-                    .to_str().unwrap().to_string();
+        // Package root (works for `cargo test` and `cargo llvm-cov`, which uses
+        // target/llvm-cov-target/... so relative paths from current_exe() break).
+        return std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("Rules")
+            .to_str()
+            .expect("CARGO_MANIFEST_DIR and Rules path must be UTF-8")
+            .to_string();
         }
     }
 }
@@ -122,6 +126,24 @@ pub fn test_ClearSpeak_prefs(language: &str, prefs: Vec<(&str, &str)>, mathml: &
     test_prefs(language, "ClearSpeak", prefs, mathml, speech)
 }
 
+/// Speech language to use when testing a given `BrailleCode`.
+/// Nemeth, UEB, LaTeX, and ASCIIMath use English; other codes use their natural language pack.
+fn language_for_braille_code(code: &str) -> &'static str {
+    match code {
+        "Vietnam" => "vi",
+        "CMU" => "es",
+        "Swedish" => "sv",
+        "Finnish" => "fi",
+        "French" => "fr",
+        "Russian" => "ru",
+        _ => "en",
+    }
+}
+
+fn set_language_for_braille_code(code: &str) {
+    set_preference("Language", language_for_braille_code(code)).unwrap();
+}
+
 // Compare the result of brailling the mathml input to the output (Unicode) 'braille'
 #[allow(dead_code)]     // used in testing
 #[allow(non_snake_case)]
@@ -134,13 +156,7 @@ pub fn test_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
         set_preference("BrailleNavHighlight", "Off").unwrap();
         set_preference("BrailleCode", code).unwrap();
         set_preference("LaTeX_UseShortName", "false").unwrap();
-        // FIX: this shouldn't need to be done -- need to figure out how to get definitions set automatically
-        // log::debug!("\nsetting Language");
-        match code {
-            "Vietnam" => set_preference("Language", "vi").unwrap(),
-            "CMU" => set_preference("Language", "es").unwrap(),
-            _ => set_preference("Language", "en").unwrap(),
-        }
+        set_language_for_braille_code(code);
         if let Err(e) = set_mathml(mathml) {
             panic!("{}", errors_to_string(&e));
         };
@@ -161,13 +177,7 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
         set_preference("DecimalSeparator", "Auto").unwrap();
         set_preference("BrailleCode", code).unwrap();
 
-        // FIX: this shouldn't need to be done -- need to figure out how to get definitions set automatically
-        // log::debug!("\nsetting Language");
-        match code {
-            "Vietnam" => set_preference("Language", "vi").unwrap(),
-            "CMU" => set_preference("Language", "es").unwrap(),
-            _ => set_preference("Language", "en").unwrap(),
-        }
+        set_language_for_braille_code(code);
 
         set_preference("UseSpacesAroundAllOperators", "false").unwrap();         // makes testing simpler
         for &(pref_name, pref_value) in &test_prefs {
@@ -186,9 +196,41 @@ pub fn test_braille_prefs(code: &str, test_prefs: Vec<(&str, &str)>, mathml: &st
     report_any_panic(result)
 }
 
+/// Setup braille and assert `get_navigation_node_from_braille_position` result.
+#[allow(dead_code)]     // used in testing
+pub fn test_braille_nav_position(
+    code: &str,
+    mathml: &str,
+    braille_position: usize,
+    expected_node_id: &str,
+    expected_offset: usize,
+) -> Result<()> {
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        set_rules_dir(abs_rules_dir_path()).unwrap();
+        set_preference("DecimalSeparator", "Auto").unwrap();
+        set_preference("BrailleNavHighlight", "Off").unwrap();
+        set_preference("BrailleCode", code).unwrap();
+        set_preference("LaTeX_UseShortName", "false").unwrap();
+        set_language_for_braille_code(code);
+        if let Err(e) = set_mathml(mathml) {
+            panic!("{}", errors_to_string(&e));
+        };
+        match get_navigation_node_from_braille_position(braille_position) {
+            Ok((node_id, offset)) => {
+                assert_eq!(node_id, expected_node_id);
+                assert_eq!(offset, expected_offset);
+            }
+            Err(e) => panic!("{}", errors_to_string(&e)),
+        };
+        Ok(())
+    }));
+    report_any_panic(result)
+}
+
 #[allow(dead_code)]
 pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) -> Result<()> {
-    use sxd_document::{dom::Element, parser};
+    use sxd_document_no_unsafe::{dom::Element, parser};
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -265,13 +307,7 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         set_preference("BrailleNavHighlight", "Off").unwrap();
         set_preference("BrailleCode", code).unwrap();
         set_preference("LaTeX_UseShortName", "false").unwrap();
-        // FIX: this shouldn't need to be done -- need to figure out how to get definitions set automatically
-        // log::debug!("\nsetting Language");
-        match code {
-            "Vietnam" => set_preference("Language", "vi").unwrap(),
-            "CMU" => set_preference("Language", "es").unwrap(),
-            _ => set_preference("Language", "en").unwrap(),
-        }
+        set_language_for_braille_code(code);
         if let Err(e) = set_mathml(mathml) {
             panic!("{}", errors_to_string(&e));
         };
