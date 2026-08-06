@@ -21,7 +21,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>x</mi> <mo>^</mo> </mover> <mo>+</mo>
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
-    test("fr", "SimpleSpeak", expr, "a accent grave, b tilde, c diacritique brève; b diacritique caron; c accent grave; plus r caron plus; x point, y point en chef; z tréma; u V diacritique trois points en chef; v W diacritique quatre points en chef; plus x accent circonflexe; plus vecteur t")?;
+    test("fr", "SimpleSpeak", expr, "a accent grave, b tilde, c diacritique brève; b diacritique caron; c accent grave; plus r caron plus; x point, y point en chef; z tréma, u trois points, v quatre points; plus x accent circonflexe; plus vecteur t")?;
             Ok(())
 }
 
