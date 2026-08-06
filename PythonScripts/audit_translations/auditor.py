@@ -31,6 +31,11 @@ def get_rules_dir(rules_dir: str | None = None) -> Path:
     return package_dir.parent.parent / "Rules" / "Languages"
 
 
+def is_definitions_file(file_path: str | Path) -> bool:
+    """Return if the file name is definitions.yaml, which is not yet supported."""
+    return Path(file_path).name == "definitions.yaml"
+
+
 def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]:
     """Get all YAML files to audit for a language, including region overrides."""
     files: set[Path] = set()
@@ -39,12 +44,13 @@ def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]
         if not directory.exists():
             return
         for f in directory.glob("*.yaml"):
-            if f.name != "prefs.yaml":  # Skip prefs.yaml as it's not translated
+            if f.name != "prefs.yaml" and not is_definitions_file(f):
                 files.add(f.relative_to(root))
         shared_dir = directory / "SharedRules"
         if shared_dir.exists():
             for f in shared_dir.glob("*.yaml"):
-                files.add(f.relative_to(root))
+                if not is_definitions_file(f):
+                    files.add(f.relative_to(root))
 
     collect_from(lang_dir, lang_dir)
     if region_dir:
@@ -144,7 +150,11 @@ def audit_language(
     verbose: bool = False,
     source_language: str = "en",
 ) -> int:
-    """Audit translations for a specific language. Returns total issue count."""
+    """Audit translations for a specific language and return the total issue count.
+
+    ``specific_file`` is the relative file path supplied by the CLI's ``--file``
+    option. When set, the audit is limited to that file.
+    """
     rules_dir_path = get_rules_dir(rules_dir)
 
     source_base_language, source_region = split_language_into_base_and_region(source_language)
@@ -168,7 +178,10 @@ def audit_language(
         raise AuditError(f"Target region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
-    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir)
+    if specific_file:
+        files = [] if is_definitions_file(Path(specific_file)) else [specific_file]
+    else:
+        files = get_yaml_files(source_dir, source_region_dir)
 
     print_audit_header(language, len(files), source_language)
 
