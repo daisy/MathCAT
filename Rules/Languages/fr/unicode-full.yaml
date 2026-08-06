@@ -2800,351 +2800,351 @@
  - "": [T: "opérateur non barre"]         	#  0xea2e	(en: 'not bar operator', DeepL translation)
  - "": [T: "opérateur non double barre"]     	#  0xea2f	(en: 'not double bar operator', DeepL translation)
  - "": [T: "opérateur non triple barre"]    	#  0xea30	(en: 'not triple bar operator', DeepL translation)
- - "": [t: "inférieur à mais pas approximativement égal à"]	#  0xea32	(en: 'less than but not approximately equal to', DeepL translation)
- - "": [t: "plus grand que mais pas approximativement égal à"]	#  0xea33	(en: 'greater than but not approximately equal to', DeepL translation)
- - "": [t: "inférieur ou non égal à"]          	#  0xea34	(en: 'less than or not equal to', DeepL translation)
- - "": [t: "plus grand que ou non égal à"]     	#  0xea35	(en: 'greater than or not equal to', DeepL translation)
- - "": [t: "non imbriqué moins que"]           	#  0xea36	(en: 'not nested less than', DeepL translation)
- - "": [t: "non imbriqué plus grand que"]      	#  0xea37	(en: 'not nested greater than', DeepL translation)
- - "": [t: "pas beaucoup moins que"]           	#  0xea38	(en: 'not much less than', DeepL translation)
- - "": [t: "pas beaucoup plus grand que"]      	#  0xea39	(en: 'not much greater than', DeepL translation)
- - "": [t: "précède mais n'équivaut pas à"]    	#  0xea3a	(en: 'precedes but not equivalent to', DeepL translation)
- - "": [t: "réussit mais n'est pas équivalent à"]	#  0xea3b	(en: 'succeeds but not equivalent to', DeepL translation)
- - "": [t: "précède mais n'est pas égal à"]    	#  0xea3c	(en: 'precedes but not equal to', DeepL translation)
- - "": [t: "succède mais n'est pas égal à"]    	#  0xea3d	(en: 'succeeds but not equal to', DeepL translation)
- - "": [t: "n'est pas égal ou ne précède pas"] 	#  0xea3e	(en: 'does not equal or precede', DeepL translation)
- - "": [t: "n'égale pas ou ne succède pas"]    	#  0xea3f	(en: 'does not equal or succeed', DeepL translation)
- - "": [t: "précède mais n'est pas égal à"]    	#  0xea40	(en: 'precedes but not equal to', DeepL translation)
- - "": [t: "succède mais n'est pas égal à"]    	#  0xea41	(en: 'succeeds but not equal to', DeepL translation)
- - "": [t: "ni sous-ensemble de ni égal à"]    	#  0xea42	(en: 'not subset of nor equal to', DeepL translation)
- - "": [t: "n'est pas un super-ensemble de ni égal à"]	#  0xea43	(en: 'not superset of nor equal to', DeepL translation)
- - "": [t: "sous-ensemble de ou non égal à"]   	#  0xea44	(en: 'subset of or not equal to', DeepL translation)
- - "": [t: "superposé de ou différent de"]     	#  0xea45	(en: 'superset of or not equal to', DeepL translation)
- - "": [t: "ni sous-ensemble de ni égal à"]    	#  0xea46	(en: 'not subset of nor equal to', DeepL translation)
- - "": [t: "n'est pas un super-ensemble de ni égal à"]	#  0xea47	(en: 'not superset of nor equal to', DeepL translation)
- - "": [t: "non triple moins que"]             	#  0xea48	(en: 'not triple less than', DeepL translation)
- - "": [t: "pas triple plus grand que"]        	#  0xea49	(en: 'not triple greater than', DeepL translation)
- - "": [t: "pas précède les égalités"]         	#  0xea4c	(en: 'not precedes equals', DeepL translation)
- - "": [t: "ne succède pas égale"]             	#  0xea4d	(en: 'not succeeds equals', DeepL translation)
- - "": [t: "sous-groupe non normal de avec barre"]	#  0xea50	(en: 'not normal subgroup of with bar', DeepL translation)
- - "": [t: "ne contient pas de sous-groupe normal avec la barre"]	#  0xea51	(en: 'does not contain as normal subgroup with bar', DeepL translation)
- - "": [t: "pas de différence entre"]          	#  0xea52	(en: 'not difference between', DeepL translation)
- - "": [t: "non géométriquement équivalent à"] 	#  0xea53	(en: 'not geometrically equivalent to', DeepL translation)
- - "": [t: "pas vert similaire"]               	#  0xea54	(en: 'not vert similar', DeepL translation)
- - "": [t: "pas égal ou similaire"]            	#  0xea55	(en: 'not equal or similar', DeepL translation)
- - "": [t: "pas vert approximatif"]            	#  0xea56	(en: 'not vert approximate', DeepL translation)
- - "": [t: "pas approximativement identique à"]	#  0xea57	(en: 'not approximately identical to', DeepL translation)
- - "": [t: "pas de bosses égales"]             	#  0xea58	(en: 'not bumpy equals', DeepL translation)
- - "": [t: "non bosselé simple égal"]          	#  0xea59	(en: 'not bumpy single equals', DeepL translation)
- - "": [t: "not equal dot"]                    	#  0xea5a	(DeepL translation)
- - "": [t: "inverse non équivalent"]           	#  0xea5b	(en: 'reverse not equivalent', DeepL translation)
- - "": [t: "pas un sous-ensemble carré"]       	#  0xea60	(en: 'not square subset', DeepL translation)
- - "": [t: "pas un super-ensemble carré"]      	#  0xea61	(en: 'not square superset', DeepL translation)
- - "": [t: "pas presque égal sur égal"]        	#  0xea62	(en: 'not almost equal over equal', DeepL translation)
- - "": [t: "pas strictement équivalent à"]     	#  0xea63	(en: 'not strictly equivalent to', DeepL translation)
- - "": [t: "point non congru"]                 	#  0xea64	(en: 'not congruent dot', DeepL translation)
- - "": [t: "inversé non égal"]                 	#  0xea65	(en: 'reverse not equal', DeepL translation)
- - "": [t: "non vert triangle gauche égal"]    	#  0xea70	(en: 'not vert left triangle equals', DeepL translation)
- - "": [t: "pas vert triangle droit égal"]     	#  0xea71	(en: 'not vert right triangle equals', DeepL translation)
- - "": [t: "non partiel"]                      	#  0xea80	(en: 'not partial', DeepL translation)
- - "": [t: "extension de l'embellissement de la flèche"]	#  0xeb00	(en: 'arrow embellishment extender', DeepL translation)
- - "": [t: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb01	(en: 'arrow rightwards over arrow leftwards', DeepL translation)
- - "": [t: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb02	(en: 'arrow rightwards over arrow leftwards', DeepL translation)
- - "": [t: "harpon à droite sur harpon à gauche"]	#  0xeb03	(en: 'harpoon right over harpoon left', DeepL translation)
- - "": [t: "harpon à droite sur harpon à gauche"]	#  0xeb04	(en: 'harpoon right over harpoon left', DeepL translation)
- - "": [t: "double flèche nord-est sud-ouest"] 	#  0xeb05	(en: 'double arrow northeast southwest', DeepL translation)
- - "": [t: "double flèche nord-ouest sud-est"] 	#  0xeb06	(en: 'double arrow northwest southeast', DeepL translation)
- - "": [t: "prolongateur de harpon horizontal"]	#  0xeb07	(en: 'horizontal harpoon extender', DeepL translation)
- - "": [t: "arc de cercle dans le sens inverse des aiguilles d'une montre, flèche vers la gauche"]	#  0xeb08	(en: 'anticlockwise arc leftwards arrow', DeepL translation)
- - "": [t: "arc antihoraire flèche vers la droite"]	#  0xeb09	(en: 'anticlockwise arc rightwards arrow', DeepL translation)
- - "": [t: "grande flèche vers la droite"]     	#  0xeb0b	(en: 'large rightwards arrow accent', DeepL translation)
- - "": [t: "grande flèche vers la gauche accent"]	#  0xeb0c	(en: 'large leftwards arrow accent', DeepL translation)
- - "": [t: "flèche vers la gauche"]            	#  0xeb0d	(en: 'leftwards arrowhead', DeepL translation)
- - "": [t: "flèche vers la droite"]            	#  0xeb0e	(en: 'rightwards arrowhead', DeepL translation)
- - "": [t: "grande flèche gauche droite avec trait"]	#  0xeb0f	(en: 'large left right arrow with stroke', DeepL translation)
- - "": [t: "prolongateur horizontal à double flèche"]	#  0xeb10	(en: 'horizontal double arrow extender', DeepL translation)
- - "": [t: "grande flèche double gauche-droite avec trait"]	#  0xeb11	(en: 'large left right double arrow with stroke', DeepL translation)
- - "": [t: "flèche vers le bas à gauche de la flèche vers le haut"]	#  0xeb12	(en: 'downwards arrow leftwards of upwards arrow', DeepL translation)
- - "": [t: "flèche vers la gauche avec l'angle vers le bas"]	#  0xeb13	(en: 'leftwards arrow with corner downwards', DeepL translation)
- - "": [t: "flèche vers la droite avec coin vers le haut"]	#  0xeb14	(en: 'rightwards arrow with corner upwards', DeepL translation)
- - "": [t: "flèche vers la gauche avec coin vers le haut"]	#  0xeb15	(en: 'leftwards arrow with corner upwards', DeepL translation)
- - "": [t: "flèche en demi-cercle supérieur dans le sens inverse des aiguilles d'une montre avec plus"]	#  0xeb16	(en: 'anticlockwise top semicircle arrow with plus', DeepL translation)
- - "": [t: "flèche demi-cercle supérieure dans le sens des aiguilles d'une montre avec moins"]	#  0xeb17	(en: 'clockwise top semicircle arrow with minus', DeepL translation)
- - "": [t: "flèche vers la droite avec empennage et trait"]	#  0xeb18	(en: 'rightwards arrow with tail with stroke', DeepL translation)
- - "": [t: "à droite harpon vers le bas"]      	#  0xeb19	(en: 'right harpoon down', DeepL translation)
- - "": [t: "harpon gauche en bas"]             	#  0xeb1a	(en: 'left harpoon down', DeepL translation)
- - "": [t: "harpon gauche droit vers le bas"]  	#  0xeb1b	(en: 'left right harpoon down', DeepL translation)
- - "": [t: "flèche gauche droite vers le haut"]	#  0xeb1c	(en: 'left right harpoon up', DeepL translation)
- - "": [t: "harpon de haut en bas à gauche"]   	#  0xeb1d	(en: 'up down harpoon left', DeepL translation)
- - "": [t: "haut bas harpon droit"]            	#  0xeb1e	(en: 'up down harpoon right', DeepL translation)
- - "": [t: "flèche vers le haut à droite de la flèche vers le bas"]	#  0xeb1f	(en: 'upwards arrow to the right of downwards arrow', DeepL translation)
- - "": [t: "vers la gauche harpon à barre avec ardillon vers le haut"]	#  0xeb20	(en: 'leftwards harpoon to bar with barb upwards', DeepL translation)
- - "": [t: "flèche vers la droite jusqu'à la barre avec ardillon vers le haut"]	#  0xeb21	(en: 'rightwards harpoon to bar with barb upwards', DeepL translation)
- - "": [t: "harpon vers la gauche avec ardillon vers le bas"]	#  0xeb22	(en: 'leftwards harpoon to bar with barb downwards', DeepL translation)
- - "": [t: "harpon vers la droite sur la barre avec ardillon vers le bas"]	#  0xeb23	(en: 'rightwards harpoon to bar with barb downwards', DeepL translation)
- - "": [t: "harpon vers la gauche à partir d'une barre avec ardillon vers le haut"]	#  0xeb24	(en: 'leftwards harpoon from bar with barb upwards', DeepL translation)
- - "": [t: "vers la droite harpon de la barre avec ardillon vers le haut"]	#  0xeb25	(en: 'rightwards harpoon from bar with barb upwards', DeepL translation)
- - "": [t: "harpon gauche de la barre avec ardillon vers le bas"]	#  0xeb26	(en: 'leftwards harpoon from bar with barb downwards', DeepL translation)
- - "": [t: "vers la droite harpon de la barre avec ardillon vers le bas"]	#  0xeb27	(en: 'rightwards harpoon from bar with barb downwards', DeepL translation)
- - "": [t: "harpon vers le haut à la barre avec ardillon vers la gauche"]	#  0xeb28	(en: 'upwards harpoon to bar with barb leftwards', DeepL translation)
- - "": [t: "harpon vers le bas sur la barre avec ardillon vers la gauche"]	#  0xeb29	(en: 'downwards harpoon to bar with barb leftwards', DeepL translation)
- - "": [t: "vers le haut harpon à barre avec ardillon vers la droite"]	#  0xeb2a	(en: 'upwards harpoon to bar with barb rightwards', DeepL translation)
- - "": [t: "harpon vers le bas sur la barre avec ardillon vers la droite"]	#  0xeb2b	(en: 'downwards harpoon to bar with barb rightwards', DeepL translation)
- - "": [t: "harpon vers le haut à partir de la barre avec ardillon vers la gauche"]	#  0xeb2c	(en: 'upwards harpoon from bar with barb leftwards', DeepL translation)
- - "": [t: "harpon de la barre avec ardillon vers la gauche"]	#  0xeb2d	(en: 'downwards harpoon from bar with barb leftwards', DeepL translation)
- - "": [t: "harpon vers le haut à partir d'une barre avec ardillon vers la droite"]	#  0xeb2e	(en: 'upwards harpoon from bar with barb rightwards', DeepL translation)
- - "": [t: "harpon vers le bas à partir de la barre avec ardillon vers la droite"]	#  0xeb2f	(en: 'downwards harpoon from bar with barb rightwards', DeepL translation)
- - "": [t: "flèche vers le haut vers la barre"]	#  0xeb30	(en: 'upwards arrow to bar', DeepL translation)
- - "": [t: "flèche vers le bas jusqu'à la barre"]	#  0xeb31	(en: 'downwards arrow to bar', DeepL translation)
- - "": [t: "harpon vers le haut à gauche du harpon vers le bas"]	#  0xeb32	(en: 'upwards harpoon to the left of downwards harpoon', DeepL translation)
- - "": [t: "harpon vers le haut à droite du harpon vers le bas"]	#  0xeb33	(en: 'upwards harpoon to the right of downwards harpoon', DeepL translation)
- - "": [t: "pointe de flèche vers le haut"]    	#  0xeb34	(en: 'upwards arrowhead', DeepL translation)
- - "": [t: "pointe de flèche vers le bas"]     	#  0xeb35	(en: 'downwards arrowhead', DeepL translation)
- - "": [t: "double harpon avec ardillon à gauche vers le bas ardillon à droite vers le haut"]	#  0xeb36	(en: 'double harpoon with leftwards barb down rightwards barb up', DeepL translation)
- - "": [t: "double harpon avec ardillon gauche en haut ardillon droit en bas"]	#  0xeb37	(en: 'double harpoon with leftwards barb up rightwards barb down', DeepL translation)
- - "": [t: "flèche vers la gauche au-dessus de la barre"]	#  0xeb38	(en: 'leftwards arrow over bar', DeepL translation)
- - "": [t: "flèche vers la droite au-dessus de la barre"]	#  0xeb39	(en: 'rightwards arrow over bar', DeepL translation)
- - "": [t: "flèche vers la gauche sous la barre"]	#  0xeb3a	(en: 'leftwards arrow under bar', DeepL translation)
- - "": [t: "flèche vers la droite sous la barre"]	#  0xeb3b	(en: 'rightwards arrow under bar', DeepL translation)
- - "": [t: "flèche triple gauche droite"]      	#  0xeb3c	(en: 'left right triple arrow', DeepL translation)
- - "": [t: "double flèche nord-est sud-est"]   	#  0xeb3f	(en: 'double arrow northeast southeast', DeepL translation)
- - "": [t: "flèche en demi-cercle vers la gauche dans le sens inverse des aiguilles d'une montre"]	#  0xeb40	(en: 'anticlockwise left semicircle arrow', DeepL translation)
- - "": [t: "flèche en demi-cercle dans le sens des aiguilles d'une montre à gauche"]	#  0xeb41	(en: 'clockwise left semicircle arrow', DeepL translation)
- - "": [t: "cercle ouvert gauche flèche droite gauche"]	#  0xeb42	(en: 'left open circle left right arrow', DeepL translation)
- - "": [t: "flèche vers la droite au-dessus d'un tilde"]	#  0xeb44	(en: 'rightwards arrow over tilde', DeepL translation)
- - "": [t: "flèche vers la gauche au-dessus du tilde"]	#  0xeb45	(en: 'leftwards arrow over tilde', DeepL translation)
- - "": [t: "vers la gauche harpon sur la barre"]	#  0xeb48	(en: 'leftwards harpoon over bar', DeepL translation)
- - "": [t: "vers la droite harpon sur barre"]  	#  0xeb49	(en: 'rightwards harpoon over bar', DeepL translation)
- - "": [t: "vers la gauche harpon sous la barre"]	#  0xeb4a	(en: 'leftwards harpoon under bar', DeepL translation)
- - "": [t: "vers la droite harpon sous la barre"]	#  0xeb4b	(en: 'rightwards harpoon under bar', DeepL translation)
- - "": [t: "flèche noire vers la gauche"]      	#  0xeb4c	(en: 'squat black leftwards arrow', DeepL translation)
- - "": [t: "flèche du demi-cercle droit dans le sens des aiguilles d'une montre"]	#  0xeb50	(en: 'clockwise right semicircle arrow', DeepL translation)
- - "": [t: "flèche de demi-cercle droit dans le sens inverse des aiguilles d'une montre"]	#  0xeb51	(en: 'anticlockwise right semicircle arrow', DeepL translation)
- - "": [t: "cercle ouvert gauche harpon gauche droite"]	#  0xeb52	(en: 'left open circle left right harpoon', DeepL translation)
- - "": [t: "flèche vers le haut à gauche de la barre verticale"]	#  0xeb58	(en: 'upwards arrow leftwards of vertical bar', DeepL translation)
- - "": [t: "flèche vers le bas à gauche de la barre verticale"]	#  0xeb59	(en: 'downwards arrow leftwards of vertical bar', DeepL translation)
- - "": [t: "flèche vers le haut à droite de la barre verticale"]	#  0xeb5a	(en: 'upwards arrow rightwards of vertical bar', DeepL translation)
- - "": [t: "flèche vers le bas à droite de la barre verticale"]	#  0xeb5b	(en: 'downwards arrow rightwards of vertical bar', DeepL translation)
- - "": [t: "vers la droite flèche avec crochet allongé vers le bas"]	#  0xeb5c	(en: 'rightwards arrow with extended downwards hook', DeepL translation)
- - "": [t: "flèche gauche avec crochet allongé"]	#  0xeb5d	(en: 'leftwards arrow with extended hook', DeepL translation)
- - "": [t: "flèche vers la gauche avec crochet allongé vers le bas"]	#  0xeb5e	(en: 'leftwards arrow with extended downwards hook', DeepL translation)
- - "": [t: "flèche vers la droite avec crochet allongé"]	#  0xeb5f	(en: 'rightwards arrow with extended hook', DeepL translation)
- - "": [t: "pas flèche droite ondulée"]        	#  0xeb60	(en: 'not right arrow wavy', DeepL translation)
- - "": [t: "pas de flèche droite courbée"]     	#  0xeb61	(en: 'not right arrow curved', DeepL translation)
- - "": [t: "harpon vers le haut à gauche de la barre verticale"]	#  0xeb68	(en: 'upwards harpoon leftwards of vertical bar', DeepL translation)
- - "": [t: "harpon vers le bas à gauche de la barre verticale"]	#  0xeb69	(en: 'downwards harpoon leftwards of vertical bar', DeepL translation)
- - "": [t: "harpon vers le haut à droite de la barre verticale"]	#  0xeb6a	(en: 'upwards harpoon rightwards of vertical bar', DeepL translation)
- - "": [t: "harpon vers le bas à droite de la barre verticale"]	#  0xeb6b	(en: 'downwards harpoon rightwards of vertical bar', DeepL translation)
- - "": [t: "flèche double verticale"]          	#  0xeb6c	(en: 'vertical double arrow extender', DeepL translation)
- - "": [t: "harpon vertical avec ardillon prolongateur gauche"]	#  0xeb6d	(en: 'vertical harpoon with barb left extender', DeepL translation)
- - "": [t: "harpon vertical avec ardillon prolongateur droit"]	#  0xeb6e	(en: 'vertical harpoon with barb right extender', DeepL translation)
- - "": [t: "harpon droit sur harpon gauche droit"]	#  0xeb6f	(en: 'right harpoon over left harpoon right', DeepL translation)
- - "": [t: "harpon droit sur harpon gauche"]   	#  0xeb70	(en: 'right harpoon over left harpoon left', DeepL translation)
- - "": [t: "harpon gauche sur harpon droit sur harpon droit"]	#  0xeb71	(en: 'left harpoon over right harpoon right', DeepL translation)
- - "": [t: "harpon gauche sur harpon droit gauche"]	#  0xeb72	(en: 'left harpoon over right harpoon left', DeepL translation)
- - "": [t: "flèche vers la gauche à partir de la tête de flèche de la barre"]	#  0xeb73	(en: 'leftwards arrow from bar arrowhead', DeepL translation)
- - "": [t: "vers la gauche flèche droite de l'extension de la barre"]	#  0xeb74	(en: 'leftwards rightwards arrow from bar extender', DeepL translation)
- - "": [t: "flèche vers la gauche à partir de la queue de l'ardillon"]	#  0xeb75	(en: 'leftwards arrow from bar tail', DeepL translation)
- - "": [t: "vers la droite flèche de l'empennage"]	#  0xeb76	(en: 'rightwards arrow from bar tail', DeepL translation)
- - "": [t: "flèche vers la droite à partir de la tête de flèche de la barre"]	#  0xeb77	(en: 'rightwards arrow from bar arrowhead', DeepL translation)
- - "": [t: "harpon vers le haut à partir de la barre avec ardillon vers la gauche"]	#  0xeb78	(en: 'upwards harpoon from bar with barb leftwards arrowhead', DeepL translation)
- - "": [t: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb79	(en: 'rightwards arrow over leftwards arrow right', DeepL translation)
- - "": [t: "flèche vers la droite au-dessus de la flèche vers la gauche"]	#  0xeb7a	(en: 'rightwards arrow over leftwards arrow left', DeepL translation)
- - "": [t: "vers la gauche flèche vers la droite flèche vers la droite"]	#  0xeb7b	(en: 'leftwards arrow over rightwards arrow right', DeepL translation)
- - "": [t: "flèche vers la gauche sur flèche vers la droite à gauche"]	#  0xeb7c	(en: 'leftwards arrow over rightwards arrow left', DeepL translation)
- - "": [t: "flèche vers le haut à partir d'une barre de flèche"]	#  0xeb7d	(en: 'upwards arrow from bar arrowhead', DeepL translation)
- - "": [t: "flèche vers le haut à partir de la queue de la barre"]	#  0xeb7e	(en: 'upwards arrow from bar tail', DeepL translation)
- - "": [t: "flèche vers le bas de la queue de la barre"]	#  0xeb7f	(en: 'downwards arrow from bar tail', DeepL translation)
- - "": [t: "flèche vers le bas à partir de la tête de flèche de la barre"]	#  0xeb80	(en: 'downwards arrow from bar arrowhead', DeepL translation)
- - "": [t: "harpon vers le bas de la barre avec ardillon vers la droite pointe de flèche"]	#  0xeb81	(en: 'downwards harpoon from bar with barb rightwards arrowhead', DeepL translation)
- - "": [t: "harpon vers le haut à gauche du harpon vers le bas"]	#  0xeb82	(en: 'upwards harpoon to the left of downwards harpoon bottom', DeepL translation)
- - "": [t: "harpon vers le haut à gauche de l'extension du harpon vers le bas"]	#  0xeb83	(en: 'upwards harpoon to the left of downwards harpoon extender', DeepL translation)
- - "": [t: "harpon vers le bas à gauche du harpon vers le haut en haut"]	#  0xeb84	(en: 'downwards harpoon to the left of upwards harpoon top', DeepL translation)
- - "": [t: "harpon vers le haut à gauche du harpon vers le bas en haut"]	#  0xeb85	(en: 'upwards harpoon to the left of downwards harpoon top', DeepL translation)
- - "": [t: "harpon vers le bas à gauche de la rallonge du harpon vers le haut"]	#  0xeb86	(en: 'downwards harpoon to the left of the upwards harpoon extender', DeepL translation)
- - "": [t: "harpon vers le bas à gauche du harpon vers le haut en bas"]	#  0xeb87	(en: 'downwards harpoon to the left of the upwards harpoon bottom', DeepL translation)
- - "": [t: "flèche vers le haut à gauche de la flèche vers le bas"]	#  0xeb88	(en: 'upwards arrow leftwards of downwards arrow bottom', DeepL translation)
- - "": [t: "flèche vers le bas à gauche de la flèche vers le haut en haut"]	#  0xeb89	(en: 'downwards arrow leftwards of upwards arrow top', DeepL translation)
- - "": [t: "flèche vers le haut à gauche de la flèche vers le bas en haut"]	#  0xeb8a	(en: 'upwards arrow leftwards of downwards arrow top', DeepL translation)
- - "": [t: "flèche vers le bas à gauche de la flèche vers le haut en bas"]	#  0xeb8b	(en: 'downwards arrow leftwards of upwards arrow bottom', DeepL translation)
- - "": [t: "flèche vers la gauche flèche vers la droite prolongateur"]	#  0xeb8c	(en: 'leftwards rightwards arrows extender', DeepL translation)
- - "": [t: "extension de la flèche nord-est"]  	#  0xeb8d	(en: 'north east arrow extender', DeepL translation)
- - "": [t: "extension de la flèche nord-ouest"]	#  0xeb8e	(en: 'north west arrow extender', DeepL translation)
- - "": [t: "accolade pointant vers le bas à gauche"]	#  0xec00	(en: 'down pointing brace left', DeepL translation)
- - "": [t: "accolade pointant vers le bas au milieu"]	#  0xec01	(en: 'down pointing brace mid', DeepL translation)
- - "": [t: "accolade pointant vers le bas à droite"]	#  0xec02	(en: 'down pointing brace right', DeepL translation)
- - "": [t: "prolongation de l'accolade horizontale"]	#  0xec03	(en: 'horizontal brace extender', DeepL translation)
- - "": [t: "flèche pointant vers le haut à gauche"]	#  0xec04	(en: 'up pointing brace left', DeepL translation)
- - "": [t: "accolade pointant vers le haut au milieu"]	#  0xec05	(en: 'up pointing brace mid', DeepL translation)
- - "": [t: "accolade pointant vers le haut à droite"]	#  0xec06	(en: 'up-pointing brace right', DeepL translation)
- - "": [t: "barre verticale gauche"]           	#  0xec07	(en: 'left vertical bar', DeepL translation)
- - "": [t: "barre verticale droite"]           	#  0xec08	(en: 'right vertical bar', DeepL translation)
- - "": [t: "double barre verticale gauche"]    	#  0xec09	(en: 'left double vertical bar', DeepL translation)
- - "": [t: "double barre verticale droite"]    	#  0xec0a	(en: 'right double vertical bar', DeepL translation)
- - "": [t: "rallonge d'équerre horizontale"]   	#  0xec0b	(en: 'horizontal bracket extender', DeepL translation)
- - "": [t: "sous crochet"]                     	#  0xec0c	(en: 'under square bracket', DeepL translation)
- - "⎵": [t: "crochet vertical inférieur"]       	#  0x23b5	(en: 'under square bracket')
- - "": [t: "sur parenthèse carrée"]            	#  0xec0d	(en: 'over square bracket', DeepL translation)
- - "⎴": [t: "crochet vertical supérieur"]       	#  0x23b4	(en: 'over square bracket')
- - "": [t: "sous l'équerre à gauche"]          	#  0xec0e	(en: 'under bracket left', DeepL translation)
- - "": [t: "sous crochet à droite"]            	#  0xec0f	(en: 'under bracket right', DeepL translation)
- - "": [t: "crochet de substitution à gauche"] 	#  0xec10	(en: 'over bracket left', DeepL translation)
- - "": [t: "plus parenthèse droite"]           	#  0xec11	(en: 'over bracket right', DeepL translation)
- - "": [t: "parenthèse gauche 1"]              	#  0xec12	(en: 'left parens 1', DeepL translation)
- - "": [t: "parenthèse gauche 2"]              	#  0xec13	(en: 'left parens 2', DeepL translation)
- - "": [t: "parenthèse gauche 3"]              	#  0xec14	(en: 'left parens 3', DeepL translation)
- - "": [t: "parenthèse gauche 4"]              	#  0xec15	(en: 'left parens 4', DeepL translation)
- - "": [t: "parenthèse droite 1"]              	#  0xec16	(en: 'right parens 1', DeepL translation)
- - "": [t: "parenthèse droite 2"]              	#  0xec17	(en: 'right parens 2', DeepL translation)
- - "": [t: "parenthèse droite 3"]              	#  0xec18	(en: 'right parens 3', DeepL translation)
- - "": [t: "parenthèse droite 4"]              	#  0xec19	(en: 'right parens 4', DeepL translation)
- - "": [t: "radical 1"]                        	#  0xec1a	(DeepL translation)
- - "": [t: "radical 2"]                        	#  0xec1b	(DeepL translation)
- - "": [t: "radical 3"]                        	#  0xec1c	(DeepL translation)
- - "": [t: "radical 4"]                        	#  0xec1d	(DeepL translation)
- - "": [t: "radical 5"]                        	#  0xec1e	(DeepL translation)
- - "": [t: "radical inférieur"]                	#  0xec1f	(en: 'radical bottom', DeepL translation)
- - "": [t: "radical vertical extender"]        	#  0xec20	(DeepL translation)
- - "": [t: "radical haut"]                     	#  0xec21	(en: 'radical top', DeepL translation)
- - "": [t: "gauche crochet blanc haut"]        	#  0xec22	(en: 'left white bracket top', DeepL translation)
- - "": [t: "parenthèse blanche gauche prolongée"]	#  0xec23	(en: 'left white bracket extender', DeepL translation)
- - "": [t: "équerre blanche gauche en bas"]    	#  0xec24	(en: 'left white bracket bottom', DeepL translation)
- - "": [t: "droite équerre blanche en haut"]   	#  0xec25	(en: 'right white bracket top', DeepL translation)
- - "": [t: "prolongateur de parenthèse blanche droite"]	#  0xec26	(en: 'right white bracket extender', DeepL translation)
- - "": [t: "droite parenthèse blanche en bas"] 	#  0xec27	(en: 'right white bracket bottom', DeepL translation)
- - "": [t: "parenthèse blanche gauche"]        	#  0xec30	(en: 'left white curly bracket', DeepL translation)
- - "": [t: "parenthèse blanche droite"]        	#  0xec31	(en: 'right white curly bracket', DeepL translation)
- - "": [t: "signe de division longue"]         	#  0xec32	(en: 'long division sign', DeepL translation)
- - "": [t: "extension du signe de division longue"]	#  0xec33	(en: 'long division sign extender', DeepL translation)
- - "": [t: "division courte"]                  	#  0xec34	(en: 'short division', DeepL translation)
- - "": [t: "double liaison em sud-ouest à nord-est"]	#  0xec40	(en: 'double southwest to northeast em bond', DeepL translation)
- - "": [t: "double liaison nord-ouest à sud-est"]	#  0xec41	(en: 'double northwest to southeast em bond', DeepL translation)
- - "": [t: "simple horizontal em bond"]        	#  0xec42	(en: 'single horizontal em bond', DeepL translation)
- - "": [t: "double liaison em horizontale"]    	#  0xec43	(en: 'double horizontal em bond', DeepL translation)
- - "": [t: "triple liaison horizontale em"]    	#  0xec44	(en: 'triple horizontal em bond', DeepL translation)
- - "": [t: "verticale simple em bond"]         	#  0xec45	(en: 'single vertical em bond', DeepL translation)
- - "": [t: "double liaison em verticale"]      	#  0xec46	(en: 'double vertical em bond', DeepL translation)
- - "": [t: "triple liaison verticale em"]      	#  0xec47	(en: 'triple vertical em bond', DeepL translation)
- - "": [t: "moins que em bond"]                	#  0xec48	(en: 'less than em bond', DeepL translation)
- - "": [t: "plus grand que em bond"]           	#  0xec49	(en: 'greater than em bond', DeepL translation)
- - "": [t: "lien horizontal simple"]           	#  0xec4a	(en: 'single horizontal en bond', DeepL translation)
- - "": [t: "double lien horizontal en"]        	#  0xec4b	(en: 'double horizontal en bond', DeepL translation)
- - "": [t: "triple barre horizontale en bond"] 	#  0xec4c	(en: 'triple horizontal en bond', DeepL translation)
- - "": [t: "rectangle en haut à gauche"]       	#  0xec80	(en: 'top left rectangle', DeepL translation)
- - "": [t: "rectangle inférieur gauche"]       	#  0xec81	(en: 'bottom left rectangle', DeepL translation)
- - "": [t: "rectangle en haut à droite"]       	#  0xec90	(en: 'top right rectangle', DeepL translation)
- - "": [t: "rectangle en bas à droite"]        	#  0xec91	(en: 'bottom right rectangle', DeepL translation)
- - "": [t: "synthetic division corner"]        	#  0xec92	(DeepL translation)
- - "": [t: "division synthétique extension horizontale"]	#  0xec93	(en: 'synthetic division horizontal extender', DeepL translation)
- - "": [t: "extension verticale de la division synthétique"]	#  0xec94	(en: 'synthetic division vertical extender', DeepL translation)
- - "": [t: "gauche extension du plancher du plafond"]	#  0xec95	(en: 'left ceiling floor extender', DeepL translation)
- - "": [t: "prolongateur de plafond droit"]    	#  0xec96	(en: 'right ceiling floor extender', DeepL translation)
- - "": [t: "au-dessus de l'extension de l'équerre"]	#  0xec97	(en: 'over bracket extender', DeepL translation)
- - "": [t: "prolongateur de la barre verticale"]	#  0xec98	(en: 'vertical bar extender', DeepL translation)
- - "": [t: "double barre verticale gauche"]    	#  0xec99	(en: 'left double vertical bar extender', DeepL translation)
- - "": [t: "barre horizontale prolongée"]      	#  0xec9a	(en: 'horizontal bar extender', DeepL translation)
- - "": [t: "sous l'extension de l'équerre"]    	#  0xec9c	(en: 'under bracket extender', DeepL translation)
- - "": [t: "parenthèse pointée vers le bas à droite"]	#  0xec9d	(en: 'down pointing paren right', DeepL translation)
- - "": [t: "prolongateur de parenthèse pointant vers le bas"]	#  0xec9e	(en: 'down pointing paren extender', DeepL translation)
- - "": [t: "vers le bas parenthèse pointant vers la gauche"]	#  0xec9f	(en: 'down pointing paren left', DeepL translation)
- - "": [t: "rallonge d'accolade pointant vers le haut"]	#  0xeca0	(en: 'up pointing brace extender', DeepL translation)
- - "": [t: "parenthèse pointant vers le haut à gauche"]	#  0xeca1	(en: 'up pointing paren left', DeepL translation)
- - "": [t: "prolongateur de parenthèse pointant vers le haut"]	#  0xeca2	(en: 'up pointing paren extender', DeepL translation)
- - "": [t: "parenthèse pointant vers le haut à droite"]	#  0xeca3	(en: 'up pointing paren right', DeepL translation)
- - "": [t: "prolongateur d'accolade pointant vers le bas"]	#  0xeca4	(en: 'down pointing brace extender', DeepL translation)
- - "": [t: "constante de planck sur deux barres de pi"]	#  0xed00	(en: 'planck constant over two pi bar', DeepL translation)
- - "": [t: "miroir g"]                         	#  0xed01	(en: 'mirror g', DeepL translation)
- - "": [t: "j sans point"]                     	#  0xed02	(en: 'dotless j', DeepL translation)
- - "": [t: "digamma"]                          	#  0xed03	(DeepL translation)
- - "ϝ": [t: "digamma"]                          	#  0x3dd
- - "": [t: ""]                                	#  0xed10	(en: 'd', DeepL translation)
- - "ⅆ": [t: "d ajouré en italique"]             	#  0x2146	(en: 'd', MathPlayer: 'd ajouré minuscule italique', DeepL: 'ⅆ')
- - "": [t: ""]                                	#  0xed11	(en: 'e', DeepL translation)
- - "ⅇ": [t: "e ajouré en italique"]             	#  0x2147	(en: 'e', MathPlayer: 'e ajouré minuscule italique', DeepL: 'ⅇ')
- - "": [t: ""]                                	#  0xed12	(en: 'i', DeepL translation)
- - "ⅈ": [t: "i ajouré en italique"]             	#  0x2148	(en: 'i', MathPlayer: 'i ajouré minuscule italique', DeepL: 'ⅈ')
- - "": [t: ""]                                	#  0xed13	(en: 'j', DeepL translation)
+ - "": [T: "inférieur à mais pas approximativement égal à"]	#  0xea32	(en: 'less than but not approximately equal to', DeepL translation)
+ - "": [T: "supérieur à mais pas approximativement égal à"]	#  0xea33	(en: 'greater than but not approximately equal to', DeepL translation)
+ - "": [T: "inférieur ou non égal à"]          	#  0xea34	(en: 'less than or not equal to', DeepL translation)
+ - "": [T: "supérieur à ou non égal à"]     	#  0xea35	(en: 'greater than or not equal to', DeepL translation)
+ - "": [T: "inférieur à non imbriqué"]           	#  0xea36	(en: 'not nested less than', DeepL translation)
+ - "": [T: "supérieur à non imbriqué"]      	#  0xea37	(en: 'not nested greater than', DeepL translation)
+ - "": [T: "pas beaucoup inférieur à"]           	#  0xea38	(en: 'not much less than', DeepL translation)
+ - "": [T: "pas beaucoup supérieur à"]      	#  0xea39	(en: 'not much greater than', DeepL translation)
+ - "": [T: "précède mais n'équivaut pas à"]    	#  0xea3a	(en: 'precedes but not equivalent to', DeepL translation)
+ - "": [T: "succède mais n'est pas équivalent à"]	#  0xea3b	(en: 'succeeds but not equivalent to', DeepL translation)
+ - "": [T: "précède mais n'est pas égal à"]    	#  0xea3c	(en: 'precedes but not equal to', DeepL translation)
+ - "": [T: "succède mais n'est pas égal à"]    	#  0xea3d	(en: 'succeeds but not equal to', DeepL translation)
+ - "": [T: "n'est pas égal ou ne précède pas"] 	#  0xea3e	(en: 'does not equal or precede', DeepL translation)
+ - "": [T: "n'est pas égal ou ne succède pas"]    	#  0xea3f	(en: 'does not equal or succeed', DeepL translation)
+ - "": [T: "précède mais n'est pas égal à"]    	#  0xea40	(en: 'precedes but not equal to', DeepL translation)
+ - "": [T: "succède mais n'est pas égal à"]    	#  0xea41	(en: 'succeeds but not equal to', DeepL translation)
+ - "": [T: "ni sous ensemble de ni égal à"]    	#  0xea42	(en: 'not subset of nor equal to', DeepL translation)
+ - "": [T: "n'est pas un sur ensemble de ni égal à"]	#  0xea43	(en: 'not superset of nor equal to', DeepL translation)
+ - "": [T: "sous ensemble de ou non égal à"]   	#  0xea44	(en: 'subset of or not equal to', DeepL translation)
+ - "": [T: "sur ensemble de ou non égal à"]     	#  0xea45	(en: 'superset of or not equal to', DeepL translation)
+ - "": [T: "ni sous ensemble de ni égal à"]    	#  0xea46	(en: 'not subset of nor equal to', DeepL translation)
+ - "": [T: "n'est pas un sur ensemble de ni égal à"]	#  0xea47	(en: 'not superset of nor equal to', DeepL translation)
+ - "": [T: "non triple moins que"]             	#  0xea48	(en: 'not triple less than', DeepL translation)
+ - "": [T: "pas triple supérieur à"]        	#  0xea49	(en: 'not triple greater than', DeepL translation)
+ - "": [T: "ne précède pas égale"]         	#  0xea4c	(en: 'not precedes equals', DeepL translation)
+ - "": [T: "ne succède pas égale"]             	#  0xea4d	(en: 'not succeeds equals', DeepL translation)
+ - "": [T: "sous-groupe non normal de avec barre"]	#  0xea50	(en: 'not normal subgroup of with bar', DeepL translation)
+ - "": [T: "ne contient pas de sous-groupe normal avec barre"]	#  0xea51	(en: 'does not contain as normal subgroup with bar', DeepL translation)
+ - "": [T: "pas de différence entre"]          	#  0xea52	(en: 'not difference between', DeepL translation)
+ - "": [T: "non géométriquement équivalent à"] 	#  0xea53	(en: 'not geometrically equivalent to', DeepL translation)
+ - "": [T: "pas vert similaire"]               	#  0xea54	(en: 'not vert similar', DeepL translation)
+ - "": [T: "pas égal ou similaire"]            	#  0xea55	(en: 'not equal or similar', DeepL translation)
+ - "": [T: "pas vert approximatif"]            	#  0xea56	(en: 'not vert approximate', DeepL translation)
+ - "": [T: "pas approximativement identique à"]	#  0xea57	(en: 'not approximately identical to', DeepL translation)
+ - "": [T: "non égale bossu"]             	#  0xea58	(en: 'not bumpy equals', DeepL translation)
+ - "": [T: "non égale simple bossu"]          	#  0xea59	(en: 'not bumpy single equals', DeepL translation)
+ - "": [T: "not equal dot"]                    	#  0xea5a	(DeepL translation)
+ - "": [T: "non équivalent inversé"]           	#  0xea5b	(en: 'reverse not equivalent', DeepL translation)
+ - "": [T: "pas un sous ensemble carré"]       	#  0xea60	(en: 'not square subset', DeepL translation)
+ - "": [T: "pas un sur ensemble carré"]      	#  0xea61	(en: 'not square superset', DeepL translation)
+ - "": [T: "pas presque égal sur égal"]        	#  0xea62	(en: 'not almost equal over equal', DeepL translation)
+ - "": [T: "pas strictement équivalent à"]     	#  0xea63	(en: 'not strictly equivalent to', DeepL translation)
+ - "": [T: "point non congru"]                 	#  0xea64	(en: 'not congruent dot', DeepL translation)
+ - "": [T: "non égal inversé"]                 	#  0xea65	(en: 'reverse not equal', DeepL translation)
+ - "": [T: "triangle gauche non vert égal"]    	#  0xea70	(en: 'not vert left triangle equals', DeepL translation)
+ - "": [T: "triangle droit non vert égal"]     	#  0xea71	(en: 'not vert right triangle equals', DeepL translation)
+ - "": [T: "non partiel"]                      	#  0xea80	(en: 'not partial', DeepL translation)
+ - "": [T: "extension de l'embellissement de la flèche"]	#  0xeb00	(en: 'arrow embellishment extender', DeepL translation)
+ - "": [T: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb01	(en: 'arrow rightwards over arrow leftwards', DeepL translation)
+ - "": [T: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb02	(en: 'arrow rightwards over arrow leftwards', DeepL translation)
+ - "": [T: "harpon à droite sur harpon à gauche"]	#  0xeb03	(en: 'harpoon right over harpoon left', DeepL translation)
+ - "": [T: "harpon à droite sur harpon à gauche"]	#  0xeb04	(en: 'harpoon right over harpoon left', DeepL translation)
+ - "": [T: "double flèche nord-est sud-ouest"] 	#  0xeb05	(en: 'double arrow northeast southwest', DeepL translation)
+ - "": [T: "double flèche nord-ouest sud-est"] 	#  0xeb06	(en: 'double arrow northwest southeast', DeepL translation)
+ - "": [T: "prolongateur de harpon horizontal"]	#  0xeb07	(en: 'horizontal harpoon extender', DeepL translation)
+ - "": [T: "arc antihoraire flèche vers la gauche"]	#  0xeb08	(en: 'anticlockwise arc leftwards arrow', DeepL translation)
+ - "": [T: "arc antihoraire flèche vers la droite"]	#  0xeb09	(en: 'anticlockwise arc rightwards arrow', DeepL translation)
+ - "": [T: "grande flèche vers la droite"]     	#  0xeb0b	(en: 'large rightwards arrow accent', DeepL translation)
+ - "": [T: "grande flèche vers la gauche accent"]	#  0xeb0c	(en: 'large leftwards arrow accent', DeepL translation)
+ - "": [T: "flèche vers la gauche"]            	#  0xeb0d	(en: 'leftwards arrowhead', DeepL translation)
+ - "": [T: "flèche vers la droite"]            	#  0xeb0e	(en: 'rightwards arrowhead', DeepL translation)
+ - "": [T: "grande flèche bilatérale avec trait"]	#  0xeb0f	(en: 'large left right arrow with stroke', DeepL translation)
+ - "": [T: "prolongateur horizontal à double flèche"]	#  0xeb10	(en: 'horizontal double arrow extender', DeepL translation)
+ - "": [T: "grande flèche double bilatérale avec trait"]	#  0xeb11	(en: 'large left right double arrow with stroke', DeepL translation)
+ - "": [T: "flèche vers le bas à gauche de la flèche vers le haut"]	#  0xeb12	(en: 'downwards arrow leftwards of upwards arrow', DeepL translation)
+ - "": [T: "flèche vers la gauche avec l'angle vers le bas"]	#  0xeb13	(en: 'leftwards arrow with corner downwards', DeepL translation)
+ - "": [T: "flèche vers la droite avec coin vers le haut"]	#  0xeb14	(en: 'rightwards arrow with corner upwards', DeepL translation)
+ - "": [T: "flèche vers la gauche avec coin vers le haut"]	#  0xeb15	(en: 'leftwards arrow with corner upwards', DeepL translation)
+ - "": [T: "flèche en demi-cercle supérieur antihoraire avec plus"]	#  0xeb16	(en: 'anticlockwise top semicircle arrow with plus', DeepL translation)
+ - "": [T: "flèche en demi-cercle supérieure horaire avec moins"]	#  0xeb17	(en: 'clockwise top semicircle arrow with minus', DeepL translation)
+ - "": [T: "flèche vers la droite avec empennage et trait"]	#  0xeb18	(en: 'rightwards arrow with tail with stroke', DeepL translation)
+ - "": [T: "harpon droit vers le bas"]      	#  0xeb19	(en: 'right harpoon down', DeepL translation)
+ - "": [T: "harpon gauche vers le bas"]             	#  0xeb1a	(en: 'left harpoon down', DeepL translation)
+ - "": [T: "harpon bilatéral vers le bas"]  	#  0xeb1b	(en: 'left right harpoon down', DeepL translation)
+ - "": [T: "flèche bilatérale vers le haut"]	#  0xeb1c	(en: 'left right harpoon up', DeepL translation)
+ - "": [T: "harpon de haut en bas à gauche"]   	#  0xeb1d	(en: 'up down harpoon left', DeepL translation)
+ - "": [T: "harpon de haut en bas à droite"]            	#  0xeb1e	(en: 'up down harpoon right', DeepL translation)
+ - "": [T: "flèche vers le haut à droite de la flèche vers le bas"]	#  0xeb1f	(en: 'upwards arrow to the right of downwards arrow', DeepL translation)
+ - "": [T: "harpon vers la gauche à barre avec ardillon vers le haut"]	#  0xeb20	(en: 'leftwards harpoon to bar with barb upwards', DeepL translation)
+ - "": [T: "flèche vers la droite jusqu'à la barre avec ardillon vers le haut"]	#  0xeb21	(en: 'rightwards harpoon to bar with barb upwards', DeepL translation)
+ - "": [T: "harpon vers la gauche avec ardillon vers le bas"]	#  0xeb22	(en: 'leftwards harpoon to bar with barb downwards', DeepL translation)
+ - "": [T: "harpon vers la droite sur la barre avec ardillon vers le bas"]	#  0xeb23	(en: 'rightwards harpoon to bar with barb downwards', DeepL translation)
+ - "": [T: "harpon vers la gauche à partir d'une barre avec ardillon vers le haut"]	#  0xeb24	(en: 'leftwards harpoon from bar with barb upwards', DeepL translation)
+ - "": [T: "harpon vers la droite de la barre avec ardillon vers le haut"]	#  0xeb25	(en: 'rightwards harpoon from bar with barb upwards', DeepL translation)
+ - "": [T: "harpon vers la gauche de la barre avec ardillon vers le bas"]	#  0xeb26	(en: 'leftwards harpoon from bar with barb downwards', DeepL translation)
+ - "": [T: "harpon vers la droite de la barre avec ardillon vers le bas"]	#  0xeb27	(en: 'rightwards harpoon from bar with barb downwards', DeepL translation)
+ - "": [T: "harpon vers le haut à la barre avec ardillon vers la gauche"]	#  0xeb28	(en: 'upwards harpoon to bar with barb leftwards', DeepL translation)
+ - "": [T: "harpon vers le bas sur la barre avec ardillon vers la gauche"]	#  0xeb29	(en: 'downwards harpoon to bar with barb leftwards', DeepL translation)
+ - "": [T: "harpon vers le haut  à barre avec ardillon vers la droite"]	#  0xeb2a	(en: 'upwards harpoon to bar with barb rightwards', DeepL translation)
+ - "": [T: "harpon vers le bas sur la barre avec ardillon vers la droite"]	#  0xeb2b	(en: 'downwards harpoon to bar with barb rightwards', DeepL translation)
+ - "": [T: "harpon vers le haut à partir de la barre avec ardillon vers la gauche"]	#  0xeb2c	(en: 'upwards harpoon from bar with barb leftwards', DeepL translation)
+ - "": [T: "harpon vers la gauche de la barre avec ardillon"]	#  0xeb2d	(en: 'downwards harpoon from bar with barb leftwards', DeepL translation)
+ - "": [T: "harpon vers le haut à partir d'une barre avec ardillon vers la droite"]	#  0xeb2e	(en: 'upwards harpoon from bar with barb rightwards', DeepL translation)
+ - "": [T: "harpon vers le bas à partir de la barre avec ardillon vers la droite"]	#  0xeb2f	(en: 'downwards harpoon from bar with barb rightwards', DeepL translation)
+ - "": [T: "flèche vers le haut vers la barre"]	#  0xeb30	(en: 'upwards arrow to bar', DeepL translation)
+ - "": [T: "flèche vers le bas jusqu'à la barre"]	#  0xeb31	(en: 'downwards arrow to bar', DeepL translation)
+ - "": [T: "harpon vers le haut à gauche du harpon vers le bas"]	#  0xeb32	(en: 'upwards harpoon to the left of downwards harpoon', DeepL translation)
+ - "": [T: "harpon vers le haut à droite du harpon vers le bas"]	#  0xeb33	(en: 'upwards harpoon to the right of downwards harpoon', DeepL translation)
+ - "": [T: "pointe de flèche vers le haut"]    	#  0xeb34	(en: 'upwards arrowhead', DeepL translation)
+ - "": [T: "pointe de flèche vers le bas"]     	#  0xeb35	(en: 'downwards arrowhead', DeepL translation)
+ - "": [T: "double harpon avec ardillon à gauche vers le bas ardillon à droite vers le haut"]	#  0xeb36	(en: 'double harpoon with leftwards barb down rightwards barb up', DeepL translation)
+ - "": [T: "double harpon avec ardillon gauche en haut ardillon droit en bas"]	#  0xeb37	(en: 'double harpoon with leftwards barb up rightwards barb down', DeepL translation)
+ - "": [T: "flèche vers la gauche au-dessus de la barre"]	#  0xeb38	(en: 'leftwards arrow over bar', DeepL translation)
+ - "": [T: "flèche vers la droite au-dessus de la barre"]	#  0xeb39	(en: 'rightwards arrow over bar', DeepL translation)
+ - "": [T: "flèche vers la gauche sous la barre"]	#  0xeb3a	(en: 'leftwards arrow under bar', DeepL translation)
+ - "": [T: "flèche vers la droite sous la barre"]	#  0xeb3b	(en: 'rightwards arrow under bar', DeepL translation)
+ - "": [T: "flèche triple gauche droite"]      	#  0xeb3c	(en: 'left right triple arrow', DeepL translation)
+ - "": [T: "double flèche nord-est sud-est"]   	#  0xeb3f	(en: 'double arrow northeast southeast', DeepL translation)
+ - "": [T: "flèche en demi-cercle vers la gauche antihoraire"]	#  0xeb40	(en: 'anticlockwise left semicircle arrow', DeepL translation)
+ - "": [T: "flèche en demi-cercle horaire"]	#  0xeb41	(en: 'clockwise left semicircle arrow', DeepL translation)
+ - "": [T: "cercle ouvert gauche flèche droite gauche"]	#  0xeb42	(en: 'left open circle left right arrow', DeepL translation)
+ - "": [T: "flèche vers la droite au-dessus d'un tilde"]	#  0xeb44	(en: 'rightwards arrow over tilde', DeepL translation)
+ - "": [T: "flèche vers la gauche au-dessus du tilde"]	#  0xeb45	(en: 'leftwards arrow over tilde', DeepL translation)
+ - "": [T: "harpon vers la gauche sur la barre"]	#  0xeb48	(en: 'leftwards harpoon over bar', DeepL translation)
+ - "": [T: "harpon vers la droite sur barre"]  	#  0xeb49	(en: 'rightwards harpoon over bar', DeepL translation)
+ - "": [T: "harpon vers la gauche sous la barre"]	#  0xeb4a	(en: 'leftwards harpoon under bar', DeepL translation)
+ - "": [T: "harpon vers la droite sous la barre"]	#  0xeb4b	(en: 'rightwards harpoon under bar', DeepL translation)
+ - "": [T: "flèche noire vers la gauche"]      	#  0xeb4c	(en: 'squat black leftwards arrow', DeepL translation)
+ - "": [T: "flèche du demi-cercle droit horaire"]	#  0xeb50	(en: 'clockwise right semicircle arrow', DeepL translation)
+ - "": [T: "flèche de demi-cercle droit antihoraire"]	#  0xeb51	(en: 'anticlockwise right semicircle arrow', DeepL translation)
+ - "": [T: "cercle ouvert gauche harpon gauche droite"]	#  0xeb52	(en: 'left open circle left right harpoon', DeepL translation)
+ - "": [T: "flèche vers le haut à gauche de la barre verticale"]	#  0xeb58	(en: 'upwards arrow leftwards of vertical bar', DeepL translation)
+ - "": [T: "flèche vers le bas à gauche de la barre verticale"]	#  0xeb59	(en: 'downwards arrow leftwards of vertical bar', DeepL translation)
+ - "": [T: "flèche vers le haut à droite de la barre verticale"]	#  0xeb5a	(en: 'upwards arrow rightwards of vertical bar', DeepL translation)
+ - "": [T: "flèche vers le bas à droite de la barre verticale"]	#  0xeb5b	(en: 'downwards arrow rightwards of vertical bar', DeepL translation)
+ - "": [T: "flèche vers la droite avec crochet allongé vers le bas"]	#  0xeb5c	(en: 'rightwards arrow with extended downwards hook', DeepL translation)
+ - "": [T: "flèche vers la gauche avec crochet allongé"]	#  0xeb5d	(en: 'leftwards arrow with extended hook', DeepL translation)
+ - "": [T: "flèche vers la gauche avec crochet allongé vers le bas"]	#  0xeb5e	(en: 'leftwards arrow with extended downwards hook', DeepL translation)
+ - "": [T: "flèche vers la droite avec crochet allongé"]	#  0xeb5f	(en: 'rightwards arrow with extended hook', DeepL translation)
+ - "": [T: "flèche pas droite ondulée"]        	#  0xeb60	(en: 'not right arrow wavy', DeepL translation)
+ - "": [T: "flèche pas droite courbée"]     	#  0xeb61	(en: 'not right arrow curved', DeepL translation)
+ - "": [T: "harpon vers le haut à gauche de la barre verticale"]	#  0xeb68	(en: 'upwards harpoon leftwards of vertical bar', DeepL translation)
+ - "": [T: "harpon vers le bas à gauche de la barre verticale"]	#  0xeb69	(en: 'downwards harpoon leftwards of vertical bar', DeepL translation)
+ - "": [T: "harpon vers le haut à droite de la barre verticale"]	#  0xeb6a	(en: 'upwards harpoon rightwards of vertical bar', DeepL translation)
+ - "": [T: "harpon vers le bas à droite de la barre verticale"]	#  0xeb6b	(en: 'downwards harpoon rightwards of vertical bar', DeepL translation)
+ - "": [T: "flèche double verticale"]          	#  0xeb6c	(en: 'vertical double arrow extender', DeepL translation)
+ - "": [T: "harpon vertical avec ardillon prolongateur gauche"]	#  0xeb6d	(en: 'vertical harpoon with barb left extender', DeepL translation)
+ - "": [T: "harpon vertical avec ardillon prolongateur droit"]	#  0xeb6e	(en: 'vertical harpoon with barb right extender', DeepL translation)
+ - "": [T: "harpon droit sur harpon gauche droit"]	#  0xeb6f	(en: 'right harpoon over left harpoon right', DeepL translation)
+ - "": [T: "harpon droit sur harpon gauche"]   	#  0xeb70	(en: 'right harpoon over left harpoon left', DeepL translation)
+ - "": [T: "harpon gauche sur harpon droit sur harpon droit"]	#  0xeb71	(en: 'left harpoon over right harpoon right', DeepL translation)
+ - "": [T: "harpon gauche sur harpon droit gauche"]	#  0xeb72	(en: 'left harpoon over right harpoon left', DeepL translation)
+ - "": [T: "flèche vers la gauche à partir de la tête de flèche de la barre"]	#  0xeb73	(en: 'leftwards arrow from bar arrowhead', DeepL translation)
+ - "": [T: "flèche bilatérale de l'extension de la barre"]	#  0xeb74	(en: 'leftwards rightwards arrow from bar extender', DeepL translation)
+ - "": [T: "flèche vers la gauche à partir de la queue de l'ardillon"]	#  0xeb75	(en: 'leftwards arrow from bar tail', DeepL translation)
+ - "": [T: "flèche vers la droite de l'empennage"]	#  0xeb76	(en: 'rightwards arrow from bar tail', DeepL translation)
+ - "": [T: "flèche vers la droite à partir de la tête de flèche de la barre"]	#  0xeb77	(en: 'rightwards arrow from bar arrowhead', DeepL translation)
+ - "": [T: "harpon vers le haut à partir de la barre avec ardillon vers la gauche"]	#  0xeb78	(en: 'upwards harpoon from bar with barb leftwards arrowhead', DeepL translation)
+ - "": [T: "flèche vers la droite sur flèche vers la gauche"]	#  0xeb79	(en: 'rightwards arrow over leftwards arrow right', DeepL translation)
+ - "": [T: "flèche vers la droite au-dessus de flèche vers la gauche"]	#  0xeb7a	(en: 'rightwards arrow over leftwards arrow left', DeepL translation)
+ - "": [T: "flèche vers la gauche au-dessus de flèche vers la droite"]	#  0xeb7b	(en: 'leftwards arrow over rightwards arrow right', DeepL translation)
+ - "": [T: "flèche vers la gauche sur flèche vers la droite à gauche"]	#  0xeb7c	(en: 'leftwards arrow over rightwards arrow left', DeepL translation)
+ - "": [T: "flèche vers le haut à partir d'une barre de flèche"]	#  0xeb7d	(en: 'upwards arrow from bar arrowhead', DeepL translation)
+ - "": [T: "flèche vers le haut à partir de la queue de la barre"]	#  0xeb7e	(en: 'upwards arrow from bar tail', DeepL translation)
+ - "": [T: "flèche vers le bas de la queue de la barre"]	#  0xeb7f	(en: 'downwards arrow from bar tail', DeepL translation)
+ - "": [T: "flèche vers le bas à partir de la tête de flèche de la barre"]	#  0xeb80	(en: 'downwards arrow from bar arrowhead', DeepL translation)
+ - "": [T: "harpon vers le bas de la barre avec ardillon vers la droite pointe de flèche"]	#  0xeb81	(en: 'downwards harpoon from bar with barb rightwards arrowhead', DeepL translation)
+ - "": [T: "harpon vers le haut à gauche du harpon vers le bas"]	#  0xeb82	(en: 'upwards harpoon to the left of downwards harpoon bottom', DeepL translation)
+ - "": [T: "harpon vers le haut à gauche de l'extension du harpon vers le bas"]	#  0xeb83	(en: 'upwards harpoon to the left of downwards harpoon extender', DeepL translation)
+ - "": [T: "harpon vers le bas à gauche du harpon vers le haut en haut"]	#  0xeb84	(en: 'downwards harpoon to the left of upwards harpoon top', DeepL translation)
+ - "": [T: "harpon vers le haut à gauche du harpon vers le bas en haut"]	#  0xeb85	(en: 'upwards harpoon to the left of downwards harpoon top', DeepL translation)
+ - "": [T: "harpon vers le bas à gauche de la rallonge du harpon vers le haut"]	#  0xeb86	(en: 'downwards harpoon to the left of the upwards harpoon extender', DeepL translation)
+ - "": [T: "harpon vers le bas à gauche du harpon vers le haut en bas"]	#  0xeb87	(en: 'downwards harpoon to the left of the upwards harpoon bottom', DeepL translation)
+ - "": [T: "flèche vers le haut à gauche de la flèche vers le bas"]	#  0xeb88	(en: 'upwards arrow leftwards of downwards arrow bottom', DeepL translation)
+ - "": [T: "flèche vers le bas à gauche de la flèche vers le haut en haut"]	#  0xeb89	(en: 'downwards arrow leftwards of upwards arrow top', DeepL translation)
+ - "": [T: "flèche vers le haut à gauche de la flèche vers le bas en haut"]	#  0xeb8a	(en: 'upwards arrow leftwards of downwards arrow top', DeepL translation)
+ - "": [T: "flèche vers le bas à gauche de la flèche vers le haut en bas"]	#  0xeb8b	(en: 'downwards arrow leftwards of upwards arrow bottom', DeepL translation)
+ - "": [T: "flèche vers la gauche flèche vers la droite prolongateur"]	#  0xeb8c	(en: 'leftwards rightwards arrows extender', DeepL translation)
+ - "": [T: "extension de la flèche nord-est"]  	#  0xeb8d	(en: 'north east arrow extender', DeepL translation)
+ - "": [T: "extension de la flèche nord-ouest"]	#  0xeb8e	(en: 'north west arrow extender', DeepL translation)
+ - "": [T: "accolade pointant vers le bas à gauche"]	#  0xec00	(en: 'down pointing brace left', DeepL translation)
+ - "": [T: "accolade pointant vers le bas au milieu"]	#  0xec01	(en: 'down pointing brace mid', DeepL translation)
+ - "": [T: "accolade pointant vers le bas à droite"]	#  0xec02	(en: 'down pointing brace right', DeepL translation)
+ - "": [T: "prolongation de l'accolade horizontale"]	#  0xec03	(en: 'horizontal brace extender', DeepL translation)
+ - "": [T: "flèche pointant vers le haut à gauche"]	#  0xec04	(en: 'up pointing brace left', DeepL translation)
+ - "": [T: "accolade pointant vers le haut au milieu"]	#  0xec05	(en: 'up pointing brace mid', DeepL translation)
+ - "": [T: "accolade pointant vers le haut à droite"]	#  0xec06	(en: 'up-pointing brace right', DeepL translation)
+ - "": [T: "barre verticale gauche"]           	#  0xec07	(en: 'left vertical bar', DeepL translation)
+ - "": [T: "barre verticale droite"]           	#  0xec08	(en: 'right vertical bar', DeepL translation)
+ - "": [T: "double barre verticale gauche"]    	#  0xec09	(en: 'left double vertical bar', DeepL translation)
+ - "": [T: "double barre verticale droite"]    	#  0xec0a	(en: 'right double vertical bar', DeepL translation)
+ - "": [T: "rallonge d'équerre horizontale"]   	#  0xec0b	(en: 'horizontal bracket extender', DeepL translation)
+ - "": [T: "sous crochet"]                     	#  0xec0c	(en: 'under square bracket', DeepL translation)
+ - "⎵": [T: "crochet vertical inférieur"]       	#  0x23b5	(en: 'under square bracket')
+ - "": [T: "sur parenthèse carrée"]            	#  0xec0d	(en: 'over square bracket', DeepL translation)
+ - "⎴": [T: "crochet vertical supérieur"]       	#  0x23b4	(en: 'over square bracket')
+ - "": [T: "sous crochet à gauche"]          	#  0xec0e	(en: 'under bracket left', DeepL translation)
+ - "": [T: "sous crochet à droite"]            	#  0xec0f	(en: 'under bracket right', DeepL translation)
+ - "": [T: "sur crochet à gauche"] 	#  0xec10	(en: 'over bracket left', DeepL translation)
+ - "": [T: "sur crochet à droite"]           	#  0xec11	(en: 'over bracket right', DeepL translation)
+ - "": [T: "parenthèse gauche 1"]              	#  0xec12	(en: 'left parens 1', DeepL translation)
+ - "": [T: "parenthèse gauche 2"]              	#  0xec13	(en: 'left parens 2', DeepL translation)
+ - "": [T: "parenthèse gauche 3"]              	#  0xec14	(en: 'left parens 3', DeepL translation)
+ - "": [T: "parenthèse gauche 4"]              	#  0xec15	(en: 'left parens 4', DeepL translation)
+ - "": [T: "parenthèse droite 1"]              	#  0xec16	(en: 'right parens 1', DeepL translation)
+ - "": [T: "parenthèse droite 2"]              	#  0xec17	(en: 'right parens 2', DeepL translation)
+ - "": [T: "parenthèse droite 3"]              	#  0xec18	(en: 'right parens 3', DeepL translation)
+ - "": [T: "parenthèse droite 4"]              	#  0xec19	(en: 'right parens 4', DeepL translation)
+ - "": [T: "radical 1"]                        	#  0xec1a	(DeepL translation)
+ - "": [T: "radical 2"]                        	#  0xec1b	(DeepL translation)
+ - "": [T: "radical 3"]                        	#  0xec1c	(DeepL translation)
+ - "": [T: "radical 4"]                        	#  0xec1d	(DeepL translation)
+ - "": [T: "radical 5"]                        	#  0xec1e	(DeepL translation)
+ - "": [T: "radical inférieur"]                	#  0xec1f	(en: 'radical bottom', DeepL translation)
+ - "": [T: "radical vertical extender"]        	#  0xec20	(DeepL translation)
+ - "": [T: "radical haut"]                     	#  0xec21	(en: 'radical top', DeepL translation)
+ - "": [T: "crochet blanc haut gauche"]        	#  0xec22	(en: 'left white bracket top', DeepL translation)
+ - "": [T: "prolongateur de crochet blanc gauche"]	#  0xec23	(en: 'left white bracket extender', DeepL translation)
+ - "": [T: "crochet blanc gauche en bas"]    	#  0xec24	(en: 'left white bracket bottom', DeepL translation)
+ - "": [T: "crochet blanc droit en haut"]   	#  0xec25	(en: 'right white bracket top', DeepL translation)
+ - "": [T: "prolongateur de crochet blanc droit"]	#  0xec26	(en: 'right white bracket extender', DeepL translation)
+ - "": [T: "crochet blanc droit en bas"] 	#  0xec27	(en: 'right white bracket bottom', DeepL translation)
+ - "": [T: "accolade blanche gauche"]        	#  0xec30	(en: 'left white curly bracket', DeepL translation)
+ - "": [T: "accolade blanche droite"]        	#  0xec31	(en: 'right white curly bracket', DeepL translation)
+ - "": [T: "signe de division longue"]         	#  0xec32	(en: 'long division sign', DeepL translation)
+ - "": [T: "extension du signe de division longue"]	#  0xec33	(en: 'long division sign extender', DeepL translation)
+ - "": [T: "division courte"]                  	#  0xec34	(en: 'short division', DeepL translation)
+ - "": [T: "liaison cadratin double sud-ouest à nord-est"]	#  0xec40	(en: 'double southwest to northeast em bond', DeepL translation)
+ - "": [T: "liaison cadratin double nord-ouest à sud-est"]	#  0xec41	(en: 'double northwest to southeast em bond', DeepL translation)
+ - "": [T: "liaison cadratin simple horizontale"]        	#  0xec42	(en: 'single horizontal em bond', DeepL translation)
+ - "": [T: "liaison cadratin double horizontale"]    	#  0xec43	(en: 'double horizontal em bond', DeepL translation)
+ - "": [T: "liaison cadratin triple horizontale"]    	#  0xec44	(en: 'triple horizontal em bond', DeepL translation)
+ - "": [T: "liaison cadratin simple verticale"]         	#  0xec45	(en: 'single vertical em bond', DeepL translation)
+ - "": [T: "liaison cadratin double verticale"]      	#  0xec46	(en: 'double vertical em bond', DeepL translation)
+ - "": [T: "liaison cadratin triple verticale"]      	#  0xec47	(en: 'triple vertical em bond', DeepL translation)
+ - "": [T: "inférieur à liaison cadratin"]                	#  0xec48	(en: 'less than em bond', DeepL translation)
+ - "": [T: "supérieur à liaison cadratin"]           	#  0xec49	(en: 'greater than em bond', DeepL translation)
+ - "": [T: "liaison demi-cadratin simple horizontale"]           	#  0xec4a	(en: 'single horizontal en bond', DeepL translation)
+ - "": [T: "liaison demi-cadratin double horizontale"]        	#  0xec4b	(en: 'double horizontal en bond', DeepL translation)
+ - "": [T: "liaison demi-cadratin triple horizontale"] 	#  0xec4c	(en: 'triple horizontal en bond', DeepL translation)
+ - "": [T: "rectangle supérieur gauche"]       	#  0xec80	(en: 'top left rectangle', DeepL translation)
+ - "": [T: "rectangle inférieur gauche"]       	#  0xec81	(en: 'bottom left rectangle', DeepL translation)
+ - "": [T: "rectangle supérieur droite"]       	#  0xec90	(en: 'top right rectangle', DeepL translation)
+ - "": [T: "rectangle inférieur droite"]        	#  0xec91	(en: 'bottom right rectangle', DeepL translation)
+ - "": [T: "synthetic division corner"]        	#  0xec92	(DeepL translation)
+ - "": [T: "prolongateur de division synthétique horizontale"]	#  0xec93	(en: 'synthetic division horizontal extender', DeepL translation)
+ - "": [T: "prolongateur de division synthétique verticale"]	#  0xec94	(en: 'synthetic division vertical extender', DeepL translation)
+ - "": [T: "gauche extension du plancher du plafond"]	#  0xec95	(en: 'left ceiling floor extender', DeepL translation)
+ - "": [T: "prolongateur de plafond droit"]    	#  0xec96	(en: 'right ceiling floor extender', DeepL translation)
+ - "": [T: "prolongateur de crochet supérieur"]	#  0xec97	(en: 'over bracket extender', DeepL translation)
+ - "": [T: "prolongateur de la barre verticale"]	#  0xec98	(en: 'vertical bar extender', DeepL translation)
+ - "": [T: "double barre verticale gauche"]    	#  0xec99	(en: 'left double vertical bar extender', DeepL translation)
+ - "": [T: "prolongateur de barre horizontale"]      	#  0xec9a	(en: 'horizontal bar extender', DeepL translation)
+ - "": [T: "prolongateur de crochet inférieur"]    	#  0xec9c	(en: 'under bracket extender', DeepL translation)
+ - "": [T: "parenthèse pointant vers le bas à droite"]	#  0xec9d	(en: 'down pointing paren right', DeepL translation)
+ - "": [T: "prolongateur de parenthèse pointant vers le bas"]	#  0xec9e	(en: 'down pointing paren extender', DeepL translation)
+ - "": [T: "parenthèse pointant vers le bas à gauche"]	#  0xec9f	(en: 'down pointing paren left', DeepL translation)
+ - "": [T: "prolongateur d'accolade pointant vers le haut"]	#  0xeca0	(en: 'up pointing brace extender', DeepL translation)
+ - "": [T: "parenthèse pointant vers le haut à gauche"]	#  0xeca1	(en: 'up pointing paren left', DeepL translation)
+ - "": [T: "prolongateur de parenthèse pointant vers le haut"]	#  0xeca2	(en: 'up pointing paren extender', DeepL translation)
+ - "": [T: "parenthèse pointant vers le haut à droite"]	#  0xeca3	(en: 'up pointing paren right', DeepL translation)
+ - "": [T: "prolongateur d'accolade pointant vers le bas"]	#  0xeca4	(en: 'down pointing brace extender', DeepL translation)
+ - "": [T: "constante de planck sur deux barres de pi"]	#  0xed00	(en: 'planck constant over two pi bar', DeepL translation)
+ - "": [T: "g miroir"]                         	#  0xed01	(en: 'mirror g', DeepL translation)
+ - "": [T: "j sans point"]                     	#  0xed02	(en: 'dotless j', DeepL translation)
+ - "": [T: "digamma"]                          	#  0xed03	(DeepL translation)
+ - "ϝ": [T: "digamma"]                          	#  0x3dd
+ - "": [T: ""]                                	#  0xed10	(en: 'd', DeepL translation)
+ - "ⅆ": [T: "d ajouré en italique"]             	#  0x2146	(en: 'd', MathPlayer: 'd ajouré minuscule italique', DeepL: 'ⅆ')
+ - "": [T: ""]                                	#  0xed11	(en: 'e', DeepL translation)
+ - "ⅇ": [T: "e ajouré en italique"]             	#  0x2147	(en: 'e', MathPlayer: 'e ajouré minuscule italique', DeepL: 'ⅇ')
+ - "": [T: ""]                                	#  0xed12	(en: 'i', DeepL translation)
+ - "ⅈ": [T: "i ajouré en italique"]             	#  0x2148	(en: 'i', MathPlayer: 'i ajouré minuscule italique', DeepL: 'ⅈ')
+ - "": [T: ""]                                	#  0xed13	(en: 'j', DeepL translation)
  - "ⅅ":
-    - spell: "translate('.', 'ⅅ', 'DD')"       	#  0xed16, 0x2145
+    - SPELL: "translate('.', 'ⅅ', 'DD')"       	#  0xed16, 0x2145
 
 # The private use chars are from MathType
- - "": [t: "boucle intégrale du contour dans le sens inverse des aiguilles d'une montre"]	#  0xee00	(en: 'anticlockwise contour integral loop', DeepL translation)
- - "": [t: "boucle intégrale dans le sens des aiguilles d'une montre"]	#  0xee01	(en: 'clockwise contour integral loop', DeepL translation)
- - "": [t: ""]                                 	#  0xee04
- - "": [t: ""]                                 	#  0xee05
- - "": [t: ""]                                 	#  0xee06
- - "": [t: ""]                                 	#  0xee07
- - "": [t: ""]                                 	#  0xee08
- - "": [t: ""]                                 	#  0xee09
- - "": [t: ""]                                 	#  0xee0a
- - "": [t: ""]                                 	#  0xee0b
- - "": [t: ""]                                 	#  0xee0c
- - "": [t: "embellissement de l'état des joints"]	#  0xee0d	(en: 'joint status embellishment', DeepL translation)
- - "": [t: "joint status embellishment left"]  	#  0xee0e	(DeepL translation)
- - "": [t: "état de l'articulation embellissement droit"]	#  0xee0f	(en: 'joint status embellishment right', DeepL translation)
- - "": [t: "extension de l'embellissement de l'état conjoint"]	#  0xee10	(en: 'joint status embellishment extender', DeepL translation)
- - "": [t: "boucle intégrale"]                 	#  0xee11	(en: 'integral loop', DeepL translation)
- - "": [t: "boucle intégrale double"]          	#  0xee12	(en: 'integral loop double', DeepL translation)
- - "": [t: "boucle intégrale triple"]          	#  0xee13	(en: 'integral loop triple', DeepL translation)
- - "": [t: "expansion boucle intégrale double"]	#  0xee15	(en: 'expanding integral loop double', DeepL translation)
- - "": [t: "triple boucle intégrale en expansion"]	#  0xee16	(en: 'expanding integral loop triple', DeepL translation)
- - "": [t: "asymptotiquement égal à l'accent"] 	#  0xee17	(en: 'asymptotically equal to accent', DeepL translation)
- - "": [t: "accent du signe égal"]             	#  0xee18	(en: 'equal sign accent', DeepL translation)
- - "": [t: "quadruple prime"]                  	#  0xee19	(DeepL translation)
- - "": [t: "accent bar avec cercle ouvert à gauche"]	#  0xee1a	(en: 'bar accent with open circle left', DeepL translation)
- - "": [t: "barre accentuée avec cercle fermé à gauche"]	#  0xee1b	(en: 'bar accent with closed circle left', DeepL translation)
- - "": [t: "barre d'accent avec cercle ouvert à droite"]	#  0xee1c	(en: 'bar accent with open circle right', DeepL translation)
- - "": [t: "barre d'accentuation avec point de suspension"]	#  0xee1d	(en: 'bar accent with over dot', DeepL translation)
- - "": [t: "barre d'accent avec point en dessous"]	#  0xee1e	(en: 'bar accent with under dot', DeepL translation)
- - "": [t: "accent barré avec point double"]   	#  0xee1f	(en: 'bar accent with double over dot', DeepL translation)
- - "": [t: "accent barré avec double point inférieur"]	#  0xee20	(en: 'bar accent with double under dot', DeepL translation)
- - "": [t: "barre d'accentuation avec caret"]  	#  0xee21	(en: 'bar accent with caret', DeepL translation)
- - "": [t: "accent épais sous la barre"]       	#  0xee22	(en: 'thick under bar accent', DeepL translation)
- - "": [t: "accent barré avec cercle fermé à droite"]	#  0xee23	(en: 'bar accent with closed circle right', DeepL translation)
- - "": [t: "gros point au-dessus"]             	#  0xee24	(en: 'large dot above', DeepL translation)
- - "": [t: "marque d'alignement"]              	#  0xef00	(en: 'alignment mark', DeepL translation)
- - "": [t: ""]                                 	#  0xef01
- - "​": [t: ""]                                 	#  0x200b
- - "": [t: ""]                                 	#  0xef02
- - " ": [t: ""]                                 	#  0x2009
- - "": [t: ""]                                 	#  0xef03
- - " ": [t: ""]                                 	#  0x205f
- - "": [t: ""]                                 	#  0xef04
- - "": [t: ""]                                 	#  0xef05
- - "": [t: ""]                                 	#  0xef06
- - "": [t: ""]                                 	#  0xef07
- - "": [t: ""]                                 	#  0xef08
- - "": [t: ""]                                 	#  0xef09
- - "": [t: ""]                                 	#  0xef0a
- - " ": [t: ""]                                 	#  0x200a
- - "": [t: ""]                                 	#  0xef22
- - "": [t: ""]                                 	#  0xef23
- - "": [t: ""]                                 	#  0xef24
- - "": [t: ""]                                 	#  0xef29
- - "": [t: "terme manquant"]                   	#  0xef41	(en: 'missing term', DeepL translation)
- - "": [t: "flèche à gauche de l'intégrale du contour dans le sens des aiguilles d'une montre"]	#  0xef80	(en: 'clockwise contour integral arrow on left', DeepL translation)
- - "": [t: "intégrale avec carré"]             	#  0xef81	(en: 'integral with square', DeepL translation)
- - "": [t: "intégrale avec barre oblique"]     	#  0xef82	(en: 'integral with slash', DeepL translation)
- - "": [t: "intégrale inversée"]               	#  0xef83	(en: 'reversed integral', DeepL translation)
- - "": [t: "double zéro sur double zéro"]      	#  0xef90	(en: 'double zero over double zero', DeepL translation)
- - "": [t: "zéro avec barre oblique"]          	#  0xef91	(en: 'zero with slash', DeepL translation)
+ - "": [T: "boucle intégrale du contour antihoraire"]	#  0xee00	(en: 'anticlockwise contour integral loop', DeepL translation)
+ - "": [T: "boucle intégrale du contour horaire"]	#  0xee01	(en: 'clockwise contour integral loop', DeepL translation)
+ - "": [T: ""]                                 	#  0xee04
+ - "": [T: ""]                                 	#  0xee05
+ - "": [T: ""]                                 	#  0xee06
+ - "": [T: ""]                                 	#  0xee07
+ - "": [T: ""]                                 	#  0xee08
+ - "": [T: ""]                                 	#  0xee09
+ - "": [T: ""]                                 	#  0xee0a
+ - "": [T: ""]                                 	#  0xee0b
+ - "": [T: ""]                                 	#  0xee0c
+ - "": [T: "embellissement de l'état des joints"]	#  0xee0d	(en: 'joint status embellishment', DeepL translation)
+ - "": [T: "joint status embellishment left"]  	#  0xee0e	(DeepL translation)
+ - "": [T: "état de l'articulation embellissement droit"]	#  0xee0f	(en: 'joint status embellishment right', DeepL translation)
+ - "": [T: "prolongateur de l'embellissement de l'état conjoint"]	#  0xee10	(en: 'joint status embellishment extender', DeepL translation)
+ - "": [T: "boucle intégrale"]                 	#  0xee11	(en: 'integral loop', DeepL translation)
+ - "": [T: "boucle intégrale double"]          	#  0xee12	(en: 'integral loop double', DeepL translation)
+ - "": [T: "boucle intégrale triple"]          	#  0xee13	(en: 'integral loop triple', DeepL translation)
+ - "": [T: "boucle intégrale double en expansion"]	#  0xee15	(en: 'expanding integral loop double', DeepL translation)
+ - "": [T: "boucle intégrale triple en expansion"]	#  0xee16	(en: 'expanding integral loop triple', DeepL translation)
+ - "": [T: "asymptotiquement égal à l'accent"] 	#  0xee17	(en: 'asymptotically equal to accent', DeepL translation)
+ - "": [T: "signe égal accent"]             	#  0xee18	(en: 'equal sign accent', DeepL translation)
+ - "": [T: "quadruple prime"]                  	#  0xee19	(DeepL translation)
+ - "": [T: "barre accentuée avec cercle ouvert à gauche"]	#  0xee1a	(en: 'bar accent with open circle left', DeepL translation)
+ - "": [T: "barre accentuée avec cercle fermé à gauche"]	#  0xee1b	(en: 'bar accent with closed circle left', DeepL translation)
+ - "": [T: "barre accentuée avec cercle ouvert à droite"]	#  0xee1c	(en: 'bar accent with open circle right', DeepL translation)
+ - "": [T: "barre accentuée avec point de suspension"]	#  0xee1d	(en: 'bar accent with over dot', DeepL translation)
+ - "": [T: "barre accentuée avec point en dessous"]	#  0xee1e	(en: 'bar accent with under dot', DeepL translation)
+ - "": [T: "barre accentuée avec point double"]   	#  0xee1f	(en: 'bar accent with double over dot', DeepL translation)
+ - "": [T: "barre accentuée avec double point inférieur"]	#  0xee20	(en: 'bar accent with double under dot', DeepL translation)
+ - "": [T: "barre accentuée avec caret"]  	#  0xee21	(en: 'bar accent with caret', DeepL translation)
+ - "": [T: "accent épais sous la barre"]       	#  0xee22	(en: 'thick under bar accent', DeepL translation)
+ - "": [T: "barre accentuée avec cercle fermé à droite"]	#  0xee23	(en: 'bar accent with closed circle right', DeepL translation)
+ - "": [T: "gros point au-dessus"]             	#  0xee24	(en: 'large dot above', DeepL translation)
+ - "": [T: "marque d'alignement"]              	#  0xef00	(en: 'alignment mark', DeepL translation)
+ - "": [T: ""]                                 	#  0xef01
+ - "​": [T: ""]                                 	#  0x200b
+ - "": [T: ""]                                 	#  0xef02
+ - " ": [T: ""]                                 	#  0x2009
+ - "": [T: ""]                                 	#  0xef03
+ - " ": [T: ""]                                 	#  0x205f
+ - "": [T: ""]                                 	#  0xef04
+ - "": [T: ""]                                 	#  0xef05
+ - "": [T: ""]                                 	#  0xef06
+ - "": [T: ""]                                 	#  0xef07
+ - "": [T: ""]                                 	#  0xef08
+ - "": [T: ""]                                 	#  0xef09
+ - "": [T: ""]                                 	#  0xef0a
+ - " ": [T: ""]                                 	#  0x200a
+ - "": [T: ""]                                 	#  0xef22
+ - "": [T: ""]                                 	#  0xef23
+ - "": [T: ""]                                 	#  0xef24
+ - "": [T: ""]                                 	#  0xef29
+ - "": [T: "terme manquant"]                   	#  0xef41	(en: 'missing term', DeepL translation)
+ - "": [T: "flèche à gauche de l'intégrale du contour horaire"]	#  0xef80	(en: 'clockwise contour integral arrow on left', DeepL translation)
+ - "": [T: "intégrale avec carré"]             	#  0xef81	(en: 'integral with square', DeepL translation)
+ - "": [T: "intégrale avec barre oblique"]     	#  0xef82	(en: 'integral with slash', DeepL translation)
+ - "": [T: "intégrale inversée"]               	#  0xef83	(en: 'reversed integral', DeepL translation)
+ - "": [T: "double zéro sur double zéro"]      	#  0xef90	(en: 'double zero over double zero', DeepL translation)
+ - "": [T: "zéro avec barre oblique"]          	#  0xef91	(en: 'zero with slash', DeepL translation)
 
  # fraktur chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔄-𝔜":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
-    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - SPELL: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
     - T: "gothique"                              	# 	(DeepL translation)
 
  - "-":                                       	#  0xf000 - 0xf018
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
     - T: "gothique"                              	# 	(DeepL translation)
 
  - "𝔞-𝔷":                                       	#  0x1d51e - 0x1d537
-    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "gothique"                              	# 	(DeepL translation)
 
  - "-":                                       	#  0xf01a - 0xf033
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "gothique"                              	# 	(DeepL translation)
     
  - "𝕬-𝖅":                                       	#  0x1D56C - 0x1D585
@@ -3152,106 +3152,106 @@
     - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf040 - 0xf059
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "𝖆-𝖟":                                       	#  0x1d586 - 0x1d59f
     - SPELL: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf05a - 0xf073
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "gothique"                              	# 	(DeepL translation)
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":                                       	#  0x1d504 - 0x1d51d ('z' version is reserved)
-    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf080 - 0xf098
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "𝕒-𝕫":                                       	#  0x1d552 - 0x1d56b            	
-    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "double barre"        # 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf09a - 0xf0b3
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "𝟘-𝟡":                                       	#  0x1d7d8 - 0x1d7e1
-    - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
+    - SPELL: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
  - "-":                                       	#  0xf0c0 - 0xf0c9
-    - spell: "translate('.', '', '0123456789')"
+    - SPELL: "translate('.', '', '0123456789')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
  - "": [T: "double barre nahblah"]            	#  0xf0ca	(en: 'double struck nahblah', DeepL translation)
- - "": [t: "constante d'euler doublement frappée"]	#  0xf0cb	(en: 'double struck euler constant', DeepL translation)
+ - "": [T: "constante d'euler doublement frappée"]	#  0xf0cb	(en: 'double struck euler constant', DeepL translation)
  
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":                                       	#  0x1d49c - 0x1d4b5
-    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "script"                               	# 	(DeepL translation)
+    - SPELL: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "script"                               	# 	(DeepL translation)
  - "-":                                       	#  0xf100 - 0xf119
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "script"                               	# 	(DeepL translation)
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "script"                               	# 	(DeepL translation)
  - "𝒶-𝓏":                                       	#  0x1d4b6 - 0x1d4cf
-    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "script"                               	# 	(DeepL translation)
+    - SPELL: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "script"                               	# 	(DeepL translation)
  - "-":                                       	#  0xf11a - 0xf133
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - T: "script"                               	# 	(DeepL translation)
 
  # bold script chars in math alphabetic block and also MathType private use area
  - "𝓐-𝓩":                                       	#  0x1d4d0 - 0x1d4e9
     - SPELL: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "script"                               	# 	(DeepL translation)
+    - T: "script"                               	# 	(DeepL translation)
 
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "-":                                       	#  0xf140 - 0xf159
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "script"                               	# 	(DeepL translation)
+    - T: "script"                               	# 	(DeepL translation)
 
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝓪-𝔃":                                       	#  0x1d4ea - 0x1d503
     - SPELL: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "script"                               	# 	(DeepL translation)
+    - T: "script"                               	# 	(DeepL translation)
 
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf15a - 0xf173
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "script"                               	# 	(DeepL translation)
+    - T: "script"                               	# 	(DeepL translation)
 
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "-":                                       	#  0xf180 - 0xf199
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" 
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" 
 
  - "":                                         	#  0xf19a
     - test: 
@@ -3269,7 +3269,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
+            then: [T: "majuscule"]              	# 	(en: 'cap', DeepL translation)
           else: [x: "$SpeechOverrides_CapitalLetters"]
  - "":                                         	#  0xf19b
     - test: 
@@ -3287,7 +3287,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
+            then: [T: "majuscule"]              	# 	(en: 'cap', DeepL translation)
           else: [x: "$SpeechOverrides_CapitalLetters"]
  - "":                                         	#  0xf19c
     - test: 
@@ -3305,427 +3305,427 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "majuscule"]              	# 	(en: 'cap', DeepL translation)
+            then: [T: "majuscule"]              	# 	(en: 'cap', DeepL translation)
           else: [x: "$SpeechOverrides_CapitalLetters"]
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                 	#  0xf201 - 0xf209
-    - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
+    - SPELL: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
  - "-":                                       	#  0xf220 - 0xf236
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - T: "double barre"                        	# 	(en: 'double struck', DeepL translation)
 
  - "": [T: "double barre final sigma"]        	#  0xf237	(en: 'double struck final sigma', DeepL translation)
- - "": [t: "double rho frappé"]                	#  0xf250	(en: 'double struck rho', DeepL translation)
- - "": [t: "phi doublement frappé"]            	#  0xf251	(en: 'double struck phi', DeepL translation)
+ - "": [T: "double rho frappé"]                	#  0xf250	(en: 'double struck rho', DeepL translation)
+ - "": [T: "phi doublement frappé"]            	#  0xf251	(en: 'double struck phi', DeepL translation)
  - "𝐀-𝐙":                                       	#  0x1d400 - 0x1d419
     - SPELL: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf260 - 0xf279
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝐚-𝐳":                                       	#  0x1d41a - 0x1d433
     - SPELL: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf27a - 0xf293
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝐴-𝑍":                                       	#  0x1d434 - 0x1d44d
-    - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf294 - 0xf2ad
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝑎-𝑧":                                       	#  0x1d44e - 0x1d467
-    - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf2ae - 0xf2c7
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝑨-𝒁":                                       	#  0x1d468 - 0x1d481
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf2c8 - 0xf2e1
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝒂-𝒛":                                       	#  0x1d482 - 0x1d49b
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf2e2 - 0xf2fb
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝖠-𝖹":                                       	#  0x1d5a0 - 0x1d5b9
-    - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf300 - 0xf319
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖺-𝗓":                                       	#  0x1d5ba - 0x1d5d3
-    - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf31a - 0xf333
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  
  - "𝗔-𝗭":                                       	#  0x1d5d4 - 0x1d5ed
     - SPELL: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf334 - 0xf34d
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝗮-𝘇":                                       	#  0x1d5ee - 0x1d607
     - SPELL: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf34e - 0xf367
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "𝘈-𝘡":                                       	#  0x1d608 - 0x1d621
-    # - t: "italic"
-    - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    # - T: "italic"
+    - SPELL: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
  - "-":                                       	#  0xf368 - 0xf381
-      # - t: "italic"
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+      # - T: "italic"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝘢-𝘻":                                       	#  0x1d622 - 0x1d63b
-      # - t: "italic"
-    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
+      # - T: "italic"
+    - SPELL: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf382 - 0xf39b
-      # - t: "italic"
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+      # - T: "italic"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝘼-𝙕":                                       	#  0x1d63c - 0x1d655
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf39c - 0xf3b5
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝙖-𝙯":                                       	#  0x1d656 - 0x1d66f
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf3b6 - 0xf3cf
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝙰-𝚉":                                       	#  0x1d670 - 0x1d689
-    - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                       	#  0xf3d0 - 0xf3e9
-    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - SPELL: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝚊-𝚣":                                       	#  0x1d68a - 0x1d6a3
-    - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf3ea - 0xf403
-    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - SPELL: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "": [t: "i sans point"]                     	#  0xf404	(en: 'dotless i', DeepL translation)
- - "𝚤": [t: "dotless i"]                        	#  0x1d6a4
- - "𝚥": [t: "dotless j"]                        	#  0x1d6a5
+ - "": [T: "i sans point"]                     	#  0xf404	(en: 'dotless i', DeepL translation)
+ - "𝚤": [T: "dotless i"]                        	#  0x1d6a4
+ - "𝚥": [T: "dotless j"]                        	#  0x1d6a5
 
  - "𝚨-𝛀":                                       	#  0x1d6a8 - 0x1d6c0
     - SPELL: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf408 - 0xf420
     - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝛂-𝛚":                                       	#  0x1d6c2 - 0x1d6da
     - SPELL: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf422 - 0xf43a
     - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
- - "": [t: "gras nahblah"]                     	#  0xf421	(en: 'bold nahblah', DeepL translation)
- - "𝛁": [t: "symbole mathématique gras nabla"]  	#  0x1d6c1	(en: 'bold nahblah', DeepL: 'gras nahblah')
+ - "": [T: "gras nahblah"]                     	#  0xf421	(en: 'bold nahblah', DeepL translation)
+ - "𝛁": [T: "symbole mathématique gras nabla"]  	#  0x1d6c1	(en: 'bold nahblah', DeepL: 'gras nahblah')
 
  - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":                                   	#  0x1D6DB - 0x1D6E1
     - SPELL: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xF43C - 0xF441
     - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝛢-𝛺":                                       	#  0x1d6e2 - 0x1d6fa
-      # - t: "italic"
-    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+      # - T: "italic"
+    - SPELL: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":                                       	#  0xf442 - 0xf45a
-      # - t: "italic"
-    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+      # - T: "italic"
+    - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝛼-𝜔":                                       	#  0x1d6fc - 0x1d714
-      # - t: "italic"
-    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+      # - T: "italic"
+    - SPELL: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":                                       	#  0xf45c - 0xf474
-      # - t: "italic"
-    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+      # - T: "italic"
+    - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "": [t: "italique nahblah"]                 	#  0xf45b	(en: 'italic nahblah', DeepL translation)
- - "𝛻": [t: "symbole mathématique italique nabla"]	#  0x1d6fb	(en: 'italic nahblah', DeepL: 'italique nahblah')
+ - "": [T: "italique nabla"]                 	#  0xf45b	(en: 'italic nahblah', DeepL translation)
+ - "𝛻": [T: "symbole mathématique italique nabla"]	#  0x1d6fb	(en: 'italic nahblah', DeepL: 'italique nahblah')
 
  - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":                                   	#  0x1d715 - 0x1d71b
-      # - t: "italic"
-    - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
+      # - T: "italic"
+    - SPELL: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
 
  - "":                                   	#  0xf475  - 0xf47b
-      # - t: "italic"
-    - spell: "translate('.', '', '∂εθκφρπ')"
+      # - T: "italic"
+    - SPELL: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜜-𝜴":                                       	#  0x1d71c - 0x1d734
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf47c - 0xf494
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝜶-𝝎":                                       	#  0x1d736 - 0x1d74e
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf496 - 0xf4ae
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":                                   	#  0x1d74f - 0x1d755
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf422 - 0xf43a
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
- - "𝜵": [t: "symbole mathématique gras italique nabla"]	#  0x1d735	(en: 'bold italic nahblah', DeepL: 'gras italique nahblah')
- - "": [t: "gras italique nahblah"]            	#  0xf495	(en: 'bold italic nahblah', DeepL translation)
+ - "𝜵": [T: "symbole mathématique gras italique nabla"]	#  0x1d735	(en: 'bold italic nahblah', DeepL: 'gras italique nahblah')
+ - "": [T: "gras italique nabla"]            	#  0xf495	(en: 'bold italic nahblah', DeepL translation)
 
  - "𝝖-𝝮":                                       	#  0x1d756 - 0x1d76e
     - SPELL: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
  - "-":                                       	#  0xf4b6 - 0xf4ce
     - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝝰-𝞈":                                       	#  0x1d770 - 0x1d788
     - SPELL: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf4d0 - 0xf4e8
     - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":                                   	#  0x1d789 - 0x1d78f
     - SPELL: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf4e9 - 0xf4ef
     - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
- - "": [t: "gras nahblah"]                     	#  0xf4cf	(en: 'bold nahblah', DeepL translation)
- - "𝝯": [t: "symbole mathématique gras sans empattement nabla"]	#  0x1d76f	(en: 'bold nahblah', DeepL: 'gras nahblah')
+ - "": [T: "gras nabla"]                     	#  0xf4cf	(en: 'bold nahblah', DeepL translation)
+ - "𝝯": [T: "symbole mathématique gras sans empattement nabla"]	#  0x1d76f	(en: 'bold nahblah', DeepL: 'gras nahblah')
 
  - "𝞐-𝞨":                                       	#  0x1d790 - 0x1d7a8
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf4f0 - 0xf508
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝞪-𝟂":                                       	#  0x1d7aa - 0x1d7c2
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf50a - 0xf522
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":                                   	#  0x1d7c3 - 0x1d7c9
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "":                                   	#  0xf523 - 0xf529
-    # - t: "bold italic"
+    # - T: "bold italic"
     - SPELL: "translate('.', '', '∂εθκφρπ')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
- - "": [t: "gras nahblah"]                     	#  0xf509	(en: 'bold nahblah', DeepL translation)
- - "𝞩": [t: "symbole mathématique sans empattement italique gras nabla"]	#  0x1d7a9	(en: 'bold nahblah', DeepL: 'gras nahblah')
+ - "": [T: "gras nabla"]                     	#  0xf509	(en: 'bold nahblah', DeepL translation)
+ - "𝞩": [T: "symbole mathématique sans empattement italique gras nabla"]	#  0x1d7a9	(en: 'bold nahblah', DeepL: 'gras nahblah')
 
  - "-":                                       	#  0xf52e - 0xf537  (old MathType)
     - SPELL: "translate('.', '', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝟎-𝟗":                                       	#  0x1d7ce - 0x1d7d7
     - SPELL: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf52e - 0xf537  (old MathType)
     - SPELL: "translate('.', '', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
 
  - "𝟬-𝟵":                                       	#  0x1D7EC - 0x1D7F5
     - SPELL: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
     - test:
         if: "not($IgnoreBold)"
-        then: [t: "gras"]                       	# 	(en: 'bold', DeepL translation)
+        then: [T: "gras"]                       	# 	(en: 'bold', DeepL translation)
 
  - "-":                                       	#  0xf556 - 0xf55f  (old MathType)
-    - spell: "translate('.', '', '0123456789')"
+    - SPELL: "translate('.', '', '0123456789')"
 
  - "𝟢-𝟫":                                       	#  0x1d7e2 - 0x1d7eb
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - SPELL: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
  - "𝟶-𝟿":                                       	#  0x1d7f6 - 0x1d7ff
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - SPELL: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
 
  - "": [t: "caractère inconnu"]                	#  0xf700	(en: 'unknown character', DeepL translation)
