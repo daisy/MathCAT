@@ -238,7 +238,7 @@ pub struct PreferenceManager {
 impl fmt::Display for PreferenceManager {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "PreferenceManager:")?;
-        if self.error.is_empty() {
+        if !self.error.is_empty() {
             writeln!(f, "  not initialized!!! Error is {}", self.error)?;
         } else {
             writeln!(f, "  user prefs:\n{}", self.user_prefs)?;
