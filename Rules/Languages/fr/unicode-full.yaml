@@ -48,7 +48,7 @@
  - "ʴ": [T: "modificateur petit r tourné"]	        #  0x2b4	(en: 'modifier small turned r', DeepL translation)
  - "ʵ": [T: "modificateur petit r tourné avec crochet"]	#  0x2b5	(en: 'modifier small turned r with hook', DeepL translation)
  - "ʶ":                                         	#  0x2b6
-    - spell: "translate('R', 'R', 'R')"
+    - SPELL: "translate('R', 'R', 'R')"
     - T: "modificateur petit inversé"           	# 	(en: 'modifier small inverted', DeepL translation)
 
 
@@ -683,7 +683,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
-     - t: "complément"                          	# 	(en: 'complement of')
+     - T: "complément"                          	# 	(en: 'complement of')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
@@ -733,7 +733,7 @@
         - test:
             if: "$Verbosity!='Terse' and not(parent::m:set)"	#  "the set x is an element of ..." sounds bad
             then: [T: "est"]                    	# 	(en: 'is', DeepL translation)
-        - t: "appartient à"                     	# 	(en: 'an element of')
+        - T: "appartient à"                     	# 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -777,22 +777,22 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
-     - t: "racine carrée"                       	# 	(en: 'square root of')
+     - T: "racine carrée"                       	# 	(en: 'square root of')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
-     - t: "racine cubique"                      	# 	(en: 'cube root of')
+     - T: "racine cubique"                      	# 	(en: 'cube root of')
  - "∜":                                         	#  0x221c
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
-     - t: "racine quatrième"                    	# 	(en: 'fourth root of')
+     - T: "racine quatrième"                    	# 	(en: 'fourth root of')
  - "∝":                                         	#  0x221d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "proportionnel à"                     	# 	(en: 'proportional to')
+     - T: "proportionnel à"                     	# 	(en: 'proportional to')
  - "∞": [T: "infini"]                           	#  0x221e	(en: 'infinity')
  - "∟": [T: "angle droit"]                      	#  0x221f	(en: 'right angle')
  - "∠": [T: "angle"]                            	#  0x2220
@@ -819,7 +819,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "rapport"                             	# 	(en: 'to')
+     - T: "rapport"                             	# 	(en: 'to')
  - "∷": [T: "proportion"]                       	#  0x2237	(en: 'as')
  - "∸": [T: "moins pointé"]                     	#  0x2238	(en: 'dot minus')
  - "∹": [T: "excès"]                            	#  0x2239	(en: 'has excess compared to')
@@ -827,19 +827,19 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "proportion géométrique"              	# 	(en: 'geometrically proportional to')
+     - T: "proportion géométrique"              	# 	(en: 'geometrically proportional to')
  - "∻":                                         	#  0x223b
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "homothétique"                        	# 	(en: 'homothetic to')
+     - T: "homothétique"                        	# 	(en: 'homothetic to')
  - "∼": [T: "opérateur tilde"]                  	#  0x223c	(en: 'varies with')
  - "∽": [T: "opérateur tilde renversé"]         	#  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "s couché renversé"                   	# 	(en: 'most positive')
+     - T: "s couché renversé"                   	# 	(en: 'most positive')
  - "∿": [T: "sinusoïde"]                        	#  0x223f	(en: 'sine wave')
  - "≀": [T: "produit couronne"]                 	#  0x2240	(en: 'wreath product')
  - "≁": [T: "non tilde"]                        	#  0x2241	(en: 'not tilde')
@@ -848,75 +848,75 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "asymptotiquement égal à"             	# 	(en: 'asymptotically equal to')
+     - T: "asymptotiquement égal à"             	# 	(en: 'asymptotically equal to')
  - "≄":                                         	#  0x2244
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "non asymptotiquement égal à"         	# 	(en: 'not asymptotically equal to')
+     - T: "non asymptotiquement égal à"         	# 	(en: 'not asymptotically equal to')
  - "≅":                                         	#  0x2245
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "approximativement égal à"            	# 	(en: 'congruent to')
+     - T: "approximativement égal à"            	# 	(en: 'congruent to')
  - "≆":                                         	#  0x2246
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "approximativement mais non strictement égal à"	# 	(en: 'approximately but not actually equal to')
+     - T: "approximativement mais non strictement égal à"	# 	(en: 'approximately but not actually equal to')
  - "≇":                                         	#  0x2247
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni approximativement ni strictement égal à"	# 	(en: 'not congruent to')
+     - T: "ni approximativement ni strictement égal à"	# 	(en: 'not congruent to')
  - "≈":                                         	#  0x2248
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "presque égal à"                      	# 	(en: 'approximately equal to')
+     - T: "presque égal à"                      	# 	(en: 'approximately equal to')
  - "≉":                                         	#  0x2249
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "non presque égal à"                  	# 	(en: 'not approximately equal to')
+     - T: "non presque égal à"                  	# 	(en: 'not approximately equal to')
  - "≊":                                         	#  0x224a
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "presque égal ou égal à"              	# 	(en: 'approximately equal or equal to')
+     - T: "presque égal ou égal à"              	# 	(en: 'approximately equal or equal to')
  - "≋": [T: "triple tilde"]                     	#  0x224b
  - "≌": [T: "entièrement égal à"]               	#  0x224c	(en: 'are all equal to')
  - "≍":                                         	#  0x224d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "équivalent à"                        	# 	(en: 'equivalent to')
+     - T: "équivalent à"                        	# 	(en: 'equivalent to')
  - "≎":                                         	#  0x224e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "géométriquement équivalent à"        	# 	(en: 'geometrically equivalent to')
+     - T: "géométriquement équivalent à"        	# 	(en: 'geometrically equivalent to')
  - "≏":                                         	#  0x224f
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
-     - t: "différence entre"                    	# 	(en: 'difference between')
+     - T: "différence entre"                    	# 	(en: 'difference between')
  - "≐": [T: "tend vers la limite"]              	#  0x2250	(en: 'approaches the limit')
  - "≑":                                         	#  0x2251
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "géométriquement égal à"              	# 	(en: 'geometrically equal to')
+     - T: "géométriquement égal à"              	# 	(en: 'geometrically equal to')
  - "≒":                                         	#  0x2252
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "approximativement égal à ou image de"	# 	(en: 'approximately equal to or the image of')
+     - T: "approximativement égal à ou image de"	# 	(en: 'approximately equal to or the image of')
  - "≓":                                         	#  0x2253
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est l'"]                    	# 	(en: 'is the', DeepL translation)
-     - t: "\uF8FEimage de ou approximativement égal à"	# 	(en: 'image of or approximately equal to')
+     - T: "\uF8FEimage de ou approximativement égal à"	# 	(en: 'image of or approximately equal to')
  - "≔": [T: "deux-points égal"]                 	#  0x2254	(en: 'colon equals', SRE: 'deux points égal')
  - "≕": [T: "égal deux points"]                 	#  0x2255	(en: 'equals colon', MathPlayer: 'égal deux-points', DeepL: 'égal colon')
  - "≖": [T: "rond dans égal"]                   	#  0x2256	(en: 'ring in equal to')
@@ -924,14 +924,14 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal avec rond en chef"              	# 	(en: 'approximately equal to')
+     - T: "égal avec rond en chef"              	# 	(en: 'approximately equal to')
  - "≘": [T: "correspond à"]                     	#  0x2258	(en: 'corresponds to')
  - "≙": [T: "estime"]                           	#  0x2259	(en: 'estimates')
  - "≚":                                         	#  0x225a
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "équiangulaire à"                     	# 	(en: 'equiangular to')
+     - T: "équiangulaire à"                     	# 	(en: 'equiangular to')
  - "≛": [T: "égal avec étoile en chef"]         	#  0x225b	(en: 'star equals')
  - "≜": [T: "égal delta"]                       	#  0x225c	(en: 'delta equals')
  - "≝": [T: "égal par définition à"]            	#  0x225d	(en: 'is defined to be')
@@ -939,120 +939,120 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "mesuré par"                          	# 	(en: 'measured by')
+     - T: "mesuré par"                          	# 	(en: 'measured by')
  - "≟": [T: "égalité en doute"]                 	#  0x225f	(en: 'has an unknown relationship with')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas égal à"                          	# 	(en: 'not equal to')
+     - T: "pas égal à"                          	# 	(en: 'not equal to')
  - "≡":                                         	#  0x2261
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "identique à"                         	# 	(en: 'identical to')
+     - T: "identique à"                         	# 	(en: 'identical to')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "non identique à"                     	# 	(en: 'not identical to')
+     - T: "non identique à"                     	# 	(en: 'not identical to')
  - "≣":                                         	#  0x2263
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "strictement équivalent à"            	# 	(en: 'strictly equivalent to')
+     - T: "strictement équivalent à"            	# 	(en: 'strictly equivalent to')
  - "≦": [T: "inférieur à sur égal à"] 	#  0x2266	(en: 'less than over equal to', MathPlayer: 'plus petit que par-dessus égal à', DeepL: 'inférieur à égal à')
  - "≧": [T: "supérieur à sur égal à"] 	#  0x2267	(en: 'greater than over equal to', MathPlayer: 'plus grand que par-dessus égal à', DeepL: 'plus grand que sur égal à')
  - "≨":                                         	#  0x2268
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "inférieur mais pas égal à"          	# 	(en: 'less than but not equal to')
+     - T: "inférieur mais pas égal à"          	# 	(en: 'less than but not equal to')
  - "≩":                                         	#  0x2269
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "supérieur mais pas égal à"          	# 	(en: 'greater than but not equal to')
+     - T: "supérieur mais pas égal à"          	# 	(en: 'greater than but not equal to')
  - "≪":                                         	#  0x226a
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "très inférieur à"             	# 	(en: 'much less than')
+     - T: "très inférieur à"             	# 	(en: 'much less than')
  - "≫":                                         	#  0x226b
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "très supérieur à"             	# 	(en: 'much greater than')
+     - T: "très supérieur à"             	# 	(en: 'much greater than')
  - "≬":                                         	#  0x226c
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "entre"                               	# 	(en: 'between')
+     - T: "entre"                               	# 	(en: 'between')
  - "≭":                                         	#  0x226d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "non équivalent à"                    	# 	(en: 'not equivalent to')
+     - T: "non équivalent à"                    	# 	(en: 'not equivalent to')
  - "≮":                                         	#  0x226e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas inférieur à"                  	# 	(en: 'not less than')
+     - T: "pas inférieur à"                  	# 	(en: 'not less than')
  - "≯":                                         	#  0x226f
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas supérieur à"                  	# 	(en: 'not greater than')
+     - T: "pas supérieur à"                  	# 	(en: 'not greater than')
  - "≰":                                         	#  0x2270
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni inférieur ni égal à"             	# 	(en: 'neither less than nor equal to')
+     - T: "ni inférieur ni égal à"             	# 	(en: 'neither less than nor equal to')
  - "≱":                                         	#  0x2271
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni supérieur ni égal à"             	# 	(en: 'neither greater than nor equal to')
+     - T: "ni supérieur ni égal à"             	# 	(en: 'neither greater than nor equal to')
  - "≲":                                         	#  0x2272
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "inférieur ou équivalent à"          	# 	(en: 'less than or equivalent to')
+     - T: "inférieur ou équivalent à"          	# 	(en: 'less than or equivalent to')
  - "≳":                                         	#  0x2273
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "supérieur ou équivalent à"          	# 	(en: 'greater than or equivalent to')
+     - T: "supérieur ou équivalent à"          	# 	(en: 'greater than or equivalent to')
  - "≴":                                         	#  0x2274
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni inférieur ni équivalent à"       	# 	(en: 'neither less than nor equivalent to')
+     - T: "ni inférieur ni équivalent à"       	# 	(en: 'neither less than nor equivalent to')
  - "≵":                                         	#  0x2275
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni supérieur ni équivalent à"       	# 	(en: 'neither greater than nor equivalent to')
+     - T: "ni supérieur ni équivalent à"       	# 	(en: 'neither greater than nor equivalent to')
  - "≶":                                         	#  0x2276
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "inférieur ou supérieur à"        	# 	(en: 'less than or greater than')
+     - T: "inférieur ou supérieur à"        	# 	(en: 'less than or greater than')
  - "≷":                                         	#  0x2277
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "supérieur ou inférieur à"        	# 	(en: 'greater than or less than')
+     - T: "supérieur ou inférieur à"        	# 	(en: 'greater than or less than')
  - "≸":                                         	#  0x2278
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni inférieur ni supérieur à"     	# 	(en: 'neither less than nor greater than')
+     - T: "ni inférieur ni supérieur à"     	# 	(en: 'neither less than nor greater than')
  - "≹":                                         	#  0x2279
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni supérieur ni inférieur à"     	# 	(en: 'neither greater than nor less than')
+     - T: "ni supérieur ni inférieur à"     	# 	(en: 'neither greater than nor less than')
  - "≺": [T: "précède"]                          	#  0x227a	(en: 'precedes')
  - "≻": [T: "suit"]                             	#  0x227b	(en: 'succeeds')
  - "≼": [T: "précède ou est égal à"]            	#  0x227c	(en: 'precedes or is equal to')
@@ -1065,42 +1065,42 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sous-ensemble de"                    	# 	(en: 'subset of', SRE: 'sous ensemble de')
+     - T: "sous-ensemble de"                    	# 	(en: 'subset of', SRE: 'sous ensemble de')
  - "⊃":                                         	#  0x2283
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sur-ensemble de"                     	# 	(en: 'superset of', SRE: 'sur ensemble de')
+     - T: "sur-ensemble de"                     	# 	(en: 'superset of', SRE: 'sur ensemble de')
  - "⊄":                                         	#  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas un sous-ensemble de"             	# 	(en: 'not a subset of', SRE: 'pas un sous ensemble de')
+     - T: "pas un sous-ensemble de"             	# 	(en: 'not a subset of', SRE: 'pas un sous ensemble de')
  - "⊅":                                         	#  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas un sur-ensemble de"              	# 	(en: 'not a superset of', SRE: 'pas un sur ensemble de')
+     - T: "pas un sur-ensemble de"              	# 	(en: 'not a superset of', SRE: 'pas un sur ensemble de')
  - "⊆":                                         	#  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sous ensemble de ou égal à"             	# 	(en: 'subset of or equal to', MathPlayer: 'sous-ensemble ou égal à', DeepL: 'sous-ensemble de ou égal à')
+     - T: "sous ensemble de ou égal à"             	# 	(en: 'subset of or equal to', MathPlayer: 'sous-ensemble ou égal à', DeepL: 'sous-ensemble de ou égal à')
  - "⊇":                                         	#  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est un"]                    	# 	(en: 'is a', DeepL translation)
-     - t: "sur ensemble de ou égal à"              	# 	(en: 'superset of or equal to', MathPlayer: 'sur-ensemble ou égal à', DeepL: 'superposé ou égal à')
+     - T: "sur ensemble de ou égal à"              	# 	(en: 'superset of or equal to', MathPlayer: 'sur-ensemble ou égal à', DeepL: 'superposé ou égal à')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni un sous ensemble de ni égal à"       	# 	(en: 'neither a subset of nor equal to', MathPlayer: 'ni un sous-ensemble ni égal à', DeepL: 'ni un sous-ensemble de ni égal à')
+     - T: "ni un sous ensemble de ni égal à"       	# 	(en: 'neither a subset of nor equal to', MathPlayer: 'ni un sous-ensemble ni égal à', DeepL: 'ni un sous-ensemble de ni égal à')
  - "⊉":                                         	#  0x2289
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni un sur ensemble de ni égal à"        	# 	(en: 'neither a superset of nor equal to', MathPlayer: 'ni un sur-ensemble ni égal à', DeepL: 'ni un surensemble de, ni égal à')
+     - T: "ni un sur ensemble de ni égal à"        	# 	(en: 'neither a superset of nor equal to', MathPlayer: 'ni un sur-ensemble ni égal à', DeepL: 'ni un surensemble de, ni égal à')
  - "⊊": [T: "sous ensemble de mais pas égal à"]    	#  0x228a	(en: 'subset of with not equal to', MathPlayer: 'sous-ensemble mais pas égal à', DeepL: 'sous-ensemble de avec non égal à')
  - "⊋": [T: "sur ensemble de mais pas égal à"]     	#  0x228b	(en: 'superset of with not equal to', MathPlayer: 'sur-ensemble mais pas égal à', DeepL: 'superposition de avec non égal à')
  - "⊌": [T: "multiensemble"]                    	#  0x228c	(en: 'multiset')
@@ -1132,14 +1132,14 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "taquet vers le haut"                 	# 	(en: 'bottom')
+     - T: "taquet vers le haut"                 	# 	(en: 'bottom')
  - "⊦": [T: "assertion"]                        	#  0x22a6	(en: 'reduces to')
  - "⊧": [T: "modélise"]                         	#  0x22a7	(en: 'models')
  - "⊨":                                         	#  0x22a8
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "vrai"                                	# 	(en: 'true')
+     - T: "vrai"                                	# 	(en: 'true')
  - "⊩": [T: "oblige"]                           	#  0x22a9	(en: 'forces')
  - "⊪": [T: "barre verticale triple avec tourniquet à droite"]	#  0x22aa	(en: 'triple vertical bar right turnstile')
  - "⊫": [T: "barre verticale double avec tourniquet à droite double"]	#  0x22ab	(en: 'double vertical bar double right turnstile')
@@ -1148,7 +1148,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas vrai"                            	# 	(en: 'not true')
+     - T: "pas vrai"                            	# 	(en: 'not true')
  - "⊮": [T: "n'oblige pas"]                     	#  0x22ae	(en: 'does not force')
  - "⊯": [T: "non barre verticale double avec tourniquet à droite double"]	#  0x22af	(en: 'negated double vertical bar double right turnstile', MathPlayer: 'non-barre verticale double avec tourniquet à droite double', DeepL: 'négation double barre verticale double tourniquet droit')
  - "⊰": [T: "précède sous relation"]            	#  0x22b0	(en: 'precedes under relation')
@@ -1157,24 +1157,24 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "sous groupe normal de"               	# 	(en: 'a normal subgroup of', MathPlayer: 'sous-groupe normal de', DeepL: 'un sous-groupe normal de')
+     - T: "sous groupe normal de"               	# 	(en: 'a normal subgroup of', MathPlayer: 'sous-groupe normal de', DeepL: 'un sous-groupe normal de')
  - "⊳": [T: "contient comme sous groupe normal"]	#  0x22b3	(en: 'contains as a normal subgroup', MathPlayer: 'contient comme sous-groupe normal', DeepL: 'contient un sous-groupe normal')
  - "⊴":                                         	#  0x22b4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "sous groupe normal de ou égal à"        	# 	(en: 'a normal subgroup of or equal to', MathPlayer: 'sous-groupe normal ou égal à', DeepL: 'un sous-groupe normal de ou égal à')
+     - T: "sous groupe normal de ou égal à"        	# 	(en: 'a normal subgroup of or equal to', MathPlayer: 'sous-groupe normal ou égal à', DeepL: 'un sous-groupe normal de ou égal à')
  - "⊵": [T: "contient comme sous-groupe normal de ou égal à"]	#  0x22b5	(en: 'contains as a normal subgroup or equal to', SRE: 'contient comme sous groupe normal ou égal à')
  - "⊶":                                         	#  0x22b6
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "original de"                         	# 	(en: 'the original of')
+     - T: "original de"                         	# 	(en: 'the original of')
  - "⊷":                                         	#  0x22b7
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "image de"                            	# 	(en: 'an image of')
+     - T: "image de"                            	# 	(en: 'an image of')
  - "⊸": [T: "multijection"]                     	#  0x22b8	(en: 'multimap')
  - "⊹": [T: "matrice hermitienne conjuguée"]    	#  0x22b9	(en: 'hermitian conjugate matrix')
  - "⊺": [T: "intercale"]                        	#  0x22ba	(en: 'intercalate')
@@ -1201,22 +1201,22 @@
     - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "est"]                        	# 	(en: 'is', DeepL translation)
-    - t: "produit semi direct à gauche de facteur normal"	# 	(en: 'the left normal factor semidirect product of', MathPlayer: 'produit semi-direct à gauche de facteur normal', DeepL: 'le facteur normal gauche produit semi-direct de')
+    - T: "produit semi direct à gauche de facteur normal"	# 	(en: 'the left normal factor semidirect product of', MathPlayer: 'produit semi-direct à gauche de facteur normal', DeepL: 'le facteur normal gauche produit semi-direct de')
  - "⋊":                                         	#  0x22ca
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "produit semi direct à droite de facteur normal"	# 	(en: 'the right normal factor semidirect product of', MathPlayer: 'produit semi-direct à droite de facteur normal', DeepL: 'le facteur normal droit produit semi-direct de')
+     - T: "produit semi direct à droite de facteur normal"	# 	(en: 'the right normal factor semidirect product of', MathPlayer: 'produit semi-direct à droite de facteur normal', DeepL: 'le facteur normal droit produit semi-direct de')
  - "⋋":                                         	#  0x22cb
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "produit semi direct à gauche"        	# 	(en: 'the left semidirect product of', MathPlayer: 'produit semi-direct à gauche', DeepL: 'le produit semi-direct gauche de')
+     - T: "produit semi direct à gauche"        	# 	(en: 'the left semidirect product of', MathPlayer: 'produit semi-direct à gauche', DeepL: 'le produit semi-direct gauche de')
  - "⋌":                                         	#  0x22cc
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "produit semi direct à droite"        	# 	(en: 'the right semidirect product of', MathPlayer: 'produit semi-direct à droite', DeepL: 'le produit semi-direct droit de')
+     - T: "produit semi direct à droite"        	# 	(en: 'the right semidirect product of', MathPlayer: 'produit semi-direct à droite', DeepL: 'le produit semi-direct droit de')
  - "⋍": [T: "égal tilde renversé"]             	#  0x22cd	(en: 'reversed tilde equals')
  - "⋎": [T: "ou logique recourbé"]              	#  0x22ce	(en: 'curly logical or')
  - "⋏": [T: "et logique recourbé"]              	#  0x22cf	(en: 'curly logical and')
@@ -1224,74 +1224,74 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "sous ensemble double"                	# 	(en: 'a double subset of', MathPlayer: 'sous-ensemble double', DeepL: 'un double sous-ensemble de')
+     - T: "sous ensemble double"                	# 	(en: 'a double subset of', MathPlayer: 'sous-ensemble double', DeepL: 'un double sous-ensemble de')
  - "⋑":                                         	#  0x22d1
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "sur ensemble double"                 	# 	(en: 'a double superset of', MathPlayer: 'sur-ensemble double', DeepL: 'un double superset de')
+     - T: "sur ensemble double"                 	# 	(en: 'a double superset of', MathPlayer: 'sur-ensemble double', DeepL: 'un double superset de')
  - "⋒":                                         	#  0x22d2
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
-     - t: "intersection double"                 	# 	(en: 'double intersection of')
+     - T: "intersection double"                 	# 	(en: 'double intersection of')
  - "⋓":                                         	#  0x22d3
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "le"]                        	# 	(en: 'the', DeepL translation)
-     - t: "union double"                        	# 	(en: 'double union of')
+     - T: "union double"                        	# 	(en: 'double union of')
  - "⋔":                                         	#  0x22d4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', DeepL translation)
-     - t: "fourche"                             	# 	(en: 'proper intersection of')
+     - T: "fourche"                             	# 	(en: 'proper intersection of')
  - "⋕":                                         	#  0x22d5
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal et parallèle à"                 	# 	(en: 'equal to and parallel to')
+     - T: "égal et parallèle à"                 	# 	(en: 'equal to and parallel to')
  - "⋖": [T: "inférieur à avec point"]            	#  0x22d6	(en: 'less than with dot')
  - "⋗": [T: "supérieur à avec point"]            	#  0x22d7	(en: 'greater than with dot')
  - "⋘":                                         	#  0x22d8
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "considérablement inférieur à"     	# 	(en: 'very much less than')
+     - T: "considérablement inférieur à"     	# 	(en: 'very much less than')
  - "⋙":                                         	#  0x22d9
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "considérablement supérieur à"     	# 	(en: 'very much greater than')
+     - T: "considérablement supérieur à"     	# 	(en: 'very much greater than')
  - "⋚":                                         	#  0x22da
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "inférieur ou égal ou supérieur à"	# 	(en: 'less than equal to or greater than')
+     - T: "inférieur ou égal ou supérieur à"	# 	(en: 'less than equal to or greater than')
  - "⋛":                                         	#  0x22db
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "supérieur ou égal ou inférieur à"	# 	(en: 'greater than equal to or less than')
+     - T: "supérieur ou égal ou inférieur à"	# 	(en: 'greater than equal to or less than')
  - "⋜":                                         	#  0x22dc
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal ou inférieur à"              	# 	(en: 'equal to or less than')
+     - T: "égal ou inférieur à"              	# 	(en: 'equal to or less than')
  - "⋝":                                         	#  0x22dd
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal ou supérieur à"   	# 	(en: 'equal to or greater than')
+     - T: "égal ou supérieur à"   	# 	(en: 'equal to or greater than')
  - "⋞":                                         	#  0x22de
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal ou précède"                     	# 	(en: 'equal to or precedes')
+     - T: "égal ou précède"                     	# 	(en: 'equal to or precedes')
  - "⋟":                                         	#  0x22df
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "égal ou suit"                        	# 	(en: 'equal to or succeeds')
+     - T: "égal ou suit"                        	# 	(en: 'equal to or succeeds')
  - "⋠": [T: "ni précédant ni égal à"]           	#  0x22e0	(en: 'does not precede nor is equal to')
  - "⋡": [T: "ni suivant ni égal à"]             	#  0x22e1	(en: 'does not succeed nor is equal to')
  - "⋢": [T: "ni image carrée de ni égal à"]        	#  0x22e2	(en: 'not square image of or equal to')
@@ -1302,25 +1302,25 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "inférieur mais non équivalent à"    	# 	(en: 'less than but not equivalent to')
+     - T: "inférieur mais non équivalent à"    	# 	(en: 'less than but not equivalent to')
  - "⋧":                                         	#  0x22e7
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "supérieur mais non équivalent à"    	# 	(en: 'greater than but not equivalent to')
+     - T: "supérieur mais non équivalent à"    	# 	(en: 'greater than but not equivalent to')
  - "⋨": [T: "précédant mais non équivalent à"]  	#  0x22e8	(en: 'precedes but is not equivalent to')
  - "⋩": [T: "suivant mais non équivalent à"]    	#  0x22e9	(en: 'succeeds but is not equivalent to')
  - "⋪":                                         	#  0x22ea
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "pas un sous groupe normal de"        	# 	(en: 'not a normal subgroup of', MathPlayer: 'pas un sous-groupe normal de', DeepL: 'n'est pas un sous-groupe normal de')
+     - T: "pas un sous groupe normal de"        	# 	(en: 'not a normal subgroup of', MathPlayer: 'pas un sous-groupe normal de', DeepL: 'n'est pas un sous-groupe normal de')
  - "⋫": [T: "ne contient pas comme sous groupe normal"]	#  0x22eb	(en: 'does not contain as a normal subgroup', MathPlayer: 'ne contient pas comme sous-groupe normal', DeepL: 'ne contient pas de sous-groupe normal')
  - "⋬":                                         	#  0x22ec
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "n'est"]                       	# 	(en: 'is', DeepL translation)
-     - t: "ni sous groupe normal de ni égal à"     	# 	(en: 'not a normal subgroup of nor is equal to', MathPlayer: 'ni sous-groupe normal ni égal à', DeepL: 'n'est pas un sous-groupe normal de ni est égal à')
+     - T: "ni sous groupe normal de ni égal à"     	# 	(en: 'not a normal subgroup of nor is equal to', MathPlayer: 'ni sous-groupe normal ni égal à', DeepL: 'n'est pas un sous-groupe normal de ni est égal à')
  - "⋭": [T: "ni égal ni contenant comme sous groupe normal"]	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to', MathPlayer: 'ni égal ni contenant comme sous- groupe normal', DeepL: 'ne contient pas de sous-groupe normal et n'est pas égal à')
  - "⋮": [T: "trois points suspendus"]           	#  0x22ee	(en: 'vertical ellipsis')
  - "⋯": [T: "trois points médians"]             	#  0x22ef	(en: 'dot dot dot')
@@ -1414,7 +1414,7 @@
  - "⏥": [T: "planéité"]                         	#  0x23e5	(en: 'flatness', DeepL translation)
  - "⏦":                                         	#  0x23e6
      - SPELL: "ac"
-     - t: "courant"                             	# 	(en: 'current', DeepL translation)
+     - T: "courant"                             	# 	(en: 'current', DeepL translation)
  - "⏧": [T: "intersection électrique"]          	#  0x23e7	(en: 'electrical intersection', DeepL translation)
  - "①-⑨":                                       	#  0x2460 - 0x2469
     - SPELL: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
@@ -1445,7 +1445,7 @@
  - "⒇": [T: "vingt entre parenthèses"]          	#  0x2487	(en: 'parenthesized twenty', DeepL translation)
  - "⒈-⒐":                                       	#  0x2488 - 0x2491
     - SPELL: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
-    - t: "avec point"                           	# 	(en: 'with period', DeepL translation)
+    - T: "avec point"                           	# 	(en: 'with period', DeepL translation)
  - "⒑": [T: "dix avec point"]                   	#  0x2491	(en: 'ten with period', DeepL translation)
  - "⒒": [T: "onze avec point"]                  	#  0x2492	(en: 'eleven with period', DeepL translation)
  - "⒓": [T: "douze avec point"]                 	#  0x2493	(en: 'twelve with period', DeepL translation)
