@@ -322,6 +322,34 @@ def test_get_yaml_files_includes_region(tmp_path) -> None:
     assert set(files) == {Path("base.yaml"), Path("SharedRules/shared.yaml"), Path("unicode.yaml")}
 
 
+def test_get_yaml_files_ignores_definitions(tmp_path) -> None:
+    """Definitions files are excluded from automatic audit discovery."""
+    lang_dir = tmp_path / "lang"
+    shared_dir = lang_dir / "SharedRules"
+    shared_dir.mkdir(parents=True)
+    (lang_dir / "rules.yaml").write_text("---", encoding="utf-8")
+    (lang_dir / "definitions.yaml").write_text("---", encoding="utf-8")
+    (shared_dir / "definitions.yaml").write_text("---", encoding="utf-8")
+
+    assert get_yaml_files(lang_dir) == [Path("rules.yaml")]
+
+
+def test_audit_language_ignores_explicit_definitions_file(tmp_path, fixed_console_width) -> None:
+    """Passing definitions.yaml through --file produces an empty audit."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", specific_file="definitions.yaml", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 0
+    assert "Files to check: 0" in output
+    assert "Files checked" in output
+    assert "definitions.yaml" not in output
+
+
 def test_list_languages_includes_region_codes(tmp_path) -> None:
     """
     Ensures list_languages reports region variants.

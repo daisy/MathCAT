@@ -50,6 +50,10 @@ The tool automatically adjusts its matching logic based on the file type:
     * Matches rules based on character/range keys.
     * *Examples:* `unicode.yaml`, `unicode-full.yaml` (keys like `a-z`, `!`, `0-9`).
 
+`definitions.yaml` is intentionally excluded from audits *for now*. It does not have the same semantics
+ as normal rules, so the tool ignores it during automatic file discovery and when it is passed to
+`--file`.
+
 ---
 
 ### ⚙️ Usage & Commands
