@@ -15,6 +15,7 @@ mod Languages {
     mod nb;
     mod de;
     mod fr;
+    mod pt;
     mod vi {
         mod vi;
     }
