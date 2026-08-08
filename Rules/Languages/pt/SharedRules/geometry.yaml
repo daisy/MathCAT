@@ -1,0 +1,60 @@
+
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "o segmento de reta de"
+      - x: "*[1]"
+      - T: "a"
+      - x: "*[2]"
+      else:
+      - T: "segmento de reta"
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "a semi reta de"
+      - x: "*[1]"
+      - T: "a"
+      - x: "*[2]"
+      else:
+      - T: "semi reta"
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-arc
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "o"]
+  - T: "arco"
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "a medida do ângulo"
+      else:
+      - T: "medida do ângulo"
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
