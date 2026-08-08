@@ -174,9 +174,11 @@
   replace:
   - t: "<⠆" # signal start of fraction (needed for state machine to replace spaces)
   - test:
-      # FIX: it seems like this should be more general, but examples break when it is more general
-      if: "not(IsNode(*[1], 'leaf')) and preceding-sibling::*[1][self::m:mo and (.='-' or .='+')]"
-      then: [t: "+"]   # "+" says to keep the indicator -- need to make sure the "numerator" appears to be in the fraction
+      # Keep fraction start (p26 rule 4b): numerator begins with minus, or a unary minus precedes the fraction.
+      # Do NOT keep merely because a binary +/- precedes the fraction (p28_3 omits start after binary minus).
+      if: "(*[1][self::m:mo and .='-'] or *[1][self::m:mrow][*[1][self::m:mo and .='-']]) or
+           (preceding-sibling::*[1][self::m:mo and .='-'] and not(preceding-sibling::*[2]))"
+      then: [t: "+"]   # "+" says to keep the indicator
   - x: "*[1]"
   - t: "W/"
   - test:
@@ -477,6 +479,15 @@
   - T: "⠆⠆"
   
 -
+  # empty-base msup of primes (from MathML like <msup><mrow/><mo>″</mo></msup>);
+  # skip the empty base so we don't emit W/⠈ before the primes
+  name: prime-exception
+  tag: msup
+  match: "*[2][translate(., \"′″‴⁗\",'')=''] and translate(*[1], '\u00A0','')=''"
+  replace:
+  - x: "*[2]"
+
+-
   name: diacriticals
   tag: [mover, msup]
   # ions don't use the shortened form
@@ -515,23 +526,34 @@
       - x: "*[2]"
 
 -
-  name: prime-exception    # 4.3.1
+  # 4.3.1 / p35: primes with subscript — either primes first, or reverse order
+  # (primes after the subscript) which requires keeping the simple close ⠱.
+  # NBSP may remain in *[3]'s string-value from canonicalize of an empty-base nested msup.
+  name: prime-exception
   tag: msubsup
-  match: "*[3][translate(., \"′″‴⁗\",'')='']"
+  match: "translate(*[3], \"′″‴⁗\u00A0\",'')=''"
   replace:
   - x: "*[1]"
   - test:
-      if: "*[2][self::m:mn and translate(., '0123456789', '') = '']"
-      then:
-      - t: "<⠡"
-      - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"
-      - t: ">⠱+"
-      - x: "*[3]"
-      else:
-      - x: "*[3]"
-      - t: "<⠡"
-      - x: "*[2]"
-      - t: ">⠱"
+      - if: "*[2][self::m:mn and translate(., '0123456789', '') = '']"
+        then:
+        - t: "<⠡"
+        - x: "BrailleChars(translate(*[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Polish')"
+        - t: ">⠱+"
+        - x: "*[3]"
+      # reverse order for compound subscripts (e.g. x_{n+1}″)
+      - else_if: "*[2][self::m:mrow or not(IsNode(., 'leaf'))]"
+        then:
+        - t: "<⠡"
+        - x: "*[2]"
+        - t: ">⠱+"
+        - x: "*[3]"
+        else:
+        # primes first (e.g. a″_n)
+        - x: "*[3]"
+        - t: "<⠡"
+        - x: "*[2]"
+        - t: ">⠱"
 
 -
   name: log-with-base
@@ -615,10 +637,10 @@
 
 -
   # scripts
-  # for some reason, the spec reverses the order of sub and sup for cap letters that are not chemistry
+  # for some reason, the spec reverses the order of sub and sup for cap letters C (combinatorics) and V (???) that are not chemistry
   name: cap-letter-scripts
   tag: msubsup
-  match: "not(@data-chem-element) and BaseNode(*[1])[translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '']"
+  match: "not(@data-chem-element) and BaseNode(*[1])[.='C' or .='V']"
   # the examples all use superscripts, not exponents for cap letters these (for example p39 and p55)
   # also, for some reason, the cap letters use superscripts first
   replace:
@@ -652,8 +674,13 @@
   # the examples all use superscripts, not exponents for cap letters these (for example p39 and p55)
   # also, for some reason, the cap letters use superscripts first
   variables:
-  - IsCapLetter: "BaseNode(*[1])[translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '']"
-  - BaseNeedsSuperscript: "self::m:msubsup and (BaseNode(*[1])[self::m:mo or .='lim' or $IsCapLetter] or parent::m:mrow[parent::m:msup])"
+  # ⠌ (superscript) vs ⠬ (exponent):
+  # - mo/'lim' bases always use superscript
+  # - msubsup nested under an outer msup uses ⠌ for its superscript half (p34_1, p34_4)
+  # - plain nested msup (e.g. a^{2^{2k-1}-1}) must stay ⠬ (p33_3) -- do NOT apply the
+  #   parent::m:mrow[parent::m:msup] clause to self::m:msup
+  - BaseNeedsSuperscript: "(self::m:msup and BaseNode(*[1])[self::m:mo or .='lim']) or
+          (self::m:msubsup and (BaseNode(*[1])[self::m:mo or .='lim'] or parent::m:mrow[parent::m:msup]))"
   replace:
   - x: "*[1]"
   - test:

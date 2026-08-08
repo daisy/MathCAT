@@ -1032,7 +1032,22 @@ fn fractions_p30_2() -> Result<()> {
 
 #[test]
 fn fractions_p30_3() -> Result<()> {
-    let expr = r#"<math><mfrac><mrow><mi>x</mi><mo>+</mo><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac></mstyle></mrow><mrow><mi>x</mi><mo>-</mo><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mstyle></mrow></mfrac><mo>=</mo><mfrac><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mo>(</mo><mi>y</mi><mo>-</mo><mn>1</mn><mo>)</mo><mo>+</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac></mstyle><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mo>(</mo><mi>y</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>-</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mstyle></mfrac><mo>=</mo><mfrac><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mi>y</mi><mo>-</mo><mi>x</mi><mo>+</mo><mi>x</mi><mo>-</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac></mstyle><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><mi>y</mi><mo>+</mo><mi>x</mi><mo>-</mo><mi>x</mi><mo>-</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mstyle></mfrac><mo>=</mo><mfrac><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac></math>"#;
+    let expr = r#"<math><mfrac><mrow><mi>x</mi><mo>+</mo><mstyle displaystyle="true">
+       <mfrac><mrow><mi>x</mi><mo>-</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac>
+       </mstyle></mrow><mrow><mi>x</mi><mo>-</mo><mstyle displaystyle="true">
+       <mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac>
+       </mstyle></mrow></mfrac><mo>=</mo>
+       <mfrac><mstyle displaystyle="true">
+         <mfrac><mrow><mi>x</mi><mo>(</mo><mi>y</mi><mo>-</mo><mn>1</mn><mo>)</mo><mo>+</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac>
+         </mstyle><mstyle displaystyle="true">
+       <mfrac><mrow><mi>x</mi><mo>(</mo><mi>y</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>-</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac>
+       </mstyle></mfrac><mo>=</mo><mfrac><mstyle displaystyle="true">
+       <mfrac><mrow><mi>x</mi><mi>y</mi><mo>-</mo><mi>x</mi><mo>+</mo><mi>x</mi><mo>-</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac>
+       </mstyle><mstyle displaystyle="true">
+       <mfrac><mrow><mi>x</mi><mi>y</mi><mo>+</mo><mi>x</mi><mo>-</mo><mi>x</mi><mo>-</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></mfrac>
+       </mstyle></mfrac><mo>=</mo>
+       <mfrac><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow><mrow><mi>y</mi><mo>-</mo><mn>1</mn></mrow></mfrac>
+       </math>"#;
     test_braille("Polish", expr, "⠆⠠⠭⠀⠖⠆⠭⠈⠤⠼⠁⠳⠽⠈⠤⠼⠁⠀⠳⠀⠭⠀⠤⠆⠭⠈⠖⠼⠁⠳⠽⠈⠖⠼⠁⠰⠀⠶⠆⠆⠭⠣⠽⠀⠤⠼⠁⠜⠈⠖⠣⠭⠀⠤⠼⠁⠜⠳⠽⠈⠤⠼⠁⠀⠳⠀⠆⠭⠣⠽⠀⠖⠼⠁⠜⠈⠤⠣⠭⠀⠖⠼⠁⠜⠳⠽⠈⠖⠼⠁⠰⠠⠶⠆⠆⠭⠽⠈⠤⠭⠈⠖⠭⠈⠤⠼⠁⠳⠽⠈⠤⠼⠁⠀⠳⠀⠆⠭⠽⠈⠖⠭⠈⠤⠭⠈⠤⠼⠁⠳⠽⠈⠖⠼⠁⠰⠀⠶⠽⠈⠖⠼⠁⠳⠽⠈⠤⠼⠁")?;
     return Ok(());
 }
@@ -1313,7 +1328,7 @@ fn scripts_p33_4() -> Result<()> {
 #[test]
 fn scripts_p33_5() -> Result<()> {
     let expr = r#"<math><msup><mi>x</mi><msub><mi>n</mi><mn>1</mn></msub></msup><mo>,</mo><mo>&#xA0;</mo><msup><mi>x</mi><msub><mi>n</mi><mn>2</mn></msub></msup><mo>,</mo><mo>&#xA0;</mo><msup><mi>x</mi><msub><mi>n</mi><mn>4</mn></msub></msup><mo>,</mo><mo>&#xA0;</mo><mo>.</mo><mo>.</mo><mo>.</mo><mo>,</mo><mo>&#xA0;</mo><msup><mi>x</mi><msub><mi>n</mi><msup><mn>2</mn><mi>k</mi></msup></msub></msup></math>"#;
-    test_braille("Polish", expr, "⠠⠭⠐⠬⠝⠡⠂⠠⠂⠀⠭⠐⠝⠡⠆⠠⠂⠀⠭⠐⠬⠝⠡⠲⠠⠂⠠⠄⠄⠄⠂⠀⠠⠭⠨⠬⠝⠐⠡⠼⠃⠬⠅⠨⠱")?;
+    test_braille("Polish", expr, "⠠⠭⠐⠬⠝⠡⠂⠠⠂⠀⠭⠐⠬⠝⠡⠆⠠⠂⠀⠭⠐⠬⠝⠡⠲⠠⠂⠠⠄⠄⠄⠂⠀⠠⠭⠨⠬⠝⠐⠡⠼⠃⠬⠅⠨⠱")?;
     return Ok(());
 }
 
@@ -1327,20 +1342,23 @@ fn scripts_p34_1() -> Result<()> {
 #[test]
 fn scripts_p34_2() -> Result<()> {
     let expr = r#"<math><msup><mrow><mo>(</mo><msub><mi>x</mi><msup><mi>n</mi><mi>i</mi></msup></msub><mo>)</mo></mrow><mi>r</mi></msup></math>"#;
-    test_braille("Polish", expr, "⠄⠭⠐⠡⠝⠌⠊⠐⠱⠬⠗")?;
+    test_braille("Polish", expr, "⠠⠭⠐⠡⠝⠌⠊⠐⠱⠬⠗")?;
     return Ok(());
 }
 
 #[test]
 fn scripts_p34_3() -> Result<()> {
-    let expr = r#"<math><msub><mi>x</mi><msub><mi>n</mi><msup><mi>j</mi><mi>r</mi></msup></msub></msub></math>"#;
+    let expr = r#"<math><msub><mi>x</mi><msub><mi>n</mi><msup><mi>i</mi><mi>r</mi></msup></msub></msub></math>"#;
     test_braille("Polish", expr, "⠠⠭⠨⠡⠝⠐⠡⠊⠬⠗⠨⠱")?;
     return Ok(());
 }
 
 #[test]
 fn scripts_p34_4() -> Result<()> {
-    let expr = r#"<math><msup><mrow><mo>(</mo><msubsup><mi>P</mi><msub><mi>a</mi><mi>j</mi></msub><msub><mi>a</mi><mi>k</mi></msub></msubsup><mo>)</mo></mrow><mi>n</mi></msup></math>"#;
+    let expr = r#"<math><msup>
+                <mrow><mo>(</mo>
+                  <msubsup><mi>P</mi><msub><mi>a</mi><mi>i</mi></msub><msub><mi>a</mi><mi>k</mi></msub></msubsup>
+                <mo>)</mo></mrow><mi>n</mi></msup></math>"#;
     test_braille("Polish", expr, "⠨⠏⠐⠡⠠⠁⠡⠊⠐⠌⠁⠡⠅⠐⠱⠬⠝")?;
     return Ok(());
 }
@@ -3460,7 +3478,7 @@ fn reactions_p86_1() -> Result<()> {
                                     <mi>PbS</mi><msub><mi mathvariant="normal">O</mi><mn>4</mn></msub><mo>&#x2193;</mo><mo>+</mo>
                                     <msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mo>&#x2191;</mo></math>"#;
     // Corrected: spec is wrong for "Pb"
-    test_braille("Polish", expr, "⠨⠏⠃⠀⠖⠼⠃⠨⠓⠌⠖⠀⠖⠸⠎⠕⠲⠬⠼⠃⠈⠤⠀⠒⠂⠨⠏⠃⠨⠎⠨⠕⠲⠸⠒⠄⠖⠨⠓⠆⠸⠒⠁")?;
+    test_braille("Polish", expr, "⠨⠏⠃⠀⠖⠼⠃⠨⠓⠌⠖⠀⠖⠸⠎⠕⠲⠌⠼⠃⠈⠤⠀⠒⠂⠨⠏⠃⠨⠎⠨⠕⠲⠸⠒⠄⠖⠨⠓⠆⠸⠒⠁")?;
     return Ok(());
 }
 

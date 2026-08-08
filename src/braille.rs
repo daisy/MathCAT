@@ -2210,9 +2210,22 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
 
     // Detailed projectors: p23 -- they end with a detailed close projector, so no remove rule
 
-    // I don't see it mentioned, but it seems that the end of the expression is a terminator for simple and compound projectors
+    // End of expression terminates simple and compound projectors (blank would also terminate),
+    // so their closes can be dropped (detailed closes '≫⠨.' are always kept).
     static REMOVE_CLOSE_INDICATORS_AT_END: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"((⠈?(>[^⠰]))|(≫⠐.))+$").unwrap());
+    // Only simple closes at EOS (used when a trailing compound close must be kept).
+    static REMOVE_SIMPLE_CLOSE_INDICATORS_AT_END: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"(⠈?(>[^⠰]))+$").unwrap());
+    // Spec (compound projectors): blank/EOS can omit ⠐⠱ (a), but keep ⠐⠱ when still needed (b).
+    // After an *exponent* drop inside a compound *script*, the drop returns only one row and the
+    // outer script is still open off the base row (e.g. P_{n²} vs (P_n)²) — keep ≫⠐⠱.
+    // Do NOT keep when:
+    // - the compound is a root (⠩), e.g. √(v₁²+v₂²) — blank/EOS is enough (physics_p60_1)
+    // - the drop is a nested *subscript* drop (⠡), e.g. U_{R₂} (physics_p68_4a)
+    // - a fraction bar precedes the drop (rule e) — excluded because we require <[⠬⠌] immediately before n.
+    static KEEP_COMPOUND_CLOSE_AFTER_SCRIPT_DROP: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"≪⠐[⠡⠬⠌][^≪≫]*<[⠬⠌]n.≫⠐.$").unwrap());
 
     // Also drop numbers close a projector, so we need to remove closing indicators before drop numbers (p22, f [only after scripts])
     // The close fraction indicator should NOT go away nor should a 'W' (used after lim, integral, etc)
@@ -2286,10 +2299,13 @@ fn polish_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
     let result = REMOVE_SCRIPT_CLOSE_INDICATORS_BEFORE_COMMA.replace_all(&result, "P⠂W"); // FIX: doesn't need to be regex
     let result = REMOVE_SIMPLE_CLOSE_INDICATORS.replace_all(&result, "${3}");
     let result = REMOVE_COMPOUND_CLOSE_INDICATORS.replace_all(&result, "${3}");
-    let result = if braille_level != BrailleLevel::Beginner {
-        REMOVE_CLOSE_INDICATORS_AT_END.replace_all(&result, "")
-    } else {
+    let result = if braille_level == BrailleLevel::Beginner {
         result
+    } else if KEEP_COMPOUND_CLOSE_AFTER_SCRIPT_DROP.is_match(&result) {
+        // keep trailing compound close after nested exponent drop; only strip simple closes
+        REMOVE_SIMPLE_CLOSE_INDICATORS_AT_END.replace_all(&result, "")
+    } else {
+        REMOVE_CLOSE_INDICATORS_AT_END.replace_all(&result, "")
     };
     let result = SCRIPT_AFTER_DROP_NUMBERS.replace_all(&result, "${1}⠘");
 
@@ -2367,7 +2383,6 @@ impl Projectors {
 }
 
 fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
-    eprintln!("POLISH RAW: {:?}", raw_braille);
     // The basic idea is that we stay in a mode until we encounter a character that requires a mode change
     // Some entries:
     //   lx  -- letter mode, followed by a letter
@@ -2377,7 +2392,8 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
     // Based on conversations with the Polish team:
     //   Restate cap letter mode if not in a run of cap letters (not if scripted or subscripted)
     //   Always restart Greek letters
-    const SHORT_FRACTION_MAX_LENGTH: usize = 38; // fractions longer this this (~20 cells) always use the long form
+    // Full (long) fraction form: Beginner, or nested fractions (p30 — outer full, inner short).
+    // Do not use raw-stream length: long single-level fractions (p28_2/5) stay short per Rules 1/4.
     let mut mode = BrailleMode::None;
     let mut letter_mode = BrailleMode::None; // used to determine if we need to output 'L' (etc) for letter mode
     let mut unit_mode = false;
@@ -2390,13 +2406,15 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
     // let braille_level_intermediate = braille_level == "Intermediate";
     let mut projector_depths = Projectors::new(max_nesting_depths(&chars, true));
     let mut projector_depth = 0;
+    let mut projector_nesting = 0; // how many projectors/fractions are open (stack size)
     debug!("Projector depths = {}", projector_depths);
     let mut fraction_depths = Projectors::new(max_nesting_depths(&chars, false));
     let mut fraction_depth = 0;
     debug!("Fraction depths = {}", fraction_depths);
-    let mut fraction_lengths = Projectors::new(find_fraction_lengths_stack(&chars));
     let mut use_long_fraction_form: bool = false;
-    debug!("Fraction lengths = {}", fraction_lengths);
+    let mut use_long_fraction_stack: Vec<bool> = vec![false];
+    // projector_nesting when the current fraction opened — blanks deeper than this (roots/scripts) still use fillers
+    let mut fraction_projector_bases: Vec<usize> = vec![0];
     while i < chars.len() {
         let ch = chars[i];
         // debug!(" ...mode={}, l_mode={}, u_mode={}, p/n depth = {}/{}, long?={}, ch/next {}/{}, result='{}'",
@@ -2569,16 +2587,20 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                     mode = BrailleMode::None;
                 }
                 unit_mode = false;
-                eprintln!("W@{i} ch={:?} proj={projector_depth}, frac={fraction_depth} bn={bracket_nesting_depth} use_long={use_long_fraction_form} next={:?}",
-                    ch,
-                    if i+1 < chars.len() { chars[i+1] } else { '?' });
                 if !use_long_fraction_form && fraction_depth == 1 && i+1 < chars.len() && chars[i+1] == '/' {
                     // drop whitespace before '/' (nothing to do)
                 } else if !use_long_fraction_form && i+1 < chars.len() && chars[i+1] == '>' {
                     // drop whitespace before '>' (nothing to do)
-                } else if (ch == 'W' || ch == 'w') && 
-                         (((projector_depth == 1 || projector_depth == 2) && bracket_nesting_depth == 0 && fraction_depth < 2) ||
-                          (use_long_fraction_form && i > 0 && chars[i-1] == '⠫' && chars[i+1] == '>')) {  // factorial at end of fraction (p55_5)
+                } else if (ch == 'W' || ch == 'w') && bracket_nesting_depth == 0 && (
+                    // short form: blanks inside a simple/compound projector become fillers
+                    (!use_long_fraction_form && (projector_depth == 1 || projector_depth == 2) && fraction_depth < 2)
+                    // full form: still fill blanks inside nested roots/scripts, not at fraction baseline
+                    || (use_long_fraction_form
+                        && projector_nesting > *fraction_projector_bases.last().unwrap_or(&0))
+                    // full form exception: factorial needs a filler before the fraction end (p55_5)
+                    || (use_long_fraction_form && i > 0 && chars[i-1] == '⠫'
+                        && i+1 < chars.len() && chars[i+1] == '>')
+                ) {
                     result.push('⠈');               // substitute "filler" character
                 } else {
                     result.push(ch);
@@ -2586,19 +2608,26 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                 i += 1;
             },
             '<' => {
-                eprintln!("@<: i={i}, depth={projector_depth}, {projector_depths}, use_long={use_long_fraction_form}");
                  // group felt should always announce internal fractions except numeric ones (they aren't marked with '<')
                 let parent_fraction_depth = fraction_depth; 
                 projector_depth = projector_depths.push();
+                projector_nesting += 1;
                 if chars[i+1] == '⠆' { // fractions aren't projectors
                     fraction_depth = fraction_depths.push();
-                    let fraction_length = fraction_lengths.push();
-                    use_long_fraction_form = fraction_length > SHORT_FRACTION_MAX_LENGTH || braille_level == BrailleLevel::Beginner;
+                    fraction_projector_bases.push(projector_nesting);
+                    // Full form when: Beginner; nested fractions (p30); or a root inside this fraction
+                    // (geometry/physics examples). Do not use raw length — long single-level
+                    // algebraic fractions stay short (p28_2/5).
+                    use_long_fraction_form = fraction_depth > 1
+                        || braille_level == BrailleLevel::Beginner
+                        || (fraction_contains_root(&chars[i..])
+                            && fraction_numerator_has_baseline_whitespace(&chars[i..]));
+                    use_long_fraction_stack.push(use_long_fraction_form);
                     // debug!("(@<: i={i} (after), frac parent/depth={parent_fraction_depth}/{fraction_depth}, {fraction_depths}, use_long={use_long_fraction_form}");
                     let has_keep_fraction_start_char = chars[i+2] == '+';
-                    // Look for '<⠆⠤' -- all other patterns can drop fraction start ('⠆') -- p24, rule 4b
-                    // Also want to keep '⠆' when the numerator is "long" (undefined and inconsistent in spec)
-                    const LONG_NUMERATOR: usize = 4;  // # of letters or digits in numerator to be considered long
+                    // Look for '<⠆⠤' -- all other patterns can drop fraction start ('⠆') -- p26, rule 4b
+                    // Also keep '⠆' when the numerator is long (p27: "when the numerator is long...")
+                    const LONG_NUMERATOR: usize = 4;  // # of letter/number atoms in numerator
                     if chars[i+2] == '-' {      // hack to signal not to use start fraction indicator (for open, always more chars)
                         i += 1;
                     } else if fraction_depth < 2 && parent_fraction_depth < 2 {
@@ -2606,7 +2635,7 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                             result.push('⠆');
                         } else {
                             let i_numerator_end = i+2 + chars[i+2..].iter().position(|&ch| ch == '/').unwrap_or(0);
-                            if chars[i+2..i_numerator_end].iter().filter(|&ch| matches!(ch, 'l' | 'L' | 'n' | 'N' | 'g' | 'G' | 'f' | 'U' | '𝐿' | '𝔹' | 'B' | 'I' )).count() >= LONG_NUMERATOR {
+                            if count_fraction_numerator_atoms(&chars[i+2..i_numerator_end]) >= LONG_NUMERATOR {
                                 result.push('⠆');
                             }
                         }
@@ -2643,8 +2672,9 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                         result.push('⠰');
                     }
                     fraction_depth = fraction_depths.pop();  // back to previous depth
-                    use_long_fraction_form = fraction_lengths.pop() > SHORT_FRACTION_MAX_LENGTH
-                        || braille_level == BrailleLevel::Beginner;
+                    fraction_projector_bases.pop();
+                    use_long_fraction_stack.pop();
+                    use_long_fraction_form = *use_long_fraction_stack.last().unwrap_or(&false);
                 } else if projector_depth == 1 || chars[i+1] == 'W' {   // 'W' for lim, integral, ... -- forces close
                     if i+2 < chars.len() && chars[i+2] == '+' {
                         // hack to force close terminator to avoid being deleted
@@ -2662,6 +2692,9 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
                     result.push(chars[i+1]);
                 }
                 projector_depth = projector_depths.pop();  // back to previous depth
+                if projector_nesting > 0 {
+                    projector_nesting -= 1;
+                }
                 i += 2;
             },
             '/' => {
@@ -2858,7 +2891,109 @@ fn polish_remove_unneeded_mode_changes(raw_braille: &str) -> String {
         }
     }}
 
+    /// True if this fraction (starting at `<⠆`) contains a square/nth root before its `>⠰`.
+    /// Those cases use full fraction form (spaces + end indicator), cf. geometry/physics examples.
+    fn fraction_contains_root(chars: &[char]) -> bool {
+        let mut depth = 0usize;
+        let mut i = 0;
+        while i + 1 < chars.len() {
+            if chars[i] == '<' && chars[i + 1] == '⠆' {
+                depth += 1;
+                i += 2;
+            } else if chars[i] == '>' && chars[i + 1] == '⠰' {
+                if depth <= 1 {
+                    return false;
+                }
+                depth -= 1;
+                i += 2;
+            } else if chars[i] == '<' && (chars[i + 1] == '⠩' || chars[i + 1] == '⠌') {
+                // ⠩ sqrt; ⠌ may be mroot index or superscript — only treat as root when
+                // followed later by ⠩ in the same fraction (mroot pattern <⠌...>⠱<⠩)
+                if chars[i + 1] == '⠩' {
+                    return true;
+                }
+                // look ahead for mroot: <⠌ ... >⠱ <⠩
+                let rest = &chars[i + 2..];
+                if let Some(close) = rest.iter().position(|&c| c == '>') {
+                    if close + 2 < rest.len() && rest[close + 1] == '⠱' && rest[close + 2] == '<'
+                        && close + 3 < rest.len() && rest[close + 3] == '⠩'
+                    {
+                        return true;
+                    }
+                }
+                i += 2;
+            } else {
+                i += 1;
+            }
+        }
+        false
+    }
+
+    /// Whitespace in the numerator at the fraction's own baseline (not inside a nested
+    /// root/script, and not the spaces around `/`). Used with roots to select full form
+    /// (physics/geometry) without forcing it for `\sqrt{…}/\sqrt{…}` or `\sqrt{3x+2}/(3x+2)`.
+    fn fraction_numerator_has_baseline_whitespace(chars: &[char]) -> bool {
+        // chars starts at `<⠆`
+        if chars.len() < 2 || chars[0] != '<' || chars[1] != '⠆' {
+            return false;
+        }
+        let mut projector_nesting = 1usize; // the fraction itself
+        let mut i = 2;
+        while i + 1 < chars.len() {
+            if chars[i] == '/' && projector_nesting == 1 {
+                return false; // reached bar with no baseline blank in numerator
+            }
+            if chars[i] == '<' {
+                projector_nesting += 1;
+                i += 2;
+            } else if chars[i] == '>' {
+                if projector_nesting > 0 {
+                    projector_nesting -= 1;
+                }
+                i += 2;
+            } else if (chars[i] == 'W' || chars[i] == 'w') && projector_nesting == 1 {
+                let prev = if i > 0 { chars[i - 1] } else { '\0' };
+                let next = chars[i + 1];
+                // spaces around the fraction bar don't count (short form drops them)
+                if prev != '/' && next != '/' {
+                    return true;
+                }
+                i += 1;
+            } else {
+                i += 1;
+            }
+        }
+        false
+    }
+
+    /// Count letter/number atoms in a fraction numerator stream (mode letter + cell).
+    /// A run of `N`/`n` (e.g. decimal `1,6` → `N⠁N⠂N⠋`) counts as one atom so that
+    /// "long numerator" (p27) is not tripped by decimal commas (p28_3).
+    fn count_fraction_numerator_atoms(chars: &[char]) -> usize {
+        let mut i = 0;
+        let mut count = 0;
+        while i < chars.len() {
+            match chars[i] {
+                'l' | 'L' | 'g' | 'G' | 'f' | 'U' | '𝐿' | '𝔹' | 'B' | 'I' | '𝒍' => {
+                    count += 1;
+                    i += if i + 1 < chars.len() { 2 } else { 1 };
+                }
+                'N' | 'n' => {
+                    count += 1;
+                    while i < chars.len() && (chars[i] == 'N' || chars[i] == 'n') {
+                        i += if i + 1 < chars.len() { 2 } else { 1 };
+                    }
+                }
+                _ => {
+                    i += 1;
+                }
+            }
+        }
+        count
+    }
+
     /// Return a vector whose ith entry is the length of the ith fraction (not including the <⠆ and >⠰)
+    #[allow(dead_code)]
     fn find_fraction_lengths_stack(chars: &[char]) -> Vec<usize> {
         let mut stack: Vec<usize> = Vec::new();
         let mut results: Vec<(usize, usize)> = Vec::new(); // (start_index, length)
