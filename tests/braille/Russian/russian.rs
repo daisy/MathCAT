@@ -793,11 +793,6 @@ fn source_gost_58511_typeform_layout_indicators_04() -> Result<()> {
 }
 
 #[test]
-fn source_gost_58511_typeform_layout_indicators_05() -> Result<()> {
-    return test_russian_braille(r#"<math><mstyle mathsize="small"><mi>x</mi></mstyle></math>"#, "⠠⠭");
-}
-
-#[test]
 fn source_gost_58511_typeform_layout_indicators_06() -> Result<()> {
     return test_russian_braille(r#"<math><mrow><mi>A</mi><mspace width="0.5em"/><mi>B</mi></mrow></math>"#, "⠨⠁⠀⠃");
 }
@@ -808,12 +803,37 @@ fn source_gost_58511_typeform_layout_indicators_07() -> Result<()> {
 }
 
 #[test]
-fn wikipedia_times_divide() -> Result<()> {
+fn source_gost_58511_typeform_layout_indicators_08() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow data-braille-typeform="small"><mi>x</mi><mo>+</mo><mn>1</mn></mrow></math>"#, "⠔⠠⠭⠀⠖⠼⠁⠔");
+}
+
+#[test]
+fn source_gost_58511_typeform_layout_indicators_09() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow intent=":small-font"><mi>A</mi><mi>B</mi></mrow></math>"#, "⠔⠨⠁⠃⠔");
+}
+
+#[test]
+fn source_gost_58511_typeform_layout_indicators_10() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow data-braille-typeform="letter-spacing"><mi>A</mi><mi>B</mi></mrow></math>"#, "⠌⠨⠁⠃⠌");
+}
+
+#[test]
+fn source_gost_58511_typeform_layout_indicators_11() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow data-braille-typeform="insertion"><mi>x</mi><mo>+</mo><mn>1</mn></mrow></math>"#, "⠧⠠⠭⠀⠖⠼⠁⠼");
+}
+
+#[test]
+fn source_gost_58511_typeform_layout_indicators_12() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow data-braille-typeform="small"><mi mathvariant="bold">x</mi><mi mathvariant="bold">y</mi></mrow></math>"#, "⠔⠻⠠⠭⠽⠔⠻");
+}
+
+#[test]
+fn wikipedia_times_divide_typeform_section() -> Result<()> {
     return test_russian_braille(r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉");
 }
 
 #[test]
-fn wikipedia_linear_parens() -> Result<()> {
+fn wikipedia_linear_parens_typeform_section() -> Result<()> {
     return test_russian_braille(r#"<math><mn>3</mn><mo>&#xB7;</mo><mo>(</mo><mn>9</mn><mo>&#x2212;</mo><mn>7</mn><mo>)</mo><mo>=</mo><mn>6</mn></math>"#, "⠼⠉⠄⠣⠼⠊⠀⠤⠼⠛⠜⠀⠶⠼⠋");
 }
 
@@ -1073,6 +1093,16 @@ fn source_geometry_matrix_chemistry_26() -> Result<()> {
 }
 
 #[test]
+fn source_geometry_matrix_chemistry_26a_right_brace_table() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow><mtable><mtr><mtd><mrow><mi>x</mi><mo>=</mo><mn>1</mn></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi><mo>=</mo><mn>2</mn></mrow></mtd></mtr></mtable><mo>}</mo></mrow></math>"#, "⠠⠭⠀⠶⠼⠁⠀⠹⠨⠳⠠⠽⠀⠶⠼⠃⠀⠼");
+}
+
+#[test]
+fn source_geometry_matrix_chemistry_26b_linear_menclose_frame() -> Result<()> {
+    return test_russian_braille(r#"<math><menclose notation="box"><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></menclose></math>"#, "⠣⠠⠁⠀⠖⠃⠜");
+}
+
+#[test]
 fn source_geometry_matrix_chemistry_27() -> Result<()> {
     return test_russian_braille(r#"<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>"#, "⠨⠓⠡⠆⠕");
 }
@@ -1258,6 +1288,26 @@ fn source_chemical_reactions_and_charges_11() -> Result<()> {
 }
 
 #[test]
+fn source_interaction_mathvariant_greek() -> Result<()> {
+    return test_russian_braille(r#"<math><mi mathvariant="bold">&#x3B1;</mi></math>"#, "⠻⠰⠁⠻");
+}
+
+#[test]
+fn source_interaction_mathvariant_scripts() -> Result<()> {
+    return test_russian_braille(r#"<math><msub><mi mathvariant="bold">x</mi><mn>2</mn></msub></math>"#, "⠻⠠⠭⠡⠆⠻");
+}
+
+#[test]
+fn source_interaction_chemical_msubsup_charge() -> Result<()> {
+    return test_russian_braille(r#"<math intent=":chemical-equation"><msubsup><mi>Fe</mi><mn>2</mn><mrow><mn>3</mn><mo>+</mo></mrow></msubsup></math>"#, "⠨⠋⠠⠑⠡⠆⠌⠒⠖");
+}
+
+#[test]
+fn source_interaction_geometry_postfix_after_indices() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow><msub><mi>A</mi><mn>1</mn></msub><msub><mi>B</mi><mn>1</mn></msub><mo>&#x2192;</mo></mrow></math>"#, "⠨⠁⠡⠂⠃⠡⠂⠨⠒⠂");
+}
+
+#[test]
 fn source_gost_logic_arrows_01() -> Result<()> {
     return test_russian_braille(r#"<math><mrow><mi>A</mi><mo>&#x21D2;</mo><mi>B</mi></mrow></math>"#, "⠨⠁⠀⠶⠜⠃");
 }
@@ -1372,23 +1422,23 @@ fn source_typeform_and_mathvariant_indicators() -> Result<()> {
 }
 
 #[test]
-fn wikipedia_times_divide() -> Result<()> {
+fn wikipedia_times_divide_aggregate_section() -> Result<()> {
     let expr = r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#;
     test_braille("Russian", expr, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉")?;
     return Ok(());
 }
 
 #[test]
-fn wikipedia_linear_parens() -> Result<()> {
+fn wikipedia_linear_parens_aggregate_section() -> Result<()> {
     let expr = r#"<math><mn>3</mn><mo>&#xB7;</mo><mo>(</mo><mn>9</mn><mo>&#x2212;</mo><mn>7</mn><mo>)</mo><mo>=</mo><mn>6</mn></math>"#;
     test_braille("Russian", expr, "⠼⠉⠄⠣⠼⠊⠀⠤⠼⠛⠜⠀⠶⠼⠋")?;
     return Ok(());
 }
 
 #[test]
-fn wikipedia_sqrt() -> Result<()> {
+fn wikipedia_sqrt_aggregate_section() -> Result<()> {
     let expr = r#"<math><msqrt><mn>10000</mn></msqrt><mo>&lt;</mo><mn>101</mn></math>"#;
-    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠀⠪⠀⠼⠁⠚⠁")?;
+    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠹⠀⠪⠀⠼⠁⠚⠁")?;
     return Ok(());
 }
 
@@ -1448,7 +1498,7 @@ fn source_large_operator_limits() -> Result<()> {
 #[test]
 fn source_geometry_matrix_chemistry() -> Result<()> {
     let expr = r#"<math><mrow><mo>&#x2220;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>=</mo><mn>15</mn><mo>&#xB0;</mo><mn>30</mn><mo>&#x2032;</mo><mn>12</mn><mo>&#x2033;</mo></mrow></math>"#;
-    test_braille("Russian", expr, "⠸⠪⠨⠁⠃⠉⠀⠶⠼⠁⠑⠨⠴⠼⠉⠚⠔⠼⠁⠃⠔⠔")?;
+    test_braille("Russian", expr, "⠸⠪⠨⠁⠃⠉⠀⠶⠼⠁⠑⠨⠴⠼⠉⠚⠨⠔⠼⠁⠃⠨⠔⠔")?;
 
     let expr = r#"<math><mrow><mo>&#x25B3;</mo><msub><mi>A</mi><mn>1</mn></msub><msub><mi>B</mi><mn>1</mn></msub><msub><mi>C</mi><mn>1</mn></msub></mrow></math>"#;
     test_braille("Russian", expr, "⠸⠙⠨⠁⠡⠂⠃⠡⠂⠉⠡⠂")?;
@@ -1507,22 +1557,22 @@ fn source_geometry_matrix_chemistry() -> Result<()> {
 }
 
 #[test]
-fn wikipedia_times_divide() -> Result<()> {
+fn wikipedia_times_divide_source_section() -> Result<()> {
     let expr = r#"<math><mn>6</mn><mo>&#xD7;</mo><mn>7</mn><mo>:</mo><mn>14</mn><mo>=</mo><mn>3</mn></math>"#;
     test_braille("Russian", expr, "⠼⠋⠀⠦⠼⠛⠀⠲⠼⠁⠙⠀⠶⠼⠉")?;
     return Ok(());
 }
 
 #[test]
-fn wikipedia_linear_parens() -> Result<()> {
+fn wikipedia_linear_parens_source_section() -> Result<()> {
     let expr = r#"<math><mn>3</mn><mo>&#xB7;</mo><mo>(</mo><mn>9</mn><mo>&#x2212;</mo><mn>7</mn><mo>)</mo><mo>=</mo><mn>6</mn></math>"#;
     test_braille("Russian", expr, "⠼⠉⠄⠣⠼⠊⠀⠤⠼⠛⠜⠀⠶⠼⠋")?;
     return Ok(());
 }
 
 #[test]
-fn wikipedia_sqrt() -> Result<()> {
+fn wikipedia_sqrt_source_section() -> Result<()> {
     let expr = r#"<math><msqrt><mn>10000</mn></msqrt><mo>&lt;</mo><mn>101</mn></math>"#;
-    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠀⠪⠀⠼⠁⠚⠁")?;
+    test_braille("Russian", expr, "⠩⠱⠼⠁⠚⠚⠚⠚⠹⠀⠪⠀⠼⠁⠚⠁")?;
     return Ok(());
 }

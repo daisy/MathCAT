@@ -336,6 +336,33 @@
   - x: "*[2]"
 
 -
+  name: gost-58511-small-font
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='small' or contains(@intent, ':small-font')"
+  replace:
+  - t: "⠔"
+  - x: "*"
+  - t: "⠔"
+
+-
+  name: gost-58511-letter-spacing
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='letter-spacing' or contains(@intent, ':letter-spacing')"
+  replace:
+  - t: "⠌"
+  - x: "*"
+  - t: "⠌"
+
+-
+  name: gost-58511-insertion
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='insertion' or contains(@intent, ':insertion')"
+  replace:
+  - t: "⠧"
+  - x: "*"
+  - t: "⠼"
+
+-
   name: default
   tag: [mrow, mstyle, semantics]
   match: "."
