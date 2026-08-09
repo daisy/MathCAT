@@ -131,38 +131,23 @@ fn is_scalar(v: &Yaml) -> bool {
     return !matches!(v, Yaml::Hash(_) | Yaml::Array(_));
 }
 
+/// Whether a YAML collection is too complex for compact inline formatting.
 fn is_complex(v: &Yaml) -> bool {
-    return match v {
-        Yaml::Hash(h) => {
-            return match h.len() {
-                0 => false,
-                1 => {
-                    let (key,val) = h.iter().next().unwrap();
-                    return !(is_scalar(key) && is_scalar(val))
-                },
-                _ => true,
-            }
-        },
-        Yaml::Array(v) => {
-            return match v.len() {
-                0 => false,
-                1 => {
-                    let hash = v[0].as_hash();
-                    if let Some(hash) = hash {
-                        return match hash.len() {
-                            0 => false,
-                            1 => {
-                                let (key, val) = hash.iter().next().unwrap();
-                                return !(is_scalar(key) && is_scalar(val));
-                            },
-                            _ => true,
-                        }
-                    } else {
-                        return !is_scalar(&v[0]);
-                    }    
-                },
-                _ => true,
-            }
+    /// Whether a hash is empty or contains one scalar key/value pair.
+    fn is_simple_hash(hash: &Hash) -> bool {
+        hash.len() <= 1
+            && hash
+                .iter()
+                .all(|(key, value)| is_scalar(key) && is_scalar(value))
+    }
+
+    match v {
+        Yaml::Hash(hash) => !is_simple_hash(hash),
+        Yaml::Array(values) => match values.as_slice() {
+            [] => false,
+            [Yaml::Hash(hash)] => !is_simple_hash(hash),
+            [value] => !is_scalar(value),
+            _ => true,
         },
         _ => false,
     }
@@ -532,6 +517,49 @@ mod tests {
             }
         }
         panic!("No root element found");
+    }
+
+    #[test]
+    fn is_complex_classifies_hashes() {
+        assert!(!is_complex(&Yaml::Hash(Hash::new())));
+
+        let mut simple_hash = Hash::new();
+        simple_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::String("value".to_string()),
+        );
+        assert!(!is_complex(&Yaml::Hash(simple_hash)));
+
+        let mut nested_hash = Hash::new();
+        nested_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::Array(Vec::new()),
+        );
+        assert!(is_complex(&Yaml::Hash(nested_hash)));
+
+        let mut multi_entry_hash = Hash::new();
+        multi_entry_hash.insert(Yaml::String("first".to_string()), Yaml::Integer(1));
+        multi_entry_hash.insert(Yaml::String("second".to_string()), Yaml::Integer(2));
+        assert!(is_complex(&Yaml::Hash(multi_entry_hash)));
+    }
+
+    #[test]
+    fn is_complex_classifies_arrays() {
+        assert!(!is_complex(&Yaml::Array(Vec::new())));
+        assert!(!is_complex(&Yaml::Array(vec![Yaml::Integer(1)])));
+
+        let mut simple_hash = Hash::new();
+        simple_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::String("value".to_string()),
+        );
+        assert!(!is_complex(&Yaml::Array(vec![Yaml::Hash(simple_hash)])));
+
+        assert!(is_complex(&Yaml::Array(vec![Yaml::Array(Vec::new())])));
+        assert!(is_complex(&Yaml::Array(vec![
+            Yaml::Integer(1),
+            Yaml::Integer(2),
+        ])));
     }
 
     #[test]
