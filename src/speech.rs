@@ -16,6 +16,7 @@ use sxd_xpath_no_unsafe::{Factory, Value, XPath};
 use sxd_xpath_no_unsafe::nodeset::Node;
 use std::fmt;
 use std::time::SystemTime;
+use strum_macros::Display;
 use crate::definitions::read_definitions_file;
 use crate::errors::*;
 use crate::prefs::*;
@@ -1976,26 +1977,13 @@ impl UnicodeDef {
  type UnicodeTable = Rc<RefCell<HashMap<u32,Vec<Replacement>>>>;
  type FilesAndTimesShared = Rc<RefCell<FilesAndTimes>>;
 
- #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, Display)]
  pub enum RulesFor {
      Intent,
      Speech,
      OverView,
      Navigation,
      Braille,
- }
-
- impl fmt::Display for RulesFor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self {
-            RulesFor::Intent => "Intent",
-            RulesFor::Speech => "Speech",
-            RulesFor::OverView => "OverView",
-            RulesFor::Navigation => "Navigation",
-            RulesFor::Braille => "Braille",
-        };
-       return write!(f, "{name}");
-    }
  }
 
  
