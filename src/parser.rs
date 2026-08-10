@@ -166,16 +166,17 @@ impl Expr {
                 format!("<mroot>{}{}</mroot>", base.to_mathml(), index.to_mathml())
             }
             Expr::Fenced { open, close, body } => {
-                let close_xml = match close {
-                    Some(c) => format!("<mo>{}</mo>", xml_escape(c)),
-                    None => Expr::Missing.to_mathml(),
-                };
-                format!(
-                    "<mrow><mo>{}</mo>{}{}</mrow>",
-                    xml_escape(open),
-                    body.to_mathml(),
-                    close_xml
-                )
+                let open_xml = format!("<mo>{}</mo>", xml_escape(open));
+                let body_xml = body.to_mathml();
+                match close {
+                    Some(c) => format!(
+                        "<mrow>{open_xml}{body_xml}<mo>{}</mo></mrow>",
+                        xml_escape(c)
+                    ),
+                    // Incomplete fence (e.g. mid-typing): open (+ body) only — no � placeholder.
+                    None if body.is_empty_row() || body_xml.is_empty() => open_xml,
+                    None => format!("<mrow>{open_xml}{body_xml}</mrow>"),
+                }
             }
             Expr::Table { open, close, rows } => {
                 let mut s = format!("<mrow><mo>{}</mo><mtable>", xml_escape(open));
@@ -188,12 +189,10 @@ impl Expr {
                     }
                     s.push_str("</mtr>");
                 }
-                let close_xml = match close {
-                    Some(c) => format!("<mo>{}</mo>", xml_escape(c)),
-                    None => Expr::Missing.to_mathml(),
-                };
                 s.push_str("</mtable>");
-                s.push_str(&close_xml);
+                if let Some(c) = close {
+                    s.push_str(&format!("<mo>{}</mo>", xml_escape(c)));
+                }
                 s.push_str("</mrow>");
                 s
             }
@@ -284,6 +283,9 @@ pub enum Token {
     FracClose,
     SqrtOpen,
     SqrtClose,
+    /// Unrecognized or incomplete braille cell(s), preserved as literary `<mtext>`
+    /// (soft recovery for mid-typing prefixes such as a lone `⠐`).
+    BrailleText(String),
     /// Grade-1 / capital indicators are consumed by the lexer; these mark passage boundaries if needed.
     Grade1PassageEnd,
 }
@@ -417,12 +419,11 @@ impl<'a> Lexer<'a> {
             if self.try_contraction()? {
                 continue;
             }
-            // Unknown / literary leftover
+            // Soft recovery: keep unknown cells as braille mtext (e.g. trailing prefix ⠐).
             let ch = self.peek_char().unwrap();
-            bail!(
-                "UEB lexer: unrecognized braille cell '{}' (U+{:04X}) near {:?}"
-                , ch, ch as u32, &self.rest[..self.rest.len().min(12)]
-            );
+            self.rest = &self.rest[ch.len_utf8()..];
+            self.numeric = false;
+            self.tokens.push(Token::BrailleText(ch.to_string()));
         }
         Ok(self.tokens)
     }
@@ -1471,17 +1472,49 @@ fn parse_tokens(tokens: &[Token]) -> Result<Expr> {
     if tokens.is_empty() {
         return Ok(Expr::Row(vec![]));
     }
-    let (rest, expr) = parse_expr(tokens)?;
-    let rest = skip_noise(rest);
-    if rest.is_empty() {
-        return Ok(expr);
+    let mut parts = Vec::new();
+    let mut input = tokens;
+    loop {
+        input = skip_noise(input);
+        if input.is_empty() {
+            break;
+        }
+        // Top-level unmatched closers (mid-typing / missing open) → print operators,
+        // not leftover braille mtext. Braille grouping closers are not printed.
+        match input.first() {
+            Some(Token::Close('⟧')) => {
+                input = &input[1..];
+                continue;
+            }
+            Some(Token::Close(c)) => {
+                parts.push(Expr::Operator(c.to_string()));
+                input = &input[1..];
+                continue;
+            }
+            Some(Token::EnlargedFence(c)) if !is_open_fence_char(*c) => {
+                parts.push(Expr::Operator(c.to_string()));
+                input = &input[1..];
+                continue;
+            }
+            _ => {}
+        }
+
+        let (rest, expr) = parse_expr(input)?;
+        if rest.len() == input.len() {
+            // No progress — keep remaining cells visible as braille mtext.
+            let trail = input.iter().map(token_to_braille).collect::<String>();
+            if !trail.is_empty() {
+                parts.push(Expr::Text(trail));
+            }
+            break;
+        }
+        match expr {
+            Expr::Row(v) => parts.extend(v),
+            e => parts.push(e),
+        }
+        input = rest;
     }
-    // Unconsumed cells (stray closers, unfinished fragments) stay visible as mtext.
-    let trail = rest.iter().map(token_to_braille).collect::<String>();
-    if trail.is_empty() {
-        return Ok(expr);
-    }
-    Ok(Expr::row(vec![expr, Expr::Text(trail)]))
+    Ok(Expr::row(parts))
 }
 
 /// Best-effort reverse of a token to UEB cells for leftover trailing mtext.
@@ -1540,6 +1573,7 @@ fn token_to_braille(t: &Token) -> String {
         }
         Token::Op(s) => s.clone(),
         Token::SimpleOver(s) | Token::SimpleUnder(s) => s.clone(),
+        Token::BrailleText(s) => s.clone(),
     }
 }
 
@@ -1763,6 +1797,14 @@ fn parse_expr_part(
         let mut v = spaces_before;
         v.push(op);
         v.extend(spaces_after);
+        return Ok((input, v));
+    }
+
+    if let Some(Token::BrailleText(s)) = input.first() {
+        let text = Expr::Text(s.clone());
+        input = &input[1..];
+        let mut v = spaces_before;
+        v.push(text);
         return Ok((input, v));
     }
 
@@ -1997,6 +2039,7 @@ fn parse_item(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
         }
         Token::Letter { ch, .. } => Ok((&input[1..], Expr::Identifier(ch.to_string()))),
         Token::Op(s) => Ok((&input[1..], Expr::Operator(s.clone()))),
+        Token::BrailleText(s) => Ok((&input[1..], Expr::Text(s.clone()))),
         _ => parse_atom(input),
     }
 }
@@ -2038,6 +2081,7 @@ fn parse_atom(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
         Token::Open(c) => parse_fenced(input, *c),
         // Operators as atoms (degree, chemistry charge ±, arrows used as items, etc.)
         Token::Op(s) => Ok((&input[1..], Expr::Operator(s.clone()))),
+        Token::BrailleText(s) => Ok((&input[1..], Expr::Text(s.clone()))),
         _ => Err(parse_err(input, "expected atom")),
     }
 }
@@ -2616,6 +2660,10 @@ fn parse_expr_part_no_leading_space(
         return Ok((&input[1..], vec![op]));
     }
 
+    if let Some(Token::BrailleText(s)) = input.first() {
+        return Ok((&input[1..], vec![Expr::Text(s.clone())]));
+    }
+
     let (input, atom) = match parse_scripted(input) {
         Ok(x) => x,
         Err(_) => return Ok((input, vec![])),
@@ -2843,6 +2891,75 @@ mod tests {
         let mml = Braille_to_MathML("⠐⠣⠼⠁⠐⠖⠼⠃⠐⠜", "UEB").unwrap();
         assert!(mml.contains("<mo>(</mo>") || mml.contains("("), "{mml}");
         assert!(mml.contains("<mn>1</mn>") && mml.contains("<mn>2</mn>"), "{mml}");
+    }
+
+    #[test]
+    fn trailing_incomplete_prefix_as_mtext() {
+        // a+b⠐  — lone dots-5 after an expression (prefix of + etc.)
+        let mml = Braille_to_MathML("⠁⠐⠖⠃⠐", "UEB").unwrap();
+        let flat = strip_mrow_math(&mml);
+        assert!(flat.contains("<mi>a</mi>"), "{mml}");
+        assert!(flat.contains("<mo>+</mo>") || flat.contains("+"), "{mml}");
+        assert!(flat.contains("<mi>b</mi>"), "{mml}");
+        assert!(
+            flat.contains("<mtext>&#x2810;</mtext>") || flat.contains("<mtext>⠐</mtext>"),
+            "{mml}"
+        );
+    }
+
+    #[test]
+    fn bare_open_paren() {
+        let mml = Braille_to_MathML("⠐⠣", "UEB").unwrap();
+        assert_eq!(mml, "<math><mo>(</mo></math>");
+    }
+
+    #[test]
+    fn stray_close_paren_after_expr() {
+        // 2a+b)
+        let mml = Braille_to_MathML("⠼⠃⠰⠁⠐⠖⠃⠐⠜", "UEB").unwrap();
+        let flat = strip_mrow_math(&mml);
+        assert!(flat.contains("<mn>2</mn>"), "{mml}");
+        assert!(flat.contains("<mi>a</mi>"), "{mml}");
+        assert!(flat.contains("<mo>+</mo>") || flat.contains("+"), "{mml}");
+        assert!(flat.contains("<mi>b</mi>"), "{mml}");
+        assert!(flat.ends_with("<mo>)</mo>") || flat.contains("<mo>)</mo>"), "{mml}");
+        assert!(!mml.contains("<mtext>"), "{mml}");
+    }
+
+    #[test]
+    fn vert_bar_unclosed_and_trailing() {
+        // bare |
+        assert_eq!(Braille_to_MathML("⠸⠳", "UEB").unwrap(), "<math><mo>|</mo></math>");
+        // |x  (open, no close)
+        let mml = Braille_to_MathML("⠸⠳⠭", "UEB").unwrap();
+        assert!(mml.contains("<mo>|</mo>") && mml.contains("<mi>x</mi>"), "{mml}");
+        assert!(!mml.contains("FFFD"), "{mml}");
+        // 2a+b|  (trailing bar — same cell as open/close)
+        let mml = Braille_to_MathML("⠼⠃⠰⠁⠐⠖⠃⠸⠳", "UEB").unwrap();
+        let flat = strip_mrow_math(&mml);
+        assert!(flat.contains("<mn>2</mn>") && flat.contains("<mi>a</mi>"), "{mml}");
+        assert!(flat.contains("<mi>b</mi>") && flat.contains("<mo>|</mo>"), "{mml}");
+        assert!(!mml.contains("FFFD") && !mml.contains("<mtext>"), "{mml}");
+    }
+
+    #[test]
+    fn bare_unclosed_fences() {
+        assert_eq!(Braille_to_MathML("⠨⠣", "UEB").unwrap(), "<math><mo>[</mo></math>");
+        assert_eq!(Braille_to_MathML("⠸⠣", "UEB").unwrap(), "<math><mo>{</mo></math>");
+        assert_eq!(Braille_to_MathML("⠸⠳", "UEB").unwrap(), "<math><mo>|</mo></math>");
+        for br in ["⠐⠣⠭", "⠨⠣⠭", "⠸⠣⠭", "⠸⠳⠭"] {
+            let mml = Braille_to_MathML(br, "UEB").unwrap();
+            assert!(!mml.contains("FFFD"), "{br} -> {mml}");
+            assert!(!mml.contains("<mo>)</mo>") && !mml.contains("<mo>]</mo>")
+                && !mml.contains("<mo>}</mo>"), "{br} -> {mml}");
+        }
+        // Enlarged open: table without closer — no �
+        let mml = Braille_to_MathML("⠠⠐⠣", "UEB").unwrap();
+        assert!(!mml.contains("FFFD"), "{mml}");
+        assert!(mml.contains("<mo>(</mo>"), "{mml}");
+        // G1 grouping open alone (not a MathML fence): empty body, no �
+        let mml = Braille_to_MathML("⠰⠣", "UEB").unwrap();
+        assert!(!mml.contains("FFFD"), "{mml}");
     }
 
     #[test]

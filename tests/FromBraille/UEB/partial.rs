@@ -101,10 +101,7 @@ fn above_missing_item() -> Result<()> {
 
 #[test]
 fn paren_open_only() -> Result<()> {
-    assert_contains(
-        "⠐⠣",
-        &["<mo>(</mo>", "<mrow></mrow>", "<mtext>&#xFFFD;</mtext>"],
-    )
+    assert_contains("⠐⠣", &["<math><mo>(</mo></math>"])
 }
 
 #[test]
@@ -112,7 +109,7 @@ fn paren_content_no_close() -> Result<()> {
     let mml = parse_partial("⠐⠣⠼⠁")?;
     assert!(mml.contains("<mo>(</mo>"), "{mml}");
     assert!(mml.contains("<mn>1</mn>"), "{mml}");
-    assert!(mml.contains("<mtext>&#xFFFD;</mtext>"), "{mml}");
+    assert!(!mml.contains("&#xFFFD;"), "{mml}");
     assert!(!mml.contains("<mo>)</mo>"), "{mml}");
     Ok(())
 }
@@ -143,8 +140,32 @@ fn expr_then_open_frac() -> Result<()> {
 fn trailing_stray_close() -> Result<()> {
     let mml = parse_partial("⠭⠐⠜")?;
     assert!(mml.contains("<mi>x</mi>"), "{mml}");
+    assert!(mml.contains("<mo>)</mo>"), "{mml}");
+    assert!(!mml.contains("&#xFFFD;"), "{mml}");
+    Ok(())
+}
+
+#[test]
+fn trailing_stray_close_after_sum() -> Result<()> {
+    // 2a+b)  — unmatched close paren after an expression
+    let mml = parse_partial("⠼⠃⠰⠁⠐⠖⠃⠐⠜")?;
+    assert!(mml.contains("<mn>2</mn>"), "{mml}");
+    assert!(mml.contains("<mi>a</mi>"), "{mml}");
+    assert!(mml.contains("<mo>+</mo>") || mml.contains("+"), "{mml}");
+    assert!(mml.contains("<mi>b</mi>"), "{mml}");
+    assert!(mml.contains("<mo>)</mo>"), "{mml}");
+    assert!(!mml.contains("<mtext>"), "{mml}");
+    Ok(())
+}
+
+#[test]
+fn trailing_incomplete_prefix() -> Result<()> {
+    // a+b⠐
+    let mml = parse_partial("⠁⠐⠖⠃⠐")?;
+    assert!(mml.contains("<mi>a</mi>"), "{mml}");
+    assert!(mml.contains("<mi>b</mi>"), "{mml}");
     assert!(
-        mml.contains("<mtext>&#x2810;&#x281C;</mtext>") || mml.contains("<mtext>⠐⠜</mtext>"),
+        mml.contains("<mtext>&#x2810;</mtext>") || mml.contains("<mtext>⠐</mtext>"),
         "{mml}"
     );
     Ok(())
