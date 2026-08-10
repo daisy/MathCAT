@@ -106,6 +106,42 @@
   - T: "fim da fração"
   - pause: medium
 
+# ACRESCENTADO: leitura literal de msqrt/mroot sem semântica inferida.
+# O inglês evita dizer "quadrada" porque a forma literal não garante índice.
+- name: literal-default
+  tag: msqrt
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [OT: "a"]
+  - T: "raiz"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
+      then: [T: "fim da raiz", pause: medium]
+
+- name: literal-default
+  tag: mroot
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [OT: "a"]
+  - T: "raiz de índice"
+  - x: "*[2]"
+  - pause: short
+  - T: "de"
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[1],'leaf'))"
+      then: [T: "fim da raiz"]
+
 - name: simple-sub
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
@@ -171,12 +207,26 @@
   - T: "com"
   - x: "*[2]"
   - T: abaixo
+# CORREÇÃO: regra ausente em es/ (e portanto em pt). O inglês trata
+# variáveis com pontos acima — notação de Newton para derivada temporal.
+- name: dot-over
+  tag: modified-variable
+  match: "*[1][self::m:mi] and (*[2][translate(., '.', '')=''])"
+  replace:
+  - x: "*[1]"
+  - x: "IfThenElse(string-length(*[2])=1, 'com ponto acima',
+        IfThenElse(string-length(*[2])=2, 'com dois pontos acima',
+        IfThenElse(string-length(*[2])=3, 'com três pontos acima', 'com quatro pontos acima')
+        ))"
+  - pause: short
+
 - name: diacriticals
-  tag: mover
-  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^~→¯_', '')='']"
+  tag: [mover, modified-variable]
+  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
   replace:
   - x: "*[1]"
   - x: "*[2]"
+  - pause: short
 
 - name: default
   tag: mover
@@ -355,8 +405,9 @@
                           - x: "$Postscripts[position() > 8]"
                           - T: "fim dos índices"
 
+
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
@@ -380,7 +431,8 @@
 - name: default
   # callers/context should do that.
   # this may get called from navigation -- in that case, there is no context to speak the row #, so don't do it
-  tag: mtr
+  # CORREÇÃO: o inglês usa tag [mtr, mlabeledtr]; o espanhol ficou só em mtr.
+  tag: [mtr, mlabeledtr]
   match: "."
   replace:
   - x: "*"
@@ -469,7 +521,7 @@
       then: [T: "seta para a direita", pause: short]
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
-      then: [T: " seta para nordeste", pause: short]
+      then: [T: "seta para nordeste", pause: short]
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
       then: [T: "seta para sudeste", pause: short]
@@ -548,6 +600,24 @@
       if: "IsNode(., '2D')"
       then: [pause: short]
       else: [pause: auto]
+
+# ACRESCENTADO: potência cujo expoente carrega um índice (x^(y_z)).
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "sub"
+  - x: "*[2]"
+  - pause: short
+
+# ACRESCENTADO: intents com a propriedade :nofix: os argumentos já
+# vêm na ordem de fala; basta falar o nome do intent.
+- name: nofix-intent
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 

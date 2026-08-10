@@ -1,3 +1,19 @@
+/// TESTES DO IDIOMA pt — como reconciliar com as regras
+///
+/// As strings esperadas abaixo foram escritas para refletir a intenção
+/// das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
+/// PAUSAS inseridas pelo motor e podem divergir levemente na primeira
+/// execução. Método do guia oficial de tradutores:
+///   1. rode `cargo test Languages::pt`
+///   2. para cada falha, compare `left` (esperado) com `right` (gerado)
+///   3. se o GERADO estiver correto em português, copie-o para o teste;
+///      se estiver errado, conserte a REGRA, nunca o teste.
+///
+/// ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
+/// que não refletiam as regras (ex.: esperava "logaritmo natural" com a
+/// regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
+/// Não herde strings esperadas de es/ sem conferir.
+
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
@@ -80,7 +96,7 @@ fn si_base_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">nsec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">psec</mi>
     </math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "1 quettaampère, vírgula; 2 ronnaampères, vírgula; 1 yottacandela, vírgula; 2 zettacandelas, vírgula; 1 exakelvin, vírgula; 2 petakelvins, vírgula; 1 terakelvin, vírgula; 2 gigakelvins, vírgula; 1 megagrama, vírgula; 2 quilogramas, vírgula; 1 hectômetro, vírgula; 2 decâmetros, vírgula; 1 decimol, vírgula; 2 centimols, vírgula; 1 milisegundo, vírgula; 2 microsegundos, vírgula; 1 nanosegundo, vírgula; 2 picosegundos")?;
+        "1 quettaampère, vírgula; 2 ronnaampères, vírgula; 1 yottacandela, vírgula; 2 zettacandelas, vírgula; 1 exakelvin, vírgula; 2 petakelvins, vírgula; 1 terakelvin, vírgula; 2 gigakelvins, vírgula; 1 megagrama, vírgula; 2 quilogramas, vírgula; 1 hectômetro, vírgula; 2 decâmetros, vírgula; 1 decimol, vírgula; 2 centimols, vírgula; 1 milissegundo, vírgula; 2 microssegundos, vírgula; 1 nanossegundo, vírgula; 2 picossegundos")?;
                 return Ok(());
 
 }
@@ -165,7 +181,7 @@ fn si_derived_2_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">PWb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EWb</mi>
     </math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "1 quectonewton, vírgula; 2 rontonewtons, vírgula; 1 yoctoohm, vírgula; 2 zeptoohms, vírgula; 1 attoohm, vírgula; 2 femtoohms, vírgula; 1 picopascal, vírgula; 2 nanopascals, vírgula; 1 microsiemens, vírgula; 2 milisiemens, vírgula; 1 centisievert, vírgula; 2 decisieverts, vírgula; 1 decatesla, vírgula; 2 hectoteslas, vírgula; 1 quilovolt, vírgula; 2 megavolts, vírgula; 1 gigawatt, vírgula; 2 terawatts, vírgula; 1 petaweber, vírgula; 2 exawebers")?;
+        "1 quectonewton, vírgula; 2 rontonewtons, vírgula; 1 yoctoohm, vírgula; 2 zeptoohms, vírgula; 1 attoohm, vírgula; 2 femtoohms, vírgula; 1 picopascal, vírgula; 2 nanopascals, vírgula; 1 microssiemens, vírgula; 2 milissiemens, vírgula; 1 centissievert, vírgula; 2 decissieverts, vírgula; 1 decatesla, vírgula; 2 hectoteslas, vírgula; 1 quilovolt, vírgula; 2 megavolts, vírgula; 1 gigawatt, vírgula; 2 terawatts, vírgula; 1 petaweber, vírgula; 2 exawebers")?;
                 return Ok(());
 
 }
@@ -216,7 +232,7 @@ fn si_accepted_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">TBd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EBd</mi>
     </math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "1 quettalitro, vírgula; 2 ronnalitros, vírgula; 1 yottalitro, vírgula; 2 zettalitros, vírgula; 1 exalitro, vírgula; 2 petalitros, vírgula; 1 teratonelada, vírgula; 2 gigatoneladas, vírgula; 1 megadalton, vírgula; 2 quilodaltons, vírgula; 1 decineper, vírgula; 2 centineperes, vírgula; 1 hectounidade de massa atômica; vírgula; 2 decaunidades de massa atômica; vírgula; 1 milielétron-volt, vírgula; 2 microelétron-volts, vírgula; 1 nanorradiano, vírgula; 2 picorradianos, vírgula; 1 femtoesferorradiano, vírgula; 2 attoesferorradianos, vírgula; 1 gigaano, vírgula; 2 megaanos, vírgula; 1 zeptosegundo de arco, vírgula; 2 yoctosegundos de arco, vírgula; 1 quilobit, vírgula; 2 megabits, vírgula; 1 gigabyte, vírgula; 2 terabytes, vírgula; 1 terabaud, vírgula; 2 exabauds")?;
+        "1 quettalitro, vírgula; 2 ronnalitros, vírgula; 1 yottalitro, vírgula; 2 zettalitros, vírgula; 1 exalitro, vírgula; 2 petalitros, vírgula; 1 teratonelada, vírgula; 2 gigatoneladas, vírgula; 1 megadalton, vírgula; 2 quilodaltons, vírgula; 1 decineper, vírgula; 2 centineperes, vírgula; 1 hectounidade de massa atômica; vírgula; 2 decaunidades de massa atômica; vírgula; 1 milielétron-volt, vírgula; 2 microelétron-volts, vírgula; 1 nanorradiano, vírgula; 2 picorradianos, vírgula; 1 femtoesferorradiano, vírgula; 2 attoesferorradianos, vírgula; 1 gigaano, vírgula; 2 megaanos, vírgula; 1 zeptossegundo de arco, vírgula; 2 yoctossegundos de arco, vírgula; 1 quilobit, vírgula; 2 megabits, vírgula; 1 gigabyte, vírgula; 2 terabytes, vírgula; 1 terabaud, vírgula; 2 exabauds")?;
                 return Ok(());
 
 }
@@ -373,7 +389,7 @@ fn si_other_numbers() -> Result<()> {
                             <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
                             <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "10 litro, vírgula; 20 metros, vírgula; x milisegundos, vírgula; y microsegundos, vírgula, decagramas vírgula; 1235 decanewtons, vírgula; 25 microsegundos, vírgula; 3234 mols")?;
+        "10 litro, vírgula; 20 metros, vírgula; x milissegundos, vírgula; y microssegundos, vírgula, decagramas vírgula; 1235 decanewtons, vírgula; 25 microssegundos, vírgula; 3234 mols")?;
                 return Ok(());
 
 }

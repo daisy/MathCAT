@@ -46,10 +46,6 @@
     "laplacian": "function=laplaciano",
 
     "chemistry-concentration": "function= ; concentração: concentração de: a concentração de; fim da concentração",
-
-    # NOTA DE TRADUÇÃO: estas duas entradas existem no en/definitions.yaml
-    # mas FALTAVAM no espanhol. A fala dos intervalos é tratada na regra
-    # "intervals" de SharedRules/general.yaml (corrigida em pt).
     "probability": "nofix=P: probabilidade",
     "conditional-probability": "function=probabilidade; dado",
     "intersection": "infix=interseção",
@@ -58,7 +54,7 @@
 
 # NOTA DE TRADUÇÃO: no arquivo em espanhol esta seção ficou em inglês.
 # Aqui está traduzida, porque estas palavras são faladas durante a
-# navegação (ex.: "saindo de numerador, em denominador").
+# navegação ex.: "saindo de numerador, em denominador" etc
 - NavigationParts: {
     "large-op": "base; limite inferior; limite superior",
     "mfrac": "numerador;denominador",
@@ -93,15 +89,12 @@
 # from www.bipm.org/documents/20126/41483022/SIBrochure-9-EN.pdf
 #   Prefixes may be used with any of the 29 SI units with special names
 #   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
-#
-# NOTA DE TRADUÇÃO: em português do Brasil as unidades com nome de pessoa
-# mantêm a grafia original (volt, watt, joule, newton, coulomb, farad),
-# ao contrário do espanhol, que as adapta (voltio, vatio, julio, culombio).
+
 - SIUnits: {
     # base units
     "A": "ampère",
     "cd": "candela",
-    "K": "kelvin", "K": "kelvin", # U+212A  — kelvin não leva a palavra "grau"
+    "K": "kelvin", "K": "kelvin", 
     "g": "grama",
     "m": "metro",
     "mol": "mol",
@@ -181,6 +174,31 @@
     "dB": "decibel", # already logarithmic, so not used with SI prefixes
     # radiano com prefixo dobra o r (nano+radiano = nanorradiano)
     "mrad": "milirradiano", "µrad": "microrradiano", "nrad": "nanorradiano", "prad": "picorradiano", "krad": "quilorradiano",
+
+
+    # CORREÇÃO ORTOGRÁFICA pt: prefixo terminado em vogal seguido de
+    # palavra iniciada por "s" dobra o s ex: milissegundo, microssegundo,
+    # nanossegundo. É o mesmo caso já tratado para "radiano" acima
+    # (milirradiano). A regra genérica de composição do MathCAT concatena
+    # sem dobrar e produziria "milisegundo".
+    # "as" fica de fora: o símbolo já significa "segundo de arco".
+    "Qs": "quettassegundo", "Rs": "ronnassegundo", "Ys": "yottassegundo", "Zs": "zettassegundo", "Es": "exassegundo",
+    "Ps": "petassegundo", "Ts": "terassegundo", "Gs": "gigassegundo", "Ms": "megassegundo", "ks": "quilossegundo",
+    "hs": "hectossegundo", "das": "decassegundo", "ds": "decissegundo", "cs": "centissegundo", "ms": "milissegundo",
+    "µs": "microssegundo", "ns": "nanossegundo", "ps": "picossegundo", "fs": "femtossegundo", "zs": "zeptossegundo",
+    "ys": "yoctossegundo", "rs": "rontossegundo", "qs": "quectossegundo",
+
+    "QS": "quettassiemens", "RS": "ronnassiemens", "YS": "yottassiemens", "ZS": "zettassiemens", "ES": "exassiemens",
+    "PS": "petassiemens", "TS": "terassiemens", "GS": "gigassiemens", "MS": "megassiemens", "kS": "quilossiemens",
+    "hS": "hectossiemens", "daS": "decassiemens", "dS": "decissiemens", "cS": "centissiemens", "mS": "milissiemens",
+    "µS": "microssiemens", "nS": "nanossiemens", "pS": "picossiemens", "fS": "femtossiemens", "aS": "attossiemens",
+    "zS": "zeptossiemens", "yS": "yoctossiemens", "rS": "rontossiemens", "qS": "quectossiemens",
+
+    "QSv": "quettassievert", "RSv": "ronnassievert", "YSv": "yottassievert", "ZSv": "zettassievert", "ESv": "exassievert",
+    "PSv": "petassievert", "TSv": "terassievert", "GSv": "gigassievert", "MSv": "megassievert", "kSv": "quilossievert",
+    "hSv": "hectossievert", "daSv": "decassievert", "dSv": "decissievert", "cSv": "centissievert", "mSv": "milissievert",
+    "µSv": "microssievert", "nSv": "nanossievert", "pSv": "picossievert", "fSv": "femtossievert", "aSv": "attossievert",
+    "zSv": "zeptossievert", "ySv": "yoctossievert", "rSv": "rontossievert", "qSv": "quectossievert",
 
     "atm": "atmosfera",
     "amu": "unidade de massa atômica",
@@ -270,6 +288,15 @@
     "mpg": "mile per gallon",
   }
 
+# ACRESCENTADO símbolos monetários para a regra currency.
+# O inglês não tem R$; acrescentado por ser o caso principal no Brasil.
+- CurrencySymbols: {
+    "R$": "real",
+    "$": "dólar", "US$": "dólar", "¢": "centavo", "€": "euro", "£": "libra",
+    "₡": "colón", "₤": "lira", "₨": "rupia", "₩": "won", "₪": "shekel",
+    "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcoin",
+  }
+
 - PluralForms: {
     "lúmen": "lúmens",
     "kelvin": "kelvins",
@@ -283,7 +310,31 @@
     # gera "decibeles"/"molares". Em português o plural de -el é -éis.
     "decibel": "decibéis",
     "bel": "béis",
+
+    # Unidades invariáveis no plural continuam invariáveis quando prefixadas.
+    # A regra genérica não consulta o nome composto e produziria
+    # "milissiemenses", "decahertzes", "attoluxes".
+    "quettassiemens": "quettassiemens", "ronnassiemens": "ronnassiemens", "yottassiemens": "yottassiemens", "zettassiemens": "zettassiemens",
+    "exassiemens": "exassiemens", "petassiemens": "petassiemens", "terassiemens": "terassiemens", "gigassiemens": "gigassiemens",
+    "megassiemens": "megassiemens", "quilossiemens": "quilossiemens", "hectossiemens": "hectossiemens", "decassiemens": "decassiemens",
+    "decissiemens": "decissiemens", "centissiemens": "centissiemens", "milissiemens": "milissiemens", "microssiemens": "microssiemens",
+    "nanossiemens": "nanossiemens", "picossiemens": "picossiemens", "femtossiemens": "femtossiemens", "attossiemens": "attossiemens",
+    "zeptossiemens": "zeptossiemens", "yoctossiemens": "yoctossiemens", "rontossiemens": "rontossiemens", "quectossiemens": "quectossiemens",
+    "quettahertz": "quettahertz", "ronnahertz": "ronnahertz", "yottahertz": "yottahertz", "zettahertz": "zettahertz",
+    "exahertz": "exahertz", "petahertz": "petahertz", "terahertz": "terahertz", "gigahertz": "gigahertz",
+    "megahertz": "megahertz", "quilohertz": "quilohertz", "hectohertz": "hectohertz", "decahertz": "decahertz",
+    "decihertz": "decihertz", "centihertz": "centihertz", "milihertz": "milihertz", "microhertz": "microhertz",
+    "nanohertz": "nanohertz", "picohertz": "picohertz", "femtohertz": "femtohertz", "attohertz": "attohertz",
+    "zeptohertz": "zeptohertz", "yoctohertz": "yoctohertz", "rontohertz": "rontohertz", "quectohertz": "quectohertz",
+    "quettalux": "quettalux", "ronnalux": "ronnalux", "yottalux": "yottalux", "zettalux": "zettalux",
+    "exalux": "exalux", "petalux": "petalux", "teralux": "teralux", "gigalux": "gigalux",
+    "megalux": "megalux", "quilolux": "quilolux", "hectolux": "hectolux", "decalux": "decalux",
+    "decilux": "decilux", "centilux": "centilux", "mililux": "mililux", "microlux": "microlux",
+    "nanolux": "nanolux", "picolux": "picolux", "femtolux": "femtolux", "attolux": "attolux",
+    "zeptolux": "zeptolux", "yoctolux": "yoctolux", "rontolux": "rontolux", "quectolux": "quectolux",
+
     "mho": "mhos",
+    "real": "reais", "dólar": "dólares", "colón": "colones",
     "pascal": "pascals",
     "weber": "webers",
     "becquerel": "becquerels",
@@ -309,7 +360,7 @@
 # The larger ordinal numbers (e.g, millionth) is used when there are only
 # '0's after that decimal place (e.g., 23000000).
 #
-# NOTA DE TRADUÇÃO — regra do português para denominador de fração:
+# NOTA DE TRADUÇÃO -> regra do português para denominador de fração:
 #   até 1/10 usa-se o ordinal ("um terço", "um décimo");
 #   de 1/11 em diante usa-se "avos" ("um onze avos", "três vinte avos").
 # Isso difere do inglês e do espanhol, e está refletido nas listas plurais.

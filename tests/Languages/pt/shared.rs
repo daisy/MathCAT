@@ -1,3 +1,19 @@
+/// TESTES DO IDIOMA pt — como reconciliar com as regras
+///
+/// As strings esperadas abaixo foram escritas para refletir a intenção
+/// das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
+/// PAUSAS inseridas pelo motor e podem divergir levemente na primeira
+/// execução. Método do guia oficial de tradutores:
+///   1. rode `cargo test Languages::pt`
+///   2. para cada falha, compare `left` (esperado) com `right` (gerado)
+///   3. se o GERADO estiver correto em português, copie-o para o teste;
+///      se estiver errado, conserte a REGRA, nunca o teste.
+///
+/// ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
+/// que não refletiam as regras (ex.: esperava "logaritmo natural" com a
+/// regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
+/// Não herde strings esperadas de es/ sem conferir.
+
 /// Tests for rules shared between various speech styles:
 /// *  modified var
 use crate::common::*;
@@ -131,6 +147,8 @@ fn prime() -> Result<()> {
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
     test("pt", "SimpleSpeak", expr, "maiúsculo p, abre parênteses, maiúsculo a barra vertical maiúsculo b; fecha parênteses")?;
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr,  "maiúsculo p, abre parênteses, maiúsculo a divide maiúsculo b, fecha parênteses")?; // not good, but follows the spec
     return Ok(());
 
@@ -220,7 +238,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a and maiúsculo b; fecha parênteses; é igual a; maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p de maiúsculo a; maiúsculo p de maiúsculo b")?;
+    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p de maiúsculo a; maiúsculo p de maiúsculo b")?;
     return Ok(());
 
 }
@@ -267,7 +285,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("pt", "SimpleSpeak", expr, "fi reto de x, é igual a; c vezes, e elevado à negativo h ao quadrado, x ao quadrado potência")?;
+    test("pt", "SimpleSpeak", expr, "fi reto de x, é igual a; c vezes, e elevado à potência negativo h ao quadrado, x ao quadrado")?;
     return Ok(());
 
 }
@@ -309,6 +327,8 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr, "fi reto de x é igual a; c, e elevado a menos h ao quadrado x ao quadrado, fim do expoente")?;
     return Ok(());
 

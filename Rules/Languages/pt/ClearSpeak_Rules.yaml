@@ -1,8 +1,18 @@
-###ainda n terminei
+- name: pause
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
+  replace:
+   - with:
+      variables: [MatchingPause: "true()"]
+      replace:
+      - test:
+        - if: "contains(@data-intent-property, ':pause-long')"
+          then: [pause: long]
+        - else_if: "contains(@data-intent-property, ':pause-short')"
+          then: [pause: short]
+          else: [pause: medium]
+      - x: "."
 
-
-
----
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
@@ -23,16 +33,18 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "el"]
+      then: [T: "a"]    # "a raiz" (feminino)
+  - T: "raiz quadrada"
+  # CORREÇÃO de ordem: o adjetivo vem depois do substantivo em português 
+  # "a raiz quadrada negativa/positiva de x", não "a positiva raiz quadrada".
   - test:
       if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
       - bookmark: "*[1]/@id"
       - test:
           if: parent::*[self::m:minus and count(*)=1]
-          then: [T: "menos"]
-          else: [T: "positivo"]
-  - T: "raíz cuadrada"
+          then: [T: "negativa"]
+          else: [T: "positiva"]
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]
@@ -42,7 +54,7 @@
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - T: "fin de raíz"
+      - T: "fim da raiz"
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -54,7 +66,22 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "el"]
+      then: [T: "a"]
+  - test:
+      if: "*[2][self::m:mn]"
+      then_test:
+      - if: "*[2][.='2']"
+        then: [T: "raiz quadrada"]
+      - else_if: "*[2][.='3']"
+        then: [T: "raiz cúbica"]
+      - else_if: "*[2][not(contains(., '.'))]"
+        # CORREÇÃO: ToOrdinal gerava "quarto raiz" (masculino + ordem inglesa).
+        # Em português: "raiz de índice 4", mesma forma do SimpleSpeak.
+        then: [T: "raiz de índice", x: "*[2]"]
+      else:
+      - T: "raiz de índice"
+      - x: "*[2]"
+  # adjetivo depois do substantivo: "a raiz cúbica negativa de x"
   - test:
       if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
@@ -63,25 +90,8 @@
           then: [bookmark: "parent/@id"]
       - test:
           if: parent::m:minus
-          then: [T: "menos"]
-          else: [T: "positivo"]
-  - test:
-      if: "*[2][self::m:mn]"
-      then_test:
-      - if: "*[2][.='2']"
-        then: [T: "raíz cuadrada"]
-      - else_if: "*[2][.='3']"
-        then: [T: ra"íz cúbica"]
-      - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", T: "raíz"]
-      else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-          else: [x: "*[2]"]
-      - T: "raíz"
+          then: [T: "negativa"]
+          else: [T: "positiva"]
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]
@@ -90,7 +100,7 @@
       if: $ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
       then:
       - pause: short
-      - T: "fin de raíz"
+      - T: "fim da raiz"
       - pause: medium
       else_test:
         if: IsNode(*[1], 'simple')
@@ -129,7 +139,7 @@
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - t: "por"      # phrase('5 meters 'per' second)
+  - T: "por"      # "cinco metros por segundo"
   - x: "*[2]"
 
 - name: common-fraction
@@ -161,17 +171,18 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [OT: "la"]
-      - T: "fracción"
+          then: [OT: "a"]
+      - T: "fração"
   - x: "*[1]"
-  - T: "partido por"
+  # léxico = fração simples é "a sobre b", não "a partido por b"
+  - T: "sobre"
   - x: "*[2]"
   - test:
-      # very ugly!!! -- replicate nested ordinal fraction as they are an exception
+
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
       then:
       - pause: short
-      - T: "fin de fracción"
+      - T: "fim da fração"
       - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
@@ -193,34 +204,34 @@
   - ")"
   replace:
   - x: "*[1]"
-  - T: "partido por"
+  - T: "sobre"
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - T: "fin de fracción"
+      - T: "fim da fração"
       - pause: short
 
 - name: default
   tag: fraction
   match: "."
   replace:
-  - OT: "la"
-  - T: "fracción con numerador"
+  - OT: "a"
+  - T: "fração com numerador"
   - test:
       if: not(IsNode(*[1], 'simple'))
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - T: "y denominador"
+  - T: "e denominador"
   - x: "*[2]"
   - pause: long
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='GeneralEndFrac'"
       then:
       - pause: short
-      - T: "fin de fracción"
+      - T: "fim da fração"
       - pause: short
 
 # rules for functions raised to a power
@@ -236,7 +247,7 @@
       else_test:
         if: $ClearSpeak_Trig = 'ArcTrig'
         then: [bookmark: "*[2]/@id", T: "arco", x: "*[1]"]
-        else: [bookmark: "*[2]/@id", T: "inverso", x: "*[1]"] # default/Auto
+        else: [bookmark: "*[2]/@id", T: "inversa de", x: "*[1]"] # default/Auto
 
 - name: function-squared-or-cubed
   tag: power
@@ -250,9 +261,10 @@
       if: "*[2][.='2']"
       then_test: 
         if: "$Verbosity='Verbose'"
-        then: [T: "elevado al cuadrado"]
-        else: [T: "al cuadrado"]
-      else: [T: "al cubo"]
+        then: [T: "elevado ao quadrado"]
+        else: [T: "ao quadrado"]
+      # CORREÇÃO: espanhol dizia "al cubo" sem par verboso; padronizado
+      else: [T: "ao cubo"]
 - name: function-power
   tag: power
   match:
@@ -260,13 +272,13 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "la"]
+      then: [T: "a"]
   - bookmark: "*[2]/@id"
-  - test:
-      if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - T: "a la potencia de"
+  # CORREÇÃO: ToOrdinal lê a lista masculina ("quarto"), que não concorda
+  # com "potência" (feminino). Mesma solução do SimpleSpeak: forma cardinal.
+  - T: "potência"
+  - x: "*[2]"
+  - T: "de"
   - pause: short
   - x: "*[1]"
 
@@ -277,18 +289,18 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - T: "elevado a la exponente"
+  - T: "elevado ao expoente"
   - pause: short
   - x: "*[2]"
   - pause: short
-  - T: "fin de la exponente"
+  - T: "fim do expoente"
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - T: "elevado a la potencia"
+  - T: "elevado à potência"
   - x: "*[2]"
   - pause: short
 
@@ -298,7 +310,9 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - T: "quadrada"
+  # CORREÇÃO: dizia "quadrada", um adjetivo feminino solto, mesma classe do
+  # bug "cúbica" corrigido no SimpleSpeak. O inglês é "squared".
+  - T: "ao quadrado"
 
 - name: cubed
   tag: power
@@ -306,21 +320,20 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - T: "al cubo"
+  - T: "ao cubo"
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
+  # CORREÇÃO: "à" + ToOrdinal gerava "à quarto potência" (ordinal masculino
+  # contra "potência" feminino). Léxico = forma cardinal
+  # "elevado a 4". A preferência 'Ordinal' pediria "à quarta", que exigiria
+  # uma lista de ordinais femininos que o MathCAT não tem; degrada para a
+  # mesma forma cardinal.
   - x: "*[1]"
-  - T: "à"
-  - test:
-      if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "potência"]
+  - T: "elevado a"
+  - x: "*[2]"
 
 - name: simple-negative-integer
   tag: power
@@ -330,23 +343,18 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "a la"
+  - T: "elevado a"
   - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "potência"]
 
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
+  # CORREÇÃO: removido o bloco "pronounce" com o sufixo inglês "-th" (IPA θ),
+  # que produzia som estrangeiro. "x elevado a n" já está completo.
   - x: "*[1]"
-  - T: "à"
+  - T: "elevado a"
   - x: "*[2]"
-  - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "potência"]
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -370,10 +378,11 @@
   - "         ]"
   - "    ]"
   replace:
+  # CORREÇÃO de ordem: "elevado à [expressão] potência" é decalque do inglês
+  # "raised to the [...] power". Em português o núcleo vem antes.
   - x: "*[1]"
-  - T: "elevado à"
+  - T: "elevado à potência"
   - x: "*[2]"
-  - T: "potência"
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
@@ -392,9 +401,8 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - T: "elevado à"
+  - T: "elevado à potência"
   - x: "*[2]"
-  - T: "potência"
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -415,9 +423,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "elevado à"
+  - T: "elevado à potência"
   - x: "*[2]"
-  - T: "potencia"
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -440,9 +447,8 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "elevado à"
+  - T: "elevado à potência"
   - x: "*[2]"
-  - T: "potencia"
 
 - name: default-exponent-power
   tag: power
@@ -461,9 +467,8 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "elevado à"
+  - T: "elevado à potência"
   - x: "*[2]"
-  - T: "potencia"
 
 #
 # Some rules on mrows
@@ -472,11 +477,17 @@
   name: ClearSpeak-absolute-value
   tag: absolute-value
   match: "."
-  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'cardinality', 'absolute value')"]
+  # CORREÇÃO: as palavras da variável são FALADAS (x: "$WordToSay") e
+  # estavam em inglês. Gênero difere entre as duas ("a cardinalidade" /
+  # "o valor absoluto"), então artigo e fecho também vêm de variáveis.
+  variables:
+  - WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'cardinalidade', 'valor absoluto')"
+  - ArticleToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'a', 'o')"
+  - EndToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'fim da cardinalidade', 'fim do valor absoluto')"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "el"]
+      then: [x: "$ArticleToSay"]
   - x: "$WordToSay"
   - T: "de"
   - x: "*[1]"
@@ -484,8 +495,7 @@
       if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
       then:
       - pause: short
-      - T: "fin"
-      - x: "$WordToSay"
+      - x: "$EndToSay"
   - pause: short
 
 - name: set
@@ -494,22 +504,24 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [T: "conjunto vazio"]
+      then: [T: "o conjunto vazio"]
     - else_if: "count(*)=2"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "el"]
-      - T: "conjunto vacío"
+          then: [T: "o"]
+      - T: "conjunto vazio"
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "el"]
-      - T: "conjunto"
+          then: [T: "o"]
+      # "conjunto de todos os x tal que" o inglês é
+      # "set of all"; a preferência woAll suprime só o "todos os".
+      - T: "conjunto de"
       - test:
           if: $ClearSpeak_Sets != 'woAll'
-          then: [T: "todo"]
+          then: [T: "todos os"]
       - x: "*[1]/*[1]"
       - T: "tal que"
       - x: "*[1]/*[3]"
@@ -534,7 +546,7 @@
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - T: "intervalo de"
+  - T: "o intervalo de"
   - x: "*[1]"
   - T: "a"
   - x: "*[2]"
@@ -544,18 +556,21 @@
       then:
       - test:
           if: "starts-with(name(.), 'open')"
-          then: [T: "no"]
+          # CORREÇÃO: "no" é espanhol; em português, "não"
+          then: [T: "não"]
       - T: "incluindo"
       - x: "*[1]"
     # logic to deal with [not] arg #1
   - test:
       if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
       then_test:
+      # CORREÇÃO: conectivos estavam em espanhol ("o", "sino").
+      # inglês: or / and / but  ->  português: ou / e / mas
       - if: "name(.)='open-interval'"
-        then: [T: "o"]
+        then: [T: "ou"]
       - else_if: "name(.)='closed-interval'"
         then: [T: "e"]
-        else: [T: "sino"]
+        else: [T: "mas"]
     # some ugly logic dealing with connectives: or, but, but, and (cleaner to be part of next clause?)
   - test:
       if: not($is_intervals_end_infinity)
@@ -566,7 +581,7 @@
           then:
           - test:
               if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [T: "no"]
+              then: [T: "não"]
           - T: "incluindo"
       - x: "*[2]"
 
@@ -578,7 +593,7 @@
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
   - x: "*[1]/*[1]/*" # mtable/mtr/mtd
-  - T: "elegir"
+  - T: "escolhe"
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
@@ -586,12 +601,12 @@
   match: "parent::m:matrix or parent::m:determinant"
   replace:
   - pause: medium
-  - T: "fila"
+  - T: "linha"
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: .[self::m:mlabeledtr]
       then:
-      - T: "etiquetada"
+      - T: "com rótulo"
       - x: "*[1]/*"
       - pause: short
   - pause: medium
@@ -610,7 +625,7 @@
       #   if: not($IsColumnSilent) and ($ClearSpeak_Matrix = 'SpeakColNum' or count(preceding-sibling::*) != 0)
       if: "not($IsColumnSilent)"
       then:
-      - T: "columna"
+      - T: "coluna"
       - x: "count(preceding-sibling::*)+1"
       - pause: medium
   - x: "*"
@@ -630,7 +645,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [T: "el"]      # phrase('the' square root of 25)
+      then: [T: "o"]
   - test:
     - if: ".='log'"
       then: [T: "log"]
@@ -647,23 +662,44 @@
   - test:
     - if: $ClearSpeak_MultiLineOverview = 'Auto'
       then:
+      # CORREÇÃO 1: rótulos traduzidos: "superficie de ligadura" era lixo de
+      # tradução automática do espanhol para "constraint" (restrição);
+      # "nivel" para "step" (passo).
+      # CORREÇÃO 2: o plural era feito concatenando "s" (ct: "s"), o que
+      # geraria "equaçãos" e "restriçãos". Substituído por duas cadeias,
+      # singular e plural, escolhidas pela contagem.
       - test:
-        - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [T: "caso"]
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-          then: [T: "línea"]
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [T: "superficie de ligadura"]
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [T: "ecuación"]
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [T: "fila"]
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [T: "nivel"]
-          # else 'None -- don't say anything'
-      - test:
-        - if: "count(*) > 1 and $ClearSpeak_MultiLineLabel != 'None'"
-          then: [ct: "s"] # plural
+          if: "count(*) > 1"
+          then:
+          - test:
+            - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+              then: [T: "casos"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
+              then: [T: "linhas"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
+              then: [T: "restrições"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
+              then: [T: "equações"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
+              then: [T: "linhas"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
+              then: [T: "passos"]
+              # else 'None' — não diz nada
+          else:
+          - test:
+            - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+              then: [T: "caso"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
+              then: [T: "linha"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
+              then: [T: "restrição"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
+              then: [T: "equação"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
+              then: [T: "linha"]
+            - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
+              then: [T: "passo"]
+              # else 'None' — não diz nada
       - pause: short
   - x: "*"
 
@@ -674,17 +710,17 @@
   - test:
     - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
       then: [T: "caso"]
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-      then: [T: "línea"]
+    - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
+      then: [T: "linha"]
     - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-      then: [T: "superficie de ligadura"]
+      then: [T: "restrição"]
     - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-      then: [T: "ecuación"]
+      then: [T: "equação"]
     - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-      then: [T: "fila"]
+      then: [T: "linha"]
     - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-      then: [T: "nivel"]
-      # else 'None -- don't say anything'
+      then: [T: "passo"]
+      # else 'None' — não diz nada
   - test:
       if: "$ClearSpeak_MultiLineLabel != 'None'"
       then:
@@ -692,7 +728,7 @@
       - test:
           if: .[self::m:mlabeledtr]
           then:
-          - T: "etiquetada"
+          - T: "com rótulo"
           - x: "*[1]/*"
       - pause: medium
   - test:
@@ -712,7 +748,12 @@
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
       then: [T: ""]
-      else: [T: "multiplicado por"]
+      # léxico = "vezes" é a forma padrão; "multiplicado por" fica
+      # para o modo verboso 
+      else_test:
+        if: "$Verbosity = 'Verbose'"
+        then: [T: "multiplicado por"]
+        else: [T: "vezes"]
 
 - name: no-times
   tag: mo
@@ -745,7 +786,10 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - T: "multiplicado por"
+  - test:
+      if: "$Verbosity = 'Verbose'"
+      then: [T: "multiplicado por"]
+      else: [T: "vezes"]
 
 - name: no-say-parens
   tag: mrow

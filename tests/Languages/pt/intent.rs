@@ -1,3 +1,19 @@
+/// TESTES DO IDIOMA pt — como reconciliar com as regras
+///
+/// As strings esperadas abaixo foram escritas para refletir a intenção
+/// das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
+/// PAUSAS inseridas pelo motor e podem divergir levemente na primeira
+/// execução. Método do guia oficial de tradutores:
+///   1. rode `cargo test Languages::pt`
+///   2. para cada falha, compare `left` (esperado) com `right` (gerado)
+///   3. se o GERADO estiver correto em português, copie-o para o teste;
+///      se estiver errado, conserte a REGRA, nunca o teste.
+///
+/// ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
+/// que não refletiam as regras (ex.: esperava "logaritmo natural" com a
+/// regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
+/// Não herde strings esperadas de es/ sem conferir.
+
 /// Tests for rules shared between various speech styles:
 /// *  this has tests focused on the various alphabets
 use crate::common::*;
@@ -8,6 +24,8 @@ use anyhow::Result;
 fn silent_intent_mi() -> Result<()> {
     let expr = "<math> <mn>2</mn> <mi intent=':silent'>x</mi></math>";
     test("pt", "SimpleSpeak", expr, "2")?;
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr, "2")?;
     return Ok(());
 
@@ -21,6 +39,8 @@ fn silent_intent_msup() -> Result<()> {
             <mn arg='n'>2</mn>
         </msup></math>";
     test("pt", "SimpleSpeak", expr, "maiúsculo h 2")?;
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr, "maiúsculo h 2")?;
     return Ok(());
 
@@ -34,6 +54,8 @@ fn silent_intent_underscore() -> Result<()> {
             <mn arg='n'>2</mn>
         </msup></math>";
     test("pt", "SimpleSpeak", expr, "maiúsculo h 2")?;
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr, "maiúsculo h 2")?;
     return Ok(());
 
@@ -46,6 +68,8 @@ fn intent_prob_x() -> Result<()> {
         <mi arg='arg'>x</mi>
         <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
     </msup></math>";
+    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
+    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test("pt", "ClearSpeak", expr, "probabilidade de x")?;
     return Ok(());
 

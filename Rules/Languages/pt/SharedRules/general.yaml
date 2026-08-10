@@ -118,9 +118,6 @@
       if: "$Verbosity!='Terse'"
       then:
       - T: "o"
-  # CORREÇÃO: o original falava translate(name(.),'-',' ') — o NOME INGLÊS
-  # da tag ("open interval") — mesmo em espanhol. Aqui o nome é falado
-  # em português conforme o tipo de intervalo.
   - test:
     - if: "self::m:open-interval"
       then: [T: "intervalo aberto"]
@@ -201,18 +198,23 @@
   match: "count(*)=3"
   replace:
   - x: "*[1]"
+  # CORREÇÃO: a distinção Verbose/conciso do inglês ("subscript"/"sub")
+  # tinha colapsado, os dois ramos diziam a mesma coisa. Restaurada,
+  # coerente com as abreviações de default.yaml ('subscrito'/'sub').
+  # Também restaurada a condição $Impairment='Blindness' do match interno,
+  # presente no inglês e perdida na tradução.
   - test:
       if: "$Verbosity='Verbose'"
       then: [T: "subscrito"]
-      else: [T: "subscrito"]
+      else: [T: "sub"]
   - x: "*[2]"
   - test:
-      if: "not(IsNode(*[2],'leaf'))"
+      if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
       then:
       - test:
           if: "$Verbosity='Verbose'"
           then: [T: "fim do subscrito"]
-          else: [T: "fim do subscrito"]
+          else: [T: "fim do sub"]
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -222,7 +224,7 @@
       then_test:
         if: "$Verbosity='Verbose'"
         then: [T: "sobrescrito"]
-        else: [T: "sobrescrito"]
+        else: [T: "super"]
   - x: "*[3]"
   - pause: short
 
@@ -231,6 +233,15 @@
 # 2. does it match an English unit (if in an English language)
 # 3. does it match an SI prefix followed by an SI that accepts SI prefixes
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
+# ACRESCENTADO (en): no modo conciso, unidade de uma letra é soletrada
+# ("3 m" -> "3 m" soletrado), em vez de expandida para "metros".
+- name: unit-terse
+  tag: unit
+  match: "$Verbosity = 'Terse' and string-length(.)=1"
+  replace:
+  - bookmark: "@id"
+  - spell: "text()"
+
 - name: unit
   tag: unit
   match: "."
@@ -315,12 +326,34 @@
 
 
 
+# ACRESCENTADO: valores monetários "R$ 100" -> "100 reais".
+# Depende de CurrencySymbols e dos plurais em definitions.yaml.
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+    # se o valor é 1, não pluraliza
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
+
 - name: sin
   tag: mi
-  match: ".='sin'"
+  match: ".='sin' or .='sen'"
   replace:
   - bookmark: "@id"
-  - T: "seno"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: sen]
+      else: [T: seno]
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -355,7 +388,9 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: sec]
+      # CORREÇÃO: dizia "sec", idêntico à regra sec; cossecante e secante
+      # ficavam indistinguíveis na fala concisa.
+      then: [T: cossec]
       else: [T: cossecante]
 - name: cot
   tag: mi
@@ -392,7 +427,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: tangente]
+      then: [T: tangente hiperbólica]
       else: [T: tangente hiperbólica]
 - name: sech
   tag: mi
@@ -410,7 +445,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: secante hiperbólica]
+      then: [T: cossecante hiperbólica]
       else: [T: cossecante hiperbólica]
 - name: coth
   tag: mi
@@ -419,8 +454,29 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: cotangente]
+
+      then: [T: cotangente hiperbólica]
       else: [T: cotangente hiperbólica]
+
+.
+- name: exponential
+  tag: mi
+  match: ".='exp'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "exp"]
+      else: [T: "exponencial"]
+- name: covariance
+  tag: mi
+  match: ".='Cov'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "Cov"]
+      else: [T: "covariância"]
 
 -
   name: log    # handle both log and ln (if in an mrow, 'intents' are used)
@@ -505,6 +561,19 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # the pausing logic is pushed down to the <mtd>
 # the rules either speak the <mtr>s (to get "row n") or the <mtd>s. "column n" spoken if $IsColumnSilent is false
+# ACRESCENTADO: regra presente em en/ e ausente em es/ (e portanto em pt).
+# Sem ela, dízimas periódicas (0,333...) não eram anunciadas como periódicas.
+- name: repeating-decimal
+  tag: repeating-decimal
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "com dígitos periódicos"
+  - spell: "*[2]"
+
+# NOTA: o inglês funde matrix e determinant numa regra só. Em português os
+# artigos diferem ("a matriz" / "o determinante"), então a separação é
+# deliberada, não é lacuna de paridade.
 - name: 1x1-matrix
   tag: matrix
   variables: [IsColumnSilent: true()]
@@ -524,6 +593,48 @@
   - T: "determinante 1 por 1"
   - T: "com o elemento"
   - x: "*[1]/*"
+
+
+- name: zero-matrix
+  tag: matrix
+  match: "not( */*/*[not(self::m:mn and .= 0)] )"
+  replace:
+  - T: "a matriz nula"
+  - x: count(*)
+  - T: "por"
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+
+- name: identity-matrix
+  tag: matrix
+  match:
+  - "count(*) = count(*[1]/*) and "
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and "
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )"
+  replace:
+  - T: "a matriz identidade"
+  - x: count(*)
+  - T: "por"
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+
+- name: diagonal-matrix
+  tag: matrix
+  match:
+  - "count(*) = count(*[1]/*) and "
+  - "not( */*/*[not(self::m:mn and .= 0)]"
+  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
+  - "    )"
+  replace:
+  - T: "a matriz diagonal"
+  - x: count(*)
+  - T: "por"
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+  - insert:
+      nodes: "(*/*/*[not(self::m:mn and .= 0)]/..)"
+      replace: [pause: auto]
+  - pause: long
 
 # simpler reading methods for smaller matrices if the entries are simple
 - name: 2-or-3x1-matrix
@@ -681,6 +792,16 @@
         if: "$Verbosity='Medium'"
         then: [T: "subscrito"]
   - x: "*[3]"
+
+# ACRESCENTADO: dimensões de matriz anotadas como dimension-product
+# ("3×5" com intent de dimensão) fala "3 por 5".
+- name: dimension-by
+  tag: mrow
+  match: dimension-product
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [T: "por", pause: auto]
 
 - name: chemistry-msup
   tag: [chemical-formula]
@@ -936,9 +1057,9 @@
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
       then: [T: "está em equilíbrio com"]
     - else_if: ".='🣓'" # U+1F8D3
-      then: [T: "parcialmente deslocado para a esquerda"]
+      then: [T: "está em equilíbrio deslocado para a esquerda com"]
     - else_if: ".='🣒'" # U+1F8D2
-      then: [T: "parcialmente deslocado para a direita"]
+      then: [T: "está em equilíbrio deslocado para a direita com"]
       else: [x: "*"]
 
 - name: chemical-equation-operator

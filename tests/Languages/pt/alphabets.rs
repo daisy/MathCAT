@@ -1,3 +1,4 @@
+/// TESTES DO IDIOMA pt — como reconciliar com as regras
 /// Testes de alfabetos — versão pt.
 /// *  this has tests focused on the various alphabets
 use crate::common::*;
@@ -27,7 +28,7 @@ fn greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // caracteres de área privada do MathType: dependem do unicode-full.yaml, removido de pt de propósito
 fn greek_mathtype_private() -> Result<()> {
     let expr = "<math> <mi>\u{f8d3}</mi><mo>,</mo><mi>\u{f8e0}</mi></math>";
     test("pt", "SimpleSpeak", expr, "delta maiúsculo vazado, vírgula úpsilon maiúsculo vazado")?;
@@ -35,7 +36,7 @@ fn greek_mathtype_private() -> Result<()> {
 }
 
 #[test]
-#[ignore]
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn cap_cyrillic() -> Result<()> {
     let expr = "<math> <mi>А</mi><mo>,</mo><mi>Я</mi></math>";
     test("pt", "SimpleSpeak", expr, "cap a comma cap ya")?;
@@ -44,7 +45,7 @@ fn cap_cyrillic() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn parenthesized() -> Result<()> {
     let expr = "<math> <mi>⒜</mi><mo>,</mo><mi>⒵</mi></math>";
     test("pt", "SimpleSpeak", expr, "parenthesized eigh comma parenthesized z")?;
@@ -53,7 +54,7 @@ fn parenthesized() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
     test("pt", "SimpleSpeak", expr, "circled cap eigh comma circled cap z")?;
@@ -64,7 +65,7 @@ fn circled() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn fraktur() -> Result<()> {
     let expr = "<math> <mi>𝔄</mi><mo>,</mo><mi>𝔜</mi></math>";
     test("pt", "SimpleSpeak", expr, "fraktur cap eigh comma fraktur cap y")?;
@@ -96,7 +97,7 @@ fn bold_fraktur() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn double_struck() -> Result<()> {
     let expr = "<math> <mi>𝔸</mi><mo>,</mo><mi>𝕐</mi></math>";
     test("pt", "SimpleSpeak", expr, "double struck cap eigh, comma double struck cap y")?;
@@ -116,7 +117,7 @@ fn double_struck() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn script() -> Result<()> {
     let expr = "<math> <mi>𝒜</mi><mo>,</mo><mi>𝒵</mi></math>";
     test("pt", "SimpleSpeak", expr, "script cap eigh comma script cap z")?;
@@ -132,7 +133,7 @@ fn script() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold_script() -> Result<()> {
     let expr = "<math> <mi>𝓐</mi><mo>,</mo><mi>𝓩</mi></math>";
     test("pt", "SimpleSpeak", expr, "script bold cap eigh comma script bold cap z")?;
@@ -148,7 +149,7 @@ fn bold_script() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold() -> Result<()> {
     let expr = "<math> <mi>𝐀</mi><mo>,</mo><mi>𝐙</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap eigh comma bold cap z")?;
@@ -164,7 +165,7 @@ fn bold() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn italic() -> Result<()> {
     let expr = "<math> <mi>𝐴</mi><mo>,</mo><mi>𝑍</mi></math>";
     test("pt", "SimpleSpeak", expr, "cap eigh comma cap z")?;
@@ -180,7 +181,7 @@ fn italic() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif() -> Result<()> {
   let expr = "<math> <mi>𝖠</mi><mo>,</mo><mi>𝖹</mi></math>";
   test("pt", "SimpleSpeak", expr, "cap eigh comma cap z")?;
@@ -196,7 +197,7 @@ fn sans_serif() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold() -> Result<()> {
     let expr = "<math> <mi>𝗔</mi><mo>,</mo><mi>𝗭</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap eigh comma bold cap z")?;
@@ -212,7 +213,7 @@ fn sans_serif_bold() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_italic() -> Result<()> {
     let expr = "<math> <mi>𝘈</mi><mo>,</mo><mi>𝘡</mi></math>";
     test("pt", "SimpleSpeak", expr, "cap eigh comma cap z")?;
@@ -228,7 +229,7 @@ fn sans_serif_italic() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold_italic() -> Result<()> {
     let expr = "<math> <mi>𝘼</mi><mo>,</mo><mi>𝙕</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap eigh comma bold cap z")?;
@@ -244,7 +245,7 @@ fn sans_serif_bold_italic() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn monospace() -> Result<()> {
     let expr = "<math> <mi>𝙰</mi><mo>,</mo><mi>𝚉</mi></math>";
     test("pt", "SimpleSpeak", expr, "cap eigh comma cap z")?;
@@ -261,7 +262,7 @@ fn monospace() -> Result<()> {
 
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold_greek() -> Result<()> {
     let expr = "<math> <mi>𝚨</mi><mo>,</mo><mi>𝛀</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap alpha comma bold cap omega")?;
@@ -277,7 +278,7 @@ fn bold_greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝛛</mi><mo>,</mo><mi>𝛡</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold partial derivative, comma bold pi")?;
@@ -290,7 +291,7 @@ fn bold_greek_others() -> Result<()> {
 
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝛢</mi><mo>,</mo><mi>𝛺</mi></math>";
     test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula maiúsculo ômega")?;
@@ -306,7 +307,7 @@ fn italic_greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝜕</mi><mo>,</mo><mi>𝜛</mi></math>";
     test("pt", "SimpleSpeak", expr, "partial derivative comma pi")?;
@@ -318,7 +319,7 @@ fn italic_greek_others() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold_italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝜜</mi><mo>,</mo><mi>𝜴</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap alpha comma bold cap omega")?;
@@ -334,7 +335,7 @@ fn bold_italic_greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn bold_italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝝏</mi><mo>,</mo><mi>𝝕</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold partial derivative, comma bold pi")?;
@@ -346,7 +347,7 @@ fn bold_italic_greek_others() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold_greek() -> Result<()> {
     let expr = "<math> <mi>𝝖</mi><mo>,</mo><mi>𝝮</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap alpha comma bold cap omega")?;
@@ -362,7 +363,7 @@ fn sans_serif_bold_greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝞉</mi><mo>,</mo><mi>𝞏</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold partial derivative, comma bold pi")?;
@@ -374,7 +375,7 @@ fn sans_serif_bold_greek_others() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold_italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝞐</mi><mo>,</mo><mi>𝞨</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold cap alpha comma bold cap omega")?;
@@ -390,7 +391,7 @@ fn sans_serif_bold_italic_greek() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn sans_serif_bold_italic_greek_others() -> Result<()> {
     let expr = "<math> <mi>𝟃</mi><mo>,</mo><mi>𝟉</mi></math>";
     test("pt", "SimpleSpeak", expr, "bold partial derivative, comma bold pi")?;
@@ -402,7 +403,7 @@ fn sans_serif_bold_italic_greek_others() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito
 fn pua_regular() -> Result<()> {
   let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
   test("pt", "SimpleSpeak", expr, "cap eigh comma cap z")?;
@@ -411,7 +412,7 @@ fn pua_regular() -> Result<()> {
 }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito
 fn turned() -> Result<()> {
     let expr = "<math> <mi>Ⅎ</mi><mo>,</mo><mi>⅄</mi></math>";
     test("pt", "SimpleSpeak", expr, "turned cap f comma turned sans-serif cap y")?;
@@ -420,7 +421,7 @@ fn turned() -> Result<()> {
   }
 
 #[test]
-#[ignore] 
+#[ignore] // depende de unicode-full.yaml, removido de pt de propósito
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("pt", "SimpleSpeak", expr, "circled 1 comma circled 9")?;
