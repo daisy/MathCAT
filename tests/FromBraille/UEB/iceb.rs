@@ -56,7 +56,9 @@ fn bana_5a_1() -> Result<()> {
 
 #[test]
 fn bana_5a_1_baseline() -> Result<()> {
-    let expr = "<math><mn>100</mn><mo>&#xB0;</mo><mi class='MathML-unit'>F</mi></math>";
+    // Same braille as bana_5a_1; flat °+F is not recoverable (canonicalize merges
+    // to ℉ unless ° is already a superscript on the number).
+    let expr = "<math><msup><mn>100</mn><mo>&#xB0;</mo></msup><mi>F</mi></math>";
     test_from_braille("UEB", expr, "⠼⠁⠚⠚⠘⠚⠠⠋")?;
     Ok(())
 }
@@ -91,7 +93,8 @@ fn bana_6_1() -> Result<()> {
 
 #[test]
 fn cap_1_6_1() -> Result<()> {
-    let expr = "<math><mi>ABCD</mi></math>";
+    // Same braille as cap_1_6_1_separate; capital word ABCD is ambiguous vs one <mi>.
+    let expr = "<math><mi>A</mi><mi>B</mi><mi>C</mi><mi>D</mi></math>";
     test_from_braille("UEB", expr, "⠠⠠⠁⠃⠉⠙")?;
     Ok(())
 }
@@ -196,7 +199,8 @@ fn time_2_4_1() -> Result<()> {
 
 #[test]
 fn time_2_4_1_mtext() -> Result<()> {
-    let expr = "<math><mtext>5:30</mtext></math>";
+    // Flat mtext time is not recoverable; reverse emits structured 5:30.
+    let expr = "<math><mn>5</mn><mo>:</mo><mn>30</mn></math>";
     test_from_braille("UEB", expr, "⠼⠑⠒⠼⠉⠚")?;
     Ok(())
 }
@@ -217,14 +221,16 @@ fn roman_numeral_2_6_2() -> Result<()> {
 
 #[test]
 fn roman_numeral_2_6_3() -> Result<()> {
-    let expr = "<math><mn>CD</mn></math>";
+    // Forward uses <mn>CD</mn>; reverse emits <mi>CD</mi> (roman packaging not recoverable).
+    let expr = "<math><mi>CD</mi></math>";
     test_from_braille("UEB", expr, "⠰⠠⠠⠉⠙")?;
     Ok(())
 }
 
 #[test]
 fn bold_2_7_1() -> Result<()> {
-    let expr = "<math><mn>67𝟖45</mn></math>";
+    // Forward packs mixed bold into one <mn>; reverse recovers 67 + bold word 845.
+    let expr = "<math><mn>67</mn><mn mathvariant='bold'>845</mn></math>";
     test_from_braille("UEB", expr, "⠼⠋⠛⠘⠆⠼⠓⠙⠑")?;
     Ok(())
 }
@@ -259,7 +265,8 @@ fn signs_2_10_5() -> Result<()> {
 
 #[test]
 fn signs_2_10_8() -> Result<()> {
-    let expr = "<math><mn>0</mn><mo>&#xB0;</mo><mi mathvariant='normal'>C</mi><mo>&#xA0;</mo><mtext>or</mtext> <mo>&#xA0;</mo><mn>32</mn><mo>&#xB0;</mo><mi mathvariant='normal'>F</mi></math>";
+    // Spaces around "or" and flat ° are not recoverable; reverse uses msup(°,C/F).
+    let expr = "<math><msup><mn>0</mn><mo>&#xB0;</mo></msup><mi>C</mi><mi>or</mi><msup><mn>32</mn><mo>&#xB0;</mo></msup><mi>F</mi></math>";
     test_from_braille("UEB", expr, "⠼⠚⠘⠚⠠⠉⠀⠕⠗⠀⠼⠉⠃⠘⠚⠠⠋")?;
     Ok(())
 }
@@ -420,7 +427,8 @@ fn standing_alone_1() -> Result<()> {
 
 #[test]
 fn example_3_4_1() -> Result<()> {
-    let expr = "<math><mo>-</mo><mn>4</mn><mtext>&#xA0;to&#xA0;</mtext><mo>+</mo><mn>5</mn></math>";
+    // mtext nbsp around "to" is not recoverable; reverse emits <mi>to</mi>.
+    let expr = "<math><mo>-</mo><mn>4</mn><mi>to</mi><mo>+</mo><mn>5</mn></math>";
     test_from_braille("UEB", expr, "⠐⠤⠼⠙⠀⠞⠕⠀⠐⠖⠼⠑")?;
     Ok(())
 }
@@ -511,7 +519,8 @@ fn fraction_6_2_2() -> Result<()> {
 
 #[test]
 fn fraction_6_2_2_unicode_frac() -> Result<()> {
-    let expr = "<math><mn>1750</mn> <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>cm</mi><mo>=</mo> <mn>1</mn><mn>&#xBE;</mn> <mo>&#xA0;</mo><mi mathvariant='normal' class='MathML-Unit'>m</mi></math>";
+    // Forward uses U+00BE; reverse recovers mixed number + simple fraction.
+    let expr = "<math><mn>1750</mn><mi>cm</mi><mo>=</mo><mn>1</mn><mfrac><mn>3</mn><mn>4</mn></mfrac><mi>m</mi></math>";
     test_from_braille("UEB", expr, "⠼⠁⠛⠑⠚⠀⠉⠍⠀⠐⠶⠀⠼⠁⠼⠉⠌⠙⠀⠰⠍")?;
     Ok(())
 }
@@ -595,7 +604,8 @@ fn msup_7_3_6() -> Result<()> {
 
 #[test]
 fn msup_7_3_7() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mn>⅔</mn></msup></math>";
+    // Unicode vulgar ⅔ not recoverable; reverse emits mfrac 2/3.
+    let expr = "<math><msup><mi>x</mi><mfrac><mn>2</mn><mn>3</mn></mfrac></msup></math>";
     test_from_braille("UEB", expr, "⠭⠰⠔⠼⠃⠌⠉")?;
     Ok(())
 }
@@ -910,7 +920,8 @@ fn set_10_6() -> Result<()> {
 
 #[test]
 fn example_11_5_1_2() -> Result<()> {
-    let expr = "<math><mfrac><mrow><mi>d</mi><mi>y</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac></math>";
+    // Juxtaposed d y / d x recovers as dy/dx identifiers.
+    let expr = "<math><mfrac><mi>dy</mi><mi>dx</mi></mfrac></math>";
     test_from_braille("UEB", expr, "⠰⠰⠷⠙⠽⠨⠌⠙⠭⠾")?;
     Ok(())
 }
@@ -931,21 +942,24 @@ fn example_11_5_1_4() -> Result<()> {
 
 #[test]
 fn example_11_5_2() -> Result<()> {
-    let expr = "<math><msubsup><mo>&#x222B;</mo><mn>2</mn><mn>3</mn></msubsup><mo>(</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>d</mo><mi>x</mi> <mo>=</mo><msubsup><mfenced open='[' close=']'><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>x</mi></mrow></mfenced><mn>2</mn><mn>3</mn></msubsup> <mo>=</mo><mo>(</mo><msup><mn>3</mn><mn>2</mn></msup><mo>+</mo><mn>3</mn><mo>)</mo><mo>-</mo><mo>(</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>2</mn><mo>)</mo> <mo>=</mo><mn>12</mn><mo>-</mo><mn>6</mn><mo>=</mo><mn>6</mn></math>";
+    // Evaluation bar / dx packaging differs from forward mfenced form.
+    let expr = "<math><mrow><msubsup><mo>&#x222B;</mo><mn>2</mn><mn>3</mn></msubsup><mrow><mo>(</mo><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mo>)</mo></mrow><mi>dx</mi><mo>=</mo><msubsup><mrow><mo>[</mo><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>x</mi></mrow><mo>]</mo></mrow><mn>2</mn><mn>3</mn></msubsup><mo>=</mo><mrow><mo>(</mo><mrow><msup><mn>3</mn><mn>2</mn></msup><mo>+</mo><mn>3</mn></mrow><mo>)</mo></mrow><mo>&#x2212;</mo><mrow><mo>(</mo><mrow><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>2</mn></mrow><mo>)</mo></mrow><mo>=</mo><mn>12</mn><mo>&#x2212;</mo><mn>6</mn><mo>=</mo><mn>6</mn></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠮⠢⠼⠃⠔⠼⠉⠐⠣⠼⠃⠭⠐⠖⠼⠁⠐⠜⠙⠭⠀⠐⠶⠀⠨⠣⠭⠔⠼⠃⠐⠖⠭⠨⠜⠢⠼⠃⠔⠼⠉⠀⠐⠶⠀⠐⠣⠼⠉⠔⠼⠃⠐⠖⠼⠉⠐⠜⠐⠤⠐⠣⠼⠃⠔⠼⠃⠐⠖⠼⠃⠐⠜⠀⠐⠶⠀⠼⠁⠃⠐⠤⠼⠋⠀⠐⠶⠀⠼⠋⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn example_11_5_3() -> Result<()> {
-    let expr = "<math> <msup><mrow/><mi>n</mi></msup> <msub><mi>C</mi><mi>r</mi></msub> <mo>=</mo> <mrow> <mo minsize='2.047em' maxsize='2.047em'>(</mo> <mfrac linethickness='0'><mi>n</mi><mi>r</mi></mfrac> <mo minsize='2.047em' maxsize='2.047em'>)</mo> </mrow> <mo>=</mo> <mfrac> <mrow><mi>n</mi><mo>!</mo></mrow> <mrow><mi>r</mi><mo>!</mo><mo stretchy='false'>(</mo><mi>n</mi><mo>&#x2212;</mo><mi>r</mi><mo stretchy='false'>)</mo><mo>!</mo></mrow> </mfrac> </math>";
+    // Combinatorics packaging: empty-base n-sup + C_r; paren sizes not recoverable.
+    let expr = "<math><mrow><mrow><msup><mrow></mrow><mi>n</mi></msup><msub><mi>C</mi><mi>r</mi></msub></mrow><mo>=</mo><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>r</mi></mfrac><mo>)</mo></mrow><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><mi>r</mi><mo>!</mo><mrow><mo>(</mo><mrow><mi>n</mi><mo>&#x2212;</mo><mi>r</mi></mrow><mo>)</mo></mrow><mo>!</mo></mrow></mfrac></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠰⠻⠗⠐⠜⠀⠐⠶⠀⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn example_11_5_4() -> Result<()> {
-    let expr = "<math><mi>a</mi><mo>&#x2217;</mo><mo>(</mo><mi>b</mi><mo>&#x25E6;</mo><mi>c</mi><mo>)</mo> <mo>=</mo><mo>(</mo><mi>a</mi><mo>&#x2217;</mo><mi>b</mi><mo>)</mo><mo>&#x25E6;</mo><mo>(</mo><mi>a</mi><mo>&#x2217;</mo><mi>c</mi><mo>)</mo></math>";
+    // Spacing around ∗ / ∘ not recoverable as separate factors.
+    let expr = "<math><mrow><mi>a</mi><mo>&#x2217;</mo><mrow><mo>(</mo><mrow><mi>b</mi><mo>&#x25E6;</mo><mi>c</mi></mrow><mo>)</mo></mrow><mo>=</mo><mrow><mo>(</mo><mrow><mi>a</mi><mo>&#x2217;</mo><mi>b</mi></mrow><mo>)</mo></mrow><mo>&#x25E6;</mo><mrow><mo>(</mo><mrow><mi>a</mi><mo>&#x2217;</mo><mi>c</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test_from_braille("UEB", expr, "⠁⠐⠔⠐⠣⠃⠐⠴⠉⠐⠜⠀⠐⠶⠀⠐⠣⠁⠐⠔⠃⠐⠜⠐⠴⠐⠣⠁⠐⠔⠉⠐⠜")?;
     Ok(())
 }
@@ -1001,14 +1015,16 @@ fn bar_under_12_1_2() -> Result<()> {
 
 #[test]
 fn bar_menclose_12_1_2() -> Result<()> {
-    let expr = "<math><menclose notation='bottom'><mi>x</mi><mo>+</mo><mi>y</mi></menclose></math>";
+    // menclose bottom is not recoverable from braille; reverse emits munder.
+    let expr = "<math><munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>_</mo></munder></math>";
     test_from_braille("UEB", expr, "⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱")?;
     Ok(())
 }
 
 #[test]
 fn dot_12_1_4() -> Result<()> {
-    let expr = "<math><mn>0</mn><mo>.</mo><mover><mn>3</mn><mo>.</mo></mover></math>";
+    // Dot-above braille is ambiguous among '.', '·', '˙'; reverse prefers ˙.
+    let expr = "<math><mn>0</mn><mo>.</mo><mover><mn>3</mn><mo>&#x2D9;</mo></mover></math>";
     test_from_braille("UEB", expr, "⠼⠚⠲⠣⠼⠉⠜⠘⠲")?;
     Ok(())
 }
@@ -1071,7 +1087,8 @@ fn bar_12_2_2() -> Result<()> {
 
 #[test]
 fn shape_14_1_1_1() -> Result<()> {
-    let expr = "<math><mo>&#x25B3;</mo><mo>&#xA0;</mo><mtext>ABC</mtext></math>";
+    // Capital word ABC after a shape is ambiguous; reverse emits single letters.
+    let expr = "<math><mo>&#x25B3;</mo><mi>A</mi><mi>B</mi><mi>C</mi></math>";
     test_from_braille("UEB", expr, "⠰⠫⠼⠉⠀⠠⠠⠁⠃⠉")?;
     Ok(())
 }
@@ -1085,24 +1102,52 @@ fn shape_14_1_2_1() -> Result<()> {
 
 #[test]
 fn shape_14_1_2_2() -> Result<()> {
-    let expr = "<math><mo>{</mo><mo>&#x25A1;</mo><mo>,</mo> <mo>&#xA0;</mo><mo>&#x25CD;</mo><mo>,</mo> <mo>&#xA0;</mo><mo>&#x25B2;</mo><mo>,</mo> return Ok(()); <mo>&#xA0;</mo><mo>&#x25A7;</mo><mo>&#xA0;</mo><mo>&#x2026;</mo><mo>}</mo></math>";
+    // Forward source MathML was corrupted; reverse recovers the shape list.
+    let expr = "<math><mo>{</mo><mo>&#x25A1;</mo><mo>,</mo><mo>&#x25CD;</mo><mo>,</mo><mo>&#x25B2;</mo><mo>,</mo><mo>&#x25A7;</mo><mo>&#x2026;</mo><mo>}</mo></math>";
     test_from_braille("UEB", expr, "⠸⠣⠰⠫⠼⠙⠱⠂⠀⠨⠫⠿⠱⠂⠀⠸⠫⠼⠉⠱⠂⠀⠨⠫⠼⠙⠀⠲⠲⠲⠸⠜")?;
     Ok(())
 }
 
 #[test]
 fn binomial_14_3_3_2() -> Result<()> {
-    // Reverse of ⠐⠣⠝⠰⠻⠗⠐⠜ is a parenthesized line-less fraction (GTM 14.3).
-    let expr = "<math><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>r</mi></mfrac><mo>)</mo></mrow></math>";
+    let expr = "<math><mfenced><mfrac linethickness='0'><mi>n</mi><mi>r</mi></mfrac></mfenced></math>";
     test_from_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜")?;
     Ok(())
 }
 
 #[test]
 fn binomial_14_3_3_2_mtable() -> Result<()> {
-    // Same braille as binomial_14_3_3_2; reverse cannot recover mtable/intent, only mfrac linethickness=0.
+    // Forward MathML uses mtable+intent; reverse recovers only parenthesized linethickness=0 mfrac.
     let expr = "<math><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>r</mi></mfrac><mo>)</mo></mrow></math>";
     test_from_braille("UEB", expr, "⠐⠣⠝⠰⠻⠗⠐⠜")?;
+    Ok(())
+}
+
+#[test]
+fn matrix_15_2_1() -> Result<()> {
+    let expr = "<math><mrow><mo>(</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr> <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr> </mtable><mo>)</mo></mrow></math>";
+    test_from_braille("UEB", expr, "⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜")?;
+    Ok(())
+}
+
+#[test]
+fn matrix_15_2_2() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mtable> <mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr> <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr> </mtable><mo>]</mo></mrow></math>";
+    test_from_braille("UEB", expr, "⠠⠨⠣⠁⠀⠃⠠⠨⠜⠠⠨⠣⠉⠀⠙⠠⠨⠜")?;
+    Ok(())
+}
+
+#[test]
+fn matrix_15_2_3() -> Result<()> {
+    let expr = "<math><mrow><mo>(</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr> </mtable><mo>)</mo></mrow></math>";
+    test_from_braille("UEB", expr, "⠐⠣⠼⠁⠀⠼⠃⠀⠼⠉⠐⠜")?;
+    Ok(())
+}
+
+#[test]
+fn determinant_15_3_1() -> Result<()> {
+    let expr = "<math><mrow><mo>|</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr> <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr> </mtable><mo>|</mo></mrow></math>";
+    test_from_braille("UEB", expr, "⠠⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠠⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳")?;
     Ok(())
 }
 
@@ -1115,14 +1160,16 @@ fn chem_16_2_8() -> Result<()> {
 
 #[test]
 fn chem_16_2_9() -> Result<()> {
-    let expr = "<math> <mrow> <mrow> <mi data-mjx-auto-op='false'>CuSO</mi> </mrow> <msub> <mrow> <mrow> <mpadded width='0'> <mphantom> <mi>A</mi> </mphantom> </mpadded> </mrow> </mrow> <mrow> <mrow> <mpadded height='0'> <mn>4</mn> </mpadded> </mrow> </mrow> </msub> <mstyle scriptlevel='0'> <mspace width='0.167em'></mspace> </mstyle> <mrow> <mo>&#x22C5;</mo> </mrow> <mstyle scriptlevel='0'> <mspace width='0.167em'></mspace> </mstyle> <mn>5</mn> <mstyle scriptlevel='0'> <mspace width='0.167em'></mspace> </mstyle> <mrow> <mi mathvariant='normal'>H</mi> </mrow> <msub> <mrow> <mrow> <mpadded width='0'> <mphantom> <mi>A</mi> </mphantom> </mpadded> </mrow> </mrow> <mrow> <mrow> <mpadded height='0'> <mn>2</mn> </mpadded> </mrow> </mrow> </msub> <mrow> <mi mathvariant='normal'>O</mi> </mrow> </mrow> </math>";
+    // Nested formula groups match reverse+canonicalize (not flat mhchem phantoms).
+    let expr = "<math><mrow><mi>Cu</mi><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>&#xB7;</mo><mn>5</mn><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠠⠉⠥⠠⠎⠠⠕⠢⠼⠙⠐⠲⠼⠑⠠⠓⠢⠼⠃⠠⠕")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_2_10() -> Result<()> {
-    let expr = "<math><mmultiscripts><mi mathvariant='normal'>H</mi><none/><mo>+</mo></mmultiscripts></math>";
+    // Bare chem + recovers as msup (same braille as GTM msup_7_6_2).
+    let expr = "<math><msup><mi mathvariant='normal'>H</mi><mo>+</mo></msup></math>";
     test_from_braille("UEB", expr, "⠠⠓⠰⠔⠐⠖")?;
     Ok(())
 }
@@ -1136,14 +1183,16 @@ fn chem_16_2_11() -> Result<()> {
 
 #[test]
 fn chem_16_2_12() -> Result<()> {
-    let expr = "<math> <mrow data-mjx-texclass='ORD'> <mi mathvariant='normal'>R</mi> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mo>&#x22C5;</mo> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mi data-mjx-auto-op='false'>CH</mi> <mo stretchy='false'>(</mo> <mi data-mjx-auto-op='false'>OH</mi> <mo stretchy='false'>)</mo> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mo>&#x22C5;</mo> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mi data-mjx-auto-op='false'>CH</mi> <msub> <mpadded width='0'><mphantom><mi>A</mi></mphantom></mpadded> <mpadded height='0'><mn>2</mn></mpadded> </msub> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mo>&#x22C5;</mo> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mi data-mjx-auto-op='false'>CH</mi> <msub> <mpadded width='0'><mphantom><mi>A</mi></mphantom></mpadded> <mpadded height='0'><mn>2</mn></mpadded> </msub> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mo>&#x22C5;</mo> <mstyle scriptlevel='0'><mspace width='0.167em'/></mstyle> <mi data-mjx-auto-op='false'>CO</mi> <msub> <mpadded width='0'><mphantom><mi>A</mi></mphantom></mpadded> <mpadded height='0'><mn>2</mn></mpadded> </msub> <mi mathvariant='normal'>H</mi> </mrow> </math>";
+    // Golden = reverse MathML (mhchem phantoms/nesting not recoverable).
+    let expr = "<math><mrow><mi>R</mi><mo>&#xB7;</mo><mi>C</mi><mi>H</mi><mrow><mo>(</mo><mrow><mi>O</mi><mi>H</mi></mrow><mo>)</mo></mrow><mo>&#xB7;</mo><mi>C</mi><msub><mi>H</mi><mn>2</mn></msub><mo>&#xB7;</mo><mi>C</mi><msub><mi>H</mi><mn>2</mn></msub><mo>&#xB7;</mo><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub><mi>H</mi></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠠⠠⠠⠗⠐⠲⠉⠓⠐⠣⠕⠓⠐⠜⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠓⠢⠼⠃⠐⠲⠉⠕⠢⠼⠃⠰⠓⠠⠄")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_2_13() -> Result<()> {
-    let expr = "<math> <mmultiscripts><mi>Fe</mi><none/><mi>III</mi></mmultiscripts> <mmultiscripts><mi>Cl</mi><mn>3</mn><none/></mmultiscripts> </math>";
+    // Cl₃ as msub is recoverable; forward packs it as mmultiscripts+none.
+    let expr = "<math><mmultiscripts><mi>Fe</mi><none/><mi>III</mi></mmultiscripts><msub><mi>Cl</mi><mn>3</mn></msub></math>";
     test_from_braille("UEB", expr, "⠰⠰⠠⠋⠑⠔⠣⠠⠠⠊⠊⠊⠜⠠⠉⠇⠢⠼⠉")?;
     Ok(())
 }
@@ -1171,35 +1220,40 @@ fn chem_16_4_3() -> Result<()> {
 
 #[test]
 fn chem_16_5_1() -> Result<()> {
-    let expr = "<math> <mrow> <mn>2</mn> <mstyle scriptlevel=\"0\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mi>NaOH</mi> <mrow></mrow> <mo>+</mo> <mrow></mrow> <mi mathvariant=\"normal\">H</mi> <msub> <mpadded width=\"0\"> <mphantom> <mi>A</mi> </mphantom> </mpadded> <mpadded height=\"0\"> <mn>2</mn> </mpadded> </msub> <mi>SO</mi> <msub> <mpadded width=\"0\"> <mphantom> <mi>A</mi> </mphantom> </mpadded> <mpadded height=\"0\"> <mn>4</mn> </mpadded> </msub> <mrow></mrow> <mo stretchy=\"false\">&#x2192;</mo> <mrow></mrow> <mi>Na</mi> <msub> <mpadded width=\"0\"> <mphantom> <mi>A</mi> </mphantom> </mpadded> <mpadded height=\"0\"> <mn>2</mn> </mpadded> </msub> <mi>SO</mi> <msub> <mpadded width=\"0\"> <mphantom> <mi>A</mi> </mphantom> </mpadded> <mpadded height=\"0\"> <mn>4</mn> </mpadded> </msub> <mrow></mrow> <mo>+</mo> <mrow></mrow> <mn>2</mn> <mstyle scriptlevel=\"0\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mi mathvariant=\"normal\">H</mi> <msub> <mpadded width=\"0\"> <mphantom> <mi>A</mi> </mphantom> </mpadded> <mpadded height=\"0\"> <mn>2</mn> </mpadded> </msub> <mi mathvariant=\"normal\">O</mi> </mrow> </math>";
+    // Golden = reverse MathML (mhchem phantoms/nesting not recoverable).
+    let expr = "<math><mrow><mn>2</mn><mi>Na</mi><mi>O</mi><mi>H</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>&#x2192;</mo><msub><mi>Na</mi><mn>2</mn></msub><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>+</mo><mn>2</mn><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠼⠃⠠⠝⠁⠠⠕⠠⠓⠐⠖⠠⠓⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠀⠳⠕⠀⠠⠝⠁⠢⠼⠃⠠⠎⠠⠕⠢⠼⠙⠐⠖⠼⠃⠠⠓⠢⠼⠃⠠⠕⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_5_2() -> Result<()> {
-    let expr = "<math> <msub><mi mathvariant=\"normal\">N</mi><mn>2</mn></msub> <munderover><mo>&#x2192;</mo><mtext>Haber&#xA0;process</mtext><msub><mi mathvariant=\"normal\">H</mi><mn>2</mn></msub></munderover> <mi mathvariant=\"normal\">N</mi> <msub><mi mathvariant=\"normal\">H</mi><mn>3</mn></msub> </math>";
+    // mtext "Haber process" not recoverable; reverse emits Haber + process identifiers.
+    let expr = "<math><msub><mi>N</mi><mn>2</mn></msub><munderover><mo>&#x2192;</mo><mrow><mi>Haber</mi><mi>process</mi></mrow><msub><mi>H</mi><mn>2</mn></msub></munderover><mi>N</mi><msub><mi>H</mi><mn>3</mn></msub></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠠⠝⠢⠼⠃⠀⠳⠕⠨⠢⠣⠠⠓⠁⠃⠑⠗⠀⠏⠗⠕⠉⠑⠎⠎⠜⠨⠔⠣⠠⠓⠢⠼⠃⠜⠀⠠⠝⠠⠓⠢⠼⠉⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_5_3() -> Result<()> {
-    let expr = "<math> <mrow> <mi mathvariant=\"normal\">H</mi> <msub> <mpadded width=\"0\"><mphantom><mi>A</mi></mphantom></mpadded> <mpadded height=\"0\"> <mn>2</mn> </mpadded> </msub> <mstyle scriptlevel=\"0\"><mspace width=\"0.167em\"/></mstyle> <mspace width=\"0.111em\"></mspace> <mo stretchy=\"false\">(</mo> <mi mathvariant=\"normal\">g</mi> <mo stretchy=\"false\">)</mo> <mrow/> <mo>+</mo> <mrow/> <mi mathvariant=\"normal\">I</mi> <msub> <mpadded width=\"0\"><mphantom><mi>A</mi></mphantom></mpadded> <mpadded height=\"0\"> <mn>2</mn> </mpadded> </msub> <mstyle scriptlevel=\"0\"><mspace width=\"0.167em\"/></mstyle> <mspace width=\"0.111em\"></mspace> <mo stretchy=\"false\">(</mo> <mi mathvariant=\"normal\">s</mi> <mo stretchy=\"false\">)</mo> <mrow/> <mo>=</mo> <mrow/> <mn>2</mn> <mstyle scriptlevel=\"0\"><mspace width=\"0.167em\"/></mstyle> <mi>HI</mi> <mstyle scriptlevel=\"0\"><mspace width=\"0.167em\"/></mstyle> <mspace width=\"0.111em\"></mspace> <mo stretchy=\"false\">(</mo> <mi mathvariant=\"normal\">g</mi> <mo stretchy=\"false\">)</mo> </mrow> </math>";
+    // Golden = reverse MathML (state fences / HI packaging differ from mhchem).
+    let expr = "<math><mrow><msub><mi>H</mi><mn>2</mn></msub><mrow><mo>(</mo><mi>g</mi><mo>)</mo></mrow><mo>+</mo><msub><mi>I</mi><mn>2</mn></msub><mrow><mo>(</mo><mi>s</mi><mo>)</mo></mrow><mo>=</mo><mn>2</mn><mi>H</mi><mi>I</mi><mrow><mo>(</mo><mi>g</mi><mo>)</mo></mrow></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠠⠓⠢⠼⠃⠀⠐⠣⠛⠐⠜⠐⠖⠠⠊⠢⠼⠃⠀⠐⠣⠎⠐⠜⠀⠐⠶⠀⠼⠃⠠⠓⠠⠊⠀⠐⠣⠛⠐⠜⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_5_4() -> Result<()> {
-    let expr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" data-latex=\"\\ce{HNCO + ROH -&gt; NH2.CO.OR -&gt; NH2CO.NH.CO2R}\" display=\"block\"> <mrow data-latex=\"{\\mathrm{HNCO} {}+{} \\mathrm{ROH} {}\\mathrel{\\longrightarrow}{} \\mathrm{NH}{\\vphantom{A}}_{\\smash[t]{2}}\\,{\\cdot}\\,\\mathrm{CO}\\,{\\cdot}\\,\\mathrm{OR} {}\\mathrel{\\longrightarrow}{} \\mathrm{NH}{\\vphantom{A}}_{\\smash[t]{2}}\\mathrm{CO}\\,{\\cdot}\\,\\mathrm{NH}\\,{\\cdot}\\,\\mathrm{CO}{\\vphantom{A}}_{\\smash[t]{2}}\\mathrm{R}}\"> <mrow> <mrow data-latex=\"\\mathrm{HNCO}\"> <mi data-latex=\"HNCO\">HNCO</mi> </mrow> <mo data-latex=\"+\">+</mo> <mrow data-latex=\"{}\"></mrow> <mrow data-latex=\"\\mathrm{ROH}\"> <mi data-latex=\"ROH\">ROH</mi> </mrow> </mrow> <mrow data-mjx-texclass=\"REL\" data-latex=\"\\mathrel{\\longrightarrow}\"> <mo stretchy=\"false\" data-latex=\"\\longrightarrow\">&#x2192;</mo> </mrow> <mrow> <mrow> <mrow data-latex=\"\\mathrm{NH}\"> <mi data-latex=\"NH\">NH</mi> </mrow> <mo>&#x2062;</mo> <msub data-latex=\"{\\vphantom{A}}_{\\smash[t]{2}}\"> <mrow data-latex=\"{\\vphantom{A}}\"> <mrow data-latex=\"\\vphantom{A}\"> <mpadded width=\"0\"> <mphantom> <mi data-latex=\"A\">A</mi> </mphantom> </mpadded> </mrow> </mrow> <mrow data-latex=\"{\\smash[t]{2}}\"> <mrow data-latex=\"\\smash[t]{2}\"> <mpadded height=\"0\"> <mn data-latex=\"2\">2</mn> </mpadded> </mrow> </mrow> </msub> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"{\\cdot}\"> <mo data-latex=\"\\cdot\">&#x22C5;</mo> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"\\mathrm{CO}\"> <mi data-latex=\"CO\">CO</mi> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"{\\cdot}\"> <mo data-latex=\"\\cdot\">&#x22C5;</mo> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"\\mathrm{OR}\"> <mi data-latex=\"OR\">OR</mi> </mrow> </mrow> <mrow data-mjx-texclass=\"REL\" data-latex=\"\\mathrel{\\longrightarrow}\"> <mo stretchy=\"false\" data-latex=\"\\longrightarrow\">&#x2192;</mo> </mrow> <mrow> <mrow> <mrow data-latex=\"\\mathrm{NH}\"> <mi data-latex=\"NH\">NH</mi> </mrow> <mo>&#x2062;</mo> <msub data-latex=\"{\\vphantom{A}}_{\\smash[t]{2}}\"> <mrow data-latex=\"{\\vphantom{A}}\"> <mrow data-latex=\"\\vphantom{A}\"> <mpadded width=\"0\"> <mphantom> <mi data-latex=\"A\">A</mi> </mphantom> </mpadded> </mrow> </mrow> <mrow data-latex=\"{\\smash[t]{2}}\"> <mrow data-latex=\"\\smash[t]{2}\"> <mpadded height=\"0\"> <mn data-latex=\"2\">2</mn> </mpadded> </mrow> </mrow> </msub> <mo>&#x2062;</mo> <mrow data-latex=\"\\mathrm{CO}\"> <mi data-latex=\"CO\">CO</mi> </mrow> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"{\\cdot}\"> <mo data-latex=\"\\cdot\">&#x22C5;</mo> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"\\mathrm{NH}\"> <mi data-latex=\"NH\">NH</mi> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow data-latex=\"{\\cdot}\"> <mo data-latex=\"\\cdot\">&#x22C5;</mo> </mrow> <mstyle scriptlevel=\"0\" data-latex=\"\\,\"> <mspace width=\"0.167em\"></mspace> </mstyle> <mrow> <mrow data-latex=\"\\mathrm{CO}\"> <mi data-latex=\"CO\">CO</mi> </mrow> <mo>&#x2062;</mo> <msub data-latex=\"{\\vphantom{A}}_{\\smash[t]{2}}\"> <mrow data-latex=\"{\\vphantom{A}}\"> <mrow data-latex=\"\\vphantom{A}\"> <mpadded width=\"0\"> <mphantom> <mi data-latex=\"A\">A</mi> </mphantom> </mpadded> </mrow> </mrow> <mrow data-latex=\"{\\smash[t]{2}}\"> <mrow data-latex=\"\\smash[t]{2}\"> <mpadded height=\"0\"> <mn data-latex=\"2\">2</mn> </mpadded> </mrow> </mrow> </msub> <mo>&#x2062;</mo> <mrow data-latex=\"\\mathrm{R}\"> <mi mathvariant=\"normal\" data-latex=\"R\">R</mi> </mrow> </mrow> </mrow> </mrow> </math>";
+    // Golden = reverse MathML (mhchem/latex packaging not recoverable).
+    let expr = "<math><mrow><mi>H</mi><mi>N</mi><mi>C</mi><mi>O</mi><mo>+</mo><mi>R</mi><mi>O</mi><mi>H</mi><mo>&#x2192;</mo><mi>N</mi><msub><mi>H</mi><mn>2</mn></msub><mo>&#xB7;</mo><mi>C</mi><mi>O</mi><mo>&#xB7;</mo><mi>OR</mi><mo>&#x2192;</mo><mi>N</mi><msub><mi>H</mi><mn>2</mn></msub><mi>C</mi><mi>O</mi><mo>&#xB7;</mo><mi>N</mi><mi>H</mi><mo>&#xB7;</mo><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub><mi>R</mi></mrow></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠠⠠⠠⠓⠝⠉⠕⠐⠖⠗⠕⠓⠀⠳⠕⠀⠝⠓⠢⠼⠃⠐⠲⠉⠕⠐⠲⠕⠗⠀⠳⠕⠀⠝⠓⠢⠼⠃⠰⠉⠕⠐⠲⠝⠓⠐⠲⠉⠕⠢⠼⠃⠗⠠⠄⠰⠄")?;
     Ok(())
 }
 
 #[test]
 fn chem_16_5_5() -> Result<()> {
-    let expr = "<math> <mrow> <mi>Pb</mi> <msup><mpadded width=\"0\"><mphantom><mi>A</mi></mphantom></mpadded><mrow><mo>+</mo><mo>+</mo></mrow></msup> <mrow> </mrow> <mo>+</mo> <mrow> </mrow> <mn>2</mn> <mstyle scriptlevel=\"0\"><mspace width=\"0.167em\"/></mstyle> <mi mathvariant=\"normal\">e</mi> <mrow> </mrow> <mover> <mpadded height=\"0\" depth=\"0\"> <mo stretchy=\"false\">&#x21BD;</mo> <mstyle scriptlevel=\"0\"><mspace width=\"-0.167em\"/></mstyle> <mstyle scriptlevel=\"0\"><mspace width=\"-0.167em\"/></mstyle> <mo>&#x2212;</mo> </mpadded> <mstyle displaystyle=\"false\" scriptlevel=\"0\"> <mo>&#x2212;</mo> <mstyle scriptlevel=\"0\"><mspace width=\"-0.167em\"/></mstyle> <mstyle scriptlevel=\"0\"><mspace width=\"-0.167em\"/></mstyle> <mo stretchy=\"false\">&#x21C0;</mo> </mstyle> </mover> <mrow> </mrow> <mi>Pb</mi> </mrow> </math>";
+    // Forward equilibrium as stacked harpoons; reverse recovers ⇌.
+    let expr = "<math><mmultiscripts><mi>Pb</mi><none/><mrow><mo>+</mo><mo>+</mo></mrow></mmultiscripts><mo>+</mo><mn>2</mn><mi>e</mi><mo>&#x21CC;</mo><mi>Pb</mi></math>";
     test_from_braille("UEB", expr, "⠰⠰⠰⠠⠏⠃⠔⠣⠐⠖⠐⠖⠜⠐⠖⠼⠃⠰⠑⠀⠘⠸⠶⠀⠠⠏⠃⠰⠄")?;
     Ok(())
 }

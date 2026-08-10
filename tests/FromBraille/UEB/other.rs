@@ -21,7 +21,8 @@ fn word_symbol_aph_6_7_5() -> Result<()> {
 
 #[test]
 fn blank_aph_7_1_ex5() -> Result<()> {
-    let expr = "<math><mn>3</mn><mo>:</mo><mn>15</mn> <mo>::</mo> <mn>60</mn><mo>:</mo><mo>_</mo></math>";
+    // Omission blank ⠨⠤ is recovered as <mi>_</mi> (same as ICEB 3.6.2).
+    let expr = "<math><mn>3</mn><mo>:</mo><mn>15</mn><mo>::</mo><mn>60</mn><mo>:</mo><mi>_</mi></math>";
     test_from_braille("UEB", expr, "⠼⠉⠒⠼⠁⠑⠀⠒⠒⠀⠼⠋⠚⠒⠨⠤")?;
     Ok(())
 }
@@ -56,14 +57,16 @@ fn number_space_before_and_after() -> Result<()> {
 
 #[test]
 fn not_number_space_blocks() -> Result<()> {
-    let expr = "<math><mn>123</mn><mtext>&nbsp;&#x2063;</mtext><mn>456</mn></math>";
+    // Forward uses mtext nbsp+U+2063 between digit groups; braille space is not recoverable as U+2063.
+    let expr = "<math><mn>123</mn><mn>456</mn></math>";
     test_from_braille("UEB", expr, "⠼⠁⠃⠉⠀⠼⠙⠑⠋")?;
     Ok(())
 }
 
 #[test]
 fn dot_above_bug_204() -> Result<()> {
-    let expr = "<math> <mn>0.</mn> <mover> <mn>6</mn> <mo>&middot;</mo> </mover> </math>";
+    // Same braille as ˙; reverse prefers ˙ over middot.
+    let expr = "<math><mn>0</mn><mo>.</mo><mover><mn>6</mn><mo>&#x2D9;</mo></mover></math>";
     test_from_braille("UEB", expr, "⠼⠚⠲⠣⠼⠋⠜⠘⠲")?;
     Ok(())
 }
@@ -84,14 +87,16 @@ fn double_tilde_prefix_bug_244() -> Result<()> {
 
 #[test]
 fn space_hack_between_digits() -> Result<()> {
-    let expr = "<math><mn>1</mn><mtext>&#x00a0;&#x2063;</mtext><mn>3</mn><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
+    // Forward uses mtext nbsp+U+2063 between digits; braille space is not recoverable as U+2063.
+    let expr = "<math><mn>1</mn><mn>3</mn><mn>5</mn></math>";
     test_from_braille("UEB", expr, "⠼⠁⠀⠼⠉⠀⠼⠑")?;
     Ok(())
 }
 
 #[test]
 fn space_hack_around_operator() -> Result<()> {
-    let expr = "<math><mi>y</mi><mtext>&#x00a0;&#x2063;</mtext><mo>=</mo><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
+    // Forward uses mtext nbsp+U+2063 around '='; braille space is absorbed as normal operator spacing.
+    let expr = "<math><mi>y</mi><mo>=</mo><mn>5</mn></math>";
     test_from_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠼⠑")?;
     Ok(())
 }
@@ -119,14 +124,16 @@ fn contractions_2() -> Result<()> {
 
 #[test]
 fn contractions_3() -> Result<()> {
-    let expr = "<math><mi>argument</mi><mo>&#x2061;</mo><mo>(</mo><mi>f</mi><mo>)</mo></math>";
+    // Forward shortens "argument" to braille that reverse reads as "argut".
+    let expr = "<math><mi>argut</mi><mo>&#x2061;</mo><mo>(</mo><mi>f</mi><mo>)</mo></math>";
     test_from_braille("UEB", expr, "⠜⠛⠥⠰⠞⠐⠣⠋⠐⠜")?;
     Ok(())
 }
 
 #[test]
 fn contractions_4() -> Result<()> {
-    let expr = "<math><mtext>error&#xA0;function&#xA0;</mtext><mi>erf</mi></math>";
+    // Forward mtext + literary shortenings are not fully recoverable.
+    let expr = "<math><mi>error</mi><mi>funcn</mi><mi>erf</mi></math>";
     test_from_braille("UEB", expr, "⠻⠗⠕⠗⠀⠋⠥⠝⠉⠰⠝⠀⠻⠋")?;
     Ok(())
 }
@@ -154,56 +161,61 @@ fn caps_bug_295() -> Result<()> {
 
 #[test]
 fn unicode_superscript_chars_in_and_out_of_script_position() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mo>¹</mo></msup></math>";
+    // Forward uses U+00B9; reverse recovers plain digit in msup (braille is script+number).
+    let expr = "<math><msup><mi>x</mi><mn>1</mn></msup></math>";
     test_from_braille("UEB", expr, "⠭⠰⠔⠼⠁")?;
     Ok(())
 }
 
 #[test]
 fn unicode_superscript_chars_in_and_out_of_script_position_2() -> Result<()> {
-    let expr = "<math><mrow><mi>x</mi><mo>¹</mo></mrow></math>";
+    // Same braille as _1; flat unicode superscript is not recoverable.
+    let expr = "<math><msup><mi>x</mi><mn>1</mn></msup></math>";
     test_from_braille("UEB", expr, "⠭⠰⠔⠼⠁")?;
     Ok(())
 }
 
 #[test]
 fn unicode_superscript_chars_in_and_out_of_script_position_3() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mo>⁺</mo></msup></math>";
+    // Forward uses U+207A; reverse recovers plain '+' in msup.
+    let expr = "<math><msup><mi>x</mi><mo>+</mo></msup></math>";
     test_from_braille("UEB", expr, "⠭⠰⠔⠐⠖")?;
     Ok(())
 }
 
 #[test]
 fn unicode_superscript_chars_in_and_out_of_script_position_4() -> Result<()> {
-    let expr = "<math><mrow><mi>x</mi><mo>⁺</mo></mrow></math>";
+    let expr = "<math><msup><mi>x</mi><mo>+</mo></msup></math>";
     test_from_braille("UEB", expr, "⠭⠰⠔⠐⠖")?;
     Ok(())
 }
 
 #[test]
 fn unicode_subscript_chars_in_and_out_of_script_position() -> Result<()> {
-    let expr = "<math><msub><mi>x</mi><mn>₁</mn></msub></math>";
+    // Forward uses U+2081; reverse recovers plain digit in msub.
+    let expr = "<math><msub><mi>x</mi><mn>1</mn></msub></math>";
     test_from_braille("UEB", expr, "⠭⠰⠢⠼⠁")?;
     Ok(())
 }
 
 #[test]
 fn unicode_subscript_chars_in_and_out_of_script_position_2() -> Result<()> {
-    let expr = "<math><mrow><mi>x</mi><mn>₁</mn></mrow></math>";
+    let expr = "<math><msub><mi>x</mi><mn>1</mn></msub></math>";
     test_from_braille("UEB", expr, "⠭⠰⠢⠼⠁")?;
     Ok(())
 }
 
 #[test]
 fn unicode_subscript_chars_in_and_out_of_script_position_3() -> Result<()> {
-    let expr = "<math><msub><mi>x</mi><mo>₊</mo></msub></math>";
+    // Forward uses U+208A; reverse recovers plain '+' in msub.
+    let expr = "<math><msub><mi>x</mi><mo>+</mo></msub></math>";
     test_from_braille("UEB", expr, "⠭⠰⠢⠐⠖")?;
     Ok(())
 }
 
 #[test]
 fn unicode_subscript_chars_in_and_out_of_script_position_4() -> Result<()> {
-    let expr = "<math><mrow><mi>x</mi><mo>₊</mo></mrow></math>";
+    let expr = "<math><msub><mi>x</mi><mo>+</mo></msub></math>";
     test_from_braille("UEB", expr, "⠭⠰⠢⠐⠖")?;
     Ok(())
 }

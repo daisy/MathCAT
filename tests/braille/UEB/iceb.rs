@@ -1466,6 +1466,49 @@ fn binomial_14_3_3_2_mtable() -> Result<()> {
 }
 
 #[test]
+fn matrix_15_2_1() -> Result<()> {
+    // GTM 15.2 first example: I = [[1,0],[0,1]] with enlarged parentheses (one-line encoding).
+    let expr = r#"<math><mrow><mo>(</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+      </mtable><mo>)</mo></mrow></math>"#;
+    test_braille("UEB", expr, "⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn matrix_15_2_2() -> Result<()> {
+    // GTM 15.2: matrix with enlarged square brackets.
+    let expr = r#"<math><mrow><mo>[</mo><mtable>
+        <mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr>
+        <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr>
+      </mtable><mo>]</mo></mrow></math>"#;
+    test_braille("UEB", expr, "⠠⠨⠣⠁⠀⠃⠠⠨⠜⠠⠨⠣⠉⠀⠙⠠⠨⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn matrix_15_2_3() -> Result<()> {
+    // Single-row: no enlarged (dot-6) markers (UEB_Rules one-row path).
+    let expr = r#"<math><mrow><mo>(</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+      </mtable><mo>)</mo></mrow></math>"#;
+    test_braille("UEB", expr, "⠐⠣⠼⠁⠀⠼⠃⠀⠼⠉⠐⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn determinant_15_3_1() -> Result<()> {
+    // GTM 15.3: determinant with enlarged vertical bars.
+    let expr = r#"<math><mrow><mo>|</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+      </mtable><mo>|</mo></mrow></math>"#;
+    test_braille("UEB", expr, "⠠⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠠⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳")?;
+    return Ok(());
+}
+
+#[test]
 fn chem_16_2_8() -> Result<()> {
     let expr = "<math><mi>Ca</mi><msub><mrow><mo>(</mo><mi>OH</mi><mo>)</mo></mrow><mn>2</mn></msub></math>";
     // Acceptable: GTM does not use a G1 start indicator: "⠠⠉⠁⠐⠣⠠⠕⠠⠓⠐⠜⠰⠢⠼⠃"

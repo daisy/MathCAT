@@ -295,12 +295,94 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
     report_any_panic(result)
 }
 
-/// This is a prototype function to test whether UEB→MathML roughly matches `mathml`.
-/// Exact tree equality is not required; we check that parsing succeeds and that
-/// round-tripping through canonicalize shares key leaves when possible.
-#[allow(dead_code)]     // used in testing
+/// Attrs ignored when comparing FromBraille parse output to forward-test MathML
+/// (mirrors `IGNORE_ATTRS` in MathMLData/compare_mathml_in_csv.py `areCanonicallyEqual`,
+/// plus a few presentation-only attrs that forward UEB does not encode).
+pub const FROM_BRAILLE_IGNORE_ATTRS: &[&str] = &[
+    "id",
+    "class",
+    "displaystyle",
+    "scriptlevel",
+    "xmlns",
+    "display",
+    "data-id-added",
+    "data-added",
+    "data-changed",
+    "data-previous-space-width",
+    "data-following-space-width",
+    "data-empty-in-2d",
+    "data-width",
+    "data-function-guess",
+    "data-split",
+    "data-number",
+    "data-roman-numeral",
+    "data-latex",
+    "data-chem-element",
+    "data-chem-formula",
+    "data-chem-formula-op",
+    "data-chem-equation",
+    "data-chem-equation-op",
+    "data-chemical-bond",
+    "data-maybe-chemistry",
+    "data-mjx-auto-op",
+    "data-mjx-texclass",
+    "stretchy",
+    "accent",
+    "accentover",
+    "columnspacing",
+    "rowspacing",
+    "rowlines",
+    "columnlines",
+    "minlabelspacing",
+    "columnalign",
+    "rowalign",
+    "equalcolumns",
+    "equalrows",
+    "align",
+    "mathcolor",
+    "mathbackground",
+    "mathsize",
+    "mathvariant",
+    "intent",
+    "arg",
+    "bevelled",
+    "minsize",
+    "maxsize",
+    "lspace",
+    "rspace",
+    "width",
+    "height",
+    "depth",
+    "fence",
+    "separator",
+    "movablelimits",
+    "largeop",
+    "symmetric",
+    "form",
+];
+
+/// Normalize for comparison the same way as `areCanonicallyEqual` in
+/// MathMLData/compare_mathml_in_csv.py (after SetMathML + attr strip).
+fn normalize_from_braille_canon(mathml: &str) -> String {
+    mathml
+        .replace("<mtext", "<mi")
+        .replace("</mtext>", "</mi>")
+        .replace("<mprescripts></mprescripts>", "<mprescripts/>")
+        // Adjacent identifiers may get U+2062 or U+2063 from canonicalize; braille
+        // does not encode which invisible operator was intended.
+        .replace('\u{2062}', "\u{2063}")
+        .replace("&#x2062;", "&#x2063;")
+        .replace("&#x2062", "&#x2063")
+}
+
+/// Parse `braille` and require the result to be canonically equal to `mathml`
+/// (both sides run through [`set_mathml`], then compared with attrs stripped).
+#[allow(dead_code)] // used in testing
 #[allow(non_snake_case)]
 pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
+    use libmathcat::pretty_print::mml_to_string;
+    use sxd_document_no_unsafe::parser;
+
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
         set_rules_dir(abs_rules_dir_path()).unwrap();
@@ -313,10 +395,32 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         let parsed = libmathcat::parser::Braille_to_MathML(braille, code).unwrap_or_else(|e| {
             panic!("{code} parse failed: {e}\nbraille={braille}\nexpected≈{mathml}")
         });
-        // Loose check: parsing produced MathML; prefer canonical equality when shapes match.
-        if !libmathcat::are_strs_canonically_equal(mathml, &parsed, &["data-changed", "data-id-added"]) {
-            // Still accept if the parse is a reasonable approximation (same digit/letter content).
-            eprintln!("note: canonical mismatch (allowed for from_braille prototype)\n parsed: {parsed}\n expect: {mathml}");
+
+        // Canonicalize both sides the same way (SetMathML), then compare trees.
+        let expected_canon = set_mathml(mathml).unwrap_or_else(|e| {
+            panic!("{code} set_mathml(expected) failed: {e}\nmathml={mathml}")
+        });
+        let parsed_canon = set_mathml(&parsed).unwrap_or_else(|e| {
+            panic!("{code} set_mathml(parsed) failed: {e}\nparsed={parsed}")
+        });
+        let expected_canon = normalize_from_braille_canon(&expected_canon);
+        let parsed_canon = normalize_from_braille_canon(&parsed_canon);
+
+        let pkg_expected = parser::parse(&expected_canon).expect("parse expected canon MathML");
+        let pkg_parsed = parser::parse(&parsed_canon).expect("parse parsed canon MathML");
+        let el_expected = get_element(&pkg_expected);
+        let el_parsed = get_element(&pkg_parsed);
+        trim_element(el_expected, false);
+        trim_element(el_parsed, false);
+
+        if let Err(e) = is_same_element(el_expected, el_parsed, FROM_BRAILLE_IGNORE_ATTRS) {
+            panic!(
+                "{code} FromBraille canonical mismatch: {e}\nbraille: {braille}\n\
+                 raw parsed:\n{parsed}\n\
+                 expected (canon):\n{}\nparsed (canon):\n{}",
+                mml_to_string(el_expected),
+                mml_to_string(el_parsed)
+            );
         }
         Ok(())
     }));

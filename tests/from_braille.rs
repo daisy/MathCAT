@@ -7,6 +7,6 @@ mod FromBraille {
     mod UEB {
         mod iceb;
         mod other;
-        mod matrix;
+        mod partial;
     }
 }
