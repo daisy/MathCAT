@@ -91,3 +91,18 @@ jobs:
         title: Development Build
         files: |
           Rules.zip
+
+  # After braille-parser builds/tests succeed, refresh the MathCATDemo /input site.
+  # Requires repo secret MATHCATDEMO_DISPATCH_TOKEN (PAT with repo scope on daisy/MathCATDemo).
+  trigger-mathcatdemo:
+    name: Trigger MathCATDemo input deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/braille-parser'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repository Dispatch to MathCATDemo
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        token: ${{ secrets.MATHCATDEMO_DISPATCH_TOKEN }}
+        repository: daisy/MathCATDemo
+        event-type: braille-parser-updated
