@@ -151,6 +151,12 @@ fn zip_entry<W: Write + Seek>(
 /// Zip up each language and braille dir
 /// Note: regional variations (including zh-cn and zh-tw) are zipped together into one zip file
 fn main() {
+    // Expected by cargo-llvm-cov / coverage builds (`--cfg coverage`).
+    // Declared here so Cargo.toml need not use `unexpected_cfgs.check-cfg`
+    // (some TOML schemas still reject that key).
+    println!("cargo::rustc-check-cfg=cfg(coverage)");
+    println!("cargo::rustc-check-cfg=cfg(coverage_nightly)");
+
     // This doesn't work because the build claims OUT_DIR is not defined(?)
     // let archive = PathBuf::from(concat!(env!("OUT_DIR"),"/rules.zip"));
     if std::env::var("CARGO_FEATURE_INCLUDE_ZIP").is_ok() {
