@@ -52,6 +52,9 @@ pub enum Expr {
     Operator(String),
     /// Horizontal list (implicit `<mrow>` when length ≠ 1).
     Row(Vec<Expr>),
+    /// Braille grouping `⠣…⠜` (not printed as fences). Scripts/accents bind to the
+    /// whole group rather than peeling the last row child.
+    Group(Box<Expr>),
     Sup(Box<Expr>, Box<Expr>),
     Sub(Box<Expr>, Box<Expr>),
     SubSup(Box<Expr>, Box<Expr>, Box<Expr>),
@@ -62,13 +65,15 @@ pub enum Expr {
     Root(Box<Expr>, Box<Expr>), // index, base
     Fenced {
         open: String,
-        close: String,
+        /// `None` when the close fence was not typed yet → emit `<mtext>&#xFFFD;</mtext>`.
+        close: Option<String>,
         body: Box<Expr>,
     },
     /// Bracketed linearized matrix/determinant (`mtable` / `mtr` / `mtd`).
     Table {
         open: String,
-        close: String,
+        /// `None` when the close fence was not typed yet → emit `<mtext>&#xFFFD;</mtext>`.
+        close: Option<String>,
         rows: Vec<Vec<Expr>>,
     },
     /// `<mover>` — accent / limit above
@@ -83,18 +88,35 @@ pub enum Expr {
         sub: Option<Box<Expr>>,
         sup: Option<Box<Expr>>,
     },
+    /// Post-scripts as `<mmultiscripts>` (chemistry ions / oxidation states).
+    MultiScripts {
+        base: Box<Expr>,
+        sub: Option<Box<Expr>>,
+        sup: Option<Box<Expr>>,
+    },
     Space,
     Text(String),
+    /// Required item/closer not yet typed — `<mtext>&#xFFFD;</mtext>`.
+    Missing,
 }
 
 impl Expr {
     fn row(mut parts: Vec<Expr>) -> Expr {
         parts.retain(|e| !matches!(e, Expr::Row(v) if v.is_empty()));
+        // Bare ° after a number is degree-as-superscript (ICEB BANA 5a), not a
+        // free-standing operator that canonicalize would merge with C/F into ℃/℉.
+        parts = fold_degree_superscripts(parts);
+        parts = fold_double_tildes(parts);
+        parts = flatten_juxtaposed_letter_rows(parts);
         match parts.len() {
             0 => Expr::Row(vec![]),
             1 => parts.pop().unwrap(),
             _ => Expr::Row(parts),
         }
+    }
+
+    fn is_empty_row(&self) -> bool {
+        matches!(self, Expr::Row(v) if v.is_empty())
     }
 
     pub fn to_mathml(&self) -> String {
@@ -103,11 +125,18 @@ impl Expr {
             Expr::Identifier(s) => format!("<mi>{}</mi>", xml_escape(s)),
             Expr::Operator(s) => format!("<mo>{}</mo>", xml_escape(s)),
             Expr::Text(s) => format!("<mtext>{}</mtext>", xml_escape(s)),
-            Expr::Space => "<mtext>&#xA0;</mtext>".to_string(),
+            Expr::Missing => "<mtext>&#xFFFD;</mtext>".to_string(),
+            // Braille spaces are usually absorbed as operator spacing in canonicalize.
+            // Emitting nbsp+U+2063 here breaks normal equations after mtext→mi normalization
+            // (they become factors with invisible times). Space-hack forward MathML that
+            // uses explicit &#x2063; separators is not recoverable from a plain braille space.
+            Expr::Space => String::new(),
             Expr::Row(parts) => {
                 let inner: String = parts.iter().map(Expr::to_mathml).collect();
                 format!("<mrow>{inner}</mrow>")
             }
+            // Grouping indicators are not MathML fences — just emit the body.
+            Expr::Group(body) => body.to_mathml(),
             Expr::Sup(base, exp) => {
                 format!("<msup>{}{}</msup>", base.to_mathml(), exp.to_mathml())
             }
@@ -137,11 +166,15 @@ impl Expr {
                 format!("<mroot>{}{}</mroot>", base.to_mathml(), index.to_mathml())
             }
             Expr::Fenced { open, close, body } => {
+                let close_xml = match close {
+                    Some(c) => format!("<mo>{}</mo>", xml_escape(c)),
+                    None => Expr::Missing.to_mathml(),
+                };
                 format!(
-                    "<mrow><mo>{}</mo>{}<mo>{}</mo></mrow>",
+                    "<mrow><mo>{}</mo>{}{}</mrow>",
                     xml_escape(open),
                     body.to_mathml(),
-                    xml_escape(close)
+                    close_xml
                 )
             }
             Expr::Table { open, close, rows } => {
@@ -155,10 +188,13 @@ impl Expr {
                     }
                     s.push_str("</mtr>");
                 }
-                s.push_str(&format!(
-                    "</mtable><mo>{}</mo></mrow>",
-                    xml_escape(close)
-                ));
+                let close_xml = match close {
+                    Some(c) => format!("<mo>{}</mo>", xml_escape(c)),
+                    None => Expr::Missing.to_mathml(),
+                };
+                s.push_str("</mtable>");
+                s.push_str(&close_xml);
+                s.push_str("</mrow>");
                 s
             }
             Expr::Over(base, over) => {
@@ -178,6 +214,13 @@ impl Expr {
             Expr::Prescripts { base, sub, sup } => {
                 let mut s = format!("<mmultiscripts>{}", base.to_mathml());
                 s.push_str("<mprescripts/>");
+                s.push_str(&sub.as_ref().map(|e| e.to_mathml()).unwrap_or_else(|| "<none/>".into()));
+                s.push_str(&sup.as_ref().map(|e| e.to_mathml()).unwrap_or_else(|| "<none/>".into()));
+                s.push_str("</mmultiscripts>");
+                s
+            }
+            Expr::MultiScripts { base, sub, sup } => {
+                let mut s = format!("<mmultiscripts>{}", base.to_mathml());
                 s.push_str(&sub.as_ref().map(|e| e.to_mathml()).unwrap_or_else(|| "<none/>".into()));
                 s.push_str(&sup.as_ref().map(|e| e.to_mathml()).unwrap_or_else(|| "<none/>".into()));
                 s.push_str("</mmultiscripts>");
@@ -273,6 +316,10 @@ enum PendingTypeform {
     None,
     /// Fraktur symbol indicator ⠈⠆ — map Latin letters to fraktur print forms when possible.
     Fraktur,
+    /// Bold symbol indicator ⠘⠂ — next number/letter only.
+    BoldSymbol,
+    /// Bold word indicator ⠘⠆ — until bold terminator ⠘⠄ or space.
+    BoldWord,
 }
 
 struct Lexer<'a> {
@@ -327,6 +374,9 @@ impl<'a> Lexer<'a> {
         }
         if matches!(self.capital, CapMode::Word) {
             self.capital = CapMode::Off;
+        }
+        if matches!(self.pending_typeform, PendingTypeform::BoldWord) {
+            self.pending_typeform = PendingTypeform::None;
         }
     }
 
@@ -458,16 +508,23 @@ impl<'a> Lexer<'a> {
             return Ok(true);
         }
         // Bold / typeform symbol/word/passage indicators (GTM 2.7).
-        // Fraktur symbol is tracked so the next letter can map to ℜ / etc.
-        // Other typeforms need mathvariant (or bold digit chars) — skipped for now.
         if self.eat("⠈⠆") {
             self.pending_typeform = PendingTypeform::Fraktur;
             return Ok(true);
         }
-        if self.eat("⠘⠆")
-            || self.eat("⠘⠂")
-            || self.eat("⠘⠄")
-            || self.eat("⠨⠂")
+        if self.eat("⠘⠆") {
+            self.pending_typeform = PendingTypeform::BoldWord;
+            return Ok(true);
+        }
+        if self.eat("⠘⠂") {
+            self.pending_typeform = PendingTypeform::BoldSymbol;
+            return Ok(true);
+        }
+        if self.eat("⠘⠄") {
+            self.pending_typeform = PendingTypeform::None;
+            return Ok(true);
+        }
+        if self.eat("⠨⠂")
             || self.eat("⠨⠆")
             || self.eat("⠸⠂")
             || self.eat("⠸⠆")
@@ -909,7 +966,17 @@ impl<'a> Lexer<'a> {
             }
             match ch {
                 '⠲' => {
-                    // decimal point
+                    // Decimal point when more of the number follows (digit, or grouped
+                    // repeating digits `0.⟨3⟩`). Trailing `⠲` after a number is a period.
+                    let after = self.rest.chars().nth(1);
+                    let is_decimal = match after {
+                        Some(c) if braille_cell_to_digit(c).is_some() => true,
+                        Some('⠣') => true, // braille grouping for following digits
+                        _ => false,
+                    };
+                    if !is_decimal {
+                        break;
+                    }
                     self.eat_char();
                     if let Some(ref mut d) = den {
                         d.push('.');
@@ -961,14 +1028,25 @@ impl<'a> Lexer<'a> {
             return Ok(false);
         }
 
+        let bold = matches!(
+            self.pending_typeform,
+            PendingTypeform::BoldSymbol | PendingTypeform::BoldWord
+        );
+        if matches!(self.pending_typeform, PendingTypeform::BoldSymbol) {
+            self.pending_typeform = PendingTypeform::None;
+        }
+
         match den {
             Some(d) => {
-                // Emit as fraction tokens via a Frac AST later — use Number with slash? Better emit dedicated.
-                // Push a synthetic frac: we'll use Op and numbers… Simplest: push Number for mixed later.
-                // Represent simple numeric fraction as a single special Number "p/q" parsed later? Or Frac tokens.
+                let (num, d) = if bold {
+                    (to_bold_digits(&num), to_bold_digits(&d))
+                } else {
+                    (num, d)
+                };
                 self.tokens.push(Token::Number(format!("FRAC:{num}/{d}")));
             }
             None => {
+                let num = if bold { to_bold_digits(&num) } else { num };
                 self.tokens.push(Token::Number(num));
             }
         }
@@ -997,6 +1075,37 @@ impl<'a> Lexer<'a> {
     fn try_operator(&mut self) -> Result<bool> {
         // Full symbol table from Rules/Braille/UEB/unicode.yaml + unicode-full.yaml.
         if let Some((braille, print)) = crate::ueb_symbols::match_ueb_symbol(self.rest) {
+            // Without grade 1, ⠔ / ⠢ are grade-2 contractions ("in" / "en"), not the
+            // start of scripted unicode superscripts (¹ ² ³ from stripped `⠰⠔⠼…`).
+            if !self.in_grade1() {
+                let first = braille.chars().next();
+                if matches!(first, Some('⠔' | '⠢')) {
+                    return Ok(false);
+                }
+            }
+            // Pending capital must apply via the letter lexer (⠠⠨⠎ → ∑/Σ, not σ + Cap left on).
+            if !matches!(self.capital, CapMode::Off) && is_greek_letter_char(&print) {
+                return Ok(false);
+            }
+            // ℃ / ℉ share the degree prefix ⠘⠚ + capital letter. Prefer degree + letter
+            // so reverse matches `<msup>…<mo>°</mo></msup><mi>F</mi>` style MathML.
+            if print == "℉" || print == "℃" {
+                if self.eat("⠘⠚") {
+                    self.numeric = false;
+                    self.tokens.push(Token::Op("°".into()));
+                    return Ok(true);
+                }
+            }
+            // Double/triple prime as repeated ′ (forward often uses adjacent primes).
+            if print == "″" || print == "‴" {
+                self.rest = &self.rest[braille.len()..];
+                self.numeric = false;
+                let n = if print == "″" { 2 } else { 3 };
+                for _ in 0..n {
+                    self.tokens.push(Token::Op("′".into()));
+                }
+                return Ok(true);
+            }
             self.rest = &self.rest[braille.len()..];
             self.numeric = false;
             // Hyphen (bare ⠤) ends numeric-initiated grade 1; minus ⠐⠤ does not (GTM 1.2.2).
@@ -1052,6 +1161,8 @@ impl<'a> Lexer<'a> {
                 .or_else(|| braille_cell_to_latin(cell))
                 .unwrap();
             let greek = latin_to_greek(base, capital);
+            // Cap+Greek s is the summation sign in UEB math (not variable Σ).
+            let greek = if capital && greek == 'Σ' { '∑' } else { greek };
             self.numeric = false;
             self.tokens.push(Token::Letter {
                 ch: greek,
@@ -1164,7 +1275,9 @@ fn is_blackboard_letter(s: &str) -> bool {
 
 /// Symbols that should tokenize as identifiers (letters / large ops), not bare `<mo>`.
 fn is_identifier_symbol(s: &str) -> bool {
-    is_blackboard_letter(s)
+    // Omission blank ⠨⠤ is recovered as an identifier (ICEB 3.6.2), not `<mo>`.
+    s == "_"
+        || is_blackboard_letter(s)
         || matches!(s, "∑" | "∏" | "∫" | "∐" | "∮" | "⋀" | "⋁" | "⋂" | "⋃")
         || {
             let mut chars = s.chars();
@@ -1269,6 +1382,24 @@ fn latin_to_fraktur(ch: char) -> char {
     }
 }
 
+fn is_greek_letter_char(s: &str) -> bool {
+    let mut chars = s.chars();
+    match (chars.next(), chars.next()) {
+        (Some(c), None) => {
+            let o = c as u32;
+            (0x0370..=0x03FF).contains(&o) || c == '∑' || c == '∏'
+        }
+        _ => false,
+    }
+}
+
+fn op_takes_post_scripts(s: &str) -> bool {
+    matches!(
+        s,
+        "∑" | "∏" | "∫" | "∐" | "∮" | "⋀" | "⋁" | "⋂" | "⋃" | "σ" | "Σ"
+    ) || is_identifier_symbol(s)
+}
+
 fn latin_to_greek(latin_or_special: char, capital: bool) -> char {
     let g = match latin_or_special {
         'a' => 'α',
@@ -1337,12 +1468,130 @@ fn latin_to_greek(latin_or_special: char, capital: bool) -> char {
 type Toks<'a> = &'a [Token];
 
 fn parse_tokens(tokens: &[Token]) -> Result<Expr> {
+    if tokens.is_empty() {
+        return Ok(Expr::Row(vec![]));
+    }
     let (rest, expr) = parse_expr(tokens)?;
     let rest = skip_noise(rest);
-    if !rest.is_empty() {
-        bail!("UEB parse: trailing tokens: {:?}", &rest[..rest.len().min(5)]);
+    if rest.is_empty() {
+        return Ok(expr);
     }
-    Ok(expr)
+    // Unconsumed cells (stray closers, unfinished fragments) stay visible as mtext.
+    let trail = rest.iter().map(token_to_braille).collect::<String>();
+    if trail.is_empty() {
+        return Ok(expr);
+    }
+    Ok(Expr::row(vec![expr, Expr::Text(trail)]))
+}
+
+/// Best-effort reverse of a token to UEB cells for leftover trailing mtext.
+fn token_to_braille(t: &Token) -> String {
+    match t {
+        Token::Space => "⠀".into(),
+        Token::LevelUp => "⠔".into(),
+        Token::LevelDown => "⠢".into(),
+        Token::Above => "⠨⠔".into(),
+        Token::Below => "⠨⠢".into(),
+        Token::FracOpen => "⠷".into(),
+        Token::FracLine => "⠨⠌".into(),
+        Token::FracClose => "⠾".into(),
+        Token::SqrtOpen => "⠩".into(),
+        Token::SqrtClose => "⠬".into(),
+        Token::Open('(') => "⠐⠣".into(),
+        Token::Close(')') => "⠐⠜".into(),
+        Token::Open('[') => "⠨⠣".into(),
+        Token::Close(']') => "⠨⠜".into(),
+        Token::Open('{') => "⠸⠣".into(),
+        Token::Close('}') => "⠸⠜".into(),
+        Token::Open('⟦') => "⠣".into(),
+        Token::Close('⟧') => "⠜".into(),
+        Token::Open(c) | Token::Close(c) => c.to_string(),
+        Token::VertBar => "⠸⠳".into(),
+        Token::EnlargedFence(c) => match c {
+            '(' => "⠠⠐⠣".into(),
+            ')' => "⠠⠐⠜".into(),
+            '[' => "⠠⠨⠣".into(),
+            ']' => "⠠⠨⠜".into(),
+            '{' => "⠠⠸⠣".into(),
+            '}' => "⠠⠸⠜".into(),
+            '|' => "⠠⠸⠳".into(),
+            other => other.to_string(),
+        },
+        Token::Grade1PassageEnd => "⠰⠄".into(),
+        Token::Letter { ch, capital } => {
+            let lower = ch.to_ascii_lowercase();
+            let cell = latin_to_braille_cell(lower).unwrap_or(*ch);
+            if *capital {
+                format!("⠠{cell}")
+            } else {
+                cell.to_string()
+            }
+        }
+        Token::Number(n) => {
+            if let Some((num, den)) = n.strip_prefix("FRAC:").and_then(|s| s.split_once('/')) {
+                format!(
+                    "⠼{}⠌{}",
+                    digits_to_braille(num),
+                    digits_to_braille(den)
+                )
+            } else {
+                format!("⠼{}", digits_to_braille(n))
+            }
+        }
+        Token::Op(s) => s.clone(),
+        Token::SimpleOver(s) | Token::SimpleUnder(s) => s.clone(),
+    }
+}
+
+fn latin_to_braille_cell(ch: char) -> Option<char> {
+    Some(match ch {
+        'a' => '⠁',
+        'b' => '⠃',
+        'c' => '⠉',
+        'd' => '⠙',
+        'e' => '⠑',
+        'f' => '⠋',
+        'g' => '⠛',
+        'h' => '⠓',
+        'i' => '⠊',
+        'j' => '⠚',
+        'k' => '⠅',
+        'l' => '⠇',
+        'm' => '⠍',
+        'n' => '⠝',
+        'o' => '⠕',
+        'p' => '⠏',
+        'q' => '⠟',
+        'r' => '⠗',
+        's' => '⠎',
+        't' => '⠞',
+        'u' => '⠥',
+        'v' => '⠧',
+        'w' => '⠺',
+        'x' => '⠭',
+        'y' => '⠽',
+        'z' => '⠵',
+        _ => return None,
+    })
+}
+
+fn digits_to_braille(digits: &str) -> String {
+    digits
+        .chars()
+        .map(|d| match d {
+            '1' => '⠁',
+            '2' => '⠃',
+            '3' => '⠉',
+            '4' => '⠙',
+            '5' => '⠑',
+            '6' => '⠋',
+            '7' => '⠛',
+            '8' => '⠓',
+            '9' => '⠊',
+            '0' => '⠚',
+            c => c,
+        })
+        .collect()
 }
 
 fn skip_noise(input: Toks<'_>) -> Toks<'_> {
@@ -1351,6 +1600,78 @@ fn skip_noise(input: Toks<'_>) -> Toks<'_> {
         i = &i[1..];
     }
     i
+}
+
+fn digit_to_bold(c: char) -> char {
+    match c {
+        '0'..='9' => char::from_u32(0x1D7CE + (c as u32 - '0' as u32)).unwrap_or(c),
+        _ => c,
+    }
+}
+
+fn to_bold_digits(s: &str) -> String {
+    s.chars().map(digit_to_bold).collect()
+}
+
+/// `100` + `°` → `<msup><mn>100</mn><mo>°</mo></msup>` so C/F stay separate units.
+fn fold_degree_superscripts(parts: Vec<Expr>) -> Vec<Expr> {
+    let mut out = Vec::with_capacity(parts.len());
+    let mut iter = parts.into_iter().peekable();
+    while let Some(part) = iter.next() {
+        if matches!(part, Expr::Number(_))
+            && matches!(iter.peek(), Some(Expr::Operator(s)) if s == "°")
+        {
+            let deg = iter.next().unwrap();
+            out.push(Expr::Sup(Box::new(part), Box::new(deg)));
+        } else {
+            out.push(part);
+        }
+    }
+    out
+}
+
+/// `~` `~` → single `~~` (MathJax double-tilde encoding; UEB repeats ⠈⠔).
+fn fold_double_tildes(parts: Vec<Expr>) -> Vec<Expr> {
+    let mut out = Vec::with_capacity(parts.len());
+    let mut iter = parts.into_iter().peekable();
+    while let Some(part) = iter.next() {
+        let is_tilde =
+            |e: &Expr| matches!(e, Expr::Operator(s) if s == "~" || s == "∼" || s == "˜");
+        if is_tilde(&part) && iter.peek().is_some_and(is_tilde) {
+            let _ = iter.next();
+            out.push(Expr::Operator("~~".into()));
+        } else {
+            out.push(part);
+        }
+    }
+    out
+}
+
+/// Flatten nested rows of letters / scripted letters so `A` `B̂` `C` stays one mrow.
+fn flatten_juxtaposed_letter_rows(parts: Vec<Expr>) -> Vec<Expr> {
+    let mut out = Vec::with_capacity(parts.len());
+    for part in parts {
+        match part {
+            Expr::Row(inner) if !inner.is_empty() && inner.iter().all(is_letterish_factor) => {
+                out.extend(inner);
+            }
+            other => out.push(other),
+        }
+    }
+    out
+}
+
+fn is_letterish_factor(e: &Expr) -> bool {
+    match e {
+        Expr::Identifier(_) => true,
+        Expr::Over(b, _) | Expr::Under(b, _) | Expr::Sup(b, _) | Expr::Sub(b, _) => {
+            matches!(b.as_ref(), Expr::Identifier(_))
+        }
+        Expr::SubSup(b, _, _) | Expr::UnderOver(b, _, _) => {
+            matches!(b.as_ref(), Expr::Identifier(_))
+        }
+        _ => false,
+    }
 }
 
 fn parse_err(input: Toks<'_>, msg: &str) -> crate::errors::Error {
@@ -1387,6 +1708,7 @@ fn parse_expr(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
 fn parse_expr_part(
     input: Toks<'_>,
 ) -> std::result::Result<(Toks<'_>, Vec<Expr>), crate::errors::Error> {
+    let input_before = input;
     let mut input = input;
     let mut spaces_before = Vec::new();
     while matches!(input.first(), Some(Token::Space)) {
@@ -1406,22 +1728,26 @@ fn parse_expr_part(
                 | Token::Grade1PassageEnd
         )
     ) {
-        return Ok((input, spaces_before));
+        // Closers / fraction line belong to the caller — don't consume spaces alone.
+        if spaces_before.is_empty() {
+            return Ok((input, vec![]));
+        }
+        return Ok((input_before, vec![]));
     }
 
     if let Some(Token::Op(s)) = input.first() {
-        // Arrows / large ops may take under/over (e.g. Haber process: → with scripts)
-        if matches!(
+        // Arrows / large ops may take under/over (e.g. Haber process: → with scripts).
+        // LevelUp/LevelDown after binary +/−/= are left-superscripts on the next atom
+        // (GTM 7.8), but ∫/∑/… still take ordinary post-scripts.
+        let limit = matches!(
             input.get(1),
-            Some(
-                Token::Above
-                    | Token::Below
-                    | Token::LevelUp
-                    | Token::LevelDown
-                    | Token::SimpleOver(_)
-                    | Token::SimpleUnder(_)
-            )
-        ) {
+            Some(Token::Above | Token::Below | Token::SimpleOver(_) | Token::SimpleUnder(_))
+        );
+        let large_op_script = matches!(
+            input.get(1),
+            Some(Token::LevelUp | Token::LevelDown)
+        ) && op_takes_post_scripts(s);
+        if limit || large_op_script {
             let (input, atom) = parse_scripted(input)?;
             let mut v = spaces_before;
             v.push(atom);
@@ -1440,11 +1766,14 @@ fn parse_expr_part(
         return Ok((input, v));
     }
 
-    let (input, atom) = parse_scripted(input)?;
+    let (input, atom) = match parse_scripted(input) {
+        Ok(x) => x,
+        Err(_) => return Ok((input_before, vec![])),
+    };
     // Simple / binomial fraction line between items: num ⠻ den → mfrac linethickness=0
     if matches!(input.first(), Some(Token::FracLine)) {
         let input = &input[1..];
-        let (input, den) = parse_scripted(input)?;
+        let (input, den) = parse_scripted_or_missing(input);
         let mut v = spaces_before;
         v.push(Expr::BinomFrac(Box::new(atom), Box::new(den)));
         return Ok((input, v));
@@ -1452,6 +1781,29 @@ fn parse_expr_part(
     let mut v = spaces_before;
     v.push(atom);
     Ok((input, v))
+}
+
+fn parse_scripted_or_missing(input: Toks<'_>) -> (Toks<'_>, Expr) {
+    if input.is_empty() || is_expr_stop_token(input.first()) {
+        return (input, Expr::Missing);
+    }
+    match parse_scripted(input) {
+        Ok(x) => x,
+        Err(_) => (input, Expr::Missing),
+    }
+}
+
+fn is_expr_stop_token(t: Option<&Token>) -> bool {
+    matches!(
+        t,
+        Some(
+            Token::FracLine
+                | Token::FracClose
+                | Token::SqrtClose
+                | Token::Close(_)
+                | Token::Grade1PassageEnd
+        )
+    )
 }
 
 fn parse_scripted(
@@ -1465,13 +1817,13 @@ fn parse_scripted(
         match input.first() {
             Some(Token::LevelDown) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 pre_sub = Some(script);
             }
             Some(Token::LevelUp) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 pre_sup = Some(script);
             }
@@ -1479,7 +1831,11 @@ fn parse_scripted(
         }
     }
 
-    let (mut input, mut base) = parse_atom(input)?;
+    let (mut input, base) = match parse_atom(input) {
+        Ok(x) => x,
+        Err(_) if pre_sub.is_some() || pre_sup.is_some() => (input, Expr::Missing),
+        Err(e) => return Err(e),
+    };
 
     let mut sub: Option<Expr> = None;
     let mut sup: Option<Expr> = None;
@@ -1491,7 +1847,7 @@ fn parse_scripted(
         match input.first() {
             Some(Token::LevelUp) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 if first_post_was_sup.is_none() {
                     first_post_was_sup = Some(true);
@@ -1504,7 +1860,7 @@ fn parse_scripted(
             }
             Some(Token::LevelDown) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 if first_post_was_sup.is_none() {
                     first_post_was_sup = Some(false);
@@ -1517,13 +1873,13 @@ fn parse_scripted(
             }
             Some(Token::Above) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 over = Some(normalize_overscript(script));
             }
             Some(Token::Below) => {
                 input = &input[1..];
-                let (rest, script) = parse_item(input)?;
+                let (rest, script) = parse_item_or_missing(input);
                 input = rest;
                 under = Some(script);
             }
@@ -1540,34 +1896,49 @@ fn parse_scripted(
             _ => break,
         }
     }
-    base = match (sub, sup, first_post_was_sup) {
-        // x^2_k written as LevelUp then LevelDown → nested msub(msup) (GTM 7.7.2)
-        (Some(sub), Some(sup), Some(true)) => {
-            Expr::Sub(Box::new(Expr::Sup(Box::new(base), Box::new(sup))), Box::new(sub))
+    // Multi-letter identifier rows (e.g. a b̂): scripts/accents bind to the last chunk only.
+    let expr = map_script_base(base, |base| {
+        let base = match (sub, sup, first_post_was_sup) {
+            // Chemistry ions / oxidation: prefer mmultiscripts (ICEB §16).
+            (ref sub, Some(sup), _) if wants_chem_multiscripts(sub.as_ref(), &sup) => {
+                Expr::MultiScripts {
+                    base: Box::new(base),
+                    sub: sub.as_ref().map(|e| Box::new(e.clone())),
+                    sup: Some(Box::new(unwrap_chem_charge_group(sup))),
+                }
+            }
+            // x^2_k written as LevelUp then LevelDown → nested msub(msup) (GTM 7.7.2)
+            (Some(sub), Some(sup), Some(true)) => {
+                Expr::Sub(Box::new(Expr::Sup(Box::new(base), Box::new(sup))), Box::new(sub))
+            }
+            (Some(sub), Some(sup), _) => Expr::SubSup(Box::new(base), Box::new(sub), Box::new(sup)),
+            (Some(sub), None, _) => Expr::Sub(Box::new(base), Box::new(sub)),
+            (None, Some(sup), _) => Expr::Sup(Box::new(base), Box::new(sup)),
+            (None, None, _) => base,
+        };
+        match (under, over) {
+            (Some(u), Some(o)) => Expr::UnderOver(Box::new(base), Box::new(u), Box::new(o)),
+            (Some(u), None) => Expr::Under(Box::new(base), Box::new(u)),
+            (None, Some(o)) => Expr::Over(Box::new(base), Box::new(o)),
+            (None, None) => base,
         }
-        (Some(sub), Some(sup), _) => Expr::SubSup(Box::new(base), Box::new(sub), Box::new(sup)),
-        (Some(sub), None, _) => Expr::Sub(Box::new(base), Box::new(sub)),
-        (None, Some(sup), _) => Expr::Sup(Box::new(base), Box::new(sup)),
-        (None, None, _) => base,
-    };
-    let expr = match (under, over) {
-        (Some(u), Some(o)) => Expr::UnderOver(Box::new(base), Box::new(u), Box::new(o)),
-        (Some(u), None) => Expr::Under(Box::new(base), Box::new(u)),
-        (None, Some(o)) => Expr::Over(Box::new(base), Box::new(o)),
-        (None, None) => base,
-    };
+    });
 
-    // Chemistry / combinatorics left-superscript on a letter base:
-    // emit empty-base `<msup>` then the base (with post-scripts), matching MathJax/GTM tests.
+    // Left-superscript on a letter/number base: empty-base `<msup>` then the base
+    // (GTM 7.8 signed numbers / combinatorics), matching MathJax-style tests.
     let expr = if pre_sub.is_none() {
         if let Some(pre_sup) = pre_sup {
-            let letterish = match &expr {
-                Expr::Identifier(_) => true,
-                Expr::Sub(b, _) | Expr::Sup(b, _) => matches!(b.as_ref(), Expr::Identifier(_)),
-                Expr::SubSup(b, _, _) => matches!(b.as_ref(), Expr::Identifier(_)),
+            let empty_msup_base = match &expr {
+                Expr::Identifier(_) | Expr::Number(_) => true,
+                Expr::Sub(b, _) | Expr::Sup(b, _) | Expr::MultiScripts { base: b, .. } => {
+                    matches!(b.as_ref(), Expr::Identifier(_) | Expr::Number(_))
+                }
+                Expr::SubSup(b, _, _) => {
+                    matches!(b.as_ref(), Expr::Identifier(_) | Expr::Number(_))
+                }
                 _ => false,
             };
-            if letterish {
+            if empty_msup_base {
                 Expr::row(vec![
                     Expr::Sup(Box::new(Expr::Row(vec![])), Box::new(pre_sup)),
                     expr,
@@ -1595,6 +1966,10 @@ fn parse_scripted(
 
 /// Map double-dot oversights from ‥ (two-dot leader) to diaeresis ¨ used by forward UEB.
 fn normalize_overscript(script: Expr) -> Expr {
+    let script = match script {
+        Expr::Group(inner) => *inner,
+        other => other,
+    };
     match script {
         Expr::Operator(s) if s == "‥" || s == ".." || s == "¨" => Expr::Operator("¨".into()),
         Expr::Row(parts) if parts.len() == 2 => {
@@ -1623,6 +1998,16 @@ fn parse_item(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
         Token::Letter { ch, .. } => Ok((&input[1..], Expr::Identifier(ch.to_string()))),
         Token::Op(s) => Ok((&input[1..], Expr::Operator(s.clone()))),
         _ => parse_atom(input),
+    }
+}
+
+fn parse_item_or_missing(input: Toks<'_>) -> (Toks<'_>, Expr) {
+    if input.is_empty() || is_expr_stop_token(input.first()) {
+        return (input, Expr::Missing);
+    }
+    match parse_item(input) {
+        Ok(x) => x,
+        Err(_) => (input, Expr::Missing),
     }
 }
 
@@ -1657,16 +2042,140 @@ fn parse_atom(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
     }
 }
 
+/// If `base` is a multi-chunk identifier row, bind scripts/accents to the last chunk only
+/// (GTM 12: hat on the last letter of a run split into single-letter identifiers).
+/// Braille grouping (`Expr::Group`) is atomic — accents apply to the whole group.
+fn map_script_base(base: Expr, f: impl FnOnce(Expr) -> Expr) -> Expr {
+    match base {
+        Expr::Group(inner) => f(Expr::Group(inner)),
+        Expr::Row(mut parts) if parts.len() > 1 => {
+            let last = parts.pop().unwrap();
+            parts.push(f(last));
+            Expr::row(parts)
+        }
+        other => f(other),
+    }
+}
+
+/// Multi-letter function names / units recognised as a single `<mi>` (longest match first).
+const KNOWN_MULTI_LETTER_NAMES: &[&str] = &[
+    // length 8+
+    "argument",
+    // length 6
+    "arccos", "arcsin", "arctan",
+    // length 4
+    "sinh", "cosh", "tanh", "sech", "csch", "coth", "Real",
+    // length 3
+    "log", "lim", "sin", "cos", "tan", "sec", "csc", "cot", "max", "min", "gcd", "lcm",
+    "exp", "det", "dim", "ker", "arg", "deg", "and", "erf", "Area",
+    // length 2
+    "ln", "Pr", "dx", "dy", "dz", "km", "cm", "mm", "kg", "mg", "ms", "ns", "pm", "am",
+    "ft", "in", "or", "to",
+];
+
+/// Roman-numeral letter inventory (upper and lower).
+fn is_roman_numeral_char(c: char) -> bool {
+    matches!(
+        c,
+        'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M' | 'i' | 'v' | 'x' | 'l' | 'c' | 'd' | 'm'
+    )
+}
+
+fn is_roman_numeral_letters(s: &str) -> bool {
+    !s.is_empty() && s.chars().all(is_roman_numeral_char)
+}
+
+/// Chemistry charge / oxidation-state superscripts (ICEB §16).
+fn is_chem_charge_op(s: &str) -> bool {
+    matches!(s, "+" | "-" | "−" | "±")
+}
+
+fn is_oxidation_roman(s: &str) -> bool {
+    // Oxidation states are uppercase roman (II, III, …). Lowercase single letters
+    // like n/m/i/x are ordinary math identifiers, not chem.
+    !s.is_empty() && s.chars().all(|c| matches!(c, 'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M'))
+}
+
+fn is_chem_charge_or_oxidation(expr: &Expr) -> bool {
+    match expr {
+        Expr::Operator(s) => is_chem_charge_op(s) || s == "++" || s == "--",
+        Expr::Identifier(s) | Expr::Number(s) => is_oxidation_roman(s),
+        Expr::Group(inner) | Expr::Fenced { body: inner, .. } => {
+            is_chem_charge_or_oxidation(inner)
+        }
+        Expr::Row(parts) if parts.len() == 1 => is_chem_charge_or_oxidation(&parts[0]),
+        Expr::Row(parts) => {
+            !parts.is_empty()
+                && parts
+                    .iter()
+                    .all(|p| matches!(p, Expr::Operator(s) if is_chem_charge_op(s)))
+        }
+        _ => false,
+    }
+}
+
+/// Use `<mmultiscripts>` for chem ions with a subscript, multi-charge, or oxidation
+/// state. Bare `+`/`−` alone stay as `<msup>` (math / simple ions in GTM examples).
+fn wants_chem_multiscripts(sub: Option<&Expr>, sup: &Expr) -> bool {
+    if !is_chem_charge_or_oxidation(sup) {
+        return false;
+    }
+    if sub.is_some() {
+        return true;
+    }
+    match sup {
+        Expr::Identifier(s) | Expr::Number(s) => is_oxidation_roman(s),
+        Expr::Group(inner) | Expr::Fenced { body: inner, .. } => {
+            wants_chem_multiscripts(None, inner)
+        }
+        Expr::Row(parts) if parts.len() >= 2 => true,
+        Expr::Operator(s) if s == "++" || s == "--" => true,
+        _ => false,
+    }
+}
+
+/// Drop script-grouping fences around charge rows: `(--)` → `--`.
+fn unwrap_chem_charge_group(expr: Expr) -> Expr {
+    match expr {
+        Expr::Group(inner) if is_chem_charge_or_oxidation(inner.as_ref()) => {
+            unwrap_chem_charge_group(*inner)
+        }
+        Expr::Fenced { body, .. } if is_chem_charge_or_oxidation(body.as_ref()) => {
+            unwrap_chem_charge_group(*body)
+        }
+        other => other,
+    }
+}
+
+/// Common two-letter chemical element symbols (matched only when the first letter is capital).
+const CHEM_ELEMENTS_2: &[&str] = &[
+    "He", "Li", "Be", "Ne", "Na", "Mg", "Al", "Si", "Cl", "Ar", "Ca", "Sc", "Ti", "Cr", "Mn",
+    "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Zr", "Nb",
+    "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "Xe", "Cs", "Ba", "La",
+    "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf",
+    "Ta", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra",
+    "Ac", "Th", "Pa", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf",
+    "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Fl", "Lv", "Ts", "Og",
+];
+
 fn parse_identifier(
     input: Toks<'_>,
 ) -> std::result::Result<(Toks<'_>, Expr), crate::errors::Error> {
-    let mut s = String::new();
+    // Collect consecutive letters; stop *before* a following script/accent token
+    // (the letter that precedes the modifier is included so names like log/lim stay intact).
+    // Also stop before switching between ASCII and non-ASCII letters (sinθ → sin + θ).
+    let mut letters: Vec<(char, bool)> = Vec::new();
     let mut i = 0;
-    while let Some(Token::Letter { ch, .. }) = input.get(i) {
-        // If a modifier / script follows this letter, leave it for parse_scripted
-        // so accents bind to the last letter only (GTM 12: ÂBC-style hat on B).
-        let next_is_modifier = matches!(
-            input.get(i + 1),
+    while let Some(Token::Letter { ch, capital }) = input.get(i) {
+        if let Some((prev, _)) = letters.last() {
+            if prev.is_ascii_alphabetic() != ch.is_ascii_alphabetic() {
+                break;
+            }
+        }
+        letters.push((*ch, *capital));
+        i += 1;
+        if matches!(
+            input.get(i),
             Some(
                 Token::LevelUp
                     | Token::LevelDown
@@ -1675,31 +2184,163 @@ fn parse_identifier(
                     | Token::SimpleOver(_)
                     | Token::SimpleUnder(_)
             )
-        );
-        if next_is_modifier {
-            if s.is_empty() {
-                s.push(*ch);
-                i += 1;
-            }
+        ) {
             break;
         }
-        s.push(*ch);
-        i += 1;
     }
-    if s.is_empty() {
+    if letters.is_empty() {
         return Err(parse_err(input, "expected letter"));
     }
-    Ok((&input[i..], Expr::Identifier(s)))
+    let chunks = split_letter_run(&letters);
+    Ok((&input[i..], Expr::row(chunks)))
+}
+
+fn split_letter_run(letters: &[(char, bool)]) -> Vec<Expr> {
+    if letters.is_empty() {
+        return vec![];
+    }
+    // Capital word/passage often marks juxtaposed single-letter variables (PQ+QR).
+    // Keep an all-caps run together only when it is a roman numeral (II, CD, XIV).
+    if letters.iter().all(|(_, capital)| *capital) {
+        let s: String = letters.iter().map(|(ch, _)| *ch).collect();
+        if is_roman_numeral_letters(&s) {
+            return vec![Expr::Identifier(s)];
+        }
+    }
+    // Lowercase ASCII runs of length ≥3 are literary / function-name remnants
+    // (error, funcn, argut). Length-2 products like "kx" / "ab" stay split unless known.
+    if letters.len() >= 3
+        && letters
+            .iter()
+            .all(|(ch, capital)| !*capital && ch.is_ascii_alphabetic())
+    {
+        let s: String = letters.iter().map(|(ch, _)| *ch).collect();
+        return vec![Expr::Identifier(s)];
+    }
+    // Proper names / labels in chem scripts: Haber, Newton (Cap + lowercase rest).
+    if letters.len() >= 3
+        && letters[0].1
+        && letters[0].0.is_ascii_uppercase()
+        && letters[1..]
+            .iter()
+            .all(|(ch, capital)| !*capital && ch.is_ascii_lowercase())
+    {
+        let s: String = letters.iter().map(|(ch, _)| *ch).collect();
+        return vec![Expr::Identifier(s)];
+    }
+    let mut chunks = Vec::new();
+    let mut i = 0;
+    while i < letters.len() {
+        if let Some(len) = longest_multi_letter_match(&letters[i..]) {
+            let s: String = letters[i..i + len].iter().map(|(ch, _)| *ch).collect();
+            chunks.push(Expr::Identifier(s));
+            i += len;
+        } else {
+            chunks.push(Expr::Identifier(letters[i].0.to_string()));
+            i += 1;
+        }
+    }
+    chunks
+}
+
+fn longest_multi_letter_match(letters: &[(char, bool)]) -> Option<usize> {
+    if letters.len() < 2 {
+        return None;
+    }
+    let full: String = letters.iter().map(|(ch, _)| *ch).collect();
+    // Function / unit names must consume the whole letter run (UEB usually spaces
+    // args). Preferring prefixes would turn "argut" into arg+u+t.
+    if full.len() <= 8
+        && KNOWN_MULTI_LETTER_NAMES
+            .iter()
+            .any(|name| name.eq_ignore_ascii_case(&full))
+    {
+        return Some(letters.len());
+    }
+    // Known function/unit as prefix when the next letter is capital (SecA, sinA).
+    // Lets "Sec" win over chem "Se" and keeps literary remnants like "argut" whole.
+    if let Some(len) = known_name_prefix_before_capital(letters) {
+        return Some(len);
+    }
+    // Maximal lowercase roman-numeral run (e.g. "vi", "xiv"). Capital roman
+    // words (II, CD) are handled above; do not glue "CD" inside "ABCD".
+    let roman_len = letters
+        .iter()
+        .take_while(|(ch, capital)| !*capital && is_roman_numeral_char(*ch))
+        .count();
+    if roman_len >= 2 && roman_len == letters.len() {
+        return Some(roman_len);
+    }
+    // Two-letter chemical elements: capital then lowercase (Ca, not CA / IR).
+    if letters.len() >= 2 && letters[0].1 && !letters[1].1 {
+        let s: String = letters[..2].iter().map(|(ch, _)| *ch).collect();
+        if CHEM_ELEMENTS_2
+            .iter()
+            .any(|el| el.eq_ignore_ascii_case(&s))
+        {
+            return Some(2);
+        }
+    }
+    None
+}
+
+fn known_name_prefix_before_capital(letters: &[(char, bool)]) -> Option<usize> {
+    let mut best = None;
+    for &name in KNOWN_MULTI_LETTER_NAMES {
+        let nlen = name.len();
+        if nlen < 2 || nlen >= letters.len() {
+            continue;
+        }
+        // Next letter starts a new capitalised atom.
+        if !letters[nlen].1 {
+            continue;
+        }
+        let s: String = letters[..nlen].iter().map(|(ch, _)| *ch).collect();
+        if name.eq_ignore_ascii_case(&s) {
+            best = Some(best.map_or(nlen, |b: usize| b.max(nlen)));
+        }
+    }
+    best
 }
 
 fn parse_general_fraction(
     input: Toks<'_>,
 ) -> std::result::Result<(Toks<'_>, Expr), crate::errors::Error> {
     let input = expect_token(input, &Token::FracOpen)?;
-    let (input, num) = parse_until(input, |t| matches!(t, Token::FracLine))?;
-    let input = expect_token(input, &Token::FracLine)?;
-    let (input, den) = parse_until(input, |t| matches!(t, Token::FracClose))?;
-    let input = expect_token(input, &Token::FracClose)?;
+    let (input, num_raw) =
+        parse_until(input, |t| matches!(t, Token::FracLine | Token::FracClose))?;
+    let has_line = matches!(input.first(), Some(Token::FracLine));
+    let input = if has_line { &input[1..] } else { input };
+
+    let (num, den, input) = if has_line {
+        let (input, den_raw) = parse_until(input, |t| matches!(t, Token::FracClose))?;
+        let input = match input.first() {
+            Some(Token::FracClose) => &input[1..],
+            _ => input,
+        };
+        let num = if num_raw.is_empty_row() {
+            Expr::Row(vec![])
+        } else {
+            num_raw
+        };
+        let den = if den_raw.is_empty_row() {
+            Expr::Row(vec![])
+        } else {
+            den_raw
+        };
+        (num, den, input)
+    } else {
+        let num = if num_raw.is_empty_row() {
+            Expr::Missing
+        } else {
+            num_raw
+        };
+        let input = match input.first() {
+            Some(Token::FracClose) => &input[1..],
+            _ => input,
+        };
+        (num, Expr::Row(vec![]), input)
+    };
     Ok((input, Expr::Frac(Box::new(num), Box::new(den))))
 }
 
@@ -1744,13 +2385,16 @@ fn parse_radical(
     let input = expect_token(input, &Token::SqrtOpen)?;
     let (input, index) = if matches!(input.first(), Some(Token::LevelUp)) {
         let input = &input[1..];
-        let (input, idx) = parse_item(input)?;
+        let (input, idx) = parse_item_or_missing(input);
         (input, Some(idx))
     } else {
         (input, None)
     };
     let (input, base) = parse_until(input, |t| matches!(t, Token::SqrtClose))?;
-    let input = expect_token(input, &Token::SqrtClose)?;
+    let input = match input.first() {
+        Some(Token::SqrtClose) => &input[1..],
+        _ => input,
+    };
     let expr = match index {
         Some(idx) => Expr::Root(Box::new(idx), Box::new(base)),
         None => Expr::Sqrt(Box::new(base)),
@@ -1773,9 +2417,9 @@ fn parse_fenced(
         let (input, body) = parse_until(input, |t| matches!(t, Token::Close('⟧')))?;
         let input = match input.first() {
             Some(Token::Close('⟧')) => &input[1..],
-            _ => return Err(parse_err(input, "expected braille group close")),
+            _ => input, // incomplete grouping — keep body
         };
-        return Ok((input, body));
+        return Ok((input, Expr::Group(Box::new(body))));
     }
 
     let is_close = |t: &Token| match t {
@@ -1785,29 +2429,31 @@ fn parse_fenced(
     };
 
     let (input, body) = parse_until(input, is_close)?;
-    let input = match input.first() {
-        Some(t) if is_close(t) => &input[1..],
-        _ => return Err(parse_err(input, "expected close fence")),
+    let (input, close_tok) = match input.first() {
+        Some(t) if is_close(t) => (&input[1..], Some(close.to_string())),
+        _ => (input, None),
     };
 
     // Single-row linearized matrix: space-separated cells inside ordinary fences
     // (UEB_Rules default-mtr without enlarged markers when there is only one row).
-    if let Some(cells) = matrix_cells_from_spaced_body(&body) {
-        return Ok((
-            input,
-            Expr::Table {
-                open: open.to_string(),
-                close: close.to_string(),
-                rows: vec![cells],
-            },
-        ));
+    if close_tok.is_some() {
+        if let Some(cells) = matrix_cells_from_spaced_body(&body) {
+            return Ok((
+                input,
+                Expr::Table {
+                    open: open.to_string(),
+                    close: close_tok,
+                    rows: vec![cells],
+                },
+            ));
+        }
     }
 
     Ok((
         input,
         Expr::Fenced {
             open: open.to_string(),
-            close: close.to_string(),
+            close: close_tok,
             body: Box::new(body),
         },
     ))
@@ -1832,10 +2478,21 @@ fn parse_enlarged_matrix(
         rows.push(cells);
 
         // Expect enlarged close
-        input = match input.first() {
-            Some(Token::EnlargedFence(c)) if *c == close => &input[1..],
-            _ => return Err(parse_err(input, "expected enlarged close fence")),
-        };
+        match input.first() {
+            Some(Token::EnlargedFence(c)) if *c == close => {
+                input = &input[1..];
+            }
+            _ => {
+                return Ok((
+                    input,
+                    Expr::Table {
+                        open: open.to_string(),
+                        close: None,
+                        rows,
+                    },
+                ));
+            }
+        }
 
         // Another row?
         match input.first() {
@@ -1851,7 +2508,7 @@ fn parse_enlarged_matrix(
         input,
         Expr::Table {
             open: open.to_string(),
-            close: close.to_string(),
+            close: Some(close.to_string()),
             rows,
         },
     ))
@@ -1943,17 +2600,15 @@ fn parse_expr_part_no_leading_space(
     }
 
     if let Some(Token::Op(s)) = input.first() {
-        if matches!(
+        let limit = matches!(
             input.get(1),
-            Some(
-                Token::Above
-                    | Token::Below
-                    | Token::LevelUp
-                    | Token::LevelDown
-                    | Token::SimpleOver(_)
-                    | Token::SimpleUnder(_)
-            )
-        ) {
+            Some(Token::Above | Token::Below | Token::SimpleOver(_) | Token::SimpleUnder(_))
+        );
+        let large_op_script = matches!(
+            input.get(1),
+            Some(Token::LevelUp | Token::LevelDown)
+        ) && op_takes_post_scripts(s);
+        if limit || large_op_script {
             let (input, atom) = parse_scripted(input)?;
             return Ok((input, vec![atom]));
         }
@@ -1961,10 +2616,13 @@ fn parse_expr_part_no_leading_space(
         return Ok((&input[1..], vec![op]));
     }
 
-    let (input, atom) = parse_scripted(input)?;
+    let (input, atom) = match parse_scripted(input) {
+        Ok(x) => x,
+        Err(_) => return Ok((input, vec![])),
+    };
     if matches!(input.first(), Some(Token::FracLine)) {
         let input = &input[1..];
-        let (input, den) = parse_scripted(input)?;
+        let (input, den) = parse_scripted_or_missing(input);
         return Ok((
             input,
             vec![Expr::BinomFrac(Box::new(atom), Box::new(den))],
@@ -2004,7 +2662,22 @@ fn matrix_cells_from_spaced_body(body: &Expr) -> Option<Vec<Expr>> {
     if cells.iter().any(|c| matches!(c, Expr::Operator(_))) {
         return None;
     }
+    // Spaced words in ordinary parentheses (`(A and B)`) are not a matrix row.
+    // Require at least one numeric / structural cell.
+    if !cells.iter().any(cell_looks_matrix_entry) {
+        return None;
+    }
     Some(cells)
+}
+
+fn cell_looks_matrix_entry(cell: &Expr) -> bool {
+    match cell {
+        Expr::Number(_) | Expr::Frac(_, _) | Expr::BinomFrac(_, _) => true,
+        Expr::Row(parts) => parts.iter().any(cell_looks_matrix_entry),
+        Expr::Identifier(_) | Expr::Text(_) | Expr::Space | Expr::Operator(_) => false,
+        // Scripted / fenced / radical cells still count as matrix entries.
+        _ => true,
+    }
 }
 
 fn matching_close(open: char) -> char {
@@ -2231,12 +2904,21 @@ mod tests {
     fn bar_under_grouped() {
         let mml = Braille_to_MathML("⠰⠰⠣⠭⠐⠖⠽⠜⠠⠱", "UEB").unwrap();
         assert!(mml.contains("<munder>"), "{mml}");
+        // Grouping must keep the bar under x+y, not only y.
+        assert!(
+            mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>")
+                || mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo"),
+            "expected under on whole group, got {mml}"
+        );
     }
 
     #[test]
     fn chem_h_plus() {
         let mml = Braille_to_MathML("⠠⠓⠰⠔⠐⠖", "UEB").unwrap();
-        assert!(mml.contains("<msup>"), "{mml}");
+        assert!(
+            mml.contains("<mmultiscripts>") || mml.contains("<msup>"),
+            "{mml}"
+        );
         assert!(mml.contains("<mi>H</mi>"), "{mml}");
         assert!(mml.contains("<mo>+</mo>"), "{mml}");
     }

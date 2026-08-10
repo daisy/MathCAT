@@ -116,7 +116,17 @@ fn load_ueb_symbols() -> Result<Vec<(String, String)>> {
         if should_skip_mapping(&ch, &braille) {
             continue;
         }
-        braille_to_print.entry(braille).or_insert(ch);
+        // Stripped G1 forms of ⠔… / ⠢… collide with grade-2 "in"/"en" (Sin30 vs S³…).
+        if matches!(braille.chars().next(), Some('⠔' | '⠢')) {
+            continue;
+        }
+        if let Some(prev) = braille_to_print.get(&braille) {
+            if should_replace_print(prev, &ch) {
+                braille_to_print.insert(braille, ch);
+            }
+        } else {
+            braille_to_print.insert(braille, ch);
+        }
     }
 
     let mut items: Vec<(String, String)> = braille_to_print.into_iter().collect();
@@ -189,6 +199,46 @@ fn preference_rank(s: &str) -> i32 {
     }
     // Punctuation / operators / symbols (e.g. §)
     if !c.is_alphabetic() {
+        // Prefer BMP chemistry/equilibrium arrows over Supplemental lookalikes
+        // (🣑 shares UEB with ⇌).
+        if (0x1F800..=0x1F8FF).contains(&o) {
+            return 3;
+        }
+        // Prefer WHITE SQUARE □ over WHITE MEDIUM SQUARE ◻ (same UEB shape).
+        if c == '□' {
+            return 5;
+        }
+        if matches!(c, '◻' | '▫' | '◽') {
+            return 2;
+        }
+        // Prefer ASCII colon over ratio ∶ (time 5:30 vs proportion).
+        if c == ':' {
+            return 5;
+        }
+        if c == '∶' {
+            return 2;
+        }
+        // Prefer ASCII '.' over dot-above ˙ (same bare ⠲ after G1 strip).
+        if c == '.' {
+            return 5;
+        }
+        if c == '˙' {
+            return 2;
+        }
+        // Prefer n-ary ∑ over Greek Σ (same Cap+Greek s braille).
+        if c == '∑' {
+            return 6;
+        }
+        if c == 'Σ' {
+            return 3;
+        }
+        // Prefer · over ⋅, ∗ over *, ⊢ over ⊦.
+        if matches!(c, '·' | '∗' | '⊢') {
+            return 5;
+        }
+        if matches!(c, '⋅' | '*' | '⊦') {
+            return 2;
+        }
         return 4;
     }
     // Canonical Greek letters
