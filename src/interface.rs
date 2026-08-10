@@ -424,6 +424,21 @@ pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
     return report_any_panic(result);
 }
 
+/// Parse Unicode braille into MathML and set it as the current expression
+/// (same as [`set_mathml`]). Uses the current `BrailleCode` preference.
+pub fn set_mathml_from_braille(braille: impl AsRef<str>) -> Result<String> {
+    enable_logs();
+    let braille = braille.as_ref().to_string();
+    let mathml = {
+        let result = catch_unwind(AssertUnwindSafe(|| {
+            let braille_code = crate::prefs::PreferenceManager::get().borrow().pref_to_string("BrailleCode");
+            crate::parser::Braille_to_MathML(&braille, &braille_code)
+        }));
+        report_any_panic(result)?
+    };
+    return set_mathml(mathml);
+}
+
 /// Get the braille associated with the current navigation focus of the MathML that was set by [`set_mathml`].
 /// The braille returned depends upon the preference for the `code` preference (default `Nemeth`).
 /// The returned braille is brailled as if the current navigation focus is the entire expression to be brailled.
