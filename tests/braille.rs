@@ -15,6 +15,7 @@ mod braille {
     mod UEB {
         mod iceb;
         mod other;
+        mod matrix;
     }
 
     mod CMU {

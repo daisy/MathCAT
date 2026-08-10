@@ -33,6 +33,8 @@ mod canonicalize;
 mod infer_intent;
 pub mod speech;
 mod braille;
+pub mod parser;
+mod ueb_symbols;
 mod navigate;
 mod prefs;
 mod tts;
