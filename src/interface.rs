@@ -1124,12 +1124,13 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
 
     /// compares attributes -- '==' didn't seems to work
     fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
-        let attrs1 = attrs1.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
-        let attrs2 = attrs2.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
+        let keep = |a: &Attribute| {
+            let name = as_qname!(a.name()).local_part();
+            // MathJax / presentation attrs vary; ids are added by set_mathml.
+            !ignore.contains(&name) && !name.starts_with("data-mjx")
+        };
+        let attrs1 = attrs1.iter().filter(|a| keep(a)).cloned().collect::<Vec<Attribute>>();
+        let attrs2 = attrs2.iter().filter(|a| keep(a)).cloned().collect::<Vec<Attribute>>();
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
         }
