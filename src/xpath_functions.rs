@@ -1480,7 +1480,7 @@ impl CountTableDims {
     /// This function is relatively permissive. Non-`mtr` rows are
     /// ignored. The number of columns is determined only from the first
     /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
-    fn count_table_dims<'d>(mut self, e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
+    fn count_table_dims(mut self, e: Element<'_>) -> (usize, usize) {
         for child in e.children() {
             let ChildOfElement::Element(row) = child else {
                 continue
@@ -1529,7 +1529,7 @@ impl CountTableDims {
         // columns, so we will not use them.
         let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
 
-        Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)))
+        (self.num_rows, self.num_cols)
     }
 
     fn evaluate<'d>(self, fn_name: &str,
@@ -1540,7 +1540,8 @@ impl CountTableDims {
         let node = validate_one_node(element, fn_name)?;
         if let Node::Element(e) = node {
             if is_tag(e, "mtable") {
-                return self.count_table_dims(e);
+                let (rows, columns) = self.count_table_dims(e);
+                return Ok((Value::Number(rows as f64), Value::Number(columns as f64)));
             } else {
                 return Err(Error::Other { what: format!("Input element was a <{}>, not an <mtable>",
                                                 as_qname!(e.name()).local_part()) });
@@ -1569,9 +1570,49 @@ impl Function for CountTableColumns {
     }
 }
 
+/// Return whether a one-based mtable boundary has a visible column line.
+///
+/// MathML repeats the final `columnlines` value for remaining boundaries.
+/// Boundaries after the final column, and values other than `solid` and
+/// `dashed`, do not describe a visible separator.
+fn has_visible_column_line(table: Element, boundary: usize) -> bool {
+    if boundary == 0 || !is_tag(table, "mtable") {
+        return false;
+    }
+
+    let (_, column_count) = CountTableDims::new().count_table_dims(table);
+    if boundary >= column_count {
+        return false;
+    }
+
+    let line_style = table
+        .attribute_value("columnlines")
+        .and_then(|values| values.split_whitespace().take(boundary).last());
+    return matches!(line_style, Some("solid" | "dashed"));
+}
+
+struct HasVisibleColumnLine;
+impl Function for HasVisibleColumnLine {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        let mut args = Args(args);
+        args.exactly(2)?;
+        let boundary = args.pop_number()?;
+        let table = validate_one_node(args.pop_nodeset()?, "HasVisibleColumnLine")?;
+        let Node::Element(table) = table else {
+            return Err(Error::Other { what: "HasVisibleColumnLine requires an mtable element".to_string() });
+        };
+        if !boundary.is_finite() || boundary < 1.0 || boundary.fract() != 0.0 {
+            return Ok(Value::Boolean(false));
+        }
+        return Ok(Value::Boolean(has_visible_column_line(table, boundary as usize)));
+    }
+}
+
 
 /// Add all the functions defined in this module to `context`.
-pub fn add_builtin_functions(context: &mut Context) {
+pub fn register_mathcat_xpath_functions(context: &mut Context) {
     context.set_function("NestingChars", crate::braille::NemethNestingChars);
     context.set_function("BrailleChars", crate::braille::BrailleChars);
     context.set_function("NeedsToBeGrouped", crate::braille::NeedsToBeGrouped);
@@ -1591,6 +1632,7 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("GetNavigationPartName", GetNavigationPartName);
     context.set_function("CountTableRows", CountTableRows);
     context.set_function("CountTableColumns", CountTableColumns);
+    context.set_function("HasVisibleColumnLine", HasVisibleColumnLine);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1796,7 +1838,7 @@ mod tests {
         let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math_elem = get_element(&package);
         let child = as_element(math_elem.children()[0]);
-        assert!(CountTableDims::new().count_table_dims(child) == Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64))));
+        assert_eq!(CountTableDims::new().count_table_dims(child), dims);
         return Ok( () );
     }
 
@@ -1813,6 +1855,31 @@ mod tests {
         check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr>
 <mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3))?;
         return Ok( () );
+        });
+    }
+
+    fn check_column_line(mathml: &str, boundary: usize, expected: bool) -> Result<()> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
+        let math = get_element(&package);
+        let table = as_element(math.children()[0]);
+        assert_eq!(has_visible_column_line(table, boundary), expected);
+        return Ok(());
+    }
+
+    #[test]
+    fn visible_column_lines() -> Result<()> {
+        return xpath_test(|| {
+        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 2, true)?;
+        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 3, true)?;
+
+        check_column_line("<math><mtable columnlines='solid dashed'><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 3, true)?;
+
+        check_column_line("<math><mtable><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        check_column_line("<math><mtable columnlines='none'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        check_column_line("<math><mtable columnlines='double'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        check_column_line("<math><mtable columnlines='solid'><mtr><mtd/><mtd/></mtr></mtable></math>", 2, false)?;
+        return Ok(());
         });
     }
 
