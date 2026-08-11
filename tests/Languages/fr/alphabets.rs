@@ -403,7 +403,7 @@ fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("fr", "SimpleSpeak", expr, "1 encerclé virgule, 9 encerclé")?;
   let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
-  test("fr", "SimpleSpeak", expr, "un encerclé de noir, virgule; numéro cinquante encerclé")?;
+  test("fr", "SimpleSpeak", expr, "un encerclé de noir, virgule; nombre cinquante encerclé")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("fr", "SimpleSpeak", expr, "1 entre parenthèses, virgule, 9 entre parenthèses")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";
