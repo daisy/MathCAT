@@ -257,7 +257,8 @@ impl TTSCommandRule {
 /// These types should do something for all the TTSCommands
 #[allow(clippy::upper_case_acronyms)]
 #[allow(dead_code)]
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Display, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum TTS {
     None,
     SSML,
@@ -766,6 +767,13 @@ impl TTS {
 mod tests {
     use super::*;
     use yaml_rust::YamlLoader;
+
+    #[test]
+    fn tts_display_and_case_insensitive_parse() {
+        assert_eq!(TTS::SSML.to_string(), "SSML");
+        assert_eq!("sapi5".parse::<TTS>(), Ok(TTS::SAPI5));
+        assert_eq!("NoNe".parse::<TTS>(), Ok(TTS::None));
+    }
 
     #[test]
     /// Verifies pronounce YAML builds and renders all supported fields.

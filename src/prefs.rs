@@ -727,15 +727,11 @@ impl PreferenceManager {
             panic!("Internal error: get_tts called on invalid PreferenceManager -- error message\n{}", self.error);
         };
 
-        return match self.pref_to_string("TTS").as_str().to_ascii_lowercase().as_str() {
-            "none" => TTS::None,
-            "ssml" => TTS::SSML,
-            "sapi5" => TTS::SAPI5,
-            _ => {
-                warn!("found unknown value for TTS: '{}'", self.pref_to_string("TTS").as_str());
-                TTS::None
-            }
-        }
+        let tts: String = self.pref_to_string("TTS");
+        return tts.parse().unwrap_or_else(|_| {
+            warn!("found unknown value for TTS: '{tts}'");
+            TTS::None
+        })
     }
 
     /// Set the string-valued preference.

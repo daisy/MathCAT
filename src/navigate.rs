@@ -13,6 +13,7 @@ use crate::pretty_print::mml_to_string;
 use crate::speech::{NAVIGATION_RULES, CONCAT_INDICATOR, CONCAT_STRING, SpeechRules, SpeechRulesWithContext};
 use crate::infer_intent::add_fixity_children;
 use crate::interface::copy_mathml;
+use crate::tts::TTS;
 #[cfg(not(target_family = "wasm"))]
 use std::time::Instant;
 use crate::errors::*;
@@ -405,15 +406,15 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                         if done {
                             let (tts, rate) = {
                                 let prefs = rules.pref_manager.borrow();
-                                (prefs.pref_to_string("TTS"), prefs.pref_to_string("MathRate"))
+                                (prefs.get_tts(), prefs.pref_to_string("MathRate"))
                             };
                             if rate != "100" {
-                                match tts.as_str() {
-                                    "SSML"
+                                match tts {
+                                    TTS::SSML
                                         if !cumulative_speech.starts_with("<prosody rate") => {
                                             cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
                                         }
-                                    "SAPI5"
+                                    TTS::SAPI5
                                         if !cumulative_speech.starts_with("<rate speed") => {
                                             cumulative_speech = format!(
                                                 "<rate speed='{:.1}'>{}</rate>",
