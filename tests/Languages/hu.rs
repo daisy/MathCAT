@@ -15,9 +15,9 @@ mod ClearSpeak {
 mod SimpleSpeak {
     mod functions;
     mod large_ops;
-    // mod menclose;
+    mod menclose;
     mod mfrac;
-    // mod mroot;
+    mod mroot;
     mod msup;
     mod sets;
     mod geometry;
@@ -29,6 +29,7 @@ mod shared;
 mod units;
 mod chemistry;
 mod alphabets;
+mod definitions;
 mod intent;
 mod mtable;
 
