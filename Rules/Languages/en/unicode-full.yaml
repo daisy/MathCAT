@@ -953,11 +953,6 @@
  - "⊢": [t: "proves"]                              # 0x22a2
  - "⊣": [t: "does not yield"]                      # 0x22a3
  - "⊤": [t: "top"]                                 # 0x22a4
- - "⊥":                                          # 0x22a5
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "bottom"
  - "⊦": [t: "reduces to"]                          # 0x22a6
  - "⊧": [t: "models"]                              # 0x22a7
  - "⊨":                                          # 0x22a8
@@ -1546,11 +1541,15 @@
  - "➾": [t: "open-outlined right arrow"]      # 0x27be
  - "⟀": [t: "three dimensional angle"]             # 0x27c0
  - "⟁": [t: "white triangle containing small white triangle"] # 0x27c1
- - "⟂":                                          # 0x27c2
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "perpendicular to"
+ - "⟂⊥":                                          # 0x27c2, 22A5 (22A5 wrongly used for perpendicular by most editors)
+     - test:
+        - if: "$SpeechStyle = 'LiteralSpeak' and text()='⊥'"   # 22A5 (up tack/bottom)
+          then: [t: "up tack"]
+        - else:
+          - test:
+              if: "$Verbosity!='Terse'"
+              then: [t: "is"]
+          - t: "perpendicular to"
  - "⟃":                                          # 0x27c3
      - test: 
          if: "$Verbosity!='Terse'"

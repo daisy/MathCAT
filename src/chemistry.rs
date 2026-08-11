@@ -1282,7 +1282,7 @@ fn has_c_h_o(elements: &[NameStr<'_>]) -> bool {
 
 
 fn is_structural(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
 
     // debug!("is_structural: {:?}", elements);
     let mut element_set = HashSet::with_capacity(elements.len());
@@ -1318,7 +1318,7 @@ fn collect_elements(mrow: Element<'_>) -> Option<Vec<NameStr<'_>>> {
 #[allow(clippy::op_ref)]
 #[allow(clippy::manual_contains)]
 fn is_alphabetical(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     // debug!("is_alphabetical: {:?}", elements);
     let mut elements = elements;
     if elements[1..].iter().any(|e| *e == "C") {  // "C" must be first if present
@@ -1333,7 +1333,7 @@ fn is_alphabetical(elements: &[NameStr<'_>]) -> bool {
 fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     // HPO_4^2 (Mono-hydrogen phosphate) doesn't fit this pattern, nor does HCO_3^- (Hydrogen carbonate) and some others
     // FIX: drop "H" from the ordering??
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     return elements.windows(2).all(|pair| CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[0])).unwrap() < CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[1])).unwrap());
 }
 

@@ -34,6 +34,7 @@ but add common mistakes of AI agents here instead.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
 - do not do any git commands unless explicitly asked for
 - Rust coverage is in `target/coverage/`.
+- When working with GitHub, e.g. looking at PRs and issues, check if the GitHub CLI is installed (`gh --version`).
 
 ## Fuzzing (`fuzz/` + cargo-fuzz)
 - Install: `cargo install cargo-fuzz`, use a **nightly** toolchain (`rustup run nightly cargo fuzz …`).

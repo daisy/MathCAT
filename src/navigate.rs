@@ -227,12 +227,6 @@ impl NavigationState {
         context.set_variable("Move2D", "" );
         context.set_variable("SpeakExpression", true );    // default is to speak the expr after navigation
         return;
-
-        fn convert_last_char_to_number(str: &str) -> usize {
-            let last_char = str.as_bytes()[str.len()-1];
-            assert!( last_char.is_ascii_digit() );
-            return (last_char - b'0') as usize;
-        }
     }
 }
 
