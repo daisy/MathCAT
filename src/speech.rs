@@ -16,7 +16,7 @@ use sxd_xpath_no_unsafe::{Factory, Value, XPath};
 use sxd_xpath_no_unsafe::nodeset::Node;
 use std::fmt;
 use std::time::SystemTime;
-use strum_macros::Display;
+use strum::Display;
 use crate::definitions::read_definitions_file;
 use crate::errors::*;
 use crate::prefs::*;
