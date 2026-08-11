@@ -2101,11 +2101,7 @@ impl FilesAndTimes {
 
 /// `SpeechRulesWithContext` encapsulates a named group of speech rules (e.g, "ClearSpeak")
 /// along with the preferences to be used for speech.
-// Note: if we can't read the files, an error message is stored in the structure and needs to be checked.
-// I tried using Result<SpeechRules>, but it was a mess with all the unwrapping.
-// Important: the code needs to be careful to check this at the top level calls
 pub struct SpeechRules {
-    error: String,
     name: RulesFor,
     pub pref_manager: Rc<RefCell<PreferenceManager>>,
     rules: RuleTable,                              // the speech rules used (partitioned into MathML tags in hashmap, then linearly searched)
@@ -2267,7 +2263,6 @@ impl SpeechRules {
         };
 
         return SpeechRules {
-            error: Default::default(),
             name,
             rules: HashMap::with_capacity(if name == RulesFor::Intent || name == RulesFor::Speech {500} else {50}),                       // lazy load them
             rule_files: FilesAndTimes::default(),
@@ -2280,14 +2275,6 @@ impl SpeechRules {
             pref_manager: PreferenceManager::get(),
         };
 }
-
-    pub fn get_error(&self) -> Option<&str> {
-        return if self.error.is_empty() {
-             None
-        } else {
-            Some(&self.error)
-        }
-    }
 
     pub fn read_files(&mut self) -> Result<()> {
         let check_rule_files = self.pref_manager.borrow().pref_to_string("CheckRuleFiles");

@@ -364,13 +364,6 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
         }
     }
 
-    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
-        if let Some(error_string) = rules.borrow().get_error() {
-            bail!("{}", error_string);
-        }
-        Ok(())
-    })?;
-
     // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
     let pref_manager = crate::prefs::PreferenceManager::get();
     let mut pref_manager = pref_manager.borrow_mut();
