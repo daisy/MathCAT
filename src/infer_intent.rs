@@ -17,6 +17,7 @@ use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::is_leaf;
 use regex::Regex;
 use phf::phf_set;
+use strum_macros::Display;
 #[allow(unused_imports)]
 use log::{debug, error, warn};
 
@@ -284,29 +285,19 @@ static TERMINALS_AS_U8: [u8; 3] = *b"(,)";
 // static TERMINALS: [char; 3] = ['(', ',',')'];
 
 // 'i -- "i" for the lifetime of the INTENT_ATTR string
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Display)]
 enum Token<'i> {
+    #[strum(to_string = "Terminal('{0}')")]
     Terminal(&'i str),  // "(", ",", ")"
+    #[strum(to_string = "Property({0})")]
     Property(&'i str),
+    #[strum(to_string = "ArgRef({0})")]
     ArgRef(&'i str),
+    #[strum(to_string = "Literal({0})")]
     ConceptOrLiteral(&'i str),
+    #[strum(to_string = "Number({0})")]
     Number(&'i str),
     None,               // out of characters
-}
-
-impl fmt::Display for Token<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        return write!(f, "{}",
-            match self {
-                Token::Terminal(str) => format!("Terminal('{str}')"),
-                Token::Property(str) => format!("Property({str})"),
-                Token::ArgRef(str) => format!("ArgRef({str})"),
-                Token::ConceptOrLiteral(str) => format!("Literal({str})"),
-                Token::Number(str) => format!("Number({str})"),
-                Token::None => "None".to_string(),
-            }
-        );
-    }
 }
 
 impl Token<'_> {
