@@ -25,7 +25,7 @@ class IssueType(StrEnum):
 class DiffType(StrEnum):
     """Rule-difference subcategories used for fine-grained diagnostics."""
 
-    MATCH = "match"  # `match` XPath differs between English and translation.
+    MATCH = "match"  # `match` XPath differs between source and translation.
     CONDITION = "condition"  # `if` / `test` condition expressions differ.
     VARIABLES = "variables"  # Variable names defined in `variables` differ.
     STRUCTURE = "structure"  # Control-flow block shape/order differs (if/then/else/with/replace).
@@ -91,7 +91,7 @@ class RuleInfo:
 
 @dataclass
 class RuleDifference:
-    """Fine-grained difference between English and translated rule"""
+    """Fine-grained difference between source and translated rule"""
 
     english_rule: RuleInfo
     translated_rule: RuleInfo
@@ -107,10 +107,10 @@ class RuleDifference:
 
 @dataclass
 class ComparisonResult:
-    """Results from comparing English and translated files"""
+    """Results from comparing source and translated files"""
 
-    missing_rules: list[RuleInfo]  # Rules in English but not in translation
-    extra_rules: list[RuleInfo]  # Rules in translation but not in English
+    missing_rules: list[RuleInfo]  # Rules in source but not in translation
+    extra_rules: list[RuleInfo]  # Rules in translation but not in source
     untranslated_text: list[tuple[RuleInfo, list[UntranslatedEntry]]]
     english_rule_count: int
     translated_rule_count: int

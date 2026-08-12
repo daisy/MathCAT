@@ -1,0 +1,85 @@
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "линейный сегмент от"      # phrase('the line segment from' A to B)
+      - x: "*[1]"
+      - T: "до"                         # phrase(the line segment from A 'to' B)
+      - x: "*[2]"
+      else:
+      - T: "отрезок"               # phrase(the 'line segment' A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "луч от "             # phrase('the ray from' A to B)
+      - x: "*[1]"
+      - T: "до"                       # phrase(the ray from A 'to' B)
+      - x: "*[2]"
+      else:
+      - T: "луч"                      # phrase(the 'ray'A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+
+- name: geometry-arc
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "а"]            # phrase('the' arc A B C)
+  - T: "дуга"                        # phrase(the 'arc' A B C)
+  - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - T: "большое"
+  - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - T: "большое"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "мера угла"      # phrase('the measure of the angle' ABC)
+      else:
+      - T: "мера угла"      # phrase('measure of angle' ABC)
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
+
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "а"]      # phrase('the' point at 1, 2)
+  - T: "точка"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "в"]      # phrase('the' point at 1, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "запятая", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "конечная точка"]      # phrase(start point, 'end point')

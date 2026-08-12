@@ -40,6 +40,16 @@ fn quotation_mark() -> Result<()> {
 }
 
 #[test]
+fn absolute_value_end_regression() -> Result<()> {
+    let expr = "<math><mrow><mo>|</mo><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mo>|</mo></mrow></math>";
+    test_prefs("de", "ClearSpeak", vec![
+        ("Verbosity", "Terse"),
+        ("ClearSpeak_AbsoluteValue", "AbsEnd"),
+    ], expr, "Betrag von x plus 1, ende Betrag")?;
+    Ok(())
+}
+
+#[test]
 fn ellipses_auto_start() -> Result<()> {
     let expr = "<math>
             <mi>…</mi><mo>,</mo>
@@ -227,7 +237,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Auto", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -247,7 +257,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -267,7 +277,7 @@ fn vertical_line_set_given() -> Result<()> {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Given", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -290,7 +300,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Auto", expr,
-        "die Menge alle x so dass der Betrag von x; ist größer als 2")?;
+        "die Menge aller x so dass der Betrag von x; ist größer als 2")?;
         return Ok(());
 
 }

@@ -476,7 +476,7 @@
       if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
       then:
       - pause: short
-      - T: "end"
+      - T: "ende"
       - x: "$WordToSay"
   - pause: short
 
@@ -501,7 +501,7 @@
       - T: "Menge"
       - test:
           if: $ClearSpeak_Sets != 'woAll'
-          then: [T: "alle"]
+          then: [T: "aller"]
       - x: "*[1]/*[1]"
       - T: "so dass"
       - x: "*[1]/*[3]"

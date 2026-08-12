@@ -5,31 +5,49 @@ on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
+  # Until all marketplace actions ship Node 24 runtimes (see GitHub deprecation of Node 20).
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
-    name: Build and Test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            features: ""
+          - name: no-unsafe
+            features: "--features no-unsafe"
+    name: Build and Test (${{ matrix.name }})
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+    - uses: actions/checkout@v5
+    - name: Build (${{ matrix.name }})
+      run: cargo build ${{ matrix.features }} --verbose
+    - name: Run tests (${{ matrix.name }})
+      run: cargo test ${{ matrix.features }} --verbose
 
   clippy:
-    name: Clippy/Lint check
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            features: ""
+          - name: no-unsafe
+            features: "--features no-unsafe"
+    name: Clippy/Lint check (${{ matrix.name }})
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: run clippy
-      run: cargo clippy
+    - uses: actions/checkout@v5
+    - name: run clippy (${{ matrix.name }})
+      run: cargo clippy ${{ matrix.features }}
 
   zip-rules:
     name: zip up the rules directory
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Remove empty Rules directories
       run:  find Rules -type d -empty -delete
     - name: Remove test directory
@@ -60,7 +78,7 @@ jobs:
     steps:
     # download the previous build artifacts and put them in their proper places
     - name: download Rules.zip
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: Rules.zip
     # put the files into the release

@@ -9,9 +9,10 @@ use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
 use regex::{Captures, Regex};
-use sxd_document::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
-use sxd_document::parser;
-use sxd_document::Package;
+use sxd_document_no_unsafe::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::parser;
+use sxd_document_no_unsafe::Package;
+use sxd_document_no_unsafe::{as_str, as_qname};
 
 use crate::canonicalize::{as_element, name};
 use crate::shim_filesystem::{find_all_dirs_shim, find_files_in_dir_that_ends_with_shim};
@@ -21,6 +22,9 @@ use crate::navigate::*;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
 use std::panic::{catch_unwind, AssertUnwindSafe};
+
+/// Maximum depth to prevent stack overflow on deeply nested MathML
+pub const MAX_DEPTH: usize = 512;
 
 #[cfg(feature = "enable-logs")]
 use std::sync::Once;
@@ -52,47 +56,68 @@ thread_local! {
 }
 
 /// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
+///
+/// Installed once. Under `#[cfg(test)]` the previous hook (cargo's) is chained so assert failures
+/// still print normally; production stays silent and relies on [`report_any_panic`].
 pub fn init_panic_handler() {
     use std::panic;
+    use std::sync::Once;
 
-    panic::set_hook(Box::new(|info| {
-        let location = info.location()
-            .map(|l| format!("{}:{}", l.file(), l.line()))
-            .unwrap_or_else(|| "unknown".to_string());
+    static INSTALL: Once = Once::new();
+    INSTALL.call_once(|| {
+        let previous = panic::take_hook();
+        panic::set_hook(Box::new(move |info| {
+            let location = info.location()
+                .map(|l| format!("{}:{}", l.file(), l.line()))
+                .unwrap_or_else(|| "unknown".to_string());
 
-        let payload = info.payload();
-        let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
-            s.to_string()
-        } else if let Some(s) = payload.downcast_ref::<String>() {
-            s.clone()
-        } else {
-            "Unknown panic payload".to_string()
-        };
+            let payload = info.payload();
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                s.to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "Unknown panic payload".to_string()
+            };
 
-        // Use try_with/try_borrow_mut to ensure the hook never panics itself
-        let _ = PANIC_INFO.try_with(|cell| {
-            if let Ok(mut slot) = cell.try_borrow_mut() {
-                *slot = Some((msg, location, 0));
+            // Use try_with/try_borrow_mut to ensure the hook never panics itself
+            let _ = PANIC_INFO.try_with(|cell| {
+                if let Ok(mut slot) = cell.try_borrow_mut() {
+                    *slot = Some((msg, location, 0));
+                }
+            });
+
+            // cargo test (and other previous hooks) still print; production ATs do not want that spam.
+            if cfg!(test) {
+                previous(info);
             }
-        });
-    }));
+        }));
+    });
 }
 
 pub fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
     match result {
         Ok(val) => val,
-        Err(_) => {
-            // Retrieve the smuggled info
-            let details = PANIC_INFO.with(|cell| cell.borrow_mut().take());
-            
-            if let Some((msg, file, line)) = details {
-                Err(anyhow::anyhow!(
+        Err(payload) => {
+            // Prefer details captured by the hook (includes file:line).
+            if let Some((msg, file, line)) = PANIC_INFO.with(|cell| cell.borrow_mut().take()) {
+                return Err(anyhow::anyhow!(
                     "MathCAT crash! Please report the following information: '{}' at {}:{}",
                     msg, file, line
-                ))
-            } else {
-                Err(anyhow::anyhow!("MathCAT crash! -- please report"))
+                ));
             }
+            // Fallback: catch_unwind always provides the payload even if the hook did not run.
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                (*s).to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                return Err(anyhow::anyhow!("MathCAT crash! -- please report"));
+            };
+            Err(anyhow::anyhow!(
+                "MathCAT crash! Please report the following information: '{}'",
+                msg
+            ))
         }
     }
 } 
@@ -150,10 +175,11 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]+"#).unwrap()); // very limited namespace prefix match
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap()); // very limited namespace prefix match
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]+?);"#).unwrap());
 
+    // These have some length limits to avoid DOS attacks via long strings
+    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
+    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
+    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -164,13 +190,18 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
         let mathml_str = mathml_str.as_ref();
+        // Safety guard: Reject strings > 1MB to prevent DoS/Stack issues
+        if mathml_str.len() > 1024 * 1024 {
+            bail!("MathML string of size {} bytes exceeds length limit of 1MB", mathml_str.len());
+        }
+
         return MATHML_INSTANCE.with(|old_package| {
             static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
-                                                    // need to deal with character data and convert to something the parser knows
-            let mathml_str =
-                HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+                                                                     
+            // FIX: need to deal with character data and convert to something the parser knows
+            let mathml_str = HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
@@ -179,6 +210,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
                 });
 
             if !error_message.is_empty() {
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
                 bail!(error_message);
             }
             let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
@@ -192,7 +225,9 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 
             let new_package = parser::parse(&mathml_str);
             if let Err(e) = new_package {
-                bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+                // Clear stale state so subsequent API calls do not return previous user's data (security issue)
+                old_package.replace(parser::parse("<math></math>").unwrap());
+                bail!("Invalid MathML input:\n{}\nError is: {}", mathml_str, e);
             }
 
             let new_package = new_package.unwrap();
@@ -323,38 +358,31 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
         }
     }
 
-    crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow_mut();
-        if let Some(error_string) = rules.get_error() {
-            bail!("{}", error_string);
+    // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
+    let pref_manager = crate::prefs::PreferenceManager::get();
+    let mut pref_manager = pref_manager.borrow_mut();
+    if name == "LanguageAuto" {
+        let language_pref = pref_manager.pref_to_string("Language");
+        if language_pref != "Auto" {
+            bail!(
+                "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
+                language_pref
+            );
         }
-
-        // we set the value even if it was the same as the old value because this might override a potentially changed future user value
-        let mut pref_manager = rules.pref_manager.borrow_mut();
-        if name == "LanguageAuto" {
-            let language_pref = pref_manager.pref_to_string("Language");
-            if language_pref != "Auto" {
-                bail!(
-                    "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
-                    language_pref
-                );
+    }
+    let lower_case_value = value.to_lowercase();
+    if lower_case_value == "true" || lower_case_value == "false" {
+        pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
+    } else {
+        match name {
+            "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
+                pref_manager.set_api_float_pref(name, to_float(name, &value)?)
+            }
+            _ => {
+                pref_manager.set_string_pref(name, &value)?;
             }
         }
-        let lower_case_value = value.to_lowercase();
-        if lower_case_value == "true" || lower_case_value == "false" {
-            pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
-        } else {
-            match name {
-                "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
-                    pref_manager.set_api_float_pref(name, to_float(name, &value)?)
-                }
-                _ => {
-                    pref_manager.set_string_pref(name, &value)?;
-                }
-            }
-        };
-        return Ok::<(), Error>(());
-    })?;
+    };
 
     return Ok(());
 }
@@ -416,7 +444,7 @@ pub fn get_navigation_braille() -> Result<String> {
                                 name(found)
                             );
                         } else if let Some(ch) = as_text(found).chars().nth(offset) {
-                            let internal_mathml = create_mathml_element(&new_doc, name(found));
+                            let internal_mathml = create_mathml_element(&new_doc, as_str!(name(found)));
                             internal_mathml.set_text(&ch.to_string());
                             let new_mathml = create_mathml_element(&new_doc, "math");
                             new_mathml.append_child(internal_mathml);
@@ -659,24 +687,34 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 /// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
 /// Convert the returned error from set_mathml, etc., to a useful string for display
 pub fn copy_mathml(mathml: Element) -> Element {
+    return copy_mathml_recursive(mathml, 0);
+}
+
+fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > MAX_DEPTH {
+        // Return the element as a leaf if it's too deep to prevent crash
+        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+    }
+
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
-    let new_mathml = create_mathml_element(&mathml.document(), name(mathml));
+    let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
     mathml.attributes().iter().for_each(|attr| {
-        new_mathml.set_attribute_value(attr.name(), attr.value());
+        new_mathml.set_attribute_value(as_qname!(attr.name()), as_str!(attr.value()));
     });
 
     // can't use is_leaf/as_text because this is also used with the intent tree
     if children.len() == 1 &&
        let Some(text) = children[0].text() {
-        new_mathml.set_text(text.text());
+        new_mathml.set_text(as_str!(text.text()));
         return new_mathml;
         }
 
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml(child);
+        let new_child = copy_mathml_recursive(child, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -711,10 +749,16 @@ fn add_ids(mathml: Element) -> Element {
         random_part.push_str("a1b2");      // needs to be at least four chars
     }
     let prefix = "M".to_string() + &time_part[time_part.len() - 3..] + &random_part[random_part.len() - 4..] + "-"; // begin with letter
-    add_ids_to_all(mathml, &prefix, 0);
+    add_ids_to_all(mathml, &prefix, 0, 0);
     return mathml;
 
-    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize) -> usize {
+    fn add_ids_to_all(mathml: Element, id_prefix: &str, count: usize, depth: usize) -> usize {
+        // Safety: Prevent stack overflow on deeply nested MathML
+        if depth > 512 {
+            // Return the element as a leaf if it's too deep to prevent crash
+            return count;
+        }
+
         let mut count = count;
         if mathml.attribute("id").is_none() {
             mathml.set_attribute_value("id", (id_prefix.to_string() + &count.to_string()).as_str());
@@ -728,7 +772,7 @@ fn add_ids(mathml: Element) -> Element {
 
         for child in mathml.children() {
             let child = as_element(child);
-            count = add_ids_to_all(child, id_prefix, count);
+            count = add_ids_to_all(child, id_prefix, count, depth + 1);
         }
         return count;
     }
@@ -769,6 +813,15 @@ fn trim_doc(doc: &Document) {
 
 /// Not really meant to be public -- used by tests in some packages
 pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
+    trim_element_recursive(e, allow_structure_in_leaves, 0);
+}
+
+fn trim_element_recursive(e: Element, allow_structure_in_leaves: bool, depth: usize) {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > 512 {
+        return;
+    }
+
     // "<mtext>this is text</mtext" results in 3 text children
     // these are combined into one child as it makes code downstream simpler
 
@@ -786,10 +839,10 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
     for child in e.children() {
         match child {
             ChildOfElement::Element(c) => {
-                trim_element(c, allow_structure_in_leaves);
+                trim_element_recursive(c, allow_structure_in_leaves, depth + 1);
             }
             ChildOfElement::Text(t) => {
-                single_text += t.text();
+                single_text += as_str!(t.text());
                 e.remove_child(child);
             }
             _ => {
@@ -835,7 +888,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
             let child_text = match child {
                 ChildOfElement::Element(child) => {
                     if name(child) == "mglyph" {
-                        child.attribute_value("alt").unwrap_or("").to_string()
+                        child.attribute_value("alt").as_deref().unwrap_or("").to_string()
                     } else {
                         gather_text(child)
                     }
@@ -864,7 +917,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
                     ChildOfElement::Element(child) => {
                         text += &gather_text(child);
                     }
-                    ChildOfElement::Text(t) => text += t.text(),
+                    ChildOfElement::Text(t) => text += as_str!(t.text()),
                     _ => (),
                 }
             }
@@ -904,11 +957,11 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
                 // combine adjacent text nodes into single nodes
                 if is_last_mtext {
                     let last_child = new_children.last_mut().unwrap().element().unwrap();
-                    let new_text = as_text(last_child).to_string() + text.text();
+                    let new_text = as_str!(as_text(last_child)).to_string() + as_str!(text.text());
                     last_child.set_text(&new_text);
                 } else {
-                    let new_leaf_node = create_mathml_element(&doc, leaf_name);
-                    new_leaf_node.set_text(text.text());
+                    let new_leaf_node = create_mathml_element(&doc, as_str!(leaf_name));
+                    new_leaf_node.set_text(as_str!(text.text()));
                     new_children.push(ChildOfElement::Element(new_leaf_node));
                     is_last_mtext = true;
                 }
@@ -918,7 +971,7 @@ pub fn trim_element(e: Element, allow_structure_in_leaves: bool) {
         // clean up whitespace in text nodes
         for child in &mut new_children {    
             if let Some(element) = child.element() && is_leaf(element) {
-                let text = as_text(element);
+                let text = as_str!(as_text(element));
                 let cleaned_text = WHITESPACE_MATCH.replace_all(text, " ").trim_matches(WHITESPACE).to_string();
                 element.set_text(&cleaned_text);
             }
@@ -1059,10 +1112,10 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
     /// compares attributes -- '==' didn't seems to work
     fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
         let attrs1 = attrs1.iter()
-                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
                 .collect::<Vec<Attribute>>();
         let attrs2 = attrs2.iter()
-                .filter(|a| !ignore.contains(&a.name().local_part())).cloned()
+                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
                 .collect::<Vec<Attribute>>();
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
@@ -1071,14 +1124,14 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
         for attr1 in attrs1 {
             if let Some(found_attr2) = attrs2
                 .iter()
-                .find(|&attr2| attr1.name().local_part() == attr2.name().local_part())
+                .find(|&attr2| as_qname!(attr1.name()).local_part() == as_qname!(attr2.name()).local_part())
             {
                 if attr1.value() == found_attr2.value() {
                     continue;
                 } else {
                     bail!(
                         "Attribute named {} has differing values:\n  '{}'\n  '{}'",
-                        attr1.name().local_part(),
+                        as_qname!(attr1.name()).local_part(),
                         attr1.value(),
                         found_attr2.value()
                     );
@@ -1094,7 +1147,7 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
         return Ok(());
 
         fn print_attr(attr: &Attribute) -> String {
-            return format!("@{}='{}'", attr.name().local_part(), attr.value());
+            return format!("@{}='{}'", as_qname!(attr.name()).local_part(), attr.value());
         }
         fn print_attrs(attrs: &[Attribute]) -> String {
             return attrs.iter().map(print_attr).collect::<Vec<String>>().join(", ");
@@ -1107,6 +1160,16 @@ mod tests {
     #[allow(unused_imports)]
     use super::super::init_logger;
     use super::*;
+
+    fn interface_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        use std::panic::{catch_unwind, AssertUnwindSafe};
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
 
     fn are_parsed_strs_equal(test: &str, target: &str) -> bool {
         let test_package = &parser::parse(test).expect("Failed to parse input");
@@ -1199,13 +1262,13 @@ mod tests {
     }
 
     #[test]
-    fn test_entities() {
-        // this forces initialization
-        set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+    fn test_entities() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
 
-        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>").unwrap();
+        let entity_str = set_mathml("<math><mrow><mo>&minus;</mo><mi>&mopf;</mi></mrow></math>")?;
         let converted_str =
-            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>").unwrap();
+            set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>")?;
 
         // need to remove unique ids
         static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
@@ -1215,26 +1278,27 @@ mod tests {
 
         let entity_str = set_mathml(
             "<math data-quot=\"&quot;value&quot;\" data-apos='&apos;value&apos;'><mi>XXX</mi></math>",
-        )
-        .unwrap();
+        )?;
         let converted_str =
-            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>").unwrap();
+            set_mathml("<math data-quot='\"value\"' data-apos=\"'value'\"><mi>XXX</mi></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities quote test failed");
 
         let entity_str =
-            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>").unwrap();
+            set_mathml("<math><mo>&lt;</mo><mo>&gt;</mo><mtext>&amp;lt;</mtext></math>")?;
         let converted_str =
-            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")
-                .unwrap();
+            set_mathml("<math><mo>&#x003C;</mo><mo>&#x003E;</mo><mtext>&#x0026;lt;</mtext></math>")?;
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "special entities <,>,& test failed");
+        return Ok( () );
+        });
     }
 
     #[test]
-    fn can_recover_from_invalid_set_rules_dir() {
+    fn can_recover_from_invalid_set_rules_dir() -> Result<()> {
+        return interface_test(|| {
         use std::env;
         // MathCAT will check the env var "MathCATRulesDir" as an override, so the following test might succeed if we don't override the env var
         unsafe { env::set_var("MathCATRulesDir", "MathCATRulesDir"); }   // safe because we are single threaded
@@ -1245,6 +1309,8 @@ mod tests {
             super::super::abs_rules_dir_path()
         );
         assert!(set_mathml("<math><mn>1</mn></math>").is_ok());
+        return Ok( () );
+        });
     }
 
     #[test]
@@ -1280,5 +1346,155 @@ mod tests {
         let test = "<math><mtext>if&#xa0;<math> <msup><mi>n</mi><mn>2</mn></msup></math>&#xa0;is real</mtext></math>";
         let target = "<math><mrow><mtext>if&#xa0;</mtext><msup><mi>n</mi><mn>2</mn></msup><mtext>&#xa0;is real</mtext></mrow></math>";
         assert!(are_parsed_strs_equal(test, target));
+    }
+
+    #[test]
+    fn stack_overflow_protection() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
+        let mut bad_mathml = String::from("<math>");
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("<msqrt><mi>n</mi>");
+        }
+        for _ in 0..MAX_DEPTH+1 {
+            bad_mathml.push_str("</msqrt>");
+        }
+        bad_mathml.push_str("</math>");
+        assert_eq!(set_mathml(bad_mathml).unwrap_err().to_string(), "MathML is too deeply nested to process");
+        return Ok( () );
+        });
+    }
+
+    #[test]
+    fn old_mathml_cleared_on_error() -> Result<()> {
+        return interface_test(|| {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
+        let good_mathml = "<math><mn>3</mn></math>";
+        set_mathml(good_mathml)?;
+        let bad_mathml = "<math><mi>&xabc;</mi></math>";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text()? == "");
+        set_mathml(good_mathml)?;
+        let bad_mathml = "<math>garbage";
+        assert!(set_mathml(bad_mathml).is_err());
+        assert!(get_spoken_text()? == "");
+        return Ok( () );
+        });
+    }
+
+
+
+    fn setup_speech_ssml() -> Result<()> {
+        set_rules_dir(super::super::abs_rules_dir_path())?;
+        set_preference("Language", "en")?;
+        set_preference("TTS", "SSML")?;
+        set_preference("MathRate", "80")?;
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        set_preference("Verbosity", "Medium")?;
+        return Ok( () );
+    }
+
+    #[test]
+    fn test_no_escaping() -> Result<()> {
+        return interface_test(|| {
+        setup_speech_ssml()?;
+        let expr = " <math>
+            <mfrac>
+                <mrow> <mi>x</mi><mo>+</mo><mi>y</mi> </mrow>
+                <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
+            </mfrac>
+        </math>";
+        set_mathml(&expr)?;
+        let speech = get_spoken_text()?;
+        // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
+        assert!(!speech.contains("&lt;"));
+        assert!(!speech.contains("&gt;"));
+        assert!(!speech.contains("&amp;lt;"));
+        return Ok(());
+        });
+    }
+
+    /// The attack payload must not pass through verbatim (rule-generated SSML may contain `<break`).
+    fn assert_ssml_attack_neutralized(speech: &str, illegal_ssml: &str) {
+        assert!(
+            !speech.contains(illegal_ssml),
+            "attack payload ({illegal_ssml}) appears verbatim in output: {speech}"
+        );
+        assert!(
+            !speech.contains(r#"time="5000ms""#) && !speech.contains("time='5000ms'"),
+            "attack break duration in output: {speech}"
+        );
+    }
+
+    /// SSML snippet an attacker might embed in MathML text or attributes.
+    const PAYLOAD: &str = r#"<break time="50000ms"/>"#;
+    /// Same bytes as `PAYLOAD`, entity-encoded so attribute values are well-formed XML.
+    const PAYLOAD_ATTR_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;";
+    /// Entity-encoded payload plus trailing literal text (well-formed in leaf element text).
+    const PAYLOAD_LEAF_XML: &str = "&lt;break time=&quot;50000ms&quot;/&gt;note";
+
+    #[test]
+    /// User-supplied leaf text must not inject SSML when TTS is SSML.
+    fn leaf_text_ssml_attack_neutralized_in_speech() -> Result<()> {
+        return interface_test(|| {
+        setup_speech_ssml()?;
+        // Entity-encoded payload: valid XML through set_mathml (no CDATA), decodes to PAYLOAD + "note".
+        let mathml = format!(
+            r#"<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo>
+                           <mi>{PAYLOAD_LEAF_XML}</mi><mo>+</mo>
+                           <ms>{PAYLOAD_LEAF_XML}</ms><mo>+</mo>
+                           <mn>{PAYLOAD_LEAF_XML}</mn></mrow></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        let mathml = format!(
+            "<math><mrow><mtext>{PAYLOAD_LEAF_XML}</mtext><mo>+</mo><mn>1</mn></mrow></math>"
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+        assert!(speech.contains("note") || speech.contains("&lt;"));
+        return Ok(());
+        });
+    }
+
+    #[test]
+    /// Attribute values read via xpath must not inject SSML when TTS is SSML.
+    fn attribute_ssml_attack_neutralized_in_speech() -> Result<()> {
+        return interface_test(|| {
+        use crate::speech::{SpeechRulesWithContext, SPEECH_RULES};
+
+        setup_speech_ssml()?;
+        let mathml = format!(
+            r#"<math data-ssml-attack="{PAYLOAD_ATTR_XML}"><mn>x</mn></math>"#
+        );
+        set_mathml(&mathml)?;
+        let speech = get_spoken_text()?;
+        assert_ssml_attack_neutralized(&speech, PAYLOAD);
+
+        // XPath Attribute nodes use replace_chars (same path as replace_nodes_string).
+        SPEECH_RULES.with(|rules| {
+            rules.borrow_mut().read_files()?;
+            let rules_ref = rules.borrow();
+            let package = parser::parse(&mathml)?;
+            let math = get_element(&package);
+            let attr = math
+                .attribute("data-ssml-attack")
+                .expect("data-ssml-attack attribute");
+            let work_package = Package::new();
+            let mut ctx =
+                SpeechRulesWithContext::new(&rules_ref, work_package.as_document(), "", 0);
+            let from_attr = ctx.replace_chars(as_str!(attr.value()), math)?;
+            assert_ssml_attack_neutralized(&from_attr, PAYLOAD);
+            assert!(
+                from_attr.contains("&lt;"),
+                "attribute value should be XML-escaped for SSML: {from_attr}"
+            );
+            Ok::<(), Error>(())
+        })?;
+        return Ok(());
+        });
     }
 }

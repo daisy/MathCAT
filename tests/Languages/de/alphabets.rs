@@ -405,3 +405,13 @@ fn enclosed_numbers() -> Result<()> {
   return Ok(());
 
 }
+
+#[test]
+fn mathematical_digit_names() -> Result<()> {
+  let expr = "<math> <mi>𝟎</mi><mo>,</mo><mi>𝟏</mi><mo>,</mo><mi>𝟖</mi></math>";
+  test("de", "SimpleSpeak", expr, "fett null komma fett eins komma fett acht")?;
+  let expr = "<math> <mi>𝟪</mi><mo>,</mo><mi>𝟾</mi></math>";
+  test("de", "SimpleSpeak", expr, "acht komma acht")?;
+  Ok(())
+
+}
