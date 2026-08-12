@@ -201,7 +201,7 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
                                                                      
             // FIX: need to deal with character data and convert to something the parser knows
-            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+            let mathml_str = HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
