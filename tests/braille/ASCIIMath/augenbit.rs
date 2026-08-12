@@ -131,6 +131,14 @@ fn augenbit1_7_7 () -> Result<()> {
 }
 
 #[test]
+fn augenbit1_7_8 () -> Result<()> {
+    let expr = r#"<math><mi>lg</mi><mi>a</mi></math>"#;
+    test_braille("ASCIIMath", expr, r"lg a")?;
+    return Ok(());
+
+}
+
+#[test]
 fn augenbit1_7_10 () -> Result<()> {
     let expr = r#"<math><msup><mi>cos</mi><mn>2</mn></msup><mi>&#x3B2;</mi></math>"#;
     test_braille("ASCIIMath", expr, r"cos^2 beta")?;
