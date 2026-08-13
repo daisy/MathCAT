@@ -1,5 +1,5 @@
 #![allow(clippy::needless_return)]
-use strum_macros::Display;
+use strum::Display;
 use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
 use sxd_document_no_unsafe::Package;
 use sxd_document_no_unsafe::as_str;

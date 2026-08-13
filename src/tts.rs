@@ -75,7 +75,7 @@ use std::fmt;
 use crate::speech::{RulesFor, SpeechRulesWithContext, MyXPath, TreeOrString};
 use std::string::ToString;
 use std::str::FromStr;
-use strum_macros::{Display, EnumString};
+use strum::{Display, EnumString};
 use regex::Regex;
 use std::sync::LazyLock;
 use sxd_xpath_no_unsafe::Value;
