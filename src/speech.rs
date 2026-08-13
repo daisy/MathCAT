@@ -206,17 +206,6 @@ fn yaml_type_err(yaml: &Yaml, str: &str) -> Error {
     anyhow!("Expected {}, found {}", str, yaml_to_type(yaml))
 }
 
-// fn yaml_key_err(dict: &Yaml, key: &str, yaml_type: &str) -> String {
-//     if dict.as_hash().is_none() {
-//        return format!("Expected dictionary with key '{}', found\n{}", key, yaml_to_string(dict, 1));
-//     }
-//     let str = &dict[key];
-//     if str.is_badvalue() {
-//         return format!("Did not find '{}' in\n{}", key,  yaml_to_string(dict, 1));
-//     }
-//     return format!("Type of '{}' is not a {}.\nIt is a {}. YAML value is\n{}", 
-//             key, yaml_type, yaml_to_type(str), yaml_to_string(dict, 0));
-// }
 
 fn find_str<'a>(dict: &'a Yaml, key: &'a str) -> Option<&'a str> {
     return dict[key].as_str();
