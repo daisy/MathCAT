@@ -1388,6 +1388,35 @@ fn source_less_common_math_symbols_11() -> Result<()> {
 }
 
 #[test]
+fn source_gost_order_relations_greater_or_less() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow><mi>x</mi><mo>&#x2277;</mo><mi>y</mi></mrow></math>"#, "⠠⠭⠀⠕⠪⠀⠽");
+}
+
+#[test]
+fn source_gost_order_relations_less_or_greater() -> Result<()> {
+    return test_russian_braille(r#"<math><mrow><mi>x</mi><mo>&#x2276;</mo><mi>y</mi></mrow></math>"#, "⠠⠭⠀⠪⠕⠀⠽");
+}
+
+#[test]
+fn source_gost_large_vertical_arrows() -> Result<()> {
+    test_russian_braille(r#"<math><mo>&#x2191;</mo></math>"#, "⠰⠌")?;
+    return test_russian_braille(r#"<math><mo>&#x2193;</mo></math>"#, "⠘⠡");
+}
+
+#[test]
+fn source_gost_contextual_square_bracket_recognition_points() -> Result<()> {
+    test_russian_braille(r#"<math><mrow><mo>[</mo><mi>x</mi><mo>]</mo></mrow></math>"#, "⠠⠷⠠⠭⠠⠾")?;
+    return test_russian_braille(r#"<math><mrow><mo>[</mo><mn>1</mn><mo>]</mo></mrow></math>"#, "⠷⠼⠁⠾");
+}
+
+#[test]
+fn source_gost_contextual_angle_bracket_recognition_points() -> Result<()> {
+    test_russian_braille(r#"<math><mrow><mo>&#x27E8;</mo><mi>x</mi><mo>&#x27E9;</mo></mrow></math>"#, "⠈⠪⠠⠭⠈⠕")?;
+    test_russian_braille(r#"<math><mrow><mo>&#x27E8;</mo><mn>1</mn><mo>&#x27E9;</mo></mrow></math>"#, "⠪⠼⠁⠕")?;
+    return test_russian_braille(r#"<math><mrow><mi>x</mi><mo>&lt;</mo><mi>y</mi></mrow></math>"#, "⠠⠭⠀⠪⠀⠽");
+}
+
+#[test]
 fn source_typeform_and_mathvariant_indicators() -> Result<()> {
     let expr = r#"<math><mi mathvariant="bold">x</mi></math>"#;
     test_braille("Russian", expr, "⠻⠠⠭⠻")?;
