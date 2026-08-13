@@ -2,10 +2,7 @@
 
 MathCAT is a tool used together with a screen reader. Through MathCAT, you can have mathematical expressions read aloud. MatCAT can also make mathematics accessible through a braille display.
 
-<!-- This part was written before MathCAT became native to NVDA, needs updating! -->
-If you are using the screen reader NVDA you have to download MathCAT as an addon. [You can download MathCAT as an addon for NVDA here.](https://nvda-addons.org/)
-
-If you are using JAWS, MathCAT comes built-in, which means you don’t have to install it as an addon.
+In screen readers NVDA and JAWS, MathCAT comes built-in. This means you don’t have to install it as an addon.
 
 ## Get started with MathCAT
 
@@ -21,7 +18,7 @@ Use your screen reader on a web page or in an e-book as usual. When you get to a
 
 When you navigate inside an expression you can use CTRL+C to copy the MathML code for the current node of the expression.
 
-There are many more possibilities when you navigate inside mathematical expressions. All features are described here: All navigation commands
+There are many more possibilities when you navigate inside mathematical expressions. All features are described here: [All navigation commands](#all-navigation-commands)
 
 ## Adapt MathCAT to your needs
 
@@ -37,8 +34,15 @@ You can choose between the following settings for speech. Below each setting you
   - Learning disability. The readout is shorter.
 - Language: (the default setting is the same as the language the screen reader is set to)
   - \[English (en)\]
+  - German (de)
+  - Greek (el)
   - Spanish (es)
+  - Finnish (fi)
+  - French (fr)
+  - Hungarian (hu)
   - Indonesian (id)
+  - Norwegian bokmål (nb)
+  - Polish (pl)
   - Russian (ru)
   - Swedish (sv)
   - Vietnamese (vi)
@@ -112,7 +116,7 @@ The table shows all the commands you can use for navigating inside a mathematica
 
 Note: tabular math means mathematical content in a table structure such as a matrix or a system of equations. They can be navigated like a table.
 
-| Key | Unmodified | \+ Ctrl | \+ Shift | +Cntrl+Shift |
+| Key | Unmodified | \+ Ctrl | \+ Shift | +Ctrl+Shift |
 | --- | --- | --- | --- | --- |
 | Left | Move to previous | In table: move to previous cell In tabular math: move to previous element  <br>Note: Ctrl+Alt+Left can also be used | Read previous | Describe previous |
 | Right | Move to next | In table: move to next cell  <br>In tabular math: move to next element  <br>Note: Ctrl+Alt+Right can also be used | Read next | Describe next |
@@ -127,4 +131,4 @@ Note: tabular math means mathematical content in a table structure such as a mat
 
 ## Do you have feedback on MathCAT?
 
-<!-- Perhaps the Daisy working group or Neil could write something here about how to get in touch. An e-mail address, or refer to creating an issue on GitHub? -->
+MathCAT is under active development, and we want your feedback. Do you have a feature request, or have you found any bugs? Please create an issue on [MathCAT's GitHub page](https://github.com/daisy/MathCAT/issues). You are also welcome to get in touch by signing up to [the mailing list of the DAISY MathCAT working group](https://www.surveymonkey.com/r/HXTLXGN).

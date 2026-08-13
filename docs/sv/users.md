@@ -2,10 +2,11 @@
 
 MathCAT är ett verktyg som används ihop med en skärmläsare. Med hjälp av MathCAT kan du få matematiska uttryck upplästa. MathCAT gör också så att matematik kan visas på en punktskriftsskärm.
 
-<!-- This part was written before MathCAT became native to NVDA, needs updating according to English version! -->
-Just nu finns MathCAT på svenska bara tillgängligt om du använder skärmläsaren NVDA. [På NVDA:s hemsida kan du läsa om hur du laddar ner och använder NVDA (sidan är på engelska).](https://www.nvaccess.org/download/) Sedan behöver du ladda ner MathCAT som tillägg. [Här kan du ladda ner MathCAT som tillägg till NVDA (sidan är på engelska)](https://nvda-addons.org/).
+Just nu finns MathCAT på svenska bara tillgängligt om du använder skärmläsaren NVDA. [På NVDA:s hemsida kan du läsa om hur du laddar ner och använder NVDA (sidan är på engelska).](https://www.nvaccess.org/download/)
 
-Om du använder JAWS kan du just nu bara använda MathCAT på engelska. Då kommer MathCAT inbyggt, du behöver alltså inte intstallera det som tillägg.
+Om du använder JAWS kan du just nu bara använda MathCAT på engelska. 
+
+MathCAT kommer inbyggt i både NVDA och JAWS, du behöver alltså inte intstallera det som tillägg.
 
 ## Börja använda MathCAT
 
@@ -21,7 +22,7 @@ Använd skärmläsaren på en hemsida eller i en e-bok som vanligt. När du komm
 
 När du navigerar i ett uttryck kan du trycka CTRL+C för att kopiera MathML-koden för den aktuella delen av uttrycket.
 
-Det finns många fler möjligheter när du navigerar i matematiska uttryck. Alla funktioner finns beskrivna här: Alla navigeringskommandon.
+Det finns många fler möjligheter när du navigerar i matematiska uttryck. Alla funktioner finns beskrivna här: [Alla navigeringskommandon](#alla-navigeringskommandon).
 
 ## Anpassa MathCAT efter dina behov
 
@@ -37,8 +38,16 @@ Du kan välja mellan följande inställningar för tal. Under varje inställning
   - Inlärningssvårigheter. Utläsningen är kortare.
 - Språk: (standardinställningen är samma som språket som skärmläsaren är inställd på)
   - Engelska (en)
+  - Tyska (de)
+  - Grekiska (el)
   - Spanska (es)
+  - Finska (fi)
+  - Franska (fr)
+  - Ungerska (hu)
   - Indonesiska (id)
+  - Norska bokmål (nb)
+  - Polska (pl)
+  - Ryska (ru)
   - \[Svenska (sv)\]
   - Vietnamesiska (vi)
   - Kinesiska, traditionell (zh-tw)
