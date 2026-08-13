@@ -1,202 +1,130 @@
----
-layout: default
-lang: en
-ref: users
----
-# <img src="logo.png" style="position: relative; top: 16px; z-index: -1;" alt="MathCAT logo"> User Guide
+# User guide for MathCAT
 
-## Advice on Choosing a Voice
+MathCAT is a tool used together with a screen reader. Through MathCAT, you can have mathematical expressions read aloud. MatCAT can also make mathematics accessible through a braille display.
 
-In NVDA, you have a choice of using different synthesizers. This is found in NVDA `Preferences:Settings...` followed by choosing `Speech`. There are usually at least three choices: eSpeak NG, Microsoft Speech API, Windows OneCore voices. All synthesizers work, but the Windows OneCore voices don't support speaking "a" properly and the other options should be used. In particular, the Microsoft Speech API are a good substitute for the OneCore voices.
+<!-- This part was written before MathCAT became native to NVDA, needs updating! -->
+If you are using the screen reader NVDA you have to download MathCAT as an addon. [You can download MathCAT as an addon for NVDA here.](https://nvda-addons.org/)
 
-## Information for MathCAT users
+If you are using JAWS, MathCAT comes built-in, which means you don’t have to install it as an addon.
 
-MathCAT supports a number of options to control speech, braille, and navigation. These are described below.
-Not all options are currently supported. The current state of support for an option is listed with the option and a ✓ is used before the option as a quick reference to indicate at least partial support for that option.
+## Get started with MathCAT
 
-Note: in NVDA, the options can be set by using the MathCAT preferences dialog. This is accessed by going to the NVDA preferences, choosing "Preferences", and then "MathCAT settings...". The settings are divided into three categories: Speech, Navigation, and Braille. This division is reflected in the documentation below.
+Use your screen reader on a web page or in an e-book as usual. When you get to a mathematical expression, the screen reader will read it out automatically. If you want to investigate the expression more closely you can activate the navigation mode by pressing Space. In NVDA, the NVDA-key+Alt+M can also be used. If you want to leave the navigation mode, press Escape.
 
-MathCAT supports multiple modes of navigation. The means to begin navigating and end navigating will differ depending on the AT you are using. See the list below. The commands/key-strokes accepted by MathCAT are the same as those accepted by MathPlayer and are [listed in this document](nav-commands.md).
-The documentation describes many useful ways to navigate math. For those who just want to get started:
+### The most common keyboard shortcuts are these
 
-* Use the arrow keys to move left/right or up/down a mathematical structure (e.g., into/out of a fraction)
-* If inside of a table, CTRL+arrow will move by cell
-* Home/End moves to the start/end of the expression
-* Space reads your current position
-* Shift+up/down will change the mode of navigation (see [navigation documentation](nav-commands.md))
+- Move left, right, upp or down inside a mathematical expression, use the arrow keys.
+- Inside a table, move between cells by using CTRL+arrow keys.
+- Move to the beginning of an expression by pressing Home. Move to the end of an expression by pressing End.
+- To hear your current position, press Space.
+- To change navigation mode, press Shift+up/down. The navigation modes are described here: Navigation
 
-To start navigation:
+When you navigate inside an expression you can use CTRL+C to copy the MathML code for the current node of the expression.
 
-* NVDA:  press NVDA+Alt+M or the space key to enter math navigation mode, press Esc to exit
+There are many more possibilities when you navigate inside mathematical expressions. All features are described here: All navigation commands
 
-MathCAT's navigation is the same in Word and in a browser.
+## Adapt MathCAT to your needs
 
-While navigating an expression, "control+c" copies the math content of the current node in NVDA. The following formats are supported:
+There are many possibilities to adjust MathCAT to fit your needs. You can find the settings by pressing the NVDA-key+N, then Settings, then MathCAT settings. Below Categories there are three options: Speech, Navigation and Braille.
 
-* MathML (Default)
-* LaTeX
-* ASCIIMath
-* Speech
+### Speech
 
-## Option List
+You can choose between the following settings for speech. Below each setting you can find a list of all options with a short description. The default setting, the one that is active if you don’t make a choice, is written inside square brackets.
 
-The options are listed below. Most options allow only a limited set of values and those are indicated in the options.
-The default value is given in \[brackets\].
+- Disability:
+  - \[Blindness.\] The readout is unambiguous.
+  - Low vision. The readout is shorter.
+  - Learning disability. The readout is shorter.
+- Language: (the default setting is the same as the language the screen reader is set to)
+  - \[English (en)\]
+  - Spanish (es)
+  - Indonesian (id)
+  - Russian (ru)
+  - Swedish (sv)
+  - Vietnamese (vi)
+  - Chinese, traditional (zh-tw)
+- Speech style:
+  - \[ClearSpeak.\] Expressions are spoken approximately like a teacher would have said them in a classroom.
+  - SimpleSpeak. Expressions are spoken more concicely. The reading is sometimes ambiguous.
+- Verbosity:
+  - Terse. “Extra” words such as “the” and “of” in “the square root of x” have been removed.
+  - \[Medium.\] A compromise between Terse and Verbose.
+  - Verbose. Everything is read out. The readout is unambiguous.
+- MathRate:
+  - \[100\], can be adjusted between 1 and 1000. Changes how fast math is spoken compared with the screen reader’s velocity. The number means percent. 100 corresponds to the same speed, less means slower and more means faster.
+- Pause factor:
+  - \[1\], can be adjusted between 0 and 10. Changes how long the pauses are when math is read out.
+- Math Sound:
+  - \[None.\]
+  - Beep. A beep is played before and after every math expression.
+- Chemistry:
+  - \[Read out.\] Chemical formulae are read out, e.g. “H two O” for $H_2O$.
+  - Off. “H sub 2 O” for $H_2O$.
 
-### Speech Options
+### Navigation
 
-* ✓Impairment: [Blindness]
-  * Options: Blindness, LowVision, LearningDisability
-  * Description: this controls whether certain notations are disambiguated or not in speech.
-  * Status: the focus has been on Blindness, but there is some support if a different value is used. That support needs to be improved.
+Through MathCAT you can investigate an expression in detail by navigating inside it, that is, moving around and reading it piece-by-piece. In the settings for Navigation you can choose how to do this, and how detailed information you want.
 
-* ✓Language: [en]
-  * Options: any known language code and sub-code. E.g., "en-uk".
-    [This site gives a list of options](https://www.venea.net/web/culture_code).
-  * Description: this value determines the language to be used.
-    If the regional variant is not found among the speech rules, the speech will fall back to using the main language. If speech rules for the main language can not be found, English ("en") is used.
-  * Status: currently only English, Spanish, Finnish, Indonesian, Swedish, Vietnamese, and Chinese are supported.
-    Support for other languages will be added with help from volunteers.
+Below each setting you can find a list of all options with a short description. The default setting, the one that is active if you don’t make a choice, is written inside square brackets.
 
-* ✓SpeechStyle: [ClearSpeak]
-  * Options:  Any implemented speech style (currently only ClearSpeak and SimpleSpeak)
-  * Description: a style of speech or coordinated philosophy about how to speak an expression.
-    * ClearSpeak was developed by ETS for use on high-stakes tests such as the SAT. The [ClearSpeak spec details are in this Word document](ClearSpeakRulesAndPreferences.docx).
-    * SimpleSpeak tries to minimize speech by speaking simple expressions such as $\frac{a}{b}$ quickly without bracketing words ("a over b"); these are distinguished from more complex expressions such as $\frac{a}{b+1}$ which will always have bracketing words ("fraction a over b plus 1 end fraction").
-  * Status: currently only ClearSpeak and SimpleSpeak are implemented, but MathSpeak will likely be implemented at some point.
+- Navigation mode used when you enter an expression:
+  - \[Enhanced mode.\] Move between mathematically meaningful parts of an expression (e.g. numerator, denominator, exponents, expressions within parentheses).
+  - Simple mode. Move between words, except when you get to a defined expression, e.g. a square root. Then the entire expression is read out.
+  - Character mode. Move between words or numbers. Zoom in to read each letter or digit separately.
 
-* ✓Verbosity: [Medium]  
-  * Options: Terse, Medium, Verbose
-  * Description: controls how much "extra" speech is used. E.g, square roots are verbosely spoken as "the square root of x" and tersely spoken as "square root x".
-  * Status: supported, but there will likely be improvements made over time
+If you want to change navigation mode while navigating an expression you can use Shift+Up to go to Enhanced from Simple (or from Character mode to Simple). If you use Shift+Down you go from Enhanced to Simple (or from Simple to Character mode). I.e., upwards means overview while downwards means more detailed.
 
-* ✓MathRate: [100]
-  * Options: Number between 1 and 100
-  * Description: Changes the relative speech rate. The change is a percentage speed change from the standard speech engine's rate. '100' means the math reading rate is the same as that of the text rate.
-    This only works for implementations that tell MathCAT to generate speech engine tagging such as SSML.
-  * Status: This should work in NVDA.
+There is also a tick box which you can select for the navigation mode to reset every time you enter an expression. By default it is not selected.
 
-* ✓PauseFactor: [50]
-  * Options: Number between 0 and 100
-  * Description: Changes the relative amount of pausing that MathCAT adds. 0 turns off all pausing and 100 makes the pauses 10 times longer than normal.
-    This only works for implementations that tell MathCAT to generate speech engine tagging such as SSML.
-  * Status: This should work in NVDA.
+- Speech after move mode:
+  - \[Read.\] Reads out the part of the expression where you are.
+  - Describe. Gives an overview of the selected expression.
 
-* ✓SpeechSound: [None]
-  * Options: None, Beep
-  * Description: a start and end beep occur before and after reading an expression.
-  * Status: This should work in NVDA.
+There is also a tick box which you can select for the speech after move mode to be reset every time you enter an expression. By default it is selected.
 
-* SubjectArea: [General]
-  * Status: this was used in MathPlayer but not yet currently implemented. I am waiting on further discussion in the MathML which might add this as a means of providing different default `intent` values.
+- Zoom out automatically when part of an expression (e.g. a root) has been read out.
+  - \[On.\] (box selected)
+  - Off. (box not selected)
+- Verbosity for navigation:
+  - Terse. “Extra” words such as “the” and “of” in “the square root of x” have been removed.
+  - \[Medium.\] A compromise between Terse and Verbose.
+  - Verbose. Everything is read out. The readout is unambiguous.
 
-* Chemistry: [SpellOut]
-  * Options:  SpellOut, AsCompound, Off
-  * Description:  controls how Chemical formulae are read. Examples for $\mathrm{H}_2\mathrm{O}$:
-    * ✓SpellOut: "H 2 0" (verbosity controls whether "sub"/"super" is spoken)
-    * AsCompound: "Water"
-    * ✓Off "H sub 2 O"
-  * Status: Many heuristics have been implemented to infer when some notation is chemistry or not. Inferring chemical notations is a bit tricky so MathCAT will sometimes not recognize them and may sometimes inadvertently classify something as chemistry. The work of the MathML WG may make it substantially easier for authors to indicate that something is chemistry.
+### Braille
 
-SpeechOverrides:
+You can choose between the following settings for braille. Below each setting you can find a list of all options. The default setting, the one that is active if you don’t make a choice, is written inside square brackets.
 
-* ✓CapitalLetters: "cap"    # word to say as a prefix for capital letters unless in unicode.yaml; empty string leaves it to screen reader
-* LeftParen: ""             # word used as override
-* RightParen: ""            # word used as override
+- Braille notation for mathematics to be shown on the braille display:
+  - CMU.
+  - \[Nemeth.\]
+  - Swedish.
+  - UEB.
+  - Vietnam.
+- Dot 7 & 8 mark the following position in the navigation mode:
+  - Off.
+  - The first characters.
+  - \[End points.\]
+  - All.
 
-ClearSpeak has a number of options. These were designed for authors to use, but can also be set by a user although they are not that useful.
+## All navigation commands
 
-* ✓CapitalLetters: Auto, SayCaps or use pitch
-* ✓AbsoluteValue: Auto, AbsEnd, Cardinality, Determinant
-* ✓Fraction: Auto, Ordinal, Over, FracOver, General, EndFrac, GeneralEndFrac, OverEndFrac, Per
-* ✓Exponent: Auto, Ordinal, OrdinalPower, AfterPower
-* ✓Roots: Auto, PosNegSqRoot, RootEnd, PosNegSqRootEnd
-* ✓Functions: Auto, None
-* ✓Trig: Auto, TrigInverse, ArcTrig
-* ✓Log: Auto, LnAsNaturalLog 
-* ✓ImpliedTimes: Auto, MoreImpliedTimes , None
-* ✓Paren: Auto, Speak, SpeakNestingLevel, Silent, CoordPoint, Interval
-* ✓Matrix: Auto, SpeakColNum, SilentColNum, EndMatrix, Vector, EndVector, Combinatorics
-* ✓MultiLineLabel: Auto, Case, Constraint, Equation, Line, None, Row, Step 
-* ✓MultiLineOverview: Auto, None, 
-* ✓MultiLinePausesBetweenColumns: Short, Long
-* ✓Sets: Auto, woAll, SilentBracket
-* ✓MultSymbolX: Auto, By, Cross
-* ✓MultSymbolDot: Auto, Dot
-* ✓TriangleSymbol: Auto, Delta
-* ✓Ellipses: Auto, AndSoOn, 
-* ✓VerticalLine: Auto, SuchThat, Divides, Given
-* ✓SetMemberSymbol: Auto, Belongs, Element, Member
-* ✓Prime: Auto, Angle, Length
-* ✓CombinationPermutation: Auto, ChoosePermute
-* ✓Bar: Auto, Bar, Conjugate, Mean
+The table shows all the commands you can use for navigating inside a mathematical expression. In the first column is the name of a key. In the second column is described what happens if you press the key. In the third column is described what happens if you press Control and then the key. In the fourth column is described what happens if you press Shift and then the key. In the fifth column is described what happens if you press Control and Shift and the key.
 
-### Navigation Options (see [navigation documentation](nav-commands.md))
+Note: tabular math means mathematical content in a table structure such as a matrix or a system of equations. They can be navigated like a table.
 
-* ✓NavMode: Enhanced -- Enhanced, Simple, Character
-* ResetNavMode: false -- remember previous value and use it
-* Overview: false -- speak the expression or give a description/overview
-* ResetOverView: true -- remember previous value and use it
-* ✓NavVerbosity: Medium -- Terse, Medium, Full (words to say for nav command)
-* ✓AutoZoomOut: true -- Auto zoom out of 2D exprs (use shift-arrow to force zoom out if unchecked).
-  * `true`: if you are at the edge of a 2D expression (e.g., a fraction or superscript) and you try to move (left or right) out of it, then the move is allowed and the zoom level is set to that of the preceding/following item. 
-  * `false`: moving (left or right) past the edge of a 2D expression is not allowed; you need to zoom out (perhaps repeatedly) until you are not at an edge to be able to move (left or right).
-* CopyMathAS: Determines the format in which to copy the math content of the current navigation node (MathML, LaTeX, ASCIIMath, or Speech).
+| Key | Unmodified | \+ Ctrl | \+ Shift | +Cntrl+Shift |
+| --- | --- | --- | --- | --- |
+| Left | Move to previous | In table: move to previous cell In tabular math: move to previous element  <br>Note: Ctrl+Alt+Left can also be used | Read previous | Describe previous |
+| Right | Move to next | In table: move to next cell  <br>In tabular math: move to next element  <br>Note: Ctrl+Alt+Right can also be used | Read next | Describe next |
+| Up  | Zoom out | In table: move to cell above  <br>In tabular math: move to element above  <br>Note: Ctrl+Alt+Up can also be used | Change Navigation Mode (Enhanced/Simple/Character) to larger | Zoom out all the way |
+| Down | Zoom in | In table: move to cell below  <br>In tabular math: move to element below  <br>Note: Ctrl+Alt+Down can also be used | Change Navigation Mode (Enhanced/Simple/Character) to smaller | Zoom in all the way |
+| Enter | Where am I | Global Where am I | &nbsp; | &nbsp; |
+| Numbers  <br>1-10 (0 is 10) | Jump to Place Marker | Set placemarker | Read Placemarker | Describe Placemarker |
+| Space | Read current | Read Current cell | Toggle “speech mode” to read or describe | Describe current |
+| Home | Move to start of expression | Move to start of line | In tabular math: Move to start of column<br><br>In column: Move to element at top |     |
+| End | Move to end of expression | Move to end of line | In tabular math: Move to end of column<br><br>In column: Move to element at bottom |     |
+| Backspace | Move back to last position |     |     |     |
 
+## Do you have feedback on MathCAT?
 
-### Braille Options
-
-* ✓BrailleCode: [Nemeth]
-  * Options: Any implemented braille code
-  * Description: the braille math code to use
-  * Status: currently ASCIIMath, ASCIIMath-Finnish, CMU, LaTeX, Nemeth, Swedish, UEB, and Vietnam are supported. Other braille code support will depend upon help from others.
-* ✓BrailleNavHighlight: [EndPoints]
-  * Options: Off, FirstChar, EndPoints, All
-  * Description:  highlight with dots 7 & 8 the currently selected navigation node
-* UEB:
-  * ✓START_MODE: [Grade2] 
-    * Options: Grade1, Grade2
-    * Description: assumed starting mode UEB braille (Grade1 assumes we are in G1 passage mode)
-  * ✓UseSpacesAroundAllOperators: [false]
-    * Options: true/false
-    * Description: The UEB guidelines suggest that for lower grades, adding space around operators such as `+` and `-` can be a good idea. Normally, space is only added around relational operators such as `=` and `<`.
-
-Braille codes often have author-definable characters. MathCAT provides some options:
-
-Nemeth defines the typeforms: Bold, Italic, SansSerif, and Script. That leaves out DoubleStruck (Blackboard Bold).
-Here we provide an option to specify a transcriber-defined typeform changes, with the default mapping DoubleStruck to Italic
-
-* Nemeth:
-  * ✓SansSerif:    "⠠⠨"
-  * ✓Bold:         "⠸"
-  * ✓DoubleStruck: "⠨"
-  * ✓Script:       "⠈"
-  * ✓Italic:       "⠨"
-
-The [UEB Guide to Technical Material](https://iceb.org/Guidelines_for_Technical_Material_2008-10.pdf) says to normally treat Fraktur and DoubleStruck as Script.
-Here we provide an option to specify a transcriber-defined typeform prefix indicator instead.
-Note: here are prefixes for 1st - 5th: "⠈⠼", "⠘⠼", "⠸⠼", "⠐⠼", "⠨⠼"
-
-* UEB:
-  * ✓DoubleStruck: "⠈"     [script]
-  * ✓Fraktur:      "⠈"     [script]
-  * ✓SansSerif:    "⠈⠼"    [first transcriber-defined typeform prefix indicator]
-  * ✓GreekVariant: "⠨"     [default to Greek]
-
-The characters for Vietnam that are definable is still be discussed. Likely, they will change some.
-
-* Vietnam:
-  * ✓UseDropNumbers: [false]
-  * Options: true, false
-  * Description: drop digits down a row in simple numeric fractions
-  * ✓DoubleStruck: "⠈"     [script]
-  * ✓Fraktur:      "⠈"     [script]
-  * ✓SansSerif:    "⠈⠼"    [first transcriber-defined typeform prefix indicator]
-  * ✓GreekVariant: "⠨"     [default to Greek]
-
-### Other Options
-
-MathCAT cleans up bad MathML. Numbers are frequently improperly marked up in MathML. In order to clean them up correctly, MathCAT needs to know locale information about what characters might be used to separate digit blocks and what characters are used a decimal separator. Typically this is set by AT based on the country code in the document. However, that may not be given and only the language code is given and so AT needs to guess based on that.
-
-* DecimalSeparators: "." # [default]
-* BlockSeparators: ", \u00A0\u202F" # [default -- includes two forms of non-breaking spaces]
+<!-- Perhaps the Daisy working group or Neil could write something here about how to get in touch. An e-mail address, or refer to creating an issue on GitHub? -->
