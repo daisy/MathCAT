@@ -1452,7 +1452,7 @@
  - "✓": [t: "check mark"]                        # 0x2713
  - "✠": [t: "maltese cross"]                     # 0x2720
  - "✪": [t: "circled white star"]                # 0x272a
- - "✶": [t: "six pionted black star"]            # 0x2736
+ - "✶": [t: "six pointed black star"]            # 0x2736
  - "❨": [t: "medium left parentheses ornament"]   # 0x2768
  - "❩": [t: "medium right parentheses ornament"]  # 0x2769
  - "❪": [t: "medium flattened left parentheses ornament"] # 0x276a

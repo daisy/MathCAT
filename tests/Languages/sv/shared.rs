@@ -151,7 +151,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    test("sv", "ClearSpeak", expr, "x nedsänkt k, upphöjt till i")?;
     return Ok(());
 
 }
@@ -183,7 +183,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    test("sv", "ClearSpeak", expr, "x nedsänkt k, upphöjt till i")?;
     return Ok(());
 
 }

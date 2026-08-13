@@ -1,3 +1,9 @@
+---
+layout: default
+lang: sv
+ref: users
+title: Användarguide till MathCAT
+---
 # Användarguide till MathCAT
 
 MathCAT är ett verktyg som används ihop med en skärmläsare. Med hjälp av MathCAT kan du få matematiska uttryck upplästa. MathCAT gör också så att matematik kan visas på en punktskriftsskärm.
