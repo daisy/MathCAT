@@ -1,3 +1,9 @@
+---
+layout: default
+lang: en
+ref: users
+title: User guide for MathCAT
+---
 # User guide for MathCAT
 
 MathCAT is a tool used together with a screen reader. Through MathCAT, you can have mathematical expressions read aloud. MatCAT can also make mathematics accessible through a braille display.
