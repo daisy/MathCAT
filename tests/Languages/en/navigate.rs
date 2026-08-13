@@ -205,7 +205,7 @@ fn no_parts_function_absolute_value() -> Result<()> {
         </mrow>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "zoom in; in absolute value; x")
+    assert_zoom_in("ZoomIn", expr, "zoom in; in the absolute value; x")
 }
 
 #[test]

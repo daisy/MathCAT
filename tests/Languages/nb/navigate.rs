@@ -190,7 +190,7 @@ fn no_parts_postfix_transpose() -> Result<()> {
         </msup>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "zoom inn; i transpose; stor m")
+    assert_zoom_in("ZoomIn", expr, "zoom inn; i transponert; stor m")
 }
 
 #[test]
@@ -205,7 +205,7 @@ fn no_parts_function_absolute_value() -> Result<()> {
         </mrow>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "zoom inn; i absolute value; x")
+    assert_zoom_in("ZoomIn", expr, "zoom inn; i absoluttverdien; x")
 }
 
 #[test]
