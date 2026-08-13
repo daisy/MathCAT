@@ -252,11 +252,24 @@
   - t: "𝐖"
 
 -
-  name: "hat"
-  tag: "mover"
-  match: "*[2][.='^']"
+  name: "accents"
+  tag: mover
+  match: "*[2][IsInDefinition(., 'Braille', 'Accents')]"
   replace:
-  - t: "𝐖\\hat{"
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'Accents')"
+  - t: "{"
+  - x: "*[1]"
+  - t: "}𝐖"
+
+-
+  name: "under-marks"
+  tag: munder
+  match: "*[2][IsInDefinition(., 'Braille', 'UnderAccents')]"
+  replace:
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'UnderAccents')"
+  - t: "{"
   - x: "*[1]"
   - t: "}𝐖"
 
@@ -267,8 +280,8 @@
   replace:
   - test:
       if: "$LaTeX_UseShortName"
-      then: [t: "\\ol{"]
-      else: [t: "\\overline{"]
+      then: [t: "𝐖\\ol{"]
+      else: [t: "𝐖\\overline{"]
   - x: "*[1]"
   - t: "}"
 
@@ -357,11 +370,11 @@
   replace:
   - test:
       if: "self::m:munderover"
-      then: [t: "\\overset{"]
+      then: [t: "𝐖\\overset{"]
   - test:
       if: "self::m:munder or self::m:undermover"
-      then: [t: "\\underset{"]
-      else: [t: "\\overset{"]
+      then: [t: "𝐖\\underset{"]
+      else: [t: "𝐖\\overset{"]
   - x: "*[2]"
   - t: "}{"
   - x: "*[1]"

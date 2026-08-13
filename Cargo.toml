@@ -1,6 +1,6 @@
 [package]
 name = "mathcat"
-version = "0.7.6-beta.3"
+version = "0.7.6-beta.9"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
@@ -8,35 +8,36 @@ repository = "https://github.com/NSoiffer/MathCAT"
 homepage = "https://nsoiffer.github.io/MathCAT/"
 documentation = "https://nsoiffer.github.io/MathCAT/"
 edition = "2024"
-exclude = ["src/main.rs", "docs", "PythonScripts"]    # should have "Rules/", but then one can't run build.rs to build the zip file
+exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should have "Rules/", but then one can't run build.rs to build the zip file
 
 
 [features]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
+"no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
 
 
 [dependencies]
-sxd-document = "0.3"
-sxd-xpath = "0.4"
+sxd-document-no-unsafe = "0.4.2"
+sxd-xpath-no-unsafe = "0.5.1"
 yaml-rust = "0.4"
 # yaml-rust = { version = "0.11", package = "yaml-rust2" }
-strum = "0.27.2"
-strum_macros = "0.27.2"
+strum = { version = "0.28", features = ["derive"] }
 anyhow = "1.0"
-regex = "1.10"
+regex = "1.12.3"
 dirs = "6.0"
-bitflags = "2.10"
+bitflags = "2.11"
 phf = { version = "0.13", features = ["macros"] }
 roman-numerals-rs = "4.1.0"
 radix_fmt = "1.0"
 unicode-script = "0.5"
 log = "0.4"
-env_logger = "0.11.8"
+env_logger = "0.11.9"
 cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
+html-escape = "0.2.13"
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 zip = { version = "8.2", default-features = false, features = ["deflate"] }
@@ -48,10 +49,12 @@ natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
-[target.'cfg(target_family = "wasm")'.build-dependencies]
-zip = { version = "8.2", default-features = false, features = ["deflate"] }
-[target.'cfg(not(target_family = "wasm"))'.build-dependencies]
-zip = { version = "8.2", default-features = false, features = ["bzip2"] }
+# Build script needs both compression backends regardless of build host —
+# build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
+
+[dev-dependencies]
+tempfile = "3.23"
 
 [lib]
 name = "libmathcat"
@@ -61,6 +64,8 @@ crate-type = ["rlib", "cdylib"]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
 
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
 
 [profile.test]
 debug = true

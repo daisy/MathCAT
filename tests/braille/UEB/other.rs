@@ -199,3 +199,31 @@ fn caps_bug_295() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn unicode_superscript_chars_in_and_out_of_script_position() -> Result<()> {
+    // Scripted: msup adds ⠔; unicode then-clause omits 1 and ⠔ so result matches non-scripted
+    let expr = "<math><msup><mi>x</mi><mo>¹</mo></msup></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠁")?;
+    let expr = "<math><mrow><mi>x</mi><mo>¹</mo></mrow></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠁")?;
+    let expr = "<math><msup><mi>x</mi><mo>⁺</mo></msup></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠐⠖")?;
+    let expr = "<math><mrow><mi>x</mi><mo>⁺</mo></mrow></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠐⠖")?;
+    return Ok(());
+}
+
+#[test]
+fn unicode_subscript_chars_in_and_out_of_script_position() -> Result<()> {
+    let expr = "<math><msub><mi>x</mi><mn>₁</mn></msub></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠼⠁")?;
+    let expr = "<math><mrow><mi>x</mi><mn>₁</mn></mrow></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠼⠁")?;
+    let expr = "<math><msub><mi>x</mi><mo>₊</mo></msub></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠐⠖")?;
+    let expr = "<math><mrow><mi>x</mi><mo>₊</mo></mrow></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠐⠖")?;
+    return Ok(());
+}
+

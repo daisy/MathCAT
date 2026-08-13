@@ -1,4 +1,6 @@
+#![cfg_attr(coverage, feature(coverage_attribute))]
 #![allow(clippy::needless_return)]
+#![allow(clippy::needless_option_as_deref)]
 
 //! A library for generating speech and braille from MathML
 //! 
@@ -60,16 +62,19 @@ pub fn abs_rules_dir_path() -> String {
     if #[cfg(feature = "include-zip")] {
           return "Rules".to_string();
     } else {
-        return std::env::current_exe().unwrap().parent().unwrap()
-                    .join("../../../Rules")
-                    .to_str().unwrap().to_string();
+        // Package root (see tests/common/mod.rs `abs_rules_dir_path` for rationale).
+        return std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("Rules")
+            .to_str()
+            .expect("CARGO_MANIFEST_DIR and Rules path must be UTF-8")
+            .to_string();
         }
     }
 }
 
 pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> Result<()> {
     use crate::{interface::*, pretty_print::mml_to_string};
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
     use crate::canonicalize::canonicalize;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
@@ -77,10 +82,10 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     let result = catch_unwind(AssertUnwindSafe(|| {
         // this forces initialization
         crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
-        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
         set_preference("Language", "en").unwrap();
         set_preference("BlockSeparators", block_separators).unwrap();
         set_preference("DecimalSeparators", decimal_separators).unwrap();
+        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
 
         let package1 = &parser::parse(test).expect("Failed to parse test input");
         let mathml = get_element(package1);
@@ -101,7 +106,6 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     match crate::interface::report_any_panic(result) {
         Ok(()) => Ok(()),
         Err(e) => {
-            eprintln!("{}", e);
             Err(e)
         }
     }

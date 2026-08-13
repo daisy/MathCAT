@@ -22,7 +22,7 @@ fn modified_vars() -> Result<()> {
         </mrow> </math>";
     test("en", "SimpleSpeak", expr, 
         "eigh grave, b tilde, c breve, b check, c grave; plus \
-            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
+            r check, plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
             return Ok(());
 
 }
@@ -210,6 +210,40 @@ fn presentation_mathml_in_semantics() -> Result<()> {
 }
 
 #[test]
+fn roman_like_superscript_identifier_is_not_chemistry() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>I</mi>
+        <mo>=</mo>
+        <mo>−</mo>
+        <mi>b</mi>
+        <mi>r</mi>
+        <mo>+</mo>
+        <msup>
+            <mi>z</mi>
+            <mi>I</mi>
+        </msup>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap i is equal to, negative b r, plus z to the cap i-th power")?;
+    Ok(())
+}
+
+#[test]
+fn roman_like_identifier_sequence_is_not_number() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>C</mi>
+        <mo>+</mo>
+        <mi>I</mi>
+        <mo>+</mo>
+        <mi>X</mi>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap c plus cap i plus cap x")?;
+    Ok(())
+}
+
+
+#[test]
 fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -375,6 +409,17 @@ fn caret_and_hat() -> Result<()> {
 }
 
 #[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+  test("en", "SimpleSpeak",expr, "x dot, plus x double dot, plus x triple dot")?;
+  return Ok(());
+}
+
+#[test]
 fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
   test_prefs("en", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
@@ -415,7 +460,7 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
 #[test]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "dihv cap f")?;
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "div cap f")?;
   test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of cap f")?;
   return Ok(());
 
@@ -456,7 +501,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }
@@ -538,7 +583,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }

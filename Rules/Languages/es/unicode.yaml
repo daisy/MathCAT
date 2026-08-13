@@ -229,10 +229,45 @@
  - "ϵ": [T: "variante de épsilon"]              	#  0x3f5	(en: 'epsilon', google: 'epsilon')
  - "϶": [T: "épsilon invertida"]                	#  0x3f6	(en: 'reversed epsilon')
 
- - "–": [T: "ene raya"]                          	#  0x2013	(en: 'en dash')
- - "—": [T: "eme raya"]                          	#  0x2014	(en: 'em dash')
- - "―": [T: "barra horizontal"]                 	#  0x2015	(en: 'horizontal bar')
- - "‖": [T: "barra vertical doble"]             	#  0x2016	(en: 'double vertical line')
+ - "⁢": [T: ""]                                 	#  0x2062
+ - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
+    - T: "prima inversa"                      	# 	(en: 'double-struck', google: 'doble golpe')
+    - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+
+ - "℃": [T: "grados Celsius"]               	#  0x2103	(en: 'degrees celsius', google: 'grados celsius')
+ - "ℋℛℓ":                                       	#  0x210b
+    - T: "grados Fahrenheit"                    	# 	(en: 'script', google: 'guion')
+    - spell: "translate('.', 'ℋℛℓ', 'HRl')"
+ - "ℜ":                                         	#  0x211c
+    - T: "r mayúscula partida"                  	# 	(en: 'fraktur', google: 'fraktur')
+    - spell: "'R'"
+
+ - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
+    - T: "angstrom resaltado"                             	# 	(en: 'double-struck italic')
+    - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+
+ - "∥":                                         	#  0x2225
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "es"]                        	# 	(en: 'is', google translation)
+     - T: "paralelo a"                          	# 	(en: 'parallel to')
+ - "∦":                                         	#  0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "es"]                        	# 	(en: 'is', google translation)
+     - T: "no paralela a"                       	# 	(en: 'not parallel to')
+ - "≤":                                         	#  0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "es"]                        	# 	(en: 'is', google translation)
+     - T: "menor o igual a"
+ - "≥":                                         	#  0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "es"]                        	# 	(en: 'is', google translation)
+     - T: "mayor o igual a"                   	# 	(en: 'greater than or equal to')
+
+ # --- restored complex short definitions (prefer over unicode-full) ---
  - "…":                                         	#  0x2026
     test:
         if:
@@ -245,7 +280,6 @@
             if: "count(following-sibling::*) = 0"
             then: [T: "etcétera"]               	# 	(en: 'and so on', google translation)
             else: [T: "puntos suspensivos"]     	# 	(en: 'and so on up to', MathPlayer: 'punto punteado punteado', google: 'y así sucesivamente')
-
  - "⁡":                                          # 0x2061
     - test:
         # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
@@ -259,56 +293,16 @@
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
         then: [T: "de"]                         	# 	(en: 'of', google translation)
- - "⁢": [T: ""]                                 	#  0x2062
- - "⁣": [T: ""]                                 	#  0x2063
- - "⁤": [T: "más"]                              	#  0x2064	(en: 'and', google: 'y')
- - "′": [T: "prima"]                            	#  0x2032	(en: 'prime')
- - "″": [T: "segunda"]                        	#  0x2033	(en: 'double prime', MathPlayer: 'segunda', google: 'doble primo')
- - "‴": [T: "tercera"]                       	#  0x2034	(en: 'triple prime', MathPlayer: 'tercera', google: 'triple prime')
- - "‵": [T: "prima inversa"]                     	#  0x2035	(en: 'reversed prime')
- - "‶": [T: "segunda inversa"]               	#  0x2036	(en: 'reversed double prime')
- - "‷": [T: "tercera inversa"]                  	#  0x2037	(en: 'reversed triple prime', google: 'triple prime invertido')
-
- - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
-    - T: "prima inversa"                      	# 	(en: 'double-struck', google: 'doble golpe')
-    - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
-
- - "℃": [T: "grados Celsius"]               	#  0x2103	(en: 'degrees celsius', google: 'grados celsius')
- - "℉": [T: "grados Fahrenheit"]                	#  0x2109	(en: 'degrees fahrenheit')
- - "ℋℛℓ":                                       	#  0x210b
-    - T: "grados Fahrenheit"                    	# 	(en: 'script', google: 'guion')
-    - spell: "translate('.', 'ℋℛℓ', 'HRl')"
- - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
- - "ℜ":                                         	#  0x211c
-    - T: "r mayúscula partida"                  	# 	(en: 'fraktur', google: 'fraktur')
-    - spell: "'R'"
-
- - "Ω": [T: "ohmio"]                            	#  0x2126	(en: 'ohms')
- - "K": [T: "grados Kelvin"]                    	#  0x212a	(en: 'kelvin')
- - "Å": [T: "angstrom"]                         	#  0x212b	(en: 'angstroms')
- - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
-    - T: "angstrom resaltado"                             	# 	(en: 'double-struck italic')
-    - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
-
- - "←": [T: "flecha izquierda"]                 	#  0x2190	(en: 'leftwards arrow')
- - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [T: "aproximaciones"]                   	# 	(en: 'approaches', google translation)
         else: [T: "flecha derecha"]             	# 	(en: 'right arrow', MathPlayer: 'flecha', google: 'flecha correcta')
-
- - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
- - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
- - "∀": [T: "para todo"]                        	#  0x2200	(en: 'for all')
  - "∂":                                         	#  0x2202
      - test: 
          if: "$Verbosity='Terse'"
          then: [T: "parcial"]                   	# 	(en: 'partial', google translation)
          else: [T: "derivada parcial"]          	# 	(en: 'partial derivative')
- - "∃": [T: "existe"]                           	#  0x2203	(en: 'there exists')
- - "∄": [T: "no existe"]                        	#  0x2204	(en: 'there does not exist')
- - "∅": [T: "conjunto vacío"]                   	#  0x2205	(en: 'empty set')
  - "∆":                                         	#  0x2206
      - test: 
          if: "$Verbosity!='Terse'"
@@ -384,13 +378,6 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "está en"]              	# 	(en: 'is in', google translation)
               - else: [T: "pertenece a"]    	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∏": [T: "producto"]                         	#  0x220f	(en: 'product')
- - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')
- - "∑": [T: "suma"]                             	#  0x2211	(en: 'sum', SRE: 'sumatorio')
- - "−": [T: "menos"]                            	#  0x2212	(en: 'minus')
- - "∓": [T: "menos más"]                        	#  0x2213	(en: 'minus or plus')
- - "∗": [T: "asterisco"]                        	#  0x2217	(en: 'times')
- - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -401,44 +388,16 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "proporcional a"                      	# 	(en: 'proportional to')
- - "∞": [T: "infinito"]                         	#  0x221e	(en: 'infinity')
- - "∟": [T: "ángulo recto"]                     	#  0x221f	(en: 'right angle')
- - "∠": [T: "ángulo"]                           	#  0x2220	(en: 'angle')
- - "∡": [T: "ángulo medido"]                    	#  0x2221	(en: 'measured angle')
- - "∣": [T: "divisible"]                         	#  0x2223	(en: 'divides')
- - "∤": [T: "indivisible"]                      	#  0x2224	(en: 'does not divide')
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "paralelo a"                          	# 	(en: 'parallel to')
- - "∦":                                         	#  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no paralela a"                       	# 	(en: 'not parallel to')
- - "∧": [T: "y"]                                	#  0x2227	(en: 'and')
- - "∨": [T: "o"]                                	#  0x2228	(en: 'or')
- - "∩": [T: "intersección"]                     	#  0x2229	(en: 'intersection')
- - "∪": [T: "unión"]                            	#  0x222a	(en: 'union')
- - "∫": [T: "integral"]                         	#  0x222b
- - "∬": [T: "integral doble"]                   	#  0x222c	(en: 'double integral')
- - "∭": [T: "integral triple"]                  	#  0x222d	(en: 'triple integral')
- - "∮": [T: "integral de contorno"]             	#  0x222e	(en: 'contour integral')
  - "∶":                                         	#  0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "a"                               	# 	(en: 'to')
- - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
- - "∼": [T: "distinto de"]                            	#  0x223c	(en: 'varies with')
- - "∽": [T: "tilde inversa"]                  	#  0x223d	(en: 'reversed tilde')
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "más positivo"              	# 	(en: 'most positive')
- - "∿": [T: "onda sinusoidal"]                        	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
@@ -449,20 +408,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "idéntico a"                          	# 	(en: 'identical to')
- - "≤":                                         	#  0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "menor o igual a"
- - "≥":                                         	#  0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "mayor o igual a"                   	# 	(en: 'greater than or equal to')
- - "≦": [T: "menor o igual a"]                	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "mayor o igual a"]                	#  0x2267	(en: 'greater than over equal to')
- - "≺": [T: "precede a"]                        	#  0x227a	(en: 'precedes')
- - "≻": [T: "sigue a"]                          	#  0x227b	(en: 'succeeds')
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -493,3 +438,29 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es un"]                     	# 	(en: 'is a', google translation)
      - T: "superconjunto o igual a"               	# 	(en: 'superset of or equal to')
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "–": [T: "ene raya"]                          	#  0x2013	(en: 'en dash')
+ - "—": [T: "eme raya"]                          	#  0x2014	(en: 'em dash')
+ - "‖": [T: "barra vertical doble"]             	#  0x2016	(en: 'double vertical line')
+ - "″": [T: "segunda"]                        	#  0x2033	(en: 'double prime', MathPlayer: 'segunda', google: 'doble primo')
+ - "‴": [T: "tercera"]                       	#  0x2034	(en: 'triple prime', MathPlayer: 'tercera', google: 'triple prime')
+ - "‵": [T: "prima inversa"]                     	#  0x2035	(en: 'reversed prime')
+ - "‶": [T: "segunda inversa"]               	#  0x2036	(en: 'reversed double prime')
+ - "‷": [T: "tercera inversa"]                  	#  0x2037	(en: 'reversed triple prime', google: 'triple prime invertido')
+ - "℉": [T: "grados Fahrenheit"]                	#  0x2109	(en: 'degrees fahrenheit')
+ - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
+ - "K": [T: "grados Kelvin"]                    	#  0x212a	(en: 'kelvin')
+ - "←": [T: "flecha izquierda"]                 	#  0x2190	(en: 'leftwards arrow')
+ - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
+ - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
+ - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
+ - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
+ - "∣": [T: "divisible"]                         	#  0x2223	(en: 'divides')
+ - "∤": [T: "indivisible"]                      	#  0x2224	(en: 'does not divide')
+ - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
+ - "∼": [T: "distinto de"]                            	#  0x223c	(en: 'varies with')
+ - "∽": [T: "tilde inversa"]                  	#  0x223d	(en: 'reversed tilde')
+ - "∿": [T: "onda sinusoidal"]                        	#  0x223f	(en: 'sine wave')
+ - "≦": [T: "menor o igual a"]                	#  0x2266	(en: 'less than over equal to')
+ - "≧": [T: "mayor o igual a"]                	#  0x2267	(en: 'greater than over equal to')

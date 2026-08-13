@@ -11,6 +11,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>c</mi> <mo>&#x0306;</mo> </mover>
         <mover> <mi>b</mi> <mo>&#x030c;</mo> </mover>
         <mover> <mi>c</mi> <mo>`</mo> </mover>  <mo>+</mo>
+        <mover> <mi>r</mi> <mo>ˇ</mo> </mover>  <mo>+</mo>
         <mover> <mi>x</mi> <mo>.</mo> </mover>
         <mover> <mi>y</mi> <mo>&#x2D9;</mo> </mover>
         <mover> <mi>z</mi> <mo>&#x00A8;</mo> </mover>
@@ -20,7 +21,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("zh-tw", "SimpleSpeak", expr, 
-        "a grave, b tilde, c breve, b check, c grave; 加; \
+        "a grave, b tilde, c breve, b check, c grave; 加 r check 加; \
             x 點, y dot, z double dot, u triple dot, v quadruple dot; 加 x hat, 加 向量 t")?;
             return Ok(());
 
@@ -65,6 +66,22 @@ fn limit_from_below() -> Result<()> {
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
+    test("zh-tw", "SimpleSpeak", expr, "n 選 m")?;
+    return Ok(());
+
+}
+
+#[test]
+fn binomial_mmultiscripts_other() -> Result<()> {
+    let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
+    test("zh-tw", "SimpleSpeak", expr, "n 選 m")?;
+    return Ok(());
+
+}
+
+#[test]
+fn binomial_subscript() -> Result<()> {  // C_{n,k}
+    let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
     test("zh-tw", "SimpleSpeak", expr, "n 選 m")?;
     return Ok(());
 
@@ -151,7 +168,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 下標 k 的 i 次方")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 下標 k, 的 i 次方")?;
     return Ok(());
 
 }
@@ -182,10 +199,12 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("zh-tw", "SimpleSpeak", expr, "x 下標 k 的 i 次方")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 下標 k, 的 i 次方")?;
     return Ok(());
 
 }
+
+
 
 #[test]
 fn ignore_period() -> Result<()> {
@@ -324,9 +343,220 @@ return Ok(());
 
 
 #[test]
+fn bug_199_2pi() -> Result<()> {
+  let expr = "<math>
+      <mrow>
+        <mo stretchy=\"false\" form=\"prefix\">[</mo>
+        <mspace width=\"0.333em\"></mspace>
+        <mn>0</mn>
+        <mspace width=\"0.333em\"></mspace>
+        <mo>,</mo>
+        <mspace width=\"0.333em\"></mspace>
+        <mn>2</mn>
+        <mi>π</mi>
+        <mspace width=\"0.333em\"></mspace>
+        <mo stretchy=\"false\" form=\"postfix\">)</mo>
+      </mrow>
+    </math>";
+  test("zh-tw", "SimpleSpeak",expr, "閉開區間 0 逗號 2 pi")?;
+  return Ok(());
+
+}
+
+#[test]
+fn caret_and_hat() -> Result<()> {
+  let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
+  test("zh-tw", "SimpleSpeak",expr, "x caret 2 加 y hat")?;
+  return Ok(());
+
+}
+
+#[test]
 fn mn_with_space() -> Result<()> {
     let expr = "<math><mn>1 234 567</mn></math>";
     test("zh-tw", "SimpleSpeak", expr, "1234567")?;
     return Ok(());
+
+}
+
+#[test]
+fn ignore_bold() -> Result<()> {
+  let expr = r#"<math>
+				<mi mathvariant="bold-italic">x</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mrow>
+				<mi>𝒔𝒊𝒏</mi>
+				<mo>&#x2061;</mo>
+				<mrow><mi mathvariant="bold-italic">t</mi></mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</math>"#; 
+  test_prefs("zh-tw", "SimpleSpeak", vec![("IgnoreBold", "false")],
+             expr, "粗斜體 x 等於, 2 sine 粗斜體 t, 減 1")?;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("IgnoreBold", "true")],
+             expr, "x 等於, 2 sine t, 減 1")?;
+             return Ok(());
+
+}
+
+#[test]
+fn mn_with_block_and_decimal_separators() -> Result<()> {
+  let expr = "<math><mn>1,234.56</mn></math>";                                       // may want to change this for another language
+  test_prefs("zh-tw", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56")?;
+  return Ok(());
+
+}
+
+#[test]
+fn divergence() -> Result<()> {
+  let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "div 大寫 f")?;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence 大寫 f")?;
+  return Ok(());
+
+}
+
+#[test]
+fn curl() -> Result<()> {
+  let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
+  // may want to change this for another language
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "curl 大寫 f")?;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "curl 大寫 f")?;
+  return Ok(());
+
+}
+
+#[test]
+fn gradient() -> Result<()> {
+  let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
+  // may want to change this for another language
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "del 大寫 f")?;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradient 大寫 f")?;
+  return Ok(());
+
+}
+
+//#[test]
+//fn literal_speak_perpendicular() -> Result<()> {
+//  let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
+//  <mrow data-changed='added'>
+//    <mover data-latex='\vec{A}'>
+//      <mi data-latex='A'>A</mi>
+//      <mo stretchy='false'>→</mo>
+//    </mover>
+//    <mo intent='perpendicular-to'>⊥</mo>
+//    <mover data-latex='\vec{B}'>
+//      <mi data-latex='B'>B</mi>
+//      <mo stretchy='false'>→</mo>
+//    </mover>
+//  </mrow>
+// </math>"#; 
+//  test("zh-tw", "LiteralSpeak", expr, "大寫 a 右箭頭, 垂直於, 大寫 b 右箭頭")?;
+//  return Ok(());
+//
+//}
+
+#[test]
+fn literal_speak_chars() -> Result<()> {
+  let expr = r#"<math>
+        <mfenced open="|" close="|">
+            <mrow>
+                <mi>x</mi><mo>&#xD7;</mo><mi>y</mi>
+                <mo>&#xB7;</mo>
+                <mi>z</mi><mo>/</mo><mn>2</mn>
+                <mo>+</mo>
+                <mi>a</mi><mo>&#x2225;</mo><mi>b</mi>
+                <mo>+</mo>
+                <mi>x</mi><mo>!</mo>
+            </mrow>
+        </mfenced>
+    </math>"#; 
+  test("zh-tw", "LiteralSpeak", expr, "豎線; x cross, y 乘 z slash 2; 加 a; 雙豎線, b 加 x 階乘; 豎線")?;
+  return Ok(());
+
+}
+
+#[test]
+fn literal_speak_with_name() -> Result<()> {
+  let expr = r#"<math intent='forced($x)'>
+      <mrow arg="x">
+        <mi>f</mi>
+        <mo data-changed='added'>&#x2061;</mo>
+        <mrow data-changed='added'>
+          <mo>(</mo>
+          <mrow data-changed='added'>
+            <mi>x</mi>
+            <mo>!</mo>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </math>"#;
+  test("zh-tw", "LiteralSpeak", expr, "forced f, 左小括 x 階乘 右小括")?;
+  return Ok(());
+
+}
+
+#[test]
+fn literal_speak_with_property() -> Result<()> {
+  let expr = r#"<math intent=':prefix'>
+      <mrow arg="x">
+        <mi>f</mi>
+        <mo data-changed='added'>&#x2061;</mo>
+        <mrow data-changed='added'>
+          <mo>(</mo>
+          <mrow data-changed='added'>
+            <mi>x</mi>
+            <mo>!</mo>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </math>"#; 
+  test("zh-tw", "LiteralSpeak", expr, "f, 左小括 x 階乘 右小括")?;
+  return Ok(());
+
+}
+
+//#[test]
+//fn literal_intent_property() -> Result<()> {
+//  let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
+//  <mrow intent=":literal">
+//    <mover data-latex='\vec{A}'>
+//      <mi data-latex='A'>A</mi>
+//      <mo stretchy='false'>→</mo>
+//    </mover>
+//    <mo intent='perpendicular-to'>⊥</mo>
+//    <mover data-latex='\vec{B}'>
+//      <mi data-latex='B'>B</mi>
+//      <mo stretchy='false'>→</mo>
+//    </mover>
+//  </mrow>
+// </math>"#; 
+//  test("zh-tw", "SimpleSpeak", expr, "大寫 a 右箭頭, 垂直於, 大寫 b 右箭頭")?;
+//  return Ok(());
+//
+//}
+
+#[test]
+fn literal_intent_property_with_name() -> Result<()> {
+  let expr = r#"<math intent='forced:literal($x)'>
+      <mrow arg="x">
+        <mi>f</mi>
+        <mo data-changed='added'>&#x2061;</mo>
+        <mrow data-changed='added'>
+          <mo>(</mo>
+          <mrow data-changed='added'>
+            <mi>x</mi>
+            <mo>!</mo>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </math>"#; 
+  test("zh-tw", "SimpleSpeak", expr, "forced f, 左小括 x 階乘 右小括")?;
+  return Ok(());
 
 }
