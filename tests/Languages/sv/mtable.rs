@@ -678,8 +678,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 	test_ClearSpeak("sv", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1, kolumn 2; b nedsänkt 1 2; \
-                    rad 2; kolumn 1; b nedsänkt 2 1, kolumn 2; b nedsänkt 2 2")?;
+        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1; kolumn 2; b nedsänkt 1 2; \
+                    rad 2; kolumn 1; b nedsänkt 2 1; kolumn 2; b nedsänkt 2 2")?;
   return Ok(());
 }
 
@@ -764,8 +764,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 	test_ClearSpeak("sv", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "2 gånger 2 matris; rad 1; b nedsänkt 1 1, b nedsänkt 1 2; \
-                            rad 2; b nedsänkt 2 1, b nedsänkt 2 2")?;
+        expr, "2 gånger 2 matris; rad 1; b nedsänkt 1 1; b nedsänkt 1 2; \
+                            rad 2; b nedsänkt 2 1; b nedsänkt 2 2")?;
   return Ok(());
 }
 
@@ -850,8 +850,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 	test_ClearSpeak("sv", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1, kolumn 2; b nedsänkt 1 2; \
-                            rad 2; kolumn 1; b nedsänkt 2 1, kolumn 2; b nedsänkt 2 2; slut matris")?;
+        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1; kolumn 2; b nedsänkt 1 2; \
+                            rad 2; kolumn 1; b nedsänkt 2 1; kolumn 2; b nedsänkt 2 2; slut matris")?;
   return Ok(());
 }
 
@@ -936,8 +936,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 	test_ClearSpeak("sv", "ClearSpeak_Matrix", "Vector",
-        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1, kolumn 2; b nedsänkt 1 2; \
-                                rad 2; kolumn 1; b nedsänkt 2 1, kolumn 2; b nedsänkt 2 2")?;
+        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1; kolumn 2; b nedsänkt 1 2; \
+                                rad 2; kolumn 1; b nedsänkt 2 1; kolumn 2; b nedsänkt 2 2")?;
   return Ok(());
 }
 
@@ -1022,8 +1022,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 	test_ClearSpeak("sv", "ClearSpeak_Matrix", "EndVector",
-        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1, kolumn 2; b nedsänkt 1 2; \
-                                rad 2; kolumn 1; b nedsänkt 2 1, kolumn 2; b nedsänkt 2 2; slut matris")?;
+        expr, "2 gånger 2 matris; rad 1; kolumn 1; b nedsänkt 1 1; kolumn 2; b nedsänkt 1 2; \
+                                rad 2; kolumn 1; b nedsänkt 2 1; kolumn 2; b nedsänkt 2 2; slut matris")?;
   return Ok(());
 }
 
