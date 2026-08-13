@@ -7,5 +7,7 @@ repository: daisy/MathCAT
 exclude: [
   README.md,      # developer docs, not part of the site
   Gemfile,        # only needed for local builds
-  Gemfile.lock    # only needed for local builds
+  Gemfile.lock,   # only needed for local builds
+  users_old.md,   # superseded by users.md; same ref/lang would duplicate the language switcher
+  helpers_old.md  # superseded draft, not part of the site
 ]

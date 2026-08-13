@@ -2532,7 +2532,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "abs")?;
             assert_eq!(speech, "move right; the absolute value of x");
             let speech = test_command("ZoomIn", mathml, "x")?;
-            assert_eq!(speech, "zoom in; in absolute value; x");
+            assert_eq!(speech, "zoom in; in the absolute value; x");
             let speech = test_command("MoveNext", mathml, "x")?;
             assert_eq!(speech, "cannot move right, end of math");
             set_preference("NavMode", "Character")?;
