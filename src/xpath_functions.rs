@@ -1586,10 +1586,15 @@ fn has_visible_column_line(table: Element, boundary: usize) -> bool {
         return false;
     }
 
-    let line_style = table
+    return table
         .attribute_value("columnlines")
-        .and_then(|values| values.split_whitespace().take(boundary).last());
-    return matches!(line_style, Some("solid" | "dashed"));
+        .map(|values| {
+            matches!(
+                values.split_whitespace().take(boundary).last(),
+                Some("solid" | "dashed")
+            )
+        })
+        .unwrap_or(false);
 }
 
 struct HasVisibleColumnLine;
