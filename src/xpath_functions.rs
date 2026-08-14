@@ -1529,7 +1529,7 @@ impl CountTableDims {
         // columns, so we will not use them.
         let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
 
-        Ok((Value::Number(self.num_rows as  f64), Value::Number(self.num_cols as f64)))
+        Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)))
     }
 
     fn evaluate<'d>(self, fn_name: &str,
