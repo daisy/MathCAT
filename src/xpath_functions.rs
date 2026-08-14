@@ -1870,6 +1870,7 @@ mod tests {
         return Ok(());
     }
 
+    /// Verifies visible column-line styles, repeated styles, and boundaries outside the table.
     #[test]
     fn visible_column_lines() -> Result<()> {
         return xpath_test(|| {
@@ -1879,9 +1880,13 @@ mod tests {
 
         check_column_line("<math><mtable columnlines='solid dashed'><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 3, true)?;
 
+        // No column-line style is specified.
         check_column_line("<math><mtable><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        // The boundary is explicitly invisible.
         check_column_line("<math><mtable columnlines='none'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        // Only `solid` and `dashed` describe visible column lines.
         check_column_line("<math><mtable columnlines='double'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
+        // Boundary 2 is after the final column, not between two columns.
         check_column_line("<math><mtable columnlines='solid'><mtr><mtd/><mtd/></mtr></mtable></math>", 2, false)?;
         return Ok(());
         });
