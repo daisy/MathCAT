@@ -1480,7 +1480,7 @@ impl CountTableDims {
     /// This function is relatively permissive. Non-`mtr` rows are
     /// ignored. The number of columns is determined only from the first
     /// row, if it exists. Within that row, non-`mtd` elements are ignored. 
-    fn count_table_dims(mut self, e: Element<'_>) -> (usize, usize) {
+    fn count_table_dims<'d>(mut self, e: Element<'_>) -> Result<(Value<'d>, Value<'d>), Error> {
         for child in e.children() {
             let ChildOfElement::Element(row) = child else {
                 continue
@@ -1529,7 +1529,7 @@ impl CountTableDims {
         // columns, so we will not use them.
         let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
 
-        (self.num_rows, self.num_cols)
+        Ok((Value::Number(self.num_rows as f64), Value::Number(self.num_cols as f64)))
     }
 
     fn evaluate<'d>(self, fn_name: &str,
@@ -1540,8 +1540,7 @@ impl CountTableDims {
         let node = validate_one_node(element, fn_name)?;
         if let Node::Element(e) = node {
             if is_tag(e, "mtable") {
-                let (rows, columns) = self.count_table_dims(e);
-                return Ok((Value::Number(rows as f64), Value::Number(columns as f64)));
+                return self.count_table_dims(e);
             } else {
                 return Err(Error::Other { what: format!("Input element was a <{}>, not an <mtable>",
                                                 as_qname!(e.name()).local_part()) });
@@ -1580,8 +1579,10 @@ fn has_visible_column_line(table: Element, boundary: usize) -> bool {
         return false;
     }
 
-    let (_, column_count) = CountTableDims::new().count_table_dims(table);
-    if boundary >= column_count {
+    let Ok((_, Value::Number(column_count))) = CountTableDims::new().count_table_dims(table) else {
+        return false;
+    };
+    if boundary as f64 >= column_count {
         return false;
     }
 
@@ -1838,7 +1839,10 @@ mod tests {
         let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math_elem = get_element(&package);
         let child = as_element(math_elem.children()[0]);
-        assert_eq!(CountTableDims::new().count_table_dims(child), dims);
+        assert_eq!(
+            CountTableDims::new().count_table_dims(child),
+            Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64)))
+        );
         return Ok( () );
     }
 
