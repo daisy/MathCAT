@@ -48,15 +48,15 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [T: "zoomed out all of the way", pause: "medium"]
+        then: [t: "zoom màxim cap enfora", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
         then:
         - test:
           - if: "string-length(.) = 1"
-            then: [T: "zoomed in all of the way"]       # phrase('zoomed in all of the way')
+            then: [t: "zoom màxim cap endins"]       # phrase('zoomed in all of the way')
           - else_if: "$NavNodeOffset = 0"
-            then: [T: "zoomed in to first character"]   # phrase('zoomed in to first character')
-            else: [T: "zoomed to character"]          # phrase('zoomed in to character')
+            then: [t: "zoom cap al primer caràcter"]   # phrase('zoomed in to first character')
+            else: [t: "zoom cap al caràcter"]          # phrase('zoomed in to character')
         - pause: "medium"
         else:
         - test:
@@ -65,36 +65,36 @@
           - if: "starts-with($NavCommand, 'Zoom')"
             then: [set_variables: [Prefix: "'zoom'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'move'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'mou'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'read'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'llegeix'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'describe'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'descriu'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
             - x: "$Prefix"
             - test:
               - if: "substring($NavCommand, $CommandOffset) = 'In'"
-                then: [T: "in"]                                  # phrase(zoom 'in' to see more details)
+                then: [t: "dins"]                                  # phrase(zoom 'in' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "\uF8FEed in all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [t: "\uF8FE cap endins del tot"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
-                then: [T: "out"]                                 # phrase(zoom 'out' to see more details)
+                then: [t: "fora"]                                 # phrase(zoom 'out' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "\uF8FEed out all of the way"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [t: "\uF8FE cap enfora del tot"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
-                then: [T: "right"]                               # phrase(move to the 'right')
+                then: [t: "dreta"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
-                then: [T: "left"]                                # phrase(move to the 'left')
+                then: [t: "esquerra"]                                # phrase(move to the 'left')
               - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
-                then: [T: "current"]                                 # phrase(who is the 'current' president)
+                then: [t: "actual"]                                 # phrase(who is the 'current' president)
               - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
-                then: [T: "to start of line"]                                 # phrase(move 'to start of line')
+                then: [t: "a l'inici de la línia"]                                 # phrase(move 'to start of line')
               - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
-                then: [T: "to end of line"]                                 # phrase(move 'to end of line')
+                then: [t: "al final de la línia"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -118,7 +118,7 @@
   tag: [mtr, mlabeledtr]
   match: "$Move2D = 'in'"
   replace:
-  - T: "columna"
+  - t: "columna"
   - x: "count($Child2D/preceding-sibling::*)+1"
   - pause: "medium"
 
@@ -136,18 +136,18 @@
           - x: "$Move2D"
           - test:
             - if: "$NumPrecedingSiblings=0"
-              then: [T: "base"]                 # phrase(the 'base' of the power)
+              then: [t: "base"]                 # phrase(the 'base' of the power)
             - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # are we before mprescripts and hence are postscripts
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [T: "pre-subscript"]       # phrase(x with 'subscript' 2)
-                  else: [T: "pre-superscript"]     # phrase(x with 'superscript' 2)
+                  then: [t: "subíndex previ"]       # phrase(x with 'subscript' 2)
+                  else: [t: "superíndex previ"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
-                  then: [T: "superscript"]    # phrase(x with 'pre-superscript' 2)
-                  else: [T: "subscript"]      # phrase(x with 'pre-subscript' 2)
+                  then: [t: "superíndex"]    # phrase(x with 'pre-superscript' 2)
+                  else: [t: "subíndex"]      # phrase(x with 'pre-subscript' 2)
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
@@ -185,7 +185,7 @@
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
               - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
           else:
-          - T: "part"         # phrase(the 'part' of the expression)
+          - t: "part"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
       - pause: "medium"
 
@@ -208,19 +208,19 @@
       then:
       - test:
         - if: "$PreviousNavCommand = 'ZoomIn'"
-          then: [T: "undo zoom in"]                       # phrase('undo zoom in')
+          then: [t: "desfés el zoom cap endins"]                       # phrase('undo zoom in')
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
-          then: [T: "undo zoom out"]                      # phrase('undo zoom out')
+          then: [t: "desfés el zoom cap enfora"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [T: "undo zooming in all of the way"]        # phrase('undo zooming in all of the way')
+          then: [t: "desfés el zoom màxim cap endins"]        # phrase('undo zooming in all of the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [T: "undo zooming out all of the way"]       # phrase('undo zooming out all of the way')
+          then: [t: "desfés el zoom màxim cap enfora"]       # phrase('undo zooming out all of the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
-          then: [T: "undo move left"]                     # phrase('undo move left')
+          then: [t: "desfés el moviment a l'esquerra"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
-          then: [T: "undo move right"]                    # phrase('undo move right')
+          then: [t: "desfés el moviment a la dreta"]                    # phrase('undo move right')
         - else_if: "$PreviousNavCommand = 'None'"
-          then: [T: "no previous command"]                # phrase('no previous command')
+          then: [t: "no hi ha cap ordre anterior"]                # phrase('no previous command')
       - pause: "medium"
   - set_variables: [NavNode: "@id"]
 
@@ -497,7 +497,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   # we need to speak it here
-  # - T: "fila"                                                  # phrase(the first 'row' of the matrix)
+  # - t: "fila"                                                  # phrase(the first 'row' of the matrix)
   #   # if we let the speech rules speak the row, it is given just the MathML for the row, so the row # will always be '1'
   # - x: "count(../preceding-sibling::*)+1"
   # - pause: medium
@@ -548,12 +548,12 @@
           then:
           - test:
             - if: "$NavCommand = 'MoveStart'"
-              then: [T: "move to start of math"]                  # phrase('move to start of math')
+              then: [t: "mou a l'inici de les matemàtiques"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [T: "move to start of line"]                  # phrase('move to start of line')
+              then: [t: "mou a l'inici de la línia"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
-              then: [T: "move to end of math"]                    # phrase('move to end of math')
-              else: [T: "move to end of line"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              then: [t: "mou al final de les matemàtiques"]                    # phrase('move to end of math')
+              else: [t: "mou al final de la línia"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -593,8 +593,8 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [T: "move to start of line"]                                # phrase('move to start of line')
-          else: [T: "move to end of line"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          then: [t: "mou a l'inici de la línia"]                                # phrase('move to start of line')
+          else: [t: "mou al final de la línia"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"
@@ -630,7 +630,7 @@
   - "$NavCommand='MoveColumnStart' or $NavCommand='MoveColumnEnd' or"
   - "$NavCommand='ReadCellCurrent'"
   replace:
-  - T: "not in table"                               # phrase('not in table')
+  - t: "no és dins d'una taula"                               # phrase('not in table')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -644,12 +644,12 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - T: "move left"                        # phrase('move left')
+          - t: "mou a l'esquerra"                        # phrase('move left')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - T: "columna"                           # phrase(the first 'column' of the table)
+          - t: "columna"                           # phrase(the first 'column' of the table)
           - x: "count(preceding-sibling::*)"
           - pause: medium
       - test:
@@ -661,7 +661,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/*[1]/@id"]
       else:
-      - T: "no previous column"                 # phrase('no previous column' in the table)
+      - t: "no hi ha cap columna anterior"                 # phrase('no previous column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -674,12 +674,12 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - T: "move right"                     # phrase('move right')
+          - t: "mou a la dreta"                     # phrase('move right')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - T: "columna"                         # phrase(the first 'column' in the table)
+          - t: "columna"                         # phrase(the first 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: medium
       - test:
@@ -691,7 +691,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/*[1]/@id"]
       else:
-      - T: "no next column"                  # phrase('no next column' in the table)
+      - t: "no hi ha cap columna següent"                  # phrase('no next column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -707,15 +707,15 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - T: "move up"                             # phrase('move up' to previous row in the table)
+              - t: "mou amunt"                             # phrase('move up' to previous row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "fila"                                 # phrase(the previous 'row' in the table)
+              - t: "fila"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
               - pause: short
-              - T: "columna"                              # phrase(the previous 'column' in the table)
+              - t: "columna"                              # phrase(the previous 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -727,7 +727,7 @@
               else:
               - set_variables: [NavNode: "../preceding-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - T: "no previous row"                            # phrase('no previous row' in the table)
+      - t: "no hi ha cap fila anterior"                            # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -743,15 +743,15 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - T: "move down"                          # phrase('move down' to the next row in the table)
+              - t: "mou avall"                          # phrase('move down' to the next row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "fila"                                # phrase(the next 'row' in the table)
+              - t: "fila"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
               - pause: short
-              - T: "columna"                             # phrase(the next 'column' in the table)
+              - t: "columna"                             # phrase(the next 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -763,7 +763,7 @@
               else:
               - set_variables: [NavNode: "../following-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - T: "no next row"                                # phrase('no next row' in the table)
+      - t: "no hi ha cap fila següent"                                # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -773,7 +773,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "move to previous row"                              # phrase('move to previous row' in the table)
+      - t: "mou a la fila anterior"                              # phrase('move to previous row' in the table)
       - pause: medium
   - test:
       if: "preceding-sibling::*"
@@ -787,7 +787,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
       else:
-      - T: "no previous row"                          # phrase('no previous row' in the table)
+      - t: "no hi ha cap fila anterior"                          # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -797,7 +797,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "move to next row"                          # phrase('move to next row' in the table)
+      - t: "mou a la fila següent"                          # phrase('move to next row' in the table)
       - pause: medium
   - test:
       if: "following-sibling::*"
@@ -811,7 +811,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/@id"]
       else:
-      - T: "no next row"                          # phrase('no next row' in the table)
+      - t: "no hi ha cap fila següent"                          # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-previous
@@ -822,9 +822,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "move to previous column"                              # phrase('move to previous column' in the table)
+      - t: "mou a la columna anterior"                              # phrase('move to previous column' in the table)
       - pause: medium
-  - T: "no previous column"                          # phrase('no previous column' in the table)
+  - t: "no hi ha cap columna anterior"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -835,9 +835,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "move to next column"                              # phrase('move to next column' in the table)
+      - t: "mou a la columna següent"                              # phrase('move to next column' in the table)
       - pause: medium
-  - T: "no next column"                          # phrase('no next row' in the table)
+  - t: "no hi ha cap columna següent"                          # phrase('no next row' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: default-read-cell
@@ -853,20 +853,20 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - T: "read current entry"                         # phrase('read current entry' in the table)
+              - t: "llegeix l'entrada actual"                         # phrase('read current entry' in the table)
               - pause: medium
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "fila"                                        # phrase(the previous 'row' in the table)
+              - t: "fila"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
               - pause: short
-              - T: "columna"                                     # phrase(the previous 'column' in the table)
+              - t: "columna"                                     # phrase(the previous 'column' in the table)
               - x: "count($MTD[1]/preceding-sibling::*)+1"
               - pause: short
           - set_variables: [NavNode: "$MTD[1]/*[1]/@id"]
           else:
-          - T: "not in table"                                   # phrase('not in table' or matrix)
+          - t: "no és dins d'una taula"                                   # phrase('not in table' or matrix)
           - pause: long
           - set_variables: [SpeakExpression: "'false'"]
 
@@ -1106,7 +1106,7 @@
       then:
       - x: "ancestor::m:mtd[1]" # try again on an mtd node
       else:
-      - T: "not in table"                                               # phrase('not in table' or matrix)
+      - t: "no és dins d'una taula"                                               # phrase('not in table' or matrix)
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
 
@@ -1183,7 +1183,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - T: "cannot move right"                              # phrase('cannot move right')
+      - t: "no es pot moure a la dreta"                              # phrase('cannot move right')
       - pause: medium
   - with:
       variables:
@@ -1204,16 +1204,16 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - T: "cannot"                                          # phrase('cannot' move right in expression)
+      - t: "no es pot"                                          # phrase('cannot' move right in expression)
       - test:
         - if: "$NavCommand = 'MoveNext'"
-          then: [T: "move"]                                  # phrase('move' to next entry in table)     
+          then: [t: "mou"]                                  # phrase('move' to next entry in table)     
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [T: "read"]                                  # phrase('read' next entry in table)     
-          else: [T: "describe"]                              # phrase('describe' next entry in table)     
-      - T: "right"                              # phrase(move 'right')
+          then: [t: "llegeix"]                                  # phrase('read' next entry in table)     
+          else: [t: "descriu"]                              # phrase('describe' next entry in table)     
+      - t: "dreta"                              # phrase(move 'right')
       - pause: short
-  - T: "end of math"                              # phrase(move 'end of math')
+  - t: "fi de les matemàtiques"                              # phrase(move 'end of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1258,7 +1258,7 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - T: "columna"                                       # phrase(the previous 'column' in the table)
+          - t: "columna"                                       # phrase(the previous 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: short
       - test:
@@ -1401,7 +1401,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose' and $NavCommand = 'MovePrevious'"
       then:
-      - T: "cannot move left"                                   # phrase('cannot move left' in expression)
+      - t: "no es pot moure a l'esquerra"                                   # phrase('cannot move left' in expression)
       - pause: medium
   - with:
       variables:
@@ -1418,7 +1418,7 @@
   - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious') and"
   - "(self::m:math or name(EdgeNode(., 'left', 'math'))='math')"
   replace:
-  - T: "start of math"                                              # phrase('start of math')
+  - t: "inici de les matemàtiques"                                              # phrase('start of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1431,7 +1431,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - T: "cannot move left"                      # phrase('cannot move left')
+      - t: "no es pot moure a l'esquerra"                      # phrase('cannot move left')
       - pause: short
   - with:
       variables: [Move2D: "'start of'", Child2D: "."]
@@ -1527,7 +1527,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "columna"                               # phrase(the first 'column' in the table)
+      - t: "columna"                               # phrase(the first 'column' in the table)
       - x: "count(preceding-sibling::*)"
       - pause: short
   - test:
@@ -1613,16 +1613,16 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - T: "character"                                                # phrase(a mathematical 'character')
+      - t: "caràcter"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - T: "simple"                                                   # phrase(a 'simple' way to do something)
+      - t: "simple"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - T: "enhanced"                                                 # phrase(an 'enhanced' way to do something)
+      - t: "millorat"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
-  - T: "mode"                                                         # phrase(a simple 'mode' of use)
+  - t: "mode"                                                         # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1638,16 +1638,16 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - T: "simple"                                                 # phrase(a 'simple' way to do something)
+      - t: "simple"                                                 # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - T: "enhanced"                                               # phrase(an 'enhanced' way to do something)
+      - t: "millorat"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - T: "character"                                              # phrase(a mathematical 'character')
+      - t: "caràcter"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
-  - T: "mode"                                                       # phrase(a simple 'mode' of use)
+  - t: "mode"                                                       # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1663,11 +1663,11 @@
   - test:
       if: "$Overview = 'true'"
       then:
-      - T: "speak expression after move"                # phrase('speak expression after move')
+      - t: "llegeix l'expressió després del moviment"                # phrase('speak expression after move')
       - pause: long
       - set_variables: [Overview: "'false'"]
       else:
-      - T: "overview of expression after move"          # phrase('overview of expression after move')
+      - t: "resum de l'expressió després del moviment"          # phrase('overview of expression after move')
       - pause: long
       - set_variables: [Overview: "'true'"]
 
@@ -1680,9 +1680,9 @@
       then:
       - test:
         - if: "$NavCommand = 'ReadCurrent'"
-          then: [T: "read"]                                  # phrase('read' next entry in table) 
-          else: [T: "describe"]                              # phrase('describe' next entry in table)     
-      - T: "current"                                         # phrase('current' entry in table)
+          then: [t: "llegeix"]                                  # phrase('read' next entry in table) 
+          else: [t: "descriu"]                              # phrase('describe' next entry in table)     
+      - t: "actual"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 
@@ -1700,13 +1700,13 @@
       then:
       - test:
         - if: "starts-with($NavCommand, 'Read')"
-          then: [T: "read"]                                  # phrase('read' next entry in table)     
+          then: [t: "llegeix"]                                  # phrase('read' next entry in table)     
         - else_if: "starts-with($NavCommand, 'Describe')"
-          then: [T: "describe"]                              # phrase('describe' next entry in table)     
+          then: [t: "descriu"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
-          then: [T: "move to "]                              # phrase('move to' the next entry in table) 
-          else: [T: "set"]                                   # phrase('set' the value of the next entry in table) 
-      - T: "placeholder"                                     # phrase('placeholder' for the value)
+          then: [t: "mou a "]                              # phrase('move to' the next entry in table) 
+          else: [t: "estableix"]                                   # phrase('set' the value of the next entry in table) 
+      - t: "marcador de posició"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1718,7 +1718,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - T: "set placeholder"                                 # phrase('set placeholder' to the value) 
+      - t: "estableix el marcador de posició"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
@@ -1750,11 +1750,11 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - T: "inside of nothing more"                         # phrase('inside of nothing more') 
+      - t: "dins, no hi ha res més"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - T: "inside"                                         # phrase('inside' a big expression) 
+      - t: "dins"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
@@ -1762,7 +1762,7 @@
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - T: "inside"                                           # phrase('inside' a big expression)
+  - t: "dins"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"

@@ -8,24 +8,24 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "the"      # phrase('the' square root of 25 equals 5)
+      - t: "la"      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][.='+']"
-      then: [T: "positive"]      # phrase(set of all 'positive' integers less than 10)
-      else: [T: "negative"]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [t: "positiu"]      # phrase(set of all 'positive' integers less than 10)
+      else: [t: "negatiu"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [T: "complex numbers"]      # phrase('complex numbers' consist of two parts)
+      then: [t: "nombres complexos"]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][.='ℕ']"
-      then: [T: "natural numbers"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [t: "nombres naturals"]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][.='ℚ']"
-      then: [T: "rational numbers"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [t: "nombres racionals"]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][.='ℝ']"
-      then: [T: "real numbers"]      # phrase('real numbers' can be both positive and negative)
+      then: [t: "nombres reals"]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][.='ℤ']"
-      then: [T: "integers"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [t: "enters"]      # phrase(positive 'integers' are natural numbers above 0)
       else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
@@ -37,15 +37,15 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [T: "C"]      # phrase(the letter 'C' used to represent complex number)
+      then: [t: "C"]      # phrase(the letter 'C' used to represent complex number)
     - else_if: "*[1][.='ℕ']"
-      then: [T: "N"]      # phrase(the letter 'N' may represent natural numbers)
+      then: [t: "N"]      # phrase(the letter 'N' may represent natural numbers)
     - else_if: "*[1][.='ℚ']"
-      then: [T: "Q"]      # phrase(the letter 'Q' may represent rational numbers)
+      then: [t: "Q"]      # phrase(the letter 'Q' may represent rational numbers)
     - else_if: "*[1][.='ℝ']"
-      then: [T: "R"]      # phrase(the letter 'R' may represent real numbers)
+      then: [t: "R"]      # phrase(the letter 'R' may represent real numbers)
     - else_if: "*[1][.='ℤ']"
-      then: [T: "Z"]      # phrase(the letter 'Z' may represent integers)
+      then: [t: "Z"]      # phrase(the letter 'Z' may represent integers)
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
@@ -57,15 +57,15 @@
   - bookmark: "@id"
   - test:
     - if: ".='ℂ'"
-      then: [T: "the complex numbers"]      # phrase('the complex numbers' include 2 parts)
+      then: [t: "els nombres complexos"]      # phrase('the complex numbers' include 2 parts)
     - else_if: ".='ℕ'"
-      then: [T: "the natural numbers"]      # phrase('the natural numbers' begin at 1)
+      then: [t: "els nombres naturals"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
-      then: [T: "the rational numbers"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [t: "els nombres racionals"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
-      then: [T: "the real numbers"]      # phrase('the real numbers' can be both positive and negative)
+      then: [t: "els nombres reals"]      # phrase('the real numbers' can be both positive and negative)
     - else_if: ".='ℤ'"
-      then: [T: "the integers"]      # phrase('the integers' are natural numbers above 0)
+      then: [t: "els enters"]      # phrase('the integers' are natural numbers above 0)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
@@ -73,14 +73,14 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - T: "the real part"      # phrase('the real part' of a complex number does not include the imaginary part)
+  - t: "la part real"      # phrase('the real part' of a complex number does not include the imaginary part)
 
 - name: imaginary-part
   tag: imaginary-part
   match: "."
   replace:
   - bookmark: "@id"
-  - T: "the imaginary part"      # phrase('the imaginary part' is part of a complex number)
+  - t: "la part imaginària"      # phrase('the imaginary part' is part of a complex number)
 
 # rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
@@ -89,7 +89,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - T: "evaluated at"      # phrase(results were 'evaluated at' a given point)
+  - t: "avaluat a"      # phrase(results were 'evaluated at' a given point)
   - pause: auto
   - x: "*[2]"
 
@@ -99,10 +99,10 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - T: "evaluated at"      # phrase(results were 'evaluated at' this point)
+  - t: "avaluat a"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
-  - T: "minus the same expression evaluated at"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
+  - t: "menys la mateixa expressió avaluada a"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
   - x: "*[2]"
 
 - name: permutation
@@ -111,7 +111,7 @@
   match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
   - x: "*[2]"
-  - T: "permutations of"      # phrase(the solution  involves several 'permutations of' values)
+  - t: "permutacions de"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
 
 - name: intervals
@@ -121,18 +121,18 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "the"      # phrase('the' square root of 25 equals 5)
+      - t: "la"      # phrase('the' square root of 25 equals 5)
   - x: "translate(name(.),'-', ' ')"
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "from"      # phrase(subtracting 5 'from' 10 gives 5)
+      - t: "des de"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[1]"
-      - T: "to"      # phrase(adding 6 'to' 6 equals  12)
+      - t: "a"      # phrase(adding 6 'to' 6 equals  12)
       - x: "*[2]"
       else:
       - x: "*[1]"
-      - T: "coma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+      - t: "coma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
       - x: "*[2]"
 
 - name: default-point
@@ -142,10 +142,10 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "the"      # phrase('the' square root of 25 equals 5)
-  - T: "punt"      # phrase(a decimal 'point' indicates the fraction component of a number)
+      - t: "la"      # phrase('the' square root of 25 equals 5)
+  - t: "punt"      # phrase(a decimal 'point' indicates the fraction component of a number)
   - x: "*[1]"
-  - T: "coma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+  - t: "coma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
 
 - name: bigop-both
@@ -154,16 +154,16 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [OT: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "la"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - T: "from"      # phrase(subtracting 5 'from' 10 gives 5)
+  - t: "des de"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
   - pause: short
-  - T: "to"      # phrase(adding 6 'to' 6 equals  12)
+  - t: "a"      # phrase(adding 6 'to' 6 equals  12)
   - x: "*[3]"
   - test:
       if: "following-sibling::*"
-      then: [T: "of"]      # phrase(the square root 'of' 25 equals 5)
+      then: [t: "de"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: bigop-under
   tag: large-op
@@ -171,13 +171,13 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [OT: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "la"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - T: "sobre"      # phrase(2 'over' 3 equals two thirds)
+  - t: "sobre"      # phrase(2 'over' 3 equals two thirds)
   - x: "*[2]"
   - test:
       if: "following-sibling::*"
-      then: [T: "of"]      # phrase(the square root 'of' 25 equals 5)
+      then: [t: "de"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: largeop
   tag: mrow
@@ -185,9 +185,9 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [OT: "the"]      # phrase('the' square root of 25 equals 5)
+      then: [ot: "la"]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - T: "de"      # phrase(the square root 'of' 25 equals 5)
+  - t: "de"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
 - name: repeating-decimal
@@ -195,7 +195,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "with repeating digits"      # phrase('with repeating digits')
+  - t: "amb dígits periòdics"      # phrase('with repeating digits')
   - spell: "*[2]"
 
 - name: msubsup-skip-super
@@ -206,16 +206,16 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [T: "subscript"]      # phrase(a 'subscript' may be used to indicate an index)
-      else: [T: "subíndex"]      # phrase(the result is 'sub' optimal)
+      then: [t: "subíndex"]      # phrase(a 'subscript' may be used to indicate an index)
+      else: [t: "subíndex"]      # phrase(the result is 'sub' optimal)
   - x: "*[2]"
   - test:
       if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
       then:
       - test:
           if: "$Verbosity='Verbose'"
-          then: [T: "end subscript"]      # phrase(this is the 'end subscript' position)
-          else: [T: "end sub"]      # phrase(this is the 'end sub' position)
+          then: [t: "fi del subíndex"]      # phrase(this is the 'end subscript' position)
+          else: [t: "fi del subíndex"]      # phrase(this is the 'end sub' position)
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -224,8 +224,8 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Verbose'"
-        then: [T: "superscript"]      # phrase(a 'superscript' number indicates raised to a power)
-        else: [T: "superíndex"]      # phrase(this is a 'super' set of numbers)
+        then: [t: "superíndex"]      # phrase(a 'superscript' number indicates raised to a power)
+        else: [t: "superíndex"]      # phrase(this is a 'super' set of numbers)
   - x: "*[3]"
   - pause: short
 
@@ -309,17 +309,17 @@
           then: [x: "$Word"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
           then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
-          else: [x: "$Word", CT: "s"]
+          else: [x: "$Word", ct: "s"]
       else:
       - x: "$Prefix"
-      - CT: "-"
+      - ct: "-"
       - test:
         - if: "$IsSingular"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
-          else: [x: "concat('\uF8FE', $Word)", CT: "s"]
+          else: [x: "concat('\uF8FE', $Word)", ct: "s"]
 
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
@@ -337,14 +337,14 @@
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", CT: "s"]
+      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
 
 - name: sin
   tag: mi
   match: ".='sin'"
   replace:
   - bookmark: "@id"
-  - T: "sinus"      # phrase(the 'sine' of the angle)
+  - t: "sinus"      # phrase(the 'sine' of the angle)
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -352,8 +352,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cos"]      # phrase('cos' is the abbreviation for cosine)
-      else: [T: "cosine"]      # phrase(find the 'cosine' in a right-angle triangle)
+      then: [t: "cos"]      # phrase('cos' is the abbreviation for cosine)
+      else: [t: "cosinus"]      # phrase(find the 'cosine' in a right-angle triangle)
 - name: tan
   tag: mi
   match: ".='tan' or .='tg'"
@@ -361,8 +361,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "tan"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [T: "tangent"]      # phrase(a 'tangent' is a straight line that touches a curve)
+      then: [t: "tan"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: [t: "tangent"]      # phrase(a 'tangent' is a straight line that touches a curve)
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -370,8 +370,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "seek"]      # phrase(to 'seek' a solution)
-      else: [T: "secant"]      # phrase(a 'secant' intersects a curve at two or more points)
+      then: [t: "secant"]      # phrase(to 'seek' a solution)
+      else: [t: "secant"]      # phrase(a 'secant' intersects a curve at two or more points)
 - name: csc
   tag: mi
   match: ".='csc'"
@@ -379,8 +379,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "coseek"]      # phrase(we will 'cosecant' a solution)
-      else: [T: "cosecant"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+      then: [t: "cosecant"]      # phrase(we will 'cosecant' a solution)
+      else: [t: "cosecant"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 - name: cot
   tag: mi
   match: ".='cot'"
@@ -388,8 +388,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cotan"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [T: "cotangent"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: [t: "cotangent"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [t: "cotangent"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -398,8 +398,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "sinch"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: [T: "hyperbolic sine"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: [t: "sinus hiperbòlic"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [t: "sinus hiperbòlic"]      # phrase(the 'hyperbolic sine' is used in mathematics)
 - name: cosh
   tag: mi
   match: ".='cosh'"
@@ -407,8 +407,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cosh"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      else: [T: "hyperbolic cosine"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+      then: [t: "cosh"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [t: "cosinus hiperbòlic"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
   match: ".='tanh'"
@@ -416,8 +416,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "tanch"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [T: "hyperbolic tangent"]      # phrase('hyperbolic tangent' is a mathematical function)
+      then: [t: "tangent hiperbòlica"]      # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [t: "tangent hiperbòlica"]      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -425,8 +425,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "sheck"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [T: "hyperbolic secant"]      # phrase('hyperbolic secant' is a mathematical function)
+      then: [t: "secant hiperbòlica"]      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [t: "secant hiperbòlica"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -434,8 +434,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cosheck"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [T: "hyperbolic cosecant"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: [t: "cosinus hiperbòlic"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [t: "cosecant hiperbòlica"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -443,8 +443,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cotanch"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [T: "hyperbolic cotangent"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: [t: "cotangent hiperbòlic"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [t: "cotangent hiperbòlica"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -452,8 +452,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "exp"]      # phrase('exp' means exponential function)
-      else: [T: "exponential"]      # phrase('exponential' function)
+      then: [t: "exp"]      # phrase('exp' means exponential function)
+      else: [t: "exponencial"]      # phrase('exponential' function)
 - name: covariance
   tag: mi
   match: ".='Cov'"
@@ -461,8 +461,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "Cov"]      # phrase('Cov' is shorthand for the covariance function)
-      else: [T: "covariance"]      # phrase('covariance' function)
+      then: [t: "Cov"]      # phrase('Cov' is shorthand for the covariance function)
+      else: [t: "covariància"]      # phrase('covariance' function)
 
 -
   name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
@@ -472,15 +472,15 @@
   - bookmark: "@id"
   - test:
     - if: "$Verbosity!='Terse'"
-      then: [OT: "the"]      # phrase('the' logarithm function is used in mathematics)
+      then: [ot: "la"]      # phrase('the' logarithm function is used in mathematics)
   - test:
     - if: ".= 'log'"
-      then: [T: "log"]      # phrase(the 'log' function is used in mathematics)
+      then: [t: "log"]      # phrase(the 'log' function is used in mathematics)
     - else_if: ".= 'Log'"
-      then: [T: "principal value log"]
+      then: [t: "valor principal del logaritme"]
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
-      else: [T: "natural log"]      # phrase(the 'natural log' function is used in mathematics)
+      else: [t: "logaritme natural"]      # phrase(the 'natural log' function is used in mathematics)
 
 
 - name: multi-line
@@ -497,13 +497,13 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [T: "case"]      # phrase(this is the first 'case' of three cases)
+      then: [t: "cas"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
-      then: [T: "equation"]      # phrase(this is the first 'equation' of three equations)
-      else: [T: "line"]      # phrase(this is the first 'line' of three lines)
+      then: [t: "equació"]      # phrase(this is the first 'equation' of three equations)
+      else: [t: "línia"]      # phrase(this is the first 'line' of three lines)
   - test:
     - if: "$LineCount != 1"
-      then: [CT: "s"] # plural
+      then: [ct: "s"] # plural
   - pause: short
   - x: "*"
   - pause: long
@@ -520,15 +520,15 @@
       - pause: medium
       - test:
         - if: "parent::m:piecewise"
-          then: [T: "case"]     # phrase('case' 1 of 10 cases)
+          then: [t: "cas"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
-          then: [T: "equation"] # phrase('equation' 1 of 10 equations)
-          else: [T: "line"]     # phrase('line 1 of 10 lines)
+          then: [t: "equació"] # phrase('equation' 1 of 10 equations)
+          else: [t: "línia"]     # phrase('line 1 of 10 lines)
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
       then:
-      - T: "with label"      # phrase(the diagram is complete 'with label')
+      - t: "amb etiqueta"      # phrase(the diagram is complete 'with label')
       - x: "*[1]/*"
   - test:
       if: "not(contains(@data-intent-property, ':continued-row:'))"
@@ -572,14 +572,14 @@
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - OT: "the"      # phrase('the' 1 by 1 matrix M)
-  - T: "1 by 1"      # phrase(the '1 by 1' matrix)
+  - ot: "la"      # phrase('the' 1 by 1 matrix M)
+  - t: "1 per 1"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: [T: "determinant"]      # phrase(the 2 by 2 'determinant'))
-      else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "determinant"]      # phrase(the 2 by 2 'determinant'))
+      else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
       
-  - T: "with entry"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - t: "amb entrada"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
 
 # simpler reading methods for special case matrices
@@ -588,11 +588,11 @@
   # select all the non-zero entries -- if there are none of them, then it is a zero matrix
   match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
-  - T: "the"      # phrase('the' 1 by 2 matrix M)
+  - t: "la"      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - T: "by"       # phrase(the 1 'by' 2 matrix)
+  - t: "per"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - T: "zero matrix"   # phrase(the 2 by 2 'zero matrix')
+  - t: "matriu nul·la"   # phrase(the 2 by 2 'zero matrix')
   - pause: long
 
 - name: identity-matrix
@@ -603,11 +603,11 @@
   - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
   - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
-  - T: "the"      # phrase('the' 1 by 2 matrix M)
+  - t: "la"      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - T: "by"       # phrase(the 1 'by' 2 matrix)
+  - t: "per"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - T: "identity matrix"   # phrase(the 2 by 2 'identity matrix')
+  - t: "matriu identitat"   # phrase(the 2 by 2 'identity matrix')
   - pause: long
 
 - name: diagonal-matrix
@@ -620,11 +620,11 @@
   - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
   - "    )"
   replace:
-  - T: "the"      # phrase('the' 1 by 2 matrix)
+  - t: "la"      # phrase('the' 1 by 2 matrix)
   - x: count(*)
-  - T: "by"       # phrase(the 1 'by' 2 matrix)
+  - t: "per"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - T: "diagonal matrix"   # phrase(the 2 by 2 'diagonal matrix')
+  - t: "matriu diagonal"   # phrase(the 2 by 2 'diagonal matrix')
   - pause: long
   - insert:
       # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
@@ -644,41 +644,41 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - T: "the"      # phrase('the' 2 by 2 matrix M)
+  - t: "la"      # phrase('the' 2 by 2 matrix M)
   - x: count(*)
-  - T: "by 1 column"      # phrase(the 2 'by 1 column' matrix)
+  - t: "per 1 columna"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "vector"]      # phrase(the 2 by 2 'vector')
-      else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "vector"]      # phrase(the 2 by 2 'vector')
+      else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "end"      # phrase('end' of matrix)
+      - t: "fi"      # phrase('end' of matrix)
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: [T: "vector"]      # phrase(the 2 column 'vector')
-          else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "vector"]      # phrase(the 2 column 'vector')
+          else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-column-matrix
   tag: matrix
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - T: "the"      # phrase('the' 2 by 2 matrix M)
+  - t: "la"      # phrase('the' 2 by 2 matrix M)
   - x: "count(*)"
-  - T: "by 1 column"      # phrase(the 2 'by 1 column' matrix)
+  - t: "per 1 columna"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "vector"]      # phrase(the 2 column 'vector')
-      else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "vector"]      # phrase(the 2 column 'vector')
+      else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "end matrix"]      # phrase(the 'end of matrix' has been reached)
+      then: [t: "fi de la matriu"]      # phrase(the 'end of matrix' has been reached)
 
 - name: 1x2-or-3-matrix
   tag: matrix
@@ -689,47 +689,47 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - T: "the 1 by"      # phrase('the 1 by' 2 matrix)
+  - t: "la matriu d'1 per"      # phrase('the 1 by' 2 matrix)
   - x: count(*/*)
-  - T: "fila"      # phrase(the 1 by 4 'row' matrix)
+  - t: "fila"      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "vector"]      # phrase('the 1 by' 2 row 'vector')
-      else: [T: "matrix"]      # phrase('the 1 by' 2 'matrix')
+      then: [t: "vector"]      # phrase('the 1 by' 2 row 'vector')
+      else: [t: "matriu"]      # phrase('the 1 by' 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "end"      # phrase(the 'end' of matrix has been reached)
+      - t: "fi"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
-          else: [T: "vector"]      # phrase(the 2 by 1 'vector')
+          then: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "vector"]      # phrase(the 2 by 1 'vector')
 
 - name: default-row-matrix
   tag: matrix
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
-  - T: "the 1 by"      # phrase('the 1 by' 2 matrix)
+  - t: "la matriu d'1 per"      # phrase('the 1 by' 2 matrix)
   - x: "count(*/*)"
-  - T: "fila"      # phrase(the 1 by 2 'row' matrix)
+  - t: "fila"      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "vector"]      # phrase(the 2 by 1 'vector')
-      else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+      then: [t: "vector"]      # phrase(the 2 by 1 'vector')
+      else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - pause: medium
   - x: "*/*" # select the cols (mtd)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "end"      # phrase(the 'end' of matrix has been reached)
+      - t: "fi"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
-          else: [T: "vector"]      # phrase(the 2 by 1 'vector')
+          then: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "vector"]      # phrase(the 2 by 1 'vector')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -739,56 +739,56 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
-  - T: "the"      # phrase('the' 1 by 2 matrix M)
+  - t: "la"      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - T: "by"      # phrase(the 1 'by' 2 matrix)
+  - t: "per"      # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
   - test:
       if: "self::m:determinant"
-      then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
+      then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [T: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "matriu ampliada"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "end"      # phrase(the 'end' of matrix has been reached)
+      - t: "fi"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
-          else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-matrix
   tag: [matrix, determinant]
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
-  - T: "the"      # phrase('the' 1 by 2 matrix M)
+  - t: "la"      # phrase('the' 1 by 2 matrix M)
   - x: "count(*)"
-  - T: "by"      # phrase(the 1 'by' 2 matrix)
+  - t: "per"      # phrase(the 1 'by' 2 matrix)
   - x: "count(*[self::m:mtr][1]/*)"
   - test:
       if: "self::m:determinant"
-      then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
+      then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [T: "augmented matrix"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [T: "matrix"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "matriu ampliada"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [t: "matriu"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "end"      # phrase(the 'end' of matrix has been reached)
+      - t: "fi"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
-          else: [T: "matrix"]      # phrase(the 2 by 2 'matrix's)
+          then: [t: "determinant"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "matriu"]      # phrase(the 2 by 2 'matrix's)
 
 - name: chemistry-msub
   tag: [chemical-formula]
@@ -797,10 +797,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [T: "subscript"]      # phrase(H 'subscript' 2)
+      then: [t: "subíndex"]      # phrase(H 'subscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "subíndex"]      # phrase(H 'sub' 2)
+        then: [t: "subíndex"]      # phrase(H 'sub' 2)
   - x: "*[3]"
 
 - name: dimension-by
@@ -809,7 +809,7 @@
   replace:
   - insert:
       nodes: "*"
-      replace: [T: "by", pause: auto]      # phrase(3 'by' 5 matrix)
+      replace: [t: "per", pause: auto]      # phrase(3 'by' 5 matrix)
 
 - name: chemistry-msup
   tag: [chemical-formula]
@@ -818,10 +818,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [T: "superscript"]      # phrase(H 'superscript' 2)
+      then: [t: "superíndex"]      # phrase(H 'superscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "superíndex"]      # phrase(H 'super' 2)
+        then: [t: "superíndex"]      # phrase(H 'super' 2)
   - x: "*[3]"
   - test:
       if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
@@ -849,10 +849,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [T: "superscript"]      # phrase(H 'superscript' 2)
+              then: [t: "superíndex"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "superíndex"]      # phrase(H 'super' 2)
+                then: [t: "superíndex"]      # phrase(H 'super' 2)
           - x: "$Prescripts[2]"
           - pause: "short"
       - test:
@@ -860,10 +860,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [T: "subscript"]      # phrase(a 'subscript' may be used to indicate an index)
+              then: [t: "subíndex"]      # phrase(a 'subscript' may be used to indicate an index)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndex"]      # phrase(here is a 'sub' total)
+                then: [t: "subíndex"]      # phrase(here is a 'sub' total)
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -874,10 +874,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [T: "superscript"]      # phrase(H 'superscript' 2)
+                  then: [t: "superíndex"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "superíndex"]      # phrase(H 'super' 2)
+                    then: [t: "superíndex"]      # phrase(H 'super' 2)
               - x: "$Prescripts[4]"
               - pause: "short"
           - test:
@@ -885,10 +885,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [T: "subscript"]      # phrase(H 'subscript' 2)
+                  then: [t: "subíndex"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndex"]      # phrase(H 'sub' 2)
+                    then: [t: "subíndex"]      # phrase(H 'sub' 2)
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -900,10 +900,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [T: "subscript"]      # phrase(phrase(H 'subscript' 2)
+              then: [t: "subíndex"]      # phrase(phrase(H 'subscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndex"]      # phrase(phrase(H 'sub' 2)
+                then: [t: "subíndex"]      # phrase(phrase(H 'sub' 2)
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -911,10 +911,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [T: "superscript"]      # phrase(H 'superscript' 2)
+              then: [t: "superíndex"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "superíndex"]          # phrase(H 'super' 2)
+                then: [t: "superíndex"]          # phrase(H 'super' 2)
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -925,10 +925,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [T: "subscript"]      # phrase(H 'subscript' 2)
+                  then: [t: "subíndex"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndex"]          # phrase(H 'sub' 2)
+                    then: [t: "subíndex"]          # phrase(H 'sub' 2)
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -936,10 +936,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [T: "superscript"]      # phrase(H 'superscript' 2)
+                  then: [t: "superíndex"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "superíndex"]          # phrase(H 'super' 2)
+                    then: [t: "superíndex"]          # phrase(H 'super' 2)
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -950,10 +950,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [T: "subscript"]    # phrase(H 'subscript' 2)
+                      then: [t: "subíndex"]    # phrase(H 'subscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "subíndex"]        # phrase(H 'sub' 2)
+                        then: [t: "subíndex"]        # phrase(H 'sub' 2)
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -961,10 +961,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [T: "superscript"]  # phrase(H 'superscript' 2)
+                      then: [t: "superíndex"]  # phrase(H 'superscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "superíndex"]      # phrase(H 'super' 2)
+                        then: [t: "superíndex"]      # phrase(H 'super' 2)
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -975,10 +975,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [T: "subscript"]      # phrase(H 'subscript' 2)
+                          then: [t: "subíndex"]      # phrase(H 'subscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "subíndex"]      # phrase(H 'sub' 2)
+                            then: [t: "subíndex"]      # phrase(H 'sub' 2)
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -986,10 +986,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [T: "superscript"]      # phrase(H 'superscript' 2)
+                          then: [t: "superíndex"]      # phrase(H 'superscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "superíndex"]      # phrase(H 'super' 2)
+                            then: [t: "superíndex"]      # phrase(H 'super' 2)
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:
@@ -1017,12 +1017,12 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: ".='s'"
-      then: [T: "solid"]      # phrase(Boron is a 'solid' in its natural state)
+      then: [t: "sòlid"]      # phrase(Boron is a 'solid' in its natural state)
     - else_if: ".='l'"
-      then: [T: "liquid"]      # phrase(water is a 'liquid')
+      then: [t: "líquid"]      # phrase(water is a 'liquid')
     - else_if: ".='g'"
-      then: [T: "gas"]      # phrase(hydrogen is a 'gas' )
-      else: [T: "aqueous"]      # phrase(an 'aqueous' solution is contained in water)
+      then: [t: "gas"]      # phrase(hydrogen is a 'gas' )
+      else: [t: "aquós"]      # phrase(an 'aqueous' solution is contained in water)
   - pause: short
 
 - name: chemical-formula-operator-bond
@@ -1033,13 +1033,13 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [T: "single bond"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+      then: [t: "enllaç senzill"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
     - else_if: ".='=' or .='∷'"
-      then: [T: "double bond"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
+      then: [t: "enllaç doble"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
-      then: [T: "triple bond"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+      then: [t: "enllaç triple"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
     - else_if: ".='≣'"
-      then: [T: "quadruple bond"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
+      then: [t: "enllaç quàdruple"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
       else: [x: "text()"]
 
 - name: chemical-formula-operator
@@ -1058,14 +1058,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [T: "forms"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [T: "reacts to form"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [t: "forma"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [t: "reacciona per formar"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
-      then: [T: "is in equilibrium with"]      # phrase(a reactant 'is in equilibrium with' a product)
+      then: [t: "està en equilibri amb"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3
-      then: [T: "is in equilibrium biased to the left with"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+      then: [t: "està en equilibri desplaçat cap a l'esquerra amb"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
     - else_if: ".='🣒'" # U+1F8D2
-      then: [T: "is in equilibrium biased to the right with"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      then: [t: "està en equilibri desplaçat cap a la dreta amb"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
 - name: chemical-equation-operator
@@ -1079,7 +1079,7 @@
   tag: none
   match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
   replace:
-  - T: "" # don't say anything
+  - t: "" # don't say anything
 
 - name: ignore-intent-wrapper
   tag: intent-wrapper

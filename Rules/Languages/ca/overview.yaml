@@ -21,22 +21,22 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - T: "sobre"
+      - t: "sobre"
       - x: "*[2]"
       else:
-      - T: "fracció"
+      - t: "fracció"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
   match: "."
   replace:
-  - T: "arrel quadrada"
+  - t: "arrel quadrada"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "of"]
+          then: [t: "de"]
       - x: "*[1]"
 
 - name: overview-default
@@ -47,11 +47,11 @@
       if: "*[2][self::m:mn]"
       then_test:
       - if: "*[2][.='2']"
-        then: [T: "square root"]
+        then: [t: "arrel quadrada"]
       - else_if: "*[2][.='3']"
-        then: [T: "cube root"]
+        then: [t: "arrel cúbica"]
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", T: "root"]
+        then: [x: "ToOrdinal(*[2])", t: "arrel"]
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
@@ -59,13 +59,13 @@
           - x: "*[2]"
           - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
           else: [x: "*[2]"]
-      - T: "arrel"
+      - t: "arrel"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: "of"]
+          then: [t: "de"]
       - x: "*[1]"
 
 - name: matrix-override
@@ -74,24 +74,27 @@
   - "*[2][self::m:mtable] and"
   - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
   replace:
-  - T: "the"
+  - test:
+      if: "*[1][.='|']"
+      then: [t: "el"]
+      else: [t: "la"]
   - x: count(*[2]/*)
-  - T: "by"
+  - t: "per"
   - x: count(*[2]/*[self::m:mtr][1]/*)
   - test:
       if: "*[1][.='|']" # just need to check the first bracket since we know it must be (, [, or |
-      then: [T: "determinant"]
-      else: [T: "matrix"]
+      then: [t: "determinant"]
+      else: [t: "matriu"]
 
 - name: overview-default
   tag: mtable
   match: "."
   replace:
-  - T: "the"
+  - t: "la"
   - x: count(*[2]/*)
-  - T: "by"
+  - t: "per"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - T: "table"
+  - t: "taula"
 
 - name: short-mrow
   tag: mrow
@@ -115,6 +118,6 @@
   - pause: auto
   - x: "*[5]"
   - pause: auto
-  - T: "and so on"
+  - t: "i així successivament"
 
 - include: "SimpleSpeak_Rules.yaml"
