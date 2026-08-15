@@ -216,7 +216,6 @@ thread_local!{
 #[derive(Debug, Default)]
 pub struct PreferenceManager {
     rules_dir: PathBuf,                   // full path to rules dir
-    error: String,                        // empty/default string if fields are set, otherwise error message
     user_prefs: Preferences,              // prefs that come from reading prefs.yaml (system and user locations)
     api_prefs: Preferences,               // prefs set by API calls (along with some defaults not in the user settings such as "pitch")
     sys_prefs_file: Option<FileAndTime>,  // the system prefs.yaml file
@@ -238,17 +237,13 @@ pub struct PreferenceManager {
 impl fmt::Display for PreferenceManager {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "PreferenceManager:")?;
-        if self.error.is_empty() {
-            writeln!(f, "  not initialized!!! Error is {}", self.error)?;
-        } else {
-            writeln!(f, "  user prefs:\n{}", self.user_prefs)?;
-            writeln!(f, "  api prefs:\n{}", self.api_prefs)?;
-            writeln!(f, "  style files: {:?}", self.speech.as_path())?;
-            writeln!(f, "  unicode files: {:?}", self.speech_unicode.as_path())?;
-            writeln!(f, "  intent files: {:?}", self.intent.as_path())?;
-            writeln!(f, "  speech definition files: {:?}", self.speech_defs)?;
-            writeln!(f, "  braille definition files: {:?}", self.braille_defs)?;
-        }
+        writeln!(f, "  user prefs:\n{}", self.user_prefs)?;
+        writeln!(f, "  api prefs:\n{}", self.api_prefs)?;
+        writeln!(f, "  style files: {:?}", self.speech.as_path())?;
+        writeln!(f, "  unicode files: {:?}", self.speech_unicode.as_path())?;
+        writeln!(f, "  intent files: {:?}", self.intent.as_path())?;
+        writeln!(f, "  speech definition files: {:?}", self.speech_defs)?;
+        writeln!(f, "  braille definition files: {:?}", self.braille_defs)?;
         return Ok(());
     }
 }
@@ -288,10 +283,6 @@ impl PreferenceManager {
 
     pub fn get() -> Rc<RefCell<PreferenceManager>> {
         return PREF_MANAGER.with( |pm| pm.clone() );
-    }
-
-    pub fn get_error(&self) -> &str {
-        return &self.error;
     }
 
     /// Return a `PreferenceHashMap` that is the merger of the api prefs onto the user prefs.
@@ -680,10 +671,6 @@ impl PreferenceManager {
     
     /// Return the speech rule style file locations.
     pub fn get_rule_file(&self, name: &RulesFor) -> &Path {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_rule_file called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         let files = match name {
             RulesFor::Intent => &self.intent,
             RulesFor::Speech => &self.speech,
@@ -696,46 +683,27 @@ impl PreferenceManager {
 
     /// Return the unicode.yaml file locations.
     pub fn get_speech_unicode_file(&self) ->(&Path, &Path) {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_speech_unicode_file called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
         return (self.speech_unicode.as_path(), self.speech_unicode_full.as_path());
     }
 
     /// Return the unicode.yaml file locations.
     pub fn get_braille_unicode_file(&self) -> (&Path, &Path) {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_braille_unicode_file called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         return (self.braille_unicode.as_path(), self.braille_unicode_full.as_path());
     }
 
     /// Return the definitions.yaml file locations.
     pub fn get_definitions_file(&self, use_speech_defs: bool) -> &Path {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_definitions_file called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         let defs_file = if use_speech_defs {&self.speech_defs} else {&self.braille_defs};
         return defs_file;
     }
 
     /// Return the TTS engine currently in use.
     pub fn get_tts(&self) -> TTS {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_tts called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
-        return match self.pref_to_string("TTS").as_str().to_ascii_lowercase().as_str() {
-            "none" => TTS::None,
-            "ssml" => TTS::SSML,
-            "sapi5" => TTS::SAPI5,
-            _ => {
-                warn!("found unknown value for TTS: '{}'", self.pref_to_string("TTS").as_str());
-                TTS::None
-            }
-        }
+        let tts: String = self.pref_to_string("TTS");
+        return tts.parse().unwrap_or_else(|_| {
+            warn!("found unknown value for TTS: '{tts}'");
+            TTS::None
+        })
     }
 
     /// Set the string-valued preference.
@@ -744,9 +712,6 @@ impl PreferenceManager {
     ///   If this happens, the preference is not set and an error is returned.
     /// If "LanguageAuto" is set, we assume "Language" has already be checked to be "Auto"
     pub fn set_string_pref(&mut self, key: &str, value: &str) -> Result<()> {
-        if !self.error.is_empty() {
-            panic!("Internal error: set_string_pref called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
 
         // verify language, braille, and SpeechStyle because these are used as access into the file system
         // should be an ascii string with only letters, dashes, and underscores
@@ -824,27 +789,15 @@ impl PreferenceManager {
     /// Set the number-valued preference.
     /// All number-valued preferences are stored with type `f64`.
     pub fn set_api_float_pref(&mut self, key: &str, value: f64) {
-        if !self.error.is_empty() {
-            panic!("Internal error: set_api_float_pref called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         self.api_prefs.prefs.insert(key.to_string(), Yaml::Real(value.to_string()));
     }
 
     pub fn set_api_boolean_pref(&mut self, key: &str, value: bool) {
-        if !self.error.is_empty() {
-            panic!("Internal error: set_api_boolean_pref called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         self.api_prefs.prefs.insert(key.to_string(), Yaml::Boolean(value));
     }
 
     /// Return the current speech rate.
     pub fn get_rate(&self) -> f64 {
-        if !self.error.is_empty() {
-            panic!("Internal error: get_rate called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-
         return match &self.pref_to_string("Rate").parse::<f64>() {
             Ok(val) => *val,
             Err(_) => {
@@ -887,10 +840,6 @@ impl PreferenceManager {
     ///  set_preference() is the function that should be called.
     /// This differs from set_preference in that the user preferences are changed, not the api ones
     pub fn set_user_prefs(&mut self, key: &str, value: &str) -> Result<()> {
-        if !self.error.is_empty() {
-            panic!("Internal error: set_user_prefs called on invalid PreferenceManager -- error message\n{}", self.error);
-        };
-        
         self.reset_files_from_preference_change(key, value)?;
         let is_decimal_separators_changed = key == "DecimalSeparator" && self.user_prefs.prefs.get("DecimalSeparator").unwrap().as_str().unwrap() != value;
         let is_language_changed = key == "Language" && self.user_prefs.prefs.get("Language").unwrap().as_str().unwrap() != value;

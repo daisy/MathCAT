@@ -1203,7 +1203,13 @@ impl Function for EdgeNode {
 }
 
 pub struct SpeakIntentName;
-/// SpeakIntentName(intent, verbosity)
+/// SpeakIntentName(intent, verbosity, fixity)
+/// Real-life example:
+///   If a MathML element has intent="factorial($x)", in the rules you might see:
+///      - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
+///   For English, MathCAT will resolve:
+///      SpeakIntentName("factorial", "Verbose", "postfix") → "factorial"
+///   This is used to generate speech like "x factorial" for expressions like "x!".
 ///   Returns a string corresponding to the intent name with the indicated verbosity
 impl Function for SpeakIntentName {
     fn evaluate<'d>(&self,
@@ -1217,6 +1223,76 @@ impl Function for SpeakIntentName {
         let verbosity = args.pop_string()?;
         let intent_name = args.pop_string()?;
         return Ok( Value::String(crate::infer_intent::intent_speech_for_name(&intent_name, &verbosity, &fixity)) );
+    }
+}
+
+pub struct IntentFunctionUseArityPath;
+/// IntentFunctionUseArityPath(name, fixity, argCount)
+///   True when IntentMappings `|` arity templates match this argument count.
+///   For example, in en/definitions.yaml for intent "choose":
+///     "function=choose|from|to"
+///   means for three arguments, templates like "choose n from k to l" apply.
+///   This returns true if the `choose` function is used with three arguments.
+impl Function for IntentFunctionUseArityPath {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(3)?;
+        let arg_count = args.pop_number()? as usize;
+        let fixity = args.pop_string()?;
+        let intent_name = args.pop_string()?;
+        return Ok( Value::Boolean(
+            crate::infer_intent::intent_function_use_arity_path(&intent_name, &fixity, arg_count)
+        ) );
+    }
+}
+
+pub struct IntentFunctionGlueBefore;
+/// IntentFunctionGlueBefore(name, fixity, argIndex, argCount)
+///   Glue spoken immediately before the given 1-based argument when using an arity template.
+impl Function for IntentFunctionGlueBefore {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(4)?;
+        let arg_count = args.pop_number()? as usize;
+        let arg_index = args.pop_number()? as usize;
+        let fixity = args.pop_string()?;
+        let intent_name = args.pop_string()?;
+        return Ok( Value::String(
+            crate::infer_intent::intent_function_glue_before(&intent_name, &fixity, arg_index, arg_count)
+        ) );
+    }
+}
+
+pub struct IntentFunctionArgSeparator;
+/// IntentFunctionArgSeparator(name, fixity, argCount)
+///   Glue spoken immediately before the given 1-based argument when using an arity template.
+///   For example, in en/definitions.yaml, for the intent name "choose", the mapping is:
+///   "function=choose|from|to".
+///   When called as IntentFunctionGlueBefore("choose", "function", 2, 3), this returns "from",
+///   which is spoken before the second argument when reading an expression like "choose n from k".
+///   Likewise, for arg_index = 3, it would return "to".
+impl Function for IntentFunctionArgSeparator {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(3)?;
+        let arg_count = args.pop_number()? as usize;
+        let fixity = args.pop_string()?;
+        let intent_name = args.pop_string()?;
+        return Ok( Value::String(
+            crate::infer_intent::intent_function_arg_separator(&intent_name, &fixity, arg_count)
+        ) );
     }
 }
 
@@ -1234,7 +1310,8 @@ impl GetBracketingIntentName {
                 //   verbosity := terse | medium | verbose
                 if let Some(matched_intent) = intent_name_pattern.split("||").find(|&entry| entry.trim().starts_with(fixity)) {
                     let (_, matched_intent) = matched_intent.split_once("=").unwrap_or_default();
-                    let parts = matched_intent.trim().split(";").collect::<Vec<&str>>();
+                    let name_part = crate::infer_intent::intent_mapping_name_part(matched_intent);
+                    let parts = name_part.split(";").collect::<Vec<&str>>();
                     if parts.len() == 1 {
                         return "".to_string();
                     }
@@ -1587,6 +1664,9 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("DistanceFromLeaf", DistanceFromLeaf);
     context.set_function("EdgeNode", EdgeNode);
     context.set_function("SpeakIntentName", SpeakIntentName);
+    context.set_function("IntentFunctionUseArityPath", IntentFunctionUseArityPath);
+    context.set_function("IntentFunctionGlueBefore", IntentFunctionGlueBefore);
+    context.set_function("IntentFunctionArgSeparator", IntentFunctionArgSeparator);
     context.set_function("GetBracketingIntentName", GetBracketingIntentName);
     context.set_function("GetNavigationPartName", GetNavigationPartName);
     context.set_function("CountTableRows", CountTableRows);

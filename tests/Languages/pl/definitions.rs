@@ -46,10 +46,7 @@ fn fixed_test() -> Result<()> {
       </math>
     "#;
 
-    // Bez jawnej fixity silnik oddaje surową nazwę intentu (zachowanie rdzenia,
-    // identyczne w EN i PL). Poprawne tłumaczenie "zbiór liczb rzeczywistych"
-    // pojawia się przy intencie z ":nofix" (patrz nofix_set_tests).
-    test("pl", "ClearSpeak", expr, "set of reals")?;
+    test("pl", "ClearSpeak", expr, "zbiór liczb rzeczywistych")?;
     Ok(())
 }
 
@@ -62,8 +59,7 @@ fn i_test() -> Result<()> {
       </math>
     "#;
 
-    // Bez jawnej fixity: surowa nazwa intentu (rdzeń, jak w EN).
-    test("pl", "ClearSpeak", expr, "imaginary i")?;
+    test("pl", "ClearSpeak", expr, "i")?;
     Ok(())
 }
 
@@ -631,7 +627,7 @@ fn nofix_set_tests() -> Result<()> {
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}:nofix'>{}</mi>
+                <mi intent='{}'>{}</mi>
             </math>",
             intent,
             symbol
@@ -711,14 +707,12 @@ fn geometry_prefix_tests() -> Result<()> {
 
 #[test]
 fn separator_tests() -> Result<()> {
-  let expr = format!(
-        "<math>
+  let expr = "<math>
             <mrow intent='time-separator($x,$y)'>
                 <mi arg='x'>x</mi>
                 <mi arg='y'>y</mi>
             </mrow>
-        </math>"
-    );
+        </math>".to_string();
 
     test("pl", "ClearSpeak", &expr, "x y")?;
     Ok(())
@@ -1005,11 +999,11 @@ fn postfix_default_fixity_tests() -> Result<()> {
 #[test]
 fn nofix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("średnica", "d", "średnica"),
-        ("odległość", "D", "odległość"),
-        ("prawdopodobieństwo", "P", "prawdopodobieństwo"),
-        ("promień", "r", "promień"),
-        ("objętość", "V", "objętość"),
+        ("diameter", "d", "średnica"),
+        ("distance", "D", "odległość"),
+        ("probability", "P", "prawdopodobieństwo"),
+        ("radius", "r", "promień"),
+        ("volume", "V", "objętość"),
         ("exponential-e", "e", "e"),
         ("imaginary-i", "i", "i"),
         ("differential-d", "d", "d"),
@@ -1019,7 +1013,7 @@ fn nofix_default_fixity_tests() -> Result<()> {
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}:nofix'>{}</mi>
+                <mi intent='{}'>{}</mi>
             </math>",
             intent,
             symbol

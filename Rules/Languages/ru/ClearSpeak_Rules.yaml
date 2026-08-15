@@ -760,6 +760,24 @@
   - pause: short
   - x: "*[3]"
 
+# Handle log and ln when they remain individual mi elements rather than the
+# canonical three-child function-application mrow handled by the next rule.
+- name: ClearSpeak-log
+  tag: mi
+  match: ".='log' or .='ln'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity!='Terse' and following-sibling::*[2] and
+           not(IsNode(following-sibling::*[2],'simple'))"
+      then: [T: "от"]
+  - test:
+    - if: ".='log'"
+      then: [T: "логарифм"]
+    - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
+      then: [T: "натуральный логарифм"]
+      else: [T: "эл эн"]
+
 - name: ClearSpeak-log
   tag: mrow
   variables: [{log_is_simple: "IsNode(*[3],'simple')"}]

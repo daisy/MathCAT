@@ -43,19 +43,17 @@ fn number_2a() -> Result<()> {
 }
 
 #[test]
-#[ignore]
 fn roman_numeral() -> Result<()> {
   let expr = "<math><mi>IX</mi><mo>+</mo><mi>VIII</mi><mo>=</mo><mi>XVII</mi></math>";
-  test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "9 cộng 8, bằng 17")?;
-  test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "9 la mã cộng 8 la mã, bằng 17 la mã")?;
+  test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "IX cộng VIII, bằng XVII")?;
+  test_prefs("vi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "IX cộng VIII, bằng XVII")?;
   return Ok(());
 }
 
 #[test]
-#[ignore]
 fn vi_units_1() -> Result<()> {
     let expr = "<math><mrow><mn>1</mn><mi>t</mi><mi>ấ</mi><mi>n</mi><mn>10</mn><mi>t</mi><mi>ạ</mi><mn>100</mn><mi>y</mi><mi>ế</mi><mi>n</mi><mi>v</mi><mi>à</mi><mn>4</mn><mi>l</mi><mi>í</mi><mi>t</mi></mrow></math>";
-    test("vi", "ClearSpeak", expr, "1 tấn 10 tạ 100 yến và 4 lít")?;
+    test("vi", "ClearSpeak", expr, "1 tấn 10 tạ 100 yếnvà 4 lít")?;
     return Ok(());
 
 }

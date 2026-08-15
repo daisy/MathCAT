@@ -13,6 +13,7 @@ use crate::pretty_print::mml_to_string;
 use crate::speech::{NAVIGATION_RULES, CONCAT_INDICATOR, CONCAT_STRING, SpeechRules, SpeechRulesWithContext};
 use crate::infer_intent::add_fixity_children;
 use crate::interface::copy_mathml;
+use crate::tts::TTS;
 #[cfg(not(target_family = "wasm"))]
 use std::time::Instant;
 use crate::errors::*;
@@ -227,12 +228,6 @@ impl NavigationState {
         context.set_variable("Move2D", "" );
         context.set_variable("SpeakExpression", true );    // default is to speak the expr after navigation
         return;
-
-        fn convert_last_char_to_number(str: &str) -> usize {
-            let last_char = str.as_bytes()[str.len()-1];
-            assert!( last_char.is_ascii_digit() );
-            return (last_char - b'0') as usize;
-        }
     }
 }
 
@@ -411,15 +406,15 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                         if done {
                             let (tts, rate) = {
                                 let prefs = rules.pref_manager.borrow();
-                                (prefs.pref_to_string("TTS"), prefs.pref_to_string("MathRate"))
+                                (prefs.get_tts(), prefs.pref_to_string("MathRate"))
                             };
                             if rate != "100" {
-                                match tts.as_str() {
-                                    "SSML"
+                                match tts {
+                                    TTS::SSML
                                         if !cumulative_speech.starts_with("<prosody rate") => {
                                             cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
                                         }
-                                    "SAPI5"
+                                    TTS::SAPI5
                                         if !cumulative_speech.starts_with("<rate speed") => {
                                             cumulative_speech = format!(
                                                 "<rate speed='{:.1}'>{}</rate>",
@@ -2537,7 +2532,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "abs")?;
             assert_eq!(speech, "move right; the absolute value of x");
             let speech = test_command("ZoomIn", mathml, "x")?;
-            assert_eq!(speech, "zoom in; in absolute value; x");
+            assert_eq!(speech, "zoom in; in the absolute value; x");
             let speech = test_command("MoveNext", mathml, "x")?;
             assert_eq!(speech, "cannot move right, end of math");
             set_preference("NavMode", "Character")?;

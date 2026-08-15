@@ -18,9 +18,7 @@
   tag: square-root
   match: "."
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [T: "akar kuadrat"]
+  - T: "akar kuadrat"
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: dari]

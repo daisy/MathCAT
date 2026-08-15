@@ -145,6 +145,22 @@ fn natural_log() -> Result<()> {
 }
 
 #[test]
+fn individual_log_mi() -> Result<()> {
+    let expr = "<math><mi>log</mi></math>";
+    test("ru", "ClearSpeak", expr, "логарифм")?;
+    return Ok(());
+}
+
+#[test]
+fn individual_ln_mi() -> Result<()> {
+    let expr = "<math><mi>ln</mi></math>";
+    test("ru", "ClearSpeak", expr, "эл эн")?;
+    test_ClearSpeak("ru", "ClearSpeak_Log", "LnAsNaturalLog", expr,
+        "натуральный логарифм")?;
+    return Ok(());
+}
+
+#[test]
 fn explicit_function_call_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
     test("ru", "ClearSpeak", expr, "тэ от икс")?;

@@ -286,15 +286,15 @@
       then:
       - with:
           variables:
-          - PreSubscript: "IfThenElse($Verbosity='Verbose', 'pre subscript', 'pre sub')"
-          - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'pre superscript', 'pre super')"
+          - PreSubscript: "IfThenElse($Verbosity='Verbose', 'vorangestellter Index', 'vorindex')"
+          - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'vorangestellte Hochstellung', 'vorhochstellung')"
           replace:
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"
               then:
-              - T: "durch"      # phrase(substitute x 'with' y)
+              - T: "mit"        # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
-              - T: "präskripte"      # phrase(in this equation certain 'prescripts' apply)
+              - T: "Präskripten"     # phrase(in this equation certain 'prescripts' apply)
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
@@ -337,8 +337,8 @@
       then:
       - with:
           variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subscript', 'sub')"
-          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'superscript', 'super')"
+          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'Index', 'sub')"
+          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'Hochstellung', 'super')"
           replace:
           - test: # only bother announcing if there is more than one postscript
               if: "count($Postscripts) > 2"
@@ -346,9 +346,9 @@
               - test:
                   if: "$Prescripts"
                   then: [T: "und"]      # phrase(10 is greater than 8 'and' less than 15)
-              - T: "durch"      # phrase(substitute x 'with' y)
+              - T: "mit"        # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
-              - T: "postskripte"      # phrase(this material includes several 'postscripts')
+              - T: "Postskripten"     # phrase(this material includes several 'postscripts')
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -434,7 +434,7 @@
   - T: "und"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
+      if: "$NumColumns=1"
       then: [T: "spalte"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "spalten"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long

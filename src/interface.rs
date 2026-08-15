@@ -176,10 +176,6 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
 
-    // Strip out processing instructions and comments -- these are not MathML and can cause DOS problems in the parser
-    static PROCESSING_INSTRUCTION: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"<\?[\s\S]{1,2048}\?>"#).unwrap());
-    static XML_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?s)"#).unwrap());
-
     // These have some length limits to avoid DOS attacks via long strings
     static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
     static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
@@ -204,10 +200,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
                                                                      
-            let mathml_str = XML_COMMENT.replace_all(mathml_str, "");
-            let mathml_str = PROCESSING_INSTRUCTION.replace_all(&mathml_str, "");
             // FIX: need to deal with character data and convert to something the parser knows
-            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+            let mathml_str = HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
@@ -363,13 +357,6 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
             bail!("'LanguageAuto' can not have the value 'Auto'");
         }
     }
-
-    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
-        if let Some(error_string) = rules.borrow().get_error() {
-            bail!("{}", error_string);
-        }
-        Ok(())
-    })?;
 
     // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
     let pref_manager = crate::prefs::PreferenceManager::get();
