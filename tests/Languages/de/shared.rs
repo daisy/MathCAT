@@ -118,21 +118,22 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "groß r durch 4 postskripte, subscript i superscript j subscript k subscript l")?;
+            "groß r mit 4 Postskripten, Index i Hochstellung j Index k Index l")?;
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "groß r durch 4 postskripte, sub i super j sub k sub l")?;
+            "groß r mit 4 Postskripten, sub i super j sub k sub l")?;
             return Ok(());
 
 }
 
 #[test]
+// idk really about that one, as we have "None" in the expected speech.
 fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "groß r durch 4 präskripte, pre subscript groß i, pre superscript groß j und abwechselnde präskripte groß k none groß l none ende der präskripte und durch 5 postskripte, subscript i superscript j subscript k subscript l und wechselnde skripte m none ende der skripte")?;
+            "groß r mit 4 Präskripten, vorangestellter Index groß i, vorangestellte Hochstellung groß j und abwechselnde präskripte groß k none groß l none ende der präskripte und mit 5 Postskripten, Index i Hochstellung j Index k Index l und wechselnde skripte m none ende der skripte")?;
             return Ok(());
 
 }

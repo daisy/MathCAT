@@ -40,7 +40,7 @@ fn hyperbolic_trig_names() -> Result<()> {
 #[test]
 fn inverse_trig() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("de", "ClearSpeak", expr, "umgekehrte sinus von x")?;
+    test("de", "ClearSpeak", expr, "umgekehrter sinus von x")?;
     return Ok(());
 
 }
@@ -49,7 +49,7 @@ fn inverse_trig() -> Result<()> {
 fn inverse_trig_trig_inverse() -> Result<()> {
     let expr = "<math><msup><mi>tan</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
     test_ClearSpeak("de", "ClearSpeak_Trig", "TrigInverse",expr,
-        "tangens umgekehrte von x")?;
+        "umgekehrter tangens von x")?;
         return Ok(());
 
 }

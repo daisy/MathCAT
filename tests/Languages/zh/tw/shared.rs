@@ -300,7 +300,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -336,7 +335,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-test("zh-tw", "SimpleSpeak", expr, "大寫 p, 左小括, 大寫 a 垂線 大寫 b, 右小括; 等於; 分數 大寫 p 大寫 b, 分之, 大寫 p, 左小括, 大寫 a 交集 大寫 b, 右小括 結束分數; 點")?;
+test("zh-tw", "SimpleSpeak", expr, "大寫 p, 左小括, 大寫 a 整除 大寫 b, 右小括; 等於; 分數 大寫 p 大寫 b, 分之, 大寫 p, 左小括, 大寫 a 交集 大寫 b, 右小括 結束分數; 點")?;
 return Ok(());
 
 }

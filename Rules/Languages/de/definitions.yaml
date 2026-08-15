@@ -158,6 +158,11 @@
     "mpg": "meile pro gallone",
   }
 
+- CurrencySymbols: {
+    "$": "dollar", "¢": "cent", "€": "euro", "£": "pfund", "₡": "colón", "₤": "lira", "₨": "rupie",
+    "₩": "won", "₪": "schekel", "₱": "peso", "₹": "rupie", "₺": "lira", "₿": "bitcoin"
+  }
+
 - PluralForms: {
     "ampere": "ampere", "candela": "candela", "kelvin": "kelvin",
     "gramm": "gramm", "meter": "meter", "mol": "mol", "sekunde": "sekunden",

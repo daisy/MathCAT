@@ -8,7 +8,7 @@ import argparse
 import sys
 
 from .auditor import audit_language, list_languages
-from .models import AuditError
+from .errors import AuditError
 from .renderer import console
 
 

@@ -149,7 +149,7 @@ fn prefix_test() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "limit as x",
+            "the limit as x",
         ),
         (
             "unit-vector",
@@ -207,34 +207,35 @@ fn functions_and_inverses_tests() -> Result<()> {
         ("mixed-fraction", "x and y"),
         ("quotient", "integer part of x divided by y"),
         ("evaluated-at", "x evaluated at y"),
-        ("remainder", "the remainder x divided by y"),
+        ("remainder", "the remainder of x divided by y"),
 
-        ("max", "max x"),
-        ("min", "min x"),
+        ("max", "max of x comma, y comma, z"),
+        ("min", "min of x comma, y comma, z"),
 
-        ("power", "x to the power y"),
+        ("power", "x to the y-th power"),
 
-        ("root", "root x"),
+        // ("root", ...) skipped: ClearSpeak `tag: root` requires an index
+        // (same as the Polish suite).
 
-        ("greatest-common-divisor", "gcd: the gcd: the greatest common divisor x"),
-        ("least-common-multiple", "lcm: the lcm: the least common multiple x"),
+        ("greatest-common-divisor", "the gcd of x comma, y comma, z"),
+        ("least-common-multiple", "the lcm of x comma, y comma, z"),
 
-        ("absolute-value", "absolute value: the absolute value: the absolute value x end absolute value"),
+        ("absolute-value", "the absolute value of x"),
 
-        ("complex-conjugate", "complex conjugate x"),
-        ("complex-arg", "arg x"),
-        ("real-part", "the real part x"),
-        ("imaginary-part", "imaginary part: the imaginary part: the imaginary part x"),
+        ("complex-conjugate", "complex conjugate of x"),
+        ("complex-arg", "arg of x"),
+        ("real-part", "the real part of x"),
+        ("imaginary-part", "the imaginary part of x"),
 
-        ("polar-coordinate", "polar coordinate x comma y"),
-        ("spherical-coordinate", "spherical coordinate x comma y comma z"),
-        ("cartesian-coordinate", "cartesian coordinate x comma y"),
-        ("coordinate", "coordinate x comma y"),
+        ("polar-coordinate", "polar coordinate of x comma, y"),
+        ("spherical-coordinate", "spherical coordinate of x comma, y comma, z"),
+        ("cartesian-coordinate", "cartesian coordinate of x comma, y comma, z"),
+        ("coordinate", "coordinate of x comma, y comma, z"),
 
-        ("floor", "floor x"),
-        ("ceiling", "ceiling x"),
-        ("round", "rounded-value x"),
-        ("fractional-part", "fractional part x"),
+        ("floor", "floor of x"),
+        ("ceiling", "ceiling of x"),
+        ("round", "rounded-value of x"),
+        ("fractional-part", "fractional part of x"),
 
         
     ];
@@ -308,7 +309,7 @@ fn calculus_tests() -> Result<()> {
         //"definite-integral", "integral over x from x to x"),
 
         // prefix
-        ("limit", "limit as x"),
+        ("limit", "the limit as x"),
 
         // infix
         ("tends-to", "x tends to y"),
@@ -596,6 +597,13 @@ fn linear_algebra_tests() -> Result<()> {
               </math>"
               .to_string()
           }
+          "transpose" => format!(
+              "<math>
+                  <mrow intent='transpose:function($x)'>
+                      <mi arg='x'>x</mi>
+                  </mrow>
+              </math>"
+          ),
           _ => format!(
               "<math>
                   <mrow intent='{intent}($x)'>
@@ -625,7 +633,7 @@ fn nofix_set_tests() -> Result<()> {
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}:nofix'>{}</mi>
+                <mi intent='{}'>{}</mi>
             </math>",
             intent,
             symbol
@@ -691,7 +699,7 @@ fn geometry_prefix_tests() -> Result<()> {
     for (intent, expected) in tests {
         let expr = format!(
             "<math>
-                <mrow intent='{intent}:function($x)'>
+                <mrow intent='{intent}($x)'>
                     <mi arg='x'>x</mi>
                 </mrow>
             </math>"
@@ -734,8 +742,8 @@ fn general_concepts_tests() -> Result<()> {
         
         ("binomial-coefficient", "x choose y"),
         ("embellished-name", "x with annotation y"),
-        ("indexed-by", "x indexed by y"),
-        // ("translation", "translation by x comma, y"), // Changes translation to comma
+        ("indexed-by", "x sub y"),
+        // ("translation", "translation by of x comma, y"), // "of" after "by" is awkward; needs dedicated rule or of-suppression
         ("constraint", "x with constraint y"),
     ];
 
@@ -1013,7 +1021,7 @@ fn nofix_default_fixity_tests() -> Result<()> {
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}:nofix'>{}</mi>
+                <mi intent='{}'>{}</mi>
             </math>",
             intent,
             symbol

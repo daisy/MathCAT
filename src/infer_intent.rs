@@ -103,12 +103,17 @@ fn add_fixity(intent: Element) {
             let definitions = definitions.borrow();
             // debug!("    add_fixity: intent_name: {}, ", intent_name);
             if let Some(definition) = definitions.get_hashmap("IntentMappings").unwrap().get(as_str!(intent_name)) &&
-               let Some((fixity, _)) = definition.split_once("=") &&
-               fixity != "nofix" {
-                        let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
-                        intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
-                        // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
-                    }
+               let Some((fixity, _)) = definition.split_once("=") {
+                // `nofix` is IntentMappings' leaf default (authors should not write :nofix).
+                // Only auto-apply it on leaves so concepts like `nofix=... || function=...`
+                // (e.g. volume) still pick up :function: when they have arguments.
+                let is_leaf = intent.children().iter().all(|c| c.element().is_none());
+                if fixity != "nofix" || is_leaf {
+                    let new_properties = (if properties.is_empty() {":"} else {properties}).to_string() + fixity + ":";
+                    intent.set_attribute_value(INTENT_PROPERTY, &new_properties);
+                    // debug!("Added fixity: new value '{}'", intent.attribute_value(INTENT_PROPERTY).unwrap());
+                }
+            }
         });
     }
 }
@@ -216,11 +221,13 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
         if let Some(intent_name_pattern) = definitions.get_hashmap("IntentMappings").unwrap().get(intent_name) {
             // Split the pattern is:
             //   fixity-def [|| fixity-def]*
-            //   fixity-def := fixity=[open;] verbosity[; close]
+            //   fixity-def := fixity=[open;] verbosity[; close] [| arity-or-sep]*
             //   verbosity := terse | medium | verbose
+            //   After '|': arity templates (glue words, ','-separated) or a single repeating separator
             if let Some(matched_intent) = intent_name_pattern.split("||").find(|&entry| entry.trim().starts_with(fixity)) {
                 let (_, matched_intent) = matched_intent.split_once("=").unwrap_or_default();
-                let parts = matched_intent.trim().split(";").collect::<Vec<&str>>();
+                let name_part = intent_mapping_name_part(matched_intent);
+                let parts = name_part.split(";").collect::<Vec<&str>>();
                 let mut operator_names = (if parts.len() > 1 {parts[1]} else {parts[0]}).split(":").collect::<Vec<&str>>();
                 match operator_names.len() {
                     1 => return operator_names[0].trim().to_string(),
@@ -245,6 +252,112 @@ pub fn intent_speech_for_name(intent_name: &str, verbosity: &str, fixity: &str) 
         };
         return intent_name.replace(['_', '-'], " ").trim().to_string();
     })
+}
+
+/// Portion of a fixity mapping before `|` arity/separator options.
+pub fn intent_mapping_name_part(matched_after_equals: &str) -> &str {
+    matched_after_equals.split('|').next().unwrap_or(matched_after_equals).trim()
+}
+
+/// `|` options after the spoken-name portion of a fixity mapping.
+fn intent_mapping_pipe_options(matched_after_equals: &str) -> Vec<&str> {
+    let mut parts = matched_after_equals.split('|');
+    parts.next(); // name / bracketing portion
+    parts.map(str::trim).filter(|s| !s.is_empty()).collect()
+}
+
+fn intent_mapping_for_fixity(intent_name: &str, fixity: &str) -> Option<String> {
+    crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+        let definitions = definitions.borrow();
+        let mappings = definitions.get_hashmap("IntentMappings").unwrap();
+        let intent_name_pattern = mappings.get(intent_name)?;
+        let matched = intent_name_pattern.split("||").find(|&entry| entry.trim().starts_with(fixity))?;
+        let (_, after_eq) = matched.split_once("=")?;
+        Some(after_eq.trim().to_string())
+    })
+}
+
+/// True when `|` options are arity templates (more than one option, or an option listing multiple glue words).
+pub fn intent_function_is_arity_mode(intent_name: &str, fixity: &str) -> bool {
+    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else { return false; };
+    let options = intent_mapping_pipe_options(&after_eq);
+    options.len() > 1 || options.iter().any(|opt| opt.contains(','))
+}
+
+/// Glue words for an exact arity match: `arg_count - 1` words, else `None`.
+fn intent_function_arity_glue(after_eq: &str, arg_count: usize) -> Option<Vec<&str>> {
+    if arg_count == 0 {
+        return None;
+    }
+    let want = arg_count - 1;
+    for opt in intent_mapping_pipe_options(after_eq) {
+        let words: Vec<&str> = if opt.is_empty() {
+            Vec::new()
+        } else {
+            opt.split(',').map(str::trim).filter(|s| !s.is_empty()).collect()
+        };
+        if words.len() == want {
+            return Some(words);
+        }
+    }
+    None
+}
+
+pub fn intent_function_has_arity_match(intent_name: &str, fixity: &str, arg_count: usize) -> bool {
+    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else { return false; };
+    if !intent_function_is_arity_mode(intent_name, fixity) {
+        return false;
+    }
+    intent_function_arity_glue(&after_eq, arg_count).is_some()
+}
+
+/// Spoken glue immediately before argument `arg_index` (1-based) when using an arity template.
+/// Empty when not in a matching arity template (caller uses separator/`of` path instead).
+pub fn intent_function_glue_before(intent_name: &str, fixity: &str, arg_index: usize, arg_count: usize) -> String {
+    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else { return String::new(); };
+    if !intent_function_is_arity_mode(intent_name, fixity) {
+        return String::new();
+    }
+    let Some(words) = intent_function_arity_glue(&after_eq, arg_count) else { return String::new(); };
+    // words has arg_count-1 entries for args 1..arg_count-1; last arg is preceded by "of"
+    if arg_index == arg_count {
+        return "of".to_string();
+    }
+    if arg_index >= 1 && arg_index < arg_count {
+        return words[arg_index - 1].to_string();
+    }
+    String::new()
+}
+
+/// Separator between args when not using an arity template.
+/// A single `|` option is a binary separator after "of" (e.g. `| divided by`); otherwise comma.
+/// Non-comma glue is only used when there are exactly two args — there is no real n-ary case for it.
+pub fn intent_function_arg_separator(intent_name: &str, fixity: &str, arg_count: usize) -> String {
+    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else {
+        return ",".to_string();
+    };
+    let options = intent_mapping_pipe_options(&after_eq);
+    if intent_function_is_arity_mode(intent_name, fixity) {
+        // Extra/unknown arity: always commas (including when multiple arity options exist)
+        if intent_function_arity_glue(&after_eq, arg_count).is_some() {
+            return String::new(); // unused on arity-match path
+        }
+        return ",".to_string();
+    }
+    if options.len() == 1 && arg_count == 2 {
+        let sep = options[0];
+        // IntentMappings write the word "comma"; speech uses the ',' character so unicode → "comma"
+        if sep.eq_ignore_ascii_case("comma") {
+            return ",".to_string();
+        }
+        return sep.to_string();
+    }
+    ",".to_string()
+}
+
+/// Whether function-intent should use the arity-template word order (no trailing name-level "of").
+pub fn intent_function_use_arity_path(intent_name: &str, fixity: &str, arg_count: usize) -> bool {
+    intent_function_has_arity_match(intent_name, fixity, arg_count)
 }
 
 
@@ -476,10 +589,34 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
     };
     if lex_state.is_terminal("(") {
         intent = build_function(intent, rules_with_context, lex_state, mathml, intent_offset)?;
+        // Arg refs like `$op($arg)` resolve `op`'s intent as a leaf first (so `nofix=` may
+        // already be set). Once arguments are attached, drop `:nofix:` so `add_fixity`
+        // / the default function path can apply (e.g. `probability` → "probability of x").
+        clear_nofix_property(intent);
     }
     // debug!("    end build_intent: state: {}     piece:\n{}", lex_state, mml_to_string(intent));
     add_fixity(intent);
     return Ok(intent);
+}
+
+/// Remove `:nofix:` from `data-intent-property` (used after a leaf concept becomes a function head).
+fn clear_nofix_property(intent: Element) {
+    let Some(raw) = intent.attribute_value(INTENT_PROPERTY) else { return; };
+    if !raw.split(':').any(|p| p == "nofix") {
+        return;
+    }
+    let mut cleaned = String::from(":");
+    for part in raw.split(':') {
+        if !part.is_empty() && part != "nofix" {
+            cleaned.push_str(part);
+            cleaned.push(':');
+        }
+    }
+    if cleaned == ":" {
+        intent.remove_attribute(INTENT_PROPERTY);
+    } else {
+        intent.set_attribute_value(INTENT_PROPERTY, &cleaned);
+    }
 }
 
 fn is_concept_name(s: &str) -> bool {
@@ -765,7 +902,8 @@ mod tests {
 
     #[test]
     fn nofix_intent_trivial() -> Result<()> {
-        let mathml = "<mi intent='set-of-integers:nofix'>ℤ</mi>";
+        // Authors write bare concept names; IntentMappings `nofix=` supplies the leaf fixity.
+        let mathml = "<mi intent='set-of-integers'>ℤ</mi>";
         let intent = "<set-of-integers data-from-mathml='mi' data-intent-property=':nofix:'>ℤ</set-of-integers>";
         assert!(test_intent(mathml, intent, "Error"));
         return Ok(());

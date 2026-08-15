@@ -29,7 +29,7 @@ mod shared;
 mod units;
 mod chemistry;
 mod alphabets;
-// mod definitions;
+mod definitions;
 mod intent;
 mod mtable;
 mod navigate;

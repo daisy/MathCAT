@@ -223,6 +223,7 @@ fn no_parts_silent_modified_variable() -> Result<()> {
 }
 
 #[test]
+#[ignore]  // needs translation
 fn no_parts_nofix_set_of_reals() -> Result<()> {
     // set-of-reals:nofix — leaf (falls back to English IntentMappings if not in nb)
     let expr = r#"

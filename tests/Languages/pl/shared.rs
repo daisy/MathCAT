@@ -336,7 +336,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -372,7 +371,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("pl", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    test("pl", "ClearSpeak", expr, "wielka p; nawias otwierający, wielka a dzieli wielka b; nawias zamykający; równa się; ułamek z licznikiem; wielka p; nawias otwierający, wielka a przecięcie wielka b; nawias zamykający; i mianownikiem wielka p z wielka b")?;
     return Ok(());
 
 }

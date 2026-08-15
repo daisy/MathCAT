@@ -554,6 +554,7 @@
  - "↉": [T: "三分之0"]                              	#  0x2189	(en: 'zero thirds', google translation)
  - "←": [T: "左箭頭"]                              	#  0x2190	(en: 'leftwards arrow', google translation)
  - "↑": [T: "向上箭頭"]                             	#  0x2191	(en: 'upwards arrow', google translation)
+ - "→": [T: "右箭頭"]                              	#  0x2192	(en: 'rightwards arrow')
  - "↓": [T: "向下箭頭"]                             	#  0x2193	(en: 'downwards arrow', google translation)
  - "↔": [T: "左右箭頭"]                           	#  0x2194	(en: 'left right arrow')
  - "↕": [T: "上下箭頭"]                             	#  0x2195	(en: 'up down arrow', google translation)

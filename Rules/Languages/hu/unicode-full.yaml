@@ -273,7 +273,7 @@
  - "‱": [T: "per tízezer"]                      	#  0x2031	(en: 'per ten thousand', DeepL translation)
  - "′": [T: "prím"]                             	#  0x2032	(en: 'prime', DeepL translation)
  - "″": [T: "dupla prím"]                       	#  0x2033	(en: 'double prime', DeepL translation)
- - "‴": [T: "hármas ikerprím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
+ - "‴": [T: "hármas prím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
  - "‵": [T: "fordított prím"]                   	#  0x2035	(en: 'reversed prime', DeepL translation)
  - "‶": [T: "fordított dupla prím"]         	#  0x2036	(en: 'reversed double prime', DeepL translation)
  - "‷": [T: "fordított hármas prím"]            	#  0x2037	(en: 'reversed triple prime', DeepL translation)
@@ -951,11 +951,6 @@
  - "⊢": [T: "bizonyítja"]                       	#  0x22a2	(en: 'proves', DeepL translation)
  - "⊣": [T: "nem enged"]                        	#  0x22a3	(en: 'does not yield', DeepL translation)
  - "⊤": [T: "felső"]                            	#  0x22a4	(en: 'top', DeepL translation)
- - "⊥":                                         	#  0x22a5
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "a(z)"]                        	# 	(en: 'is', DeepL translation)
-     - T: "alul"                                	# 	(en: 'bottom', DeepL translation)
  - "⊦": [T: "redukálódik"]                      	#  0x22a6	(en: 'reduces to', DeepL translation)
  - "⊧": [T: "modellezi"]                         	#  0x22a7	(en: 'models', DeepL translation)
  - "⊨":                                         	#  0x22a8
@@ -1543,11 +1538,15 @@
  - "➾": [T: "nyitott körvonalú jobbra mutató nyíl"]	#  0x27be	(en: 'open-outlined right arrow', DeepL translation)
  - "⟀": [T: "háromdimenziós szög"]              	#  0x27c0	(en: 'three dimensional angle', DeepL translation)
  - "⟁": [T: "fehér háromszög, benne egy kis fehér háromszög"]	#  0x27c1	(en: 'white triangle containing small white triangle', DeepL translation)
- - "⟂":                                         	#  0x27c2
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "a(z)"]                        	# 	(en: 'is', DeepL translation)
-     - T: "merőleges"                           	# 	(en: 'perpendicular to', DeepL translation)
+ - "⟂⊥":                                          # 0x27c2, 22A5 (22A5 wrongly used for perpendicular by most editors)
+     - test:
+        - if: "$SpeechStyle = 'LiteralSpeak' and text()='⊥'"   # 22A5 (up tack/bottom)
+          then: [T: "felfelé mutató merőleges"]
+        - else:
+          - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "a(z)"]
+          - T: "merőleges"
  - "⟃":                                         	#  0x27c3
      - test: 
          if: "$Verbosity!='Terse'"

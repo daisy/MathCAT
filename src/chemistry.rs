@@ -1258,15 +1258,6 @@ fn is_order_ok(mrow: Element) -> bool {
     }
 }
 
-// from https://learnwithdrscott.com/ionic-bond-definition/
-// I don't include the noble gases since they don't interact with other elements and are ruled out elsewhere
-// fn has_non_metal_element(elements: &[&str]) -> bool {
-//     static NON_METAL_ELEMENTS: phf::Set<&str> = phf_set! {
-//         "H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At",
-//     };
-//     return elements.iter().any(|&e| NON_METAL_ELEMENTS.contains(e));
-// }
-
 
 fn has_noble_element(elements: &[NameStr<'_>]) -> bool {
     static NOBLE_ELEMENTS: phf::Set<&str> = phf_set! {

@@ -15,8 +15,8 @@ fn tuple_basic() -> Result<()> {
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "krotka z x przecinek, y")?;
-    test("pl", "SimpleSpeak", expr, "krotka z x przecinek, y")?;
+    test("hu", "ClearSpeak", expr, "a tuple x vessző, y")?;
+    test("hu", "SimpleSpeak", expr, "a tuple x vessző, y")?;
 
     return Ok(());
 }
@@ -32,7 +32,7 @@ fn my_set_basic() -> Result<()> {
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "zbiór pusty")?;
+    test("hu", "ClearSpeak", expr, "az üres halmaz")?;
 
     Ok(())
 }
@@ -41,12 +41,12 @@ fn my_set_basic() -> Result<()> {
 fn fixed_test() -> Result<()> {
     let expr = r#"
       <math>
-        <mi intent="set-of-reals">R
+        <mi intent="az összes valós szám halmaza">az összes valós szám halmaza
         </mi>
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "zbiór liczb rzeczywistych")?;
+    test("hu", "ClearSpeak", expr, "az összes valós szám halmaza")?;
     Ok(())
 }
 
@@ -54,12 +54,12 @@ fn fixed_test() -> Result<()> {
 fn i_test() -> Result<()> {
     let expr = r#"
       <math>
-        <mi intent="imaginary-i">i
+    <mi intent="képzeletbeli én">képzeletbeli én
         </mi>
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "i")?;
+    test("hu", "ClearSpeak", expr, "képzeletbeli én")?;
     Ok(())
 }
 
@@ -74,7 +74,7 @@ fn floor_basic() -> Result<()> {
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "podłoga z x")?;
+    test("hu", "ClearSpeak", expr, "lépcső x")?;
 
     Ok(())
 }
@@ -91,7 +91,7 @@ fn set_difference_basic() -> Result<()> {
       </math>
     "#;
 
-    test("pl", "ClearSpeak", expr, "i z wielka a przecinek, wielka b")?;
+    test( "hu", "ClearSpeak", expr, "különbséghalmaz nagy a vessző, nagy b")?;
 
     Ok(())
 }
@@ -107,7 +107,7 @@ fn postfix_test() -> Result<()> {
                 <mo>T</mo>
             </msup>
             "#,
-            "transpozycja z x",
+            "transzponált x",
         ),
         (
             "highlight",
@@ -116,7 +116,7 @@ fn postfix_test() -> Result<()> {
                 <mi arg="x">x</mi>
             </menclose>
             "#,
-            "x podświetlone",
+            "x kiemelt",
         ),
     ];
 
@@ -131,7 +131,7 @@ fn postfix_test() -> Result<()> {
             body
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -149,7 +149,7 @@ fn prefix_test() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "granica gdy x",
+            "határérték x",
         ),
         (
             "unit-vector",
@@ -159,7 +159,7 @@ fn prefix_test() -> Result<()> {
                 <mo>^</mo>
             </mover>
             "#,
-            "wektor jednostkowy x",
+            "egységvektor x",
         ),
         (
             "line-segment",
@@ -169,7 +169,7 @@ fn prefix_test() -> Result<()> {
                 <mo>¯</mo>
             </mover>
             "#,
-            "odcinek x",
+            "line segment x",
         ),
     ];
 
@@ -183,7 +183,7 @@ fn prefix_test() -> Result<()> {
             body
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -193,50 +193,48 @@ fn prefix_test() -> Result<()> {
 #[test]
 fn functions_and_inverses_tests() -> Result<()> {
     let tests = vec![
-        //("closed-interval", "closed interval between x and y"),
-        //("closed-open-interval", "interval between x included and y"),
-        //("open-closed-interval", "interval between x and y included"),
-        //("open-interval", "open interval between x and y"),
+        ("closed-interval", "x től y ig terjedő intervallum, tartalmazza a(z) x elemet és y elemet"),
+        ("closed-open-interval", "x től y ig terjedő intervallum, tartalmazza a(z) x elemet de nem tartalmazza a(z) y elemet"),
+        ("open-closed-interval", "x től y ig terjedő intervallum, nem tartalmazza a(z) x elemet de tartalmazza a(z) y elemet"),
+        ("open-interval", "x től y ig terjedő intervallum, nem tartalmazza a(z) x elemet vagy y elemet"),
 
-        ("inverse", "odwrotność z x"),
-        ("domain", "dziedzina z x"),
-        ("codomain", "przeciwdziedzina z x"),
-        ("image", "obraz z x"),
+        ("inverse", "inverz x"),
+        ("domain", "domén x"),
+        ("codomain", "kodomán x"),
+        ("image", "kép x"),
 
         //("fraction", "fraction x over y end fraction"),
-        ("mixed-fraction", "x i y"),
-        ("quotient", "podzielone przez z x przecinek, y"),
-        ("evaluated-at", "x obliczone w y"),
-        ("remainder", "podzielone przez z x przecinek, y"),
+        ("mixed-fraction", "x és y"),
+        ("quotient", "egész rész osztva x vessző, y"),
+        ("evaluated-at", "x értékelve y"),
+        ("remainder", "a maradék, osztva x vessző, y"),
 
-        ("max", "maksimum z x przecinek, y przecinek, z"),
-        ("min", "minimum z x przecinek, y przecinek, z"),
+        ("max", "max x vessző, y vessző, z"),
+        ("min", "min x vessző, y vessző, z"),
 
-        ("power", "x do potęgi y"),
+        ("power", "x a(z) y-edik hatványon"),
 
-        // ("root", ...) pominięte: intent 'root' bez indeksu rzuca błąd
-        // dopasowania reguły w RDZENIU silnika (identycznie w EN i PL),
-        // więc to nie jest luka polskiej lokalizacji.
+        //("root", "gyök x"),
 
-        ("greatest-common-divisor", "największy wspólny dzielnik z x przecinek, y przecinek, z"),
-        ("least-common-multiple", "najmniejsza wspólna wielokrotność z x przecinek, y przecinek, z"),
+        ("greatest-common-divisor", "a legnagyobb közös osztó x vessző, y vessző, z"),
+        ("least-common-multiple", "a legkisebb közös többszörös x vessző, y vessző, z"),
 
-        ("absolute-value", "wartość bezwzględna z x"),
+        ("absolute-value", "x abszolút értéke"),
 
-        ("complex-conjugate", "sprzężenie zespolone z x"),
-        ("complex-arg", "arg z x"),
-        ("real-part", "część rzeczywista"),
-        ("imaginary-part", "część urojona"),
+        ("complex-conjugate", "Komplex konjugált x"),
+        ("complex-arg", "argumentum x"),
+        ("real-part", "valós rész"),
+        ("imaginary-part", "képzetes rész"),
 
-        ("polar-coordinate", "przecinek z x przecinek, y"),
-        ("spherical-coordinate", "przecinek z x przecinek, y przecinek, z"),
-        ("cartesian-coordinate", "przecinek z x przecinek, y przecinek, z"),
-        ("coordinate", "przecinek, x przecinek y przecinek z"),
+        ("polar-coordinate", "poláris koordináta x vessző, y"),
+        ("spherical-coordinate", "gömb koordináta x vessző, y vessző, z"),
+        ("cartesian-coordinate", "derékszögű koordináta x vessző, y vessző, z"),
+        ("coordinate", "pont, x vessző y vessző z"),
 
-        ("floor", "podłoga z x"),
-        ("ceiling", "sufit z x"),
-        ("round", "zaokrąglenie z x"),
-        ("fractional-part", "część ułamkowa z x"),
+        ("floor", "lépcső x"),
+        ("ceiling", "mennyezet x"),
+        ("round", "kerekített érték x"),
+        ("fractional-part", "tört rész x"),
 
         
     ];
@@ -296,7 +294,7 @@ fn functions_and_inverses_tests() -> Result<()> {
             }
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -310,12 +308,12 @@ fn calculus_tests() -> Result<()> {
         //"definite-integral", "integral over x from x to x"),
 
         // prefix
-        ("limit", "granica gdy x"),
+        ("limit", "határérték x"),
 
         // infix
-        ("tends-to", "x dąży do y"),
-        ("tends-to-from-above", "x dąży do z prawej y"),
-        ("tends-to-from-below", "x dąży do z lewej y"),
+        ("tends-to", "x ehhez tart y"),
+        ("tends-to-from-above", "x általában alulról indul y"),
+        ("tends-to-from-below", "x alulról indul y"),
     ];
 
     for (intent, expected) in tests {
@@ -345,7 +343,7 @@ fn calculus_tests() -> Result<()> {
             }
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -355,13 +353,13 @@ fn calculus_tests() -> Result<()> {
 #[test]
 fn set_tests() -> Result<()> {
     let tests = vec![
-        ("set", "zbiór x"),
-        // ("set-difference", "set difference of x and y"),
-        ("complement", "dopełnienie z x"),
-        //("empty-set", "empty set"),
-        ("cardinality", "moc zbioru z x"),
-        ("list", "lista z x"),
-        ("tuple", "krotka z x"),
+        ("set", "a halmaz x"),
+        //("set-difference", "x és y halmaz különbsége"),
+        ("complement", "komplemens x"),
+        //("empty-set", "üres halmaz"),
+        ("cardinality", "számosság x"),
+        ("list", "lista x"),
+        ("tuple", "a tuple x"),
     ];
 
     for (intent, expected) in tests {
@@ -374,7 +372,7 @@ fn set_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -392,7 +390,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "suma z x",
+            "összeg x",
         ),
         (
             "sum-2",
@@ -403,7 +401,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "suma z i przecinek, x",
+            "összeg i vessző, x",
         ),
         (
             "sum-3",
@@ -415,7 +413,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "suma z i przecinek, n przecinek, x",
+            "összeg i vessző, n vessző, x",
         ),
         (
             "product-1",
@@ -425,7 +423,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "iloczyn z x",
+            "szorzat x",
         ),
         (
             "product-2",
@@ -436,7 +434,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "iloczyn z i przecinek, x",
+            "szorzat i vessző, x",
         ),
         (
             "product-3",
@@ -448,7 +446,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "iloczyn z i przecinek, n przecinek, x",
+            "szorzat i vessző, n vessző, x",
         ),
     ];
 
@@ -462,7 +460,7 @@ fn sequence_and_series_intents() -> Result<()> {
             body
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -472,36 +470,36 @@ fn sequence_and_series_intents() -> Result<()> {
 fn elementary_classical_tests() -> Result<()> {
     let tests = vec![
         // Trig
-        ("sine", "sinus z x"),
-        ("cosine", "cosinus z x"),
-        ("tangent", "tangens z x"),
-        ("secant", "sekans z x"),
-        ("cosecant", "kosekans z x"),
-        ("cotangent", "cotangens z x"),
+        ("sine", "szinusz x"),
+        ("cosine", "koszinusz x"),
+        ("tangent", "tangens x"),
+        ("secant", "szekáns x"),
+        ("cosecant", "koszekáns x"),
+        ("cotangent", "kotangens x"),
 
         // Inverse trig
-        ("arcsine", "arcus sinus z x"),
-        ("arccosine", "arcus cosinus z x"),
-        ("arctangent", "arcus tangens z x"),
-        ("arcsecant", "arcus sekans z x"),
-        ("arccosecant", "arcus kosekans z x"),
-        ("arccotangent", "arcus cotangens z x"),
+        ("arcsine", "arkusz szinusz x"),
+        ("arccosine", "arkusz koszinusz x"),
+        ("arctangent", "arkusz tangens x"),
+        ("arcsecant", "arkusz szekáns x"),
+        ("arccosecant", "arkusz koszekáns x"),
+        ("arccotangent", "arkusz kotangens x"),
 
         // Hyperbolic trig
-        ("hyperbolic-sine", "sinus hiperboliczny z x"),
-        ("hyperbolic-cosine", "cosinus hiperboliczny z x"),
-        ("hyperbolic-tangent", "tangens hiperboliczny z x"),
-        ("hyperbolic-secant", "sekans hiperboliczny z x"),
-        ("hyperbolic-cosecant", "kosekans hiperboliczny z x"),
-        ("hyperbolic-cotangent", "cotangens hiperboliczny z x"),
+        ("hyperbolic-sine", "hiperbolikus szinusz x"),
+        ("hyperbolic-cosine", "hiperbolikus koszinusz x"),
+        ("hyperbolic-tangent", "hiperbolikus tangens x"),
+        ("hyperbolic-secant", "hiperbolikus szekáns x"),
+        ("hyperbolic-cosecant", "hiperbolikus koszekáns x"),
+        ("hyperbolic-cotangent", "hiperbolikus kotangens x"),
 
         // Inverse hyperbolic trig
-        ("arc-hyperbolic-sine", "arcus sinus hiperboliczny z x"),
-        ("arc-hyperbolic-cosine", "arcus cosinus hiperboliczny z x"),
-        ("arc-hyperbolic-tangent", "arcus tangens hiperboliczny z x"),
-        ("arc-hyperbolic-secant", "arcus sekans hiperboliczny z x"),
-        ("arc-hyperbolic-cosecant", "arcus kosekans hiperboliczny z x"),
-        ("arc-hyperbolic-cotangent", "arcus cotangens hiperboliczny z x"),
+        ("arc-hyperbolic-sine", "arkusz hiperbolikus szinusz x"),
+        ("arc-hyperbolic-cosine", "arkusz hiperbolikus koszinusz x"),
+        ("arc-hyperbolic-tangent", "arkusz hiperbolikus tangens x"),
+        ("arc-hyperbolic-secant", "arkusz hiperbolikus szekáns x"),
+        ("arc-hyperbolic-cosecant", "arkusz hiperbolikus koszekáns x"),
+        ("arc-hyperbolic-cotangent", "arkusz hiperbolikus kotangens x"),
     ];
 
     for (intent, expected) in tests {
@@ -514,7 +512,7 @@ fn elementary_classical_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -523,11 +521,11 @@ fn elementary_classical_tests() -> Result<()> {
 #[test]
 fn statistics_and_probability_tests() -> Result<()> {
     let tests = vec![
-        ("mean", "średnia z x"),
-        ("standard-deviation", "odchylenie standardowe z x"),
-        ("variance", "wariancja z x"),
-        ("median", "mediana z x"),
-        ("mode", "dominanta z x"),
+        ("mean", "jelentése x"),
+        ("standard-deviation", "szórás x"),
+        ("variance", "variencia x"),
+        ("median", "medián x"),
+        ("mode", "mód x"),
 
         // conditional probability typically two arguments
         // ("conditional-probability", "probability of x given y"),
@@ -560,7 +558,7 @@ fn statistics_and_probability_tests() -> Result<()> {
             ),
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -569,22 +567,22 @@ fn statistics_and_probability_tests() -> Result<()> {
 #[test]
 fn linear_algebra_tests() -> Result<()> {
     let tests = vec![
-        ("vector", "wektor z x"),
+        ("vector", "vektor x"),
         // ("matrix", "matrix of x"),
-        ("determinant", "wyznacznik z x"),
-        ("adjugate", "macierz dopełnień algebraicznych z x"),
-        ("magnitude", "długość z x"),
-        ("norm", "norma z x"),
-        ("span", "powłoka liniowa z x"),
+        ("determinant", "determináns a x"),
+        ("adjugate", "adjugált x"),
+        ("magnitude", "nagyságrend x"),
+        ("norm", "normalizálás x"),
+        ("span", "fesztávolság x"),
 
         // transpose supports both postfix and function; we test function explicitly
-        ("transpose", "transpozycja z x"),
+        ("transpose", "transzponált x"),
 
         // dimensional product is infix
-        ("dimensional-product", "x na y"),
+        ("dimensional-product", "x a(z) y"),
 
         // unit-vector is prefix
-        ("unit-vector", "wektor jednostkowy x")
+        ("unit-vector", "egységvektor x")
     ];
 
     for (intent, expected) in tests {
@@ -607,7 +605,7 @@ fn linear_algebra_tests() -> Result<()> {
           ),
       };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -616,24 +614,24 @@ fn linear_algebra_tests() -> Result<()> {
 #[test]
 fn nofix_set_tests() -> Result<()> {
     let tests = vec![
-        ("set-of-integers", "ℤ", "zbiór liczb całkowitych"),
-        ("set-of-reals", "ℝ", "zbiór liczb rzeczywistych"),
-        ("set-of-rationals", "ℚ", "zbiór liczb wymiernych"),
-        ("set-of-natural-numbers", "ℕ", "zbiór liczb naturalnych"),
-        ("set-of-complex-numbers", "ℂ", "zbiór liczb zespolonych"),
-        ("set-of-primes", "ℙ", "zbiór liczb pierwszych"),
+        ("set-of-integers", "ℤ", "az összes egész szám halmaza"),
+        ("set-of-reals", "valós számok halmaza", "az összes valós szám halmaza"),
+        ("set-of-rationals", "ℚ", "az összes racionális szám halmaza"),
+        ("set-of-natural-numbers", "ℕ", "az összes természetes szám halmaza"),
+        ("set-of-complex-numbers", "ℂ", "az összes komplex szám halmaza"),
+        ("set-of-primes", "ℙ", "az összes prímszám halmaza"),
     ];
 
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}'>{}</mi>
+                <mi intent='{}:nofix'>{}</mi>
             </math>",
             intent,
             symbol
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -642,12 +640,12 @@ fn nofix_set_tests() -> Result<()> {
 #[test]
 fn geometry_prefix_multi_value_tests() -> Result<()> {
     let tests = vec![
-        ("line-segment", "odcinek x y"),
-        ("directed-line-segment", "odcinek skierowany x y"),
-        ("line", "linia x y"),
-        ("ray", "półprosta x y"),
-        ("arc", "łuk x y"),
-        ("point", "punkt x y z"),
+        ("line-segment", "vonalszakasz x y"),
+        ("directed-line-segment", "irányított vonalszakasz x y"),
+        ("line", "vonal x y"),
+        ("ray", "sugár x y"),
+        ("arc", "ív x y"),
+        ("point", "pont x y z"),
     ];
 
     for (intent, expected) in tests {
@@ -676,7 +674,7 @@ fn geometry_prefix_multi_value_tests() -> Result<()> {
             }
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -685,9 +683,9 @@ fn geometry_prefix_multi_value_tests() -> Result<()> {
 #[test]
 fn geometry_prefix_tests() -> Result<()> {
     let tests = vec![
-        ("length", "długość z x"),
-        ("area", "pole z x"),
-        ("objętość", "objętość z x"),
+        ("length", "hossz x"),
+        ("area", "terület x"),
+        ("volume", "hangerő x"),
     ];
 
     for (intent, expected) in tests {
@@ -699,7 +697,7 @@ fn geometry_prefix_tests() -> Result<()> {
             </math>"
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -707,14 +705,16 @@ fn geometry_prefix_tests() -> Result<()> {
 
 #[test]
 fn separator_tests() -> Result<()> {
-  let expr = "<math>
+  let expr = format!(
+        "<math>
             <mrow intent='time-separator($x,$y)'>
                 <mi arg='x'>x</mi>
                 <mi arg='y'>y</mi>
             </mrow>
-        </math>".to_string();
+        </math>"
+    );
 
-    test("pl", "ClearSpeak", &expr, "x y")?;
+    test("hu", "ClearSpeak", &expr, "x y")?;
     Ok(())
 }
 
@@ -722,21 +722,21 @@ fn separator_tests() -> Result<()> {
 fn general_concepts_tests() -> Result<()> {
     let tests = vec![
         // Unary structural
-        ("fenced-group", "grupa w nawiasach z x"),
-        ("highlight", "x podświetlone"),
-        ("least-common-denominator", "najmniejszy wspólny mianownik z x przecinek, y przecinek, z"), // add x, y , z ...
-        ("pochhammer", "symbol Pochhammera z x"),
-        ("permutation-cycle", "cykl permutacji z x"),
+        ("fenced-group", "bekerített csoport x"),
+        ("highlight", "x kiemelt"),
+        ("least-common-denominator", "legkisebb közös nevező x vessző, y vessző, z"), // add x, y , z ...
+        ("pochhammer", "permutáció x"),
+        ("permutation-cycle", "permutációs ciklus x"),
 
         // Binary structural / infix-style
         // ("ordered-pair", "the pair of x and y"),
-        ("rate", "x na y"),
+        ("rate", "x per y"),
         
-        ("binomial-coefficient", "x po y"),
-        ("embellished-name", "x z oznaczeniem y"),
-        ("indexed-by", "x indeks dolny y"),
+        ("binomial-coefficient", "x választ y"),
+        ("embellished-name", "x megjegyzéssel y"),
+        ("indexed-by", "x alsó index y"),
         // ("translation", "translation by x comma, y"), // Changes translation to comma
-        ("constraint", "x przy warunku y"),
+        ("constraint", "x feltétellel y"),
     ];
 
     for (intent, expected) in tests {
@@ -784,7 +784,7 @@ fn general_concepts_tests() -> Result<()> {
             }
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -793,7 +793,7 @@ fn general_concepts_tests() -> Result<()> {
 #[test]
 fn grouping_tests() -> Result<()> {
     let tests = vec![
-        ("annotation", "x czyli y"),
+("annotation", "x ami y"),
         // ("braced-group", "grouped x end-grouped"),
         // ("repeating-decimal", "repeating decimal of x"),
     ];
@@ -823,7 +823,7 @@ fn grouping_tests() -> Result<()> {
             } 
         };
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -832,10 +832,10 @@ fn grouping_tests() -> Result<()> {
 #[test]
 fn function_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("curl", "rotacja z x"),
-        ("divergence", "dywergencja z x"),
-        ("gradient", "gradient z x"),
-        ("laplacian", "laplasjan z x"),
+        ("curl", "rotáció x"),
+        ("divergence", "eltérés x"),
+        ("gradient", "gradiens x"),
+        ("laplacian", "laplaciánus x"),
     ];
 
     for (intent, expected) in tests {
@@ -848,7 +848,7 @@ fn function_default_fixity_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -857,18 +857,18 @@ fn function_default_fixity_tests() -> Result<()> {
 #[test]
 fn prefix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("angle", "kąt x"),
-        ("angle-measure", "miara kąta x"),
-        ("change", "zmiana x"),
-        ("for-all", "dla każdego x"),
-        ("measured-angle", "kąt mierzony x"),
-        ("not", "nie x"),
-        ("number-of", "liczba x"),
-        ("partial-derivative", "cząstkowe x"),
-        ("right-angle", "kąt prosty x"),
-        ("square-root-of", "pierwiastek kwadratowy z x"),
-        ("there-does-not-exist", "nie istnieje x"),
-        ("there-exists", "istnieje x"),
+        ("angle", "szög x"),
+        ("angle-measure", "szögmérés x"),
+        ("change", "változás x"),
+        ("for-all", "minden x"),
+        ("measured-angle", "mért szög x"),
+        ("not", "nem x"),
+        ("number-of", "száma x"),
+        ("partial-derivative", "parciális derivált x"),
+        ("right-angle", "derékszög x"),
+        ("square-root-of", "négyzetgyöke x"),
+        ("there-does-not-exist", "nem létezik x"),
+        ("there-exists", "létezik x"),
     ];
 
     for (intent, expected) in tests {
@@ -881,7 +881,7 @@ fn prefix_default_fixity_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -890,70 +890,70 @@ fn prefix_default_fixity_tests() -> Result<()> {
 #[test]
 fn infix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("and", "x i y"),
-        ("applied-to", "x zastosowane do y"),
-        ("approximately", "x w przybliżeniu y"),
-        ("congruent", "x przystające do y"),
-        ("cartesian-product", "x iloczyn kartezjański y"),
-        ("composed-with", "x złożone z y"),
-        ("cross-product", "x iloczyn wektorowy y"),
-        ("defined-as", "x zdefiniowane jako y"),
-        ("divided-by", "x podzielone przez y"),
-        ("divides", "x dzieli y"),
-        ("does-not-belong-to", "x nie należy do y"),
-        ("does-not-divide", "x nie dzieli y"),
-        ("dot-product", "x iloczyn skalarny y"),
-        ("downwards-diagonal-ellipsis", "x ukośny wielokropek w dół y"),
-        ("direct-product", "x iloczyn prosty y"),
-        ("element-of", "x należy do y"),
-        ("ellipsis", "x wielokropek y"),
-        ("equals", "x równa się y"),
-        ("equivalent-to", "x równoważne y"),
-        ("evaluates-to", "x ma wartość y"),
-        ("given", "x pod warunkiem y"),
-        ("greater-than", "x większe niż y"),
-        ("greater-than-or-equal-to", "x większe lub równe y"),
-        ("identically-equals", "x tożsamościowo równe y"),
-        ("if-and-only-if", "x wtedy i tylko wtedy gdy y"),
-        ("implies", "x implikuje y"),
-        ("inner-product", "x iloczyn wewnętrzny y"),
-        ("intersection", "x część wspólna y"),
-        ("less-than", "x mniejsze niż y"),
-        ("less-than-or-equal-to", "x mniejsze lub równe y"),
-        ("list-separator", "x przecinek y"),
-        ("maps-to", "x przekształca na y"),
-        ("member-of", "x element zbioru y"),
-        ("minus", "x minus y"),
-        ("minus-or-plus", "x minus lub plus y"),
-        ("not-subset", "x nie jest podzbiorem y"),
-        ("not-superset", "x nie jest nadzbiorem y"),
-        ("not-equal-to", "x nie równa się y"),
-        ("not-member-of", "x nie jest elementem zbioru y"),
-        ("not-parallel-to", "x nierównoległe do y"),
-        ("obtained-from", "x otrzymane z y"),
-        ("or", "x lub y"),
-        ("outer-product", "x iloczyn zewnętrzny y"),
-        ("parallel-to", "x równoległe do y"),
-        ("perpendicular", "x prostopadłe do y"),
-        ("plus", "x plus y"),
-        ("plus-or-minus", "x plus minus y"),
-        ("precedes", "x poprzedza y"),
-        ("proportional", "x proporcjonalne do y"),
-        ("range-separator", "x do y"),
-        ("ratio", "x stosunek y"),
-        ("similar", "x podobne do y"),
-        ("subset", "x podzbiór y"),
-        ("subset-or-equal", "x podzbiór lub równy y"),
-        ("succeeds", "x następuje po y"),
-        ("such-that", "x taki że y"),
-        ("superset", "x nadzbiór y"),
-        ("superset-or-equal", "x nadzbiór lub równy y"),
-        ("tilde", "x tylda y"),
-        ("times", "x razy y"),
-        ("union", "x suma zbiorów y"),
-        ("upwards-diagonal-ellipsis", "x ukośny wielokropek w górę y"),
-        ("vertical-ellipsis", "x wielokropek pionowy y"),
-        ("xor", "x albo y"),
+        ("and", "x és y"),
+        ("applied-to", "x alkalmazva y"),
+        ("approximately", "x hozzávetőlegesen y"),
+        ("congruent", "x egybeesik y"),
+        ("cartesian-product", "x derékszögű szorzat y"),
+        ("composed-with", "x komponálva y"),
+        ("cross-product", "x kereszt szorzata y"),
+        ("defined-as", "x definiálva y"),
+        ("divided-by", "x osztva y"),
+        ("divides", "x osztja y"),
+        ("does-not-belong-to", "x nem tartozik hozzá y"),
+        ("does-not-divide", "x nem osztja y"),
+        ("dot-product", "x skaláris szorzat y"),
+        ("downwards-diagonal-ellipsis", "x lefelé mutató átlós ellipszis y"),
+        ("direct-product", "x direkt szorzat y"),
+        ("element-of", "x eleme y"),
+        ("ellipsis", "x ellipszis y"),
+        ("equals", "x egyenlő y"),
+        ("equivalent-to", "x egyenértékű ezzel y"),
+        ("evaluates-to", "x értéke y"),
+        ("given", "x adott y"),
+        ("greater-than", "x nagyobb, mint y"),
+        ("greater-than-or-equal-to", "x nagyobb vagy egyenlő, mint y"),
+        ("identically-equals", "x teljesen egyenlő y"),
+        ("if-and-only-if", "x akkor és csak akkor, ha y"),
+        ("implies", "x utal y"),
+        ("inner-product", "x belső szorzat y"),
+        ("intersection", "x keresztezi y"),
+        ("less-than", "x kisebb, mint y"),
+        ("less-than-or-equal-to", "x kisebb vagy egyenlő, mint y"),
+        ("list-separator", "x vessző y"),
+        ("maps-to", "x megfelel ennek y"),
+        ("member-of", "x tagja y"),
+        ("minus", "x mínusz y"),
+        ("minus-or-plus", "x mínusz vagy plusz y"),
+        ("not-subset", "x nem részhalmaza y"),
+        ("not-superset", "x nem szuperhalmaza y"),
+        ("not-equal-to", "x nem egyenlő y"),
+        ("not-member-of", "x nem tagja y"),
+        ("not-parallel-to", "x nem párhuzamos y"),
+        ("obtained-from", "x innen származik y"),
+        ("or", "x vagy y"),
+        ("outer-product", "x külső szorzata y"),
+        ("parallel-to", "x párhuzamos y"),
+        ("perpendicular", "x merőleges y"),
+        ("plus", "x plusz y"),
+        ("plus-or-minus", "x plusz vagy mínusz y"),
+        ("precedes", "x megelőzi y"),
+        ("proportional", "x arányos y"),
+        ("range-separator", "x keresztül y"),
+        ("ratio", "x arány y"),
+        ("similar", "x hasonló y"),
+        ("subset", "x részhalmaza y"),
+        ("subset-or-equal", "x részhalmaza vagy egyenlő y"),
+        ("succeeds", "x követi y"),
+        ("such-that", "x úgy, hogy y"),
+        ("superset", "x szuperhalmaza y"),
+        ("superset-or-equal", "x szuperhalmaza vagy egyenlő y"),
+        ("tilde", "x tilde y"),
+        ("times", "x szorozva y"),
+        ("union", "x unió y"),
+        ("upwards-diagonal-ellipsis", "x felfelé átlós ellipszis y"),
+        ("vertical-ellipsis", "x függőleges ellipszis y"),
+        ("xor", "x kizárólagos vagy y"),
     ];
     
     for (intent, expected) in tests {
@@ -967,7 +967,7 @@ fn infix_default_fixity_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -976,8 +976,8 @@ fn infix_default_fixity_tests() -> Result<()> {
 #[test]
 fn postfix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("factorial", "x silnia"),
-        ("percent", "x procent"),
+        ("factorial", "x faktoriális"),
+        ("percent", "x százalék"),
     ];
 
     for (intent, expected) in tests {
@@ -990,7 +990,7 @@ fn postfix_default_fixity_tests() -> Result<()> {
             intent
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())
@@ -999,27 +999,27 @@ fn postfix_default_fixity_tests() -> Result<()> {
 #[test]
 fn nofix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("diameter", "d", "średnica"),
-        ("distance", "D", "odległość"),
-        ("probability", "P", "prawdopodobieństwo"),
-        ("radius", "r", "promień"),
-        ("volume", "V", "objętość"),
+        ("diameter", "átmérő", "átmérő"),
+        ("distance", "távolság", "távolság"),
+        ("probability", "valószínűség", "valószínűség"),
+        ("radius", "sugár", "sugár"),
+        ("volume", "hangerő", "hangerő"),
         ("exponential-e", "e", "e"),
-        ("imaginary-i", "i", "i"),
+        ("imaginary-i", "képzeletbeli én", "képzeletbeli én"),
         ("differential-d", "d", "d"),
-        ("golden-ratio", "φ", "złota proporcja"),
+        ("golden-ratio", "φ", "aranymetszés"),
     ];
 
     for (intent, symbol, expected) in tests {
         let expr = format!(
             "<math>
-                <mi intent='{}'>{}</mi>
+                <mi intent='{}:nofix'>{}</mi>
             </math>",
             intent,
             symbol
         );
 
-        test("pl", "ClearSpeak", &expr, expected)?;
+        test("hu", "ClearSpeak", &expr, expected)?;
     }
 
     Ok(())

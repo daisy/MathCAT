@@ -8,7 +8,7 @@ import pytest
 
 from ..auditor import audit_language, compare_files, get_yaml_files, list_languages
 from ..line_resolver import resolve_diff_lines
-from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
+from ..models.rules import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
 from ..renderer import console, print_warnings
 from .conftest import strip_ansi
 
@@ -322,32 +322,80 @@ def test_get_yaml_files_includes_region(tmp_path) -> None:
     assert set(files) == {Path("base.yaml"), Path("SharedRules/shared.yaml"), Path("unicode.yaml")}
 
 
-def test_get_yaml_files_ignores_definitions(tmp_path) -> None:
-    """Definitions files are excluded from automatic audit discovery."""
+def test_get_yaml_files_includes_definitions_but_ignores_prefs(tmp_path) -> None:
+    """Definitions use automatic discovery while prefs remains excluded."""
     lang_dir = tmp_path / "lang"
     shared_dir = lang_dir / "SharedRules"
     shared_dir.mkdir(parents=True)
     (lang_dir / "rules.yaml").write_text("---", encoding="utf-8")
     (lang_dir / "definitions.yaml").write_text("---", encoding="utf-8")
+    (lang_dir / "prefs.yaml").write_text("---", encoding="utf-8")
     (shared_dir / "definitions.yaml").write_text("---", encoding="utf-8")
 
-    assert get_yaml_files(lang_dir) == [Path("rules.yaml")]
+    assert get_yaml_files(lang_dir) == [
+        Path("SharedRules/definitions.yaml"),
+        Path("definitions.yaml"),
+        Path("rules.yaml"),
+    ]
 
 
-def test_audit_language_ignores_explicit_definitions_file(tmp_path, fixed_console_width) -> None:
-    """Passing definitions.yaml through --file produces an empty audit."""
+def test_audit_language_supports_explicit_definitions_file(tmp_path, fixed_console_width) -> None:
+    """Passing definitions.yaml through --file audits that file only."""
     rules_dir = tmp_path / "Rules" / "Languages"
     (rules_dir / "en").mkdir(parents=True)
     (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text('- include: "other.yaml"\n', encoding="utf-8")
 
     with console.capture() as capture:
         total_issues = audit_language("de", specific_file="definitions.yaml", rules_dir=str(rules_dir))
     output = strip_ansi(capture.get())
 
+    assert total_issues == 1
+    assert "Files to check: 1" in output
+    assert "definitions.yaml" in output
+    assert "Definition Issues [1]" in output
+    assert "Missing definitions" in output
+
+
+def test_audit_language_discovers_definitions_by_default(tmp_path, fixed_console_width) -> None:
+    """A normal audit includes definitions.yaml without a feature flag."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text("- Foo: {key: value}\n", encoding="utf-8")
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 1
+    assert "Files to check: 1" in output
+    assert "Definition Type Mismatch" in output
+    assert "Definition type mismatches" in output
+
+
+def test_extra_definitions_are_informational_only(tmp_path, fixed_console_width) -> None:
+    """Target-only definitions render without increasing issue or file-issue counts."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text(
+        "- Foo: [eins]\n- GermanSpecific: {key: value}\n",
+        encoding="utf-8",
+    )
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
     assert total_issues == 0
-    assert "Files to check: 0" in output
-    assert "Files checked" in output
-    assert "definitions.yaml" not in output
+    assert "Info: Extra Definitions [1]" in output
+    assert "Files with issues                 0" in output
+    assert "Files OK                          1" in output
+    assert "Extra definitions                 1" in output
 
 
 def test_list_languages_includes_region_codes(tmp_path) -> None:

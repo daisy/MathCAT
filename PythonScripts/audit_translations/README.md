@@ -10,6 +10,7 @@ The tool analyzes rule files to detect the following issues:
 * **Extra Rules:** Rules present in the target translation but absent in the source (flagged as potentially intentional language-specific additions).
 * **Untranslated Text:** Detects text keys that still use **lowercase** formatting, indicating they haven't been verified or translated yet.
 * **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
+* **Definition Coverage:** Compares literal `definitions.yaml` entries by name and collection kind (`vector`, `set`, or `map`).
 
 Add `# audit-ignore` to a rule block to suppress auditing that rule.
 
@@ -49,10 +50,11 @@ The tool automatically adjusts its matching logic based on the file type:
 2.  **Unicode Files:**
     * Matches rules based on character/range keys.
     * *Examples:* `unicode.yaml`, `unicode-full.yaml` (keys like `a-z`, `!`, `0-9`).
+3.  **Definition Files:**
+    * `definitions.yaml` is audited by default and can be selected with `--file definitions.yaml`.
+    * Definitions are matched by name. Missing definitions and collection-kind mismatches are issues; target-only definitions are informational.
+    * Definition contents are not compared, includes are not resolved, and translation verification is not available for definitions.
 
-`definitions.yaml` is intentionally excluded from audits *for now*. It does not have the same semantics
- as normal rules, so the tool ignores it during automatic file discovery and when it is passed to
-`--file`.
 
 ---
 

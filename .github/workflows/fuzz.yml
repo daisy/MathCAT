@@ -80,7 +80,7 @@ jobs:
       # --- Crash artifact upload (on failure) ---
       - name: Upload crash artifacts
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: fuzz-crash-artifacts
           path: fuzz/artifacts/

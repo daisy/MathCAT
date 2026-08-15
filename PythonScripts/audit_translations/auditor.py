@@ -8,9 +8,19 @@ and for performing full language audits.
 from pathlib import Path
 
 from .differ import diff_rules
-from .models import AuditError, AuditSummary, ComparisonResult, RuleInfo
-from .parsers import parse_yaml_file
-from .renderer import console, print_audit_header, print_audit_summary, print_language_list, print_warnings
+from .errors import AuditError
+from .models.audit import AuditSummary
+from .models.definitions import DefinitionComparisonResult, DefinitionInfo, DefinitionTypeMismatch
+from .models.rules import ComparisonResult, RuleInfo
+from .parsers import parse_definitions_file, parse_yaml_file
+from .renderer import (
+    console,
+    print_audit_header,
+    print_audit_summary,
+    print_definition_findings,
+    print_language_list,
+    print_warnings,
+)
 
 
 def split_language_into_base_and_region(language: str) -> tuple[str, str | None]:
@@ -32,7 +42,7 @@ def get_rules_dir(rules_dir: str | None = None) -> Path:
 
 
 def is_definitions_file(file_path: str | Path) -> bool:
-    """Return if the file name is definitions.yaml, which is not yet supported."""
+    """Return whether a file needs the dedicated definitions audit path."""
     return Path(file_path).name == "definitions.yaml"
 
 
@@ -44,13 +54,12 @@ def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]
         if not directory.exists():
             return
         for f in directory.glob("*.yaml"):
-            if f.name != "prefs.yaml" and not is_definitions_file(f):
+            if f.name != "prefs.yaml":
                 files.add(f.relative_to(root))
         shared_dir = directory / "SharedRules"
         if shared_dir.exists():
             for f in shared_dir.glob("*.yaml"):
-                if not is_definitions_file(f):
-                    files.add(f.relative_to(root))
+                files.add(f.relative_to(root))
 
     collect_from(lang_dir, lang_dir)
     if region_dir:
@@ -142,6 +151,67 @@ def compare_files(
     )
 
 
+def compare_definition_files(
+    source_path: Path,
+    target_path: Path,
+    issue_filter: set[str] | None = None,
+    target_region_path: Path | None = None,
+    source_region_path: Path | None = None,
+) -> DefinitionComparisonResult:
+    """Compare literal definitions by name and collection kind."""
+
+    def load_definitions(path: Path | None) -> dict[str, DefinitionInfo]:
+        if path and path.exists():
+            definitions, _ = parse_definitions_file(path)
+            return definitions
+        return {}
+
+    def merge_definitions(
+        base_definitions: dict[str, DefinitionInfo],
+        region_definitions: dict[str, DefinitionInfo],
+    ) -> dict[str, DefinitionInfo]:
+        merged = dict(base_definitions)
+        merged.update(region_definitions)
+        return merged
+
+    source_definitions = merge_definitions(
+        load_definitions(source_path),
+        load_definitions(source_region_path),
+    )
+    target_definitions = merge_definitions(
+        load_definitions(target_path),
+        load_definitions(target_region_path),
+    )
+
+    include_all = issue_filter is None
+    include_missing = include_all or "missing" in issue_filter
+    include_extra = include_all or "extra" in issue_filter
+    include_diffs = include_all or "diffs" in issue_filter
+
+    missing_definitions = (
+        [definition for name, definition in source_definitions.items() if name not in target_definitions]
+        if include_missing
+        else []
+    )
+    extra_definitions = (
+        [definition for name, definition in target_definitions.items() if name not in source_definitions] if include_extra else []
+    )
+    type_mismatches = []
+    if include_diffs:
+        for name, source_definition in source_definitions.items():
+            target_definition = target_definitions.get(name)
+            if target_definition and source_definition.kind is not target_definition.kind:
+                type_mismatches.append(DefinitionTypeMismatch(source_definition, target_definition))
+
+    return DefinitionComparisonResult(
+        missing_definitions=missing_definitions,
+        extra_definitions=extra_definitions,
+        type_mismatches=type_mismatches,
+        source_definition_count=len(source_definitions),
+        target_definition_count=len(target_definitions),
+    )
+
+
 def audit_language(
     language: str,
     specific_file: str | None = None,
@@ -178,10 +248,7 @@ def audit_language(
         raise AuditError(f"Target region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
-    if specific_file:
-        files = [] if is_definitions_file(Path(specific_file)) else [specific_file]
-    else:
-        files = get_yaml_files(source_dir, source_region_dir)
+    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir)
 
     print_audit_header(language, len(files), source_language)
 
@@ -190,6 +257,9 @@ def audit_language(
     total_untranslated = 0
     total_extra = 0
     total_differences = 0
+    total_missing_definitions = 0
+    total_extra_definitions = 0
+    total_definition_type_mismatches = 0
     files_with_issues = 0
     files_ok = 0
 
@@ -203,26 +273,54 @@ def audit_language(
             console.print(f"\n[yellow]⚠ Warning:[/] Source file not found: {english_path}")
             continue
 
-        result = compare_files(
-            english_path,
-            translated_path,
-            issue_filter,
-            translated_region_path if translated_region_path and translated_region_path.exists() else None,
-            english_region_path if english_region_path and english_region_path.exists() else None,
+        existing_translated_region_path = (
+            translated_region_path if translated_region_path and translated_region_path.exists() else None
         )
+        existing_english_region_path = english_region_path if english_region_path and english_region_path.exists() else None
 
-        if result.has_issues:
-            issues = print_warnings(result, file_name, verbose, language, source_language)
+        if is_definitions_file(file_name):
+            definition_result = compare_definition_files(
+                english_path,
+                translated_path,
+                issue_filter,
+                existing_translated_region_path,
+                existing_english_region_path,
+            )
+            issues = print_definition_findings(
+                definition_result,
+                file_name,
+                language,
+                source_language,
+            )
             if issues > 0:
                 files_with_issues += 1
+            else:
+                files_ok += 1
             total_issues += issues
+            total_missing_definitions += len(definition_result.missing_definitions)
+            total_extra_definitions += len(definition_result.extra_definitions)
+            total_definition_type_mismatches += len(definition_result.type_mismatches)
         else:
-            files_ok += 1
+            result = compare_files(
+                english_path,
+                translated_path,
+                issue_filter,
+                existing_translated_region_path,
+                existing_english_region_path,
+            )
 
-        total_missing += len(result.missing_rules)
-        total_untranslated += sum(len(entries) for _rule, entries in result.untranslated_text)
-        total_extra += len(result.extra_rules)
-        total_differences += len(result.rule_differences)
+            if result.has_issues:
+                issues = print_warnings(result, file_name, verbose, language, source_language)
+                if issues > 0:
+                    files_with_issues += 1
+                total_issues += issues
+            else:
+                files_ok += 1
+
+            total_missing += len(result.missing_rules)
+            total_untranslated += sum(len(entries) for _rule, entries in result.untranslated_text)
+            total_extra += len(result.extra_rules)
+            total_differences += len(result.rule_differences)
 
     print_audit_summary(
         AuditSummary(
@@ -233,6 +331,9 @@ def audit_language(
             total_untranslated=total_untranslated,
             total_extra=total_extra,
             total_differences=total_differences,
+            total_missing_definitions=total_missing_definitions,
+            total_extra_definitions=total_extra_definitions,
+            total_definition_type_mismatches=total_definition_type_mismatches,
             total_issues=total_issues,
         )
     )
