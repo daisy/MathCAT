@@ -1981,7 +1981,14 @@ mod tests {
     fn check_table_line(mathml: &str, boundary: usize, axis: TableLineAxis, expected: bool) -> Result<()> {
         let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math = get_element(&package);
-        let table = as_element(math.children()[0]);
+        let table = math
+            .children()
+            .iter()
+            .find_map(|child| match child {
+                ChildOfElement::Element(table) => Some(*table),
+                _ => None,
+            })
+            .expect("test MathML should contain an mtable element");
         assert_eq!(has_visible_table_line(table, boundary, axis), expected);
         return Ok(());
     }
