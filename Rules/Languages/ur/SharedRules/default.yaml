@@ -1,0 +1,44 @@
+---
+- name: positive
+  tag: plus
+  match: "count(*)=1"
+  replace: [t: "مثبت", x: "*[1]"]
+
+- name: plus
+  tag: plus
+  match: "."
+  replace: [x: "*[1]", t: "جمع", x: "*[2]"]
+
+- name: negative
+  tag: minus
+  match: "count(*)=1"
+  replace: [t: "منفی", x: "*[1]"]
+
+- name: minus
+  tag: minus
+  match: "."
+  replace: [x: "*[1]", t: "منفی", x: "*[2]"]
+
+- name: times
+  tag: times
+  match: "."
+  replace: [x: "*[1]", t: "ضرب", x: "*[2]"]
+
+- name: divided-by
+  tag: divided-by
+  match: "."
+  replace: [x: "*[1]", t: "تقسیم", x: "*[2]"]
+
+- name: equals
+  tag: equals
+  match: "."
+  replace: [x: "*[1]", t: "برابر", x: "*[2]"]
+
+- name: indexed-by
+  tag: indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "زیر نوشت"
+  - x: "*[2]"
+  - pause: short
