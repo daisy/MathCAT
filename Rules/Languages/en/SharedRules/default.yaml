@@ -480,11 +480,15 @@
   - x: "*"
   - test:
       if: "HasVisibleColumnLine(../.., count(preceding-sibling::*) + 1)"
-      then: [t: "separator"]
+      then:
+      - pause: medium
+      - t: "separator"
   - test:
       # Announce a row separator only after the row's final cell, so it is spoken once per horizontal boundary.
       if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
-      then: [t: "row separator"]
+      then:
+      - pause: medium
+      - t: "row separator"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
