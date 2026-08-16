@@ -598,7 +598,7 @@
 -
   name: single-char-exceptions    # 4.3.1
   tag: msup
-  match: "*[2][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+  match: "*[2][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
   replace:
   - x: "*"
   - test:
@@ -609,7 +609,7 @@
 -
   name: single-char-exceptions    # 4.3.1
   tag: msubsup
-  match: "*[3][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+  match: "*[3][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
   replace:
   - x: "*[1]"
   - x: "*[3]"
@@ -633,8 +633,8 @@
   name: number-char-exceptions    # 4.3.1  (FIX: degree doesn't use dot-3 for chemistry or temp/angles/etc)
   tag: [msub, msup]
   match:
-  - "*[2][translate(., \"'*`+-∞ª°²³´¹º‘’“”‟‵‶‷\",'')=''] or"
-  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mn] and *[2][self::m:mo][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']]"
+  - "*[2][translate(., \"'*`+-∞´°‘’“”‟‵‶‷\",'')=''] or"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][self::m:mn] and *[2][self::m:mo][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']]"
   replace:
   - x: "*[1]"
   - test:
@@ -779,7 +779,7 @@
   replace:
   - x: "*[1]"
   - test: # special case superscript postscripts that preceed the prescripts
-      if: "$Postscripts and not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+      if: "$Postscripts and not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-´°‘’“”‟‵‶‷\",'')='']"
       then:
       - x: "$Postscripts[2]"
       - test:
@@ -805,7 +805,7 @@
                     # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                     if: "not($Prescripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[1][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Prescripts[1][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
                 - x: "$Prescripts[1]"
                 - test:
@@ -835,7 +835,7 @@
                     # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                     if: "not($Prescripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[2][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Prescripts[2][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
                 - x: "$Prescripts[2]"
                 - test:
@@ -868,7 +868,7 @@
                         # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                         if: "not($Prescripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                         then: [t: "⠄"]
-                  - else_if: "$Prescripts[3][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                  - else_if: "$Prescripts[3][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                     then:
                     - x: "$Prescripts[3]"
                     - test:
@@ -898,7 +898,7 @@
                         # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                         if: "not($Prescripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                         then: [t: "⠄"]
-                  - else_if: "$Prescripts[4][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                  - else_if: "$Prescripts[4][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                     then:
                     - x: "$Prescripts[4]"
                     - test:
@@ -935,7 +935,7 @@
                     # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                     if: "not($Postscripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                     then: [t: "⠄"]
-              - else_if: "$Postscripts[1][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Postscripts[1][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
                 - x: "$Postscripts[1]"
                 - test:
@@ -950,7 +950,7 @@
                 else:
                 - x: "$Postscripts[1]"
       - test:
-          if: "not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')!='']"
+          if: "not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-´°‘’“”‟‵‶‷\",'')!='']"
           then:
           - t: "⠡"
           - test:
@@ -991,7 +991,7 @@
                         # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                         if: "not($Postscripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                         then: [t: "⠄"]
-                  - else_if: "$Postscripts[3][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                  - else_if: "$Postscripts[3][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                     then:
                     - x: "$Postscripts[3]"
                     - test:
@@ -1021,7 +1021,7 @@
                         # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                         if: "not($Postscripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                         then: [t: "⠄"]
-                  - else_if: "$Postscripts[4][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                  - else_if: "$Postscripts[4][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                     then:
                     - x: "$Postscripts[4]"
                     - test:
@@ -1054,7 +1054,7 @@
                             # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                             if: "not($Postscripts[5][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                             then: [t: "⠄"]
-                      - else_if: "$Postscripts[5][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                      - else_if: "$Postscripts[5][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                         then:
                         - x: "$Postscripts[5]"
                         - test:
@@ -1084,7 +1084,7 @@
                             # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
                             if: "not($Postscripts[6][.='°'] and *[1][self::m:mn or @data-chem-element])" 
                             then: [t: "⠄"]
-                      - else_if: "$Postscripts[6][translate(., \"'*`+-ª°²³´¹º‘’“”‟‵‶‷\",'')='']"
+                      - else_if: "$Postscripts[6][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                         then:
                         - x: "$Postscripts[6]"
                         - test:

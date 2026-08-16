@@ -50,47 +50,48 @@
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
         then: [T: "已完全縮小", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
-        then: [T: "已完全放大", pause: "medium"]
+        then:
+        - test:
+          - if: "string-length(.) = 1"
+            then: [T: "已完全放大"]       # phrase('zoomed in all of the way')
+          - else_if: "$NavNodeOffset = 0"
+            then: [T: "放大到第一字元"]   # phrase('zoomed in to first character')
+            else: [T: "放大到字元"]          # phrase('zoomed in to character')
+        - pause: "medium"
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "' '"]]          # phrase('zoom' in to see more details)   #hjy -- 'zoom' is a bit weird in Chinese, so skip it.  
+            then: [set_variables: [Prefix: "' '", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     # a space in single quotation is necessary #hjy
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'移到'"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'移到'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'讀出'"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'讀出'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'描述'"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'描述'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
             - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, 5) = 'In'"
+              - if: "substring($NavCommand, $CommandOffset) = 'In'"
                 then: [T: "放大"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, 5) = 'InAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "完全放大"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, 5) = 'Out'"
+                then: [T: "完全放大"]                     # phrase(zoom 'out all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
                 then: [T: "縮小"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, 5) = 'OutAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "完全縮小"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, 5) = 'Next'"  # string-length($Prefix)+1 ###fix by hjy
+                then: [T: "完全縮小"]                     # phrase(zoom 'out all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
                 then: [T: "下一項"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, 9) = 'Next'"  # string-length($Prefix)+1 ###fix by hjy for describe
-                then: [T: "下一項"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, 5) = 'Previous'"    #string-length($Prefix)+1 ###fix by hjy
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
                 then: [T: "上一項"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, 9) = 'Previous'"    #string-length($Prefix)+1 ###fix by hjy for describe
-                then: [T: "上一項"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, 5) = 'Current'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
                 then: [T: "目前"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, 9) = 'Current'"
-                then: [T: "目前"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, 5) = 'LineStart'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
                 then: [T: "到行首"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, 5) = 'LineEnd'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
                 then: [T: "到行尾"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
@@ -212,18 +213,19 @@
 
 # ********* ZoomIn  ***************
 - name: zoom-in-leaf
-
   tag: "*"
   match: "($NavCommand = 'ZoomIn' or $NavCommand = 'ZoomInAll') and IsNode(., 'leaf')"
   replace:
+  - with:
+      variables: [SayCommand: "string($NavVerbosity != 'Terse')"]
+      replace: [x: "."]
   - test:
-      if: "$MatchCounter = 0 and $NavVerbosity != 'Terse'"
-      then: [T: "已完全放大", pause: "long"]    # phrase('zoomed in all of the way')
-  - test:
-      if: "$ReadZoomLevel!=-1"
+      if: "$ReadZoomLevel !=-1"
       then:
       - set_variables: [ReadZoomLevel: "0"]
-  - set_variables: [NavNode: "@id"]
+  - set_variables:
+      - NavNode: "@id"
+      - NavNodeOffset: "IfThenElse(string-length(.) > 1 and $MatchCounter = 1 and $NavNodeOffset = 0, '1', '0')"
 
 # special case of zooming into a table -- move to the first row (if only one row, first column)
 - name: zoom-in-table
@@ -233,12 +235,7 @@
   - with:
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
-  - test:
-      if: "count(*)=1"
-      then: 
-      - set_variables: [NavNode: "*[1]/*[1]/@id"]
-      else:
-      - set_variables: [NavNode: "*[1]/@id"]
+  - set_variables: [NavNode: "IfThenElse(count(*)=1, (*[1]/*[1]/@id), (*[1]/@id))"]
 
 - name: zoom-in-mrow-in-math
   # zooming in only once is meaningless because 'math' has only a single child and it was spoken at the math level -- dig inside and do it again 
@@ -265,7 +262,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "name(*[1]) != 'mrow'"
+      if: "not(*[1][self::m:mrow or @data-from-mathml='mrow'])"
       then:
       - with:
           variables: [Move2D: "'進入'", Child2D: "IfThenElse(count(*)=0, $Move2D, $Move2D)"]   # phrase('in' the denominator)
@@ -310,7 +307,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "DEBUG($MatchCounter) > 1 and IsNode(., '2D') "
+      if: "$MatchCounter > 1 and IsNode(., '2D')"
       then: [set_variables: [NavNode: "@id"]]   # time to stop, not going "in" to next thing, so before "Move2D"
       else:
       - with:
@@ -481,20 +478,26 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
+    - if: "$NavNodeOffset > 0 and IsNode(., 'leaf')"  # Inside leaf -- just reset offset, intent offset doesn't change
+      then:
+      - set_variables: [NavNodeOffset: "0"]
+      # NavNode remains the same
+    - else_if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
       then: [x: ".."] # auto-zoom: move out a level and retry
       else:
       - with:
-          variables: [Move2D: "'離開'", Child2D: "."]
+          variables: [Move2D: "'離開'", Child2D: "."]   # phrase('out of' the denominator)
           replace: [x: ".."]
       - test:
           if: "parent::m:mtd"
           then: [x: ".."]
           else:
           - test:
-              if: "$ReadZoomLevel!=-1"
+              if: "DEBUG($ReadZoomLevel)!=-1"
               then: [set_variables: [ReadZoomLevel: "DistanceFromLeaf(.., true, $NavMode!='Character')"]]
-          - set_variables: [NavNode: "../@id"]
+          - set_variables:
+              - NavNode: "../@id"
+              - NavNodeOffset: "IfThenElse(../@data-id-offset, ../@data-id-offset, '0')"
 
 # ********* MoveStart/End  ***************
 - name: math-move-to-start-or-end
@@ -1073,6 +1076,27 @@
 
 # ========  Move/Read/Describe Next rules =================
 
+- name: move-next-character
+  tag: [mn, mi, mtext]
+  match: 
+  - "($NavCommand = 'MoveNext' or $NavCommand = 'ReadNext' or $NavCommand = 'DescribeNext' or $NavCommand = 'MoveNextZoom') and"
+  - "$NavNodeOffset > 0 and"
+  - "($NavNodeOffset < string-length(.) or name(EdgeNode(., 'right', 'math'))!='math')" # not at edge of math
+  replace:
+  - test:
+      if: "$NavNodeOffset < string-length(.)"
+      then:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "$NavNodeOffset + 1"]
+      else:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "0"]
+      - x: "."
+
 # skip 'none'
 - name: move-next-none
   tag: [none, mprescripts]
@@ -1148,7 +1172,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'終點'"
       - Child2D: "$EdgeNode/*[last()]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -1343,7 +1367,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'終點'"
       - Child2D: "$EdgeNode/*[1]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -1372,10 +1396,31 @@
       - T: "無法移到上一項"                      # phrase('cannot move left')
       - pause: short
   - with:
-      variables: [Move2D: "'start of'", Child2D: "."]
+      variables: [Move2D: "'開頭'", Child2D: "."]
       replace: [x: "."]
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
+
+- name: move-prev-character
+  tag: [mn, mi, mtext]
+  match: 
+  - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious' or $NavCommand = 'MovePreviousZoom') and"
+  - "$NavNodeOffset > 0 and"
+  - "($NavNodeOffset > 1 or name(EdgeNode(., 'left', 'math'))!='math')" # not at edge of math
+  replace:
+  - test:
+      if: "$NavNodeOffset > 1"
+      then:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "$NavNodeOffset - 1"]
+      else:
+      - with:
+          variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
+          replace: [x: "."]
+      - set_variables: [NavNodeOffset: "0"]
+      - x: "."
 
 - name: move-previous-auto-zoom-up-one-level
   # Last child or in auto-zoom'd in-- move up a level and try again 

@@ -16,6 +16,7 @@ use sxd_xpath_no_unsafe::{Factory, Value, XPath};
 use sxd_xpath_no_unsafe::nodeset::Node;
 use std::fmt;
 use std::time::SystemTime;
+use strum::Display;
 use crate::definitions::read_definitions_file;
 use crate::errors::*;
 use crate::prefs::*;
@@ -205,17 +206,6 @@ fn yaml_type_err(yaml: &Yaml, str: &str) -> Error {
     anyhow!("Expected {}, found {}", str, yaml_to_type(yaml))
 }
 
-// fn yaml_key_err(dict: &Yaml, key: &str, yaml_type: &str) -> String {
-//     if dict.as_hash().is_none() {
-//        return format!("Expected dictionary with key '{}', found\n{}", key, yaml_to_string(dict, 1));
-//     }
-//     let str = &dict[key];
-//     if str.is_badvalue() {
-//         return format!("Did not find '{}' in\n{}", key,  yaml_to_string(dict, 1));
-//     }
-//     return format!("Type of '{}' is not a {}.\nIt is a {}. YAML value is\n{}", 
-//             key, yaml_type, yaml_to_type(str), yaml_to_string(dict, 0));
-// }
 
 fn find_str<'a>(dict: &'a Yaml, key: &'a str) -> Option<&'a str> {
     return dict[key].as_str();
@@ -569,6 +559,10 @@ impl InsertChildren {
                     )
                 );
                 for i in 2..n_nodes+1 {
+                    // Make the 1-based index of the following child available to separators (e.g. arity glue).
+                    expanded_result.push(Replacement::SetVariables(Box::new(SetVariables {
+                        variables: VariableDefinitions::from_literal_number("InsertIndex", i as f64)?,
+                    })));
                     expanded_result.extend_from_slice(&self.replacements.replacements);
                     expanded_result.push(
                         Replacement::XPath(
@@ -1695,6 +1689,16 @@ impl VariableDefinitions {
         return VariableDefinitions{ defs: Vec::with_capacity(len) };
     }
 
+    /// Single variable bound to a numeric literal (used when expanding `insert:` separators).
+    fn from_literal_number(name: &str, value: f64) -> Result<VariableDefinitions> {
+        let mut defs = VariableDefinitions::new(1);
+        defs.push(VariableDefinition {
+            name: name.to_string(),
+            value: MyXPath::new(value.to_string())?,
+        });
+        return Ok(defs);
+    }
+
     fn build(defs: &Yaml) -> Result<VariableDefinitions> {
         if defs.is_badvalue() {
             return Ok( VariableDefinitions::new(0) );
@@ -1757,7 +1761,7 @@ impl<'c, 'r> ContextStack<'c> {
     fn base_context(var_defs: PreferenceHashMap) -> sxd_xpath_no_unsafe::Context<'c> {
         let mut context  = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
-        crate::xpath_functions::add_builtin_functions(&mut context);
+        crate::xpath_functions::register_mathcat_xpath_functions(&mut context);
         for (key, value) in var_defs {
             context.set_variable(key.as_str(), yaml_to_value(&value));
             // if let Some(str_value) = value.as_str() {
@@ -1976,26 +1980,13 @@ impl UnicodeDef {
  type UnicodeTable = Rc<RefCell<HashMap<u32,Vec<Replacement>>>>;
  type FilesAndTimesShared = Rc<RefCell<FilesAndTimes>>;
 
- #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, Display)]
  pub enum RulesFor {
      Intent,
      Speech,
      OverView,
      Navigation,
      Braille,
- }
-
- impl fmt::Display for RulesFor {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self {
-            RulesFor::Intent => "Intent",
-            RulesFor::Speech => "Speech",
-            RulesFor::OverView => "OverView",
-            RulesFor::Navigation => "Navigation",
-            RulesFor::Braille => "Braille",
-        };
-       return write!(f, "{name}");
-    }
  }
 
  
@@ -2113,11 +2104,7 @@ impl FilesAndTimes {
 
 /// `SpeechRulesWithContext` encapsulates a named group of speech rules (e.g, "ClearSpeak")
 /// along with the preferences to be used for speech.
-// Note: if we can't read the files, an error message is stored in the structure and needs to be checked.
-// I tried using Result<SpeechRules>, but it was a mess with all the unwrapping.
-// Important: the code needs to be careful to check this at the top level calls
 pub struct SpeechRules {
-    error: String,
     name: RulesFor,
     pub pref_manager: Rc<RefCell<PreferenceManager>>,
     rules: RuleTable,                              // the speech rules used (partitioned into MathML tags in hashmap, then linearly searched)
@@ -2279,7 +2266,6 @@ impl SpeechRules {
         };
 
         return SpeechRules {
-            error: Default::default(),
             name,
             rules: HashMap::with_capacity(if name == RulesFor::Intent || name == RulesFor::Speech {500} else {50}),                       // lazy load them
             rule_files: FilesAndTimes::default(),
@@ -2292,14 +2278,6 @@ impl SpeechRules {
             pref_manager: PreferenceManager::get(),
         };
 }
-
-    pub fn get_error(&self) -> Option<&str> {
-        return if self.error.is_empty() {
-             None
-        } else {
-            Some(&self.error)
-        }
-    }
 
     pub fn read_files(&mut self) -> Result<()> {
         let check_rule_files = self.pref_manager.borrow().pref_to_string("CheckRuleFiles");
@@ -3027,7 +3005,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
                 let start_main_file = rules.borrow().unicode_short_files.borrow().ft[0].clone();
 
                 // open the file, read all the contents, then write them back so the time changes
-                let contents = std::fs::read(&start_main_file.file).expect(&format!("Failed to read file {} during test", &start_main_file.file.to_string_lossy()));
+                let contents = std::fs::read(&start_main_file.file).unwrap_or_else(|_| panic!("Failed to read file {} during test", start_main_file.file.to_string_lossy()));
                 std::fs::write(start_main_file.file, contents).unwrap();
                 std::thread::sleep(Duration::from_millis(5));       // pause a little to make sure the time changes
 

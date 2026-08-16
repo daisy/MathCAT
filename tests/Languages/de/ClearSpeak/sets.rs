@@ -205,7 +205,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("de", "ClearSpeak", expr, "die Menge alle x so dass x ist größer als 2")?;
+    test("de", "ClearSpeak", expr, "die Menge aller x so dass x ist größer als 2")?;
     return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("de", "ClearSpeak", expr, "die Menge alle x so dass x ist größer als 2")?;
+    test("de", "ClearSpeak", expr, "die Menge aller x so dass x ist größer als 2")?;
     return Ok(());
 
 }
@@ -263,7 +263,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("de", "ClearSpeak", expr, "die Menge alle x in die ganzen zahlen so dass 2 ist kleiner als x ist kleiner als 7")?;
+    test("de", "ClearSpeak", expr, "die Menge aller x in den ganzen zahlen so dass 2 ist kleiner als x ist kleiner als 7")?;
     return Ok(());
 
 }
@@ -279,7 +279,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("de", "ClearSpeak", expr,
-            "die Menge alle x in die natürlichen zahlen so dass x is an even number")?;
+            "die Menge aller x in den natürlichen zahlen so dass x is an even number")?;
             return Ok(());
 
 }
@@ -299,7 +299,7 @@ fn set_with_bar_member() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "die Menge alle x element von die ganzen zahlen so dass x ist größer als 5")?;
+                expr, "die Menge aller x element von die ganzen zahlen so dass x ist größer als 5")?;
                 return Ok(());
 
 }
@@ -348,7 +348,7 @@ fn set_with_bar_element() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "die Menge alle x element von die ganzen zahlen so dass x ist größer als 5")?;
+                expr, "die Menge aller x element von die ganzen zahlen so dass x ist größer als 5")?;
                 return Ok(());
 
 }
@@ -396,7 +396,7 @@ fn set_with_bar_in() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "die Menge alle x in die ganzen zahlen so dass x ist größer als 5")?;
+                expr, "die Menge aller x in den ganzen zahlen so dass x ist größer als 5")?;
                 return Ok(());
 
 }
@@ -407,7 +407,7 @@ fn element_alone_in() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 plus 2 i, ist nicht in die reellen zahlen")?;
+                expr, "3 plus 2 i, ist nicht in den reellen zahlen")?;
                 return Ok(());
 
 }
@@ -425,7 +425,7 @@ fn element_under_sum_in() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "die summe durch i ist in die ganzen zahlen von; der bruch mit zähler 1; und nenner i quadrat")?;
+                expr, "die summe durch i ist in den ganzen zahlen von; der bruch mit zähler 1; und nenner i quadrat")?;
                 return Ok(());
 
 }
@@ -444,7 +444,7 @@ fn set_with_bar_belongs() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("de", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "die Menge alle x element von die ganzen zahlen so dass x ist größer als 5")?;
+                expr, "die Menge aller x element von die ganzen zahlen so dass x ist größer als 5")?;
                 return Ok(());
 
 }
@@ -524,7 +524,7 @@ fn silent_bracket() -> Result<()> {
                 <mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo>
             </math>";
             test_ClearSpeak("de", "ClearSpeak_Sets", "SilentBracket", expr,
-                    "die Menge alle x so dass x ist größer als 2")?;
+                    "die Menge aller x so dass x ist größer als 2")?;
                     return Ok(());
 
         }

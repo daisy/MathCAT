@@ -5,8 +5,6 @@ on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
-  # Until all marketplace actions ship Node 24 runtimes (see GitHub deprecation of Node 20).
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -49,45 +47,47 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Remove empty Rules directories
-      run:  find Rules -type d -empty -delete
+      run: find Rules -type d -empty -delete
     - name: Remove test directory
-      run:  rm -r Rules/Languages/zz
-    - name: create rules.zip
-      uses: thedoctor0/zip-release@0.7.5
-      with:
-        type: 'zip'
-        filename: 'Rules.zip'
-        directory: '.'
-        path: 'Rules'
+      run: rm -r Rules/Languages/zz
+    - name: create Rules.zip
+      run: zip -r Rules.zip Rules
     - name: Upload Rules.zip
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: 'Rules.zip'
         path: 'Rules.zip'
         compression-level: 0
         retention-days: 1
-  
+
   pre-release:
     name: Pre Release
     continue-on-error: false
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' # otherwise, job fails on pull requests, as GITHUB_TOKEN is not available
-    needs: [zip-rules]
+    needs: [build, clippy, zip-rules]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-    # download the previous build artifacts and put them in their proper places
     - name: download Rules.zip
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: Rules.zip
-    # put the files into the release
-    - name: Automatic release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: latest
-        prerelease: true
-        title: Development Build
-        files: |
+    # Moving 'latest' prerelease (replaces marvinpinto/action-automatic-releases)
+    - name: Development Build release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        REPO="${{ github.repository }}"
+        SHA="${{ github.sha }}"
+        # No checkout in this job — always pass --repo.
+        gh release delete latest --repo "$REPO" --yes --cleanup-tag || true
+        gh api --method DELETE "repos/${REPO}/git/refs/tags/latest" || true
+        gh release create latest \
+          --repo "$REPO" \
+          --target "$SHA" \
+          --prerelease \
+          --latest=false \
+          --title "Development Build" \
+          --notes "Development build from ${SHA}" \
           Rules.zip

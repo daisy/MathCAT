@@ -1,16 +1,8 @@
-"""
-Data models for the audit tool.
-
-Contains dataclasses for representing rules and comparison results.
-"""
+"""Models for speech, navigation, and unicode rule audits."""
 
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
-
-
-class AuditError(Exception):
-    """Raised when the audit encounters a configuration or validation error."""
 
 
 class IssueType(StrEnum):
@@ -72,7 +64,7 @@ class RuleInfo:
 
     name: str | None  # None for unicode entries
     tag: str | None  # None for unicode entries
-    key: str  # For unicode entries, this is the character/range
+    key: str
     line_number: int
     raw_content: str
     data: Any | None = None
@@ -91,7 +83,7 @@ class RuleInfo:
 
 @dataclass
 class RuleDifference:
-    """Fine-grained difference between source and translated rule"""
+    """Fine-grained difference between source and translated rule."""
 
     english_rule: RuleInfo
     translated_rule: RuleInfo
@@ -107,29 +99,15 @@ class RuleDifference:
 
 @dataclass
 class ComparisonResult:
-    """Results from comparing source and translated files"""
+    """Results from comparing source and translated rule files."""
 
-    missing_rules: list[RuleInfo]  # Rules in source but not in translation
-    extra_rules: list[RuleInfo]  # Rules in translation but not in source
+    missing_rules: list[RuleInfo]
+    extra_rules: list[RuleInfo]
     untranslated_text: list[tuple[RuleInfo, list[UntranslatedEntry]]]
     english_rule_count: int
     translated_rule_count: int
-    rule_differences: list[RuleDifference] = field(default_factory=list)  # Fine-grained diffs
+    rule_differences: list[RuleDifference] = field(default_factory=list)
 
     @property
     def has_issues(self) -> bool:
         return bool(self.missing_rules or self.untranslated_text or self.extra_rules or self.rule_differences)
-
-
-@dataclass
-class AuditSummary:
-    """Accumulated totals from a full language audit."""
-
-    files_checked: int
-    files_with_issues: int
-    files_ok: int
-    total_missing: int
-    total_untranslated: int
-    total_extra: int
-    total_differences: int
-    total_issues: int

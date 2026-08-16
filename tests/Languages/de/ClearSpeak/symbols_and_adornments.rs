@@ -39,6 +39,46 @@ fn quotation_mark() -> Result<()> {
     Ok(())
 }
 
+/// Compound relation symbols must use German descriptions rather than English fallbacks.
+#[test]
+fn compound_relation_symbols_are_localized() -> Result<()> {
+    let expr = "<math><mo>⪑</mo><mo>⪒</mo><mo>⪤</mo></math>";
+    test("de", "ClearSpeak", expr,
+        "kleiner als über größer als über doppelter Gleichheitslinie; größer als über kleiner als über doppelter Gleichheitslinie; größer als überlappend mit kleiner als")?;
+    Ok(())
+}
+
+/// Unicode integral and logical-relation names must not fall back to English.
+#[test]
+fn unicode_integral_and_logical_symbols_are_localized() -> Result<()> {
+    test("de", "ClearSpeak", "<math><mo>⨎</mo></math>", "Integral mit doppeltem Strich")?;
+    test("de", "ClearSpeak", "<math><mo>⨛</mo></math>", "Integral mit Überstrich")?;
+    test("de", "ClearSpeak", "<math><mo>⩏</mo></math>", "doppelte quadratische Vereinigung")?;
+    test("de", "ClearSpeak", "<math><mo>⩐</mo></math>",
+        "geschlossene Vereinigung mit Serifen und Smash-Produkt")?;
+    test("de", "ClearSpeak", "<math><mo>⩞</mo></math>",
+        "logisches Und mit doppeltem Überstrich")?;
+    Ok(())
+}
+
+/// A geometric ray uses the German term rather than the English fallback.
+#[test]
+fn geometric_ray_is_localized() -> Result<()> {
+    let expr = "<math><mover><mrow><mi>X</mi><mo>&#x2062;</mo><mi>Y</mi></mrow><mo>→</mo></mover></math>";
+    test("de", "ClearSpeak", expr, "strahl groß x groß y")?;
+    Ok(())
+}
+
+#[test]
+fn absolute_value_end_regression() -> Result<()> {
+    let expr = "<math><mrow><mo>|</mo><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mo>|</mo></mrow></math>";
+    test_prefs("de", "ClearSpeak", vec![
+        ("Verbosity", "Terse"),
+        ("ClearSpeak_AbsoluteValue", "AbsEnd"),
+    ], expr, "Betrag von x plus 1, ende Betrag")?;
+    Ok(())
+}
+
 #[test]
 fn ellipses_auto_start() -> Result<()> {
     let expr = "<math>
@@ -227,7 +267,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Auto", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -247,7 +287,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -267,7 +307,7 @@ fn vertical_line_set_given() -> Result<()> {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Given", expr,
-            "die Menge alle x so dass x ist größer als 0")?;
+            "die Menge aller x so dass x ist größer als 0")?;
             return Ok(());
 
 }
@@ -290,7 +330,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("de", "ClearSpeak_VerticalLine", "Auto", expr,
-        "die Menge alle x so dass der Betrag von x; ist größer als 2")?;
+        "die Menge aller x so dass der Betrag von x; ist größer als 2")?;
         return Ok(());
 
 }

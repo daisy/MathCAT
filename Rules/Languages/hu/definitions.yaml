@@ -87,14 +87,14 @@
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
     "mixed-fraction":"infix=és", # NOTE: in website says function, but follow infix speech pattern.
     "greatest-common-divisor": "function=a legnagyobb közös osztó",
-    "quotient":"function=egész rész | osztva", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
+    "quotient":"function=egész rész osztva", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
     "evaluated-at":"infix=értékelve || postfix=értékként",
-    "remainder":"function=a maradék | osztva",
+    "remainder":"function=a maradék, osztva",
     "max":"function=max",
     "min":"function=min",
     "power":"infix=a hatványra",
     "root":"function=root",
-    "imaginary-part": "function=a képzeletbeli rész: a képzeletbeli rész: a képzeletbeli rész",
+    "imaginary-part": "a képzeletbeli rész",
     "least-common-multiple": "function=lcm: a legkisebb közös többszörös: a legkisebb közös többszörös",
     "complex-conjugate":"function=Komplex konjugált",
     "complex-arg":"function=argumentum",
@@ -131,15 +131,15 @@
     "tends-to-from-below":"infix=alulról indul",
     ### Sets
     "set": "function= ; halmaz: a halmaz",
-    "set-difference":"function=különbséghalmaz | és || infix=mínusz",
+    "set-difference":"function=különbséghalmaz || infix=mínusz || postfix=különbséghalmaza", # NOTE: not tested
     "complement":"function=komplemens",
     "empty-set":"function=üres halmaz",
     "cardinality":"function=számosság", # NOTE: does not have a defined speech template in website
     "list":"function=lista",
     "tuple": "function= ; tuple: a tuple",
     ### Sequence and Series
-    "sum": "function=összeg",
-    "product":"function=szorzat",
+    "sum":"function= ; összegzés : összeg ; ", #: sum over : sum from; to",
+    "product":"function=szorzat || function=szorzat vége || function=szorzat innen ide",
 
     ### Elementary classical functions
     "sine":"function=szinusz: szinusz",
@@ -225,7 +225,6 @@
     "highlight":"postfix=kiemelt",
     "least-common-denominator":"function=legkisebb közös nevező",
     "rate":"infix=per",
-    "translation":"function=fordítás",
     "constraint":"infix= ; feltétellel; ", 
 
     "binomial-coefficient":"infix=választ",

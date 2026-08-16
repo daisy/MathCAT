@@ -321,7 +321,7 @@
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "in"]                 	# 	(google translation)
+                then: [T: "in"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "element von"]       	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
@@ -345,7 +345,7 @@
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "nicht in"]           	# 	(en: 'not in', google translation)
+                then: [T: "nicht in"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "nicht element von"] 	# 	(en: 'not member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
@@ -368,7 +368,7 @@
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "in"]                 	# 	(google translation)
+                then: [T: "in"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "element von"]       	# 	(en: 'member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'

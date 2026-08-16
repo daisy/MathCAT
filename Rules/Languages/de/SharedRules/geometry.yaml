@@ -28,7 +28,7 @@
       - T: "nach"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
       else:
-      - T: "ray"                      # phrase(the 'ray'A  B)
+      - T: "strahl"                   # phrase(the 'ray' A B)
       - x: "*[1]"
       - x: "*[2]"
 

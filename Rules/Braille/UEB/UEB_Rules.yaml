@@ -340,7 +340,7 @@
 -
   name: single-char-exceptions    # RUEB 3.11 -- ° and various prime/minute/seconds aren't treated as if superscripts
   tag: [msup]
-  match: "*[2][translate(., \"'*`ª°²³´¹º‘’“”‟′″‴‵‶‷⁗\",'')='']"
+  match: "*[2][translate(., \"'*`´°‘’“”‟′″‴‵‶‷⁗\",'')='']"
   replace:
   - test:
       if: "NeedsToBeGrouped(*[1], 'UEB', true())"

@@ -8,8 +8,9 @@
  - "¦": [T: "gebrochene Linie"]                 	#  0xa6	(en: 'broken bar')
  - "§": [T: "Abschnitt"]                        	#  0xa7	(en: 'section')
  - "¨": [T: "diaeresis"]                        	#  0xa8	(en: 'double dot')
- - "©": [T: "Copyright"]                        	#  0xa9	(en: 'copyright')
+ - "©": [T: "Urheberrecht"]                     	#  0xa9	(en: 'copyright')
  - "ª": [T: "weibliches Ordnungszeichen"]       	#  0xaa	(en: 'feminine ordinal indicator')
+ - "¬": [T: "nicht"]                            	#  0xac	(en: 'not')
  - "«": [T: "Nach links zeigendes doppeltes spitzes Anführungszeichen"]	#  0xab	(en: 'left-pointing double angle quote mark', MathPlayer: 'left-pointing double angle quote mark', google: 'links zeigende doppelwinkel-zitatmarke')
  - "¯":                                         	#  0xaf
      - test:
@@ -18,9 +19,24 @@
         else: [T: "Überstrich"]                 	# 	(en: 'line', MathPlayer: 'macron', google: 'linie')
  - "²": [T: "Quadrat"]                          	#  0xb2	(en: 'two', MathPlayer: 'zum Quadrat', google: 'zwei')
  - "³": [T: "Kubik"]                            	#  0xb3	(en: 'three', MathPlayer: 'hoch drei', google: 'drei')
+ - "´": [T: "Akutakzent"]                       	#  0xb4	(en: 'acute', MathPlayer: 'acute accent', google: 'akut')
  - "µ": [T: "Mikrozeichen"]                     	#  0xb5	(en: 'micro', MathPlayer: 'micro sign', google: 'mikro')
  - "¹": [T: "hoch eins"]                        	#  0xb9	(en: 'one', google: 'eins')
  - "º": [T: "Männliches Ordnungszeichen"]       	#  0xb9	(en: 'masculine ordinal indicator')
+ - "·":
+    - test:
+        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
+        then: [T: "mal"]                        	# 	(en: 'times', google translation)
+        else: [T: "mal"]                        	# 	(en: 'dot', MathPlayer: 'Punkt mittig', google: 'punkt')
+ - "×":                                         	#  0xd7
+    - test:
+        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
+        then: [T: "mal"]                        	# 	(en: 'times', google translation)
+        else_test:
+            if: $ClearSpeak_MultSymbolX = 'By'
+            then: [T: "von"]                    	# 	(en: 'by', google translation)
+            else: [T: "mal"]                    	# 	(en: 'cross', MathPlayer: 'times', google: 'kreuzen')
+ - "÷": [T: "geteilt durch"]                    	#  0xf7	(en: 'divided by', MathPlayer: 'divides')
  - "¡": [T: "umgekehrtes ausrufezeichen"]       	#  0xa1	(en: 'inverted exclamation mark')
  - "¶": [T: "absatzzeichen"]                    	#  0xb6	(en: 'paragraph mark')
  - "¿": [T: "umgekehrtes fragezeichen"]         	#  0xbf	(en: 'inverted question mark')
@@ -108,6 +124,14 @@
  - "˽": [T: "modifikatorregal"]                 	#  0x2fd	(en: 'modifier shelf', google translation)
  - "˾": [T: "modifikator offenes regal"]        	#  0x2fe	(en: 'modifier open shelf', google translation)
  - "˿": [T: "modifikator niedriger links pfeil"]	#  0x2ff	(en: 'modifier low left arrow', google translation)
+ - "̀": [T: "gravisakzentverzierung"]             	#  0x300	(en: 'grave accent embellishment', google: 'grabakzentverzierung')
+ - "́": [T: "akutakzentverzierung"]        	#  0x301	(en: 'acute accent embellishment', google: 'akute akzentverzierung')
+ - "̂": [T: "Hutverzierung"]                	#  0x302	(en: 'circumflex accent embellishment', google: 'zirma akzentverzierung')
+ - "̃": [T: "tildeverzierung"]              	#  0x303	(google: 'tilde verzierung')
+ - "̄": [T: "makronverzierung"]                  	#  0x304	(en: 'macron embellishment', google: 'makron -verzierung')
+ - "̅": [T: "Überstreifenverzierung"]            	#  0x305	(google: 'überbärerverzierung')
+ - "̆": [T: "kombinierendes Breve"]                  	#  0x306	(en: 'breve embellishment', google: 'breve -verzierung')
+ - "̇": [T: "Punkt über Verzierung"]          	#  0x307	(google: 'punkt über verzierung')
  - "̈": [T: "zwei Punkte oberhalb"]              	#  0x308	(en: 'diaeresis embellishment', google: 'diaeresis -verzierung')
  - "̉": [T: "haken über verzierung"]            	#  0x309	(en: 'hook above embellishment', google translation)
  - "̊": [T: "ring über verzierung"]             	#  0x30a	(en: 'ring above embellishment', google: 'ring über verzierung')
@@ -197,9 +221,13 @@
  - "ϒ": [T: "Variante Upsilon mit Haken"]       	#  0x3d2	(en: 'upsilon with hook', google: 'upsilon mit haken')
  - "ϓ": [T: "Upsilon mit Akutakzent und Haken"] 	#  0x3d3	(en: 'upsilon with acute and hook', google translation)
  - "ϔ": [T: "Upsilon mit Diaeresis und Haken"]  	#  0x3d4	(en: 'upsilon with diaeresis and hook', google translation)
+ - "ϕ": [T: "gerades Phi"]                      	#  0x3d5	(en: 'phi', google: 'phi')
+ - "ϖ": [T: "Variante Pi"]                      	#  0x3d6	(en: 'pi', google: 'pi')
  - "ϗ": [T: "kai"]                              	#  0x3d7	(MathPlayer: 'variant kai')
  - "Ϙ": [T: "großes archaisches koppa"]        	#  0x3d8	(en: 'cap archaic koppa')
  - "ϙ": [T: "archaisches koppa"]               	#  0x3d9	(en: 'archaic koppa')
+ - "ϵ": [T: "epsilon"]                          	#  0x3f5
+ - "϶": [T: "umgekehrtes epsilon"]              	#  0x3f6	(en: 'reversed epsilon', MathPlayer: 'reversed epsilon', google: 'umgekehrter epsilon')
  - "А-Я":                                       	#  0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -256,6 +284,10 @@
  - "‐": [T: "Bindestrich"]                      	#  0x2010	(en: 'hyphen', MathPlayer: 'minus', google: 'bindestrich')
  - "‑": [T: "nicht-trennender Bindestrich"]     	#  0x2011	(en: 'hyphen', google: 'bindestrich')
  - "‒": [T: "Figurenstrich"]                   	#  0x2012	(en: 'figure dash', google: 'figur dash')
+ - "–": [T: "Halbgeviertstrich"]               	#  0x2013	(SRE: 'En Dash')
+ - "—": [T: "Geviertstrich"]                    	#  0x2014	(SRE: 'EM Dash')
+ - "―": [T: "Horizontale Linie"]                	#  0x2015	(en: 'horizontal bar', MathPlayer: 'horizontal bar', google: 'horizontale linie')
+ - "‖": [T: "Doppelte vertikale Linie"]         	#  0x2016	(en: 'double vertical line', MathPlayer: 'double vertical bar', google: 'doppelte vertikale linie')
  - "†": [T: "Dolch"]                            	#  0x2020	(en: 'dagger', MathPlayer: 'dagger', google: 'dolch')
  - "‡": [T: "Doppelter Dolch"]                  	#  0x2021	(en: 'double dagger', MathPlayer: 'double dagger', google: 'doppeldolch')
 
@@ -267,8 +299,24 @@
         then: [T: "punkt"]                      	# 	(en: 'dot', google translation)
         else: [T: "Kugel"]                      	# 	(en: 'bullet', MathPlayer: 'bullet', google: 'kugel')
 
+ - "…":                                         	#  0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][text()='…']"
+        then: [T: "punkt punkt punkt"]          	# 	(en: 'dot dot dot', google translation)
+        else_test:                              	#  must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [T: "und so weiter"]          	# 	(en: 'and so on', google translation)
+            else: [T: "horizontale Ellipse"]   	# 	(en: 'and so on up to', MathPlayer: 'dot dot dot', google: 'und so weiter bis')
+
  - "‰": [T: "promille"]                         	#  0x2030	(en: 'per mille', MathPlayer: 'per mille sign', google: 'pro mille')
  - "‱": [T: "pro Zehntausend"]                  	#  0x2031	(en: 'per ten thousand', MathPlayer: 'per ten thousand sign', google: 'pro zehntausend')
+ - "′": [T: "Strich"]                           	#  0x2032	(en: 'prime', MathPlayer: 'strich', google: 'prime')
+ - "″": [T: "zwei Striche"]                      	#  0x2033	(en: 'double prime', MathPlayer: 'zwei-strich', google: 'double prime')
+ - "‴": [T: "drei Striche"]                      	#  0x2034	(en: 'triple prime', MathPlayer: 'drei-strich', google: 'triple prime')
  - "‵": [T: "umgekehrter Strich"]              	#  0x2035	(en: 'reversed prime', MathPlayer: 'reversed prime', google: 'umgekehrt prime')
  - "‶": [T: "zwei umgekehrte Striche"]          	#  0x2036	(en: 'reversed double prime', MathPlayer: 'reversed double prime', google: 'umgekehrt doppelte prime')
  - "‷": [T: "drei umgekehrte Striche"]          	#  0x2037	(en: 'reversed triple prime', google: 'triple prime umgekehrt')
@@ -398,6 +446,7 @@
  - "℆": [T: "cada una"]                         	#  0x2106	(google translation)
  - "ℇ": [T: "Euler-Konstante"]                  	#  0x2107	(en: 'euler's constant', google: 'eulers konstante')
  - "℈": [T: "skrupel"]                          	#  0x2108	(en: 'scruples', google translation)
+ - "℉": [T: "Grad Fahrenheit"]                  	#  0x2109	(google: 'grad fahrenheit')
  - "ℊ": [T: "Skript G"]                         	#  0x210a	(google: 'skript g')
  - "ℌℑℨℭ":                                      	#  0x210c, 0x2111, 0x2128, 0x212d
     - T: "Fraktur"                              	# 	(en: 'fraktur', google: 'fraktur')
@@ -409,6 +458,7 @@
          then: [T: "doppelt geschlagen"]        	# 	(en: 'double struck', google translation)
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
+ - "ℎ": [T: "Planck-Konstante"]                 	#  0x210e	(en: 'planck constant', MathPlayer: 'planck constant', google: 'planck konstant')
  - "ℏ":                                         	#  0x210f
      - test: 
          if: "($Verbosity='Terse')"
@@ -419,11 +469,15 @@
     - T: "Skript"                               	# 	(en: 'script', MathPlayer: 'h bar', google: 'skript')
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
+ - "ℓ": [T: "Schreibschrift l"]                 	#  0x2113	(en: 'script l', MathPlayer: 'script l', google: 'skript l')
  - "℔": [T: "L B Balkensymbol"]                 	#  0x2114	(en: 'pounds', google: 'pfund')
  - "№": [T: "Numero-Zeichen"]                   	#  0x2116	(en: 'number', MathPlayer: 'numero sign', google: 'nummer')
  - "℥": [T: "Unze-Zeichen"]                     	#  0x2125	(en: 'ounces', MathPlayer: 'ounce sign', google: 'unzen')
+ - "Ω": [T: "Ohm-Zeichen"]                      	#  0x2126	(en: 'ohms', MathPlayer: 'ohm sign', google: 'ohm')
  - "℧": [T: "Umgekehrtes Ohm-Zeichen"]          	#  0x2127	(en: 'mhos', MathPlayer: 'inverted ohm', google: 'mhos')
  - "℩": [T: "gedrehtes Iota"]                   	#  0x2129	(google: 'drehte iota')
+ - "K": [T: "Kelvin-Zeichen"]                   	#  0x212a	(en: 'kelvin', MathPlayer: 'degrees kelvin', google: 'kelvin')
+ - "Å": [T: "Angstrom-Zeichen"]                 	#  0x212b	(en: 'angstroms', MathPlayer: 'angstroms', google: 'angstrome')
  - "ℯ": [T: "Skript E"]                         	#  0x212f	(google: 'skript e')
 
    # coalesced some chars that use cap letters
@@ -501,6 +555,10 @@
  - "ⅾ": [T: "ⅾ"]                                	#  0x217e	(en: 'D', google translation)
  - "ⅿ": [T: "ⅿ"]                                	#  0x217f	(en: 'M', google translation)
  - "↉": [T: "null drittel"]                     	#  0x2189	(en: 'zero thirds')
+ - "←": [T: "Pfeil nach links"]                 	#  0x2190	(en: 'leftwards arrow', MathPlayer: 'leftwards arrow', google: 'pfeil nach links')
+ - "↑": [T: "Aufwärtspfeil"]                    	#  0x2191	(en: 'upwards arrow', MathPlayer: 'upwards arrow', google: 'nach oben pfeil')
+ - "→": [T: "Pfeil nach rechts"]                	#  0x2192	(en: 'rightwards arrow', MathPlayer: 'rightwards arrow', google: 'richtiger pfeil')
+ - "↓": [T: "Pfeil nach unten"]                 	#  0x2193	(en: 'downwards arrow', MathPlayer: 'downwards arrow', google: 'nach unten pfeil')
  - "↔": [T: "Pfeil nach links und rechts"]             	#  0x2194	(en: 'left right arrow', MathPlayer: 'left right arrow', google: 'links rechts pfeil')
  - "↕": [T: "Pfeil nach oben und unten"]                  	#  0x2195	(en: 'up down arrow', MathPlayer: 'up down arrow', google: 'auf pfeil runter')
  - "↖": [T: "Nordwestpfeil"]                    	#  0x2196	(en: 'north west arrow', MathPlayer: 'north west arrow', google: 'nordwestpfeil')
@@ -573,6 +631,7 @@
  - "⇏": [T: "Doppelpfeil nach rechts mit Strich"]	#  0x21cf	(en: 'rightwards double arrow with stroke', MathPlayer: 'rightwards double arrow with stroke', google: 'richtiger doppelpfeil mit schlaganfall')
  - "⇐": [T: "Doppelpfeil nach links"]           	#  0x21d0	(en: 'leftwards double arrow', MathPlayer: 'leftwards double arrow', google: 'links doppelpfeil')
  - "⇑": [T: "Doppelpfeil nach oben"]            	#  0x21d1	(en: 'upwards double arrow', MathPlayer: 'upwards double arrow', google: 'double -pfeil nach oben')
+ - "⇒": [T: "Doppelpfeil nach rechts"]          	#  0x21d2	(en: 'rightwards double arrow', MathPlayer: 'rightwards double arrow', google: 'richtiger doppelpfeil')
  - "⇓": [T: "Doppelpfeil nach unten"]           	#  0x21d3	(en: 'downwards double arrow', MathPlayer: 'downwards double arrow', google: 'downwards doppelpfeil')
  - "⇔": [T: "Linker rechter Doppelpfeil"]       	#  0x21d4	(en: 'left right double arrow', MathPlayer: 'left right double arrow', google: 'links rechts doppelpfeil')
  - "⇕": [T: "Doppelpfeil nach oben und unten"]           	#  0x21d5	(en: 'up down double arrow', MathPlayer: 'up down double arrow', google: 'doppelpfeil nach oben')
@@ -624,18 +683,107 @@
          if: "$Verbosity!='Terse'"
          then: [T: "die"]                       	# 	(en: 'the', google translation)
      - T: "Komplement"                          	# 	(en: 'complement of')
+ - "∂":                                         	#  0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [T: "partiell"]                  	# 	(en: 'partial', google translation)
+         else: [T: "partielle Ableitung"]        	# 	(en: 'partial derivative', google: 'partielle ableitung')
  - "∃": [T: "es gibt"]                          	#  0x2203	(en: 'there exists')
  - "∄": [T: "es gibt nicht"]                    	#  0x2204	(en: 'there does not exist')
  - "∅": [T: "leere Menge"]                      	#  0x2205	(en: 'empty set')
+ - "∆":                                         	#  0x2206
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "die"]                       	# 	(en: 'the', google translation)
+     - T: "Laplace-Operator von"                           	# 	(en: 'laplacian of', MathPlayer: 'increment', google: 'laplace von')
+ - "∇":                                         	#  0x2207
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "die"]                       	# 	(en: 'the', google translation)
+     - T: "Nabla"                               	# 	(en: 'gradient of', google: 'gradient von')
+ - "∈":                                         	#  0x2208
+     - test:
+        if: "$SpeechStyle != 'ClearSpeak'"
+        then: [T: "ein Element von"]            	# 	(en: 'an element of', google translation)
+        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+        else_test:
+            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            then_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "in"]                 	# 	(google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "Element von"]        	# 	(en: 'member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "Element von"]        	# 	(en: 'element of', google translation)
+              - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+            else_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "ist ein Element von"]	# 	(en: 'is a member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "ist ein Element von"]	# 	(en: 'is an element of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "ist in"]             	# 	(en: 'is in', google translation)
+              - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+ - "∉":                                         	#  0x2209
+    # rule is identical to 0x2208
+     - test:
+        if: "$SpeechStyle != 'ClearSpeak'"
+        then: [T: "ist kein Element von"]       	# 	(en: 'is not an element of', google translation)
+        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+        else_test:
+            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            then_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "nicht in"]           	# 	(en: 'not in', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "kein Element von"]   	# 	(en: 'not member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "kein Element von"]   	# 	(en: 'not element of', google translation)
+              - else: [T: "nicht Element von"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
+            else_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "ist kein Element von"]	# 	(en: 'is not a member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "ist kein Element von"]	# 	(en: 'is not an element of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "ist nicht in"]       	# 	(en: 'is not in', google translation)
+              - else: [T: "nicht Element von"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
+ - "∊":                                         	#  0x220a
+     - test:
+        if: "$SpeechStyle != 'ClearSpeak'"
+        then: [T: "ist ein Element von"]        	# 	(en: 'is an element of', google translation)
+        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
+        else_test:
+            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            then_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "in"]                 	# 	(google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "Element von"]        	# 	(en: 'member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "Element von"]        	# 	(en: 'element of', google translation)
+              - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+            else_test:
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "ist ein Element von"]	# 	(en: 'is a member of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
+                then: [T: "ist ein Element von"]	# 	(en: 'is an element of', google translation)
+              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
+                then: [T: "ist in"]             	# 	(en: 'is in', google translation)
+              - else: [T: "Element von"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
  - "∋": [T: "hat als Element"]                  	#  0x220b	(en: 'contains the member')
  - "∌": [T: "hat nicht als Element"]            	#  0x220c	(en: 'does not contain the member')
  - "∍": [T: "hat als Element"]                  	#  0x220d	(en: 'contains the member')
  - "∎": [T: "Ende Beweis"]                      	#  0x220e	(en: 'end of proof')
+ - "∏": [T: "Produkt"]                          	#  0x220f	(en: 'product', MathPlayer: 'Product', google: 'produkt')
+ - "∐": [T: "Koprodukt"]                        	#  0x2210	(en: 'coproduct', MathPlayer: 'coproduct', google: 'koprodukt')
+ - "∑": [T: "Summe"]                            	#  0x2211	(en: 'sum')
  - "−": [T: "minus"]                            	#  0x2212
  - "∓": [T: "minus plus"]                       	#  0x2213	(en: 'minus or plus')
  - "∔": [T: "Plus mit Punkt"]                   	#  0x2214	(en: 'dot plus', MathPlayer: 'dot plus', google: 'punkt plus')
  - "∕": [T: "Division"]                         	#  0x2215	(en: 'divided by', MathPlayer: 'Schrägstrich (Division)', google: 'geteilt durch')
  - "∖": [T: "Mengendifferenz"]                  	#  0x2216	(en: 'set minus', MathPlayer: 'Mengen-Minus', google: 'minus einstellen')
+ - "∗": [T: "Sternoperator"]                    	#  0x2217	(en: 'times', MathPlayer: 'asterisk operator', google: 'mal')
  - "∘": [T: "verknüpft mit"]                    	#  0x2218	(en: 'composed with')
  - "∙":                                         	#  0x2219
     - test: 
@@ -643,6 +791,11 @@
         then: [T: "punkt"]                      	# 	(en: 'dot', google translation)
         else: [T: "Kreisoperator"]              	# 	(en: 'times', MathPlayer: 'bullet operator', google: 'mal')
 
+ - "√":                                         	#  0x221a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "die"]                       	# 	(en: 'the', google translation)
+     - T: "Quadratwurzel"                       	# 	(en: 'square root of', MathPlayer: 'radical', google: 'quadratwurzel von')
  - "∛":                                         	#  0x221b
      - test: 
          if: "$Verbosity!='Terse'"
@@ -653,12 +806,26 @@
          if: "$Verbosity!='Terse'"
          then: [T: "die"]                       	# 	(en: 'the', google translation)
      - T: "vierte Wurzel"                       	# 	(en: 'fourth root of')
+ - "∝":                                         	#  0x221d
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "proportional zu"                     	# 	(en: 'proportional to')
  - "∞": [T: "unendlich"]                        	#  0x221e	(en: 'infinity')
+ - "∟": [T: "rechter Winkel"]                   	#  0x221f	(en: 'right angle')
+ - "∠": [T: "Winkel"]                           	#  0x2220	(en: 'angle')
+ - "∡": [T: "gerichteter Winkel"]               	#  0x2221	(en: 'measured angle', MathPlayer: 'measured angle', google: 'gemessener winkel')
  - "∢": [T: "Raumwinkel"]                       	#  0x2222	(en: 'spherical angle', MathPlayer: 'spherical angle', google: 'sphärischer winkel')
  - "∣": [T: "teilt"]                            	#  0x2223	(en: 'divides')
  - "∤": [T: "teilt nicht"]                      	#  0x2224	(en: 'does not divide')
  - "∧": [T: "und"]                              	#  0x2227	(en: 'and')
  - "∨": [T: "oder"]                             	#  0x2228	(en: 'or')
+ - "∩": [T: "Durchschnitt"]                     	#  0x2229	(en: 'intersection')
+ - "∪": [T: "Vereinigung"]                      	#  0x222a	(en: 'union')
+ - "∫": [T: "Integral"]                         	#  0x222b	(en: 'integral')
+ - "∬": [T: "Doppelintegral"]                   	#  0x222c	(en: 'double integral')
+ - "∭": [T: "Dreifachintegral"]                 	#  0x222d	(en: 'triple integral', MathPlayer: 'Dreifaches Integral', google: 'dreifachintegral')
+ - "∮": [T: "Randintegral"]                     	#  0x222e	(en: 'contour integral', MathPlayer: 'Kontur-Integral', google: 'konturintegral')
  - "∯": [T: "Oberflächenintegral"]              	#  0x222f	(en: 'surface integral', MathPlayer: 'Flächenintegral', google: 'oberflächenintegral')
  - "∰": [T: "Volumenintegral"]                  	#  0x2230	(en: 'volume integral', MathPlayer: 'Volumsintegral', google: 'volumenintegral')
  - "∱": [T: "Integral im Uhrzeigersinn"]        	#  0x2231	(en: 'clockwise integral')
@@ -666,6 +833,12 @@
  - "∳": [T: "Kurvenintegral im Gegenuhrzeigersinn"]	#  0x2233	(en: 'anticlockwise contour integral', MathPlayer: 'Kontur-Integral im Gegenuhrzeigersinn', google: 'konturintegral gegen den gegenwart')
  - "∴": [T: "folglich"]                         	#  0x2234	(en: 'therefore', MathPlayer: 'deshalb', google: 'daher')
  - "∵": [T: "weil"]                             	#  0x2235	(en: 'because')
+ - "∶":                                         	#  0x2236
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "Verhältnis"                          	# 	(en: 'to')
+ - "∷": [T: "Proportion"]                       	#  0x2237	(en: 'as')
  - "∸": [T: "Minus mit Punkt"]                  	#  0x2238	(en: 'dot minus', MathPlayer: 'dot minus', google: 'punkt minus')
  - "∹": [T: "Überschuss"]                       	#  0x2239	(en: 'has excess compared to', MathPlayer: 'excess', google: 'hat überschüssig im vergleich zu')
  - "∺":                                         	#  0x223a
@@ -678,6 +851,14 @@
          if: "$Verbosity!='Terse'"
          then: [T: "ist"]                       	# 	(en: 'is', google translation)
      - T: "homothetisch"                        	# 	(en: 'homothetic to', MathPlayer: 'homothetic', google: 'homothetisch zu')
+ - "∼": [T: "Tildeoperator"]                    	#  0x223c	(en: 'varies with', MathPlayer: 'tilde operator', google: 'variiert mit')
+ - "∽": [T: "Umgekehrte Tilde"]                 	#  0x223d	(en: 'reversed tilde', MathPlayer: 'reversed tilde', google: 'umgekehrte tilde')
+ - "∾":                                         	#  0x223e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "Umgekehrtes stummes S"               	# 	(en: 'most positive', MathPlayer: 'inverted lazy s', google: 'am positivsten')
+ - "∿": [T: "Sinuswelle"]                       	#  0x223f	(en: 'sine wave', MathPlayer: 'sine wave', google: 'sinus')
  - "≀": [T: "Kranzprodukt"]                     	#  0x2240	(en: 'wreath product', MathPlayer: 'wreath product', google: 'kranzprodukt')
  - "≁": [T: "durchgestrichene Tilde"]           	#  0x2241	(en: 'not tilde', MathPlayer: 'not tilde', google: 'nicht tilde')
  - "≂": [T: "minus tilde"]                      	#  0x2242	(SRE: 'Minus über Tilde')
@@ -778,6 +959,16 @@
          then: [T: "ist"]                       	# 	(en: 'is', google translation)
      - T: "gemessen mit"                        	# 	(en: 'measured by', MathPlayer: 'measured by')
  - "≟": [T: "vielleicht gleich"]                	#  0x225f	(en: 'has an unknown relationship with', MathPlayer: 'questioned equal to', google: 'hat eine unbekannte beziehung zu')
+ - "≠":                                         	#  0x2260
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "ungleich"                            	# 	(en: 'not equal to')
+ - "≡":                                         	#  0x2261
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "identisch mit"                       	# 	(en: 'identical to', SRE: 'kongruent mit')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -888,6 +1079,36 @@
  - "≿": [T: "nachfolgend oder äquivalent"]      	#  0x227f	(en: 'succeeds or is equivalent to', MathPlayer: 'succeeds or equivalent to', google: 'erfolg oder ist gleichbedeutend mit')
  - "⊀": [T: "nicht vorangehend"]                	#  0x2280	(en: 'does not precede', MathPlayer: 'does not precede', google: 'vorausgegangen nicht voraus')
  - "⊁": [T: "nicht nachfolgend"]                	#  0x2281	(en: 'does not succeed', MathPlayer: 'does not succeed', google: 'gelingt es nicht')
+ - "⊂":                                         	#  0x2282
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
+     - T: "echte Teilmenge von"                 	# 	(en: 'subset of', MathPlayer: 'Teilmenge von', google: 'untergruppe von')
+ - "⊃":                                         	#  0x2283
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
+     - T: "echte Obermenge von"                 	# 	(en: 'superset of', MathPlayer: 'Obermenge von', google: 'superset von')
+ - "⊄":                                         	#  0x2284
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "keine echte Teilmenge von"           	# 	(en: 'not a subset of', MathPlayer: 'nicht Teilmenge von', google: 'keine teilmenge von')
+ - "⊅":                                         	#  0x2285
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist"]                       	# 	(en: 'is', google translation)
+     - T: "keine echte Obermenge von"            	# 	(en: 'not a superset of', MathPlayer: 'nicht Obermenge von', google: 'kein superset von')
+ - "⊆":                                         	#  0x2286
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
+     - T: "Teilmenge oder gleich"               	# 	(en: 'subset of or equal to', MathPlayer: 'Teilmenge von odre gleich', google: 'teilmenge von oder gleich')
+ - "⊇":                                         	#  0x2287
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
+     - T: "Obermenge oder gleich"               	# 	(en: 'superset of or equal to', MathPlayer: 'Obermenge von oder gleich', google: 'superset von oder gleich')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -976,7 +1197,7 @@
  - "⊹": [T: "hermitesch konjugierte Matrix"]    	#  0x22b9	(en: 'hermitian conjugate matrix', MathPlayer: 'hermitian conjugate matrix', google: 'hermitische konjugierte matrix')
  - "⊺": [T: "einschalten"]                      	#  0x22ba	(en: 'intercalate', MathPlayer: 'intercalate', google: 'interkalieren')
  - "⊻": [T: "Ausschließendes Oder"]                              	#  0x22bb	(SRE: 'Ausschließendes Oder')
- - "⊼": [T: "nand"]                             	#  0x22bc	(SRE: 'Nand verknüpft mit')
+ - "⊼": [T: "Nicht-und"]                        	#  0x22bc	(SRE: 'Nand verknüpft mit')
  - "⊽": [T: "Nor verknüpft mit"]                	#  0x22bd	(en: 'nor', MathPlayer: 'nor', google: 'noch')
  - "⊾": [T: "rechter Winkel mit Bogen"]         	#  0x22be	(en: 'right angle with arc', MathPlayer: 'right angle with arc', google: 'rechtwinkel mit bogen')
  - "⊿": [T: "rechtwinkliges Dreieck"]           	#  0x22bf	(en: 'right triangle', MathPlayer: 'right triangle', google: 'rechtwinkliges dreieck')
@@ -1849,7 +2070,7 @@
  - "⧿": [T: "Miny"]                             	#  0x29ff	(en: 'miny', google: 'miny')
  - "⨀": [T: "Operator mit eingekreistem Punkt"]     	#  0x2a00	(en: 'circled dot operator', google: 'eingekreister punktbetreiber')
  - "⨁": [T: "Operator mit eingekreistem Plus"]      	#  0x2a01	(en: 'circled plus operator', google: 'kreis plus operator')
- - "⨂": [T: "Operator mit eingekreistem Kreuz"]     	#  0x2a02	(en: 'circled times operator', google: 'eingekreistes times operator')
+ - "⨂": [T: "Operator mit eingekreistem Malzeichen"] 	#  0x2a02	(en: 'circled times operator', google: 'eingekreistes times operator')
  - "⨃": [T: "Vereinigungs-Operator mit Punkt"]   	#  0x2a03	(en: 'union operator with dot', google: 'gewerkschaftsbetreiber mit punkt')
  - "⨄": [T: "Vereinigungs-Operator mit Plus"]    	#  0x2a04	(en: 'union operator with plus', google: 'gewerkschaftsbetreiber mit plus')
  - "⨅": [T: "quadratischer Schnittmengen-Operator"]   	#  0x2a05	(en: 'square intersection operator', google: 'square intersection operator')
@@ -1861,7 +2082,7 @@
  - "⨋": [T: "Summation mit Integral"]           	#  0x2a0b	(en: 'summation with integral', google: 'summierung mit integral')
  - "⨌": [T: "Vierfach-Integral-Operator"]      	#  0x2a0c	(SRE: 'Vierfach-Integral-Operator')
  - "⨍": [T: "endliches Teilintegral"]             	#  0x2a0d	(en: 'finite part integral', MathPlayer: 'finite part integral', google: 'finite -teil -integral')
- - "⨎": [T: "Integral mit Doppelhub"]           	#  0x2a0e	(en: 'integral with double stroke', google: 'integral mit doppelter hub')
+ - "⨎": [T: "Integral mit doppeltem Strich"]   	#  0x2a0e	(en: 'integral with double stroke')
  - "⨏": [T: "Integraler Durchschnitt mit Schrägstrich"]	#  0x2a0f	(en: 'integral average with slash', google: 'integraler durchschnitt mit schrägstrich')
  - "⨐": [T: "Zirkulationsfunktion"]             	#  0x2a10	(en: 'circulation function', MathPlayer: 'circulation function', google: 'zirkulationsfunktion')
  - "⨑": [T: "Integration gegen den Uhrzeigersinn"]	#  0x2a11	(en: 'anticlockwise integration', MathPlayer: 'anticlockwise integration', google: 'integration gegen den uhrzeigersinn')
@@ -1869,13 +2090,13 @@
  - "⨓": [T: "Linienintegration mit halbkreisförmigem Pfad um den Pol"]	#  0x2a13	(en: 'line integration with semicircular path around pole', MathPlayer: 'line integration with semicircular path around pole', google: 'linienintegration mit halbkreisförmigem pfad um pol')
  - "⨔": [T: "Leitungsintegration ohne Pole"]    	#  0x2a14	(en: 'line integration not including the pole', MathPlayer: 'line integration not including the pole', google: 'linienintegration ohne stange')
  - "⨕": [T: "Integral um einen Punktoperator"]  	#  0x2a15	(en: 'integral around a point operator', MathPlayer: 'integral around a point operator', google: 'integral um einen punktbetreiber')
- - "⨖": [T: "quaternion Integral-Operator"]     	#  0x2a16	(SRE: 'Quaternion Integral Operator')
+ - "⨖": [T: "Quaternionen-Integraloperator"]   	#  0x2a16	(SRE: 'Quaternion Integral Operator')
  - "⨗": [T: "Integral mit Pfeil nach links mit Haken"]	#  0x2a17	(en: 'integral with leftwards arrow with hook', MathPlayer: 'integral with leftwards arrow with hook', google: 'integraler mit linksem pfeil mit haken')
  - "⨘": [T: "Integral mit Kreuzproduktzeichen"]        	#  0x2a18	(en: 'integral with times sign', google: 'integral mit times sign')
  - "⨙": [T: "Integral mit Schnittmenge-Zeichen"]        	#  0x2a19	(en: 'integral with intersection', google: 'integral mit der kreuzung')
  - "⨚": [T: "Integral mit Vereinigungs-Zeichen"]               	#  0x2a1a	(en: 'integral with union', google: 'integral mit union')
- - "⨛": [T: "Integral mit Overbar"]             	#  0x2a1b	(en: 'integral with overbar', google: 'integral mit overbar')
- - "⨜": [T: "Integral mit Underbar"]            	#  0x2a1c	(en: 'integral with underbar', google: 'integral mit underbar')
+ - "⨛": [T: "Integral mit Überstrich"]          	#  0x2a1b	(en: 'integral with overbar')
+ - "⨜": [T: "Integral mit Unterstrich"]         	#  0x2a1c	(en: 'integral with underbar')
  - "⨝": [T: "Beitreten"]                        	#  0x2a1d	(en: 'join', google: 'verbinden')
  - "⨞": [T: "Großes linkes Dreieckbediener"]    	#  0x2a1e	(en: 'large left triangle operator', google: 'großer linker dreieck operator')
  - "⨟": [T: "Z-Notationsschema-Zusammensetzung"]	#  0x2a1f	(en: 'z notation schema composition', google: 'z notationschema -zusammensetzung')
@@ -1903,7 +2124,7 @@
  - "⨵": [T: "Multiplikationszeichen im rechten Halbkreis"]	#  0x2a35	(en: 'multiplication sign in right half circle', MathPlayer: 'multiplication sign in right half circle', google: 'multiplikationszeichen im rechten halbkreis')
  - "⨶": [T: "eingekreistes Multiplikationszeichen mit Circumflex-Akzent"]	#  0x2a36	(en: 'circled multiplication sign with circumflex accent', MathPlayer: 'circled multiplication sign with circumflex accent', google: 'umkreistes multiplikationszeichen mit circumflex -akzent')
  - "⨷": [T: "Multiplikationszeichen im doppelten Kreis"]	#  0x2a37	(en: 'multiplication sign in double circle', MathPlayer: 'multiplication sign in double circle', google: 'multiplikationszeichen im doppelkreis')
- - "⨸": [T: "circled division sign"]            	#  0x2a38
+ - "⨸": [T: "eingekreistes Divisionszeichen"]     	#  0x2a38
  - "⨹": [T: "Pluszeichen im Dreieck"]           	#  0x2a39	(en: 'plus sign in triangle', MathPlayer: 'plus sign in triangle', google: 'plus melden sie sich im dreieck an')
  - "⨺": [T: "Minuszeichen im Dreieck"]          	#  0x2a3a	(en: 'minus sign in triangle', MathPlayer: 'minus sign in triangle', google: 'minus zeichen im dreieck')
  - "⨻": [T: "Multiplikationszeichen im Dreieck"]	#  0x2a3b	(en: 'multiplication sign in triangle', MathPlayer: 'multiplication sign in triangle', google: 'multiplikationszeichen im dreieck')
@@ -1913,8 +2134,8 @@
  - "⨿": [T: "Verschmelzung oder Koprodukt"]     	#  0x2a3f	(en: 'amalgamation or coproduct', MathPlayer: 'amalgamation or coproduct', google: 'verschmelzung oder koprodukt')
  - "⩀": [T: "Schnittpunkt mit Punkt"]           	#  0x2a40	(en: 'intersection with dot', MathPlayer: 'intersection with dot', google: 'kreuzung mit punkt')
  - "⩁": [T: "Union mit Minuszeichen"]           	#  0x2a41	(en: 'union with minus sign', google: 'gewerkschaft mit minus zeichen')
- - "⩂": [T: "Union mit Overbar"]                	#  0x2a42	(en: 'union with overbar', MathPlayer: 'union with overbar', google: 'gewerkschaft mit overbar')
- - "⩃": [T: "Kreuzung mit Overbar"]             	#  0x2a43	(en: 'intersection with overbar', MathPlayer: 'intersection with overbar', google: 'kreuzung mit überbär')
+ - "⩂": [T: "Vereinigung mit Überstrich"]       	#  0x2a42	(en: 'union with overbar')
+ - "⩃": [T: "Schnittmenge mit Überstrich"]      	#  0x2a43	(en: 'intersection with overbar')
  - "⩄": [T: "Überschneidung mit logischem und"] 	#  0x2a44	(en: 'intersection with logical and', MathPlayer: 'intersection with logical and', google: 'schnittpunkt mit logisch und')
  - "⩅": [T: "Vereinigung mit logischem Or"]     	#  0x2a45	(en: 'union with logical or', MathPlayer: 'union with logical or', google: 'vereinigung mit logisch oder')
  - "⩆": [T: "Vereinigung über dem Schnittpunkt"]	#  0x2a46	(en: 'union above intersection', MathPlayer: 'union above intersection', google: 'union über der kreuzung')
@@ -1926,26 +2147,26 @@
  - "⩌": [T: "Geschlossene Vereinigung mit Serifen"]	#  0x2a4c	(en: 'closed union with serifs', MathPlayer: 'closed union with serifs', google: 'geschlossene vereinigung mit serifen')
  - "⩍": [T: "Geschlossener Schnittpunkt mit Serifen"]	#  0x2a4d	(en: 'closed intersection with serifs', MathPlayer: 'closed intersection with serifs', google: 'geschlossener kreuzung mit serifen')
  - "⩎": [T: "Doppelter Quadratschnitt"]         	#  0x2a4e	(en: 'double square intersection', google: 'doppelquadratische kreuzung')
- - "⩏": [T: "Double Square Union"]              	#  0x2a4f	(en: 'double square union', google: 'doppelquadratische gewerkschaft')
- - "⩐": [T: "Closed Union mit Serifen und Smash-Produkten"]	#  0x2a50	(en: 'closed union with serifs and smash product', MathPlayer: 'closed union with serifs and smash product', google: 'geschlossene vereinigung mit serifen und smash -produkt')
+ - "⩏": [T: "doppelte quadratische Vereinigung"]	#  0x2a4f	(en: 'double square union')
+ - "⩐": [T: "geschlossene Vereinigung mit Serifen und Smash-Produkt"]	#  0x2a50	(en: 'closed union with serifs and smash product')
  - "⩑": [T: "Logisch und mit Punkt oben"]       	#  0x2a51	(en: 'logical and with dot above', google: 'logisch und mit punkt oben')
  - "⩒": [T: "Logisch oder mit Punkt oben"]      	#  0x2a52	(en: 'logical or with dot above', google: 'logisch oder mit punkt oben')
- - "⩓": [T: "double logical and"]               	#  0x2a53
- - "⩔": [T: "double logical or"]                	#  0x2a54
+ - "⩓": [T: "doppeltes logisches Und"]           	#  0x2a53
+ - "⩔": [T: "doppeltes logisches Oder"]         	#  0x2a54
  - "⩕": [T: "Zwei durchschneiden logisch und"]  	#  0x2a55	(en: 'two intersecting logical and', MathPlayer: 'two intersecting logical and', google: 'zwei kreuzende logische und')
  - "⩖": [T: "Zwei sich überschneidende logische Oder"]	#  0x2a56	(en: 'two intersecting logical or', MathPlayer: 'two intersecting logical or', google: 'zwei kreuzende logische oder')
  - "⩗": [T: "Abfallend großes oder"]            	#  0x2a57	(en: 'sloping large or', MathPlayer: 'sloping large or', google: 'groß oder')
  - "⩘": [T: "Abfallend großes und"]             	#  0x2a58	(en: 'sloping large and', MathPlayer: 'sloping large and', google: 'groß und')
  - "⩙": [T: "Logisch oder Überlappend Logisch Und"]	#  0x2a59	(en: 'logical or overlapping logical and', google: 'logisch oder überlappend logisch und')
- - "⩚": [T: "Logisch und mit Middle Stem"]      	#  0x2a5a	(en: 'logical and with middle stem', MathPlayer: 'logical and with middle stem', google: 'logisch und mit mittlerem stiel')
- - "⩛": [T: "Logisch oder mit Middle Stem"]     	#  0x2a5b	(en: 'logical or with middle stem', MathPlayer: 'logical or with middle stem', google: 'logisch oder mit mittlerem stiel')
+ - "⩚": [T: "logisches Und mit Mittelsteg"]     	#  0x2a5a	(en: 'logical and with middle stem')
+ - "⩛": [T: "logisches Oder mit Mittelsteg"]    	#  0x2a5b	(en: 'logical or with middle stem')
  - "⩜": [T: "Logisch und mit Horizontalstrich"] 	#  0x2a5c	(en: 'logical and with horizontal dash', MathPlayer: 'logical and with horizontal dash', google: 'logisch und mit horizontalem armaturenbrett')
  - "⩝": [T: "Logisch oder mit Horizontalstrich"]	#  0x2a5d	(en: 'logical or with horizontal dash', MathPlayer: 'logical or with horizontal dash', google: 'logisch oder mit horizontalem strich')
- - "⩞": [T: "Logisch und mit Double Overbar"]   	#  0x2a5e	(en: 'logical and with double overbar', google: 'logisch und mit doppelter überbärung')
- - "⩟": [T: "Logisch und mit Underbar"]         	#  0x2a5f	(en: 'logical and with underbar', MathPlayer: 'logical and with underbar', google: 'logisch und mit unterbar')
- - "⩠": [T: "Logisch und mit Double Underbar"]  	#  0x2a60	(en: 'logical and with double underbar', google: 'logisch und mit doppelter unterbarung')
- - "⩡": [T: "kleines Vee mit Underbar"]         	#  0x2a61	(en: 'small vee with underbar', google: 'kleiner vee mit unterbar')
- - "⩢": [T: "Logisch oder mit Double Overbar"]  	#  0x2a62	(en: 'logical or with double overbar', google: 'logisch oder mit doppelter überbärung')
+ - "⩞": [T: "logisches Und mit doppeltem Überstrich"]	#  0x2a5e	(en: 'logical and with double overbar')
+ - "⩟": [T: "logisches Und mit Unterstrich"]    	#  0x2a5f	(en: 'logical and with underbar')
+ - "⩠": [T: "logisches Und mit doppeltem Unterstrich"]	#  0x2a60	(en: 'logical and with double underbar')
+ - "⩡": [T: "kleines V mit Unterstrich"]        	#  0x2a61	(en: 'small vee with underbar')
+ - "⩢": [T: "logisches Oder mit doppeltem Überstrich"]	#  0x2a62	(en: 'logical or with double overbar')
  - "⩣": [T: "Logisch oder mit doppelter Unterleiste"]	#  0x2a63	(en: 'logical or with double underbar', google: 'logisch oder mit doppelter unterbarung')
  - "⩤": [T: "Z-Notation Domain Antirestriction"]	#  0x2a64	(en: 'z notation domain antirestriction', google: 'z notation domain antirestriktion')
  - "⩥": [T: "Z Notationsbereich Antirestriction"]	#  0x2a65	(en: 'z notation range antirestriction', google: 'z notation range antirestriktion')
@@ -1964,7 +2185,7 @@
  - "⩲": [T: "Pluszeichen über Gleichheitszeichen"]	#  0x2a72	(en: 'plus sign above equals sign', MathPlayer: 'equals with plus above', google: 'plus -zeichen oben gleiches zeichen')
  - "⩳": [T: "Gleichheitszeichen über Tilde-Operator"]	#  0x2a73	(en: 'equals sign above tilde operator', MathPlayer: 'equals sign above tilde operator', google: 'gleicher vorzeichen über dem tilde -operator')
  - "⩴": [T: "Doppelpunkt gleich"]               	#  0x2a74	(en: 'double colon equal', MathPlayer: 'double colon equal', google: 'doppelter dickdarm gleich')
- - "⩵": [T: "double equal"]                     	#  0x2a75	(en: 'two consecutive equals signs')
+ - "⩵": [T: "doppeltes Gleichheitszeichen"]      	#  0x2a75	(en: 'two consecutive equals signs')
  - "⩶": [T: "Drei aufeinander folgende Gleichheitszeichen"]	#  0x2a76	(en: 'three consecutive equals signs', google: 'drei aufeinanderfolgende anzeichen')
  - "⩷": [T: "Gleichheitszeichen mit zwei Punkten oben und zwei Punkten unten"]	#  0x2a77	(en: 'equals sign with two dots above and two dots below', MathPlayer: 'equals sign with two dots above and two dots below', google: 'gleiches zeichen mit zwei punkten oben und zwei punkten unten')
  - "⩸": [T: "Gleichwertig mit vier Punkten oben"]	#  0x2a78	(en: 'equivalent with four dots above', MathPlayer: 'equivalent with four dots above', google: 'äquivalent mit vier punkten oben')
@@ -1992,8 +2213,8 @@
  - "⪎": [T: "Größer als oben ähnlich oder gleich"]	#  0x2a8e	(en: 'greater than above similar or equal', MathPlayer: 'greater than above similar or equal', google: 'größer als über ähnlich oder gleich')
  - "⪏": [T: "Weniger als oben ähnlich oben größer als"]	#  0x2a8f	(en: 'less than above similar above greater than', MathPlayer: 'less than above similar above greater than', google: 'weniger als über ähnlich oben höher als größer als')
  - "⪐": [T: "Größer als oben Ähnlich oben"]     	#  0x2a90	(en: 'greater than above similar above less than', MathPlayer: 'greater than above similar above less than', google: 'größer als über ähnlich über ähnlichem')
- - "⪑": [T: "less than greater than or equal to"]	#  0x2a91	(en: 'less than above greater than above double line equal')
- - "⪒": [T: "greater than less than or equal to"]	#  0x2a92	(en: 'greater than above less than above double line equal')
+ - "⪑": [T: "kleiner als über größer als über doppelter Gleichheitslinie"]	#  0x2a91	(en: 'less than above greater than above double line equal')
+ - "⪒": [T: "größer als über kleiner als über doppelter Gleichheitslinie"]	#  0x2a92	(en: 'greater than above less than above double line equal')
  - "⪓": [T: "Weniger als oben schräg gleich oben Größer als oben schräg gleich"]	#  0x2a93	(en: 'less than above slanted equal above greater than above slanted equal', MathPlayer: 'less than above slanted equal above greater than above slanted equal', google: 'weniger als über dem überdurchschnittlich überdurchschnittlich überdurchschnittlich ist es gleich')
  - "⪔": [T: "Größer als oben schräg gleich oben kleiner als oben schräg gleich groß"]	#  0x2a94	(en: 'greater than above slanted equal above less than above slanted equal', MathPlayer: 'greater than above slanted equal above less than above slanted equal', google: 'größer als über dem schrägen gleich über dem gleichen schrägen gleich')
  - "⪕": [T: "Schräg gleich oder kleiner als"]   	#  0x2a95	(en: 'slanted equal to or less than', google: 'schräg gleich oder weniger als')
@@ -2011,7 +2232,7 @@
  - "⪡": [T: "Verschachteltes kleiner als"]      	#  0x2aa1	(en: 'double nested less than', MathPlayer: 'nested less than', google: 'doppelt weniger verschachtelt als')
  - "⪢": [T: "Verschachteltes größer als"]       	#  0x2aa2	(en: 'double nested greater than', MathPlayer: 'nested greater than', google: 'doppelt verschachtelt größer als')
  - "⪣": [T: "Doppelt verschachtelt, weniger als mit Unterleiste"]	#  0x2aa3	(en: 'double nested less than with underbar', google: 'doppelte verschachtel weniger als mit underbar')
- - "⪤": [T: "less than greater than overlay"]   	#  0x2aa4	(en: 'greater than overlapping less than')
+ - "⪤": [T: "größer als überlappend mit kleiner als"]	#  0x2aa4	(en: 'greater than overlapping less than')
  - "⪥": [T: "Größer als weniger als"]           	#  0x2aa5	(en: 'greater than beside less than', MathPlayer: 'greater than beside less than', google: 'größer als weniger als weniger als')
  - "⪦": [T: "Weniger als durch Kurve geschlossen"]	#  0x2aa6	(en: 'less than closed by curve', MathPlayer: 'less than closed by curve', google: 'weniger als durch kurve geschlossen')
  - "⪧": [T: "Größer als durch Kurve geschlossen"]	#  0x2aa7	(en: 'greater than closed by curve', MathPlayer: 'greater than closed by curve', google: 'größer als durch kurve geschlossen')
@@ -2058,10 +2279,10 @@
  - "⫐": [T: "Superset geschlossen"]             	#  0x2ad0	(en: 'closed superset', MathPlayer: 'closed superset', google: 'geschlossener superset')
  - "⫑": [T: "Geschlossene Untermenge oder gleich"]	#  0x2ad1	(en: 'closed subset or equal to', MathPlayer: 'closed subset or equal to', google: 'geschlossene untergruppe oder gleich')
  - "⫒": [T: "Superset geschlossen oder gleich"] 	#  0x2ad2	(en: 'closed superset or equal to', MathPlayer: 'closed superset or equal to', google: 'geschlossene superset oder gleich')
- - "⫓": [T: "subset over superset"]             	#  0x2ad3	(en: 'subset above superset')
- - "⫔": [T: "superset over subset"]             	#  0x2ad4	(en: 'superset above subset')
- - "⫕": [T: "subset over subset"]               	#  0x2ad5	(en: 'subset above subset')
- - "⫖": [T: "superset over superset"]           	#  0x2ad6	(en: 'superset above superset')
+ - "⫓": [T: "Teilmenge über Obermenge"]         	#  0x2ad3	(en: 'subset above superset')
+ - "⫔": [T: "Obermenge über Teilmenge"]         	#  0x2ad4	(en: 'superset above subset')
+ - "⫕": [T: "Teilmenge über Teilmenge"]         	#  0x2ad5	(en: 'subset above subset')
+ - "⫖": [T: "Obermenge über Obermenge"]         	#  0x2ad6	(en: 'superset above superset')
  - "⫗": [T: "Superset neben dem Subset"]        	#  0x2ad7	(en: 'superset beside subset', MathPlayer: 'superset beside subset', google: 'superset neben untergruppe')
  - "⫘": [T: "Superset Neben und Joined von Dash mit Subset"]	#  0x2ad8	(en: 'superset beside and joined by dash with subset', MathPlayer: 'superset beside and joined by dash with subset', google: 'superset neben dem dash mit der untergruppe')
  - "⫙": [T: "Element der Öffnung nach unten"]   	#  0x2ad9	(en: 'element of opening downwards', MathPlayer: 'element of opening downwards', google: 'element der abwärts öffnen')
@@ -2071,21 +2292,21 @@
  - "⫝": [T: "Nicht Gabeln"]                     	#  0x2add	(en: 'nonforking', google: 'nicht -forking')
  - "⫞": [T: "Kurzer Linker Tack"]               	#  0x2ade	(en: 'short left tack', google: 'kurzer linker tack')
  - "⫟": [T: "Kurzer Down Tack"]                 	#  0x2adf	(en: 'short down tack', google: 'kurzer tack')
- - "⫠": [T: "Short Up Tack"]                    	#  0x2ae0	(en: 'short up tack', google: 'kurzer tack')
+ - "⫠": [T: "kurzer Aufwärtshaken"]              	#  0x2ae0	(en: 'short up tack', google: 'kurzer tack')
  - "⫡": [T: "Rechtwinklig zu S"]                	#  0x2ae1	(en: 'perpendicular with s', google: 'senkrecht mit s')
  - "⫢": [T: "Vertikales Dreifach-Drehkreuz"]    	#  0x2ae2	(en: 'vertical bar triple right turnstile', google: 'vertikale bar dreifache rechte drehstil')
  - "⫣": [T: "Doppelter vertikaler Balken linkes Drehkreuz"]	#  0x2ae3	(en: 'double vertical bar left turnstile', google: 'doppelte vertikale balken linke drehkreuze')
- - "⫤": [T: "double left turnstile vertical bar"]	#  0x2ae4	(en: 'vertical bar double left turnstile')
+ - "⫤": [T: "vertikaler Strich mit doppeltem linkem Drehkreuz"]	#  0x2ae4	(en: 'vertical bar double left turnstile')
  - "⫥": [T: "Doppelter vertikaler Balken Doppelter linker Drehkreuz"]	#  0x2ae5	(en: 'double vertical bar double left turnstile', google: 'doppelte vertikale balken doppelte linke drehkreuze')
- - "⫦": [T: "Long Dash von Left Member von Double Vertical"]	#  0x2ae6	(en: 'long dash from left member of double vertical', MathPlayer: 'long dash from left member of double vertical', google: 'langer dash vom linken mitglied des doppel vertikalen')
- - "⫧": [T: "Short Down Tack mit Overbar"]      	#  0x2ae7	(en: 'short down tack with overbar', MathPlayer: 'short down tack with overbar', google: 'kurzer tack mit overbar')
- - "⫨": [T: "perpendicular over bar"]           	#  0x2ae8	(en: 'short up tack with underbar')
- - "⫩": [T: "Short Up Tack Über Short Down Tack"]	#  0x2ae9	(en: 'short up tack above short down tack', MathPlayer: 'short up tack above short down tack', google: 'kurzschluss über kurzer tack')
- - "⫪": [T: "Double Down Tack"]                 	#  0x2aea	(en: 'double down tack', google: 'double down tack')
- - "⫫": [T: "Verdoppeln Sie Tack"]              	#  0x2aeb	(en: 'double up tack', MathPlayer: 'double up tack', google: 'doppelte tack')
+ - "⫦": [T: "langer Strich vom linken Teil eines doppelten Vertikalstrichs"]	#  0x2ae6	(en: 'long dash from left member of double vertical', MathPlayer: 'long dash from left member of double vertical', google: 'langer dash vom linken mitglied des doppel vertikalen')
+ - "⫧": [T: "kurzer Abwärtshaken mit Überstrich"]   	#  0x2ae7	(en: 'short down tack with overbar', MathPlayer: 'short down tack with overbar', google: 'kurzer tack mit overbar')
+ - "⫨": [T: "kurzer Aufwärtshaken mit Unterstrich"]	#  0x2ae8	(en: 'short up tack with underbar')
+ - "⫩": [T: "kurzer Aufwärtshaken über kurzem Abwärtshaken"]	#  0x2ae9	(en: 'short up tack above short down tack', MathPlayer: 'short up tack above short down tack', google: 'kurzschluss über kurzer tack')
+ - "⫪": [T: "doppelter Abwärtshaken"]            	#  0x2aea	(en: 'double down tack', google: 'double down tack')
+ - "⫫": [T: "doppelter Aufwärtshaken"]	#  0x2aeb	(en: 'double up tack', MathPlayer: 'double up tack', google: 'doppelte tack')
  - "⫬": [T: "Doppelstrich nicht unterschreiben"]	#  0x2aec	(en: 'double stroke not sign', MathPlayer: 'double stroke not sign', google: 'doppelhub nicht unterschreiben')
  - "⫭": [T: "Umgekehrter Doppelstrich nicht unterschrieben"]	#  0x2aed	(en: 'reversed double stroke not sign', MathPlayer: 'reversed double stroke not sign', google: 'umgekehrter doppelstrich nicht unterschreiben')
- - "⫮": [T: "Teilt sich nicht mit umgekehrten Negationsschrägstrich"]	#  0x2aee	(en: 'does not divide with reversed negation slash', MathPlayer: 'does not divide with reversed negation slash', google: 'teilt sich nicht mit umgekehrter negationsschrägung')
+ - "⫮": [T: "teilt nicht mit umgekehrtem Negationsschrägstrich"]	#  0x2aee	(en: 'does not divide with reversed negation slash', MathPlayer: 'does not divide with reversed negation slash', google: 'teilt sich nicht mit umgekehrter negationsschrägung')
  - "⫯": [T: "Vertikale Linie mit Kreis oben"]   	#  0x2aef	(en: 'vertical line with circle above', MathPlayer: 'vertical line with circle above', google: 'vertikale linie mit dem obigen kreis')
  - "⫰": [T: "Vertikale Linie mit Kreis unten"]  	#  0x2af0	(en: 'vertical line with circle below', MathPlayer: 'vertical line with circle below', google: 'vertikale linie mit kreis unten')
  - "⫱": [T: "Down Tack mit Kreis unten"]        	#  0x2af1	(en: 'down tack with circle below', MathPlayer: 'down tack with circle below', google: 'down tack mit kreis unten')
@@ -2236,7 +2457,7 @@
  - "⸫": [T: "ein punkt über zwei punkte"]       	#  0x2e2b	(en: 'one dot over two dots punctuation', google translation)
  - "⸬": [T: "quadratische vier punkt -interpunktion"]	#  0x2e2c	(en: 'squared four dot punctuation', google translation)
  - "⸭": [T: "fünf punkt mark"]                  	#  0x2e2d	(en: 'five dot mark', google translation)
- - "⸮": [T: "umgekehrter fragezeichen"]         	#  0x2e2e	(en: 'reversed question mark', google translation)
+ - "⸮": [T: "umgekehrtes Fragezeichen"]         	#  0x2e2e	(en: 'reversed question mark', google translation)
  - "ⸯ": [T: "vertikale tilde"]                  	#  0x2e2f	(en: 'vertical tilde', google translation)
  - "⸰": [T: "ringpunkt"]                        	#  0x2e30	(en: 'ring point', google translation)
  - "⸱": [T: "wortseparator mittlerer punkt"]    	#  0x2e31	(en: 'word separator middle dot', google translation)
@@ -2313,29 +2534,29 @@
  - "㋍": [T: "ergs"]                             	#  0x32cd	(google translation)
  - "㋎": [T: "elektronenvolt"]                   	#  0x32ce	(en: 'electron volts', google translation)
  - "㋏": [T: "haftungsschild beschränkt"]        	#  0x32cf	(en: 'limited liability sign', google translation)
- - "㍱": [T: "hectopascals"]                     	#  0x3371	(google translation)
- - "㍲": [T: "daltons"]                          	#  0x3372	(google translation)
+ - "㍱": [T: "hektopascal"]                      	#  0x3371	(google translation)
+ - "㍲": [T: "dalton"]                           	#  0x3372	(google translation)
  - "㍳": [T: "astronomische einheiten"]          	#  0x3373	(en: 'astronomical units', google translation)
  - "㍴": [T: "riegel"]                           	#  0x3374	(en: 'bars', google translation)
  - "㍵": [T: "o v"]                              	#  0x3375	(google translation)
- - "㍶": [T: "parsecs"]                          	#  0x3376	(google translation)
+ - "㍶": [T: "parsec"]                           	#  0x3376	(google translation)
  - "㍷": [T: "dezimeter"]                        	#  0x3377	(en: 'decimeters', google translation)
- - "㍸": [T: "dezimeter quadratisch"]            	#  0x3378	(en: 'decimeters squared', google translation)
- - "㍹": [T: "dezimeter gewonnen"]               	#  0x3379	(en: 'decimeters cubed', google translation)
- - "㍺": [T: "instrumentaleinheiten"]            	#  0x337a	(en: 'instrumental units', google translation)
- - "㎀": [T: "picoamps"]                         	#  0x3380	(google translation)
- - "㎁": [T: "nanoamps"]                         	#  0x3381	(google translation)
- - "㎂": [T: "mikroamps"]                        	#  0x3382	(en: 'microamps', google translation)
- - "㎃": [T: "milliamps"]                        	#  0x3383	(google translation)
- - "㎄": [T: "kiloamps"]                         	#  0x3384	(google translation)
- - "㎅": [T: "kilobytes"]                        	#  0x3385	(google translation)
+ - "㍸": [T: "Quadratdezimeter"]                 	#  0x3378	(en: 'decimeters squared', google translation)
+ - "㍹": [T: "Kubikdezimeter"]                   	#  0x3379	(en: 'decimeters cubed', google translation)
+ - "㍺": [T: "internationale Einheit"]           	#  0x337a	(en: 'instrumental units', google translation)
+ - "㎀": [T: "pikoampere"]                        	#  0x3380	(google translation)
+ - "㎁": [T: "nanoampere"]                        	#  0x3381	(google translation)
+ - "㎂": [T: "mikroampere"]                       	#  0x3382	(en: 'microamps', google translation)
+ - "㎃": [T: "milliampere"]                       	#  0x3383	(google translation)
+ - "㎄": [T: "kiloampere"]                        	#  0x3384	(google translation)
+ - "㎅": [T: "kilobyte"]                          	#  0x3385	(google translation)
  - "㎆": [T: "megabyte"]                         	#  0x3386	(en: 'megabytes', google translation)
  - "㎇": [T: "gigabyte"]                         	#  0x3387	(en: 'gigabytes', google translation)
  - "㎈": [T: "kalorien"]                         	#  0x3388	(en: 'calories', google translation)
  - "㎉": [T: "kilokalorien"]                     	#  0x3389	(en: 'kilocalories', google translation)
- - "㎊": [T: "picofarads"]                       	#  0x338a	(google translation)
- - "㎋": [T: "nanofarads"]                       	#  0x338b	(google translation)
- - "㎌": [T: "mikrofaraden"]                     	#  0x338c	(en: 'microfarads', google translation)
+ - "㎊": [T: "pikofarad"]                        	#  0x338a	(google translation)
+ - "㎋": [T: "nanofarad"]                        	#  0x338b	(google translation)
+ - "㎌": [T: "mikrofarad"]                       	#  0x338c	(en: 'microfarads', google translation)
  - "㎍": [T: "mikrogramm"]                       	#  0x338d	(en: 'micrograms', google translation)
  - "㎎": [T: "milligramm"]                       	#  0x338e	(en: 'milligrams', google translation)
  - "㎏": [T: "kilogramm"]                        	#  0x338f	(en: 'kilograms', google translation)
@@ -2390,9 +2611,9 @@
  - "㏀": [T: "kilo-ohm"]                         	#  0x33c0	(en: 'kilo-ohms', google translation)
  - "㏁": [T: "megaohm"]                          	#  0x33c1	(en: 'megaohms', google translation)
  - "㏂": [T: "attometer"]                        	#  0x33c2	(en: 'attometers', google translation)
- - "㏃": [T: "becquerels"]                       	#  0x33c3	(google translation)
+ - "㏃": [T: "becquerel"]                         	#  0x33c3	(google translation)
  - "㏄": [T: "kubikzentimeter"]                  	#  0x33c4	(en: 'cubic centimeters', google translation)
- - "㏅": [T: "candelas"]                         	#  0x33c5	(google translation)
+ - "㏅": [T: "candela"]                          	#  0x33c5	(google translation)
  - "㏆": [T: "coulombs pro kilogramm"]           	#  0x33c6	(en: 'coulombs per kilogram', google translation)
  - "㏇": [T: "herzzeitvolumen"]                  	#  0x33c7	(en: 'cardiac output', google translation)
  - "㏈": [T: "dezibel"]                          	#  0x33c8	(en: 'decibels', google translation)
@@ -2400,16 +2621,16 @@
  - "㏊": [T: "hektar"]                           	#  0x33ca	(en: 'hectares', google translation)
  - "㏋": [T: "pferdestärke"]                     	#  0x33cb	(en: 'horsepower', google translation)
  - "㏌": [T: "zoll"]                             	#  0x33cc	(en: 'inches', google translation)
- - "㏍": [T: "kilokelvins"]                      	#  0x33cd	(google translation)
+ - "㏍": [T: "kilokelvin"]                       	#  0x33cd	(google translation)
  - "㏎": [T: "kilometer"]                        	#  0x33ce	(en: 'kilometers', google translation)
  - "㏏": [T: "knoten"]                           	#  0x33cf	(en: 'knots', google translation)
  - "㏐": [T: "lumen"]                            	#  0x33d0	(en: 'lumens', google translation)
- - "㏑": [T: "natural log"]                      	#  0x33d1	(google translation)
+ - "㏑": [T: "natürlicher Logarithmus"]          	#  0x33d1	(google translation)
  - "㏒": [T: "logarithmus"]                      	#  0x33d2	(en: 'logarithm', google translation)
  - "㏓": [T: "lux"]                              	#  0x33d3	(google translation)
- - "㏔": [T: "millibarns"]                       	#  0x33d4	(google translation)
- - "㏕": [T: "mühlen"]                           	#  0x33d5	(en: 'mills', google translation)
- - "㏖": [T: "maulwürfe"]                        	#  0x33d6	(en: 'moles', google translation)
+ - "㏔": [T: "millibar"]                         	#  0x33d4	(google translation)
+ - "㏕": [T: "mil"]                              	#  0x33d5	(en: 'mills', google translation)
+ - "㏖": [T: "mol"]                              	#  0x33d6	(en: 'moles', google translation)
  - "㏗": [T: "p h"]                              	#  0x33d7	(google translation)
  - "㏘": [T: "picometer"]                        	#  0x33d8	(en: 'picometers', google translation)
  - "㏙": [T: "teile pro million"]                	#  0x33d9	(en: 'parts per million', google translation)
@@ -2846,8 +3067,11 @@
  - "": [T: "digamma"]                          	#  0xed03	(google translation)
  - "ϝ": [T: "digamma"]                          	#  0x3dd
  - "": [T: ""]                                	#  0xed10	(en: 'd', google translation)
+ - "ⅆ": [T: "d kursiv mit Doppelstrich"]        	#  0x2146	(en: 'd', MathPlayer: 'd', google: 'ⅆ')
  - "": [T: ""]                                	#  0xed11	(en: 'e', google translation)
+ - "ⅇ": [T: "e kursiv mit Doppelstrich"]        	#  0x2147	(en: 'e', MathPlayer: 'e', google: 'ⅇ')
  - "": [T: ""]                                	#  0xed12	(en: 'i', google translation)
+ - "ⅈ": [T: "i kursiv mit Doppelstrich"]        	#  0x2148	(en: 'i', MathPlayer: 'i', google: 'ⅈ')
  - "": [T: ""]                                	#  0xed13	(en: 'j', google translation)
  - "ⅅ":
     - spell: "translate('.', 'ⅅ', 'DD')"       	#  0xed16, 0x2145
@@ -2896,6 +3120,7 @@
  - " ": [T: ""]                                 	#  0x205f
  - "": [T: ""]                                 	#  0xef04
  - "": [T: ""]                                 	#  0xef05
+ - " ": [T: ""]                                 	#  0x2003
  - "": [T: ""]                                 	#  0xef06
  - "": [T: ""]                                 	#  0xef07
  - "": [T: ""]                                 	#  0xef08
@@ -2911,7 +3136,7 @@
  - "": [T: "integral mit quadratisch"]         	#  0xef81	(en: 'integral with square', google translation)
  - "": [T: "integral mit schrägstrich"]        	#  0xef82	(en: 'integral with slash', google translation)
  - "": [T: "umgekehrter integral"]             	#  0xef83	(en: 'reversed integral', google translation)
- - "": [T: "double null über double null"]     	#  0xef90	(en: 'double zero over double zero', google translation)
+ - "": [T: "doppelte Null über doppelter Null"]    	#  0xef90	(en: 'double zero over double zero', google translation)
  - "": [T: "null mit schrägstrich"]            	#  0xef91	(en: 'zero with slash', google translation)
 
  # fraktur chars in math alphabetic block and also MathType private use area

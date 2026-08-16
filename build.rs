@@ -151,6 +151,9 @@ fn zip_entry<W: Write + Seek>(
 /// Zip up each language and braille dir
 /// Note: regional variations (including zh-cn and zh-tw) are zipped together into one zip file
 fn main() {
+    println!("cargo::rerun-if-changed=build.rs");
+    println!("cargo::rerun-if-changed=Rules");
+
     // This doesn't work because the build claims OUT_DIR is not defined(?)
     // let archive = PathBuf::from(concat!(env!("OUT_DIR"),"/rules.zip"));
     if std::env::var("CARGO_FEATURE_INCLUDE_ZIP").is_ok() {
@@ -198,6 +201,5 @@ fn main() {
         if let Err(e) = archive_zip.finish() {
             panic!("Error in zip.finish(): {}", e);
         }
-        println!("cargo::rerun-if-changed=Rules");
     }
 }

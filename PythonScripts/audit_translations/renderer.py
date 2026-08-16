@@ -13,7 +13,9 @@ from rich.panel import Panel
 from rich.table import Table
 
 from .line_resolver import resolve_diff_lines
-from .models import AuditSummary, ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
+from .models.audit import AuditSummary
+from .models.definitions import DefinitionComparisonResult
+from .models.rules import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
 
 console = Console()
 
@@ -152,6 +154,59 @@ def print_warnings(
     return issues
 
 
+def print_definition_findings(
+    result: DefinitionComparisonResult,
+    file_name: str | Path,
+    target_language: str = "tr",
+    source_language: str = "en",
+) -> int:
+    """Render definition issues and informational extras on a dedicated path."""
+    if not result.has_findings:
+        return 0
+
+    display_name = Path(file_name).as_posix()
+    source_label = language_label(source_language)
+    target_label = language_label(target_language)
+    style, icon = ("red", "✗") if result.issue_count else ("blue", "i")
+
+    console.print()
+    console.rule(style="cyan")
+    console.print(f"[{style}]{icon}[/] [bold]{escape(display_name)}[/]")
+    console.print(
+        f"  [dim]{source_label}: {result.source_definition_count} definitions  →  "
+        f"{target_label}: {result.target_definition_count} definitions[/]"
+    )
+    console.rule(style="cyan")
+
+    if result.issue_count:
+        console.print(f"\n  [magenta]≠[/] [bold]Definition Issues[/] [[magenta]{result.issue_count}[/]]")
+
+        for definition in result.missing_definitions:
+            console.print(f"      [dim]•[/] [cyan]{escape(definition.name)}[/]")
+            console.print("          [dim]Missing in Translation[/]")
+            console.print(f"              [dim]• (line {definition.line_number} in {source_label})[/]")
+
+        for mismatch in result.type_mismatches:
+            source_definition = mismatch.source_definition
+            target_definition = mismatch.target_definition
+            console.print(f"      [dim]•[/] [cyan]{escape(source_definition.name)}[/]")
+            console.print("          [dim]Definition Type Mismatch[/]")
+            console.print(
+                f"              [dim]• (line {source_definition.line_number} {source_label}, "
+                f"{target_definition.line_number} {target_label})[/]"
+            )
+            console.print(f"              [green]{source_label}:[/] {source_definition.kind.value}")
+            console.print(f"              [red]{target_label}:[/] {target_definition.kind.value}")
+
+    if result.extra_definitions:
+        console.print(f"\n  [blue]i[/] [bold]Info: Extra Definitions[/] [[blue]{len(result.extra_definitions)}[/]]")
+        for definition in result.extra_definitions:
+            console.print(f"      [dim]•[/] [cyan]{escape(definition.name)}[/]")
+            console.print(f"          [dim](line {definition.line_number} in {target_label})[/]")
+
+    return result.issue_count
+
+
 GREEN_FILE_COUNT_THRESHOLD = 7
 YELLOW_FILE_COUNT_THRESHOLD = 4
 
@@ -185,6 +240,21 @@ def print_audit_summary(summary: AuditSummary) -> None:
         ("Untranslated text", summary.total_untranslated, "yellow" if summary.total_untranslated else "green"),
         ("Rule differences", summary.total_differences, "magenta" if summary.total_differences else "green"),
         ("Extra rules", summary.total_extra, "blue" if summary.total_extra else None),
+        (
+            "Missing definitions",
+            summary.total_missing_definitions,
+            "red" if summary.total_missing_definitions else "green",
+        ),
+        (
+            "Definition type mismatches",
+            summary.total_definition_type_mismatches,
+            "magenta" if summary.total_definition_type_mismatches else "green",
+        ),
+        (
+            "Extra definitions",
+            summary.total_extra_definitions,
+            "blue" if summary.total_extra_definitions else None,
+        ),
     ]:
         table.add_row(label, f"[{color}]{value}[/]" if color else str(value))
     console.print(Panel(table, style="cyan"))

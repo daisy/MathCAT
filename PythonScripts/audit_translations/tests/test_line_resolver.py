@@ -3,7 +3,7 @@ Unit tests for line_resolver.py.
 """
 
 from ..line_resolver import first_structure_mismatch, resolve_diff_lines
-from ..models import RuleDifference, RuleInfo
+from ..models.rules import RuleDifference, RuleInfo
 
 
 def _make_rule(name: str, line_map: dict, line_number: int = 1) -> RuleInfo:

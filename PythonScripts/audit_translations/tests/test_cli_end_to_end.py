@@ -20,6 +20,86 @@ def fixture_rules_dir() -> Path:
     return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
 
 
+def make_definitions_rules_dir(tmp_path: Path) -> Path:
+    """Create definitions with one missing, extra, and mismatched entry."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "en"
+    target_dir = rules_dir / "de"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+    (source_dir / "definitions.yaml").write_text(
+        "- Missing: [one]\n- Different: [one]\n",
+        encoding="utf-8",
+    )
+    (target_dir / "definitions.yaml").write_text(
+        "- Extra: {key: value}\n- Different: {key: value}\n",
+        encoding="utf-8",
+    )
+    return rules_dir
+
+
+def run_definitions_cli(tmp_path, capsys, monkeypatch, only: str) -> str:
+    """Run the definitions CLI fixture with one existing --only category."""
+    rules_dir = make_definitions_rules_dir(tmp_path)
+    args = ["de", "--rules-dir", str(rules_dir), "--file", "definitions.yaml", "--only", only]
+    monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
+
+    audit_cli.main()
+    return strip_ansi(capsys.readouterr().out)
+
+
+def test_cli_definitions_missing_filter_shows_only_missing_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI missing filter renders missing definitions but no extra or mismatch findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "missing")
+
+    assert "Files to check: 1" in output
+    assert "Missing in Translation" in output
+    assert "Definition Type Mismatch" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_extra_filter_shows_only_extra_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI extra filter renders informational target-only definitions and no issues."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "extra")
+
+    assert "Files to check: 1" in output
+    assert "Info: Extra Definitions" in output
+    assert "Missing in Translation" not in output
+    assert "Definition Type Mismatch" not in output
+
+
+def test_cli_definitions_diffs_filter_shows_only_type_mismatches(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI diffs filter renders type mismatches but no coverage findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "diffs")
+
+    assert "Files to check: 1" in output
+    assert "Definition Type Mismatch" in output
+    assert "Missing in Translation" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_untranslated_filter_shows_no_definition_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI untranslated filter produces no definition-specific findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "untranslated")
+
+    assert "Files to check: 1" in output
+    assert "Missing definitions" in output
+    assert "Definition type mismatches" in output
+    assert "Extra definitions" in output
+    assert "Definition Issues" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_all_filter_shows_every_definition_finding(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI all filter renders missing, extra, and type-mismatch definition findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "all")
+
+    assert "Files to check: 1" in output
+    assert "Missing in Translation" in output
+    assert "Definition Type Mismatch" in output
+    assert "Info: Extra Definitions" in output
+
+
 def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     """
     Ensure --only also filters visible rich subgroup sections.

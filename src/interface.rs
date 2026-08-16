@@ -56,47 +56,68 @@ thread_local! {
 }
 
 /// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
+///
+/// Installed once. Under `#[cfg(test)]` the previous hook (cargo's) is chained so assert failures
+/// still print normally; production stays silent and relies on [`report_any_panic`].
 pub fn init_panic_handler() {
     use std::panic;
+    use std::sync::Once;
 
-    panic::set_hook(Box::new(|info| {
-        let location = info.location()
-            .map(|l| format!("{}:{}", l.file(), l.line()))
-            .unwrap_or_else(|| "unknown".to_string());
+    static INSTALL: Once = Once::new();
+    INSTALL.call_once(|| {
+        let previous = panic::take_hook();
+        panic::set_hook(Box::new(move |info| {
+            let location = info.location()
+                .map(|l| format!("{}:{}", l.file(), l.line()))
+                .unwrap_or_else(|| "unknown".to_string());
 
-        let payload = info.payload();
-        let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
-            s.to_string()
-        } else if let Some(s) = payload.downcast_ref::<String>() {
-            s.clone()
-        } else {
-            "Unknown panic payload".to_string()
-        };
+            let payload = info.payload();
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                s.to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "Unknown panic payload".to_string()
+            };
 
-        // Use try_with/try_borrow_mut to ensure the hook never panics itself
-        let _ = PANIC_INFO.try_with(|cell| {
-            if let Ok(mut slot) = cell.try_borrow_mut() {
-                *slot = Some((msg, location, 0));
+            // Use try_with/try_borrow_mut to ensure the hook never panics itself
+            let _ = PANIC_INFO.try_with(|cell| {
+                if let Ok(mut slot) = cell.try_borrow_mut() {
+                    *slot = Some((msg, location, 0));
+                }
+            });
+
+            // cargo test (and other previous hooks) still print; production ATs do not want that spam.
+            if cfg!(test) {
+                previous(info);
             }
-        });
-    }));
+        }));
+    });
 }
 
 pub fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
     match result {
         Ok(val) => val,
-        Err(_) => {
-            // Retrieve the smuggled info
-            let details = PANIC_INFO.with(|cell| cell.borrow_mut().take());
-            
-            if let Some((msg, file, line)) = details {
-                Err(anyhow::anyhow!(
+        Err(payload) => {
+            // Prefer details captured by the hook (includes file:line).
+            if let Some((msg, file, line)) = PANIC_INFO.with(|cell| cell.borrow_mut().take()) {
+                return Err(anyhow::anyhow!(
                     "MathCAT crash! Please report the following information: '{}' at {}:{}",
                     msg, file, line
-                ))
-            } else {
-                Err(anyhow::anyhow!("MathCAT crash! -- please report"))
+                ));
             }
+            // Fallback: catch_unwind always provides the payload even if the hook did not run.
+            let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+                (*s).to_string()
+            } else if let Some(s) = payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                return Err(anyhow::anyhow!("MathCAT crash! -- please report"));
+            };
+            Err(anyhow::anyhow!(
+                "MathCAT crash! Please report the following information: '{}'",
+                msg
+            ))
         }
     }
 } 
@@ -155,10 +176,6 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
 
-    // Strip out processing instructions and comments -- these are not MathML and can cause DOS problems in the parser
-    static PROCESSING_INSTRUCTION: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"<\?[\s\S]{1,2048}\?>"#).unwrap());
-    static XML_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?s)"#).unwrap());
-
     // These have some length limits to avoid DOS attacks via long strings
     static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
     static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
@@ -183,10 +200,8 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
                                                                      
-            let mathml_str = XML_COMMENT.replace_all(mathml_str, "");
-            let mathml_str = PROCESSING_INSTRUCTION.replace_all(&mathml_str, "");
             // FIX: need to deal with character data and convert to something the parser knows
-            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+            let mathml_str = HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
@@ -342,13 +357,6 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
             bail!("'LanguageAuto' can not have the value 'Auto'");
         }
     }
-
-    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
-        if let Some(error_string) = rules.borrow().get_error() {
-            bail!("{}", error_string);
-        }
-        Ok(())
-    })?;
 
     // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
     let pref_manager = crate::prefs::PreferenceManager::get();
@@ -1365,11 +1373,11 @@ mod tests {
         set_mathml(good_mathml)?;
         let bad_mathml = "<math><mi>&xabc;</mi></math>";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text()? == "");
+        assert!(get_spoken_text()?.is_empty());
         set_mathml(good_mathml)?;
         let bad_mathml = "<math>garbage";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text()? == "");
+        assert!(get_spoken_text()?.is_empty());
         return Ok( () );
         });
     }
@@ -1396,7 +1404,7 @@ mod tests {
                 <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
             </mfrac>
         </math>";
-        set_mathml(&expr)?;
+        set_mathml(expr)?;
         let speech = get_spoken_text()?;
         // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
         assert!(!speech.contains("&lt;"));

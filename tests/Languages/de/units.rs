@@ -40,7 +40,7 @@ fn prefix_sweep() -> Result<()> {
         <mi intent=":unit">qg</mi>
         </math>"#;
     test("de", "SimpleSpeak", expr,
-        "quetta-gramms, komma ronna-gramms, komma yotta-gramms, komma zetta-gramms, komma exa-gramms, komma peta-gramms, komma tera-gramms, komma giga-gramms, komma mega-gramms, komma kilo-gramms, komma hekto-gramms, komma deka-gramms, komma dezi-gramms, komma zenti-gramms, komma milli-gramms, komma mikro-gramms, komma nano-gramms, komma piko-gramms, komma femto-gramms, komma atto-gramms, komma zepto-gramms, komma yocto-gramms, komma ronto-gramms, komma quecto-gramms")?;
+        "quetta-gramm, komma ronna-gramm, komma yotta-gramm, komma zetta-gramm, komma exa-gramm, komma peta-gramm, komma tera-gramm, komma giga-gramm, komma mega-gramm, komma kilo-gramm, komma hekto-gramm, komma deka-gramm, komma dezi-gramm, komma zenti-gramm, komma milli-gramm, komma mikro-gramm, komma nano-gramm, komma piko-gramm, komma femto-gramm, komma atto-gramm, komma zepto-gramm, komma yocto-gramm, komma ronto-gramm, komma quecto-gramm")?;
         return Ok(());
 
 }
@@ -61,9 +61,46 @@ fn si_base() -> Result<()> {
         <mn>1</mn><mi intent=":unit">sec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">sec</mi>
     </math>"#;
     test("de", "SimpleSpeak", expr,
-        "1 ampere, komma 2 amperes, komma 1 candela, komma 2 candelas, komma 1 kelvin, komma 2 kelvins, komma 1 kelvin, komma 2 kelvins, komma 1 gramm komma 2 gramms, komma 1 meter komma 2 meters, komma 1 mol komma 2 mols, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes, komma 1 sekunde, komma 2 sekundes")?;
+        "1 ampere, komma 2 ampere, komma 1 candela, komma 2 candela, komma 1 kelvin, komma 2 kelvin, komma 1 kelvin, komma 2 kelvin, komma 1 gramm komma 2 gramm, komma 1 meter komma 2 meter, komma 1 mol komma 2 mol, komma 1 sekunde, komma 2 sekunden, komma 1 sekunde, komma 2 sekunden, komma 1 sekunde, komma 2 sekunden, komma 1 sekunde, komma 2 sekunden")?;
         return Ok(());
 
+}
+
+#[test]
+fn si_unit_plural_regression() -> Result<()> {
+    let expr = r#"<math>
+        <mn>2</mn><mi intent=":unit">kg</mi><mo>,</mo>
+        <mn>2</mn><mi intent=":unit">°C</mi><mo>,</mo>
+        <mn>2</mn><mi intent=":unit">s</mi>
+    </math>"#;
+    test("de", "ClearSpeak", expr,
+        "2 kilo-gramm, komma 2 grad celsius, komma 2 sekunden")?;
+    Ok(())
+}
+
+#[test]
+fn english_rute_plural_regression() -> Result<()> {
+    let expr = r#"<math>
+        <mn>1</mn><mi intent=":unit">rd</mi><mo>,</mo>
+        <mn>2</mn><mi intent=":unit">rd</mi>
+    </math>"#;
+    test("de", "SimpleSpeak", expr, "1 rute komma 2 ruten")?;
+    Ok(())
+}
+
+#[test]
+fn non_si_unit_plural_regression() -> Result<()> {
+    let expr = r#"<math>
+        <mn>1</mn><mi intent=":unit">h</mi><mo>,</mo><mn>2</mn><mi intent=":unit">h</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">d</mi><mo>,</mo><mn>2</mn><mi intent=":unit">d</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">w</mi><mo>,</mo><mn>2</mn><mi intent=":unit">w</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">pc</mi><mo>,</mo><mn>2</mn><mi intent=":unit">pc</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">Kib</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Kib</mi>
+    </math>"#;
+    test("de", "SimpleSpeak", expr,
+        "1 stunde, komma 2 stunden, komma 1 tag komma 2 tage, komma 1 woche komma 2 wochen, komma 1 parsec, komma 2 parsec, komma 1 hektar, komma 2 hektar, komma 1 kibi-bit, komma 2 kibi-bit")?;
+    Ok(())
 }
 
 /*
