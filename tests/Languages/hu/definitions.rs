@@ -719,7 +719,7 @@ fn separator_tests() -> Result<()> {
 #[test]
 fn general_concepts_tests() -> Result<()> {
     let tests = vec![
-        // Unary structural
+// Unary structural
         ("fenced-group", "bekerített csoport x"),
         ("highlight", "x kiemelt"),
         ("least-common-denominator", "legkisebb közös nevező x vessző, y vessző, z"), // add x, y , z ...

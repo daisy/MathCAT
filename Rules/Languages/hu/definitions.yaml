@@ -133,7 +133,7 @@
     "set": "function= ; halmaz: a halmaz",
     "set-difference":"function=különbséghalmaz | és || infix=mínusz",
     "complement":"function=komplemens",
-    "empty-set":"nofix=üres halmaz",
+    "empty-set":"function=üres halmaz",
     "cardinality":"function=számosság", # NOTE: does not have a defined speech template in website
     "list":"function=lista",
     "tuple": "function= ; tuple: a tuple",
