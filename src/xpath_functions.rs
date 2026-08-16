@@ -1646,25 +1646,35 @@ impl Function for CountTableColumns {
     }
 }
 
-/// Return whether a one-based mtable boundary has a visible column line.
+#[derive(Clone, Copy)]
+enum TableLineAxis {
+    Row,
+    Column,
+}
+
+/// Return whether a one-based mtable boundary has a visible line on the given axis.
 ///
-/// MathML repeats the final `columnlines` value for remaining boundaries.
-/// Boundaries after the final column, and values other than `solid` and
-/// `dashed`, do not describe a visible separator.
-fn has_visible_column_line(table: Element, boundary: usize) -> bool {
+/// MathML repeats the final line style for remaining boundaries. Boundaries after
+/// the final row or column, and values other than `solid` and `dashed`, do not
+/// describe a visible separator.
+fn has_visible_table_line(table: Element, boundary: usize, axis: TableLineAxis) -> bool {
     if boundary == 0 || !is_tag(table, "mtable") {
         return false;
     }
 
-    let Ok((_, Value::Number(column_count))) = CountTableDims::new().count_table_dims(table) else {
+    let Ok((Value::Number(row_count), Value::Number(column_count))) = CountTableDims::new().count_table_dims(table) else {
         return false;
     };
-    if boundary as f64 >= column_count {
+    let (line_count, attribute_name) = match axis {
+        TableLineAxis::Row => (row_count, "rowlines"),
+        TableLineAxis::Column => (column_count, "columnlines"),
+    };
+    if boundary as f64 >= line_count {
         return false;
     }
 
     return table
-        .attribute_value("columnlines")
+        .attribute_value(attribute_name)
         .map(|values| {
             matches!(
                 values.split_whitespace().take(boundary).last(),
@@ -1674,22 +1684,42 @@ fn has_visible_column_line(table: Element, boundary: usize) -> bool {
         .unwrap_or(false);
 }
 
+/// Validate and convert XPath arguments before delegating to the typed table-line helper.
+fn evaluate_has_visible_table_line<'d>(
+    args: Vec<Value<'d>>,
+    function_name: &str,
+    axis: TableLineAxis,
+) -> Result<Value<'d>, Error> {
+    let mut args = Args(args);
+    args.exactly(2)?;
+    let boundary = args.pop_number()?;
+    let table = validate_one_node(args.pop_nodeset()?, function_name)?;
+    let Node::Element(table) = table else {
+        return Err(Error::Other { what: format!("{function_name} requires an mtable element") });
+    };
+    if !boundary.is_finite() || boundary < 1.0 || boundary.fract() != 0.0 {
+        return Ok(Value::Boolean(false));
+    }
+    return Ok(Value::Boolean(has_visible_table_line(table, boundary as usize, axis)));
+}
+
+/// XPath function reporting whether an mtable column boundary has a visible line.
 struct HasVisibleColumnLine;
 impl Function for HasVisibleColumnLine {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-        let mut args = Args(args);
-        args.exactly(2)?;
-        let boundary = args.pop_number()?;
-        let table = validate_one_node(args.pop_nodeset()?, "HasVisibleColumnLine")?;
-        let Node::Element(table) = table else {
-            return Err(Error::Other { what: "HasVisibleColumnLine requires an mtable element".to_string() });
-        };
-        if !boundary.is_finite() || boundary < 1.0 || boundary.fract() != 0.0 {
-            return Ok(Value::Boolean(false));
-        }
-        return Ok(Value::Boolean(has_visible_column_line(table, boundary as usize)));
+        evaluate_has_visible_table_line(args, "HasVisibleColumnLine", TableLineAxis::Column)
+    }
+}
+
+/// XPath function reporting whether an mtable row boundary has a visible line.
+struct HasVisibleRowLine;
+impl Function for HasVisibleRowLine {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        evaluate_has_visible_table_line(args, "HasVisibleRowLine", TableLineAxis::Row)
     }
 }
 
@@ -1719,6 +1749,7 @@ pub fn register_mathcat_xpath_functions(context: &mut Context) {
     context.set_function("CountTableRows", CountTableRows);
     context.set_function("CountTableColumns", CountTableColumns);
     context.set_function("HasVisibleColumnLine", HasVisibleColumnLine);
+    context.set_function("HasVisibleRowLine", HasVisibleRowLine);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1947,33 +1978,100 @@ mod tests {
         });
     }
 
-    fn check_column_line(mathml: &str, boundary: usize, expected: bool) -> Result<()> {
+    fn check_table_line(mathml: &str, boundary: usize, axis: TableLineAxis, expected: bool) -> Result<()> {
         let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math = get_element(&package);
         let table = as_element(math.children()[0]);
-        assert_eq!(has_visible_column_line(table, boundary), expected);
+        assert_eq!(has_visible_table_line(table, boundary, axis), expected);
         return Ok(());
     }
 
-    /// Verifies visible column-line styles, repeated styles, and boundaries outside the table.
+    /// Verifies visible table-line styles, repeated styles, and boundaries outside the table.
     #[test]
-    fn visible_column_lines() -> Result<()> {
+    fn visible_table_lines() -> Result<()> {
         return xpath_test(|| {
-        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
-        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 2, true)?;
-        check_column_line("<math><mtable columnlines=' none  solid\n dashed '><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 3, true)?;
+            // The three values map in order to the three boundaries between four columns.
+            let mixed_column_lines: &str = "<math>
+            <mtable columnlines=' none  solid dashed '>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                    <mtd>column 3</mtd>
+                    <mtd>column 4</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(mixed_column_lines, 1, TableLineAxis::Column, false)?;
+            check_table_line(mixed_column_lines, 2, TableLineAxis::Column, true)?;
+            check_table_line(mixed_column_lines, 3, TableLineAxis::Column, true)?;
 
-        check_column_line("<math><mtable columnlines='solid dashed'><mtr><mtd/><mtd/><mtd/><mtd/></mtr></mtable></math>", 3, true)?;
+            // The final `dashed` value repeats for the third column boundary.
+            let repeated_column_line: &str = "<math>
+            <mtable columnlines='solid dashed'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                    <mtd>column 3</mtd>
+                    <mtd>column 4</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(repeated_column_line, 3, TableLineAxis::Column, true)?;
 
-        // No column-line style is specified.
-        check_column_line("<math><mtable><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
-        // The boundary is explicitly invisible.
-        check_column_line("<math><mtable columnlines='none'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
-        // Only `solid` and `dashed` describe visible column lines.
-        check_column_line("<math><mtable columnlines='double'><mtr><mtd/><mtd/></mtr></mtable></math>", 1, false)?;
-        // Boundary 2 is after the final column, not between two columns.
-        check_column_line("<math><mtable columnlines='solid'><mtr><mtd/><mtd/></mtr></mtable></math>", 2, false)?;
-        return Ok(());
+            // A table without `columnlines` has no visible column boundary.
+            let no_column_lines: &str = "<math>
+            <mtable>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(no_column_lines, 1, TableLineAxis::Column, false)?;
+
+            // `none` explicitly makes the column boundary invisible.
+            let invisible_column_line: &str = "<math>
+            <mtable columnlines='none'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(invisible_column_line, 1, TableLineAxis::Column, false)?;
+
+            // Only `solid` and `dashed` describe visible table lines.
+            let unsupported_column_line: &str = "<math>
+            <mtable columnlines='double'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(unsupported_column_line, 1, TableLineAxis::Column, false)?;
+
+            // Boundary 2 is after the final column, not between two columns.
+            let two_column_table: &str = "<math><mtable columnlines='solid'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(two_column_table, 2, TableLineAxis::Column, false)?;
+
+            // Four rows have three interior boundaries. `none` applies after row 1,
+            // `dashed` applies after row 2, and the final `dashed` repeats after row 3.
+            let mixed_row_lines: &str = "<math>
+            <mtable rowlines='none dashed'>
+                <mtr><mtd>row 1</mtd></mtr>
+                <mtr><mtd>row 2</mtd></mtr>
+                <mtr><mtd>row 3</mtd></mtr>
+                <mtr><mtd>row 4</mtd></mtr>
+            </mtable></math>";
+            check_table_line(mixed_row_lines, 1, TableLineAxis::Row, false)?;
+            check_table_line(mixed_row_lines, 2, TableLineAxis::Row, true)?;
+            check_table_line(mixed_row_lines, 3, TableLineAxis::Row, true)?;
+            // Boundary 4 is after the final row, not between two rows.
+            check_table_line(mixed_row_lines, 4, TableLineAxis::Row, false)?;
+            // Boundary zero is invalid for both axes.
+            check_table_line(mixed_row_lines, 0, TableLineAxis::Row, false)?;
+            return Ok(());
         });
     }
 

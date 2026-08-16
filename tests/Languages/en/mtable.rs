@@ -291,6 +291,52 @@ fn dashed_augmented_matrix_separator() -> Result<()> {
     Ok(())
 }
 
+/// A horizontal line is announced once, after the row it separates from the next row.
+#[test]
+fn matrix_row_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("en", "ClearSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2 row separator; row 2; 3, 4")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2 row separator; row 2; 3, 4")?;
+    Ok(())
+}
+
+/// Horizontal and vertical lines use distinct announcements at their respective boundaries.
+#[test]
+fn matrix_row_and_column_separators() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='dashed' columnlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("en", "ClearSpeak", expr, "the 2 by 2 augmented matrix; row 1; 1 separator, 2 row separator; row 2; 3 separator, 4")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 2 augmented matrix; row 1; 1 separator, 2 row separator; row 2; 3 separator, 4")?;
+    Ok(())
+}
+
 #[test]
 fn matrix_2x3_labeled() -> Result<()> {
     let expr = "
