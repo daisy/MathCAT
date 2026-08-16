@@ -13,6 +13,7 @@ mod Languages {
     mod pl;
     mod sv;
     mod nb;
+    mod ur;
     mod de;
     mod fr;
     mod vi {

@@ -1,0 +1,43 @@
+---
+- name: fraction
+  tag: fraction
+  match: "."
+  replace: [x: "*[1]", t: "بٹا", x: "*[2]", pause: short]
+
+- name: square-root
+  tag: square-root
+  match: "."
+  replace: [x: "*[1]", t: "کا جذر المربع", pause: short]
+
+- name: cube-root
+  tag: root
+  match: "*[2][self::m:mn][.='3']"
+  replace: [x: "*[1]", t: "کا جذر المکعب", pause: short]
+
+- name: root
+  tag: root
+  match: "."
+  replace: [x: "*[1]", t: "کا", x: "*[2]", t: "درجے کا جذر", pause: short]
+
+- name: square
+  tag: power
+  match: "*[2][self::m:mn][.='2']"
+  replace: [x: "*[1]", bookmark: "*[2]/@id", t: "کا مربع"]
+
+- name: cube
+  tag: power
+  match: "*[2][self::m:mn][.='3']"
+  replace: [x: "*[1]", bookmark: "*[2]/@id", t: "کا مکعب"]
+
+- name: power
+  tag: power
+  match: "."
+  replace: [x: "*[1]", t: "کی قوت", x: "*[2]", pause: short]
+
+- include: "SharedRules/calculus.yaml"
+- include: "SharedRules/geometry.yaml"
+- include: "SharedRules/linear-algebra.yaml"
+- include: "SharedRules/general.yaml"
+- include: "SharedRules/default.yaml"
+
+- include: "../en/ClearSpeak_Rules.yaml"
