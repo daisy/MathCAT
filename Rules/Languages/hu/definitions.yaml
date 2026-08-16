@@ -1,14 +1,71 @@
 ---
 - include: "../../definitions.yaml"
 
-# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
-# If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
-# If no ":"s are used, the same speech is used for all forms
-# If bracketing words make sense, they are separated with ";"s
-# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
-# If there are multiple fixities (e.g., see transpose), they are separated with "||"
-#   for readability, spaces can be used around any of the delimiter characters
-# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+# IntentMappings Syntax:
+#
+# This section defines how each "intent" is spoken for various grammatical forms (fixities such as "prefix", "infix", "postfix", and "function"),
+#  along with supporting different verbosity levels.
+# The syntax is a little bit complicated, but allows a declarative syntax so you don't have to write as many rules.
+#
+# For each intent, you specify spoken forms for one or more fixities using the syntax below.
+#
+# - Each mapping has the form:
+#     "<intent>": "<fixity1>=<speech1> || <fixity2>=<speech2> || ...",
+#   or just
+#     "<intent>": "<speech>",
+#   where <speech> is used for all forms if fixity and '=' are omitted.
+#
+# - If an intent has multiple fixities, separate them with "||". Spaces are allowed around delimiters for readability.
+# - If only one ":" is present in *<speech>*, it provides the 'terse' form, and the following string is used for both 'medium' and 'verbose'.
+# - If more than one ":" is present, the string is split into 'terse', 'medium', and 'verbose' forms, in that order (each separated by ":").
+# - If no ":" is present, the same spoken form is used for all styles.
+#
+# - Use semicolons ";" to divide opening, main, and closing bracketing words within a speech string, where such words make sense.
+# - If an intent has multiple fixities but a definition does not specify one, the first fixity listed is chosen by default.
+#
+# Functions and argument glue:
+# - The "|" character delimits options describing how to glue arguments together when speaking function arguments.
+# - Arity templates (multiple "|" options, or one option with ','-separated glue words): glue-word count
+#   implies arity; the final argument is preceded by "of". Example: "sum | over | from,to"
+#      - 1 arg:  "sum of x"
+#      - 2 args: "sum over i of x"
+#      - 3 args: "sum from i to n of x"
+#   If no option matches the argument count, separators fall back to "comma".
+# - Binary separator (exactly one "|" option, no commas in it): after "of", that word joins the two args.
+#   Example: "quotient": "function=integer part | divided by" → "integer part of x divided by y"
+#   If there are not exactly two args, separators fall back to "comma" (no real n-ary use of these words).
+#
+# BNF-like description:
+#
+#   IntentMappingsEntry ::= <intent> ":" <intent_speech>
+#
+#   <intent_speech> ::= <fixity_speech> ( "||" <fixity_speech> )*
+#                    | <simple_speech>
+#
+#   <fixity_speech> ::= <fixity> "=" <speech_options>
+#
+#   <fixity> ::= "prefix" | "infix" | "postfix" | "function" | "nofix" | "silent"
+#
+#   <speech_options> ::= <speech_string>
+#                     | <speech_string> "|" <arg_glue> ( "|" <arg_glue> )*
+#
+#   <speech_string> ::= text
+#       # May use ":" to separate terse:medium:verbose forms.
+#       # May use ";" for bracketing (opening; main; closing).
+#
+#   <arg_glue> ::= text
+#       # One option, no commas: binary separator after "of" (e.g. "divided by").
+#       # One option with "," or several "|" options: arity templates
+#       # (glue-word count = arg_count - 1; last arg preceded by "of").
+#       # Unmatched arity (or binary glue with ≠2 args): fall back to "comma".
+#
+#   <simple_speech> ::= <speech_string> (applies to all fixities)
+#
+# Example:
+#   "absolute-value": "function= ; absolute value: the absolute value: the absolute value; end absolute value"
+#   "sum": "function=sum | over | from,to"
+#   "quotient": "function=integer part | divided by"
+#
 - IntentMappings: {
     "indexed-by": "infix= alsó index kezdete; alsó index; alsó index vége: alsó index vége: alsó index vége",
     "say-super": "infix=felső index: felső index: felső index",   # used with 'mo' for superscripts (e.g, "<")
@@ -30,14 +87,14 @@
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
     "mixed-fraction":"infix=és", # NOTE: in website says function, but follow infix speech pattern.
     "greatest-common-divisor": "function=a legnagyobb közös osztó",
-    "quotient":"function=egész rész osztva", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
+    "quotient":"function=egész rész | osztva", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
     "evaluated-at":"infix=értékelve || postfix=értékként",
-    "remainder":"function=a maradék, osztva",
+    "remainder":"function=a maradék | osztva",
     "max":"function=max",
     "min":"function=min",
     "power":"infix=a hatványra",
     "root":"function=root",
-    "imaginary-part": "a képzeletbeli rész",
+    "imaginary-part": "function=a képzeletbeli rész: a képzeletbeli rész: a képzeletbeli rész",
     "least-common-multiple": "function=lcm: a legkisebb közös többszörös: a legkisebb közös többszörös",
     "complex-conjugate":"function=Komplex konjugált",
     "complex-arg":"function=argumentum",
@@ -74,15 +131,15 @@
     "tends-to-from-below":"infix=alulról indul",
     ### Sets
     "set": "function= ; halmaz: a halmaz",
-    "set-difference":"function=különbséghalmaz || infix=mínusz || postfix=különbséghalmaza", # NOTE: not tested
+    "set-difference":"function=különbséghalmaz | és || infix=mínusz",
     "complement":"function=komplemens",
-    "empty-set":"function=üres halmaz",
+    "empty-set":"nofix=üres halmaz",
     "cardinality":"function=számosság", # NOTE: does not have a defined speech template in website
     "list":"function=lista",
     "tuple": "function= ; tuple: a tuple",
     ### Sequence and Series
-    "sum":"function= ; összegzés : összeg ; ", #: sum over : sum from; to",
-    "product":"function=szorzat || function=szorzat vége || function=szorzat innen ide",
+    "sum": "function=összeg",
+    "product":"function=szorzat",
 
     ### Elementary classical functions
     "sine":"function=szinusz: szinusz",
@@ -118,7 +175,7 @@
     "variance":"function=variencia",
     "median":"function=medián",
     "mode":"function=mód",
-    "conditional-probability":"function=valószínűség; adott", # NOTE: Check test
+    "conditional-probability":"function=valószínűség",
 
 
     ### Linear Algebra
@@ -133,7 +190,7 @@
     "unit-vector":"prefix=egységvektor",
 
     "identity-matrix":"nofix=identitásmátrix", # NOTE: no function specified
-    "transpose":"function=transzponált || postfix=transzponált", # postfix needs testing
+    "transpose":"postfix=transzponált || function=transzponált",
     "dimensional-product":"infix=a(z)", # INFIX
 
 
@@ -164,10 +221,11 @@
     ### General Concepts 
     "fenced-group":"function=bekerített csoport", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
-    "ordered-pair": "function= ; a pár; és", # Needs to be tested, test converts "and" to "comma,"
+    "ordered-pair": "function=a pár | és", # Needs to be tested, test converts "and" to "comma,"
     "highlight":"postfix=kiemelt",
     "least-common-denominator":"function=legkisebb közös nevező",
     "rate":"infix=per",
+    "translation":"function=fordítás",
     "constraint":"infix= ; feltétellel; ", 
 
     "binomial-coefficient":"infix=választ",
@@ -269,7 +327,7 @@
     ## Default fixity nofix
     "diameter":"nofix=átmérő: átmérő",
     "distance":"nofix=távolság; távolság: távolság",
-    "probability":"nofix=P: valószínűség",
+    "probability":"nofix=P: valószínűség || function=valószínűség",
     "radius":"nofix=r: sugár",
     "volume":"nofix=hangerő: hangerő || function=hangerő",
     "exponential-e":"nofix=e",
