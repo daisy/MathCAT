@@ -1361,6 +1361,9 @@
               then: [t: "⠱"]
 
 -
+  # Arbitrary numbers of pre-/post-scripts via mmultiscripts: (issue #234).
+  # process-order: most braille uses [prescripts, base, postscripts].
+  # left-labels rule above stays custom (Phase 3).
   name: default
   tag: mmultiscripts
   match: "."
@@ -1369,64 +1372,65 @@
   - NumChildren: "count(*)"
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) - count($Prescripts))]"
   replace:
-  - test:
-      if: "$Prescripts"
-      then:
+  - mmultiscripts:
+      process-order: [prescripts, base, postscripts]
+      base:
+      - x: "*[1]"
+      prescript-sub:
       - test:
-          if: "not($Prescripts[1][self::m:none])"
+          if: "not($Subscript[self::m:none])"
           then:
           - t: "⠡"
           - test:
-            - if: "$Prescripts[1][self::m:mn and translate(., '0123456789', '')='']"
+            - if: "$Subscript[self::m:mn and translate(., '0123456789', '')='']"
               then:
-              - x: "BrailleChars(translate($Prescripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+              - x: "BrailleChars(translate($Subscript, '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
             - else:
-              - x: "$Prescripts[1]"
+              - x: "$Subscript"
           - test:
-              if: "not($Prescripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[1][.='∞'])"
+              if: "not($Subscript[self::m:mn and translate(., '0123456789', '')='']) and not($Subscript[.='∞'])"
               then: [t: "⠱"]
+      prescript-super:
       - test:
-          if: "not($Prescripts[2][self::m:none])"
+          if: "not($Superscript[self::m:none])"
           then:
           - t: "⠌"
           - test:
-            - if: "$Prescripts[2][self::m:mn and translate(., '0123456789', '')='']"
+            - if: "$Superscript[self::m:mn and translate(., '0123456789', '')='']"
               then:
-              - x: "BrailleChars(translate($Prescripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+              - x: "BrailleChars(translate($Superscript, '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
             - else:
-              - x: "$Prescripts[2]"
+              - x: "$Superscript"
           - test:
-              if: "not($Prescripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Prescripts[2][.='∞'])"
+              if: "not($Superscript[self::m:mn and translate(., '0123456789', '')='']) and not($Superscript[.='∞'])"
               then: [t: "⠱"]
-  - x: "*[1]"
-  - test:
-      if: "$Postscripts"
-      then:
+      postscript-sub:
       - test:
-          if: "not($Postscripts[1][self::m:none])"
+          if: "not($Subscript[self::m:none])"
           then:
           - t: "⠡"
           - test:
-            - if: "$Postscripts[1][self::m:mn and translate(., '0123456789', '')='']"
+            - if: "$Subscript[self::m:mn and translate(., '0123456789', '')='']"
               then:
-              - x: "BrailleChars(translate($Postscripts[1], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+              - x: "BrailleChars(translate($Subscript, '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
             - else:
-              - x: "$Postscripts[1]"
+              - x: "$Subscript"
           - test:
-              if: "not($Postscripts[1][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[1][.='∞'])"
+              if: "not($Subscript[self::m:mn and translate(., '0123456789', '')='']) and not($Subscript[.='∞'])"
               then: [t: "⠱"]
+      postscript-super:
       - test:
-          if: "not($Postscripts[2][self::m:none])"
+          if: "not($Superscript[self::m:none])"
           then:
           - t: "⠌"
           - test:
-            - if: "$Postscripts[2][self::m:mn and translate(., '0123456789', '')='']"
+            - if: "$Superscript[self::m:mn and translate(., '0123456789', '')='']"
               then:
-              - x: "BrailleChars(translate($Postscripts[2], '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
+              - x: "BrailleChars(translate($Superscript, '0123456789', '\ue000\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009'), 'Russian')"
             - else:
-              - x: "$Postscripts[2]"
+              - x: "$Superscript"
           - test:
-              if: "not($Postscripts[2][self::m:mn and translate(., '0123456789', '')='']) and not($Postscripts[2][.='∞'])"
+              if: "not($Superscript[self::m:mn and translate(., '0123456789', '')='']) and not($Superscript[.='∞'])"
               then: [t: "⠱"]
 
 -

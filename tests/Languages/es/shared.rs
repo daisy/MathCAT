@@ -101,9 +101,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 postscripts, subscript i superscript j subscript k subscript l")?;
+            "cap r with 4 postscripts, subscript i and superscript none subscript none and superscript j subscript k and superscript none subscript l and superscript none")?;
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "cap r with 4 postscripts, sub i super j sub k sub l")?;
+            "cap r with 4 postscripts, sub i and super none sub none and super j sub k and super none sub l and super none")?;
             return Ok(());
 
 }
@@ -115,7 +115,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "cap r with 4 prescripts, pre subscript cap i, pre superscript cap j and alternating prescripts cap k none cap l none end prescripts and with 5 postscripts, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts")?;
+            "cap r with 4 prescripts, pre subscript cap i and pre superscript none, pre subscript none and pre superscript cap j, pre subscript cap k and pre superscript none, pre subscript cap l and pre superscript none and with 5 postscripts, subscript i and superscript none subscript none and superscript j subscript k and superscript none subscript l and superscript none subscript m and superscript none")?;
             return Ok(());
 
 }

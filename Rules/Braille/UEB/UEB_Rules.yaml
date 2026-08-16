@@ -440,6 +440,8 @@
       then: [t: "W"]
 
 -
+   # Arbitrary numbers of pre-/post-scripts via mmultiscripts: (issue #234).
+   # process-order: most braille uses [prescripts, base, postscripts].
    name: default
    tag: mmultiscripts
    match: "."
@@ -449,203 +451,71 @@
    - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
    - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
    replace:
-   - test:
-      if: "$Prescripts"
-      then:
-      - test:
-         if: "not($Prescripts[1][self::m:none])"
-         then:
-         - with:
-            variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-            replace:
-            - t: "1⠢"
-            - test:
-                if: "NeedsToBeGrouped($Prescripts[1], 'UEB', true())"
-                then:
-                - t: "1⠣"
-                - x: "$Prescripts[1]"
-                - t: "1⠜"
-                else: [x: "$Prescripts[1]"]
-      - test:
-         if: "not($Prescripts[2][self::m:none])"
-         then:
-         - with:
-            variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-            replace:
-            - t: "1⠔"
-            - test:
-                if: "NeedsToBeGrouped($Prescripts[2], 'UEB', false())"
-                then:
-                - t: "1⠣"
-                - x: "$Prescripts[2]"
-                - t: "1⠜"
-                else: [x: "$Prescripts[2]"]
-      - test:
-         if: "count($Prescripts)>2"
-         then:
-         - test:
-            if: "not($Prescripts[3][self::m:none])"
-            then:
-            - with:
+   - mmultiscripts:
+       process-order: [prescripts, base, postscripts]
+       base:
+       - x: "*[1]"
+       prescript-sub:
+       - test:
+           if: "not($Subscript[self::m:none])"
+           then:
+           - with:
                variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
                replace:
                - t: "1⠢"
                - test:
-                  if: "NeedsToBeGrouped($Prescripts[3], 'UEB', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Prescripts[3]"
-                  - t: "1⠜"
-                  else: [x: "$Prescripts[3]"]
-         - test:
-            if: "not($Prescripts[4][self::m:none])"
-            then:
-            - with:
+                   if: "NeedsToBeGrouped($Subscript, 'UEB', $ScriptIndex=1)"
+                   then:
+                   - t: "1⠣"
+                   - x: "$Subscript"
+                   - t: "1⠜"
+                   else: [x: "$Subscript"]
+       prescript-super:
+       - test:
+           if: "not($Superscript[self::m:none])"
+           then:
+           - with:
                variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
                replace:
                - t: "1⠔"
                - test:
-                  if: "NeedsToBeGrouped($Prescripts[4], 'UEB', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Prescripts[4]"
-                  - t: "1⠜"
-                  else: [x: "$Prescripts[4]"]
-         - test:
-            if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
-            then: [x: "$Prescripts[position() > 4]"]
-
-   - x: "*[1]"
-   - test:
-      if: "$Postscripts"
-      then:
-      - test:
-         if: "not($Postscripts[1][self::m:none])"
-         then:
-         - with:
-            variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-            replace:
-            - t: "1⠢"
-            - test:
-                if: "NeedsToBeGrouped($Postscripts[1], 'UEB', false())"
-                then:
-                - t: "1⠣"
-                - x: "$Postscripts[1]"
-                - t: "1⠜"
-                else: [x: "$Postscripts[1]"]
-      - test:
-         if: "not($Postscripts[2][self::m:none])"
-         then:
-         - with:
-            variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-            replace:
-            - t: "1⠔"
-            - test:
-                if: "NeedsToBeGrouped($Postscripts[2], 'UEB', false())"
-                then:
-                - t: "1⠣"
-                - x: "$Postscripts[2]"
-                - t: "1⠜"
-                else: [x: "$Postscripts[2]"]
-      - test:
-         if: "count($Postscripts)>2"
-         then:
-         - test:
-            if: "not($Postscripts[3][self::m:none])"
-            then:
-            - with:
+                   if: "NeedsToBeGrouped($Superscript, 'UEB', false())"
+                   then:
+                   - t: "1⠣"
+                   - x: "$Superscript"
+                   - t: "1⠜"
+                   else: [x: "$Superscript"]
+       postscript-sub:
+       - test:
+           if: "not($Subscript[self::m:none])"
+           then:
+           - with:
                variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
                replace:
                - t: "1⠢"
                - test:
-                  if: "NeedsToBeGrouped($Postscripts[3], 'UEB', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Postscripts[3]"
-                  - t: "1⠜"
-                  else: [x: "$Postscripts[3]"]
-         - test:
-            if: "not($Postscripts[4][self::m:none])"
-            then:
-            - with:
+                   if: "NeedsToBeGrouped($Subscript, 'UEB', false())"
+                   then:
+                   - t: "1⠣"
+                   - x: "$Subscript"
+                   - t: "1⠜"
+                   else: [x: "$Subscript"]
+       postscript-super:
+       - test:
+           if: "not($Superscript[self::m:none])"
+           then:
+           - with:
                variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
                replace:
                - t: "1⠔"
                - test:
-                  if: "NeedsToBeGrouped($Postscripts[4], 'UEB', false())"
-                  then:
-                  - t: "1⠣"
-                  - x: "$Postscripts[4]"
-                  - t: "1⠜"
-                  else: [x: "$Postscripts[4]"]
-         - test:
-            if: "count($Postscripts)>4"
-            then:
-            - test:
-               if: "not($Postscripts[5][self::m:none])"
-               then:
-               - with:
-                  variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-                  replace:
-                  - t: "1⠢"
-                  - test:
-                      if: "NeedsToBeGrouped($Postscripts[5], 'UEB', false())"
-                      then:
-                      - t: "1⠣"
-                      - x: "$Postscripts[5]"
-                      - t: "1⠜"
-                      else: [x: "$Postscripts[5]"]
-            - test:
-               if: "not($Postscripts[6][self::m:none])"
-               then:
-               - with:
-                  variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-                  replace:
-                  - t: "1⠔"
-                  - test:
-                      if: "NeedsToBeGrouped($Postscripts[6], 'UEB', false())"
-                      then:
-                      - t: "1⠣"
-                      - x: "$Postscripts[6]"
-                      - t: "1⠜"
-                      else: [x: "$Postscripts[6]"]
-            - test:
-               if: "count($Postscripts)>6"
-               then:
-               - test:
-                  if: "not($Postscripts[7][self::m:none])"
-                  then:
-                  - with:
-                     variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-                     replace:
-                     - t: "1⠢"
-                     - test:
-                        if: "NeedsToBeGrouped($Postscripts[7], 'UEB', false())"
-                        then:
-                        - t: "1⠣"
-                        - x: "$Postscripts[7]"
-                        - t: "1⠜"
-                        else: [x: "$Postscripts[7]"]
-               - test:
-                  if: "not($Postscripts[8][self::m:none])"
-                  then:
-                  - with:
-                     variables: [NewScriptContext: "in"]   # value doesn't matter -- just can't be empty string
-                     replace:
-                     - t: "1⠔"
-                     - test:
-                        if: "NeedsToBeGrouped($Postscripts[8], 'UEB', false())"
-                        then:
-                        - t: "1⠣"
-                        - x: "$Postscripts[8]"
-                        - t: "1⠜"
-                        else: [x: "$Postscripts[8]"]
-               - test:
-                  if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
-                  then:
-                  - x: "$Postscripts[position() > 8]"
+                   if: "NeedsToBeGrouped($Superscript, 'UEB', false())"
+                   then:
+                   - t: "1⠣"
+                   - x: "$Superscript"
+                   - t: "1⠜"
+                   else: [x: "$Superscript"]
    - t: "#"   # signal end script/numeric mode
-                  
 
 -
   # Note: @notation can contain more than one value

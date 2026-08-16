@@ -408,6 +408,8 @@ enum Replacement {
     SetVariables(Box<SetVariables>),
     Insert(Box<InsertChildren>),
     Translate(TranslateExpression),
+    /// Special-case for `mmultiscripts`: process base, then each pre/post script pair (#234).
+    Mmultiscripts(Box<MmultiscriptsReplacement>),
 }
 
 impl fmt::Display for Replacement {
@@ -423,6 +425,7 @@ impl fmt::Display for Replacement {
                 Replacement::SetVariables(v) => v.to_string(),
                 Replacement::Insert(ic) => ic.to_string(),
                 Replacement::Translate(x) => x.to_string(),
+                Replacement::Mmultiscripts(m) => m.to_string(),
             }
         );
     }
@@ -487,6 +490,9 @@ impl Replacement {
             "translate" => {
                 return Ok( Replacement::Translate( TranslateExpression::build(value)
                     .context("while trying to evaluate value of 'speak:'")? ) );
+            },
+            "mmultiscripts" => {
+                return Ok( Replacement::Mmultiscripts( MmultiscriptsReplacement::build(value)? ) );
             },
             _ => {
                 bail!("Unknown 'replace' command ({}) with value: {}", key, yaml_to_string(value, 0));
@@ -581,6 +587,206 @@ impl InsertChildren {
         }
         
     }    
+}
+
+/// Replacement used when `mmultiscripts:` is encountered in a rule (issue #234).
+/// Requires `process-order` listing `base`, `prescripts`, and `postscripts` exactly once
+/// (speech typically `[base, prescripts, postscripts]`; most braille `[prescripts, base, postscripts]`).
+/// Within each script phase, pairs run sub then super.
+/// For each pair, `$Subscript`, `$Superscript`, and `$ScriptIndex` (1-based) are defined.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum MmultiscriptsPhase {
+    Base,
+    Prescripts,
+    Postscripts,
+}
+
+#[derive(Debug, Clone)]
+struct MmultiscriptsReplacement {
+    process_order: [MmultiscriptsPhase; 3],
+    base: ReplacementArray,
+    prescript_sub: ReplacementArray,
+    prescript_super: ReplacementArray,
+    postscript_sub: ReplacementArray,
+    postscript_super: ReplacementArray,
+}
+
+#[cfg_attr(coverage, coverage(off))]
+impl fmt::Display for MmultiscriptsReplacement {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let order = self.process_order.iter().map(|p| match p {
+            MmultiscriptsPhase::Base => "base",
+            MmultiscriptsPhase::Prescripts => "prescripts",
+            MmultiscriptsPhase::Postscripts => "postscripts",
+        }).collect::<Vec<_>>().join(", ");
+        return write!(f,
+            "mmultiscripts:\n  process-order: [{order}]\n  base: {}\n  prescript-sub: {}\n  \
+             prescript-super: {}\n  postscript-sub: {}\n  postscript-super: {}",
+            self.base, self.prescript_sub, self.prescript_super, self.postscript_sub, self.postscript_super);
+    }
+}
+
+impl MmultiscriptsReplacement {
+    fn build(dict: &Yaml) -> Result<Box<MmultiscriptsReplacement>> {
+        if dict.as_hash().is_none() {
+            bail!("'mmultiscripts' value should be a dictionary with keys 'process-order', 'base', \
+                   'prescript-sub', 'prescript-super', 'postscript-sub', and 'postscript-super'");
+        }
+        return Ok( Box::new( MmultiscriptsReplacement {
+            process_order: Self::build_process_order(dict)?,
+            base: Self::optional_replacements(dict, "base")?,
+            prescript_sub: Self::optional_replacements(dict, "prescript-sub")?,
+            prescript_super: Self::optional_replacements(dict, "prescript-super")?,
+            postscript_sub: Self::optional_replacements(dict, "postscript-sub")?,
+            postscript_super: Self::optional_replacements(dict, "postscript-super")?,
+        } ) );
+    }
+
+    fn build_process_order(dict: &Yaml) -> Result<[MmultiscriptsPhase; 3]> {
+        let value = &dict["process-order"];
+        if value.is_badvalue() {
+            bail!("mmultiscripts requires 'process-order: [base, prescripts, postscripts]' \
+                   (or another permutation of those three phases)");
+        }
+        let Some(items) = value.as_vec() else {
+            bail!("mmultiscripts 'process-order' must be an array of three phase names \
+                   (base, prescripts, postscripts); found {}", yaml_to_string(value, 0));
+        };
+        if items.len() != 3 {
+            bail!("mmultiscripts 'process-order' must list exactly three phases; found {}", items.len());
+        }
+        let mut seen_base = false;
+        let mut seen_pre = false;
+        let mut seen_post = false;
+        let mut order = [MmultiscriptsPhase::Base; 3];
+        for (i, item) in items.iter().enumerate() {
+            let name = as_str_checked(item)
+                .with_context(|| format!("mmultiscripts 'process-order' entry #{}", i + 1))?;
+            let phase = match name {
+                "base" => {
+                    if seen_base {
+                        bail!("mmultiscripts 'process-order' lists 'base' more than once");
+                    }
+                    seen_base = true;
+                    MmultiscriptsPhase::Base
+                },
+                "prescripts" => {
+                    if seen_pre {
+                        bail!("mmultiscripts 'process-order' lists 'prescripts' more than once");
+                    }
+                    seen_pre = true;
+                    MmultiscriptsPhase::Prescripts
+                },
+                "postscripts" => {
+                    if seen_post {
+                        bail!("mmultiscripts 'process-order' lists 'postscripts' more than once");
+                    }
+                    seen_post = true;
+                    MmultiscriptsPhase::Postscripts
+                },
+                _ => bail!("mmultiscripts 'process-order' unknown phase '{name}'; \
+                           expected base, prescripts, or postscripts"),
+            };
+            order[i] = phase;
+        }
+        if !(seen_base && seen_pre && seen_post) {
+            bail!("mmultiscripts 'process-order' must include base, prescripts, and postscripts exactly once");
+        }
+        return Ok(order);
+    }
+
+    fn optional_replacements(dict: &Yaml, key: &str) -> Result<ReplacementArray> {
+        let value = &dict[key];
+        if value.is_badvalue() {
+            return Ok( ReplacementArray::build_empty() );
+        }
+        return ReplacementArray::build(value)
+            .with_context(|| format!("mmultiscripts '{key}'"));
+    }
+
+    /// Collect 1-based child indices for each (sub, super) pair of postscripts and of prescripts.
+    #[allow(clippy::type_complexity)]  // adding extra typing is noise
+    fn collect_script_pairs(mathml: Element) -> Result<(Vec<(usize, usize)>, Vec<(usize, usize)>)> {
+        let children: Vec<Element> = mathml.children().iter().filter_map(|c| c.element()).collect();
+        if children.is_empty() {
+            bail!("mmultiscripts has no children");
+        }
+        // children[0] is the base; walk the rest looking for <mprescripts/>
+        let mut i = 1;
+        let mut postscripts = Vec::new();
+        while i < children.len() {
+            if as_str!(name(children[i])) == "mprescripts" {
+                i += 1;
+                break;
+            }
+            if i + 1 >= children.len() {
+                break; // unpaired trailing child -- ignore (matches prior xpath logic)
+            }
+            postscripts.push((i + 1, i + 2)); // convert to 1-based positions for *[n]
+            i += 2;
+        }
+        let mut prescripts = Vec::new();
+        while i + 1 < children.len() {
+            prescripts.push((i + 1, i + 2));
+            i += 2;
+        }
+        return Ok( (postscripts, prescripts) );
+    }
+
+    fn pair_with(sub_idx: usize, super_idx: usize, script_index: usize,
+                 sub_reps: &ReplacementArray, super_reps: &ReplacementArray) -> Result<Replacement> {
+        let mut variables = VariableDefinitions::new(3);
+        variables.push(VariableDefinition {
+            name: "Subscript".to_string(),
+            value: MyXPath::new(format!("*[{sub_idx}]"))?,
+        });
+        variables.push(VariableDefinition {
+            name: "Superscript".to_string(),
+            value: MyXPath::new(format!("*[{super_idx}]"))?,
+        });
+        variables.push(VariableDefinition {
+            name: "ScriptIndex".to_string(),
+            value: MyXPath::new(script_index.to_string())?,
+        });
+        let mut replacements = Vec::with_capacity(sub_reps.replacements.len() + super_reps.replacements.len());
+        replacements.extend_from_slice(&sub_reps.replacements);
+        replacements.extend_from_slice(&super_reps.replacements);
+        return Ok( Replacement::With(Box::new(With {
+            variables,
+            replacements: ReplacementArray { replacements },
+        })) );
+    }
+
+    fn append_script_pairs(expanded: &mut Vec<Replacement>,
+                           pairs: &[(usize, usize)],
+                           sub_reps: &ReplacementArray,
+                           super_reps: &ReplacementArray) -> Result<()> {
+        for (i, &(sub_idx, super_idx)) in pairs.iter().enumerate() {
+            expanded.push( Self::pair_with(sub_idx, super_idx, i + 1, sub_reps, super_reps)? );
+        }
+        return Ok(());
+    }
+
+    fn replace<'c, 's:'c, 'm: 'c, T:TreeOrString<'c, 'm, T>>(&self, rules_with_context: &mut SpeechRulesWithContext<'c, 's,'m>, mathml: Element<'c>) -> Result<T> {
+        let (postscripts, prescripts) = Self::collect_script_pairs(mathml)?;
+        let mut expanded = Vec::with_capacity(
+            self.base.replacements.len() + 2 * (prescripts.len() + postscripts.len())
+        );
+        for phase in self.process_order {
+            match phase {
+                MmultiscriptsPhase::Base => {
+                    expanded.extend_from_slice(&self.base.replacements);
+                },
+                MmultiscriptsPhase::Prescripts => {
+                    Self::append_script_pairs(&mut expanded, &prescripts, &self.prescript_sub, &self.prescript_super)?;
+                },
+                MmultiscriptsPhase::Postscripts => {
+                    Self::append_script_pairs(&mut expanded, &postscripts, &self.postscript_sub, &self.postscript_super)?;
+                },
+            }
+        }
+        return ReplacementArray { replacements: expanded }.replace(rules_with_context, mathml);
+    }
 }
 
 
@@ -2675,6 +2881,9 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
                 },
                 Replacement::Translate(id) => {
                     id.replace(self, mathml)?                     
+                },
+                Replacement::Mmultiscripts(m) => {
+                    m.replace(self, mathml)?
                 },
             }
         )

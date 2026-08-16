@@ -285,10 +285,9 @@
   - T: "felett"        # phrase(x modified with y 'above' it)
 
 - name: default
-  #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
-  #   If there are more, we just dump them out without regard to sup/super :-(
-  # FIX: this could use more special cases 
-  # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  # Arbitrary numbers of pre-/post-scripts via the special `mmultiscripts:` replacement (issue #234).
+  # For each pair, $Subscript / $Superscript / $ScriptIndex (1-based) are set.
+  # process-order is required: speech uses [base, prescripts, postscripts]; most braille uses [prescripts, base, postscripts].
   tag: mmultiscripts
   match: "."
   variables:
@@ -297,67 +296,44 @@
   - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
   replace:
-  - x: "*[1]"
-  - test:
-      if: "$Prescripts" # more common case
-      then:
-      - with:
-          variables:
-          - PreSubscript: "IfThenElse($Verbosity='Verbose', 'pre subscript', 'pre sub')"
-          - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'pre superscript', 'pre super')"
-          replace:
-          - test: # only bother announcing if there is more than one prescript
+  - with:
+      variables:
+      - PreSubscript: "IfThenElse($Verbosity='Verbose', 'pre subscript', 'pre sub')"
+      - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'pre superscript', 'pre super')"
+      - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subscript', 'sub')"
+      - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'superscript', 'super')"
+      replace:
+      - mmultiscripts:
+          process-order: [base, prescripts, postscripts]
+          base:
+          - x: "*[1]"
+          - test: # only bother announcing if there is more than one prescript pair
               if: "count($Prescripts) > 2"
               then:
-              - T: "preskriptek"      # phrase(substitute x 'with' y)
+              - T: "preskriptek"      # phrase(in this equation certain 'prescripts' apply)
               - x: "count($Prescripts) div 2"
               - pause: short
+          prescript-sub:
+          - x: "$PreSubscript"
           - test:
-              if: "not($Prescripts[1][self::m:none])"
-              then:
-              - x: "$PreSubscript"
-              - x: "$Prescripts[1]"
+              if: "$Subscript[self::m:none]"
+              then: [t: "semmi"]
+              else: [x: "$Subscript"]
+          prescript-super:
+          - T: "és"      # phrase(10 is greater than 8 'and' less than 15)
+          - x: "$PreSuperscript"
           - test:
-              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
-              then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
+              if: "$Superscript[self::m:none]"
+              then: [t: "semmi"]
+              else: [x: "$Superscript"]
           - test:
-              if: "not($Prescripts[2][self::m:none])"
-              then:
-              - x: "$PreSuperscript"
-              - x: "$Prescripts[2]"
-          - pause: short
-          - test:
-              if: "count($Prescripts) > 2" # more common case
-              then:
-              - test:
-                  if: "not($Prescripts[3][self::m:none])"
-                  then:
-                  - x: "$PreSubscript"
-                  - x: "$Prescripts[3]"
-              - test:
-                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [T: "és"]      # phrase(10 is grater than 8 'and' less than 15)
-              - test:
-                  if: "not($Prescripts[4][self::m:none])"
-                  then:
-                  - x: "$PreSuperscript"
-                  - x: "$Prescripts[4]"
-              - test:
-                  if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
-                  then:
-                  - T: "és váltakozó preskriptek"      # phrase(in this case there are values 'and alternating prescripts')
-                  - x: "$Prescripts[position() > 4]"
-                  - T: "preskriptek vége"      # phrase(This is where 'end prescripts' occurs)
-  - test:
-      if: "$Postscripts"
-      then:
-      - with:
-          variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subscript', 'sub')"
-          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'superscript', 'super')"
-          replace:
-          - test: # only bother announcing if there is more than one postscript
-              if: "count($Postscripts) > 2"
+              # Pause after each pair except the last when there are multiple pairs;
+              # always pause after a single pair (matches prior default rule).
+              if: "count($Prescripts) <= 2 or $ScriptIndex < count($Prescripts) div 2"
+              then: [pause: short]
+          postscript-sub:
+          - test: # announce once before the first postscript pair when there is more than one pair
+              if: "$ScriptIndex=1 and count($Postscripts) > 2"
               then:
               - test:
                   if: "$Prescripts"
@@ -365,73 +341,18 @@
               - T: "posskriptek"      # phrase(this material includes several 'postscripts')
               - x: "count($Postscripts) div 2"
               - pause: short
+          - x: "$PostSubscript"
           - test:
-              if: "not($Postscripts[1][self::m:none])"
-              then:
-              - x: "$PostSubscript"
-              - x: "$Postscripts[1]"
+              if: "$Subscript[self::m:none]"
+              then: [t: "semmi"]
+              else: [x: "$Subscript"]
+          postscript-super:
+          - T: "és"      # phrase(10 is greater than 8 'and' less than 15)
+          - x: "$PostSuperscript"
           - test:
-              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
-              then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
-          - test:
-              if: "not($Postscripts[2][self::m:none])"
-              then:
-              - x: "$PostSuperscript"
-              - x: "$Postscripts[2]"
-          - test:
-              if: "count($Postscripts) > 2"
-              then:
-              - test:
-                  if: "not($Postscripts[3][self::m:none])"
-                  then:
-                  - x: "$PostSubscript"
-                  - x: "$Postscripts[3]"
-              - test:
-                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
-              - test:
-                  if: "not($Postscripts[4][self::m:none])"
-                  then:
-                  - x: "$PostSuperscript"
-                  - x: "$Postscripts[4]"
-              - test:
-                  if: "count($Postscripts) > 4"
-                  then:
-                  - test:
-                      if: "not($Postscripts[5][self::m:none])"
-                      then:
-                      - x: "$PostSubscript"
-                      - x: "$Postscripts[5]"
-                  - test:
-                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [T: "és"]      # phrase(10 is greater than 8 'and' less than 15)
-                  - test:
-                      if: "not($Postscripts[6][self::m:none])"
-                      then:
-                      - x: "$PostSuperscript"
-                      - x: "$Postscripts[6]"
-                  - test:
-                      if: "count($Postscripts) > 6"
-                      then:
-                      - test:
-                          if: "not($Postscripts[7][self::m:none])"
-                          then:
-                          - x: "$PostSubscript"
-                          - x: "$Postscripts[7]"
-                      - test:
-                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [T: "és"]      # phrase(10 is less than 15 'and' greater than 5)
-                      - test:
-                          if: "not($Postscripts[8][self::m:none])"
-                          then:
-                          - x: "$PostSuperscript"
-                          - x: "$Postscripts[8]"
-                      - test:
-                          if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
-                          then:
-                          - T: "és váltakozó szkriptek"      # phrase(this situation involves complexities 'and alternating scripts')
-                          - x: "$Postscripts[position() > 8]"
-                          - T: "szkriptek vége"      # phrase(At this point 'end scripts' occurs)
+              if: "$Superscript[self::m:none]"
+              then: [t: "semmi"]
+              else: [x: "$Superscript"]
 
 - name: default
   tag: [mtable, array]

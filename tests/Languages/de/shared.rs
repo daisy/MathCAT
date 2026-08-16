@@ -118,9 +118,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "groß r mit 4 Postskripten, Index i Hochstellung j Index k Index l")?;
+            "groß r mit 4 Postskripten, Index i und Hochstellung nichts Index nichts und Hochstellung j Index k und Hochstellung nichts Index l und Hochstellung nichts")?;
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "groß r mit 4 Postskripten, sub i super j sub k sub l")?;
+            "groß r mit 4 Postskripten, sub i und super nichts sub nichts und super j sub k und super nichts sub l und super nichts")?;
             return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "groß r mit 4 Präskripten, vorangestellter Index groß i, vorangestellte Hochstellung groß j und abwechselnde präskripte groß k none groß l none ende der präskripte und mit 5 Postskripten, Index i Hochstellung j Index k Index l und wechselnde skripte m none ende der skripte")?;
+            "groß r mit 4 Präskripten, vorangestellter Index groß i und vorangestellte Hochstellung nichts, vorangestellter Index nichts und vorangestellte Hochstellung groß j, vorangestellter Index groß k und vorangestellte Hochstellung nichts, vorangestellter Index groß l und vorangestellte Hochstellung nichts und mit 5 Postskripten, Index i und Hochstellung nichts Index nichts und Hochstellung j Index k und Hochstellung nichts Index l und Hochstellung nichts Index m und Hochstellung nichts")?;
             return Ok(());
 
 }
