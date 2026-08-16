@@ -22,7 +22,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("hu", "SimpleSpeak", expr, 
-        "a súlyozott, b tilde, c rövid, b ellenőrzés, c súlyozott; plusz, r hacsek karakter mint repülő ékezet; plusz; x pont, y pont, z dupla pont, u hármas pont, v négyes pont; plusz x kalap, plusz vektor kezdete t")?;
+        "a súlyozott, b tilde, c rövid, b ellenőrzés, c súlyozott; plusz, r hacsek karakter mint repülő ékezet, plusz; x pont, y pont, z dupla pont, u hármas pont, v négyes pont; plusz x kalap, plusz vektor kezdete t")?;
             return Ok(());
 
 }
@@ -483,7 +483,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl; merőleges nagy b jobbra nyíl")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -569,7 +569,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl; merőleges nagy b jobbra nyíl")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }
