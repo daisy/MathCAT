@@ -27,7 +27,7 @@
   tag: mrow
   match: "not(*)"
   replace:
-  - t: " " # say nothing -- placeholder
+  - T: " " # say nothing -- placeholder
 
 - name: default
   tag: mrow
@@ -214,13 +214,13 @@
           else:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "superscript"]
+              then: [T: "apice"]
               else: [T: "apice"]
           - x: "*[last()]"
           - test:
               if: "$Verbosity='Verbose'"
               then: [T: "fine apice"]
-              else: [t: "end super"]
+              else: [T: "fine apice"]
 
 - name: default
   tag: munder
@@ -345,7 +345,7 @@
               then:
               - test:
                   if: "$Prescripts"
-                  then: [t: "and"]      # phrase(10 is greater than 8 'and' less than 15)
+                  then: [T: "e"]      # phrase(10 is greater than 8 'and' less than 15)
               - T: "con"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
               - T: "indici a destra"      # phrase(this material includes several 'postscripts')
@@ -436,7 +436,7 @@
   - test:
       if: "NumColumns=1"
       then: [T: "colonna"]      # phrase(the table with 3 rows and 1 'column')
-      else: [t: "colonne"]      # phrase(the table with 3 rows and 4 'columns')
+      else: [T: "colonne"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
   - x: "*"
 
@@ -576,7 +576,7 @@
       then: [T: "freccia orizzontale a due punte", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [t: "freccia diagonale in alto a due punte", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [T: "freccia diagonale in alto a due punte", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
       then: [T: "freccia diagonale in basso a due punte", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')

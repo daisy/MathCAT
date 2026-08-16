@@ -1109,7 +1109,7 @@
   tag: none
   match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
   replace:
-  - t: "" # don't say anything
+  - T: "" # don't say anything
 
 - name: ignore-intent-wrapper
   tag: intent-wrapper

@@ -29,7 +29,7 @@
 
  - "0-9": [T: "."]                              	# 	(en: '.')
 
- - " ": [t: " "]                                  # 0x20
+ - " ": [T: " "]                                  # 0x20
 
  - "!": [T: "fattoriale"]                        	#  0x21
  - "\"": [T: "barra inversa"]                   	#  0x22	(en: 'quotation mark')
