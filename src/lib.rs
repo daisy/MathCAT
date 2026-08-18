@@ -25,6 +25,8 @@ pub mod errors {
 }
 
 pub mod interface;
+#[cfg(feature = "js-api")]
+pub mod wasm_api;
 #[cfg(feature = "include-zip")]
 pub use shim_filesystem::ZIPPED_RULE_FILES;
 
