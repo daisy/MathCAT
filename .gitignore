@@ -1,6 +1,7 @@
 .idea
 .DS_Store
 target
+bindings
 build.rs.orig
 Python/libmathcat.pyd
 Cargo.lock
