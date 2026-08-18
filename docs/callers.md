@@ -162,8 +162,29 @@ except Exception as e:
 ```
 
 
+## JavaScript/WASM Users (Diplomat)
+
+MathCAT has a generated JavaScript/TypeScript interface, built with [Diplomat](https://github.com/rust-diplomat/diplomat) from the `js-api` feature's bridge module (`src/wasm_api.rs`). Diplomat handles cross-language memory management for you (no manual free calls, unlike the C interface below), and generates the bindings directly from the Rust source, so they can't drift out of sync the way a hand-written wrapper can.
+
+To build the WASM library and regenerate the bindings:
+```
+rustup target add wasm32-unknown-unknown
+cargo build --target wasm32-unknown-unknown --no-default-features --features "js-api,include-zip" --release
+cargo install diplomat-tool --locked
+diplomat-tool js bindings/js -e src/wasm_api.rs
+```
+(`include-zip` is required alongside `js-api` for any wasm build -- the Rules directory is embedded as a zip file rather than read from the filesystem, and `build.rs` only produces that zip when `include-zip` is enabled.)
+
+This targets stable Rust using Diplomat's legacy wasm-ABI code path (not the nightly-only `-Zwasm-c-abi=spec` path), to keep it consistent with the rest of MathCAT's stable-only build and avoid requiring downstream consumers to use nightly Rust.
+
+The generated interface mirrors the Rust interface, camelCase and all: `set_mathml` becomes `MathCat.setMathml(mathmlStr)`, etc. Errors are thrown as a JS `Error` whose `.cause` is a `MathCatError` handle (`cause.toString()` gives the message) -- wrap calls in `try`/`catch` the same way as the Python interface's `try`/`except`.
+
+The old hand-rolled WASM build described below (used by [MathCatDemo](https://github.com/NSoiffer/MathCATDemo)) required manual "hand tweaks" during the build process; these generated bindings are meant to supersede that for the core API surface. MathCATDemo itself is a separate repo and isn't changed by this.
+
 ## Web Users
 I built a web assembly version. Has a few compromises and requires some hand tweaks during the build process. Those need to be automated. It can be found at [MathCatDemo](https://github.com/NSoiffer/MathCATDemo). This builds a web page for demo purposes, so it is not a pure build for the Web. Nonetheless, it does demonstrate how that can be done.
 
 ## C/C++ Users
 There is a C/C++ interface. It can be found at the related project [MathCatForC](https://github.com/NSoiffer/MathCATForC). Rust and C have separate memory managers, and so the interface is a little clunky because the memory needs to be free'd. That can be hidden by wrapping the calls in a small function as demonstrated by `SetMathCatPreference` in the [sample code](https://github.com/NSoiffer/MathCATForC/blob/main/c-example/test.cpp). Otherwise, it is easy to use. If someone knows a better way to deal with the memory issues, please let me know or submit a PR. This is new territory for me as a Rust programmer.
+
+(Diplomat, used for the JavaScript interface above, can also generate a C/C++ interface from the same bridge module -- worth considering as a future replacement for this hand-rolled one, but not attempted yet.)
