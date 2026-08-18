@@ -411,6 +411,16 @@ fn unicode_typo_regressions() -> Result<()> {
 }
 
 #[test]
+fn unicode_braille_patterns() -> Result<()> {
+  // U+2800 blank cell; other cells named by raised dots (singular when only one)
+  test("en", "SimpleSpeak", "<math><mi>&#x2800;</mi></math>", "space")?;
+  test("en", "SimpleSpeak", "<math><mi>&#x2801;</mi></math>", "dot 1")?;
+  test("en", "SimpleSpeak", "<math><mi>&#x280b;</mi></math>", "dots 1 2 4")?;
+  test("en", "SimpleSpeak", "<math><mi>&#x28ff;</mi></math>", "dots 1 2 3 4 5 6 7 8")?;
+  Ok(())
+}
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("en", "SimpleSpeak", expr, "circled 1 comma, circled 9")?;
