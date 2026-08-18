@@ -11,7 +11,7 @@ from .extractors import (
     extract_variables,
     normalize_xpath,
 )
-from .models import DiffType, RuleDifference, RuleInfo
+from .models.rules import DiffType, RuleDifference, RuleInfo
 
 
 def dedup_list(values: list[str]) -> list[str]:

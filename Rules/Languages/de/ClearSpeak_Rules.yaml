@@ -228,11 +228,11 @@
   replace:
   - test:
       if: $ClearSpeak_Trig = 'TrigInverse'
-      then: [x: "*[1]", bookmark: "*[2]/@id", T: "umgekehrte"]
+      then: [bookmark: "*[2]/@id", T: "umgekehrter", x: "*[1]"]
       else_test:
         if: $ClearSpeak_Trig = 'ArcTrig'
         then: [bookmark: "*[2]/@id", T: "ark", x: "*[1]"]
-        else: [bookmark: "*[2]/@id", T: "umgekehrte", x: "*[1]"] # default/Auto
+        else: [bookmark: "*[2]/@id", T: "umgekehrter", x: "*[1]"] # default/Auto
 
 - name: function-squared-or-cubed
   tag: power

@@ -22,7 +22,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("hu", "SimpleSpeak", expr, 
-        "a súlyozott, b tilde, c rövid, b ellenőrzés, c súlyozott; plusz, r hacsek karakter mint repülő ékezet; plusz; x pont, y pont, z dupla pont, u hármas pont, v négyes pont; plusz x kalap, plusz vektor kezdete t")?;
+        "a súlyozott, b tilde, c rövid, b ellenőrzés, c súlyozott; plusz, r hacsek karakter mint repülő ékezet, plusz; x pont, y pont, z dupla pont, u hármas pont, v négyes pont; plusz x kalap, plusz vektor kezdete t")?;
             return Ok(());
 
 }
@@ -322,7 +322,6 @@ fn ignore_comma() -> Result<()> {
 
 // AI generated
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://hu.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -358,7 +357,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("hu", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    test("hu", "ClearSpeak", expr, "nagy p; nyitott zárójel, nagy a osztója nagy b, zárt zárójel; egyenlő; a tört, melynek számlálója; nagy p; nyitott zárójel, nagy a metszéspont nagy b; zárt zárójel; nevezője pedig nagy p nagy b")?;
     return Ok(());
 
 }
@@ -381,7 +380,7 @@ fn bug_199_2pi() -> Result<()> {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("hu", "SimpleSpeak",expr, "0 től 2 pí ig terjedő intervallum, tartalmazza a 0 elemet de nem tartalmazza a 2 pí elemet")?;
+  test("hu", "SimpleSpeak",expr, "0 től 2 pí ig terjedő intervallum, tartalmazza a(z) 0 elemet de nem tartalmazza a(z) 2 pí elemet")?;
   return Ok(());
 
 }
@@ -484,7 +483,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl; merőleges nagy b jobbra nyíl")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -570,7 +569,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl; merőleges nagy b jobbra nyíl")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
   return Ok(());
 
 }

@@ -1258,15 +1258,6 @@ fn is_order_ok(mrow: Element) -> bool {
     }
 }
 
-// from https://learnwithdrscott.com/ionic-bond-definition/
-// I don't include the noble gases since they don't interact with other elements and are ruled out elsewhere
-// fn has_non_metal_element(elements: &[&str]) -> bool {
-//     static NON_METAL_ELEMENTS: phf::Set<&str> = phf_set! {
-//         "H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At",
-//     };
-//     return elements.iter().any(|&e| NON_METAL_ELEMENTS.contains(e));
-// }
-
 
 fn has_noble_element(elements: &[NameStr<'_>]) -> bool {
     static NOBLE_ELEMENTS: phf::Set<&str> = phf_set! {
@@ -1282,7 +1273,7 @@ fn has_c_h_o(elements: &[NameStr<'_>]) -> bool {
 
 
 fn is_structural(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
 
     // debug!("is_structural: {:?}", elements);
     let mut element_set = HashSet::with_capacity(elements.len());
@@ -1318,7 +1309,7 @@ fn collect_elements(mrow: Element<'_>) -> Option<Vec<NameStr<'_>>> {
 #[allow(clippy::op_ref)]
 #[allow(clippy::manual_contains)]
 fn is_alphabetical(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     // debug!("is_alphabetical: {:?}", elements);
     let mut elements = elements;
     if elements[1..].iter().any(|e| *e == "C") {  // "C" must be first if present
@@ -1333,7 +1324,7 @@ fn is_alphabetical(elements: &[NameStr<'_>]) -> bool {
 fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     // HPO_4^2 (Mono-hydrogen phosphate) doesn't fit this pattern, nor does HCO_3^- (Hydrogen carbonate) and some others
     // FIX: drop "H" from the ordering??
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     return elements.windows(2).all(|pair| CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[0])).unwrap() < CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[1])).unwrap());
 }
 

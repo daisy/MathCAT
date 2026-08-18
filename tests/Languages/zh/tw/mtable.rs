@@ -226,6 +226,43 @@ fn matrix_2x3() -> Result<()> {
     return Ok(());
 
 }
+#[test]
+fn augmented_matrix_2x3() -> Result<()> {
+    let expr = "
+    <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow>
+      <mrow><mo>[</mo>
+        <mtable columnlines='none solid'>
+          <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>4</mn>
+          </mtd>
+          </mtr>
+          <mtr>
+          <mtd>
+            <mn>0</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+          <mtd>
+            <mn>6</mn>
+          </mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow></mrow>
+    </math>
+                                ";
+    test("zh-tw", "SimpleSpeak", expr, "2 乘 3 增廣矩陣; 列 1; 3, 1, 4; 列 2; 0, 2, 6")?;
+    Ok(())
+}
+
 
 #[test]
 fn matrix_2x3_labeled() -> Result<()> {
@@ -555,4 +592,154 @@ let expr = "<math>
   return Ok(());
 }
   
+  
 // Test preferences
+
+#[test]
+fn augmented_matrix_3x4_end_matrix() -> Result<()> {
+let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+  <mrow>
+    <mrow><mo>[</mo>
+      <mtable columnalign='right right right right' columnlines='none none solid'>
+        <mtr>
+          <mtd><mn>1</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mrow><mo>-</mo><mn>3</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>2</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+        </mtr>
+      </mtable>
+    <mo>]</mo></mrow>
+  </mrow>
+</math>";
+    test("zh-tw", "SimpleSpeak",
+        expr, "3 乘 4 增廣矩陣; 列 1; 行 1; 1, 行 2; 2, 行 3; 負 1, 行 4; 3; \
+               列 2; 行 1; 負 3, 行 2; 3, 行 3; 負 1, 行 4; 2; \
+               列 3; 行 1; 2, 行 2; 3, 行 3; 2, 行 4; 負 1")?;
+    Ok(())
+  }
+
+
+
+
+
+
+
+
+#[test]
+fn matrix_times() -> Result<()> {
+  let expr = "<math>
+    <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
+    <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
+  </math>";
+  test("zh-tw", "SimpleSpeak", expr,
+    "2 乘 2 矩陣; 列 1; 1, 2; 列 2; 3, 4; 乘, 2 乘 2 矩陣; 列 1; a, b; 列 2; c, d")?;
+    return Ok(());
+  }
+
+
+
+#[test]
+fn zero_matrix() -> Result<()> {
+  let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+  test("zh-tw", "SimpleSpeak", expr,
+    "2 乘 2 零矩陣")?;
+    return Ok(());
+  }
+
+#[test]
+fn identity_matrix() -> Result<()> {
+  let expr = "<math>
+      <mo>(</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+      </mtable>
+      <mo>)</mo>
+  </math>";
+  test("zh-tw", "SimpleSpeak", expr,
+    "3 乘 3 單位矩陣")?;
+    return Ok(());
+  }
+
+#[test]
+fn identity_matrix_false_positive_negative_one() -> Result<()> {
+  let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>-1</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "2 乘 2 對角矩陣; 行 1; 1; 行 2; 負 1")?;
+  Ok(())
+}
+
+#[test]
+fn identity_matrix_false_positive_zero_diagonal() -> Result<()> {
+  let expr = "<math>
+      <mo>[</mo>
+      <mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+      </mtable>
+      <mo>]</mo>
+  </math>";
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "2 乘 2 對角矩陣; 行 1; 1")?;
+  Ok(())
+}
+
+#[test]
+fn diagonal_matrix() -> Result<()> {
+  let expr = "<math>
+      <mo>(</mo>
+      <mtable>
+        <mtr><mtd><mn>2</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><msup><mi>x</mi><mn>2</mn></msup></mtd></mtr>
+      </mtable>
+      <mo>)</mo>
+  </math>";
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "3 乘 3 對角矩陣; 行 1; 2; 行 2; 1; 行 3; x 平方")?;
+  // test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")],
+  //     expr, "the 3 by 3 diagonal matrix; row 1, column 1, 2; row 2, column 2, 1; row 3, column 3, x squared");
+    return Ok(());
+  }
+
+#[test]
+fn single_line_with_label() -> Result<()> {
+  let expr = r#"<math>
+  <mtable class="gather" displaystyle="true" intent=":system-of-equations">
+    <mtr>
+      <mtd intent=":equation-label"> <mtext>(2)</mtext> </mtd>
+      <mtd> <mi>𝑏</mi> <mo>=</mo> <mn>2</mn> </mtd>
+    </mtr>
+  </mtable>
+  </math>"#;
+  test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "1 方程, 帶有標籤 2; b 等於 2")?;
+    return Ok(());
+  }

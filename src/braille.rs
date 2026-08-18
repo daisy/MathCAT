@@ -1,5 +1,5 @@
 #![allow(clippy::needless_return)]
-use strum_macros::Display;
+use strum::Display;
 use sxd_document_no_unsafe::dom::{Element, ChildOfElement};
 use sxd_document_no_unsafe::Package;
 use sxd_document_no_unsafe::as_str;
@@ -645,7 +645,7 @@ fn nemeth_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
         "B" => "⠸",     // bold
         "𝔹" => "⠠⠸",     // blackboard
         "T" => "⠈",     // script
-        "I" => "⠨",     // italic (mapped to be the same a blackboard)
+        "I" => "⠨",     // italic -- used for digits (not math letters)
         "R" => "",      // roman
         "E" => "⠰",     // English
         "D" => "⠸",     // German (Deutsche)
@@ -889,7 +889,7 @@ static UEB_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "B" => "⠘",     // bold
     "𝔹" => "XXX",     // blackboard -- from prefs
     "T" => "⠈",     // script
-    "I" => "⠨",     // italic
+    "I" => "⠨",     // italic -- used for digits (not math letters)
     "R" => "",      // roman
     // "E" => "⠰",     // English
     "1" => "⠰",      // Grade 1 symbol
@@ -2047,8 +2047,6 @@ static VIETNAM_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "B" => "⠘",     // bold
     "𝔹" => "XXX",     // blackboard -- from prefs
     "T" => "⠈",     // script
-    "I" => "⠨",     // italic
-    "R" => "",      // roman
     // "E" => "⠰",     // English
     "1" => "⠠",     // Grade 1 symbol
     "L" => "",     // Letter left in to assist in locating letters
@@ -2137,7 +2135,7 @@ static CMU_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "B" => "⠔",     // bold
     "𝔹" => "⠬",     // blackboard -- from prefs
     // "T" => "⠈",     // script
-    "I" => "⠔",     // italic -- same as bold
+    "I" => "⠔",     // italic -- used for digits (not math letters); same cell as bold in CMU
     // "R" => "",      // roman
     // "E" => "⠰",     // English
     "1" => "⠐",     // Grade 1 symbol -- used here for a-j after number
@@ -2230,7 +2228,7 @@ static SWEDISH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "B" => "⠨",     // bold
     "𝔹" => "XXX",     // blackboard -- from prefs
     "T" => "⠈",     // script
-    "I" => "⠨",     // italic
+    "I" => "⠨",     // italic -- used for digits (not math letters)
     "R" => "",      // roman
     "1" => "⠱",     // Grade 1 symbol (used for number followed by a letter)
     "L" => "",     // Letter left in to assist in locating letters
@@ -2269,7 +2267,7 @@ static FINNISH_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
     "B" => "⠨",     // bold
     "𝔹" => "XXX",     // blackboard -- from prefs
     "T" => "⠈",     // script
-    "I" => "⠨",     // italic
+    "I" => "⠨",     // italic -- used for digits (not math letters)
     "R" => "",      // roman
     "E" => "⠰",     // English
     "1" => "⠀",     // Grade 1 symbol (used for number followed by a letter)
@@ -2719,21 +2717,34 @@ impl BrailleChars {
         }
     }
 
+    /// Italic typeform is for digits (and numeric punctuation like '.'), not math letters.
+    fn uses_italic_typeform(node_name: &str, text: &str) -> bool {
+        if node_name == "mn" {
+            return true;
+        }
+        !text.is_empty() && text.chars().all(|ch| ch.is_ascii_digit() || matches!(ch, '.' | ',' | '−' | '-' | '+'))
+    }
+
     fn get_braille_nemeth_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
         // To greatly simplify typeface/language generation, the chars have unique ASCII chars for them:
         // Typeface: S: sans-serif, B: bold, 𝔹: blackboard, T: script, I: italic, R: Roman
         // Language: E: English, D: German, G: Greek, V: Greek variants, H: Hebrew, U: Russian
         // Indicators: C: capital, L: letter, N: number, P: punctuation, M: multipurpose
+        // Italic typeform is used for digits; math letters do not get italic.
         static PICK_APART_CHAR: LazyLock<Regex> = LazyLock::new(|| {
             Regex::new(r"(?P<face>[SB𝔹TIR]*)(?P<lang>[EDGVHU]?)(?P<cap>C?)(?P<letter>L?)(?P<num>[N]?)(?P<char>.)").unwrap()
         });
         let raw_math_variant = node.attribute_value("mathvariant");
         let math_variant = raw_math_variant.as_deref();
+        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
+        let node_name = as_str!(name(node));
+        let italic_ok = BrailleChars::uses_italic_typeform(node_name, &text);
         let  attr_typeface = match math_variant {
             None => "R",
             Some(variant) => match variant {
                 "bold" => "B",
-                "italic" => "I",
+                "italic" => if italic_ok {"I"} else {"R"},
+                "bold-italic" => if italic_ok {"BI"} else {"B"},
                 "double-struck" => "𝔹",
                 "script" => "T",
                 "fraktur" => "D",
@@ -2741,7 +2752,6 @@ impl BrailleChars {
                 _ => "R",       // normal and unknown
             },
         };
-        let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let braille_chars = braille_replace_chars(&text, node)?;
         // debug!("Nemeth chars: text='{}', braille_chars='{}'", &text, &braille_chars);
         
@@ -2750,7 +2760,6 @@ impl BrailleChars {
         // also true (sort of) for capitalization -- if all caps, use double cap in front (assume abbr or Roman Numeral)
         
         // we only care about this for numbers and identifiers/text, so we filter for only those
-        let node_name = name(node);
         let is_in_enclosed_list = node_name != "mo" && BrailleChars::is_in_enclosed_list(node);
         let is_mn_in_enclosed_list = is_in_enclosed_list && node_name == "mn";
         let mut typeface = "R".to_string();     // assumption is "R" and if attr or letter is different, something happens
@@ -2760,7 +2769,15 @@ impl BrailleChars {
             // debug!("  face: {:?}, lang: {:?}, num {:?}, letter: {:?}, cap: {:?}, char: {:?}",
             //        &caps["face"], &caps["lang"], &caps["num"], &caps["letter"], &caps["cap"], &caps["char"]);
             let mut nemeth_chars = "".to_string();
-            let char_face = if caps["face"].is_empty() {attr_typeface} else {&caps["face"]};
+            let face_stripped;
+            let char_face = if caps["face"].is_empty() {
+                attr_typeface
+            } else if italic_ok {
+                &caps["face"]
+            } else {
+                face_stripped = caps["face"].replace('I', "");
+                &face_stripped
+            };
             let typeface_changed =  typeface != char_face;
             if typeface_changed {
                 typeface = char_face.to_string();   // needs to outlast this instance of the loop
@@ -2813,10 +2830,15 @@ impl BrailleChars {
             return Ok(braille_chars);
         }
         // mathvariant could be "sans-serif-bold-italic" -- get the parts
+        // Italic typeform for digits (GTM 2.7); math letters do not get italic (GTM 1.5).
         let math_variant = math_variant.unwrap();
-        let italic = math_variant.contains("italic");
-        if italic & !braille_chars.contains('I') {
+        let italic_ok = BrailleChars::uses_italic_typeform(as_str!(name(node)), &text);
+        let italic = italic_ok && math_variant.contains("italic");
+        if italic && !braille_chars.contains('I') {
             braille_chars = "I".to_string() + &braille_chars;
+        }
+        if !italic_ok {
+            braille_chars = braille_chars.replace('I', "");
         }
         let bold = math_variant.contains("bold");
         if bold & !braille_chars.contains('B') {
@@ -2849,6 +2871,7 @@ impl BrailleChars {
     }
 
     fn get_braille_russian_chars(node: Element, text_range: Option<Range<usize>>) -> Result<String> {
+        // Russian italic typeform for letters is left unchanged pending external advice.
         let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let braille_chars = braille_replace_chars(&text, node)?;
         let Some(raw_math_variant) = node.attribute_value("mathvariant") else {
@@ -2898,16 +2921,27 @@ impl BrailleChars {
         let text = BrailleChars::substring(as_str!(as_text(node)), &text_range);
         let text = add_separator(text);
 
-        let braille_chars = braille_replace_chars(&text, node)?;
+        let mut braille_chars = braille_replace_chars(&text, node)?;
 
         // debug!("get_braille_ueb_chars: before/after unicode.yaml: '{}'/'{}'", text, braille_chars);
         if math_variant.is_none() {         // nothing we need to do
             return Ok(braille_chars);
         }
         // mathvariant could be "sans-serif-bold-italic" -- get the parts
+        // CMU: italic typeform for digits only (not math letters)
         let math_variant = math_variant.unwrap();
+        let italic_ok = BrailleChars::uses_italic_typeform(as_str!(name(node)), &text);
+        let italic = italic_ok && math_variant.contains("italic");
+        if italic && !braille_chars.contains('I') {
+            braille_chars = "I".to_string() + &braille_chars;
+        }
+        if !italic_ok {
+            braille_chars = braille_chars.replace('I', "");
+        }
         let bold = math_variant.contains("bold");
-        let italic = math_variant.contains("italic");
+        if bold && !braille_chars.contains('B') {
+            braille_chars = "B".to_string() + &braille_chars;
+        }
         let typeface = match HAS_TYPEFACE.find(math_variant) {
             None => "",
             Some(m) => match m.as_str() {

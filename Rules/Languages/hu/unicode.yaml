@@ -297,7 +297,6 @@
  - "⁢": [T: ""]                                 	#  0x2062
  - "⁣": [T: "láthatatlan elválasztó"]                                 	#  0x2063
  - "⁤": [T: "és"]                               	#  0x2064	(en: 'and', DeepL translation)
- - "‴": [T: "hármas prím"]                      	#  0x2034	(en: 'triple prime', DeepL translation)
 
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "duplán leütött"                       	# 	(en: 'double-struck', DeepL translation)
@@ -418,7 +417,6 @@
                 then: [T: "benne van ebben:"]          	# 	(en: 'is in', DeepL translation)
               - else: [T: "ebbe a halmazba tartozik:"]           	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to', DeepL translation)
  - "∐": [T: "diszjunkt unió"]                       	#  0x2210	(en: 'co-product', DeepL translation)
- - "∗": [T: "csillag operátortimes"]                            	#  0x2217	(DeepL translation)
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -448,7 +446,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: "van"]                       	# 	(en: 'is', DeepL translation)
      - T: "hogy"                                  	# 	(DeepL translation)
- - "∷": [T: "arány"]                               	#  0x2237	(DeepL translation)
  - "∾":                                         	#  0x223e
      - test: 
          if: "$Verbosity!='Terse'"
@@ -474,8 +471,6 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]                       	# 	(en: 'is', DeepL translation)
      - T: "nagyobb vagy egyenlő"                	# 	(en: 'greater than or equal to', DeepL translation)
- - "≦": [T: "kisebb, mint egyenlő"]             	#  0x2266	(en: 'less than over equal to', DeepL translation)
- - "≧": [T: "nagyobb, mint az egyenlő"]         	#  0x2267	(en: 'greater than over equal to', DeepL translation)
  - "⊂":                                         	#  0x2282
      - test: 
          if: "$Verbosity!='Terse'"

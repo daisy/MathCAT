@@ -336,6 +336,33 @@
   - x: "*[2]"
 
 -
+  name: gost-58511-small-font
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='small' or contains(@intent, ':small-font')"
+  replace:
+  - t: "⠔"
+  - x: "*"
+  - t: "⠔"
+
+-
+  name: gost-58511-letter-spacing
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='letter-spacing' or contains(@intent, ':letter-spacing')"
+  replace:
+  - t: "⠌"
+  - x: "*"
+  - t: "⠌"
+
+-
+  name: gost-58511-insertion
+  tag: [mrow, mstyle, semantics]
+  match: "@data-braille-typeform='insertion' or contains(@intent, ':insertion')"
+  replace:
+  - t: "⠧"
+  - x: "*"
+  - t: "⠼"
+
+-
   name: default
   tag: [mrow, mstyle, semantics]
   match: "."
@@ -1527,6 +1554,32 @@
   match: "DefinitionValue(., 'Braille', 'RussianFunctionBraille') != ''"
   replace:
   - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
+
+-
+  name: contextual-square-bracket-recognition-point
+  tag: mo
+  match:
+  - "parent::*[IsBracketed(., '[', ']')] and"
+  - "((.='[' and not(preceding-sibling::*) and following-sibling::*[1][self::m:mi or self::m:mtext]) or"
+  - " (.=']' and not(following-sibling::*) and preceding-sibling::*[1][self::m:mi or self::m:mtext]))"
+  replace:
+  - T: "⠠"
+  - x: "text()"
+
+-
+  name: contextual-angle-bracket-recognition-point
+  tag: mo
+  match:
+  - "parent::*[IsBracketed(., '⟨', '⟩')] and"
+  - "((.='⟨' and not(preceding-sibling::*)) or (.='⟩' and not(following-sibling::*))) and"
+  - "(parent::*/*[2][self::m:mi or self::m:mtext] or"
+  - " parent::*/*[last()-1][self::m:mi or self::m:mtext])"
+  replace:
+  - T: "⠈"
+  - test:
+    - if: ".='⟨'"
+      then: [T: "⠪"]
+      else: [T: "⠕"]
 
 -
   name: div-operator-function

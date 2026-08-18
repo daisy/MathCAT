@@ -367,84 +367,17 @@
  - "y": [t: "L⠽"]               # 0x79 
  - "z": [t: "L⠵"]               # 0x7a 
 
- - "A": [t: "CL⠁"]              # 0x41 
- - "B":                         # 0x42 
+ # Latin capitals: chem-element letters use 𝐶 (no word indicator); others use C.
+ # Cells come from lowercase a-z via spell/translate.
+ - "BCHIKNOPSUVWY":              # chemistry-capable capitals
     - test:
         if: "@data-chem-element"
-        then: [t: "𝐶L⠃"]
-        else: [t: "CL⠃"]
- - "C":                         # 0x43 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠉"]
-        else: [t: "CL⠉"]
- - "D": [t: "CL⠙"]              # 0x44 
- - "E": [t: "CL⠑"]              # 0x45 
- - "F": [t: "CL⠋"]              # 0x46 
- - "G": [t: "CL⠛"]              # 0x47 
- - "H":                         # 0x48 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠓"]
-        else: [t: "CL⠓"]
- - "I":                         # 0x49 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠊"]
-        else: [t: "CL⠊"]
- - "J": [t: "CL⠚"]              # 0x4a 
- - "K":                         # 0x4b 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠅"]
-        else: [t: "CL⠅"]
- - "L": [t: "CL⠇"]              # 0x4c 
- - "M": [t: "CL⠍"]              # 0x4d 
- - "N":                         # 0x4e 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠝"]
-        else: [t: "CL⠝"]
- - "O":                         # 0x4f 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠕"]
-        else: [t: "CL⠕"]
- - "P":                         # 0x50 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠏"]
-        else: [t: "CL⠏"]
- - "Q": [t: "CL⠟"]              # 0x51 
- - "R": [t: "CL⠗"]              # 0x52 
- - "S":                         # 0x53 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠎"]
-        else: [t: "CL⠎"]
- - "T": [t: "CL⠞"]              # 0x54 
- - "U":                         # 0x55 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠥"]
-        else: [t: "CL⠥"]
- - "V":                         # 0x56 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠧"]
-        else: [t: "CL⠧"]
- - "W":                         # 0x57 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠺"]
-        else: [t: "CL⠺"]
- - "X": [t: "CL⠭"]              # 0x58 
- - "Y":                         # 0x59 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠽"]
-        else: [t: "CL⠽"]
- - "Z": [t: "CL⠵"]              # 0x5a 
+        then: [tc: "𝐶"]
+        else: [tc: "C"]
+    - spell: "translate('.', 'BCHIKNOPSUVWY', 'bchiknopsuvwy')"
+ - "ADEFGJLMQRTXZ":              # remaining capitals
+    - tc: "C"
+    - spell: "translate('.', 'ADEFGJLMQRTXZ', 'adefgjlmqrtxz')"
 
  - "α": [t: "GL⠁"]              # 0x3b1 
  - "β": [t: "GL⠃"]              # 0x3b2 
@@ -486,7 +419,7 @@
  - "Δ": [t: "CGL⠙"]             # 0x394 
  - "Ε": [t: "CGL⠑"]             # 0x395 
  - "Ζ": [t: "CGL⠵"]             # 0x396 
- - "Η": [t: "CGL⠱ "]            # 0x397 
+ - "Η": [t: "CGL⠱"]             # 0x397 
  - "Θ": [t: "CGL⠹"]             # 0x398 
  - "Ι": [t: "CGL⠊"]             # 0x399 
  - "Κ": [t: "CGL⠅"]             # 0x39a 

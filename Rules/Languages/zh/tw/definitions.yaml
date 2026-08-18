@@ -1,14 +1,8 @@
 ---
 - include: "../../../definitions.yaml"
-# Lines starting with "#" are a comment
-# Each definition in this file is of the form
-# - name: { "...", "..." "..." }
-# For numbers, 
-# - name: [] "...", "..." "..." ]
 
-
-# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
-# If only one ":" is used, it the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function||nofix||silent fixity
+# If only one ":" is used, the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
 # If no ":"s are used, the same speech is used for all forms
 # If bracketing words make sense, they are separated with ";"s
 # Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
@@ -16,38 +10,313 @@
 #   for readability, spaces can be used around any of the delimiter characters
 # Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
 - IntentMappings: {
+    "binomial": "infix=; 選; ",
+
+    ### Functions and Inverses
+    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
+    # "closed-interval":"function=closed interval between; and", #NOTE: Check test, does not follow this pattern
+    #"closed-open-interval":"function=interval between; included and",
+    #"open-closed-interval":"function=interval between; and included",
+    #"open-interval":"function=open interval between; and",
+    "inverse":"function=inverse || postfix=inverse", 
+
+    "domain": "function= ; domain",
+    "codomain": "function= ; codomain",
+
+    "image":"function=image", 
+    #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
+    "mixed-fraction":"infix=and", # NOTE: in website says function, but follow infix speech pattern.
+    "quotient":"function=integer part; divided by", # NOTE: Logic somewhere here failing, becomes "divided by of x comma, y" instead of "integer part of x divided by y"
+    "evaluated-at":"infix=evaluated at",
+    "remainder":"function=the remainder; divided by",
+
+    "max":"function=max",
+    "min":"function=min",
+
+    "power":"infix=to the power",
+    "root":"function=root",
+
+    "greatest-common-divisor": "function=gcd: the gcd: the greatest common divisor",
+    "least-common-multiple":"function=lcm: the lcm: the least common multiple", # In webpage typo "lest common"
+
+    "absolute-value": "function= ; absolute value: the absolute value: the absolute value; end absolute value",
+    "complex-conjugate":"function=complex conjugate",
+    "complex-arg":"function=arg",
+    "real-part": "function=the real part",
+    "imaginary-part": "function=imaginary part: the imaginary part: the imaginary part",
+
+    "polar-coordinate":"function=polar coordinate; comma",
+    "spherical-coordinate":"function=spherical coordinate; comma; comma",
+    "cartesian-coordinate":"function=cartesian coordinate; comma",
+    "coordinate":"function=coordinate; comma",
+    "floor":"function=floor",
+    "ceiling":"function=ceiling",
+    "round":"function=rounded-value",
+    "fractional-part":"function=fractional part",
+
+
+    ### Calculus
+    # "definite-integral":"function=integral over || function=integral from; to", # Property ???
+    # "derivative":"function=the derivative; with respect to", # Property ???
+    # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
+
+    "limit": "prefix=極限",
+    "tends-to":"infix=tends to",
+    "tends-to-from-above":"infix=tends to from above",
+    "tends-to-from-below":"infix=tends to from below",
+
+
+    ### Sets
+    "set": "function= ; set: the set",
+    "set-difference":"function=set difference; and || infix=minus", # NOTE: not tested
+    "complement":"function=complement",
+    #"empty-set":"nofix=empty set",
+    "cardinality":"function=cardinality", # NOTE: does not have a defined speech template in website
+    "list":"function=list",
+    "tuple": "function= ; tuple: the tuple",
+
+
+    ### Sequence and Series
+    "sum":"function= ; sum over : sum ; ", #: sum over : sum from; to",
+    "product":"function=product || function=product over || function=product from; to",
+
+
+    ### Elementary classical functions
+    "sine":"function=sin: sine",
+    "cosine":"function=cos: cosine",
+    "tangent":"function=tan: tangent",
+    "secant":"function=seech: secant",
+    "cosecant":"function=co-seech: cosecant",
+    "cotangent":"function=co-tan: cotangent",
+
+    "arcsine":"function=arcsine",
+    "arccosine":"function=arccosine",
+    "arctangent":"function=arctangent",
+    "arcsecant":"function=arcsecant",
+    "arccosecant":"function=arc-cosecant",
+    "arccotangent":"function=arc-cotangent",
+
+    "hyperbolic-sine":"function=shine",
+    "hyperbolic-cosine":"function=cosh",
+    "hyperbolic-tangent":"function=tanch",
+    "hyperbolic-secant":"function=sech",
+    "hyperbolic-cosecant":"function=cosech",
+    "hyperbolic-cotangent":"function=coth",
+
+    "arc-hyperbolic-sine":"function=arc shine",
+    "arc-hyperbolic-cosine":"function=arc cosh",
+    "arc-hyperbolic-tangent":"function=arc tanch",
+    "arc-hyperbolic-secant":"function=arc sech",
+    "arc-hyperbolic-cosecant":"function=arc cosech",
+    "arc-hyperbolic-cotangent":"function=arc coth",
+
+    "exponential":"function=exponential",
+    "natural-logarithm": "function=l n: natural log: natural log",
+    "logarithm":"function=log", ##Check arity 2 
+
+
+    ### Statistics and Probability
+    "mean":"function=mean", 
+    "standard-deviation":"function=standard deviation",
+    "variance":"function=variance",
+    "median":"function=median",
+    "mode":"function=mode",
+
+    "conditional-probability":"function=probability; given", # NOTE: Check test
+
+
+    ### Linear Algebra
+    "vector": "function= ; 向量 || prefix=向量", # prefix not tested, also prefix not on webpage
+    "matrix":"function=matrix", # NOTE: Failing test, recheck
+    "determinant":"function=determinant",
+    "adjugate":"function=adjugate",
+    "magnitude":"function=magnitude",
+    "norm": "function=; norm: norm: norm; 結束 norm",
+    "span":"function=span",
+
+    "unit-vector":"prefix=unit vector",
+
+    "identity-matrix":"nofix=identity matrix", # NOTE: no function specified
+    "transpose":"function=transpose || postfix= transpose", # postfix needs testing
+    "dimensional-product":"infix=by", # INFIX
+
+
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ: set of all integers",
+    "set-of-reals":"nofix=ℝ: set of all real numbers",
+    "set-of-rationals":"nofix=ℚ: set of all rational numbers",
+    "set-of-natural-numbers":"nofix=ℕ: set of all natural numbers",
+    "set-of-complex-numbers":"nofix=ℂ: set of all complex numbers",
+    "set-of-primes":"nofix=ℙ: set of all prime numbers",
+
+    
+    ### Geometry
+    "line-segment":"prefix=line segment",
+    "directed-line-segment":"prefix=directed line segment", 
+    "line":"prefix=line",
+    "ray":"prefix=ray",
+    "arc":"prefix=arc",
+
+    "length":"function=length",
+    "area":"function=area",
+
+    "point":"prefix=point",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+
+    ### Separators
+    "time-separator":"infix=",
+
+    ### General Concepts 
+    "fenced-group":"function=fenced-group", # appears both under general concepts and grouping
+     # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
+    "ordered-pair": "function= ; the pair; and", # Needs to be tested, test converts "and" to "comma,"
     "indexed-by": "infix= ; 下標; 結束下標",
+    # "indexed-by": "infix= ; indexed by; ",
+    
+    "highlight":"postfix=highlighted",
+    "least-common-denominator":"function=least common denominator",
+    "rate":"infix=per",
+    "translation":"function= translation by; comma", # NOTE: not tested, changes "translation" -> "comma" in test
+    "constraint":"infix= ; with constraint; ", 
+    
+    "binomial-coefficient":"infix=choose",
+    "pochhammer":"function=permutation",
+    "permutation-cycle":"function=permutation cycle",
+    "embellished-name":"infix=with annotation",
+
+    ### Grouping
+    "annotation":"infix= ; which is ;",              # NOTE: Follows the same order as indexed-by, in site listed as function. Should it be infix?
+    "braced-group":"function=grouped; end grouped",  # NOTE: not tested, site is missing "of" keyword function introduces
+    #"repeating-decimal":"function=repeating decimal", # NOTE: BREAKS TEST. Check again. Site is missing "of" keyword function introduces.
+
+
+    ### Other
+    ## Default fixity function
+    "curl": "function=curl",
+    "divergence": "function=div:divergence",
+    "gradient": "function=del:gradient",
+    "laplacian": "function=laplacian",
+
+    ## Default fixity prefix
+    "angle": "prefix=angle",
+    "angle-measure": "prefix=angle measure",
+    "change": "prefix=change in",
+    "for-all": "prefix=for all",
+    "measured-angle": "prefix=measured angle",
+    "not": "prefix=not",
+    "number-of": "prefix=number of",
+    "partial-derivative": "prefix=partial",
+    "right-angle": "prefix=right angle",
+    "square-root-of": "prefix=square root of",
+    "there-does-not-exist": "prefix=there does not exist",
+    "there-exists": "prefix=there exists",
+
+
+    ## Default fixity infix
+    "and": "infix=and",
+    "applied-to": "infix=applied to",
+    "approximately": "infix=approximately",
+    "congruent": "infix=congruent to",
+    "cartesian-product": "infix=cartesian product",
+    "composed-with": "infix=composed with",
+    "cross-product": "infix=cross: cross product: cross product",
+    "defined-as": "infix=defined as",
+    "divided-by": "infix=divided by",
+    "divides": "infix=divides",
+    "does-not-belong-to": "infix=does not belong to",
+    "does-not-divide": "infix=does not divide",
+    "dot-product": "infix=dot product",
+    "downwards-diagonal-ellipsis": "infix=downwards diagonal ellipsis",
+    "direct-product": "infix=direct product",
+    "element-of": "infix=element of",
+    "ellipsis": "infix=ellipsis",
+    "equals": "infix=equals",
+    "equivalent-to": "infix=equivalent to",
+    "evaluates-to": "infix=evaluates to",
+    "given": "infix=given",
+    "greater-than": "infix=greater than",
+    "greater-than-or-equal-to": "infix=greater than or equal to",
+    "identically-equals": "infix=identically equals",
+    "if-and-only-if": "infix=if and only if",
+    "implies": "infix=implies",
+    "inner-product": "infix=inner product",
+    "intersection": "infix=intersection",
+    "less-than": "infix=less than",
+    "less-than-or-equal-to": "infix=less than or equal to",
+    "list-separator": "infix=comma",
+    "maps-to": "infix=maps to",
+    "member-of": "infix=member of",
+    "minus-or-plus": "infix=minus or plus",
+    "not-subset": "infix=not subset of",
+    "not-superset": "infix=not superset of",
+    "not-equal-to": "infix=not equal to",
+    "not-member-of": "infix=not member of",
+    "not-parallel-to": "infix=not parallel to",
+    "obtained-from": "infix=obtained from",
+    "or": "infix=or",
+    "outer-product": "infix=outer product",
+    "parallel-to": "infix=parallel to",
+    "perpendicular": "infix= 垂直於",
+    "plus": "infix=加 || prefix=正", # Prefix not tested
+    "minus": "infix=減 || prefix=負", # Prefix not tested
+    "plus-or-minus": "infix=plus or minus",
+    "precedes": "infix=precedes",
+    "proportional": "infix=proportional to",
+    "range-separator": "infix=through",
+    "ratio": "infix=ratio",
+    "similar": "infix=similar to",
+    "subset": "infix=subset of",
+    "subset-or-equal": "infix=subset or equal to",
+    "succeeds": "infix=succeeds",
+    "such-that": "infix=such that",
+    "superset": "infix=superset of",
+    "superset-or-equal": "infix=superset or equal to",
+    "tilde": "infix=tilde",
+    "times": "infix=times",
+    "union": "infix=union",
+    "upwards-diagonal-ellipsis": "infix=upwards diagonal ellipsis",
+    "vertical-ellipsis": "infix=vertical ellipsis",
+    "xor": "infix=exclusive or",
+
+    ## Default fixity postfix
+    "factorial": "postfix=factorial",
+    "percent": "postfix=percent",
+
+    ## Default fixity nofix
+    "diameter":"nofix=d: diameter",
+    "distance":"nofix=d; D: distance",
+    "probability":"nofix=P: probability",
+    "radius":"nofix=r: radius",
+    "volume":"nofix=V: volume || function=volume",
+    "exponential-e":"nofix=e",
+    "imaginary-i":"nofix=i",
+    "differential-d":"nofix=d",
+    "golden-ratio":"nofix=golden ratio",
+    
+
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
     "modified-variable": "silent= ",
     "say-super": "infix=上標",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
-
-    "absolute-value": "function= ; 絕對值; 結束絕對值",
-    "binomial": "infix=; 選; end binomial",
-    "limit": "prefix=極限",
+    # "large-op": "infix=over || other=from,to",
     "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
     "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
-    "logarithm-with-base": "prefix=log 底",
-    "minus": "infix=減 || prefix=負",
-    "plus": "infix=加 || prefix=正",
+    "logarithm-with-base": "prefix=log 底數",        #"prefix=log base: the log base: the log base",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "trace": "function= ; trace : trace: trace; 結束 trace",
+    "dimension": "function=; dimension : dimension: dimension; 結束 dimension",
+    "homomorphism": "function= ; homomorphism : homomorphism: homomorphism; 結束 homomorphism",
+    "kernel": "function= ; kernel : kernel: kernel; 結束 kernel",
+    
+    "chemistry-concentration": "function= ; concentration: concentration of: the concentration of; end concentration",
+  }
 
-    # These act like postfix in linear-algebra.yaml, so rules are currently used instead of these defaults
-    # "transpose": "postfix=的 轉置 || function=的 轉置",
-    # "norm": "function=範數: 的 範數: 的 範數; 結束範數",
-    # "trace": "function=跡 : 的 跡: 的 跡",
-    # "dimension": "function=維數 : 的 維數: 的 維數",
-    # "homomorphism": "function=同態 : 的 同態: 的 同態",
-    # "kernel": "function=核 : 的 核: 的 核",
-    "vector": "function=向量 || prefix=向量",
-    "cross-product": "infix=cross: cross product: cross product",
-    "dot-product": "infix=dot: dot product: dot:dot product",
-
-    "divergence": "function= ; div: divergence: divergence; end divergence",
-    "curl": "function= ; curl; end curl",
-    "gradient": "function= ; grad: gradient: gradient; end gradient",
-    "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+- TerseFunctionNames: {
+    "divergence", "del:gradient", "curl"
   }
 
 - NavigationParts: {
+    # These are the parts of a formula that can be navigated to
     "large-op": "基底; 下限; 上限",
     "mfrac": "分子;分母",
     "fraction": "分子;分母",
@@ -57,6 +326,8 @@
     "root": "根號;根指數",
     "msub": "基底;下標",
     "sub": "基底;下標",
+    "logarithm-with-base": "底數",
+    "indexed-by": "基底; 下標",
     "msup": "基底;上標",
     "say-super": "基底;上標",
     "skip-super": "基底;上標",
@@ -65,6 +336,10 @@
     "munder": "基底;下限",
     "mover": "基底;上限",
     "munderover": "基底;下限;上限",
+    "absolute-value":"絕對值",
+    "minus":"減號",
+    "vector":"向量",
+    "magnitude":"magnitude",
 
     # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
     # it's a hack to put them here, but at least they are grouped with the other navigation parts
@@ -72,6 +347,14 @@
     "out": "離開",
   }
 
+- KnownWords: {
+    # MathCAT will put together some runs of three or more mi's (a common mistake), but skips those in alphabetical order.
+    # This is a list of exceptions so that they do get put together. Don't list words with repeated letters.
+
+    # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
+    # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
+    "Abel", "aery", "ails", "airy", "amps", "ceil", "cents", "chop", "flux", "flow", "knot", "most"
+  }
 
 - SIPrefixes: {
     "Q": "昆", "R": "羅", "Y": "佑", "Z": "皆", "E": "艾", "P": "拍", "T": "兆", "G": "吉", "M": "百萬", "k": "千", "h": "百", "da": "十",
@@ -107,10 +390,8 @@
     "N": "牛頓",
     "Ω": "歐姆", "Ω": "歐姆",       # Greek Cap letter, U+2126 OHM SIGN
     "Pa": "帕",
-    "rad": "弳",
     "S": "西門",
     "Sv": "西弗",
-    "sr": "立弳",
     "T": "特士拉",
     "V": "伏特",
     "W": "瓦",
@@ -121,16 +402,15 @@
     "t": "公噸",
     "Da": "道爾頓",
     "Np": "奈培",       # nepar        # should only take negative powers
-    "amu": "原子質量單位", "u": "原子質量單位",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
-    "au": "天文單位", "AU": "天文單位",
+    "u": "原子質量單位",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "eV": "電子伏特",
+    "rad": "弳",
+    "sr": "立弳",
     
-    # copy from english version by hjy
     # others that take a prefix
     "a": "年",               # should only take positive powers
     "as": "角秒",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
 
-    # Copy from english version by hjy
     # technically wrong, but used in practice with SI Units
     "b": "位元",               # should only take positive powers
     "B": "位元組",              # should only take positive powers
@@ -155,20 +435,20 @@
     "MOA": "角分",
     "arcsec": "角秒",
     "asec": "角秒",
-    "as": "角秒",
-
-    # other accepted units that don't take SI prefixes
-    "ha": "公頃",
-    "B": "貝爾",
-    "dB": "分貝",
 
     # distance
+    "au": "天文單位", "AU": "天文單位",
     "ltyr": "光年", "ly": "光年",
     "pc": "秒差距",
     "Å": "埃", "Å": "埃",           # U+00C5 and U+212B
     "fm": "費米",
 
-    # others
+    # other accepted units that don't take SI prefixes
+    "ha": "公頃",
+    # "B": "貝爾",  # "B" more commonly means bytes
+    "dB": "分貝",
+    
+    "amu": "原子質量單位", 
     "atm": "大氣壓",
     "bar": "巴",
     "cal": "卡",
@@ -180,11 +460,10 @@
     "℧": "姆歐",
     "dyn": "達因",
     "erg": "耳格",
-    # copy from english version by hjy
+
     # powers of 2 used with bits and bytes
     "Kib": "kibi-位元", "Mib": "mebi-位元", "Gib": "gibi-位元", "Tib": "tebi-位元", "Pib": "pebi-位元", "Eib": "exbi-位元", "Zib": "zebi-位元", "Yib": "yobi-位元",
     "KiB": "kibi-位元組", "MiB": "mebi-位元組", "GiB": "gibi-位元組", "TiB": "tebi-位元組", "PiB": "pebi-位元組", "EiB": "exbi-位元組", "ZiB": "zebi-位元組", "YiB": "yobi-位元組",
-
   }
 
   # this will only be used if the language is English, so it can be empty for other countries
@@ -244,6 +523,12 @@
     "mpg": "英里每加侖",
   }
 
+- CurrencySymbols: {
+    "$": "美元", "¢": "cent", "€": "歐元", "£": "英鎊", "₡": "colón", "₤": "lira", "₨": "rupee",
+    "₩": "won", "₪": "shekel", "₱": "peso", "₹": "rupee", "₺": "lira", "₿": "bitcoin",
+    # could add more currencies...
+  }
+
 - PluralForms: {
   # FIX: this needs to be flushed out
     "inch": "英寸", "square inch": "平方英寸", "cubic inch": "立方英寸",
@@ -251,10 +536,21 @@
     "board foot": "板英尺",
     "degree celsius": "攝氏度",
     "degree fahrenheit": "華氏度",
+    "henry": "亨利",
     "hertz": "赫茲",
+    "lux": "勒克斯",
     "siemens": "西門",
     "revolution per minute": "轉每分",
+    "mile per hour": "英里每小時",
+    "mile per gallon": "英里每加侖",
+    "colón": "colones", "lira": "lire", "won": "won", "bitcoin": "bitcoin"
   }
+
+# Lines starting with "#" are a comment
+# Each definition in this file is of the form
+# - name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
 
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
