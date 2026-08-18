@@ -15,6 +15,7 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
+"js-api" = ["diplomat", "diplomat-runtime"]
 
 
 [dependencies]
@@ -38,6 +39,8 @@ cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
+diplomat = { version = "0.16.0", optional = true }
+diplomat-runtime = { version = "0.16.0", optional = true }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 zip = { version = "8.2", default-features = false, features = ["deflate"] }
