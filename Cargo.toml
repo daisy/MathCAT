@@ -16,6 +16,8 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
+# Opt-in audit: braille → MathML → braille (not run by default).
+"from-braille-roundtrip" = []
 
 
 [dependencies]
@@ -66,6 +68,12 @@ path = "src/bin/mathml2text.rs"
 [[bin]]
 name = "package-rules"
 path = "src/bin/package_rules.rs"
+
+# Only built/run with `--features from-braille-roundtrip`.
+[[test]]
+name = "from_braille_roundtrip"
+path = "tests/from_braille_roundtrip.rs"
+required-features = ["from-braille-roundtrip"]
 
 [lints.rust]
 unexpected_cfgs = "allow"
