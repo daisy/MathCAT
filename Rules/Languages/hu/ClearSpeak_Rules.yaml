@@ -568,27 +568,25 @@
 
 - name: set
   tag: set
-  match: "."
+  # Empty set and braced/{set-builder} forms (typically 0–1 child).
+  # Multi-arg intent set($x,$y,...) and set($x) with @arg fall through to function-intent
+  # ("the set of …").
+  match: "count(*)=0 or (count(*)=1 and not(*[1][@arg]))"
   replace:
   - test:
     - if: "count(*)=0"
       then: [T: "az üres halmaz"]      # phrase('the empty set')
-    - else_if: "count(*)=2"
-      then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [T: "az"]      # phrase('the' empty set)
-      - T: "üres halmaz"      # phrase(the 'empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [T: ""]      # phrase('the' set of all integers)
-      - x: "*[1]/*[1]"
-      - T: "melyekre teljesül, hogy"      # phrase(this is a 'set of' numbers)
+          then: [T: ""]      # phrase('the' empty set)
+      - T: ""      # phrase(the 'empty set')
       - test:
           if: "$ClearSpeak_Sets != 'woAll'"
           then: [T: "minden"]      # phrase(the set of 'all' integers)
+      - x: "*[1]/*[1]"
+      - T: "melyekre teljesül, hogy"      # phrase(the set S 'such that' x is less than y)
       - x: "*[1]/*[3]"
       else:
       - test:

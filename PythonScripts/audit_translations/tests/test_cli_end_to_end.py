@@ -127,6 +127,80 @@ def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     assert "Structure Differences" not in output
 
 
+@pytest.mark.parametrize(
+    ("excluded_file", "expected_file", "expected_rule", "unexpected_rule"),
+    [
+        (
+            "default.yaml",
+            "SharedRules/default.yaml",
+            "shared-only",
+            "root-only",
+        ),
+        (
+            "SharedRules/default.yaml",
+            "default.yaml",
+            "root-only",
+            "shared-only",
+        ),
+    ],
+    ids=["exclude-root", "exclude-shared-rules"],
+)
+def test_cli_main_exclude_uses_relative_paths(
+    tmp_path,
+    capsys,
+    monkeypatch,
+    excluded_file,
+    expected_file,
+    expected_rule,
+    unexpected_rule,
+) -> None:
+    """Ensure --exclude distinguishes root files from SharedRules files."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "en"
+    target_dir = rules_dir / "de"
+
+    (source_dir / "SharedRules").mkdir(parents=True)
+    (target_dir / "SharedRules").mkdir(parents=True)
+
+    (source_dir / "default.yaml").write_text(
+        '- name: root-only\n  tag: mo\n  match: ".//m:mi"\n  replace:\n    - t: "root"\n',
+        encoding="utf-8",
+    )
+    (source_dir / "SharedRules" / "default.yaml").write_text(
+        '- name: shared-only\n  tag: mo\n  match: ".//m:mi"\n  replace:\n    - t: "shared"\n',
+        encoding="utf-8",
+    )
+
+    target_rule = '- name: target-only\n  tag: mo\n  match: ".//m:mi"\n  replace:\n    - t: "target"\n'
+    (target_dir / "default.yaml").write_text(
+        target_rule,
+        encoding="utf-8",
+    )
+    (target_dir / "SharedRules" / "default.yaml").write_text(
+        target_rule,
+        encoding="utf-8",
+    )
+
+    args = [
+        "de",
+        "--rules-dir",
+        str(rules_dir),
+        "--exclude",
+        excluded_file,
+        "--only",
+        "missing",
+    ]
+    monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
+
+    audit_cli.main()
+    output = strip_ansi(capsys.readouterr().out)
+
+    assert "Files to check: 1" in output
+    assert expected_file in output
+    assert expected_rule in output
+    assert unexpected_rule not in output
+
+
 def test_cli_main_accepts_source_language(capsys, monkeypatch) -> None:
     """
     Ensure --source changes the reference language without changing target semantics.

@@ -651,7 +651,8 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
         let mut language_paths = lang_paths.iter()
                         .map(|path| path.strip_prefix(&lang_dir).unwrap()
                                                   .to_string_lossy()
-                                                  .replace(std::path::MAIN_SEPARATOR, "-")
+                                                  // include-zip stores paths with '/'; native trees use MAIN_SEPARATOR.
+                                                  .replace(['/', '\\'], "-")
                                                   .to_string())
                         .filter(|string_path| !string_path.is_empty() )
                         .collect::<Vec<String>>();
@@ -1373,11 +1374,11 @@ mod tests {
         set_mathml(good_mathml)?;
         let bad_mathml = "<math><mi>&xabc;</mi></math>";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text()? == "");
+        assert!(get_spoken_text()?.is_empty());
         set_mathml(good_mathml)?;
         let bad_mathml = "<math>garbage";
         assert!(set_mathml(bad_mathml).is_err());
-        assert!(get_spoken_text()? == "");
+        assert!(get_spoken_text()?.is_empty());
         return Ok( () );
         });
     }
@@ -1404,7 +1405,7 @@ mod tests {
                 <mrow> <mi>x</mi><mo>-</mo><mi>y</mi> </mrow>
             </mfrac>
         </math>";
-        set_mathml(&expr)?;
+        set_mathml(expr)?;
         let speech = get_spoken_text()?;
         // Rule-generated SSML must pass through verbatim (not XML-entity-encoded).
         assert!(!speech.contains("&lt;"));

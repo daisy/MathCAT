@@ -1761,7 +1761,7 @@ impl<'c, 'r> ContextStack<'c> {
     fn base_context(var_defs: PreferenceHashMap) -> sxd_xpath_no_unsafe::Context<'c> {
         let mut context  = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
-        crate::xpath_functions::add_builtin_functions(&mut context);
+        crate::xpath_functions::register_mathcat_xpath_functions(&mut context);
         for (key, value) in var_defs {
             context.set_variable(key.as_str(), yaml_to_value(&value));
             // if let Some(str_value) = value.as_str() {

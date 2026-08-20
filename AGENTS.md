@@ -12,7 +12,8 @@ but add common mistakes of AI agents here instead.
 - Common per-language files:
   - `ClearSpeak_Rules.yaml`, `SimpleSpeak_Rules.yaml`
   - `SharedRules/`, `unicode.yaml`, `unicode-full.yaml`, `definitions.yaml`, `navigate.yaml`
-- `build.rs` can bundle rules into `rules.zip` when `include-zip` is enabled.
+- `build.rs` can bundle rules into `rules.zip` when `include-zip` is enabled (always the minimized tree). Shared zipper: `src/rules_archive.rs`, invoked as `cargo run --bin package-rules -- Rules <output> [--minimize]`.
+- CI packages `Rules.zip` (verbatim) and `Rules-minimized.zip` (flow-style rewrite of all YAML: comments dropped). Each language/braille subdir is stored as `<name>/<name>.zip`; top-level and `Intent/` YAML stay loose. Inner language zips use BZIP2; the outer downloadable archive uses DEFLATE so `unzip` works. Both omit `Languages/zz`; the `test-rules-package` job restores `zz` from git after unzip so unit tests still run against release-like archives.
 
 ## Translation Conventions
 - `t:` means untranslated or unverified.
@@ -26,7 +27,7 @@ but add common mistakes of AI agents here instead.
 - In sandboxed runs, if needed:
   - set `UV_CACHE_DIR=/tmp/uv-cache`
   - rerun with escalated permissions if macOS `system-configuration` panics occur.
-- *always* self-validate: `ùv run pytest`
+- self-validate appropriately with: `uv run pytest`
 
 ## Agent Instructions
 - Do not mirror README content here; keep guidance agent-specific.

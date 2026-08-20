@@ -597,13 +597,11 @@ fn linear_algebra_tests() -> Result<()> {
               </math>"
               .to_string()
           }
-          "transpose" => format!(
-              "<math>
+          "transpose" => "<math>
                   <mrow intent='transpose:function($x)'>
                       <mi arg='x'>x</mi>
                   </mrow>
-              </math>"
-          ),
+              </math>".to_string(),
           _ => format!(
               "<math>
                   <mrow intent='{intent}($x)'>
@@ -713,14 +711,12 @@ fn geometry_prefix_tests() -> Result<()> {
 
 #[test]
 fn separator_tests() -> Result<()> {
-  let expr = format!(
-        "<math>
+  let expr = "<math>
             <mrow intent='time-separator($x,$y)'>
                 <mi arg='x'>x</mi>
                 <mi arg='y'>y</mi>
             </mrow>
-        </math>"
-    );
+        </math>".to_string();
 
     test("en", "ClearSpeak", &expr, "x y")?;
     Ok(())

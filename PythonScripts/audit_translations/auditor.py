@@ -46,24 +46,31 @@ def is_definitions_file(file_path: str | Path) -> bool:
     return Path(file_path).name == "definitions.yaml"
 
 
-def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]:
+def get_yaml_files(lang_dir: Path, region_dir: Path | None = None, excluded_files: list[str] | None = None) -> list[Path]:
     """Get all YAML files to audit for a language, including region overrides."""
     files: set[Path] = set()
 
-    def collect_from(directory: Path, root: Path) -> None:
+    def collect_from(directory: Path, root: Path, excluded: list[str] | None) -> None:
         if not directory.exists():
             return
-        for f in directory.glob("*.yaml"):
-            if f.name != "prefs.yaml":
-                files.add(f.relative_to(root))
-        shared_dir = directory / "SharedRules"
-        if shared_dir.exists():
-            for f in shared_dir.glob("*.yaml"):
-                files.add(f.relative_to(root))
 
-    collect_from(lang_dir, lang_dir)
+        excluded_paths = {Path(path) for path in excluded or []}
+
+        candidates = {f for f in directory.glob("*.yaml") if f.name != "prefs.yaml"}
+        candidates.update((directory / "SharedRules").glob("*.yaml"))
+
+        relative_candidates = {f.relative_to(directory): f for f in candidates}
+
+        for path in excluded_paths - relative_candidates.keys():
+            console.print(f"\n[yellow]⚠ Warning:[/] File to exclude {path} does not exist.")
+
+        files.update(
+            f.relative_to(root) for relative_path, f in relative_candidates.items() if relative_path not in excluded_paths
+        )
+
+    collect_from(lang_dir, lang_dir, excluded_files)
     if region_dir:
-        collect_from(region_dir, region_dir)
+        collect_from(region_dir, region_dir, excluded_files)
 
     return sorted(files)
 
@@ -215,6 +222,7 @@ def compare_definition_files(
 def audit_language(
     language: str,
     specific_file: str | None = None,
+    excluded_files: list[str] | None = None,
     rules_dir: str | None = None,
     issue_filter: set[str] | None = None,
     verbose: bool = False,
@@ -248,7 +256,7 @@ def audit_language(
         raise AuditError(f"Target region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
-    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir)
+    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir, excluded_files)
 
     print_audit_header(language, len(files), source_language)
 

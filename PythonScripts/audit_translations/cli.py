@@ -30,7 +30,18 @@ Examples:
 
     parser.add_argument("language", nargs="?", help="Language code to audit (e.g., 'es', 'de', 'fi')")
     parser.add_argument("--source", default="en", help="Source/reference language code (default: 'en')")
-    parser.add_argument("--file", dest="specific_file", help="Audit only a specific file (e.g., 'SharedRules/default.yaml')")
+    file_group = parser.add_mutually_exclusive_group()
+    file_group.add_argument(
+        "--file",
+        dest="specific_file",
+        help="Audit only a specific file (e.g., 'SharedRules/default.yaml')",
+    )
+    file_group.add_argument(
+        "--exclude",
+        nargs="+",
+        dest="excluded_files",
+        help="Exclude a list of files from the audit.",
+    )
     parser.add_argument("--list", action="store_true", help="List available languages")
     parser.add_argument("--rules-dir", help="Override Rules/Languages directory path")
     parser.add_argument(
@@ -67,6 +78,7 @@ Examples:
             audit_language(
                 args.language,
                 args.specific_file,
+                args.excluded_files,
                 args.rules_dir,
                 issue_filter,
                 args.verbose,

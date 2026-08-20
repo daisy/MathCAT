@@ -458,6 +458,10 @@ impl PreferenceManager {
     /// Unzip the files if needed
     /// Returns true if it unzipped them
     pub fn unzip_files(path: &Path, lang: &str, default_lang: Option<&str>) -> Result<bool> {
+        return PreferenceManager::unzip_files_locked(path, lang, default_lang);
+    }
+
+    fn unzip_files_locked(path: &Path, lang: &str, default_lang: Option<&str>) -> Result<bool> {
         thread_local!{
             /// when a language/braille code dir is unzipped, it is recorded here
             static UNZIPPED_FILES: RefCell<HashSet<String>> = RefCell::new( HashSet::with_capacity(31));
@@ -479,7 +483,7 @@ impl PreferenceManager {
                     // try again in parent dir of regional language
                     let language = lang.split_once('-').unwrap_or((lang, "")).0; // get the parent language
                     // debug!("unzip_files: trying again in parent language: {}", language);
-                    PreferenceManager::unzip_files(path, language, default_lang)
+                    PreferenceManager::unzip_files_locked(path, language, default_lang)
                                                 .with_context(|| format!("Couldn't open zip file {zip_file_string} in parent {language}: {e}."))?
                 } else {
                     // maybe just regional dialects
@@ -488,7 +492,7 @@ impl PreferenceManager {
                     for dir in regional_dirs {
                         // debug!("unzip_files: trying again in subdir: {}", dir.display());
                         let language = format!("{}-{}", lang, dir.file_name().unwrap().to_str().unwrap());
-                        if let Ok(result) =PreferenceManager::unzip_files(path, &language, default_lang) {
+                        if let Ok(result) =PreferenceManager::unzip_files_locked(path, &language, default_lang) {
                             return Ok(result);
                         }
                     }
@@ -501,11 +505,6 @@ impl PreferenceManager {
         };
 
         UNZIPPED_FILES.with( |unzipped_files| unzipped_files.borrow_mut().insert(zip_file_string.clone()) );
-        // debug!("  unzip_files: unzipped {} files from {}", result, &zip_file_string);
-        // UNZIPPED_FILES.with( |unzipped_files| {
-        //     debug!("unzip_files: unzipped_files: {:?}", unzipped_files.borrow());
-        // });
-        
         return Ok(result);
     }
 
@@ -1289,8 +1288,11 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
         let braille_before = interface::get_braille("").unwrap();
         let unicode_file = temp_rules_dir.join("Braille/Nemeth/unicode.yaml");
         let unicode_contents = fs::read_to_string(&unicode_file).unwrap();
-        // remap the digit '1' to the (distinctive) full braille cell '⠿'
-        let changed_unicode = unicode_contents.replace("\"1\": [t: \"N⠂\"]", "\"1\": [t: \"N⠿\"]");
+        // Remap digit '1' to the distinctive full braille cell '⠿'.
+        // Source Rules use block style (`"1": [t: "N⠂"]`); Rules-minimized.zip uses flow (`{"1": [{t: N⠂}]}`).
+        let changed_unicode = unicode_contents
+            .replace("\"1\": [t: \"N⠂\"]", "\"1\": [t: \"N⠿\"]")
+            .replace("{\"1\": [{t: N⠂}]}", "{\"1\": [{t: N⠿}]}");
         assert_ne!(changed_unicode, unicode_contents, "expected to find the Nemeth mapping for '1'");
         fs::write(&unicode_file, changed_unicode).unwrap();
         sleep(Duration::from_millis(5));

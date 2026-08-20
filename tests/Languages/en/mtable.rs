@@ -271,8 +271,69 @@ fn augmented_matrix_2x3() -> Result<()> {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("en", "ClearSpeak",  expr, "the 2 by 3 augmented matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
-    test("en", "SimpleSpeak", expr, "the 2 by 3 augmented matrix; row 1; 3, 1, 4; row 2; 0, 2, 6")?;
+    test("en", "ClearSpeak",  expr, "the 2 by 3 augmented matrix; row 1; 3, 1, separator, 4; row 2; 0, 2, separator, 6")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 3 augmented matrix; row 1; 3, 1, separator, 4; row 2; 0, 2, separator, 6")?;
+    Ok(())
+}
+
+#[test]
+fn dashed_augmented_matrix_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable columnlines='dashed'>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("en", "ClearSpeak", expr, "the 1 by 3 row matrix; 1, separator, 2, separator, 3")?;
+    test("en", "SimpleSpeak", expr, "the 1 by 3 row matrix; 1, separator, 2, separator, 3")?;
+    Ok(())
+}
+
+/// A horizontal line is announced once, after the row it separates from the next row.
+#[test]
+fn matrix_row_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("en", "ClearSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2, row separator; row 2; 3, 4")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2, row separator; row 2; 3, 4")?;
+    Ok(())
+}
+
+/// Horizontal and vertical lines use distinct announcements at their respective boundaries.
+#[test]
+fn matrix_row_and_column_separators() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='dashed' columnlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("en", "ClearSpeak", expr, "the 2 by 2 augmented matrix; row 1; 1, separator, 2, row separator; row 2; 3, separator, 4")?;
+    test("en", "SimpleSpeak", expr, "the 2 by 2 augmented matrix; row 1; 1, separator, 2, row separator; row 2; 3, separator, 4")?;
     Ok(())
 }
 
@@ -926,13 +987,13 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   </mrow>
 </math>";
 test_ClearSpeak("en", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, column 4; 3; \
-               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, column 4; 2; \
-               row 3; column 1; 2, column 2; 3, column 3; 2, column 4; negative 1; end matrix")?;
+        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, separator, column 4; 3; \
+               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, separator, column 4; 2; \
+               row 3; column 1; 2, column 2; 3, column 3; 2, separator, column 4; negative 1; end matrix")?;
     test("en", "SimpleSpeak",
-        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, column 4; 3; \
-               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, column 4; 2; \
-               row 3; column 1; 2, column 2; 3, column 3; 2, column 4; negative 1; end matrix")?;
+        expr, "the 3 by 4 augmented matrix; row 1; column 1; 1, column 2; 2, column 3; negative 1, separator, column 4; 3; \
+               row 2; column 1; negative 3, column 2; 3, column 3; negative 1, separator, column 4; 2; \
+               row 3; column 1; 2, column 2; 3, column 3; 2, separator, column 4; negative 1; end matrix")?;
     Ok(())
   }
 

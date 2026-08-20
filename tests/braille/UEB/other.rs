@@ -227,3 +227,31 @@ fn unicode_subscript_chars_in_and_out_of_script_position() -> Result<()> {
     return Ok(());
 }
 
+#[test]
+fn ueb_no_italic_typeform_for_math_letters() -> Result<()> {
+    // UEB omits italic typeform for math letters (GTM 1.5); Greek uses ⠨ via G only.
+    // Plain, mathvariant italic, and Mathematical Italic x should match (no italic ⠨).
+    let plain = "<math><mi>x</mi></math>";
+    let attr_italic = "<math><mi mathvariant='italic'>x</mi></math>";
+    let plane1_italic = "<math><mi>𝑥</mi></math>";
+    test_braille("UEB", plain, "⠰⠭")?;
+    test_braille("UEB", attr_italic, "⠰⠭")?;
+    test_braille("UEB", plane1_italic, "⠰⠭")?;
+
+    // Greek letter indicator (same cell as italic typeform) still used for α
+    test_braille("UEB", "<math><mi>α</mi></math>", "⠨⠁")?;
+
+    // Bold-italic keeps bold ⠘, not italic typeform
+    test_braille("UEB", "<math><mi mathvariant='bold-italic'>x</mi></math>", "⠘⠆⠰⠭")?;
+    test_braille("UEB", "<math><mi>𝒙</mi></math>", "⠘⠆⠰⠭")?;
+    return Ok(());
+}
+
+#[test]
+fn ueb_italic_typeform_for_digits() -> Result<()> {
+    // UEB uses italic typeform for digits (GTM 2.7 emphasis of numeric material).
+    test_braille("UEB", "<math><mn mathvariant='italic'>3</mn></math>", "⠨⠆⠼⠉")?;
+    test_braille("UEB", "<math><mn mathvariant='italic'>.3</mn></math>", "⠨⠂⠼⠲⠉")?;
+    return Ok(());
+}
+

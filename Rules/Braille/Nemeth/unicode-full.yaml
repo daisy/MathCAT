@@ -61,41 +61,41 @@
 
   # --- Nemeth Default Alphabet bold-italic chars. ---
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
-     - tc: "BIE"
+     - tc: "BE"
      - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
-     - tc: "BIE"
+     - tc: "BE"
      - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝜜-𝜴":    # 0x1d71c - 0x1d734
-     - tc: "BIG"
+     - tc: "BG"
      - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
- - "𝜵": [tc: "BIGL⠫"]            # 0x1d735
+ - "𝜵": [tc: "BGL⠫"]            # 0x1d735
 
  - "𝜶-𝝆":    # 0x1d736 - 0x1d746
-     - tc: "BIG"
+     - tc: "BG"
      - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆', 'αβγδεζηθικλμνξοπρ')"
 
- - "𝝇": [tc: "BIVL⠎"]            # 0x1d747
+ - "𝝇": [tc: "BVL⠎"]            # 0x1d747
 
  - "𝝈-𝝊":    # 0x1d748 - 0x1d74a
-     - tc: "BIG"
+     - tc: "BG"
      - spell: "translate('.', '𝝈𝝉𝝊', 'στυ')"
 
- - "𝝋": [tc: "BIVL⠋"]            # 0x1d74b
+ - "𝝋": [tc: "BVL⠋"]            # 0x1d74b
 
  - "𝝌-𝝎":    # 0x1d74c - 0x1d74e
-     - tc: "BIG"
+     - tc: "BG"
      - spell: "translate('.', '𝝌𝝍𝝎', 'χψω')"
 
  - "𝝏": [tc: "BVL⠙"]             # 0x1d74f
- - "𝝐": [tc: "BIGL⠑"]            # 0x1d750
- - "𝝑": [tc: "BIVL⠹"]            # 0x1d751
+ - "𝝐": [tc: "BGL⠑"]            # 0x1d750
+ - "𝝑": [tc: "BVL⠹"]            # 0x1d751
 
  - "𝝒-𝝕":    # 0x1d752 - 0x1d755
-     - tc: "BIG"
+     - tc: "BG"
      - spell: "translate('.', '𝝒𝝓𝝔𝝕', 'κφρπ')"
 
   # --- Nemeth Default Alphabet bold-script chars. ---
@@ -277,36 +277,36 @@
      - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
-     - tc: "IG"
+     - tc: "G"
      - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
- - "𝛻": [tc: "IGL⠫"]             # 0x1d6fb
+ - "𝛻": [tc: "GL⠫"]             # 0x1d6fb
 
  - "𝛼-𝜌":    # 0x1d6fc - 0x1d70c
-     - tc: "IG"
+     - tc: "G"
      - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌', 'αβγδεζηθικλμνξοπρ')"
- - "𝜍": [tc: "IVL⠎"]             # 0x1d70d
+ - "𝜍": [tc: "VL⠎"]             # 0x1d70d
 
- - "𝜎": [tc: "IGL⠎"]             # 0x1d70e
- - "𝜏": [tc: "IGL⠞"]             # 0x1d70f
- - "𝜐": [tc: "IGL⠥"]             # 0x1d710
+ - "𝜎": [tc: "GL⠎"]             # 0x1d70e
+ - "𝜏": [tc: "GL⠞"]             # 0x1d70f
+ - "𝜐": [tc: "GL⠥"]             # 0x1d710
 
- - "𝜑": [tc: "IVL⠋"]             # 0x1d711
+ - "𝜑": [tc: "VL⠋"]             # 0x1d711
 
- - "𝜒": [tc: "IGL⠯"]             # 0x1d712
- - "𝜓": [tc: "IGL⠽"]             # 0x1d713
- - "𝜔": [tc: "IGL⠺"]             # 0x1d714
+ - "𝜒": [tc: "GL⠯"]             # 0x1d712
+ - "𝜓": [tc: "GL⠽"]             # 0x1d713
+ - "𝜔": [tc: "GL⠺"]             # 0x1d714
 
  - "𝜕": [tc: "VL⠙"]              # 0x1d715
 
- - "𝜖": [tc: "IGL⠑"]             # 0x1d716
+ - "𝜖": [tc: "GL⠑"]             # 0x1d716
 
- - "𝜗": [tc: "IVL⠹"]             # 0x1d717
+ - "𝜗": [tc: "VL⠹"]             # 0x1d717
 
- - "𝜘": [tc: "IGL⠅"]             # 0x1d718
- - "𝜙": [tc: "IGL⠋"]             # 0x1d719
- - "𝜚": [tc: "IGL⠗"]             # 0x1d71a
- - "𝜛": [tc: "IGL⠏"]             # 0x1d71b
+ - "𝜘": [tc: "GL⠅"]             # 0x1d718
+ - "𝜙": [tc: "GL⠋"]             # 0x1d719
+ - "𝜚": [tc: "GL⠗"]             # 0x1d71a
+ - "𝜛": [tc: "GL⠏"]             # 0x1d71b
 
   # --- Nemeth Default Alphabet monospace chars. ---
 
@@ -504,49 +504,49 @@
   # --- Nemeth Default Alphabet sans-serif-bold-italic chars. ---
 
  - "𝘼-𝙕":    # 0x1d63c - 0x1d655
-     - tc: "SBIE"
+     - tc: "SBE"
      - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
-     - tc: "SBIE"
+     - tc: "SBE"
      - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
-     - tc: "SBIG"
+     - tc: "SBG"
      - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ')"
 
- - "𝞩": [t: "SBIGL⠫"]           # 0x1d7a9
+ - "𝞩": [t: "SBGL⠫"]           # 0x1d7a9
 
  - "𝞪-𝞺":    # 0x1d7aa - 0x1d7ba
-     - tc: "SBIG"
+     - tc: "SBG"
      - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺', 'αβγδεζηθικλμνξοπρ')"
 
- - "𝞻": [t: "SBIVL⠎"]           # 0x1d7bb
- - "𝞼": [t: "SBIGL⠎"]           # 0x1d7bc
- - "𝞽": [t: "SBIGL⠞"]           # 0x1d7bd
- - "𝞾": [t: "SBIGL⠥"]           # 0x1d7be
- - "𝞿": [t: "SBIVL⠋"]           # 0x1d7bf
+ - "𝞻": [t: "SBVL⠎"]           # 0x1d7bb
+ - "𝞼": [t: "SBGL⠎"]           # 0x1d7bc
+ - "𝞽": [t: "SBGL⠞"]           # 0x1d7bd
+ - "𝞾": [t: "SBGL⠥"]           # 0x1d7be
+ - "𝞿": [t: "SBVL⠋"]           # 0x1d7bf
 
- - "𝟀": [t: "SBIGL⠯"]           # 0x1d7c0
- - "𝟁": [t: "SBIGL⠽"]           # 0x1d7c1
- - "𝟂": [t: "SBIGL⠺"]           # 0x1d7c2
+ - "𝟀": [t: "SBGL⠯"]           # 0x1d7c0
+ - "𝟁": [t: "SBGL⠽"]           # 0x1d7c1
+ - "𝟂": [t: "SBGL⠺"]           # 0x1d7c2
  - "𝟃": [t: "SBVL⠙"]            # 0x1d7c3
 
- - "𝟄": [t: "SBIGL⠑"]           # 0x1d7c4
- - "𝟅": [t: "SBIVL⠹"]           # 0x1d7c5
+ - "𝟄": [t: "SBGL⠑"]           # 0x1d7c4
+ - "𝟅": [t: "SBVL⠹"]           # 0x1d7c5
 
- - "𝟆": [t: "SBIGL⠅"]           # 0x1d7c6
- - "𝟇": [t: "SBIGL⠋"]           # 0x1d7c7
- - "𝟈": [t: "SBIGL⠗"]           # 0x1d7c8
- - "𝟉": [t: "SBIGL⠏"]           # 0x1d7c9
+ - "𝟆": [t: "SBGL⠅"]           # 0x1d7c6
+ - "𝟇": [t: "SBGL⠋"]           # 0x1d7c7
+ - "𝟈": [t: "SBGL⠗"]           # 0x1d7c8
+ - "𝟉": [t: "SBGL⠏"]           # 0x1d7c9
 
   # --- Nemeth Default Alphabet sans-serif-italic chars. ---
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
-     - tc: "SIE"
+     - tc: "SE"
      - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
-     - tc: "SIE"
+     - tc: "SE"
      - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
   # --- Nemeth Default Alphabet script chars. ---
@@ -1041,18 +1041,7 @@
  - "™": [t: "⠘⠞"]               # 0x2122
  - "Å": [t: "⠈⠠⠁"]              # 0x212b
  - "­": [t: "⠤"]                # 0xad
- - " ": [t: "W"]                # 0x2000
- - " ": [t: "W"]                # 0x2001
- - " ": [t: "W"]                # 0x2002
- - " ": [t: "W"]                # 0x2003
- - " ": [t: "W"]                # 0x2004
- - " ": [t: "W"]                # 0x2005
- - " ": [t: "W"]                # 0x2006
- - " ": [t: "W"]                # 0x2007
- - " ": [t: "W"]                # 0x2008
- - " ": [t: "W"]                # 0x2009
- - " ": [t: "W"]                # 0x200a
- - "​": [t: "W"]                # 0x200b
+ - " -​": [t: "W"]               # 0x2000 - 0x200b (various spaces / ZWSP)
  - " ": [t: "W"]                # 0x2028
  - " ": [t: "W"]                # 0x2029
  - " ": [t: "W"]                # 0x202f
