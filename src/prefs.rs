@@ -1288,8 +1288,11 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
         let braille_before = interface::get_braille("").unwrap();
         let unicode_file = temp_rules_dir.join("Braille/Nemeth/unicode.yaml");
         let unicode_contents = fs::read_to_string(&unicode_file).unwrap();
-        // remap the digit '1' to the (distinctive) full braille cell '⠿'
-        let changed_unicode = unicode_contents.replace("\"1\": [t: \"N⠂\"]", "\"1\": [t: \"N⠿\"]");
+        // Remap digit '1' to the distinctive full braille cell '⠿'.
+        // Source Rules use block style (`"1": [t: "N⠂"]`); Rules-minimized.zip uses flow (`{"1": [{t: N⠂}]}`).
+        let changed_unicode = unicode_contents
+            .replace("\"1\": [t: \"N⠂\"]", "\"1\": [t: \"N⠿\"]")
+            .replace("{\"1\": [{t: N⠂}]}", "{\"1\": [{t: N⠿}]}");
         assert_ne!(changed_unicode, unicode_contents, "expected to find the Nemeth mapping for '1'");
         fs::write(&unicode_file, changed_unicode).unwrap();
         sleep(Duration::from_millis(5));

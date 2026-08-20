@@ -13,12 +13,11 @@ use std::fs::{self, File, read_dir};
 use std::io::{self, Cursor, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
-use yaml_rust::{YamlEmitter, YamlLoader};
+use yaml_rust::{Yaml, YamlLoader};
 use zip::write::{SimpleFileOptions, ZipWriter};
 use zip::CompressionMethod;
 
 const YAML_SUFFIXES: [&str; 2] = ["yaml", "yml"];
-const MINIMIZE_NAMES: [&str; 2] = ["unicode.yaml", "unicode-full.yaml"];
 const SKIP_LANGUAGE_DIR: &str = "zz";
 const ARCHIVE_ROOT: &str = "Rules";
 
@@ -83,17 +82,7 @@ fn file_name_str(path: &Path) -> io::Result<String> {
         .ok_or_else(|| io::Error::other(format!("non-UTF-8 file name: {}", path.display())))?;
     return Ok(name.to_string());
 }
-
-/// Speech unicode YAML only — braille `unicode.yaml` stays verbatim.
-fn should_minimize(path: &Path) -> bool {
-    let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
-    if !MINIMIZE_NAMES.contains(&name) {
-        return false;
-    }
-    return path.components().any(|c| c.as_os_str() == "Languages");
-}
-
-/// Load YAML, drop comments, re-emit. Returns `Err` if yaml-rust cannot parse the file.
+/// Load YAML, drop comments, re-emit in flow style. Returns `Err` if yaml-rust cannot parse the file.
 pub fn minimize_yaml_text(text: &str) -> Result<String, String> {
     let normalized = text.replace('\t', "    ");
     let docs = YamlLoader::load_from_str(&normalized).map_err(|e| e.to_string())?;
@@ -101,16 +90,13 @@ pub fn minimize_yaml_text(text: &str) -> Result<String, String> {
         return Ok(String::new());
     }
     let mut out = String::new();
-    {
-        let mut emitter = YamlEmitter::new(&mut out);
-        emitter.compact(true);
-        for doc in &docs {
-            emitter.dump(doc).map_err(|e| e.to_string())?;
+    for (i, doc) in docs.iter().enumerate() {
+        if i > 0 {
+            out.push_str("\n---\n");
         }
+        emit_flow(&mut out, doc)?;
     }
-    if !out.ends_with('\n') {
-        out.push('\n');
-    }
+    out.push('\n');
     // yaml-rust quotes scalars that parse as f64 (including "infinity"); keep a guard in case
     // a future emitter change stops doing that — unquoted `infinity` becomes a float on load.
     if looks_like_unquoted_infinity(&out) {
@@ -119,15 +105,143 @@ pub fn minimize_yaml_text(text: &str) -> Result<String, String> {
     return Ok(out);
 }
 
+fn emit_flow(out: &mut String, yaml: &Yaml) -> Result<(), String> {
+    match yaml {
+        Yaml::Array(items) => {
+            out.push('[');
+            for (i, item) in items.iter().enumerate() {
+                if i > 0 {
+                    out.push(',');
+                }
+                emit_flow(out, item)?;
+            }
+            out.push(']');
+        }
+        Yaml::Hash(hash) => {
+            out.push('{');
+            for (i, (key, value)) in hash.iter().enumerate() {
+                if i > 0 {
+                    out.push(',');
+                }
+                emit_flow(out, key)?;
+                out.push_str(": ");
+                emit_flow(out, value)?;
+            }
+            out.push('}');
+        }
+        Yaml::String(s) => emit_yaml_string(out, s),
+        Yaml::Boolean(true) => out.push_str("true"),
+        Yaml::Boolean(false) => out.push_str("false"),
+        Yaml::Integer(i) => out.push_str(&i.to_string()),
+        Yaml::Real(s) => out.push_str(s),
+        Yaml::Null | Yaml::BadValue => out.push('~'),
+        Yaml::Alias(_) => return Err("cannot minimize YAML that contains aliases".to_string()),
+    }
+    return Ok(());
+}
+
+fn emit_yaml_string(out: &mut String, s: &str) {
+    if need_quotes(s) {
+        escape_yaml_string(out, s);
+    } else {
+        out.push_str(s);
+    }
+}
+
+/// Same quoting rules as yaml-rust 0.4's emitter, so load/emit round-trips.
+fn need_quotes(string: &str) -> bool {
+    string.is_empty()
+        || string.starts_with(' ')
+        || string.ends_with(' ')
+        || string.starts_with(|character: char| {
+            matches!(character, '&' | '*' | '?' | '|' | '-' | '<' | '>' | '=' | '!' | '%' | '@')
+        })
+        || string.contains(|character: char| {
+            matches!(
+                character,
+                ':' | '{' | '}' | '[' | ']' | ',' | '#' | '`' | '"' | '\'' | '\\'
+                    | '\0'..='\x06'
+                    | '\t'
+                    | '\n'
+                    | '\r'
+                    | '\x0e'..='\x1a'
+                    | '\x1c'..='\x1f'
+            )
+        })
+        || [
+            "yes", "Yes", "YES", "no", "No", "NO", "True", "TRUE", "true", "False", "FALSE",
+            "false", "on", "On", "ON", "off", "Off", "OFF", "null", "Null", "NULL", "~",
+        ]
+        .contains(&string)
+        || string.starts_with('.')
+        || string.starts_with("0x")
+        || string.parse::<i64>().is_ok()
+        || string.parse::<f64>().is_ok()
+}
+
+fn escape_yaml_string(out: &mut String, v: &str) {
+    out.push('"');
+    let mut start = 0;
+    for (i, byte) in v.bytes().enumerate() {
+        let escaped = match byte {
+            b'"' => "\\\"",
+            b'\\' => "\\\\",
+            b'\x00' => "\\u0000",
+            b'\x01' => "\\u0001",
+            b'\x02' => "\\u0002",
+            b'\x03' => "\\u0003",
+            b'\x04' => "\\u0004",
+            b'\x05' => "\\u0005",
+            b'\x06' => "\\u0006",
+            b'\x07' => "\\u0007",
+            b'\x08' => "\\b",
+            b'\t' => "\\t",
+            b'\n' => "\\n",
+            b'\x0b' => "\\u000b",
+            b'\x0c' => "\\f",
+            b'\r' => "\\r",
+            b'\x0e' => "\\u000e",
+            b'\x0f' => "\\u000f",
+            b'\x10' => "\\u0010",
+            b'\x11' => "\\u0011",
+            b'\x12' => "\\u0012",
+            b'\x13' => "\\u0013",
+            b'\x14' => "\\u0014",
+            b'\x15' => "\\u0015",
+            b'\x16' => "\\u0016",
+            b'\x17' => "\\u0017",
+            b'\x18' => "\\u0018",
+            b'\x19' => "\\u0019",
+            b'\x1a' => "\\u001a",
+            b'\x1b' => "\\u001b",
+            b'\x1c' => "\\u001c",
+            b'\x1d' => "\\u001d",
+            b'\x1e' => "\\u001e",
+            b'\x1f' => "\\u001f",
+            b'\x7f' => "\\u007f",
+            _ => continue,
+        };
+        if start < i {
+            out.push_str(&v[start..i]);
+        }
+        out.push_str(escaped);
+        start = i + 1;
+    }
+    if start != v.len() {
+        out.push_str(&v[start..]);
+    }
+    out.push('"');
+}
+
 fn looks_like_unquoted_infinity(yaml: &str) -> bool {
-    // Match a YAML value `infinity` that is not inside quotes.
+    // Block-style leftovers and flow mappings (`: infinity}` / `: infinity,`).
     for line in yaml.lines() {
         let trimmed = line.trim();
         if trimmed == "infinity" || trimmed.ends_with(": infinity") || trimmed.ends_with("- infinity") {
             return true;
         }
     }
-    return false;
+    return yaml.contains(": infinity,") || yaml.contains(": infinity}") || yaml.contains(": infinity]");
 }
 
 fn minimize_yaml_file(src: &Path, dst: &Path) -> Result<(), String> {
@@ -143,9 +257,8 @@ fn minimize_yaml_file(src: &Path, dst: &Path) -> Result<(), String> {
     return Ok(());
 }
 
-/// Copy a Rules tree. When `minify` is true, rewrite `Languages/**/unicode.yaml` and
-/// `unicode-full.yaml` (comments stripped). `Languages/zz` is omitted. Returns the number of
-/// files successfully minimized.
+/// Copy a Rules tree. When `minify` is true, rewrite every YAML file as comment-free flow YAML.
+/// `Languages/zz` is omitted. Returns the number of files successfully minimized.
 pub fn copy_rules_tree(src: &Path, dst: &Path, minify: bool) -> io::Result<usize> {
     fs::create_dir_all(dst)?;
     return copy_dir(src, dst, minify, false);
@@ -167,7 +280,7 @@ fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> 
         if src_path.is_dir() {
             fs::create_dir_all(&dst_path)?;
             minimized += copy_dir(&src_path, &dst_path, minify, name == "Languages")?;
-        } else if minify && should_minimize(&src_path) {
+        } else if minify && is_yaml_file(&src_path) {
             match minimize_yaml_file(&src_path, &dst_path) {
                 Ok(()) => minimized += 1,
                 Err(e) => {

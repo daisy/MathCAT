@@ -15,14 +15,14 @@ use std::process::ExitCode;
 #[command(
     name = "package-rules",
     about = "Package MathCAT Rules/ into a zip archive. \
-             Use --minimize to strip comments from Languages unicode YAML."
+             Use --minimize to rewrite all Rules YAML in compact flow style."
 )]
 struct Options {
     /// Path to the Rules directory
     source: PathBuf,
     /// Output zip file path (e.g. Rules.zip)
     output: PathBuf,
-    /// Emit compact unicode.yaml / unicode-full.yaml without comments (speech languages only)
+    /// Rewrite all Rules YAML as compact flow YAML without comments
     #[arg(long)]
     minimize: bool,
 }
@@ -120,6 +120,23 @@ mod tests {
     }
 
     #[test]
+    fn minimize_yaml_uses_flow_style() {
+        let source = "---\n# comment\n - \"+\": [t: \"plus\"]  # inline\n - \"-\": [t: \"minus\"]\n";
+        let minimized = minimize_yaml_text(source).unwrap();
+        assert!(
+            minimized.contains('[') && minimized.contains('{'),
+            "expected flow collections, got: {minimized}"
+        );
+        assert!(
+            !minimized.lines().any(|line| line.trim_start().starts_with("- ")),
+            "expected no block-sequence dashes, got: {minimized}"
+        );
+        let original = yaml_rust::YamlLoader::load_from_str(source).unwrap();
+        let roundtrip = yaml_rust::YamlLoader::load_from_str(&minimized).unwrap();
+        assert_eq!(original, roundtrip);
+    }
+
+    #[test]
     fn minimize_quotes_infinity() {
         let source = "---\n - \"∞\": [t: \"infinity\"]\n";
         let minimized = minimize_yaml_text(source).unwrap();
@@ -130,6 +147,22 @@ mod tests {
         assert!(!looks_like_unquoted_infinity(&minimized));
         let docs = yaml_rust::YamlLoader::load_from_str(&minimized).unwrap();
         assert_eq!(docs.len(), 1);
+    }
+
+    #[test]
+    fn minimize_roundtrips_en_unicode_files() {
+        for name in ["unicode.yaml", "unicode-full.yaml"] {
+            let path = std::path::Path::new("Rules/Languages/en").join(name);
+            let source = fs::read_to_string(&path).expect(name);
+            let minimized = minimize_yaml_text(&source).unwrap();
+            assert!(
+                !minimized.lines().any(|line| line.trim_start().starts_with("- ")),
+                "{name} still uses block sequences"
+            );
+            let original = yaml_rust::YamlLoader::load_from_str(&source).unwrap();
+            let roundtrip = yaml_rust::YamlLoader::load_from_str(&minimized).unwrap();
+            assert_eq!(original, roundtrip, "{name} did not round-trip");
+        }
     }
 
     #[test]
@@ -161,8 +194,43 @@ mod tests {
         assert_eq!(unicode.replace("\r\n", "\n"), "- \"+\": [t: \"plus\"]\n");
     }
 
+    fn walk_yaml_files(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
+        for entry in fs::read_dir(dir).unwrap() {
+            let entry = entry.unwrap();
+            let path = entry.path();
+            if path.is_dir() {
+                walk_yaml_files(&path, out);
+            } else if is_yaml_file(&path) {
+                out.push(path);
+            }
+        }
+    }
+
     #[test]
-    fn should_not_minimize_braille_unicode() {
+    fn minimize_roundtrips_all_rules_yaml() {
+        let mut paths = Vec::new();
+        walk_yaml_files(std::path::Path::new("Rules"), &mut paths);
+        assert!(!paths.is_empty());
+        for path in paths {
+            if path.components().any(|c| c.as_os_str() == SKIP_LANGUAGE_DIR) {
+                continue;
+            }
+            let source = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            let minimized = minimize_yaml_text(&source)
+                .unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            assert!(
+                !minimized.lines().any(|line| line.trim_start().starts_with("- ")),
+                "{} still uses block sequences",
+                path.display()
+            );
+            let original = yaml_rust::YamlLoader::load_from_str(&source).unwrap();
+            let roundtrip = yaml_rust::YamlLoader::load_from_str(&minimized).unwrap();
+            assert_eq!(original, roundtrip, "{} did not round-trip", path.display());
+        }
+    }
+
+    #[test]
+    fn minimize_braille_unicode() {
         let tmp = tempdir().unwrap();
         let rules = tmp.path().join("Rules");
         let braille = rules.join("Braille").join("Nemeth");
@@ -172,11 +240,16 @@ mod tests {
 
         let output = tmp.path().join("Rules-minimized.zip");
         let minimized = package_rules(&rules, &output, true, downloadable_compression()).unwrap();
-        assert_eq!(minimized, 0);
+        assert_eq!(minimized, 1);
 
         let bytes = fs::read(&output).unwrap();
         let text = read_nested_zip_text(&bytes, "Rules/Braille/Nemeth/Nemeth.zip", "unicode.yaml");
-        assert_eq!(text.replace("\r\n", "\n"), source.replace("\r\n", "\n"));
+        assert!(!text.contains('#'));
+        assert!(text.contains('[') && text.contains('{'));
+        assert!(!text.lines().any(|line| line.trim_start().starts_with("- ")));
+        let original = yaml_rust::YamlLoader::load_from_str(source).unwrap();
+        let roundtrip = yaml_rust::YamlLoader::load_from_str(&text).unwrap();
+        assert_eq!(original, roundtrip);
     }
 
     #[test]
@@ -198,7 +271,7 @@ mod tests {
 
         let output = tmp.path().join("Rules-minimized.zip");
         let minimized = package_rules(&rules, &output, true, downloadable_compression()).unwrap();
-        assert_eq!(minimized, 1);
+        assert_eq!(minimized, 2);
 
         let bytes = fs::read(&output).unwrap();
         let names = outer_names(&bytes);
@@ -208,8 +281,14 @@ mod tests {
         let unicode = read_nested_zip_text(&bytes, "Rules/Languages/en/en.zip", "unicode.yaml");
         let defs = read_nested_zip_text(&bytes, "Rules/Languages/en/en.zip", "definitions.yaml");
         assert!(!unicode.contains('#'));
+        assert!(unicode.contains('[') && unicode.contains('{'));
+        assert!(!unicode.lines().any(|line| line.trim_start().starts_with("- ")));
+        assert!(!defs.contains('#'));
+        assert!(defs.contains('[') && defs.contains('{'));
+        assert!(!defs.lines().any(|line| line.trim_start().starts_with("- ")));
         assert!(defs.contains("real=inf"));
         assert_eq!(yaml_rust::YamlLoader::load_from_str(&unicode).unwrap().len(), 1);
+        assert_eq!(yaml_rust::YamlLoader::load_from_str(&defs).unwrap().len(), 1);
     }
 
     #[test]
