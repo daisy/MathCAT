@@ -159,8 +159,7 @@
   replace:
    - test: 
       if: "../*[2]"   # more than one row
-      then: [t: "⠠"]
-   - t: ""
+      then: [t: "⠸W"]
    - x: $RowStart
    - test:
       if: .[self::m:mlabeledtr]

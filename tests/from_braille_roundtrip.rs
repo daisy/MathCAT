@@ -7,7 +7,6 @@ mod common;
 
 use anyhow::Result;
 use common::*;
-use libmathcat::interface::*;
 use libmathcat::parser::Braille_to_MathML;
 use std::fs;
 use std::path::PathBuf;

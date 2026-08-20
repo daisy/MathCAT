@@ -264,6 +264,8 @@ pub enum Token {
     /// Enlarged / multi-line fence (dot-6 + grouping): GTM 15 matrices on one line.
     /// Open and close use the print character (`(` `)` `[` `]` `{` `}` `|`).
     EnlargedFence(char),
+    /// UEB_Rules multi-row `mtr` marker: dots 456 + blank (`⠸⠀`).
+    TableRowStart,
     /// Vertical bar `|` (⠸⠳) — open/close share one cell.
     VertBar,
     /// Level-change up (superscript)
@@ -538,6 +540,12 @@ impl<'a> Lexer<'a> {
     }
 
     fn try_structure(&mut self) -> Result<bool> {
+        // Multi-row mtable row start (UEB_Rules `mtr` when >1 row): before bare space.
+        if self.eat("⠸⠀") {
+            self.end_numeric_modes_for_space();
+            self.tokens.push(Token::TableRowStart);
+            return Ok(true);
+        }
         // Space
         if self.eat("⠀") {
             self.end_numeric_modes_for_space();
@@ -1496,6 +1504,12 @@ fn parse_tokens(tokens: &[Token]) -> Result<Expr> {
                 input = &input[1..];
                 continue;
             }
+            Some(Token::TableRowStart) => {
+                let (rest, expr) = parse_row_marked_matrix(input)?;
+                parts.push(expr);
+                input = rest;
+                continue;
+            }
             _ => {}
         }
 
@@ -1540,6 +1554,7 @@ fn token_to_braille(t: &Token) -> String {
         Token::Close('⟧') => "⠜".into(),
         Token::Open(c) | Token::Close(c) => c.to_string(),
         Token::VertBar => "⠸⠳".into(),
+        Token::TableRowStart => "⠸⠀".into(),
         Token::EnlargedFence(c) => match c {
             '(' => "⠠⠐⠣".into(),
             ')' => "⠠⠐⠜".into(),
@@ -1844,6 +1859,7 @@ fn is_expr_stop_token(t: Option<&Token>) -> bool {
                 | Token::SqrtClose
                 | Token::Close(_)
                 | Token::Grade1PassageEnd
+                | Token::TableRowStart
         )
     )
 }
@@ -2558,6 +2574,72 @@ fn parse_enlarged_matrix(
     ))
 }
 
+/// UEB_Rules `mtr` with more than one row: `Token::TableRowStart` (`⠸⠀`) before each row.
+/// Each row uses a normal open fence / vert bar and an enlarged close fence (GTM 15).
+fn parse_row_marked_matrix(
+    input: Toks<'_>,
+) -> std::result::Result<(Toks<'_>, Expr), crate::errors::Error> {
+    if !matches!(input.first(), Some(Token::TableRowStart)) {
+        return Err(parse_err(input, "expected table row marker"));
+    }
+    let mut input = &input[1..];
+    let mut rows = Vec::new();
+    let (rest, open, close, cells) = parse_matrix_row_segment(input)?;
+    input = rest;
+    rows.push(cells);
+
+    while matches!(input.first(), Some(Token::TableRowStart)) {
+        input = &input[1..];
+        let (rest, next_open, next_close, cells) = parse_matrix_row_segment(input)?;
+        if next_open != open || next_close != close {
+            return Err(parse_err(input, "inconsistent matrix row fences"));
+        }
+        input = rest;
+        rows.push(cells);
+    }
+
+    Ok((
+        input,
+        Expr::Table {
+            open,
+            close: Some(close),
+            rows,
+        },
+    ))
+}
+
+/// One linearized matrix row: open (normal or enlarged) + cells + enlarged close.
+fn parse_matrix_row_segment(
+    input: Toks<'_>,
+) -> std::result::Result<(Toks<'_>, String, String, Vec<Expr>), crate::errors::Error> {
+    let mut input = skip_noise(input);
+    if input.is_empty() {
+        return Err(parse_err(input, "expected matrix row open"));
+    }
+    let (open, close_ch) = match input.first().unwrap() {
+        Token::Open(c) => {
+            input = &input[1..];
+            (*c, matching_close(*c))
+        }
+        Token::VertBar => {
+            input = &input[1..];
+            ('|', '|')
+        }
+        Token::EnlargedFence(c) if is_open_fence_char(*c) => {
+            input = &input[1..];
+            (*c, matching_close(*c))
+        }
+        _ => return Err(parse_err(input, "expected matrix row open")),
+    };
+    let (input, cells) = parse_matrix_row_cells(input, close_ch)?;
+    // Enlarged close is optional when input ends mid-typing.
+    let input = match input.first() {
+        Some(Token::EnlargedFence(c)) if *c == close_ch => &input[1..],
+        _ => input,
+    };
+    Ok((input, open.to_string(), close_ch.to_string(), cells))
+}
+
 fn is_open_fence_char(c: char) -> bool {
     matches!(c, '(' | '[' | '{' | '|')
 }
@@ -2576,7 +2658,8 @@ fn parse_matrix_row_cells(
         if matches!(
             input.first(),
             Some(Token::EnlargedFence(c)) if *c == close
-        ) {
+        ) || matches!(input.first(), Some(Token::TableRowStart))
+        {
             break;
         }
         if input.is_empty() {
@@ -2587,6 +2670,7 @@ fn parse_matrix_row_cells(
         loop {
             if matches!(input.first(), Some(Token::Space))
                 || matches!(input.first(), Some(Token::EnlargedFence(c)) if *c == close)
+                || matches!(input.first(), Some(Token::TableRowStart))
                 || input.is_empty()
             {
                 break;
@@ -2599,6 +2683,7 @@ fn parse_matrix_row_cells(
                         | Token::SqrtClose
                         | Token::Close(_)
                         | Token::Grade1PassageEnd
+                        | Token::TableRowStart
                 )
             ) {
                 break;
@@ -2636,6 +2721,7 @@ fn parse_expr_part_no_leading_space(
                 | Token::SqrtClose
                 | Token::Close(_)
                 | Token::EnlargedFence(_)
+                | Token::TableRowStart
                 | Token::Space
                 | Token::Grade1PassageEnd
         )
@@ -3072,7 +3158,11 @@ mod tests {
 
     #[test]
     fn matrix_2x2_enlarged_parens() {
-        let mml = Braille_to_MathML("⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜", "UEB").unwrap();
+        let mml = Braille_to_MathML(
+            "⠸⠀⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜",
+            "UEB",
+        )
+        .unwrap();
         assert!(mml.contains("<mtable>"), "{mml}");
         assert!(mml.contains("<mtr>"), "{mml}");
         assert!(mml.contains("<mtd>"), "{mml}");
@@ -3089,7 +3179,11 @@ mod tests {
 
     #[test]
     fn determinant_2x2_enlarged() {
-        let mml = Braille_to_MathML("⠠⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠠⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳", "UEB").unwrap();
+        let mml = Braille_to_MathML(
+            "⠸⠀⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠸⠀⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳",
+            "UEB",
+        )
+        .unwrap();
         assert!(mml.contains("<mtable>"), "{mml}");
         assert!(mml.contains("<mo>|</mo>"), "{mml}");
     }
