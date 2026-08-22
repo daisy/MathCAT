@@ -1037,10 +1037,11 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
     let result = capitals_to_word_mode(&result);
 
     let use_only_grade1 = pref_manager.pref_to_string("UEB_START_MODE").as_str() == "Grade1";
+    let use_bana_style = pref_manager.pref_to_string("UEB_G1_BANA_Style").as_str() != "false";
     
     // '𝐖' is a hard break -- basically, it separates exprs
     let mut result = result.split('𝐖')
-                        .map(|str| pick_start_mode(str, use_only_grade1) + "W")
+                        .map(|str| pick_start_mode(str, use_only_grade1, use_bana_style) + "W")
                         .collect::<String>();
     result.pop();   // we added a 'W' at the end that needs to be removed.
 
@@ -1057,13 +1058,21 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
    
     return result.to_string();
 
-    fn pick_start_mode(raw_braille: &str, use_only_grade1: bool) -> String {
-        // Need to decide what the start mode should be
-        // From http://www.brailleauthority.org/ueb/ueb_math_guidance/final_for_posting_ueb_math_guidance_may_2019_102419.pdf
-        //   Unless a math expression can be correctly represented with only a grade 1 symbol indicator in the first three cells
-        //   or before a single letter standing alone anywhere in the expression,
-        //   begin the expression with a grade 1 word indicator (or a passage indicator if the expression includes spaces)
-        // Apparently "only a grade 1 symbol..." means at most one grade 1 symbol based on some examples (GTM 6.4, example 4)
+    fn pick_start_mode(raw_braille: &str, use_only_grade1: bool, use_bana_style: bool) -> String {
+        // Need to decide what the start mode should be.
+        //
+        // Two styles are supported, selected by the `UEB_G1_BANA_Style` preference:
+        //  * BANA style (`use_bana_style == true`, the default):
+        //    From http://www.brailleauthority.org/ueb/ueb_math_guidance/final_for_posting_ueb_math_guidance_may_2019_102419.pdf
+        //      Unless a math expression can be correctly represented with only a grade 1 symbol indicator in the first three cells
+        //      or before a single letter standing alone anywhere in the expression,
+        //      begin the expression with a grade 1 word indicator (or a passage indicator if the expression includes spaces)
+        //    Apparently "only a grade 1 symbol..." means at most one grade 1 symbol based on some examples (GTM 6.4, example 4)
+        //  * ICEB GTM 1.7 style (`use_bana_style == false`):
+        //    GTM 1.7.3 decides indicators per *symbols-sequence* (RUEB 2.1 -- text separated by spaces):
+        //      (a) allow one grade 1 symbol per symbols-sequence, or a grade 1 word indicator if a sequence needs more than one;
+        //      (b) use a grade 1 passage only if three or more symbols-sequences each need a grade 1 symbol or word indicator.
+        //    grade 1 symbol indicators forced by 'a-j' following a digit are not counted (GTM 1.7.3 note).
         // debug!("before determining mode:  '{}'", raw_braille);
 
         // a bit ugly because we need to store the string if we have cap passage mode
@@ -1071,6 +1080,9 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
         let raw_braille = if raw_braille_string.is_empty() {raw_braille} else {&raw_braille_string};
         if use_only_grade1 {
             return remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
+        }
+        if !use_bana_style {
+            return gtm_1_7_mode(raw_braille);
         }
         let grade2 = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade2, UEB_Duration::Symbol);
         debug!("Symbol mode:  '{}'", grade2);
@@ -1262,6 +1274,47 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
                 }
             }
             return if found_word_mode {g1_words.join("W")} else {"".to_string()};
+        }
+
+        /// Count the number of non-forced grade 1 indicators needed for a single symbols-sequence.
+        /// (Forced indicators -- 'a-j' following a digit -- are excluded per the GTM 1.7.3 note.)
+        fn grade1_count(raw_word: &str) -> usize {
+            let grade2 = remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade2, UEB_Duration::Symbol);
+            let chars = grade2.chars().collect::<Vec<char>>();
+            return chars.iter().enumerate()
+                .filter(|&(i, &ch)| ch == '1' && !is_forced_grade1(&chars, i))
+                .count();
+        }
+
+        /// ICEB GTM 1.7 grade 1 indicator placement (per symbols-sequence).
+        /// See GTM 1.7.3. Note: the 1.7.5 two-symbol allowance and contraction-preserving
+        /// word/passage placement for expressions containing English words are only partially
+        /// realized here; those cases depend on separate contraction-rule improvements.
+        fn gtm_1_7_mode(raw_braille: &str) -> String {
+            // Count how many symbols-sequences (whitespace-separated) need a non-forced grade 1 indicator.
+            let n_seq_needing = raw_braille.split('W')
+                .filter(|raw_word| grade1_count(raw_word) >= 1)
+                .count();
+
+            // GTM 1.7.3(b): use a grade 1 passage if three or more sequences each need grade 1.
+            if n_seq_needing >= 3 {
+                let grade1_passage = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
+                return "⠰⠰⠰".to_string() + &grade1_passage + "⠰⠄";
+            }
+
+            // GTM 1.7.3(a): per sequence, allow one grade 1 symbol indicator, or a grade 1 word
+            // indicator if the sequence needs more than one.
+            let words = raw_braille.split('W')
+                .map(|raw_word| {
+                    if grade1_count(raw_word) >= 2 {
+                        "⠰⠰".to_string() + &remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade1, UEB_Duration::Word)
+                    } else {
+                        // 0 or 1 grade 1 indicators: the grade 2 form leaves a single symbol indicator inline
+                        remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade2, UEB_Duration::Symbol)
+                    }
+                })
+                .collect::<Vec<String>>();
+            return words.join("W");
         }
     }
 }
@@ -1940,7 +1993,8 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
 fn handle_contractions(chars: &[char], mut result: String) -> String {
     struct Replacement {
         pattern: String,
-        replacement: &'static str
+        replacement: &'static str,
+        skip_if_word_in: Option<&'static phf::Set<&'static str>>,
     }
 
     const ASCII_TO_UNICODE: &[char] = &[
@@ -1959,47 +2013,88 @@ fn handle_contractions(chars: &[char], mut result: String) -> String {
         return unicode;
     }
 
+    // Whole words where the lower groupsign 'cc' must not apply (10.11.1 compound/function names).
+    static CC_EXCEPTION_WORDS: phf::Set<&str> = phf_set! {
+        "L⠁L⠗L⠉L⠉L⠕L⠎",       // arccos
+        "L⠁L⠗L⠉L⠉L⠕L⠎L⠊L⠝L⠑", // arccosine
+        "L⠁L⠗L⠉L⠉L⠕L⠎L⠓",     // arccosh
+        "L⠁L⠗L⠉L⠉L⠕L⠎L⠑L⠉",   // arccosec
+        "L⠁L⠗L⠉L⠉L⠕L⠎L⠑L⠉L⠁L⠝L⠞", // arccosecant
+        "L⠁L⠗L⠉L⠉L⠕L⠞",       // arccot
+        "L⠁L⠗L⠉L⠉L⠕L⠞L⠁L⠝L⠛L⠑L⠝L⠞", // arccotangent
+        "L⠁L⠗L⠉L⠉L⠎L⠉",       // arccsc
+    };
+
+    // Words where the 'ea' lower groupsign must not apply (re- prefix morpheme boundary).
+    static EA_EXCEPTION_WORDS: phf::Set<&str> = phf_set! {
+        "L⠗L⠑L⠁L⠉L⠞L⠁L⠝L⠉L⠑", // reactance
+        "L⠗L⠑L⠁L⠉L⠞L⠊L⠕L⠝",     // reaction
+        "L⠗L⠑L⠁L⠉L⠞L⠊L⠧L⠊L⠞L⠽", // reactivity
+    };
+
     // It would be much better from an extensibility point of view to read the table in from a file
     static CONTRACTIONS: LazyLock<Vec<Replacement>> = LazyLock::new(|| { vec![
+            // 10.9: initial-letter (dot-5) wordsigns -- whole word only
+            Replacement{ pattern: format!("^{}$", to_unicode_braille("time")), replacement: "⠐⠞", skip_if_word_in: None },
+            Replacement{ pattern: format!("^{}$", to_unicode_braille("work")), replacement: "⠐⠺", skip_if_word_in: None },
+            Replacement{ pattern: format!("^{}$", to_unicode_braille("leverage")), replacement: "⠇⠐⠑⠁⠛⠑", skip_if_word_in: None },
+
+            // 10.10: shortform prefix "dis"
+            Replacement{ pattern: format!("^{}", to_unicode_braille("dis")), replacement: "⠲", skip_if_word_in: None },
+            // liblouis/brailletranslators "con" prefix
+            Replacement{ pattern: format!("^{}", to_unicode_braille("con")), replacement: "⠒", skip_if_word_in: None },
+
+            // 10.7.1: dot-5 initial-letter contractions (as wordsigns / groupsigns)
+            Replacement{ pattern: format!("^{}", to_unicode_braille("through")), replacement: "⠐⠹", skip_if_word_in: None },
+            Replacement{ pattern: format!("(?P<s>L.){}(?P<e>L.)", to_unicode_braille("part")), replacement: "${s}⠐⠏${e}", skip_if_word_in: None },
+
             // 10.3: Strong contractions
-            Replacement{ pattern: to_unicode_braille("and"), replacement: "L⠯"},
-            Replacement{ pattern: to_unicode_braille("for"), replacement: "L⠿"},
-            Replacement{ pattern: to_unicode_braille("of"), replacement: "L⠷"},
-            Replacement{ pattern: to_unicode_braille("the"), replacement: "L⠮"},
-            Replacement{ pattern: to_unicode_braille("with"), replacement: "L⠾"},
+            Replacement{ pattern: to_unicode_braille("and"), replacement: "L⠯", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("for"), replacement: "L⠿", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("of"), replacement: "L⠷", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("the"), replacement: "L⠮", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("with"), replacement: "L⠾", skip_if_word_in: None },
             
-            // 10.8: final-letter group signs (this need to precede 'en' and any other shorter contraction)
-            Replacement{ pattern: "(?P<s>L.)L⠍L⠑L⠝L⠞".to_string(), replacement: "${s}L⠰L⠞" }, // ment
-            Replacement{ pattern: "(?P<s>L.)L⠞L⠊L⠕L⠝".to_string(), replacement: "${s}L⠰L⠝" } ,// tion
+            // 10.8: final-letter group signs (these need to precede 'en' and any other shorter contraction)
+            Replacement{ pattern: "(?P<s>L.)L⠍L⠑L⠝L⠞".to_string(), replacement: "${s}L⠰L⠞", skip_if_word_in: None }, // ment
+            Replacement{ pattern: "(?P<s>L.)L⠞L⠊L⠕L⠝".to_string(), replacement: "${s}L⠰L⠝", skip_if_word_in: None }, // tion
+            Replacement{ pattern: "(?P<s>L.)L⠊L⠞L⠽".to_string(), replacement: "${s}L⠰L⠽", skip_if_word_in: None }, // ity
+            Replacement{ pattern: "(?P<s>L.)L⠁L⠝L⠉L⠑".to_string(), replacement: "${s}L⠨L⠑", skip_if_word_in: None }, // ance
+            Replacement{ pattern: "(?P<s>L.)L⠎L⠊L⠕L⠝".to_string(), replacement: "${s}L⠨L⠝", skip_if_word_in: None }, // sion
+            Replacement{ pattern: "(?P<s>L.)L⠑L⠝L⠉L⠑".to_string(), replacement: "${s}L⠰L⠑", skip_if_word_in: None }, // ence
+            Replacement{ pattern: "(?P<s>L.)L⠝L⠑L⠎L⠎".to_string(), replacement: "${s}L⠰L⠎", skip_if_word_in: None }, // ness
+            Replacement{ pattern: "(?P<s>L.)L⠕L⠥L⠝L⠙".to_string(), replacement: "${s}L⠨L⠙", skip_if_word_in: None }, // ound
+            Replacement{ pattern: "(?P<s>L.)L⠕L⠥L⠝L⠞".to_string(), replacement: "${s}L⠨L⠞", skip_if_word_in: None }, // ount
+            Replacement{ pattern: "(?P<s>L.)L⠇L⠑L⠎L⠎".to_string(), replacement: "${s}L⠨L⠎", skip_if_word_in: None }, // less
+            Replacement{ pattern: "(?P<s>L.)L⠕L⠝L⠛".to_string(), replacement: "${s}L⠰L⠛", skip_if_word_in: None }, // ong
+            Replacement{ pattern: "(?P<s>L.)L⠋L⠥L⠇".to_string(), replacement: "${s}L⠰L⠇", skip_if_word_in: None }, // ful
 
             // 10.4: Strong group signs
-            Replacement{ pattern: to_unicode_braille("ch"), replacement: "L⠡"},
-            Replacement{ pattern: to_unicode_braille("gh"), replacement: "L⠣"},
-            Replacement{ pattern: to_unicode_braille("sh"), replacement: "L⠩"},
-            Replacement{ pattern: to_unicode_braille("th"), replacement: "L⠹"},
-            Replacement{ pattern: to_unicode_braille("wh"), replacement: "L⠱"},
-            Replacement{ pattern: to_unicode_braille("ed"), replacement: "L⠫"},
-            Replacement{ pattern: to_unicode_braille("er"), replacement: "L⠻"},
-            Replacement{ pattern: to_unicode_braille("ou"), replacement: "L⠳"},
-            Replacement{ pattern: to_unicode_braille("ow"), replacement: "L⠪"},
-            Replacement{ pattern: to_unicode_braille("st"), replacement: "L⠌"},
-            Replacement{ pattern: "(?P<s>L.)L⠊L⠝L⠛".to_string(), replacement: "${s}L⠬" },  // 'ing', not at start
-            Replacement{ pattern: to_unicode_braille("ar"), replacement: "L⠜"},
+            Replacement{ pattern: to_unicode_braille("ch"), replacement: "L⠡", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("gh"), replacement: "L⠣", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("sh"), replacement: "L⠩", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("th"), replacement: "L⠹", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("wh"), replacement: "L⠱", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("ed"), replacement: "L⠫", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("er"), replacement: "L⠻", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("ou"), replacement: "L⠳", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("ow"), replacement: "L⠪", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("st"), replacement: "L⠌", skip_if_word_in: None },
+            Replacement{ pattern: "(?P<s>L.)L⠊L⠝L⠛".to_string(), replacement: "${s}L⠬", skip_if_word_in: None },  // 'ing', not at start
+            Replacement{ pattern: to_unicode_braille("ar"), replacement: "L⠜", skip_if_word_in: None },
 
             // 10.6.5: Lower group signs preceded and followed by letters
             // FIX: don't match if after/before a cap letter -- can't use negative pattern (?!...) in regex package
-            // Note: removed cc because "arccos" shouldn't be contracted (10.11.1), but there is no way to know about compound words
-            // Add it back after implementing a lookup dictionary of exceptions
-            Replacement{ pattern: "(?P<s>L.)L⠑L⠁(?P<e>L.)".to_string(), replacement: "${s}L⠂${e}" },  // ea
-            Replacement{ pattern: "(?P<s>L.)L⠃L⠃(?P<e>L.)".to_string(), replacement: "${s}L⠆${e}" },  // bb
-            // Replacement{ pattern: "(?P<s>L.)L⠉L⠉(?P<e>L.)".to_string(), replacement: "${s}L⠒${e}" },  // cc
-            Replacement{ pattern: "(?P<s>L.)L⠋L⠋(?P<e>L.)".to_string(), replacement: "${s}L⠖${e}" },  // ff
-            Replacement{ pattern: "(?P<s>L.)L⠛L⠛(?P<e>L.)".to_string(), replacement: "${s}L⠶${e}" },  // gg
+            Replacement{ pattern: "(?P<s>L.)L⠑L⠁(?P<e>L.)".to_string(), replacement: "${s}L⠂${e}", skip_if_word_in: Some(&EA_EXCEPTION_WORDS) },  // ea
+            Replacement{ pattern: "(?P<s>L.)L⠃L⠃(?P<e>L.)".to_string(), replacement: "${s}L⠆${e}", skip_if_word_in: None },  // bb
+            Replacement{ pattern: "(?P<s>L.)L⠉L⠉(?P<e>L.)".to_string(), replacement: "${s}L⠒${e}", skip_if_word_in: Some(&CC_EXCEPTION_WORDS) },  // cc
+            Replacement{ pattern: "(?P<s>L.)L⠋L⠋(?P<e>L.)".to_string(), replacement: "${s}L⠖${e}", skip_if_word_in: None },  // ff
+            Replacement{ pattern: "(?P<s>L.)L⠛L⠛(?P<e>L.)".to_string(), replacement: "${s}L⠶${e}", skip_if_word_in: None },  // gg
 
             // 10.6.8: Lower group signs ("in" also 10.5.4 lower word signs)
             // FIX: these need restrictions about only applying when upper dots are present
-            Replacement{ pattern: to_unicode_braille("en"), replacement: "⠢"},
-            Replacement{ pattern: to_unicode_braille("in"), replacement: "⠔"},
+            Replacement{ pattern: to_unicode_braille("en"), replacement: "⠢", skip_if_word_in: None },
+            Replacement{ pattern: to_unicode_braille("in"), replacement: "⠔", skip_if_word_in: None },
            
         ]
     });
@@ -2008,10 +2103,16 @@ fn handle_contractions(chars: &[char], mut result: String) -> String {
     static CONTRACTION_REGEX: LazyLock<Vec<Regex>> = LazyLock::new(|| init_regex(&CONTRACTIONS));
 
     let mut chars_as_str = chars.iter().collect::<String>();
+    let original_chars_as_str = chars_as_str.clone();
     // debug!("  handle_contractions: examine '{}'", &chars_as_str);
     let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
     for i in matches.iter() {
         let element = &CONTRACTIONS[i];
+        if let Some(exceptions) = element.skip_if_word_in {
+            if exceptions.contains(&original_chars_as_str) {
+                continue;
+            }
+        }
         // debug!("  replacing '{}' with '{}' in '{}'", element.pattern, element.replacement, &chars_as_str);
         result.truncate(result.len() - chars_as_str.len());
         chars_as_str = CONTRACTION_REGEX[i].replace_all(&chars_as_str, element.replacement).to_string();
@@ -3639,5 +3740,368 @@ mod tests {
         assert_eq!("⠭⠔⠝", braille, "Grade1");
         return Ok( () );
         });
+    }
+
+    /// Letter-to-Unicode-braille mapping (matches handle_contractions).
+    const TEST_ASCII_TO_UNICODE: &[char] = &[
+        '⠀', '⠮', '⠐', '⠼', '⠫', '⠩', '⠯', '⠄', '⠷', '⠾', '⠡', '⠬', '⠠', '⠤', '⠨', '⠌',
+        '⠴', '⠂', '⠆', '⠒', '⠲', '⠢', '⠖', '⠶', '⠦', '⠔', '⠱', '⠰', '⠣', '⠿', '⠜', '⠹',
+        '⠈', '⠁', '⠃', '⠉', '⠙', '⠑', '⠋', '⠛', '⠓', '⠊', '⠚', '⠅', '⠇', '⠍', '⠝', '⠕',
+        '⠏', '⠟', '⠗', '⠎', '⠞', '⠥', '⠧', '⠺', '⠭', '⠽', '⠵', '⠪', '⠳', '⠻', '⠘', '⠸',
+    ];
+
+    fn ascii_to_uncontracted_braille(word: &str) -> String {
+        word.bytes()
+            .map(|b| TEST_ASCII_TO_UNICODE[(b.to_ascii_uppercase() - 32) as usize])
+            .collect()
+    }
+
+    /// Run handle_contractions on a lowercase ASCII word (L-cell input) and return Unicode braille.
+    fn contract_word(word: &str) -> String {
+        let l_chars: Vec<char> = word.bytes()
+            .flat_map(|b| {
+                let ch = TEST_ASCII_TO_UNICODE[(b.to_ascii_uppercase() - 32) as usize];
+                ['L', ch]
+            })
+            .collect();
+        let input: String = l_chars.iter().collect();
+        let output = handle_contractions(&l_chars, input);
+        output.chars().filter(|&c| c != 'L').collect()
+    }
+
+    /// Grade-2 contraction coverage for technical vocabulary (311 words).
+    /// Cross-check goldens at https://brailletranslators.com/ (Grade 2 / UEB).
+    /// Should contract (225): force, work, time, speed, distance, area, height, weight, power, energy, density, gravity, acceleration, length, width, depth, cost, profit, interest, revenue, clearance, conductance, capacitance, resistance, impedance, reactance, variance, tolerance, luminosity, reliability, velocity, viscosity, precision, tension, efficiency, frequency, valence, stiffness, thickness, displacement, concentration, consumption, duration, elevation, fraction, friction, inflation, iteration, population, position, potential, production, resolution, rotation, charge, chord, pitch, growth, head, heat, reach, shear, margin, salary, offset, income, input, inventory, current, error, leverage, temperature, turnover, accuracy, breadth, strength, spread, discount, count, version, inductance, intensity, interval, perimeter, probability, utility, validity, parity, permeability, proportion, uncertainty, circumference, capacity, deceleration, dilution, enthalpy, entropy, equity, expense, gradient, headroom, inertia, latency, longitude, permittivity, period, principal, sensitivity, stress, throughput, thrust, wavelength, absorption, activation, activity, admittance, affinity, albedo, aperture, attenuation, average, bandwidth, baseline, bearing, benchmark, boiling, boundary, cohesion, compliance, compression, conductivity, coverage, damping, deflection, departure, depreciation, deviation, diffusion, dispersion, dissipation, distortion, divergence, downforce, elasticity, emissivity, emission, erosion, evaporation, expansion, expectation, extent, feedback, fidelity, filament, hardness, humidity, hysteresis, illuminance, incidence, index, inflow, influx, inhibition, injection, irradiance, kinetic, leakage, luminance, maturity, mean, median, melting, minimum, mobility, molarity, moisture, opacity, oscillation, outflow, overlap, parallax, parameter, peak, percentile, percentage, polarization, propagation, purity, quality, quantity, quenching, quotient, radiance, radiation, reaction, reactivity, redshift, reflectance, reflection, refraction, reluctance, remanence, resistivity, resonance, restitution, retardation, rigidity, salinity, saturation, scalar, scattering, separation, shrinkage, similarity, battery, diameter, epoch, gain, jitter, joule, momentum, shift, step, stride, zenith
+    /// Should not contract (86): mass, volume, base, rate, drag, drift, gap, lag, loss, pace, radius, range, ratio, risk, run, scale, size, slope, tax, torque, capital, impulse, latitude, magnitude, premium, pressure, response, return, trajectory, voltage, aspect, backlog, curvature, dosage, dose, equilibrium, excess, exposure, fatigue, hydraulic, lifetime, likelihood, maximum, metric, orbit, osmosis, pulse, quanta, quantum, regret, residual, ripple, root, rotor, sag, secant, signal, altitude, amplitude, angle, bias, bitrate, budget, bulk, decay, deficit, degree, delay, duty, lift, limit, load, modulus, payload, phase, price, sample, skew, slack, span, supply, total, value, vector, wage, yield
+    /// Note: arccos (cc exception, partial ar groupsign) is covered in tests/braille/UEB/other.rs contractions_1.
+    #[test]
+    fn ueb_technical_word_contractions() {
+        const SHOULD_CONTRACT: &[(&str, &str)] = &[
+            ("force", "⠿⠉⠑"),
+            ("work", "⠐⠺"),
+            ("time", "⠐⠞"),
+            ("speed", "⠎⠏⠑⠫"),
+            ("distance", "⠲⠞⠨⠑"),
+            ("area", "⠜⠑⠁"),
+            ("height", "⠓⠑⠊⠣⠞"),
+            ("weight", "⠺⠑⠊⠣⠞"),
+            ("power", "⠏⠪⠻"),
+            ("energy", "⠢⠻⠛⠽"),
+            ("density", "⠙⠢⠎⠰⠽"),
+            ("gravity", "⠛⠗⠁⠧⠰⠽"),
+            ("acceleration", "⠁⠒⠑⠇⠻⠁⠰⠝"),
+            ("length", "⠇⠢⠛⠹"),
+            ("width", "⠺⠊⠙⠹"),
+            ("depth", "⠙⠑⠏⠹"),
+            ("cost", "⠉⠕⠌"),
+            ("profit", "⠏⠗⠷⠊⠞"),
+            ("interest", "⠔⠞⠻⠑⠌"),
+            ("revenue", "⠗⠑⠧⠢⠥⠑"),
+            ("clearance", "⠉⠇⠑⠜⠨⠑"),
+            ("conductance", "⠒⠙⠥⠉⠞⠨⠑"),
+            ("capacitance", "⠉⠁⠏⠁⠉⠊⠞⠨⠑"),
+            ("resistance", "⠗⠑⠎⠊⠌⠨⠑"),
+            ("impedance", "⠊⠍⠏⠫⠨⠑"),
+            ("reactance", "⠗⠑⠁⠉⠞⠨⠑"),
+            ("variance", "⠧⠜⠊⠨⠑"),
+            ("tolerance", "⠞⠕⠇⠻⠨⠑"),
+            ("luminosity", "⠇⠥⠍⠔⠕⠎⠰⠽"),
+            ("reliability", "⠗⠑⠇⠊⠁⠃⠊⠇⠰⠽"),
+            ("velocity", "⠧⠑⠇⠕⠉⠰⠽"),
+            ("viscosity", "⠧⠊⠎⠉⠕⠎⠰⠽"),
+            ("precision", "⠏⠗⠑⠉⠊⠨⠝"),
+            ("tension", "⠞⠢⠨⠝"),
+            ("efficiency", "⠑⠖⠊⠉⠊⠢⠉⠽"),
+            ("frequency", "⠋⠗⠑⠟⠥⠢⠉⠽"),
+            ("valence", "⠧⠁⠇⠰⠑"),
+            ("stiffness", "⠌⠊⠖⠰⠎"),
+            ("thickness", "⠹⠊⠉⠅⠰⠎"),
+            ("displacement", "⠲⠏⠇⠁⠉⠑⠰⠞"),
+            ("concentration", "⠒⠉⠢⠞⠗⠁⠰⠝"),
+            ("consumption", "⠒⠎⠥⠍⠏⠰⠝"),
+            ("duration", "⠙⠥⠗⠁⠰⠝"),
+            ("elevation", "⠑⠇⠑⠧⠁⠰⠝"),
+            ("fraction", "⠋⠗⠁⠉⠰⠝"),
+            ("friction", "⠋⠗⠊⠉⠰⠝"),
+            ("inflation", "⠔⠋⠇⠁⠰⠝"),
+            ("iteration", "⠊⠞⠻⠁⠰⠝"),
+            ("population", "⠏⠕⠏⠥⠇⠁⠰⠝"),
+            ("position", "⠏⠕⠎⠊⠰⠝"),
+            ("potential", "⠏⠕⠞⠢⠞⠊⠁⠇"),
+            ("production", "⠏⠗⠕⠙⠥⠉⠰⠝"),
+            ("resolution", "⠗⠑⠎⠕⠇⠥⠰⠝"),
+            ("rotation", "⠗⠕⠞⠁⠰⠝"),
+            ("charge", "⠡⠜⠛⠑"),
+            ("chord", "⠡⠕⠗⠙"),
+            ("pitch", "⠏⠊⠞⠡"),
+            ("growth", "⠛⠗⠪⠹"),
+            ("head", "⠓⠂⠙"),
+            ("heat", "⠓⠂⠞"),
+            ("reach", "⠗⠂⠡"),
+            ("shear", "⠩⠑⠜"),
+            ("margin", "⠍⠜⠛⠔"),
+            ("salary", "⠎⠁⠇⠜⠽"),
+            ("offset", "⠷⠋⠎⠑⠞"),
+            ("income", "⠔⠉⠕⠍⠑"),
+            ("input", "⠔⠏⠥⠞"),
+            ("inventory", "⠔⠧⠢⠞⠕⠗⠽"),
+            ("current", "⠉⠥⠗⠗⠢⠞"),
+            ("error", "⠻⠗⠕⠗"),
+            ("leverage", "⠇⠐⠑⠁⠛⠑"),
+            ("temperature", "⠞⠑⠍⠏⠻⠁⠞⠥⠗⠑"),
+            ("turnover", "⠞⠥⠗⠝⠕⠧⠻"),
+            ("accuracy", "⠁⠒⠥⠗⠁⠉⠽"),
+            ("breadth", "⠃⠗⠂⠙⠹"),
+            ("strength", "⠌⠗⠢⠛⠹"),
+            ("spread", "⠎⠏⠗⠂⠙"),
+            ("discount", "⠲⠉⠨⠞"),
+            ("count", "⠉⠨⠞"),
+            ("version", "⠧⠻⠨⠝"),
+            ("inductance", "⠔⠙⠥⠉⠞⠨⠑"),
+            ("intensity", "⠔⠞⠢⠎⠰⠽"),
+            ("interval", "⠔⠞⠻⠧⠁⠇"),
+            ("perimeter", "⠏⠻⠊⠍⠑⠞⠻"),
+            ("probability", "⠏⠗⠕⠃⠁⠃⠊⠇⠰⠽"),
+            ("utility", "⠥⠞⠊⠇⠰⠽"),
+            ("validity", "⠧⠁⠇⠊⠙⠰⠽"),
+            ("parity", "⠏⠜⠰⠽"),
+            ("permeability", "⠏⠻⠍⠂⠃⠊⠇⠰⠽"),
+            ("proportion", "⠏⠗⠕⠏⠕⠗⠰⠝"),
+            ("uncertainty", "⠥⠝⠉⠻⠞⠁⠔⠞⠽"),
+            ("circumference", "⠉⠊⠗⠉⠥⠍⠋⠻⠰⠑"),
+            ("capacity", "⠉⠁⠏⠁⠉⠰⠽"),
+            ("deceleration", "⠙⠑⠉⠑⠇⠻⠁⠰⠝"),
+            ("dilution", "⠙⠊⠇⠥⠰⠝"),
+            ("enthalpy", "⠢⠹⠁⠇⠏⠽"),
+            ("entropy", "⠢⠞⠗⠕⠏⠽"),
+            ("equity", "⠑⠟⠥⠰⠽"),
+            ("expense", "⠑⠭⠏⠢⠎⠑"),
+            ("gradient", "⠛⠗⠁⠙⠊⠢⠞"),
+            ("headroom", "⠓⠂⠙⠗⠕⠕⠍"),
+            ("inertia", "⠔⠻⠞⠊⠁"),
+            ("latency", "⠇⠁⠞⠢⠉⠽"),
+            ("longitude", "⠇⠰⠛⠊⠞⠥⠙⠑"),
+            ("permittivity", "⠏⠻⠍⠊⠞⠞⠊⠧⠰⠽"),
+            ("period", "⠏⠻⠊⠕⠙"),
+            ("principal", "⠏⠗⠔⠉⠊⠏⠁⠇"),
+            ("sensitivity", "⠎⠢⠎⠊⠞⠊⠧⠰⠽"),
+            ("stress", "⠌⠗⠑⠎⠎"),
+            ("throughput", "⠐⠹⠏⠥⠞"),
+            ("thrust", "⠹⠗⠥⠌"),
+            ("wavelength", "⠺⠁⠧⠑⠇⠢⠛⠹"),
+            ("absorption", "⠁⠃⠎⠕⠗⠏⠰⠝"),
+            ("activation", "⠁⠉⠞⠊⠧⠁⠰⠝"),
+            ("activity", "⠁⠉⠞⠊⠧⠰⠽"),
+            ("admittance", "⠁⠙⠍⠊⠞⠞⠨⠑"),
+            ("affinity", "⠁⠖⠔⠰⠽"),
+            ("albedo", "⠁⠇⠃⠫⠕"),
+            ("aperture", "⠁⠏⠻⠞⠥⠗⠑"),
+            ("attenuation", "⠁⠞⠞⠢⠥⠁⠰⠝"),
+            ("average", "⠁⠧⠻⠁⠛⠑"),
+            ("bandwidth", "⠃⠯⠺⠊⠙⠹"),
+            ("baseline", "⠃⠁⠎⠑⠇⠔⠑"),
+            ("bearing", "⠃⠑⠜⠬"),
+            ("benchmark", "⠃⠢⠡⠍⠜⠅"),
+            ("boiling", "⠃⠕⠊⠇⠬"),
+            ("boundary", "⠃⠨⠙⠜⠽"),
+            ("cohesion", "⠉⠕⠓⠑⠨⠝"),
+            ("compliance", "⠉⠕⠍⠏⠇⠊⠨⠑"),
+            ("compression", "⠉⠕⠍⠏⠗⠑⠎⠨⠝"),
+            ("conductivity", "⠒⠙⠥⠉⠞⠊⠧⠰⠽"),
+            ("coverage", "⠉⠕⠧⠻⠁⠛⠑"),
+            ("damping", "⠙⠁⠍⠏⠬"),
+            ("deflection", "⠙⠑⠋⠇⠑⠉⠰⠝"),
+            ("departure", "⠙⠑⠐⠏⠥⠗⠑"),
+            ("depreciation", "⠙⠑⠏⠗⠑⠉⠊⠁⠰⠝"),
+            ("deviation", "⠙⠑⠧⠊⠁⠰⠝"),
+            ("diffusion", "⠙⠊⠖⠥⠨⠝"),
+            ("dispersion", "⠲⠏⠻⠨⠝"),
+            ("dissipation", "⠲⠎⠊⠏⠁⠰⠝"),
+            ("distortion", "⠲⠞⠕⠗⠰⠝"),
+            ("divergence", "⠙⠊⠧⠻⠛⠰⠑"),
+            ("downforce", "⠙⠪⠝⠿⠉⠑"),
+            ("elasticity", "⠑⠇⠁⠌⠊⠉⠰⠽"),
+            ("emissivity", "⠑⠍⠊⠎⠎⠊⠧⠰⠽"),
+            ("emission", "⠑⠍⠊⠎⠨⠝"),
+            ("erosion", "⠻⠕⠨⠝"),
+            ("evaporation", "⠑⠧⠁⠏⠕⠗⠁⠰⠝"),
+            ("expansion", "⠑⠭⠏⠁⠝⠨⠝"),
+            ("expectation", "⠑⠭⠏⠑⠉⠞⠁⠰⠝"),
+            ("extent", "⠑⠭⠞⠢⠞"),
+            ("feedback", "⠋⠑⠫⠃⠁⠉⠅"),
+            ("fidelity", "⠋⠊⠙⠑⠇⠰⠽"),
+            ("filament", "⠋⠊⠇⠁⠰⠞"),
+            ("hardness", "⠓⠜⠙⠰⠎"),
+            ("humidity", "⠓⠥⠍⠊⠙⠰⠽"),
+            ("hysteresis", "⠓⠽⠌⠻⠑⠎⠊⠎"),
+            ("illuminance", "⠊⠇⠇⠥⠍⠔⠨⠑"),
+            ("incidence", "⠔⠉⠊⠙⠰⠑"),
+            ("index", "⠔⠙⠑⠭"),
+            ("inflow", "⠔⠋⠇⠪"),
+            ("influx", "⠔⠋⠇⠥⠭"),
+            ("inhibition", "⠔⠓⠊⠃⠊⠰⠝"),
+            ("injection", "⠔⠚⠑⠉⠰⠝"),
+            ("irradiance", "⠊⠗⠗⠁⠙⠊⠨⠑"),
+            ("kinetic", "⠅⠔⠑⠞⠊⠉"),
+            ("leakage", "⠇⠂⠅⠁⠛⠑"),
+            ("luminance", "⠇⠥⠍⠔⠨⠑"),
+            ("maturity", "⠍⠁⠞⠥⠗⠰⠽"),
+            ("mean", "⠍⠂⠝"),
+            ("median", "⠍⠫⠊⠁⠝"),
+            ("melting", "⠍⠑⠇⠞⠬"),
+            ("minimum", "⠍⠔⠊⠍⠥⠍"),
+            ("mobility", "⠍⠕⠃⠊⠇⠰⠽"),
+            ("molarity", "⠍⠕⠇⠜⠰⠽"),
+            ("moisture", "⠍⠕⠊⠌⠥⠗⠑"),
+            ("opacity", "⠕⠏⠁⠉⠰⠽"),
+            ("oscillation", "⠕⠎⠉⠊⠇⠇⠁⠰⠝"),
+            ("outflow", "⠳⠞⠋⠇⠪"),
+            ("overlap", "⠕⠧⠻⠇⠁⠏"),
+            ("parallax", "⠏⠜⠁⠇⠇⠁⠭"),
+            ("parameter", "⠏⠜⠁⠍⠑⠞⠻"),
+            ("peak", "⠏⠂⠅"),
+            ("percentile", "⠏⠻⠉⠢⠞⠊⠇⠑"),
+            ("percentage", "⠏⠻⠉⠢⠞⠁⠛⠑"),
+            ("polarization", "⠏⠕⠇⠜⠊⠵⠁⠰⠝"),
+            ("propagation", "⠏⠗⠕⠏⠁⠛⠁⠰⠝"),
+            ("purity", "⠏⠥⠗⠰⠽"),
+            ("quality", "⠟⠥⠁⠇⠰⠽"),
+            ("quantity", "⠟⠥⠁⠝⠞⠰⠽"),
+            ("quenching", "⠟⠥⠢⠡⠬"),
+            ("quotient", "⠟⠥⠕⠞⠊⠢⠞"),
+            ("radiance", "⠗⠁⠙⠊⠨⠑"),
+            ("radiation", "⠗⠁⠙⠊⠁⠰⠝"),
+            ("reaction", "⠗⠑⠁⠉⠰⠝"),
+            ("reactivity", "⠗⠑⠁⠉⠞⠊⠧⠰⠽"),
+            ("redshift", "⠗⠫⠩⠊⠋⠞"),
+            ("reflectance", "⠗⠑⠋⠇⠑⠉⠞⠨⠑"),
+            ("reflection", "⠗⠑⠋⠇⠑⠉⠰⠝"),
+            ("refraction", "⠗⠑⠋⠗⠁⠉⠰⠝"),
+            ("reluctance", "⠗⠑⠇⠥⠉⠞⠨⠑"),
+            ("remanence", "⠗⠑⠍⠁⠝⠰⠑"),
+            ("resistivity", "⠗⠑⠎⠊⠌⠊⠧⠰⠽"),
+            ("resonance", "⠗⠑⠎⠕⠝⠨⠑"),
+            ("restitution", "⠗⠑⠌⠊⠞⠥⠰⠝"),
+            ("retardation", "⠗⠑⠞⠜⠙⠁⠰⠝"),
+            ("rigidity", "⠗⠊⠛⠊⠙⠰⠽"),
+            ("salinity", "⠎⠁⠇⠔⠰⠽"),
+            ("saturation", "⠎⠁⠞⠥⠗⠁⠰⠝"),
+            ("scalar", "⠎⠉⠁⠇⠜"),
+            ("scattering", "⠎⠉⠁⠞⠞⠻⠬"),
+            ("separation", "⠎⠑⠏⠜⠁⠰⠝"),
+            ("shrinkage", "⠩⠗⠔⠅⠁⠛⠑"),
+            ("similarity", "⠎⠊⠍⠊⠇⠜⠰⠽"),
+            ("battery", "⠃⠁⠞⠞⠻⠽"),
+            ("diameter", "⠙⠊⠁⠍⠑⠞⠻"),
+            ("epoch", "⠑⠏⠕⠡"),
+            ("gain", "⠛⠁⠔"),
+            ("jitter", "⠚⠊⠞⠞⠻"),
+            ("joule", "⠚⠳⠇⠑"),
+            ("momentum", "⠍⠕⠰⠞⠥⠍"),
+            ("shift", "⠩⠊⠋⠞"),
+            ("step", "⠌⠑⠏"),
+            ("stride", "⠌⠗⠊⠙⠑"),
+            ("zenith", "⠵⠢⠊⠹"),
+        ];
+        const SHOULD_NOT_CONTRACT: &[&str] = &[
+            "mass", "volume", "base", "rate", "drag", "drift", "gap", "lag", "loss", "pace",
+            "radius", "range", "ratio", "risk", "run", "scale", "size", "slope", "tax", "torque",
+            "capital", "impulse", "latitude", "magnitude", "premium", "pressure", "response", "return",
+            "trajectory", "voltage", "aspect", "backlog", "curvature", "dosage", "dose", "equilibrium",
+            "excess", "exposure", "fatigue", "hydraulic", "lifetime", "likelihood", "maximum", "metric",
+            "orbit", "osmosis", "pulse", "quanta", "quantum", "regret", "residual", "ripple", "root",
+            "rotor", "sag", "secant", "signal", "altitude", "amplitude", "angle", "bias", "bitrate",
+            "budget", "bulk", "decay", "deficit", "degree", "delay", "duty", "lift", "limit", "load",
+            "modulus", "payload", "phase", "price", "sample", "skew", "slack", "span", "supply",
+            "total", "value", "vector", "wage", "yield",
+        ];
+
+        for &(word, expected) in SHOULD_CONTRACT {
+            let got = contract_word(word);
+            assert_eq!(expected, got, "word '{word}'");
+            assert_ne!(ascii_to_uncontracted_braille(word), got, "word '{word}' should contract");
+        }
+        for &word in SHOULD_NOT_CONTRACT {
+            let got = contract_word(word);
+            let uncontracted = ascii_to_uncontracted_braille(word);
+            assert_eq!(uncontracted, got, "word '{word}' should not contract");
+        }
+    }
+
+    #[test]
+    #[ignore]
+    fn ueb_technical_word_contractions_probe_batch2() {
+        let try_contract = [
+            "circumference", "capacity", "deceleration", "dilution", "enthalpy", "entropy", "equity", "expense",
+            "gradient", "headroom", "inertia", "latency", "longitude", "permittivity", "period", "principal",
+            "sensitivity", "stress", "throughput", "thrust", "wavelength", "absorption", "activation", "activity",
+            "admittance", "affinity", "albedo", "aperture", "attenuation", "average", "bandwidth", "baseline",
+            "bearing", "benchmark", "boiling", "boundary", "cohesion", "compliance", "compression", "conductivity",
+            "coverage", "damping", "deflection", "departure", "depreciation", "deviation", "diffusion", "dispersion",
+            "dissipation", "distortion", "divergence", "downforce", "elasticity", "emissivity", "emission", "erosion",
+            "evaporation", "expansion", "expectation", "extent", "feedback", "fidelity", "filament", "hardness",
+            "humidity", "hysteresis", "illuminance", "incidence", "index", "inflow", "influx", "inhibition",
+            "injection", "irradiance", "kinetic", "leakage", "luminance", "maturity", "mean", "median", "melting",
+            "minimum", "mobility", "molarity", "moisture", "opacity", "oscillation", "outflow", "overlap", "parallax",
+            "parameter", "peak", "percentile", "percentage", "polarization", "propagation", "purity", "quality",
+            "quantity", "quenching", "quotient", "radiance", "radiation", "reaction", "reactivity", "redshift",
+            "reflectance", "reflection", "refraction", "reluctance", "remanence", "resistivity", "resonance",
+            "restitution", "retardation", "rigidity", "salinity", "saturation", "scalar", "scattering", "separation",
+            "shrinkage", "similarity", "battery", "diameter", "epoch", "gain", "jitter", "joule", "momentum", "shift",
+            "step", "stride", "zenith",
+        ];
+        let try_not = [
+            "capital", "impulse", "latitude", "magnitude", "premium", "pressure", "response", "return", "trajectory",
+            "voltage", "aspect", "backlog", "curvature", "dosage", "dose", "equilibrium", "excess", "exposure",
+            "fatigue", "hydraulic", "lifetime", "likelihood", "maximum", "metric", "orbit", "osmosis", "pulse",
+            "quanta", "quantum", "regret", "residual", "ripple", "root", "rotor", "sag", "secant", "signal",
+            "altitude", "amplitude", "angle", "bias", "bitrate", "budget", "bulk", "decay", "deficit", "degree",
+            "delay", "duty", "lift", "limit", "load", "modulus", "payload", "phase", "price", "sample", "skew",
+            "slack", "span", "supply", "total", "value", "vector", "wage", "yield",
+        ];
+        let mut out = String::new();
+        for w in try_contract {
+            let c = contract_word(w);
+            out.push_str(&format!("(\"{w}\", \"{c}\"),\n"));
+        }
+        for w in try_not {
+            out.push_str(&format!("// no: {w}\n"));
+        }
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("notes/_batch2_goldens.txt");
+        std::fs::write(path, out).unwrap();
+    }
+
+    #[test]
+    #[ignore]
+    fn ueb_technical_word_contractions_probe() {
+        let should_contract = [
+            "force", "work", "time", "speed", "distance", "area", "height", "weight", "power", "energy",
+            "density", "gravity", "acceleration", "length", "width", "depth", "cost", "profit", "interest", "revenue",
+            "clearance", "conductance", "capacitance", "resistance", "impedance", "reactance", "variance", "tolerance",
+            "luminosity", "reliability", "velocity", "viscosity", "precision", "tension", "efficiency", "frequency",
+            "valence", "stiffness", "thickness", "displacement", "concentration", "consumption", "duration", "elevation",
+            "fraction", "friction", "inflation", "iteration", "population", "position", "potential", "production",
+            "resolution", "rotation", "charge", "chord", "pitch", "growth", "head", "heat", "reach", "shear", "margin",
+            "salary", "offset", "income", "input", "inventory", "current", "error", "leverage", "temperature",
+            "turnover", "accuracy", "breadth", "strength", "spread", "discount", "count", "version", "inductance",
+            "intensity", "interval", "perimeter", "probability", "utility", "validity", "parity", "permeability",
+            "proportion", "uncertainty",
+        ];
+        let should_not = [
+            "mass", "volume", "base", "rate", "drag", "drift", "gap", "lag", "loss", "pace",
+            "radius", "range", "ratio", "risk", "run", "scale", "size", "slope", "tax", "torque",
+        ];
+        eprintln!("=== SHOULD CONTRACT ===");
+        for w in should_contract {
+            let c = contract_word(w);
+            let u = ascii_to_uncontracted_braille(w);
+            eprintln!("(\"{w}\", \"{c}\"), // uncontracted={u} changed={}", c != u);
+        }
+        eprintln!("=== SHOULD NOT CONTRACT ===");
+        for w in should_not {
+            let c = contract_word(w);
+            let u = ascii_to_uncontracted_braille(w);
+            eprintln!("{w}: contracted={c} uncontracted={u} ok={}", c == u);
+        }
     }
 }
