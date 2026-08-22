@@ -380,6 +380,20 @@ fn normalize_from_braille_canon(mathml: &str) -> String {
 #[allow(dead_code)] // used in testing
 #[allow(non_snake_case)]
 pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
+    test_from_braille_prefs(code, vec![], mathml, braille)
+}
+
+/// Like [`test_from_braille`], but applies the same preference overrides as
+/// [`test_braille_prefs`] so FromBraille / round-trip stay aligned with the
+/// forward MathML→braille test that produced the braille string.
+#[allow(dead_code)] // used in testing
+#[allow(non_snake_case)]
+pub fn test_from_braille_prefs(
+    code: &str,
+    test_prefs: Vec<(&str, &str)>,
+    mathml: &str,
+    braille: &str,
+) -> Result<()> {
     use libmathcat::pretty_print::mml_to_string;
     use sxd_document_no_unsafe::parser;
 
@@ -391,6 +405,12 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
         set_preference("BrailleCode", code).unwrap();
         set_preference("LaTeX_UseShortName", "false").unwrap();
         set_language_for_braille_code(code);
+
+        // Match `test_braille_prefs`: reset then apply case-specific overrides.
+        set_preference("UseSpacesAroundAllOperators", "false").unwrap();
+        for &(pref_name, pref_value) in &test_prefs {
+            set_preference(pref_name, pref_value).unwrap();
+        }
 
         let parsed = libmathcat::parser::Braille_to_MathML(braille, code).unwrap_or_else(|e| {
             panic!("{code} parse failed: {e}\nbraille={braille}\nexpected≈{mathml}")

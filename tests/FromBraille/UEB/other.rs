@@ -36,29 +36,29 @@ fn word_symbol_aph_10_3_11() -> Result<()> {
 
 #[test]
 fn number_space_before() -> Result<()> {
-    let expr = "<math><mtext>&#xA0;</mtext><mn>2</mn></math>";
+    let expr = "<math><mo>&#xA0;</mo><mn>2</mn></math>";
     test_from_braille("UEB", expr, "⠀⠼⠃")?;
     Ok(())
 }
 
 #[test]
 fn number_space_after() -> Result<()> {
-    let expr = "<math><mn>2</mn><mtext>&#xA0;</mtext></math>";
+    let expr = "<math><mn>2</mn><mo>&#xA0;</mo></math>";
     test_from_braille("UEB", expr, "⠼⠃⠀")?;
     Ok(())
 }
 
 #[test]
 fn number_space_before_and_after() -> Result<()> {
-    let expr = "<math><mtext>&#xA0;</mtext><mn>2</mn><mtext>&#xA0;</mtext></math>";
+    let expr = "<math><mo>&#xA0;</mo><mn>2</mn><mo>&#xA0;</mo></math>";
     test_from_braille("UEB", expr, "⠀⠼⠃⠀")?;
     Ok(())
 }
 
 #[test]
 fn not_number_space_blocks() -> Result<()> {
-    // Forward uses mtext nbsp+U+2063 between digit groups; braille space is not recoverable as U+2063.
-    let expr = "<math><mn>123</mn><mn>456</mn></math>";
+    // Braille space between digit groups recovers as nbsp (not forward's nbsp+U+2063).
+    let expr = "<math><mn>123</mn><mo>&#xA0;</mo><mn>456</mn></math>";
     test_from_braille("UEB", expr, "⠼⠁⠃⠉⠀⠼⠙⠑⠋")?;
     Ok(())
 }
@@ -87,8 +87,8 @@ fn double_tilde_prefix_bug_244() -> Result<()> {
 
 #[test]
 fn space_hack_between_digits() -> Result<()> {
-    // Forward uses mtext nbsp+U+2063 between digits; braille space is not recoverable as U+2063.
-    let expr = "<math><mn>1</mn><mn>3</mn><mn>5</mn></math>";
+    // Braille spaces between digits recover as nbsp (not forward's nbsp+U+2063).
+    let expr = "<math><mn>1</mn><mo>&#xA0;</mo><mn>3</mn><mo>&#xA0;</mo><mn>5</mn></math>";
     test_from_braille("UEB", expr, "⠼⠁⠀⠼⠉⠀⠼⠑")?;
     Ok(())
 }
@@ -217,5 +217,17 @@ fn unicode_subscript_chars_in_and_out_of_script_position_3() -> Result<()> {
 fn unicode_subscript_chars_in_and_out_of_script_position_4() -> Result<()> {
     let expr = "<math><msub><mi>x</mi><mo>+</mo></msub></math>";
     test_from_braille("UEB", expr, "⠭⠰⠢⠐⠖")?;
+    Ok(())
+}
+
+#[test]
+fn multiple_lines() -> Result<()> {
+    // Bare equation-line mtable: `⠸⠀` between rows, no start/end bounds.
+    let expr = "<math><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mrow><mo>=</mo><mi>f</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mi>y</mi></mtd><mtd><mrow><mo>=</mo><mi>g</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>";
+    test_from_braille(
+        "UEB",
+        expr,
+        "⠰⠭⠀⠐⠶⠀⠋⠐⠣⠞⠐⠜⠸⠀⠰⠽⠀⠐⠶⠀⠛⠐⠣⠞⠐⠜",
+    )?;
     Ok(())
 }

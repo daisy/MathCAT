@@ -281,14 +281,14 @@ fn signs_2_10_16() -> Result<()> {
 #[test]
 fn expr_3_1_1_spaces() -> Result<()> {
     let expr = "<math><mn>3</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>8</mn></math>";
-    test_from_braille("UEB", expr, "⠼⠉⠀⠐⠖⠀⠼⠑⠀⠐⠶⠀⠼⠓")?;
+    test_from_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠉⠀⠐⠖⠀⠼⠑⠀⠐⠶⠀⠼⠓")?;
     Ok(())
 }
 
 #[test]
 fn expr_3_1_2_spaces() -> Result<()> {
     let expr = "<math><mn>8</mn><mo>-</mo><mn>5</mn><mo>=</mo><mn>3</mn></math>";
-    test_from_braille("UEB", expr, "⠼⠓⠀⠐⠤⠀⠼⠑⠀⠐⠶⠀⠼⠉")?;
+    test_from_braille_prefs("UEB", vec![("UseSpacesAroundAllOperators", "true")], expr, "⠼⠓⠀⠐⠤⠀⠼⠑⠀⠐⠶⠀⠼⠉")?;
     Ok(())
 }
 
@@ -1125,29 +1125,105 @@ fn binomial_14_3_3_2_mtable() -> Result<()> {
 
 #[test]
 fn matrix_15_2_1() -> Result<()> {
-    let expr = "<math><mrow><mo>(</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr> <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr> </mtable><mo>)</mo></mrow></math>";
-    test_from_braille("UEB", expr, "⠸⠀⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜")?;
+    // Parallel to braille::UEB::iceb::matrix_15_2_1 (I = identity matrix).
+    let expr = r#"<math><mi>I</mi><mo>=</mo>
+       <mrow><mo>(</mo><mtable>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+          <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+        </mtable><mo>)</mo>
+      </mrow></math>"#;
+    test_from_braille("UEB", expr, "⠠⠊⠀⠐⠶⠀⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜")?;
     Ok(())
 }
 
 #[test]
 fn matrix_15_2_2() -> Result<()> {
-    let expr = "<math><mrow><mo>[</mo><mtable> <mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr> <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr> </mtable><mo>]</mo></mrow></math>";
-    test_from_braille("UEB", expr, "⠸⠀⠨⠣⠁⠀⠃⠠⠨⠜⠸⠀⠨⠣⠰⠉⠀⠙⠠⠨⠜")?;
+    // Parallel to braille::UEB::iceb::matrix_15_2_2 (matrix multiplication).
+    let expr = r#"<math>
+      <mrow><mo>[</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+        <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
+      </mtable><mo>]</mo></mrow>
+      <mrow><mo>[</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        <mtr><mtd><mo>-</mo><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+        <mtr><mtd><mn>5</mn></mtd><mtd><mo>-</mo><mn>6</mn></mtd></mtr>
+      </mtable><mo>]</mo></mrow>
+    </math>"#;
+    test_from_braille(
+        "UEB",
+        expr,
+        "⠠⠨⠣⠼⠁⠀⠼⠃⠀⠼⠉⠠⠨⠜⠸⠀⠠⠨⠣⠼⠙⠀⠼⠑⠀⠼⠋⠠⠨⠜⠠⠨⠣⠼⠁⠀⠼⠃⠠⠨⠜⠸⠀⠠⠨⠣⠐⠤⠼⠉⠀⠼⠙⠠⠨⠜⠸⠀⠠⠨⠣⠼⠑⠀⠐⠤⠼⠋⠠⠨⠜",
+    )?;
     Ok(())
 }
 
 #[test]
 fn matrix_15_2_3() -> Result<()> {
-    let expr = "<math><mrow><mo>(</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr> </mtable><mo>)</mo></mrow></math>";
-    test_from_braille("UEB", expr, "⠐⠣⠼⠁⠀⠼⠃⠀⠼⠉⠐⠜")?;
+    // Parallel to braille::UEB::iceb::matrix_15_2_3 ((a −b ; −c d)).
+    let expr = r#"<math><mrow><mo>(</mo><mtable>
+        <mtr><mtd><mi>a</mi></mtd><mtd><mrow><mo>-</mo><mi>b</mi></mrow></mtd></mtr>
+        <mtr><mtd><mrow><mo>-</mo><mi>c</mi></mrow></mtd><mtd><mi>d</mi></mtd></mtr>
+      </mtable><mo>)</mo></mrow></math>"#;
+    test_from_braille("UEB", expr, "⠠⠐⠣⠁⠀⠐⠤⠃⠠⠐⠜⠸⠀⠠⠐⠣⠐⠤⠉⠀⠙⠠⠐⠜")?;
     Ok(())
 }
 
 #[test]
 fn determinant_15_3_1() -> Result<()> {
-    let expr = "<math><mrow><mo>|</mo><mtable> <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr> <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr> </mtable><mo>|</mo></mrow></math>";
-    test_from_braille("UEB", expr, "⠸⠀⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠸⠀⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳")?;
+    // Parallel to braille::UEB::iceb::determinant_15_3_1 (|P| = |a b; c d| = ad − bc).
+    let expr = r#"<math>
+      <mrow><mo>|</mo><mi>P</mi><mo>|</mo></mrow>
+      <mo>=</mo>
+      <mrow><mo>|</mo><mtable>
+        <mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr>
+        <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr>
+      </mtable><mo>|</mo></mrow>
+      <mo>=</mo>
+      <mrow><mi>a</mi><mi>d</mi><mo>-</mo><mi>b</mi><mi>c</mi></mrow>
+    </math>"#;
+    test_from_braille(
+        "UEB",
+        expr,
+        "⠸⠳⠠⠏⠸⠳⠀⠐⠶⠀⠠⠸⠳⠁⠀⠃⠠⠸⠳⠸⠀⠠⠸⠳⠉⠀⠙⠠⠸⠳⠀⠐⠶⠀⠁⠙⠐⠤⠃⠉",
+    )?;
+    Ok(())
+}
+
+#[test]
+fn omission_15_4_1() -> Result<()> {
+    // Parallel to braille::UEB::iceb::omission_15_4_1 (determinant with omission dots).
+    let expr = r#"<math><mrow><mo>|</mo><mtable>
+      <mtr>
+        <mtd><msub><mi>a</mi><mn>11</mn></msub></mtd>
+        <mtd><msub><mi>a</mi><mn>12</mn></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><msub><mi>a</mi><mrow><mn>1</mn><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+      <mtr>
+        <mtd><msub><mi>a</mi><mn>21</mn></msub></mtd>
+        <mtd><msub><mi>a</mi><mn>22</mn></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><msub><mi>a</mi><mrow><mn>2</mn><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+      <mtr>
+        <mtd><mo>.</mo></mtd>
+        <mtd><mo>.</mo></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><mo>.</mo></mtd>
+      </mtr>
+      <mtr>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mn>1</mn></mrow></msub></mtd>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mn>2</mn></mrow></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+    </mtable><mo>|</mo></mrow></math>"#;
+    test_from_braille(
+        "UEB",
+        expr,
+        "⠰⠰⠰⠠⠸⠳⠁⠢⠼⠁⠁⠀⠁⠢⠼⠁⠃⠀⠄⠄⠄⠀⠁⠢⠣⠼⠁⠝⠜⠠⠸⠳⠸⠀⠠⠸⠳⠁⠢⠼⠃⠁⠀⠁⠢⠼⠃⠃⠀⠄⠄⠄⠀⠁⠢⠣⠼⠃⠝⠜⠠⠸⠳⠸⠀⠠⠸⠳⠲⠀⠲⠀⠄⠄⠄⠀⠲⠠⠸⠳⠸⠀⠠⠸⠳⠁⠢⠣⠍⠼⠁⠜⠀⠁⠢⠣⠍⠼⠃⠜⠀⠄⠄⠄⠀⠁⠢⠣⠍⠝⠜⠠⠸⠳⠰⠄",
+    )?;
     Ok(())
 }
 

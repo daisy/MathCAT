@@ -17,6 +17,8 @@ struct Case {
     file: String,
     name: String,
     original: String,
+    /// Preference overrides from `test_from_braille_prefs` (empty for plain cases).
+    prefs: Vec<(String, String)>,
 }
 
 #[derive(Debug)]
@@ -32,6 +34,27 @@ struct Mismatch {
 
 fn from_braille_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/FromBraille/UEB")
+}
+
+/// Parse `vec![("k", "v"), ...]` from a single-line `test_from_braille_prefs` call.
+fn parse_prefs_vec(s: &str) -> Vec<(String, String)> {
+    let mut prefs = Vec::new();
+    let mut rest = s;
+    while let Some(start) = rest.find("(\"") {
+        rest = &rest[start + 2..];
+        let Some(mid) = rest.find("\", \"") else {
+            break;
+        };
+        let key = rest[..mid].to_string();
+        rest = &rest[mid + 4..];
+        let Some(end) = rest.find('"') else {
+            break;
+        };
+        let value = rest[..end].to_string();
+        prefs.push((key, value));
+        rest = &rest[end + 1..];
+    }
+    prefs
 }
 
 fn extract_cases() -> Vec<Case> {
@@ -52,6 +75,24 @@ fn extract_cases() -> Vec<Case> {
                     name = n.trim().to_string();
                 }
             }
+            // Prefs form: test_from_braille_prefs("UEB", vec![...], expr, "BRAILLE")
+            if let Some(idx) = t.find("test_from_braille_prefs(\"UEB\", vec![") {
+                let after_vec = &t[idx + "test_from_braille_prefs(\"UEB\", vec![".len()..];
+                let Some(vec_end) = after_vec.find("], expr, \"") else {
+                    continue;
+                };
+                let prefs = parse_prefs_vec(&after_vec[..vec_end]);
+                let after = &after_vec[vec_end + "], expr, \"".len()..];
+                if let Some(end) = after.find('"') {
+                    cases.push(Case {
+                        file: file.clone(),
+                        name: name.clone(),
+                        original: after[..end].to_string(),
+                        prefs,
+                    });
+                }
+                continue;
+            }
             if let Some(idx) = t.find("test_from_braille(\"UEB\", expr, \"") {
                 let after = &t[idx + "test_from_braille(\"UEB\", expr, \"".len()..];
                 if let Some(end) = after.find('"') {
@@ -59,6 +100,7 @@ fn extract_cases() -> Vec<Case> {
                         file: file.clone(),
                         name: name.clone(),
                         original: after[..end].to_string(),
+                        prefs: Vec::new(),
                     });
                 }
             }
@@ -143,14 +185,21 @@ fn categorize(original: &str, regenerated: &str, mathml: &str) -> (String, Strin
     ("other".into(), detail)
 }
 
-fn roundtrip_one(original: &str) -> Result<(String, String), String> {
-    let parsed = Braille_to_MathML(original, "UEB").map_err(|e| format!("parse: {e}"))?;
+fn roundtrip_one(original: &str, prefs: &[(String, String)]) -> Result<(String, String), String> {
     set_rules_dir(abs_rules_dir_path()).map_err(|e| format!("rules: {e}"))?;
     set_preference("DecimalSeparator", "Auto").ok();
     set_preference("BrailleNavHighlight", "Off").ok();
     set_preference("BrailleCode", "UEB").map_err(|e| format!("pref: {e}"))?;
     set_preference("LaTeX_UseShortName", "false").ok();
     set_preference("Language", "en").ok();
+    // Match `test_braille_prefs` / `test_from_braille_prefs`: reset then apply overrides
+    // *before* parse so auto-space detection sees UseSpacesAroundAllOperators.
+    set_preference("UseSpacesAroundAllOperators", "false")
+        .map_err(|e| format!("pref: {e}"))?;
+    for (k, v) in prefs {
+        set_preference(k, v).map_err(|e| format!("pref {k}: {e}"))?;
+    }
+    let parsed = Braille_to_MathML(original, "UEB").map_err(|e| format!("parse: {e}"))?;
     set_mathml(&parsed).map_err(|e| format!("set_mathml: {e}"))?;
     let regen = get_braille("").map_err(|e| format!("get_braille: {e}"))?;
     Ok((parsed, regen))
@@ -173,7 +222,7 @@ fn report_from_braille_roundtrips() {
     let mut matches = 0usize;
 
     for case in &cases {
-        match roundtrip_one(&case.original) {
+        match roundtrip_one(&case.original, &case.prefs) {
             Ok((mathml, regen)) => {
                 if regen == case.original {
                     matches += 1;

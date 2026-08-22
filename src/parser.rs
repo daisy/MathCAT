@@ -69,10 +69,11 @@ pub enum Expr {
         close: Option<String>,
         body: Box<Expr>,
     },
-    /// Bracketed linearized matrix/determinant (`mtable` / `mtr` / `mtd`).
+    /// Linearized matrix/determinant or equation-line `mtable`.
+    /// `open`/`close` are `Some` for GTM-15 fenced matrices; both `None` for bare `<mtable>`.
     Table {
-        open: String,
-        /// `None` when the close fence was not typed yet → emit `<mtext>&#xFFFD;</mtext>`.
+        open: Option<String>,
+        /// `None` when the close fence was not typed yet (fenced) or for bare tables.
         close: Option<String>,
         rows: Vec<Vec<Expr>>,
     },
@@ -118,7 +119,98 @@ impl Expr {
     fn is_empty_row(&self) -> bool {
         matches!(self, Expr::Row(v) if v.is_empty())
     }
+}
 
+/// Emit row children as MathML, turning braille spaces into `<mo>&#xA0;</mo>` unless they
+/// match UEB `default`/`mo` `AddSpaces` (spaces auto-inserted around comparison operators,
+/// or around all operators when `UseSpacesAroundAllOperators` is true).
+fn row_parts_to_mathml(parts: &[Expr]) -> String {
+    let mut s = String::new();
+    for (i, p) in parts.iter().enumerate() {
+        if matches!(p, Expr::Space) {
+            if space_is_auto_added_by_mo_rule(parts, i) {
+                continue;
+            }
+            s.push_str("<mo>&#xA0;</mo>");
+        } else {
+            s.push_str(&p.to_mathml());
+        }
+    }
+    s
+}
+
+/// True when this braille space would have been inserted by UEB_Rules `mo`/`default` AddSpaces
+/// (also under/over/underover whose base is a comparison operator).
+fn space_is_auto_added_by_mo_rule(parts: &[Expr], space_idx: usize) -> bool {
+    let neighbor_is_auto = |e: Option<&Expr>| match e {
+        Some(Expr::Operator(op)) => operator_gets_ueb_auto_spaces(op),
+        Some(Expr::Under(base, _) | Expr::Over(base, _) | Expr::UnderOver(base, _, _)) => {
+            match base.as_ref() {
+                Expr::Operator(op) => operator_gets_ueb_auto_spaces(op),
+                _ => false,
+            }
+        }
+        _ => false,
+    };
+    neighbor_is_auto(space_idx.checked_sub(1).and_then(|j| parts.get(j)))
+        || neighbor_is_auto(parts.get(space_idx + 1))
+}
+
+/// Mirrors UEB_Rules `AddSpaces` / `braille::is_operator_that_adds_whitespace`.
+fn operator_gets_ueb_auto_spaces(op: &str) -> bool {
+    // Ratio colon is explicitly excluded from AddSpaces in UEB_Rules.
+    if op == "∶" {
+        return false;
+    }
+    if use_spaces_around_all_operators() {
+        return true;
+    }
+    is_braille_comparison_operator(op)
+}
+
+fn use_spaces_around_all_operators() -> bool {
+    use crate::prefs::PreferenceManager;
+    PreferenceManager::get()
+        .borrow()
+        .pref_to_string("UseSpacesAroundAllOperators")
+        == "true"
+}
+
+fn is_braille_comparison_operator(op: &str) -> bool {
+    use crate::definitions::BRAILLE_DEFINITIONS;
+    BRAILLE_DEFINITIONS.with(|definitions| {
+        let definitions = definitions.borrow();
+        if let Some(set) = definitions.get_hashset("NemethComparisonOperators") {
+            return set.contains(op);
+        }
+        if let Some(set) = definitions.get_hashset("ComparisonOperators") {
+            return set.contains(op);
+        }
+        // Defs may be unloaded in isolated parser unit tests — cover common equals/relations.
+        matches!(
+            op,
+            "=" | "≠"
+                | "≈"
+                | "<"
+                | ">"
+                | "≤"
+                | "≥"
+                | "∈"
+                | "∋"
+                | "→"
+                | "←"
+                | "↔"
+                | "≡"
+                | "≢"
+                | "≦"
+                | "≧"
+                | "≲"
+                | "≳"
+        )
+    })
+}
+
+impl Expr {
     pub fn to_mathml(&self) -> String {
         match self {
             Expr::Number(n) => format!("<mn>{}</mn>", xml_escape(n)),
@@ -126,14 +218,10 @@ impl Expr {
             Expr::Operator(s) => format!("<mo>{}</mo>", xml_escape(s)),
             Expr::Text(s) => format!("<mtext>{}</mtext>", xml_escape(s)),
             Expr::Missing => "<mtext>&#xFFFD;</mtext>".to_string(),
-            // Braille spaces are usually absorbed as operator spacing in canonicalize.
-            // Emitting nbsp+U+2063 here breaks normal equations after mtext→mi normalization
-            // (they become factors with invisible times). Space-hack forward MathML that
-            // uses explicit &#x2063; separators is not recoverable from a plain braille space.
-            Expr::Space => String::new(),
+            // Non-automatic braille spaces → explicit nbsp (see `row_parts_to_mathml`).
+            Expr::Space => "<mo>&#xA0;</mo>".to_string(),
             Expr::Row(parts) => {
-                let inner: String = parts.iter().map(Expr::to_mathml).collect();
-                format!("<mrow>{inner}</mrow>")
+                format!("<mrow>{}</mrow>", row_parts_to_mathml(parts))
             }
             // Grouping indicators are not MathML fences — just emit the body.
             Expr::Group(body) => body.to_mathml(),
@@ -179,7 +267,15 @@ impl Expr {
                 }
             }
             Expr::Table { open, close, rows } => {
-                let mut s = format!("<mrow><mo>{}</mo><mtable>", xml_escape(open));
+                let mut s = String::new();
+                let fenced = open.is_some();
+                if fenced {
+                    s.push_str("<mrow>");
+                    if let Some(o) = open {
+                        s.push_str(&format!("<mo>{}</mo>", xml_escape(o)));
+                    }
+                }
+                s.push_str("<mtable>");
                 for row in rows {
                     s.push_str("<mtr>");
                     for cell in row {
@@ -190,10 +286,12 @@ impl Expr {
                     s.push_str("</mtr>");
                 }
                 s.push_str("</mtable>");
-                if let Some(c) = close {
-                    s.push_str(&format!("<mo>{}</mo>", xml_escape(c)));
+                if fenced {
+                    if let Some(c) = close {
+                        s.push_str(&format!("<mo>{}</mo>", xml_escape(c)));
+                    }
+                    s.push_str("</mrow>");
                 }
-                s.push_str("</mrow>");
                 s
             }
             Expr::Over(base, over) => {
@@ -266,6 +364,8 @@ pub enum Token {
     EnlargedFence(char),
     /// UEB_Rules multi-row `mtr` marker: dots 456 + blank (`⠸⠀`).
     TableRowStart,
+    /// Equation-line table bound when the `mtable` is not alone: dot-6 + space (`⠠⠀`).
+    TableBound,
     /// Vertical bar `|` (⠸⠳) — open/close share one cell.
     VertBar,
     /// Level-change up (superscript)
@@ -448,6 +548,10 @@ impl<'a> Lexer<'a> {
         if self.rest.starts_with("⠠⠱") || self.rest.starts_with("⠠⠘⠱") {
             return Ok(false);
         }
+        // Equation-line table bound `⠠⠀` — before treating ⠠ as capital.
+        if self.rest.starts_with("⠠⠀") {
+            return Ok(false);
+        }
         // Enlarged (multi-line) grouping for linearized matrices (GTM 15) — must be
         // recognized before treating ⠠ as a capital indicator.
         if self.try_enlarged_fence()? {
@@ -540,6 +644,12 @@ impl<'a> Lexer<'a> {
     }
 
     fn try_structure(&mut self) -> Result<bool> {
+        // Equation-line mtable bound (dot-6 + space) when table is not alone.
+        if self.eat("⠠⠀") {
+            self.end_numeric_modes_for_space();
+            self.tokens.push(Token::TableBound);
+            return Ok(true);
+        }
         // Multi-row mtable row start (UEB_Rules `mtr` when >1 row): before bare space.
         if self.eat("⠸⠀") {
             self.end_numeric_modes_for_space();
@@ -719,7 +829,7 @@ impl<'a> Lexer<'a> {
         if self.eat("⠸⠳") {
             self.numeric = false;
             let spaced = matches!(self.tokens.last(), Some(Token::Space))
-                || self.rest.starts_with('⠀');
+                && self.rest.starts_with('⠀');
             if spaced {
                 self.tokens.push(Token::Op("|".into()));
             } else {
@@ -1480,6 +1590,10 @@ fn parse_tokens(tokens: &[Token]) -> Result<Expr> {
     if tokens.is_empty() {
         return Ok(Expr::Row(vec![]));
     }
+    // Bare equation-line mtable: row breaks only, no ⠠⠀ bounds, no fences.
+    if let Some(expr) = try_parse_unbracketed_mtable(tokens) {
+        return Ok(expr);
+    }
     let mut parts = Vec::new();
     let mut input = tokens;
     loop {
@@ -1504,7 +1618,34 @@ fn parse_tokens(tokens: &[Token]) -> Result<Expr> {
                 input = &input[1..];
                 continue;
             }
+            Some(Token::TableBound) => {
+                // Marked equation-line table, or literary comma when no row markers follow.
+                if input.iter().any(|t| matches!(t, Token::TableRowStart)) {
+                    let (rest, expr) = parse_marked_equation_lines(input)?;
+                    parts.push(expr);
+                    input = rest;
+                } else {
+                    parts.push(Expr::Operator(",".into()));
+                    input = &input[1..];
+                }
+                continue;
+            }
             Some(Token::TableRowStart) => {
+                let (rest, expr) = parse_row_marked_matrix(input)?;
+                parts.push(expr);
+                input = rest;
+                continue;
+            }
+            // Multi-row linearized matrix: enlarged or normal open … enlarged close `⠸⠀` …
+            Some(Token::EnlargedFence(c))
+                if is_open_fence_char(*c) && looks_like_row_marked_matrix(input) =>
+            {
+                let (rest, expr) = parse_row_marked_matrix(input)?;
+                parts.push(expr);
+                input = rest;
+                continue;
+            }
+            Some(Token::Open(_)) | Some(Token::VertBar) if looks_like_row_marked_matrix(input) => {
                 let (rest, expr) = parse_row_marked_matrix(input)?;
                 parts.push(expr);
                 input = rest;
@@ -1555,6 +1696,7 @@ fn token_to_braille(t: &Token) -> String {
         Token::Open(c) | Token::Close(c) => c.to_string(),
         Token::VertBar => "⠸⠳".into(),
         Token::TableRowStart => "⠸⠀".into(),
+        Token::TableBound => "⠠⠀".into(),
         Token::EnlargedFence(c) => match c {
             '(' => "⠠⠐⠣".into(),
             ')' => "⠠⠐⠜".into(),
@@ -1860,6 +2002,7 @@ fn is_expr_stop_token(t: Option<&Token>) -> bool {
                 | Token::Close(_)
                 | Token::Grade1PassageEnd
                 | Token::TableRowStart
+                | Token::TableBound
         )
     )
 }
@@ -2092,6 +2235,9 @@ fn parse_atom(input: Toks<'_>) -> std::result::Result<(Toks<'_>, Expr), crate::e
         Token::Letter { .. } => parse_identifier(input),
         Token::FracOpen => parse_general_fraction(input),
         Token::SqrtOpen => parse_radical(input),
+        Token::EnlargedFence(_) if looks_like_row_marked_matrix(input) => {
+            parse_row_marked_matrix(input)
+        }
         Token::EnlargedFence(_) => parse_enlarged_matrix(input),
         Token::VertBar => parse_fenced(input, '|'),
         Token::Open(c) => parse_fenced(input, *c),
@@ -2501,7 +2647,7 @@ fn parse_fenced(
             return Ok((
                 input,
                 Expr::Table {
-                    open: open.to_string(),
+                    open: Some(open.to_string()),
                     close: close_tok,
                     rows: vec![cells],
                 },
@@ -2546,7 +2692,7 @@ fn parse_enlarged_matrix(
                 return Ok((
                     input,
                     Expr::Table {
-                        open: open.to_string(),
+                        open: Some(open.to_string()),
                         close: None,
                         rows,
                     },
@@ -2567,22 +2713,96 @@ fn parse_enlarged_matrix(
     Ok((
         input,
         Expr::Table {
-            open: open.to_string(),
+            open: Some(open.to_string()),
             close: Some(close.to_string()),
             rows,
         },
     ))
 }
 
-/// UEB_Rules `mtr` with more than one row: `Token::TableRowStart` (`⠸⠀`) before each row.
-/// Each row uses a normal open fence / vert bar and an enlarged close fence (GTM 15).
+/// True when tokens look like a multi-row fenced matrix: open … enlarged-close `⠸⠀` open …
+fn looks_like_row_marked_matrix(input: Toks<'_>) -> bool {
+    match input.first() {
+        Some(Token::EnlargedFence(c)) if is_open_fence_char(*c) => {
+            // Current UEB_Rules: both open and close are enlarged.
+            enlarged_close_then_row_start(&input[1..], matching_close(*c))
+        }
+        Some(Token::TableRowStart) => {
+            // Legacy encoding with a leading row marker.
+            input.iter().skip(1).any(|t| {
+                matches!(t, Token::Open(_) | Token::VertBar | Token::EnlargedFence(_))
+            })
+        }
+        Some(Token::Open(c)) => {
+            // Legacy: normal open … enlarged close `⠸⠀` — stop if a normal close appears first.
+            let close = matching_close(*c);
+            legacy_open_enlarged_close_row_start(input, *c, close)
+        }
+        Some(Token::VertBar) => {
+            // `|P|` uses a second normal vert bar before any enlarged `⠠⠸⠳` matrix.
+            legacy_vertbar_row_marked(input)
+        }
+        _ => false,
+    }
+}
+
+fn enlarged_close_then_row_start(after_open: Toks<'_>, close: char) -> bool {
+    for i in 0..after_open.len() {
+        if matches!(after_open[i], Token::EnlargedFence(c) if c == close) {
+            let mut j = i + 1;
+            while j < after_open.len() && matches!(after_open[j], Token::Space) {
+                j += 1;
+            }
+            return matches!(after_open.get(j), Some(Token::TableRowStart));
+        }
+    }
+    false
+}
+
+fn legacy_open_enlarged_close_row_start(input: Toks<'_>, _open: char, close: char) -> bool {
+    for i in 1..input.len() {
+        match &input[i] {
+            Token::Close(c) if *c == close => return false,
+            Token::EnlargedFence(c) if *c == close => {
+                let mut j = i + 1;
+                while j < input.len() && matches!(input[j], Token::Space) {
+                    j += 1;
+                }
+                return matches!(input.get(j), Some(Token::TableRowStart));
+            }
+            _ => {}
+        }
+    }
+    false
+}
+
+fn legacy_vertbar_row_marked(input: Toks<'_>) -> bool {
+    for i in 1..input.len() {
+        match &input[i] {
+            Token::VertBar => return false,
+            Token::EnlargedFence('|') => {
+                let mut j = i + 1;
+                while j < input.len() && matches!(input[j], Token::Space) {
+                    j += 1;
+                }
+                return matches!(input.get(j), Some(Token::TableRowStart));
+            }
+            _ => {}
+        }
+    }
+    false
+}
+
+/// UEB_Rules multi-row fenced matrix/determinant.
+/// Rows: enlarged (or normal) open + cells + enlarged close, with `⠸⠀` between rows
+/// (not before row 1). Also accepts a legacy leading `⠸⠀`.
 fn parse_row_marked_matrix(
     input: Toks<'_>,
 ) -> std::result::Result<(Toks<'_>, Expr), crate::errors::Error> {
-    if !matches!(input.first(), Some(Token::TableRowStart)) {
-        return Err(parse_err(input, "expected table row marker"));
+    let mut input = input;
+    if matches!(input.first(), Some(Token::TableRowStart)) {
+        input = &input[1..];
     }
-    let mut input = &input[1..];
     let mut rows = Vec::new();
     let (rest, open, close, cells) = parse_matrix_row_segment(input)?;
     input = rest;
@@ -2601,11 +2821,178 @@ fn parse_row_marked_matrix(
     Ok((
         input,
         Expr::Table {
-            open,
+            open: Some(open),
             close: Some(close),
             rows,
         },
     ))
+}
+
+/// Bare multi-row equation-line `mtable`: `row ⠸⠀ row` with no fences and no `⠠⠀` bounds.
+fn try_parse_unbracketed_mtable(tokens: &[Token]) -> Option<Expr> {
+    if !tokens.iter().any(|t| matches!(t, Token::TableRowStart)) {
+        return None;
+    }
+    if tokens.iter().any(|t| matches!(t, Token::TableBound)) {
+        return None; // handled by parse_marked_equation_lines
+    }
+    if looks_like_row_marked_matrix(tokens) {
+        return None;
+    }
+    // Require the row marker to appear as a top-level split (not only inside a fence body).
+    if matches!(
+        tokens.first(),
+        Some(Token::Open(_) | Token::VertBar | Token::EnlargedFence(_) | Token::TableRowStart)
+    ) {
+        return None;
+    }
+    let mut rows = Vec::new();
+    for segment in split_tokens_on(tokens, |t| matches!(t, Token::TableRowStart)) {
+        let cells = parse_unbracketed_row_cells(segment).ok()?;
+        if cells.is_empty() {
+            return None;
+        }
+        rows.push(normalize_unbracketed_row_cells(cells));
+    }
+    if rows.len() < 2 {
+        return None;
+    }
+    Some(Expr::Table {
+        open: None,
+        close: None,
+        rows,
+    })
+}
+
+/// Equation-line `mtable` with `⠠⠀` … `⠠⠀` bounds on each row (when not alone in the math).
+fn parse_marked_equation_lines(
+    input: Toks<'_>,
+) -> std::result::Result<(Toks<'_>, Expr), crate::errors::Error> {
+    let mut input = input;
+    let mut rows = Vec::new();
+    loop {
+        input = skip_noise(input);
+        if matches!(input.first(), Some(Token::TableBound)) {
+            input = &input[1..];
+        } else if rows.is_empty() {
+            return Err(parse_err(input, "expected equation-line table bound"));
+        } else {
+            break;
+        }
+        let (rest, cells) = parse_unbracketed_row_until_bound(input)?;
+        input = rest;
+        rows.push(normalize_unbracketed_row_cells(cells));
+        input = skip_noise(input);
+        if matches!(input.first(), Some(Token::TableBound)) {
+            input = &input[1..];
+        }
+        input = skip_noise(input);
+        if matches!(input.first(), Some(Token::TableRowStart)) {
+            input = &input[1..];
+            continue;
+        }
+        break;
+    }
+    if rows.is_empty() {
+        return Err(parse_err(input, "empty equation-line table"));
+    }
+    Ok((
+        input,
+        Expr::Table {
+            open: None,
+            close: None,
+            rows,
+        },
+    ))
+}
+
+fn split_tokens_on<'a>(tokens: &'a [Token], pred: impl Fn(&Token) -> bool) -> Vec<&'a [Token]> {
+    let mut out = Vec::new();
+    let mut start = 0;
+    for (i, t) in tokens.iter().enumerate() {
+        if pred(t) {
+            out.push(&tokens[start..i]);
+            start = i + 1;
+        }
+    }
+    out.push(&tokens[start..]);
+    out
+}
+
+fn parse_unbracketed_row_until_bound(
+    input: Toks<'_>,
+) -> std::result::Result<(Toks<'_>, Vec<Expr>), crate::errors::Error> {
+    let mut input = input;
+    let mut cells = Vec::new();
+    loop {
+        while matches!(input.first(), Some(Token::Space)) {
+            input = &input[1..];
+        }
+        if matches!(
+            input.first(),
+            Some(Token::TableBound | Token::TableRowStart) | None
+        ) {
+            break;
+        }
+        let mut parts = Vec::new();
+        loop {
+            if matches!(
+                input.first(),
+                Some(Token::Space | Token::TableBound | Token::TableRowStart) | None
+            ) {
+                break;
+            }
+            if is_expr_stop_token(input.first()) {
+                break;
+            }
+            let (rest, part) = parse_expr_part_no_leading_space(input)?;
+            if rest.len() == input.len() {
+                break;
+            }
+            parts.extend(part);
+            input = rest;
+        }
+        if !parts.is_empty() {
+            cells.push(Expr::row(parts));
+        } else {
+            break;
+        }
+    }
+    Ok((input, cells))
+}
+
+fn parse_unbracketed_row_cells(
+    input: Toks<'_>,
+) -> std::result::Result<Vec<Expr>, crate::errors::Error> {
+    let (rest, cells) = parse_unbracketed_row_until_bound(input)?;
+    if !rest.is_empty()
+        && !matches!(rest.first(), Some(Token::TableBound | Token::TableRowStart))
+    {
+        // leftover non-boundary tokens — still accept what we parsed
+    }
+    Ok(cells)
+}
+
+/// Forward rules space around `=`, so `x = f(t)` becomes three space-cells; fold to two columns.
+fn normalize_unbracketed_row_cells(cells: Vec<Expr>) -> Vec<Expr> {
+    if cells.len() == 3 {
+        let is_eq = |e: &Expr| matches!(e, Expr::Operator(s) if s == "=" || s == "＝");
+        if is_eq(&cells[1]) {
+            return vec![
+                cells[0].clone(),
+                Expr::row(vec![cells[1].clone(), cells[2].clone()]),
+            ];
+        }
+    }
+    if cells.len() >= 3 {
+        let is_eq = |e: &Expr| matches!(e, Expr::Operator(s) if s == "=" || s == "＝");
+        if is_eq(&cells[1]) {
+            let mut rhs = vec![cells[1].clone()];
+            rhs.extend(cells[2..].iter().cloned());
+            return vec![cells[0].clone(), Expr::row(rhs)];
+        }
+    }
+    cells
 }
 
 /// One linearized matrix row: open (normal or enlarged) + cells + enlarged close.
@@ -2658,8 +3045,10 @@ fn parse_matrix_row_cells(
         if matches!(
             input.first(),
             Some(Token::EnlargedFence(c)) if *c == close
-        ) || matches!(input.first(), Some(Token::TableRowStart))
-        {
+        ) || matches!(
+            input.first(),
+            Some(Token::TableRowStart | Token::TableBound)
+        ) {
             break;
         }
         if input.is_empty() {
@@ -2670,7 +3059,7 @@ fn parse_matrix_row_cells(
         loop {
             if matches!(input.first(), Some(Token::Space))
                 || matches!(input.first(), Some(Token::EnlargedFence(c)) if *c == close)
-                || matches!(input.first(), Some(Token::TableRowStart))
+                || matches!(input.first(), Some(Token::TableRowStart | Token::TableBound))
                 || input.is_empty()
             {
                 break;
@@ -3158,8 +3547,9 @@ mod tests {
 
     #[test]
     fn matrix_2x2_enlarged_parens() {
+        // Current UEB_Rules: enlarged open + enlarged close, `⠸⠀` between rows.
         let mml = Braille_to_MathML(
-            "⠸⠀⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜",
+            "⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜",
             "UEB",
         )
         .unwrap();
@@ -3172,7 +3562,8 @@ mod tests {
 
     #[test]
     fn matrix_1x3_spaced_parens() {
-        let mml = Braille_to_MathML("⠐⠣⠼⠁⠀⠼⠃⠀⠼⠉⠐⠜", "UEB").unwrap();
+        // Single-row matrix also uses enlarged fences under current rules.
+        let mml = Braille_to_MathML("⠠⠐⠣⠼⠁⠀⠼⠃⠀⠼⠉⠠⠐⠜", "UEB").unwrap();
         assert!(mml.contains("<mtable>"), "{mml}");
         assert!(mml.matches("<mtd>").count() == 3, "{mml}");
     }
@@ -3180,11 +3571,37 @@ mod tests {
     #[test]
     fn determinant_2x2_enlarged() {
         let mml = Braille_to_MathML(
-            "⠸⠀⠸⠳⠼⠁⠀⠼⠃⠠⠸⠳⠸⠀⠸⠳⠼⠉⠀⠼⠙⠠⠸⠳",
+            "⠠⠸⠳⠁⠀⠃⠠⠸⠳⠸⠀⠠⠸⠳⠉⠀⠙⠠⠸⠳",
             "UEB",
         )
         .unwrap();
         assert!(mml.contains("<mtable>"), "{mml}");
         assert!(mml.contains("<mo>|</mo>"), "{mml}");
+    }
+
+    #[test]
+    fn unbracketed_mtable_multiple_lines() {
+        let mml = Braille_to_MathML(
+            "⠰⠭⠀⠐⠶⠀⠋⠐⠣⠞⠐⠜⠸⠀⠰⠽⠀⠐⠶⠀⠛⠐⠣⠞⠐⠜",
+            "UEB",
+        )
+        .unwrap();
+        assert!(mml.contains("<mtable>"), "{mml}");
+        assert!(!mml.contains("<mrow><mo>(</mo><mtable>"), "{mml}");
+        assert_eq!(mml.matches("<mtr>").count(), 2, "{mml}");
+        assert!(mml.contains("<mi>x</mi>"), "{mml}");
+        assert!(mml.contains("<mi>y</mi>"), "{mml}");
+    }
+
+    #[test]
+    fn matrix_multiplication_two_tables() {
+        // GTM 15.2 second example (linearized): two adjacent bracketed matrices.
+        let mml = Braille_to_MathML(
+            "⠠⠨⠣⠼⠁⠀⠼⠃⠀⠼⠉⠠⠨⠜⠸⠀⠠⠨⠣⠼⠙⠀⠼⠑⠀⠼⠋⠠⠨⠜⠠⠨⠣⠼⠁⠀⠼⠃⠠⠨⠜⠸⠀⠠⠨⠣⠐⠤⠼⠉⠀⠼⠙⠠⠨⠜⠸⠀⠠⠨⠣⠼⠑⠀⠐⠤⠼⠋⠠⠨⠜",
+            "UEB",
+        )
+        .unwrap();
+        assert_eq!(mml.matches("<mtable>").count(), 2, "{mml}");
+        assert!(mml.contains("<mo>[</mo>"), "{mml}");
     }
 }
