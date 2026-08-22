@@ -1,0 +1,36 @@
+---
+
+- name: scalar-determinant
+  tag: determinant
+  match: "count(*)=1 and not(*[1][self::m:mtr])"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: ""      # phrase('the' square root of 25 equals 5)
+  - T: "行列式"      # phrase(the 'determinant' of a matrix)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: ""      # phrase(systems 'of' linear equations)
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
+      then: [T: "结束行列式"]      # phrase('end determinant' of a matrix)
+
+
+- name: subscripted-norm
+  tag: subscripted-norm
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - T: "的"
+  - x: "*[2]"
+  - T: "范数"
+
+- name: norm
+  tag: norm
+  match: "count(*)=1"
+  replace:
+  - x: "*[1]"
+  - T: "的范数"
