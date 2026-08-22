@@ -102,7 +102,7 @@ fn literal_speech_matches_documented_examples() -> Result<()> {
 }
 
 #[test]
-fn units_and_laplacian_use_standard_terms() -> Result<()> {
+fn units_increment_and_laplacian_use_standard_terms() -> Result<()> {
     test(
         "zh",
         "SimpleSpeak",
@@ -112,7 +112,13 @@ fn units_and_laplacian_use_standard_terms() -> Result<()> {
     test(
         "zh",
         "SimpleSpeak",
-        "<math><mo>&#x2206;</mo><mi>f</mi></math>",
+        "<math><mo>&#x2206;</mo><mi>x</mi></math>",
+        "增量 x",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='laplacian($x)'><mi arg='x'>f</mi></mrow></math>",
         "拉普拉斯算子 f",
     )
 }
@@ -237,6 +243,143 @@ fn set_operations_use_standard_verb_forms() -> Result<()> {
         "ClearSpeak",
         "<math><mrow intent='union($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>",
         "x 并 y",
+    )
+}
+
+#[test]
+fn textbook_logic_and_geometry_symbols_use_standard_readings() -> Result<()> {
+    // Prefer the relation and shape names used in mainland textbooks over visual Unicode descriptions.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x2200;</mo><mi>x</mi><mo>&#x2208;</mo><mi>R</mi><mo>,</mo><mi>p</mi><mo>&#x2227;</mo><mi>q</mi><mo>&#x21d2;</mo><mi>r</mi><mo>&#x2228;</mo><mi>s</mi></math>",
+        "任意 x 属于 大写 r; 逗号; p 且 q 推出 r 或 s",
+    )?;
+    test("zh", "SimpleSpeak", "<math><mo>&#x2205;</mo></math>", "空集")?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>x</mi><mo>&#x21a6;</mo><msup><mi>x</mi><mn>2</mn></msup><mo>,</mo><mi>A</mi><mo>&#x2216;</mo><mi>B</mi></math>",
+        "x 映射到 x 平方, 逗号; 大写 a 减去 大写 b",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>x</mi><mo>&#x27fc;</mo><msup><mi>x</mi><mn>2</mn></msup></math>",
+        "x 映射到 x 平方",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>p</mi><mo>&#x27f9;</mo><mi>q</mi></math>",
+        "p 推出 q",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x25b3;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>&#x223d;</mo><mo>&#x25b3;</mo><mi>D</mi><mi>E</mi><mi>F</mi></math>",
+        "三角形, 大写 a 大写 b 大写 c; 相似于; 三角形, 大写 d 大写 e 大写 f",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x25b3;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>&#x224c;</mo><mo>&#x25b3;</mo><mi>D</mi><mi>E</mi><mi>F</mi></math>",
+        "三角形, 大写 a 大写 b 大写 c; 全等于; 三角形, 大写 d 大写 e 大写 f",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x2299;</mo><mi>O</mi><mo>,</mo><mo>&#x25b1;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mi>D</mi></math>",
+        "圆 大写 o, 逗号; 平行四边形, 大写 a 大写 b 大写 c 大写 d",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>a</mi><mo>&#x2299;</mo><mi>b</mi></math>",
+        "a 带圈点运算符 b",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x22bf;</mo><mi>A</mi><mi>B</mi><mi>C</mi></math>",
+        "直角三角形, 大写 a 大写 b 大写 c",
+    )
+}
+
+#[test]
+fn plus_minus_symbols_follow_standard_contextual_readings() -> Result<()> {
+    // GB 3102.11 distinguishes signs used alone from binary plus/minus operations.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#xb1;</mo></math>",
+        "正或负",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#xb1;</mo><mi>x</mi></math>",
+        "正或负 x",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mn>20</mn><mo>&#xb1;</mo><mn>0.5</mn></math>",
+        "20 加或减 0.5",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x2213;</mo></math>",
+        "负或正",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>a</mi><mo>&#x2213;</mo><mi>b</mi></math>",
+        "a 减或加 b",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='plus-or-minus($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "a 加或减 b",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='minus-or-plus($a,$b)'><mi arg='a'>c</mi><mi arg='b'>d</mi></mrow></math>",
+        "c 减或加 d",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>a</mi><mo>&#x2266;</mo><mi>b</mi></math>",
+        "a 小于等于 b",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>c</mi><mo>&#x2267;</mo><mi>d</mi></math>",
+        "c 大于等于 d",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>a</mi><mo>&#x2a7d;</mo><mi>b</mi></math>",
+        "a 小于等于 b",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>c</mi><mo>&#x2a7e;</mo><mi>d</mi></math>",
+        "c 大于等于 d",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>f</mi><mo>&#x2243;</mo><mi>g</mi></math>",
+        "f 渐近等于 g",
     )
 }
 
@@ -509,7 +652,7 @@ fn additional_real_world_readings() -> Result<()> {
             "ClearSpeak",
             "Medium",
             "<math><mrow intent='dot-product($a,$b)'><mi arg='a'>v</mi><mi arg='b'>w</mi></mrow></math>",
-            "v 点乘 w",
+            "v 与 w 的数量积",
         ),
         (
             "scalar-centered-dot",
@@ -523,7 +666,14 @@ fn additional_real_world_readings() -> Result<()> {
             "SimpleSpeak",
             "Medium",
             "<math><mover><mi>v</mi><mo>&#x2192;</mo></mover><mo>&#xd7;</mo><mover><mi>w</mi><mo>&#x2192;</mo></mover></math>",
-            "向量 v, 向量积 向量 w",
+            "向量 v, 叉乘 向量 w",
+        ),
+        (
+            "explicit-cross-product-intent",
+            "ClearSpeak",
+            "Medium",
+            "<math><mrow intent='cross-product($a,$b)'><mi arg='a'>v</mi><mi arg='b'>w</mi></mrow></math>",
+            "v 与 w 的叉积",
         ),
         (
             "plain-norm",
@@ -642,14 +792,14 @@ fn additional_real_world_readings() -> Result<()> {
             "SimpleSpeak",
             "Medium",
             "<math><mi>x</mi><mo>=</mo><mfrac><mrow><mo>&#x2212;</mo><mi>b</mi><mo>&#xb1;</mo><msqrt><mrow><msup><mi>b</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>4</mn><mi>a</mi><mi>c</mi></mrow></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>",
-            "x 等于; 分数, 2 a, 分之, 负 b 正负, 根号 b 平方 减 4 a c 结束根号; 结束分数",
+            "x 等于; 分数, 2 a, 分之, 负 b 加或减; 根号 b 平方 减 4 a c 结束根号; 结束分数",
         ),
         (
             "quadratic-formula-literal",
             "LiteralSpeak",
             "Medium",
             "<math><mi>x</mi><mo>=</mo><mfrac><mrow><mo>&#x2212;</mo><mi>b</mi><mo>&#xb1;</mo><msqrt><mrow><msup><mi>b</mi><mn>2</mn></msup><mo>&#x2212;</mo><mn>4</mn><mi>a</mi><mi>c</mi></mrow></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>",
-            "x 等于; 分数, 2 a, 分之, 减 b 正负; 根号 b 上标 2 结束上标, 减 4 a c, 结束根号; 结束分数",
+            "x 等于; 分数, 2 a, 分之, 减 b 加或减; 根号 b 上标 2 结束上标, 减 4 a c, 结束根号; 结束分数",
         ),
         (
             "binomial",

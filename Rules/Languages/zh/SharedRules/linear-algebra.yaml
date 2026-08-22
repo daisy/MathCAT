@@ -1,5 +1,18 @@
 ---
 
+# Use the mainland textbook noun phrases when both operands belong to one intent node.
+- name: textbook-vector-product-intent
+  tag: "*"
+  match: "count(*)=2 and (name(.)='dot-product' or name(.)='cross-product')"
+  replace:
+  - x: "*[1]"
+  - T: "与"
+  - x: "*[2]"
+  - test:
+      if: "name(.)='dot-product'"
+      then: [T: "的数量积"]
+      else: [T: "的叉积"]
+
 - name: scalar-determinant
   tag: determinant
   match: "count(*)=1 and not(*[1][self::m:mtr])"

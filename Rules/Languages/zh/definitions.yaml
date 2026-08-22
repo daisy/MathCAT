@@ -273,13 +273,13 @@
     "congruent": "infix=全等于",
     "cartesian-product": "infix=笛卡尔积",
     "composed-with": "infix=复合",
-    "cross-product": "infix=叉乘: 向量积: 向量积",
+    "cross-product": "infix=叉乘", # Operator form; complete binary expressions use the textbook noun phrase below.
     "defined-as": "infix=定义为",
     "divided-by": "infix=除以",
     "divides": "infix=整除",
     "does-not-belong-to": "infix=不属于",
     "does-not-divide": "infix=不能整除",
-    "dot-product": "infix=点乘",
+    "dot-product": "infix=点乘", # Operator form; complete binary expressions use the textbook noun phrase below.
     "downwards-diagonal-ellipsis": "infix=右下省略号",
     "direct-product": "infix=直积",
     "element-of": "infix=属于",
@@ -300,7 +300,7 @@
     "list-separator": "infix=逗号",
     "maps-to": "infix=映射到",
     "member-of": "infix=属于",
-    "minus-or-plus": "infix=负或正",
+    "minus-or-plus": "infix=减或加",
     "not-subset": "infix=不真包含于",
     "not-superset": "infix=不真包含",
     "not-equal-to": "infix=不等于",
@@ -313,7 +313,7 @@
     "perpendicular": "infix=垂直于",
     "plus": "infix=加 || prefix=正", # Prefix not tested
     "minus": "infix=减 || prefix=负", # Prefix not tested
-    "plus-or-minus": "infix=正负",
+    "plus-or-minus": "infix=加或减",
     "precedes": "infix=先于",
     "proportional": "infix=正比于",
     "range-separator": "infix=到",

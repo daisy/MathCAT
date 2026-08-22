@@ -215,7 +215,11 @@
 
  - "¬": [T: "非"]                                 # 0xac
  - "°": [T: "度"]                           # 0xb0
- - "±": [T: "正负"]                       # 0xb1
+ - "±":                                           # 0xb1
+    - test:
+        if: "preceding-sibling::* and following-sibling::*"
+        then: [T: "加或减"]
+        else: [T: "正或负"]
  - "´": [T: "锐音符"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
@@ -408,7 +412,7 @@
          if: "$Verbosity='Terse'"
          then: [T: "偏微分"]
          else: [T: "偏导数"]
- - "∆": [T: "拉普拉斯算子"]                    # 0x2206
+ - "∆": [T: "增量"]                            # 0x2206
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
@@ -526,5 +530,5 @@
      - T: "包含"
 
  # --- restored short definitions that differ from unicode-full ---
- - "⇒": [T: "向右双线箭头"]             # 0x21d2
+ - "⇒": [T: "推出"]             # 0x21d2
  - "∐": [T: "余积"]                          # 0x2210
