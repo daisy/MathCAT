@@ -200,6 +200,527 @@ fn grade1_1_7_4() -> Result<()> {
 
 }
 
+// Additional examples from GTM 1.7 (July 2025):
+// https://iceb.org/wp-content/uploads/2026/02/GTM-1.7-Grade-1-Indicators-Approved.pdf
+// Ordinary surrounding text is omitted; braille is the preferred math from the spec.
+
+#[test]
+fn grade1_1_7_3_a_1() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_3_a_2() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></math>";
+    test_braille("UEB", expr, "⠰⠭⠀⠰⠳⠕⠀⠼⠿")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_3_a_3() -> Result<()> {
+    let expr = "<math><mfrac><mi>x</mi><mi>y</mi></mfrac></math>";
+    test_braille("UEB", expr, "⠰⠰⠷⠭⠨⠌⠽⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_3_b_1() -> Result<()> {
+    let expr = "<math><msub><mi>x</mi><mi>a</mi></msub><mo>=</mo><msub><mi>x</mi><mi>b</mi></msub>
+                <mo>=</mo><msub><mi>x</mi><mi>c</mi></msub></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠢⠁⠀⠐⠶⠀⠭⠢⠃⠀⠐⠶⠀⠭⠢⠉⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_3_b_2() -> Result<()> {
+    let expr = "<math><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mn>4</mn><mo>;</mo>
+                <mo>&#xA0;</mo><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mn>2</mn><mi>x</mi><mo>;</mo>
+                <mo>&#xA0;</mo><mi>y</mi><mo>=</mo><mi>x</mi><mo>-</mo><msup><mi>x</mi><mn>2</mn></msup><mo>.</mo></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠽⠀⠐⠶⠀⠭⠔⠼⠃⠐⠤⠼⠙⠆⠀⠽⠀⠐⠶⠀⠭⠔⠼⠃⠐⠤⠼⠃⠭⠆⠀⠽⠀⠐⠶⠀⠭⠐⠤⠭⠔⠼⠃⠲⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_4_1() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mi>x</mi><mo>-</mo><mn>2</mn>
+                <mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠔⠼⠃⠐⠤⠭⠐⠤⠼⠃⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_4_2() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mn>4</mn><mi>x</mi><mo>-</mo><mn>3</mn>
+                <mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠔⠼⠃⠐⠤⠼⠙⠭⠐⠤⠼⠉⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_4_3() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>";
+    test_braille("UEB", expr, "⠭⠔⠼⠃⠐⠤⠼⠁⠀⠐⠶⠀⠼⠚")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_5_b() -> Result<()> {
+    let expr = "<math><msub><mtext>luminosity</mtext><mtext>sun</mtext></msub></math>";
+    test_braille("UEB", expr, "⠇⠥⠍⠔⠕⠎⠰⠽⠰⠰⠢⠣⠎⠥⠝⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_5_c() -> Result<()> {
+    let expr = "<math><mtext>speed</mtext><mo>=</mo>
+                <mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac><mo>=</mo>
+                <mfrac>
+                    <mrow><mn>30,000</mn><mo>&#xA0;</mo><mi class='MathML-unit'>m</mi></mrow>
+                    <mrow><mn>60</mn><mo>&#xA0;</mo><mi class='MathML-unit'>s</mi></mrow>
+                </mfrac><mo>=</mo>
+                <mn>500</mn><mo>&#xA0;</mo><mi class='MathML-unit'>m</mi><mo>/</mo><mi class='MathML-unit'>s</mi></math>";
+    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾⠀⠐⠶⠀⠷⠼⠉⠚⠂⠚⠚⠚⠀⠍⠨⠌⠼⠋⠚⠀⠎⠾⠀⠐⠶⠀⠼⠑⠚⠚⠀⠍⠸⠌⠎⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_1() -> Result<()> {
+    let expr = "<math><mi>y</mi><mo>=</mo><mi>x</mi></math>";
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠰⠭")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_2() -> Result<()> {
+    let expr = "<math><msqrt><mn>25</mn></msqrt><mo>=</mo><mn>5</mn></math>";
+    test_braille("UEB", expr, "⠰⠩⠼⠃⠑⠬⠀⠐⠶⠀⠼⠑")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_3() -> Result<()> {
+    let expr = "<math><msqrt><mi>x</mi></msqrt><mo>=</mo><mn>7</mn></math>";
+    test_braille("UEB", expr, "⠰⠰⠩⠭⠬⠀⠐⠶⠀⠼⠛")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_4() -> Result<()> {
+    let expr = "<math><msup><mi>ms</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠍⠎⠔⠣⠐⠤⠼⠁⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_6() -> Result<()> {
+    let expr = "<math><mi>y</mi><mo>=</mo><mfrac><msup><mi>x</mi><mn>2</mn></msup><mn>2</mn></mfrac></math>";
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠰⠰⠷⠭⠔⠼⠃⠨⠌⠼⠃⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_7() -> Result<()> {
+    let expr = "<math><mfrac><mi>x</mi><mi>y</mi></mfrac><mo>=</mo><mfrac><mi>c</mi><mi>d</mi></mfrac></math>";
+    test_braille("UEB", expr, "⠰⠰⠷⠭⠨⠌⠽⠾⠀⠐⠶⠀⠰⠰⠷⠉⠨⠌⠙⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_8() -> Result<()> {
+    let expr = "<math><mo>(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>)</mo></math>";
+    test_braille("UEB", expr, "⠐⠣⠰⠭⠂⠀⠰⠽⠐⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_9() -> Result<()> {
+    let expr = "<math><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><msub><mi>y</mi><mi>i</mi></msub><mo>)</mo></math>";
+    test_braille("UEB", expr, "⠐⠣⠭⠰⠢⠊⠂⠀⠽⠰⠢⠊⠐⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_10() -> Result<()> {
+    let expr = "<math><mo>(</mo><msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup><mo>,</mo>
+                <msubsup><mi>y</mi><mi>i</mi><mn>2</mn></msubsup><mo>)</mo></math>";
+    test_braille("UEB", expr, "⠰⠰⠐⠣⠭⠢⠊⠔⠼⠃⠂⠀⠰⠰⠽⠢⠊⠔⠼⠃⠐⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_11() -> Result<()> {
+    let expr = "<math><mover><mi>B</mi><mo>&#xAF;</mo></mover></math>";
+    test_braille("UEB", expr, "⠠⠃⠰⠱")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_12() -> Result<()> {
+    let expr = "<math><mover><mi>M</mi><mo>&#x2194;</mo></mover></math>";
+    test_braille("UEB", expr, "⠠⠍⠨⠔⠰⠳⠺⠗⠕")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_13() -> Result<()> {
+    let expr = "<math><mover><mi>AZ</mi><mo>&#x2194;</mo></mover></math>";
+    test_braille("UEB", expr, "⠰⠰⠣⠠⠠⠁⠵⠜⠨⠔⠳⠺⠗⠕")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_14() -> Result<()> {
+    let expr = "<math><msubsup><mrow/><mn>13</mn><mn>27</mn></msubsup><mi>Al</mi></math>";
+    test_braille("UEB", expr, "⠰⠢⠼⠁⠉⠔⠼⠃⠛⠠⠁⠇")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_15() -> Result<()> {
+    let expr = "<math><msup><mi>O</mi><mrow><mn>2</mn><mo>-</mo></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠠⠕⠔⠣⠼⠃⠐⠤⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_16() -> Result<()> {
+    let expr = "<math><mn>2</mn><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub>
+                <mo>(</mo><mi>g</mi><mo>)</mo><mo>+</mo>
+                <msub><mi mathvariant='normal'>O</mi><mn>2</mn></msub>
+                <mo>(</mo><mi>g</mi><mo>)</mo><mo>&#x2192;</mo>
+                <mn>2</mn><msub><mi mathvariant='normal'>H</mi><mn>2</mn></msub>
+                <mi mathvariant='normal'>O</mi><mo>(</mo><mi>l</mi><mo>)</mo></math>";
+    test_braille("UEB", expr, "⠼⠃⠠⠓⠢⠼⠃⠐⠣⠛⠐⠜⠐⠖⠠⠕⠢⠼⠃⠐⠣⠛⠐⠜⠀⠰⠳⠕⠀⠼⠃⠠⠓⠢⠼⠃⠠⠕⠐⠣⠇⠐⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_17() -> Result<()> {
+    let expr = "<math><mi>y</mi><mo>=</mo><mi>m</mi><mi>x</mi><mo>+</mo><mi>c</mi></math>";
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠍⠭⠐⠖⠉")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_18() -> Result<()> {
+    let expr = "<math><mi>A</mi><mo>=</mo><mi>&#x3C0;</mi><msup><mi>r</mi><mn>2</mn></msup></math>";
+    test_braille("UEB", expr, "⠠⠁⠀⠐⠶⠀⠨⠏⠗⠰⠔⠼⠃")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_19() -> Result<()> {
+    let expr = "<math><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></math>";
+    test_braille("UEB", expr, "⠰⠠⠑⠀⠐⠶⠀⠍⠉⠰⠔⠼⠃")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_20() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>-</mo><mn>2</mn><mi>x</mi><mo>+</mo><mn>1</mn>
+                <mo>=</mo><msup><mrow><mo>(</mo><mi>x</mi><mo>-</mo><mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup></math>";
+    test_braille("UEB", expr, "⠭⠰⠔⠼⠃⠐⠤⠼⠃⠭⠐⠖⠼⠁⠀⠐⠶⠀⠐⠣⠭⠐⠤⠼⠁⠐⠜⠔⠼⠃")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_21() -> Result<()> {
+    let expr = "<math><msub><mi>x</mi><mi>n</mi></msub><mo>=</mo><mn>1</mn><mo>+</mo>
+                <mfrac><mrow><mo>-</mo><msup><mn>1</mn><mi>n</mi></msup></mrow><mi>n</mi></mfrac></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠝⠀⠐⠶⠀⠼⠁⠐⠖⠷⠐⠤⠼⠁⠔⠝⠨⠌⠝⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_22() -> Result<()> {
+    let expr = "<math><msub><mi>x</mi><mi>n</mi></msub><mo>=</mo>
+                <mfrac><msup><mn>2</mn><mi>n</mi></msup><msup><mi>n</mi><mn>2</mn></msup></mfrac></math>";
+    test_braille("UEB", expr, "⠭⠰⠢⠝⠀⠐⠶⠀⠰⠷⠼⠃⠔⠝⠨⠌⠝⠔⠼⠃⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_24() -> Result<()> {
+    let expr = "<math><mi>x</mi><msqrt><mi>sin</mi><mi>&#x3B8;</mi></msqrt></math>";
+    test_braille("UEB", expr, "⠰⠰⠭⠩⠎⠊⠝⠨⠹⠬")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_25() -> Result<()> {
+    let expr = "<math><msup><mtext>Version</mtext><mrow><mn>1</mn><mi>b</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠠⠧⠻⠨⠝⠰⠰⠔⠣⠼⠁⠰⠃⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_26() -> Result<()> {
+    let expr = "<math><mi>W</mi><mo>=</mo><mi>F</mi><mi>s</mi></math>";
+    test_braille("UEB", expr, "⠰⠠⠺⠀⠐⠶⠀⠠⠋⠎")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_27() -> Result<()> {
+    let expr = "<math><mtext>work</mtext><mo>=</mo><mtext>force</mtext><mo>&#xD7;</mo><mtext>distance</mtext></math>";
+    test_braille("UEB", expr, "⠐⠺⠀⠐⠶⠀⠿⠉⠑⠐⠦⠙⠊⠌⠨⠑")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_28() -> Result<()> {
+    let expr = "<math><mo>&#x2234;</mo><mo>&#xA0;</mo><mtext>force</mtext><mo>=</mo>
+                <mfrac><mtext>work</mtext><mtext>distance</mtext></mfrac></math>";
+    test_braille("UEB", expr, "⠰⠠⠡⠀⠿⠉⠑⠀⠐⠶⠀⠰⠷⠐⠺⠨⠌⠙⠊⠌⠨⠑⠰⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_29() -> Result<()> {
+    let expr = "<math><mtext>acceleration</mtext><mo>=</mo>
+                <mfrac>
+                    <mrow><mi>&#x394;</mi><mtext>speed</mtext></mrow>
+                    <mrow><mi>&#x394;</mi><mtext>time</mtext></mrow>
+                </mfrac></math>";
+    test_braille("UEB", expr, "⠁⠒⠑⠇⠻⠁⠰⠝⠀⠐⠶⠀⠰⠷⠠⠨⠙⠎⠏⠑⠫⠨⠌⠠⠨⠙⠐⠞⠰⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_30() -> Result<()> {
+    let expr = "<math><mtext>frequency</mtext><mo>=</mo><mfrac><mn>1</mn><mtext>time</mtext></mfrac></math>";
+    test_braille("UEB", expr, "⠋⠗⠑⠟⠥⠢⠉⠽⠀⠐⠶⠀⠰⠷⠼⠁⠨⠌⠞⠊⠍⠑⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_31() -> Result<()> {
+    let expr = "<math><mtext>frequency</mtext><mo>=</mo><mn>1</mn><mo>/</mo><mtext>time</mtext></math>";
+    test_braille("UEB", expr, "⠋⠗⠑⠟⠥⠢⠉⠽⠀⠐⠶⠀⠼⠁⠸⠌⠞⠊⠍⠑")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_32() -> Result<()> {
+    let expr = "<math><msub><mi>V</mi><mtext>cone</mtext></msub><mo>=</mo>
+                <mfrac><mn>1</mn><mn>3</mn></mfrac><mi>&#x3C0;</mi>
+                <msup><mi>r</mi><mn>2</mn></msup><mi>h</mi></math>";
+    test_braille("UEB", expr, "⠰⠰⠠⠧⠢⠣⠉⠕⠝⠑⠜⠀⠐⠶⠀⠼⠁⠌⠉⠨⠏⠗⠔⠼⠃⠰⠓")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_33() -> Result<()> {
+    let expr = "<math><mi>V</mi><mo>=</mo><mo>&#x222B;</mo><mi>&#x3C0;</mi>
+                <msup><mi>y</mi><mn>2</mn></msup><mi>d</mi><mi>x</mi></math>";
+    test_braille("UEB", expr, "⠰⠠⠧⠀⠐⠶⠀⠰⠰⠮⠨⠏⠽⠔⠼⠃⠰⠙⠭")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_34() -> Result<()> {
+    let expr = "<math><mtext>period</mtext><mo>=</mo><mn>2</mn><mi>&#x3C0;</mi>
+                <msqrt><mfrac>
+                    <mrow><mi>l</mi><mi>cos</mi><mi>&#x3B1;</mi></mrow>
+                    <mi>g</mi>
+                </mfrac></msqrt></math>";
+    test_braille("UEB", expr, "⠏⠻⠊⠕⠙⠀⠐⠶⠀⠼⠃⠨⠏⠩⠷⠇⠀⠰⠰⠉⠕⠎⠨⠁⠨⠌⠛⠾⠬")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_35() -> Result<()> {
+    let expr = "<math><mi>g</mi><mo>=</mo><mn>9.81</mn><mo>&#xA0;</mo>
+                <msup><mi>ms</mi><mrow><mo>-</mo><mn>2</mn></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠛⠀⠐⠶⠀⠼⠊⠲⠓⠁⠀⠰⠰⠍⠎⠔⠣⠐⠤⠼⠃⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_36() -> Result<()> {
+    let expr = "<math><msub><mi>v</mi><mn>1</mn></msub><mo>=</mo><mi>x</mi><mo>&#xA0;</mo>
+                <msup><mi>ms</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠧⠢⠼⠁⠀⠐⠶⠀⠭⠀⠍⠎⠔⠣⠐⠤⠼⠁⠜⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_37() -> Result<()> {
+    let expr = "<math><mi>P</mi><mo>=</mo>
+                <mfenced open='{' close='}'><mrow><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>v</mi></mrow></mfenced></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠏⠀⠐⠶⠀⠸⠣⠞⠂⠀⠥⠂⠀⠧⠸⠜⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_38() -> Result<()> {
+    let expr = "<math><msub><mi>x</mi><mi>a</mi></msub><mo>=</mo><msub><mi>x</mi><mi>b</mi></msub>
+                <mo>=</mo><msub><mi>x</mi><mi>c</mi></msub><mo>=</mo><msub><mi>x</mi><mi>d</mi></msub></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠢⠁⠀⠐⠶⠀⠭⠢⠃⠀⠐⠶⠀⠭⠢⠉⠀⠐⠶⠀⠭⠢⠙⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_39() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2</mn></msup><mo>&#xD7;</mo><msup><mi>x</mi><mn>3</mn></msup>
+                <mo>=</mo><msup><mi>x</mi><mrow><mn>2</mn><mo>+</mo><mn>3</mn></mrow></msup>
+                <mo>=</mo><msup><mi>x</mi><mn>5</mn></msup></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠭⠔⠼⠃⠐⠦⠭⠔⠼⠉⠀⠐⠶⠀⠭⠔⠣⠼⠃⠐⠖⠼⠉⠜⠀⠐⠶⠀⠭⠔⠼⠑⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_40() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mi>m</mi></msup><mo>&#xD7;</mo><msup><mi>a</mi><mi>n</mi></msup>
+                <mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mo>+</mo><mi>n</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠁⠔⠍⠐⠦⠁⠔⠝⠀⠐⠶⠀⠁⠔⠣⠍⠐⠖⠝⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_41() -> Result<()> {
+    let expr = "<math><msup><mrow><mo>(</mo><msup><mi>a</mi><mi>m</mi></msup><mo>)</mo></mrow><mi>n</mi></msup>
+                <mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mi>n</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠐⠣⠁⠔⠍⠐⠜⠔⠝⠀⠐⠶⠀⠁⠔⠣⠍⠝⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_42() -> Result<()> {
+    let expr = "<math><mfrac><msup><mi>a</mi><mi>m</mi></msup><msup><mi>a</mi><mi>n</mi></msup></mfrac>
+                <mo>=</mo><msup><mi>a</mi><mrow><mi>m</mi><mo>-</mo><mi>n</mi></mrow></msup></math>";
+    test_braille("UEB", expr, "⠷⠁⠔⠍⠨⠌⠁⠔⠝⠾⠀⠐⠶⠀⠁⠔⠣⠍⠐⠤⠝⠜")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_43() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mrow><mo>-</mo><mi>m</mi></mrow></msup>
+                <mo>=</mo><mfrac><mn>1</mn><msup><mi>a</mi><mi>m</mi></msup></mfrac></math>";
+    test_braille("UEB", expr, "⠁⠔⠣⠐⠤⠍⠜⠀⠐⠶⠀⠷⠼⠁⠨⠌⠁⠔⠍⠾")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_44() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mn>0</mn></msup><mo>=</mo><mn>1</mn></math>";
+    test_braille("UEB", expr, "⠁⠔⠼⠚⠀⠐⠶⠀⠼⠁")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_45() -> Result<()> {
+    let expr = "<math><msup><mi>a</mi><mfrac><mn>1</mn><mi>n</mi></mfrac></msup>
+                <mo>=</mo><mroot><mi>a</mi><mi>n</mi></mroot></math>";
+    test_braille("UEB", expr, "⠁⠔⠷⠼⠁⠨⠌⠝⠾⠀⠐⠶⠀⠩⠔⠝⠁⠬")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_46() -> Result<()> {
+    let expr = "<math><mi>B</mi><mo>&#x2192;</mo><mi>C</mi></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠃⠀⠳⠕⠀⠠⠉⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_47() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>+</mo><mi>y</mi><mo>=</mo><mn>5</mn></math>";
+    test_braille("UEB", expr, "⠭⠐⠖⠽⠀⠐⠶⠀⠼⠑")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_48() -> Result<()> {
+    let expr = "<math><mi mathvariant='normal'>C</mi><msub><mi mathvariant='normal'>H</mi><mn>4</mn></msub>
+                <mo>+</mo><mn>4</mn><msub><mi>Cl</mi><mn>2</mn></msub>
+                <mo>&#x2192;</mo>
+                <mi mathvariant='normal'>C</mi><msub><mi>Cl</mi><mn>4</mn></msub>
+                <mo>+</mo><mn>4</mn><mi mathvariant='normal'>H</mi><mi>Cl</mi></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠠⠉⠠⠓⠢⠼⠙⠐⠖⠼⠙⠠⠉⠇⠢⠼⠃⠀⠳⠕⠀⠠⠉⠠⠉⠇⠢⠼⠙⠐⠖⠼⠙⠠⠓⠠⠉⠇⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_49() -> Result<()> {
+    let expr = "<math><msubsup><mrow/><mn>6</mn><mn>14</mn></msubsup><mi mathvariant='normal'>C</mi>
+                <mo>&#x2192;</mo>
+                <msubsup><mrow/><mn>7</mn><mn>14</mn></msubsup><mi mathvariant='normal'>N</mi>
+                <mo>+</mo>
+                <msubsup><mrow/><mrow><mo>-</mo><mn>1</mn></mrow><mn>0</mn></msubsup><mi>&#x3B2;</mi></math>";
+    test_braille("UEB", expr, "⠰⠰⠰⠢⠼⠋⠔⠼⠁⠙⠠⠉⠀⠳⠕⠀⠢⠼⠛⠔⠼⠁⠙⠠⠝⠐⠖⠢⠣⠐⠤⠼⠁⠜⠔⠼⠚⠨⠃⠰⠄")?;
+    return Ok(());
+
+}
+
+#[test]
+fn grade1_1_7_9_50() -> Result<()> {
+    let expr = "<math><mtext>reliability</mtext><mo>=</mo>
+                <mfrac><mtext>number of faults</mtext><mtext>total number of items</mtext></mfrac>
+                <mo>=</mo><mi>p</mi></math>";
+    test_braille("UEB", expr, "⠗⠑⠇⠊⠁⠃⠊⠇⠰⠽⠀⠐⠶⠀⠰⠰⠰⠷⠝⠥⠍⠃⠑⠗⠀⠕⠋⠀⠋⠁⠥⠇⠞⠎⠀⠨⠌⠞⠕⠞⠁⠇⠀⠝⠥⠍⠃⠑⠗⠀⠕⠋⠀⠊⠞⠑⠍⠎⠾⠀⠐⠶⠀⠏⠰⠄")?;
+    return Ok(());
+
+}
+
 #[test]
 fn number_2_1_2() -> Result<()> {
     let expr = "<math><mn>3,000</mn></math>";
