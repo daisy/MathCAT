@@ -1,0 +1,72 @@
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "linje-segmentet från"      # phrase('the line segment from' A to B)
+      - x: "*[1]"
+      - T: "till"                         # phrase(the line segment from A 'to' B)
+      - x: "*[2]"
+      else:
+      - T: "linje-segmentet"               # phrase(the 'line segment' A  B)
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "den riktade sträckan från"             # phrase('the ray from' A to B)
+      - x: "*[1]"
+      - T: "till"                       # phrase(the ray from A 'to' B)
+      - x: "*[2]"
+      else:
+      - T: "den riktade sträckan"                      # phrase(the 'ray'A  B)
+      - x: "*[1]"
+      - x: "*[2]"
+
+- name: geometry-arc                  # audit-ignore
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - T: "bågen"                        # phrase(the 'arc' A B C)
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "måttet på vinkeln"      # phrase('the measure of the angle' ABC)
+      else:
+      - T: "vinkeln"      # phrase('measure of angle' ABC)
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
+- name: coordinate                   # audit-ignore
+  tag: coordinate
+  match: "."
+  replace:
+  - T: "punkten"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "vid"]      # phrase('the' point at 1, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "komma", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "slut punkt"]      # phrase(start point, 'end point')

@@ -87,7 +87,7 @@
  - "%": [T: "⠼⠚⠴"]                # 0x25 (Percent sign) No dots 46 before as in UEB
  - "&": [t: "⠈⠯"]               # 0x26 (Ampersand)
  - "*": [T: "⠐⠦"]               # 0x002A (Asterisk)
- - "/": [T: "⠐⠌"]               # 0x002F (Solidus (slash))
+ - "/": [T: "⠐⠲"]               # 0x002F (Solidus (slash))
  - ";": [t: "c⠆"]               # 0x003B (Semicolon)
  - "?": [T: "c⠢"]               # 0x003F (Question mark)
  - "@": [T: "⠈⠁"]               # 0x0040 (Commercial at sign)
@@ -242,8 +242,6 @@
  - "⊞": [t: "⠫⠼⠙⠪⠐⠖t"]         # 0x229E (Squared plus)
  - "⊟": [t: "⠫⠼⠙⠪⠐⠤t"]         # 0x229F (Squared minus)
  - "⊠": [t: "⠫⠼⠙⠪⠐⠦t"]         # 0x22A0 (Squared times)
- - "⋇": [t: "⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)
  - "˙": [t: "⠲"]               # 0x02D9 ( Dot Above)
  - "¨": [t: "⠲⠲"]              # 0x00A8 ( Diaeresis/Double Dot Above)
  - "©": [t: "⠘⠉"]               # 0xa9 (Copyright)
@@ -289,7 +287,7 @@
     - test:
         if:
         - "ancestor::*[2][IsBracketed(., '{', '}')] or "       # field extension
-        - "preceding-sibling::*[2][text()=':'] or following-sibling::*[2][text()=':'] or"  # trilinear form
+        - "preceding-sibling::*[2][.=':'] or following-sibling::*[2][.=':'] or"  # trilinear form
           # ratios tend to have similar left and right sides
         - "name(preceding-sibling::*[1]) = name(following-sibling::*[1]) or"
           # am/pm test
@@ -322,7 +320,7 @@
         #- "           (self::m:mi and translate(., 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '') or "
         #- "           (self::m:mrow and translate(*[last()], 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '') = '')] and"
         #- "  following::*[1][self::m:mrow and count(*)=3 and "   # look for function apply
-        #- "     *[2][text()='⁡'] and *[1][self::m:mi and translate(., 'abcdefghijklmnopqrstuvwxyz', '') = '']]" 
+        #- "     *[2][.='⁡'] and *[1][self::m:mi and translate(., 'abcdefghijklmnopqrstuvwxyz', '') = '']]" 
         #then: [t: "W"]
         #else: [t: ""]
  - "⁣": [t: ""]                 # 0x2063⁡ (invisible separator)
@@ -513,32 +511,10 @@
  - "Ỹ": [t: "CL⠤𝑐L⠽"]
  - "Ỵ": [t: "CL⠠𝑐L⠽"]
 
- - "A": [t: "CL⠁"]              # 0x41 
- - "B": [t: "CL⠃"]              # 0x42
- - "C": [t: "CL⠉"]              # 0x43 
- - "D": [t: "CL⠙"]              # 0x44 
- - "E": [t: "CL⠑"]              # 0x45 
- - "F": [t: "CL⠋"]              # 0x46 
- - "G": [t: "CL⠛"]              # 0x47 
- - "H": [t: "CL⠓"]              # 0x48 
- - "I": [t: "CL⠊"]              # 0x49 
- - "J": [t: "CL⠚"]              # 0x4a 
- - "K": [t: "CL⠅"]              # 0x4b 
- - "L": [t: "CL⠇"]              # 0x4c 
- - "M": [t: "CL⠍"]              # 0x4d 
- - "N": [t: "CL⠝"]              # 0x4e 
- - "O": [t: "CL⠕"]              # 0x4f 
- - "P": [t: "CL⠏"]              # 0x50 
- - "Q": [t: "CL⠟"]              # 0x51 
- - "R": [t: "CL⠗"]              # 0x52 
- - "S": [t: "CL⠎"]              # 0x53 
- - "T": [t: "CL⠞"]              # 0x54 
- - "U": [t: "CL⠥"]              # 0x55 
- - "V": [t: "CL⠧"]              # 0x56 
- - "W": [t: "CL⠺"]              # 0x57 
- - "X": [t: "CL⠭"]              # 0x58 
- - "Y": [t: "CL⠽"]              # 0x59 
- - "Z": [t: "CL⠵"]              # 0x5a 
+ # Latin capitals: C + cells from lowercase a-z via spell/translate.
+ - "A-Z":                        # 0x41 - 0x5a
+    - tc: "C"
+    - spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "α": [t: "GL⠁"]              # 0x3b1 
  - "β": [t: "GL⠃"]              # 0x3b2 
@@ -605,7 +581,8 @@
  - "≊": [T: "⠐⠢⠢⠶"]
  - "⋮": [T: "⠣⠴⠜"]          # 0x22ee (vertical ellipsis used to indicate dividable)
  - "⧵": [T: "⠸⠡"]          
- - "∕": [T: "⠐⠌"]
- - "⊘": [T: "⠐⠌"]
+ - "∕": [T: "⠐⠲"]
+ - "⊘": [T: "⠐⠲"]
+ - "⁄": [T: "⠐⠲"]
  - "℃": [T: "⠔⠚⠀⠨⠉"]
  - "℉": [T: "⠔⠚⠀⠨⠋"]

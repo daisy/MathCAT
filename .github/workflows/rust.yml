@@ -1,24 +1,132 @@
 name: Rust
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 
 env:
   CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-Dwarnings"
 
 jobs:
   build:
-
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            features: ""
+          - name: no-unsafe
+            features: "--features no-unsafe"
+    name: Build and Test (${{ matrix.name }})
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
-    - name: Run Clippy/Lint
-      run: cargo clippy
+    - uses: actions/checkout@v5
+    - name: Build (${{ matrix.name }})
+      run: cargo build ${{ matrix.features }} --verbose
+    - name: Run tests (${{ matrix.name }})
+      run: cargo test ${{ matrix.features }} --verbose
+
+  clippy:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            features: ""
+          - name: no-unsafe
+            features: "--features no-unsafe"
+    name: Clippy/Lint check (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: run clippy (${{ matrix.name }})
+      run: cargo clippy ${{ matrix.features }}
+
+  zip-rules:
+    name: zip up the rules directory
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Create Rules.zip
+      run: cargo run --bin package-rules -- Rules Rules.zip
+    - name: Create Rules-minimized.zip
+      run: cargo run --bin package-rules -- Rules Rules-minimized.zip --minimize
+    - name: Upload Rules.zip
+      uses: actions/upload-artifact@v7
+      with:
+        name: 'Rules.zip'
+        path: 'Rules.zip'
+        compression-level: 0
+        retention-days: 1
+    - name: Upload Rules-minimized.zip
+      uses: actions/upload-artifact@v7
+      with:
+        name: 'Rules-minimized.zip'
+        path: 'Rules-minimized.zip'
+        compression-level: 0
+        retention-days: 1
+
+  test-rules-package:
+    name: Test (${{ matrix.feature_name }}, ${{ matrix.rules_zip }})
+    needs: zip-rules
+    strategy:
+      fail-fast: false
+      matrix:
+        rules_zip: [Rules.zip, Rules-minimized.zip]
+        include:
+          - feature_name: default
+            features: ""
+          - feature_name: no-unsafe
+            features: "--features no-unsafe"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: Download ${{ matrix.rules_zip }}
+      uses: actions/download-artifact@v8
+      with:
+        name: ${{ matrix.rules_zip }}
+    - name: Install packaged Rules
+      run: |
+        rm -rf Rules
+        unzip -q "${{ matrix.rules_zip }}"
+        # Release zips omit the synthetic zz test language; restore it for unit tests only.
+        git checkout HEAD -- Rules/Languages/zz
+    - name: Run tests (${{ matrix.feature_name }})
+      run: cargo test ${{ matrix.features }} --verbose
+
+  pre-release:
+    name: Pre Release
+    continue-on-error: false
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # otherwise, job fails on pull requests, as GITHUB_TOKEN is not available
+    needs: [build, clippy, zip-rules, test-rules-package]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: download Rules.zip
+      uses: actions/download-artifact@v8
+      with:
+        name: Rules.zip
+    - name: download Rules-minimized.zip
+      uses: actions/download-artifact@v8
+      with:
+        name: Rules-minimized.zip
+    # Moving 'latest' prerelease (replaces marvinpinto/action-automatic-releases)
+    - name: Development Build release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        REPO="${{ github.repository }}"
+        SHA="${{ github.sha }}"
+        # No checkout in this job — always pass --repo.
+        gh release delete latest --repo "$REPO" --yes --cleanup-tag || true
+        gh api --method DELETE "repos/${REPO}/git/refs/tags/latest" || true
+        gh release create latest \
+          --repo "$REPO" \
+          --target "$SHA" \
+          --prerelease \
+          --latest=false \
+          --title "Development Build" \
+          --notes "Development build from ${SHA}" \
+          Rules.zip \
+          Rules-minimized.zip

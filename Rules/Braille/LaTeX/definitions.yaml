@@ -1,6 +1,4 @@
 ---
-- include: "../../definitions.yaml"
-
 - NoSpacesBefore: {
   #FIX: this needs expanding
     "(", ")", "[", "]", "{", "}", "|",
@@ -24,4 +22,12 @@
     "⨌", "∳", "∲", "∱", "∰", "∯", "∮", "∭", "∬", "∫",
     "⨋", "∐", "∏", "⫿", "⫼", "⨉", "⨈", "⨇", "⨆", "⨅",
     "⨂", "⨀", "⋂", "⋁", "⋀", "⨄", "⨃", "⋃", "⨁", "⨞", "⨝", "⨊", "∑",
+  }
+
+- Accents: {
+    "→": "vec", ".": "dot", "·": "dot", "˙": "dot", "..": "ddot", "~": "tilde", "^": "hat", "⏞": "overbrace",
+  }
+
+- UnderAccents: {
+    "¯": "underline", "⏟": "underbrace", "→": "underrightarrow",
   }

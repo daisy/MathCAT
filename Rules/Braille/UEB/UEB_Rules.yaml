@@ -59,7 +59,7 @@
       - "     ((self::m:mi or self::m:mo) and string-length(text())=1) or"
       - "     self::m:mfrac or self::m:msqrt or self::m:mroot or"
       - "     IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '{', '}') or"
-      - "     IsInDefinition(., 'Arrows')"
+      - "     IsInDefinition(., 'Braille', 'Arrows')"
       - "    ]"
       then:
       - x: "*[2]"
@@ -81,7 +81,7 @@
    name: common-fraction-mixed-number
    tag: mfrac
    match:
-      - "preceding-sibling::*[1][self::m:mo][text()='\u2064'] and" # preceding element is invisible plus
+      - "preceding-sibling::*[1][self::m:mo][.='\u2064'] and" # preceding element is invisible plus
       - "*[1][self::m:mn][not(contains(., '.'))]   and" 
       - "*[2][self::m:mn][not(contains(., '.'))]"
    replace: 
@@ -138,43 +138,53 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
-   name: default-matrix
-   tag: mrow
-   variables:
-      - RowStart: "*[1]"
-      - RowEnd: "*[3]"
-   match:
-      - "*[2][self::m:mtable] and"
-      - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
-   replace: [x: "*[2]"]
+  name: default-matrix
+  tag: mrow
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "*[3]"
+  match:
+    - "*[2][self::m:mtable] and"
+    - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
+  replace: [x: "*[2]"]
+
 -
-   name: default-mtable
-   tag: mtable
-   match: "."
-   replace: [x: "*"]
+  name: default-mtable
+  tag: mtable
+  match: "."
+  variables:   # should only be here for lines of equations -- made up dot-6, dot 0 as a parallel to dot six before parens
+  - RowStart: "IfThenElse($RowStart = '', '⠀', $RowStart)"
+  - RowEnd: "IfThenElse($RowEnd = '', '⠀', $RowEnd)"
+  replace: [x: "*"]
+
 -
   name: default
   tag: [mtr, mlabeledtr]
   match: "."
   replace:
-   - test: 
-      if: "count(parent::*) > 1"
-      then: [t: "⠠"]
-   - t: ""
-   - x: $RowStart
-   - test:
+  - test: 
+      if: "preceding-sibling::*"   # between rows (not before the first)
+      then: [t: "⠸W"]
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowStart
+  - test:
       if: .[self::m:mlabeledtr]
       then:
-         - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
-         - x: "*[1]/*"           # contents of row label
-   - test:
+          - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
+          - x: "*[1]/*"           # contents of row label
+  - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
-   - test: 
-      if: "count(parent::*) > 1"
-      then: [t: "⠠"]
-   - x: $RowEnd
+      else: [x: "*"]
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowEnd
+
 -
   name: default
   tag: mtd
@@ -226,7 +236,7 @@
    # normally(?) this is an omission, but the case 6'2" causes problems due to WIRIS
    # in that case, it doesn't put the ft/in in a superscript and thinks the space is an operator
    # canonicalization moves them into <msup> with base <mn>, so this shouldn't be an omission for that case
-   match: ".='\u00A0' and @width > 1.1 and 
+   match: ".='\u00A0' and @data-width > 1.1 and
            not( preceding-sibling::*[1][self::m:msup and *[2][self::m:mo]] and
                 following-sibling::*[1][self::m:msup and *[2][self::m:mo]] )"
    replace:
@@ -246,9 +256,9 @@
    tag: mo
      # add spaces around comparison operators unless they are in a script position,
    variables: # ratio not spaced in UEB; also make sure it is an infix operator (e.g., "~" can be prefix)
-   - AddSpaces: "$UEB_UseSpacesAroundAllOperators or
+   - AddSpaces: "$UseSpacesAroundAllOperators or
                        ( parent::*[self::m:mrow] and $NewScriptContext='' and
-                         .!='∶' and IsInDefinition(., 'NemethComparisonOperators') )"
+                         .!='∶' and IsInDefinition(., 'Braille', 'NemethComparisonOperators') )"
    match: "."
    replace:
       - test:
@@ -271,7 +281,6 @@
    - x: "BrailleChars(., 'UEB')"
       
 -
-   # FIX: need to deal with all caps
    name: default
    tag: [mi, mtext]
    match: "."
@@ -302,15 +311,15 @@
       if: "*[1][self::m:mrow]"
       then_test:
           if: "*[2][self::m:mrow]"
-          then: [x: "'🣒'"]    # this is currently unassigned and may get used by UTC at some point (<=>)
-          else: [x: "'🣔'"]    # this is currently unassigned and may get used by UTC at some point (<<=>)
-      else: [x: "'🣓'"]        # this is currently unassigned and may get used by UTC at some point (<==>>)
+          then: [x: "'🣑'"]    # 0x1f8d1 -- this is currently unassigned and may get used by UTC at some point (<=>)
+          else: [x: "'🣓'"]    # 0x1f8d3 -- this is currently unassigned and may get used by UTC at some point (<<=>)
+      else: [x: "'🣒'"]        # 0x1f8d2 -- this is currently unassigned and may get used by UTC at some point (<=>>)
   - t: "W"
 
 -
    name: single-char-exceptions    # GTM 12
    tag: [mover, munder]
-   match: "*[2][string-length(.) = 1 and ( translate(., '_¯→.·˙~^','')='' or (parent::m:mover and text()='⌒') )]"
+   match: "*[2][string-length(.) = 1 and ( translate(., '_¯→.·˙~^','')='' or (parent::m:mover and .='⌒') )]"
    replace: 
    - test:
          if: "NeedsToBeGrouped(*[1], 'UEB', true())"
@@ -326,22 +335,22 @@
       if: "self::m:munder"
       then: [t: "⠠"]
    - test:
-      - if: "*[2][text()='_' or text()='¯']"
+      - if: "*[2][.='_' or .='¯']"
         then: [t: "⠱"]
-      - else_if: "*[2][text()='→']"
+      - else_if: "*[2][.='→']"
         then: [t: "⠘⠱"]
-      - else_if: "*[2][text()='.' or text()='·' or text()='˙']"
+      - else_if: "*[2][.='.' or .='·' or .='˙']"
         then: [t: "⠘⠲"]
-      - else_if: "*[2][text()='~']"
+      - else_if: "*[2][.='~']"
         then: [t: "⠸⠱"]
-      - else_if: "*[2][text()='^']"
+      - else_if: "*[2][.='^']"
         then: [t: "⠐⠱ "]
         else: [t: "⠨⠸⠱"]    # arc/⌒
 
 -
   name: single-char-exceptions    # RUEB 3.11 -- ° and various prime/minute/seconds aren't treated as if superscripts
   tag: [msup]
-  match: "*[2][translate(., \"'*`ª°²³´¹º‘’“”‟′″‴‵‶‷⁗\",'')='']"
+  match: "*[2][translate(., \"'*`´°‘’“”‟′″‴‵‶‷⁗\",'')='']"
   replace:
   - test:
       if: "NeedsToBeGrouped(*[1], 'UEB', true())"
@@ -357,7 +366,7 @@
    name: default
    tag: [msub, msup, munder, mover]
    match: "."
-   variables: [AddSpaces: "(self::m:munder or self::m:mover) and IsInDefinition(BaseNode(*[1]), 'NemethComparisonOperators')"]
+   variables: [AddSpaces: "(self::m:munder or self::m:mover) and IsInDefinition(BaseNode(*[1]), 'Braille', 'NemethComparisonOperators')"]
    replace:
    - test:
       if: "$AddSpaces"
@@ -398,7 +407,7 @@
   name: msubsup_default_mmultiscripts_equiv
   tag: [msubsup, munderover] # mmultiscripts with only sub/sup postscript
   match: "count(*)=3"    # catches mmultiscripts equiv
-  variables: [AddSpaces: "IsInDefinition(BaseNode(*[1]), 'NemethComparisonOperators')"]
+  variables: [AddSpaces: "IsInDefinition(BaseNode(*[1]), 'Braille', 'NemethComparisonOperators')"]
   replace:
   - test:
       if: "$AddSpaces"
@@ -670,7 +679,7 @@
    tag: menclose
    match: "."
    # FIX: can't find a rule that says anything about comparison operator spacing and enclosure
-   variables: [AddSpaces: "parent::*[self::m:mrow] and *[1][ self::m:mo and IsInDefinition(., 'NemethComparisonOperators')]"]
+   variables: [AddSpaces: "parent::*[self::m:mrow] and *[1][ self::m:mo and IsInDefinition(., 'Braille', 'NemethComparisonOperators')]"]
    replace:
    - test:
       if: "contains(concat(' ', normalize-space(@notation), ' '), ' left ')"                  #avoid 'leftarrow'
@@ -830,7 +839,7 @@
    tag: "*"
    match: "*"    # make sure there are children
    replace: 
-   - t: "unknown math m l element"
+   - x: "BrailleChars('unknown math m l element', 'UEB')"
    - x: "name(.)"
    - x: "*"
 
@@ -840,7 +849,7 @@
    tag: "*"
    match: "text()"
    replace: 
-   - t: unknown math m l element
+   - x: "BrailleChars('unknown math m l element', 'UEB')"
    - x: "name(.)"
    - x: "text()"
 
@@ -849,5 +858,5 @@
    tag: "*"
    match: "."
    replace: 
-    - t: "empty unknown math m l element"
+    - x: "BrailleChars('empty unknown math m l element', 'UEB')"
     - x: "name(.)"

@@ -66,7 +66,7 @@
 
  - "!":                                            # 0x21
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':structure:')]"
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then_test:
             if: "$Verbosity = 'Terse'"
             then: [t: "bang"]                      # 0x21
@@ -112,8 +112,12 @@
                # speak "comma" when not adjacent to '…'
             - "( following-sibling::*[1][text()!= '…'] and preceding-sibling::*[1][text()!='…']  ) or "
                # except if expression starts with '…'
-            - "../*[1][text()='…'] "
-        then: [t: "comma"]
+            - "../*[1][.='…'] "
+        then:
+        - T: "comma"                         # 	(en: 'comma', google translation)
+        - test:
+            if: "$Verbosity != Terse"
+            then: [pause: short]
         # else silent
 
  - "-": [t: "minus"]                               # 0x2d
@@ -122,7 +126,12 @@
         if: "parent::*[1][self::m:mn]"
         then: [t: "point"]
         else: [t: "dot"]
- - "/": [t: "divided by"]                          # 0x2f
+ - "/":                                           # 0x2f
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [t: "slash"]                        # 0x2f
+        else: [t: "divided by"]                   # 0x2f
+
  - ":": [t: "colon"]                               # 0x3a
  - ";": [t: "semicolon"]                           # 0x3b
  - "<":                                          # 0x3c
@@ -168,14 +177,27 @@
         else: [t: "left brace"]                            
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
-     - test:
-        - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [t: "vertical line"]
-        - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [t: "such that"]
-        - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
-          then: [t: "given"] 
-        - else: [t: "divides"]                   
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [t: "vertical line"]
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [t: "given"]
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [t: "divides"]
+                  else: [t: "vertical line"]
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [t: "vertical line"]
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [t: "such that"]
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [t: "given"] 
+            - else: [t: "divides"]                   
 
  - "}":                                          # 0x7d
     - test:
@@ -186,7 +208,8 @@
  - "~": [t: "tilde"]                               # 0x7e
  - " ":                                            # 0xa0
     - test:
-        if: "@data-empty-in-2D and ../../../../*[name(.)!='equations']"
+        # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
+        if: "@data-empty-in-2D and not(ancestor::*[self::m:piecewise or self::m:system-of-equations or self::m:lines])"
         then: [t: "empty"]                         # want to say something for fraction (etc) with empty child
         else: [t: ""]                            
 
@@ -196,17 +219,23 @@
  - "´": [t: "acute"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "times"]
-        else: [t: "dot"]
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        then: [t: "dot"]
+        else: [t: "times"]
  - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "times"]
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then: [t: "times"]
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [t: "by"]
+          else: [t: "cross"]
         else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "by"]
-            else: [t: "cross"]
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [t: "cross"]
+            else: [t: "times"]
+
  - "÷": [t: "divided by"]                          # 0xf7
  - "̀": [t: "grave accent embellishment"]          # 0x300
  - "́": [t: "acute accent embellishment"]          # 0x301
@@ -268,89 +297,55 @@
  - "ϵ": [t: "epsilon"]                             # 0x3f5
  - "϶": [t: "reversed epsilon"]                    # 0x3f6
 
- - "–": [t: "en dash"]                             # 0x2013
- - "—": [t: "em dash"]                             # 0x2014
- - "―": [t: "horizontal bar"]                      # 0x2015
- - "‖": [t: "double vertical line"]                # 0x2016
- - "…":                                          # 0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][text()='…']"
-        then: [t: "dot dot dot"]
-        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [t: "and so on"]
-            else: [t: "and so on up to"]
-
  - "⁡":                                          # 0x2061
     - test:
-        if: "$Verbosity!='Terse' and not(preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')]) and
-             not(@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':structure:')])"
+        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
+        if: "not(
+              ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
+                preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
+                                                   IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
+                                                   IsInDefinition(., 'TrigFunctionNames') )]
+              ) or
+              preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
+            )"
         then: [t: "of"]
  - "⁢": [t: ""]                                   # 0x2062
  - "⁣": [t: ""]                                   # 0x2063
  - "⁤": [t: "and"]                                # 0x2064
- - "′": [t: "prime"]                               # 0x2032
- - "″": [t: "double prime"]                        # 0x2033
- - "‴": [t: "triple prime"]                        # 0x2034
-
  - "ℂℕℚℝℤ":     # here we rely on this running through the table again to speak "cap xxx"
     - t: "double-struck"
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [t: "degrees celsius"]                     # 0x2103
- - "℉": [t: "degrees fahrenheit"]                  # 0x2109
  - "ℋℛℓ":                                          # 0x210b
     - t: "script"
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
- - "ℎ": [t: "planck constant"]                     # 0x210e
  - "ℜ":                                          # 0x211c
     - t: "fraktur"
     - spell: "'R'"
 
- - "Ω": [t: "ohms"]                                # 0x2126
- - "K": [t: "kelvin"]                              # 0x212a
- - "Å": [t: "angstroms"]                           # 0x212b
  - "ⅆⅇⅈⅉ":                                          # 0x2146-9
     - t: "double-struck italic"
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
- - "←": [t: "leftwards arrow"]                     # 0x2190
- - "↑": [t: "upwards arrow"]                       # 0x2191
+ - "←": [t: "left arrow"]                     # 0x2190
+ - "↑": [t: "up arrow"]                       # 0x2191
  - "→":                                          # 0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [t: "approaches"]
         else: [t: "right arrow"]
 
- - "↓": [t: "downwards arrow"]                     # 0x2193
- - "⇒": [t: "rightwards double arrow"]             # 0x21d2
- - "∀": [t: "for all"]                             # 0x2200
- - "∂":                                          # 0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [t: "partial"]
-         else: [t: "partial derivative"]
- - "∃": [t: "there exists"]                        # 0x2203
- - "∄": [t: "there does not exist"]                # 0x2204
- - "∅": [t: "empty set"]                           # 0x2205
- - "∆":                                          # 0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "the"]
-     - t: "laplacian of"
- - "∇":                                          # 0x2207
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "the"]
-     - t: "gradient of"
+ - "↓": [t: "down arrow"]                     # 0x2193
  - "∈":                                          # 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "an element of"]
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [t: "is"]
+        - t: "an element of"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -370,11 +365,63 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "is in"]
               - else: [t: "belongs to"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+ - "∥":                                           # 0x2225
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [t: "double vertical line"]
+         else:
+         - test:
+              if: "$Verbosity!='Terse'"
+              then: [t: "is"]
+         - t: "parallel to"
+ - "∦":                                           # 0x2226
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "is"]
+     - t: "not parallel to"
+ - "≤":                                          # 0x2264
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "is"]
+     - t: "less than or equal to"
+ - "≥":                                          # 0x2265
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [t: "is"]
+     - t: "greater than or equal to"
+
+ # --- restored complex short definitions (prefer over unicode-full) ---
+ - "…":                                          # 0x2026
+    test:
+        if:
+            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
+               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
+               # speak '…' as 'and so on...' unless expr starts with '…'
+            - "../*[1][.='…']"
+        then: [t: "dot dot dot"]
+        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
+            if: "count(following-sibling::*) = 0"
+            then: [t: "and so on"]
+            else: [t: "and so on up to"]
+ - "∂":                                          # 0x2202
+     - test: 
+         if: "$Verbosity='Terse'"
+         then: [t: "partial"]
+         else: [t: "partial derivative"]
+ - "∆":                                          # 0x2206
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [ot: "the"]
+     - t: "laplacian of"
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "is not an element of"]
+        then:
+        - test: 
+            if: "$Verbosity!='Terse'"
+            then: [t: "is"]
+        - t: "not an element of"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -397,7 +444,11 @@
  - "∊":                                          # 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "is an element of"]
+        then:
+        - test: 
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [t: "is"]
+        - t: "an element of"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -417,61 +468,26 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "is in"]
               - else: [t: "belongs to"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
- - "∏": [t: "product"]                             # 0x220f
- - "∐": [t: "co-product"]                          # 0x2210
- - "∑": [t: "sum"]                                 # 0x2211
- - "−": [t: "minus"]                               # 0x2212
- - "∓": [t: "minus or plus"]                       # 0x2213
- - "∗": [t: "times"]                               # 0x2217
- - "∘": [t: "composed with"]                       # 0x2218
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "the"]
+         then: [ot: "the"]
      - t: "square root of"
  - "∝":                                          # 0x221d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "is"]
      - t: "proportional to"
- - "∞": [t: "infinity"]                          # 0x221e
- - "∟": [t: "right angle"]                         # 0x221f
- - "∠": [t: "angle"]                               # 0x2220
- - "∡": [t: "measured angle"]                      # 0x2221
- - "∣": [t: "divides"]                              # 0x2223
- - "∤": [t: "does not divide"]                      # 0x2224
- - "∥":                                           # 0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "parallel to"
- - "∦":                                           # 0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "not parallel to"
- - "∧": [t: "and"]                                 # 0x2227
- - "∨": [t: "or"]                                  # 0x2228
- - "∩": [t: "intersection"]                        # 0x2229
- - "∪": [t: "union"]                               # 0x222a
- - "∫": [t: "integral"]                            # 0x222b
- - "∬": [t: "double integral"]                     # 0x222c
- - "∭": [t: "triple integral"]                     # 0x222d
- - "∮": [t: "contour integral"]                    # 0x222e
  - "∶":                                          # 0x2236
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "is"]
      - t: "to"
- - "∷": [t: "as"]                                  # 0x2237
- - "∼": [t: "varies with"]                         # 0x223c
- - "∽": [t: "reversed tilde"]                      # 0x223d
  - "∾":                                          # 0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "is"]
      - t: "most positive"
- - "∿": [t: "sine wave"]                           # 0x223f
  - "≠":                                          # 0x2260
      - test: 
          if: "$Verbosity!='Terse'"
@@ -482,20 +498,6 @@
          if: "$Verbosity!='Terse'"
          then: [t: "is"]
      - t: "identical to"
- - "≤":                                          # 0x2264
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t:  "less than or equal to"
- - "≥":                                          # 0x2265
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "greater than or equal to"
- - "≦": [t: "less than over equal to"]             # 0x2266
- - "≧": [t: "greater than over equal to"]          # 0x2267
- - "≺": [t: "precedes"]                            # 0x227a
- - "≻": [t: "succeeds"]                            # 0x227b
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -526,3 +528,7 @@
          if: "$Verbosity!='Terse'"
          then: [t: "is a"]
      - t: "superset of or equal to"
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "⇒": [t: "right double arrow"]             # 0x21d2
+ - "∐": [t: "co-product"]                          # 0x2210

@@ -1,10 +1,13 @@
 #![allow(non_snake_case)]
+#![allow(clippy::needless_return)]
 
 mod common;
 
 mod braille {
     mod Nemeth {
         mod rules;
+        mod other;
+        mod chemistry;
         mod SRE_Nemeth72;
         mod SRE_NemethBase;
         mod AataNemeth;
@@ -22,6 +25,14 @@ mod braille {
         mod vi;
     }
 
+    mod Russian {
+        mod russian;
+    }
+
+    mod Swedish {
+        mod swedish;
+    }
+
     mod LaTeX {
         mod augenbit;
         mod other;
@@ -29,6 +40,12 @@ mod braille {
 
     mod ASCIIMath {
         mod augenbit;
+        mod other;
+    }
+
+    mod French {
+        mod french;
+        mod chemistry;
         mod other;
     }
 }

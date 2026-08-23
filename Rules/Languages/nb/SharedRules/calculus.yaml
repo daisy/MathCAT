@@ -1,0 +1,52 @@
+---
+
+- name: laplacian
+  tag: laplacian
+  match: "count(*) <= 1"   # can be on ∇^2 or on enclosing mrow
+  replace:
+  - T: "laplas"      # phrase('laplacian' of x) # Norwegian: "laplace" is not pronounced correctly
+  - test:
+      if: "count(*) = 1"
+      then:
+      - T: "av"
+      - test:
+          if: "not(IsNode(*[1], 'leaf'))"
+          then: [pause: short]
+      - x: "*[1]"
+
+- name: divergence      # audit-ignore
+  tag: divergence
+  match: "count(*) = 1"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "divergensen til"]      # phrase('divergence' from the mean)
+      else: [T: "div"]      # phrase('divergence' from the mean)
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"
+
+- name: curl        # audit-ignore
+  tag: curl
+  match: "count(*) = 1"
+  replace:
+  - test: 
+      if: "$Verbosity='Verbose'"
+      then: [T: "curlen til"]
+      else: [T: "curl"]
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"
+
+- name: gradient        # audit-ignore
+  tag: gradient
+  match: "count(*) = 1"
+  replace:
+  - T: "gradienten til"
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"
+

@@ -1,70 +1,78 @@
 [package]
 name = "mathcat"
-version = "0.5.3"
+version = "0.7.7-alpha.1"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
 repository = "https://github.com/NSoiffer/MathCAT"
 homepage = "https://nsoiffer.github.io/MathCAT/"
 documentation = "https://nsoiffer.github.io/MathCAT/"
-edition = "2018"
-exclude = ["src/main.rs"]    # should have "Rules/", but then one can't run build.rs to build the zip file
+edition = "2024"
+exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should have "Rules/", but then one can't run build.rs to build the zip file
 
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+"include-zip" = []
+"enable-logs" = ["android_logger"]
+"tts" = [ "natural-tts" ]
+"no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
+
 
 [dependencies]
-sxd-document = "0.3.2"
-sxd-xpath = "0.4.2"
-yaml-rust = "0.4.5"
-lazy_static = "1.4.0"
-strum = "0.23.0"
-strum_macros = "0.23.0"
-error-chain = "0.12.4"
-regex = "1.5.4"
-dirs = "4.0"
-bitflags = "1.2.1"
-phf = { version = "0.10.0", features = ["macros"] }
-rand = "0.8.0"
-roman = "0.1.6"
-radix_fmt = "1.0.0"
-internment = "0.5.4"
-log = "0.4.0"
-env_logger = "0.8.4"
-cfg-if = "1.0"
-zip = { version = "0.6.2", default-features = false, features = ["deflate"] }
-getrandom = { version = "0.2.3", features = ["js"] }
+sxd-document-no-unsafe = "0.4.2"
+sxd-xpath-no-unsafe = "0.5.1"
+yaml-rust = "0.4"
+# yaml-rust = { version = "0.11", package = "yaml-rust2" }
+strum = { version = "0.28", features = ["derive"] }
+anyhow = "1.0"
+regex = "1.12.3"
+dirs = "6.0"
+bitflags = "2.11"
+phf = { version = "0.13", features = ["macros"] }
+roman-numerals-rs = "4.1.0"
+radix_fmt = "1.0"
+unicode-script = "0.5"
+log = "0.4"
+env_logger = "0.11.9"
+cfg-if = "1.0.1"
+fastrand = { version = "2.3.0" }
+clap = { version = "4.5.60", features = ["derive"] }
+html-escape = "0.2.13"
 
-# # dependencies because of need to build wasm version for file i/o
-# yew = "0.18.0"
-# wasm-bindgen = "0.2.78"
-# wasm-bindgen-futures = "0.4.28"
-# js-sys = "0.3.35"
-# futures = "0.3.15"
+# Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
+# writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.
+# wasm uses the same features: zip 8.x bzip2 is pure Rust (libbz2-rs-sys), not clang C.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
-# [dependencies.web-sys]
-# version = "0.3.35"
-# features = [
-#     "HtmlInputElement",
-#     # probably not all of these are needed -- copied from an example
-#     "Headers",
-#     "Request",
-#     "RequestInit",
-#     "RequestMode",
-#     "Response",
-#     "Window",
-# ]
-
-
+android_logger = {version = "0.15.1", optional = true}
+natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
-bitflags = "1.2.1"
-phf = { version = "0.8.0", features = ["macros"] }
-zip = { version = "0.6.2", default-features = false, features = ["deflate"] }
+bitflags = "2.6"
+yaml-rust = "0.4"
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
+
+[dev-dependencies]
+tempfile = "3.23"
 
 [lib]
 name = "libmathcat"
 crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "mathml2text"
+path = "src/bin/mathml2text.rs"
+
+[[bin]]
+name = "package-rules"
+path = "src/bin/package_rules.rs"
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
+
+[profile.test]
+debug = true
+opt-level = 1    # adds a few seconds to the compile, but cuts testing time by ~75% (~90 secs on 5/24)
 
 [profile.release]
 debug = false

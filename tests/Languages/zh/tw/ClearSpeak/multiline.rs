@@ -1,7 +1,8 @@
 use crate::common::*;
+use anyhow::Result;
 
 #[test]
-fn case_1() {
+fn case_1() -> Result<()> {
     // init_logger();
     let expr = "<math>
             <mrow>
@@ -33,11 +34,11 @@ fn case_1() {
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Auto", expr, "f of x is equal to; 3 cases, \
                 case 1; negative 1 if x; is less than 0; \
                 case 2; 0 if x, is equal to 0; \
-                case 3; 1 if x, is greater than 0;");
+                case 3; 1 if x, is greater than 0;")?;
 }
 
 #[test]
-fn equation_auto() {
+fn equation_auto() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -48,11 +49,11 @@ fn equation_auto() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 lines, \
                 line 1; x plus y, is equal to, 7; \
-                line 2; 2 x plus 3 y, is equal to, 17;");
+                line 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_case() {
+fn equation_case() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -63,11 +64,11 @@ fn equation_case() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Case", expr, "2 cases, \
                 case 1; x plus y, is equal to, 7; \
-                case 2; 2 x plus 3 y, is equal to, 17;");
+                case 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_constraint() {
+fn equation_constraint() -> Result<()> {
   let expr = "<math>
      <mrow>
       <mtable>
@@ -78,11 +79,11 @@ fn equation_constraint() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 constraints, \
                 constraint 1; x plus y, is equal to, 7; \
-                constraint 2; 2 x plus 3 y, is equal to, 17;");
+                constraint 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_equation() {
+fn equation_equation() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -93,11 +94,11 @@ fn equation_equation() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 equations, \
                 equation 1; x plus y, is equal to, 7; \
-                equation 2; 2 x plus 3 y, is equal to, 17;");
+                equation 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_line() {
+fn equation_line() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -108,11 +109,11 @@ fn equation_line() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Line", expr, "2 lines, \
                 line 1; x plus y, is equal to, 7; \
-                line 2; 2 x plus 3 y, is equal to, 17;");
+                line 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_none() {
+fn equation_none() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -123,11 +124,11 @@ fn equation_none() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "None", expr, "\
                 2, x plus y, is equal to, 7; \
-                2 x plus 3 y, is equal to, 17;");
+                2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_row() {
+fn equation_row() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -138,11 +139,11 @@ fn equation_row() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Row", expr, "2 rows, \
                 row 1; x plus y, is equal to, 7; \
-                row 2; 2 x plus 3 y, is equal to, 17;");
+                row 2; 2 x plus 3 y, is equal to, 17;")?;
 }
 
 #[test]
-fn equation_step() {
+fn equation_step() -> Result<()> {
     let expr = "<math>
      <mrow>
       <mtable>
@@ -153,5 +154,6 @@ fn equation_step() {
    ";
    test_ClearSpeak("en", "ClearSpeak_MultiLineLabel", "Step", expr, "2 steps, \
                 step 1; x plus y, is equal to, 7; \
-                step 2; 2 x plus 3 y, is equal to, 17;");
+                step 2; 2 x plus 3 y, is equal to, 17;")?;
 }
+return Ok(());

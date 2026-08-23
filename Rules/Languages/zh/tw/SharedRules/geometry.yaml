@@ -23,12 +23,12 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "向量"             # phrase('the ray from' A to B)
+      - T: "射線"             # phrase('the ray from' A to B)
       - x: "*[1]"
       - T: "到"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
       else:
-      - T: "向量"                      # phrase(the 'ray'A  B)
+      - T: "射線"                      # phrase(the 'ray'A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -38,7 +38,7 @@
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [{T: ""}]            # phrase('the' arc A B C)
+      then: [T: ""]            # phrase('the' arc A B C)
   - T: "弧"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
@@ -57,3 +57,23 @@
   - x: "*[2]"
   - x: "*[3]"
 
+
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [OT: ""]      # phrase('the' point at 1, 2)
+  - T: "點"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "在"]      # phrase('the' point at 1, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "逗號", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "結束點"]      # phrase(start point, 'end point')
