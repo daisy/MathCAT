@@ -255,3 +255,16 @@ fn ueb_italic_typeform_for_digits() -> Result<()> {
     return Ok(());
 }
 
+#[test]
+fn multiple_lines() -> Result<()> {
+    init_logger();
+    // Bare equation-line mtable: `⠸⠀` between rows, no start/end bounds.
+    let expr = "<math><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mrow><mo>=</mo><mi>f</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mi>y</mi></mtd><mtd><mrow><mo>=</mo><mi>g</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>";
+    test_braille(
+        "UEB",
+        expr,
+        "⠰⠭⠀⠐⠶⠀⠋⠐⠣⠞⠐⠜⠸⠀⠰⠽⠀⠐⠶⠀⠛⠐⠣⠞⠐⠜",
+    )?;
+    Ok(())
+}
+
