@@ -2430,11 +2430,10 @@ fn remove_optional_group_indicators(braille: &str) -> String {
     for (i, &ch) in chars.iter().enumerate() {
         if ch == 'b' {
             stack.push(i);
-        } else if ch == 'e' {
-            if let Some(b_idx) = stack.pop() {
+        } else if ch == 'e'
+            && let Some(b_idx) = stack.pop() {
                 pairs.push((b_idx, i));
             }
-        }
     }
 
     let mut convert_to_oc = vec![false; chars.len()];
@@ -2583,7 +2582,7 @@ fn french_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
 
     // This reuses the code just for getting rid of unnecessary "L"s and "N"s
     let result = remove_unneeded_mode_changes(&result, UEB_Mode::Grade1, UEB_Duration::Passage);
-    debug!("   after removing mode changes={}", &result);
+    debug!("   after removing mode changes={}", result);
 
     // remove any grouping pair at the start or end -- we ensure they are a pair but making sure there is no "o" inside the string
     let result = if result.starts_with('o') && result.ends_with('c') && !result[1..result.len() - 1].contains('o') {
