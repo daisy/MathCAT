@@ -1053,7 +1053,7 @@
  - "⌏": [t: "cây trồng trên cùng bên trái"]         #  0x230f   (en: 'top left crop')
  - "⌐": [t: "đảo ngược không ký"]                   #  0x2310   (en: 'reversed not sign')
  - "⌑": [t: "hình vuông"]                           #  0x2311   (en: 'square lozenge')
- - "⌒": [t: "vòng cung"]                            #  0x2312   (en: 'arc')
+ - "⌒": [t: "cung"]                                #  0x2312   (en: 'arc')
  - "⌓": [t: "bộ phận"]                              #  0x2313   (en: 'segment')
  - "⌔": [t: "khu vực"]                              #  0x2314   (en: 'sector')
  - "⌕": [t: "máy ghi âm điện thoại"]                #  0x2315   (en: 'telephone recorder')
