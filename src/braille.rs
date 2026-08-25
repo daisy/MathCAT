@@ -1510,6 +1510,39 @@ fn is_left_intervening_char(ch: char) -> bool {
     matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w')
 }
 
+/// RUEB 10.6.2 / 2.6.2: lower word signs may only begin a word when preceded by whitespace,
+/// hyphen/dash, an opening quote/bracket/typeform, capitals, or the start of the sequence.
+/// `word_start` is the index of the first char of a grade-2 letter run ('L', 'C', or 'A').
+fn allows_lower_word_sign_at(chars: &[char], word_start: usize) -> bool {
+    if word_start >= chars.len() {
+        return false;
+    }
+    if word_start == 0 {
+        return true;
+    }
+    let mut j = word_start - 1;
+    while j > 0 {
+        let ch = chars[j];
+        if matches!(ch, 'o' | 'b') {
+            return false;     // fraction/group open -- not a literary word start (RUEB 10.6.2)
+        }
+        if is_left_intervening_char(ch) || matches!(ch, 'e' | 'c' | 's' | 'w') {
+            j -= 1;
+            continue;
+        }
+        break;
+    }
+    if chars[j] == 'L' {
+        return false;
+    }
+    return lower_word_sign_may_follow(chars[j]);
+
+    fn lower_word_sign_may_follow(ch: char) -> bool {
+        "W𝐖-—―".contains(ch) ||
+        matches!(ch, 'C' | '𝐶' | 'I' | 'B' | '𝔹' | 'S' | 'T' | 'D' | 'G' | 'V')
+    }
+}
+
 /// Return value for use_g1_word_mode()
 #[derive(Debug, PartialEq)]
 enum Grade1WordIndicator {
@@ -1778,7 +1811,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                     _ => {
                         if let Some(start) = start_g2_letter {
                             if !cap_word_mode {
-                                result = handle_contractions(&chars[start..i], result);
+                                result = handle_contractions(&chars, start, i, result);
                             }
                             cap_word_mode = false;
                             start_g2_letter = None;     // not start of char sequence
@@ -1794,7 +1827,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                 }
                 if mode != UEB_Mode::Grade2 && !cap_word_mode &&
                    let Some(start) = start_g2_letter {
-                        result = handle_contractions(&chars[start..i], result);
+                        result = handle_contractions(&chars, start, i, result);
                         start_g2_letter = None;     // not start of char sequence
                     }
             },
@@ -1814,7 +1847,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
     }
     if mode == UEB_Mode::Grade2 &&
        let Some(start) = start_g2_letter {
-            result = handle_contractions(&chars[start..i], result);
+            result = handle_contractions(&chars, start, i, result);
         }
 
     return result;
@@ -1946,10 +1979,11 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
 
 /// Return a modified result if chars can be contracted.
 /// Otherwise, the original string is returned
-fn handle_contractions(chars: &[char], mut result: String) -> String {
+fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result: String) -> String {
     struct Replacement {
         pattern: String,
-        replacement: &'static str
+        replacement: &'static str,
+        word_start_only: bool,
     }
 
     const ASCII_TO_UNICODE: &[char] = &[
@@ -1971,44 +2005,49 @@ fn handle_contractions(chars: &[char], mut result: String) -> String {
     // It would be much better from an extensibility point of view to read the table in from a file
     static CONTRACTIONS: LazyLock<Vec<Replacement>> = LazyLock::new(|| { vec![
             // 10.3: Strong contractions
-            Replacement{ pattern: to_unicode_braille("and"), replacement: "L⠯"},
-            Replacement{ pattern: to_unicode_braille("for"), replacement: "L⠿"},
-            Replacement{ pattern: to_unicode_braille("of"), replacement: "L⠷"},
-            Replacement{ pattern: to_unicode_braille("the"), replacement: "L⠮"},
-            Replacement{ pattern: to_unicode_braille("with"), replacement: "L⠾"},
+            Replacement{ pattern: to_unicode_braille("and"), replacement: "L⠯", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("for"), replacement: "L⠿", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("of"), replacement: "L⠷", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("the"), replacement: "L⠮", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("with"), replacement: "L⠾", word_start_only: false},
             
             // 10.8: final-letter group signs (this need to precede 'en' and any other shorter contraction)
-            Replacement{ pattern: "(?P<s>L.)L⠍L⠑L⠝L⠞".to_string(), replacement: "${s}L⠰L⠞" }, // ment
-            Replacement{ pattern: "(?P<s>L.)L⠞L⠊L⠕L⠝".to_string(), replacement: "${s}L⠰L⠝" } ,// tion
+            Replacement{ pattern: "(?P<s>L.)L⠍L⠑L⠝L⠞".to_string(), replacement: "${s}L⠰L⠞", word_start_only: false }, // ment
+            Replacement{ pattern: "(?P<s>L.)L⠞L⠊L⠕L⠝".to_string(), replacement: "${s}L⠰L⠝", word_start_only: false } ,// tion
 
             // 10.4: Strong group signs
-            Replacement{ pattern: to_unicode_braille("ch"), replacement: "L⠡"},
-            Replacement{ pattern: to_unicode_braille("gh"), replacement: "L⠣"},
-            Replacement{ pattern: to_unicode_braille("sh"), replacement: "L⠩"},
-            Replacement{ pattern: to_unicode_braille("th"), replacement: "L⠹"},
-            Replacement{ pattern: to_unicode_braille("wh"), replacement: "L⠱"},
-            Replacement{ pattern: to_unicode_braille("ed"), replacement: "L⠫"},
-            Replacement{ pattern: to_unicode_braille("er"), replacement: "L⠻"},
-            Replacement{ pattern: to_unicode_braille("ou"), replacement: "L⠳"},
-            Replacement{ pattern: to_unicode_braille("ow"), replacement: "L⠪"},
-            Replacement{ pattern: to_unicode_braille("st"), replacement: "L⠌"},
-            Replacement{ pattern: "(?P<s>L.)L⠊L⠝L⠛".to_string(), replacement: "${s}L⠬" },  // 'ing', not at start
-            Replacement{ pattern: to_unicode_braille("ar"), replacement: "L⠜"},
+            Replacement{ pattern: to_unicode_braille("ch"), replacement: "L⠡", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("gh"), replacement: "L⠣", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("sh"), replacement: "L⠩", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("th"), replacement: "L⠹", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("wh"), replacement: "L⠱", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("ed"), replacement: "L⠫", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("er"), replacement: "L⠻", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("ou"), replacement: "L⠳", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("ow"), replacement: "L⠪", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("st"), replacement: "L⠌", word_start_only: false},
+            Replacement{ pattern: "(?P<s>L.)L⠊L⠝L⠛".to_string(), replacement: "${s}L⠬", word_start_only: false },  // 'ing', not at start
+            Replacement{ pattern: to_unicode_braille("ar"), replacement: "L⠜", word_start_only: false},
 
             // 10.6.5: Lower group signs preceded and followed by letters
             // FIX: don't match if after/before a cap letter -- can't use negative pattern (?!...) in regex package
             // Note: removed cc because "arccos" shouldn't be contracted (10.11.1), but there is no way to know about compound words
             // Add it back after implementing a lookup dictionary of exceptions
-            Replacement{ pattern: "(?P<s>L.)L⠑L⠁(?P<e>L.)".to_string(), replacement: "${s}L⠂${e}" },  // ea
-            Replacement{ pattern: "(?P<s>L.)L⠃L⠃(?P<e>L.)".to_string(), replacement: "${s}L⠆${e}" },  // bb
+            Replacement{ pattern: "(?P<s>L.)L⠑L⠁(?P<e>L.)".to_string(), replacement: "${s}L⠂${e}", word_start_only: false },  // ea
+            Replacement{ pattern: "(?P<s>L.)L⠃L⠃(?P<e>L.)".to_string(), replacement: "${s}L⠆${e}", word_start_only: false },  // bb
             // Replacement{ pattern: "(?P<s>L.)L⠉L⠉(?P<e>L.)".to_string(), replacement: "${s}L⠒${e}" },  // cc
-            Replacement{ pattern: "(?P<s>L.)L⠋L⠋(?P<e>L.)".to_string(), replacement: "${s}L⠖${e}" },  // ff
-            Replacement{ pattern: "(?P<s>L.)L⠛L⠛(?P<e>L.)".to_string(), replacement: "${s}L⠶${e}" },  // gg
+            Replacement{ pattern: "(?P<s>L.)L⠋L⠋(?P<e>L.)".to_string(), replacement: "${s}L⠖${e}", word_start_only: false },  // ff
+            Replacement{ pattern: "(?P<s>L.)L⠛L⠛(?P<e>L.)".to_string(), replacement: "${s}L⠶${e}", word_start_only: false },  // gg
 
-            // 10.6.8: Lower group signs ("in" also 10.5.4 lower word signs)
+            // 10.6.2: Lower word signs -- only at the beginning of a word (RUEB 10.6.1-10.6.4)
+            Replacement{ pattern: format!("^{}", to_unicode_braille("be")), replacement: "L⠃L⠑", word_start_only: true },
+            Replacement{ pattern: format!("^{}", to_unicode_braille("con")), replacement: "L⠉L⠕L⠝", word_start_only: true },
+            Replacement{ pattern: format!("^{}", to_unicode_braille("dis")), replacement: "L⠙L⠊L⠌", word_start_only: true },
+
+            // 10.6.8: lower group signs; also 10.6.2 word signs when at word start ("sin", etc.)
             // FIX: these need restrictions about only applying when upper dots are present
-            Replacement{ pattern: to_unicode_braille("en"), replacement: "⠢"},
-            Replacement{ pattern: to_unicode_braille("in"), replacement: "⠔"},
+            Replacement{ pattern: to_unicode_braille("en"), replacement: "⠢", word_start_only: false},
+            Replacement{ pattern: to_unicode_braille("in"), replacement: "⠔", word_start_only: false},
            
         ]
     });
@@ -2016,11 +2055,16 @@ fn handle_contractions(chars: &[char], mut result: String) -> String {
     static CONTRACTION_PATTERNS: LazyLock<RegexSet> = LazyLock::new(|| init_patterns(&CONTRACTIONS));
     static CONTRACTION_REGEX: LazyLock<Vec<Regex>> = LazyLock::new(|| init_regex(&CONTRACTIONS));
 
+    let word_start_ok = allows_lower_word_sign_at(full_chars, start);
+    let chars = &full_chars[start..end];
     let mut chars_as_str = chars.iter().collect::<String>();
     // debug!("  handle_contractions: examine '{}'", &chars_as_str);
     let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
     for i in matches.iter() {
         let element = &CONTRACTIONS[i];
+        if element.word_start_only && !word_start_ok {
+            continue;
+        }
         // debug!("  replacing '{}' with '{}' in '{}'", element.pattern, element.replacement, &chars_as_str);
         result.truncate(result.len() - chars_as_str.len());
         chars_as_str = CONTRACTION_REGEX[i].replace_all(&chars_as_str, element.replacement).to_string();
@@ -3808,6 +3852,24 @@ mod tests {
         });
     }
     
+    #[test]
+    fn ueb_lower_word_sign_contractions() -> Result<()> {
+        return braille_test(|| {
+        init_braille_mathml("<math><mtext>distance</mtext></math>")?;
+        set_preference("BrailleCode", "UEB")?;
+        let distance = get_braille("")?;
+        assert!(distance.starts_with("⠙⠊⠌"), "dis lower word sign at word start: got '{distance}'");
+        assert!(!distance.starts_with("⠙⠊⠎"), "unexpected uncontracted dis at word start");
+        init_braille_mathml("<math><mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac></math>")?;
+        let frac = get_braille("")?;
+        assert!(frac.contains("⠙⠊⠎"), "dis not contracted immediately after fraction open: got '{frac}'");
+        assert!(!frac.contains("⠙⠊⠌"), "dis wrongly contracted after fraction open");
+        init_braille_mathml("<math><mtext>include</mtext></math>")?;
+        assert!(get_braille("")?.starts_with("⠔"), "in lower word sign at word start");
+        return Ok(());
+        });
+    }
+
     #[test]
     // This test probably should be repeated for each braille code and be taken out of here
     fn find_mathml_from_braille() -> Result<()> { 
