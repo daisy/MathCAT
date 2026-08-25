@@ -120,7 +120,11 @@
             then: [pause: short]
         # else silent
 
- - "-": [T: "减"]                               # 0x2d
+ - "-":
+    - test:
+        if: "ancestor::*[@data-chem-formula] and not(following-sibling::*)"
+        then: [T: "负"]
+        else: [T: "减"]                               # 0x2d
  - ".":                                          # 0x2e
     - test:
         if: "parent::*[1][self::m:mn]"
@@ -247,7 +251,7 @@
  - "̃": [T: "上加波浪号"]                 # 0x303
  - "̄": [T: "上加长音符"]                # 0x304
  - "̅": [T: "上加横线"]               # 0x305
- - "̆": [T: "短音符"]                               # 0x306
+ - "̆": [T: "上加短音符"]                           # 0x306
  - "̇": [T: "上加点"]             # 0x307
 
    # Note: ClearSpeak has pref TriangleSymbol for "Δ", but that is wrong

@@ -51,9 +51,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [T: "的"]        # phrase(the square root 'of' x)
+  - T: "的"
   - test:
       if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
@@ -111,8 +109,14 @@
   - "BaseNode(*[2])[contains(@data-intent-property, ':unit')] "
   replace:
   - x: "*[1]"
-  - T: "每"      # phrase('5 meters 'per' second)
-  - x: "*[2]"
+  - CT: "每"      # phrase('5 meters 'per' second)
+  - test:
+      if: "*[2][self::m:power and *[2][self::m:mn]]"
+      then:
+      - x: "substring(ToOrdinal(*[2]/*[2]), 2)"
+      - TC: "次方"
+      - x: "*[2]/*[1]"
+      else: [x: "*[2]"]
 
 - name: simple
   # don't include nested fractions. E.g, fraction a plus b over c + 1 end fraction" is ambiguous
@@ -300,11 +304,11 @@
       - T: "空集"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - T: "所有满足"      # phrase(x 'such that' x is less than y)
+      - T: "满足"      # phrase(x 'such that' x is less than y)
       - x: "*[1]/*[3]"
-      - T: "的"
+      - T: "的所有"
       - x: "*[1]/*[1]"
-      - T: "的集合"      # phrase(the 'set of all' positive integers less than 10)
+      - T: "组成的集合"      # phrase(the 'set of all' positive integers less than 10)
       else:
       - x: "*[1]"
       - T: "的集合"      # phrase(here is a 'set' of numbers)

@@ -49,6 +49,19 @@ fn roots_and_powers_use_chinese_word_order() -> Result<()> {
         "<math><mroot><mi>x</mi><mi>n</mi></mroot></math>",
         "x 的 n 次方根",
     )?;
+    test_prefs(
+        "zh",
+        "SimpleSpeak",
+        vec![("Verbosity", "Terse")],
+        "<math><mroot><mi>x</mi><mn>3</mn></mroot></math>",
+        "x 的 立方根",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mroot><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mi>n</mi></mroot></math>",
+        "x 加 y 的 n 次方根, 结束根号",
+    )?;
     test(
         "zh",
         "SimpleSpeak",
@@ -60,6 +73,18 @@ fn roots_and_powers_use_chinese_word_order() -> Result<()> {
         "LiteralSpeak",
         "<math><mroot><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mi>n</mi></mroot></math>",
         "根指数 n 根号, x 加 y, 结束根号",
+    )
+}
+
+#[test]
+fn clearspeak_ordinal_exponents_keep_the_chinese_power_noun() -> Result<()> {
+    // Chinese exponent readings use "次方" rather than an inflected ordinal form.
+    test_prefs(
+        "zh",
+        "ClearSpeak",
+        vec![("ClearSpeak_Exponents", "Ordinal")],
+        "<math><msup><mi>x</mi><mn>4</mn></msup></math>",
+        "x 的 4 次方",
     )
 }
 
@@ -102,7 +127,8 @@ fn literal_speech_matches_documented_examples() -> Result<()> {
 }
 
 #[test]
-fn units_increment_and_laplacian_use_standard_terms() -> Result<()> {
+fn units_increment_and_calculus_operators_use_standard_terms() -> Result<()> {
+    // Differential operators put their operand before the operator name in Chinese.
     test(
         "zh",
         "SimpleSpeak",
@@ -119,7 +145,25 @@ fn units_increment_and_laplacian_use_standard_terms() -> Result<()> {
         "zh",
         "ClearSpeak",
         "<math><mrow intent='laplacian($x)'><mi arg='x'>f</mi></mrow></math>",
-        "拉普拉斯算子 f",
+        "f 的拉普拉斯算子",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='divergence($x)'><mi arg='x'>f</mi></mrow></math>",
+        "f 的散度",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='curl($x)'><mi arg='x'>f</mi></mrow></math>",
+        "f 的旋度",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='gradient($x)'><mi arg='x'>f</mi></mrow></math>",
+        "f 的梯度",
     )
 }
 
@@ -138,6 +182,21 @@ fn permutation_cycles_and_repeating_decimals_use_concise_terms() -> Result<()> {
         "<math><mrow intent='repeating-decimal($a,$b)'><mn arg='a'>0.1</mn><mn arg='b'>6</mn></mrow></math>",
         "0.1 循环节为 6",
     )
+}
+
+#[test]
+fn permutation_counts_use_mainland_textbook_word_order() -> Result<()> {
+    // All supported P-notation layouts mean the number of permutations obtained by taking k from n.
+    let cases = [
+        "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>",
+        "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>",
+        "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>",
+    ];
+
+    for mathml in cases {
+        test("zh", "SimpleSpeak", mathml, "n 取 k 的排列数")?;
+    }
+    Ok(())
 }
 
 #[test]
@@ -176,6 +235,193 @@ fn chemical_equilibrium_arrows_use_standard_reaction_terms() -> Result<()> {
         "SimpleSpeak",
         &equation("&#x1f8d2;"),
         "大写 h, 平衡偏右 大写 i",
+    )
+}
+
+#[test]
+fn chemical_quadruple_bond_uses_the_standard_bond_order_term() -> Result<()> {
+    // A bond formed by four shared electron pairs is a 四重键, parallel to 单键、双键、三键.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow data-chem-formula='3'><mi mathvariant='normal' data-chem-element='1'>C</mi><mo data-chemical-bond='true' data-chem-formula-op='1'>&#x2263;</mo><mi mathvariant='normal' data-chem-element='1'>C</mi></mrow></math>",
+        "大写 c, 四重键 大写 c",
+    )
+}
+
+#[test]
+fn function_intents_use_natural_chinese_argument_order() -> Result<()> {
+    // Chinese property names follow their argument; binary relationships keep their semantic order.
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='domain($x)'><mi arg='x'>f</mi></mrow></math>",
+        "f 的定义域",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='complex-conjugate($x)'><mi arg='x'>z</mi></mrow></math>",
+        "z 的共轭复数",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow intent='fractional-part($x)'><mi arg='x'>x</mi></mrow></math>",
+        "x 的小数部分",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow intent='floor($x)'><mi arg='x'>x</mi></mrow></math>",
+        "x 向下取整",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow intent='round($x)'><mi arg='x'>x</mi></mrow></math>",
+        "x 四舍五入后的值",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='greatest-common-divisor($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>",
+        "x 与 y 的最大公约数",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='least-common-multiple($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>",
+        "x 与 y 的最小公倍数",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='conditional-probability($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "在 b 条件下 a 的概率",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='set-difference($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "a 与 b 的差集",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='least-common-denominator($x,$y,$z)'><mi arg='x'>x</mi><mi arg='y'>y</mi><mi arg='z'>z</mi></mrow></math>",
+        "x, y 与 z 的最小公分母",
+    )
+}
+
+#[test]
+fn argument_owned_function_variants_keep_their_standard_terms() -> Result<()> {
+    // Exercise every remaining branch of the shared argument-first function rule.
+    let cases = [
+        ("inverse", "f", "f 的逆"),
+        ("codomain", "f", "f 的陪域"),
+        ("image", "f", "f 的像"),
+        ("max", "s", "s 的最大值"),
+        ("min", "s", "s 的最小值"),
+        ("complex-arg", "z", "z 的辐角"),
+        ("real-part", "z", "z 的实部"),
+        ("imaginary-part", "z", "z 的虚部"),
+        ("complement", "a", "a 的补集"),
+        ("cardinality", "s", "s 的基数"),
+        ("probability", "a", "a 的概率"),
+        ("volume", "v", "v 的体积"),
+        ("chemistry-concentration", "c", "c 的浓度"),
+        ("ceiling", "x", "x 向上取整"),
+    ];
+
+    for (intent, argument, expected) in cases {
+        let mathml = format!(
+            "<math><mrow intent='{intent}($x)'><mi arg='x'>{argument}</mi></mrow></math>"
+        );
+        test("zh", "ClearSpeak", &mathml, expected)
+            .map_err(|error| anyhow::anyhow!("{intent}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn linear_algebra_intents_use_standard_noun_phrases() -> Result<()> {
+    // These intents denote a property of an object or a map between spaces.
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='determinant($x)'><mi arg='x'>a</mi></mrow></math>",
+        "a 的行列式",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='adjugate($x)'><mi arg='x'>a</mi></mrow></math>",
+        "a 的伴随矩阵",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='magnitude($x)'><mi arg='x'>v</mi></mrow></math>",
+        "v 的模",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='transpose($x)'><mi arg='x'>a</mi></mrow></math>",
+        "a 的转置",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='trace($x)'><mi arg='x'>a</mi></mrow></math>",
+        "a 的迹",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='dimension($x)'><mi arg='x'>v</mi></mrow></math>",
+        "v 的维数",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='kernel($x)'><mi arg='x'>f</mi></mrow></math>",
+        "f 的核",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='span($u,$v)'><mi arg='u'>u</mi><mi arg='v'>v</mi></mrow></math>",
+        "由 u 与 v 张成的空间",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='span($u)'><mi arg='u'>u</mi></mrow></math>",
+        "由 u 张成的空间",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='homomorphism($m)'><mi arg='m'>m</mi></mrow></math>",
+        "m 的同态",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='homomorphism($m,$n)'><mi arg='m'>m</mi><mi arg='n'>n</mi></mrow></math>",
+        "m 到 n 的同态",
+    )
+}
+
+#[test]
+fn non_divisibility_uses_the_textbook_relation() -> Result<()> {
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='does-not-divide($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "a 不整除 b",
     )
 }
 
@@ -290,7 +536,7 @@ fn textbook_logic_and_geometry_symbols_use_standard_readings() -> Result<()> {
         "zh",
         "SimpleSpeak",
         "<math><mo>&#x2299;</mo><mi>O</mi><mo>,</mo><mo>&#x25b1;</mo><mi>A</mi><mi>B</mi><mi>C</mi><mi>D</mi></math>",
-        "圆 大写 o, 逗号; 平行四边形, 大写 a 大写 b 大写 c 大写 d",
+        "圆 大写 o, 逗号; 白色平行四边形; 大写 a 大写 b 大写 c 大写 d",
     )?;
     test(
         "zh",
@@ -384,6 +630,23 @@ fn plus_minus_symbols_follow_standard_contextual_readings() -> Result<()> {
 }
 
 #[test]
+fn double_factorial_distinguishes_math_and_literal_contexts() -> Result<()> {
+    // U+203C is a double factorial in formulas but remains punctuation in literal content.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo>&#x203c;</mo></math>",
+        "双阶乘",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow intent=':literal'><mo>&#x203c;</mo></mrow></math>",
+        "双感叹号",
+    )
+}
+
+#[test]
 fn standard_number_sets_use_textbook_names() -> Result<()> {
     let cases = [
         ("set-of-integers", "ℤ", "全体整数的集合"),
@@ -404,15 +667,15 @@ fn standard_number_sets_use_textbook_names() -> Result<()> {
 #[test]
 fn set_builder_description_is_natural() -> Result<()> {
     let expr = "<math><mrow><mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&gt;</mo><mn>2</mn></mrow><mo>}</mo></mrow></math>";
-    test("zh", "ClearSpeak", expr, "所有满足 x 大于 2 的 x 的集合")?;
+    test("zh", "ClearSpeak", expr, "满足 x 大于 2 的所有 x 组成的集合")?;
     test_prefs(
         "zh",
         "ClearSpeak",
         vec![("ClearSpeak_Sets", "woAll")],
         expr,
-        "满足 x 大于 2 的 x 的集合",
+        "满足 x 大于 2 的 x 组成的集合",
     )?;
-    test("zh", "SimpleSpeak", expr, "所有满足 x 大于 2 的 x 的集合")
+    test("zh", "SimpleSpeak", expr, "满足 x 大于 2 的所有 x 组成的集合")
 }
 
 #[test]
@@ -493,6 +756,20 @@ fn geometry_objects_use_textbook_word_order() -> Result<()> {
         "<math><mrow intent='ray($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
         "射线 a b",
     )?;
+    test_prefs(
+        "zh",
+        "SimpleSpeak",
+        vec![("Verbosity", "Verbose")],
+        "<math><mrow intent='line-segment($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "线段 a b",
+    )?;
+    test_prefs(
+        "zh",
+        "SimpleSpeak",
+        vec![("Verbosity", "Verbose")],
+        "<math><mrow intent='ray($a,$b)'><mi arg='a'>a</mi><mi arg='b'>b</mi></mrow></math>",
+        "射线 a b",
+    )?;
     test(
         "zh",
         "SimpleSpeak",
@@ -504,6 +781,18 @@ fn geometry_objects_use_textbook_word_order() -> Result<()> {
         "SimpleSpeak",
         "<math><mrow intent='measure-of-angle($a,$b,$c)'><mi arg='a'>a</mi><mi arg='b'>b</mi><mi arg='c'>c</mi></mrow></math>",
         "角 a b c 的度数",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='length($x)'><mi arg='x'>a</mi></mrow></math>",
+        "a 的长度",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow intent='area($x)'><mi arg='x'>s</mi></mrow></math>",
+        "s 的面积",
     )
 }
 
@@ -519,11 +808,29 @@ fn definite_integral_announces_limits() -> Result<()> {
 
 #[test]
 fn matrix_announces_dimensions_and_rows() -> Result<()> {
+    // Matrix row numbers follow the Chinese ordinal pattern "第 n 行".
     test(
         "zh",
         "SimpleSpeak",
         "<math><mrow><mo>(</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable><mo>)</mo></mrow></math>",
-        "2 乘 2 矩阵; 行 1; 1, 2; 行 2; 3, 4",
+        "2 乘 2 矩阵; 第 1 行; 1, 2; 第 2 行; 3, 4",
+    )
+}
+
+#[test]
+fn menclose_names_the_mark_instead_of_the_result() -> Result<()> {
+    // The notation describes the drawn enclosure: a radical sign or two crossing strike lines.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><menclose notation='radical'><mi>x</mi></menclose></math>",
+        "根号, 包围 x",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><menclose notation='updiagonalstrike downdiagonalstrike'><mi>x</mi></menclose></math>",
+        "交叉, 划掉, 包围 x",
     )
 }
 
@@ -535,6 +842,497 @@ fn tau_and_dotted_minus_symbols_are_distinguishable() -> Result<()> {
         "SimpleSpeak",
         "<math><mo>&#x2a2b;</mo><mo>,</mo><mo>&#x2a2c;</mo></math>",
         "带下降点列的减号, 逗号, 带上升点列的减号",
+    )
+}
+
+#[test]
+fn unicode_letter_currency_and_operator_names_match_character_identity() -> Result<()> {
+    // These names distinguish characters that were blank or assigned to a different symbol.
+    let cases = [
+        ("0306", "上加短音符"),
+        ("030c", "上加倒抑扬符"),
+        ("0430", "西里尔字母阿"),
+        ("043b", "西里尔字母埃勒"),
+        ("0440", "西里尔字母埃尔"),
+        ("0607", "阿拉伯-印度四次方根"),
+        ("20b3", "奥斯特拉尔货币符号"),
+        ("20e7", "年金符号"),
+        ("2106", "每个"),
+        ("2114", "磅符号"),
+        ("2116", "序号符号"),
+        ("2127", "姆欧"),
+        ("2129", "倒置希腊小写字母约塔"),
+        ("223c", "波浪运算符"),
+        ("223d", "相似于"),
+        ("2240", "圈积"),
+        ("2244", "不渐近等于"),
+        ("2246", "近似但不等于"),
+        ("2257", "约等于"),
+        ("225c", "三角等号"),
+        ("226d", "不等价于"),
+        ("22a3", "左断言符"),
+        ("22a6", "断言符"),
+        ("22a8", "为真"),
+        ("22b8", "多重映射"),
+        ("22c6", "星号运算符"),
+        ("2327", "矩形框内的 X"),
+        ("2332", "锥度"),
+        ("23e3", "带圆圈的苯环"),
+        ("260c", "合"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn unicode_arrows_shapes_and_ornaments_name_visible_features() -> Result<()> {
+    // Direction, fill, quadrant, and bracket shape must remain distinguishable in speech.
+    let cases = [
+        ("219e", "向左双头箭头"),
+        ("21ba", "逆时针开口圆箭头"),
+        ("21bb", "顺时针开口圆箭头"),
+        ("21dc", "向左曲线箭头"),
+        ("21dd", "向右曲线箭头"),
+        ("21c4", "上方右箭头下方左箭头"),
+        ("21c5", "左侧上箭头右侧下箭头"),
+        ("21c6", "上方左箭头下方右箭头"),
+        ("21ea", "从横线向上的白色箭头"),
+        ("25cd", "竖直线填充的圆"),
+        ("25d4", "右上象限为黑色的圆"),
+        ("25d5", "除左上象限外为黑色的圆"),
+        ("25d9", "反白圆"),
+        ("25da", "上半反白圆"),
+        ("25db", "下半反白圆"),
+        ("25e6", "复合"),
+        ("29eb", "黑色长菱形"),
+        ("2661", "空心红桃"),
+        ("2665", "实心红桃"),
+        ("2680", "骰子一点"),
+        ("2688", "右侧带白点的实心圆"),
+        ("2768", "中等左圆括号装饰符"),
+        ("2774", "中等左花括号装饰符"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn unicode_composite_symbols_preserve_feature_and_spatial_order() -> Result<()> {
+    // Expected names follow the Unicode character identity, including which component is above.
+    let cases = [
+        ("2105", "转交"),
+        ("231c", "左上角"),
+        ("23dc", "上置圆括号"),
+        ("23df", "下置花括号"),
+        ("23e0", "上置六角括号"),
+        ("23e1", "下置六角括号"),
+        ("2681", "骰子二点"),
+        ("26aa", "中等白色圆"),
+        ("27c1", "内含小型白色三角形的白色三角形"),
+        ("27c3", "开子集"),
+        ("27c5", "左 S 形多重集定界符"),
+        ("27c6", "右 S 形多重集定界符"),
+        ("27ca", "带横线的竖线"),
+        ("27d0", "中心带点的白色菱形"),
+        ("27e0", "被横线分割的长菱形"),
+        ("2772", "细左六角括号装饰符"),
+        ("2773", "细右六角括号装饰符"),
+        ("27ec", "左白六角括号"),
+        ("27ed", "右白六角括号"),
+        ("27f2", "逆时针缺口圆箭头"),
+        ("27f3", "顺时针缺口圆箭头"),
+        ("27f4", "带圈加号的向右箭头"),
+        ("27ff", "向右长曲线箭头"),
+        ("2938", "顺时针右侧弧形箭头"),
+        ("2942", "短向左箭头上方的向右箭头"),
+        (
+            "294a",
+            "倒钩向上的向左鱼叉箭头与倒钩向下的向右鱼叉箭头",
+        ),
+        ("2970", "圆头向右双线箭头"),
+        ("2971", "向右箭头上方的等号"),
+        ("2976", "向左箭头上方的小于号"),
+        ("298d", "上角带短线的左方括号"),
+        ("2997", "左黑六角括号"),
+        ("2998", "右黑六角括号"),
+        ("29a8", "开口边末端带向上偏右箭头的测量角"),
+        ("29ac", "开口边末端带向右偏上箭头的测量角"),
+        ("29b1", "上方带横线的空集"),
+        ("29b5", "带横线的圆"),
+        ("2a22", "上方带小圆圈的加号"),
+        ("2a48", "并集号、横线、交集号从上到下排列"),
+        ("2a81", "上方带点的小于或倾斜等号"),
+        ("2a82", "上方带点的大于或倾斜等号"),
+        ("2a83", "右上方带点的小于或倾斜等号"),
+        ("2a84", "左上方带点的大于或倾斜等号"),
+        ("2a8b", "小于号、双线等号、大于号从上到下排列"),
+        ("2aa8", "曲线闭合的小于号在斜等号上方"),
+        ("2aa9", "曲线闭合的大于号在斜等号上方"),
+        ("2acd", "左侧开口的方框运算符"),
+        ("2acf", "闭子集"),
+        ("2ada", "顶部带丁字的叉形符号"),
+        ("2b00", "向右上方的白色箭头"),
+        ("2b1a", "点状方框"),
+        ("2b27", "黑色中等长菱形"),
+        ("2b39", "带箭尾和竖线的向左箭头"),
+        ("3248", "黑色方块上的带圈数字十"),
+        ("1f8d1", "上方为长向右鱼叉箭头，下方为长向左鱼叉箭头"),
+        ("1f8d2", "上方为长向右鱼叉箭头，下方为短向左鱼叉箭头"),
+        ("1f8d3", "上方为短向右鱼叉箭头，下方为长向左鱼叉箭头"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn audited_unicode_symbols_keep_precise_names() -> Result<()> {
+    // Each case locks a corrected identity, direction, shape, or spatial relationship.
+    let cases = [
+        ("00ab", "左双角引号"),
+        ("21a8", "带底线的上下箭头"),
+        ("21ab", "向左带环箭头"),
+        ("21ac", "向右带环箭头"),
+        ("21fd", "向左开口箭头"),
+        ("21fe", "向右开口箭头"),
+        ("21ff", "左右开口箭头"),
+        ("224c", "全等于"),
+        ("2298", "带圈斜杠"),
+        ("229f", "方框减号"),
+        ("22a0", "方框乘号"),
+        ("22a1", "方框点运算符"),
+        ("22a9", "力迫"),
+        ("22ae", "不力迫"),
+        ("22dc", "等于或小于"),
+        ("22e2", "既非方形像也不等于"),
+        ("22e3", "既非方形原像也不等于"),
+        ("2303", "向上箭头尖"),
+        ("2333", "斜度"),
+        ("23e6", "交流电"),
+        ("2472", "带圈数字十九"),
+        ("2736", "黑色六角星"),
+        ("2794", "粗宽头向右箭头"),
+        ("290a", "向上三重箭头"),
+        ("290b", "向下三重箭头"),
+        ("2983", "左白色花括号"),
+        ("2984", "右白色花括号"),
+        ("2993", "左弧小于括号"),
+        ("2994", "右弧大于括号"),
+        ("2995", "双左弧大于括号"),
+        ("2996", "双右弧小于括号"),
+        ("299b", "开口向左的测量角"),
+        ("299d", "带点的测量直角"),
+        ("2abd", "带点的子集号"),
+        ("2abe", "带点的超集号"),
+        ("2ad3", "子集号在超集号上方"),
+        ("2ad4", "超集号在子集号上方"),
+        ("2ad5", "子集号在子集号上方"),
+        ("2ad6", "超集号在超集号上方"),
+        ("e920", "双重方形并集"),
+        ("e921", "双重方形交集"),
+        ("e92c", "带点的恒等号"),
+        ("e994", "带双斜杠的恒等号"),
+        ("e997", "竖直正比号"),
+        ("ea70", "带竖线的既不是正规子群也不等于"),
+        ("ea71", "带竖线的既不包含正规子群也不等于"),
+        ("eb60", "否定向右波浪箭头"),
+        ("eb61", "否定向右弯曲箭头"),
+        ("ec44", "水平全长三键"),
+        ("ec47", "竖直全长三键"),
+        ("ec4c", "水平半长三键"),
+        ("fe35", "上置圆括号"),
+        ("fe36", "下置圆括号"),
+        ("fe37", "上置花括号"),
+        ("fe38", "下置花括号"),
+        ("fe3f", "上置角括号"),
+        ("fe40", "下置角括号"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn audited_unicode_math_names_match_symbol_identity() -> Result<()> {
+    // Each entry covers a corrected Unicode name or a standard mainland mathematical reading.
+    let cases = [
+        ("02d9", "上点符"),
+        ("02ef", "修饰字母低位向下箭头尖"),
+        ("02f0", "修饰字母低位向上箭头尖"),
+        ("02f1", "修饰字母低位向左箭头尖"),
+        ("02f2", "修饰字母低位向右箭头尖"),
+        ("0332", "下加下划线"),
+        ("0333", "下加双下划线"),
+        ("2135", "阿列夫"),
+        ("2136", "贝特"),
+        ("2137", "吉梅尔"),
+        ("2138", "达列特"),
+        ("2140", "双线体求和号"),
+        ("222f", "曲面积分"),
+        ("2231", "顺时针积分"),
+        ("225f", "是否等于"),
+        ("22d8", "远远小于"),
+        ("22d9", "远远大于"),
+        ("299a", "竖直之字形线"),
+        ("29e2", "混洗积"),
+        ("2a00", "n 元带圈点运算符"),
+        ("2a01", "n 元带圈加号运算符"),
+        ("2a02", "n 元带圈乘号运算符"),
+        ("2a03", "带点的 n 元并集运算符"),
+        ("2a04", "带加号的 n 元并集运算符"),
+        ("2a05", "n 元方交集运算符"),
+        ("2a06", "n 元方并集运算符"),
+        ("2a09", "n 元乘号运算符"),
+        ("2a0f", "带斜线的平均积分号"),
+        ("2a33", "压缩积"),
+        ("2a50", "带衬线和压缩积的闭合并集"),
+        ("2a85", "小于或约等于"),
+        ("2a86", "大于或约等于"),
+        ("2af9", "双线倾斜小于或等于"),
+        ("2afa", "双线倾斜大于或等于"),
+        ("3372", "道尔顿"),
+        ("3375", "小写 o 大写 V"),
+        ("fb05", "长 s t 连字"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn audited_mathtype_private_use_symbols_match_their_source_names() -> Result<()> {
+    // MathType PUA symbols have no Unicode fallback, so each corrected identity needs a direct check.
+    let cases = [
+        ("e916", "带点的超集号"),
+        ("e917", "带点的子集号"),
+        ("e918", "下方带点的等号"),
+        ("e92e", "竖线运算符"),
+        ("e92f", "双竖线运算符"),
+        ("e930", "三重竖线运算符"),
+        ("e950", "带竖线的正规包含于"),
+        ("e951", "带竖线的包含正规子群"),
+        ("e98f", "自由基圆点运算符"),
+        ("e991", "恒等于且平行于"),
+        ("e992", "压缩积"),
+        ("e993", "带横线的三重竖线运算符"),
+        ("e995", "带三条竖线的三重横线"),
+        ("e9a0", "负正弦波"),
+        ("ea06", "既不小于也不等于"),
+        ("ea07", "既不大于也不等于"),
+        ("ea15", "既不后于也不相似于"),
+        ("ea1d", "既不小于也不等于"),
+        ("ea1e", "既不大于也不等于"),
+        ("ea2e", "否定竖线运算符"),
+        ("ea2f", "否定双竖线运算符"),
+        ("ea30", "否定三重竖线运算符"),
+        ("ea50", "带竖线的不是正规子群"),
+        ("ea51", "带竖线的不包含正规子群"),
+        ("ea55", "既不等于也不相似于"),
+        ("ea63", "不严格等价于"),
+        ("eb0f", "带斜线的大左右箭头"),
+        ("eb11", "带斜线的大左右双箭头"),
+        ("eb18", "带尾部和斜线的向右箭头"),
+        (
+            "eb36",
+            "左侧倒钩向下、右侧倒钩向上的双鱼叉箭头",
+        ),
+        (
+            "eb37",
+            "左侧倒钩向上、右侧倒钩向下的双鱼叉箭头",
+        ),
+        ("eb3f", "右上与右下双箭头"),
+        ("eb4c", "粗短黑色向左箭头"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn mathtype_double_struck_greek_matches_the_original_character_table() -> Result<()> {
+    // Check every MathType PUA slot because the source order is non-alphabetic in both ranges.
+    let capitals = [
+        ("f201", "德尔塔"),
+        ("f202", "克西"),
+        ("f203", "拉姆达"),
+        ("f204", "派"),
+        ("f205", "西格马"),
+        ("f206", "西塔"),
+        ("f207", "伽马"),
+        ("f208", "欧米伽"),
+        ("f209", "宇普西隆"),
+    ];
+    for (codepoint, name) in capitals {
+        let expr = format!("<math><mi>&#x{codepoint};</mi></math>");
+        let expected = format!("双线体 大写 {name}");
+        test("zh", "SimpleSpeak", &expr, &expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+
+    let lowercase = [
+        ("f220", "阿尔法"),
+        ("f221", "贝塔"),
+        ("f222", "斐"),
+        ("f223", "泽塔"),
+        ("f224", "普西"),
+        ("f225", "德尔塔"),
+        ("f226", "艾普西隆"),
+        ("f227", "伽马"),
+        ("f228", "伊塔"),
+        ("f229", "约塔"),
+        ("f22a", "克西"),
+        ("f22b", "卡帕"),
+        ("f22c", "拉姆达"),
+        ("f22d", "缪"),
+        ("f22e", "纽"),
+        ("f22f", "艾普西隆"),
+        ("f230", "派"),
+        ("f231", "西塔"),
+        ("f232", "柔"),
+        ("f233", "西格马"),
+        ("f234", "陶"),
+        ("f235", "西塔"),
+        ("f236", "欧米伽"),
+    ];
+    for (codepoint, name) in lowercase {
+        let expr = format!("<math><mi>&#x{codepoint};</mi></math>");
+        let expected = format!("双线体 {name}");
+        test("zh", "SimpleSpeak", &expr, &expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn mathematical_capital_theta_symbols_remain_speakable_in_every_variant() -> Result<()> {
+    // Each 25-character range has an extra theta-symbol slot where U+03A2 must not be used.
+    let cases = [
+        ("1d6b9", "粗体 大写 西塔"),
+        ("f419", "粗体 大写 西塔"),
+        ("1d6f3", "大写 西塔"),
+        ("f453", "大写 西塔"),
+        ("1d72d", "粗体 大写 西塔"),
+        ("f48d", "粗体 大写 西塔"),
+        ("1d767", "粗体 大写 西塔"),
+        ("f4c7", "粗体 大写 西塔"),
+        ("1d7a1", "粗体 大写 西塔"),
+        ("f501", "粗体 大写 西塔"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mi>&#x{codepoint};</mi></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn audited_unicode_ranges_keep_their_boundaries() -> Result<()> {
+    // The first and last characters catch off-by-one and shifted translate mappings.
+    let cases = [
+        ("03aa", "大写 约塔 带分音符"),
+        ("03ab", "大写 宇普西隆 带分音符"),
+        ("03cf", "大写 凯"),
+        ("24b6", "带圈 大写 a"),
+        ("24cf", "带圈 大写 z"),
+        ("24d0", "带圈 a"),
+        ("24e9", "带圈 z"),
+        ("1d538", "双线体 大写 a"),
+        ("1d550", "双线体 大写 y"),
+        ("f080", "双线体 大写 a"),
+        ("f098", "双线体 大写 y"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mi>&#x{codepoint};</mi></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn unicode_dingbats_editorial_marks_and_compatibility_units_are_precise() -> Result<()> {
+    // Less common symbols still need exact names because visual context is unavailable to speech users.
+    let cases = [
+        ("2798", "粗向右下箭头"),
+        ("27a2", "顶部高亮的立体向右箭头尖"),
+        ("27b4", "黑色羽状向右下箭头"),
+        ("27bc", "楔尾向右箭头"),
+        ("2999", "点状围栏"),
+        ("29cc", "三角形内字母 S"),
+        ("2b1d", "黑色极小方块"),
+        ("2b2a", "黑色小长菱形"),
+        ("2b2c", "黑色横向椭圆"),
+        ("2b30", "带小圆圈的向左箭头"),
+        ("2b33", "向左长曲线箭头"),
+        ("2b51", "黑色小星"),
+        ("2b59", "粗圆圈内的叉号"),
+        ("2e00", "直角替换标记"),
+        ("2e08", "点状换位标记"),
+        ("2e13", "带点奥贝洛斯符号"),
+        ("2e16", "带点的右指角"),
+        ("2e18", "倒置疑问感叹号"),
+        ("2e19", "棕榈枝"),
+        ("2e1b", "上方带圆环的波浪线"),
+        ("2e30", "圆环点"),
+        ("3014", "左六角括号"),
+        ("3015", "右六角括号"),
+        ("3018", "左白六角括号"),
+        ("3019", "右白六角括号"),
+        ("33c2", "上午"),
+        ("33d8", "下午"),
+        ("33da", "拍伦琴"),
+        ("33d4", "毫靶恩"),
+        ("33c7", "公司"),
+        ("33ff", "伽"),
+        ("fe64", "小型小于号"),
+        ("fe65", "小型大于号"),
+    ];
+
+    for (codepoint, expected) in cases {
+        let expr = format!("<math><mo>&#x{codepoint};</mo></math>");
+        test("zh", "SimpleSpeak", &expr, expected)
+            .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn gallon_unit_remains_distinct_from_the_gal_acceleration_symbol() -> Result<()> {
+    // The unit token "gal" means gallon; U+33FF is the Gal acceleration unit and is tested above.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mn>1</mn><mi intent=':unit'>gal</mi></math>",
+        "1 加仑",
     )
 }
 
@@ -572,6 +1370,50 @@ fn navigation_enters_fraction_numerator() -> Result<()> {
         Ok(())
     }));
     report_any_panic(result)
+}
+
+#[test]
+fn navigation_uses_chinese_row_and_column_number_order() -> Result<()> {
+    // Cell location announcements use "第 n 行，第 n 列" rather than noun-first order.
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_navigation(
+            "<math><mrow><mo>(</mo><mtable><mtr><mtd><mn id='r1c1'>1</mn></mtd><mtd><mn id='r1c2'>2</mn></mtd></mtr><mtr><mtd><mn id='r2c1'>3</mn></mtd><mtd><mn id='r2c2'>4</mn></mtd></mtr></mtable><mo>)</mo></mrow></math>",
+        )?;
+        set_navigation_node("r2c2", 0)?;
+        let speech = do_navigate_command("ReadCellCurrent")?;
+        let speech = speech.trim_end_matches([' ', ',', ';']);
+        assert_eq!("朗读当前单元格; 第 2 行, 第 2 列, 4", speech);
+        Ok(())
+    }));
+    report_any_panic(result)
+}
+
+#[test]
+fn navigation_overview_keeps_the_root_possessive_marker() -> Result<()> {
+    // Overview speech must keep 的 after a complex radicand, just like full speech.
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_navigation(
+            "<math><mroot><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mi>n</mi></mroot></math>",
+        )?;
+        let speech = do_navigate_command("DescribeCurrent")?;
+        let speech = speech.trim_end_matches([' ', ',', ';']);
+        assert_eq!("概述 当前项; x 加 y 的 n 次方根", speech);
+        Ok(())
+    }));
+    report_any_panic(result)
+}
+
+#[test]
+fn clearspeak_multiline_labels_use_chinese_count_and_ordinal_order() -> Result<()> {
+    // Overview counts take classifiers, while each branch is introduced as an ordinal.
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mrow><mo>{</mo><mtable><mtr><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr><mtr><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr></mtable></mrow></math>",
+        "2 个分支; 第 1 个分支; x 大于 0; 第 2 个分支; x 小于 0",
+    )
 }
 
 #[test]
@@ -617,7 +1459,7 @@ fn additional_real_world_readings() -> Result<()> {
             "ClearSpeak",
             "Medium",
             "<math><mrow intent='partial-derivative($x)'><mi arg='x'>f</mi></mrow></math>",
-            "偏导数 f",
+            "f 的偏导数",
         ),
         (
             "sum",
@@ -694,7 +1536,7 @@ fn additional_real_world_readings() -> Result<()> {
             "SimpleSpeak",
             "Medium",
             "<math><mrow><mo>|</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable><mo>|</mo></mrow></math>",
-            "2 乘 2 行列式; 行 1; a, b; 行 2; c, d",
+            "2 乘 2 行列式; 第 1 行; a, b; 第 2 行; c, d",
         ),
         (
             "mean",
@@ -757,7 +1599,7 @@ fn additional_real_world_readings() -> Result<()> {
             "SimpleSpeak",
             "Medium",
             "<math><msup><mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow><mrow><mn>2</mn><mo>&#x2212;</mo></mrow></msup></math>",
-            "左方括号, 大写 s, 大写 o, 下标 4; 右方括号 上标 2 减",
+            "左方括号, 大写 s, 大写 o, 下标 4; 右方括号 上标 2 负",
         ),
         (
             "aqueous-terse",
@@ -771,21 +1613,21 @@ fn additional_real_world_readings() -> Result<()> {
             "SimpleSpeak",
             "Medium",
             "<math><mfrac><mrow><mn>3</mn><mi intent=':unit'>m</mi></mrow><msup><mi intent=':unit'>s</mi><mn>2</mn></msup></mfrac></math>",
-            "3 米 每 秒 平方",
+            "3 米每 二 次方秒",
         ),
         (
             "piecewise",
             "SimpleSpeak",
             "Medium",
             "<math><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mrow><mo>{</mo><mtable><mtr><mtd><msup><mi>x</mi><mn>2</mn></msup><mtext> 当 </mtext><mi>x</mi><mo>&#x2265;</mo><mn>0</mn></mtd></mtr><mtr><mtd><mo>&#x2212;</mo><mi>x</mi><mtext> 当 </mtext><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr></mtable></mrow></math>",
-            "f x 等于; 2 分支; 分支 1; x 平方 当 x, 大于等于 0; 分支 2; 负 x 当 x, 小于 0",
+            "f x 等于; 2 个分支; 第 1 个分支; x 平方 当 x, 大于等于 0; 第 2 个分支; 负 x 当 x, 小于 0",
         ),
         (
             "system-of-equations",
             "SimpleSpeak",
             "Medium",
             "<math><mtable><mtr><mtd><mi>x</mi><mo>+</mo><mi>y</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>7</mn></mtd></mtr><mtr><mtd><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi></mtd><mtd><mo>=</mo></mtd><mtd><mn>17</mn></mtd></mtr></mtable></math>",
-            "2 方程; 方程 1; x 加 y 等于 7; 方程 2; 2 x 加 3 y; 等于 17",
+            "2 个方程; 第 1 个方程; x 加 y 等于 7; 第 2 个方程; 2 x 加 3 y; 等于 17",
         ),
         (
             "quadratic-formula-simple",

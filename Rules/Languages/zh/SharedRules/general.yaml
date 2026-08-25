@@ -126,14 +126,109 @@
   - x: "*[2]"
   - T: "的余数"
 
+# Chinese puts the argument before a quantity or property that belongs to it.
+- name: argument-owned-function
+  tag: [inverse, domain, codomain, image, max, min, complex-conjugate, complex-arg, real-part, imaginary-part, fractional-part, complement, cardinality, probability, volume, chemistry-concentration]
+  match: "count(*)=1"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "self::m:inverse"
+      then: [T: "的逆"]
+    - else_if: "self::m:domain"
+      then: [T: "的定义域"]
+    - else_if: "self::m:codomain"
+      then: [T: "的陪域"]
+    - else_if: "self::m:image"
+      then: [T: "的像"]
+    - else_if: "self::m:max"
+      then: [T: "的最大值"]
+    - else_if: "self::m:min"
+      then: [T: "的最小值"]
+    - else_if: "self::m:complex-conjugate"
+      then: [T: "的共轭复数"]
+    - else_if: "self::m:complex-arg"
+      then: [T: "的辐角"]
+    - else_if: "self::m:real-part"
+      then: [T: "的实部"]
+    - else_if: "self::m:imaginary-part"
+      then: [T: "的虚部"]
+    - else_if: "self::m:fractional-part"
+      then: [T: "的小数部分"]
+    - else_if: "self::m:complement"
+      then: [T: "的补集"]
+    - else_if: "self::m:cardinality"
+      then: [T: "的基数"]
+    - else_if: "self::m:probability"
+      then: [T: "的概率"]
+    - else_if: "self::m:volume"
+      then: [T: "的体积"]
+      else: [T: "的浓度"]
+
+- name: rounding-function
+  tag: [floor, ceiling, round]
+  match: "count(*)=1"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "self::m:floor"
+      then: [T: "向下取整"]
+    - else_if: "self::m:ceiling"
+      then: [T: "向上取整"]
+      else: [T: "四舍五入后的值"]
+
+- name: common-divisor-and-multiple
+  tag: [greatest-common-divisor, least-common-multiple]
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - T: "与"
+  - x: "*[2]"
+  - test:
+      if: "self::m:greatest-common-divisor"
+      then: [T: "的最大公约数"]
+      else: [T: "的最小公倍数"]
+
+- name: conditional-probability
+  tag: conditional-probability
+  match: "count(*)=2"
+  replace:
+  - T: "在"
+  - x: "*[2]"
+  - T: "条件下"
+  - x: "*[1]"
+  - T: "的概率"
+
+- name: set-difference
+  tag: set-difference
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - T: "与"
+  - x: "*[2]"
+  - T: "的差集"
+
+- name: least-common-denominator
+  tag: least-common-denominator
+  match: "count(*)=2 or count(*)=3"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "count(*)=3"
+      then: [pause: short, x: "*[2]"]
+  - T: "与"
+  - x: "*[last()]"
+  - T: "的最小公分母"
+
 - name: permutation
   # Not a default because the order of the args is reversed
   tag: pochhammer
   match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
   - x: "*[1]"
-  - T: "排列"      # phrase(the solution  involves several 'permutations of' values)
+  - T: "取"
   - x: "*[2]"
+  - T: "的排列数"
 
 - name: intervals
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
@@ -567,9 +662,9 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [T: "分支"]      # phrase(this is the first 'case' of three cases)
+      then: [T: "个分支"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
-      then: [T: "方程"]      # phrase(this is the first 'equation' of three equations)
+      then: [T: "个方程"]      # phrase(this is the first 'equation' of three equations)
       else: [T: "行"]      # phrase(this is the first 'line' of three lines)
   - test:
     - if: "$LineCount != 1"
@@ -587,13 +682,14 @@
       if: "not($LineCount=1 or contains(@data-intent-property, ':continued-row:'))"
       then:
       - pause: medium
+      - T: "第"
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
       - test:
         - if: "parent::m:piecewise"
-          then: [T: "分支"]     # phrase('case' 1 of 10 cases)
+          then: [T: "个分支"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
-          then: [T: "方程"] # phrase('equation' 1 of 10 equations)
+          then: [T: "个方程"] # phrase('equation' 1 of 10 equations)
           else: [T: "行"]     # phrase('line 1 of 10 lines)
-      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
       then:
@@ -1112,7 +1208,7 @@
     - else_if: ".='≡'"
       then: [T: "三键"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
     - else_if: ".='≣'"
-      then: [T: "四键"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
+      then: [T: "四重键"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
       else: [x: "text()"]
 
 - name: chemical-formula-operator

@@ -140,8 +140,14 @@
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - T: "每"      # phrase('5 meters 'per' second)
-  - x: "*[2]"
+  - CT: "每"      # phrase('5 meters 'per' second)
+  - test:
+      if: "*[2][self::m:power and *[2][self::m:mn]]"
+      then:
+      - x: "substring(ToOrdinal(*[2]/*[2]), 2)"
+      - TC: "次方"
+      - x: "*[2]/*[1]"
+      else: [x: "*[2]"]
 
 - name: common-fraction
   tag: fraction
@@ -331,9 +337,7 @@
       if: "*[2][.>0]"
       then: [x: "*[2]"]
       else: [x: "*[2]"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "次方"]      # phrase(2 raised to the 'power' 7)
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 - name: simple-negative-integer
   tag: power
@@ -345,9 +349,7 @@
   - x: "*[1]"
   - T: "的"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "次方"]      # phrase(2 raised to the 'power' 7)
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 - name: simple-var
   tag: power
@@ -356,9 +358,7 @@
   - x: "*[1]"
   - T: "的"      # phrase(3 raised 'to the' power 7)
   - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "次方"]      # phrase(2 raised to the 'power' 7)
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -508,14 +508,14 @@
       then: [T: "空集"]      # phrase('the empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - test:
-          if: "$ClearSpeak_Sets != 'woAll'"
-          then: [T: "所有满足"]
-          else: [T: "满足"]      # phrase(the set S 'such that' x is less than y)
+      - T: "满足"
       - x: "*[1]/*[3]"
       - T: "的"
+      - test:
+          if: "$ClearSpeak_Sets != 'woAll'"
+          then: [CT: "所有"]
       - x: "*[1]/*[1]"
-      - T: "的集合"
+      - T: "组成的集合"
       else:
       - x: "*[1]"
       - test:
@@ -587,8 +587,9 @@
   variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - pause: medium
-  - T: "行"      # phrase(the first 'row' of a matrix)
+  - T: "第"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
+  - T: "行"
   - test:
       if: ".[self::m:mlabeledtr]"
       then:
@@ -631,13 +632,13 @@
       - x: "$LineCount"
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [T: "分支"]      # phrase(this is the first 'case' of three cases)
+          then: [T: "个分支"]      # phrase(this is the first 'case' of three cases)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'"
           then: [T: "行"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [T: "约束"]      # phrase(this is the first 'constraint' of three constraints)
+          then: [T: "个约束"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [T: "方程"]      # phrase(this is the first 'equation' of three equations)
+          then: [T: "个方程"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then: [T: "行"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
@@ -658,20 +659,21 @@
       if: "not($LineCount=1 or $ClearSpeak_MultiLineLabel='None' or contains(@data-intent-property, ':continued-row:'))"
       then:
       - pause: medium
+      - T: "第"
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [T: "分支"]
+          then: [T: "个分支"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
           then: [T: "行"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [T: "约束"]
+          then: [T: "个约束"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [T: "方程"]
+          then: [T: "个方程"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then: [T: "行"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then: [T: "步"]
-      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
       then:

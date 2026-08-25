@@ -4,53 +4,37 @@
   tag: laplacian
   match: "count(*) <= 1"   # can be on ∇^2 or on enclosing mrow
   replace:
-  - T: "拉普拉斯算子"      # phrase('laplacian' of x)
   - test:
       if: "count(*) = 1"
       then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [T: ""]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
-      - test:
-          if: "not(IsNode(*[1], 'leaf'))"
-          then: [pause: short]
       - x: "*[1]"
+      - T: "的拉普拉斯算子"
+      else: [T: "拉普拉斯算子"]
 
 - name: divergence
   tag: divergence
   match: "count(*) = 1"
   replace:
-  - test:
-      if: "$Verbosity='Terse'"
-      then: [T: "散度"]             # phrase('div' is short for divergence)
-      else: [T: "散度"]      # phrase('divergence of' this function from the mean)
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [pause: short]
   - x: "*[1]"
+  - T: "的散度"
 
 - name: curl
   tag: curl
   match: "count(*) = 1"
   replace:
-  - T: "旋度"      # phrase(the 'curl of' a field)
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [T: ""]             # phrase(function 'of' one variable)
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [pause: short]
   - x: "*[1]"
+  - T: "的旋度"
 
 - name: gradient
   tag: gradient
   match: "count(*) = 1"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [T: "梯度"]      # phrase(the hill has a 'gradient of' five percent)
-      else: [T: "梯度"]      # use the standard Chinese mathematical term in terse mode too
-  - test:
-      if: "not(IsNode(*[1], 'leaf'))"
-      then: [pause: short]
   - x: "*[1]"
+  - T: "的梯度"
+
+- name: partial-derivative
+  tag: partial-derivative
+  match: "count(*) = 1"
+  replace:
+  - x: "*[1]"
+  - T: "的偏导数"

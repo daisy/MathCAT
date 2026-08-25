@@ -118,8 +118,9 @@
   tag: [mtr, mlabeledtr]
   match: "$Move2D = 'in'"
   replace:
-  - T: "列"
+  - T: "第"
   - x: "count($Child2D/preceding-sibling::*)+1"
+  - T: "列"
   - pause: "medium"
 
 - name: into-or-out-of-mmultiscripts
@@ -650,8 +651,9 @@
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - T: "列"                           # phrase(the first 'column' of the table)
+          - T: "第"                           # phrase(the first 'column' of the table)
           - x: "count(preceding-sibling::*)"
+          - T: "列"
           - pause: medium
       - test:
           if: "$NavMode='Character'"
@@ -680,8 +682,9 @@
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - T: "列"                         # phrase(the first 'column' in the table)
+          - T: "第"                         # phrase(the first 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
+          - T: "列"
           - pause: medium
       - test:
           if: "$NavMode='Character'"
@@ -713,11 +716,13 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                 # phrase(the previous 'row' in the table)
+              - T: "第"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
+              - T: "行"
               - pause: short
-              - T: "列"                              # phrase(the previous 'column' in the table)
+              - T: "第"                              # phrase(the previous 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
+              - T: "列"
               - pause: medium
           - test:
               if: "$NavMode='Character'"
@@ -749,11 +754,13 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                # phrase(the next 'row' in the table)
+              - T: "第"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
+              - T: "行"
               - pause: short
-              - T: "列"                             # phrase(the next 'column' in the table)
+              - T: "第"                             # phrase(the next 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
+              - T: "列"
               - pause: medium
           - test:
               if: "$NavMode='Character'"
@@ -859,11 +866,13 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                        # phrase(the previous 'row' in the table)
+              - T: "第"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
+              - T: "行"
               - pause: short
-              - T: "列"                                     # phrase(the previous 'column' in the table)
+              - T: "第"                                     # phrase(the previous 'column' in the table)
               - x: "count($MTD[1]/preceding-sibling::*)+1"
+              - T: "列"
               - pause: short
           - set_variables: [NavNode: "$MTD[1]/*[1]/@id"]
           else:
@@ -1259,8 +1268,9 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - T: "列"                                       # phrase(the previous 'column' in the table)
+          - T: "第"                                       # phrase(the previous 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
+          - T: "列"
           - pause: short
       - test:
           if: "$NavMode = 'Character'"
@@ -1528,8 +1538,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "列"                               # phrase(the first 'column' in the table)
+      - T: "第"                               # phrase(the first 'column' in the table)
       - x: "count(preceding-sibling::*)"
+      - T: "列"
       - pause: short
   - test:
       if: "$NavMode = 'Character'"
