@@ -14,7 +14,7 @@
 
 
 - name: overview-default
-  tag: mfrac
+  tag: [fraction, mfrac]   # CORREÇÃO: en ampliou a tag; sem "fraction" o intent não casa
   match: "."
   replace:
   - test:
@@ -27,7 +27,7 @@
       - T: "fração"
 
 - name: overview-default
-  tag: msqrt
+  tag: [msqrt, "square-root"]   # CORREÇÃO: idem
   match: "."
   replace:
   - T: "raiz quadrada"
@@ -40,7 +40,7 @@
       - x: "*[1]"
 
 - name: overview-default
-  tag: mroot
+  tag: [mroot, root]   # CORREÇÃO: idem
   match: "."
   replace:
   - test:

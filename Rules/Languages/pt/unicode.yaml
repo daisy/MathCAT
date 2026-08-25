@@ -314,7 +314,7 @@
  - "∈":                                          #  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "um elemento de"]              #  (en: 'an element of', google translation)
+        then: [T: "pertence a"]                  #  (en: 'an element of'; 'pertence a' é o uso brasileiro corrente)
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
@@ -338,7 +338,7 @@
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "não é um elemento de"]        #  (en: 'is not an element of', google translation)
+        then: [T: "não pertence a"]              #  (en: 'is not an element of'; uso brasileiro)
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
@@ -351,8 +351,10 @@
                 then: [T: "não é um elemento de"]      #  (en: 'not element of', google translation)
               - else: [T: "não pertence a"]  #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "não é membro de"]    #  (en: 'is not a member of', google translation)
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto'
+                then: [T: "não pertence a"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
+                then: [T: "não é membro de"]    #  (en: 'is not a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "não é um elemento de"] #  (en: 'is not an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
@@ -404,8 +406,8 @@
  - "≠":                                          #  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é"]                         #  (en: 'is', google translation)
-     - T: "não é igual a"                        #  (en: 'not equal to', MathPlayer: 'distinto de', google: 'no igual a')
+         then: [T: ""]                          #  ("diferente de" já dispensa a cópula)
+     - T: "diferente de"                         #  (en: 'not equal to'; MathPlayer sugeria 'distinto de' e o algoritmo escolheu a do Google)
  - "≡":                                          #  0x2261
      - test: 
          if: "$Verbosity!='Terse'"
@@ -414,33 +416,33 @@
  - "⊂":                                          #  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é um"]                      #  (en: 'is a', google translation)
-     - T: "subconjunto de"                          #  (en: 'subset of')
+         then: [T: "está"]                      #  (en: 'is a'; "está contido em" é o uso brasileiro)
+     - T: "contido em"                              #  (en: 'subset of')
  - "⊃":                                          #  0x2283
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é um"]                      #  (en: 'is a', google translation)
-     - T: "superconjunto de"                           #  (en: 'superset of')
+         then: [T: ""]                          #  (en: 'is a'; "contém" já é verbo)
+     - T: "contém"                                  #  (en: 'superset of')
  - "⊄":                                          #  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é"]                         #  (en: 'is', google translation)
-     - T: "não é um subconjunto de"                       #  (en: 'not a subset of')
+         then: [T: "não"]                       #  (coerente com ⊂: "não está contido em")
+     - T: "está contido em"                         #  (en: 'not a subset of')
  - "⊅":                                          #  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é"]                         #  (en: 'is', google translation)
-     - T: "não é um superconjunto de"                        #  (en: 'not a superset of')
+         then: [T: "não"]                       #  (coerente com ⊃)
+     - T: "contém"                                  #  (en: 'not a superset of')
  - "⊆":                                          #  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é um"]                      #  (en: 'is a', google translation)
-     - T: "subconjunto de ou igual a"                   #  (en: 'subset of or equal to')
+         then: [T: "está"]                      #  (coerente com ⊂)
+     - T: "contido em ou é igual a"                  #  (en: 'subset of or equal to')
  - "⊇":                                          #  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "é um"]                      #  (en: 'is a', google translation)
-     - T: "superconjunto de ou igual a"                #  (en: 'superset of or equal to')
+         then: [T: ""]                          #  (coerente com ⊃)
+     - T: "contém ou é igual a"                     #  (en: 'superset of or equal to')
 
  # --- restored short definitions that differ from unicode-full ---
  - "–": [T: "meia-risca"]                           #  0x2013 (en: 'en dash')

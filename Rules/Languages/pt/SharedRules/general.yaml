@@ -458,7 +458,6 @@
       then: [T: cotangente hiperbólica]
       else: [T: cotangente hiperbólica]
 
-.
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -495,6 +494,7 @@
       else: [T: "logaritmo natural"]      # phrase(the 'natural log' function is used in mathematics)
 
 - name: multi-line
+  # audit-ignore: divergência deliberada do en — plural por cadeias, não por concatenação de s
   #   that eliminates the need for the if: else_if: ...
   # IDEA:  set a variable with the word to say for the row (e.g., RowLabel = Row/Case/Line/...)
   tag: [piecewise, system-of-equations, lines]
@@ -502,15 +502,25 @@
   variables: [IsColumnSilent: true()]
   replace:
   - x: "count(*)"
+  # CORREÇÃO: o plural era feito concatenando "s" (ct: "s"), o que produzia
+  # "equaçãos". Substituído por duas cadeias, singular e plural, escolhidas
+  # pela contagem — mesma correção já aplicada no ClearSpeak.
   - test:
-    - if: "self::m:piecewise"
-      then: [T: "caso"]
-    - else_if: "self::m:system-of-equations"
-      then: [T: "equação"]
-      else: [T: "linha"]
-  - test:
-    - if: "count(*) > 1"
-      then: [ct: "s"] # plural
+      if: "count(*) > 1"
+      then:
+      - test:
+        - if: "self::m:piecewise"
+          then: [T: "casos"]
+        - else_if: "self::m:system-of-equations"
+          then: [T: "equações"]
+          else: [T: "linhas"]
+      else:
+      - test:
+        - if: "self::m:piecewise"
+          then: [T: "caso"]
+        - else_if: "self::m:system-of-equations"
+          then: [T: "equação"]
+          else: [T: "linha"]
   - pause: short
   - x: "*"
 
@@ -575,6 +585,7 @@
 # artigos diferem ("a matriz" / "o determinante"), então a separação é
 # deliberada, não é lacuna de paridade.
 - name: 1x1-matrix
+  # audit-ignore: divergência deliberada do en — separada de 1x1-determinant: artigos de gêneros diferentes
   tag: matrix
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
@@ -585,6 +596,7 @@
   - x: "*[1]/*"
 
 - name: 1x1-determinant
+  # audit-ignore: divergência deliberada do en — idem
   tag: determinant
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"

@@ -40,7 +40,12 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  # ACRESCENTADO (en): numerais romanos são soletrados ("XIV" -> letra a
+  # letra), não lidos como palavra.
+  - test:
+    - if: "@data-roman-numeral"
+      then: [spell: "text()", pause: "short"]
+      else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -55,9 +60,12 @@
   replace:
   - bookmark: "@id"
   - test:
-      if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
+    - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-      else: [x: "translate(., '-_\u00A0', '  ')" ]   # from intent literals
+    # ACRESCENTADO (en): NavMode=Character precisa disto
+    - else_if: "@data-chem-element or @data-roman-numeral"
+      then: [spell: "text()", pause: "short"]
+      else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals
 
 - name: default
   tag: ms
@@ -103,7 +111,10 @@
       then: [pause: short]
   - x: "*[2]"
   - pause: short
-  - T: "fim da fração"
+  # ALINHADO ao en: o marcador de fim é dito apenas para cegueira
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then: [T: "fim da fração"]
   - pause: medium
 
 # ACRESCENTADO: leitura literal de msqrt/mroot sem semântica inferida.
@@ -126,6 +137,7 @@
       then: [T: "fim da raiz", pause: medium]
 
 - name: literal-default
+  # audit-ignore: divergência deliberada do en — ordem portuguesa: raiz de índice N de X — o teste final acompanha o último elemento falado
   tag: mroot
   match: "."
   replace:
@@ -429,13 +441,26 @@
   - x: "*"
 
 - name: default
-  # callers/context should do that.
-  # this may get called from navigation -- in that case, there is no context to speak the row #, so don't do it
-  # CORREÇÃO: o inglês usa tag [mtr, mlabeledtr]; o espanhol ficou só em mtr.
+  # ATUALIZADO para a geração atual do en: anuncia "linha N" e, no
+  # mlabeledtr, o rótulo — a versão herdada do es só falava os filhos,
+  # deixando tabelas genéricas sem anúncio de linha.
   tag: [mtr, mlabeledtr]
   match: "."
   replace:
-  - x: "*"
+  - pause: medium
+  - T: "linha"
+  - x: "count(preceding-sibling::*)+1"
+  - test:
+      if: "self::m:mlabeledtr"
+      then:
+      - T: "com rótulo"
+      - x: "*[1]/*"
+      - pause: short
+  - pause: medium
+  - test:
+      if: "self::m:mlabeledtr"
+      then: [x: "*[position()>1]"]
+      else: [x: "*"]
 
 - name: default
   tag: mtd

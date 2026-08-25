@@ -1,0 +1,704 @@
+---
+# unicode-full.yaml — português (pt-BR)
+#
+# Traduzido a partir do INGLÊS (nunca do espanhol: ver AUDITORIA.md).
+# Cobertura: as quatro faixas que o guia oficial de tradutores recomenda
+# priorizar — acentos 0x2D8-0x2DD, setas 0x2190-0x21FF, operadores
+# matemáticos 0x2200-0x22FF e formas geométricas 0x25A0-0x25FF.
+#
+# Caracteres já definidos em unicode.yaml foram deliberadamente OMITIDOS:
+# o motor avisa quando um caractere aparece nas duas tabelas.
+# Caracteres fora destas faixas caem no inglês, que é o comportamento de
+# degradação seguro do MathCAT (melhor inglês do que soletrar o codepoint).
+#
+# Todas as entradas usam T:/OT: maiúsculo porque foram conferidas uma a uma.
+# As setas seguem um padrão composicional deliberado, com a direção antes do
+# sintagma preposicional, como pede a sintaxe portuguesa:
+#     "seta para a esquerda com cauda"      (não "seta com cauda esquerda")
+#     "seta tracejada para a esquerda"      (adjetivo cola no substantivo)
+
+ - "˘": [T: "breve"]                          # 0x2d8
+ - "˚": [T: "anel acima"]                     # 0x2da
+ - "˛": [T: "ogonek"]                         # 0x2db
+ - "˜": [T: "til pequeno"]                    # 0x2dc
+ - "˝": [T: "acento agudo duplo"]             # 0x2dd
+ - "↔": [T: "seta para a esquerda e para a direita"] # 0x2194
+ - "↕": [T: "seta para cima e para baixo"]    # 0x2195
+ - "↖": [T: "seta para noroeste"]             # 0x2196
+ - "↙": [T: "seta para sudoeste"]             # 0x2199
+ - "↚": [T: "seta para a esquerda com traço"] # 0x219a
+ - "↛": [T: "seta para a direita com traço"]  # 0x219b
+ - "↜": [T: "seta ondulada para a esquerda"]  # 0x219c
+ - "↝": [T: "seta ondulada para a direita"]   # 0x219d
+ - "↞": [T: "seta de duas pontas para a esquerda"] # 0x219e
+ - "↟": [T: "seta de duas pontas para cima"]  # 0x219f
+ - "↠": [T: "seta de duas pontas para a direita"] # 0x21a0
+ - "↡": [T: "seta de duas pontas para baixo"] # 0x21a1
+ - "↢": [T: "seta para a esquerda com cauda"] # 0x21a2
+ - "↣": [T: "seta para a direita com cauda"]  # 0x21a3
+ - "↤": [T: "seta para a esquerda a partir de barra"] # 0x21a4
+ - "↥": [T: "seta para cima a partir de barra"] # 0x21a5
+ - "↦": [T: "seta para a direita a partir de barra"] # 0x21a6
+ - "↧": [T: "seta para baixo a partir de barra"] # 0x21a7
+ - "↨": [T: "seta para cima e para baixo com base"] # 0x21a8
+ - "↩": [T: "seta para a esquerda com gancho"] # 0x21a9
+ - "↪": [T: "seta para a direita com gancho"] # 0x21aa
+ - "↫": [T: "seta para a esquerda com laço"]  # 0x21ab
+ - "↬": [T: "seta para a direita com laço"]   # 0x21ac
+ - "↭": [T: "seta ondulada para a esquerda e para a direita"] # 0x21ad
+ - "↮": [T: "seta para a esquerda e para a direita com traço"] # 0x21ae
+ - "↯": [T: "seta em zigue-zague para baixo"] # 0x21af
+ - "↰": [T: "seta para cima com ponta para a esquerda"] # 0x21b0
+ - "↱": [T: "seta para cima com ponta para a direita"] # 0x21b1
+ - "↲": [T: "seta para baixo com ponta para a esquerda"] # 0x21b2
+ - "↳": [T: "seta para baixo com ponta para a direita"] # 0x21b3
+ - "↴": [T: "seta para a direita com canto para baixo"] # 0x21b4
+ - "↵": [T: "seta para baixo com canto para a esquerda"] # 0x21b5
+ - "↶": [T: "seta semicircular superior no sentido anti-horário"] # 0x21b6
+ - "↷": [T: "seta semicircular superior no sentido horário"] # 0x21b7
+ - "↸": [T: "seta para noroeste até barra longa"] # 0x21b8
+ - "↹": [T: "seta para a esquerda até barra sobre seta para a direita até barra"] # 0x21b9
+ - "↺": [T: "seta circular aberta no sentido anti-horário"] # 0x21ba
+ - "↻": [T: "seta circular aberta no sentido horário"] # 0x21bb
+ - "↼": [T: "arpão para a esquerda com farpa para cima"] # 0x21bc
+ - "↽": [T: "arpão para a esquerda com farpa para baixo"] # 0x21bd
+ - "↾": [T: "arpão para cima com farpa para a direita"] # 0x21be
+ - "↿": [T: "arpão para cima com farpa para a esquerda"] # 0x21bf
+ - "⇀": [T: "arpão para a direita com farpa para cima"] # 0x21c0
+ - "⇁": [T: "arpão para a direita com farpa para baixo"] # 0x21c1
+ - "⇂": [T: "arpão para baixo com farpa para a direita"] # 0x21c2
+ - "⇃": [T: "arpão para baixo com farpa para a esquerda"] # 0x21c3
+ - "⇄": [T: "seta para a direita sobre seta para a esquerda"] # 0x21c4
+ - "⇅": [T: "seta para cima à esquerda de seta para baixo"] # 0x21c5
+ - "⇆": [T: "seta para a esquerda sobre seta para a direita"] # 0x21c6
+ - "⇇": [T: "duas setas para a esquerda"]     # 0x21c7
+ - "⇈": [T: "duas setas para cima"]           # 0x21c8
+ - "⇉": [T: "duas setas para a direita"]      # 0x21c9
+ - "⇊": [T: "duas setas para baixo"]          # 0x21ca
+ - "⇋": [T: "arpão para a esquerda sobre arpão para a direita"] # 0x21cb
+ - "⇌": [T: "arpão para a direita sobre arpão para a esquerda"] # 0x21cc
+ - "⇍": [T: "seta dupla para a esquerda com traço"] # 0x21cd
+ - "⇎": [T: "seta dupla para a esquerda e para a direita com traço"] # 0x21ce
+ - "⇏": [T: "seta dupla para a direita com traço"] # 0x21cf
+ - "⇐": [T: "seta dupla para a esquerda"]     # 0x21d0
+ - "⇑": [T: "seta dupla para cima"]           # 0x21d1
+ - "⇓": [T: "seta dupla para baixo"]          # 0x21d3
+ - "⇔": [T: "se e somente se"]                # 0x21d4
+ - "⇕": [T: "seta dupla para cima e para baixo"] # 0x21d5
+ - "⇖": [T: "seta dupla para noroeste"]       # 0x21d6
+ - "⇗": [T: "seta dupla para nordeste"]       # 0x21d7
+ - "⇘": [T: "seta dupla para sudeste"]        # 0x21d8
+ - "⇙": [T: "seta dupla para sudoeste"]       # 0x21d9
+ - "⇚": [T: "seta tripla para a esquerda"]    # 0x21da
+ - "⇛": [T: "seta tripla para a direita"]     # 0x21db
+ - "⇜": [T: "seta serpenteante para a esquerda"] # 0x21dc
+ - "⇝": [T: "seta serpenteante para a direita"] # 0x21dd
+ - "⇞": [T: "seta para cima com traço duplo"] # 0x21de
+ - "⇟": [T: "seta para baixo com traço duplo"] # 0x21df
+ - "⇠": [T: "seta tracejada para a esquerda"] # 0x21e0
+ - "⇡": [T: "seta tracejada para cima"]       # 0x21e1
+ - "⇢": [T: "seta tracejada para a direita"]  # 0x21e2
+ - "⇣": [T: "seta tracejada para baixo"]      # 0x21e3
+ - "⇤": [T: "seta para a esquerda até barra"] # 0x21e4
+ - "⇥": [T: "seta para a direita até barra"]  # 0x21e5
+ - "⇦": [T: "seta vazada para a esquerda"]    # 0x21e6
+ - "⇧": [T: "seta vazada para cima"]          # 0x21e7
+ - "⇨": [T: "seta vazada para a direita"]     # 0x21e8
+ - "⇩": [T: "seta vazada para baixo"]         # 0x21e9
+ - "⇪": [T: "seta vazada para cima a partir de barra"] # 0x21ea
+ - "⇫": [T: "seta vazada para cima sobre pedestal"] # 0x21eb
+ - "⇬": [T: "seta vazada para cima sobre pedestal com barra horizontal"] # 0x21ec
+ - "⇭": [T: "seta vazada para cima sobre pedestal com barra vertical"] # 0x21ed
+ - "⇮": [T: "seta vazada dupla para cima"]    # 0x21ee
+ - "⇯": [T: "seta vazada dupla para cima sobre pedestal"] # 0x21ef
+ - "⇰": [T: "seta vazada para a direita a partir de parede"] # 0x21f0
+ - "⇱": [T: "seta para noroeste até o canto"] # 0x21f1
+ - "⇲": [T: "seta para sudeste até o canto"]  # 0x21f2
+ - "⇳": [T: "seta vazada para cima e para baixo"] # 0x21f3
+ - "⇴": [T: "seta para a direita com círculo pequeno"] # 0x21f4
+ - "⇵": [T: "seta para baixo à esquerda de seta para cima"] # 0x21f5
+ - "⇶": [T: "três setas para a direita"]      # 0x21f6
+ - "⇷": [T: "seta para a esquerda com traço vertical"] # 0x21f7
+ - "⇸": [T: "seta para a direita com traço vertical"] # 0x21f8
+ - "⇹": [T: "seta para a esquerda e para a direita com traço vertical"] # 0x21f9
+ - "⇺": [T: "seta para a esquerda com traço vertical duplo"] # 0x21fa
+ - "⇻": [T: "seta para a direita com traço vertical duplo"] # 0x21fb
+ - "⇼": [T: "seta para a esquerda e para a direita com traço vertical duplo"] # 0x21fc
+ - "⇽": [T: "seta de ponta aberta para a esquerda"] # 0x21fd
+ - "⇾": [T: "seta de ponta aberta para a direita"] # 0x21fe
+ - "⇿": [T: "seta vazada para a esquerda e para a direita"] # 0x21ff
+ - "∀": [T: "para todo"]                      # 0x2200
+ - "∁":                                          # 0x2201
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "o"]
+     - T: "complemento de"
+ - "∃": [T: "existe"]                         # 0x2203
+ - "∄": [T: "não existe"]                     # 0x2204
+ - "∅": [T: "conjunto vazio"]                 # 0x2205
+ - "∇": [T: "nabla"]                          # 0x2207
+ - "∋": [T: "contém o elemento"]              # 0x220b
+ - "∌": [T: "não contém o elemento"]          # 0x220c
+ - "∍": [T: "contém o elemento"]              # 0x220d
+ - "∎": [T: "fim da demonstração"]            # 0x220e
+ - "∏": [T: "produtório"]                     # 0x220f
+ - "∑": [T: "somatório"]                      # 0x2211
+ - "−": [T: "menos"]                          # 0x2212
+ - "∓": [T: "menos ou mais"]                  # 0x2213
+ - "∔": [T: "mais com ponto"]                 # 0x2214
+ - "∕": [T: "dividido por"]                   # 0x2215
+ - "∖": [T: "diferença de conjuntos"]         # 0x2216
+ - "∗": [T: "vezes"]                          # 0x2217
+ - "∙":                                            # 0x2219
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [T: "ponto"]
+        else: [T: "vezes"]
+ - "∛":                                          # 0x221b
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "a"]
+     - T: "raiz cúbica de"
+ - "∜":                                          # 0x221c
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "a"]
+     - T: "raiz quarta de"
+ - "∞": [T: "infinito"]                       # 0x221e
+ - "∟": [T: "ângulo reto"]                    # 0x221f
+ - "∠": [T: "ângulo"]                         # 0x2220
+ - "∡": [T: "ângulo medido"]                  # 0x2221
+ - "∢": [T: "ângulo esférico"]                # 0x2222
+ - "∧": [T: "e"]                              # 0x2227
+ - "∨": [T: "ou"]                             # 0x2228
+ - "∩": [T: "interseção"]                     # 0x2229
+ - "∪": [T: "união"]                          # 0x222a
+ - "∫": [T: "integral"]                       # 0x222b
+ - "∬": [T: "integral dupla"]                 # 0x222c
+ - "∭": [T: "integral tripla"]                # 0x222d
+ - "∮": [T: "integral de contorno"]           # 0x222e
+ - "∯": [T: "integral de superfície"]         # 0x222f
+ - "∰": [T: "integral de volume"]             # 0x2230
+ - "∱": [T: "integral no sentido horário"]    # 0x2231
+ - "∲": [T: "integral de contorno no sentido horário"] # 0x2232
+ - "∳": [T: "integral de contorno no sentido anti-horário"] # 0x2233
+ - "∴": [T: "portanto"]                       # 0x2234
+ - "∵": [T: "porque"]                         # 0x2235
+ - "∸": [T: "menos com ponto"]                # 0x2238
+ - "∹": [T: "tem excesso em relação a"]       # 0x2239
+ - "∺":                                          # 0x223a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente proporcional a"
+ - "∻":                                          # 0x223b
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "homotético a"
+ - "≀": [T: "produto coroa"]                  # 0x2240
+ - "≁": [T: "não é semelhante a"]             # 0x2241
+ - "≂": [T: "menos til"]                      # 0x2242
+ - "≃":                                          # 0x2243
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "assintoticamente igual a"
+ - "≄":                                          # 0x2244
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é assintoticamente igual a"
+ - "≅":                                          # 0x2245
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "congruente a"
+ - "≆":                                          # 0x2246
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente mas não realmente igual a"
+ - "≇":                                          # 0x2247
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "nem aproximadamente nem realmente igual a"
+ - "≈":                                          # 0x2248
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual a"
+ - "≉":                                          # 0x2249
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é aproximadamente igual a"
+ - "≊":                                          # 0x224a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual ou igual a"
+ - "≋": [T: "til triplo"]                     # 0x224b
+ - "≌": [T: "são todos iguais a"]             # 0x224c
+ - "≍":                                          # 0x224d
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "equivalente a"
+ - "≎":                                          # 0x224e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente equivalente a"
+ - "≏":                                          # 0x224f
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "a diferença entre"
+ - "≐": [T: "aproxima-se do limite"]          # 0x2250
+ - "≑":                                          # 0x2251
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente igual a"
+ - "≒":                                          # 0x2252
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual ou a imagem de"
+ - "≓":                                          # 0x2253
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "a imagem de ou aproximadamente igual a"
+ - "≔": [T: "dois pontos igual"]              # 0x2254
+ - "≕": [T: "igual dois pontos"]              # 0x2255
+ - "≖": [T: "igual com anel"]                 # 0x2256
+ - "≗":                                          # 0x2257
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual por definição a"
+ - "≘": [T: "corresponde a"]                  # 0x2258
+ - "≙": [T: "estima"]                         # 0x2259
+ - "≚":                                          # 0x225a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual e inclinado a"
+ - "≛": [T: "igual com estrela"]              # 0x225b
+ - "≜": [T: "igual delta"]                    # 0x225c
+ - "≝": [T: "é definido como"]                # 0x225d
+ - "≞":                                          # 0x225e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual por medida a"
+ - "≟": [T: "tem relação desconhecida com"]   # 0x225f
+ - "≢":                                          # 0x2262
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é idêntico a"
+ - "≣":                                          # 0x2263
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "estritamente equivalente a"
+ - "≨":                                          # 0x2268
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor que mas não igual a"
+ - "≩":                                          # 0x2269
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior que mas não igual a"
+ - "≬":                                          # 0x226c
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "entre"
+ - "≭":                                          # 0x226d
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é equivalente a"
+ - "≮":                                          # 0x226e
+     # audit-ignore: em português a negação já é frase completa; o "é" do
+     # inglês (is not less than) não tem par que valha suprimir no Terse
+     - T: "não é menor que"
+ - "≯":                                          # 0x226f
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior que"
+ - "≰":                                          # 0x2270
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é menor nem igual a"
+ - "≱":                                          # 0x2271
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior nem igual a"
+ - "≲":                                          # 0x2272
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor ou equivalente a"
+ - "≳":                                          # 0x2273
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior ou equivalente a"
+ - "≴":                                          # 0x2274
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é menor nem equivalente a"
+ - "≵":                                          # 0x2275
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior nem equivalente a"
+ - "≶":                                          # 0x2276
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor ou maior que"
+ - "≷":                                          # 0x2277
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior ou menor que"
+ - "≸":                                          # 0x2278
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "nem menor nem maior que"
+ - "≹":                                          # 0x2279
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "nem maior nem menor que"
+ - "≺": [T: "precede"]                        # 0x227a
+ - "≻": [T: "sucede"]                         # 0x227b
+ - "≼": [T: "precede ou é igual a"]           # 0x227c
+ - "≽": [T: "sucede ou é igual a"]            # 0x227d
+ - "≾": [T: "precede ou é equivalente a"]     # 0x227e
+ - "≿": [T: "sucede ou é equivalente a"]      # 0x227f
+ - "⊀": [T: "não precede"]                    # 0x2280
+ - "⊁": [T: "não sucede"]                     # 0x2281
+ - "⊈":                                          # 0x2288
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "não está contido em nem é igual a"
+ - "⊉":                                          # 0x2289
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "não contém nem é igual a"
+ - "⊊": [T: "está contido em mas não é igual a"] # 0x228a
+ - "⊋": [T: "contém mas não é igual a"]       # 0x228b
+ - "⊌": [T: "multiconjunto"]                  # 0x228c
+ - "⊍": [T: "multiplicação de multiconjunto"] # 0x228d
+ - "⊎": [T: "união de multiconjunto"]         # 0x228e
+ - "⊏": [T: "imagem quadrada de"]             # 0x228f
+ - "⊐": [T: "original quadrado de"]           # 0x2290
+ - "⊑": [T: "imagem quadrada de ou igual a"]  # 0x2291
+ - "⊒": [T: "original quadrado de ou igual a"] # 0x2292
+ - "⊓": [T: "interseção quadrada"]            # 0x2293
+ - "⊔": [T: "união quadrada"]                 # 0x2294
+ - "⊕": [T: "mais circulado"]                 # 0x2295
+ - "⊖": [T: "menos circulado"]                # 0x2296
+ - "⊗": [T: "vezes circulado"]                # 0x2297
+ - "⊘": [T: "barra circulada"]                # 0x2298
+ - "⊙": [T: "ponto circulado"]                # 0x2299
+ - "⊚": [T: "anel circulado"]                 # 0x229a
+ - "⊛": [T: "asterisco circulado"]            # 0x229b
+ - "⊜": [T: "igual circulado"]                # 0x229c
+ - "⊝": [T: "traço circulado"]                # 0x229d
+ - "⊞": [T: "mais enquadrado"]                # 0x229e
+ - "⊟": [T: "menos enquadrado"]               # 0x229f
+ - "⊠": [T: "vezes enquadrado"]               # 0x22a0
+ - "⊡": [T: "ponto enquadrado"]               # 0x22a1
+ - "⊢": [T: "demonstra"]                      # 0x22a2
+ - "⊣": [T: "não produz"]                     # 0x22a3
+ - "⊤": [T: "topo"]                           # 0x22a4
+ - "⊦": [T: "reduz a"]                        # 0x22a6
+ - "⊧": [T: "modela"]                         # 0x22a7
+ - "⊨":                                          # 0x22a8
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "verdadeiro"
+ - "⊩": [T: "força"]                          # 0x22a9
+ - "⊪": [T: "barra vertical tripla com catraca à direita"] # 0x22aa
+ - "⊫": [T: "barra vertical dupla com catraca dupla à direita"] # 0x22ab
+ - "⊬": [T: "não demonstra"]                  # 0x22ac
+ - "⊭":                                          # 0x22ad
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é verdadeiro"
+ - "⊮": [T: "não força"]                      # 0x22ae
+ - "⊯": [T: "barra vertical dupla com catraca dupla à direita negada"] # 0x22af
+ - "⊰": [T: "precede sob relação"]            # 0x22b0
+ - "⊱": [T: "sucede sob relação"]             # 0x22b1
+ - "⊲":                                          # 0x22b2
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "subgrupo normal de"
+ - "⊳": [T: "contém como subgrupo normal"]    # 0x22b3
+ - "⊴":                                          # 0x22b4
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "subgrupo normal de ou igual a"
+ - "⊵": [T: "contém como subgrupo normal ou é igual a"] # 0x22b5
+ - "⊶":                                          # 0x22b6
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "imagem original"
+ - "⊷":                                          # 0x22b7
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "imagem"
+ - "⊸": [T: "multimapa"]                      # 0x22b8
+ - "⊹": [T: "matriz conjugada hermitiana"]    # 0x22b9
+ - "⊺": [T: "intercala"]                      # 0x22ba
+ - "⊻": [T: "ou exclusivo"]                   # 0x22bb
+ - "⊼": [T: "não-e"]                          # 0x22bc
+ - "⊽": [T: "não-ou"]                         # 0x22bd
+ - "⊾": [T: "ângulo reto com arco"]           # 0x22be
+ - "⊿": [T: "triângulo retângulo"]            # 0x22bf
+ - "⋀": [T: "e lógico"]                       # 0x22c0
+ - "⋁": [T: "ou lógico"]                      # 0x22c1
+ - "⋂": [T: "interseção"]                     # 0x22c2
+ - "⋃": [T: "união"]                          # 0x22c3
+ - "⋄": [T: "operador losango"]               # 0x22c4
+ - "⋅":                                             # 0x22c5
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [T: "ponto"]
+        else: [T: "vezes"]
+ - "⋆": [T: "vezes"]                          # 0x22c6
+ - "⋇": [T: "divisão vezes"]                  # 0x22c7
+ - "⋈": [T: "junção"]                         # 0x22c8
+ - "⋉":                                          # 0x22c9
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "produto semidireto à esquerda"
+ - "⋊":                                          # 0x22ca
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "produto semidireto à direita"
+ - "⋋":                                          # 0x22cb
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "junção semidireta à esquerda"
+ - "⋌":                                          # 0x22cc
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "junção semidireta à direita"
+ - "⋍": [T: "til invertido igual"]            # 0x22cd
+ - "⋎": [T: "ou lógico ondulado"]             # 0x22ce
+ - "⋏": [T: "e lógico ondulado"]              # 0x22cf
+ - "⋐":                                          # 0x22d0
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "contido de forma fechada em"
+ - "⋑":                                          # 0x22d1
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "contém de forma fechada"
+ - "⋒":                                          # 0x22d2
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "interseção dupla"
+ - "⋓":                                          # 0x22d3
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "união dupla"
+ - "⋔":                                          # 0x22d4
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "transversal a"
+ - "⋕":                                          # 0x22d5
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "paralelo forquilhado a"
+ - "⋖": [T: "menor que com ponto"]            # 0x22d6
+ - "⋗": [T: "maior que com ponto"]            # 0x22d7
+ - "⋘":                                          # 0x22d8
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "muito menor que"
+ - "⋙":                                          # 0x22d9
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "muito maior que"
+ - "⋚":                                          # 0x22da
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor que, igual ou maior que"
+ - "⋛":                                          # 0x22db
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior que, igual ou menor que"
+ - "⋜":                                          # 0x22dc
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou menor que"
+ - "⋝":                                          # 0x22dd
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou maior que"
+ - "⋞":                                          # 0x22de
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou precede"
+ - "⋟":                                          # 0x22df
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou sucede"
+ - "⋠": [T: "não precede nem é igual a"]      # 0x22e0
+ - "⋡": [T: "não sucede nem é igual a"]       # 0x22e1
+ - "⋢": [T: "não é imagem quadrada de nem igual a"] # 0x22e2
+ - "⋣": [T: "não é original quadrado de nem igual a"] # 0x22e3
+ - "⋤": [T: "imagem quadrada de ou não igual a"] # 0x22e4
+ - "⋥": [T: "original quadrado de ou não igual a"] # 0x22e5
+ - "⋦":                                          # 0x22e6
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor mas não equivalente a"
+ - "⋧":                                          # 0x22e7
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior mas não equivalente a"
+ - "⋨": [T: "precede mas não é equivalente a"] # 0x22e8
+ - "⋩": [T: "sucede mas não é equivalente a"] # 0x22e9
+ - "⋪":                                          # 0x22ea
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é subgrupo normal de"
+ - "⋫": [T: "não contém como subgrupo normal"] # 0x22eb
+ - "⋬":                                          # 0x22ec
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é subgrupo normal de nem igual a"
+ - "⋭": [T: "não contém como subgrupo normal nem é igual a"] # 0x22ed
+ - "⋮": [T: "reticências verticais"]          # 0x22ee
+ - "⋯": [T: "reticências"]                    # 0x22ef
+ - "⋰": [T: "reticências diagonais para cima"] # 0x22f0
+ - "⋱": [T: "reticências diagonais"]          # 0x22f1
+ - "⋲": [T: "pertence a com traço horizontal longo"] # 0x22f2
+ - "⋳": [T: "pertence a com barra vertical no fim do traço"] # 0x22f3
+ - "⋴": [T: "pertence a com barra vertical no fim do traço"] # 0x22f4
+ - "⋵": [T: "pertence a com ponto acima"]     # 0x22f5
+ - "⋶": [T: "pertence a com barra acima"]     # 0x22f6
+ - "⋷": [T: "pertence a com barra acima"]     # 0x22f7
+ - "⋸": [T: "pertence a com barra abaixo"]    # 0x22f8
+ - "⋹": [T: "pertence a com dois traços horizontais"] # 0x22f9
+ - "⋺": [T: "contém com traço horizontal longo"] # 0x22fa
+ - "⋻": [T: "contém com barra vertical no fim do traço"] # 0x22fb
+ - "⋼": [T: "contém com barra vertical no fim do traço"] # 0x22fc
+ - "⋽": [T: "contém com barra acima"]         # 0x22fd
+ - "⋾": [T: "contém com barra acima"]         # 0x22fe
+ - "⋿": [T: "pertinência de multiconjunto da notação z"] # 0x22ff
+ - "■": [T: "quadrado preto"]                 # 0x25a0
+ - "□": [T: "quadrado branco"]                # 0x25a1
+ - "▢": [T: "quadrado branco de cantos arredondados"] # 0x25a2
+ - "▣": [T: "quadrado branco contendo quadrado preto pequeno"] # 0x25a3
+ - "▤": [T: "quadrado com preenchimento horizontal"] # 0x25a4
+ - "▥": [T: "quadrado com preenchimento vertical"] # 0x25a5
+ - "▦": [T: "quadrado com hachura ortogonal"] # 0x25a6
+ - "▧": [T: "quadrado com preenchimento diagonal descendente"] # 0x25a7
+ - "▨": [T: "quadrado com preenchimento diagonal ascendente"] # 0x25a8
+ - "▩": [T: "quadrado com hachura diagonal"]  # 0x25a9
+ - "▪": [T: "quadrado preto pequeno"]         # 0x25aa
+ - "▫": [T: "quadrado branco pequeno"]        # 0x25ab
+ - "▬": [T: "retângulo preto"]                # 0x25ac
+ - "▭": [T: "retângulo branco"]               # 0x25ad
+ - "▮": [T: "retângulo preto vertical"]       # 0x25ae
+ - "▯": [T: "retângulo branco vertical"]      # 0x25af
+ - "▰": [T: "paralelogramo preto"]            # 0x25b0
+ - "▱": [T: "paralelogramo branco"]           # 0x25b1
+ - "▲": [T: "triângulo preto apontando para cima"] # 0x25b2
+ - "△": [T: "triângulo"]                      # 0x25b3
+ - "▴": [T: "triângulo preto pequeno apontando para cima"] # 0x25b4
+ - "▵": [T: "triângulo branco pequeno apontando para cima"] # 0x25b5
+ - "▶": [T: "triângulo preto apontando para a direita"] # 0x25b6
+ - "▷": [T: "triângulo branco apontando para a direita"] # 0x25b7
+ - "▸": [T: "triângulo preto pequeno apontando para a direita"] # 0x25b8
+ - "▹": [T: "triângulo branco pequeno apontando para a direita"] # 0x25b9
+ - "►": [T: "ponteiro preto para a direita"]  # 0x25ba
+ - "▻": [T: "ponteiro branco para a direita"] # 0x25bb
+ - "▼": [T: "triângulo preto apontando para baixo"] # 0x25bc
+ - "▽": [T: "triângulo branco apontando para baixo"] # 0x25bd
+ - "▾": [T: "triângulo preto pequeno apontando para baixo"] # 0x25be
+ - "▿": [T: "triângulo branco pequeno apontando para baixo"] # 0x25bf
+ - "◀": [T: "triângulo preto apontando para a esquerda"] # 0x25c0
+ - "◁": [T: "triângulo branco apontando para a esquerda"] # 0x25c1
+ - "◂": [T: "triângulo preto pequeno apontando para a esquerda"] # 0x25c2
+ - "◃": [T: "triângulo branco pequeno apontando para a esquerda"] # 0x25c3
+ - "◄": [T: "ponteiro preto para a esquerda"] # 0x25c4
+ - "◅": [T: "ponteiro branco para a esquerda"] # 0x25c5
+ - "◆": [T: "losango preto"]                  # 0x25c6
+ - "◇": [T: "losango branco"]                 # 0x25c7
+ - "◈": [T: "losango branco contendo losango preto pequeno"] # 0x25c8
+ - "◉": [T: "olho de peixe"]                  # 0x25c9
+ - "◊": [T: "losango"]                        # 0x25ca
+ - "○": [T: "círculo branco"]                 # 0x25cb
+ - "◌": [T: "círculo pontilhado"]             # 0x25cc
+ - "◍": [T: "círculo com preenchimento vertical"] # 0x25cd
+ - "◎": [T: "alvo"]                           # 0x25ce
+ - "●": [T: "círculo preto"]                  # 0x25cf
+ - "◐": [T: "círculo com metade esquerda preta"] # 0x25d0
+ - "◑": [T: "círculo com metade direita preta"] # 0x25d1
+ - "◒": [T: "círculo com metade inferior preta"] # 0x25d2
+ - "◓": [T: "círculo com metade superior preta"] # 0x25d3
+ - "◔": [T: "círculo com quadrante superior direito preto"] # 0x25d4
+ - "◕": [T: "círculo preto exceto o quadrante superior esquerdo"] # 0x25d5
+ - "◖": [T: "meio círculo preto esquerdo"]    # 0x25d6
+ - "◗": [T: "meio círculo preto direito"]     # 0x25d7
+ - "◘": [T: "marcador inverso"]               # 0x25d8
+ - "◙": [T: "círculo branco inverso"]         # 0x25d9
+ - "◚": [T: "metade superior de círculo branco inverso"] # 0x25da
+ - "◛": [T: "metade inferior de círculo branco inverso"] # 0x25db
+ - "◜": [T: "arco circular do quadrante superior esquerdo"] # 0x25dc
+ - "◝": [T: "arco circular do quadrante superior direito"] # 0x25dd
+ - "◞": [T: "arco circular do quadrante inferior direito"] # 0x25de
+ - "◟": [T: "arco circular do quadrante inferior esquerdo"] # 0x25df
+ - "◠": [T: "semicírculo superior"]           # 0x25e0
+ - "◡": [T: "semicírculo inferior"]           # 0x25e1
+ - "◢": [T: "triângulo preto inferior direito"] # 0x25e2
+ - "◣": [T: "triângulo preto inferior esquerdo"] # 0x25e3
+ - "◤": [T: "triângulo preto superior esquerdo"] # 0x25e4
+ - "◥": [T: "triângulo preto superior direito"] # 0x25e5
+ - "◦": [T: "composição"]                     # 0x25e6
+ - "◧": [T: "quadrado com metade esquerda preta"] # 0x25e7
+ - "◨": [T: "quadrado com metade direita preta"] # 0x25e8
+ - "◩": [T: "quadrado com metade superior esquerda preta"] # 0x25e9
+ - "◪": [T: "quadrado com metade inferior direita preta"] # 0x25ea
+ - "◫": [T: "quadrado branco com linha divisória"] # 0x25eb
+ - "◬": [T: "triângulo branco apontando para cima com ponto"] # 0x25ec
+ - "◭": [T: "triângulo apontando para cima com metade esquerda preta"] # 0x25ed
+ - "◮": [T: "triângulo apontando para cima com metade direita preta"] # 0x25ee
+ - "◯": [T: "círculo grande"]                 # 0x25ef
+ - "◰": [T: "quadrado branco com quadrante superior esquerdo"] # 0x25f0
+ - "◱": [T: "quadrado branco com quadrante inferior esquerdo"] # 0x25f1
+ - "◲": [T: "quadrado branco com quadrante inferior direito"] # 0x25f2
+ - "◳": [T: "quadrado branco com quadrante superior direito"] # 0x25f3
+ - "◴": [T: "círculo branco com quadrante superior esquerdo"] # 0x25f4
+ - "◵": [T: "círculo branco com quadrante inferior esquerdo"] # 0x25f5
+ - "◶": [T: "círculo branco com quadrante inferior direito"] # 0x25f6
+ - "◷": [T: "círculo branco com quadrante superior direito"] # 0x25f7
+ - "◸": [T: "triângulo superior esquerdo"]    # 0x25f8
+ - "◹": [T: "triângulo superior direito"]     # 0x25f9
+ - "◺": [T: "triângulo inferior esquerdo"]    # 0x25fa
+ - "◻": [T: "quadrado branco médio"]          # 0x25fb
+ - "◼": [T: "quadrado preto médio"]           # 0x25fc
+ - "◽": [T: "quadrado branco pequeno médio"]  # 0x25fd
+ - "◾": [T: "quadrado preto pequeno médio"]   # 0x25fe
+ - "◿": [T: "triângulo inferior direito"]     # 0x25ff

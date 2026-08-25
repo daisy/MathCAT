@@ -2,13 +2,16 @@
 
 - name: divergence
   tag: divergence
-  match: "."
+  match: "count(*) = 1"
   replace:
+  # CORREÇÃO: a polaridade estava invertida — o modo padrão (Medium) ouvia a
+  # abreviação "div"; o nome completo só saía no Verbose. No inglês, só o
+  # Terse abrevia. E o "de" era incondicional, contrariando TerseFunctionNames
+  # (divergence/curl/gradient não dizem "de" no modo conciso).
   - test:
-      if: "$Verbosity='Verbose'"
-      then: [T: "divergente"]      # phrase('divergence' from the mean)
-      else: [T: "div"]      # phrase('divergence' from the mean)
-  - T: "de"      # phrase(systems 'of' linear equations)
+      if: "$Verbosity='Terse'"
+      then: [T: "div"]
+      else: [T: "divergente de"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -16,9 +19,12 @@
 
 - name: curl
   tag: curl
-  match: "."
+  match: "count(*) = 1"
   replace:
-  - T: "rotacional de"      # phrase(the 'curl of' a field)
+  - T: "rotacional"      # phrase(the 'curl of' a field)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -26,7 +32,7 @@
 
 - name: gradient
   tag: gradient
-  match: "."
+  match: "count(*) = 1"
   replace:
   - test:
       if: "$Verbosity!='Terse'"

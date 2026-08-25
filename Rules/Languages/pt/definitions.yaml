@@ -55,6 +55,25 @@
 # NOTA DE TRADUÇÃO: no arquivo em espanhol esta seção ficou em inglês.
 # Aqui está traduzida, porque estas palavras são faladas durante a
 # navegação ex.: "saindo de numerador, em denominador" etc
+# ACRESCENTADO: definição presente em en/ e ausente em es/ (e portanto em pt).
+# ATENÇÃO: estes NÃO são textos falados — são nomes de intent (chaves internas
+# do motor, sempre em inglês). A regra os consulta com IsInDefinition(name(.), ...).
+# Traduzi-los quebraria o casamento. Copiados tal e qual do inglês.
+- TerseFunctionNames: {
+    "divergence", "del:gradient", "curl"
+  }
+
+# ACRESCENTADO: definição presente em en/ e ausente em es/ (e portanto em pt).
+# O motor junta sequências de 3+ <mi> que formam uma palavra (erro comum de
+# autoria), mas PULA as que estão em ordem alfabética, supondo que sejam
+# variáveis soltas (a, b, c). Esta lista é a exceção: palavras reais que por
+# acaso estão em ordem alfabética crescente e sem letras repetidas.
+# O comentário do arquivo inglês diz explicitamente "Change the list for other
+# languages" — a lista inglesa (Abel, aery, ails...) não serve para nós.
+- KnownWords: {
+    "abs", "adj", "ano", "cel", "dez", "din", "elo", "fim", "lux", "nos"
+  }
+
 - NavigationParts: {
     "large-op": "base; limite inferior; limite superior",
     "mfrac": "numerador;denominador",

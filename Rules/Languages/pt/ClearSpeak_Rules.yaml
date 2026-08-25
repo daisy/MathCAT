@@ -61,6 +61,7 @@
       else: [pause: long]
 
 - name: default
+  # audit-ignore: divergência deliberada do en — adjetivo positiva/negativa pós-posto (ordem do português)
   tag: root
   match: "."
   replace:
@@ -250,6 +251,7 @@
         else: [bookmark: "*[2]/@id", T: "inversa de", x: "*[1]"] # default/Auto
 
 - name: function-squared-or-cubed
+  # audit-ignore: divergência deliberada do en — ao quadrado/ao cubo com par verboso padronizado
   tag: power
   match:
   - "*[2][self::m:mn][.='2' or .='3'] and"
@@ -266,6 +268,7 @@
       # CORREÇÃO: espanhol dizia "al cubo" sem par verboso; padronizado
       else: [T: "ao cubo"]
 - name: function-power
+  # audit-ignore: divergência deliberada do en — forma cardinal no lugar de ToOrdinal (sem ordinais femininos no motor)
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -323,6 +326,7 @@
   - T: "ao cubo"
 
 - name: simple-integer
+  # audit-ignore: divergência deliberada do en — forma cardinal; preferência Ordinal degrada documentadamente
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
@@ -336,6 +340,7 @@
   - x: "*[2]"
 
 - name: simple-negative-integer
+  # audit-ignore: divergência deliberada do en — forma cardinal
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
@@ -347,6 +352,7 @@
   - x: "*[2]"
 
 - name: simple-var
+  # audit-ignore: divergência deliberada do en — sem o sufixo fonético inglês -th
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
@@ -475,6 +481,7 @@
 #
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
   name: ClearSpeak-absolute-value
+  # audit-ignore: divergência deliberada do en — três variáveis por causa do gênero (a cardinalidade / o valor absoluto)
   tag: absolute-value
   match: "."
   # CORREÇÃO: as palavras da variável são FALADAS (x: "$WordToSay") e
@@ -499,6 +506,7 @@
   - pause: short
 
 - name: set
+  # audit-ignore: divergência deliberada do en — conjunto de todos os x tal que (uso brasileiro)
   tag: set
   match: "."
   replace:
@@ -654,6 +662,7 @@
       else: [spell: "'ln'"]
 
 - name: ClearSpeak-multi-line
+  # audit-ignore: divergência deliberada do en — plural por cadeias singular/plural, não por concatenação de s
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
   variables: [IsColumnSilent: true()]
@@ -704,6 +713,7 @@
   - x: "*"
 
 - name: ClearSpeak-default-multiline
+  # audit-ignore: divergência deliberada do en — rótulos com plural correto
   tag: [mtr, mlabeledtr]
   match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
   replace:
@@ -764,6 +774,7 @@
   - T: ""
 
 - name: ClearSpeak-times
+  # audit-ignore: divergência deliberada do en — vezes/multiplicado por conforme verbosidade (léxico ACESSÍLIA)
   tag: mo
   match:
   # say "times" when invisible times is followed by parens or a superscript that has a base with parens or "|"s
@@ -792,6 +803,7 @@
       else: [T: "vezes"]
 
 - name: no-say-parens
+  # audit-ignore: divergência deliberada do en — idem ClearSpeak-times
   tag: mrow
   match:
   - "parent::*[not(self::m:msup) and not(self::m:msub) and not(self::m:msubsup) and not(self::m:power) and"
