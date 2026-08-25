@@ -2231,6 +2231,8 @@ pub fn invalidate_braille_caches() {
     BRAILLE_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
     BRAILLE_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
     BRAILLE_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    crate::ueb_symbols::clear_ueb_symbol_cache();
+    crate::nemeth_symbols::clear_nemeth_symbol_cache();
 }
 
 #[cfg(test)]

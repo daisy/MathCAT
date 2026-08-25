@@ -16,6 +16,7 @@ use std::path::PathBuf;
 struct Case {
     file: String,
     name: String,
+    code: String,
     original: String,
     /// Preference overrides from `test_from_braille_prefs` (empty for plain cases).
     prefs: Vec<(String, String)>,
@@ -32,8 +33,12 @@ struct Mismatch {
     detail: String,
 }
 
-fn from_braille_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/FromBraille/UEB")
+fn from_braille_dirs() -> Vec<(PathBuf, &'static str)> {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/FromBraille");
+    vec![
+        (root.join("UEB"), "UEB"),
+        (root.join("Nemeth"), "Nemeth"),
+    ]
 }
 
 /// Parse `vec![("k", "v"), ...]` from a single-line `test_from_braille_prefs` call.
@@ -59,49 +64,57 @@ fn parse_prefs_vec(s: &str) -> Vec<(String, String)> {
 
 fn extract_cases() -> Vec<Case> {
     let mut cases = Vec::new();
-    for entry in fs::read_dir(from_braille_dir()).unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
-        if path.extension().and_then(|e| e.to_str()) != Some("rs") {
+    for (dir, code) in from_braille_dirs() {
+        let Ok(entries) = fs::read_dir(&dir) else {
             continue;
-        }
-        let file = path.file_name().unwrap().to_string_lossy().to_string();
-        let text = fs::read_to_string(&path).unwrap();
-        let mut name = String::new();
-        for line in text.lines() {
-            let t = line.trim();
-            if let Some(rest) = t.strip_prefix("fn ") {
-                if let Some(n) = rest.split('(').next() {
-                    name = n.trim().to_string();
-                }
-            }
-            // Prefs form: test_from_braille_prefs("UEB", vec![...], expr, "BRAILLE")
-            if let Some(idx) = t.find("test_from_braille_prefs(\"UEB\", vec![") {
-                let after_vec = &t[idx + "test_from_braille_prefs(\"UEB\", vec![".len()..];
-                let Some(vec_end) = after_vec.find("], expr, \"") else {
-                    continue;
-                };
-                let prefs = parse_prefs_vec(&after_vec[..vec_end]);
-                let after = &after_vec[vec_end + "], expr, \"".len()..];
-                if let Some(end) = after.find('"') {
-                    cases.push(Case {
-                        file: file.clone(),
-                        name: name.clone(),
-                        original: after[..end].to_string(),
-                        prefs,
-                    });
-                }
+        };
+        for entry in entries {
+            let entry = entry.unwrap();
+            let path = entry.path();
+            if path.extension().and_then(|e| e.to_str()) != Some("rs") {
                 continue;
             }
-            if let Some(idx) = t.find("test_from_braille(\"UEB\", expr, \"") {
-                let after = &t[idx + "test_from_braille(\"UEB\", expr, \"".len()..];
-                if let Some(end) = after.find('"') {
-                    cases.push(Case {
-                        file: file.clone(),
-                        name: name.clone(),
-                        original: after[..end].to_string(),
-                        prefs: Vec::new(),
-                    });
+            let file = format!("{code}/{}", path.file_name().unwrap().to_string_lossy());
+            let text = fs::read_to_string(&path).unwrap();
+            let mut name = String::new();
+            let prefs_needle = format!("test_from_braille_prefs(\"{code}\", vec![");
+            let plain_needle = format!("test_from_braille(\"{code}\", expr, \"");
+            for line in text.lines() {
+                let t = line.trim();
+                if let Some(rest) = t.strip_prefix("fn ") {
+                    if let Some(n) = rest.split('(').next() {
+                        name = n.trim().to_string();
+                    }
+                }
+                if let Some(idx) = t.find(&prefs_needle) {
+                    let after_vec = &t[idx + prefs_needle.len()..];
+                    let Some(vec_end) = after_vec.find("], expr, \"") else {
+                        continue;
+                    };
+                    let prefs = parse_prefs_vec(&after_vec[..vec_end]);
+                    let after = &after_vec[vec_end + "], expr, \"".len()..];
+                    if let Some(end) = after.find('"') {
+                        cases.push(Case {
+                            file: file.clone(),
+                            name: name.clone(),
+                            code: code.to_string(),
+                            original: after[..end].to_string(),
+                            prefs,
+                        });
+                    }
+                    continue;
+                }
+                if let Some(idx) = t.find(&plain_needle) {
+                    let after = &t[idx + plain_needle.len()..];
+                    if let Some(end) = after.find('"') {
+                        cases.push(Case {
+                            file: file.clone(),
+                            name: name.clone(),
+                            code: code.to_string(),
+                            original: after[..end].to_string(),
+                            prefs: Vec::new(),
+                        });
+                    }
                 }
             }
         }
@@ -185,11 +198,15 @@ fn categorize(original: &str, regenerated: &str, mathml: &str) -> (String, Strin
     ("other".into(), detail)
 }
 
-fn roundtrip_one(original: &str, prefs: &[(String, String)]) -> Result<(String, String), String> {
+fn roundtrip_one(
+    code: &str,
+    original: &str,
+    prefs: &[(String, String)],
+) -> Result<(String, String), String> {
     set_rules_dir(abs_rules_dir_path()).map_err(|e| format!("rules: {e}"))?;
     set_preference("DecimalSeparator", "Auto").ok();
     set_preference("BrailleNavHighlight", "Off").ok();
-    set_preference("BrailleCode", "UEB").map_err(|e| format!("pref: {e}"))?;
+    set_preference("BrailleCode", code).map_err(|e| format!("pref: {e}"))?;
     set_preference("LaTeX_UseShortName", "false").ok();
     set_preference("Language", "en").ok();
     // Match `test_braille_prefs` / `test_from_braille_prefs`: reset then apply overrides
@@ -199,7 +216,7 @@ fn roundtrip_one(original: &str, prefs: &[(String, String)]) -> Result<(String, 
     for (k, v) in prefs {
         set_preference(k, v).map_err(|e| format!("pref {k}: {e}"))?;
     }
-    let parsed = Braille_to_MathML(original, "UEB").map_err(|e| format!("parse: {e}"))?;
+    let parsed = Braille_to_MathML(original, code).map_err(|e| format!("parse: {e}"))?;
     set_mathml(&parsed).map_err(|e| format!("set_mathml: {e}"))?;
     let regen = get_braille("").map_err(|e| format!("get_braille: {e}"))?;
     Ok((parsed, regen))
@@ -222,7 +239,7 @@ fn report_from_braille_roundtrips() {
     let mut matches = 0usize;
 
     for case in &cases {
-        match roundtrip_one(&case.original, &case.prefs) {
+        match roundtrip_one(&case.code, &case.original, &case.prefs) {
             Ok((mathml, regen)) => {
                 if regen == case.original {
                     matches += 1;

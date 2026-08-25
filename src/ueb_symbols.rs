@@ -59,7 +59,6 @@ pub fn match_ueb_symbol(input: &str) -> Option<(String, String)> {
 }
 
 /// Drop the cached table so the next parse reloads YAML (e.g. after prefs change).
-#[allow(dead_code)]
 pub fn clear_ueb_symbol_cache() {
     UEB_SYMBOLS.with(|cell| *cell.borrow_mut() = None);
 }

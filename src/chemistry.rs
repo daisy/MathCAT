@@ -1861,6 +1861,12 @@ static CHEMICAL_ELEMENT_ATOMIC_NUMBER: phf::Map<&str, u32> = phf_map! {
     "Rg" => 111, "Cn" => 112, "Nh" => 113, "Fl" => 114, "Mc" => 115, "Lv" => 116, "Ts" => 117, "Og" => 118, 
 };
 
+/// True when `s` is an element symbol (H, Cl, Uue-style names in the table).
+pub(crate) fn is_element_symbol(s: &str) -> bool {
+    CHEMICAL_ELEMENT_ATOMIC_NUMBER.contains_key(s)
+        || CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(s)
+}
+
 pub fn is_chemical_element(node: Element) -> bool {
 	// FIX: allow name to be in an mrow (e.g., <mi>N</mi><mi>a</mi>
 	let name = name(node);

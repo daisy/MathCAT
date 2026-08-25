@@ -35,6 +35,7 @@ pub mod speech;
 mod braille;
 pub mod parser;
 mod ueb_symbols;
+mod nemeth_symbols;
 mod navigate;
 mod prefs;
 mod tts;

@@ -9,4 +9,10 @@ mod FromBraille {
         mod other;
         mod partial;
     }
+    mod Nemeth {
+        mod rules;
+        mod other;
+        mod chemistry;
+        mod partial;
+    }
 }
