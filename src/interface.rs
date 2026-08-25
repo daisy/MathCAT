@@ -1128,7 +1128,8 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
     /// compares attributes -- '==' didn't seems to work
     fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
         let keep = |a: &Attribute| {
-            let name = as_qname!(a.name()).local_part();
+            let qname = a.name();
+            let name = as_qname!(qname).local_part();
             // MathJax / presentation attrs vary; ids are added by set_mathml.
             !ignore.contains(&name) && !name.starts_with("data-mjx")
         };
