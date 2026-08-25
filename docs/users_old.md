@@ -160,9 +160,6 @@ ClearSpeak has a number of options. These were designed for authors to use, but 
   * ✓UseSpacesAroundAllOperators: [false]
     * Options: true/false
     * Description: The UEB guidelines suggest that for lower grades, adding space around operators such as `+` and `-` can be a good idea. Normally, space is only added around relational operators such as `=` and `<`.
-  * G1_BANA_Style: [true]
-    * Options: true/false
-    * Description: chooses how grade 1 indicators are placed. `true` follows the BANA 2019 provisional guidance (grade 1 word/passage decided for the whole expression); `false` follows ICEB GTM 1.7 (grade 1 indicators chosen per symbols-sequence, with a passage only when three or more sequences need grade 1).
 
 Braille codes often have author-definable characters. MathCAT provides some options:
 

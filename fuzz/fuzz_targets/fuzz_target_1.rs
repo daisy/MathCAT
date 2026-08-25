@@ -101,7 +101,7 @@ fn value_choices_for_key(key: &str, default: &str) -> Vec<String> {
         "CopyAs" => vec!["MathML", "LaTeX", "ASCIIMath"],
         "BrailleNavHighlight" => vec!["Off", "FirstChar", "EndPoints", "All"],
         "UEB_StartMode" => vec!["Grade1", "Grade2"],
-        "LaTeX_UseShortName" | "Vietnam_UseDropNumbers" | "UEB_G1_BANA_Style" => vec!["true", "false"],
+        "LaTeX_UseShortName" | "Vietnam_UseDropNumbers" => vec!["true", "false"],
         "DecimalSeparator" => vec!["Auto", ".", ","],
         _ if key.starts_with("ClearSpeak_") => vec![
             "Auto", "Verbose", "Ordinal", "Over", "None", "Speak", "TrigInverse", "AbsEnd",
