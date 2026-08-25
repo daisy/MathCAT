@@ -1,0 +1,980 @@
+---
+-
+  name: whitespace-omission
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingWhitespace) and (@data-previous-space-width >= 0.35 or @data-following-space-width >= 0.35)"
+  replace:
+   - with:
+      variables: [MatchingWhitespace: "true()"]
+      replace:
+      - test:
+        - if: "@class='MathML-unit' or BaseNode(.)[@class='MathML-unit'] or @data-previous-space-width >= 0.35"  # BANA 5.3(a)
+          then: [t: "W"]
+      - x: "."
+      - test:
+        - if: "@class='MathML-unit' or BaseNode(.)[@class='MathML-unit'] or @data-following-space-width >= 0.35" # BANA 5.3(a)
+          then: [t: "W"]
+
+-
+   name: omission-intent
+   tag: "!*"
+   match: "contains(@intent, ':blank')"
+   replace: 
+   - t: "⠬"
+
+-
+   name: unicode-override
+   tag: "*"
+   match: "@data-unicode"
+   replace: 
+   - x: "@data-unicode"
+
+-
+  name: default
+  tag: msqrt
+  match: "."
+  replace: 
+  - t: "b⠜"
+  - test:
+      if: "NeedsToBeGrouped(*[1], 'French', true())"
+      then:
+      - t: "o"
+      - x: "*[1]"
+      - t: "c"
+      else:
+      - x: "*[1]"
+  - t: "e"
+
+-
+  name: default
+  tag: mroot
+  match: "."
+  replace: 
+  - t: "b"
+  - t: "L⠈"    # this ("L") is a hack -- it allows the optional group indicators to be added if needed before the mroot
+  - test:
+      if: "NeedsToBeGrouped(*[2], 'French', false())"
+      then:
+      - t: "o"
+      - x: "*[2]"
+      - t: "c"
+      else:
+      - x: "*[2]"
+  - t: "⠜"
+  - test:
+      if: "NeedsToBeGrouped(*[1], 'French', false())"
+      then:
+      - t: "o"
+      - x: "*[1]"
+      - t: "c"
+      else:
+      - x: "*[1]"
+  - t: "e"
+      
+               
+# Fraction rules
+   # The fraction part of a mixed number is always simple
+   # They also differ because a two character sequence is needed to bracket the fraction
+   # The invisible plus should produce an empty string
+
+-
+  name: common-fraction-mixed-number
+  tag: mfrac
+  match:
+      - "preceding-sibling::*[1][self::m:mo][text()='\u2064'] and" # preceding element is invisible plus
+      - "*[1][self::m:mn][not(contains(., '.'))]   and" 
+      - "*[2][self::m:mn][not(contains(., '.'))]"
+  replace: 
+  - t: "b"
+  - x: "*[1]"
+  - t: "N⠌"
+  - x: "*[2]"
+  - t: "e"
+
+-
+  name: default
+  tag: mfrac
+  match: "."
+  replace:
+  - t: "b"
+  - test:
+      if: "NeedsToBeGrouped(*[1], 'French', true())"
+      then:
+      - t: "o"
+      - x: "*[1]"
+      - t: "c"
+      else:
+      - x: "*[1]"
+  - t: "⠌"
+  - test:
+      if: "NeedsToBeGrouped(*[2], 'French', true())"
+      then:
+      - t: "o"
+      - x: "*[2]"
+      - t: "c"
+      else:
+      - x: "*[2]"
+  - t: "e"
+-
+  name: default-mtable
+  tag: mtable
+  match: "."
+  replace:
+  - x: "*"
+-
+  name: default
+  tag: [mtr, mlabeledtr]
+  match: "."
+  # When an mtable is used in a script position (e.g. stacked lim conditions), §14.2
+  # joins rows with a comma (⠂) rather than the matrix row-change (⠠⠜).
+  variables:
+  - InScriptPosition: "parent::m:mtable[preceding-sibling::* and IsNode(.., 'modified')]"
+  replace:
+  - test: 
+      if: "preceding-sibling::*"
+      then:
+        - test:
+            if: "$InScriptPosition"
+            then: [t: "⠂"]       # comma between script-position rows
+            else: [t: "W⠠⠜W"]  # matrix/system row change
+  - test:
+      if: .[self::m:mlabeledtr]
+      then: [x: "*[position()>1]"]
+      else: {x: "*"}
+  - test:
+      if: "following-sibling::* and not($InScriptPosition)"
+      then: [t: "W"]
+
+-
+  name: default
+  tag: mtd
+  match: "."
+  replace:
+  - test:
+      if: "preceding-sibling::*"
+      then: [t: "W"]
+  - test:
+      if: "*[1][self::m:mtext and .=' ']"  # empty or non-breaking space (canonicalized to this)
+      then: [t: "⠐⠂"]
+      else: [x: "*"]
+
+-
+   name: no-content
+   tag: math
+   match: "not(*)"      # empty
+   replace: [t: "W"]    # not sure that is right, but this shouldn't happen
+
+-
+  name: default
+  tag: math
+  match: "."
+  variables:
+  - MatchingWhitespace: "false()"
+  replace:
+  - test:
+      if: "@display='inline' and not(*[1][self::m:mi])"   # FIX: should check to make sure it is only (Roman?) letters 
+      then: [t: "P"]  # Add inline indicator
+  - x: "*"
+
+-
+    name: empty-mrow
+    tag: mrow
+    match: "not(*)"
+    replace: [t: "W"] # not sure what is correct -- if in a fraction, probably something is better than nothing
+
+-
+   name: binomial-frac
+   tag: mrow
+   match: "IsBracketed(., '(', ')') and *[2][self::m:mfrac][@linethickness=0]"
+   replace: 
+   - t: "⠘⠦"   # large left parenthesis
+   - x: "*[2]/*[1]"
+   - t: "⠠⠜"
+   - x: "*[2]/*[2]"
+   - t: "⠘⠴"   # large right parenthesis
+
+# - name: binomial-table
+#   tag: mrow
+#   match: "IsBracketed(., '(', ')') and *[2][self::m:mtable][count(*)=2 and count(*[1])=1] and contains(@intent, 'binomial(')"
+#   replace:
+#      - x: "*[1]"
+#      - x: "*[2]/*[1]/*[1]/*[1]"
+#      - t: "⠰⠻"
+#      - x: "*[2]/*[2]/*[1]/*[1]"
+#      - x: "*[3]"
+
+-
+  # integral rules -- need to group the integrand (but not the 'd x')
+  # we look for what follows the integral and check for 'd' in the next to last element and group what comes before it (assuming there is more than one element)
+  # note: we need to skip the invisible times when checking for 'd'
+  name: integrals
+  tag: mrow
+  match: "BaseNode(*[1])[translate(., '∫∬∭∮', '')=''] and
+          *[2][self::m:mrow][count(*)>5 and *[last()-2][self::m:mi][.='d' or .='ⅆ']]"
+  replace:
+  - x: "*[1]"
+  - t: "o"
+  - x: "*[2]/*[position() <= last()- 4]"
+  - t: "c"
+  - x: "*[2]/*[last()-2]"
+  - x: "*[2]/*[last()]"
+
+# -
+#   # From 14.5, 14.6, and 14.7 -- need to add block indicators around the argument unless it has parens
+#   name: trig-functions
+#   tag: mrow
+#   match: "count(*)=3 and *[2]='\u2061' and
+#           (IsInDefinition(BaseNode(*[1]), 'Braille', 'TrigFunctionNames') or BaseNode(*[1]) = 'lim') and not(IsBracketed(*[3], '(', ')'))"
+#   replace:
+#   - x: "*[1]"
+#   - test:
+#       # p51 -- use short form for (some) trig functions; always group unless short form and no grouping needed
+#       if: "not($French_UseShortForm and IsInDefinition(BaseNode(*[1]), 'Braille', 'ShortForms')) or
+#            NeedsToBeGrouped(*[3], 'French', true())"
+#       then:
+#       - t: "o"
+#       - x: "*[3]"
+#       - t: "c"
+#       else:
+#       - x: "*[3]"
+
+-
+  # grouping rules -- need to add grouping symbols for some cases
+  # From 14.5, 14.6, and 14.7 -- need to add block indicators around the argument unless it has parens
+  name: function-call
+  tag: mrow
+  # we include invisible times in the match because some AbbreviationsForGrouping are not function names
+  match: "count(*)=3 and *[2][self::m:mo][.='\u2061'or .='\u2062'] and
+          not(*[3][self::m:mrow][IsBracketed(., '(', ')') or IsBracketed(., '[', ']')]) and
+          BaseNode(*[1])[self::m:mi]
+                        [not($French_UseShortForm and IsInDefinition(., 'Braille', 'ShortForms')) and
+                         (IsInDefinition(., 'Braille', 'TrigFunctionNames') or IsInDefinition(., 'Braille', 'AbbreviationsForGrouping'))]"
+  replace:
+  - x: "*[1]"
+  - t: "o"
+  - x: "*[3]"
+  - t: "c"
+  
+-
+   name: default
+   tag: mrow
+   match: "."
+   replace: [x: "*"]
+
+
+-
+   # operator omission
+   name: operator-omission
+   tag: mo
+   # normally(?) this is an omission, but the case 6'2" causes problems due to WIRIS
+   # in that case, it doesn't put the ft/in in a superscript and thinks the space is an operator
+   # canonicalization moves them into <msup> with base <mn>, so this shouldn't be an omission for that case
+   match: ".='\u00A0' and @width > 1.1 and 
+           not( preceding-sibling::*[1][self::m:msup and *[2][self::m:mo]] and
+                following-sibling::*[1][self::m:msup and *[2][self::m:mo]] )"
+   replace:
+   - t: "⠬"   # empty space for omission
+
+-
+  # "∼" can be a prefix *operator* or an infix comparison -- they have different spacing. We catch the prefix version here
+  # Note: ASCII "~" has been canonicalized to occur only in a diacritical position
+  name: prefix-tilde
+  tag: mo
+  match: "translate(., '∼', '')='' and not(preceding-sibling::*) and parent::m:mrow"
+  replace:
+  - x: "text()"
+
+-
+  name: default
+  tag: mo
+  match: "."
+  replace:
+  - x: "text()"
+
+
+-
+   name: default
+   tag: mn
+   match: "."
+   replace:
+   - x: "BrailleChars(., 'French')"
+-
+   name: default
+   tag: [mi, mtext]
+   match: "."
+   replace:
+   - test:
+      if: "$French_UseShortForm"
+      then_test:
+        - if: "IsInDefinition(., 'Braille', 'ShortForms')"
+          then: [x: "DEBUG(DefinitionValue(., 'Braille', 'ShortForms'))"]     # sin
+        - else_if: "IsInDefinition(., 'Braille', 'ShortFormAbbreviations')"   # cosh ->  ch
+          then: [x: "BrailleChars(DefinitionValue(., 'Braille', 'ShortFormAbbreviations'), 'French')"]
+          else: [x: "BrailleChars(., 'French')"]
+      else: [x: "BrailleChars(., 'French')"]
+
+-
+   name: default
+   tag: mstyle
+   match: "."
+   replace:
+   - test:
+      if: "*"
+      then: [x: "*"]
+      # else do nothing -- no content
+
+-
+  name: mhchem-hack
+  # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  tag: mover
+  match:
+  -    "*[1][substring(., 1, 1)='↽'] and"
+  -    "*[2][substring(., string-length(), 1)='⇀']"
+  replace:
+  - t: "W"
+  - test:
+      if: "*[1][self::m:mrow]"
+      then_test:
+          if: "*[2][self::m:mrow]"
+          then: [x: "'🣑'"]    # 0x1f8d1 -- this is currently unassigned and may get used by UTC at some point (<=>)
+          else: [x: "'🣓'"]    # 0x1f8d3 -- this is currently unassigned and may get used by UTC at some point (<<=>)
+      else: [x: "'🣒'"]        # 0x1f8d2 -- this is currently unassigned and may get used by UTC at some point (<=>>)
+  - t: "W"
+
+-
+  # special hack to catch double over/under bar built from nested mover/munder
+  name: doubled-line-hack-exception 
+  tag: mover
+  match:
+  - "*[2][self::m:mo and string-length(.) = 1 and (.='¯')] and"    # has line/bar
+  - "(*[1][self::m:mover] and *[1]/*[2][self::m:mo and string-length(.) = 1 and (.='¯')])" 
+  replace: 
+  - t: "⠘⠸⠒"
+  - x: "*[1]"
+
+-
+  # Drop subscript indicator for chemistry (e.g., H₂O → ⠨⠓⠣⠨⠕)
+  name: single-char-exceptions 
+  tag: msub
+  match: "@data-chem-formula"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+-
+  # Drop superscript indicator for primes and degree (units: 37° → ⠩⠻⠐⠕, not …⠈⠐⠕)
+  name: single-char-exceptions 
+  tag: msup
+  match: "*[2][translate(., \"'′″‴°º\",'')='']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+-
+  # Chemistry ion charges keep ⠈; group when followed by the same operator (chem spec p.9)
+  # or when the charge itself needs grouping (e.g. 2-)
+  name: chemistry-charge
+  tag: msup
+  match: "@data-chem-formula"
+  replace:
+  - x: "*[1]"
+  - t: "⠈"
+  - test:
+      if: "*[2][self::m:mo] and following::*[1][self::m:mo and .=preceding::*[1]]"
+      then:
+      - t: "o"
+      - x: "*[2]"
+      - t: "c"
+      else:
+      - test:
+          if: "NeedsToBeGrouped(*[2], 'French', false())"
+          then:
+          - t: "o"
+          - x: "*[2]"
+          - t: "c"
+          else: [x: "*[2]"]
+
+-
+  # Chemistry ion with both an atom count (subscript) and a charge (superscript), e.g. SO₄²⁻.
+  # The subscript drops its indicator like the msub single-char-exceptions rule (@data-chem-formula),
+  # and the superscript charge is handled exactly like the chemistry-charge msup rule.
+  name: chemistry-charge
+  tag: msubsup
+  match: "@data-chem-formula"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"    # subscript count: single-char-exception -> no ⠢ indicator
+  - t: "⠈"
+  - test:
+      if: "*[3][self::m:mo] and following::*[1][self::m:mo and .=preceding::*[1]]"
+      then:
+      - t: "o"
+      - x: "*[3]"
+      - t: "c"
+      else:
+      - test:
+          if: "NeedsToBeGrouped(*[3], 'French', false())"
+          then:
+          - t: "o"
+          - x: "*[3]"
+          - t: "c"
+          else: [x: "*[3]"]
+
+-
+  name: single-char-exceptions 
+  tag: [mover]
+  match: "*[2][translate(., \"⌒⌢⏜^→⇀¯⌣◌̌~\",'')='']"
+  replace:
+  - x: "*[2]"
+  - x: "*[1]"
+
+-
+  # Nested munder/mover for lim / large operators (§14.2): join the two script
+  # conditions with a comma (⠂), like script-position mtables — one script
+  # indicator and one block around both conditions.
+  name: nested-lim-or-largeop-conditions
+  tag: [munder, mover]
+  match: "((self::m:munder and *[1][self::m:munder]) or (self::m:mover and *[1][self::m:mover])) and
+          *[1]/*[1][IsInDefinition(., 'Braille', 'LargeOperators') or .='lim' or .='Lim']"
+  replace:
+  - t: "b"
+  - test:
+      if: "NeedsToBeGrouped(*[1]/*[1], 'French', true())"
+      then:
+      - t: "o"
+      - x: "*[1]/*[1]"
+      - t: "c"
+      else: [x: "*[1]/*[1]"]
+  - test:
+      - if: "self::m:munder"
+        then: [t: "⠢⠢"]
+        else: [t: "⠈⠈"]
+  - t: "o"
+  - x: "*[1]/*[2]"
+  - t: "⠂"
+  - x: "*[2]"
+  - t: "c"
+  - t: "e"
+
+-
+   name: default
+   tag: [msub, msup, munder, mover]
+   match: "."
+   replace:
+   - t: "b"
+   - test:
+         if: "(self::m:munder or self::m:mover) and NeedsToBeGrouped(*[1], 'French', true())"
+         then:
+         - t: "o"
+         - x: "*[1]"
+         - t: "c"
+         else: [x: "*[1]"]
+   - test:
+      - if: "self::m:msup"
+        then: [t: "⠈"]
+      - else_if: "self::m:msub"
+        then: [t: "⠢"]
+      - else_if: "self::m:munder"
+        then: [t: "⠢⠢"]
+        else: [t: "⠈⠈"]  # mover
+   - test:
+      if: "NeedsToBeGrouped(*[2], 'French', false())"
+      then:
+      - t: "o"
+      - x: "*[2]"
+      - t: "c"
+      else: [x: "*[2]"]
+   - t: "e"
+
+
+
+-
+  # Lewis doublets: bars above or below an atom → output "1d"
+  name: lewis-doublets
+  tag: [munder, mover]
+  match: "*[2][.='¯'] and (*[1][@data-chem-element] or ancestor-or-self::*[contains(@intent, ':chemical-formula')] or ancestor-or-self::*[@data-chem-formula])"
+  replace:
+  - x: "*[1]"
+  - t: "⠰⠡⠙⠆"
+
+-
+  # Lewis doublets: bars above and below an atom → output "2d" (chem spec §I.5)
+  name: lewis-doublets
+  tag: munderover
+  match: "*[2][.='¯'] and *[3][.='¯'] and (*[1][@data-chem-element] or ancestor-or-self::*[contains(@intent, ':chemical-formula')] or ancestor-or-self::*[@data-chem-formula])"
+  replace:
+  - x: "*[1]"
+  - t: "⠰⠣⠙⠆"
+
+-
+  # Chemical equilibrium annotations: ⠸⠻(LTR;RTL) with empty zone = ⠐⠂ (chem spec §III.5)
+  # Note: the "over" comes first
+  name: chemical-equilibrium-zones
+  tag: [munderover, munder, mover]
+  match: "*[1][.='⇌' or .='⇄']"
+  replace:
+  - x: "*[1]"
+  - t: "⠦"
+  - test:
+    - if: "self::m:munder"
+      then:
+      - t: "⠐⠂⠆"
+      - x: "*[2]"
+    - else_if: "self::m:mover"
+      then:
+      - x: "*[2]"
+      - t: "⠆⠐⠂"
+    - else_if: "*[2][self::m:mtext and .=' ']"
+      then:
+      - x: "*[3]"
+      - t: "⠆⠐⠂"
+    - else_if: "*[3][self::m:mtext and .=' ']"
+      then: 
+      - t: "⠐⠂⠆"
+      - x: "*[2]"
+      else:
+      - x: "*[3]"
+      - t: "⠆"
+      - x: "*[2]"
+  - t: "⠴"
+
+-
+  name: msubsup_default_mmultiscripts_equiv
+  tag: [msubsup, munderover, mmultiscripts] # mmultiscripts with only sub/sup postscript
+  match: "count(*)=3"    # catches mmultiscripts equiv
+  variables: [IsPrimeSuperScript: "not(self::m:munderover) and *[3][translate(., \"'′″‴\",'')='']"]
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$IsPrimeSuperScript"
+      then: [x: "*[3]"]
+  - test:
+      if: "self::m:munderover"
+      then: [t: "⠢⠢"]
+      else: [t: "⠢"]
+  - test:
+      if: "NeedsToBeGrouped(*[2], 'French', false())"
+      then:
+      - t: "o"
+      - x: "*[2]"
+      - t: "c"
+      else: [x: "*[2]"]
+  - test:
+      if: "not($IsPrimeSuperScript)"
+      then:
+      - test:
+          if: "self::m:munderover"
+          then: [t: "⠈⠈"]
+          else: [t: "⠈"]
+      - test:
+          if: "NeedsToBeGrouped(*[3], 'French', false())"
+          then:
+          - t: "o"
+          - x: "*[3]"
+          - t: "c"
+          else: [x: "*[3]"]
+
+
+-
+# See 9.5, remark before last example about atomic numbers (they are *after* the base preceded by dot 6)
+  name: atomic-number
+  tag: mmultiscripts
+  match: "count(*)=4 and *[2][self::m:mprescripts] and @data-chem-formula"
+  replace:
+  - t: "b"
+  - x: "*[1]"
+  - test:
+      if: "not(*[3][self::m:none])"
+      then:
+      - t: "⠠⠢"
+      - test:
+          if: "NeedsToBeGrouped(*[3], 'French', true())"
+          then:
+          - t: "o"
+          - x: "*[3]"
+          - t: "c"
+          else: [x: "*[3]"]
+  - test:
+      if: "not(*[4][self::m:none])"
+      then:
+      - t: "⠠⠈"
+      - test:
+          if: "NeedsToBeGrouped(*[4], 'French', false())"
+          then:
+          - t: "o"
+          - x: "*[4]"
+          - t: "c"
+          else: [x: "*[4]"]
+  - t: "e"
+-
+   name: default
+   tag: mmultiscripts
+   match: "."
+   variables:
+   # computing the number of postscripts is messy because of <mprescripts> being optionally present -- we use "mod" to get the count right
+   - Prescripts: "m:mprescripts/following-sibling::*"
+   - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
+   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+   replace:
+   - test:
+        if: "$Prescripts"
+        then: [t: "o"]
+        else: [t: "b"]
+   - test:
+      if: "$Prescripts"
+      then:
+      - test:
+         if: "not($Prescripts[1][self::m:none])"
+         then:
+         - t: "⠢"
+         - test:
+             if: "NeedsToBeGrouped($Prescripts[1], 'French', true())"
+             then:
+             - t: "o"
+             - x: "$Prescripts[1]"
+             - t: "c"
+             else: [x: "$Prescripts[1]"]
+      - test:
+         if: "not($Prescripts[2][self::m:none])"
+         then:
+         - t: "⠈"
+         - test:
+             if: "NeedsToBeGrouped($Prescripts[2], 'French', false())"
+             then:
+             - t: "o"
+             - x: "$Prescripts[2]"
+             - t: "c"
+             else: [x: "$Prescripts[2]"]
+      - test:
+         if: "count($Prescripts)>2"
+         then:
+         - test:
+            if: "not($Prescripts[3][self::m:none])"
+            then:
+            - t: "⠢"
+            - test:
+               if: "NeedsToBeGrouped($Prescripts[3], 'French', false())"
+               then:
+               - t: "o"
+               - x: "$Prescripts[3]"
+               - t: "c"
+               else: [x: "$Prescripts[3]"]
+         - test:
+            if: "not($Prescripts[4][self::m:none])"
+            then:
+            - t: "⠈"
+            - test:
+               if: "NeedsToBeGrouped($Prescripts[4], 'French', false())"
+               then:
+               - t: "o"
+               - x: "$Prescripts[4]"
+               - t: "c"
+               else: [x: "$Prescripts[4]"]
+         - test:
+            if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
+            then: [x: "$Prescripts[position() > 4]"]
+
+   - x: "*[1]"
+   - test:
+      if: "$Postscripts"
+      then:
+      - test:
+         if: "not($Postscripts[1][self::m:none])"
+         then:
+         - t: "⠢"
+         - test:
+             if: "NeedsToBeGrouped($Postscripts[1], 'French', false())"
+             then:
+             - t: "o"
+             - x: "$Postscripts[1]"
+             - t: "c"
+             else: [x: "$Postscripts[1]"]
+      - test:
+         if: "not($Postscripts[2][self::m:none])"
+         then:
+         - t: "⠈"
+         - test:
+             if: "NeedsToBeGrouped($Postscripts[2], 'French', false())"
+             then:
+             - t: "o"
+             - x: "$Postscripts[2]"
+             - t: "c"
+             else: [x: "$Postscripts[2]"]
+      - test:
+         if: "count($Postscripts)>2"
+         then:
+         - test:
+            if: "not($Postscripts[3][self::m:none])"
+            then:
+            - t: "⠢"
+            - test:
+               if: "NeedsToBeGrouped($Postscripts[3], 'French', false())"
+               then:
+               - t: "o"
+               - x: "$Postscripts[3]"
+               - t: "c"
+               else: [x: "$Postscripts[3]"]
+         - test:
+            if: "not($Postscripts[4][self::m:none])"
+            then:
+            - t: "⠈"
+            - test:
+               if: "NeedsToBeGrouped($Postscripts[4], 'French', false())"
+               then:
+               - t: "o"
+               - x: "$Postscripts[4]"
+               - t: "c"
+               else: [x: "$Postscripts[4]"]
+         - test:
+            if: "count($Postscripts)>4"
+            then:
+            - test:
+               if: "not($Postscripts[5][self::m:none])"
+               then:
+               - t: "⠢"
+               - test:
+                   if: "NeedsToBeGrouped($Postscripts[5], 'French', false())"
+                   then:
+                   - t: "o"
+                   - x: "$Postscripts[5]"
+                   - t: "c"
+                   else: [x: "$Postscripts[5]"]
+            - test:
+               if: "not($Postscripts[6][self::m:none])"
+               then:
+               - t: "⠈"
+               - test:
+                   if: "NeedsToBeGrouped($Postscripts[6], 'French', false())"
+                   then:
+                   - t: "o"
+                   - x: "$Postscripts[6]"
+                   - t: "c"
+                   else: [x: "$Postscripts[6]"]
+            - test:
+               if: "count($Postscripts)>6"
+               then:
+               - test:
+                  if: "not($Postscripts[7][self::m:none])"
+                  then:
+                  - t: "⠢"
+                  - test:
+                     if: "NeedsToBeGrouped($Postscripts[7], 'French', false())"
+                     then:
+                     - t: "o"
+                     - x: "$Postscripts[7]"
+                     - t: "c"
+                     else: [x: "$Postscripts[7]"]
+               - test:
+                  if: "not($Postscripts[8][self::m:none])"
+                  then:
+                  - t: "⠈"
+                  - test:
+                     if: "NeedsToBeGrouped($Postscripts[8], 'French', false())"
+                     then:
+                     - t: "o"
+                     - x: "$Postscripts[8]"
+                     - t: "c"
+                     else: [x: "$Postscripts[8]"]
+               - test:
+                  if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
+                  then:
+                  - x: "$Postscripts[position() > 8]"
+   - test:
+        if: "$Prescripts"
+        then: [t: "c"]
+        else: [t: "e"]
+
+-
+  # Note: @notation can contain more than one value
+  # I don't think UEB has a good way to represent all notations, especially when in combination
+  # Note:
+  #   Shape indicator: ⠫
+  #   Physical enclosure: ⠪  (think plus inside of a circle)
+  #   Superposition indicator: ⠯  (think contour integral)
+  #   Cancellation: ⠈⠱ (line through previous char -- will use for horizontal, vertical, diagonal lines)
+  #   Line over/under: use GTM 12 bar rule (over ⠱, under ⠠⠱)
+  #   Horizontal juxtaposition indicator: ⠿
+  #   Vertical juxtaposition indicator: ⠻ (think ≗)
+  #   Termination indicator: ⠱ 
+  #
+  # We place left and right outside of other notations
+  # Boxes and circle are does as physical enclosure (shape before base)
+  # Arrows are done as superposition (after base)
+  # top and bottom are done as "bars" (GTM 12) (after base)
+
+   name: default
+   tag: menclose
+   match: "."
+   # FIX: can't find a rule that says anything about comparison operator spacing and enclosure
+   replace:
+   - test:
+      if: "contains(concat(' ', normalize-space(@notation), ' '), ' left ')"                  #avoid 'leftarrow'
+      then: [t: "⠸"]
+   - test:
+      if: "contains(@notation,'box')"                  # box and roundedbox
+      then:
+      - t: "1⠫⠼⠙"                                  # square (no rectangle in UEB)
+   - test:
+      if: "contains(@notation,'circle')"
+      then:
+      - t: "1⠫⠿"                                  # circle (no oval in UEB)
+# ??? What should happen with arrow?
+#  If there is a box/circle with arrows only and an empty child,
+#     then it acts like the arrow is the child
+#  If there are only arrows for 'notation', then maybe rule 112 applies (superposition),
+#     but the examples aren't similar. In that case, the arrow acts like 'box' and the child is the content... maybe  
+# 
+#  - test:
+#      if: "contains(@notation,'leftarrow')"
+#      then: [t: left arrow, pause: short]
+#  - test:
+#      if: "contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')"
+#      then: [t: right arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'northeastarrow')"
+#      then: [t: northeast arrow, pause: short]
+#  - test:
+#      if: "contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')"
+#      then: [t: southeast arrow, pause: short]
+#  - test:
+#      if: "contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')"
+#      then: [t: southwest arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'northwestarrow')"
+#      then: [t: northwest arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'updownarrow')"
+#      then: [t: double ended vertical arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'leftrightarrow')"
+#      then: [t: double ended horizontal arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'northeastsouthwestarrow')"
+#      then: [t: double ended up diagonal arrow, pause: short]
+#  - test:
+#      if: "contains(@notation,'northwestsoutheastarrow')"
+#      then: [t: double ended down diagonal arrow, pause: short]
+#  - test:
+#      if: ".[contains(@notation,'actuarial')]"
+#      then: [t: actuarial symbol, pause: short]
+#  - test:
+#      if: ".[contains(@notation,'madrub')]"
+#      then: [t: arabic factorial symbol, pause: short]
+#  - test:
+#      if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']"      # default
+#      then: [t: long division symbol, pause: short]
+#  - test:
+#      if: ".[contains(@notation,'radical')]"
+#      then: [t: square root, pause: short]
+
+   - test:
+      if: "NeedsToBeGrouped(*[1], 'French', false())"
+      then:
+      - t: "o"
+      - x: "*[1]"
+      - t: "c"
+      else: [x: "*[1]"]
+
+   # - test:
+   #    if: "contains(@notation,'phasorangle')"  #FIX: what should this be???
+   #    then: [t: "⠫⠪⠸⠫"]
+   - test:
+      if: "contains(@notation,'arrow')"    # all the arrows
+      then:
+      - test:
+         - if: "contains(@notation,'rightarrow')" 
+           then: [t: "1⠳⠕"]                                                           
+         - else_if: "contains(@notation,'leftarrow')" 
+           then: [t: "1⠳⠪"]                                                           
+         - else_if: "contains(@notation,'uparrow')" 
+           then: [t: "1⠳⠬ "]                                                           
+         - else_if: "contains(@notation,'downarrow')" 
+           then: [t: "1⠳⠩"]                                                           
+         - else_if: "contains(@notation,'northeastarrow')" 
+           then: [t: "1⠳⠎"]                                                           
+         - else_if: "contains(@notation,'southeastarrow')" 
+           then: [t: "1⠳⠣"]                                                           
+         - else_if: "contains(@notation,'northwestarrow')" 
+           then: [t: "1⠳⠱"]                                                           
+         - else_if: "contains(@notation,'southwestarrow')" 
+           then: [t: "1⠳⠜"]                                                           
+         - else_if: "contains(@notation,'leftrightarrow')" 
+           then: [t: "1⠳⠺⠗⠕"]                                                           
+         - else_if: "contains(@notation,'updownarrow')" 
+           then: [t: "1⠳⠺⠗⠬"]                                                           
+         - else_if: "contains(@notation,'northeastsouthwestarrow')" 
+           then: [t: "1⠳⠺⠗⠎"]                                                           
+         - else_if: "contains(@notation,'northwestsoutheastarrow')" 
+           then: [t: "1⠳⠺⠗⠣"]                                                           
+   - test:
+      if: "contains(@notation,'top')"
+      then: [t: "⠱"]                                                                
+   - test:
+      if: "contains(@notation,'bottom')"
+      then: [t: "⠠⠱"]                                                                
+   - test:
+      if: "contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or 
+            contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike')"
+      then:
+         - t: "1⠈⠱"                        # cancellation
+   - test:
+      if:
+      - "contains(@notation,'box') or contains(@notation,'circle') or"
+      - "contains(@notation,'arrow') or contains(@notation,'phasorangle')" 
+      then:
+      - t: "⠻"                   # terminate shape
+   - test:
+      if: "contains(concat(' ', normalize-space(@notation), ' '), ' right ')"                  #avoid 'rightarrow'
+      then: [t: "⠸"]
+
+
+
+-
+   name: default
+   tag: ms
+   match: "."
+   replace:
+      - test:
+         if: "string(@lquote)!=''"
+         then: [x: "@lquote"]
+         else: [t: "⠄⠄"]
+      - x: "BrailleChars(., 'French')"
+      - test:
+         if: "string(@rquote)!=''"
+         then: [x: "@rquote"]
+         else: [t: "⠄⠄"]
+
+-
+   name: default
+   tag: semantics
+   match: "."
+   replace: 
+      - x: "*[1]"             #/ FIX: should prioritize @encoding="MathML-Presentation" and @encoding="application/mathml-presentation+xml"
+
+-
+   name: default-children
+   tag: "*"
+   match: "*"    # make sure there are children
+   replace: 
+   - t: "unknown math m l element"
+   - x: "name(.)"
+   - x: "*"
+
+-
+   # at this point, we know there are no children -- might be no text
+   name: default-no-children
+   tag: "*"
+   match: "text()"
+   replace: 
+   - t: unknown math m l element
+   - x: "name(.)"
+   - x: "text()"
+
+-
+   name: default-no-text
+   tag: "*"
+   match: "."
+   replace: 
+    - t: "empty unknown math m l element"
+    - x: "name(.)"

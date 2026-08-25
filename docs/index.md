@@ -166,14 +166,14 @@ Several people helped out in various ways with the project. I am very grateful f
 * Elaine A. Moore -- helped me to figure out what should and should not be said for chemistry, along with what makes sense as chemistry and what doesn't.
 * Richard Orme -- did all the work for the MathCAT NVDA settings dialog.
 * Sam Dooley, Murray Sargent, and Volker Sorge -- provided tables of Nemeth translations of characters and Nemeth tests
-* Moritz Groß ([Math4VIP](https://www.math4vip.de/)) -- worked on various parts of the Rust code base, and built the Python tool for tracking localization progress.
+* Moritz Groß ([Math4VIP](https://www.math4vip.de/), Marburg University) -- worked on various parts of the Rust code base, and built the Python tool for tracking localization progress.
 
 Translators:
 
 * Chinese (Traditional) -- Hon-Jang Yang
 * Finnish -- Sami Määttä (Accessibility Library Celia), and Essi Viippola (freelancer)
 * French -- Olivier Thiffault (Technologies Humanware)
-* German -- Nazli Andjic, Robert Graf and Paul Libbrecht (IU International University of Applied Sciences)
+* German -- Nazli Andjic, Robert Graf and Paul Libbrecht (IU International University of Applied Sciences), and Moritz Groß (Math4VIP, Marburg University)
 * Hungarian -- Attila Hammer (IT Foundation for the Visually Impaired)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
 * Norwegian -- Marthe Gjelstad (National Library of Norway), Kvile

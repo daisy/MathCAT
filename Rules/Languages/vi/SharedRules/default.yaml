@@ -231,7 +231,7 @@
 -
   name: overparen
   tag: mover
-  match: "*[2][.='⏜']"
+  match: "*[2][.='⏜' or .='⌢' or .='⌒']"
   replace:
   - x: "*[2]"     # shape indicator, overparen
   - x: "*[1]"
