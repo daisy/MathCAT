@@ -15,6 +15,7 @@ use crate::canonicalize::get_parent;
 use std::borrow::Cow;
 use std::ops::Range;
 use std::sync::LazyLock;
+#[allow(unused_imports)]
 use log::{debug, error};
 
 fn is_ueb_prefix(ch: char) -> bool {
@@ -1037,11 +1038,10 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
     let result = capitals_to_word_mode(&result);
 
     let use_only_grade1 = pref_manager.pref_to_string("UEB_START_MODE").as_str() == "Grade1";
-    let use_bana_style = pref_manager.pref_to_string("UEB_G1_BANA_Style").as_str() != "false";
     
     // '𝐖' is a hard break -- basically, it separates exprs
     let mut result = result.split('𝐖')
-                        .map(|str| pick_start_mode(str, use_only_grade1, use_bana_style) + "W")
+                        .map(|str| pick_start_mode(str, use_only_grade1) + "W")
                         .collect::<String>();
     result.pop();   // we added a 'W' at the end that needs to be removed.
 
@@ -1058,54 +1058,41 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
    
     return result.to_string();
 
-    fn pick_start_mode(raw_braille: &str, use_only_grade1: bool, use_bana_style: bool) -> String {
-        // Need to decide what the start mode should be.
-        //
-        // Two styles are supported, selected by the `UEB_G1_BANA_Style` preference:
-        //  * BANA style (`use_bana_style == true`, the default):
-        //    From http://www.brailleauthority.org/ueb/ueb_math_guidance/final_for_posting_ueb_math_guidance_may_2019_102419.pdf
-        //      Unless a math expression can be correctly represented with only a grade 1 symbol indicator in the first three cells
-        //      or before a single letter standing alone anywhere in the expression,
-        //      begin the expression with a grade 1 word indicator (or a passage indicator if the expression includes spaces)
-        //    Apparently "only a grade 1 symbol..." means at most one grade 1 symbol based on some examples (GTM 6.4, example 4)
-        //  * ICEB GTM 1.7 style (`use_bana_style == false`):
-        //    GTM 1.7.3 decides indicators per *symbols-sequence* (RUEB 2.1 -- text separated by spaces):
-        //      (a) allow one grade 1 symbol per symbols-sequence, or a grade 1 word indicator if a sequence needs more than one;
-        //      (b) use a grade 1 passage only if three or more symbols-sequences each need a grade 1 symbol or word indicator.
-        //    grade 1 symbol indicators forced by 'a-j' following a digit are not counted (GTM 1.7.3 note).
+    fn pick_start_mode(raw_braille: &str, use_only_grade1: bool) -> String {
+        // Decide grade 1 indicator placement per ICEB GTM 1.7 (2025).
+        // BANA's 2026 guidance adopts the same GTM §1.7 rules:
+        //   https://www.brailleauthority.org/sites/default/files/2026-07/Guidance%20on%20Transcribing%20Math%20and%20Science%20in%20UEB%202026.pdf
+        // GTM 1.7.3 decides indicators per *symbols-sequence* (RUEB 2.1 -- text separated by spaces):
+        //   (a) allow one grade 1 symbol per symbols-sequence, or a grade 1 word indicator if a sequence needs more than one;
+        //   (b) use a grade 1 passage only if three or more symbols-sequences each need a grade 1 symbol or word indicator.
+        // Grade 1 symbol indicators forced by 'a-j' following a digit are not counted (GTM 1.7.3 note).
         // debug!("before determining mode:  '{}'", raw_braille);
 
-        // a bit ugly because we need to store the string if we have cap passage mode
-        let raw_braille_string = if is_cap_passage_mode_good(raw_braille) {convert_to_cap_passage_mode(raw_braille)} else {String::default()};
-        let raw_braille = if raw_braille_string.is_empty() {raw_braille} else {&raw_braille_string};
-        if use_only_grade1 {
-            return remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
-        }
-        if !use_bana_style {
-            return gtm_1_7_mode(raw_braille);
-        }
-        let grade2 = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade2, UEB_Duration::Symbol);
-        debug!("Symbol mode:  '{}'", grade2);
-
-        if is_grade2_string_ok(&grade2) {
-            return grade2;
+        // Capital passage (RUEB §8.5): like word mode's extra 'C' (CC…), passage uses CCC…Ce.
+        // Count G1 on the original (with capital markers) so standing-alone letters still force
+        // passage when needed (BANA Ex 5-15), but apply mode changes after stripping C/𝐶 so
+        // Grade 2 contractions are not blocked by cap_word_mode (chem "ch" → ⠡).
+        let use_cap_passage = is_cap_passage_mode_good(raw_braille);
+        let stripped_caps = raw_braille.replace(['C', '𝐶'], "");
+        let apply_to = if use_cap_passage { stripped_caps.as_str() } else { raw_braille };
+        let result = if use_only_grade1 {
+            remove_unneeded_mode_changes(apply_to, UEB_Mode::Grade1, UEB_Duration::Passage)
         } else {
-            // BANA says use g1 word mode if spaces are present, but that's not what their examples do
-            // A conversation with Ms. DeAndrea from BANA said that they mean use passage mode if ≥3 "segments" (≥2 blanks)
-            // The G1 Word mode might not be at the start (iceb.rs:omission_3_6_7)
-            let grade1_word = try_grade1_word_mode(raw_braille);
-            debug!("Word mode:    '{}'", grade1_word);
-            if !grade1_word.is_empty() {
-                return grade1_word;
-            } else {
-                let grade1_passage = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
-                return "⠰⠰⠰".to_string() + &grade1_passage + "⠰⠄";
-            }
+            gtm_1_7_mode(raw_braille, apply_to)
+        };
+        if use_cap_passage {
+            return convert_to_cap_passage_mode(&result);
         }
+        return result;
 
-        /// Return true if at least five (= # of cap passage indicators) cap indicators and no lower case letters
+        /// Return true if capital passage mode should be used (RUEB §8.5 / BANA Ex 5-15).
+        /// Requires no lowercase letters, and either ≥5 capital indicators (chem / dense caps)
+        /// or ≥3 letter-bearing symbols-sequences that are fully capitalized.
+        /// Grade 1 / numeric / other non-letter markers are transparent (do not abort the scan).
         fn is_cap_passage_mode_good(braille: &str) -> bool {
             let mut n_caps = 0;
+            let mut n_letter_seqs = 0;
+            let mut seq_has_letter = false;
             let mut is_cap_mode = false;
             let mut cap_mode = UEB_Duration::Symbol;    // real value set when is_cap_mode is set to true
             let mut chars = braille.chars();
@@ -1118,6 +1105,7 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
                     if !is_cap_mode {
                         return false;
                     }
+                    seq_has_letter = true;
                     chars.next();       // skip letter
                     if cap_mode == UEB_Duration::Symbol {
                         is_cap_mode = false;
@@ -1133,76 +1121,34 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
                     }
                     n_caps += 1;
                 } else if ch == 'W' || ch == '𝐖' {
-                    if is_cap_mode {
-                        assert!(cap_mode == UEB_Duration::Word);
+                    if seq_has_letter {
+                        n_letter_seqs += 1;
+                        seq_has_letter = false;
                     }
                     is_cap_mode = false;
-                } else if ch == '1' && is_cap_mode {
-                    break;
                 }
+                // else: '1', '𝟙', 'N', operators, typeforms, etc. — transparent
             }
-            return n_caps > 4;
+            if seq_has_letter {
+                n_letter_seqs += 1;
+            }
+            return n_caps >= 5 || n_letter_seqs >= 3;
         }
 
+        /// After G1 placement: strip any leftover capital markers and wrap with intermediate
+        /// `CCC`…`Ce` (same map as word mode: C→⠠, e→⠄ → ⠠⠠⠠…⠠⠄). Applied after
+        /// remove_unneeded_mode_changes so parsers never treat passage opener as CL letters.
+        /// If G1 passage is present (⠰⠰⠰…⠰⠄), capital passage goes inside (BANA Ex 5-15).
         fn convert_to_cap_passage_mode(braille: &str) -> String {
-            return "⠠⠠⠠".to_string() + &braille.replace(['C', '𝐶'], "") + "⠠⠄";
-        }
-
-        /// Return true if the BANA or ICEB guidelines say it is ok to start with grade 2
-        fn is_grade2_string_ok(grade2_braille: &str) -> bool {
-            // BANA says use grade 2 if there is not more than one grade one symbol or single letter standing alone.
-            // The exact quote from their guidance:
-            //    Unless a math expression can be correctly represented with only a grade 1 symbol indicator in the first three cells
-            //    or before a single letter standing alone anywhere in the expression,
-            //    begin the expression with a grade 1 word indicator
-            // Note: I modified this slightly to exclude the cap indicator in the count. That allows three more ICEB rule to pass and seems
-            //    like it is a reasonable thing to do.
-            // Another modification is allow a single G1 indicator to occur after whitespace later on
-            //    because ICEB examples show it and it seems better than going to passage mode if it is the only G1 indicator
-
-            // Because of the 'L's which go away, we have to put a little more work into finding the first three chars
-            let chars = grade2_braille.chars().collect::<Vec<char>>();
-            let mut n_real_chars = 0;  // actually number of chars
-            let mut found_g1 = false;
-            let mut i = 0;
-            while i < chars.len() {
-                let ch = chars[i];
-                if ch == '1' && !is_forced_grade1(&chars, i) {
-                    if found_g1 {
-                        return false;
-                    }
-                    found_g1 = true;
-                } else if !"𝐶CLobc".contains(ch) {
-                    if n_real_chars == 2 {
-                        i += 1;
-                        break;              // this is the third real char
-                    };
-                    n_real_chars += 1;
+            let body = braille.replace(['C', '𝐶'], "");
+            const G1_START: &str = "⠰⠰⠰";
+            const G1_END: &str = "⠰⠄";
+            if let Some(rest) = body.strip_prefix(G1_START) {
+                if let Some(mid) = rest.strip_suffix(G1_END) {
+                    return format!("{G1_START}CCC{mid}Ce{G1_END}");
                 }
-                i += 1
             }
-
-            // if we find *another* g1 that isn't forced and isn't standing alone, we are done
-            // I've added a 'follows whitespace' clause for test iceb.rs:omission_3_6_2 to the standing alone rule
-            // we only allow one standing alone example -- not sure if BANA guidance has this limit, but GTM 11_5_5_3 seems better with it
-            // Same for GTM 1_7_3_1 (passage mode is mentioned also)
-            let mut is_standing_alone_already_encountered = false;
-            let mut is_after_whitespace = false;
-            while i < chars.len() {
-                let ch = chars[i];
-                if ch == 'W' {
-                    is_after_whitespace = true;
-                } else if ch == '1' && !is_forced_grade1(&chars, i) {
-                    if is_standing_alone_already_encountered ||
-                       ((found_g1 || !is_after_whitespace) && !is_single_letter_on_right(&chars, i)) {
-                        return false;
-                    }
-                    found_g1 = true;
-                    is_standing_alone_already_encountered = true;
-                }
-                i += 1;
-            }
-            return true;
+            return format!("CCC{body}Ce");
         }
 
         /// Return true if the sequence of chars forces a '1' at the `i`th position
@@ -1224,58 +1170,6 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             return false;
         }
 
-        fn is_single_letter_on_right(chars: &[char], i: usize) -> bool {
-            fn is_skip_char(ch: char) -> bool {
-                matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w')
-            }
-
-            // find the first char (if any)
-            let mut count = 0;      // how many letters
-            let mut i = i+1;
-            while i < chars.len() {
-                let ch = chars[i];
-                if !is_skip_char(ch) {
-                    if ch == 'L' {
-                        if count == 1 {
-                            return false;   // found a second letter in the sequence
-                        }
-                        count += 1;
-                    } else {
-                        return count==1;
-                    }
-                    i += 2;   // eat 'L' and actual letter
-                } else {
-                    i += 1;
-                }
-            }
-            return true;
-        }
-
-        fn try_grade1_word_mode(raw_braille: &str) -> String {
-            // this isn't quite right, but pretty close -- try splitting at 'W' (words)
-            // only one of the parts can be in word mode and none of the others can have '1' unless forced
-            let mut g1_words = Vec::default();
-            let mut found_word_mode = false;
-            for raw_word in raw_braille.split('W') {
-                let word = remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade2, UEB_Duration::Symbol);
-                // debug!("try_grade1_word_mode: word='{}'", word);
-                let word_chars = word.chars().collect::<Vec<char>>();
-                let needs_word_mode = word_chars.iter().enumerate()
-                    .any(|(i, &ch) | ch == '1' && !is_forced_grade1(&word_chars, i));
-                if needs_word_mode {
-                    if found_word_mode {
-                        return "".to_string();
-                    }
-                    found_word_mode = true;
-                    g1_words.push("⠰⠰".to_string() + &remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade1, UEB_Duration::Word)
-                    );
-                } else {
-                    g1_words.push(word);
-                }
-            }
-            return if found_word_mode {g1_words.join("W")} else {"".to_string()};
-        }
-
         /// Count the number of non-forced grade 1 indicators needed for a single symbols-sequence.
         /// (Forced indicators -- 'a-j' following a digit -- are excluded per the GTM 1.7.3 note.)
         fn grade1_count(raw_word: &str) -> usize {
@@ -1290,27 +1184,33 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
         /// See GTM 1.7.3. Note: the 1.7.5 two-symbol allowance and contraction-preserving
         /// word/passage placement for expressions containing English words are only partially
         /// realized here; those cases depend on separate contraction-rule improvements.
-        fn gtm_1_7_mode(raw_braille: &str) -> String {
+        /// `count_src` decides passage vs word vs symbol; changes are applied to `apply_to`
+        /// (may differ when capital markers were stripped for capital-passage mode).
+        fn gtm_1_7_mode(count_src: &str, apply_to: &str) -> String {
             // Count how many symbols-sequences (whitespace-separated) need a non-forced grade 1 indicator.
-            let n_seq_needing = raw_braille.split('W')
+            let n_seq_needing = count_src.split('W')
                 .filter(|raw_word| grade1_count(raw_word) >= 1)
                 .count();
 
             // GTM 1.7.3(b): use a grade 1 passage if three or more sequences each need grade 1.
             if n_seq_needing >= 3 {
-                let grade1_passage = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
+                let grade1_passage = remove_unneeded_mode_changes(apply_to, UEB_Mode::Grade1, UEB_Duration::Passage);
                 return "⠰⠰⠰".to_string() + &grade1_passage + "⠰⠄";
             }
 
             // GTM 1.7.3(a): per sequence, allow one grade 1 symbol indicator, or a grade 1 word
             // indicator if the sequence needs more than one.
-            let words = raw_braille.split('W')
-                .map(|raw_word| {
-                    if grade1_count(raw_word) >= 2 {
-                        "⠰⠰".to_string() + &remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade1, UEB_Duration::Word)
+            let count_words: Vec<&str> = count_src.split('W').collect();
+            let apply_words: Vec<&str> = apply_to.split('W').collect();
+            assert_eq!(count_words.len(), apply_words.len(),
+                "gtm_1_7_mode: count_src and apply_to must have the same number of symbols-sequences");
+            let words = count_words.iter().zip(apply_words.iter())
+                .map(|(&count_word, &apply_word)| {
+                    if grade1_count(count_word) >= 2 {
+                        "⠰⠰".to_string() + &remove_unneeded_mode_changes(apply_word, UEB_Mode::Grade1, UEB_Duration::Word)
                     } else {
                         // 0 or 1 grade 1 indicators: the grade 2 form leaves a single symbol indicator inline
-                        remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade2, UEB_Duration::Symbol)
+                        remove_unneeded_mode_changes(apply_word, UEB_Mode::Grade2, UEB_Duration::Symbol)
                     }
                 })
                 .collect::<Vec<String>>();
@@ -3696,7 +3596,7 @@ mod tests {
 
         set_preference("BrailleCode", "UEB")?;
         let _braille = get_braille("")?;
-        let answers= &[0, 0, 0, 2, 3, 3, 3, 3, 4, 7,   7, 8, 9, 9, 10, 13, 12, 14, 14, 15,   15, 17, 17, 19, 19, 21, 10, 4, 4, 23,   23, 25, 25, 4, 0, 0];
+        let answers= &[2, 2, 3, 3, 3, 3, 4, 4, 4, 7,   7, 8, 9, 9, 10, 13, 12, 14, 14, 15,   15, 17, 17, 19, 19, 21, 10, 4, 4, 23,   23, 25, 25, 4];
         let answers = answers.map(|num| format!("id-{}", num));
         debug!("\n\n*** Testing UEB ***");
         for (i, answer) in answers.iter().enumerate() {

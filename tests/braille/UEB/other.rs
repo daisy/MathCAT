@@ -12,7 +12,7 @@ use anyhow::Result;
 #[test]
 fn overscript_grouping_aph_5_4_8() -> Result<()> {
     // this test was added because #220 (failed to add grouping around overscript)
-    let expr = "<math> <mover> <mi>MN</mi> <mo>&#x2194;</mo> </mover> </math>";
+    let expr = "<math> <mover> <mi>MN</mi> <mo>↔</mo> </mover> </math>";
     test_braille("UEB", expr, "⠰⠰⠣⠠⠠⠍⠝⠜⠨⠔⠳⠺⠗⠕")?;
     return Ok(());
 
@@ -39,7 +39,7 @@ fn blank_aph_7_1_ex5() -> Result<()> {
 #[test]
 fn word_symbol_aph_10_3_11() -> Result<()> {
     // this test was added because ⊻ (U+22bb) uses a 'G1 Word mode' char, so is different than others
-    let expr = "<math> <mi>p</mi> <mo>&#x22bb;</mo> <mi>q</mi> </math>";
+    let expr = "<math> <mi>p</mi> <mo>⊻</mo> <mi>q</mi> </math>";
     test_braille("UEB", expr, "⠰⠰⠏⠈⠖⠠⠱⠟")?;
     return Ok(());
 
@@ -110,7 +110,7 @@ fn double_tilde_prefix_bug_244() -> Result<()> {
 #[test]
 fn space_hack_between_digits() -> Result<()> {
     // https://github.com/NSoiffer/MathCAT/issues/144
-    let expr = "<math><mn>1</mn><mtext>&#x00a0;&#x2063;</mtext><mn>3</mn><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
+    let expr = "<math><mn>1</mn><mtext>&#xA0;&#x2063;</mtext><mn>3</mn><mtext>&#xA0;&#x2063;</mtext><mn>5</mn></math>";
     test_braille("UEB", expr, "⠼⠁⠀⠼⠉⠀⠼⠑")?;
     return Ok(());
 
@@ -119,7 +119,7 @@ fn space_hack_between_digits() -> Result<()> {
 #[test]
 fn space_hack_around_operator() -> Result<()> {
     // https://github.com/NSoiffer/MathCAT/issues/144
-    let expr = "<math><mi>y</mi><mtext>&#x00a0;&#x2063;</mtext><mo>=</mo><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
+    let expr = "<math><mi>y</mi><mtext>&#xA0;&#x2063;</mtext><mo>=</mo><mtext>&#xA0;&#x2063;</mtext><mn>5</mn></math>";
     test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠼⠑")?;
     return Ok(());
 
