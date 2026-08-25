@@ -21,10 +21,11 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use yaml_rust::{Yaml, YamlLoader};
 
+type SymbolTableLoad = std::result::Result<Vec<(String, String)>, String>;
+
 thread_local! {
     /// Longest-first (braille cells, print character). `None` until first use.
-    static UEB_SYMBOLS: RefCell<Option<std::result::Result<Vec<(String, String)>, String>>> =
-        const { RefCell::new(None) };
+    static UEB_SYMBOLS: RefCell<Option<SymbolTableLoad>> = const { RefCell::new(None) };
 }
 
 /// Ensure the UEB reverse symbol table is loaded (reads YAML on first call).
@@ -148,11 +149,10 @@ fn insert_pairs(
             continue;
         }
         if overwrite {
-            if let Some(prev) = map.get(&braille) {
-                if !should_replace_print(prev, ch) {
+            if let Some(prev) = map.get(&braille)
+                && !should_replace_print(prev, ch) {
                     continue;
                 }
-            }
             map.insert(braille, ch.clone());
         } else if let Some(prev) = map.get(&braille) {
             if should_replace_print(prev, ch) {
@@ -466,15 +466,12 @@ fn first_text_prefix(yaml: &Yaml) -> Option<String> {
         Yaml::Array(arr) => arr.iter().find_map(first_text_prefix),
         Yaml::Hash(h) => {
             for (k, v) in h {
-                if let Some(key) = k.as_str() {
-                    if matches!(key, "t" | "T" | "tc" | "TC" | "ct" | "CT") {
-                        if let Some(s) = v.as_str() {
-                            if !s.trim().is_empty() {
+                if let Some(key) = k.as_str()
+                    && matches!(key, "t" | "T" | "tc" | "TC" | "ct" | "CT")
+                        && let Some(s) = v.as_str()
+                            && !s.trim().is_empty() {
                                 return Some(s.to_string());
                             }
-                        }
-                    }
-                }
             }
             h.values().find_map(first_text_prefix)
         }
@@ -558,11 +555,10 @@ fn collect_text_templates(yaml: &Yaml, ch: &str, out: &mut Vec<(String, String)>
                 if let Some(key) = k.as_str() {
                     match key {
                         "t" | "T" | "tc" | "TC" | "ct" | "CT" | "ot" | "OT" => {
-                            if let Some(s) = v.as_str() {
-                                if !s.trim().is_empty() {
+                            if let Some(s) = v.as_str()
+                                && !s.trim().is_empty() {
                                     out.push((ch.to_string(), s.to_string()));
                                 }
-                            }
                         }
                         _ => collect_text_templates(v, ch, out),
                     }

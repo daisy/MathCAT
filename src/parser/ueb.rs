@@ -259,10 +259,9 @@ impl<'a> Lexer<'a> {
             if after.and_then(braille_cell_to_latin) == Some('a') {
                 self.eat("⠘⠫");
                 self.eat_char(); // a
-                let capital = self.consume_cap_for_letter();
-                let ch = if capital { 'Å' } else { 'Å' };
+                let _capital = self.consume_cap_for_letter();
                 self.tokens.push(Token::Letter {
-                    ch,
+                    ch: 'Å',
                     capital: true,
                 });
                 return Ok(true);
@@ -642,8 +641,8 @@ impl<'a> Lexer<'a> {
     fn try_shape(&mut self) -> Result<bool> {
         // Prefer full reverse-map match so typeformed shapes (⠨⠫⠿⠱ → ◍, ⠸⠫⠼⠉⠱ → ▲)
         // emit the Unicode characters forward UEB already uses.
-        if let Some((braille, print)) = crate::ueb_symbols::match_ueb_symbol(self.rest) {
-            if braille.contains('⠫') {
+        if let Some((braille, print)) = crate::ueb_symbols::match_ueb_symbol(self.rest)
+            && braille.contains('⠫') {
                 let typeform_prefix = braille.starts_with('⠨')
                     || braille.starts_with('⠘')
                     || braille.starts_with('⠸')
@@ -658,7 +657,6 @@ impl<'a> Lexer<'a> {
                     return Ok(true);
                 }
             }
-        }
 
         // Optional typeform prefix before shape (e.g. ⠨⠫ for italicised shape)
         let typeform_prefixes = ["⠨", "⠘", "⠸", "⠈"];
@@ -732,11 +730,7 @@ impl<'a> Lexer<'a> {
         let mut num = String::new();
         let mut den: Option<String> = None;
 
-        loop {
-            let ch = match self.peek_char() {
-                Some(c) => c,
-                None => break,
-            };
+        while let Some(ch) = self.peek_char() {
             if let Some(digit) = braille_cell_to_digit(ch) {
                 self.eat_char();
                 if let Some(ref mut d) = den {
@@ -871,13 +865,12 @@ impl<'a> Lexer<'a> {
             }
             // ℃ / ℉ share the degree prefix ⠘⠚ + capital letter. Prefer degree + letter
             // so reverse matches `<msup>…<mo>°</mo></msup><mi>F</mi>` style MathML.
-            if print == "℉" || print == "℃" {
-                if self.eat("⠘⠚") {
+            if (print == "℉" || print == "℃")
+                && self.eat("⠘⠚") {
                     self.numeric = false;
                     self.tokens.push(Token::Op("°".into()));
                     return Ok(true);
                 }
-            }
             // Double/triple prime as repeated ′ (forward often uses adjacent primes).
             if print == "″" || print == "‴" {
                 self.rest = &self.rest[braille.len()..];
@@ -957,11 +950,10 @@ impl<'a> Lexer<'a> {
             // In numeric mode, a-j cells are digits — already handled. If numeric still true
             // with a-j, they'd be digits. k-z can appear? Unusual. If numeric true and a-j,
             // try_number should have taken them. So if we see a-j here with numeric, treat as digit restart.
-            if self.numeric {
-                if braille_cell_to_digit(ch).is_some() {
+            if self.numeric
+                && braille_cell_to_digit(ch).is_some() {
                     return self.lex_numeric_item();
                 }
-            }
             // Letters a-j immediately after a number need G1 (numeric_grade1 still on).
             // If we get here without G1 for a-j after number, still accept as letter (tests use ⠰).
             self.eat_char();
@@ -1981,11 +1973,10 @@ fn parse_identifier(
     let mut letters: Vec<(char, bool)> = Vec::new();
     let mut i = 0;
     while let Some(Token::Letter { ch, capital }) = input.get(i) {
-        if let Some((prev, _)) = letters.last() {
-            if prev.is_ascii_alphabetic() != ch.is_ascii_alphabetic() {
+        if let Some((prev, _)) = letters.last()
+            && prev.is_ascii_alphabetic() != ch.is_ascii_alphabetic() {
                 break;
             }
-        }
         letters.push((*ch, *capital));
         i += 1;
         if matches!(
@@ -2250,8 +2241,8 @@ fn parse_fenced(
 
     // Single-row linearized matrix: space-separated cells inside ordinary fences
     // (UEB_Rules default-mtr without enlarged markers when there is only one row).
-    if close_tok.is_some() {
-        if let Some(cells) = matrix_cells_from_spaced_body(&body) {
+    if close_tok.is_some()
+        && let Some(cells) = matrix_cells_from_spaced_body(&body) {
             return Ok((
                 input,
                 Expr::Table {
@@ -2261,7 +2252,6 @@ fn parse_fenced(
                 },
             ));
         }
-    }
 
     Ok((
         input,
@@ -2514,7 +2504,7 @@ fn parse_marked_equation_lines(
     ))
 }
 
-fn split_tokens_on<'a>(tokens: &'a [Token], pred: impl Fn(&Token) -> bool) -> Vec<&'a [Token]> {
+fn split_tokens_on(tokens: &[Token], pred: impl Fn(&Token) -> bool) -> Vec<&[Token]> {
     let mut out = Vec::new();
     let mut start = 0;
     for (i, t) in tokens.iter().enumerate() {

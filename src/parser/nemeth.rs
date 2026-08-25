@@ -378,13 +378,11 @@ impl<'a> Lexer<'a> {
             return Some(true);
         }
         if rest.starts_with('⠼') && matches!(self.frac_stack.last(), Some(FracKind::Nested(m)) if *m == n)
-        {
-            if self.frac_saw_line.last().copied() == Some(true) {
+            && self.frac_saw_line.last().copied() == Some(true) {
                 self.rest = &rest['⠼'.len_utf8()..];
                 self.push_frac_close(FracKind::Nested(n));
                 return Some(true);
             }
-        }
         None
     }
 
@@ -604,8 +602,7 @@ impl<'a> Lexer<'a> {
         // number in the default typeform (`⠸⠼⠲⠼⠒⠢` → 𝟒35).
         if mathvariant.is_none()
             && text.chars().all(|c| c.is_ascii_digit() || c == '.' || c == ',')
-        {
-            if let Some(Token::Number {
+            && let Some(Token::Number {
                 text: prev,
                 mathvariant: prev_var,
             }) = self.tokens.last_mut()
@@ -620,7 +617,6 @@ impl<'a> Lexer<'a> {
                     return true;
                 }
             }
-        }
         self.tokens.push(Token::Number { text, mathvariant });
         true
     }
@@ -864,13 +860,11 @@ fn is_quote_char(s: &str) -> bool {
 /// YAML matches that the mode-aware lexer must keep.
 fn should_leave_for_lexer(braille: &str, rest: &str) -> bool {
     // ⠐ + digit / decimal / plus is multipurpose, not a ⠐-prefixed operator.
-    if braille.starts_with('⠐') && braille.chars().count() > 1 {
-        if let Some(c) = braille.chars().nth(1) {
-            if braille_cell_to_digit(c).is_some() || c == '⠨' || c == '⠬' {
+    if braille.starts_with('⠐') && braille.chars().count() > 1
+        && let Some(c) = braille.chars().nth(1)
+            && (braille_cell_to_digit(c).is_some() || c == '⠨' || c == '⠬') {
                 return true;
             }
-        }
-    }
     // ⠠⠠ + one letter with more letters after is a capital word, not Hebrew.
     if braille.starts_with("⠠⠠") && braille.chars().count() == 3 {
         let after = rest.get(braille.len()..).unwrap_or("");
@@ -1143,8 +1137,8 @@ fn parse_scripted(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
 
     // Implicit numeric subscript: letter / function / chem element, then unmarked number.
     // A row of letters (FeCl) attaches the digit to the last eligible identifier (Cl₂).
-    if let Some(Token::Number { .. }) = input.first() {
-        if sub.is_none() && eligible_numeric_sub_base(&base) {
+    if let Some(Token::Number { .. }) = input.first()
+        && sub.is_none() && eligible_numeric_sub_base(&base) {
             let num_expr = number_token_to_expr(&input[0]);
             input = &input[1..];
             if matches!(&base, Expr::Row(v) if !v.is_empty()) {
@@ -1157,7 +1151,6 @@ fn parse_scripted(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
                 sub = Some(num_expr);
             }
         }
-    }
 
     loop {
         match input.first() {
@@ -1189,22 +1182,19 @@ fn parse_scripted(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
                 match input.get(1) {
                     Some(Token::Number { text: n, .. }) if sub.is_none() && sup.is_none() => {
                         // Rule 177: ⠐ between letter and digit is juxtaposition, not a subscript.
-                        if let Expr::Identifier(s) = &base {
-                            if !n.starts_with('.') {
+                        if let Expr::Identifier(s) = &base
+                            && !n.starts_with('.') {
                                 base = Expr::Identifier(format!("{s}{n}"));
                                 input = &input[2..];
                                 continue;
                             }
-                        }
-                        if let Expr::Row(parts) = &mut base {
-                            if let Some(Expr::Identifier(s)) = parts.last_mut() {
-                                if !n.starts_with('.') {
+                        if let Expr::Row(parts) = &mut base
+                            && let Some(Expr::Identifier(s)) = parts.last_mut()
+                                && !n.starts_with('.') {
                                     s.push_str(n);
                                     input = &input[2..];
                                     continue;
                                 }
-                            }
-                        }
                         input = &input[1..];
                         break;
                     }
@@ -1339,7 +1329,7 @@ fn is_simple_script(e: &Expr) -> bool {
 
 fn fold_simple_over(input: Toks<'_>, expr: Expr) -> (Toks<'_>, Expr) {
     match input.first() {
-        Some(Token::Op(s)) if s == "¯" || s == "\u{AF}" || s == "‾" || s == "˙" || s == "^" => {
+        Some(Token::Op(s)) if s == "¯" || s == "‾" || s == "˙" || s == "^" => {
             (
                 &input[1..],
                 Expr::Over(Box::new(expr), Box::new(Expr::Operator(s.clone()))),
@@ -1550,7 +1540,7 @@ const FUNCTION_NAMES: &[&str] = &[
 ];
 
 fn is_function_name(s: &str) -> bool {
-    FUNCTION_NAMES.iter().any(|n| *n == s)
+    FUNCTION_NAMES.contains(&s)
 }
 
 fn longest_function_prefix(s: &str) -> Option<usize> {
