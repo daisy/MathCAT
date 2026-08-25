@@ -1143,11 +1143,10 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             let body = braille.replace(['C', '𝐶'], "");
             const G1_START: &str = "⠰⠰⠰";
             const G1_END: &str = "⠰⠄";
-            if let Some(rest) = body.strip_prefix(G1_START) {
-                if let Some(mid) = rest.strip_suffix(G1_END) {
+            if let Some(rest) = body.strip_prefix(G1_START)
+                && let Some(mid) = rest.strip_suffix(G1_END) {
                     return format!("{G1_START}CCC{mid}Ce{G1_END}");
                 }
-            }
             return format!("CCC{body}Ce");
         }
 
@@ -2008,11 +2007,10 @@ fn handle_contractions(chars: &[char], mut result: String) -> String {
     let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
     for i in matches.iter() {
         let element = &CONTRACTIONS[i];
-        if let Some(exceptions) = element.skip_if_word_in {
-            if exceptions.contains(&original_chars_as_str) {
+        if let Some(exceptions) = element.skip_if_word_in
+            && exceptions.contains(&original_chars_as_str) {
                 continue;
             }
-        }
         // debug!("  replacing '{}' with '{}' in '{}'", element.pattern, element.replacement, &chars_as_str);
         result.truncate(result.len() - chars_as_str.len());
         chars_as_str = CONTRACTION_REGEX[i].replace_all(&chars_as_str, element.replacement).to_string();
