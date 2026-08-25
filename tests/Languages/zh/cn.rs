@@ -227,6 +227,12 @@ fn chemical_equilibrium_arrows_use_standard_reaction_terms() -> Result<()> {
     test(
         "zh",
         "SimpleSpeak",
+        &equation("&#x1f8d1;"),
+        "大写 h, 可逆反应 大写 i",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
         &equation("&#x1f8d3;"),
         "大写 h, 平衡偏左 大写 i",
     )?;
