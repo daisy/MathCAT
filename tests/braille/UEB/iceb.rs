@@ -486,7 +486,9 @@ fn grade1_1_7_4_3() -> Result<()> {
 fn grade1_1_7_5_a() -> Result<()> {
     let expr = "<math><mtext>speed</mtext><mo>=</mo>
                 <mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac></math>";
-    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾")?;
+    // GTM 1.7.5(a) (2025): two grade 1 symbol indicators so the words stay contracted.
+    // After the fraction open, "dis" is not a word start (RUEB 10.6.2), so st+ance: ⠙⠊⠌⠨⠑.
+    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠷⠙⠊⠌⠨⠑⠨⠌⠐⠞⠰⠾")?;
     return Ok(());
 
 }
@@ -570,7 +572,8 @@ fn grade1_1_7_9_4_unit() -> Result<()> {
 #[test]
 fn grade1_1_7_9_5() -> Result<()> {
     let expr = "<math><mi>y</mi><mo>=</mo><mfrac><mi>x</mi><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠰⠰⠷⠭⠨⠌⠼⠃⠾")?;
+    // GTM 1.7.9 (July 2025): one symbol indicator; numeric mode covers the closer.
+    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠰⠷⠭⠨⠌⠼⠃⠾")?;
     return Ok(());
 
 }
@@ -763,7 +766,7 @@ fn grade1_1_7_9_26() -> Result<()> {
 #[test]
 fn grade1_1_7_9_27() -> Result<()> {
     let expr = "<math><mtext>work</mtext><mo>=</mo><mtext>force</mtext><mo>×</mo><mtext>distance</mtext></math>";
-    test_braille("UEB", expr, "⠐⠺⠀⠐⠶⠀⠿⠉⠑⠐⠦⠲⠞⠨⠑")?;
+    test_braille("UEB", expr, "⠐⠺⠀⠐⠶⠀⠿⠉⠑⠐⠦⠙⠊⠌⠨⠑")?;
     return Ok(());
 
 }
@@ -1493,14 +1496,6 @@ fn fraction_6_3_1() -> Result<()> {
 }
 
 #[test]
-fn fraction_6_4_1() -> Result<()> {
-    let expr = "<math><mi>y</mi><mo>=</mo><mfrac><mi>x</mi><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠰⠰⠷⠭⠨⠌⠼⠃⠾")?;
-    return Ok(());
-
-}
-
-#[test]
 fn fraction_6_4_2() -> Result<()> {
     let expr = "<math><mfrac>
         <mrow><mn>2</mn><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow>
@@ -1544,8 +1539,9 @@ fn fraction_6_4_5() -> Result<()> {
 #[test]
 fn fraction_6_4_6() -> Result<()> {
     let expr = "<math><mtext>speed</mtext><mo>=</mo><mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac></math>";
-    // GTM lists two options:  "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾" and "⠰⠰⠰⠎⠏⠑⠑⠙⠀⠐⠶⠀⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾⠰⠄"
-    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠰⠷⠙⠊⠎⠞⠁⠝⠉⠑⠨⠌⠞⠊⠍⠑⠾")?;
+    // GTM 2014 §6.4 listed word-indicator and passage alternatives (uncontracted words).
+    // GTM 1.7.5(a) (2025) prefers two grade 1 symbol indicators with contracted words.
+    test_braille("UEB", expr, "⠎⠏⠑⠫⠀⠐⠶⠀⠰⠷⠙⠊⠌⠨⠑⠨⠌⠐⠞⠰⠾")?;
     return Ok(());
 
 }
@@ -1869,7 +1865,9 @@ fn spacing_9_3_2_4() -> Result<()> {
 #[test]
 fn spacing_9_3_2_5() -> Result<()> {
     let expr = "<math><mi>Lim</mi><mfrac><mi>x</mi><mn>2</mn></mfrac></math>";
-    test_braille("UEB", expr, "⠰⠰⠠⠇⠊⠍⠷⠭⠨⠌⠼⠃⠾")?;
+    // GTM 2014 9.3.2 used a word indicator (;;,lim(x./#b)). GTM 1.7.3(a): one
+    // symbol indicator on the fraction open; numeric mode covers the closer.
+    test_braille("UEB", expr, "⠠⠇⠊⠍⠰⠷⠭⠨⠌⠼⠃⠾")?;
     return Ok(());
 
 }
@@ -1949,9 +1947,9 @@ fn text_9_7_1() -> Result<()> {
 fn stat_9_7_2() -> Result<()> {
     let expr = "<math><mi>Exp</mi><mo>(</mo><mi>R</mi><mo>)</mo><mo>=</mo>
                             <mfrac><mi>n</mi><mn>2</mn></mfrac><mo>+</mo><mn>1</mn></math>";
-    // GTM uses "⠰⠰⠰⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁⠰⠄",
-    //      but "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁" is shorter and is consistent with omission_3_6_7 and fraction_6_4_6
-    test_braille("UEB", expr, "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁")?;
+    // GTM 2014 9.7 used a passage around the whole equation. GTM 1.7.3(a): one
+    // symbol indicator on n/2 (same as grade1_1_7_9_5).
+    test_braille("UEB", expr, "⠠⠑⠭⠏⠐⠣⠠⠗⠐⠜⠀⠐⠶⠀⠰⠷⠝⠨⠌⠼⠃⠾⠐⠖⠼⠁")?;
     return Ok(());
 
 }

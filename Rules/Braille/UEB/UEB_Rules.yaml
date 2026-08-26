@@ -107,7 +107,7 @@
    replace: 
    - t: "1⠷"
    - x: "*[1]"
-   - t: "1⠨⠌"
+   - t: "⠨⠌"
    - x: "*[2]"
    - t: "1⠾"
 
@@ -256,9 +256,10 @@
    tag: mo
      # add spaces around comparison operators unless they are in a script position,
    variables: # ratio not spaced in UEB; also make sure it is an infix operator (e.g., "~" can be prefix)
+   # ∴ / ∵ / ∎ are spaced like comparison signs (GTM 1.7.9 "∴ force = …"; GTM 11)
    - AddSpaces: "$UseSpacesAroundAllOperators or
                        ( parent::*[self::m:mrow] and $NewScriptContext='' and
-                         .!='∶' and IsInDefinition(., 'Braille', 'NemethComparisonOperators') )"
+                         .!='∶' and (IsInDefinition(., 'Braille', 'NemethComparisonOperators') or .='∴' or .='∵' or .='∎') )"
    match: "."
    replace:
       - test:

@@ -1039,11 +1039,9 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
 
     let use_only_grade1 = pref_manager.pref_to_string("UEB_START_MODE").as_str() == "Grade1";
     
-    // '𝐖' is a hard break -- basically, it separates exprs
-    let mut result = result.split('𝐖')
-                        .map(|str| pick_start_mode(str, use_only_grade1) + "W")
-                        .collect::<String>();
-    result.pop();   // we added a 'W' at the end that needs to be removed.
+    // 𝐖 is a unit hard-break. For GTM 1.7 it is still a symbols-sequence boundary (same as W),
+    // so G1 passage decisions (1.7.3(b) / 1.7.5(c)) see the whole expression.
+    let result = pick_start_mode(&result, use_only_grade1);
 
     let result = result.replace("tW", "W");
 
@@ -1072,13 +1070,15 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
         // Count G1 on the original (with capital markers) so standing-alone letters still force
         // passage when needed (BANA Ex 5-15), but apply mode changes after stripping C/𝐶 so
         // Grade 2 contractions are not blocked by cap_word_mode (chem "ch" → ⠡).
-        let use_cap_passage = is_cap_passage_mode_good(raw_braille);
+        let had_unit_break = raw_braille.contains('𝐖');
+        let raw_braille = raw_braille.replace('𝐖', "W");
+        let use_cap_passage = is_cap_passage_mode_good(&raw_braille);
         let stripped_caps = raw_braille.replace(['C', '𝐶'], "");
-        let apply_to = if use_cap_passage { stripped_caps.as_str() } else { raw_braille };
+        let apply_to = if use_cap_passage { stripped_caps.as_str() } else { raw_braille.as_str() };
         let result = if use_only_grade1 {
             remove_unneeded_mode_changes(apply_to, UEB_Mode::Grade1, UEB_Duration::Passage)
         } else {
-            gtm_1_7_mode(raw_braille, apply_to)
+            gtm_1_7_mode(&raw_braille, apply_to, had_unit_break)
         };
         if use_cap_passage {
             return convert_to_cap_passage_mode(&result);
@@ -1180,34 +1180,122 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
                 .count();
         }
 
+        /// True if this symbols-sequence contains a literary English word (4+ letters).
+        /// GTM 1.7.5: short math names (sin, cos, lim, min, …) and single-letter variables
+        /// are not treated as words.
+        fn sequence_contains_word(raw_word: &str) -> bool {
+            let chars: Vec<char> = raw_word.chars().collect();
+            let mut run = 0usize;
+            let mut i = 0usize;
+            while i < chars.len() {
+                let ch = chars[i];
+                if ch == 'L' {
+                    run += 1;
+                    i += 1;
+                    if i < chars.len() {
+                        i += 1; // skip the braille cell after 'L'
+                    }
+                    if run >= 4 {
+                        return true;
+                    }
+                } else if ch == 'A' {
+                    run += 1;
+                    i += 1;
+                    if run >= 4 {
+                        return true;
+                    }
+                } else if is_math_alphabet_typeform(ch) {
+                    // Double-struck/script/fraktur/sans-serif letters are not part of an English word.
+                    let end = math_typeform_item_end(&chars, i);
+                    i = if end > i { end } else { i + 1 };
+                    run = 0;
+                } else if matches!(ch, 'C' | '𝐶' | 'G' | 'V' | 'B' | 'I' | 's' | 'w' | 'e') {
+                    i += 1; // letter prefixes / literary typeform — do not break the run
+                } else {
+                    run = 0;
+                    i += 1;
+                }
+            }
+            false
+        }
+
+        /// G2 form of a general-fraction sequence when two symbol indicators keep words
+        /// contracted (GTM 1.7.5(a)). `None` if more than two G1 symbols would remain.
+        fn g2_two_symbol_form(raw_word: &str) -> Option<String> {
+            // Only the GTM 1.7.5(a) case: a general fraction whose numerator/denominator
+            // contain literary words. Superscripts, radicals, etc. keep 1.7.3 word indicators.
+            if !(raw_word.contains('⠷') && raw_word.contains("⠨⠌")) {
+                return None;
+            }
+            let g2 = remove_unneeded_mode_changes(raw_word, UEB_Mode::Grade2, UEB_Duration::Symbol);
+            let chars: Vec<char> = g2.chars().collect();
+            let n_g1 = chars.iter().enumerate()
+                .filter(|&(i, &ch)| ch == '1' && !is_forced_grade1(&chars, i))
+                .count();
+            if n_g1 <= 2 {
+                Some(g2)
+            } else {
+                None
+            }
+        }
+
         /// ICEB GTM 1.7 grade 1 indicator placement (per symbols-sequence).
-        /// See GTM 1.7.3. Note: the 1.7.5 two-symbol allowance and contraction-preserving
-        /// word/passage placement for expressions containing English words are only partially
-        /// realized here; those cases depend on separate contraction-rule improvements.
+        /// GTM 1.7.3: one grade 1 symbol per sequence, or a word indicator if more than one.
+        /// GTM 1.7.5(a): for a sequence containing word(s), allow two grade 1 symbol
+        /// indicators when that keeps the words in their usual contracted form
+        /// (e.g. ⠷…⠾ around work/distance). More than two still uses a word indicator.
         /// `count_src` decides passage vs word vs symbol; changes are applied to `apply_to`
         /// (may differ when capital markers were stripped for capital-passage mode).
-        fn gtm_1_7_mode(count_src: &str, apply_to: &str) -> String {
-            // Count how many symbols-sequences (whitespace-separated) need a non-forced grade 1 indicator.
-            let n_seq_needing = count_src.split('W')
-                .filter(|raw_word| grade1_count(raw_word) >= 1)
-                .count();
+        fn gtm_1_7_mode(count_src: &str, apply_to: &str, had_unit_break: bool) -> String {
+            let count_words: Vec<&str> = count_src.split('W').collect();
+            let apply_words: Vec<&str> = apply_to.split('W').collect();
+            assert_eq!(count_words.len(), apply_words.len(),
+                "gtm_1_7_mode: count_src and apply_to must have the same number of symbols-sequences");
 
-            // GTM 1.7.3(b): use a grade 1 passage if three or more sequences each need grade 1.
+            // Count how many symbols-sequences (whitespace-separated) need a non-forced grade 1 indicator.
+            let n_seq_needing = count_words.iter().filter(|raw_word| grade1_count(raw_word) >= 1).count();
+
+            // GTM 1.7.3(b) / 1.7.5(c): use a grade 1 passage if three or more sequences
+            // each need grade 1. 1.7.5(c) starts the passage at the first such sequence so
+            // preceding words (e.g. "speed") stay contracted. That delayed start is used when
+            // spaced units (𝐖) joined the expression; otherwise a passage wraps the whole
+            // expression (chem, roots, labelled equations).
             if n_seq_needing >= 3 {
+                let first = count_words.iter().position(|w| grade1_count(w) >= 1)
+                    .expect("n_seq_needing >= 3 implies a sequence that needs grade 1");
+                let delay_start = had_unit_break && first > 0;
+                if delay_start {
+                    let prefix: Vec<String> = apply_words[..first].iter()
+                        .map(|w| remove_unneeded_mode_changes(w, UEB_Mode::Grade2, UEB_Duration::Symbol))
+                        .collect();
+                    let rest = apply_words[first..].join("W");
+                    let passage = remove_unneeded_mode_changes(&rest, UEB_Mode::Grade1, UEB_Duration::Passage);
+                    let mut out = prefix.join("W");
+                    if !out.is_empty() {
+                        out.push('W');
+                    }
+                    out.push_str("⠰⠰⠰");
+                    out.push_str(&passage);
+                    out.push_str("⠰⠄");
+                    return out;
+                }
                 let grade1_passage = remove_unneeded_mode_changes(apply_to, UEB_Mode::Grade1, UEB_Duration::Passage);
                 return "⠰⠰⠰".to_string() + &grade1_passage + "⠰⠄";
             }
 
             // GTM 1.7.3(a): per sequence, allow one grade 1 symbol indicator, or a grade 1 word
             // indicator if the sequence needs more than one.
-            let count_words: Vec<&str> = count_src.split('W').collect();
-            let apply_words: Vec<&str> = apply_to.split('W').collect();
-            assert_eq!(count_words.len(), apply_words.len(),
-                "gtm_1_7_mode: count_src and apply_to must have the same number of symbols-sequences");
             let words = count_words.iter().zip(apply_words.iter())
                 .map(|(&count_word, &apply_word)| {
-                    if grade1_count(count_word) >= 2 {
-                        "⠰⠰".to_string() + &remove_unneeded_mode_changes(apply_word, UEB_Mode::Grade1, UEB_Duration::Word)
+                    let n_g1 = grade1_count(count_word);
+                    if n_g1 >= 2 {
+                        // GTM 1.7.5(a): two symbol indicators if that preserves contractions
+                        if sequence_contains_word(count_word)
+                            && let Some(g2) = g2_two_symbol_form(apply_word) {
+                                g2
+                            } else {
+                                "⠰⠰".to_string() + &remove_unneeded_mode_changes(apply_word, UEB_Mode::Grade1, UEB_Duration::Word)
+                            }
                     } else {
                         // 0 or 1 grade 1 indicators: the grade 2 form leaves a single symbol indicator inline
                         remove_unneeded_mode_changes(apply_word, UEB_Mode::Grade2, UEB_Duration::Symbol)
@@ -1454,8 +1542,71 @@ fn is_left_intervening_char(ch: char) -> bool {
     matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w')
 }
 
-/// RUEB 10.6.2 / 2.6.2: lower word signs may only begin a word when preceded by whitespace,
-/// hyphen/dash, an opening quote/bracket/typeform, capitals, or the start of the sequence.
+/// Double-struck / script / fraktur / sans-serif: math alphabets, not literary emphasis.
+fn is_math_alphabet_typeform(ch: char) -> bool {
+    matches!(ch, '𝔹' | 'T' | 'D' | 'S')
+}
+
+/// Advance past one letter with optional capital, Greek, and accent prefixes (`C? G|V? A…? L cell`).
+fn skip_one_prefixed_letter(chars: &[char], mut i: usize) -> usize {
+    if i >= chars.len() {
+        return i;
+    }
+    if matches!(chars[i], 'C' | '𝐶') {
+        i += 1;
+    }
+    if i < chars.len() && matches!(chars[i], 'G' | 'V') {
+        i += 1;
+    }
+    if i < chars.len() && chars[i] == 'A' {
+        match index_after_accent_to_l(chars, i + 1) {
+            Some(i_l) => i = i_l,
+            None => return i,
+        }
+    }
+    if i < chars.len() && chars[i] == 'L' {
+        i += 1;
+        if i < chars.len() {
+            i += 1; // braille cell
+        }
+    }
+    i
+}
+
+/// End index of a math-alphabet typeform item starting at `i` (`𝔹`/`T`/`D`/`S`).
+/// `s` covers one letter; `w` covers the typeform word until its terminator.
+fn math_typeform_item_end(chars: &[char], i: usize) -> usize {
+    if i >= chars.len() || !is_math_alphabet_typeform(chars[i]) {
+        return i;
+    }
+    let typeform = chars[i];
+    let mut j = i + 1;
+    let word_mode = j < chars.len() && chars[j] == 'w';
+    if j < chars.len() && matches!(chars[j], 's' | 'w') {
+        j += 1;
+    }
+    if word_mode {
+        loop {
+            let next = skip_one_prefixed_letter(chars, j);
+            if next == j {
+                break;
+            }
+            j = next;
+        }
+        if j + 1 < chars.len() && chars[j] == typeform && chars[j + 1] == 'e' {
+            j += 2;
+        } else if j < chars.len() && chars[j] == 'e' {
+            j += 1;
+        }
+        return j;
+    }
+    return skip_one_prefixed_letter(chars, j);
+}
+
+/// RUEB 10.6.2: lower groupsigns "be", "con", "dis" only at the beginning of a word.
+/// Beginning of a word = letters-sequence after space, hyphen or dash, optionally with
+/// intervening punctuation/indicators from RUEB 2.6.2 (opening brackets/quotes, typeform,
+/// capitals). Math operators and fraction indicators are not word boundaries.
 /// `word_start` is the index of the first char of a grade-2 letter run ('L', 'C', or 'A').
 fn allows_lower_word_sign_at(chars: &[char], word_start: usize) -> bool {
     if word_start >= chars.len() {
@@ -1464,27 +1615,18 @@ fn allows_lower_word_sign_at(chars: &[char], word_start: usize) -> bool {
     if word_start == 0 {
         return true;
     }
-    let mut j = word_start - 1;
+    let mut j = word_start;
     while j > 0 {
+        j -= 1;
         let ch = chars[j];
-        if matches!(ch, 'o' | 'b') {
-            return false;     // fraction/group open -- not a literary word start (RUEB 10.6.2)
-        }
-        if is_left_intervening_char(ch) || matches!(ch, 'e' | 'c' | 's' | 'w') {
-            j -= 1;
+        // 2.6.2 intervening symbols (opening punctuation flags, typeform, capitals, etc.)
+        if is_left_intervening_char(ch) || matches!(ch, 'e' | 'c' | 's' | 'w' | 'o' | 'b' | 'G' | 'V') {
             continue;
         }
-        break;
+        // Must be space, hyphen or dash (RUEB 10.6.2 Note)
+        return "W𝐖-—―".contains(ch);
     }
-    if chars[j] == 'L' {
-        return false;
-    }
-    return lower_word_sign_may_follow(chars[j]);
-
-    fn lower_word_sign_may_follow(ch: char) -> bool {
-        "W𝐖-—―".contains(ch) ||
-        matches!(ch, 'C' | '𝐶' | 'I' | 'B' | '𝔹' | 'S' | 'T' | 'D' | 'G' | 'V')
-    }
+    true
 }
 
 /// Return value for use_g1_word_mode()
@@ -1654,6 +1796,34 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                }
                 // debug!("Grade 2: ch={}, duration: {:?}", ch, duration);
                 match ch {
+                    '𝔹' | 'T' | 'D' | 'S' => {
+                        // Math-alphabet typeform: this letter is not part of an English word
+                        // (GTM 11.6). Close any current contraction run, emit the typeform
+                        // item on its own, then let following letters start a new word.
+                        if let Some(start) = start_g2_letter {
+                            if !cap_word_mode {
+                                result = handle_contractions(&chars, start, i, result);
+                            }
+                            cap_word_mode = false;
+                            start_g2_letter = None;
+                        }
+                        let unit_end = math_typeform_item_end(&chars, i);
+                        // Typeform prefix (`𝔹s`) must precede the grade 1 indicator: ⠈⠆⠰⠠⠗, not ⠰⠈⠆⠠⠗.
+                        let mut letter_start = i + 1;
+                        if letter_start < unit_end && matches!(chars[letter_start], 's' | 'w') {
+                            letter_start += 1;
+                        }
+                        result.extend(chars[i..letter_start].iter().copied());
+                        if let Some(letter_idx) = chars[i..unit_end].iter().position(|&c| c == 'L') {
+                            let (is_alone, _, n_letters) = stands_alone(&chars, i + letter_idx);
+                            if is_alone && n_letters == 1 {
+                                result.push('1');
+                                mode = UEB_Mode::Grade1;
+                            }
+                        }
+                        result.extend(chars[letter_start..unit_end].iter().copied());
+                        i = unit_end;
+                    },
                     'L' => {
                         if start_g2_letter.is_none() {
                             start_g2_letter = Some(i);
@@ -1735,6 +1905,16 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                         }
                     },
                     '1' => {
+                        // Contract the preceding letter run before consuming '1'. The '1' arm used
+                        // to increment first, so handle_contractions saw "work1" and the whole-word
+                        // patterns `^work$` / `^time$` failed (GTM 1.7.9 work/distance, 1.7.5(a) time).
+                        if let Some(start) = start_g2_letter {
+                            if !cap_word_mode {
+                                result = handle_contractions(&chars, start, i, result);
+                            }
+                            cap_word_mode = false;
+                            start_g2_letter = None;
+                        }
                         result.push(ch);
                         i += 1;
                         mode = UEB_Mode::Grade1;
@@ -1966,6 +2146,12 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
         "L⠗L⠑L⠁L⠉L⠞L⠊L⠧L⠊L⠞L⠽", // reactivity
     };
 
+    // Words where "be" is not the first syllable (RUEB 10.6.1 "But:" cases and similar).
+    static BE_EXCEPTION_WORDS: phf::Set<&str> = phf_set! {
+        "L⠃L⠑L⠁L⠗L⠊L⠝L⠛",     // bearing
+        "L⠃L⠑L⠝L⠉L⠓L⠍L⠁L⠗L⠅", // benchmark
+    };
+
     // It would be much better from an extensibility point of view to read the table in from a file
     static CONTRACTIONS: LazyLock<Vec<Replacement>> = LazyLock::new(|| { vec![
             // 10.9: initial-letter (dot-5) wordsigns -- whole word only
@@ -1983,6 +2169,12 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
             Replacement{ pattern: to_unicode_braille("of"), replacement: "L⠷", skip_if_word_in: None, word_start_only: false },
             Replacement{ pattern: to_unicode_braille("the"), replacement: "L⠮", skip_if_word_in: None, word_start_only: false },
             Replacement{ pattern: to_unicode_braille("with"), replacement: "L⠾", skip_if_word_in: None, word_start_only: false },
+
+            // 10.6.1-10.6.4 / 10.10.4: lower groupsigns be/con/dis -- only at word start,
+            // and preferred over other groupsigns (e.g. "distance" is ⠲⠞⠨⠑, not di+st+ance).
+            Replacement{ pattern: format!("^{}", to_unicode_braille("be")), replacement: "⠆", skip_if_word_in: Some(&BE_EXCEPTION_WORDS), word_start_only: true },
+            Replacement{ pattern: format!("^{}", to_unicode_braille("con")), replacement: "⠒", skip_if_word_in: None, word_start_only: true },
+            Replacement{ pattern: format!("^{}", to_unicode_braille("dis")), replacement: "⠲", skip_if_word_in: None, word_start_only: true },
             
             // 10.8: final-letter group signs (these need to precede 'en' and any other shorter contraction)
             Replacement{ pattern: "(?P<s>L.)L⠍L⠑L⠝L⠞".to_string(), replacement: "${s}L⠰L⠞", skip_if_word_in: None, word_start_only: false }, // ment
@@ -2020,11 +2212,6 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
             Replacement{ pattern: "(?P<s>L.)L⠋L⠋(?P<e>L.)".to_string(), replacement: "${s}L⠖${e}", skip_if_word_in: None, word_start_only: false },  // ff
             Replacement{ pattern: "(?P<s>L.)L⠛L⠛(?P<e>L.)".to_string(), replacement: "${s}L⠶${e}", skip_if_word_in: None, word_start_only: false },  // gg
 
-            // 10.6.2: Lower word signs -- only at the beginning of a word (RUEB 10.6.1-10.6.4)
-            Replacement{ pattern: format!("^{}", to_unicode_braille("be")), replacement: "L⠃L⠑", skip_if_word_in: None, word_start_only: true },
-            Replacement{ pattern: format!("^{}", to_unicode_braille("con")), replacement: "L⠉L⠕L⠝", skip_if_word_in: None, word_start_only: true },
-            Replacement{ pattern: format!("^{}", to_unicode_braille("dis")), replacement: "L⠙L⠊L⠌", skip_if_word_in: None, word_start_only: true },
-
             // 10.6.8: lower group signs; also 10.6.2 word signs when at word start ("sin", etc.)
             // FIX: these need restrictions about only applying when upper dots are present
             Replacement{ pattern: to_unicode_braille("en"), replacement: "⠢", skip_if_word_in: None, word_start_only: false },
@@ -2038,6 +2225,13 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
 
     let word_start_ok = allows_lower_word_sign_at(full_chars, start);
     let chars = &full_chars[start..end];
+    // A non-English letter glued to an English word (GTM 1.7.9 Δtime, or a
+    // double-struck/script/fraktur letter) is not part of the English
+    // letters-sequence; contract the following word on its own (time → ⠐⠞).
+    let skip = leading_non_word_letter_len(chars);
+    if skip > 0 && skip < chars.len() {
+        return handle_contractions(full_chars, start + skip, end, result);
+    }
     let mut chars_as_str = chars.iter().collect::<String>();
     let original_chars_as_str = chars_as_str.clone();
     // debug!("  handle_contractions: examine '{}'", &chars_as_str);
@@ -2061,6 +2255,31 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
     return result;
 
 
+
+    fn leading_non_word_letter_len(chars: &[char]) -> usize {
+        if chars.is_empty() {
+            return 0;
+        }
+        if is_math_alphabet_typeform(chars[0]) {
+            let end = math_typeform_item_end(chars, 0);
+            return if end < chars.len() { end } else { 0 };
+        }
+        let mut i = 0;
+        if i < chars.len() && matches!(chars[i], 'C' | '𝐶') {
+            i += 1;
+        }
+        if i < chars.len() && matches!(chars[i], 'G' | 'V') {
+            i += 1;
+            if i < chars.len() && chars[i] == 'L' {
+                i += 1;
+                if i < chars.len() {
+                    i += 1; // braille cell
+                }
+                return i;
+            }
+        }
+        0
+    }
 
     fn init_patterns(contractions: &[Replacement]) -> RegexSet {
         let mut vec: Vec<&str> = Vec::with_capacity(contractions.len());
@@ -3581,14 +3800,16 @@ mod tests {
         init_braille_mathml("<math><mtext>distance</mtext></math>")?;
         set_preference("BrailleCode", "UEB")?;
         let distance = get_braille("")?;
-        assert!(distance.starts_with("⠙⠊⠌"), "dis lower word sign at word start: got '{distance}'");
-        assert!(!distance.starts_with("⠙⠊⠎"), "unexpected uncontracted dis at word start");
+        // RUEB 10.6.1 / 10.10.4: distance at word start uses dis lower groupsign
+        assert_eq!(distance, "⠲⠞⠨⠑", "dis lower groupsign at word start: got '{distance}'");
+        // After fraction open (not a RUEB 10.6.2 word start), dis must not apply; st+ance may.
         init_braille_mathml("<math><mfrac><mtext>distance</mtext><mtext>time</mtext></mfrac></math>")?;
         let frac = get_braille("")?;
-        assert!(frac.contains("⠙⠊⠎"), "dis not contracted immediately after fraction open: got '{frac}'");
-        assert!(!frac.contains("⠙⠊⠌"), "dis wrongly contracted after fraction open");
+        assert!(!frac.contains("⠲"), "dis wrongly used after fraction open: got '{frac}'");
+        assert!(frac.contains("⠙⠊⠌⠨⠑") || frac.contains("⠙⠊⠎⠞⠁⠝⠉⠑"),
+            "expected st+ance or uncontracted distance after fraction open: got '{frac}'");
         init_braille_mathml("<math><mtext>include</mtext></math>")?;
-        assert!(get_braille("")?.starts_with("⠔"), "in lower word sign at word start");
+        assert!(get_braille("")?.starts_with("⠔"), "in lower groupsign at word start");
         return Ok(());
         });
     }
@@ -3738,7 +3959,7 @@ mod tests {
             ("work", "⠐⠺"),
             ("time", "⠐⠞"),
             ("speed", "⠎⠏⠑⠫"),
-            ("distance", "⠙⠊⠌⠨⠑"),
+            ("distance", "⠲⠞⠨⠑"),
             ("area", "⠜⠑⠁"),
             ("height", "⠓⠑⠊⠣⠞"),
             ("weight", "⠺⠑⠊⠣⠞"),
@@ -3755,7 +3976,7 @@ mod tests {
             ("interest", "⠔⠞⠻⠑⠌"),
             ("revenue", "⠗⠑⠧⠢⠥⠑"),
             ("clearance", "⠉⠇⠑⠜⠨⠑"),
-            ("conductance", "⠉⠕⠝⠙⠥⠉⠞⠨⠑"),
+            ("conductance", "⠒⠙⠥⠉⠞⠨⠑"),
             ("capacitance", "⠉⠁⠏⠁⠉⠊⠞⠨⠑"),
             ("resistance", "⠗⠑⠎⠊⠌⠨⠑"),
             ("impedance", "⠊⠍⠏⠫⠨⠑"),
@@ -3773,9 +3994,9 @@ mod tests {
             ("valence", "⠧⠁⠇⠰⠑"),
             ("stiffness", "⠌⠊⠖⠰⠎"),
             ("thickness", "⠹⠊⠉⠅⠰⠎"),
-            ("displacement", "⠙⠊⠌⠏⠇⠁⠉⠑⠰⠞"),
-            ("concentration", "⠉⠕⠝⠉⠢⠞⠗⠁⠰⠝"),
-            ("consumption", "⠉⠕⠝⠎⠥⠍⠏⠰⠝"),
+            ("displacement", "⠲⠏⠇⠁⠉⠑⠰⠞"),
+            ("concentration", "⠒⠉⠢⠞⠗⠁⠰⠝"),
+            ("consumption", "⠒⠎⠥⠍⠏⠰⠝"),
             ("duration", "⠙⠥⠗⠁⠰⠝"),
             ("elevation", "⠑⠇⠑⠧⠁⠰⠝"),
             ("fraction", "⠋⠗⠁⠉⠰⠝"),
@@ -3811,7 +4032,7 @@ mod tests {
             ("breadth", "⠃⠗⠂⠙⠹"),
             ("strength", "⠌⠗⠢⠛⠹"),
             ("spread", "⠎⠏⠗⠂⠙"),
-            ("discount", "⠙⠊⠌⠉⠨⠞"),
+            ("discount", "⠲⠉⠨⠞"),
             ("count", "⠉⠨⠞"),
             ("version", "⠧⠻⠨⠝"),
             ("inductance", "⠔⠙⠥⠉⠞⠨⠑"),
@@ -3864,7 +4085,7 @@ mod tests {
             ("cohesion", "⠉⠕⠓⠑⠨⠝"),
             ("compliance", "⠉⠕⠍⠏⠇⠊⠨⠑"),
             ("compression", "⠉⠕⠍⠏⠗⠑⠎⠨⠝"),
-            ("conductivity", "⠉⠕⠝⠙⠥⠉⠞⠊⠧⠰⠽"),
+            ("conductivity", "⠒⠙⠥⠉⠞⠊⠧⠰⠽"),
             ("coverage", "⠉⠕⠧⠻⠁⠛⠑"),
             ("damping", "⠙⠁⠍⠏⠬"),
             ("deflection", "⠙⠑⠋⠇⠑⠉⠰⠝"),
@@ -3872,9 +4093,9 @@ mod tests {
             ("depreciation", "⠙⠑⠏⠗⠑⠉⠊⠁⠰⠝"),
             ("deviation", "⠙⠑⠧⠊⠁⠰⠝"),
             ("diffusion", "⠙⠊⠖⠥⠨⠝"),
-            ("dispersion", "⠙⠊⠌⠏⠻⠨⠝"),
-            ("dissipation", "⠙⠊⠌⠎⠊⠏⠁⠰⠝"),
-            ("distortion", "⠙⠊⠌⠕⠗⠰⠝"),
+            ("dispersion", "⠲⠏⠻⠨⠝"),
+            ("dissipation", "⠲⠎⠊⠏⠁⠰⠝"),
+            ("distortion", "⠲⠞⠕⠗⠰⠝"),
             ("divergence", "⠙⠊⠧⠻⠛⠰⠑"),
             ("downforce", "⠙⠪⠝⠿⠉⠑"),
             ("elasticity", "⠑⠇⠁⠌⠊⠉⠰⠽"),
