@@ -33,6 +33,7 @@ but add common mistakes of AI agents here instead.
 - Do not mirror README content here; keep guidance agent-specific.
 - Avoid broad formatting sweeps; do not run `cargo fmt` in this repo.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
+- Do **not** change test goldens (expected braille/speech/nav strings) unless the user explicitly says to. Prefer fixing code/rules to match existing goldens; if a golden looks wrong vs the spec, ask before editing it.
 - do not do any git commands unless explicitly asked for
 - Rust coverage is in `target/coverage/`.
 - When working with GitHub, e.g. looking at PRs and issues, check if the GitHub CLI is installed (`gh --version`).
