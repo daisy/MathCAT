@@ -375,6 +375,53 @@ def secao_colisao(base: list[Regra], full: list[Regra]) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Seção 5 — o que falta traduzir, separando duas coisas que usam a mesma marca
+#
+# `t:` minúsculo significa "não conferido". Mas o recuo controlado (entradas
+# copiadas do inglês, marcadas # RECUO-EN) também usa `t:`, e são milhares:
+# sem separar, as poucas pendências reais somem no meio delas.
+# ---------------------------------------------------------------------------
+
+MARCA_RECUO = "# RECUO-EN"
+T_MINUSCULO = re.compile(r'(?<![A-Za-z_])(t|ot):\s*"([^"]*)"')
+
+
+def secao_pendencias(arquivos: list[Path]) -> tuple[int, int]:
+    pend: list[tuple[str, int, str]] = []
+    recuo_entradas = recuo_strings = 0
+    for caminho in arquivos:
+        if not caminho.exists():
+            continue
+        em_recuo = False
+        for n, linha in enumerate(caminho.read_text(encoding="utf-8").splitlines(), 1):
+            if linha.lstrip().startswith("#"):
+                continue
+            if CHAVE.match(linha) and len(CHAVE.match(linha).group(1)) <= 1:
+                em_recuo = MARCA_RECUO in linha
+                if em_recuo:
+                    recuo_entradas += 1
+            for _, txt in T_MINUSCULO.findall(linha):
+                if not txt.strip():
+                    continue  # `t: " "` do espaço (herdado do en) não é tradução
+                if em_recuo:
+                    recuo_strings += 1
+                else:
+                    pend.append((caminho.name, n, txt))
+    titulo("5. TRADUÇÃO PENDENTE DE CONFERÊNCIA × RECUO DELIBERADO")
+    print("   (as duas usam `t:` minúsculo; só o recuo leva a marca # RECUO-EN)")
+    print(f"\n   recuo deliberado (# RECUO-EN): {recuo_entradas} entradas, {recuo_strings} strings em inglês")
+    print("      -> não é pendência: é o que fala em vez de sair cru; traduzir movendo a")
+    print("         entrada para cima do marcador do bloco.")
+    print(f"\n   tradução PENDENTE DE CONFERÊNCIA (t: fora do recuo): {len(pend)} strings")
+    por_palavra: dict[str, list[str]] = defaultdict(list)
+    for arq, n, txt in pend:
+        por_palavra[txt].append(f"{arq}:{n}")
+    for txt, onde in sorted(por_palavra.items(), key=lambda kv: -len(kv[1])):
+        print(f"      {len(onde):3d}x  {txt!r}   ({', '.join(onde[:4])}{' …' if len(onde) > 4 else ''})")
+    return len(pend), recuo_strings
+
+
+# ---------------------------------------------------------------------------
 
 
 def main() -> int:
@@ -385,7 +432,7 @@ def main() -> int:
     p.add_argument("--referencia", default="en", help="idioma que define os conceitos (padrão: en)")
     p.add_argument(
         "--secao",
-        choices=["conceitos", "ordem", "estrutura", "colisao", "todas"],
+        choices=["conceitos", "ordem", "estrutura", "colisao", "pendencias", "todas"],
         default="todas",
     )
     p.add_argument("--rules-dir", default=None, help="caminho de Rules/Languages")
@@ -426,6 +473,9 @@ def main() -> int:
         total += secao_estrutura(pt_idx, en_idx)
     if args.secao in ("colisao", "todas"):
         secao_colisao(pt_base, pt_full)
+    if args.secao in ("pendencias", "todas"):
+        d = raiz / args.idioma
+        secao_pendencias([d / "unicode.yaml", d / "unicode-full.yaml"])
 
     titulo("RESUMO")
     print(f"   {total} grupo(s) de inconsistência encontrados nas seções 1-3.")

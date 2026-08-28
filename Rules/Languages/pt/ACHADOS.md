@@ -886,6 +886,22 @@ fala "integral average with slash" em vez de "⨏". Pior que português, muito
 melhor que cru. O `conferir_vocabulario.py` continua em 4 grupos: o recuo não
 partiu nenhum conceito.
 
+Duas garantias, acrescentadas depois da primeira versão:
+
+- **O recuo é distinguível de tradução pendente.** As entradas copiadas usam
+  `t:` minúsculo, a mesma marca de "traduzido mas não conferido" — e eram
+  2 mil, contra 20 pendências reais, que sumiam no meio. Cada entrada do bloco
+  leva agora `# RECUO-EN` na linha da chave, e a seção 5 do
+  `conferir_vocabulario.py` reporta os dois números em separado: 2091 entradas
+  de recuo deliberado (1981 strings em inglês) contra **20 strings pendentes
+  de conferência** — as dez de "fraktur" e as dez de "caligráfico".
+- **O recuo não regrediu nada.** As 593 expressões dos testes do inglês foram
+  faladas em português sem o bloco e com o bloco. 526 iguais; 67 mudaram, e
+  **todas as 67 tinham caractere cru antes** (as letras decoradas de
+  `alphabets.rs`). Nenhuma expressão que falava só português mudou de fala:
+  o gerador só entra onde o pt não tinha regra, por construção (pula qualquer
+  entrada com codepoint já coberto).
+
 ### 9.4 O que mudou de regra nesta rodada
 
 | arquivo | mudança |

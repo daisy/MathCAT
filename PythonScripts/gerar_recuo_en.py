@@ -162,6 +162,10 @@ def main() -> int:
         if any(c in pt_idx for c in cps) or all(ord(c) < 128 for c in cps):
             continue  # o pt já cobre (parcial ou todo) — não duplicar codepoint
         novas, t, tot = reescrever_entrada(linhas, mapa)
+        # marca própria: recuo deliberado, para não se confundir com `t:` de
+        # tradução pendente de conferência (as duas coisas são contadas em
+        # separado pelo conferir_vocabulario.py, seção 5)
+        novas[0] = re.sub(r"\s*#.*$", "", novas[0]).rstrip() + "   # RECUO-EN"
         bloco.extend(novas)
         n_ent += 1
         n_cp += len(cps)
@@ -179,7 +183,8 @@ def main() -> int:
 # Entradas copiadas de en/unicode-full.yaml para codepoints que o português
 # ainda não cobria. Sem elas o caractere saía CRU para o sintetizador (ver
 # ACHADOS 9.2). `T:` maiúsculo = reaproveitou tradução ou termo já definido;
-# `t:` minúsculo = ainda em inglês, contado pela auditoria como pendente.
+# `t:` minúsculo = ainda em inglês. Toda entrada aqui leva a marca # RECUO-EN
+# na linha da chave: é recuo deliberado, NÃO tradução pendente de conferência.
 # NÃO EDITE À MÃO: rode `python3 PythonScripts/gerar_recuo_en.py`. Para
 # traduzir um destes caracteres, mova a entrada para cima do marcador.
 """

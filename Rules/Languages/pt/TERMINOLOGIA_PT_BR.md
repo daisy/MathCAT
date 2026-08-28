@@ -130,8 +130,10 @@ Princípio: termo matemático, não tradução do nome Unicode.
 Caracteres sem regra pt recebem a entrada do inglês, gerada por
 `PythonScripts/gerar_recuo_en.py` no fim do `unicode-full.yaml` (entre
 marcadores). Estilo já definido vira o termo do pt; o resto fica em inglês com
-`t:` minúsculo. Status de cada um: **PENDENTE DE ESCUTA** por definição —
-traduzir movendo a entrada para cima do marcador.
+`t:` minúsculo e a marca `# RECUO-EN` na linha da chave. **Não é tradução
+pendente**: é o que fala em vez de sair cru. `conferir_vocabulario.py --secao
+pendencias` conta os dois em separado. Traduzir = mover a entrada para cima
+do marcador do bloco (e tirar a marca).
 
 ## Segundo caminho: `IntentMappings` — prioridade baixa, medida
 
