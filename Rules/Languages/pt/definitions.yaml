@@ -46,8 +46,11 @@
     "laplacian": "function=laplaciano",
 
     "chemistry-concentration": "function= ; concentração: concentração de: a concentração de; fim da concentração",
-    "probability": "nofix=P: probabilidade",
-    "conditional-probability": "function=probabilidade; dado",
+    # CORREÇÃO: o en tem duas fixidades (nofix || function); só com a function
+    # a fala ganha o "de" ("probabilidade de x"). E o separador de palavras do
+    # conditional-probability é "|", como no en — ";" não é reconhecido aqui.
+    "probability": "nofix=P: probabilidade || function=probabilidade",
+    "conditional-probability": "function=probabilidade | dado",
     "intersection": "infix=interseção",
     "union": "infix=união",
   }

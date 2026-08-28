@@ -211,7 +211,7 @@ fn ignore_period() -> Result<()> {
           <mi>A</mi>
           <mrow>
             <mstyle displaystyle='false' scriptlevel='0'>
-              <mtext>&nbsp;and&nbsp;</mtext>
+              <mtext>&nbsp;e&nbsp;</mtext>
             </mstyle>
           </mrow>
           <mi>B</mi>
@@ -238,7 +238,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p de maiúsculo a; maiúsculo p de maiúsculo b")?;
+    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a e maiúsculo b; fecha parênteses; é igual a; maiúsculo p, abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a, maiúsculo p de maiúsculo a, maiúsculo p de maiúsculo b")?;
     return Ok(());
 
 }
