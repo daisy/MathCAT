@@ -159,7 +159,7 @@
   tag: inverse-function
   match: "."
   replace:
-  - T: "umgekehrte"      # phrase(the 'inverse' of f)
+  - T: "umgekehrter"     # phrase(the 'inverse' of f)
   - x: "*[1]"
 
 - name: function-squared-or-cubed

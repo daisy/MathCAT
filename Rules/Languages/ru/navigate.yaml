@@ -91,6 +91,15 @@
 
 
 # Rules for speaking what happens when moving into or out of a notation
+# Prefix/silent intents with no NavigationParts entry (for example, unary
+# minus, a vector, or a modified variable) should not announce "in"/"out of".
+- name: into-or-out-of-prefix-or-silent-without-parts
+  tag: "*"
+  match: "$Move2D != '' and
+          (contains(@data-intent-property, ':prefix:') or contains(@data-intent-property, ':silent:')) and
+          GetNavigationPartName(name(.), count($Child2D/preceding-sibling::*)) = ''"
+  replace: []
+
 - name: into-or-out-of-mfrac
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='mfrac' or self::m:mfrac)"

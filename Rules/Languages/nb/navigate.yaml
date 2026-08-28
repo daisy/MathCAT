@@ -98,9 +98,13 @@
           (name(.)='mrow' or name(.) = 'mtr' or name(.) = 'mlabeledtr' or @data-from-mathml = 'mtable')"
   replace: []
 
-- name: into-or-out-of-minus-silent-on-zoom-out
+# Prefix/silent intents with no NavigationParts entry (e.g. unary minus, x-hat)
+# should not announce "i"/"ut av".
+- name: into-or-out-of-prefix-or-silent-without-parts
   tag: "*"
-  match: "$Move2D != '' and name(.)='minus' and count(*)=1 and ($NavCommand = 'ZoomOut' or $NavCommand = 'ZoomOutAll')"
+  match: "$Move2D != '' and
+          (contains(@data-intent-property, ':prefix:') or contains(@data-intent-property, ':silent:')) and
+          GetNavigationPartName(name(.), count($Child2D/preceding-sibling::*)) = ''"
   replace: []
 
 - name: into-or-out-of-mtr
@@ -158,7 +162,21 @@
         - else_if: "count(*) = 1" # if the node has one child
           then_test:
             if: "$NavVerbosity = 'Verbose'"
-            then: [x: "translate(name(.), '-_', ' ')"]      # e.g., "in absolute value"
+            then:   # IntentMappings via SpeakIntentName; falls back to spaced intent name
+            - test:
+              - if: "contains(@data-intent-property, ':prefix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"]
+              - else_if: "contains(@data-intent-property, ':postfix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"]
+              - else_if: "contains(@data-intent-property, ':infix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')"]
+              - else_if: "contains(@data-intent-property, ':function:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+              - else_if: "contains(@data-intent-property, ':nofix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"]
+              - else_if: "contains(@data-intent-property, ':silent:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
+              - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
           else:
           - T: "del"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"

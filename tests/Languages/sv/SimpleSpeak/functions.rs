@@ -86,7 +86,7 @@ fn trig_power_other() -> Result<()> {
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
-    test("sv", "SimpleSpeak", expr, "logg x")?;
+    test("sv", "SimpleSpeak", expr, "logg av x")?;
     return Ok(());
 
 }
@@ -118,7 +118,7 @@ fn normal_log_with_base() -> Result<()> {
 #[test]
 fn simple_ln() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
-    test("sv", "SimpleSpeak", expr, "l n x")?;
+    test("sv", "SimpleSpeak", expr, "l n av x")?;
     return Ok(());
 
 }
@@ -135,7 +135,7 @@ fn normal_ln() -> Result<()> {
 fn normal_ln_terse() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "l n av, start-parentes; x plus y; slut-parentes")?;
+                expr, "l n, start-parentes; x plus y; slut-parentes")?;
                 return Ok(());
 
 }

@@ -1,7 +1,7 @@
 """
 YAML file parsing functions.
 
-Handles parsing of rule files and unicode files to extract rule information.
+Handles parsing of rule, unicode, and definitions files.
 """
 
 import re
@@ -9,10 +9,13 @@ from pathlib import Path
 from typing import Any
 
 from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 from ruamel.yaml.scanner import ScannerError
 
+from .errors import AuditError
 from .extractors import iter_field_matches, mapping_key_line
-from .models import RuleInfo, UntranslatedEntry
+from .models.definitions import DefinitionInfo, DefinitionKind
+from .models.rules import RuleInfo, UntranslatedEntry
 
 _yaml = YAML()
 _yaml.preserve_quotes = True
@@ -23,14 +26,8 @@ def is_unicode_file(file_path: Path) -> bool:
     return file_path.name in ("unicode.yaml", "unicode-full.yaml")
 
 
-def parse_yaml_file(file_path: Path, strict: bool = False) -> tuple[list[RuleInfo], str]:
-    """
-    Parse a YAML file and extract rules.
-    Returns list of RuleInfo and the raw file content.
-
-    For standard rule files: extracts rules with name/tag
-    For unicode files: extracts entries with character/range keys
-    """
+def _load_yaml_file(file_path: Path, strict: bool = False) -> tuple[Any, str]:
+    """Read and load YAML, retaining the tool's existing tab fallback."""
     with open(file_path, encoding="utf-8") as f:
         content = f.read()
 
@@ -45,9 +42,101 @@ def parse_yaml_file(file_path: Path, strict: bool = False) -> tuple[list[RuleInf
         else:
             raise exc
 
+    return data, content
+
+
+def parse_yaml_file(file_path: Path, strict: bool = False) -> tuple[list[RuleInfo], str]:
+    """
+    Parse a YAML file and extract rules.
+    Returns list of RuleInfo and the raw file content.
+
+    For standard rule files: extracts rules with name/tag
+    For unicode files: extracts entries with character/range keys
+    """
+    data, content = _load_yaml_file(file_path, strict)
     rules = parse_unicode_file(content, data) if is_unicode_file(file_path) else parse_rules_file(content, data)
 
     return rules, content
+
+
+def parse_definitions_file(file_path: Path, strict: bool = False) -> tuple[dict[str, DefinitionInfo], str]:
+    """Parse and validate one literal ``definitions.yaml`` file.
+
+    Includes are deliberately ignored. Definitions are returned by name so
+    ordering is irrelevant and a later duplicate replaces an earlier one.
+    """
+    try:
+        data, content = _load_yaml_file(file_path, strict)
+    except YAMLError as exc:
+        raise AuditError(f"Invalid YAML in {file_path}: {exc}") from exc
+
+    return parse_definitions(content, data, file_path), content
+
+
+def parse_definitions(content: str, data: Any, file_path: Path) -> dict[str, DefinitionInfo]:
+    """Validate parsed YAML and return literal definitions keyed by name."""
+    if not isinstance(data, list):
+        raise AuditError(f"Invalid definitions file {file_path}: expected a YAML sequence")
+
+    lines = content.splitlines()
+    starts = [data.lc.item(idx)[0] if hasattr(data, "lc") else 0 for idx in range(len(data))]
+    raw_blocks = build_raw_blocks(lines, starts)
+    definitions: dict[str, DefinitionInfo] = {}
+
+    for item, line_idx, raw_content in zip(data, starts, raw_blocks, strict=True):
+        line_number = line_idx + 1
+        if not isinstance(item, dict) or len(item) != 1:
+            raise AuditError(f"Invalid definition in {file_path} at line {line_number}: expected exactly one definition name")
+
+        name, value = next(iter(item.items()))
+        if not isinstance(name, str):
+            raise AuditError(
+                f"Invalid definition name in {file_path} at line {line_number}: expected a string, got {type(name).__name__}"
+            )
+        if name == "include":
+            continue
+
+        kind = _definition_kind(value, file_path, name, line_number)
+        definitions[name] = DefinitionInfo(
+            name=name,
+            kind=kind,
+            line_number=line_number,
+            raw_content=raw_content,
+            data=value,
+        )
+
+    return definitions
+
+
+def _definition_kind(value: Any, file_path: Path, name: str, line_number: int) -> DefinitionKind:
+    """Validate a definition value and identify its collection kind."""
+
+    def invalid(message: str) -> AuditError:
+        return AuditError(f"Invalid definition '{name}' in {file_path} at line {line_number}: {message}")
+
+    if isinstance(value, list):
+        if not value:
+            raise invalid("empty sequences have no unambiguous definition kind")
+        if not all(isinstance(entry, str) for entry in value):
+            raise invalid("vector entries must all be strings")
+        return DefinitionKind.VECTOR
+
+    if isinstance(value, dict):
+        if not value:
+            raise invalid("empty mappings have no unambiguous definition kind")
+        if not all(isinstance(key, str) for key in value):
+            raise invalid("mapping keys must all be strings")
+
+        values = list(value.values())
+        if all(entry is None for entry in values):
+            return DefinitionKind.SET
+        if all(isinstance(entry, str) for entry in values):
+            return DefinitionKind.MAP
+        if any(entry is None for entry in values) and any(isinstance(entry, str) for entry in values):
+            raise invalid("mixed set/map values are not supported")
+        raise invalid("mapping values must be all null (set) or all strings (map)")
+
+    raise invalid("value must be a non-empty sequence or mapping")
 
 
 def format_tag(tag_value: Any) -> str | None:

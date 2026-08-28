@@ -5,7 +5,7 @@ ref: callers
 title: Интеграция MathCAT
 ---
 # MathCAT: средство обеспечения доступности математики
-<img src="../logo.png" style="position: relative; top: 16px; z-index: -1;">
+<img src="../logo.png" width="110" style="position: relative; top: 16px; z-index: -1; width: 110px; height: auto;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT.">
 
 ## Информация для разработчиков ассистивных технологий и пользователей библиотеки
 

@@ -21,19 +21,27 @@
 
     "absolute-value": "function= ; absolutbeloppet; slut absolutbelopp",
     "binomial": "infix=binomial; över; slut binomial",
+    "dimension-product": "infix=gånger",
+    # "closed-interval": "other=closed-interval; from,to; end closed-interval",
+    "greatest-common-divisor": "function=sgd: sgd: största gemensamma delaren",
+    "imaginary-part": "function=imaginär del: den imaginära delen: den imaginära delen",
+    "least-common-multiple": "function=mgm: mgm: den minsta gemensamma multipeln",
+    # "large-op": "infix=over || other=from,to",
     "limit": "prefix=gränsvärdet då",
     "lim-sup": "prefix=lim sup då: övre gränsvärdet då: det övre gränsvärdet då", 
     "lim-inf": "prefix=lim inf då: undre gränsvärdet då : det undre gränsvärdet då", 
     "logarithm-with-base": "prefix=logg bas: logaritmen med bas: logaritmen med bas",
     "minus": "infix=minus || prefix=minus",
     "plus": "infix=plus || prefix=positivt",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "real-part": "function=den reella delen",
 
     "transpose": "postfix=transponat || function=transponat",
     "norm": "function=; normen; slut norm",
     "trace": "function=;spåret; slut spår",
     "dimension": "function=; dimensionen; slut dimension",
-    # "homomorphism": "function= ; homomorfism; slut homomorfism",                                # doesn't fit function pattern
-    # "kernel": "function= ; noll-rummet : noll-rummet till: noll-rummet till; slut noll-rummet", # doesn't fit function pattern
+    # "homomorphism": "function= ; homomorfism; slut homomorfism",                                # SWEDISH: doesn't fit function pattern
+    # "kernel": "function= ; noll-rummet : noll-rummet till: noll-rummet till; slut noll-rummet", # SWEDISH: doesn't fit function pattern
     "vector": "function= ; vektor: vektorn: vektorn || prefix=vektor: vektorn: vektorn",
     "cross-product": "infix=kryss: kryssprodukt: kryssprodukt",
     "dot-product": "infix=skalärt: skalärprodukt: skalärprodukt",
@@ -41,8 +49,10 @@
     "divergence": "function= ; div: divergens: divergens; slut divergens",
     "curl": "function= ; rotation; slut rotation",
     "gradient": "function= ; grad: gradient: gradient; slut gradient",
-    "laplacian": "function=laplacian",   # speech engines don't do a good job with "laplacian" (swedish ones might)
-  }
+    "laplacian": "function=laplacianen",   # speech engines don't do a good job with "laplacian" (swedish ones might)
+  
+    "chemistry-concentration": "function= ; koncentration: koncentrationen av: koncentrationen av; slut koncentration",
+}
 
 - NavigationParts: {
     "large-op": "bas; undre gräns; övre gräns",
@@ -54,6 +64,8 @@
     "root": "rot;rot index",
     "msub": "bas;nedre index",
     "sub": "bas;nedre index",
+    "logarithm-with-base": "bas",
+    "indexed-by": "bas; med index",
     "msup": "bas;övre index",
     "say-super": "bas;upphöjt",
     "skip-super": "bas;upphöjt",
@@ -67,6 +79,15 @@
     # it's a hack to put them here, but at least they are grouped with the other navigation parts
     "in": "i",
     "out": "ut ur",
+  }
+
+- KnownWords: {
+    # MathCAT will put together some runs of three or more mi's (a common mistake), but skips those in alphabetical order.
+    # This is a list of exceptions so that they do get put together. Don't list words with repeated letters.
+
+    # I asked bard and chatgpt for formula words that are alphabetical, and they failed.
+    # Here are the words I managed to find, but it almost certainly not complete. Change the list for other languages.
+    "Abel", "aery", "ails", "airy", "amps", "ceil", "cents", "chop", "flux", "flow", "knot", "most"
   }
 
 - SIPrefixes: {
@@ -235,6 +256,12 @@
     # other
     "mph": "mile per hour",
     "mpg": "mile per gallon",
+  }
+
+- CurrencySymbols: {
+    "$": "dollar", "¢": "cent", "€": "euro", "£": "pund", "₡": "colón", "₤": "lira", "₨": "rupee",
+    "₩": "won", "₪": "shekel", "₱": "peso", "₹": "rupee", "₺": "lira", "₿": "bitcoin",
+    # could add more currencies...
   }
 
 - PluralForms: {

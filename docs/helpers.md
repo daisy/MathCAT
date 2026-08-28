@@ -1,493 +1,564 @@
-# <img src="logo.png" style="position: relative; top: 16px; z-index: -1;"> Translator and Rule Developer Guide
+# A translator's guide to MathCAT
 
-## Information for MathCAT Rule Developers/Translators
-This page is a work-in-progress.
+This guide explains how to create or update a MathCAT translation, using Portuguese as example target language.
 
-## Getting Started
-If you plan to work on MathCAT development, you need to make use of github:
-1. Fork the MathCAT repo at `github.com/NSoiffer/MathCAT`
-2. Clone the forked copy so you have a local copy to work on.
-3. Checkout the branch I create for your work (typically the country code for your translation) and work in that branch.
+Most of this guide focuses on **speech (TTS) translation**. If you are working on Braille, you should still read the main workflow first, because much of the setup and testing process is similar. Then go to the section on [Braille translation](#braille-translation) to see what is different.
 
-If you are unfamiliar with these steps, a simple search will turn up lots of places that describe how to do them. They are simple, so don't get put off by your unfamiliarity.
+You do **not** need to be an experienced programmer to do this work well. Several successful translators started with only basic programming knowledge and no previous experience with YAML or Rust. What matters most is that you know your target language well, understand how mathematics is normally spoken or written in that language, and are willing to test carefully.
 
+A background in mathematics is very helpful. You do not need to be a professional mathematician, but you do need to recognize when something sounds awkward, unclear, or mathematically misleading. If you are a native speaker and are comfortable with mathematics at about university level, that is a strong starting point.
 
-## Language Translators
-If you are a translator, please contact @NSoiffer and he will set up an initial translation that could save a large amount of time. This initial translation will create files in Rules/Languages/xx, where 'xx' is your country code (e.g., fr, de, el, ...). This directory is where you will make your translations. There are four categories of files you should edit:
-1. definitions.yaml: this has a number of translations for numbers, both cardinal and ordinal numbers. Look through those initial translations and make any corrections needed. These numbers are used for things like saying "three fifths". Languages start to have regular counting patterns at some point and so some of the lists in that file can be shortened and some may need additional entries. There are some more details in the English comments in the file.
-2. The xxx_Rules.yaml files (currently `ClearSpeak_Rules.yaml` and `SimpleSpeak_Rules.yaml`). These represent different styles of speech. I strongly recommend you just pick one to start with. These files typically have the words that describe the structure such as "fraction" and "power" along with connective words such as "the", "of", and "from". Because there is a lot of similarity between the two styles of speech, there is also a `SharedRules` folder with rule files in it. These are included (via rules `- include file_name`)
-into `ClearSpeak_Rules.yaml` and `SimpleSpeak_Rules.yaml`. They need to be translated also.
-<br/>
-<br/>
-Note: The MathCAT settings dialog looks for files named `XXX_Rules.yaml` and adds them to pull down menu for the language. You don't need to use the SimpleSpeak and ClearSpeak names. If you only want to do one translation (e.g, SimpleSpeak), but don't want to delete `ClearSpeak_Rules.yaml` rename it to something like `ClearSpeak_Rules.yaml.untranslated`.
-<br/>
-<br/>
-These files have auto-generated initial translations. Even though they are translated, `t:` (see below) is used, not the upper case `T:`. This is because each translation should be verified to be correct and when verified, then change to the uppercase version.
-See below for more comments about the auto translations.
+## Time estimate
 
-    * In some languages it doesn't make sense to say "_the_ square root of x" (and maybe "of"). If that is the case, just change those to empty strings.
-    * Some languages, the word order changes -- feel free to move the words around, but pay attention to the indentation.
-    Indentation is meaningful in YAML. 
-    * In some languages, you may want to add words that aren't in the English version, perhaps before or after existing phrases. Feel free to add them -- they can be conditionally added using `test` if needed. Please contact @NSoiffer if you need help with this.
-    * Pausing between words/phrases can greatly help make speech understandable. The pausing is chosen based on English. You should adjust pauses based on what sounds good in speech synthesizers for your language. It is very simple to add, remove, or change the amount of pauses. All pauses are scaled to the current speech rate.
-3. The unicode files (`unicode.yaml` and `unicode-full.yaml`). These contain characters like `<` and `∫`.
-    * You should start with translating `unicode.yaml`. These represent the vast majority of math symbols used. Currently the list is based on experience as to which are the most commonly used Unicode symbols, but I plan to make use of statistics from actual books to refine the list even further. There are about 270 characters to translate in `unicode.yaml`, although ~50 of them are Greek letters (which is hopefully simple).
-    Just like the speech rule files, these files have auto-generated initial translations and the translations should be verified and the `t:` changed to `T:`.
-    See below for more comments about the auto translations.
-    * The `unicode-full.yaml` is thousands of lines long. Once you have done other translations, I would come back to this file and work through it until you reach a point of being exhausted -- most of these characters will only show up in very advanced mathematics, and even then, only very rarely. The most important of these characters are probably:
-         * Some of the arrows that start at 0x2190
-         * The characters in the math symbols block: 0x2200 - 0x22ff
-         * Some accents: 0x2d8-0x2dd
-         * Some of the simple black/white shapes starting at: 0x25a0 and also at 0x2b1a
-4. The navigation files `navigate.yaml` and `overview.yaml`. Just translate `navigate.yaml`; `overview.yaml` is not ready to be used. Many of the words in `navigate.yaml` are repeated many times, so you probably want to do a global search/replace. I hope to rewrite the file at some point and isolate the words.
+A full translation takes time, especially if you want it to be reliable and pleasant to use.
 
-__NOTE__: I am most of the way through the process of changing the rules to make use of `intent`. This will move the complicated logic of recognizing things like absolute value and determinants into the `intent` folder which is language-independent. It makes translations simpler because the rule only needs to match the tag "absolute-value" or "determinant". The tests also should be separated out into an `intent` directory that is language independent.
+Based on real projects, a thorough TTS translation may take around **300–450 hours**. A Braille translation may take around **160–240 hours**. That can vary a lot depending on how good your starting point is, whether a similar language already exists, and how much previous programming experience you have.
 
-### Marking text as translated
-These files are YAML files and their content is described later in this page.
-In all of these files, the text to translate will have the YAML key name `t` (and very rarely `ot`, `ct`, `spell`, `pronounce`, and `IfThenElse`). When you make a translation, you should capitalize them (e.g, `T`, `IFTHENELSE`) to indicate that the file has been translated.
+## Need help getting started?
 
-As an example, here are two rules from `unicode.yaml`:
+This guide was written by Marthe Gjelstad, Tim Arborealis Lötberg and Anders Eklund, who made the Norwegian and Swedish translations of MathCAT. If you need help getting started, we're happy to help. Get in touch with us at:
+
+**[mathcat-wg@daisylists.org](mailto:mathcat-wg@daisylists.org)**
+
+---
+
+## Recommended workflow
+
+A good workflow for translating MathCAT looks like this:
+
+1. Set up your working copy
+2. Update and audit the translation
+3. Listen to the speech early
+4. Add and run tests
+5. Learn about speech modes and verbosity settings
+6. Work on the rule files
+7. Review with a mathematician
+8. Do user testing
+9. Submit the translation
+10. Keep the translation up-to-date
+
+---
+
+## Step 1: Set up your working copy
+
+### Get the repository
+
+MathCAT is hosted on GitHub.
+
+If you have never used GitHub before, do not let that put you off. For translation work, you only need a small part of it. In practice, you just need to get a copy of the project, edit files, and save your changes.
+
+The easiest way to get started is often with **GitHub Desktop**:
+[https://desktop.github.com/](https://desktop.github.com/)
+
+Basic workflow:
+
+1. Fork the MathCAT repository.
+2. Clone it to your computer.
+3. Work in your own branch, for example `pt`.
+
+That is enough to get started.
+
+### Install the tools you need
+
+You will need a few tools. It sounds like a lot at first, but each one has a clear purpose.
+
+* Git: [https://git-scm.com/](https://git-scm.com/)
+* GitHub Desktop: [https://desktop.github.com/](https://desktop.github.com/)
+* A code editor, for example VS Code: [https://code.visualstudio.com/](https://code.visualstudio.com/)
+* Rust: [https://rust-lang.org/tools/install/](https://rust-lang.org/tools/install/)
+* NVDA: [https://www.nvaccess.org/download/](https://www.nvaccess.org/download/)
+
+Rust is only needed to run the automated tests. You do not need to learn Rust as a programming language in order to translate MathCAT.
+
+---
+
+## Step 2: Update and audit the translation
+
+Before you start translating, make sure your language files match the current English structure. If you skip this step, you may spend time fixing problems that are really caused by outdated files.
+
+### Use the audit tool
+
+Documentation:
+[https://github.com/daisy/MathCAT/blob/main/PythonScripts/audit_translations/README.md](https://github.com/daisy/MathCAT/blob/main/PythonScripts/audit_translations/README.md)
+
+Use the audit tool to find missing rules in the “pt” files. Add these rules to the “pt” files. The documentation contains detailed instructions on how to use the tool, so start there.
+
+### Start from a similar language if possible
+
+If a language that is grammatically very similar to yours already exists, it is often better to start from that instead of from English or from a machine-generated translation.
+
+For example, the Norwegian translation started from Swedish. That can save a lot of time, especially in places where grammar and word order differ from English in systematic ways. But, remember to use the audit tool to look for missing rules before you start translating to your own language. The audit tool can be used to compare any two languages.
+
+---
+
+## Step 3: Listen to the speech early
+
+Listening to the output as you go along will help you identify errors early. A translation can look perfectly fine in a YAML file and still sound awkward, repetitive, or confusing when spoken. A good procedure is to listen to some expressions through a screen reader after each file has been translated.
+
+### Set up NVDA with your local rules
+
+1. Download NVDA: [https://www.nvaccess.org/download/](https://www.nvaccess.org/download/)
+2. Make a copy of your language folder, for example `pt`, and add it to:
+
+```text
+NVDA\include\nvda-mathcat\assets\Rules\Languages
 ```
- - "=": [t: "equals"]                            # 0x3d
- - ">":                                          # 0x3e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [t: "is"]
-     - t: "greater than"
-```
-If you were translating this to French, the words after the `t:` would get changed to (probably):
-```
- - "=": [T: "égale"]                            # 0x3d
 
- - ">":                                         # 0x3e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "est"]
-     - T: "supérieur à"
-```
+This makes it possible to listen to your local translation in NVDA. Note: you might need admin privileges on your computer to be able to do this.
 
-Note: `IfThenElse` may not require a translation but should be changed regardless so you know that has been looked at. Here's an example where no translation is needed because the "then" and "else" parts (`count(*/*[1])` and `$LineCountTry` respectively) are not words:
-```
- - LineCount: "IfThenElse($LineCountTry=0, count(*/*[1]), $LineCountTry)"
+### Try real expressions
+
+A practical way to test speech is to take MathML expressions from the Rust test files and put them into a simple HTML document. Then open that file and listen with NVDA. For starters, you can use [this page of test expressions](https://daisy.github.io/MathCAT/test-exprs.html), which contains many of the expressions from the tests.
+
+Make one change at a time, listen again, and keep notes. This is an efficient way to learn how the rules behave in practice.
+
+---
+
+## Step 4: Add and run tests
+
+Automated tests are a core part of the workflow. They help you catch syntax errors, document the speech you expect, and make sure future MathCAT changes do not silently break your translation. It is helpful to translate the tests as you work on the translation and not save them for last.
+
+In `MathCAT/tests`, open `languages.rs` and add (in the case of Portuguese):
+
+```rust
+mod pt;
 ```
 
-See below for a discussion of what can be used in a rule file.
+Then in `MathCAT/tests/Languages`:
 
-### A note about the translated files
-To derive an initial translation for the Unicode files, both MathPlayer's and SRE's translations are used. Google translate is also used.
-If SRE and MathPlayer agree, or if only one of SRE or MathPlayer has a translation but that translation agrees with the google translation, then only the original English version will be part of a comment at the end. For example:
-```
- - "!": [t: "factorielle"]                      	#  0x21	(en: 'factorial')
-```
+1. Copy `en.rs` to `pt.rs`.
+2. Copy the `en` folder to `pt`.
 
-If the MathPlayer and SRE translations disagree, then the translation that agrees with the google translation will be chosen and the other translation included in a comment. For example:
-```
-        else: [t: "parenthèse gauche"]          	# 	(en: 'left paren', MathPlayer: 'parenthèse ouvrante')
-```
-If none of the translations agree, then one of the translations is picked and the other translations are in a comment. For example:
-```
-            else: [t: "parenthèse gauche"]      	# 	(en: 'open paren', MathPlayer: 'parenthèse ouvrante', google: 'parenthèse ouverte')
-```
-Finally, if there is no translation, then the google translation is given and is marked with a comment "google translation". There is a significant chance that this is not a good translation so pay special attention to those. Here is an example where there is only a google translation
-```
-          then: [t: "ligne verticale"]          	# 	(en: 'vertical line', google translation)
+If you only choose one speech style at first, you can remove or comment out the other one.
+
+In each test, replace `"en"` with `"pt"`.
+
+Once that is done, run:
+
+```bash
+cargo test Languages::pt
 ```
 
+The first time, many tests will probably fail. That is normal.
 
-### Trying out your translation
-Once you've done some translations and want to try them out, you can do so immediately if using NVDA. Assuming you have the MathCAT addon:
-1. Copy your new translation directory to `%AppData%\nvda\addons\MathCAT\globalPlugins\MathCAT\Rules\Languages`.
-2. Start NVDA and go to the MathCAT settings menu (NVDA preferences: MathCAT settings..).
-3. Under the "Languages" drop down you should see your new language. Select that.
-4. Try out the speech. Wikipedia pages are a good source for examples.
-5. If there is an error (often you won't hear speech), open NVDA's log (in NVDA's "Tools" submenu). The error should be listed there. The error messages are explained below.
-6. When you make a change, MathCAT should notice the file is changed and reload it. There is currently a bug that this is not done for files that are `include`d in from a file (e.g., all those in the Shared directory). If you make a change to one of those files, either reload MathCAT (NVDA Tools:Reload Plugins) or restart NVDA.
+### Understanding test failures
 
-Translating the settings dialog: this is a separate process from translating the speech. This is done by volunteers that do other addon translations also. See [this mailing list](https://groups.io/g/nvda-translations) for more info.
+A typical failure report will show something like this:
 
-### Automatic tests for your translation
-Testing is very important! MathCAT is written in Rust and has a large number of automated tests. These tests take advantage of the builtin Rust test system. Hence, to write and verify your own tests, you need to [download and install Rust](https://www.rust-lang.org/tools/install). You do not need to know Rust -- you will simply change some strings from what they are in English to what you think they should be in your language.
-
-For the sake of discussion, let's assume you are doing a French translation, then your country code is `fr`.
-
-To start, in the tests directory, open `languages.rs` and add the line `mod fr;` after `mod en;` or any other similar line for a different language.
-
-In the `tests\Languages` directory, there is a file `en.rs` and a directory `en`. 
-1. Copy `en.rs` to `fr.rs`.
-2. Copy the `en` directory to `fr`.
-3. If you only choose one speech style (e.g., "SimpleSpeak), edit `fr.rs` and remove the lines starting `mod ClearSpeak {` all the way down to the matching `}`. In the `fr` directory, remove the subdirectory `ClearSpeak`.
-4. Although it is good translate all the files, it is probably ok to just translate a few of them, especially at the start. In `fr.rs`, comment out any untranslated file by adding `//` in front of the untranslated files. E.g., if you didn't translate the SimpleSpeak file `geometry.yaml`, then the line should look like `// mod geometry;`
-5. Start editing the files, first doing a global change of `"en"` to `"fr"` and then replacing the English string with the appropriate French (or whatever language you added) string.
-
-An example of a test is
+```rust
+left: "1 half"
+right: "1 halv"
 ```
+
+The important part is the comparison:
+
+* `left` is the expected text written in the test
+* `right` is the text MathCAT actually produced
+
+If the generated output is correct, copy it into the test. If it is wrong, fix the rule instead.
+
+It can actually be faster to run the tests before translating all the expected output. Then you can use the failure messages to see what MathCAT already produces in your language, and copy the correct ones into place.
+
+### Example of a simple test
+
+```rust
 #[test]
-fn common_fraction_half() {
+fn common_fraction_half() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("en", "SimpleSpeak", expr, "1 half");
+    test("pt", "ClearSpeak", expr, "um meio")?;
+    return Ok(());
 }
 ```
-For French, the "test" line would change to:
+
+Here:
+
+* `common_fraction_half` is the name of the test
+* `expr` contains the MathML expression
+* `"pt"` is the language code
+* `"ClearSpeak"` is the speech mode
+* `"um meio"` is the expected spoken output
+
+### Example with preferences
+
+Some tests use `test_prefs` so that you can check a rule under specific settings.
+
+```rust
+#[test]
+fn common_fraction_tenths() -> Result<()> {
+    let expr = "<math>
+                    <mfrac> <mn>17</mn> <mn>10</mn> </mfrac>
+                </math>";
+    test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "17 tenths")?;
+    test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "17 tenths")?;
+    return Ok(());
+}
 ```
-    test("fr", "SimpleSpeak", expr, "un demi");
-```
 
-Now that you have some tests translated, try running the automated tests.
-As a check that everything is set up properly, verify that the English version of the tests are working
-```
-cargo test Languages::en
-```
-If that is working, try your tests. Again assuming your created a `fr` version:
-```
-cargo test Languages::fr
-```
-MathCAT adds pausing in places and in the test strings, these appear as `,` and `;`. You may need to adjust your expected output by adding or removing those. If those pauses seem inappropriate, you will need to add or remove `pause: xxx` from the appropriate place in the one of the `Rules\fr` files.
+In this kind of test:
 
-__A suggestion__: it might be fastest if you run the tests in your language before changing the expected output. All the tests will fail but you will see failure messages that show the speech that MathCAT generated (in your language). _If it is correct_, simply copy it in place of the English. Once you've done that for all the "errors", rerun the tests and hopefully there won't be anymore errors.
+* `test_prefs` runs the expression with specific preferences
+* `vec![]` contains those preferences
+* `("Verbosity", "Medium")` sets the verbosity level
+* `("ClearSpeak_Fractions", "Auto")` sets a ClearSpeak preference
 
+MathCAT also adds pauses in some places. In the test strings, these show up as punctuation such as commas and semicolons. So if a test almost matches, always check whether the real difference is pausing rather than wording.
 
-### Keeping the translation up-to-date
-To be written...
+---
 
-I hope to eventually have a tool that will
-1. warn about missing translations
-2. warn about rules in the `en` that have not been copied to another language (likely due to new rules having been added to English)
+## Step 5: Learn about speech modes and verbosity settings
 
-These tools will look for untranslated and translated text.
+There are two main speech modes: ClearSpeak and SimpleSpeak. The paper [A Comparison of Different Styles of Speech for Mathematics](https://scholarworks.calstate.edu/downloads/5t34sv64c), written by Neil, includes a good explanation of the difference between the two speech styles. In short:
 
+* ClearSpeak is supposed to be similar to how a teacher would say a mathematical expression in a classroom.
+* SimpleSpeak speaks simple expressions compactly. For example $\frac{x}{y} + 1$ is spoken as "x over y plus one". There are no bracketing words to indicate where the fraction begins and ends. This is because both the numerator and denominator are simple. The expression $\frac{x}{y+1}$ is spoken as "fraction, x over y plus one, end fraction". Here, bracketing words are used because the denominator is not simple.
 
-## Braille translators
-If you want support for a new braille language, you probably need to start from scratch unless the language is similar to an existing braille language.
-You will need to create three `.yaml` files in `Rules\Braille\your-braille-language`. This should mirror the files that are in the other braille directories:
-1. xxx_Rules.yaml -- where 'xxx' is the name of your new braille language. These will contain the rules that translate MathML to braille
-2. unicode.yaml -- this is a translation of the more common braille characters. Use `Nemeth\unicode.yaml` as a starting point for the translation. Convert the `t: xxx` into what is appropriate for your language. You likely need to delete some logic or maybe add some of your own for characters that might be represented differently based on context. For example, in Nemeth, a "," is represented differently if it is part of a number.
-3. unicode-full.yaml -- this is the rest of the character translations.
+It is up to you if you want to translate both speech styles or just focus on one. The translated speech styles may be more or less different from one another than the English ones depending on what variety of spoken math makes sense in the target language.
 
-The reason for two separate unicode files is that having a shorter file for the most common characters means startup takes less time. The goal of that file is to capture 99.99% of the characters used.
+MathCAT also supports the verbosity levels **Terse**, **Medium**, and **Verbose**. It is up to you as a translator to what degree these levels should differ in your language. In some cases, the natural translation may collapse two English variants into one (such as when the word "the" does not exist in the target language). In others, there may be several ways of speaking an expression where there is only one option in English. That is all fine. Clarity matters more than forcing artificial differences.
 
-For both UEB and Nemeth, some cleanup code needed to be written in Rust. If you are doing a braille translation and cleanup needs to be done, please file an issue and we can work together to get the code written.
+For ClearSpeak there are many different preferences. These are used in the rules and in the tests. You can read about the preferences here: [ClearSpeak Preferences](https://github.com/daisy/MathCAT/blob/main/docs/ClearSpeakRulesAndPreferences.docx). At the moment, the preferences are not visible for users in the MathCAT settings in NVDA.
 
-To try out your braille translation, you can do so immediately. Please see the instructions above for doing a language translation where it instructs on copying the files to `%AppData%\nvda\addons\MathCAT\globalPlugins\MathCAT\Rules\Languages`. Change languages to `Braille` and most things will be the same.
+---
 
-For automated testing, the instructions above should be followed. The current tests are taken from braille guides for Nemeth/UEB, and you may want to do the same. See the tests in the Nemeth or UEB directories for examples of what braille tests look like.
+## Step 6: Work on the rule files
 
-## Understanding MathCAT Error Message
-If there is a problem with a rule that causes an error, these print to the terminal console if you are running MathCAT directly or to NVDA's log if you are using NVDA.
+### Which files need translating?
 
-The error messages can be confusing to understand. Here is a description of one and how to understand what is saying.
+Most of your work will be in YAML rule files. If you're translating to Portuguese, your language files will be inside the folder `MathCAT\Rules\Languages\pt`. It contains the following files to translate:
 
-Because the library that is used in MathCAT to read YAML files does not keep lines numbers, MathCAT is not able to report line numbers.
-Instead, it reports the file name and rule's `name` and `tag` within that file.
-It then (recursively) reports which section of the rule has the error.
+* `ClearSpeak_Rules.yaml`
+* `definitions.yaml`
+* `navigate.yaml`
+* `overview.yaml` (optional)
+* `SimpleSpeak_Rules.yaml`
+* `unicode.yaml`
+* `unicode-full.yaml` (semi-optional)
 
-Here's an example of an error message where "test:" was  changed to "textx:" to cause an error:
-```
-caused by: in file "...\\MathCAT\\Rules\\Languages\\en\\ClearSpeak_Rules.yaml"
-caused by: value for 'replace' in rule (fraction: fraction-over-simple). Replacements:
-  - test:
-      if: "$ClearSpeak_Fractions='FracOver'"
-      then:
-        - testx:
-            if: "$Verbosity!='Terse'"
-            then: [ot: the]
-        - t: fraction
+The subfolder `MathCAT\Rules\Languages\pt\SharedRules` contains shorter rules that are the building blocks that the rules in both `ClearSpeak_Rules.yaml` and `SimpleSpeak_Rules.yaml` are made from. All of these need translating as well.
+
+### Where to start
+
+It can be helpful to start out with for example `ClearSpeak_Rules.yaml` and a few of the files in the `SharedRules`, to get a feel for how the rules work.
+
+Many of the changes which need to be made will be discovered through the tests, as stated above. However, the files `unicode.yaml`, `unicode-full.yaml`, `navigate.yaml` and `definitions.yaml` are not sufficiently covered by the tests. These especially need a lot of manual attention.
+
+Do not spend a lot of time going through `unicode-full.yaml` at first. It is several thousand lines long, and most of the symbols are very rarely used in real life (some won't even render in VS Code). This file can be saved for last, and it is enough to look through it and check the most recognisable symbols.
+
+Likewise, the file `overview.yaml` is less critical than the others, because it does not affect the reading of mathematical expressions directly. However, it provides screen readers with access to short structural summaries of expressions, and so it is worth going over eventually.
+
+### What to do
+
+Your main task will be to locate all yaml key names `t:`, which correspond to text strings to be spoken. Lowercase `t:` means the text has not yet been translated. Verify (if the auto translation happens to be correct) or change the translation until you are happy with it. Once this is done, change it into a capital `T:` to indicate you have gone over it.
+
+The same procedure of capitalization applies to all instances of `ct:`, `ot:`, `tc:` `spell:`, `pronounce:` and `IfThenElse:`. However, these are far less frequent than `t:`.
+
+### Adapting or writing custom rules
+
+The tests cover most of the rules in the rule files. However, there can be grammatical things in Portuguese that do not exist in English, and are not covered by the tests. It is therefore a good idea to go through all the rules to check that everything looks correct.
+
+When there are grammatical differences, it will not be enough to simply change the text strings. Then, the rules need to be adapted, or new rules added. It is a good idea to write new tests to cover entirely new rules, to make sure your output is correct. Don't be afraid of trial-and-error until you get it right.
+
+Here follows a crash course in the anatomy of a MathCAT rule. Each rule describes when it applies and what should be spoken. The main parts are:
+
+* `name` — the name of the rule
+* `tag` — the MathML element the rule applies to
+* `match` — the condition that must be true for the rule to apply
+* `replace` — the output and actions MathCAT should use
+
+Inside `replace`, some common commands are:
+
+* `t:` — text to speak
+* `ct:` — concatenate text without a space in front
+* `ot:` — optional text, used to avoid repeated words
+* `tc:` — text to translate (automatically, via translations most commonly defined in `definitions.yaml`)
+* `x:` — an XPath expression
+* `test:` — conditional logic
+* `pause:` — a pause in the speech
+* `bookmark:` — used for synchronized highlighting
+
+#### Example 1
+
+```yaml
+- name: squared
+  tag: power
+  match: "*[2][self::m:mn][.='2'] and $ClearSpeak_Exponents = 'Auto'"
+  replace:
   - x: "*[1]"
-  - t: over
-  - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
-      then:
-        - pause: short
-        - t: end fraction
-        - pause: short
-caused by: replacement #1 of 5
-caused by: replacement #1 of 2
-caused by: Unknown 'replace' command (testx) with value:  if: "$Verbosity!='Terse'" then: [ot: the]
+  - bookmark: "*[2]/@id"
+  - t: "squared"      # phrase(7 'squared' equals 49)
 ```
-To give some explanation:
-The first two lines tell you the file, and the "tag" and "name" values. Here's that rule:
-```
-- name: fraction-over-simple
+
+This rule states that if a power has exponent 2 and the preference for `ClearSpeak_Exponents` is set to `Auto`, then the output should be “base squared”. For example, $x^2$ would be spoken as “x squared”.
+
+A few things are worth noticing here:
+
+* The `match` says what expressions the rule applies to.
+* The expression after `x` is an XPath expression. It retrieves the first child of a power element, which would be the base.
+* The expression after `t` is text that must be translated. When the string is translated and verified, capitalize the `t`.
+
+#### Example 2
+
+```yaml
+- name: fraction-over-text
   tag: fraction
   match:
-  - "($ClearSpeak_Fractions='Over' or $ClearSpeak_Fractions='FracOver' or $ClearSpeak_Fractions='OverEndFrac') or"
-  - "( not($ClearSpeak_Fractions='General' or $ClearSpeak_Fractions='GeneralEndFrac') and"
-  - "  (IsNode(*[1],'simple') and IsNode(*[2],'simple')) )" # simple fraction in ClearSpeak spec
+  - "not($ClearSpeak_Fractions='General' or $ClearSpeak_Fractions='GeneralEndFrac') and"
+  - "( "
+  - "  ((*[1][self::m:mi or self::m:mtext][string-length(.)>1]) or "
+  - "   (*[1][self::m:mrow][count(*)=3][ "
+  - "        *[1][self::m:mn] and "
+  - "        *[2][self::m:mo][.='⁢'] and "
+  - "        *[3][self::m:mi or self::m:mtext][string-length(.)>1] ]) ) and"
+  - "  ((*[2][self::m:mi or self::m:mtext][string-length(.)>1]) or "
+  - "   (*[2][self::m:mrow][count(*)=3][ "
+  - "        *[1][self::m:mn] and "
+  - "        *[2][self::m:mo][.='⁢'] and "
+  - "        *[3][self::m:mi or self::m:mtext][string-length(.)>1] ]) )"
+  - ")"
   replace:
-  - test:
-      if: "$ClearSpeak_Fractions='FracOver'"
-      then:
-      - testx:
-          if: "$Verbosity!='Terse'"
-          then: [{ot: "the"}]
-      - t: "fraction"
   - x: "*[1]"
-  - t: "over"
+  - t: "over"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
-      # very ugly!!! -- replicate nested ordinal fraction as they are an exception
-      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
+      if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - t: "end fraction"
+      - t: "end fraction"      # phrase(7 over 8 'end fraction')
       - pause: short
 ```
 
-The next part of the message (`caused by: replacement #1 of 5`) says the problem happens in the first replacement (the first "-").
-The next line (`caused by: replacement #1 of 2`) says inside of that, the error inside of the first part of that
-The final line says that in there, the problem is `Unknown 'replace' command (testx) with value`. So now you can correct that problem.
-It is often easiest to read the error from the bottom up.
+For this rule to apply, several constraints must be satisfied. They are all listed in `match`.
 
+In plain language, the rule says:
 
-## Rust Developers
-To be written...
+* The preference `ClearSpeak_Fractions` should not be `General` or `GeneralEndFrac`, **and**
+* the numerator is a text string with length more than 1, or a number invisibly multiplied with a text string with length more than 1, **and**
+* the denominator satisfies the same constraints as the numerator.
 
-`build.rs` and files in `src`
+If all of that is satisfied, the fraction will be spoken as “numerator over denominator”. If `ClearSpeak_Fractions` is set to `EndFrac` or `OverEndFrac`, there will also be a short pause before “end fraction” is spoken.
 
-## Testing
-Whether you are developing code or writing rules, writing and running the tests is very important. It is how you know what you wrote works and also how you know what you wrote didn't break something else.
+For example, the output for the expression $\frac{\text{meter}}{\text{second}}$ would be “meter over second”.
 
-The `tests` directory is similar to the `Rules` directory. If you are a translator, see the section above that describes what you should do.
+---
 
-Rust provides testing support with the command `cargo test`. For more information about testing and test coverage, see the [Developer Guide](developers.md).
+## Step 7: Review with a mathematician
 
+Once you have a fairly complete translation, it is a very good idea to ask a mathematician, mathematics teacher, or another strong subject expert who is a native speaker of the language to review a representative set of outputs.
 
-## Files
-MathCAT reads the following files for critical information:
-* Rules
-  * intent.yaml -- rules that infer author intent from MathML. These are used by various speech styles (in various languages) to avoid duplicating the inference process. They add an `intent` attribute to the MathML.
-  * definitions.yaml -- these define various lists used by MathCAT for canonicalization (inferring proper structure) and also rule matching. E.g., `TrigFunctionNames` is a list of names of trig functions such as `tan` and `lim`.
-  * prefs.yaml -- system defaults for various preferences that are settable. MathCAT will also look for this file in a platform-specific user location so that individual users can set the values.
-    * Windows: `%AppData%\prefs.yaml`
-    * Linux:  `$XDG_CONFIG_HOME` or `$HOME/.config`
-  * definitions.yaml -- language independent definitions (e.g., trig function names).
-* Rules/[lang]
-  * Unicode.yaml -- a (long) list for how to pronounce each Unicode character that is encountered (not used for multi-char strings).
-  * XXX_rules.yaml -- the rules used to speak math. MathCAT will scan every subdirectory of the `Rules` directory for files that have the suffix `_rules.yaml` and add them to the list of options for people to choose. The `XXX` should reflect the speech style. E.g., `ClearSpeak_rules.yaml` and `MathSpeak_rules.yaml` will result in user options to choose "ClearSpeak" and "MathSpeak" for the speech style.
-  * definitions.yaml -- language specific definitions such as how to speak ordinal numbers ("first", "half", etc).
-  * navigate.yaml -- rules that define what happens for each navigation command along with the speech that is said
+A useful way to do this is to prepare a set of example expressions together with transcripts of what MathCAT says. Then ask the reviewer to go through them and flag anything that sounds mathematically odd, ambiguous, or unusual.
 
-The `lang` subdirectory should follow the two letter language and language-region [ISO naming convention](https://en.wikipedia.org/wiki/Language_localisation#Language_tags_and_codes). E.g, there is a `en` subdirectory of the `Rules` directory. If region-specific speech is needed, there can be a region subdirectory such as `gb` that will be used if the language specified is `en-gb`.
+This kind of review is important because a translation can be grammatically correct and still not sound like real mathematics. A subject expert can often catch problems in terminology, symbol naming, and the way larger structures are spoken.
 
-MathCAT will first read the main language rules and then read the region-specific rules. The region-specific rules will either replace or add existing rules in the corresponding `Unicode.yaml` and `XXX_rules.yaml` language files. 
+That said, you may not always be able to satisfy every request perfectly. Sometimes the way screen readers work, or the way MathCAT is structured, means that the most mathematically elegant wording is not the most usable one.
 
-MathCAT looks for the `Rules` directory in the following locations:
-1. In the directory specified by the environment variable `MathCATRulesDir`
-2. In the Rules subdirectory that is a sibling to the executable. Typically this is `C:\Program Files\MathCAT\Rules` on windows.
+---
 
-# File Format
-The files (as the suffix implies) are [YAML files](https://lzone.de/cheat-sheet/YAML). For those who aren't familiar with YAML, it is a superset of JSON that offers options that can be more human readable and writeable.
+## Step 8: Do user testing
 
-## A YAML Introduction
-The basic types in YAML are:
-* scalar types like integers, floats, and strings (can be inside of single or double quotes or left unquoted in some cases)
-* arrays (used inline as `["a", "b", "c"]`)
-* dictionaries/maps (used inline as `{key: value, foo: bar}`)
+If you are not yourself a proficient screen reader user, user testing is essential.
 
-Comments begin with a `#` and extend to the end of the line. There are no block comments in YAML.
+The best testers are blind users who are comfortable with mathematics, especially STEM users if you can find them. Give them a local version of MathCAT with your translation, together with an HTML file containing representative MathML expressions.
 
-In the more verbose form of YAML syntax for arrays, indentation is used instead of brackets so the above array becomes
-```
- - a
- - b
- - c
-```
-Notice that the strings don't need to be quoted in this form (although some text requires quotes).
+It helps to let users try it on their own first. After that, meet with them and go through more examples together. Ask them not only whether the wording is correct, but whether the structure is clear, whether the pauses help, and whether the output matches what they are used to hearing.
 
-The dictionary in the more verbose form looks like:
-```
-   key: value
-   foo: bar
-```
+This matters because spoken math is not judged only by correctness. It also has to be usable in real screen reader workflows. In practice, user feedback should often weigh more heavily than theoretical preferences about grammar, especially when the disagreement is really about clarity or navigation rather than mathematical meaning.
 
-Here is a more real life example from the Unicode definitions showing various alternatives.
-Pay attention to the indentation: all entries that are indented to the right of the line above are subentries in that array/dictionary.
-```
-# Two options for defining a simple replacement for the symbol '∞'.
-# For brevity and clarity, the first form is preferred.
- - "∞": [t: "infinity"]                          # 0x221e
- - '∞':
-    - t: infinity                                # 0x222e
+---
 
-# Here are a few options for a more complex definition that involves a test
-# This compact form is (compact) JSON syntax for the value
-- 0x003C: [test: {if:Verbosity!='terse', then: [t: is]}, t: "less than"]
+## Step 9: Submit the translation
 
-# This form emphasizes (to the reader) that there are two actions: a test followed by producing "less than"
-- 0x003C:
-    - test: [{if: Verbosity!='terse', then: {t: is}}]
-    - t: "less than"
+Before you open a pull request or share your translation, it’s worth doing one final pass to make sure everything is in good shape. This helps avoid unnecessary back-and-forth and makes the review process smoother.
 
-# This is slightly more long-winded but makes it clear what the parts of the test are
-- 0x003C:
-    - test: 
-        if: Verbosity!='terse'
-        then: [t: is]
-    - t: less than
+### Final checklist
 
-# This uses the most verbose form of YAML
-- 0x003C:
-    - test: 
-        if: Verbosity!='terse'
-        then:
-        - t: is
-    - t: less than
-```
-All forms are valid, but the second and third options are preferred as they seem to be good compromises between brevity and clarity
+Go through the following:
 
-Note: all YAML files begin with "---". That indicates the beginning of a "document".
+#### Files and structure
 
-## The Basic Parts of a Speech Rule
+* Your language files are up to date with the current English structure
+* No rules are missing (audit tool has been run)
+* No obvious leftover English text remains
 
-```
-# rule:
-#     name: <string> # name of the rule (name+tag should be unique)
-#     tag: <string>
-#     variables: [{name: value}, ...]
-#      - name is a string, value is an XPath expr that evaluates to a string, number, or boolean
-#      - inside the rule, the value is accessed as $name
-#      - the variable's value is set _before_ testing "match", so it can be used in match
-#      -   they are valid for the duration of the match
-#     match: <string>  # xpath for the match
-#      - can be a single string or
-#      - an array of strings (for readability) that are joined together
-#     replace:  [replacements] where replacements are one of the following
-#      - t: some text
-#          'T' is used to indicate text has been translated.
-#      - ct: concatenate text without space in front
-#           'CT' is used to indicate text has been translated
-#      - ot: optional text (don't use text if it results in repeated words)
-#           'OT' to indicate text has been translated
-#           E.g., we don't want "t raised to the the fraction with ...."
-#           Making "the" optional in the fraction rule prevents the repetition
-#      - x: some xpath (as string)
-#      - test:  values are conventional if/then/else with two twists:
-#                the first twist is that there is an option to use either 'then_test:' or 'else_test'
-#                  This avoids another level of 'test:'
-#                the second twist is that any number of if/else_if pairs can be given;
-#                  these are tested in order until one is true
-#            The value of "test:" can either be an array of if/else_if/else keys or a single if/then/else key for convenience.
-#              If an array, then the first entry should be 'if', the middle (and maybe last) 'else_if', and the optional
-#              last one can be 'else'/'else_test'
-#         if: <string> some xpath
-#         then: [replacements]
-#         then_test [replacements] used in place of 'then:' -- avoids needing to use 'test:' after the 'then:'
-#         else: [replacements] # optional
-#         else_test # optional, used in place of 'else:' -- avoids needing to use 'test:' after the 'else:'
-#      - with:
-#         variables: [name: value, ...] variables whose values are set during the execution of this clause
-#         replace: [replacements]
-#      - intent:
-#          name: string  name of intent rule
-#          children: children of the intent rule
-#      - insert:
-#          nodes:  xpath (evaluate to nodes)
-#          replace: [replacements]  values that are inserted between all the nodes
-#      - translate: xpath   allow speech of an expression in the middle of a rule (used by "WhereAmI" for navigation)
-#      - set_variables: [var: value, ...] global variable definitions.
-#         These are available to the program after the rules have run; currently used for navigation which can change state.
-#      - pause: string or number  # "short", "medium", "long", "auto", or number in milliseconds
-#      - rate:  string/number or dict with 1 or 2 entries
-#         value: float number with optional %
-#         replace: [replacements]  # tts values need to scope contents 
-#      - volume:  string/number or dict with 1 or 2 entries
-#         value: float number with optional %
-#         replace: [replacements]  # tts values need to scope contents 
-#      - pitch:  string/number or dict with 1 or 2 entries
-#         value: float number with optional %
-#         replace: [replacements]  # tts values need to scope contents 
-#      - gender:  string/number or dict with 1 or 2 entries
-#         value: "male" # or "female"
-#         replace: [replacements]  # tts values need to scope contents 
-#      - voice:  string/number or dict with 1 or 2 entries
-#         value: string
-#         replace: [replacements]  # tts values need to scope contents 
-#      - spell:  string that is an xpath (usually a single letter to be pronounced as the letter, `"'a'"`)
-#      - bookmark: some xpath (as string) returns an 'id' that can be used for synchronized highlighting
-```
+#### Translation status
 
-Note: for "pause", the "auto" value will calculate a pausing amount based on the complexity of the surrounding parts. The more complex they are, the longer the pause (up to a limit). The basic idea is that you want to give the listener time to digest and separate out the two parts when one or both are more complicated.
+* All reviewed text has been changed from `t:` to `T:` (and `ct:` → `CT:`, `ot:` → `OT:` etc.)
+* You have consciously reviewed wording, not just auto-translated it
 
-In addition to having a named rule, the speech rule file supports including other speech rules files. This lets various speech rule styles share common features. Inclusion is done via an entry in place of a speech rule:
-```
-  -include: file_name
-```
-Any number of includes can occur in a file. They are processed as if the contents of the included file were in the original file. The file name may be located in the current directory of the rule file being processed in or some relative directory to the current directory.
-## The Unicode Files
+#### Speech output
 
-Unicode files are simplified versions of the speech rules. This makes it easier to specify rules for Unicode characters and also results in a significant speed boost. Rules on leaf elements such as `mo` will override any definition in the Unicode files. In general however, speech rules for Unicode characters should be in a Unicode file.
+* You have listened to a representative set of expressions in NVDA
+* Output sounds natural and unambiguous in your language
+* Pauses and structure make sense when listening
 
-Like speech rules, Unicode files are YAML files. The main difference is that only the character is used for defining the rule. There is no need to specify a rule name, tag name, match expression, etc. The value of a rule can be anything that is value as a "replace:" value for speech rules.
+#### Tests
 
-Most rules are very simple. Here is an example:
-```
- - "+": [t: plus]                                # 0x2b
-```
-This rule will translate the "+" character int the string "plus".
+* Tests have been added for your language
+* All tests pass:
 
-A more complicated rule is:
-```
- - "[":                                          # 0x5b
-    - test:
-        if: $SpeechStyle = 'ClearSpeak'
-        then: [t: open bracket]
-        else: [t: left bracket]                            
-```
-This rule produces different speech depending on the current preference for the speech style.
+  ```bash
+  cargo test Languages::pt
+  ```
 
-It is also possible to share Unicode files via `- include: file_name` just as it is possible to do so with speech rules.
+* Expected outputs in tests match your intended speech (including pauses)
 
+#### Expert review
 
-## The Prefs Files
+* A mathematician or subject expert has reviewed representative output
+* Major terminology or structure issues have been addressed
 
-Note: Preferences such as the ClearSpeak preferences is a dictionary within the `ClearSpeak`
-entry in the YAML file. That would make setting the value and reading it difficult.
-The solution adopted to convert it to a string with an "_" as a separator.
-For example, the _name_ for the `ClearSpeak` `Fraction` preference is `ClearSpeak_Fraction`.
-This is what should be used when setting its value via the API and when accessing its value in `ClearSpeak_Rules.yaml`.
+#### User testing
 
+* At least some testing has been done with screen reader users
+* Feedback on clarity and usability has been considered
 
-## The Definition Files
+### Submitting your translation
 
+Once you are satisfied with the checklist:
 
-## XPath
-Many parts of a speech rule make use of xpath. This is a popular and well documented method for selecting parts on an XML document. A web search will turn up many tutorials. Those not familiar with xpath are encouraged to read some. The implementation of xpath used by MathCAT is a slightly extended version of XPATH 1.0.
+1. **Commit your changes** in your branch (for example `pt`)
+2. **Push your branch** to GitHub
+3. **Open a pull request** against the main MathCAT repository
 
-MathCAT usage tends to use only a few features of xpath. It also makes use of some custom functions. Here is a short explanation of common xpath usage:
+In your pull request, it helps to include:
 
-| usage | meaning |
-| ----- | ---- |
-| `*`    | matches all children |
-| `[...]` | selects nodes from the current match| 
-|  `*[1]`  | selects first child|
-| `*[self::m:mn]` | selects all children that are `mn` elements. Note that `m` is used to indicate that the element is in the MathML namespace.
-| `*[1][self::m:mn]` | select the first child as long as it is an `mn` element |
-| `*[1][self::m:mo][text()='-']` | select the first child as long as it is an `mo` element whose content is '-'. This could also be written as `*[1][text()='-']` because other nodes probably won't have the content `-`, but an `mtext` element could have that, so specifying the element name is safest. |
-| `count(*[2]/*)` | the number of children of the second child |
-| `count(preceding-sibling::*)+1` | add 1 to the number of siblings before the current element |
+* A short description of the translation
+* What has been completed (e.g. ClearSpeak, SimpleSpeak, tests)
+* Any known limitations or areas that still need work
+
+After that, maintainers will review your work and may suggest changes before merging.
+
+### When will the translation become available for users?
+
+Once your translation is merged into MathCAT:
+
+* It will become part of future MathCAT releases
+* Users will be able to select your language in supported screen readers (such as NVDA)
+
+If you want to use it immediately before an official release, you can:
+
+* keep using your local rules folder in NVDA, or
+* install a development version of MathCAT that includes your changes
+
+---
+
+## Step 10: Keep the translation up-to-date
+
+A translation is never “finished” in a strict sense. Even after merging, you will likely find small improvements over time—especially as users start working with real content.
+
+Furthermore, the English version is still under active development, and you will want to include new features in your translation. To keep your translation in sync, you may use the [Translation audit tool](https://github.com/daisy/MathCAT/blob/main/PythonScripts/audit_translations/README.md).
+
+<!-- Please add details about notification and translation update procedure here when it has been decided upon. -->
+
+---
+
+## Braille translation
+
+Braille translation follows a similar overall workflow, but there are some important differences.
+
+Before starting work on the Braille rules, it is important to establish what standard is used in your country for writing mathematics. Some countries have established Braille codes, while others use some other kind of notation such as LaTeX or ASCIIMath. You need to decide early which standard MathCAT should follow.
+
+If a Braille standard similar to yours already exists, it may be useful as a starting point. Otherwise, you will probably need to start more or less from scratch.
+
+### Braille files
+
+For a new Braille language, you will need to create three `.yaml` files in `Rules\Braille\your-braille-language`:
+
+1. `xxx_Rules.yaml` — where `xxx` is the name of your Braille code. This contains the rules that translate MathML into Braille.
+2. `unicode.yaml` — this contains translations of the more common characters.
+3. `unicode-full.yaml` — this contains the rest of the character translations.
+
+The reason for having two Unicode files is practical: keeping the common characters in a shorter file helps startup time.
+
+On top of this, additions need to be made in the file `src/braille.rs`.
+
+### An example from Swedish
+
+The Swedish Braille translation followed the official Swedish Braille code for mathematics, which was a 6-dot standard intended for printed Braille. There was no established 8-dot standard for mathematics, so the translation had to be built around the only recognized standard that existed.
+
+The Swedish work also showed that source standards are not always strict enough for software. Some printed standards allow spacing to follow the printed source. In MathCAT, that is not enough. The rules need to be explicit, so you may need to resolve inconsistencies and make firm decisions about spacing.
+
+### Testing Braille
+
+The basic idea is similar to TTS testing, but the tests check Braille Unicode instead of speech strings.
+
+A practical way to work is to write Rust tests with expected Braille output taken from the national standard or from agreed examples. Then run the tests, inspect failures, and refine the rules until the output matches.
+
+The Swedish translation used examples taken straight from the Swedish Braille code, especially for arithmetic, fractions, subscript and superscript, and basic functions. That turned out to be a good way to ground the rules in a real standard.
+
+### Braille-specific challenges
+
+Braille work often raises issues that do not come up in speech translation. For example:
+
+* the standard may be incomplete or inconsistent
+* the standard may assume printed context instead of machine-generated output
+* some symbols may not have clear established representations
+* spacing may need to be made stricter than the source standard suggests
+
+### Braille user testing
+
+Braille user testing is just as important as speech user testing.
+
+In the Swedish work, testers used NVDA together with the Braille viewer so that the output could be monitored during remote sessions. That made it possible to observe the output even when the reviewers themselves were not reading the physical Braille display.
+
+As with speech, the goal is not only technical correctness. The output should also be readable, consistent, and useful in real workflows.
+
+---
+
+## Appendix
+
+### Practical advice for working efficiently
+
+AI tools can be useful when you are drafting translations, exploring alternative phrasings, or trying to understand a difficult rule. They can also help when you need to write or edit rules.
+
+However, they should always be treated as assistants, not authorities. Automatic translations always need checking by a human, and rule changes always need testing with real output.
+
+More generally, it helps to make one change at a time, test often, and discuss difficult cases with other translators or subject experts when you can.
+
+### Troubleshooting
+
+If something does not work as expected, check indentation first. YAML errors are common and can be surprisingly hard to spot. If you use VS Code, it can be useful to download a YAML extension to help you find YAML errors.
+
+Also check the test output carefully and listen again. Many problems are easier to hear than to see.
+
+### XPath
+
+Many parts of a speech rule make use of XPath. This is a popular and well-documented method for selecting parts of an XML document. A web search will turn up many tutorials. Those not familiar with XPath are encouraged to read some. The implementation of XPath used by MathCAT is a slightly extended version of XPath 1.0.
+
+MathCAT usage tends to use only a few features of XPath. It also makes use of some custom functions. Here is a short explanation of common XPath usage:
+
+| usage                           | meaning                                                                                                                                                                                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*`                             | matches all children                                                                                                                                                                                                                                                      |
+| `[...]`                         | selects nodes from the current match                                                                                                                                                                                                                                      |
+| `*[1]`                          | selects first child                                                                                                                                                                                                                                                       |
+| `*[self::m:mn]`                 | selects all children that are `mn` elements. Note that `m` is used to indicate that the element is in the MathML namespace.                                                                                                                                               |
+| `*[1][self::m:mn]`              | select the first child as long as it is an `mn` element                                                                                                                                                                                                                   |
+| `*[1][self::m:mo][text()='-']`  | select the first child as long as it is an `mo` element whose content is ‘-‘. This could also be written as `*[1][text()='-']` because other nodes probably won’t have the content `-`, but an `mtext` element could have that, so specifying the element name is safest. |
+| `count(*[2]/*)`                 | the number of children of the second child                                                                                                                                                                                                                                |
+| `count(preceding-sibling::*)+1` | add 1 to the number of siblings before the current element                                                                                                                                                                                                                |
 
 MathCAT adds some custom functions to make writing rules easier:
 
-| function | meaning |
-| ----- | ---- |
-| `IsNode(nodes, type)   | Returns true if all of the nodes are of the same type. Type can be one of:<br/>  "simple" -- a defined set of elements in ClearSpeak <br/> "leaf" -- one of the MathML leaf elements <br/> "2D" -- a 2D nodes such as `mfrac` or `mroot` <br/> "modified" -- the node has a script or something over/under it <br/> "scripts" -- the node as a subscript and/or superscript<br/> "common_fraction" -- integer numerator and denominator |
-| ToOrdinal |  |
-| ToCommonFraction | |
-| IsBracketed(openChar, closeChar, requiresComma) | |
-| BaseNode(node) | Returns the base (recursively) of a scripted node |
-| IsInDefinition(node, name) | Returns true if node is a member of the list 'name' (defined in definitions.yaml) |
-| IfThenElse(test, then-part, else-part) | Returns `then-part` if the test is true, otherwise `else-part`. All arguments are xpath |
-| DistanceFromLeaf(node, left_side, treat_2d_elements_as_tokens) |  Returns distance from the current node to the leftmost/rightmost leaf (if a char, then = 0, if token, then 1). If the node is a bracketed expr with the indicated left/right chars. If `left_side` is `true`, traverse leftmost child to leaf. If `treat2D_elements_as_tokens` is `true`, 2D notations such as fractions are treated like leaves. |
-| EdgeNode(node, "left"/"right", stopNodeName) | Returns the stopNode if at left/right edge of named ancestor node. "stopNodeName' can also be "2D'. The  original node is returned if match isn't found. Note: if stopNodeName=="math", then punctuation is taken into account since it isn't really part of the math
- |
-| DEBUG(xpath) | Really helpful for debugging -- it will be added to debug output |
+| function                                                         | meaning                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `IsNode(nodes, type)`                                            | Returns true if all of the nodes are of the same type. Type can be one of:<br/> "simple" -- a defined set of elements in ClearSpeak <br/> "leaf" -- one of the MathML leaf elements <br/> "2D" -- a 2D node such as `mfrac` or `mroot`<br/>"modified" – the node has a script or something over/under it<br/>"scripts" – the node has a subscript and/or superscript<br/>"common_fraction" – integer numerator and denominator |
+| `ToOrdinal`                                                      |                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `ToCommonFraction`                                               |                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `IsBracketed(openChar, closeChar, requiresComma)`                |                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `BaseNode(node)`                                                 | Returns the base (recursively) of a scripted node                                                                                                                                                                                                                                                                                                                                                                              |
+| `IsInDefinition(node, "Speech"/"Braille", name)`                                     | Returns true if node is a member of the list ‘name’ (defined in `definitions.yaml`). For a translation, two arguments is allowed (`node` and `name`), and the second argument defaults to `Speech`.                                                                                                                                                                                                                                                                                                                                               |
+| `IfThenElse(test, then-part, else-part)`                         | Returns `then-part` if the test is true, otherwise `else-part`. All arguments are XPath expressions                                                                                                                                                                                                                                                                                                                                        |
+| `DistanceFromLeaf(node, left_side, treat_2d_elements_as_tokens)` | Returns the distance from the current node to the leftmost or rightmost leaf (0 for a character, 1 for a token). If `left_side` is `true`, traversal follows the leftmost child to the leaf; otherwise it follows the right side. If `treat_2d_elements_as_tokens` is `true`, two-dimensional notations such as fractions are treated as single tokens (like leaves).                                                                              |
+| `EdgeNode(node, "left"/"right", stopNodeName)`                   | Returns the stopNode if at left/right edge of named ancestor node. `stopNodeName` can also be `"2D"`. The original node is returned if no match is found. Note: if `stopNodeName` is `"math"`, then punctuation is taken into account since it is not really part of the math                                                                                                                                                           |
+| `DEBUG(xpath)`                                                   | Really helpful for debugging – it will be added to debug output                                                                                                                                                                                                                                                                                                                                                                |
+
+There are other calls that can be made. The full list is in `src/xpath_functions.rs`. See `add_builtin_functions()`.
 
 These are used by Nemeth Rules:
 
-| function | meaning |
-| ----- | ---- |
-| NestingChars | Used by mfrac, msqrt, and mroot rules to repeat the chars the appropriate number of times |
-| BrailleChars | Used by token elements to deal with the complicated rearrangement of various Nemeth indicators such as capitalization and font face |
+| function       | meaning                                                                                                                             |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `NestingChars` | Used by mfrac, msqrt, and mroot rules to repeat the chars the appropriate number of times                                           |
+| `BrailleChars` | Used by token elements to deal with the complicated rearrangement of various Nemeth indicators such as capitalization and font face |

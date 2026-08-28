@@ -22,7 +22,7 @@ fn modified_vars() -> Result<()> {
         </mrow> </math>";
     test("en", "SimpleSpeak", expr, 
         "eigh grave, b tilde, c breve, b check, c grave; plus \
-            r check, plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
+            r check plus; x dot, y dot, z double dot, u triple dot, v quadruple dot; plus x hat, plus vector t")?;
             return Ok(());
 
 }
@@ -337,7 +337,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -373,7 +372,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b; dot")?;
     return Ok(());
 
 }
@@ -415,7 +414,7 @@ fn dots() -> Result<()> {
          <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
          <mover><mi>x</mi><mo>...</mo></mover>
     </math>";
-  test("en", "SimpleSpeak",expr, "x dot, plus x double dot, plus x triple dot")?;
+  test("en", "SimpleSpeak",expr, "x dot, plus x .., plus x ...")?;
   return Ok(());
 }
 
@@ -501,7 +500,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }
@@ -583,7 +582,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow; perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }

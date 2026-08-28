@@ -10,6 +10,7 @@ The tool analyzes rule files to detect the following issues:
 * **Extra Rules:** Rules present in the target translation but absent in the source (flagged as potentially intentional language-specific additions).
 * **Untranslated Text:** Detects text keys that still use **lowercase** formatting, indicating they haven't been verified or translated yet.
 * **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
+* **Definition Coverage:** Compares literal `definitions.yaml` entries by name and collection kind (`vector`, `set`, or `map`).
 
 Add `# audit-ignore` to a rule block to suppress auditing that rule.
 
@@ -49,6 +50,11 @@ The tool automatically adjusts its matching logic based on the file type:
 2.  **Unicode Files:**
     * Matches rules based on character/range keys.
     * *Examples:* `unicode.yaml`, `unicode-full.yaml` (keys like `a-z`, `!`, `0-9`).
+3.  **Definition Files:**
+    * `definitions.yaml` is audited by default and can be selected with `--file definitions.yaml`.
+    * Definitions are matched by name. Missing definitions and collection-kind mismatches are issues; target-only definitions are informational.
+    * Definition contents are not compared, includes are not resolved, and translation verification is not available for definitions.
+
 
 ---
 
@@ -71,6 +77,7 @@ uv run --project PythonScripts audit-translations --list
   * Region variants are shown as `lang-region` (e.g., `zz-aa`) based on subdirectories under `Rules/Languages/<lang>`.
 * `--source`: Sets the source/reference language. Defaults to `en`.
 * `--file`: Audits a single specific file instead of the whole directory.
+* `--exclude`: Exclude one or more files from the audit.
 * `--rules-dir`: Override the Rules/Languages directory path.
 * `--only`: Filter issue types (comma-separated): `missing`, `untranslated`, `extra`, `diffs`, `all`.
 * `--verbose`: Show detailed output including source/target snippets for rule differences.
@@ -94,8 +101,16 @@ uv run audit-translations de
 # Compare Norwegian Bokmal against Swedish instead of English
 uv run audit-translations nb --source sv
 
-# Audit only a specific file
+# Audit only a specific file (note: --file is incompatible with --exclude)
+uv run audit-translations es --file ClearSpeak_Rules.yaml
 uv run audit-translations es --file SharedRules/default.yaml
+
+# Exclude a list of files from the audit, note that if you use this option before specifying the
+# target language you'll need to use the option terminator (--).
+# (note: --exclude is incompatible with --file)
+uv run audit-translations es --exclude unicode-full.yaml
+uv run audit-translations es --exclude unicode-full.yaml unicode.yaml
+uv run audit-translations --exclude unicode-full.yaml -- es
 
 # Audit a regional variant (merges Rules/Languages/de and Rules/Languages/de/CH)
 uv run audit-translations de-CH

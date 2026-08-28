@@ -355,7 +355,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, nem tartalmazza a c elemet vagy d elemet")?;
+    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, nem tartalmazza a(z) c elemet vagy d elemet")?;
     return Ok(());
 
 }
@@ -368,7 +368,7 @@ fn no_times_sqrt() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
             <mo>)</mo></mrow>
         </math>";
-    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, tartalmazza a c elemet de nem tartalmazza a d elemet")?;
+    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, tartalmazza a(z) c elemet de nem tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -382,7 +382,7 @@ fn parens_interval_open_closed() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("hu", "SimpleSpeak",expr,"c től d ig terjedő intervallum, nem tartalmazza a c elemet de tartalmazza a d elemet")?;
+    test("hu", "SimpleSpeak",expr,"c től d ig terjedő intervallum, nem tartalmazza a(z) c elemet de tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -396,7 +396,7 @@ fn parens_interval_closed_closed() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
             <mo>]</mo></mrow>
     </math>";
-    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, tartalmazza a c elemet és d elemet")?;
+    test("hu", "SimpleSpeak",expr, "c től d ig terjedő intervallum, tartalmazza a(z) c elemet és d elemet")?;
     return Ok(());
 
 }
@@ -409,7 +409,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test("hu", "SimpleSpeak",expr,
-    "negatív végtelen től d ig terjedő intervallum, nem tartalmazza a d elemet")?;
+    "negatív végtelen től d ig terjedő intervallum, nem tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }
@@ -422,7 +422,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>]</mo></mrow>
     </math>";
     test("hu", "SimpleSpeak",expr,
-    "negatív végtelen től d ig terjedő intervallum, tartalmazza a d elemet")?;
+    "negatív végtelen től d ig terjedő intervallum, tartalmazza a(z) d elemet")?;
     return Ok(());
 
 }

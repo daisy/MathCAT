@@ -6,7 +6,7 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..models import UntranslatedEntry
+from ..models.rules import UntranslatedEntry
 from ..parsers import (
     build_line_map,
     find_untranslated_text_entries,

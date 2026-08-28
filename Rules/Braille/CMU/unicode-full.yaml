@@ -10,7 +10,7 @@
 
  - "𝐀-𝐙": # 0x1d400 - 0x1d419
    - tc: "BC"
-   - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'abcdefghijklmnopqrstuvwxyz')"
 
 # don't mark these as italic
  - "𝑎-𝑧": # 0x1d44e - 0x1d467
@@ -19,15 +19,15 @@
 
  - "𝐴-𝑍": # 0x1d434 - 0x1d44d
    - tc: "C"
-   - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝒂-𝒛": # 0x1d482 - 0x1d49b
-   - tc: "BI"
+   - tc: "B"
    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝑨-𝒁": # 0x1d468 - 0x1d481
-   - tc: "BIC"
-   - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - tc: "BC"
+   - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝒶-𝓏": # 0x1d4b6 - 0x1d4cf
    - tc: "Ts"
@@ -35,7 +35,7 @@
 
  - "𝒜-𝒵": # 0x1d49c - 0x1d4b5
    - tc: "TsC"
-   - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "ℊ": [t: "TL⠛⠁"]             # 0x210a (Script Small G)
  - "ℋ": [t: "TCL⠓⠁"]            # 0x210b (Script Capital H)
@@ -54,15 +54,15 @@
 
  - "𝓐-𝓩": # 0x1d4d0 - 0x1d4e9
    - tc: "BTsC"
-   - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝔞-𝔷": # 0x1d51e - 0x1d537
    - tc: "D"
    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝔄-𝔝": # 0x1d504 - 0x1d51d
-   - tc: "D"
-   - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGJKLMNOPQSTUVWXY')"
+   - tc: "DC"
+   - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'abcdefgjklmnopqstuvwxy')"
 
  - "ℌ": [t: "DCL⠓"]             # 0x210C (Fraktur Capital H)
  - "ℑ": [t: "DCL⠊"]             # 0x2111 (Fraktur Capital I)
@@ -73,8 +73,8 @@
    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝔸-𝕐": # 0x1d538 - 0x1d550 (blackboard bold capitals, excluding special number sets)
-   - tc: "D"
-   - spell: "translate('.', '𝔸𝔹𝔻𝔼𝔽𝔾𝕀𝕁𝕂𝕃𝕄𝕆𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRST')"
+   - tc: "𝔹C"
+   - spell: "translate('.', '𝔸𝔹𝔻𝔼𝔽𝔾𝕀𝕁𝕂𝕃𝕄𝕆𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'abcdefghijklmnopqrst')"
 
  - "ℂ": [t: "⠸⠉"]                # 0x2102 (números complejos)
  - "ℍ": [t: "⠸⠓"]                # 0x210D (cuaterniones)
@@ -86,11 +86,11 @@
 
  - "𝖆-𝖟": # 0x1d586 - 0x1d59f
    - tc: "BD"
-   - spell: "translate('.', 'abcdefghijklmnopqrstuvwxyz', 'abcdefghijklmnopqrstuvwxyz')"
+   - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝕬-𝖅": # 0x1d56c - 0x1d585
    - tc: "BDC"
-   - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝖺-𝗓": # 0x1d5ba - 0x1d5d3
    - tc: "S"
@@ -98,7 +98,7 @@
 
  - "𝖠-𝖹": # 0x1d5a0 - 0x1d5b9
    - tc: "SC"
-   - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝗮-𝘇": # 0x1d5ee - 0x1d607
    - tc: "BS"
@@ -106,23 +106,23 @@
 
  - "𝗔-𝗭": # 0x1d5d4 - 0x1d5ed
    - tc: "BSC"
-   - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝘢-𝘻": # 0x1d622 - 0x1d63b
-   - tc: "IS"
+   - tc: "S"
    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝘈-𝘡": # 0x1d608 - 0x1d621
-   - tc: "ISC"
-   - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - tc: "SC"
+   - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝙖-𝙯": # 0x1d656 - 0x1d66f
-   - tc: "BILS"
+   - tc: "BS"
    - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝘼-𝙕": # 0x1d63c - 0x1d655
-   - tc: "BILSC"
-   - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - tc: "BSC"
+   - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝚊-𝚣": # 0x1d68a - 0x1d6a3
    - tc: ""
@@ -130,7 +130,7 @@
 
  - "𝙰-𝚉": # 0x1d670 - 0x1d689
    - tc: "C"
-   - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+   - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝚤": [t: "L⠊"]               # 0x1d6a4 (dotless i)
  - "𝚥": [t: "L⠚"]               # 0x1d6a5 (dotless j)
@@ -143,19 +143,19 @@
    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿')"
 
  - "𝛼-𝜓": # 0x1d6fc - 0x1d713
-   - tc: "IGL"
+   - tc: "GL"
    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓')"
 
  - "𝛢-𝛹": # 0x1d6e2 - 0x1d6f9
-   - tc: "ICGL"
+   - tc: "CGL"
    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹')"
 
  - "𝜶-𝝍": # 0x1d736 - 0x1d74d
-   - tc: "BIGL"
+   - tc: "BGL"
    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍')"
 
  - "𝜜-𝜳": # 0x1d71c - 0x1d733
-   - tc: "BICGL"
+   - tc: "BCGL"
    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳')"
 
  - "𝝰-𝞇": # 0x1d770 - 0x1d787
@@ -167,11 +167,11 @@
    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭')"
 
  - "𝞪-𝟁": # 0x1d7aa - 0x1d7c1
-   - tc: "BISGL"
+   - tc: "BSGL"
    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁')"
 
  - "𝞐-𝞧": # 0x1d790 - 0x1d7a7
-   - tc: "BISCGL"
+   - tc: "BSCGL"
    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧')"
 
  - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  

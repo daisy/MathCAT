@@ -1466,6 +1466,122 @@ fn binomial_14_3_3_2_mtable() -> Result<()> {
 }
 
 #[test]
+fn matrix_15_2_1() -> Result<()> {
+    // GTM 15.2 first example: I = [[1,0],[0,1]] with enlarged parentheses (one-line encoding).
+    let expr = r#"<math><mi>I</mi><mo>=</mo>
+       <mrow><mo>(</mo><mtable>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+          <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+        </mtable><mo>)</mo>
+      </mrow></math>"#;
+    test_braille("UEB", expr, "⠠⠊⠀⠐⠶⠀⠠⠐⠣⠼⠁⠀⠼⠚⠠⠐⠜⠸⠀⠠⠐⠣⠼⠚⠀⠼⠁⠠⠐⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn matrix_15_2_2() -> Result<()> {
+    // GTM 15.2 second example: matrix multiplication (linearized with `⠸⠀` between rows).
+    // [1 2 3; 4 5 6] [1 2; -3 4; 5 -6]
+    let expr = r#"<math>
+      <mrow><mo>[</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+        <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
+      </mtable><mo>]</mo></mrow>
+      <mrow><mo>[</mo><mtable>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        <mtr><mtd><mo>-</mo><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+        <mtr><mtd><mn>5</mn></mtd><mtd><mo>-</mo><mn>6</mn></mtd></mtr>
+      </mtable><mo>]</mo></mrow>
+    </math>"#;
+    // example has G1 passage mode start/end, but they are not needed and not included.
+    test_braille(
+        "UEB",
+        expr,
+        "⠠⠨⠣⠼⠁⠀⠼⠃⠀⠼⠉⠠⠨⠜⠸⠀⠠⠨⠣⠼⠙⠀⠼⠑⠀⠼⠋⠠⠨⠜⠠⠨⠣⠼⠁⠀⠼⠃⠠⠨⠜⠸⠀⠠⠨⠣⠐⠤⠼⠉⠀⠼⠙⠠⠨⠜⠸⠀⠠⠨⠣⠼⠑⠀⠐⠤⠼⠋⠠⠨⠜",
+    )?;
+    return Ok(());
+}
+
+#[test]
+fn matrix_15_2_3() -> Result<()> {
+    // GTM 15.2 third example: (a −b ; −c d), linearized with `⠸⠀` between rows.
+    // Spec spatial braille (ASCII):  ,"< a "-b,"> / ,"<"-c d,">
+    // Spec spatial (Unicode):       ⠠⠐⠣⠀⠁⠀⠐⠤⠃⠠⠐⠜ / ⠠⠐⠣⠐⠤⠉⠀⠙⠠⠐⠜
+    // (extra space after the first-row open paren aligns columns so the minus stands out)
+    let expr = r#"<math><mrow><mo>(</mo><mtable>
+        <mtr><mtd><mi>a</mi></mtd><mtd><mrow><mo>-</mo><mi>b</mi></mrow></mtd></mtr>
+        <mtr><mtd><mrow><mo>-</mo><mi>c</mi></mrow></mtd><mtd><mi>d</mi></mtd></mtr>
+      </mtable><mo>)</mo></mrow></math>"#;
+    test_braille("UEB", expr, "⠠⠐⠣⠁⠀⠐⠤⠃⠠⠐⠜⠸⠀⠠⠐⠣⠐⠤⠉⠀⠙⠠⠐⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn determinant_15_3_1() -> Result<()> {
+    // GTM 15.3: |P| = |a b; c d| = ad − bc (determinant linearized with `⠸⠀` between rows).
+    let expr = r#"<math>
+      <mrow><mo>|</mo><mi>P</mi><mo>|</mo></mrow>
+      <mo>=</mo>
+      <mrow><mo>|</mo><mtable>
+        <mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr>
+        <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr>
+      </mtable><mo>|</mo></mrow>
+      <mo>=</mo>
+      <mrow><mi>a</mi><mi>d</mi><mo>-</mo><mi>b</mi><mi>c</mi></mrow>
+    </math>"#;
+    test_braille(
+        "UEB",
+        expr,
+        "⠸⠳⠠⠏⠸⠳⠀⠐⠶⠀⠠⠸⠳⠁⠀⠃⠠⠸⠳⠸⠀⠠⠸⠳⠉⠀⠙⠠⠸⠳⠀⠐⠶⠀⠁⠙⠐⠤⠃⠉",
+    )?;
+    return Ok(());
+}
+
+#[test]
+fn omission_15_4_1() -> Result<()> {
+    // GTM 15.4: determinant with omission dots (linearized with `⠸⠀` between rows).
+    // Spec spatial (ASCII):
+    //   ;;;,_|a5#aa a5#ab 444 a5<#an>,_|
+    //    ,_|a5#ba a5#bb 444 a5<#bn>,_|
+    //    ,_| 4 4 444 4 ,_|
+    //    ,_|a5<m#a> a5<m#b> 444 a5<mn> ,_|;'
+    // Spec uses . (⠄) / ⋯ (⠄⠄⠄) for omission dots; U+2024 / U+22EF in the MathML.
+    let expr = r#"<math><mrow><mo>|</mo><mtable>
+      <mtr>
+        <mtd><msub><mi>a</mi><mn>11</mn></msub></mtd>
+        <mtd><msub><mi>a</mi><mn>12</mn></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+   
+        <mtd><msub><mi>a</mi><mrow><mn>1</mn><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+      <mtr>
+        <mtd><msub><mi>a</mi><mn>21</mn></msub></mtd>
+        <mtd><msub><mi>a</mi><mn>22</mn></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><msub><mi>a</mi><mrow><mn>2</mn><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+      <mtr>
+        <mtd><mo>.</mo></mtd>
+        <mtd><mo>.</mo></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><mo>.</mo></mtd>
+      </mtr>
+      <mtr>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mn>1</mn></mrow></msub></mtd>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mn>2</mn></mrow></msub></mtd>
+        <mtd><mo>⋯</mo></mtd>
+        <mtd><msub><mi>a</mi><mrow><mi>m</mi><mi>n</mi></mrow></msub></mtd>
+      </mtr>
+    </mtable><mo>|</mo></mrow></math>"#;
+    test_braille(
+        "UEB",
+        expr,
+        "⠰⠰⠰⠠⠸⠳⠁⠢⠼⠁⠁⠀⠁⠢⠼⠁⠃⠀⠄⠄⠄⠀⠁⠢⠣⠼⠁⠝⠜⠠⠸⠳⠸⠀⠠⠸⠳⠁⠢⠼⠃⠁⠀⠁⠢⠼⠃⠃⠀⠄⠄⠄⠀⠁⠢⠣⠼⠃⠝⠜⠠⠸⠳⠸⠀⠠⠸⠳⠲⠀⠲⠀⠄⠄⠄⠀⠲⠠⠸⠳⠸⠀⠠⠸⠳⠁⠢⠣⠍⠼⠁⠜⠀⠁⠢⠣⠍⠼⠃⠜⠀⠄⠄⠄⠀⠁⠢⠣⠍⠝⠜⠠⠸⠳⠰⠄",
+    )?;
+    return Ok(());
+}
+
+#[test]
 fn chem_16_2_8() -> Result<()> {
     let expr = "<math><mi>Ca</mi><msub><mrow><mo>(</mo><mi>OH</mi><mo>)</mo></mrow><mn>2</mn></msub></math>";
     // Acceptable: GTM does not use a G1 start indicator: "⠠⠉⠁⠐⠣⠠⠕⠠⠓⠐⠜⠰⠢⠼⠃"

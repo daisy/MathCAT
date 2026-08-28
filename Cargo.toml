@@ -1,6 +1,6 @@
 [package]
 name = "mathcat"
-version = "0.7.6-beta.9"
+version = "0.7.7-alpha.1"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
@@ -23,8 +23,7 @@ sxd-document-no-unsafe = "0.4.2"
 sxd-xpath-no-unsafe = "0.5.1"
 yaml-rust = "0.4"
 # yaml-rust = { version = "0.11", package = "yaml-rust2" }
-strum = "0.28"
-strum_macros = "0.28"
+strum = { version = "0.28", features = ["derive"] }
 anyhow = "1.0"
 regex = "1.12.3"
 dirs = "6.0"
@@ -40,18 +39,17 @@ fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
 
-[target.'cfg(target_family = "wasm")'.dependencies]
-zip = { version = "8.2", default-features = false, features = ["deflate"] }
-[target.'cfg(not(target_family = "wasm"))'.dependencies]
-zip = { version = "8.2", default-features = false, features = ["bzip2"] }
+# Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
+# writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.
+# wasm uses the same features: zip 8.x bzip2 is pure Rust (libbz2-rs-sys), not clang C.
+zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
 natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
-# Build script needs both compression backends regardless of build host —
-# build.rs picks DEFLATE/BZIP2 based on the *target* family, not the host.
+yaml-rust = "0.4"
 zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
 
 [dev-dependencies]
@@ -64,6 +62,10 @@ crate-type = ["rlib", "cdylib"]
 [[bin]]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
+
+[[bin]]
+name = "package-rules"
+path = "src/bin/package_rules.rs"
 
 [lints.rust]
 unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }

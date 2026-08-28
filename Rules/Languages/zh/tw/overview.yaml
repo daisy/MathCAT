@@ -12,10 +12,9 @@
 # There is a balance that you want to maximize the info given, so 10 words is likely better then 3.
 #   That might mean that at the top level, we may want to allow the first few children to expand
 
-- include: "SimpleSpeak_Rules.yaml"
 
 - name: overview-default
-  tag: mfrac
+  tag: [mfrac, fraction]
   match: "."
   replace:
   - test:
@@ -28,7 +27,7 @@
       - T: "分數"
 
 - name: overview-default
-  tag: msqrt
+  tag: [msqrt, "square-root"]
   match: "."
   replace:
   - T: "根號"
@@ -41,7 +40,7 @@
       - x: "*[1]"
 
 - name: overview-default
-  tag: mroot
+  tag: [mroot, root]
   match: "."
   replace:
   - T: ""
@@ -119,3 +118,5 @@
   - x: "*[5]"
   - pause: auto
   - T: "等等"
+
+- include: "SimpleSpeak_Rules.yaml"

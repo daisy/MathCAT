@@ -138,43 +138,53 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
-   name: default-matrix
-   tag: mrow
-   variables:
-      - RowStart: "*[1]"
-      - RowEnd: "*[3]"
-   match:
-      - "*[2][self::m:mtable] and"
-      - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
-   replace: [x: "*[2]"]
+  name: default-matrix
+  tag: mrow
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "*[3]"
+  match:
+    - "*[2][self::m:mtable] and"
+    - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
+  replace: [x: "*[2]"]
+
 -
-   name: default-mtable
-   tag: mtable
-   match: "."
-   replace: [x: "*"]
+  name: default-mtable
+  tag: mtable
+  match: "."
+  variables:   # should only be here for lines of equations -- made up dot-6, dot 0 as a parallel to dot six before parens
+  - RowStart: "IfThenElse($RowStart = '', '⠀', $RowStart)"
+  - RowEnd: "IfThenElse($RowEnd = '', '⠀', $RowEnd)"
+  replace: [x: "*"]
+
 -
   name: default
   tag: [mtr, mlabeledtr]
   match: "."
   replace:
-   - test: 
-      if: "../*[2]"   # more than one row
-      then: [t: "⠠"]
-   - t: ""
-   - x: $RowStart
-   - test:
+  - test: 
+      if: "preceding-sibling::*"   # between rows (not before the first)
+      then: [t: "⠸W"]
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowStart
+  - test:
       if: .[self::m:mlabeledtr]
       then:
-         - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
-         - x: "*[1]/*"           # contents of row label
-   - test:
+          - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
+          - x: "*[1]/*"           # contents of row label
+  - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: [x: "*"]
-   - test: 
-      if: "../*[2]"   # more than one row
-      then: [t: "⠠"]
-   - x: $RowEnd
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowEnd
+
 -
   name: default
   tag: mtd

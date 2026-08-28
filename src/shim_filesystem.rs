@@ -361,15 +361,40 @@ cfg_if! {
             }
         }
         
+        // Tests extract language/braille zips in parallel. During extraction, individual YAML
+        // files can briefly exist in a partially-written state (created/truncated before the
+        // full contents are flushed). Guard both extraction and YAML reads with the same lock
+        // so readers never observe truncated YAML.
+        use std::sync::Mutex;
+        static RULES_ZIP_EXTRACT_LOCK: Mutex<()> = Mutex::new(());
+
+        fn should_lock_rules_yaml_path(path: &Path) -> bool {
+            let s = path.to_string_lossy();
+            let is_yaml = s.ends_with(".yaml") || s.ends_with(".yml");
+            if !is_yaml {
+                return false;
+            }
+            return s.contains("Rules/Languages/") || s.contains("Rules\\Languages\\")
+                || s.contains("Rules/Braille/") || s.contains("Rules\\Braille\\");
+        }
+
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
             let path = match path.canonicalize() {
                 Ok(path) => path,
                 Err(_) => path.to_path_buf(),
             };
             debug!("Reading file '{}'", path.display());
-            match std::fs::read_to_string(&path) {
-                Ok(str) => return Ok(str),
-                Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
+            if should_lock_rules_yaml_path(&path) {
+                let _guard = RULES_ZIP_EXTRACT_LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+                match std::fs::read_to_string(&path) {
+                    Ok(str) => return Ok(str),
+                    Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
+                }
+            } else {
+                match std::fs::read_to_string(&path) {
+                    Ok(str) => return Ok(str),
+                    Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
+                }
             }
         }
 
@@ -386,6 +411,7 @@ cfg_if! {
                     }
                 },
                 Ok(contents) => {
+                    let _guard = RULES_ZIP_EXTRACT_LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
                     let archive = std::io::Cursor::new(contents);
                     let mut zip_archive = zip::ZipArchive::new(archive).unwrap();
                     zip_archive.extract(dir).expect("Zip extraction failed");
