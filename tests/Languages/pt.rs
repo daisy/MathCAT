@@ -9,3 +9,5 @@ mod chemistry;
 mod alphabets;
 mod intent;
 mod units;
+mod unicode_full;
+

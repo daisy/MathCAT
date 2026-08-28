@@ -38,10 +38,10 @@ fn silent_intent_msup() -> Result<()> {
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo h 2")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula h 2")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-    test("pt", "ClearSpeak", expr, "maiúsculo h 2")?;
+    test("pt", "ClearSpeak", expr, "maiúscula h 2")?;
     return Ok(());
 
 }
@@ -53,10 +53,10 @@ fn silent_intent_underscore() -> Result<()> {
             <mi arg='H' mathvariant='normal'>H</mi>
             <mn arg='n'>2</mn>
         </msup></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo h 2")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula h 2")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-    test("pt", "ClearSpeak", expr, "maiúsculo h 2")?;
+    test("pt", "ClearSpeak", expr, "maiúscula h 2")?;
     return Ok(());
 
 }

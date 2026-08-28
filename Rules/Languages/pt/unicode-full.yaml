@@ -702,3 +702,264 @@
  - "◽": [T: "quadrado branco pequeno médio"]  # 0x25fd
  - "◾": [T: "quadrado preto pequeno médio"]   # 0x25fe
  - "◿": [T: "triângulo inferior direito"]     # 0x25ff
+
+# ============================================================================
+# ACRESCENTADO nesta rodada — faixas de maior impacto pedagógico.
+# Traduzido a partir do INGLÊS, linha a linha (nunca do espanhol).
+#
+# Convenção de marcação usada aqui:
+#   T:  o termo é o padrão inequívoco do português matemático, ou segue
+#       decisão já tomada neste repositório.
+#   t:  houve escolha entre alternativas defensáveis; falta conferência de
+#       falante nativo. Os pontos em aberto estão listados no ACHADOS.md.
+#
+# Ordem das palavras: ao contrário do inglês, que antepõe o estilo
+# ("fraktur cap a"), o português pospõe o adjetivo ("maiúscula a vazado").
+# Por isso o `spell:` vem ANTES da palavra de estilo nos blocos de alfabeto.
+# Isso segue a expectativa já registrada em tests/Languages/pt/alphabets.rs
+# ("maiúscula delta vazado").
+# ============================================================================
+
+# ---- Frações vulgares (0x00bc-0x00be, 0x2150-0x215f) ----
+ - "¼": [T: "um quarto"]                        # 0x00bc
+ - "½": [T: "um meio"]                          # 0x00bd
+ - "¾": [T: "três quartos"]                     # 0x00be
+ - "⅐": [T: "um sétimo"]                        # 0x2150
+ - "⅑": [T: "um nono"]                          # 0x2151
+ - "⅒": [T: "um décimo"]                        # 0x2152
+ - "⅓": [T: "um terço"]                         # 0x2153
+ - "⅔": [T: "dois terços"]                      # 0x2154
+ - "⅕": [T: "um quinto"]                        # 0x2155
+ - "⅖": [T: "dois quintos"]                     # 0x2156
+ - "⅗": [T: "três quintos"]                     # 0x2157
+ - "⅘": [T: "quatro quintos"]                   # 0x2158
+ - "⅙": [T: "um sexto"]                         # 0x2159
+ - "⅚": [T: "cinco sextos"]                     # 0x215a
+ - "⅛": [T: "um oitavo"]                        # 0x215b
+ - "⅜": [T: "três oitavos"]                     # 0x215c
+ - "⅝": [T: "cinco oitavos"]                    # 0x215d
+ - "⅞": [T: "sete oitavos"]                     # 0x215e
+ - "⅟": [T: "um sobre"]                         # 0x215f
+
+# ---- Sobrescritos e subscritos (0x2070-0x209f) ----
+ - "⁰": [T: "elevado a zero"]                   # 0x2070
+ - "ⁱ": [T: "elevado a i"]                      # 0x2071
+ - "⁴": [T: "elevado à quarta potência"]        # 0x2074
+ - "⁵": [T: "elevado à quinta potência"]        # 0x2075
+ - "⁶": [T: "elevado à sexta potência"]         # 0x2076
+ - "⁷": [T: "elevado à sétima potência"]        # 0x2077
+ - "⁸": [T: "elevado à oitava potência"]        # 0x2078
+ - "⁹": [T: "elevado à nona potência"]          # 0x2079
+ - "⁺": [T: "sinal de mais sobrescrito"]        # 0x207a
+ - "⁻": [T: "menos sobrescrito"]                # 0x207b
+ - "⁼": [T: "sinal de igual sobrescrito"]       # 0x207c
+ - "⁽": [T: "abre parênteses sobrescrito"]      # 0x207d
+ - "⁾": [T: "fecha parênteses sobrescrito"]     # 0x207e
+ - "ⁿ": [T: "elevado à enésima potência"]       # 0x207f
+ - "₀": [T: "subscrito zero"]                   # 0x2080
+ - "₁": [T: "subscrito um"]                     # 0x2081
+ - "₂": [T: "subscrito dois"]                   # 0x2082
+ - "₃": [T: "subscrito três"]                   # 0x2083
+ - "₄": [T: "subscrito quatro"]                 # 0x2084
+ - "₅": [T: "subscrito cinco"]                  # 0x2085
+ - "₆": [T: "subscrito seis"]                   # 0x2086
+ - "₇": [T: "subscrito sete"]                   # 0x2087
+ - "₈": [T: "subscrito oito"]                   # 0x2088
+ - "₉": [T: "subscrito nove"]                   # 0x2089
+ - "₊": [T: "sinal de mais subscrito"]          # 0x208a
+ - "₋": [T: "sinal de menos subscrito"]         # 0x208b
+ - "₌": [T: "sinal de igual subscrito"]         # 0x208c
+ - "₍": [T: "abre parênteses subscrito"]        # 0x208d
+ - "₎": [T: "fecha parênteses subscrito"]       # 0x208e
+ - "ₐ": [T: "subscrito A"]                      # 0x2090
+ - "ₑ": [T: "subscrito E"]                      # 0x2091
+ - "ₒ": [T: "subscrito O"]                      # 0x2092
+ - "ₓ": [T: "subscrito X"]                      # 0x2093
+ - "ₕ": [T: "subscrito H"]                      # 0x2095
+ - "ₖ": [T: "subscrito K"]                      # 0x2096
+ - "ₗ": [T: "subscrito L"]                      # 0x2097
+ - "ₘ": [T: "subscrito M"]                      # 0x2098
+ - "ₙ": [T: "subscrito N"]                      # 0x2099
+ - "ₚ": [T: "subscrito P"]                      # 0x209a
+ - "ₛ": [T: "subscrito S"]                      # 0x209b
+ - "ₜ": [T: "subscrito T"]                      # 0x209c
+
+# ---- Numerais romanos (0x2160-0x217f) ----
+# DECISÃO (consultoria de acessibilidade matemática): falar o VALOR, não a
+# grafia. Soletrar "I V" descreve como o algarismo é escrito; quem ouve
+# precisa do número. Divergimos aqui do inglês, que ainda soletra ("I V").
+# Vale só para estes caracteres Unicode dedicados, cuja semântica de numeral
+# é inequívoca — o "IV" escrito com letras ASCII continua no caminho de
+# inferência de contexto, intocado.
+ - "Ⅰ": [T: "um"]                               # 0x2160 (valor 1)
+ - "Ⅱ": [T: "dois"]                             # 0x2161 (valor 2)
+ - "Ⅲ": [T: "três"]                             # 0x2162 (valor 3)
+ - "Ⅳ": [T: "quatro"]                           # 0x2163 (valor 4)
+ - "Ⅴ": [T: "cinco"]                            # 0x2164 (valor 5)
+ - "Ⅵ": [T: "seis"]                             # 0x2165 (valor 6)
+ - "Ⅶ": [T: "sete"]                             # 0x2166 (valor 7)
+ - "Ⅷ": [T: "oito"]                             # 0x2167 (valor 8)
+ - "Ⅸ": [T: "nove"]                             # 0x2168 (valor 9)
+ - "Ⅹ": [T: "dez"]                              # 0x2169 (valor 10)
+ - "Ⅺ": [T: "onze"]                             # 0x216a (valor 11)
+ - "Ⅻ": [T: "doze"]                             # 0x216b (valor 12)
+ - "Ⅼ": [T: "cinquenta"]                        # 0x216c (valor 50)
+ - "Ⅽ": [T: "cem"]                              # 0x216d (valor 100)
+ - "Ⅾ": [T: "quinhentos"]                       # 0x216e (valor 500)
+ - "Ⅿ": [T: "mil"]                              # 0x216f (valor 1000)
+ - "ⅰ": [T: "um"]                               # 0x2170 (valor 1)
+ - "ⅱ": [T: "dois"]                             # 0x2171 (valor 2)
+ - "ⅲ": [T: "três"]                             # 0x2172 (valor 3)
+ - "ⅳ": [T: "quatro"]                           # 0x2173 (valor 4)
+ - "ⅴ": [T: "cinco"]                            # 0x2174 (valor 5)
+ - "ⅵ": [T: "seis"]                             # 0x2175 (valor 6)
+ - "ⅶ": [T: "sete"]                             # 0x2176 (valor 7)
+ - "ⅷ": [T: "oito"]                             # 0x2177 (valor 8)
+ - "ⅸ": [T: "nove"]                             # 0x2178 (valor 9)
+ - "ⅹ": [T: "dez"]                              # 0x2179 (valor 10)
+ - "ⅺ": [T: "onze"]                             # 0x217a (valor 11)
+ - "ⅻ": [T: "doze"]                             # 0x217b (valor 12)
+ - "ⅼ": [T: "cinquenta"]                        # 0x217c (valor 50)
+ - "ⅽ": [T: "cem"]                              # 0x217d (valor 100)
+ - "ⅾ": [T: "quinhentos"]                       # 0x217e (valor 500)
+ - "ⅿ": [T: "mil"]                              # 0x217f (valor 1000)
+
+# ---- Alfabetos matemáticos: fraktur, vazado (double-struck) e caligráfico ----
+# Símbolos avulsos do bloco "letterlike" (0x2100-0x214f).
+# ℓ, ℋ, ℛ, ℜ ficam de fora: já estão em unicode.yaml.
+ - "ℊ": [T: "g caligráfico"]                    # 0x210a
+ - "ℯ": [T: "e caligráfico"]                    # 0x212f
+ - "ℴ": [T: "o caligráfico"]                    # 0x2134
+ - "ℼ": [T: "pi vazado"]                        # 0x213c
+ - "ℽ": [T: "gama vazado"]                      # 0x213d
+ - "⅀": [T: "somatório n-ário vazado"]          # 0x2140
+
+ - "ℌℑℨℭ":   # 0x210c, 0x2111, 0x2128, 0x212d
+    - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
+    - t: "fraktur"
+
+ - "ℍℙℾℿ":   # 0x210d, 0x2119, 0x213e, 0x213f
+    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')"
+    - T: "vazado"
+
+ - "ℐℒ℘ℬℰℱℳ":   # 0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
+    - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
+    - T: "caligráfico"
+
+# Blocos alfabéticos do plano 1 e as cópias na área de uso privado do
+# MathType. Chaves e argumentos de translate() copiados byte a byte do en.
+
+ - "𝔄-𝔜":   # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - t: "fraktur"
+
+ - "-":   # 0xf000 - 0xf018
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - t: "fraktur"
+
+ - "𝔞-𝔷":   # 0x1d51e - 0x1d537
+    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+
+ - "-":   # 0xf01a - 0xf033
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+
+ - "𝕬-𝖅":   # 0x1D56C - 0x1D585
+    - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf040 - 0xf059
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝖆-𝖟":   # 0x1d586 - 0x1d59f
+    - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf05a - 0xf073
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝔸-𝕐":   # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "vazado"
+
+ - "-":   # 0xf080 - 0xf098
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "vazado"
+
+ - "𝕒-𝕫":   # 0x1d552 - 0x1d56b
+    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "vazado"
+
+ - "-":   # 0xf09a - 0xf0b3
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "vazado"
+
+ - "𝟘-𝟡":   # 0x1d7d8 - 0x1d7e1
+    - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
+    - T: "vazado"
+
+ - "-":   # 0xf0c0 - 0xf0c9
+    - spell: "translate('.', '', '0123456789')"
+    - T: "vazado"
+
+ - "𝒜-𝒵":   # 0x1d49c - 0x1d4b5
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "caligráfico"
+
+ - "-":   # 0xf100 - 0xf119
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "caligráfico"
+
+ - "𝒶-𝓏":   # 0x1d4b6 - 0x1d4cf
+    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "caligráfico"
+
+ - "-":   # 0xf11a - 0xf133
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "caligráfico"
+
+ - "𝓐-𝓩":   # 0x1d4d0 - 0x1d4e9
+    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf140 - 0xf159
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝓪-𝔃":   # 0x1d4ea - 0x1d503
+    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf15a - 0xf173
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "": [T: "nabla vazado"]                     # 0xf0ca
+ - "": [T: "constante de Euler vazada"]        # 0xf0cb

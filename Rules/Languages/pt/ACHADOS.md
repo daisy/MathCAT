@@ -12,6 +12,8 @@ consulta daqui a meses — inclusive para quem nunca mexeu no MathCAT.
 4. [Outros achados desta rodada](#4)
 5. [Erros que eu mesmo introduzi e depois corrigi](#5)
 6. [Rodada de reconciliação dos testes (todos passando)](#6)
+7. [O caractere não traduzido NÃO cai no inglês](#7)
+8. [Três decisões de terminologia (consultoria de acessibilidade)](#8)
 
 ---
 
@@ -366,10 +368,362 @@ que é o que a regra já fazia, e alinhar os três testes discordantes.
 
 ---
 
+<a name="7"></a>
+## 7. O caractere não traduzido NÃO cai no inglês
+
+Esta seção corrige uma afirmação errada que estava espalhada por três lugares
+do projeto e que orientou uma decisão de escopo.
+
+### 7.1 O que se acreditava
+
+Que um caractere ausente do `unicode-full.yaml` do português seria buscado no
+arquivo inglês, e que o pior caso seria ouvir a descrição em inglês. Sob essa
+premissa, cobrir só quatro faixas do `unicode-full.yaml` parecia uma escolha
+segura: o resto "degradaria para o inglês", que é ruim mas inteligível.
+
+### 7.2 O que acontece de verdade
+
+**Sai o caractere cru.** Nem inglês, nem `'\xhhhh'`, nem silêncio: os bytes
+UTF-8 do próprio caractere, intactos. Verificado com `hexdump`:
+
+```
+U+1D504  𝔄
+    en | [fraktur  cap a]   66 72 61 6b 74 75 72 20 20 63 61 70 20 61
+    pt | [𝔄]                f0 9d 94 84
+
+U+00BD  ½
+    en | [one half]         6f 6e 65 20 68 61 6c 66
+    pt | [½]                c2 bd
+
+U+0410  А (cirílico)
+    en | [cap a]            63 61 70 20 61
+    pt | [А]                d0 90
+```
+
+O que o leitor de tela faz com isso depende do sintetizador: pode soletrar o
+nome Unicode em inglês, pode ler algo aleatório, pode não dizer nada. Não é
+uma degradação controlada — é entregar o problema para a camada de baixo.
+
+### 7.3 Onde isso é decidido
+
+`src/speech.rs`, função `replace_single_char`, depois de falhar a busca nas
+duas tabelas (curta e completa):
+
+```rust
+            if replacements.is_none() {
+                self.translate_count = 0;     // not in loop
+                if rules.translate_single_chars_only || ch.is_ascii() {
+                  return Ok(self.escape_string_for_safety(String::from(ch)));
+                } else {
+                  let ch_as_int = ch as u32;
+                  if ('\u{2800}'..='\u{28ff}').contains(&ch) {   // braille -- leave as braille
+                      return Ok(self.escape_string_for_safety(String::from(ch)));
+                  } else {   // Emulate what NVDA does: generate '\xhhhh' or '\yhhhhhh'
+                      let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
+                      return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                  }
+                }
+              }
+```
+
+`String::from(ch)` devolve o caractere inteiro. O ramo `'\xhhhh'`, que imita o
+NVDA, **nunca é alcançado na fala**: `translate_single_chars_only` é `true`
+para fala e `false` só para braille, como se vê na construção das regras no
+mesmo arquivo:
+
+```rust
+RefCell::new( SpeechRules::new(RulesFor::Speech, true) );
+RefCell::new( SpeechRules::new(RulesFor::Braille, false) );
+```
+
+Como a condição é `translate_single_chars_only || ch.is_ascii()`, na fala o
+primeiro ramo sempre vence.
+
+### 7.4 Por que não existe recuo para o inglês
+
+Dois motivos, os dois em `src/prefs.rs`:
+
+- `find_file` procura o arquivo **subindo** de `Rules/Languages/pt` em direção
+  a `Rules/`, e para ao chegar lá. Nunca olha de lado, para
+  `Rules/Languages/en`.
+- O `Some("en")` passado nas chamadas de `find_file` só entra em ação em
+  `get_language_dir`, quando o **diretório** do idioma não existe. O diretório
+  `pt` existe e tem o seu próprio `unicode-full.yaml`.
+
+Ou seja, o recuo para o inglês é de **diretório**, não de conteúdo. Um
+`unicode-full.yaml` presente e incompleto é pior do que um ausente: sua mera
+existência impede qualquer busca alternativa.
+
+### 7.5 Consequência para o escopo
+
+A decisão de traduzir só quatro faixas do `unicode-full.yaml` (acentos, setas,
+operadores e formas geométricas) foi tomada sob a premissa errada de 7.1. Com
+o comportamento real, cada caractere não coberto é uma falha muda, não uma
+degradação elegante. **Isso muda a prioridade da cobertura do
+`unicode-full.yaml`, que deixa de ser acabamento e passa a ser correção.**
+
+Nesta rodada foram acrescentadas as quatro faixas de maior peso pedagógico —
+frações vulgares, sobrescritos e subscritos, numerais romanos e os alfabetos
+fraktur, vazado e caligráfico. Ver 7.7.
+
+### 7.6 Os comentários errados que ainda precisam ser corrigidos
+
+A afirmação falsa aparece em três lugares. Um deles é esta própria seção, que
+a corrige. Os outros dois **continuam errados no código e precisam ser
+consertados**:
+
+1. `Rules/Languages/pt/unicode-full.yaml`, no cabeçalho:
+
+   > "Caracteres fora destas faixas caem no inglês, que é o comportamento de
+   > degradação seguro do MathCAT (melhor inglês do que soletrar o codepoint)."
+
+   As duas metades estão erradas: não caem no inglês, e não há degradação
+   segura. A menção a "soletrar o codepoint" também confunde: é o
+   comportamento do braille, não o da fala.
+
+2. `tests/Languages/pt/alphabets.rs`, nos comentários dos testes marcados
+   `#[ignore]`:
+
+   > "depende de unicode-full.yaml, removido de pt de propósito (cai no
+   > inglês)"
+
+   Além do mecanismo errado, isso torna esses testes inúteis: as strings que
+   eles esperam estão em inglês ("fraktur cap eigh comma fraktur cap y") e
+   nunca poderiam passar, porque o inglês nunca é consultado. Quando forem
+   reativados, precisam ser reescritos, não só destravados.
+
+### 7.7 O que entrou nesta rodada
+
+125 entradas YAML, cobrindo 651 codepoints, todas traduzidas a partir do
+inglês, linha a linha:
+
+| Faixa | Codepoints |
+|---|---|
+| Frações vulgares (0x00bc-0x00be, 0x2150-0x215f) | 19 |
+| Sobrescritos e subscritos (0x2070-0x209f) | 41 |
+| Numerais romanos (0x2160-0x217f) | 32 |
+| Alfabetos fraktur, vazado e caligráfico | 559 |
+
+A cobertura do português passou de 673 para 1324 codepoints (o inglês tem
+5075). Nenhuma colisão com o `unicode.yaml`, conferido antes de aplicar.
+
+Três decisões que valem registro:
+
+- **Ordem das palavras.** O inglês antepõe o estilo ("fraktur cap a"); o
+  português pospõe o adjetivo. Por isso o `spell:` vem antes da palavra de
+  estilo, e sai "maiúsculo a fraktur". Isso é divergência deliberada do en, e
+  segue o que o próprio `alphabets.rs` já registrava ("delta maiúsculo
+  vazado").
+- **"vazado" para *double-struck*** — não é escolha nova, é a que já estava
+  em `alphabets.rs`.
+- **Numerais romanos ficam como sequência de letras**, igual ao inglês: o
+  sintetizador português lê "I V" como "i vê", que é a leitura corrente.
+
+Onze entradas ficaram com `t:` minúsculo, de propósito, por dependerem de
+conferência de falante nativo: as nove ocorrências de "fraktur" (a alternativa
+é "gótico") e as duas de "elevado à potência zero" / "elevado à potência i"
+(a alternativa é a forma cardinal, "elevado a zero"). A auditoria conta essas
+onze em "Untranslated text"; as outras 25 que ela acusa são os `translate()`
+dos blocos alfabéticos, falso positivo da mesma natureza dos que já existiam.
+
+---
+
+<a name="8"></a>
+## 8. Três decisões de terminologia (consultoria de acessibilidade)
+
+Três escolhas de vocabulário que estavam em aberto foram validadas com um
+consultor de acessibilidade matemática e aplicadas nesta rodada. Cada uma foi
+aplicada isoladamente, com `cargo test Languages::pt` logo em seguida, para
+saber o que cada uma quebrava por si só. **Nenhuma quebrou nada: 92/92 antes,
+92/92 depois de cada uma.** A suíte completa também segue verde.
+
+### 8.1 "maiúsculo" passa a ser "maiúscula"
+
+**Decisão.** Anteposto à letra, o adjetivo concorda com o substantivo
+"letra", implícito — portanto feminino. É também a forma que o guia oficial
+do NVDA em pt-BR usa. Onde o português dizia "maiúsculo P", passa a dizer
+"maiúscula P".
+
+**Onde ficava, de verdade.** A palavra aparecia 142 vezes no repositório, mas
+como **string de fala** só existia em dois lugares, os dois em
+`Rules/Languages/pt/unicode.yaml`: a linha 23 (bloco `A-Z`) e a linha 214
+(bloco grego maiúsculo). Todo o resto eram expectativas de teste e
+comentários. Vale registrar porque a intuição inicial era o contrário — a
+impressão de "centenas de strings" vem dos testes, não das regras.
+
+**A sutileza da concordância.** A justificativa (feminino porque concorda com
+"letra") só vale para a posição **anteposta**. Posposto a um substantivo
+masculino, o correto continuaria sendo o masculino: "delta maiúsculo". Foi
+preciso conferir se a forma posposta existe na saída real. **Não existe:** o
+motor sempre antepõe a palavra de caixa e pospõe apenas a palavra de estilo.
+
+```
+𝔸  ->  "maiúscula a vazado"      (caixa anteposta, estilo posposto)
+𝔄  ->  "maiúscula a fraktur"
+Δ   ->  "maiúscula delta"
+```
+
+Logo a troca é segura em todas as ocorrências vivas.
+
+**Um teste obsoleto encontrado no caminho.** `alphabets.rs:36`
+(`greek_mathtype_private`, marcado `#[ignore]`) era a única ocorrência
+**posposta** do repositório: `"delta maiúsculo vazado"`. Um `sed` cego teria
+produzido "delta maiúscula vazado", que é agramatical. Conferido: essa
+expectativa já estava errada por dois motivos independentes — os caracteres
+de área privada do MathType não produzem nada em `pt` hoje (a saída é vazia),
+e a ordem posposta contradiz tanto o motor quanto o exemplo que o próprio
+comentário de `unicode-full.yaml` dá. A linha foi normalizada para a ordem
+anteposta. **Continua `#[ignore]` e continua não verificada** — não confie
+nela.
+
+Lição repetida de 6.1: substituição em massa de termo precisa de uma passada
+pelas posições sintáticas, não só pelo termo.
+
+### 8.2 Numerais romanos falam o valor, não a grafia
+
+**Decisão.** `Ⅳ` (U+2163) deve falar "quatro", não "i v". Soletrar descreve
+como o algarismo é **escrito**; quem ouve precisa do **número**. Aplicado a
+toda a faixa 0x2160–0x217F (32 entradas, maiúsculas e minúsculas), em
+`unicode-full.yaml`.
+
+```
+Ⅳ -> "quatro"      Ⅻ -> "doze"      ⅳ -> "quatro"      Ⅿ -> "mil"
+```
+
+Isto é uma **divergência deliberada do inglês**, que ainda soletra ("I V").
+A justificativa é que esses codepoints são numerais dedicados: a semântica de
+número está no próprio caractere, não depende de contexto nenhum.
+
+**O que NÃO foi feito, e por quê.** O "IV" escrito com letras ASCII é outra
+história. Ele não passa pelo `unicode-full.yaml`: é marcado por
+`src/canonicalize.rs:734` com `data-roman-numeral`, e quem decide a fala são
+as regras `default` de `mn` e de `mi` em `SharedRules/default.yaml`, que
+mandam `spell: "text()"`. Mudar isso é mexer em **regra de inferência de
+contexto**, e é o mesmo ramo de regra que trata `I` e `V` como identificador
+ou variável. Ficou pendente, por decisão explícita, aguardando aval.
+
+Nota útil para quem for retomar: o motor **já calcula o valor** e o guarda em
+`data-number` (`<mn data-roman-numeral='true' data-number='48'>XLVIII</mn>`).
+A mudança seria trocar `spell: "text()"` por algo que leia `@data-number` —
+tecnicamente pequena, mas com raio de alcance grande, porque atinge todo
+`mn`/`mi` marcado como romano em qualquer estilo de fala.
+
+### 8.3 Expoente zero e expoente i na forma cardinal
+
+**Decisão.** As duas entradas que usavam a forma "elevado à potência X"
+passam à forma cardinal, que é a que o resto do sistema já usa:
+
+```
+⁰  (0x2070)   "elevado à potência zero"  ->  "elevado a zero"
+ⁱ  (0x2071)   "elevado à potência i"     ->  "elevado a i"
+```
+
+Ambas foram promovidas de `t:` para `T:`: estavam marcadas como pendentes de
+falante nativo e agora estão decididas.
+
+Por que só essas duas: as vizinhas (⁴ a ⁹, ⁿ) usam a forma **ordinal**
+("elevado à quarta potência"), que é natural em português para 4ª, 5ª etc.
+Zero e `i` não têm ordinal, e por isso tinham caído na construção pesada
+"elevado à potência zero". A forma cardinal resolve sem tocar nas ordinais,
+que continuam como estavam.
+
+### 8.4 ⊂ ⊃ ⊆ ficaram de fora — e provavelmente deveriam virar preferência
+
+Não foram alterados nesta rodada, por decisão. Fica registrado **por que** a
+pendência é real e não apenas falta de tempo.
+
+A ambiguidade é da literatura, não da tradução. Em boa parte do material
+brasileiro `⊂` é lido como "está contido em" no sentido de subconjunto
+**qualquer** (permitindo a igualdade), e `⊆` aparece como reforço redundante.
+Em outra parte, `⊂` é subconjunto **próprio** (exclui a igualdade) e `⊆` é o
+que permite. As duas convenções convivem — a mesma instituição (UTFPR) usa
+uma em um material e a outra em outro. Não há uma leitura "correta" a ser
+descoberta: há duas, e qual delas vale depende do material que o aluno tem na
+frente.
+
+Isso muda a natureza do problema. Enquanto se acreditar que existe uma
+resposta certa, a tarefa é pesquisar mais. Reconhecida a ambiguidade, a
+tarefa passa a ser **não escolher**: uma escolha fixa no `unicode.yaml` vai
+estar errada para metade dos usuários, em silêncio e sem recurso.
+
+**Encaminhamento sugerido:** tratar como **preferência configurável**, na
+linha do que o MathCAT já faz com `ClearSpeak_Paren`, `ClearSpeak_Fractions`
+etc. — uma preferência de estilo com as duas convenções, e um padrão
+declarado. Hoje o comportamento é o da primeira convenção ("está contido
+em"), fixo, em `unicode.yaml:432` (`⊂`), `:437` (`⊃`) e `:452` (`⊆`).
+
+**Não altere esses três símbolos sem decidir antes a questão da preferência.**
+Trocar a convenção fixa só transfere o erro de um grupo de usuários para o
+outro.
+
+### 8.5 Cobertura de teste para 8.2 e 8.3
+
+Quando as três decisões foram aplicadas, os 92/92 verdes valeram como prova
+para a 8.1 (havia dezenas de casos de química, `intent` e `shared` exercitando
+a palavra de caixa) mas **não valiam nada para a 8.2 e a 8.3**: a suíte `pt`
+não tinha um único teste tocando a faixa 0x2160-0x217F nem os codepoints
+0x2070/0x2071. O verde só dizia "nada mais regrediu".
+
+Isso foi corrigido: `tests/Languages/pt/unicode_full.rs`, 10 testes. As
+expectativas foram capturadas da saída real do motor sob as preferências do
+próprio harness — não escritas a partir do que se supunha que sairia.
+
+Os testes foram verificados por mutação, isto é, revertendo a decisão e
+conferindo que o teste de fato falha:
+
+| mutação aplicada | o que falhou |
+|---|---|
+| `Ⅳ` de volta para `"I V"` | os 3 testes de romano Unicode que usam `Ⅳ` |
+| `⁰` de volta para `"elevado à potência zero"` | os 2 testes de expoente cardinal |
+| caminho ASCII lendo `@data-number` | os 2 guardas ASCII (`XIV` virou `"14"`) |
+
+A terceira linha é a que importa mais. Ela simula exatamente a mudança que
+ficou pendente em 8.2 — trocar `spell: "text()"` por `@data-number` nas regras
+`default` de `mn`/`mi` — e confirma que, se alguém fizer isso sem decidir,
+`romanos_ascii_continuam_soletrados_nao_viram_valor` quebra na hora, com
+`XIV -> "14"` na mensagem. Era o cenário de regressão que se queria travar.
+
+Note que `letras_ascii_isoladas_continuam_identificadores` **não** quebra nessa
+mutação, e está certo: `I` e `V` sozinhos passam pelo ramo
+`string-length(.) = 1`, que é outro caminho. O teste existe para documentar
+essa separação.
+
+### 8.6 Um efeito colateral encontrado ao escrever os testes
+
+`<msup><mi>x</mi><mi>⁰</mi></msup>` produz **"x elevado a elevado a zero"** —
+"elevado a" duplicado. A causa é que o `msup` já diz "elevado a" e o caractere
+⁰ carrega a locução inteira. É entrada malformada (o normal seria `<mn>0</mn>`
+no expoente, que dá "x elevado a 0"), e a duplicação **é anterior** à decisão
+8.3: antes dela a saída era "x elevado a elevado à potência zero". A decisão
+não criou o problema, mas deixou-o mais audível. Não foi fixado em teste, para
+não carimbar como correta uma saída que não é.
+
+---
+
 ## Pendências conhecidas
 
 - A tradução de `Log` ("log do valor principal") está marcada `t:` e precisa
   de conferência.
+- Os comentários errados sobre o recuo para o inglês, em
+  `unicode-full.yaml` e em `tests/Languages/pt/alphabets.rs`, ainda não
+  foram consertados (ver 7.6). O que a rodada 8 mexeu nesses dois arquivos
+  foi só a terminologia de caixa e a ordem das palavras em 8.1 — a afirmação
+  errada sobre o recuo continua lá.
+- "fraktur" contra "gótico": nove entradas ainda marcadas `t:` esperando
+  falante nativo. (A forma ordinal contra a cardinal nos sobrescritos saiu
+  desta lista — decidida em 8.3.)
+- ⊂ ⊃ ⊆ continuam com a convenção fixa "está contido em". A ambiguidade é
+  real na literatura brasileira e a sugestão é virar preferência
+  configurável, não escolha fixa — ver 8.4. **Não trocar a convenção sem
+  resolver isso antes.**
+- O "IV" em letras ASCII continua soletrado. Falar o valor exige mexer na
+  regra de inferência de contexto em `SharedRules/default.yaml`, o que ficou
+  pendente de aval — ver 8.2. Há guarda de teste travando o comportamento
+  atual (8.5): a mudança vai quebrar teste de propósito.
+- `<msup>` com o caractere ⁰ no expoente duplica o "elevado a" (ver 8.6).
+  Entrada malformada, problema anterior à rodada 8, sem teste fixando.
+- O `unicode-full.yaml` ainda cobre 1324 dos 5075 codepoints do inglês.
+  Depois de 7.5 isso é lacuna de correção, não de acabamento.
 - Continuam valendo as decisões que dependem de ouvir: se as pausas da química
   soam naturais ou picotadas, e se o artigo em "o log de x" ajuda ou atrapalha.
 - O issue da seção 3 (divisor 48 fixo no Rust) não foi aberto ainda.

@@ -23,7 +23,7 @@ fn greek() -> Result<()> {
     let expr = "<math> <mi>Α</mi><mo>,</mo><mi>Ω</mi></math>";
     // a segunda vírgula é a pausa automática do motor depois do operador;
     // o inglês tem a mesma ("cap alpha comma, cap omega").
-    test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula, maiúsculo ômega")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula alfa vírgula, maiúscula ômega")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
     test("pt", "SimpleSpeak", expr, "alfa vírgula, ômega")?;
     return Ok(());
@@ -33,7 +33,7 @@ fn greek() -> Result<()> {
 #[ignore] // caracteres de área privada do MathType: dependem do unicode-full.yaml, removido de pt de propósito
 fn greek_mathtype_private() -> Result<()> {
     let expr = "<math> <mi>\u{f8d3}</mi><mo>,</mo><mi>\u{f8e0}</mi></math>";
-    test("pt", "SimpleSpeak", expr, "delta maiúsculo vazado, vírgula úpsilon maiúsculo vazado")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula delta vazado, vírgula maiúscula úpsilon vazado")?;
     return Ok(());
 }
 
@@ -296,12 +296,12 @@ fn bold_greek_others() -> Result<()> {
 #[ignore] // depende de unicode-full.yaml, removido de pt de propósito (cai no inglês)
 fn italic_greek() -> Result<()> {
     let expr = "<math> <mi>𝛢</mi><mo>,</mo><mi>𝛺</mi></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula maiúsculo ômega")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula alfa vírgula maiúscula ômega")?;
     let expr = "<math> <mi>𝛼</mi><mo>,</mo><mi>𝜔</mi></math>";
     test("pt", "SimpleSpeak", expr, "alfa vírgula ômega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula maiúsculo ômega")?;
+    test("pt", "SimpleSpeak", expr, "maiúscula alfa vírgula maiúscula ômega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
     test("pt", "SimpleSpeak", expr, "alfa vírgula ômega")?;
     return Ok(());
