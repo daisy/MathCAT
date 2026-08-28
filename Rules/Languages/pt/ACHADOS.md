@@ -907,10 +907,31 @@ regra — o que está lá tem de ser a fala real. O gerador é o teste `#[ignore
 
 O que o pacote já mostra e **não** foi corrigido, por ser decisão e não
 consistência: "varia com" para ∼ em estatística (é distribuição, não
-proporcionalidade); "A divide B" para P(A|B) (o latex2mathml emite U+2223 e o
-motor lê divisibilidade); `\mathrm{NaCl}` e `mol/L` não reconhecidos como
+proporcionalidade); `\mathrm{NaCl}` e `mol/L` não reconhecidos como
 química/unidade pela forma do MathML; "sobrescrito 14, subscrito 6" no
 isótopo. Todos na tabela de decisões do pacote.
+
+### 9.6 Varredura de vazamento e o ∣ do latex2mathml
+
+Falamos em português as 593 expressões dos testes do inglês (sem `intent=`,
+como o ACESSÍLIA) e procuramos palavras inglesas na saída. Fora dos `<mtext>`
+em inglês dos próprios testes e das letras decoradas (circulado, entre
+parênteses — que agora vêm do recuo, traduzidas no mapa de estilo), **não há
+vazamento** em material real. "log", "integral", "vertical", "bar" são falsos
+positivos: a palavra é a mesma em português.
+
+O que a varredura reforçou foi o `\mid`: o latex2mathml emite U+2223, não
+"|", e "P(A ∣ B)" saía "A divide B" — errado sem leitura possível. A entrada
+"∣" ganhou a mesma condição de contexto da regra do "|" (P( · ∣ · ) → "dado";
+fora disso continua "divide").
+
+O mesmo ∣ em conjunto por compreensão — `\{ x \mid x > 2 \}` — **continua
+saindo "x divide x é maior que 2"**, e aí não há regra que resolva: a regra de
+conjuntos do pt já aceita "∣" (`ClearSpeak_Rules.yaml:522`), mas exige a
+condição agrupada em três filhos, e o canonicalizador (`src/canonicalize.rs:58`)
+só trata "|" como cerca, não "∣". Com ":" funciona. Fica como item de `src/`
+a pedir ao upstream (ou orientar o ACESSÍLIA a normalizar `\mid` → `|` antes
+do MathML, que é a saída mais barata).
 
 ---
 
@@ -968,6 +989,9 @@ isótopo. Todos na tabela de decisões do pacote.
   preferências de ClearSpeak não são reinicializadas entre testes na mesma
   thread, e um teste que dependesse do padrão implícito passaria ou falharia
   conforme a ordem de execução.
+- **`\{x \mid …\}` do latex2mathml fala "divide"** (9.6). Precisa de
+  `src/canonicalize.rs` tratar U+2223 como cerca, ou o ACESSÍLIA normalizar
+  `\mid` para `|` antes de gerar o MathML. Não é regra.
 - **IntentMappings: prioridade baixa, medida.** Ver 9.1 — o input do
   ACESSÍLIA nunca traz `intent=`; só os intents que o motor infere importam, e
   os que apareceram no corpus (`magnitude`, `cross-product`, `dot-product`)

@@ -528,7 +528,14 @@
  - "↓": [T: "seta para baixo"]                      #  0x2193 (en: 'downwards arrow')
  - "⇒": [T: "implica que"]                      #  0x21d2 (en: 'rightwards double arrow')
  - "∘": [T: "composto com"]                       #  0x2218 (en: 'composed with')
- - "∣": [T: "divide"]                          #  0x2223 (en: 'divides')
+ - "∣":                                          #  0x2223 (en: 'divides')
+    # O latex2mathml emite \mid como U+2223, não como "|". Em P(A ∣ B) é
+    # "dado" — mesma condição de contexto da regra do "|" (0x7c). Fora disso,
+    # continua "divide" (a ∣ b entre inteiros). Ver ACHADOS 9.6.
+    - test:
+        if: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"
+        then: [T: "dado"]                       #  (en: 'given')
+        else: [T: "divide"]
  - "∤": [T: "não divide"]                       #  0x2224 (en: 'does not divide')
  - "∷": [T: "como"]                        #  0x2237 (en: 'as')
  - "∼": [T: "varia com"]                             #  0x223c (en: 'varies with')

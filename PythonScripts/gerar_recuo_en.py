@@ -50,6 +50,14 @@ ESTILO = {
     "sans serif": "sem serifa",
     "monospace": "monoespaçado",
     "cap": "maiúscula",
+    # decorações de letra/dígito que a varredura dos testes mostrou vazando
+    "circled": "circulado",
+    "black circled": "circulado preto",
+    "double circled": "duplo circulado",
+    "parenthesized": "entre parênteses",
+    "with period": "com ponto",
+    "turned": "invertido",
+    "turned sans-serif": "invertido sem serifa",
 }
 
 T_RE = re.compile(r'(?<![A-Za-z_])([Tt]|OT|ot):\s*"([^"]*)"')

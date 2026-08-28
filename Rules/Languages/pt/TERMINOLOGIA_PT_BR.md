@@ -123,7 +123,7 @@ Princípio: termo matemático, não tradução do nome Unicode.
 | ‖x‖ (intent `magnitude`) | "a norma de x" | "magnitude" (vazava en) | DEFINIDA | `definitions.yaml` IntentMappings |
 | ⃗a × ⃗b, ⃗a ⋅ ⃗b | "produto vetorial", "produto escalar" | "cross product" (vazava o nome literal) | DEFINIDA | `definitions.yaml` (nofix) + `SharedRules/default.yaml` |
 | ∼ em estatística | "varia com" | "tem distribuição", "segue" | PENDENTE DE DECISÃO | `unicode.yaml` ∼ |
-| \mid em P(A\|B) | "divide" (U+2223) | "dado" — exige tratar U+2223 como condicional em contexto de P( ) | PENDENTE DE DECISÃO | — |
+| \mid em P(A\|B) (U+2223) | "dado" em P( · ∣ · ); "divide" fora | "divide" em todo lugar (era) | DEFINIDA | `unicode.yaml` 0x2223, mesma condição de contexto do "\|" |
 
 ## Recuo controlado
 

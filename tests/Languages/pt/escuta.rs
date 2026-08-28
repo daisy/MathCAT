@@ -13,7 +13,6 @@
 ///     cargo test Languages::pt::escuta -- --ignored --nocapture
 
 use crate::common::*;
-use libmathcat::interface::*;
 
 fn falar(estilo: &str, verbosidade: &str, mathml: &str) -> String {
     set_rules_dir(abs_rules_dir_path()).unwrap();

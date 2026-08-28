@@ -1392,10 +1392,10 @@
       - if: "'.' = '℺'"
         then: [t: "rotated"]
       - else_if: "'.' = 'Ⅎ'"
-        then: [t: "turned"]
+        then: [T: "invertido"]
       - else_if: "'.' = '⅃'"
         then: [t: "reversed sans-serif"]
-        else: [t: "turned sans-serif"]
+        else: [T: "invertido sem serifa"]
     - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
  - "ℵ": [t: "first transfinite cardinal"]           # 0x2135
  - "ℶ": [t: "second transfinite cardinal"]          # 0x2136
@@ -1483,7 +1483,7 @@
  - "⏧": [t: "electrical intersection"]            # 0x23e7
  - "①-⑨":    # 0x2460 - 0x2469
     - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
-    - t: "circled"
+    - T: "circulado"
  - "⑩": [t: "circled ten"]                         # 0x2469
  - "⑪": [t: "circled eleven"]                      # 0x246a
  - "⑫": [t: "circled twelve"]                      # 0x246b
@@ -1496,7 +1496,7 @@
  - "⑳": [t: "circled twenty"]                      # 0x2473
  - "⑴-⑼":    # 0x2474 - 0x247d
     - spell: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
-    - t: "parenthesized"
+    - T: "entre parênteses"
  - "⑽": [t: "parenthesized ten"]                   # 0x247d
  - "⑾": [t: "parenthesized eleven"]                # 0x247e
  - "⑿": [t: "parenthesized twelve"]                # 0x247f
@@ -1510,7 +1510,7 @@
  - "⒇": [t: "parenthesized twenty"]                # 0x2487
  - "⒈-⒐":    # 0x2488 - 0x2491
     - spell: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
-    - t: "with period"
+    - T: "com ponto"
  - "⒑": [t: "ten with period"]                     # 0x2491
  - "⒒": [t: "eleven with period"]                  # 0x2492
  - "⒓": [t: "twelve with period"]                  # 0x2493
@@ -1524,16 +1524,16 @@
  - "⒛": [t: "twenty with period"]                  # 0x249b
  - "⒜-⒵":                                         # 0x249c - 0x24b5
     - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "parenthesized"
+    - T: "entre parênteses"
  - "Ⓐ-ⓩ":                                         # 0x24b6 - 0x24cf
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "circled"
+    - T: "circulado"
  - "🅐-🅩":                                         # 0x1f150 - 0x1f169
     - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - t: "black circled"
+    - T: "circulado preto"
  - "ⓐ-ⓩ":                                         # 0x24d0 - 0x24e9
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
-    - t: "circled"
+    - T: "circulado"
  - "⓪": [t: "circled zero"]                        # 0x24ea
  - "⓫": [t: "black circled eleven"]                # 0x24eb
  - "⓬": [t: "black circled twelve"]                # 0x24ec
@@ -1547,7 +1547,7 @@
  - "⓴": [t: "black circled twenty"]                # 0x24f4
  - "⓵-⓽":    # 0x24f5 - 0x24fe
     - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
-    - t: "double circled"
+    - T: "duplo circulado"
  - "⓾": [t: "double circled ten"]                  # 0x24fe
  - "⓿": [t: "black circled zero"]                  # 0x24ff
  - "★": [t: "black star"]                          # 0x2605
@@ -3457,7 +3457,7 @@
               then: [t: "such that"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [t: "given"] 
-            - else: [T: "divide"]                   
+            - else: [t: "divides"]                   
  - "～": [T: "til"]                               # 0xff5e
  - "￢": [T: "não"]                                 # 0xffe2
  - "￩": [T: "seta para a esquerda"]                           # 0xffe9

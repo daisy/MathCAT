@@ -78,7 +78,6 @@ sessão é o que as fecha.
 | **"x barra"** para x̄ | "x barra" | "x com barra", "média de x" | Média amostral, Normal |
 | **"colchete angular"** para ⟨u, v⟩ | "abre colchete angular, u vírgula, v, fecha colchete angular" | "produto interno de u e v" (exige inferência de intent, não só palavra) | Produto interno e norma |
 | **"varia com"** para ∼ | "varia com" | "tem distribuição", "segue" (em estatística ∼ é distribuição, não proporcionalidade) | Normal |
-| **"divide"** para o \\mid de P(A\\|B) | "A divide B" | "A dado B" (o latex2mathml emite U+2223, que o motor lê como divisibilidade) | Probabilidade condicional |
 | **"seta para a direita"** em f: ℝ → ℝ | "números reais seta para a direita números reais" | "em", "para" | não está nas 30; pergunte se surgir |
 | **∼ / ≃ / ≈** | "varia com" / "é assintoticamente igual a" / "é aproximadamente igual a" | — | Normal |
 
