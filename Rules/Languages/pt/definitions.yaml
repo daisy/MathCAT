@@ -210,6 +210,31 @@
     "µs": "microssegundo", "ns": "nanossegundo", "ps": "picossegundo", "fs": "femtossegundo", "zs": "zeptossegundo",
     "ys": "yoctossegundo", "rs": "rontossegundo", "qs": "quectossegundo",
 
+    # O MathML pode escrever o segundo como "s" OU como "sec" (ambos estão em
+    # SIUnits). Sem estas entradas, "nsec" cai no caminho de prefixo e sai
+    # "nanosegundo" com s simples. Mesma lista, grafia alternativa.
+    # "asec" fica de fora: já significa segundo de arco.
+    "Qsec": "quettassegundo", "Rsec": "ronnassegundo", "Ysec": "yottassegundo", "Zsec": "zettassegundo",
+    "Esec": "exassegundo", "Psec": "petassegundo", "Tsec": "terassegundo", "Gsec": "gigassegundo",
+    "Msec": "megassegundo", "ksec": "quilossegundo", "hsec": "hectossegundo", "dasec": "decassegundo",
+    "dsec": "decissegundo", "csec": "centissegundo", "msec": "milissegundo", "µsec": "microssegundo",
+    "μsec": "microssegundo", "nsec": "nanossegundo", "psec": "picossegundo", "fsec": "femtossegundo",
+    "zsec": "zeptossegundo", "ysec": "yoctossegundo", "rsec": "rontossegundo", "qsec": "quectossegundo",
+
+    # µ tem duas codificações Unicode (U+00B5 micro sign e U+03BC mu grego).
+    # A lista original só tinha a primeira.
+    "μs": "microssegundo",
+
+    # "as" (segundo de arco) também aceita prefixo: "zas" = zeptossegundo de
+    # arco. Sem estas entradas sai "zeptosegundo de arco", com s simples.
+    # Só os prefixos pequenos, que são os usados de fato em astronomia. Os
+    # maiúsculos ficam de fora de propósito: "Pas" é pascal-segundo e "Gas"
+    # seria lido errado. "das" já significa decassegundo na lista acima.
+    "cas": "centissegundo de arco", "mas": "milissegundo de arco",
+    "µas": "microssegundo de arco", "μas": "microssegundo de arco", "nas": "nanossegundo de arco",
+    "pas": "picossegundo de arco", "fas": "femtossegundo de arco", "zas": "zeptossegundo de arco",
+    "yas": "yoctossegundo de arco", "ras": "rontossegundo de arco", "qas": "quectossegundo de arco",
+
     "QS": "quettassiemens", "RS": "ronnassiemens", "YS": "yottassiemens", "ZS": "zettassiemens", "ES": "exassiemens",
     "PS": "petassiemens", "TS": "terassiemens", "GS": "gigassiemens", "MS": "megassiemens", "kS": "quilossiemens",
     "hS": "hectossiemens", "daS": "decassiemens", "dS": "decissiemens", "cS": "centissiemens", "mS": "milissiemens",

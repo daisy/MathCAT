@@ -219,18 +219,11 @@
   - T: "com"
   - x: "*[2]"
   - T: abaixo
-# CORREÇÃO: regra ausente em es/ (e portanto em pt). O inglês trata
-# variáveis com pontos acima — notação de Newton para derivada temporal.
-- name: dot-over
-  tag: modified-variable
-  match: "*[1][self::m:mi] and (*[2][translate(., '.', '')=''])"
-  replace:
-  - x: "*[1]"
-  - x: "IfThenElse(string-length(*[2])=1, 'com ponto acima',
-        IfThenElse(string-length(*[2])=2, 'com dois pontos acima',
-        IfThenElse(string-length(*[2])=3, 'com três pontos acima', 'com quatro pontos acima')
-        ))"
-  - pause: short
+# NOTA: aqui existia uma regra "dot-over" que eu havia acrescentado supondo
+# ser uma porta do inglês. Ela NÃO existe em en/ — o inglês trata a notação
+# de Newton pela regra "diacriticals" abaixo, que apenas fala o caractere.
+# A regra inventada encobria a diacriticals e produzia "x com ponto acima"
+# no lugar de "x ponto". Removida.
 
 - name: diacriticals
   tag: [mover, modified-variable]
