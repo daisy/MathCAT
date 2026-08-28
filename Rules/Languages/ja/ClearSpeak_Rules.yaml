@@ -174,7 +174,7 @@
   - x: "*[2]"
   - test:
       # very ugly!!! -- replicate nested ordinal fraction as they are an exception
-      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
+      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] and *[2][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] ) )"
       then:
       - pause: short
       - t: "分数終了"      # phrase(7 over 8 'end fraction')
@@ -369,8 +369,8 @@
   - "     *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   # base is mn, mi, common fraction ([xxx] case)
   - "     *[1][self::m:mn or self::m:mi or "
-  - "          self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                        *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "          self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                        *[2][self::m:mn][not(contains(., '.'))]]"
   - "         ]"
   - "    ]"
   replace:
@@ -389,8 +389,8 @@
   - "                *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3"
   # base is mn, mi, common fraction ([xxx] case)
   - "                *[1][self::m:mn or self::m:mi or "
-  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                                   *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                                   *[2][self::m:mn][not(contains(., '.'))]]"
   - "               ]"
   - "          ]"
   - "     ]"
@@ -413,8 +413,8 @@
   - "       *[2][self::m:mo][.='⁢'] and " # invisible times
   # base is mn, or common fraction ([xxx] case)
   - "       *[1][self::m:mn or "
-  - "            self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                          *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "            self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                          *[2][self::m:mn][not(contains(., '.'))]]"
   - "           ]"
   - "      ]"
   replace:
@@ -437,8 +437,8 @@
   - "       *[1][self::m:minus and count(*)=1 and "
   # base is mn, or common fraction ([xxx] case)
   - "            *[1][self::m:mn or "
-  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                                  *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                                  *[2][self::m:mn][not(contains(., '.'))]]"
   - "                ]"
   - "           ]"
   - "      ]"
