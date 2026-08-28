@@ -348,6 +348,19 @@
     "lúmen": "lúmens",
     "kelvin": "kelvins",
     "grau Celsius": "graus Celsius",
+    # O plural genérico acrescenta "s" no FIM da string, o que produziria
+    # "yoctossegundo de arcos". O "s" tem de ir no substantivo, não na frase.
+    # (a forma sem prefixo já está mais abaixo, junto de "minuto de arco".)
+    "centissegundo de arco": "centissegundos de arco",
+    "milissegundo de arco": "milissegundos de arco",
+    "microssegundo de arco": "microssegundos de arco",
+    "nanossegundo de arco": "nanossegundos de arco",
+    "picossegundo de arco": "picossegundos de arco",
+    "femtossegundo de arco": "femtossegundos de arco",
+    "zeptossegundo de arco": "zeptossegundos de arco",
+    "yoctossegundo de arco": "yoctossegundos de arco",
+    "rontossegundo de arco": "rontossegundos de arco",
+    "quectossegundo de arco": "quectossegundos de arco",
     "grau Fahrenheit": "graus Fahrenheit",
     "hertz": "hertz",
     "siemens": "siemens",

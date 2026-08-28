@@ -117,8 +117,10 @@ fn tensor_mmultiscripts() -> Result<()> {
         </mmultiscripts></math>";
     test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
             "maiúsculo r com 4 pós-escritos, subscrito i sobrescrito j subscrito k subscrito l")?;
+    // em Medium as regras usam a forma abreviada ('sub'/'super'), como no inglês;
+    // a forma longa fica reservada ao Verbose (SharedRules/default.yaml).
     test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "maiúsculo r com 4 pós-escritos, subscrito i sobrescrito j subscrito k subscrito l")?;
+            "maiúsculo r com 4 pós-escritos, sub i super j sub k sub l")?;
             return Ok(());
 
 }
@@ -146,10 +148,10 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo p, abre parênteses, maiúsculo a barra vertical maiúsculo b; fecha parênteses")?;
-    // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
-    // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-    test("pt", "ClearSpeak", expr,  "maiúsculo p, abre parênteses, maiúsculo a divide maiúsculo b, fecha parênteses")?; // not good, but follows the spec
+    // "dado": em P(A|B) a barra é probabilidade condicional nos dois estilos,
+    // como no inglês ("cap eigh given cap b").
+    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a dado maiúsculo b; fecha parênteses")?;
+    test("pt", "ClearSpeak", expr,  "maiúsculo p; abre parênteses, maiúsculo a dado maiúsculo b; fecha parênteses")?; // not good, but follows the spec
     return Ok(());
 
 }
@@ -238,7 +240,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a e maiúsculo b; fecha parênteses; é igual a; maiúsculo p, abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a, maiúsculo p de maiúsculo a, maiúsculo p de maiúsculo b")?;
+    test("pt", "SimpleSpeak", expr, "maiúsculo p; abre parênteses, maiúsculo a e maiúsculo b; fecha parênteses; é igual a; maiúsculo p; abre parênteses, maiúsculo a interseção maiúsculo b; fecha parênteses; é igual a; maiúsculo p de maiúsculo a; maiúsculo p de maiúsculo b")?;
     return Ok(());
 
 }
@@ -285,7 +287,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("pt", "SimpleSpeak", expr, "fi reto de x, é igual a; c vezes, e elevado à potência negativo h ao quadrado, x ao quadrado")?;
+    test("pt", "SimpleSpeak", expr, "fi reto de x, é igual a; c vezes, e elevado à potência menos h ao quadrado, x ao quadrado")?;
     return Ok(());
 
 }

@@ -11,6 +11,7 @@ consulta daqui a meses — inclusive para quem nunca mexeu no MathCAT.
 3. [Como abrir o issue no daisy/MathCAT](#3)
 4. [Outros achados desta rodada](#4)
 5. [Erros que eu mesmo introduzi e depois corrigi](#5)
+6. [Rodada de reconciliação dos testes (todos passando)](#6)
 
 ---
 
@@ -45,9 +46,11 @@ Está no arquivo `src/tts.rs`, na função `compute_auto_pause`:
 let pause = std::cmp::min(3000, ((2 * before_len + after_len)/48) * 128);
 ```
 
-Traduzindo: o MathCAT decide o tamanho da pausa **contando os caracteres**
-do texto que vem antes e do que vem depois. Não conta palavras, nem sílabas,
-nem estruturas matemáticas. Conta letras.
+Traduzindo: o MathCAT decide o tamanho da pausa **contando os bytes** do texto
+que vem antes e do que vem depois. Não conta palavras, nem sílabas, nem
+estruturas matemáticas. (`str::len()` em Rust conta bytes, não caracteres —
+em UTF-8 cada vogal acentuada custa 2. Ver 6.3: trocar por caracteres não
+resolve.)
 
 Depois, esse número de milissegundos vira pontuação no texto do teste:
 
@@ -90,9 +93,15 @@ programa é que foi calibrada para o comprimento do inglês.**
 ### Como verificamos
 
 Comparamos as regras de química do português com as do inglês, linha por
-linha. São **idênticas** — só as palavras mudam. Nenhuma diferença de pausa,
+linha. As diretivas de pausa são **idênticas** — nenhuma diferença de `pause:`,
 de estrutura ou de condição. Logo, a diferença de pontuação não podia vir
 delas, e só podia vir do motor.
+
+> **Ressalva acrescentada depois.** Essa comparação foi feita olhando só as
+> pausas, e a conclusão sobre elas continua valendo. Mas as regras de química
+> **não eram** idênticas em tudo: a distinção Verbose/Medium estava desabada em
+> 14 lugares. Ver 6.1. Lição: "comparei com o inglês" só vale para o que foi
+> efetivamente comparado.
 
 ---
 
@@ -231,8 +240,13 @@ era inconsistência. Era distinção deliberada, e precisei reverter.
 
 Ao ajustar a função trigonométrica inversa no ClearSpeak para "inversa de",
 não olhei o SimpleSpeak, que continuou "seno inverso". Os dois estilos
-passaram a divergir sem motivo. **Ainda não corrigido** — está na lista de
-pendências.
+passaram a divergir sem motivo.
+
+**Corrigido.** As duas regras já diziam "inversa de"; o que tinha ficado para
+trás era o *teste*, que ainda esperava "seno inverso". A forma preposta é a
+que resolve o gênero: "inversa de seno", "inversa de tangente" e "inversa de
+cossecante" funcionam com a mesma palavra, enquanto a posposta exigiria
+concordar ("seno inverso", mas "tangente inversa").
 
 ### 5.4 Deixei lixo de compilação num commit
 
@@ -245,15 +259,119 @@ não tem nada a ver com o que você estava fazendo.
 
 ---
 
+<a name="6"></a>
+## 6. Rodada de reconciliação dos testes
+
+Ponto de partida: 33 dos 91 testes de `cargo test Languages::pt` falhavam.
+Fim: **92 de 92 passando** (e a suíte inteira do repositório, 7256 testes,
+continua verde). O método foi o do cabeçalho dos arquivos de teste: para cada
+falha, comparar a regra portuguesa com a inglesa. Se as duas são iguais e só o
+resultado difere, o teste é que estava desatualizado; se as regras diferem, a
+regra é que estava errada.
+
+### 6.1 Bugs de regra encontrados (7 deles)
+
+**A distinção Verbose/Medium tinha desabado na química.** Em inglês, `H₂` é
+"cap h sub 2" em Medium e "cap h subscript 2" em Verbose. A tradução dizia
+"subscrito" nos dois. Eram 14 pares de ramos `Verbose`/`Medium` em
+`SharedRules/general.yaml` (regras `chemistry-msub`, `chemistry-msup` e
+`chemistry-scripts`), todos colapsados. Um deles estava ainda mais trocado:
+no ramo `$Prescripts[4]` o Verbose dizia "subscrito" onde o inglês diz
+*superscript*.
+
+Isso explicava a contradição registrada nas pendências antigas, em que
+`tensor_mmultiscripts` e `mhchem_so4_2mais` pareciam se contradizer no mesmo
+nível de verbosidade: são caminhos de código diferentes. O de
+`tensor_mmultiscripts` (`SharedRules/default.yaml`) estava correto o tempo
+todo; o da química é que estava quebrado.
+
+**A ligação dupla escrita com `::` não era reconhecida.** A regra portuguesa
+testava `.='::'`, mas o canonicalizador converte `::` no caractere U+2237
+(`∷`) antes de as regras rodarem. O inglês testa `.='∷'`. Resultado: `H₂C::CH₂`
+saía "maiúsculo c, **como** maiúsculo c" — o caractere sendo lido pela regra
+genérica do unicode — em vez de "ligação dupla".
+
+**A barra vertical perdia três casos.** A regra de `|` em `unicode.yaml` era
+uma simplificação da inglesa e só sabia produzir "barra vertical" fora do
+ClearSpeak. Faltavam:
+
+- `P(A|B)`, probabilidade condicional, que deve dizer "dado" nos dois estilos;
+- `a|b` entre dois números, que deve dizer "divide";
+- o caso do intent literal, que deve dizer "barra vertical" sempre.
+
+Portada a estrutura inglesa inteira, com as quatro palavras traduzidas.
+
+**`<none/>` falava em inglês.** Fora da química, o elemento `<none/>` de
+`mmultiscripts` não tem regra e cai no `default-text`, que fala o *nome da
+tag*. Em inglês isso dá "none", que passa despercebido; em português saía a
+palavra inglesa no meio da fala. Acrescentada a regra `none-default`, que diz
+"nenhum".
+
+**Faltava o `Log` maiúsculo.** O inglês distingue `log` de `Log` (valor
+principal, de variável complexa). A regra portuguesa só casava `log` e `ln`,
+então `Log x` caía na regra genérica de `mi` e saía "Log de x". Acrescentado
+o ramo, com `t:` minúsculo porque a tradução ("log do valor principal") ainda
+não foi verificada por falante nativo.
+
+**Chave duplicada no YAML.** `PluralForms` tinha `"segundo de arco"` duas
+vezes. O leitor de YAML do Rust aceita e fica com a última, mas a ferramenta
+de auditoria (`uv run --project PythonScripts audit-translations pt`)
+recusava o arquivo inteiro por causa disso — ou seja, a auditoria de
+`definitions.yaml` não estava rodando de verdade.
+
+### 6.2 Testes que estavam desatualizados
+
+O resto das falhas eram testes que não refletiam as regras. Três grupos:
+
+1. **Pausas.** O grosso. É o problema da seção 1 deste arquivo: as palavras
+   portuguesas são mais longas e atravessam o limiar de 96 do
+   `compute_auto_pause`. Testes ajustados ao que o motor gera, como decidido
+   na seção 2. Casos: toda a química de pausa, `hyperbolic_trig_names`,
+   `no_times_sqrt`, `normal_log`, `normal_ln`, `ignore_period`.
+
+2. **Estrutura herdada do inglês que o teste não tinha copiado.** O artigo em
+   "o log de x" (o inglês tem "the log of x" e a regra portuguesa tem o mesmo
+   `if $Verbosity!='Terse'`); o "1 meio" em vez de "um meio" (o inglês fala
+   "1 half" — o numerador vai como dígito, e o sintetizador lê "um"); o modo
+   conciso do `ln` sem "de" ("l n x", como "l n x"); e a vírgula do grego
+   (`alfa vírgula, ômega`), que o inglês também tem.
+
+3. **Uma pausa que eu tinha tratado como problema de comprimento e não era.**
+   Em `alphabets::greek`, a segunda vírgula existe igualmente no teste
+   inglês. Não era efeito do português.
+
+### 6.3 Sobre a hipótese de contar caracteres em vez de bytes
+
+`compute_auto_pause` usa `str::len()`, que em Rust conta **bytes**. Como as
+vogais acentuadas do português ocupam 2 bytes em UTF-8, "maiúsculo" custa 10 e
+não 9. Parecia que trocar por `chars().count()` corrigiria as pausas de graça,
+sem mexer em nada específico do português (o inglês é ASCII puro e não mudaria
+em nada).
+
+**Testado, e não resolve.** Com a troca, as falhas em `pt` sobem de 15 para
+36: quebra as unidades inteiras, `modified_vars`, `trig_names`. O limiar não
+está calibrado nem para bytes nem para caracteres — está calibrado para o
+comprimento das palavras inglesas, e mudar a unidade só desloca o problema.
+Fica registrado como argumento a mais para o issue da seção 3: a métrica certa
+não é nenhuma das duas, é tempo de fala.
+
+### 6.4 Decisão tomada nesta rodada
+
+**Menos unário: "menos", não "negativo".** O inglês distingue `infix=minus` de
+`prefix=negative`; o espanhol e o alemão seguem essa distinção, o francês, o
+norueguês, o sueco e o polonês não. Os testes portugueses estavam divididos:
+`no_parens_negative_number` esperava "menos", `ignore_comma` e os dois
+`beta_decay` esperavam "negativo". Decidido manter "menos" para os dois usos,
+que é o que a regra já fazia, e alinhar os três testes discordantes.
+
+---
+
 ## Pendências conhecidas
 
-- As regras de `log` e `ln` divergem estruturalmente do inglês (a auditoria
-  aponta diferenças de condição e de estrutura). Oito testes dependem disso.
-- `inverse_trig`: SimpleSpeak e ClearSpeak divergem entre si (ver 5.3).
-- `tensor_mmultiscripts` e `mhchem_so4_2mais` se contradizem: no mesmo modo
-  de verbosidade, um gera a forma longa ("subscrito") e o outro a curta
-  ("sub").
-- `normal_ln_terse`: a palavra "parênteses" some no modo conciso.
-- Decisões que dependem de ouvir: o artigo em "o log de x", o "de" no modo
-  conciso, e "negativo" contra "menos".
-- Nada foi ouvido em leitor de tela até agora. Continua sendo o maior risco.
+- A tradução de `Log` ("log do valor principal") está marcada `t:` e precisa
+  de conferência.
+- Continuam valendo as decisões que dependem de ouvir: se as pausas da química
+  soam naturais ou picotadas, e se o artigo em "o log de x" ajuda ou atrapalha.
+- O issue da seção 3 (divisor 48 fixo no Rust) não foi aberto ainda.
+- **Nada foi ouvido em leitor de tela até agora. Continua sendo o maior
+  risco** — todos os testes passarem não diz nada sobre a fala soar bem.

@@ -130,14 +130,30 @@
         else: [T: "abre chaves"]             #  (en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
  - "|":                                          #  0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
-     - test:
-        - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [T: "barra vertical"]            #  (en: 'vertical line', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [T: "tal que"]                   #  (en: 'such that', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
-          then: [T: "dado"]                      #  (en: 'given', google translation)
-        - else: [T: "barra vertical"]            #  (en: 'divides')
+    # CORREÇÃO: a versão anterior era uma simplificação da regra inglesa e perdia
+    # três casos: P(A|B) ("dado"), a|b entre números ("divide") e o intent literal.
+    # Fora do ClearSpeak tudo caía em "barra vertical".
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [T: "barra vertical"]        #  (en: 'vertical line')
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [T: "dado"]              #  (en: 'given')
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [T: "divide"]            #  (en: 'divides')
+                  else: [T: "barra vertical"]    #  (en: 'vertical line')
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [T: "barra vertical"]        #  (en: 'vertical line')
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [T: "tal que"]               #  (en: 'such that')
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [T: "dado"]                  #  (en: 'given')
+            - else: [T: "divide"]                #  (en: 'divides')
 
  - "}":                                          #  0x7d
     - test:

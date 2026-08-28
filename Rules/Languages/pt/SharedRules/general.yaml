@@ -478,9 +478,13 @@
       else: [T: "covariância"]
 
 -
-  name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  # CORREÇÃO: faltava o 'Log' maiúsculo (valor principal), presente no inglês.
+  # Sem ele, "Log x" caía na regra genérica de mi e saía "Log de x", perdendo a
+  # distinção. A tradução de "principal value log" ainda não foi verificada por
+  # falante nativo -- daí o 't:' minúsculo.
+  name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
   tag: mi
-  match: ".='log' or .='ln'"
+  match: ".='log' or .='Log' or .='ln'"
   replace:
   - bookmark: "@id"
   - test:
@@ -489,6 +493,8 @@
   - test:
     - if: ".= 'log'"
       then: [T: "log"]      # phrase(the 'log' function is used in mathematics)
+    - else_if: ".= 'Log'"
+      then: [t: "log do valor principal"]      # (en: 'principal value log')
     - else_if: "$Verbosity='Terse'"
       then: [SPELL: "'ln'"]
       else: [T: "logaritmo natural"]      # phrase(the 'natural log' function is used in mathematics)
@@ -802,7 +808,7 @@
       then: [T: "subscrito"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "subscrito"]
+        then: [T: "sub"]
   - x: "*[3]"
 
 # ACRESCENTADO: dimensões de matriz anotadas como dimension-product
@@ -825,7 +831,7 @@
       then: [T: "sobrescrito"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "sobrescrito"]
+        then: [T: "super"]
   - x: "*[3]"
   - test:
       if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
@@ -856,7 +862,7 @@
               then: [T: "sobrescrito"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "sobrescrito"]
+                then: [T: "super"]
           - x: "$Prescripts[2]"
           - pause: "short"
       - test:
@@ -867,7 +873,7 @@
               then: [T: "subscrito"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subscrito"]
+                then: [T: "sub"]
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -878,10 +884,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [T: "subscrito"]
+                  then: [T: "sobrescrito"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "sobrescrito"]
+                    then: [T: "super"]
               - x: "$Prescripts[4]"
               - pause: "short"
           - test:
@@ -892,7 +898,7 @@
                   then: [T: "subscrito"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subscrito"]
+                    then: [T: "sub"]
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -907,7 +913,7 @@
               then: [T: "subscrito"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subscrito"]
+                then: [T: "sub"]
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -918,7 +924,7 @@
               then: [T: "sobrescrito"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "sobrescrito"]
+                then: [T: "super"]
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -932,7 +938,7 @@
                   then: [T: "subscrito"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subscrito"]
+                    then: [T: "sub"]
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -943,7 +949,7 @@
                   then: [T: "sobrescrito"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "sobrescrito"]
+                    then: [T: "super"]
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -957,7 +963,7 @@
                       then: [T: "subscrito"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "subscrito"]
+                        then: [T: "sub"]
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -968,7 +974,7 @@
                       then: [T: "sobrescrito"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "sobrescrito"]
+                        then: [T: "super"]
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -982,7 +988,7 @@
                           then: [T: "subscrito"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "subscrito"]
+                            then: [T: "sub"]
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -993,7 +999,7 @@
                           then: [T: "sobrescrito"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "sobrescrito"]
+                            then: [T: "super"]
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:
@@ -1040,7 +1046,7 @@
   - test:
     - if: ".='-' or .=':'"
       then: [T: "ligação simples"]
-    - else_if: ".='=' or .='::'"
+    - else_if: ".='=' or .='∷'"   # U+2237: o canonicalizador converte '::' nesse caractere
       then: [T: "ligação dupla"]
     - else_if: ".='≡'"
       then: [T: "ligação tripla"]
@@ -1086,6 +1092,15 @@
   match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
   replace:
   - t: "" # don't say anything
+
+# ACRESCENTADO: fora da química, <none/> cai na regra 'default-text', que fala o
+# nome da tag -- em inglês isso dá "none", que é aceitável lá, mas em português
+# saía a palavra inglesa. Aqui traduzimos.
+- name: none-default
+  tag: none
+  match: "."
+  replace:
+  - T: "nenhum"
 
 - name: ignore-intent-wrapper
   tag: intent-wrapper

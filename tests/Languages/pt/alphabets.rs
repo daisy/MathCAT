@@ -21,9 +21,11 @@ fn special_alphabet_chars() -> Result<()> {
 #[test]
 fn greek() -> Result<()> {
     let expr = "<math> <mi>Α</mi><mo>,</mo><mi>Ω</mi></math>";
-    test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula maiúsculo ômega")?;
+    // a segunda vírgula é a pausa automática do motor depois do operador;
+    // o inglês tem a mesma ("cap alpha comma, cap omega").
+    test("pt", "SimpleSpeak", expr, "maiúsculo alfa vírgula, maiúsculo ômega")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
-    test("pt", "SimpleSpeak", expr, "alfa vírgula ômega")?;
+    test("pt", "SimpleSpeak", expr, "alfa vírgula, ômega")?;
     return Ok(());
 }
 

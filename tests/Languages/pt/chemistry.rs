@@ -7,7 +7,7 @@ use anyhow::Result;
 #[test]
 fn salt() -> Result<()> {
   let expr = "<math><mi>Na</mi><mi>Cl</mi></math>";
-  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo n a, maiúsculo c l")?;
+  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo n a; maiúsculo c l")?;
   return Ok(());
 
 }
@@ -17,10 +17,10 @@ fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2 maiúsculo o")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2, maiúsculo o")?;
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "maiúsculo h, sub 2 maiúsculo o")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "maiúsculo h, sub 2, maiúsculo o")?;
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
   test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "maiúsculo h, subscrito 2, maiúsculo o")?;
@@ -55,13 +55,13 @@ fn aluminum_sulfate() -> Result<()> {
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo a, l, 2, abre parênteses, maiúsculo s, maiúsculo o, 4, fecha parênteses, 3")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo a l, 2; abre parênteses, maiúsculo s, maiúsculo o, 4; fecha parênteses 3")?;
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "maiúsculo a, l, sub 2; abre parênteses, maiúsculo s, maiúsculo o, sub 4; fecha parênteses sub 3")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "maiúsculo a l, sub 2; abre parênteses, maiúsculo s, maiúsculo o, sub 4; fecha parênteses sub 3")?;
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "maiúsculo a, l, subscrito 2; abre parênteses, maiúsculo s, maiúsculo o, subscrito 4; fecha parênteses subscrito 3")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "maiúsculo a l, subscrito 2; abre parênteses, maiúsculo s, maiúsculo o, subscrito 4; fecha parênteses subscrito 3")?;
   return Ok(());
 
 }
@@ -82,7 +82,7 @@ fn ethanol_bonds() -> Result<()> {
       </math>";
   // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
   // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
-  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo c, maiúsculo h, 3 ligação simples maiúsculo c, maiúsculo h, 2 ligação simples maiúsculo o, maiúsculo h")?;
+  test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo c, maiúsculo h, 3, ligação simples, maiúsculo c, maiúsculo h, 2, ligação simples, maiúsculo o, maiúsculo h")?;
 
   return Ok(());
 
@@ -101,14 +101,14 @@ fn dichlorine_hexoxide() -> Result<()> {
       </msup>
     </mrow></math>";
   test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], 
-    expr, "abre colchetes, maiúsculo c l, maiúsculo o, 2, fecha colchetes mais; \
-                          abre colchetes, maiúsculo c l, maiúsculo o, 4, fecha colchetes menos")?;
+    expr, "abre colchetes, maiúsculo c l; maiúsculo o, 2; fecha colchetes mais; \
+                          abre colchetes, maiúsculo c l; maiúsculo o, 4; fecha colchetes menos")?;
   test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-    expr, "abre colchetes, maiúsculo c l, maiúsculo o, sub 2; fecha colchetes super mais; \
-                          abre colchetes, maiúsculo c l, maiúsculo o, sub 4; fecha colchetes super menos")?;
+    expr, "abre colchetes, maiúsculo c l; maiúsculo o, sub 2; fecha colchetes super mais; \
+                          abre colchetes, maiúsculo c l; maiúsculo o, sub 4; fecha colchetes super menos")?;
   test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
-    expr, "abre colchetes, maiúsculo c l, maiúsculo o, subscrito 2; fecha colchetes sobrescrito mais; \
-                          abre colchetes, maiúsculo c l, maiúsculo o, subscrito 4; fecha colchetes sobrescrito menos")?;
+    expr, "abre colchetes, maiúsculo c l; maiúsculo o, subscrito 2; fecha colchetes sobrescrito mais; \
+                          abre colchetes, maiúsculo c l; maiúsculo o, subscrito 4; fecha colchetes sobrescrito menos")?;
                           return Ok(());
 
 }
@@ -121,7 +121,7 @@ fn ethylene_with_bond() -> Result<()> {
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2 maiúsculo c, ligação dupla maiúsculo c, maiúsculo h, 2")?;
+  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2, maiúsculo c; ligação dupla, maiúsculo c, maiúsculo h, 2")?;
   return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn ferric_chloride_aq() -> Result<()> {
         <msub><mi>Cl</mi><mn>3</mn></msub>
         <mrow><mo>(</mo><mrow><mi>aq</mi></mrow><mo>)</mo></mrow>
     </mrow></math>";
-  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo f e, maiúsculo c l, 3 aquoso")?;
+  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo f e; maiúsculo c l, 3, aquoso")?;
   return Ok(());
 
   }
@@ -145,7 +145,7 @@ fn ethylene_with_colon_bond() -> Result<()> {
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2 maiúsculo c, ligação dupla maiúsculo c, maiúsculo h, 2")?;
+  test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "maiúsculo h, 2, maiúsculo c; ligação dupla, maiúsculo c, maiúsculo h, 2")?;
   return Ok(());
 
 }
@@ -180,15 +180,15 @@ fn beta_decay() -> Result<()> {
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, maiúsculo c; forma, 14, 7, maiúsculo n; mais 0, negativo 1, e")?;
+      "14, 6, maiúsculo c; forma, 14, 7, maiúsculo n; mais 0, menos 1, e")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, maiúsculo c; reage formando; super 14, sub 7, maiúsculo n; mais super 0, sub negativo 1, e")?;
+      "super 14, sub 6, maiúsculo c; reage formando; super 14, sub 7, maiúsculo n; mais super 0, sub menos 1, e")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "sobrescrito 14, subscrito 6, maiúsculo c; reage formando; sobrescrito 14, subscrito 7, maiúsculo n; mais, sobrescrito 0, subscrito negativo 1, e")?;
+      "sobrescrito 14, subscrito 6, maiúsculo c; reage formando; sobrescrito 14, subscrito 7, maiúsculo n; mais, sobrescrito 0, subscrito menos 1, e")?;
       return Ok(());
 
 }
@@ -452,15 +452,15 @@ fn mhchem_beta_decay() -> Result<()> {
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, maiúsculo c; forma, 14, 7, maiúsculo n; mais 0, negativo 1, e")?;
+      "14, 6, maiúsculo c; forma, 14, 7, maiúsculo n; mais 0, menos 1, e")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "super 14, sub 6, maiúsculo c; reage formando; super 14, sub 7, maiúsculo n; mais super 0, sub negativo 1, e")?;
+      "super 14, sub 6, maiúsculo c; reage formando; super 14, sub 7, maiúsculo n; mais super 0, sub menos 1, e")?;
     // ClearSpeak reativado: Rules/Languages/pt/ClearSpeak_Rules.yaml traduzido.
     // Pausas (vírgula/ponto-e-vírgula) podem precisar de reconciliação via cargo test.
     test_prefs("pt", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "sobrescrito 14, subscrito 6, maiúsculo c; reage formando; sobrescrito 14, subscrito 7, maiúsculo n; mais, sobrescrito 0, subscrito negativo 1, e")?;
+      "sobrescrito 14, subscrito 6, maiúsculo c; reage formando; sobrescrito 14, subscrito 7, maiúsculo n; mais, sobrescrito 0, subscrito menos 1, e")?;
       return Ok(());
 
 }
@@ -475,7 +475,7 @@ fn hcl_na_produz() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, maiúsculo h, maiúsculo c l; mais 2 maiúsculo n a; reage formando; 2, maiúsculo n a, maiúsculo c l; mais maiúsculo h, subscrito 2")?;
+        "2, maiúsculo h, maiúsculo c l; mais 2 maiúsculo n a; reage formando; 2, maiúsculo n a; maiúsculo c l; mais maiúsculo h, subscrito 2")?;
         return Ok(());
 
 }
@@ -614,7 +614,7 @@ fn mhchem_hcl_aq_etc() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, maiúsculo h, maiúsculo c l, aquoso; mais, 2, maiúsculo n a, sólido; forma; 2, maiúsculo n a, maiúsculo c l, aquoso; mais, maiúsculo h, 2, gasoso")?;
+      expr, "2, maiúsculo h, maiúsculo c l; aquoso; mais, 2, maiúsculo n a; sólido; forma; 2, maiúsculo n a; maiúsculo c l; aquoso; mais, maiúsculo h, 2; gasoso")?;
 
       return Ok(());
 
@@ -682,7 +682,7 @@ fn mhchem_barbed_equilibrium() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "maiúsculo h, 2, gasoso; mais; maiúsculo i, 2, gasoso; está em equilíbrio com, 2, maiúsculo h, maiúsculo i, gasoso")?;
+      expr, "maiúsculo h, 2; gasoso; mais; maiúsculo i, 2; gasoso; está em equilíbrio com, 2, maiúsculo h, maiúsculo i, gasoso")?;
       return Ok(());
 
 }
