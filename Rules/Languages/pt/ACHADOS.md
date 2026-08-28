@@ -505,7 +505,15 @@ inglês, linha a linha:
 | Alfabetos fraktur, vazado e caligráfico | 559 |
 
 A cobertura do português passou de 673 para 1324 codepoints (o inglês tem
-5075). Nenhuma colisão com o `unicode.yaml`, conferido antes de aplicar.
+5075).
+
+> **CORREÇÃO (rodada 9).** Onde antes se lia "nenhuma colisão com o
+> `unicode.yaml`, conferido antes de aplicar", entenda-se: **nenhuma colisão
+> de _codepoint_**. Isso continua verdade — nenhum símbolo é definido nos dois
+> arquivos — mas foi a conferência errada para concluir que não havia
+> conflito. Duas entradas podem não colidir em codepoint e ainda assim falar o
+> mesmo conceito com palavras diferentes, ou na ordem inversa. O vocabulário
+> nunca foi conferido. Ver 7.8.
 
 Três decisões que valem registro:
 
@@ -525,6 +533,104 @@ conferência de falante nativo: as nove ocorrências de "fraktur" (a alternativa
 (a alternativa é a forma cardinal, "elevado a zero"). A auditoria conta essas
 onze em "Untranslated text"; as outras 25 que ela acusa são os `translate()`
 dos blocos alfabéticos, falso positivo da mesma natureza dos que já existiam.
+
+### 7.8 A causa raiz: conferimos codepoint, nunca vocabulário
+
+Três defeitos que vinham sendo tratados como independentes são **um só**, e a
+correção precisa ser feita como uma só:
+
+| caso | fala hoje | onde |
+|---|---|---|
+| ℜ contra ℑ ℌ ℨ ℭ | "**gótico** maiúscula r" contra "maiúscula i **fraktur**" | `unicode.yaml:260` / `unicode-full.yaml:837` |
+| ℋ ℛ ℓ contra ℐ ℒ ℘ ℬ ℰ ℱ ℳ | "**cursivo** maiúscula h" contra "maiúscula i **caligráfico**" | `unicode.yaml:257` / `unicode-full.yaml:845` |
+| ordem do adjetivo | "**vazado** ..." contra "... **vazado**" — a mesma palavra nas duas ordens | `unicode.yaml:252` / `unicode-full.yaml:841` |
+| ∈ ∊ contra ∉ | Auto fundido com Member nos dois primeiros, separado no terceiro | `unicode.yaml:330,379` / `353` |
+
+Os três primeiros são pares de símbolos do **mesmo bloco Unicode letterlike**
+partidos entre os dois arquivos. O quarto é o mesmo erro dentro de um arquivo
+só. Em todos, uma decisão terminológica foi aplicada em **um** caminho que
+leva à fala e não nos outros.
+
+Passaram porque a conferência feita ao montar o `unicode-full.yaml` foi de
+codepoint ("nenhum símbolo nos dois arquivos"), e essa conferência é cega para
+o problema: ℜ e ℑ não colidem — são codepoints distintos —, e é exatamente por
+não colidirem que ninguém notou que passaram a ser falados com palavras
+diferentes. O mesmo vale para a ordem do adjetivo: a decisão de 7.7 de pospor
+o adjetivo foi aplicada ao `unicode-full.yaml` e o `unicode.yaml`, que já
+estava pronto, ficou com a ordem herdada do inglês.
+
+**Não corrigir caso a caso.** Corrigir caso a caso reproduz o defeito: foi
+assim que o ∉ foi consertado sozinho e o ∈ e o ∊ ficaram para trás. O
+que fecha a lacuna é escolher o termo e a ordem uma vez e varrer **todos** os
+caminhos que levam à fala.
+
+Para isso existe agora `PythonScripts/conferir_vocabulario.py`, que confere o
+que faltava conferir: mesmo conceito com palavras diferentes, ordem
+inconsistente do adjetivo, e símbolos que o inglês trata igual e a tradução
+não. Roda sem preparar ambiente:
+
+```
+python3 PythonScripts/conferir_vocabulario.py
+```
+
+Ele mantém também a conferência de codepoint, agora com a ressalva de que
+passar nela não significa nada sozinho. Autoteste: `--idioma en` compara o
+inglês consigo mesmo e as seções 1 e 3 saem vazias.
+
+**Um caminho que a ferramenta não cobre.** Ela lê os `unicode*.yaml`. Existe
+um segundo caminho para a fala, o `IntentMappings` do `definitions.yaml`, e lá
+o português define 30 dos 216 nomes do inglês. `element-of` não está entre
+eles: com `intent="element-of"`, o pt fala "*element of de x vírgula*" —
+inglês cru e com fixidade errada. O mesmo vale para `member-of`,
+`not-member-of`, `subset`, `less-than` e todas as trigonométricas. É a mesma
+falha de "um ramo só", em escala maior, e ainda não tem conferência
+automática.
+
+### 7.9 Verbo finito depende do contexto: dentro ou fora do conjunto
+
+Princípio que faltava estar escrito, e que o inglês já seguia sem dizer:
+
+- **Fora de um conjunto** (`x ∈ ℝ`) o sujeito é um termo só, e o verbo finito
+  está certo: "x **pertence a** números reais", "x **está em** números reais".
+  O inglês faz igual: `is in`, `is a member of`.
+- **Dentro de um conjunto** (`{ x ∈ ℤ : x > 5 }`) a expressão **modifica**
+  "todos os x". Verbo finito ali gruda no substantivo errado — saía "o conjunto
+  de todos os x **pertence a** inteiros", que se lê como *o conjunto* pertencer
+  a inteiros. O inglês usa forma não-finita justamente por isso: `in`,
+  `member of`, `element of`, `belonging to`.
+
+O português não estava seguindo o princípio em nenhum dos ramos negativos nem
+em três dos positivos. A varredura dos oito ramos de dentro do conjunto:
+
+| preferência | ∈ ∊ antes | ∉ antes | defeito | agora (∈ ∊ / ∉) |
+|---|---|---|---|---|
+| Auto \| In | "em" | "não está em" | verbo finito na negação | "em" / "não pertencentes a" |
+| Member | "membro de" | "não é membro de" | singular contra "todos os x"; verbo finito | "membros de" / "não membros de" |
+| Element | "elemento de" | "não é um elemento de" | singular; verbo finito | "elementos de" / "não elementos de" |
+| Belongs | "pertence a" | "não pertence a" | verbo finito | "pertencentes a" / "não pertencentes a" |
+
+Duas observações que valem para quem for mexer nisto:
+
+- **A negação de "em" dentro do conjunto é "não pertencentes a".** Duas
+  alternativas foram rodadas e rejeitadas. **"não em"** sai truncado: "não"
+  não nega preposição nua em português, e "o conjunto de todos os x não em
+  inteiros" não é frase. **"fora de"** — que chegou a ser aplicado numa
+  iteração intermediária — foi rejeitado por trocar o **conceito**, não a
+  forma: "não pertencentes a" nega a pertinência, "fora de" afirma
+  localização; some a simetria com o "em" do ∈ e, em contexto de
+  complementar, fica ambíguo. O custo da escolha é que, no ∉ dentro de um
+  conjunto, `Auto|In` e `Belongs` passam a coincidir. É custo aceito: as
+  quatro preferências continuam distintas no ∈, e uma coincidência é menos
+  grave que uma troca de conceito.
+- **O ramo SimpleSpeak usava uma string só** para dentro e fora do conjunto,
+  então não tinha como distinguir os dois contextos. Passou a ter a mesma
+  bifurcação `../../self::m:set` que o ClearSpeak, nos três símbolos.
+
+E o ∉ com `In` **fora** de um conjunto falava "não está contido em", que é
+exatamente a fala do ⊄ (0x2284). Duas relações distintas soando idênticas é
+defeito pior que fraseado ruim, então passou a "não está em", espelhando o
+"está em" do ∈. Há um teste guarda (`nao_pertinencia_e_nao_subconjunto_falam_diferente`)
+travando que os dois não voltem a coincidir.
 
 ---
 
@@ -709,9 +815,75 @@ não carimbar como correta uma saída que não é.
   foram consertados (ver 7.6). O que a rodada 8 mexeu nesses dois arquivos
   foi só a terminologia de caixa e a ordem das palavras em 8.1 — a afirmação
   errada sobre o recuo continua lá.
-- "fraktur" contra "gótico": nove entradas ainda marcadas `t:` esperando
-  falante nativo. (A forma ordinal contra a cardinal nos sobrescritos saiu
-  desta lista — decidida em 8.3.)
+- **[CORRIGIDO na rodada 9, em varredura]** O vocabulário partido entre
+  `unicode.yaml` e `unicode-full.yaml` — um só defeito, não três (ver 7.8).
+  Aplicado aos dois arquivos de uma vez:
+  - **família fraktur**: termo único `fraktur`; ℜ deixou de falar "gótico".
+  - **família script**: termo único `caligráfico`; ℋ ℛ ℓ deixaram de falar
+    "cursivo". As duas famílias estão marcadas `t:` minúsculo em **todos** os
+    caminhos, porque a escolha entre os pares ainda depende de escuta — o que
+    esta rodada garante é que não há mais dois termos, não qual dos dois fica.
+  - **ordem do adjetivo**: posposta em todos os caminhos (decisão 8.1),
+    incluindo "vazado" e "vazado itálico", que apareciam nas duas ordens.
+  `conferir_vocabulario.py` saiu de 8 grupos para 4, e a seção 2 passou a
+  dizer "consistente: todas as regras usam 'posposto'".
+- **[CORRIGIDO na rodada 9]** ∈ e ∊ receberam a separação Auto/Member que só
+  o ∉ tinha, e o ∊ passou a falar "pertence a" no ramo SimpleSpeak, alinhado
+  ao ∈. Com as preferências padrão os três agora falam "pertence a" / "não
+  pertence a".
+- **[CORRIGIDO na rodada 9]** `!` voltou a ramificar literal/fatorial como o
+  inglês: dentro de `:literal:` fala "ponto de exclamação" (Terse:
+  "exclamação"), fora fala "fatorial". Antes um ponto de exclamação literal
+  era lido "fatorial".
+- **[CORRIGIDO na rodada 9]** Termos que traduziam o **nome Unicode** em vez
+  do termo matemático, achados varrendo os 64 blocos estruturados contra o en:
+  | símbolo | era | virou |
+  |---|---|---|
+  | ≇ | "nem aproximadamente nem realmente igual a" | "não é congruente a" |
+  | ≚ | "igual e inclinado a" | "equiangular a" |
+  | ≞ | "igual por medida a" | "medido por" |
+  | ⋕ | "paralelo forquilhado a" | "igual e paralelo a" |
+- **[CORRIGIDO na rodada 9]** Cópula dupla: ∦, ⊈ e ⊉ tinham o ramo
+  `Verbosity!='Terse' -> "é"` **e** um texto que já começa com "não",
+  produzindo "é não é paralela a" e "é não está contido em nem é igual a" no
+  modo padrão. O ≢ e o ≇ já tinham o `audit-ignore` explicando que em
+  português a negação dispensa a cópula; os outros três não receberam. Mesma
+  causa raiz de 7.8, encontrada pela varredura.
+- **[CORRIGIDO na rodada 9]** Passou a existir `tests/Languages/pt/ClearSpeak/sets.rs`
+  (e o módulo `ClearSpeak` em `tests/Languages/pt.rs`), nos moldes de de/en/pl/ru.
+  Cobre pertinência nas cinco preferências de `ClearSpeak_SetMemberSymbol`,
+  dentro e fora de um conjunto, nos dois estilos, mais conjunto vazio, extensão,
+  compreensão, união, interseção e os conjuntos numéricos. A suíte pt foi de
+  102 para 136 testes. A invariante travada é **∈ e ∊ falam igual em todos os
+  ramos** — era o que faltava para o caso não sobreviver a uma terceira rodada.
+  Cada teste fixa a preferência explicitamente, inclusive no caso `Auto`: as
+  preferências de ClearSpeak não são reinicializadas entre testes na mesma
+  thread, e um teste que dependesse do padrão implícito passaria ou falharia
+  conforme a ordem de execução.
+- **[CORRIGIDO na rodada 9]** Os dois defeitos de fala que a rodada anterior
+  havia deixado como `#[ignore]` em `sets.rs` foram corrigidos e os testes
+  destravados (ver 7.9): o verbo finito dentro de um conjunto, que fazia a
+  concordância cair em "conjunto" em vez de no elemento — e que existia em
+  **seis** dos oito ramos, não só no `Belongs` —, e o ∉ com `In`, que falava
+  igual ao ⊄. A suíte pt foi de 136 para 142 testes, sem nenhum `#[ignore]`
+  próprio. A negação de "em" dentro do conjunto ficou "não pertencentes a";
+  "fora de" foi rejeitado por trocar pertinência por localização (ver 7.9).
+  As leituras adotadas e as pendentes estão agora centralizadas em
+  `TERMINOLOGIA_PT_BR.md`.
+- **Divergências de conceito ainda em aberto no `unicode-full.yaml`.** A
+  varredura dos blocos estruturados achou entradas onde o pt diz outra coisa
+  que o en, e que **não** foram tocadas por dependerem de decisão de
+  terminologia, não de consistência: ≗ ("é igual por definição a" contra
+  'is approximately equal to'), ⋋ ⋌ ("junção semidireta" contra 'semidirect
+  product'), ⋉ ⋊ (falta o "de" final do infixo), ⊶ ⊷ ("é imagem original" /
+  "é imagem", sem o "de"), ⋐ ⋑ ⋒ ⋓ ⋔ (leituras próprias para 'double subset',
+  'double intersection', 'proper intersection'). Precisam de falante nativo.
+- **Os oito arpões (0x21bc-0x21c3) traduzem o nome Unicode completo**
+  ("arpão para a esquerda com farpa para cima") onde o inglês encurta
+  ("left harpoon up"). Foram deixados como estão de propósito: não há termo
+  matemático sendo perdido, a farpa é o que distingue os oito entre si, e
+  encurtar em português daria frase pior. Fica registrado por ter aparecido
+  na varredura.
 - ⊂ ⊃ ⊆ continuam com a convenção fixa "está contido em". A ambiguidade é
   real na literatura brasileira e a sugestão é virar preferência
   configurável, não escolha fixa — ver 8.4. **Não trocar a convenção sem

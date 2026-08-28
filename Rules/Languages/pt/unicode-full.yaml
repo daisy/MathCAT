@@ -219,7 +219,10 @@
      - T: "aproximadamente mas não realmente igual a"
  - "≇":                                          # 0x2247
      # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
-     - T: "nem aproximadamente nem realmente igual a"
+     # Era "nem aproximadamente nem realmente igual a" — tradução do NOME
+     # Unicode (NEITHER APPROXIMATELY NOR ACTUALLY EQUAL TO) em vez do termo
+     # matemático. O inglês fala 'is not congruent to'. Ver ACHADOS 7.8.
+     - T: "não é congruente a"
  - "≈":                                          # 0x2248
      - test: 
          if: "$Verbosity!='Terse'"
@@ -280,7 +283,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "é"]
-     - T: "igual e inclinado a"
+     - T: "equiangular a"                 # era "igual e inclinado a" (descrição do glifo); en: 'is equiangular to'
  - "≛": [T: "igual com estrela"]              # 0x225b
  - "≜": [T: "igual delta"]                    # 0x225c
  - "≝": [T: "é definido como"]                # 0x225d
@@ -288,7 +291,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "é"]
-     - T: "igual por medida a"
+     - T: "medido por"                    # era "igual por medida a" (descrição); en: 'is measured by'
  - "≟": [T: "tem relação desconhecida com"]   # 0x225f
  - "≢":                                          # 0x2262
      # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
@@ -370,14 +373,11 @@
  - "⊀": [T: "não precede"]                    # 0x2280
  - "⊁": [T: "não sucede"]                     # 0x2281
  - "⊈":                                          # 0x2288
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "é"]
+     # audit-ignore: negação já é frase completa; com o ramo "é" saía
+     # "é não está contido em nem é igual a". Igual a ≢, ≇ e ∦.
      - T: "não está contido em nem é igual a"
  - "⊉":                                          # 0x2289
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "é"]
+     # audit-ignore: idem ⊈ — saía "é não contém nem é igual a".
      - T: "não contém nem é igual a"
  - "⊊": [T: "está contido em mas não é igual a"] # 0x228a
  - "⊋": [T: "contém mas não é igual a"]       # 0x228b
@@ -519,7 +519,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "é"]
-     - T: "paralelo forquilhado a"
+     - T: "igual e paralelo a"            # era "paralelo forquilhado a" (descreve a forquilha); en: 'is equal to and parallel to'
  - "⋖": [T: "menor que com ponto"]            # 0x22d6
  - "⋗": [T: "maior que com ponto"]            # 0x22d7
  - "⋘":                                          # 0x22d8
@@ -844,7 +844,7 @@
 
  - "ℐℒ℘ℬℰℱℳ":   # 0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
-    - T: "caligráfico"
+    - t: "caligráfico"
 
 # Blocos alfabéticos do plano 1 e as cópias na área de uso privado do
 # MathType. Chaves e argumentos de translate() copiados byte a byte do en.
@@ -919,44 +919,44 @@
 
  - "𝒜-𝒵":   # 0x1d49c - 0x1d4b5
     - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - T: "caligráfico"
+    - t: "caligráfico"
 
  - "-":   # 0xf100 - 0xf119
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - T: "caligráfico"
+    - t: "caligráfico"
 
  - "𝒶-𝓏":   # 0x1d4b6 - 0x1d4cf
     - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
-    - T: "caligráfico"
+    - t: "caligráfico"
 
  - "-":   # 0xf11a - 0xf133
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - T: "caligráfico"
+    - t: "caligráfico"
 
  - "𝓐-𝓩":   # 0x1d4d0 - 0x1d4e9
     - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - T: "caligráfico"
+    - t: "caligráfico"
     - test:
         if: "not($IgnoreBold)"
         then: [T: "negrito"]
 
  - "-":   # 0xf140 - 0xf159
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
-    - T: "caligráfico"
+    - t: "caligráfico"
     - test:
         if: "not($IgnoreBold)"
         then: [T: "negrito"]
 
  - "𝓪-𝔃":   # 0x1d4ea - 0x1d503
     - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
-    - T: "caligráfico"
+    - t: "caligráfico"
     - test:
         if: "not($IgnoreBold)"
         then: [T: "negrito"]
 
  - "-":   # 0xf15a - 0xf173
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
-    - T: "caligráfico"
+    - t: "caligráfico"
     - test:
         if: "not($IgnoreBold)"
         then: [T: "negrito"]

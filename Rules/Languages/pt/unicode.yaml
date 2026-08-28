@@ -31,7 +31,16 @@
 
  - " ": [t: " "]                                  # 0x20
 
- - "!": [T: "fatorial"]                         #  0x21
+ - "!":                                          #  0x21
+    # Restaura a ramificação do inglês: dentro de :literal: é pontuação, fora
+    # é o operador. Sem isto, um ponto de exclamação literal é lido "fatorial".
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then_test:
+            if: "$Verbosity = 'Terse'"
+            then: [T: "exclamação"]             #  (en: 'bang')
+            else: [T: "ponto de exclamação"]    #  (en: 'exclamation point')
+        else: [T: "fatorial"]                   #  (en: 'factorial')
  - "\"": [T: "aspas"]                    #  0x22 (en: 'quotation mark')
  - "#": [T: "número"]                       #  0x23 (en: 'number', MathPlayer: 'signo de número', google: 'número')
  - "$": [T: "dólares"]                             #  0x24 (en: 'dollars')
@@ -250,20 +259,26 @@
 
  - "⁢": [T: ""]                                  #  0x2062
  - "ℂℕℚℝℤ":                                      #  here we rely on this running through the table again to speak "cap xxx"
-    - T: "vazado"                       #  (en: 'double-struck', google: 'doble golpe')
+    # Adjetivo de estilo POSPOSTO (decisão 8.1): o spell: vem primeiro.
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+    - T: "vazado"                       #  (en: 'double-struck', google: 'doble golpe')
 
  - "℃": [T: "graus Celsius"]                #  0x2103 (en: 'degrees celsius', google: 'grados celsius')
  - "ℋℛℓ":                                        #  0x210b
-    - T: "cursivo"                     #  (en: 'script', google: 'guion')
+    # 'caligráfico', não 'cursivo': termo único da família script, igual ao
+    # que o unicode-full.yaml usa (ℐ ℒ ℘ ℬ ℰ ℱ ℳ). t: minúsculo porque a
+    # escolha entre os dois ainda depende de escuta — ver ACHADOS 7.8.
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
+    - t: "caligráfico"                 #  (en: 'script', google: 'guion')
  - "ℜ":                                          #  0x211c
-    - T: "gótico"                   #  (en: 'fraktur', google: 'fraktur')
+    # 'fraktur', não 'gótico': termo único da família, igual ao
+    # unicode-full.yaml (ℑ ℌ ℨ ℭ e os blocos do plano 1). t: minúsculo.
     - spell: "'R'"
+    - t: "fraktur"                  #  (en: 'fraktur', google: 'fraktur')
 
  - "ⅆⅇⅈⅉ":                                       #  0x2146-9
-    - T: "vazado itálico"                              #  (en: 'double-struck italic')
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+    - T: "vazado itálico"                              #  (en: 'double-struck italic')
 
  - "∥":                                          #  0x2225
      - test: 
@@ -271,9 +286,9 @@
          then: [T: "é"]                         #  (en: 'is', google translation)
      - T: "paralela a"                           #  (en: 'parallel to')
  - "∦":                                          #  0x2226
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "é"]                         #  (en: 'is', google translation)
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês
+     # não tem par que valha suprimir no Terse. Com o ramo "é" a fala saía
+     # "é não é paralela a". Mesmo tratamento que ≢, ≇, ⊈ e ⊉.
      - T: "não é paralela a"                        #  (en: 'not parallel to')
  - "≤":                                          #  0x2264
      - test: 
@@ -330,20 +345,34 @@
  - "∈":                                          #  0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "pertence a"]                  #  (en: 'an element of'; 'pertence a' é o uso brasileiro corrente)
+        # Também aqui o ramo dentro de um conjunto precisa do particípio: uma
+        # string só para os dois contextos daria "o conjunto de todos os x
+        # pertence a inteiros", com o verbo grudando em "conjunto".
+        then_test:
+            if: "../../self::m:set or ../../../self::m:set"
+            then: [T: "pertencentes a"]
+            else: [T: "pertence a"]              #  (en: 'an element of'; uso brasileiro corrente)
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
             then_test:
+              # DENTRO de um conjunto a expressão modifica "todos os x": nada de
+              # verbo finito (grudaria em "conjunto") e concordância no plural.
+              # É o que o inglês faz com 'in / member of / element of / belonging to'.
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "em"]                  #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "membro de"]          #  (en: 'member of', google translation)
+                then: [T: "membros de"]         #  (en: 'member of'; plural concorda com "todos os x")
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "elemento de"]         #  (en: 'element of', google translation)
-              - else: [T: "pertence a"]     #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+                then: [T: "elementos de"]        #  (en: 'element of'; plural concorda com "todos os x")
+              - else: [T: "pertencentes a"] #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+              # Auto separado de Member, como o ∉ já tinha: com as preferências
+              # padrão ($ClearSpeak_SetMemberSymbol = 'Auto') o brasileiro
+              # corrente é "pertence a". Ver ACHADOS 7.8.
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto'
+                then: [T: "pertence a"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "é membro de"]       #  (en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "é um elemento de"]   #  (en: 'is an element of', google translation)
@@ -354,18 +383,27 @@
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "não pertence a"]              #  (en: 'is not an element of'; uso brasileiro)
+        then_test:
+            if: "../../self::m:set or ../../../self::m:set"
+            then: [T: "não pertencentes a"]
+            else: [T: "não pertence a"]          #  (en: 'is not an element of'; uso brasileiro)
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
             then_test:
+              # Idem ao 0x2208: sem verbo finito, concordando com "todos os x".
+              # "não em" é truncado ("não" não nega preposição nua) e "fora de"
+              # troca o conceito (afirma localização em vez de negar pertinência,
+              # ambíguo com complementar). Fica a forma nominal da negação, que
+              # coincide com o ramo Belongs — decisão registrada em
+              # TERMINOLOGIA_PT_BR.md e ACHADOS 7.9.
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "não está em"]               #  (en: 'not in', google translation)
+                then: [T: "não pertencentes a"]        #  (en: 'not in')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "não é membro de"]       #  (en: 'not member of', google translation)
+                then: [T: "não membros de"]        #  (en: 'not member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "não é um elemento de"]      #  (en: 'not element of', google translation)
-              - else: [T: "não pertence a"]  #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
+                then: [T: "não elementos de"]          #  (en: 'not element of')
+              - else: [T: "não pertencentes a"] #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto'
                 then: [T: "não pertence a"]
@@ -374,25 +412,38 @@
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "não é um elemento de"] #  (en: 'is not an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "não está contido em"]      #  (en: 'is not in', google translation)
+                # Era "não está contido em", que é exatamente a fala do ⊄
+                # (ver 0x2284): duas relações distintas soavam iguais. Agora
+                # espelha o "está em" do ∈ e o que o próprio ∉ diz num conjunto.
+                then: [T: "não está em"]              #  (en: 'is not in', google translation)
               - else: [T: "não pertence a"]  #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
  - "∊":                                          #  0x220a
+    # variante de forma do 0x2208: fala igual ao ∈ em todos os ramos.
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "é um elemento de"]           #  (en: 'is an element of', google translation)
+        then_test:
+            if: "../../self::m:set or ../../../self::m:set"
+            then: [T: "pertencentes a"]
+            else: [T: "pertence a"]              #  alinhado ao ∈ (era "é um elemento de")
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
             then_test:
+              # DENTRO de um conjunto a expressão modifica "todos os x": nada de
+              # verbo finito (grudaria em "conjunto") e concordância no plural.
+              # É o que o inglês faz com 'in / member of / element of / belonging to'.
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "em"]                  #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "membro de"]          #  (en: 'member of', google translation)
+                then: [T: "membros de"]         #  (en: 'member of'; plural concorda com "todos os x")
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "elemento de"]         #  (en: 'element of', google translation)
-              - else: [T: "pertence a"]     #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+                then: [T: "elementos de"]        #  (en: 'element of'; plural concorda com "todos os x")
+              - else: [T: "pertencentes a"] #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+              # Auto separado de Member, igual ao ∈ e ao ∉. Ver ACHADOS 7.8.
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto'
+                then: [T: "pertence a"]
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "é membro de"]       #  (en: 'is a member of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "é um elemento de"]   #  (en: 'is an element of', google translation)
