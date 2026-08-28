@@ -14,6 +14,7 @@ consulta daqui a meses — inclusive para quem nunca mexeu no MathCAT.
 6. [Rodada de reconciliação dos testes (todos passando)](#6)
 7. [O caractere não traduzido NÃO cai no inglês](#7)
 8. [Três decisões de terminologia (consultoria de acessibilidade)](#8)
+9. [Rodada 9: medir o material real antes de escolher o que corrigir](#9)
 
 ---
 
@@ -806,6 +807,113 @@ não carimbar como correta uma saída que não é.
 
 ---
 
+<a name="9"></a>
+## 9. Rodada 9: medir o material real antes de escolher o que corrigir
+
+Regra desta rodada: trabalhar pelo **dano ao estudante**, não pelo tamanho do
+buraco. Antes de mexer, medimos o que o material que o ACESSÍLIA realmente
+produz exige do MathCAT. Três perguntas, três respostas que mudaram o plano.
+
+### 9.1 Os IntentMappings importam? Quase nada — mas por um motivo diferente
+
+O ACESSÍLIA gera MathML por dois caminhos, e os dois terminam no mesmo lugar:
+`latex2mathml` (`pipeline/analisador_de_estrutura.py:27`), inclusive o caminho
+Docling (Docling → LaTeX → latex2mathml). Geramos 20 fórmulas típicas de
+Cálculo I e Álgebra Linear por esse caminho: **zero trazem `intent=`**. O
+serializador próprio do ACESSÍLIA (`serializacao_matematica.py`) também não
+emite `intent`. Logo os 186 mappings ausentes **não** são prioridade: o input
+nunca os aciona.
+
+O que aciona o `IntentMappings` é o **próprio motor**, que infere intents
+sozinho (‖x‖ → `magnitude`, ⃗a × ⃗b → `cross-product`). Esses são poucos e
+apareceram no corpus: `magnitude` vazava "magnitude de x" (sem mapping pt) e
+`cross-product`/`dot-product` vazavam "cross product" **mesmo com mapping**,
+porque o elemento inferido vem sem filhos e nenhuma regra de intent casa com
+`count(*)=0` — o motor falava o nome literal. Os dois foram corrigidos (9.4).
+A "cola de argumentos" que o plano temia ("sum de i vírgula, n vírgula, x")
+só acontece com `intent=` vindo do autor, que aqui nunca vem.
+
+(O Docling não rodou nesta máquina — conflito numpy/skimage no ambiente, fora
+do escopo — mas a conclusão vem do código, não da execução.)
+
+### 9.2 Corpus de codepoints: o que sai CRU hoje
+
+Cruzamos o MathML das 20 fórmulas mais os testes do repositório com a
+cobertura do pt. Nas fórmulas reais, saíam crus para o sintetizador:
+
+| caractere | de onde vem | fala antes | fala agora |
+|---|---|---|---|
+| 𝐱 𝐛 𝐯 𝐰 (negrito latino) | `\mathbf` — vetores em Álgebra Linear | "𝐱" | "x negrito" |
+| 𝜶 (grego negrito itálico) | `\boldsymbol` | "𝜶" | "alfa negrito" |
+| ⟨ ⟩ | produto interno | "⟨" | "abre/fecha colchete angular" |
+| ¯ (U+00AF) | `\bar{x}`, `\overline` — **o motor canonicaliza U+0304 e U+203E para U+00AF**, então a entrada "com mácron" do `unicode.yaml` nunca era alcançada num `<mover>` | "x ¯" | "x barra" |
+| ⟶ | `\longrightarrow` (química, fora da regra de reação) | "⟶" | "seta longa para a direita" |
+| µ Ω ℧ Å Å soltos | fora de unidade (dentro, `definitions.yaml` já resolvia) | cru | "mi", "ômega", "mho", "angstrom" |
+
+Os testes do repositório acusam mais 159 codepoints distintos, mas quase todos
+vêm de `alphabets.rs` (cirílico, circulados, sans-serif) — material de teste
+do inglês, não de estudante. Ficaram para o recuo controlado (9.3).
+
+O corpus revelou também três defeitos que **não** eram de caractere e causam
+mais dano que qualquer um deles:
+
+- **"1 terceiro"** para 1/3. A lista `NumbersOrdinalFractionalOnes` do pt
+  parava em "meio"; de 1/3 em diante o motor caía nos ordinais comuns.
+  Estendida até "décimo" (de 1/11 em diante já era "avos"). Agora "1 terço",
+  "3 décimos".
+- **"o integral"**. As três regras de operador grande (`bigop-both`,
+  `bigop-under`, `largeop` em `general.yaml`) emitiam "o" fixo. Agora o artigo
+  concorda com o operador: "a integral", "o somatório".
+- **"magnitude de x"** para ‖x‖ — ver 9.1. Agora "a norma de x".
+
+### 9.3 Recuo controlado, só em regra
+
+Um caractere sem regra sai **cru**: `src/speech.rs`, `replace_single_char`,
+devolve o próprio caractere quando não o acha em nenhuma tabela. O que o
+sintetizador faz com "⟪" é imprevisível. Um recuo por caractere para o inglês
+ou para "símbolo + nome" seria mudança em `src/` — e o recuo para o inglês que
+existe em `prefs.rs:390` é por **arquivo** (só quando o idioma não tem
+`unicode-full.yaml`), não por caractere.
+
+A alternativa barata é fazer o recuo em regra: `PythonScripts/gerar_recuo_en.py`
+copia para o fim do `unicode-full.yaml` do pt as 2091 entradas do inglês (3557
+codepoints) que o pt não cobria, entre marcadores, regeneráveis. Não copia às
+cegas: palavras de estilo já definidas viram o termo do pt (bold → negrito,
+script → caligráfico...), e textos que o pt já traduziu em outro codepoint são
+reaproveitados — 92 das 2082 strings. As outras 1990 ficam em inglês com `t:`
+minúsculo, contadas pela auditoria como pendentes. Resultado: um caractere raro
+fala "integral average with slash" em vez de "⨏". Pior que português, muito
+melhor que cru. O `conferir_vocabulario.py` continua em 4 grupos: o recuo não
+partiu nenhum conceito.
+
+### 9.4 O que mudou de regra nesta rodada
+
+| arquivo | mudança |
+|---|---|
+| `unicode-full.yaml` | bloco "Rodada 9" com os caracteres de 9.2; bloco gerado do recuo controlado |
+| `definitions.yaml` | listas fracionárias até "décimo"; `magnitude` mapeado como norma; `cross-product` e `dot-product` ganham fixidade `nofix` |
+| `SharedRules/general.yaml` | artigo do operador grande concorda ("a integral") |
+| `SharedRules/default.yaml` | regra `produto-vetorial-ou-escalar-sem-filhos`: intent inferido sem filhos passa pelo IntentMappings em vez de falar o nome literal |
+
+### 9.5 O pacote da sessão de escuta
+
+É o único risco que teste nenhum cobre. `PythonScripts/gerar_pacote_escuta.py`
+gera `SESSAO_ESCUTA.md`: 30 expressões (5 por área, MathML do latex2mathml),
+a fala real em ClearSpeak e SimpleSpeak nos três níveis de verbosidade, o
+roteiro de perguntas (a mais valiosa: *reescreva o que ouviu*) e a tabela das
+decisões que dependem do ouvinte. Regenerar depois de qualquer mudança de
+regra — o que está lá tem de ser a fala real. O gerador é o teste `#[ignore]`
+`tests/Languages/pt/escuta.rs`, lendo `escuta_expressoes.tsv`.
+
+O que o pacote já mostra e **não** foi corrigido, por ser decisão e não
+consistência: "varia com" para ∼ em estatística (é distribuição, não
+proporcionalidade); "A divide B" para P(A|B) (o latex2mathml emite U+2223 e o
+motor lê divisibilidade); `\mathrm{NaCl}` e `mol/L` não reconhecidos como
+química/unidade pela forma do MathML; "sobrescrito 14, subscrito 6" no
+isótopo. Todos na tabela de decisões do pacote.
+
+---
+
 ## Pendências conhecidas
 
 - A tradução de `Log` ("log do valor principal") está marcada `t:` e precisa
@@ -860,6 +968,13 @@ não carimbar como correta uma saída que não é.
   preferências de ClearSpeak não são reinicializadas entre testes na mesma
   thread, e um teste que dependesse do padrão implícito passaria ou falharia
   conforme a ordem de execução.
+- **IntentMappings: prioridade baixa, medida.** Ver 9.1 — o input do
+  ACESSÍLIA nunca traz `intent=`; só os intents que o motor infere importam, e
+  os que apareceram no corpus (`magnitude`, `cross-product`, `dot-product`)
+  foram corrigidos. Os 186 restantes ficam para quando algum aparecer na fala.
+- **Recuo controlado deixa ~1990 strings em inglês** no fim do
+  `unicode-full.yaml` (9.3). É lacuna de tradução, não de comportamento;
+  traduzir movendo a entrada para cima do marcador.
 - **[CORRIGIDO na rodada 9]** Os dois defeitos de fala que a rodada anterior
   havia deixado como `#[ignore]` em `sets.rs` foram corrigidos e os testes
   destravados (ver 7.9): o verbo finito dentro de um conjunto, que fazia a

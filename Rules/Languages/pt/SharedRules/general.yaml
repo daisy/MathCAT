@@ -157,7 +157,11 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: o]
+      then_test:
+        # "a integral", "o somatório": o artigo concorda com o operador.
+        if: "*[1][self::m:mo][contains('∫∬∭∮∯∰∱∲∳⨋⨌⨍⨎⨏⨐⨑⨒⨓⨔⨕⨖⨗⨘⨙⨚⨛⨜', .)]"
+        then: [T: a]
+        else: [T: o]
   - x: "*[1]"
   - T: de
   - x: "*[2]"
@@ -173,7 +177,11 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: o]
+      then_test:
+        # "a integral", "o somatório": o artigo concorda com o operador.
+        if: "*[1][self::m:mo][contains('∫∬∭∮∯∰∱∲∳⨋⨌⨍⨎⨏⨐⨑⨒⨓⨔⨕⨖⨗⨘⨙⨚⨛⨜', .)]"
+        then: [T: a]
+        else: [T: o]
   - x: "*[1]"
   - T: sobre
   - x: "*[2]"
@@ -187,7 +195,11 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: o]
+      then_test:
+        # "a integral", "o somatório": o artigo concorda com o operador.
+        if: "*[1][self::m:mo][contains('∫∬∭∮∯∰∱∲∳⨋⨌⨍⨎⨏⨐⨑⨒⨓⨔⨕⨖⨗⨘⨙⨚⨛⨜', .)]"
+        then: [T: a]
+        else: [T: o]
   - x: "*[1]"
   - T: de
   - x: "*[2]"

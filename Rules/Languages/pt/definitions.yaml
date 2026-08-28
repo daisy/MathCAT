@@ -32,13 +32,19 @@
 
     "transpose": "postfix=transposta || function=transposta",
     "norm": "function=; norma: norma: a norma; fim da norma",
+    # ‖x‖ é inferido pelo motor como 'magnitude' (não 'norm'); sem esta linha
+    # vazava "magnitude de x" em inglês. Mesma fala da norma.
+    "magnitude": "function=; norma: norma: a norma; fim da norma",
     "trace": "function=; traço: traço de: o traço de; fim do traço",
     "dimension": "function=; dimensão: dimensão de: a dimensão de; fim da dimensão",
     "homomorphism": "function= ; homomorfismo: homomorfismo de: o homomorfismo de; fim do homomorfismo",
     "kernel": "function= ; núcleo: núcleo de: o núcleo de; fim do núcleo",
     "vector": "function= ; vetor || prefix=vetor",
-    "cross-product": "infix=vetorial: produto vetorial: produto vetorial",
-    "dot-product": "infix=escalar: produto escalar: produto escalar",
+    # O motor infere ⃗a × ⃗b como um <cross-product> SEM filhos (o operador vira
+    # o próprio elemento); aí a fixidade infix não se aplica e ele falava o nome
+    # literal, "cross product". A fixidade nofix cobre esse caso. Idem dot-product.
+    "cross-product": "infix=vetorial: produto vetorial: produto vetorial || nofix=vetorial: produto vetorial: produto vetorial",
+    "dot-product": "infix=escalar: produto escalar: produto escalar || nofix=escalar: produto escalar: produto escalar",
 
     "divergence": "function= ; div: divergente: divergente; fim do divergente",
     "curl": "function= ; rotacional; fim do rotacional",
@@ -449,13 +455,19 @@
     ]
 
     # stop when regularity begins
+# A lista parava em "meio": de 1/3 em diante o motor caía nos ordinais
+# comuns e falava "1 terceiro". Até 1/10 a forma é a do denominador de
+# fração ("um terço", "um décimo"); de 1/11 em diante entra "avos", que já
+# está nas listas plurais acima. Ver ACHADOS 9.
 - NumbersOrdinalFractionalOnes: [
-         "zero", "primeiro", "meio"
+         "zero", "primeiro", "meio", "terço", "quarto", "quinto", "sexto", "sétimo", "oitavo", "nono",
+         "décimo"
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "zeros", "primeiros", "meios"
+         "zeros", "primeiros", "meios", "terços", "quartos", "quintos", "sextos", "sétimos", "oitavos", "nonos",
+         "décimos"
     ]
 
 

@@ -608,6 +608,17 @@
   - x: "*[position() > 1]"
 
 # Here are the intent hints that need to be handled: 'prefix' | 'infix' | 'postfix' | 'function' | 'silent'
+- name: produto-vetorial-ou-escalar-sem-filhos
+  # O motor infere ⃗a × ⃗b e ⃗a ⋅ ⃗b como um elemento <cross-product>/<dot-product>
+  # SEM filhos (o próprio operador vira o elemento, data-from-mathml='mo').
+  # Nenhuma regra de intent casa com count(*)=0, e a regra genérica falava o
+  # NOME do intent: "cross product", em inglês. Aqui passa pelo IntentMappings
+  # do pt. Ver ACHADOS 9.4.
+  tag: [cross-product, dot-product]
+  match: "count(*)=0"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'infix')"
+
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"

@@ -13,4 +13,5 @@ mod alphabets;
 mod intent;
 mod units;
 mod unicode_full;
+mod escuta;      // gerador do pacote de escuta (#[ignore])
 

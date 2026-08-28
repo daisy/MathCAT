@@ -108,10 +108,37 @@ Princípio: termo matemático, não tradução do nome Unicode.
 | `{ }` | o conjunto vazio | com artigo | DEFINIDA |
 | ∅ | conjunto vazio | sem artigo; acompanha o en ('empty set') | PENDENTE DE DECISÃO (idem) |
 
-## Segundo caminho não coberto: `IntentMappings`
+## Caracteres do corpus real (rodada 9)
+
+| símbolo | leitura adotada | alternativas | status | onde está |
+|---|---|---|---|---|
+| 𝐀-𝐙 𝐚-𝐳, 𝑨-𝒛 (negrito, negrito itálico) | "x negrito" (posposto) | — | DEFINIDA | `unicode-full.yaml` bloco "Rodada 9" |
+| 𝚨-𝛚, 𝜜-𝝎 (grego negrito) | "alfa negrito" | — | DEFINIDA | idem |
+| ⟨ ⟩ ⟪ ⟫ | abre/fecha colchete angular (duplo) | "produto interno de" (exige inferência, não palavra) | PENDENTE DE ESCUTA | idem |
+| ¯ sobre variável | "x barra" | "x com barra", "média de x" | PENDENTE DE ESCUTA | idem (U+00AF; o motor canonicaliza U+0304/U+203E para ele) |
+| ⟵ ⟶ ⟷ ⟸ ⟹ ⟺ | seta longa...; implica; se e somente se | — | DEFINIDA | idem |
+| µ Ω ℧ Å Å soltos | mi, ômega, mho, angstrom | "micro" só dentro de unidade | DEFINIDA | idem |
+| ∫ e família (artigo) | "a integral" | "o integral" (era) | DEFINIDA | `SharedRules/general.yaml` bigop-both/under, largeop |
+| 1/3 … 1/10 | "um terço" … "um décimo"; plural "terços" | "1 terceiro" (era) | DEFINIDA | `definitions.yaml` NumbersOrdinalFractional* |
+| ‖x‖ (intent `magnitude`) | "a norma de x" | "magnitude" (vazava en) | DEFINIDA | `definitions.yaml` IntentMappings |
+| ⃗a × ⃗b, ⃗a ⋅ ⃗b | "produto vetorial", "produto escalar" | "cross product" (vazava o nome literal) | DEFINIDA | `definitions.yaml` (nofix) + `SharedRules/default.yaml` |
+| ∼ em estatística | "varia com" | "tem distribuição", "segue" | PENDENTE DE DECISÃO | `unicode.yaml` ∼ |
+| \mid em P(A\|B) | "divide" (U+2223) | "dado" — exige tratar U+2223 como condicional em contexto de P( ) | PENDENTE DE DECISÃO | — |
+
+## Recuo controlado
+
+Caracteres sem regra pt recebem a entrada do inglês, gerada por
+`PythonScripts/gerar_recuo_en.py` no fim do `unicode-full.yaml` (entre
+marcadores). Estilo já definido vira o termo do pt; o resto fica em inglês com
+`t:` minúsculo. Status de cada um: **PENDENTE DE ESCUTA** por definição —
+traduzir movendo a entrada para cima do marcador.
+
+## Segundo caminho: `IntentMappings` — prioridade baixa, medida
 
 O `definitions.yaml` do pt define 30 dos 216 intents do en. `element-of`,
 `member-of`, `not-member-of`, `subset`, `less-than` e todas as trigonométricas
-vazam inglês com fixidade errada ("element of de x vírgula"). Nenhuma decisão
-desta tabela chega lá até que os intents sejam traduzidos. Status:
-**PENDENTE DE DECISÃO** (é tradução em massa, não escolha de termo).
+vazam inglês com fixidade errada ("element of de x vírgula") — **mas só se o
+MathML trouxer `intent=`, e o do ACESSÍLIA nunca traz** (ACHADOS 9.1). O que
+importa são os intents que o motor infere; os que apareceram no corpus
+(`magnitude`, `cross-product`, `dot-product`) estão DEFINIDOS acima. Status do
+restante: **PENDENTE DE DECISÃO**, a tratar quando algum aparecer na fala.
