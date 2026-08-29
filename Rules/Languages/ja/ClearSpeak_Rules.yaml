@@ -481,13 +481,13 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [t: "空のセット"]      # phrase('the empty set')
+      then: [t: "空集合"]      # phrase('the empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [t: ""]      # phrase('the' set of all integers)
-      - t: "セット"      # phrase(this is a 'set of' numbers)
+      - t: "集合"      # phrase(this is a 'set of' numbers)
       - test:
           if: "$ClearSpeak_Sets != 'woAll'"
           then: [t: "すべて"]      # phrase(the set of 'all' integers)
@@ -501,7 +501,7 @@
           - test:
               if: "$Verbosity!='Terse'"
               then: [t: ""]      # phrase('the' set of integers)
-          - t: "セット"      # phrase(this is a 'set' of integers)
+          - t: "集合"      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 - # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed

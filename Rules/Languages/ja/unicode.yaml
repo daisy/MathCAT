@@ -502,32 +502,32 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "サブセット"
+     - t: "部分集合"
  - "⊃":                                          # 0x2283
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "スーパーセット"
+     - t: "上位集合"
  - "⊄":                                          # 0x2284
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "サブセットではなく"
+     - t: "部分集合でない"
  - "⊅":                                          # 0x2285
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "スーパーセットではない"
+     - t: "上位集合でない"
  - "⊆":                                          # 0x2286
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "または等しいのサブセット"
+     - t: "部分集合または等しい"
  - "⊇":                                          # 0x2287
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "スーパーセットまたは等しく"
+     - t: "上位集合または等しい"
 
  # --- restored short definitions that differ from unicode-full ---
  - "⇒": [t: "右ダブル矢印"]             # 0x21d2

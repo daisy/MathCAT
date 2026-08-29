@@ -17,15 +17,15 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "複雑な数字"]      # phrase('complex numbers' consist of two parts)
+      then: [t: "複素数"]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "自然な数字"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [t: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "合理的な番号"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [t: "有理数"]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][.='ℝ']"
       then: [t: "実数"]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "インテガーズ"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [t: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
       else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
@@ -57,9 +57,9 @@
   - bookmark: "@id"
   - test:
     - if: ".='ℂ'"
-      then: [t: "複雑な数字"]      # phrase('the complex numbers' include 2 parts)
+      then: [t: "複素数"]      # phrase('the complex numbers' include 2 parts)
     - else_if: ".='ℕ'"
-      then: [t: "自然な数字"]      # phrase('the natural numbers' begin at 1)
+      then: [t: "自然数"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
       then: [t: "合理的な数字"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
