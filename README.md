@@ -1,7 +1,6 @@
 # MathCAT: Math Capable Assistive Technology
 
-<img src="logo.png" width="110" style="position: relative; top: 16px; z-index: -1; width: 110px; height: auto;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT.">
-is a library that supports conversion of MathML to:
+<img src="logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> is a library that supports conversion of MathML to:
 
 
 * Speech strings (in several languages) with embedded speech engine commands

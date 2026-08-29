@@ -4,7 +4,7 @@ lang: ru
 ref: helpers
 title: Руководство переводчика и разработчика правил
 ---
-# <img src="../logo.png" width="110" style="position: relative; top: 16px; z-index: -1; width: 110px; height: auto;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> Руководство переводчика и разработчика правил
+# <img src="../logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> Руководство переводчика и разработчика правил
 
 ## Информация для разработчиков правил и переводчиков MathCAT
 Эта страница находится в процессе подготовки.
