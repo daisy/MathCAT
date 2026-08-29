@@ -266,7 +266,23 @@ fn set_membership() -> Result<()> {
 #[test]
 fn summation() -> Result<()> {
     let expr = "<math><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>i</mi></math>";
-    test("ja", "SimpleSpeak", expr, "総和 から i イコール 1, に n の i")?;
+    test("ja", "SimpleSpeak", expr, "総和 i イコール 1 から, n まで オブ i")?;
+    return Ok(());
+}
+
+/// A large operator with only a lower limit takes the postposed "over" cue.
+#[test]
+fn summation_lower_limit_only() -> Result<()> {
+    let expr = "<math><munder><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow></munder><mi>i</mi></math>";
+    test("ja", "SimpleSpeak", expr, "総和 i イコール 1 にわたる オブ i")?;
+    return Ok(());
+}
+
+/// The same shape is used for the other large operators.
+#[test]
+fn product_with_limits() -> Result<()> {
+    let expr = "<math><munderover><mo>&#x220F;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>i</mi></math>";
+    test("ja", "SimpleSpeak", expr, "プロダクト i イコール 1 から, n まで オブ i")?;
     return Ok(());
 }
 
@@ -274,6 +290,6 @@ fn summation() -> Result<()> {
 #[test]
 fn definite_integral() -> Result<()> {
     let expr = "<math><msubsup><mo>&#x222B;</mo><mn>0</mn><mn>1</mn></msubsup><mi>x</mi><mo>&#x2146;</mo><mi>x</mi></math>";
-    test("ja", "SimpleSpeak", expr, "積分 から 0, に 1 の; x 微分 d x")?;
+    test("ja", "SimpleSpeak", expr, "積分 0 から, 1 まで オブ; x 微分 d x")?;
     return Ok(());
 }

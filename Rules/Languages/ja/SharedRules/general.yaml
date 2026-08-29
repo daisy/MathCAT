@@ -156,14 +156,14 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
   - x: "*[2]"
+  - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
   - pause: short
-  - t: "に"      # phrase(adding 6 'to' 6 equals  12)
   - x: "*[3]"
+  - t: "まで"      # phrase(adding 6 'to' 6 equals  12)
   - test:
       if: "following-sibling::*"
-      then: [t: "の"]      # phrase(the square root 'of' 25 equals 5)
+      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: bigop-under
   tag: large-op
@@ -173,11 +173,11 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "分の"      # phrase(2 'over' 3 equals two thirds)
   - x: "*[2]"
+  - t: "にわたる"      # phrase(2 'over' 3 equals two thirds)
   - test:
       if: "following-sibling::*"
-      then: [t: "の"]      # phrase(the square root 'of' 25 equals 5)
+      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: largeop
   tag: mrow
