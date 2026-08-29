@@ -173,24 +173,19 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "スクエア"]      # phrase(5 'squared' equals 25)
-      else: [t: "キューブド"]      # phrase(5 'cubed' equals 125)
+      then: [t: "の 2 乗"]      # phrase(5 'squared' equals 25)
+      else: [t: "の 3 乗"]      # phrase(5 'cubed' equals 125)
 - name: function-power
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [ot: ""]      # # phrase('the' fourth power of 10)
-  - bookmark: "*[2]/@id"
-  - test:
-      if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - t: "パワーの"      # phrase(the fourth 'power of' 2)
-  - pause: short
   - x: "*[1]"
+  - t: "の"      # phrase(the fourth 'power of' 2)
+  - bookmark: "*[2]/@id"
+  - x: "*[2]"
+  - t: "乗"      # phrase(the fourth 'power of' 2)
+  - pause: short
 
 # non-function rules for power
 - name: squared-or-cubed
@@ -201,8 +196,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.=2]"
-      then: [t: "スクエア"]      # phrase(5 'squared' equals 25)
-      else: [t: "キューブド"]      # phrase(5 'cubed' equals 125)
+      then: [t: "の 2 乗"]      # phrase(5 'squared' equals 25)
+      else: [t: "の 3 乗"]      # phrase(5 'cubed' equals 125)
 
 - name: simple-integer
   tag: power
@@ -210,10 +205,9 @@
   replace:
   - x: "*[1]"
   - t: "の"      # phrase(15 raised 'to the' second power equals 225)
-  - test:
-      if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
+  - x: "*[2]"
+  - t: "乗"      # phrase(15 raised to the second 'power' equals 225)
+
 - name: simple-negative-integer
   tag: power
   match:
@@ -223,6 +217,8 @@
   - x: "*[1]"
   - t: "の"      # phrase(15 raised 'to the' second power equals 225)
   - x: "*[2]"
+  - t: "乗"      # phrase(15 raised to the second 'power' equals 225)
+
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
@@ -230,7 +226,7 @@
   - x: "*[1]"
   - t: "の"      # phrase(15 raised 'to the' second power equals 225)
   - x: "*[2]"
-  - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
+  - t: "乗"      # phrase(15 raised to the second 'power' equals 225)
 
 - name: simple
   tag: power
@@ -239,6 +235,7 @@
   - x: "*[1]"
   - t: "の"      # phrase(15 raised 'to the' second power equals 225)
   - x: "*[2]"
+  - t: "乗"      # phrase(15 raised to the second 'power' equals 225)
 
 - name: nested
   # it won't end in "power" if the exponent is simple enough
@@ -252,13 +249,13 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(15 'raised to the' second power equals 225)
+  - t: "の上付き"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
       then:
-      - t: "エンド指数"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+      - t: "上付き終了"      # phrase(start 2 raised to the exponent 4 'end of exponent')
       - pause: short
       else:
       - pause: medium
@@ -268,9 +265,9 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(15 'raised to the' second power equals 225)
+  - t: "の上付き"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
-  - t: "パワー"      # phrase(15 raised to the second 'power' equals 225)
+  - t: "上付き終了"      # phrase(15 raised to the second 'power' equals 225)
   - pause: short
 
 #

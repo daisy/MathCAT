@@ -254,25 +254,20 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.='2']"
-      then: [t: "スクエア"]      # phrase(25 equals 5 'squared')
-      else: [t: "キューブド"]      # phrase(625 equals 5 'cubed')
+      then: [t: "の 2 乗"]      # phrase(25 equals 5 'squared')
+      else: [t: "の 3 乗"]      # phrase(625 equals 5 'cubed')
 
 - name: function-power
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [ot: ""]      # phrase('the' third power of 2)
-  - bookmark: "*[2]/@id"
-  - test:
-      if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - t: "パワーの"      # phrase(the third 'power of' 6)
-  - pause: short
   - x: "*[1]"
+  - t: "の"      # phrase(the third 'power of' 6)
+  - bookmark: "*[2]/@id"
+  - x: "*[2]"
+  - t: "乗"      # phrase(the third 'power of' 6)
+  - pause: short
 
 - name: AfterPower-nested
   tag: power
@@ -281,19 +276,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "緊急事態に育つ"      # phrase(5 'raised to the exponent' x plus 1)
+  - t: "の上付き"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "エンド指数"      # phrase(5 raised to the exponent x plus 1 'end exponent')
+  - t: "上付き終了"      # phrase(5 raised to the exponent x plus 1 'end exponent')
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - t: "力に育つ"      # phrase(x is 'raised to the power' 4)
+  - t: "の"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
+  - t: "乗"      # phrase(x is raised to the 'power' 4)
   - pause: short
 
 - name: squared
@@ -302,7 +298,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "スクエア"      # phrase(7 'squared' equals 49)
+  - t: "の 2 乗"      # phrase(7 'squared' equals 49)
 
 - name: cubed
   tag: power
@@ -310,7 +306,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "キューブド"      # phrase(5 'cubed' equals 125)
+  - t: "の 3 乗"      # phrase(5 'cubed' equals 125)
 
 - name: simple-integer
   tag: power
@@ -318,13 +314,8 @@
   replace:
   - x: "*[1]"
   - t: "の"      # phrase(2 raised 'to the' power 7)
-  - test:
-      if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "パワー"]      # phrase(2 raised to the 'power' 7)
+  - x: "*[2]"
+  - t: "乗"      # phrase(2 raised to the 'power' 7)
 
 - name: simple-negative-integer
   tag: power
@@ -336,9 +327,7 @@
   - x: "*[1]"
   - t: "の"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "パワー"]      # phrase(2 raised to the 'power' 7)
+  - t: "乗"      # phrase(2 raised to the 'power' 7)
 
 - name: simple-var
   tag: power
@@ -347,10 +336,7 @@
   - x: "*[1]"
   - t: "の"      # phrase(3 raised 'to the' power 7)
   - x: "*[2]"
-  - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "パワー"]      # phrase(2 raised to the 'power' 7)
+  - t: "乗"      # phrase(2 raised to the 'power' 7)
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -375,9 +361,9 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(x 'raised to the' second power)
+  - t: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "パワー"      # phrase(x raised to the second 'power')
+  - t: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
@@ -396,9 +382,9 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(x 'raised to the' second power)
+  - t: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "パワー"      # phrase(x raised to the second 'power')
+  - t: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -419,9 +405,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(x 'raised to the' second power)
+  - t: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "パワー"      # phrase(x raised to the second 'power')
+  - t: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -444,9 +430,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(x 'raised to the' second power)
+  - t: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "パワー"      # phrase(x raised to the second 'power')
+  - t: "上付き終了"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -454,20 +440,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "緊急事態に育つ"      # phrase(x is 'raised to the exponent')
+  - t: "の上付き"      # phrase(x is 'raised to the exponent')
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "エンド指数"      # phrase(and now 'end exponent' has been reached)
+  - t: "上付き終了"      # phrase(and now 'end exponent' has been reached)
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "に上げられた"      # phrase(x 'raised to the' second power)
+  - t: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "パワー"      # phrase(x raised to the second 'power')
+  - t: "上付き終了"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows

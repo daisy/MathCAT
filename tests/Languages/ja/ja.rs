@@ -47,11 +47,49 @@ fn square_root() -> Result<()> {
     return Ok(());
 }
 
-/// Verifies that a squared value uses the seeded Japanese exponent wording.
+/// An exponent is read "<base> の <exponent> 乗"; 乗 closes it. Japanese has no
+/// ordinal form here, so 2 is 2 and not "second".
 #[test]
 fn squared() -> Result<()> {
     let expr = "<math><msup><mn>3</mn><mn>2</mn></msup></math>";
-    test("ja", "ClearSpeak", expr, "3 スクエア")?;
+    test("ja", "ClearSpeak", expr, "3 の 2 乗")?;
+    test("ja", "SimpleSpeak", expr, "3 の 2 乗")?;
+    return Ok(());
+}
+
+/// Same shape for a cube.
+#[test]
+fn cubed() -> Result<()> {
+    let expr = "<math><msup><mn>5</mn><mn>3</mn></msup></math>";
+    test("ja", "ClearSpeak", expr, "5 の 3 乗")?;
+    test("ja", "SimpleSpeak", expr, "5 の 3 乗")?;
+    return Ok(());
+}
+
+/// The pattern does not change for exponents above three.
+#[test]
+fn integer_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>5</mn></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の 5 乗")?;
+    test("ja", "SimpleSpeak", expr, "x の 5 乗")?;
+    return Ok(());
+}
+
+/// A variable exponent is read the same way (English adds "-th" here; Japanese does not).
+#[test]
+fn variable_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mi>n</mi></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の n 乗")?;
+    test("ja", "SimpleSpeak", expr, "x の n 乗")?;
+    return Ok(());
+}
+
+/// A complex exponent is read as a superscript instead, with an explicit close:
+/// 「の上付き … 上付き終了」. Reading it as 乗 would end a nested exponent 「… 乗 乗」.
+#[test]
+fn complex_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></msup></math>";
+    test("ja", "SimpleSpeak", expr, "x の上付き y プラス 1 上付き終了")?;
     return Ok(());
 }
 
