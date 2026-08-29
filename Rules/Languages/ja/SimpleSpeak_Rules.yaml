@@ -44,7 +44,7 @@
   - pause: short
   - test:
       if: "not(IsNode(*[1], 'leaf')) and $Impairment = 'Blindness'"
-      then: [t: "根号終わり", pause: medium]  # phrase(start the square root of x 'end of root')
+      then: [t: "根号終了", pause: medium]  # phrase(start the square root of x 'end of root')
 
 - name: default
   tag: root
@@ -60,15 +60,10 @@
         then: [t: "平方根"]        # phrase(the 'square root' of x)
       - else_if: "*[2][.='3']"
         then: [t: "立方根"]        # phrase(the 'cube root' of x)
-      - else: [x: "ToOrdinal(*[2])", t: "根"]      # phrase(the square 'root' of 25)
+      - else: [x: "*[2]", t: "乗根"]      # phrase(the square 'root' of 25)
       else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-          else: [x: "*[2]"]
-      - t: "根"        # phrase(the square 'root' of)
+      - x: "*[2]"
+      - t: "乗根"        # phrase(the square 'root' of)
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "の"]        # phrase(the square root 'of' x)
@@ -76,7 +71,7 @@
   - pause: short
   - test:
       if: "not(IsNode(*[1], 'leaf')) and $Impairment = 'Blindness'"
-      then: [t: "根号終わり", pause: medium]  # phrase(start the square root of x 'end of root')
+      then: [t: "根号終了", pause: medium]  # phrase(start the square root of x 'end of root')
 
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own

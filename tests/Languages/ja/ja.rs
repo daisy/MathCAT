@@ -74,6 +74,24 @@ fn cube_root() -> Result<()> {
     return Ok(());
 }
 
+/// An n-th root is 「n 乗根」 -- the index, then 乗根. English builds an ordinal
+/// ("the fifth root"); Japanese has no such form and reads the number as it is.
+#[test]
+fn nth_root() -> Result<()> {
+    let expr = "<math><mroot><mi>x</mi><mn>5</mn></mroot></math>";
+    test("ja", "ClearSpeak", expr, "5 乗根 の x")?;
+    test("ja", "SimpleSpeak", expr, "5 乗根 の x")?;
+    return Ok(());
+}
+
+/// The same holds when the index is a variable (English appends "-th" here).
+#[test]
+fn variable_index_root() -> Result<()> {
+    let expr = "<math><mroot><mi>x</mi><mi>n</mi></mroot></math>";
+    test("ja", "ClearSpeak", expr, "n 乗根 の x")?;
+    return Ok(());
+}
+
 /// Verifies the basic Japanese SimpleSpeak subscript pattern.
 #[test]
 fn subscript() -> Result<()> {
