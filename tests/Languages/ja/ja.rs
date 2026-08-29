@@ -9,11 +9,33 @@ fn arithmetic_operators() -> Result<()> {
     return Ok(());
 }
 
-/// Verifies that a simple fraction is spoken with Japanese fraction wording.
+/// A fraction of two numbers is read denominator-first in Japanese:
+/// 21/22 is "22 分の 21", literally "of 22, 21". Reading it the other way round
+/// says 22/21.
 #[test]
 fn simple_fraction() -> Result<()> {
     let expr = "<math><mfrac><mn>21</mn><mn>22</mn></mfrac></math>";
-    test("ja", "ClearSpeak", expr, "21 分の 22")?;
+    test("ja", "ClearSpeak", expr, "22 分の 21")?;
+    test("ja", "SimpleSpeak", expr, "22 分の 21")?;
+    return Ok(());
+}
+
+/// The denominator-first pattern is not limited to the small numbers that English
+/// has ordinals for ("three fourths"); it is how any two numbers are read.
+#[test]
+fn numeric_fraction_large_denominator() -> Result<()> {
+    let expr = "<math><mfrac><mn>3</mn><mn>128</mn></mfrac></math>";
+    test("ja", "ClearSpeak", expr, "128 分の 3")?;
+    return Ok(());
+}
+
+/// When the parts are not plain numbers, Japanese keeps the written order and
+/// borrows the English preposition as "オーバー" instead (Yamaguchi et al. 1996).
+#[test]
+fn fraction_of_variables() -> Result<()> {
+    let expr = "<math><mfrac><mi>x</mi><mi>y</mi></mfrac></math>";
+    test("ja", "ClearSpeak", expr, "x オーバー y")?;
+    test("ja", "SimpleSpeak", expr, "x オーバー y")?;
     return Ok(());
 }
 

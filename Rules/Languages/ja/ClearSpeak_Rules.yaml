@@ -139,19 +139,21 @@
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - t: "パーカー"      # phrase('5 meters 'per' second)
+  - t: "毎"      # phrase('5 meters 'per' second)
   - x: "*[2]"
 
 - name: common-fraction
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))]"
-  variables: [IsPlural: "*[1]!=1"]
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators))]   and"
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"
   replace:
+  # Japanese says the denominator first: 3/4 is "4 分の 3". There is no separate ordinal
+  # form to build (unlike "three fourths"), so the pattern is uniform for any two numbers.
+  - x: "*[2]"
+  - t: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
 
 - name: fraction-over-simple
   tag: fraction
@@ -168,14 +170,14 @@
           then: [ot: ""]
       - t: "分数"      # phrase(the 'fraction' with 3 over 4)
   - x: "*[1]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       # very ugly!!! -- replicate nested ordinal fraction as they are an exception
-      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
+      if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] and *[2][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] ) )"
       then:
       - pause: short
-      - t: "分数終わり"      # phrase(7 over 8 'end fraction')
+      - t: "分数終了"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
@@ -197,13 +199,13 @@
   - ")"
   replace:
   - x: "*[1]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - t: "分数終わり"      # phrase(7 over 8 'end fraction')
+      - t: "分数終了"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - name: default
@@ -211,20 +213,20 @@
   match: "."
   replace:
   - ot: ""      # phrase(5 is 'the' square toot of 25)
-  - t: "分子 との 分数"      # phrase(the 'fraction with numerator' 6)
+  - t: "分数"      # phrase(the 'fraction with numerator' 6)
   - test:
       if: "not(IsNode(*[1], 'simple'))"
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - t: "デノミネーター"      # phrase(the fraction with numerator 5 'and denominator' 8)
+  - t: "オーバー"      # phrase(the fraction with numerator 5 'and denominator' 8)
   - x: "*[2]"
   - pause: long
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='GeneralEndFrac'"
       then:
       - pause: short
-      - t: "分数終わり"      # phrase(the fraction with 3 over 4 'end fraction')
+      - t: "分数終了"      # phrase(the fraction with 3 over 4 'end fraction')
       - pause: short
 
 # rules for functions raised to a power
@@ -367,8 +369,8 @@
   - "     *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   # base is mn, mi, common fraction ([xxx] case)
   - "     *[1][self::m:mn or self::m:mi or "
-  - "          self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                        *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "          self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                        *[2][self::m:mn][not(contains(., '.'))]]"
   - "         ]"
   - "    ]"
   replace:
@@ -387,8 +389,8 @@
   - "                *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3"
   # base is mn, mi, common fraction ([xxx] case)
   - "                *[1][self::m:mn or self::m:mi or "
-  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                                   *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                                   *[2][self::m:mn][not(contains(., '.'))]]"
   - "               ]"
   - "          ]"
   - "     ]"
@@ -411,8 +413,8 @@
   - "       *[2][self::m:mo][.='⁢'] and " # invisible times
   # base is mn, or common fraction ([xxx] case)
   - "       *[1][self::m:mn or "
-  - "            self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                          *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "            self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                          *[2][self::m:mn][not(contains(., '.'))]]"
   - "           ]"
   - "      ]"
   replace:
@@ -435,8 +437,8 @@
   - "       *[1][self::m:minus and count(*)=1 and "
   # base is mn, or common fraction ([xxx] case)
   - "            *[1][self::m:mn or "
-  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "                                  *[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]]"
+  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "                                  *[2][self::m:mn][not(contains(., '.'))]]"
   - "                ]"
   - "           ]"
   - "      ]"

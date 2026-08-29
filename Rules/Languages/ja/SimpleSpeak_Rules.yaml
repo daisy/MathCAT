@@ -83,12 +83,13 @@
 - name: common-fraction
   tag: fraction
   match:
-  - "*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
-  - "*[2][self::m:mn][not(contains(., '.')) and 2<= text() and text()<=10]"
-  variables: [IsPlural: "*[1]!=1"]
+  - "*[1][self::m:mn][not(contains(., '.'))]   and"
+  - "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
+  # Japanese says the denominator first: 3/4 is "4 分の 3".
+  - x: "*[2]"
+  - t: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
 
 - name: common-fraction-mixed-number
   tag: fraction
@@ -96,10 +97,10 @@
   - "preceding-sibling::*[1][self::m:mo][.='⁤'] and" # preceding element is invisible plus
   - "*[1][self::m:mn][not(contains(., '.'))]   and"
   - "*[2][self::m:mn][not(contains(., '.'))]"
-  variables: [IsPlural: "*[1]!=1"]
   replace:
+  - x: "*[2]"
+  - t: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
 
 
 # Units (e.g., meters per second, m^2/s^2, (3m^2)/s)
@@ -112,7 +113,7 @@
   - "BaseNode(*[2])[contains(@data-intent-property, ':unit')] "
   replace:
   - x: "*[1]"
-  - t: "パーカー"      # phrase('5 meters 'per' second)
+  - t: "毎"      # phrase('5 meters 'per' second)
   - x: "*[2]"
 
 - name: simple
@@ -125,7 +126,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - pause: short
 
@@ -141,7 +142,7 @@
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -149,7 +150,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "分数終わり"]      # phrase(start 7 over 8 'end of fraction')
+      then: [t: "分数終了"]      # phrase(start 7 over 8 'end of fraction')
   - pause: medium
 
 # rules for functions raised to a power
