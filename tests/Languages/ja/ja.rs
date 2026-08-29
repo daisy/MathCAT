@@ -62,6 +62,15 @@ fn variable_exponent() -> Result<()> {
     return Ok(());
 }
 
+/// A complex exponent is read as a superscript instead, with an explicit close:
+/// 「の上付き … 上付き終了」. Reading it as 乗 would end a nested exponent 「… 乗 乗」.
+#[test]
+fn complex_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mrow><mi>y</mi><mo>+</mo><mn>1</mn></mrow></msup></math>";
+    test("ja", "SimpleSpeak", expr, "x の上付き y プラス 1 上付き終了")?;
+    return Ok(());
+}
+
 /// Verifies both Japanese gradient readings selected by verbosity.
 #[test]
 fn gradient() -> Result<()> {
