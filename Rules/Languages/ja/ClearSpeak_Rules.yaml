@@ -512,6 +512,7 @@
   # does not distribute over a disjunction the way it does in English, so a literal または would say
   # "not(a) or not(b)". Each endpoint therefore carries its own verb, joined by the continuative form.
   name: ClearSpeak-intervals # avoid overriding with default "intervals" name
+  # audit-ignore -- the clause structure intentionally differs from en (see comment above)
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
   - is_intervals_end_infinity: "*[2][.='∞'or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
