@@ -262,7 +262,7 @@ fn summation_lower_limit_only() -> Result<()> {
 #[test]
 fn product_with_limits() -> Result<()> {
     let expr = "<math><munderover><mo>&#x220F;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>i</mi></math>";
-    test("ja", "SimpleSpeak", expr, "総積 i イコール 1 から, n まで オブ i")?;
+    test("ja", "SimpleSpeak", expr, "プロダクト i イコール 1 から, n まで オブ i")?;
     return Ok(());
 }
 
