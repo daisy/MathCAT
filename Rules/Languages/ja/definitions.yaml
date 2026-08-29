@@ -309,8 +309,8 @@
     "outer-product": "infix=外積",
     "parallel-to": "infix=平行へ",
     "perpendicular": "infix=垂直へ",
-    "plus": "infix=プラス || prefix=正の", # Prefix not tested
-    "minus": "infix=マイナス || prefix=負の", # Prefix not tested
+    "plus": "infix=プラス || prefix=プラス", # Prefix not tested
+    "minus": "infix=マイナス || prefix=マイナス", # Prefix not tested
     "plus-or-minus": "infix=プラスまたはマイナス",
     "precedes": "infix=に先行する",
     "proportional": "infix=比例する",

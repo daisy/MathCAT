@@ -93,6 +93,17 @@ fn complex_exponent() -> Result<()> {
     return Ok(());
 }
 
+/// A leading minus is read マイナス, the same word as the binary operator.
+/// 負の / 正の name the *kind* of number (負の数 = "the negative numbers") and are
+/// not how −5 is read aloud.
+#[test]
+fn negative_number() -> Result<()> {
+    let expr = "<math><mo>&#x2212;</mo><mn>5</mn></math>";
+    test("ja", "ClearSpeak", expr, "マイナス 5")?;
+    test("ja", "SimpleSpeak", expr, "マイナス 5")?;
+    return Ok(());
+}
+
 /// Verifies both Japanese gradient readings selected by verbosity.
 #[test]
 fn gradient() -> Result<()> {
