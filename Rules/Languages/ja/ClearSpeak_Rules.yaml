@@ -463,14 +463,13 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' absolute value of 25)
   - x: "$WordToSay"
-  - t: "の"      # phrase(the absolute value 'of' 25)
   - x: "*[1]"
   - test:
       if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
       then:
       - pause: short
-      - t: "リリース"      # phrase('end' absolute value)
       - x: "$WordToSay"
+      - t: "閉じ"      # phrase('end' absolute value)
   - pause: short
 
 - name: set
