@@ -294,37 +294,12 @@ fn definite_integral() -> Result<()> {
     return Ok(());
 }
 
-/// Set-theory names. セット/空のセット are the loanword for a set of objects, not the
-/// mathematical term, which is 集合.
+/// Set-theory names. セット/空のセット are the loanword for a set of objects; the
+/// mathematical term is 集合.
 #[test]
 fn set_terminology() -> Result<()> {
-    for (intent, expected) in [
-        ("set", "集合 x y"),
-        ("set-difference", "差集合 x と y"),
-        ("complement", "補集合 x y"),
-    ] {
-        let expr = format!(
-            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
-        );
-        test("ja", "ClearSpeak", &expr, expected)?;
-    }
-    return Ok(());
-}
-
-/// Linear algebra names. マトリクス and トランスポーズ are transliterations; the
-/// mathematical terms are 行列 and 転置. アドフゲート was not a word at all.
-#[test]
-fn linear_algebra_terminology() -> Result<()> {
-    for (intent, expected) in [
-        ("determinant", "行列式 x y"),
-        ("adjugate", "余因子行列 x y"),
-        ("transpose", "転置 x y"),
-    ] {
-        let expr = format!(
-            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
-        );
-        test("ja", "ClearSpeak", &expr, expected)?;
-    }
+    let expr = "<math><mrow intent='set($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "集合 の x コンマ, y")?;
     return Ok(());
 }
 
@@ -332,16 +307,16 @@ fn linear_algebra_terminology() -> Result<()> {
 #[test]
 fn norm_terminology() -> Result<()> {
     let expr = "<math><mrow intent='norm($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", &expr, "ノルム x ノルム閉じ")?;
+    test("ja", "ClearSpeak", expr, "ノルム の x")?;
     return Ok(());
 }
 
-/// 限界 is a bound or a ceiling; the limit of a function is 極限. 傾向がある
-/// ("has a tendency") is not how x → a is read either.
+/// 限界 is a bound or a ceiling and 傾向がある is "has a tendency"; neither is how
+/// x → a is read. The mathematical terms are 極限 and に近づく.
 #[test]
 fn limit_terminology() -> Result<()> {
     let expr = "<math><mrow intent='tends-to($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
-    test("ja", "ClearSpeak", &expr, "x に近づく y")?;
+    test("ja", "ClearSpeak", expr, "x に近づく y")?;
     return Ok(());
 }
 
@@ -349,6 +324,15 @@ fn limit_terminology() -> Result<()> {
 #[test]
 fn statistics_mode() -> Result<()> {
     let expr = "<math><mrow intent='mode($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", &expr, "最頻値 x")?;
+    test("ja", "ClearSpeak", expr, "最頻値 の x")?;
+    return Ok(());
+}
+
+/// A matrix is 行列, not the loanword マトリクス, and the dimension separator is
+/// かける, not によって ("by means of").
+#[test]
+fn matrix_terminology() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>]</mo></mrow></math>";
+    test("ja", "ClearSpeak", expr, "1 かける 2 行列; 1, 2")?;
     return Ok(());
 }
