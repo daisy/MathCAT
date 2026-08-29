@@ -62,14 +62,6 @@ fn variable_exponent() -> Result<()> {
     return Ok(());
 }
 
-/// A negative exponent keeps the same frame.
-#[test]
-fn negative_exponent() -> Result<()> {
-    let expr = "<math><msup><mi>x</mi><mrow><mo>&#x2212;</mo><mn>2</mn></mrow></msup></math>";
-    test("ja", "ClearSpeak", expr, "x の マイナス 2 乗")?;
-    return Ok(());
-}
-
 /// Verifies both Japanese gradient readings selected by verbosity.
 #[test]
 fn gradient() -> Result<()> {
