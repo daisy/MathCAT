@@ -113,17 +113,17 @@
     # "derivative":"function=the derivative; with respect to", # Property ???
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
-    "limit": "prefix=限界として:限界として",
-    "tends-to":"infix=傾向がある",
-    "tends-to-from-above":"infix=上記から",
-    "tends-to-from-below":"infix=以下に傾向がある",
+    "limit": "prefix=極限:極限",
+    "tends-to":"infix=に近づく",
+    "tends-to-from-above":"infix=上から近づく",
+    "tends-to-from-below":"infix=下から近づく",
 
 
     ### Sets
-    "set": "function=; セット: セット",
-    "set-difference":"function=セットの違い | と || infix=マイナス",
+    "set": "function=; 集合: 集合",
+    "set-difference":"function=差集合 | と || infix=マイナス",
     "complement":"function=補集合",
-    "empty-set":"nofix=空のセット",
+    "empty-set":"nofix=空集合",
     "cardinality":"function=濃度", # NOTE: does not have a defined speech template in website
     "list":"function=リスト",
     "tuple": "function=;タプル:タプル",
@@ -173,25 +173,25 @@
     "standard-deviation":"function=標準偏差",
     "variance":"function=分散",
     "median":"function=中央値",
-    "mode":"function=モード",
+    "mode":"function=最頻値",
 
     "conditional-probability":"function=確率 | 与えられた", 
 
 
     ### Linear Algebra
     "vector": "function=; ベクトル || prefix=ベクトル", # prefix not tested, also prefix not on webpage
-    "matrix":"function=マトリクス", # NOTE: Failing test, recheck
+    "matrix":"function=行列", # NOTE: Failing test, recheck
     "determinant":"function=行列式",
-    "adjugate":"function=アドフゲート",
+    "adjugate":"function=余因子行列",
     "magnitude":"function=大きさ",
-    "norm": "function=;規範:規範:規範;エンド規範",
+    "norm": "function=;ノルム:ノルム:ノルム;ノルム閉じ",
     "span":"function=線形包",
 
     "unit-vector":"prefix=単位ベクトル",
 
-    "identity-matrix":"nofix=アイデンティティ マトリックス", # NOTE: no function specified
-    "transpose":"postfix=トランスポーズ || function=トランスポーズ",
-    "dimensional-product":"infix=によって", # INFIX
+    "identity-matrix":"nofix=単位行列", # NOTE: no function specified
+    "transpose":"postfix=転置 || function=転置",
+    "dimensional-product":"infix=かける", # INFIX
 
 
     ### Constants and Sets

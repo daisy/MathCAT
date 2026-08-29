@@ -293,3 +293,62 @@ fn definite_integral() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "積分 0 から, 1 まで オブ; x 微分 d x")?;
     return Ok(());
 }
+
+/// Set-theory names. セット/空のセット are the loanword for a set of objects, not the
+/// mathematical term, which is 集合.
+#[test]
+fn set_terminology() -> Result<()> {
+    for (intent, expected) in [
+        ("set", "集合 x y"),
+        ("set-difference", "差集合 x と y"),
+        ("complement", "補集合 x y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Linear algebra names. マトリクス and トランスポーズ are transliterations; the
+/// mathematical terms are 行列 and 転置. アドフゲート was not a word at all.
+#[test]
+fn linear_algebra_terminology() -> Result<()> {
+    for (intent, expected) in [
+        ("determinant", "行列式 x y"),
+        ("adjugate", "余因子行列 x y"),
+        ("transpose", "転置 x y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// 規範 is a social norm; the norm of a vector is ノルム.
+#[test]
+fn norm_terminology() -> Result<()> {
+    let expr = "<math><mrow intent='norm($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", &expr, "ノルム x ノルム閉じ")?;
+    return Ok(());
+}
+
+/// 限界 is a bound or a ceiling; the limit of a function is 極限. 傾向がある
+/// ("has a tendency") is not how x → a is read either.
+#[test]
+fn limit_terminology() -> Result<()> {
+    let expr = "<math><mrow intent='tends-to($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", &expr, "x に近づく y")?;
+    return Ok(());
+}
+
+/// モード is the loanword; the statistical term is 最頻値.
+#[test]
+fn statistics_mode() -> Result<()> {
+    let expr = "<math><mrow intent='mode($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", &expr, "最頻値 x")?;
+    return Ok(());
+}
