@@ -187,6 +187,45 @@ fn less_than() -> Result<()> {
     return Ok(());
 }
 
+/// Geometry has settled Japanese terms: 線分, 半直線, 弧, 点. The katakana
+/// transliterations of the English words are not used for these.
+#[test]
+fn geometry_terms() -> Result<()> {
+    for (intent, expected) in [
+        ("line-segment", "線分 x y"),
+        ("directed-line-segment", "有向線分 x y"),
+        ("line", "直線 x y"),
+        ("ray", "半直線 x y"),
+        ("arc", "弧 x y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// A point is 点, not ポイント.
+#[test]
+fn geometry_point() -> Result<()> {
+    let expr = "<math><mrow intent='point($x,$y,$z)'><mi arg='x'>x</mi><mi arg='y'>y</mi><mi arg='z'>z</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "点 x y z")?;
+    return Ok(());
+}
+
+/// Verbose keeps the head term first, as the reference asks, but a ray and a
+/// segment differ in what the second point is: a segment stops at it, a ray only
+/// passes through it. 「まで」 would claim the ray ends at B.
+#[test]
+fn geometry_verbose_from_to() -> Result<()> {
+    let seg = "<math><mrow intent='line-segment($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], seg, "線分 x から y まで")?;
+    let ray = "<math><mrow intent='ray($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], ray, "半直線 x を始点として y を通る")?;
+    return Ok(());
+}
+
 /// Verifies that common lowercase Greek letters use their Japanese names.
 #[test]
 fn greek_letters() -> Result<()> {

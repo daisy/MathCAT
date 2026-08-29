@@ -204,16 +204,16 @@
 
     
     ### Geometry
-    "line-segment":"prefix=ラインセグメント",
-    "directed-line-segment":"prefix=ラインセグメント", 
-    "line":"prefix=ライン",
-    "ray":"prefix=レイ",
-    "arc":"prefix=アーク",
+    "line-segment":"prefix=線分",
+    "directed-line-segment":"prefix=有向線分", 
+    "line":"prefix=直線",
+    "ray":"prefix=半直線",
+    "arc":"prefix=弧",
 
     "length":"function=長さ",
-    "area":"function=エリア",
+    "area":"function=面積",
 
-    "point":"prefix=ポイント",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+    "point":"prefix=点",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
 
     ### Separators
     "time-separator":"infix=",
@@ -250,11 +250,11 @@
     "laplacian": "function=ラプラシアン",
 
     ## Default fixity prefix
-    "angle": "prefix=アングル",
-    "angle-measure": "prefix=角度測定",
+    "angle": "prefix=角",
+    "angle-measure": "prefix=角の大きさ",
     "change": "prefix=変更点",
     "for-all": "prefix=すべての",
-    "measured-angle": "prefix=測定角度",
+    "measured-angle": "prefix=測定角",
     "not": "prefix=でない",
     "number-of": "prefix=個数",
     "partial-derivative": "prefix=偏微分",
