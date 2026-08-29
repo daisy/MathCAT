@@ -26,9 +26,9 @@
       then:
       - t: "半直線"             # phrase('the ray from' A to B)
       - x: "*[1]"
-      - t: "から"                       # phrase(the ray from A 'to' B)
+      - t: "を始点として"           # phrase(the ray 'from' A to B) -- A is the endpoint
       - x: "*[2]"
-      - t: "まで"                       # phrase(the ray from A to B)
+      - t: "を通る"                   # phrase(the ray from A 'to' B) -- it passes through B, it does not stop there
       else:
       - t: "半直線"                      # phrase(the 'ray'A  B)
       - x: "*[1]"
