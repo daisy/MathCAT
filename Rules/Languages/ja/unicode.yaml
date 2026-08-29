@@ -84,16 +84,16 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "開き"]                     # 0x28
-            else: [t: "開き丸括弧"]               # 0x28
+            then: [t: "括弧"]                     # 0x28
+            else: [t: "丸括弧"]               # 0x28
         else: [t: "左丸括弧"]                   # 0x28                         
  - ")":                                          # 0x29
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "閉じ"]                   # 0x29
-            else: [t: "閉じ丸括弧"]             # 0x29
+            then: [t: "括弧閉じ"]                   # 0x29
+            else: [t: "丸括弧閉じ"]             # 0x29
         else: [t: "右丸括弧"]                 # 0x29                 
 
  - "*":                                          # 0x2a
@@ -155,14 +155,14 @@
  - "[":                                          # 0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "オープンブラケット"]
-        else: [t: "左ブラケット"]                            
+        then: [t: "角括弧"]
+        else: [t: "左角括弧"]                            
  - "\\": [t: "バックスラッシュ"]                         # 0x5c
  - "]":                                          # 0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "クローズブラケット"]
-        else: [t: "右ブラケット"]
+        then: [t: "角括弧閉じ"]
+        else: [t: "右角括弧"]
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
@@ -173,8 +173,8 @@
  - "{":                                         # 0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "オープンブレイス"]
-        else: [t: "左の括弧"]                            
+        then: [t: "中括弧"]
+        else: [t: "左中括弧"]                            
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -202,8 +202,8 @@
  - "}":                                          # 0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "クローズ ブラス"]
-        else: [t: "右括弧"]                            
+        then: [t: "中括弧閉じ"]
+        else: [t: "右中括弧"]                            
 
  - "~": [t: "チルド"]                               # 0x7e
  - " ":                                            # 0xa0

@@ -125,7 +125,18 @@ fn multiplication_and_division() -> Result<()> {
 #[test]
 fn parenthesized_expression() -> Result<()> {
     let expr = "<math><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>)</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "開き丸括弧, 1 プラス 2, 閉じ丸括弧")?;
+    test("ja", "ClearSpeak", expr, "丸括弧, 1 プラス 2, 丸括弧閉じ")?;
+    return Ok(());
+}
+
+/// Square and curly brackets follow the same pattern: the opening bracket names
+/// the shape and the closing one adds the postposed cue (Yamaguchi et al. 1996).
+#[test]
+fn square_and_curly_brackets() -> Result<()> {
+    let square = "<math><mrow><mo>[</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>]</mo></mrow></math>";
+    test("ja", "ClearSpeak", square, "角括弧, 1 プラス 2, 角括弧閉じ")?;
+    let curly = "<math><mrow><mo>{</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>}</mo></mrow></math>";
+    test("ja", "ClearSpeak", curly, "中括弧, 1 プラス 2, 中括弧閉じ")?;
     return Ok(());
 }
 
@@ -133,7 +144,16 @@ fn parenthesized_expression() -> Result<()> {
 #[test]
 fn absolute_value() -> Result<()> {
     let expr = "<math><mrow><mo>|</mo><mi>x</mi><mo>|</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "絶対値 の x")?;
+    test("ja", "ClearSpeak", expr, "絶対値 x")?;
+    return Ok(());
+}
+
+/// With AbsEnd the closing cue is spoken after the contents, not before it, so
+/// the bar that ends the group is heard where it actually is.
+#[test]
+fn absolute_value_abs_end() -> Result<()> {
+    let expr = "<math><mrow><mo>|</mo><mi>x</mi><mo>|</mo></mrow></math>";
+    test_ClearSpeak("ja", "AbsoluteValue", "AbsEnd", expr, "絶対値 x, 絶対値 閉じ")?;
     return Ok(());
 }
 
