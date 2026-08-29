@@ -124,7 +124,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [ot: ""]    # phrase("'the' root of x")
-  - t: "根"
+  - t: "ルート"
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "の"]    # phrase("the root 'of' x")
@@ -132,7 +132,7 @@
   - pause: short
   - test:
       if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
-      then: [t: "根号終わり", pause: medium] # phrase("root of x 'end root symbol'")
+      then: [t: "根号終了", pause: medium] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
 - name: literal-default
@@ -142,7 +142,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [ot: ""]   # phrase("'the' root of x")
-  - t: "インデックスとルート" # phrase("the 'root with index' 3 of 5")
+  - t: "根指数" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short
   - t: "の"              # phrase("the root 'of' x")
@@ -150,7 +150,7 @@
   - pause: short
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [t: "エンドルートシンボル"] # phrase("root of x 'end root symbol'")
+      then: [t: "根号終了"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub

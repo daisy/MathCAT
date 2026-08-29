@@ -53,7 +53,7 @@
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "根号終わり"      # phrase(the square root of x 'end root')
+      - t: "根号終了"      # phrase(the square root of x 'end root')
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -83,15 +83,10 @@
         then: [t: "平方根"]      # phrase(5 is the 'square root' of 25)
       - else_if: "*[2][.='3']"
         then: [t: "立方根"]      # phrase(5 is the 'cube root' of 625)
-      - else: [x: "ToOrdinal(*[2])", t: "根"]      # phrase(the square 'root' of 25)
+      - else: [x: "*[2]", t: "乗根"]      # phrase(the square 'root' of 25)
       else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-          else: [x: "*[2]"]
-      - t: "根"      # phrase(the square 'root' of 36)
+      - x: "*[2]"
+      - t: "乗根"      # phrase(the square 'root' of 36)
   - test:
       if: "$Verbosity!='Terse'"
       then: [t: "の"]      # phrase(the square root 'of' 36)
@@ -100,7 +95,7 @@
       if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "根号終わり"      # phrase(start the fifth root of x 'end root')
+      - t: "根号終了"      # phrase(start the fifth root of x 'end root')
       - pause: medium
       else_test:
         if: "IsNode(*[1], 'simple')"

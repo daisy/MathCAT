@@ -51,15 +51,10 @@
       - else_if: "*[2][.='3']"
         then: [t: "立方根"]
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", t: "根"]
+        then: [x: "*[2]", t: "乗根"]
       else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-          else: [x: "*[2]"]
-      - t: "根"
+      - x: "*[2]"
+      - t: "乗根"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
