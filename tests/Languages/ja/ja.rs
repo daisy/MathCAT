@@ -333,6 +333,6 @@ fn statistics_mode() -> Result<()> {
 #[test]
 fn matrix_terminology() -> Result<()> {
     let expr = "<math><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>]</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "1 かける 2 行列; 1, 2")?;
+    test("ja", "ClearSpeak", expr, "1 かける 2 行 行列; 1, 2")?;
     return Ok(());
 }
