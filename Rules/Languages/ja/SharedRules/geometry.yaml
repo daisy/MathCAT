@@ -7,12 +7,13 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "ラインセグメントから"      # phrase('the line segment from' A to B)
+      - t: "線分"      # phrase('the line segment from' A to B)
       - x: "*[1]"
-      - t: "に"                         # phrase(the line segment from A 'to' B)
+      - t: "から"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
+      - t: "まで"                         # phrase(the line segment from A to B)
       else:
-      - t: "ラインセグメント"               # phrase(the 'line segment' A  B)
+      - t: "線分"               # phrase(the 'line segment' A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -23,12 +24,13 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "線から"             # phrase('the ray from' A to B)
+      - t: "半直線"             # phrase('the ray from' A to B)
       - x: "*[1]"
-      - t: "に"                       # phrase(the ray from A 'to' B)
+      - t: "から"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
+      - t: "まで"                       # phrase(the ray from A to B)
       else:
-      - t: "レイ"                      # phrase(the 'ray'A  B)
+      - t: "半直線"                      # phrase(the 'ray'A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -39,7 +41,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [ot: ""]            # phrase('the' arc A B C)
-  - t: "アーク"                        # phrase(the 'arc' A B C)
+  - t: "弧"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
 
@@ -50,9 +52,9 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "角度の測定"      # phrase('the measure of the angle' ABC)
+      - t: "角の大きさ"      # phrase('the measure of the angle' ABC)
       else:
-      - t: "角度の測定"      # phrase('measure of angle' ABC)
+      - t: "角の大きさ"      # phrase('measure of angle' ABC)
   - x: "*[1]"
   - x: "*[2]"
   - x: "*[3]"
@@ -66,10 +68,10 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [ot: ""]      # phrase('the' point at 1, 2)
-  - t: "ポイント"      # phrase(the 'point' at 1, 2)
+  - t: "点"      # phrase(the 'point' at 1, 2)
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "で"]      # phrase('the' point at 1, 2)
+      then: [t: "の座標"]      # phrase('the' point at 1, 2)
   - pause: short
   - insert:
       nodes: "*"
@@ -77,4 +79,4 @@
   - pause: short
   - test:
       if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
-      then: [t: "エンドポイント"]      # phrase(start point, 'end point')
+      then: [t: "点終了"]      # phrase(start point, 'end point')

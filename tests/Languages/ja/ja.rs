@@ -98,6 +98,33 @@ fn less_than() -> Result<()> {
     return Ok(());
 }
 
+/// Geometry has settled Japanese terms: 線分, 半直線, 弧, 点. The katakana
+/// transliterations of the English words are not used for these.
+#[test]
+fn geometry_terms() -> Result<()> {
+    for (intent, expected) in [
+        ("line-segment", "線分 x y"),
+        ("directed-line-segment", "有向線分 x y"),
+        ("line", "直線 x y"),
+        ("ray", "半直線 x y"),
+        ("arc", "弧 x y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// A point is 点, not ポイント.
+#[test]
+fn geometry_point() -> Result<()> {
+    let expr = "<math><mrow intent='point($x,$y,$z)'><mi arg='x'>x</mi><mi arg='y'>y</mi><mi arg='z'>z</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "点 x y z")?;
+    return Ok(());
+}
+
 /// Verifies that common lowercase Greek letters use their Japanese names.
 #[test]
 fn greek_letters() -> Result<()> {
