@@ -798,7 +798,7 @@ fn key_press_to_command_and_param(
 	// key press mapping should probably be stored externally (registry) with an app that allows changes
 	// for now, we build in the defaults
 
-    // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/NSoiffer/MathCAT/issues/105)
+    // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/daisy/MathCAT/issues/105)
     // if this change sticks, choose_command() needs to be changed and this hack should go away
     let mut alt_key = alt_key;
     if alt_key && control_key && [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN].contains(&key) {

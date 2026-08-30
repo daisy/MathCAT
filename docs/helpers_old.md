@@ -5,7 +5,7 @@ This page is a work-in-progress.
 
 ## Getting Started
 If you plan to work on MathCAT development, you need to make use of github:
-1. Fork the MathCAT repo at `github.com/NSoiffer/MathCAT`
+1. Fork the MathCAT repo at `github.com/daisy/MathCAT`
 2. Clone the forked copy so you have a local copy to work on.
 3. Checkout the branch I create for your work (typically the country code for your translation) and work in that branch.
 
