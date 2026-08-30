@@ -177,12 +177,6 @@
       if: "$Verbosity!='Terse'"
       then: [T: a]
   - bookmark: "*[2]/@id"
-  # CORREÇÃO: o ramo numérico usava ToOrdinal(), que lê NumbersOrdinalOnes —
-  # lista MASCULINA ("quarto"), incompatível com "potência" (feminino).
-  # O MathCAT não tem lista de ordinais femininos, e NumbersOrdinalOnes não
-  # pode virar feminino porque também serve aos denominadores de fração
-  # ("um terço"). Os dois ramos passam a usar a mesma forma cardinal,
-  # que já era a escolhida para expoente simbólico.
   - T: "potência"
   - x: "*[2]"
   - T: "de"
@@ -227,9 +221,6 @@
   - x: "*[1]"
   - T: "elevado a"
   - x: "*[2]"
-  # CORREÇÃO: removido o bloco "pronounce" com o sufixo inglês "-th"
-  # que o arquivo em espanhol manteve do original. Em português
-  # "x elevado a n" já está completo; o sufixo produzia som estrangeiro.
 
 - name: simple
   tag: power
@@ -287,8 +278,6 @@
       - test:
           if: "$Verbosity!='Terse'"
           then: [T: o]
-      # CORREÇÃO: o espanhol dizia "conjunto completo" (conjunto completo),
-      # mas o inglês é "set of all" o conjunto de TODOS os x tais que...
       - T: "conjunto de todos os"
       - x: "*[1]/*[1]"
       - T: "tal que"
