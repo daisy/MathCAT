@@ -5,7 +5,7 @@
  - "a": 
     - test: 
         if: "$TTS='none'"
-        then: [t: "イーグル"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
+        then: [t: "エー"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
         else: [spell: "'a'"]                         #    AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
  - "b-z": 
     - test: 
@@ -37,7 +37,7 @@
         replace:
         - test:
             if: "$TTS='none'"
-            then: [t: "イーグル"]
+            then: [t: "エー"]
             else: [spell: "'a'"]
             
  - "B-Z":
@@ -70,8 +70,8 @@
         then_test:
             if: "$Verbosity = 'Terse'"
             then: [t: "バング"]                      # 0x21
-            else: [t: "排除ポイント"]          # 0x21
-        else: [t: "ファクシャル"]                     # 0x21
+            else: [t: "感嘆符"]          # 0x21
+        else: [t: "階乗"]                     # 0x21
           
  - "\"": [t: "引用の印"]                     # 0x22
  - "#": [t: "番号記号"]                              # 0x23
@@ -189,7 +189,7 @@
                   then: [t: "与えられた"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
-                  then: [t: "分割する"]
+                  then: [t: "割り切る"]
                   else: [t: "縦ライン"]
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [t: "縦ライン"]
@@ -197,7 +197,7 @@
               then: [t: "そのようなこと"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [t: "与えられた"] 
-            - else: [t: "分割する"]                   
+            - else: [t: "割り切る"]                   
 
  - "}":                                          # 0x7d
     - test:
@@ -373,22 +373,22 @@
          - test:
               if: "$Verbosity!='Terse'"
               then: [t: "は"]
-         - t: "平行へ"
+         - t: "平行"
  - "∦":                                           # 0x2226
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "並行しない"
+     - t: "平行でない"
  - "≤":                                          # 0x2264
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "より少しまたは等しい"
+     - t: "より小さいか等しい"
  - "≥":                                          # 0x2265
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "より大きいか等しいへの"
+     - t: "より大きいか等しい"
 
  # --- restored complex short definitions (prefer over unicode-full) ---
  - "…":                                          # 0x2026
@@ -497,7 +497,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "同じ"
+     - t: "恒等的に等しい"
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"

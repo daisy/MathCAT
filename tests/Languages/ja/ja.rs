@@ -262,6 +262,54 @@ fn set_membership() -> Result<()> {
     return Ok(());
 }
 
+/// The seed read the variable a as イーグル -- an eagle. The English rule says
+/// "eigh" only because the letter a and the article "a" sound alike in English;
+/// the note to translators at the top of unicode.yaml says most languages do not
+/// need this. Japanese reads the letter as エー, and 大文字 エー when capital.
+#[test]
+fn letter_a() -> Result<()> {
+    let expr = "<math><mi>a</mi><mo>+</mo><mi>b</mi></math>";
+    test("ja", "ClearSpeak", expr, "エー プラス b")?;
+    return Ok(());
+}
+
+/// 平行 and 垂直 are the geometric relations. The seed used 平行へ and 垂直へ,
+/// which attach a direction particle that cannot follow a noun this way, and
+/// wrote the negative form with 並行 -- a different word, meaning "concurrent".
+#[test]
+fn parallel_and_perpendicular() -> Result<()> {
+    for (op, expected) in [
+        ("&#x2225;", "x は 平行 y"),
+        ("&#x2226;", "x は 平行でない y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// ≤ said より少しまたは等しい ("a little more, or equal") and ≥ ended in the
+/// particle へ.
+#[test]
+fn comparison_with_equality() -> Result<()> {
+    for (op, expected) in [
+        ("&#x2264;", "x は より小さいか等しい 5"),
+        ("&#x2265;", "x は より大きいか等しい 5"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{op}</mo><mn>5</mn></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// A factorial is 階乗. ファクシャル is not a Japanese word.
+#[test]
+fn factorial() -> Result<()> {
+    let expr = "<math><mn>5</mn><mo>!</mo></math>";
+    test("ja", "ClearSpeak", expr, "5 階乗")?;
+    return Ok(());
+}
+
 /// Verifies the seeded Japanese cues for a summation with limits.
 #[test]
 fn summation() -> Result<()> {
