@@ -336,3 +336,23 @@ fn matrix_terminology() -> Result<()> {
     test("ja", "ClearSpeak", expr, "1 かける 2 行 行列; 1, 2")?;
     return Ok(());
 }
+
+/// Every number set, not just ℝ, has a settled Japanese name. ℝ was the only one
+/// with a test, which is how 合理的な数字 ("reasonable numbers") and 整数者
+/// ("integer person") survived in the other branches of the same rule.
+#[test]
+fn number_set_names() -> Result<()> {
+    for (letter, expected) in [
+        ("C", "x は 属する 複素数"),
+        ("N", "x は 属する 自然数"),
+        ("Q", "x は 属する 有理数"),
+        ("R", "x は 属する 実数"),
+        ("Z", "x は 属する 整数"),
+    ] {
+        let expr = format!(
+            "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>{letter}</mi></math>"
+        );
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}

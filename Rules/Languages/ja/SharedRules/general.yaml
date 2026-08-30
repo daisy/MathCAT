@@ -61,11 +61,11 @@
     - else_if: ".='ℕ'"
       then: [t: "自然数"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
-      then: [t: "合理的な数字"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [t: "有理数"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
       then: [t: "実数"]      # phrase('the real numbers' can be both positive and negative)
     - else_if: ".='ℤ'"
-      then: [t: "整数者"]      # phrase('the integers' are natural numbers above 0)
+      then: [t: "整数"]      # phrase('the integers' are natural numbers above 0)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
