@@ -61,9 +61,7 @@
     "union": "infix=união",
   }
 
-# NOTA DE TRADUÇÃO: no arquivo em espanhol esta seção ficou em inglês.
-# Aqui está traduzida, porque estas palavras são faladas durante a
-# navegação ex.: "saindo de numerador, em denominador" etc
+
 # ACRESCENTADO: definição presente em en/ e ausente em es/ (e portanto em pt).
 # ATENÇÃO: estes NÃO são textos falados — são nomes de intent (chaves internas
 # do motor, sempre em inglês). A regra os consulta com IsInDefinition(name(.), ...).
@@ -72,13 +70,6 @@
     "divergence", "del:gradient", "curl"
   }
 
-# ACRESCENTADO: definição presente em en/ e ausente em es/ (e portanto em pt).
-# O motor junta sequências de 3+ <mi> que formam uma palavra (erro comum de
-# autoria), mas PULA as que estão em ordem alfabética, supondo que sejam
-# variáveis soltas (a, b, c). Esta lista é a exceção: palavras reais que por
-# acaso estão em ordem alfabética crescente e sem letras repetidas.
-# O comentário do arquivo inglês diz explicitamente "Change the list for other
-# languages" — a lista inglesa (Abel, aery, ails...) não serve para nós.
 - KnownWords: {
     "abs", "adj", "ano", "cel", "dez", "din", "elo", "fim", "lux", "nos"
   }
@@ -216,10 +207,6 @@
     "µs": "microssegundo", "ns": "nanossegundo", "ps": "picossegundo", "fs": "femtossegundo", "zs": "zeptossegundo",
     "ys": "yoctossegundo", "rs": "rontossegundo", "qs": "quectossegundo",
 
-    # O MathML pode escrever o segundo como "s" OU como "sec" (ambos estão em
-    # SIUnits). Sem estas entradas, "nsec" cai no caminho de prefixo e sai
-    # "nanosegundo" com s simples. Mesma lista, grafia alternativa.
-    # "asec" fica de fora: já significa segundo de arco.
     "Qsec": "quettassegundo", "Rsec": "ronnassegundo", "Ysec": "yottassegundo", "Zsec": "zettassegundo",
     "Esec": "exassegundo", "Psec": "petassegundo", "Tsec": "terassegundo", "Gsec": "gigassegundo",
     "Msec": "megassegundo", "ksec": "quilossegundo", "hsec": "hectossegundo", "dasec": "decassegundo",
@@ -227,15 +214,10 @@
     "μsec": "microssegundo", "nsec": "nanossegundo", "psec": "picossegundo", "fsec": "femtossegundo",
     "zsec": "zeptossegundo", "ysec": "yoctossegundo", "rsec": "rontossegundo", "qsec": "quectossegundo",
 
-    # µ tem duas codificações Unicode (U+00B5 micro sign e U+03BC mu grego).
-    # A lista original só tinha a primeira.
+
     "μs": "microssegundo",
 
-    # "as" (segundo de arco) também aceita prefixo: "zas" = zeptossegundo de
-    # arco. Sem estas entradas sai "zeptosegundo de arco", com s simples.
-    # Só os prefixos pequenos, que são os usados de fato em astronomia. Os
-    # maiúsculos ficam de fora de propósito: "Pas" é pascal-segundo e "Gas"
-    # seria lido errado. "das" já significa decassegundo na lista acima.
+
     "cas": "centissegundo de arco", "mas": "milissegundo de arco",
     "µas": "microssegundo de arco", "μas": "microssegundo de arco", "nas": "nanossegundo de arco",
     "pas": "picossegundo de arco", "fas": "femtossegundo de arco", "zas": "zeptossegundo de arco",
@@ -280,10 +262,6 @@
 
 
   # this will only be used if the language is English, so it can be empty for other countries
-  # ATENÇÃO: esta lista NÃO pode ficar vazia. Mesmo sendo usada apenas quando
-  # o idioma é inglês, as regras chamam DefinitionValue(., 'Speech', 'EnglishUnits')
-  # incondicionalmente. Um mapa vazio é tratado como "não definido" e derruba o
-  # MathCAT com "'EnglishUnits' is not defined in definitions.yaml".
   # Mantida em inglês de propósito: são unidades imperiais, sem uso no Brasil.
 - EnglishUnits: {
     # length
