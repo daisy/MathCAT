@@ -671,12 +671,6 @@
   - test:
     - if: $ClearSpeak_MultiLineOverview = 'Auto'
       then:
-      # CORREÇÃO 1: rótulos traduzidos: "superficie de ligadura" era lixo de
-      # tradução automática do espanhol para "constraint" (restrição);
-      # "nivel" para "step" (passo).
-      # CORREÇÃO 2: o plural era feito concatenando "s" (ct: "s"), o que
-      # geraria "equaçãos" e "restriçãos". Substituído por duas cadeias,
-      # singular e plural, escolhidas pela contagem.
       - test:
           if: "count(*) > 1"
           then:
