@@ -109,7 +109,7 @@ fn negative_number() -> Result<()> {
 fn gradient() -> Result<()> {
     let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル 大文字 f")?;
-    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 の 大文字 f")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ 大文字 f")?;
     return Ok(());
 }
 
