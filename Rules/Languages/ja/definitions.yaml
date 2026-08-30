@@ -275,7 +275,7 @@
     "defined-as": "infix=定義する",
     "divided-by": "infix=割る",
     "divides": "infix=割り切る",
-    "does-not-belong-to": "infix=所属しない",
+    "does-not-belong-to": "infix=属さない",
     "does-not-divide": "infix=割り切れない",
     "dot-product": "infix=内積",
     "downwards-diagonal-ellipsis": "infix=下向き対角の省略記号",
