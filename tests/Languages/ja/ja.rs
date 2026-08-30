@@ -231,7 +231,7 @@ fn subscript() -> Result<()> {
 #[test]
 fn sine_function() -> Result<()> {
     let expr = "<math><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></math>";
-    test("ja", "SimpleSpeak", expr, "サイン の x")?;
+    test("ja", "SimpleSpeak", expr, "サイン オブ x")?;
     return Ok(());
 }
 
