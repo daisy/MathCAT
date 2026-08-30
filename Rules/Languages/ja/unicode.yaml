@@ -166,10 +166,10 @@
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
-        then: [t: "帽子帽子"]
-        else: [t: "ケアト"]
+        then: [t: "ハット"]
+        else: [t: "キャレット"]
  - "_": [t: "アンダーバー"]                          # 0x5f
- - "`": [t: "墓地"]                              # 0x60
+ - "`": [t: "グレイヴアクセント"]                              # 0x60
  - "{":                                         # 0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -205,7 +205,7 @@
         then: [t: "中括弧閉じ"]
         else: [t: "右中括弧"]                            
 
- - "~": [t: "チルド"]                               # 0x7e
+ - "~": [t: "チルダ"]                               # 0x7e
  - " ":                                            # 0xa0
     - test:
         # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
@@ -213,10 +213,10 @@
         then: [t: "空"]                         # want to say something for fraction (etc) with empty child
         else: [t: ""]                            
 
- - "¬": [t: "コメントはありません"]                                 # 0xac
- - "°": [t: "キーワード"]                           # 0xb0
+ - "¬": [t: "ノット"]                                 # 0xac
+ - "°": [t: "度"]                           # 0xb0
  - "±": [t: "プラスまたはマイナス"]                       # 0xb1
- - "´": [t: "アキュート"]                            # 0xb4
+ - "´": [t: "アキュートアクセント"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
@@ -237,14 +237,14 @@
             else: [t: "掛ける"]
 
  - "÷": [t: "割る"]                          # 0xf7
- - "̀": [t: "砂利アクセント装飾"]          # 0x300
- - "́": [t: "アキュート アクセントの装飾"]          # 0x301
- - "̂": [t: "円滑なアクセントの装飾"]     # 0x302
- - "̃": [t: "チルド装飾"]                 # 0x303
+ - "̀": [t: "グレイヴアクセント装飾"]          # 0x300
+ - "́": [t: "アキュートアクセント装飾"]          # 0x301
+ - "̂": [t: "サーカムフレックス装飾"]     # 0x302
+ - "̃": [t: "チルダ装飾"]                 # 0x303
  - "̄": [t: "マクロン装飾"]                # 0x304
  - "̅": [t: "オーバーバー装飾"]               # 0x305
- - "̆": [t: "ブリーブ"]                               # 0x306
- - "̇": [t: "装飾上の点"]             # 0x307
+ - "̆": [t: "ブレーヴェ"]                               # 0x306
+ - "̇": [t: "上付きドット装飾"]             # 0x307
 
    # Note: ClearSpeak has pref TriangleSymbol for "Δ", but that is wrong
  - "Α-Ω": 
