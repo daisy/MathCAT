@@ -323,7 +323,7 @@
     "such-that": "infix=そのようなこと",
     "superset": "infix=上位集合",
     "superset-or-equal": "infix=上位集合または等しい",
-    "tilde": "infix=チルド",
+    "tilde": "infix=チルダ",
     "times": "infix=掛ける",
     "union": "infix=和集合",
     "upwards-diagonal-ellipsis": "infix=対角のエリプシ",
