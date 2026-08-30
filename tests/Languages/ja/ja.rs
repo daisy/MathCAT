@@ -273,6 +273,42 @@ fn letter_a() -> Result<()> {
     return Ok(());
 }
 
+/// Five Greek letters were wrong and ξ was silent: it had an empty string, so a
+/// formula using it simply skipped the variable. ゼタ is the SI prefix zetta,
+/// オクタ is "octa", and プッシー is an offensive English word.
+#[test]
+fn greek_letters_that_were_wrong() -> Result<()> {
+    for (letter, expected) in [
+        ("&#x3b6;", "ゼータ"),
+        ("&#x3b9;", "イオタ"),
+        ("&#x3be;", "クサイ"),
+        ("&#x3c5;", "ウプシロン"),
+        ("&#x3c8;", "プサイ"),
+    ] {
+        let expr = format!("<math><mi>{letter}</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// ∂ said 部分的な派生物 -- "a partially derived object". The symbol is read
+/// ラウンド and the concept is 偏微分.
+#[test]
+fn partial_derivative_symbol() -> Result<()> {
+    let expr = "<math><mo>&#x2202;</mo></math>";
+    test("ja", "ClearSpeak", expr, "偏微分")?;
+    return Ok(());
+}
+
+/// Set membership was worded as club membership: メンバー, 会員でない
+/// ("not a club member") and 所属団体 ("the organization one belongs to").
+#[test]
+fn set_non_membership() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>y</mi></math>";
+    test("ja", "ClearSpeak", expr, "x 元でない y")?;
+    return Ok(());
+}
+
 /// 平行 and 垂直 are the geometric relations. The seed used 平行へ and 垂直へ,
 /// which attach a direction particle that cannot follow a noun this way, and
 /// wrote the negative form with 並行 -- a different word, meaning "concurrent".
