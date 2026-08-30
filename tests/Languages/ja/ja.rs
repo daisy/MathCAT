@@ -356,3 +356,27 @@ fn number_set_names() -> Result<()> {
     }
     return Ok(());
 }
+
+/// In geometry a translation is 平行移動. 翻訳 is translation between languages.
+#[test]
+fn geometry_translation() -> Result<()> {
+    let expr = "<math><mrow intent='translation($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "平行移動 の x")?;
+    return Ok(());
+}
+
+/// 分割する is to split something into parts; divisibility is 割り切る. Similar
+/// figures are 相似, not と同様 ("the same as").
+#[test]
+fn divides_and_similar() -> Result<()> {
+    for (intent, expected) in [
+        ("divides", "x 割り切る y"),
+        ("similar", "x 相似 y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
