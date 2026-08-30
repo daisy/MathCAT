@@ -73,14 +73,14 @@
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "実際の部分"      # phrase('the real part' of a complex number does not include the imaginary part)
+  - t: "実部"      # phrase('the real part' of a complex number does not include the imaginary part)
 
 - name: imaginary-part
   tag: imaginary-part
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "想像上の部分"      # phrase('the imaginary part' is part of a complex number)
+  - t: "虚部"      # phrase('the imaginary part' is part of a complex number)
 
 # rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
@@ -361,8 +361,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "タン"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [t: "接線"]      # phrase(a 'tangent' is a straight line that touches a curve)
+      then: [t: "タンジェント"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: [t: "タンジェント"]      # phrase(a 'tangent' is a straight line that touches a curve)
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -370,8 +370,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "探す"]      # phrase(to 'seek' a solution)
-      else: [t: "割線"]      # phrase(a 'secant' intersects a curve at two or more points)
+      then: [t: "セカント"]      # phrase(to 'seek' a solution)
+      else: [t: "セカント"]      # phrase(a 'secant' intersects a curve at two or more points)
 - name: csc
   tag: mi
   match: ".='csc'"
@@ -379,7 +379,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コセック"]      # phrase(we will 'cosecant' a solution)
+      then: [t: "コセカント"]      # phrase(we will 'cosecant' a solution)
       else: [t: "コセカント"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 - name: cot
   tag: mi
@@ -388,8 +388,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コタン"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [t: "余接"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: [t: "コタンジェント"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [t: "コタンジェント"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -398,8 +398,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ピンチ"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: [t: "高分子正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: [t: "ハイパーボリックサイン"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [t: "双曲線正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
 - name: cosh
   tag: mi
   match: ".='cosh'"
@@ -407,8 +407,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コッシュ"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      else: [t: "高分子コサイン"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+      then: [t: "ハイパーボリックコサイン"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [t: "双曲線余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
   match: ".='tanh'"
@@ -416,8 +416,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "タンチ"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [t: "双曲線の正接"]      # phrase('hyperbolic tangent' is a mathematical function)
+      then: [t: "ハイパーボリックタンジェント"]      # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [t: "双曲線正接"]      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -425,8 +425,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "シーメール"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [t: "ハイパーボリック 正割"]      # phrase('hyperbolic secant' is a mathematical function)
+      then: [t: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [t: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -434,8 +434,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コシュネック"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [t: "ハイパーボリック・コンセカント"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: [t: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [t: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -443,8 +443,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コタンチ"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [t: "ハイパーボリックコタント"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: [t: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [t: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
