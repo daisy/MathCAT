@@ -57,12 +57,16 @@
 
 - name: coordinate
   tag: coordinate
-  match: "."
+  # Intencje postaci coordinate($x,...) mają @arg i spadają do function-intent / IntentMappings
+  match: "not(*[@arg])"
   replace:
-  - T: "przecinek"      # phrase(the 'point' at 1, 2)
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "w"]      # phrase('the' point at 1, 2)
+      then: [OT: "ten"]      # phrase('the' point at 1, 2)
+  - T: "punkt"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "w"]      # phrase('the' point at 1, 2)
   - pause: short
   - insert:
       nodes: "*"
