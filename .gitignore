@@ -57,4 +57,3 @@ Rules/*/*/*.zip
 docs/_site
 docs/.jekyll-cache
 docs/Gemfile.lock
-PythonScripts/venv/
