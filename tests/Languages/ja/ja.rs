@@ -157,6 +157,42 @@ fn absolute_value_abs_end() -> Result<()> {
     return Ok(());
 }
 
+/// The four bounded interval forms. English says "not including c or d"; a slot-by-slot
+/// translation would use または and change the meaning, because negation does not
+/// distribute over a Japanese disjunction. Each endpoint takes its own verb instead,
+/// with the first in the continuative form.
+#[test]
+fn interval_open_open() -> Result<()> {
+    let expr = "<math><mrow><mo>(</mo><mrow><mi>c</mi><mo>,</mo><mi>d</mi></mrow><mo>)</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Paren", "Interval", expr,
+        "区間 c から d まで, c を含まず d を含まない")?;
+    return Ok(());
+}
+
+#[test]
+fn interval_closed_closed() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mrow><mi>c</mi><mo>,</mo><mi>d</mi></mrow><mo>]</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Paren", "Interval", expr,
+        "区間 c から d まで, c を含み d を含む")?;
+    return Ok(());
+}
+
+#[test]
+fn interval_closed_open() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mrow><mi>c</mi><mo>,</mo><mi>d</mi></mrow><mo>)</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Paren", "Interval", expr,
+        "区間 c から d まで, c を含み d を含まない")?;
+    return Ok(());
+}
+
+#[test]
+fn interval_open_closed() -> Result<()> {
+    let expr = "<math><mrow><mo>(</mo><mrow><mi>c</mi><mo>,</mo><mi>d</mi></mrow><mo>]</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Paren", "Interval", expr,
+        "区間 c から d まで, c を含まず d を含む")?;
+    return Ok(());
+}
+
 /// Verifies that an indexed cube root receives the Japanese cube-root cue.
 #[test]
 fn cube_root() -> Result<()> {

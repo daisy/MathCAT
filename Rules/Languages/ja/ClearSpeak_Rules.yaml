@@ -504,54 +504,53 @@
           - t: "セット"      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
-- # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
+- # intervals are controlled by a ClearSpeak Preference -- parens/brackets do not have to match, so we avoid IsBracketed
   # alternatively, we could have four (or ten) rules, but there is a lot of duplication if we do that
   # this one rule handles all ten cases listed as part $ClearSpeak_Paren = 'Interval'
   # note that *[2] is an mrow with X, ",", Y, so getting X or Y is a double index
+  # The English rule says "not including a or b". Japanese cannot copy that slot by slot: the negation
+  # does not distribute over a disjunction the way it does in English, so a literal または would say
+  # "not(a) or not(b)". Each endpoint therefore carries its own verb, joined by the continuative form.
   name: ClearSpeak-intervals # avoid overriding with default "intervals" name
+  # audit-ignore -- the clause structure intentionally differs from en (see comment above)
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
   - is_intervals_end_infinity: "*[2][.='∞'or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
+  - is_start_closed: "name(.)='closed-interval' or name(.)='closed-open-interval'"
+  - is_end_closed: "name(.)='closed-interval' or name(.)='open-closed-interval'"
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - t: "間隔から"      # phrase('the interval from' a to b)
+  - t: "区間"      # phrase('the interval from' a to b)
   - x: "*[1]"
-  - t: "に"      # phrase(the interval from a 'to' b)
+  - t: "から"      # phrase(the interval from a 'to' b)
   - x: "*[2]"
+  - t: "まで"      # phrase(the interval from a 'to' b)
   - pause: short
+    # each endpoint takes its own verb; the first one is continuative unless it is the only clause
   - test:
       if: "not($is_intervals_start_infinity)"
       then:
-      - test:
-          if: "starts-with(name(.), 'open')"
-          then: [t: "コメントはありません"]      # phrase(the interval from a to b 'not' including b)
-      - t: "含まれるもの"      # phrase(the interval from a to b not 'including' b)
       - x: "*[1]"
-    # logic to deal with [not] arg #1
-  - test:
-      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
-      then_test:
-      - if: "name(.)='open-interval'"
-        then: [t: "または"]      # phrase(the interval including a 'or' b )
-      - else_if: "name(.)='closed-interval'"
-        then: [t: "および"]      # phrase(the interval including a 'and' b)
-        else: [t: "しかし、"]      # phrase(the interval including a 'but' not b)
-    # some ugly logic dealing with connectives: or, but, but, and (cleaner to be part of next clause?)
+      - test:
+          if: "$is_start_closed"
+          then_test:
+            if: "$is_intervals_end_infinity"
+            then: [t: "を含む"]      # phrase(the interval from a to b 'including' b)
+            else: [t: "を含み"]      # phrase(the interval from a to b 'including' b)
+          else_test:
+            if: "$is_intervals_end_infinity"
+            then: [t: "を含まない"]      # phrase(the interval from a to b 'not' including b)
+            else: [t: "を含まず"]      # phrase(the interval from a to b 'not' including b)
   - test:
       if: "not($is_intervals_end_infinity)"
       then:
-      - test:
-          # there is some asymmetry to the test because of the and/or/but logic above
-          if: "not( name(.)='open-interval' or name(.)='closed-interval' ) or $is_intervals_start_infinity"
-          then:
-          - test:
-              if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [t: "コメントはありません"]      # phrase(the interval 'not' including a)
-          - t: "含まれるもの"      # phrase(the interval not 'including' a)
       - x: "*[2]"
+      - test:
+          if: "$is_end_closed"
+          then: [t: "を含む"]      # phrase(the interval not 'including' a)
+          else: [t: "を含まない"]      # phrase(the interval 'not' including a)
 
-    # onto the [not] [including]... part
 - name: binomial-frac-vector
   tag: matrix
   match:
