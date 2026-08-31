@@ -53,39 +53,46 @@
         then: [t: "maksymalnie oddalono", pause: "medium"]
         else:
         - test:
-          - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'przybliż'"]]          # phrase('zoom' in to see more details)     
+          # CommandOffset to 1 + długość ANGIELSKIEGO rdzenia $NavCommand
+          # (Zoom/Move/Read/Describe), a NIE długość wymawianego $Prefix -
+          # dzięki temu tłumaczenie może mieć słowo Prefix innej długości.
+          # Angielskie "zoom" obsługuje oba kierunki, polski ma dwa różne
+          # czasowniki - "przybliż na zewnątrz" byłoby sprzeczne.
+          - if: "starts-with($NavCommand, 'ZoomOut')"
+            then: [set_variables: [Prefix: "'oddal'", CommandOffset: "5"]]             # phrase('zoom' out to see less detail)
+          - else_if: "starts-with($NavCommand, 'Zoom')"
+            then: [set_variables: [Prefix: "'przybliż'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'przejdź'"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'przejdź'", CommandOffset: "5"]]          # phrase('move' to next entry in table)
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'odczytaj'"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'odczytaj'", CommandOffset: "5"]]          # phrase('read' to next entry in table)
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'opisz'"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'opisz'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
             - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
-                then: [T: "do"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
+              - if: "substring($NavCommand, $CommandOffset) = 'In'"
+                then: []                                         # sam czasownik "przybliż" wystarcza
+              - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "maksymalnie do środka"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
-                then: [t: "na zewnątrz"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
+                then: [T: "maksymalnie"]                          # phrase(zoom 'in all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
+                then: []                                         # sam czasownik "oddal" wystarcza
+              - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "maksymalnie na zewnątrz"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
-                then: [t: "w prawo"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
-                then: [t: "w lewo"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
-                then: [t: "bieżący"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
-                then: [t: "do początku linii"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
-                then: [t: "do końca linii"]                                 # phrase(move 'to end of line')
+                then: [T: "maksymalnie"]                          # phrase(zoom 'out all of the way' to see more details)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
+                then: [T: "w prawo"]                               # phrase(move to the 'right')
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
+                then: [T: "w lewo"]                                # phrase(move to the 'left')
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
+                then: [T: "bieżący"]                                 # phrase(who is the 'current' president)
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
+                then: [T: "do początku linii"]                                 # phrase(move 'to start of line')
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
+                then: [T: "do końca linii"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -94,6 +101,15 @@
   # saying "out of row n" is not very useful, so skip it
   match: "$Move2D != '' and (not(@data-from-mathml) or @data-from-mathml = name(.)) and
           (name(.)='mrow' or name(.) = 'mtr' or name(.) = 'mlabeledtr' or @data-from-mathml = 'mtable')"
+  replace: []
+
+- name: into-or-out-of-prefix-or-silent-without-parts
+  tag: "*"
+  # Intencje prefiksowe i ciche bez wpisu w NavigationParts (np. minus unarny,
+  # x z daszkiem) NIE powinny zapowiadać "do"/"na zewnątrz".
+  match: "$Move2D != '' and
+          (contains(@data-intent-property, ':prefix:') or contains(@data-intent-property, ':silent:')) and
+          GetNavigationPartName(name(.), count($Child2D/preceding-sibling::*)) = ''"
   replace: []
 
 - name: into-or-out-of-mtr
@@ -168,6 +184,24 @@
       - test:
         - if: "$PartName != ''"
           then: [x: "$PartName"]
+        - else_if: "count(*) = 1"
+          then_test:
+            if: "$NavVerbosity = 'Verbose'"
+            then:   # IntentMappings przez SpeakIntentName; w razie braku - nazwa intentu ze spacjami
+            - test:
+              - if: "contains(@data-intent-property, ':prefix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"]
+              - else_if: "contains(@data-intent-property, ':postfix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"]
+              - else_if: "contains(@data-intent-property, ':infix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')"]
+              - else_if: "contains(@data-intent-property, ':function:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+              - else_if: "contains(@data-intent-property, ':nofix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"]
+              - else_if: "contains(@data-intent-property, ':silent:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
+              - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
           else:
           - t: "części"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
