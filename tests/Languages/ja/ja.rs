@@ -243,6 +243,40 @@ fn less_than() -> Result<()> {
     return Ok(());
 }
 
+/// A hat over a variable is ハット. 帽子 is the thing you wear, and it was said
+/// twice.
+#[test]
+fn accent_hat() -> Result<()> {
+    let expr = "<math><mover><mi>x</mi><mo>^</mo></mover></math>";
+    test("ja", "ClearSpeak", expr, "x ハット")?;
+    return Ok(());
+}
+
+/// A tilde is チルダ. チルド is the loanword for "chilled" (as in chilled food).
+#[test]
+fn accent_tilde() -> Result<()> {
+    let expr = "<math><mover><mi>x</mi><mo>~</mo></mover></math>";
+    test("ja", "ClearSpeak", expr, "x チルダ")?;
+    return Ok(());
+}
+
+/// The degree sign is 度. キーワード ("keyword") is not a unit of angle.
+#[test]
+fn degree_sign() -> Result<()> {
+    let expr = "<math><mn>90</mn><mo>&#xb0;</mo></math>";
+    test("ja", "ClearSpeak", expr, "90 度")?;
+    return Ok(());
+}
+
+/// The negation sign is ノット. The seed said コメントはありません -- "there are no
+/// comments" -- because the English source word is "not".
+#[test]
+fn logical_not() -> Result<()> {
+    let expr = "<math><mo>&#xac;</mo><mi>p</mi></math>";
+    test("ja", "ClearSpeak", expr, "ノット p")?;
+    return Ok(());
+}
+
 /// Geometry has settled Japanese terms: 線分, 半直線, 弧, 点. The katakana
 /// transliterations of the English words are not used for these.
 #[test]
