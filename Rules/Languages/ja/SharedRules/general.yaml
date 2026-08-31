@@ -111,7 +111,7 @@
   match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
   - x: "*[2]"
-  - t: "パーミュテーションの"      # phrase(the solution  involves several 'permutations of' values)
+  - t: "順列の"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
 
 - name: intervals

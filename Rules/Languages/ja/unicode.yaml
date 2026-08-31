@@ -5,7 +5,7 @@
  - "a": 
     - test: 
         if: "$TTS='none'"
-        then: [t: "イーグル"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
+        then: [t: "エー"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
         else: [spell: "'a'"]                         #    AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
  - "b-z": 
     - test: 
@@ -37,7 +37,7 @@
         replace:
         - test:
             if: "$TTS='none'"
-            then: [t: "イーグル"]
+            then: [t: "エー"]
             else: [spell: "'a'"]
             
  - "B-Z":
@@ -70,10 +70,10 @@
         then_test:
             if: "$Verbosity = 'Terse'"
             then: [t: "バング"]                      # 0x21
-            else: [t: "排除ポイント"]          # 0x21
-        else: [t: "ファクシャル"]                     # 0x21
+            else: [t: "感嘆符"]          # 0x21
+        else: [t: "階乗"]                     # 0x21
           
- - "\"": [t: "引用の印"]                     # 0x22
+ - "\"": [t: "引用符"]                     # 0x22
  - "#": [t: "番号記号"]                              # 0x23
  - "$": [t: "ドル"]                             # 0x24
  - "%": [t: "パーセント"]                             # 0x25
@@ -150,8 +150,8 @@
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
      - t: "より大きい"
- - "?": [t: "質問の印"]                       # 0x3f
- - "@": [t: "サインイン"]                             # 0x40
+ - "?": [t: "疑問符"]                       # 0x3f
+ - "@": [t: "アットマーク"]                             # 0x40
  - "[":                                          # 0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -182,22 +182,22 @@
         replace:
         - test:
             - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-              then: [t: "縦ライン"]
+              then: [t: "縦線"]
             - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
                   then: [t: "与えられた"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
-                  then: [t: "分割する"]
-                  else: [t: "縦ライン"]
+                  then: [t: "割り切る"]
+                  else: [t: "縦線"]
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
-              then: [t: "縦ライン"]
+              then: [t: "縦線"]
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [t: "そのようなこと"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [t: "与えられた"] 
-            - else: [t: "分割する"]                   
+            - else: [t: "割り切る"]                   
 
  - "}":                                          # 0x7d
     - test:
@@ -272,25 +272,25 @@
  - "γ": [t: "ガンマ"]                               # 0x3b3
  - "δ": [t: "デルタ"]                               # 0x3b4
  - "ε": [t: "エプシロン"]                             # 0x3b5
- - "ζ": [t: "ゼタ"]                                # 0x3b6
+ - "ζ": [t: "ゼータ"]                                # 0x3b6
  - "η": [t: "エータ"]                                 # 0x3b7
  - "θ": [t: "シータ"]                               # 0x3b8
- - "ι": [t: "オクタ"]                                # 0x3b9
+ - "ι": [t: "イオタ"]                                # 0x3b9
  - "κ": [t: "カッパ"]                               # 0x3ba
  - "λ": [t: "ラムダ"]                               # 0x3bb
  - "μ": [t: "ミュー"]                                  # 0x3bc
  - "ν": [t: "ニュー"]                                  # 0x3bd
- - "ξ": [t: ""]                                 # 0x3be
+ - "ξ": [t: "クサイ"]                                 # 0x3be
  - "ο": [t: "オミクロン"]                             # 0x3bf
  - "π": [t: "パイ"]                                  # 0x3c0
  - "ρ": [t: "ロー"]                                 # 0x3c1
  - "ς": [t: "最終シグマ"]                         # 0x3c2
  - "σ": [t: "シグマ"]                               # 0x3c3
  - "τ": [t: "タウ"]                                 # 0x3c4
- - "υ": [t: "アップサイロン"]                             # 0x3c5
+ - "υ": [t: "ウプシロン"]                             # 0x3c5
  - "φ": [t: "ファイ"]                                 # 0x3c6
  - "χ": [t: "カイ"]                                 # 0x3c7
- - "ψ": [t: "プッシー"]                                 # 0x3c8
+ - "ψ": [t: "プサイ"]                                 # 0x3c8
  - "ω": [t: "オメガ"]                               # 0x3c9
  - "ϕ": [t: "ファイ"]                                 # 0x3d5
  - "ϖ": [t: "パイ"]                                  # 0x3d6
@@ -314,7 +314,7 @@
  - "⁣": [t: ""]                                   # 0x2063
  - "⁤": [t: "および"]                                # 0x2064
  - "ℂℕℚℝℤ":     # here we rely on this running through the table again to speak "cap xxx"
-    - t: "ダブルタック"
+    - t: "黒板太字"
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [t: "摂氏温度"]                     # 0x2103
@@ -330,14 +330,14 @@
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
  - "←": [t: "左矢印"]                     # 0x2190
- - "↑": [t: "上下矢印"]                       # 0x2191
+ - "↑": [t: "上矢印"]                       # 0x2191
  - "→":                                          # 0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "アプローチ"]
+        then: [t: "近づく"]
         else: [t: "右矢印"]
 
- - "↓": [t: "ダウン矢印"]                     # 0x2193
+ - "↓": [t: "下矢印"]                     # 0x2193
  - "∈":                                          # 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -353,42 +353,42 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "中へ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "メンバー"]
+                then: [t: "元"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [t: "要素の"]
               - else: [t: "に属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "メンバー"]
+                then: [t: "元"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "の要素は"]
+                then: [t: "要素"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "に含まれる"]
-              - else: [t: "所属団体"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [t: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∥":                                           # 0x2225
      - test:
          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-         then: [t: "二重縦ライン"]
+         then: [t: "二重縦線"]
          else:
          - test:
               if: "$Verbosity!='Terse'"
               then: [t: "は"]
-         - t: "平行へ"
+         - t: "平行"
  - "∦":                                           # 0x2226
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "並行しない"
+     - t: "平行でない"
  - "≤":                                          # 0x2264
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "より少しまたは等しい"
+     - t: "より小さいか等しい"
  - "≥":                                          # 0x2265
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "より大きいか等しいへの"
+     - t: "より大きいか等しい"
 
  # --- restored complex short definitions (prefer over unicode-full) ---
  - "…":                                          # 0x2026
@@ -398,7 +398,7 @@
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
             - "../*[1][.='…']"
-        then: [t: "ドットドットドットドット"]
+        then: [t: "ドットドットドット"]
         else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
             then: [t: "以下同様"]
@@ -406,13 +406,13 @@
  - "∂":                                          # 0x2202
      - test: 
          if: "$Verbosity='Terse'"
-         then: [t: "部分的な"]
-         else: [t: "部分的な派生物"]
+         then: [t: "ラウンド"]
+         else: [t: "偏微分"]
  - "∆":                                          # 0x2206
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "ラップラキアンの"
+     - t: "ラプラシアンの"
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
@@ -429,18 +429,18 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "に含まれない"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "会員でない"]
+                then: [t: "元でない"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [t: "要素ではない"]
-              - else: [t: "お持ちでない"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [t: "属さない"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "会員でない"]
+                then: [t: "元でない"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [t: "要素ではない"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "ない"]
-              - else: [t: "所属しない"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [t: "含まれない"]
+              - else: [t: "属さない"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∊":                                          # 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -456,18 +456,18 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "中へ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "メンバー"]
+                then: [t: "元"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [t: "要素の"]
               - else: [t: "に属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "メンバー"]
+                then: [t: "元"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "の要素は"]
+                then: [t: "要素"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [t: "に含まれる"]
-              - else: [t: "所属団体"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [t: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -497,7 +497,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "同じ"
+     - t: "恒等的に等しい"
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -530,5 +530,5 @@
      - t: "上位集合または等しい"
 
  # --- restored short definitions that differ from unicode-full ---
- - "⇒": [t: "右ダブル矢印"]             # 0x21d2
- - "∐": [t: "共産品"]                          # 0x2210
+ - "⇒": [t: "右二重矢印"]             # 0x21d2
+ - "∐": [t: "余積"]                          # 0x2210
