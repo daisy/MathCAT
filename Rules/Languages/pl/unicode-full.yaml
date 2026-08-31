@@ -291,7 +291,7 @@
  - "†": [t: "obelisk"]                              # 0x2020
  - "‡": [t: "podwójny obelisk"]                       # 0x2021
 
- - " - ": [t: " "]                                 # 0x2000 - 0x2007
+ - " - ": [T: " "]                                 # 0x2000 - 0x2007
 
  - "•":                                            # 0x2022
     - test: 
@@ -344,7 +344,7 @@
  - "⁑": [t: "dwie pionowe gwiazdki"]              # 0x2051
  - "⁒": [t: "handlowy znak minus"]               # 0x2052
  - "⁗": [t: "poczwórny prim"]                     # 0x2057
- - "⁠": [t: ""]                                     # 0x2060
+ - "⁠": [T: ""]                                     # 0x2060
  - "⁰": [t: "do zerowej potęgi"]                 # 0x2070
  - "ⁱ": [t: "do potęgi i"]                     # 0x2071
  - "⁴": [t: "do czwartej potęgi"]                 # 0x2074
@@ -409,7 +409,7 @@
  - "₴": [t: "hrywny"]                            # 0x20b4
  - "₵": [t: "cedi"]                               # 0x20b5
  - "₶": [t: "liwr turoński"]                      # 0x20b6
- - "₷": [t: "spesmilos"]                           # 0x20b7
+ - "₷": [T: "spesmilos"]                           # 0x20b7
  - "₸": [t: "tenge"]                              # 0x20b8
  - "₹": [t: "rupie indyjskie"]                       # 0x20b9
  - "₺": [t: "liry tureckie"]                       # 0x20ba
@@ -473,7 +473,7 @@
  - "№": [t: "numer"]                              # 0x2116
  - "℥": [t: "uncje"]                              # 0x2125
  - "Ω": [t: "omy"]                                # 0x2126
- - "℧": [t: "mhos"]                                # 0x2127
+ - "℧": [T: "mho"]                                # 0x2127
  - "℩": [t: "odwrócony jota"]                         # 0x2129
  - "K": [t: "kelwin"]                              # 0x212a
  - "Å": [t: "angstremy"]                           # 0x212b
@@ -522,37 +522,37 @@
  - "⅞": [t: "siedem ósmych"]                       # 0x215e
  - "⅟": [t: "jeden przez"]                            # 0x215f
  - "Ⅰ": [t: "I"]                                   # 0x2160
- - "Ⅱ": [t: "I I"]                                 # 0x2161
- - "Ⅲ": [t: "I I I"]                               # 0x2162
- - "Ⅳ": [t: "I V"]                                 # 0x2163
- - "Ⅴ": [t: "V"]                                   # 0x2164
- - "Ⅵ": [t: "V I"]                                 # 0x2165
- - "Ⅶ": [t: "V I I"]                               # 0x2166
- - "Ⅷ": [t: "V I I I"]                             # 0x2167
- - "Ⅸ": [t: "I X"]                                 # 0x2168
- - "Ⅹ": [t: "X"]                                   # 0x2169
- - "Ⅺ": [t: "X I"]                                 # 0x216a
- - "Ⅻ": [t: "X I I"]                               # 0x216b
- - "Ⅼ": [t: "L"]                                   # 0x216c
- - "Ⅽ": [t: "C"]                                   # 0x216d
- - "Ⅾ": [t: "D"]                                   # 0x216e
- - "Ⅿ": [t: "M"]                                   # 0x216f
+ - "Ⅱ": [T: "I I"]                                 # 0x2161
+ - "Ⅲ": [T: "I I I"]                               # 0x2162
+ - "Ⅳ": [T: "I V"]                                 # 0x2163
+ - "Ⅴ": [T: "V"]                                   # 0x2164
+ - "Ⅵ": [T: "V I"]                                 # 0x2165
+ - "Ⅶ": [T: "V I I"]                               # 0x2166
+ - "Ⅷ": [T: "V I I I"]                             # 0x2167
+ - "Ⅸ": [T: "I X"]                                 # 0x2168
+ - "Ⅹ": [T: "X"]                                   # 0x2169
+ - "Ⅺ": [T: "X I"]                                 # 0x216a
+ - "Ⅻ": [T: "X I I"]                               # 0x216b
+ - "Ⅼ": [T: "L"]                                   # 0x216c
+ - "Ⅽ": [T: "C"]                                   # 0x216d
+ - "Ⅾ": [T: "D"]                                   # 0x216e
+ - "Ⅿ": [T: "M"]                                   # 0x216f
  - "ⅰ": [t: "I"]                                   # 0x2170
- - "ⅱ": [t: "I I"]                                 # 0x2171
- - "ⅲ": [t: "I I I"]                               # 0x2172
- - "ⅳ": [t: "I V"]                                 # 0x2173
- - "ⅴ": [t: "V"]                                   # 0x2174
- - "ⅵ": [t: "V I"]                                 # 0x2175
- - "ⅶ": [t: "V I I"]                               # 0x2176
- - "ⅷ": [t: "V I I I"]                             # 0x2177
- - "ⅸ": [t: "I X"]                                 # 0x2178
- - "ⅹ": [t: "X"]                                   # 0x2179
- - "ⅺ": [t: "X I"]                                 # 0x217a
- - "ⅻ": [t: "X I I"]                               # 0x217b
- - "ⅼ": [t: "L"]                                   # 0x217c
- - "ⅽ": [t: "C"]                                   # 0x217d
- - "ⅾ": [t: "D"]                                   # 0x217e
- - "ⅿ": [t: "M"]                                   # 0x217f
+ - "ⅱ": [T: "I I"]                                 # 0x2171
+ - "ⅲ": [T: "I I I"]                               # 0x2172
+ - "ⅳ": [T: "I V"]                                 # 0x2173
+ - "ⅴ": [T: "V"]                                   # 0x2174
+ - "ⅵ": [T: "V I"]                                 # 0x2175
+ - "ⅶ": [T: "V I I"]                               # 0x2176
+ - "ⅷ": [T: "V I I I"]                             # 0x2177
+ - "ⅸ": [T: "I X"]                                 # 0x2178
+ - "ⅹ": [T: "X"]                                   # 0x2179
+ - "ⅺ": [T: "X I"]                                 # 0x217a
+ - "ⅻ": [T: "X I I"]                               # 0x217b
+ - "ⅼ": [T: "L"]                                   # 0x217c
+ - "ⅽ": [T: "C"]                                   # 0x217d
+ - "ⅾ": [T: "D"]                                   # 0x217e
+ - "ⅿ": [T: "M"]                                   # 0x217f
  - "↉": [t: "zero trzecich"]                         # 0x2189
  - "↔": [t: "lewy strzałka w prawo"]                    # 0x2194
  - "↕": [t: "górny strzałka w dół"]                       # 0x2195
@@ -1533,7 +1533,7 @@
  - "♁": [t: "Ziemia"]                               # 0x2641
  - "♂": [t: "męskie"]                                # 0x2642
  - "♃": [t: "Jowisz"]                            # 0x2643
- - "♄": [t: "Saturn"]                             # 0x2644
+ - "♄": [T: "Saturn"]                             # 0x2644
  - "♅": [t: "Uran"]                             # 0x2645
  - "♆": [t: "Neptun"]                           # 0x2646
  - "♇": [t: "Pluton"]                             # 0x2647
@@ -2353,10 +2353,10 @@
  - "⸌": [t: "lewy podniesiony pominięcia nawias kwadratowy"]        # 0x2e0c
  - "⸍": [t: "prawy podniesiony pominięcia nawias kwadratowy"]       # 0x2e0d
  - "⸎": [t: "redakcyjny koronis"]                 # 0x2e0e
- - "⸏": [t: "paragraphos"]                         # 0x2e0f
+ - "⸏": [T: "paragraphos"]                         # 0x2e0f
  - "⸐": [t: "rozwidlony paragrafos"]                  # 0x2e10
  - "⸑": [t: "odwrócony rozwidlony paragrafos"]         # 0x2e11
- - "⸒": [t: "hypodiastole"]                        # 0x2e12
+ - "⸒": [T: "hypodiastole"]                        # 0x2e12
  - "⸓": [t: "kropkowany obelos"]                       # 0x2e13
  - "⸔": [t: "dolny ancora"]                    # 0x2e14
  - "⸕": [t: "górny ancora"]                      # 0x2e15
@@ -2465,7 +2465,7 @@
  - "㍲": [t: "daltony"]                             # 0x3372
  - "㍳": [t: "jednostki astronomiczne"]                  # 0x3373
  - "㍴": [t: "bary"]                                # 0x3374
- - "㍵": [t: "o V"]                                 # 0x3375
+ - "㍵": [T: "o V"]                                 # 0x3375
  - "㍶": [t: "parseki"]                             # 0x3376
  - "㍷": [t: "decymetry"]                          # 0x3377
  - "㍸": [t: "decymetry do kwadratu"]                  # 0x3378
@@ -2558,7 +2558,7 @@
  - "㏔": [t: "milibarny"]                           # 0x33d4
  - "㏕": [t: "mile"]                                # 0x33d5
  - "㏖": [t: "mole"]                                # 0x33d6
- - "㏗": [t: "p h"]                                 # 0x33d7
+ - "㏗": [T: "p h"]                                 # 0x33d7
  - "㏘": [t: "pikometry"]                           # 0x33d8
  - "㏙": [t: "części na milion"]                    # 0x33d9
  - "㏚": [t: "petarentgeny"]                        # 0x33da
@@ -2991,30 +2991,30 @@
  - "": [t: "stała Plancka przez dwa pi kreska"]     # 0xed00
  - "": [t: "lustrzane g"]                            # 0xed01
  - "": [t: "j bez kropki"]                           # 0xed02
- - "": [t: "digamma"]                             # 0xed03
- - "ϝ": [t: "digamma"]                             # 0x3dd
- - "": [t: "d"]                                   # 0xed10
- - "ⅆ": [t: "d"]                                   # 0x2146
+ - "": [T: "digamma"]                             # 0xed03
+ - "ϝ": [T: "digamma"]                             # 0x3dd
+ - "": [T: "d"]                                   # 0xed10
+ - "ⅆ": [T: "d"]                                   # 0x2146
  - "": [t: "e"]                                   # 0xed11
  - "ⅇ": [t: "e"]                                   # 0x2147
  - "": [t: "i"]                                   # 0xed12
  - "ⅈ": [t: "i"]                                   # 0x2148
- - "": [t: "j"]                                   # 0xed13
+ - "": [T: "j"]                                   # 0xed13
  - "ⅅ":
     - spell: "translate('.', 'ⅅ', 'DD')"                                         # 0xed16, 0x2145
 
 # The private use chars are from MathType
  - "": [t: "całka krzywoliniowa z pętlą przeciwnie do ruchu wskazówek zegara"] # 0xee00
  - "": [t: "całka krzywoliniowa z pętlą zgodnie z ruchem wskazówek zegara"]     # 0xee01
- - "": [t: ""]                                  # 0xee04
- - "": [t: ""]                                  # 0xee05
- - "": [t: ""]                                  # 0xee06
- - "": [t: ""]                                  # 0xee07
- - "": [t: ""]                                  # 0xee08
- - "": [t: ""]                                  # 0xee09
- - "": [t: ""]                                  # 0xee0a
- - "": [t: ""]                                  # 0xee0b
- - "": [t: ""]                                  # 0xee0c
+ - "": [T: ""]                                  # 0xee04
+ - "": [T: ""]                                  # 0xee05
+ - "": [T: ""]                                  # 0xee06
+ - "": [T: ""]                                  # 0xee07
+ - "": [T: ""]                                  # 0xee08
+ - "": [T: ""]                                  # 0xee09
+ - "": [T: ""]                                  # 0xee0a
+ - "": [T: ""]                                  # 0xee0b
+ - "": [T: ""]                                  # 0xee0c
  - "": [t: "ozdobnik statusu połączenia"]          # 0xee0d
  - "": [t: "lewy ozdobnik statusu połączenia"]     # 0xee0e
  - "": [t: "prawy ozdobnik statusu połączenia"]    # 0xee0f
@@ -3039,24 +3039,24 @@
  - "": [t: "kreska akcent z zamkniętym okręgiem po prawej"] # 0xee23
  - "": [t: "duży kropka nad"]                     # 0xee24
  - "": [t: "znak wyrównania"]                      # 0xef00
- - "": [t: ""]                                  # 0xef01
- - "​": [t: ""]                                  # 0x200b
- - "": [t: ""]                                  # 0xef02
- - " ": [t: ""]                                  # 0x2009
- - "": [t: ""]                                  # 0xef03
- - " ": [t: ""]                                  # 0x205f
- - "": [t: ""]                                  # 0xef04
- - "": [t: ""]                                  # 0xef05
- - "": [t: ""]                                  # 0xef06
- - "": [t: ""]                                  # 0xef07
- - "": [t: ""]                                  # 0xef08
- - "": [t: ""]                                  # 0xef09
- - "": [t: ""]                                  # 0xef0a
- - " ": [t: ""]                                  # 0x200a
- - "": [t: ""]                                  # 0xef22
- - "": [t: ""]                                  # 0xef23
- - "": [t: ""]                                  # 0xef24
- - "": [t: ""]                                  # 0xef29
+ - "": [T: ""]                                  # 0xef01
+ - "​": [T: ""]                                  # 0x200b
+ - "": [T: ""]                                  # 0xef02
+ - " ": [T: ""]                                  # 0x2009
+ - "": [T: ""]                                  # 0xef03
+ - " ": [T: ""]                                  # 0x205f
+ - "": [T: ""]                                  # 0xef04
+ - "": [T: ""]                                  # 0xef05
+ - "": [T: ""]                                  # 0xef06
+ - "": [T: ""]                                  # 0xef07
+ - "": [T: ""]                                  # 0xef08
+ - "": [T: ""]                                  # 0xef09
+ - "": [T: ""]                                  # 0xef0a
+ - " ": [T: ""]                                  # 0x200a
+ - "": [T: ""]                                  # 0xef22
+ - "": [T: ""]                                  # 0xef23
+ - "": [T: ""]                                  # 0xef24
+ - "": [T: ""]                                  # 0xef29
  - "": [t: "brakujący składnik"]                        # 0xef41
  - "": [t: "całka krzywoliniowa zgodna z ruchem wskazówek zegara ze strzałką po lewej"] # 0xef80
  - "": [t: "całka z kwadrat"]                # 0xef81
@@ -3563,13 +3563,13 @@
  - "": [t: "prawy nawias klamrowy środkowy"]                     # 0xf8fd
  - "": [t: "prawy nawias klamrowy dolny"]                  # 0xf8fe
  - "": [t: "logo jabłka"]                          # 0xf8ff
- - "ﬀ": [t: "ff"]                                  # 0xfb00
+ - "ﬀ": [T: "ff"]                                  # 0xfb00
  - "ﬁ": [t: "fi"]                                  # 0xfb01
- - "ﬂ": [t: "fl"]                                  # 0xfb02
- - "ﬃ": [t: "ffi"]                                 # 0xfb03
- - "ﬄ": [t: "ffl"]                                 # 0xfb04
- - "ﬅ": [t: "ft"]                                  # 0xfb05
- - "ﬆ": [t: "st"]                                  # 0xfb06
+ - "ﬂ": [T: "fl"]                                  # 0xfb02
+ - "ﬃ": [T: "ffi"]                                 # 0xfb03
+ - "ﬄ": [T: "ffl"]                                 # 0xfb04
+ - "ﬅ": [T: "ft"]                                  # 0xfb05
+ - "ﬆ": [T: "st"]                                  # 0xfb06
  - "﬩": [t: "hebrajska litera alternatywny znak plus"]      # 0xfb29
  - "︠": [t: "lewa połowa ligatury, ozdobnik"]     # 0xfe20
  - "︡": [t: "prawa połowa ligatury, ozdobnik"]    # 0xfe21
