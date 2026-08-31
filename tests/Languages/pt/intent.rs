@@ -9,10 +9,6 @@
 ///   3. se o GERADO estiver correto em português, copie-o para o teste;
 ///      se estiver errado, conserte a REGRA, nunca o teste.
 ///
-/// ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
-/// que não refletiam as regras (ex.: esperava "logaritmo natural" com a
-/// regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
-/// Não herde strings esperadas de es/ sem conferir.
 
 /// Tests for rules shared between various speech styles:
 /// *  this has tests focused on the various alphabets

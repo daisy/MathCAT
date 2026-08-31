@@ -1,17 +1,3 @@
-/// Gerador do pacote da sessão de escuta (ACHADOS 9.3).
-///
-/// Não é um teste de regressão: é #[ignore] e só roda quando chamado de
-/// propósito por PythonScripts/gerar_pacote_escuta.py, que monta o
-/// Rules/Languages/pt/SESSAO_ESCUTA.md a partir do que este arquivo imprime.
-///
-/// Lê tests/Languages/pt/escuta_expressoes.tsv (30 expressões, MathML gerado
-/// pelo latex2mathml — o mesmo caminho do ACESSÍLIA) e imprime a fala do motor
-/// nos três níveis de verbosidade, nos dois estilos. Formato de cada linha:
-///     FALA<TAB>área<TAB>título<TAB>estilo<TAB>verbosidade<TAB>fala
-///
-/// Rodar à mão:
-///     cargo test Languages::pt::escuta -- --ignored --nocapture
-
 use crate::common::*;
 
 fn falar(estilo: &str, verbosidade: &str, mathml: &str) -> String {

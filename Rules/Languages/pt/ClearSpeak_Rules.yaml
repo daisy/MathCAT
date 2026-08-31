@@ -76,8 +76,6 @@
       - else_if: "*[2][.='3']"
         then: [T: "raiz cúbica"]
       - else_if: "*[2][not(contains(., '.'))]"
-        # CORREÇÃO: ToOrdinal gerava "quarto raiz" (masculino + ordem inglesa).
-        # Em português: "raiz de índice 4", mesma forma do SimpleSpeak.
         then: [T: "raiz de índice", x: "*[2]"]
       else:
       - T: "raiz de índice"
@@ -265,7 +263,6 @@
         if: "$Verbosity='Verbose'"
         then: [T: "elevado ao quadrado"]
         else: [T: "ao quadrado"]
-      # CORREÇÃO: espanhol dizia "al cubo" sem par verboso; padronizado
       else: [T: "ao cubo"]
 - name: function-power
   # audit-ignore: divergência deliberada do en — forma cardinal no lugar de ToOrdinal (sem ordinais femininos no motor)
@@ -277,8 +274,6 @@
       if: "$Verbosity!='Terse'"
       then: [T: "a"]
   - bookmark: "*[2]/@id"
-  # CORREÇÃO: ToOrdinal lê a lista masculina ("quarto"), que não concorda
-  # com "potência" (feminino). Mesma solução do SimpleSpeak: forma cardinal.
   - T: "potência"
   - x: "*[2]"
   - T: "de"
@@ -313,8 +308,6 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  # CORREÇÃO: dizia "quadrada", um adjetivo feminino solto, mesma classe do
-  # bug "cúbica" corrigido no SimpleSpeak. O inglês é "squared".
   - T: "ao quadrado"
 
 - name: cubed
@@ -330,11 +323,6 @@
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
-  # CORREÇÃO: "à" + ToOrdinal gerava "à quarto potência" (ordinal masculino
-  # contra "potência" feminino). Léxico = forma cardinal
-  # "elevado a 4". A preferência 'Ordinal' pediria "à quarta", que exigiria
-  # uma lista de ordinais femininos que o MathCAT não tem; degrada para a
-  # mesma forma cardinal.
   - x: "*[1]"
   - T: "elevado a"
   - x: "*[2]"
@@ -384,8 +372,6 @@
   - "         ]"
   - "    ]"
   replace:
-  # CORREÇÃO de ordem: "elevado à [expressão] potência" é decalque do inglês
-  # "raised to the [...] power". Em português o núcleo vem antes.
   - x: "*[1]"
   - T: "elevado à potência"
   - x: "*[2]"
@@ -484,9 +470,6 @@
   # audit-ignore: divergência deliberada do en — três variáveis por causa do gênero (a cardinalidade / o valor absoluto)
   tag: absolute-value
   match: "."
-  # CORREÇÃO: as palavras da variável são FALADAS (x: "$WordToSay") e
-  # estavam em inglês. Gênero difere entre as duas ("a cardinalidade" /
-  # "o valor absoluto"), então artigo e fecho também vêm de variáveis.
   variables:
   - WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'cardinalidade', 'valor absoluto')"
   - ArticleToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'a', 'o')"
@@ -572,8 +555,6 @@
   - test:
       if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
       then_test:
-      # CORREÇÃO: conectivos estavam em espanhol ("o", "sino").
-      # inglês: or / and / but  ->  português: ou / e / mas
       - if: "name(.)='open-interval'"
         then: [T: "ou"]
       - else_if: "name(.)='closed-interval'"
@@ -671,12 +652,6 @@
   - test:
     - if: $ClearSpeak_MultiLineOverview = 'Auto'
       then:
-      # CORREÇÃO 1: rótulos traduzidos: "superficie de ligadura" era lixo de
-      # tradução automática do espanhol para "constraint" (restrição);
-      # "nivel" para "step" (passo).
-      # CORREÇÃO 2: o plural era feito concatenando "s" (ct: "s"), o que
-      # geraria "equaçãos" e "restriçãos". Substituído por duas cadeias,
-      # singular e plural, escolhidas pela contagem.
       - test:
           if: "count(*) > 1"
           then:

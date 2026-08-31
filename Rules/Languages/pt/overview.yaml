@@ -14,7 +14,7 @@
 
 
 - name: overview-default
-  tag: [fraction, mfrac]   # CORREÇÃO: en ampliou a tag; sem "fraction" o intent não casa
+  tag: [fraction, mfrac]   
   match: "."
   replace:
   - test:
