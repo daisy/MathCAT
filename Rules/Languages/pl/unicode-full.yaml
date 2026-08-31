@@ -1081,11 +1081,6 @@
  - "⊢": [t: "dowodzi"]                              # 0x22a2
  - "⊣": [t: "jest dowodzone przez"]                      # 0x22a3
  - "⊤": [t: "góra"]                                 # 0x22a4
- - "⊥":                                          # 0x22a5
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "jest"]
-     - t: "dół"
  - "⊦": [t: "redukuje się do"]                          # 0x22a6
  - "⊧": [t: "modeluje"]                              # 0x22a7
  - "⊨":                                          # 0x22a8
@@ -1662,11 +1657,15 @@
  - "➾": [t: "otwarta konturowa strzałka w prawo"]      # 0x27be
  - "⟀": [t: "trójwymiarowy kąt"]             # 0x27c0
  - "⟁": [t: "biały trójkąt zawierający mały biały trójkąt"] # 0x27c1
- - "⟂":                                          # 0x27c2
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "jest"]
-     - t: "prostopadłe do"
+ - "⟂⊥":                                          # 0x27c2, 22A5 (22A5 wrongly used for perpendicular by most editors)
+     - test:
+        - if: "$SpeechStyle = 'LiteralSpeak' and text()='⊥'"   # 22A5 (up tack/bottom)
+          then: [T: "dół"]
+        - else:
+          - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "jest"]
+          - T: "prostopadłe do"
  - "⟃":                                          # 0x27c3
      - test: 
          if: "$Verbosity!='Terse'"
