@@ -3809,7 +3809,7 @@ impl NeedsToBeGrouped {
         };
 
         debug!("needs_grouping_for_french: mathml (sans '-') = {}", mml_to_string(mathml));
-        let node_name = name(mathml);
+        let node_name = as_str!(name(mathml));
         let children = mathml.children();
         match node_name {
             "mn" | "mi" | "mtext" => {

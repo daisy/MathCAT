@@ -534,9 +534,9 @@ fn set_marked_chemistry_attr(mathml: Element, chem: &str) {
                 // inherit from the base
                 let base = as_element(mathml.children()[0]);
                 if let Some(base_chem) = base.attribute(CHEM_EQUATION_OPERATOR) {
-                    mathml.set_attribute_value(CHEM_EQUATION_OPERATOR, base_chem.value());
+                    mathml.set_attribute_value(CHEM_EQUATION_OPERATOR, as_str!(base_chem.value()));
                 } else if let Some(base_chem) = base.attribute(CHEM_FORMULA_OPERATOR) {
-                    mathml.set_attribute_value(CHEM_FORMULA_OPERATOR, base_chem.value());
+                    mathml.set_attribute_value(CHEM_FORMULA_OPERATOR, as_str!(base_chem.value()));
                 }
             }
             _ => error!("Internal error: {} should not be marked as 'MAYBE_CHEMISTRY'", tag_name),
