@@ -93,19 +93,19 @@
     "least-common-multiple":"function=エルシーエム:エルシーエム:最小公倍数", # In webpage typo "lest common"
 
     "absolute-value": "function=;絶対値:絶対値:絶対値;絶対値",
-    "complex-conjugate":"function=複雑なコンジュゲート",
-    "complex-arg":"function=アーグ",
-    "real-part": "function=実際の部分",
-    "imaginary-part": "function=想像上の部分:想像上の部分:想像上の部分",
+    "complex-conjugate":"function=複素共役",
+    "complex-arg":"function=偏角",
+    "real-part": "function=実部",
+    "imaginary-part": "function=虚部",
 
-    "polar-coordinate":"function=極の座標",
+    "polar-coordinate":"function=極座標",
     "spherical-coordinate":"function=球面座標",
     "cartesian-coordinate":"function=デカルト座標",
     "coordinate":"function=座標",
     "floor":"function=床関数",
     "ceiling":"function=天井関数",
     "round":"function=ラウンド値",
-    "fractional-part":"function=フラクショナルパーツ",
+    "fractional-part":"function=小数部分",
 
 
     ### Calculus
@@ -136,28 +136,28 @@
 
     ### Elementary classical functions
     "sine":"function=サイン: 正弦",
-    "cosine":"function=コス:コサイン",
-    "tangent":"function=タン: タンジェント",
-    "secant":"function=種目: 正割",
+    "cosine":"function=コサイン: 余弦",
+    "tangent":"function=タンジェント: 正接",
+    "secant":"function=セカント: 正割",
     "cosecant":"function=コセカント: 余割",
-    "cotangent":"function=コタン:コタント",
+    "cotangent":"function=コタンジェント: 余接",
 
-    "arcsine":"function=アークシネ",
-    "arccosine":"function=アルコシン",
-    "arctangent":"function=アークタンジェント",
-    "arcsecant":"function=アークセカント",
-    "arccosecant":"function=アークコンセカント",
-    "arccotangent":"function=アーク-コタント",
+    "arcsine":"function=アークサイン: 逆正弦",
+    "arccosine":"function=アークコサイン: 逆余弦",
+    "arctangent":"function=アークタンジェント: 逆正接",
+    "arcsecant":"function=アークセカント: 逆正割",
+    "arccosecant":"function=アークコセカント: 逆余割",
+    "arccotangent":"function=アークコタンジェント: 逆余接",
 
     "hyperbolic-sine":"function=ハイパーボリックサイン: 双曲線正弦",
-    "hyperbolic-cosine":"function=コッシュ",
-    "hyperbolic-tangent":"function=タンチ",
+    "hyperbolic-cosine":"function=ハイパーボリックコサイン: 双曲線余弦",
+    "hyperbolic-tangent":"function=ハイパーボリックタンジェント: 双曲線正接",
     "hyperbolic-secant":"function=ハイパーボリックセカント: 双曲線正割",
     "hyperbolic-cosecant":"function=ハイパーボリックコセカント: 双曲線余割",
     "hyperbolic-cotangent":"function=ハイパーボリックコタンジェント: 双曲線余接",
 
     "arc-hyperbolic-sine":"function=アークハイパーボリックサイン",
-    "arc-hyperbolic-cosine":"function=アークコッシュ",
+    "arc-hyperbolic-cosine":"function=アークハイパーボリックコサイン",
     "arc-hyperbolic-tangent":"function=アークハイパーボリックタンジェント",
     "arc-hyperbolic-secant":"function=アークハイパーボリックセカント",
     "arc-hyperbolic-cosecant":"function=アークハイパーボリックコセカント",

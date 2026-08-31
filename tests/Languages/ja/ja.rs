@@ -282,6 +282,83 @@ fn geometry_verbose_from_to() -> Result<()> {
     return Ok(());
 }
 
+/// The trigonometric functions have settled Japanese names. 接線 and 割線 are the
+/// tangent *line* and the secant *line* -- curves, not the functions -- and 探す is
+/// the verb "to search", so none of them can be spoken for tan/sec.
+#[test]
+fn trigonometric_function_names() -> Result<()> {
+    for (name, expected) in [
+        ("cos", "コサイン の x"),
+        ("tan", "タンジェント の x"),
+        ("sec", "セカント の x"),
+        ("csc", "コセカント の x"),
+        ("cot", "コタンジェント の x"),
+    ] {
+        let expr = format!("<math><mi>{name}</mi><mo>&#x2061;</mo><mi>x</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// The six hyperbolic functions are 双曲線正弦 through 双曲線余接.
+#[test]
+fn hyperbolic_function_names() -> Result<()> {
+    for (name, expected) in [
+        ("sinh", "双曲線正弦 の x"),
+        ("cosh", "双曲線余弦 の x"),
+        ("tanh", "双曲線正接 の x"),
+        ("sech", "双曲線正割 の x"),
+        ("csch", "双曲線余割 の x"),
+        ("coth", "双曲線余接 の x"),
+    ] {
+        let expr = format!("<math><mi>{name}</mi><mo>&#x2061;</mo><mi>x</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Terse reads the abbreviation aloud instead of the formal name.
+#[test]
+fn hyperbolic_function_terse() -> Result<()> {
+    let expr = "<math><mi>tanh</mi><mo>&#x2061;</mo><mi>x</mi></math>";
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ハイパーボリックタンジェント, x")?;
+    return Ok(());
+}
+
+/// The parts of a complex number are 実部 and 虚部, and its conjugate is 複素共役.
+/// 実際の部分 ("the actual portion") and 想像上の部分 ("an imagined portion") are
+/// the everyday senses of "real" and "imaginary", not the mathematical ones.
+#[test]
+fn complex_number_parts() -> Result<()> {
+    for (intent, expected) in [
+        ("real-part", "実部 の x"),
+        ("imaginary-part", "虚部 の x"),
+        ("complex-conjugate", "複素共役 の x"),
+        ("complex-arg", "偏角 の x"),
+    ] {
+        let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// The inverse trigonometric functions are 逆正弦 through 逆余接.
+#[test]
+fn inverse_trigonometric_names() -> Result<()> {
+    for (intent, expected) in [
+        ("arcsine", "逆正弦 の x"),
+        ("arccosine", "逆余弦 の x"),
+        ("arctangent", "逆正接 の x"),
+        ("arcsecant", "逆正割 の x"),
+        ("arccosecant", "逆余割 の x"),
+        ("arccotangent", "逆余接 の x"),
+    ] {
+        let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Verifies that common lowercase Greek letters use their Japanese names.
 #[test]
 fn greek_letters() -> Result<()> {
