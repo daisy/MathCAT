@@ -1152,11 +1152,10 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             let body = braille.replace(['C', '𝐶'], "");
             const G1_START: &str = "⠰⠰⠰";
             const G1_END: &str = "⠰⠄";
-            if let Some(rest) = body.strip_prefix(G1_START) {
-                if let Some(mid) = rest.strip_suffix(G1_END) {
+            if let Some(rest) = body.strip_prefix(G1_START)
+                && let Some(mid) = rest.strip_suffix(G1_END) {
                     return format!("{G1_START}CCC{mid}Ce{G1_END}");
                 }
-            }
             return format!("CCC{body}Ce");
         }
 
@@ -2247,11 +2246,10 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
     let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
     for i in matches.iter() {
         let element = &CONTRACTIONS[i];
-        if let Some(exceptions) = element.skip_if_word_in {
-            if exceptions.contains(&original_chars_as_str) {
+        if let Some(exceptions) = element.skip_if_word_in
+            && exceptions.contains(&original_chars_as_str) {
                 continue;
             }
-        }
         if element.word_start_only && !word_start_ok {
             continue;
         }
@@ -2689,11 +2687,10 @@ fn remove_optional_group_indicators(braille: &str) -> String {
     for (i, &ch) in chars.iter().enumerate() {
         if ch == 'b' {
             stack.push(i);
-        } else if ch == 'e' {
-            if let Some(b_idx) = stack.pop() {
+        } else if ch == 'e'
+            && let Some(b_idx) = stack.pop() {
                 pairs.push((b_idx, i));
             }
-        }
     }
 
     let mut convert_to_oc = vec![false; chars.len()];
@@ -2842,7 +2839,7 @@ fn french_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) ->
 
     // This reuses the code just for getting rid of unnecessary "L"s and "N"s
     let result = remove_unneeded_mode_changes(&result, UEB_Mode::Grade1, UEB_Duration::Passage);
-    debug!("   after removing mode changes={}", &result);
+    debug!("   after removing mode changes={}", result);
 
     // remove any grouping pair at the start or end -- we ensure they are a pair but making sure there is no "o" inside the string
     let result = if result.starts_with('o') && result.ends_with('c') && !result[1..result.len() - 1].contains('o') {
@@ -4196,7 +4193,7 @@ mod tests {
     #[test]
     fn french_remove_optional_group_indicators() {
         assert_eq!(remove_optional_group_indicators("bLxe+"), "Lx+");
-        assert_eq!(remove_optional_group_indicators("bLxeLy"), "oLxLy");
+        assert_eq!(remove_optional_group_indicators("bLxeLy"), "oLxcLy");
         assert_eq!(remove_optional_group_indicators("bLxbe+NeLz"), "oLx+NcLz");
         // inner e is followed by outer e, then L — resolve outer pair first
         assert_eq!(remove_optional_group_indicators("bbLx+NeeLy"), "ooLx+NccLy");
