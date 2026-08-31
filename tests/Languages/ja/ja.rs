@@ -329,3 +329,90 @@ fn definite_integral() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "積分 0 から, 1 まで オブ; x 微分 d x")?;
     return Ok(());
 }
+
+/// Set-theory names. セット/空のセット are the loanword for a set of objects; the
+/// mathematical term is 集合.
+#[test]
+fn set_terminology() -> Result<()> {
+    let expr = "<math><mrow intent='set($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "集合 の x コンマ, y")?;
+    return Ok(());
+}
+
+/// 規範 is a social norm; the norm of a vector is ノルム.
+#[test]
+fn norm_terminology() -> Result<()> {
+    let expr = "<math><mrow intent='norm($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "ノルム の x")?;
+    return Ok(());
+}
+
+/// 限界 is a bound or a ceiling and 傾向がある is "has a tendency"; neither is how
+/// x → a is read. The mathematical terms are 極限 and に近づく.
+#[test]
+fn limit_terminology() -> Result<()> {
+    let expr = "<math><mrow intent='tends-to($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "x に近づく y")?;
+    return Ok(());
+}
+
+/// モード is the loanword; the statistical term is 最頻値.
+#[test]
+fn statistics_mode() -> Result<()> {
+    let expr = "<math><mrow intent='mode($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "最頻値 の x")?;
+    return Ok(());
+}
+
+/// A matrix is 行列, not the loanword マトリクス, and the dimension separator is
+/// かける, not によって ("by means of").
+#[test]
+fn matrix_terminology() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>]</mo></mrow></math>";
+    test("ja", "ClearSpeak", expr, "1 かける 2 行 行列; 1, 2")?;
+    return Ok(());
+}
+
+/// Every number set, not just ℝ, has a settled Japanese name. ℝ was the only one
+/// with a test, which is how 合理的な数字 ("reasonable numbers") and 整数者
+/// ("integer person") survived in the other branches of the same rule.
+#[test]
+fn number_set_names() -> Result<()> {
+    for (letter, expected) in [
+        ("C", "x は 属する 複素数"),
+        ("N", "x は 属する 自然数"),
+        ("Q", "x は 属する 有理数"),
+        ("R", "x は 属する 実数"),
+        ("Z", "x は 属する 整数"),
+    ] {
+        let expr = format!(
+            "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>{letter}</mi></math>"
+        );
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// In geometry a translation is 平行移動. 翻訳 is translation between languages.
+#[test]
+fn geometry_translation() -> Result<()> {
+    let expr = "<math><mrow intent='translation($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "平行移動 の x")?;
+    return Ok(());
+}
+
+/// 分割する is to split something into parts; divisibility is 割り切る. Similar
+/// figures are 相似, not と同様 ("the same as").
+#[test]
+fn divides_and_similar() -> Result<()> {
+    for (intent, expected) in [
+        ("divides", "x 割り切る y"),
+        ("similar", "x 相似 y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>"
+        );
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
