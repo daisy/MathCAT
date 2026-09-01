@@ -43,7 +43,7 @@ fn fraction_of_variables() -> Result<()> {
 #[test]
 fn square_root() -> Result<()> {
     let expr = "<math><msqrt><mn>9</mn></msqrt></math>";
-    test("ja", "ClearSpeak", expr, "平方根 の 9")?;
+    test("ja", "ClearSpeak", expr, "平方根 オブ 9")?;
     return Ok(());
 }
 
@@ -110,6 +110,24 @@ fn gradient() -> Result<()> {
     let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル 大文字 f")?;
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ 大文字 f")?;
+    return Ok(());
+}
+
+/// These four reach the generic function-application rule through the
+/// function= entries in definitions.yaml, so they take オブ like any other
+/// function. SharedRules/calculus.yaml also names them, but neither ja nor en
+/// includes that file today, so it is not the path under test here.
+#[test]
+fn vector_calculus_operators() -> Result<()> {
+    for (intent, expected) in [
+        ("curl", "回転 オブ x"),
+        ("divergence", "発散 オブ x"),
+        ("gradient", "勾配 オブ x"),
+        ("laplacian", "ラプラシアン オブ x"),
+    ] {
+        let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
     return Ok(());
 }
 
@@ -197,7 +215,7 @@ fn interval_open_closed() -> Result<()> {
 #[test]
 fn cube_root() -> Result<()> {
     let expr = "<math><mroot><mn>8</mn><mn>3</mn></mroot></math>";
-    test("ja", "ClearSpeak", expr, "立方根 の 8")?;
+    test("ja", "ClearSpeak", expr, "立方根 オブ 8")?;
     return Ok(());
 }
 
@@ -206,8 +224,8 @@ fn cube_root() -> Result<()> {
 #[test]
 fn nth_root() -> Result<()> {
     let expr = "<math><mroot><mi>x</mi><mn>5</mn></mroot></math>";
-    test("ja", "ClearSpeak", expr, "5 乗根 の x")?;
-    test("ja", "SimpleSpeak", expr, "5 乗根 の x")?;
+    test("ja", "ClearSpeak", expr, "5 乗根 オブ x")?;
+    test("ja", "SimpleSpeak", expr, "5 乗根 オブ x")?;
     return Ok(());
 }
 
@@ -215,7 +233,7 @@ fn nth_root() -> Result<()> {
 #[test]
 fn variable_index_root() -> Result<()> {
     let expr = "<math><mroot><mi>x</mi><mi>n</mi></mroot></math>";
-    test("ja", "ClearSpeak", expr, "n 乗根 の x")?;
+    test("ja", "ClearSpeak", expr, "n 乗根 オブ x")?;
     return Ok(());
 }
 
@@ -322,11 +340,11 @@ fn geometry_verbose_from_to() -> Result<()> {
 #[test]
 fn trigonometric_function_names() -> Result<()> {
     for (name, expected) in [
-        ("cos", "コサイン の x"),
-        ("tan", "タンジェント の x"),
-        ("sec", "セカント の x"),
-        ("csc", "コセカント の x"),
-        ("cot", "コタンジェント の x"),
+        ("cos", "コサイン オブ x"),
+        ("tan", "タンジェント オブ x"),
+        ("sec", "セカント オブ x"),
+        ("csc", "コセカント オブ x"),
+        ("cot", "コタンジェント, オブ x"),
     ] {
         let expr = format!("<math><mi>{name}</mi><mo>&#x2061;</mo><mi>x</mi></math>");
         test("ja", "SimpleSpeak", &expr, expected)?;
@@ -338,12 +356,12 @@ fn trigonometric_function_names() -> Result<()> {
 #[test]
 fn hyperbolic_function_names() -> Result<()> {
     for (name, expected) in [
-        ("sinh", "双曲線正弦 の x"),
-        ("cosh", "双曲線余弦 の x"),
-        ("tanh", "双曲線正接 の x"),
-        ("sech", "双曲線正割 の x"),
-        ("csch", "双曲線余割 の x"),
-        ("coth", "双曲線余接 の x"),
+        ("sinh", "双曲線正弦 オブ x"),
+        ("cosh", "双曲線余弦 オブ x"),
+        ("tanh", "双曲線正接 オブ x"),
+        ("sech", "双曲線正割 オブ x"),
+        ("csch", "双曲線余割 オブ x"),
+        ("coth", "双曲線余接 オブ x"),
     ] {
         let expr = format!("<math><mi>{name}</mi><mo>&#x2061;</mo><mi>x</mi></math>");
         test("ja", "SimpleSpeak", &expr, expected)?;
@@ -365,10 +383,10 @@ fn hyperbolic_function_terse() -> Result<()> {
 #[test]
 fn complex_number_parts() -> Result<()> {
     for (intent, expected) in [
-        ("real-part", "実部 の x"),
-        ("imaginary-part", "虚部 の x"),
-        ("complex-conjugate", "複素共役 の x"),
-        ("complex-arg", "偏角 の x"),
+        ("real-part", "実部 オブ x"),
+        ("imaginary-part", "虚部 オブ x"),
+        ("complex-conjugate", "複素共役 オブ x"),
+        ("complex-arg", "偏角 オブ x"),
     ] {
         let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -380,12 +398,12 @@ fn complex_number_parts() -> Result<()> {
 #[test]
 fn inverse_trigonometric_names() -> Result<()> {
     for (intent, expected) in [
-        ("arcsine", "逆正弦 の x"),
-        ("arccosine", "逆余弦 の x"),
-        ("arctangent", "逆正接 の x"),
-        ("arcsecant", "逆正割 の x"),
-        ("arccosecant", "逆余割 の x"),
-        ("arccotangent", "逆余接 の x"),
+        ("arcsine", "逆正弦 オブ x"),
+        ("arccosine", "逆余弦 オブ x"),
+        ("arctangent", "逆正接 オブ x"),
+        ("arcsecant", "逆正割 オブ x"),
+        ("arccosecant", "逆余割 オブ x"),
+        ("arccotangent", "逆余接 オブ x"),
     ] {
         let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -530,7 +548,7 @@ fn definite_integral() -> Result<()> {
 #[test]
 fn set_terminology() -> Result<()> {
     let expr = "<math><mrow intent='set($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "集合 の x コンマ, y")?;
+    test("ja", "ClearSpeak", expr, "集合 オブ x コンマ, y")?;
     return Ok(());
 }
 
@@ -538,7 +556,7 @@ fn set_terminology() -> Result<()> {
 #[test]
 fn norm_terminology() -> Result<()> {
     let expr = "<math><mrow intent='norm($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "ノルム の x")?;
+    test("ja", "ClearSpeak", expr, "ノルム オブ x")?;
     return Ok(());
 }
 
@@ -555,7 +573,7 @@ fn limit_terminology() -> Result<()> {
 #[test]
 fn statistics_mode() -> Result<()> {
     let expr = "<math><mrow intent='mode($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "最頻値 の x")?;
+    test("ja", "ClearSpeak", expr, "最頻値 オブ x")?;
     return Ok(());
 }
 
@@ -592,7 +610,7 @@ fn number_set_names() -> Result<()> {
 #[test]
 fn geometry_translation() -> Result<()> {
     let expr = "<math><mrow intent='translation($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "平行移動 の x")?;
+    test("ja", "ClearSpeak", expr, "平行移動 オブ x")?;
     return Ok(());
 }
 

@@ -412,7 +412,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "ラプラシアンの"
+     - t: "ラプラシアン オブ"
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
@@ -472,7 +472,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "平方根の"
+     - t: "平方根 オブ"
  - "∝":                                          # 0x221d
      - test: 
          if: "$Verbosity!='Terse'"

@@ -187,7 +187,7 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "の"      # phrase(the square root 'of' 25 equals 5)
+  - t: "オブ"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
 - name: repeating-decimal
