@@ -46,7 +46,7 @@
   - t: "平方根"      # phrase(8 is the 'square root' of 64)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "の"]      # phrase(the square root 'of' 5)
+      then: [t: "オブ"]      # phrase(the square root 'of' 5)
       else: [pause: short]
   - x: "*[1]"
   - test:
@@ -89,7 +89,7 @@
       - t: "乗根"      # phrase(the square 'root' of 36)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "の"]      # phrase(the square root 'of' 36)
+      then: [t: "オブ"]      # phrase(the square root 'of' 36)
   - x: "*[1]"
   - test:
       if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"

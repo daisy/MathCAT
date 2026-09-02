@@ -127,7 +127,7 @@
   - t: "ルート"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "の"]    # phrase("the root 'of' x")
+      then: [t: "オブ"]    # phrase("the root 'of' x")
   - x: "*[1]"
   - pause: short
   - test:
@@ -145,7 +145,7 @@
   - t: "根指数" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short
-  - t: "の"              # phrase("the root 'of' x")
+  - t: "オブ"              # phrase("the root 'of' x")
   - x: "*[2]"
   - pause: short
   - test:
@@ -636,7 +636,7 @@
   match: .
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(the sine 'of' x )
+  - t: "オブ"      # phrase(the sine 'of' x )
   - pause: auto
   - x: "*[position() > 1]"
  
@@ -736,7 +736,7 @@
       - test:
           if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
                not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
-          then: [t: "の", pause: auto]      # phrase(sine 'of' 5)
+          then: [t: "オブ", pause: auto]      # phrase(sine 'of' 5)
       - insert:
           nodes: "*"
           replace:

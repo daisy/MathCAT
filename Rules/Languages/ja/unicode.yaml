@@ -309,7 +309,7 @@
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [t: "の"]
+        then: [t: "オブ"]
  - "⁢": [t: ""]                                   # 0x2062
  - "⁣": [t: ""]                                   # 0x2063
  - "⁤": [t: "および"]                                # 0x2064
@@ -412,7 +412,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "ラプラシアンの"
+     - t: "ラプラシアン オブ"
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
@@ -472,7 +472,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "平方根の"
+     - t: "平方根 オブ"
  - "∝":                                          # 0x221d
      - test: 
          if: "$Verbosity!='Terse'"
