@@ -8,7 +8,7 @@
       variables: [MatchingWhitespace: "true()"]
       replace:
       - test:
-        - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-previous-space-width >= 0.25"  # BANA 5.3(a)
+        - if: "(@class='MathML-unit' or contains(@data-intent-property, ':unit:') or BaseNode(.)[@class='MathML-unit' or contains(@data-intent-property, ':unit:')]) and @data-previous-space-width >= 0.25"  # treat spaced units as separate exprs for G1 placement
           then: [t: "𝐖"]
         - else_if: "@data-previous-space-width > 1.1"
           then: [t: "⠬"]
@@ -16,7 +16,7 @@
           then: [t: "W"]
       - x: "."
       - test:
-        - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-following-space-width >= 0.25" # BANA 5.3(a)
+        - if: "(@class='MathML-unit' or contains(@data-intent-property, ':unit:') or BaseNode(.)[@class='MathML-unit' or contains(@data-intent-property, ':unit:')]) and @data-following-space-width >= 0.25" # treat spaced units as separate exprs for G1 placement
           then: [t: "𝐖"]
         - else_if: "@data-following-space-width > 1.1"
           then: [t: "⠬"]
@@ -107,7 +107,7 @@
    replace: 
    - t: "1⠷"
    - x: "*[1]"
-   - t: "1⠨⠌"
+   - t: "⠨⠌"
    - x: "*[2]"
    - t: "1⠾"
 
@@ -256,9 +256,10 @@
    tag: mo
      # add spaces around comparison operators unless they are in a script position,
    variables: # ratio not spaced in UEB; also make sure it is an infix operator (e.g., "~" can be prefix)
+   # ∴ / ∵ / ∎ are spaced like comparison signs (GTM 1.7.9 "∴ force = …"; GTM 11)
    - AddSpaces: "$UseSpacesAroundAllOperators or
                        ( parent::*[self::m:mrow] and $NewScriptContext='' and
-                         .!='∶' and IsInDefinition(., 'Braille', 'NemethComparisonOperators') )"
+                         .!='∶' and (IsInDefinition(., 'Braille', 'NemethComparisonOperators') or .='∴' or .='∵' or .='∎') )"
    match: "."
    replace:
       - test:

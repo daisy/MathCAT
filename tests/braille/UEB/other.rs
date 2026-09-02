@@ -12,7 +12,7 @@ use anyhow::Result;
 #[test]
 fn overscript_grouping_aph_5_4_8() -> Result<()> {
     // this test was added because #220 (failed to add grouping around overscript)
-    let expr = "<math> <mover> <mi>MN</mi> <mo>&#x2194;</mo> </mover> </math>";
+    let expr = "<math> <mover> <mi>MN</mi> <mo>↔</mo> </mover> </math>";
     test_braille("UEB", expr, "⠰⠰⠣⠠⠠⠍⠝⠜⠨⠔⠳⠺⠗⠕")?;
     return Ok(());
 
@@ -39,7 +39,7 @@ fn blank_aph_7_1_ex5() -> Result<()> {
 #[test]
 fn word_symbol_aph_10_3_11() -> Result<()> {
     // this test was added because ⊻ (U+22bb) uses a 'G1 Word mode' char, so is different than others
-    let expr = "<math> <mi>p</mi> <mo>&#x22bb;</mo> <mi>q</mi> </math>";
+    let expr = "<math> <mi>p</mi> <mo>⊻</mo> <mi>q</mi> </math>";
     test_braille("UEB", expr, "⠰⠰⠏⠈⠖⠠⠱⠟")?;
     return Ok(());
 
@@ -244,6 +244,23 @@ fn ueb_no_italic_typeform_for_math_letters() -> Result<()> {
     // Bold-italic keeps bold ⠘, not italic typeform
     test_braille("UEB", "<math><mi mathvariant='bold-italic'>x</mi></math>", "⠘⠆⠰⠭")?;
     test_braille("UEB", "<math><mi>𝒙</mi></math>", "⠘⠆⠰⠭")?;
+    return Ok(());
+}
+
+#[test]
+fn ueb_space_because_and_qed() -> Result<()> {
+    // ∵ and ∎ are spaced like ∴ (GTM 11 miscellaneous; same mo AddSpaces path as 1.7.9).
+    test_braille("UEB", "<math><mo>∵</mo><mi>x</mi><mo>=</mo><mn>1</mn></math>", "⠈⠌⠀⠰⠭⠀⠐⠶⠀⠼⠁")?;
+    test_braille("UEB", "<math><mi>x</mi><mo>=</mo><mn>1</mn><mo>∎</mo></math>", "⠰⠭⠀⠐⠶⠀⠼⠁⠀⠸⠫⠼⠙⠱")?;
+    return Ok(());
+}
+
+#[test]
+fn ueb_math_typeform_not_part_of_word() -> Result<()> {
+    // Double-struck/script/fraktur letters are math alphabets, not part of an English
+    // letters-sequence, so a following whole word still takes its contraction (time → ⠐⠞).
+    test_braille("UEB", "<math><mi mathvariant='double-struck'>R</mi><mtext>time</mtext></math>", "⠈⠆⠠⠗⠐⠞")?;
+    test_braille("UEB", "<math><mi mathvariant='fraktur'>R</mi></math>", "⠈⠆⠰⠠⠗")?;
     return Ok(());
 }
 
