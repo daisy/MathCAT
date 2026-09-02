@@ -15,8 +15,8 @@
  - "¯":                                            # 0xaf
      - test:
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
-        then: [t: "kreska"]
-        else: [t: "linia"]
+        then: [T: "kreska"]
+        else: [T: "linia"]
  - "²": [T: "dwa"]                                 # 0xb2
  - "³": [T: "trzy"]                               # 0xb3
  - "´": [T: "akut"]                               # 0xb4
@@ -35,7 +35,7 @@
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
             then: [T: "na"]
-            else: [t: "krzyż"]
+            else: [T: "krzyż"]
  - "÷": [T: "podzielone przez"]                          # 0xf7
  - "¡": [T: "odwrócony wykrzyknik"]           # 0xa1
  - "¶": [T: "znak akapitu"]                      # 0xb6
@@ -48,7 +48,7 @@
  - "ʴ": [T: "modyfikator mały odwrócony R"]             # 0x2b4
  - "ʵ": [T: "modyfikator mały odwrócony R z haczykiem"] # 0x2b5
  - "ʶ":                                            # 0x2b6
-    - t: "modyfikator mały odwrócony"
+    - T: "modyfikator mały odwrócony"
     - spell: "translate('R', 'R', 'R')"
 
  - "ʷ": [T: "modyfikator mały w"]                    # 0x2b7
@@ -205,12 +205,12 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "wielka"]
+            then: [T: "wielka"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
         replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
-    - t: "z dialityką"
+    - T: "z dialityką"
  - "ϊ": [T: "jota z dialityką"]                 # 0x3ca
  - "ϋ": [T: "ypsilon z dialityką"]              # 0x3cb
  - "ό": [T: "omikron z tonosem"]                # 0x3cc
@@ -241,7 +241,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "wielka"]
+            then: [T: "wielka"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -297,7 +297,7 @@
     - test: 
         if: "@data-chem-formula-op"
         then: [T: "kropka"]
-        else: [t: "punkt"]
+        else: [T: "punkt"]
 
  - "…":                                          # 0x2026
     test:
@@ -306,11 +306,11 @@
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
             - "../*[1][.='…']"
-        then: [t: "trzy kropki"]
+        then: [T: "trzy kropki"]
         else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "i tak dalej"]
-            else: [t: "i tak dalej aż do"]
+            then: [T: "i tak dalej"]
+            else: [T: "i tak dalej aż do"]
 
  - "‰": [T: "promil"]                           # 0x2030
  - "‱": [T: "na dziesięć tysięcy"]                    # 0x2031
@@ -326,12 +326,12 @@
  - "‼":                                            # 0x203c
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [t: "podwójny wykrzyknik punkt"]      # 0x203c
-        else: [t: "podwójny silnia"]              # 0x203c
+        then: [T: "podwójny wykrzyknik punkt"]      # 0x203c
+        else: [T: "podwójny silnia"]              # 0x203c
  - "⁄":                                            # 0x2044
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [t: "duży ukośnik"]      # 0x203c
+        then: [T: "duży ukośnik"]      # 0x203c
         else: [T: "podzielone przez"]              # 0x203c
  - "⁅": [T: "lewy kwadratowy nawias z piórem"]      # 0x2045
  - "⁆": [T: "prawy kwadratowy nawias z piórem"]     # 0x2046
@@ -454,18 +454,18 @@
  - "℉": [T: "stopnie Fahrenheita"]                  # 0x2109
  - "ℊ": [T: "pisane g"]                            # 0x210a
  - "ℌℑℨℭ":                                # 0x210c, 0x2111, 0x2128, 0x212d
-    - t: "fraktura"
+    - T: "fraktura"
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
  - "ℍℙℾℿ":                                          # 0x210d, 0x2119, 0x213e, 0x213f
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
 
  - "ℎ": [T: "stała Plancka"]                     # 0x210e
  - "ℏ": [T: "h kreślone"]                               # 0x210f
 
  - "ℐℒ℘ℬℰℱℳ":                          # 0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
-    - t: "pisane"
+    - T: "pisane"
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
  - "ℓ": [T: "pisane L"]                            # 0x2113
@@ -483,12 +483,12 @@
  - "Ⅎ℺⅁⅂⅃⅄":        # 0x2132, 0x213a, 0x2141, 0x2142, 0x2143, 0x2144 
     - test:
       - if: "'.' = '℺'"
-        then: [t: "obrócone"]
+        then: [T: "obrócone"]
       - else_if: "'.' = 'Ⅎ'"
-        then: [t: "odwrócone"]
+        then: [T: "odwrócone"]
       - else_if: "'.' = '⅃'"
-        then: [t: "odwrócone bezszeryfowe"]
-        else: [t: "odwrócony bezszeryfowe"]
+        then: [T: "odwrócone bezszeryfowe"]
+        else: [T: "odwrócony bezszeryfowe"]
     - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
 
  - "ℴ": [T: "pisane o"]                             # 0x2134
@@ -560,14 +560,14 @@
  - "↗":                                          # 0x2197
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "dąży od dołu"]
-        else: [t: "północ wschód strzałka"]
+        then: [T: "dąży od dołu"]
+        else: [T: "północ wschód strzałka"]
 
  - "↘":                                          # 0x2198
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "dąży od góry"]
-        else: [t: "południe wschód strzałka"]
+        then: [T: "dąży od góry"]
+        else: [T: "południe wschód strzałka"]
 
  - "↙": [T: "południe zachód strzałka"]                    # 0x2199
  - "↚": [T: "przekreślona strzałka w lewo"]         # 0x219a
@@ -674,12 +674,12 @@
  - "⇿": [T: "strzałka w lewo i w prawo z otwartymi grotami"]        # 0x21ff
  - "∀": [T: "dla każdego"]                             # 0x2200
  - "∁":                                          # 0x2201
-     - t: "dopełnienie"
+     - T: "dopełnienie"
  - "∂":                                          # 0x2202
      - test: 
          if: "$Verbosity='Terse'"
-         then: [t: "cząstkowe"]
-         else: [t: "pochodna cząstkowa"]
+         then: [T: "cząstkowe"]
+         else: [T: "pochodna cząstkowa"]
  - "∃": [T: "istnieje"]                        # 0x2203
  - "∄": [T: "nie istnieje"]                # 0x2204
  - "∅": [T: "zbiór pusty"]                           # 0x2205
@@ -688,35 +688,35 @@
          if: "following-sibling::*"
          then_test:
             if: "$Verbosity!='Terse'"
-            then: [t: "laplasjan"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
-            else: [t: "laplasjan"]
-         else: [t: "laplasjan"]
+            then: [T: "laplasjan"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
+            else: [T: "laplasjan"]
+         else: [T: "laplasjan"]
 
  - "∇": [T: "nabla"]                           # 0x2207
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "nie jest elementem zbioru"]
+        then: [T: "nie jest elementem zbioru"]
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "nie należy do"]
+                then: [T: "nie należy do"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "nie jest elementem zbioru"]
+                then: [T: "nie jest elementem zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "nie jest elementem zbioru"]
-              - else: [t: "nienależące do"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "nie jest elementem zbioru"]
+              - else: [T: "nienależące do"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "nie jest elementem zbioru"]
+                then: [T: "nie jest elementem zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "nie jest elementem zbioru"]
+                then: [T: "nie jest elementem zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "nie należy do"]
-              - else: [t: "nie należy do"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "nie należy do"]
+              - else: [T: "nie należy do"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∊":                                          # 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -724,7 +724,7 @@
         - test:
             if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
             then: [T: "jest"]
-        - t: "element zbioru"
+        - T: "element zbioru"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -732,18 +732,18 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "do"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "element zbioru"]
+                then: [T: "element zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "należy do"]
-              - else: [t: "należące do"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "należy do"]
+              - else: [T: "należące do"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "jest elementem zbioru"]
+                then: [T: "jest elementem zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "jest elementem zbioru"]
+                then: [T: "jest elementem zbioru"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "należy do"]
-              - else: [t: "należy do"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "należy do"]
+              - else: [T: "należy do"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∋": [T: "zawiera element"]                 # 0x220b
  - "∌": [T: "nie zawiera elementu"]         # 0x220c
  - "∍": [T: "zawiera element"]                 # 0x220d
@@ -765,16 +765,16 @@
         else: [T: "razy"]
 
  - "√":                                          # 0x221a
-     - t: "pierwiastek kwadratowy z"
+     - T: "pierwiastek kwadratowy z"
  - "∛":                                          # 0x221b
-     - t: "pierwiastek sześcienny z"
+     - T: "pierwiastek sześcienny z"
  - "∜":                                          # 0x221c
-     - t: "czwarty pierwiastek z"
+     - T: "czwarty pierwiastek z"
  - "∝":                                          # 0x221d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "proporcjonalne do"
+     - T: "proporcjonalne do"
  - "∞":
     - test:
         if: "ancestor::*[self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:large-op]"
@@ -813,19 +813,19 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "geometrycznie proporcjonalne do"
+     - T: "geometrycznie proporcjonalne do"
  - "∻":                                          # 0x223b
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "homotetyczne do"
+     - T: "homotetyczne do"
  - "∼": [T: "tylda"]                            # 0x223c
  - "∽": [T: "odwrócona tylda"]                      # 0x223d
  - "∾":                                          # 0x223e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "most dodatnie"
+     - T: "most dodatnie"
  - "∿": [T: "fala sinusoidalna"]                           # 0x223f
  - "≀": [T: "iloczyn wieńcowy"]                      # 0x2240
  - "≁": [T: "nie jest podobne"]                           # 0x2241
@@ -844,7 +844,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "przystające do"
+     - T: "przystające do"
  - "≆":                                          # 0x2246
      - test: 
          if: "$Verbosity!='Terse'"
@@ -854,7 +854,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie przystające do"
+     - T: "nie przystające do"
  - "≈":                                          # 0x2248
      - test: 
          if: "$Verbosity!='Terse'"
@@ -876,14 +876,14 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "Równoważne"
+     - T: "Równoważne"
  - "≎":                                          # 0x224e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
      - T: "geometrycznie równoważne"
  - "≏":                                          # 0x224f
-     - t: "różnica między"
+     - T: "różnica między"
  - "≐": [T: "dąży do granicy"]                # 0x2250
  - "≑":                                          # 0x2251
      - test: 
@@ -898,7 +898,7 @@
  - "≓":                                          # 0x2253
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "jest"]
+         then: [T: "jest"]
      - T: "obrazem lub w przybliżeniu równe"
  - "≔": [T: "dwukropek równa się"]                        # 0x2254
  - "≕": [T: "równa się dwukropek"]                        # 0x2255
@@ -914,7 +914,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równokątne do"
+     - T: "równokątne do"
  - "≛": [T: "gwiazda równa się"]                         # 0x225b
  - "≜": [T: "delta równa się"]                        # 0x225c
  - "≝": [T: "jest z definicji równe"]                    # 0x225d
@@ -922,7 +922,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mierzone na"
+     - T: "mierzone na"
  - "≟": [T: "ma nieznaną relację z"]    # 0x225f
  - "≠":                                          # 0x2260
      - test: 
@@ -933,91 +933,91 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "identyczne z"
+     - T: "identyczne z"
  - "≢":                                          # 0x2262
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie identyczne z"
+     - T: "nie identyczne z"
  - "≣":                                          # 0x2263
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "ściśle równoważne"
+     - T: "ściśle równoważne"
  - "≦": [T: "mniejsze nad równe"]             # 0x2266
  - "≧": [T: "większe nad równe"]          # 0x2267
  - "≨":                                          # 0x2268
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mniejsze niż ale nie równa się"
+     - T: "mniejsze niż ale nie równa się"
  - "≩":                                          # 0x2269
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "większe niż ale nie równa się"
+     - T: "większe niż ale nie równa się"
  - "≪":                                          # 0x226a
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "znacznie mniejsze niż"
+     - T: "znacznie mniejsze niż"
  - "≫":                                          # 0x226b
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "znacznie większe niż"
+     - T: "znacznie większe niż"
  - "≬":                                          # 0x226c
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "między"
+     - T: "między"
  - "≭":                                          # 0x226d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie równoważne"
+     - T: "nie równoważne"
  - "≮":                                          # 0x226e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie mniejsze niż"
+     - T: "nie mniejsze niż"
  - "≯":                                          # 0x226f
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie większe niż"
+     - T: "nie większe niż"
  - "≰":                                          # 0x2270
-     - t: "nie jest mniejsze ani równe"
+     - T: "nie jest mniejsze ani równe"
  - "≱":                                          # 0x2271
-     - t: "nie jest większe ani równe"
+     - T: "nie jest większe ani równe"
  - "≲":                                          # 0x2272
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mniejsze niż lub równoważne"
+     - T: "mniejsze niż lub równoważne"
  - "≳":                                          # 0x2273
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "większe niż lub równoważne"
+     - T: "większe niż lub równoważne"
  - "≴":                                          # 0x2274
-     - t: "nie jest mniejsze ani równoważne"
+     - T: "nie jest mniejsze ani równoważne"
  - "≵":                                          # 0x2275
-     - t: "nie jest większe ani równoważne"
+     - T: "nie jest większe ani równoważne"
  - "≶":                                          # 0x2276
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mniejsze lub większe niż"
+     - T: "mniejsze lub większe niż"
  - "≷":                                          # 0x2277
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "większe lub mniejsze niż"
+     - T: "większe lub mniejsze niż"
  - "≸":                                          # 0x2278
-     - t: "nie jest mniejsze ani większe niż"
+     - T: "nie jest mniejsze ani większe niż"
  - "≹":                                          # 0x2279
-     - t: "nie jest większe ani mniejsze niż"
+     - T: "nie jest większe ani mniejsze niż"
  - "≺": [T: "poprzedza"]                            # 0x227a
  - "≻": [T: "następuje po"]                            # 0x227b
  - "≼": [T: "poprzedza lub jest równe"]             # 0x227c
@@ -1029,31 +1029,31 @@
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "jest"]
-     - t: "podzbiór"
+         then: [T: "jest"]
+     - T: "podzbiór"
  - "⊃":                                          # 0x2283
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "jest"]
-     - t: "nadzbiór"
+         then: [T: "jest"]
+     - T: "nadzbiór"
  - "⊄":                                          # 0x2284
-     - t: "nie jest podzbiorem"
+     - T: "nie jest podzbiorem"
  - "⊅":                                          # 0x2285
-     - t: "nie jest nadzbiorem"
+     - T: "nie jest nadzbiorem"
  - "⊆":                                          # 0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "jest"]
-     - t: "podzbiór lub równy"
+         then: [T: "jest"]
+     - T: "podzbiór lub równy"
  - "⊇":                                          # 0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "jest"]
-     - t: "nadzbiór lub równy"
+         then: [T: "jest"]
+     - T: "nadzbiór lub równy"
  - "⊈":                                          # 0x2288
-     - t: "nie jest podzbiorem ani nie jest równe"
+     - T: "nie jest podzbiorem ani nie jest równe"
  - "⊉":                                          # 0x2289
-     - t: "nie jest nadzbiorem ani nie jest równe"
+     - T: "nie jest nadzbiorem ani nie jest równe"
  - "⊊": [T: "podzbiór z nie równa się"]         # 0x228a
  - "⊋": [T: "nadzbiór z nie równa się"]       # 0x228b
  - "⊌": [T: "wielozbiór"]                            # 0x228c
@@ -1087,7 +1087,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "prawdziwe"
+     - T: "prawdziwe"
  - "⊩": [T: "wymusza"]                              # 0x22a9
  - "⊪": [T: "potrójna pionowa kreska z prawym znacznikiem dedukcji"] # 0x22aa
  - "⊫": [T: "podwójna pionowa kreska z podwójnym prawym znacznikiem dedukcji"] # 0x22ab
@@ -1096,7 +1096,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie jest prawdziwe"
+     - T: "nie jest prawdziwe"
  - "⊮": [T: "nie wymusza"]                      # 0x22ae
  - "⊯": [T: "zanegowana podwójna pionowa kreska z podwójnym prawym znacznikiem dedukcji"] # 0x22af
  - "⊰": [T: "poprzedza pod relacją"]             # 0x22b0
@@ -1105,24 +1105,24 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "normalną podgrupą"
+     - T: "normalną podgrupą"
  - "⊳": [T: "zawiera jako normalną podgrupę"]       # 0x22b3
  - "⊴":                                          # 0x22b4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "normalną podgrupą lub równe"
+     - T: "normalną podgrupą lub równe"
  - "⊵": [T: "zawiera jako normalną podgrupę lub jest równe"] # 0x22b5
  - "⊶":                                          # 0x22b6
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "oryginałem"
+     - T: "oryginałem"
  - "⊷":                                          # 0x22b7
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "obrazem"
+     - T: "obrazem"
  - "⊸": [T: "multimapa"]                            # 0x22b8
  - "⊹": [T: "macierz sprzężona hermitowsko"]          # 0x22b9
  - "⊺": [T: "interkalacja"]                         # 0x22ba
@@ -1149,22 +1149,22 @@
     - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "jest"]
-    - t: "lewym iloczynem półprostym z czynnikiem normalnym"
+    - T: "lewym iloczynem półprostym z czynnikiem normalnym"
  - "⋊":                                          # 0x22ca
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "prawym iloczynem półprostym z czynnikiem normalnym"
+     - T: "prawym iloczynem półprostym z czynnikiem normalnym"
  - "⋋":                                          # 0x22cb
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "lewym iloczynem półprostym"
+     - T: "lewym iloczynem półprostym"
  - "⋌":                                          # 0x22cc
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "prawym iloczynem półprostym"
+     - T: "prawym iloczynem półprostym"
  - "⋍": [T: "odwrócona tylda równa się"]               # 0x22cd
  - "⋎": [T: "zakręcone logiczne lub"]                    # 0x22ce
  - "⋏": [T: "zakręcone logiczne i"]                   # 0x22cf
@@ -1172,65 +1172,65 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "podwójnym podzbiorem"
+     - T: "podwójnym podzbiorem"
  - "⋑":                                          # 0x22d1
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "podwójnym nadzbiorem"
+     - T: "podwójnym nadzbiorem"
  - "⋒":                                          # 0x22d2
-     - t: "podwójna część wspólna"
+     - T: "podwójna część wspólna"
  - "⋓":                                          # 0x22d3
-     - t: "podwójna suma zbiorów"
+     - T: "podwójna suma zbiorów"
  - "⋔":                                          # 0x22d4
-     - t: "właściwa część wspólna"
+     - T: "właściwa część wspólna"
  - "⋕":                                          # 0x22d5
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równe i równoległe do"
+     - T: "równe i równoległe do"
  - "⋖": [T: "mniejsze niż z kropką"]                  # 0x22d6
  - "⋗": [T: "większe niż z kropką"]               # 0x22d7
  - "⋘":                                          # 0x22d8
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "bardzo znacznie mniejsze niż"
+     - T: "bardzo znacznie mniejsze niż"
  - "⋙":                                          # 0x22d9
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "bardzo znacznie większe niż"
+     - T: "bardzo znacznie większe niż"
  - "⋚":                                          # 0x22da
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mniejsze niż, równe lub większe niż"
+     - T: "mniejsze niż, równe lub większe niż"
  - "⋛":                                          # 0x22db
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "większe niż, równe lub mniejsze niż"
+     - T: "większe niż, równe lub mniejsze niż"
  - "⋜":                                          # 0x22dc
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równe lub mniejsze niż"
+     - T: "równe lub mniejsze niż"
  - "⋝":                                          # 0x22dd
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równe lub większe niż"
+     - T: "równe lub większe niż"
  - "⋞":                                          # 0x22de
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równe lub poprzedza"
+     - T: "równe lub poprzedza"
  - "⋟":                                          # 0x22df
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "równe lub następuje po"
+     - T: "równe lub następuje po"
  - "⋠": [T: "nie poprzedza ani nie jest równe"]    # 0x22e0
  - "⋡": [T: "nie następuje po ani nie jest równe"]    # 0x22e1
  - "⋢": [T: "nie poprzedza kwadratowo ani nie jest równe"]     # 0x22e2
@@ -1241,25 +1241,25 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "mniejsze niż, ale nie równoważne"
+     - T: "mniejsze niż, ale nie równoważne"
  - "⋧":                                          # 0x22e7
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "większe niż, ale nie równoważne"
+     - T: "większe niż, ale nie równoważne"
  - "⋨": [T: "poprzedza, ale nie jest równoważne"]   # 0x22e8
  - "⋩": [T: "następuje po, ale nie jest równoważne"]   # 0x22e9
  - "⋪":                                          # 0x22ea
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie jest normalną podgrupą"
+     - T: "nie jest normalną podgrupą"
  - "⋫": [T: "nie zawiera jako normalnej podgrupy"] # 0x22eb
  - "⋬":                                          # 0x22ec
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "nie jest normalną podgrupą ani równe"
+     - T: "nie jest normalną podgrupą ani równe"
  - "⋭": [T: "nie zawiera jako normalnej podgrupy ani równe"] # 0x22ed
  - "⋮": [T: "pionowy wielokropek"]                   # 0x22ee
  - "⋯": [T: "trzy kropki"]                         # 0x22ef
@@ -1351,10 +1351,10 @@
  - "⏣": [T: "benzenowy pierścień z okręgiem po prawej"]          # 0x23e3
  - "⏤": [T: "prostoliniowość"]                       # 0x23e4
  - "⏥": [T: "płaskość"]                           # 0x23e5
- - "⏦": [t: "prąd przemienny"]                   # 0x23e6
+ - "⏦": [T: "prąd przemienny"]                   # 0x23e6
  - "⏧": [T: "symbol elektrycznego przecięcia"]            # 0x23e7
  - "①-⑨":    # 0x2460 - 0x2469
-    - t: "w kółku"
+    - T: "w kółku"
     - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
  - "⑩": [T: "w kółku dziesięć"]                         # 0x2469
  - "⑪": [T: "w kółku jedenaście"]                      # 0x246a
@@ -1367,7 +1367,7 @@
  - "⑱": [T: "w kółku osiemnaście"]                    # 0x2471
  - "⑳": [T: "w kółku dwadzieścia"]                      # 0x2473
  - "⑴-⑼":    # 0x2474 - 0x247d
-    - t: "w nawiasie"
+    - T: "w nawiasie"
     - spell: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
  - "⑽": [T: "w nawiasie dziesięć"]                   # 0x247d
  - "⑾": [T: "w nawiasie jedenaście"]                # 0x247e
@@ -1382,7 +1382,7 @@
  - "⒇": [T: "w nawiasie dwadzieścia"]                # 0x2487
  - "⒈-⒐":    # 0x2488 - 0x2491
     - spell: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
-    - t: "z kropką"
+    - T: "z kropką"
  - "⒑": [T: "dziesięć z kropką"]                     # 0x2491
  - "⒒": [T: "jedenaście z kropką"]                  # 0x2492
  - "⒓": [T: "dwanaście z kropką"]                  # 0x2493
@@ -1395,19 +1395,19 @@
  - "⒚": [T: "dziewiętnaście z kropką"]                # 0x249a
  - "⒛": [T: "dwadzieścia z kropką"]                  # 0x249b
  - "⒜-⒵":                                         # 0x249c - 0x24b5
-    - t: "w nawiasie"
+    - T: "w nawiasie"
     - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "Ⓐ-ⓩ":                                         # 0x24b6 - 0x24cf
-    - t: "w kółku"
+    - T: "w kółku"
     - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "🅐-🅩":                                         # 0x1f150 - 0x1f169
-    - t: "czarny w kółku"
+    - T: "czarny w kółku"
     - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "ⓐ-ⓩ":                                         # 0x24d0 - 0x24e9
-    - t: "w kółku"
+    - T: "w kółku"
     - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
  - "⓪": [T: "w kółku zero"]                        # 0x24ea
  - "⓫": [T: "czarny w kółku jedenaście"]                # 0x24eb
@@ -1421,7 +1421,7 @@
  - "⓳": [T: "czarny w kółku dziewiętnaście"]              # 0x24f3
  - "⓴": [T: "czarny w kółku dwadzieścia"]                # 0x24f4
  - "⓵-⓽":    # 0x24f5 - 0x24fe
-    - t: "podwójny w kółku"
+    - T: "podwójny w kółku"
     - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
  - "⓾": [T: "podwójny w kółku dziesięć"]                  # 0x24fe
  - "⓿": [T: "czarny w kółku zero"]                  # 0x24ff
@@ -1670,12 +1670,12 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "otwórz podzbiór"
+     - T: "otwórz podzbiór"
  - "⟄":                                          # 0x27c4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "jest"]
-     - t: "otwórz nadzbiór"
+     - T: "otwórz nadzbiór"
  - "⟅": [T: "lewy ogranicznik workowy w kształcie S"]         # 0x27c5
  - "⟆": [T: "prawy ogranicznik workowy w kształcie S"]        # 0x27c6
  - "⟇": [T: "lub z kropką wewnątrz"]                  # 0x27c7
@@ -2041,8 +2041,8 @@
  - "⨯":                                             # 0x2a2f
       - test: 
          if: "$Verbosity='Terse'"
-         then: [t: "krzyż"]
-         else: [t: "krzyż iloczyn"]
+         then: [T: "krzyż"]
+         else: [T: "krzyż iloczyn"]
  - "⨰": [T: "znak mnożenia z kropką nad"]  # 0x2a30
  - "⨱": [T: "znak mnożenia z podkreśleniem"]   # 0x2a31
  - "⨲": [T: "iloczyn półprosty domknięty od dołu"] # 0x2a32
@@ -3068,60 +3068,60 @@
  # fraktur chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔄-𝔜":    # 0x1d504 - 0x1d51d ('z' version is reserved)
-    - t: "fraktura"
+    - T: "fraktura"
     - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
 
  - "-":                                          # 0xf000 - 0xf018
-    - t: "fraktura"
+    - T: "fraktura"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
 
  - "𝔞-𝔷":    # 0x1d51e - 0x1d537
-    - t: "fraktura"
+    - T: "fraktura"
     - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf01a - 0xf033
-    - t: "fraktura"
+    - T: "fraktura"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     
  - "𝕬-𝖅":    # 0x1D56C - 0x1D585
-    - t: "fraktura"
-    - t: "pogrubione"
+    - T: "fraktura"
+    - T: "pogrubione"
     - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf040 - 0xf059
-    - t: "fraktura"
-    - t: "pogrubione"
+    - T: "fraktura"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
-    - t: "fraktura"
-    - t: "pogrubione"
+    - T: "fraktura"
+    - T: "pogrubione"
     - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf05a - 0xf073
-    - t: "fraktura"
-    - t: "pogrubione"
+    - T: "fraktura"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display
  - "𝔸-𝕐":    # 0x1d504 - 0x1d51d ('z' version is reserved)
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf080 - 0xf098
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf09a - 0xf0b3
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
  - "-":    # 0xf0c0 - 0xf0c9
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '', '0123456789')"
 
  - "": [T: "dwukreskowe nabla"]                 # 0xf0ca
@@ -3129,38 +3129,38 @@
  
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
-    - t: "pisane"
+    - T: "pisane"
     - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf100 - 0xf119
-    - t: "pisane"
+    - T: "pisane"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒶-𝓏":    # 0x1d4b6 - 0x1d4cf
-    - t: "pisane"
+    - T: "pisane"
     - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf11a - 0xf133
-    - t: "pisane"
+    - T: "pisane"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  # bold script chars in math alphabetic block and also MathType private use area
  - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
-    - t: "pisane"
-    - t: "pogrubione"
+    - T: "pisane"
+    - T: "pogrubione"
     - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf140 - 0xf159
-    - t: "pisane"
-    - t: "pogrubione"
+    - T: "pisane"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
-    - t: "pisane"
-    - t: "pogrubione"
+    - T: "pisane"
+    - T: "pogrubione"
     - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf15a - 0xf173
-    - t: "pisane"
-    - t: "pogrubione"
+    - T: "pisane"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                          # 0xf180 - 0xf199
@@ -3179,11 +3179,11 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "wielka"]
+            then: [T: "wielka"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "ligatura ae"]
+        replace: [T: "ligatura ae"]
  - "":                                          # 0xf19b
     - test: 
         if: "$CapitalLetters_Beep"
@@ -3197,11 +3197,11 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "wielka"]
+            then: [T: "wielka"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "eszett"]
+        replace: [T: "eszett"]
  - "":                                          # 0xf19c
     - test: 
         if: "$CapitalLetters_Beep"
@@ -3215,38 +3215,38 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "wielka"]
+            then: [T: "wielka"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
-        replace: [t: "o z kreską"]
+        replace: [T: "o z kreską"]
 
  # MathType only has a few of the cap Greek letters in PUA
  - "":                                          # 0xf201 - 0xf209
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
 
  - "-":    # 0xf220 - 0xf236
-    - t: "dwukreskowe"
+    - T: "dwukreskowe"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "": [T: "dwukreskowe sigma końcowa"]           # 0xf237
  - "": [T: "dwukreskowe ro"]                   # 0xf250
  - "": [T: "dwukreskowe fi"]                   # 0xf251
  - "𝐀-𝐙":    # 0x1d400 - 0x1d419
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf260 - 0xf279
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝐚-𝐳":    # 0x1d41a - 0x1d433
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf27a - 0xf293
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
@@ -3262,23 +3262,23 @@
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf2c8 - 0xf2e1
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf2e2 - 0xf2fb
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
@@ -3294,53 +3294,53 @@
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  
  - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf334 - 0xf34d
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf34e - 0xf367
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
-    # - t: "kursywa"
+    # - T: "kursywa"
     - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
  - "-":    # 0xf368 - 0xf381
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf382 - 0xf39b
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝘼-𝙕":    # 0x1d63c - 0x1d655
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf39c - 0xf3b5
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf3b6 - 0xf3cf
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝙰-𝚉":    # 0x1d670 - 0x1d689
@@ -3360,165 +3360,165 @@
  - "𝚥": [T: "j bez kropki"]                           # 0x1d6a5
 
  - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf408 - 0xf420
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf422 - 0xf43a
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "": [T: "pogrubiona nabla"]                          # 0xf421
  - "𝛁": [T: "pogrubiona nabla"]                          # 0x1d6c1
 
  - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":    # 0x1D6DB - 0x1D6E1
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
 
  - "":    # 0xF43C - 0xF441
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf442 - 0xf45a
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝛼-𝜔":    # 0x1d6fc - 0x1d714
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf45c - 0xf474
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "": [T: "kursywa nabla"]                          # 0xf45b
  - "𝛻": [T: "kursywa nabla"]                          # 0x1d6fb
 
  - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":    # 0x1d715 - 0x1d71b
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
 
  - "":    # 0xf475  - 0xf47b
-      # - t: "kursywa"
+      # - T: "kursywa"
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜜-𝜴":    # 0x1d71c - 0x1d734
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf47c - 0xf494
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf496 - 0xf4ae
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
 
  - "":    # 0xf422 - 0xf43a
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜵": [T: "pogrubiona pochylona nabla"]                  # 0x1d735
  - "": [T: "pogrubiona pochylona nabla"]                  # 0xf495
 
  - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
  - "-":    # 0xf4b6 - 0xf4ce
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝝰-𝞈":    # 0x1d770 - 0x1d788
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf4d0 - 0xf4e8
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
 
  - "":    # 0xf4e9 - 0xf4ef
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [T: "pogrubiona nabla"]                          # 0xf4cf
  - "𝝯": [T: "pogrubiona nabla"]                          # 0x1d76f
 
  - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf4f0 - 0xf508
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf50a - 0xf522
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
 
  - "":    # 0xf523 - 0xf529
-    # - t: "pogrubiona kursywa"
-    - t: "pogrubione"
+    # - T: "pogrubiona kursywa"
+    - T: "pogrubione"
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [T: "pogrubiona nabla"]                          # 0xf509
  - "𝞩": [T: "pogrubiona nabla"]                          # 0x1d7a9
 
  - "-":    # 0xf52e - 0xf537  (old MathType)
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
  - "-":    # 0xf52e - 0xf537  (old MathType)
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
-    - t: "pogrubione"
+    - T: "pogrubione"
     - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
 
  - "-":    # 0xf556 - 0xf55f  (old MathType)
