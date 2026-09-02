@@ -293,6 +293,14 @@
     # cannot be determined, which falls through to the genitive - the form
     # Polish uses with unknown or large quantities.
   - Coefficient: "IfThenElse($MRowForCoefficient, number($MRowForCoefficient/*[1][self::m:mn]), 0)"
+    # The 'per-fraction' rule speaks the denominator after the preposition "na",
+    # which governs the accusative: "na godzinę", not "na godzina". Only feminine
+    # nouns change form, so AccusativeCase holds just those; a missing entry
+    # means the accusative equals the nominative (as for "na litr", "na mol").
+    # The second test covers a denominator raised to a power, as in m/s^2, where
+    # the unit's parent is the 'power' element rather than the fraction itself.
+  - IsFractionDenominator: "(parent::m:fraction and preceding-sibling::*) or
+                            (parent::m:power and parent::*[parent::m:fraction and preceding-sibling::*])"
   - IsNominativePlural: "$Coefficient mod 10 >= 2 and $Coefficient mod 10 <= 4 and
                          not($Coefficient mod 100 >= 12 and $Coefficient mod 100 <= 14)"
   - Prefix: "''"
@@ -339,7 +347,9 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "$IsSingular"
+        - if: "$IsSingular and $IsFractionDenominator and DefinitionValue($Word, 'Speech', 'AccusativeCase') != ''"
+          then: [x: "DefinitionValue($Word, 'Speech', 'AccusativeCase')"]
+        - else_if: "$IsSingular"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "$Word"]
         - else_if: "$IsNominativePlural and DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -353,7 +363,9 @@
       - x: "$Prefix"
       - ct: "-"
       - test:
-        - if: "$IsSingular"
+        - if: "$IsSingular and $IsFractionDenominator and DefinitionValue($Word, 'Speech', 'AccusativeCase') != ''"
+          then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'AccusativeCase'))"]
+        - else_if: "$IsSingular"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
         - else_if: "$IsNominativePlural and DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
