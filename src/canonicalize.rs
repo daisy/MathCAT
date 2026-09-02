@@ -2083,7 +2083,7 @@ impl CanonicalizeContext {
 		fn merge_number_blocks(context: &CanonicalizeContext, parent_mrow: Element, children: &mut Vec<ChildOfElement>) {
 			// debug!("parent:\n{}", mml_to_string(parent_mrow));
 			// If we find a comma that is not part of a number, don't form a number
-			//   (see https://github.com/NSoiffer/MathCAT/issues/271)
+			//   (see https://github.com/daisy/MathCAT/issues/271)
 			// Unfortunately, we can't do this in the loop below because we might discover the "not part of a number" after a number has been formed
 			let do_not_merge_comma = is_comma_not_part_of_a_number(children);
 			let mut i = 0;

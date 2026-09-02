@@ -1,11 +1,11 @@
-# <img src="logo.png" style="position: relative; top: 16px; z-index: -1;"> Translator and Rule Developer Guide
+# <img src="logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> Translator and Rule Developer Guide
 
 ## Information for MathCAT Rule Developers/Translators
 This page is a work-in-progress.
 
 ## Getting Started
 If you plan to work on MathCAT development, you need to make use of github:
-1. Fork the MathCAT repo at `github.com/NSoiffer/MathCAT`
+1. Fork the MathCAT repo at `github.com/daisy/MathCAT`
 2. Clone the forked copy so you have a local copy to work on.
 3. Checkout the branch I create for your work (typically the country code for your translation) and work in that branch.
 

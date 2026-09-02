@@ -152,7 +152,7 @@ fn speak_rules(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>, math
         // debug!("Speech string: {}", speech_string);
         // Note: [[...]] is added around a matching child, but if the "id" is on 'mathml', the whole string is used
         if !rules_with_context.nav_node_id.is_empty() {
-            // See https://github.com/NSoiffer/MathCAT/issues/174 for why we can just start the speech at the nav node
+            // See https://github.com/daisy/MathCAT/issues/174 for why we can just start the speech at the nav node
             let raw_intent_attr = mathml.attribute_value("data-intent-property");
             let intent_attr = raw_intent_attr.as_deref().unwrap_or_default();
             if let Some(start) = speech_string.find("[[") {

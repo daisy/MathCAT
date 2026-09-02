@@ -72,7 +72,7 @@ fn number_space_before_and_after() -> Result<()> {
 
 #[test]
 fn not_number_space_blocks() -> Result<()> {
-    // https://github.com/NSoiffer/MathCAT/issues/144
+    // https://github.com/daisy/MathCAT/issues/144
     let expr = "<math><mn>123</mn><mtext>&nbsp;&#x2063;</mtext><mn>456</mn></math>";
     test_braille("UEB", expr, "⠼⠁⠃⠉⠀⠼⠙⠑⠋")?;
     return Ok(());
@@ -81,7 +81,7 @@ fn not_number_space_blocks() -> Result<()> {
 
 #[test]
 fn dot_above_bug_204() -> Result<()> {
-    // https://github.com/NSoiffer/MathCAT/issues/204
+    // https://github.com/daisy/MathCAT/issues/204
     let expr = "<math> <mn>0.</mn> <mover> <mn>6</mn> <mo>&middot;</mo> </mover> </math>";
     test_braille("UEB", expr, "⠼⠚⠲⠣⠼⠋⠜⠘⠲")?;
     return Ok(());
@@ -90,7 +90,7 @@ fn dot_above_bug_204() -> Result<()> {
 
 #[test]
 fn tilde_prefix_bug_244() -> Result<()> {
-    // https://github.com/NSoiffer/MathCAT/issues/244
+    // https://github.com/daisy/MathCAT/issues/244
     let expr = "<math> <mo>~</mo> <mi>p</mi> </math>";
     test_braille("UEB", expr, "⠈⠔⠏")?;
     return Ok(());
@@ -109,8 +109,8 @@ fn double_tilde_prefix_bug_244() -> Result<()> {
 
 #[test]
 fn space_hack_between_digits() -> Result<()> {
-    // https://github.com/NSoiffer/MathCAT/issues/144
-    let expr = "<math><mn>1</mn><mtext>&#xA0;&#x2063;</mtext><mn>3</mn><mtext>&#xA0;&#x2063;</mtext><mn>5</mn></math>";
+    // https://github.com/daisy/MathCAT/issues/144
+    let expr = "<math><mn>1</mn><mtext>&#x00a0;&#x2063;</mtext><mn>3</mn><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
     test_braille("UEB", expr, "⠼⠁⠀⠼⠉⠀⠼⠑")?;
     return Ok(());
 
@@ -118,8 +118,8 @@ fn space_hack_between_digits() -> Result<()> {
 
 #[test]
 fn space_hack_around_operator() -> Result<()> {
-    // https://github.com/NSoiffer/MathCAT/issues/144
-    let expr = "<math><mi>y</mi><mtext>&#xA0;&#x2063;</mtext><mo>=</mo><mtext>&#xA0;&#x2063;</mtext><mn>5</mn></math>";
+    // https://github.com/daisy/MathCAT/issues/144
+    let expr = "<math><mi>y</mi><mtext>&#x00a0;&#x2063;</mtext><mo>=</mo><mtext>&#x00a0;&#x2063;</mtext><mn>5</mn></math>";
     test_braille("UEB", expr, "⠰⠽⠀⠐⠶⠀⠼⠑")?;
     return Ok(());
 

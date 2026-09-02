@@ -2688,9 +2688,10 @@ fn remove_optional_group_indicators(braille: &str) -> String {
         if ch == 'b' {
             stack.push(i);
         } else if ch == 'e'
-            && let Some(b_idx) = stack.pop() {
-                pairs.push((b_idx, i));
-            }
+            && let Some(b_idx) = stack.pop()
+        {
+            pairs.push((b_idx, i));
+        }
     }
 
     let mut convert_to_oc = vec![false; chars.len()];

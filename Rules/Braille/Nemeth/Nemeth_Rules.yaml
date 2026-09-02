@@ -164,7 +164,7 @@
    replace:
    - test:
       if: "preceding-sibling::*"
-      then: [t: "W⣍"]     # github.com/NSoiffer/MathCAT/issues/43#issuecomment-1297048039
+      then: [t: "W⣍"]     # github.com/daisy/MathCAT/issues/43#issuecomment-1297048039
    - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
@@ -900,7 +900,7 @@
 
 -
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   name: chemistry-mhchem-equilibrium-arrow
   tag: mover
   match:
