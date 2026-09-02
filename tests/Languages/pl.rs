@@ -2,6 +2,7 @@
 
 // Existing hand-written Polish tests (norms, degrees, relations, etc.)
 mod pl;
+mod number_sets;
 
 // Tests mirrored from the English suite, with expected speech localized to Polish.
 mod ClearSpeak {
