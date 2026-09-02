@@ -16,4 +16,4 @@ There are four related projects that make use of MathCAT:
 
 MathCAT is used in many assistive technologies including NVDA and JAWS.
 
-For more information, see the [full documentation](https://nsoiffer.github.io/MathCAT/).
+For more information, see the [full documentation](https://daisy.github.io/MathCAT/).

@@ -1945,7 +1945,7 @@ mod tests {
         test_is_not_simple("-x y z", 
                 "<mrow><mrow><mo>-</mo><mi>x</mi></mrow>
                             <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
-        test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
+        test_is_not_simple("C(-2,1,4)",             // github.com/daisy/MathCAT/issues/199
                     "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>")?;
         return Ok( () );
         });
