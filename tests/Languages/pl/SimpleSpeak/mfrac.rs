@@ -164,7 +164,7 @@ fn frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("pl", "SimpleSpeak", expr, "62 milas na godzina")?;
+    test("pl", "SimpleSpeak", expr, "62 mile na godzina")?;
     return Ok(());
 
 }
@@ -198,7 +198,7 @@ fn number_in_numerator_with_units() -> Result<()> {
             <mi intent=':unit'>mi</mi>
         </mfrac>
     </math>";
-    test("pl", "SimpleSpeak", expr, "3 galons na mila")?;
+    test("pl", "SimpleSpeak", expr, "3 galony na mila")?;
     return Ok(());
 
 }
@@ -212,7 +212,7 @@ fn units_with_powers() -> Result<()> {
             <msup> <mi intent=':unit'>s</mi><mn>2</mn> </msup>
         </mfrac>
     </math>";
-    test("pl", "SimpleSpeak", expr, "3 metrs na sekunda do kwadratu")?;
+    test("pl", "SimpleSpeak", expr, "3 metry na sekunda do kwadratu")?;
     return Ok(());
 
 }
