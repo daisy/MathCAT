@@ -13,9 +13,9 @@
 
     "image":"function=obraz", 
     "mixed-fraction":"infix=i",
-    "quotient":"function=część całkowita; podzielone przez",
+    "quotient":"function=część całkowita | podzielone przez",
     "evaluated-at":"infix=obliczone w",
-    "remainder":"function=reszta; podzielone przez",
+    "remainder":"function=reszta | podzielone przez",
 
     "max":"function=maksimum",
     "min":"function=minimum",
@@ -32,10 +32,10 @@
     "real-part": "function=część rzeczywista",
     "imaginary-part": "function=część urojona: część urojona: część urojona",
 
-    "polar-coordinate":"function=współrzędna biegunowa; przecinek",
-    "spherical-coordinate":"function=współrzędna sferyczna; przecinek; przecinek",
-    "cartesian-coordinate":"function=współrzędna kartezjańska; przecinek",
-    "coordinate":"function=współrzędna; przecinek",
+    "polar-coordinate":"function=współrzędna biegunowa",
+    "spherical-coordinate":"function=współrzędna sferyczna",
+    "cartesian-coordinate":"function=współrzędna kartezjańska",
+    "coordinate":"function=współrzędna",
     "floor":"function=podłoga",
     "ceiling":"function=sufit",
     "round":"function=zaokrąglenie",
@@ -51,16 +51,23 @@
 
     ### Sets
     "set": "function=; zbiór: zbiór",
-    "set-difference":"function=różnica zbiorów; i || infix=minus", # NOTE: not tested
+    "set-difference":"function=różnica zbiorów | i || infix=minus",
     "complement":"function=dopełnienie",
+    "empty-set":"nofix=zbiór pusty",
     "cardinality":"function=moc zbioru",
     "list":"function=lista",
     "tuple": "function=; krotka: krotka",
 
 
     ### Sequence and Series
-    "sum":"function=; suma po: suma; ",
-    "product":"function=iloczyn || function=iloczyn po || function=iloczyn od; do",
+    # UWAGA: NIE używamy tu szablonów arności ("| po | od,do"), choć angielski je ma.
+    # Powód (zmierzone 31.08.2026): intent_function_glue_before w src/infer_intent.rs
+    # zwraca dla ostatniego argumentu ZASZYTE W KODZIE angielskie "of", więc polskie
+    # wyjście brzmiałoby "suma po i of x". To defekt rdzenia dotyczący każdego języka
+    # poza angielskim; węgierski uniknął go tak samo, zostawiając prostą postać.
+    # Separator binarny (jedna opcja "| słowo") działa poprawnie i jest używany niżej.
+    "sum":"function=suma",
+    "product":"function=iloczyn",
 
 
     ### Elementary classical functions
@@ -104,7 +111,7 @@
     "median":"function=mediana",
     "mode":"function=dominanta",
 
-    "conditional-probability":"function=prawdopodobieństwo; pod warunkiem", # NOTE: Check test
+    "conditional-probability":"function=prawdopodobieństwo | pod warunkiem",
 
 
     ### Linear Algebra
@@ -120,7 +127,7 @@
     "unit-vector":"prefix=wektor jednostkowy",
 
     "identity-matrix":"nofix=macierz jednostkowa", # NOTE: no function specified
-    "transpose":"function=transpozycja || postfix=transponowane",
+    "transpose":"postfix=transponowane || function=transpozycja",
     "dimensional-product":"infix=na", # INFIX
 
 
@@ -150,13 +157,13 @@
 
     ### General Concepts 
     "fenced-group":"function=grupa w nawiasach",
-    "ordered-pair": "function=; para; i",
+    "ordered-pair": "function=para | i",
     "indexed-by": "infix=; indeks dolny; koniec indeksu dolnego",
     
     "highlight":"postfix=podświetlone",
     "least-common-denominator":"function=najmniejszy wspólny mianownik",
     "rate":"infix=na",
-    "translation":"function=przesunięcie o; przecinek",
+    "translation":"function=przesunięcie o",
     "constraint":"infix=; przy warunku; ", 
     
     "binomial-coefficient":"infix=po",
@@ -264,7 +271,7 @@
     ## Default fixity nofix
     "diameter":"nofix=d: średnica",
     "distance":"nofix=d; D: odległość",
-    "probability":"nofix=P: prawdopodobieństwo",
+    "probability":"nofix=P: prawdopodobieństwo || function=prawdopodobieństwo",
     "radius":"nofix=r: promień",
     "volume":"nofix=V: objętość || function=objętość",
     "exponential-e":"nofix=e",

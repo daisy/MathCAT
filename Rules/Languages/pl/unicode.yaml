@@ -60,9 +60,9 @@
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
         replace: [spell: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
 
- - "0-9": [t: "."]
+ - "0-9": [T: "."]
 
- - " ": [t: " "]                     # 0x20
+ - " ": [T: " "]                     # 0x20
 
  - "!":                                            # 0x21
     - test:
@@ -337,8 +337,8 @@
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
         then: [T: "z"]
- - "⁢": [t: ""]                                   # 0x2062
- - "⁣": [t: ""]                                   # 0x2063
+ - "⁢": [T: ""]                                   # 0x2062
+ - "⁣": [T: ""]                                   # 0x2063
  - "⁤": [T: "i"]                                # 0x2064
  - "′": [t: "prim"]                               # 0x2032
  - "″": [t: "podwójny prim"]                        # 0x2033
