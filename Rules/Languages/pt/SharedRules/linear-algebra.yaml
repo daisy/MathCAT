@@ -1,0 +1,35 @@
+---
+
+- name: scalar-determinant
+  tag: determinant
+  match: "count(*)=1 and not(*[1][self::m:mtr])"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "o"
+  - T: "determinante"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: "de"
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "fim do determinante"]
+
+- name: subscripted-norm
+  tag: subscripted-norm
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "a"
+  - x: "*[2]"
+  - T: "norma"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then:
+      - T: "de"
+  - x: "*[1]"
