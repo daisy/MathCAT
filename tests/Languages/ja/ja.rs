@@ -641,3 +641,31 @@ fn permutation_p_notation() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "5 個から 2 個取る順列")?;
     return Ok(());
 }
+
+/// Multi-line labels: a system of equations labelled as cases is announced as
+/// "2 ケース" and each line as "ケース 1", "ケース 2" (the seed doubled the word
+/// and used 設備 "equipment" for equation).
+#[test]
+fn multiline_case_label() -> Result<()> {
+    let expr = "<math>
+     <mrow>
+      <mtable>
+       <mtr> <mtd> <mrow> <mi>x</mi><mo>+</mo><mi>y</mi></mrow> </mtd>  <mtd><mo>=</mo> </mtd>  <mtd><mn>7</mn></mtd>  </mtr>
+       <mtr> <mtd> <mrow> <mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi></mrow></mtd>  <mtd><mo>=</mo></mtd>  <mtd><mrow><mn>17</mn></mrow></mtd> </mtr>
+      </mtable></mrow>
+    </math>";
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Case", expr,
+        "2 ケース; ケース 1; x プラス y, イコール 7; ケース 2; 2 x プラス 3 y; イコール 17")?;
+    return Ok(());
+}
+
+/// menclose with a line on one side: the side comes first and the noun last,
+/// "左に 線" ("a line on the left"); the seed said ライン アクセス for line-on-right.
+#[test]
+fn menclose_line_on_left() -> Result<()> {
+    let expr = "<math>
+                    <menclose notation='left'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
+                </math>";
+    test("ja", "ClearSpeak", expr, "左に 線, 2 分の 3 を囲む 囲み終了")?;
+    return Ok(());
+}

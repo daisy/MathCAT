@@ -295,9 +295,9 @@
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"
               then:
-              - t: "付き"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
-              - t: "プレスクリプト"      # phrase(in this equation certain 'prescripts' apply)
+              - T: "個の前置き添字"      # phrase(in this equation certain 'prescripts' apply)
+              - T: "付き"      # phrase(substitute x 'with' y)
               - pause: short
           - test:
               if: "not($Prescripts[1][self::m:none])"
@@ -332,9 +332,9 @@
               - test:
                   if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
                   then:
-                  - t: "プレスクリプトの改変"      # phrase(in this case there are values 'and alternating prescripts')
+                  - T: "および交互の前置き添字"      # phrase(in this case there are values 'and alternating prescripts')
                   - x: "$Prescripts[position() > 4]"
-                  - t: "終了原稿"      # phrase(This is where 'end prescripts' occurs)
+                  - T: "前置き添字終了"      # phrase(This is where 'end prescripts' occurs)
   - test:
       if: "$Postscripts"
       then:
@@ -428,7 +428,6 @@
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
-  - t: "テーブルと"      # phrase(the 'table with' 3 rows)
   - x: count(*)
   - test:
       if: count(*)=1
@@ -438,8 +437,9 @@
   - x: "$NumColumns"
   - test:
       if: "NumColumns=1"
-      then: [t: "コラム"]      # phrase(the table with 3 rows and 1 'column')
-      else: [t: "コラム"]      # phrase(the table with 3 rows and 4 'columns')
+      then: [T: "列"]      # phrase(the table with 3 rows and 1 'column')
+      else: [T: "列"]      # phrase(the table with 3 rows and 4 'columns')
+  - T: "の表"      # phrase(the 'table with' 3 rows)
   - pause: long
   - x: "*"
 
@@ -524,19 +524,19 @@
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
-      - t: "ライン"      # phrase(draw a straight 'line' on the page)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
-          then: [t: "左から", pause: short]      # phrase(line on 'left' of the expression)
+          then: [T: "左に", pause: short]      # phrase(line on 'left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [t: "アクセス", pause: short]      # phrase(line on 'right' of the expression)
+          then: [T: "右に", pause: short]      # phrase(line on 'right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [t: "トップトップ", pause: short]      # phrase(line on 'top' of the expression)
+          then: [T: "上に", pause: short]      # phrase(line on 'top' of the expression)
       - test:
           if: ".[contains(@notation,'bottom')]"
-          then: [t: "ボトム", pause: short]      # phrase(line on the 'bottom' of the expression)
+          then: [T: "下に", pause: short]      # phrase(line on the 'bottom' of the expression)
+      - T: "線"      # phrase(draw a straight 'line' on the page)
   - test:
       if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
       then:
