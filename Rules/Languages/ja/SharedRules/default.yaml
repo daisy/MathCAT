@@ -349,9 +349,9 @@
               - test:
                   if: "$Prescripts"
                   then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
-              - t: "付き"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
-              - t: "投稿原稿"      # phrase(this material includes several 'postscripts')
+              - T: "個の後置き添字"      # phrase(this material includes several 'postscripts')
+              - T: "付き"      # phrase(substitute x 'with' y)
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -417,9 +417,9 @@
                       - test:
                           if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
                           then:
-                          - t: "スクリプトの変更と変更"      # phrase(this situation involves complexities 'and alternating scripts')
+                          - T: "および交互の添字"      # phrase(this situation involves complexities 'and alternating scripts')
                           - x: "$Postscripts[position() > 8]"
-                          - t: "エンドスクリプト"      # phrase(At this point 'end scripts' occurs)
+                          - T: "添字終了"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
   tag: mtable
@@ -474,7 +474,7 @@
       #   if: not($IsColumnSilent) and ($ClearSpeak_Matrix = 'SpeakColNum' or count(preceding-sibling::*) != 0)
       if: "not($IsColumnSilent)"
       then:
-      - t: "コラム"      # phrase(the first 'column' of the matrix)
+      - T: "列"      # phrase(the first 'column' of the matrix)
       - x: "count(preceding-sibling::*)+IfThenElse(parent::m:mlabeledtr, 0, 1)"
       - pause: medium
   - x: "*"
@@ -526,17 +526,18 @@
       then:
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
-          then: [T: "左に", pause: short]      # phrase(line on 'left' of the expression)
+          then: [T: "左に"]      # phrase(line on 'left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [T: "右に", pause: short]      # phrase(line on 'right' of the expression)
+          then: [T: "右に"]      # phrase(line on 'right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
-          then: [T: "上に", pause: short]      # phrase(line on 'top' of the expression)
+          then: [T: "上に"]      # phrase(line on 'top' of the expression)
       - test:
           if: ".[contains(@notation,'bottom')]"
-          then: [T: "下に", pause: short]      # phrase(line on the 'bottom' of the expression)
-      - T: "線"      # phrase(draw a straight 'line' on the page)
+          then: [T: "下に"]      # phrase(line on the 'bottom' of the expression)
+      - T: "線"
+      - pause: short      # phrase(draw a straight 'line' on the page)
   - test:
       if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
       then:
@@ -609,14 +610,14 @@
   - test:
       if: ".[contains(@notation,'radical')]"
       then: [t: "平方根", pause: short]      # phrase(5 is the 'square root' of 25)
-  - t: "エンクロージャー"      # phrase(parentheses are 'enclosing' part of the equation)
+  - T: "囲み"      # phrase(parentheses are 'enclosing' part of the equation)
   - test:
       if: "*[self::m:mtext and .=' ']"
       then: [t: "スペース"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
-      then: [t: "エンドエンクロージャ"]      # phrase(reached the 'end enclosure' point)
+      then: [T: "囲み終了"]      # phrase(reached the 'end enclosure' point)
   - pause: short
 
 - name: semantics

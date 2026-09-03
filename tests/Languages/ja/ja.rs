@@ -666,6 +666,6 @@ fn menclose_line_on_left() -> Result<()> {
     let expr = "<math>
                     <menclose notation='left'>  <mfrac><mn>3</mn><mn>2</mn></mfrac> </menclose>
                 </math>";
-    test("ja", "ClearSpeak", expr, "左に 線, 2 分の 3 を囲む 囲み終了")?;
+    test("ja", "ClearSpeak", expr, "左に 線, 囲み 2 分の 3 囲み終了")?;
     return Ok(());
 }
