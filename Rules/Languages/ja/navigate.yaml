@@ -48,15 +48,15 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [t: "すべての方法でズームアウト", pause: "medium"]
+        then: [T: "ズームアウトを最大にしました", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
         then:
         - test:
           - if: "string-length(.) = 1"
-            then: [t: "すべての方法でズーム"]       # phrase('zoomed in all of the way')
+            then: [T: "ズームインを最大にしました"]       # phrase('zoomed in all of the way')
           - else_if: "$NavNodeOffset = 0"
             then: [t: "最初の文字にズームイン"]   # phrase('zoomed in to first character')
-            else: [t: "キャラクターにズーム"]          # phrase('zoomed in to character')
+            else: [T: "文字までズームしました"]          # phrase('zoomed in to character')
         - pause: "medium"
         else:
         - test:
@@ -76,25 +76,25 @@
             - x: "$Prefix"
             - test:
               - if: "substring($NavCommand, $CommandOffset) = 'In'"
-                then: [t: "中へ"]                                  # phrase(zoom 'in' to see more details)
+                then: [T: "イン"]                                  # phrase(zoom 'in' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
                 then: [t: "\uF8FEインを最大にしました"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
-                then: [t: "インフォメーション"]                                 # phrase(zoom 'out' to see more details)
+                then: [T: "アウト"]                                 # phrase(zoom 'out' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
                 then: [t: "\uF8FEアウトを最大にしました"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
-                then: [t: "アクセス"]                               # phrase(move to the 'right')
+                then: [T: "右"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
-                then: [t: "左から"]                                # phrase(move to the 'left')
+                then: [T: "左"]                                # phrase(move to the 'left')
               - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
-                then: [t: "最近の投稿"]                                 # phrase(who is the 'current' president)
+                then: [T: "現在"]                                 # phrase(who is the 'current' president)
               - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
-                then: [t: "ラインの先頭へ"]                                 # phrase(move 'to start of line')
+                then: [T: "行の先頭へ"]                                 # phrase(move 'to start of line')
               - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
-                then: [t: "行末まで"]                                 # phrase(move 'to end of line')
+                then: [T: "行の末尾へ"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -118,7 +118,7 @@
   tag: [mtr, mlabeledtr]
   match: "$Move2D = 'in'"
   replace:
-  - t: "コラム"
+  - T: "列"
   - x: "count($Child2D/preceding-sibling::*)+1"
   - pause: "medium"
 
@@ -141,8 +141,8 @@
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [t: "プレサブスクリプト"]       # phrase(x with 'subscript' 2)
-                  else: [t: "事前原稿"]     # phrase(x with 'superscript' 2)
+                  then: [T: "前置き下付き文字"]       # phrase(x with 'subscript' 2)
+                  else: [T: "前置き上付き文字"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
@@ -185,7 +185,7 @@
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
               - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
           else:
-          - t: "パーツ"         # phrase(the 'part' of the expression)
+          - T: "部分"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
       - pause: "medium"
 
@@ -212,15 +212,15 @@
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
           then: [t: "元に戻す ズームアウト"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [t: "元に戻す すべての方法でズーム"]        # phrase('undo zooming in all of the way')
+          then: [T: "元に戻す ズームインを最大"]        # phrase('undo zooming in all of the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [t: "元に戻す ズーム アウト すべて の 方法"]       # phrase('undo zooming out all of the way')
+          then: [T: "元に戻す ズームアウトを最大"]       # phrase('undo zooming out all of the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
           then: [t: "元に戻す 左に移動"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
           then: [t: "元に戻す 右に移動"]                    # phrase('undo move right')
         - else_if: "$PreviousNavCommand = 'None'"
-          then: [t: "前のコマンドはなし"]                # phrase('no previous command')
+          then: [T: "前のコマンドはありません"]                # phrase('no previous command')
       - pause: "medium"
   - set_variables: [NavNode: "@id"]
 
@@ -548,12 +548,12 @@
           then:
           - test:
             - if: "$NavCommand = 'MoveStart'"
-              then: [t: "数学の開始に進む"]                  # phrase('move to start of math')
+              then: [T: "数式の先頭に移動"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
               then: [t: "行の先頭に移動"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
-              then: [t: "数学の末尾に移動"]                    # phrase('move to end of math')
-              else: [t: "行末まで移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              then: [T: "数式の末尾に移動"]                    # phrase('move to end of math')
+              else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -594,7 +594,7 @@
       - test:
           if: "$NavCommand = 'MoveLineStart'"
           then: [t: "行の先頭に移動"]                                # phrase('move to start of line')
-          else: [t: "行末まで移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"
@@ -630,7 +630,7 @@
   - "$NavCommand='MoveColumnStart' or $NavCommand='MoveColumnEnd' or"
   - "$NavCommand='ReadCellCurrent'"
   replace:
-  - t: "テーブルにない"                               # phrase('not in table')
+  - T: "表の中ではありません"                               # phrase('not in table')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -649,7 +649,7 @@
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - t: "コラム"                           # phrase(the first 'column' of the table)
+          - T: "列"                           # phrase(the first 'column' of the table)
           - x: "count(preceding-sibling::*)"
           - pause: medium
       - test:
@@ -661,7 +661,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/*[1]/@id"]
       else:
-      - t: "前の列がない"                 # phrase('no previous column' in the table)
+      - T: "前の列はありません"                 # phrase('no previous column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -679,7 +679,7 @@
       - test:
           if: "$NavVerbosity != 'Terse'"
           then:
-          - t: "コラム"                         # phrase(the first 'column' in the table)
+          - T: "列"                         # phrase(the first 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: medium
       - test:
@@ -707,7 +707,7 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "サインアップ"                             # phrase('move up' to previous row in the table)
+              - T: "上に移動"                             # phrase('move up' to previous row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
@@ -715,7 +715,7 @@
               - t: "行"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
               - pause: short
-              - t: "コラム"                              # phrase(the previous 'column' in the table)
+              - T: "列"                              # phrase(the previous 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -727,7 +727,7 @@
               else:
               - set_variables: [NavNode: "../preceding-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - t: "前の行"                            # phrase('no previous row' in the table)
+      - T: "前の行はありません"                            # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -743,7 +743,7 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "シフトダウン"                          # phrase('move down' to the next row in the table)
+              - T: "下に移動"                          # phrase('move down' to the next row in the table)
               - pause: short
           - test:
               if: "$NavVerbosity != 'Terse'"
@@ -751,7 +751,7 @@
               - t: "行"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
               - pause: short
-              - t: "コラム"                             # phrase(the next 'column' in the table)
+              - T: "列"                             # phrase(the next 'column' in the table)
               - x: "count(preceding-sibling::*)+1"
               - pause: medium
           - test:
@@ -763,7 +763,7 @@
               else:
               - set_variables: [NavNode: "../following-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - t: "次の行"                                # phrase('no next row' in the table)
+      - T: "次の行はありません"                                # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -787,7 +787,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
       else:
-      - t: "前の行"                          # phrase('no previous row' in the table)
+      - T: "前の行はありません"                          # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -811,7 +811,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/@id"]
       else:
-      - t: "次の行"                          # phrase('no next row' in the table)
+      - T: "次の行はありません"                          # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-previous
@@ -824,7 +824,7 @@
       then:
       - t: "前の列に移動"                              # phrase('move to previous column' in the table)
       - pause: medium
-  - t: "前の列がない"                          # phrase('no previous column' in the table)
+  - T: "前の列はありません"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -861,12 +861,12 @@
               - t: "行"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
               - pause: short
-              - t: "コラム"                                     # phrase(the previous 'column' in the table)
+              - T: "列"                                     # phrase(the previous 'column' in the table)
               - x: "count($MTD[1]/preceding-sibling::*)+1"
               - pause: short
           - set_variables: [NavNode: "$MTD[1]/*[1]/@id"]
           else:
-          - t: "テーブルにない"                                   # phrase('not in table' or matrix)
+          - T: "表の中ではありません"                                   # phrase('not in table' or matrix)
           - pause: long
           - set_variables: [SpeakExpression: "'false'"]
 
@@ -1106,7 +1106,7 @@
       then:
       - x: "ancestor::m:mtd[1]" # try again on an mtd node
       else:
-      - t: "テーブルにない"                                               # phrase('not in table' or matrix)
+      - T: "表の中ではありません"                                               # phrase('not in table' or matrix)
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
 
@@ -1204,16 +1204,16 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "できません。"                                          # phrase('cannot' move right in expression)
+      - T: "右に"                              # phrase(move 'right')
       - test:
         - if: "$NavCommand = 'MoveNext'"
           then: [t: "移動"]                                  # phrase('move' to next entry in table)     
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [t: "フィードバック"]                                  # phrase('read' next entry in table)     
-          else: [t: "コンテンツ"]                              # phrase('describe' next entry in table)     
-      - t: "アクセス"                              # phrase(move 'right')
+          then: [T: "読み上げ"]                                  # phrase('read' next entry in table)     
+          else: [T: "説明"]                              # phrase('describe' next entry in table)     
+      - T: "できません"                                          # phrase('cannot' move right in expression)
       - pause: short
-  - t: "数学の終わり"                              # phrase(move 'end of math')
+  - T: "数式の末尾"                              # phrase(move 'end of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1258,7 +1258,7 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "コラム"                                       # phrase(the previous 'column' in the table)
+          - T: "列"                                       # phrase(the previous 'column' in the table)
           - x: "count(preceding-sibling::*)+2"
           - pause: short
       - test:
@@ -1418,7 +1418,7 @@
   - "($NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious') and"
   - "(self::m:math or name(EdgeNode(., 'left', 'math'))='math')"
   replace:
-  - t: "数学の始まり"                                              # phrase('start of math')
+  - T: "数式の先頭"                                              # phrase('start of math')
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
 
@@ -1527,7 +1527,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "コラム"                               # phrase(the first 'column' in the table)
+      - T: "列"                               # phrase(the first 'column' in the table)
       - x: "count(preceding-sibling::*)"
       - pause: short
   - test:
@@ -1613,14 +1613,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "キャラクター"                                                # phrase(a mathematical 'character')
+      - T: "文字"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
       - t: "シンプル"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - t: "強化強化"                                                 # phrase(an 'enhanced' way to do something)
+      - T: "拡張"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
   - t: "モード"                                                         # phrase(a simple 'mode' of use)
   - pause: long
@@ -1642,10 +1642,10 @@
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "強化強化"                                               # phrase(an 'enhanced' way to do something)
+      - T: "拡張"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - t: "キャラクター"                                              # phrase(a mathematical 'character')
+      - T: "文字"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
   - t: "モード"                                                       # phrase(a simple 'mode' of use)
   - pause: long
@@ -1663,7 +1663,7 @@
   - test:
       if: "$Overview = 'true'"
       then:
-      - t: "移動後の表現"                # phrase('speak expression after move')
+      - T: "移動後に式を読み上げる"                # phrase('speak expression after move')
       - pause: long
       - set_variables: [Overview: "'false'"]
       else:
@@ -1680,9 +1680,9 @@
       then:
       - test:
         - if: "$NavCommand = 'ReadCurrent'"
-          then: [t: "フィードバック"]                                  # phrase('read' next entry in table) 
-          else: [t: "コンテンツ"]                              # phrase('describe' next entry in table)     
-      - t: "最近の投稿"                                         # phrase('current' entry in table)
+          then: [T: "読み上げ"]                                  # phrase('read' next entry in table) 
+          else: [T: "説明"]                              # phrase('describe' next entry in table)     
+      - T: "現在"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 
@@ -1700,9 +1700,9 @@
       then:
       - test:
         - if: "starts-with($NavCommand, 'Read')"
-          then: [t: "フィードバック"]                                  # phrase('read' next entry in table)     
+          then: [T: "読み上げ"]                                  # phrase('read' next entry in table)     
         - else_if: "starts-with($NavCommand, 'Describe')"
-          then: [t: "コンテンツ"]                              # phrase('describe' next entry in table)     
+          then: [T: "説明"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
           then: [t: "移動する"]                              # phrase('move to' the next entry in table) 
           else: [t: "セット"]                                   # phrase('set' the value of the next entry in table) 
@@ -1750,11 +1750,11 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - t: "何もない内部"                         # phrase('inside of nothing more') 
+      - T: "これ以上内側はありません"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - t: "インスタグラム"                                         # phrase('inside' a big expression) 
+      - T: "内側"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
@@ -1762,7 +1762,7 @@
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - t: "インスタグラム"                                           # phrase('inside' a big expression)
+  - T: "内側"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
