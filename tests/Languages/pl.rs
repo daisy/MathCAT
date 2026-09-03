@@ -4,6 +4,7 @@
 mod pl;
 mod number_sets;
 mod unit_plurals;
+mod preposition_case;
 
 // Tests mirrored from the English suite, with expected speech localized to Polish.
 mod ClearSpeak {

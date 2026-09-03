@@ -646,6 +646,48 @@
     "łyżka stołowa": "łyżki stołowe"
   }
 
+- AccusativeCase: {
+  # Accusative singular, used after the preposition "na" in the
+  # 'per-fraction' rule: "62 mile na godzinę", not "na godzina".
+  # Only feminine nouns differ from the nominative, so masculine and
+  # neuter names are deliberately absent - a missing entry means
+  # "the form does not change" (na litr, na mol, na metr).
+  # An adjective agrees with its noun (milę kwadratową), while a
+  # dependent noun keeps its own case (uncję płynu, minutę łuku).
+    "atmosfera": "atmosferę",
+    "baryłka": "baryłkę",
+    "drachma": "drachmę",
+    "drachma płynu": "drachmę płynu",
+    "dyna": "dynę",
+    "godzina": "godzinę",
+    "jednostka astronomiczna": "jednostkę astronomiczną",
+    "jednostka masy atomowej": "jednostkę masy atomowej",
+    "kaloria": "kalorię",
+    "kandela": "kandelę",
+    "kwarta": "kwartę",
+    "mila": "milę",
+    "mila kwadratowa": "milę kwadratową",
+    "mila na galon": "milę na galon",
+    "mila na godzinę": "milę na godzinę",
+    "minuta": "minutę",
+    "minuta łuku": "minutę łuku",
+    "pinta": "pintę",
+    "rupia": "rupię",
+    "sekunda": "sekundę",
+    "sekunda łuku": "sekundę łuku",
+    "stopa": "stopę",
+    "stopa deskowa": "stopę deskową",
+    "stopa kwadratowa": "stopę kwadratową",
+    "stopa sześcienna": "stopę sześcienną",
+    "tesla": "teslę",
+    "tona": "tonę",
+    "uncja": "uncję",
+    "uncja płynu": "uncję płynu",
+    "uncja trojańska": "uncję trojańską",
+    "łyżeczka": "łyżeczkę",
+    "łyżka stołowa": "łyżkę stołową"
+  }
+
 - PluralGenitive: {
   # Genitive plural - after 5 and above, and after 12-14, 112-114.
   # Polish inflects the noun according to the numeral, so a single plural
