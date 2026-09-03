@@ -105,14 +105,16 @@
   - t: "同じ式が評価されるマイナス"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
   - x: "*[2]"
 
-- name: permutation
-  # Not a default because the order of the args is reversed
+- name: permutation   # audit-ignore
+  # en reverses the args ("k permutations of n"); Japanese reads nPk in display
+  # order with the standard school phrase: 5P2 = "5 個から 2 個取る順列"
   tag: pochhammer
   match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
-  - x: "*[2]"
-  - t: "順列の"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
+  - T: "個から"      # phrase(the solution  involves several 'permutations of' values)
+  - x: "*[2]"
+  - T: "個取る順列"
 
 - name: intervals
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
