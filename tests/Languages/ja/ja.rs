@@ -629,3 +629,15 @@ fn divides_and_similar() -> Result<()> {
     }
     return Ok(());
 }
+
+/// nPk permutation notation is read with the standard Japanese school phrase
+/// and in display order: (superscript 5) P (subscript 2) is
+/// "5 個から 2 個取る順列" ("permutations taking 2 out of 5").
+/// en reverses the arguments ("2 permutations of 5"); Japanese does not need to.
+#[test]
+fn permutation_p_notation() -> Result<()> {
+    let expr = "<math><msubsup><mi>P</mi><mn>2</mn><mn>5</mn></msubsup></math>";
+    test("ja", "ClearSpeak", expr, "5 個から 2 個取る順列")?;
+    test("ja", "SimpleSpeak", expr, "5 個から 2 個取る順列")?;
+    return Ok(());
+}
