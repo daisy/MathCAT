@@ -654,8 +654,9 @@ fn multiline_case_label() -> Result<()> {
        <mtr> <mtd> <mrow> <mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi></mrow></mtd>  <mtd><mo>=</mo></mtd>  <mtd><mrow><mn>17</mn></mrow></mtd> </mtr>
       </mtable></mrow>
     </math>";
-    // SimpleSpeak reaches the same labels through SharedRules/general.yaml.
-    test("ja", "SimpleSpeak", expr, "PLACEHOLDER")?;
+    // SimpleSpeak reaches the same labels through SharedRules/general.yaml, and
+    // classifies this as a system of equations rather than cases: 2 式, 式 1, 式 2.
+    test("ja", "SimpleSpeak", expr, "2 式; 式 1; x プラス y, イコール 7; 式 2; 2 x プラス 3 y; イコール 17")?;
     test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Case", expr,
         "2 ケース; ケース 1; x プラス y, イコール 7; ケース 2; 2 x プラス 3 y; イコール 17")?;
     return Ok(());
