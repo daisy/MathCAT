@@ -672,3 +672,115 @@ fn menclose_line_on_left() -> Result<()> {
     test("ja", "ClearSpeak", expr, "左に 線, 囲み 2 分の 3 囲み終了")?;
     return Ok(());
 }
+
+/// The letter names in the dimension form of a number set (N squared) are the
+/// katakana letter names. ネクタイ is a necktie.
+#[test]
+fn number_set_dimension_letters() -> Result<()> {
+    for (letter, expected) in [
+        ("ℂ", "シー 2"),
+        ("ℕ", "エヌ 2"),
+        ("ℚ", "キュー 2"),
+        ("ℝ", "アール 2"),
+        ("ℤ", "ゼット 2"),
+    ] {
+        let expr = format!("<math><msup><mi>{letter}</mi><mn>2</mn></msup></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// A vector is ベクトル; コンテンツ is "content". The end marker is one word with
+/// the noun first, matching 行列終了 already used in the same file.
+#[test]
+fn column_vector_end_vector() -> Result<()> {
+    let expr = "<math display='block'>
+        <mrow><mo>(</mo><mrow><mtable>
+          <mtr><mtd><mn>1</mn></mtd></mtr>
+          <mtr><mtd><mn>2</mn></mtd></mtr>
+          <mtr><mtd><mn>3</mn></mtd></mtr>
+        </mtable></mrow><mo>)</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector",
+        expr, "3 かける 1 列 ベクトル; 1; 2; 3; ベクトル終了")?;
+    return Ok(());
+}
+
+/// The row form, and the matrix form of the same end marker: 行列終了, not
+/// リリース 行列 ("release matrix").
+#[test]
+fn row_vector_and_matrix_end_markers() -> Result<()> {
+    let row = "<math display='block'>
+        <mrow><mo>[</mo><mrow><mtable>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+        </mtable></mrow><mo>]</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector",
+        row, "1 かける 2 行 ベクトル; 1, 2; ベクトル終了")?;
+    let square = "<math display='block'>
+        <mrow><mo>(</mo><mrow><mtable>
+          <mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+          <mtr><mtd><mn>7</mn></mtd><mtd><mn>5</mn></mtd></mtr>
+        </mtable></mrow><mo>)</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix",
+        square, "2 かける 2 行列; 行 1; 2, 1; 行 2; 7, 5; 行列終了")?;
+    return Ok(());
+}
+
+/// Chemical states use the terms taught in Japanese chemistry: 固体 液体 気体
+/// 水溶液. ガスレンジ is a gas cooker and アキュース is not a word.
+#[test]
+fn chemical_states() -> Result<()> {
+    for (state, expected) in [
+        ("s", "大文字 n エー; 固体"),
+        ("l", "大文字 n エー; 液体"),
+        ("g", "大文字 n エー; 気体"),
+        ("aq", "大文字 n エー; 水溶液"),
+    ] {
+        let expr = format!(
+            "<math><mrow><mi>Na</mi><mrow><mo>(</mo><mrow><mi>{state}</mi></mrow><mo>)</mo></mrow></mrow></math>"
+        );
+        test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Bond names are 単結合 二重結合 三重結合 四重結合, not transliterations;
+/// 四倍の結束 is "quadruple solidarity", not a chemistry term.
+#[test]
+fn chemical_bonds() -> Result<()> {
+    let ethylene = "<math><mrow>
+          <msub><mi>H</mi><mn>2</mn></msub><mi>C</mi>
+          <mo>=</mo>
+          <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
+      </mrow></math>";
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], ethylene,
+        "大文字 h, 2 大文字 c, 二重結合 大文字 c, 大文字 h, 2")?;
+    return Ok(());
+}
+
+/// The short readings of sub and superscript are 下付き and 上付き, the same
+/// stems as the verbose 下付き文字 / 上付き文字 in the branch beside them.
+/// サブサブ is the word "sub" doubled and スーパー is a supermarket.
+#[test]
+fn sub_and_superscript_medium() -> Result<()> {
+    let sulfate = "<math><mrow><msup>
+          <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
+          <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
+      </msup></mrow></math>";
+    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Medium")], sulfate,
+        "角括弧, 大文字 s, 大文字 o, 下付き 4; 角括弧閉じ 上付き 2 マイナス")?;
+    return Ok(());
+}
+
+/// A determinant ends with 行列式終了, built the same way as 行列終了.
+#[test]
+fn determinant_end_marker() -> Result<()> {
+    let expr = "<math><mrow><mrow><mo>|</mo>
+        <mtable>
+          <mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+          <mtr><mtd><mn>7</mn></mtd><mtd><mn>5</mn></mtd></mtr>
+        </mtable>
+      <mo>|</mo></mrow></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "2 かける 2 行列式; 行 1; 2, 1; 行 2; 7, 5; 行列式終了")?;
+    return Ok(());
+}
