@@ -499,10 +499,10 @@
   - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [t: "ケースケース"]      # phrase(this is the first 'case' of three cases)
+      then: [T: "ケース"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
-      then: [t: "設備"]      # phrase(this is the first 'equation' of three equations)
-      else: [t: "ライン"]      # phrase(this is the first 'line' of three lines)
+      then: [T: "式"]      # phrase(this is the first 'equation' of three equations)
+      else: [T: "行"]      # phrase(this is the first 'line' of three lines)
   - test:
     - if: "$LineCount != 1"
       then: [ct: ""] # plural
@@ -522,10 +522,10 @@
       - pause: medium
       - test:
         - if: "parent::m:piecewise"
-          then: [t: "ケースケース"]     # phrase('case' 1 of 10 cases)
+          then: [T: "ケース"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
-          then: [t: "設備"] # phrase('equation' 1 of 10 equations)
-          else: [t: "ライン"]     # phrase('line 1 of 10 lines)
+          then: [T: "式"] # phrase('equation' 1 of 10 equations)
+          else: [T: "行"]     # phrase('line 1 of 10 lines)
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"

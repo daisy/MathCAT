@@ -612,17 +612,17 @@
       - x: "$LineCount"
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "ケースケース"]      # phrase(this is the first 'case' of three cases)
+          then: [T: "ケース"]      # phrase(this is the first 'case' of three cases)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
-          then: [t: "ライン"]      # phrase(this is the first 'line' of three lines)
+          then: [T: "行"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then: [t: "制約条件"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "設備"]      # phrase(this is the first 'equation' of three equations)
+          then: [T: "式"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then: [t: "行"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "ステップステップ"]      # phrase(this is the first 'step' of three steps)
+          then: [T: "ステップ"]      # phrase(this is the first 'step' of three steps)
           # else 'None -- don't say anything'
       - test:
         - if: "$LineCount != 1"
@@ -642,17 +642,17 @@
       - pause: medium
       - test:
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "ケースケース"]      # phrase(in this  'case' x is not equal to y)
+          then: [T: "ケース"]      # phrase(in this  'case' x is not equal to y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-          then: [t: "ライン"]      # phrase(the straight 'line' between x and y)
+          then: [T: "行"]      # phrase(the straight 'line' between x and y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then: [t: "制約条件"]      # phrase(there is a 'constraint' on possible values)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "設備"]      # phrase(the 'equation' pi r squared gives the area of a circle)
+          then: [T: "式"]      # phrase(the 'equation' pi r squared gives the area of a circle)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then: [t: "行"]      # phrase(the values on the top 'row' are relevant)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "ステップステップ"]      # phrase(this is a 'step' by step process)
+          then: [T: "ステップ"]      # phrase(this is a 'step' by step process)
           # else 'None -- don't say anything'
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:

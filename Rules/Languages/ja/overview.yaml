@@ -86,7 +86,7 @@
   - x: count(*[2]/*)
   - t: "かける"
   - x: count(*[2]/*[self::m:mtr][1]/*)
-  - t: "テーブル"
+  - T: "の表"
 
 - name: short-mrow
   tag: mrow

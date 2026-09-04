@@ -691,9 +691,9 @@
          if: "following-sibling::*"
          then_test:
             if: "$Verbosity!='Terse'"
-            then: [t: "ラプラシアン の"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
-            else: [t: "ラ・プラハシアン"]
-         else: [t: "ラ・プラハシアン"]
+            then: [T: "ラプラシアン の"]     # "LahPlahsian" sounds better than "laplacian" in speech engines tested
+            else: [T: "ラプラシアン"]
+         else: [T: "ラプラシアン"]
 
  - "∇": [t: "ナブラ"]                           # 0x2207
  - "∉":                                          # 0x2209

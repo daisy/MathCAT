@@ -252,7 +252,7 @@
     ## Default fixity prefix
     "angle": "prefix=角",
     "angle-measure": "prefix=角の大きさ",
-    "change": "prefix=変更点",
+    "change": "prefix=変化量",
     "for-all": "prefix=すべての",
     "measured-angle": "prefix=測定角",
     "not": "prefix=でない",
