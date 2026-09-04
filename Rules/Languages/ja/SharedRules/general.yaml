@@ -37,15 +37,15 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "シー"]      # phrase(the letter 'C' used to represent complex number)
+      then: [T: "シー"]      # phrase(the letter 'C' used to represent complex number)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "ネクタイ"]      # phrase(the letter 'N' may represent natural numbers)
+      then: [T: "エヌ"]      # phrase(the letter 'N' may represent natural numbers)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "キュー"]      # phrase(the letter 'Q' may represent rational numbers)
+      then: [T: "キュー"]      # phrase(the letter 'Q' may represent rational numbers)
     - else_if: "*[1][.='ℝ']"
-      then: [t: "アール"]      # phrase(the letter 'R' may represent real numbers)
+      then: [T: "アール"]      # phrase(the letter 'R' may represent real numbers)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "ゼット"]      # phrase(the letter 'Z' may represent integers)
+      then: [T: "ゼット"]      # phrase(the letter 'Z' may represent integers)
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
   - x: "*[2]"
@@ -208,16 +208,16 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "下付き文字"]      # phrase(a 'subscript' may be used to indicate an index)
-      else: [t: "サブサブ"]      # phrase(the result is 'sub' optimal)
+      then: [T: "下付き文字"]      # phrase(a 'subscript' may be used to indicate an index)
+      else: [T: "下付き"]      # phrase(the result is 'sub' optimal)
   - x: "*[2]"
   - test:
       if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
       then:
       - test:
           if: "$Verbosity='Verbose'"
-          then: [t: "終了サブスクリプト"]      # phrase(this is the 'end subscript' position)
-          else: [t: "エンドサブ"]      # phrase(this is the 'end sub' position)
+          then: [T: "下付き文字終了"]      # phrase(this is the 'end subscript' position)
+          else: [T: "下付き終了"]      # phrase(this is the 'end sub' position)
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -226,8 +226,8 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Verbose'"
-        then: [t: "上付き文字"]      # phrase(a 'superscript' number indicates raised to a power)
-        else: [t: "スーパー"]      # phrase(this is a 'super' set of numbers)
+        then: [T: "上付き文字"]      # phrase(a 'superscript' number indicates raised to a power)
+        else: [T: "上付き"]      # phrase(this is a 'super' set of numbers)
   - x: "*[3]"
   - pause: short
 
@@ -648,21 +648,21 @@
   replace:
   - t: ""      # phrase('the' 2 by 2 matrix M)
   - x: count(*)
-  - t: "1列ずつ"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "コンテンツ"]      # phrase(the 2 by 2 'vector')
-      else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+      then: [T: "ベクトル"]      # phrase(the 2 by 2 'vector')
+      else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "リリース"      # phrase('end' of matrix)
+      - T: ""      # phrase('end' of matrix)
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: [t: "コンテンツ"]      # phrase(the 2 column 'vector')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "ベクトル終了"]      # phrase(the 2 column 'vector')
+          else: [T: "行列終了"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-column-matrix
   tag: matrix
@@ -671,16 +671,16 @@
   replace:
   - t: ""      # phrase('the' 2 by 2 matrix M)
   - x: "count(*)"
-  - t: "1列ずつ"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "コンテンツ"]      # phrase(the 2 column 'vector')
-      else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+      then: [T: "ベクトル"]      # phrase(the 2 column 'vector')
+      else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "行列終了"]      # phrase(the 'end of matrix' has been reached)
+      then: [T: "行列終了"]      # phrase(the 'end of matrix' has been reached)
 
 - name: 1x2-or-3-matrix
   tag: matrix
@@ -696,18 +696,18 @@
   - t: "行"      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "コンテンツ"]      # phrase('the 1 by' 2 row 'vector')
-      else: [t: "行列"]      # phrase('the 1 by' 2 'matrix')
+      then: [T: "ベクトル"]      # phrase('the 1 by' 2 row 'vector')
+      else: [T: "行列"]      # phrase('the 1 by' 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "リリース"      # phrase(the 'end' of matrix has been reached)
+      - T: ""      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "行列"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "コンテンツ"]      # phrase(the 2 by 1 'vector')
+          then: [T: "行列終了"]      # phrase(the 2 by 2 'matrix')
+          else: [T: "ベクトル終了"]      # phrase(the 2 by 1 'vector')
 
 - name: default-row-matrix
   tag: matrix
@@ -719,19 +719,19 @@
   - t: "行"      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [t: "コンテンツ"]      # phrase(the 2 by 1 'vector')
-      else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+      then: [T: "ベクトル"]      # phrase(the 2 by 1 'vector')
+      else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - pause: medium
   - x: "*/*" # select the cols (mtd)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "リリース"      # phrase(the 'end' of matrix has been reached)
+      - T: ""      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "行列"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "コンテンツ"]      # phrase(the 2 by 1 'vector')
+          then: [T: "行列終了"]      # phrase(the 2 by 2 'matrix')
+          else: [T: "ベクトル終了"]      # phrase(the 2 by 1 'vector')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -758,11 +758,11 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "リリース"      # phrase(the 'end' of matrix has been reached)
+      - T: ""      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "行列式終了"]      # phrase(the 2 by 2 'determinant')
+          else: [T: "行列終了"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-matrix
   tag: [matrix, determinant]
@@ -786,11 +786,11 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "リリース"      # phrase(the 'end' of matrix has been reached)
+      - T: ""      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix's)
+          then: [T: "行列式終了"]      # phrase(the 2 by 2 'determinant')
+          else: [T: "行列終了"]      # phrase(the 2 by 2 'matrix's)
 
 - name: chemistry-msub
   tag: [chemical-formula]
@@ -799,10 +799,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "下付き文字"]      # phrase(H 'subscript' 2)
+      then: [T: "下付き文字"]      # phrase(H 'subscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [t: "サブサブ"]      # phrase(H 'sub' 2)
+        then: [T: "下付き"]      # phrase(H 'sub' 2)
   - x: "*[3]"
 
 - name: dimension-by
@@ -820,10 +820,10 @@
   - x: "*[2]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+      then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
       else_test:
         if: "$Verbosity='Medium'"
-        then: [t: "スーパー"]      # phrase(H 'super' 2)
+        then: [T: "上付き"]      # phrase(H 'super' 2)
   - x: "*[3]"
   - test:
       if: "following-sibling::*[1][.='+' or .='-']" # a little lazy -- assumes chemistry superscripts end with + or -
@@ -851,10 +851,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+              then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "スーパー"]      # phrase(H 'super' 2)
+                then: [T: "上付き"]      # phrase(H 'super' 2)
           - x: "$Prescripts[2]"
           - pause: "short"
       - test:
@@ -862,10 +862,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "下付き文字"]      # phrase(a 'subscript' may be used to indicate an index)
+              then: [T: "下付き文字"]      # phrase(a 'subscript' may be used to indicate an index)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "サブサブ"]      # phrase(here is a 'sub' total)
+                then: [T: "下付き"]      # phrase(here is a 'sub' total)
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -876,10 +876,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+                  then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "スーパー"]      # phrase(H 'super' 2)
+                    then: [T: "上付き"]      # phrase(H 'super' 2)
               - x: "$Prescripts[4]"
               - pause: "short"
           - test:
@@ -887,10 +887,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "下付き文字"]      # phrase(H 'subscript' 2)
+                  then: [T: "下付き文字"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "サブサブ"]      # phrase(H 'sub' 2)
+                    then: [T: "下付き"]      # phrase(H 'sub' 2)
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -902,10 +902,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "下付き文字"]      # phrase(phrase(H 'subscript' 2)
+              then: [T: "下付き文字"]      # phrase(phrase(H 'subscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "サブサブ"]      # phrase(phrase(H 'sub' 2)
+                then: [T: "下付き"]      # phrase(phrase(H 'sub' 2)
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -913,10 +913,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+              then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "スーパー"]          # phrase(H 'super' 2)
+                then: [T: "上付き"]          # phrase(H 'super' 2)
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -927,10 +927,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "下付き文字"]      # phrase(H 'subscript' 2)
+                  then: [T: "下付き文字"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "サブサブ"]          # phrase(H 'sub' 2)
+                    then: [T: "下付き"]          # phrase(H 'sub' 2)
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -938,10 +938,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+                  then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "スーパー"]          # phrase(H 'super' 2)
+                    then: [T: "上付き"]          # phrase(H 'super' 2)
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -952,10 +952,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "下付き文字"]    # phrase(H 'subscript' 2)
+                      then: [T: "下付き文字"]    # phrase(H 'subscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "サブサブ"]        # phrase(H 'sub' 2)
+                        then: [T: "下付き"]        # phrase(H 'sub' 2)
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -963,10 +963,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "上付き文字"]  # phrase(H 'superscript' 2)
+                      then: [T: "上付き文字"]  # phrase(H 'superscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "スーパー"]      # phrase(H 'super' 2)
+                        then: [T: "上付き"]      # phrase(H 'super' 2)
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -977,10 +977,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "下付き文字"]      # phrase(H 'subscript' 2)
+                          then: [T: "下付き文字"]      # phrase(H 'subscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "サブサブ"]      # phrase(H 'sub' 2)
+                            then: [T: "下付き"]      # phrase(H 'sub' 2)
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -988,10 +988,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "上付き文字"]      # phrase(H 'superscript' 2)
+                          then: [T: "上付き文字"]      # phrase(H 'superscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "スーパー"]      # phrase(H 'super' 2)
+                            then: [T: "上付き"]      # phrase(H 'super' 2)
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:
@@ -1019,12 +1019,12 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: ".='s'"
-      then: [t: "固体"]      # phrase(Boron is a 'solid' in its natural state)
+      then: [T: "固体"]      # phrase(Boron is a 'solid' in its natural state)
     - else_if: ".='l'"
-      then: [t: "液体液体"]      # phrase(water is a 'liquid')
+      then: [T: "液体"]      # phrase(water is a 'liquid')
     - else_if: ".='g'"
-      then: [t: "ガスレンジ"]      # phrase(hydrogen is a 'gas' )
-      else: [t: "アキュース"]      # phrase(an 'aqueous' solution is contained in water)
+      then: [T: "気体"]      # phrase(hydrogen is a 'gas' )
+      else: [T: "水溶液"]      # phrase(an 'aqueous' solution is contained in water)
   - pause: short
 
 - name: chemical-formula-operator-bond
@@ -1035,13 +1035,13 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [t: "シングルボンド"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+      then: [T: "単結合"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
     - else_if: ".='=' or .='∷'"
-      then: [t: "ダブルボンド"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
+      then: [T: "二重結合"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
-      then: [t: "トリプルボンド"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+      then: [T: "三重結合"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
     - else_if: ".='≣'"
-      then: [t: "四倍の結束"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
+      then: [T: "四重結合"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
       else: [x: "text()"]
 
 - name: chemical-formula-operator

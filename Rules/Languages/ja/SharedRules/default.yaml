@@ -112,7 +112,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "リリース"]          # phrase("start of fraction x over y 'end over'")
+      then: [T: "分数終了"]          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 
@@ -167,7 +167,7 @@
   match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
-  - t: "サブサブ"               # phrase(x 'sub' 2)
+  - T: "下付き"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -176,7 +176,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "サブサブ"               # phrase(x 'sub' 2)
+  - T: "下付き"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -189,7 +189,7 @@
   - x: "*[1]"
   - test:
       if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"  # just say "x 1" for terse vs "x sub 1"
-      then: [t: "サブサブ"]      # phrase(x 'sub' 2)
+      then: [T: "下付き"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
 
@@ -201,7 +201,7 @@
   - test:
       if: "name(.)='msubsup'"
       then:
-      - t: "サブサブ"          # phrase(x 'sub' 2)
+      - T: "下付き"          # phrase(x 'sub' 2)
       - x: "*[2]"
   - test:
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
@@ -209,21 +209,21 @@
       else_test:
           if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
           then:
-          - t: "スーパー"      # phrase(x 'super' 2)
+          - T: "上付き"      # phrase(x 'super' 2)
           - x: "*[last()]"
           - test:
               if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
-              then: [t: "エンドスーパー"]      # phrase(x super 2 'end of super')
+              then: [T: "上付き終了"]      # phrase(x super 2 'end of super')
           else:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "上付き文字"]
-              else: [t: "スーパー"]
+              then: [T: "上付き文字"]
+              else: [T: "上付き"]
           - x: "*[last()]"
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "終了スーパースクリプト"]
-              else: [t: "エンドスーパー"]
+              then: [T: "上付き文字終了"]
+              else: [T: "上付き終了"]
 
 - name: default
   tag: munder
