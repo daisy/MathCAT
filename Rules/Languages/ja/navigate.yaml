@@ -42,7 +42,7 @@
 - name: say-command
   tag: "!*"
   match: "$SayCommand != ''"   # value should be '', 'true', or 'false'
-  variables: [Prefix: "''"]
+  variables: [Prefix: "''", Particle: "''"]
   replace:
   - test:
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
@@ -63,38 +63,51 @@
           # CommandOffset is 1 + length of the English NavCommand stem (Zoom/Move/Read/Describe),
           # not the spoken Prefix length — so translations can use a different Prefix word.
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'zoom'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     
+            then: [set_variables: [Prefix: "'ズーム'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'move'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'移動'", Particle: "'に'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'read'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'読み上げ'", Particle: "'を'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'describe'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'説明'", Particle: "'を'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
-            - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, $CommandOffset) = 'In'"
-                then: [T: "イン"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
-                # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEインを最大にしました"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
-                then: [T: "アウト"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
-                # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "\uF8FEアウトを最大にしました"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
-                then: [T: "右"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
-                then: [T: "左"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
-                then: [T: "現在"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
-                then: [T: "行の先頭へ"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
-                then: [T: "行の末尾へ"]                                 # phrase(move 'to end of line')
+                # The Zoom commands keep the English order because ズーム + イン
+                # is read as one loanword, and the concatenation below needs the
+                # prefix first. The others put the target and its particle before
+                # the verb (右 に 移動 / 右 を 読み上げ), as Japanese requires.
+                if: "starts-with($NavCommand, 'Zoom')"
+                then:
+                - x: "$Prefix"
+                - test:
+                  - if: "substring($NavCommand, $CommandOffset) = 'In'"
+                    then: [T: "イン"]      # phrase(zoom 'in' to see more details)
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
+                    # HACK: '\uF8FE' is the internal concatenation char, so this joins onto the prefix: ズーム + インを最大にしました
+                    then: [T: "\uF8FEインを最大にしました"]      # phrase(zoom 'in all of the way')
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
+                    then: [T: "アウト"]      # phrase(zoom 'out' to see more details)
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
+                    # HACK: '\uF8FE' is the internal concatenation char, so this joins onto the prefix: ズーム + アウトを最大にしました
+                    then: [T: "\uF8FEアウトを最大にしました"]      # phrase(zoom 'out all of the way')
+                else:
+                - test:
+                  # $Particle is に for Move and を for Read/Describe. It is emitted
+                  # inside each branch so a command with no matching suffix still
+                  # falls back to the bare verb, the way it does in en.
+                  - if: "substring($NavCommand, $CommandOffset) = 'Next'"
+                    then: [T: "右", x: "$Particle"]      # phrase(move to the 'right')
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
+                    then: [T: "左", x: "$Particle"]      # phrase(move to the 'left')
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
+                    then: [T: "現在", x: "$Particle"]      # phrase(who is the 'current' president)
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
+                    then: [T: "行の先頭", x: "$Particle"]      # phrase(move 'to start of line')
+                  - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
+                    then: [T: "行の末尾", x: "$Particle"]      # phrase(move 'to end of line')
+                - x: "$Prefix"
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -1204,13 +1217,13 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - T: "右に"                              # phrase(move 'right')
       - test:
+        # the particle belongs to the verb: に移動 but を読み上げ / を説明
         - if: "$NavCommand = 'MoveNext'"
-          then: [t: "移動"]                                  # phrase('move' to next entry in table)     
+          then: [T: "右に移動"]      # phrase(cannot 'move right')
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [T: "読み上げ"]                                  # phrase('read' next entry in table)     
-          else: [T: "説明"]                              # phrase('describe' next entry in table)     
+          then: [T: "右を読み上げ"]      # phrase(cannot 'read' to the right)
+          else: [T: "右を説明"]      # phrase(cannot 'describe' to the right)
       - T: "できません"                                          # phrase('cannot' move right in expression)
       - pause: short
   - T: "数式の末尾"                              # phrase(move 'end of math')
@@ -1678,11 +1691,11 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
+      - T: "現在"      # phrase('current' entry in table)
       - test:
         - if: "$NavCommand = 'ReadCurrent'"
-          then: [T: "読み上げ"]                                  # phrase('read' next entry in table) 
-          else: [T: "説明"]                              # phrase('describe' next entry in table)     
-      - T: "現在"                                         # phrase('current' entry in table)
+          then: [T: "を読み上げ"]      # phrase('read' next entry in table)
+          else: [T: "を説明"]      # phrase('describe' next entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 
