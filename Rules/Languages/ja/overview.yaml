@@ -20,9 +20,10 @@
   - test:
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
-      - x: "*[1]"
-      - t: "分の"
+      # Japanese says the denominator first: x/y is "y 分の x". The other order says y/x.
       - x: "*[2]"
+      - T: "分の"
+      - x: "*[1]"
       else:
       - t: "分数"
 

@@ -145,7 +145,7 @@
       if: "$Verbosity!='Terse'"
       then:
       - t: ""      # phrase('the' square root of 25 equals 5)
-  - t: "ポイント"      # phrase(a decimal 'point' indicates the fraction component of a number)
+  - T: "点"      # phrase(a decimal 'point' indicates the fraction component of a number)
   - x: "*[1]"
   - t: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
@@ -581,7 +581,7 @@
       then: [t: "行列式"]      # phrase(the 2 by 2 'determinant'))
       else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
       
-  - t: "エントリー"      # phrase(the 2 by 2 matrix 'with entry' x)
+  - T: "成分"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
 
 # simpler reading methods for special case matrices

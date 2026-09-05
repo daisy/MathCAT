@@ -28,7 +28,7 @@
       then:
       - t: ""      # phrase('the' square root of 25 equals 5)
   - x: "*[2]"
-  - t: "ノルダム"      # phrase(the 'norm' can be a measure of distance)
+  - T: "ノルム"      # phrase(the 'norm' can be a measure of distance)
   - test:
       if: "$Verbosity!='Terse'"
       then:
