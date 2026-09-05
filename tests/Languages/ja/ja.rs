@@ -298,7 +298,7 @@ fn element_of() -> Result<()> {
 fn set_builder_member_symbol() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!(
-            "<math><mrow><mo>{{</mo><mrow><mi>x</mi><mo>{ch}</mo><mi>A</mi></mrow><mo>}}</mo></mrow></math>"
+            "<math><mrow><mo>{{</mo><mi>x</mi><mo>{ch}</mo><mi>A</mi><mo>}}</mo></mrow></math>"
         );
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
             "集合 x イン 大文字 エー")?;
