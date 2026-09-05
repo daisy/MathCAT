@@ -822,8 +822,8 @@ fn overview_fraction_is_denominator_first() -> Result<()> {
 #[test]
 fn menclose_strikes() -> Result<()> {
     for (notation, expected) in [
-        ("updiagonalstrike", "右上がりの斜め, 取り消し線, 囲み x 囲み終了"),
-        ("downdiagonalstrike", "右下がりの斜め, 取り消し線, 囲み x 囲み終了"),
+        ("updiagonalstrike", "右上がり方向, 取り消し線, 囲み x 囲み終了"),
+        ("downdiagonalstrike", "右下がり方向, 取り消し線, 囲み x 囲み終了"),
     ] {
         let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -845,14 +845,15 @@ fn menclose_shapes_and_long_division() -> Result<()> {
     return Ok(());
 }
 
-/// 上下矢印 is an arrow with a head at each end, so the single up arrow and the
-/// three double ended arrows all named the same thing.
+/// 上下矢印 is an arrow with a head at each end, so it was the wrong name for the
+/// single up arrow. The double ended arrows had the English "double ended" in them;
+/// unicode-full.yaml already calls ↕ 上下矢印 and ⤢ 北東・南西矢印.
 #[test]
 fn menclose_arrows() -> Result<()> {
     for (notation, expected) in [
         ("uparrow", "上矢印, 囲み x 囲み終了"),
-        ("updownarrow", "両向き垂直矢印, 囲み x 囲み終了"),
-        ("northeastsouthwestarrow", "両向き右上がり矢印, 囲み x 囲み終了"),
+        ("updownarrow", "上下矢印, 囲み x 囲み終了"),
+        ("northeastsouthwestarrow", "北東・南西矢印, 囲み x 囲み終了"),
     ] {
         let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -864,10 +865,10 @@ fn menclose_arrows() -> Result<()> {
 /// is "above", the partner of the 下 in the rule next to it.
 #[test]
 fn something_above_and_below_an_expression() -> Result<()> {
-    let over = "<math><mover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi></mover></math>";
-    test("ja", "ClearSpeak", over, "数量 x プラス 1 付き y 上")?;
-    let both = "<math><munderover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>a</mi><mi>b</mi></munderover></math>";
-    test("ja", "ClearSpeak", both, "数量 x プラス 1 付き エー 下および b 上")?;
+    let over = "<math><mover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>z</mi></mover></math>";
+    test("ja", "ClearSpeak", over, "数量 x プラス 1 付き z 上")?;
+    let both = "<math><munderover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi><mi>z</mi></munderover></math>";
+    test("ja", "ClearSpeak", both, "数量 x プラス 1 付き y 下および z 上")?;
     return Ok(());
 }
 
@@ -879,10 +880,20 @@ fn subscripted_norm() -> Result<()> {
     return Ok(());
 }
 
-/// A matrix has 成分, not エントリー, and a coordinate is a 点, as in geometry.yaml.
+/// A matrix has 成分, not エントリー.
 #[test]
-fn matrix_entry_and_point() -> Result<()> {
+fn matrix_entry() -> Result<()> {
     let matrix = "<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>x</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>";
     test("ja", "ClearSpeak", matrix, "1 かける 1 行列 成分 x")?;
+    return Ok(());
+}
+
+/// A coordinate is a 点, the word geometry.yaml already uses, and the decimal
+/// point is 点 as well: 3.5 is "3 点 5".
+#[test]
+fn point_and_decimal_point() -> Result<()> {
+    let coordinate = "<math><mrow intent='point($x,$y)'><mn arg='x'>1</mn><mo>,</mo><mn arg='y'>2</mn></mrow></math>";
+    test("ja", "ClearSpeak", coordinate, "点 1 コンマ 2")?;
+    test("ja", "ClearSpeak", "<math><mn>3.5</mn></math>", "3 点 5")?;
     return Ok(());
 }

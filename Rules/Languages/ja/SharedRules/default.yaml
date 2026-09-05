@@ -505,7 +505,7 @@
   tag: menclose
   match: "@notation='box' and *[self::m:mtext and .=' ']"
   replace:
-  - t: "空の箱"      # phrase(the 'empty box' contains no values)
+  - T: "空の四角"      # phrase(the 'empty box' contains no values)
 
 - name: default
   # The ordering below is the order in which words come out when there is more than one value
@@ -548,16 +548,16 @@
           else:
           - test:
               if: ".[contains(@notation,'updiagonalstrike')]"
-              then: [T: "右上がりの斜め", pause: short]      # phrase(the line runs 'up diagonal')
+              then: [T: "右上がり方向", pause: short]      # phrase(the line runs 'up diagonal')
           - test:
               if: ".[contains(@notation,'downdiagonalstrike')]"
-              then: [T: "右下がりの斜め", pause: short]      # phrase(the line runs 'down diagonal')
+              then: [T: "右下がり方向", pause: short]      # phrase(the line runs 'down diagonal')
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
-          then: [t: "垂直方向", pause: short]      # phrase(the line is  'vertical')
+          then: [T: "垂直方向", pause: short]      # phrase(the line is  'vertical')
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
-          then: [t: "水平方向", pause: short]      # phrase(the line is 'horizontal')
+          then: [T: "水平方向", pause: short]      # phrase(the line is 'horizontal')
       - T: "取り消し線"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
@@ -586,16 +586,16 @@
       then: [t: "北西矢印", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [T: "両向き垂直矢印", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+      then: [T: "上下矢印", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [T: "両向き水平矢印", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+      then: [T: "左右矢印", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [T: "両向き右上がり矢印", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [T: "北東・南西矢印", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [T: "両向き右下がり矢印", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+      then: [T: "北西・南東矢印", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
   - test:
       if: ".[contains(@notation,'actuarial')]"
       then: [T: "保険数理記号", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)

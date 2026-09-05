@@ -83,7 +83,7 @@
   replace:
   # Japanese says the denominator first: 3/4 is "4 分の 3".
   - x: "*[2]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - T: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
 
 - name: common-fraction-mixed-number
@@ -94,7 +94,7 @@
   - "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[2]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - T: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
 
 
