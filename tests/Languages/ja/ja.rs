@@ -799,7 +799,7 @@ fn literal_speak_simple_fraction() -> Result<()> {
 #[test]
 fn literal_speak_bracketed_fraction() -> Result<()> {
     let expr = "<math><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></mfrac></math>";
-    test("ja", "LiteralSpeak", expr, "分数 x プラス 1 オーバー 2 分数終了")?;
+    test("ja", "LiteralSpeak", expr, "分数, x プラス 1, オーバー 2, 分数終了")?;
     return Ok(());
 }
 
@@ -822,8 +822,8 @@ fn overview_fraction_is_denominator_first() -> Result<()> {
 #[test]
 fn menclose_strikes() -> Result<()> {
     for (notation, expected) in [
-        ("updiagonalstrike", "右上がりの斜め 取り消し線, 囲み x 囲み終了"),
-        ("downdiagonalstrike", "右下がりの斜め 取り消し線, 囲み x 囲み終了"),
+        ("updiagonalstrike", "右上がりの斜め, 取り消し線, 囲み x 囲み終了"),
+        ("downdiagonalstrike", "右下がりの斜め, 取り消し線, 囲み x 囲み終了"),
     ] {
         let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -867,14 +867,14 @@ fn something_above_and_below_an_expression() -> Result<()> {
     let over = "<math><mover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi></mover></math>";
     test("ja", "ClearSpeak", over, "数量 x プラス 1 付き y 上")?;
     let both = "<math><munderover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>a</mi><mi>b</mi></munderover></math>";
-    test("ja", "ClearSpeak", both, "数量 x プラス 1 付き a 下および b 上")?;
+    test("ja", "ClearSpeak", both, "数量 x プラス 1 付き エー 下および b 上")?;
     return Ok(());
 }
 
 /// ノルダム is Notre-Dame. The Japanese for a norm is ノルム.
 #[test]
 fn subscripted_norm() -> Result<()> {
-    let expr = "<math><msub><mrow><mo>&#x2016;</mo><mi>x</mi><mo>&#x2016;</mo></mrow><mn>2</mn></msub></math>";
+    let expr = "<math><msub><mrow><mo>&#x2225;</mo><mi>x</mi><mo>&#x2225;</mo></mrow><mn>2</mn></msub></math>";
     test("ja", "ClearSpeak", expr, "2 ノルム の x")?;
     return Ok(());
 }
