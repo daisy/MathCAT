@@ -89,22 +89,23 @@
   - "(IsNode(*[1],'leaf') and IsNode(*[2],'leaf')) and"
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
-  - x: "*[1]"
-  - t: "分の"               # phrase("the fraction x 'over' y")
+  # Japanese says the denominator first: x/y is "y 分の x". The other order says y/x.
   - x: "*[2]"
+  - T: "分の"               # phrase("the fraction x 'over' y")
+  - x: "*[1]"
   - pause: short
 
 - name: literal-default
   tag: mfrac
   match: "."
   replace:
-  - t: "スタート"              # phrase("'start'  fraction x over y end of fraction")
+  - T: "分数"              # phrase("'start'  fraction x over y end of fraction")
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "分の"               # phrase("the fraction x 'over' y")
+  - T: "オーバー"             # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -254,7 +255,7 @@
   - x: "*[1]"
   - t: "付き"         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "詳しくはこちら"        # phrase(x modified 'with' y above it)
+  - T: "上"        # phrase(x modified 'with' y above it)
 
 - name: default
   tag: munderover
@@ -268,7 +269,7 @@
   - x: "*[2]"
   - t: "下および"    # phrase(x modified with y 'below and' y above it)
   - x: "*[3]"
-  - t: "詳しくはこちら"        # phrase(x modified with y 'above' it)
+  - T: "上"        # phrase(x modified with y 'above' it)
 
 - name: default
   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
@@ -504,7 +505,7 @@
   tag: menclose
   match: "@notation='box' and *[self::m:mtext and .=' ']"
   replace:
-  - t: "空の箱"      # phrase(the 'empty box' contains no values)
+  - T: "空の四角"      # phrase(the 'empty box' contains no values)
 
 - name: default
   # The ordering below is the order in which words come out when there is more than one value
@@ -514,13 +515,13 @@
   replace:
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' box ')]"
-      then: [t: "ボックス", pause: short]      # phrase(the 'box' around the expression)
+      then: [T: "四角", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [t: "ラウンドボックス", pause: short]      # phrase(the 'round box' around the expression)
+      then: [T: "角丸の四角", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
-      then: [t: "サークル", pause: short]      # phrase(the 'circle' around the expression)
+      then: [T: "円", pause: short]      # phrase(the 'circle' around the expression)
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
@@ -547,24 +548,24 @@
           else:
           - test:
               if: ".[contains(@notation,'updiagonalstrike')]"
-              then: [t: "対角形", pause: short]      # phrase(the line runs 'up diagonal')
+              then: [T: "右上がり方向", pause: short]      # phrase(the line runs 'up diagonal')
           - test:
               if: ".[contains(@notation,'downdiagonalstrike')]"
-              then: [t: "ダウンの対角", pause: short]      # phrase(the line runs 'down diagonal')
+              then: [T: "右下がり方向", pause: short]      # phrase(the line runs 'down diagonal')
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
-          then: [t: "垂直方向", pause: short]      # phrase(the line is  'vertical')
+          then: [T: "垂直方向", pause: short]      # phrase(the line is  'vertical')
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
-          then: [t: "水平方向", pause: short]      # phrase(the line is 'horizontal')
-      - t: "クロスアウト"      # phrase(please 'cross out' the incorrect answer)
+          then: [T: "水平方向", pause: short]      # phrase(the line is 'horizontal')
+      - T: "取り消し線"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
-      then: [t: "上下矢印", pause: short]      # phrase(direction is shown by the 'up arrow')
+      then: [T: "上矢印", pause: short]      # phrase(direction is shown by the 'up arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
-      then: [t: "ダウン矢印", pause: short]      # phrase(the trend is shown by the 'down arrow')
+      then: [T: "下矢印", pause: short]      # phrase(the trend is shown by the 'down arrow')
   - test:
       if: ".[contains(@notation,'leftarrow')]"
       then: [t: "左矢印", pause: short]      # phrase(the 'left arrow' indicates going back)
@@ -585,28 +586,28 @@
       then: [t: "北西矢印", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [t: "ダブルエンド垂直矢印", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+      then: [T: "上下矢印", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [t: "ダブルエンド水平矢印", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+      then: [T: "左右矢印", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [t: "ダブルは対角矢印を終了", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [T: "北東・南西矢印", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [t: "二重は対角矢印を終了", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+      then: [T: "北西・南東矢印", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
   - test:
       if: ".[contains(@notation,'actuarial')]"
-      then: [t: "行動シンボル", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
+      then: [T: "保険数理記号", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
   - test:
       if: ".[contains(@notation,'madrub')]"
-      then: [t: "アラビア語の要素のシンボル", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
+      then: [T: "アラビア文字の階乗記号", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
   - test:
       if: ".[contains(@notation,'phasorangle')]"
       then: [t: "フェーザの角度", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
   - test:
       if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']" # default
-      then: [t: "ロングディビジョンシンボル", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
+      then: [T: "割り算の筆算の記号", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
   - test:
       if: ".[contains(@notation,'radical')]"
       then: [t: "平方根", pause: short]      # phrase(5 is the 'square root' of 25)

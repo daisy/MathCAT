@@ -124,7 +124,7 @@
  - ".":                                          # 0x2e
     - test:
         if: "parent::*[1][self::m:mn]"
-        then: [t: "ポイント"]
+        then: [T: "点"]
         else: [t: "ドット"]
  - "/":                                           # 0x2f
     - test:

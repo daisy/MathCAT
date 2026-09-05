@@ -147,7 +147,7 @@
   # Japanese says the denominator first: 3/4 is "4 分の 3". There is no separate ordinal
   # form to build (unlike "three fourths"), so the pattern is uniform for any two numbers.
   - x: "*[2]"
-  - t: "分の"      # phrase(the fraction 3 'over' 4)
+  - T: "分の"      # phrase(the fraction 3 'over' 4)
   - x: "*[1]"
 
 - name: fraction-over-simple

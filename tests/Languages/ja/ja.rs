@@ -784,3 +784,114 @@ fn determinant_end_marker() -> Result<()> {
         expr, "2 かける 2 行列式; 行 1; 2, 1; 行 2; 7, 5; 行列式終了")?;
     return Ok(());
 }
+
+/// LiteralSpeak reads what is written, and Japanese writes the denominator
+/// first: 3/4 is "4 分の 3". "3 分の 4" is the other number, 4/3.
+#[test]
+fn literal_speak_simple_fraction() -> Result<()> {
+    let expr = "<math><mfrac><mn>3</mn><mn>4</mn></mfrac></math>";
+    test("ja", "LiteralSpeak", expr, "4 分の 3")?;
+    return Ok(());
+}
+
+/// A fraction that is not two leaves is bracketed instead, and then the written
+/// order is kept with the borrowed オーバー, as ClearSpeak already does.
+#[test]
+fn literal_speak_bracketed_fraction() -> Result<()> {
+    let expr = "<math><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></mfrac></math>";
+    test("ja", "LiteralSpeak", expr, "分数, x プラス 1, オーバー 2, 分数終了")?;
+    return Ok(());
+}
+
+/// The overview rules (what the "describe" navigation command speaks) have their
+/// own fraction rule, and it has to say the denominator first as well.
+#[test]
+fn overview_fraction_is_denominator_first() -> Result<()> {
+    set_rules_dir(abs_rules_dir_path())?;
+    set_preference("Language", "ja")?;
+    set_preference("SpeechStyle", "SimpleSpeak")?;
+    set_preference("Verbosity", "Medium")?;
+    set_mathml("<math><mfrac><mn>3</mn><mn>4</mn></mfrac></math>")?;
+    let spoken = get_overview_text()?;
+    assert_eq!("4 分の 3", spoken.trim_end_matches([' ', ',', ';']));
+    return Ok(());
+}
+
+/// A strike names its direction and then the mark. 対角形 ("diagonal shape") does
+/// not say which diagonal, and クロスアウト is the English "cross out".
+#[test]
+fn menclose_strikes() -> Result<()> {
+    for (notation, expected) in [
+        ("updiagonalstrike", "右上がり方向, 取り消し線, 囲み x 囲み終了"),
+        ("downdiagonalstrike", "右下がり方向, 取り消し線, 囲み x 囲み終了"),
+    ] {
+        let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// The shapes and the long division mark were transliterations of the English.
+#[test]
+fn menclose_shapes_and_long_division() -> Result<()> {
+    for (notation, expected) in [
+        ("circle", "円, 囲み x 囲み終了"),
+        ("roundedbox", "角丸の四角, 囲み x 囲み終了"),
+        ("longdiv", "割り算の筆算の記号, 囲み x 囲み終了"),
+    ] {
+        let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// 上下矢印 is an arrow with a head at each end, so it was the wrong name for the
+/// single up arrow. The double ended arrows had the English "double ended" in them;
+/// unicode-full.yaml already calls ↕ 上下矢印 and ⤢ 北東・南西矢印.
+#[test]
+fn menclose_arrows() -> Result<()> {
+    for (notation, expected) in [
+        ("uparrow", "上矢印, 囲み x 囲み終了"),
+        ("updownarrow", "上下矢印, 囲み x 囲み終了"),
+        ("northeastsouthwestarrow", "北東・南西矢印, 囲み x 囲み終了"),
+    ] {
+        let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// 詳しくはこちら is the web phrase "click here for details". The word wanted here
+/// is "above", the partner of the 下 in the rule next to it.
+#[test]
+fn something_above_and_below_an_expression() -> Result<()> {
+    let over = "<math><mover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>z</mi></mover></math>";
+    test("ja", "ClearSpeak", over, "数量 x プラス 1 付き z 上")?;
+    let both = "<math><munderover><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mi>y</mi><mi>z</mi></munderover></math>";
+    test("ja", "ClearSpeak", both, "数量 x プラス 1 付き y 下および z 上")?;
+    return Ok(());
+}
+
+/// ノルダム is Notre-Dame. The Japanese for a norm is ノルム.
+#[test]
+fn subscripted_norm() -> Result<()> {
+    let expr = "<math><msub><mrow><mo>&#x2225;</mo><mi>x</mi><mo>&#x2225;</mo></mrow><mn>2</mn></msub></math>";
+    test("ja", "ClearSpeak", expr, "2 ノルム の x")?;
+    return Ok(());
+}
+
+/// A matrix has 成分, not エントリー.
+#[test]
+fn matrix_entry() -> Result<()> {
+    let matrix = "<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>x</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", matrix, "1 かける 1 行列 成分 x")?;
+    return Ok(());
+}
+
+/// A coordinate is a 点, the word geometry.yaml already uses.
+#[test]
+fn coordinate_point() -> Result<()> {
+    let coordinate = "<math><mrow intent='point($x,$y)'><mn arg='x'>1</mn><mo>,</mo><mn arg='y'>2</mn></mrow></math>";
+    test("ja", "ClearSpeak", coordinate, "点 1 コンマ 2")?;
+    return Ok(());
+}
