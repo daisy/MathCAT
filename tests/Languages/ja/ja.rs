@@ -261,6 +261,43 @@ fn less_than() -> Result<()> {
     return Ok(());
 }
 
+/// 小なり / 大なり are the pair the source gives for < and >. より大きい strands the
+/// より, which needs its comparand in front of it, so "x は より大きい 5" reads as
+/// "x is a bigger 5"; and it did not match the 小なり already used for <.
+#[test]
+fn greater_than_and_or_equal() -> Result<()> {
+    for (op, expected) in [
+        ("&gt;", "x は 大なり 5"),
+        ("&#x2264;", "x は 小なり オア イコール 5"),
+        ("&#x2265;", "x は 大なり オア イコール 5"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{op}</mo><mn>5</mn></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// ≠ is ノット・イコール, the partner of the イコール already used for =.
+#[test]
+fn not_equal() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&#x2260;</mo><mn>5</mn></math>";
+    test("ja", "ClearSpeak", expr, "x は ノット・イコール 5")?;
+    return Ok(());
+}
+
+/// ∈ is 要素オブ. 要素の attaches backwards -- 要素の A is "A of an element" -- and
+/// the rules for ∈ and ∊ did not even agree with each other.
+#[test]
+fn element_of() -> Result<()> {
+    for ch in ["&#x2208;", "&#x220a;"] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
+        test("ja", "SimpleSpeak", &expr, "x は 要素オブ 大文字 エー")?;
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
+            "x 要素オブ 大文字 エー")?;
+    }
+    return Ok(());
+}
+
 /// A hat over a variable is ハット. 帽子 is the thing you wear, and it was said
 /// twice.
 #[test]
