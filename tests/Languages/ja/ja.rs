@@ -261,19 +261,13 @@ fn less_than() -> Result<()> {
     return Ok(());
 }
 
-/// 小なり / 大なり are the pair the source gives for < and >. より大きい strands the
-/// より, which needs its comparand in front of it, so "x は より大きい 5" reads as
+/// 小なり / 大なり are the pair the source gives for < and >. より大きい stranded the
+/// より, which needs its comparand in front of it, so "x は より大きい 5" read as
 /// "x is a bigger 5"; and it did not match the 小なり already used for <.
 #[test]
-fn greater_than_and_or_equal() -> Result<()> {
-    for (op, expected) in [
-        ("&gt;", "x は 大なり 5"),
-        ("&#x2264;", "x は 小なり オア イコール 5"),
-        ("&#x2265;", "x は 大なり オア イコール 5"),
-    ] {
-        let expr = format!("<math><mi>x</mi><mo>{op}</mo><mn>5</mn></math>");
-        test("ja", "ClearSpeak", &expr, expected)?;
-    }
+fn greater_than() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&gt;</mo><mn>5</mn></math>";
+    test("ja", "ClearSpeak", expr, "x は 大なり 5")?;
     return Ok(());
 }
 
@@ -291,7 +285,7 @@ fn not_equal() -> Result<()> {
 fn element_of() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
-        test("ja", "SimpleSpeak", &expr, "x は 要素オブ 大文字 エー")?;
+        test("ja", "SimpleSpeak", &expr, "x は 要素オブ, 大文字 エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
             "x 要素オブ 大文字 エー")?;
     }
@@ -460,7 +454,7 @@ fn greek_letters() -> Result<()> {
 #[test]
 fn set_membership() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>R</mi></math>";
-    test("ja", "SimpleSpeak", expr, "x は 属する 実数")?;
+    test("ja", "SimpleSpeak", expr, "x は 要素オブ 実数")?;
     return Ok(());
 }
 
@@ -527,12 +521,13 @@ fn parallel_and_perpendicular() -> Result<()> {
 }
 
 /// ≤ said より少しまたは等しい ("a little more, or equal") and ≥ ended in the
-/// particle へ.
+/// particle へ. They then said より小さいか等しい / より大きいか等しい, which strand the
+/// より the same way > did; the source gives 小なり・オア・イコール.
 #[test]
 fn comparison_with_equality() -> Result<()> {
     for (op, expected) in [
-        ("&#x2264;", "x は より小さいか等しい 5"),
-        ("&#x2265;", "x は より大きいか等しい 5"),
+        ("&#x2264;", "x は 小なり オア イコール 5"),
+        ("&#x2265;", "x は 大なり オア イコール 5"),
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mn>5</mn></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -629,11 +624,11 @@ fn matrix_terminology() -> Result<()> {
 #[test]
 fn number_set_names() -> Result<()> {
     for (letter, expected) in [
-        ("C", "x は 属する 複素数"),
-        ("N", "x は 属する 自然数"),
-        ("Q", "x は 属する 有理数"),
-        ("R", "x は 属する 実数"),
-        ("Z", "x は 属する 整数"),
+        ("C", "x は 要素オブ 複素数"),
+        ("N", "x は 要素オブ 自然数"),
+        ("Q", "x は 要素オブ 有理数"),
+        ("R", "x は 要素オブ 実数"),
+        ("Z", "x は 要素オブ 整数"),
     ] {
         let expr = format!(
             "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>{letter}</mi></math>"
