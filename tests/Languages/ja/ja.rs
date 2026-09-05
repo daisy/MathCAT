@@ -275,7 +275,7 @@ fn greater_than() -> Result<()> {
 #[test]
 fn not_equal() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2260;</mo><mn>5</mn></math>";
-    test("ja", "ClearSpeak", expr, "x は ノット・イコール 5")?;
+    test("ja", "ClearSpeak", expr, "x は ノット イコール 5")?;
     return Ok(());
 }
 
@@ -289,6 +289,30 @@ fn element_of() -> Result<()> {
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
             "x 要素オブ 大文字 エー")?;
     }
+    return Ok(());
+}
+
+/// Inside a set the ClearSpeak options take a different branch of the same rule.
+/// 中へ is "into", a direction of motion, not membership.
+#[test]
+fn set_builder_member_symbol() -> Result<()> {
+    for ch in ["&#x2208;", "&#x220a;"] {
+        let expr = format!(
+            "<math><mrow><mo>{{</mo><mrow><mi>x</mi><mo>{ch}</mo><mi>A</mi></mrow><mo>}}</mo></mrow></math>"
+        );
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
+            "集合 x イン 大文字 エー")?;
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
+            "集合 x 要素オブ 大文字 エー")?;
+    }
+    return Ok(());
+}
+
+/// ∾ is "most positive" in the numeric sense; 最も肯定的な is "most affirmative".
+#[test]
+fn most_positive() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&#x223e;</mo><mi>y</mi></math>";
+    test("ja", "ClearSpeak", expr, "x は 最も正の y")?;
     return Ok(());
 }
 
