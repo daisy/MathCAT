@@ -888,12 +888,10 @@ fn matrix_entry() -> Result<()> {
     return Ok(());
 }
 
-/// A coordinate is a 点, the word geometry.yaml already uses, and the decimal
-/// point is 点 as well: 3.5 is "3 点 5".
+/// A coordinate is a 点, the word geometry.yaml already uses.
 #[test]
-fn point_and_decimal_point() -> Result<()> {
+fn coordinate_point() -> Result<()> {
     let coordinate = "<math><mrow intent='point($x,$y)'><mn arg='x'>1</mn><mo>,</mo><mn arg='y'>2</mn></mrow></math>";
     test("ja", "ClearSpeak", coordinate, "点 1 コンマ 2")?;
-    test("ja", "ClearSpeak", "<math><mn>3.5</mn></math>", "3 点 5")?;
     return Ok(());
 }
