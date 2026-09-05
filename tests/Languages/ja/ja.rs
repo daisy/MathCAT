@@ -293,17 +293,18 @@ fn element_of() -> Result<()> {
 }
 
 /// Inside a set the ClearSpeak options take a different branch of the same rule.
-/// 中へ is "into", a direction of motion, not membership.
+/// 中へ is "into", a direction of motion, not membership. The shape is the one
+/// en/ClearSpeak/sets.rs uses for set-builder notation.
 #[test]
 fn set_builder_member_symbol() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!(
-            "<math><mrow><mo>{{</mo><mi>x</mi><mo>{ch}</mo><mi>A</mi><mo>}}</mo></mrow></math>"
+            "<math><mo>{{</mo><mi>x</mi><mo>{ch}</mo><mi>&#x2124;</mi><mo>:</mo>             <mi>x</mi><mo>&#x003E;</mo><mn>5</mn><mo>}}</mo></math>"
         );
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
-            "集合 x イン 大文字 エー")?;
+            "集合 すべて x イン 整数 そのようなこと x は 大なり 5")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
-            "集合 x 要素オブ 大文字 エー")?;
+            "集合 すべて x 要素オブ 整数 そのようなこと x は 大なり 5")?;
     }
     return Ok(());
 }
