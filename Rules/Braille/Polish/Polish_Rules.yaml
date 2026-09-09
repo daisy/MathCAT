@@ -1,0 +1,391 @@
+---
+# Polish math braille rules
+#
+# Source: "Brajlowska notacja matematyczna, fizyczna, chemiczna", 2nd edition,
+# Krakow-Laski-Lodz 2011 (recommended by the Polish Ministry of National Education).
+# Page numbers in comments refer to that guide.
+#
+# STATUS: first instalment. Characters (unicode.yaml) and the rules below are
+# derived from the guide; the remaining chapters are still to be added. Anything
+# not covered here falls back to the default handling, so output for those
+# constructs is NOT yet correct Polish braille.
+
+# --- whitespace ---------------------------------------------------------------
+# The guide devotes a whole chapter to spacing (p. 3 "Nastepstwo znakow" and
+# p. 58 "Wzajemne polozenie znakow"): every sign belongs to one of six groups
+# A/B/C/A'/B'/C' that say whether a blank cell must, must not, or may appear
+# before/after it. When two requirements collide, C outranks B, which outranks A.
+# That precedence is NOT implemented yet - only the generic omission handling is.
+-
+  name: omission-intent
+  tag: "!*"
+  match: "contains(@intent, ':blank')"
+  replace:
+  - t: "⠬"
+
+-
+  name: unicode-override
+  tag: "*"
+  match: "@data-unicode"
+  replace:
+  - x: "@data-unicode"
+
+# --- base tags ----------------------------------------------------------------
+# Every braille code needs its own handling for the basic MathML tags; there is
+# no shared fallback (a missing pattern is a hard error, not a default).
+-
+  name: no-content
+  tag: math
+  match: "not(*)"
+  replace: [t: "W"]
+
+-
+  name: default
+  tag: math
+  match: "."
+  variables:
+  - RowStart: "''"
+  - RowEnd: "''"
+  - NewScriptContext: "''"
+  - MatchingWhitespace: "false()"
+  replace: [x: "*"]
+
+-
+  name: empty-mrow
+  tag: mrow
+  match: "not(*)"
+  replace: [t: "W"]
+
+-
+  name: default
+  tag: mrow
+  match: "."
+  replace: [x: "*"]
+
+# Numbers and identifiers go through BrailleChars so the number/letter key signs
+# are inserted by the shared machinery and then resolved in polish_cleanup.
+-
+  name: default
+  tag: mn
+  match: "."
+  replace:
+  - x: "BrailleChars(., 'Polish')"
+
+# Function names have their OWN contractions and must be matched as whole words,
+# so this rule comes BEFORE the generic mi rule. They cannot live in unicode.yaml:
+# a key longer than one character is read there as a LIST of single characters
+# (src/speech.rs, UnicodeDef::build), so "max" would silently redefine m, a and x.
+# Trigonometric names (p. 52) share the dots-1-2-4-6 prefix and the inverse ones
+# (p. 53) insert dot 2 after it, keeping the cell of the base function.
+
+# Units (p. 69-72, 76). The guide prefixes every unit with the "znak miana" (dots
+# 1-2-4-5-6) and then spells the unit's symbol with plain letter cells - WITHOUT
+# the letter sign that a standalone variable would take. Measured in the guide's
+# own worked example on p. 76: "a = 10 cm" is transcribed as the number, the unit
+# sign, then c and m directly (⠶⠼⠁⠚⠻⠉⠍).
+# Capitals keep their capital sign: "N" is the unit sign, capital sign, then n.
+# Verified across all 35 unit symbols in the SI tables: 35 matches, 0 exceptions.
+#
+# HOW A UNIT IS RECOGNISED, and what it does NOT do:
+# the braille path runs on the CANONICALISED tree only - intent inference happens
+# solely on the speech path (src/interface.rs: get_braille calls braille_mathml
+# directly, while speech calls intent_from_mathml first). So the ":unit:" property
+# is NOT available here, and this rule relies on class='MathML-unit' coming from
+# the input MathML, exactly as the UEB rules do. Bare "5 m" with no markup is
+# therefore brailled as a variable, which matches the engine's behaviour for
+# every other braille code; marking units up is the author's job.
+# Chemistry (p. 77-79). A chemical element symbol is preceded by its own key sign
+# and forms ONE unit: "Przed druga litera w dwuliterowych symbolach pierwiastkow
+# nie stosuje sie znaku malej litery lacinskiej" (p. 77). Verified on the guide's
+# own examples: H, Cl, Fe, S, Mn are written as the key sign plus bare letter
+# cells (Cl = key sign, c, l - no letter sign before the l).
+# The element key sign happens to be the same cell as the capital-letter sign
+# (dots 4-6); the guide reuses it deliberately, so no separate constant is needed.
+#
+# Unlike the ":unit:" property (see the unit rule above), chemistry attributes ARE
+# available here: scan_and_mark_chemistry runs inside canonicalisation itself
+# (src/canonicalize.rs), which is the tree the braille path receives.
+-
+  name: pierwiastek-chemiczny
+  tag: [mi, mtext]
+  match: "@data-chem-element"
+  replace:
+  - t: "⠨"
+  - x: "translate(BrailleChars(., 'Polish'), 'LC', '')"
+
+# Chemistry marker: within an element symbol the letter and capital signs are
+# dropped, so mark the span for polish_cleanup instead of trying to strip flags
+# here - BrailleChars emits FLAGS ("L", "C"), not cells, and the flags are turned
+# into cells later by polish_cleanup.
+
+-
+  name: jednostka-miary
+  tag: [mi, mtext]
+  match: "@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']"
+  replace:
+  - t: "⠻"
+  - x: "translate(BrailleChars(., 'Polish'), 'L', '')"
+
+-
+  name: nazwa-funkcji
+  tag: [mi, mtext]
+  match: "text()='sin' or text()='cos' or text()='tg' or text()='ctg' or
+          text()='sec' or text()='cosec' or text()='arcsin' or text()='arccos' or
+          text()='arctg' or text()='arcctg' or text()='arcsec' or text()='arccosec' or
+          text()='min' or text()='max' or text()='const' or text()='sgn'"
+  replace:
+  - test:
+    # trigonometric, p. 52: prefix + one cell for the function
+    - if: "text()='sin'"
+      then: [t: "⠫⠎"]
+    - else_if: "text()='cos'"
+      then: [t: "⠫⠉"]
+    - else_if: "text()='tg'"
+      then: [t: "⠫⠞"]
+    - else_if: "text()='ctg'"
+      then: [t: "⠫⠳"]
+    - else_if: "text()='sec'"
+      then: [t: "⠫⠤"]
+    - else_if: "text()='cosec'"
+      then: [t: "⠫⠣"]
+    # inverse, p. 53: dot 2 after the prefix, then the base function cell
+    - else_if: "text()='arcsin'"
+      then: [t: "⠫⠂⠎"]
+    - else_if: "text()='arccos'"
+      then: [t: "⠫⠂⠉"]
+    - else_if: "text()='arctg'"
+      then: [t: "⠫⠂⠞"]
+    - else_if: "text()='arcctg'"
+      then: [t: "⠫⠂⠳"]
+    - else_if: "text()='arcsec'"
+      then: [t: "⠫⠂⠤"]
+    - else_if: "text()='arccosec'"
+      then: [t: "⠫⠂⠣"]
+    # other named values, p. 17, 18, 41
+    - else_if: "text()='min'"
+      then: [t: "⠼⠝"]
+    - else_if: "text()='max'"
+      then: [t: "⠼⠭"]
+    - else_if: "text()='const'"
+      then: [t: "⠼⠅"]
+    - else:
+      - t: "⠼⠎"
+
+-
+  name: default
+  tag: [mi, mtext]
+  match: "."
+  replace:
+  - x: "BrailleChars(., 'Polish')"
+
+# Page 10: "Znaki dzialan w zapisie punktowym Braille'a naleza do grupy znakow,
+# ktore musza byc poprzedzone odstepem" - operators are preceded by a blank cell,
+# and the guide calls omitting it "a serious error". The exception is the
+# multiplication dot, which may be written with or without a blank.
+-
+  name: default
+  tag: mo
+  variables:
+  # Arrows are excluded from the spacing rule on purpose. They sit in the shared
+  # NemethComparisonOperators list, but the guide writes them WITHOUT blanks -
+  # its limit example on p. 56 glues the arrow to both neighbours, and p. 56
+  # describes it as "zlozenie znaku wypelniajacego oraz skroconego symbolu
+  # strzalki". The shared list is left untouched so other codes keep their rules.
+  - IsArrow: "contains('←→↔⇐⇒⇔↑↓', .)"
+  - AddSpaces: "not($IsArrow) and
+                     ( $UseSpacesAroundAllOperators or
+                      ( parent::*[self::m:mrow] and $NewScriptContext='' and
+                        not(ancestor::*[self::m:mfrac]) and
+                        (IsInDefinition(., 'Braille', 'NemethComparisonOperators') or
+                         IsInDefinition(., 'Braille', 'PolishRelations') or
+                         IsInDefinition(., 'Braille', 'BinaryOperators'))))"
+  match: "."
+  replace:
+    - test:
+        if: "$AddSpaces"
+        then:
+        - test:
+            if: "preceding-sibling::*"
+            then: [t: "W"]
+    - test:
+        if: "@mathvariant"
+        then: [x: "BrailleChars(., 'Polish')"]
+        else: [x: "text()"]
+    - test:
+        if: "$AddSpaces and following-sibling::*"
+        then: [t: "W"]
+
+-
+  name: default
+  tag: mstyle
+  match: "."
+  replace:
+  - test:
+      if: "*"
+      then: [x: "*"]
+
+# --- roots (p. 37) ------------------------------------------------------------
+# "Prosty znak pierwiastka" (simple root sign) is dots 2-3 + the radicand.
+# The guide's own example: sqrt(16) is written 2"`e, i.e. root sign, number
+# sign, cell for 1, cell for 6.
+-
+  name: default
+  tag: msqrt
+  match: "."
+  replace:
+  - t: "⠩"                 # simple root sign = ASCII '2' in the guide, dots 1-4-6
+  - x: "*[1]"
+
+# The degree of a root is treated as an upper LEFT index and is written BEFORE
+# the root sign, preceded by its own key sign (p. 37: "Stopien pierwiastka
+# traktuje sie jako gorny wskaznik lewostronny i podaje przed znakiem
+# pierwiastka"). The guide writes cbrt(27) as {92"af_<"b.
+-
+  name: default
+  tag: mroot
+  match: "."
+  replace:
+  - t: "⠌⠒"                # ASCII '{9': sign preceding the root degree
+  - x: "*[2]"              # the degree comes first in braille
+  - t: "⠩"                 # root sign
+  - x: "*[1]"
+
+# --- projectors: simple / compound / detailed (p. 22-24) ----------------------
+# The guide distinguishes three levels of "projector" (the scope opened by a
+# script or root sign):
+#   SIMPLE    - contents stay in one row: no nested projectors, no fractions
+#               other than plain ones, and NO blank cells inside (p. 22).
+#   COMPOUND  - may contain simple projectors and blank-free fractions (p. 23).
+#   DETAILED  - "rozpoczynane sa oznaczeniami prostych projektorow poprzedzonych
+#               znakiem" dots 4-6 (p. 23).
+#
+# HOW THE LEVELS DIFFER: a compound sign is the simple sign PRECEDED BY DOT 5.
+# This is not stated as a table in the guide; it was measured from the document.
+# On p. 23 the compound signs occupy two cells (bbox 23.5 pt) against 11.7 pt for
+# the simple ones on p. 22, and the extra leading cell decodes to dot 5. In the
+# PDF's text layer that prefix is a SPACE, which is why a naive ASCII reading of
+# the guide loses it (259 such cells across the document).
+#
+#   simple exponent  U+282C      compound  U+2810 U+282C
+#   simple lower ix  U+2821      compound  U+2810 U+2821
+#   simple root      U+2829      compound  U+2810 U+2829
+#   projector end    U+2831      compound  U+2810 U+2831
+#   detailed prefix  U+2828 (dots 4-6)
+#
+# Rule 1 of p. 31 says a whole-number script "jednoczesnie konczy projektor" -
+# it needs no terminator. Everything else does, hence the terminator below.
+
+# A script whose content is NOT a plain whole number opens a projector that has
+# to be closed. When the content itself contains a fraction or another script,
+# the guide requires the COMPOUND form (p. 23).
+-
+  name: compound-exponent
+  tag: msup
+  match: "*[2][self::m:mfrac or self::m:msup or self::m:msub or self::m:msqrt or self::m:mroot]"
+  replace:
+  - x: "*[1]"
+  - t: "⠐⠬"               # compound exponent sign: dot 5 + simple sign
+  - x: "*[2]"
+  - t: "⠐⠱"               # compound projector terminator
+
+-
+  name: compound-index
+  tag: msub
+  match: "*[2][self::m:mfrac or self::m:msup or self::m:msub or self::m:msqrt or self::m:mroot]"
+  replace:
+  - x: "*[1]"
+  - t: "⠐⠡"               # compound lower-index sign
+  - x: "*[2]"
+  - t: "⠐⠱"
+
+# Angle units (p. 51). Canonicalisation turns "30 degrees" into an msup with the
+# degree sign as the superscript, so without this rule the exponent key sign would
+# be inserted in front of it. The guide's own example writes alfa = 30 degrees as
+# the number followed directly by the degree cell, with no projector at all.
+-
+  name: miara-katowa
+  tag: msup
+  match: "*[2][self::m:mo or self::m:mi][.='°' or .='′' or .='″' or .='\u2032' or .='\u2033']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+# --- exponents and right-hand indices (p. 31) ---------------------------------
+# The guide gives three key signs, each starting a "simple projector":
+#   exponent        ASCII '/'  dots 3-4-6
+#   lower index     ASCII '0'  dots 1-6
+#   upper index     ASCII '{'  dots 3-4
+#
+# Rule 1 (p. 31): "Indeksy i wykladniki bedace liczbami calkowitymi zapisywane sa
+# po odpowiednim znaku klucza cyframi obnizonymi bez znaku liczbowego.
+# Jednoczesnie koncza projektor." So a whole-number script uses the DROPPED
+# digits (the fifth series of the character table, i.e. the digits shifted one
+# row down) and takes no number sign. The guide writes b^10 as &a/+( and
+# a_12 as &`0+:.
+-
+  name: whole-number-exponent
+  tag: msup
+  match: "*[2][self::m:mn and not(contains(., '.')) and not(contains(., ','))]"
+  replace:
+  - x: "*[1]"
+  - t: "⠬"
+  - x: "translate(*[2], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"
+
+-
+  name: default
+  tag: msup
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "⠬"
+  - x: "*[2]"
+
+-
+  name: whole-number-index
+  tag: msub
+  match: "*[2][self::m:mn and not(contains(., '.')) and not(contains(., ','))]"
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - x: "translate(*[2], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"
+
+-
+  name: default
+  tag: msub
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - x: "*[2]"
+
+# Page 34 ("Kolejnosc wskaznikow prawostronnych i wykladnika potegi"): the index
+# is written before the exponent, each after its own key sign.
+-
+  name: default
+  tag: msubsup
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - test:
+      if: "*[2][self::m:mn and not(contains(., '.')) and not(contains(., ','))]"
+      then: [x: "translate(*[2], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"]
+      else: [x: "*[2]"]
+  - t: "⠬"
+  - test:
+      if: "*[3][self::m:mn and not(contains(., '.')) and not(contains(., ','))]"
+      then: [x: "translate(*[3], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"]
+      else: [x: "*[3]"]
+
+# --- fractions (p. 25) --------------------------------------------------------
+# Two notations exist. The SHORT one is mandated wherever possible (p. 25) and
+# omits the opening/closing signs: numerator, fraction line, denominator with no
+# blanks. The guide writes 2/3 as "a7"b.
+-
+  name: default
+  tag: mfrac
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "⠳"                 # fraction line, short form
+  - x: "*[2]"
