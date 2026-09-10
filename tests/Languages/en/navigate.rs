@@ -1747,6 +1747,243 @@ mod tests {
         });
     }
 
+    #[test]
+    fn move_fraction_root_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mi id='id-3'>x</mi>
+                <mo id='id-4'>+</mo>
+                <msqrt id='id-5'>
+                    <mrow id='id-6'>
+                        <mn id='id-7'>2</mn>
+                        <mo id='id-8'>+</mo>
+                        <mfrac id='id-9'>
+                            <mn id='id-10'>1</mn>
+                            <mi id='id-11'>y</mi>
+                        </mfrac>
+                    </mrow>
+                </msqrt>
+            </mrow>
+            <mrow id='id-12'>
+                <mi id='id-13'>x</mi>
+                <mo id='id-14'>-</mo>
+                <mi id='id-15'>y</mi>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom in; fraction, x plus the square root of 2 plus 1 over y, end root, over, x minus y, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler(
+                "zoom in; in numerator; x plus the square root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom in; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "move right; the square root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom in; in root; 2 plus 1 over y", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-7");
+            assert_eq_with_panic_handler("zoom in; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; 1 over y", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-10");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-11");
+            assert_eq_with_panic_handler("move right; in denominator; y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-9");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom out; 2 plus 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "zoom out; out of root; the square root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_fraction_root_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mi id='id-3'>x</mi>
+                <mo id='id-4'>+</mo>
+                <msqrt id='id-5'>
+                    <mrow id='id-6'>
+                        <mn id='id-7'>2</mn>
+                        <mo id='id-8'>+</mo>
+                        <mfrac id='id-9'>
+                            <mn id='id-10'>1</mn>
+                            <mi id='id-11'>y</mi>
+                        </mfrac>
+                    </mrow>
+                </msqrt>
+            </mrow>
+            <mrow id='id-12'>
+                <mi id='id-13'>x</mi>
+                <mo id='id-14'>-</mo>
+                <mi id='id-15'>y</mi>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom in; fraction, x plus the square root of 2 plus 1 over y, end root, over, x minus y, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom in; in numerator; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "move right; the square root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-7");
+            assert_eq_with_panic_handler("zoom in; in root; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; 1 over y", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-10");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-11");
+            assert_eq_with_panic_handler("move right; in denominator; y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-9");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom out; 2 plus 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "zoom out; out of root; the square root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_fraction_root_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mi id='id-3'>x</mi>
+                <mo id='id-4'>+</mo>
+                <msqrt id='id-5'>
+                    <mrow id='id-6'>
+                        <mn id='id-7'>2</mn>
+                        <mo id='id-8'>+</mo>
+                        <mfrac id='id-9'>
+                            <mn id='id-10'>1</mn>
+                            <mi id='id-11'>y</mi>
+                        </mfrac>
+                    </mrow>
+                </msqrt>
+            </mrow>
+            <mrow id='id-12'>
+                <mi id='id-13'>x</mi>
+                <mo id='id-14'>-</mo>
+                <mi id='id-15'>y</mi>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom in; in numerator; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in root; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-10");
+            assert_eq_with_panic_handler("move right; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-11");
+            assert_eq_with_panic_handler("move right; in denominator; y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-9");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom out; 2 plus 1 over y", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "zoom out; out of root; the root of 2 plus 1 over y, end root",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
             return Ok(());
         });
     }
