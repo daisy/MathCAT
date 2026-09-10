@@ -377,16 +377,28 @@
   - x: "*[1]"
 
 # The degree of a root is treated as an upper LEFT index and is written BEFORE
-# the root sign, preceded by its own key sign (p. 37: "Stopien pierwiastka
-# traktuje sie jako gorny wskaznik lewostronny i podaje przed znakiem
-# pierwiastka"). The guide writes cbrt(27) as {92"af_<"b.
+# the root sign, preceded by its own key sign (p. 36 rule 5, p. 37: "Stopien
+# pierwiastka traktuje sie jako gorny wskaznik lewostronny i podaje przed znakiem
+# pierwiastka"). Rule 5 adds that this one index needs NO terminator.
+#
+# The key sign is dots 3-4 ALONE. Measured off the guide's glyphs on p. 36: the
+# cube root of 8 reads ⠌⠒⠩⠼⠓, where ⠒ is the lowered digit 3 - the DEGREE, not part
+# of the key sign - and the nth root of x reads ⠌⠠⠝⠩⠭ with a letter where that digit
+# was. Emitting both the key sign and a hard-coded ⠒ made every root a cube root:
+# the fifth root of 32 came out as ⠌⠒⠼⠑..., saying "3" and "5" at once.
 -
   name: default
   tag: mroot
   match: "."
   replace:
-  - t: "⠌⠒"                # ASCII '{9': sign preceding the root degree
-  - x: "*[2]"              # the degree comes first in braille
+  - t: "⠌"                 # upper left index key sign, short form (p. 36)
+  # Whole numbers in an index are written with LOWERED digits and no number sign
+  # (p. 33 rule 1), which is also what makes the terminator unnecessary. The same
+  # translate() table is used by the power and subscript rules below.
+  - test:
+      if: "*[2][self::m:mn][translate(., '0123456789', '')='']"
+      then: [x: "translate(*[2], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"]
+      else: [x: "*[2]"]
   - t: "⠩"                 # root sign
   - x: "*[1]"
 

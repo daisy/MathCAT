@@ -515,3 +515,32 @@ fn calka_i_pochodna_czastkowa() -> Result<()> {
     test_braille("Polish", expr, "⠹⠠⠋")?;
     return Ok(());
 }
+
+// Page 36 rule 5 with p. 37: the degree of a root is an upper LEFT index, written
+// before the root sign after its own key sign (dots 3-4), and it needs no
+// terminator. Whole numbers in an index use LOWERED digits with no number sign
+// (p. 33 rule 1). Measured off the guide's glyphs on p. 36: cbrt(8) is ⠌⠒⠩⠼⠓ and
+// the nth root of x is ⠌⠠⠝⠩⠭.
+//
+// The rule used to emit the key sign together with a hard-coded lowered 3, so every
+// root claimed to be a cube root: the fifth root of 32 came out saying "3" and "5".
+#[test]
+fn pierwiastek_szescienny() -> Result<()> {
+    let expr = r#"<math><mroot><mn>8</mn><mn>3</mn></mroot></math>"#;
+    test_braille("Polish", expr, "⠌⠒⠩⠼⠓")?;
+    return Ok(());
+}
+
+#[test]
+fn pierwiastek_piatego_stopnia() -> Result<()> {
+    let expr = r#"<math><mroot><mn>32</mn><mn>5</mn></mroot></math>"#;
+    test_braille("Polish", expr, "⠌⠢⠩⠼⠉⠃")?;
+    return Ok(());
+}
+
+#[test]
+fn pierwiastek_stopnia_n() -> Result<()> {
+    let expr = r#"<math><mroot><mi>x</mi><mi>n</mi></mroot></math>"#;
+    test_braille("Polish", expr, "⠌⠠⠝⠩⠠⠭")?;
+    return Ok(());
+}
