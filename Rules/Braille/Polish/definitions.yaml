@@ -39,6 +39,7 @@
 # this list "a is-not-parallel-to b" came out with no blanks at all.
 - PolishRelations: {
     '⊥', '⊮', '∥', '∦', '∼', '≁', '≅', '≇', '≐', '≗',
+    '∣', '∤',
   }
 
 # Arrows are NOT in the list above on purpose. The guide writes them WITHOUT

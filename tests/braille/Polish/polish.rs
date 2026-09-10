@@ -442,3 +442,40 @@ fn nawiasy_kwadratowe_i_klamrowe() -> Result<()> {
 // first; collapsing every capital run instead breaks ordinary uses. MathCAT has no
 // notion of a Roman numeral, so this is left unimplemented on purpose rather than
 // wrongly generalised.
+
+// Page 12: "jest dzielnikiem" and its negation, which adds the dots 3-5 cell that
+// negates any relation (p. 58). The guide's examples are 5|25 and 5|27.
+#[test]
+fn dzielnik() -> Result<()> {
+    let expr = r#"<math><mn>5</mn><mo>&#x2223;</mo><mn>25</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠑⠀⠈⠇⠼⠃⠑")?;
+    return Ok(());
+}
+
+#[test]
+fn nie_jest_dzielnikiem() -> Result<()> {
+    let expr = r#"<math><mn>5</mn><mo>&#x2224;</mo><mn>27</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠑⠀⠔⠈⠇⠼⠃⠛")?;
+    return Ok(());
+}
+
+// Page 10: the multiplication dot has a cell of its own. Unlike every other
+// operator it may be written EITHER with or without a leading blank - the guide
+// makes it an explicit exception ("wyjatek stanowi znak mnozenia, ktory moze byc
+// pisany dwojako") and prints both forms side by side for 12 . 3. We emit the
+// no-blank form, so the dot is deliberately NOT in the group-B list.
+#[test]
+fn mnozenie_kropka() -> Result<()> {
+    let expr = r#"<math><mn>12</mn><mo>&#x22C5;</mo><mn>3</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠁⠃⠄⠼⠉")?;
+    return Ok(());
+}
+
+// Page 13: punctuation after a number. Without entries these reached the braille
+// output as raw ASCII bytes.
+#[test]
+fn srednik_po_liczbie() -> Result<()> {
+    let expr = r#"<math><mn>12</mn><mo>;</mo></math>"#;
+    test_braille("Polish", expr, "⠼⠁⠃⠆")?;
+    return Ok(());
+}

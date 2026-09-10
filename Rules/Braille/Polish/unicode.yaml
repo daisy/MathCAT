@@ -59,6 +59,29 @@
  - "⟨": [t: "⠷⠄"]        # 0x27E8 (angle, opening; guide p. 11)
  - "⟩": [t: "⠠⠾"]        # 0x27E9 (angle, closing)
 
+# Multiplication dot (p. 10). The guide gives it a cell of its own and notes that
+# multiplication is the ONE operator allowed either with or without a leading blank
+# ("wyjatek stanowi znak mnozenia"). Its example 12 . 3 confirms the cell.
+ - "⋅": [t: "⠄"]              # 0x22C5 (multiplication dot; guide p. 10)
+
+# Divisibility (p. 12): "jest dzielnikiem" and its negation, which adds the same
+# dots 3-5 cell that negates any relation (p. 58). NOTE this is the SAME cell pair
+# as the opening absolute value (p. 12) - the guide reuses it, and position tells
+# them apart.
+ - "∣": [t: "⠈⠇"]        # 0x2223 (divides; guide p. 12)
+ - "∤": [t: "⠔⠈⠇"]  # 0x2224 (does not divide; guide p. 12)
+
+# Punctuation after a number (p. 13). These signs are written with NO blank on their
+# left, and a number before them takes dot 6 first so the punctuation cannot be read
+# as a continuation of the number: the guide's example 12; reads number sign, 1, 2,
+# dot 6, semicolon. The dot-6 part is handled by the engine's own punctuation
+# indicator; these entries only supply the cells, which were missing and reached the
+# output as raw ASCII.
+ - ";": [t: "⠆"]              # 0x003B (semicolon; guide p. 13)
+ - ":": [t: "⠒"]              # 0x003A (colon; guide p. 13)
+ - "?": [t: "⠢"]              # 0x003F (question mark; guide p. 13)
+ - "!": [t: "⠖"]              # 0x0021 (exclamation mark; guide p. 13)
+
 # digits (number sign + first series, page 4)
  - "0": [t: "N⠚"]                # 0x0030 (digit 0)
  - "1": [t: "N⠁"]                # 0x0031 (digit 1)
