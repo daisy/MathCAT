@@ -339,9 +339,14 @@
         if: "@mathvariant"
         then: [x: "BrailleChars(., 'Polish')"]
         else: [x: "text()"]
-    - test:
-        if: "$AddSpaces and following-sibling::*"
-        then: [t: "W"]
+  # NO trailing space. Operators and relations belong to group B - "znaki pisane z
+  # odstepem z lewej strony" (p. 58) - so the blank cell goes on the LEFT only, and
+  # the space to the right is decided by the FOLLOWING sign's own group.
+  # Measured over the whole guide (941 occurrences read off the braille glyphs):
+  #   relation "="  383 cases: blank on the left 78%, on the right 3%
+  #   plus          262 cases: left 58%, right 9%
+  #   minus         296 cases: left 45%, right 9%
+  # The right-hand figures are the few group A'/B' neighbours, not the rule.
 
 -
   name: default

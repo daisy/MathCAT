@@ -41,7 +41,7 @@ fn litera_mala() -> Result<()> {
 #[test]
 fn dodawanie() -> Result<()> {
     let expr = r#"<math><mn>5</mn><mo>+</mo><mn>2</mn></math>"#;
-    test_braille("Polish", expr, "⠼⠑⠀⠖⠀⠼⠃")?;
+    test_braille("Polish", expr, "⠼⠑⠀⠖⠼⠃")?;
     return Ok(());
 }
 
@@ -49,7 +49,7 @@ fn dodawanie() -> Result<()> {
 #[test]
 fn rownosc() -> Result<()> {
     let expr = r#"<math><mi>x</mi><mo>=</mo><mn>1</mn></math>"#;
-    test_braille("Polish", expr, "⠠⠭⠀⠶⠀⠼⠁")?;
+    test_braille("Polish", expr, "⠠⠭⠀⠶⠼⠁")?;
     return Ok(());
 }
 
@@ -159,7 +159,7 @@ fn grecka_wielka_omega() -> Result<()> {
 #[test]
 fn nalezy_do_zbioru() -> Result<()> {
     let expr = r#"<math><mi>x</mi><mo>&#x2208;</mo><mi>A</mi></math>"#;
-    test_braille("Polish", expr, "⠠⠭⠀⠈⠑⠀⠨⠁")?;
+    test_braille("Polish", expr, "⠠⠭⠀⠈⠑⠨⠁")?;
     return Ok(());
 }
 
@@ -219,10 +219,16 @@ fn kod_polski_jest_na_liscie_wyboru() -> Result<()> {
 // relations and binary operators take their blank on the left. The conflict
 // resolution itself is NOT implemented - see the comment in definitions.yaml.
 // This test therefore only pins the group-B behaviour that does work.
+// Page 58-59: group B signs take the blank cell on the LEFT only ("znaki pisane z
+// odstepem z lewej strony"). What follows them is decided by the NEXT sign's own
+// group, and rule 1 says two signs are written with no gap when the second one is
+// from group C. The number sign and the letter/capital sign behave that way here,
+// which the guide's own examples confirm: "x = 1" reads letter-sign, x, blank,
+// equals, number-sign, 1 - with no blank after the relation.
 #[test]
 fn grupa_b_daje_odstepy() -> Result<()> {
     let expr = r#"<math><mi>a</mi><mo>=</mo><mi>b</mi></math>"#;
-    test_braille("Polish", expr, "⠠⠁⠀⠶⠀⠠⠃")?;
+    test_braille("Polish", expr, "⠠⠁⠀⠶⠠⠃")?;
     return Ok(());
 }
 
@@ -338,7 +344,7 @@ fn figura_trojkat() -> Result<()> {
 #[test]
 fn nierownolegle() -> Result<()> {
     let expr = r#"<math><mi>a</mi><mo>&#x2226;</mo><mi>b</mi></math>"#;
-    test_braille("Polish", expr, "⠠⠁⠀⠔⠈⠇⠇⠀⠠⠃")?;
+    test_braille("Polish", expr, "⠠⠁⠀⠔⠈⠇⠇⠠⠃")?;
     return Ok(());
 }
 
@@ -386,5 +392,24 @@ fn pierwiastek_dwuliterowy() -> Result<()> {
 fn czasteczka_hcl() -> Result<()> {
     let expr = r#"<math><mi>H</mi><mo>&#x2062;</mo><mi>Cl</mi></math>"#;
     test_braille("Polish", expr, "⠨⠓⠨⠉⠇")?;
+    return Ok(());
+}
+
+// Page 59, conflict rule 1: two signs are written with NO blank between them when
+// the second one is from group C. The prime is group C ("znaki pisane bez odstepu
+// z lewej strony", p. 58), so a' has no gap before the prime.
+#[test]
+fn prim_bez_odstepu() -> Result<()> {
+    let expr = r#"<math><msup><mi>a</mi><mo>&#x2032;</mo></msup></math>"#;
+    test_braille("Polish", expr, "⠠⠁⠔")?;
+    return Ok(());
+}
+
+// Page 10: the ASCII hyphen-minus U+002D shares the cell with the proper minus
+// U+2212. Without an entry it used to reach the output as a raw ASCII byte.
+#[test]
+fn minus_ascii_i_unicode() -> Result<()> {
+    let expr = r#"<math><mi>a</mi><mo>=</mo><mo>-</mo><mi>b</mi></math>"#;
+    test_braille("Polish", expr, "⠠⠁⠀⠶⠤⠠⠃")?;
     return Ok(());
 }

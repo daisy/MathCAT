@@ -41,6 +41,11 @@
  - "%": [t: "⠼⠚⠴"]        # 0x0025 (per cent; guide p. 5)
  - "‰": [t: "⠼⠚⠴⠴"]   # 0x2030 (per mille; guide p. 5)
 
+# ASCII hyphen-minus. MathML in the wild carries U+002D far more often than the
+# proper minus U+2212, and without an entry it fell through to the output as a raw
+# ASCII byte. Same cell as U+2212 (p. 10); Swedish keeps both for the same reason.
+ - "-": [t: "⠤"]              # 0x002D (hyphen-minus, same cell as U+2212)
+
 # digits (number sign + first series, page 4)
  - "0": [t: "N⠚"]                # 0x0030 (digit 0)
  - "1": [t: "N⠁"]                # 0x0031 (digit 1)
