@@ -479,3 +479,39 @@ fn srednik_po_liczbie() -> Result<()> {
     test_braille("Polish", expr, "⠼⠁⠃⠆")?;
     return Ok(());
 }
+
+// Page 47: logarithms. Measured off the guide's glyphs - log is the function prefix
+// plus one cell; ln puts an extra cell between them. Before this they were spelled
+// out letter by letter.
+#[test]
+fn logarytm_dziesietny() -> Result<()> {
+    let expr = r#"<math><mi>log</mi><mn>1000</mn></math>"#;
+    test_braille("Polish", expr, "⠫⠇⠼⠁⠚⠚⠚")?;
+    return Ok(());
+}
+
+#[test]
+fn logarytm_naturalny() -> Result<()> {
+    let expr = r#"<math><mi>ln</mi><mi>x</mi></math>"#;
+    test_braille("Polish", expr, "⠫⠦⠇⠠⠭")?;
+    return Ok(());
+}
+
+// Page 55: the factorial sign, and p. 57: the integral and the partial derivative.
+// These already worked; the tests pin them so a later change cannot break them
+// silently.
+#[test]
+fn silnia() -> Result<()> {
+    let expr = r#"<math><mn>5</mn><mo>!</mo></math>"#;
+    test_braille("Polish", expr, "⠼⠑⠫")?;
+    return Ok(());
+}
+
+#[test]
+fn calka_i_pochodna_czastkowa() -> Result<()> {
+    let expr = r#"<math><mo>&#x222B;</mo><mi>f</mi></math>"#;
+    test_braille("Polish", expr, "⠮⠠⠋")?;
+    let expr = r#"<math><mo>&#x2202;</mo><mi>f</mi></math>"#;
+    test_braille("Polish", expr, "⠹⠠⠋")?;
+    return Ok(());
+}

@@ -257,7 +257,7 @@
           text()='sec' or text()='cosec' or text()='arcsin' or text()='arccos' or
           text()='arctg' or text()='arcctg' or text()='arcsec' or text()='arccosec' or
           text()='min' or text()='max' or text()='const' or text()='sgn' or
-          text()='lim'"
+          text()='lim' or text()='log' or text()='ln'"
   replace:
   - test:
     # trigonometric, p. 52: prefix + one cell for the function
@@ -296,6 +296,13 @@
     # limit, p. 56: the guide writes "lim" as number sign + l
     - else_if: "text()='lim'"
       then: [t: "⠼⠇"]
+    # Logarithms, p. 47. Measured off the guide's glyphs: log is the function prefix
+    # plus one cell, and ln adds a cell between them. The guide's examples read
+    # log 1000 = 3 and ln e^2 = 2.
+    - else_if: "text()='log'"
+      then: [t: "⠫⠇"]
+    - else_if: "text()='ln'"
+      then: [t: "⠫⠦⠇"]
     - else:
       - t: "⠼⠎"
 
