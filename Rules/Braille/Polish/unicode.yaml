@@ -25,6 +25,12 @@
  - "⁣": [t: ""]                # 0x2063 (invisible separator)
  - "⁤": [t: ""]                # 0x2064 (invisible plus)
 
+# Big operators. The guide gives them no sign of their own - it lists only the
+# Greek capitals (p. 7) - so sum and product are written as capital sigma and
+# capital pi. Swedish and UEB map 0x2211 onto the Greek capital in the same way.
+ - "∑": [t: "CG⠎"]   # 0x2211 (n-ary sum = capital sigma)
+ - "∏": [t: "CG⠏"]   # 0x220F (n-ary product = capital pi)
+
 # digits (number sign + first series, page 4)
  - "0": [t: "N⠚"]                # 0x0030 (digit 0)
  - "1": [t: "N⠁"]                # 0x0031 (digit 1)

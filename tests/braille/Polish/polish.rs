@@ -239,6 +239,54 @@ fn prim_po_relacji_bez_odstepu() -> Result<()> {
     return Ok(());
 }
 
+// Page 12: absolute value has its OWN pair of signs - opening dots 4 + 1-2-3 and
+// closing dots 4-5-6 - not a repeated bar. Before this rule the vertical bar had
+// no entry at all and leaked into the output as raw ASCII "|".
+#[test]
+fn wartosc_bezwzgledna() -> Result<()> {
+    let expr = r#"<math><mrow><mo>|</mo><mi>a</mi><mo>|</mo></mrow></math>"#;
+    test_braille("Polish", expr, "⠈⠇⠠⠁⠸")?;
+    return Ok(());
+}
+
+// Page 49: the vector arrow is a BRACKETING key sign (dots 4-5, 2-5, 2) placed in
+// front of the whole expression it covers. Taken from the guide's own example.
+#[test]
+fn wektor_nad_litera() -> Result<()> {
+    let expr = r#"<math><mover><mi>u</mi><mo>&#x2192;</mo></mover></math>"#;
+    test_braille("Polish", expr, "⠨⠒⠂⠠⠥")?;
+    return Ok(());
+}
+
+// Page 56: a limit is written as a lower index of the operator, closed by the
+// simple-projector terminator - the guide writes "lim x->oo" as number sign, l,
+// index sign, x, arrow, infinity, blank.
+#[test]
+fn granica_pod_symbolem() -> Result<()> {
+    let expr = r#"<math><munder><mi>lim</mi><mi>n</mi></munder></math>"#;
+    test_braille("Polish", expr, "⠼⠇⠡⠠⠝⠀")?;
+    return Ok(());
+}
+
+// Page 46: a matrix is bracketed with dots 1-2-6 ... 3-4-6, entries and rows are
+// separated by a blank cell.
+#[test]
+fn macierz_dwa_na_dwa() -> Result<()> {
+    let expr = r#"<math><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></math>"#;
+    test_braille("Polish", expr, "⠣⠼⠁⠀⠼⠃⠀⠼⠉⠀⠼⠙⠜")?;
+    return Ok(());
+}
+
+// A big operator with both limits. The guide gives sum no sign of its own (only
+// the Greek capitals on p. 7), so it comes out as capital sigma, then the lower
+// index and the upper index, each closed by the terminator.
+#[test]
+fn suma_z_granicami() -> Result<()> {
+    let expr = r#"<math><munderover><mo>&#x2211;</mo><mi>i</mi><mi>n</mi></munderover></math>"#;
+    test_braille("Polish", expr, "⠸⠎⠡⠠⠊⠀⠬⠠⠝⠀")?;
+    return Ok(());
+}
+
 // Page 51: the guide gives both a full and a SHORT form for angle units and tells
 // the transcriber to prefer the short one; its own example writes 30 degrees with
 // the bare cell, no prefix.

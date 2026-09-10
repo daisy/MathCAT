@@ -56,6 +56,130 @@
   match: "not(*)"
   replace: [t: "W"]
 
+# Absolute value / modulus (p. 12). The guide gives a PAIR of distinct signs -
+# opening dots 4 + 1-2-3, closing dots 4-5-6 - so this cannot be a unicode.yaml
+# entry for "|" (one character, two different meanings by position). Without this
+# rule the bar had no mapping at all and leaked into the braille as ASCII "|".
+# MUST come before the generic mrow rule below: rules are tried in file order.
+-
+  name: wartosc-bezwzgledna
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mo][text()='|'] and *[3][self::m:mo][text()='|']"
+  replace:
+  - t: "⠈⠇"
+  - x: "*[2]"
+  - t: "⠸"
+
+# Vectors (p. 49). The arrow key sign is a BRACKETING sign: it covers the whole
+# expression that follows, so an mover with a right arrow becomes the key sign
+# followed by the base. Verified against the guide's own examples, e.g.
+# "wektor AB = -wektor DC" -> dots 4-5 + 2-5 + 2 then the letters.
+-
+  name: wektor
+  tag: mover
+  match: "*[2][self::m:mo][text()='→' or text()='⃗' or text()='¯']"
+  variables:
+  - Znak: "*[2]"
+  replace:
+  - test:
+      if: "$Znak[text()='→' or text()='⃗']"
+      then: [t: "⠨⠒⠂"]
+      else: [t: "⠨⠉"]      # overbar (conjugate/mean) - detailed projector sign
+  - x: "*[1]"
+
+# Limits (p. 56). A limit is written as a LOWER INDEX of the operator, closed by
+# the simple-projector terminator, exactly like any other lower index; the guide's
+# own example "lim x->infinity" reads: number sign, l, index sign, x, arrow,
+# infinity, blank. So munder over a limit-like operator reuses the index rule.
+-
+  name: granica
+  tag: munder
+  match: "*[1][self::m:mi or self::m:mo]"
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - x: "*[2]"
+  - t: "W"
+
+# munderover: base, then lower index, then upper index (sum/integral limits).
+-
+  name: granice-dolna-gorna
+  tag: munderover
+  match: "."
+  replace:
+  - x: "*[1]"
+  - t: "⠡"
+  - x: "*[2]"
+  - t: "W"
+  - t: "⠬"
+  - x: "*[3]"
+  - t: "W"
+
+# Matrices and determinants (p. 46). The guide brackets a matrix with dots 1-2-6
+# ... 3-4-6 and a determinant with dots 1-2-3 ... 4-5-6; rows are separated by a
+# blank cell and so are the entries within a row. Read off the guide's own worked
+# example, a 2x2 matrix and its determinant.
+-
+  name: macierz
+  tag: mtable
+  match: "."
+  replace:
+  - t: "⠣"
+  - x: "*"
+  - t: "⠜"
+
+-
+  name: wiersz-macierzy
+  tag: mtr
+  match: "."
+  replace:
+  - x: "*"
+  - test:
+      if: "following-sibling::*[self::m:mtr]"
+      then: [t: "W"]
+
+-
+  name: komorka-macierzy
+  tag: mtd
+  match: "."
+  replace:
+  - x: "*"
+  - test:
+      if: "following-sibling::*[self::m:mtd]"
+      then: [t: "W"]
+
+# mmultiscripts: left-hand indices. The guide devotes a section to them (p. 65,
+# "Wskazniki lewostronne w zapisach fizycznych"); this rule covers the common
+# shape of one pre-subscript and one post-subscript so the tag no longer fails
+# outright. The full left-index grammar is NOT implemented (see definitions.yaml).
+-
+  name: wskazniki-obustronne
+  tag: mmultiscripts
+  match: "."
+  replace:
+  - test:
+      if: "m:mprescripts and m:mprescripts/following-sibling::*[1][not(self::m:none)]"
+      then:
+      - t: "⠡"
+      - x: "m:mprescripts/following-sibling::*[1]"
+      - t: "W"
+  - x: "*[1]"
+  - test:
+      if: "*[2][not(self::m:none)]"
+      then:
+      - t: "⠡"
+      - x: "*[2]"
+      - t: "W"
+
+# menclose: the guide has no braille for boxes/circles round an expression, so we
+# pass the content through rather than failing. Reported as a gap, not a feature.
+-
+  name: menclose-przezroczysty
+  tag: menclose
+  match: "."
+  replace:
+  - x: "*"
+
 -
   name: default
   tag: mrow
@@ -132,7 +256,8 @@
   match: "text()='sin' or text()='cos' or text()='tg' or text()='ctg' or
           text()='sec' or text()='cosec' or text()='arcsin' or text()='arccos' or
           text()='arctg' or text()='arcctg' or text()='arcsec' or text()='arccosec' or
-          text()='min' or text()='max' or text()='const' or text()='sgn'"
+          text()='min' or text()='max' or text()='const' or text()='sgn' or
+          text()='lim'"
   replace:
   - test:
     # trigonometric, p. 52: prefix + one cell for the function
@@ -168,6 +293,9 @@
       then: [t: "⠼⠭"]
     - else_if: "text()='const'"
       then: [t: "⠼⠅"]
+    # limit, p. 56: the guide writes "lim" as number sign + l
+    - else_if: "text()='lim'"
+      then: [t: "⠼⠇"]
     - else:
       - t: "⠼⠎"
 
