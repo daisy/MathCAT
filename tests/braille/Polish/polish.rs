@@ -413,3 +413,32 @@ fn minus_ascii_i_unicode() -> Result<()> {
     test_braille("Polish", expr, "⠠⠁⠀⠶⠤⠠⠃")?;
     return Ok(());
 }
+
+// Page 11: the four bracket pairs. Without entries for them the engine reached for
+// unrelated cells and printed digit cells where brackets belong.
+#[test]
+fn nawiasy_okragle() -> Result<()> {
+    let expr = r#"<math><mo>(</mo><mn>14</mn><mo>-</mo><mn>5</mn><mo>)</mo></math>"#;
+    test_braille("Polish", expr, "⠣⠼⠁⠙⠀⠤⠼⠑⠜")?;
+    return Ok(());
+}
+
+#[test]
+fn nawiasy_kwadratowe_i_klamrowe() -> Result<()> {
+    let expr = r#"<math><mo>[</mo><mn>1</mn><mo>]</mo></math>"#;
+    test_braille("Polish", expr, "⠷⠼⠁⠾")?;
+    let expr = r#"<math><mo>{</mo><mn>4</mn><mo>}</mo></math>"#;
+    test_braille("Polish", expr, "⠪⠼⠙⠕")?;
+    return Ok(());
+}
+
+// Page 6 gives Roman numerals a SINGLE capital sign for the whole run
+// (XLII reads capital sign + x + l + i + i; MDCCCXXXVII keeps one sign for eleven
+// letters), but p. 57 states the general rule for symbols: "w granicach symbolu
+// kazdy znak duzej litery odnosi sie tylko do tej litery przed ktora stoi" - the
+// sign IS repeated, which the guide's own PLN and its geometry points confirm.
+//
+// So Roman numerals are an exception that needs them to be RECOGNISED as numerals
+// first; collapsing every capital run instead breaks ordinary uses. MathCAT has no
+// notion of a Roman numeral, so this is left unimplemented on purpose rather than
+// wrongly generalised.

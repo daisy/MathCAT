@@ -46,6 +46,19 @@
 # ASCII byte. Same cell as U+2212 (p. 10); Swedish keeps both for the same reason.
  - "-": [t: "⠤"]              # 0x002D (hyphen-minus, same cell as U+2212)
 
+# Brackets (p. 11). Four pairs, each its own sign - the guide lists them together
+# with worked examples such as "(14 - 5) + 7" and a nested one three levels deep.
+# Without these entries the engine fell back to unrelated cells and printed digits
+# where brackets belong.
+ - "(": [t: "⠣"]              # 0x0028 (round, opening; guide p. 11)
+ - ")": [t: "⠜"]              # 0x0029 (round, closing)
+ - "[": [t: "⠷"]              # 0x005B (square, opening; guide p. 11)
+ - "]": [t: "⠾"]              # 0x005D (square, closing)
+ - "{": [t: "⠪"]              # 0x007B (curly, opening; guide p. 11)
+ - "}": [t: "⠕"]              # 0x007D (curly, closing)
+ - "⟨": [t: "⠷⠄"]        # 0x27E8 (angle, opening; guide p. 11)
+ - "⟩": [t: "⠠⠾"]        # 0x27E9 (angle, closing)
+
 # digits (number sign + first series, page 4)
  - "0": [t: "N⠚"]                # 0x0030 (digit 0)
  - "1": [t: "N⠁"]                # 0x0031 (digit 1)
