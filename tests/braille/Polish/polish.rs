@@ -544,3 +544,30 @@ fn pierwiastek_stopnia_n() -> Result<()> {
     test_braille("Polish", expr, "⠌⠠⠝⠩⠠⠭")?;
     return Ok(());
 }
+
+// Page 36 rule 6: the BASE of a logarithm, printed as a lower index after the
+// function name, becomes an upper LEFT index written BEFORE it. Measured off the
+// guide's glyphs on p. 47: log2 8 = 3 reads ⠌⠆⠫⠇⠼⠓.
+#[test]
+fn podstawa_logarytmu() -> Result<()> {
+    let expr = r#"<math><msub><mi>log</mi><mn>2</mn></msub><mn>8</mn></math>"#;
+    test_braille("Polish", expr, "⠌⠆⠫⠇⠼⠓")?;
+    return Ok(());
+}
+
+#[test]
+fn podstawa_logarytmu_litera() -> Result<()> {
+    let expr = r#"<math><msub><mi>log</mi><mi>a</mi></msub><mi>x</mi></math>"#;
+    test_braille("Polish", expr, "⠌⠠⠁⠫⠇⠠⠭")?;
+    return Ok(());
+}
+
+// Control: an ORDINARY lower index must keep behaving as before. The logarithm rule
+// sits before the generic msub rules in the file, which is how it takes precedence,
+// so this test guards against it swallowing every subscript.
+#[test]
+fn zwykly_wskaznik_dolny_nietkniety() -> Result<()> {
+    let expr = r#"<math><msub><mi>a</mi><mn>1</mn></msub></math>"#;
+    test_braille("Polish", expr, "⠠⠁⠡⠂")?;
+    return Ok(());
+}

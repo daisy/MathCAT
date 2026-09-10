@@ -427,6 +427,29 @@
 # Rule 1 of p. 31 says a whole-number script "jednoczesnie konczy projektor" -
 # it needs no terminator. Everything else does, hence the terminator below.
 
+# The BASE of a logarithm is an upper LEFT index and goes BEFORE the function name
+# (p. 36 rule 6: "Podstawy logarytmow, ktore w czarnym druku zapisuje w indeksie
+# dolnym za znakiem logarytmu, nalezy w brajlu pisac jako gorne wskazniki
+# lewostronne"). Measured off the guide's glyphs on p. 47: log2 8 = 3 reads
+# ⠌⠆⠫⠇⠼⠓ - key sign, lowered 2, then log.
+#
+# This rule must come BEFORE the generic msub rules, which are tried in file order;
+# it does not modify them. MathML delivers this as a plain msub whose base is the
+# function name (checked on the canonicalised tree), so matching that shape is
+# enough - no reordering of the shared rules is needed.
+-
+  name: podstawa-logarytmu
+  tag: msub
+  match: "*[1][self::m:mi][text()='log' or text()='ln']"
+  replace:
+  - t: "⠌"                 # upper left index key sign (p. 36)
+  # Whole numbers in an index use lowered digits and no number sign (p. 33 rule 1).
+  - test:
+      if: "*[2][self::m:mn][translate(., '0123456789', '')='']"
+      then: [x: "translate(*[2], '0123456789', '⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔')"]
+      else: [x: "*[2]"]
+  - x: "*[1]"              # then the function name itself
+
 # A script whose content is NOT a plain whole number opens a projector that has
 # to be closed. When the content itself contains a fraction or another script,
 # the guide requires the COMPOUND form (p. 23).
