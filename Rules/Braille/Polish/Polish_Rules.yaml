@@ -516,4 +516,7 @@
   replace:
   - x: "*[1]"
   - t: "⠳"                 # fraction line, short form
-  - x: "*[2]"
+  # The letter sign is NOT repeated after the fraction line: the guide writes x/y
+  # as letter-sign, x, line, y (p. 25). Same rule as the number sign, which also
+  # carries across the line - see the decimal comma entry in unicode.yaml.
+  - x: "translate(BrailleChars(*[2], 'Polish'), 'L', '')"

@@ -287,6 +287,33 @@ fn suma_z_granicami() -> Result<()> {
     return Ok(());
 }
 
+// Page 5: in braille the integer part is separated from the fraction by a COMMA
+// (dot 2) and never by a point - the guide says braille uses only the comma, so
+// print notation's point/comma ambiguity does not arise. Its example: 7,29.
+#[test]
+fn liczba_dziesietna() -> Result<()> {
+    let expr = r#"<math><mn>7,29</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠛⠂⠃⠊")?;
+    return Ok(());
+}
+
+// Page 5: per cent follows the number.
+#[test]
+fn procent() -> Result<()> {
+    let expr = r#"<math><mn>25</mn><mo>%</mo></math>"#;
+    test_braille("Polish", expr, "⠼⠃⠑⠼⠚⠴")?;
+    return Ok(());
+}
+
+// Page 25: the FULL fraction form brackets the fraction and puts a blank cell on
+// both sides of the fraction line; the guide writes 2/3 that way as well.
+#[test]
+fn ulamek_pelny_z_odstepami() -> Result<()> {
+    let expr = r#"<math><mfrac><mi>x</mi><mi>y</mi></mfrac></math>"#;
+    test_braille("Polish", expr, "⠠⠭⠳⠽")?;
+    return Ok(());
+}
+
 // Page 51: the guide gives both a full and a SHORT form for angle units and tells
 // the transcriber to prefer the short one; its own example writes 30 degrees with
 // the bare cell, no prefix.

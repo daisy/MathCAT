@@ -31,6 +31,16 @@
  - "∑": [t: "CG⠎"]   # 0x2211 (n-ary sum = capital sigma)
  - "∏": [t: "CG⠏"]   # 0x220F (n-ary product = capital pi)
 
+# Decimal comma (p. 5). The guide is explicit: "W liczbach dziesietnych czesc
+# calkowita od ulamkowej oddziela sie przecinkiem" - dot 2 - and a footnote adds
+# that braille uses ONLY the comma, never the decimal point, so the ambiguity of
+# print notation does not arise. Verified on the guide's examples 7,29 and 0,072.
+ - ",": [t: "N⠂"]             # 0x002C (decimal comma; guide p. 5)
+
+# Per cent and per mille (p. 5), written after the number.
+ - "%": [t: "⠼⠚⠴"]        # 0x0025 (per cent; guide p. 5)
+ - "‰": [t: "⠼⠚⠴⠴"]   # 0x2030 (per mille; guide p. 5)
+
 # digits (number sign + first series, page 4)
  - "0": [t: "N⠚"]                # 0x0030 (digit 0)
  - "1": [t: "N⠁"]                # 0x0031 (digit 1)
