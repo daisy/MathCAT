@@ -1549,6 +1549,10 @@ mod tests {
                 speech,
             )?;
 
+            return Ok(());
+        });
+    }
+
     #[test]
     fn move_nested_fraction_enhanced() -> Result<()> {
         let mathml_str = "<math display='block' id='id-0'>
@@ -2810,6 +2814,125 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn move_unit_fraction_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mfrac id='id-1'>
+        <mi id='id-2' intent=':unit'>m</mi>
+        <msup id='id-3'>
+            <mi id='id-4' intent=':unit'>s</mi>
+            <mn id='id-5'>2</mn>
+        </msup>
+    </mfrac>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in numerator; metre", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in denominator; second squared", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in base; second", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler(
+                "zoom out; out of exponent; second squared",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom out; out of denominator; metre per second squared",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_unit_fraction_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mfrac id='id-1'>
+        <mi id='id-2' intent=':unit'>m</mi>
+        <msup id='id-3'>
+            <mi id='id-4' intent=':unit'>s</mi>
+            <mn id='id-5'>2</mn>
+        </msup>
+    </mfrac>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in numerator; metre", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in denominator; second squared", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in base; second", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler(
+                "zoom out; out of exponent; second squared",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom out; out of denominator; metre per second squared",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_unit_fraction_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mfrac id='id-1'>
+        <mi id='id-2' intent=':unit'>m</mi>
+        <msup id='id-3'>
+            <mi id='id-4' intent=':unit'>s</mi>
+            <mn id='id-5'>2</mn>
+        </msup>
+    </mfrac>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in numerator; m", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in denominator; in base; s", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler(
+                "zoom out; out of superscript; s super 2 end super",
+                speech,
+            )?;
 
             return Ok(());
         });
