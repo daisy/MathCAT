@@ -2520,6 +2520,129 @@ mod tests {
         });
     }
 
+    #[test]
+    fn move_mixed_number_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mn id='id-2'>3</mn>
+        <mo id='id-3'>&#x2064;</mo>
+        <mfrac id='id-4'>
+            <mn id='id-5'>1</mn>
+            <mn id='id-6'>8</mn>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; and", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; 1 eighth", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; in denominator; 8", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 eighth", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-3");
+            assert_eq_with_panic_handler("move left; and", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; 3", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_mixed_number_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mn id='id-2'>3</mn>
+        <mo id='id-3'>&#x2064;</mo>
+        <mfrac id='id-4'>
+            <mn id='id-5'>1</mn>
+            <mn id='id-6'>8</mn>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; 1 eighth", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; in denominator; 8", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 eighth", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; 3", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_mixed_number_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mn id='id-2'>3</mn>
+        <mo id='id-3'>&#x2064;</mo>
+        <mfrac id='id-4'>
+            <mn id='id-5'>1</mn>
+            <mn id='id-6'>8</mn>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; 1 eighth", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; in denominator; 8", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 eighth", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; 3", speech)?;
+
+            return Ok(());
+        });
+    }
+
             return Ok(());
         });
     }
