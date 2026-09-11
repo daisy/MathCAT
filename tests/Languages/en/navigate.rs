@@ -2358,6 +2358,168 @@ mod tests {
         });
     }
 
+    #[test]
+    fn move_binomial_inferred_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mo id='id-2'>(</mo>
+        <mfrac linethickness='0' id='id-3'>
+            <mrow id='id-4'>
+                <mi id='id-5'>n</mi>
+                <mo id='id-6'>+</mo>
+                <mn id='id-7'>7</mn>
+            </mrow>
+            <mrow id='id-8'>
+                <mi id='id-9'>k</mi>
+                <mo id='id-10'>+</mo>
+                <mn id='id-11'>3</mn>
+            </mrow>
+        </mfrac>
+        <mo id='id-12'>)</mo>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in part 1; n plus 7", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; in part 2; k plus 3", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-4");
+            assert_eq_with_panic_handler("move left; in part 1; n plus 7", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; n", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; 7", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom out; n plus 7", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_binomial_inferred_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mo id='id-2'>(</mo>
+        <mfrac linethickness='0' id='id-3'>
+            <mrow id='id-4'>
+                <mi id='id-5'>n</mi>
+                <mo id='id-6'>+</mo>
+                <mn id='id-7'>7</mn>
+            </mrow>
+            <mrow id='id-8'>
+                <mi id='id-9'>k</mi>
+                <mo id='id-10'>+</mo>
+                <mn id='id-11'>3</mn>
+            </mrow>
+        </mfrac>
+        <mo id='id-12'>)</mo>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; 7", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-7");
+            assert_eq_with_panic_handler("move left; in part 1; 7", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-10");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-11");
+            assert_eq_with_panic_handler("move right; 3", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_binomial_inferred_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow id='id-1'>
+        <mo id='id-2'>(</mo>
+        <mfrac linethickness='0' id='id-3'>
+            <mrow id='id-4'>
+                <mi id='id-5'>n</mi>
+                <mo id='id-6'>+</mo>
+                <mn id='id-7'>7</mn>
+            </mrow>
+            <mrow id='id-8'>
+                <mi id='id-9'>k</mi>
+                <mo id='id-10'>+</mo>
+                <mn id='id-11'>3</mn>
+            </mrow>
+        </mfrac>
+        <mo id='id-12'>)</mo>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; open paren", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in numerator; n", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; 7", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; in denominator; k", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-7");
+            assert_eq_with_panic_handler("move left; in numerator; 7", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-9");
+            assert_eq_with_panic_handler("move right; in denominator; k", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-10");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-11");
+            assert_eq_with_panic_handler("move right; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-12");
+            assert_eq_with_panic_handler("move right; out of denominator; close paren", speech)?;
+
+            return Ok(());
+        });
+    }
+
             return Ok(());
         });
     }
