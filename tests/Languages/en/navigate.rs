@@ -2643,6 +2643,174 @@ mod tests {
         });
     }
 
+    #[test]
+    fn zoom_all_nested_fraction_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='math'>
+    <mrow id='id-0'>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn zoom_all_nested_fraction_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='math'>
+    <mrow id='id-0'>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn zoom_all_nested_fraction_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='math'>
+    <mrow id='id-0'>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomInAll", mathml, "id-4");
+            assert_eq_with_panic_handler(
+                "zoomed in all of the way; in numerator; in numerator; 1",
+                speech,
+            )?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            assert_eq_with_panic_handler(
+                "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
             return Ok(());
         });
     }
