@@ -2188,6 +2188,176 @@ mod tests {
         });
     }
 
+    #[test]
+    fn auto_zoom_out_nested_fractions_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom in; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1 half", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom in; 1 half", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler(
+                "move right; out of denominator; in denominator; 2 thirds",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-7");
+            assert_eq_with_panic_handler("zoom in; 2 thirds", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-8");
+            assert_eq_with_panic_handler("zoom in; in numerator; 2", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler(
+                "move left; out of numerator; in numerator; 1 half",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn auto_zoom_out_nested_fractions_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom in; fraction, 1 half, over, 2 thirds, end fraction",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1 half", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler(
+                "move right; out of denominator; in denominator; 2 thirds",
+                speech,
+            )?;
+
+            let speech = test_command("ZoomIn", mathml, "id-8");
+            assert_eq_with_panic_handler("zoom in; in numerator; 2", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-3");
+            assert_eq_with_panic_handler(
+                "move left; out of numerator; in numerator; 1 half",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn auto_zoom_out_nested_fractions_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <mfrac id='id-1'>
+            <mrow id='id-2'>
+                <mfrac id='id-3'>
+                    <mn id='id-4'>1</mn>
+                    <mn id='id-5'>2</mn>
+                </mfrac>
+            </mrow>
+            <mrow id='id-6'>
+                <mfrac id='id-7'>
+                    <mn id='id-8'>2</mn>
+                    <mn id='id-9'>3</mn>
+                </mfrac>
+            </mrow>
+        </mfrac>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in numerator; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler(
+                "move right; out of denominator; in denominator; in numerator; 2",
+                speech,
+            )?;
+
+            let speech = test_command("MovePrevious", mathml, "id-5");
+            assert_eq_with_panic_handler(
+                "move left; out of numerator; in numerator; in denominator; 2",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
             return Ok(());
         });
     }
