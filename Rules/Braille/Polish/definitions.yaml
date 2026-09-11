@@ -30,6 +30,32 @@
 # removed rather than left in place looking functional. Doing this properly needs
 # per-sign group membership for all six groups plus the pairwise rules above,
 # which the mo spacing rule cannot express on its own.
+#
+# The group membership WAS measured, though, by reading the braille glyphs of the
+# whole guide and counting how often each sign meets a blank
+# (scripts/mathcat_brajl_grupy.py, kept outside the repo):
+#
+#   sign          n     blank on left   blank on right   groups
+#   equals      380         0.79             0.07         B, C'
+#   plus        254         0.88             0.09         B, C'
+#   minus       254         0.74             0.11         B, C'
+#
+# Three things had to be filtered out before the numbers meant anything, each
+# found by inspecting the contexts rather than assumed:
+#   - the FILLER sign (dot 4) satisfies a required blank where a real blank cannot
+#     be written (p. 21, 26), so it counts as one - without this, plus measured
+#     0.60 and looked optional;
+#   - a leading minus is unary after a bracket, a fraction opener or a relation,
+#     where the blank belongs to the PRECEDING sign - without this, minus measured
+#     0.65;
+#   - the same cell serves several signs (64 of our 214 entries share cells), so
+#     digits and letters had to be excluded by context.
+#
+# Multiplication and division are deliberately NOT in that table: their cells are
+# dominated by other uses in this document (dot 3 is the ordinal-number full stop
+# of p. 4, dots 2-5-6 the date separator of p. 9), so the statistic measured those
+# instead. For them a single worked example is the stronger evidence - p. 10 writes
+# 67:14 with a blank before the division sign and prints 12 . 3 both ways.
 - PolishGroupC: {
     '′', '″', '‴', '\u2032', '\u2033', '\u2034',
   }

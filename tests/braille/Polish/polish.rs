@@ -571,3 +571,23 @@ fn zwykly_wskaznik_dolny_nietkniety() -> Result<()> {
     test_braille("Polish", expr, "⠠⠁⠡⠂")?;
     return Ok(());
 }
+
+// Page 10, read off the guide's own worked examples rather than inferred: the
+// division sign takes a blank on its left (67:14 is written number-sign 6 7, blank,
+// division, number-sign 1 4), while multiplication by a DOT is printed in both
+// forms side by side - it is the one operator the guide lets you write either way.
+// The cross is a multiplication sign too but has no example of its own, so it keeps
+// the general rule for operators.
+#[test]
+fn dzielenie_dwukropek() -> Result<()> {
+    let expr = r#"<math><mn>67</mn><mo>&#xF7;</mo><mn>14</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠋⠛⠀⠲⠼⠁⠙")?;
+    return Ok(());
+}
+
+#[test]
+fn mnozenie_krzyzyk() -> Result<()> {
+    let expr = r#"<math><mn>2</mn><mo>&#xD7;</mo><mn>3</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠃⠀⠦⠼⠉")?;
+    return Ok(());
+}
