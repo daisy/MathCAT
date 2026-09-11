@@ -591,3 +591,37 @@ fn mnozenie_krzyzyk() -> Result<()> {
     test_braille("Polish", expr, "⠼⠃⠀⠦⠼⠉")?;
     return Ok(());
 }
+
+// Page 59 conflict rule 1, second half: two signs are written with NO blank when
+// the FIRST is from group C' ("znaki pisane bez odstepu z prawej strony", p. 58),
+// where the guide's example of that group is ">".
+//
+// This needs no rule of its own - it already holds, because the spacing rule emits
+// the blank on the LEFT only (see the mo rule and p. 58 group B). These tests pin
+// that, since a rule keyed on "the previous sign is group C'" would be DEAD CODE:
+// it could not change any output. Measured against the guide's glyphs on p. 11,
+// where "x > 0" appears four times as key-sign x, blank, >, number-sign 0.
+#[test]
+fn brak_odstepu_po_grupie_c_prim() -> Result<()> {
+    let expr = r#"<math><mi>x</mi><mo>&gt;</mo><mn>0</mn></math>"#;
+    test_braille("Polish", expr, "⠠⠭⠀⠕⠂⠼⠚")?;
+    return Ok(());
+}
+
+// The same for a NEGATIVE right-hand side: the guide writes 7 > -1 with a blank
+// before the relation and none after it, the minus following immediately.
+#[test]
+fn relacja_przed_liczba_ujemna() -> Result<()> {
+    let expr = r#"<math><mn>7</mn><mo>&gt;</mo><mo>-</mo><mn>1</mn></math>"#;
+    test_braille("Polish", expr, "⠼⠛⠀⠕⠂⠤⠼⠁")?;
+    return Ok(());
+}
+
+// A CLOSING BRACKET is NOT in group C', which is easy to assume wrongly: the guide's
+// own example (14 - 5) + 7 on p. 11 keeps a blank between the bracket and the plus.
+#[test]
+fn nawias_zamykajacy_nie_jest_grupa_c_prim() -> Result<()> {
+    let expr = r#"<math><mrow><mo>(</mo><mi>a</mi><mo>)</mo></mrow><mo>+</mo><mi>b</mi></math>"#;
+    test_braille("Polish", expr, "⠣⠠⠁⠜⠀⠖⠠⠃")?;
+    return Ok(());
+}
