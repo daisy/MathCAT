@@ -728,14 +728,13 @@ impl Intent {
 
             fn push_lifted<'a>(child_of_element: ChildOfElement<'a>, new_children: &mut Vec<ChildOfElement<'a>>, is_direct_child: bool) {
                 if let ChildOfElement::Element(child) = child_of_element && name(child) == "TEMP_NAME" {
-                        let grandchildren = child.children();
-                        let is_leaf_wrapper = grandchildren.iter().any(|gc| matches!(gc, ChildOfElement::Text(_)));
-                        if is_direct_child || !is_leaf_wrapper {
-                            for grandchild in grandchildren {
-                                push_lifted(grandchild, new_children, false);
-                            }
-                            return;
-                        }
+                    let grandchildren = child.children();
+                    let is_leaf_wrapper = grandchildren.iter().any(|gc| matches!(gc, ChildOfElement::Text(_)));
+                    if is_direct_child || !is_leaf_wrapper {
+                    	for grandchild in grandchildren {
+                            push_lifted(grandchild, new_children, false);
+                    	}
+                        return;
                     }
                 }
                 new_children.push(child_of_element);
