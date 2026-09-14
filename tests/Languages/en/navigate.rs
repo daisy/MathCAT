@@ -1329,7 +1329,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "id-3");
             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
             let speech = test_command("ZoomOut", mathml, "id-1");
-            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 2", speech)?;
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 half", speech)?;
             return Ok(());
         });
     }
@@ -1349,7 +1349,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "id-3");
             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
             let speech = test_command("ZoomOut", mathml, "id-1");
-            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 2", speech)?;
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 half", speech)?;
             return Ok(());
         });
     }
