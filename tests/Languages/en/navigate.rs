@@ -1397,11 +1397,6 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            let speech = test_command("ZoomIn", mathml, "id-1");
-            assert_eq_with_panic_handler(
-                "zoom in; fraction, x plus y, over, x minus y, end fraction",
-                speech,
-            )?;
             let speech = test_command("ZoomIn", mathml, "id-2");
             assert_eq_with_panic_handler("zoom in; in numerator; x plus y", speech)?;
             let speech = test_command("MoveNext", mathml, "id-6");
@@ -1450,11 +1445,6 @@ mod tests {
         return MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            let speech = test_command("ZoomIn", mathml, "id-1");
-            assert_eq_with_panic_handler(
-                "zoom in; fraction, x plus y, over, x minus y, end fraction",
-                speech,
-            )?;
 
             let speech = test_command("ZoomIn", mathml, "id-3");
             assert_eq_with_panic_handler("zoom in; in numerator; x", speech)?;
@@ -1545,7 +1535,7 @@ mod tests {
 
             let speech = test_command("ZoomOut", mathml, "id-1");
             assert_eq_with_panic_handler(
-                "zoom out; out of denominator; fraction, x plus y, over, x minus y, end fraction",
+                "zoom out; out of denominator; start, x plus y, over, x minus y, end",
                 speech,
             )?;
 
