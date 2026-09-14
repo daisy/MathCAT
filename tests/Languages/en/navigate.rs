@@ -2503,20 +2503,14 @@ mod tests {
             let speech = test_command("ZoomIn", mathml, "id-2");
             assert_eq_with_panic_handler("zoom in; 3", speech)?;
 
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; and", speech)?;
+
             let speech = test_command("MoveNext", mathml, "id-4");
             assert_eq_with_panic_handler("move right; 1 eighth", speech)?;
 
-            let speech = test_command("ZoomIn", mathml, "id-5");
-            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
-
-            let speech = test_command("MoveNext", mathml, "id-6");
-            assert_eq_with_panic_handler("move right; in denominator; 8", speech)?;
-
-            let speech = test_command("ZoomOut", mathml, "id-4");
-            assert_eq_with_panic_handler("zoom out; out of denominator; 1 eighth", speech)?;
-
-            let speech = test_command("MovePrevious", mathml, "id-2");
-            assert_eq_with_panic_handler("move left; 3", speech)?;
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler("zoom out; 3 and 1 eighth", speech)?;
 
             return Ok(());
         });
@@ -2542,17 +2536,14 @@ mod tests {
             let speech = test_command("ZoomIn", mathml, "id-2");
             assert_eq_with_panic_handler("zoom in; 3", speech)?;
 
-            let speech = test_command("MoveNext", mathml, "id-4");
-            assert_eq_with_panic_handler("move right; 1 eighth", speech)?;
-
-            let speech = test_command("ZoomIn", mathml, "id-5");
-            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in numerator; 1", speech)?;
 
             let speech = test_command("MoveNext", mathml, "id-6");
             assert_eq_with_panic_handler("move right; in denominator; 8", speech)?;
 
             let speech = test_command("ZoomOut", mathml, "id-4");
-            assert_eq_with_panic_handler("zoom out; out of denominator; 1 eighth", speech)?;
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 8", speech)?;
 
             let speech = test_command("MovePrevious", mathml, "id-2");
             assert_eq_with_panic_handler("move left; 3", speech)?;
