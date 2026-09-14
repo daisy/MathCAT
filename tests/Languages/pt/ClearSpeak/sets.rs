@@ -1,27 +1,27 @@
-/// Testes de conjuntos e pertinência — pt-BR, ClearSpeak e SimpleSpeak.
-///
-/// POR QUE ESTE ARQUIVO EXISTE
-/// O par ∈ / ∊ falou "é membro de" com as preferências padrão durante duas
-/// rodadas inteiras sem ninguém notar, porque o pt não tinha NENHUM teste de
-/// pertinência — nem ClearSpeak, nem SimpleSpeak. O ∉ foi corrigido sozinho
-/// numa rodada e os outros dois ficaram para trás. Ver ACHADOS 7.8.
-///
-/// A invariante que este arquivo trava: **∈ (0x2208) e ∊ (0x220a) são
-/// variantes de forma do mesmo símbolo e devem falar igual em todos os ramos**
-/// — nas cinco preferências de ClearSpeak_SetMemberSymbol, dentro e fora de
-/// um conjunto, nos dois estilos de fala.
-///
-/// COMO AS EXPECTATIVAS FORAM ESCRITAS
-/// Todas saíram da saída real do motor, nunca de tradução do inglês. O método
-/// é o do cabeçalho de tests/Languages/pt/shared.rs: rodar, comparar `left`
-/// com `right`, e se o gerado estiver certo em português, copiá-lo; se estiver
-/// errado, consertar a REGRA, nunca o teste.
-///
-/// Cada teste de pertinência fixa ClearSpeak_SetMemberSymbol explicitamente,
-/// inclusive no caso 'Auto'. Isso é de propósito: as preferências de
-/// ClearSpeak não são reinicializadas entre testes na mesma thread, então um
-/// teste que dependesse do padrão implícito poderia passar ou falhar conforme
-/// a ordem de execução.
+//! Testes de conjuntos e pertinência — pt-BR, ClearSpeak e SimpleSpeak.
+//!
+//! POR QUE ESTE ARQUIVO EXISTE
+//! O par ∈ / ∊ falou "é membro de" com as preferências padrão durante duas
+//! rodadas inteiras sem ninguém notar, porque o pt não tinha NENHUM teste de
+//! pertinência — nem ClearSpeak, nem SimpleSpeak. O ∉ foi corrigido sozinho
+//! numa rodada e os outros dois ficaram para trás. Ver ACHADOS 7.8.
+//!
+//! A invariante que este arquivo trava: **∈ (0x2208) e ∊ (0x220a) são
+//! variantes de forma do mesmo símbolo e devem falar igual em todos os ramos**
+//! — nas cinco preferências de ClearSpeak_SetMemberSymbol, dentro e fora de
+//! um conjunto, nos dois estilos de fala.
+//!
+//! COMO AS EXPECTATIVAS FORAM ESCRITAS
+//! Todas saíram da saída real do motor, nunca de tradução do inglês. O método
+//! é o do cabeçalho de tests/Languages/pt/shared.rs: rodar, comparar `left`
+//! com `right`, e se o gerado estiver certo em português, copiá-lo; se estiver
+//! errado, consertar a REGRA, nunca o teste.
+//!
+//! Cada teste de pertinência fixa ClearSpeak_SetMemberSymbol explicitamente,
+//! inclusive no caso 'Auto'. Isso é de propósito: as preferências de
+//! ClearSpeak não são reinicializadas entre testes na mesma thread, então um
+//! teste que dependesse do padrão implícito poderia passar ou falhar conforme
+//! a ordem de execução.
 
 use crate::common::*;
 use anyhow::Result;

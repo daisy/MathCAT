@@ -328,14 +328,14 @@ cfg_if! {
         }
 
         pub fn is_file_shim(path: &Path) -> bool {
-            if IN_MEMORY_FILES.read().unwrap().as_ref().map_or(false, |f| f.contains_key(&get_in_memory_key(path))) {
+            if IN_MEMORY_FILES.read().unwrap().as_ref().is_some_and(|f| f.contains_key(&get_in_memory_key(path))) {
                 return true;
             }
             return path.is_file();
         }
         
         pub fn is_dir_shim(path: &Path) -> bool {
-            if IN_MEMORY_DIRS.read().unwrap().as_ref().map_or(false, |d| d.contains(&get_in_memory_key(path))) {
+            if IN_MEMORY_DIRS.read().unwrap().as_ref().is_some_and(|d| d.contains(&get_in_memory_key(path))) {
                 return true;
             }
             return path.is_dir();

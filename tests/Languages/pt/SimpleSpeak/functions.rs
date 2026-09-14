@@ -1,18 +1,18 @@
-/// TESTES DO IDIOMA pt — como reconciliar com as regras
-///
-/// As strings esperadas abaixo foram escritas para refletir a intenção
-/// das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
-/// PAUSAS inseridas pelo motor e podem divergir levemente na primeira
-/// execução. Método do guia oficial de tradutores:
-///   1. rode `cargo test Languages::pt`
-///   2. para cada falha, compare `left` (esperado) com `right` (gerado)
-///   3. se o GERADO estiver correto em português, copie-o para o teste;
-///      se estiver errado, conserte a REGRA, nunca o teste.
-///
-/// ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
-/// que não refletiam as regras (ex.: esperava "logaritmo natural" com a
-/// regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
-/// Não herde strings esperadas de es/ sem conferir.
+//! TESTES DO IDIOMA pt — como reconciliar com as regras
+//!
+//! As strings esperadas abaixo foram escritas para refletir a intenção
+//! das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
+//! PAUSAS inseridas pelo motor e podem divergir levemente na primeira
+//! execução. Método do guia oficial de tradutores:
+//!   1. rode `cargo test Languages::pt`
+//!   2. para cada falha, compare `left` (esperado) com `right` (gerado)
+//!   3. se o GERADO estiver correto em português, copie-o para o teste;
+//!      se estiver errado, conserte a REGRA, nunca o teste.
+//!
+//! ATENÇÃO ao histórico: o arquivo espanhol equivalente continha testes
+//! que não refletiam as regras (ex.: esperava "logaritmo natural" com a
+//! regra dizendo "natural log") e dano de busca-e-troca (ex.: "eigh"→"8").
+//! Não herde strings esperadas de es/ sem conferir.
 
 use crate::common::*;
 use anyhow::Result;

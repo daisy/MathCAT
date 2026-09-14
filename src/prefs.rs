@@ -262,7 +262,7 @@ impl PreferenceManager {
         //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
         let rules_dir = match canonicalize_shim(&rules_dir) {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e.to_string()),
+            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
             Ok(rules_dir) => rules_dir,
         };
 
