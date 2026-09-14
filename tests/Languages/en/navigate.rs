@@ -2583,7 +2583,7 @@ mod tests {
                 speech,
             )?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
                 "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
                 speech,
@@ -2598,7 +2598,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "id-5");
             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
                 "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
                 speech,
@@ -2639,7 +2639,7 @@ mod tests {
                 speech,
             )?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
                 "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
                 speech,
@@ -2654,7 +2654,7 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "id-5");
             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
                 "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
                 speech,
@@ -2695,9 +2695,9 @@ mod tests {
                 speech,
             )?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
-                "zoomed out all of the way; out of numerator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                "zoomed out all of the way; out of numerator; out of numerator; start, 1 over 2; over, 2 over 3; end",
                 speech,
             )?;
 
@@ -2710,9 +2710,9 @@ mod tests {
             let speech = test_command("MoveNext", mathml, "id-5");
             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
 
-            let speech = test_command("ZoomOutAll", mathml, "id-0");
+            let speech = test_command("ZoomOutAll", mathml, "id-1");
             assert_eq_with_panic_handler(
-                "zoomed out all of the way; out of denominator; out of numerator; fraction, 1 half, over, 2 thirds, end fraction",
+                "zoomed out all of the way; out of denominator; out of numerator; start, 1 over 2; over, 2 over 3; end",
                 speech,
             )?;
 
