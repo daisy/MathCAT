@@ -5,35 +5,46 @@ use anyhow::Result;
 #[test]
 fn transpose() -> Result<()> {
   let expr = "<math> <msup><mi>M</mi><mi>T</mi></msup> </math>";
-  test("ru", "SimpleSpeak", expr, "заглавная эм транспонирование")?;
+  // Name the transposed matrix before its letter, as requested for Russian speech.
+  test("ru", "SimpleSpeak", expr, "транспонированная матрица эм")?;
+  test("ru", "ClearSpeak", expr, "транспонированная матрица эм")?;
+  return Ok(());
+}
+
+#[test]
+fn determinant_verbose() -> Result<()> {
+  // Explicit determinant intent must use the mathematical noun without an English article.
+  let expr = r#"<math><mrow intent="determinant($a)"><mi arg="a">a</mi></mrow></math>"#;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "определитель а")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "определитель а")?;
   return Ok(());
 }
 
 #[test]
 fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "след от заглавная эм")?;
+  test("ru", "SimpleSpeak", expr, "след от заглавной эм")?;
   return Ok(());
 }
 
 #[test]
 fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "размерность от заглавная эм")?;
+  test("ru", "SimpleSpeak", expr, "размерность от заглавной эм")?;
   return Ok(());
 }
 
 #[test]
 fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("ru", "SimpleSpeak", expr, "гомоморфизм от заглавная эм")?;
+  test("ru", "SimpleSpeak", expr, "гомоморфизм от заглавной эм")?;
   return Ok(());
 }
 
 #[test]
 fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("ru", "SimpleSpeak", expr, "ядро от заглавная эль")?;
+  test("ru", "SimpleSpeak", expr, "ядро от заглавной эль")?;
   return Ok(());
 }
 
@@ -63,7 +74,7 @@ fn norm_non_simple() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "норма от икс плюс игрек конец нормы")?;
+  test("ru", "SimpleSpeak", expr, "норма от выражения икс плюс игрек конец нормы")?;
   return Ok(());
 }
 
@@ -80,7 +91,9 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "пэ норма из эф")?;
+  // Speak the norm's operand first, then identify its subscript explicitly.
+  test("ru", "SimpleSpeak", expr, "норма эф с индексом пэ")?;
+  test("ru", "ClearSpeak", expr, "норма эф с индексом пэ")?;
   return Ok(());
 }
 

@@ -3,6 +3,36 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn strict_subset_terminology() -> Result<()> {
+    // The agreed convention makes the plain subset sign strict at every verbosity.
+    let expr = "<math><mi>A</mi><mo>⊂</mo><mi>B</mi></math>";
+    for verbosity in ["Terse", "Medium", "Verbose"] {
+        test_prefs("ru", "ClearSpeak", vec![("Verbosity", verbosity)], expr,
+            "заглавная а строгое подмножество заглавная бэ")?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn subset_or_equal_terminology() -> Result<()> {
+    // The non-strict sign must retain the equality alternative.
+    let expr = "<math><mi>A</mi><mo>⊆</mo><mi>B</mi></math>";
+    test("ru", "ClearSpeak", expr, "заглавная а подмножество или равно заглавная бэ")?;
+    test("ru", "SimpleSpeak", expr, "заглавная а подмножество или равно заглавная бэ")?;
+    return Ok(());
+}
+
+#[test]
+fn negated_subset_terminology() -> Result<()> {
+    // Negation is expressed as a complete predicate, including for the full Unicode table.
+    let expr = "<math><mi>A</mi><mo>⊄</mo><mi>B</mi></math>";
+    test("ru", "ClearSpeak", expr, "заглавная а не является строгим подмножеством заглавная бэ")?;
+    let expr = "<math><mi>A</mi><mo>⊈</mo><mi>B</mi></math>";
+    test("ru", "ClearSpeak", expr, "заглавная а не является подмножеством заглавная бэ")?;
+    return Ok(());
+}
+
+#[test]
 fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>

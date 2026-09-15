@@ -585,7 +585,7 @@ fn simple_cardinality_value() -> Result<()> {
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "мощность множества из заглавная эс")?;
+             "мощность множества из заглавной эс")?;
              return Ok(());
 }
   

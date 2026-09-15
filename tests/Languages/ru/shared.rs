@@ -110,9 +110,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами после, нижний индекс и верхний индекс джей нижний индекс ка нижний индекс эль")?;
+            "заглавная эр с 4 индексами после, нижний индекс и верхний индекс йот нижний индекс ка нижний индекс эль")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "заглавная эр с 4 индексами после, нижний и верхний джей нижний ка нижний эль")?;
+            "заглавная эр с 4 индексами после, нижний и верхний йот нижний ка нижний эль")?;
             return Ok(());
 }
 
@@ -123,7 +123,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами перед, левый нижний индекс заглавная и, левый верхний индекс заглавная джей и далее левый нижний индекс заглавная ка левый нижний индекс заглавная эль, и с 5 индексами после, нижний индекс и верхний индекс джей нижний индекс ка нижний индекс эль и далее нижний индекс эм")?;
+            "заглавная эр с 4 индексами перед, левый нижний индекс заглавная и, левый верхний индекс заглавная йот и далее левый нижний индекс заглавная ка левый нижний индекс заглавная эль, и с 5 индексами после, нижний индекс и верхний индекс йот нижний индекс ка нижний индекс эль и далее нижний индекс эм")?;
             return Ok(());
 }
 
@@ -164,10 +164,10 @@ fn simple_msubsup() -> Result<()> {
 #[test]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("ru", "SimpleSpeak", expr, "и нижний индекс джей минус 2, в степени ка")?;
-  test("ru", "ClearSpeak", expr, "и нижний индекс джей минус 2, в степени ка")?;
+  test("ru", "SimpleSpeak", expr, "и нижний индекс йот минус 2, в степени ка")?;
+  test("ru", "ClearSpeak", expr, "и нижний индекс йот минус 2, в степени ка")?;
   test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "и нижний индекс джей минус 2, в степени ка")?;
+          "и нижний индекс йот минус 2, в степени ка")?;
           return Ok(());
 }
 
@@ -316,7 +316,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("ru", "ClearSpeak", expr, "заглавная пэ; открывающая круглая скобка, заглавная а делит заглавная бэ, закрывающая круглая скобка равно дробь, числитель: заглавная пэ, открывающая круглая скобка, заглавная а пересечение заглавная бэ, закрывающая круглая скобка; знаменатель: заглавная пэ от заглавной бэ")?;
+    test("ru", "ClearSpeak", expr, "заглавная пэ; открывающая круглая скобка, заглавная а при условии заглавная бэ, закрывающая круглая скобка равно дробь, числитель: заглавная пэ, открывающая круглая скобка, заглавная а пересечение заглавная бэ, закрывающая круглая скобка; знаменатель: заглавная пэ от заглавной бэ")?;
     return Ok(());
 }
 
@@ -364,7 +364,7 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
 #[test]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "див заглавная эф")?;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "див заглавной эф")?;
   test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "дивергенция заглавной эф")?;
   return Ok(());
 }
@@ -372,7 +372,7 @@ fn divergence() -> Result<()> {
 #[test]
 fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ротор заглавная эф")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ротор заглавной эф")?;
   test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "ротор заглавной эф")?;
   return Ok(());
 }
@@ -380,7 +380,7 @@ fn curl() -> Result<()> {
 #[test]
 fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
-  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "набла заглавная эф")?;
+  test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "набла заглавной эф")?;
   test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "градиент заглавной эф")?;
   return Ok(());
 }
