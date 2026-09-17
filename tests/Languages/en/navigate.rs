@@ -2842,4 +2842,124 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn move_in_sum_lower_upper_limit_enhanced() -> Result<()> {
+        let mathml_str = "<math id='id-0'>
+        <munderover id='id-1'>
+            <mo id='id-2'>∑</mo>
+            <mrow id='id-3'>
+                <mi id='id-4'>n</mi><mo id='id-5'>=</mo><mn id='id-6'>1</mn>
+            </mrow>
+            <mn id='id-7'>10</mn>
+        </munderover>
+        <mi id='id-8'>n</mi>
+    </math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
+        set_preference("Verbosity", "Terse")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler("zoom in; sum from n equals 1, to 10 of", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; sum", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in lower limit; n equals 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in upper limit; 10", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; out of upper limit; n", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_in_sum_lower_upper_limit_simple() -> Result<()> {
+        let mathml_str = "<math id='id-0'>
+        <munderover id='id-1'>
+            <mo id='id-2'>∑</mo>
+            <mrow id='id-3'>
+                <mi id='id-4'>n</mi><mo id='id-5'>=</mo><mn id='id-6'>1</mn>
+            </mrow>
+            <mn id='id-7'>10</mn>
+        </munderover>
+        <mi id='id-8'>n</mi>
+    </math>";
+        init_prefs(mathml_str, "Simple", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
+        set_preference("Verbosity", "Terse")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-1");
+            assert_eq_with_panic_handler("zoom in; sum from n equals 1, to 10 of", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; sum", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in lower limit; n", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; equals", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in upper limit; 10", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; out of upper limit; n", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_in_sum_lower_upper_limit_character() -> Result<()> {
+        let mathml_str = "<math id='id-0'>
+        <munderover id='id-1'>
+            <mo id='id-2'>∑</mo>
+            <mrow id='id-3'>
+                <mi id='id-4'>n</mi><mo id='id-5'>=</mo><mn id='id-6'>1</mn>
+            </mrow>
+            <mn id='id-7'>10</mn>
+        </munderover>
+        <mi id='id-8'>n</mi>
+    </math>";
+        init_prefs(mathml_str, "Character", "en");
+        set_preference("SpeechStyle", "ClearSpeak")?;
+        set_preference("Verbosity", "Terse")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; sum", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in under limit; n", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; equals", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in upper limit; 10", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-8");
+            assert_eq_with_panic_handler("move right; out of upper limit; n", speech)?;
+
+            return Ok(());
+        });
+    }
 }
