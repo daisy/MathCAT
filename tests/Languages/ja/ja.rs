@@ -309,6 +309,57 @@ fn set_builder_member_symbol() -> Result<()> {
     return Ok(());
 }
 
+/// ∉ is the negation of ∈, and 要素ではない ends the sentence, so the set that
+/// follows is stranded behind it: "x は 要素ではない A" reads as "x is not an element"
+/// and then an A. The source gives ノット・イコール for ≠, so the negation is that same
+/// ノット in front of whatever the positive form says.
+#[test]
+fn not_element_of() -> Result<()> {
+    let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>A</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x は ノット 要素オブ, 大文字 エー")?;
+    test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", expr,
+        "x ノット 要素オブ, 大文字 エー")?;
+    return Ok(());
+}
+
+/// The Member option said 元 on its own, which is the noun "element" with no
+/// preposition, so the set after it was stranded the same way 要素の was for ∈.
+/// 元オブ keeps the noun the seed chose and adds the オブ the source introduces
+/// for English prepositions. に含まれる attaches to what comes before it, which
+/// reverses the relation, so the In option uses the イン already used inside a set.
+#[test]
+fn member_and_in_options_work_between_the_operands() -> Result<()> {
+    for ch in ["&#x2208;", "&#x220a;"] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Member", &expr,
+            "x 元オブ 大文字 エー")?;
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
+            "x イン 大文字 エー")?;
+    }
+    return Ok(());
+}
+
+/// The source gives 部分集合オブ for ⊂ and 部分集合（オブ）・オア・イコール for ⊆,
+/// where the オア イコール is the one already used for ≤. The seed dropped the オブ,
+/// leaving 部分集合 to strand the set after it, and wrote the negated forms as
+/// でない, which ends the sentence in front of that set. The source gives no
+/// reading for the superset forms, so those keep the noun the seed chose.
+#[test]
+fn subset_and_superset() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x2282;", "x は 部分集合オブ y"),
+        ("&#x2283;", "x は 上位集合オブ y"),
+        ("&#x2284;", "x は ノット 部分集合オブ y"),
+        ("&#x2285;", "x は ノット 上位集合オブ y"),
+        ("&#x2286;", "x は 部分集合オブ オア イコール y"),
+        ("&#x2287;", "x は 上位集合オブ オア イコール y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// ∾ is "most positive" in the numeric sense; 最も肯定的な is "most affirmative".
 #[test]
 fn most_positive() -> Result<()> {
@@ -523,10 +574,12 @@ fn partial_derivative_symbol() -> Result<()> {
 
 /// Set membership was worded as club membership: メンバー, 会員でない
 /// ("not a club member") and 所属団体 ("the organization one belongs to").
+/// The Auto option lands on the Member branch, which then said a bare 元でない;
+/// it now takes the ノット of ≠ in front of the 元オブ the positive form uses.
 #[test]
 fn set_non_membership() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>y</mi></math>";
-    test("ja", "ClearSpeak", expr, "x 元でない y")?;
+    test("ja", "ClearSpeak", expr, "x ノット 元オブ y")?;
     return Ok(());
 }
 
