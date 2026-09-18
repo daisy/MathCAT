@@ -3046,4 +3046,136 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn move_compound_power_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mi id='id-4'>y</mi>
+                <mo id='id-5'>+</mo>
+                <mn id='id-6'>2</mn>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; y plus 2", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; y", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; y plus 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom out; out of exponent; 3 raised to the y plus 2 power",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_compound_power_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mi id='id-4'>y</mi>
+                <mo id='id-5'>+</mo>
+                <mn id='id-6'>2</mn>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in exponent; y", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; y plus 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom out; out of exponent; 3 raised to the y plus 2 power",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_compound_power_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mi id='id-4'>y</mi>
+                <mo id='id-5'>+</mo>
+                <mn id='id-6'>2</mn>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in superscript; y", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; plus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; y plus 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-1");
+            assert_eq_with_panic_handler(
+                "zoom out; out of superscript; 3 super y plus 2 end super",
+                speech,
+            )?;
+
+            return Ok(());
+        });
+    }
 }
