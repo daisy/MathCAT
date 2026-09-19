@@ -302,9 +302,9 @@ fn set_builder_member_symbol() -> Result<()> {
             "<math><mo>{{</mo><mi>x</mi><mo>{ch}</mo><mi>&#x2124;</mi><mo>:</mo>             <mi>x</mi><mo>&#x003E;</mo><mn>5</mn><mo>}}</mo></math>"
         );
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
-            "集合 すべて x イン 整数 そのようなこと x は 大なり 5")?;
+            "集合 すべての x イン 整数 ただし x は 大なり 5")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
-            "集合 すべて x 要素オブ 整数 そのようなこと x は 大なり 5")?;
+            "集合 すべての x 要素オブ 整数 ただし x は 大なり 5")?;
     }
     return Ok(());
 }
@@ -1003,5 +1003,62 @@ fn matrix_entry() -> Result<()> {
 fn coordinate_point() -> Result<()> {
     let coordinate = "<math><mrow intent='point($x,$y)'><mn arg='x'>1</mn><mo>,</mo><mn arg='y'>2</mn></mrow></math>";
     test("ja", "ClearSpeak", coordinate, "点 1 コンマ 2")?;
+    return Ok(());
+}
+
+/// そのようなこと is "such a thing": it translates the words of "such that" and
+/// none of its work, which is to attach a condition to what was just named.
+/// ただし is the word Japanese mathematical prose uses for that. 集合 stays in
+/// front of the variable, where a listener learns what they are hearing before
+/// the first argument runs long.
+#[test]
+fn set_builder_says_the_condition_is_a_condition() -> Result<()> {
+    let expr = "<math><mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo></math>";
+    test("ja", "SimpleSpeak", expr, "集合 すべての x ただし x は 大なり 2")?;
+    return Ok(());
+}
+
+/// 与えられた is the past participle "given", which in Japanese modifies the noun
+/// after it -- so P(A | B) came out as "A, given B" with B as the thing being
+/// described rather than the condition.
+#[test]
+fn the_vertical_line_names_the_condition() -> Result<()> {
+    let expr = "<math><mn>1</mn><mo>|</mo><mn>2</mn></math>";
+    test_ClearSpeak("ja", "ClearSpeak_VerticalLine", "Given", expr, "1 条件は 2")?;
+    return Ok(());
+}
+
+/// ラベルを使って is "using a label", which says the row does something with a
+/// label. The label is simply what the row is called.
+#[test]
+fn a_labelled_row_names_its_label() -> Result<()> {
+    let expr = "<math><mtable><mlabeledtr><mtd><mn>1</mn></mtd><mtd><mi>x</mi></mtd></mlabeledtr></mtable></math>";
+    test("ja", "ClearSpeak", expr, "array オブ; 行 1 ラベルは 1; 列 1; x")?;
+    return Ok(());
+}
+
+/// 評価される is the passive "is evaluated", with nothing to say what it is
+/// evaluated at, and 同じ式が評価されるマイナス put the minus last, so the
+/// subtraction arrived after the thing being subtracted.
+#[test]
+fn an_evaluation_bar_says_where_it_is_evaluated() -> Result<()> {
+    let two = "<math><mrow intent='evaluate($f,$a)'><mi arg='f'>f</mi><mn arg='a'>1</mn></mrow></math>";
+    test("ja", "ClearSpeak", two, "f 次の点で評価 1")?;
+    let three = "<math><mrow intent='evaluate($f,$a,$b)'><mi arg='f'>f</mi><mn arg='a'>1</mn><mn arg='b'>2</mn></mrow></math>";
+    test("ja", "ClearSpeak", three, "f 次の点で評価 2 マイナス 同じ式を次の点で評価 1")?;
+    return Ok(());
+}
+
+/// ラウンド値 is "round" in katakana with 値 stuck on the end, and
+/// フェンスグループ is an English term that has no Japanese meaning at all.
+#[test]
+fn the_function_names_are_japanese_words() -> Result<()> {
+    for (intent, expected) in [
+        ("round", "丸めた値 オブ x"),
+        ("fenced-group", "括弧のまとまり オブ x"),
+    ] {
+        let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
     return Ok(());
 }

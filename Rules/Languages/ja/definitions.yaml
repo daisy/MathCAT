@@ -104,7 +104,7 @@
     "coordinate":"function=座標",
     "floor":"function=床関数",
     "ceiling":"function=天井関数",
-    "round":"function=ラウンド値",
+    "round":"function=丸めた値",
     "fractional-part":"function=小数部分",
 
 
@@ -175,7 +175,7 @@
     "median":"function=中央値",
     "mode":"function=最頻値",
 
-    "conditional-probability":"function=確率 | 与えられた", 
+    "conditional-probability":"function=確率 | 条件は", 
 
 
     ### Linear Algebra
@@ -219,7 +219,7 @@
     "time-separator":"infix=",
 
     ### General Concepts 
-    "fenced-group":"function=フェンスグループ", # appears both under general concepts and grouping
+    "fenced-group":"function=括弧のまとまり", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function=ペア |", # Needs to be tested
     # Simple last arg: "x sub k". Complex: "… end sub" (terse/medium) / "end subscript" (verbose) via infix-intent.
@@ -285,7 +285,7 @@
     "equals": "infix=イコール",
     "equivalent-to": "infix=と同等の",
     "evaluates-to": "infix=評価する",
-    "given": "infix=与えられた",
+    "given": "infix=条件は",
     "greater-than": "infix=大なり",
     "greater-than-or-equal-to": "infix=大なり オア イコール",
     "identically-equals": "infix=恒等的に等しい",
@@ -320,7 +320,7 @@
     "subset": "infix=部分集合オブ",
     "subset-or-equal": "infix=部分集合オブ オア イコール",
     "succeeds": "infix=に後続する",
-    "such-that": "infix=そのようなこと",
+    "such-that": "infix=ただし",
     "superset": "infix=上位集合オブ",
     "superset-or-equal": "infix=上位集合オブ オア イコール",
     "tilde": "infix=チルダ",
