@@ -133,12 +133,11 @@ impl Preferences{
             verify_keys(doc, "Other", file_name)?;
         }
 
-        let prefs = &mut base_prefs.prefs;
-        add_prefs(prefs, &doc["Speech"], "", file_name);
-        add_prefs(prefs, &doc["Navigation"], "", file_name);
-        add_prefs(prefs, &doc["Braille"], "", file_name);
-        add_prefs(prefs, &doc["Other"], "", file_name);
-        return Ok( Preferences{ prefs: prefs.to_owned() } );
+        add_prefs(&mut base_prefs.prefs, &doc["Speech"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Navigation"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Braille"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Other"], "", file_name);
+        return Ok(base_prefs);
 
 
 
