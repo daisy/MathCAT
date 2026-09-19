@@ -64,17 +64,6 @@ fn is_zip_file(path: &Path) -> bool {
     return path.extension().map(|ext| ext.eq_ignore_ascii_case("zip")).unwrap_or(false);
 }
 
-fn posix_path(parts: &[&str]) -> String {
-    return parts.join("/");
-}
-
-fn posix_join(prefix: &str, name: &str) -> String {
-    if prefix.is_empty() {
-        return name.to_string();
-    }
-    return format!("{}/{}", prefix, name);
-}
-
 fn file_name_str(path: &Path) -> io::Result<String> {
     let name = path
         .file_name()
@@ -305,10 +294,10 @@ fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> 
 fn add_file_to_zip<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
     in_path: &Path,
-    zip_name: &str,
+    zip_path: &Path,
     options: SimpleFileOptions,
 ) -> io::Result<()> {
-    zip.start_file(zip_name, options)
+    zip.start_file_from_path(zip_path, options)
         .map_err(io::Error::other)?;
     let mut file = File::open(in_path)?;
     let mut buffer = Vec::new();
@@ -319,11 +308,11 @@ fn add_file_to_zip<W: Write + Seek>(
 
 fn add_bytes_to_zip<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
-    zip_name: &str,
+    zip_path: &Path,
     bytes: &[u8],
     options: SimpleFileOptions,
 ) -> io::Result<()> {
-    zip.start_file(zip_name, options)
+    zip.start_file_from_path(zip_path, options)
         .map_err(io::Error::other)?;
     zip.write_all(bytes)?;
     return Ok(());
@@ -332,7 +321,7 @@ fn add_bytes_to_zip<W: Write + Seek>(
 fn zip_entry<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
     full_path: &Path,
-    relative_path: &str,
+    relative_path: &Path,
     options: SimpleFileOptions,
 ) -> io::Result<usize> {
     let mut n_files_in_zip = 0;
@@ -343,7 +332,7 @@ fn zip_entry<W: Write + Seek>(
                 continue;
             }
             let entry_name = file_name_str(&entry_path)?;
-            let child_rel = posix_join(relative_path, &entry_name);
+            let child_rel = relative_path.join(entry_name);
             n_files_in_zip += zip_entry(zip, &entry_path, &child_rel, options)?;
         }
     } else if is_yaml_file(full_path) {
@@ -356,7 +345,7 @@ fn zip_entry<W: Write + Seek>(
 fn write_inner_zip(source_dir: &Path, inner: SimpleFileOptions) -> io::Result<Option<Vec<u8>>> {
     let cursor = Cursor::new(Vec::new());
     let mut zip = ZipWriter::new(cursor);
-    let n_files = zip_entry(&mut zip, source_dir, "", inner)?;
+    let n_files = zip_entry(&mut zip, source_dir, Path::new(""), inner)?;
     let cursor = zip.finish().map_err(io::Error::other)?;
     if n_files == 0 {
         return Ok(None);
@@ -370,7 +359,7 @@ fn zip_dir<W: Write + Seek>(
     archive_zip: &mut ZipWriter<W>,
     inner: SimpleFileOptions,
     outer: SimpleFileOptions,
-    archive_prefix: &str,
+    archive_prefix: &Path,
 ) -> io::Result<()> {
     if !rules_section.is_dir() {
         return Ok(());
@@ -386,14 +375,14 @@ fn zip_dir<W: Write + Seek>(
                 continue;
             }
             if let Some(bytes) = write_inner_zip(&entry_path, inner)? {
-                let zip_name = posix_path(&[archive_prefix, &dir_name, &format!("{}.zip", dir_name)]);
-                add_bytes_to_zip(archive_zip, &zip_name, &bytes, outer)?;
+                let zip_path = archive_prefix.join(&dir_name).join(format!("{dir_name}.zip"));
+                add_bytes_to_zip(archive_zip, &zip_path, &bytes, outer)?;
             }
         } else if is_yaml_file(&entry_path) {
             // e.g. Rules/Braille/definitions.yaml
             let name = file_name_str(&entry_path)?;
-            let zip_name = posix_path(&[archive_prefix, &name]);
-            add_file_to_zip(archive_zip, &entry_path, &zip_name, outer)?;
+            let zip_path = archive_prefix.join(name);
+            add_file_to_zip(archive_zip, &entry_path, &zip_path, outer)?;
         }
     }
     return Ok(());
@@ -404,7 +393,7 @@ fn zip_other_files<W: Write + Seek>(
     rules_dir: &Path,
     archive_zip: &mut ZipWriter<W>,
     outer: SimpleFileOptions,
-    archive_prefix: &str,
+    archive_prefix: &Path,
 ) -> io::Result<()> {
     for entry in read_dir(rules_dir)? {
         let entry_path = entry?.path();
@@ -415,12 +404,12 @@ fn zip_other_files<W: Write + Seek>(
                     &rules_dir.join("Intent"),
                     archive_zip,
                     outer,
-                    &posix_join(archive_prefix, "Intent"),
+                    &archive_prefix.join("Intent"),
                 )?;
             }
         } else if is_yaml_file(&entry_path) {
-            let zip_name = posix_join(archive_prefix, &entry_name);
-            add_file_to_zip(archive_zip, &entry_path, &zip_name, outer)?;
+            let zip_path = archive_prefix.join(entry_name);
+            add_file_to_zip(archive_zip, &entry_path, &zip_path, outer)?;
         }
     }
     return Ok(());
@@ -441,21 +430,22 @@ pub fn write_rules_archive(
     let outer = zip_options(compression.outer);
     let archive_zip_file = File::create(output)?;
     let mut archive_zip = ZipWriter::new(archive_zip_file);
+    let archive_root = Path::new(ARCHIVE_ROOT);
 
-    zip_other_files(rules_dir, &mut archive_zip, outer, ARCHIVE_ROOT)?;
+    zip_other_files(rules_dir, &mut archive_zip, outer, archive_root)?;
     zip_dir(
         &rules_dir.join("Languages"),
         &mut archive_zip,
         inner,
         outer,
-        &posix_join(ARCHIVE_ROOT, "Languages"),
+        &archive_root.join("Languages"),
     )?;
     zip_dir(
         &rules_dir.join("Braille"),
         &mut archive_zip,
         inner,
         outer,
-        &posix_join(ARCHIVE_ROOT, "Braille"),
+        &archive_root.join("Braille"),
     )?;
 
     archive_zip.finish().map_err(io::Error::other)?;
