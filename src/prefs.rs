@@ -718,20 +718,15 @@ impl PreferenceManager {
             bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
         }
         
-        // don't do an update if the value hasn't changed
-        let mut is_user_pref = true;
-        if let Some(pref_value) = self.api_prefs.prefs.get(key) {
-            if pref_value.as_str().unwrap() != value {
-                is_user_pref = false;
-                self.reset_files_from_preference_change(key, value)?;
-            }
-        } else if let Some(pref_value) = self.user_prefs.prefs.get(key) {
-            if pref_value.as_str().unwrap() != value {
-                self.reset_files_from_preference_change(key, value)?;
-            }
-        } else {
-            bail!("{} is an unknown MathCAT preference!", key);
+        let api_pref: Option<&Yaml> = self.api_prefs.prefs.get(key);
+        let Some(pref_value) = api_pref.or_else(|| self.user_prefs.prefs.get(key)) else {
+            bail!("{key} is an unknown MathCAT preference!");
+        };
+        if pref_value.as_str().unwrap() == value {
+            return Ok( () );
         }
+        let is_user_pref: bool = api_pref.is_none();
+        self.reset_files_from_preference_change(key, value)?;
 
         // debug!("Setting ({}) {} to '{}'", if is_user_pref {"user"} else {"sys"}, key, value);
         if is_user_pref {
@@ -1175,6 +1170,19 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             assert!(pref_manager.set_string_pref("BrailleCode", "C:\\my\\path").is_err());
             assert!(pref_manager.set_string_pref("SpeechStyle", "/my/path").is_err());
         });
+    }
+
+    /// Setting `TTS` to its existing value should not copy it from API preferences into user preferences.
+    #[test]
+    fn unchanged_api_string_pref_is_noop() {
+        let mut pref_manager = PreferenceManager {
+            api_prefs: Preferences::api_defaults(),
+            ..PreferenceManager::default()
+        };
+
+        pref_manager.set_string_pref("TTS", "none").unwrap();
+
+        assert!(!pref_manager.user_prefs.prefs.contains_key("TTS"));
     }
 
     /// #262: MathCAT must notice when a rule file on disk changes and reload it.
