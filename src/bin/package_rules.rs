@@ -37,7 +37,7 @@ fn main() -> ExitCode {
         return ExitCode::from(1);
     }
 
-    match package_rules(
+    return match package_rules(
         &cli.source,
         &cli.output,
         cli.minimize,
@@ -45,15 +45,15 @@ fn main() -> ExitCode {
     ) {
         Ok(minimized) => {
             let label = if cli.minimize { "minimized" } else { "standard" };
-            println!("Created {} archive: {}", label, cli.output.display());
+            println!("Created {label} archive: {}", cli.output.display());
             if cli.minimize {
-                println!("  minimized YAML files: {}", minimized);
+                println!("  minimized YAML files: {minimized}");
             }
-            return ExitCode::SUCCESS;
+            ExitCode::SUCCESS
         }
         Err(e) => {
-            eprintln!("error: {}", e);
-            return ExitCode::from(1);
+            eprintln!("error: {e}");
+            ExitCode::from(1)
         }
     }
 }
