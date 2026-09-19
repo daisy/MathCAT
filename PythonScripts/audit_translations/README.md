@@ -12,7 +12,8 @@ The tool analyzes rule files to detect the following issues:
 * **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
 * **Definition Coverage:** Compares literal `definitions.yaml` entries by name and collection kind (`vector`, `set`, or `map`).
 
-Add `# audit-ignore` to a rule block to suppress auditing that rule.
+Add `# audit-ignore` on the line immediately before a rule to suppress auditing
+that rule. Existing markers inside a rule block are also supported.
 
 ---
 

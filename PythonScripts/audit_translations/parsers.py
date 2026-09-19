@@ -149,13 +149,20 @@ def format_tag(tag_value: Any) -> str | None:
 
 
 def build_raw_blocks(lines: list[str], starts: list[int]) -> list[str]:
-    blocks = []
     if not starts:
-        return blocks
+        return []
+
+    block_starts = starts.copy()
     for idx, start in enumerate(starts):
-        end = starts[idx + 1] if idx + 1 < len(starts) else len(lines)
-        blocks.append("\n".join(lines[start:end]))
-    return blocks
+        lower_bound = starts[idx - 1] + 1 if idx else 0
+        while start > lower_bound and (not lines[start - 1].strip() or lines[start - 1].lstrip().startswith("#")):
+            start -= 1
+        block_starts[idx] = start
+
+    return [
+        "\n".join(lines[start : block_starts[idx + 1] if idx + 1 < len(block_starts) else len(lines)])
+        for idx, start in enumerate(block_starts)
+    ]
 
 
 def _extract_item_fields(item: Any, is_unicode: bool) -> tuple[str, str | None, str | None, Any] | None:
