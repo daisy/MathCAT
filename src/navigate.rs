@@ -560,7 +560,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         debug!("after match nav_position: {}", nav_position);
         // push the new location on the stack
-        if nav_position != NavigationPosition::default() && &nav_position != &nav_state.top().unwrap().position {
+        if nav_position != NavigationPosition::default() && nav_position != nav_state.top().unwrap().position {
             nav_state.push(nav_position.clone(), nav_command);
         }
 
