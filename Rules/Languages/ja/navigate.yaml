@@ -55,7 +55,7 @@
           - if: "string-length(.) = 1"
             then: [T: "ズームインを最大にしました"]       # phrase('zoomed in all of the way')
           - else_if: "$NavNodeOffset = 0"
-            then: [t: "最初の文字にズームイン"]   # phrase('zoomed in to first character')
+            then: [T: "最初の文字までズームしました"]   # phrase('zoomed in to first character')
             else: [T: "文字までズームしました"]          # phrase('zoomed in to character')
         - pause: "medium"
         else:
@@ -577,7 +577,7 @@
             - if: "$NavCommand = 'MoveStart'"
               then: [T: "数式の先頭に移動"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [t: "行の先頭に移動"]                  # phrase('move to start of line')
+              then: [T: "行の先頭に移動"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
               then: [T: "数式の末尾に移動"]                    # phrase('move to end of math')
               else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
@@ -620,7 +620,7 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [t: "行の先頭に移動"]                                # phrase('move to start of line')
+          then: [T: "行の先頭に移動"]                                # phrase('move to start of line')
           else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
@@ -671,7 +671,7 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "左に移動"                        # phrase('move left')
+          - T: "左に移動"                        # phrase('move left')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
@@ -701,7 +701,7 @@
       - test:
           if: "$NavVerbosity = 'Verbose'"
           then:
-          - t: "右に移動"                     # phrase('move right')
+          - T: "右に移動"                     # phrase('move right')
           - pause: short
       - test:
           if: "$NavVerbosity != 'Terse'"
@@ -718,7 +718,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/*[1]/@id"]
       else:
-      - t: "次の列はありません"                  # phrase('no next column' in the table)
+      - T: "次の列はありません"                  # phrase('no next column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -739,7 +739,7 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "行"                                 # phrase(the previous 'row' in the table)
+              - T: "行"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
               - pause: short
               - T: "列"                              # phrase(the previous 'column' in the table)
@@ -775,7 +775,7 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "行"                                # phrase(the next 'row' in the table)
+              - T: "行"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
               - pause: short
               - T: "列"                             # phrase(the next 'column' in the table)
@@ -800,7 +800,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "前の行に移動"                              # phrase('move to previous row' in the table)
+      - T: "前の行に移動"                              # phrase('move to previous row' in the table)
       - pause: medium
   - test:
       if: "preceding-sibling::*"
@@ -824,7 +824,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "次の行に移動"                          # phrase('move to next row' in the table)
+      - T: "次の行に移動"                          # phrase('move to next row' in the table)
       - pause: medium
   - test:
       if: "following-sibling::*"
@@ -849,7 +849,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "前の列に移動"                              # phrase('move to previous column' in the table)
+      - T: "前の列に移動"                              # phrase('move to previous column' in the table)
       - pause: medium
   - T: "前の列はありません"                          # phrase('no previous column' in the table)
   - set_variables: [SpeakExpression: "'false'"]
@@ -862,9 +862,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - t: "次の列に移動"                              # phrase('move to next column' in the table)
+      - T: "次の列に移動"                              # phrase('move to next column' in the table)
       - pause: medium
-  - t: "次の列はありません"                          # phrase('no next row' in the table)
+  - T: "次の列はありません"                          # phrase('no next row' in the table)
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: default-read-cell
@@ -880,12 +880,12 @@
           - test:
               if: "$NavVerbosity = 'Verbose'"
               then:
-              - t: "現在のエントリを読む"                         # phrase('read current entry' in the table)
+              - T: "現在のセルを読む"                         # phrase('read current entry' in the table)
               - pause: medium
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - t: "行"                                        # phrase(the previous 'row' in the table)
+              - T: "行"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
               - pause: short
               - T: "列"                                     # phrase(the previous 'column' in the table)
@@ -1210,7 +1210,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "右に移動できません"                              # phrase('cannot move right')
+      - T: "右に移動できません"                              # phrase('cannot move right')
       - pause: medium
   - with:
       variables:
@@ -1428,7 +1428,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose' and $NavCommand = 'MovePrevious'"
       then:
-      - t: "左に移動できません"                                   # phrase('cannot move left' in expression)
+      - T: "左に移動できません"                                   # phrase('cannot move left' in expression)
       - pause: medium
   - with:
       variables:
@@ -1458,7 +1458,7 @@
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity = 'Verbose'"
       then:
-      - t: "左に移動できません"                      # phrase('cannot move left')
+      - T: "左に移動できません"                      # phrase('cannot move left')
       - pause: short
   - with:
       variables: [Move2D: "'start of'", Child2D: "."]
@@ -1644,12 +1644,12 @@
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "シンプル"                                                   # phrase(a 'simple' way to do something)
+      - T: "簡易"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
       - T: "拡張"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
-  - t: "モード"                                                         # phrase(a simple 'mode' of use)
+  - T: "モード"                                                         # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1665,7 +1665,7 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "シンプル"                                                 # phrase(a 'simple' way to do something)
+      - T: "簡易"                                                 # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
@@ -1674,7 +1674,7 @@
     - else:
       - T: "文字"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
-  - t: "モード"                                                       # phrase(a simple 'mode' of use)
+  - T: "モード"                                                       # phrase(a simple 'mode' of use)
   - pause: long
   - test:
     - if: "$NavMode != 'Enhanced'" # potentially need to zoom to the sibling
@@ -1694,7 +1694,7 @@
       - pause: long
       - set_variables: [Overview: "'false'"]
       else:
-      - t: "移動後の式の概要"          # phrase('overview of expression after move')
+      - T: "移動後に式の概要を読み上げる"          # phrase('overview of expression after move')
       - pause: long
       - set_variables: [Overview: "'true'"]
 

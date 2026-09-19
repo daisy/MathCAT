@@ -11,11 +11,15 @@ use anyhow::Result;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
 fn init_nav(mathml: &str) -> Result<()> {
+    init_nav_in_mode(mathml, "Enhanced")
+}
+
+fn init_nav_in_mode(mathml: &str, nav_mode: &str) -> Result<()> {
     set_rules_dir(abs_rules_dir_path())?;
     set_preference("Language", "ja")?;
     set_preference("SpeechStyle", "SimpleSpeak")?;
     set_preference("Verbosity", "Medium")?;
-    set_preference("NavMode", "Enhanced")?;
+    set_preference("NavMode", nav_mode)?;
     set_preference("NavVerbosity", "Verbose")?;
     set_preference("AutoZoomOut", "False")?;
     set_preference("Overview", "False")?;
@@ -24,9 +28,13 @@ fn init_nav(mathml: &str) -> Result<()> {
 }
 
 fn assert_command_prefix(mathml: &str, commands: &[&str], expected: &str) -> Result<()> {
+    assert_command_prefix_in_mode(mathml, "Enhanced", commands, expected)
+}
+
+fn assert_command_prefix_in_mode(mathml: &str, nav_mode: &str, commands: &[&str], expected: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        init_nav(mathml)?;
+        init_nav_in_mode(mathml, nav_mode)?;
         let mut speech = String::new();
         for command in commands {
             speech = do_navigate_command(command)?;
@@ -53,6 +61,12 @@ fn assert_speech(mathml: &str, commands: &[&str], expected: &str) -> Result<()> 
 }
 
 const EXPR: &str = r#"<math><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn></mrow></math>"#;
+
+/// A leaf with more than one character, so that zooming in has a first
+/// character to land on.
+const MULTI_CHAR: &str = r#"<math><mrow><mi>xy</mi><mo>+</mo><mn>1</mn></mrow></math>"#;
+
+const TABLE: &str = r#"<math><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></math>"#;
 
 /// The prefix used to be the English word "zoom", spoken as-is by a Japanese
 /// synthesiser. ズーム + イン also reads as the ordinary loanword.
@@ -119,4 +133,38 @@ fn placemarker_names_the_placeholder_first() -> Result<()> {
 #[test]
 fn reading_a_placemarker_names_it_first() -> Result<()> {
     assert_speech(EXPR, &["SetPlacemarker3", "Read3"], "プレースホルダー 3 を 読み上げ; x の 2 乗 プラス 1")
+}
+
+/// Character mode steps inside a leaf: ZoomInAll reaches the leaf, and one more
+/// ZoomIn lands on its first character (the same sequence as move_inside_leaves
+/// in src/navigate.rs). The other two zoom reports are sentences
+/// (ズームインを最大にしました, 文字までズームしました); this one was a bare noun
+/// phrase, so it did not read as a report of where the zoom ended up.
+#[test]
+fn zooming_to_the_first_character_reports_it() -> Result<()> {
+    assert_command_prefix_in_mode(
+        MULTI_CHAR, "Character", &["ZoomInAll", "ZoomIn"], "最初の文字までズームしました")
+}
+
+/// The three navigation modes are spoken as <word> + モード. 文字 and 拡張 are
+/// ordinary words; シンプル was a transliteration sitting between them.
+#[test]
+fn the_simple_mode_is_named_like_the_others() -> Result<()> {
+    assert_command_prefix(EXPR, &["ToggleZoomLockUp", "ToggleZoomLockUp"], "簡易 モード")
+}
+
+/// エントリ appeared exactly once in the whole Japanese rule set. This rule
+/// speaks 行 and 列 straight after it, and the sibling rule says 表, so セル is
+/// the word these rules already use for the thing being read.
+#[test]
+fn reading_the_current_cell_calls_it_a_cell() -> Result<()> {
+    assert_command_prefix(TABLE, &["ZoomInAll", "ReadCellCurrent"], "現在のセルを読む")
+}
+
+/// The two states of one toggle. The other is the sentence 移動後に式を読み上げる;
+/// this one was the noun phrase 移動後の式の概要, which does not say what will
+/// happen to it.
+#[test]
+fn the_overview_toggle_says_what_it_will_do() -> Result<()> {
+    assert_command_prefix(EXPR, &["ToggleSpeakMode"], "移動後に式の概要を読み上げる")
 }
