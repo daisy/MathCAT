@@ -456,7 +456,7 @@
   - test:
       if: "self::m:mlabeledtr"
       then:
-      - t: "ラベルを使って"      # phrase(the line 'with label' first equation)
+      - T: "ラベルは"      # phrase(the line 'with label' first equation)
       - x: "*[1]/*"
       - pause: short
   - pause: medium

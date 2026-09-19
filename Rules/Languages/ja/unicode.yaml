@@ -186,7 +186,7 @@
             - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
-                  then: [t: "与えられた"]
+                  then: [T: "条件は"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
                   then: [t: "割り切る"]
@@ -194,9 +194,9 @@
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
               then: [t: "縦線"]
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-              then: [t: "そのようなこと"]
+              then: [T: "ただし"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [t: "与えられた"] 
+              then: [T: "条件は"] 
             - else: [t: "割り切る"]                   
 
  - "}":                                          # 0x7d
