@@ -135,7 +135,7 @@
   - x: "count($Child2D/preceding-sibling::*)+1"
   - pause: "medium"
 
-- name: into-or-out-of-mmultiscripts
+- name: into-or-out-of-mmultiscripts   # audit-ignore: Japanese puts the part before the word that applies to it, so the children are in a different order than en
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='mmultiscripts' or self::m:mmultiscripts)"
   replace:
@@ -146,10 +146,9 @@
           variables:
           - NumPrecedingSiblings: "count($Child2D/preceding-sibling::*)"
           replace:
-          - x: "$Move2D"
           - test:
             - if: "$NumPrecedingSiblings=0"
-              then: [t: "底"]                 # phrase(the 'base' of the power)
+              then: [T: "底"]                 # phrase(the 'base' of the power)
             - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # are we before mprescripts and hence are postscripts
               then:
               - test:   # in postscripts -- base shifts by one
@@ -159,12 +158,20 @@
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
-                  then: [t: "上付き文字"]    # phrase(x with 'pre-superscript' 2)
-                  else: [t: "下付き文字"]      # phrase(x with 'pre-subscript' 2)
+                  then: [T: "上付き文字"]    # phrase(x with 'pre-superscript' 2)
+                  else: [T: "下付き文字"]      # phrase(x with 'pre-subscript' 2)
+          - test:
+            - if: "$Move2D = 'in'"
+              then: [T: "に入る"]          # phrase('in' the denominator)
+            - else_if: "$Move2D = 'out of'"
+              then: [T: "から出る"]        # phrase('out of' the denominator)
+            - else_if: "$Move2D = 'end of'"
+              then: [T: "の終わり"]        # phrase('end of' the row)
+              else: [T: "の始め"]          # phrase('start of' the expression)
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
-- name: into-or-out-of-default
+- name: into-or-out-of-default   # audit-ignore: Japanese puts the part before the word that applies to it, so the children are in a different order than en
   tag: "*"
   # saying "out of row n" is not very useful, so skip it
   # match: "$Move2D != '' and @data-from-mathml and @data-from-mathml != name(.) and count(*)>1 and @data-from-mathml != 'mtable'"
@@ -175,7 +182,6 @@
       - PartNumber: "count($Child2D/preceding-sibling::*)"
       - PartName: "GetNavigationPartName(name(.), $PartNumber)"
       replace:
-      - x: "$Move2D"
       - test:
         - if: "$PartName != ''"
           then: [x: "$PartName"]
@@ -200,6 +206,14 @@
           else:
           - T: "部分"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
+      - test:
+        - if: "$Move2D = 'in'"
+          then: [T: "に入る"]          # phrase('in' the denominator)
+        - else_if: "$Move2D = 'out of'"
+          then: [T: "から出る"]        # phrase('out of' the denominator)
+        - else_if: "$Move2D = 'end of'"
+          then: [T: "の終わり"]        # phrase('end of' the row)
+          else: [T: "の始め"]          # phrase('start of' the expression)
       - pause: "medium"
 
 - name: default-move
@@ -221,17 +235,17 @@
       then:
       - test:
         - if: "$PreviousNavCommand = 'ZoomIn'"
-          then: [t: "元に戻す ズームイン"]                       # phrase('undo zoom in')
+          then: [T: "ズームイン を 元に戻す"]                       # phrase('undo zoom in')
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
-          then: [t: "元に戻す ズームアウト"]                      # phrase('undo zoom out')
+          then: [T: "ズームアウト を 元に戻す"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [T: "元に戻す ズームインを最大"]        # phrase('undo zooming in all of the way')
+          then: [T: "最大までのズームイン を 元に戻す"]        # phrase('undo zooming in all of the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [T: "元に戻す ズームアウトを最大"]       # phrase('undo zooming out all of the way')
+          then: [T: "最大までのズームアウト を 元に戻す"]       # phrase('undo zooming out all of the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
-          then: [t: "元に戻す 左に移動"]                     # phrase('undo move left')
+          then: [T: "左に移動 を 元に戻す"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
-          then: [t: "元に戻す 右に移動"]                    # phrase('undo move right')
+          then: [T: "右に移動 を 元に戻す"]                    # phrase('undo move right')
         - else_if: "$PreviousNavCommand = 'None'"
           then: [T: "前のコマンドはありません"]                # phrase('no previous command')
       - pause: "medium"
@@ -1700,7 +1714,7 @@
   - set_variables: [NavNode: "@id"]
 
 # this needs to be near the end because we only test for 'Describe', "Read", etc., and we don't want to get 'DescribeNext', etc.
-- name: placemarker
+- name: placemarker   # audit-ignore: Japanese puts the part before the word that applies to it, so the children are in a different order than en
 
   tag: "*"
   match:
@@ -1711,28 +1725,29 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
+      - T: "プレースホルダー"                                     # phrase('placeholder' for the value)
+      - x: "$PlaceMarkerIndex"
       - test:
         - if: "starts-with($NavCommand, 'Read')"
-          then: [T: "読み上げ"]                                  # phrase('read' next entry in table)     
+          then: [T: "を 読み上げ"]                                  # phrase('read' next entry in table)     
         - else_if: "starts-with($NavCommand, 'Describe')"
-          then: [T: "説明"]                              # phrase('describe' next entry in table)     
+          then: [T: "を 説明"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
-          then: [t: "移動する"]                              # phrase('move to' the next entry in table) 
-          else: [t: "セット"]                                   # phrase('set' the value of the next entry in table) 
-      - t: "プレースホルダー"                                     # phrase('placeholder' for the value)
-      - x: "$PlaceMarkerIndex"
+          then: [T: "に 移動"]                              # phrase('move to' the next entry in table) 
+          else: [T: "を 設定"]                                   # phrase('set' the value of the next entry in table) 
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
 
-- name: set-placemarker
+- name: set-placemarker   # audit-ignore: Japanese puts the part before the word that applies to it, so the children are in a different order than en
   tag: "*"
   match: "starts-with($NavCommand, 'SetPlacemarker')"
   replace:
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - t: "セットプレースホルダー"                                 # phrase('set placeholder' to the value) 
+      - T: "プレースホルダー"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
+      - T: "を 設定"
       - pause: long
   - set_variables: [NavNode: "@id"]
 
