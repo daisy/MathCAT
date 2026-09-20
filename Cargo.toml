@@ -38,6 +38,7 @@ cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
+elements_rs = { version = "0.2.8", default-features = false }
 
 # Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
 # writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.

@@ -52,6 +52,10 @@ use std::collections::HashSet;
 use std::cmp::Ordering;
 use crate::errors::*;
 use std::sync::LazyLock;
+use elements_rs::{
+    AtomicNumber, Electronegativity, Element as PeriodicElement, ElementCategory,
+    ElementClassification,
+};
 
 
 pub static NOT_CHEMISTRY: i32 = -10000;  // should overwhelm any positive signal
@@ -411,7 +415,7 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
         }
         match str::from_utf8(&bytes_str[..n]) {
             Ok(chem_element) => {
-                if CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(chem_element) {
+                if is_known_chemical_symbol(chem_element) {
                     return Some(new_chemical_element(doc, chem_element));
                 }
                 return None;
@@ -1254,7 +1258,7 @@ fn likely_chem_formula(mathml: Element) -> i32 {
 fn is_order_ok(mrow: Element) -> bool {
     assert_eq!(name(mrow), "mrow");
     if let Some(elements) = collect_elements(mrow) {
-        if elements.iter().any(|e| !CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(as_str!(*e))) {
+        if elements.iter().any(|e| !is_known_chemical_symbol(as_str!(e))) {
             return false;
         }
         let n_elements = elements.len();
@@ -1278,10 +1282,10 @@ fn is_order_ok(mrow: Element) -> bool {
 
 
 fn has_noble_element(elements: &[NameStr<'_>]) -> bool {
-    static NOBLE_ELEMENTS: phf::Set<&str> = phf_set! {
-        "He", "Ne", "Ar", "Kr", "Xe", "Rn", "Og" // Og might be reactive, but it is unstable
-    };
-    return elements.iter().any(|e| NOBLE_ELEMENTS.contains(as_str!(*e)));
+    return elements.iter().any(|symbol| {
+        periodic_element(as_str!(symbol))
+            .is_some_and(|e| e.classification() == ElementCategory::NobleGas)
+    });
 }
 
 #[allow(clippy::manual_contains)]
@@ -1343,7 +1347,9 @@ fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     // HPO_4^2 (Mono-hydrogen phosphate) doesn't fit this pattern, nor does HCO_3^- (Hydrogen carbonate) and some others
     // FIX: drop "H" from the ordering??
     assert!(elements.len() > 1);   // already handled
-    return elements.windows(2).all(|pair| CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[0])).unwrap() < CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[1])).unwrap());
+    return elements.windows(2).all(|pair| {
+        chemical_electronegativity(as_str!(pair[0])).unwrap() < chemical_electronegativity(as_str!(pair[1])).unwrap()
+    });
 }
 
 fn is_generalized_salt(elements: &[NameStr<'_>]) -> bool {
@@ -1429,8 +1435,8 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> i32 {
             let base = as_element(children[0]);
             let base_name = name(base);
             let atomic_number = if matches!(as_str!(base_name), "mi" | "mtext") &&
-                                        let Some(atomic_number) = CHEMICAL_ELEMENT_ATOMIC_NUMBER.get(as_str!(as_text(base))) {
-                        *atomic_number
+                                        let Some(atomic_number) = chemical_element_atomic_number(as_str!(as_text(base))) {
+                        atomic_number
                     } else {
                         return NOT_CHEMISTRY;
                     };
@@ -1835,46 +1841,34 @@ fn convert_to_short_form(mathml: Element) -> Result<String> {
     }
 }
 
-/// A map of chemical elements and their relative IUPAC electronegativity (https://i.stack.imgur.com/VCSzW.png)
-/// That list uses a horizontal line for the Lanthanide and Actinide Series.
-/// Because I had already ordered the elements before realizing that, I opened a gap and started the higher ones again with a '1' in front.
-/// The list is missing recent (unstable) elements -- I added them with the same value as the element above them in the periodic table.
-static CHEMICAL_ELEMENT_ELECTRONEGATIVITY: phf::Map<&str, u32> = phf_map! {
-	"Ac" => 40, "Ag" => 155, "Al" => 163, "Am" => 29, "Ar" => 4, "As" => 172, "At" => 181, "Au" => 154,
-    "B" => 164, "Ba" => 14, "Be" => 18, "Bh" => 137, "Bi" => 170, "Bk" => 27, "Br" => 183,
-	"C" => 169, "Ca" => 16, "Cd" => 158, "Ce" => 56, "Cf" => 26, "Cl" => 184, "Cm" => 28, "Cn" => 157, "Co" => 148, "Cr" => 136, "Cs" => 8, "Cu" => 156,
-    "Db" => 129, "Ds" => 149, "Dy" => 48, 
-	"Er" => 46, "Es" => 25, "Eu" => 51, "F" => 185, "Fe" => 144, "Fl" => 165, "Fm" => 24, "Fr" => 7, "Ga" => 162, "Gd" => 50, "Ge" => 167,
-	"H" => 175, "He" => 6, "Hf" => 126, "Hg" => 157, "Ho" => 47, "Hs" => 141, "I" => 182, "In" => 161, "Ir" => 146, "K" => 10, "Kr" => 3,
-	"La" => 62, "Li" => 12, "Lr" => 19, "Lu" => 41, "Lv" => 176, "Mc" => 170, "Md" => 23, "Mg" => 17, "Mn" => 140, "Mo" => 135, "Mt" => 145, 
-	"N" => 174, "Na" => 11, "Nb" => 131, "Nd" => 54, "Ne" => 5, "Nh" => 160, "Ni" => 152, "No" => 22, "Np" => 31, "O" => 180, "Og" => 1, "Os" => 142, 
-	"P" => 173, "Pa" => 33, "Pb" => 165, "Pd" => 151, "Pm" => 53, "Po" => 176, "Pr" => 55, "Pt" => 150, "Pu" => 30,
-	"Ra" => 13, "Rb" => 9, "Re" => 138, "Rf" => 125, "Rg" => 153, "Rh" => 147, "Rn" => 1, "Ru" => 143, 
-	"S" => 179, "Sb" => 171, "Sc" => 124, "Se" => 178, "Sg" => 133, "Si" => 168, "Sm" => 52, "Sn" => 166, "Sr" => 15,
-	"Ta" => 130, "Tb" => 49, "Tc" => 139, "Te" => 177, "Th" => 34, "Ti" => 128, "Tl" => 160, "Tm" => 45, "Ts" => 181, 
-	"U" => 32, "V" => 132, "W" => 134, "Xe" => 2, "Y" => 123, "Yb" => 44, "Zn" => 159, "Zr" => 127,
-    // The following come from E.A. Moore who said to treat them like chemicals 
-    // These stand for methyl, ethyl, alkyl, acetyl and phenyl and apparently are quite commonly used ("Ac" is already a chemical)
-    // A full(er?) list is at en.wikipedia.org/wiki/Skeletal_formula#Alkyl_groups and in following sections
-    "Me" => 0, "Et" => 0, "R" => 0, /* "Ac" => 0, */ "Ph" => 0,
-    "X" => 0, /* treated as an unknown */
+// These MathCAT-specific abbreviations are commonly used in chemical formulae, but are not
+// elements. Ac is deliberately absent: it is the real element actinium, even when authors use
+// the same spelling for acetyl. X represents an unknown element in MathCAT's chemistry heuristic.
+static CHEMICAL_ABBREVIATIONS: phf::Set<&str> = phf_set! {
+    "Me", "Et", "R", "Ph", "X"
 };
 
-// A map of the chemical elements and their atomic numbers
-static CHEMICAL_ELEMENT_ATOMIC_NUMBER: phf::Map<&str, u32> = phf_map! {
-    "H" => 1, "He" => 2, "Li" => 3, "Be" => 4, "B" => 5, "C" => 6, "N" => 7, "O" => 8, "F" => 9, "Ne" => 10,
-    "Na" => 11, "Mg" => 12, "Al" => 13, "Si" => 14, "P" => 15, "S" => 16, "Cl" => 17, "Ar" => 18, "K" => 19, "Ca" => 20,
-    "Sc" => 21, "Ti" => 22, "V" => 23, "Cr" => 24, "Mn" => 25, "Fe" => 26, "Co" => 27, "Ni" => 28, "Cu" => 29, "Zn" => 30,
-    "Ga" => 31, "Ge" => 32, "As" => 33, "Se" => 34, "Br" => 35, "Kr" => 36, "Rb" => 37, "Sr" => 38, "Y" => 39, "Zr" => 40,
-    "Nb" => 41, "Mo" => 42, "Tc" => 43, "Ru" => 44, "Rh" => 45, "Pd" => 46, "Ag" => 47, "Cd" => 48, "In" => 49, "Sn" => 50,
-    "Sb" => 51, "Te" => 52, "I" => 53, "Xe" => 54, "Cs" => 55, "Ba" => 56, "La" => 57, "Ce" => 58, "Pr" => 59, "Nd" => 60, 
-    "Pm" => 61, "Sm" => 62, "Eu" => 63, "Gd" => 64, "Tb" => 65, "Dy" => 66, "Ho" => 67, "Er" => 68, "Tm" => 69, "Yb" => 70,
-    "Lu" => 71, "Hf" => 72, "Ta" => 73, "W" => 74, "Re" => 75, "Os" => 76, "Ir" => 77, "Pt" => 78, "Au" => 79, "Hg" => 80,
-    "Tl" => 81, "Pb" => 82, "Bi" => 83, "Po" => 84, "At" => 85, "Rn" => 86, "Fr" => 87, "Ra" => 88, "Ac" => 89, "Th" => 90,
-    "Pa" => 91, "U" => 92, "Np" => 93, "Pu" => 94, "Am" => 95, "Cm" => 96, "Bk" => 97, "Cf" => 98, "Es" => 99, "Fm" => 100,
-    "Md" => 101, "No" => 102, "Lr" => 103, "Rf" => 104, "Db" => 105, "Sg" => 106, "Bh" => 107, "Hs" => 108, "Mt" => 109, "Ds" => 110,
-    "Rg" => 111, "Cn" => 112, "Nh" => 113, "Fl" => 114, "Mc" => 115, "Lv" => 116, "Ts" => 117, "Og" => 118, 
-};
+fn periodic_element(symbol: &str) -> Option<PeriodicElement> {
+    symbol.parse().ok()
+}
+
+fn is_known_chemical_symbol(symbol: &str) -> bool {
+    periodic_element(symbol).is_some() || CHEMICAL_ABBREVIATIONS.contains(symbol)
+}
+
+fn chemical_element_atomic_number(symbol: &str) -> Option<u32> {
+    periodic_element(symbol).map(|e| u32::from(e.atomic_number()))
+}
+
+fn chemical_electronegativity(symbol: &str) -> Option<f64> {
+    if CHEMICAL_ABBREVIATIONS.contains(symbol) {
+        return Some(0.0);
+    }
+
+    // MathCAT historically assigned a value to every real element. Keep that coverage for
+    // elements whose Pauling electronegativity has not been measured by sorting them at zero.
+    periodic_element(symbol).map(|e| e.pauling_electronegativity().unwrap_or(0.0))
+}
 
 pub fn is_chemical_element(node: Element) -> bool {
 	// FIX: allow name to be in an mrow (e.g., <mi>N</mi><mi>a</mi>
@@ -1884,7 +1878,7 @@ pub fn is_chemical_element(node: Element) -> bool {
 	}
 
 	let text = as_text(node);
-	return CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(as_str!(text)) ||
+	return is_known_chemical_symbol(as_str!(text)) ||
            has_chem_intent(node, "chemical-element") ||
            has_inherited_property(node, "chemical-formula");
 }
@@ -1974,6 +1968,34 @@ mod chem_tests {
     }
 
     #[test]
+    fn test_periodic_element_lookups() {
+        // Representative symbols retain their old validity and atomic-number results.
+        assert_eq!(chemical_element_atomic_number("H"), Some(1));
+        assert_eq!(chemical_element_atomic_number("Fe"), Some(26));
+        assert_eq!(chemical_element_atomic_number("Og"), Some(118));
+        assert!(is_known_chemical_symbol("H"));
+        assert!(is_known_chemical_symbol("Fe"));
+        assert!(is_known_chemical_symbol("Og"));
+        assert!(!is_known_chemical_symbol("fe"));
+        assert!(!is_known_chemical_symbol("Zz"));
+    }
+
+    #[test]
+    fn test_chemical_abbreviations_are_not_periodic_elements() {
+        // MathCAT abbreviations remain valid chemistry tokens without acquiring element data.
+        for abbreviation in ["Me", "Et", "Ph", "R", "X"] {
+            assert!(is_known_chemical_symbol(abbreviation));
+            assert!(periodic_element(abbreviation).is_none());
+            assert_eq!(chemical_element_atomic_number(abbreviation), None);
+            assert_eq!(chemical_electronegativity(abbreviation), Some(0.0));
+        }
+
+        // Ac remains actinium; its alternate use as acetyl does not shadow the real element.
+        assert!(!CHEMICAL_ABBREVIATIONS.contains("Ac"));
+        assert_eq!(chemical_element_atomic_number("Ac"), Some(89));
+    }
+
+    #[test]
     fn test_noble_element() -> Result<()> {
         return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
@@ -2054,7 +2076,7 @@ mod chem_tests {
             <mi>N</mi><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>3</mn></msub>
              </mrow>"#;
-        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
+        assert_chem_elements(test, false, is_ordered_by_electronegativity)?;
         let test = r#"<mrow>  
             <mi>O</mi><mo>&#x2063;</mo> 
             <msub><mi>F</mi><mn>2</mn></msub>
