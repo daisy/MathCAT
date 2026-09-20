@@ -363,6 +363,11 @@
     "chemistry-concentration": "function= ; concentration: concentration of: the concentration of; end concentration",
   }
 
+  # The connector word to say for functional 'IntentMappings' (in English, "of")
+  # This is likely the word used for U+2061 in unicode.yaml, but for technical reasons needs to be defined here
+  # vector of length=1 because scalars not supported
+- FunctionApplicationWord: ["of"]
+
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
     "divergence", "del:gradient", "curl"

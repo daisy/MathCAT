@@ -71,7 +71,7 @@ fn test_9_b_4() -> Result<()> {
 }
 #[test]
 fn test_9_c_1_linear() -> Result<()> {
-    // see https://github.com/NSoiffer/MathCAT/issues/43 for discussion on linear layout
+    // see https://github.com/daisy/MathCAT/issues/43 for discussion on linear layout
     let expr = "<math><mo>|</mo><mtable>
             <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
             <mtr><mtd><mo>-</mo><mn>3</mn></mtd><mtd><mo>-</mo><mn>4</mn></mtd></mtr>
@@ -1763,7 +1763,7 @@ fn racket_below_121_4() -> Result<()> {
 
 #[test]
 fn identity_matrix_126_linearize() -> Result<()> {
-    // see https://github.com/NSoiffer/MathCAT/issues/43 for discussion on linear layout
+    // see https://github.com/daisy/MathCAT/issues/43 for discussion on linear layout
     let expr = "<math> <mrow><mo>(</mo> <mtable>
         <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
         <mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
@@ -2203,7 +2203,7 @@ fn tensor_from_mathml_spec() -> Result<()> {
       <mi>l</mi> <none></none>
     </mmultiscripts>
     </math>";
-    // Note: the braille answer was verified to be correct (see https://github.com/NSoiffer/MathCAT/issues/55) 
+    // Note: the braille answer was verified to be correct (see https://github.com/daisy/MathCAT/issues/55)
     test_braille("Nemeth", expr, "⠠⠗⠰⠊⠐⠘⠚⠐⠰⠅⠐⠰⠇")?;
     return Ok(());
 }

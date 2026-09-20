@@ -174,6 +174,91 @@ class TestParseRulesFile:
         rules = parse_rules_file(content, data)
         assert rules[0].audit_ignore
 
+    def test_assigns_leading_audit_ignore_to_following_rule(self):
+        """A marker directly above a rule suppresses that rule, not its neighbour."""
+        content = """
+- name: first
+  tag: mo
+  match: "."
+
+# audit-ignore: the following placeholder intentionally differs
+# from the source-language rule.
+- name: second
+  tag: mi
+  match: "false()"
+"""
+        yaml = YAML()
+        data = yaml.load(content)
+        rules = parse_rules_file(content, data)
+        assert not rules[0].audit_ignore
+        assert rules[1].audit_ignore
+
+    def test_keeps_audit_ignore_inside_rule(self):
+        """Existing markers within a rule block remain supported."""
+        content = """
+- name: first
+  tag: mo
+  # audit-ignore
+  match: "."
+
+- name: second
+  tag: mi
+  match: "x"
+"""
+        yaml = YAML()
+        data = yaml.load(content)
+        rules = parse_rules_file(content, data)
+        assert rules[0].audit_ignore
+        assert not rules[1].audit_ignore
+
+    def test_keeps_touching_comment_with_preceding_rule(self):
+        """A comment without a separating blank remains part of the preceding rule."""
+        content = """
+- name: first
+  tag: mo
+  match: "."
+# audit-ignore: this comment documents the first rule
+- name: second
+  tag: mi
+  match: "x"
+"""
+        yaml = YAML()
+        data = yaml.load(content)
+        rules = parse_rules_file(content, data)
+        assert rules[0].audit_ignore
+        assert not rules[1].audit_ignore
+
+    def test_includes_comment_on_item_dash_line(self):
+        """A comment attached to an item's dash belongs to that item."""
+        content = """
+- name: first
+  tag: mo
+  match: "."
+
+- # second rule introduction
+  name: second
+  tag: mi
+  match: "x"
+"""
+        yaml = YAML()
+        data = yaml.load(content)
+        rules = parse_rules_file(content, data)
+        assert "second rule introduction" not in rules[0].raw_content
+        assert "second rule introduction" in rules[1].raw_content
+
+    def test_assigns_file_header_to_first_rule(self):
+        """A leading marker before the first item is included in its raw block."""
+        content = """
+# audit-ignore
+- name: first
+  tag: mo
+  match: "."
+"""
+        yaml = YAML()
+        data = yaml.load(content)
+        rules = parse_rules_file(content, data)
+        assert rules[0].audit_ignore
+
     def test_handles_array_tag(self):
         """Ensure handles array tag."""
         content = """- name: multi-tag
