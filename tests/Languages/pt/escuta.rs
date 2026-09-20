@@ -2,12 +2,12 @@ use crate::common::*;
 
 fn falar(estilo: &str, verbosidade: &str, mathml: &str) -> String {
     set_rules_dir(abs_rules_dir_path()).unwrap();
-    set_preference("Language", "pt".to_string()).unwrap();
-    set_preference("SpeechStyle", estilo.to_string()).unwrap();
-    set_preference("Verbosity", verbosidade.to_string()).unwrap();
-    set_preference("SpeechOverrides_CapitalLetters", "".to_string()).unwrap();
-    set_preference("ClearSpeak_SetMemberSymbol", "Auto".to_string()).unwrap();
-    match set_mathml(mathml.to_string()) {
+    set_preference("Language", "pt").unwrap();
+    set_preference("SpeechStyle", estilo).unwrap();
+    set_preference("Verbosity", verbosidade).unwrap();
+    set_preference("SpeechOverrides_CapitalLetters", "").unwrap();
+    set_preference("ClearSpeak_SetMemberSymbol", "Auto").unwrap();
+    match set_mathml(mathml) {
         Ok(_) => match get_spoken_text() {
             Ok(fala) => regex::Regex::new(r"  +").unwrap().replace_all(&fala, " ").to_string(),
             Err(e) => format!("[ERRO ao falar: {}]", errors_to_string(&e)),

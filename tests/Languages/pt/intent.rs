@@ -1,17 +1,16 @@
-/// TESTES DO IDIOMA pt — como reconciliar com as regras
-///
-/// As strings esperadas abaixo foram escritas para refletir a intenção
-/// das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
-/// PAUSAS inseridas pelo motor e podem divergir levemente na primeira
-/// execução. Método do guia oficial de tradutores:
-///   1. rode `cargo test Languages::pt`
-///   2. para cada falha, compare `left` (esperado) com `right` (gerado)
-///   3. se o GERADO estiver correto em português, copie-o para o teste;
-///      se estiver errado, conserte a REGRA, nunca o teste.
-///
+//! TESTES DO IDIOMA pt — como reconciliar com as regras
+//!
+//! As strings esperadas abaixo foram escritas para refletir a intenção
+//! das regras em Rules/Languages/pt. Vírgulas e ponto-e-vírgula marcam
+//! PAUSAS inseridas pelo motor e podem divergir levemente na primeira
+//! execução. Método do guia oficial de tradutores:
+//!   1. rode `cargo test Languages::pt`
+//!   2. para cada falha, compare `left` (esperado) com `right` (gerado)
+//!   3. se o GERADO estiver correto em português, copie-o para o teste;
+//!      se estiver errado, conserte a REGRA, nunca o teste.
 
-/// Tests for rules shared between various speech styles:
-/// *  this has tests focused on the various alphabets
+// Tests for rules shared between various speech styles:
+// *  this has tests focused on the various alphabets
 use crate::common::*;
 use anyhow::Result;
 
