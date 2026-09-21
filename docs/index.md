@@ -173,13 +173,14 @@ Translators:
 * Finnish -- Sami Määttä (Accessibility Library Celia), and Essi Viippola (freelancer)
 * French -- Olivier Thiffault (Technologies Humanware)
 * German -- Nazli Andjic, Robert Graf and Paul Libbrecht (IU International University of Applied Sciences), and Moritz Groß (Math4VIP, Marburg University)
+* Greek -- Theodora Antonakopoulou and Paraskevi Riga (National and Kapodistrian University of Athens)
 * Hungarian -- Attila Hammer (IT Foundation for the Visually Impaired)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
-* Norwegian -- Marthe Gjelstad (National Library of Norway), Kvile
+* Norwegian -- Marthe Gjelstad (National Library of Norway) and Kvile
 * Polish -- Michał Dziwisz (Fundacja Instytut Rozwoju Regionalnego)
 * Russian (both speech and braille) -- Danil Kostenkov
 * Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development) and María Allo Roldán
-* Swedish -- Tim Arborealis Lötberg (MTM), and Anders Eklund (SPSM)
+* Swedish -- Tim Arborealis Lötberg (MTM) and Anders Eklund (SPSM)
 * Vietnamese -- Dang Hoai Phúc and Trang Pham
 * Others??? -- please volunteer so I can list you here...
 

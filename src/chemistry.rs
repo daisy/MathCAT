@@ -1653,7 +1653,7 @@ fn likely_chem_equation_operator(mathml: Element) -> i32 {
     return -3;  // there is still a chance
 
     /// Detects output of mhchem for some equilibrium arrows that currently (11/22) don't have Unicode points
-    /// See github.com/NSoiffer/MathCAT/issues/60 for the patterns being matched
+    /// See github.com/daisy/MathCAT/issues/60 for the patterns being matched
     fn is_hack_for_missing_arrows(mover: Element) -> bool {
         assert_eq!(name(mover), "mover");
         let children = mover.children();

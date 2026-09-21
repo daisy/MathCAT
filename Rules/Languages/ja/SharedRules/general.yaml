@@ -89,7 +89,7 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "評価される"      # phrase(results were 'evaluated at' a given point)
+  - T: "次の点で評価"      # phrase(results were 'evaluated at' a given point)
   - pause: auto
   - x: "*[2]"
 
@@ -99,10 +99,10 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - t: "評価される"      # phrase(results were 'evaluated at' this point)
+  - T: "次の点で評価"      # phrase(results were 'evaluated at' this point)
   - pause: auto
   - x: "*[3]"
-  - t: "同じ式が評価されるマイナス"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
+  - T: "マイナス 同じ式を次の点で評価"      # phrase(this result is 'minus the same expression evaluated at' an earlier point)
   - x: "*[2]"
 
 - name: permutation   # audit-ignore
@@ -530,7 +530,7 @@
   - test:
       if: "self::m:mlabeledtr"
       then:
-      - t: "ラベルを使って"      # phrase(the diagram is complete 'with label')
+      - T: "ラベルは"      # phrase(the diagram is complete 'with label')
       - x: "*[1]/*"
   - test:
       if: "not(contains(@data-intent-property, ':continued-row:'))"
