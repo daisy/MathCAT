@@ -422,7 +422,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "suma z i przecinek, x",
+            "suma przez i z x",
         ),
         (
             "sum-3",
@@ -434,7 +434,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "suma z i przecinek, n przecinek, x",
+            "suma od i do n z x",
         ),
         (
             "product-1",
@@ -455,7 +455,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "iloczyn z i przecinek, x",
+            "iloczyn przez i z x",
         ),
         (
             "product-3",
@@ -467,7 +467,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "iloczyn z i przecinek, n przecinek, x",
+            "iloczyn od i do n z x",
         ),
     ];
 

@@ -60,14 +60,12 @@
 
 
     ### Sequence and Series
-    # UWAGA: NIE używamy tu szablonów arności ("| po | od,do"), choć angielski je ma.
-    # Powód (zmierzone 31.08.2026): intent_function_glue_before w src/infer_intent.rs
-    # zwraca dla ostatniego argumentu ZASZYTE W KODZIE angielskie "of", więc polskie
-    # wyjście brzmiałoby "suma po i of x". To defekt rdzenia dotyczący każdego języka
-    # poza angielskim; węgierski uniknął go tak samo, zostawiając prostą postać.
-    # Separator binarny (jedna opcja "| słowo") działa poprawnie i jest używany niżej.
-    "sum":"function=suma",
-    "product":"function=iloczyn",
+    # Szablony arności działają od czasu, gdy słowo łączące przestało być zaszyte
+    # w kodzie (issue #739): ostatni argument poprzedza teraz FunctionApplicationWord
+    # z tego pliku, czyli polskie "z". Słowa "przez" i "od,do" dobrane tak, jak mówią
+    # o tym istniejące reguły dużych operatorów ("suma przez wielka s z i").
+    "sum":"function=suma | przez | od,do",
+    "product":"function=iloczyn | przez | od,do",
 
 
     ### Elementary classical functions
@@ -297,6 +295,11 @@
     
     "chemistry-concentration": "function=; stężenie: stężenie: stężenie; koniec stężenia",
   }
+
+  # The connector word to say for functional 'IntentMappings' (in English, "of")
+  # This is likely the word used for U+2061 in unicode.yaml, but for technical reasons needs to be defined here
+  # vector of length=1 because scalars not supported
+- FunctionApplicationWord: ["z"]
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
