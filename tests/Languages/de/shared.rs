@@ -4,6 +4,19 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn ordinary_integer_powers() -> Result<()> {
+    // Ordinary integer exponents use the idiomatic German "hoch" construction.
+    let fourth_power = "<math><msup><mi>x</mi><mn>4</mn></msup></math>";
+    test("de", "ClearSpeak", fourth_power, "x hoch 4")?;
+    test("de", "SimpleSpeak", fourth_power, "x hoch 4")?;
+
+    let zeroth_power = "<math><msup><mi>x</mi><mn>0</mn></msup></math>";
+    test("de", "ClearSpeak", zeroth_power, "x hoch 0")?;
+    test("de", "SimpleSpeak", zeroth_power, "x hoch 0")?;
+    Ok(())
+}
+
+#[test]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>

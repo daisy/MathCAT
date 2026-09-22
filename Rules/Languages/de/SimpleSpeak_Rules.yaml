@@ -208,11 +208,8 @@
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - T: "zu dem"      # phrase(15 raised 'to the' second power equals 225)
-  - test:
-      if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
+  - T: "hoch"      # phrase(15 raised 'to the' fourth power equals 50625)
+  - x: "*[2]"
 - name: simple-negative-integer
   tag: power
   match:

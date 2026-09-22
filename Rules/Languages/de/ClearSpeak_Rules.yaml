@@ -326,13 +326,7 @@
   replace:
   - x: "*[1]"
   - T: "hoch"
-  - test:
-      if: "*[2][.>0]"
-      then: [x: "ToOrdinal(*[2])"]
-      else: [x: "*[2]"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "hoch"]
+  - x: "*[2]"
 
 - name: simple-negative-integer
   tag: power
