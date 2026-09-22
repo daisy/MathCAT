@@ -1044,10 +1044,7 @@
   - bookmark: "@id"
   - test:
     - if: ".='→' or .='⟶'"
-      then_test:
-        if: "$Verbosity='Terse'"
-        then: [T: "formen"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [T: "reagiert auf die form"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+      then: [T: "ergibt"]      # phrase(hydrogen and oxygen 'forms/reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
       then: [T: "ist im gleichgewicht mit"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3

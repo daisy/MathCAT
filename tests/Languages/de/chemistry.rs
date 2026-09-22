@@ -74,6 +74,32 @@ fn chemical_state_names_are_german_adjectives() -> Result<()> {
   Ok(())
 }
 
+#[test]
+fn reaction_arrow_uses_idiomatic_german() -> Result<()> {
+  // A reaction arrow should describe the resulting products idiomatically in German.
+  let expr = "<math><mrow>
+      <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
+      <mo>&#x2192;</mo>
+      <mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo>
+      <msub><mi>H</mi><mn>2</mn></msub>
+    </mrow></math>";
+  test_prefs(
+    "de",
+    "SimpleSpeak",
+    vec![("Verbosity", "Terse")],
+    expr,
+    "2, groß h, groß c l; plus 2 groß n a; ergibt; 2, groß n a, groß c l; plus groß h, 2",
+  )?;
+  test_prefs(
+    "de",
+    "SimpleSpeak",
+    vec![("Verbosity", "Verbose")],
+    expr,
+    "2, groß h, groß c l; plus 2 groß n a; ergibt; 2, groß n a, groß c l; plus groß h, index 2",
+  )?;
+  Ok(())
+}
+
 
 /* // ignored below
 #[test]
