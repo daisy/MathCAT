@@ -4,6 +4,18 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn transpose_uses_grammatical_german_forms() -> Result<()> {
+    // A superscript T uses the participle, while a function intent names the transpose.
+    let postfix = "<math><msup><mi>A</mi><mi>T</mi></msup></math>";
+    test("de", "ClearSpeak", postfix, "groß a transponiert")?;
+    test("de", "SimpleSpeak", postfix, "groß a transponiert")?;
+
+    let function = "<math><mrow intent='transpose:function($matrix)'><mi arg='matrix'>A</mi></mrow></math>";
+    test("de", "ClearSpeak", function, "die Transponierte von groß a")?;
+    Ok(())
+}
+
+#[test]
 fn ordinary_integer_powers() -> Result<()> {
     // Ordinary integer exponents use the idiomatic German "hoch" construction.
     let fourth_power = "<math><msup><mi>x</mi><mn>4</mn></msup></math>";
