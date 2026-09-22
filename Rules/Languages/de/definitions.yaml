@@ -29,6 +29,7 @@
     "plus": "infix=plus || prefix=positiv",
     "real-part": "function=der reale teil",
     "transpose": "postfix=transponieren || function=transponieren",
+    "magnitude": "function=; Norm: Norm: Norm; Ende Norm",
     "norm": "function=; norm: norm: norm; ende norm",
     "trace": "function=; spur : spur: die spur; ende spur",
     "dimension": "function=; dimension : dimension: die dimension; ende dimension",

@@ -4,6 +4,15 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn magnitude_is_localized_as_norm() -> Result<()> {
+    // Double bars infer the magnitude intent, which should use the German term "Norm".
+    let expr = "<math><mo>‖</mo><mi>x</mi><mo>‖</mo></math>";
+    test("de", "ClearSpeak", expr, "Norm von x")?;
+    test("de", "SimpleSpeak", expr, "Norm von x")?;
+    Ok(())
+}
+
+#[test]
 fn clear_speak_short_pause_intent() -> Result<()> {
     // A short pause intent should survive intent inference and render as a comma.
     let expr = "<math><mrow><mi>x</mi><mi intent=':pause-short:y'>y</mi></mrow></math>";
