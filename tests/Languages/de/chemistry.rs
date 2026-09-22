@@ -40,6 +40,66 @@ fn sulfate() -> Result<()> {
 
 }
 
+#[test]
+fn chemical_state_names_are_german_adjectives() -> Result<()> {
+  // Chemical state suffixes should use the standard German adjectival names.
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>Na</mi><mrow><mo>(</mo><mi mathvariant='normal'>s</mi><mo>)</mo></mrow></math>",
+    "groß n a, fest",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi><mrow><mo>(</mo><mi mathvariant='normal'>l</mi><mo>)</mo></mrow></math>",
+    "groß h, 2 groß o, flüssig",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>HCl</mi><mrow><mo>(</mo><mi mathvariant='normal'>g</mi><mo>)</mo></mrow></math>",
+    "groß h, groß c l, gasförmig",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>HCl</mi><mrow><mo>(</mo><mi>aq</mi><mo>)</mo></mrow></math>",
+    "groß h, groß c l, wässrig",
+  )?;
+  Ok(())
+}
+
+#[test]
+fn reaction_arrow_uses_idiomatic_german() -> Result<()> {
+  // A reaction arrow should describe the resulting products idiomatically in German.
+  let expr = "<math><mrow>
+      <mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
+      <mo>&#x2192;</mo>
+      <mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo>
+      <msub><mi>H</mi><mn>2</mn></msub>
+    </mrow></math>";
+  test_prefs(
+    "de",
+    "SimpleSpeak",
+    vec![("Verbosity", "Terse")],
+    expr,
+    "2, groß h, groß c l; plus 2 groß n a; ergibt; 2, groß n a, groß c l; plus groß h, 2",
+  )?;
+  test_prefs(
+    "de",
+    "SimpleSpeak",
+    vec![("Verbosity", "Verbose")],
+    expr,
+    "2, groß h, groß c l; plus 2 groß n a; ergibt; 2, groß n a, groß c l; plus groß h, index 2",
+  )?;
+  Ok(())
+}
+
 
 /* // ignored below
 #[test]

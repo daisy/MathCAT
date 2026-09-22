@@ -7,7 +7,7 @@ use std::panic::{catch_unwind, AssertUnwindSafe};
 fn overview_modes(expr: &str, expected: [&str; 3]) -> Result<()> {
     for style in ["SimpleSpeak", "ClearSpeak"] {
         for (verbosity, answer) in ["Terse", "Medium", "Verbose"].into_iter().zip(expected) {
-            init_nav(expr)?;
+            init_nav("ru", expr)?;
             set_preference("SpeechStyle", style)?;
             set_preference("Verbosity", verbosity)?;
             let overview = get_overview_text()?.split_whitespace().collect::<Vec<_>>().join(" ");
@@ -46,25 +46,12 @@ fn overview_fraction_and_long_row() -> Result<()> {
 }
 
 
-fn init_nav(mathml: &str) -> Result<()> {
-    set_rules_dir(abs_rules_dir_path())?;
-    set_preference("Language", "ru")?;
-    set_preference("SpeechStyle", "SimpleSpeak")?;
-    set_preference("Verbosity", "Medium")?;
-    set_preference("NavMode", "Enhanced")?;
-    set_preference("NavVerbosity", "Verbose")?;
-    set_preference("AutoZoomOut", "False")?;
-    set_preference("Overview", "False")?;
-    set_mathml(mathml)?;
-    Ok(())
-}
-
 #[test]
 fn overview_table_dimensions() -> Result<()> {
     // Dimensions contain one separator, with no translated English article before them.
     let expr = "<math><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable></math>";
     for verbosity in ["Terse", "Medium", "Verbose"] {
-        init_nav(expr)?;
+        init_nav("ru", expr)?;
         set_preference("Verbosity", verbosity)?;
         assert_eq!(get_overview_text()?, "1 на 2 таблица");
     }
@@ -76,7 +63,7 @@ fn overview_symbolic_root() -> Result<()> {
     // A symbolic degree must be read as a degree, without an English TTS ordinal suffix.
     let expr = "<math><mroot><mi>x</mi><mi>n</mi></mroot></math>";
     for verbosity in ["Terse", "Medium", "Verbose"] {
-        init_nav(expr)?;
+        init_nav("ru", expr)?;
         set_preference("Verbosity", verbosity)?;
         let expected = if verbosity == "Terse" { "корень степени эн икс" } else { "корень степени эн из икс" };
         assert_eq!(get_overview_text()?, expected);
@@ -89,7 +76,7 @@ fn overview_matrix_dimensions() -> Result<()> {
     // Bracketed matrices use the matrix overview at every verbosity.
     let expr = "<math><mrow><mo>(</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>)</mo></mrow></math>";
     for verbosity in ["Terse", "Medium", "Verbose"] {
-        init_nav(expr)?;
+        init_nav("ru", expr)?;
         set_preference("Verbosity", verbosity)?;
         assert_eq!(get_overview_text()?, "1 на 2 матрица");
     }
@@ -101,7 +88,7 @@ fn overview_determinant_dimensions() -> Result<()> {
     // Vertical bars select the determinant overview, without an initial "на".
     let expr = "<math><mrow><mo>|</mo><mtable><mtr><mtd><mn>1</mn></mtd></mtr></mtable><mo>|</mo></mrow></math>";
     for verbosity in ["Terse", "Medium", "Verbose"] {
-        init_nav(expr)?;
+        init_nav("ru", expr)?;
         set_preference("Verbosity", verbosity)?;
         assert_eq!(get_overview_text()?, "1 на 1 определитель");
     }
@@ -111,7 +98,7 @@ fn overview_determinant_dimensions() -> Result<()> {
 fn assert_zoom_in(mathml: &str, expected: &str) -> Result<()> {
     init_panic_handler();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        init_nav(mathml)?;
+        init_nav("ru", mathml)?;
         let speech = do_navigate_command("ZoomIn")?;
         let trimmed_speech = speech.trim_end_matches([' ', ',', ';']).to_string();
         assert_eq!(expected, trimmed_speech);

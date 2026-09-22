@@ -8,7 +8,7 @@
       variables: [MatchingWhitespace: "true()"]
       replace:
       - test:
-        - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-previous-space-width >= 0.25"  # BANA 5.3(a)
+        - if: "(@class='MathML-unit' or contains(@data-intent-property, ':unit:') or BaseNode(.)[@class='MathML-unit' or contains(@data-intent-property, ':unit:')]) and @data-previous-space-width >= 0.25"  # treat spaced units as separate exprs for G1 placement
           then: [t: "𝐖"]
         - else_if: "@data-previous-space-width > 1.1"
           then: [t: "⠬"]
@@ -16,7 +16,7 @@
           then: [t: "W"]
       - x: "."
       - test:
-        - if: "(@class='MathML-unit' or BaseNode(.)[@class='MathML-unit']) and @data-following-space-width >= 0.25" # BANA 5.3(a)
+        - if: "(@class='MathML-unit' or contains(@data-intent-property, ':unit:') or BaseNode(.)[@class='MathML-unit' or contains(@data-intent-property, ':unit:')]) and @data-following-space-width >= 0.25" # treat spaced units as separate exprs for G1 placement
           then: [t: "𝐖"]
         - else_if: "@data-following-space-width > 1.1"
           then: [t: "⠬"]
@@ -107,7 +107,7 @@
    replace: 
    - t: "1⠷"
    - x: "*[1]"
-   - t: "1⠨⠌"
+   - t: "⠨⠌"
    - x: "*[2]"
    - t: "1⠾"
 
@@ -138,43 +138,53 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
-   name: default-matrix
-   tag: mrow
-   variables:
-      - RowStart: "*[1]"
-      - RowEnd: "*[3]"
-   match:
-      - "*[2][self::m:mtable] and"
-      - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
-   replace: [x: "*[2]"]
+  name: default-matrix
+  tag: mrow
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "*[3]"
+  match:
+    - "*[2][self::m:mtable] and"
+    - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
+  replace: [x: "*[2]"]
+
 -
-   name: default-mtable
-   tag: mtable
-   match: "."
-   replace: [x: "*"]
+  name: default-mtable
+  tag: mtable
+  match: "."
+  variables:   # should only be here for lines of equations -- made up dot-6, dot 0 as a parallel to dot six before parens
+  - RowStart: "IfThenElse($RowStart = '', '⠀', $RowStart)"
+  - RowEnd: "IfThenElse($RowEnd = '', '⠀', $RowEnd)"
+  replace: [x: "*"]
+
 -
   name: default
   tag: [mtr, mlabeledtr]
   match: "."
   replace:
-   - test: 
-      if: "../*[2]"   # more than one row
-      then: [t: "⠠"]
-   - t: ""
-   - x: $RowStart
-   - test:
+  - test: 
+      if: "preceding-sibling::*"   # between rows (not before the first)
+      then: [t: "⠸W"]
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowStart
+  - test:
       if: .[self::m:mlabeledtr]
       then:
-         - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
-         - x: "*[1]/*"           # contents of row label
-   - test:
+          - t: "⠗⠕⠺W⠇⠁⠃⠑⠇⠸⠒"  # "row label:"
+          - x: "*[1]/*"           # contents of row label
+  - test:
       if: .[self::m:mlabeledtr]
       then: [x: "*[position()>1]"]
       else: [x: "*"]
-   - test: 
-      if: "../*[2]"   # more than one row
-      then: [t: "⠠"]
-   - x: $RowEnd
+  - test:
+      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      then:
+      - t: "⠠"
+      - x: $RowEnd
+
 -
   name: default
   tag: mtd
@@ -246,9 +256,10 @@
    tag: mo
      # add spaces around comparison operators unless they are in a script position,
    variables: # ratio not spaced in UEB; also make sure it is an infix operator (e.g., "~" can be prefix)
+   # ∴ / ∵ / ∎ are spaced like comparison signs (GTM 1.7.9 "∴ force = …"; GTM 11)
    - AddSpaces: "$UseSpacesAroundAllOperators or
                        ( parent::*[self::m:mrow] and $NewScriptContext='' and
-                         .!='∶' and IsInDefinition(., 'Braille', 'NemethComparisonOperators') )"
+                         .!='∶' and (IsInDefinition(., 'Braille', 'NemethComparisonOperators') or .='∴' or .='∵' or .='∎') )"
    match: "."
    replace:
       - test:
@@ -290,7 +301,7 @@
 -
   name: mhchem-hack
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   tag: mover
   match:
   -    "*[1][substring(., 1, 1)='↽'] and"

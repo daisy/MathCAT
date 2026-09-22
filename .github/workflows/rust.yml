@@ -46,12 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Remove empty Rules directories
-      run: find Rules -type d -empty -delete
-    - name: Remove test directory
-      run: rm -r Rules/Languages/zz
-    - name: create Rules.zip
-      run: zip -r Rules.zip Rules
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Create Rules.zip
+      run: cargo run --bin package-rules -- Rules Rules.zip
+    - name: Create Rules-minimized.zip
+      run: cargo run --bin package-rules -- Rules Rules-minimized.zip --minimize
     - name: Upload Rules.zip
       uses: actions/upload-artifact@v7
       with:
@@ -59,12 +58,47 @@ jobs:
         path: 'Rules.zip'
         compression-level: 0
         retention-days: 1
+    - name: Upload Rules-minimized.zip
+      uses: actions/upload-artifact@v7
+      with:
+        name: 'Rules-minimized.zip'
+        path: 'Rules-minimized.zip'
+        compression-level: 0
+        retention-days: 1
+
+  test-rules-package:
+    name: Test (${{ matrix.feature_name }}, ${{ matrix.rules_zip }})
+    needs: zip-rules
+    strategy:
+      fail-fast: false
+      matrix:
+        rules_zip: [Rules.zip, Rules-minimized.zip]
+        include:
+          - feature_name: default
+            features: ""
+          - feature_name: no-unsafe
+            features: "--features no-unsafe"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: Download ${{ matrix.rules_zip }}
+      uses: actions/download-artifact@v8
+      with:
+        name: ${{ matrix.rules_zip }}
+    - name: Install packaged Rules
+      run: |
+        rm -rf Rules
+        unzip -q "${{ matrix.rules_zip }}"
+        # Release zips omit the synthetic zz test language; restore it for unit tests only.
+        git checkout HEAD -- Rules/Languages/zz
+    - name: Run tests (${{ matrix.feature_name }})
+      run: cargo test ${{ matrix.features }} --verbose
 
   pre-release:
     name: Pre Release
     continue-on-error: false
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' # otherwise, job fails on pull requests, as GITHUB_TOKEN is not available
-    needs: [build, clippy, zip-rules]
+    needs: [build, clippy, zip-rules, test-rules-package]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -73,6 +107,10 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: Rules.zip
+    - name: download Rules-minimized.zip
+      uses: actions/download-artifact@v8
+      with:
+        name: Rules-minimized.zip
     # Moving 'latest' prerelease (replaces marvinpinto/action-automatic-releases)
     - name: Development Build release
       env:
@@ -90,4 +128,5 @@ jobs:
           --latest=false \
           --title "Development Build" \
           --notes "Development build from ${SHA}" \
-          Rules.zip
+          Rules.zip \
+          Rules-minimized.zip

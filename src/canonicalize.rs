@@ -776,7 +776,53 @@ impl CanonicalizeContext {
 
 		fn contains_currency(s: &str) -> bool {
 			s.chars().any(is_currency_symbol)
-		}		
+		}
+
+		/// Geometry arc names like AB / ABC: a leaf whose text is 2–3 ASCII capitals.
+		fn is_two_or_three_ascii_capitals(base: Element) -> bool {
+			if !is_leaf(base) {
+				return false;
+			}
+			let text = as_str!(as_text(base));
+			let n = text.chars().count();
+			return (n == 2 || n == 3) && text.chars().all(|c| c.is_ascii_uppercase());
+		}
+
+		/// `mrow` of 2 or 3 capital `<mi>`s, optionally separated by U+2062 / U+2063 `<mo>`s.
+		fn is_mrow_of_two_or_three_cap_identifiers(base: Element) -> bool {
+			if name(base) != "mrow" {
+				return false;
+			}
+			let children = base.children();
+			if children.is_empty() {
+				return false;
+			}
+			let mut n_mi = 0;
+			let mut prev_was_mo = false;
+			for (i, child) in children.iter().enumerate() {
+				let child = as_element(*child);
+				if name(child) == "mi" {
+					let text = as_str!(as_text(child));
+					if !(text.chars().count() == 1 && text.chars().next().unwrap().is_ascii_uppercase()) {
+						return false;
+					}
+					n_mi += 1;
+					prev_was_mo = false;
+				} else if name(child) == "mo" {
+					if i == 0 || prev_was_mo {
+						return false;
+					}
+					let text = as_str!(as_text(child));
+					if text != "\u{2062}" && text != "\u{2063}" {
+						return false;
+					}
+					prev_was_mo = true;
+				} else {
+					return false;
+				}
+			}
+			return !prev_was_mo && (n_mi == 2 || n_mi == 3);
+		}
 		
 		// begin by cleaning up empty elements
 		// debug!("clean_mathml\n{}", mml_to_string(mathml));
@@ -985,9 +1031,21 @@ impl CanonicalizeContext {
 							}
 						},
 						"..." => {
-							if name(get_parent(mathml)) != "mover" {
+							if parent_name != "mover" {
 								mathml.set_text("…");
 							}  // name might need to change -- checked below
+						},
+						"⌢" | "⏜" => {    // lookalikes:  U+2322 (“Frown”), U+23DC (“Top Parenthesis”)
+							// arc should be over constructs like AB or ABC 
+							if parent_name == "mover" {
+								let parent = get_parent(mathml);
+								let base = as_element(parent.children()[0]);  // already made sure correct number of children
+								if base != mathml &&
+								   (is_two_or_three_ascii_capitals(base) || is_mrow_of_two_or_three_cap_identifiers(base)) {
+									mathml.set_text("⌒");  // U+2312
+								}
+							}
+							return Some(mathml);
 						},
 						":" => {
 							if is_ratio(mathml) {
@@ -2025,7 +2083,7 @@ impl CanonicalizeContext {
 		fn merge_number_blocks(context: &CanonicalizeContext, parent_mrow: Element, children: &mut Vec<ChildOfElement>) {
 			// debug!("parent:\n{}", mml_to_string(parent_mrow));
 			// If we find a comma that is not part of a number, don't form a number
-			//   (see https://github.com/NSoiffer/MathCAT/issues/271)
+			//   (see https://github.com/daisy/MathCAT/issues/271)
 			// Unfortunately, we can't do this in the loop below because we might discover the "not part of a number" after a number has been formed
 			let do_not_merge_comma = is_comma_not_part_of_a_number(children);
 			let mut i = 0;
@@ -2412,23 +2470,21 @@ impl CanonicalizeContext {
 			// This is not yet in canonical form, so the fences may be siblings or siblings of the parent 
 			let preceding_siblings = as_element(children[0]).preceding_siblings();
 			let following_siblings = as_element(children[end-1]).following_siblings();
-			let first_child;
-			let last_child;
-			if preceding_siblings.is_empty() && following_siblings.is_empty() {
+			
+			
+			let (first_child, last_child) = if preceding_siblings.is_empty() && following_siblings.is_empty() {
 				// number spans all children, look to parent for fences
 				let preceding_children = mrow.preceding_siblings();
 				let following_children = mrow.following_siblings();
 				if preceding_children.is_empty() || following_children.is_empty() {
 					return true;	// doesn't have left or right fence
 				}
-				first_child = preceding_children[preceding_children.len()-1];
-				last_child = following_children[0];
+				(preceding_children[preceding_children.len()-1], following_children[0])
 			} else if preceding_siblings.is_empty() || following_siblings.is_empty() {
 				return true; // can't be fences around it
 			} else {
-				first_child = preceding_siblings[preceding_siblings.len()-1];
-				last_child = following_siblings[0];
-			}
+				(preceding_siblings[preceding_siblings.len()-1], following_siblings[0])
+			};
 			let first_child = as_element(first_child);
 			let last_child = as_element(last_child);
 			return !(name(first_child) == "mo" && is_fence(first_child) &&
@@ -6018,6 +6074,72 @@ mod canonicalize_tests {
 			<mo data-changed='added'>&#x2061;</mo>
 			<mi>x</mi>
 			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn clean_up_arc_lookalike_mrow() -> Result<()> {
+        // Frown over two capital identifiers is rewritten to the arc operator (U+2312)
+        let test_str = "<math><mover><mrow><mi>A</mi><mi>B</mi><mi>C</mi></mrow><mo>&#x2322;</mo></mover></math>";
+        let target_str = "<math>
+			<mover>
+			<mrow>
+			<mi>A</mi>
+			<mo data-changed='added'>&#x2063;</mo>
+			<mi>B</mi>
+			<mo data-changed='added'>&#x2063;</mo>
+			<mi>C</mi>
+			</mrow>
+			<mo>⌒</mo>
+			</mover>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn clean_up_arc_lookalike_mrow_invisible_sep() -> Result<()> {
+        // Same rewrite when the capital identifiers are already separated by U+2063
+        let test_str = "<math><mover><mrow><mi>B</mi><mo>&#x2063;</mo><mi>C</mi></mrow><mo>&#x2322;</mo></mover></math>";
+        let target_str = "<math>
+			<mover>
+			<mrow>
+			<mi>B</mi>
+			<mo>&#x2063;</mo>
+			<mi>C</mi>
+			</mrow>
+			<mo>⌒</mo>
+			</mover>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn clean_up_arc_lookalike_mtext() -> Result<()> {
+        // Frown over a 2-letter capital mtext is rewritten to the arc operator (U+2312)
+        let test_str = "<math><mover><mtext>BC</mtext><mo>&#x2322;</mo></mover></math>";
+        let target_str = "<math>
+			<mover>
+			<mrow>
+			<mi>B</mi>
+			<mo data-changed='added'>&#x2063;</mo>
+			<mi>C</mi>
+			</mrow>
+			<mo>⌒</mo>
+			</mover>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn clean_up_arc_lookalike_not_letters() -> Result<()> {
+        // Frown over a single lowercase identifier is left as a frown, not an arc
+        let test_str = "<math><mover><mi>z</mi><mo>&#x2322;</mo></mover></math>";
+        let target_str = "<math>
+			<mover>
+			<mi>z</mi>
+			<mo>⌢</mo>
+			</mover>
 		</math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}

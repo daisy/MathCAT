@@ -4,6 +4,40 @@ use crate::common::*;
 use anyhow::Result;
 
 #[test]
+fn transpose_uses_grammatical_german_forms() -> Result<()> {
+    // A superscript T uses the participle, while a function intent names the transpose.
+    let postfix = "<math><msup><mi>A</mi><mi>T</mi></msup></math>";
+    test("de", "ClearSpeak", postfix, "groß a transponiert")?;
+    test("de", "SimpleSpeak", postfix, "groß a transponiert")?;
+
+    let function = "<math><mrow intent='transpose:function($matrix)'><mi arg='matrix'>A</mi></mrow></math>";
+    test("de", "ClearSpeak", function, "die Transponierte von groß a")?;
+    Ok(())
+}
+
+#[test]
+fn ordinary_integer_powers() -> Result<()> {
+    // Ordinary integer exponents use the idiomatic German "hoch" construction.
+    let fourth_power = "<math><msup><mi>x</mi><mn>4</mn></msup></math>";
+    test("de", "ClearSpeak", fourth_power, "x hoch 4")?;
+    test("de", "SimpleSpeak", fourth_power, "x hoch 4")?;
+
+    let zeroth_power = "<math><msup><mi>x</mi><mn>0</mn></msup></math>";
+    test("de", "ClearSpeak", zeroth_power, "x hoch 0")?;
+    test("de", "SimpleSpeak", zeroth_power, "x hoch 0")?;
+    Ok(())
+}
+
+#[test]
+fn variable_powers() -> Result<()> {
+    // Variable exponents should not acquire an English ordinal suffix or a second "hoch".
+    let expr = "<math><msup><mn>2</mn><mi>x</mi></msup></math>";
+    test("de", "ClearSpeak", expr, "2 hoch x")?;
+    test("de", "SimpleSpeak", expr, "2 hoch x")?;
+    Ok(())
+}
+
+#[test]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>

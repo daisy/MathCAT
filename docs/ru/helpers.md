@@ -4,7 +4,7 @@ lang: ru
 ref: helpers
 title: Руководство переводчика MathCAT
 ---
-# Руководство переводчика MathCAT
+# <img src="../logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Логотип MathCAT: сидящий коричневый кот, хвост которого образует прописную букву C в слове MathCAT."> Руководство переводчика MathCAT
 
 В этом руководстве описано, как создать или обновить перевод MathCAT. В качестве примеров используется русский язык.
 

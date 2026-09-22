@@ -107,6 +107,15 @@ fn simple_log() -> Result<()> {
 }
 
 #[test]
+fn principal_value_log() -> Result<()> {
+    // Uppercase Log denotes the principal-value logarithm.
+    let expr = "<math><mrow><mi>Log</mi><mi>x</mi></mrow></math>";
+    test("de", "ClearSpeak", expr, "der hauptwert des logarithmus, von x")?;
+    test("de", "SimpleSpeak", expr, "der hauptwert des logarithmus, von x")?;
+    Ok(())
+}
+
+#[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test("de", "ClearSpeak", expr, "der log von, klammer auf x plus y, klammer zu")?;

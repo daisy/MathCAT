@@ -3777,7 +3777,7 @@
  - "￫": [t: "right arrow"]                          # 0xffeb
  - "￬": [t: "down arrow"]                           # 0xffec
  - "￼": [t: "unknown or missing object"]            # 0xfffc
- - "�": [t: "unknown or missing character"]        # 0xfffd
+ - "�": [t: "missing char"]                       # 0xfffd  (used for missing input when entering braille)
 
  - "🣑": [t: "is in equilibrium with"]                      # 0x1F8D1
  - "🣒": [t: "is in equilibrium biased to the right with"]  # 0x1F8D2

@@ -12,7 +12,8 @@ but add common mistakes of AI agents here instead.
 - Common per-language files:
   - `ClearSpeak_Rules.yaml`, `SimpleSpeak_Rules.yaml`
   - `SharedRules/`, `unicode.yaml`, `unicode-full.yaml`, `definitions.yaml`, `navigate.yaml`
-- `build.rs` can bundle rules into `rules.zip` when `include-zip` is enabled.
+- `build.rs` can bundle rules into `rules.zip` when `include-zip` is enabled (always the minimized tree). Shared zipper: `src/rules_archive.rs`, invoked as `cargo run --bin package-rules -- Rules <output> [--minimize]`.
+- CI packages `Rules.zip` (verbatim) and `Rules-minimized.zip` (comments stripped from `Languages/**/unicode.yaml` and `unicode-full.yaml` only). Each language/braille subdir is stored as `<name>/<name>.zip`; top-level and `Intent/` YAML stay loose. Inner language zips use BZIP2; the outer downloadable archive uses DEFLATE so `unzip` works. Both omit `Languages/zz`; the `test-rules-package` job restores `zz` from git after unzip so unit tests still run against release-like archives.
 
 ## Translation Conventions
 - `t:` means untranslated or unverified.
@@ -26,12 +27,13 @@ but add common mistakes of AI agents here instead.
 - In sandboxed runs, if needed:
   - set `UV_CACHE_DIR=/tmp/uv-cache`
   - rerun with escalated permissions if macOS `system-configuration` panics occur.
-- *always* self-validate: `ùv run pytest`
+- self-validate appropriately with: `uv run pytest`
 
 ## Agent Instructions
 - Do not mirror README content here; keep guidance agent-specific.
 - Avoid broad formatting sweeps; do not run `cargo fmt` in this repo.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
+- Do **not** change test goldens (expected braille/speech/nav strings) unless the user explicitly says to. Prefer fixing code/rules to match existing goldens; if a golden looks wrong vs the spec, ask before editing it.
 - do not do any git commands unless explicitly asked for
 - Rust coverage is in `target/coverage/`.
 - When working with GitHub, e.g. looking at PRs and issues, check if the GitHub CLI is installed (`gh --version`).

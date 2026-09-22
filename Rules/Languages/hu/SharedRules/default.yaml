@@ -62,7 +62,7 @@
   - test:
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-    - else_if: "@data-chem-element > 0 or @data-roman-numeral"                      # NavMode=Character needs this
+    - else_if: "@data-chem-element or @data-roman-numeral"                      # NavMode=Character needs this
       then: [SPELL: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
@@ -237,26 +237,12 @@
   - x: "*[2]"
   - T: "alatt"      # phrase(x with z 'below' it)
 
-# FIX: this only works for up to four dots (which is realistically all we need)
-- name: dot-over
-  tag: modified-variable
-  match: "*[1][self::m:mi] and (*[2][translate(., '.', '')=''])"
-  replace:
-  - x: "*[1]"
-  - x: "IfThenElse(string-length(*[2])=1, 'pont',
-        IfThenElse(string-length(*[2])=2, 'pont pont',
-        IfThenElse(string-length(*[2])=3, 'pont pont pont', 'pont pont pont pont')
-        ))"
-  - pause: short
-
-# FIX: the 'translate' list is a little different from 'modified-variable', so we also include 'mover' (unify?)
 - name: diacriticals
-  tag: [mover, modified-variable]
+  tag: mover
   match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
   replace:
   - x: "*[1]"
   - x: "*[2]"
-  - pause: short
 
 - name: default
   tag: mover
@@ -434,23 +420,22 @@
                           - T: "szkriptek vége"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
-  tag: [mtable, array]
+  tag: mtable
   variables:
   - IsColumnSilent: "false()"
-  - NumColumns: "CountTableColumns(.)"
-  - NumRows: "CountTableRows(.)"
+  - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
   - T: "táblázat"      # phrase(the 'table with' 3 rows)
-  - x: "$NumRows"
+  - x: count(*)
   - test:
-      if: "$NumRows=1"
+      if: count(*)=1
       then: [T: "sorral"]      # phrase(the table with 1 'row')
       else: [T: "sorral"]      # phrase(the table with 3 'rows')
   - T: "és"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "$NumColumns=1"
+      if: "NumColumns=1"
       then: [T: "oszloppal"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "oszloppal"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -493,11 +478,24 @@
   - x: "*"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
+      if: "HasVisibleColumnLine(../.., count(preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - T: "elválasztó"
+  - test:
+      # Announce a row separator only after the row's final cell, so it is spoken once per horizontal boundary.
+      if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - T: "sorelválasztó"
+  - test:
+    # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
       then: [pause: short]
     - else_if: count(../following-sibling::*) > 0
       then: [pause: medium]
       else: [pause: long]
+
 
 
 - name: empty-box
@@ -720,16 +718,27 @@
   replace:
   - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
   - test:
-      if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
-           not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
-      then: [T: "", pause: auto]      # phrase(sine 'of' 5)
-  - insert:
-      nodes: "*"
-      replace:
-      - test:
-          if: "not(contains(@data-intent-property, ':literal:'))"
-          then: [x: "','"]
+    - if: "IntentFunctionUseArityPath(name(.), 'function', count(*))"
+      then: 
+      - x: "IntentFunctionGlueBefore(name(.), 'function', 1, count(*))"
       - pause: auto
+      - insert:
+          nodes: "*"
+          replace:
+          - x: "IntentFunctionGlueBefore(name(.), 'function', $InsertIndex, count(*))"
+          - pause: auto
+      else:
+      - test:
+          if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
+               not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
+          then: [T: "", pause: auto]      # phrase(sine 'of' 5)
+      - insert:
+          nodes: "*"
+          replace:
+          - test:
+              if: "not(contains(@data-intent-property, ':literal:'))"
+              then: [x: "IntentFunctionArgSeparator(name(.), 'function', count(*))"]
+          - pause: auto
   - test:
       # speak "end ..." if not bracketed or last child is not simple and not last node
       if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"

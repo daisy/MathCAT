@@ -1,0 +1,496 @@
+---
+- include: "../../definitions.yaml"
+# Lines starting with "#" are a comment
+# Each definition in this file is of the form
+# - name: { "...", "..." "..." }
+# For numbers, 
+# - name: [] "...", "..." "..." ]
+
+
+# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
+# If only one ":" is used, it the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
+# If no ":"s are used, the same speech is used for all forms
+# If bracketing words make sense, they are separated with ";"s
+# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
+# If there are multiple fixities (e.g., see transpose), they are separated with "||
+#   for readability, spaces can be used around any of the delimiter characters
+# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+- IntentMappings: {
+    "indexed-by": "infix= ; índice; fim do índice",
+    "modified-variable": "silent= ",
+    "say-super": "infix=sobrescrito",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+
+    "absolute-value": "function= ; valor absoluto: o valor absoluto de: o valor absoluto de; fim do valor absoluto",
+    "binomial": "infix=binomial; escolhe; fim do binomial",
+    "limit": "prefix=limite quando",
+    "lim-sup": "prefix=lim sup quando: o limite superior quando: o limite superior quando",
+    "lim-inf": "prefix=lim inf quando: o limite inferior quando: o limite inferior quando",
+    "logarithm-with-base": "prefix=log na base: o log na base: o logaritmo na base",
+    "minus": "infix=menos || prefix=menos",
+    "plus": "infix=mais || prefix=positivo",
+
+    "transpose": "postfix=transposta || function=transposta",
+    "norm": "function=; norma: norma: a norma; fim da norma",
+    # ‖x‖ é inferido pelo motor como 'magnitude' (não 'norm'); sem esta linha
+    # vazava "magnitude de x" em inglês. Mesma fala da norma.
+    "magnitude": "function=; norma: norma: a norma; fim da norma",
+    "trace": "function=; traço: traço de: o traço de; fim do traço",
+    "dimension": "function=; dimensão: dimensão de: a dimensão de; fim da dimensão",
+    "homomorphism": "function= ; homomorfismo: homomorfismo de: o homomorfismo de; fim do homomorfismo",
+    "kernel": "function= ; núcleo: núcleo de: o núcleo de; fim do núcleo",
+    "vector": "function= ; vetor || prefix=vetor",
+    # O motor infere ⃗a × ⃗b como um <cross-product> SEM filhos (o operador vira
+    # o próprio elemento); aí a fixidade infix não se aplica e ele falava o nome
+    # literal, "cross product". A fixidade nofix cobre esse caso. Idem dot-product.
+    "cross-product": "infix=vetorial: produto vetorial: produto vetorial || nofix=vetorial: produto vetorial: produto vetorial",
+    "dot-product": "infix=escalar: produto escalar: produto escalar || nofix=escalar: produto escalar: produto escalar",
+
+    "divergence": "function= ; div: divergente: divergente; fim do divergente",
+    "curl": "function= ; rotacional; fim do rotacional",
+    "gradient": "function= ; grad: gradiente: gradiente; fim do gradiente",
+    "laplacian": "function=laplaciano",
+
+    "chemistry-concentration": "function= ; concentração: concentração de: a concentração de; fim da concentração",
+    # CORREÇÃO: o en tem duas fixidades (nofix || function); só com a function
+    # a fala ganha o "de" ("probabilidade de x"). E o separador de palavras do
+    # conditional-probability é "|", como no en — ";" não é reconhecido aqui.
+    "probability": "nofix=P: probabilidade || function=probabilidade",
+    "conditional-probability": "function=probabilidade | dado",
+    "intersection": "infix=interseção",
+    "union": "infix=união",
+  }
+
+
+# ACRESCENTADO: definição presente em en/ e ausente em es/ (e portanto em pt).
+# ATENÇÃO: estes NÃO são textos falados — são nomes de intent (chaves internas
+# do motor, sempre em inglês). A regra os consulta com IsInDefinition(name(.), ...).
+# Traduzi-los quebraria o casamento. Copiados tal e qual do inglês.
+- TerseFunctionNames: {
+    "divergence", "del:gradient", "curl"
+  }
+
+- KnownWords: {
+    "abs", "adj", "ano", "cel", "dez", "din", "elo", "fim", "lux", "nos"
+  }
+
+- NavigationParts: {
+    "large-op": "base; limite inferior; limite superior",
+    "mfrac": "numerador;denominador",
+    "fraction": "numerador;denominador",
+    "msqrt": "radicando",
+    "square-root": "radicando",
+    "mroot": "radicando;índice da raiz",
+    "root": "radicando;índice da raiz",
+    "msub": "base;subscrito",
+    "sub": "base;subscrito",
+    "msup": "base;sobrescrito",
+    "say-super": "base;sobrescrito",
+    "skip-super": "base;sobrescrito",
+    "power": "base;expoente",
+    "msubsup": "base;subscrito;sobrescrito",
+    "munder": "base;limite inferior",
+    "mover": "base;limite superior",
+    "munderover": "base;limite inferior;limite superior",
+
+    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
+    # it's a hack to put them here, but at least they are grouped with the other navigation parts
+    "in": "em",
+    "out": "saindo de",
+  }
+
+- SIPrefixes: {
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "quilo", "h": "hecto", "da": "deca",
+    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+  }
+
+# this is a list of all units that accept SIPrefixes
+# from www.bipm.org/documents/20126/41483022/SIBrochure-9-EN.pdf
+#   Prefixes may be used with any of the 29 SI units with special names
+#   The SI prefixes can be used with several of accepted units, but not, for example, with the non-SI units of time.
+
+- SIUnits: {
+    # base units
+    "A": "ampère",
+    "cd": "candela",
+    "K": "kelvin", "K": "kelvin", 
+    "g": "grama",
+    "m": "metro",
+    "mol": "mol",
+    "s": "segundo", "sec": "segundo",  # "sec" not actually legal
+
+    # derived units
+    "Bq": "becquerel",
+    "C": "coulomb",
+    "°C": "grau Celsius", "℃": "grau Celsius",  # should only take negative powers
+    "F": "farad",
+    "Gy": "gray",
+    "H": "henry",
+    "Hz": "hertz",
+    "J": "joule",
+    "kat": "katal",
+    "lm": "lúmen",
+    "lx": "lux",
+    "N": "newton",
+    "Ω": "ohm", "Ω": "ohm",       # Greek Cap letter, U+2126 OHM SIGN
+    "Pa": "pascal",
+    "S": "siemens",
+    "Sv": "sievert",
+    "T": "tesla",
+    "V": "volt",
+    "W": "watt",
+    "Wb": "weber",
+
+    # accepted (plus a few variants) that take SI prefixes
+    "l": "litro", "L": "litro", "ℓ": "litro", # Should only take negative powers
+    "t": "tonelada",             # should only take positive powers
+    "Da": "dalton",
+    "Np": "neper",               # should only take negative powers
+    "u": "unidade de massa atômica",
+    "eV": "elétron-volt",
+    "rad": "radiano",            # should only take negative powers
+    "sr": "esferorradiano",      # should only take negative powers
+
+    # others that take a prefix
+    "a": "ano",                 # should only take positive powers
+    "as": "segundo de arco",    # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+
+    # technically wrong, but used in practice with SI Units (and only positive powers)
+    "b": "bit",                 # should only take positive powers
+    "B": "byte",                # should only take positive powers
+    "Bd": "baud",               # should only take positive powers
+  }
+
+
+- UnitsWithoutPrefixes: {
+    # time
+    "″": "segundo", "\"": "segundo", 
+    "′": "minuto", "'": "minuto","min": "minuto",
+    "h": "hora", "hr": "hora", "Hr": "hora",
+    "d": "dia", "dy": "dia",
+    "w": "semana", "wk": "semana",
+    "y": "ano", "yr": "ano",    
+
+    # angles
+    "°": "grau", "deg": "grau", # should only take negative powers
+    "arcmin": "minuto de arco",
+    "amin": "minuto de arco",
+    "am": "minuto de arco",
+    "MOA": "minuto de arco",
+    "arcsec": "segundo de arco",
+    "asec": "segundo de arco",
+
+    # distance
+    "au": "unidade astronômica", "AU": "unidade astronômica",
+    "ltyr": "ano-luz", "ly": "ano-luz",
+    "pc": "parsec",
+    "Å": "angström", "Å": "angström",           # U+00C5 and U+212B
+    "fm": "fermi",
+
+    # others
+    "ha": "hectare",
+    # "B": "bel",    # "B" more commonly means bytes
+    "dB": "decibel", # already logarithmic, so not used with SI prefixes
+    # radiano com prefixo dobra o r (nano+radiano = nanorradiano)
+    "mrad": "milirradiano", "µrad": "microrradiano", "nrad": "nanorradiano", "prad": "picorradiano", "krad": "quilorradiano",
+
+
+    # CORREÇÃO ORTOGRÁFICA pt: prefixo terminado em vogal seguido de
+    # palavra iniciada por "s" dobra o s ex: milissegundo, microssegundo,
+    # nanossegundo. É o mesmo caso já tratado para "radiano" acima
+    # (milirradiano). A regra genérica de composição do MathCAT concatena
+    # sem dobrar e produziria "milisegundo".
+    # "as" fica de fora: o símbolo já significa "segundo de arco".
+    "Qs": "quettassegundo", "Rs": "ronnassegundo", "Ys": "yottassegundo", "Zs": "zettassegundo", "Es": "exassegundo",
+    "Ps": "petassegundo", "Ts": "terassegundo", "Gs": "gigassegundo", "Ms": "megassegundo", "ks": "quilossegundo",
+    "hs": "hectossegundo", "das": "decassegundo", "ds": "decissegundo", "cs": "centissegundo", "ms": "milissegundo",
+    "µs": "microssegundo", "ns": "nanossegundo", "ps": "picossegundo", "fs": "femtossegundo", "zs": "zeptossegundo",
+    "ys": "yoctossegundo", "rs": "rontossegundo", "qs": "quectossegundo",
+
+    "Qsec": "quettassegundo", "Rsec": "ronnassegundo", "Ysec": "yottassegundo", "Zsec": "zettassegundo",
+    "Esec": "exassegundo", "Psec": "petassegundo", "Tsec": "terassegundo", "Gsec": "gigassegundo",
+    "Msec": "megassegundo", "ksec": "quilossegundo", "hsec": "hectossegundo", "dasec": "decassegundo",
+    "dsec": "decissegundo", "csec": "centissegundo", "msec": "milissegundo", "µsec": "microssegundo",
+    "μsec": "microssegundo", "nsec": "nanossegundo", "psec": "picossegundo", "fsec": "femtossegundo",
+    "zsec": "zeptossegundo", "ysec": "yoctossegundo", "rsec": "rontossegundo", "qsec": "quectossegundo",
+
+
+    "μs": "microssegundo",
+
+
+    "cas": "centissegundo de arco", "mas": "milissegundo de arco",
+    "µas": "microssegundo de arco", "μas": "microssegundo de arco", "nas": "nanossegundo de arco",
+    "pas": "picossegundo de arco", "fas": "femtossegundo de arco", "zas": "zeptossegundo de arco",
+    "yas": "yoctossegundo de arco", "ras": "rontossegundo de arco", "qas": "quectossegundo de arco",
+
+    "QS": "quettassiemens", "RS": "ronnassiemens", "YS": "yottassiemens", "ZS": "zettassiemens", "ES": "exassiemens",
+    "PS": "petassiemens", "TS": "terassiemens", "GS": "gigassiemens", "MS": "megassiemens", "kS": "quilossiemens",
+    "hS": "hectossiemens", "daS": "decassiemens", "dS": "decissiemens", "cS": "centissiemens", "mS": "milissiemens",
+    "µS": "microssiemens", "nS": "nanossiemens", "pS": "picossiemens", "fS": "femtossiemens", "aS": "attossiemens",
+    "zS": "zeptossiemens", "yS": "yoctossiemens", "rS": "rontossiemens", "qS": "quectossiemens",
+
+    "QSv": "quettassievert", "RSv": "ronnassievert", "YSv": "yottassievert", "ZSv": "zettassievert", "ESv": "exassievert",
+    "PSv": "petassievert", "TSv": "terassievert", "GSv": "gigassievert", "MSv": "megassievert", "kSv": "quilossievert",
+    "hSv": "hectossievert", "daSv": "decassievert", "dSv": "decissievert", "cSv": "centissievert", "mSv": "milissievert",
+    "µSv": "microssievert", "nSv": "nanossievert", "pSv": "picossievert", "fSv": "femtossievert", "aSv": "attossievert",
+    "zSv": "zeptossievert", "ySv": "yoctossievert", "rSv": "rontossievert", "qSv": "quectossievert",
+
+    "atm": "atmosfera",
+    "amu": "unidade de massa atômica",
+    "bar": "bar",
+    "cal": "caloria",
+    "Ci": "curie",
+    "grad": "grado",
+    "M": "molar",
+    "R": "roentgen",
+    "rpm": "rotação por minuto",
+    "℧": "mho",
+    "dyn": "dina",
+    "erg": "erg",
+
+    # special case overrides because prefixes with the base "metro" all get accents
+    "Qm": "quetâmetro", "Rm": "ronâmetro", "Ym": "yotâmetro", "Zm": "zetâmetro", "Em": "exâmetro", "Pm": "petâmetro",
+      "Tm": "terâmetro", "Gm": "gigâmetro", "Mm": "megâmetro", "km": "quilômetro", "hm": "hectômetro", "dam": "decâmetro",
+    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrômetro", "nm": "nanômetro", "pm": "picômetro",
+    #  conflicts: "fm": "femtômetro", "am": "attômetro",
+    "zm": "zeptômetro", "ym": "yoctômetro", "rm": "rontômetro", "qm": "quectômetro",
+  
+    # powers of 2 used with bits and bytes
+    "Kib": "kibibit", "Mib": "mebibit", "Gib": "gibibit", "Tib": "tebibit", "Pib": "pebibit", "Eib": "exbibit", "Zib": "zebibit", "Yib": "yobibit",
+    "KiB": "kibibyte", "MiB": "mebibyte", "GiB": "gibibyte", "TiB": "tebibyte", "PiB": "pebibyte", "EiB": "exbibyte", "ZiB": "zebibyte", "YiB": "yobibyte",
+  }
+
+
+  # this will only be used if the language is English, so it can be empty for other countries
+  # Mantida em inglês de propósito: são unidades imperiais, sem uso no Brasil.
+- EnglishUnits: {
+    # length
+    "in": "inch",
+    "ft": "foot",
+    "mi": "mile",
+    "rd": "rod",
+    "li": "link",
+    "ch": "chain",
+
+    # area
+    "sq in": "square inch", "sq. in": "square inch", "sq. in.": "square inch",
+    "sq ft": "square foot", "sq. ft": "square foot", "sq. ft.": "square foot",
+    "sq yd": "square yard", "sq. yd": "square yard", "sq. yd.": "square yard",
+    "sq mi": "square mile", "sq. mi": "square mile", "sq. mi.": "square mile",
+    "ac": "acre",
+    "FBM": "board foot",
+
+    # volume
+    "cu in": "cubic inch", "cu. in": "cubic inch", "cu. in.": "cubic inch",
+    "cu ft": "cubic foot", "cu. ft": "cubic foot", "cu. ft.": "cubic foot",
+    "cu yd": "cubic yard", "cu. yd": "cubic yard", "cu. yd.": "cubic yard",
+    "bbl": "barrel", "BBL": "barrel",
+    "pk": "peck",
+    "bu": "bushel",
+    "tsp": "teaspoon",
+    "tbl": "tablespoon",
+
+    # liquid
+    "fl dr": "fluid drams",
+    "fl oz": "fluid ounce",
+    "gi": "gill",
+    "cp": "cup", "cup": "cup",
+    "pt": "pint",
+    "qt": "quart",
+    "gal": "gallon",
+
+    # weight
+    "gr": "grain",
+    "dr": "dram",
+    "oz": "ounce", "℥": "ounce",
+    "lb": "pound",
+    "cwt": "hundredweight",
+    "dwt": "pennyweight",
+    "oz t": "troy ounce",
+    "lb t": "troy pound",
+
+    # energy
+    "hp": "horsepower",
+    "BTU": "BTU",
+    "°F": "degree fahrenheit", "℉": "degree fahrenheit",
+
+    # other
+    "mph": "mile per hour",
+    "mpg": "mile per gallon",
+  }
+
+# ACRESCENTADO símbolos monetários para a regra currency.
+# O inglês não tem R$; acrescentado por ser o caso principal no Brasil.
+- CurrencySymbols: {
+    "R$": "real",
+    "$": "dólar", "US$": "dólar", "¢": "centavo", "€": "euro", "£": "libra",
+    "₡": "colón", "₤": "lira", "₨": "rupia", "₩": "won", "₪": "shekel",
+    "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcoin",
+  }
+
+- PluralForms: {
+    "lúmen": "lúmens",
+    "kelvin": "kelvins",
+    "grau Celsius": "graus Celsius",
+    # O plural genérico acrescenta "s" no FIM da string, o que produziria
+    # "yoctossegundo de arcos". O "s" tem de ir no substantivo, não na frase.
+    # (a forma sem prefixo já está mais abaixo, junto de "minuto de arco".)
+    "centissegundo de arco": "centissegundos de arco",
+    "milissegundo de arco": "milissegundos de arco",
+    "microssegundo de arco": "microssegundos de arco",
+    "nanossegundo de arco": "nanossegundos de arco",
+    "picossegundo de arco": "picossegundos de arco",
+    "femtossegundo de arco": "femtossegundos de arco",
+    "zeptossegundo de arco": "zeptossegundos de arco",
+    "yoctossegundo de arco": "yoctossegundos de arco",
+    "rontossegundo de arco": "rontossegundos de arco",
+    "quectossegundo de arco": "quectossegundos de arco",
+    "grau Fahrenheit": "graus Fahrenheit",
+    "hertz": "hertz",
+    "siemens": "siemens",
+    "lux": "lux",
+    "mol": "mols",
+    # a regra genérica acrescenta "es" a palavras terminadas em l/r, o que
+    # gera "decibeles"/"molares". Em português o plural de -el é -éis.
+    "decibel": "decibéis",
+    "bel": "béis",
+
+    # Unidades invariáveis no plural continuam invariáveis quando prefixadas.
+    # A regra genérica não consulta o nome composto e produziria
+    # "milissiemenses", "decahertzes", "attoluxes".
+    "quettassiemens": "quettassiemens", "ronnassiemens": "ronnassiemens", "yottassiemens": "yottassiemens", "zettassiemens": "zettassiemens",
+    "exassiemens": "exassiemens", "petassiemens": "petassiemens", "terassiemens": "terassiemens", "gigassiemens": "gigassiemens",
+    "megassiemens": "megassiemens", "quilossiemens": "quilossiemens", "hectossiemens": "hectossiemens", "decassiemens": "decassiemens",
+    "decissiemens": "decissiemens", "centissiemens": "centissiemens", "milissiemens": "milissiemens", "microssiemens": "microssiemens",
+    "nanossiemens": "nanossiemens", "picossiemens": "picossiemens", "femtossiemens": "femtossiemens", "attossiemens": "attossiemens",
+    "zeptossiemens": "zeptossiemens", "yoctossiemens": "yoctossiemens", "rontossiemens": "rontossiemens", "quectossiemens": "quectossiemens",
+    "quettahertz": "quettahertz", "ronnahertz": "ronnahertz", "yottahertz": "yottahertz", "zettahertz": "zettahertz",
+    "exahertz": "exahertz", "petahertz": "petahertz", "terahertz": "terahertz", "gigahertz": "gigahertz",
+    "megahertz": "megahertz", "quilohertz": "quilohertz", "hectohertz": "hectohertz", "decahertz": "decahertz",
+    "decihertz": "decihertz", "centihertz": "centihertz", "milihertz": "milihertz", "microhertz": "microhertz",
+    "nanohertz": "nanohertz", "picohertz": "picohertz", "femtohertz": "femtohertz", "attohertz": "attohertz",
+    "zeptohertz": "zeptohertz", "yoctohertz": "yoctohertz", "rontohertz": "rontohertz", "quectohertz": "quectohertz",
+    "quettalux": "quettalux", "ronnalux": "ronnalux", "yottalux": "yottalux", "zettalux": "zettalux",
+    "exalux": "exalux", "petalux": "petalux", "teralux": "teralux", "gigalux": "gigalux",
+    "megalux": "megalux", "quilolux": "quilolux", "hectolux": "hectolux", "decalux": "decalux",
+    "decilux": "decilux", "centilux": "centilux", "mililux": "mililux", "microlux": "microlux",
+    "nanolux": "nanolux", "picolux": "picolux", "femtolux": "femtolux", "attolux": "attolux",
+    "zeptolux": "zeptolux", "yoctolux": "yoctolux", "rontolux": "rontolux", "quectolux": "quectolux",
+
+    "mho": "mhos",
+    "real": "reais", "dólar": "dólares", "colón": "colones",
+    "pascal": "pascals",
+    "weber": "webers",
+    "becquerel": "becquerels",
+    "katal": "katals",
+    "rotação por minuto": "rotações por minuto",
+    "unidade de massa atômica": "unidades de massa atômica",
+    "unidade astronômica": "unidades astronômicas",
+    "ano-luz": "anos-luz",
+    "minuto de arco": "minutos de arco",
+    "segundo de arco": "segundos de arco",
+  }
+
+# ----------------  Cardinal and Ordinal Numbers  --------------------------
+# The following definitions are used to convert numbers to words
+# The are mainly used for ordinals, of which there are two cases:
+# 1. Regular ordinals: first, second, third, ...
+# 2. Ordinals used in the denominator of fractions (e.g, one half, one third)
+#    When used in the denominator of fractions, a plural version might be
+#    used (e.g., two halves, two thirds)
+# Although a lot of languages are regular after a few entries, for generality,
+# the following lists should be filled out even though they are the same
+# or easily derived from others in many languages (e.g, an 's' is added for plurals).
+# The larger ordinal numbers (e.g, millionth) is used when there are only
+# '0's after that decimal place (e.g., 23000000).
+#
+# NOTA DE TRADUÇÃO -> regra do português para denominador de fração:
+#   até 1/10 usa-se o ordinal ("um terço", "um décimo");
+#   de 1/11 em diante usa-se "avos" ("um onze avos", "três vinte avos").
+# Isso difere do inglês e do espanhol, e está refletido nas listas plurais.
+
+# All definitions start 0, 10, 100, etc.
+
+# The definitions for the "ones" should extend until a regular pattern begins
+#   The minimum length is 10.
+
+- NumbersOnes: [
+         "zero", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove",
+         "dez", "onze", "doze", "treze", "catorze", "quinze", "dezesseis",
+         "dezessete", "dezoito", "dezenove"
+    ]
+
+- NumbersOrdinalOnes: [
+         "zero", "primeiro", "segundo", "terceiro", "quarto", "quinto", "sexto", "sétimo", "oitavo", "nono",
+         "décimo", "décimo primeiro", "décimo segundo", "décimo terceiro", "décimo quarto", "décimo quinto", "décimo sexto",
+         "décimo sétimo", "décimo oitavo", "décimo nono"
+    ]
+
+- NumbersOrdinalPluralOnes: [
+         "zeros", "primeiros", "meios", "terços", "quartos", "quintos", "sextos", "sétimos", "oitavos", "nonos",
+         "décimos", "onze avos", "doze avos", "treze avos", "catorze avos", "quinze avos", "dezesseis avos",
+         "dezessete avos", "dezoito avos", "dezenove avos"
+    ]
+
+    # stop when regularity begins
+# A lista parava em "meio": de 1/3 em diante o motor caía nos ordinais
+# comuns e falava "1 terceiro". Até 1/10 a forma é a do denominador de
+# fração ("um terço", "um décimo"); de 1/11 em diante entra "avos", que já
+# está nas listas plurais acima. Ver ACHADOS 9.
+- NumbersOrdinalFractionalOnes: [
+         "zero", "primeiro", "meio", "terço", "quarto", "quinto", "sexto", "sétimo", "oitavo", "nono",
+         "décimo"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralOnes: [
+         "zeros", "primeiros", "meios", "terços", "quartos", "quintos", "sextos", "sétimos", "oitavos", "nonos",
+         "décimos"
+    ]
+
+
+    # What to use for multiples of 10
+- NumbersTens: [
+         "", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"
+    ]
+
+- NumbersOrdinalTens: [
+         "", "décimo", "vigésimo", "trigésimo", "quadragésimo", "quinquagésimo", "sexagésimo", "septuagésimo", "octogésimo", "nonagésimo"
+    ]
+
+- NumbersOrdinalPluralTens: [
+         "", "décimos", "vinte avos", "trinta avos", "quarenta avos", "cinquenta avos", "sessenta avos", "setenta avos", "oitenta avos", "noventa avos"
+    ]
+
+
+- NumbersHundreds: [
+       "", "cem", "duzentos", "trezentos", "quatrocentos", "quinhentos",
+         "seiscentos", "setecentos", "oitocentos", "novecentos"
+    ]
+
+- NumbersOrdinalHundreds: [
+       "", "centésimo", "ducentésimo", "tricentésimo", "quadringentésimo", "quingentésimo",
+         "sexcentésimo", "septingentésimo", "octingentésimo", "noningentésimo"
+    ]
+
+- NumbersOrdinalPluralHundreds: [
+       "", "centésimos", "ducentésimos", "tricentésimos", "quadringentésimos", "quingentésimos",
+         "sexcentésimos", "septingentésimos", "octingentésimos", "noningentésimos"
+    ]
+      
+
+    # At this point, hopefully the language is regular. If not, code needs to be written
+- NumbersLarge: [
+         "", "mil", "milhão", "bilhão", "trilhão", "quatrilhão",
+         "quintilhão", "sextilhão", "septilhão", "octilhão", "nonilhão"
+    ]
+      
+- NumbersOrdinalLarge: [
+         "", "milésimo", "milionésimo", "bilionésimo", "trilionésimo", "quatrilionésimo",
+         "quintilionésimo", "sextilionésimo", "septilionésimo", "octilionésimo", "nonilionésimo"
+    ]
+      
+- NumbersOrdinalPluralLarge: [
+         "", "milésimos", "milionésimos", "bilionésimos", "trilionésimos", "quatrilionésimos",
+         "quintilionésimos", "sextilionésimos", "septilionésimos", "octilionésimos", "nonilionésimos"
+    ]

@@ -4,15 +4,6 @@
 use sxd_document_no_unsafe::dom::{Element, ChildOfElement, Attribute};
 use sxd_document_no_unsafe::{as_str, as_qname};
 
-// #[allow(dead_code)]
-// pub fn pp_doc(doc: &Document) {
-//     for root_child in doc.root().children() {
-//         if let ChildOfRoot::Element(e) = root_child {
-//             format_element(&e, 0);
-//             break;
-//         }
-//     };
-// }
 
 /// Pretty-print the MathML represented by `element`.
 pub fn mml_to_string(e: Element) -> String {
@@ -88,23 +79,6 @@ fn handle_special_chars(text: &str) -> String {
     s
 }
 
-
-// /// Pretty print an xpath value.
-// /// If the value is a `NodeSet`, the MathML for the node/element is returned.
-// pub fn pp_xpath_value(value: Value) {
-//     use sxd_xpath_no_unsafe::Value;
-//     use sxd_xpath_no_unsafe::nodeset::Node;
-//     debug!("XPath value:");
-//     if let Value::Nodeset(nodeset) = &value {
-//         for node in nodeset.document_order() {
-//             match node {
-//                 Node::Element(el) => {debug!("{}", crate::pretty_print::format_element(&el, 1))},
-//                 Node::Text(t) =>  {debug!("found Text value: {}", t.text())},
-//                 _ => {debug!("found unexpected node type")}
-//             }
-//         }
-//     }
-// }
 
 /// Convert YAML to a string using with `indent` amount of space.
 pub fn yaml_to_string(yaml: &Yaml, indent: usize) -> String {
@@ -288,12 +262,6 @@ impl<'a> YamlEmitter<'a> {
         self.compact
     }
 
-    // fn dump(&mut self, doc: &Yaml) -> EmitResult {
-    //     // write DocumentStart
-    //     writeln!(self.writer, "---")?;
-    //     self.level = -1;
-    //     self.emit_node(doc)
-    // }
 
     fn write_indent(&mut self) -> EmitResult {
         if self.level <= 0 {

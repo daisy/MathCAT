@@ -863,8 +863,8 @@ impl IsBracketed {
             return false;
         }
 
-        if !left.is_empty() && get_text_from_COE(&children[0]) != left ||
-           !right.is_empty() && get_text_from_COE(&children[children.len()-1]) != right {
+        if (!left.is_empty() && get_text_from_COE(&children[0]) != left) ||
+           (!right.is_empty() && get_text_from_COE(&children[children.len()-1]) != right) {
             // left or right don't match
             return false;
         }
@@ -1408,9 +1408,10 @@ pub struct FontSizeGuess;
 ///    ""
 // 		   returns original node match isn't found
 impl FontSizeGuess {
+    /// Returns an estimated width in em units, using an assumed 12-point font for conversions.
     pub fn em_from_value(value_with_unit: &str) -> f64 {
         // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
-        static FONT_VALUE: LazyLock<Regex> = LazyLock::new(|| { Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|ppc|pt|ex|em|rem)").unwrap() });
+        static FONT_VALUE: LazyLock<Regex> = LazyLock::new(|| { Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|pc|pt|ex|em|rem)").unwrap() });
         let cap = FONT_VALUE.captures(value_with_unit);
         if let Some(cap) = cap {
             if cap.len() == 3 {
@@ -1646,9 +1647,86 @@ impl Function for CountTableColumns {
     }
 }
 
+#[derive(Clone, Copy)]
+enum TableLineAxis {
+    Row,
+    Column,
+}
+
+/// Return whether a one-based mtable boundary has a visible line on the given axis.
+///
+/// MathML repeats the final line style for remaining boundaries. Boundaries after
+/// the final row or column, and values other than `solid` and `dashed`, do not
+/// describe a visible separator.
+fn has_visible_table_line(table: Element, boundary: usize, axis: TableLineAxis) -> bool {
+    if boundary == 0 || !is_tag(table, "mtable") {
+        return false;
+    }
+
+    let Ok((Value::Number(row_count), Value::Number(column_count))) = CountTableDims::new().count_table_dims(table) else {
+        return false;
+    };
+    let (line_count, attribute_name) = match axis {
+        TableLineAxis::Row => (row_count, "rowlines"),
+        TableLineAxis::Column => (column_count, "columnlines"),
+    };
+    if boundary as f64 >= line_count {
+        return false;
+    }
+
+    return table
+        .attribute_value(attribute_name)
+        .map(|values| {
+            matches!(
+                values.split_whitespace().take(boundary).last(),
+                Some("solid" | "dashed")
+            )
+        })
+        .unwrap_or(false);
+}
+
+/// Validate and convert XPath arguments before delegating to the typed table-line helper.
+fn evaluate_has_visible_table_line<'d>(
+    args: Vec<Value<'d>>,
+    function_name: &str,
+    axis: TableLineAxis,
+) -> Result<Value<'d>, Error> {
+    let mut args = Args(args);
+    args.exactly(2)?;
+    let boundary = args.pop_number()?;
+    let table = validate_one_node(args.pop_nodeset()?, function_name)?;
+    let Node::Element(table) = table else {
+        return Err(Error::Other { what: format!("{function_name} requires an mtable element") });
+    };
+    if !boundary.is_finite() || boundary < 1.0 || boundary.fract() != 0.0 {
+        return Ok(Value::Boolean(false));
+    }
+    return Ok(Value::Boolean(has_visible_table_line(table, boundary as usize, axis)));
+}
+
+/// XPath function reporting whether an mtable column boundary has a visible line.
+struct HasVisibleColumnLine;
+impl Function for HasVisibleColumnLine {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        evaluate_has_visible_table_line(args, "HasVisibleColumnLine", TableLineAxis::Column)
+    }
+}
+
+/// XPath function reporting whether an mtable row boundary has a visible line.
+struct HasVisibleRowLine;
+impl Function for HasVisibleRowLine {
+    fn evaluate<'c, 'd>(&self,
+                        _context: &context::Evaluation<'c, 'd>,
+                        args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
+        evaluate_has_visible_table_line(args, "HasVisibleRowLine", TableLineAxis::Row)
+    }
+}
+
 
 /// Add all the functions defined in this module to `context`.
-pub fn add_builtin_functions(context: &mut Context) {
+pub fn register_mathcat_xpath_functions(context: &mut Context) {
     context.set_function("NestingChars", crate::braille::NemethNestingChars);
     context.set_function("BrailleChars", crate::braille::BrailleChars);
     context.set_function("NeedsToBeGrouped", crate::braille::NeedsToBeGrouped);
@@ -1671,6 +1749,8 @@ pub fn add_builtin_functions(context: &mut Context) {
     context.set_function("GetNavigationPartName", GetNavigationPartName);
     context.set_function("CountTableRows", CountTableRows);
     context.set_function("CountTableColumns", CountTableColumns);
+    context.set_function("HasVisibleColumnLine", HasVisibleColumnLine);
+    context.set_function("HasVisibleRowLine", HasVisibleRowLine);
     context.set_function("DEBUG", Debug);
 
     // Not used: remove??
@@ -1703,6 +1783,16 @@ mod tests {
         crate::interface::set_preference("Language", "en")?;
         crate::definitions::read_definitions_file(true)?;
         return Ok( () );
+    }
+
+    // Pica widths must use the existing 12pt font estimate: 1pc, 12pt, and 1em are equivalent.
+    #[test]
+    fn font_size_guess_pica_widths() {
+        assert_eq!(FontSizeGuess::em_from_value("1pc"), 1.0);
+        assert_eq!(FontSizeGuess::em_from_value("0.5pc"), 0.5);
+        assert_eq!(FontSizeGuess::em_from_value("-1pc"), -1.0);
+        assert_eq!(FontSizeGuess::em_from_value("12pt"), 1.0);
+        assert_eq!(FontSizeGuess::em_from_value("1em"), 1.0);
     }
 
     #[test]
@@ -1866,7 +1956,7 @@ mod tests {
         test_is_not_simple("-x y z", 
                 "<mrow><mrow><mo>-</mo><mi>x</mi></mrow>
                             <mo>&#x2062;</mo><mi>y</mi><mo>&#x2062;</mo><mi>z</mi></mrow>")?;
-        test_is_not_simple("C(-2,1,4)",             // github.com/NSoiffer/MathCAT/issues/199
+        test_is_not_simple("C(-2,1,4)",             // github.com/daisy/MathCAT/issues/199
                     "<mrow><mi>C</mi><mrow><mo>(</mo><mo>−</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo>)</mo></mrow></mrow>")?;
         return Ok( () );
         });
@@ -1876,7 +1966,10 @@ mod tests {
         let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
         let math_elem = get_element(&package);
         let child = as_element(math_elem.children()[0]);
-        assert!(CountTableDims::new().count_table_dims(child) == Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64))));
+        assert_eq!(
+            CountTableDims::new().count_table_dims(child),
+            Ok((Value::Number(dims.0 as f64), Value::Number(dims.1 as f64)))
+        );
         return Ok( () );
     }
 
@@ -1893,6 +1986,110 @@ mod tests {
         check_table_dims("<math><mtable><mtr><mtd rowspan=\"3\">a</mtd></mtr>
 <mtr><mtd columnspan=\"2\">b</mtd></mtr></mtable></math>", (2, 3))?;
         return Ok( () );
+        });
+    }
+
+    fn check_table_line(mathml: &str, boundary: usize, axis: TableLineAxis, expected: bool) -> Result<()> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
+        let math = get_element(&package);
+        let table = math
+            .children()
+            .iter()
+            .find_map(|child| match child {
+                ChildOfElement::Element(table) => Some(*table),
+                _ => None,
+            })
+            .expect("test MathML should contain an mtable element");
+        assert_eq!(has_visible_table_line(table, boundary, axis), expected);
+        return Ok(());
+    }
+
+    /// Verifies visible table-line styles, repeated styles, and boundaries outside the table.
+    #[test]
+    fn visible_table_lines() -> Result<()> {
+        return xpath_test(|| {
+            // The three values map in order to the three boundaries between four columns.
+            let mixed_column_lines: &str = "<math>
+            <mtable columnlines=' none  solid dashed '>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                    <mtd>column 3</mtd>
+                    <mtd>column 4</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(mixed_column_lines, 1, TableLineAxis::Column, false)?;
+            check_table_line(mixed_column_lines, 2, TableLineAxis::Column, true)?;
+            check_table_line(mixed_column_lines, 3, TableLineAxis::Column, true)?;
+
+            // The final `dashed` value repeats for the third column boundary.
+            let repeated_column_line: &str = "<math>
+            <mtable columnlines='solid dashed'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                    <mtd>column 3</mtd>
+                    <mtd>column 4</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(repeated_column_line, 3, TableLineAxis::Column, true)?;
+
+            // A table without `columnlines` has no visible column boundary.
+            let no_column_lines: &str = "<math>
+            <mtable>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(no_column_lines, 1, TableLineAxis::Column, false)?;
+
+            // `none` explicitly makes the column boundary invisible.
+            let invisible_column_line: &str = "<math>
+            <mtable columnlines='none'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(invisible_column_line, 1, TableLineAxis::Column, false)?;
+
+            // Only `solid` and `dashed` describe visible table lines.
+            let unsupported_column_line: &str = "<math>
+            <mtable columnlines='double'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(unsupported_column_line, 1, TableLineAxis::Column, false)?;
+
+            // Boundary 2 is after the final column, not between two columns.
+            let two_column_table: &str = "<math><mtable columnlines='solid'>
+                <mtr>
+                    <mtd>column 1</mtd>
+                    <mtd>column 2</mtd>
+                </mtr>
+            </mtable></math>";
+            check_table_line(two_column_table, 2, TableLineAxis::Column, false)?;
+
+            // Four rows have three interior boundaries. `none` applies after row 1,
+            // `dashed` applies after row 2, and the final `dashed` repeats after row 3.
+            let mixed_row_lines: &str = "<math>
+            <mtable rowlines='none dashed'>
+                <mtr><mtd>row 1</mtd></mtr>
+                <mtr><mtd>row 2</mtd></mtr>
+                <mtr><mtd>row 3</mtd></mtr>
+                <mtr><mtd>row 4</mtd></mtr>
+            </mtable></math>";
+            check_table_line(mixed_row_lines, 1, TableLineAxis::Row, false)?;
+            check_table_line(mixed_row_lines, 2, TableLineAxis::Row, true)?;
+            check_table_line(mixed_row_lines, 3, TableLineAxis::Row, true)?;
+            // Boundary 4 is after the final row, not between two rows.
+            check_table_line(mixed_row_lines, 4, TableLineAxis::Row, false)?;
+            // Boundary zero is invalid for both axes.
+            check_table_line(mixed_row_lines, 0, TableLineAxis::Row, false)?;
+            return Ok(());
         });
     }
 

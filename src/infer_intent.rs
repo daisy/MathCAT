@@ -314,19 +314,26 @@ pub fn intent_function_has_arity_match(intent_name: &str, fixity: &str, arg_coun
 /// Spoken glue immediately before argument `arg_index` (1-based) when using an arity template.
 /// Empty when not in a matching arity template (caller uses separator/`of` path instead).
 pub fn intent_function_glue_before(intent_name: &str, fixity: &str, arg_index: usize, arg_count: usize) -> String {
-    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else { return String::new(); };
     if !intent_function_is_arity_mode(intent_name, fixity) {
         return String::new();
     }
+    if arg_index == arg_count {
+        return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+            let definitions = definitions.borrow();
+            let word_ref = definitions.get_vec("FunctionApplicationWord");
+            if let Some(word) = word_ref && !word.is_empty() {
+                return word[0].clone();
+            }
+            return String::new();
+        })
+    }
+    let Some(after_eq) = intent_mapping_for_fixity(intent_name, fixity) else { return String::new(); };
     let Some(words) = intent_function_arity_glue(&after_eq, arg_count) else { return String::new(); };
     // words has arg_count-1 entries for args 1..arg_count-1; last arg is preceded by "of"
-    if arg_index == arg_count {
-        return "of".to_string();
-    }
     if arg_index >= 1 && arg_index < arg_count {
         return words[arg_index - 1].to_string();
     }
-    String::new()
+    return String::new();
 }
 
 /// Separator between args when not using an arity template.

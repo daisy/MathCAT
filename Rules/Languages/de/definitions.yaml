@@ -28,7 +28,8 @@
     "minus": "infix=minus || prefix=negativ",
     "plus": "infix=plus || prefix=positiv",
     "real-part": "function=der reale teil",
-    "transpose": "postfix=transponieren || function=transponieren",
+    "transpose": "postfix=transponiert || function=die Transponierte",
+    "magnitude": "function=; Norm: Norm: Norm; Ende Norm",
     "norm": "function=; norm: norm: norm; ende norm",
     "trace": "function=; spur : spur: die spur; ende spur",
     "dimension": "function=; dimension : dimension: die dimension; ende dimension",
@@ -253,7 +254,9 @@
 
   # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-        "nulle", "erste", "hälften"
+        "nulle", "erste", "hälften", "Drittel", "Viertel", "Fünftel", "Sechstel", "Siebtel", "Achtel", "Neuntel", "Zehntel",
+        "Elftel", "Zwölftel", "Dreizehntel", "Vierzehntel", "Fünfzehntel", "Sechzehntel",
+        "Siebzehntel", "Achtzehntel", "Neunzehntel"
     ]
 
   # What to use for multiples of 10
