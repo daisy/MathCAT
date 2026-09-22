@@ -226,7 +226,6 @@
   - x: "*[1]"
   - T: "hoch"      # phrase(15 raised 'to the' second power equals 225)
   - x: "*[2]"
-  - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
 
 - name: simple
   tag: power

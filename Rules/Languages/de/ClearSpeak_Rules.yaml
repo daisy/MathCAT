@@ -349,10 +349,6 @@
   - x: "*[1]"
   - T: "hoch"
   - x: "*[2]"
-  - pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [T: "hoch"]
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n

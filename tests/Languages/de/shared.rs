@@ -17,6 +17,15 @@ fn ordinary_integer_powers() -> Result<()> {
 }
 
 #[test]
+fn variable_powers() -> Result<()> {
+    // Variable exponents should not acquire an English ordinal suffix or a second "hoch".
+    let expr = "<math><msup><mn>2</mn><mi>x</mi></msup></math>";
+    test("de", "ClearSpeak", expr, "2 hoch x")?;
+    test("de", "SimpleSpeak", expr, "2 hoch x")?;
+    Ok(())
+}
+
+#[test]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
