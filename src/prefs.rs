@@ -715,7 +715,8 @@ impl PreferenceManager {
            !value.chars().all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '-')) {
             bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
         }
-        
+
+        // don't do an update if the value hasn't changed
         let api_pref: Option<&Yaml> = self.api_prefs.prefs.get(key);
         let Some(pref_value) = api_pref.or_else(|| self.user_prefs.prefs.get(key)) else {
             bail!("{key} is an unknown MathCAT preference!");
