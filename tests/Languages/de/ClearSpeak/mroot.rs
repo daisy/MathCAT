@@ -119,17 +119,25 @@ fn ordinal_root() -> Result<()> {
 }
 
 
-/* // should have n-te wurze
 #[test]
-fn simple_mi_root() -> Result<()> {
+fn variable_root_index_uses_german_ordinal_suffix() -> Result<()> {
+    // A variable root index uses the German ordinal suffix in both speech styles.
     let expr = "<math>
                     <mroot> <mi>x</mi> <mi>n</mi> </mroot>
                 </math>";
-    test("de", "ClearSpeak", expr, "die n-th wurzel von x")?;
+    test("de", "ClearSpeak", expr, "die n-te wurzel von x")?;
+    test("de", "SimpleSpeak", expr, "die n-te wurzel von x")?;
+
+    let expr = "<math>
+                    <mroot> <mi>x</mi> <mi>k</mi> </mroot>
+                </math>";
+    test("de", "ClearSpeak", expr, "die k-te wurzel von x")?;
+    test("de", "SimpleSpeak", expr, "die k-te wurzel von x")?;
     return Ok(());
 
 }
 
+/*
 #[test]
 fn mroot_simple_pos_end_root() -> Result<()> {
     let expr = "<math>
