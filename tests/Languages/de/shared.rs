@@ -38,6 +38,19 @@ fn variable_powers() -> Result<()> {
 }
 
 #[test]
+fn unary_signs_use_plus_and_minus() -> Result<()> {
+    // Unary signs use their mathematical names rather than adjectival forms.
+    let signed_numbers = "<math><mo>−</mo><mn>5</mn><mo>,</mo><mo>+</mo><mn>5</mn></math>";
+    test("de", "ClearSpeak", signed_numbers, "minus 5 komma plus 5")?;
+    test("de", "SimpleSpeak", signed_numbers, "minus 5 komma plus 5")?;
+
+    let negative_root = "<math><mo>−</mo><msqrt><mi>x</mi></msqrt></math>";
+    test("de", "ClearSpeak", negative_root, "minus die quadratwurzel von x")?;
+    test("de", "SimpleSpeak", negative_root, "minus die quadratwurzel von x")?;
+    Ok(())
+}
+
+#[test]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>

@@ -71,7 +71,7 @@ fn neg_without_root() -> Result<()> {
     let expr = "<math>
                     <mo>-</mo> <mi>x</mi> <mo>-</mo> <mi>y</mi>
                 </math>";
-    test("de", "ClearSpeak", expr, "negative x minus y")?;
+    test("de", "ClearSpeak", expr, "minus x minus y")?;
     return Ok(());
 
 }
