@@ -214,7 +214,7 @@
  - "θ": [T: "theta"]                            	#  0x3b8
  - "ι": [T: "iota"]                             	#  0x3b9	(google: 'jota')
  - "κ": [T: "kappa"]                            	#  0x3ba
- - "λ": [T: "lamda"]                            	#  0x3bb	(en: 'lambda', google: 'lambda')
+ - "λ": [T: "lambda"]                            	#  0x3bb	(en: 'lambda', google: 'lambda')
  - "μ": [T: "mü"]                               	#  0x3bc
  - "ν": [T: "nü"]                               	#  0x3bd
  - "ξ": [T: "xi"]                               	#  0x3be	(en: 'zai', google: 'zai')
