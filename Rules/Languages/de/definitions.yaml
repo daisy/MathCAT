@@ -96,7 +96,7 @@
     "pc": "parsec", "Å": "ångström", "Å": "ångström", "fm": "fermi",
     "ha": "hektar", "dB": "dezibel", "amu": "atommasse-einheit", "atm": "atmosphäre",
     "bar": "bar", "cal": "kalorie", "Ci": "curie", "grad": "gon", "M": "mol/liter",
-    "R": "röntgen", "rpm": "umdrehungen pro minute", "℧": "mho", "dyn": "dyn", "erg": "erg",
+    "R": "röntgen", "rpm": "Umdrehung pro Minute", "℧": "mho", "dyn": "dyn", "erg": "erg",
     "Kib": "kibi-bit", "Mib": "mebi-bit", "Gib": "gibi-bit", "Tib": "tebi-bit", "Pib": "pebi-bit",
     "Eib": "exbi-bit", "Zib": "zebi-bit", "Yib": "yobi-bit", "KiB": "kibi-byte", "MiB": "mebi-byte",
     "GiB": "gibi-byte", "TiB": "tebi-byte", "PiB": "pebi-byte", "EiB": "exbi-byte",
@@ -204,7 +204,7 @@
     "kibi-byte": "kibi-byte", "mebi-byte": "mebi-byte", "gibi-byte": "gibi-byte",
     "tebi-byte": "tebi-byte", "pebi-byte": "pebi-byte", "exbi-byte": "exbi-byte",
     "zebi-byte": "zebi-byte", "yobi-byte": "yobi-byte",
-    "umdrehungen pro minute": "umdrehungen pro minute"
+    "Umdrehung pro Minute": "Umdrehungen pro Minute"
   }
 
 
