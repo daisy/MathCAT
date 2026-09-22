@@ -669,14 +669,18 @@ impl TTS {
     /// There is a bias towards pausing more _after_ longer strings.
     pub fn compute_auto_pause(&self, prefs: &PreferenceManager, before: &str, after: &str) -> Result<String> {
         static REMOVE_XML: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<.+?>").unwrap()); // punctuation ending with a '.'
-        let (before_len, after_len) = match self {
+        let before_len;
+        let after_len;
+        match self {
             TTS::SSML | TTS::SAPI5 => {
-                (REMOVE_XML.replace_all(before, "").len(), REMOVE_XML.replace_all(after, "").len())
+                before_len = REMOVE_XML.replace_all(before, "").len();
+                after_len = REMOVE_XML.replace_all(after, "").len();
             },
             _ => {
-                (before.len(), after.len())
+                before_len = before.len();
+                after_len = after.len();
             },
-        };
+        }
 
         // pause values are not cut in stone
         // the calculation bias to 'previous' is based on MathPlayer which used '30 * #-of-descendants-on-left
