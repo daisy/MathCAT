@@ -154,10 +154,9 @@ impl Preferences{
         }
 
         fn add_prefs(map: &mut PreferenceHashMap, new_prefs: &Yaml, name_prefix: &str, file_name: &str) {
-            if new_prefs.is_badvalue() || new_prefs.is_null() || new_prefs.as_hash().is_none() {
+            let Some(new_prefs) = new_prefs.as_hash() else {
                 return;
-            }
-            let new_prefs = new_prefs.as_hash().unwrap();
+            };
             for (yaml_name, yaml_value) in new_prefs {
                 let name = as_str_checked(yaml_name);
                 if let Err(e) = name {
