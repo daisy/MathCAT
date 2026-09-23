@@ -106,37 +106,24 @@ impl Preferences{
 
     fn read_prefs_file(file: &Path, mut base_prefs: Preferences) -> Result<Preferences> {
         let file_name = file.to_str().unwrap();
-        let docs;
-        match read_to_string_shim(file) {
-            Err(e) => {
-                bail!("Couldn't read file {}\n{}", file_name, e);
-            },
-            Ok( file_contents) => {
-                match YamlLoader::load_from_str(&file_contents) {
-                    Err(e) => {
-                        bail!("Yaml parse error ('{}') in preference file {}.", e, file_name);
-                    },
-                    Ok(d) => docs = d,
-                }
-
-            }
-        }
+        let file_contents = read_to_string_shim(file)
+            .map_err(|e| anyhow!("Couldn't read file {file_name}\n{e}"))?;
+        let docs = YamlLoader::load_from_str(&file_contents)
+            .map_err(|e| anyhow!("Yaml parse error ('{e}') in preference file {file_name}."))?;
         if docs.len() != 1 {
             bail!("MathCAT: error in prefs file '{}'.\nFound {} 'documents' -- should only be 1.", file_name, docs.len());
         }
 
         let doc = &docs[0];
+        const SECTIONS: [&str; 4] = ["Speech", "Navigation", "Braille", "Other"];
         if cfg!(debug_assertions) {
-            verify_keys(doc, "Speech", file_name)?;
-            verify_keys(doc, "Navigation", file_name)?;
-            verify_keys(doc, "Braille", file_name)?;
-            verify_keys(doc, "Other", file_name)?;
+            for section in SECTIONS {
+                verify_keys(doc, section, file_name)?;
+            }
         }
-
-        add_prefs(&mut base_prefs.prefs, &doc["Speech"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Navigation"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Braille"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Other"], "", file_name);
+        for section in SECTIONS {
+            add_prefs(&mut base_prefs.prefs, &doc[section], "", file_name);
+        }
         return Ok(base_prefs);
 
 
