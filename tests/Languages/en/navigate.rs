@@ -3178,4 +3178,106 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn move_negative_power_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mrow id='id-3'>
+            <mo id='id-4'>-</mo>
+            <mn id='id-5'>2</mn>
+        </mrow>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; negative 2", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in minus; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; out of minus; negative 2", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_negative_power_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mrow id='id-3'>
+            <mo id='id-4'>-</mo>
+            <mn id='id-5'>2</mn>
+        </mrow>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; negative 2", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom in; in minus; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; out of minus; negative 2", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_negative_power_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mrow id='id-3'>
+            <mo id='id-4'>-</mo>
+            <mn id='id-5'>2</mn>
+        </mrow>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in superscript; minus", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; minus 2", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
 }
