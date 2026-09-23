@@ -526,11 +526,10 @@ pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let command = command.as_ref().to_string();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-        if cmd.is_none() {
+        let Some(cmd) = NAV_COMMANDS.get_key(&command) else {   // gets a &'static version of the command.
             bail!("Unknown command in call to DoNavigateCommand()");
         };
-        let cmd = *cmd.unwrap();
+        let cmd = *cmd;
         MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);

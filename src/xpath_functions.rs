@@ -266,14 +266,12 @@ impl IsNode {
             return false;
         }
 
-        let num = children[0].element();
-        let denom = children[1].element();
-        if num.is_none() || denom.is_none() {
+        let Some(num) = children[0].element() else {
             return false;
         };
-
-        let num = num.unwrap();
-        let denom = denom.unwrap();
+        let Some(denom) = children[1].element() else {
+            return false;
+        };
         if !is_tag(num, "mn") || !is_tag(denom, "mn") {
             return false
         };
