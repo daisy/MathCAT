@@ -107,9 +107,9 @@ impl Preferences{
     fn read_prefs_file(file: &Path, mut base_prefs: Preferences) -> Result<Preferences> {
         let file_name = file.to_str().unwrap();
         let file_contents = read_to_string_shim(file)
-            .map_err(|e| anyhow!("Couldn't read file {file_name}\n{e}"))?;
+            .with_context(|| format!("Couldn't read file {file_name}"))?;
         let docs = YamlLoader::load_from_str(&file_contents)
-            .map_err(|e| anyhow!("Yaml parse error ('{e}') in preference file {file_name}."))?;
+            .with_context(|| format!("Yaml parse error in preference file {file_name}."))?;
         if docs.len() != 1 {
             bail!("MathCAT: error in prefs file '{}'.\nFound {} 'documents' -- should only be 1.", file_name, docs.len());
         }
@@ -247,10 +247,8 @@ impl PreferenceManager {
         // Note: if current_dir() also fails, unwrap_or_default yields an empty PathBuf,
         //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
-        let rules_dir = match canonicalize_shim(&rules_dir) {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
-            Ok(rules_dir) => rules_dir,
-        };
+        let rules_dir = canonicalize_shim(&rules_dir)
+            .with_context(|| format!("set_rules_dir: could not canonicalize path {}", rules_dir.display()))?;
 
         self.set_rules_dir(&rules_dir)?;
         self.set_preference_files()?;
