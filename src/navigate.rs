@@ -798,7 +798,7 @@ fn key_press_to_command_and_param(
 	// key press mapping should probably be stored externally (registry) with an app that allows changes
 	// for now, we build in the defaults
 
-    // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/NSoiffer/MathCAT/issues/105)
+    // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/daisy/MathCAT/issues/105)
     // if this change sticks, choose_command() needs to be changed and this hack should go away
     let mut alt_key = alt_key;
     if alt_key && control_key && [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN].contains(&key) {
@@ -1030,13 +1030,7 @@ mod tests {
         init_panic_handler();
         let result = catch_unwind(AssertUnwindSafe(|| {
             set_rules_dir(super::super::abs_rules_dir_path())?;
-            set_preference("NavMode", nav_mode_default)?;
-            set_preference("NavVerbosity", "Verbose")?;
-            set_preference("AutoZoomOut", "True")?;
-            set_preference("Language", language)?;
-            set_preference("SpeechStyle", "SimpleSpeak")?;
-            set_preference("Verbosity", "Medium")?;
-            set_preference("Overview", "False")?;
+            set_navigation_test_preferences(language, nav_mode_default, true)?;
             set_mathml(mathml)?;
             return Ok( () );
         }));
@@ -1761,6 +1755,59 @@ mod tests {
             assert_eq!("move left; in denominator; y", test_command("MovePrevious", mathml, "id-4")?);
             assert_eq!("move left; in numerator; x", test_command("MovePrevious", mathml, "id-3")?);
 
+            return Ok( () );
+        });
+    }
+
+    #[test]
+    fn zoom_speech_pl() -> Result<()> {
+        let mathml_str = "<math id='math'><mfrac id='mfrac'>
+                <msup id='msup'><mi id='base'>b</mi><mn id='exp'>2</mn></msup>
+                <mi id='denom'>d</mi>
+            </mfrac></math>";
+        init_prefs(mathml_str, "Enhanced", "pl")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "msup")?;
+            assert_eq!("przybliż; do licznika; b do kwadratu", speech);
+            let speech = test_command("ZoomIn", mathml, "base")?;
+            assert_eq!("przybliż; do podstawy; b", speech);
+            let speech = test_command("ZoomOut", mathml, "msup")?;
+            assert_eq!("oddal; z podstawy; b do kwadratu", speech);
+            let speech = test_command("ZoomInAll", mathml, "base")?;
+            assert_eq!("przybliż maksymalnie; do podstawy; b", speech);
+            let speech = test_command("ZoomOutAll", mathml, "mfrac")?;
+            assert_eq!("oddal maksymalnie; z podstawy; z licznika; ułamek, b do kwadratu, przez d, koniec ułamka", speech);
+            return Ok( () );
+        });
+    }
+
+    #[test]
+    fn move_char_speech_pl() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+                <mrow id='id-1'>
+                <mfrac id='id-2'>
+                    <mi id='id-3'>x</mi>
+                    <mi id='id-4'>y</mi>
+                </mfrac>
+                <mo id='id-5'>&#x2062;</mo>
+                <msqrt id='id-6'><mi id='id-7'>z</mi></msqrt>
+                </mrow>
+            </math>";
+        init_prefs(mathml_str, "Character", "pl")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomInAll", mathml, "id-3")?;
+            let speech = test_command("MoveNext", mathml, "id-4")?;
+            assert_eq!("przejdź w prawo; do mianownika; y", speech);
+            let speech = test_command("MoveNext", mathml, "id-7")?;
+            assert_eq!("przejdź w prawo; z mianownika; do pierwiastka; z", speech);
+            let speech = test_command("MovePrevious", mathml, "id-4")?;
+            assert_eq!("przejdź w lewo; z pierwiastka; do mianownika; y", speech);
+            let speech = test_command("MovePrevious", mathml, "id-3")?;
+            assert_eq!("przejdź w lewo; do licznika; x", speech);
             return Ok( () );
         });
     }

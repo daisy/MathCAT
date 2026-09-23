@@ -214,7 +214,7 @@
  - "θ": [T: "theta"]                            	#  0x3b8
  - "ι": [T: "iota"]                             	#  0x3b9	(google: 'jota')
  - "κ": [T: "kappa"]                            	#  0x3ba
- - "λ": [T: "lamda"]                            	#  0x3bb	(en: 'lambda', google: 'lambda')
+ - "λ": [T: "lambda"]                            	#  0x3bb	(en: 'lambda', google: 'lambda')
  - "μ": [T: "mü"]                               	#  0x3bc
  - "ν": [T: "nü"]                               	#  0x3bd
  - "ξ": [T: "xi"]                               	#  0x3be	(en: 'zai', google: 'zai')
@@ -431,12 +431,12 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "ist eine"]                   	# 	(en: 'is a', google translation)
-     - T: "teilmenge oder gleich"               	# 	(en: 'subset of or equal to', MathPlayer: 'Teilmenge von odre gleich', google: 'teilmenge von oder gleich')
+     - T: "teilmenge von oder gleich"           	# 	(en: 'subset of or equal to', MathPlayer: 'Teilmenge von odre gleich', google: 'teilmenge von oder gleich')
  - "⊇":                                         	#  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "ist eine"]                   	# 	(en: 'is a', google translation)
-     - T: "obermenge oder gleich"               	# 	(en: 'superset of or equal to', MathPlayer: 'Obermenge von oder gleich', google: 'superset von oder gleich')
+     - T: "obermenge von oder gleich"           	# 	(en: 'superset of or equal to', MathPlayer: 'Obermenge von oder gleich', google: 'superset von oder gleich')
 
  # --- restored short definitions that differ from unicode-full ---
  - "–": [T: "halbgeviertstrich"]                    #  0x2013	(SRE: 'En Dash')

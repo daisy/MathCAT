@@ -133,12 +133,11 @@ impl Preferences{
             verify_keys(doc, "Other", file_name)?;
         }
 
-        let prefs = &mut base_prefs.prefs;
-        add_prefs(prefs, &doc["Speech"], "", file_name);
-        add_prefs(prefs, &doc["Navigation"], "", file_name);
-        add_prefs(prefs, &doc["Braille"], "", file_name);
-        add_prefs(prefs, &doc["Other"], "", file_name);
-        return Ok( Preferences{ prefs: prefs.to_owned() } );
+        add_prefs(&mut base_prefs.prefs, &doc["Speech"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Navigation"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Braille"], "", file_name);
+        add_prefs(&mut base_prefs.prefs, &doc["Other"], "", file_name);
+        return Ok(base_prefs);
 
 
 
@@ -261,17 +260,9 @@ impl PreferenceManager {
         // Note: if current_dir() also fails, unwrap_or_default yields an empty PathBuf,
         //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
-        let rules_dir = match rules_dir.canonicalize() {
-            Err(_e) => {
-                if rules_dir.is_absolute() {
-                    rules_dir
-                } else {
-                    std::env::current_dir()
-                        .unwrap_or_default()
-                        .join(&rules_dir)
-                }
-            },
-            Ok(rules_dir) =>  rules_dir,
+        let rules_dir = match canonicalize_shim(&rules_dir) {
+            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
+            Ok(rules_dir) => rules_dir,
         };
 
         self.set_rules_dir(&rules_dir)?;
@@ -325,8 +316,7 @@ impl PreferenceManager {
 
         let mut prefs = Preferences::default();
 
-        let mut system_prefs_file = self.rules_dir.to_path_buf();
-        system_prefs_file.push("prefs.yaml");
+        let system_prefs_file: PathBuf = self.rules_dir.join("prefs.yaml");
         if is_file_shim(&system_prefs_file) {
             let defaults = DEFAULT_USER_PREFERENCES.with(|defaults| defaults.clone());
             prefs = Preferences::read_prefs_file(&system_prefs_file, defaults)?;
@@ -371,11 +361,11 @@ impl PreferenceManager {
 
         let language = self.pref_to_string("Language");
         let language = if language.as_str() == "Auto" {"en"} else {language.as_str()};       // avoid 'temp value dropped while borrowed' error
-        let language_dir = rules_dir.to_path_buf().join("Languages");
+        let language_dir = rules_dir.join("Languages");
         self.set_speech_files(&language_dir, language, None)?;  // also sets style file
 
         let braille_code = self.pref_to_string("BrailleCode");
-        let braille_dir = rules_dir.to_path_buf().join("Braille");
+        let braille_dir = rules_dir.join("Braille");
         self.set_braille_files(&braille_dir, &braille_code)?;
         return Ok(());
     }
@@ -434,12 +424,12 @@ impl PreferenceManager {
         let new_language = new_prefs.prefs.get("Language").unwrap();
         debug!("set_files_based_on_changes: old_language={old_language:?}, new_language={new_language:?}");
         if old_language != new_language {
-            let language_dir = self.rules_dir.to_path_buf().join("Languages");
+            let language_dir = self.rules_dir.join("Languages");
             self.set_speech_files(&language_dir, new_language.as_str().unwrap(), None)?;  // also sets style file
         } else {
             let old_speech_style = self.user_prefs.prefs.get("SpeechStyle").unwrap();
             let new_speech_style = new_prefs.prefs.get("SpeechStyle").unwrap();
-            let language_dir = self.rules_dir.to_path_buf().join("Languages");
+            let language_dir = self.rules_dir.join("Languages");
             if old_speech_style != new_speech_style {
                 self.set_speech_files(&language_dir, new_language.as_str().unwrap(), new_speech_style.as_str())?;
             }
@@ -448,7 +438,7 @@ impl PreferenceManager {
         let old_braille_code = self.user_prefs.prefs.get("BrailleCode").unwrap();
         let new_braille_code = new_prefs.prefs.get("BrailleCode").unwrap();
         if old_braille_code != new_braille_code {
-            let braille_code_dir = self.rules_dir.to_path_buf().join("Braille");
+            let braille_code_dir = self.rules_dir.join("Braille");
             self.set_braille_files(&braille_code_dir, new_braille_code.as_str().unwrap())?;  // also sets style file
         }
 
@@ -574,7 +564,7 @@ impl PreferenceManager {
         let mut alternative_style_file = None;      // back up in case we don't find the target style in lang_dir
         let looking_for_style_file = file_name.ends_with("_Rules.yaml");
         for os_path in lang_dir.ancestors() {   // ancestor returns self and ancestors
-            let path = PathBuf::from(os_path).join(file_name);
+            let path = os_path.join(file_name);
             // debug!("find_file: checking file: {}", path.to_string_lossy());
             if is_file_shim(&path) {
                 // we make an exception for definitions.yaml -- there a language specific checks for Hundreds, etc
@@ -642,8 +632,7 @@ impl PreferenceManager {
     fn get_language_dir(rules_dir: &Path, lang: &str, default_lang: Option<&str>) -> Result<PathBuf> {
         // return 'Rules/Language/fr', 'Rules/Language/en/gb', etc, if they exist.
         // fall back to main language, and then to default_dir if language dir doesn't exist
-        let mut full_path = rules_dir.to_path_buf();
-        full_path.push(lang.replace('-', std::path::MAIN_SEPARATOR_STR));
+        let full_path = rules_dir.join(lang.replace('-', std::path::MAIN_SEPARATOR_STR));
         for parent in full_path.ancestors() {
             if parent == rules_dir {
                 break;
@@ -718,21 +707,17 @@ impl PreferenceManager {
            !value.chars().all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '-')) {
             bail!("{} is an invalid value! Must contains only ascii letters, '_', or'-'", key);
         }
-        
+
         // don't do an update if the value hasn't changed
-        let mut is_user_pref = true;
-        if let Some(pref_value) = self.api_prefs.prefs.get(key) {
-            if pref_value.as_str().unwrap() != value {
-                is_user_pref = false;
-                self.reset_files_from_preference_change(key, value)?;
-            }
-        } else if let Some(pref_value) = self.user_prefs.prefs.get(key) {
-            if pref_value.as_str().unwrap() != value {
-                self.reset_files_from_preference_change(key, value)?;
-            }
-        } else {
-            bail!("{} is an unknown MathCAT preference!", key);
+        let api_pref: Option<&Yaml> = self.api_prefs.prefs.get(key);
+        let Some(pref_value) = api_pref.or_else(|| self.user_prefs.prefs.get(key)) else {
+            bail!("{key} is an unknown MathCAT preference!");
+        };
+        if pref_value.as_str().unwrap() == value {
+            return Ok( () );
         }
+        let is_user_pref: bool = api_pref.is_none();
+        self.reset_files_from_preference_change(key, value)?;
 
         // debug!("Setting ({}) {} to '{}'", if is_user_pref {"user"} else {"sys"}, key, value);
         if is_user_pref {
@@ -763,7 +748,7 @@ impl PreferenceManager {
         }
 
         let changed_pref = if changed_pref == "LanguageAuto" {"Language"} else {changed_pref};
-        let language_dir = self.rules_dir.to_path_buf().join("Languages");
+        let language_dir = self.rules_dir.join("Languages");
         match changed_pref {
             "Language" => {
                 self.set_speech_files(&language_dir, changed_value, None)?;
@@ -776,7 +761,7 @@ impl PreferenceManager {
                 crate::speech::invalidate_speech_style_caches();
             },
             "BrailleCode" => {
-                let braille_dir = self.rules_dir.to_path_buf().join("Braille");
+                let braille_dir = self.rules_dir.join("Braille");
                 self.set_braille_files(&braille_dir, changed_value)?;
                 crate::speech::invalidate_braille_caches();
             },
@@ -1176,6 +1161,19 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
             assert!(pref_manager.set_string_pref("BrailleCode", "C:\\my\\path").is_err());
             assert!(pref_manager.set_string_pref("SpeechStyle", "/my/path").is_err());
         });
+    }
+
+    /// Setting `TTS` to its existing value should not copy it from API preferences into user preferences.
+    #[test]
+    fn unchanged_api_string_pref_is_noop() {
+        let mut pref_manager = PreferenceManager {
+            api_prefs: Preferences::api_defaults(),
+            ..PreferenceManager::default()
+        };
+
+        pref_manager.set_string_pref("TTS", "none").unwrap();
+
+        assert!(!pref_manager.user_prefs.prefs.contains_key("TTS"));
     }
 
     /// #262: MathCAT must notice when a rule file on disk changes and reload it.

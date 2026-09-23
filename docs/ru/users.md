@@ -4,7 +4,7 @@ lang: ru
 ref: users
 title: Руководство пользователя MathCAT
 ---
-# <img src="../logo.png" style="position: relative; top: 16px; z-index: -1;" alt="Логотип MathCAT"> Руководство пользователя
+# <img src="../logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> Руководство пользователя
 
 ## Рекомендации по выбору голоса
 

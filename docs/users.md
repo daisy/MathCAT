@@ -10,8 +10,6 @@ MathCAT is a tool used together with a screen reader. Through MathCAT, you can h
 
 In screen readers NVDA and JAWS, MathCAT comes built-in. This means you don’t have to install it as an addon.
 
-MathCAT is still available as an addon to NVDA. You can use it if you want access to the very latest features between NVDA releases. [How to use MathCAT as an addon is described here](#how-to-install-mathcat-as-an-addon-in-nvda).
-
 ## Get started with MathCAT
 
 Use your screen reader on a web page or in an e-book as usual. When you get to a mathematical expression, the screen reader will read it out automatically. If you want to investigate the expression more closely you can activate the navigation mode by pressing Space. In NVDA, the NVDA-key+Alt+M can also be used. If you want to leave the navigation mode, press Escape.
@@ -140,41 +138,3 @@ Note: tabular math means mathematical content in a table structure such as a mat
 ## Do you have feedback on MathCAT?
 
 MathCAT is under active development, and we want your feedback. Do you have a feature request, or have you found any bugs? Please create an issue on [MathCAT's GitHub page](https://github.com/daisy/MathCAT/issues). You are also welcome to get in touch by signing up to [the mailing list of the DAISY MathCAT working group](https://www.surveymonkey.com/r/HXTLXGN).
-
-## How to install MathCAT as an addon in NVDA
-
-To use MathCAT as an add-on, do the following:
-
-1. Open the NVDA menu.
-2. Choose Tools and then Add-on store.
-3. In the add-on store, choose Available add-ons. 
-
-   The channel settings have the following options:
-    - Stable: Will only search for stable add-ons
-    - All: Will search for all add-ons
-    - Beta: Will search for add-ons that are in beta
-    - Dev: Will search for add-ons in development
-
-    Choose option "All".
-
-4. Search for MathCAT and install.
-
-5. In the settings menu, you can control how add-ons are updated:
-
-    - Open the NVDA menu
-    - Choose settings and Add-on Store
-
-      For Automatic updates, you can choose between:
-        - Notify
-        - Update Automatically
-        - Deactivated
-
-      For Default update channel, you have the following options:
-
-        - Same: If automatic updates is set to “Update Automatically” and your add-on is a beta, it will update to the first available beta.
-        -  Any: It will update to any version of the add-on.
-        - Do not update
-        - Stable: It will only update to stable versions.
-        - Beta or dev: It will update to beta or dev versions.
-        - Beta: It will update to beta versions.
-        - Dev: It will update to dev versions.

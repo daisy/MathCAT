@@ -7,6 +7,11 @@ use log::*;
 use std::path::PathBuf;
 use clap::{Parser, ValueEnum};
 
+// The quadratic formula used as the MathCAT demo's starting example.
+const DEFAULT_MATHML: &str = r#"
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>=</mo><mfrac><mrow><mo>−</mo><mi>b</mi><mo>±</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>
+        "#;
+
 // Maybe also have this speak to test the TTS generation.
 // There is a rust winapi crate that mirrors the WinPAI and has "Speak(...)" in it
 
@@ -32,7 +37,18 @@ struct Options {
     #[arg(short, long)]
     rules_dir: Option<PathBuf>,
 
+    #[arg(
+        value_name = "INPUT_FILE",
+        help = "MathML file to read, or '-' to read from stdin")]
     input_file: Option<PathBuf>,
+
+    #[arg(
+        long,
+        conflicts_with = "input_file",
+        value_name = "MATHML",
+        help = "Use MathML text directly as input",
+    )]
+    mathml: Option<String>,
 
     #[arg(short, long, default_value="en")]
     language: String,
@@ -52,22 +68,42 @@ fn main() -> Result<()> {
 
     let cli = Options::parse();
 
-    let expr = if let Some(f) = cli.input_file {
-	std::fs::read_to_string(&f).with_context(|| format!("unable to open {}", f.to_str().unwrap_or_default()))?
-    } else {
-        r#"
-            <math xmlns="http://www.w3.org/1998/Math/MathML"><mo>(</mo><mn>1</mn><mo>)</mo></math>
-		"#.to_string()
+    let expr = match (cli.input_file, cli.mathml) {
+
+        // Match "-" as stdin
+        (Some(f), None) if f.as_os_str() == std::ffi::OsStr::new("-") => {
+            let mut mathml = String::new();
+            std::io::Read::read_to_string(&mut std::io::stdin(), &mut mathml)
+                .with_context(|| "unable to read MathML from stdin")?;
+            mathml
+        }
+
+        // regular file
+        (Some(f), None) => {
+            std::fs::read_to_string(&f)
+                .with_context(|| format!("unable to open {}", f.to_str().unwrap_or_default()))?
+        }
+
+        (None, Some(mathml)) => mathml,
+
+        (None, None) => DEFAULT_MATHML.to_string(),
+
+        (Some(_), Some(_)) => unreachable!("clap rejects conflicting input sources"),
     };
 
-    if let Err(e) = set_rules_dir(get_rules_dir()) {
-	panic!("Error: exiting -- {}", errors_to_string(&e));
-    }
+    let rules_dir = if let Some(path) = cli.rules_dir {
+        path.to_str()
+            .context("Rules directory path must be valid UTF-8")?
+            .to_string()
+    } else {
+        get_rules_dir()
+    };
+    set_rules_dir(&rules_dir).with_context(|| format!("unable to use Rules dir {}", rules_dir))?;
     debug!("Languages: {}", libmathcat::interface::get_supported_languages()?.join(", "));
 
     #[cfg(feature = "include-zip")]
     info!("***********include-zip is present**********");
-    info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
+    info!("Version = '{}' using Rules dir {}", get_version(), rules_dir);
     set_preference("Language", cli.language)?;
 
     set_preference("DecimalSeparator", "Auto").unwrap();

@@ -317,7 +317,23 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))", ct: " "]
           else: [x: "concat('\uF8FE', $Word)", ct: "s"]
 
-    
+# Currency symbols precede amounts in MathML but are spoken after them in German: $ 3 -> 3 dollar.
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
+
 - name: sin
   tag: mi
   match: ".='sin'"
@@ -444,9 +460,9 @@
       else: [T: "kovarianz"]      # phrase('covariance' function)
 
 -
-  name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
   tag: mi
-  match: ".='log' or .='ln'"
+  match: ".='log' or .='Log' or .='ln'"
   replace:
   - bookmark: "@id"
   - test:
@@ -456,6 +472,8 @@
   - test:
     - if: ".= 'log'"
       then: [T: "log"]      # phrase(the 'log' function is used in mathematics)
+    - else_if: ".= 'Log'"
+      then: [T: "hauptwert des logarithmus"]
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
       else: [T: "natürliche logarithmus"]      # phrase(the 'natural log' function is used in mathematics)
@@ -987,12 +1005,12 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: ".='s'"
-      then: [T: "solide"]      # phrase(Boron is a 'solid' in its natural state)
+      then: [T: "fest"]      # phrase(Boron is a 'solid' in its natural state)
     - else_if: ".='l'"
-      then: [T: "flüssigkeit"]      # phrase(water is a 'liquid')
+      then: [T: "flüssig"]      # phrase(water is a 'liquid')
     - else_if: ".='g'"
-      then: [T: "gas"]      # phrase(hydrogen is a 'gas' )
-      else: [T: "wässrige"]      # phrase(an 'aqueous' solution is contained in water)
+      then: [T: "gasförmig"]      # phrase(hydrogen is a 'gas' )
+      else: [T: "wässrig"]      # phrase(an 'aqueous' solution is contained in water)
   - pause: short
 
 - name: chemical-formula-operator-bond
@@ -1026,10 +1044,7 @@
   - bookmark: "@id"
   - test:
     - if: ".='→' or .='⟶'"
-      then_test:
-        if: "$Verbosity='Terse'"
-        then: [T: "formen"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [T: "reagiert auf die form"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+      then: [T: "ergibt"]      # phrase(hydrogen and oxygen 'forms/reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
       then: [T: "ist im gleichgewicht mit"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3

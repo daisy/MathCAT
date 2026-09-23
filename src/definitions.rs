@@ -141,9 +141,20 @@ pub fn read_definitions_file(use_speech_defs: bool) -> Result<Vec<PathBuf>> {
     let file_path = pref_manager.get_definitions_file(use_speech_defs);
     let definitions = if use_speech_defs {&SPEECH_DEFINITIONS} else {&BRAILLE_DEFINITIONS};
     definitions.with( |defs| defs.borrow_mut().name_to_var_mapping.clear() );
-    let mut new_files = vec![file_path.to_path_buf()];
-    let mut files_read = read_one_definitions_file(use_speech_defs, file_path).with_context(|| format!("in file '{}", file_path.to_string_lossy()))?;
-    new_files.append(&mut files_read);
+    let mut files_read = read_one_definitions_file(use_speech_defs, file_path)
+        .with_context(|| format!("in file '{}'", file_path.to_string_lossy()))?;
+    let mut seen: HashSet<String> = HashSet::with_capacity(files_read.len());
+    let mut new_files: Vec<PathBuf> = Vec::with_capacity(files_read.len());
+    for p in files_read.drain(..) {
+        let canon = match crate::shim_filesystem::canonicalize_shim(&p) {
+            Ok(c) => c,
+            Err(_) => p,
+        };
+        let key = canon.to_string_lossy().to_string();
+        if seen.insert(key) {
+            new_files.push(canon);
+        }
+    }
 
     // merge the contents of `TrigFunctions` into a set that contains all the function names (from `AdditionalFunctionNames`).
     return definitions.with(|defs| {
@@ -228,39 +239,21 @@ fn build_values(definition: &Yaml, use_speech_defs: bool, path: &Path) -> Result
         return Ok( Some(crate::speech::process_include(path, include_file_name, do_include_fn)?) );
     }
 
-    let result;
-    if def_name.starts_with("Numbers") || def_name.ends_with("_vec") {
-         result = Contains::Vec( Rc::new( RefCell::new( get_vec_values(value.as_vec().unwrap())? ) ) );
+    let result = if let Some(vec) = value.as_vec() {
+        Contains::Vec( Rc::new( RefCell::new( get_vec_values(vec)? ) ) )
     } else {
-        // match value.as_vec() {
-        //     Some(vec) => {
-        //         result = Contains::Set( Rc::new( RefCell::new( get_set_values(vec)? ) ) );            },
-        //     None => {
-        //         let dict = value.as_hash().ok_or_else(|| anyhow!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
-        //         result = Contains::Map( Rc::new( RefCell::new( get_map_values(dict)
-        //                     .chain_err(||format!("while reading value '{}'", def_name))? ) ) );
-
-        //     },
-        // }
         let dict = value.as_hash().ok_or_else(|| anyhow!("definition list value '{}' is not an array or dictionary", yaml_to_type(value)))?;
         if dict.is_empty() {
-            result = Contains::Set( Rc::new( RefCell::new( HashSet::with_capacity(0) ) ) );
+            Contains::Set( Rc::new( RefCell::new( HashSet::with_capacity(0) ) ) )
         } else {
             // peak and see if this is a set or a map
             let (_, entry_value) = dict.iter().next().unwrap();
             if entry_value.is_null() {
-                result = Contains::Set( Rc::new( RefCell::new( get_set_values(dict)
-                            .with_context(||format!("while reading value '{def_name}'"))? ) ) );
+                Contains::Set( Rc::new( RefCell::new( get_set_values(dict)
+                            .with_context(||format!("while reading value '{def_name}'"))? ) ) )
             } else {
-                // peak and see if this is a set or a map
-                let (_, entry_value) = dict.iter().next().unwrap();
-                if entry_value.is_null() {
-                    result = Contains::Set( Rc::new( RefCell::new( get_set_values(dict)
-                                .with_context(||format!("while reading value '{def_name}'"))? ) ) );
-                } else {
-                    result = Contains::Map( Rc::new( RefCell::new( get_map_values(dict)
-                                .with_context(||format!("while reading value '{def_name}'"))? ) ) );
-                }
+                Contains::Map( Rc::new( RefCell::new( get_map_values(dict)
+                            .with_context(||format!("while reading value '{def_name}'"))? ) ) )
             }
         }
     };
@@ -366,6 +359,26 @@ mod tests {
             assert_eq!(names.len(), 7);
             assert!(names.contains("f"));
             assert!(!names.contains("a"));
+        });
+    }
+
+    #[test]
+    fn test_vec_not_numbers() {
+        let function_application_word = r#"[FunctionApplicationWord: ["of"]]"#;
+        let defs_build_fn = |variable_def_list: &Yaml| {
+            for variable_def in variable_def_list.as_vec().unwrap() {
+                if let Err(e) = build_values(variable_def, true, Path::new("")) {
+                    bail!("{}", crate::interface::errors_to_string(&e.context(format!("in file {:?}", function_application_word))));
+                }
+            }
+            return Ok(vec![]);
+        };
+        compile_rule(function_application_word, defs_build_fn).unwrap();
+        SPEECH_DEFINITIONS.with(|defs| {
+            let defs = defs.borrow();
+            let word = defs.get_vec("FunctionApplicationWord");
+            assert!(word.is_some());
+            assert_eq!(word.unwrap().as_slice(), ["of"]);
         });
     }
 
