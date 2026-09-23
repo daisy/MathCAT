@@ -3389,3 +3389,1909 @@ mod tests {
             return Ok(());
         });
     }
+
+    #[test]
+    fn move_nested_power_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mn id='id-4'>2</mn>
+                <msup id='id-5'>
+                    <mi id='id-6'>x</mi>
+                    <mn id='id-7'>2</mn>
+                </msup>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; 2 x squared", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; x squared", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom out; out of exponent; x squared", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; 2 x squared", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_nested_power_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mn id='id-4'>2</mn>
+                <msup id='id-5'>
+                    <mi id='id-6'>x</mi>
+                    <mn id='id-7'>2</mn>
+                </msup>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; x squared", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-6");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom out; out of exponent; x squared", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; 2 x squared", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_nested_power_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <mrow>
+        <msup id='id-1'>
+            <mn id='id-2'>3</mn>
+            <mrow id='id-3'>
+                <mn id='id-4'>2</mn>
+                <msup id='id-5'>
+                    <mi id='id-6'>x</mi>
+                    <mn id='id-7'>2</mn>
+                </msup>
+            </mrow>
+        </msup>
+    </mrow>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-6");
+            assert_eq_with_panic_handler("move right; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-7");
+            assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-5");
+            assert_eq_with_panic_handler("zoom out; out of superscript; x super 2 end super", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; 2 x super 2 end super", speech)?;
+
+            return Ok(());
+        });
+    }
+
+//     // Issue 36
+//     #[test]
+//     fn move_nested_power_negative_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>-</mo>
+//                 <mn id='id-5'>2</mn>
+//                 <msup id='id-6'>
+//                     <mi id='id-7'>x</mi>
+//                     <mn id='id-8'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 2 x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; minus 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_power_negative_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>-</mo>
+//                 <mn id='id-5'>2</mn>
+//                 <msup id='id-6'>
+//                     <mi id='id-7'>x</mi>
+//                     <mn id='id-8'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_power_negative_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>-</mo>
+//                 <mn id='id-5'>2</mn>
+//                 <msup id='id-6'>
+//                     <mi id='id-7'>x</mi>
+//                     <mn id='id-8'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in superscript; minus", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-5");
+//             assert_eq_with_panic_handler("move right; 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of superscript; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 37
+//     #[test]
+//     fn move_nested_fractional_power_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mn id='id-7'>3</mn>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in exponent; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_fractional_power_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mn id='id-7'>3</mn>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in exponent; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_fractional_power_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mn id='id-7'>3</mn>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-5");
+//             assert_eq_with_panic_handler("move right; in superscript; in base; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in superscript; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; out of superscript; 4 over 5 super 3 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 38
+//     #[test]
+//     fn move_negative_nested_fractional_power_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <mrow id='id-3'>
+//             <mo id='id-4'>-</mo>
+//             <msup id='id-5'>
+//                 <mfrac id='id-6'>
+//                     <mn id='id-7'>4</mn>
+//                     <mn id='id-8'>5</mn>
+//                 </mfrac>
+//                 <mn id='id-9'>3</mn>
+//             </msup>
+//         </mrow>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in exponent; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("MovePrevious", mathml, "id-2");
+//             assert_eq_with_panic_handler("move left; in base; y", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_negative_nested_fractional_power_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <mrow id='id-3'>
+//             <mo id='id-4'>-</mo>
+//             <msup id='id-5'>
+//                 <mfrac id='id-6'>
+//                     <mn id='id-7'>4</mn>
+//                     <mn id='id-8'>5</mn>
+//                 </mfrac>
+//                 <mn id='id-9'>3</mn>
+//             </msup>
+//         </mrow>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in exponent; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("MovePrevious", mathml, "id-2");
+//             assert_eq_with_panic_handler("move left; in base; y", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_negative_nested_fractional_power_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>y</mi>
+//         <mrow id='id-3'>
+//             <mo id='id-4'>-</mo>
+//             <msup id='id-5'>
+//                 <mfrac id='id-6'>
+//                     <mn id='id-7'>4</mn>
+//                     <mn id='id-8'>5</mn>
+//                 </mfrac>
+//                 <mn id='id-9'>3</mn>
+//             </msup>
+//         </mrow>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; y", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in superscript; minus", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in base; in numerator; 4", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in denominator; 5", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-6");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in superscript; 3", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom out; out of superscript; 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; minus 4 over 5 super 3 end super", speech)?;
+//
+//             let speech = test_command("MovePrevious", mathml, "id-2");
+//             assert_eq_with_panic_handler("move left; in base; y", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 39
+//     #[test]
+//     fn move_fraction_times_nested_power_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mfrac id='id-4'>
+//                     <mn id='id-5'>1</mn>
+//                     <mn id='id-6'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-7'>
+//                     <mi id='id-8'>x</mi>
+//                     <mn id='id-9'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 1 over 2 x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; 1 over 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-8");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; 1 over 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_fraction_times_nested_power_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mfrac id='id-4'>
+//                     <mn id='id-5'>1</mn>
+//                     <mn id='id-6'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-7'>
+//                     <mi id='id-8'>x</mi>
+//                     <mn id='id-9'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; 1 over 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-8");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom out; out of exponent; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; 1 over 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_fraction_times_nested_power_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mfrac id='id-4'>
+//                     <mn id='id-5'>1</mn>
+//                     <mn id='id-6'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-7'>
+//                     <mi id='id-8'>x</mi>
+//                     <mn id='id-9'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-5");
+//             assert_eq_with_panic_handler("move right; in superscript; in numerator; 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in denominator; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 2", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom out; out of superscript; x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom out; 1 over 2 x super 2 end super", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 40
+//     #[test]
+//     fn move_negative_fraction_times_nested_power_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>−</mo>
+//                 <mfrac id='id-5'>
+//                     <mn id='id-6'>1</mn>
+//                     <mn id='id-7'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-8'>
+//                     <mi id='id-9'>x</mi>
+//                     <mn id='id-10'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 1 over 2 x super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; minus 1 over 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; 1 over 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_negative_fraction_times_nested_power_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>−</mo>
+//                 <mfrac id='id-5'>
+//                     <mn id='id-6'>1</mn>
+//                     <mn id='id-7'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-8'>
+//                     <mi id='id-9'>x</mi>
+//                     <mn id='id-10'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 1 over 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-5");
+//             assert_eq_with_panic_handler("zoom in; 1 over 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_negative_fraction_times_nested_power_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mi id='id-2'>e</mi>
+//             <mrow id='id-3'>
+//                 <mo id='id-4'>−</mo>
+//                 <mfrac id='id-5'>
+//                     <mn id='id-6'>1</mn>
+//                     <mn id='id-7'>2</mn>
+//                 </mfrac>
+//                 <msup id='id-8'>
+//                     <mi id='id-9'>x</mi>
+//                     <mn id='id-10'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; e", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in superscript; minus", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-6");
+//             assert_eq_with_panic_handler("move right; in numerator; 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 41
+//     #[test]
+//     fn move_parenthesized_nested_power_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <msup id='id-4'>
+//                     <mrow id='id-5'>
+//                         <mrow id='id-6'>
+//                             <mo id='id-7'>(</mo>
+//                             <mrow id='id-8'>
+//                                 <mi id='id-9'>x</mi>
+//                                 <mo id='id-10'>+</mo>
+//                                 <mn id='id-11'>1</mn>
+//                             </mrow>
+//                             <mo id='id-12'>)</mo>
+//                         </mrow>
+//                     </mrow>
+//                     <mn id='id-13'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; open paren x plus 1 close paren super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-8");
+//             assert_eq_with_panic_handler("zoom in; in base; x plus 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_parenthesized_nested_power_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <msup id='id-4'>
+//                     <mrow id='id-5'>
+//                         <mrow id='id-6'>
+//                             <mo id='id-7'>(</mo>
+//                             <mrow id='id-8'>
+//                                 <mi id='id-9'>x</mi>
+//                                 <mo id='id-10'>+</mo>
+//                                 <mn id='id-11'>1</mn>
+//                             </mrow>
+//                             <mo id='id-12'>)</mo>
+//                         </mrow>
+//                     </mrow>
+//                     <mn id='id-13'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; open paren x plus 1 close paren super 2 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-7");
+//             assert_eq_with_panic_handler("zoom in; in base; open paren", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_parenthesized_nested_power_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <mrow>
+//         <msup id='id-1'>
+//             <mn id='id-2'>3</mn>
+//             <mrow id='id-3'>
+//                 <msup id='id-4'>
+//                     <mrow id='id-5'>
+//                         <mrow id='id-6'>
+//                             <mo id='id-7'>(</mo>
+//                             <mrow id='id-8'>
+//                                 <mi id='id-9'>x</mi>
+//                                 <mo id='id-10'>+</mo>
+//                                 <mn id='id-11'>1</mn>
+//                             </mrow>
+//                             <mo id='id-12'>)</mo>
+//                         </mrow>
+//                     </mrow>
+//                     <mn id='id-13'>2</mn>
+//                 </msup>
+//             </mrow>
+//         </msup>
+//     </mrow>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; 3", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in superscript; in base; open paren", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 42
+//     #[test]
+//     fn move_nested_compound_exponent_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mi id='id-8'>n</mi>
+//                 <mo id='id-9'>+</mo>
+//                 <mn id='id-10'>1</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super n plus 1 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in exponent; n plus 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_compound_exponent_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mi id='id-8'>n</mi>
+//                 <mo id='id-9'>+</mo>
+//                 <mn id='id-10'>1</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super n plus 1 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in exponent; n", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_compound_exponent_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mi id='id-8'>n</mi>
+//                 <mo id='id-9'>+</mo>
+//                 <mn id='id-10'>1</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-5");
+//             assert_eq_with_panic_handler("move right; in superscript; in base; in numerator; 4", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of numerator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in superscript; n", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 43
+//     #[test]
+//     fn move_nested_negative_exponent_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mo id='id-8'>-</mo>
+//                 <mn id='id-9'>3</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super minus 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 3", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-9");
+//             assert_eq_with_panic_handler("zoom in; 3", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_negative_exponent_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mo id='id-8'>-</mo>
+//                 <mn id='id-9'>3</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in exponent; 4 over 5 super minus 3 end super", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in base; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-7");
+//             assert_eq_with_panic_handler("move right; in exponent; minus 3", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-9");
+//             assert_eq_with_panic_handler("zoom in; 3", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_nested_negative_exponent_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>t</mi>
+//         <msup id='id-3'>
+//             <mfrac id='id-4'>
+//                 <mn id='id-5'>4</mn>
+//                 <mn id='id-6'>5</mn>
+//             </mfrac>
+//             <mrow id='id-7'>
+//                 <mo id='id-8'>-</mo>
+//                 <mn id='id-9'>3</mn>
+//             </mrow>
+//         </msup>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; t", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-5");
+//             assert_eq_with_panic_handler("move right; in superscript; in base; in numerator; 4", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom out; out of numerator; 4 over 5", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-8");
+//             assert_eq_with_panic_handler("move right; in superscript; minus", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-9");
+//             assert_eq_with_panic_handler("move right; 3", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 44
+//     #[test]
+//     fn move_skip_super_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mo id='id-3'>°</mo>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in superscript; degrees", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_skip_super_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mo id='id-3'>°</mo>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in superscript; degrees", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_skip_super_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mo id='id-3'>°</mo>
+//     </msup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in superscript; degrees", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 45
+//     #[test]
+//     fn move_simple_subscript_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_simple_subscript_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_simple_subscript_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 46
+//     #[test]
+//     fn move_compound_subscript_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>i</mi>
+//             <mo id='id-5'>+</mo>
+//             <mn id='id-6'>1</mn>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; i plus 1", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; i", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_compound_subscript_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>i</mi>
+//             <mo id='id-5'>+</mo>
+//             <mn id='id-6'>1</mn>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in subscript; i", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_compound_subscript_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>i</mi>
+//             <mo id='id-5'>+</mo>
+//             <mn id='id-6'>1</mn>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in subscript; i", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 47
+//     #[test]
+//     fn move_logarithm_with_base_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_logarithm_with_base_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_logarithm_with_base_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; the log", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; b", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 48
+//     #[test]
+//     fn move_binomial_msub_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>C</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>n</mi>
+//             <mo id='id-5'>,</mo>
+//             <mi id='id-6'>k</mi>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_binomial_msub_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>C</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>n</mi>
+//             <mo id='id-5'>,</mo>
+//             <mi id='id-6'>k</mi>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_binomial_msub_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msub id='id-1'>
+//         <mi id='id-2'>C</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>n</mi>
+//             <mo id='id-5'>,</mo>
+//             <mi id='id-6'>k</mi>
+//         </mrow>
+//     </msub>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; c", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 49
+//     #[test]
+//     fn move_simple_subsup_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom in; in base; x sub 1", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom out; out of subscript; x sub 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_simple_subsup_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom in; in base; x sub 1", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom out; out of subscript; x sub 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_simple_subsup_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>x</mi>
+//         <mn id='id-3'>1</mn>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; 1", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 50
+//     #[test]
+//     fn move_compound_subscript_subsup_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>i</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>j</mi>
+//             <mo id='id-5'>-</mo>
+//             <mn id='id-6'>2</mn>
+//         </mrow>
+//         <mi id='id-7'>k</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom in; in base; i sub j minus 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; i", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; j minus 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_compound_subscript_subsup_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>i</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>j</mi>
+//             <mo id='id-5'>-</mo>
+//             <mn id='id-6'>2</mn>
+//         </mrow>
+//         <mi id='id-7'>k</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-indexed-by");
+//             assert_eq_with_panic_handler("zoom in; in base; i sub j minus 2", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; i", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in subscript; j", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_compound_subscript_subsup_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>i</mi>
+//         <mrow id='id-3'>
+//             <mi id='id-4'>j</mi>
+//             <mo id='id-5'>-</mo>
+//             <mn id='id-6'>2</mn>
+//         </mrow>
+//         <mi id='id-7'>k</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; i", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in subscript; j", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 51
+//     #[test]
+//     fn move_permutation_subsup_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>P</mi>
+//         <mi id='id-3'>k</mi>
+//         <mi id='id-4'>n</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_permutation_subsup_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>P</mi>
+//         <mi id='id-3'>k</mi>
+//         <mi id='id-4'>n</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-4");
+//             assert_eq_with_panic_handler("zoom in; in part 1; n", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in part 2; k", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_permutation_subsup_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>P</mi>
+//         <mi id='id-3'>k</mi>
+//         <mi id='id-4'>n</mi>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; p", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     // Issue 52
+//     #[test]
+//     fn move_logarithm_with_base_and_exponent_enhanced() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Enhanced", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-log-base");
+//             assert_eq_with_panic_handler("zoom in; in base; log base b", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-1-log-base");
+//             assert_eq_with_panic_handler("zoom out; out of base; log base b", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_logarithm_with_base_and_exponent_simple() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Simple", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-1-log-base");
+//             assert_eq_with_panic_handler("zoom in; in base; log base b", speech)?;
+//
+//             let speech = test_command("ZoomIn", mathml, "id-3");
+//             assert_eq_with_panic_handler("zoom in; in base; b", speech)?;
+//
+//             let speech = test_command("ZoomOut", mathml, "id-1-log-base");
+//             assert_eq_with_panic_handler("zoom out; out of base; log base b", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in exponent; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+//     #[test]
+//     fn move_logarithm_with_base_and_exponent_character() -> Result<()> {
+//         let mathml_str = "<math display='block' id='id-0'>
+//     <msubsup id='id-1'>
+//         <mi id='id-2'>log</mi>
+//         <mi id='id-3'>b</mi>
+//         <mn id='id-4'>2</mn>
+//     </msubsup>
+// </math>";
+//         init_prefs(mathml_str, "Character", "en");
+//         return MATHML_INSTANCE.with(|package_instance| {
+//             let package_instance = package_instance.borrow();
+//             let mathml = get_element(&package_instance);
+//             let speech = test_command("ZoomIn", mathml, "id-2");
+//             assert_eq_with_panic_handler("zoom in; in base; the log", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-3");
+//             assert_eq_with_panic_handler("move right; in subscript; b", speech)?;
+//
+//             let speech = test_command("MoveNext", mathml, "id-4");
+//             assert_eq_with_panic_handler("move right; in superscript; 2", speech)?;
+//
+//             return Ok(());
+//         });
+//     }
+//
+}
