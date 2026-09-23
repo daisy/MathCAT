@@ -119,7 +119,7 @@ def compare_files(
         shared_keys = source_keys & target_keys
         source_order = [rule for rule in english_rules if rule.key in shared_keys and not rule.audit_ignore]
         target_order = [rule for rule in translated_rules if rule.key in shared_keys and not rule.audit_ignore]
-        for position, (source_rule, target_rule) in enumerate(zip(source_order, target_order), start=1):
+        for position, (source_rule, target_rule) in enumerate(zip(source_order, target_order, strict=True), start=1):
             if source_rule.key != target_rule.key:
                 first_order_mismatch_position = position
                 break
