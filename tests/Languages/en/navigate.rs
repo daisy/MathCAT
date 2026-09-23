@@ -3281,3 +3281,111 @@ mod tests {
         });
     }
 }
+
+    #[test]
+    fn move_fractional_power_enhanced() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mfrac id='id-3'>
+            <mn id='id-4'>1</mn>
+            <mn id='id-5'>3</mn>
+        </mfrac>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Enhanced", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; 1 third", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 3", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 third", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_fractional_power_simple() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mfrac id='id-3'>
+            <mn id='id-4'>1</mn>
+            <mn id='id-5'>3</mn>
+        </mfrac>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Simple", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-3");
+            assert_eq_with_panic_handler("move right; in exponent; 1 third", speech)?;
+
+            let speech = test_command("ZoomIn", mathml, "id-4");
+            assert_eq_with_panic_handler("zoom in; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 3", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 third", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
+
+    #[test]
+    fn move_fractional_power_character() -> Result<()> {
+        let mathml_str = "<math display='block' id='id-0'>
+    <msup id='id-1'>
+        <mi id='id-2'>x</mi>
+        <mfrac id='id-3'>
+            <mn id='id-4'>1</mn>
+            <mn id='id-5'>3</mn>
+        </mfrac>
+    </msup>
+</math>";
+        init_prefs(mathml_str, "Character", "en");
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "id-2");
+            assert_eq_with_panic_handler("zoom in; in base; x", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-4");
+            assert_eq_with_panic_handler("move right; in superscript; in numerator; 1", speech)?;
+
+            let speech = test_command("MoveNext", mathml, "id-5");
+            assert_eq_with_panic_handler("move right; in denominator; 3", speech)?;
+
+            let speech = test_command("ZoomOut", mathml, "id-3");
+            assert_eq_with_panic_handler("zoom out; out of denominator; 1 over 3", speech)?;
+
+            let speech = test_command("MovePrevious", mathml, "id-2");
+            assert_eq_with_panic_handler("move left; in base; x", speech)?;
+
+            return Ok(());
+        });
+    }
