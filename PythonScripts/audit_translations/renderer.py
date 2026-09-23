@@ -264,8 +264,7 @@ def print_order_findings(findings: list[tuple[str, int]]) -> None:
     """Print the first shared-rule order difference for each affected file."""
     for file_name, position in findings:
         console.print(
-            f"[yellow]Rule order differs[/] in {escape(str(file_name))}: "
-            f"first difference at shared rule position {position}"
+            f"[yellow]Rule order differs[/] in {escape(str(file_name))}: first difference at shared rule position {position}"
         )
 
 

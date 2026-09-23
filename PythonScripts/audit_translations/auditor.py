@@ -277,7 +277,7 @@ def audit_language(
     total_definition_type_mismatches = 0
     files_with_issues = 0
     files_ok = 0
-    order_findings: list[tuple[str, int]] = []     # One item per file, eg  [("calculus.yaml", 2), ...]
+    order_findings: list[tuple[str, int]] = []  # One item per file, eg  [("calculus.yaml", 2), ...]
 
     for file_name in files:
         english_path = source_dir / file_name

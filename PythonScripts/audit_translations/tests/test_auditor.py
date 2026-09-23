@@ -50,20 +50,26 @@ def test_rule_order_reports_first_shared_difference(tmp_path) -> None:
     """A swapped pair records the first shared rule position without adding an issue."""
     source = tmp_path / "source.yaml"
     target = tmp_path / "target.yaml"
-    source.write_text("""- name: a
+    source.write_text(
+        """- name: a
   tag: mi
 - name: b
   tag: mi
 - name: c
   tag: mi
-""", encoding="utf-8")
-    target.write_text("""- name: a
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
   tag: mi
 - name: c
   tag: mi
 - name: b
   tag: mi
-""", encoding="utf-8")
+""",
+        encoding="utf-8",
+    )
 
     result = compare_files(source, target)
     assert result.first_order_mismatch_position == 2
@@ -74,38 +80,50 @@ def test_missing_and_ignored_rules_do_not_shift_order(tmp_path) -> None:
     """Only shared rules without audit-ignore markers participate in ordering."""
     source = tmp_path / "source.yaml"
     target = tmp_path / "target.yaml"
-    source.write_text("""- name: a
+    source.write_text(
+        """- name: a
   tag: mi
 - name: missing
   tag: mi
 - name: b
   tag: mi
-""", encoding="utf-8")
-    target.write_text("""- name: a
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
   tag: mi
 - name: extra
   tag: mi
 - name: b
   tag: mi
-""", encoding="utf-8")
+""",
+        encoding="utf-8",
+    )
     assert compare_files(source, target).first_order_mismatch_position is None
 
-    source.write_text("""- name: a
+    source.write_text(
+        """- name: a
   tag: mi
 - name: b
   tag: mi
 # audit-ignore
 - name: c
   tag: mi
-""", encoding="utf-8")
-    target.write_text("""# audit-ignore
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """# audit-ignore
 - name: c
   tag: mi
 - name: a
   tag: mi
 - name: b
   tag: mi
-""", encoding="utf-8")
+""",
+        encoding="utf-8",
+    )
     assert compare_files(source, target).first_order_mismatch_position is None
 
 
@@ -113,14 +131,20 @@ def test_include_placement_is_not_checked(tmp_path) -> None:
     """An include moving around a named rule has no effect on named rule order."""
     source = tmp_path / "source.yaml"
     target = tmp_path / "target.yaml"
-    source.write_text("""- include: shared.yaml
+    source.write_text(
+        """- include: shared.yaml
 - name: a
   tag: mi
-""", encoding="utf-8")
-    target.write_text("""- name: a
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
   tag: mi
 - include: shared.yaml
-""", encoding="utf-8")
+""",
+        encoding="utf-8",
+    )
     result = compare_files(source, target)
     assert result.first_order_mismatch_position is None
     assert result.english_rule_count == result.translated_rule_count == 1
@@ -133,12 +157,18 @@ def test_unicode_entries_are_not_checked_for_order(tmp_path) -> None:
     source = tmp_path / "unicode.yaml"
     target = tmp_path / "target" / "unicode.yaml"
     target.parent.mkdir()
-    source.write_text("""- "←": [t: left]
+    source.write_text(
+        """- "←": [t: left]
 - "∥": [t: parallel]
-""", encoding="utf-8")
-    target.write_text("""- "∥": [T: parallel]
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- "∥": [T: parallel]
 - "←": [T: left]
-""", encoding="utf-8")
+""",
+        encoding="utf-8",
+    )
 
     assert compare_files(source, target).first_order_mismatch_position is None
 
