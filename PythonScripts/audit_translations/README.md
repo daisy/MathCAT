@@ -10,6 +10,7 @@ The tool analyzes rule files to detect the following issues:
 * **Extra Rules:** Rules present in the target translation but absent in the source (flagged as potentially intentional language-specific additions).
 * **Untranslated Text:** Detects text keys that still use **lowercase** formatting, indicating they haven't been verified or translated yet.
 * **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
+* **Rule Order:** After the summary, reports the first differing position of shared named rules in each affected file. Missing, extra, and `# audit-ignore` rules do not shift the comparison. Include entries are not checked.
 * **Definition Coverage:** Compares literal `definitions.yaml` entries by name and collection kind (`vector`, `set`, or `map`).
 
 After a blank line, add `# audit-ignore` immediately before a rule to suppress

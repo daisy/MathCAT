@@ -46,6 +46,133 @@ def fixture_rules_dir() -> Path:
     return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
 
 
+def test_rule_order_reports_first_shared_difference(tmp_path) -> None:
+    """A swapped pair records the first shared rule position without adding an issue."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text("""- name: a
+  tag: mi
+- name: b
+  tag: mi
+- name: c
+  tag: mi
+""", encoding="utf-8")
+    target.write_text("""- name: a
+  tag: mi
+- name: c
+  tag: mi
+- name: b
+  tag: mi
+""", encoding="utf-8")
+
+    result = compare_files(source, target)
+    assert result.first_order_mismatch_position == 2
+    assert not result.has_issues
+
+
+def test_missing_and_ignored_rules_do_not_shift_order(tmp_path) -> None:
+    """Only shared rules without audit-ignore markers participate in ordering."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text("""- name: a
+  tag: mi
+- name: missing
+  tag: mi
+- name: b
+  tag: mi
+""", encoding="utf-8")
+    target.write_text("""- name: a
+  tag: mi
+- name: extra
+  tag: mi
+- name: b
+  tag: mi
+""", encoding="utf-8")
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+    source.write_text("""- name: a
+  tag: mi
+- name: b
+  tag: mi
+# audit-ignore
+- name: c
+  tag: mi
+""", encoding="utf-8")
+    target.write_text("""# audit-ignore
+- name: c
+  tag: mi
+- name: a
+  tag: mi
+- name: b
+  tag: mi
+""", encoding="utf-8")
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+
+def test_include_placement_is_not_checked(tmp_path) -> None:
+    """An include moving around a named rule has no effect on named rule order."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text("""- include: shared.yaml
+- name: a
+  tag: mi
+""", encoding="utf-8")
+    target.write_text("""- name: a
+  tag: mi
+- include: shared.yaml
+""", encoding="utf-8")
+    result = compare_files(source, target)
+    assert result.first_order_mismatch_position is None
+    assert result.english_rule_count == result.translated_rule_count == 1
+    assert not result.missing_rules and not result.extra_rules
+    assert compare_files(source, target, {"missing"}).first_order_mismatch_position is None
+
+
+def test_unicode_entries_are_not_checked_for_order(tmp_path) -> None:
+    """The order check only covers named rules, not Unicode character entries."""
+    source = tmp_path / "unicode.yaml"
+    target = tmp_path / "target" / "unicode.yaml"
+    target.parent.mkdir()
+    source.write_text("""- "←": [t: left]
+- "∥": [t: parallel]
+""", encoding="utf-8")
+    target.write_text("""- "∥": [T: parallel]
+- "←": [T: left]
+""", encoding="utf-8")
+
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+
+def test_order_findings_appear_after_summary_without_affecting_totals(tmp_path, capsys) -> None:
+    """Each affected file gets one final line while the audit issue count stays zero."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "en"
+    target_dir = rules_dir / "de"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+    source = """- name: a
+  tag: mi
+- name: b
+  tag: mi
+"""
+    target = """- name: b
+  tag: mi
+- name: a
+  tag: mi
+"""
+    for filename in ("first.yaml", "second.yaml"):
+        (source_dir / filename).write_text(source, encoding="utf-8")
+        (target_dir / filename).write_text(target, encoding="utf-8")
+
+    assert audit_language("de", rules_dir=str(rules_dir)) == 0
+    output = strip_ansi(capsys.readouterr().out)
+    assert "Files with issues                 0" in output
+    assert "Rule order differences" not in output
+    assert output.count("first difference at shared rule position 1") == 2
+    assert output.index("SUMMARY") < output.index("Rule order differs in first.yaml")
+    assert output.index("Rule order differs in first.yaml") < output.index("Rule order differs in second.yaml")
+
+
 def aggregate_issue_counts(
     language: str,
     issue_filter: set[str] | None = None,

@@ -19,6 +19,7 @@ from .renderer import (
     print_audit_summary,
     print_definition_findings,
     print_language_list,
+    print_order_findings,
     print_warnings,
 )
 
@@ -109,6 +110,19 @@ def compare_files(
     include_untranslated = include_all or "untranslated" in issue_filter
     include_extra = include_all or "extra" in issue_filter
     include_diffs = include_all or "diffs" in issue_filter
+    include_order = include_all
+
+    first_order_mismatch_position = None
+    if include_order:
+        source_keys = {rule.key for rule in english_rules if rule.name is not None and not rule.audit_ignore}
+        target_keys = {rule.key for rule in translated_rules if rule.name is not None and not rule.audit_ignore}
+        shared_keys = source_keys & target_keys
+        source_order = [rule for rule in english_rules if rule.key in shared_keys and not rule.audit_ignore]
+        target_order = [rule for rule in translated_rules if rule.key in shared_keys and not rule.audit_ignore]
+        for position, (source_rule, target_rule) in enumerate(zip(source_order, target_order), start=1):
+            if source_rule.key != target_rule.key:
+                first_order_mismatch_position = position
+                break
 
     # Find missing rules (in source but not in translation)
     missing_rules = []
@@ -146,6 +160,7 @@ def compare_files(
         extra_rules=extra_rules,
         untranslated_text=untranslated_text,
         rule_differences=rule_differences,
+        first_order_mismatch_position=first_order_mismatch_position,
         english_rule_count=len(english_rules),
         translated_rule_count=len(translated_rules),
     )
@@ -262,6 +277,7 @@ def audit_language(
     total_definition_type_mismatches = 0
     files_with_issues = 0
     files_ok = 0
+    order_findings: list[tuple[str, int]] = []     # One item per file, eg  [("calculus.yaml", 2), ...]
 
     for file_name in files:
         english_path = source_dir / file_name
@@ -308,6 +324,8 @@ def audit_language(
                 existing_translated_region_path,
                 existing_english_region_path,
             )
+            if result.first_order_mismatch_position is not None:
+                order_findings.append((file_name, result.first_order_mismatch_position))
 
             if result.has_issues:
                 issues = print_warnings(result, file_name, verbose, language, source_language)
@@ -337,6 +355,8 @@ def audit_language(
             total_issues=total_issues,
         )
     )
+
+    print_order_findings(order_findings)
 
     return total_issues
 
