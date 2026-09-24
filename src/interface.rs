@@ -287,10 +287,7 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| {
             let rules = rules.borrow();
             let pref_manager = rules.pref_manager.borrow();
-            let mut value = pref_manager.pref_to_string(&name);
-            if value == NO_PREFERENCE {
-                value = pref_manager.pref_to_string(&name);
-            }
+            let value = pref_manager.pref_to_string(&name);
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
             } else {
