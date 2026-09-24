@@ -266,10 +266,7 @@ impl IsNode {
             return false;
         }
 
-        let Some(num) = children[0].element() else {
-            return false;
-        };
-        let Some(denom) = children[1].element() else {
+        let (Some(num), Some(denom)) = (children[0].element(), children[1].element()) else {
             return false;
         };
         if !is_tag(num, "mn") || !is_tag(denom, "mn") {
