@@ -20,6 +20,59 @@ use zip::CompressionMethod;
 const YAML_SUFFIXES: [&str; 2] = ["yaml", "yml"];
 const SKIP_LANGUAGE_DIR: &str = "zz";
 const ARCHIVE_ROOT: &str = "Rules";
+const LANGUAGES_DIR: &str = "Languages";
+const BRAILLE_DIR: &str = "Braille";
+const PREFS_FILE: &str = "prefs.yaml";
+const BRAILLE_CODE_PREF: &str = "BrailleCode";
+/// `find_file` falls back to this language by name, so it cannot be pruned away. Braille has the
+/// same arrangement with UEB, but [`set_default_braille_code`] means it is never reached.
+const FALLBACK_LANGUAGE: &str = "en";
+
+/// Which `Languages/` and `Braille/` directories to keep.
+///
+/// The full Rules tree is about 10 MB, and a caller that only ever asks for one language and one
+/// braille code pays for all of it: `include-zip` embeds every directory in the binary. `None`
+/// means keep everything, which is what every existing caller gets.
+#[derive(Clone, Default)]
+pub struct RulesSubset {
+    pub languages: Option<Vec<String>>,
+    pub braille_codes: Option<Vec<String>>,
+}
+
+impl RulesSubset {
+    /// Keeps everything, the behaviour before this existed.
+    pub fn all() -> Self {
+        return RulesSubset::default();
+    }
+
+    /// A directory name matches if it is listed, ignoring case, or if a regional variant of a
+    /// listed language (`zh` keeps `zh-cn` and `zh-tw`, and `ASCIIMath` keeps `ASCIIMath-fi`).
+    fn keeps(wanted: &Option<Vec<String>>, name: &str) -> bool {
+        let Some(wanted) = wanted else {
+            return true;
+        };
+        let name = name.to_ascii_lowercase();
+        return wanted.iter().any(|w| {
+            let w = w.to_ascii_lowercase();
+            name == w || name.starts_with(&(w + "-"))
+        });
+    }
+
+    fn keeps_language(&self, name: &str) -> bool {
+        // `find_file` falls back to "en" by name from inside the library, so a subset without it
+        // cannot resolve anything.
+        return name.eq_ignore_ascii_case(FALLBACK_LANGUAGE) || RulesSubset::keeps(&self.languages, name);
+    }
+
+    /// The braille code `Rules/prefs.yaml` should default to, or `None` when every code is kept.
+    fn default_braille_code(&self) -> Option<&str> {
+        return self.braille_codes.as_ref().and_then(|codes| codes.first()).map(|code| code.as_str());
+    }
+
+    fn keeps_braille_code(&self, name: &str) -> bool {
+        return RulesSubset::keeps(&self.braille_codes, name);
+    }
+}
 
 /// Compression methods for nested language zips vs the outer archive.
 #[derive(Clone, Copy)]
@@ -249,17 +302,74 @@ fn minimize_yaml_file(src: &Path, dst: &Path) -> Result<(), String> {
 /// Copy a Rules tree. When `minify` is true, rewrite every YAML file as comment-free flow YAML.
 /// `Languages/zz` is omitted. Returns the number of files successfully minimized.
 pub fn copy_rules_tree(src: &Path, dst: &Path, minify: bool) -> io::Result<usize> {
-    fs::create_dir_all(dst)?;
-    return copy_dir(src, dst, minify, false);
+    return copy_rules_subset(src, dst, minify, &RulesSubset::all());
 }
 
-fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> io::Result<usize> {
+/// As [`copy_rules_tree`], keeping only the languages and braille codes `subset` asks for.
+pub fn copy_rules_subset(src: &Path, dst: &Path, minify: bool, subset: &RulesSubset) -> io::Result<usize> {
+    fs::create_dir_all(dst)?;
+    let minimized = copy_dir(src, dst, minify, None, subset)?;
+    if let Some(code) = subset.default_braille_code() {
+        set_default_braille_code(&dst.join(PREFS_FILE), code)?;
+    }
+    return Ok(minimized);
+}
+
+/// Rewrites the `BrailleCode` default in a staged `prefs.yaml`.
+///
+/// Without this, the default (Nemeth) and the library's own fallback (UEB) are both missing from a
+/// subset that asked for neither, and `set_rules_dir` reports that it could not read the braille
+/// directory. Keeping Nemeth and UEB instead would cost about 50 KB for rules nothing asks for.
+fn set_default_braille_code(prefs: &Path, code: &str) -> io::Result<()> {
+    let text = fs::read_to_string(prefs)?;
+    let docs = YamlLoader::load_from_str(&text).map_err(io::Error::other)?;
+    let mut out = String::new();
+    for (i, doc) in docs.iter().enumerate() {
+        if i > 0 {
+            out.push_str("\n---\n");
+        }
+        emit_flow(&mut out, &with_replaced_value(doc, BRAILLE_CODE_PREF, code)).map_err(io::Error::other)?;
+    }
+    out.push('\n');
+    fs::write(prefs, out)?;
+    return Ok(());
+}
+
+/// `yaml` with the value of every `key` entry, at any depth, replaced by `value`.
+fn with_replaced_value(yaml: &Yaml, key: &str, value: &str) -> Yaml {
+    match yaml {
+        Yaml::Hash(hash) => {
+            let mut out = yaml_rust::yaml::Hash::new();
+            for (k, v) in hash {
+                let replace = matches!(k, Yaml::String(name) if name == key);
+                let v = if replace { Yaml::String(value.to_string()) } else { with_replaced_value(v, key, value) };
+                out.insert(k.clone(), v);
+            }
+            return Yaml::Hash(out);
+        }
+        Yaml::Array(items) => {
+            return Yaml::Array(items.iter().map(|item| with_replaced_value(item, key, value)).collect());
+        }
+        other => return other.clone(),
+    }
+}
+
+fn copy_dir(
+    src: &Path,
+    dst: &Path,
+    minify: bool,
+    parent: Option<&str>,
+    subset: &RulesSubset,
+) -> io::Result<usize> {
     let mut minimized = 0usize;
     for entry in read_dir(src)? {
         let entry = entry?;
         let src_path = entry.path();
         let name = file_name_str(&src_path)?;
-        if parent_is_languages && name == SKIP_LANGUAGE_DIR {
+        if parent == Some(LANGUAGES_DIR) && (name == SKIP_LANGUAGE_DIR || !subset.keeps_language(&name)) {
+            continue;
+        }
+        if parent == Some(BRAILLE_DIR) && src_path.is_dir() && !subset.keeps_braille_code(&name) {
             continue;
         }
         if is_zip_file(&src_path) {
@@ -268,7 +378,7 @@ fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> 
         let dst_path = dst.join(&name);
         if src_path.is_dir() {
             fs::create_dir_all(&dst_path)?;
-            minimized += copy_dir(&src_path, &dst_path, minify, name == "Languages")?;
+            minimized += copy_dir(&src_path, &dst_path, minify, Some(name.as_str()), subset)?;
         } else if minify && is_yaml_file(&src_path) {
             match minimize_yaml_file(&src_path, &dst_path) {
                 Ok(()) => minimized += 1,
