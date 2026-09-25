@@ -132,3 +132,16 @@ fn no_parts_silent_modified_variable_suppresses_base_announcement() -> Result<()
     "#;
     assert_zoom_in(expr, "переход внутрь; икс")
 }
+
+#[test]
+fn move_cell_next_from_row_reports_column_boundary() -> Result<()> {
+    // MoveCellNext acts on columns; the boundary message must not mention rows or moving up.
+    let expr = "<math><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable></math>";
+    init_nav("ru", expr)?;
+    set_preference("NavVerbosity", "Verbose")?;
+    do_navigate_command("ZoomIn")?;
+    let speech = do_navigate_command("MoveCellNext")?;
+    assert_eq!(speech.trim_end_matches([' ', ',', ';']),
+        "перейти к следующему столбцу; нет следующего столбца");
+    Ok(())
+}

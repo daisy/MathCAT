@@ -143,6 +143,20 @@ fn given() -> Result<()> {
 }
 
 #[test]
+fn compact_unicode_uses_mathematical_terminology() -> Result<()> {
+    // The compact Unicode table takes precedence over unicode-full, so its
+    // common relation and operator names must retain their mathematical meaning.
+    test("ru", "SimpleSpeak", "<math><mi>a</mi><mo>⇒</mo><mi>b</mi></math>",
+        "а следует бэ")?;
+    test("ru", "SimpleSpeak", "<math><mo>∐</mo></math>", "копроизведение")?;
+    test("ru", "SimpleSpeak", "<math><mi>a</mi><mo>≦</mo><mi>b</mi><mo>≧</mo><mi>c</mi></math>",
+        "а меньше или равно бэ больше или равно цэ")?;
+    test("ru", "SimpleSpeak", "<math><mi>x</mi><mo>∊</mo><mi>A</mi></math>",
+        "икс принадлежит заглавной а")?;
+    return Ok(());
+}
+
+#[test]
 fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>

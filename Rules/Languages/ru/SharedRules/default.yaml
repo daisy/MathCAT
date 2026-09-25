@@ -185,6 +185,26 @@
   - pause: short
   - x: "*[3]"
 
+- name: set-member-number-set
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and *[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ'] and not(ancestor::*[self::m:set or self::m:large-op])"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then: [T: "является элементом множества"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='In'"
+      then: [T: "находится в множестве"]
+    - else: [T: "принадлежит множеству"]
+  - test:
+    - if: "*[3][.='ℕ']"
+      then: [T: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
+    - else: [T: "действительных чисел"]
+
 - name: set-membership-in-builder
   tag: mrow
   match: "count(*)=3 and *[2][.='∈'] and ancestor::*[self::m:set]"
@@ -194,26 +214,30 @@
     - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
       then:
       - pause: short
-      - T: "входящих в"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "входящих в множество"]
+          else: [T: "входящих в"]
     - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
       then:
       - pause: short
-      - T: "являющихся элементами"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "являющихся элементами множества"]
+          else: [T: "являющихся элементами"]
     - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Member')"
       then:
       - pause: short
-      - T: "принадлежащих"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "принадлежащих множеству"]
+          else: [T: "принадлежащих"]
     - else: [T: "из"]
   - test:
     - if: "*[3][.='ℕ']"
       then: [T: "натуральных чисел"]
     - else_if: "*[3][.='ℤ']"
-      then_test:
-      - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
-        then: [T: "целые числа"]
-      - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Member'"
-        then: [T: "целым числам"]
-      - else: [T: "целых чисел"]
+      then: [T: "целых чисел"]
     - else_if: "*[3][.='ℚ']"
       then: [T: "рациональных чисел"]
     - else_if: "*[3][.='ℝ']"
@@ -236,24 +260,28 @@
     - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
       then:
       - pause: short
-      - T: "входящему в"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "входящему в множество"]
+          else: [T: "входящему в"]
     - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='In'"
       then: [T: "из"]
     - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member')"
       then:
       - pause: short
-      - T: "принадлежащему"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "принадлежащему множеству"]
+          else: [T: "принадлежащему"]
     - else:
       - pause: short
-      - T: "являющемуся элементом"
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "являющемуся элементом множества"]
+          else: [T: "являющемуся элементом"]
   - test:
     - if: "*[3][.='ℤ']"
-      then_test:
-      - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
-        then: [T: "целые числа"]
-      - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member')"
-        then: [T: "целым числам"]
-      - else: [T: "целых чисел"]
+      then: [T: "целых чисел"]
     - else_if: "*[3][.='ℚ']"
       then: [T: "рациональных чисел"]
     - else: [x: "*[3]"]
@@ -267,17 +295,35 @@
   - pause: short
   - test:
     - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
-      then: [T: "не входит в"]
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не входит в множество"]
+          else: [T: "не входит в"]
     - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
-      then: [T: "не является элементом"]
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не является элементом множества"]
+          else: [T: "не является элементом"]
     - else_if: "$SpeechStyle='ClearSpeak'"
-      then: [T: "не принадлежит"]
-    - else: [T: "не является элементом"]
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не принадлежит множеству"]
+          else: [T: "не принадлежит"]
+    - else:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не является элементом множества"]
+          else: [T: "не является элементом"]
   - test:
-    - if: "*[3][.='ℝ'] and $SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
-      then: [T: "действительные числа"]
-    - else_if: "*[3][.='ℝ'] and $SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol!='Element'"
-      then: [T: "действительным числам"]
+    - if: "*[3][.='ℕ']"
+      then: [T: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
     - else_if: "*[3][.='ℝ']"
       then: [T: "действительных чисел"]
     - else: [x: "*[3]"]
@@ -478,7 +524,7 @@
   tag: mi
   match:
   - "string-length(.)=1 and"
-  - "(parent::*[self::m:trace or self::m:dimension or self::m:homomorphism or self::m:kernel or self::m:norm or self::m:determinant or self::m:real-part or self::m:imaginary-part or self::m:laplacian or self::m:divergence or self::m:curl or self::m:gradient or self::m:subscripted-norm or self::m:limit or self::m:line-segment or self::m:ray or self::m:open-interval or self::m:closed-interval or self::m:open-closed-interval or self::m:closed-open-interval or self::m:binomial or self::m:pochhammer or self::m:square-root or self::m:root or self::m:absolute-value] or parent::m:large-op or parent::m:logarithm-with-base or (parent::m:power and preceding-sibling::*) or (parent::m:fraction and preceding-sibling::* and IsNode(../*[1], 'simple') and IsNode(., 'simple')) or (parent::m:apply-function and preceding-sibling::*) or (parent::m:evaluate and preceding-sibling::*) or preceding-sibling::*[1][.='⁡'] or parent::m:mrow[IsBracketed(., '(', ')') and count(*)=3 and parent::*[self::m:kernel or self::m:homomorphism]])"
+  - "(parent::*[self::m:trace or self::m:dimension or self::m:homomorphism or self::m:kernel or self::m:norm or self::m:determinant or self::m:real-part or self::m:imaginary-part or self::m:laplacian or self::m:divergence or self::m:curl or self::m:gradient or self::m:subscripted-norm or self::m:limit or self::m:line-segment or self::m:ray or self::m:open-interval or self::m:closed-interval or self::m:open-closed-interval or self::m:closed-open-interval or self::m:binomial or self::m:pochhammer or self::m:square-root or self::m:root or self::m:absolute-value] or parent::m:large-op or parent::m:logarithm-with-base or (parent::m:power and preceding-sibling::*) or (parent::m:fraction and preceding-sibling::* and IsNode(../*[1], 'simple') and IsNode(., 'simple')) or (parent::m:apply-function and preceding-sibling::*) or (parent::m:evaluate and preceding-sibling::*) or preceding-sibling::*[1][.='⁡' or .='∈' or .='∉' or .='∊'] or parent::m:mrow[IsBracketed(., '(', ')') and count(*)=3 and parent::*[self::m:kernel or self::m:homomorphism]])"
   replace:
   - bookmark: "@id"
   - with:
@@ -761,7 +807,7 @@
   - x: "*[1]"
   - T: "с"      # phrase(x 'with' z below it)
   - x: "*[2]"
-  - T: "ниже"      # phrase(x with z 'below' it)
+  - T: "нижний придел"      # phrase(x with z 'below' it)
 
 - name: diacriticals
   tag: mover
@@ -794,7 +840,7 @@
   - x: "*[2]"
   - T: "ниже и"    # phrase(x modified with y 'below and' y above it)
   - x: "*[3]"
-  - T: "выше"        # phrase(x modified with y 'above' it)
+  - T: "верхний придел"        # phrase(x modified with y 'above' it)
 
 - name: default
   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
@@ -987,7 +1033,7 @@
   variables: [IsColumnSilent: false()]
   match: "."
   replace:
-  - T: "стол с"      # phrase(the 'table with' 3 rows)
+  - T: "таблица с"      # phrase(the 'table with' 3 rows)
   - x: count(*)
   - test:
       if: count(*)=1

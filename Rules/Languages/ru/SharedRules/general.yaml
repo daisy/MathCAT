@@ -215,12 +215,10 @@
   replace:
   - test:
     - if: "name(.)='open-interval'"
-      then: [T: "открытый интервал"]
+      then: [T: "интервал"]
     - else_if: "name(.)='closed-interval'"
-      then: [T: "закрытый интервал"]
-    - else_if: "name(.)='open-closed-interval'"
-      then: [T: "открыто-закрытый интервал"]
-      else: [T: "закрыто-открытый интервал"]
+      then: [T: "отрезок"]
+      else: [T: "полуинтервал"]
   - T: "от"
   - test:
       if: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"

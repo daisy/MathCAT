@@ -541,26 +541,53 @@
         - if: "$ClearSpeak_SetMemberSymbol='Belongs'"
           then:
           - pause: short
-          - T: "входящих в"
           - test:
-            - if: "*[3][.='ℤ']"
-              then: [T: "целые числа"]
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "входящих в множество"]
+              else: [T: "входящих в"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
+              then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else_if: "$ClearSpeak_SetMemberSymbol='Element'"
           then:
           - pause: short
-          - T: "являющихся элементами"
           - test:
-            - if: "*[3][.='ℤ']"
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "являющихся элементами множества"]
+              else: [T: "являющихся элементами"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
               then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else_if: "$ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member'"
           then:
           - pause: short
-          - T: "принадлежащих"
           - test:
-            - if: "*[3][.='ℤ']"
-              then: [T: "целым числам"]
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "принадлежащих множеству"]
+              else: [T: "принадлежащих"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
+              then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else:
           - T: "из"
