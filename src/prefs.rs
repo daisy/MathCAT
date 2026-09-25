@@ -170,16 +170,6 @@ impl Preferences{
             }
         }
     }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_string_value(&mut self, name: &str, value: &str) {
-        self.prefs.insert(name.to_string(), Yaml::String(value.trim().to_string()));
-    }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_bool_value(&mut self, name: &str, value: bool) {
-        self.prefs.insert(name.to_string(), Yaml::Boolean(value));
-    }
 }
 
 
