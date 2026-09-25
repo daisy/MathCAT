@@ -118,32 +118,6 @@ pub struct Pronounce {
 }
 
 
-impl fmt::Display for Pronounce {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut comma = "";     // comma separator so it looks right
-        write!(f, "pronounce: [")?;
-        if !self.text.is_empty() {
-            write!(f, "text: '{}'", self.text)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.ipa.is_empty() {
-            write!(f, "{}ipa: '{}'", comma, self.ipa)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.sapi5.is_empty() {
-            write!(f, "{}sapi5: '{}'", comma, self.sapi5)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.eloquence.is_empty() {
-            write!(f, "{}eloquence: '{}'", comma, self.eloquence)?;
-        }
-        return writeln!(f, "]");
-    }
-}
-
 impl Pronounce {
     fn build(values: &Yaml) -> Result<Pronounce> {
         use crate::speech::{as_str_checked, yaml_to_type};
@@ -232,7 +206,7 @@ impl fmt::Display for TTSCommandRule {
             TTSCommandValue::String(s) => s.to_string(),
             TTSCommandValue::Number(f) => f.to_string(),
             TTSCommandValue::XPath(p) => p.to_string(),
-            TTSCommandValue::Pronounce(p) => p.to_string(),
+            TTSCommandValue::Pronounce(p) => format!("{p:?}"),
         };
         if self.command == TTSCommand::Pause {
             return write!(f, "pause: {value}");
@@ -789,10 +763,31 @@ mod tests {
         let rule = TTS::build("pronounce", values).unwrap();
         let rendered = format!("{rule}");
 
-        assert!(rendered.contains("text: 'alpha'"));
-        assert!(rendered.contains("ipa: 'a'"));
-        assert!(rendered.contains("sapi5: 'b'"));
-        assert!(rendered.contains("eloquence: 'c'"));
+        assert!(rendered.contains("text: \"alpha\""));
+        assert!(rendered.contains("ipa: \"a\""));
+        assert!(rendered.contains("sapi5: \"b\""));
+        assert!(rendered.contains("eloquence: \"c\""));
+    }
+
+    /// Shows the derived pronunciation details when displaying a TTS rule.
+    #[test]
+    fn pronounce_rule_display_uses_debug_fields() {
+        let pronounce = Pronounce {
+            text: "bli bla blub".to_string(),
+            ipa: "a".to_string(),
+            sapi5: "b".to_string(),
+            eloquence: "c".to_string(),
+        };
+        let rule = TTSCommandRule::new(
+            TTSCommand::Pronounce,
+            TTSCommandValue::Pronounce(Box::new(pronounce)),
+            ReplacementArray::build_empty(),
+        );
+
+        assert_eq!(
+            rule.to_string(),
+            "pronounce: Pronounce { text: \"bli bla blub\", ipa: \"a\", sapi5: \"b\", eloquence: \"c\" }\n"
+        );
     }
 
     #[test]
