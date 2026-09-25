@@ -6,6 +6,14 @@
 
 include!("src/rules_archive.rs");
 
+/// A comma separated list from the environment, or `None` for "keep everything".
+fn subset_from_env(var: &str) -> Option<Vec<String>> {
+    println!("cargo::rerun-if-env-changed={}", var);
+    let value = std::env::var(var).ok()?;
+    let names: Vec<String> = value.split(',').map(|s| s.trim().to_string()).filter(|s| !s.is_empty()).collect();
+    return if names.is_empty() { None } else { Some(names) };
+}
+
 fn main() {
     println!("cargo::rerun-if-changed=build.rs");
     println!("cargo::rerun-if-changed=src/rules_archive.rs");
@@ -20,7 +28,23 @@ fn main() {
         if staging.exists() {
             let _ = std::fs::remove_dir_all(&staging);
         }
-        if let Err(e) = copy_rules_tree(&rules_dir, &staging, true) {
+        // A caller that asks for one language and one braille code should not carry the other
+        // fifteen and the other nine. Unset means keep everything, as before.
+        let subset = RulesSubset {
+            languages: subset_from_env("MATHCAT_INCLUDE_LANGUAGES"),
+            braille_codes: subset_from_env("MATHCAT_INCLUDE_BRAILLE"),
+        };
+        if let Some(codes) = &subset.braille_codes {
+            println!("cargo::warning=MathCAT rules limited to braille codes: {}", codes.join(", "));
+        }
+        if let Some(langs) = &subset.languages {
+            let mut langs = langs.clone();
+            if !langs.iter().any(|l| l.eq_ignore_ascii_case("en")) {
+                langs.push("en (the fallback)".to_string());
+            }
+            println!("cargo::warning=MathCAT rules limited to languages: {}", langs.join(", "));
+        }
+        if let Err(e) = copy_rules_subset(&rules_dir, &staging, true, &subset) {
             panic!("build.rs failed to stage minimized Rules: {}", e);
         }
         let archive_path = out_dir.join("rules.zip");
