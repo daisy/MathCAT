@@ -115,9 +115,39 @@ def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, mo
         encoding="utf-8",
     )
 
-    loaded, matched, defined, rule_hits, rule_tests, errors = rule_coverage.read_events()
+    loaded, defined, hits_by_test, errors = rule_coverage.read_events()
 
-    assert loaded == matched == set()
-    assert rule_hits == rule_tests == {}
+    assert loaded == set()
+    assert hits_by_test == {}
     assert defined == {(path, name, "mfrac")}
     assert errors == []
+
+
+def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Malformed events and hits without definitions must keep the report incomplete."""
+    output = tmp_path / "target" / "rule-coverage"
+    monkeypatch.setattr(rule_coverage, "ROOT", tmp_path)
+    monkeypatch.setattr(rule_coverage, "OUTPUT", output)
+    monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
+    path = "Languages/en/SimpleSpeak_Rules.yaml"
+
+    def fake_cargo(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        events = [
+            {"kind": "loaded", "path": path},
+            {"kind": "defined-rule", "path": path, "name": "known", "tag": "mi"},
+            {"kind": "matched-rule", "path": path, "name": "unknown", "tag": "mi", "test": "test_alpha"},
+        ]
+        (output / "events" / "pid-123.jsonl").write_text(
+            "\n".join(json.dumps(event) for event in events) + "\n{bad json\n",
+            encoding="utf-8",
+        )
+        return subprocess.CompletedProcess(command, 0)
+
+    monkeypatch.setattr(rule_coverage.subprocess, "run", fake_cargo)
+    monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: True)
+
+    assert rule_coverage.run() == 1
+    report = (output / "report.md").read_text(encoding="utf-8")
+    assert "Status: **Incomplete**" in report
+    assert "Invalid JSON in pid-123.jsonl:4" in report
+    assert "Matched rules lack definition events" in report

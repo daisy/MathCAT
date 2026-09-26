@@ -16,11 +16,10 @@ EVENTS = OUTPUT / "events"
 EXCLUDED_FILE_NAMES = {"definitions.yaml", "unicode.yaml", "unicode-full.yaml"}
 
 
-def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
+def read_events() -> tuple[set[str], set[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
     loaded: set[str] = set()
     defined_rules: set[RuleKey] = set()
-    rule_hits: Counter[RuleKey] = Counter()
-    rule_tests: dict[RuleKey, Counter[str]] = defaultdict(Counter)
+    hits_by_test: dict[RuleKey, Counter[str]] = defaultdict(Counter)
     errors: list[str] = []
     for event_file in sorted(EVENTS.glob("*.jsonl")):
         for number, line in enumerate(event_file.read_text(encoding="utf-8").splitlines(), 1):
@@ -63,14 +62,12 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                     and event["test"]
                 ):
                     key = (path, name, tag)
-                    rule_hits[key] += 1
-                    rule_tests[key][event["test"]] += 1
+                    hits_by_test[key][event["test"]] += 1
                 else:
                     errors.append(f"Invalid event in {event_file.name}:{number}")
             else:
                 errors.append(f"Invalid event in {event_file.name}:{number}")
-    matched = {path for path, _, _ in rule_hits}
-    return loaded, matched, defined_rules, rule_hits, dict(rule_tests), errors
+    return loaded, defined_rules, dict(hits_by_test), errors
 
 
 def run() -> int:
@@ -91,8 +88,9 @@ def run() -> int:
             log.write(f"Could not run cargo: {error}\n")
             test_status = 1
 
-    loaded, matched, defined_rules, rule_hits, rule_tests, errors = read_events()
-    matched_rules = set(rule_hits)
+    loaded, defined_rules, hits_by_test, errors = read_events()
+    matched_rules = set(hits_by_test)
+    matched = {path for path, _, _ in matched_rules}
     if test_status:
         errors.insert(0, f"cargo test failed (exit status {test_status}); see test.log")
     if not loaded:
@@ -126,14 +124,14 @@ def run() -> int:
             section("Loaded YAML files", loaded),
             section("Matched pattern files", matched),
             section("Loaded files with no pattern match", loaded - matched),
-            rule_section("Matched rules", matched_rules, rule_hits, rule_tests),
+            rule_section("Matched rules", matched_rules, hits_by_test),
             rule_section("Active rules with no match", defined_rules - matched_rules),
         )
     )
     report_path = OUTPUT / "report.md"
     report_path.write_text("\n".join(report), encoding="utf-8")
     html_path = OUTPUT / "index.html"
-    html_path.write_text(render_html(loaded, matched, defined_rules, rule_hits, rule_tests, errors), encoding="utf-8")
+    html_path.write_text(render_html(loaded, defined_rules, hits_by_test, errors), encoding="utf-8")
     print(
         f"{status}: {len(loaded)} files loaded, {coverage(len(matched), len(loaded))} files matched; "
         f"{coverage(len(matched_rules), len(defined_rules))} rules matched; report: {html_path}"
