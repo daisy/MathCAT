@@ -1,20 +1,35 @@
 //! Per-process YAML rule coverage events, enabled only by `rule-coverage`.
 
 use std::collections::HashSet;
-use std::fs::{self, OpenOptions};
+use std::fs::{self, File, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
-enum EventKind {
+enum OnceKind {
     Loaded,
-    Matched,
     DefinedRule,
-    MatchedRule,
 }
 
-static RECORDED: OnceLock<Mutex<HashSet<(EventKind, PathBuf, String, String)>>> = OnceLock::new();
+struct Recorder {
+    output: File,
+    recorded: HashSet<(OnceKind, PathBuf, String, String)>,
+}
+
+static RECORDER: OnceLock<Mutex<Recorder>> = OnceLock::new();
+
+fn recorder() -> &'static Mutex<Recorder> {
+    RECORDER.get_or_init(|| {
+        let event_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("target/rule-coverage/events");
+        fs::create_dir_all(&event_dir).expect("cannot create rule coverage event directory");
+        let event_file = event_dir.join(format!("pid-{}.jsonl", std::process::id()));
+        let output = OpenOptions::new().create(true).append(true).open(event_file)
+            .expect("cannot open rule coverage event file");
+        Mutex::new(Recorder { output, recorded: HashSet::new() })
+    })
+}
 
 fn rule_relative_path(path: &Path) -> Option<PathBuf> {
     let rules_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("Rules");
@@ -27,46 +42,34 @@ fn rule_relative_path(path: &Path) -> Option<PathBuf> {
     Some(relative.to_path_buf())
 }
 
-fn record(kind: EventKind, path: &Path, name: &str, tag: &str) {
+fn record_once(kind: OnceKind, path: &Path, name: &str, tag: &str) {
     let Some(relative) = rule_relative_path(path) else { return };
-    let mut recorded = RECORDED.get_or_init(|| Mutex::new(HashSet::new()))
-        .lock().unwrap_or_else(|poisoned| poisoned.into_inner());
-    let key = (kind, relative.clone(), name.to_string(), tag.to_string());
-    if kind != EventKind::MatchedRule && recorded.contains(&key) {
+    let mut recorder = recorder().lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+    if !recorder.recorded.insert((kind, relative.clone(), name.to_string(), tag.to_string())) {
         return;
     }
-
-    let event_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("target/rule-coverage/events");
-    fs::create_dir_all(&event_dir).expect("cannot create rule coverage event directory");
-    let event_file = event_dir.join(format!("pid-{}.jsonl", std::process::id()));
-    let mut output = OpenOptions::new().create(true).append(true).open(event_file)
-        .expect("cannot open rule coverage event file");
     let path = relative.to_string_lossy();
     let event = match kind {
-        EventKind::Loaded => serde_json::json!({"kind": "loaded", "path": path}),
-        EventKind::Matched => serde_json::json!({"kind": "matched", "path": path}),
-        EventKind::DefinedRule => serde_json::json!({"kind": "defined-rule", "path": path, "name": name, "tag": tag}),
-        EventKind::MatchedRule => serde_json::json!({
-            "kind": "matched-rule", "path": path, "name": name, "tag": tag,
-            "test": std::thread::current().name().unwrap_or("(unnamed thread)"),
-        }),
+        OnceKind::Loaded => serde_json::json!({"kind": "loaded", "path": path}),
+        OnceKind::DefinedRule => serde_json::json!({"kind": "defined-rule", "path": path, "name": name, "tag": tag}),
     };
-    writeln!(output, "{event}").expect("cannot write rule coverage event");
-    if kind != EventKind::MatchedRule {
-        recorded.insert(key);
-    }
+    writeln!(recorder.output, "{event}").expect("cannot write rule coverage event");
 }
 
 pub(crate) fn loaded(path: &Path) {
-    record(EventKind::Loaded, path, "", "");
+    record_once(OnceKind::Loaded, path, "", "");
 }
 
 pub(crate) fn defined_rule(path: &Path, name: &str, tag: &str) {
-    record(EventKind::DefinedRule, path, name, tag);
+    record_once(OnceKind::DefinedRule, path, name, tag);
 }
 
 pub(crate) fn matched_rule(path: &Path, name: &str, tag: &str) {
-    record(EventKind::Matched, path, "", "");
-    record(EventKind::MatchedRule, path, name, tag);
+    let Some(relative) = rule_relative_path(path) else { return };
+    let mut recorder = recorder().lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+    let event = serde_json::json!({
+        "kind": "matched-rule", "path": relative.to_string_lossy(), "name": name, "tag": tag,
+        "test": std::thread::current().name().unwrap_or("(unnamed thread)"),
+    });
+    writeln!(recorder.output, "{event}").expect("cannot write rule coverage event");
 }

@@ -18,7 +18,6 @@ EXCLUDED_FILE_NAMES = {"definitions.yaml", "unicode.yaml", "unicode-full.yaml"}
 
 def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
     loaded: set[str] = set()
-    matched: set[str] = set()
     defined_rules: set[RuleKey] = set()
     rule_hits: Counter[RuleKey] = Counter()
     rule_tests: dict[RuleKey, Counter[str]] = defaultdict(Counter)
@@ -48,8 +47,6 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                 continue
             elif kind == "loaded" and event.keys() == {"kind", "path"}:
                 loaded.add(path)
-            elif kind == "matched" and event.keys() == {"kind", "path"}:
-                matched.add(path)
             elif kind in ("defined-rule", "matched-rule") and {"name", "tag"} <= event.keys():
                 name, tag = event["name"], event["tag"]
                 if not isinstance(name, str) or not isinstance(tag, str) or not name or not tag:
@@ -64,6 +61,7 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                     errors.append(f"Invalid event in {event_file.name}:{number}")
             else:
                 errors.append(f"Invalid event in {event_file.name}:{number}")
+    matched = {path for path, _, _ in rule_hits}
     return loaded, matched, defined_rules, rule_hits, dict(rule_tests), errors
 
 
@@ -103,8 +101,6 @@ def run() -> int:
         errors.append("Matched rules lack definition events")
     if {path for path, _, _ in defined_rules} - loaded:
         errors.append("Defined rules have no loaded YAML event")
-    if matched != {path for path, _, _ in matched_rules}:
-        errors.append("File and rule match events disagree")
 
     status = "Incomplete" if errors else "Complete"
     report = [
