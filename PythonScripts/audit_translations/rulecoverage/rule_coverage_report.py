@@ -38,10 +38,7 @@ def render_html(
                 "matched": key in hits_by_test,
                 "hits": total_hits,
                 "tooltip": "Tests:\n"
-                + "\n".join(
-                    f"{test} ({count} {'hit' if count == 1 else 'hits'})"
-                    for test, count in sorted(tests.items())
-                )
+                + "\n".join(f"{test} ({count} {'hit' if count == 1 else 'hits'})" for test, count in sorted(tests.items()))
                 if total_hits
                 else "No test hits",
             }
