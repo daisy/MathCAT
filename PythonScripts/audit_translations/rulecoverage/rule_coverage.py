@@ -8,7 +8,7 @@ import webbrowser
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 
-from .rule_coverage_report import RuleKey, coverage, render_html, rule_section, section
+from .rule_coverage_report import RuleKey, coverage, render_html
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "target" / "rule-coverage"
@@ -65,8 +65,9 @@ def read_events() -> tuple[set[RuleKey], dict[RuleKey, Counter[str]], list[str]]
 
 
 def run() -> int:
-    """Generate all reports and open the HTML page when the run finishes."""
+    """Generate the HTML report and open it when the run finishes."""
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    (OUTPUT / "report.md").unlink(missing_ok=True)
     if EVENTS.exists():
         shutil.rmtree(EVENTS)
     EVENTS.mkdir()
@@ -96,27 +97,6 @@ def run() -> int:
         errors.append("Matched rules lack definition events")
 
     status = "Incomplete" if errors else "Complete"
-    report = [
-        "# Rule Coverage\n",
-        f"Status: **{status}**\n",
-        f"Rule files matched: **{coverage(len(matched_files), len(rule_files))}**\n",
-        f"Active rules matched: **{coverage(len(matched_rules), len(defined_rules))}**\n",
-        "Paths are relative to `Rules/`. Files with active rules are coverage targets; "
-        "a file is matched when a rule from it completes its replacement successfully.\n",
-    ]
-    if errors:
-        report.append("## Problems\n\n" + "\n".join(f"- {error}" for error in errors) + "\n")
-    report.extend(
-        (
-            section("Rule files", rule_files),
-            section("Matched rule files", matched_files),
-            section("Rule files with no match", rule_files - matched_files),
-            rule_section("Matched rules", matched_rules, hits_by_test),
-            rule_section("Active rules with no match", defined_rules - matched_rules),
-        )
-    )
-    report_path = OUTPUT / "report.md"
-    report_path.write_text("\n".join(report), encoding="utf-8")
     html_path = OUTPUT / "index.html"
     html_path.write_text(render_html(defined_rules, hits_by_test, errors), encoding="utf-8")
     print(

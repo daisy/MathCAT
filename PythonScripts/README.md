@@ -17,4 +17,4 @@ uv run --project PythonScripts audit-translations --rule-coverage
 ```
 
 The tool opens `target/rule-coverage/index.html` in a browser when the run finishes. Expand a YAML file to see each active rule's name, tag, hit count, and match status. Hover over a rule to see which tests hit it. Coverage fractions include percentages.
-The Markdown report and test output remain at `target/rule-coverage/report.md` and `target/rule-coverage/test.log`.
+The Rust test output remains at `target/rule-coverage/test.log`.

@@ -1,4 +1,4 @@
-"""Format file and rule coverage events as Markdown and an interactive HTML report."""
+"""Format file and rule coverage events as an interactive HTML report."""
 
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -13,35 +13,9 @@ TEMPLATE = Environment(
 ).get_template("rule_coverage.html")
 
 
-def section(title: str, paths: set[str]) -> str:
-    """List covered YAML paths in a Markdown section."""
-    lines = [f"## {title} ({len(paths)})"]
-    lines.extend(f"- `{path}`" for path in sorted(paths))
-    return "\n".join(lines) + "\n"
-
-
 def coverage(count: int, total: int) -> str:
     """Show the matched fraction and its percentage, including empty groups."""
     return f"{count}/{total} ({100 * count / total:.0f}%)" if total else "0/0 (0%)"
-
-
-def rule_section(
-    title: str,
-    rules: set[RuleKey],
-    hits_by_test: dict[RuleKey, Counter[str]] | None = None,
-) -> str:
-    """List active rules with their source path, name, and MathML tag."""
-    lines = [f"## {title} ({len(rules)})"]
-    for path, name, tag in sorted(rules):
-        key = (path, name, tag)
-        line = f"- `{path}`: `{name}` (`{tag}`)"
-        if hits_by_test is not None:
-            tests = hits_by_test[key]
-            line += f" — {sum(tests.values())} hits; tests: " + ", ".join(
-                f"`{test}` ({count})" for test, count in sorted(tests.items())
-            )
-        lines.append(line)
-    return "\n".join(lines) + "\n"
 
 
 def render_html(

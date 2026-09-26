@@ -11,9 +11,11 @@ from .. import cli
 from ..rulecoverage import rule_coverage
 
 
-def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """The CLI uses test events to write both reports and opens the HTML page."""
+def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The CLI writes only the HTML report, removes an old Markdown report, and opens the page."""
     output = tmp_path / "target" / "rule-coverage"
+    output.mkdir(parents=True)
+    (output / "report.md").write_text("old report", encoding="utf-8")
     monkeypatch.setattr(rule_coverage, "ROOT", tmp_path)
     monkeypatch.setattr(rule_coverage, "OUTPUT", output)
     monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
@@ -63,15 +65,11 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
 
     assert result.value.code == 0
     assert opened == [(output / "index.html").as_uri()]
-    assert "Status: **Complete**" in (output / "report.md").read_text(encoding="utf-8")
-    assert "## Matched rules (1)" in (output / "report.md").read_text(encoding="utf-8")
-    assert "## Active rules with no match (2)" in (output / "report.md").read_text(encoding="utf-8")
-    assert "Rule files matched: **1/2 (50%)**" in (output / "report.md").read_text(encoding="utf-8")
-    assert "## Rule files with no match (1)\n- `Languages/en/Z_Rules.yaml`" in (output / "report.md").read_text(
-        encoding="utf-8"
-    )
-    assert "3 hits; tests: `test_alpha` (2), `test_beta` (1)" in (output / "report.md").read_text(encoding="utf-8")
+    assert not (output / "report.md").exists()
     html = (output / "index.html").read_text(encoding="utf-8")
+    assert "Status: <strong>Complete</strong>" in html
+    assert "1/2 (50%) rule files matched" in html
+    assert "Languages/en/Z_Rules.yaml" in html
     assert 'data-rule-search="simple mi" data-status="matched"' in html
     assert 'data-rule-search="default mi" data-status="unmatched"' in html
     assert "1/3 (33%) active rules matched" in html
@@ -101,8 +99,10 @@ def test_failed_coverage_run_opens_incomplete_report(tmp_path: Path, monkeypatch
 
     assert rule_coverage.run() == 1
     assert opened == [(output / "index.html").as_uri()]
-    assert "Status: **Incomplete**" in (output / "report.md").read_text(encoding="utf-8")
-    assert "No active rule definitions found" in (output / "index.html").read_text(encoding="utf-8")
+    html = (output / "index.html").read_text(encoding="utf-8")
+    assert "Status: <strong>Incomplete</strong>" in html
+    assert "No active rule definitions found" in html
+    assert not (output / "report.md").exists()
 
 
 def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -148,8 +148,9 @@ def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, 
     monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: True)
 
     assert rule_coverage.run() == 1
-    report = (output / "report.md").read_text(encoding="utf-8")
-    assert "Status: **Incomplete**" in report
-    assert "Invalid event in pid-123.jsonl:1" in report
-    assert "Invalid JSON in pid-123.jsonl:4" in report
-    assert "Matched rules lack definition events" in report
+    html = (output / "index.html").read_text(encoding="utf-8")
+    assert "Status: <strong>Incomplete</strong>" in html
+    assert "Invalid event in pid-123.jsonl:1" in html
+    assert "Invalid JSON in pid-123.jsonl:4" in html
+    assert "Matched rules lack definition events" in html
+    assert not (output / "report.md").exists()
