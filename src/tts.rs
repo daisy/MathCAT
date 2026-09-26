@@ -770,11 +770,11 @@ mod tests {
             ipa: "a".to_string(),
             sapi5: "b".to_string(),
         };
-        let rule = TTSCommandRule::new(
-            TTSCommand::Pronounce,
-            TTSCommandValue::Pronounce(Box::new(pronounce)),
-            ReplacementArray::build_empty(),
-        );
+        let rule = TTSCommandRule {
+            command: TTSCommand::Pronounce,
+            value: TTSCommandValue::Pronounce(Box::new(pronounce)),
+            replacements: ReplacementArray::build_empty(),
+        };
 
         assert_eq!(
             rule.to_string(),
