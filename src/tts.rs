@@ -216,16 +216,6 @@ impl fmt::Display for TTSCommandRule {
 }
 
 
-impl TTSCommandRule {
-    pub fn new(command: TTSCommand, value: TTSCommandValue, replacements: ReplacementArray) -> TTSCommandRule {
-        return TTSCommandRule{
-            command,
-            value,
-            replacements
-        }
-    }
-}
-
 /// Supported TTS engines
 /// These types should do something for all the TTSCommands
 #[allow(clippy::upper_case_acronyms)]
@@ -321,7 +311,11 @@ impl TTS {
                 TTSCommandValue::String(tts_str_value.to_string())
             },
         };
-        return Ok( Box::new( TTSCommandRule::new(tts_enum, tts_command_value, replacements) ) );
+        return Ok(Box::new(TTSCommandRule {
+            command: tts_enum,
+            value: tts_command_value,
+            replacements,
+        }));
     }
     
     /// The rule called to execute the TTSCommand `command`
@@ -664,11 +658,11 @@ impl TTS {
         }
         let pause = std::cmp::min(3000, ((2 * before_len + after_len)/48) * 128);
         // create a TTSCommandRule so we reuse code
-        let command = TTSCommandRule::new(
-            TTSCommand::Pause,
-            TTSCommandValue::Number(pause as f64),
-            ReplacementArray::build_empty(),
-        );
+        let command = TTSCommandRule {
+            command: TTSCommand::Pause,
+            value: TTSCommandValue::Number(pause as f64),
+            replacements: ReplacementArray::build_empty(),
+        };
         return match self {
             TTS::None  => self.get_string_none(&command, prefs, true),
             TTS::SSML  => self.get_string_ssml(&command, prefs, true),
