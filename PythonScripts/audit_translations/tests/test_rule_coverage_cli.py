@@ -22,11 +22,14 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
         assert kwargs["cwd"] == tmp_path
         events = [
             {"kind": "loaded", "path": "Languages/en/SimpleSpeak_Rules.yaml"},
+            {"kind": "loaded", "path": "Languages/en/SharedRules/empty.yaml"},
             {"kind": "loaded", "path": "Languages/en/definitions.yaml"},
             {"kind": "matched", "path": "Languages/en/SimpleSpeak_Rules.yaml"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "default", "tag": "mi"},
-            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi"},
+            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi", "test": "test_alpha"},
+            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi", "test": "test_alpha"},
+            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi", "test": "test_beta"},
         ]
         (output / "events" / "pid-123.jsonl").write_text(
             "\n".join(json.dumps(event) for event in events) + "\n",
@@ -47,9 +50,17 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
     assert "Status: **Complete**" in (output / "report.md").read_text(encoding="utf-8")
     assert "## Matched rules (1)" in (output / "report.md").read_text(encoding="utf-8")
     assert "## Active rules with no match (1)" in (output / "report.md").read_text(encoding="utf-8")
+    assert "3 hits; tests: `test_alpha` (2), `test_beta` (1)" in (output / "report.md").read_text(encoding="utf-8")
     html = (output / "index.html").read_text(encoding="utf-8")
     assert 'data-rule-search="simple mi" data-status="matched"' in html
     assert 'data-rule-search="default mi" data-status="unmatched"' in html
+    assert "1/2 (50%) active rules matched" in html
+    assert "1/2 (50%) rules" in html
+    assert 'role="tooltip">Tests:\ntest_alpha (2 hits)\ntest_beta (1 hit)</span>' in html
+    assert ".rules li:hover .rule-tooltip, .rules li:focus .rule-tooltip { display: block; }" in html
+    assert 'aria-describedby="rule-tooltip-1-1"' in html
+    assert "3 hits</span>" in html
+    assert "0 hits</span>" in html
     assert "No active pattern rules" in html
     assert (output / "test.log").is_file()
 
@@ -86,8 +97,9 @@ def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, mo
         encoding="utf-8",
     )
 
-    loaded, matched, defined, matched_rules, errors = rule_coverage.read_events()
+    loaded, matched, defined, rule_hits, rule_tests, errors = rule_coverage.read_events()
 
-    assert loaded == matched == matched_rules == set()
+    assert loaded == matched == set()
+    assert rule_hits == rule_tests == {}
     assert defined == {(path, name, "mfrac")}
     assert errors == []

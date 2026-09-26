@@ -1,6 +1,6 @@
 """Format file and rule coverage events as Markdown and an interactive HTML report."""
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -20,10 +20,27 @@ def section(title: str, paths: set[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def rule_section(title: str, rules: set[RuleKey]) -> str:
+def coverage(count: int, total: int) -> str:
+    """Show the matched fraction and its percentage, including empty groups."""
+    return f"{count}/{total} ({100 * count / total:.0f}%)" if total else "0/0 (0%)"
+
+
+def rule_section(
+    title: str,
+    rules: set[RuleKey],
+    hits: Counter[RuleKey] | None = None,
+    tests: dict[RuleKey, Counter[str]] | None = None,
+) -> str:
     """List active rules with their source path, name, and MathML tag."""
     lines = [f"## {title} ({len(rules)})"]
-    lines.extend(f"- `{path}`: `{name}` (`{tag}`)" for path, name, tag in sorted(rules))
+    for path, name, tag in sorted(rules):
+        key = (path, name, tag)
+        line = f"- `{path}`: `{name}` (`{tag}`)"
+        if hits is not None and tests is not None:
+            line += f" — {hits[key]} hits; tests: " + ", ".join(
+                f"`{test}` ({count})" for test, count in sorted(tests[key].items())
+            )
+        lines.append(line)
     return "\n".join(lines) + "\n"
 
 
@@ -31,24 +48,34 @@ def render_html(
     loaded: set[str],
     matched: set[str],
     defined_rules: set[RuleKey],
-    matched_rules: set[RuleKey],
+    rule_hits: Counter[RuleKey],
+    rule_tests: dict[RuleKey, Counter[str]],
     errors: list[str],
 ) -> str:
     """Show file coverage and searchable rule details in a standalone page."""
-    rules_by_path: dict[str, list[tuple[str, str, bool]]] = defaultdict(list)
+    rules_by_path: dict[str, list[dict]] = defaultdict(list)
     for path, name, tag in defined_rules:
-        rules_by_path[path].append((name, tag, (path, name, tag) in matched_rules))
+        key = (path, name, tag)
+        rules_by_path[path].append({
+            "name": name, "tag": tag, "matched": rule_hits[key] > 0,
+            "hits": rule_hits[key], "tests": sorted(rule_tests.get(key, {}).items()),
+            "tooltip": "Tests:\n" + "\n".join(
+                f"{test} ({count} {'hit' if count == 1 else 'hits'})"
+                for test, count in sorted(rule_tests.get(key, {}).items())
+            ) if rule_hits[key] else "No test hits",
+        })
 
     files = []
     for path in sorted(loaded | matched | rules_by_path.keys()):
-        rules = sorted(rules_by_path.get(path, []), key=lambda rule: (rule[0], rule[1]))
+        rules = sorted(rules_by_path.get(path, []), key=lambda rule: (rule["name"], rule["tag"]))
         files.append(
             {
                 "path": path,
                 "matched": path in matched,
-                "matched_count": sum(is_matched for _, _, is_matched in rules),
+                "matched_count": sum(rule["matched"] for rule in rules),
                 "rule_count": len(rules),
-                "rules": [{"name": name, "tag": tag, "matched": is_matched} for name, tag, is_matched in rules],
+                "coverage": coverage(sum(rule["matched"] for rule in rules), len(rules)),
+                "rules": rules,
             }
         )
 
@@ -57,7 +84,9 @@ def render_html(
         loaded_count=len(loaded),
         matched_count=len(matched),
         defined_rule_count=len(defined_rules),
-        matched_rule_count=len(matched_rules),
+        matched_rule_count=len(rule_hits),
+        file_coverage=coverage(len(matched), len(loaded)),
+        rule_coverage=coverage(len(rule_hits), len(defined_rules)),
         errors=errors,
         files=files,
     )

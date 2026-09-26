@@ -19,7 +19,12 @@ summary { cursor: pointer; }
 .badge.matched { color: #155c36; background: #dcf5e5; }
 .badge.unmatched { color: #8b3d00; background: #fff0cf; }
 .rules { list-style: none; padding-left: 1rem; }
-.rules li { padding: .2rem 0; }
+.rules li { position: relative; padding: .2rem 0; }
+.rule-tooltip { display: none; position: absolute; z-index: 1; top: 100%; left: 0;
+  max-width: min(35rem, 90vw); max-height: 60vh; overflow: auto; padding: .5rem .7rem;
+  border: 1px solid #8396a5; border-radius: .3rem; background: #fff; color: #17212b;
+  box-shadow: 0 .2rem .6rem #0003; white-space: pre-line; overflow-wrap: anywhere; }
+.rules li:hover .rule-tooltip, .rules li:focus .rule-tooltip { display: block; }
 .rule-name { font-weight: 600; }
 .empty { color: #52616d; }
 [hidden] { display: none !important; }
@@ -28,8 +33,8 @@ summary { cursor: pointer; }
 <body>
 <h1>Rule YAML coverage</h1>
 <p>Status: <strong>{{ status }}</strong></p>
-<div class="summary"><span>{{ loaded_count }} files loaded</span><span>{{ matched_count }} pattern files matched</span>
-<span>{{ matched_rule_count }} of {{ defined_rule_count }} active rules matched</span></div>
+<div class="summary"><span>{{ loaded_count }} files loaded</span><span>{{ file_coverage }} pattern files matched</span>
+<span>{{ rule_coverage }} active rules matched</span></div>
 <p>Paths are relative to <code>Rules/</code>. A pattern file is matched when a rule from it
 completes its replacement successfully.</p>
 <p>Unicode mapping and definition files are omitted because this report measures pattern-rule coverage.</p>
@@ -46,13 +51,15 @@ placeholder="Search paths, rule names, or tags">
 {% for file in files %}
 <details class="file" data-file-search="{{ file.path }}" data-status="{{ 'matched' if file.matched else 'unmatched' }}">
 <summary><span class="badge {{ 'matched' if file.matched else 'unmatched' }}">{{ 'Matched' if file.matched else 'No match' }}</span>
-<code>{{ file.path }}</code> <span class="count">{{ file.matched_count }}/{{ file.rule_count }} rules</span></summary>
+<code>{{ file.path }}</code> <span class="count">{{ file.coverage }} rules</span></summary>
 {% if file.rules %}
-<p>{{ file.matched_count }} of {{ file.rule_count }} active rules matched</p><ul class="rules">
+<p>{{ file.coverage }} active rules matched</p><ul class="rules">
+{% set file_index = loop.index0 %}
 {% for rule in file.rules %}
-<li data-rule-search="{{ rule.name }} {{ rule.tag }}" data-status="{{ 'matched' if rule.matched else 'unmatched' }}">
+<li data-rule-search="{{ rule.name }} {{ rule.tag }}" data-status="{{ 'matched' if rule.matched else 'unmatched' }}" tabindex="0" aria-describedby="rule-tooltip-{{ file_index }}-{{ loop.index0 }}">
 <span class="badge {{ 'matched' if rule.matched else 'unmatched' }}">{{ 'Matched' if rule.matched else 'No match' }}</span>
-<span class="rule-name">{{ rule.name }}</span> <code>{{ rule.tag }}</code></li>
+<span class="rule-name">{{ rule.name }}</span> <code>{{ rule.tag }}</code> <span class="count">{{ rule.hits }} {{ 'hit' if rule.hits == 1 else 'hits' }}</span>
+<span class="rule-tooltip" id="rule-tooltip-{{ file_index }}-{{ loop.index0 }}" role="tooltip">{{ rule.tooltip }}</span></li>
 {% endfor %}
 </ul>
 {% else %}

@@ -32,7 +32,7 @@ fn record(kind: EventKind, path: &Path, name: &str, tag: &str) {
     let mut recorded = RECORDED.get_or_init(|| Mutex::new(HashSet::new()))
         .lock().unwrap_or_else(|poisoned| poisoned.into_inner());
     let key = (kind, relative.clone(), name.to_string(), tag.to_string());
-    if recorded.contains(&key) {
+    if kind != EventKind::MatchedRule && recorded.contains(&key) {
         return;
     }
 
@@ -47,10 +47,15 @@ fn record(kind: EventKind, path: &Path, name: &str, tag: &str) {
         EventKind::Loaded => serde_json::json!({"kind": "loaded", "path": path}),
         EventKind::Matched => serde_json::json!({"kind": "matched", "path": path}),
         EventKind::DefinedRule => serde_json::json!({"kind": "defined-rule", "path": path, "name": name, "tag": tag}),
-        EventKind::MatchedRule => serde_json::json!({"kind": "matched-rule", "path": path, "name": name, "tag": tag}),
+        EventKind::MatchedRule => serde_json::json!({
+            "kind": "matched-rule", "path": path, "name": name, "tag": tag,
+            "test": std::thread::current().name().unwrap_or("(unnamed thread)"),
+        }),
     };
     writeln!(output, "{event}").expect("cannot write rule coverage event");
-    recorded.insert(key);
+    if kind != EventKind::MatchedRule {
+        recorded.insert(key);
+    }
 }
 
 pub(crate) fn loaded(path: &Path) {
