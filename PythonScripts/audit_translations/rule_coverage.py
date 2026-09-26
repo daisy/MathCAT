@@ -108,7 +108,7 @@ def run() -> int:
 
     status = "Incomplete" if errors else "Complete"
     report = [
-        "# Rule YAML coverage\n",
+        "# Rule Coverage\n",
         f"Status: **{status}**\n",
         f"Pattern files matched: **{coverage(len(matched), len(loaded))}**\n",
         f"Active rules matched: **{coverage(len(matched_rules), len(defined_rules))}**\n",
