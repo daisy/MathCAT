@@ -58,7 +58,7 @@ def render_html(
         key = (path, name, tag)
         rules_by_path[path].append({
             "name": name, "tag": tag, "matched": rule_hits[key] > 0,
-            "hits": rule_hits[key], "tests": sorted(rule_tests.get(key, {}).items()),
+            "hits": rule_hits[key],
             "tooltip": "Tests:\n" + "\n".join(
                 f"{test} ({count} {'hit' if count == 1 else 'hits'})"
                 for test, count in sorted(rule_tests.get(key, {}).items())
@@ -72,8 +72,6 @@ def render_html(
             {
                 "path": path,
                 "matched": path in matched,
-                "matched_count": sum(rule["matched"] for rule in rules),
-                "rule_count": len(rules),
                 "coverage": coverage(sum(rule["matched"] for rule in rules), len(rules)),
                 "rules": rules,
             }
@@ -82,9 +80,6 @@ def render_html(
     return TEMPLATE.render(
         status="Incomplete" if errors else "Complete",
         loaded_count=len(loaded),
-        matched_count=len(matched),
-        defined_rule_count=len(defined_rules),
-        matched_rule_count=len(rule_hits),
         file_coverage=coverage(len(matched), len(loaded)),
         rule_coverage=coverage(len(rule_hits), len(defined_rules)),
         errors=errors,
