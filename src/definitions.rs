@@ -48,9 +48,16 @@ pub enum DefinitionCollection {
 ///
 /// There should only be one instance of this structure ([`DEFINITIONS`])
 // FIX: this probably can done with a macro to remove all the repetition
-#[derive(Default)]
 pub struct Definitions {
     pub name_to_var_mapping: HashMap<String, DefinitionCollection>,
+}
+
+impl Default for Definitions {
+    fn default() -> Self {
+        Definitions {
+            name_to_var_mapping: HashMap::with_capacity(30),
+        }
+    }
 }
 
 impl Definitions {
