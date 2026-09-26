@@ -12,6 +12,7 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 
 
 [features]
+"rule-coverage" = ["dep:serde_json"]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
@@ -38,6 +39,7 @@ cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
+serde_json = { version = "1.0", optional = true }
 elements_rs = { version = "0.2.8", default-features = false }
 
 # Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
