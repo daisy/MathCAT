@@ -114,35 +114,9 @@ pub struct Pronounce {
     text: String,       // plain text
     ipa: String,        // ipa 
     sapi5: String,
-    eloquence: String,
+    // eloquence: String,
 }
 
-
-impl fmt::Display for Pronounce {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut comma = "";     // comma separator so it looks right
-        write!(f, "pronounce: [")?;
-        if !self.text.is_empty() {
-            write!(f, "text: '{}'", self.text)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.ipa.is_empty() {
-            write!(f, "{}ipa: '{}'", comma, self.ipa)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.sapi5.is_empty() {
-            write!(f, "{}sapi5: '{}'", comma, self.sapi5)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.eloquence.is_empty() {
-            write!(f, "{}eloquence: '{}'", comma, self.eloquence)?;
-        }
-        return writeln!(f, "]");
-    }
-}
 
 impl Pronounce {
     fn build(values: &Yaml) -> Result<Pronounce> {
@@ -152,7 +126,6 @@ impl Pronounce {
         let mut text = "";
         let mut ipa = "";
         let mut sapi5 = "";
-        let mut eloquence = "";
         // values should be an array with potential values for Pronounce
         let values = values.as_vec().ok_or_else(||
                                         anyhow!("'pronounce' value '{}' is not an array", yaml_to_type(values)))?;
@@ -168,7 +141,7 @@ impl Pronounce {
                     "text" => text = as_str_checked(value)?,
                     "ipa" => ipa = as_str_checked(value)?,
                     "sapi5" => sapi5 = as_str_checked(value)?,
-                    "eloquence" => eloquence = as_str_checked(value)?,
+                    "eloquence" => { as_str_checked(value)?; },
                     _ => bail!("unknown pronounce type: {} with value {}", yaml_to_string(key, 0), yaml_to_string(value, 0)),
                 }
             }
@@ -180,7 +153,7 @@ impl Pronounce {
             text: text.to_string(),
             ipa: ipa.to_string(),
             sapi5: sapi5.to_string(),
-            eloquence: eloquence.to_string()
+            // eloquence: eloquence.to_string()
         } );
     
 
@@ -232,7 +205,7 @@ impl fmt::Display for TTSCommandRule {
             TTSCommandValue::String(s) => s.to_string(),
             TTSCommandValue::Number(f) => f.to_string(),
             TTSCommandValue::XPath(p) => p.to_string(),
-            TTSCommandValue::Pronounce(p) => p.to_string(),
+            TTSCommandValue::Pronounce(p) => format!("{p:?}"),
         };
         if self.command == TTSCommand::Pause {
             return write!(f, "pause: {value}");
@@ -783,10 +756,30 @@ mod tests {
         let rule = TTS::build("pronounce", values).unwrap();
         let rendered = format!("{rule}");
 
-        assert!(rendered.contains("text: 'alpha'"));
-        assert!(rendered.contains("ipa: 'a'"));
-        assert!(rendered.contains("sapi5: 'b'"));
-        assert!(rendered.contains("eloquence: 'c'"));
+        assert!(rendered.contains("text: \"alpha\""));
+        assert!(rendered.contains("ipa: \"a\""));
+        assert!(rendered.contains("sapi5: \"b\""));
+        assert!(!rendered.contains("eloquence"));
+    }
+
+    /// Shows the derived pronunciation details when displaying a TTS rule.
+    #[test]
+    fn pronounce_rule_display_uses_debug_fields() {
+        let pronounce = Pronounce {
+            text: "bli bla blub".to_string(),
+            ipa: "a".to_string(),
+            sapi5: "b".to_string(),
+        };
+        let rule = TTSCommandRule {
+            command: TTSCommand::Pronounce,
+            value: TTSCommandValue::Pronounce(Box::new(pronounce)),
+            replacements: ReplacementArray::build_empty(),
+        };
+
+        assert_eq!(
+            rule.to_string(),
+            "pronounce: Pronounce { text: \"bli bla blub\", ipa: \"a\", sapi5: \"b\" }\n"
+        );
     }
 
     #[test]
