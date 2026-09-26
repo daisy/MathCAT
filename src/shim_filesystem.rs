@@ -10,7 +10,7 @@ fn record_successful_read(path: &Path, contents: String) -> String {
     #[cfg(feature = "rule-coverage")]
     crate::rule_coverage::loaded(path);
     #[cfg(not(feature = "rule-coverage"))]
-    let _ = path;
+    let _ = path; // suppress unused variable warning if feature is not enabled
     contents
 }
 
