@@ -6,14 +6,6 @@ use std::path::{Path, PathBuf};
 use crate::errors::*;
 use cfg_if::cfg_if;
 
-fn record_successful_read(path: &Path, contents: String) -> String {
-    #[cfg(feature = "rule-coverage")]
-    crate::rule_coverage::loaded(path);
-    #[cfg(not(feature = "rule-coverage"))]
-    let _ = path; // suppress unused variable warning if feature is not enabled
-    contents
-}
-
 #[allow(unused_imports)]
 use log::{debug};
 
@@ -227,7 +219,7 @@ cfg_if! {
                     return None;
                 }
             }) {
-                return Ok(record_successful_read(&path, contents));
+                return Ok(contents);
             };
 
             let file_name = file_name.replace('\\', "/"); // zip files always use forward slash
@@ -264,7 +256,7 @@ cfg_if! {
                 if let Err(e) = file.read_to_string(&mut contents) {
                     bail!("read_to_string: {}", e);
                 }
-                return Ok(record_successful_read(&path, contents));
+                return Ok(contents);
             });
         }
 
@@ -433,7 +425,7 @@ cfg_if! {
 
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
             if let Some(content) = IN_MEMORY_FILES.read().unwrap().as_ref().and_then(|f| f.get(&get_in_memory_key(path)).cloned()) {
-                return Ok(record_successful_read(path, content));
+                return Ok(content);
             }
 
             let path = match path.canonicalize() {
@@ -444,12 +436,12 @@ cfg_if! {
             if should_lock_rules_yaml_path(&path) {
                 let _guard = RULES_ZIP_EXTRACT_LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
                 match std::fs::read_to_string(&path) {
-                    Ok(str) => return Ok(record_successful_read(&path, str)),
+                    Ok(str) => return Ok(str),
                     Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
                 }
             } else {
                 match std::fs::read_to_string(&path) {
-                    Ok(str) => return Ok(record_successful_read(&path, str)),
+                    Ok(str) => return Ok(str),
                     Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
                 }
             }

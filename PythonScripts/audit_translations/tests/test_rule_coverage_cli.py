@@ -22,11 +22,9 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
         assert command == ["cargo", "test", "--features", "rule-coverage"]
         assert kwargs["cwd"] == tmp_path
         events = [
-            {"kind": "loaded", "path": "Languages/en/SimpleSpeak_Rules.yaml"},
-            {"kind": "loaded", "path": "Languages/en/SharedRules/empty.yaml"},
-            {"kind": "loaded", "path": "Languages/en/definitions.yaml"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "default", "tag": "mi"},
+            {"kind": "defined-rule", "path": "Languages/en/Z_Rules.yaml", "name": "unused", "tag": "mn"},
             {
                 "kind": "matched-rule",
                 "path": "Languages/en/SimpleSpeak_Rules.yaml",
@@ -67,19 +65,23 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
     assert opened == [(output / "index.html").as_uri()]
     assert "Status: **Complete**" in (output / "report.md").read_text(encoding="utf-8")
     assert "## Matched rules (1)" in (output / "report.md").read_text(encoding="utf-8")
-    assert "## Active rules with no match (1)" in (output / "report.md").read_text(encoding="utf-8")
+    assert "## Active rules with no match (2)" in (output / "report.md").read_text(encoding="utf-8")
+    assert "Rule files matched: **1/2 (50%)**" in (output / "report.md").read_text(encoding="utf-8")
+    assert "## Rule files with no match (1)\n- `Languages/en/Z_Rules.yaml`" in (output / "report.md").read_text(
+        encoding="utf-8"
+    )
     assert "3 hits; tests: `test_alpha` (2), `test_beta` (1)" in (output / "report.md").read_text(encoding="utf-8")
     html = (output / "index.html").read_text(encoding="utf-8")
     assert 'data-rule-search="simple mi" data-status="matched"' in html
     assert 'data-rule-search="default mi" data-status="unmatched"' in html
-    assert "1/2 (50%) active rules matched" in html
+    assert "1/3 (33%) active rules matched" in html
     assert "1/2 (50%) rules" in html
     assert 'role="tooltip">Tests:\ntest_alpha (2 hits)\ntest_beta (1 hit)</span>' in html
     assert ".rules li:hover .rule-tooltip, .rules li:focus .rule-tooltip { display: block; }" in html
-    assert 'aria-describedby="rule-tooltip-1-1"' in html
+    assert 'aria-describedby="rule-tooltip-0-1"' in html
     assert "3 hits</span>" in html
     assert "0 hits</span>" in html
-    assert "No active pattern rules" in html
+    assert "2 files with active rules" in html
     assert (output / "test.log").is_file()
 
 
@@ -100,7 +102,7 @@ def test_failed_coverage_run_opens_incomplete_report(tmp_path: Path, monkeypatch
     assert rule_coverage.run() == 1
     assert opened == [(output / "index.html").as_uri()]
     assert "Status: **Incomplete**" in (output / "report.md").read_text(encoding="utf-8")
-    assert "No loaded YAML events found" in (output / "index.html").read_text(encoding="utf-8")
+    assert "No active rule definitions found" in (output / "index.html").read_text(encoding="utf-8")
 
 
 def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -115,9 +117,8 @@ def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, mo
         encoding="utf-8",
     )
 
-    loaded, defined, hits_by_test, errors = rule_coverage.read_events()
+    defined, hits_by_test, errors = rule_coverage.read_events()
 
-    assert loaded == set()
     assert hits_by_test == {}
     assert defined == {(path, name, "mfrac")}
     assert errors == []
@@ -149,5 +150,6 @@ def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, 
     assert rule_coverage.run() == 1
     report = (output / "report.md").read_text(encoding="utf-8")
     assert "Status: **Incomplete**" in report
+    assert "Invalid event in pid-123.jsonl:1" in report
     assert "Invalid JSON in pid-123.jsonl:4" in report
     assert "Matched rules lack definition events" in report

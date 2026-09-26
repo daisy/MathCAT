@@ -6,15 +6,9 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
-#[derive(Clone, Copy, Eq, Hash, PartialEq)]
-enum OnceKind {
-    Loaded,
-    DefinedRule,
-}
-
 struct Recorder {
     output: File,
-    recorded: HashSet<(OnceKind, PathBuf, String, String)>,
+    recorded: HashSet<(PathBuf, String, String)>,
 }
 
 static RECORDER: OnceLock<Mutex<Recorder>> = OnceLock::new();
@@ -42,26 +36,15 @@ fn rule_relative_path(path: &Path) -> Option<PathBuf> {
     Some(relative.to_path_buf())
 }
 
-fn record_once(kind: OnceKind, path: &Path, name: &str, tag: &str) {
+pub(crate) fn defined_rule(path: &Path, name: &str, tag: &str) {
     let Some(relative) = rule_relative_path(path) else { return };
     let mut recorder = recorder().lock().unwrap_or_else(|poisoned| poisoned.into_inner());
-    if !recorder.recorded.insert((kind, relative.clone(), name.to_string(), tag.to_string())) {
+    if !recorder.recorded.insert((relative.clone(), name.to_string(), tag.to_string())) {
         return;
     }
     let path = relative.to_string_lossy();
-    let event = match kind {
-        OnceKind::Loaded => serde_json::json!({"kind": "loaded", "path": path}),
-        OnceKind::DefinedRule => serde_json::json!({"kind": "defined-rule", "path": path, "name": name, "tag": tag}),
-    };
+    let event = serde_json::json!({"kind": "defined-rule", "path": path, "name": name, "tag": tag});
     writeln!(recorder.output, "{event}").expect("cannot write rule coverage event");
-}
-
-pub(crate) fn loaded(path: &Path) {
-    record_once(OnceKind::Loaded, path, "", "");
-}
-
-pub(crate) fn defined_rule(path: &Path, name: &str, tag: &str) {
-    record_once(OnceKind::DefinedRule, path, name, tag);
 }
 
 pub(crate) fn matched_rule(path: &Path, name: &str, tag: &str) {

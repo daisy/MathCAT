@@ -26,18 +26,16 @@ summary { cursor: pointer; }
   box-shadow: 0 .2rem .6rem #0003; white-space: pre-line; overflow-wrap: anywhere; }
 .rules li:hover .rule-tooltip, .rules li:focus .rule-tooltip { display: block; }
 .rule-name { font-weight: 600; }
-.empty { color: #52616d; }
 [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <h1>Rule YAML coverage</h1>
 <p>Status: <strong>{{ status }}</strong></p>
-<div class="summary"><span>{{ loaded_count }} files loaded</span><span>{{ file_coverage }} pattern files matched</span>
+<div class="summary"><span>{{ rule_file_count }} files with active rules</span><span>{{ file_coverage }} rule files matched</span>
 <span>{{ rule_coverage }} active rules matched</span></div>
-<p>Paths are relative to <code>Rules/</code>. A pattern file is matched when a rule from it
-completes its replacement successfully.</p>
-<p>Unicode mapping and definition files are omitted because this report measures pattern-rule coverage.</p>
+<p>Paths are relative to <code>Rules/</code>. Files with active rules are coverage targets;
+a file is matched when a rule from it completes its replacement successfully.</p>
 {% if errors %}
 <section class="problems"><h2>Problems</h2><ul>
 {% for error in errors %}<li>{{ error }}</li>{% endfor %}
@@ -52,7 +50,6 @@ placeholder="Search paths, rule names, or tags">
 <details class="file" data-file-search="{{ file.path }}" data-status="{{ 'matched' if file.matched else 'unmatched' }}">
 <summary><span class="badge {{ 'matched' if file.matched else 'unmatched' }}">{{ 'Matched' if file.matched else 'No match' }}</span>
 <code>{{ file.path }}</code> <span class="count">{{ file.coverage }} rules</span></summary>
-{% if file.rules %}
 <p>{{ file.coverage }} active rules matched</p><ul class="rules">
 {% set file_index = loop.index0 %}
 {% for rule in file.rules %}
@@ -62,9 +59,6 @@ placeholder="Search paths, rule names, or tags">
 <span class="rule-tooltip" id="rule-tooltip-{{ file_index }}-{{ loop.index0 }}" role="tooltip">{{ rule.tooltip }}</span></li>
 {% endfor %}
 </ul>
-{% else %}
-<p class="empty">No active pattern rules</p>
-{% endif %}
 </details>
 {% endfor %}
 </div>

@@ -13,11 +13,9 @@ from .rule_coverage_report import RuleKey, coverage, render_html, rule_section, 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "target" / "rule-coverage"
 EVENTS = OUTPUT / "events"
-EXCLUDED_FILE_NAMES = {"definitions.yaml", "unicode.yaml", "unicode-full.yaml"}
 
 
-def read_events() -> tuple[set[str], set[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
-    loaded: set[str] = set()
+def read_events() -> tuple[set[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
     defined_rules: set[RuleKey] = set()
     hits_by_test: dict[RuleKey, Counter[str]] = defaultdict(Counter)
     errors: list[str] = []
@@ -45,10 +43,6 @@ def read_events() -> tuple[set[str], set[RuleKey], dict[RuleKey, Counter[str]], 
                 or PurePosixPath(path).suffix not in (".yaml", ".yml")
             ):
                 errors.append(f"Invalid event in {event_file.name}:{number}")
-            elif PurePosixPath(path).name.lower() in EXCLUDED_FILE_NAMES:
-                continue
-            elif kind == "loaded" and event.keys() == {"kind", "path"}:
-                loaded.add(path)
             elif kind in ("defined-rule", "matched-rule") and {"name", "tag"} <= event.keys():
                 name, tag = event["name"], event["tag"]
                 if not isinstance(name, str) or not isinstance(tag, str) or not name or not tag:
@@ -67,7 +61,7 @@ def read_events() -> tuple[set[str], set[RuleKey], dict[RuleKey, Counter[str]], 
                     errors.append(f"Invalid event in {event_file.name}:{number}")
             else:
                 errors.append(f"Invalid event in {event_file.name}:{number}")
-    return loaded, defined_rules, dict(hits_by_test), errors
+    return defined_rules, dict(hits_by_test), errors
 
 
 def run() -> int:
@@ -88,42 +82,35 @@ def run() -> int:
             log.write(f"Could not run cargo: {error}\n")
             test_status = 1
 
-    loaded, defined_rules, hits_by_test, errors = read_events()
+    defined_rules, hits_by_test, errors = read_events()
     matched_rules = set(hits_by_test)
-    matched = {path for path, _, _ in matched_rules}
+    rule_files = {path for path, _, _ in defined_rules}
+    matched_files = {path for path, _, _ in matched_rules}
     if test_status:
         errors.insert(0, f"cargo test failed (exit status {test_status}); see test.log")
-    if not loaded:
-        errors.append("No loaded YAML events found")
-    if not matched:
-        errors.append("No matched pattern events found")
     if not defined_rules:
         errors.append("No active rule definitions found")
     if not matched_rules:
         errors.append("No matched rule events found")
-    if matched - loaded:
-        errors.append("Matched pattern files lack loaded events: " + ", ".join(sorted(matched - loaded)))
     if matched_rules - defined_rules:
         errors.append("Matched rules lack definition events")
-    if {path for path, _, _ in defined_rules} - loaded:
-        errors.append("Defined rules have no loaded YAML event")
 
     status = "Incomplete" if errors else "Complete"
     report = [
         "# Rule Coverage\n",
         f"Status: **{status}**\n",
-        f"Pattern files matched: **{coverage(len(matched), len(loaded))}**\n",
+        f"Rule files matched: **{coverage(len(matched_files), len(rule_files))}**\n",
         f"Active rules matched: **{coverage(len(matched_rules), len(defined_rules))}**\n",
-        "Paths are relative to `Rules/`. A pattern file is matched when a rule from it completes its replacement successfully.\n",
-        "Unicode mapping and definition files are omitted because this report measures pattern-rule coverage.\n",
+        "Paths are relative to `Rules/`. Files with active rules are coverage targets; "
+        "a file is matched when a rule from it completes its replacement successfully.\n",
     ]
     if errors:
         report.append("## Problems\n\n" + "\n".join(f"- {error}" for error in errors) + "\n")
     report.extend(
         (
-            section("Loaded YAML files", loaded),
-            section("Matched pattern files", matched),
-            section("Loaded files with no pattern match", loaded - matched),
+            section("Rule files", rule_files),
+            section("Matched rule files", matched_files),
+            section("Rule files with no match", rule_files - matched_files),
             rule_section("Matched rules", matched_rules, hits_by_test),
             rule_section("Active rules with no match", defined_rules - matched_rules),
         )
@@ -131,9 +118,9 @@ def run() -> int:
     report_path = OUTPUT / "report.md"
     report_path.write_text("\n".join(report), encoding="utf-8")
     html_path = OUTPUT / "index.html"
-    html_path.write_text(render_html(loaded, defined_rules, hits_by_test, errors), encoding="utf-8")
+    html_path.write_text(render_html(defined_rules, hits_by_test, errors), encoding="utf-8")
     print(
-        f"{status}: {len(loaded)} files loaded, {coverage(len(matched), len(loaded))} files matched; "
+        f"{status}: {coverage(len(matched_files), len(rule_files))} rule files matched; "
         f"{coverage(len(matched_rules), len(defined_rules))} rules matched; report: {html_path}"
     )
     try:

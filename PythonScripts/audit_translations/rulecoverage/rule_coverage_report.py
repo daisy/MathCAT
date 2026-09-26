@@ -45,13 +45,13 @@ def rule_section(
 
 
 def render_html(
-    loaded: set[str],
     defined_rules: set[RuleKey],
     hits_by_test: dict[RuleKey, Counter[str]],
     errors: list[str],
 ) -> str:
     """Show file coverage and searchable rule details in a standalone page."""
-    matched = {path for path, _, _ in hits_by_test}
+    rule_files = {path for path, _, _ in defined_rules}
+    matched_files = {path for path, _, _ in hits_by_test}
     rules_by_path: dict[str, list[dict]] = defaultdict(list)
     for path, name, tag in defined_rules:
         key = (path, name, tag)
@@ -74,12 +74,12 @@ def render_html(
         )
 
     files = []
-    for path in sorted(loaded | matched | rules_by_path.keys()):
+    for path in sorted(rule_files):
         rules = sorted(rules_by_path.get(path, []), key=lambda rule: (rule["name"], rule["tag"]))
         files.append(
             {
                 "path": path,
-                "matched": path in matched,
+                "matched": path in matched_files,
                 "coverage": coverage(sum(rule["matched"] for rule in rules), len(rules)),
                 "rules": rules,
             }
@@ -87,8 +87,8 @@ def render_html(
 
     return TEMPLATE.render(
         status="Incomplete" if errors else "Complete",
-        loaded_count=len(loaded),
-        file_coverage=coverage(len(matched), len(loaded)),
+        rule_file_count=len(rule_files),
+        file_coverage=coverage(len(matched_files), len(rule_files)),
         rule_coverage=coverage(len(hits_by_test), len(defined_rules)),
         errors=errors,
         files=files,
