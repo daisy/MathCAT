@@ -448,6 +448,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "780955b8b195a21ab8e4ac6b60dd1dbdcec1dc6c51c0617964b08c81785e12c9"
 
 [[package]]
+name = "elements_rs"
+version = "0.2.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5834efe826a9a66b548e0887d9fc744fc8bb57065dcc6e5495359b25ab98319"
+dependencies = [
+ "strum",
+ "strum_macros",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "encoding_rs"
 version = "0.8.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -784,6 +795,7 @@ dependencies = [
  "cfg-if",
  "clap",
  "dirs",
+ "elements_rs",
  "env_logger",
  "fastrand",
  "html-escape",

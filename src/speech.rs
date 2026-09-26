@@ -431,11 +431,9 @@ impl fmt::Display for Replacement {
 impl Replacement {   
     fn build(replacement: &Yaml) -> Result<Replacement> {
         // Replacement -- single key/value (see below for allowed values)
-        let dictionary = replacement.as_hash();
-        if dictionary.is_none() {
+        let Some(dictionary) = replacement.as_hash() else {
             bail!("  expected a key/value pair. Found {}.",  yaml_to_string(replacement, 0));
         };
-        let dictionary = dictionary.unwrap();
         if dictionary.is_empty() { 
             bail!("No key/value pairs found for key 'replace'.\n\
                 Suggestion: are the following lines indented properly?");
@@ -898,8 +896,7 @@ impl ReplacementArray {
     /// Any errors are passed back out.
     pub fn build(replacements: &Yaml) -> Result<ReplacementArray> {
         // replacements is either a single replacement or an array of replacements
-        let result= if replacements.is_array() {
-            let replacements = replacements.as_vec().unwrap();
+        let result= if let Some(replacements) = replacements.as_vec() {
             replacements
                 .iter()
                 .enumerate()    // useful for errors
@@ -1173,12 +1170,9 @@ impl MyXPath {
     /// Convert DEBUG(...) input to the internal function which is DEBUG(arg, arg_as_string)
     fn add_debug_string_arg(xpath: &str) -> Result<String> {
         // do a quick check to see if "DEBUG" is in the string -- this is the common case
-        let debug_start = xpath.find("DEBUG(");
-        if debug_start.is_none() {
+        let Some(debug_start) = xpath.find("DEBUG(") else {
             return Ok( xpath.to_string() );
-        }
-
-        let debug_start = debug_start.unwrap();
+        };
         let mut before_paren = xpath[..debug_start+5].to_string();   // includes "DEBUG"
         let chars = xpath[debug_start+5..].chars().collect::<Vec<char>>();     // begins at '('
         before_paren.push_str(&chars_add_debug_string_arg(&chars).with_context(|| format!("In xpath='{xpath}'"))?);
@@ -1469,9 +1463,9 @@ impl TestArray {
         // 'if:' should only be the first entry in the array; 'else_if' should never be the first entry. Otherwise, they are the same
         let mut test_array = vec![];
         for test in tests {
-            if test.as_hash().is_none() {
+            let Some(test_hash) = test.as_hash() else {
                 bail!("Value for array entry in 'test:' must be a dictionary/contain keys");
-            }
+            };
             let if_part = &test[if test_array.is_empty() {"if"} else {"else_if"}];
             if !if_part.is_badvalue() {
                 // first case: if:, then:, optional else:
@@ -1479,7 +1473,7 @@ impl TestArray {
                 let then_part = TestOrReplacements::build(test, "then", "then_test", true)?;
                 let else_part = TestOrReplacements::build(test, "else", "else_test", false)?;
                 let n_keys = if else_part.is_none() {2} else {3};
-                if test.as_hash().unwrap().len() > n_keys {
+                if test_hash.len() > n_keys {
                     bail!("A key other than 'if', 'else_if', 'then', 'then_test', 'else', or 'else_test' was found in the 'then' clause of 'test'");
                 };
                 test_array.push(
@@ -1488,7 +1482,7 @@ impl TestArray {
             } else {
                 // second case: should be else/else_test
                 let else_part = TestOrReplacements::build(test, "else", "else_test", true)?;
-                if test.as_hash().unwrap().len() > 1 {
+                if test_hash.len() > 1 {
                     bail!("A key other than 'if', 'else_if', 'then', 'then_test', 'else', or 'else_test' was found the 'else' clause of 'test'");
                 };
                 test_array.push(
@@ -1715,8 +1709,7 @@ impl VariableDefinitions {
         if defs.is_badvalue() {
             return Ok( VariableDefinitions::new(0) );
         };
-        if defs.is_array() {
-            let defs = defs.as_vec().unwrap();
+        if let Some(defs) = defs.as_vec() {
             let mut definitions = VariableDefinitions::new(defs.len());
             for def in defs {
                 let variable_def = VariableDefinition::build(def)
@@ -1874,12 +1867,9 @@ impl UnicodeDef {
             return Ok( Some(process_include(file_name, include_file_name, do_include_fn)?) );
         }
         // key: char, value is replacement or array of replacements
-        let dictionary = unicode_def.as_hash();
-        if dictionary.is_none() {
+        let Some(dictionary) = unicode_def.as_hash() else {
             bail!("Expected a unicode definition (e.g, '+':[t: \"plus\"]'), found {}", yaml_to_string(unicode_def, 0));
-        }
-
-        let dictionary = dictionary.unwrap();
+        };
         if dictionary.len() != 1 {
             bail!("Expected a unicode definition (e.g, '+':[t: \"plus\"]'), found {}", yaml_to_string(unicode_def, 0));
         }
@@ -2334,11 +2324,9 @@ impl SpeechRules {
 
     fn build_speech_patterns(&mut self, patterns: &Yaml, file_name: &Path) -> Result<Vec<PathBuf>> {
         // Rule::SpeechPatternList
-        let patterns_vec = patterns.as_vec();
-        if patterns_vec.is_none() {
+        let Some(patterns_vec) = patterns.as_vec() else {
             bail!(yaml_type_err(patterns, "array"));
-        }
-        let patterns_vec = patterns.as_vec().unwrap();
+        };
         let mut files_read = vec![file_name.to_path_buf()];
         for entry in patterns_vec.iter() {
             if let Some(mut added_files) = SpeechPattern::build(entry, file_name, self)? {
@@ -2368,12 +2356,11 @@ impl SpeechRules {
         // info!("Reading unicode file {}", path.to_str().unwrap());
         let unicode_file_contents = read_to_string_shim(&path)?;
         let unicode_build_fn = |unicode_def_list: &Yaml| {
-            let unicode_defs = unicode_def_list.as_vec();
-            if unicode_defs.is_none() {
+            let Some(unicode_defs) = unicode_def_list.as_vec() else {
                 bail!("File '{}' does not begin with an array", yaml_to_type(unicode_def_list));
             };
             let mut files_read = vec![path.to_path_buf()];
-            for unicode_def in unicode_defs.unwrap() {
+            for unicode_def in unicode_defs {
                 if let Some(mut added_files) = UnicodeDef::build(unicode_def, &path, self, use_short)
                                                                 .with_context(|| {format!("In file {:?}", path.to_str())})? {
                     files_read.append(&mut added_files);

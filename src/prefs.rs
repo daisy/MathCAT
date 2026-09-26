@@ -106,37 +106,24 @@ impl Preferences{
 
     fn read_prefs_file(file: &Path, mut base_prefs: Preferences) -> Result<Preferences> {
         let file_name = file.to_str().unwrap();
-        let docs;
-        match read_to_string_shim(file) {
-            Err(e) => {
-                bail!("Couldn't read file {}\n{}", file_name, e);
-            },
-            Ok( file_contents) => {
-                match YamlLoader::load_from_str(&file_contents) {
-                    Err(e) => {
-                        bail!("Yaml parse error ('{}') in preference file {}.", e, file_name);
-                    },
-                    Ok(d) => docs = d,
-                }
-
-            }
-        }
+        let file_contents = read_to_string_shim(file)
+            .with_context(|| format!("Couldn't read file {file_name}"))?;
+        let docs = YamlLoader::load_from_str(&file_contents)
+            .with_context(|| format!("Yaml parse error in preference file {file_name}."))?;
         if docs.len() != 1 {
             bail!("MathCAT: error in prefs file '{}'.\nFound {} 'documents' -- should only be 1.", file_name, docs.len());
         }
 
         let doc = &docs[0];
+        const SECTIONS: [&str; 4] = ["Speech", "Navigation", "Braille", "Other"];
         if cfg!(debug_assertions) {
-            verify_keys(doc, "Speech", file_name)?;
-            verify_keys(doc, "Navigation", file_name)?;
-            verify_keys(doc, "Braille", file_name)?;
-            verify_keys(doc, "Other", file_name)?;
+            for section in SECTIONS {
+                verify_keys(doc, section, file_name)?;
+            }
         }
-
-        add_prefs(&mut base_prefs.prefs, &doc["Speech"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Navigation"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Braille"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Other"], "", file_name);
+        for section in SECTIONS {
+            add_prefs(&mut base_prefs.prefs, &doc[section], "", file_name);
+        }
         return Ok(base_prefs);
 
 
@@ -182,16 +169,6 @@ impl Preferences{
                 }                  
             }
         }
-    }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_string_value(&mut self, name: &str, value: &str) {
-        self.prefs.insert(name.to_string(), Yaml::String(value.trim().to_string()));
-    }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_bool_value(&mut self, name: &str, value: bool) {
-        self.prefs.insert(name.to_string(), Yaml::Boolean(value));
     }
 }
 
@@ -260,10 +237,8 @@ impl PreferenceManager {
         // Note: if current_dir() also fails, unwrap_or_default yields an empty PathBuf,
         //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
-        let rules_dir = match canonicalize_shim(&rules_dir) {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
-            Ok(rules_dir) => rules_dir,
-        };
+        let rules_dir = canonicalize_shim(&rules_dir)
+            .with_context(|| format!("set_rules_dir: could not canonicalize path {}", rules_dir.display()))?;
 
         self.set_rules_dir(&rules_dir)?;
         self.set_preference_files()?;
