@@ -114,7 +114,7 @@ pub struct Pronounce {
     text: String,       // plain text
     ipa: String,        // ipa 
     sapi5: String,
-    eloquence: String,
+    // eloquence: String,
 }
 
 
@@ -126,7 +126,6 @@ impl Pronounce {
         let mut text = "";
         let mut ipa = "";
         let mut sapi5 = "";
-        let mut eloquence = "";
         // values should be an array with potential values for Pronounce
         let values = values.as_vec().ok_or_else(||
                                         anyhow!("'pronounce' value '{}' is not an array", yaml_to_type(values)))?;
@@ -142,7 +141,7 @@ impl Pronounce {
                     "text" => text = as_str_checked(value)?,
                     "ipa" => ipa = as_str_checked(value)?,
                     "sapi5" => sapi5 = as_str_checked(value)?,
-                    "eloquence" => eloquence = as_str_checked(value)?,
+                    "eloquence" => { as_str_checked(value)?; },
                     _ => bail!("unknown pronounce type: {} with value {}", yaml_to_string(key, 0), yaml_to_string(value, 0)),
                 }
             }
@@ -154,7 +153,7 @@ impl Pronounce {
             text: text.to_string(),
             ipa: ipa.to_string(),
             sapi5: sapi5.to_string(),
-            eloquence: eloquence.to_string()
+            // eloquence: eloquence.to_string()
         } );
     
 
@@ -766,7 +765,7 @@ mod tests {
         assert!(rendered.contains("text: \"alpha\""));
         assert!(rendered.contains("ipa: \"a\""));
         assert!(rendered.contains("sapi5: \"b\""));
-        assert!(rendered.contains("eloquence: \"c\""));
+        assert!(!rendered.contains("eloquence"));
     }
 
     /// Shows the derived pronunciation details when displaying a TTS rule.
@@ -776,7 +775,6 @@ mod tests {
             text: "bli bla blub".to_string(),
             ipa: "a".to_string(),
             sapi5: "b".to_string(),
-            eloquence: "c".to_string(),
         };
         let rule = TTSCommandRule::new(
             TTSCommand::Pronounce,
@@ -786,7 +784,7 @@ mod tests {
 
         assert_eq!(
             rule.to_string(),
-            "pronounce: Pronounce { text: \"bli bla blub\", ipa: \"a\", sapi5: \"b\", eloquence: \"c\" }\n"
+            "pronounce: Pronounce { text: \"bli bla blub\", ipa: \"a\", sapi5: \"b\" }\n"
         );
     }
 
