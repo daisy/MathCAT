@@ -10,7 +10,7 @@ import sys
 from .auditor import audit_language, list_languages
 from .errors import AuditError
 from .renderer import console
-from .rule_coverage import run as run_rule_coverage
+from .rulecoverage.rule_coverage import run as run_rule_coverage
 
 
 def main() -> None:

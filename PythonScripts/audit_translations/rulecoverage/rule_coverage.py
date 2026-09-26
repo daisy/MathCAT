@@ -10,7 +10,7 @@ from pathlib import Path, PurePosixPath
 
 from .rule_coverage_report import RuleKey, coverage, render_html, rule_section, section
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "target" / "rule-coverage"
 EVENTS = OUTPUT / "events"
 EXCLUDED_FILE_NAMES = {"definitions.yaml", "unicode.yaml", "unicode-full.yaml"}
@@ -53,7 +53,8 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                     errors.append(f"Empty rule identity in {event_file.name}:{number}")
                 elif kind == "defined-rule" and event.keys() == {"kind", "path", "name", "tag"}:
                     defined_rules.add((path, name, tag))
-                elif kind == "matched-rule" and event.keys() == {"kind", "path", "name", "tag", "test"} and isinstance(event["test"], str) and event["test"]:
+                elif (kind == "matched-rule" and event.keys() == {"kind", "path", "name", "tag", "test"}
+                        and isinstance(event["test"], str) and event["test"]):
                     key = (path, name, tag)
                     rule_hits[key] += 1
                     rule_tests[key][event["test"]] += 1
