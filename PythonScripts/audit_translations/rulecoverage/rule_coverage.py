@@ -39,9 +39,12 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                 continue
             path = path.replace("\\", "/")
             parts = PurePosixPath(path).parts
-            if (not parts
-                    or PurePosixPath(path).is_absolute() or ".." in parts
-                    or PurePosixPath(path).suffix not in (".yaml", ".yml")):
+            if (
+                not parts
+                or PurePosixPath(path).is_absolute()
+                or ".." in parts
+                or PurePosixPath(path).suffix not in (".yaml", ".yml")
+            ):
                 errors.append(f"Invalid event in {event_file.name}:{number}")
             elif PurePosixPath(path).name.lower() in EXCLUDED_FILE_NAMES:
                 continue
@@ -53,8 +56,12 @@ def read_events() -> tuple[set[str], set[str], set[RuleKey], Counter[RuleKey], d
                     errors.append(f"Empty rule identity in {event_file.name}:{number}")
                 elif kind == "defined-rule" and event.keys() == {"kind", "path", "name", "tag"}:
                     defined_rules.add((path, name, tag))
-                elif (kind == "matched-rule" and event.keys() == {"kind", "path", "name", "tag", "test"}
-                        and isinstance(event["test"], str) and event["test"]):
+                elif (
+                    kind == "matched-rule"
+                    and event.keys() == {"kind", "path", "name", "tag", "test"}
+                    and isinstance(event["test"], str)
+                    and event["test"]
+                ):
                     key = (path, name, tag)
                     rule_hits[key] += 1
                     rule_tests[key][event["test"]] += 1
@@ -114,13 +121,15 @@ def run() -> int:
     ]
     if errors:
         report.append("## Problems\n\n" + "\n".join(f"- {error}" for error in errors) + "\n")
-    report.extend((
-        section("Loaded YAML files", loaded),
-        section("Matched pattern files", matched),
-        section("Loaded files with no pattern match", loaded - matched),
-        rule_section("Matched rules", matched_rules, rule_hits, rule_tests),
-        rule_section("Active rules with no match", defined_rules - matched_rules),
-    ))
+    report.extend(
+        (
+            section("Loaded YAML files", loaded),
+            section("Matched pattern files", matched),
+            section("Loaded files with no pattern match", loaded - matched),
+            rule_section("Matched rules", matched_rules, rule_hits, rule_tests),
+            rule_section("Active rules with no match", defined_rules - matched_rules),
+        )
+    )
     report_path = OUTPUT / "report.md"
     report_path.write_text("\n".join(report), encoding="utf-8")
     html_path = OUTPUT / "index.html"
@@ -131,7 +140,7 @@ def run() -> int:
     )
     try:
         opened = webbrowser.open(html_path.resolve().as_uri())
-    except (OSError, webbrowser.Error):
+    except OSError, webbrowser.Error:
         opened = False
     if not opened:
         print(f"Browser unavailable; open {html_path} manually")

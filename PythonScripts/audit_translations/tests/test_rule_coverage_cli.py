@@ -27,12 +27,27 @@ def test_coverage_command_generates_reports_and_opens_browser(tmp_path: Path, mo
             {"kind": "loaded", "path": "Languages/en/definitions.yaml"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "default", "tag": "mi"},
-            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml",
-             "name": "simple", "tag": "mi", "test": "test_alpha"},
-            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml",
-             "name": "simple", "tag": "mi", "test": "test_alpha"},
-            {"kind": "matched-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml",
-             "name": "simple", "tag": "mi", "test": "test_beta"},
+            {
+                "kind": "matched-rule",
+                "path": "Languages/en/SimpleSpeak_Rules.yaml",
+                "name": "simple",
+                "tag": "mi",
+                "test": "test_alpha",
+            },
+            {
+                "kind": "matched-rule",
+                "path": "Languages/en/SimpleSpeak_Rules.yaml",
+                "name": "simple",
+                "tag": "mi",
+                "test": "test_alpha",
+            },
+            {
+                "kind": "matched-rule",
+                "path": "Languages/en/SimpleSpeak_Rules.yaml",
+                "name": "simple",
+                "tag": "mi",
+                "test": "test_beta",
+            },
         ]
         (output / "events" / "pid-123.jsonl").write_text(
             "\n".join(json.dumps(event) for event in events) + "\n",

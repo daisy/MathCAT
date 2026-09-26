@@ -56,14 +56,21 @@ def render_html(
     rules_by_path: dict[str, list[dict]] = defaultdict(list)
     for path, name, tag in defined_rules:
         key = (path, name, tag)
-        rules_by_path[path].append({
-            "name": name, "tag": tag, "matched": rule_hits[key] > 0,
-            "hits": rule_hits[key],
-            "tooltip": "Tests:\n" + "\n".join(
-                f"{test} ({count} {'hit' if count == 1 else 'hits'})"
-                for test, count in sorted(rule_tests.get(key, {}).items())
-            ) if rule_hits[key] else "No test hits",
-        })
+        rules_by_path[path].append(
+            {
+                "name": name,
+                "tag": tag,
+                "matched": rule_hits[key] > 0,
+                "hits": rule_hits[key],
+                "tooltip": "Tests:\n"
+                + "\n".join(
+                    f"{test} ({count} {'hit' if count == 1 else 'hits'})"
+                    for test, count in sorted(rule_tests.get(key, {}).items())
+                )
+                if rule_hits[key]
+                else "No test hits",
+            }
+        )
 
     files = []
     for path in sorted(loaded | matched | rules_by_path.keys()):

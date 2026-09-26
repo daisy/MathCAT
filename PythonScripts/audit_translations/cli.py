@@ -51,8 +51,7 @@ Examples:
     args = parser.parse_args()
 
     if args.rule_coverage:
-        if (args.language or args.list or args.specific_file or args.rules_dir or args.only
-                or args.verbose or args.source != "en"):
+        if args.language or args.list or args.specific_file or args.rules_dir or args.only or args.verbose or args.source != "en":
             parser.error("--rule-coverage cannot be combined with translation audit options")
         sys.exit(run_rule_coverage())
     elif args.list:
