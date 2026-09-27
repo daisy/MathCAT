@@ -4,6 +4,8 @@
 #![allow(clippy::needless_return)]
 #![allow(dead_code)] // include! of rules_archive.rs pulls in the downloadable packager too
 
+#[path = "src/yaml_helpers.rs"]
+mod yaml_helpers;
 include!("src/rules_archive.rs");
 
 fn main() {
