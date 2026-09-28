@@ -387,6 +387,7 @@
   replace:
   - x: "*[2]"
 
+- include: "SharedRules/reader-intents.yaml"
 - include: "SharedRules/geometry.yaml"
 - include: "SharedRules/linear-algebra.yaml"
 - include: "SharedRules/general.yaml"

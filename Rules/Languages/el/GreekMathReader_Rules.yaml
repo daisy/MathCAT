@@ -1,0 +1,213 @@
+---
+# Greek Math Reader mathematical reading conventions, implemented as native MathCAT rules.
+# NVDA Greek Math (Greek Math Reader) by Bouronikos Christos (cbouronikos@uth.gr)
+# New wording remains lowercase until Greek expert and screen-reader listening review.
+# Native SimpleSpeak supplies structures not overridden here, including tables and units.
+
+- name: reader-silent-token
+  tag: [mi, mo, mn]
+  match: "contains(@data-intent-property, ':silent:')"
+  replace: []
+
+- name: reader-equality
+  tag: mo
+  match: ".='='"
+  replace: [t: "ίσον"]
+
+- name: reader-plus-minus
+  tag: mo
+  match: ".='±'"
+  replace: [t: "συν πλην"]
+
+- name: reader-decimal
+  tag: mn
+  match: "contains(., $DecimalSeparators)"
+  replace:
+  - bookmark: "@id"
+  - x: "translate(substring-before(., $DecimalSeparators), $BlockSeparators, '')"
+  - t: "κόμμα"
+  - x: "substring-after(., $DecimalSeparators)"
+
+# Recognize conventional notation only within this speech style. Author-supplied
+# literal intent and unrelated notation retain MathCAT's structural reading.
+- name: reader-scalar-multiplication
+  tag: mo
+  match: ".='·' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace: [t: "επί"]
+
+- name: reader-first-derivative
+  tag: fraction
+  match:
+  - "count(*)=2 and *[1][self::m:mrow] and *[2][self::m:mrow] and"
+  - "*[1]/*[1][.='d' or .='∂'] and *[1]/*[1]=*[2]/*[1] and"
+  - "((count(*[1]/*)=3 and count(*[2]/*)=3 and *[1]/*[2]='⁢' and *[2]/*[2]='⁢') or"
+  - "(count(*[1]/*)=2 and count(*[2]/*)=2 and *[1]/*[1]='∂')) and"
+  - "*[2]/*[last()][self::m:mi] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - test:
+      if: "*[1]/*[1][.='∂']"
+      then: [t: "μερική παράγωγος του"]
+      else: [t: "παράγωγος του"]
+  - x: "*[1]/*[last()]"
+  - t: "ως προς"
+  - x: "*[2]/*[last()]"
+
+- name: reader-integral-differential
+  tag: mrow
+  match:
+  - "count(*)>=5 and preceding-sibling::*[1][self::m:large-op and *[1][contains('∫∬∭∮∯∰', .)]] and"
+  - "*[last()-3][self::m:mo and .='⁢'] and *[last()-2][self::m:mi and .='d'] and"
+  - "*[last()-1][self::m:mo and .='⁢'] and *[last()][self::m:mi] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - x: "*[position()<last()-3]"
+  - t: "ως προς"
+  - x: "*[last()]"
+
+- name: reader-statistical-function
+  tag: mrow
+  match:
+  - "count(*)=3 and *[1][self::m:mi and (.='E' or .='P' or .='Var' or .='Cov')] and"
+  - "*[2][self::m:mo and (.='⁡' or .='⁢')] and"
+  - "*[3][self::m:mrow and count(*)=3 and ((*[1]='(' and *[3]=')') or (*[1]='[' and *[3]=']'))] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  variables:
+  - Argument: "*[3]/*[2]"
+  replace:
+  - test:
+    - if: "*[1]='Cov' and $Argument[self::m:mrow and count(*)=3 and *[2]=',']"
+      then:
+      - t: "συνδιακύμανση των"
+      - x: "$Argument/*[1]"
+      - t: "και"
+      - x: "$Argument/*[3]"
+    - else_if: "(*[1]='E' or *[1]='P') and $Argument[self::m:mrow and count(*)=3 and *[2]='|']"
+      then:
+      - test:
+          if: "*[1]='E'"
+          then: [t: "αναμενόμενη τιμή του"]
+          else: [t: "πιθανότητα του"]
+      - x: "$Argument/*[1]"
+      - t: "δεδομένου του"
+      - x: "$Argument/*[3]"
+      else:
+      - test:
+        - if: "*[1]='E'"
+          then: [t: "αναμενόμενη τιμή του"]
+        - else_if: "*[1]='P'"
+          then: [t: "πιθανότητα του"]
+        - else_if: "*[1]='Var'"
+          then: [t: "διακύμανση του"]
+          else: [t: "συνδιακύμανση του"]
+      - x: "$Argument"
+
+- name: reader-bra-ket-notation
+  tag: mrow
+  match:
+  - "count(*)=3 and *[1]='⟨' and *[3]='⟩' and *[2][self::m:mrow and count(*)=3 and *[2]='|'] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: "εσωτερικό γινόμενο"
+  - x: "*[2]/*[1]"
+  - t: "με"
+  - x: "*[2]/*[3]"
+
+- name: reader-matrix-element-notation
+  tag: mrow
+  match:
+  - "count(*)=3 and *[1]='⟨' and *[3]='⟩' and *[2][self::m:mrow and count(*)=5] and"
+  - "*[2]/*[2]='⁢' and *[2]/*[4]='⁢' and"
+  - "*[2]/*[3][self::m:absolute-value and count(*)=1 and @data-changed='added' and not(@intent)] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: "στοιχείο πίνακα με μπρα"
+  - x: "*[2]/*[1]"
+  - x: "*[2]/*[3]/*[1]"
+  - t: "κετ"
+  - x: "*[2]/*[5]"
+
+- name: reader-simple-fraction
+  tag: fraction
+  match: "count(*)=2 and IsNode(*[1], 'leaf') and IsNode(*[2], 'leaf') and not(ancestor::m:fraction)"
+  replace:
+  - x: "*[1]"
+  - t: "διά"
+  - x: "*[2]"
+
+- name: reader-fraction
+  tag: fraction
+  match: "count(*)=2"
+  replace:
+  - t: "κλάσμα με αριθμητή"
+  - x: "*[1]"
+  - pause: short
+  - t: "και παρονομαστή"
+  - x: "*[2]"
+  - pause: short
+  - t: "τέλος κλάσματος"
+
+- name: reader-square-root
+  tag: square-root
+  match: "count(*)=1"
+  replace:
+  - t: "τετραγωνική ρίζα του"
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [pause: short, t: "τέλος ρίζας"]
+
+- name: reader-root
+  tag: root
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "*[2][.='3']"
+      then: [t: "κυβική ρίζα του"]
+      else:
+      - t: "ρίζα τάξης"
+      - x: "*[2]"
+      - t: "του"
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [pause: short, t: "τέλος ρίζας"]
+
+- name: reader-power
+  tag: power
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "*[2][self::m:mn and .='2']"
+      then: [t: "στο τετράγωνο"]
+    - else_if: "*[2][self::m:mn and .='3']"
+      then: [t: "στον κύβο"]
+      else:
+      - t: "στη δύναμη"
+      - x: "*[2]"
+      - test:
+          if: "not(IsNode(*[2], 'simple'))"
+          then: [pause: short, t: "τέλος εκθέτη"]
+
+- name: reader-index
+  tag: indexed-by
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - t: "δείκτης"
+  - x: "*[2]"
+  - test:
+      if: "not(IsNode(*[2], 'simple'))"
+      then: [pause: short, t: "τέλος δείκτη"]
+
+- name: reader-interval
+  tag: [interval, open-interval, closed-interval, open-closed-interval, closed-open-interval]
+  match: "count(*)=2"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - t: "από"
+  - x: "*[1]"
+  - t: "έως"
+  - x: "*[2]"
+
+- include: "SimpleSpeak_Rules.yaml"

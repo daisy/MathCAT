@@ -1,0 +1,162 @@
+---
+# Greek grammar for the exported Greek Math Reader semantic concepts.
+# Explicit arities keep malformed or extended intents on MathCAT's generic,
+# operand-preserving fallback. No domain is guessed from an ambiguous letter.
+# NVDA Greek Math (Greek Math Reader) by Bouronikos Christos (cbouronikos@uth.gr)
+# Candidate terminology is documented in docs/greek-math-reader.md.
+
+- name: reader-conditional-expectation
+  tag: conditional-expectation
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "δεσμευμένη αναμενόμενη τιμή του"
+  - x: "*[1]"
+  - t: "δεδομένου του"
+  - x: "*[2]"
+
+- name: reader-covariance
+  tag: [covariance, commutator, anticommutator, classical-hamiltonian]
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - t: "των"
+  - x: "*[1]"
+  - t: "και"
+  - x: "*[2]"
+
+- name: reader-coordinate
+  tag: coordinate
+  match: "count(*)>=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "σημείο με συντεταγμένες"
+  - insert:
+      nodes: "*"
+      replace: [t: "και"]
+
+- name: reader-point-definition
+  tag: point-definition
+  match: "count(*)>=3 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "το σημείο"
+  - x: "*[1]"
+  - t: "έχει συντεταγμένες"
+  - insert:
+      nodes: "*[position()>1]"
+      replace: [t: "και"]
+
+- name: reader-normal-distribution
+  tag: normal-distribution
+  match: "count(*)=3 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "*[1]"
+  - t: "ακολουθεί κανονική κατανομή με μέση τιμή"
+  - x: "*[2]"
+  - t: "και διακύμανση"
+  - x: "*[3]"
+
+- name: reader-modular-congruence
+  tag: modular-congruence
+  match: "count(*)=3 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "*[1]"
+  - t: "ισότιμο με"
+  - x: "*[2]"
+  - t: "μόντουλο"
+  - x: "*[3]"
+
+- name: reader-evaluation
+  tag: evaluation
+  match: "count(*)=3 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - t: "υπολογισμένο από"
+  - x: "*[2]"
+  - t: "έως"
+  - x: "*[3]"
+
+- name: reader-identified-transform
+  tag: [fourier-transform, laplace-transform]
+  match: "count(*)=1 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - test:
+      if: "self::m:fourier-transform"
+      then: [t: "της"]
+      else: [t: "του"]
+  - x: "*[1]"
+
+- name: reader-dirac-delta
+  tag: dirac-delta
+  match: "count(*)=1 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "δέλτα του Ντιράκ στο"
+  - x: "*[1]"
+
+- name: reader-condition
+  tag: [initial-condition, boundary-condition]
+  match: "count(*)=1 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - pause: short
+  - x: "*[1]"
+
+- name: reader-braket
+  tag: braket
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "εσωτερικό γινόμενο"
+  - x: "*[1]"
+  - t: "με"
+  - x: "*[2]"
+
+- name: reader-matrix-element
+  tag: matrix-element
+  match: "count(*)=3 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "στοιχείο πίνακα με μπρα"
+  - x: "*[1]"
+  - x: "*[2]"
+  - t: "κετ"
+  - x: "*[3]"
+
+- name: reader-derivative
+  tag: [ordinary-derivative, partial-derivative]
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - t: "του"
+  - x: "*[1]"
+  - t: "ως προς"
+  - x: "*[2]"
+
+- name: reader-directional-derivative
+  tag: directional-derivative
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "παράγωγος του"
+  - x: "*[1]"
+  - t: "κατά την κατεύθυνση"
+  - x: "*[2]"
+
+- name: reader-quotient-group
+  tag: quotient-group
+  match: "count(*)=2 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "ομάδα πηλίκο του"
+  - x: "*[1]"
+  - t: "ως προς"
+  - x: "*[2]"
+
+- name: reader-identity-matrix
+  tag: identity-matrix
+  match: "count(*)=1 and contains(@data-intent-property, ':function:') and not(contains(@data-intent-property, ':literal:'))"
+  replace:
+  - t: "μοναδιαίος πίνακας τάξης"
+  - x: "*[1]"
+
+- name: reader-zero-argument-intent
+  tag: "*"
+  match: "count(*)=0 and contains(@data-intent-property, ':function:') and DefinitionValue(name(.), 'Speech', 'IntentMappings') != ''"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"

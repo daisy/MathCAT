@@ -814,6 +814,23 @@
       then: [t: "ινφ"]
       else: [t: "ινφίμουμ"]
 #####################
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and *[2][self::m:mo and .='⁢'] and *[3][self::m:mn] and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+    # If the amount is singular, we don't add the plural ending.
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
+
 - name: sin
   tag: mi
   match: ".='sin'"
@@ -1439,7 +1456,7 @@
   replace:
   - insert:
       nodes: "*"
-      replace: [t: "by", pause: auto]      # phrase(3 'by' 5 matrix)
+      replace: [t: "επί", pause: auto]      # phrase(3 'by' 5 matrix)
 
 - name: chemistry-msup
   tag: [chemical-formula]

@@ -4,14 +4,20 @@
 #   some languages say the word for "uppercase" after the letter. Make sure to change that where appropriate by moving some code around
  - "a": 
     - test: 
-        if: "$TTS='none'"
-        then: [t: "a"]                          	#  long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,	(en: 'eigh', google translation)
-        else: [spell: "'a'"]                    	#     AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [x: "DefinitionValue('a', 'Speech', 'GreekMathReaderLetters')"]
+        else_test:
+          if: "$TTS='none'"
+          then: [t: "a"]                            #  long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,  (en: 'eigh', google translation)
+          else: [spell: "'a'"]                      #     AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
  - "b-z": 
     - test: 
-        if: "$TTS='none'"
-        then: [t: "."]                          	# 	(en: '.', google translation)
-        else: [spell: "'.'"]                       
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [x: "DefinitionValue('.', 'Speech', 'GreekMathReaderLetters')"]
+        else_test:
+          if: "$TTS='none'"
+          then: [t: "."]                            #   (en: '.', google translation)
+          else: [spell: "'.'"]
 
 # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
 # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
@@ -36,9 +42,12 @@
         value: "$CapitalLetters_Pitch"
         replace:
         - test:
-            if: "$TTS='none'"
-            then: [t: "A"]                      	# 	(en: 'eigh', google translation)
-            else: [spell: "'a'"]
+            if: "$SpeechStyle = 'GreekMathReader'"
+            then: [x: "DefinitionValue('a', 'Speech', 'GreekMathReaderLetters')"]
+            else_test:
+              if: "$TTS='none'"
+              then: [t: "A"]                        #   (en: 'eigh', google translation)
+              else: [spell: "'a'"]
             
  - "B-Z":
     - test: 
@@ -58,7 +67,11 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
+        replace:
+        - test:
+            if: "$SpeechStyle = 'GreekMathReader'"
+            then: [x: "DefinitionValue(translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'Speech', 'GreekMathReaderLetters')"]
+            else: [spell: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
 
  - "0-9": [t: "."]                     	# 	(en: '.', google: 'A') #theodora. is this replacing dots with commas in decimals for greek?
 
@@ -72,12 +85,12 @@
             else: [t: "θαυμαστικό"]               	#  0x21	(en: 'exclamation point', google: 'θαυμαστικό')
         else: [t: "παραγοντικό"]                	#  0x21	(en: 'factorial')
           
- - \"": [t: "εισαγωγικά"]                	        #  0x22	(en: 'quotation mark', google: 'εισαγωγικά') 
+ - '"': [t: "εισαγωγικά"]                          #  0x22  (en: 'quotation mark', google: 'εισαγωγικά')
  - "#": [t: "σύμβολο αριθμού"]                      #  0x23	(en: 'number', google: 'αριθμός')
  - "$": [t: "δολάριο"]                          	#  0x24	(en: 'dollars', google: 'δολάρια')
  - "%": [t: "τοις εκατό"]                       	#  0x25	(en: 'percent')
  - "&": [t: "ampersand"]                      	    #  0x26	(en: 'ampersand', google: 'ampersand')  
- - \'": [t: "απόστροφος"]                       	#  0x27	(en: 'apostrophe') 
+ - "'": [t: "απόστροφος"]                         #  0x27  (en: 'apostrophe')
  - "(":                                         	#  0x28
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -274,22 +287,66 @@
  - "ζ": [t: "ζήτα"]                                	#  0x3b6	(en: 'zeta', google: 'ζέτα')
  - "η": [t: "ήτα"]                                	#  0x3b7	(en: 'eta', google: 'eta')
  - "θ": [t: "θήτα"]                                	#  0x3b8	(en: 'theta', google: 'θήτα')
- - "ι": [t: "ιότα"]                                	#  0x3b9	(en: 'iota', google: 'ιώτα')
- - "κ": [t: "καπα"]                                	#  0x3ba	(en: 'kappa', google: 'kappa')
+ - "ι":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "γιώτα"]
+        else: [t: "ιότα"]
+ - "κ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "κάπα"]
+        else: [t: "καπα"]
  - "λ": [t: "λάμδα"]                                	#  0x3bb	(en: 'lambda', google: 'lambda')
- - "μ": [t: "μί"]                                	#  0x3bc	(en: 'mu', google: 'mu')
- - "ν": [t: "νί"]                               	#  0x3bd	(en: 'nu', google: 'nu')
- - "ξ": [t: "ξ"]                                	#  0x3be	(en: 'zai', google: 'zai')
+ - "μ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "μι"]
+        else: [t: "μί"]
+ - "ν":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "νι"]
+        else: [t: "νί"]
+ - "ξ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "ξι"]
+        else: [t: "ξ"]
  - "ο": [t: "όμικρον"]                                	#  0x3bf	(en: 'omicron', google: 'όμικρο')
- - "π": [t: "π"]                                	#  0x3c0	(en: 'pi', google: 'πι')
- - "ρ": [t: "ρ"]                                	#  0x3c1	(en: 'rho', google: 'rho')
+ - "π":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "πι"]
+        else: [t: "π"]
+ - "ρ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "ρο"]
+        else: [t: "ρ"]
  - "ς": [t: "μικρό σίγμα"]                                	#  0x3c2	(en: 'final sigma', google: 'τελική sigma')
  - "σ": [t: "σίγμα"]                                	#  0x3c3	(en: 'sigma', google: 'sigma')
- - "τ": [t: "τάαφ"]                                	#  0x3c4	(en: 'tau', google: 'tau')
+ - "τ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "ταυ"]
+        else: [t: "τάαφ"]
  - "υ": [t: "ύψιλον"]                                	#  0x3c5	(en: 'upsilon', google: 'ύψιλο')
- - "φ": [t: "φ"]                                	#  0x3c6	(en: 'phi', google: 'phi')
- - "χ": [t: "χ"]                                	#  0x3c7	(en: 'chi', google: 'τσι')
- - "ψ": [t: "ψ"]                                	#  0x3c8	(en: 'psi', google: 'psi')
+ - "φ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "φι"]
+        else: [t: "φ"]
+ - "χ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "χι"]
+        else: [t: "χ"]
+ - "ψ":
+    - test:
+        if: "$SpeechStyle = 'GreekMathReader'"
+        then: [t: "ψι"]
+        else: [t: "ψ"]
  - "ω": [t: "ωμέγα"]                                	#  0x3c9	(en: 'omega', google: 'ωμέγα')
  - "ϕ": [t: "παραλλαγή του φ"]                     	#  0x3d5	(en: 'phi', google: 'phi')
  - "ϖ": [t: "παραλλαγή του π"]                  	#  0x3d6	(en: 'pi', google: 'πι')
@@ -532,12 +589,11 @@
  - "∷": [t: "σύμβολο αναλογίας"]                    #  0x2237	(en: 'as', google: 'όπως και')
  - "∼": [t: "κυματοειδής γραμμή"]                       	#  0x223c	(en: 'varies with', google: 'ποικίλλει με')
  - "∽": [t: "ανεστραμμένη κυματοειδής γραμμή"]         	#  0x223d	(en: 'reversed tilde', google: 'αντιστράφηκε tilde')
-# new 
-# - "∾":                                          # 0x223e
-#     - test: 
-#         if: "$Verbosity!='Terse'"
-#         then: [t: "είναι"]
-#     - t: "most positive"
+ - "∾":                                          # 0x223e
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [t: "είναι"]
+     - t: "μέγιστο θετικό"
  - "∿": [t: "ημιτονοειδές κύμα"]                	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 
@@ -565,7 +621,6 @@
  - "≻": [t: "έπεται του"]                    	#  0x227b	(en: 'succeeds', google: 'επιτυγχάνει')
  - "⊂":                                         	#  0x2282
      - test: 
-         if: "$Verbosity!='Terse'"
          if: "$Verbosity!='Terse'"
          then: [t: "είναι ένα"]                 	# 	(en: 'is a', google translation)
      - t: "υποσύνολο του"                        	# 	(en: 'subset of', google: 'υποσύνολο του')

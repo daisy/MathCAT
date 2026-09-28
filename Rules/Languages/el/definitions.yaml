@@ -44,7 +44,7 @@
     "kernel": "function= ; πυρήνας : πυρήνας: ο πυρήνας; τέλος πυρήνα",
     "vector": "function= ; διάνυσμα || prefix=διάνυσμα",
     "cross-product": "infix=διανυσματικό γινόμενο", # theodora. check το είχε έτσι "infix=cross: διανυσματικό γινόμενο: διανυσματικό γινόμενο",
-    "dot-product": "infix=τελεία: εσωτερικό γινόμενο: τελεία: εσωτερικό γινόμενο", #theodora. check. είναι ολα εσωτερικό γινόμενο ή πιάνει κι άλλα οπότε θέλει πιο γενικό όρο;
+    "dot-product": "infix=τελεία: εσωτερικό γινόμενο: εσωτερικό γινόμενο", #theodora. check. είναι ολα εσωτερικό γινόμενο ή πιάνει κι άλλα οπότε θέλει πιο γενικό όρο;
 
     "divergence": "function= ; απόκλιση: απόκλιση: απόκλιση; τέλος απόκλισης",
     "curl": "function= ; στροβιλισμός; τέλος στροβιλισμού",
@@ -52,6 +52,102 @@
     "laplacian": "function=λαπλασιανή",   # speech engines don't do a good job with "laplacian"
 
     "chemistry-concentration": "function= ; συγκέντρωση: η συγκέντρωση του: η συγκέντρωση του; τέλος συγκέντρωσης",
+
+    # NVDA Greek Math (Greek Math Reader) by Bouronikos Christos (cbouronikos@uth.gr)
+    # Exported registry 2026.08.2; supplied under MathCAT terms.
+    # Pending entries remain terminology candidates, not expert-verified translations.
+    "acceleration": "function=επιτάχυνση", # source-checked-pending-expert-review
+    "adjoint": "function=συζυγής ανάστροφος", # source-checked-pending-expert-review
+    "angular-momentum": "function=στροφορμή", # source-checked-pending-expert-review
+    "anticommutator": "function=αντιμεταθέτης", # source-checked-pending-expert-review
+    "asymptotic-equivalence": "infix=είναι ασυμπτωτικά ισοδύναμο με", # source-checked-pending-expert-review
+    "augmented-matrix": "function=επαυξημένος πίνακας", # source-checked-pending-expert-review
+    "block-matrix": "function=πίνακας κατά μπλοκ", # source-checked-pending-expert-review
+    "boundary-condition": "function=συνοριακή συνθήκη", # source-checked-pending-expert-review
+    "bounded-operator": "function=φραγμένος τελεστής", # source-checked-pending-expert-review
+    "bra": "function=μπρα", # source-checked-pending-expert-review
+    "braket": "function=εσωτερικό γινόμενο", # source-checked-pending-expert-review
+    "cardinality": "function=πληθάριθμος", # reviewed
+    "classical-hamiltonian": "function=χαμιλτονιανή συνάρτηση", # source-checked-pending-expert-review
+    "closed-interval": "function=κλειστό διάστημα", # reviewed
+    "closed-open-interval": "function=διάστημα κλειστό αριστερά ανοιχτό δεξιά", # reviewed
+    "commutator": "function=μεταθέτης", # source-checked-pending-expert-review
+    "conditional-expectation": "function=δεσμευμένη αναμενόμενη τιμή", # source-checked-pending-expert-review
+    "confidence-interval": "function=διάστημα εμπιστοσύνης", # source-checked-pending-expert-review
+    "contravariant-index": "function=ανταλλοίωτος δείκτης", # source-checked-pending-expert-review
+    "coordinate": "function=σημείο με συντεταγμένες", # reviewed
+    "covariance": "function=συνδιακύμανση", # source-checked-pending-expert-review
+    "covariant-index": "function=συναλλοίωτος δείκτης", # source-checked-pending-expert-review
+    "diagonal-matrix": "function=διαγώνιος πίνακας", # source-checked-pending-expert-review
+    "differential-form": "function=διαφορική μορφή", # source-checked-pending-expert-review
+    "dirac-delta": "function=δέλτα του Ντιράκ στο", # source-checked-pending-expert-review
+    "directional-derivative": "function=παράγωγος κατά την κατεύθυνση", # source-checked-pending-expert-review
+    "eigenvalue": "function=ιδιοτιμή", # source-checked-pending-expert-review
+    "eigenvector": "function=ιδιοδιάνυσμα", # source-checked-pending-expert-review
+    "electric-field": "function=ηλεκτρικό πεδίο", # source-checked-pending-expert-review
+    "entropy": "function=εντροπία", # source-checked-pending-expert-review
+    "estimator": "function=εκτιμητής", # source-checked-pending-expert-review
+    "evaluation": "function=υπολογισμένο", # source-checked-pending-expert-review
+    "expectation": "function=αναμενόμενη τιμή", # source-checked-pending-expert-review
+    "exterior-product": "infix=εξωτερικό γινόμενο", # source-checked-pending-expert-review
+    "field-structure": "function=σώμα", # source-checked-pending-expert-review
+    "four-momentum": "function=τετραορμή", # source-checked-pending-expert-review
+    "four-vector": "function=τετραδιάνυσμα", # source-checked-pending-expert-review
+    "fourier-transform": "function=μετασχηματισμός Φουριέ", # source-checked-pending-expert-review
+    "gamma-function": "function=συνάρτηση γάμα", # source-checked-pending-expert-review
+    "generalized-function": "function=γενικευμένη συνάρτηση", # source-checked-pending-expert-review
+    "group": "function=ομάδα", # source-checked-pending-expert-review
+    "hamiltonian": "function=χαμιλτονιανός τελεστής", # source-checked-pending-expert-review
+    "hessian": "function=εσσιανός πίνακας", # source-checked-pending-expert-review
+    "hypothesis-test": "function=έλεγχος υπόθεσης", # source-checked-pending-expert-review
+    "ideal": "function=ιδεώδες", # source-checked-pending-expert-review
+    "identity-matrix": "function=μοναδιαίος πίνακας τάξης", # source-checked-pending-expert-review
+    "independence": "infix=ανεξάρτητο από", # source-checked-pending-expert-review
+    "initial-condition": "function=αρχική συνθήκη", # source-checked-pending-expert-review
+    "interval": "function=διάστημα", # reviewed
+    "jacobian": "function=ιακωβιανός πίνακας", # source-checked-pending-expert-review
+    "ket": "function=κετ", # source-checked-pending-expert-review
+    "lagrangian": "function=λαγκρανζιανή συνάρτηση", # source-checked-pending-expert-review
+    "laplace-transform": "function=μετασχηματισμός Λαπλάς", # source-checked-pending-expert-review
+    "line-integral": "function=επικαμπύλιο ολοκλήρωμα", # source-checked-pending-expert-review
+    "magnetic-field": "function=μαγνητικό πεδίο", # source-checked-pending-expert-review
+    "manifold": "function=πολλαπλότητα", # source-checked-pending-expert-review
+    "material-derivative": "function=υλική παράγωγος", # source-checked-pending-expert-review
+    "matrix-element": "function=στοιχείο πίνακα", # source-checked-pending-expert-review
+    "measure": "function=μέτρο", # source-checked-pending-expert-review
+    "metric-tensor": "function=μετρικός τανυστής", # source-checked-pending-expert-review
+    "modular-congruence": "function=ισότιμο με", # source-checked-pending-expert-review
+    "momentum": "function=ορμή", # source-checked-pending-expert-review
+    "morphism": "function=μορφισμός", # source-checked-pending-expert-review
+    "multiple-integral": "function=πολλαπλό ολοκλήρωμα", # source-checked-pending-expert-review
+    "normal-distribution": "function=ακολουθεί κανονική κατανομή", # source-checked-pending-expert-review
+    "open-closed-interval": "function=διάστημα ανοιχτό αριστερά κλειστό δεξιά", # reviewed
+    "open-interval": "function=ανοιχτό διάστημα", # reviewed
+    "open-set": "function=ανοιχτό σύνολο", # source-checked-pending-expert-review
+    "ordinary-derivative": "function=παράγωγος", # source-checked-pending-expert-review
+    "partial-derivative": "function=μερική παράγωγος", # source-checked-pending-expert-review
+    "partition-function": "function=συνάρτηση επιμερισμού", # source-checked-pending-expert-review
+    "point-definition": "function=έχει συντεταγμένες", # source-checked-pending-expert-review
+    "position-vector": "function=διάνυσμα θέσης", # source-checked-pending-expert-review
+    "power": "function=δύναμη", # reviewed
+    "probability": "function=πιθανότητα", # reviewed
+    "proper-time": "function=ιδιοχρόνος", # source-checked-pending-expert-review
+    "quadratic-form": "function=τετραγωνική μορφή", # source-checked-pending-expert-review
+    "quantum-adjoint": "function=ερμιτιανός συζυγής", # source-checked-pending-expert-review
+    "quantum-operator": "function=κβαντικός τελεστής", # source-checked-pending-expert-review
+    "quotient-group": "function=ομάδα πηλίκο", # source-checked-pending-expert-review
+    "ring": "function=δακτύλιος", # source-checked-pending-expert-review
+    "semantic-entailment": "infix=συνεπάγεται σημασιολογικά", # source-checked-pending-expert-review
+    "standard-deviation": "function=τυπική απόκλιση", # reviewed
+    "stochastic-integral": "function=στοχαστικό ολοκλήρωμα", # source-checked-pending-expert-review
+    "stochastic-process": "function=στοχαστική διαδικασία", # source-checked-pending-expert-review
+    "surface-integral": "function=επιφανειακό ολοκλήρωμα", # source-checked-pending-expert-review
+    "tensor-product": "infix=τανυστικό γινόμενο", # reviewed
+    "topological-space": "function=τοπολογικός χώρος", # source-checked-pending-expert-review
+    "torque": "function=ροπή", # source-checked-pending-expert-review
+    "variance": "function=διακύμανση", # reviewed
+    "velocity": "function=ταχύτητα", # source-checked-pending-expert-review
+    "wavefunction": "function=κυματοσυνάρτηση", # source-checked-pending-expert-review
   }
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
@@ -61,6 +157,8 @@
 - NavigationParts: {
     # These are the parts of a formula that can be navigated to
     "large-op": "βάση; κάτω όριο; άνω όριο",
+    "logarithm-with-base": "βάση",
+    "indexed-by": "βάση; δείκτης",
     "mfrac": "αριθμητής; παρονομαστής",
     "fraction": "αριθμητής; παρονομαστής",
     "msqrt": "ρίζα",
@@ -80,8 +178,11 @@
 
     # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
     # it's a hack to put them here, but at least they are grouped with the other navigation parts
-    "in": "in",
-    "out": "out of",
+    "in": "μέσα σε",
+    "out": "έξω από",
+    "out of": "έξω από",
+    "end of": "τέλος",
+    "start of": "αρχή",
   }
     
 
@@ -277,6 +378,10 @@
   }
 
 - PluralForms: {
+    "δολάριο": "δολάρια", "σεντ": "σεντ", "ευρώ": "ευρώ", "λίρα": "λίρες",
+    "κολόν": "κολόν", "λιρέτα": "λιρέτες", "ρουπία": "ρουπίες", "γουόν": "γουόν",
+    "σέκελ": "σέκελ", "πέσο": "πέσο", "μπιτκόιν": "μπιτκόιν",
+
   # FIX: this needs to be flushed out
     ### -------------- SIUnits --------------  ### vivi
     # base units
@@ -284,7 +389,6 @@
     "κιλό": "κιλά",
     "εκατοστό": "εκατοστά",
     "μέτρο": "μέτρα",     # British spelling works for US also
-    "δευτερόλεπτο": "δευτερόλεπτα",
     "αμπέρ": "αμπέρ",
     "καντέλα": "καντέλα",
     "κέλβιν": "κέλβιν", # U+212A
@@ -316,7 +420,6 @@
     # accepted (plus a few variants) that take SI prefixes
     "λίτρο": "λίτρα", 
     "τόνος": "τόνοι",           # should only take positive powers
-    "ατομική μονάδα μάζας": "ατομικές μονάδες μάζας",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "ακτίνιο": "ακτίνια",             # should only take negative powers
     "στερακτίνιο": "στερακτίνια",          # should only take negative powers    
     "ντάλτον": "ντάλτον",
@@ -325,7 +428,6 @@
        
   
     # others that take a prefix
-    "δευτερόλεπτο τόξου": "δευτερόλεπτα τόξου",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
     "άνουμ": "άνουμ", 
 
     "μπιτ": "μπιτ",               # should only take positive powers
@@ -345,7 +447,6 @@
     "έτος": "έτη",
 
     # angles
-    "βαθμός": "βαθμοί",
     "λεπτό τόξου": "λεπτά τόξου",
     "δευτερόλεπτο τόξου": "δευτερόλεπτα τόξου",
 
@@ -408,7 +509,6 @@
     "ουγγιά υγρών": "ουγγιές υγρών",
     
     "φλιτζάνι": "φλιτζάνια",
-    "πίντα": "πίντες",
     "γαλόνι": "γαλόνια",
     "πίντα": "πίντα",
     "κουάρτ": "κουάρτ",
@@ -537,3 +637,40 @@
 - NumbersOrdinalPluralLarge: [
          "", "χιλιαστοί", "εκατομμυριοστοί", "δισεκατομμυριοστοί", "τρισεκατομμυριοστοί", "τετράκις εκατομμυριοστοί", "πεντάκις εκατομμυριοστοί", "εξάκις εκατομμυριοστοί", "επτάκις εκατομμυριοστοί", "οκτάκις εκατομμυριοστοί", "εννεάκις εκατομμυριοστοί", "δεκάκις εκατομμυριοστοί", "ενδεκάκις εκατομμυριοστοί", "δωδεκάκις εκατομμυριοστοί", "δεκατριάκις εκατομμυριοστοί", "δεκατετράκις εκατομμυριοστοί", "δεκαπεντάκις εκατομμυριοστοί", "δεκαεξάκις εκατομμυριοστοί", "δεκαεπτάκις εκατομμυριοστοί", "δεκαοκτάκις εκατομμυριοστοί", "δεκαεννεάκις εκατομμυριοστοί", "εικοσάκις εκατομμυριοστοί", "εικοσιάπαξ εκατομμυριοστοί", "εικοσιδίς εκατομμυριοστοί", "εικοσιτρίς εκατομμυριοστοί", "εικοσιτετράκις εκατομμυριοστοί", "εικοσιπεντάκις εκατομμυριοστοί", "εικοσιεξάκις εκατομμυριοστοί"
     ]
+# Letter names for the GreekMathReader style; existing styles keep their conventions.
+- GreekMathReaderLetters: {
+    "a": "έι",
+    "b": "μπί",
+    "c": "σί",
+    "d": "ντί",
+    "e": "ί",
+    "f": "εφ",
+    "g": "τζί",
+    "h": "έιτς",
+    "i": "άι",
+    "j": "τζέι",
+    "k": "κάπα",
+    "l": "έλ",
+    "m": "μι",
+    "n": "νι",
+    "o": "όμικρον",
+    "p": "πι",
+    "q": "κιού",
+    "r": "άρ",
+    "s": "ες",
+    "t": "ταυ",
+    "u": "γιού",
+    "v": "βί",
+    "w": "ντάμπλιου",
+    "x": "χι",
+    "y": "γουάι",
+    "z": "ζήτα",
+  }
+
+- FunctionApplicationWord: ["του"]
+
+- CurrencySymbols: {
+    "$": "δολάριο", "¢": "σεντ", "€": "ευρώ", "£": "λίρα", "₡": "κολόν",
+    "₤": "λιρέτα", "₨": "ρουπία", "₩": "γουόν", "₪": "σέκελ", "₱": "πέσο",
+    "₹": "ρουπία", "₺": "λίρα", "₿": "μπιτκόιν"
+  }

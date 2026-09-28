@@ -123,7 +123,7 @@ def _definition_kind(value: Any, file_path: Path, name: str, line_number: int) -
 
     if isinstance(value, dict):
         if not value:
-            raise invalid("empty mappings have no unambiguous definition kind")
+            return DefinitionKind.SET
         if not all(isinstance(key, str) for key in value):
             raise invalid("mapping keys must all be strings")
 
@@ -136,7 +136,7 @@ def _definition_kind(value: Any, file_path: Path, name: str, line_number: int) -
             raise invalid("mixed set/map values are not supported")
         raise invalid("mapping values must be all null (set) or all strings (map)")
 
-    raise invalid("value must be a non-empty sequence or mapping")
+    raise invalid("value must be a sequence or mapping")
 
 
 def format_tag(tag_value: Any) -> str | None:

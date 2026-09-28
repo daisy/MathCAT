@@ -38,3 +38,10 @@
 //mod uoa_corpus_Clearspeak;
 //mod uoa_corpus_Simplespeak;
 
+
+// Active regression coverage for the Greek Math Reader contribution.
+mod reader;
+mod reader_intents;
+mod reader_symbols;
+mod navigation;
+mod reader_documents;

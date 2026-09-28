@@ -8,7 +8,7 @@ from ruamel.yaml import YAML
 from ..auditor import compare_definition_files
 from ..errors import AuditError
 from ..models.definitions import DefinitionKind
-from ..parsers import parse_definitions
+from ..parsers import parse_definitions, parse_definitions_file
 
 
 def parse(content: str):
@@ -66,19 +66,24 @@ def test_parse_definitions_rejects_empty_vector() -> None:
     assert_invalid("- Foo: []\n", "empty sequences")
 
 
-def test_parse_definitions_rejects_empty_mapping() -> None:
-    """An empty mapping is rejected because it could be either a set or a map."""
-    assert_invalid("- Foo: {}\n", "empty mappings")
+def test_parse_empty_greek_known_words_as_set() -> None:
+    """Greek KnownWords uses an empty mapping, which MathCAT loads as an empty set."""
+    repo_root = Path(__file__).resolve().parents[3]
+    definitions, _ = parse_definitions_file(repo_root / "Rules/Languages/el/definitions.yaml")
+
+    known_words = definitions["KnownWords"]
+    assert known_words.kind is DefinitionKind.SET
+    assert known_words.data == {}
 
 
 def test_parse_definitions_rejects_string_scalar() -> None:
     """A string scalar cannot be used as a definition value."""
-    assert_invalid("- Foo: bar\n", "non-empty sequence or mapping")
+    assert_invalid("- Foo: bar\n", "sequence or mapping")
 
 
 def test_parse_definitions_rejects_numeric_scalar() -> None:
     """A numeric scalar cannot be used as a definition value."""
-    assert_invalid("- Foo: 123\n", "non-empty sequence or mapping")
+    assert_invalid("- Foo: 123\n", "sequence or mapping")
 
 
 def test_parse_definitions_rejects_nested_mapping_value() -> None:

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greek Math Reader — παραδείγματα για έλεγχο στο NVDA</title>
+<style>
+body { font: 1.15rem/1.6 sans-serif; max-width: 52rem; margin: auto; padding: 1.5rem; }
+math { display: block; margin: 1.5rem 0; font-size: 1.4em; }
+summary { cursor: pointer; }
+section { border-top: 1px solid; margin-top: 2rem; }
+a:focus, summary:focus { outline: 3px solid; outline-offset: 4px; }
+</style>
+</head>
+<body>
+<h1>Greek Math Reader: έλεγχος μαθηματικών εκφωνήσεων</h1>
+<p>Επιλέξτε γλώσσα <strong>Ελληνικά (el)</strong> και στυλ <strong>GreekMathReader</strong>
+σε έκδοση του MathCAT που περιλαμβάνει τους νέους κανόνες. Τα παραδείγματα είναι προς έλεγχο από ειδικούς και χρήστες του NVDA.</p>
+<p>Οι αναμενόμενες εκφωνήσεις χρησιμοποιούν μεσαία λεπτομέρεια και απενεργοποιημένη τη λέξη «κεφαλαίο».
+Οι παύσεις μπορεί να ακούγονται διαφορετικά ανάλογα με τη φωνή. Τα παραδείγματα ελέγχουν MathML στον φυλλομετρητή·
+ο έλεγχος των ίδιων τύπων μέσα στο Word και σε PDF παραμένει ξεχωριστός.</p>
+<p><a href="greek-math-reader.html" lang="en">Implementation, provenance and review status</a></p>
+<section aria-labelledby="example-1">
+<h2 id="example-1">1. Διάστημα με δηλωμένη σημασία</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow intent="open-closed-interval($a,$b)"><mn arg="a">0</mn><mn arg="b">1</mn></mrow></math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>διάστημα ανοιχτό αριστερά κλειστό δεξιά από 0 έως 1</p></details>
+</section>
+<section aria-labelledby="example-2">
+<h2 id="example-2">2. Τύπος δευτεροβάθμιας εξίσωσης (MathJax)</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mi>x</mi><mo>=</mo>
+      <mfrac>
+        <mrow><mo>−</mo><mi>b</mi><mo>±</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow>
+        <mrow><mn>2</mn><mi>a</mi></mrow>
+      </mfrac>
+    </mrow>
+    <annotation encoding="application/x-tex">x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}</annotation>
+  </semantics>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>χι ίσον; κλάσμα με αριθμητή μείον μπί, συν πλην; τετραγωνική ρίζα του μπί στο τετράγωνο, μείον, 4 έι σί, τέλος ρίζας, και παρονομαστή 2 έι, τέλος κλάσματος</p></details>
+</section>
+<section aria-labelledby="example-3">
+<h2 id="example-3">3. Ορισμένο ολοκλήρωμα (MathType)</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <annotation encoding="application/x-tex">\int_0^1 x^2\,dx</annotation>
+    <annotation-xml encoding="MathML-Presentation">
+      <mrow>
+        <msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup>
+        <msup><mi>x</mi><mn>2</mn></msup><mi>d</mi><mi>x</mi>
+      </mrow>
+    </annotation-xml>
+  </semantics>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>ολοκλήρωμα από 0 ως 1 του; χι στο τετράγωνο ως προς χι</p></details>
+</section>
+<section aria-labelledby="example-4">
+<h2 id="example-4">4. Στοιχείο πίνακα στην κβαντική σημειογραφία</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>⟨</mo><mi>ψ</mi><mo>|</mo><mi>H</mi><mo>|</mo><mi>φ</mi><mo>⟩</mo>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>στοιχείο πίνακα με μπρα ψι έιτς κετ φι</p></details>
+</section>
+<section aria-labelledby="example-5">
+<h2 id="example-5">5. Δεσμευμένη αναμενόμενη τιμή</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>E</mi><mrow><mo>[</mo><mi>X</mi><mo>|</mo><mi>Y</mi><mo>]</mo></mrow>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>αναμενόμενη τιμή του χι δεδομένου του γουάι</p></details>
+</section>
+<section aria-labelledby="example-6">
+<h2 id="example-6">6. Εξίσωση από επισημασμένο PDF</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup>
+  </mrow>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>ί ίσον, μι σί στο τετράγωνο</p></details>
+</section>
+<section aria-labelledby="example-7">
+<h2 id="example-7">7. Τανυστικοί δείκτες</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mmultiscripts><mi>T</mi><mi>j</mi><none/><mprescripts/><none/><mi>i</mi></mmultiscripts>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>ταυ προτεταγμένος εκθέτης άι, δείκτης τζέι</p></details>
+</section>
+<section aria-labelledby="example-8">
+<h2 id="example-8">8. Απόκλιση διανύσματος</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>∇</mo><mo>·</mo><mi mathvariant="bold">F</mi><mo>=</mo><mn>0</mn>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>απόκλιση του έντονο εφ; ίσον 0</p></details>
+</section>
+<section aria-labelledby="example-9">
+<h2 id="example-9">9. Άθροισμα με πρόθεμα χώρου ονομάτων (Word)</h2>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munderover>
+      <mo>∑</mo>
+      <mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow>
+      <mi>∞</mi>
+    </munderover>
+    <mfrac><mn>1</mn><msup><mi>n</mi><mn>2</mn></msup></mfrac>
+  </mrow>
+</math>
+<details><summary>Αναμενόμενη εκφώνηση</summary><p>άθροισμα από νι ίσον 1 ως άπειρο του; κλάσμα με αριθμητή 1, και παρονομαστή νι στο τετράγωνο, τέλος κλάσματος</p></details>
+</section>
+</body>
+</html>
