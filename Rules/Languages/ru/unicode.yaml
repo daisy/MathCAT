@@ -347,15 +347,15 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "в"]                  	# 	(en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "член"]               	# 	(en: 'member of', google translation)
+                then: [T: "принадлежит"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "элемент"]            	# 	(en: 'element of', google translation)
               - else: [T: "принадлежит"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "член"]    	# 	(en: 'is a member of', google translation)
+                then: [T: "принадлежит"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "элемент"]            	# 	(en: 'is an element of', google translation)
+                then: [T: "является элементом"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "находится в"]        	# 	(en: 'is in', google translation)
               - else: [T: "принадлежит"]        	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
@@ -425,9 +425,9 @@
               - else: [T: "не принадлежит"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "не член"] 	# 	(en: 'is not a member of', google translation)
+                then: [T: "не принадлежит"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "не элемент"]         	# 	(en: 'is not an element of', google translation)
+                then: [T: "не является элементом"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "не в"]               	# 	(en: 'is not in', google translation)
               - else: [T: "не принадлежит"]     	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
@@ -438,7 +438,7 @@
         - test: 
             if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"	#  "the set x is an element of ..." sounds bad"
             then: [T: ""]               	# 	(en: 'is', google translation)
-        - T: "малое принадлежит"                	# 	(en: 'an element of')
+        - T: "принадлежит"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set"	#  inside a set
@@ -446,18 +446,18 @@
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "в"]                  	# 	(en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "член"]               	# 	(en: 'member of', google translation)
+                then: [T: "принадлежит"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "элемент"]            	# 	(en: 'element of', google translation)
-              - else: [T: "малое принадлежит"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+              - else: [T: "принадлежит"]
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "член"]    	# 	(en: 'is a member of', google translation)
+                then: [T: "принадлежит"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "элемент"]            	# 	(en: 'is an element of', google translation)
+                then: [T: "является элементом"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "находится в"]        	# 	(en: 'is in', google translation)
-              - else: [T: "малое принадлежит"]  	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+              - else: [T: "принадлежит"]
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -500,8 +500,8 @@
  - "℉": [T: "градусы фаренгейта"]                	#  0x2109	(en: 'degrees fahrenheit', google translation)
  - "Ω": [T: "ом"]                               	#  0x2126	(en: 'ohms', google translation)
  - "Å": [T: "ангстрем"]                          	#  0x212b	(en: 'angstroms', google translation)
- - "⇒": [T: "двойная стрелка вправо"]            	#  0x21d2	(en: 'rightwards double arrow', google translation)
- - "∐": [T: "эн-арный сомножитель"]             	#  0x2210	(en: 'co-product')
+ - "⇒": [T: "следует"]
+ - "∐": [T: "копроизведение"]
  - "∓": [T: "минус плюс"]                       	#  0x2213	(en: 'minus or plus')
  - "∗": [T: "звёздочка"]               	#  0x2217	(en: 'times')
  - "∘": [T: "композиция"]                           	#  0x2218	(en: 'composed with')
@@ -511,6 +511,6 @@
  - "∷": [T: "пропорция"]                        	#  0x2237	(en: 'as')
  - "∼": [T: "тильда"]                           	#  0x223c	(en: 'varies with')
  - "∿": [T: "синусоидальная волна"]             	#  0x223f	(en: 'sine wave')
- - "≦": [T: "меньше над равно"]                 	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "больше над равно"]                 	#  0x2267	(en: 'greater than over equal to')
+ - "≦": [T: "меньше или равно"]
+ - "≧": [T: "больше или равно"]
  - "≻": [T: "следует за"]                       	#  0x227b	(en: 'succeeds')

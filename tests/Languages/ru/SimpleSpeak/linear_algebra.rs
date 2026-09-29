@@ -98,6 +98,28 @@ fn norm_subscripted() -> Result<()> {
 }
 
 #[test]
+fn norm_with_subscript_on_closing_bar() -> Result<()> {
+  // Recognize the TeX4ht form in which only the closing norm bar carries the index.
+  let expr = "<math><mrow><mo>∥</mo><mi>A</mi><msub><mrow><mo>∥</mo></mrow><mi>p</mi></msub></mrow></math>";
+  test("ru", "SimpleSpeak", expr, "норма заглавной а с индексом пэ")?;
+  test("ru", "ClearSpeak", expr, "норма заглавной а с индексом пэ")?;
+
+  let doubled_bars = "<math><mrow><mo>|</mo><mo>|</mo><mi>x</mi><mo>|</mo><msub><mrow><mo>|</mo></mrow><mi>∞</mi></msub></mrow></math>";
+  test("ru", "SimpleSpeak", doubled_bars, "норма икс с индексом бесконечность")?;
+  test("ru", "ClearSpeak", doubled_bars, "норма икс с индексом бесконечность")?;
+  return Ok(());
+}
+
+#[test]
+fn norm_with_doubled_ordinary_bars() -> Result<()> {
+  // TeX4ht sometimes emits a norm as two adjacent ordinary bars on each side.
+  let expr = "<math><mrow><mo>|</mo><mo>|</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>|</mo><mo>|</mo></mrow></math>";
+  test("ru", "SimpleSpeak", expr, "норма икс плюс игрек")?;
+  test("ru", "ClearSpeak", expr, "норма икс плюс игрек")?;
+  return Ok(());
+}
+
+#[test]
 fn not_gradient() -> Result<()> {
   // the nabla is at the end, so it can't be gradient because it doesn't operate on anything
   let expr = r#"<math>

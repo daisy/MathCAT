@@ -20,6 +20,13 @@
   - T: "с индексом"
   - x: "*[2]"
 
+- name: magnitude-as-norm
+  tag: magnitude
+  match: "count(*)=1"
+  replace:
+  - T: "норма"
+  - x: "*[1]"
+
 - name: transpose
   tag: transpose
   match: "count(*)=1"

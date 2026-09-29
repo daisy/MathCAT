@@ -374,6 +374,30 @@
   - pause: short
   - x: "*[3]"
 
+- name: skip-equality-before-continued-gathered-line
+  tag: mo
+  match: ".='=' and not(following-sibling::*) and ancestor::m:lines and ancestor::m:mtr/following-sibling::*[1]//*[.='=']"
+  replace: [T: ""]
+
+- name: skip-final-period-in-multiline
+  tag: mo
+  match: ".='.' and not(following-sibling::*) and ancestor::m:mtr[not(following-sibling::*)] and ancestor::m:lines"
+  replace: [T: ""]
+
+- name: SimpleSpeak-double-absolute-value-as-norm
+  tag: absolute-value
+  match: "count(*)=1 and *[1][self::m:absolute-value]"
+  replace:
+  - T: "норма"
+  - x: "*[1]/*[1]"
+
+- name: SimpleSpeak-absolute-value
+  tag: absolute-value
+  match: "."
+  replace:
+  - T: "модуль"
+  - x: "*[1]"
+
 - name: SimpleSpeak-log
   tag: mrow
   match:

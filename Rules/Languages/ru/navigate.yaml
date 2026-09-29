@@ -1048,9 +1048,9 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "перемещение вверх"                              # phrase('move up' to the previous row in the table)
+      - T: "перейти к следующему столбцу"
       - pause: medium
-  - T: "нет следующей строки"                          # phrase('no next row' in the table)
+  - T: "нет следующего столбца"
   - set_variables: [SpeakExpression: "'false'"]
 
 - name: default-read-cell

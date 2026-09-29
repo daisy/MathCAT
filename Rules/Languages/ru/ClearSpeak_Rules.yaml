@@ -483,6 +483,14 @@
       then: [x: "*[2]/text()"]
       else: [x: "*[2]"]
 
+- name: ClearSpeak-double-absolute-value-as-norm
+  tag: absolute-value
+  match: "count(*)=1 and *[1][self::m:absolute-value]"
+  replace:
+  - T: "норма"
+  - x: "*[1]/*[1]"
+  - pause: short
+
 - name: ClearSpeak-absolute-value
   tag: absolute-value
   match: "."
@@ -501,7 +509,6 @@
             if: "$ClearSpeak_AbsoluteValue = 'Cardinality'"
             then: [T: "мощность множества"]
             else: [T: "модуль"]
-        - T: "из"
         - x: "*[1]"
         - test:
             if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
@@ -541,26 +548,53 @@
         - if: "$ClearSpeak_SetMemberSymbol='Belongs'"
           then:
           - pause: short
-          - T: "входящих в"
           - test:
-            - if: "*[3][.='ℤ']"
-              then: [T: "целые числа"]
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "входящих в множество"]
+              else: [T: "входящих в"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
+              then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else_if: "$ClearSpeak_SetMemberSymbol='Element'"
           then:
           - pause: short
-          - T: "являющихся элементами"
           - test:
-            - if: "*[3][.='ℤ']"
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "являющихся элементами множества"]
+              else: [T: "являющихся элементами"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
               then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else_if: "$ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member'"
           then:
           - pause: short
-          - T: "принадлежащих"
           - test:
-            - if: "*[3][.='ℤ']"
-              then: [T: "целым числам"]
+              if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+              then: [T: "принадлежащих множеству"]
+              else: [T: "принадлежащих"]
+          - test:
+            - if: "*[3][.='ℕ']"
+              then: [T: "натуральных чисел"]
+            - else_if: "*[3][.='ℤ']"
+              then: [T: "целых чисел"]
+            - else_if: "*[3][.='ℚ']"
+              then: [T: "рациональных чисел"]
+            - else_if: "*[3][.='ℝ']"
+              then: [T: "действительных чисел"]
             - else: [x: "*[3]"]
         - else:
           - T: "из"
@@ -919,6 +953,16 @@
       then: [T: "скобка закрывается"]
       else: [T: "скобка закрывается"]
 
+- name: skip-equality-before-continued-gathered-line
+  tag: mo
+  match: ".='=' and not(following-sibling::*) and ancestor::m:lines and ancestor::m:mtr/following-sibling::*[1]//*[.='=']"
+  replace: [T: ""]
+
+- name: skip-final-period-in-multiline
+  tag: mo
+  match: ".='.' and not(following-sibling::*) and ancestor::m:mtr[not(following-sibling::*)] and ancestor::m:lines"
+  replace: [T: ""]
+
 - name: ClearSpeak-multi-line
   tag: [piecewise, system-of-equations, lines]
   match: "."
@@ -963,7 +1007,16 @@
             then: [T: "шаг"]
             else: [T: "шага"]
       - pause: short
-  - x: "*"
+  - test:
+      # Announce the first visual line here: intent processing may flatten that
+      # row while retaining later mtr nodes.
+      if: "self::m:lines and count(*) > 1"
+      then:
+      - T: "строка"
+      - x: "1"
+      - pause: medium
+      - x: "*"
+      else: [x: "*"]
   - pause: long
 
 - name: ClearSpeak-default-multiline
@@ -972,7 +1025,10 @@
   variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - test:
-      if: "not($LineCount=1 or $ClearSpeak_MultiLineLabel='None' or contains(@data-intent-property, ':continued-row:'))"
+      if: "not($ClearSpeak_MultiLineLabel='None') and
+           ((parent::m:lines and preceding-sibling::*) or
+            (not(parent::m:lines) and
+             not($LineCount=1 or contains(@data-intent-property, ':continued-row:'))))"
       then:
       - pause: medium
       - test:
@@ -988,7 +1044,9 @@
           then: [T: "строка"]
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then: [T: "шаг"]
-      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
+      - x: "IfThenElse(parent::m:lines,
+                        count(preceding-sibling::*) + 1,
+                        count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1)"
       - test:
           if: "self::m:mlabeledtr"
           then:

@@ -28,6 +28,41 @@ fn modified_vars() -> Result<()> {
 }
 
 #[test]
+fn double_overline() -> Result<()> {
+    // A nested overline should be announced as one standard Russian mathematical term.
+    let expr = "<math>
+        <mover accent='false' class='mml-overline'>
+            <mover accent='true'><mi>z</mi><mo>¯</mo></mover>
+            <mo accent='true'>¯</mo>
+        </mover>
+    </math>";
+    let expected = "зэт с двойным надчёркиванием";
+    test("ru", "LiteralSpeak", expr, expected)?;
+    test("ru", "ClearSpeak", expr, expected)?;
+    test("ru", "SimpleSpeak", expr, expected)?;
+    Ok(())
+}
+
+#[test]
+fn complex_number_modulus_identity() -> Result<()> {
+    // An overlined variable and an absolute value should use natural Russian terminology.
+    let expr = "<math><mrow>
+        <mrow><mi>z</mi><mo>&#x2062;</mo><mover accent='true'><mi>z</mi><mo>¯</mo></mover></mrow>
+        <mo>=</mo>
+        <mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></mrow>
+        <mo>=</mo>
+        <msup><mrow><mo>|</mo><mi>z</mi><mo>|</mo></mrow><mn>2</mn></msup>
+    </mrow></math>";
+    test("ru", "ClearSpeak", expr,
+        "зэт зэт с чертой равно икс в квадрате плюс игрек в квадрате равно модуль зэт, в квадрате")?;
+    test("ru", "SimpleSpeak", expr,
+        "зэт зэт с чертой равно икс в квадрате плюс игрек в квадрате равно модуль зэт в квадрате")?;
+    test("ru", "LiteralSpeak", expr,
+        "зэт зэт с чертой равно икс верхний индекс 2 конец верхнего индекса плюс игрек верхний индекс 2 конец верхнего индекса равно вертикальная черта зэт вертикальная черта верхний индекс 2 конец верхнего индекса")?;
+    Ok(())
+}
+
+#[test]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -139,6 +174,20 @@ fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
     test("ru", "SimpleSpeak", expr, "пэ большое, скобка открывается, а большое при условии бэ большое, скобка закрывается")?;
     test("ru", "ClearSpeak", expr,  "пэ большое, скобка открывается, а большое при условии бэ большое, скобка закрывается")?;
+    return Ok(());
+}
+
+#[test]
+fn compact_unicode_uses_mathematical_terminology() -> Result<()> {
+    // The compact Unicode table takes precedence over unicode-full, so its
+    // common relation and operator names must retain their mathematical meaning.
+    test("ru", "SimpleSpeak", "<math><mi>a</mi><mo>⇒</mo><mi>b</mi></math>",
+        "а следует бэ")?;
+    test("ru", "SimpleSpeak", "<math><mo>∐</mo></math>", "копроизведение")?;
+    test("ru", "SimpleSpeak", "<math><mi>a</mi><mo>≦</mo><mi>b</mi><mo>≧</mo><mi>c</mi></math>",
+        "а меньше или равно бэ больше или равно цэ")?;
+    test("ru", "SimpleSpeak", "<math><mi>x</mi><mo>∊</mo><mi>A</mi></math>",
+        "икс принадлежит заглавной а")?;
     return Ok(());
 }
 
@@ -358,6 +407,18 @@ fn mn_with_space() -> Result<()> {
 fn mn_with_block_and_decimal_separators() -> Result<()> {
   let expr = "<math><mn>1,234.56</mn></math>";                                      
   test_prefs("ru", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234.56")?;
+  return Ok(());
+}
+
+#[test]
+fn named_operators_with_lower_limits() -> Result<()> {
+  // TeX4ht wraps named operators and the invisible apply character in the munder base.
+  let max_expr = "<math><munder><mrow><mi class='qopname' mathvariant='normal'>max</mi><mo>⁡</mo></mrow><mi>i</mi></munder></math>";
+  let lim_expr = "<math><munder><mrow><mi class='qopname' mathvariant='normal'>lim</mi><mo>⁡</mo></mrow><mrow><mi>x</mi><mo>→</mo><mi>∞</mi></mrow></munder></math>";
+  test("ru", "SimpleSpeak", max_expr, "максимум по и")?;
+  test("ru", "ClearSpeak", max_expr, "максимум по и")?;
+  test("ru", "SimpleSpeak", lim_expr, "предел при икс стремящемся к бесконечности")?;
+  test("ru", "ClearSpeak", lim_expr, "предел при икс стремящемся к бесконечности")?;
   return Ok(());
 }
 
