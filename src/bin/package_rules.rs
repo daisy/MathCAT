@@ -6,6 +6,8 @@
 
 #![allow(clippy::needless_return)]
 
+#[path = "../yaml_helpers.rs"]
+mod yaml_helpers;
 include!("../rules_archive.rs");
 
 use clap::Parser;

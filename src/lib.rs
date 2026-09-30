@@ -38,6 +38,7 @@ mod prefs;
 mod tts;
 mod xpath_functions;
 mod definitions;
+mod yaml_helpers;
 pub mod pretty_print;
 mod chemistry;
 
