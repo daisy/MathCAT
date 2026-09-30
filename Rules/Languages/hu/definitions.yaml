@@ -351,6 +351,10 @@
     ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
     "modified-variable": "silent= "
   }
+  # The connector word to say for functional 'IntentMappings' (in English, "of")
+  # This is likely the word used for U+2061 in unicode.yaml, but for technical reasons needs to be defined here
+  # vector of length=1 because scalars not supported
+- FunctionApplicationWord: ["a(z)"]
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
