@@ -287,10 +287,7 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| {
             let rules = rules.borrow();
             let pref_manager = rules.pref_manager.borrow();
-            let mut value = pref_manager.pref_to_string(&name);
-            if value == NO_PREFERENCE {
-                value = pref_manager.pref_to_string(&name);
-            }
+            let value = pref_manager.pref_to_string(&name);
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
             } else {
@@ -526,11 +523,10 @@ pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let command = command.as_ref().to_string();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-        if cmd.is_none() {
+        let Some(cmd) = NAV_COMMANDS.get_key(&command) else {   // gets a &'static version of the command.
             bail!("Unknown command in call to DoNavigateCommand()");
         };
-        let cmd = *cmd.unwrap();
+        let cmd = *cmd;
         MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);

@@ -303,7 +303,7 @@ class TestParseRulesFile:
         assert rules[0].name == "real-rule"
 
     def test_mixed_valid_and_skipped_items(self):
-        """Valid rules interspersed with non-rule items keep correct line numbers."""
+        """Named rules retain their line numbers around skipped includes."""
         content = """- name: first
   tag: mo
   match: "."

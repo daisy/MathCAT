@@ -1,0 +1,83 @@
+name: Library Size
+
+on: pull_request
+
+permissions:
+  contents: read
+
+concurrency:
+  group: library-size-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  measure:
+    name: Measure Linux shared library
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out base revision
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+
+      - name: Check out PR revision
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          persist-credentials: false
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@1.96.0
+
+      - name: Build base library
+        id: base
+        working-directory: base
+        env:
+          CARGO_TARGET_DIR: ${{ runner.temp }}/mathcat-size-base-target
+        run: |
+          cargo build --release --lib --locked
+          bytes=$(stat -c%s "$CARGO_TARGET_DIR/release/liblibmathcat.so")
+          echo "bytes=$bytes" >> "$GITHUB_OUTPUT"
+
+      - name: Build PR library
+        id: head
+        working-directory: head
+        env:
+          CARGO_TARGET_DIR: ${{ runner.temp }}/mathcat-size-head-target
+        run: |
+          cargo build --release --lib --locked
+          bytes=$(stat -c%s "$CARGO_TARGET_DIR/release/liblibmathcat.so")
+          echo "bytes=$bytes" >> "$GITHUB_OUTPUT"
+
+      - name: Save measurements
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_BYTES: ${{ steps.base.outputs.bytes }}
+          HEAD_BYTES: ${{ steps.head.outputs.bytes }}
+          REPORT_DIR: ${{ runner.temp }}/mathcat-size-report
+        run: |
+          mkdir -p "$REPORT_DIR"
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const report = {
+            prNumber: Number(process.env.PR_NUMBER),
+            baseSha: process.env.BASE_SHA,
+            headSha: process.env.HEAD_SHA,
+            baseBytes: Number(process.env.BASE_BYTES),
+            headBytes: Number(process.env.HEAD_BYTES),
+          };
+          fs.writeFileSync(path.join(process.env.REPORT_DIR, 'report.json'), JSON.stringify(report));
+          NODE
+
+      - name: Upload measurements
+        uses: actions/upload-artifact@v7
+        with:
+          name: library-size-report
+          path: ${{ runner.temp }}/mathcat-size-report/report.json
+          retention-days: 1

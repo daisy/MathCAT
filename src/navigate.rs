@@ -52,6 +52,12 @@ struct NavigationPosition {
     current_node_offset: usize,     // for leaves, char offset in leaf (default = 0), otherwise id for artificial intent node
 }
 
+#[derive(Clone, Debug)]
+struct NavigationHistoryEntry {
+    position: NavigationPosition,
+    command: &'static str,
+}
+
 impl fmt::Display for NavigationPosition {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "{}[+{}]", self.current_node, self.current_node_offset);
@@ -71,10 +77,7 @@ impl Default for NavigationPosition {
 
 #[derive(Debug, Clone)]
 pub struct NavigationState {
-    // it might be better to use a linked for the stacks, with the first node being the top
-    // these two stacks should be kept in sync.
-    position_stack: Vec<NavigationPosition>,    // all positions, so we can go back to them
-    command_stack: Vec<&'static str>,           // all commands, so we can undo them
+    history: Vec<NavigationHistoryEntry>,       // positions and commands, so we can undo them
     place_markers: [NavigationPosition; MAX_PLACE_MARKERS],
     where_am_i: NavigationPosition,             // current 'where am i' location
 
@@ -90,13 +93,13 @@ impl fmt::Display for NavigationState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "NavigationState{{")?;
         write!(f, "  Position Stack: ")?;
-        for (i, nav_state) in self.position_stack.iter().enumerate() {
-            write!(f, "{}{}", if i==0 {""} else {", "}, nav_state)?;
+        for (i, entry) in self.history.iter().enumerate() {
+            write!(f, "{}{}", if i==0 {""} else {", "}, entry.position)?;
         }
         writeln!(f)?;
         write!(f, "  Command Stack: ")?;
-        for (i, nav_state) in self.command_stack.iter().enumerate() {
-            write!(f, "{}{}", if i==0 {""} else {", "}, *nav_state)?;
+        for (i, entry) in self.history.iter().enumerate() {
+            write!(f, "{}{}", if i==0 {""} else {", "}, entry.command)?;
         }
         writeln!(f)?;
         writeln!(f, "  where_am_i: {}, start_time: {:?}", self.where_am_i, self.where_am_i_start_time)?;
@@ -109,8 +112,7 @@ impl fmt::Display for NavigationState {
 impl NavigationState {
     fn new() -> NavigationState {
         return NavigationState {
-            position_stack: Vec::with_capacity(1024),
-            command_stack: Vec::with_capacity(1024),
+            history: Vec::with_capacity(1024),
             place_markers: Default::default(),
             where_am_i: NavigationPosition::default(),
             // FIX: figure this out for the web
@@ -124,8 +126,7 @@ impl NavigationState {
     }
 
     pub fn reset(&mut self) {
-        self.position_stack.clear();
-        self.command_stack.clear();
+        self.history.clear();
         self.where_am_i = NavigationPosition::default();
         self.reset_start_time()
     }
@@ -146,32 +147,22 @@ impl NavigationState {
 
 
     fn push(&mut self, position: NavigationPosition, command: &'static str) {
-        self.position_stack.push(position);
-        self.command_stack.push(command);
+        self.history.push(NavigationHistoryEntry { position, command });
     }
 
-    fn pop(&mut self) -> Option<(NavigationPosition, &'static str)> {
-        assert_eq!(self.position_stack.len(), self.command_stack.len());
-        if self.position_stack.is_empty() {
-            return None;
-        } else {
-            return Some( (self.position_stack.pop().unwrap(), self.command_stack.pop().unwrap()) );
-        }
+    fn pop(&mut self) -> Option<NavigationHistoryEntry> {
+        return self.history.pop();
     }
 
-    fn top(&self) -> Option<(&NavigationPosition, &'static str)> {
-        if self.position_stack.is_empty() {
-            return None;
-        }
-        let last = self.position_stack.len()-1;
-        return Some( (&self.position_stack[last], self.command_stack[last]) );
+    fn top(&self) -> Option<&NavigationHistoryEntry> {
+        return self.history.last();
     }
 
     pub fn get_navigation_mathml<'a>(&self, mathml: Element<'a>) -> Result<(Element<'a>, usize)> {
-        if self.position_stack.is_empty() {
+        if self.history.is_empty() {
             return Ok( (mathml, 0) );
         } else {
-            let (position, _) = self.top().unwrap();
+            let position = &self.top().unwrap().position;
             return match get_node_by_id(mathml, position) {
                 None => bail!("internal error: id '{}' was not found in mathml:\n{}",
                                 position.current_node, mml_to_string(mathml)),
@@ -181,23 +172,23 @@ impl NavigationState {
     }
 
     pub fn get_navigation_mathml_id(&self, mathml: Element) -> (String, usize) {
-        if self.position_stack.is_empty() {
+        if self.history.is_empty() {
             return (mathml.attribute_value("id").unwrap().to_string(), 0);
         } else {
-            let (position, _) = self.top().unwrap();
+            let position = &self.top().unwrap().position;
             return (position.current_node.clone(), position.current_node_offset);
         }
     }
 
     fn init_navigation_context(&self, context: &mut sxd_xpath_no_unsafe::Context, command: &'static str,
-                               nav_state_top: Option<(&NavigationPosition, &'static str)>) {
+                               nav_state_top: Option<&NavigationHistoryEntry>) {
         context.set_variable("NavCommand", command);
 
         if command == "WhereAmI" && self.where_am_i == NavigationPosition::default() {
             context.set_variable("NavNode", self.where_am_i.current_node.as_str());
             context.set_variable("NavNodeOffset", self.where_am_i.current_node_offset as f64);
         } else {
-            let position = &self.position_stack[self.position_stack.len()-1];
+            let position = &self.history.last().unwrap().position;
             context.set_variable("NavNode", position.current_node.as_str());
             context.set_variable("NavNodeOffset", position.current_node_offset as f64);
         }
@@ -218,7 +209,7 @@ impl NavigationState {
         if command == "MoveLastLocation" {
             let previous_command = match nav_state_top {
                 None => "None",
-                Some( (_, previous_command) ) => previous_command,
+                Some(entry) => entry.command,
             };
             context.set_variable("PreviousNavCommand", previous_command);
         }
@@ -372,7 +363,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
     return NAVIGATION_STATE.with(|nav_state| {
         let mut nav_state = nav_state.borrow_mut();
         // debug!("MathML: {}", mml_to_string(mathml));
-        if nav_state.position_stack.is_empty() {
+        if nav_state.history.is_empty() {
             // initialize to root node
             nav_state.push(NavigationPosition{
                 current_node: mathml.attribute_value("id").unwrap().to_string(),
@@ -440,7 +431,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             }
             bail!("Internal error: Navigation exceeded limit of number of times no speech generated
                    when attempting to {} in {} mode start at id={} in this MathML:\n{}.",
-                   nav_command, nav_state.mode, nav_state.top().unwrap().0.current_node, mml_to_string(mathml));
+                   nav_command, nav_state.mode, nav_state.top().unwrap().position.current_node, mml_to_string(mathml));
         });
     });
 
@@ -450,14 +441,14 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 let nav_position = NavigationPosition { current_node: mathml.attribute_value("id").unwrap().to_string(), current_node_offset: 0 };
                 get_node_by_id(mathml, &nav_position)
             },
-            Some( (position, _) ) => get_node_by_id(mathml, position),
+            Some(entry) => get_node_by_id(mathml, &entry.position),
         };
 
         return match element {
             Some(node) => Ok(node),
             None => {
                 bail!("Internal Error: didn't find id/offset '{:?}' while attempting to start navigation. MathML is\n{}",
-                      nav_state.top().map(|t| t.0), mml_to_string(mathml));
+                      nav_state.top().map(|entry| &entry.position), mml_to_string(mathml));
             }
         };
     }
@@ -518,7 +509,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         // debug!("intent=\n{}", mml_to_string(intent));
         // debug!("nav intent=\n{}", mml_to_string(nav_intent));
-        // debug!("start_node id={}\n{}", nav_state.top().unwrap().0.current_node.as_str(), mml_to_string(start_node));
+        // debug!("start_node id={}\n{}", nav_state.top().unwrap().position.current_node.as_str(), mml_to_string(start_node));
         // if name(start_node) != "math" {
         //     let mut parent= get_parent(start_node);
         //     if name(parent) != "math" {
@@ -528,7 +519,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         // }
         let offset = context_get_int_variable(rules_with_context.get_context(), "NavNodeOffset", intent)?;
         rules_with_context.set_nav_node_offset(offset);
-        debug!("starting nav_position: {}, start node ={}", nav_state.top().unwrap().0, name(start_node));
+        debug!("starting nav_position: {}, start node ={}", nav_state.top().unwrap().position, name(start_node));
 
         let raw_speech_string = rules_with_context.match_pattern::<String>(start_node)
                     .context("Pattern match/replacement failure during math navigation!")?;
@@ -569,7 +560,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         debug!("after match nav_position: {}", nav_position);
         // push the new location on the stack
-        if nav_position != NavigationPosition::default() && &nav_position != nav_state.top().unwrap().0 {
+        if nav_position != NavigationPosition::default() && nav_position != nav_state.top().unwrap().position {
             nav_state.push(nav_position.clone(), nav_command);
         }
 
@@ -634,12 +625,12 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         let push_command_on_stack = (nav_command.starts_with("Move") && nav_command != "MoveLastLocation") || nav_command.starts_with("Zoom");
         // debug!("pop_stack: nav_command={}, count={}, push? {} stack=\n{}", nav_command, count, push_command_on_stack, nav_state);
         if count == 0 {
-            if !push_command_on_stack && nav_command == nav_state.top().unwrap().1 {
+            if !push_command_on_stack && nav_command == nav_state.top().unwrap().command {
                 nav_state.pop();    // remove ReadXXX, SetPlacemarker, etc. commands that don't change the state
             }
             return;
         }
-        let (top_position, top_command) = nav_state.pop().unwrap();
+        let top_entry = nav_state.pop().unwrap();
         let mut count = count - 1;
         loop {
             // debug!("  ... loop count={}", count);
@@ -650,7 +641,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             count -= 1;
         };
         if push_command_on_stack {
-            nav_state.push(top_position, top_command);
+            nav_state.push(top_entry.position, top_entry.command);
         }
         // debug!("END pop_stack: stack=\n{}", nav_state);
     }

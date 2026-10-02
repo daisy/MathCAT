@@ -81,6 +81,20 @@
           children: [x: "*[2]"]
                
 
+
+-
+  # We want to say "ratio of x to y" instead of "x ratio y" (which is ambiguous)
+  name: ratio
+  tag: mrow
+  match: "count(*)=3 and *[2][self::m:mo][.='∶']"
+  replace:
+  - intent:
+      name: "ratio"
+      attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+      children:
+      - x: "*[1]"
+      - x: "*[3]"
+
 -
   # (a,b) has many interpretations; (a, b] (etc) have fewer interpretations.
   # as an interval, it represents a set and hence a clue that it is an interval is that a set operator comes
