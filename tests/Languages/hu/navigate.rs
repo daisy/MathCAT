@@ -46,7 +46,7 @@ fn parts_prefix_logarithm_with_base() -> Result<()> {
         </msub>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap; b")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap logaritmus; b")
 }
 
 #[test]
