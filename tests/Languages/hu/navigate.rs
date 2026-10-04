@@ -46,7 +46,7 @@ fn parts_prefix_logarithm_with_base() -> Result<()> {
         </msub>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap logaritmus; b")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; alap logaritmus; b")
 }
 
 #[test]
@@ -60,7 +60,7 @@ fn parts_infix_power() -> Result<()> {
         </msup>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap; x")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; alap; x")
 }
 
 #[test]
@@ -74,7 +74,7 @@ fn parts_infix_indexed_by() -> Result<()> {
         </msub>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap; x")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; alap; x")
 }
 
 #[test]
@@ -88,7 +88,7 @@ fn parts_function_fraction() -> Result<()> {
         </mfrac>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in számláló; 1")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; számláló; 1")
 }
 
 #[test]
@@ -101,7 +101,7 @@ fn parts_function_square_root() -> Result<()> {
         </msqrt>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in gyök; x")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; gyök; x")
 }
 
 #[test]
@@ -115,7 +115,7 @@ fn parts_silent_skip_super() -> Result<()> {
         </msup>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in alap; x")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; alap; x")
 }
 
 // --- Intents not in NavigationParts ---
@@ -163,7 +163,7 @@ fn no_parts_prefix_vector() -> Result<()> {
 
 #[test]
 fn no_parts_infix_binomial() -> Result<()> {
-    // binomial:infix (choose); no NavigationParts → "in part 1"
+    // binomial:infix (choose); no NavigationParts → "part 1"
     let expr = r#"
       <math>
         <mrow id="bin">
@@ -176,12 +176,12 @@ fn no_parts_infix_binomial() -> Result<()> {
         </mrow>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in része 1; 7")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; része 1; 7")
 }
 
 #[test]
 fn no_parts_postfix_transpose() -> Result<()> {
-    // transpose:postfix — not prefix, so still announces "in …"
+    // transpose:postfix — not prefix, so still announces its name
     let expr = r#"
       <math>
         <msup id="tr">
@@ -190,7 +190,7 @@ fn no_parts_postfix_transpose() -> Result<()> {
         </msup>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in transzponált; nagy m")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; transzponált; nagy m")
 }
 
 #[test]
@@ -205,12 +205,12 @@ fn no_parts_function_absolute_value() -> Result<()> {
         </mrow>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "nagyítás; in az abszolút érték; x")
+    assert_zoom_in("ZoomIn", expr, "nagyítás; az abszolút érték; x")
 }
 
 #[test]
 fn no_parts_silent_modified_variable() -> Result<()> {
-    // modified-variable:silent (x-hat) — no NavigationParts → silent "in"
+    // modified-variable:silent (x-hat) — no NavigationParts → silent
     let expr = r#"
       <math>
         <mover id="hat">
