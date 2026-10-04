@@ -133,7 +133,11 @@
           variables:
           - NumPrecedingSiblings: "count($Child2D/preceding-sibling::*)"
           replace:
-          - x: "$Move2D"
+          # "in" is not spoken: Hungarian expresses it with a case suffix on the part name, which cannot be added generically,
+          # and the command word (e.g. "nagyítás") already conveys the direction
+          - test:
+              if: "$Move2D != 'in' and $Move2D != 'ban/ben'"
+              then: [x: "$Move2D"]
           - test:
             - if: "$NumPrecedingSiblings=0"
               then: [T: "alapja"]                 # phrase(the 'base' of the power)
@@ -162,7 +166,11 @@
       - PartNumber: "count($Child2D/preceding-sibling::*)"
       - PartName: "GetNavigationPartName(name(.), $PartNumber)"
       replace:
-      - x: "$Move2D"
+      # "in" is not spoken: Hungarian expresses it with a case suffix on the part name, which cannot be added generically,
+      # and the command word (e.g. "nagyítás") already conveys the direction
+      - test:
+          if: "$Move2D != 'in' and $Move2D != 'ban/ben'"
+          then: [x: "$Move2D"]
       - test:
         - if: "$PartName != ''"
           then: [x: "$PartName"]
