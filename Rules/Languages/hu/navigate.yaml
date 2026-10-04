@@ -39,7 +39,7 @@
 #   as they would likely be much more efficient and also cleaner.
 
 # Rules for announcing the command
-- name: say-command
+- name: say-command #audit-ignore
   tag: "!*"
   match: "$SayCommand != ''"   # value should be '', 'true', or 'false'
   variables: [Prefix: "''"]
@@ -132,7 +132,7 @@
   - x: "count($Child2D/preceding-sibling::*)+1"
   - pause: "medium"
 
-- name: into-or-out-of-mmultiscripts
+- name: into-or-out-of-mmultiscripts #audit-ignore
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='mmultiscripts' or self::m:mmultiscripts)"
   replace:
@@ -170,7 +170,7 @@
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
-- name: into-or-out-of-default
+- name: into-or-out-of-default #audit-ignore
   tag: "*"
   # saying "out of row n" is not very useful, so skip it
   # match: "$Move2D != '' and @data-from-mathml and @data-from-mathml != name(.) and count(*)>1 and @data-from-mathml != 'mtable'"
