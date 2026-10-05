@@ -1,5 +1,50 @@
 ---
 #default rules shared among several speech rules
+- name: russian-array-name
+  tag: array
+  match: "$SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak'"
+  replace:
+  - T: "таблица"
+  - pause: short
+  - x: "*"
+
+# A repeated equality across a gathered line break marks one derivation.
+# Priority is necessary because ClearSpeak's general table rule matches first.
+- name: russian-gathered-derivation
+  tag: "!*"
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and (self::m:lines or self::m:system-of-equations) and contains(@class, 'gathered') and (*[1]//*[not(*)])[last()][.='='] and (*[2]//*[not(*)])[1][.='=']"
+  variables:
+  - LineCount: "count(*)"
+  - IsColumnSilent: "true()"
+  replace:
+  - x: "$LineCount"
+  - T: "строки"
+  - test:
+      if: "$SpeechStyle='ClearSpeak'"
+      then: [pause: short]
+      else: [pause: medium]
+  - x: "*"
+
+- name: russian-gathered-derivation-row
+  tag: "!*"
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and self::m:mtr and parent::*[contains(@class, 'gathered') and (*[1]//*[not(*)])[last()][.='='] and (*[2]//*[not(*)])[1][.='=']]"
+  replace:
+  - T: "строка"
+  - x: "count(preceding-sibling::*)+1"
+  - pause: medium
+  - x: "*"
+  - pause: medium
+
+- name: russian-gathered-repeated-equality
+  tag: mo
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and .='=' and not(following-sibling::*) and ancestor::m:mtr[following-sibling::*[1][(.//*[not(*)])[1][.='=']]] and ancestor::*[contains(@class, 'gathered')]"
+  replace: []
+
+- name: russian-gathered-sentence-period
+  tag: mo
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and .='.' and not(following-sibling::*) and ancestor::m:mtr[not(following-sibling::*)] and ancestor::*[contains(@class, 'gathered')]"
+  replace: []
+
 - name: probability-given
   tag: math
   match: "count(*)=6 and *[1][.='P'] and *[2][.='('] and *[4][.='|'] and *[6][.=')']"

@@ -1,4 +1,25 @@
 ---
+# Names confirmed in Russian mathematical notation. Do not rewrite MathML.
+- name: russian-function-alias
+  tag: [mi, mtext]
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and DefinitionValue(normalize-space(.), 'Speech', 'RussianFunctionAliases') != '' and (contains(@class, 'qopname') or following-sibling::*[1][.='⁡' or IsBracketed(., '(', ')')] or (parent::m:apply-function and not(preceding-sibling::*)))"
+  replace:
+  - bookmark: "@id"
+  - x: "DefinitionValue(normalize-space(.), 'Speech', 'RussianFunctionAliases')"
+
+- name: russian-cauchy-name
+  tag: [mi, mtext]
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and normalize-space(.)='Cauchy'"
+  replace:
+  - bookmark: "@id"
+  - T: "Коши"
+
+- name: russian-typographic-quotation-mark
+  tag: [mi, mo]
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and (.='”' or .='“')"
+  replace:
+  - bookmark: "@id"
+  - T: "кавычка"
 
 - name: capital-letter-as-big
   tag: mi
