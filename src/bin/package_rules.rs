@@ -306,4 +306,39 @@ mod tests {
         assert!(names.contains(&"Rules/Languages/en/en.zip".to_string()));
         assert!(!names.iter().any(|n| n.contains("/zz")));
     }
+
+    #[test]
+    fn modular_language_and_braille_filtering() {
+        let tmp = tempdir().unwrap();
+        let rules = tmp.path().join("Rules");
+        fs::create_dir_all(rules.join("Languages").join("en")).unwrap();
+        fs::write(rules.join("Languages").join("en").join("unicode.yaml"), "- b: 2\n").unwrap();
+        fs::create_dir_all(rules.join("Languages").join("es")).unwrap();
+        fs::write(rules.join("Languages").join("es").join("unicode.yaml"), "- c: 3\n").unwrap();
+        fs::create_dir_all(rules.join("Braille").join("Nemeth")).unwrap();
+        fs::write(rules.join("Braille").join("Nemeth").join("unicode.yaml"), "- d: 4\n").unwrap();
+        fs::create_dir_all(rules.join("Braille").join("French")).unwrap();
+        fs::write(rules.join("Braille").join("French").join("unicode.yaml"), "- e: 5\n").unwrap();
+
+        // Simulate CARGO_FEATURE_LANG_EN and CARGO_FEATURE_BRAILLE_NEMETH
+        unsafe {
+            std::env::set_var("CARGO_FEATURE_LANG_EN", "1");
+            std::env::set_var("CARGO_FEATURE_BRAILLE_NEMETH", "1");
+        }
+
+        let output = tmp.path().join("Rules-filtered.zip");
+        package_rules(&rules, &output, false, downloadable_compression()).unwrap();
+        let names = outer_names(&fs::read(&output).unwrap());
+
+        // Clean up env vars
+        unsafe {
+            std::env::remove_var("CARGO_FEATURE_LANG_EN");
+            std::env::remove_var("CARGO_FEATURE_BRAILLE_NEMETH");
+        }
+
+        assert!(names.contains(&"Rules/Languages/en/en.zip".to_string()));
+        assert!(!names.contains(&"Rules/Languages/es/es.zip".to_string()));
+        assert!(names.contains(&"Rules/Braille/Nemeth/Nemeth.zip".to_string()));
+        assert!(!names.contains(&"Rules/Braille/French/French.zip".to_string()));
+    }
 }

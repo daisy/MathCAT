@@ -353,6 +353,24 @@ fn write_inner_zip(source_dir: &Path, inner: SimpleFileOptions) -> io::Result<Op
     return Ok(Some(cursor.into_inner()));
 }
 
+fn is_language_enabled(lang: &str) -> bool {
+    let has_any_lang_feature = std::env::vars().any(|(k, _)| k.starts_with("CARGO_FEATURE_LANG_") && k != "CARGO_FEATURE_LANG_ALL");
+    if !has_any_lang_feature || std::env::var("CARGO_FEATURE_LANG_ALL").is_ok() {
+        return true;
+    }
+    let feature_var = format!("CARGO_FEATURE_LANG_{}", lang.to_uppercase().replace('-', "_"));
+    return std::env::var(feature_var).is_ok();
+}
+
+fn is_braille_enabled(braille: &str) -> bool {
+    let has_any_braille_feature = std::env::vars().any(|(k, _)| k.starts_with("CARGO_FEATURE_BRAILLE_") && k != "CARGO_FEATURE_BRAILLE_ALL");
+    if !has_any_braille_feature || std::env::var("CARGO_FEATURE_BRAILLE_ALL").is_ok() {
+        return true;
+    }
+    let feature_var = format!("CARGO_FEATURE_BRAILLE_{}", braille.to_uppercase().replace('-', "_"));
+    return std::env::var(feature_var).is_ok();
+}
+
 /// Zip each immediate subdirectory of Languages/ or Braille/ into `<name>/<name>.zip`.
 fn zip_dir<W: Write + Seek>(
     rules_section: &Path,
@@ -360,6 +378,8 @@ fn zip_dir<W: Write + Seek>(
     inner: SimpleFileOptions,
     outer: SimpleFileOptions,
     archive_prefix: &Path,
+    is_languages: bool,
+    is_braille: bool,
 ) -> io::Result<()> {
     if !rules_section.is_dir() {
         return Ok(());
@@ -372,6 +392,12 @@ fn zip_dir<W: Write + Seek>(
         if entry_path.is_dir() {
             let dir_name = file_name_str(&entry_path)?;
             if dir_name == SKIP_LANGUAGE_DIR {
+                continue;
+            }
+            if is_languages && !is_language_enabled(&dir_name) {
+                continue;
+            }
+            if is_braille && !is_braille_enabled(&dir_name) {
                 continue;
             }
             if let Some(bytes) = write_inner_zip(&entry_path, inner)? {
@@ -439,6 +465,8 @@ pub fn write_rules_archive(
         inner,
         outer,
         &archive_root.join("Languages"),
+        true,
+        false,
     )?;
     zip_dir(
         &rules_dir.join("Braille"),
@@ -446,6 +474,8 @@ pub fn write_rules_archive(
         inner,
         outer,
         &archive_root.join("Braille"),
+        false,
+        true,
     )?;
 
     archive_zip.finish().map_err(io::Error::other)?;
