@@ -1,1 +1,34 @@
-/PythonScripts/  @moritz-gross
+# CODEOWNERS
+#
+# This file defines who should review pull requests that touch specific
+# parts of the codebase. On its own it does not enforce anything — GitHub
+# only requires these reviews when branch protection rules are turned on
+# for this repo. 
+
+# Default owner for anything not matched by a more specific rule below
+*                     @NSoiffer
+
+# Protects this CODEOWNERS file itself (and the rest of .github/, e.g.
+# CI workflows) so review requirements can't be changed without the
+# repo owner's review. 
+/.github/             @NSoiffer
+
+# Core Rust source
+/src/                 @NSoiffer
+
+# Files used by translation/localization contributors. These
+# generally do not affect overall functionality.
+/Rules/Languages/     @daisy/mathcat-translators
+/tests/Languages/     @daisy/mathcat-translators
+
+# Standalone Python tooling for braille/Nemeth/UEB conversion, the
+# translation audit tool, and other scripts outside the main Rust build
+/PythonScripts/       @moritz-gross
+
+# Other candidates for ownership we haven't assigned yet — add an
+# owner here once we know who:
+# /Rules/Braille/       — braille specialists
+# /tests/braille/       — braille specialists
+# /BrailleDocs/         — braille specialists / documentation
+# /docs/                — documentation contributors
+# /.github/workflows    - CI/infrastructure owner(s)
