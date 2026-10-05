@@ -85,7 +85,7 @@ fn ellipses_auto_start() -> Result<()> {
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-    test("de", "ClearSpeak", expr, "punkt punkt punkt komma negative 2 komma negative 1 komma 0")?;
+    test("de", "ClearSpeak", expr, "punkt punkt punkt komma minus 2 komma minus 1 komma 0")?;
     return Ok(());
 
 }
@@ -135,7 +135,7 @@ fn ellipses_auto_both() -> Result<()> {
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("de", "ClearSpeak_Ellipses", "Auto", expr,
-            "punkt punkt punkt komma negative 2 komma negative 1 komma 0 komma 1 komma 2 komma punkt punkt punkt")?;
+            "punkt punkt punkt komma minus 2 komma minus 1 komma 0 komma 1 komma 2 komma punkt punkt punkt")?;
             return Ok(());
 
 }
@@ -146,7 +146,7 @@ fn ellipses_and_so_on_start() -> Result<()> {
             <mi>…</mi><mo>,</mo>
             <mo>-</mo><mn>2</mn><mo>,</mo><mo>-</mo><mn>1</mn><mo>,</mo><mn>0</mn>
         </math>";
-        test_ClearSpeak("de", "ClearSpeak_Ellipses", "AndSoOn", expr, "punkt punkt punkt komma negative 2 komma negative 1 komma 0")?;
+        test_ClearSpeak("de", "ClearSpeak_Ellipses", "AndSoOn", expr, "punkt punkt punkt komma minus 2 komma minus 1 komma 0")?;
         return Ok(());
 
 }
@@ -196,7 +196,7 @@ fn ellipses_and_so_on_both() -> Result<()> {
             <mo>,</mo><mi>…</mi>
        </math>";
     test_ClearSpeak("de", "ClearSpeak_Ellipses", "AndSoOn", expr,
-            "punkt punkt punkt komma negative 2 komma negative 1 komma 0 komma 1 komma 2 komma punkt punkt punkt")?;
+            "punkt punkt punkt komma minus 2 komma minus 1 komma 0 komma 1 komma 2 komma punkt punkt punkt")?;
             return Ok(());
 
 }

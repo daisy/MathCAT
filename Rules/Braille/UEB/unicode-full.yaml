@@ -6,6 +6,7 @@
  - " ": [t: "W"]                # 0x202f
  - " ": [t: "W"]                # 0x205f
  - "﻿": [t: "W"]                # 0xfeff
+
  - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
  - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
  - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)

@@ -120,6 +120,24 @@ fn currency_symbol_precedes_amount() -> Result<()> {
     Ok(())
 }
 
+#[test]
+fn rpm_uses_singular_and_plural_forms() -> Result<()> {
+    // The unit name is singular only for a coefficient of exactly one.
+    test(
+        "de",
+        "SimpleSpeak",
+        r#"<math><mn>1</mn><mi intent=":unit">rpm</mi></math>"#,
+        "1 Umdrehung pro Minute",
+    )?;
+    test(
+        "de",
+        "SimpleSpeak",
+        r#"<math><mn>2</mn><mi intent=":unit">rpm</mi></math>"#,
+        "2 Umdrehungen pro Minute",
+    )?;
+    Ok(())
+}
+
 /*
 #[test]
 fn si_base_with_prefixes() -> Result<()> {

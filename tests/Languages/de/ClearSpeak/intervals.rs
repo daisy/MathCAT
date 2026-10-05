@@ -80,7 +80,7 @@ fn interval_negative_infinity_to_open_endpoint() -> Result<()> {
         "ClearSpeak_Paren",
         "Interval",
         expr,
-        "das Intervall negative unendlich bis d, nicht einschließlich d",
+        "das Intervall minus unendlich bis d, nicht einschließlich d",
     )
 }
 
@@ -96,7 +96,7 @@ fn interval_negative_infinity_to_closed_endpoint() -> Result<()> {
         "ClearSpeak_Paren",
         "Interval",
         expr,
-        "das Intervall negative unendlich bis d, einschließlich d",
+        "das Intervall minus unendlich bis d, einschließlich d",
     )
 }
 
@@ -144,6 +144,6 @@ fn interval_between_infinities_has_no_endpoint_qualifier() -> Result<()> {
         "ClearSpeak_Paren",
         "Interval",
         expr,
-        "das Intervall negative unendlich bis unendlich",
+        "das Intervall minus unendlich bis unendlich",
     )
 }
