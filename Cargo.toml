@@ -12,11 +12,20 @@ exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should ha
 
 
 [features]
+"default" = []
 "rule-coverage" = ["dep:serde_json"]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
+
+# Modular feature packaging for lightweight English fork
+"lang-en" = []
+"lang-all" = []
+"braille-nemeth" = []
+"braille-ueb" = []
+"braille-all" = []
+"english-minimal" = ["include-zip", "lang-en", "braille-nemeth", "braille-ueb"]
 
 
 [dependencies]
