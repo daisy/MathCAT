@@ -64,6 +64,7 @@ yaml-rust = "0.4"
 strum = { version = "0.28", features = ["derive"] }
 anyhow = "1.0.103"
 regex = "1.12.3"
+lazy-regex = "3.6.2"
 dirs = "7"
 bitflags = "2.11"
 phf = { version = "0.13", features = ["macros"] }
