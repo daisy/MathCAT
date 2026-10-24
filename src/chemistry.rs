@@ -1272,8 +1272,7 @@ fn is_order_ok(mrow: Element) -> bool {
                     has_c_h_o(&elements) ||
                     is_structural(&elements) ||
                     is_alphabetical(&elements) ||
-                    is_ordered_by_electronegativity(&elements) ||
-                    is_generalized_salt(&elements);
+                    is_ordered_by_electronegativity(&elements);
         }
     } else {
         return false;
@@ -1350,11 +1349,6 @@ fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     return elements.windows(2).all(|pair| {
         chemical_electronegativity(as_str!(pair[0])).unwrap() < chemical_electronegativity(as_str!(pair[1])).unwrap()
     });
-}
-
-fn is_generalized_salt(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.is_empty());
-    return false;
 }
 
 
