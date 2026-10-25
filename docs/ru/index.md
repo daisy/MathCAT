@@ -5,8 +5,7 @@ ref: index
 title: MathCAT
 ---
 # MathCAT: средство обеспечения доступности математики
-<img src="../logo.png" style="position: relative; top: 16px; z-index: -1;">
-— библиотека, которая преобразует MathML в:
+<img src="../logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> — библиотека, которая преобразует MathML в:
 
 * текст для озвучивания со встроенными командами синтезатора речи;
 * Брайль (код Немета, технический вариант UEB, а в дальнейшем и другие математические системы записи Брайля);

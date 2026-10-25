@@ -1684,12 +1684,12 @@ impl CanonicalizeContext {
 				return mathml;
 			} else if has_subscript {
 				set_mathml_name(mathml, "msub");
-				let children = vec!(children[0], children[1]);
+				let children = vec![children[0], children[1]];
 				mathml.replace_children(children);
 				return mathml;
 			} else if has_superscript {
 				set_mathml_name(mathml, "msup");
-				let children = vec!(children[0], children[2]);
+				let children = vec![children[0], children[2]];
 				mathml.replace_children(children);
 				return mathml;
 			} else {
@@ -1882,7 +1882,7 @@ impl CanonicalizeContext {
 			let close = close_raw.as_deref().unwrap_or(")").replace('>', "⟩");
 			// debug!("open={}, close={}", open, close);
 			let separators_raw = mfenced.attribute_value("separators");
-			let mut separators = separators_raw.as_deref().unwrap_or(",").chars();
+			let separators: Vec<char> = separators_raw.as_deref().unwrap_or(",").chars().filter(|ch| !ch.is_whitespace()).collect();
 			set_mathml_name(mfenced, "mrow");
 			mfenced.remove_attribute("open");
 			mfenced.remove_attribute("close");
@@ -1894,9 +1894,10 @@ impl CanonicalizeContext {
 			}
 			if !children.is_empty() {
 				new_children.push(children[0]);
-				for child in &children[1..] {
-					let sep = separators.next().unwrap_or(',').to_string();
-					new_children.push( ChildOfElement::Element( create_mo(mfenced.document(), &sep, MFENCED_ATTR_VALUE)) );
+				for (i, child) in children[1..].iter().enumerate() {
+					if let Some(&sep) = separators.get(i).or_else(|| separators.last()) {
+            		    new_children.push(ChildOfElement::Element( create_mo(mfenced.document(), &sep.to_string(), MFENCED_ATTR_VALUE)) );
+					}
 					new_children.push(*child);
 				}
 			}
@@ -2083,7 +2084,7 @@ impl CanonicalizeContext {
 		fn merge_number_blocks(context: &CanonicalizeContext, parent_mrow: Element, children: &mut Vec<ChildOfElement>) {
 			// debug!("parent:\n{}", mml_to_string(parent_mrow));
 			// If we find a comma that is not part of a number, don't form a number
-			//   (see https://github.com/NSoiffer/MathCAT/issues/271)
+			//   (see https://github.com/daisy/MathCAT/issues/271)
 			// Unfortunately, we can't do this in the loop below because we might discover the "not part of a number" after a number has been formed
 			let do_not_merge_comma = is_comma_not_part_of_a_number(children);
 			let mut i = 0;
@@ -2470,23 +2471,21 @@ impl CanonicalizeContext {
 			// This is not yet in canonical form, so the fences may be siblings or siblings of the parent 
 			let preceding_siblings = as_element(children[0]).preceding_siblings();
 			let following_siblings = as_element(children[end-1]).following_siblings();
-			let first_child;
-			let last_child;
-			if preceding_siblings.is_empty() && following_siblings.is_empty() {
+			
+			
+			let (first_child, last_child) = if preceding_siblings.is_empty() && following_siblings.is_empty() {
 				// number spans all children, look to parent for fences
 				let preceding_children = mrow.preceding_siblings();
 				let following_children = mrow.following_siblings();
 				if preceding_children.is_empty() || following_children.is_empty() {
 					return true;	// doesn't have left or right fence
 				}
-				first_child = preceding_children[preceding_children.len()-1];
-				last_child = following_children[0];
+				(preceding_children[preceding_children.len()-1], following_children[0])
 			} else if preceding_siblings.is_empty() || following_siblings.is_empty() {
 				return true; // can't be fences around it
 			} else {
-				first_child = preceding_siblings[preceding_siblings.len()-1];
-				last_child = following_siblings[0];
-			}
+				(preceding_siblings[preceding_siblings.len()-1], following_siblings[0])
+			};
 			let first_child = as_element(first_child);
 			let last_child = as_element(last_child);
 			return !(name(first_child) == "mo" && is_fence(first_child) &&
@@ -3534,6 +3533,7 @@ impl CanonicalizeContext {
 				"\u{02C9}"| "\u{0304}"| "\u{0305}" => "\u{00AF}",
 				"\u{02DC}" | "~"  => "\u{223C}",		// for base, use version with prefix and infix
 				"\u{01C1}" => "\u{2016}", // U+2016 is "‖"
+				"!!" => "\u{203C}", // U+203C is "‼" (double factorial)
 
 				_ => mo_text,
 			};
@@ -4557,7 +4557,9 @@ impl CanonicalizeContext {
 		// We essentially have 'terminator( mrow terminator)'
 		//   in other words, we have an extra mrow with one child due to the initial start -- remove it
 		let mut top_of_stack = parse_stack.pop().unwrap();
-		assert_eq!(parse_stack.len(), 0);
+		if !parse_stack.is_empty() {
+			bail!("Unbalanced fences:\n{}", mml_to_string(mrow));
+		}
 	
 		let mut parsed_mrow = top_of_stack.mrow;
 		assert_eq!( name(top_of_stack.mrow), "mrow");
@@ -4992,14 +4994,120 @@ mod canonicalize_tests {
 					<mi>y</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>;</mo>
-				<mrow data-changed='added'>
-					<mi>z</mi>
-					<mo data-changed='from_mfenced'>,</mo>
-					<mi>a</mi>
-				</mrow>
+				<mi>z</mi>
+				<mo data-changed='from_mfenced'>;</mo>
+				<mi>a</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_empty_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=''><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_repeat_last_separator() -> Result<()> {
+        let test_str = "<math><mfenced separators=';'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>z</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_separators_with_whitespace() -> Result<()> {
+        let test_str = "<math><mfenced separators='; ,'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mrow data-changed='added'>
+						<mi>y</mi>
+						<mo data-changed='from_mfenced'>,</mo>
+						<mi>z</mi>
+					</mrow>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_too_many_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=';,'><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_default_separator() -> Result<()> {
+        let test_str = "<math><mfenced><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>,</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_whitespace_only_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=' '><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
 		</math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])

@@ -287,10 +287,7 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| {
             let rules = rules.borrow();
             let pref_manager = rules.pref_manager.borrow();
-            let mut value = pref_manager.pref_to_string(&name);
-            if value == NO_PREFERENCE {
-                value = pref_manager.pref_to_string(&name);
-            }
+            let value = pref_manager.pref_to_string(&name);
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
             } else {
@@ -433,7 +430,7 @@ pub fn get_navigation_braille() -> Result<String> {
                                 Ok(found)
                             } else {
                                 let new_mathml = create_mathml_element(&new_doc, "math");
-                                new_mathml.append_child(copy_mathml(found));
+                                new_mathml.append_child(copy_mathml(found, new_doc));
                                 new_doc.root().append_child(new_mathml);
                                 Ok(new_mathml)
                             }
@@ -526,11 +523,10 @@ pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let command = command.as_ref().to_string();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-        if cmd.is_none() {
+        let Some(cmd) = NAV_COMMANDS.get_key(&command) else {   // gets a &'static version of the command.
             bail!("Unknown command in call to DoNavigateCommand()");
         };
-        let cmd = *cmd.unwrap();
+        let cmd = *cmd;
         MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -538,6 +534,28 @@ pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
         })
     }));
     return report_any_panic(result);
+}
+
+/// Preferences shared by navigation unit and integration tests.
+///
+/// Sets `PauseFactor` to 100 so local user prefs (e.g. AppData) cannot change
+/// TTS:None pause punctuation (`,` vs `;`) in goldens.
+/// `auto_zoom_out` is true for most `src/navigate.rs` tests and false for
+/// `tests/Languages/*/navigate.rs`.
+pub fn set_navigation_test_preferences(
+    language: impl AsRef<str>,
+    nav_mode: impl AsRef<str>,
+    auto_zoom_out: bool,
+) -> Result<()> {
+    set_preference("NavMode", nav_mode)?;
+    set_preference("NavVerbosity", "Verbose")?;
+    set_preference("AutoZoomOut", if auto_zoom_out { "True" } else { "False" })?;
+    set_preference("Language", language)?;
+    set_preference("SpeechStyle", "SimpleSpeak")?;
+    set_preference("Verbosity", "Medium")?;
+    set_preference("PauseFactor", "100")?;
+    set_preference("Overview", "False")?;
+    return Ok(());
 }
 
 /// Given an 'id' and an offset (for tokens), set the navigation node to that id.
@@ -684,23 +702,23 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 
 // utility functions
 
-/// Copy (recursively) the (MathML) element and return the new one.
-/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
-/// Convert the returned error from set_mathml, etc., to a useful string for display
-pub fn copy_mathml(mathml: Element) -> Element {
-    return copy_mathml_recursive(mathml, 0);
+/// Copy (recursively) the (MathML) element into `dest` and return the new one.
+/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy.
+/// Nodes are document-local (arena indexes with `no-unsafe`), so the copy must be created in `dest`.
+pub fn copy_mathml<'d>(mathml: Element<'_>, dest: Document<'d>) -> Element<'d> {
+    return copy_mathml_recursive(mathml, dest, 0);
 }
 
-fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+fn copy_mathml_recursive<'d>(mathml: Element<'_>, dest: Document<'d>, depth: usize) -> Element<'d> {
     // Safety: Prevent stack overflow on deeply nested MathML
     if depth > MAX_DEPTH {
         // Return the element as a leaf if it's too deep to prevent crash
-        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+        return create_mathml_element(&dest, as_str!(name(mathml)));
     }
 
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
-    let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+    let new_mathml = create_mathml_element(&dest, as_str!(name(mathml)));
     mathml.attributes().iter().for_each(|attr| {
         new_mathml.set_attribute_value(as_qname!(attr.name()), as_str!(attr.value()));
     });
@@ -715,7 +733,7 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml_recursive(child, depth + 1);
+        let new_child = copy_mathml_recursive(child, dest, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -1111,13 +1129,9 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
     return Ok(());
 
     /// compares attributes -- '==' didn't seems to work
-    fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
-        let attrs1 = attrs1.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
-        let attrs2 = attrs2.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
+    fn attrs_are_same(mut attrs1: Vec<Attribute>, mut attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
+        attrs1.retain(|a| !ignore.contains(&as_qname!(a.name()).local_part()));
+        attrs2.retain(|a| !ignore.contains(&as_qname!(a.name()).local_part()));
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
         }
@@ -1496,6 +1510,19 @@ mod tests {
             Ok::<(), Error>(())
         })?;
         return Ok(());
+        });
+    }
+
+    #[test]
+    fn navigation_braille_copies_focused_node_into_temporary_document() -> Result<()> {
+        return interface_test(|| {
+            set_rules_dir(super::super::abs_rules_dir_path())?;
+            set_preference("BrailleCode", "LaTeX")?;
+            set_mathml("<math><mi id='focused'>x</mi><mo>+</mo><mi>y</mi></math>")?;
+            set_navigation_node("focused", 0)?;
+
+            assert_eq!(get_navigation_braille()?, "x");
+            Ok(())
         });
     }
 }

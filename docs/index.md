@@ -1,6 +1,5 @@
 # MathCAT: Math Capable Assistive Technology
-<img src="logo.png" style="position: relative; top: 16px; z-index: -1;">
-is a library that supports conversion of MathML to:
+<img src="logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT."> is a library that supports conversion of MathML to:
 
 * Speech strings with embedded speech engine commands
 * Braille (Nemeth, UEB Technical, and eventually other braille math codes)
@@ -12,6 +11,10 @@ To do: incorporation of third party libraries to support a common subset of TeX 
 
 
 # Documentation for different MathCAT Users
+
+Watch the short explainer video below for an introduction to MathCAT.
+
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1228948748?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Introduction to MathCAT"></iframe></div>
 
 There are many different audiences for MathCAT and each audience has different interests/needs. Please see the following documentation for details based on your needs:
 * AT users: [information about preferences you can set](users.md)
@@ -174,13 +177,14 @@ Translators:
 * Finnish -- Sami Määttä (Accessibility Library Celia), and Essi Viippola (freelancer)
 * French -- Olivier Thiffault (Technologies Humanware)
 * German -- Nazli Andjic, Robert Graf and Paul Libbrecht (IU International University of Applied Sciences), and Moritz Groß (Math4VIP, Marburg University)
+* Greek -- Theodora Antonakopoulou and Paraskevi Riga (National and Kapodistrian University of Athens)
 * Hungarian -- Attila Hammer (IT Foundation for the Visually Impaired)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
-* Norwegian -- Marthe Gjelstad (National Library of Norway), Kvile
+* Norwegian -- Marthe Gjelstad (National Library of Norway) and Kvile
 * Polish -- Michał Dziwisz (Fundacja Instytut Rozwoju Regionalnego)
 * Russian (both speech and braille) -- Danil Kostenkov
 * Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development) and María Allo Roldán
-* Swedish -- Tim Arborealis Lötberg (MTM), and Anders Eklund (SPSM)
+* Swedish -- Tim Arborealis Lötberg (MTM) and Anders Eklund (SPSM)
 * Vietnamese -- Dang Hoai Phúc and Trang Pham
 * Others??? -- please volunteer so I can list you here...
 

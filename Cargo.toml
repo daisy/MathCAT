@@ -1,21 +1,59 @@
 [package]
 name = "mathcat"
-version = "0.7.7-alpha.1"
+version = "0.7.8-alpha"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
-repository = "https://github.com/NSoiffer/MathCAT"
-homepage = "https://nsoiffer.github.io/MathCAT/"
-documentation = "https://nsoiffer.github.io/MathCAT/"
+repository = "https://github.com/daisy/MathCAT"
+homepage = "https://daisy.github.io/MathCAT/"
+documentation = "https://daisy.github.io/MathCAT/"
 edition = "2024"
 exclude = ["src/main.rs", "docs", "BrailleDocs", "PythonScripts"]    # should have "Rules/", but then one can't run build.rs to build the zip file
 
 
 [features]
+default = ["rules-all"]
+"rule-coverage" = ["dep:serde_json"]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "tts" = [ "natural-tts" ]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
+
+# Which Rules/Languages and Rules/Braille directories `include-zip` embeds. Every one is on by default.
+# To embed fewer, turn off default features and name the ones you want, for example
+# `default-features = false, features = ["include-zip", "lang-en", "braille-ueb"]`.
+# `en` is always embedded because the library falls back to it, and `build.rs` fails if a rules
+# directory has no feature here or is missing from `lang-all` / `braille-all`.
+# MathCAT itself never asks for ASCIIMath or LaTeX, but an application that copies math in those
+# notations does so through the braille API, so it needs `braille-asciimath` / `braille-latex`.
+# These only change what is embedded: without `include-zip`, the Rules directory is read from disk.
+rules-all = ["lang-all", "braille-all"]
+lang-all = ["lang-de", "lang-el", "lang-en", "lang-es", "lang-fi", "lang-fr", "lang-hu", "lang-id", "lang-nb", "lang-pl", "lang-pt", "lang-ru", "lang-sv", "lang-vi", "lang-zh"]
+braille-all = ["braille-asciimath", "braille-cmu", "braille-french", "braille-latex", "braille-nemeth", "braille-russian", "braille-swedish", "braille-ueb", "braille-vietnam"]
+lang-de = []
+lang-el = []
+lang-en = []
+lang-es = []
+lang-fi = []
+lang-fr = []
+lang-hu = []
+lang-id = []
+lang-nb = []
+lang-pl = []
+lang-pt = []
+lang-ru = []
+lang-sv = []
+lang-vi = []
+lang-zh = []
+braille-asciimath = []
+braille-cmu = []
+braille-french = []
+braille-latex = []
+braille-nemeth = []
+braille-russian = []
+braille-swedish = []
+braille-ueb = []
+braille-vietnam = []
 
 
 [dependencies]
@@ -24,9 +62,9 @@ sxd-xpath-no-unsafe = "0.5.1"
 yaml-rust = "0.4"
 # yaml-rust = { version = "0.11", package = "yaml-rust2" }
 strum = { version = "0.28", features = ["derive"] }
-anyhow = "1.0"
+anyhow = "1.0.103"
 regex = "1.12.3"
-dirs = "6.0"
+dirs = "7"
 bitflags = "2.11"
 phf = { version = "0.13", features = ["macros"] }
 roman-numerals-rs = "4.1.0"
@@ -38,11 +76,13 @@ cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
+serde_json = { version = "1.0", optional = true }
+elements_rs = { version = "0.2.8", default-features = false }
 
 # Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
 # writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.
-# wasm uses the same features: zip 8.x bzip2 is pure Rust (libbz2-rs-sys), not clang C.
-zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
+# wasm uses the same features: zip 9.x bzip2 is pure Rust (libbz2-rs-sys), not clang C.
+zip = { version = "9.0", default-features = false, features = ["deflate", "bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
 natural-tts = { version = "0.3.1", optional = true }
@@ -50,7 +90,7 @@ natural-tts = { version = "0.3.1", optional = true }
 [build-dependencies]
 bitflags = "2.6"
 yaml-rust = "0.4"
-zip = { version = "8.2", default-features = false, features = ["deflate", "bzip2"] }
+zip = { version = "9.0", default-features = false, features = ["deflate", "bzip2"] }
 
 [dev-dependencies]
 tempfile = "3.23"

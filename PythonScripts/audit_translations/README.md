@@ -10,9 +10,11 @@ The tool analyzes rule files to detect the following issues:
 * **Extra Rules:** Rules present in the target translation but absent in the source (flagged as potentially intentional language-specific additions).
 * **Untranslated Text:** Detects text keys that still use **lowercase** formatting, indicating they haven't been verified or translated yet.
 * **Rule Differences:** Structural changes (match expressions, conditions, variables, or test/replace layout) between the source and target translation.
+* **Rule Order:** After the summary, reports the first differing position of shared named rules in each affected file. Missing, extra, and `# audit-ignore` rules do not shift the comparison. Include entries are not checked.
 * **Definition Coverage:** Compares literal `definitions.yaml` entries by name and collection kind (`vector`, `set`, or `map`).
 
-Add `# audit-ignore` to a rule block to suppress auditing that rule.
+After a blank line, add `# audit-ignore` immediately before a rule to suppress
+auditing that rule. Existing markers inside a rule block are also supported.
 
 ---
 
@@ -65,11 +67,13 @@ The tool automatically adjusts its matching logic based on the file type:
 uv run audit-translations <language> [--file <specific_file>]
 uv run audit-translations <language> --source <source-language>
 uv run audit-translations --list
+uv run audit-translations --rule-coverage
 
 # If running from the repo root, point uv at the project:
 uv run --project PythonScripts audit-translations <language>
 uv run --project PythonScripts audit-translations <language> --source <source-language>
 uv run --project PythonScripts audit-translations --list
+uv run --project PythonScripts audit-translations --rule-coverage
 ```
 
 **Convenience Features:**
@@ -77,10 +81,10 @@ uv run --project PythonScripts audit-translations --list
   * Region variants are shown as `lang-region` (e.g., `zz-aa`) based on subdirectories under `Rules/Languages/<lang>`.
 * `--source`: Sets the source/reference language. Defaults to `en`.
 * `--file`: Audits a single specific file instead of the whole directory.
-* `--exclude`: Exclude one or more files from the audit.
 * `--rules-dir`: Override the Rules/Languages directory path.
 * `--only`: Filter issue types (comma-separated): `missing`, `untranslated`, `extra`, `diffs`, `all`.
 * `--verbose`: Show detailed output including source/target snippets for rule differences.
+* `--rule-coverage`: Run the full Rust test suite, generate file- and rule-level pattern coverage under `target/rule-coverage/`, and open the HTML report. File coverage includes files with active rules; empty and include-only files are not separate coverage targets. Expand a file to inspect matched and unmatched rules by name and tag, their hit counts, and hover over a rule to see the tests that matched it. Coverage fractions include percentages. This runs independently of a language audit.
 * **Summary Stats:** Provides a statistical summary after every run.
 
 **Examples:**
@@ -101,16 +105,8 @@ uv run audit-translations de
 # Compare Norwegian Bokmal against Swedish instead of English
 uv run audit-translations nb --source sv
 
-# Audit only a specific file (note: --file is incompatible with --exclude)
-uv run audit-translations es --file ClearSpeak_Rules.yaml
+# Audit only a specific file
 uv run audit-translations es --file SharedRules/default.yaml
-
-# Exclude a list of files from the audit, note that if you use this option before specifying the
-# target language you'll need to use the option terminator (--).
-# (note: --exclude is incompatible with --file)
-uv run audit-translations es --exclude unicode-full.yaml
-uv run audit-translations es --exclude unicode-full.yaml unicode.yaml
-uv run audit-translations --exclude unicode-full.yaml -- es
 
 # Audit a regional variant (merges Rules/Languages/de and Rules/Languages/de/CH)
 uv run audit-translations de-CH
