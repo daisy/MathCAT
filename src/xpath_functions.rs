@@ -1314,7 +1314,7 @@ impl Function for GetNavigationPartName {
 /// Converts a MathML length (e.g. "0.278em", "12pt", "thinspace") to an estimated size in ems, assuming a 12-point font.
 pub(crate) fn em_from_value(value_with_unit: &str) -> f64 {
     // match one or more digits followed by a unit -- there are many more units, but they tend to be large and rarer(?)
-    static FONT_VALUE: LazyLock<Regex> = LazyLock::new(|| { Regex::new(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|pc|pt|ex|em|rem)").unwrap() });
+    static FONT_VALUE: Lazy<Regex> = lazy_regex!(r"(-?[0-9]*\.?[0-9]*)(px|cm|mm|Q|in|pc|pt|ex|em|rem)");
     let cap = FONT_VALUE.captures(value_with_unit);
     if let Some(cap) = cap {
         if cap.len() == 3 {
