@@ -1252,6 +1252,7 @@ fn likely_chem_formula(mathml: Element) -> i32 {
 ///   there are cases where the outer ordering doesn't match the inner ordering.
 /// For "generalized salts", we need to split the elements into positive and negative ions, and within each group
 ///   the order is suppose to be alphabetical but many use electronegativity (the point being there are two separate groups).
+///   The implementation looks like it will be complicated, so at least for now, we don't check that.
 /// This site has a nice summary of the rules: https://chemistry.stackexchange.com/questions/537/why-is-arsenous-acid-denoted-h3aso3/538#538
 /// Note: "(OH)" doesn't fit with the above, and Susan Jolly suggests allowing any sequence that ends with H, so we allow that.
 /// Also, Susan Jolly suggested allowing any compound with C, H, and O
@@ -1272,8 +1273,7 @@ fn is_order_ok(mrow: Element) -> bool {
                     has_c_h_o(&elements) ||
                     is_structural(&elements) ||
                     is_alphabetical(&elements) ||
-                    is_ordered_by_electronegativity(&elements) ||
-                    is_generalized_salt(&elements);
+                    is_ordered_by_electronegativity(&elements);
         }
     } else {
         return false;
@@ -1350,11 +1350,6 @@ fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     return elements.windows(2).all(|pair| {
         chemical_electronegativity(as_str!(pair[0])).unwrap() < chemical_electronegativity(as_str!(pair[1])).unwrap()
     });
-}
-
-fn is_generalized_salt(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.is_empty());
-    return false;
 }
 
 

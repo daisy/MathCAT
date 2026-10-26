@@ -391,42 +391,36 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             const LOOP_LIMIT: usize = 3;
             let mut cumulative_speech = String::with_capacity(120);
             for loop_count in 0..LOOP_LIMIT {
-                match apply_navigation_rules(mathml, nav_command, &rules, &mut rules_with_context, &mut nav_state, loop_count) {
-                    Ok( (speech, done)) => {
-                        cumulative_speech = cumulative_speech + if loop_count==0 {""} else {" "} + speech.trim();
-                        if done {
-                            let (tts, rate) = {
-                                let prefs = rules.pref_manager.borrow();
-                                (prefs.get_tts(), prefs.pref_to_string("MathRate"))
-                            };
-                            if rate != "100" {
-                                match tts {
-                                    TTS::SSML
-                                        if !cumulative_speech.starts_with("<prosody rate") => {
-                                            cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
-                                        }
-                                    TTS::SAPI5
-                                        if !cumulative_speech.starts_with("<rate speed") => {
-                                            cumulative_speech = format!(
-                                                "<rate speed='{:.1}'>{}</rate>",
-                                                10.0 * (0.01 * rate.parse::<f32>().unwrap_or(100.0)).log(3.0),
-                                                cumulative_speech
-                                            );
-                                        }
-                                    _ => (),  // do nothing
+                let (speech, done) = apply_navigation_rules(mathml, nav_command, &rules, &mut rules_with_context, &mut nav_state, loop_count)?;
+                cumulative_speech = cumulative_speech + if loop_count==0 {""} else {" "} + speech.trim();
+                if done {
+                    let (tts, rate) = {
+                        let prefs = rules.pref_manager.borrow();
+                        (prefs.get_tts(), prefs.pref_to_string("MathRate"))
+                    };
+                    if rate != "100" {
+                        match tts {
+                            TTS::SSML
+                                if !cumulative_speech.starts_with("<prosody rate") => {
+                                    cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
                                 }
-                            }
-                                                return Ok( rules.pref_manager.borrow().get_tts()
-                                            .merge_pauses(crate::speech::remove_optional_indicators(
-                                                &cumulative_speech.replace(CONCAT_STRING, "")
-                                                                    .replace(CONCAT_INDICATOR, "")                            
-                                                            )
-                                            .trim_start().trim_end_matches([' ', ',', ';'])) );
+                            TTS::SAPI5
+                                if !cumulative_speech.starts_with("<rate speed") => {
+                                    cumulative_speech = format!(
+                                        "<rate speed='{:.1}'>{}</rate>",
+                                        10.0 * (0.01 * rate.parse::<f32>().unwrap_or(100.0)).log(3.0),
+                                        cumulative_speech
+                                    );
+                                }
+                            _ => (),  // do nothing
                         }
-                    },
-                    Err(e) => {
-                        return Err(e);
                     }
+                    return Ok( rules.pref_manager.borrow().get_tts()
+                                .merge_pauses(crate::speech::remove_optional_indicators(
+                                    &cumulative_speech.replace(CONCAT_STRING, "")
+                                                        .replace(CONCAT_INDICATOR, "")
+                                                )
+                                .trim_start().trim_end_matches([' ', ',', ';'])) );
                 }
             }
             bail!("Internal error: Navigation exceeded limit of number of times no speech generated
@@ -631,15 +625,10 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             return;
         }
         let top_entry = nav_state.pop().unwrap();
-        let mut count = count - 1;
-        loop {
-            // debug!("  ... loop count={}", count);
+        for _i in 0..count {
+			// debug!("  ... loop count={}", count - 1 - _i);
             nav_state.pop();
-            if count == 0 {
-                break;
-            };
-            count -= 1;
-        };
+        }
         if push_command_on_stack {
             nav_state.push(top_entry.position, top_entry.command);
         }
@@ -741,42 +730,14 @@ enum NavigationParam {
 }
 
 
-fn choose_command(
-	shift_key: bool,
-	control_key: bool,
-	none: NavigationCommand,
-	shift: NavigationCommand,
-	control: NavigationCommand,
-	shift_control: NavigationCommand
-) -> NavigationCommand {
-	   if shift_key && control_key {
-		return shift_control;
-    } else if control_key {
-        return control;
-    } else if shift_key {
-		return shift;
-	} else {
-		return none;
-    }
-}
-
-fn choose_param(
-	shift_key: bool,
-	control_key: bool,
-	none: NavigationParam,
-	shift: NavigationParam,
-	control: NavigationParam,
-	shift_control: NavigationParam
-) -> NavigationParam {
-    if shift_key && control_key {
-		return shift_control;
-    } else if control_key {
-        return control;
-    } else if shift_key {
-		return shift;
-	} else {
-		return none;
-    }
+/// Returns one of four values (a `NavigationCommand` or `NavigationParam`) depending on which of Shift/Ctrl are held.
+fn choose<T>(shift_key: bool, control_key: bool, none: T, shift: T, control: T, shift_control: T) -> T {
+    return match (shift_key, control_key) {
+        (true, true) => shift_control,
+        (false, true) => control,
+        (true, false) => shift,
+        (false, false) => none,
+    };
 }
 
 fn key_press_to_command_and_param(
@@ -790,7 +751,7 @@ fn key_press_to_command_and_param(
 	// for now, we build in the defaults
 
     // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/daisy/MathCAT/issues/105)
-    // if this change sticks, choose_command() needs to be changed and this hack should go away
+    // if this change sticks, choose() needs to be changed and this hack should go away
     let mut alt_key = alt_key;
     if alt_key && control_key && [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN].contains(&key) {
         alt_key = false;
@@ -803,37 +764,37 @@ fn key_press_to_command_and_param(
     let param;
 	match key {
         VK_LEFT => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move,   NavigationCommand::Read,	NavigationCommand::Move,	   NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous, NavigationParam::Previous, NavigationParam::CellPrevious, NavigationParam::Previous);
+            command = choose(shift_key, control_key, NavigationCommand::Move,   NavigationCommand::Read,	NavigationCommand::Move,	   NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Previous, NavigationParam::Previous, NavigationParam::CellPrevious, NavigationParam::Previous);
             },
         VK_RIGHT => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move,	NavigationCommand::Read, NavigationCommand::Move,	  NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Next, NavigationParam::Next, NavigationParam::CellNext, NavigationParam::Next);
+            command = choose(shift_key, control_key, NavigationCommand::Move,	NavigationCommand::Read, NavigationCommand::Move,	  NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Next, NavigationParam::Next, NavigationParam::CellNext, NavigationParam::Next);
             },
         VK_UP => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Zoom,      NavigationCommand::ChangeNavMode, NavigationCommand::Move,   NavigationCommand::Zoom);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous,  NavigationParam::Previous,      NavigationParam::CellUp, NavigationParam::Start);
+            command = choose(shift_key, control_key, NavigationCommand::Zoom,      NavigationCommand::ChangeNavMode, NavigationCommand::Move,   NavigationCommand::Zoom);
+            param =   choose(shift_key, control_key, NavigationParam::Previous,  NavigationParam::Previous,      NavigationParam::CellUp, NavigationParam::Start);
             },
         VK_DOWN => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Zoom, NavigationCommand::ChangeNavMode, NavigationCommand::Move,     NavigationCommand::Zoom);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Next, NavigationParam::Next,          NavigationParam::CellDown, NavigationParam::End);
+            command = choose(shift_key, control_key, NavigationCommand::Zoom, NavigationCommand::ChangeNavMode, NavigationCommand::Move,     NavigationCommand::Zoom);
+            param =   choose(shift_key, control_key, NavigationParam::Next, NavigationParam::Next,          NavigationParam::CellDown, NavigationParam::End);
             },
         VK_RETURN => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Locate,  NavigationCommand::Last, NavigationCommand::Locate, NavigationCommand::Last);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous,NavigationParam::Last, NavigationParam::Last,    NavigationParam::Last);
+            command = choose(shift_key, control_key, NavigationCommand::Locate,  NavigationCommand::Last, NavigationCommand::Locate, NavigationCommand::Last);
+            param =   choose(shift_key, control_key, NavigationParam::Previous,NavigationParam::Last, NavigationParam::Last,    NavigationParam::Last);
             },
         VK_SPACE => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Read,		NavigationCommand::ToggleSpeakMode,    NavigationCommand::Read,        NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Current, NavigationParam::Last,                NavigationParam::CellCurrent, NavigationParam::Current);
+            command = choose(shift_key, control_key, NavigationCommand::Read,		NavigationCommand::ToggleSpeakMode,    NavigationCommand::Read,        NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Current, NavigationParam::Last,                NavigationParam::CellCurrent, NavigationParam::Current);
             },
     
         VK_HOME => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,	   NavigationCommand::Move,      NavigationCommand::ReadTo);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Start,NavigationParam::ColStart, NavigationParam::LineStart, NavigationParam::Start);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,	   NavigationCommand::Move,      NavigationCommand::ReadTo);
+            param =   choose(shift_key, control_key, NavigationParam::Start,NavigationParam::ColStart, NavigationParam::LineStart, NavigationParam::Start);
             },
         VK_END => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,   NavigationCommand::Move,    NavigationCommand::ReadTo);
-            param =   choose_param(  shift_key, control_key, NavigationParam::End,  NavigationParam::ColEnd, NavigationParam::LineEnd, NavigationParam::End);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,   NavigationCommand::Move,    NavigationCommand::ReadTo);
+            param =   choose(shift_key, control_key, NavigationParam::End,  NavigationParam::ColEnd, NavigationParam::LineEnd, NavigationParam::End);
             },
         VK_BACK => {
             command = NavigationCommand::MoveLastLocation;
@@ -844,7 +805,7 @@ fn key_press_to_command_and_param(
             param = NavigationParam::Last;
             },
         0x30..=0x39 => {  // '0' ... '9'
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Read, NavigationCommand::SetPlacemarker, NavigationCommand::Describe);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Read, NavigationCommand::SetPlacemarker, NavigationCommand::Describe);
             static PLACE_MARKER: &[NavigationParam] = &[
                 NavigationParam::Placemarker0,
                 NavigationParam::Placemarker1,
