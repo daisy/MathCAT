@@ -67,7 +67,7 @@ regex = "1.12.3"
 lazy-regex = "3.6.2"
 dirs = "7"
 bitflags = "2.11"
-phf = { version = "0.13", features = ["macros"] }
+phf = { version = "0.14", features = ["macros"] }
 roman-numerals-rs = "4.1.0"
 radix_fmt = "1.0"
 unicode-script = "0.5"
