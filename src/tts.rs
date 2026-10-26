@@ -76,8 +76,8 @@ use crate::speech::{RulesFor, SpeechRulesWithContext, MyXPath, TreeOrString};
 use std::string::ToString;
 use std::str::FromStr;
 use strum::{Display, EnumString};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
-use std::sync::LazyLock;
 use sxd_xpath_no_unsafe::Value;
 use html_escape::encode_safe;
 
@@ -234,18 +234,13 @@ pub enum TTS {
 /// Applies only when generating speech (not braille) with SSML or SAPI5 output.
 /// Returns `s` unchanged when no escaping is needed (no allocation).
 pub fn escape_string_for_safety(s: String, rules_for: RulesFor, tts: &TTS) -> String {
-    if rules_for == RulesFor::Braille || (*tts != TTS::SSML && *tts != TTS::SAPI5) {
-        return s;
-    }
-    if !needs_xml_text_escape(&s) {
+    if rules_for == RulesFor::Braille ||
+       (*tts != TTS::SSML && *tts != TTS::SAPI5) ||
+       !s.contains(['&', '<', '>', '"']) {   // no XML text escape needed
         return s;
     }
     log::debug!("Escaping string for safety: {}", s);
     return encode_safe(&s).into_owned();
-}
-
-fn needs_xml_text_escape(s: &str) -> bool {
-    return s.as_bytes().iter().any(|&b| b == b'&' || b == b'<' || b == b'>' || b == b'"');
 }
 
 impl TTS {
@@ -636,7 +631,7 @@ impl TTS {
     /// The computation is based on the length of the speech strings (after removing tagging).
     /// There is a bias towards pausing more _after_ longer strings.
     pub fn compute_auto_pause(&self, prefs: &PreferenceManager, before: &str, after: &str) -> Result<String> {
-        static REMOVE_XML: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<.+?>").unwrap()); // punctuation ending with a '.'
+        static REMOVE_XML: Lazy<Regex> = lazy_regex!(r"<.+?>"); // punctuation ending with a '.'
         
         
         let (before_len, after_len) = match self {
@@ -685,8 +680,8 @@ impl TTS {
 
     fn merge_pauses_none(&self, str: &str) -> String {
         // punctuation used for pauses is ",", ";" 
-        static SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+([;,])").unwrap()); // two or more pauses
-        static MULTIPLE_PAUSES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([,;][,;]+)").unwrap()); // two or more pauses
+        static SPACES: Lazy<Regex> = lazy_regex!(r"\s+([;,])"); // two or more pauses
+        static MULTIPLE_PAUSES: Lazy<Regex> = lazy_regex!(r"([,;][,;]+)"); // two or more pauses
         // we reduce all sequences of two or more pauses to a single medium pause
         let merges_string = SPACES.replace_all(str, "$1").to_string();
         let merges_string = MULTIPLE_PAUSES.replace_all(&merges_string, ";").to_string();
@@ -710,15 +705,15 @@ impl TTS {
     }
 
     fn merge_pauses_sapi5(&self, str: &str) -> String {
-        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<silence msec[^>]+?> *){2,}").unwrap()); // two or more pauses
-        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"msec=.*?(\d+)").unwrap()); // amount after 'time'
+        static CONSECUTIVE_BREAKS: Lazy<Regex> = lazy_regex!(r"(<silence msec[^>]+?> *){2,}"); // two or more pauses
+        static PAUSE_AMOUNT: Lazy<Regex> = lazy_regex!(r"msec=.*?(\d+)"); // amount after 'time'
         let replacement = |amount: usize| format!("<silence msec=='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }
 
     fn merge_pauses_ssml(&self, str: &str) -> String {
-        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<break time=[^>]+?> *){2,}").unwrap()); // two or more pauses
-        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"time=.*?(\d+)").unwrap()); // amount after 'time'
+        static CONSECUTIVE_BREAKS: Lazy<Regex> = lazy_regex!(r"(<break time=[^>]+?> *){2,}"); // two or more pauses
+        static PAUSE_AMOUNT: Lazy<Regex> = lazy_regex!(r"time=.*?(\d+)"); // amount after 'time'
         let replacement = |amount: usize| format!("<break time='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }

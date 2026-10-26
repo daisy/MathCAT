@@ -42,6 +42,7 @@ use crate::canonicalize::*;
 use crate::canonicalize::NameStr;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use crate::xpath_functions::IsBracketed;
 use phf::{phf_map, phf_set};
@@ -51,7 +52,6 @@ use log::{error, debug};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 use crate::errors::*;
-use std::sync::LazyLock;
 use elements_rs::{
     AtomicNumber, Electronegativity, Element as PeriodicElement, ElementCategory,
     ElementClassification,
@@ -1018,8 +1018,8 @@ fn likely_chem_superscript(sup: Element) -> i32 {
     // bullet is radical (en.wikipedia.org/wiki/Radical_(chemistry)#Depiction_in_chemical_reactions); mhchem uses dot operator
     //  these can stand alone, be followed by +/- or have a number in front "(2•)-"" [examples from mhchem documentation]
     // roman numerals are "oxidation state" and range from -4 to +9
-    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$").unwrap());
-    static SINGLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[+-\U{2212}⋅∙•]$").unwrap());
+    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$");
+    static SINGLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^[+-\U{2212}⋅∙•]$");
     static DOTS: &[char; 3] = &['⋅', '∙', '•'];
     let sup_name = name(sup);
     if sup_name == "mo" && MULTIPLE_PLUS_OR_MINUS_OR_DOT.is_match(as_str!(as_text(sup))) {
@@ -1686,7 +1686,7 @@ fn is_equilibrium_constant(mut mathml: Element) -> bool {
 
 // Oxidation states range from -4 to 9 and are written with (a subset of) roman numerals.
 // All instances seem to be upper case that I've seen.
-static SMALL_UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^(IX|IV|V?I{0,3})\s*$").unwrap());
+static SMALL_UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^(IX|IV|V?I{0,3})\s*$");
 
 /// look for "(s)", "(l)", "(g)", "(aq)", "(eau)" (could also use [...])
 /// this might be called before canonicalization, but in clean_chemistry_mrow, we made sure "( xxx )" is grouped properly

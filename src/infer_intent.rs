@@ -12,9 +12,9 @@ use crate::speech::SpeechRulesWithContext;
 use crate::canonicalize::{as_element, as_text, name, create_mathml_element, set_mathml_name, INTENT_ATTR, MATHML_FROM_NAME_ATTR};
 use crate::errors::*;
 use std::fmt;
-use std::sync::LazyLock;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::is_leaf;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use phf::phf_set;
 #[allow(unused_imports)]
@@ -451,19 +451,10 @@ fn function_application_word() -> String {
 //  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
 // NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
 //   We follow NC_NAME for the basic latin block, but then allow everything
-static CONCEPT_OR_LITERAL: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
-    ).unwrap()
-});
-static PROPERTY: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
-    ).unwrap()
-});
-static ARG_REF: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
-    ).unwrap()
-});
-static NUMBER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap());
+static CONCEPT_OR_LITERAL: Lazy<Regex> = lazy_regex!(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);     // NC_NAME but simpler
+static PROPERTY: Lazy<Regex> = lazy_regex!(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);    // : NC_NAME
+static ARG_REF: Lazy<Regex> = lazy_regex!(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);   // $ NC_NAME
+static NUMBER: Lazy<Regex> = lazy_regex!(r#"^-?[0-9]+(\.[0-9]+)?"#);
 
 static TERMINALS_AS_U8: [u8; 3] = *b"(,)";
 // static TERMINALS: [char; 3] = ['(', ',',')'];

@@ -22,6 +22,7 @@ use phf::{phf_map, phf_set};
 use crate::xpath_functions::{IsBracketed, is_leaf, IsNode};
 use std::ptr::eq as ptr_eq;
 use crate::pretty_print::*;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use std::fmt;
 use std::marker::PhantomData;
@@ -110,7 +111,7 @@ static ILLEGAL_OPERATOR_INFO: OperatorInfo = OperatorInfo{
 static EQUAL_PRIORITY: LazyLock<usize> = LazyLock::new(|| OPERATORS.get("=").unwrap().priority);
 
 // useful for detecting whitespace
-static IS_WHITESPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s+$").unwrap());    // only Unicode whitespace
+static IS_WHITESPACE: Lazy<Regex> = lazy_regex!(r"^\s+$");    // only Unicode whitespace
 
 // Operators are either PREFIX, INFIX, or POSTFIX, but can also have other properties such as LEFT_FENCE
 bitflags! {
@@ -462,8 +463,8 @@ static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
 
 // turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
 // two cases because we don't want to have a match for 'Cl', etc.
-static UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$").unwrap());
-static LOWER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$").unwrap());
+static UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$");
+static LOWER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$");
 
 
 struct CanonicalizeContextPatterns {
@@ -764,10 +765,10 @@ impl CanonicalizeContext {
 	/// Returns 'None' if the element should not be in the tree.
 	fn clean_mathml<'a>(&self, mathml: Element<'a>) -> Option<Element<'a>> {
 		// Note: this works bottom-up (clean the children first, then this element)
-		static IS_PRIME: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"['′″‴⁗]").unwrap());
+		static IS_PRIME: Lazy<Regex> = lazy_regex!(r"['′″‴⁗]");
 
 		// Note: including intervening spaces in what is likely a symbol of omission preserves any notion of separate digits (e.g., "_ _ _")
-		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
+		static IS_UNDERSCORE: Lazy<Regex> = lazy_regex!(r"^[_\u{00A0}]+$");
 
 			
 		fn is_currency_symbol(ch: char) -> bool {
@@ -1504,7 +1505,7 @@ impl CanonicalizeContext {
 
 		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
 		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
-			static IS_DEGREES_C_OR_F: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[°º][CF]").unwrap());
+			static IS_DEGREES_C_OR_F: Lazy<Regex> = lazy_regex!(r"[°º][CF]");
 
 			let text = as_text(mi);
 			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
@@ -2195,7 +2196,7 @@ impl CanonicalizeContext {
 		/// under some specific conditions (trying to be a little cautious).
 		/// The returned (mrow) element reuses the arg so tree siblings links remain correct.
 		fn split_points(leaf: Element) -> Option<Element> {
-			static IS_UPPERCASE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[A-Z]+$").unwrap());
+			static IS_UPPERCASE: Lazy<Regex> = lazy_regex!(r"^[A-Z]+$");
 
 			if !IS_UPPERCASE.is_match(as_str!(as_text(leaf))) {
 				return None;
