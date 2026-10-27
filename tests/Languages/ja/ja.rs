@@ -676,6 +676,14 @@ fn unicode_full_symbol_names() -> Result<()> {
     return Ok(());
 }
 
+/// main reads a∶b as the function intent ratio(a, b); ja gives it a name and glue word.
+#[test]
+fn ratio_as_function() -> Result<()> {
+    let expr = "<math><mi>a</mi><mo>&#x2236;</mo><mi>b</mi></math>";
+    test("ja", "ClearSpeak", expr, "比 オブ a 対 b")?;
+    return Ok(());
+}
+
 /// Set-theory names. セット/空のセット are the loanword for a set of objects; the
 /// mathematical term is 集合.
 #[test]
