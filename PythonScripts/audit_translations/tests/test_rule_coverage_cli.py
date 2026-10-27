@@ -1,8 +1,8 @@
 """Checks the rule coverage command without rerunning the Rust test suite."""
 
 import json
-import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -10,6 +10,28 @@ import pytest
 from .. import cli
 from ..rulecoverage import rule_coverage
 from ..rulecoverage.rule_coverage_report import render_html
+
+LIST_COMMAND = [*rule_coverage.COMMAND, "--", "--list"]
+
+
+def fake_popen(run_cargo: Callable[..., tuple[int, list[str]]]) -> type:
+    """Stand in for `subprocess.Popen`, replaying `(exit status, output lines)` from `run_cargo(command, **kwargs)`."""
+
+    class FakeProcess:
+        def __init__(self, command: list[str], **kwargs: object) -> None:
+            self.returncode, lines = run_cargo(command, **kwargs)
+            self.stdout = iter(line + "\n" for line in lines)
+
+        def __enter__(self) -> FakeProcess:
+            return self
+
+        def __exit__(self, *exc_info: object) -> None:
+            pass
+
+        def wait(self) -> int:
+            return self.returncode
+
+    return FakeProcess
 
 
 def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -21,9 +43,14 @@ def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monke
     monkeypatch.setattr(rule_coverage, "OUTPUT", output)
     monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
 
-    def fake_cargo(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
-        assert command == ["cargo", "test", "--features", "rule-coverage"]
+    commands: list[list[str]] = []
+
+    def fake_cargo(command: list[str], **kwargs: object) -> tuple[int, list[str]]:
+        commands.append(command)
         assert kwargs["cwd"] == tmp_path
+        if command == LIST_COMMAND:
+            return 0, ["   Compiling mathcat v0.7.8", "     Running unittests src/lib.rs", "test_alpha: test", "test_beta: test"]
+        assert command == ["cargo", "test", "--features", "rule-coverage"]
         events = [
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "simple", "tag": "mi"},
             {"kind": "defined-rule", "path": "Languages/en/SimpleSpeak_Rules.yaml", "name": "default", "tag": "mi"},
@@ -54,10 +81,10 @@ def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monke
             "\n".join(json.dumps(event) for event in events) + "\n",
             encoding="utf-8",
         )
-        return subprocess.CompletedProcess(command, 0)
+        return 0, ["running 2 tests", "test test_alpha ... ok", "test test_beta ... ok"]
 
     opened: list[str] = []
-    monkeypatch.setattr(rule_coverage.subprocess, "run", fake_cargo)
+    monkeypatch.setattr(rule_coverage.subprocess, "Popen", fake_popen(fake_cargo))
     monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: opened.append(url) or True)
     monkeypatch.setattr(sys, "argv", ["audit-translations", "--rule-coverage"])
 
@@ -81,7 +108,10 @@ def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monke
     assert "3 hits</span>" in html
     assert "0 hits</span>" in html
     assert "2 files with active rules" in html
-    assert (output / "test.log").is_file()
+    assert commands == [LIST_COMMAND, rule_coverage.COMMAND]
+    log = (output / "test.log").read_text(encoding="utf-8")
+    assert "$ cargo test --features rule-coverage -- --list\n" in log
+    assert "test_beta: test\n$ cargo test --features rule-coverage\nrunning 2 tests\n" in log
 
 
 def test_failed_coverage_run_opens_incomplete_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -92,8 +122,8 @@ def test_failed_coverage_run_opens_incomplete_report(tmp_path: Path, monkeypatch
     monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
     monkeypatch.setattr(
         rule_coverage.subprocess,
-        "run",
-        lambda command, **kwargs: subprocess.CompletedProcess(command, 1),
+        "Popen",
+        fake_popen(lambda command, **kwargs: (0, []) if command == LIST_COMMAND else (1, ["test test_alpha ... FAILED"])),
     )
     opened: list[str] = []
     monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: opened.append(url) or True)
@@ -104,6 +134,48 @@ def test_failed_coverage_run_opens_incomplete_report(tmp_path: Path, monkeypatch
     assert "Status: <strong>Incomplete</strong>" in html
     assert "No active rule definitions found" in html
     assert not (output / "report.md").exists()
+
+
+def test_failed_listing_skips_the_test_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """When `cargo test -- --list` fails (e.g. a compile error), the full run is skipped and the report is incomplete."""
+    output = tmp_path / "target" / "rule-coverage"
+    monkeypatch.setattr(rule_coverage, "ROOT", tmp_path)
+    monkeypatch.setattr(rule_coverage, "OUTPUT", output)
+    monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
+    commands: list[list[str]] = []
+
+    def fake_cargo(command: list[str], **kwargs: object) -> tuple[int, list[str]]:
+        commands.append(command)
+        return 101, ["error[E0425]: cannot find value `x` in this scope"]
+
+    monkeypatch.setattr(rule_coverage.subprocess, "Popen", fake_popen(fake_cargo))
+    monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: True)
+
+    assert rule_coverage.run() == 1
+    assert commands == [LIST_COMMAND]
+    html = (output / "index.html").read_text(encoding="utf-8")
+    assert "Status: <strong>Incomplete</strong>" in html
+    assert "cargo test failed (exit status 101)" in html
+
+
+def test_progress_counts_listed_tests_and_reports_failures(capsys: pytest.CaptureFixture[str]) -> None:
+    """Listed tests set the bar's total, each libtest result advances it, and failed tests are printed by name.
+    Outside a terminal (as under pytest) the live display is replaced by plain lines."""
+    progress = rule_coverage.CargoProgress()
+    with progress:
+        for line in ["   Compiling mathcat v0.7.8 (/repo)", "     Running tests/braille.rs", "a::one: test", "a::two: test", ""]:
+            progress.listing_line(line)
+        progress.start_tests()
+        for line in ["     Running tests/braille.rs (x)", "running 2 tests", "test a::one ... ok", "test a::two ... FAILED"]:
+            progress.test_line(line)
+
+    task = progress.progress.tasks[0]
+    assert (task.completed, task.total) == (2, 2)
+    assert task.fields["failures"] == "1 failed"
+    assert progress.current.plain == "tests/braille.rs · a::two"
+    out = capsys.readouterr().out
+    assert "Running 2 tests…" in out
+    assert "✗ tests/braille.rs · a::two" in out
 
 
 def test_jsonl_rule_identity_preserves_separators_and_unicode(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -133,7 +205,9 @@ def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, 
     monkeypatch.setattr(rule_coverage, "EVENTS", output / "events")
     path = "Languages/en/SimpleSpeak_Rules.yaml"
 
-    def fake_cargo(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+    def fake_cargo(command: list[str], **kwargs: object) -> tuple[int, list[str]]:
+        if command == LIST_COMMAND:
+            return 0, []
         events = [
             {"kind": "loaded", "path": path},
             {"kind": "defined-rule", "path": path, "name": "known", "tag": "mi"},
@@ -143,9 +217,9 @@ def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, 
             "\n".join(json.dumps(event) for event in events) + "\n{bad json\n",
             encoding="utf-8",
         )
-        return subprocess.CompletedProcess(command, 0)
+        return 0, []
 
-    monkeypatch.setattr(rule_coverage.subprocess, "run", fake_cargo)
+    monkeypatch.setattr(rule_coverage.subprocess, "Popen", fake_popen(fake_cargo))
     monkeypatch.setattr(rule_coverage.webbrowser, "open", lambda url: True)
 
     assert rule_coverage.run() == 1
