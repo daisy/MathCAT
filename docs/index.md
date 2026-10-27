@@ -5,16 +5,16 @@
 * Braille (Nemeth, UEB Technical, and eventually other braille math codes)
 * Navigation of math (in multiple ways including overviews)
 
+Watch the short explainer video below for an introduction to MathCAT.
+
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1228948748?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Introduction to MathCAT"></iframe></div>
+
 A goal of MathCAT is to be an easy-to-use library for screen readers and other assistive technology to use to produce high quality speech and/or braille from MathML. It is a follow-on project from MathPlayer (see below) and uses lessons learned from it to produce even higher quality speech, navigation, and braille. MathCAT takes advantage of some new ideas that the [MathML Working Group](https://mathml-refresh.github.io/charter-drafts/math-2020.html) is developing to allow authors to express their intent when they use a notation. E.g., $(3, 6)$ could be a point in the plane or an open interval, or even a shorthand notation for the greatest common divisor. When that information is conveyed in the MathML, MathCAT will use it to generate more natural sounding speech.
 
 To do: incorporation of third party libraries to support a common subset of TeX math commands along with ASCIIMath.
 
 
 # Documentation for different MathCAT Users
-
-Watch the short explainer video below for an introduction to MathCAT.
-
-<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1228948748?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Introduction to MathCAT"></iframe></div>
 
 There are many different audiences for MathCAT and each audience has different interests/needs. Please see the following documentation for details based on your needs:
 * AT users: [information about preferences you can set](users.md)
