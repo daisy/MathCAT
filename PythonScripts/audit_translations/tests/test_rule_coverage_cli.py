@@ -9,6 +9,7 @@ import pytest
 
 from .. import cli
 from ..rulecoverage import rule_coverage
+from ..rulecoverage.rule_coverage_report import render_html
 
 
 def test_coverage_command_generates_html_and_opens_browser(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -154,3 +155,30 @@ def test_invalid_and_unknown_rule_events_make_report_incomplete(tmp_path: Path, 
     assert "Invalid JSON in pid-123.jsonl:4" in html
     assert "Matched rules lack definition events" in html
     assert not (output / "report.md").exists()
+
+
+def test_report_files_are_tagged_with_language_or_braille_code() -> None:
+    """Each file gets a rule-set tag (language, `lang-region`, braille code, or other group) for the filter dropdown,
+    so `de` selects only German files even though `default.yaml` and rule names like `default` also contain "de"."""
+    paths = [
+        "Languages/de/SharedRules/default.yaml",
+        "Languages/en/SharedRules/default.yaml",
+        "Languages/zh/tw/navigate.yaml",
+        "Braille/Nemeth/Nemeth_Rules.yaml",
+        "Intent/general.yaml",
+    ]
+    html = render_html({(path, "default", "mi") for path in paths}, {}, [])
+
+    assert 'data-file-search="Languages/de/SharedRules/default.yaml" data-rule-set="de"' in html
+    assert 'data-file-search="Languages/en/SharedRules/default.yaml" data-rule-set="en"' in html
+    assert 'data-file-search="Languages/zh/tw/navigate.yaml" data-rule-set="zh-tw"' in html
+    assert 'data-file-search="Braille/Nemeth/Nemeth_Rules.yaml" data-rule-set="Nemeth"' in html
+    assert 'data-file-search="Intent/general.yaml" data-rule-set="Intent"' in html
+    assert '<select id="rule-set" aria-label="Filter by language or braille code">' in html
+    assert (
+        '<optgroup label="Speech languages">\n'
+        '<option value="de">de</option><option value="en">en</option><option value="zh-tw">zh-tw</option>\n'
+        "</optgroup>"
+    ) in html
+    assert '<optgroup label="Braille codes">\n<option value="Nemeth">Nemeth</option>' in html
+    assert html.index('label="Speech languages"') < html.index('label="Braille codes"') < html.index('label="Other"')
