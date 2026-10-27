@@ -16,7 +16,6 @@ default = ["rules-all"]
 "rule-coverage" = ["dep:serde_json"]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
-"tts" = [ "natural-tts" ]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
 
 # Which Rules/Languages and Rules/Braille directories `include-zip` embeds. Every one is on by default.
@@ -86,7 +85,6 @@ elements_rs = { version = "0.2.8", default-features = false }
 zip = { version = "9.0", default-features = false, features = ["deflate", "bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
-natural-tts = { version = "0.3.1", optional = true }
 
 [build-dependencies]
 bitflags = "2.6"
