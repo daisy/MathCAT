@@ -303,7 +303,7 @@
     "not-superset": "infix=ノット 上位集合オブ",
     "not-equal-to": "infix=ノット イコール",
     "not-member-of": "infix=ノット 元オブ",
-    "not-parallel-to": "infix=平行でない",
+    "not-parallel-to": "infix=ノット 平行",
     "obtained-from": "infix=から得られる",
     "or": "infix=または",
     "outer-product": "infix=外積",
@@ -311,7 +311,7 @@
     "perpendicular": "infix=垂直",
     "plus": "infix=プラス || prefix=プラス", # Prefix not tested
     "minus": "infix=マイナス || prefix=マイナス", # Prefix not tested
-    "plus-or-minus": "infix=プラスまたはマイナス",
+    "plus-or-minus": "infix=プラス オア マイナス",
     "precedes": "infix=に先行する",
     "proportional": "infix=比例する",
     "range-separator": "infix=から",

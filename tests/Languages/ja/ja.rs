@@ -143,7 +143,7 @@ fn multiplication_and_division() -> Result<()> {
 #[test]
 fn parenthesized_expression() -> Result<()> {
     let expr = "<math><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>)</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "丸括弧 1 プラス 2, 丸括弧閉じ")?;
+    test("ja", "ClearSpeak", expr, "丸カッコ 1 プラス 2, 丸カッコ閉じ")?;
     return Ok(());
 }
 
@@ -152,9 +152,9 @@ fn parenthesized_expression() -> Result<()> {
 #[test]
 fn square_and_curly_brackets() -> Result<()> {
     let square = "<math><mrow><mo>[</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>]</mo></mrow></math>";
-    test("ja", "ClearSpeak", square, "角括弧 1 プラス 2, 角括弧閉じ")?;
+    test("ja", "ClearSpeak", square, "角カッコ 1 プラス 2, 角カッコ閉じ")?;
     let curly = "<math><mrow><mo>{</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>}</mo></mrow></math>";
-    test("ja", "ClearSpeak", curly, "中括弧 1 プラス 2, 中括弧閉じ")?;
+    test("ja", "ClearSpeak", curly, "中カッコ 1 プラス 2, 中カッコ閉じ")?;
     return Ok(());
 }
 
@@ -590,7 +590,7 @@ fn set_non_membership() -> Result<()> {
 fn parallel_and_perpendicular() -> Result<()> {
     for (op, expected) in [
         ("&#x2225;", "x は 平行 y"),
-        ("&#x2226;", "x は 平行でない y"),
+        ("&#x2226;", "x は ノット 平行 y"),
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -649,7 +649,30 @@ fn product_with_limits() -> Result<()> {
 #[test]
 fn definite_integral() -> Result<()> {
     let expr = "<math><msubsup><mo>&#x222B;</mo><mn>0</mn><mn>1</mn></msubsup><mi>x</mi><mo>&#x2146;</mo><mi>x</mi></math>";
-    test("ja", "SimpleSpeak", expr, "積分 0 から, 1 まで オブ; x 微分 d x")?;
+    test("ja", "SimpleSpeak", expr, "インテグラル 0 から, 1 まで オブ; x 微分 d x")?;
+    return Ok(());
+}
+
+/// Characters that only unicode-full.yaml knows. The seeded file read ¥ as 入会金
+/// ("entrance fee"), ∅ as 空のセット, ∋ as 会員を含む ("contains a club member")
+/// and ≺ as プリセット; these are the readings a listener actually hears.
+#[test]
+fn unicode_full_symbol_names() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x00A5;", "円記号"),
+        ("&#x2205;", "空集合"),
+        ("&#x2295;", "丸 プラス"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    for (op, expected) in [
+        ("&#x220B;", "x 要素として含む y"),
+        ("&#x227A;", "x 先行 y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
     return Ok(());
 }
 
@@ -877,7 +900,7 @@ fn sub_and_superscript_medium() -> Result<()> {
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Medium")], sulfate,
-        "角括弧, 大文字 s, 大文字 o, 下付き 4; 角括弧閉じ 上付き 2 マイナス")?;
+        "角カッコ, 大文字 s, 大文字 o, 下付き 4; 角カッコ閉じ 上付き 2 マイナス")?;
     return Ok(());
 }
 
@@ -956,12 +979,12 @@ fn menclose_shapes_and_long_division() -> Result<()> {
 }
 
 /// 上下矢印 is an arrow with a head at each end, so it was the wrong name for the
-/// single up arrow. The double ended arrows had the English "double ended" in them;
+/// single up arrow, which is 上向き矢印 (Yamaguchi et al. 1996: → is 右向き矢印). The double ended arrows had the English "double ended" in them;
 /// unicode-full.yaml already calls ↕ 上下矢印 and ⤢ 北東・南西矢印.
 #[test]
 fn menclose_arrows() -> Result<()> {
     for (notation, expected) in [
-        ("uparrow", "上矢印, 囲み x 囲み終了"),
+        ("uparrow", "上向き矢印, 囲み x 囲み終了"),
         ("updownarrow", "上下矢印, 囲み x 囲み終了"),
         ("northeastsouthwestarrow", "北東・南西矢印, 囲み x 囲み終了"),
     ] {
