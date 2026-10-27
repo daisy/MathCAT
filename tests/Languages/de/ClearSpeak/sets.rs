@@ -231,6 +231,24 @@ fn element_alone() -> Result<()> {
 }
 
 #[test]
+fn subset_and_superset_or_equal_include_von() -> Result<()> {
+    // Both inclusive set relations should form complete German relational phrases.
+    test(
+        "de",
+        "ClearSpeak",
+        "<math><mi>A</mi><mo>⊆</mo><mi>B</mi></math>",
+        "groß a, ist eine teilmenge von oder gleich, groß b",
+    )?;
+    test(
+        "de",
+        "ClearSpeak",
+        "<math><mi>A</mi><mo>⊇</mo><mi>B</mi></math>",
+        "groß a, ist eine obermenge von oder gleich, groß b",
+    )?;
+    Ok(())
+}
+
+#[test]
 fn element_under_sum() -> Result<()> {
     let expr = "<math>
             <munder>

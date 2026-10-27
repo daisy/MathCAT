@@ -6,7 +6,6 @@
 use std::path::PathBuf;
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
-use std::sync::LazyLock;
 use std::fmt::Debug;
 use sxd_document_no_unsafe::dom::{ChildOfElement, Document, Element};
 use sxd_document_no_unsafe::{Package, QName};
@@ -29,6 +28,7 @@ use std::path::Path;
 use std::rc::Rc;
 use crate::shim_filesystem::{read_to_string_shim, canonicalize_shim};
 use crate::canonicalize::{as_element, create_mathml_element, set_mathml_name, name, MATHML_FROM_NAME_ATTR};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use log::{debug, error, info};
 
@@ -431,11 +431,9 @@ impl fmt::Display for Replacement {
 impl Replacement {   
     fn build(replacement: &Yaml) -> Result<Replacement> {
         // Replacement -- single key/value (see below for allowed values)
-        let dictionary = replacement.as_hash();
-        if dictionary.is_none() {
+        let Some(dictionary) = replacement.as_hash() else {
             bail!("  expected a key/value pair. Found {}.",  yaml_to_string(replacement, 0));
         };
-        let dictionary = dictionary.unwrap();
         if dictionary.is_empty() { 
             bail!("No key/value pairs found for key 'replace'.\n\
                 Suggestion: are the following lines indented properly?");
@@ -584,13 +582,11 @@ impl InsertChildren {
 }
 
 
-static ATTR_NAME_VALUE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(
-        // match name='value', where name is sort of an NCNAME (see CONCEPT_OR_LITERAL in infer_intent.rs)
-        // The quotes can be either single or double quotes
-        r#"(?P<name>[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*)\s*=\s*('(?P<value>[^']+)'|"(?P<dqvalue>[^"]+)")"#
-    ).unwrap()
-});
+static ATTR_NAME_VALUE: Lazy<Regex> = lazy_regex!(
+    // match name='value', where name is sort of an NCNAME (see CONCEPT_OR_LITERAL in infer_intent.rs)
+    // The quotes can be either single or double quotes
+    r#"(?P<name>[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*)\s*=\s*('(?P<value>[^']+)'|"(?P<dqvalue>[^"]+)")"#
+);
 
 // structure used when "intent:" is encountered in a rule
 // the name is either a string or an xpath that needs evaluation. 99% of the time it is a string
@@ -898,8 +894,7 @@ impl ReplacementArray {
     /// Any errors are passed back out.
     pub fn build(replacements: &Yaml) -> Result<ReplacementArray> {
         // replacements is either a single replacement or an array of replacements
-        let result= if replacements.is_array() {
-            let replacements = replacements.as_vec().unwrap();
+        let result= if let Some(replacements) = replacements.as_vec() {
             replacements
                 .iter()
                 .enumerate()    // useful for errors
@@ -1005,11 +1000,9 @@ impl ReplacementArray {
         }
 
         let new_element = create_mathml_element(&rules_with_context.doc, "Unknown");  // Hopefully set later (in Intent::Replace())
-        let mut new_children = Vec::with_capacity(self.replacements.len());
-        for child in self.replacements.iter() {
-            let child = rules_with_context.replace::<Element<'m>>(child, mathml)?;
-            new_children.push(ChildOfElement::Element(child));
-        };
+        let new_children = self.replacements.iter()
+            .map(|child| Ok(ChildOfElement::Element(rules_with_context.replace::<Element<'m>>(child, mathml)?)))
+            .collect::<Result<Vec<_>>>()?;
         new_element.append_children(new_children);
         return Ok(new_element);
     }
@@ -1173,12 +1166,9 @@ impl MyXPath {
     /// Convert DEBUG(...) input to the internal function which is DEBUG(arg, arg_as_string)
     fn add_debug_string_arg(xpath: &str) -> Result<String> {
         // do a quick check to see if "DEBUG" is in the string -- this is the common case
-        let debug_start = xpath.find("DEBUG(");
-        if debug_start.is_none() {
+        let Some(debug_start) = xpath.find("DEBUG(") else {
             return Ok( xpath.to_string() );
-        }
-
-        let debug_start = debug_start.unwrap();
+        };
         let mut before_paren = xpath[..debug_start+5].to_string();   // includes "DEBUG"
         let chars = xpath[debug_start+5..].chars().collect::<Vec<char>>();     // begins at '('
         before_paren.push_str(&chars_add_debug_string_arg(&chars).with_context(|| format!("In xpath='{xpath}'"))?);
@@ -1411,23 +1401,6 @@ impl SpeechPattern  {
 
         return Ok(None);
     }
-
-    fn is_match(&self, context: &sxd_xpath_no_unsafe::Context, mathml: Element) -> Result<bool> {
-        if self.tag_name != as_qname!(mathml.name()).local_part() && self.tag_name != "*" && self.tag_name != "!*" {
-            return Ok( false );
-        }
-
-        // debug!("\nis_match: pattern='{}'", self.pattern_name);
-        // debug!("    pattern_expr {:?}", self.pattern);
-        // debug!("is_match: mathml is\n{}", mml_to_string(mathml));
-        return Ok(
-            match self.pattern.evaluate(context, mathml)? {
-                Value::Boolean(b)       => b,
-                Value::Nodeset(nodes) => nodes.size() > 0,
-                _                             => false,
-            }
-        );
-    }
 }
 
 
@@ -1469,9 +1442,9 @@ impl TestArray {
         // 'if:' should only be the first entry in the array; 'else_if' should never be the first entry. Otherwise, they are the same
         let mut test_array = vec![];
         for test in tests {
-            if test.as_hash().is_none() {
+            let Some(test_hash) = test.as_hash() else {
                 bail!("Value for array entry in 'test:' must be a dictionary/contain keys");
-            }
+            };
             let if_part = &test[if test_array.is_empty() {"if"} else {"else_if"}];
             if !if_part.is_badvalue() {
                 // first case: if:, then:, optional else:
@@ -1479,7 +1452,7 @@ impl TestArray {
                 let then_part = TestOrReplacements::build(test, "then", "then_test", true)?;
                 let else_part = TestOrReplacements::build(test, "else", "else_test", false)?;
                 let n_keys = if else_part.is_none() {2} else {3};
-                if test.as_hash().unwrap().len() > n_keys {
+                if test_hash.len() > n_keys {
                     bail!("A key other than 'if', 'else_if', 'then', 'then_test', 'else', or 'else_test' was found in the 'then' clause of 'test'");
                 };
                 test_array.push(
@@ -1488,7 +1461,7 @@ impl TestArray {
             } else {
                 // second case: should be else/else_test
                 let else_part = TestOrReplacements::build(test, "else", "else_test", true)?;
-                if test.as_hash().unwrap().len() > 1 {
+                if test_hash.len() > 1 {
                     bail!("A key other than 'if', 'else_if', 'then', 'then_test', 'else', or 'else_test' was found the 'else' clause of 'test'");
                 };
                 test_array.push(
@@ -1715,15 +1688,11 @@ impl VariableDefinitions {
         if defs.is_badvalue() {
             return Ok( VariableDefinitions::new(0) );
         };
-        if defs.is_array() {
-            let defs = defs.as_vec().unwrap();
-            let mut definitions = VariableDefinitions::new(defs.len());
-            for def in defs {
-                let variable_def = VariableDefinition::build(def)
-                        .context("definition of 'variables'")?;
-                definitions.push( variable_def);
-            };
-            return Ok (definitions );
+        if let Some(defs) = defs.as_vec() {
+            let defs = defs.iter()
+                .map(|def| VariableDefinition::build(def).context("definition of 'variables'"))
+                .collect::<Result<Vec<_>>>()?;
+            return Ok( VariableDefinitions{ defs } );
         }
         bail!( "'variables' is not an array of {{name: xpath-value}} definitions. Found {}'",
                 yaml_to_string(defs, 1) );
@@ -1874,12 +1843,9 @@ impl UnicodeDef {
             return Ok( Some(process_include(file_name, include_file_name, do_include_fn)?) );
         }
         // key: char, value is replacement or array of replacements
-        let dictionary = unicode_def.as_hash();
-        if dictionary.is_none() {
+        let Some(dictionary) = unicode_def.as_hash() else {
             bail!("Expected a unicode definition (e.g, '+':[t: \"plus\"]'), found {}", yaml_to_string(unicode_def, 0));
-        }
-
-        let dictionary = dictionary.unwrap();
+        };
         if dictionary.len() != 1 {
             bail!("Expected a unicode definition (e.g, '+':[t: \"plus\"]'), found {}", yaml_to_string(unicode_def, 0));
         }
@@ -2301,6 +2267,14 @@ impl SpeechRules {
         if self.rules.is_empty() || !self.rule_files.is_file_up_to_date(&rule_file, should_ignore_file_time) {
             self.rules.clear();
             let files_read = self.read_patterns(&rule_file)?;
+            #[cfg(feature = "rule-coverage")]
+            for patterns in self.rules.values() {
+                for pattern in patterns {
+                    crate::rule_coverage::defined_rule(
+                        Path::new(&pattern.file_name), &pattern.pattern_name, &pattern.tag_name
+                    );
+                }
+            }
             self.rule_files.set_files_and_times(files_read);
         }
 
@@ -2312,7 +2286,7 @@ impl SpeechRules {
             self.unicode_short_files.borrow_mut().set_files_and_times(self.read_unicode(None, true)?);
         }
 
-        if self.definitions_files.borrow().ft.is_empty() || !self.definitions_files.borrow().is_file_up_to_date(
+        if !self.definitions_files.borrow().is_file_up_to_date(
                             pref_manager.get_definitions_file(self.name != RulesFor::Braille),
                             should_ignore_file_time
         ) {
@@ -2334,11 +2308,9 @@ impl SpeechRules {
 
     fn build_speech_patterns(&mut self, patterns: &Yaml, file_name: &Path) -> Result<Vec<PathBuf>> {
         // Rule::SpeechPatternList
-        let patterns_vec = patterns.as_vec();
-        if patterns_vec.is_none() {
+        let Some(patterns_vec) = patterns.as_vec() else {
             bail!(yaml_type_err(patterns, "array"));
-        }
-        let patterns_vec = patterns.as_vec().unwrap();
+        };
         let mut files_read = vec![file_name.to_path_buf()];
         for entry in patterns_vec.iter() {
             if let Some(mut added_files) = SpeechPattern::build(entry, file_name, self)? {
@@ -2368,12 +2340,11 @@ impl SpeechRules {
         // info!("Reading unicode file {}", path.to_str().unwrap());
         let unicode_file_contents = read_to_string_shim(&path)?;
         let unicode_build_fn = |unicode_def_list: &Yaml| {
-            let unicode_defs = unicode_def_list.as_vec();
-            if unicode_defs.is_none() {
+            let Some(unicode_defs) = unicode_def_list.as_vec() else {
                 bail!("File '{}' does not begin with an array", yaml_to_type(unicode_def_list));
             };
             let mut files_read = vec![path.to_path_buf()];
-            for unicode_def in unicode_defs.unwrap() {
+            for unicode_def in unicode_defs {
                 if let Some(mut added_files) = UnicodeDef::build(unicode_def, &path, self, use_short)
                                                                 .with_context(|| {format!("In file {:?}", path.to_str())})? {
                     files_read.append(&mut added_files);
@@ -2497,12 +2468,12 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
     fn find_match<T:TreeOrString<'c, 'm, T>>(&'r mut self, rule_vector: &[Box<SpeechPattern>], mathml: Element<'c>) -> Result<Option<T>> {
         for pattern in rule_vector {
             // debug!("Pattern name: {}", pattern.pattern_name);
-            // always pushing and popping around the is_match would be a little cleaner, but push/pop is relatively expensive,
+            // always pushing and popping around the match test would be a little cleaner, but push/pop is relatively expensive,
             //   so we optimize and only push first if the variables are needed to do the match
             if pattern.match_uses_var_defs {
                 self.context_stack.push(pattern.var_defs.clone(), mathml)?;
             }
-            if pattern.is_match(&self.context_stack.base, mathml)
+            if pattern.pattern.is_true(&self.context_stack.base, mathml)
                     .with_context(|| error_string(pattern, mathml) )? {
                 // debug!("  find_match: FOUND!!!");
                 if !pattern.match_uses_var_defs && pattern.var_defs.len() > 0 { // don't push them on twice
@@ -2524,6 +2495,10 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
                 }
                 return match result {
                     Ok(s) => {
+                        #[cfg(feature = "rule-coverage")]
+                        crate::rule_coverage::matched_rule(
+                            Path::new(&pattern.file_name), &pattern.pattern_name, &pattern.tag_name
+                        );
                         // for all except braille and navigation, nav_node_id will be an empty string and will not match
                         if self.nav_node_id.is_empty() {
                             Ok( Some(s) )
@@ -2795,61 +2770,79 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
         return Ok(result);
     }
 
-    fn replace_single_char(&'r mut self, ch: char, mathml: Element<'c>) -> Result<String> {
-        let ch_as_u32 = ch as u32;
-        let rules =  self.speech_rules;
-        let mut unicode = rules.unicode_short.borrow();
-        let mut replacements = unicode.get( &ch_as_u32 );
-        // debug!("replace_single_char: looking for unicode {} for char '{}'/{:#06x}, found: {:?}", rules.name, ch, ch_as_u32, replacements);
-        if replacements.is_none() {
-            // see if it in the full unicode table (if it isn't loaded already)
-            let pref_manager = rules.pref_manager.borrow();
-            let unicode_pref_files = if rules.name == RulesFor::Braille {pref_manager.get_braille_unicode_file()} else {pref_manager.get_speech_unicode_file()};
-            let should_ignore_file_time = pref_manager.pref_to_string("CheckRuleFiles") == "All";
-            if rules.unicode_full.borrow().is_empty() || !rules.unicode_full_files.borrow().is_file_up_to_date(unicode_pref_files.1, should_ignore_file_time) {
-                info!("*** Loading full unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
-                rules.unicode_full.borrow_mut().clear();
-                rules.unicode_full_files.borrow_mut().set_files_and_times(rules.read_unicode(None, false)?);
-                // when debugging, run a check across the short and full tables to ensure no characters are repeated
-                if cfg!(debug_assertions) {
-                    let unicode_full = rules.unicode_full.borrow();
-                    for ch in unicode.keys() {
-                        if unicode_full.get(ch).is_some() {
-                            error!("*** Character '{}' (0x{:X}) is repeated in both short and full unicode tables", *ch, *ch);
-                        }
-                    }
-                }
-                info!("# Unicode defs = {}/{}", rules.unicode_short.borrow().len(), rules.unicode_full.borrow().len());
-            }
-            unicode = rules.unicode_full.borrow();
-            replacements = unicode.get( &ch_as_u32 );
-            if replacements.is_none() {
-                self.translate_count = 0;     // not in loop
-                // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
-                if rules.translate_single_chars_only || ch.is_ascii() {  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
-                  return Ok(self.escape_string_for_safety(String::from(ch)));
-                } else {
-                  let ch_as_int = ch as u32;
-                  if ('\u{2800}'..='\u{28ff}').contains(&ch) {   // braille -- leave as braille
-                      return Ok(self.escape_string_for_safety(String::from(ch)));
-                  } else {                                    // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
-                      let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
-                      return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
-                  }
-                }
-              }
-          };
-
+    /// Run a character's replacement list. `replacements` may borrow a unicode table;
+    /// the caller decides whether that borrow is safe across the nested lookup.
+    fn finish_replacements(&'r mut self, replacements: &[Replacement], mathml: Element<'c>) -> Result<String> {
         // map across all the parts of the replacement, collect them up into a Vec, and then concat them together
-        let result = replacements.unwrap()
-                    .iter()
+        let result = replacements.iter()
                     .map(|replacement|
                          self.replace(replacement, mathml)
                                 .with_context(|| format!("Unicode replacement error: {replacement}")) )
                     .collect::<Result<Vec<String>>>()?
                     .join(" ");
-         self.translate_count = 0;     // found a replacement, so not in a loop
+        self.translate_count = 0;     // found a replacement, so not in a loop
         return Ok(result);
+    }
+
+    fn replace_single_char(&'r mut self, ch: char, mathml: Element<'c>) -> Result<String> {
+        let ch_as_u32 = ch as u32;
+        let rules = self.speech_rules;
+        // A nested lookup mutably borrows unicode_full only, so a short-table hit can
+        // keep this borrow. Letters and operators are in that table and are not copied.
+        {
+            let unicode_short = rules.unicode_short.borrow();
+            if let Some(replacements) = unicode_short.get(&ch_as_u32) {
+                return self.finish_replacements(replacements, mathml);
+            }
+        }
+        // debug!("replace_single_char: looking for unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
+
+        // see if it in the full unicode table (if it isn't loaded already)
+        let (unicode_full_path, should_ignore_file_time) = {
+            let pref_manager = rules.pref_manager.borrow();
+            let unicode_pref_files = if rules.name == RulesFor::Braille {pref_manager.get_braille_unicode_file()} else {pref_manager.get_speech_unicode_file()};
+            let should_ignore_file_time = pref_manager.pref_to_string("CheckRuleFiles") != "All";
+            (unicode_pref_files.1.to_path_buf(), should_ignore_file_time)
+        };
+        // A nested lookup mutably borrows this map only when it also decides the file must be
+        // read (a capital spelling its lowercase, while the table is still empty or stale).
+        // Copy the rule on that path so the two lookups are not borrowing it at once. Once the
+        // file is loaded, the nested lookup only borrows it immutably and the rule is not copied.
+        let needs_full_read = rules.unicode_full.borrow().is_empty() || !rules.unicode_full_files.borrow().is_file_up_to_date(&unicode_full_path, should_ignore_file_time);
+        if needs_full_read {
+            info!("*** Loading full unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
+            rules.unicode_full.borrow_mut().clear();
+            let files_read = rules.read_unicode(None, false)?;
+            rules.unicode_full_files.borrow_mut().set_files_and_times(files_read);
+            // when debugging, run a check across the short and full tables to ensure no characters are repeated
+            if cfg!(debug_assertions) {
+                let unicode_short = rules.unicode_short.borrow();
+                let unicode_full = rules.unicode_full.borrow();
+                for ch in unicode_short.keys() {
+                    if unicode_full.get(ch).is_some() {
+                        error!("*** Character '{}' (0x{:X}) is repeated in both short and full unicode tables", *ch, *ch);
+                    }
+                }
+            }
+            info!("# Unicode defs = {}/{}", rules.unicode_short.borrow().len(), rules.unicode_full.borrow().len());
+            if let Some(replacements) = rules.unicode_full.borrow().get(&ch_as_u32).cloned() {
+                return self.finish_replacements(&replacements, mathml);
+            }
+        } else {
+            let unicode_full = rules.unicode_full.borrow();
+            if let Some(replacements) = unicode_full.get(&ch_as_u32) {
+                return self.finish_replacements(replacements, mathml);
+            }
+        }
+        self.translate_count = 0;     // not in loop
+        // debug!("*** Did not find unicode {} for char '{}'/{:#06x}", rules.name, ch, ch_as_u32);
+        if rules.translate_single_chars_only || ch.is_ascii() ||  // speech or if braille, avoid loop (ASCII remains ASCII if not found)
+           ('\u{2800}'..='\u{28ff}').contains(&ch) {             // braille -- leave as braille
+            return Ok(self.escape_string_for_safety(String::from(ch)));
+        } else {                                    // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
+            let prefix_indicator = if ch_as_u32 < 1<<16 {'x'} else {'y'};
+            return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_u32), mathml);
+        }
     }
 }
 

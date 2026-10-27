@@ -22,6 +22,7 @@ use phf::{phf_map, phf_set};
 use crate::xpath_functions::{IsBracketed, is_leaf, IsNode};
 use std::ptr::eq as ptr_eq;
 use crate::pretty_print::*;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use std::fmt;
 use std::marker::PhantomData;
@@ -110,7 +111,7 @@ static ILLEGAL_OPERATOR_INFO: OperatorInfo = OperatorInfo{
 static EQUAL_PRIORITY: LazyLock<usize> = LazyLock::new(|| OPERATORS.get("=").unwrap().priority);
 
 // useful for detecting whitespace
-static IS_WHITESPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s+$").unwrap());    // only Unicode whitespace
+static IS_WHITESPACE: Lazy<Regex> = lazy_regex!(r"^\s+$");    // only Unicode whitespace
 
 // Operators are either PREFIX, INFIX, or POSTFIX, but can also have other properties such as LEFT_FENCE
 bitflags! {
@@ -462,8 +463,8 @@ static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
 
 // turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
 // two cases because we don't want to have a match for 'Cl', etc.
-static UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$").unwrap());
-static LOWER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$").unwrap());
+static UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$");
+static LOWER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$");
 
 
 struct CanonicalizeContextPatterns {
@@ -764,10 +765,10 @@ impl CanonicalizeContext {
 	/// Returns 'None' if the element should not be in the tree.
 	fn clean_mathml<'a>(&self, mathml: Element<'a>) -> Option<Element<'a>> {
 		// Note: this works bottom-up (clean the children first, then this element)
-		static IS_PRIME: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"['′″‴⁗]").unwrap());
+		static IS_PRIME: Lazy<Regex> = lazy_regex!(r"['′″‴⁗]");
 
 		// Note: including intervening spaces in what is likely a symbol of omission preserves any notion of separate digits (e.g., "_ _ _")
-		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
+		static IS_UNDERSCORE: Lazy<Regex> = lazy_regex!(r"^[_\u{00A0}]+$");
 
 			
 		fn is_currency_symbol(ch: char) -> bool {
@@ -1504,7 +1505,7 @@ impl CanonicalizeContext {
 
 		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
 		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
-			static IS_DEGREES_C_OR_F: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[°º][CF]").unwrap());
+			static IS_DEGREES_C_OR_F: Lazy<Regex> = lazy_regex!(r"[°º][CF]");
 
 			let text = as_text(mi);
 			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
@@ -1684,12 +1685,12 @@ impl CanonicalizeContext {
 				return mathml;
 			} else if has_subscript {
 				set_mathml_name(mathml, "msub");
-				let children = vec!(children[0], children[1]);
+				let children = vec![children[0], children[1]];
 				mathml.replace_children(children);
 				return mathml;
 			} else if has_superscript {
 				set_mathml_name(mathml, "msup");
-				let children = vec!(children[0], children[2]);
+				let children = vec![children[0], children[2]];
 				mathml.replace_children(children);
 				return mathml;
 			} else {
@@ -1882,7 +1883,7 @@ impl CanonicalizeContext {
 			let close = close_raw.as_deref().unwrap_or(")").replace('>', "⟩");
 			// debug!("open={}, close={}", open, close);
 			let separators_raw = mfenced.attribute_value("separators");
-			let mut separators = separators_raw.as_deref().unwrap_or(",").chars();
+			let separators: Vec<char> = separators_raw.as_deref().unwrap_or(",").chars().filter(|ch| !ch.is_whitespace()).collect();
 			set_mathml_name(mfenced, "mrow");
 			mfenced.remove_attribute("open");
 			mfenced.remove_attribute("close");
@@ -1894,9 +1895,10 @@ impl CanonicalizeContext {
 			}
 			if !children.is_empty() {
 				new_children.push(children[0]);
-				for child in &children[1..] {
-					let sep = separators.next().unwrap_or(',').to_string();
-					new_children.push( ChildOfElement::Element( create_mo(mfenced.document(), &sep, MFENCED_ATTR_VALUE)) );
+				for (i, child) in children[1..].iter().enumerate() {
+					if let Some(&sep) = separators.get(i).or_else(|| separators.last()) {
+            		    new_children.push(ChildOfElement::Element( create_mo(mfenced.document(), &sep.to_string(), MFENCED_ATTR_VALUE)) );
+					}
 					new_children.push(*child);
 				}
 			}
@@ -2194,7 +2196,7 @@ impl CanonicalizeContext {
 		/// under some specific conditions (trying to be a little cautious).
 		/// The returned (mrow) element reuses the arg so tree siblings links remain correct.
 		fn split_points(leaf: Element) -> Option<Element> {
-			static IS_UPPERCASE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[A-Z]+$").unwrap());
+			static IS_UPPERCASE: Lazy<Regex> = lazy_regex!(r"^[A-Z]+$");
 
 			if !IS_UPPERCASE.is_match(as_str!(as_text(leaf))) {
 				return None;
@@ -3532,6 +3534,7 @@ impl CanonicalizeContext {
 				"\u{02C9}"| "\u{0304}"| "\u{0305}" => "\u{00AF}",
 				"\u{02DC}" | "~"  => "\u{223C}",		// for base, use version with prefix and infix
 				"\u{01C1}" => "\u{2016}", // U+2016 is "‖"
+				"!!" => "\u{203C}", // U+203C is "‼" (double factorial)
 
 				_ => mo_text,
 			};
@@ -4555,7 +4558,9 @@ impl CanonicalizeContext {
 		// We essentially have 'terminator( mrow terminator)'
 		//   in other words, we have an extra mrow with one child due to the initial start -- remove it
 		let mut top_of_stack = parse_stack.pop().unwrap();
-		assert_eq!(parse_stack.len(), 0);
+		if !parse_stack.is_empty() {
+			bail!("Unbalanced fences:\n{}", mml_to_string(mrow));
+		}
 	
 		let mut parsed_mrow = top_of_stack.mrow;
 		assert_eq!( name(top_of_stack.mrow), "mrow");
@@ -4990,14 +4995,120 @@ mod canonicalize_tests {
 					<mi>y</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>;</mo>
-				<mrow data-changed='added'>
-					<mi>z</mi>
-					<mo data-changed='from_mfenced'>,</mo>
-					<mi>a</mi>
-				</mrow>
+				<mi>z</mi>
+				<mo data-changed='from_mfenced'>;</mo>
+				<mi>a</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_empty_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=''><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_repeat_last_separator() -> Result<()> {
+        let test_str = "<math><mfenced separators=';'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>z</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_separators_with_whitespace() -> Result<()> {
+        let test_str = "<math><mfenced separators='; ,'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mrow data-changed='added'>
+						<mi>y</mi>
+						<mo data-changed='from_mfenced'>,</mo>
+						<mi>z</mi>
+					</mrow>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_too_many_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=';,'><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_default_separator() -> Result<()> {
+        let test_str = "<math><mfenced><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>,</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_whitespace_only_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=' '><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
 		</math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])

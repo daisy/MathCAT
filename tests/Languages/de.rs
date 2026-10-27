@@ -2,6 +2,7 @@
 
 mod ClearSpeak {
     mod functions;
+    mod intervals;
     mod large_ops;
     mod menclose;
     mod mfrac;
