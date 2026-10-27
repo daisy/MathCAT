@@ -18,8 +18,11 @@ summary { cursor: pointer; }
 .badge { display: inline-block; border-radius: .3rem; padding: .05rem .4rem; font-size: .85rem; font-weight: 600; }
 .badge.matched { color: #155c36; background: #dcf5e5; }
 .badge.unmatched { color: #8b3d00; background: #fff0cf; }
-.rules { list-style: none; padding-left: 1rem; }
-.rules li { position: relative; padding: .2rem 0; }
+.rules { list-style: none; padding-left: .5rem; }
+.rules li { position: relative; padding: .2rem .5rem; border-radius: .2rem; }
+/* zebra stripes count only visible rows so filtering keeps them alternating */
+.rules li:nth-child(odd of :not([hidden])) { background: #f1f4f6; }
+.rules li:hover, .rules li:focus { background: #e2eaf0; }
 .rule-tooltip { display: none; position: absolute; z-index: 1; top: 100%; left: 0;
   max-width: min(35rem, 90vw); max-height: 60vh; overflow: auto; padding: .5rem .7rem;
   border: 1px solid #8396a5; border-radius: .3rem; background: #fff; color: #17212b;
