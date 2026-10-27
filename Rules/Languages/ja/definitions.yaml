@@ -79,9 +79,9 @@
     "image":"function=像", 
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
     "mixed-fraction":"infix=および", # NOTE: in website says function, but follow infix speech pattern.
-    "quotient":"function=整数部 | 割る",
+    "quotient":"function=整数部 : 割る",
     "evaluated-at":"infix=評価される",
-    "remainder":"function=余り | 割る",
+    "remainder":"function=余り : 割る",
 
     "max":"function=マックス",
     "min":"function=最小値",
@@ -89,10 +89,10 @@
     "power":"infix=パワーに",
     "root":"function=根",
 
-    "greatest-common-divisor": "function=ジーシーディー:ジーシーディー:最大公約数",
-    "least-common-multiple":"function=エルシーエム:エルシーエム:最小公倍数", # In webpage typo "lest common"
+    "greatest-common-divisor": "function=ジーシーディー|ジーシーディー|最大公約数",
+    "least-common-multiple":"function=エルシーエム|エルシーエム|最小公倍数", # In webpage typo "lest common"
 
-    "absolute-value": "function=;絶対値:絶対値:絶対値;絶対値",
+    "absolute-value": "function=;絶対値|絶対値|絶対値;絶対値",
     "complex-conjugate":"function=複素共役",
     "complex-arg":"function=偏角",
     "real-part": "function=実部",
@@ -113,48 +113,48 @@
     # "derivative":"function=the derivative; with respect to", # Property ???
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
-    "limit": "prefix=極限:極限",
+    "limit": "prefix=極限|極限",
     "tends-to":"infix=に近づく",
     "tends-to-from-above":"infix=上から近づく",
     "tends-to-from-below":"infix=下から近づく",
 
 
     ### Sets
-    "set": "function=; 集合: 集合",
-    "set-difference":"function=差集合 | と || infix=マイナス",
+    "set": "function=; 集合| 集合",
+    "set-difference":"function=差集合 : と || infix=マイナス",
     "complement":"function=補集合",
     "empty-set":"nofix=空集合",
     "cardinality":"function=濃度", # NOTE: does not have a defined speech template in website
     "list":"function=リスト",
-    "tuple": "function=;タプル:タプル",
+    "tuple": "function=;タプル|タプル",
 
 
     ### Sequence and Series
-    "sum": "function=サム | にわたる | から,まで",
-    "product": "function=総積 | にわたる | から,まで",
+    "sum": "function=サム : にわたる : から,まで",
+    "product": "function=総積 : にわたる : から,まで",
 
 
     ### Elementary classical functions
-    "sine":"function=サイン: 正弦",
-    "cosine":"function=コサイン: 余弦",
-    "tangent":"function=タンジェント: 正接",
-    "secant":"function=セカント: 正割",
-    "cosecant":"function=コセカント: 余割",
-    "cotangent":"function=コタンジェント: 余接",
+    "sine":"function=サイン| 正弦",
+    "cosine":"function=コサイン| 余弦",
+    "tangent":"function=タンジェント| 正接",
+    "secant":"function=セカント| 正割",
+    "cosecant":"function=コセカント| 余割",
+    "cotangent":"function=コタンジェント| 余接",
 
-    "arcsine":"function=アークサイン: 逆正弦",
-    "arccosine":"function=アークコサイン: 逆余弦",
-    "arctangent":"function=アークタンジェント: 逆正接",
-    "arcsecant":"function=アークセカント: 逆正割",
-    "arccosecant":"function=アークコセカント: 逆余割",
-    "arccotangent":"function=アークコタンジェント: 逆余接",
+    "arcsine":"function=アークサイン| 逆正弦",
+    "arccosine":"function=アークコサイン| 逆余弦",
+    "arctangent":"function=アークタンジェント| 逆正接",
+    "arcsecant":"function=アークセカント| 逆正割",
+    "arccosecant":"function=アークコセカント| 逆余割",
+    "arccotangent":"function=アークコタンジェント| 逆余接",
 
-    "hyperbolic-sine":"function=ハイパーボリックサイン: 双曲線正弦",
-    "hyperbolic-cosine":"function=ハイパーボリックコサイン: 双曲線余弦",
-    "hyperbolic-tangent":"function=ハイパーボリックタンジェント: 双曲線正接",
-    "hyperbolic-secant":"function=ハイパーボリックセカント: 双曲線正割",
-    "hyperbolic-cosecant":"function=ハイパーボリックコセカント: 双曲線余割",
-    "hyperbolic-cotangent":"function=ハイパーボリックコタンジェント: 双曲線余接",
+    "hyperbolic-sine":"function=ハイパーボリックサイン| 双曲線正弦",
+    "hyperbolic-cosine":"function=ハイパーボリックコサイン| 双曲線余弦",
+    "hyperbolic-tangent":"function=ハイパーボリックタンジェント| 双曲線正接",
+    "hyperbolic-secant":"function=ハイパーボリックセカント| 双曲線正割",
+    "hyperbolic-cosecant":"function=ハイパーボリックコセカント| 双曲線余割",
+    "hyperbolic-cotangent":"function=ハイパーボリックコタンジェント| 双曲線余接",
 
     "arc-hyperbolic-sine":"function=アークハイパーボリックサイン",
     "arc-hyperbolic-cosine":"function=アークハイパーボリックコサイン",
@@ -164,7 +164,7 @@
     "arc-hyperbolic-cotangent":"function=アークハイパーボリックコタンジェント",
 
     "exponential":"function=指数関数",
-    "natural-logarithm": "function=エル エヌ: 自然対数: 自然対数",
+    "natural-logarithm": "function=エル エヌ| 自然対数| 自然対数",
     "logarithm":"function=対数", ##Check arity 2 
 
 
@@ -175,7 +175,7 @@
     "median":"function=中央値",
     "mode":"function=最頻値",
 
-    "conditional-probability":"function=確率 | 条件は", 
+    "conditional-probability":"function=確率 : 条件は", 
 
 
     ### Linear Algebra
@@ -184,7 +184,7 @@
     "determinant":"function=行列式",
     "adjugate":"function=余因子行列",
     "magnitude":"function=大きさ",
-    "norm": "function=;ノルム:ノルム:ノルム;ノルム閉じ",
+    "norm": "function=;ノルム|ノルム|ノルム;ノルム閉じ",
     "span":"function=線形包",
 
     "unit-vector":"prefix=単位ベクトル",
@@ -195,12 +195,12 @@
 
 
     ### Constants and Sets
-    "set-of-integers":"nofix=ゼット:すべての整数の集合",
-    "set-of-reals":"nofix=アール: すべての実数の集合",
-    "set-of-rationals":"nofix=キュー:すべての有理数の集合",
-    "set-of-natural-numbers":"nofix=エヌ:すべての自然数の集合",
-    "set-of-complex-numbers":"nofix=シー:すべての複素数の集合",
-    "set-of-primes":"nofix=ピー:すべての素数の集合",
+    "set-of-integers":"nofix=ゼット|すべての整数の集合",
+    "set-of-reals":"nofix=アール| すべての実数の集合",
+    "set-of-rationals":"nofix=キュー|すべての有理数の集合",
+    "set-of-natural-numbers":"nofix=エヌ|すべての自然数の集合",
+    "set-of-complex-numbers":"nofix=シー|すべての複素数の集合",
+    "set-of-primes":"nofix=ピー|すべての素数の集合",
 
     
     ### Geometry
@@ -221,9 +221,9 @@
     ### General Concepts 
     "fenced-group":"function=括弧のまとまり", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
-    "ordered-pair": "function=ペア |", # Needs to be tested
+    "ordered-pair": "function=ペア :", # Needs to be tested
     # Simple last arg: "x sub k". Complex: "… end sub" (terse/medium) / "end subscript" (verbose) via infix-intent.
-    "indexed-by": "infix=; サブ; 末尾サブ: 末尾サブスクリプト",
+    "indexed-by": "infix=; サブ; 末尾サブ| 末尾サブスクリプト",
     
     "highlight":"postfix=ハイライト",
     "least-common-denominator":"function=最小公分母",
@@ -245,8 +245,8 @@
     ### Other
     ## Default fixity function
     "curl": "function=回転",
-    "divergence": "function=ダイバージェンス:発散",
-    "gradient": "function=デル:勾配",
+    "divergence": "function=ダイバージェンス|発散",
+    "gradient": "function=デル|勾配",
     "laplacian": "function=ラプラシアン",
 
     ## Default fixity prefix
@@ -271,7 +271,7 @@
     "congruent": "infix=合同",
     "cartesian-product": "infix=デカルト積",
     "composed-with": "infix=合成",
-    "cross-product": "infix=クロス:外積:外積",
+    "cross-product": "infix=クロス|外積|外積",
     "defined-as": "infix=定義する",
     "divided-by": "infix=割る",
     "divides": "infix=割り切る",
@@ -335,11 +335,11 @@
     "percent": "postfix=パーセント",
 
     ## Default fixity nofix
-    "diameter":"nofix=ディー: 直径",
-    "distance":"nofix=ディー; ディー: 間隔",
-    "probability":"nofix=ピー: 確率 || function=確率",
-    "radius":"nofix=アール: 半径",
-    "volume":"nofix=ブイ: ボリューム || function=ボリューム",
+    "diameter":"nofix=ディー| 直径",
+    "distance":"nofix=ディー; ディー| 間隔",
+    "probability":"nofix=ピー| 確率 || function=確率",
+    "radius":"nofix=アール| 半径",
+    "volume":"nofix=ブイ| ボリューム || function=ボリューム",
     "exponential-e":"nofix=イー",
     "imaginary-i":"nofix=アイ",
     "differential-d":"nofix=ディー",
@@ -348,24 +348,28 @@
 
     ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
     "modified-variable": "silent=",
-    "say-super": "infix=スーパースクリプト:スーパースクリプト",   # used with 'mo' for superscripts (e.g, "<")
+    "say-super": "infix=スーパースクリプト|スーパースクリプト",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
     # "large-op": "infix=over || other=from,to",
-    "lim-sup": "prefix=リム サップ:上極限:上極限",
-    "lim-inf": "prefix=リム インフ:下極限:下極限",
-    "logarithm-with-base": "prefix=ログベース:ログベース:ログベース",
+    "lim-sup": "prefix=リム サップ|上極限|上極限",
+    "lim-inf": "prefix=リム インフ|下極限|下極限",
+    "logarithm-with-base": "prefix=ログベース|ログベース|ログベース",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "trace": "function=; トレース:トレース:トレース;終了トレース",
-    "dimension": "function=;次元:次元:次元;端次元",
-    "homomorphism": "function=; 準同型: 準同型: 準同型; 準同型終わり",
-    "kernel": "function=; カーネル : カーネル: カーネル; エンドカーネル",
+    "trace": "function=; トレース|トレース|トレース;終了トレース",
+    "dimension": "function=;次元|次元|次元;端次元",
+    "homomorphism": "function=; 準同型| 準同型| 準同型; 準同型終わり",
+    "kernel": "function=; カーネル | カーネル| カーネル; エンドカーネル",
     
-    "chemistry-concentration": "function=; 濃度: 濃度: 濃度; 濃度終わり",
+    "chemistry-concentration": "function=; 濃度| 濃度| 濃度; 濃度終わり",
   }
+
+  # The connector word to say for functional 'IntentMappings' (in English, "of")
+  # Same word unicode.yaml uses for U+2061
+- FunctionApplicationWord: ["オブ"]
 
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
 - TerseFunctionNames: {
-    "divergence", "del:gradient", "curl"
+    "divergence", "del|gradient", "curl"
   }
 
 - NavigationParts: {
