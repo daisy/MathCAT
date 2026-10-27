@@ -143,7 +143,7 @@ fn multiplication_and_division() -> Result<()> {
 #[test]
 fn parenthesized_expression() -> Result<()> {
     let expr = "<math><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>)</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "丸カッコ 1 プラス 2, 丸カッコ閉じ")?;
+    test("ja", "ClearSpeak", expr, "丸カッコ, 1 プラス 2, 丸カッコ閉じ")?;
     return Ok(());
 }
 
@@ -152,9 +152,9 @@ fn parenthesized_expression() -> Result<()> {
 #[test]
 fn square_and_curly_brackets() -> Result<()> {
     let square = "<math><mrow><mo>[</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>]</mo></mrow></math>";
-    test("ja", "ClearSpeak", square, "角カッコ 1 プラス 2, 角カッコ閉じ")?;
+    test("ja", "ClearSpeak", square, "角カッコ, 1 プラス 2, 角カッコ閉じ")?;
     let curly = "<math><mrow><mo>{</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>}</mo></mrow></math>";
-    test("ja", "ClearSpeak", curly, "中カッコ 1 プラス 2, 中カッコ閉じ")?;
+    test("ja", "ClearSpeak", curly, "中カッコ, 1 プラス 2, 中カッコ閉じ")?;
     return Ok(());
 }
 
@@ -625,7 +625,7 @@ fn factorial() -> Result<()> {
 #[test]
 fn summation() -> Result<()> {
     let expr = "<math><munderover><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>i</mi></math>";
-    test("ja", "SimpleSpeak", expr, "総和 i イコール 1 から, n まで オブ i")?;
+    test("ja", "SimpleSpeak", expr, "サム i イコール 1 から, n まで オブ i")?;
     return Ok(());
 }
 
@@ -633,7 +633,7 @@ fn summation() -> Result<()> {
 #[test]
 fn summation_lower_limit_only() -> Result<()> {
     let expr = "<math><munder><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow></munder><mi>i</mi></math>";
-    test("ja", "SimpleSpeak", expr, "総和 i イコール 1 にわたる オブ i")?;
+    test("ja", "SimpleSpeak", expr, "サム i イコール 1 にわたる オブ i")?;
     return Ok(());
 }
 

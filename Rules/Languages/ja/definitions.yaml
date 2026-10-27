@@ -130,7 +130,7 @@
 
 
     ### Sequence and Series
-    "sum": "function=総和 | にわたる | から,まで",
+    "sum": "function=サム | にわたる | から,まで",
     "product": "function=総積 | にわたる | から,まで",
 
 
