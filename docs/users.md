@@ -5,6 +5,7 @@ ref: users
 title: User guide for MathCAT
 ---
 # User guide for MathCAT
+<img src="logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT.">
 
 MathCAT is a tool used together with a screen reader. Through MathCAT, you can have mathematical expressions read aloud. MatCAT can also make mathematics accessible through a braille display.
 

@@ -1,4 +1,5 @@
 # Developer Guide
+<img src="logo-inline.png" style="height: 5.25em; vertical-align: -0.13em; margin-right: -0.25em;" alt="Logo for MathCAT. a brown cat sits upright. Its tail swoops down to form the capital letter C in the word MathCAT.">
 
 This guide provides technical information for developers working on the MathCAT codebase.
 
