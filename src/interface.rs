@@ -179,7 +179,9 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     // These have some length limits to avoid DOS attacks via long strings
     static NAMESPACE_DECL: Lazy<Regex> = lazy_regex!(r#"xmlns:[[:alpha:]]{1,32}"#);
     static PREFIX: Lazy<Regex> = lazy_regex!(r#"(</?)[[:alpha:]]{1,32}:"#);
-    static HTML_ENTITIES: Lazy<Regex> = lazy_regex!(r#"&([a-zA-Z]{2,10});"#);
+    // The longest name in src/entities.in is "CounterClockwiseContourIntegral" (31 letters),
+    // so 32 is used as the upper bound to keep names of any length resolvable.
+    static HTML_ENTITIES: Lazy<Regex> = lazy_regex!(r#"&([a-zA-Z]{2,32});"#);
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
