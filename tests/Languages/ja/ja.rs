@@ -679,8 +679,8 @@ fn unicode_full_symbol_names() -> Result<()> {
 /// main reads a∶b as the function intent ratio(a, b); ja gives it a name and glue word.
 #[test]
 fn ratio_as_function() -> Result<()> {
-    let expr = "<math><mi>a</mi><mo>&#x2236;</mo><mi>b</mi></math>";
-    test("ja", "ClearSpeak", expr, "比 オブ a 対 b")?;
+    let expr = "<math><mi>x</mi><mo>&#x2236;</mo><mi>y</mi></math>";
+    test("ja", "ClearSpeak", expr, "比 オブ x 対 y")?;
     return Ok(());
 }
 
