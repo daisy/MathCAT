@@ -8,6 +8,17 @@
 * Navigation of math (in multiple ways including overviews)
 
 
+<details>
+<summary>Supported speech languages</summary>
+
+**Supported:** Chinese (Traditional), English, Finnish, French, German, Greek, Hungarian, Indonesian, Norwegian, Polish, Portuguese, Russian, Spanish, Swedish, and Vietnamese.
+
+**In progress:** Catalan, Icelandic, Italian, Japanese, and Urdu.
+
+Source: [DAISY MathCAT Initiative](https://daisy.org/activities/projects/mathcat-initiative/).
+
+</details>
+
 There are four related projects that make use of MathCAT:
 - [MathCATDemo](https://nsoiffer.github.io/MathCATDemo/) -- an online demonstration of some of what can be done with MathCAT
 - [A python interface for MathCAT](https://github.com/NSoiffer/MathCATForPython) -- used by a [MathCAT NVDA add-on](https://addons.nvda-project.org/addons/MathCAT.en.html).

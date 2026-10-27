@@ -562,16 +562,16 @@
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
-      then: [T: "上矢印", pause: short]      # phrase(direction is shown by the 'up arrow')
+      then: [T: "上向き矢印", pause: short]      # phrase(direction is shown by the 'up arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
-      then: [T: "下矢印", pause: short]      # phrase(the trend is shown by the 'down arrow')
+      then: [T: "下向き矢印", pause: short]      # phrase(the trend is shown by the 'down arrow')
   - test:
       if: ".[contains(@notation,'leftarrow')]"
-      then: [t: "左矢印", pause: short]      # phrase(the 'left arrow' indicates going back)
+      then: [T: "左向き矢印", pause: short]      # phrase(the 'left arrow' indicates going back)
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
-      then: [t: "右矢印", pause: short]      # phrase(the 'right arrow' indicates moving forward)
+      then: [T: "右向き矢印", pause: short]      # phrase(the 'right arrow' indicates moving forward)
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
       then: [t: "北東矢印", pause: short]      # phrase(direction is indicated by the 'northeast arrow')

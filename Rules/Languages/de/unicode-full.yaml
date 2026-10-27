@@ -1102,13 +1102,13 @@
  - "⊆":                                         	#  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
-     - T: "Teilmenge oder gleich"               	# 	(en: 'subset of or equal to', MathPlayer: 'Teilmenge von odre gleich', google: 'teilmenge von oder gleich')
+         then: [T: "ist eine"]                  	# 	(en: 'is a', google translation)
+     - T: "Teilmenge von oder gleich"           	# 	(en: 'subset of or equal to', MathPlayer: 'Teilmenge von odre gleich', google: 'teilmenge von oder gleich')
  - "⊇":                                         	#  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "ist ein"]                   	# 	(en: 'is a', google translation)
-     - T: "Obermenge oder gleich"               	# 	(en: 'superset of or equal to', MathPlayer: 'Obermenge von oder gleich', google: 'superset von oder gleich')
+         then: [T: "ist eine"]                  	# 	(en: 'is a', google translation)
+     - T: "Obermenge von oder gleich"           	# 	(en: 'superset of or equal to', MathPlayer: 'Obermenge von oder gleich', google: 'superset von oder gleich')
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"

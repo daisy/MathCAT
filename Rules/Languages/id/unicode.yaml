@@ -243,7 +243,7 @@
 - "θ": [T: theta] # 0x3b8
 - "ι": [T: iota] # 0x3b9
 - "κ": [T: kappa] # 0x3ba
-- "λ": [T: lamda] # 0x3bb
+- "λ": [T: lambda] # 0x3bb
 - "μ": [T: mu] # 0x3bc
 - "ν": [T: nu] # 0x3bd
 - "ξ": [T: zai] # 0x3be

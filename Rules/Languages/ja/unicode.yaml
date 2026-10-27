@@ -84,17 +84,17 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "括弧"]                     # 0x28
-            else: [t: "丸括弧"]               # 0x28
-        else: [t: "左丸括弧"]                   # 0x28                         
+            then: [T: "カッコ"]                     # 0x28
+            else: [T: "丸カッコ"]               # 0x28
+        else: [T: "丸カッコ"]                   # 0x28                         
  - ")":                                          # 0x29
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
-            then: [t: "括弧閉じ"]                   # 0x29
-            else: [t: "丸括弧閉じ"]             # 0x29
-        else: [t: "右丸括弧"]                 # 0x29                 
+            then: [T: "カッコ閉じ"]                   # 0x29
+            else: [T: "丸カッコ閉じ"]             # 0x29
+        else: [T: "丸カッコ閉じ"]                 # 0x29                 
 
  - "*":                                          # 0x2a
     test:
@@ -155,14 +155,14 @@
  - "[":                                          # 0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "角括弧"]
-        else: [t: "左角括弧"]                            
+        then: [T: "角カッコ"]
+        else: [T: "角カッコ"]                            
  - "\\": [t: "バックスラッシュ"]                         # 0x5c
  - "]":                                          # 0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "角括弧閉じ"]
-        else: [t: "右角括弧"]
+        then: [T: "角カッコ閉じ"]
+        else: [T: "角カッコ閉じ"]
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
@@ -173,8 +173,8 @@
  - "{":                                         # 0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "中括弧"]
-        else: [t: "左中括弧"]                            
+        then: [T: "中カッコ"]
+        else: [T: "中カッコ"]                            
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -202,8 +202,8 @@
  - "}":                                          # 0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [t: "中括弧閉じ"]
-        else: [t: "右中括弧"]                            
+        then: [T: "中カッコ閉じ"]
+        else: [T: "中カッコ閉じ"]                            
 
  - "~": [t: "チルダ"]                               # 0x7e
  - " ":                                            # 0xa0
@@ -215,7 +215,7 @@
 
  - "¬": [t: "ノット"]                                 # 0xac
  - "°": [t: "度"]                           # 0xb0
- - "±": [t: "プラスまたはマイナス"]                       # 0xb1
+ - "±": [T: "プラス オア マイナス"]                       # 0xb1
  - "´": [t: "アキュートアクセント"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
@@ -229,7 +229,7 @@
         - if: "$ClearSpeak_MultSymbolX = 'Auto'"
           then: [t: "掛ける"]
         - else_if: "$ClearSpeak_MultSymbolX = 'By'"
-          then: [t: "によって"]
+          then: [T: "掛ける"]
           else: [t: "クロス"]
         else_test:
             if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
@@ -329,15 +329,15 @@
     - t: "微分"
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
- - "←": [t: "左矢印"]                     # 0x2190
- - "↑": [t: "上矢印"]                       # 0x2191
+ - "←": [T: "左向き矢印"]                     # 0x2190
+ - "↑": [T: "上向き矢印"]                       # 0x2191
  - "→":                                          # 0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [t: "近づく"]
-        else: [t: "右矢印"]
+        else: [T: "右向き矢印"]
 
- - "↓": [t: "下矢印"]                     # 0x2193
+ - "↓": [T: "下向き矢印"]                     # 0x2193
  - "∈":                                          # 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -378,7 +378,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
-     - t: "平行でない"
+     - T: "ノット 平行"
  - "≤":                                          # 0x2264
      - test: 
          if: "$Verbosity!='Terse'"
@@ -530,5 +530,5 @@
      - T: "上位集合オブ オア イコール"
 
  # --- restored short definitions that differ from unicode-full ---
- - "⇒": [t: "右二重矢印"]             # 0x21d2
+ - "⇒": [T: "右向き二重矢印"]             # 0x21d2
  - "∐": [t: "余積"]                          # 0x2210

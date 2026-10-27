@@ -3,11 +3,11 @@
 #![allow(non_snake_case)]
 #![allow(clippy::needless_return)]
 use std::cell::RefCell;
-use std::sync::LazyLock;
 
 use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::{Captures, Regex};
 use sxd_document_no_unsafe::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
 use sxd_document_no_unsafe::parser;
@@ -173,13 +173,15 @@ pub fn get_version() -> String {
 pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     enable_logs();
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
-    static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
-    static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
+    static MATHJAX_V2: Lazy<Regex> = lazy_regex!(r#"class *= *['"]MJX-.*?['"]"#);
+    static MATHJAX_V3: Lazy<Regex> = lazy_regex!(r#"class *= *['"]data-mjx-.*?['"]"#);
 
     // These have some length limits to avoid DOS attacks via long strings
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
+    static NAMESPACE_DECL: Lazy<Regex> = lazy_regex!(r#"xmlns:[[:alpha:]]{1,32}"#);
+    static PREFIX: Lazy<Regex> = lazy_regex!(r#"(</?)[[:alpha:]]{1,32}:"#);
+    // The longest name in src/entities.in is "CounterClockwiseContourIntegral" (31 letters),
+    // so 32 is used as the upper bound to keep names of any length resolvable.
+    static HTML_ENTITIES: Lazy<Regex> = lazy_regex!(r#"&([a-zA-Z]{2,32});"#);
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -287,10 +289,7 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| {
             let rules = rules.borrow();
             let pref_manager = rules.pref_manager.borrow();
-            let mut value = pref_manager.pref_to_string(&name);
-            if value == NO_PREFERENCE {
-                value = pref_manager.pref_to_string(&name);
-            }
+            let value = pref_manager.pref_to_string(&name);
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
             } else {
@@ -433,7 +432,7 @@ pub fn get_navigation_braille() -> Result<String> {
                                 Ok(found)
                             } else {
                                 let new_mathml = create_mathml_element(&new_doc, "math");
-                                new_mathml.append_child(copy_mathml(found));
+                                new_mathml.append_child(copy_mathml(found, new_doc));
                                 new_doc.root().append_child(new_mathml);
                                 Ok(new_mathml)
                             }
@@ -526,11 +525,10 @@ pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let command = command.as_ref().to_string();
     let result = catch_unwind(AssertUnwindSafe(|| {
-        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-        if cmd.is_none() {
+        let Some(cmd) = NAV_COMMANDS.get_key(&command) else {   // gets a &'static version of the command.
             bail!("Unknown command in call to DoNavigateCommand()");
         };
-        let cmd = *cmd.unwrap();
+        let cmd = *cmd;
         MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
@@ -706,23 +704,23 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 
 // utility functions
 
-/// Copy (recursively) the (MathML) element and return the new one.
-/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
-/// Convert the returned error from set_mathml, etc., to a useful string for display
-pub fn copy_mathml(mathml: Element) -> Element {
-    return copy_mathml_recursive(mathml, 0);
+/// Copy (recursively) the (MathML) element into `dest` and return the new one.
+/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy.
+/// Nodes are document-local (arena indexes with `no-unsafe`), so the copy must be created in `dest`.
+pub fn copy_mathml<'d>(mathml: Element<'_>, dest: Document<'d>) -> Element<'d> {
+    return copy_mathml_recursive(mathml, dest, 0);
 }
 
-fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+fn copy_mathml_recursive<'d>(mathml: Element<'_>, dest: Document<'d>, depth: usize) -> Element<'d> {
     // Safety: Prevent stack overflow on deeply nested MathML
     if depth > MAX_DEPTH {
         // Return the element as a leaf if it's too deep to prevent crash
-        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+        return create_mathml_element(&dest, as_str!(name(mathml)));
     }
 
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
-    let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+    let new_mathml = create_mathml_element(&dest, as_str!(name(mathml)));
     mathml.attributes().iter().for_each(|attr| {
         new_mathml.set_attribute_value(as_qname!(attr.name()), as_str!(attr.value()));
     });
@@ -737,7 +735,7 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml_recursive(child, depth + 1);
+        let new_child = copy_mathml_recursive(child, dest, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -850,7 +848,7 @@ fn trim_element_recursive(e: Element, allow_structure_in_leaves: bool, depth: us
 
     // space, tab, newline, carriage return all get collapsed to a single space
     const WHITESPACE: &[char] = &[' ', '\u{0009}', '\u{000A}','\u{000C}', '\u{000D}'];
-    static WHITESPACE_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"[ \u{0009}\u{000A}\u{00C}\u{000D}]+"#).unwrap());
+    static WHITESPACE_MATCH: Lazy<Regex> = lazy_regex!(r#"[ \u{0009}\u{000A}\u{00C}\u{000D}]+"#);
 
     if is_leaf(e) && (!allow_structure_in_leaves || IsNode::is_mathml(e)) {
         // Assume it is HTML inside of the leaf -- turn the HTML into a string
@@ -1133,13 +1131,9 @@ pub fn is_same_element(e1: Element, e2: Element, ignore_attrs: &[&str]) -> Resul
     return Ok(());
 
     /// compares attributes -- '==' didn't seems to work
-    fn attrs_are_same(attrs1: Vec<Attribute>, attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
-        let attrs1 = attrs1.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
-        let attrs2 = attrs2.iter()
-                .filter(|a| !ignore.contains(&as_qname!(a.name()).local_part())).cloned()
-                .collect::<Vec<Attribute>>();
+    fn attrs_are_same(mut attrs1: Vec<Attribute>, mut attrs2: Vec<Attribute>, ignore: &[&str]) -> Result<()> {
+        attrs1.retain(|a| !ignore.contains(&as_qname!(a.name()).local_part()));
+        attrs2.retain(|a| !ignore.contains(&as_qname!(a.name()).local_part()));
         if attrs1.len() != attrs2.len() {
             bail!("Attributes have different length: {:?} != {:?}", attrs1, attrs2);
         }
@@ -1294,7 +1288,7 @@ mod tests {
             set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>")?;
 
         // need to remove unique ids
-        static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
+        static ID_MATCH: Lazy<Regex> = lazy_regex!(r#"id='.+?' "#);
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "normal entity test failed");
@@ -1518,6 +1512,19 @@ mod tests {
             Ok::<(), Error>(())
         })?;
         return Ok(());
+        });
+    }
+
+    #[test]
+    fn navigation_braille_copies_focused_node_into_temporary_document() -> Result<()> {
+        return interface_test(|| {
+            set_rules_dir(super::super::abs_rules_dir_path())?;
+            set_preference("BrailleCode", "LaTeX")?;
+            set_mathml("<math><mi id='focused'>x</mi><mo>+</mo><mi>y</mi></math>")?;
+            set_navigation_node("focused", 0)?;
+
+            assert_eq!(get_navigation_braille()?, "x");
+            Ok(())
         });
     }
 }

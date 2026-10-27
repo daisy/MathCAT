@@ -76,8 +76,8 @@ use crate::speech::{RulesFor, SpeechRulesWithContext, MyXPath, TreeOrString};
 use std::string::ToString;
 use std::str::FromStr;
 use strum::{Display, EnumString};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
-use std::sync::LazyLock;
 use sxd_xpath_no_unsafe::Value;
 use html_escape::encode_safe;
 
@@ -114,35 +114,9 @@ pub struct Pronounce {
     text: String,       // plain text
     ipa: String,        // ipa 
     sapi5: String,
-    eloquence: String,
+    // eloquence: String,
 }
 
-
-impl fmt::Display for Pronounce {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut comma = "";     // comma separator so it looks right
-        write!(f, "pronounce: [")?;
-        if !self.text.is_empty() {
-            write!(f, "text: '{}'", self.text)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.ipa.is_empty() {
-            write!(f, "{}ipa: '{}'", comma, self.ipa)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.sapi5.is_empty() {
-            write!(f, "{}sapi5: '{}'", comma, self.sapi5)?;
-            comma = ",";
-        }
-        write!(f, "pronounce: [")?;
-        if !self.eloquence.is_empty() {
-            write!(f, "{}eloquence: '{}'", comma, self.eloquence)?;
-        }
-        return writeln!(f, "]");
-    }
-}
 
 impl Pronounce {
     fn build(values: &Yaml) -> Result<Pronounce> {
@@ -152,7 +126,6 @@ impl Pronounce {
         let mut text = "";
         let mut ipa = "";
         let mut sapi5 = "";
-        let mut eloquence = "";
         // values should be an array with potential values for Pronounce
         let values = values.as_vec().ok_or_else(||
                                         anyhow!("'pronounce' value '{}' is not an array", yaml_to_type(values)))?;
@@ -168,7 +141,7 @@ impl Pronounce {
                     "text" => text = as_str_checked(value)?,
                     "ipa" => ipa = as_str_checked(value)?,
                     "sapi5" => sapi5 = as_str_checked(value)?,
-                    "eloquence" => eloquence = as_str_checked(value)?,
+                    "eloquence" => { as_str_checked(value)?; },
                     _ => bail!("unknown pronounce type: {} with value {}", yaml_to_string(key, 0), yaml_to_string(value, 0)),
                 }
             }
@@ -180,7 +153,7 @@ impl Pronounce {
             text: text.to_string(),
             ipa: ipa.to_string(),
             sapi5: sapi5.to_string(),
-            eloquence: eloquence.to_string()
+            // eloquence: eloquence.to_string()
         } );
     
 
@@ -232,7 +205,7 @@ impl fmt::Display for TTSCommandRule {
             TTSCommandValue::String(s) => s.to_string(),
             TTSCommandValue::Number(f) => f.to_string(),
             TTSCommandValue::XPath(p) => p.to_string(),
-            TTSCommandValue::Pronounce(p) => p.to_string(),
+            TTSCommandValue::Pronounce(p) => format!("{p:?}"),
         };
         if self.command == TTSCommand::Pause {
             return write!(f, "pause: {value}");
@@ -242,16 +215,6 @@ impl fmt::Display for TTSCommandRule {
     }
 }
 
-
-impl TTSCommandRule {
-    pub fn new(command: TTSCommand, value: TTSCommandValue, replacements: ReplacementArray) -> TTSCommandRule {
-        return TTSCommandRule{
-            command,
-            value,
-            replacements
-        }
-    }
-}
 
 /// Supported TTS engines
 /// These types should do something for all the TTSCommands
@@ -271,18 +234,13 @@ pub enum TTS {
 /// Applies only when generating speech (not braille) with SSML or SAPI5 output.
 /// Returns `s` unchanged when no escaping is needed (no allocation).
 pub fn escape_string_for_safety(s: String, rules_for: RulesFor, tts: &TTS) -> String {
-    if rules_for == RulesFor::Braille || (*tts != TTS::SSML && *tts != TTS::SAPI5) {
-        return s;
-    }
-    if !needs_xml_text_escape(&s) {
+    if rules_for == RulesFor::Braille ||
+       (*tts != TTS::SSML && *tts != TTS::SAPI5) ||
+       !s.contains(['&', '<', '>', '"']) {   // no XML text escape needed
         return s;
     }
     log::debug!("Escaping string for safety: {}", s);
     return encode_safe(&s).into_owned();
-}
-
-fn needs_xml_text_escape(s: &str) -> bool {
-    return s.as_bytes().iter().any(|&b| b == b'&' || b == b'<' || b == b'>' || b == b'"');
 }
 
 impl TTS {
@@ -348,7 +306,11 @@ impl TTS {
                 TTSCommandValue::String(tts_str_value.to_string())
             },
         };
-        return Ok( Box::new( TTSCommandRule::new(tts_enum, tts_command_value, replacements) ) );
+        return Ok(Box::new(TTSCommandRule {
+            command: tts_enum,
+            value: tts_command_value,
+            replacements,
+        }));
     }
     
     /// The rule called to execute the TTSCommand `command`
@@ -462,11 +424,7 @@ impl TTS {
         }
 
         let mut result = String::with_capacity(255);
-        result += &match self {
-            TTS::None  => self.get_string_none(&command, prefs, true)?,
-            TTS::SSML  => self.get_string_ssml(&command, prefs, true)?,
-            TTS::SAPI5 => self.get_string_sapi5(&command, prefs, true)?,
-        };
+        result += &self.get_string(&command, prefs, true)?;
 
 
         if !command.replacements.is_empty()  {
@@ -477,11 +435,7 @@ impl TTS {
             result += &speech;
         }
 
-        let end_tag = match self {
-            TTS::None  => self.get_string_none(&command, prefs, false)?,
-            TTS::SSML  => self.get_string_ssml(&command, prefs, false)?,
-            TTS::SAPI5 => self.get_string_sapi5(&command, prefs, false)?,
-        };   
+        let end_tag = self.get_string(&command, prefs, false)?;
 
         if end_tag.is_empty() {
             return Ok( result ); // avoids adding in " "
@@ -500,6 +454,15 @@ impl TTS {
             }
         }
     
+    }
+
+    /// Dispatch to the engine-specific code that generates the start or end tag for `command`
+    fn get_string(&self, command: &TTSCommandRule, prefs: &PreferenceManager, is_start_tag: bool) -> Result<String> {
+        return match self {
+            TTS::None  => self.get_string_none(command, prefs, is_start_tag),
+            TTS::SSML  => self.get_string_ssml(command, prefs, is_start_tag),
+            TTS::SAPI5 => self.get_string_sapi5(command, prefs, is_start_tag),
+        };
     }
 
     // auto pausing can't be known until neighboring strings are computed
@@ -668,7 +631,7 @@ impl TTS {
     /// The computation is based on the length of the speech strings (after removing tagging).
     /// There is a bias towards pausing more _after_ longer strings.
     pub fn compute_auto_pause(&self, prefs: &PreferenceManager, before: &str, after: &str) -> Result<String> {
-        static REMOVE_XML: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"<.+?>").unwrap()); // punctuation ending with a '.'
+        static REMOVE_XML: Lazy<Regex> = lazy_regex!(r"<.+?>"); // punctuation ending with a '.'
         
         
         let (before_len, after_len) = match self {
@@ -691,17 +654,12 @@ impl TTS {
         }
         let pause = std::cmp::min(3000, ((2 * before_len + after_len)/48) * 128);
         // create a TTSCommandRule so we reuse code
-        let command = TTSCommandRule::new(
-            TTSCommand::Pause,
-            TTSCommandValue::Number(pause as f64),
-            ReplacementArray::build_empty(),
-        );
-        return match self {
-            TTS::None  => self.get_string_none(&command, prefs, true),
-            TTS::SSML  => self.get_string_ssml(&command, prefs, true),
-            TTS::SAPI5 => self.get_string_sapi5(&command, prefs, true),
+        let command = TTSCommandRule {
+            command: TTSCommand::Pause,
+            value: TTSCommandValue::Number(pause as f64),
+            replacements: ReplacementArray::build_empty(),
         };
-
+        return self.get_string(&command, prefs, true);
     }
 
     /// Take the longest of the pauses
@@ -722,8 +680,8 @@ impl TTS {
 
     fn merge_pauses_none(&self, str: &str) -> String {
         // punctuation used for pauses is ",", ";" 
-        static SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+([;,])").unwrap()); // two or more pauses
-        static MULTIPLE_PAUSES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([,;][,;]+)").unwrap()); // two or more pauses
+        static SPACES: Lazy<Regex> = lazy_regex!(r"\s+([;,])"); // two or more pauses
+        static MULTIPLE_PAUSES: Lazy<Regex> = lazy_regex!(r"([,;][,;]+)"); // two or more pauses
         // we reduce all sequences of two or more pauses to a single medium pause
         let merges_string = SPACES.replace_all(str, "$1").to_string();
         let merges_string = MULTIPLE_PAUSES.replace_all(&merges_string, ";").to_string();
@@ -747,15 +705,15 @@ impl TTS {
     }
 
     fn merge_pauses_sapi5(&self, str: &str) -> String {
-        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<silence msec[^>]+?> *){2,}").unwrap()); // two or more pauses
-        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"msec=.*?(\d+)").unwrap()); // amount after 'time'
+        static CONSECUTIVE_BREAKS: Lazy<Regex> = lazy_regex!(r"(<silence msec[^>]+?> *){2,}"); // two or more pauses
+        static PAUSE_AMOUNT: Lazy<Regex> = lazy_regex!(r"msec=.*?(\d+)"); // amount after 'time'
         let replacement = |amount: usize| format!("<silence msec=='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }
 
     fn merge_pauses_ssml(&self, str: &str) -> String {
-        static CONSECUTIVE_BREAKS: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(<break time=[^>]+?> *){2,}").unwrap()); // two or more pauses
-        static PAUSE_AMOUNT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"time=.*?(\d+)").unwrap()); // amount after 'time'
+        static CONSECUTIVE_BREAKS: Lazy<Regex> = lazy_regex!(r"(<break time=[^>]+?> *){2,}"); // two or more pauses
+        static PAUSE_AMOUNT: Lazy<Regex> = lazy_regex!(r"time=.*?(\d+)"); // amount after 'time'
         let replacement = |amount: usize| format!("<break time='{amount}ms'/>");
         return TTS::merge_pauses_xml(str, &CONSECUTIVE_BREAKS, &PAUSE_AMOUNT, replacement);
     }
@@ -789,10 +747,30 @@ mod tests {
         let rule = TTS::build("pronounce", values).unwrap();
         let rendered = format!("{rule}");
 
-        assert!(rendered.contains("text: 'alpha'"));
-        assert!(rendered.contains("ipa: 'a'"));
-        assert!(rendered.contains("sapi5: 'b'"));
-        assert!(rendered.contains("eloquence: 'c'"));
+        assert!(rendered.contains("text: \"alpha\""));
+        assert!(rendered.contains("ipa: \"a\""));
+        assert!(rendered.contains("sapi5: \"b\""));
+        assert!(!rendered.contains("eloquence"));
+    }
+
+    /// Shows the derived pronunciation details when displaying a TTS rule.
+    #[test]
+    fn pronounce_rule_display_uses_debug_fields() {
+        let pronounce = Pronounce {
+            text: "bli bla blub".to_string(),
+            ipa: "a".to_string(),
+            sapi5: "b".to_string(),
+        };
+        let rule = TTSCommandRule {
+            command: TTSCommand::Pronounce,
+            value: TTSCommandValue::Pronounce(Box::new(pronounce)),
+            replacements: ReplacementArray::build_empty(),
+        };
+
+        assert_eq!(
+            rule.to_string(),
+            "pronounce: Pronounce { text: \"bli bla blub\", ipa: \"a\", sapi5: \"b\" }\n"
+        );
     }
 
     #[test]
