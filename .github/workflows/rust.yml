@@ -5,6 +5,8 @@ on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
+  # Tests must not read %APPDATA%\MathCAT\prefs.yaml (or the platform equivalent).
+  MATHCAT_IGNORE_USER_PREFS: "1"
 
 jobs:
   build:

@@ -2,6 +2,7 @@
 //! Either source can set any preference, but users and AT typically set different preferences.
 //!
 //! User prefs are read in from a YAML file (prefs.yaml). They can be written by hand.
+//! Set `MATHCAT_IGNORE_USER_PREFS` (any value, including empty) to skip the per-user file.
 //! In the future, there will hopefully be a nice UI that writes out the YAML file.
 //!
 //! AT prefs are set via the API given in the [crate::interface] module.
@@ -301,15 +302,22 @@ impl PreferenceManager {
                         system_prefs_file.to_str().unwrap());
         };
 
-        let mut user_prefs_file = dirs::config_dir();
-        if let Some(mut user_prefs_file_path_buf) = user_prefs_file {
-            user_prefs_file_path_buf.push("MathCAT/prefs.yaml");
-            if is_file_shim(&user_prefs_file_path_buf) {
-                prefs = Preferences::read_prefs_file(&user_prefs_file_path_buf, prefs)?;
+        let mut user_prefs_file = None;
+        if Self::ignore_user_prefs(std::env::var_os("MATHCAT_IGNORE_USER_PREFS").as_deref()) {
+            // Mark user prefs current without opening the config-dir file. Leaving
+            // `user_prefs_file` as None would reload the system file on every later call.
+            self.user_prefs_file = Some(FileAndTime::new_with_time(PathBuf::new()));
+        } else {
+            user_prefs_file = dirs::config_dir();
+            if let Some(mut user_prefs_file_path_buf) = user_prefs_file {
+                user_prefs_file_path_buf.push("MathCAT/prefs.yaml");
+                if is_file_shim(&user_prefs_file_path_buf) {
+                    prefs = Preferences::read_prefs_file(&user_prefs_file_path_buf, prefs)?;
+                }
+                // set the time otherwise keeps needing to do updates
+                self.user_prefs_file = Some( FileAndTime::new_with_time(user_prefs_file_path_buf.clone()) );
+                user_prefs_file = Some(user_prefs_file_path_buf);
             }
-            // set the time otherwise keeps needing to do updates
-            self.user_prefs_file = Some( FileAndTime::new_with_time(user_prefs_file_path_buf.clone()) );
-            user_prefs_file = Some(user_prefs_file_path_buf);
         }
 
         if prefs.prefs.is_empty() {
@@ -328,6 +336,11 @@ impl PreferenceManager {
         self.set_separators(language)?;
         
         return Ok( () );
+    }
+
+    /// True when `MATHCAT_IGNORE_USER_PREFS` is present. An empty value still counts as set.
+    fn ignore_user_prefs(flag: Option<&std::ffi::OsStr>) -> bool {
+        flag.is_some()
     }
 
     fn set_all_files(&mut self, rules_dir: &Path) -> Result<()> {
@@ -848,6 +861,15 @@ mod tests {
 
     fn speech_definitions_files_cache_path() -> PathBuf {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow().definitions_files_cache_path())
+    }
+
+    /// An unset flag reads the user prefs file. Any set value, including empty, skips it.
+    #[test]
+    fn ignore_user_prefs_follows_the_flag() {
+        use std::ffi::OsStr;
+        assert!(!PreferenceManager::ignore_user_prefs(None));
+        assert!(PreferenceManager::ignore_user_prefs(Some(OsStr::new("1"))));
+        assert!(PreferenceManager::ignore_user_prefs(Some(OsStr::new(""))));
     }
 
     #[test]

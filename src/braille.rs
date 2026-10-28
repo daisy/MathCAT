@@ -2239,28 +2239,163 @@ fn handle_contractions(full_chars: &[char], start: usize, end: usize, mut result
     if skip > 0 && skip < chars.len() {
         return handle_contractions(full_chars, start + skip, end, result);
     }
-    let mut chars_as_str = chars.iter().collect::<String>();
-    let original_chars_as_str = chars_as_str.clone();
-    // debug!("  handle_contractions: examine '{}'", &chars_as_str);
-    let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
-    for i in matches.iter() {
-        let element = &CONTRACTIONS[i];
-        if let Some(exceptions) = element.skip_if_word_in
-            && exceptions.contains(&original_chars_as_str) {
+    // Abbreviated function names (definitions.yaml FunctionNames) are spelled out.
+    // Spelled-out names such as "argument" still contract. A capital starts a new
+    // factor in the same letters-sequence ("xSin", "sinA").
+    let tokens = letter_tokens(chars);
+    let any_function = tokens.iter().any(|token| token.is_function);
+    if any_function && tokens.iter().all(|token| token.is_function) {
+        return result;
+    }
+    if any_function {
+        let chars_as_str: String = chars.iter().collect();
+        result.truncate(result.len() - chars_as_str.len());
+        let mut i = 0;
+        for token in &tokens {
+            if token.start > i {
+                let gap = &chars[i..token.start];
+                result.extend(gap.iter().copied());
+                result = apply_contractions(gap, false, result);
+            }
+            let token_chars = &chars[token.start..token.end];
+            result.extend(token_chars.iter().copied());
+            if !token.is_function {
+                result = apply_contractions(token_chars, i == 0 && word_start_ok, result);
+            }
+            i = token.end;
+        }
+        if i < chars.len() {
+            let tail = &chars[i..];
+            result.extend(tail.iter().copied());
+            result = apply_contractions(tail, false, result);
+        }
+        return result;
+    }
+    return apply_contractions(chars, word_start_ok, result);
+
+    /// `result` must already end with `chars`. Contractions are applied in place.
+    fn apply_contractions(chars: &[char], word_start_ok: bool, mut result: String) -> String {
+        let mut chars_as_str: String = chars.iter().collect();
+        let original_chars_as_str = chars_as_str.clone();
+        let matches = CONTRACTION_PATTERNS.matches(&chars_as_str);
+        for i in matches.iter() {
+            let element = &CONTRACTIONS[i];
+            if let Some(exceptions) = element.skip_if_word_in
+                && exceptions.contains(&original_chars_as_str) {
+                    continue;
+                }
+            if element.word_start_only && !word_start_ok {
                 continue;
             }
-        if element.word_start_only && !word_start_ok {
-            continue;
+            result.truncate(result.len() - chars_as_str.len());
+            chars_as_str = CONTRACTION_REGEX[i].replace_all(&chars_as_str, element.replacement).to_string();
+            result.push_str(&chars_as_str);
         }
-        // debug!("  replacing '{}' with '{}' in '{}'", element.pattern, element.replacement, &chars_as_str);
-        result.truncate(result.len() - chars_as_str.len());
-        chars_as_str = CONTRACTION_REGEX[i].replace_all(&chars_as_str, element.replacement).to_string();
-        result.push_str(&chars_as_str);
-        // debug!("  result after replace '{}'", result);
+        result
     }
-    return result;
 
+    struct LetterToken {
+        start: usize,
+        end: usize,
+        is_function: bool,
+    }
 
+    /// Leading English letters, split before each capital after the first letter.
+    /// Stops at the first non-letter (a number indicator, for example).
+    fn letter_tokens(chars: &[char]) -> Vec<LetterToken> {
+        let mut tokens = Vec::new();
+        let mut i = 0;
+        while i < chars.len() {
+            let start = i;
+            let mut word = String::new();
+            loop {
+                if i >= chars.len() {
+                    break;
+                }
+                let capital = chars[i] == 'C' || chars[i] == '𝐶';
+                if capital && !word.is_empty() {
+                    break;
+                }
+                if capital {
+                    i += 1;
+                    if i >= chars.len() || chars[i] != 'L' {
+                        word.clear();
+                        i = start;
+                        break;
+                    }
+                }
+                if i >= chars.len() || chars[i] != 'L' || i + 1 >= chars.len() {
+                    break;
+                }
+                let Some(letter) = cell_to_letter(chars[i + 1]) else {
+                    break;
+                };
+                word.push(if capital { letter.to_ascii_uppercase() } else { letter });
+                i += 2;
+            }
+            if word.is_empty() {
+                break;
+            }
+            tokens.push(LetterToken {
+                start,
+                end: i,
+                is_function: is_abbreviated_function_name(&word),
+            });
+        }
+        tokens
+    }
+
+    fn cell_to_letter(cell: char) -> Option<char> {
+        const LETTERS: &str = "abcdefghijklmnopqrstuvwxyz";
+        for letter in LETTERS.chars() {
+            let idx = (letter.to_ascii_uppercase() as usize) - 32;
+            if ASCII_TO_UNICODE[idx] == cell {
+                return Some(letter);
+            }
+        }
+        None
+    }
+
+    /// True for function-name abbreviations (`sin`, `arctan`), which are not contracted.
+    /// A spelled-out name (`argument`, `sine`) is a `FunctionNames` entry whose longest
+    /// function-name prefix leaves an English ending (`arg` + `ument`, `sin` + `e`).
+    fn is_abbreviated_function_name(word: &str) -> bool {
+        if word.is_empty() || !function_name_defined(word) {
+            return false;
+        }
+        let lower = word.to_ascii_lowercase();
+        let mut prefix_end = 0;
+        for (i, _) in lower.char_indices().skip(1) {
+            if function_name_defined(&lower[..i]) {
+                prefix_end = i;
+            }
+        }
+        if prefix_end == 0 {
+            return true;
+        }
+        let rest = &lower[prefix_end..];
+        if function_name_defined(rest) {
+            return true; // arc+tan, lim+inf: still an abbreviation
+        }
+        let has_vowel = rest.bytes().any(|b| matches!(b, b'a' | b'e' | b'i' | b'o' | b'u' | b'y'));
+        let spelled_out = has_vowel && (rest.len() >= 3 || rest == "e" || rest == "it");
+        !spelled_out
+    }
+
+    fn function_name_defined(word: &str) -> bool {
+        if word.is_empty() {
+            return false;
+        }
+        use crate::xpath_functions::IsInDefinition;
+        if IsInDefinition::is_defined_in(word, &SPEECH_DEFINITIONS, "FunctionNames").unwrap_or(false) {
+            return true;
+        }
+        // "Sin" is the same name as "sin"; definitions.yaml lists the lowercase form.
+        if word.bytes().any(|b| b.is_ascii_uppercase()) {
+            return IsInDefinition::is_defined_in(&word.to_ascii_lowercase(), &SPEECH_DEFINITIONS, "FunctionNames").unwrap_or(false);
+        }
+        false
+    }
 
     fn leading_non_word_letter_len(chars: &[char]) -> usize {
         if chars.is_empty() {
@@ -4260,9 +4395,13 @@ mod tests {
     /// Cross-check goldens at https://brailletranslators.com/ (Grade 2 / UEB).
     /// Should contract (225): force, work, time, speed, distance, area, height, weight, power, energy, density, gravity, acceleration, length, width, depth, cost, profit, interest, revenue, clearance, conductance, capacitance, resistance, impedance, reactance, variance, tolerance, luminosity, reliability, velocity, viscosity, precision, tension, efficiency, frequency, valence, stiffness, thickness, displacement, concentration, consumption, duration, elevation, fraction, friction, inflation, iteration, population, position, potential, production, resolution, rotation, charge, chord, pitch, growth, head, heat, reach, shear, margin, salary, offset, income, input, inventory, current, error, leverage, temperature, turnover, accuracy, breadth, strength, spread, discount, count, version, inductance, intensity, interval, perimeter, probability, utility, validity, parity, permeability, proportion, uncertainty, circumference, capacity, deceleration, dilution, enthalpy, entropy, equity, expense, gradient, headroom, inertia, latency, longitude, permittivity, period, principal, sensitivity, stress, throughput, thrust, wavelength, absorption, activation, activity, admittance, affinity, albedo, aperture, attenuation, average, bandwidth, baseline, bearing, benchmark, boiling, boundary, cohesion, compliance, compression, conductivity, coverage, damping, deflection, departure, depreciation, deviation, diffusion, dispersion, dissipation, distortion, divergence, downforce, elasticity, emissivity, emission, erosion, evaporation, expansion, expectation, extent, feedback, fidelity, filament, hardness, humidity, hysteresis, illuminance, incidence, index, inflow, influx, inhibition, injection, irradiance, kinetic, leakage, luminance, maturity, mean, median, melting, minimum, mobility, molarity, moisture, opacity, oscillation, outflow, overlap, parallax, parameter, peak, percentile, percentage, polarization, propagation, purity, quality, quantity, quenching, quotient, radiance, radiation, reaction, reactivity, redshift, reflectance, reflection, refraction, reluctance, remanence, resistivity, resonance, restitution, retardation, rigidity, salinity, saturation, scalar, scattering, separation, shrinkage, similarity, battery, diameter, epoch, gain, jitter, joule, momentum, shift, step, stride, zenith
     /// Should not contract (86): mass, volume, base, rate, drag, drift, gap, lag, loss, pace, radius, range, ratio, risk, run, scale, size, slope, tax, torque, capital, impulse, latitude, magnitude, premium, pressure, response, return, trajectory, voltage, aspect, backlog, curvature, dosage, dose, equilibrium, excess, exposure, fatigue, hydraulic, lifetime, likelihood, maximum, metric, orbit, osmosis, pulse, quanta, quantum, regret, residual, ripple, root, rotor, sag, secant, signal, altitude, amplitude, angle, bias, bitrate, budget, bulk, decay, deficit, degree, delay, duty, lift, limit, load, modulus, payload, phase, price, sample, skew, slack, span, supply, total, value, vector, wage, yield
-    /// Note: arccos (cc exception, partial ar groupsign) is covered in tests/braille/UEB/other.rs contractions_1.
+    /// Note: abbreviated function names are spelled out; spelled-out names still contract. See tests/braille/UEB/other.rs.
     #[test]
     fn ueb_technical_word_contractions() {
+        // Load FunctionNames so abbreviated names in this list are left uncontracted.
+        crate::interface::set_rules_dir(crate::abs_rules_dir_path()).unwrap();
+        crate::interface::set_preference("Language", "en").unwrap();
+        crate::interface::set_mathml("<math><mi>x</mi></math>").unwrap();
         const SHOULD_CONTRACT: &[(&str, &str)] = &[
             ("force", "⠿⠉⠑"),
             ("work", "⠐⠺"),
@@ -4276,6 +4415,7 @@ mod tests {
             ("energy", "⠢⠻⠛⠽"),
             ("density", "⠙⠢⠎⠰⠽"),
             ("gravity", "⠛⠗⠁⠧⠰⠽"),
+            ("gradient", "⠛⠗⠁⠙⠊⠢⠞"),
             ("acceleration", "⠁⠒⠑⠇⠻⠁⠰⠝"),
             ("length", "⠇⠢⠛⠹"),
             ("width", "⠺⠊⠙⠹"),
@@ -4363,7 +4503,6 @@ mod tests {
             ("entropy", "⠢⠞⠗⠕⠏⠽"),
             ("equity", "⠑⠟⠥⠰⠽"),
             ("expense", "⠑⠭⠏⠢⠎⠑"),
-            ("gradient", "⠛⠗⠁⠙⠊⠢⠞"),
             ("headroom", "⠓⠂⠙⠗⠕⠕⠍"),
             ("inertia", "⠔⠻⠞⠊⠁"),
             ("latency", "⠇⠁⠞⠢⠉⠽"),

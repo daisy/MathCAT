@@ -23,6 +23,9 @@ jobs:
   llvm-cov:
     name: cargo llvm-cov
     runs-on: ubuntu-latest
+    env:
+      # Tests must not read the per-user prefs.yaml.
+      MATHCAT_IGNORE_USER_PREFS: "1"
     steps:
       - uses: actions/checkout@v4
 

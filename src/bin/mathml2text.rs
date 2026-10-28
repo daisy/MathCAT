@@ -27,8 +27,6 @@ fn get_rules_dir() -> String {
 enum OutputType {
     Text,
     Braille,
-    #[cfg(feature="tts")]
-    Speech,
 }
 
 #[derive(Parser)]
@@ -153,21 +151,6 @@ fn main() -> Result<()> {
 		Err(e) => panic!("{}", errors_to_string(&e)),
 	    }
 	},
-	#[cfg(feature="tts")]
-	OutputType::Speech => {
-	    // Create the NaturalTts struct using the builder pattern.
-	    let mut natural = natural_tts::NaturalTtsBuilder::default()
-		.gtts_model(natural_tts::models::gtts::GttsModel::default())
-		.default_model(natural_tts::Model::Gtts)
-		.build().expect("failed to generate natural tts gtts model");
-
-
-	    // Start producing an output using the default_model.
-	    let _ = natural.start(get_spoken_text().unwrap(), &PathBuf::from("output.wav"));
-
-	    // Play the audio until it finishes
-	    natural.sleep_until_end();
-	}
     }
 
     Ok(())
