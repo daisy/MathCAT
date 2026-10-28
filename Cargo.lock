@@ -776,7 +776,7 @@ dependencies = [
 
 [[package]]
 name = "mathcat"
-version = "0.7.7-alpha.1"
+version = "0.7.8-alpha.1"
 dependencies = [
  "android_logger",
  "anyhow",
