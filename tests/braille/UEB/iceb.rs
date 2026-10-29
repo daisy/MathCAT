@@ -2055,7 +2055,7 @@ fn example_11_5_3() -> Result<()> {
         </mfrac>
     </math>";
     // modified to use "shape" as recommended in a comment on this example
-    test_braille("UEB", expr, "⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠰⠻⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾")?;
+    test_braille("UEB", expr, "⠰⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠻⠗⠐⠜⠀⠐⠶⠀⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾⠰⠄")?;
     return Ok(());
 
 }
