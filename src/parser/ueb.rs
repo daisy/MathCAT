@@ -99,6 +99,9 @@ struct Lexer<'a> {
     pending_typeform: PendingTypeform,
     /// Open radical nesting — only then is ⠬ a radical closer (else omission).
     radical_depth: i32,
+    /// Open general fractions (`⠷` … `⠨⠌` … `⠾`). A grade-1 symbol indicator
+    /// before the opener applies only to `⠷`; the line and closer stay structural.
+    general_frac_depth: i32,
     tokens: Vec<Token>,
 }
 
@@ -112,6 +115,7 @@ impl<'a> Lexer<'a> {
             capital: CapMode::Off,
             pending_typeform: PendingTypeform::None,
             radical_depth: 0,
+            general_frac_depth: 0,
             tokens: Vec::new(),
         }
     }
@@ -340,6 +344,36 @@ impl<'a> Lexer<'a> {
             return Ok(true);
         }
 
+        // General fraction indicators. Grade 1 is required to *open* one (⠰⠷),
+        // but that symbol indicator does not cover the line or the closer.
+        // Once open, ⠷ / ⠨⠌ / ⠾ stay structural so ⠰⠷⠭⠐⠖⠽⠨⠌⠼⠃⠾ puts 2
+        // in the denominator. A number earlier in the fraction used to hide this
+        // because numeric grade 1 stays on until a space.
+        if self.in_grade1() || self.general_frac_depth > 0 {
+            if self.eat("⠷") {
+                self.consume_grade1_symbol_use();
+                self.numeric = false;
+                self.general_frac_depth += 1;
+                self.tokens.push(Token::FracOpen);
+                return Ok(true);
+            }
+            if self.eat("⠨⠌") {
+                self.consume_grade1_symbol_use();
+                self.numeric = false;
+                self.tokens.push(Token::FracLine);
+                return Ok(true);
+            }
+            if self.eat("⠾") {
+                self.consume_grade1_symbol_use();
+                self.numeric = false;
+                if self.general_frac_depth > 0 {
+                    self.general_frac_depth -= 1;
+                }
+                self.tokens.push(Token::FracClose);
+                return Ok(true);
+            }
+        }
+
         // Level changes — require grade 1 meaning (G1 mode or explicit G1 already consumed)
         if self.in_grade1() {
             if self.eat("⠔") {
@@ -362,25 +396,6 @@ impl<'a> Lexer<'a> {
             if self.eat("⠨⠢") {
                 self.consume_grade1_symbol_use();
                 self.tokens.push(Token::Below);
-                return Ok(true);
-            }
-            // General fraction indicators (G1)
-            if self.eat("⠷") {
-                self.consume_grade1_symbol_use();
-                self.numeric = false;
-                self.tokens.push(Token::FracOpen);
-                return Ok(true);
-            }
-            if self.eat("⠨⠌") {
-                self.consume_grade1_symbol_use();
-                self.numeric = false;
-                self.tokens.push(Token::FracLine);
-                return Ok(true);
-            }
-            if self.eat("⠾") {
-                self.consume_grade1_symbol_use();
-                self.numeric = false;
-                self.tokens.push(Token::FracClose);
                 return Ok(true);
             }
             // Radical
@@ -3061,6 +3076,27 @@ mod tests {
         let mml = Braille_to_MathML("⠰⠰⠰⠽⠀⠐⠶⠀⠷⠭⠨⠌⠼⠃⠾⠰⠄", "UEB").unwrap();
         assert!(mml.contains("<mfrac>"), "{mml}");
         assert!(mml.contains("<mi>x</mi>") && mml.contains("<mn>2</mn>"), "{mml}");
+    }
+
+    #[test]
+    fn fraction_symbol_g1_x_plus_y_over_2() {
+        // ⠰ covers only the opening ⠷. The line and closer must still bound the
+        // denominator when no number (and therefore no numeric grade 1) precedes them.
+        let mml = Braille_to_MathML("⠰⠷⠭⠐⠖⠽⠨⠌⠼⠃⠾", "UEB").unwrap();
+        let frac = mml
+            .split_once("<mfrac>")
+            .and_then(|(_, rest)| rest.split_once("</mfrac>"))
+            .map(|(inner, _)| inner)
+            .unwrap_or("");
+        let (num, den) = frac.split_once("<mn>").unwrap_or(("", ""));
+        assert!(
+            num.contains("<mi>x</mi>") && num.contains("<mi>y</mi>"),
+            "numerator should be x+y\n{mml}"
+        );
+        assert!(
+            den.starts_with("2</mn>"),
+            "denominator should be 2\n{mml}"
+        );
     }
 
     #[test]
