@@ -23,20 +23,15 @@ def stream(command: list[str], log: TextIO, on_line: Callable[[str], None]) -> i
     """Run a command from the repo root, copying each output line to the log and passing it to `on_line`."""
     log.write(f"$ {' '.join(command)}\n")
     log.flush()
-    try:
-        process = subprocess.Popen(
-            command,
-            cwd=ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-        )
-    except OSError as error:
-        log.write(f"Could not run cargo: {error}\n")
-        return 1
-    with process:
+    with subprocess.Popen(
+        command,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    ) as process:
         for line in process.stdout:
             log.write(line)
             on_line(line.rstrip("\r\n"))
