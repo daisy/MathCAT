@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from .. import cli
-from ..rulecoverage import rule_coverage
+from ..rulecoverage import loading_visualizer, rule_coverage
 from ..rulecoverage.rule_coverage_report import render_html
 
 LIST_COMMAND = [*rule_coverage.COMMAND, "--", "--list"]
@@ -161,7 +161,7 @@ def test_failed_listing_skips_the_test_run(tmp_path: Path, monkeypatch: pytest.M
 def test_progress_counts_listed_tests_and_reports_failures(capsys: pytest.CaptureFixture[str]) -> None:
     """Listed tests set the bar's total, each libtest result advances it, and failed tests are printed by name.
     Outside a terminal (as under pytest) the live display is replaced by plain lines."""
-    progress = rule_coverage.CargoProgress()
+    progress = loading_visualizer.CargoProgress()
     with progress:
         for line in ["   Compiling mathcat v0.7.8 (/repo)", "     Running tests/braille.rs", "a::one: test", "a::two: test", ""]:
             progress.listing_line(line)
