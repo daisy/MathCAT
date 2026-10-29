@@ -12,14 +12,12 @@
 #![allow(clippy::needless_return)]
 
 use crate::errors::Result;
+use crate::parser::symbols;
 use crate::prefs::{PreferenceManager, NO_PREFERENCE};
 use crate::shim_filesystem::read_to_string_shim;
 use anyhow::Context;
-use regex::Regex;
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::path::PathBuf;
-use yaml_rust::{Yaml, YamlLoader};
 
 type SymbolTableLoad = std::result::Result<Vec<(String, String)>, String>;
 
@@ -30,54 +28,29 @@ thread_local! {
 
 /// Ensure the UEB reverse symbol table is loaded (reads YAML on first call).
 pub fn ensure_ueb_symbols_loaded() -> Result<()> {
-    UEB_SYMBOLS.with(|cell| {
-        if cell.borrow().is_none() {
-            *cell.borrow_mut() = Some(load_ueb_symbols().map_err(|e| format!("{e:#}")));
-        }
-        match cell.borrow().as_ref().unwrap() {
-            Ok(_) => Ok(()),
-            Err(e) => Err(anyhow::anyhow!("UEB symbol table failed to load: {e}")),
-        }
-    })
+    UEB_SYMBOLS.with(|cell| symbols::ensure(cell, load_ueb_symbols, "UEB symbol table"))
 }
 
 /// Longest-match lookup of a UEB symbol at the start of `input`.
 /// Returns `(braille_prefix, print_char)`. Loads YAML on first use.
 pub fn match_ueb_symbol(input: &str) -> Option<(String, String)> {
     let _ = ensure_ueb_symbols_loaded();
-    UEB_SYMBOLS.with(|cell| {
-        let table = cell.borrow();
-        let Ok(table) = table.as_ref().unwrap() else {
-            return None;
-        };
-        for (braille, print) in table.iter() {
-            if input.starts_with(braille.as_str()) {
-                return Some((braille.clone(), print.clone()));
-            }
-        }
-        None
-    })
+    UEB_SYMBOLS.with(|cell| symbols::with_ok(cell, |table| symbols::match_longest(table, input)).flatten())
 }
 
 /// Drop the cached table so the next parse reloads YAML (e.g. after prefs change).
 pub fn clear_ueb_symbol_cache() {
-    UEB_SYMBOLS.with(|cell| *cell.borrow_mut() = None);
+    UEB_SYMBOLS.with(symbols::clear);
 }
 
 /// Number of symbols currently cached (0 if not loaded). Test/debug helper.
 #[cfg(test)]
 fn cached_symbol_count() -> usize {
-    UEB_SYMBOLS.with(|cell| {
-        cell.borrow()
-            .as_ref()
-            .and_then(|r| r.as_ref().ok())
-            .map(|v| v.len())
-            .unwrap_or(0)
-    })
+    UEB_SYMBOLS.with(|cell| symbols::cached_len(cell, |table| table.len()))
 }
 
 fn load_ueb_symbols() -> Result<Vec<(String, String)>> {
-    let rules_dir = rules_dir_for_ueb()?;
+    let rules_dir = symbols::rules_dir()?;
     let unicode_path = rules_dir.join("Braille/UEB/unicode.yaml");
     let full_path = rules_dir.join("Braille/UEB/unicode-full.yaml");
 
@@ -129,9 +102,7 @@ fn load_ueb_symbols() -> Result<Vec<(String, String)>> {
         }
     }
 
-    let mut items: Vec<(String, String)> = braille_to_print.into_iter().collect();
-    items.sort_by(|a, b| b.0.len().cmp(&a.0.len()).then_with(|| a.0.cmp(&b.0)));
-    Ok(items)
+    Ok(symbols::into_longest_first(braille_to_print))
 }
 
 fn insert_pairs(
@@ -148,19 +119,7 @@ fn insert_pairs(
         if should_skip_mapping(ch, &braille) {
             continue;
         }
-        if overwrite {
-            if let Some(prev) = map.get(&braille)
-                && !should_replace_print(prev, ch) {
-                    continue;
-                }
-            map.insert(braille, ch.clone());
-        } else if let Some(prev) = map.get(&braille) {
-            if should_replace_print(prev, ch) {
-                map.insert(braille, ch.clone());
-            }
-        } else {
-            map.insert(braille, ch.clone());
-        }
+        symbols::insert_ranked(map, braille, ch.clone(), overwrite, preference_rank);
     }
 }
 
@@ -278,50 +237,18 @@ fn should_skip_print_char(ch: &str) -> bool {
 }
 
 fn should_skip_mapping(ch: &str, braille: &str) -> bool {
-    if braille.is_empty() || !braille.chars().any(is_braille) {
+    if braille.is_empty() || !braille.chars().any(symbols::is_braille) {
         return true;
     }
     // Bare Latin letter cells (no typeform / numeric / Greek indicators) would steal
     // a–z from the letter lexer (e.g. ⅆ → ⠙).
-    if is_only_latin_letter_cells(braille) {
+    if symbols::is_only_latin_letter_cells(braille) {
         return true;
     }
     let _ = ch;
     false
 }
 
-fn is_only_latin_letter_cells(braille: &str) -> bool {
-    let mut any = false;
-    for c in braille.chars() {
-        if !is_braille(c) {
-            return false;
-        }
-        if !is_latin_letter_cell(c) {
-            return false;
-        }
-        any = true;
-    }
-    any
-}
-
-fn is_latin_letter_cell(c: char) -> bool {
-    matches!(
-        c,
-        '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊' | '⠚' | '⠅' | '⠇'
-            | '⠍' | '⠝' | '⠕' | '⠏' | '⠟' | '⠗' | '⠎' | '⠞' | '⠥' | '⠧' | '⠺' | '⠭'
-            | '⠽' | '⠵'
-    )
-}
-
-fn rules_dir_for_ueb() -> Result<PathBuf> {
-    let pm = PreferenceManager::get();
-    let pm = pm.borrow();
-    let dir = pm.get_rules_dir();
-    if !dir.as_os_str().is_empty() {
-        return Ok(dir);
-    }
-    Ok(PathBuf::from(crate::abs_rules_dir_path()))
-}
 
 struct TypeformPrefs {
     double_struck: String,
@@ -360,9 +287,6 @@ impl TypeformPrefs {
     }
 }
 
-fn is_braille(ch: char) -> bool {
-    ('\u{2800}'..='\u{28FF}').contains(&ch)
-}
 
 /// Expand YAML flag letters to braille cells (UEB defaults + typeform prefs).
 fn expand_flags(raw: &str, tf: &TypeformPrefs) -> String {
@@ -393,7 +317,7 @@ fn expand_flags(raw: &str, tf: &TypeformPrefs) -> String {
             '-' => "⠤",
             '—' => "⠠⠤",
             '―' => "⠐⠠⠤",
-            c if is_braille(c) => {
+            c if symbols::is_braille(c) => {
                 out.push(c);
                 continue;
             }
@@ -405,93 +329,6 @@ fn expand_flags(raw: &str, tf: &TypeformPrefs) -> String {
     out
 }
 
-/// Collect (print_char, raw_template) from a UEB unicode YAML file.
-/// Includes single-character entries and ranged `translate(...)` alphabets.
-fn collect_unicode_file(text: &str) -> Result<Vec<(String, String)>> {
-    let docs = YamlLoader::load_from_str(text).map_err(|e| anyhow::anyhow!("YAML parse: {e}"))?;
-    let doc = docs
-        .first()
-        .ok_or_else(|| anyhow::anyhow!("empty unicode YAML"))?;
-    let list = doc
-        .as_vec()
-        .ok_or_else(|| anyhow::anyhow!("unicode YAML root is not an array"))?;
-
-    let mut pairs = Vec::new();
-    let translate_re =
-        Regex::new(r"translate\('\.',\s*'([^']+)',\s*'([a-zA-Z0-9]+)'\)").unwrap();
-
-    for entry in list {
-        let Some(hash) = entry.as_hash() else {
-            continue;
-        };
-        if hash.len() != 1 {
-            continue;
-        }
-        let (key, value) = hash.iter().next().unwrap();
-        let Some(key_str) = key.as_str() else {
-            continue;
-        };
-
-        let mut key_chars = key_str.chars();
-        let Some(first) = key_chars.next() else {
-            continue;
-        };
-
-        // Single character definition
-        if key_chars.next().is_none() {
-            collect_text_templates(value, &first.to_string(), &mut pairs);
-            continue;
-        }
-
-        // Range / multi-char key — expand via translate() + t/tc prefix when present
-        let prefix = first_text_prefix(value).unwrap_or_default();
-        let value_str = yaml_to_flat_string(value);
-        for caps in translate_re.captures_iter(&value_str) {
-            let glyphs = caps.get(1).unwrap().as_str();
-            let letters = caps.get(2).unwrap().as_str();
-            for (g, letter) in glyphs.chars().zip(letters.chars()) {
-                let raw = raw_template_for_translated_glyph(g, letter, &prefix);
-                if !raw.is_empty() {
-                    pairs.push((g.to_string(), raw));
-                }
-            }
-        }
-    }
-    Ok(pairs)
-}
-
-/// First `t:` / `tc:` string under a node (used as alphabet prefix for ranges).
-fn first_text_prefix(yaml: &Yaml) -> Option<String> {
-    match yaml {
-        Yaml::Array(arr) => arr.iter().find_map(first_text_prefix),
-        Yaml::Hash(h) => {
-            for (k, v) in h {
-                if let Some(key) = k.as_str()
-                    && matches!(key, "t" | "T" | "tc" | "TC" | "ct" | "CT")
-                        && let Some(s) = v.as_str()
-                            && !s.trim().is_empty() {
-                                return Some(s.to_string());
-                            }
-            }
-            h.values().find_map(first_text_prefix)
-        }
-        _ => None,
-    }
-}
-
-fn yaml_to_flat_string(yaml: &Yaml) -> String {
-    match yaml {
-        Yaml::String(s) => s.clone(),
-        Yaml::Array(arr) => arr.iter().map(yaml_to_flat_string).collect::<Vec<_>>().join("\n"),
-        Yaml::Hash(h) => h
-            .iter()
-            .map(|(k, v)| format!("{}: {}", yaml_to_flat_string(k), yaml_to_flat_string(v)))
-            .collect::<Vec<_>>()
-            .join("\n"),
-        _ => String::new(),
-    }
-}
-
 /// Build a YAML-style template for one glyph from a `translate` alphabet range.
 fn raw_template_for_translated_glyph(glyph: char, letter: char, yaml_prefix: &str) -> String {
     let o = glyph as u32;
@@ -501,14 +338,14 @@ fn raw_template_for_translated_glyph(glyph: char, letter: char, yaml_prefix: &st
     let use_blackboard = (0x1D538..=0x1D56B).contains(&o) || (0x1D7D8..=0x1D7E1).contains(&o);
 
     if letter.is_ascii_digit() {
-        let cell = digit_cell(letter);
+        let cell = symbols::ueb_digit_cell(letter);
         if use_blackboard {
             return format!("𝔹N{cell}");
         }
         return format!("{yaml_prefix}N{cell}");
     }
 
-    let cell = letter_cell(letter.to_ascii_lowercase());
+    let cell = symbols::letter_cell(letter.to_ascii_lowercase());
     if cell.is_empty() {
         return String::new();
     }
@@ -542,81 +379,10 @@ fn raw_template_for_translated_glyph(glyph: char, letter: char, yaml_prefix: &st
     format!("{prefix}L{cell}")
 }
 
-/// Gather every `t:` / `tc:` / `ct:` / `ot:` string under a unicode replacement node.
-fn collect_text_templates(yaml: &Yaml, ch: &str, out: &mut Vec<(String, String)>) {
-    match yaml {
-        Yaml::Array(arr) => {
-            for item in arr {
-                collect_text_templates(item, ch, out);
-            }
-        }
-        Yaml::Hash(h) => {
-            for (k, v) in h {
-                if let Some(key) = k.as_str() {
-                    match key {
-                        "t" | "T" | "tc" | "TC" | "ct" | "CT" | "ot" | "OT" => {
-                            if let Some(s) = v.as_str()
-                                && !s.trim().is_empty() {
-                                    out.push((ch.to_string(), s.to_string()));
-                                }
-                        }
-                        _ => collect_text_templates(v, ch, out),
-                    }
-                } else {
-                    collect_text_templates(v, ch, out);
-                }
-            }
-        }
-        _ => {}
-    }
-}
-
-fn letter_cell(ch: char) -> &'static str {
-    match ch {
-        'a' => "⠁",
-        'b' => "⠃",
-        'c' => "⠉",
-        'd' => "⠙",
-        'e' => "⠑",
-        'f' => "⠋",
-        'g' => "⠛",
-        'h' => "⠓",
-        'i' => "⠊",
-        'j' => "⠚",
-        'k' => "⠅",
-        'l' => "⠇",
-        'm' => "⠍",
-        'n' => "⠝",
-        'o' => "⠕",
-        'p' => "⠏",
-        'q' => "⠟",
-        'r' => "⠗",
-        's' => "⠎",
-        't' => "⠞",
-        'u' => "⠥",
-        'v' => "⠧",
-        'w' => "⠺",
-        'x' => "⠭",
-        'y' => "⠽",
-        'z' => "⠵",
-        _ => "",
-    }
-}
-
-fn digit_cell(ch: char) -> &'static str {
-    match ch {
-        '1' => "⠁",
-        '2' => "⠃",
-        '3' => "⠉",
-        '4' => "⠙",
-        '5' => "⠑",
-        '6' => "⠋",
-        '7' => "⠛",
-        '8' => "⠓",
-        '9' => "⠊",
-        '0' => "⠚",
-        _ => "",
-    }
+/// Collect (print_char, raw_template) from a UEB unicode YAML file.
+/// Includes single-character entries and ranged `translate(...)` alphabets.
+fn collect_unicode_file(text: &str) -> Result<Vec<(String, String)>> {
+    symbols::collect_templates(text, Some("[a-zA-Z0-9]+"), raw_template_for_translated_glyph)
 }
 
 #[cfg(test)]

@@ -87,6 +87,7 @@ enum Token {
 }
 
 struct Lexer<'a> {
+    input: &'a str,
     rest: &'a str,
     tokens: Vec<Token>,
     frac_stack: Vec<FracKind>,
@@ -98,6 +99,7 @@ struct Lexer<'a> {
 impl<'a> Lexer<'a> {
     fn new(input: &'a str) -> Self {
         Self {
+            input,
             rest: input,
             tokens: Vec::new(),
             frac_stack: Vec::new(),
@@ -173,7 +175,13 @@ impl<'a> Lexer<'a> {
     }
 
     fn try_space(&mut self) -> bool {
-        if self.eat("⠀") {
+        // Braille blank, or ASCII whitespace. A trailing space still has to be
+        // visible when deciding whether ⠨⠅ is "=" or κ.
+        let Some(c) = self.peek_char() else {
+            return false;
+        };
+        if c == '⠀' || c.is_whitespace() {
+            self.eat_char();
             self.tokens.push(Token::Space);
             true
         } else {
@@ -661,6 +669,17 @@ impl<'a> Lexer<'a> {
                 }
             }
             self.rest = &self.rest[braille.len()..];
+            // ⠨⠅ is "=" with a space on both sides, and κ otherwise.
+            // An indicator glued to the cells (script, multipurpose, directly
+            // over/under, punctuation comma after a space) is not a clear letter
+            // context, so it stays "=".
+            let print = if braille == "⠨⠅" && print == "=" {
+                let end = self.input.len() - self.rest.len();
+                let start = end - braille.len();
+                equals_or_kappa(self.input, start).to_string()
+            } else {
+                print
+            };
             if print == "√" {
                 self.radical_depth += 1;
                 self.tokens.push(Token::SqrtOpen);
@@ -855,6 +874,59 @@ fn is_prime_op(s: &str) -> bool {
 
 fn is_quote_char(s: &str) -> bool {
     matches!(s, "“" | "”" | "\"")
+}
+
+/// `⠨⠅` is Nemeth "=" when a blank sits on both sides.
+/// A blank is the braille space `⠀` or any Unicode whitespace.
+/// `start` is the byte index of this `⠨⠅` in `input`.
+///
+/// Nemeth cleanup trims a trailing blank, so a comparison at the end of the
+/// string (`2 =` → `…⠆⠀⠨⠅`) has a blank before it and nothing after. That
+/// is still "=". The exception is `= κ`, written `⠀⠨⠅⠀⠨⠅` at the end:
+/// the second `⠨⠅` follows an equals that already has a blank on both sides.
+/// Indicators glued to the cells are not a clear letter context, so those stay "=".
+fn equals_or_kappa(input: &str, start: usize) -> &'static str {
+    let before = input[..start].chars().next_back();
+    let after = input[start + "⠨⠅".len()..].chars().next();
+    if is_nemeth_blank(before) && is_nemeth_blank(after) {
+        return "=";
+    }
+    if before_marks_comparison(before) || after_marks_comparison(after) {
+        return "=";
+    }
+    // Rule 151.16: a comparison sign in a punctuated list, `( < , = , > )`.
+    if is_nemeth_blank(before) && after == Some('⠠') {
+        return "=";
+    }
+    if is_nemeth_blank(before) && after.is_none() && !preceded_by_spaced_equals(input, start) {
+        return "=";
+    }
+    "κ"
+}
+
+/// True when this `⠨⠅` is the κ in `= κ` (`⠀⠨⠅⠀⠨⠅` at the end).
+fn preceded_by_spaced_equals(input: &str, start: usize) -> bool {
+    let head = input[..start].trim_end_matches(|c: char| c == '⠀' || c.is_whitespace());
+    let Some(head) = head.strip_suffix("⠨⠅") else {
+        return false;
+    };
+    is_nemeth_blank(head.chars().next_back())
+}
+
+fn is_nemeth_blank(c: Option<char>) -> bool {
+    matches!(c, Some(ch) if ch == '⠀' || ch.is_whitespace())
+}
+
+fn before_marks_comparison(before: Option<char>) -> bool {
+    matches!(
+        before,
+        Some('⠐' | '⠘' | '⠰' | '⠠' | '⠌' | '⠸' | '⠈' | '⠼' | '⠨' | '⠻')
+    )
+}
+
+fn after_marks_comparison(after: Option<char>) -> bool {
+    // Directly over/under, or the next comparison's multipurpose indicator.
+    matches!(after, Some('⠣' | '⠩' | '⠐'))
 }
 
 /// YAML matches that the mode-aware lexer must keep.
@@ -1803,6 +1875,39 @@ mod tests {
     #[test]
     fn equals_after_multipurpose_not_decimal() {
         assert_nemeth("⠐⠨⠅⠣⠸⠦⠻", &["<mover>", "<mo>=</mo>"]);
+    }
+
+    #[test]
+    fn trailing_blank_keeps_equals() {
+        // y = κ−2 =. Cleanup drops the blank after a final comparison, so
+        // `…⠆⠀⠨⠅` at the end is still "=". A blank that is still present
+        // (braille or ASCII) is "=" too.
+        let with_plus = "<math><mrow><mo>+</mo><mi>y</mi><mo>=</mo><mi>&#x3BA;</mi><mo>-</mo><mn>2</mn><mo>=</mo></mrow></math>";
+        let no_plus = "<math><mrow><mi>y</mi><mo>=</mo><mi>&#x3BA;</mi><mo>-</mo><mn>2</mn><mo>=</mo></mrow></math>";
+        let cases = [
+            ("⠬⠽⠀⠨⠅⠀⠨⠅⠤⠆⠀⠨⠅⠀", with_plus),
+            ("⠬⠽⠀⠨⠅⠀⠨⠅⠤⠆ ⠨⠅ ", with_plus),
+            ("⠬⠽⠀⠨⠅⠀⠨⠅⠤⠆⠀⠨⠅", with_plus),
+            ("⠽⠀⠨⠅⠀⠨⠅⠤⠆ ⠨⠅ ", no_plus),
+            ("⠽⠀⠨⠅⠀⠨⠅⠤⠆⠀⠨⠅", no_plus),
+        ];
+        for (src, expect) in cases {
+            let mml = crate::parser::Braille_to_MathML(src, "Nemeth").unwrap();
+            assert_eq!(mml, expect, "{src:?}");
+        }
+    }
+
+    #[test]
+    fn spaced_equals_otherwise_kappa() {
+        // ⠨⠅ is "=" only with a space on both sides. ⠭⠀⠨⠅⠀⠨⠅ is x = κ
+        // (the second ⠨⠅ follows a spaced equals). A ⠨⠅ with no blank on
+        // either side is kappa.
+        assert_nemeth(
+            "⠭⠀⠨⠅⠀⠨⠅",
+            &["<mi>x</mi>", "<mo>=</mo>", "<mi>&#x3BA;</mi>"],
+        );
+        assert_nemeth("⠨⠅", &["<mi>&#x3BA;</mi>"]);
+        assert_nemeth("⠭⠨⠅", &["<mi>x</mi>", "<mi>&#x3BA;</mi>"]);
     }
 
     #[test]

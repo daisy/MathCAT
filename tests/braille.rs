@@ -48,5 +48,7 @@ mod braille {
         mod chemistry;
         mod other;
     }
+
+    mod omission;
 }
 

@@ -38,7 +38,42 @@ fn from_braille_dirs() -> Vec<(PathBuf, &'static str)> {
     vec![
         (root.join("UEB"), "UEB"),
         (root.join("Nemeth"), "Nemeth"),
+        (root.join("ASCIIMath"), "ASCIIMath"),
+        (root.join("LaTeX"), "LaTeX"),
     ]
+}
+
+/// Parse a Rust string literal at the start of `s` (`"..."`, `r"..."`, or `r#"..."#`).
+fn parse_rust_string(s: &str) -> Option<String> {
+    if let Some(rest) = s.strip_prefix("r#\"") {
+        let end = rest.find("\"#")?;
+        return Some(rest[..end].to_string());
+    }
+    if let Some(rest) = s.strip_prefix("r\"") {
+        let end = rest.find('"')?;
+        return Some(rest[..end].to_string());
+    }
+    let rest = s.strip_prefix('"')?;
+    let mut out = String::new();
+    let mut chars = rest.chars();
+    while let Some(c) = chars.next() {
+        if c == '\\' {
+            match chars.next() {
+                Some('n') => out.push('\n'),
+                Some('r') => out.push('\r'),
+                Some('t') => out.push('\t'),
+                Some('\\') => out.push('\\'),
+                Some('"') => out.push('"'),
+                Some(other) => out.push(other),
+                None => return None,
+            }
+        } else if c == '"' {
+            return Some(out);
+        } else {
+            out.push(c);
+        }
+    }
+    None
 }
 
 /// Parse `vec![("k", "v"), ...]` from a single-line `test_from_braille_prefs` call.
@@ -78,7 +113,8 @@ fn extract_cases() -> Vec<Case> {
             let text = fs::read_to_string(&path).unwrap();
             let mut name = String::new();
             let prefs_needle = format!("test_from_braille_prefs(\"{code}\", vec![");
-            let plain_needle = format!("test_from_braille(\"{code}\", expr, \"");
+            let plain_mark = format!("test_from_braille(\"{code}\", expr, ");
+            let prefs_mark = format!("test_from_braille_prefs(\"{code}\", vec![");
             for line in text.lines() {
                 let t = line.trim();
                 if let Some(rest) = t.strip_prefix("fn ") {
@@ -88,30 +124,34 @@ fn extract_cases() -> Vec<Case> {
                 }
                 if let Some(idx) = t.find(&prefs_needle) {
                     let after_vec = &t[idx + prefs_needle.len()..];
-                    let Some(vec_end) = after_vec.find("], expr, \"") else {
+                    let Some(vec_end) = after_vec.find("], expr, ") else {
                         continue;
                     };
                     let prefs = parse_prefs_vec(&after_vec[..vec_end]);
-                    let after = &after_vec[vec_end + "], expr, \"".len()..];
-                    if let Some(end) = after.find('"') {
+                    let after = after_vec[vec_end + "], expr, ".len()..].trim_start();
+                    if let Some(original) = parse_rust_string(after) {
                         cases.push(Case {
                             file: file.clone(),
                             name: name.clone(),
                             code: code.to_string(),
-                            original: after[..end].to_string(),
+                            original,
                             prefs,
                         });
                     }
                     continue;
                 }
-                if let Some(idx) = t.find(&plain_needle) {
-                    let after = &t[idx + plain_needle.len()..];
-                    if let Some(end) = after.find('"') {
+                if let Some(idx) = t.find(&plain_mark) {
+                    // Skip the prefs form, which also contains this prefix only after `vec!`.
+                    if t[idx..].starts_with(prefs_mark.as_str()) {
+                        continue;
+                    }
+                    let after = t[idx + plain_mark.len()..].trim_start();
+                    if let Some(original) = parse_rust_string(after) {
                         cases.push(Case {
                             file: file.clone(),
                             name: name.clone(),
                             code: code.to_string(),
-                            original: after[..end].to_string(),
+                            original,
                             prefs: Vec::new(),
                         });
                     }

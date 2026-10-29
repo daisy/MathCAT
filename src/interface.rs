@@ -413,13 +413,12 @@ pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
 
 /// Parse Unicode braille into MathML and set it as the current expression
 /// (same as [`set_mathml`]). Uses the current `BrailleCode` preference.
-pub fn set_mathml_from_braille(braille: impl AsRef<str>) -> Result<String> {
+pub fn set_mathml_from_braille(braille: impl AsRef<str>, braille_code: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let braille = braille.as_ref().to_string();
     let mathml = {
         let result = catch_unwind(AssertUnwindSafe(|| {
-            let braille_code = crate::prefs::PreferenceManager::get().borrow().pref_to_string("BrailleCode");
-            crate::parser::Braille_to_MathML(&braille, &braille_code)
+            crate::parser::Braille_to_MathML(&braille, braille_code.as_ref())
         }));
         report_any_panic(result)?
     };

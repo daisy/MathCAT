@@ -15,4 +15,12 @@ mod FromBraille {
         mod chemistry;
         mod partial;
     }
+    mod ASCIIMath {
+        mod augenbit;
+        mod other;
+    }
+    mod LaTeX {
+        mod augenbit;
+        mod other;
+    }
 }

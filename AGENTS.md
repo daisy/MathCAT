@@ -33,6 +33,7 @@ but add common mistakes of AI agents here instead.
 - Do not mirror README content here; keep guidance agent-specific.
 - **Always use UTF-8** for anything MathCAT-related (braille cells, MathML, Rules YAML, tests, notes, JSON, logs). Never rely on the Windows default (cp1252) or PowerShell's default redirect encoding — those corrupt Unicode braille. In Python: `encoding="utf-8"` on every `open` / `Path.read_text` / `Path.write_text` / `json.dump`, and `sys.stdout.reconfigure(encoding="utf-8")` (same for stderr). Write files with Python/`Path.write_text(..., encoding="utf-8")` rather than `Out-File` / `>` unless the shell is known to be UTF-8.
 - Avoid broad formatting sweeps; do not run `cargo fmt` in this repo.
+- In Rust, put logical connectives (`&&`, `||`) at the end of the line, before any comment. Do not start a continuation line with `&&` or `||`. Include this in every plan that touches Rust.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
 - Do **not** change test goldens (expected braille/speech/nav strings) unless the user explicitly says to. Prefer fixing code/rules to match existing goldens; if a golden looks wrong vs the spec, ask before editing it.
 - do not do any git commands unless explicitly asked for

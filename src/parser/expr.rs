@@ -1,4 +1,4 @@
-//! Shared presentation AST for braille → MathML (UEB and Nemeth).
+//! Shared presentation AST for braille / ASCIIMath → MathML (UEB, Nemeth, ASCIIMath).
 
 #![allow(clippy::needless_return)]
 #![allow(non_snake_case)]
@@ -64,6 +64,11 @@ pub enum Expr {
     },
     Space,
     Text(String),
+    /// `<menclose notation="…">` (ASCIIMath `cancel`).
+    Enclose {
+        notation: String,
+        body: Box<Expr>,
+    },
     /// Required item/closer not yet typed — `<mtext>&#xFFFD;</mtext>`.
     Missing,
 }
@@ -189,6 +194,11 @@ impl Expr {
             Expr::Identifier(s) => format!("<mi>{}</mi>", xml_escape(s)),
             Expr::Operator(s) => format!("<mo>{}</mo>", xml_escape(s)),
             Expr::Text(s) => format!("<mtext>{}</mtext>", xml_escape(s)),
+            Expr::Enclose { notation, body } => format!(
+                "<menclose notation=\"{}\">{}</menclose>",
+                xml_escape(notation),
+                body.to_mathml()
+            ),
             Expr::Missing => "<mtext>&#xFFFD;</mtext>".to_string(),
             // Non-automatic braille spaces → explicit nbsp (see `row_parts_to_mathml`).
             Expr::Space => "<mo>&#xA0;</mo>".to_string(),
