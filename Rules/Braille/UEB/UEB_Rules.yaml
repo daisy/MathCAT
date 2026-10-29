@@ -119,7 +119,7 @@
    replace: 
    - x: "*[1]"
    - x: "*[2]/*[1]"
-   - t: "⠰⠻"
+   - t: "1⠻"
    - x: "*[2]/*[2]"
    - x: "*[3]"
 
@@ -129,7 +129,7 @@
   replace:
      - x: "*[1]"
      - x: "*[2]/*[1]/*[1]/*[1]"
-     - t: "⠰⠻"
+     - t: "1⠻"
      - x: "*[2]/*[2]/*[1]/*[1]"
      - x: "*[3]"
 
@@ -138,24 +138,52 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
-  name: default-matrix
+  name: bracketed-table
   tag: mrow
-  variables:
-  - RowStart: "*[1]"
-  - RowEnd: "*[3]"
   match:
     - "*[2][self::m:mtable] and"
     - (IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "*[3]"
   replace: [x: "*[2]"]
+
+-
+  name: left-sided-delimiter
+  tag: mrow
+  match:
+    - "*[2][self::m:mtable] and"
+    - "*[1][.='{' or .='[' or .='(' or .='|']"
+  variables:
+  - RowStart: "*[1]"
+  - RowEnd: "''"
+  replace:
+  - x: "*[2]"
+  - t: "⠸W"      # need to add something to signal the end of the table -- act like a new line
+
+-
+  name: right-sided-delimiter
+  tag: mrow
+  match:
+    - "*[1][self::m:mtable] and"
+    - "*[2][.='}' or .=']' or .=')' or .='|']"
+  variables:
+  - RowStart: "''"
+  - RowEnd: "*[2]"
+  replace: [x: "*[1]"]
 
 -
   name: default-mtable
   tag: mtable
   match: "."
-  variables:   # should only be here for lines of equations -- made up dot-6, dot 0 as a parallel to dot six before parens
-  - RowStart: "IfThenElse($RowStart = '', '⠀', $RowStart)"
-  - RowEnd: "IfThenElse($RowEnd = '', '⠀', $RowEnd)"
-  replace: [x: "*"]
+  # variables:   # should only be here for lines of equations -- made up dot-6, dot 0 as a parallel to dot six before parens
+  # - RowStart: "IfThenElse($RowStart = '', '⠀', $RowStart)"
+  # - RowEnd: "IfThenElse($RowEnd = '', '⠀', $RowEnd)"
+  replace:
+  - x: "*"
+  - test:
+      if: "$RowEnd = ''"
+      then: [t: "⠸W"]      # need to add something to signal the end of the table -- act like a new line
 
 -
   name: default
@@ -166,7 +194,7 @@
       if: "preceding-sibling::*"   # between rows (not before the first)
       then: [t: "⠸W"]
   - test:
-      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      if: "../../self::m:mrow and $RowStart" # matrix, etc., or non-standalone lines (probably doesn't happen)
       then:
       - t: "⠠"
       - x: $RowStart
@@ -180,7 +208,7 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
   - test:
-      if: "../../self::m:mrow" # matrix, etc., or non-standalone lines (probably doesn't happen)
+      if: "../../self::m:mrow and $RowEnd" # matrix, etc., or non-standalone lines (probably doesn't happen)
       then:
       - t: "⠠"
       - x: $RowEnd
