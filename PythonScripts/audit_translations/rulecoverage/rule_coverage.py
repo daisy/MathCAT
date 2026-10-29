@@ -10,7 +10,7 @@ from collections.abc import Callable
 from pathlib import Path, PurePosixPath
 from typing import TextIO
 
-from .loading_visualizer import CargoProgress
+from .cargo_progress_visualizer import CargoProgress
 from .rule_coverage_report import RuleKey, coverage, render_html
 
 ROOT = Path(__file__).resolve().parents[3]
