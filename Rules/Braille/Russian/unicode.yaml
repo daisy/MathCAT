@@ -1,5 +1,6 @@
 ---
 # Russian mathematical braille characters
+- "�": [t: "⠀"]               # 0xFFFD missing character → empty cell (no omission sign)
 - ".": [t: "⠠⠲"]
 - ",": [t: "⠠⠂"]
 - "!": [t: "⠠⠖"]

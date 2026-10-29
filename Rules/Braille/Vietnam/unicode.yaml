@@ -17,6 +17,7 @@
 #    o -- opening/left side, c -- closing/right side, b -- both open and close (e.g, '"')
 
  
+ - "�": [t: "⠿"]               # 0xFFFD missing character → omission
  - "=": [T: "⠐⠶"]               # 0x003D (Equals)
  - "≠": [T: "⠐⠾"]             # 0x2260 (Not equal)
  - "<": [T: "⠐⠪"]               # 0x003C (Less than)

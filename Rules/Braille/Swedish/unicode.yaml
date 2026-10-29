@@ -15,6 +15,7 @@
 #    Any character which acts as a standing alone character (e.g, "{") needs each braille symbol to be labeled
 #    o -- opening/left side, c -- closing/right side, b -- both open and close (e.g, '"')
 
+ - "�": [t: "⠬"]               # 0xFFFD missing character → omission
  - "!": [t: "⠖"]                # 0x0021 (exclamation point)
  - "#": [t: "⠘⠼"]                # 0x0023 (number sign ; crosshatch ; tic-tac-toe ; pounds ( weight ))
  - "$": [t: "⠘⠎"]                # 0x0024 (dollar sign)

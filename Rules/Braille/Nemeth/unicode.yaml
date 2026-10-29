@@ -10,6 +10,7 @@
 
 
   # --- Nemeth Default Alphabet normal chars. ---
+ - "�": [t: "⠿"]               # 0xFFFD missing character → omission
  - "0": [t: "N⠴"]               # 0x30
  - "1": [t: "N⠂"]               # 0x31
  - "2": [t: "N⠆"]               # 0x32

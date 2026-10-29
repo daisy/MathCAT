@@ -17,6 +17,7 @@
 
 
 
+ - "�": [t: "⠬"]               # 0xFFFD missing character → omission
  - "a": [t: "L⠁"]               # 0x61 
  - "b": [t: "L⠃"]               # 0x62 
  - "c": [t: "L⠉"]               # 0x63 

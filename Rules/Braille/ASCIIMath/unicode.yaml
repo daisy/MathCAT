@@ -1,5 +1,6 @@
 
 ---
+ - "�": [t: ""]                         # 0xFFFD missing character → empty (no omission sign)
  - " ": [t: "𝐖"]                         # 0x20
  - "!": [t: "!"]                         # 0x21
  - "\"": [t: "\""]                       # 0x22

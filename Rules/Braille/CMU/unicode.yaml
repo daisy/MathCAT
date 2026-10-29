@@ -15,6 +15,7 @@
 #    Any character which acts as a standing alone character (e.g, "{") needs each braille symbol to be labeled
 #    o -- opening/left side, c -- closing/right side, b -- both open and close (e.g, '"')
 
+ - "�": [t: "⠰⠤⠆"]             # 0xFFFD missing character → omission
  - "0": [t: "N⠚"]               # 0x30 
  - "1": [t: "N⠁"]               # 0x31 
  - "2": [t: "N⠃"]               # 0x32 

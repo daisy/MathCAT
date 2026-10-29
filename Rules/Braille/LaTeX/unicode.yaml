@@ -9,6 +9,7 @@
 # Note: there is some filtering of unlikely names, so the above is not 100% as to the output, but it is close.
 
 ---
+ - "�": [t: ""]                       # 0xFFFD missing character → empty (no omission sign)
  - " ": [t: "\\space𝐖"]                  # 0x20
  - "#": [t: "\\#"]                       # 0x23
  - "$": [t: "\\$"]                       # 0x24
