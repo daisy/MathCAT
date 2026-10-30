@@ -94,16 +94,12 @@ impl Parser {
     }
 
     fn at_row_break(&self) -> bool {
-        let rest = self.rest();
-        (rest.starts_with("\\\\") &&
-            rest[2..].chars().next().is_none_or(|c| !c.is_ascii_alphabetic())) ||
-            self.at_cmd("cr")
+        // `\\` is a row break even when the next cell starts immediately (`\\c`).
+        self.rest().starts_with("\\\\") || self.at_cmd("cr")
     }
 
     fn eat_row_break(&mut self) -> bool {
-        if self.rest().starts_with("\\\\") &&
-            self.rest()[2..].chars().next().is_none_or(|c| !c.is_ascii_alphabetic())
-        {
+        if self.rest().starts_with("\\\\") {
             self.advance(2);
             true
         } else if self.at_cmd("cr") {
@@ -1913,6 +1909,8 @@ mod tests {
             (r"\hbar", "&#x210F;"),
             (r"\circlearrowleft", "&#x21BA;"),
             (r"\dashrightarrow", "&#x21E2;"),
+            (r"\rightarrow", "&#x2192;"),
+            (r"\rarr", "&#x2192;"),
             (r"\iddots", "&#x22F0;"),
             (r"\pvint", "&#x2A0D;"),
             (r"\dots", "&#x2026;"),
@@ -1936,6 +1934,48 @@ mod tests {
         // `\neq` must not swallow the letters of a longer name, and `\not=` stays ≠.
         assert_eq!(mml(r"\neq"), mml(r"\not="));
         assert!(mml(r"\infty").contains("&#x221E;"), "{}", mml(r"\infty"));
+        // `\rightarrow` is the same arrow as `\to`, and does not swallow `\rightarrowtail`.
+        assert_eq!(mml(r"a \rightarrow b"), mml(r"a \to b"));
+        assert!(mml(r"\rightarrowtail").contains("&#x21A3;"), "{}", mml(r"\rightarrowtail"));
+        // `\Longrightarrow` is the same arrow as `\implies`. The lowercase long arrow stays separate.
+        assert_eq!(mml(r"a \Longrightarrow b"), mml(r"a \implies b"));
+        assert!(mml(r"\longrightarrow").contains("&#x27F6;"), "{}", mml(r"\longrightarrow"));
+        assert!(mml(r"\Longleftarrow").contains("&#x27F8;"), "{}", mml(r"\Longleftarrow"));
+    }
+
+    #[test]
+    fn commented_spellings_match_the_active_command() {
+        // The forward template is unchanged. The commented name is the same character.
+        let pairs = [
+            (r"\leq", r"\le"),
+            (r"\geq", r"\ge"),
+            (r"\land", r"\wedge"),
+            (r"\lor", r"\vee"),
+            (r"\owns", r"\ni"),
+            (r"\Box", r"\square"),
+            (r"\verymuchless", r"\lll"),
+            (r"\verymuchgreater", r"\ggg"),
+            (r"\i", r"\imath"),
+        ];
+        for (alias, active) in pairs {
+            assert_eq!(mml(alias), mml(active), "{alias}");
+        }
+        // Both characters use `\setminus` in the rules. The later one wins, so
+        // `\smallsetminus` is what still reaches U+2216.
+        assert_eq!(mml(r"\smallsetminus"), "<math><mo>&#x2216;</mo></math>");
+        assert_eq!(mml(r"\setminus"), "<math><mo>&#x29F5;</mo></math>");
+        // A one-letter alias must not swallow a longer command.
+        let fenced = mml(r"\left(x\right)");
+        assert!(
+            fenced.contains("<mo>(</mo>") &&
+                fenced.contains("<mi>x</mi>") &&
+                fenced.contains("<mo>)</mo>"),
+            "{fenced}"
+        );
+        assert!(mml(r"\infty").contains("&#x221E;"), "{}", mml(r"\infty"));
+        assert!(mml(r"\vee").contains("&#x2228;"), "{}", mml(r"\vee"));
+        assert!(mml(r"\geqq").contains("&#x2267;"), "{}", mml(r"\geqq"));
+        assert_eq!(mml(r"{\rm x}"), "<math><mi mathvariant=\"normal\">x</mi></math>");
     }
 
     #[test]
@@ -2306,6 +2346,11 @@ mod tests {
         assert_eq!(
             mml(r"\begin{matrix} a \cr b \end{matrix}"),
             "<math><mtable><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd></mtr></mtable></math>"
+        );
+        // `\\` before a letter is still a row break, not a stray backslash.
+        assert_eq!(
+            mml(r"\begin{array}{cc}a&b\\c&d\end{array}"),
+            "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></math>"
         );
         assert_eq!(
             mml(r"\begin{cases} a & b \end{cases}"),
