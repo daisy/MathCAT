@@ -1458,7 +1458,7 @@ fn space_for_mu(mu: f64) -> char {
 }
 
 fn mu_to_space(mu: f64) -> Expr {
-    if !(mu >= 2.0) {
+    if mu < 2.0 {
         return Expr::Operator("\u{200B}".into());
     }
     let mu = mu.min(2160.0);
