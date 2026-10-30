@@ -427,10 +427,32 @@ cfg_if! {
                 || s.contains("Rules/Braille/") || s.contains("Rules\\Braille\\");
         }
 
+        /// Packaged `Rules.zip` stores each braille code and language as
+        /// `<name>/<name>.zip`. A direct read of `LaTeX/unicode-full.yaml` has to
+        /// unpack that zip first; speech does this when a code is selected, but
+        /// the parsers read the YAML on their own.
+        fn extract_packed_rules_yaml(path: &Path) {
+            if path.is_file() {
+                return;
+            }
+            let Some(dir) = path.parent() else {
+                return;
+            };
+            let Some(name) = dir.file_name().and_then(|s| s.to_str()) else {
+                return;
+            };
+            let zip_name = format!("{name}.zip");
+            if dir.join(&zip_name).is_file() {
+                let _ = zip_extract_shim(dir, &zip_name);
+            }
+        }
+
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
             if let Some(content) = IN_MEMORY_FILES.read().unwrap().as_ref().and_then(|f| f.get(&get_in_memory_key(path)).cloned()) {
                 return Ok(content);
             }
+
+            extract_packed_rules_yaml(path);
 
             let path = match path.canonicalize() {
                 Ok(path) => path,
@@ -528,6 +550,21 @@ mod tests {
         let result: Result<bool> = zip_extract_shim(test_dir.path(), "missing.zip");
 
         assert!(result.is_err()); // not true/false, but an error instead
+    }
+
+    /// A braille-code directory that only contains `<Name>.zip` still serves the
+    /// YAML packed inside it. That is the layout of the CI rules-package job.
+    #[test]
+    fn read_to_string_shim_extracts_packed_rules_yaml() {
+        let test_dir = Builder::new().prefix("mathcat-shim-packed-yaml-").tempdir().unwrap();
+        let code_dir = test_dir.path().join("LaTeX");
+        fs::create_dir(&code_dir).unwrap();
+        write_zip_file(&code_dir, "LaTeX.zip", "unicode-full.yaml", "packed: true\n");
+
+        let yaml = code_dir.join("unicode-full.yaml");
+        assert!(!yaml.is_file());
+        assert_eq!("packed: true\n", read_to_string_shim(&yaml).unwrap());
+        assert!(yaml.is_file());
     }
 
     /// Verifies both `read_to_string_shim` outcomes in one test run:
