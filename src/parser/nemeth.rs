@@ -668,6 +668,15 @@ impl<'a> Lexer<'a> {
                     return false;
                 }
             }
+            // A run of ⠨⠅ (`=`, ⩵, ⩶) is one comparison only when each ⠨⠅
+            // has a blank on both sides. ⠭⠀⠨⠅⠀⠨⠅⠨⠅ is x = κκ: the second
+            // ⠨⠅ is followed by another ⠨⠅, not a blank, and the third has
+            // no blank on either side. Take them one ⠨⠅ at a time.
+            let (braille, print) = if let Some(one) = first_equals_cell(&braille) {
+                (one, "=".to_string())
+            } else {
+                (braille, print)
+            };
             self.rest = &self.rest[braille.len()..];
             // ⠨⠅ is "=" with a space on both sides, and κ otherwise.
             // An indicator glued to the cells (script, multipurpose, directly
@@ -885,6 +894,10 @@ fn is_quote_char(s: &str) -> bool {
 /// is still "=". The exception is `= κ`, written `⠀⠨⠅⠀⠨⠅` at the end:
 /// the second `⠨⠅` follows an equals that already has a blank on both sides.
 /// Indicators glued to the cells are not a clear letter context, so those stay "=".
+///
+/// `⠨⠅⠨⠅` and `⠨⠅⠨⠅⠨⠅` are the braille for ⩵ and ⩶, but only as one
+/// comparison. A `⠨⠅` in that run that does not itself have a blank on both
+/// sides is κ (`⠭⠀⠨⠅⠀⠨⠅⠨⠅` is x = κκ).
 fn equals_or_kappa(input: &str, start: usize) -> &'static str {
     let before = input[..start].chars().next_back();
     let after = input[start + "⠨⠅".len()..].chars().next();
@@ -915,6 +928,24 @@ fn preceded_by_spaced_equals(input: &str, start: usize) -> bool {
 
 fn is_nemeth_blank(c: Option<char>) -> bool {
     matches!(c, Some(ch) if ch == '⠀' || ch.is_whitespace())
+}
+
+/// `braille` is two or more `⠨⠅` (the YAML entries for ⩵ and ⩶).
+/// Return one `⠨⠅` so each cell is judged by `equals_or_kappa`.
+fn first_equals_cell(braille: &str) -> Option<String> {
+    let cell = "⠨⠅";
+    if braille.len() <= cell.len() || !braille.len().is_multiple_of(cell.len()) {
+        return None;
+    }
+    let mut rest = braille;
+    while let Some(tail) = rest.strip_prefix(cell) {
+        rest = tail;
+    }
+    if rest.is_empty() {
+        Some(cell.to_string())
+    } else {
+        None
+    }
 }
 
 fn before_marks_comparison(before: Option<char>) -> bool {
@@ -1908,6 +1939,16 @@ mod tests {
         );
         assert_nemeth("⠨⠅", &["<mi>&#x3BA;</mi>"]);
         assert_nemeth("⠭⠨⠅", &["<mi>x</mi>", "<mi>&#x3BA;</mi>"]);
+        // ⠨⠅⠨⠅ is not ⩵ here: neither cell has a blank on both sides.
+        assert_nemeth(
+            "⠭⠀⠨⠅⠀⠨⠅⠨⠅",
+            &[
+                "<mi>x</mi>",
+                "<mo>=</mo>",
+                "<mi>&#x3BA;</mi>",
+                "<mi>&#x3BA;</mi>",
+            ],
+        );
     }
 
     #[test]
