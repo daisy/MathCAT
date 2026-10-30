@@ -145,9 +145,9 @@ fn p13_fraction_without_invisible_plus () -> Result<()> {
 
 }
 
+// The numerator doesn't require parentheses to be read correctly.
 #[test]
 fn p13_fractional_no_paren () -> Result<()> {
-    // The numerator doesn't require parentheses to be read correctly.
     let expr = r#"<math><mfrac><mrow><mn>4</mn><mo>&#8290;</mo><mi>x</mi></mrow><mrow><mo >(</mo><mn>1</mn><mo>−</mo><mi>x</mi><mo>)</mo></mrow></mfrac></math>"#;
     test_braille("ASCIIMath-fi", expr, r"4 x /(1 -x)")?;
     return Ok(());
@@ -283,9 +283,9 @@ fn p19_unit_vector () -> Result<()> {
 
 }
 
+// Notice that dot product (middle dot) in vectors has space around the dot.
 #[test]
 fn p19_vector_dot_product () -> Result<()> {
-    // Notice that dot product (middle dot) in vectors has space around the dot.
     let expr = r#"<math><mover><mi>a</mi><mo accent='false'>¯</mo></mover><mo>&#183;</mo><mover><mi>b</mi><mo accent='false'>¯</mo></mover></math>"#;
     test_braille("ASCIIMath-fi", expr, r"vec a * vec b")?;
     return Ok(());
@@ -555,7 +555,6 @@ fn p25_x_average () -> Result<()> {
 
 #[test]
 fn p26_expected_value () -> Result<()> {
-    // This might prove to be wrong mark up, but this way there won't be mix up with vectors.
     let expr = r#"<math><mi>E</mi><mo>&#8289;</mo><mo>(</mo><mi>X</mi><mo>)</mo><mo>=</mo><mi>&#956;</mi><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><mo>(</mo><msub><mi>p</mi><mi>i</mi></msub><mo>&#8290;</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></math>"#;
     test_braille("ASCIIMath-fi", expr, r"E(X) =~m =sum_i (p_i x_i)")?;
     return Ok(());
