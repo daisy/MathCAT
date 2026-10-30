@@ -428,6 +428,7 @@ impl Parser {
                     }
                 }),
                 rows,
+                intent: None,
             }
         } else {
             let body = Expr::row(items);
@@ -919,9 +920,10 @@ fn map_expr(expr: Expr, letters: u32, digits: u32) -> Expr {
             sub: sub.map(|e| Box::new(map_expr(*e, letters, digits))),
             sup: sup.map(|e| Box::new(map_expr(*e, letters, digits))),
         },
-        Expr::Table { open, close, rows } => Expr::Table {
+        Expr::Table { open, close, rows, intent } => Expr::Table {
             open,
             close,
+            intent,
             rows: rows
                 .into_iter()
                 .map(|r| r.into_iter().map(|c| map_expr(c, letters, digits)).collect())

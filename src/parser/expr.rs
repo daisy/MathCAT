@@ -50,6 +50,8 @@ pub enum Expr {
         /// `None` when the close fence was not typed yet (fenced) or for bare tables.
         close: Option<String>,
         rows: Vec<Vec<Expr>>,
+        /// MathML `intent` inferred from a LaTeX environment name.
+        intent: Option<String>,
     },
     /// `<mover>` — accent / limit above
     Over(Box<Expr>, Box<Expr>),
@@ -267,7 +269,7 @@ impl Expr {
                     None => format!("<mrow>{open_xml}{body_xml}</mrow>"),
                 }
             }
-            Expr::Table { open, close, rows } => {
+            Expr::Table { open, close, rows, intent } => {
                 let mut s = String::new();
                 // `cases` has only an opener. `rcases` has only a closer.
                 let fenced = open.is_some() || close.is_some();
@@ -277,7 +279,12 @@ impl Expr {
                         s.push_str(&format!("<mo>{}</mo>", xml_escape(o)));
                     }
                 }
-                s.push_str("<mtable>");
+                match intent {
+                    Some(intent) => {
+                        s.push_str(&format!("<mtable intent=\"{}\">", xml_escape(intent)))
+                    }
+                    None => s.push_str("<mtable>"),
+                }
                 for row in rows {
                     s.push_str("<mtr>");
                     for cell in row {

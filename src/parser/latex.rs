@@ -750,7 +750,12 @@ impl Parser {
             rows.push(vec![Expr::Row(vec![])]);
         }
         self.in_cd = saved_cd;
-        let table = Expr::Table { open, close, rows };
+        let table = Expr::Table {
+            open,
+            close,
+            rows,
+            intent: table_intent(&env).map(str::to_string),
+        };
         if env == "equation" || env == "equation*" {
             unwrap_equation(table)
         } else {
@@ -802,6 +807,7 @@ impl Parser {
             open: None,
             close: None,
             rows,
+            intent: None,
         }
     }
 
@@ -1232,9 +1238,10 @@ fn apply_face(expr: Expr, face: Face) -> Expr {
             close: close.map(|c| map_text_face(&c, face)),
             body: Box::new(apply_face(*body, face)),
         },
-        Expr::Table { open, close, rows } => Expr::Table {
+        Expr::Table { open, close, rows, intent } => Expr::Table {
             open,
             close,
+            intent,
             rows: rows
                 .into_iter()
                 .map(|r| r.into_iter().map(|c| apply_face(c, face)).collect())
@@ -1529,8 +1536,27 @@ fn fence_frac(frac: Expr, left: Option<String>, right: Option<String>) -> Expr {
 fn takes_column_spec(env: &str) -> bool {
     matches!(
         env,
-        "array" | "array*" | "subarray" | "alignat" | "alignat*" | "alignedat"
+        "array" | "array*" | "subarray"
+            | "alignat" | "alignat*" | "alignedat"
+            | "xalignat" | "xalignat*" | "xxalignat" | "xxalignat*"
     )
+}
+
+/// Intent inferred from the environment name. A trailing `*` is the same environment.
+fn table_intent(env: &str) -> Option<&'static str> {
+    let name = env.strip_suffix('*').unwrap_or(env);
+    match name {
+        "array" | "pmatrix" | "bmatrix" | "matrix" | "smallmatrix" | "bpm" | "bbm" => {
+            Some(":matrix")
+        }
+        "cases" => Some(":piecewise"),
+        "align" | "alignat" | "flalign" | "xalignat" | "xxalignat" => {
+            Some(":system-of-equations")
+        }
+        "eqnarray" => Some(":system-of-equations"),
+        "gather" => Some(":lines"),
+        _ => None,
+    }
 }
 
 fn unwrap_equation(expr: Expr) -> Expr {
@@ -1538,6 +1564,7 @@ fn unwrap_equation(expr: Expr) -> Expr {
         Expr::Table {
             open: None,
             close: None,
+            intent: _,
             mut rows,
         } if rows.len() == 1 && rows[0].len() == 1 => rows.pop().unwrap().pop().unwrap(),
         other => other,
@@ -1863,19 +1890,19 @@ mod tests {
             (r"\left(x", "<math><mrow><mo>(</mo><mi>x</mi></mrow></math>"),
             (
                 r"\begin{pmatrix}",
-                "<math><mrow><mo>(</mo><mtable><mtr><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
+                "<math><mrow><mo>(</mo><mtable intent=\":matrix\"><mtr><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
             ),
             (
                 r"\begin{pmatrix} a &",
-                "<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
+                "<math><mrow><mo>(</mo><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
             ),
             (
                 r"\begin{pmatrix} a \\",
-                "<math><mrow><mo>(</mo><mtable><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
+                "<math><mrow><mo>(</mo><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mrow></mrow></mtd></mtr></mtable><mo>)</mo></mrow></math>",
             ),
             (
                 r"\begin{array}{cc} a &",
-                "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mrow></mrow></mtd></mtr></mtable></math>",
+                "<math><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd><mtd><mrow></mrow></mtd></mtr></mtable></math>",
             ),
         ];
         for (src, expect) in cases {
@@ -2345,16 +2372,16 @@ mod tests {
         );
         assert_eq!(
             mml(r"\begin{matrix} a \cr b \end{matrix}"),
-            "<math><mtable><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd></mtr></mtable></math>"
+            "<math><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd></mtr></mtable></math>"
         );
         // `\\` before a letter is still a row break, not a stray backslash.
         assert_eq!(
             mml(r"\begin{array}{cc}a&b\\c&d\end{array}"),
-            "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></math>"
+            "<math><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></math>"
         );
         assert_eq!(
             mml(r"\begin{cases} a & b \end{cases}"),
-            "<math><mrow><mo>{</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></mrow></math>"
+            "<math><mrow><mo>{</mo><mtable intent=\":piecewise\"><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></mrow></math>"
         );
         assert_eq!(
             mml(r"\begin{rcases} a \end{rcases}"),
@@ -2364,11 +2391,11 @@ mod tests {
         assert_eq!(mml(r"\begin{equation*} x \end{equation*}"), mml("x"));
         assert_eq!(
             mml(r"\begin{alignat}{2} a & b \end{alignat}"),
-            "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></math>"
+            "<math><mtable intent=\":system-of-equations\"><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></math>"
         );
         assert_eq!(
             mml(r"\begin{smallmatrix} a \end{smallmatrix}"),
-            "<math><mtable><mtr><mtd><mi>a</mi></mtd></mtr></mtable></math>"
+            "<math><mtable intent=\":matrix\"><mtr><mtd><mi>a</mi></mtd></mtr></mtable></math>"
         );
         assert_eq!(
             mml(r"\eqalign{a & b \cr c}"),
@@ -2468,5 +2495,29 @@ mod tests {
         );
         assert!(!mml(r"@>>>").contains("&#x2192;"), "{}", mml(r"@>>>"));
         assert!(!mml(r"\begin{matrix} @>>> \end{matrix}").contains("&#x2192;"));
+    }
+
+    #[test]
+    fn environment_tables_carry_intent() {
+        // The environment name sets `intent`. A trailing `*` is the same environment.
+        let cases = [
+            (r"\begin{bmatrix} a \end{bmatrix}", ":matrix"),
+            (r"\begin{align*} a \end{align*}", ":system-of-equations"),
+            (r"\begin{flalign} a \end{flalign}", ":system-of-equations"),
+            (r"\begin{xalignat}{1} a \end{xalignat}", ":system-of-equations"),
+            (r"\begin{xxalignat}{1} a \end{xxalignat}", ":system-of-equations"),
+            (r"\begin{eqnarray} a \end{eqnarray}", ":system-of-equations"),
+            (r"\begin{eqnarray*} a \end{eqnarray*}", ":system-of-equations"),
+            (r"\begin{gather} a \\ b \end{gather}", ":lines"),
+            (r"\begin{gather*} a \end{gather*}", ":lines"),
+        ];
+        for (src, intent) in cases {
+            let out = mml(src);
+            assert!(
+                out.contains(&format!("<mtable intent=\"{intent}\">")),
+                "{src} -> {out}"
+            );
+            assert!(!out.contains("<mn>1</mn>"), "{src} -> {out}");
+        }
     }
 }

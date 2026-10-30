@@ -2264,6 +2264,7 @@ fn parse_fenced(
                     open: Some(open.to_string()),
                     close: close_tok,
                     rows: vec![cells],
+                    intent: None,
                 },
             ));
         }
@@ -2308,6 +2309,7 @@ fn parse_enlarged_matrix(
                         open: Some(open.to_string()),
                         close: None,
                         rows,
+                        intent: None,
                     },
                 ));
             }
@@ -2329,6 +2331,7 @@ fn parse_enlarged_matrix(
             open: Some(open.to_string()),
             close: Some(close.to_string()),
             rows,
+            intent: None,
         },
     ))
 }
@@ -2437,6 +2440,7 @@ fn parse_row_marked_matrix(
             open: Some(open),
             close: Some(close),
             rows,
+            intent: None,
         },
     ))
 }
@@ -2474,6 +2478,7 @@ fn try_parse_unbracketed_mtable(tokens: &[Token]) -> Option<Expr> {
         open: None,
         close: None,
         rows,
+        intent: None,
     })
 }
 
@@ -2515,6 +2520,7 @@ fn parse_marked_equation_lines(
             open: None,
             close: None,
             rows,
+            intent: None,
         },
     ))
 }

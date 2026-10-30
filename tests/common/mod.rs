@@ -317,6 +317,8 @@ pub const FROM_BRAILLE_IGNORE_ATTRS: &[&str] = &[
     "xmlns",
     "display",
     "data-id-added",
+    // LaTeX environments infer intent (`:matrix`, `:piecewise`, …) that the source tree may not carry.
+    "intent",
     "data-added",
     "data-changed",
     "data-previous-space-width",

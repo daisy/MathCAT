@@ -1805,6 +1805,7 @@ fn parse_enlarged_matrix(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
             open: Some(open.to_string()),
             close: Some(close_ch.to_string()),
             rows,
+            intent: None,
         },
     ))
 }
