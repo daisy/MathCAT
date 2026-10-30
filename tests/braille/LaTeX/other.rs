@@ -82,5 +82,27 @@ fn dots() -> Result<()> {
          <mover><mi>x</mi><mo>...</mo></mover>
     </math>";
     test_braille("LaTeX",expr, r"\dot{x} + \ddot{x} + \overset{...}{x}")?;
-  return Ok(());
+    return Ok(());
+}
+
+#[test]
+fn gather_lines_keep_begin_end() -> Result<()> {
+    // A bare table of equations is a gather. The intent is what names the environment.
+    let expr = r#"<math><mtable intent=":lines">
+        <mtr><mtd><mi>a</mi><mo>+</mo><mi>b</mi><mo>=</mo><mi>c</mi></mtd></mtr>
+        <mtr><mtd><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><msup><mi>z</mi><mn>2</mn></msup><mo>=</mo><msup><mi>r</mi><mn>2</mn></msup></mtd></mtr>
+        <mtr><mtd><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mtd></mtr>
+    </mtable></math>"#;
+    test_braille(
+        "LaTeX",
+        expr,
+        r"\begin{gather} a +b =c \\ x^2 +y^2 +z^2 =r^2 \\ E =mc^2 \end{gather}",
+    )?;
+    let matrix = r#"<math><mtable intent=":matrix"><mtr><mtd><mi>a</mi></mtd></mtr></mtable></math>"#;
+    test_braille("LaTeX", matrix, r"\begin{matrix} a \end{matrix}")?;
+    let pmatrix = r#"<math><mrow><mo>(</mo><mtable intent=":matrix"><mtr><mtd><mi>a</mi></mtd></mtr></mtable><mo>)</mo></mrow></math>"#;
+    test_braille("LaTeX", pmatrix, r"\begin{pmatrix} a \end{pmatrix}")?;
+    let cases = r#"<math><mrow><mo>{</mo><mtable intent=":piecewise"><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd></mtr></mtable></mrow></math>"#;
+    test_braille("LaTeX", cases, r"\begin{cases} a \\ b \end{cases}")?;
+    return Ok(());
 }

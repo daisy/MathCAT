@@ -320,3 +320,14 @@ fn dots() -> Result<()> {
   return Ok(());
 }
 
+#[test]
+fn gather_lines_use_invisible_fences() -> Result<()> {
+    // `{:` `:}` is a matrix with no visible fences.
+    let expr = r#"<math><mtable intent=":lines">
+        <mtr><mtd><mi>a</mi><mo>+</mo><mi>b</mi><mo>=</mo><mi>c</mi></mtd></mtr>
+        <mtr><mtd><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mtd></mtr>
+    </mtable></math>"#;
+    test_braille("ASCIIMath", expr, "{:[a+b=c], [E=mc^2]:}")?;
+    return Ok(());
+}
+
