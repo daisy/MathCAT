@@ -79,6 +79,11 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
+    "blank": "nofix=blank",
+    "definite-integral": "other=integral",
+    "derivative": "other=derivative",
+    "invisible-separator": "silent=",
+    "invisible-times": "silent=",
     "binomial": "infix=binomial; choose; end binomial",
 
     ### Functions and Inverses
