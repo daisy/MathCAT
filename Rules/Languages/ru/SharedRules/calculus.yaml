@@ -1,5 +1,96 @@
 ---
 
+# W3C definite-integral arguments are the integration domain or the two bounds, not the sign.
+- name: definite-integral-intent
+  tag: definite-integral
+  match: "(count(*)=1 or count(*)=2) and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "интеграл"
+  - test:
+      if: "count(*)=1"
+      then: [T: "по", x: "*[1]"]
+      else:
+      - T: "от"
+      - test:
+        - if: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
+          then: [T: "минус бесконечности"]
+        - else_if: "*[1][self::m:plus and count(*)=1 and *[1][.='∞']]"
+          then: [T: "плюс бесконечности"]
+        - else_if: "*[1][.='∞']"
+          then: [T: "бесконечности"]
+          else: [x: "*[1]"]
+      - T: "до"
+      - test:
+        - if: "*[2][self::m:minus and count(*)=1 and *[1][.='∞']]"
+          then: [T: "минус бесконечности"]
+        - else_if: "*[2][self::m:plus and count(*)=1 and *[1][.='∞']]"
+          then: [T: "плюс бесконечности"]
+        - else_if: "*[2][.='∞']"
+          then: [T: "бесконечности"]
+          else: [x: "*[2]"]
+
+# A semantic reading also works for prime notation; the numeric-order phrase avoids case-dependent ordinals.
+- name: derivative-intent
+  tag: derivative
+  match: "count(*)=3 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "производная"
+  - test:
+      if: "not(*[3][self::m:mn and .='1'])"
+      then: [T: "порядка", x: "*[3]"]
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
+  - x: "*[1]"
+  - T: "по"
+  - x: "*[2]"
+
+- name: core-sum-product
+  tag: [sum, product]
+  match: "count(*)>=1 and count(*)<=3 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - test:
+    - if: "count(*)=2"
+      then: [T: "по", x: "*[1]"]
+    - else_if: "count(*)=3"
+      then: [T: "от", x: "*[1]", T: "до", x: "*[2]"]
+  - test:
+      if: "count(*)>1 or not(IsNode(*[last()], 'simple'))"
+      then: [T: "выражения"]
+  - x: "*[last()]"
+  - test:
+      if: "$Impairment='Blindness' and not(IsNode(*[last()], 'simple') or IsBracketed(*[last()], '', ''))"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
+
+# Pair each variable with its following order. InsertIndex is supplied by insert;
+# the previous variable's order is at 2*InsertIndex-1 in the full child list.
+
+- name: core-partial-derivative
+  tag: partial-derivative
+  match: "count(*)>=3 and count(*) mod 2=1 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "частная производная"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
+  - x: "*[1]"
+  - T: "по"
+  - insert:
+      nodes: "*[position() mod 2=0]"
+      replace:
+      - test:
+          if: "not(*[2*$InsertIndex - 1][self::m:mn and .='1'])"
+          then: [T: "порядка", x: "*[2*$InsertIndex - 1]"]
+      - T: "и по"
+  - test:
+      if: "not(*[last()][self::m:mn and .='1'])"
+      then: [T: "порядка", x: "*[last()]"]
+
 - name: laplacian
   tag: laplacian
   match: "count(*) <= 1"   # can be on ∇^2 or on enclosing mrow

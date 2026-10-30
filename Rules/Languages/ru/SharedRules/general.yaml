@@ -1,4 +1,19 @@
 ---
+
+- name: blank-intent
+  tag: blank
+  match: "count(*)=0"
+  replace: [bookmark: "@id", T: "пустое место"]
+
+# Preserve operands while suppressing the default-silent operator, including a bare operator leaf.
+- name: invisible-operator-intent
+  tag: [invisible-times, invisible-separator]
+  match: "not(@data-intent-property) or contains(@data-intent-property, ':silent:')"
+  replace:
+  - test:
+      if: "*"
+      then: [x: "*"]
+      else: [T: ""]
 # Names confirmed in Russian mathematical notation. Do not rewrite MathML.
 - name: russian-function-alias
   tag: [mi, mtext]
@@ -128,7 +143,165 @@
       if: "count(*)>0"
       then: [x: "*"]
 
+# Function sets take a genitive operand, without the generic connector "от".
+- name: function-set
+  tag: [image, domain, codomain]
+  match: "count(*)<=1 and not(contains(@data-intent-property, ':silent:') or contains(@data-intent-property, ':postfix:') or contains(@data-intent-property, ':infix:') or contains(@data-intent-property, ':nofix:'))"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "parent::*[self::m:image or self::m:domain or self::m:codomain][count(*)=1] or DefinitionValue(name(..), 'Speech', 'RussianCoreGenitiveNames')!=''"
+      then: [x: "DefinitionValue(name(.), 'Speech', 'RussianGenitiveFunctionSets')"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+  - test:
+      if: "count(*)=1"
+      then:
+      - test:
+          if: "not(IsNode(*[1], 'simple')) and not(*[1][self::m:image or self::m:domain or self::m:codomain]) and DefinitionValue(name(*[1]), 'Speech', 'RussianCoreGenitiveNames')=''"
+          then: [T: "выражения"]
+      - with:
+          variables:
+          - SpeechOverrides_CapitalLetters: "IfThenElse(*[1][self::m:mi and string-length(.)=1 and contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', .)] and $SpeechOverrides_CapitalLetters='' and $Impairment='Blindness', 'заглавной', $SpeechOverrides_CapitalLetters)"
+          replace: [x: "*[1]"]
+
 # rules on scripted vertical bars ('evaluated at')
+- name: core-noun-function
+  tag: [adjugate, area, cardinality, ceiling, complement, complex-arg, complex-conjugate, diameter, distance, floor, fractional-part, least-common-denominator, length, max, mean, median, min, mode, probability, radius, round, span, standard-deviation, variance, volume]
+  match: "count(*)=1 and not(contains(@data-intent-property, ':silent:') or contains(@data-intent-property, ':postfix:') or contains(@data-intent-property, ':infix:'))"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "DefinitionValue(name(..), 'Speech', 'RussianCoreGenitiveNames')!='' or DefinitionValue(name(..), 'Speech', 'RussianGenitiveFunctionSets')!=''"
+      then: [x: "DefinitionValue(name(.), 'Speech', 'RussianCoreGenitiveNames')"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+  - test:
+      if: "not(IsNode(*[1], 'simple')) and not(DefinitionValue(name(*[1]), 'Speech', 'RussianCoreGenitiveNames')!='' or DefinitionValue(name(*[1]), 'Speech', 'RussianGenitiveFunctionSets')!='')"
+      then: [T: "выражения"]
+  - x: "*[1]"
+
+- name: core-coordinate-list
+  tag: [cartesian-coordinate, polar-coordinate, spherical-coordinate, list, tuple, permutation-cycle]
+  match: "count(*)>0 and not(contains(@data-intent-property, ':silent:') or contains(@data-intent-property, ':postfix:') or contains(@data-intent-property, ':infix:'))"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "DefinitionValue(name(..), 'Speech', 'RussianCoreGenitiveNames')!='' or DefinitionValue(name(..), 'Speech', 'RussianGenitiveFunctionSets')!=''"
+      then: [x: "DefinitionValue(name(.), 'Speech', 'RussianCoreGenitiveNames')"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+  - test:
+      if: "*"
+      then:
+      - insert:
+          nodes: "*"
+          replace: [T: "запятая"]
+
+- name: core-ordered-pair
+  tag: ordered-pair
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "упорядоченная пара"
+  - x: "*[1]"
+  - T: "и"
+  - x: "*[2]"
+
+- name: core-conditional-probability
+  tag: conditional-probability
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "вероятность"
+  - x: "*[1]"
+  - T: "при условии"
+  - x: "*[2]"
+
+- name: core-logarithm-with-base
+  tag: logarithm
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "логарифм по основанию"
+  - x: "*[2]"
+  - T: "от"
+  - x: "*[1]"
+
+- name: core-division-result
+  tag: [quotient, remainder]
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "self::m:quotient"
+      then: [T: "целая часть результата деления"]
+      else: [T: "остаток от деления"]
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
+  - x: "*[1]"
+  - T: "на"
+  - test:
+      if: "not(IsNode(*[2], 'simple'))"
+      then: [T: "выражение"]
+  - x: "*[2]"
+
+- name: core-common-denominator
+  tag: least-common-denominator
+  match: "count(*)>=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "наименьший общий знаменатель"
+  - insert:
+      nodes: "*"
+      replace: [T: "и"]
+
+- name: core-extrema
+  tag: [max, min]
+  match: "count(*)>=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - T: "из"
+  - insert:
+      nodes: "*"
+      replace: [T: "запятая"]
+
+- name: core-set-difference
+  tag: set-difference
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:') or contains(@data-intent-property, ':infix:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "разность множеств"
+  - x: "*[1]"
+  - T: "и"
+  - x: "*[2]"
+
+- name: core-ratio
+  tag: ratio
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "отношение"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
+  - x: "*[1]"
+  - T: "к"
+  - test:
+      if: "not(IsNode(*[2], 'simple'))"
+      then: [T: "выражению"]
+  - x: "*[2]"
+
+- name: core-inverse
+  tag: inverse
+  match: "count(*)=1 and not(contains(@data-intent-property, ':silent:') or contains(@data-intent-property, ':postfix:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "обратный к"
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражению"]
+  - x: "*[1]"
+
 - name: evaluated-at-2
   tag: evaluate
   match: "count(*)=2"
@@ -181,7 +354,7 @@
   - x: "*[2]"
 
 - name: binomial
-  tag: binomial
+  tag: [binomial, binomial-coefficient]
   match: "count(*)=2"
   replace:
   - T: "число сочетаний из"
@@ -210,11 +383,11 @@
       if: "not(IsNode(*[2], 'simple'))"
       then: [T: "конец числа сочетаний"]
 
-# Read an infix pochhammer intent as a number of arrangements.
+# Accept W3C's default function fixity as well as the inferred infix representation.
 - name: permutation
   # Use Russian arrangements wording rather than the generic infix intent mapping
   tag: pochhammer
-  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
+  match: "count(*)=2 and (contains(@data-intent-property, ':infix:') or contains(@data-intent-property, ':function:'))"
   replace:
   - T: "число размещений из"
   - x: "*[1]"
@@ -255,15 +428,15 @@
       then: [T: "бесконечности"]
       else: [x: "*[2]"]
 
-# Read a two-coordinate point with a spoken comma between coordinates.
+# W3C points have one or more coordinates, separated by spoken commas.
 - name: default-point
   tag: point
-  match: "count(*)=2"
+  match: "count(*)>=1 and not(contains(@data-intent-property, ':silent:'))"
   replace:
   - T: "точка"      # phrase(the 'point' with coordinates x and y)
-  - x: "*[1]"
-  - T: "запятая"
-  - x: "*[2]"
+  - insert:
+      nodes: "*"
+      replace: [T: "запятая"]
 
 - name: bigop-both
   tag: large-op
@@ -327,13 +500,16 @@
       then: [T: "от"]      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
+# W3C supplies the period alone; inferred MathCAT intents also carry a non-repeating prefix.
 - name: repeating-decimal
   tag: repeating-decimal
-  match: "."
+  match: "(count(*)=1 or count(*)=2) and not(contains(@data-intent-property, ':silent:'))"
   replace:
-  - x: "*[1]"
-  - T: "с повторяющимися цифрами"      # phrase('with repeating digits')
-  - SPELL: "*[2]"
+  - test:
+      if: "count(*)=2"
+      then: [x: "*[1]", T: "с повторяющимися цифрами"]
+      else: [T: "период"]
+  - SPELL: "*[last()]"
 
 - name: msubsup-skip-super
   # handles single, double, etc., prime
