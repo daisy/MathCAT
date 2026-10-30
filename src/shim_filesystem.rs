@@ -208,6 +208,10 @@ cfg_if! {
         
         /// Read the file at 'path' and return its contents as a String
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
+            // Parser symbol tables read rules before anything else has opened the archive.
+            if FILES.with(|files| files.borrow().is_empty()) {
+                initialize_static_vars()?;
+            }
             let path = canonicalize_shim(path).unwrap();        // can't fail
             let file_name = canonicalize_path_separators(&path);
             // Is this the debugging override?
