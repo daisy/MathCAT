@@ -17,6 +17,10 @@ struct Parser {
     pos: usize,
     /// `\mathop` makes the following scripts under/over. `\limits` / `\nolimits` override it.
     force_limits: Option<bool>,
+    /// Declaration fonts (`\bf`, `\rm`, …). The last face applies to new letters.
+    fonts: Vec<Face>,
+    /// `fonts.len()` at each `{`, so `}` restores the outer face.
+    font_marks: Vec<usize>,
 }
 
 enum Stop {
@@ -36,6 +40,8 @@ impl Parser {
             input: input.to_string(),
             pos: 0,
             force_limits: None,
+            fonts: Vec::new(),
+            font_marks: Vec::new(),
         }
     }
 
@@ -76,8 +82,23 @@ impl Parser {
 
     fn at_row_break(&self) -> bool {
         let rest = self.rest();
-        rest.starts_with("\\\\") &&
-            rest[2..].chars().next().is_none_or(|c| !c.is_ascii_alphabetic())
+        (rest.starts_with("\\\\") &&
+            rest[2..].chars().next().is_none_or(|c| !c.is_ascii_alphabetic())) ||
+            self.at_cmd("cr")
+    }
+
+    fn eat_row_break(&mut self) -> bool {
+        if self.rest().starts_with("\\\\") &&
+            self.rest()[2..].chars().next().is_none_or(|c| !c.is_ascii_alphabetic())
+        {
+            self.advance(2);
+            true
+        } else if self.at_cmd("cr") {
+            let _ = self.read_cmd_name();
+            true
+        } else {
+            false
+        }
     }
 
     fn at_cmd(&self, name: &str) -> bool {
@@ -217,9 +238,27 @@ impl Parser {
         if !self.eat("{") {
             return Expr::Row(vec![]);
         }
+        self.braced()
+    }
+
+    /// The body after `{` has been consumed. `}` restores declaration fonts.
+    fn braced(&mut self) -> Expr {
+        self.font_marks.push(self.fonts.len());
         let items = self.parse_list(Stop::Group);
         self.eat("}");
+        if let Some(mark) = self.font_marks.pop() {
+            self.fonts.truncate(mark);
+        }
         list(items)
+    }
+
+    /// An explicit font command (`\mathbf`, `\mathrm`) ignores declaration faces
+    /// such as `\it`, then applies its own face to the argument.
+    fn plain_group(&mut self) -> Expr {
+        let saved = std::mem::take(&mut self.fonts);
+        let body = self.group();
+        self.fonts = saved;
+        body
     }
 
     /// `[l]` / `[r]` on `\cfrac`. The alignment is not stored.
@@ -242,19 +281,21 @@ impl Parser {
         }
         // A line break here is outside a matrix cell. Drop it instead of stalling.
         if self.at_row_break() {
-            self.advance(2);
+            self.eat_row_break();
             return Expr::Row(vec![]);
+        }
+        // `[\![` / `]\!]` before a stray `]` is taken on its own.
+        if let Some(ch) = self.take_double_bracket() {
+            return self.oper(ch.to_string());
         }
         // A closer the current list did not claim. Keep it and move on.
         if matches!(self.peek(), Some('}' | '&' | ']')) {
             let ch = self.peek().unwrap();
             self.advance(ch.len_utf8());
-            return Expr::Operator(ch.to_string());
+            return self.oper(ch.to_string());
         }
         if self.eat("{") {
-            let items = self.parse_list(Stop::Group);
-            self.eat("}");
-            return list(items);
+            return self.braced();
         }
         if self.rest().starts_with('\\') {
             return self.parse_backslash();
@@ -268,16 +309,16 @@ impl Parser {
         }
         if let Some((out, n)) = latex_symbols::match_prefix(self.rest()) {
             self.advance(n);
-            return emit(&out);
+            return self.emit_out(&out);
         }
         if let Some(n) = self.number_len() {
             let text = self.rest()[..n].to_string();
             self.advance(n);
-            return Expr::Number(text);
+            return self.number(text);
         }
         if let Some(name) = self.match_func() {
             self.advance(name.len());
-            return func_expr(name);
+            return self.func_leaf(name);
         }
         // LaTeX `~` is a non-breaking space. A short name such as `~p` is a longer token
         // and was already taken by the symbol table.
@@ -287,9 +328,47 @@ impl Parser {
         let ch = self.peek().unwrap();
         self.advance(ch.len_utf8());
         if ch.is_alphabetic() {
-            Expr::Identifier(ch.to_string())
+            self.ident(ch.to_string())
         } else {
-            Expr::Operator(ch.to_string())
+            self.oper(ch.to_string())
+        }
+    }
+
+    fn ident(&self, text: String) -> Expr {
+        match self.fonts.last().copied() {
+            Some(face) => apply_face(Expr::Identifier(text), face),
+            None => Expr::Identifier(text),
+        }
+    }
+
+    fn number(&self, text: String) -> Expr {
+        match self.fonts.last().copied() {
+            Some(face) => apply_face(Expr::Number(text), face),
+            None => Expr::Number(text),
+        }
+    }
+
+    fn oper(&self, text: String) -> Expr {
+        match self.fonts.last().copied() {
+            Some(face) => apply_face(Expr::Operator(text), face),
+            None => Expr::Operator(text),
+        }
+    }
+
+    fn emit_out(&self, out: &Out) -> Expr {
+        if out.ident {
+            self.ident(out.text.clone())
+        } else {
+            self.oper(out.text.clone())
+        }
+    }
+
+    fn func_leaf(&self, name: &str) -> Expr {
+        // Limit names stay plain operators so `_` / `^` become under/over.
+        if latex_symbols::is_limit_name(name) {
+            Expr::Operator(name.to_string())
+        } else {
+            self.ident(name.to_string())
         }
     }
 
@@ -329,7 +408,12 @@ impl Parser {
 
     fn parse_backslash(&mut self) -> Expr {
         if self.at_row_break() {
-            return Expr::Missing;
+            self.eat_row_break();
+            return Expr::Row(vec![]);
+        }
+        // `\lbrack\!\lbrack` before `\!` becomes a zero-width space.
+        if let Some(ch) = self.take_double_bracket() {
+            return self.oper(ch.to_string());
         }
         if let Some(space) = self.explicit_space() {
             return space;
@@ -339,7 +423,7 @@ impl Parser {
             let after = self.rest()[n..].chars().next();
             if !(is_structural(&name) && matches!(after, Some('{' | '['))) {
                 self.advance(n);
-                return emit(&out);
+                return self.emit_out(&out);
             }
         }
         let name = self.read_cmd_name();
@@ -358,12 +442,19 @@ impl Parser {
         if is_big_delim(&name) || name == "limits" || name == "nolimits" {
             return Expr::Row(vec![]);
         }
+        if let Some(face) = decl_face(&name) {
+            self.fonts.push(face);
+            return Expr::Row(vec![]);
+        }
+        if matches!(name.as_str(), "mkern" | "mskip") {
+            return mu_to_space(self.read_mu());
+        }
         if is_structural(&name) {
             self.parse_structural(&name)
         } else if name.is_empty() {
             Expr::Operator("\\".into())
         } else {
-            Expr::Identifier(name)
+            self.ident(name)
         }
     }
 
@@ -476,18 +567,18 @@ impl Parser {
             "substack" => self.parse_substack(),
             "operatorname" => {
                 let name = self.group_text();
-                func_expr(name.trim())
+                self.func_leaf(name.trim())
             }
-            "bmod" => Expr::Identifier("mod".into()),
+            "bmod" => self.ident("mod".into()),
             "pmod" => Expr::Row(vec![
                 Expr::Operator("(".into()),
-                Expr::Identifier("mod".into()),
+                self.ident("mod".into()),
                 Expr::Operator("\u{00A0}".into()),
                 self.group(),
                 Expr::Operator(")".into()),
             ]),
             "mod" => Expr::Row(vec![
-                Expr::Identifier("mod".into()),
+                self.ident("mod".into()),
                 Expr::Operator("\u{00A0}".into()),
                 self.group(),
             ]),
@@ -505,15 +596,15 @@ impl Parser {
                 self.force_limits = Some(true);
                 self.parse_postscripts(body)
             }
-            "mathrm" | "textrm" | "textnormal" => apply_upright(self.group()),
-            "mathbf" | "textbf" => apply_alpha(self.group(), 0x1D400, 0x1D7CE, 0x1D6A8),
-            "mathit" | "textit" | "emph" => apply_alpha(self.group(), 0x1D434, 0, 0x1D6E2),
-            "mathsf" | "textsf" => apply_alpha(self.group(), 0x1D5A0, 0x1D7E2, 0),
-            "mathtt" | "texttt" => apply_alpha(self.group(), 0x1D670, 0x1D7F6, 0),
-            "mathbb" | "Bbb" => apply_alpha(self.group(), 0x1D538, 0x1D7D8, 0),
-            "mathcal" | "mathscr" => apply_alpha(self.group(), 0x1D49C, 0, 0),
-            "mathfrak" => apply_alpha(self.group(), 0x1D504, 0, 0),
-            "boldsymbol" | "bm" => apply_alpha(self.group(), 0x1D468, 0x1D7CE, 0x1D71C),
+            "mathrm" | "textrm" | "textnormal" => apply_upright(self.plain_group()),
+            "mathbf" | "textbf" => apply_alpha(self.plain_group(), 0x1D400, 0x1D7CE, 0x1D6A8),
+            "mathit" | "textit" | "emph" => apply_alpha(self.plain_group(), 0x1D434, 0, 0x1D6E2),
+            "mathsf" | "textsf" => apply_alpha(self.plain_group(), 0x1D5A0, 0x1D7E2, 0),
+            "mathtt" | "texttt" => apply_alpha(self.plain_group(), 0x1D670, 0x1D7F6, 0),
+            "mathbb" | "Bbb" => apply_alpha(self.plain_group(), 0x1D538, 0x1D7D8, 0),
+            "mathcal" | "mathscr" => apply_alpha(self.plain_group(), 0x1D49C, 0, 0),
+            "mathfrak" => apply_alpha(self.plain_group(), 0x1D504, 0, 0),
+            "boldsymbol" | "bm" => apply_alpha(self.plain_group(), 0x1D468, 0x1D7CE, 0x1D71C),
             "mbox" | "hbox" => Expr::Text(self.group_text()),
             "overset" => {
                 let over = self.group();
@@ -535,14 +626,30 @@ impl Parser {
             "begin" => self.parse_matrix(),
             "left" => self.parse_left(),
             "text" => Expr::Text(self.group_text()),
-            _ => Expr::Identifier(name.to_string()),
+            "hspace" => self.parse_hspace(),
+            "bra" => Expr::Fenced {
+                open: "⟨".into(),
+                close: Some("∣".into()),
+                body: Box::new(self.group()),
+            },
+            "ket" => Expr::Fenced {
+                open: "∣".into(),
+                close: Some("⟩".into()),
+                body: Box::new(self.group()),
+            },
+            "xrightarrow" | "xleftarrow" => self.parse_extensible_arrow(name),
+            "genfrac" => self.parse_genfrac(),
+            "root" => self.parse_root_of(),
+            "eqalign" => self.parse_substack(),
+            "color" | "textcolor" => self.parse_color(),
+            _ => self.ident(name.to_string()),
         }
     }
 
     fn parse_matrix(&mut self) -> Expr {
         let env = self.brace_word();
-        // `\begin{array}{cc}` — the group after the name is a column spec.
-        if env == "array" || env == "array*" || env == "subarray" {
+        // `\begin{array}{cc}` and `\begin{alignat}{2}` — the group is a column spec.
+        if takes_column_spec(&env) {
             self.skip_ws();
             if self.peek() == Some('{') {
                 let _ = self.group();
@@ -563,8 +670,7 @@ impl Parser {
                 if self.eat("&") {
                     continue;
                 }
-                if self.at_row_break() {
-                    self.advance(2);
+                if self.eat_row_break() {
                     broke = true;
                 }
                 break;
@@ -585,7 +691,12 @@ impl Parser {
         if rows.is_empty() {
             rows.push(vec![Expr::Row(vec![])]);
         }
-        Expr::Table { open, close, rows }
+        let table = Expr::Table { open, close, rows };
+        if env == "equation" || env == "equation*" {
+            unwrap_equation(table)
+        } else {
+            table
+        }
     }
 
     /// `\substack{a \\ b}` — one column, rows split on `\\`.
@@ -610,8 +721,7 @@ impl Parser {
                     if self.eat("&") {
                         continue;
                     }
-                    if self.at_row_break() {
-                        self.advance(2);
+                    if self.eat_row_break() {
                         broke = true;
                     }
                     break;
@@ -655,6 +765,9 @@ impl Parser {
 
     fn read_fence(&mut self) -> String {
         self.skip_ws();
+        if let Some(ch) = self.take_double_bracket() {
+            return ch.to_string();
+        }
         if self.rest().starts_with('\\') {
             if let Some((out, n)) = latex_symbols::match_prefix(self.rest()) {
                 self.advance(n);
@@ -732,6 +845,157 @@ impl Parser {
         }
         s
     }
+
+    /// `[\![`, `]\!]`, `\lbrack\!\lbrack`, `\rbrack\!\rbrack` → U+27E6 / U+27E7.
+    fn take_double_bracket(&mut self) -> Option<char> {
+        let rest = self.rest();
+        let (ch, n) = if rest.starts_with("\\lbrack\\!\\lbrack") {
+            ('\u{27E6}', 16)
+        } else if rest.starts_with("\\rbrack\\!\\rbrack") {
+            ('\u{27E7}', 16)
+        } else if rest.starts_with("[\\![") {
+            ('\u{27E6}', 4)
+        } else if rest.starts_with("]\\!]") {
+            ('\u{27E7}', 4)
+        } else {
+            return None;
+        };
+        self.advance(n);
+        Some(ch)
+    }
+
+    /// Sign, decimal, and `mu` / `em` / `ex` / `pt`. Missing pieces are zero mu.
+    fn read_mu(&mut self) -> f64 {
+        self.skip_ws();
+        let neg = self.eat("-");
+        if !neg {
+            let _ = self.eat("+");
+        }
+        let mut num = String::new();
+        while let Some(c) = self.peek() &&
+            (c.is_ascii_digit() || (c == '.' && !num.contains('.')))
+        {
+            num.push(c);
+            self.advance(c.len_utf8());
+        }
+        let mag: f64 = num.parse().unwrap_or(0.0);
+        self.skip_ws();
+        let scale = if self.eat("mu") {
+            1.0
+        } else if self.eat("em") {
+            18.0
+        } else if self.eat("ex") {
+            9.0
+        } else if self.eat("pt") {
+            1.8
+        } else {
+            1.0
+        };
+        if neg { -mag * scale } else { mag * scale }
+    }
+
+    fn parse_hspace(&mut self) -> Expr {
+        self.skip_ws();
+        let braced = self.eat("{");
+        let mu = self.read_mu();
+        if braced {
+            self.skip_ws();
+            while !self.eof() && self.peek() != Some('}') {
+                let c = self.peek().unwrap();
+                self.advance(c.len_utf8());
+            }
+            self.eat("}");
+        }
+        mu_to_space(mu)
+    }
+
+    fn parse_extensible_arrow(&mut self, name: &str) -> Expr {
+        let arrow = if name == "xrightarrow" { "→" } else { "←" };
+        self.skip_ws();
+        let below = if self.eat("[") {
+            let under = list(self.parse_list(Stop::Bracket));
+            self.eat("]");
+            Some(under)
+        } else {
+            None
+        };
+        let above = self.group();
+        let base = Expr::Operator(arrow.into());
+        match below {
+            Some(under) if !under.is_empty_row() => {
+                if above.is_empty_row() {
+                    Expr::Under(Box::new(base), Box::new(under))
+                } else {
+                    Expr::UnderOver(Box::new(base), Box::new(under), Box::new(above))
+                }
+            }
+            _ => {
+                if above.is_empty_row() {
+                    base
+                } else {
+                    Expr::Over(Box::new(base), Box::new(above))
+                }
+            }
+        }
+    }
+
+    fn parse_genfrac(&mut self) -> Expr {
+        let left = fence_spec(&self.group_text());
+        let right = fence_spec(&self.group_text());
+        let thick = self.group_text();
+        let _style = self.group_text();
+        let num = self.group();
+        let den = self.group();
+        let frac = if thickness_is_zero(&thick) {
+            Expr::BinomFrac(Box::new(num), Box::new(den))
+        } else {
+            Expr::Frac(Box::new(num), Box::new(den))
+        };
+        fence_frac(frac, left, right)
+    }
+
+    /// `\root n \of expr` — the index runs up to `\of`, then one group or atom.
+    fn parse_root_of(&mut self) -> Expr {
+        let mut items = Vec::new();
+        loop {
+            self.skip_ws();
+            if self.eof() ||
+                self.at_cmd("of") ||
+                self.peek() == Some('}') ||
+                self.at_row_break() ||
+                self.peek() == Some('&')
+            {
+                break;
+            }
+            let atom = self.parse_atom();
+            if atom.is_empty_row() {
+                continue;
+            }
+            items.push(self.parse_postscripts(atom));
+        }
+        if self.at_cmd("of") {
+            let _ = self.read_cmd_name();
+        }
+        Expr::Root(Box::new(list(items)), Box::new(self.script_body()))
+    }
+
+    /// Color is dropped. A following group, when present, is the math.
+    fn parse_color(&mut self) -> Expr {
+        self.skip_ws();
+        if self.peek() == Some('[') {
+            self.skip_optional_bracket();
+        }
+        self.skip_ws();
+        if self.peek() == Some('{') {
+            let _ = self.group_text();
+        }
+        self.skip_ws();
+        if self.peek() == Some('{') {
+            self.group()
+        } else {
+            Expr::Row(vec![])
+        }
+    }
 }
 
 fn list(items: Vec<Expr>) -> Expr {
@@ -739,22 +1003,6 @@ fn list(items: Vec<Expr>) -> Expr {
         0 => Expr::Row(vec![]),
         1 => items.into_iter().next().unwrap(),
         _ => Expr::Row(items),
-    }
-}
-
-fn emit(out: &Out) -> Expr {
-    if out.ident {
-        Expr::Identifier(out.text.clone())
-    } else {
-        Expr::Operator(out.text.clone())
-    }
-}
-
-fn func_expr(name: &str) -> Expr {
-    if latex_symbols::is_limit_name(name) {
-        Expr::Operator(name.to_string())
-    } else {
-        Expr::Identifier(name.to_string())
     }
 }
 
@@ -1038,6 +1286,150 @@ fn hole_char(cp: u32) -> char {
     char::from_u32(mapped).unwrap_or(char::REPLACEMENT_CHARACTER)
 }
 
+fn decl_face(name: &str) -> Option<Face> {
+    Some(match name {
+        "rm" => Face::Upright,
+        "bf" => Face::Alpha {
+            letters: 0x1D400,
+            digits: 0x1D7CE,
+            greek: 0x1D6A8,
+        },
+        "it" => Face::Alpha {
+            letters: 0x1D434,
+            digits: 0,
+            greek: 0x1D6E2,
+        },
+        "cal" => Face::Alpha {
+            letters: 0x1D49C,
+            digits: 0,
+            greek: 0,
+        },
+        "frak" => Face::Alpha {
+            letters: 0x1D504,
+            digits: 0,
+            greek: 0,
+        },
+        "sf" => Face::Alpha {
+            letters: 0x1D5A0,
+            digits: 0x1D7E2,
+            greek: 0,
+        },
+        "tt" => Face::Alpha {
+            letters: 0x1D670,
+            digits: 0x1D7F6,
+            greek: 0,
+        },
+        _ => return None,
+    })
+}
+
+fn space_for_mu(mu: f64) -> char {
+    if mu >= 14.0 {
+        '\u{2003}'
+    } else if mu >= 9.0 {
+        '\u{2002}'
+    } else if mu >= 4.5 {
+        '\u{2004}'
+    } else if mu >= 3.5 {
+        '\u{205F}'
+    } else if mu >= 2.0 {
+        '\u{2009}'
+    } else {
+        '\u{200B}'
+    }
+}
+
+fn mu_to_space(mu: f64) -> Expr {
+    if !(mu >= 2.0) {
+        return Expr::Operator("\u{200B}".into());
+    }
+    let mu = mu.min(2160.0);
+    if mu < 18.0 {
+        return Expr::Operator(space_for_mu(mu).to_string());
+    }
+    let ems = (mu / 18.0).floor() as usize;
+    let rem = mu - (ems as f64) * 18.0;
+    let mut s = "\u{2003}".repeat(ems);
+    if rem >= 2.0 {
+        s.push(space_for_mu(rem));
+    }
+    Expr::Operator(s)
+}
+
+fn fence_spec(spec: &str) -> Option<String> {
+    let t = spec.trim();
+    if t.is_empty() || t == "." {
+        return None;
+    }
+    Some(match t {
+        "(" | ")" | "[" | "]" | "{" | "}" | "|" => t.to_string(),
+        "\\{" | "\\lbrace" => "{".into(),
+        "\\}" | "\\rbrace" => "}".into(),
+        "\\lbrack" => "[".into(),
+        "\\rbrack" => "]".into(),
+        "\\vert" | "\\lvert" | "\\rvert" => "|".into(),
+        "\\|" | "\\Vert" | "\\lVert" | "\\rVert" => "‖".into(),
+        "\\langle" => "⟨".into(),
+        "\\rangle" => "⟩".into(),
+        other => other.trim_start_matches('\\').to_string(),
+    })
+}
+
+fn thickness_is_zero(spec: &str) -> bool {
+    let t = spec.trim();
+    if t.is_empty() {
+        return false;
+    }
+    let bytes = t.as_bytes();
+    let mut i = 0;
+    if bytes.first() == Some(&b'+') || bytes.first() == Some(&b'-') {
+        i = 1;
+    }
+    let start = i;
+    let mut saw_digit = false;
+    let mut saw_dot = false;
+    while i < bytes.len() && (bytes[i].is_ascii_digit() || (bytes[i] == b'.' && !saw_dot)) {
+        if bytes[i].is_ascii_digit() {
+            saw_digit = true;
+        }
+        if bytes[i] == b'.' {
+            saw_dot = true;
+        }
+        i += 1;
+    }
+    saw_digit && t[start..i].parse::<f64>().unwrap_or(1.0) == 0.0
+}
+
+fn fence_frac(frac: Expr, left: Option<String>, right: Option<String>) -> Expr {
+    match (left, right) {
+        (None, None) => frac,
+        (Some(open), close) => Expr::Fenced {
+            open,
+            close,
+            body: Box::new(frac),
+        },
+        (None, Some(close)) => Expr::Row(vec![frac, Expr::Operator(close)]),
+    }
+}
+
+fn takes_column_spec(env: &str) -> bool {
+    matches!(
+        env,
+        "array" | "array*" | "subarray" | "alignat" | "alignat*" | "alignedat"
+    )
+}
+
+fn unwrap_equation(expr: Expr) -> Expr {
+    match expr {
+        Expr::Table {
+            open: None,
+            close: None,
+            mut rows,
+        } if rows.len() == 1 && rows[0].len() == 1 => rows.pop().unwrap().pop().unwrap(),
+        other => other,
+    }
+}
+
 fn is_large(expr: &Expr) -> bool {
     match expr {
         Expr::Operator(s) if latex_symbols::is_limit_name(s) => true,
@@ -1130,6 +1522,16 @@ fn is_structural(name: &str) -> bool {
             | "texttt"
             | "mbox"
             | "hbox"
+            | "hspace"
+            | "bra"
+            | "ket"
+            | "xrightarrow"
+            | "xleftarrow"
+            | "genfrac"
+            | "root"
+            | "eqalign"
+            | "color"
+            | "textcolor"
     )
 }
 
@@ -1219,7 +1621,9 @@ fn matrix_fences(env: &str) -> (Option<String>, Option<String>) {
         "vmatrix" | "bvm" => (Some("|".into()), Some("|".into())),
         "Vmatrix" | "bVm" => (Some("‖".into()), Some("‖".into())),
         "Bmatrix" | "bBm" => (Some("{".into()), Some("}".into())),
-        // `matrix` and `array` are bare tables. An unknown or unfinished name is too.
+        "cases" => (Some("{".into()), None),
+        "rcases" => (None, Some("}".into())),
+        // `matrix`, `array`, `smallmatrix`, `split`, `align`, and `equation` are bare.
         _ => (None, None),
     }
 }
@@ -1719,5 +2123,120 @@ mod tests {
             mml(r"\mathop{\sum}_i"),
             "<math><munder><mo>&#x2211;</mo><mi>i</mi></munder></math>"
         );
+    }
+
+    #[test]
+    fn group1_lengths_map_to_unicode_spaces() {
+        // 1 em = 18 mu. Whole ems are U+2003; the remainder uses the same spaces as `\,`.
+        assert_eq!(mml(r"\mkern18mu"), "<math><mo>&#x2003;</mo></math>");
+        assert_eq!(mml(r"\mskip 20mu"), "<math><mo>&#x2003;&#x2009;</mo></math>");
+        assert_eq!(mml(r"\hspace{0.5em}"), "<math><mo>&#x2002;</mo></math>");
+        assert_eq!(mml(r"\mkern5mu"), "<math><mo>&#x2004;</mo></math>");
+        assert_eq!(mml(r"\mkern4mu"), "<math><mo>&#x205F;</mo></math>");
+        assert_eq!(mml(r"\mkern3mu"), "<math><mo>&#x2009;</mo></math>");
+        assert_eq!(mml(r"\mkern0mu"), "<math><mo>&#x200B;</mo></math>");
+        assert_eq!(mml(r"\mkern-2mu"), "<math><mo>&#x200B;</mo></math>");
+        assert_eq!(
+            mml(r"a\mkern18mu b"),
+            "<math><mrow><mi>a</mi><mo>&#x2003;</mo><mi>b</mi></mrow></math>"
+        );
+    }
+
+    #[test]
+    fn group1_declaration_fonts_last_until_the_group_ends() {
+        // `\bf` / `\it` apply to later letters. An explicit `\mathbf` ignores the outer face.
+        assert_eq!(mml(r"{\bf x}"), "<math><mi>&#x1D431;</mi></math>");
+        assert_eq!(mml(r"{\rm x}"), "<math><mi mathvariant=\"normal\">x</mi></math>");
+        assert_eq!(mml(r"\cal B"), "<math><mi>&#x212C;</mi></math>");
+        assert_eq!(mml(r"\frak A"), "<math><mi>&#x1D504;</mi></math>");
+        assert_eq!(mml(r"\sf A"), "<math><mi>&#x1D5A0;</mi></math>");
+        assert_eq!(mml(r"\tt A"), "<math><mi>&#x1D670;</mi></math>");
+        assert_eq!(mml(r"{\bf 2}"), "<math><mn>&#x1D7D0;</mn></math>");
+        assert_eq!(
+            mml(r"{\bf x\it y}"),
+            "<math><mrow><mi>&#x1D431;</mi><mi>&#x1D466;</mi></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"{{\bf x}y}"),
+            "<math><mrow><mi>&#x1D431;</mi><mi>y</mi></mrow></math>"
+        );
+        assert_eq!(mml(r"{\it \mathbf{x}}"), "<math><mi>&#x1D431;</mi></math>");
+        assert_eq!(
+            mml(r"{\bf \mathrm{x}}"),
+            "<math><mi mathvariant=\"normal\">x</mi></math>"
+        );
+    }
+
+    #[test]
+    fn group1_fences_tables_arrows_and_roots() {
+        // Bra/ket, double brackets, case fences, equation as a single cell, and `\root`.
+        assert_eq!(
+            mml(r"\bra{x}"),
+            "<math><mrow><mo>&#x27E8;</mo><mi>x</mi><mo>&#x2223;</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\ket{x}"),
+            "<math><mrow><mo>&#x2223;</mo><mi>x</mi><mo>&#x27E9;</mo></mrow></math>"
+        );
+        assert_eq!(mml(r"[\!["), "<math><mo>&#x27E6;</mo></math>");
+        assert_eq!(mml(r"]\!]"), "<math><mo>&#x27E7;</mo></math>");
+        assert_eq!(mml(r"\lbrack\!\lbrack"), mml(r"[\!["));
+        assert_eq!(
+            mml(r"\left[\![ x \right]\!]"),
+            "<math><mrow><mo>&#x27E6;</mo><mi>x</mi><mo>&#x27E7;</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{matrix} a \cr b \end{matrix}"),
+            "<math><mtable><mtr><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{cases} a & b \end{cases}"),
+            "<math><mrow><mo>{</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{rcases} a \end{rcases}"),
+            "<math><mrow><mtable><mtr><mtd><mi>a</mi></mtd></mtr></mtable><mo>}</mo></mrow></math>"
+        );
+        assert_eq!(mml(r"\begin{equation} x \end{equation}"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\begin{equation*} x \end{equation*}"), mml("x"));
+        assert_eq!(
+            mml(r"\begin{alignat}{2} a & b \end{alignat}"),
+            "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{smallmatrix} a \end{smallmatrix}"),
+            "<math><mtable><mtr><mtd><mi>a</mi></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\eqalign{a & b \cr c}"),
+            "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\xrightarrow{n}"),
+            "<math><mover><mo>&#x2192;</mo><mi>n</mi></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\xrightarrow[a]{b}"),
+            "<math><munderover><mo>&#x2192;</mo><mi>a</mi><mi>b</mi></munderover></math>"
+        );
+        assert_eq!(
+            mml(r"\xleftarrow[a]{}"),
+            "<math><munder><mo>&#x2190;</mo><mi>a</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\genfrac{(}{)}{0pt}{}{n}{k}"),
+            "<math><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\genfrac{}{}{}{}{1}{2}"),
+            "<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>"
+        );
+        assert_eq!(
+            mml(r"\root 3 \of {x}"),
+            "<math><mroot><mi>x</mi><mn>3</mn></mroot></math>"
+        );
+        assert_eq!(mml(r"\color{red}{x}"), mml("x"));
+        assert_eq!(mml(r"\textcolor{#FF0000}{x+1}"), mml("x+1"));
+        assert_eq!(mml(r"\color{blue}x"), mml("x"));
     }
 }

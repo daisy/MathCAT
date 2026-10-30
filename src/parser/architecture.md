@@ -178,12 +178,16 @@ The structural commands, recognized when `{` or `[` follows, or when the command
 - `\begin{env}` … `\end{env}` for `pmatrix`, `bmatrix`, `vmatrix`, `Vmatrix`, `Bmatrix`, `matrix`, `array`, and the short names `bpm`, `bbm`, `bvm`, `bVm`, `bBm`
 - `\left` / `\right`, `\text`
 
+`\mkern`, `\mskip`, and `\hspace{length}` are a sign, a decimal, and `mu` / `em` / `ex` / `pt` (1 em = 18 mu, 1 ex = 9 mu, 1 pt = 1.8 mu), then the same spaces as `\,` and `\quad`. At least 14 mu is an em space, 9–13 an en, 4.5–8 a three-per-em, 3.5–4.5 a medium space, 2–3.5 a thin space, and anything smaller, zero, or negative a zero-width space. Past 18 mu, one em space is emitted per whole em. `\rm`, `\bf`, `\it`, `\cal`, `\frak`, `\sf`, and `\tt` apply to later letters until the group ends. An argument font such as `\mathbf` ignores an outer declaration, so `{\it \mathbf{x}}` is bold.
+
+`\bra` and `\ket` are the fences ⟨ ∣ and ∣ ⟩. `[\![`, `]\!]`, and `\lbrack\!\lbrack` / `\rbrack\!\rbrack` (including after `\left` / `\right`) are ⟦ and ⟧, read before `\!` becomes a zero-width space. `\cr` is a row break. `\begin{cases}` puts `{` before the table and `\begin{rcases}` puts `}` after it. `smallmatrix`, `split`, `gathered`, `align`, `align*`, `aligned`, `gather`, `eqnarray`, and `multline` are bare tables. `alignat` and `alignedat` drop the `{n}` column spec the way `array` drops `{cc}`. `equation` and `equation*` are that one cell, or a bare table when the body has more than one cell. `\eqalign{...}` is the same table inside one group. `\xrightarrow[below]{above}` and `\xleftarrow` are under, over, or underover on → or ←. `\genfrac{left}{right}{thick}{style}{num}{den}` is a fraction (linethickness 0 when the thickness is 0) inside those fences; the style is ignored. `\root n \of expr` is an `mroot`. `\color` and `\textcolor` parse and drop the color.
+
 `\sum`, `\int`, `\prod`, and the limit names take `_` and `^` as under and over scripts. Other bases take them as sub and sup. A leading `_` or `^` with no base is an empty-base `msubsup` followed by the next atom, which is how `_{95}^{238}U` is emitted. Primes are a superscript of `'`.
 
 Special cases:
 
 - **Empty slots, not U+FFFD.** A `{` that was never typed is an empty row. `\frac` is an empty fraction. `2^` and `2_{` are a script with an empty script. `\sqrt` and `\sqrt{` are an empty square root. `\sqrt[3]{` is a cube root whose radicand is empty. `\binom` with a missing argument leaves that part empty. An opened group keeps what was typed (`2^{x` is `x` in the exponent).
-- **Arrays.** Cells are split on `&`, rows on `\\`. A trailing `&` or `\\` starts an empty cell or an empty row. `\begin{array}{cc}` treats the `{cc}` group as a column spec and does not put it in a cell. The environment name supplies the fences even when `\end` was not typed.
+- **Arrays.** Cells are split on `&`, rows on `\\` or `\cr`. A trailing `&` or `\\` starts an empty cell or an empty row. `\begin{array}{cc}` and `\begin{alignat}{2}` treat the following group as a column spec and do not put it in a cell. The environment name supplies the fences even when `\end` was not typed.
 - **`\left` without `\right`** is a fence with `close: None`. No closer is invented.
 - **`\binom`** is emitted with parentheses around the linethickness-0 fraction, because the forward rule only writes `\binom` for a parenthesized binomial.
 - **Large-operator scripts** on `∑` and `lim` are `munder` / `mover` / `munderover`, matching the movable-limits rule.

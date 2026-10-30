@@ -269,7 +269,8 @@ impl Expr {
             }
             Expr::Table { open, close, rows } => {
                 let mut s = String::new();
-                let fenced = open.is_some();
+                // `cases` has only an opener. `rcases` has only a closer.
+                let fenced = open.is_some() || close.is_some();
                 if fenced {
                     s.push_str("<mrow>");
                     if let Some(o) = open {
