@@ -21,8 +21,11 @@ struct Parser {
     fonts: Vec<Face>,
     /// `fonts.len()` at each `{`, so `}` restores the outer face.
     font_marks: Vec<usize>,
+    /// `@>>>` and the other amscd arrows are arrows only inside `\begin{CD}`.
+    in_cd: bool,
 }
 
+#[derive(Clone, Copy)]
 enum Stop {
     Top,
     Group,
@@ -34,6 +37,15 @@ enum Stop {
     Right,
 }
 
+#[derive(Clone, Copy)]
+enum Infix {
+    Over,
+    Atop,
+    Choose,
+    Brace,
+    Brack,
+}
+
 impl Parser {
     fn new(input: &str) -> Self {
         Self {
@@ -42,6 +54,7 @@ impl Parser {
             force_limits: None,
             fonts: Vec::new(),
             font_marks: Vec::new(),
+            in_cd: false,
         }
     }
 
@@ -124,11 +137,38 @@ impl Parser {
     }
 
     fn parse_list(&mut self, stop: Stop) -> Vec<Expr> {
+        self.parse_scoped(stop, false).0
+    }
+
+    /// `until_over` is the top of `\buildrel`. The `\over` there ends the top
+    /// instead of starting another fraction, and that signal propagates out.
+    fn parse_scoped(&mut self, stop: Stop, until_over: bool) -> (Vec<Expr>, bool) {
         let mut items = Vec::new();
         loop {
             self.skip_ws();
             if self.eof() || self.at_stop(&stop) {
-                break;
+                return (items, false);
+            }
+            if until_over && self.at_cmd("over") {
+                let _ = self.read_cmd_name();
+                return (items, true);
+            }
+            if self.at_cmd("buildrel") {
+                let _ = self.read_cmd_name();
+                let (top, saw) = self.parse_scoped(stop, true);
+                if !saw {
+                    items.push(Expr::Over(Box::new(Expr::Row(vec![])), Box::new(list(top))));
+                    return (items, false);
+                }
+                let (base, base_saw) = self.parse_scoped(stop, until_over);
+                items.push(Expr::Over(Box::new(list(base)), Box::new(list(top))));
+                return (items, base_saw);
+            }
+            if let Some(kind) = self.infix_kind() {
+                let _ = self.read_cmd_name();
+                let (den, saw) = self.parse_scoped(stop, until_over);
+                let frac = infix_frac(kind, list(std::mem::take(&mut items)), list(den));
+                return (vec![frac], saw);
             }
             if items.is_empty() && matches!(self.peek(), Some('^' | '_')) {
                 items.push(self.parse_leading_scripts());
@@ -141,7 +181,22 @@ impl Parser {
             }
             items.push(self.parse_postscripts(atom));
         }
-        items
+    }
+
+    fn infix_kind(&self) -> Option<Infix> {
+        if self.at_cmd("over") {
+            Some(Infix::Over)
+        } else if self.at_cmd("atop") {
+            Some(Infix::Atop)
+        } else if self.at_cmd("choose") {
+            Some(Infix::Choose)
+        } else if self.at_cmd("brace") {
+            Some(Infix::Brace)
+        } else if self.at_cmd("brack") {
+            Some(Infix::Brack)
+        } else {
+            None
+        }
     }
 
     fn parse_leading_scripts(&mut self) -> Expr {
@@ -287,6 +342,9 @@ impl Parser {
         // `[\![` / `]\!]` before a stray `]` is taken on its own.
         if let Some(ch) = self.take_double_bracket() {
             return self.oper(ch.to_string());
+        }
+        if let Some(ch) = self.take_cd_arrow() {
+            return Expr::Operator(ch.to_string());
         }
         // A closer the current list did not claim. Keep it and move on.
         if matches!(self.peek(), Some('}' | '&' | ']')) {
@@ -656,6 +714,10 @@ impl Parser {
             }
         }
         let (open, close) = matrix_fences(&env);
+        let saved_cd = self.in_cd;
+        if env == "CD" {
+            self.in_cd = true;
+        }
         let mut rows = Vec::new();
         loop {
             self.skip_ws();
@@ -691,6 +753,7 @@ impl Parser {
         if rows.is_empty() {
             rows.push(vec![Expr::Row(vec![])]);
         }
+        self.in_cd = saved_cd;
         let table = Expr::Table { open, close, rows };
         if env == "equation" || env == "equation*" {
             unwrap_equation(table)
@@ -864,6 +927,41 @@ impl Parser {
         Some(ch)
     }
 
+    /// `@>>>` `@<<<` `@VVV` `@AAA`, three or more marks. Only while `in_cd` is set.
+    fn take_cd_arrow(&mut self) -> Option<char> {
+        if !self.in_cd {
+            return None;
+        }
+        let rest = self.rest();
+        let mut chars = rest.chars();
+        if chars.next() != Some('@') {
+            return None;
+        }
+        let kind = chars.next()?;
+        if !matches!(kind, '>' | '<' | 'V' | 'A') {
+            return None;
+        }
+        let mut count = 1usize;
+        let mut n = 2usize;
+        for c in chars {
+            if c != kind {
+                break;
+            }
+            count += 1;
+            n += c.len_utf8();
+        }
+        if count < 3 {
+            return None;
+        }
+        self.advance(n);
+        Some(match kind {
+            '>' => '\u{2192}',
+            '<' => '\u{2190}',
+            'V' => '\u{2193}',
+            _ => '\u{2191}',
+        })
+    }
+
     /// Sign, decimal, and `mu` / `em` / `ex` / `pt`. Missing pieces are zero mu.
     fn read_mu(&mut self) -> f64 {
         self.skip_ws();
@@ -1004,6 +1102,26 @@ fn list(items: Vec<Expr>) -> Expr {
         1 => items.into_iter().next().unwrap(),
         _ => Expr::Row(items),
     }
+}
+
+fn infix_frac(kind: Infix, num: Expr, den: Expr) -> Expr {
+    let barless = matches!(kind, Infix::Atop | Infix::Choose | Infix::Brace | Infix::Brack);
+    let frac = if barless {
+        Expr::BinomFrac(Box::new(num), Box::new(den))
+    } else {
+        Expr::Frac(Box::new(num), Box::new(den))
+    };
+    let (open, close) = match kind {
+        Infix::Choose => ("(", ")"),
+        Infix::Brace => ("{", "}"),
+        Infix::Brack => ("[", "]"),
+        Infix::Over | Infix::Atop => return frac,
+    };
+    Expr::Row(vec![
+        Expr::Operator(open.into()),
+        frac,
+        Expr::Operator(close.into()),
+    ])
 }
 
 fn scripted(base: Expr, sub: Option<Expr>, sup: Option<Expr>, large: bool) -> Expr {
@@ -2238,5 +2356,72 @@ mod tests {
         assert_eq!(mml(r"\color{red}{x}"), mml("x"));
         assert_eq!(mml(r"\textcolor{#FF0000}{x+1}"), mml("x+1"));
         assert_eq!(mml(r"\color{blue}x"), mml("x"));
+    }
+
+    #[test]
+    fn infix_fractions_are_scoped_to_the_group() {
+        // The keyword splits the group. A second keyword splits the denominator.
+        assert_eq!(
+            mml(r"{a \over b}"),
+            "<math><mfrac><mi>a</mi><mi>b</mi></mfrac></math>"
+        );
+        assert_eq!(
+            mml(r"a \over b"),
+            "<math><mfrac><mi>a</mi><mi>b</mi></mfrac></math>"
+        );
+        assert_eq!(mml(r"{a \choose b}"), mml(r"\binom{a}{b}"));
+        assert_eq!(
+            mml(r"{a \choose b}c"),
+            "<math><mrow><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>a</mi><mi>b</mi></mfrac><mo>)</mo></mrow><mi>c</mi></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"{a \choose bc}"),
+            "<math><mrow><mo>(</mo><mfrac linethickness=\"0\"><mi>a</mi><mrow><mi>b</mi><mi>c</mi></mrow></mfrac><mo>)</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"{a \atop b}"),
+            "<math><mfrac linethickness=\"0\"><mi>a</mi><mi>b</mi></mfrac></math>"
+        );
+        assert_eq!(
+            mml(r"{n \brace k}"),
+            "<math><mrow><mo>{</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>k</mi></mfrac><mo>}</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"{n \brack k}"),
+            "<math><mrow><mo>[</mo><mfrac linethickness=\"0\"><mi>n</mi><mi>k</mi></mfrac><mo>]</mo></mrow></math>"
+        );
+        assert_eq!(mml(r"{a \over b \over c}"), mml(r"{a \over {b \over c}}"));
+        assert_eq!(
+            mml(r"\buildrel a \over x"),
+            "<math><mover><mi>x</mi><mi>a</mi></mover></math>"
+        );
+        assert_eq!(
+            mml(r"{\buildrel a \over x}c"),
+            "<math><mrow><mover><mi>x</mi><mi>a</mi></mover><mi>c</mi></mrow></math>"
+        );
+        // `\overline` is still one accent, not `\over` plus `line`.
+        assert_eq!(
+            mml(r"\overline{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2015;</mo></mover></math>"
+        );
+    }
+
+    #[test]
+    fn cd_arrows_are_only_inside_the_environment() {
+        // `@>>>` is an arrow in `CD`. The same text in a matrix is ordinary characters.
+        assert_eq!(
+            mml(r"\begin{CD} A @>>> B \end{CD}"),
+            "<math><mtable><mtr><mtd><mrow><mi>A</mi><mo>&#x2192;</mo><mi>B</mi></mrow></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{CD} A & @>>> & B \\ @VVV & @AAA & @<<< \end{CD}"),
+            "<math><mtable><mtr><mtd><mi>A</mi></mtd><mtd><mo>&#x2192;</mo></mtd><mtd><mi>B</mi></mtd></mtr><mtr><mtd><mo>&#x2193;</mo></mtd><mtd><mo>&#x2191;</mo></mtd><mtd><mo>&#x2190;</mo></mtd></mtr></mtable></math>"
+        );
+        assert_eq!(
+            mml(r"\begin{CD} @>>>> \end{CD}"),
+            "<math><mtable><mtr><mtd><mo>&#x2192;</mo></mtd></mtr></mtable></math>"
+        );
+        assert!(!mml(r"@>>>").contains("&#x2192;"), "{}", mml(r"@>>>"));
+        assert!(!mml(r"\begin{matrix} @>>> \end{matrix}").contains("&#x2192;"));
     }
 }
