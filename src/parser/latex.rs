@@ -15,6 +15,8 @@ use crate::latex_symbols::{self, Out};
 struct Parser {
     input: String,
     pos: usize,
+    /// `\mathop` makes the following scripts under/over. `\limits` / `\nolimits` override it.
+    force_limits: Option<bool>,
 }
 
 enum Stop {
@@ -33,6 +35,7 @@ impl Parser {
         Self {
             input: input.to_string(),
             pos: 0,
+            force_limits: None,
         }
     }
 
@@ -143,9 +146,20 @@ impl Parser {
     }
 
     fn parse_postscripts(&mut self, mut base: Expr) -> Expr {
+        let mut forced = self.force_limits.take();
         loop {
             self.skip_ws();
-            let large = is_large(&base);
+            if self.at_cmd("limits") {
+                let _ = self.read_cmd_name();
+                forced = Some(true);
+                continue;
+            }
+            if self.at_cmd("nolimits") {
+                let _ = self.read_cmd_name();
+                forced = Some(false);
+                continue;
+            }
+            let large = forced.unwrap_or_else(|| is_large(&base));
             if self.peek() == Some('\'') {
                 let mut primes = String::new();
                 while self.eat("'") {
@@ -208,6 +222,19 @@ impl Parser {
         list(items)
     }
 
+    /// `[l]` / `[r]` on `\cfrac`. The alignment is not stored.
+    fn skip_optional_bracket(&mut self) {
+        self.skip_ws();
+        if !self.eat("[") {
+            return;
+        }
+        while !self.eof() && self.peek() != Some(']') {
+            let ch = self.peek().unwrap();
+            self.advance(ch.len_utf8());
+        }
+        self.eat("]");
+    }
+
     fn parse_atom(&mut self) -> Expr {
         self.skip_ws();
         if self.eof() {
@@ -251,6 +278,11 @@ impl Parser {
         if let Some(name) = self.match_func() {
             self.advance(name.len());
             return func_expr(name);
+        }
+        // LaTeX `~` is a non-breaking space. A short name such as `~p` is a longer token
+        // and was already taken by the symbol table.
+        if self.eat("~") {
+            return Expr::Operator("\u{00A0}".into());
         }
         let ch = self.peek().unwrap();
         self.advance(ch.len_utf8());
@@ -299,6 +331,9 @@ impl Parser {
         if self.at_row_break() {
             return Expr::Missing;
         }
+        if let Some(space) = self.explicit_space() {
+            return space;
+        }
         if let Some((out, n)) = latex_symbols::match_prefix(self.rest()) {
             let name = cmd_name_of(&self.rest()[..n]);
             let after = self.rest()[n..].chars().next();
@@ -308,6 +343,21 @@ impl Parser {
             }
         }
         let name = self.read_cmd_name();
+        if is_ignored_command(&name) {
+            return Expr::Row(vec![]);
+        }
+        if is_ignored_with_arg(&name) {
+            self.skip_ws();
+            let _ = self.eat("*");
+            if self.peek() == Some('{') {
+                let _ = self.group();
+            }
+            return Expr::Row(vec![]);
+        }
+        // `\bigl(` is the fence character. The size grade is not representable.
+        if is_big_delim(&name) || name == "limits" || name == "nolimits" {
+            return Expr::Row(vec![]);
+        }
         if is_structural(&name) {
             self.parse_structural(&name)
         } else if name.is_empty() {
@@ -315,6 +365,31 @@ impl Parser {
         } else {
             Expr::Identifier(name)
         }
+    }
+
+    /// `\!` `\,` `\:` `\;` and `\ ` (backslash space). A longer symbol that starts
+    /// with the same characters keeps the symbol (`\,,` is still the low double quote).
+    fn explicit_space(&mut self) -> Option<Expr> {
+        let rest = self.rest();
+        let mut chars = rest.chars();
+        if chars.next() != Some('\\') {
+            return None;
+        }
+        let (ch, n) = match chars.next() {
+            Some('!') => ('\u{200B}', 2usize),
+            Some(',') => ('\u{2009}', 2),
+            Some(':') => ('\u{205F}', 2),
+            Some(';') => ('\u{2004}', 2),
+            Some(' ') => (' ', 2),
+            _ => return None,
+        };
+        if let Some((_, len)) = latex_symbols::match_prefix(rest) &&
+            len > n
+        {
+            return None;
+        }
+        self.advance(n);
+        Some(Expr::Operator(ch.to_string()))
     }
 
     fn read_cmd_name(&mut self) -> String {
@@ -336,10 +411,18 @@ impl Parser {
 
     fn parse_structural(&mut self, name: &str) -> Expr {
         match name {
-            "frac" | "f" => {
+            "frac" | "f" | "dfrac" | "tfrac" | "cfrac" => {
+                if name == "cfrac" {
+                    self.skip_optional_bracket();
+                }
                 let num = self.group();
                 let den = self.group();
                 Expr::Frac(Box::new(num), Box::new(den))
+            }
+            "ifrac" => {
+                let num = self.group();
+                let den = self.group();
+                Expr::BevelledFrac(Box::new(num), Box::new(den))
             }
             "sqrt" | "s" => {
                 self.skip_ws();
@@ -351,7 +434,7 @@ impl Parser {
                     Expr::Sqrt(Box::new(self.group()))
                 }
             }
-            "binom" => {
+            "binom" | "dbinom" | "tbinom" => {
                 let n = self.group();
                 let k = self.group();
                 Expr::Row(vec![
@@ -369,6 +452,69 @@ impl Parser {
             "tilde" => Expr::Over(Box::new(self.group()), Box::new(Expr::Operator("~".into()))),
             "overbrace" => Expr::Over(Box::new(self.group()), Box::new(Expr::Operator("⏞".into()))),
             "underbrace" => Expr::Under(Box::new(self.group()), Box::new(Expr::Operator("⏟".into()))),
+            "widehat" => accent_over("^", self.group()),
+            "widetilde" => accent_over("~", self.group()),
+            "check" => accent_over("\u{02C7}", self.group()),
+            "acute" => accent_over("\u{00B4}", self.group()),
+            "grave" => accent_over("`", self.group()),
+            "breve" => accent_over("\u{02D8}", self.group()),
+            "bar" => accent_over("\u{00AF}", self.group()),
+            "mathring" => accent_over("\u{02DA}", self.group()),
+            "dddot" => accent_over("...", self.group()),
+            "ddddot" => accent_over("....", self.group()),
+            "overrightarrow" => accent_over("\u{2192}", self.group()),
+            "overleftarrow" => accent_over("\u{2190}", self.group()),
+            "overleftrightarrow" => accent_over("\u{2194}", self.group()),
+            "underrightarrow" => accent_under("\u{2192}", self.group()),
+            "underleftarrow" => accent_under("\u{2190}", self.group()),
+            "underleftrightarrow" => accent_under("\u{2194}", self.group()),
+            "stackrel" => {
+                let over = self.group();
+                let base = self.group();
+                Expr::Over(Box::new(base), Box::new(over))
+            }
+            "substack" => self.parse_substack(),
+            "operatorname" => {
+                let name = self.group_text();
+                func_expr(name.trim())
+            }
+            "bmod" => Expr::Identifier("mod".into()),
+            "pmod" => Expr::Row(vec![
+                Expr::Operator("(".into()),
+                Expr::Identifier("mod".into()),
+                Expr::Operator("\u{00A0}".into()),
+                self.group(),
+                Expr::Operator(")".into()),
+            ]),
+            "mod" => Expr::Row(vec![
+                Expr::Identifier("mod".into()),
+                Expr::Operator("\u{00A0}".into()),
+                self.group(),
+            ]),
+            "phantom" => enclose("phantom", self.group()),
+            "hphantom" => enclose("hphantom", self.group()),
+            "vphantom" => enclose("vphantom", self.group()),
+            "cancel" => enclose("updiagonalstrike", self.group()),
+            "bcancel" => enclose("downdiagonalstrike", self.group()),
+            "xcancel" => enclose("updiagonalstrike downdiagonalstrike", self.group()),
+            "fbox" | "framebox" => wrap_outer("box", self.group()),
+            "middle" => Expr::Operator(self.read_fence()),
+            "mathrel" => self.group(),
+            "mathop" => {
+                let body = self.group();
+                self.force_limits = Some(true);
+                self.parse_postscripts(body)
+            }
+            "mathrm" | "textrm" | "textnormal" => apply_upright(self.group()),
+            "mathbf" | "textbf" => apply_alpha(self.group(), 0x1D400, 0x1D7CE, 0x1D6A8),
+            "mathit" | "textit" | "emph" => apply_alpha(self.group(), 0x1D434, 0, 0x1D6E2),
+            "mathsf" | "textsf" => apply_alpha(self.group(), 0x1D5A0, 0x1D7E2, 0),
+            "mathtt" | "texttt" => apply_alpha(self.group(), 0x1D670, 0x1D7F6, 0),
+            "mathbb" | "Bbb" => apply_alpha(self.group(), 0x1D538, 0x1D7D8, 0),
+            "mathcal" | "mathscr" => apply_alpha(self.group(), 0x1D49C, 0, 0),
+            "mathfrak" => apply_alpha(self.group(), 0x1D504, 0, 0),
+            "boldsymbol" | "bm" => apply_alpha(self.group(), 0x1D468, 0x1D7CE, 0x1D71C),
+            "mbox" | "hbox" => Expr::Text(self.group_text()),
             "overset" => {
                 let over = self.group();
                 let base = self.group();
@@ -396,7 +542,7 @@ impl Parser {
     fn parse_matrix(&mut self) -> Expr {
         let env = self.brace_word();
         // `\begin{array}{cc}` — the group after the name is a column spec.
-        if env == "array" || env == "array*" {
+        if env == "array" || env == "array*" || env == "subarray" {
             self.skip_ws();
             if self.peek() == Some('{') {
                 let _ = self.group();
@@ -440,6 +586,54 @@ impl Parser {
             rows.push(vec![Expr::Row(vec![])]);
         }
         Expr::Table { open, close, rows }
+    }
+
+    /// `\substack{a \\ b}` — one column, rows split on `\\`.
+    fn parse_substack(&mut self) -> Expr {
+        self.skip_ws();
+        let opened = self.eat("{");
+        let mut rows = Vec::new();
+        if opened {
+            loop {
+                self.skip_ws();
+                if self.eof() || self.peek() == Some('}') {
+                    break;
+                }
+                let mut cells = Vec::new();
+                let mut broke = false;
+                loop {
+                    cells.push(list(self.parse_list(Stop::Cell)));
+                    self.skip_ws();
+                    if self.eof() || self.peek() == Some('}') {
+                        break;
+                    }
+                    if self.eat("&") {
+                        continue;
+                    }
+                    if self.at_row_break() {
+                        self.advance(2);
+                        broke = true;
+                    }
+                    break;
+                }
+                rows.push(cells);
+                if broke {
+                    self.skip_ws();
+                    if self.eof() || self.peek() == Some('}') {
+                        rows.push(vec![Expr::Row(vec![])]);
+                    }
+                }
+            }
+            self.eat("}");
+        }
+        if rows.is_empty() {
+            rows.push(vec![Expr::Row(vec![])]);
+        }
+        Expr::Table {
+            open: None,
+            close: None,
+            rows,
+        }
     }
 
     fn parse_left(&mut self) -> Expr {
@@ -580,6 +774,270 @@ fn bar() -> Expr {
     Expr::Operator("\u{2015}".into())
 }
 
+fn accent_over(op: &str, body: Expr) -> Expr {
+    Expr::Over(Box::new(body), Box::new(Expr::Operator(op.into())))
+}
+
+fn accent_under(op: &str, body: Expr) -> Expr {
+    Expr::Under(Box::new(body), Box::new(Expr::Operator(op.into())))
+}
+
+fn enclose(notation: &str, body: Expr) -> Expr {
+    Expr::Enclose {
+        notation: notation.to_string(),
+        body: Box::new(body),
+    }
+}
+
+#[derive(Clone, Copy)]
+enum Face {
+    Upright,
+    Alpha { letters: u32, digits: u32, greek: u32 },
+}
+
+fn apply_upright(expr: Expr) -> Expr {
+    apply_face(expr, Face::Upright)
+}
+
+fn apply_alpha(expr: Expr, letters: u32, digits: u32, greek: u32) -> Expr {
+    apply_face(
+        expr,
+        Face::Alpha {
+            letters,
+            digits,
+            greek,
+        },
+    )
+}
+
+fn apply_face(expr: Expr, face: Face) -> Expr {
+    match expr {
+        Expr::Identifier(text) => match face {
+            Face::Upright => Expr::StyledIdent {
+                text,
+                mathvariant: "normal".into(),
+            },
+            Face::Alpha {
+                letters,
+                digits,
+                greek,
+            } => Expr::Identifier(map_text(&text, letters, digits, greek)),
+        },
+        Expr::StyledIdent { text, .. } => match face {
+            Face::Upright => Expr::StyledIdent {
+                text,
+                mathvariant: "normal".into(),
+            },
+            Face::Alpha {
+                letters,
+                digits,
+                greek,
+            } => Expr::Identifier(map_text(&text, letters, digits, greek)),
+        },
+        Expr::Number(text) => Expr::Number(map_text_face(&text, face)),
+        Expr::StyledNumber { text, mathvariant } => Expr::StyledNumber {
+            text: map_text_face(&text, face),
+            mathvariant,
+        },
+        Expr::Operator(text) => Expr::Operator(map_text_face(&text, face)),
+        Expr::Text(text) => Expr::Text(map_text_face(&text, face)),
+        Expr::Row(v) => Expr::Row(v.into_iter().map(|e| apply_face(e, face)).collect()),
+        Expr::Group(e) => Expr::Group(Box::new(apply_face(*e, face))),
+        Expr::Sup(a, b) => Expr::Sup(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face))),
+        Expr::Sub(a, b) => Expr::Sub(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face))),
+        Expr::SubSup(a, b, c) => Expr::SubSup(
+            Box::new(apply_face(*a, face)),
+            Box::new(apply_face(*b, face)),
+            Box::new(apply_face(*c, face)),
+        ),
+        Expr::Frac(a, b) => {
+            Expr::Frac(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face)))
+        }
+        Expr::BinomFrac(a, b) => Expr::BinomFrac(
+            Box::new(apply_face(*a, face)),
+            Box::new(apply_face(*b, face)),
+        ),
+        Expr::BevelledFrac(a, b) => Expr::BevelledFrac(
+            Box::new(apply_face(*a, face)),
+            Box::new(apply_face(*b, face)),
+        ),
+        Expr::Sqrt(a) => Expr::Sqrt(Box::new(apply_face(*a, face))),
+        Expr::Root(a, b) => {
+            Expr::Root(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face)))
+        }
+        Expr::Fenced { open, close, body } => Expr::Fenced {
+            open: map_text_face(&open, face),
+            close: close.map(|c| map_text_face(&c, face)),
+            body: Box::new(apply_face(*body, face)),
+        },
+        Expr::Table { open, close, rows } => Expr::Table {
+            open,
+            close,
+            rows: rows
+                .into_iter()
+                .map(|r| r.into_iter().map(|c| apply_face(c, face)).collect())
+                .collect(),
+        },
+        Expr::Over(a, b) => {
+            Expr::Over(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face)))
+        }
+        Expr::Under(a, b) => {
+            Expr::Under(Box::new(apply_face(*a, face)), Box::new(apply_face(*b, face)))
+        }
+        Expr::UnderOver(a, b, c) => Expr::UnderOver(
+            Box::new(apply_face(*a, face)),
+            Box::new(apply_face(*b, face)),
+            Box::new(apply_face(*c, face)),
+        ),
+        Expr::Enclose { notation, body } => Expr::Enclose {
+            notation,
+            body: Box::new(apply_face(*body, face)),
+        },
+        Expr::Prescripts { base, sub, sup } => Expr::Prescripts {
+            base: Box::new(apply_face(*base, face)),
+            sub: sub.map(|e| Box::new(apply_face(*e, face))),
+            sup: sup.map(|e| Box::new(apply_face(*e, face))),
+        },
+        Expr::MultiScripts { base, sub, sup } => Expr::MultiScripts {
+            base: Box::new(apply_face(*base, face)),
+            sub: sub.map(|e| Box::new(apply_face(*e, face))),
+            sup: sup.map(|e| Box::new(apply_face(*e, face))),
+        },
+        other => other,
+    }
+}
+
+fn map_text_face(s: &str, face: Face) -> String {
+    match face {
+        Face::Upright => s.to_string(),
+        Face::Alpha {
+            letters,
+            digits,
+            greek,
+        } => map_text(s, letters, digits, greek),
+    }
+}
+
+fn map_text(s: &str, letters: u32, digits: u32, greek: u32) -> String {
+    s.chars()
+        .map(|c| map_char(c, letters, digits, greek))
+        .collect()
+}
+
+fn map_char(c: char, letters: u32, digits: u32, greek: u32) -> char {
+    let cp = if c.is_ascii_uppercase() && letters != 0 {
+        letters + (c as u32 - 'A' as u32)
+    } else if c.is_ascii_lowercase() && letters != 0 {
+        letters + 26 + (c as u32 - 'a' as u32)
+    } else if c.is_ascii_digit() && digits != 0 {
+        digits + (c as u32 - '0' as u32)
+    } else if greek != 0 &&
+        let Some(slot) = greek_slot(c)
+    {
+        greek + slot
+    } else {
+        return c;
+    };
+    hole_char(cp)
+}
+
+/// Index in the Mathematical Alphanumeric Greek run (bold capital alpha is 0).
+fn greek_slot(c: char) -> Option<u32> {
+    Some(match c {
+        'Α' => 0,
+        'Β' => 1,
+        'Γ' => 2,
+        'Δ' => 3,
+        'Ε' => 4,
+        'Ζ' => 5,
+        'Η' => 6,
+        'Θ' => 7,
+        'Ι' => 8,
+        'Κ' => 9,
+        'Λ' => 10,
+        'Μ' => 11,
+        'Ν' => 12,
+        'Ξ' => 13,
+        'Ο' => 14,
+        'Π' => 15,
+        'Ρ' => 16,
+        'ϴ' => 17,
+        'Σ' => 18,
+        'Τ' => 19,
+        'Υ' => 20,
+        'Φ' => 21,
+        'Χ' => 22,
+        'Ψ' => 23,
+        'Ω' => 24,
+        '∇' => 25,
+        'α' => 26,
+        'β' => 27,
+        'γ' => 28,
+        'δ' => 29,
+        'ε' => 30,
+        'ζ' => 31,
+        'η' => 32,
+        'θ' => 33,
+        'ι' => 34,
+        'κ' => 35,
+        'λ' => 36,
+        'μ' => 37,
+        'ν' => 38,
+        'ξ' => 39,
+        'ο' => 40,
+        'π' => 41,
+        'ρ' => 42,
+        'ς' => 43,
+        'σ' => 44,
+        'τ' => 45,
+        'υ' => 46,
+        'φ' => 47,
+        'χ' => 48,
+        'ψ' => 49,
+        'ω' => 50,
+        '∂' => 51,
+        'ϵ' => 52,
+        'ϑ' => 53,
+        'ϰ' => 54,
+        'ϕ' => 55,
+        'ϱ' => 56,
+        'ϖ' => 57,
+        _ => return None,
+    })
+}
+
+/// Holes in the Mathematical Alphanumeric Symbols block point at legacy BMP letters.
+fn hole_char(cp: u32) -> char {
+    let mapped = match cp {
+        0x1D455 => 0x210E,
+        0x1D49D => 0x212C,
+        0x1D4A0 => 0x2130,
+        0x1D4A1 => 0x2131,
+        0x1D4A3 => 0x210B,
+        0x1D4A4 => 0x2110,
+        0x1D4A7 => 0x2112,
+        0x1D4A8 => 0x2133,
+        0x1D4AD => 0x211B,
+        0x1D4BA => 0x212F,
+        0x1D4BC => 0x210A,
+        0x1D4C4 => 0x2134,
+        0x1D506 => 0x212D,
+        0x1D50B => 0x210C,
+        0x1D50C => 0x2111,
+        0x1D515 => 0x211C,
+        0x1D51D => 0x2128,
+        0x1D53A => 0x2102,
+        0x1D53F => 0x210D,
+        0x1D545 => 0x2115,
+        0x1D547 => 0x2119,
+        0x1D548 => 0x211A,
+        0x1D549 => 0x211D,
+        0x1D551 => 0x2124,
+        other => other,
+    };
+    char::from_u32(mapped).unwrap_or(char::REPLACEMENT_CHARACTER)
+}
+
 fn is_large(expr: &Expr) -> bool {
     match expr {
         Expr::Operator(s) if latex_symbols::is_limit_name(s) => true,
@@ -598,9 +1056,9 @@ fn is_large(expr: &Expr) -> bool {
 fn is_structural(name: &str) -> bool {
     matches!(
         name,
-        "frac" | "f"
+        "frac" | "f" | "dfrac" | "tfrac" | "cfrac" | "ifrac"
             | "sqrt" | "s"
-            | "binom"
+            | "binom" | "dbinom" | "tbinom"
             | "overline" | "ol"
             | "underline"
             | "vec"
@@ -608,16 +1066,95 @@ fn is_structural(name: &str) -> bool {
             | "dot"
             | "ddot"
             | "tilde"
+            | "widehat"
+            | "widetilde"
+            | "check"
+            | "acute"
+            | "grave"
+            | "breve"
+            | "bar"
+            | "mathring"
+            | "dddot"
+            | "ddddot"
+            | "overrightarrow"
+            | "overleftarrow"
+            | "overleftrightarrow"
+            | "underrightarrow"
+            | "underleftarrow"
+            | "underleftrightarrow"
             | "overbrace"
             | "underbrace"
             | "overset"
             | "underset"
+            | "stackrel"
             | "boxed"
             | "circle"
             | "overwrite"
             | "begin"
             | "left"
             | "text"
+            | "substack"
+            | "operatorname"
+            | "bmod"
+            | "pmod"
+            | "mod"
+            | "phantom"
+            | "hphantom"
+            | "vphantom"
+            | "cancel"
+            | "bcancel"
+            | "xcancel"
+            | "fbox"
+            | "framebox"
+            | "middle"
+            | "mathrel"
+            | "mathop"
+            | "mathrm"
+            | "mathbf"
+            | "mathit"
+            | "mathsf"
+            | "mathtt"
+            | "mathbb"
+            | "Bbb"
+            | "mathcal"
+            | "mathscr"
+            | "mathfrak"
+            | "boldsymbol"
+            | "bm"
+            | "textrm"
+            | "textnormal"
+            | "textbf"
+            | "textit"
+            | "emph"
+            | "textsf"
+            | "texttt"
+            | "mbox"
+            | "hbox"
+    )
+}
+
+fn is_ignored_command(name: &str) -> bool {
+    matches!(
+        name,
+        "displaystyle" | "textstyle" | "scriptstyle" | "scriptscriptstyle"
+            | "tiny" | "scriptsize" | "footnotesize" | "small" | "normalsize"
+            | "large" | "Large" | "LARGE" | "huge" | "Huge"
+            | "notag" | "nonumber"
+    )
+}
+
+fn is_ignored_with_arg(name: &str) -> bool {
+    matches!(name, "tag" | "label" | "ref" | "eqref")
+}
+
+fn is_big_delim(name: &str) -> bool {
+    matches!(
+        name,
+        "big" | "Big" | "bigg" | "Bigg"
+            | "bigl" | "bigr" | "bigm"
+            | "Bigl" | "Bigr" | "Bigm"
+            | "biggl" | "biggr" | "biggm"
+            | "Biggl" | "Biggr" | "Biggm"
     )
 }
 
@@ -689,9 +1226,10 @@ fn matrix_fences(env: &str) -> (Option<String>, Option<String>) {
 
 const FUNC_NAMES: &[&str] = &[
     "arccsch", "arcsech", "arccoth", "arcsinh", "arccosh", "arctanh", "arcsin", "arccos",
-    "arctan", "arccsc", "arcsec", "arccot", "liminf", "limsup", "sinh", "cosh", "tanh",
-    "csch", "sech", "coth", "sin", "cos", "tan", "csc", "sec", "cot", "deg", "det", "dim",
-    "exp", "gcd", "hom", "inf", "ker", "lg", "lim", "ln", "log", "max", "min", "Pr", "sup",
+    "arctan", "arccsc", "arcsec", "arccot", "varinjlim", "varprojlim", "varliminf",
+    "varlimsup", "injlim", "projlim", "liminf", "limsup", "sinh", "cosh", "tanh", "csch",
+    "sech", "coth", "sin", "cos", "tan", "csc", "sec", "cot", "deg", "det", "dim", "exp",
+    "gcd", "hom", "inf", "ker", "lg", "lim", "ln", "log", "max", "min", "Pr", "sup", "arg",
 ];
 
 pub(super) fn braille_to_expr(input: &str) -> Result<Expr> {
@@ -827,5 +1365,359 @@ mod tests {
             assert_eq!(out, expect, "{src}");
             assert!(!out.contains("FFFD"), "{src} -> {out}");
         }
+    }
+
+    #[test]
+    fn office_symbol_aliases_reuse_existing_characters() {
+        // Names from the Microsoft 365 list that spell a character MathCAT already emits
+        // under another command. `\jmath` is the one new character (U+0237).
+        let cases = [
+            (r"\neq", "&#x2260;"),
+            (r"\ne", "&#x2260;"),
+            (r"\emptyset", "&#x2205;"),
+            (r"\neg", "&#xAC;"),
+            (r"\bot", "&#x22A5;"),
+            (r"\prime", "&#x2032;"),
+            (r"\omicron", "&#x3BF;"),
+            (r"\varGamma", "&#x393;"),
+            (r"\varOmega", "&#x3A9;"),
+            (r"\diamond", "&#x22C4;"),
+            (r"\Diamond", "&#x25C7;"),
+            (r"\lozenge", "&#x25CA;"),
+            (r"\blacklozenge", "&#x29EB;"),
+            (r"\bigcirc", "&#x25EF;"),
+            (r"\dagger", "&#x2020;"),
+            (r"\ddagger", "&#x2021;"),
+            (r"\hbar", "&#x210F;"),
+            (r"\circlearrowleft", "&#x21BA;"),
+            (r"\dashrightarrow", "&#x21E2;"),
+            (r"\iddots", "&#x22F0;"),
+            (r"\pvint", "&#x2A0D;"),
+            (r"\dots", "&#x2026;"),
+            (r"\dotsb", "&#x22EF;"),
+            (r"\dotsc", "&#x2026;"),
+            (r"\nleq", "&#x2270;"),
+            (r"\ntriangleleft", "&#x22EA;"),
+            (r"\doteqdot", "&#x2251;"),
+            (r"\quad", "&#x2003;"),
+            (r"\enspace", "&#x2002;"),
+            (r"\medspace", "&#x205F;"),
+            (r"\jmath", "&#x237;"),
+            (r"\lbrace", "{"),
+            (r"\lvert", "|"),
+            (r"\lVert", "&#x2016;"),
+        ];
+        for (src, needle) in cases {
+            let out = mml(src);
+            assert!(out.contains(needle), "{src} -> {out}");
+        }
+        // `\neq` must not swallow the letters of a longer name, and `\not=` stays ≠.
+        assert_eq!(mml(r"\neq"), mml(r"\not="));
+        assert!(mml(r"\infty").contains("&#x221E;"), "{}", mml(r"\infty"));
+    }
+
+    #[test]
+    fn spacing_commands_and_short_names() {
+        // `\,` is a thin space here. The forward template for U+201A stays `\,`.
+        let thin = mml(r"a\,b");
+        assert!(thin.contains("&#x2009;"), "{thin}");
+        assert!(mml(r"a\!b").contains("&#x200B;"));
+        assert!(mml(r"a\:b").contains("&#x205F;"));
+        assert!(mml(r"a\;b").contains("&#x2004;"));
+        assert!(mml("~").contains("&#xA0;"));
+        // `~p` is still the short name for pi, not a space plus p.
+        assert_eq!(mml("~p"), mml(r"\pi"));
+        assert!(mml(r"\qquad").contains("&#x2003;&#x2003;"));
+        assert!(mml(r"\arg").contains("<mi>arg</mi>"));
+        let lim = mml(r"\varinjlim_n");
+        assert!(lim.contains("<munder>"), "{lim}");
+        assert!(lim.contains("varinjlim"), "{lim}");
+    }
+
+    #[test]
+    fn ignored_commands_leave_the_math() {
+        // Style, size, tags, and delimiter grades are accepted and dropped.
+        assert_eq!(mml(r"\displaystyle x"), mml("x"));
+        assert_eq!(mml(r"\Large x"), mml("x"));
+        assert_eq!(mml(r"\tag{1}x"), mml("x"));
+        assert_eq!(mml(r"\label{eq}x"), mml("x"));
+        assert_eq!(mml(r"\notag x"), mml("x"));
+        assert_eq!(mml(r"\bigl("), mml("("));
+        assert_eq!(mml(r"\Biggr)"), mml(")"));
+    }
+
+    #[test]
+    fn fraction_accent_and_font_commands() {
+        assert_eq!(mml(r"\dfrac{1}{2}"), mml(r"\frac{1}{2}"));
+        assert_eq!(mml(r"\cfrac[l]{1}{2}"), mml(r"\frac{1}{2}"));
+        assert_eq!(mml(r"\tbinom{n}{k}"), mml(r"\binom{n}{k}"));
+        let skewed = mml(r"\ifrac{1}{2}");
+        assert!(skewed.contains("bevelled=\"true\""), "{skewed}");
+        assert!(skewed.contains("<mn>1</mn>"), "{skewed}");
+        let hat = mml(r"\widehat{x}");
+        assert!(hat.contains("<mover>"), "{hat}");
+        assert!(hat.contains("<mo>^</mo>"), "{hat}");
+        assert_eq!(mml(r"\stackrel{a}{b}"), mml(r"\overset{a}{b}"));
+        let under = mml(r"\underrightarrow{x}");
+        assert!(under.contains("<munder>"), "{under}");
+        // Bold x is U+1D431. Upright x keeps ASCII and mathvariant.
+        assert!(mml(r"\mathbf{x}").contains("&#x1D431;"));
+        assert!(mml(r"\mathrm{x}").contains("mathvariant=\"normal\">x</mi>"));
+        // Script B is the BMP hole U+212C, not the unassigned slot.
+        assert!(mml(r"\mathcal{B}").contains("&#x212C;"));
+        assert!(mml(r"\mathbb{R}").contains("&#x211D;"));
+        assert!(mml(r"\mathfrak{g}").contains("&#x1D524;"));
+        assert!(mml(r"\mathbf{\alpha}").contains("&#x1D6C2;"));
+        assert!(mml(r"\mbox{hi}").contains("<mtext>hi</mtext>"));
+    }
+
+    #[test]
+    fn enclose_limits_mod_and_substack() {
+        assert!(mml(r"\cancel{x}").contains("notation=\"updiagonalstrike\""));
+        assert!(mml(r"\bcancel{x}").contains("notation=\"downdiagonalstrike\""));
+        let cross = mml(r"\xcancel{x}");
+        assert!(
+            cross.contains("notation=\"updiagonalstrike downdiagonalstrike\""),
+            "{cross}"
+        );
+        assert!(mml(r"\phantom{x}").contains("notation=\"phantom\""));
+        assert!(mml(r"\fbox{x}").contains("notation=\"box\""));
+        let nolimits = mml(r"\sum\nolimits_i");
+        assert!(nolimits.contains("<msub>"), "{nolimits}");
+        assert!(!nolimits.contains("<munder>"), "{nolimits}");
+        let forced = mml(r"x\limits_i");
+        assert!(forced.contains("<munder>"), "{forced}");
+        let op = mml(r"\mathop{x}_i^n");
+        assert!(op.contains("<munderover>"), "{op}");
+        assert_eq!(mml(r"\mathrel{=}"), mml("="));
+        assert!(mml(r"\operatorname{sin}").contains("<mi>sin</mi>"));
+        let lim = mml(r"\operatorname{lim}_n");
+        assert!(lim.contains("<munder>"), "{lim}");
+        let pmod = mml(r"\pmod{2}");
+        assert!(pmod.contains("<mo>(</mo>"), "{pmod}");
+        assert!(pmod.contains(">mod</mi>"), "{pmod}");
+        assert!(pmod.contains("<mn>2</mn>"), "{pmod}");
+        assert!(mml(r"a \bmod b").contains(">mod</mi>"));
+        let stack = mml(r"\substack{a \\ b}");
+        assert!(stack.contains("<mtable>"), "{stack}");
+        assert_eq!(stack.matches("<mtr>").count(), 2, "{stack}");
+        let sub = mml(r"\begin{subarray}{c} a \\ b \end{subarray}");
+        assert_eq!(sub.matches("<mtr>").count(), 2, "{sub}");
+        let mid = mml(r"\left( a \middle| b \right)");
+        assert!(mid.contains("<mo>(</mo>"), "{mid}");
+        assert!(mid.contains("<mo>|</mo>"), "{mid}");
+        assert!(mid.contains("<mo>)</mo>"), "{mid}");
+    }
+
+    #[test]
+    fn ms_alias_does_not_eat_a_longer_command() {
+        // A shorter alias must stop at a letter boundary. `\ne` is ≠, `\neg` is ¬,
+        // and `\nleq` is not the existing `\nless`.
+        assert_eq!(mml(r"\neg"), "<math><mo>&#xAC;</mo></math>");
+        assert_eq!(mml(r"\nleq"), "<math><mo>&#x2270;</mo></math>");
+        assert_eq!(mml(r"\ngeq"), "<math><mo>&#x2271;</mo></math>");
+        assert_eq!(mml(r"\nsim"), "<math><mo>&#x2241;</mo></math>");
+        assert_eq!(mml(r"\ncong"), "<math><mo>&#x2247;</mo></math>");
+        assert_eq!(mml(r"\dots"), "<math><mo>&#x2026;</mo></math>");
+        assert_eq!(mml(r"\dotsb"), "<math><mo>&#x22EF;</mo></math>");
+        assert_eq!(mml(r"\dotsm"), "<math><mo>&#x22EF;</mo></math>");
+        assert_eq!(mml(r"\dotso"), "<math><mo>&#x2026;</mo></math>");
+        assert_eq!(mml(r"\quad"), "<math><mo>&#x2003;</mo></math>");
+        assert_eq!(
+            mml(r"\qquad"),
+            "<math><mo>&#x2003;&#x2003;</mo></math>"
+        );
+        assert_eq!(mml(r"\thickspace"), "<math><mo>&#x2004;</mo></math>");
+        assert_eq!(mml(r"\jmath"), "<math><mi>&#x237;</mi></math>");
+    }
+
+    #[test]
+    fn ms_fences_and_greek_aliases() {
+        // Fence names are the same glyphs as the ASCII fences, including inside `\left`.
+        assert_eq!(
+            mml(r"\left\lbrace x \right\rbrace"),
+            "<math><mrow><mo>{</mo><mi>x</mi><mo>}</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\left\lvert x \right\rvert"),
+            "<math><mrow><mo>|</mo><mi>x</mi><mo>|</mo></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\left\lVert x \right\|"),
+            "<math><mrow><mo>&#x2016;</mo><mi>x</mi><mo>&#x2016;</mo></mrow></math>"
+        );
+        assert_eq!(mml(r"\lbrack"), "<math><mo>[</mo></math>");
+        assert_eq!(mml(r"\rbrack"), "<math><mo>]</mo></math>");
+        assert_eq!(mml(r"\varDelta"), "<math><mi>&#x394;</mi></math>");
+        assert_eq!(mml(r"\varPhi"), "<math><mi>&#x3A6;</mi></math>");
+        assert_eq!(mml(r"\circlearrowright"), "<math><mo>&#x21BB;</mo></math>");
+        assert_eq!(mml(r"\dashleftarrow"), "<math><mo>&#x21E0;</mo></math>");
+        assert_eq!(mml(r"\ntriangleright"), "<math><mo>&#x22EB;</mo></math>");
+        assert_eq!(mml(r"\ntrianglelefteq"), "<math><mo>&#x22EC;</mo></math>");
+        assert_eq!(mml(r"\ntrianglerighteq"), "<math><mo>&#x22ED;</mo></math>");
+    }
+
+    #[test]
+    fn ms_spacing_and_dropped_commands() {
+        // Punctuation spaces and the commands Office parses and then discards.
+        assert_eq!(
+            mml(r"a\ b"),
+            "<math><mrow><mi>a</mi><mo> </mo><mi>b</mi></mrow></math>"
+        );
+        assert_eq!(mml(r"a\space b"), mml(r"a\ b"));
+        assert_eq!(mml(r"\textstyle x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\scriptstyle x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\scriptsize x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\Huge x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\eqref{1}x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\ref{1}x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\nonumber x"), "<math><mi>x</mi></math>");
+        assert_eq!(mml(r"\bigm|"), "<math><mo>|</mo></math>");
+        assert_eq!(mml(r"\Bigl("), "<math><mo>(</mo></math>");
+    }
+
+    #[test]
+    fn ms_fraction_aliases_match_frac_and_binom() {
+        // Size and alignment on these names are not stored. `\ifrac` is bevelled.
+        let frac = "<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>";
+        assert_eq!(mml(r"\tfrac{1}{2}"), frac);
+        assert_eq!(mml(r"\cfrac[r]{1}{2}"), frac);
+        assert_eq!(
+            mml(r"\dfrac"),
+            "<math><mfrac><mrow></mrow><mrow></mrow></mfrac></math>"
+        );
+        assert_eq!(mml(r"\dbinom{n}{k}"), mml(r"\binom{n}{k}"));
+        assert_eq!(
+            mml(r"\ifrac{1}{2}"),
+            "<math><mfrac bevelled=\"true\"><mn>1</mn><mn>2</mn></mfrac></math>"
+        );
+    }
+
+    #[test]
+    fn ms_accents_are_over_or_under() {
+        // One argument, same shape as `\hat` and `\overline`.
+        assert_eq!(
+            mml(r"\widetilde{x}"),
+            "<math><mover><mi>x</mi><mo>~</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\check{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2C7;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\acute{x}"),
+            "<math><mover><mi>x</mi><mo>&#xB4;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\grave{x}"),
+            "<math><mover><mi>x</mi><mo>`</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\breve{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2D8;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\bar{x}"),
+            "<math><mover><mi>x</mi><mo>&#xAF;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\mathring{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2DA;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\dddot{x}"),
+            "<math><mover><mi>x</mi><mo>...</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\ddddot{x}"),
+            "<math><mover><mi>x</mi><mo>....</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\overrightarrow{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2192;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\overleftarrow{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2190;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\overleftrightarrow{x}"),
+            "<math><mover><mi>x</mi><mo>&#x2194;</mo></mover></math>"
+        );
+        assert_eq!(
+            mml(r"\underleftarrow{x}"),
+            "<math><munder><mi>x</mi><mo>&#x2190;</mo></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\underleftrightarrow{x}"),
+            "<math><munder><mi>x</mi><mo>&#x2194;</mo></munder></math>"
+        );
+    }
+
+    #[test]
+    fn ms_font_commands_map_letters() {
+        // Letters move into the math alphanumeric block. Upright roman stays ASCII.
+        // Script B and double-struck Z use the BMP holes.
+        assert_eq!(mml(r"\mathit{x}"), "<math><mi>&#x1D465;</mi></math>");
+        assert_eq!(mml(r"\mathsf{A}"), "<math><mi>&#x1D5A0;</mi></math>");
+        assert_eq!(mml(r"\mathtt{A}"), "<math><mi>&#x1D670;</mi></math>");
+        assert_eq!(mml(r"\Bbb{Z}"), "<math><mi>&#x2124;</mi></math>");
+        assert_eq!(mml(r"\mathscr{B}"), "<math><mi>&#x212C;</mi></math>");
+        assert_eq!(mml(r"\boldsymbol{x}"), "<math><mi>&#x1D499;</mi></math>");
+        assert_eq!(mml(r"\bm{x}"), mml(r"\boldsymbol{x}"));
+        assert_eq!(
+            mml(r"\mathrm{sin}"),
+            "<math><mi mathvariant=\"normal\">sin</mi></math>"
+        );
+        assert_eq!(mml(r"\textrm{x}"), mml(r"\mathrm{x}"));
+        assert_eq!(mml(r"\textnormal{x}"), mml(r"\mathrm{x}"));
+        assert_eq!(mml(r"\textbf{x}"), mml(r"\mathbf{x}"));
+        assert_eq!(mml(r"\textit{x}"), mml(r"\mathit{x}"));
+        assert_eq!(mml(r"\emph{x}"), mml(r"\mathit{x}"));
+        assert_eq!(mml(r"\textsf{A}"), mml(r"\mathsf{A}"));
+        assert_eq!(mml(r"\texttt{A}"), mml(r"\mathtt{A}"));
+        assert_eq!(mml(r"\hbox{hi}"), "<math><mtext>hi</mtext></math>");
+    }
+
+    #[test]
+    fn ms_operators_limits_and_enclose() {
+        // New operator names. Limit names take the script below the name.
+        assert_eq!(
+            mml(r"\injlim_n"),
+            "<math><munder><mo>injlim</mo><mi>n</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\projlim_n"),
+            "<math><munder><mo>projlim</mo><mi>n</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\varprojlim_n"),
+            "<math><munder><mo>varprojlim</mo><mi>n</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\varliminf_n"),
+            "<math><munder><mo>varliminf</mo><mi>n</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\varlimsup_n"),
+            "<math><munder><mo>varlimsup</mo><mi>n</mi></munder></math>"
+        );
+        assert_eq!(
+            mml(r"\mod{2}"),
+            "<math><mrow><mi>mod</mi><mo>&#xA0;</mo><mn>2</mn></mrow></math>"
+        );
+        assert_eq!(
+            mml(r"\hphantom{x}"),
+            "<math><menclose notation=\"hphantom\"><mi>x</mi></menclose></math>"
+        );
+        assert_eq!(
+            mml(r"\vphantom{x}"),
+            "<math><menclose notation=\"vphantom\"><mi>x</mi></menclose></math>"
+        );
+        assert_eq!(mml(r"\framebox{x}"), mml(r"\boxed{x}"));
+        assert_eq!(
+            mml(r"\mathop{\sum}_i"),
+            "<math><munder><mo>&#x2211;</mo><mi>i</mi></munder></math>"
+        );
     }
 }

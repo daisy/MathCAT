@@ -15,6 +15,11 @@ pub enum Expr {
     },
     /// Identifier text (Latin or Greek letter(s), possibly multi-letter).
     Identifier(String),
+    /// `<mi mathvariant="…">` when the letters stay in ASCII (upright `\mathrm`).
+    StyledIdent {
+        text: String,
+        mathvariant: String,
+    },
     /// Operator / punctuation character(s) for `<mo>`.
     Operator(String),
     /// Horizontal list (implicit `<mrow>` when length ≠ 1).
@@ -28,6 +33,8 @@ pub enum Expr {
     Frac(Box<Expr>, Box<Expr>),
     /// Binomial / line-less fraction: `<mfrac linethickness="0">`
     BinomFrac(Box<Expr>, Box<Expr>),
+    /// Skewed fraction: `<mfrac bevelled="true">` (`\ifrac`).
+    BevelledFrac(Box<Expr>, Box<Expr>),
     Sqrt(Box<Expr>),
     Root(Box<Expr>, Box<Expr>), // index, base
     Fenced {
@@ -192,6 +199,11 @@ impl Expr {
                 xml_escape(text)
             ),
             Expr::Identifier(s) => format!("<mi>{}</mi>", xml_escape(s)),
+            Expr::StyledIdent { text, mathvariant } => format!(
+                "<mi mathvariant=\"{}\">{}</mi>",
+                xml_escape(mathvariant),
+                xml_escape(text)
+            ),
             Expr::Operator(s) => format!("<mo>{}</mo>", xml_escape(s)),
             Expr::Text(s) => format!("<mtext>{}</mtext>", xml_escape(s)),
             Expr::Enclose { notation, body } => format!(
@@ -227,6 +239,13 @@ impl Expr {
             Expr::BinomFrac(num, den) => {
                 format!(
                     "<mfrac linethickness=\"0\">{}{}</mfrac>",
+                    num.to_mathml(),
+                    den.to_mathml()
+                )
+            }
+            Expr::BevelledFrac(num, den) => {
+                format!(
+                    "<mfrac bevelled=\"true\">{}{}</mfrac>",
                     num.to_mathml(),
                     den.to_mathml()
                 )

@@ -45,6 +45,17 @@ impl Node {
         }
     }
 
+    /// Insert only when this key is not already a token.
+    fn insert_missing(&mut self, key: &str, out: Out) {
+        let mut node = self;
+        for ch in key.chars() {
+            node = node.children.entry(ch).or_insert_with(Node::new);
+        }
+        if node.out.is_none() {
+            node.out = Some(out);
+        }
+    }
+
     /// Longest key that is a complete token at the start of `input`.
     fn longest<'a>(&'a self, input: &str) -> Option<(&'a Out, usize)> {
         let mut node = self;
@@ -161,21 +172,99 @@ fn load_symbols() -> Result<Node> {
             false,
         );
     }
+    // Reverse-only spellings. A key that YAML already owns is left alone, so the
+    // forward template (for example `\not=` for ≠) does not change.
+    for (key, text) in ALIASES {
+        root.insert_missing(key, out_for(text));
+    }
     Ok(root)
 }
 
 pub(crate) fn is_limit_name(name: &str) -> bool {
     matches!(
         name,
-        "lim" | "liminf" | "limsup" | "max" | "min" | "sup" | "inf"
+        "lim" | "liminf" | "limsup"
+            | "injlim" | "projlim"
+            | "varinjlim" | "varprojlim"
+            | "varliminf" | "varlimsup"
+            | "max" | "min" | "sup" | "inf"
     )
 }
 
 const FUNC_NAMES: &[&str] = &[
     "arccsch", "arcsech", "arccoth", "arcsinh", "arccosh", "arctanh", "arcsin", "arccos",
-    "arctan", "arccsc", "arcsec", "arccot", "liminf", "limsup", "sinh", "cosh", "tanh",
-    "csch", "sech", "coth", "sin", "cos", "tan", "csc", "sec", "cot", "deg", "det", "dim",
-    "exp", "gcd", "hom", "inf", "ker", "lg", "lim", "ln", "log", "max", "min", "Pr", "sup",
+    "arctan", "arccsc", "arcsec", "arccot", "varinjlim", "varprojlim", "varliminf",
+    "varlimsup", "injlim", "projlim", "liminf", "limsup", "sinh", "cosh", "tanh", "csch",
+    "sech", "coth", "sin", "cos", "tan", "csc", "sec", "cot", "deg", "det", "dim", "exp",
+    "gcd", "hom", "inf", "ker", "lg", "lim", "ln", "log", "max", "min", "Pr", "sup", "arg",
+];
+
+/// Command spellings from the Microsoft 365 LaTeX set whose character MathCAT
+/// already emits under another name, plus `\jmath` (U+0237), which has no key.
+const ALIASES: &[(&str, &str)] = &[
+    (r"\ne", "\u{2260}"),
+    (r"\neq", "\u{2260}"),
+    (r"\neg", "\u{00AC}"),
+    (r"\bot", "\u{22A5}"),
+    (r"\prime", "\u{2032}"),
+    (r"\emptyset", "\u{2205}"),
+    (r"\omicron", "\u{03BF}"),
+    (r"\varGamma", "\u{0393}"),
+    (r"\varDelta", "\u{0394}"),
+    (r"\varTheta", "\u{0398}"),
+    (r"\varLambda", "\u{039B}"),
+    (r"\varXi", "\u{039E}"),
+    (r"\varPi", "\u{03A0}"),
+    (r"\varSigma", "\u{03A3}"),
+    (r"\varUpsilon", "\u{03A5}"),
+    (r"\varPhi", "\u{03A6}"),
+    (r"\varPsi", "\u{03A8}"),
+    (r"\varOmega", "\u{03A9}"),
+    (r"\diamond", "\u{22C4}"),
+    (r"\Diamond", "\u{25C7}"),
+    (r"\lozenge", "\u{25CA}"),
+    (r"\blacklozenge", "\u{29EB}"),
+    (r"\bigcirc", "\u{25EF}"),
+    (r"\dagger", "\u{2020}"),
+    (r"\ddagger", "\u{2021}"),
+    (r"\hbar", "\u{210F}"),
+    (r"\circlearrowleft", "\u{21BA}"),
+    (r"\circlearrowright", "\u{21BB}"),
+    (r"\dashleftarrow", "\u{21E0}"),
+    (r"\dashrightarrow", "\u{21E2}"),
+    (r"\iddots", "\u{22F0}"),
+    (r"\pvint", "\u{2A0D}"),
+    (r"\dots", "\u{2026}"),
+    (r"\dotsb", "\u{22EF}"),
+    (r"\dotsm", "\u{22EF}"),
+    (r"\dotsc", "\u{2026}"),
+    (r"\dotsi", "\u{2026}"),
+    (r"\dotso", "\u{2026}"),
+    (r"\nleq", "\u{2270}"),
+    (r"\ngeq", "\u{2271}"),
+    (r"\nsim", "\u{2241}"),
+    (r"\ncong", "\u{2247}"),
+    (r"\ntriangleleft", "\u{22EA}"),
+    (r"\ntriangleright", "\u{22EB}"),
+    (r"\ntrianglelefteq", "\u{22EC}"),
+    (r"\ntrianglerighteq", "\u{22ED}"),
+    (r"\doteqdot", "\u{2251}"),
+    (r"\quad", "\u{2003}"),
+    (r"\qquad", "\u{2003}\u{2003}"),
+    (r"\enspace", "\u{2002}"),
+    (r"\medspace", "\u{205F}"),
+    (r"\thickspace", "\u{2004}"),
+    (r"\jmath", "\u{0237}"),
+    (r"\lbrace", "{"),
+    (r"\rbrace", "}"),
+    (r"\lbrack", "["),
+    (r"\rbrack", "]"),
+    (r"\lvert", "|"),
+    (r"\rvert", "|"),
+    (r"\vert", "|"),
+    (r"\lVert", "\u{2016}"),
+    (r"\rVert", "\u{2016}"),
+    (r"\|", "\u{2016}"),
 ];
 
 /// A template MathCAT emits as one token. Grouped composites (`\acute{\eta}`) are
