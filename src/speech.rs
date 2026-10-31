@@ -2833,9 +2833,15 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
                   let ch_as_int = ch as u32;
                   if ('\u{2800}'..='\u{28ff}').contains(&ch) {   // braille -- leave as braille
                       return Ok(self.escape_string_for_safety(String::from(ch)));
-                  } else {                                    // Emulate what NVDA does: generate (including single quotes) '\xhhhh' or '\yhhhhhh'
-                      let prefix_indicator = if ch_as_int < 1<<16 {'x'} else {'y'};
-                      return self.replace_chars( &format!("'\\{prefix_indicator}{:06x}'", ch_as_int), mathml);
+                  } else {
+                      // Undefined print char: spell the code point with no quotes.
+                      // BMP is four hex digits (\xhhhh); above the BMP is six (\yhhhhhh).
+                      let spelling = if ch_as_int < 1 << 16 {
+                          format!("\\x{ch_as_int:04x}")
+                      } else {
+                          format!("\\y{ch_as_int:06x}")
+                      };
+                      return self.replace_chars(&spelling, mathml);
                   }
                 }
               }
