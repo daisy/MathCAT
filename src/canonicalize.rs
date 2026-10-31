@@ -1243,6 +1243,11 @@ impl CanonicalizeContext {
 				if element_name == "mrow" && children.len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(mathml) {
 					// "lift" the child up so all the links (e.g., siblings) are correct
 					let child = as_element(children[0]);
+					// The synthesized wrapper can disappear, but its original token must
+					// not inherit a marker that chemistry cleanup uses to delete added leaves.
+					if is_leaf(child) && mathml.attribute_value(CHANGED_ATTR).as_deref() == Some(ADDED_ATTR_VALUE) {
+						mathml.remove_attribute(CHANGED_ATTR);
+					}
 					mathml.replace_children(child.children());
 					set_mathml_name(mathml, as_str!(name(child)));
 					add_attrs(mathml, &child.attributes());
@@ -4700,6 +4705,28 @@ mod canonicalize_tests {
     fn canonical_same() -> Result<()> {
         let target_str = "<math><mrow><mo>-</mo><mi>a</mi></mrow></math>";
         are_strs_canonically_equal_result(target_str, target_str, &[])
+    }
+
+    #[test]
+    fn mstyle_split_function_preserves_content() -> Result<()> {
+        // A style wrapper must preserve a split function name when its mi children merge.
+        crate::interface::set_rules_dir(abs_rules_dir_path())?;
+        crate::interface::set_preference("Language", "ru")?;
+        let canonical = crate::interface::set_mathml("<math><mi>a</mi><mo>=</mo><mstyle mathvariant='normal'><mi>R</mi><mi>e</mi></mstyle><mspace width='0.28em'/><mi>z</mi><mo>,</mo><mi>b</mi><mo>=</mo><mstyle mathvariant='normal'><mi>I</mi><mi>m</mi></mstyle><mspace width='0.28em'/><mi>z</mi></math>")?;
+        assert!(canonical.contains(">Re</mi>"), "{canonical}");
+        assert!(canonical.contains(">Im</mi>"), "{canonical}");
+        Ok(())
+    }
+
+    #[test]
+    fn mpadded_split_function_preserves_content() -> Result<()> {
+        // mpadded follows the same wrapper cleanup path; chemistry rollback must keep both names.
+        crate::interface::set_rules_dir(abs_rules_dir_path())?;
+        crate::interface::set_preference("Language", "ru")?;
+        let canonical = crate::interface::set_mathml("<math><mi>a</mi><mo>=</mo><mpadded><mi>R</mi><mi>e</mi></mpadded><mi>z</mi><mo>,</mo><mi>b</mi><mo>=</mo><mpadded><mi>I</mi><mi>m</mi></mpadded><mi>z</mi></math>")?;
+        assert!(canonical.contains(">Re</mi>"), "{canonical}");
+        assert!(canonical.contains(">Im</mi>"), "{canonical}");
+        Ok(())
     }
 
 	#[test]

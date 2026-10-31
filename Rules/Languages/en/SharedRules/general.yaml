@@ -1,5 +1,49 @@
 ---
 
+# W3C definite-integral arguments are the integration domain or the two bounds, not the sign.
+- name: definite-integral-intent
+  tag: definite-integral
+  match: "(count(*)=1 or count(*)=2) and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - t: "integral"
+  - test:
+      if: "count(*)=1"
+      then: [t: "over", x: "*[1]"]
+      else: [t: "from", x: "*[1]", t: "to", x: "*[2]"]
+
+# A semantic reading also works for prime notation; do not assume a Leibniz fraction.
+- name: derivative-intent
+  tag: derivative
+  match: "count(*)=3 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - t: "the"
+  - test:
+    - if: "*[3][self::m:mn and .='1']"
+      then: [t: "derivative of"]
+    - else_if: "*[3][self::m:mn and string-length(.)>0 and translate(., '0123456789', '')='']"
+      then: [x: "ToOrdinal(*[3])", t: "derivative of"]
+      else: [t: "derivative of order", x: "*[3]", t: "of"]
+  - x: "*[1]"
+  - t: "with respect to"
+  - x: "*[2]"
+
+- name: blank-intent
+  tag: blank
+  match: "count(*)=0"
+  replace: [bookmark: "@id", t: "blank"]
+
+# Preserve operands while suppressing the default-silent operator, including a bare operator leaf.
+- name: invisible-operator-intent
+  tag: [invisible-times, invisible-separator]
+  match: "not(@data-intent-property) or contains(@data-intent-property, ':silent:')"
+  replace:
+  - test:
+      if: "*"
+      then: [x: "*"]
+      else: [t: ""]
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -190,13 +234,16 @@
   - t: "of"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
+# W3C supplies the period alone; inferred MathCAT intents also carry a non-repeating prefix.
 - name: repeating-decimal
   tag: repeating-decimal
-  match: "."
+  match: "(count(*)=1 or count(*)=2) and not(contains(@data-intent-property, ':silent:'))"
   replace:
-  - x: "*[1]"
-  - t: "with repeating digits"      # phrase('with repeating digits')
-  - spell: "*[2]"
+  - test:
+      if: "count(*)=2"
+      then: [x: "*[1]", t: "with repeating digits"]
+      else: [t: "repeating decimal"]
+  - spell: "*[last()]"
 
 - name: msubsup-skip-super
   # handles single, double, etc., prime
