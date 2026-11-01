@@ -250,6 +250,7 @@
  - "▨": [t: "⠨⠫⠼⠙t"]            # 0x25A8 (Square with upper right to lower left fill)
  - "▩": [t: "⠨⠫⠼⠙t"]            # 0x25A9 (Square with diagonal crosshatch fill)
  - "○": [t: "1⠫⠿t"]             # 0x25CB (Circle)
+ - "●": [t: "⠸⠫⠿t"]             # 0x25CF (Black circle)
  - "◍": [t: "⠨⠫⠿t"]             # 0x25CD (Circle with vertical fill)
  - "▱": [t: "1⠫⠈⠼⠙t"]           # 0x25B1 (Parallelogram)
  - "▲": [t: "⠸⠫⠼⠉t"]            # 0x25B2 (Filled triangle)
