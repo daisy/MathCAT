@@ -159,6 +159,62 @@ fn trailing_stray_close_after_sum() -> Result<()> {
 }
 
 #[test]
+fn assigned_shapes_gtm_14() -> Result<()> {
+    // ICEB 3.19 / GTM 14. Side count is the regular polygon. The terminator is optional.
+    assert_contains("⠰⠫⠼⠉", &["&#x25B3;"])?; // triangle
+    assert_contains("⠫⠼⠉", &["&#x25B3;"])?; // triangle without grade 1
+    assert_contains("⠨⠫⠼⠉", &["&#x25B3;"])?; // shaded triangle
+    assert_contains("⠰⠫⠼⠙", &["&#x25A1;"])?; // square
+    assert_contains("⠫⠿", &["&#x25CB;"])?; // white circle
+    assert_contains("⠰⠫⠿", &["&#x25CB;"])?; // white circle after grade 1
+    assert_contains("⠸⠫⠿", &["&#x25CF;"])?; // black circle
+    assert_contains("⠰⠫⠼⠑", &["&#x2B20;"])?; // pentagon
+    assert_contains("⠰⠫⠼⠋⠱", &["&#x2B21;"])?; // hexagon, shape terminator
+    assert_contains("⠸⠫⠼⠑", &["&#x2B1F;"])?; // black pentagon
+    assert_contains("⠸⠫⠼⠋", &["&#x2B22;"])?; // black hexagon
+    assert_contains("⠸⠫⠈⠼⠋", &["&#x2B23;"])?; // horizontal black hexagon
+    assert_contains("⠰⠫⠼⠓", &["&#x2BC4;"])?; // white octagon
+    assert_contains("⠸⠫⠼⠓", &["&#x2BC3;"])?; // black octagon
+    assert_contains("⠸⠫⠼⠉", &["&#x25B2;"])?; // filled triangle
+    assert_contains("⠨⠫⠿", &["&#x25CD;"])?; // shaded circle
+    assert_contains("⠰⠫⠈⠼⠙", &["&#x25B1;"])?; // parallelogram
+    // Heptagon is an assigned shape with no Unicode character: keep the whole shape.
+    let heptagon = parse_partial("⠰⠫⠼⠛")?;
+    assert!(
+        heptagon.contains("<mtext>&#x2830;&#x282B;&#x283C;&#x281B;</mtext>"),
+        "{heptagon}"
+    );
+    assert!(!heptagon.contains("<mn>7</mn>"), "{heptagon}");
+    Ok(())
+}
+
+#[test]
+fn unmatched_shape_prefixes_stay_braille() -> Result<()> {
+    // ⠰⠫, ⠸⠫, and ⠨⠫ are shape indicators. With no defined shape after them
+    // they stay as those cells. U+25C7 is not a UEB shape.
+    for braille in ["⠰⠫", "⠸⠫", "⠨⠫"] {
+        let mml = parse_partial(braille)?;
+        let cells: String = braille
+            .chars()
+            .map(|c| format!("&#x{:X};", c as u32))
+            .collect();
+        assert!(
+            mml.contains(&format!("<mtext>{cells}</mtext>")),
+            "expected braille cells {cells} in MathML\nbraille: {braille}\ngot: {mml}"
+        );
+        assert!(!mml.contains("25C7"), "{mml}");
+    }
+    // A defined shape is still the print character (△), not the indicator cells.
+    let triangle = parse_partial("⠰⠫⠼⠉")?;
+    assert!(
+        triangle.contains("&#x25B3;") || triangle.contains("△"),
+        "{triangle}"
+    );
+    assert!(!triangle.contains("25C7"), "{triangle}");
+    Ok(())
+}
+
+#[test]
 fn trailing_incomplete_prefix() -> Result<()> {
     // a+b⠐
     let mml = parse_partial("⠁⠐⠖⠃⠐")?;

@@ -273,6 +273,30 @@ fn ueb_italic_typeform_for_digits() -> Result<()> {
 }
 
 #[test]
+fn undefined_bmp_char_is_four_hex_digits() -> Result<()> {
+    // ◇ (U+25C7) is not a UEB symbol. Spell it as \x25c7: four hex digits, no quotes.
+    // c needs a grade-1 indicator so it is not read as a digit.
+    let expr = "<math><mo>◇</mo></math>";
+    test_braille("UEB", expr, "⠸⠡⠭⠼⠃⠑⠰⠉⠼⠛")?;
+    Ok(())
+}
+
+#[test]
+fn polygon_shapes() -> Result<()> {
+    // White polygons use the shape indicator; black polygons use the filled indicator.
+    // Horizontal black hexagon adds ⠈ so it is not the same cells as the regular black hexagon.
+    test_braille("UEB", "<math><mo>○</mo></math>", "⠰⠫⠿⠱")?;
+    test_braille("UEB", "<math><mo>●</mo></math>", "⠸⠫⠿⠱")?;
+    test_braille("UEB", "<math><mo>⬠</mo></math>", "⠰⠫⠼⠑⠱")?; // U+2B20
+    test_braille("UEB", "<math><mo>⬟</mo></math>", "⠸⠫⠼⠑⠱")?; // U+2B1F
+    test_braille("UEB", "<math><mo>⬢</mo></math>", "⠸⠫⠼⠋⠱")?; // U+2B22
+    test_braille("UEB", "<math><mo>⬣</mo></math>", "⠸⠫⠈⠼⠋⠱")?; // U+2B23
+    test_braille("UEB", "<math><mo>⯄</mo></math>", "⠰⠫⠼⠓⠱")?; // U+2BC4
+    test_braille("UEB", "<math><mo>⯃</mo></math>", "⠸⠫⠼⠓⠱")?; // U+2BC3
+    Ok(())
+}
+
+#[test]
 fn multiple_lines() -> Result<()> {
     // Bare equation-line mtable: `⠸⠀` between rows, no start/end bounds.
     let expr = "<math><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mrow><mo>=</mo><mi>f</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mi>y</mi></mtd><mtd><mrow><mo>=</mo><mi>g</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>";

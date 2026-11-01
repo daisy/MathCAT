@@ -270,9 +270,7 @@ impl<'a> Lexer<'a> {
                 });
                 return Ok(true);
             }
-            // Unknown decorated shape — skip prefix
-            self.eat("⠘⠫");
-            return Ok(true);
+            // Otherwise ⠘⠫ is a shape prefix. An unmatched one stays braille in try_shape.
         }
         // Numeric indicator
         if self.eat("⠼") {
@@ -339,7 +337,8 @@ impl<'a> Lexer<'a> {
             return Ok(true);
         }
 
-        // Shape indicator ⠫ … (minimal: consume shape + following number/letter run)
+        // Shape indicator ⠫ … A defined shape becomes its print character.
+        // An unmatched prefix (⠰⠫, ⠸⠫, ⠨⠫, …) stays as those braille cells.
         if self.try_shape()? {
             return Ok(true);
         }
@@ -656,24 +655,20 @@ impl<'a> Lexer<'a> {
     fn try_shape(&mut self) -> Result<bool> {
         // Prefer full reverse-map match so typeformed shapes (⠨⠫⠿⠱ → ◍, ⠸⠫⠼⠉⠱ → ▲)
         // emit the Unicode characters forward UEB already uses.
-        if let Some((braille, print)) = crate::ueb_symbols::match_ueb_symbol(self.rest)
-            && braille.contains('⠫') {
-                let typeform_prefix = braille.starts_with('⠨')
-                    || braille.starts_with('⠘')
-                    || braille.starts_with('⠸')
-                    || braille.starts_with('⠈');
-                if !self.in_grade1() && !typeform_prefix && !braille.starts_with('⠰') {
-                    // fall through to manual parse / G1 requirement
-                } else {
-                    self.rest = &self.rest[braille.len()..];
-                    self.consume_grade1_symbol_use();
-                    self.numeric = false;
-                    self.tokens.push(Token::Op(print));
-                    return Ok(true);
-                }
-            }
+        if let Some((braille, print)) = crate::ueb_symbols::match_ueb_symbol(self.rest) &&
+            braille.contains('⠫') &&
+            (self.in_grade1() || braille.starts_with('⠨') ||
+                braille.starts_with('⠘') || braille.starts_with('⠸') ||
+                braille.starts_with('⠈') || braille.starts_with('⠰'))
+        {
+            self.rest = &self.rest[braille.len()..];
+            self.consume_grade1_symbol_use();
+            self.numeric = false;
+            self.tokens.push(Token::Op(print));
+            return Ok(true);
+        }
 
-        // Optional typeform prefix before shape (e.g. ⠨⠫ for italicised shape)
+        // Filled ⠸ and shaded ⠨ (plus ⠘ / ⠈ when those cells stand immediately before ⠫).
         let typeform_prefixes = ["⠨", "⠘", "⠸", "⠈"];
         let mut prefix_len = 0;
         for p in typeform_prefixes {
@@ -686,50 +681,61 @@ impl<'a> Lexer<'a> {
         if !after_prefix.starts_with('⠫') {
             return Ok(false);
         }
-        // Shape needs G1, unless a typeform prefix makes the shape indicator unambiguous
-        if !self.in_grade1() && prefix_len == 0 {
+
+        let prefix = self.rest[..prefix_len].to_string();
+        let after_indicator = self.rest[prefix_len + '⠫'.len_utf8()..].to_string();
+        let (code, spec_len) = peek_shape_spec(&after_indicator);
+        // Print characters already defined in UEB unicode.yaml. A side count with no
+        // character (ICEB "n/e": heptagon and up) stays braille, including its digits.
+        let print = assigned_shape(&prefix, &code);
+        // Shape needs G1, unless a typeform prefix makes the shape indicator unambiguous.
+        // ⠫⠿ is the white circle and ⠫⠼⠉ is the triangle even without a grade-1 indicator.
+        let bare_circle_or_triangle = prefix_len == 0 &&
+            matches!(code.as_str(), "●" | "3") &&
+            print.is_some();
+        if !self.in_grade1() && prefix_len == 0 && !bare_circle_or_triangle {
             return Ok(false);
         }
-        let prefix = if prefix_len > 0 {
-            let p = &self.rest[..prefix_len];
-            self.rest = &self.rest[prefix_len..];
-            p.to_string()
-        } else {
-            String::new()
-        };
-        self.eat("⠫");
-        self.consume_grade1_symbol_use();
-        self.numeric = false;
-        // Optional following number (shape code), e.g. ⠼⠉ for triangle
-        let mut code = String::new();
-        if self.eat("⠼") {
-            self.numeric = true;
-            self.numeric_grade1 = true;
-            while let Some(ch) = self.peek_char() {
-                if let Some(d) = braille_cell_to_digit(ch) {
-                    self.eat_char();
-                    code.push(d);
-                } else {
-                    break;
-                }
-            }
+        if let Some(print) = print {
+            self.rest = &self.rest[prefix_len + '⠫'.len_utf8() + spec_len..];
+            // Optional shape terminator ⠱
+            let _ = self.eat("⠱");
+            self.consume_grade1_symbol_use();
             self.numeric = false;
-        } else if self.eat("⠿") {
-            code.push('●');
+            // A shape number uses ⠼; keep grade 1 until a space (same as the old lexer).
+            if code != "●" {
+                self.numeric_grade1 = true;
+            }
+            self.tokens.push(Token::Op(print.into()));
+            return Ok(true);
         }
-        // Optional shape terminator ⠱
-        let _ = self.eat("⠱");
-        let print = match (prefix.as_str(), code.as_str()) {
-            ("⠸", "3") => "▲",
-            ("⠸", "4") => "■",
-            ("⠨", "●") => "◍",
-            ("⠨", "4") => "▧",
-            (_, "3") => "△",
-            (_, "4") => "□",
-            (_, "●") => "○",
-            _ => "◇",
-        };
-        self.tokens.push(Token::Op(print.into()));
+
+        // No print character. A real specification (side count or ⠿) stays with the
+        // indicator; a bare indicator is only the prefix cells.
+        let mut extra_len = spec_len;
+        if spec_len > 0 &&
+            self.rest[prefix_len + '⠫'.len_utf8() + spec_len..].starts_with('⠱')
+        {
+            extra_len += '⠱'.len_utf8();
+        }
+        let indicator_at = prefix_len;
+        let spec_at = prefix_len + '⠫'.len_utf8();
+        let mut cells = String::new();
+        if prefix.is_empty() && matches!(self.grade1, Grade1Mode::Symbol) {
+            cells.push('⠰');
+            self.grade1 = Grade1Mode::Off;
+        } else {
+            self.consume_grade1_symbol_use();
+        }
+        cells.push_str(&self.rest[..indicator_at]);
+        cells.push('⠫');
+        cells.push_str(&self.rest[spec_at..spec_at + extra_len]);
+        self.rest = &self.rest[spec_at + extra_len..];
+        self.numeric = false;
+        if spec_len > 0 && code != "●" {
+            self.numeric_grade1 = true;
+        }
+        self.tokens.push(Token::BrailleText(cells));
         Ok(true)
     }
 
@@ -1096,6 +1102,75 @@ fn braille_cell_to_digit(cell: char) -> Option<char> {
         '⠚' => '0',
         _ => return None,
     })
+}
+
+/// Shape specification after ⠫.
+///
+/// GTM 14 / ICEB 3.19: `⠿` is the circle, `⠼` plus digits is a regular polygon
+/// with that many sides (`⠼⠉` triangle, `⠼⠁⠚` decagon), and `⠈⠼⠙` is the
+/// parallelogram. Code `●` stands for `⠿`. An empty code means there is no
+/// specification, so the caller leaves the following cells alone.
+fn peek_shape_spec(rest: &str) -> (String, usize) {
+    if rest.starts_with('⠿') {
+        return ("●".into(), '⠿'.len_utf8());
+    }
+    let chars: Vec<char> = rest.chars().collect();
+    let mut idx = 0;
+    let mut len = 0;
+    let mut code = String::new();
+    if chars.first() == Some(&'⠈') {
+        if chars.get(1) != Some(&'⠼') {
+            return (String::new(), 0);
+        }
+        code.push('⠈');
+        len += '⠈'.len_utf8();
+        idx = 1;
+    }
+    if chars.get(idx) != Some(&'⠼') {
+        return (String::new(), 0);
+    }
+    len += '⠼'.len_utf8();
+    idx += 1;
+    let mut digits = String::new();
+    while let Some(&ch) = chars.get(idx) {
+        if let Some(d) = braille_cell_to_digit(ch) {
+            digits.push(d);
+            len += ch.len_utf8();
+            idx += 1;
+        } else {
+            break;
+        }
+    }
+    if digits.is_empty() {
+        return (String::new(), 0);
+    }
+    code.push_str(&digits);
+    (code, len)
+}
+
+/// Print character for an assigned UEB shape that `unicode.yaml` already defines.
+/// `code` is a side count (`"3"`, `"10"`), `"⠈4"` (parallelogram), or `"●"` (circle).
+fn assigned_shape(prefix: &str, code: &str) -> Option<&'static str> {
+    match (prefix, code) {
+        ("", "3") => Some("\u{25B3}"), // triangle
+        ("", "4") => Some("\u{25A1}"), // square
+        ("", "5") => Some("\u{2B20}"), // white pentagon
+        ("", "6") => Some("\u{2B21}"), // white hexagon
+        ("", "8") => Some("\u{2BC4}"), // white octagon
+        ("", "\u{25CF}") => Some("\u{25CB}"), // white circle (bullet stands for ⠿)
+        ("\u{2838}", "\u{25CF}") => Some("\u{25CF}"), // black circle
+        ("", "\u{2808}4") => Some("\u{25B1}"), // parallelogram
+        ("\u{2838}", "3") => Some("\u{25B2}"), // filled triangle
+        ("\u{2838}", "4") => Some("\u{25A0}"), // filled square
+        ("\u{2838}", "5") => Some("\u{2B1F}"), // black pentagon
+        ("\u{2838}", "6") => Some("\u{2B22}"), // black hexagon
+        ("\u{2838}", "\u{2808}6") => Some("\u{2B23}"), // horizontal black hexagon
+        ("\u{2838}", "8") => Some("\u{2BC3}"), // black octagon
+        ("\u{2828}", "3") => Some("\u{25B3}"), // shaded triangle
+        ("\u{2828}", "4") => Some("\u{25A7}"), // shaded square
+        ("\u{2828}", "\u{25CF}") => Some("\u{25CD}"), // shaded circle
+        _ => None,
+    }
 }
 
 fn braille_cell_to_latin(cell: char) -> Option<char> {
