@@ -222,7 +222,8 @@
     "ordered-pair": "function=упорядоченная пара: и",
     "outer-product": "infix=внешнее произведение",
     "parallel-to": "infix=параллельно",
-    "partial-derivative": "other=частная производная",
+    # Speech rules defined elsewhere: SharedRules/calculus.yaml (core-partial-derivative).
+    # "partial-derivative": "other=частная производная",
     "percent": "postfix=процентов",
     "permutation-cycle": "function=цикл перестановки",
     "plus-or-minus": "infix=плюс минус",
@@ -278,12 +279,18 @@
     "vertical-ellipsis": "infix=вертикальное многоточие",
     "volume": "nofix=объём || function=объём",
     "xor": "infix=исключающее или",
-    "blank": "nofix=пустое место",
-    "definite-integral": "other=интеграл",
-    "derivative": "other=производная",
-    "invisible-separator": "silent=",
-    "invisible-times": "silent=",
-    "point": "other=точка",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (blank-intent).
+    # "blank": "nofix=пустое место",
+    # Speech rules defined elsewhere: SharedRules/calculus.yaml (definite-integral-intent, derivative-intent).
+    # "definite-integral": "other=интеграл",
+    # "derivative": "other=производная",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (invisible-operator-intent).
+    # "invisible-separator": "silent=",
+    # "invisible-times": "silent=",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (default-point).
+    # "point": "other=точка",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (permutation).
+    # Keep this mapping to supply the default function fixity required by that rule.
     "pochhammer": "function=число размещений",
     "indexed-by": "infix= ; с индексом; конец индекса| с индексом| с индексом",
     "modified-variable": "silent= ",
@@ -295,10 +302,17 @@
     "codomain": "function=целевое множество",
     "image": "function=образ",
     "binomial": "infix=число сочетаний из; по; конец числа сочетаний",
+    # Speech rules for open-interval, open-closed-interval, closed-interval, and closed-open-interval
+    # are defined elsewhere: SharedRules/general.yaml (intervals, numeric-half-open-interval).
     # "closed-interval": "other=closed-interval; от,до; end closed-interval",
+    # Speech rules defined elsewhere: ClearSpeak_Rules.yaml and SimpleSpeak_Rules.yaml.
+    # "fraction": "function=дробь; делить на; конец дроби",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (repeating-decimal).
+    # "repeating-decimal": "function=период",
     "greatest-common-divisor": "function=нод| нод| наибольший общий делитель",
     "imaginary-part": "function=мнимая часть",
     "least-common-multiple": "function=нок|нок|наименьшее общее кратное",
+    # Speech rules defined elsewhere: SharedRules/general.yaml (bigop-both, bigop-under).
     # "large-op": "infix=над || other=от,до",
     "limit": "prefix=предел при| предел при| предел при",
     "lim-sup": "prefix=верхний предел при| верхний предел при| верхний предел при",
