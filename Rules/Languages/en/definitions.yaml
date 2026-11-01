@@ -79,11 +79,6 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "blank": "nofix=blank",
-    "definite-integral": "other=integral",
-    "derivative": "other=derivative",
-    "invisible-separator": "silent=",
-    "invisible-times": "silent=",
     "binomial": "infix=binomial; choose; end binomial",
 
     ### Functions and Inverses
@@ -126,8 +121,6 @@
 
 
     ### Calculus
-    # "definite-integral":"function=integral over || function=integral from; to", # Property ???
-    # "derivative":"function=the derivative; with respect to", # Property ???
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
     "limit": "prefix=limit as|the limit as",
