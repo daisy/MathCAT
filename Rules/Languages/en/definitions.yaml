@@ -82,14 +82,16 @@
     "binomial": "infix=binomial; choose; end binomial",
 
     ### Functions and Inverses
-    # Interval intents (open-/closed-interval, etc.) are handled by rules due to special cases involving ∞.
+    # Speech rules for open-interval, open-closed-interval, closed-interval, and closed-open-interval
+    # are defined elsewhere: SharedRules/general.yaml (intervals).
     "inverse":"function=inverse || postfix=inverse", 
 
     "domain": "function= ; domain",
     "codomain": "function= ; codomain",
 
     "image":"function=image", 
-    #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
+    # Speech rules defined elsewhere: ClearSpeak_Rules.yaml and SimpleSpeak_Rules.yaml.
+    # "fraction":"function=fraction; over; end fraction",
     "mixed-fraction":"infix=and", # NOTE: in website says function, but follow infix speech pattern.
     "quotient":"function=integer part: divided by",
     "evaluated-at":"infix=evaluated at",
@@ -121,7 +123,11 @@
 
 
     ### Calculus
-    # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
+    # Speech rules defined elsewhere: SharedRules/general.yaml (definite-integral-intent, derivative-intent).
+    # "definite-integral":"function=integral over || function=integral from; to",
+    # "derivative":"function=the derivative; with respect to",
+    # The active prefix mapping for partial-derivative is in Other below.
+    # "partial-derivative":"function=partial",
 
     "limit": "prefix=limit as|the limit as",
     "tends-to":"infix=tends to",
@@ -226,9 +232,14 @@
     "point":"prefix=point",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
 
     ### Separators
+    # Speech rules defined elsewhere: SharedRules/general.yaml (invisible-operator-intent).
+    # "invisible-separator": "silent=",
+    # "invisible-times": "silent=",
     "time-separator":"infix=",
 
     ### General Concepts 
+    # Speech rules defined elsewhere: SharedRules/general.yaml (blank-intent).
+    # "blank": "nofix=blank",
     "fenced-group":"function=fenced-group", # appears both under general concepts and grouping
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function=the pair: and", # Needs to be tested
@@ -249,7 +260,8 @@
     ### Grouping
     "annotation":"infix= ; which is ;",              # NOTE: Follows the same order as indexed-by, in site listed as function. Should it be infix?
     "braced-group":"function=grouped; end grouped",  # NOTE: not tested, site is missing "of" keyword function introduces
-    #"repeating-decimal":"function=repeating decimal", # NOTE: BREAKS TEST. Check again. Site is missing "of" keyword function introduces.
+    # Speech rules defined elsewhere: SharedRules/general.yaml (repeating-decimal).
+    # "repeating-decimal":"function=repeating decimal",
 
 
     ### Other
@@ -360,11 +372,14 @@
     "modified-variable": "silent= ",
     "say-super": "infix=super| superscript| superscript",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+    # Speech rules defined elsewhere: SharedRules/general.yaml (bigop-both, bigop-under).
     # "large-op": "infix=over || other=from,to",
     "lim-sup": "prefix=lim sup as| the limit superior as| the limit superior as",
     "lim-inf": "prefix=lim inf as| the limit inferior as| the limit inferior as",
     "logarithm-with-base": "prefix=log base| the log base| the log base",
-    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    # Infix speech rules defined elsewhere: SharedRules/general.yaml (permutation) reverses the arguments.
+    # The active function mapping above handles the other fixity.
+    # "pochhammer": "infix=permutations of",
     "trace": "function= ; trace| trace| the trace; end trace",
     "dimension": "function=; dimension| dimension| the dimension; end dimension",
     "homomorphism": "function= ; homomorphism| homomorphism| the homomorphism; end homomorphism",
