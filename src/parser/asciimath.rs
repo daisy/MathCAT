@@ -179,9 +179,9 @@ impl Parser {
                 continue;
             }
             self.skip_ws();
-            if let Some((sym, n)) = self.lookup()
-                && sym.kind == Kind::Infix
-                && sym.name == "/"
+            if let Some((sym, n)) = self.lookup() &&
+                sym.kind == Kind::Infix &&
+                sym.name == "/"
             {
                 self.advance(n);
                 self.prev_kind = Kind::Infix;
@@ -208,9 +208,9 @@ impl Parser {
         }
         let mut parsed = self.parse_s()?;
         self.skip_ws();
-        if let Some((sym, n)) = self.lookup()
-            && sym.kind == Kind::Infix
-            && sym.name != "/"
+        if let Some((sym, n)) = self.lookup() &&
+            sym.kind == Kind::Infix &&
+            sym.name != "/"
         {
             self.advance(n);
             self.prev_kind = Kind::Infix;
@@ -220,9 +220,9 @@ impl Parser {
                 .unwrap_or(Expr::Missing);
             let (sub, sup) = if sym.name == "_" {
                 self.skip_ws();
-                if let Some((sup_sym, n2)) = self.lookup()
-                    && sup_sym.kind == Kind::Infix
-                    && sup_sym.name == "^"
+                if let Some((sup_sym, n2)) = self.lookup() &&
+                    sup_sym.kind == Kind::Infix &&
+                    sup_sym.name == "^"
                 {
                     self.advance(n2);
                     self.prev_kind = Kind::Infix;
@@ -371,9 +371,9 @@ impl Parser {
             .unwrap_or(Expr::Missing);
         let (sub, sup) = if sym.name == "_" {
             self.skip_ws();
-            if let Some((s2, n2)) = self.lookup()
-                && s2.kind == Kind::Infix
-                && s2.name == "^"
+            if let Some((s2, n2)) = self.lookup() &&
+                s2.kind == Kind::Infix &&
+                s2.name == "^"
             {
                 self.advance(n2);
                 let sup = self
@@ -530,10 +530,10 @@ impl Parser {
         if sym.func {
             self.skip_ws();
             let next = self.rest().chars().next();
-            let bare = next.is_none()
-                || self.at_closer().is_some()
-                || matches!(next, Some('^' | '_' | '/' | '|' | ','))
-                || (func_chars == 1 && next != Some('('));
+            let bare = next.is_none() ||
+                self.at_closer().is_some() ||
+                matches!(next, Some('^' | '_' | '/' | '|' | ',')) ||
+                (func_chars == 1 && next != Some('('));
             if bare {
                 return Some(Parsed {
                     expr: emit_const(sym),
@@ -701,9 +701,9 @@ fn unwrap_fence(expr: Expr) -> Expr {
             open,
             close: Some(close),
             body,
-        } if matches!(open.as_str(), "(" | "[" | "{")
-            && matches!(close.as_str(), ")" | "]" | "}")
-            && !matches!(body.as_ref(), Expr::Table { .. }) =>
+        } if matches!(open.as_str(), "(" | "[" | "{") &&
+            matches!(close.as_str(), ")" | "]" | "}") &&
+            !matches!(body.as_ref(), Expr::Table { .. }) =>
         {
             *body
         }

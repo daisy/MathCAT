@@ -295,12 +295,12 @@ impl<'a> Lexer<'a> {
             self.pending_typeform = PendingTypeform::None;
             return Ok(true);
         }
-        if self.eat("⠨⠂")
-            || self.eat("⠨⠆")
-            || self.eat("⠸⠂")
-            || self.eat("⠸⠆")
-            || self.eat("⠈⠂")
-            || self.eat("⠈⠄")
+        if self.eat("⠨⠂") ||
+            self.eat("⠨⠆") ||
+            self.eat("⠸⠂") ||
+            self.eat("⠸⠆") ||
+            self.eat("⠈⠂") ||
+            self.eat("⠈⠄")
         {
             return Ok(true);
         }
@@ -410,8 +410,8 @@ impl<'a> Lexer<'a> {
                 self.numeric = false;
                 // Empty radical is written ⠩⠬⠬ (GTM 3.6.7): a filler ⠬ before the closer.
                 // Consume the filler without emitting tokens so the body stays empty.
-                if self.rest.starts_with('⠬')
-                    && matches!(self.tokens.last(), Some(Token::SqrtOpen))
+                if self.rest.starts_with('⠬') &&
+                    matches!(self.tokens.last(), Some(Token::SqrtOpen))
                 {
                     return Ok(true);
                 }
@@ -504,8 +504,8 @@ impl<'a> Lexer<'a> {
         // Spaced form ⠀⠸⠳⠀ is the “such that” comparison (unicode.yaml), not a fence.
         if self.eat("⠸⠳") {
             self.numeric = false;
-            let spaced = matches!(self.tokens.last(), Some(Token::Space))
-                && self.rest.starts_with('⠀');
+            let spaced = matches!(self.tokens.last(), Some(Token::Space)) &&
+                self.rest.starts_with('⠀');
             if spaced {
                 self.tokens.push(Token::Op("|".into()));
             } else {
@@ -852,11 +852,11 @@ impl<'a> Lexer<'a> {
         // After finishing a number token, if next isn't numeric-continuation, clear numeric.
         if !matches!(
             self.peek_char(),
-            Some(c) if braille_cell_to_digit(c).is_some()
-                || c == '⠲'
-                || c == '⠂'
-                || c == '⠌'
-                || c == '⠐'
+            Some(c) if braille_cell_to_digit(c).is_some() ||
+                c == '⠲' ||
+                c == '⠂' ||
+                c == '⠌' ||
+                c == '⠐'
         ) {
             self.numeric = false;
         }
@@ -886,8 +886,8 @@ impl<'a> Lexer<'a> {
             }
             // ℃ / ℉ share the degree prefix ⠘⠚ + capital letter. Prefer degree + letter
             // so reverse matches `<msup>…<mo>°</mo></msup><mi>F</mi>` style MathML.
-            if (print == "℉" || print == "℃")
-                && self.eat("⠘⠚") {
+            if (print == "℉" || print == "℃") &&
+                self.eat("⠘⠚") {
                     self.numeric = false;
                     self.tokens.push(Token::Op("°".into()));
                     return Ok(true);
@@ -971,8 +971,8 @@ impl<'a> Lexer<'a> {
             // In numeric mode, a-j cells are digits — already handled. If numeric still true
             // with a-j, they'd be digits. k-z can appear? Unusual. If numeric true and a-j,
             // try_number should have taken them. So if we see a-j here with numeric, treat as digit restart.
-            if self.numeric
-                && braille_cell_to_digit(ch).is_some() {
+            if self.numeric &&
+                braille_cell_to_digit(ch).is_some() {
                     return self.lex_numeric_item();
                 }
             // Letters a-j immediately after a number need G1 (numeric_grade1 still on).
@@ -1076,10 +1076,10 @@ fn is_blackboard_letter(s: &str) -> bool {
 /// Symbols that should tokenize as identifiers (letters / large ops), not bare `<mo>`.
 fn is_identifier_symbol(s: &str) -> bool {
     // Omission blank ⠨⠤ is recovered as an identifier (ICEB 3.6.2), not `<mo>`.
-    s == "_"
-        || is_blackboard_letter(s)
-        || matches!(s, "∑" | "∏" | "∫" | "∐" | "∮" | "⋀" | "⋁" | "⋂" | "⋃")
-        || {
+    s == "_" ||
+        is_blackboard_letter(s) ||
+        matches!(s, "∑" | "∏" | "∫" | "∐" | "∮" | "⋀" | "⋁" | "⋂" | "⋃") ||
+        {
             let mut chars = s.chars();
             match (chars.next(), chars.next()) {
                 (Some(c), None) => c.is_alphabetic(),
@@ -2001,8 +2001,8 @@ fn is_chem_charge_or_oxidation(expr: &Expr) -> bool {
         }
         Expr::Row(parts) if parts.len() == 1 => is_chem_charge_or_oxidation(&parts[0]),
         Expr::Row(parts) => {
-            !parts.is_empty()
-                && parts
+            !parts.is_empty() &&
+                parts
                     .iter()
                     .all(|p| matches!(p, Expr::Operator(s) if is_chem_charge_op(s)))
         }
@@ -2063,8 +2063,8 @@ fn parse_identifier(
     let mut letters: Vec<(char, bool)> = Vec::new();
     let mut i = 0;
     while let Some(Token::Letter { ch, capital }) = input.get(i) {
-        if let Some((prev, _)) = letters.last()
-            && prev.is_ascii_alphabetic() != ch.is_ascii_alphabetic() {
+        if let Some((prev, _)) = letters.last() &&
+            prev.is_ascii_alphabetic() != ch.is_ascii_alphabetic() {
                 break;
             }
         letters.push((*ch, *capital));
@@ -2104,8 +2104,8 @@ fn split_letter_run(letters: &[(char, bool)]) -> Vec<Expr> {
     }
     // Lowercase ASCII runs of length ≥3 are literary / function-name remnants
     // (error, funcn, argut). Length-2 products like "kx" / "ab" stay split unless known.
-    if letters.len() >= 3
-        && letters
+    if letters.len() >= 3 &&
+        letters
             .iter()
             .all(|(ch, capital)| !*capital && ch.is_ascii_alphabetic())
     {
@@ -2113,10 +2113,10 @@ fn split_letter_run(letters: &[(char, bool)]) -> Vec<Expr> {
         return vec![Expr::Identifier(s)];
     }
     // Proper names / labels in chem scripts: Haber, Newton (Cap + lowercase rest).
-    if letters.len() >= 3
-        && letters[0].1
-        && letters[0].0.is_ascii_uppercase()
-        && letters[1..]
+    if letters.len() >= 3 &&
+        letters[0].1 &&
+        letters[0].0.is_ascii_uppercase() &&
+        letters[1..]
             .iter()
             .all(|(ch, capital)| !*capital && ch.is_ascii_lowercase())
     {
@@ -2145,8 +2145,8 @@ fn longest_multi_letter_match(letters: &[(char, bool)]) -> Option<usize> {
     let full: String = letters.iter().map(|(ch, _)| *ch).collect();
     // Function / unit names must consume the whole letter run (UEB usually spaces
     // args). Preferring prefixes would turn "argut" into arg+u+t.
-    if full.len() <= 8
-        && KNOWN_MULTI_LETTER_NAMES
+    if full.len() <= 8 &&
+        KNOWN_MULTI_LETTER_NAMES
             .iter()
             .any(|name| name.eq_ignore_ascii_case(&full))
     {
@@ -2331,8 +2331,8 @@ fn parse_fenced(
 
     // Single-row linearized matrix: space-separated cells inside ordinary fences
     // (UEB_Rules default-mtr without enlarged markers when there is only one row).
-    if close_tok.is_some()
-        && let Some(cells) = matrix_cells_from_spaced_body(&body) {
+    if close_tok.is_some() &&
+        let Some(cells) = matrix_cells_from_spaced_body(&body) {
             return Ok((
                 input,
                 Expr::Table {
@@ -2659,8 +2659,8 @@ fn parse_unbracketed_row_cells(
     input: Toks<'_>,
 ) -> std::result::Result<Vec<Expr>, crate::errors::Error> {
     let (rest, cells) = parse_unbracketed_row_until_bound(input)?;
-    if !rest.is_empty()
-        && !matches!(rest.first(), Some(Token::TableBound | Token::TableRowStart))
+    if !rest.is_empty() &&
+        !matches!(rest.first(), Some(Token::TableBound | Token::TableRowStart))
     {
         // leftover non-boundary tokens — still accept what we parsed
     }
@@ -2751,10 +2751,10 @@ fn parse_matrix_row_cells(
         // One cell: atoms/ops until a column-separating space or the row closer.
         let mut parts = Vec::new();
         loop {
-            if matches!(input.first(), Some(Token::Space))
-                || matches!(input.first(), Some(Token::EnlargedFence(c)) if *c == close)
-                || matches!(input.first(), Some(Token::TableRowStart | Token::TableBound))
-                || input.is_empty()
+            if matches!(input.first(), Some(Token::Space)) ||
+                matches!(input.first(), Some(Token::EnlargedFence(c)) if *c == close) ||
+                matches!(input.first(), Some(Token::TableRowStart | Token::TableBound)) ||
+                input.is_empty()
             {
                 break;
             }
@@ -3119,8 +3119,8 @@ mod tests {
         for br in ["⠐⠣⠭", "⠨⠣⠭", "⠸⠣⠭", "⠸⠳⠭"] {
             let mml = Braille_to_MathML(br, "UEB").unwrap();
             assert!(!mml.contains("FFFD"), "{br} -> {mml}");
-            assert!(!mml.contains("<mo>)</mo>") && !mml.contains("<mo>]</mo>")
-                && !mml.contains("<mo>}</mo>"), "{br} -> {mml}");
+            assert!(!mml.contains("<mo>)</mo>") && !mml.contains("<mo>]</mo>") &&
+                !mml.contains("<mo>}</mo>"), "{br} -> {mml}");
         }
         // Enlarged open: table without closer — no �
         let mml = Braille_to_MathML("⠠⠐⠣", "UEB").unwrap();
@@ -3213,8 +3213,8 @@ mod tests {
         assert!(mml.contains("<munder>"), "{mml}");
         // Grouping must keep the bar under x+y, not only y.
         assert!(
-            mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>")
-                || mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo"),
+            mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow>") ||
+                mml.contains("<munder><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo"),
             "expected under on whole group, got {mml}"
         );
     }

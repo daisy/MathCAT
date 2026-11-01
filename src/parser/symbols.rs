@@ -183,8 +183,8 @@ pub(crate) fn insert_ranked(
 ) {
     let outranks = |new: &str, existing: &str| rank(new) >= rank(existing);
     if overwrite {
-        if let Some(prev) = map.get(&braille)
-            && !outranks(&print, prev)
+        if let Some(prev) = map.get(&braille) &&
+            !outranks(&print, prev)
         {
             return;
         }
@@ -268,10 +268,10 @@ fn first_text_prefix(yaml: &Yaml) -> Option<String> {
         Yaml::Array(arr) => arr.iter().find_map(first_text_prefix),
         Yaml::Hash(h) => {
             for (k, v) in h {
-                if let Some(key) = k.as_str()
-                    && matches!(key, "t" | "T" | "tc" | "TC" | "ct" | "CT")
-                    && let Some(s) = v.as_str()
-                    && !s.trim().is_empty()
+                if let Some(key) = k.as_str() &&
+                    matches!(key, "t" | "T" | "tc" | "TC" | "ct" | "CT") &&
+                    let Some(s) = v.as_str() &&
+                    !s.trim().is_empty()
                 {
                     return Some(s.to_string());
                 }
@@ -311,8 +311,8 @@ fn collect_text_templates(yaml: &Yaml, ch: &str, out: &mut Vec<(String, String)>
                 if let Some(key) = k.as_str() {
                     match key {
                         "t" | "T" | "tc" | "TC" | "ct" | "CT" | "ot" | "OT" => {
-                            if let Some(s) = v.as_str()
-                                && !s.trim().is_empty()
+                            if let Some(s) = v.as_str() &&
+                                !s.trim().is_empty()
                             {
                                 out.push((ch.to_string(), s.to_string()));
                             }

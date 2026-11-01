@@ -132,12 +132,12 @@ impl<'a> Lexer<'a> {
     fn lex(mut self) -> Result<Vec<Token>> {
         crate::nemeth_symbols::ensure_nemeth_symbols_loaded()?;
         while !self.rest.is_empty() {
-            if self.try_space()
-                || self.try_structure()
-                || self.try_typeform_before_number()
-                || self.try_number()
-                || self.try_symbol()
-                || self.try_letter()
+            if self.try_space() ||
+                self.try_structure() ||
+                self.try_typeform_before_number() ||
+                self.try_number() ||
+                self.try_symbol() ||
+                self.try_letter()
             {
                 continue;
             }
@@ -242,8 +242,8 @@ impl<'a> Lexer<'a> {
             return true;
         }
         if self.eat("⠣") {
-            if self.last_is_atom_like()
-                || matches!(
+            if self.last_is_atom_like() ||
+                matches!(
                     self.tokens.last(),
                     Some(Token::Baseline | Token::Above)
                 )
@@ -377,16 +377,16 @@ impl<'a> Lexer<'a> {
             self.tokens.push(Token::FracLine { bevelled: false });
             return Some(true);
         }
-        if rest.starts_with("⠸⠌")
-            && matches!(self.frac_stack.last(), Some(FracKind::Nested(m)) if *m == n)
+        if rest.starts_with("⠸⠌") &&
+            matches!(self.frac_stack.last(), Some(FracKind::Nested(m)) if *m == n)
         {
             self.rest = &rest["⠸⠌".len()..];
             self.mark_frac_line();
             self.tokens.push(Token::FracLine { bevelled: true });
             return Some(true);
         }
-        if rest.starts_with('⠼') && matches!(self.frac_stack.last(), Some(FracKind::Nested(m)) if *m == n)
-            && self.frac_saw_line.last().copied() == Some(true) {
+        if rest.starts_with('⠼') && matches!(self.frac_stack.last(), Some(FracKind::Nested(m)) if *m == n) &&
+            self.frac_saw_line.last().copied() == Some(true) {
                 self.rest = &rest['⠼'.len_utf8()..];
                 self.push_frac_close(FracKind::Nested(n));
                 return Some(true);
@@ -464,8 +464,8 @@ impl<'a> Lexer<'a> {
     }
 
     fn can_close_simple_frac(&self) -> bool {
-        matches!(self.frac_stack.last(), Some(FracKind::Simple))
-            && self.frac_saw_line.last().copied() == Some(true)
+        matches!(self.frac_stack.last(), Some(FracKind::Simple)) &&
+            self.frac_saw_line.last().copied() == Some(true)
     }
 
     fn eat_level_run(&mut self) -> Vec<ScriptDir> {
@@ -512,11 +512,11 @@ impl<'a> Lexer<'a> {
         let mut after_mp = false;
         for c in self.rest.chars() {
             if after_mp {
-                return braille_cell_to_latin(c).is_some()
-                    || c == '⠠'
-                    || c == '⠷'
-                    || c == '⠈'
-                    || c == '⠨';
+                return braille_cell_to_latin(c).is_some() ||
+                    c == '⠠' ||
+                    c == '⠷' ||
+                    c == '⠈' ||
+                    c == '⠨';
             }
             if c == '⠀' {
                 return false;
@@ -537,13 +537,13 @@ impl<'a> Lexer<'a> {
         if start_marked {
             // Don't consume ⠼ if it is a simple-fraction closer (already handled).
             self.eat("⠼");
-        } else if self.peek_char() == Some('⠨')
-            && matches!(self.tokens.last(), Some(Token::Letter { .. } | Token::Word(_)))
+        } else if self.peek_char() == Some('⠨') &&
+            matches!(self.tokens.last(), Some(Token::Letter { .. } | Token::Word(_)))
         {
             // After a letter, ⠨ is Greek/italic, not an unmarked decimal.
             return false;
-        } else if self.peek_char().and_then(braille_cell_to_digit).is_none()
-            && self.peek_char() != Some('⠨')
+        } else if self.peek_char().and_then(braille_cell_to_digit).is_none() &&
+            self.peek_char() != Some('⠨')
         {
             return false;
         }
@@ -571,9 +571,9 @@ impl<'a> Lexer<'a> {
                 continue;
             }
             // Interior comma ⠠ (not ⠠⠀ punctuation comma)
-            if self.rest.starts_with('⠠')
-                && !self.rest.starts_with("⠠⠀")
-                && self.rest['⠠'.len_utf8()..]
+            if self.rest.starts_with('⠠') &&
+                !self.rest.starts_with("⠠⠀") &&
+                self.rest['⠠'.len_utf8()..]
                     .chars()
                     .next()
                     .and_then(braille_cell_to_digit)
@@ -583,8 +583,8 @@ impl<'a> Lexer<'a> {
                 num.push(',');
                 continue;
             }
-            if self.rest.starts_with('⠨')
-                && self.rest.chars().nth(1).and_then(braille_cell_to_digit).is_some()
+            if self.rest.starts_with('⠨') &&
+                self.rest.chars().nth(1).and_then(braille_cell_to_digit).is_some()
             {
                 self.eat("⠨");
                 num.push('.');
@@ -608,15 +608,15 @@ impl<'a> Lexer<'a> {
         self.pending_typeform = PendingTypeform::None;
         // Rule 9e: after a typeformed digit run, a fresh ⠼ continues the same
         // number in the default typeform (`⠸⠼⠲⠼⠒⠢` → 𝟒35).
-        if mathvariant.is_none()
-            && text.chars().all(|c| c.is_ascii_digit() || c == '.' || c == ',')
-            && let Some(Token::Number {
+        if mathvariant.is_none() &&
+            text.chars().all(|c| c.is_ascii_digit() || c == '.' || c == ',') &&
+            let Some(Token::Number {
                 text: prev,
                 mathvariant: prev_var,
             }) = self.tokens.last_mut()
-            {
-                let styled = prev_var.is_some()
-                    || prev.chars().any(|c| {
+        {
+                let styled = prev_var.is_some() ||
+                    prev.chars().any(|c| {
                         let o = c as u32;
                         (0x1D7CE..=0x1D7FF).contains(&o)
                     });
@@ -630,8 +630,8 @@ impl<'a> Lexer<'a> {
     }
 
     fn allow_unmarked_digits(&self) -> bool {
-        if self.peek_char().and_then(braille_cell_to_digit).is_none()
-            && self.peek_char() != Some('⠨')
+        if self.peek_char().and_then(braille_cell_to_digit).is_none() &&
+            self.peek_char() != Some('⠨')
         {
             return false;
         }
@@ -963,9 +963,9 @@ fn after_marks_comparison(after: Option<char>) -> bool {
 /// YAML matches that the mode-aware lexer must keep.
 fn should_leave_for_lexer(braille: &str, rest: &str) -> bool {
     // ⠐ + digit / decimal / plus is multipurpose, not a ⠐-prefixed operator.
-    if braille.starts_with('⠐') && braille.chars().count() > 1
-        && let Some(c) = braille.chars().nth(1)
-            && (braille_cell_to_digit(c).is_some() || c == '⠨' || c == '⠬') {
+    if braille.starts_with('⠐') && braille.chars().count() > 1 &&
+        let Some(c) = braille.chars().nth(1) &&
+        (braille_cell_to_digit(c).is_some() || c == '⠨' || c == '⠬') {
                 return true;
             }
     // ⠠⠠ + one letter with more letters after is a capital word, not Hebrew.
@@ -1034,8 +1034,8 @@ fn parse_expr(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
                 if let Some(left) = parts.pop() {
                     let (rest, right) = parse_modifier_material(input);
                     input = rest;
-                    if is_simple_bar(&right)
-                        && !matches!(input.first(), Some(Token::Above | Token::ModEnd))
+                    if is_simple_bar(&right) &&
+                        !matches!(input.first(), Some(Token::Above | Token::ModEnd))
                     {
                         parts.push(Expr::Under(Box::new(left), Box::new(right)));
                     } else {
@@ -1240,8 +1240,8 @@ fn parse_scripted(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
 
     // Implicit numeric subscript: letter / function / chem element, then unmarked number.
     // A row of letters (FeCl) attaches the digit to the last eligible identifier (Cl₂).
-    if let Some(Token::Number { .. }) = input.first()
-        && sub.is_none() && eligible_numeric_sub_base(&base) {
+    if let Some(Token::Number { .. }) = input.first() &&
+        sub.is_none() && eligible_numeric_sub_base(&base) {
             let num_expr = number_token_to_expr(&input[0]);
             input = &input[1..];
             if matches!(&base, Expr::Row(v) if !v.is_empty()) {
@@ -1285,15 +1285,15 @@ fn parse_scripted(input: Toks<'_>) -> Result<(Toks<'_>, Expr)> {
                 match input.get(1) {
                     Some(Token::Number { text: n, .. }) if sub.is_none() && sup.is_none() => {
                         // Rule 177: ⠐ between letter and digit is juxtaposition, not a subscript.
-                        if let Expr::Identifier(s) = &base
-                            && !n.starts_with('.') {
+                        if let Expr::Identifier(s) = &base &&
+                            !n.starts_with('.') {
                                 base = Expr::Identifier(format!("{s}{n}"));
                                 input = &input[2..];
                                 continue;
                             }
-                        if let Expr::Row(parts) = &mut base
-                            && let Some(Expr::Identifier(s)) = parts.last_mut()
-                                && !n.starts_with('.') {
+                        if let Expr::Row(parts) = &mut base &&
+                            let Some(Expr::Identifier(s)) = parts.last_mut() &&
+                            !n.starts_with('.') {
                                     s.push_str(n);
                                     input = &input[2..];
                                     continue;
@@ -1505,9 +1505,9 @@ fn eligible_numeric_sub_base(base: &Expr) -> bool {
 fn identifier_ok_for_numeric_sub(s: &str) -> bool {
     // Match Nemeth_Rules `numeric-sub` / BaseOkForNumericScript: single letter,
     // function name, or a chemical element (Cl, Na, Fe, …) so Cl₂ is msub not Cl2.
-    (s.chars().count() == 1 && s.chars().all(|c| c.is_alphabetic()))
-        || is_function_name(s)
-        || crate::chemistry::is_element_symbol(s)
+    (s.chars().count() == 1 && s.chars().all(|c| c.is_alphabetic())) ||
+        is_function_name(s) ||
+        crate::chemistry::is_element_symbol(s)
 }
 
 fn number_token_to_expr(t: &Token) -> Expr {

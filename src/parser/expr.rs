@@ -133,8 +133,8 @@ fn space_is_auto_added_by_mo_rule(parts: &[Expr], space_idx: usize) -> bool {
         }
         _ => false,
     };
-    neighbor_is_auto(space_idx.checked_sub(1).and_then(|j| parts.get(j)))
-        || neighbor_is_auto(parts.get(space_idx + 1))
+    neighbor_is_auto(space_idx.checked_sub(1).and_then(|j| parts.get(j))) ||
+        neighbor_is_auto(parts.get(space_idx + 1))
 }
 
 /// Mirrors UEB_Rules `AddSpaces` / `braille::is_operator_that_adds_whitespace`.
@@ -357,8 +357,8 @@ fn fold_degree_superscripts(parts: Vec<Expr>) -> Vec<Expr> {
     let mut out = Vec::with_capacity(parts.len());
     let mut iter = parts.into_iter().peekable();
     while let Some(part) = iter.next() {
-        if matches!(part, Expr::Number(_))
-            && matches!(iter.peek(), Some(Expr::Operator(s)) if s == "°")
+        if matches!(part, Expr::Number(_)) &&
+            matches!(iter.peek(), Some(Expr::Operator(s)) if s == "°")
         {
             let deg = iter.next().unwrap();
             out.push(Expr::Sup(Box::new(part), Box::new(deg)));
@@ -412,4 +412,3 @@ fn is_letterish_factor(e: &Expr) -> bool {
         _ => false,
     }
 }
-
