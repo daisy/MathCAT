@@ -1,5 +1,15 @@
 ---
 
+- name: core-translation
+  tag: translation
+  match: "count(*)=2 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - bookmark: "@id"
+  - T: "перенос на"
+  - x: "*[1]"
+  - T: "запятая"
+  - x: "*[2]"
+
 - name: line-segment
   tag: line-segment
   match: "count(*)=2"

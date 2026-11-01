@@ -18,6 +18,42 @@ fn overview_modes(expr: &str, expected: [&str; 3]) -> Result<()> {
 }
 
 #[test]
+fn read_function_set_intents() -> Result<()> {
+    // Semantic modes read the explicit image intent; Character mode keeps its literal notation.
+    for style in ["ClearSpeak", "SimpleSpeak"] {
+        for mode in ["Enhanced", "Simple", "Character"] {
+            init_nav("ru", "<math><mrow intent='image($r)'><mi>Im</mi><mi arg='r'>R</mi></mrow></math>")?;
+            set_preference("SpeechStyle", style)?;
+            set_preference("NavMode", mode)?;
+            let speech = do_navigate_command("ReadCurrent")?.split_whitespace().collect::<Vec<_>>().join(" ");
+            let expected = if mode == "Character" {"Im заглавной эр"} else {"образ заглавной эр"};
+            assert!(speech.contains(expected), "{style}/{mode}: {speech}");
+        }
+    }
+    Ok(())
+}
+
+#[test]
+fn read_w3c_point_and_pochhammer() -> Result<()> {
+    // Semantic navigation must retain all coordinates and the asymmetric permutation arguments.
+    for style in ["ClearSpeak", "SimpleSpeak"] {
+        for mode in ["Enhanced", "Simple"] {
+            init_nav("ru", "<math><mrow intent='point(1,2,3)'/></math>")?;
+            set_preference("SpeechStyle", style)?;
+            set_preference("NavMode", mode)?;
+            let speech=do_navigate_command("ReadCurrent")?.split_whitespace().collect::<Vec<_>>().join(" ");
+            assert!(speech.contains("точка 1 запятая 2 запятая 3"), "{style}/{mode}: {speech}");
+            init_nav("ru", "<math><mrow intent='pochhammer(5,2)'/></math>")?;
+            set_preference("SpeechStyle", style)?;
+            set_preference("NavMode", mode)?;
+            let speech=do_navigate_command("ReadCurrent")?.split_whitespace().collect::<Vec<_>>().join(" ");
+            assert!(speech.contains("число размещений из 5 по 2"), "{style}/{mode}: {speech}");
+        }
+    }
+    Ok(())
+}
+
+#[test]
 fn overview_labeled_table() -> Result<()> {
     // A row label is not a data column; both rows have two data cells.
     let expr = "<math><mtable><mlabeledtr><mtd><mtext>label</mtext></mtd><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mlabeledtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></math>";
