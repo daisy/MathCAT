@@ -172,6 +172,7 @@
  - "Ω": [t: "CGL⠺"]             # 0x3a9
 
  - "ϑ": [t: "VL⠹"]              # 0x3d1
+ - "ϴ": [t: "CVL⠹"]             # 0x03F4 (capital theta symbol)
  - "ϵ": [t: "VL⠑"]              # 0x3f5
  - "ϰ": [t: "VL⠅"]              # 0x3f0
  - "ϕ": [t: "VL⠋"]              # 0x3d5
