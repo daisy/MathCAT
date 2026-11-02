@@ -154,7 +154,6 @@
 - name: into-or-out-of-default
   tag: "*"
   # saying "out of row n" is not very useful, so skip it
-  # match: "$Move2D != '' and @data-from-mathml and @data-from-mathml != name(.) and count(*)>1 and @data-from-mathml != 'mtable'"
   match: "$Move2D != '' and not(self::m:math or @data-from-mathml = 'mtable' or  @data-from-mathml = 'mtd') "
   replace:
   - with:
@@ -183,7 +182,9 @@
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"]
               - else_if: "contains(@data-intent-property, ':silent:')"
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
-              - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
+              - else_if: "contains(@data-intent-property, ':other:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
+                else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]  # defaults to function
           else:
           - t: "part"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
