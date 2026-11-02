@@ -3795,11 +3795,13 @@ impl CanonicalizeContext {
 	// E.g, sin x and f(x)
 	// 1. If parens follow the name, then we use a more inclusive set of heuristics as it is more likely a function
 	// The heuristics used are:
-	//   - it is on the list of known function names (e.g., sin" and "log")
+	//   - it is on the list of known function names (e.g., "sin" and "log")
 	//   - it is on the list of likely function names (e.g, f, g, h)
 	//   - multi-char names that begin with a capital letter (e.g, "Tr")
 	//   - there is a single token inside the parens (why else would someone use parens), any name (e.g, a(x))
 	//	 - if there are multiple comma-separated args
+	//   - if the name doesn't appear inside the parens (e.g., n(n+1))
+	//   - GeometryShapes also always returns True (△ABC, etc)
 	//
 	// 2. If there are no parens, then only names on the known function list are used (e.g., "sin x")
 	//

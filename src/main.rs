@@ -36,17 +36,11 @@ fn main() {
       .init();
 
    let expr = r#"
- <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-  <mi>A</mi>
-  <mo>=</mo>
-  <mi>&#x1D70B;</mi>
-  <msup>
-    <mrow>
-      <mi>r</mi>
-    </mrow>
-    <mn>2</mn>
-  </msup>
-</math>
+<math>
+    <msup intent='$op($arg)'>
+        <mi arg='arg'>x</mi>
+        <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
+    </msup></math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
@@ -191,7 +185,7 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "LaTeX").unwrap();
+  set_preference("BrailleCode", "CMU").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Medium").unwrap();
@@ -221,9 +215,9 @@ fn main() {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
     Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
   }
-  match do_navigate_command("ZoomIn")  {
+  match do_navigate_command("ZoomOut")  {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+    Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
   }
   info!("\n");
   // match do_navigate_command("ToggleZoomLockUp") {
