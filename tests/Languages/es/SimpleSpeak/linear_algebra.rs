@@ -11,42 +11,34 @@ fn transpose() -> Result<()> {
 
 }
 
-// REVISAR (de de): «traza de de mayúscula m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("es", "SimpleSpeak", expr, "traza de de mayúscula m")?;
+  test("es", "SimpleSpeak", expr, "la traza de mayúscula m")?;
   return Ok(());
 
 }
 
-// REVISAR (de de): «dimensión de de mayúscula m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("es", "SimpleSpeak", expr, "dimensión de de mayúscula m")?;
+  test("es", "SimpleSpeak", expr, "la dimensión de mayúscula m")?;
   return Ok(());
 
 }
 
-// REVISAR (de de): «homomorfismo de de mayúscula m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("es", "SimpleSpeak", expr, "homomorfismo de de mayúscula m")?;
+  test("es", "SimpleSpeak", expr, "el homomorfismo de mayúscula m")?;
   return Ok(());
 
 }
 
-// REVISAR (de de): «núcleo de de mayúscula l»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("es", "SimpleSpeak", expr, "núcleo de de mayúscula l")?;
+  test("es", "SimpleSpeak", expr, "el núcleo de mayúscula l")?;
   return Ok(());
 
 }

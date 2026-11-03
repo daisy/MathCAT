@@ -638,7 +638,6 @@ fn matrix_4x2() -> Result<()> {
 }
 
 // put absolute value test here since it is related to determinate and is small for its own file
-// REVISAR (de de): «el valor absoluto de de x»
 // REVISAR (inglés: absolute value): «el absolute value de x»
 // REVISAR (inglés: absolute value): «absolute value de x»
 // REVISAR (inglés: absolute value): «el absolute value de x, fin absolute value»
@@ -648,7 +647,7 @@ fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
-  test("es", "SimpleSpeak", expr, "el valor absoluto de de x")?;
+  test("es", "SimpleSpeak", expr, "el valor absoluto de x")?;
   test("es", "ClearSpeak",  expr, "el absolute value de x")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "absolute value de x")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],

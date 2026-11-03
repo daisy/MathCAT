@@ -90,7 +90,7 @@
     "say-super": "infix=superíndice",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
 
-    "absolute-value": "function= ; valor absoluto| el valor absoluto de| el valor absoluto de; final del valor absoluto",
+    "absolute-value": "function= ; valor absoluto| el valor absoluto| el valor absoluto; fin del valor absoluto",
     "binomial": "infix=binomial; elegir; end binomial",
     "limit": "prefix=límite cuando",
     "lim-sup": "prefix=lim sup as| the limit superior as| the limit superior as",
@@ -101,10 +101,10 @@
 
     "transpose": "postfix=intercambiar || function=intercambiar",
     "norm": "function=; regla| regla| la regla; fin de la regla",
-    "trace": "function=;traza | traza de| la traza de; fin de la traza",
-    "dimension": "function=; dimensión | dimensión de| la dimensión de; fin de la dimensión",
-    "homomorphism": "function= ; homomorfismo | homomorfismo de| el homomorfismo de; find de el homomorfismo",
-    "kernel": "function= ; núcleo | núcleo de| el núcleo de; fin de el núcleo",
+    "trace": "function= ; traza| la traza| la traza; fin de la traza",
+    "dimension": "function= ; dimensión| la dimensión| la dimensión; fin de la dimensión",
+    "homomorphism": "function= ; homomorfismo| el homomorfismo| el homomorfismo; fin del homomorfismo",
+    "kernel": "function= ; núcleo| el núcleo| el núcleo; fin del núcleo",
     "vector": "function= ; vector || prefix=vector",
     "cross-product": "infix=cross| cross product| cross product",
     "dot-product": "infix=dot| dot product| dot|dot product",
@@ -114,7 +114,17 @@
     "gradient": "function= ; grad| gradient| gradient; end gradient",
     "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
 
-    "chemistry-concentration": "function= ; concentración| concentración de| la concentración de; fin de la concentración",
+    "chemistry-concentration": "function= ; concentración| la concentración| la concentración; fin de la concentración",
+  }
+
+  # La palabra que une una función con su argumento en las IntentMappings funcionales (en inglés, "of").
+  # Probablemente es la misma que se usa para U+2061 en unicode.yaml, pero por razones técnicas se define aquí.
+  # Es un vector de largo 1 porque no se admiten escalares.
+- FunctionApplicationWord: ["de"]
+
+  # Nombres de funciones (nombres de intent, no se traducen) que en modo breve no dicen "de"
+- TerseFunctionNames: {
+    "divergence", "del|gradient", "curl"
   }
 
 - NavigationParts: {
@@ -140,6 +150,12 @@
     # it's a hack to put them here, but at least they are grouped with the other navigation parts
     "in": "in",
     "out": "out of",
+  }
+
+- KnownWords: {
+    # MathCAT junta algunas secuencias de tres o más mi (un error común), pero no las que están en orden alfabético.
+    # Esta es la lista de excepciones que sí se juntan. No incluir palabras con letras repetidas.
+    # Por ahora vacía: falta reunir palabras de fórmulas en español que estén en orden alfabético.
   }
 
 - SIPrefixes: {
