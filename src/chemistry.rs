@@ -361,6 +361,9 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
         if second_element_name != "mi" && second_element_name != "mtext" {
             return None;
         }
+        if !can_merge_mi_elements(leaf, second_element) {
+            return None;
+        }
         let second_element_text = as_text(second_element);
         if second_element_text.len() != 1 {
             return None;

@@ -38,6 +38,7 @@ const DECIMAL_SEPARATOR: &str = ".";
 pub const CHANGED_ATTR: &str = "data-changed";
 pub const ADDED_ATTR_VALUE: &str = "added";
 pub const INTENT_ATTR: &str = "intent";
+pub const ARG_ATTR: &str = "arg";
 pub const MATHML_FROM_NAME_ATTR: &str = "data-from-mathml";
 const MFENCED_ATTR_VALUE: &str = "from_mfenced";
 const EMPTY_IN_2D: &str = "data-empty-in-2D";
@@ -45,6 +46,16 @@ const SPACE_AFTER: &str = "data-space-after";
 const ACT_AS_OPERATOR: &str = "data-acts_as_operator";
 // character to use instead of the text content for priority, etc.
 pub const CHEMICAL_BOND: &str ="data-chemical-bond";
+
+/// `arg` and `intent` must stay on their own elements so intent references remain valid.
+fn has_arg_or_intent(el: Element<'_>) -> bool {
+	return el.attribute(ARG_ATTR).is_some() || el.attribute(INTENT_ATTR).is_some();
+}
+
+/// True when neither token carries `arg` or `intent`. Used before merging adjacent `mi`/`mtext`.
+pub(crate) fn can_merge_mi_elements(left: Element<'_>, right: Element<'_>) -> bool {
+	return !has_arg_or_intent(left) && !has_arg_or_intent(right);
+}
 
 
 /// Used when mhchem is detected and we should favor postscripts rather than prescripts in constructing an mmultiscripts
@@ -2275,7 +2286,9 @@ impl CanonicalizeContext {
 			let parent = get_parent(mi);	// not canonicalized into mrows, so parent could be "math"
 			let parent_name = name(parent);
 			// don't merge if more than one char, or if not in an mrow (or implied on since we haven't normalized yet)
-			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") {
+			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") ||
+				has_arg_or_intent(mi)
+			{
 				return None;
 			}
 			let mut text =  as_text(mi).to_string();
@@ -2289,14 +2302,16 @@ impl CanonicalizeContext {
 							if name(child) == "msub" || name(child) == "msup" {
 								// check if the *last* char in the sequence is scripted
 								// if so, we need to stop here anyway and deal with it specially
-								last_char_is_scripted = Some(child);		// need to remember the value -- cleared later if not ok
-								child = as_element(child.children()[0]);
-								while name(child) == "mrow" && child.children().len() == 1 {
-									// the base may be wrapped with mrows
+								if !has_arg_or_intent(child) {
+									last_char_is_scripted = Some(child);		// need to remember the value -- cleared later if not ok
 									child = as_element(child.children()[0]);
+									while name(child) == "mrow" && child.children().len() == 1 {
+										// the base may be wrapped with mrows
+										child = as_element(child.children()[0]);
+									}
 								}
 							}
-							if name(child) == "mi" {
+							if name(child) == "mi" && can_merge_mi_elements(mi, child) {
 								let child_ns = as_text(child);
 								let mut child_text = child_ns.chars();
 								let first_char = child_text.next().unwrap_or('a');
@@ -6838,6 +6853,60 @@ mod canonicalize_tests {
         let test_str = "<math><mi>S</mi><mi>I</mi><msup><mi>N</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
         let target_str = "<math><msup><mi mathvariant='normal'>SIN</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn merge_mi_skips_arg_and_intent() -> Result<()> {
+		// An mi with arg/intent must stay its own node, so "c o s" is not merged into "cos".
+		let test_str = "<math>
+			<mi>c</mi><mi arg='x'>o</mi><mi>s</mi><mo>=</mo>
+			<mi intent=':unit'>m</mi><mi>a</mi><mi>x</mi>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+					<mi>c</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi arg='x'>o</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>s</mi>
+				</mrow>
+				<mo>=</mo>
+				<mrow data-changed='added'>
+					<mi intent=':unit'>m</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>a</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>x</mi>
+				</mrow>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn merge_chem_element_skips_arg_and_intent() -> Result<()> {
+		// "N"+"a" would normally become Na; arg/intent must block that merge.
+		let test_str = "<math>
+			<mi>N</mi><mi arg='a'>a</mi><mo>+</mo>
+			<mi intent=':chemical-element'>C</mi><mi>l</mi>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+					<mi>N</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi arg='a'>a</mi>
+				</mrow>
+				<mo>+</mo>
+				<mrow data-changed='added'>
+					<mi intent=':chemical-element'>C</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>l</mi>
+				</mrow>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
 	#[test]
