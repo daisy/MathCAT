@@ -377,17 +377,17 @@
  - "↉": [T: "fracción común cero tercios"]      	#  0x2189	(en: 'zero thirds', google: 'cero tercios')
  - "↔": [T: "flecha hacia izquierda y derecha"]       	#  0x2194	(en: 'left right arrow')
  - "↕": [T: "flecha hacia arriba y abajo"]            	#  0x2195	(en: 'up down arrow')
- - "↖": [T: "flecha hacia el  noroeste"]                	#  0x2196	(en: 'north west arrow')
+ - "↖": [T: "flecha hacia el noroeste"]                	#  0x2196	(en: 'north west arrow')
  - "↗":                                         	#  0x2197
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [T: "enfoque desde abajo"]       	# 	(en: 'approaches from below', google translation)
+        then: [T: "tiende por la izquierda a"] 	# 	(en: 'approaches from below')
         else: [T: "flecha hacia el nordeste"]          	# 	(en: 'north east arrow')
 
  - "↘":                                         	#  0x2198
     - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [T: "enfoque desde arriba"]      	# 	(en: 'approaches from above', google translation)
+        then: [T: "tiende por la derecha a"]  	# 	(en: 'approaches from above')
         else: [T: "flecha hacia el sudeste"]           	# 	(en: 'south east arrow')
 
  - "↙": [T: "flecha hacia el sudoeste"]                	#  0x2199	(en: 'south west arrow')

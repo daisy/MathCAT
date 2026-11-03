@@ -297,7 +297,7 @@
  - "→":                                         	#  0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [T: "aproximaciones"]                   	# 	(en: 'approaches', google translation)
+        then: [T: "tiende a"]                   	# 	(en: 'approaches')
         else: [T: "flecha derecha"]             	# 	(en: 'right arrow', MathPlayer: 'flecha', google: 'flecha correcta')
  - "∂":                                         	#  0x2202
      - test: 
@@ -402,8 +402,8 @@
  - "≠":                                         	#  0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no es igual a"                       	# 	(en: 'not equal to', MathPlayer: 'distinto de', google: 'no igual a')
+         then: [T: "no es igual a"]             	# 	(en: 'is not equal to')
+         else: [T: "distinto de"]               	# 	(en: 'not equal to', MathPlayer: 'distinto de')
  - "≡":                                         	#  0x2261
      - test: 
          if: "$Verbosity!='Terse'"

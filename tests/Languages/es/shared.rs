@@ -28,10 +28,7 @@ fn modified_vars() -> Result<()> {
 
 }
 
-// REVISAR (aproximaciones): «el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
-// REVISAR (aproximaciones): «el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -45,9 +42,9 @@ fn limit() -> Result<()> {
             </mfrac>
             </mrow>
         </math>";
-    test("es", "SimpleSpeak", expr, "el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "el límite cuando x tiende a 0, de, fracción, seno de x, partido por x, fin de fracción")?;
     test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
+            "el límite cuando x tiende a 0, de, fracción, seno de x, partido por x, fin de fracción")?;
             return Ok(());
 
 }
@@ -63,7 +60,7 @@ fn limit_from_below() -> Result<()> {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("es", "SimpleSpeak", expr, "el límite cuando x enfoque desde abajo 0, de seno de x")?;
+    test("es", "SimpleSpeak", expr, "el límite cuando x tiende por la izquierda a 0, de seno de x")?;
     return Ok(());
 
 }
