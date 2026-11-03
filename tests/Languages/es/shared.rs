@@ -3,9 +3,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: breve grave tilde): «a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x sombrero, más vector t»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn modified_vars() -> Result<()> {
     let expr = "<math> <mrow>
         <mover> <mi>a</mi> <mo>`</mo> </mover>
@@ -23,7 +21,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("es", "SimpleSpeak", expr, 
-        "a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x sombrero, más vector t")?;
+        "a acento grave, b tilde, c breve, b carón, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x sombrero, más vector t")?;
             return Ok(());
 
 }

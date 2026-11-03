@@ -178,8 +178,6 @@
         then: [T: "vacío"]                      	#  want to say something for fraction (etc) with empty child	(en: 'empty', google translation)
         else: [T: ""]                            
 
- - "¢": [T: "centavo"]                          	#  0xa2	(en: 'cents')
- - "£": [T: "libra esterlina"]                  	#  0xa3	(en: 'pounds')
  - "¬": [T: "no"]                         	#  0xac	(en: 'not')
  - "°": [T: "grados"]                            	#  0xb0	(en: 'degrees')
  - "±": [T: "más menos"]                        	#  0xb1	(en: 'plus or minus')
@@ -222,7 +220,6 @@
  - "̄": [T: "barra ornamentada"]                            	#  0x304	(en: 'macron embellishment', google: 'embellido de macron')
  - "̅": [T: "barra encima con adorno"]                            	#  0x305	(en: 'overbar embellishment', google: 'embellido de overbar')
  - "̆": [T: "breve"]                            	#  0x306
- - "˙": [T: "punto"]                             	#  0x2D9
  - "̇": [T: "punto encima con adorno"]            	#  0x307	(en: 'dot above embellishment', google: 'punto por encima del adorno')
 
    # Note: ClearSpeak has pref TriangleSymbol for "Δ", but that is wrong
@@ -504,28 +501,8 @@
      - T: "superconjunto o igual a"               	# 	(en: 'superset of or equal to')
 
  # --- restored short definitions that differ from unicode-full ---
- - "–": [T: "ene raya"]                          	#  0x2013	(en: 'en dash')
- - "—": [T: "eme raya"]                          	#  0x2014	(en: 'em dash')
- - "‖": [T: "barra vertical doble"]             	#  0x2016	(en: 'double vertical line')
- - "″": [T: "doble prima"]                        	#  0x2033	(en: 'double prime')
- - "‴": [T: "triple prima"]                       	#  0x2034	(en: 'triple prime')
- - "‵": [T: "prima inversa"]                     	#  0x2035	(en: 'reversed prime')
- - "‶": [T: "doble prima inversa"]               	#  0x2036	(en: 'reversed double prime')
- - "‷": [T: "triple prima inversa"]                  	#  0x2037	(en: 'reversed triple prime', google: 'triple prime invertido')
- - "℉": [T: "grados Fahrenheit"]                	#  0x2109	(en: 'degrees fahrenheit')
- - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
- - "K": [T: "grados Kelvin"]                    	#  0x212a	(en: 'kelvin')
  - "←": [T: "flecha izquierda"]                 	#  0x2190	(en: 'leftwards arrow')
  - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
  - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
  - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
  - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')
- - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
- - "∣": [T: "divide a"]                         	#  0x2223	(en: 'divides')
- - "∤": [T: "no divide a"]                      	#  0x2224	(en: 'does not divide')
- - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
- - "∼": [T: "varía con"]                            	#  0x223c	(en: 'varies with')
- - "∽": [T: "tilde inversa"]                  	#  0x223d	(en: 'reversed tilde')
- - "∿": [T: "onda sinusoidal"]                        	#  0x223f	(en: 'sine wave')
- - "≦": [T: "menor o igual a"]                	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "mayor o igual a"]                	#  0x2267	(en: 'greater than over equal to')

@@ -383,9 +383,7 @@ fn pua_regular() -> Result<()> {
 
 }
 
-// REVISAR (inglés: sans serif): «girada mayúscula f, coma; sans serif girada mayúscula y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn turned() -> Result<()> {
     let expr = "<math> <mi>Ⅎ</mi><mo>,</mo><mi>⅄</mi></math>";
     test("es", "SimpleSpeak", expr, "girada mayúscula f, coma; sans serif girada mayúscula y")?;
@@ -400,15 +398,15 @@ fn up_tack_330() -> Result<()> {
     test("es", "SimpleSpeak", perp, "a es perpendicular a b")?;
     test("es", "LiteralSpeak", perp, "a es perpendicular a b")?;
     let up_tack = "<math><mi>a</mi><mo>⊥</mo><mi>b</mi></math>"; // 0x22a5
-    test("es", "ClearSpeak", up_tack, "a es perpendicular invertida b")?;
-    test("es", "LiteralSpeak", up_tack, "a es perpendicular invertida b")?;
+    test("es", "ClearSpeak", up_tack, "a es perpendicular a b")?;
+    test("es", "LiteralSpeak", up_tack, "a tachuela hacia arriba b")?;
     return Ok(());
   }
 
 #[test]
 fn unicode_typo_regressions() -> Result<()> {
   test("es", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "superíndice i")?;
-  test("es", "SimpleSpeak", "<math><mi>☌</mi></math>", "☌")?;
+  test("es", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunción")?;
   Ok(())
 }
 
