@@ -312,7 +312,11 @@ static MATHML_SCRIPTED_NODES: phf::Set<&str> = phf_set! {
 };
 
 pub fn is_leaf(element: Element) -> bool {
-    return MATHML_LEAF_NODES.contains(as_str!(name(element)));
+    return is_leaf_name(as_str!(name(element)));
+}
+
+pub fn is_leaf_name(name: &str) -> bool {
+    return MATHML_LEAF_NODES.contains(name);
 }
 
 impl Function for IsNode {

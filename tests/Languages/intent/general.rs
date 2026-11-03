@@ -114,3 +114,53 @@ fn evaluated_at() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn child_intent_blocks_ratio() -> Result<()> {
+    // The intent on the ∶ says it is not a ratio colon, so the mrow must not be inferred as a ratio.
+    let expr = "<math>
+      <mrow>
+        <mn>20</mn>
+        <mo intent='_divides'>∶</mo>
+        <mn>5</mn>
+      </mrow>
+    </math>";
+    test("en", "SimpleSpeak", expr, "20 divides 5")?;
+    return Ok(());
+}
+
+#[test]
+fn child_intent_supplies_ratio() -> Result<()> {
+    // The intent on the operator says it is a ∶, so the mrow is inferred as a ratio as if ∶ had been written.
+    let expr = "<math>
+      <mrow>
+        <mn>20</mn>
+        <mo intent='∶'>÷</mo>
+        <mn>5</mn>
+      </mrow>
+    </math>";
+    let target = "<math data-from-mathml='math'>
+      <ratio data-from-mathml='mrow' data-intent-property=':function:'>
+        <mn data-from-mathml='mn'>20</mn>
+        <mn data-from-mathml='mn'>5</mn>
+      </ratio>
+    </math>";
+    test_intent(expr, target, vec![])?;
+    return Ok(());
+}
+
+#[test]
+fn child_intent_supplies_number_set() -> Result<()> {
+    // The intent on the base says it is ℝ, so the msup is inferred as a number set as if ℝ had been written.
+    let expr = "<math><msup><mi intent='ℝ'>R</mi><mo>+</mo></msup></math>";
+    test("en", "SimpleSpeak", expr, "the positive double-struck cap r")?;
+    return Ok(());
+}
+
+#[test]
+fn child_intent_blocks_number_set() -> Result<()> {
+    // The intent on the base says it is not ℝ, so the msup must not be inferred as a number set.
+    let expr = "<math><msup><mi intent='foo'>ℝ</mi><mo>+</mo></msup></math>";
+    test("en", "SimpleSpeak", expr, "foo superscript plus")?;
+    return Ok(());
+}

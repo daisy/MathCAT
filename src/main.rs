@@ -36,11 +36,7 @@ fn main() {
       .init();
 
    let expr = r#"
-<math>
-    <msup intent='$op($arg)'>
-        <mi arg='arg'>x</mi>
-        <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
-    </msup></math>
+<math><mn>20</mn><mo intent="_dividido">∶</mo><mn>5</mn></math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>

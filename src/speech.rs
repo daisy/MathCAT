@@ -105,9 +105,11 @@ fn intent_rules<'m>(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>,
                 mathml.set_attribute_value("intent", ":literal");
             };
         }
+        let overlay = overlay_intents(mathml);
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, doc, nav_node_id, 0);
-        let intent =  rules_with_context.match_pattern::<Element<'m>>(mathml)
-                    .context("Pattern match/replacement failure!")?;
+        let intent =  rules_with_context.match_pattern::<Element<'m>>(mathml);
+        drop(overlay);
+        let intent = intent.context("Pattern match/replacement failure!")?;
         let answer = if name(intent) == "TEMP_NAME" {   // unneeded extra layer
             assert_eq!(intent.children().len(), 1);
             as_element(intent.children()[0])
