@@ -268,9 +268,7 @@ fn roman_like_identifier_sequence_is_not_number() -> Result<()> {
 }
 
 
-// REVISAR (inglés: and): «mayúscula p; se abren paréntesis; mayúscula a and mayúscula b; se cierran paréntesis; es igual a; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; es igual a; mayúscula p de mayúscula a; mayúscula p de mayúscula b»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -284,7 +282,7 @@ fn ignore_period() -> Result<()> {
           <mi>A</mi>
           <mrow>
             <mstyle displaystyle='false' scriptlevel='0'>
-              <mtext>&nbsp;and&nbsp;</mtext>
+              <mtext>&nbsp;y&nbsp;</mtext>
             </mstyle>
           </mrow>
           <mi>B</mi>
@@ -311,7 +309,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis; mayúscula a and mayúscula b; se cierran paréntesis; es igual a; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; es igual a; mayúscula p de mayúscula a; mayúscula p de mayúscula b")?;
+    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis; mayúscula a y mayúscula b; se cierran paréntesis; es igual a; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; es igual a; mayúscula p de mayúscula a; mayúscula p de mayúscula b")?;
     return Ok(());
 
 }
@@ -324,9 +322,7 @@ fn ignore_mtext_period() -> Result<()> {
 
 }
 
-// REVISAR (phi recta, inglés: phi): «phi recta de x, es igual a; c por, e elevado a menos h al cuadrado, x al cuadrado fin de exponente»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn ignore_comma() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -360,14 +356,12 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("es", "SimpleSpeak", expr, "phi recta de x, es igual a; c por, e elevado a menos h al cuadrado, x al cuadrado fin de exponente")?;
+    test("es", "SimpleSpeak", expr, "fi de x es igual a; c por, e elevado a menos h al cuadrado, x al cuadrado fin de exponente")?;
     return Ok(());
 
 }
 
-// REVISAR (divisible): «mayúscula p; se abren paréntesis, mayúscula a divisible mayúscula b; se cierran paréntesis; es igual a; la fracción con numerador; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; y denominador mayúscula p de mayúscula b»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -403,7 +397,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("es", "ClearSpeak", expr, "mayúscula p; se abren paréntesis, mayúscula a divisible mayúscula b; se cierran paréntesis; es igual a; la fracción con numerador; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; y denominador mayúscula p de mayúscula b")?;
+    test("es", "ClearSpeak", expr, "mayúscula p; se abren paréntesis, mayúscula a divide a mayúscula b; se cierran paréntesis; es igual a; la fracción con numerador; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; y denominador mayúscula p de mayúscula b")?;
     return Ok(());
 
 }
@@ -516,9 +510,7 @@ fn gradient() -> Result<()> {
 
 }
 
-// REVISAR (inglés: to): «mayúscula a flecha derecha, perpendicular to, mayúscula b flecha derecha»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn literal_speak_perpendicular() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow data-changed='added'>
@@ -526,14 +518,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular-a'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, perpendicular to, mayúscula b flecha derecha")?;
+  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
   return Ok(());
 
 }
@@ -558,11 +550,9 @@ fn literal_speak_chars() -> Result<()> {
 
 }
 
-// REVISAR (inglés: forced): «forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn literal_speak_with_name() -> Result<()> {
-  let expr = r#"<math intent='forced($x)'>
+  let expr = r#"<math intent='forzado($x)'>
       <mrow arg="x">
         <mi>f</mi>
         <mo data-changed='added'>&#x2061;</mo>
@@ -576,7 +566,7 @@ fn literal_speak_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#;
-  test("es", "LiteralSpeak", expr, "forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
+  test("es", "LiteralSpeak", expr, "forzado f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
   return Ok(());
 
 }
@@ -602,9 +592,7 @@ fn literal_speak_with_property() -> Result<()> {
 
 }
 
-// REVISAR (inglés: to): «mayúscula a flecha derecha, perpendicular to, mayúscula b flecha derecha»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn literal_intent_property() -> Result<()> {
   let expr = r#"<math data-latex='\vec{A} \perp \vec{B}' display='block'>
   <mrow intent=":literal">
@@ -612,23 +600,21 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular-a'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, perpendicular to, mayúscula b flecha derecha")?;
+  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
   return Ok(());
 
 }
 
-// REVISAR (inglés: forced): «forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn literal_intent_property_with_name() -> Result<()> {
-  let expr = r#"<math intent='forced:literal($x)'>
+  let expr = r#"<math intent='forzado:literal($x)'>
       <mrow arg="x">
         <mi>f</mi>
         <mo data-changed='added'>&#x2061;</mo>
@@ -642,7 +628,7 @@ fn literal_intent_property_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("es", "SimpleSpeak", expr, "forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
+  test("es", "SimpleSpeak", expr, "forzado f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
   return Ok(());
 
 }

@@ -152,9 +152,7 @@ fn denominator_simple_fraction() -> Result<()> {
 }
 
 
-// REVISAR (inglés: miles): «62 miles por hora»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn frac_with_units() -> Result<()> {
     let expr = "
     <math>
@@ -166,14 +164,12 @@ fn frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("es", "SimpleSpeak", expr, "62 miles por hora")?;
+    test("es", "SimpleSpeak", expr, "62 millas por hora")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: gallon mile): «1 gallon por mile»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn singular_frac_with_units() -> Result<()> {
     let expr = "
     <math>
@@ -185,14 +181,12 @@ fn singular_frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("es", "SimpleSpeak", expr, "1 gallon por mile")?;
+    test("es", "SimpleSpeak", expr, "1 galón por milla")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: gallons mile): «3 gallons por mile»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn number_in_numerator_with_units() -> Result<()> {
     let expr = "
     <math>
@@ -204,7 +198,7 @@ fn number_in_numerator_with_units() -> Result<()> {
             <mi intent=':unit'>mi</mi>
         </mfrac>
     </math>";
-    test("es", "SimpleSpeak", expr, "3 gallons por mile")?;
+    test("es", "SimpleSpeak", expr, "3 galones por milla")?;
     return Ok(());
 
 }
@@ -258,31 +252,27 @@ fn mixed_number_big() -> Result<()> {
 
 }
 
-// REVISAR (inglés: rise run): «rise partido por run»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_text() -> Result<()> {
     let expr = "<math>
-    <mfrac> <mi>rise</mi> <mi>run</mi> </mfrac>
+    <mfrac> <mi>distancia</mi> <mi>tiempo</mi> </mfrac>
                 </math>";
-    test("es", "SimpleSpeak", expr, "rise partido por run")?;
+    test("es", "SimpleSpeak", expr, "distancia partido por tiempo")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: gallons miles): «fracción, 2 miles, partido por, 3 gallons, fin de fracción»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn number_and_text() -> Result<()> {
     let expr = "<math>
             <mfrac>
             <mrow>
-                <mn>2</mn><mtext>miles</mtext></mrow>
+                <mn>2</mn><mtext>millas</mtext></mrow>
             <mrow>
-                <mn>3</mn><mtext>gallons</mtext></mrow>
+                <mn>3</mn><mtext>galones</mtext></mrow>
             </mfrac>
         </math>";
-    test("es", "SimpleSpeak", expr, "fracción, 2 miles, partido por, 3 gallons, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "fracción, 2 millas, partido por, 3 galones, fin de fracción")?;
     return Ok(());
 
 }

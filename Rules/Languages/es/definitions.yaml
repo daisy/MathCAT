@@ -259,7 +259,7 @@
     "area": "function=área| el área",
     "point": "prefix=punto",
     "time-separator": "infix=",
-    "fenced-group": "function=fenced-group",
+    "fenced-group": "function=grupo delimitado",
     "ordered-pair": "function=el par ordenado: y",
     "indexed-by": "infix= ; subíndice; fin de subíndice",
     "highlight": "postfix=resaltado",
@@ -539,59 +539,60 @@
 
   # this will only be used if the language is English, so it can be empty for other countries
 - EnglishUnits: {
+    # unidades anglosajonas, con su nombre en español
     # length
-    "in": "inch",
-    "ft": "foot",
-    "mi": "mile",
-    "rd": "rod",
-    "li": "link",
-    "ch": "chain",
+    "in": "pulgada",
+    "ft": "pie",
+    "mi": "milla",
+    "rd": "vara",
+    "li": "eslabón",
+    "ch": "cadena",
 
     # area
-    "sq in": "square inch", "sq. in": "square inch", "sq. in.": "square inch",
-    "sq ft": "square foot", "sq. ft": "square foot", "sq. ft.": "square foot",
-    "sq yd": "square yard", "sq. yd": "square yard", "sq. yd.": "square yard",
-    "sq mi": "square mile", "sq. mi": "square mile", "sq. mi.": "square mile",
+    "sq in": "pulgada cuadrada", "sq. in": "pulgada cuadrada", "sq. in.": "pulgada cuadrada",
+    "sq ft": "pie cuadrado", "sq. ft": "pie cuadrado", "sq. ft.": "pie cuadrado",
+    "sq yd": "yarda cuadrada", "sq. yd": "yarda cuadrada", "sq. yd.": "yarda cuadrada",
+    "sq mi": "milla cuadrada", "sq. mi": "milla cuadrada", "sq. mi.": "milla cuadrada",
     "ac": "acre",
-    "FBM": "board foot",
+    "FBM": "pie tablar",
 
     # volume
-    "cu in": "cubic inch", "cu. in": "cubic inch", "cu. in.": "cubic inch",
-    "cu ft": "cubic foot", "cu. ft": "cubic foot", "cu. ft.": "cubic foot",
-    "cu yd": "cubic yard", "cu. yd": "cubic yard", "cu. yd.": "cubic yard",
-    "bbl": "barrel", "BBL": "barrel",
+    "cu in": "pulgada cúbica", "cu. in": "pulgada cúbica", "cu. in.": "pulgada cúbica",
+    "cu ft": "pie cúbico", "cu. ft": "pie cúbico", "cu. ft.": "pie cúbico",
+    "cu yd": "yarda cúbica", "cu. yd": "yarda cúbica", "cu. yd.": "yarda cúbica",
+    "bbl": "barril", "BBL": "barril",
     "pk": "peck",
     "bu": "bushel",
-    "tsp": "teaspoon",
-    "tbl": "tablespoon",
+    "tsp": "cucharadita",
+    "tbl": "cucharada",
 
     # liquid
-    "fl dr": "fluid drams",
-    "fl oz": "fluid ounce",
+    "fl dr": "dracma líquida",
+    "fl oz": "onza líquida",
     "gi": "gill",
-    "cp": "cup", "cup": "cup",
-    "pt": "pint",
-    "qt": "quart",
-    "gal": "gallon",
+    "cp": "taza", "cup": "taza",
+    "pt": "pinta",
+    "qt": "cuarto de galón",
+    "gal": "galón",
 
     # weight
-    "gr": "grain",
-    "dr": "dram",
-    "oz": "ounce", "℥": "ounce",
-    "lb": "pound",
-    "cwt": "hundredweight",
+    "gr": "grano",
+    "dr": "dracma",
+    "oz": "onza", "℥": "onza",
+    "lb": "libra",
+    "cwt": "quintal",
     "dwt": "pennyweight",
-    "oz t": "troy ounce",
-    "lb t": "troy pound",
+    "oz t": "onza troy",
+    "lb t": "libra troy",
 
     # energy
-    "hp": "horsepower",
+    "hp": "caballo de fuerza",
     "BTU": "BTU",
-    "°F": "degree fahrenheit", "℉": "degree fahrenheit",
+    "°F": "grado Fahrenheit", "℉": "grado Fahrenheit",
 
     # other
-    "mph": "mile per hour",
-    "mpg": "mile per gallon",
+    "mph": "milla por hora",
+    "mpg": "milla por galón",
   }
 
 - CurrencySymbols: {
@@ -611,12 +612,17 @@
     "grado Celsius": "grados Celsius",
     "grado Fahrenheit": "grados Fahrenheit",
 
-    "inch": "inches", "square inch": "square inches", "cubic inch": "cubic inches",
-    "foot": "feet", "square foot": "square feet", "cubic foot": "cubic feet",
-    "board foot": "board feet",
     "hertz": "hertz",
     "siemens": "siemens",
-    "revolution per minute": "revolutions per minute",
+
+    # unidades anglosajonas
+    "eslabón": "eslabones", "galón": "galones", "gill": "gills", "bushel": "bushels", "BTU": "BTU",
+    "pulgada cuadrada": "pulgadas cuadradas", "pie cuadrado": "pies cuadrados", "yarda cuadrada": "yardas cuadradas",
+    "milla cuadrada": "millas cuadradas", "pie tablar": "pies tablares",
+    "pulgada cúbica": "pulgadas cúbicas", "pie cúbico": "pies cúbicos", "yarda cúbica": "yardas cúbicas",
+    "dracma líquida": "dracmas líquidas", "onza líquida": "onzas líquidas", "cuarto de galón": "cuartos de galón",
+    "onza troy": "onzas troy", "libra troy": "libras troy", "caballo de fuerza": "caballos de fuerza",
+    "milla por hora": "millas por hora", "milla por galón": "millas por galón",
   }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------

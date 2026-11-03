@@ -6,9 +6,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (phi recta, inglés: phi): «seno x más coseno y más tangente z más secante alfa, más cosecante phi recta, más cotangente phi»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn trig_names() -> Result<()> {
     let expr = "<math><mrow>
     <mi>sin</mi><mi>x</mi><mo>+</mo>
@@ -18,14 +16,12 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("es", "ClearSpeak", expr, "seno x más coseno y más tangente z más secante alfa, más cosecante phi recta, más cotangente phi")?;
+    test("es", "ClearSpeak", expr, "seno x más coseno y más tangente z más secante alfa, más cosecante fi, más cotangente fi")?;
     return Ok(());
 
 }
 
-// REVISAR (phi recta, inglés: phi): «seno hiperbólico de x, más coseno hiperbólico de y, más tangente hiperbólica de z, más secante hiperbólica de alfa, más, cosecante hiperbólica de phi recta; más, cotangente hiperbólica de phi»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn hyperbolic_trig_names() -> Result<()> {
     let expr = "<math><mrow>
     <mi>sinh</mi><mi>x</mi><mo>+</mo>
@@ -35,7 +31,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     <mi>csch</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>coth</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("es", "ClearSpeak", expr, "seno hiperbólico de x, más coseno hiperbólico de y, más tangente hiperbólica de z, más secante hiperbólica de alfa, más, cosecante hiperbólica de phi recta; más, cotangente hiperbólica de phi")?;
+    test("es", "ClearSpeak", expr, "seno hiperbólico de x, más coseno hiperbólico de y, más tangente hiperbólica de z, más secante hiperbólica de alfa, más cosecante hiperbólica de fi, más cotangente hiperbólica de fi")?;
                                 return Ok(());
 
 }

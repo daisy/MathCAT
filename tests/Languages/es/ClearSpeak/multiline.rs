@@ -2,9 +2,7 @@ use crate::common::*;
 use anyhow::Result;
 
 
-// REVISAR (inglés: if): «f de x es igual a; 3 casos; línea 1; menos 1 if x es menor que 0; línea 2; 0 if x es igual a 0; línea 3; 1 if x es mayor que 0»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn case_1() -> Result<()> {
   let expr = "<math>
     <mi>f</mi>
@@ -17,15 +15,15 @@ fn case_1() -> Result<()> {
     <mrow>
       <mo stretchy='true'>{</mo>
       <mtable>
-        <mtr><mtd><mo>-</mo><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr>
-        <mtr><mtd><mn>0</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr>
-        <mtr><mtd><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mo>-</mo><mn>1</mn></mtd><mtd><mtext>si</mtext></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>0</mn></mtd><mtd><mtext>si</mtext></mtd><mtd><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr>
+        <mtr><mtd><mn>1</mn></mtd><mtd><mtext>si</mtext></mtd><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr>
       </mtable>
     </mrow>
   </math>
    ";
   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr,
-    "f de x es igual a; 3 casos; línea 1; menos 1 if x es menor que 0; línea 2; 0 if x es igual a 0; línea 3; 1 if x es mayor que 0"
+    "f de x es igual a; 3 casos; línea 1; menos 1 si x es menor que 0; línea 2; 0 si x es igual a 0; línea 3; 1 si x es mayor que 0"
     )?;
     return Ok(());
 }

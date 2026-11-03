@@ -268,20 +268,18 @@ fn complicated_set_with_colon() -> Result<()> {
 
 }
 
-// REVISAR (inglés: an even is number): «el conjunto de todos los x un elemento de números naturales tal que x is an even number»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn complicated_set_with_mtext() -> Result<()> {
     // as of 8/5/21, parsing of "|" is problematic an element of the example, so <mrows> are needed for this test
     let expr = "<math>
         <mo>{</mo>
         <mrow> <mi>x</mi><mo>∈</mo><mi>ℕ</mi></mrow>
         <mo>|</mo>
-        <mrow><mi>x</mi> <mtext>&#x00A0;is&#x00A0;an&#x00A0;even&#x00A0;number</mtext> </mrow>
+        <mrow><mi>x</mi> <mtext>&#x00A0;es&#x00A0;un&#x00A0;número&#x00A0;par</mtext> </mrow>
         <mo>}</mo>
         </math>";
     test("es", "SimpleSpeak", expr, 
-            "el conjunto de todos los x un elemento de números naturales tal que x is an even number")?;
+            "el conjunto de todos los x un elemento de números naturales tal que x es un número par")?;
             return Ok(());
 
 }

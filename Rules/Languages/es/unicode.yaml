@@ -266,11 +266,11 @@
  - "σ": [T: "sigma"]                            	#  0x3c3
  - "τ": [T: "tau"]                              	#  0x3c4
  - "υ": [T: "ípsilon"]                          	#  0x3c5	(en: 'upsilon', google: 'upsilon')
- - "φ": [T: "phi"]                              	#  0x3c6	(google: 'fi')
+ - "φ": [T: "fi"]                              	#  0x3c6	(google: 'fi')
  - "χ": [T: "ji"]                               	#  0x3c7	(en: 'chi', google: 'chi')
  - "ψ": [T: "psi"]                              	#  0x3c8
  - "ω": [T: "omega"]                            	#  0x3c9
- - "ϕ": [T: "phi recta"]                        	#  0x3d5	(en: 'phi', google: 'fi')
+ - "ϕ": [T: "fi"]                        	#  0x3d5	(en: 'phi', google: 'fi')
  - "ϖ": [T: "variante de pi"]                   	#  0x3d6	(en: 'pi', google: 'pi')
  - "ϵ": [T: "variante de épsilon"]              	#  0x3f5	(en: 'epsilon', google: 'epsilon')
  - "϶": [T: "épsilon invertida"]                	#  0x3f6	(en: 'reversed epsilon')
@@ -520,7 +520,7 @@
  - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
  - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')
  - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
- - "∣": [T: "divisible"]                         	#  0x2223	(en: 'divides')
+ - "∣": [T: "divide a"]                         	#  0x2223	(en: 'divides')
  - "∤": [T: "indivisible"]                      	#  0x2224	(en: 'does not divide')
  - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
  - "∼": [T: "distinto de"]                            	#  0x223c	(en: 'varies with')

@@ -74,9 +74,7 @@ fn non_simple_fraction() -> Result<()> {
 
 }
 
-// REVISAR (inglés: miles): «62 miles por hora»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn frac_with_units() -> Result<()> {
     let expr = "
     <math>
@@ -88,7 +86,7 @@ fn frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("es", "ClearSpeak", expr, "62 miles por hora")?;
+    test("es", "ClearSpeak", expr, "62 millas por hora")?;
     return Ok(());
 
 }
@@ -128,31 +126,27 @@ fn mixed_number_big() -> Result<()> {
 
 }
 
-// REVISAR (inglés: rise run): «rise partido por run»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_text() -> Result<()> {
     let expr = "<math>
-    <mfrac> <mi>rise</mi> <mi>run</mi> </mfrac>
+    <mfrac> <mi>distancia</mi> <mi>tiempo</mi> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "rise partido por run")?;
+    test("es", "ClearSpeak", expr, "distancia partido por tiempo")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: gallons miles): «2 miles partido por 3 gallons»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn number_and_text() -> Result<()> {
     let expr = "<math>
             <mfrac>
             <mrow>
-                <mn>2</mn><mtext>miles</mtext></mrow>
+                <mn>2</mn><mtext>millas</mtext></mrow>
             <mrow>
-                <mn>3</mn><mtext>gallons</mtext></mrow>
+                <mn>3</mn><mtext>galones</mtext></mrow>
             </mfrac>
         </math>";
-    test("es", "ClearSpeak", expr, "2 miles partido por 3 gallons")?;
+    test("es", "ClearSpeak", expr, "2 millas partido por 3 galones")?;
     return Ok(());
 
 }

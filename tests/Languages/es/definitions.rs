@@ -740,13 +740,11 @@ fn separator_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: fenced group): «fenced-group de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn general_concepts_tests() -> Result<()> {
     let tests = vec![
         // Unary structural
-        ("fenced-group", "fenced-group de x"),
+        ("fenced-group", "grupo delimitado de x"),
         ("highlight", "x resaltado"),
         ("least-common-denominator", "el mínimo común denominador de x coma, y coma, z"), // add x, y , z ...
         ("pochhammer", "permutación de x"),

@@ -279,9 +279,7 @@ fn without_prefix_distance() -> Result<()> {
 
 }
 
-// REVISAR (inglés: drams fluid molar roentgen roentgens): «1 hectárea, coma, 2 hectáreas, coma, 1 decibelio, coma, 2 decibelios, coma, 1 atmósfera, coma, 2 atmósferas, coma; 1 unidad de masa atómica, coma; 2 unidades de masa atómica, coma, 1 bar coma, 2 bares, coma, 1 caloría, coma, 2 calorías, coma, 1 curio, coma, 2 curios, coma, 1 gradián, coma, 2 gradianes, coma, 1 molar, coma, 2 molares, coma, 1 roentgen, coma, 2 roentgens, coma; 1 revolución por minuto, coma; 2 revoluciones por minuto, coma, 1 fluid drams, coma, 2 fluid dramss, coma, 1 mho coma, 2 mhos, coma, 1 dina, coma, 2 dinas, coma, 1 ergio, coma, 2 ergios»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn without_prefix_other() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">ha</mi><mo>,</mo><mn>2</mn><mi intent=":unit">ha</mi><mo>,</mo>
@@ -301,7 +299,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 hectárea, coma, 2 hectáreas, coma, 1 decibelio, coma, 2 decibelios, coma, 1 atmósfera, coma, 2 atmósferas, coma; 1 unidad de masa atómica, coma; 2 unidades de masa atómica, coma, 1 bar coma, 2 bares, coma, 1 caloría, coma, 2 calorías, coma, 1 curio, coma, 2 curios, coma, 1 gradián, coma, 2 gradianes, coma, 1 molar, coma, 2 molares, coma, 1 roentgen, coma, 2 roentgens, coma; 1 revolución por minuto, coma; 2 revoluciones por minuto, coma, 1 fluid drams, coma, 2 fluid dramss, coma, 1 mho coma, 2 mhos, coma, 1 dina, coma, 2 dinas, coma, 1 ergio, coma, 2 ergios")?;
+        "1 hectárea, coma, 2 hectáreas, coma, 1 decibelio, coma, 2 decibelios, coma, 1 atmósfera, coma, 2 atmósferas, coma; 1 unidad de masa atómica, coma; 2 unidades de masa atómica, coma, 1 bar coma, 2 bares, coma, 1 caloría, coma, 2 calorías, coma, 1 curio, coma, 2 curios, coma, 1 gradián, coma, 2 gradianes, coma, 1 molar, coma, 2 molares, coma, 1 roentgen, coma, 2 roentgens, coma; 1 revolución por minuto, coma; 2 revoluciones por minuto, coma; 1 dracma líquida, coma; 2 dracmas líquidas, coma, 1 mho coma, 2 mhos, coma, 1 dina, coma, 2 dinas, coma, 1 ergio, coma, 2 ergios")?;
                 return Ok(());
 
 }
