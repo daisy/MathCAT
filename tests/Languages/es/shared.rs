@@ -44,7 +44,7 @@ fn limit() -> Result<()> {
         </math>";
     test("es", "SimpleSpeak", expr, "el límite cuando x tiende a 0, de, fracción, seno de x, partido por x, fin de fracción")?;
     test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "el límite cuando x tiende a 0, de, fracción, seno de x, partido por x, fin de fracción")?;
+            "el límite cuando x tiende a 0, de; seno de x, partido por x")?;
             return Ok(());
 
 }
@@ -180,9 +180,7 @@ fn given() -> Result<()> {
 
 }
 
-// REVISAR (-th, inglés: th): «x subíndice k, a la i-th potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_msubsup() -> Result<()> {
     let expr = "<math>
             <mstyle displaystyle='true' scriptlevel='0'>
@@ -197,29 +195,23 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k, a la i-th potencia")?;
+    test("es", "ClearSpeak", expr, "x subíndice k, elevado a i")?;
     return Ok(());
 
 }
 
-// REVISAR (-th, inglés: th): «i subíndice j menos 2 fin de subíndice, a la k-th»
-// REVISAR (-th, inglés: th): «i subíndice j menos 2 fin de subíndice, a la k-th potencia»
-// REVISAR (-th, inglés: th): «i subíndice j menos 2, a la k-th»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("es", "SimpleSpeak", expr, "i subíndice j menos 2 fin de subíndice, a la k-th")?;
-  test("es", "ClearSpeak", expr, "i subíndice j menos 2 fin de subíndice, a la k-th potencia")?;
+  test("es", "SimpleSpeak", expr, "i subíndice j menos 2 fin de subíndice, elevado a k")?;
+  test("es", "ClearSpeak", expr, "i subíndice j menos 2 fin de subíndice, elevado a k")?;
   test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "i subíndice j menos 2, a la k-th")?;
+          "i subíndice j menos 2, elevado a k")?;
           return Ok(());
 
 }
 
-// REVISAR (-th, inglés: th): «x subíndice k, a la i-th potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn presentation_mathml_in_semantics() -> Result<()> {
     let expr = "<math>
         <semantics>
@@ -237,14 +229,12 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k, a la i-th potencia")?;
+    test("es", "ClearSpeak", expr, "x subíndice k, elevado a i")?;
     return Ok(());
 
 }
 
-// REVISAR (-th, inglés: th): «mayúscula i es igual a; menos b r más z a la mayúscula i-th potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn roman_like_superscript_identifier_is_not_chemistry() -> Result<()> {
     // Regression test for https://github.com/daisy/MathCAT/issues/528
     let expr = "<math>
@@ -259,7 +249,7 @@ fn roman_like_superscript_identifier_is_not_chemistry() -> Result<()> {
             <mi>I</mi>
         </msup>
     </math>";
-    test("es", "ClearSpeak", expr, "mayúscula i es igual a; menos b r más z a la mayúscula i-th potencia")?;
+    test("es", "ClearSpeak", expr, "mayúscula i es igual a, menos b r más z elevado a mayúscula i")?;
     Ok(())
 }
 
@@ -334,7 +324,7 @@ fn ignore_mtext_period() -> Result<()> {
 
 }
 
-// REVISAR (phi recta, inglés: phi): «phi recta de x, es igual a; c por, e elevado a la menos h al cuadrado, x al cuadrado potencia»
+// REVISAR (phi recta, inglés: phi): «phi recta de x, es igual a; c por, e elevado a menos h al cuadrado, x al cuadrado fin de exponente»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn ignore_comma() -> Result<()> {
@@ -370,7 +360,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("es", "SimpleSpeak", expr, "phi recta de x, es igual a; c por, e elevado a la menos h al cuadrado, x al cuadrado potencia")?;
+    test("es", "SimpleSpeak", expr, "phi recta de x, es igual a; c por, e elevado a menos h al cuadrado, x al cuadrado fin de exponente")?;
     return Ok(());
 
 }
@@ -419,9 +409,7 @@ fn ignore_period_and_space() -> Result<()> {
 }
 
 
-// REVISAR (inglés: closed interval open): «el closed open interval de 0 a 2 pi»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn bug_199_2pi() -> Result<()> {
   let expr = "<math>
       <mrow>
@@ -437,7 +425,7 @@ fn bug_199_2pi() -> Result<()> {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("es", "SimpleSpeak",expr, "el closed open interval de 0 a 2 pi")?;
+  test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de 0 a 2 pi")?;
   return Ok(());
 
 }
@@ -512,7 +500,7 @@ fn divergence() -> Result<()> {
 fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "rotacional mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "rot mayúscula f")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "rotacional de mayúscula f")?;
   return Ok(());
 
@@ -522,7 +510,7 @@ fn curl() -> Result<()> {
 fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nabla mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "grad mayúscula f")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradiente de mayúscula f")?;
   return Ok(());
 

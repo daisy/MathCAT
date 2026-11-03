@@ -651,19 +651,30 @@
     ]
 
 - NumbersOrdinalPluralOnes: [
-         "cero", "primero", "segundos", "tercios", "cuartos", "quintos", "sextos", "séptimos", "ochos", "novenos",
-         "décimos", "undécimos", "doceavos", "treceavos", "catorceavos", "decimoquintos", "dieciseisavos",
-         "diecisiete", "dieciochovo", "diecinueve"
+         "ceros", "primeros", "segundos", "terceros", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "undécimos", "duodécimos", "decimoterceros", "decimocuartos", "decimoquintos", "decimosextos",
+         "decimoséptimos", "decimoctavos", "decimonovenos"
     ]
 
     # stop when regularity begins
+# ordinales femeninos para "x a la quinta" y "la raíz quinta" (solo hasta 10; desde 11 se usa el cardinal)
+- OrdinalesFemeninos: {
+    "2": "segunda", "3": "tercera", "4": "cuarta", "5": "quinta", "6": "sexta",
+    "7": "séptima", "8": "octava", "9": "novena", "10": "décima"
+  }
+
 - NumbersOrdinalFractionalOnes: [
-         "cero", "primero", "mitad"
+         # en español los denominadores de fracciones no son ordinales hasta 20: tercio, onceavo…
+         "cero", "entero", "medio", "tercio", "cuarto", "quinto", "sexto", "séptimo", "octavo", "noveno",
+         "décimo", "onceavo", "doceavo", "treceavo", "catorceavo", "quinceavo", "dieciseisavo",
+         "diecisieteavo", "dieciochoavo", "diecinueveavo"
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "ceros", "primeros", "mitades"
+         "ceros", "enteros", "medios", "tercios", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "onceavos", "doceavos", "treceavos", "catorceavos", "quinceavos", "dieciseisavos",
+         "diecisieteavos", "dieciochoavos", "diecinueveavos"
     ]
 
 

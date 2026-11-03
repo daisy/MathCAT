@@ -4,14 +4,12 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (mitad): «1 mitad»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn common_fraction_half() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "1 mitad")?;
+    test("es", "ClearSpeak", expr, "1 medio")?;
     return Ok(());
 
 }
@@ -96,15 +94,13 @@ fn frac_with_units() -> Result<()> {
 }
 
 
-// REVISAR (mitad): «3 más 1 mitad»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn mixed_number() -> Result<()> {
     let expr = "<math>
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 más 1 mitad")?;
+    test("es", "ClearSpeak", expr, "3 y 1 medio")?;
     return Ok(());
 
 }
@@ -116,7 +112,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 más 1 octavo")?;
+    test("es", "ClearSpeak", expr, "3 y 1 octavo")?;
     return Ok(());
 
 }
@@ -127,7 +123,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 más 7 partido por 83")?;
+    test("es", "ClearSpeak", expr, "3 y 7 partido por 83")?;
     return Ok(());
 
 }
@@ -162,11 +158,7 @@ fn number_and_text() -> Result<()> {
 }
 
 
-// REVISAR (mitad): «1 mitad partido por 2 tercios»
-// REVISAR (mitad): «1 mitad partido por 2 tercios»
-// REVISAR (mitad): «1 mitad partido por 2 tercios»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_simple_fractions() -> Result<()> {
     let expr = "<math>
                 <mrow>
@@ -186,14 +178,14 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 mitad partido por 2 tercios")?;
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 mitad partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 medio partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 medio partido por 2 tercios")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 partido por 2 partido por 2 partido por 3")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
             "la fracción la fracción 1 partido por 2 partido por la fracción 2 partido por 3")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "la fracción con numerador la fracción con numerador 1; y denominador 2; y denominador la fracción con numerador 2; y denominador 3")?;
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 mitad partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 medio partido por 2 tercios")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
             "la fracción con numerador la fracción con numerador 1; y denominador 2; fin de fracción; y denominador la fracción con numerador 2; y denominador 3; fin de fracción; fin de fracción")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,

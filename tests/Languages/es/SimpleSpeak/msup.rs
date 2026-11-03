@@ -14,14 +14,12 @@ fn squared() -> Result<()> {
 
 }
 
-// REVISAR (x cúbica): «x cúbica»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn cubed() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>3</mn> </msup>
                 </math>";
-    test("es", "SimpleSpeak", expr, "x cúbica")?;
+    test("es", "SimpleSpeak", expr, "x al cubo")?;
     return Ok(());
 
 }
@@ -31,19 +29,17 @@ fn cubed() -> Result<()> {
         let expr = "<math>
                         <msup> <mi>x</mi> <mn>4</mn> </msup>
                     </math>";
-        test("es", "SimpleSpeak", expr, "x a la cuarto")?;
+        test("es", "SimpleSpeak", expr, "x a la cuarta")?;
         return Ok(());
 
     }
 
-// REVISAR (-th, inglés: th): «x a la n-th»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_mi_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mi>n</mi> </msup>
                 </math>";
-  test("es", "SimpleSpeak", expr, "x a la n-th")?;
+  test("es", "SimpleSpeak", expr, "x elevado a n")?;
   return Ok(());
 
 }
@@ -53,7 +49,7 @@ fn zero_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>0</mn> </msup>
                 </math>";
-    test("es", "SimpleSpeak", expr, "x a la 0")?;
+    test("es", "SimpleSpeak", expr, "x elevado a 0")?;
     return Ok(());
 
 }
@@ -64,7 +60,7 @@ fn decimal_power() -> Result<()> {
     let expr = "<math>
                     <msup> <mi>x</mi> <mn>2.0</mn> </msup>
                 </math>";
-    test("es", "SimpleSpeak", expr, "x a la 20")?;
+    test("es", "SimpleSpeak", expr, "x elevado a 20")?;
     return Ok(());
 
 }
@@ -80,7 +76,7 @@ fn non_simple_power() -> Result<()> {
       </msup>
       </mrow>
                 </math>";
-    test("es", "SimpleSpeak", expr, "3 elevado a la y más 2 potencia")?;
+    test("es", "SimpleSpeak", expr, "3 elevado a y más 2 fin de exponente")?;
     return Ok(());
 
 }
@@ -93,14 +89,12 @@ fn negative_power() -> Result<()> {
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("es", "SimpleSpeak", expr, "x a la menos 2")?;
+    test("es", "SimpleSpeak", expr, "x elevado a menos 2")?;
     return Ok(());
 
 }
 
-// REVISAR (tercero): «x elevado a la 1 tercero potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_fraction_power() -> Result<()> {
   let expr = "<math>
                   <msup>
@@ -108,7 +102,7 @@ fn simple_fraction_power() -> Result<()> {
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("es", "SimpleSpeak", expr, "x elevado a la 1 tercero potencia")?;
+  test("es", "SimpleSpeak", expr, "x elevado a 1 tercio fin de exponente")?;
   return Ok(());
 
 }
@@ -129,7 +123,7 @@ fn nested_squared_power_with_coef() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a la 2 x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a 2 x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -151,7 +145,7 @@ fn nested_squared_power_with_neg_coef() -> Result<()> {
     </msup>
     </mrow>
   </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a la menos 2 x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a menos 2 x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -168,7 +162,7 @@ fn nested_cubed_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "y elevado a la 4 quintos cúbica potencia")?;
+  test("es", "SimpleSpeak", expr, "y elevado a 4 quintos al cubo fin de exponente")?;
   return Ok(());
 
 }
@@ -187,14 +181,12 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("es", "SimpleSpeak", expr, "y elevado a la menos 4 quintos cúbica potencia")?;
+  test("es", "SimpleSpeak", expr, "y elevado a menos 4 quintos al cubo fin de exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (mitad): «e elevado a la 1 mitad x al cuadrado potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_number_times_squared() -> Result<()> {
     let expr = "<math>
         <mrow>
@@ -213,14 +205,12 @@ fn nested_number_times_squared() -> Result<()> {
         </msup>
         </mrow>
         </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a la 1 mitad x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "e elevado a 1 medio x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (mitad): «e elevado a la menos 1 mitad x al cuadrado potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_negative_number_times_squared() -> Result<()> {
   let expr = "<math>
     <mrow>
@@ -239,14 +229,12 @@ fn nested_negative_number_times_squared() -> Result<()> {
     </msup>
     </mrow>
     </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a la menos 1 mitad x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "e elevado a menos 1 medio x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (décimo potencia): «3 elevado a la 3 a la décimo potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_expr_to_tenth() -> Result<()> {
     let expr = "<math>
       <mrow>
@@ -262,7 +250,7 @@ fn nested_expr_to_tenth() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a la 3 a la décimo potencia")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a 3 a la décima fin de exponente")?;
   return Ok(());
 
 }
@@ -286,14 +274,12 @@ fn nested_non_simple_squared_exp() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a la se abren paréntesis, x más 1, se cierran paréntesis al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a se abren paréntesis, x más 1, se cierran paréntesis al cuadrado fin de exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (-th, inglés: th): «t elevado a la 4 quintos a la n-th potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_simple_power() -> Result<()> {
     let expr = "<math>
       <msup>
@@ -304,7 +290,7 @@ fn nested_simple_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "t elevado a la 4 quintos a la n-th potencia")?;
+  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos elevado a n fin de exponente")?;
   return Ok(());
 
 }
@@ -320,9 +306,9 @@ fn nested_end_exponent_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos elevado a la n más 1 potencia, fin de la exponente")?;
+  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos elevado a n más 1 fin de exponente; fin de exponente")?;
   test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-  "t elevado a 4 quintos elevado a la n más 1 potencia, fin de la exponente")?;
+  "t elevado a 4 quintos elevado a n más 1 fin de exponente")?;
   return Ok(());
 
 }
@@ -338,14 +324,12 @@ fn nested_end_exponent_neg_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos a la menos 3, fin de la exponente")?;
+  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos elevado a menos 3, fin de exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (mitad): «e elevado a la menos 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_complex_power() -> Result<()> {
     let expr = "<math>
       <mrow>
@@ -373,7 +357,7 @@ fn nested_complex_power() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a la menos 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "e elevado a menos 1 medio por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -389,7 +373,7 @@ fn default_power() -> Result<()> {
       </mfrac>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "t elevado a la fracción, b más 1, partido por 3, fin de fracción; potencia")?;
+  test("es", "SimpleSpeak", expr, "t elevado a fracción, b más 1, partido por 3, fin de fracción; fin de exponente")?;
   return Ok(());
 
 }

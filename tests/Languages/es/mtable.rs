@@ -265,7 +265,7 @@ fn augmented_matrix_2x3() -> Result<()> {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("es", "ClearSpeak",  expr, "la matriz ampliada 2 por 3; fila 1; 3, 1, 4; fila 2; 0, 2, 6")?;
+    test("es", "ClearSpeak",  expr, "la matriz ampliada 2 por 3; fila 1; 3, 1, separador, 4; fila 2; 0, 2, separador, 6")?;
     test("es", "SimpleSpeak", expr, "la matriz ampliada 2 por 3; fila 1; 3, 1, separador, 4; fila 2; 0, 2, separador, 6")?;
     Ok(())
 }
@@ -280,7 +280,7 @@ fn dashed_augmented_matrix_separator() -> Result<()> {
         </mtable>
       <mo>]</mo></mrow>
     </math>";
-    test("es", "ClearSpeak", expr, "la matriz fila 1 por 3; 1, 2, 3")?;
+    test("es", "ClearSpeak", expr, "la matriz fila 1 por 3; 1, separador, 2, separador, 3")?;
     test("es", "SimpleSpeak", expr, "la matriz fila 1 por 3; 1, separador, 2, separador, 3")?;
     Ok(())
 }
@@ -303,7 +303,7 @@ fn matrix_row_separator() -> Result<()> {
         </mtable>
       <mo>]</mo></mrow>
     </math>";
-    test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4")?;
+    test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2, separador de filas; fila 2; 3, 4")?;
     test("es", "SimpleSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2, separador de filas; fila 2; 3, 4")?;
     Ok(())
 }
@@ -326,7 +326,7 @@ fn matrix_row_and_column_separators() -> Result<()> {
         </mtable>
       <mo>]</mo></mrow>
     </math>";
-    test("es", "ClearSpeak", expr, "la matriz ampliada 2 por 2; fila 1; 1, 2; fila 2; 3, 4")?;
+    test("es", "ClearSpeak", expr, "la matriz ampliada 2 por 2; fila 1; 1, separador, 2, separador de filas; fila 2; 3, separador, 4")?;
     test("es", "SimpleSpeak", expr, "la matriz ampliada 2 por 2; fila 1; 1, separador, 2, separador de filas; fila 2; 3, separador, 4")?;
     Ok(())
 }
@@ -368,7 +368,7 @@ fn matrix_2x3_labeled() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr,
-        "la matriz 2 por 3; fila 1 etiquetada (3.1); columna 2; 3, columna 3; 1, columna 4; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
+        "la matriz 2 por 3; fila 1 con etiqueta (3.1); columna 1; 3, columna 2; 1, columna 3; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
     test("es", "SimpleSpeak", expr,
         "la matriz 2 por 3; fila 1 con etiqueta (3.1); columna 1; 3, columna 2; 1, columna 3; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
                                    return Ok(());
@@ -478,7 +478,7 @@ fn matrix_4x1_labeled() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr,
-        "la matriz columna 4 por 1; fila 1; 3; fila 2; 6; fila 3; 1; fila 4 etiquetada (3.1); 2")?;
+        "la matriz columna 4 por 1; fila 1; 3; fila 2; 6; fila 3; 1; fila 4 con etiqueta (3.1); 2")?;
     test("es", "SimpleSpeak", expr,
         "la matriz columna 4 por 1; fila 1; 3; fila 2; 6; fila 3; 1; fila 4 con etiqueta (3.1); 2")?;
         return Ok(());
@@ -638,48 +638,39 @@ fn matrix_4x2() -> Result<()> {
 }
 
 // put absolute value test here since it is related to determinate and is small for its own file
-// REVISAR (inglés: absolute value): «el absolute value de x»
-// REVISAR (inglés: absolute value): «absolute value de x»
-// REVISAR (inglés: absolute value): «el absolute value de x, fin absolute value»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test("es", "SimpleSpeak", expr, "el valor absoluto de x")?;
-  test("es", "ClearSpeak",  expr, "el absolute value de x")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "absolute value de x")?;
+  test("es", "ClearSpeak",  expr, "el valor absoluto de x")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "valor absoluto de x")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "el absolute value de x, fin absolute value")?;
+             expr, "el valor absoluto de x, fin del valor absoluto")?;
   return Ok(());
 }
   
-// REVISAR (inglés: absolute value): «el absolute value de x más 1»
-// REVISAR (inglés: absolute value): «absolute value de x más 1, fin absolute value»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn absolute_value_plus_1() -> Result<()> {
 let expr = "<math>
     <mrow><mrow><mo>|</mo>
       <mrow><mi>x</mi><mo>+</mo><mn>1</mn> </mrow>
     <mo>|</mo></mrow></mrow>
   </math>";
-  test("es", "ClearSpeak", expr, "el absolute value de x más 1")?;
+  test("es", "ClearSpeak", expr, "el valor absoluto de x más 1")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "absolute value de x más 1, fin absolute value")?;
+             expr, "valor absoluto de x más 1, fin del valor absoluto")?;
   return Ok(());
 }
 
-// REVISAR (inglés: cardinality): «el cardinality de mayúscula s»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_cardinality_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "el cardinality de mayúscula s")?;
+             "el cardinal de mayúscula s")?;
     return Ok(());
 }
   
@@ -967,7 +958,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   </mrow>
 </math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "la matriz ampliada 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, columna 4; menos 1; fin de la matriz")?;
+        expr, "la matriz ampliada 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, separador, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, separador, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, separador, columna 4; menos 1; fin de la matriz")?;
     test("es", "SimpleSpeak",
         expr, "la matriz ampliada 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, separador, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, separador, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, separador, columna 4; menos 1; fin de la matriz")?;
     Ok(())
@@ -1144,16 +1135,14 @@ test_ClearSpeak("es", "ClearSpeak_Matrix", "EndVector",
 }
 
 
-// REVISAR (elegir): «3 elegir 2»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn matrix_binomial() -> Result<()> {
   let expr = "<math>
       <mo>(</mo><mrow>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
       </mrow><mo>)</mo>
     </math>";
-  test_ClearSpeak("es", "ClearSpeak_Matrix", "Combinatorics", expr, "3 elegir 2")?;
+  test_ClearSpeak("es", "ClearSpeak_Matrix", "Combinatorics", expr, "3 sobre 2")?;
   return Ok(());
 }
 
@@ -1402,7 +1391,7 @@ fn matrix_raised_to_power() -> Result<()> {
       <mo>)</mo></mrow>
       <mn>2</mn>
     </msup></math>";
-  test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4; cuadrado")
+  test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4; al cuadrado")
 }
 
 #[test]
@@ -1429,5 +1418,5 @@ fn matrix_raised_to_power_lualatex_spacing() -> Result<()> {
       <mn>2</mn>
     </msup>
   </math>";
-  test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4; cuadrado")
+  test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4; al cuadrado")
 }

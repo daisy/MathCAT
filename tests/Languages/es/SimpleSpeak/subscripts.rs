@@ -22,7 +22,7 @@ fn msub_not_simple() -> Result<()> {
 #[test]
 fn msubsup_not_simple() -> Result<()> {
     let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x subíndice 12, cúbica")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x subíndice 12, al cubo")?;
     return Ok(());
 
   }

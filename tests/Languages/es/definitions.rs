@@ -32,7 +32,7 @@ fn my_set_basic() -> Result<()> {
       </math>
     "#;
 
-    test("es", "ClearSpeak", expr, "el conjunto vacío")?;
+    test("es", "ClearSpeak", expr, "el conjunto de x coma, y")?;
 
     Ok(())
 }
@@ -208,8 +208,6 @@ fn prefix_test() -> Result<()> {
 }
 
 
-// REVISAR (-th, inglés: th): «x a la y-th potencia»
-// REVISAR (inglés: absolute value): «el absolute value de x»
 // REVISAR (inglés: polar): «coordenada polar de x coma, y»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
@@ -234,7 +232,7 @@ fn functions_and_inverses_tests() -> Result<()> {
         ("max", "el máximo de x coma, y coma, z"),
         ("min", "el mínimo de x coma, y coma, z"),
 
-        ("power", "x a la y-th potencia"),
+        ("power", "x elevado a y"),
 
         // ("root", ...) skipped: ClearSpeak `tag: root` requires an index
         // (same as the Polish suite).
@@ -242,7 +240,7 @@ fn functions_and_inverses_tests() -> Result<()> {
         ("greatest-common-divisor", "el mcd de x coma, y coma, z"),
         ("least-common-multiple", "el mcm de x coma, y coma, z"),
 
-        ("absolute-value", "el absolute value de x"),
+        ("absolute-value", "el valor absoluto de x"),
 
         ("complex-conjugate", "el conjugado complejo de x"),
         ("complex-arg", "el argumento de x"),
@@ -376,7 +374,7 @@ fn calculus_tests() -> Result<()> {
 #[test]
 fn set_tests() -> Result<()> {
     let tests = vec![
-        ("set", "el conjunto x"),
+        ("set", "el conjunto de x"),
         // ("set-difference", "set difference of x and y"),
         ("complement", "el complemento de x"),
         //("empty-set", "empty set"),

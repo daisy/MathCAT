@@ -70,17 +70,15 @@ fn trig_squared() -> Result<()> {
 #[test]
 fn trig_cubed() -> Result<()> {
     let expr = "<math><msup><mi>tan</mi><mn>3</mn></msup><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "tangente cúbica de x")?;
+    test("es", "SimpleSpeak", expr, "tangente al cubo de x")?;
     return Ok(());
 
 }
 
-// REVISAR (cuarto potencia): «la cuarto potencia de, secante de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "la cuarto potencia de, secante de x")?;
+    test("es", "SimpleSpeak", expr, "la cuarta potencia de, secante de x")?;
     return Ok(());
 
 }
@@ -89,7 +87,7 @@ fn trig_fourth() -> Result<()> {
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "la n menos 1 potencia de, seno hiperbólico de x")?;
+    test("es", "SimpleSpeak", expr, "la potencia n menos 1 de, seno hiperbólico de x")?;
     return Ok(());
 
 }
@@ -261,9 +259,9 @@ fn no_times_sqrt() -> Result<()> {
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
     test("es", "SimpleSpeak", expr, 
-            "la raíz cuadrada de a; la raíz cuadrada de b; es igual a, la raíz cuadrada de a b fin de raíz")?;
+            "la raíz cuadrada de a; por la raíz cuadrada de b; es igual a, la raíz cuadrada de a b, fin de raíz")?;
     test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "la raíz cuadrada de a; la raíz cuadrada de b; es igual a, la raíz cuadrada de a b fin de raíz")?;
+            "la raíz cuadrada de a; por la raíz cuadrada de b; es igual a, la raíz cuadrada de a b")?;
             return Ok(());
 
 }
@@ -292,7 +290,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "b x y")?;
+        test("es", "SimpleSpeak", expr, "b, se abren paréntesis, x y, se cierran paréntesis")?;
         return Ok(());
 
     }
@@ -342,9 +340,7 @@ fn no_times_sqrt() -> Result<()> {
 
     }
 
-    // REVISAR (mitad): «2 más 1 mitad»
-#[test]
-#[ignore = "lectura en español pendiente de revisión"]
+    #[test]
     fn no_parens_fraction() -> Result<()> {
         let expr = "<math><mrow>
         <mn>2</mn>
@@ -354,74 +350,64 @@ fn no_times_sqrt() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("es", "SimpleSpeak", expr, "2 más 1 mitad")?;
+        test("es", "SimpleSpeak", expr, "2 más 1 medio")?;
         return Ok(());
 
     }
 
 
     // Tests for the four types of intervals in SimpleSpeak
-    // REVISAR (inglés: interval open): «el open interval de c a d»
-#[test]
-#[ignore = "lectura en español pendiente de revisión"]
+    #[test]
     fn parens_interval_open_open() -> Result<()> {
         let expr = "<math> 
         <mrow intent='open-interval($start, $end)'><mo>(</mo>
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el open interval de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto de c a d")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: closed interval open): «el closed open interval de c a d»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
     fn parens_interval_closed_open() -> Result<()> {
         let expr = "<math> 
         <mrow intent='closed-open-interval($start, $end)'><mo>[</mo>
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
             <mo>)</mo></mrow>
         </math>";
-    test("es", "SimpleSpeak",expr, "el closed open interval de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de c a d")?;
     return Ok(());
 
 }
 
 
-// REVISAR (inglés: closed interval open): «el open closed interval de c a d»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn parens_interval_open_closed() -> Result<()> {
     let expr = "<math> 
     <mrow intent='open-closed-interval($start, $end)'><mo>(</mo>
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr,"el open closed interval de c a d")?;
+    test("es", "SimpleSpeak",expr,"el intervalo abierto por la izquierda de c a d")?;
     return Ok(());
 
 }
 
 
-// REVISAR (inglés: closed interval): «el closed interval de c a d»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn parens_interval_closed_closed() -> Result<()> {
     let expr = "<math> 
         <mrow intent='closed-interval($start, $end)'><mo>[</mo>
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
             <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el closed interval de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo cerrado de c a d")?;
     return Ok(());
 
 }
 
-    // REVISAR (inglés: interval open): «el open interval de menos infinito a d»
-#[test]
-#[ignore = "lectura en español pendiente de revisión"]
+    #[test]
     fn parens_interval_neg_infinity_open_open() -> Result<()> {
         let expr = "<math> 
         <mrow intent='open-interval($start, $end)'><mo arg='open'>(</mo>
@@ -429,14 +415,12 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el open interval de menos infinito a d")?;
+    "el intervalo abierto de menos infinito a d")?;
     return Ok(());
 
 }
 
-    // REVISAR (inglés: closed interval open): «el open closed interval de menos infinito a d»
-#[test]
-#[ignore = "lectura en español pendiente de revisión"]
+    #[test]
     fn parens_interval_neg_infinity_open_closed() -> Result<()> {
         let expr = "<math> 
         <mrow intent='open-closed-interval($start, $end)'><mo arg='open'>(</mo>
@@ -444,7 +428,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>]</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el open closed interval de menos infinito a d")?;
+    "el intervalo abierto por la izquierda de menos infinito a d")?;
     return Ok(());
 
 }

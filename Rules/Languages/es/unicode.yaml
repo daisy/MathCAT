@@ -232,6 +232,7 @@
  - "϶": [T: "épsilon invertida"]                	#  0x3f6	(en: 'reversed epsilon')
 
  - "⁢": [T: ""]                                 	#  0x2062
+ - "⁤": [T: "y"]                                	#  0x2064	(en: 'and')
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "prima inversa"                      	# 	(en: 'double-struck', google: 'doble golpe')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"

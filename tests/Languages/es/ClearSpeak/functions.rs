@@ -86,7 +86,7 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("es", "ClearSpeak", expr, "la cuarto a la potencia de, secante de x")?;
+    test("es", "ClearSpeak", expr, "la cuarta potencia de, secante de x")?;
     return Ok(());
 
 }
@@ -95,7 +95,7 @@ fn trig_fourth() -> Result<()> {
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("es", "ClearSpeak", expr, "la n menos 1 a la potencia de, seno hiperbólico de x")?;
+    test("es", "ClearSpeak", expr, "la potencia n menos 1 de, seno hiperbólico de x")?;
     return Ok(());
 
 }
@@ -273,9 +273,7 @@ fn times_preceding_paren() -> Result<()> {
 
 }
 
-// REVISAR (el raíz): «el raíz cuadrada de a; el raíz cuadrada de b; es igual a, el raíz cuadrada de a b»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn times_sqrt() -> Result<()> {
     let expr = "<math><mrow>
         <msqrt> <mi>a</mi>  </msqrt>
@@ -283,7 +281,7 @@ fn times_sqrt() -> Result<()> {
         <mo>=</mo>
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
-    test("es", "ClearSpeak", expr, "el raíz cuadrada de a; el raíz cuadrada de b; es igual a, el raíz cuadrada de a b")?;
+    test("es", "ClearSpeak", expr, "la raíz cuadrada de a; multiplicado por, la raíz cuadrada de b; es igual a, la raíz cuadrada de a b")?;
     return Ok(());
 
 }
@@ -302,7 +300,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr,
-        "se abren paréntesis, 2 multiplicado por x, se cierran paréntesis cuadrado")?;
+        "se abren paréntesis, 2 multiplicado por x, se cierran paréntesis al cuadrado")?;
         return Ok(());
 
 }
@@ -347,7 +345,7 @@ fn explicit_times_none_superscript() -> Result<()> {
     </math>";
     test_ClearSpeak_prefs("es", 
         vec![("ClearSpeak_ImpliedTimes", "None"), ("ClearSpeak_Functions", "None")],
-        expr, "f, se abren paréntesis x se cierran paréntesis; es igual a; x cuadrado, se abren paréntesis, x más 1, se cierran paréntesis")?;
+        expr, "f, se abren paréntesis x se cierran paréntesis; es igual a; x al cuadrado, se abren paréntesis, x más 1, se cierran paréntesis")?;
         return Ok(());
 
 }
@@ -376,7 +374,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "ClearSpeak", expr, "b x y")?;
+        test("es", "ClearSpeak", expr, "b, se abren paréntesis, x y, se cierran paréntesis")?;
         return Ok(());
 
     }
@@ -422,14 +420,12 @@ fn explicit_times_none_superscript() -> Result<()> {
         </msup>
         </mrow>
     </mrow></math>";
-        test("es", "ClearSpeak", expr, "se abren paréntesis, 2 x, se cierran paréntesis cuadrado")?;
+        test("es", "ClearSpeak", expr, "se abren paréntesis, 2 x, se cierran paréntesis al cuadrado")?;
         return Ok(());
 
     }
 
-    // REVISAR (mitad): «2 más 1 mitad»
-#[test]
-#[ignore = "lectura en español pendiente de revisión"]
+    #[test]
     fn no_parens_fraction() -> Result<()> {
         let expr = "<math><mrow>
         <mn>2</mn>
@@ -439,7 +435,7 @@ fn explicit_times_none_superscript() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("es", "ClearSpeak", expr, "2 más 1 mitad")?;
+        test("es", "ClearSpeak", expr, "2 más 1 medio")?;
         return Ok(());
 
     }
@@ -454,7 +450,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval",expr,
-    "el intervalo de c a d, no incluyendo c o d")?;
+    "el intervalo de c a d, sin incluir c ni d")?;
     return Ok(());
 
 }
@@ -467,7 +463,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval ",expr,
-    "el intervalo de c a d, incluyendo c sino no incluyendo d")?;
+    "el intervalo de c a d, incluyendo c pero sin incluir d")?;
     return Ok(());
 
 }
@@ -481,7 +477,7 @@ fn parens_interval_open_closed() -> Result<()> {
     <mo>]</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval ",expr,
-    "el intervalo de c a d, no incluyendo c sino incluyendo d")?;
+    "el intervalo de c a d, sin incluir c pero incluyendo d")?;
     return Ok(());
 
 }
@@ -508,7 +504,7 @@ return Ok(());
         <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval ",expr,
-    "el intervalo de menos infinito a d, no incluyendo d")?;
+    "el intervalo de menos infinito a d, sin incluir d")?;
     return Ok(());
 
 }
@@ -535,7 +531,7 @@ fn parens_interval_open_open_infinity() -> Result<()> {
     <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval ",expr,
-    "el intervalo de c a infinito, no incluyendo c")?;
+    "el intervalo de c a infinito, sin incluir c")?;
     return Ok(());
 
 }
@@ -575,7 +571,7 @@ fn parens_interval_neg_infinity_to_pos_infinity() -> Result<()> {
     <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Paren", "Interval ",expr,
-    "el intervalo de menos infinito a positivo infinito")?;
+    "el intervalo de menos infinito a más infinito")?;
     return Ok(());
 
 }

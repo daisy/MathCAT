@@ -525,7 +525,7 @@
   - test:
       if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
       then:
-      - T: "línea en"      # phrase(draw a straight 'line' on the page)
+      - T: "línea"      # phrase(draw a straight 'line' on the page)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
           then: [T: "izquierda", pause: short]      # phrase(line on 'left' of the expression)

@@ -151,7 +151,14 @@
       if: "$Verbosity!='Terse'"
       then:
       - T: "el"
-  - x: "translate(name(.),'-', ' ')"
+  - test:
+    - if: "self::m:open-interval"
+      then: [T: "intervalo abierto"]      # phrase(el 'intervalo abierto' de 0 a 1)
+    - else_if: "self::m:closed-interval"
+      then: [T: "intervalo cerrado"]      # phrase(el 'intervalo cerrado' de 0 a 1)
+    - else_if: "self::m:open-closed-interval"
+      then: [T: "intervalo abierto por la izquierda"]      # phrase(el 'intervalo abierto por la izquierda' de 0 a 1)
+      else: [T: "intervalo abierto por la derecha"]      # phrase(el 'intervalo abierto por la derecha' de 0 a 1)
   - test:
       if: "$Verbosity!='Terse'"
       then:

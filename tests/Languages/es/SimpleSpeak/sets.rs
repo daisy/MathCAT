@@ -205,7 +205,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("es", "SimpleSpeak", expr, "el conjunto completo x tal que x es mayor que 2")?;
+    test("es", "SimpleSpeak", expr, "el conjunto de todos los x tal que x es mayor que 2")?;
     return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("es", "SimpleSpeak", expr, "el conjunto completo x tal que x es mayor que 2")?;
+    test("es", "SimpleSpeak", expr, "el conjunto de todos los x tal que x es mayor que 2")?;
     return Ok(());
 
 }
@@ -263,12 +263,12 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("es", "SimpleSpeak", expr, "el conjunto completo x un elemento de enteros tal que 2 es menor que x es menor que 7")?;
+    test("es", "SimpleSpeak", expr, "el conjunto de todos los x un elemento de enteros tal que 2 es menor que x es menor que 7")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: an even is number): «el conjunto completo x un elemento de números naturales tal que x is an even number»
+// REVISAR (inglés: an even is number): «el conjunto de todos los x un elemento de números naturales tal que x is an even number»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn complicated_set_with_mtext() -> Result<()> {
@@ -281,7 +281,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("es", "SimpleSpeak", expr, 
-            "el conjunto completo x un elemento de números naturales tal que x is an even number")?;
+            "el conjunto de todos los x un elemento de números naturales tal que x is an even number")?;
             return Ok(());
 
 }

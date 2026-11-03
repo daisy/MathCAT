@@ -4,14 +4,12 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (mitad): «1 mitad»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn common_fraction_half() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "SimpleSpeak", expr, "1 mitad")?;
+    test("es", "SimpleSpeak", expr, "1 medio")?;
     return Ok(());
 
 }
@@ -97,7 +95,7 @@ fn deeply_nested_fraction_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("es", "SimpleSpeak", expr, "fracción, x más, la raíz cuadrada de 1 partido por y, fin de raíz; partido por, x menos y, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "fracción, x más, la raíz cuadrada de 1 partido por y; fin de raíz; partido por, x menos y, fin de fracción")?;
     return Ok(());
 
 }
@@ -115,7 +113,7 @@ fn deeply_nested_fraction_mrow_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("es", "SimpleSpeak", expr, "fracción, x más, la raíz cuadrada de 2 más 1 partido por y, fin de raíz; partido por, x menos y, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "fracción, x más; la raíz cuadrada de 2 más 1 partido por y; fin de raíz; partido por, x menos y, fin de fracción")?;
     return Ok(());
 
 }
@@ -226,15 +224,13 @@ fn units_with_powers() -> Result<()> {
 }
 
 
-// REVISAR (mitad): «3 más 1 mitad»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn mixed_number() -> Result<()> {
     let expr = "<math>
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "SimpleSpeak", expr, "3 más 1 mitad")?;
+    test("es", "SimpleSpeak", expr, "3 y 1 medio")?;
     return Ok(());
 
 }
@@ -246,7 +242,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("es", "SimpleSpeak", expr, "3 más 1 octavo")?;
+    test("es", "SimpleSpeak", expr, "3 y 1 octavo")?;
     return Ok(());
 
 }
@@ -257,7 +253,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("es", "SimpleSpeak", expr, "3 más 7 ochenta tercios")?;
+    test("es", "SimpleSpeak", expr, "3 y 7 partido por 83")?;
     return Ok(());
 
 }
@@ -292,9 +288,7 @@ fn number_and_text() -> Result<()> {
 }
 
 
-// REVISAR (mitad): «fracción, 1 mitad, partido por, 2 tercios, fin de fracción»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nested_simple_fractions() -> Result<()> {
     let expr = "<math>
                 <mrow>
@@ -314,7 +308,7 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test("es", "SimpleSpeak", expr, "fracción, 1 mitad, partido por, 2 tercios, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "fracción, 1 medio, partido por, 2 tercios, fin de fracción")?;
     return Ok(());
 
 }

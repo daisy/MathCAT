@@ -219,7 +219,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Auto", expr,
-            "el conjunto todo x tal que x es mayor que 0")?;
+            "el conjunto de todos los x tal que x es mayor que 0")?;
             return Ok(());
 
 }
@@ -239,7 +239,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "el conjunto todo x tal que x es mayor que 0")?;
+            "el conjunto de todos los x tal que x es mayor que 0")?;
             return Ok(());
 
 }
@@ -259,14 +259,12 @@ fn vertical_line_set_given() -> Result<()> {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Given", expr,
-            "el conjunto todo x tal que x es mayor que 0")?;
+            "el conjunto de todos los x tal que x es mayor que 0")?;
             return Ok(());
 
 }
 
-// REVISAR (inglés: absolute value): «el conjunto todo x tal que el absolute value de x; es mayor que 2»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn vertical_line_set_and_abs() -> Result<()> {
     let expr = "<math>
             <mo>{</mo>
@@ -284,7 +282,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Auto", expr,
-        "el conjunto todo x tal que el absolute value de x; es mayor que 2")?;
+        "el conjunto de todos los x tal que el valor absoluto de x; es mayor que 2")?;
         return Ok(());
 
 }
@@ -329,7 +327,7 @@ fn vertical_line_evaluated_at_both() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Auto", expr,
-        "x cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
+        "x al cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
         return Ok(());
 
 }
@@ -373,7 +371,7 @@ fn vertical_line_evaluated_at_both_given() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Given", expr,
-        "x cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
+        "x al cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
         return Ok(());
 
 }
