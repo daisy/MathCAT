@@ -37,7 +37,7 @@ cfg-if = "1.0.1"
 fastrand = { version = "2.3.0" }
 clap = { version = "4.5.60", features = ["derive"] }
 html-escape = "0.2.13"
-ext-php-rs = "0.10.0"
+ext-php-rs = "0.16.4"
 
 # Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
 # writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.
