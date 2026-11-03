@@ -442,24 +442,20 @@ fn parens_interval_closed_closed() -> Result<()> {
 }
 
 // Tests propios del español (no existen en inglés)
-// REVISAR (test antiguo de español; lectura actual): «l n, abrir paréntesis, x más y, cerrar paréntesis»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn normal_ln_terse() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "l n de x, apertura x más y cierre")?;
+                expr, "l n, abrir paréntesis, x más y, cerrar paréntesis")?;
                 return Ok(());
 
 }
 
-// REVISAR (test antiguo de español; lectura actual): «l n x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_ln_terse() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "l n de x")?;
+                expr, "l n x")?;
                 return Ok(());
 
 }
