@@ -185,7 +185,7 @@ fn explicit_function_call_with_parens() -> Result<()> {
 #[test]
 fn explicit_times_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "t multiplicado por x")?;
+    test("es", "ClearSpeak", expr, "t por x")?;
     return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn test_functions_none_pref() -> Result<()> {
     <mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Functions", "None",expr,
-        "el log de, abrir paréntesis, x más y, cerrar paréntesis; más; f multiplicado por; abrir paréntesis, x más y, cerrar paréntesis")?;
+        "el log de, abrir paréntesis, x más y, cerrar paréntesis; más; f por, abrir paréntesis, x más y, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -226,7 +226,7 @@ fn test_functions_none_pref_multiple_args() -> Result<()> {
         <mi>B</mi> <mrow><mo>(</mo> <mrow> <mn>2</mn><mo>,</mo><mn>6</mn></mrow> <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Functions", "None",expr,
-        "mayúscula b multiplicado por; abrir paréntesis, 2 coma, 6, cerrar paréntesis")?;
+        "mayúscula b por, abrir paréntesis, 2 coma, 6, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -249,7 +249,7 @@ fn times_following_paren() -> Result<()> {
         <mn>2</mn>
         <mrow>  <mo>(</mo> <mn>3</mn>  <mo>)</mo> </mrow>
         </mrow></math>";
-    test("es", "ClearSpeak", expr, "2 multiplicado por 3")?;
+    test("es", "ClearSpeak", expr, "2 por 3")?;
     return Ok(());
 
 }
@@ -260,7 +260,7 @@ fn times_preceding_paren() -> Result<()> {
         <mrow>  <mo>(</mo> <mn>2</mn>  <mo>)</mo> </mrow>
         <mn>3</mn>
         </mrow></math>";
-    test("es", "ClearSpeak", expr, "2 multiplicado por 3")?;
+    test("es", "ClearSpeak", expr, "2 por 3")?;
     return Ok(());
 
 }
@@ -273,7 +273,7 @@ fn times_sqrt() -> Result<()> {
         <mo>=</mo>
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
-    test("es", "ClearSpeak", expr, "la raíz cuadrada de a; multiplicado por, la raíz cuadrada de b; es igual a, la raíz cuadrada de a b")?;
+    test("es", "ClearSpeak", expr, "la raíz cuadrada de a; por la raíz cuadrada de b; es igual a, la raíz cuadrada de a b")?;
     return Ok(());
 
 }
@@ -292,7 +292,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr,
-        "abrir paréntesis, 2 multiplicado por x, cerrar paréntesis al cuadrado")?;
+        "abrir paréntesis, 2 por x, cerrar paréntesis al cuadrado")?;
         return Ok(());
 
 }
@@ -300,7 +300,7 @@ fn more_implied_times() -> Result<()> {
 #[test]
 fn explicit_times_more_implied_times() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mi>x</mi></mrow></mrow></math>";
-    test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr, "t multiplicado por x")?;
+    test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr, "t por x")?;
     return Ok(());
 
 }
@@ -353,7 +353,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mo>)</mo></mrow>
         <mi>x</mi>
         </mrow></math>";
-        test("es", "ClearSpeak", expr, "25 multiplicado por x")?;
+        test("es", "ClearSpeak", expr, "25 por x")?;
         return Ok(());
 
     }

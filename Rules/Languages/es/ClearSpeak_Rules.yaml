@@ -710,7 +710,10 @@
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
       then: [T: ""]
-      else: [T: "multiplicado por"]      # phrase(5 'times' 3 equals 15)
+      else_test:
+        if: "$Verbosity = 'Verbose'"
+        then: [T: "multiplicado por"]      # phrase(7 'multiplicado por' 5 es 35)
+        else: [T: "por"]      # phrase(7 'por' 5 es 35)
 
 - name: no-times
   tag: mo
@@ -749,7 +752,10 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - T: "multiplicado por"      # phrase(5 'times' 3 equals 15)
+  - test:
+      if: "$Verbosity = 'Verbose'"
+      then: [T: "multiplicado por"]      # phrase(7 'multiplicado por' 5 es 35)
+      else: [T: "por"]      # phrase(7 'por' 5 es 35)
 
 - name: no-say-parens
   tag: mrow

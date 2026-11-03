@@ -307,7 +307,7 @@ fn binomial() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "ClearSpeak", expr, "2 multiplicado por, 7 sobre 3")?;
+    test("es", "ClearSpeak", expr, "2 por 7 sobre 3")?;
     return Ok(());
 
 }

@@ -354,13 +354,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis al cuadrado, fin de exponente")?;
+       "e elevado al exponente, menos un medio por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis al cuadrado, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda, fin de exponente")?;
+       "e elevado al exponente, menos un medio por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda potencia, fin de exponente")?;
+       "e elevado al exponente, menos un medio por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda potencia, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis elevado a la potencia 2; fin de exponente")?;
+       "e elevado al exponente, menos un medio por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis elevado a la potencia 2; fin de exponente")?;
        return Ok(());
 
 }
