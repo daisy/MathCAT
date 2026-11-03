@@ -237,7 +237,7 @@
     "matrix": "function=matriz| la matriz",
     "determinant": "function=determinante| el determinante",
     "adjugate": "function=adjunta| la matriz adjunta",
-    "magnitude": "function=módulo| el módulo",
+    "magnitude": "function=norma| la norma",
     "norm": "function=; norma| norma| la norma; fin de la norma",
     "span": "function=espacio generado| el espacio generado",
     "unit-vector": "prefix=vector unitario",

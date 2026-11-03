@@ -109,3 +109,13 @@ fn not_gradient() -> Result<()> {
   return Ok(());
 
 }
+
+#[test]
+fn subscripted_double_bars() -> Result<()> {
+  // ‖f‖_p en LaTeX corriente, sin intent
+  let expr = "<math><msub><mrow><mo>‖</mo><mi>f</mi><mo>‖</mo></mrow><mi>p</mi></msub></math>";
+  test("es", "SimpleSpeak", expr, "la norma p de f")?;
+  let expr = "<math><mrow><mo>‖</mo><mi>v</mi><mo>‖</mo></mrow></math>";
+  test("es", "SimpleSpeak", expr, "la norma de v")?;
+  return Ok(());
+}

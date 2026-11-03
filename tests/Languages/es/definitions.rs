@@ -590,7 +590,7 @@ fn linear_algebra_tests() -> Result<()> {
         // ("matrix", "matrix of x"),
         ("determinant", "determinante de x"),
         ("adjugate", "la matriz adjunta de x"),
-        ("magnitude", "el módulo de x"),
+        ("magnitude", "la norma de x"),
         ("norm", "norma de x"),
         ("span", "el espacio generado de x"),
 
