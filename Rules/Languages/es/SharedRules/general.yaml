@@ -4,13 +4,31 @@
 - name: one-sided-limit
   # "x → 0⁻" se lee "x tiende a 0 por la izquierda"; "x → 0⁺", "x tiende a 0 por la derecha"
   tag: [say-super, msup, power]
-  match: "*[2][self::m:mo][.='-' or .='−' or .='+'] and ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf]"
+  match: "*[2][self::m:mo][.='-' or .='−' or .='+'] and ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
   replace:
   - x: "*[1]"
   - test:
       if: "*[2][.='+']"
       then: [T: "por la derecha"]      # phrase(x tiende a 0 'por la derecha')
       else: [T: "por la izquierda"]    # phrase(x tiende a 0 'por la izquierda')
+
+- name: limite-con-tilde
+  # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
+  tag: munder
+  variables: [Base: "translate(*[1], ' \u00A0\u2061', '')"]
+  match: "$Base='lím' or $Base='límsup' or $Base='líminf'"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "el"]
+  - test:
+    - if: "$Base='límsup'"
+      then: [T: "límite superior cuando"]
+    - else_if: "$Base='líminf'"
+      then: [T: "límite inferior cuando"]
+      else: [T: "límite cuando"]
+  - x: "*[2]"
+  - pause: short
 
 - name: pos-neg-number-sets
   tag: number-sets
@@ -321,7 +339,7 @@
 
 - name: sin
   tag: mi
-  match: ".='sin'"
+  match: ".='sin' or .='sen'"
   replace:
   - bookmark: "@id"
   - T: "seno"
@@ -373,7 +391,7 @@
 
 - name: sinh
   tag: mi
-  match: ".='sinh'"
+  match: ".='sinh' or .='senh'"
   replace:
   - bookmark: "@id"
   - test:

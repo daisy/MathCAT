@@ -666,3 +666,26 @@ fn coordinate_point() -> Result<()> {
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "el punto de coordenadas, 1 coma 2, fin del punto")?;
   return Ok(());
 }
+
+// pruebas propias del español: abreviaturas con tilde o en español
+#[test]
+fn limit_with_accent() -> Result<()> {
+  let expr = "<math><munder><mo>lím</mo><mrow><mi>x</mi><mo>→</mo><mn>0</mn></mrow></munder>
+                <mi>f</mi><mo>&#x2061;</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+  test("es", "ClearSpeak", expr, "el límite cuando x tiende a 0, de f de x")?;
+  let expr = "<math><munder><mi>lím</mi><mrow><mi>x</mi><mo>→</mo><msup><mn>0</mn><mo>+</mo></msup></mrow></munder>
+                <mfrac><mn>1</mn><mi>x</mi></mfrac></math>";
+  test("es", "ClearSpeak", expr, "el límite cuando x tiende a 0 por la derecha, de 1 partido por x")?;
+  return Ok(());
+}
+
+#[test]
+fn spanish_function_names() -> Result<()> {
+  let expr = "<math><mi>sen</mi><mo>&#x2061;</mo><mi>x</mi></math>";
+  test("es", "ClearSpeak", expr, "seno x")?;
+  let expr = "<math><msup><mi>sen</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mo>&#x2061;</mo><mi>x</mi></math>";
+  test("es", "ClearSpeak", expr, "seno inverso de x")?;
+  let expr = "<math><mi>senh</mi><mo>&#x2061;</mo><mi>x</mi></math>";
+  test("es", "ClearSpeak", expr, "seno hiperbólico de x")?;
+  return Ok(());
+}

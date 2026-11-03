@@ -1,5 +1,79 @@
 ---
 - include: "../../definitions.yaml"
+
+# ----------------  Nombres de funciones en español  ----------------
+# Redefinen las listas de Rules/definitions.yaml para que MathCAT reconozca
+# las abreviaturas en español (sen, tg, arcsen, máx, mín, lím…).
+- TrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "senh", "cotg", "ctg", "tgh", "cotgh",  # español
+    "cos", "cosec", "cosech", "cosh", "cot", "cotan", "cotanh", "coth", "csc", "csch",
+    "sec", "sech", "sin", "sinh", "tan", "tang", "tanh", "tg", "ln", "log", "lg"    
+  }
+
+- ClearSpeakTrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "cotg", "ctg", "cosec",  # español
+    "sin", "cos", "tan", "sec", "csc", "cot",
+    "log", "ln",
+    "tang", "tg", "lg",       # these aren't listed in the ClearSpeak, but they are equivalents
+  }
+
+- AdditionalFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig",  # español
+    # the arcXXX functions aren't really trig functions (they are inverse functions)
+    "arccos", "arccosec", "arccosech", "arccosh",
+    "arccot", "arccotan", "arccotanh", "arccoth",
+    "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
+    "arctan", "arctang", "arctanh",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
+    "gcd", "lcm",
+    "min", "max", "deg", "det", "rank", "rg", "sgn",
+    "dim", "hom", "ker", "tr", "rot", "div",
+    "Dim", "Hom", "Ker", "Tr",
+    "inf", "lim", "liminf", "limsup", "sup",
+    "injlim", "projlim", "inj lim", "proj lim",
+
+    # these come from the nemeth book (Rule XVII)
+    "arc",
+    "amp", "amplitude",
+    "antilog", "antilogarithm",
+    "argument",
+    "colog", "cologarithm",
+    "cosine",
+    "hyperbolic cosine",
+    "cotangent",
+    "hyperbolic cotangent",
+    "covers", "coversine",
+    "cosecant",
+    "hyperbolic cosecant",
+    "ctn",
+    "ctnh",
+    "determinant",
+    "erf", "error function",
+    "exponential",
+    "exsec", "exsecant",
+    "grad", "gradient",
+    "hav", "haversine",
+    "limit",
+    "upper limit",
+    "lower limit",
+    "natural logarithm",
+    "logarithm",
+    "maximum",
+    "minimum",
+    "real part",
+    "secant",
+    "hyperbolic secant",
+    "sine",
+    "hyperbolic sine",
+    "supremum",
+    "tangent",
+    "hyperbolic tangent",
+    "vers", "versine"
+  }
+
 # Lines starting with "#" are a comment
 # Each definition in this file is of the form
 # - name: { "...", "..." "..." }

@@ -296,7 +296,7 @@
         then: [T: "de"]                         	# 	(en: 'of', google translation)
  - "→":                                         	#  0x2192
      - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
         then: [T: "tiende a"]                   	# 	(en: 'approaches')
         else: [T: "flecha derecha"]             	# 	(en: 'right arrow', MathPlayer: 'flecha', google: 'flecha correcta')
  - "∂":                                         	#  0x2202

@@ -380,13 +380,13 @@
  - "↖": [T: "flecha hacia el noroeste"]                	#  0x2196	(en: 'north west arrow')
  - "↗":                                         	#  0x2197
     - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
         then: [T: "tiende por la izquierda a"] 	# 	(en: 'approaches from below')
         else: [T: "flecha hacia el nordeste"]          	# 	(en: 'north east arrow')
 
  - "↘":                                         	#  0x2198
     - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
         then: [T: "tiende por la derecha a"]  	# 	(en: 'approaches from above')
         else: [T: "flecha hacia el sudeste"]           	# 	(en: 'south east arrow')
 
