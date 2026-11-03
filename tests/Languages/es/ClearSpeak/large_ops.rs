@@ -64,7 +64,7 @@ fn sum() -> Result<()> {
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "la suma de a subíndice i")?;
+    test("es", "ClearSpeak", expr, "la suma de a sub i")?;
     return Ok(());
 
 }
@@ -104,7 +104,7 @@ fn product() -> Result<()> {
             <mo>∏</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "el producto de a subíndice i")?;
+    test("es", "ClearSpeak", expr, "el producto de a sub i")?;
     return Ok(());
 
 }
@@ -119,7 +119,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "la intersección desde i es igual a 1, hasta 10 de; mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la intersección desde i es igual a 1, hasta 10 de; mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "la intersección sobre mayúscula c de; mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la intersección sobre mayúscula c de; mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -144,7 +144,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("es", "ClearSpeak", expr, "la intersección de mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la intersección de mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -159,7 +159,7 @@ fn union_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "la unión desde i es igual a 1, hasta 10 de; mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la unión desde i es igual a 1, hasta 10 de; mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -173,7 +173,7 @@ fn union_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "ClearSpeak", expr, "la unión sobre mayúscula c de; mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la unión sobre mayúscula c de; mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -184,7 +184,7 @@ fn union() -> Result<()> {
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("es", "ClearSpeak", expr, "la unión de mayúscula s subíndice i")?;
+    test("es", "ClearSpeak", expr, "la unión de mayúscula s sub i")?;
     return Ok(());
 
 }
@@ -217,7 +217,7 @@ fn integral_under() -> Result<()> {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("es", "ClearSpeak", expr, "la integral sobre números reales de; f de x d x")?;
+    test("es", "ClearSpeak", expr, "la integral sobre los números reales de; f de x d x")?;
     return Ok(());
 
 }

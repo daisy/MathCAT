@@ -6,7 +6,7 @@ fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>
                 </math>";
-    test("es", "SimpleSpeak", expr, "números complejos")?;
+    test("es", "SimpleSpeak", expr, "los números complejos")?;
     return Ok(());
 
 }
@@ -16,7 +16,7 @@ fn natural() -> Result<()> {
     let expr = "<math>
                     <mi>ℕ</mi>
                 </math>";
-    test("es", "SimpleSpeak", expr, "números naturales")?;
+    test("es", "SimpleSpeak", expr, "los números naturales")?;
     return Ok(());
 
 }
@@ -26,7 +26,7 @@ fn rationals() -> Result<()> {
     let expr = "<math>
                     <mi>ℚ</mi>
                 </math>";
-    test("es", "SimpleSpeak", expr, "números racionales")?;
+    test("es", "SimpleSpeak", expr, "los números racionales")?;
     return Ok(());
 
 }
@@ -36,7 +36,7 @@ fn reals() -> Result<()> {
     let expr = "<math>
                     <mi>ℝ</mi>
                 </math>";
-    test("es", "SimpleSpeak", expr, "números reales")?;
+    test("es", "SimpleSpeak", expr, "los números reales")?;
     return Ok(());
 
 }
@@ -46,7 +46,7 @@ fn integers() -> Result<()> {
     let expr = "<math>
                     <mi>ℤ</mi>
                 </math>";
-    test("es", "SimpleSpeak", expr, "enteros")?;
+    test("es", "SimpleSpeak", expr, "los enteros")?;
     return Ok(());
 
 }
@@ -225,7 +225,7 @@ fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("es", "SimpleSpeak", expr, "3 más 2 i, no es un elemento de, números reales")?;
+    test("es", "SimpleSpeak", expr, "3 más 2 i, no pertenece a los números reales")?;
     return Ok(());
 
 }
@@ -243,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("es", "SimpleSpeak", expr,
-                    "la suma sobre i es un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
+                    "la suma sobre i pertenece a los enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
                     return Ok(());
 
 }
@@ -263,7 +263,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("es", "SimpleSpeak", expr, "el conjunto de todos los x un elemento de enteros tal que 2 es menor que x es menor que 7")?;
+    test("es", "SimpleSpeak", expr, "el conjunto de todos los x perteneciente a los enteros tal que 2 es menor que x es menor que 7")?;
     return Ok(());
 
 }
@@ -279,7 +279,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("es", "SimpleSpeak", expr, 
-            "el conjunto de todos los x un elemento de números naturales tal que x es un número par")?;
+            "el conjunto de todos los x perteneciente a, los números naturales tal que x es un número par")?;
             return Ok(());
 
 }

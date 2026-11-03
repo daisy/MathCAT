@@ -6,7 +6,7 @@ fn complex() -> Result<()> {
     let expr = "<math>
                     <mi>ℂ</mi>
                 </math>";
-    test("es", "ClearSpeak", expr, "números complejos")?;
+    test("es", "ClearSpeak", expr, "los números complejos")?;
     return Ok(());
 
 }
@@ -16,7 +16,7 @@ fn natural() -> Result<()> {
     let expr = "<math>
                     <mi>ℕ</mi>
                 </math>";
-    test("es", "ClearSpeak", expr, "números naturales")?;
+    test("es", "ClearSpeak", expr, "los números naturales")?;
     return Ok(());
 
 }
@@ -26,7 +26,7 @@ fn rationals() -> Result<()> {
     let expr = "<math>
                     <mi>ℚ</mi>
                 </math>";
-    test("es", "ClearSpeak", expr, "números racionales")?;
+    test("es", "ClearSpeak", expr, "los números racionales")?;
     return Ok(());
 
 }
@@ -36,7 +36,7 @@ fn reals() -> Result<()> {
     let expr = "<math>
                     <mi>ℝ</mi>
                 </math>";
-    test("es", "ClearSpeak", expr, "números reales")?;
+    test("es", "ClearSpeak", expr, "los números reales")?;
     return Ok(());
 
 }
@@ -46,7 +46,7 @@ fn integers() -> Result<()> {
     let expr = "<math>
                     <mi>ℤ</mi>
                 </math>";
-    test("es", "ClearSpeak", expr, "enteros")?;
+    test("es", "ClearSpeak", expr, "los enteros")?;
     return Ok(());
 
 }
@@ -225,7 +225,7 @@ fn element_alone() -> Result<()> {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("es", "ClearSpeak", expr, "3 más 2 i, no es miembro de números reales")?;
+    test("es", "ClearSpeak", expr, "3 más 2 i, no pertenece a los números reales")?;
     return Ok(());
 
 }
@@ -243,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("es", "ClearSpeak", expr,
-                    "la suma sobre i es miembro de enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
+                    "la suma sobre i pertenece a los enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
                     return Ok(());
 
 }
@@ -263,7 +263,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("es", "ClearSpeak", expr, "el conjunto de todos los x en enteros tal que 2 es menor que x es menor que 7")?;
+    test("es", "ClearSpeak", expr, "el conjunto de todos los x en los enteros tal que 2 es menor que x es menor que 7")?;
     return Ok(());
 
 }
@@ -279,7 +279,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("es", "ClearSpeak", expr, 
-            "el conjunto de todos los x en números naturales tal que x es un número par")?;
+            "el conjunto de todos los x en los números naturales tal que x es un número par")?;
             return Ok(());
 
 }
@@ -299,7 +299,7 @@ fn set_with_bar_member() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "el conjunto de todos los x miembro de enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de todos los x miembro de los enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }
@@ -310,7 +310,7 @@ fn element_alone_member() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "3 más 2 i, no es miembro de números reales")?;
+                expr, "3 más 2 i, no es miembro de, los números reales")?;
                 return Ok(());
 
 }
@@ -328,7 +328,7 @@ fn element_under_sum_member() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "la suma sobre i es miembro de enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
+                expr, "la suma sobre i es miembro de los enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
                 return Ok(());
 
 }
@@ -348,7 +348,7 @@ fn set_with_bar_element() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "el conjunto de todos los x elemento de enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de todos los x elemento de los enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }
@@ -359,7 +359,7 @@ fn element_alone_element() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "3 más 2 i, no es un elemento de, números reales")?;
+                expr, "3 más 2 i, no es un elemento de, los números reales")?;
                 return Ok(());
 
 }
@@ -377,7 +377,7 @@ fn element_under_sum_element() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "la suma sobre i es un elemento de enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
+                expr, "la suma sobre i es un elemento de los enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
                 return Ok(());
 
 }
@@ -396,7 +396,7 @@ fn set_with_bar_in() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "el conjunto de todos los x en enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de todos los x en los enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }
@@ -407,7 +407,7 @@ fn element_alone_in() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 más 2 i, no está en números reales")?;
+                expr, "3 más 2 i, no está en los números reales")?;
                 return Ok(());
 
 }
@@ -425,7 +425,7 @@ fn element_under_sum_in() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "la suma sobre i está en enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
+                expr, "la suma sobre i está en los enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
                 return Ok(());
 
 }
@@ -444,7 +444,7 @@ fn set_with_bar_belongs() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "el conjunto de todos los x perteneciente a enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de todos los x perteneciente a los enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }
@@ -455,7 +455,7 @@ fn element_alone_belongs() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "3 más 2 i, no pertenece a números reales")?;
+                expr, "3 más 2 i, no pertenece a los números reales")?;
                 return Ok(());
 
 }
@@ -473,7 +473,7 @@ fn element_under_sum_belongs() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "la suma sobre i pertenece a enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
+                expr, "la suma sobre i pertenece a los enteros de; la fracción con numerador 1; y denominador i al cuadrado")?;
                 return Ok(());
 
 }
@@ -493,7 +493,7 @@ fn set_member_woall() -> Result<()> {
             <mo>}</mo>
             </math>";
             test_ClearSpeak_prefs("es", vec![("ClearSpeak_SetMemberSymbol", "Member"), ("ClearSpeak_Sets", "woAll")],
-                expr, "el conjunto de x miembro de enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de x miembro de los enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }

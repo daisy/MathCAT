@@ -142,7 +142,7 @@ fn tensor_mmultiscripts() -> Result<()> {
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
             "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
+            "mayúscula r con 4 índices, sub i superíndice j sub k sub l")?;
             return Ok(());
 
 }
@@ -193,7 +193,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k, elevado a i")?;
+    test("es", "ClearSpeak", expr, "x sub k, elevado a i")?;
     return Ok(());
 
 }
@@ -201,10 +201,10 @@ fn simple_msubsup() -> Result<()> {
 #[test]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("es", "SimpleSpeak", expr, "i subíndice j menos 2 fin de subíndice, elevado a k")?;
-  test("es", "ClearSpeak", expr, "i subíndice j menos 2 fin de subíndice, elevado a k")?;
+  test("es", "SimpleSpeak", expr, "i sub j menos 2 fin de sub, elevado a k")?;
+  test("es", "ClearSpeak", expr, "i sub j menos 2 fin de sub, elevado a k")?;
   test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "i subíndice j menos 2, elevado a k")?;
+          "i sub j menos 2, elevado a k")?;
           return Ok(());
 
 }
@@ -227,7 +227,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k, elevado a i")?;
+    test("es", "ClearSpeak", expr, "x sub k, elevado a i")?;
     return Ok(());
 
 }

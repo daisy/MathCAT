@@ -87,15 +87,15 @@
   - bookmark: "@id"
   - test:
     - if: ".='ℂ'"
-      then: [T: números complejos]
+      then: [T: "los números complejos"]
     - else_if: ".='ℕ'"
-      then: [T: números naturales]
+      then: [T: "los números naturales"]
     - else_if: ".='ℚ'"
-      then: [T: números racionales]
+      then: [T: "los números racionales"]
     - else_if: ".='ℝ'"
-      then: [T: números reales]
+      then: [T: "los números reales"]
     - else_if: ".='ℤ'"
-      then: [T: enteros]
+      then: [T: "los enteros"]
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
@@ -253,7 +253,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [T: "subíndice"]
-      else: [T: "subíndice"]
+      else: [T: "sub"]
   - x: "*[2]"
   - test:
       if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
@@ -261,7 +261,7 @@
       - test:
           if: "$Verbosity='Verbose'"
           then: [T: "fin de subíndice"]
-          else: [T: "fin de subíndice"]
+          else: [T: "fin de sub"]
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -879,7 +879,7 @@
       then: [T: "subíndice"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "subíndice"]
+        then: [T: "sub"]
   - x: "*[3]"
 
 - name: dimension-by
@@ -942,7 +942,7 @@
               then: [T: "subíndice"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndice"]
+                then: [T: "sub"]
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -967,7 +967,7 @@
                   then: [T: "subíndice"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndice"]
+                    then: [T: "sub"]
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -982,7 +982,7 @@
               then: [T: "subíndice"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndice"]
+                then: [T: "sub"]
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -1007,7 +1007,7 @@
                   then: [T: "subíndice"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndice"]
+                    then: [T: "sub"]
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -1032,7 +1032,7 @@
                       then: [T: "subíndice"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "subíndice"]
+                        then: [T: "sub"]
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -1057,7 +1057,7 @@
                           then: [T: "subíndice"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "subíndice"]
+                            then: [T: "sub"]
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:

@@ -756,7 +756,7 @@ fn general_concepts_tests() -> Result<()> {
         
         ("binomial-coefficient", "x sobre y"),
         ("embellished-name", "x con anotación y"),
-        ("indexed-by", "x subíndice y"),
+        ("indexed-by", "x sub y"),
         // ("translation", "translation by of x comma, y"), // "of" after "by" is awkward; needs dedicated rule or of-suppression
         ("constraint", "x con la restricción y"),
     ];

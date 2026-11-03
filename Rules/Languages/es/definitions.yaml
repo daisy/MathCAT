@@ -261,7 +261,7 @@
     "time-separator": "infix=",
     "fenced-group": "function=grupo delimitado",
     "ordered-pair": "function=el par ordenado: y",
-    "indexed-by": "infix= ; subíndice; fin de subíndice",
+    "indexed-by": "infix= ; sub| sub| subíndice; fin de sub| fin de sub| fin de subíndice",
     "highlight": "postfix=resaltado",
     "least-common-denominator": "function=mínimo común denominador| el mínimo común denominador",
     "rate": "infix=por",

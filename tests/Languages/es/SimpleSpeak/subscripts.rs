@@ -5,7 +5,7 @@ use anyhow::Result;
 fn msub_simple() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mn>1</mn> </msub> </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x 1")?;
-    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "x subíndice 1")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "x sub 1")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "x subíndice 1")?;
     return Ok(());
 
@@ -14,7 +14,7 @@ fn msub_simple() -> Result<()> {
 #[test]
 fn msub_not_simple() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mn>1.2</mn> </msub> </math>";
-    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x subíndice 12")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 12")?;
     return Ok(());
 
   }
@@ -22,7 +22,7 @@ fn msub_not_simple() -> Result<()> {
 #[test]
 fn msubsup_not_simple() -> Result<()> {
     let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x subíndice 12, al cubo")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 12, al cubo")?;
     return Ok(());
 
   }
@@ -30,7 +30,7 @@ fn msubsup_not_simple() -> Result<()> {
 #[test]
 fn msub_simple_mi() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mi>i</mi> </msub> </math>";
-    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x subíndice i")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub i")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "x subíndice i")?;
     return Ok(());
 

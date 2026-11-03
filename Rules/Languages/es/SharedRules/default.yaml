@@ -167,7 +167,7 @@
   match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
-  - T: "subíndice"               # phrase(x 'sub' 2)
+  - x: "IfThenElse($Verbosity='Verbose', 'subíndice', 'sub')"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -176,7 +176,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "subíndice"               # phrase(x 'sub' 2)
+  - x: "IfThenElse($Verbosity='Verbose', 'subíndice', 'sub')"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -189,7 +189,7 @@
   - x: "*[1]"
   - test:
       if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"  # just say "x 1" for terse vs "x sub 1"
-      then: [T: "subíndice"]      # phrase(x 'sub' 2)
+      then: [x: "IfThenElse($Verbosity='Verbose', 'subíndice', 'sub')"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
 
@@ -201,7 +201,7 @@
   - test:
       if: "name(.)='msubsup'"
       then:
-      - T: "subíndice"          # phrase(x 'sub' 2)
+      - x: "IfThenElse($Verbosity='Verbose', 'subíndice', 'sub')"          # phrase(x 'sub' 2)
       - x: "*[2]"
   - test:
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
@@ -340,7 +340,7 @@
       then:
       - with:
           variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subíndice', 'subíndice')"
+          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subíndice', 'sub')"
           - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'superíndice', 'superíndice')"
           replace:
           - test: # only bother announcing if there is more than one postscript

@@ -15,7 +15,7 @@ fn salt() -> Result<()> {
 fn water() -> Result<()> {
   let expr = "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula o")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula h, subíndice 2, mayúscula o")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula h, sub 2, mayúscula o")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "mayúscula h, subíndice 2, mayúscula o")?;
   return Ok(());
 
@@ -35,7 +35,7 @@ fn sulfate() -> Result<()> {
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "abrir corchetes, mayúscula s, mayúscula o, subíndice 4; cerrar corchetes superíndice 2 menos")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "abrir corchetes, mayúscula s, mayúscula o, sub 4; cerrar corchetes superíndice 2 menos")?;
   return Ok(());
 
 }
@@ -45,7 +45,7 @@ fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula a l, 2; abrir paréntesis, mayúscula s, mayúscula o, 4; cerrar paréntesis 3")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula a l, subíndice 2; se abren paréntesis; mayúscula s, mayúscula o, subíndice 4; se cierran paréntesis subíndice 3")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula a l, sub 2; se abren paréntesis; mayúscula s, mayúscula o, sub 4; se cierran paréntesis sub 3")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "mayúscula a l, subíndice 2; se abren paréntesis; mayúscula s, mayúscula o, subíndice 4; se cierran paréntesis subíndice 3")?;
   return Ok(());
 
@@ -86,7 +86,7 @@ fn dichlorine_hexoxide() -> Result<()> {
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], 
     expr, "abrir corchetes, mayúscula c l; mayúscula o, 2; cerrar corchetes más; abrir corchetes, mayúscula c l; mayúscula o, 4; cerrar corchetes menos")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-    expr, "abrir corchetes; mayúscula c l; mayúscula o, subíndice 2; cerrar corchetes superíndice más; abrir corchetes; mayúscula c l; mayúscula o, subíndice 4; cerrar corchetes superíndice menos")?;
+    expr, "abrir corchetes, mayúscula c l; mayúscula o, sub 2; cerrar corchetes superíndice más; abrir corchetes, mayúscula c l; mayúscula o, sub 4; cerrar corchetes superíndice menos")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
     expr, "abrir corchetes; mayúscula c l; mayúscula o, subíndice 2; cerrar corchetes superíndice más; abrir corchetes; mayúscula c l; mayúscula o, subíndice 4; cerrar corchetes superíndice menos")?;
                           return Ok(());
@@ -160,7 +160,7 @@ fn beta_decay() -> Result<()> {
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, sub 6, mayúscula c; reacciona para formar; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
@@ -426,7 +426,7 @@ fn mhchem_beta_decay() -> Result<()> {
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, sub 6, mayúscula c; reacciona para formar; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
@@ -491,7 +491,7 @@ fn mhchem_so4_2plus() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula s; mayúscula o, 4, 2 más")?;
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula s; mayúscula o, subíndice 4, superíndice 2 más")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula s; mayúscula o, sub 4, superíndice 2 más")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "mayúscula s; mayúscula o, subíndice 4, superíndice 2 más")?;
   return Ok(());
 

@@ -359,13 +359,13 @@
          then: [T: "el"]                        	# 	(en: 'the', google translation)
      - T: "incremento"                          	# 	(en: 'laplacian of')
  - "∈":                                          # 0x2208
+     # en español lo natural es "x pertenece a A"; ClearSpeak Auto también usa "pertenece a"
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test:
-            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
-            then: [T: "es"]      # 	(en: 'is')
-        - T: "un elemento de"      # 	(en: 'an element of')
+        then_test:
+            if: "ancestor::*[self::m:set]"
+            then: [T: "perteneciente a"]      # 	el conjunto de todos los x perteneciente a...
+            else: [T: "pertenece a"]      # 	(en: 'is an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -376,23 +376,23 @@
                 then: [T: "miembro de"]      # 	(en: 'member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "elemento de"]      # 	(en: 'element of')
-              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "pertenece a"]      # 	(en: 'is a member of')
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "es miembro de"]      # 	(en: 'is a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "es un elemento de"]      # 	(en: 'is an element of')
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "está en"]      # 	(en: 'is in')
-              - else: [T: "pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+              - else: [T: "está en"]      # $ClearSpeak_SetMemberSymbol = 'In'
  - "∉":                                          # 0x2209
+     # en español lo natural es "x pertenece a A"; ClearSpeak Auto también usa "pertenece a"
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test: 
-            if: "$Verbosity!='Terse'"
-            then: [T: "no es un elemento de"]      # 	(en: 'is not an element of')
-            else: [T: "no elemento de"]      # 	(en: 'not an element of')
+        then_test:
+            if: "ancestor::*[self::m:set]"
+            then: [T: "no perteneciente a"]      # 	el conjunto de todos los x perteneciente a...
+            else: [T: "no pertenece a"]      # 	(en: 'is not an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -403,23 +403,23 @@
                 then: [T: "no miembro de"]      # 	(en: 'not member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "no elemento de"]      # 	(en: 'not element of')
-              - else: [T: "no perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
+              - else: [T: "no perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "no pertenece a"]      # 	(en: 'is not a member of')
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "no es miembro de"]      # 	(en: 'is not a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "no es un elemento de"]      # 	(en: 'is not an element of')
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "no está en"]      # 	(en: 'is not in')
-              - else: [T: "no pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
+              - else: [T: "no está en"]      # $ClearSpeak_SetMemberSymbol = 'In'
  - "∊":                                          # 0x220a
+     # en español lo natural es "x pertenece a A"; ClearSpeak Auto también usa "pertenece a"
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test:
-            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
-            then: [T: "es"]      # 	(en: 'is')
-        - T: "un elemento de"      # 	(en: 'an element of')
+        then_test:
+            if: "ancestor::*[self::m:set]"
+            then: [T: "perteneciente a"]      # 	el conjunto de todos los x perteneciente a...
+            else: [T: "pertenece a"]      # 	(en: 'is an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
             if: "../../self::m:set or ../../../self::m:set" # inside a set
@@ -430,15 +430,15 @@
                 then: [T: "miembro de"]      # 	(en: 'member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "elemento de"]      # 	(en: 'element of')
-              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
+              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Belongs'
+                then: [T: "pertenece a"]      # 	(en: 'is a member of')
+              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "es miembro de"]      # 	(en: 'is a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "es un elemento de"]      # 	(en: 'is an element of')
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "está en"]      # 	(en: 'is in')
-              - else: [T: "pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+              - else: [T: "está en"]      # $ClearSpeak_SetMemberSymbol = 'In'
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
