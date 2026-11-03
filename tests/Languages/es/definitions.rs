@@ -208,9 +208,7 @@ fn prefix_test() -> Result<()> {
 }
 
 
-// REVISAR (inglés: polar): «coordenada polar de x coma, y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn functions_and_inverses_tests() -> Result<()> {
     let tests = vec![
         //("closed-interval", "closed interval between x and y"),
@@ -913,12 +911,7 @@ fn prefix_default_fixity_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: divide): «x divide a y»
-// REVISAR (inglés: divide): «x no divide a y»
-// REVISAR (distinto de): «x distinto de y»
-// REVISAR (inglés: tilde): «x tilde y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn infix_default_fixity_tests() -> Result<()> {
     let tests = vec![
         ("and", "x y y"),

@@ -32,31 +32,31 @@
   - pause: short
 
 - name: pos-neg-number-sets
+  # en español el adjetivo va después y concuerda: "los enteros negativos", "los números reales positivos"
   tag: number-sets
   match: "count(*)=2 and *[2][.='+' or .='-']"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then:
-      - T: "la"
-  - bookmark: "*[2]/@id"
-  - test:
-    - if: "*[2][.='+']"
-      then: [T: "positivo"]
-      else: [T: "negativo"]
+      then: [T: "los"]      # phrase('los' enteros positivos)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [T: números complejos]
+      then: [T: "números complejos"]
     - else_if: "*[1][.='ℕ']"
-      then: [T:  números naturales]
+      then: [T: "números naturales"]
     - else_if: "*[1][.='ℚ']"
-      then: [T: números racionales]
+      then: [T: "números racionales"]
     - else_if: "*[1][.='ℝ']"
-      then: [T: números reales]
+      then: [T: "números reales"]
     - else_if: "*[1][.='ℤ']"
-      then: [T: enteros]
+      then: [T: "enteros"]
       else: [x: "*[1][text()]"] # shouldn't happen
+  - bookmark: "*[2]/@id"
+  - test:
+    - if: "*[2][.='+']"
+      then: [T: "positivos"]      # phrase(los enteros 'positivos')
+      else: [T: "negativos"]      # phrase(los enteros 'negativos')
 
 - name: dimension-number-sets
 
@@ -1114,8 +1114,8 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [T: "enlace único"]
-    - else_if: ".='=' or .='::'"
+      then: [T: "enlace simple"]      # phrase(un 'enlace simple' entre dos átomos)
+    - else_if: ".='=' or .='∷'"
       then: [T: "doble enlace"]
     - else_if: ".='≡'"
       then: [T: "triple enlace"]
@@ -1139,14 +1139,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [T: "formas"]
-        else: [T: "da forma"]
+        then: [T: "forma"]      # phrase(hidrógeno y oxígeno 'forma' agua)
+        else: [T: "reacciona para formar"]      # phrase(hidrógeno y oxígeno 'reacciona para formar' agua)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
       then: [T: "está en equilibrio con"]
     - else_if: ".='🣓'" # U+1F8D3
-      then: [T: "equilibrado parcialmente hacia el lado izquierdo"]
+      then: [T: "está en equilibrio desplazado a la izquierda con"]
     - else_if: ".='🣒'" # U+1F8D2
-      then: [T: "equilibrado parcialmente hacia el lado derecho"]
+      then: [T: "está en equilibrio desplazado a la derecha con"]
       else: [x: "*"]
 
 - name: chemical-equation-operator

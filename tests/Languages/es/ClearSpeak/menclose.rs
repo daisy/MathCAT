@@ -1,9 +1,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: actuarial): «símbolo actuarial, que encierra 3 más 2 i fin de lo encerrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn menclose_actuarial() -> Result<()> {
     let expr = "<math>
                     <menclose notation='actuarial'>  <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi> </menclose>

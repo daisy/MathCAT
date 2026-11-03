@@ -126,7 +126,7 @@ fn msup_positive_integers() -> Result<()> {
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("es", "SimpleSpeak", expr, "la positivo enteros")?;
+    test("es", "SimpleSpeak", expr, "los enteros positivos")?;
     return Ok(());
 
 }
@@ -139,7 +139,7 @@ fn msup_negative_integers() -> Result<()> {
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("es", "SimpleSpeak", expr, "la negativo enteros")?;
+    test("es", "SimpleSpeak", expr, "los enteros negativos")?;
     return Ok(());
 
 }
@@ -152,7 +152,7 @@ fn msup_positive_rationals() -> Result<()> {
                     <mo>+</mo>
                 </msup>
             </math>";
-    test("es", "SimpleSpeak", expr, "la positivo números racionales")?;
+    test("es", "SimpleSpeak", expr, "los números racionales positivos")?;
     return Ok(());
 
 }
@@ -165,7 +165,7 @@ fn msup_negative_rationals() -> Result<()> {
                     <mo>-</mo>
                 </msup>
             </math>";
-    test("es", "SimpleSpeak", expr, "la negativo números racionales")?;
+    test("es", "SimpleSpeak", expr, "los números racionales negativos")?;
     return Ok(());
 
 }

@@ -45,9 +45,7 @@ fn prefix_sweep() -> Result<()> {
 
 }
 
-// REVISAR (inglés: candela candelas kelvin): «1 amperio, coma, 2 amperios, coma, 1 candela, coma, 2 candelas, coma, 1 grado kelvin, coma, 2 grados kelvin, coma, 1 grado kelvin, coma, 2 grados kelvin, coma, 1 gramo, coma, 2 gramos, coma, 1 metro, coma, 2 metros, coma, 1 mol coma, 2 moles, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn si_base() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">A</mi><mo>,</mo><mn>2</mn><mi intent=":unit">A</mi><mo>,</mo>
@@ -63,14 +61,12 @@ fn si_base() -> Result<()> {
         <mn>1</mn><mi intent=":unit">sec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">sec</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 amperio, coma, 2 amperios, coma, 1 candela, coma, 2 candelas, coma, 1 grado kelvin, coma, 2 grados kelvin, coma, 1 grado kelvin, coma, 2 grados kelvin, coma, 1 gramo, coma, 2 gramos, coma, 1 metro, coma, 2 metros, coma, 1 mol coma, 2 moles, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos")?;
+        "1 amperio, coma, 2 amperios, coma, 1 candela, coma, 2 candelas, coma, 1 kelvin, coma, 2 kelvin, coma, 1 kelvin, coma, 2 kelvin, coma, 1 gramo, coma, 2 gramos, coma, 1 metro, coma, 2 metros, coma, 1 mol coma, 2 moles, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos")?;
                 return Ok(());
 
 }
 
-// REVISAR (inglés: kelvin): «1 quettaamperio, coma; 2 ronnaamperios, coma; 1 yottacandela, coma; 2 zettacandelas, coma; 1 exagrado kelvin, coma; 2 petagrados kelvin, coma; 1 teragrado kelvin, coma; 2 gigagrados kelvin, coma, 1 megagramo, coma; 2 kilogramos, coma, 1 hectómetro, coma, 2 dekámetros, coma, 1 decimol, coma; 2 centimoles, coma; 1 milisegundo, coma; 2 microsegundos, coma; 1 nanosegundo, coma; 2 picosegundos»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn si_base_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QA</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RA</mi><mo>,</mo>
@@ -84,15 +80,13 @@ fn si_base_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">nsec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">psec</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quettaamperio, coma; 2 ronnaamperios, coma; 1 yottacandela, coma; 2 zettacandelas, coma; 1 exagrado kelvin, coma; 2 petagrados kelvin, coma; 1 teragrado kelvin, coma; 2 gigagrados kelvin, coma, 1 megagramo, coma; 2 kilogramos, coma, 1 hectómetro, coma, 2 dekámetros, coma, 1 decimol, coma; 2 centimoles, coma; 1 milisegundo, coma; 2 microsegundos, coma; 1 nanosegundo, coma; 2 picosegundos")?;
+        "1 quettaamperio, coma; 2 ronnaamperios, coma; 1 yottacandela, coma; 2 zettacandelas, coma, 1 exakelvin, coma; 2 petakelvin, coma; 1 terakelvin, coma; 2 gigakelvin, coma, 1 megagramo, coma; 2 kilogramos, coma, 1 hectómetro, coma, 2 decámetros, coma, 1 decimol, coma; 2 centimoles, coma; 1 milisegundo, coma; 2 microsegundos, coma; 1 nanosegundo, coma; 2 picosegundos")?;
                 return Ok(());
 
 }
 
 
-// REVISAR (inglés: becquerel celsius gray grays katal lumen lux): «1 becquerel, coma, 2 becquereles, coma, 1 culombio, coma, 2 culombios, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 faradio, coma, 2 faradios, coma, 1 gray, coma, 2 grays, coma, 1 henrio, coma, 2 henrios, coma, 1 hercio, coma, 2 hercios, coma, 1 julio, coma, 2 julios, coma, 1 katal, coma, 2 katales, coma, 1 lumen, coma, 2 lúmenes, coma, 1 lux coma, 2 luxs»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn si_derived_1() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">Bq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bq</mi><mo>,</mo>
@@ -114,9 +108,7 @@ fn si_derived_1() -> Result<()> {
 
 }
 
-// REVISAR (inglés: celsius): «1 quettabecquerel, coma; 2 ronnabecquereles, coma; 1 yottaculombio, coma; 2 zettaculombios, coma; 1 exafaradio, coma; 2 petafaradios, coma, 1 teragray, coma, 2 gigagrays, coma; 1 megahenrio, coma; 2 kilohenrios, coma; 1 decahercio, coma; 2 decihercios, coma; 1 centijulio, coma; 2 milijulios, coma; 1 microkatal, coma; 2 nanokatales, coma, 1 picolumen, coma; 2 femtolúmenes, coma, 1 attolux, coma, 2 zeptoluxs, coma; 1 miligrado Celsius, coma; 2 microgrados Celsius, coma; 1 picogrado Celsius, coma; 2 nanogrados Celsius»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn si_derived_1_with_prefixes() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">QBq</mi><mo>,</mo><mn>2</mn><mi intent=":unit">RBq</mi><mo>,</mo>
@@ -138,9 +130,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
 
 }
 
-// REVISAR (inglés: newton newtons pascal siemens sievert sieverts tesla teslas weber): «1 newton, coma, 2 newtons, coma, 1 ohmio, coma, 2 ohmios, coma, 1 ohmio, coma, 2 ohmios, coma, 1 pascal, coma, 2 pascales, coma, 1 siemens, coma, 2 siemens, coma, 1 sievert, coma, 2 sieverts, coma, 1 tesla, coma, 2 teslas, coma, 1 voltio, coma, 2 voltios, coma, 1 vatio, coma, 2 vatios, coma, 1 weber, coma, 2 weberes»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn si_derived_2() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">N</mi><mo>,</mo><mn>2</mn><mi intent=":unit">N</mi><mo>,</mo>
@@ -273,9 +263,7 @@ fn without_prefix_angles() -> Result<()> {
 
 }
 
-// REVISAR (inglés: parsec parsecs): «1 unidad astronómica, coma; 2 unidades astronómicas, coma, 1 año luz, coma, 2 años luz, coma, 1 parsec, coma, 2 parsecs, coma, 1 ángstrom, coma, 2 ángstroms, coma, 1 ángstrom, coma, 2 ángstroms, coma, 1 fermio, coma, 2 fermios»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn without_prefix_distance() -> Result<()> {
     let expr = r#"<math>
         <mn>1</mn><mi intent=":unit">au</mi><mo>,</mo><mn>2</mn><mi intent=":unit">au</mi><mo>,</mo>
@@ -416,13 +404,7 @@ fn metro() -> Result<()> {
                 <mn>2</mn><mi intent=":unit">mm</mi>
             </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 metro, coma, 2 metros, coma, \
-                1 gigámetro, coma, 2 gigámetros, coma, \
-                1 megámetro, coma, 2 megámetros, coma, \
-                1 kilómetro, coma, 2 kilómetros, coma, \
-                1 hectómetro, coma, 2 hectómetros, coma, \
-                1 dekámetro, coma, 2 dekámetros, coma, \
-                1 milímetro, coma, 2 milímetros")?;
+        "1 metro, coma, 2 metros, coma, 1 gigámetro, coma, 2 gigámetros, coma, 1 megámetro, coma, 2 megámetros, coma, 1 kilómetro, coma, 2 kilómetros, coma, 1 hectómetro, coma, 2 hectómetros, coma, 1 decámetro, coma, 2 decámetros, coma, 1 milímetro, coma, 2 milímetros")?;
                 return Ok(());
 
 }

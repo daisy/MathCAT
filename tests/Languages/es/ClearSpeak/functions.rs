@@ -157,9 +157,7 @@ fn normal_ln() -> Result<()> {
 }
 
     
-// REVISAR (inglés: natural): «logaritmo natural x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn simple_natural_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_ClearSpeak("es", "ClearSpeak_Log", "LnAsNaturalLog",expr,
@@ -169,9 +167,7 @@ fn simple_natural_log() -> Result<()> {
 }
 
     
-// REVISAR (inglés: natural): «el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn natural_log() -> Result<()> {
     let expr = "<math><mi>ln</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
     test_ClearSpeak("es", "ClearSpeak_Log", "LnAsNaturalLog",expr,

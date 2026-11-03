@@ -65,7 +65,7 @@ fn ethanol_bonds() -> Result<()> {
               <mi>H</mi>
           </mrow>
       </math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula c, mayúscula h, 3, enlace único mayúscula c, mayúscula h, 2, enlace único mayúscula o, mayúscula h")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula c, mayúscula h, 3, enlace simple mayúscula c, mayúscula h, 2, enlace simple mayúscula o, mayúscula h")?;
 
   return Ok(());
 
@@ -125,7 +125,7 @@ fn ethylene_with_colon_bond() -> Result<()> {
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c, como mayúscula c, mayúscula h, 2")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c; doble enlace mayúscula c, mayúscula h, 2")?;
   return Ok(());
 
 }
@@ -158,11 +158,11 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, mayúscula c; formas, 14, 7, mayúscula n; más 0, menos 1, e")?;
+      "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; da forma; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; da forma; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
 
 }
@@ -424,11 +424,11 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, mayúscula c; formas, 14, 7, mayúscula n; más 0, menos 1, e")?;
+      "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; da forma; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; da forma; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
 
 }
@@ -443,7 +443,7 @@ fn hcl_na_yields() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, mayúscula h, mayúscula c l; más 2 mayúscula n a; da forma; 2, mayúscula n a; mayúscula c l; más mayúscula h, subíndice 2")?;
+        "2, mayúscula h, mayúscula c l; más 2 mayúscula n a; reacciona para formar; 2, mayúscula n a; mayúscula c l; más mayúscula h, subíndice 2")?;
         return Ok(());
 
 }
@@ -582,7 +582,7 @@ fn mhchem_hcl_aq_etc() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, mayúscula h, mayúscula c l; acuoso; más, 2, mayúscula n a; sólido; formas; 2, mayúscula n a; mayúscula c l; acuoso; más, mayúscula h, 2; gaseoso")?;
+      expr, "2, mayúscula h, mayúscula c l; acuoso; más, 2, mayúscula n a; sólido; forma; 2, mayúscula n a; mayúscula c l; acuoso; más, mayúscula h, 2; gaseoso")?;
 
       return Ok(());
 

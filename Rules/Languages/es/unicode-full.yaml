@@ -162,7 +162,11 @@
  - "‸": [T: "signo de intercalación"]           	#  0x2038	(en: 'to the', google: 'hacia')
  - "‹": [T: "comillas izquierda"]               	#  0x2039	(en: 'single left pointing angle quote mark', MathPlayer: 'abre comillas', google: 'marque de cotización de ángulo de punta individual izquierdo')
  - "›": [T: "comillas derecha"]                 	#  0x203a	(en: 'single right pointing angle quote mark', MathPlayer: 'cierra comillas', google: 'marque de cita de ángulo de punta de la derecha única')
- - "‼": [T: "doble signo de exclamación"]       	#  0x203c	(en: 'double factorial', google: 'doble factorial')
+ - "‼":                                            # 0x203c
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "doble signo de exclamación"]      # 0x203c	(en: 'double exclamation point')
+        else: [T: "doble factorial"]              # 0x203c	(en: 'double factorial')
  - "⁄": [T: "barra de fracción"]                	#  0x2044	(en: 'divided by')
  - "⁅": [T: "corchete izquierdo"]	#  0x2045	(en: 'left square bracket with quill')
  - "⁆": [T: "corchete derecho"]	#  0x2046	(en: 'right square bracket with quill')

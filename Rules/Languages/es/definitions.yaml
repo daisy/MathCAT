@@ -432,7 +432,7 @@
     # base units
     "A": "amperio",
     "cd": "candela",
-    "K": "grado kelvin", "K": "grado kelvin", # U+212A
+    "K": "kelvin", "K": "kelvin", # U+212A
     "g": "gramo",
     "m": "metro",     # British spelling works for US also
     "mol": "mol",
@@ -526,7 +526,7 @@
 
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
-      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "dekámetro",
+      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
     "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
     #  conflicts: "fm": "femtómetro", "am": "attómetro",
     "zm": "zeptómetro", "ym": "yoctómetro", "rm": "rontómetro", "qm": "quectómetro",

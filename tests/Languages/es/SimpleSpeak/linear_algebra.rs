@@ -73,9 +73,7 @@ fn norm_non_simple() -> Result<()> {
 
 }
 
-// REVISAR (regla): «p regla de f»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn norm_subscripted() -> Result<()> {
   let expr = "  <math>
     <msub>
@@ -88,7 +86,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("es", "SimpleSpeak", expr, "p regla de f")?;
+  test("es", "SimpleSpeak", expr, "p norma de f")?;
   return Ok(());
 
 }

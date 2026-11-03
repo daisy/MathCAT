@@ -27,7 +27,7 @@
       then:
       - T: "la"
   - x: "*[2]"
-  - T: "regla"
+  - T: "norma"      # phrase(la 'norma' p de f)
   - test:
       if: "$Verbosity!='Terse'"
       then:

@@ -31,9 +31,7 @@ fn greek() -> Result<()> {
 
 }
 
-// REVISAR (inglés: ya): «mayúscula a coma, mayúscula ya»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn cap_cyrillic() -> Result<()> {
     let expr = "<math> <mi>А</mi><mo>,</mo><mi>Я</mi></math>";
     test("es", "SimpleSpeak", expr, "mayúscula a coma, mayúscula ya")?;
