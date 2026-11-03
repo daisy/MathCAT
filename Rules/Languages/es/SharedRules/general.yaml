@@ -674,6 +674,23 @@
       then: [T: "cov"]
       else: [T: "covarianza"]
 
+- name: max-min
+  # propia del español: "máx" y "mín" se leen enteros ("el máximo de a coma b"); el sintetizador diría "max"
+  tag: mi
+  match:
+  - "(.='max' or .='máx' or .='min' or .='mín') and"
+  - "(parent::m:apply-function or following-sibling::*[1][.='⁡'] or"
+  - " (not(preceding-sibling::*) and parent::*[self::m:munder or self::m:munderover or self::m:msub or self::m:msubsup or self::m:indexed-by]))"   # no "m sub min"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "el"]      # phrase('el' máximo de a coma b)
+  - test:
+      if: ".='max' or .='máx'"
+      then: [T: "máximo"]      # phrase(el 'máximo' de a coma b)
+      else: [T: "mínimo"]      # phrase(el 'mínimo' de a coma b)
+
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7
   tag: ratio

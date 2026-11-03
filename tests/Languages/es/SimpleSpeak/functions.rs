@@ -469,3 +469,12 @@ fn arc_trig_babel_split() -> Result<()> {
                 expr, "arcotangente; abrir paréntesis, x más 1, cerrar paréntesis")?;
     return Ok(());
 }
+
+#[test]
+fn max_min_spanish() -> Result<()> {
+    let expr = "<math><mi>máx</mi><mo>(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>)</mo></math>";
+    test("es", "SimpleSpeak", expr, "el máximo de, abrir paréntesis, a coma, b, cerrar paréntesis")?;
+    let expr = "<math><msub><mi>m</mi><mi>mín</mi></msub></math>";
+    test("es", "SimpleSpeak", expr, "m sub mín fin de sub")?;
+    return Ok(());
+}
