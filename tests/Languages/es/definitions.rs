@@ -37,9 +37,7 @@ fn my_set_basic() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: of set): «set of reals»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn fixed_test() -> Result<()> {
     let expr = r#"
       <math>
@@ -48,13 +46,11 @@ fn fixed_test() -> Result<()> {
       </math>
     "#;
 
-    test("es", "ClearSpeak", expr, "set of reals")?;
+    test("es", "ClearSpeak", expr, "el conjunto de los números reales")?;
     Ok(())
 }
 
-// REVISAR (inglés: imaginary): «imaginary i»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn i_test() -> Result<()> {
     let expr = r#"
       <math>
@@ -63,7 +59,7 @@ fn i_test() -> Result<()> {
       </math>
     "#;
 
-    test("es", "ClearSpeak", expr, "imaginary i")?;
+    test("es", "ClearSpeak", expr, "i")?;
     Ok(())
 }
 
@@ -113,7 +109,7 @@ fn set_difference_basic() -> Result<()> {
       </math>
     "#;
 
-    test( "es", "ClearSpeak", expr, "diferencia de mayúscula a coma, mayúscula b")?;
+    test( "es", "ClearSpeak", expr, "diferencia de mayúscula a y mayúscula b")?;
 
     Ok(())
 }
@@ -231,9 +227,9 @@ fn functions_and_inverses_tests() -> Result<()> {
 
         //("fraction", "fraction x over y end fraction"),
         ("mixed-fraction", "x y y"),
-        ("quotient", "parte entera de x coma, y"),
+        ("quotient", "parte entera de x dividido por y"),
         ("evaluated-at", "x evaluado en y"),
-        ("remainder", "el resto de x coma, y"),
+        ("remainder", "el resto de x dividido por y"),
 
         ("max", "el máximo de x coma, y coma, z"),
         ("min", "el mínimo de x coma, y coma, z"),
@@ -428,7 +424,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "la suma de i coma, x",
+            "la suma sobre i de x",
         ),
         (
             "sum-3",
@@ -440,7 +436,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "la suma de i coma, n coma, x",
+            "la suma desde i hasta n de x",
         ),
         (
             "product-1",
@@ -461,7 +457,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "el producto de i coma, x",
+            "el producto sobre i de x",
         ),
         (
             "product-3",
@@ -473,7 +469,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "el producto de i coma, n coma, x",
+            "el producto desde i hasta n de x",
         ),
     ];
 
@@ -643,22 +639,15 @@ fn linear_algebra_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: integers of set): «set of integers»
-// REVISAR (inglés: of set): «set of reals»
-// REVISAR (inglés: of set): «set of rationals»
-// REVISAR (inglés: natural numbers of set): «set of natural numbers»
-// REVISAR (inglés: complex numbers of set): «set of complex numbers»
-// REVISAR (inglés: of set): «set of primes»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nofix_set_tests() -> Result<()> {
     let tests = vec![
-        ("set-of-integers", "ℤ", "set of integers"),
-        ("set-of-reals", "ℝ", "set of reals"),
-        ("set-of-rationals", "ℚ", "set of rationals"),
-        ("set-of-natural-numbers", "ℕ", "set of natural numbers"),
-        ("set-of-complex-numbers", "ℂ", "set of complex numbers"),
-        ("set-of-primes", "ℙ", "set of primes"),
+        ("set-of-integers", "ℤ", "el conjunto de los números enteros"),
+        ("set-of-reals", "ℝ", "el conjunto de los números reales"),
+        ("set-of-rationals", "ℚ", "el conjunto de los números racionales"),
+        ("set-of-natural-numbers", "ℕ", "el conjunto de los números naturales"),
+        ("set-of-complex-numbers", "ℂ", "el conjunto de los números complejos"),
+        ("set-of-primes", "ℙ", "el conjunto de los números primos"),
     ];
 
     for (intent, symbol, expected) in tests {
@@ -1044,27 +1033,18 @@ fn postfix_default_fixity_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: diameter): «diameter»
-// REVISAR (inglés: distance): «distance»
-// REVISAR (inglés: probability): «probability»
-// REVISAR (inglés: radius): «radius»
-// REVISAR (inglés: volume): «volume»
-// REVISAR (inglés: exponential): «exponential e»
-// REVISAR (inglés: imaginary): «imaginary i»
-// REVISAR (inglés: golden ratio): «golden ratio»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn nofix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("diameter", "d", "diameter"),
-        ("distance", "D", "distance"),
-        ("probability", "P", "probability"),
-        ("radius", "r", "radius"),
-        ("volume", "V", "volume"),
-        ("exponential-e", "e", "exponential e"),
-        ("imaginary-i", "i", "imaginary i"),
-        ("differential-d", "d", "differential d"),
-        ("golden-ratio", "φ", "golden ratio"),
+        ("diameter", "d", "diámetro"),
+        ("distance", "D", "distancia"),
+        ("probability", "P", "probabilidad"),
+        ("radius", "r", "radio"),
+        ("volume", "V", "volumen"),
+        ("exponential-e", "e", "e"),
+        ("imaginary-i", "i", "i"),
+        ("differential-d", "d", "d"),
+        ("golden-ratio", "φ", "número áureo"),
     ];
 
     for (intent, symbol, expected) in tests {

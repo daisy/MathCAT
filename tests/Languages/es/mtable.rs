@@ -14,7 +14,7 @@ fn matrix_1x1() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 1 por 1 con acceso 3")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 1 con acceso columna 1; 3")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 1 con acceso 3")?;
     return Ok(());
 
 }
@@ -32,7 +32,7 @@ fn determinant_1x1() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "el determinante 1 por 1 con acceso 3")?;
-    test("es", "SimpleSpeak", expr, "el determinante 1 por 1 con acceso columna 1; 3")?;
+    test("es", "SimpleSpeak", expr, "el determinante 1 por 1 con acceso 3")?;
     return Ok(());
 
 }
@@ -58,7 +58,7 @@ fn matrix_1x2() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 1 por 2 fila; 3, 5")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 2 fila; columna 1; 3; columna 2; 5")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 2 fila; columna 1; 3, columna 2; 5")?;
     return Ok(());
 
 }
@@ -87,7 +87,7 @@ fn matrix_1x3() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak", expr, "la matriz 1 por 3 fila; menos x, 5, 12")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; menos x; columna 2; 5; columna 3; 12")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; menos x, columna 2; 5, columna 3; 12")?;
     return Ok(());
 
 }
@@ -117,7 +117,7 @@ fn matrix_2x1_not_simple() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak", expr, "la matriz 2 por 1 columna; fila 1; x más 1; fila 2; x menos 1")?;
-    test("es", "SimpleSpeak", expr, "la matriz 2 por 1 columna; columna 1; x más 1; columna 1; x menos 1")?;
+    test("es", "SimpleSpeak", expr, "la matriz 2 por 1 columna; fila 1; x más 1; fila 2; x menos 1")?;
     return Ok(());
 
 }
@@ -155,7 +155,7 @@ fn matrix_3x1_not_simple() -> Result<()> {
         </mtable>
       <mo>)</mo></mrow></mrow>
     </math>";
-    test("es", "SimpleSpeak", expr, "la matriz 3 por 1 columna; columna 1; x; columna 1; a; columna 1; fracción, x partido por, x más 1, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "la matriz 3 por 1 columna; fila 1; x; fila 2; a; fila 3; fracción, x partido por, x más 1, fin de fracción")?;
     test("es", "ClearSpeak",  expr, "la matriz 3 por 1 columna; fila 1; x; fila 2; a; fila 3; la fracción con numerador x; y denominador x más 1")?;
             return Ok(());
 
@@ -188,7 +188,7 @@ fn determinant_2x2() -> Result<()> {
       <mo>|</mo></mrow></mrow>
                         </math>";
     test("es", "ClearSpeak",  expr, "el determinante 2 por 2; fila 1; 2, 1; fila 2; 7, 5")?;
-    test("es", "SimpleSpeak", expr, "el determinante 2 por 2; columna 1; 2; columna 2; 1; columna 1; 7; columna 2; 5")?;
+    test("es", "SimpleSpeak", expr, "el determinante 2 por 2; fila 1; columna 1; 2, columna 2; 1; fila 2; columna 1; 7, columna 2; 5")?;
     return Ok(());
 
 }
@@ -227,7 +227,7 @@ fn matrix_2x3() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 2 por 3; fila 1; 3, 1, 4; fila 2; 0, 2, 6")?;
-    test("es", "SimpleSpeak", expr, "la matriz 2 por 3; columna 1; 3; columna 2; 1; columna 3; 4; columna 1; 0; columna 2; 2; columna 3; 6")?;
+    test("es", "SimpleSpeak", expr, "la matriz 2 por 3; fila 1; columna 1; 3, columna 2; 1, columna 3; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
     return Ok(());
 
 }
@@ -266,7 +266,7 @@ fn augmented_matrix_2x3() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 2 por 3; fila 1; 3, 1, 4; fila 2; 0, 2, 6")?;
-    test("es", "SimpleSpeak", expr, "la matriz 2 por 3; columna 1; 3; columna 2; 1; columna 3; 4; columna 1; 0; columna 2; 2; columna 3; 6")?;
+    test("es", "SimpleSpeak", expr, "la matriz 2 por 3; fila 1; columna 1; 3, columna 2; 1, separador, columna 3; 4; fila 2; columna 1; 0, columna 2; 2, separador, columna 3; 6")?;
     Ok(())
 }
 
@@ -281,7 +281,7 @@ fn dashed_augmented_matrix_separator() -> Result<()> {
       <mo>]</mo></mrow>
     </math>";
     test("es", "ClearSpeak", expr, "la matriz 1 por 3 fila; 1, 2, 3")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; 1; columna 2; 2; columna 3; 3")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; 1, separador, columna 2; 2, separador, columna 3; 3")?;
     Ok(())
 }
 
@@ -304,7 +304,7 @@ fn matrix_row_separator() -> Result<()> {
       <mo>]</mo></mrow>
     </math>";
     test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4")?;
-    test("es", "SimpleSpeak", expr, "la matriz 2 por 2; columna 1; 1; columna 2; 2; columna 1; 3; columna 2; 4")?;
+    test("es", "SimpleSpeak", expr, "la matriz 2 por 2; fila 1; columna 1; 1, columna 2; 2, separador de filas; fila 2; columna 1; 3, columna 2; 4")?;
     Ok(())
 }
 
@@ -327,7 +327,7 @@ fn matrix_row_and_column_separators() -> Result<()> {
       <mo>]</mo></mrow>
     </math>";
     test("es", "ClearSpeak", expr, "la matriz 2 por 2; fila 1; 1, 2; fila 2; 3, 4")?;
-    test("es", "SimpleSpeak", expr, "la matriz 2 por 2; columna 1; 1; columna 2; 2; columna 1; 3; columna 2; 4")?;
+    test("es", "SimpleSpeak", expr, "la matriz 2 por 2; fila 1; columna 1; 1, separador, columna 2; 2, separador de filas; fila 2; columna 1; 3, separador, columna 2; 4")?;
     Ok(())
 }
 
@@ -370,7 +370,7 @@ fn matrix_2x3_labeled() -> Result<()> {
     test("es", "ClearSpeak",  expr,
         "la matriz 2 por 3; fila 1 etiquetada (3.1); columna 2; 3, columna 3; 1, columna 4; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
     test("es", "SimpleSpeak", expr,
-        "la matriz 2 por 3; mlabeledtr de columna 0; (3.1); coma, columna 1; 3; coma, columna 2; 1; coma, columna 3; 4; columna 1; 0; columna 2; 2; columna 3; 6")?;
+        "la matriz 2 por 3; fila 1 con etiqueta (3.1); columna 1; 3, columna 2; 1, columna 3; 4; fila 2; columna 1; 0, columna 2; 2, columna 3; 6")?;
                                    return Ok(());
 
 }
@@ -401,7 +401,7 @@ fn matrix_3x1() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz columna 3 por 1 columna; 1; 2; 3")?;
-    test("es", "SimpleSpeak", expr, "la matriz columna 3 por 1 columna; columna 1; 1; columna 1; 2; columna 1; 3")?;
+    test("es", "SimpleSpeak", expr, "la matriz columna 3 por 1 columna; 1; 2; 3")?;
     return Ok(());
 
 }
@@ -438,7 +438,7 @@ fn matrix_4x1() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 4 por 1 columna; fila 1; 3; fila 2; 6; fila 3; 1; fila 4; 2")?;
-    test("es", "SimpleSpeak", expr, "la matriz 4 por 1 columna; columna 1; 3; columna 1; 6; columna 1; 1; columna 1; 2")?;
+    test("es", "SimpleSpeak", expr, "la matriz 4 por 1 columna; fila 1; 3; fila 2; 6; fila 3; 1; fila 4; 2")?;
     return Ok(());
 
 }
@@ -480,7 +480,7 @@ fn matrix_4x1_labeled() -> Result<()> {
     test("es", "ClearSpeak",  expr,
         "la matriz 4 por 1 columna; fila 1; 3; fila 2; 6; fila 3; 1; fila 4 etiquetada (3.1); 2")?;
     test("es", "SimpleSpeak", expr,
-        "la matriz 4 por 1 columna; columna 1; 3; columna 1; 6; columna 1; 1; mlabeledtr de columna 0; (3.1); coma, columna 1; 2")?;
+        "la matriz 4 por 1 columna; fila 1; 3; fila 2; 6; fila 3; 1; fila 4 con etiqueta (3.1); 2")?;
         return Ok(());
 
 }
@@ -511,7 +511,7 @@ fn matrix_1x4() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 1 por 4 fila; columna 1; 3, columna 2; 6, columna 3; 1, columna 4; 2")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 4 fila; columna 1; 3; columna 2; 6; columna 3; 1; columna 4; 2")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 4 fila; columna 1; 3, columna 2; 6, columna 3; 1, columna 4; 2")?;
     return Ok(());
 
 }
@@ -584,7 +584,7 @@ fn matrix_4x4() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak",  expr, "la matriz 4 por 4; fila 1; columna 1; 0, columna 2; 3, columna 3; 4, columna 4; 3; fila 2; columna 1; 2, columna 2; 1, columna 3; 0, columna 4; 9; fila 3; columna 1; 3, columna 2; 0, columna 3; 2, columna 4; 1; fila 4; columna 1; 6, columna 2; 2, columna 3; 9, columna 4; 0")?;
-    test("es", "SimpleSpeak", expr, "la matriz 4 por 4; columna 1; 0; columna 2; 3; columna 3; 4; columna 4; 3; columna 1; 2; columna 2; 1; columna 3; 0; columna 4; 9; columna 1; 3; columna 2; 0; columna 3; 2; columna 4; 1; columna 1; 6; columna 2; 2; columna 3; 9; columna 4; 0")?;
+    test("es", "SimpleSpeak", expr, "la matriz 4 por 4; fila 1; columna 1; 0, columna 2; 3, columna 3; 4, columna 4; 3; fila 2; columna 1; 2, columna 2; 1, columna 3; 0, columna 4; 9; fila 3; columna 1; 3, columna 2; 0, columna 3; 2, columna 4; 1; fila 4; columna 1; 6, columna 2; 2, columna 3; 9, columna 4; 0")?;
     return Ok(());
 }
 
@@ -633,7 +633,7 @@ fn matrix_4x2() -> Result<()> {
     </math>
       ";
     test("es", "ClearSpeak",  expr, "la matriz 4 por 2; fila 1; columna 1; 1, columna 2; 3; fila 2; columna 1; 4, columna 2; 2; fila 3; columna 1; 2, columna 2; 1; fila 4; columna 1; 0, columna 2; 5")?;
-    test("es", "SimpleSpeak", expr, "la matriz 4 por 2; columna 1; 1; columna 2; 3; columna 1; 4; columna 2; 2; columna 1; 2; columna 2; 1; columna 1; 0; columna 2; 5")?;
+    test("es", "SimpleSpeak", expr, "la matriz 4 por 2; fila 1; columna 1; 1, columna 2; 3; fila 2; columna 1; 4, columna 2; 2; fila 3; columna 1; 2, columna 2; 1; fila 4; columna 1; 0, columna 2; 5")?;
     return Ok(());
 }
 
@@ -764,7 +764,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1, columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1, columna 2; b subíndice 2 2")?;
+        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1; columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1; columna 2; b subíndice 2 2")?;
     return Ok(());
 }
 
@@ -849,7 +849,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "la matriz 2 por 2; fila 1; b subíndice 1 1, b subíndice 1 2; fila 2; b subíndice 2 1, b subíndice 2 2")?;
+        expr, "la matriz 2 por 2; fila 1; b subíndice 1 1; b subíndice 1 2; fila 2; b subíndice 2 1; b subíndice 2 2")?;
     return Ok(());
   }
 
@@ -934,7 +934,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1, columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1, columna 2; b subíndice 2 2; fin matriz")?;
+        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1; columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1; columna 2; b subíndice 2 2; fin matriz")?;
     return Ok(());
   }
 
@@ -969,7 +969,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndMatrix",
         expr, "la matriz 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, columna 4; menos 1; fin matriz")?;
     test("es", "SimpleSpeak",
-        expr, "la matriz 3 por 4; columna 1; 1; columna 2; 2; columna 3; menos 1; columna 4; 3; columna 1; menos 3; columna 2; 3; columna 3; menos 1; columna 4; 2; columna 1; 2; columna 2; 3; columna 3; 2; columna 4; menos 1; fin matriz")?;
+        expr, "la matriz 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, separador, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, separador, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, separador, columna 4; menos 1; fin matriz")?;
     Ok(())
   }
 
@@ -1054,7 +1054,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "Vector",
-        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1, columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1, columna 2; b subíndice 2 2")?;
+        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1; columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1; columna 2; b subíndice 2 2")?;
     return Ok(());
   }
 
@@ -1139,7 +1139,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndVector",
-        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1, columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1, columna 2; b subíndice 2 2; fin matriz")?;
+        expr, "la matriz 2 por 2; fila 1; columna 1; b subíndice 1 1; columna 2; b subíndice 1 2; fila 2; columna 1; b subíndice 2 1; columna 2; b subíndice 2 2; fin matriz")?;
   return Ok(());
 }
 
@@ -1157,14 +1157,12 @@ fn matrix_binomial() -> Result<()> {
   return Ok(());
 }
 
-// REVISAR (inglés: array): «array de columna 1; 3; coma, columna 1; 2»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn matrix_simple_table() -> Result<()> {
   let expr = "<math>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-  test("es", "ClearSpeak", expr, "array de columna 1; 3; coma, columna 1; 2")
+  test("es", "ClearSpeak", expr, "arreglo con 2 filas y 1 columna; fila 1; columna 1; 3; fila 2; columna 1; 2")
 }
 
 #[test]
@@ -1182,32 +1180,26 @@ fn mtable_prefix_op() -> Result<()>{
     Ok(())
 }
 
-// REVISAR (inglés: array): «, array de columna 1; 3; coma, columna 1; 2»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn mtable_blank_op() -> Result<()>{
     // When a table is prefixed with a blank operator, still assume array intent
     let expr = "<math>
         <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-    test("es", "ClearSpeak", expr, ", array de columna 1; 3; coma, columna 1; 2")
+    test("es", "ClearSpeak", expr, "; arreglo con 2 filas y 1 columna; fila 1; columna 1; 3; fila 2; columna 1; 2")
 }
 
 
 
-// REVISAR (inglés: array): «array de columna 1; 3; coma; columna 1; 2; columna 2; 4»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn mtable_colspan_table() -> Result<()>{
   let expr = "<math>
         <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
     </math>";
-  test("es", "ClearSpeak", expr, "array de columna 1; 3; coma; columna 1; 2; columna 2; 4")
+  test("es", "ClearSpeak", expr, "arreglo con 2 filas y 1 columna; fila 1; columna 1; 3; fila 2; columna 1; 2, columna 2; 4")
 }
 
-// REVISAR (inglés: array): «array de columna 1; a; columna 2; b; columna 3; c; coma; columna 1; d; columna 2; e»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn bug_mtable_rowspan_colspan() -> Result<()>{
   // Currently, the code correctly computes the number of rows and
   // columns, but it does not correctly compute the column number whnen
@@ -1225,13 +1217,10 @@ fn bug_mtable_rowspan_colspan() -> Result<()>{
         </mtable>
     </math>";
     test("es", "ClearSpeak", expr,
-	 "array de columna 1; a; columna 2; b; columna 3; c; coma; columna 1; d; columna 2; e")
+	 "arreglo con 2 filas y 3 columnas; fila 1; columna 1; a, columna 2; b, columna 3; c; fila 2; columna 1; d, columna 2; e")
 }
 
-// REVISAR (inglés: array): «array de columna 1; a; columna 2; b; coma; columna 1; c; columna 2; d»
-// REVISAR (inglés: array): «array de columna 1; a; columna 2; b; coma; columna 1; c; columna 2; d»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn mtable_array_no_comma_between_rows() -> Result<()> {
   // Issue #890: an unfenced table gets 'array' intent; its rows must not be separated by "comma"
   let expr = "<math display=\"inline\">
@@ -1247,9 +1236,9 @@ fn mtable_array_no_comma_between_rows() -> Result<()> {
       </mtable>
     </math>";
   test("es", "ClearSpeak", expr,
-    "array de columna 1; a; columna 2; b; coma; columna 1; c; columna 2; d")?;
+    "arreglo con 2 filas y 2 columnas; fila 1; columna 1; a, columna 2; b; fila 2; columna 1; c, columna 2; d")?;
   test("es", "SimpleSpeak", expr,
-    "array de columna 1; a; columna 2; b; coma; columna 1; c; columna 2; d")
+    "arreglo con 2 filas y 2 columnas; fila 1; columna 1; a, columna 2; b; fila 2; columna 1; c, columna 2; d")
 }
 
 
@@ -1261,7 +1250,7 @@ fn matrix_times() {
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
   let _ = test("es", "SimpleSpeak", expr,
-    "la matriz 2 por 2; columna 1; 1; columna 2; 2; columna 1; 3; columna 2; 4; por; la matriz 2 por 2; columna 1; a; columna 2; b; columna 1; c; columna 2; d");
+    "la matriz 2 por 2; fila 1; columna 1; 1, columna 2; 2; fila 2; columna 1; 3, columna 2; 4; por; la matriz 2 por 2; fila 1; columna 1; a, columna 2; b; fila 2; columna 1; c, columna 2; d");
 }
 
 #[test]
@@ -1314,7 +1303,7 @@ fn zero_matrix() -> Result<()> {
       <mo>]</mo>
   </math>";
   test("es", "SimpleSpeak", expr,
-    "la matriz 2 por 2; columna 1; 0; columna 2; 0; columna 1; 0; columna 2; 0")?;
+    "la matriz 2 por 2; fila 1; columna 1; 0, columna 2; 0; fila 2; columna 1; 0, columna 2; 0")?;
     return Ok(());
   }
 
@@ -1330,7 +1319,7 @@ fn identity_matrix() -> Result<()> {
       <mo>)</mo>
   </math>";
   test("es", "SimpleSpeak", expr,
-    "la matriz 3 por 3; columna 1; 1; columna 2; 0; columna 3; 0; columna 1; 0; columna 2; 1; columna 3; 0; columna 1; 0; columna 2; 0; columna 3; 1")?;
+    "la matriz 3 por 3; fila 1; columna 1; 1, columna 2; 0, columna 3; 0; fila 2; columna 1; 0, columna 2; 1, columna 3; 0; fila 3; columna 1; 0, columna 2; 0, columna 3; 1")?;
     return Ok(());
   }
 
@@ -1345,7 +1334,7 @@ fn identity_matrix_false_positive_negative_one() -> Result<()> {
       <mo>]</mo>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "la matriz 2 por 2; columna 1; 1; columna 2; 0; columna 1; 0; columna 2; menos 1")?;
+      expr, "la matriz 2 por 2; fila 1; columna 1; 1, columna 2; 0; fila 2; columna 1; 0, columna 2; menos 1")?;
   Ok(())
 }
 
@@ -1360,7 +1349,7 @@ fn identity_matrix_false_positive_zero_diagonal() -> Result<()> {
       <mo>]</mo>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "la matriz 2 por 2; columna 1; 1; columna 2; 0; columna 1; 0; columna 2; 0")?;
+      expr, "la matriz 2 por 2; fila 1; columna 1; 1, columna 2; 0; fila 2; columna 1; 0, columna 2; 0")?;
   Ok(())
 }
 
@@ -1376,7 +1365,7 @@ fn diagonal_matrix() -> Result<()> {
       <mo>)</mo>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "la matriz 3 por 3; columna 1; 2; columna 2; 0; columna 3; 0; columna 1; 0; columna 2; 1; columna 3; 0; columna 1; 0; columna 2; 0; columna 3; x al cuadrado")?;
+      expr, "la matriz 3 por 3; fila 1; columna 1; 2, columna 2; 0, columna 3; 0; fila 2; columna 1; 0, columna 2; 1, columna 3; 0; fila 3; columna 1; 0, columna 2; 0, columna 3; x al cuadrado")?;
   // test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
   //     expr, "the 3 by 3 diagonal matrix; row 1, column 1, 2; row 2, column 2, 1; row 3, column 3, x squared");
     return Ok(());

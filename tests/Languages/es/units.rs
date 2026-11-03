@@ -390,7 +390,7 @@ fn test_mtext_inference() -> Result<()> {
             <msub><mi>m</mi><mi>min</mi></msub>
             </math>"#;
         test("es", "SimpleSpeak", expr, 
-            "3 metros, coma, 1 kilómetro, coma, 3 metros, coma; 3 décimos faradios, coma, m subíndice min")?;
+            "3 metros, coma, 1 kilómetro, coma, 3 metros, coma; 3 décimos faradios, coma; m subíndice min fin de subíndice")?;
             return Ok(());
 
     }

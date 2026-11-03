@@ -3,7 +3,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: breve grave tilde): «a acento grave, b tilde, c breve, b ̌, c acento grave; más r con carón por encima de, más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t»
+// REVISAR (inglés: breve grave tilde): «a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn modified_vars() -> Result<()> {
@@ -23,7 +23,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("es", "SimpleSpeak", expr, 
-        "a acento grave, b tilde, c breve, b ̌, c acento grave; más r con carón por encima de, más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t")?;
+        "a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t")?;
             return Ok(());
 
 }
@@ -117,23 +117,20 @@ fn permutation_msubsup() -> Result<()> {
 
 }
 
-// REVISAR (inglés: subscript superscript): «mayúscula r con 4 adición, subscript i superscript j subscript k subscript l»
-// REVISAR (inglés: sub super): «mayúscula r con 4 adición, sub i super j sub k sub l»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 adición, subscript i superscript j subscript k subscript l")?;
+            "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "mayúscula r con 4 adición, sub i super j sub k sub l")?;
+            "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
             return Ok(());
 
 }
 
-// REVISAR (inglés: alternating and end none pre scripts subscript superscript): «mayúscula r con 4 secuencia, pre subscript mayúscula i, pre superscript mayúscula j una secuencia alternativa mayúscula k none mayúscula l none fin de la secuencia y con 5 adición, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts»
+// REVISAR (inglés: none): «mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn huge_num_mmultiscripts() -> Result<()> {
@@ -142,7 +139,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 secuencia, pre subscript mayúscula i, pre superscript mayúscula j una secuencia alternativa mayúscula k none mayúscula l none fin de la secuencia y con 5 adición, subscript i superscript j subscript k subscript l and alternating scripts m none end scripts")?;
+            "mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices")?;
             return Ok(());
 
 }
@@ -164,7 +161,7 @@ fn given() -> Result<()> {
 
 }
 
-// REVISAR (-th, inglés: th): «x subíndice k a la i-th potencia»
+// REVISAR (-th, inglés: th): «x subíndice k, a la i-th potencia»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn simple_msubsup() -> Result<()> {
@@ -181,7 +178,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k a la i-th potencia")?;
+    test("es", "ClearSpeak", expr, "x subíndice k, a la i-th potencia")?;
     return Ok(());
 
 }
@@ -201,7 +198,7 @@ fn non_simple_msubsup() -> Result<()> {
 
 }
 
-// REVISAR (-th, inglés: th): «x subíndice k a la i-th potencia»
+// REVISAR (-th, inglés: th): «x subíndice k, a la i-th potencia»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn presentation_mathml_in_semantics() -> Result<()> {
@@ -221,7 +218,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("es", "ClearSpeak", expr, "x subíndice k a la i-th potencia")?;
+    test("es", "ClearSpeak", expr, "x subíndice k, a la i-th potencia")?;
     return Ok(());
 
 }
