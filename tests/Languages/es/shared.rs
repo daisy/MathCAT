@@ -499,39 +499,31 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
 
 }
 
-// REVISAR (inglés: div of): «div of mayúscula f»
-// REVISAR (inglés: divergence of): «divergence of mayúscula f»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "div of mayúscula f")?;
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "div mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergencia de mayúscula f")?;
   return Ok(());
 
 }
 
-// REVISAR (inglés: curl of): «curl of mayúscula f»
-// REVISAR (inglés: curl of): «curl of mayúscula f»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn curl() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xD7;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "curl of mayúscula f")?;
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "curl of mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "rotacional mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "rotacional de mayúscula f")?;
   return Ok(());
 
 }
 
-// REVISAR (inglés: gradient of): «gradient of mayúscula f»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn gradient() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";          
   // may want to change this for another language
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "del mayúscula f")?;
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradient of mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "nabla mayúscula f")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "gradiente de mayúscula f")?;
   return Ok(());
 
 }
@@ -665,4 +657,12 @@ fn literal_intent_property_with_name() -> Result<()> {
   test("es", "SimpleSpeak", expr, "forced f, se abren paréntesis, x factorial, se cierran paréntesis")?;
   return Ok(());
 
+}
+
+#[test]
+fn coordinate_point() -> Result<()> {
+  let expr = r#"<math><mrow intent="coordinate(1,2)"><mn>1</mn><mn>2</mn></mrow></math>"#;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "punto, 1 coma 2")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "el punto de coordenadas, 1 coma 2, fin del punto")?;
+  return Ok(());
 }

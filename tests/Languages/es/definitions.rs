@@ -857,16 +857,12 @@ fn grouping_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: curl of): «curl of x»
-// REVISAR (inglés: div of): «div of x»
-// REVISAR (inglés: gradient of): «gradient of x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn function_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("curl", "curl of x"),
-        ("divergence", "div of x"),
-        ("gradient", "gradient of x"),
+        ("curl", "rotacional de x"),
+        ("divergence", "divergencia de x"),
+        ("gradient", "gradiente de x"),
         ("laplacian", "laplaciano de x"),
     ];
 
