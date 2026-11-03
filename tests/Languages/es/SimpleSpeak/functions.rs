@@ -458,3 +458,14 @@ fn arc_trig_names() -> Result<()> {
                 expr, "arcoseno x más arcotangente y, más arcoseno hiperbólico, z")?;
     return Ok(());
 }
+
+#[test]
+fn arc_trig_babel_split() -> Result<()> {
+    // babel en español escribe \arcsen como "arc\,sen" (parche temporal en general.yaml)
+    let expr = "<math><mrow><mi mathvariant='normal'>arc</mi><mspace width='0.167em'></mspace><mi mathvariant='normal'>sen</mi></mrow><mspace width='0.167em'></mspace><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "arcoseno de x")?;
+    let expr = "<math><mi>arc</mi><mspace width='0.167em'></mspace><mi>tg</mi><mspace width='0.167em'></mspace><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "arcotangente; abrir paréntesis, x más 1, cerrar paréntesis")?;
+    return Ok(());
+}

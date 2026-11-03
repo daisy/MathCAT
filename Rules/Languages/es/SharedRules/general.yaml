@@ -514,6 +514,62 @@
       else: [T: "cotangente hiperbólica"]
 
 # funciones trigonométricas inversas: "arcoseno de x" en vez de deletrear "arcsin"
+# PARCHE TEMPORAL (sacar cuando se arregle merge_arc_trig en src/canonicalize.rs):
+# babel en español escribe \arcsen como "arc\,sen" y MathCAT no une "arc" con el nombre
+# de la función cuando hay un espacio entre medio, así que llega como arc ⁡ sen y se lee
+# "arc de seno". Estas tres reglas lo leen como "arcoseno de x".
+- name: arc-trig-separado-aplicado
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡']"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]      # phrase(arcoseno 'de' x)
+  - pause: auto
+  - x: "*[3]"
+
+- name: arc-trig-separado-plano
+  tag: mrow
+  match: "count(*)=5 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and *[4][self::m:mo][.='⁡']"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[3][.='sen' or .='sin']"
+      then: [T: "arcoseno"]
+    - else_if: "*[3][.='cos']"
+      then: [T: "arcocoseno"]
+    - else_if: "*[3][.='tan' or .='tg']"
+      then: [T: "arcotangente"]
+    - else_if: "*[3][.='sec']"
+      then: [T: "arcosecante"]
+    - else_if: "*[3][.='csc' or .='cosec']"
+      then: [T: "arcocosecante"]
+    - else: [T: "arcocotangente"]
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]      # phrase(arcoseno 'de' x)
+  - pause: auto
+  - x: "*[5]"
+
+- name: arc-trig-separado
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[3][.='sen' or .='sin']"
+      then: [T: "arcoseno"]
+    - else_if: "*[3][.='cos']"
+      then: [T: "arcocoseno"]
+    - else_if: "*[3][.='tan' or .='tg']"
+      then: [T: "arcotangente"]
+    - else_if: "*[3][.='sec']"
+      then: [T: "arcosecante"]
+    - else_if: "*[3][.='csc' or .='cosec']"
+      then: [T: "arcocosecante"]
+    - else: [T: "arcocotangente"]
+
 - name: arcsin
   tag: mi
   match: ".='arcsin' or .='arcsen'"
