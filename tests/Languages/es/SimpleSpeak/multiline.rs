@@ -1,7 +1,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: if): «f de x es igual a; 3 casos; caso 1; negativo 1 if x; es menor que 0; caso 2; 0 if x, es igual a 0; caso 3; 1 if x, es mayor que 0»
+// REVISAR (inglés: if): «f de x es igual a; 3 casos; caso 1; menos 1 if x; es menor que 0; caso 2; 0 if x, es igual a 0; caso 3; 1 if x, es mayor que 0»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn case_1() -> Result<()> {
@@ -32,7 +32,7 @@ fn case_1() -> Result<()> {
             </mtable></mrow> </mrow></mrow>
         </math>
    ";
-    test("es", "SimpleSpeak", expr, "f de x es igual a; 3 casos; caso 1; negativo 1 if x; es menor que 0; caso 2; 0 if x, es igual a 0; caso 3; 1 if x, es mayor que 0")?;
+    test("es", "SimpleSpeak", expr, "f de x es igual a; 3 casos; caso 1; menos 1 if x; es menor que 0; caso 2; 0 if x, es igual a 0; caso 3; 1 if x, es mayor que 0")?;
     return Ok(());
 }
 

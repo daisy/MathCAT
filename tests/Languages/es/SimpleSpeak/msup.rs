@@ -93,7 +93,7 @@ fn negative_power() -> Result<()> {
                         <mrow> <mo>-</mo> <mn>2</mn> </mrow>
                     </msup>
                 </math>";
-    test("es", "SimpleSpeak", expr, "x a la negativo 2")?;
+    test("es", "SimpleSpeak", expr, "x a la menos 2")?;
     return Ok(());
 
 }
@@ -151,7 +151,7 @@ fn nested_squared_power_with_neg_coef() -> Result<()> {
     </msup>
     </mrow>
   </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a la negativo 2 x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a la menos 2 x al cuadrado potencia")?;
   return Ok(());
 
 }
@@ -187,7 +187,7 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("es", "SimpleSpeak", expr, "y elevado a la negativo 4 quintos cúbica potencia")?;
+  test("es", "SimpleSpeak", expr, "y elevado a la menos 4 quintos cúbica potencia")?;
   return Ok(());
 
 }
@@ -218,7 +218,7 @@ fn nested_number_times_squared() -> Result<()> {
 
 }
 
-// REVISAR (mitad): «e elevado a la negativo 1 mitad, x al cuadrado potencia»
+// REVISAR (mitad): «e elevado a la menos 1 mitad x al cuadrado potencia»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn nested_negative_number_times_squared() -> Result<()> {
@@ -239,7 +239,7 @@ fn nested_negative_number_times_squared() -> Result<()> {
     </msup>
     </mrow>
     </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a la negativo 1 mitad, x al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "e elevado a la menos 1 mitad x al cuadrado potencia")?;
   return Ok(());
 
 }
@@ -338,12 +338,12 @@ fn nested_end_exponent_neg_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos a la negativo 3, fin de la exponente")?;
+  test("es", "SimpleSpeak", expr, "t elevado a 4 quintos a la menos 3, fin de la exponente")?;
   return Ok(());
 
 }
 
-// REVISAR (mitad): «e elevado a la negativo 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia»
+// REVISAR (mitad): «e elevado a la menos 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn nested_complex_power() -> Result<()> {
@@ -373,7 +373,7 @@ fn nested_complex_power() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a la negativo 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia")?;
+  test("es", "SimpleSpeak", expr, "e elevado a la menos 1 mitad por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado potencia")?;
   return Ok(());
 
 }

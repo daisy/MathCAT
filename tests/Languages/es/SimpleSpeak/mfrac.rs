@@ -319,9 +319,7 @@ fn nested_simple_fractions() -> Result<()> {
 
 }
 
-// REVISAR (elegir): «2 por 7 elegir 3»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn>
@@ -329,14 +327,12 @@ fn binomial() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "SimpleSpeak", expr, "2 por 7 elegir 3")?;
+    test("es", "SimpleSpeak", expr, "2 por 7 sobre 3")?;
     return Ok(());
 
 }
 
-// REVISAR (elegir): «2 por, binomial n más 7 elegir 3»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_non_simple_top() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn>
@@ -344,14 +340,12 @@ fn binomial_non_simple_top() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "SimpleSpeak", expr, "2 por, binomial n más 7 elegir 3")?;
+    test("es", "SimpleSpeak", expr, "2 por, binomial n más 7 sobre 3")?;
     return Ok(());
 
 }
 
-// REVISAR (elegir, inglés: end): «2 por, 7 elegir k más 3 end binomial»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_non_simple_bottom() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn>
@@ -359,14 +353,12 @@ fn binomial_non_simple_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "SimpleSpeak", expr, "2 por, 7 elegir k más 3 end binomial")?;
+    test("es", "SimpleSpeak", expr, "2 por, 7 sobre k más 3 fin del binomial")?;
     return Ok(());
 
 }
 
-// REVISAR (elegir, inglés: end): «2 por, binomial n más 7 elegir k más 3 end binomial»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_non_simple_top_and_bottom() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn>
@@ -374,7 +366,7 @@ fn binomial_non_simple_top_and_bottom() -> Result<()> {
                     <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "SimpleSpeak", expr, "2 por, binomial n más 7 elegir k más 3 end binomial")?;
+    test("es", "SimpleSpeak", expr, "2 por, binomial n más 7 sobre k más 3 fin del binomial")?;
     return Ok(());
 
 }

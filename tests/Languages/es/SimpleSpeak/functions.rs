@@ -111,7 +111,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("es", "SimpleSpeak", expr, "el log base b, de x")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de x")?;
     return Ok(());
 
 }
@@ -119,7 +119,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el log base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
     return Ok(());
 
 }
@@ -297,7 +297,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mo>&#x2212;</mo><mn>2</mn></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "2 más negativo 2")?;
+        test("es", "SimpleSpeak", expr, "2 más menos 2")?;
         return Ok(());
 
     }
@@ -311,7 +311,7 @@ fn no_times_sqrt() -> Result<()> {
         <mo>)</mo></mrow>
         <mo>+</mo><mn>1</mn>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "negativo 2 x, más 1")?;
+        test("es", "SimpleSpeak", expr, "menos 2 x, más 1")?;
         return Ok(());
 
     }
@@ -411,7 +411,7 @@ fn parens_interval_closed_closed() -> Result<()> {
 
 }
 
-    // REVISAR (inglés: interval open): «el open interval de negativo infinito a d»
+    // REVISAR (inglés: interval open): «el open interval de menos infinito a d»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
     fn parens_interval_neg_infinity_open_open() -> Result<()> {
@@ -421,12 +421,12 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el open interval de negativo infinito a d")?;
+    "el open interval de menos infinito a d")?;
     return Ok(());
 
 }
 
-    // REVISAR (inglés: closed interval open): «el open closed interval de negativo infinito a d»
+    // REVISAR (inglés: closed interval open): «el open closed interval de menos infinito a d»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
     fn parens_interval_neg_infinity_open_closed() -> Result<()> {
@@ -436,7 +436,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>]</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el open closed interval de negativo infinito a d")?;
+    "el open closed interval de menos infinito a d")?;
     return Ok(());
 
 }

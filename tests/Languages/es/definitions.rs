@@ -3,10 +3,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: tuple): «tuple de x coma, y»
-// REVISAR (inglés: tuple): «tuple de x coma, y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn tuple_basic() -> Result<()> {
     // function 
     let expr = r#"
@@ -18,8 +15,8 @@ fn tuple_basic() -> Result<()> {
       </math>
     "#;
 
-    test("es", "ClearSpeak", expr, "tuple de x coma, y")?;
-    test("es", "SimpleSpeak", expr, "tuple de x coma, y")?;
+    test("es", "ClearSpeak", expr, "la tupla de x coma, y")?;
+    test("es", "SimpleSpeak", expr, "la tupla de x coma, y")?;
 
     return Ok(());
 }
@@ -71,9 +68,7 @@ fn i_test() -> Result<()> {
 }
 
 
-// REVISAR (inglés: floor): «floor de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn floor_basic() -> Result<()> {
     let expr = r#"
       <math>
@@ -83,17 +78,12 @@ fn floor_basic() -> Result<()> {
       </math>
     "#;
 
-    test("es", "ClearSpeak", expr, "floor de x")?;
+    test("es", "ClearSpeak", expr, "el piso de x")?;
 
     Ok(())
 }
 
-// REVISAR (inglés: ratio): «ratio de 6 coma, 3»
-// REVISAR (inglés: ratio): «ratio de 6 coma, 3»
-// REVISAR (inglés: ratio): «ratio de 6 coma, 3»
-// REVISAR (inglés: ratio): «ratio de 6 coma, 3»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn ratio_function_basic() -> Result<()> {
     let expr = r#"
       <math>
@@ -104,16 +94,14 @@ fn ratio_function_basic() -> Result<()> {
       </math>
     "#;
 
-    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "ratio de 6 coma, 3")?;
-    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "ratio de 6 coma, 3")?;
-    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "ratio de 6 coma, 3")?;
-    test("es", "ClearSpeak", expr, "ratio de 6 coma, 3")?;
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "6 es a 3")?;
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "6 es a 3")?;
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "6 es a 3")?;
+    test("es", "ClearSpeak", expr, "6 es a 3")?;
     Ok(())
 }
 
-// REVISAR (inglés: difference set): «set difference de mayúscula a coma, mayúscula b»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn set_difference_basic() -> Result<()> {
     let expr = r#"
       <math>
@@ -125,14 +113,12 @@ fn set_difference_basic() -> Result<()> {
       </math>
     "#;
 
-    test( "es", "ClearSpeak", expr, "set difference de mayúscula a coma, mayúscula b")?;
+    test( "es", "ClearSpeak", expr, "diferencia de mayúscula a coma, mayúscula b")?;
 
     Ok(())
 }
 
-// REVISAR (intercambiar): «x intercambiar»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn postfix_test() -> Result<()> {
     let tests = [
         (
@@ -143,7 +129,7 @@ fn postfix_test() -> Result<()> {
                 <mo>T</mo>
             </msup>
             "#,
-            "x intercambiar",
+            "x transpuesta",
         ),
         (
             "highlight",
@@ -152,7 +138,7 @@ fn postfix_test() -> Result<()> {
                 <mi arg="x">x</mi>
             </menclose>
             "#,
-            "highlight de x",
+            "x resaltado",
         ),
     ];
 
@@ -173,10 +159,7 @@ fn postfix_test() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: unit): «unit vector de x»
-// REVISAR (inglés: line segment): «line segment de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn prefix_test() -> Result<()> {
     // Prefix test limit, unit-vector, line-segment
     // Directed-line-segment, line, ray, arc
@@ -188,7 +171,7 @@ fn prefix_test() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "límite cuando x",
+            "el límite cuando x",
         ),
         (
             "unit-vector",
@@ -198,7 +181,7 @@ fn prefix_test() -> Result<()> {
                 <mo>^</mo>
             </mover>
             "#,
-            "unit vector de x",
+            "vector unitario x",
         ),
         (
             "line-segment",
@@ -208,7 +191,7 @@ fn prefix_test() -> Result<()> {
                 <mo>¯</mo>
             </mover>
             "#,
-            "line segment de x",
+            "segmento x",
         ),
     ];
 
@@ -229,26 +212,9 @@ fn prefix_test() -> Result<()> {
 }
 
 
-// REVISAR (inglés: inverse): «inverse de x»
-// REVISAR (inglés: domain): «domain de x»
-// REVISAR (inglés: codomain): «codomain de x»
-// REVISAR (inglés: image): «image de x»
-// REVISAR (inglés: fraction): «mixed fraction de x coma, y»
-// REVISAR (inglés: at evaluated): «evaluated at de x coma, y»
-// REVISAR (inglés: remainder): «remainder de x coma, y»
 // REVISAR (-th, inglés: th): «x a la y-th potencia»
-// REVISAR (inglés: common): «greatest common divisor de x coma, y coma, z»
-// REVISAR (inglés: common least): «least common multiple de x coma, y coma, z»
 // REVISAR (inglés: absolute value): «el absolute value de x»
-// REVISAR (inglés: complex conjugate): «complex conjugate de x»
-// REVISAR (inglés: arg complex): «complex arg de x»
-// REVISAR (inglés: coordinate polar): «polar coordinate de x coma, y»
-// REVISAR (inglés: coordinate spherical): «spherical coordinate de x coma, y coma, z»
-// REVISAR (inglés: cartesian coordinate): «cartesian coordinate de x coma, y coma, z»
-// REVISAR (inglés: coordinate): «coordinate de x coma, y coma, z»
-// REVISAR (inglés: floor): «floor de x»
-// REVISAR (inglés: ceiling): «ceiling de x»
-// REVISAR (inglés: fractional part): «fractional part de x»
+// REVISAR (inglés: polar): «coordenada polar de x coma, y»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn functions_and_inverses_tests() -> Result<()> {
@@ -258,44 +224,44 @@ fn functions_and_inverses_tests() -> Result<()> {
         //("open-closed-interval", "interval between x and y included"),
         //("open-interval", "open interval between x and y"),
 
-        ("inverse", "inverse de x"),
-        ("domain", "domain de x"),
-        ("codomain", "codomain de x"),
-        ("image", "image de x"),
+        ("inverse", "inversa de x"),
+        ("domain", "el dominio de x"),
+        ("codomain", "el codominio de x"),
+        ("image", "la imagen de x"),
 
         //("fraction", "fraction x over y end fraction"),
-        ("mixed-fraction", "mixed fraction de x coma, y"),
-        ("quotient", "quotient de x coma, y"),
-        ("evaluated-at", "evaluated at de x coma, y"),
-        ("remainder", "remainder de x coma, y"),
+        ("mixed-fraction", "x y y"),
+        ("quotient", "parte entera de x coma, y"),
+        ("evaluated-at", "x evaluado en y"),
+        ("remainder", "el resto de x coma, y"),
 
-        ("max", "max de x coma, y coma, z"),
-        ("min", "min de x coma, y coma, z"),
+        ("max", "el máximo de x coma, y coma, z"),
+        ("min", "el mínimo de x coma, y coma, z"),
 
         ("power", "x a la y-th potencia"),
 
         // ("root", ...) skipped: ClearSpeak `tag: root` requires an index
         // (same as the Polish suite).
 
-        ("greatest-common-divisor", "greatest common divisor de x coma, y coma, z"),
-        ("least-common-multiple", "least common multiple de x coma, y coma, z"),
+        ("greatest-common-divisor", "el mcd de x coma, y coma, z"),
+        ("least-common-multiple", "el mcm de x coma, y coma, z"),
 
         ("absolute-value", "el absolute value de x"),
 
-        ("complex-conjugate", "complex conjugate de x"),
-        ("complex-arg", "complex arg de x"),
+        ("complex-conjugate", "el conjugado complejo de x"),
+        ("complex-arg", "el argumento de x"),
         ("real-part", "la parte real"),
         ("imaginary-part", "la parte imaginaria"),
 
-        ("polar-coordinate", "polar coordinate de x coma, y"),
-        ("spherical-coordinate", "spherical coordinate de x coma, y coma, z"),
-        ("cartesian-coordinate", "cartesian coordinate de x coma, y coma, z"),
-        ("coordinate", "coordinate de x coma, y coma, z"),
+        ("polar-coordinate", "coordenada polar de x coma, y"),
+        ("spherical-coordinate", "coordenada esférica de x coma, y coma, z"),
+        ("cartesian-coordinate", "coordenada cartesiana de x coma, y coma, z"),
+        ("coordinate", "la coordenada de x coma, y coma, z"),
 
-        ("floor", "floor de x"),
-        ("ceiling", "ceiling de x"),
-        ("round", "round de x"),
-        ("fractional-part", "fractional part de x"),
+        ("floor", "el piso de x"),
+        ("ceiling", "el techo de x"),
+        ("round", "el redondeo de x"),
+        ("fractional-part", "la parte fraccionaria de x"),
 
         
     ];
@@ -362,23 +328,19 @@ fn functions_and_inverses_tests() -> Result<()> {
 }
 
 
-// REVISAR (inglés: tends to): «tends to de x coma, y»
-// REVISAR (inglés: above from tends to): «tends to from above de x coma, y»
-// REVISAR (inglés: below from tends to): «tends to from below de x coma, y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn calculus_tests() -> Result<()> {
     let tests = vec![
         //("derivative", "the derivative of x with respect to x"),
         //"definite-integral", "integral over x from x to x"),
 
         // prefix
-        ("limit", "límite cuando x"),
+        ("limit", "el límite cuando x"),
 
         // infix
-        ("tends-to", "tends to de x coma, y"),
-        ("tends-to-from-above", "tends to from above de x coma, y"),
-        ("tends-to-from-below", "tends to from below de x coma, y"),
+        ("tends-to", "x tiende a y"),
+        ("tends-to-from-above", "x tiende por la derecha a y"),
+        ("tends-to-from-below", "x tiende por la izquierda a y"),
     ];
 
     for (intent, expected) in tests {
@@ -415,21 +377,16 @@ fn calculus_tests() -> Result<()> {
 }
 
 
-// REVISAR (inglés: complement): «complement de x»
-// REVISAR (inglés: cardinality): «cardinality de x»
-// REVISAR (inglés: list): «list de x»
-// REVISAR (inglés: tuple): «tuple de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn set_tests() -> Result<()> {
     let tests = vec![
         ("set", "el conjunto x"),
         // ("set-difference", "set difference of x and y"),
-        ("complement", "complement de x"),
+        ("complement", "el complemento de x"),
         //("empty-set", "empty set"),
-        ("cardinality", "cardinality de x"),
-        ("list", "list de x"),
-        ("tuple", "tuple de x"),
+        ("cardinality", "el cardinal de x"),
+        ("list", "la lista de x"),
+        ("tuple", "la tupla de x"),
     ];
 
     for (intent, expected) in tests {
@@ -449,14 +406,7 @@ fn set_tests() -> Result<()> {
 }
 
 
-// REVISAR (inglés: sum): «sum de x»
-// REVISAR (inglés: sum): «sum de i coma, x»
-// REVISAR (inglés: sum): «sum de i coma, n coma, x»
-// REVISAR (inglés: product): «product de x»
-// REVISAR (inglés: product): «product de i coma, x»
-// REVISAR (inglés: product): «product de i coma, n coma, x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sequence_and_series_intents() -> Result<()> {
     let tests = [
         (
@@ -467,7 +417,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "sum de x",
+            "la suma de x",
         ),
         (
             "sum-2",
@@ -478,7 +428,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "sum de i coma, x",
+            "la suma de i coma, x",
         ),
         (
             "sum-3",
@@ -490,7 +440,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "sum de i coma, n coma, x",
+            "la suma de i coma, n coma, x",
         ),
         (
             "product-1",
@@ -500,7 +450,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "product de x",
+            "el producto de x",
         ),
         (
             "product-2",
@@ -511,7 +461,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "product de i coma, x",
+            "el producto de i coma, x",
         ),
         (
             "product-3",
@@ -523,7 +473,7 @@ fn sequence_and_series_intents() -> Result<()> {
                 <mi arg="x">x</mi>
             </mrow>
             "#,
-            "product de i coma, n coma, x",
+            "el producto de i coma, n coma, x",
         ),
     ];
 
@@ -543,63 +493,40 @@ fn sequence_and_series_intents() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: sine): «sine de x»
-// REVISAR (inglés: cosine): «cosine de x»
-// REVISAR (inglés: tangent): «tangent de x»
-// REVISAR (inglés: secant): «secant de x»
-// REVISAR (inglés: cosecant): «cosecant de x»
-// REVISAR (inglés: cotangent): «cotangent de x»
-// REVISAR (inglés: arcsine): «arcsine de x»
-// REVISAR (inglés: arccosine): «arccosine de x»
-// REVISAR (inglés: arctangent): «arctangent de x»
-// REVISAR (inglés: arcsecant): «arcsecant de x»
-// REVISAR (inglés: hyperbolic sine): «hyperbolic sine de x»
-// REVISAR (inglés: cosine hyperbolic): «hyperbolic cosine de x»
-// REVISAR (inglés: hyperbolic tangent): «hyperbolic tangent de x»
-// REVISAR (inglés: hyperbolic secant): «hyperbolic secant de x»
-// REVISAR (inglés: cosecant hyperbolic): «hyperbolic cosecant de x»
-// REVISAR (inglés: cotangent hyperbolic): «hyperbolic cotangent de x»
-// REVISAR (inglés: hyperbolic sine): «arc hyperbolic sine de x»
-// REVISAR (inglés: cosine hyperbolic): «arc hyperbolic cosine de x»
-// REVISAR (inglés: hyperbolic tangent): «arc hyperbolic tangent de x»
-// REVISAR (inglés: hyperbolic secant): «arc hyperbolic secant de x»
-// REVISAR (inglés: cosecant hyperbolic): «arc hyperbolic cosecant de x»
-// REVISAR (inglés: cotangent hyperbolic): «arc hyperbolic cotangent de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn elementary_classical_tests() -> Result<()> {
     let tests = vec![
         // Trig
-        ("sine", "sine de x"),
-        ("cosine", "cosine de x"),
-        ("tangent", "tangent de x"),
-        ("secant", "secant de x"),
-        ("cosecant", "cosecant de x"),
-        ("cotangent", "cotangent de x"),
+        ("sine", "seno de x"),
+        ("cosine", "coseno de x"),
+        ("tangent", "tangente de x"),
+        ("secant", "secante de x"),
+        ("cosecant", "cosecante de x"),
+        ("cotangent", "cotangente de x"),
 
         // Inverse trig
-        ("arcsine", "arcsine de x"),
-        ("arccosine", "arccosine de x"),
-        ("arctangent", "arctangent de x"),
-        ("arcsecant", "arcsecant de x"),
-        ("arccosecant", "arccosecant de x"),
-        ("arccotangent", "arccotangent de x"),
+        ("arcsine", "arcoseno de x"),
+        ("arccosine", "arcocoseno de x"),
+        ("arctangent", "arcotangente de x"),
+        ("arcsecant", "arcosecante de x"),
+        ("arccosecant", "arcocosecante de x"),
+        ("arccotangent", "arcocotangente de x"),
 
         // Hyperbolic trig
-        ("hyperbolic-sine", "hyperbolic sine de x"),
-        ("hyperbolic-cosine", "hyperbolic cosine de x"),
-        ("hyperbolic-tangent", "hyperbolic tangent de x"),
-        ("hyperbolic-secant", "hyperbolic secant de x"),
-        ("hyperbolic-cosecant", "hyperbolic cosecant de x"),
-        ("hyperbolic-cotangent", "hyperbolic cotangent de x"),
+        ("hyperbolic-sine", "seno hiperbólico de x"),
+        ("hyperbolic-cosine", "coseno hiperbólico de x"),
+        ("hyperbolic-tangent", "tangente hiperbólica de x"),
+        ("hyperbolic-secant", "secante hiperbólica de x"),
+        ("hyperbolic-cosecant", "cosecante hiperbólica de x"),
+        ("hyperbolic-cotangent", "cotangente hiperbólica de x"),
 
         // Inverse hyperbolic trig
-        ("arc-hyperbolic-sine", "arc hyperbolic sine de x"),
-        ("arc-hyperbolic-cosine", "arc hyperbolic cosine de x"),
-        ("arc-hyperbolic-tangent", "arc hyperbolic tangent de x"),
-        ("arc-hyperbolic-secant", "arc hyperbolic secant de x"),
-        ("arc-hyperbolic-cosecant", "arc hyperbolic cosecant de x"),
-        ("arc-hyperbolic-cotangent", "arc hyperbolic cotangent de x"),
+        ("arc-hyperbolic-sine", "arcoseno hiperbólico de x"),
+        ("arc-hyperbolic-cosine", "arcocoseno hiperbólico de x"),
+        ("arc-hyperbolic-tangent", "arcotangente hiperbólica de x"),
+        ("arc-hyperbolic-secant", "arcosecante hiperbólica de x"),
+        ("arc-hyperbolic-cosecant", "arcocosecante hiperbólica de x"),
+        ("arc-hyperbolic-cotangent", "arcocotangente hiperbólica de x"),
     ];
 
     for (intent, expected) in tests {
@@ -618,20 +545,14 @@ fn elementary_classical_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: mean): «mean de x»
-// REVISAR (inglés: deviation standard): «standard deviation de x»
-// REVISAR (inglés: variance): «variance de x»
-// REVISAR (inglés: median): «median de x»
-// REVISAR (de de, inglés: mode): «mode de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn statistics_and_probability_tests() -> Result<()> {
     let tests = vec![
-        ("mean", "mean de x"),
-        ("standard-deviation", "standard deviation de x"),
-        ("variance", "variance de x"),
-        ("median", "median de x"),
-        ("mode", "mode de x"),
+        ("mean", "la media de x"),
+        ("standard-deviation", "la desviación estándar de x"),
+        ("variance", "la varianza de x"),
+        ("median", "la mediana de x"),
+        ("mode", "la moda de x"),
 
         // conditional probability typically two arguments
         // ("conditional-probability", "probability of x given y"),
@@ -670,33 +591,25 @@ fn statistics_and_probability_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: adjugate): «adjugate de x»
-// REVISAR (de de, magnitude, inglés: magnitude): «magnitude de x»
-// REVISAR (regla): «regla de x»
-// REVISAR (inglés: span): «span de x»
-// REVISAR (intercambiar): «intercambiar de x»
-// REVISAR (inglés: product): «dimensional product de x coma, y»
-// REVISAR (inglés: unit): «unit vector de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn linear_algebra_tests() -> Result<()> {
     let tests = vec![
         ("vector", "vector de x"),
         // ("matrix", "matrix of x"),
         ("determinant", "determinante de x"),
-        ("adjugate", "adjugate de x"),
-        ("magnitude", "magnitude de x"),
-        ("norm", "regla de x"),
-        ("span", "span de x"),
+        ("adjugate", "la matriz adjunta de x"),
+        ("magnitude", "el módulo de x"),
+        ("norm", "norma de x"),
+        ("span", "el espacio generado de x"),
 
         // transpose supports both postfix and function; we test function explicitly
-        ("transpose", "intercambiar de x"),
+        ("transpose", "transpuesta de x"),
 
         // dimensional product is infix
-        ("dimensional-product", "dimensional product de x coma, y"),
+        ("dimensional-product", "x por y"),
 
         // unit-vector is prefix
-        ("unit-vector", "unit vector de x")
+        ("unit-vector", "vector unitario x")
     ];
 
     for (intent, expected) in tests {
@@ -763,19 +676,15 @@ fn nofix_set_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: directed line segment): «directed line segment de x coma, y»
-// REVISAR (inglés: line): «line de x coma, y»
-// REVISAR (inglés: point): «point de x coma, y coma, z»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn geometry_prefix_multi_value_tests() -> Result<()> {
     let tests = vec![
         ("line-segment", "segmento de línea x y"),
-        ("directed-line-segment", "directed line segment de x coma, y"),
-        ("line", "line de x coma, y"),
+        ("directed-line-segment", "segmento dirigido x y"),
+        ("line", "recta x y"),
         ("ray", "semirrecta x y"),
         ("arc", "arco x y"),
-        ("point", "point de x coma, y coma, z"),
+        ("point", "punto x y z"),
     ];
 
     for (intent, expected) in tests {
@@ -810,16 +719,12 @@ fn geometry_prefix_multi_value_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: length): «length de x»
-// REVISAR (inglés: area): «area de x»
-// REVISAR (inglés: volume): «volume de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn geometry_prefix_tests() -> Result<()> {
     let tests = vec![
-        ("length", "length de x"),
-        ("area", "area de x"),
-        ("volume", "volume de x"),
+        ("length", "la longitud de x"),
+        ("area", "el área de x"),
+        ("volume", "volumen de x"),
     ];
 
     for (intent, expected) in tests {
@@ -837,9 +742,7 @@ fn geometry_prefix_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: separator): «time separator de x coma, y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn separator_tests() -> Result<()> {
   let expr = "<math>
             <mrow intent='time-separator($x,$y)'>
@@ -848,34 +751,31 @@ fn separator_tests() -> Result<()> {
             </mrow>
         </math>".to_string();
 
-    test("es", "ClearSpeak", &expr, "time separator de x coma, y")?;
+    test("es", "ClearSpeak", &expr, "x y")?;
     Ok(())
 }
 
-// REVISAR (inglés: fenced group): «fenced group de x»
-// REVISAR (inglés: common denominator least): «least common denominator de x coma, y coma, z»
-// REVISAR (inglés: cycle permutation): «permutation cycle de x»
-// REVISAR (inglés: constraint): «constraint de x coma, y»
+// REVISAR (inglés: fenced group): «fenced-group de x»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn general_concepts_tests() -> Result<()> {
     let tests = vec![
         // Unary structural
-        ("fenced-group", "fenced group de x"),
-        ("highlight", "highlight de x"),
-        ("least-common-denominator", "least common denominator de x coma, y coma, z"), // add x, y , z ...
-        ("pochhammer", "pochhammer de x"),
-        ("permutation-cycle", "permutation cycle de x"),
+        ("fenced-group", "fenced-group de x"),
+        ("highlight", "x resaltado"),
+        ("least-common-denominator", "el mínimo común denominador de x coma, y coma, z"), // add x, y , z ...
+        ("pochhammer", "permutación de x"),
+        ("permutation-cycle", "el ciclo de permutación de x"),
 
         // Binary structural / infix-style
         // ("ordered-pair", "the pair of x and y"),
-        ("rate", "rate de x coma, y"),
+        ("rate", "x por y"),
         
-        ("binomial-coefficient", "binomial coefficient de x coma, y"),
-        ("embellished-name", "embellished name de x coma, y"),
+        ("binomial-coefficient", "x sobre y"),
+        ("embellished-name", "x con anotación y"),
         ("indexed-by", "x subíndice y"),
         // ("translation", "translation by of x comma, y"), // "of" after "by" is awkward; needs dedicated rule or of-suppression
-        ("constraint", "constraint de x coma, y"),
+        ("constraint", "x con la restricción y"),
     ];
 
     for (intent, expected) in tests {
@@ -929,12 +829,10 @@ fn general_concepts_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: annotation): «annotation de x coma, y»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn grouping_tests() -> Result<()> {
     let tests = vec![
-        ("annotation", "annotation de x coma, y"),
+        ("annotation", "x que es y"),
         // ("braced-group", "grouped x end-grouped"),
         // ("repeating-decimal", "repeating decimal of x"),
     ];
@@ -973,7 +871,6 @@ fn grouping_tests() -> Result<()> {
 // REVISAR (inglés: curl of): «curl of x»
 // REVISAR (inglés: div of): «div of x»
 // REVISAR (inglés: gradient of): «gradient of x»
-// REVISAR (lahplahsian): «lahplahsian de x»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn function_default_fixity_tests() -> Result<()> {
@@ -981,7 +878,7 @@ fn function_default_fixity_tests() -> Result<()> {
         ("curl", "curl of x"),
         ("divergence", "div of x"),
         ("gradient", "gradient of x"),
-        ("laplacian", "lahplahsian de x"),
+        ("laplacian", "laplaciano de x"),
     ];
 
     for (intent, expected) in tests {
@@ -1000,34 +897,21 @@ fn function_default_fixity_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: angle): «angle de x»
-// REVISAR (inglés: angle measure): «angle measure de x»
-// REVISAR (inglés: change): «change de x»
-// REVISAR (inglés: all for): «for all de x»
-// REVISAR (inglés: angle measured): «measured angle de x»
-// REVISAR (inglés: not): «not de x»
-// REVISAR (inglés: number of): «number of de x»
-// REVISAR (inglés: derivative partial): «partial derivative de x»
-// REVISAR (inglés: angle right): «right angle de x»
-// REVISAR (inglés: of root square): «square root of de x»
-// REVISAR (inglés: does exist not there): «there does not exist de x»
-// REVISAR (inglés: exists there): «there exists de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn prefix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("angle", "angle de x"),
-        ("angle-measure", "angle measure de x"),
-        ("change", "change de x"),
-        ("for-all", "for all de x"),
-        ("measured-angle", "measured angle de x"),
-        ("not", "not de x"),
-        ("number-of", "number of de x"),
-        ("partial-derivative", "partial derivative de x"),
-        ("right-angle", "right angle de x"),
-        ("square-root-of", "square root of de x"),
-        ("there-does-not-exist", "there does not exist de x"),
-        ("there-exists", "there exists de x"),
+        ("angle", "ángulo x"),
+        ("angle-measure", "medida del ángulo x"),
+        ("change", "incremento de x"),
+        ("for-all", "para todo x"),
+        ("measured-angle", "ángulo medido x"),
+        ("not", "no x"),
+        ("number-of", "número de x"),
+        ("partial-derivative", "parcial x"),
+        ("right-angle", "ángulo recto x"),
+        ("square-root-of", "raíz cuadrada de x"),
+        ("there-does-not-exist", "no existe x"),
+        ("there-exists", "existe x"),
     ];
 
     for (intent, expected) in tests {
@@ -1046,134 +930,78 @@ fn prefix_default_fixity_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: and): «and de x coma, y»
-// REVISAR (inglés: applied to): «applied to de x coma, y»
-// REVISAR (inglés: approximately): «approximately de x coma, y»
-// REVISAR (inglés: congruent): «congruent de x coma, y»
-// REVISAR (inglés: cartesian product): «cartesian product de x coma, y»
-// REVISAR (inglés: composed with): «composed with de x coma, y»
-// REVISAR (inglés: cross product): «x cross product y»
-// REVISAR (inglés: as defined): «defined as de x coma, y»
-// REVISAR (inglés: by divided): «divided by de x coma, y»
-// REVISAR (inglés: divides): «divides de x coma, y»
-// REVISAR (inglés: belong does not to): «does not belong to de x coma, y»
-// REVISAR (de de, inglés: divide does not): «does not divide de x coma, y»
-// REVISAR (inglés: dot product): «x dot product y»
-// REVISAR (inglés: downwards ellipsis): «downwards diagonal ellipsis de x coma, y»
-// REVISAR (inglés: direct product): «direct product de x coma, y»
-// REVISAR (inglés: element of): «element of de x coma, y»
-// REVISAR (inglés: ellipsis): «ellipsis de x coma, y»
-// REVISAR (inglés: equals): «equals de x coma, y»
-// REVISAR (inglés: equivalent to): «equivalent to de x coma, y»
-// REVISAR (inglés: evaluates to): «evaluates to de x coma, y»
-// REVISAR (inglés: given): «given de x coma, y»
-// REVISAR (inglés: greater than): «greater than de x coma, y»
-// REVISAR (inglés: equal greater or than to): «greater than or equal to de x coma, y»
-// REVISAR (inglés: equals identically): «identically equals de x coma, y»
-// REVISAR (inglés: and if only): «if and only if de x coma, y»
-// REVISAR (inglés: implies): «implies de x coma, y»
-// REVISAR (inglés: inner product): «inner product de x coma, y»
-// REVISAR (inglés: intersection): «intersection de x coma, y»
-// REVISAR (inglés: less than): «less than de x coma, y»
-// REVISAR (inglés: equal less or than to): «less than or equal to de x coma, y»
-// REVISAR (inglés: list separator): «list separator de x coma, y»
-// REVISAR (inglés: maps to): «maps to de x coma, y»
-// REVISAR (inglés: member of): «member of de x coma, y»
-// REVISAR (inglés: minus or plus): «minus or plus de x coma, y»
-// REVISAR (inglés: not subset): «not subset de x coma, y»
-// REVISAR (inglés: not superset): «not superset de x coma, y»
-// REVISAR (inglés: equal not to): «not equal to de x coma, y»
-// REVISAR (inglés: member not of): «not member of de x coma, y»
-// REVISAR (inglés: not parallel to): «not parallel to de x coma, y»
-// REVISAR (inglés: from obtained): «obtained from de x coma, y»
-// REVISAR (inglés: or): «or de x coma, y»
-// REVISAR (inglés: outer product): «outer product de x coma, y»
-// REVISAR (inglés: parallel to): «parallel to de x coma, y»
-// REVISAR (inglés: minus or plus): «plus or minus de x coma, y»
-// REVISAR (inglés: precedes): «precedes de x coma, y»
-// REVISAR (inglés: proportional): «proportional de x coma, y»
-// REVISAR (inglés: separator): «range separator de x coma, y»
-// REVISAR (inglés: ratio): «ratio de x coma, y»
-// REVISAR (inglés: similar): «similar de x coma, y»
-// REVISAR (inglés: subset): «subset de x coma, y»
-// REVISAR (inglés: equal or subset): «subset or equal de x coma, y»
-// REVISAR (inglés: succeeds): «succeeds de x coma, y»
-// REVISAR (inglés: such that): «such that de x coma, y»
-// REVISAR (inglés: superset): «superset de x coma, y»
-// REVISAR (inglés: equal or superset): «superset or equal de x coma, y»
-// REVISAR (de de, inglés: tilde): «tilde de x coma, y»
-// REVISAR (inglés: times): «times de x coma, y»
-// REVISAR (inglés: union): «union de x coma, y»
-// REVISAR (inglés: ellipsis upwards): «upwards diagonal ellipsis de x coma, y»
-// REVISAR (inglés: ellipsis): «vertical ellipsis de x coma, y»
+// REVISAR (inglés: divide): «x divide a y»
+// REVISAR (inglés: divide): «x no divide a y»
+// REVISAR (distinto de): «x distinto de y»
+// REVISAR (inglés: tilde): «x tilde y»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn infix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("and", "and de x coma, y"),
-        ("applied-to", "applied to de x coma, y"),
-        ("approximately", "approximately de x coma, y"),
-        ("congruent", "congruent de x coma, y"),
-        ("cartesian-product", "cartesian product de x coma, y"),
-        ("composed-with", "composed with de x coma, y"),
-        ("cross-product", "x cross product y"),
-        ("defined-as", "defined as de x coma, y"),
-        ("divided-by", "divided by de x coma, y"),
-        ("divides", "divides de x coma, y"),
-        ("does-not-belong-to", "does not belong to de x coma, y"),
-        ("does-not-divide", "does not divide de x coma, y"),
-        ("dot-product", "x dot product y"),
-        ("downwards-diagonal-ellipsis", "downwards diagonal ellipsis de x coma, y"),
-        ("direct-product", "direct product de x coma, y"),
-        ("element-of", "element of de x coma, y"),
-        ("ellipsis", "ellipsis de x coma, y"),
-        ("equals", "equals de x coma, y"),
-        ("equivalent-to", "equivalent to de x coma, y"),
-        ("evaluates-to", "evaluates to de x coma, y"),
-        ("given", "given de x coma, y"),
-        ("greater-than", "greater than de x coma, y"),
-        ("greater-than-or-equal-to", "greater than or equal to de x coma, y"),
-        ("identically-equals", "identically equals de x coma, y"),
-        ("if-and-only-if", "if and only if de x coma, y"),
-        ("implies", "implies de x coma, y"),
-        ("inner-product", "inner product de x coma, y"),
-        ("intersection", "intersection de x coma, y"),
-        ("less-than", "less than de x coma, y"),
-        ("less-than-or-equal-to", "less than or equal to de x coma, y"),
-        ("list-separator", "list separator de x coma, y"),
-        ("maps-to", "maps to de x coma, y"),
-        ("member-of", "member of de x coma, y"),
+        ("and", "x y y"),
+        ("applied-to", "x aplicado a y"),
+        ("approximately", "x aproximadamente igual a y"),
+        ("congruent", "x congruente con y"),
+        ("cartesian-product", "x producto cartesiano y"),
+        ("composed-with", "x compuesta con y"),
+        ("cross-product", "x producto vectorial y"),
+        ("defined-as", "x definido como y"),
+        ("divided-by", "x dividido por y"),
+        ("divides", "x divide a y"),
+        ("does-not-belong-to", "x no pertenece a y"),
+        ("does-not-divide", "x no divide a y"),
+        ("dot-product", "x producto escalar y"),
+        ("downwards-diagonal-ellipsis", "x puntos suspensivos diagonales descendentes y"),
+        ("direct-product", "x producto directo y"),
+        ("element-of", "x pertenece a y"),
+        ("ellipsis", "x puntos suspensivos y"),
+        ("equals", "x es igual a y"),
+        ("equivalent-to", "x equivalente a y"),
+        ("evaluates-to", "x da como resultado y"),
+        ("given", "x dado y"),
+        ("greater-than", "x mayor que y"),
+        ("greater-than-or-equal-to", "x mayor o igual que y"),
+        ("identically-equals", "x idénticamente igual a y"),
+        ("if-and-only-if", "x si y solo si y"),
+        ("implies", "x implica y"),
+        ("inner-product", "x producto interior y"),
+        ("intersection", "x intersección y"),
+        ("less-than", "x menor que y"),
+        ("less-than-or-equal-to", "x menor o igual que y"),
+        ("list-separator", "x coma y"),
+        ("maps-to", "x se asigna a y"),
+        ("member-of", "x pertenece a y"),
         ("minus", "x menos y"),
-        ("minus-or-plus", "minus or plus de x coma, y"),
-        ("not-subset", "not subset de x coma, y"),
-        ("not-superset", "not superset de x coma, y"),
-        ("not-equal-to", "not equal to de x coma, y"),
-        ("not-member-of", "not member of de x coma, y"),
-        ("not-parallel-to", "not parallel to de x coma, y"),
-        ("obtained-from", "obtained from de x coma, y"),
-        ("or", "or de x coma, y"),
-        ("outer-product", "outer product de x coma, y"),
-        ("parallel-to", "parallel to de x coma, y"),
-        ("perpendicular", "perpendicular de x coma, y"),
+        ("minus-or-plus", "x menos más y"),
+        ("not-subset", "x no es subconjunto de y"),
+        ("not-superset", "x no es superconjunto de y"),
+        ("not-equal-to", "x distinto de y"),
+        ("not-member-of", "x no pertenece a y"),
+        ("not-parallel-to", "x no es paralela a y"),
+        ("obtained-from", "x obtenido de y"),
+        ("or", "x o y"),
+        ("outer-product", "x producto exterior y"),
+        ("parallel-to", "x paralela a y"),
+        ("perpendicular", "x perpendicular a y"),
         ("plus", "x más y"),
-        ("plus-or-minus", "plus or minus de x coma, y"),
-        ("precedes", "precedes de x coma, y"),
-        ("proportional", "proportional de x coma, y"),
-        ("range-separator", "range separator de x coma, y"),
-        ("ratio", "ratio de x coma, y"),
-        ("similar", "similar de x coma, y"),
-        ("subset", "subset de x coma, y"),
-        ("subset-or-equal", "subset or equal de x coma, y"),
-        ("succeeds", "succeeds de x coma, y"),
-        ("such-that", "such that de x coma, y"),
-        ("superset", "superset de x coma, y"),
-        ("superset-or-equal", "superset or equal de x coma, y"),
-        ("tilde", "tilde de x coma, y"),
-        ("times", "times de x coma, y"),
-        ("union", "union de x coma, y"),
-        ("upwards-diagonal-ellipsis", "upwards diagonal ellipsis de x coma, y"),
-        ("vertical-ellipsis", "vertical ellipsis de x coma, y"),
-        ("xor", "xor de x coma, y"),
+        ("plus-or-minus", "x más menos y"),
+        ("precedes", "x precede a y"),
+        ("proportional", "x proporcional a y"),
+        ("range-separator", "x a y"),
+        ("ratio", "x es a y"),
+        ("similar", "x semejante a y"),
+        ("subset", "x subconjunto de y"),
+        ("subset-or-equal", "x subconjunto o igual a y"),
+        ("succeeds", "x sucede a y"),
+        ("such-that", "x tal que y"),
+        ("superset", "x superconjunto de y"),
+        ("superset-or-equal", "x superconjunto o igual a y"),
+        ("tilde", "x tilde y"),
+        ("times", "x por y"),
+        ("union", "x unión y"),
+        ("upwards-diagonal-ellipsis", "x puntos suspensivos diagonales ascendentes y"),
+        ("vertical-ellipsis", "x puntos suspensivos verticales y"),
+        ("xor", "x o exclusivo y"),
     ];
     
     for (intent, expected) in tests {
@@ -1193,13 +1021,11 @@ fn infix_default_fixity_tests() -> Result<()> {
     Ok(())
 }
 
-// REVISAR (inglés: percent): «percent de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn postfix_default_fixity_tests() -> Result<()> {
     let tests = vec![
-        ("factorial", "factorial de x"),
-        ("percent", "percent de x"),
+        ("factorial", "x factorial"),
+        ("percent", "x por ciento"),
     ];
 
     for (intent, expected) in tests {

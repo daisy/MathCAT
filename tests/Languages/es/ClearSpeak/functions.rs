@@ -127,7 +127,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("es", "ClearSpeak", expr, "el log base b, de x")?;
+    test("es", "ClearSpeak", expr, "el logaritmo en base b, de x")?;
     return Ok(());
 
 }
@@ -135,7 +135,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el log base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "ClearSpeak", expr, "el logaritmo en base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
     return Ok(());
 
 }

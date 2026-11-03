@@ -415,6 +415,15 @@
       then: [T: cotangente]
       else: [T: cotangente hiperbólica]
 
+- name: ratio
+  # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7
+  tag: ratio
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - T: "es a"      # phrase(20 'es a' 5)
+  - x: "*[2]"
+
 -
   name: log    # handle both log and ln (if in an mrow, 'intents' are used)
   tag: mi

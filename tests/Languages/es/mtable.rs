@@ -87,7 +87,7 @@ fn matrix_1x3() -> Result<()> {
     </math>
                                 ";
     test("es", "ClearSpeak", expr, "la matriz 1 por 3 fila; menos x, 5, 12")?;
-    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; negativo x; columna 2; 5; columna 3; 12")?;
+    test("es", "SimpleSpeak", expr, "la matriz 1 por 3 fila; columna 1; menos x; columna 2; 5; columna 3; 12")?;
     return Ok(());
 
 }
@@ -969,7 +969,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndMatrix",
         expr, "la matriz 3 por 4; fila 1; columna 1; 1, columna 2; 2, columna 3; menos 1, columna 4; 3; fila 2; columna 1; menos 3, columna 2; 3, columna 3; menos 1, columna 4; 2; fila 3; columna 1; 2, columna 2; 3, columna 3; 2, columna 4; menos 1; fin matriz")?;
     test("es", "SimpleSpeak",
-        expr, "la matriz 3 por 4; columna 1; 1; columna 2; 2; columna 3; negativo 1; columna 4; 3; columna 1; negativo 3; columna 2; 3; columna 3; negativo 1; columna 4; 2; columna 1; 2; columna 2; 3; columna 3; 2; columna 4; negativo 1; fin matriz")?;
+        expr, "la matriz 3 por 4; columna 1; 1; columna 2; 2; columna 3; menos 1; columna 4; 3; columna 1; menos 3; columna 2; 3; columna 3; menos 1; columna 4; 2; columna 1; 2; columna 2; 3; columna 3; 2; columna 4; menos 1; fin matriz")?;
     Ok(())
   }
 
@@ -1345,7 +1345,7 @@ fn identity_matrix_false_positive_negative_one() -> Result<()> {
       <mo>]</mo>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "la matriz 2 por 2; columna 1; 1; columna 2; 0; columna 1; 0; columna 2; negativo 1")?;
+      expr, "la matriz 2 por 2; columna 1; 1; columna 2; 0; columna 1; 0; columna 2; menos 1")?;
   Ok(())
 }
 

@@ -28,8 +28,8 @@ fn modified_vars() -> Result<()> {
 
 }
 
-// REVISAR (aproximaciones): «límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
-// REVISAR (aproximaciones): «límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
+// REVISAR (aproximaciones): «el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
+// REVISAR (aproximaciones): «el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn limit() -> Result<()> {
@@ -45,9 +45,9 @@ fn limit() -> Result<()> {
             </mfrac>
             </mrow>
         </math>";
-    test("es", "SimpleSpeak", expr, "límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
+    test("es", "SimpleSpeak", expr, "el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
     test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
+            "el límite cuando x aproximaciones 0, de, fracción, seno de x, partido por x, fin de fracción")?;
             return Ok(());
 
 }
@@ -63,38 +63,32 @@ fn limit_from_below() -> Result<()> {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("es", "SimpleSpeak", expr, "límite cuando x enfoque desde abajo 0, de seno de x")?;
+    test("es", "SimpleSpeak", expr, "el límite cuando x enfoque desde abajo 0, de seno de x")?;
     return Ok(());
 
 }
 
 
-// REVISAR (elegir): «n elegir m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("es", "SimpleSpeak", expr, "n elegir m")?;
+    test("es", "SimpleSpeak", expr, "n sobre m")?;
     return Ok(());
 
 }
 
-// REVISAR (elegir): «n elegir m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("es", "SimpleSpeak", expr, "n elegir m")?;
+    test("es", "SimpleSpeak", expr, "n sobre m")?;
     return Ok(());
 
 }
 
-// REVISAR (elegir): «n elegir m»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
-    test("es", "SimpleSpeak", expr, "n elegir m")?;
+    test("es", "SimpleSpeak", expr, "n sobre m")?;
     return Ok(());
 
 }
@@ -192,15 +186,15 @@ fn simple_msubsup() -> Result<()> {
 
 }
 
-// REVISAR (-th, inglés: th): «i subíndice j menos 2 final del subíndice, a la k-th»
-// REVISAR (-th, inglés: th): «i subíndice j menos 2 final del subíndice, a la k-th potencia»
+// REVISAR (-th, inglés: th): «i subíndice j menos 2 fin de subíndice, a la k-th»
+// REVISAR (-th, inglés: th): «i subíndice j menos 2 fin de subíndice, a la k-th potencia»
 // REVISAR (-th, inglés: th): «i subíndice j menos 2, a la k-th»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("es", "SimpleSpeak", expr, "i subíndice j menos 2 final del subíndice, a la k-th")?;
-  test("es", "ClearSpeak", expr, "i subíndice j menos 2 final del subíndice, a la k-th potencia")?;
+  test("es", "SimpleSpeak", expr, "i subíndice j menos 2 fin de subíndice, a la k-th")?;
+  test("es", "ClearSpeak", expr, "i subíndice j menos 2 fin de subíndice, a la k-th potencia")?;
   test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
           "i subíndice j menos 2, a la k-th")?;
           return Ok(());
@@ -324,7 +318,7 @@ fn ignore_mtext_period() -> Result<()> {
 
 }
 
-// REVISAR (phi recta, inglés: phi): «phi recta de x, es igual a; c por, e elevado a la negativo h al cuadrado, x al cuadrado potencia»
+// REVISAR (phi recta, inglés: phi): «phi recta de x, es igual a; c por, e elevado a la menos h al cuadrado, x al cuadrado potencia»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn ignore_comma() -> Result<()> {
@@ -360,7 +354,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("es", "SimpleSpeak", expr, "phi recta de x, es igual a; c por, e elevado a la negativo h al cuadrado, x al cuadrado potencia")?;
+    test("es", "SimpleSpeak", expr, "phi recta de x, es igual a; c por, e elevado a la menos h al cuadrado, x al cuadrado potencia")?;
     return Ok(());
 
 }

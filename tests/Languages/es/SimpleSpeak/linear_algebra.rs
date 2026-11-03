@@ -1,12 +1,10 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (intercambiar): «mayúscula m intercambiar»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn transpose() -> Result<()> {
   let expr = "<math> <msup><mi>M</mi><mi>T</mi></msup> </math>";
-  test("es", "SimpleSpeak", expr, "mayúscula m intercambiar")?;
+  test("es", "SimpleSpeak", expr, "mayúscula m transpuesta")?;
   return Ok(());
 
 }
@@ -43,9 +41,7 @@ fn kernel() -> Result<()> {
 
 }
 
-// REVISAR (regla): «regla de f»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn norm() -> Result<()> {
   let expr = "  <math>
     <mrow>
@@ -55,14 +51,12 @@ fn norm() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("es", "SimpleSpeak", expr, "regla de f")?;
+  test("es", "SimpleSpeak", expr, "norma de f")?;
   return Ok(());
 
 }
 
-// REVISAR (regla): «regla de x más y fin de la regla»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn norm_non_simple() -> Result<()> {
   let expr = "  <math>
     <mrow>
@@ -74,7 +68,7 @@ fn norm_non_simple() -> Result<()> {
     </mrow>
 </math>
 ";
-  test("es", "SimpleSpeak", expr, "regla de x más y fin de la regla")?;
+  test("es", "SimpleSpeak", expr, "norma de x más y fin de la norma")?;
   return Ok(());
 
 }

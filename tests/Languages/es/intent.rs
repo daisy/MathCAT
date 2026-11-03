@@ -143,16 +143,14 @@ fn silent_intent_underscore() -> Result<()> {
 
 }
 
-// REVISAR (inglés: probability): «probability de x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn intent_prob_x() -> Result<()> {
     let expr = "<math>
     <msup intent='$op($arg)'>
         <mi arg='arg'>x</mi>
         <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
     </msup></math>";
-    test("es", "ClearSpeak", expr, "probability de x")?;
+    test("es", "ClearSpeak", expr, "probabilidad de x")?;
     return Ok(());
 
 }

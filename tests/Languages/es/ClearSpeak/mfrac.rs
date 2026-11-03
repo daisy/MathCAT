@@ -313,9 +313,7 @@ fn non_simple_function_over_function() -> Result<()> {
 
 }
 
-// REVISAR (elegir): «2 multiplicado por, 7 elegir 3»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn binomial() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn>
@@ -323,7 +321,7 @@ fn binomial() -> Result<()> {
                     <mfrac linethickness='0'> <mn>7</mn> <mn>3</mn> </mfrac>
                     <mo>)</mo>
                 </math>";
-    test("es", "ClearSpeak", expr, "2 multiplicado por, 7 elegir 3")?;
+    test("es", "ClearSpeak", expr, "2 multiplicado por, 7 sobre 3")?;
     return Ok(());
 
 }
