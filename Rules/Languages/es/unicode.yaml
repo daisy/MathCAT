@@ -288,7 +288,7 @@
     - T: "caligráfica"                    	# 	(en: 'script')
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℜ":                                         	#  0x211c
-    - T: "r mayúscula partida"                  	# 	(en: 'fraktur', google: 'fraktur')
+    - T: "gótica"                  	# 	(en: 'fraktur', google: 'fraktur')
     - spell: "'R'"
 
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9

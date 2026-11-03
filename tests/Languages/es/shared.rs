@@ -468,7 +468,7 @@ fn ignore_bold() -> Result<()> {
   test_prefs("es", "SimpleSpeak", vec![("IgnoreBold", "false")],
              expr, "negrita x es igual a, 2 seno de negrita t, menos 1")?;
   test_prefs("es", "SimpleSpeak", vec![("IgnoreBold", "true")],
-             expr, "negrita x es igual a, 2 seno de negrita t, menos 1")?;
+             expr, "x es igual a, 2 seno de t, menos 1")?;
              return Ok(());
 
 }

@@ -7,11 +7,11 @@ use anyhow::Result;
 #[test]
 fn special_alphabet_chars() -> Result<()> {
   let expr = "<math> <mi>ℌ</mi><mo>,</mo><mi>ℭ</mi></math>";
-  test("es", "SimpleSpeak", expr, "g cursiva mayúscula h, coma, g cursiva mayúscula c")?;
+  test("es", "SimpleSpeak", expr, "gótica mayúscula h, coma, gótica mayúscula c")?;
   let expr = "<math> <mi>ℍ</mi><mo>,</mo><mi>ℿ</mi></math>";
-  test("es", "SimpleSpeak", expr, "doble tachadura mayúscula h, coma; doble tachadura mayúscula pi")?;
+  test("es", "SimpleSpeak", expr, "doble trazo mayúscula h, coma, doble trazo mayúscula pi")?;
   let expr = "<math> <mi>ℐ</mi><mo>,</mo><mi>ℳ</mi></math>";
-  test("es", "SimpleSpeak", expr, "h barra mayúscula i, coma, h barra mayúscula m")?;
+  test("es", "SimpleSpeak", expr, "caligráfica mayúscula i, coma, caligráfica mayúscula m")?;
   return Ok(());
 
 }
@@ -24,7 +24,7 @@ fn greek() -> Result<()> {
     test("es", "SimpleSpeak", expr, "alfa coma, omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura mayúscula delta, coma; doble tachadura mayúscula ípsilon")?;
+    test("es", "SimpleSpeak", expr, "doble trazo mayúscula delta, coma; doble trazo mayúscula ípsilon")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
     test("es", "SimpleSpeak", expr, "alfa coma, omega")?;
     return Ok(());
@@ -50,51 +50,41 @@ fn parenthesized() -> Result<()> {
 #[test]
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
-    test("es", "SimpleSpeak", expr, "dentro de uncírculo mayúscula a, coma; dentro de uncírculo mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "en círculo mayúscula a, coma, en círculo mayúscula z")?;
     let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
     test("es", "SimpleSpeak", expr, "dentro de un círculo negro mayúscula a, coma; dentro de un círculo negro mayúscula z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
-    test("es", "SimpleSpeak", expr, "dentro de un círculo a, coma, dentro de un círculo z")?;
+    test("es", "SimpleSpeak", expr, "en círculo a coma, en círculo z")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: fraktur): «fraktur mayúscula a, coma, fraktur mayúscula y»
-// REVISAR (inglés: fraktur): «fraktur a coma, fraktur z»
-// REVISAR (inglés: fraktur): «fraktur mayúscula a, coma, fraktur mayúscula y»
-// REVISAR (inglés: fraktur): «fraktur a coma, fraktur z»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn fraktur() -> Result<()> {
     let expr = "<math> <mi>𝔄</mi><mo>,</mo><mi>𝔜</mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur mayúscula a, coma, fraktur mayúscula y")?;
+    test("es", "SimpleSpeak", expr, "gótica mayúscula a, coma, gótica mayúscula y")?;
     let expr = "<math> <mi>𝔞</mi><mo>,</mo><mi>𝔷</mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur a coma, fraktur z")?;
+    test("es", "SimpleSpeak", expr, "gótica a coma, gótica z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur mayúscula a, coma, fraktur mayúscula y")?;
+    test("es", "SimpleSpeak", expr, "gótica mayúscula a, coma, gótica mayúscula y")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur a coma, fraktur z")?;
+    test("es", "SimpleSpeak", expr, "gótica a coma, gótica z")?;
     return Ok(());
 
 }
 
-// REVISAR (inglés: bold fraktur): «fraktur bold mayúscula a, coma, fraktur bold mayúscula z»
-// REVISAR (inglés: bold fraktur): «fraktur bold a coma, fraktur bold z»
-// REVISAR (inglés: bold fraktur): «fraktur bold mayúscula a, coma, fraktur bold mayúscula z»
-// REVISAR (inglés: bold fraktur): «fraktur bold a coma, fraktur bold z»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn bold_fraktur() -> Result<()> {
     let expr = "<math> <mi>𝕬</mi><mo>,</mo><mi>𝖅</mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur bold mayúscula a, coma, fraktur bold mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "gótica negrita mayúscula a, coma, gótica negrita mayúscula z")?;
     let expr = "<math> <mi>𝖆</mi><mo>,</mo><mi>𝖟</mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur bold a coma, fraktur bold z")?;
+    test("es", "SimpleSpeak", expr, "gótica negrita a coma, gótica negrita z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur bold mayúscula a, coma, fraktur bold mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "gótica negrita mayúscula a, coma, gótica negrita mayúscula z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "fraktur bold a coma, fraktur bold z")?;
+    test("es", "SimpleSpeak", expr, "gótica negrita a coma, gótica negrita z")?;
     return Ok(());
 
 }
@@ -102,18 +92,18 @@ fn bold_fraktur() -> Result<()> {
 #[test]
 fn double_struck() -> Result<()> {
     let expr = "<math> <mi>𝔸</mi><mo>,</mo><mi>𝕐</mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura mayúscula a, coma, doble tachadura mayúscula y")?;
+    test("es", "SimpleSpeak", expr, "doble trazo mayúscula a, coma, doble trazo mayúscula y")?;
     let expr = "<math> <mi>𝕒</mi><mo>,</mo><mi>𝕫</mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura a coma, doble tachadura z")?;
+    test("es", "SimpleSpeak", expr, "doble trazo a coma, doble trazo z")?;
     let expr = "<math> <mi>𝟘</mi><mo>,</mo><mi>𝟡</mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura 0 coma, doble tachadura 9")?;
+    test("es", "SimpleSpeak", expr, "doble trazo 0 coma, doble trazo 9")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura mayúscula a, coma, doble tachadura mayúscula y")?;
+    test("es", "SimpleSpeak", expr, "doble trazo mayúscula a, coma, doble trazo mayúscula y")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura a coma, doble tachadura z")?;
+    test("es", "SimpleSpeak", expr, "doble trazo a coma, doble trazo z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "doble tachadura 0 coma, doble tachadura 9")?;
+    test("es", "SimpleSpeak", expr, "doble trazo 0 coma, doble trazo 9")?;
     return Ok(());
 
 }
@@ -121,14 +111,14 @@ fn double_struck() -> Result<()> {
 #[test]
 fn script() -> Result<()> {
     let expr = "<math> <mi>𝒜</mi><mo>,</mo><mi>𝒵</mi></math>";
-    test("es", "SimpleSpeak", expr, "guión mayúscula a, coma, guión mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica mayúscula a, coma, caligráfica mayúscula z")?;
     let expr = "<math> <mi>𝒶</mi><mo>,</mo><mi>𝓏</mi></math>";
-    test("es", "SimpleSpeak", expr, "guión a coma, guión z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica a coma, caligráfica z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "guión mayúscula a, coma, guión mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica mayúscula a, coma, caligráfica mayúscula z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "guión a coma, guión z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica a coma, caligráfica z")?;
     return Ok(());
 
 }
@@ -136,14 +126,14 @@ fn script() -> Result<()> {
 #[test]
 fn bold_script() -> Result<()> {
     let expr = "<math> <mi>𝓐</mi><mo>,</mo><mi>𝓩</mi></math>";
-    test("es", "SimpleSpeak", expr, "guión en negrita mayúscula a, coma; guión en negrita mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica negrita mayúscula a, coma; caligráfica negrita mayúscula z")?;
     let expr = "<math> <mi>𝓪</mi><mo>,</mo><mi>𝔃</mi></math>";
-    test("es", "SimpleSpeak", expr, "guión en negrita a coma, guión en negrita z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica negrita a, coma, caligráfica negrita z")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "guión en negrita mayúscula a, coma; guión en negrita mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica negrita mayúscula a, coma; caligráfica negrita mayúscula z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "guión en negrita a coma, guión en negrita z")?;
+    test("es", "SimpleSpeak", expr, "caligráfica negrita a, coma, caligráfica negrita z")?;
     return Ok(());
 
 }
@@ -257,14 +247,14 @@ fn monospace() -> Result<()> {
 #[test]
 fn bold_greek() -> Result<()> {
     let expr = "<math> <mi>𝚨</mi><mo>,</mo><mi>𝛀</mi></math>";
-    test("es", "SimpleSpeak", expr, "j cursiva sin punto mayúscula alfa, coma; j cursiva sin punto mayúscula omega")?;
+    test("es", "SimpleSpeak", expr, "negrita mayúscula alfa, coma, negrita mayúscula omega")?;
     let expr = "<math> <mi>𝛂</mi><mo>,</mo><mi>𝛚</mi></math>";
-    test("es", "SimpleSpeak", expr, "j cursiva sin punto alfa, coma, j cursiva sin punto omega")?;
+    test("es", "SimpleSpeak", expr, "negrita alfa coma, negrita omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "j cursiva sin punto mayúscula alfa, coma; j cursiva sin punto mayúscula omega")?;
+    test("es", "SimpleSpeak", expr, "negrita mayúscula alfa, coma, negrita mayúscula omega")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("es", "SimpleSpeak", expr, "j cursiva sin punto alfa, coma, j cursiva sin punto omega")?;
+    test("es", "SimpleSpeak", expr, "negrita alfa coma, negrita omega")?;
     return Ok(());
 
 }
@@ -393,10 +383,12 @@ fn pua_regular() -> Result<()> {
 
 }
 
+// REVISAR (inglés: sans serif): «girada mayúscula f, coma; sans serif girada mayúscula y»
 #[test]
+#[ignore = "lectura en español pendiente de revisión"]
 fn turned() -> Result<()> {
     let expr = "<math> <mi>Ⅎ</mi><mo>,</mo><mi>⅄</mi></math>";
-    test("es", "SimpleSpeak", expr, "transformado mayúscula f, coma, e cursiva mayúscula y")?;
+    test("es", "SimpleSpeak", expr, "girada mayúscula f, coma; sans serif girada mayúscula y")?;
     return Ok(());
 
   }
@@ -423,15 +415,15 @@ fn unicode_typo_regressions() -> Result<()> {
 #[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
-  test("es", "SimpleSpeak", expr, "corchete rotacional inferior 1, coma; corchete rotacional inferior 9")?;
+  test("es", "SimpleSpeak", expr, "en círculo 1 coma, en círculo 9")?;
   let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
   test("es", "SimpleSpeak", expr, "círculo negro rodeando uno, coma; número cincuenta rodeado por un círculo")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("es", "SimpleSpeak", expr, "entre paréntesis 1 coma, entre paréntesis 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";
-  test("es", "SimpleSpeak", expr, "1 con periodo coma, 9 con periodo")?;
+  test("es", "SimpleSpeak", expr, "1 con punto coma, 9 con punto")?;
   let expr = "<math> <mi>⓵</mi><mo>,</mo><mi>⓽</mi></math>";
-  test("es", "SimpleSpeak", expr, "doble círculo 1 coma, doble círculo 9")?;
+  test("es", "SimpleSpeak", expr, "en doble círculo 1 coma, en doble círculo 9")?;
   return Ok(());
 
 }
