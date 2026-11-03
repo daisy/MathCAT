@@ -398,7 +398,10 @@
   match: ".='sin' or .='sen'"
   replace:
   - bookmark: "@id"
-  - T: "seno"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "sen"]
+      else: [T: "seno"]
 
 - name: cos
   tag: mi
@@ -457,7 +460,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "seno hiperbólico"]
+      then: [T: "sen hache"]
       else: [T: "seno hiperbólico"]
 
 - name: cosh
@@ -467,7 +470,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "coseno hiperbólico"]
+      then: [T: "cos hache"]
       else: [T: "coseno hiperbólico"]
 
 - name: tanh
@@ -477,7 +480,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "tangente hiperbólica"]
+      then: [T: "tan hache"]
       else: [T: "tangente hiperbólica"]
 
 - name: sech
@@ -487,7 +490,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "secante hiperbólica"]
+      then: [T: "sec hache"]
       else: [T: "secante hiperbólica"]
 
 - name: csch
@@ -497,7 +500,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cosecante hiperbólica"]
+      then: [T: "cosec hache"]
       else: [T: "cosecante hiperbólica"]
 
 - name: coth
@@ -507,8 +510,93 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cotangente hiperbólica"]
+      then: [T: "cotan hache"]
       else: [T: "cotangente hiperbólica"]
+
+# funciones trigonométricas inversas: "arcoseno de x" en vez de deletrear "arcsin"
+- name: arcsin
+  tag: mi
+  match: ".='arcsin' or .='arcsen'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcoseno"
+
+- name: arccos
+  tag: mi
+  match: ".='arccos'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocoseno"
+
+- name: arctan
+  tag: mi
+  match: ".='arctan' or .='arctang' or .='arctg'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcotangente"
+
+- name: arcsec
+  tag: mi
+  match: ".='arcsec'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcosecante"
+
+- name: arccsc
+  tag: mi
+  match: ".='arccsc' or .='arccosec'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocosecante"
+
+- name: arccot
+  tag: mi
+  match: ".='arccot' or .='arccotan' or .='arccotg' or .='arcctg'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocotangente"
+
+- name: arcsinh
+  tag: mi
+  match: ".='arcsinh' or .='arcsenh' or .='arsinh' or .='argsinh' or .='argsenh'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcoseno hiperbólico"
+
+- name: arccosh
+  tag: mi
+  match: ".='arccosh' or .='arcosh' or .='argcosh'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocoseno hiperbólico"
+
+- name: arctanh
+  tag: mi
+  match: ".='arctanh' or .='artanh' or .='argtanh' or .='argtgh' or .='arctgh'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcotangente hiperbólica"
+
+- name: arcsech
+  tag: mi
+  match: ".='arcsech' or .='arsech' or .='argsech'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcosecante hiperbólica"
+
+- name: arccsch
+  tag: mi
+  match: ".='arccsch' or .='arccosech' or .='arcsch' or .='argcsch'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocosecante hiperbólica"
+
+- name: arccoth
+  tag: mi
+  match: ".='arccoth' or .='arccotanh' or .='arcoth' or .='argcoth'"
+  replace:
+  - bookmark: "@id"
+  - T: "arcocotangente hiperbólica"
 
 - name: exponential
   tag: mi

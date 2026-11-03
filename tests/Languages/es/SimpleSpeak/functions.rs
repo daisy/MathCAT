@@ -438,3 +438,23 @@ fn simple_ln_terse() -> Result<()> {
                 return Ok(());
 
 }
+
+#[test]
+fn trig_names_terse() -> Result<()> {
+    let expr = "<math><mi>sen</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo><mi>sinh</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo><mi>tgh</mi><mo>&#x2061;</mo><mi>z</mi></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "sen x más sen hache y, más tan hache z")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "seno de x más seno hiperbólico de y, más tangente hiperbólica de z")?;
+    return Ok(());
+}
+
+#[test]
+fn arc_trig_names() -> Result<()> {
+    let expr = "<math><mi>arcsen</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo><mi>arctan</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo><mi>argsenh</mi><mo>&#x2061;</mo><mi>z</mi></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "arcoseno de x más arcotangente de y, más arcoseno hiperbólico de z")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "arcoseno x más arcotangente y, más arcoseno hiperbólico, z")?;
+    return Ok(());
+}
