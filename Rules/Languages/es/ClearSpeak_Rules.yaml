@@ -226,13 +226,17 @@
   tag: inverse-function
   match: "."
   replace:
+  # en español el adjetivo va después y concuerda: "seno inverso", "tangente inversa"
   - test:
-      if: $ClearSpeak_Trig = 'TrigInverse'
-      then: [x: "*[1]", bookmark: "*[2]/@id", T: "inverso"]
-      else_test:
-        if: $ClearSpeak_Trig = 'ArcTrig'
-        then: [bookmark: "*[2]/@id", T: "arco", x: "*[1]"]
-        else: [bookmark: "*[2]/@id", T: "inverso", x: "*[1]"] # default/Auto
+      if: $ClearSpeak_Trig = 'ArcTrig'
+      then: [bookmark: "*[2]/@id", T: "arco", x: "*[1]"]
+      else:   # TrigInverse y default/Auto
+      - x: "*[1]"
+      - bookmark: "*[2]/@id"
+      - test:
+          if: "*[1][.='sin' or .='sen' or .='cos' or .='sinh' or .='senh' or .='cosh' or .='log' or .='ln']"
+          then: [T: "inverso"]     # phrase(seno 'inverso')
+          else: [T: "inversa"]     # phrase(tangente 'inversa')
 
 - name: function-squared-or-cubed
   tag: power

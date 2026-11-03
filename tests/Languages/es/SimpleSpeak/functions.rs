@@ -44,9 +44,19 @@ fn hyperbolic_trig_names() -> Result<()> {
 #[test]
 fn inverse_trig() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "inverso seno de x")?;
+    test("es", "SimpleSpeak", expr, "seno inverso de x")?;
     return Ok(());
 
+}
+
+// prueba propia del español: "inverso"/"inversa" concuerda con la función
+#[test]
+fn inverse_trig_gender() -> Result<()> {
+    let expr = "<math><msup><mi>tan</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "tangente inversa de x")?;
+    let expr = "<math><msup><mi>cos</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "coseno inverso de x")?;
+    return Ok(());
 }
 
 #[test]

@@ -1,6 +1,17 @@
 ---
 
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
+- name: one-sided-limit
+  # "x → 0⁻" se lee "x tiende a 0 por la izquierda"; "x → 0⁺", "x tiende a 0 por la derecha"
+  tag: [say-super, msup, power]
+  match: "*[2][self::m:mo][.='-' or .='−' or .='+'] and ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "*[2][.='+']"
+      then: [T: "por la derecha"]      # phrase(x tiende a 0 'por la derecha')
+      else: [T: "por la izquierda"]    # phrase(x tiende a 0 'por la izquierda')
+
 - name: pos-neg-number-sets
   tag: number-sets
   match: "count(*)=2 and *[2][.='+' or .='-']"

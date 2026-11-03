@@ -65,6 +65,28 @@ fn limit_from_below() -> Result<()> {
 
 }
 
+// prueba propia del español: "0⁻" y "0⁺" dentro de un límite
+#[test]
+fn limit_one_sided_superscript() -> Result<()> {
+    let expr = "<math>
+            <munder>
+            <mo>lim</mo>
+            <mrow>  <mi>x</mi> <mo>→</mo>  <msup><mn>0</mn><mo>-</mo></msup>  </mrow>
+            </munder>
+            <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
+        </math>";
+    test("es", "SimpleSpeak", expr, "el límite cuando x tiende a 0 por la izquierda, de seno de x")?;
+    let expr = "<math>
+            <munder>
+            <mo>lim</mo>
+            <mrow>  <mi>x</mi> <mo>→</mo>  <msup><mn>0</mn><mo>+</mo></msup>  </mrow>
+            </munder>
+            <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
+        </math>";
+    test("es", "ClearSpeak", expr, "el límite cuando x tiende a 0 por la derecha, de seno x")?;
+    return Ok(());
+}
+
 
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {

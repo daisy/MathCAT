@@ -135,8 +135,12 @@
   tag: inverse-function
   match: "."
   replace:
-  - T: "inverso"
+  # en español el adjetivo va después y concuerda: "seno inverso", "tangente inversa"
   - x: "*[1]"
+  - test:
+      if: "*[1][.='sin' or .='sen' or .='cos' or .='sinh' or .='senh' or .='cosh' or .='log' or .='ln']"
+      then: [T: "inverso"]     # phrase(seno 'inverso')
+      else: [T: "inversa"]     # phrase(tangente 'inversa')
 
 - name: function-squared-or-cubed
   tag: power
