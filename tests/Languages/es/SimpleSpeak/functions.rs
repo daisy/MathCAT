@@ -107,7 +107,7 @@ fn principal_value_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el log de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "SimpleSpeak", expr, "el log de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -123,7 +123,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -134,9 +134,9 @@ fn normal_ln() -> Result<()> {
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "l n, abrir paréntesis, x más y, cerrar paréntesis")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis")?;
+                expr, "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
-                expr, "el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis")?;
+                expr, "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
                 return Ok(());
 
 }
@@ -277,7 +277,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "b, se abren paréntesis, x y, se cierran paréntesis")?;
+        test("es", "SimpleSpeak", expr, "b, abrir paréntesis, x y cerrar paréntesis")?;
         return Ok(());
 
     }
@@ -322,7 +322,7 @@ fn no_times_sqrt() -> Result<()> {
         </msup>
         </mrow>
     </mrow></math>";
-        test("es", "SimpleSpeak", expr, "se abren paréntesis, 2 x, se cierran paréntesis al cuadrado")?;
+        test("es", "SimpleSpeak", expr, "abrir paréntesis, 2 x cerrar paréntesis al cuadrado")?;
         return Ok(());
 
     }

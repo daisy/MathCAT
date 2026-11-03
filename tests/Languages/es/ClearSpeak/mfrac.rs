@@ -292,9 +292,9 @@ fn non_simple_function_over_function() -> Result<()> {
             <mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
         </mfrac></math>";
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr,
-             "la fracción con numerador; f de, se abren paréntesis, x más 1, se cierran paréntesis; y denominador g de x")?;
+             "la fracción con numerador; f de, abrir paréntesis, x más 1, cerrar paréntesis; y denominador g de x")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr,
-             "la fracción con numerador; f de, se abren paréntesis, x más 1, se cierran paréntesis; y denominador g de x; fin de fracción")?;
+             "la fracción con numerador; f de, abrir paréntesis, x más 1, cerrar paréntesis; y denominador g de x; fin de fracción")?;
              return Ok(());
 
 }

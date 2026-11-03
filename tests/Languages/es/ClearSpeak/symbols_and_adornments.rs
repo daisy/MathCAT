@@ -201,7 +201,7 @@ fn vertical_line_divides() -> Result<()> {
                 </mrow>
             </math>";
         test_ClearSpeak_prefs("es", vec![("ClearSpeak_VerticalLine", "Given"), ("ClearSpeak_ImpliedTimes", "None")]
-                        , expr, "mayúscula p; se abren paréntesis, mayúscula a dado mayúscula b; se cierran paréntesis")?;
+                        , expr, "mayúscula p; abrir paréntesis, mayúscula a dado mayúscula b; cerrar paréntesis")?;
                         return Ok(());
     }
 

@@ -172,8 +172,8 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis, mayúscula a dado mayúscula b; se cierran paréntesis")?;
-    test("es", "ClearSpeak", expr,  "mayúscula p; se abren paréntesis, mayúscula a dado mayúscula b; se cierran paréntesis")?; // not good, but follows the spec
+    test("es", "SimpleSpeak", expr, "mayúscula p; abrir paréntesis, mayúscula a dado mayúscula b; cerrar paréntesis")?;
+    test("es", "ClearSpeak", expr,  "mayúscula p; abrir paréntesis, mayúscula a dado mayúscula b; cerrar paréntesis")?; // not good, but follows the spec
     return Ok(());
 
 }
@@ -307,7 +307,7 @@ fn ignore_period() -> Result<()> {
       </annotation-xml>
     </semantics>  
   </math>";
-    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis; mayúscula a y mayúscula b; se cierran paréntesis; es igual a; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; es igual a; mayúscula p de mayúscula a; mayúscula p de mayúscula b")?;
+    test("es", "SimpleSpeak", expr, "mayúscula p; abrir paréntesis, mayúscula a y mayúscula b; cerrar paréntesis; es igual a; mayúscula p; abrir paréntesis, mayúscula a intersección mayúscula b; cerrar paréntesis; es igual a; mayúscula p de mayúscula a; mayúscula p de mayúscula b")?;
     return Ok(());
 
 }
@@ -395,7 +395,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("es", "ClearSpeak", expr, "mayúscula p; se abren paréntesis, mayúscula a divide a mayúscula b; se cierran paréntesis; es igual a; la fracción con numerador; mayúscula p; se abren paréntesis, mayúscula a intersección mayúscula b; se cierran paréntesis; y denominador mayúscula p de mayúscula b")?;
+    test("es", "ClearSpeak", expr, "mayúscula p; abrir paréntesis, mayúscula a divide a mayúscula b; cerrar paréntesis; es igual a; la fracción con numerador; mayúscula p; abrir paréntesis, mayúscula a intersección mayúscula b; cerrar paréntesis; y denominador mayúscula p de mayúscula b")?;
     return Ok(());
 
 }
@@ -564,7 +564,7 @@ fn literal_speak_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#;
-  test("es", "LiteralSpeak", expr, "forzado f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
+  test("es", "LiteralSpeak", expr, "forzado f, abrir paréntesis, x signo de exclamación, cerrar paréntesis")?;
   return Ok(());
 
 }
@@ -585,7 +585,7 @@ fn literal_speak_with_property() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("es", "LiteralSpeak", expr, "f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
+  test("es", "LiteralSpeak", expr, "f, abrir paréntesis, x signo de exclamación, cerrar paréntesis")?;
   return Ok(());
 
 }
@@ -626,7 +626,7 @@ fn literal_intent_property_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("es", "SimpleSpeak", expr, "forzado f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
+  test("es", "SimpleSpeak", expr, "forzado f, abrir paréntesis, x signo de exclamación, cerrar paréntesis")?;
   return Ok(());
 
 }

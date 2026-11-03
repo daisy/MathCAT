@@ -51,16 +51,16 @@
         then_test:
             if: "$Verbosity='Terse'"
             then: [T: "abrir paréntesis"]                	# 	(en: 'open', google translation)
-            else: [T: "se abren paréntesis"]   	# 	(en: 'open paren', MathPlayer: 'paréntesis', google: 'paréntesis abierto')
-        else: [T: "se abren paréntesis"]       	# 	(en: 'left paren', MathPlayer: 'paréntesis', google: 'paréntesis dejado')
+            else: [T: "abrir paréntesis"]   	# 	(en: 'open paren', MathPlayer: 'paréntesis', google: 'paréntesis abierto')
+        else: [T: "abrir paréntesis"]       	# 	(en: 'left paren', MathPlayer: 'paréntesis', google: 'paréntesis dejado')
  - ")":                                         	#  0x29
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then_test:
             if: "$Verbosity='Terse'"
             then: [T: "cerrar paréntesis"]                  	# 	(en: 'close', google translation)
-            else: [T: "se cierran paréntesis"]     	# 	(en: 'close paren', MathPlayer: 'cierra paréntesis', google: 'paréntesis cercana')
-        else: [T: "se cierran paréntesis"]         	# 	(en: 'right paren', MathPlayer: 'cierra paréntesis')
+            else: [T: "cerrar paréntesis"]     	# 	(en: 'close paren', MathPlayer: 'cierra paréntesis', google: 'paréntesis cercana')
+        else: [T: "cerrar paréntesis"]         	# 	(en: 'right paren', MathPlayer: 'cierra paréntesis')
 
  - "*":                                         	#  0x2a
     test:
@@ -120,14 +120,14 @@
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "abrir corchetes"]            	# 	(en: 'open bracket', google translation)
-        else: [T: "se abren corchetes"]         	# 	(en: 'left bracket', MathPlayer: 'abre corchetes', google: 'soporte izquierdo')
+        then: [T: "abrir corchete"]            	# 	(en: 'open bracket', google translation)
+        else: [T: "abrir corchete"]         	# 	(en: 'left bracket', MathPlayer: 'abre corchetes', google: 'soporte izquierdo')
  - "\\": [T: "barra invertida"]              	#  0x5c	(en: 'back slash', MathPlayer: 'abre corchetes', google: 'back slash')
  - "]":                                         	#  0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "cerrar corchetes"]          	# 	(en: 'close bracket', google translation)
-        else: [T: "se cierran corchetes"]           	# 	(en: 'right bracket', MathPlayer: 'cierra corchetes', google: 'soporte derecho')
+        then: [T: "cerrar corchete"]          	# 	(en: 'close bracket', google translation)
+        else: [T: "cerrar corchete"]           	# 	(en: 'right bracket', MathPlayer: 'cierra corchetes', google: 'soporte derecho')
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
@@ -138,8 +138,8 @@
  - "{":                                         	#  0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "abrir llaves"]         	# 	(en: 'open brace', google translation)
-        else: [T: "se abren llaves"]            	# 	(en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
+        then: [T: "abrir llave"]         	# 	(en: 'open brace', google translation)
+        else: [T: "abrir llave"]            	# 	(en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -167,8 +167,8 @@
  - "}":                                         	#  0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "cerrar llaves"]          	# 	(en: 'close brace', google translation)
-        else: [T: "se cierran llaves"]             	# 	(en: 'right brace', MathPlayer: 'cierra llaves', google: 'abrazadera derecha')
+        then: [T: "cerrar llave"]          	# 	(en: 'close brace', google translation)
+        else: [T: "cerrar llave"]             	# 	(en: 'right brace', MathPlayer: 'cierra llaves', google: 'abrazadera derecha')
 
  - "~": [T: "tilde"]                            	#  0x7e
  - " ":                                         	#  0xa0

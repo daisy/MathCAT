@@ -301,10 +301,10 @@ fn nested_non_simple_squared_exp() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 elevado al exponente, se abren paréntesis, x más 1, se cierran paréntesis al cuadrado, fin de exponente")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 elevado al exponente, se abren paréntesis, x más 1, se cierran paréntesis a la segunda, fin de exponente")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 elevado al exponente, se abren paréntesis, x más 1, se cierran paréntesis a la segunda potencia, fin de exponente")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 elevado al exponente, se abren paréntesis, x más 1, se cierran paréntesis elevado a la potencia 2; fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 elevado al exponente, abrir paréntesis, x más 1, cerrar paréntesis al cuadrado, fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 elevado al exponente, abrir paréntesis, x más 1, cerrar paréntesis a la segunda, fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 elevado al exponente, abrir paréntesis, x más 1, cerrar paréntesis a la segunda potencia, fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 elevado al exponente, abrir paréntesis, x más 1, cerrar paréntesis elevado a la potencia 2; fin de exponente")?;
   return Ok(());
 
 }
@@ -354,13 +354,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis al cuadrado, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis al cuadrado, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis a la segunda, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis a la segunda potencia, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis a la segunda potencia, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis elevado a la potencia 2; fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; abrir paréntesis; la fracción con numerador; x menos mu; y denominador sigma; cerrar paréntesis elevado a la potencia 2; fin de exponente")?;
        return Ok(());
 
 }

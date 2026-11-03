@@ -115,7 +115,7 @@ fn principal_value_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el log de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "ClearSpeak", expr, "el log de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -131,7 +131,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el logaritmo en base b, de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "ClearSpeak", expr, "el logaritmo en base b, de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -147,7 +147,7 @@ fn simple_ln() -> Result<()> {
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el l n de, se abren paréntesis, x más y, se cierran paréntesis")?;
+    test("es", "ClearSpeak", expr, "el l n de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -167,7 +167,7 @@ fn simple_natural_log() -> Result<()> {
 fn natural_log() -> Result<()> {
     let expr = "<math><mi>ln</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
     test_ClearSpeak("es", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis")?;
+        "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn test_functions_none_pref() -> Result<()> {
     <mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Functions", "None",expr,
-        "el log de, se abren paréntesis, x más y, se cierran paréntesis; más; f multiplicado por; se abren paréntesis, x más y, se cierran paréntesis")?;
+        "el log de, abrir paréntesis, x más y, cerrar paréntesis; más; f multiplicado por; abrir paréntesis, x más y, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -226,7 +226,7 @@ fn test_functions_none_pref_multiple_args() -> Result<()> {
         <mi>B</mi> <mrow><mo>(</mo> <mrow> <mn>2</mn><mo>,</mo><mn>6</mn></mrow> <mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Functions", "None",expr,
-        "mayúscula b multiplicado por; se abren paréntesis, 2 coma, 6, se cierran paréntesis")?;
+        "mayúscula b multiplicado por; abrir paréntesis, 2 coma, 6, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -292,7 +292,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes",expr,
-        "se abren paréntesis, 2 multiplicado por x, se cierran paréntesis al cuadrado")?;
+        "abrir paréntesis, 2 multiplicado por x, cerrar paréntesis al cuadrado")?;
         return Ok(());
 
 }
@@ -309,7 +309,7 @@ fn explicit_times_more_implied_times() -> Result<()> {
 fn explicit_times_none_simple_right() -> Result<()> {
     let expr = "<math><mn>2</mn><mo>[</mo><mn>3</mn> <mo>]</mo></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "None",
-        expr, "2, abrir corchetes 3 cerrar corchetes")?;
+        expr, "2, abrir corchete 3 cerrar corchete")?;
         return Ok(());
 
 }
@@ -318,7 +318,7 @@ fn explicit_times_none_simple_right() -> Result<()> {
 fn explicit_times_none_simple_left() -> Result<()> {
     let expr = "<math><mo>(</mo><mn>2</mn><mo>&#x2212;</mo><mn>1</mn><mo>)</mo><mi>x</mi></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "None",
-        expr, "se abren paréntesis, 2 menos 1, se cierran paréntesis; x")?;
+        expr, "abrir paréntesis, 2 menos 1, cerrar paréntesis; x")?;
         return Ok(());
 
 }
@@ -337,7 +337,7 @@ fn explicit_times_none_superscript() -> Result<()> {
     </math>";
     test_ClearSpeak_prefs("es", 
         vec![("ClearSpeak_ImpliedTimes", "None"), ("ClearSpeak_Functions", "None")],
-        expr, "f, se abren paréntesis x se cierran paréntesis; es igual a; x al cuadrado, se abren paréntesis, x más 1, se cierran paréntesis")?;
+        expr, "f, abrir paréntesis x cerrar paréntesis; es igual a; x al cuadrado, abrir paréntesis, x más 1, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -366,7 +366,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "ClearSpeak", expr, "b, se abren paréntesis, x y, se cierran paréntesis")?;
+        test("es", "ClearSpeak", expr, "b, abrir paréntesis, x y cerrar paréntesis")?;
         return Ok(());
 
     }
@@ -412,7 +412,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         </msup>
         </mrow>
     </mrow></math>";
-        test("es", "ClearSpeak", expr, "se abren paréntesis, 2 x, se cierran paréntesis al cuadrado")?;
+        test("es", "ClearSpeak", expr, "abrir paréntesis, 2 x cerrar paréntesis al cuadrado")?;
         return Ok(());
 
     }

@@ -35,7 +35,7 @@ fn sulfate() -> Result<()> {
           <mrow><mo>[</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>]</mo></mrow>
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "abrir corchetes, mayúscula s, mayúscula o, sub 4; cerrar corchetes superíndice 2 menos")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "abrir corchete, mayúscula s, mayúscula o, sub 4; cerrar corchete superíndice 2 menos")?;
   return Ok(());
 
 }
@@ -45,8 +45,8 @@ fn aluminum_sulfate() -> Result<()> {
   let expr = "<math><mrow><msub><mi>Al</mi><mn>2</mn></msub>
           <msub><mrow><mo>(</mo><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>)</mo></mrow><mn>3</mn></msub></mrow></math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula a l, 2; abrir paréntesis, mayúscula s, mayúscula o, 4; cerrar paréntesis 3")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula a l, sub 2; se abren paréntesis; mayúscula s, mayúscula o, sub 4; se cierran paréntesis sub 3")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "mayúscula a l, subíndice 2; se abren paréntesis; mayúscula s, mayúscula o, subíndice 4; se cierran paréntesis subíndice 3")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "mayúscula a l, sub 2; abrir paréntesis, mayúscula s, mayúscula o, sub 4; cerrar paréntesis sub 3")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "mayúscula a l, subíndice 2; abrir paréntesis; mayúscula s, mayúscula o, subíndice 4; cerrar paréntesis subíndice 3")?;
   return Ok(());
 
 }
@@ -84,11 +84,11 @@ fn dichlorine_hexoxide() -> Result<()> {
       </msup>
     </mrow></math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], 
-    expr, "abrir corchetes, mayúscula c l; mayúscula o, 2; cerrar corchetes más; abrir corchetes, mayúscula c l; mayúscula o, 4; cerrar corchetes menos")?;
+    expr, "abrir corchete, mayúscula c l; mayúscula o, 2; cerrar corchete más; abrir corchete, mayúscula c l; mayúscula o, 4; cerrar corchete menos")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], 
-    expr, "abrir corchetes, mayúscula c l; mayúscula o, sub 2; cerrar corchetes superíndice más; abrir corchetes, mayúscula c l; mayúscula o, sub 4; cerrar corchetes superíndice menos")?;
+    expr, "abrir corchete, mayúscula c l; mayúscula o, sub 2; cerrar corchete superíndice más; abrir corchete, mayúscula c l; mayúscula o, sub 4; cerrar corchete superíndice menos")?;
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], 
-    expr, "abrir corchetes; mayúscula c l; mayúscula o, subíndice 2; cerrar corchetes superíndice más; abrir corchetes; mayúscula c l; mayúscula o, subíndice 4; cerrar corchetes superíndice menos")?;
+    expr, "abrir corchete, mayúscula c l; mayúscula o, subíndice 2; cerrar corchete superíndice más; abrir corchete, mayúscula c l; mayúscula o, subíndice 4; cerrar corchete superíndice menos")?;
                           return Ok(());
 
 }

@@ -1157,8 +1157,8 @@ fn matrix_simple_table() -> Result<()> {
 #[test]
 fn mtable_prefix_op() -> Result<()>{
     // When a table is prefixed with a non-blank operator, assume it is something besides array intent
-    for (op, speech) in [("(", "se abren paréntesis; 2 líneas; línea 1; 3; línea 2; 2"),
-			 ("[", "abrir corchetes, 2 líneas; línea 1; 3; línea 2; 2"),
+    for (op, speech) in [("(", "abrir paréntesis, 2 líneas; línea 1; 3; línea 2; 2"),
+			 ("[", "abrir corchete, 2 líneas; línea 1; 3; línea 2; 2"),
 			 ("|", "barra vertical, 2 líneas; línea 1; 3; línea 2; 2"),
 			 ("f", "f, 2 líneas; línea 1; 3; línea 2; 2")] {
 	let expr = format!("<math>

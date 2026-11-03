@@ -274,7 +274,7 @@ fn nested_non_simple_squared_exp() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "3 elevado a se abren paréntesis, x más 1, se cierran paréntesis al cuadrado fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "3 elevado a abrir paréntesis, x más 1, cerrar paréntesis al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -357,7 +357,7 @@ fn nested_complex_power() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a menos un medio por; se abren paréntesis; fracción, x menos mu, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "e elevado a menos un medio por; abrir paréntesis; fracción, x menos mu, partido por sigma, fin de fracción; cerrar paréntesis al cuadrado fin de exponente")?;
   return Ok(());
 
 }
