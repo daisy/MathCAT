@@ -603,7 +603,7 @@
 
 - PluralForms: {
   # FIX: this needs to be flushed out
-    "lumen": "lúmenes",
+    "lumen": "lúmenes", "lux": "lux",
     "colón": "colones", "bitcóin": "bitcoines",
     "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
     "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",

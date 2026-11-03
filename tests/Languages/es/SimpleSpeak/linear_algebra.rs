@@ -86,7 +86,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("es", "SimpleSpeak", expr, "p norma de f")?;
+  test("es", "SimpleSpeak", expr, "norma p de f")?;
   return Ok(());
 
 }

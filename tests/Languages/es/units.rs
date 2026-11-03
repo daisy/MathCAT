@@ -103,7 +103,7 @@ fn si_derived_1() -> Result<()> {
         <mn>1</mn><mi intent=":unit">lx</mi><mo>,</mo><mn>2</mn><mi intent=":unit">lx</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 becquerel, coma, 2 becquereles, coma, 1 culombio, coma, 2 culombios, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 faradio, coma, 2 faradios, coma, 1 gray, coma, 2 grays, coma, 1 henrio, coma, 2 henrios, coma, 1 hercio, coma, 2 hercios, coma, 1 julio, coma, 2 julios, coma, 1 katal, coma, 2 katales, coma, 1 lumen, coma, 2 lúmenes, coma, 1 lux coma, 2 luxs")?;
+        "1 becquerel, coma, 2 becquereles, coma, 1 culombio, coma, 2 culombios, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 faradio, coma, 2 faradios, coma, 1 gray, coma, 2 grays, coma, 1 henrio, coma, 2 henrios, coma, 1 hercio, coma, 2 hercios, coma, 1 julio, coma, 2 julios, coma, 1 katal, coma, 2 katales, coma, 1 lumen, coma, 2 lúmenes, coma, 1 lux coma, 2 lux")?;
                 return Ok(());
 
 }
@@ -125,7 +125,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">p℃</mi><mo>,</mo><mn>2</mn><mi intent=":unit">n℃</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quettabecquerel, coma; 2 ronnabecquereles, coma; 1 yottaculombio, coma; 2 zettaculombios, coma; 1 exafaradio, coma; 2 petafaradios, coma, 1 teragray, coma, 2 gigagrays, coma; 1 megahenrio, coma; 2 kilohenrios, coma; 1 decahercio, coma; 2 decihercios, coma; 1 centijulio, coma; 2 milijulios, coma; 1 microkatal, coma; 2 nanokatales, coma, 1 picolumen, coma; 2 femtolúmenes, coma, 1 attolux, coma, 2 zeptoluxs, coma; 1 miligrado Celsius, coma; 2 microgrados Celsius, coma; 1 picogrado Celsius, coma; 2 nanogrados Celsius")?;
+        "1 quettabecquerel, coma; 2 ronnabecquereles, coma; 1 yottaculombio, coma; 2 zettaculombios, coma; 1 exafaradio, coma; 2 petafaradios, coma, 1 teragray, coma, 2 gigagrays, coma; 1 megahenrio, coma; 2 kilohenrios, coma; 1 decahercio, coma; 2 decihercios, coma; 1 centijulio, coma; 2 milijulios, coma; 1 microkatal, coma; 2 nanokatales, coma, 1 picolumen, coma; 2 femtolúmenes, coma, 1 attolux, coma, 2 zeptolux, coma; 1 miligrado Celsius, coma; 2 microgrados Celsius, coma; 1 picogrado Celsius, coma; 2 nanogrados Celsius")?;
                 return Ok(());
 
 }
