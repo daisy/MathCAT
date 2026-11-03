@@ -337,7 +337,7 @@ fn no_times_sqrt() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("es", "SimpleSpeak", expr, "2 más 1 medio")?;
+        test("es", "SimpleSpeak", expr, "2 más un medio")?;
         return Ok(());
 
     }

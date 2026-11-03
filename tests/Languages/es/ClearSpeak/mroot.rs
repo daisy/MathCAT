@@ -157,7 +157,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </mroot>
                 </math>";
-    test("es", "ClearSpeak", expr, "la raíz de índice 1 tercio de x")?;
+    test("es", "ClearSpeak", expr, "la raíz de índice un tercio de x")?;
     return Ok(());
 
 }

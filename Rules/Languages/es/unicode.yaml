@@ -39,10 +39,10 @@
             then: [T: "exclamación"]                      # 0x21	(en: 'bang')
             else: [T: "signo de exclamación"]          # 0x21	(en: 'exclamation point')
         else: [T: "factorial"]                     # 0x21
- - "\"": [T: "barra inversa"]                   	#  0x22	(en: 'quotation mark')
+ - "\"": [T: "comillas"]                   	#  0x22	(en: 'quotation mark')
  - "#": [T: "almohadilla"]                      	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
  - "$": [T: "dólar"]                            	#  0x24	(en: 'dollars')
- - "%": [T: "porciento"]                        	#  0x25	(en: 'percent')
+ - "%": [T: "por ciento"]                        	#  0x25	(en: 'percent')
  - "&": [T: "ampersand"]                        	#  0x26
  - "'": [T: "apóstrofo"]                            	#  0x27	(en: 'apostrophe', MathPlayer: 'apóstrofo', google: 'apóstrofe')
  - "(":                                         	#  0x28
@@ -122,7 +122,7 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "abrir corchetes"]            	# 	(en: 'open bracket', google translation)
         else: [T: "se abren corchetes"]         	# 	(en: 'left bracket', MathPlayer: 'abre corchetes', google: 'soporte izquierdo')
- - "\\": [T: "se abren corchetes"]              	#  0x5c	(en: 'back slash', MathPlayer: 'abre corchetes', google: 'back slash')
+ - "\\": [T: "barra invertida"]              	#  0x5c	(en: 'back slash', MathPlayer: 'abre corchetes', google: 'back slash')
  - "]":                                         	#  0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -181,12 +181,13 @@
  - "¢": [T: "centavo"]                          	#  0xa2	(en: 'cents')
  - "£": [T: "libra esterlina"]                  	#  0xa3	(en: 'pounds')
  - "¬": [T: "no"]                         	#  0xac	(en: 'not')
- - "°": [T: "grado"]                            	#  0xb0	(en: 'degrees')
+ - "°": [T: "grados"]                            	#  0xb0	(en: 'degrees')
  - "±": [T: "más menos"]                        	#  0xb1	(en: 'plus or minus')
  - "´": [T: "acento agudo"]                     	#  0xb4	(en: 'acute')
  - "·":                                            # 0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        # en español el punto medio es un signo de multiplicar (2·5 = "2 por 5"); el inglés dice "dot" en SimpleSpeak
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot != 'Auto')"
         then: [T: "punto"]      # 	(en: 'dot')
         else_test:
             if: "$Verbosity = 'Verbose'"
@@ -256,8 +257,8 @@
  - "ι": [T: "iota"]                             	#  0x3b9
  - "κ": [T: "kappa"]                            	#  0x3ba
  - "λ": [T: "lambda"]                           	#  0x3bb
- - "μ": [T: "my"]                               	#  0x3bc	(en: 'mu', google: 'mu')
- - "ν": [T: "ny"]                               	#  0x3bd	(en: 'nu', google: 'nu')
+ - "μ": [T: "mu"]                               	#  0x3bc	(en: 'mu', google: 'mu')
+ - "ν": [T: "nu"]                               	#  0x3bd	(en: 'nu', google: 'nu')
  - "ξ": [T: "xi"]                               	#  0x3be	(en: 'zai', google: 'zai')
  - "ο": [T: "ómicron"]                          	#  0x3bf	(en: 'omicron', google: 'omicron')
  - "π": [T: "pi"]                               	#  0x3c0
@@ -284,14 +285,14 @@
 
  - "℃": [T: "grados Celsius"]               	#  0x2103	(en: 'degrees celsius', google: 'grados celsius')
  - "ℋℛℓ":                                       	#  0x210b
-    - T: "grados Fahrenheit"                    	# 	(en: 'script', google: 'guion')
+    - T: "caligráfica"                    	# 	(en: 'script')
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℜ":                                         	#  0x211c
     - T: "r mayúscula partida"                  	# 	(en: 'fraktur', google: 'fraktur')
     - spell: "'R'"
 
  - "ⅆⅇⅈⅉ":                                      	#  0x2146-9
-    - T: "angstrom resaltado"                             	# 	(en: 'double-struck italic')
+    - T: "cursiva de doble trazo"                             	# 	(en: 'double-struck italic')
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
  - "∥":                                           # 0x2225
@@ -521,9 +522,9 @@
  - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')
  - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
  - "∣": [T: "divide a"]                         	#  0x2223	(en: 'divides')
- - "∤": [T: "indivisible"]                      	#  0x2224	(en: 'does not divide')
+ - "∤": [T: "no divide a"]                      	#  0x2224	(en: 'does not divide')
  - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
- - "∼": [T: "distinto de"]                            	#  0x223c	(en: 'varies with')
+ - "∼": [T: "varía con"]                            	#  0x223c	(en: 'varies with')
  - "∽": [T: "tilde inversa"]                  	#  0x223d	(en: 'reversed tilde')
  - "∿": [T: "onda sinusoidal"]                        	#  0x223f	(en: 'sine wave')
  - "≦": [T: "menor o igual a"]                	#  0x2266	(en: 'less than over equal to')

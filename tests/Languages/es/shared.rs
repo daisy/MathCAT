@@ -663,3 +663,17 @@ fn spanish_function_names() -> Result<()> {
   test("es", "ClearSpeak", expr, "seno hiperbólico de x")?;
   return Ok(());
 }
+
+// pruebas propias del español: símbolos que cambiaban el significado
+#[test]
+fn spanish_symbols_p1() -> Result<()> {
+  test("es", "SimpleSpeak", "<math><mn>2</mn><mo>·</mo><mn>5</mn></math>", "2 por 5")?;
+  test("es", "SimpleSpeak", "<math><mn>2</mn><mo>⋅</mo><mn>5</mn></math>", "2 por 5")?;
+  test("es", "ClearSpeak", "<math><mn>2</mn><mo>⋅</mo><mn>5</mn></math>", "2 por 5")?;
+  test("es", "SimpleSpeak", "<math><mi>a</mi><mo>∤</mo><mi>b</mi></math>", "a no divide a b")?;
+  test("es", "SimpleSpeak", "<math><mn>90</mn><mo>°</mo></math>", "90 grados")?;
+  test("es", "SimpleSpeak", "<math><mn>5</mn><mo>%</mo></math>", "5 por ciento")?;
+  test("es", "SimpleSpeak", "<math><mi>μ</mi><mo>+</mo><mi>ν</mi></math>", "mu más nu")?;
+  test("es", "SimpleSpeak", "<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>", "un medio")?;
+  return Ok(());
+}

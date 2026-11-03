@@ -9,7 +9,7 @@ fn common_fraction_half() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "1 medio")?;
+    test("es", "ClearSpeak", expr, "un medio")?;
     return Ok(());
 
 }
@@ -98,7 +98,7 @@ fn mixed_number() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 y 1 medio")?;
+    test("es", "ClearSpeak", expr, "3 y un medio")?;
     return Ok(());
 
 }
@@ -110,7 +110,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 y 1 octavo")?;
+    test("es", "ClearSpeak", expr, "3 y un octavo")?;
     return Ok(());
 
 }
@@ -172,14 +172,14 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 medio partido por 2 tercios")?;
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 medio partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "un medio partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "un medio partido por 2 tercios")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 partido por 2 partido por 2 partido por 3")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
             "la fracción la fracción 1 partido por 2 partido por la fracción 2 partido por 3")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "la fracción con numerador la fracción con numerador 1; y denominador 2; y denominador la fracción con numerador 2; y denominador 3")?;
-    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 medio partido por 2 tercios")?;
+    test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "un medio partido por 2 tercios")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
             "la fracción con numerador la fracción con numerador 1; y denominador 2; fin de fracción; y denominador la fracción con numerador 2; y denominador 3; fin de fracción; fin de fracción")?;
     test_prefs("es", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,

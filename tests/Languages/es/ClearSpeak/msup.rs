@@ -118,7 +118,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </msup>
                 </math>";
-  test("es", "ClearSpeak", expr, "x elevado a 1 tercio fin de exponente")?;
+  test("es", "ClearSpeak", expr, "x elevado a un tercio fin de exponente")?;
   return Ok(());
 
 }
@@ -225,7 +225,7 @@ fn nested_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e elevado a 1 medio x al cuadrado")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e elevado a un medio x al cuadrado")?;
   return Ok(());
 
 }
@@ -249,10 +249,10 @@ fn nested_negative_number_times_squared() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e elevado a menos 1 medio x al cuadrado")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e elevado al exponente, menos 1 medio x a la segunda, fin de exponente")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e elevado al exponente, menos 1 medio x a la segunda potencia, fin de exponente")?;
-  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e elevado al exponente, menos 1 medio x elevado a la potencia 2; fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "e elevado a menos un medio x al cuadrado")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "e elevado al exponente, menos un medio x a la segunda, fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "e elevado al exponente, menos un medio x a la segunda potencia, fin de exponente")?;
+  test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "e elevado al exponente, menos un medio x elevado a la potencia 2; fin de exponente")?;
   return Ok(());
 
 }
@@ -354,13 +354,13 @@ fn nested_complex_power() -> Result<()> {
       </mrow>
       </math>";
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr,
-       "e elevado al exponente, menos 1 medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos my; y denominador sigma; se cierran paréntesis al cuadrado, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis al cuadrado, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr,
-       "e elevado al exponente, menos 1 medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos my; y denominador sigma; se cierran paréntesis a la segunda, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis a la segunda, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr,
-       "e elevado al exponente, menos 1 medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos my; y denominador sigma; se cierran paréntesis a la segunda potencia, fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis a la segunda potencia, fin de exponente")?;
   test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr,
-       "e elevado al exponente, menos 1 medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos my; y denominador sigma; se cierran paréntesis elevado a la potencia 2; fin de exponente")?;
+       "e elevado al exponente, menos un medio multiplicado por; se abren paréntesis; la fracción con numerador; x menos mu; y denominador sigma; se cierran paréntesis elevado a la potencia 2; fin de exponente")?;
        return Ok(());
 
 }

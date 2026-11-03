@@ -878,7 +878,10 @@
     - test: 
         if: "@data-chem-formula-op"
         then: [T: "punto"]                      	# 	(en: 'dot', google translation)
-        else: [T: "punto"]                      	# 	(en: 'times')
+        else_test:
+            if: "$Verbosity = 'Verbose'"
+            then: [T: "multiplicado por"]      # 	(en: 'times')
+            else: [T: "por"]      # 	(en: 'times')
 
  - "⋆": [T: "operador estrella"]                         	#  0x22c6	(en: 'times')
  - "⋇": [T: "dividido por"]                     	#  0x22c7	(en: 'division times')
@@ -1176,7 +1179,7 @@
  - "▰": [T: "paralelogramo negro"]              	#  0x25b0	(en: 'black parallelogram', google: 'paralelograma negro')
  - "▱": [T: "paralelogramo blanco"]                    	#  0x25b1	(en: 'white parallelogram')
  - "▲": [T: "triángulo negro apuntando hacia arriba"]                	#  0x25b2	(en: 'black up pointing triangle')
- - "△": [T: "triángulo blanco apuntando hacia arriba"]                        	#  0x25b3	(en: 'white up pointing triangle')
+ - "△": [T: "triángulo"]                        	#  0x25b3	(en: 'white up pointing triangle')
  - "▴": [T: "triángulo negro pequeño apuntando hacia arriba"]                	#  0x25b4	(en: 'black up pointing small triangle')
  - "▵": [T: "triángulo blanco pequeño apuntando hacia arriba"]                        	#  0x25b5	(en: 'white up pointing small triangle')
  - "▶": [T: "triángulo negro apuntando hacia la derecha"] 	#  0x25b6	(en: 'black right pointing triangle')

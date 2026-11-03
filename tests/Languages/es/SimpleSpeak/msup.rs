@@ -102,7 +102,7 @@ fn simple_fraction_power() -> Result<()> {
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("es", "SimpleSpeak", expr, "x elevado a 1 tercio fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "x elevado a un tercio fin de exponente")?;
   return Ok(());
 
 }
@@ -205,7 +205,7 @@ fn nested_number_times_squared() -> Result<()> {
         </msup>
         </mrow>
         </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a 1 medio x al cuadrado fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "e elevado a un medio x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -229,7 +229,7 @@ fn nested_negative_number_times_squared() -> Result<()> {
     </msup>
     </mrow>
     </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a menos 1 medio x al cuadrado fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "e elevado a menos un medio x al cuadrado fin de exponente")?;
   return Ok(());
 
 }
@@ -357,7 +357,7 @@ fn nested_complex_power() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test("es", "SimpleSpeak", expr, "e elevado a menos 1 medio por; se abren paréntesis; fracción, x menos my, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado fin de exponente")?;
+  test("es", "SimpleSpeak", expr, "e elevado a menos un medio por; se abren paréntesis; fracción, x menos mu, partido por sigma, fin de fracción; se cierran paréntesis al cuadrado fin de exponente")?;
   return Ok(());
 
 }

@@ -427,7 +427,7 @@ fn explicit_times_none_superscript() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("es", "ClearSpeak", expr, "2 más 1 medio")?;
+        test("es", "ClearSpeak", expr, "2 más un medio")?;
         return Ok(());
 
     }
