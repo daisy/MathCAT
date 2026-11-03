@@ -341,7 +341,8 @@
 - KnownWords: {
     # MathCAT junta algunas secuencias de tres o más mi (un error común), pero no las que están en orden alfabético.
     # Esta es la lista de excepciones que sí se juntan. No incluir palabras con letras repetidas.
-    # Por ahora vacía: falta reunir palabras de fórmulas en español que estén en orden alfabético.
+    # Lista inicial; se puede ampliar.
+    "abs", "adj", "bit", "dim", "fin", "lux"
   }
 
 - SIPrefixes: {
