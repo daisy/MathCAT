@@ -52,7 +52,7 @@ fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
     test("es", "SimpleSpeak", expr, "en círculo mayúscula a, coma, en círculo mayúscula z")?;
     let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
-    test("es", "SimpleSpeak", expr, "dentro de un círculo negro mayúscula a, coma; dentro de un círculo negro mayúscula z")?;
+    test("es", "SimpleSpeak", expr, "en círculo negro mayúscula a, coma; en círculo negro mayúscula z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
     test("es", "SimpleSpeak", expr, "en círculo a coma, en círculo z")?;
     return Ok(());
@@ -415,7 +415,7 @@ fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("es", "SimpleSpeak", expr, "en círculo 1 coma, en círculo 9")?;
   let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
-  test("es", "SimpleSpeak", expr, "círculo negro rodeando uno, coma; número cincuenta rodeado por un círculo")?;
+  test("es", "SimpleSpeak", expr, "en círculo negro uno, coma, en círculo cincuenta")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("es", "SimpleSpeak", expr, "entre paréntesis 1 coma, entre paréntesis 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";

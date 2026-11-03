@@ -192,7 +192,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then_test:   # el producto, el coproducto; la suma, la integral, la unión…
-        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨂' or .='⨉']"
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
         then: [OT: "el"]      # phrase('el' producto de k)
         else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
@@ -212,7 +212,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then_test:   # el producto, el coproducto; la suma, la integral, la unión…
-        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨂' or .='⨉']"
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
         then: [OT: "el"]      # phrase('el' producto de k)
         else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
@@ -229,7 +229,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then_test:   # el producto, el coproducto; la suma, la integral, la unión…
-        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨂' or .='⨉']"
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
         then: [OT: "el"]      # phrase('el' producto de k)
         else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
