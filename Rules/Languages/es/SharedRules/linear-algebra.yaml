@@ -15,8 +15,9 @@
       - T: "de"
   - x: "*[1]"
   - test:
-      if: "not(IsNode(*[1], 'simple'))"
-      then: [T: " fin del determinante"]
+      if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
+      then: [T: "fin del determinante"]
+
 
 - name: subscripted-norm
   tag: subscripted-norm
