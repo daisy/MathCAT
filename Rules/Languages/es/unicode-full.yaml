@@ -281,7 +281,11 @@
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then: [T: "doble signo de exclamación"]      # 0x203c	(en: 'double exclamation point')
         else: [T: "doble factorial"]              # 0x203c	(en: 'double factorial')
- - "⁄": [T: "barra de fracción"]                	#  0x2044	(en: 'divided by')
+ - "⁄":                                            # 0x2044
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "barra de fracción"]      # 	(en: 'large slash')
+        else: [T: "dividido por"]              # 	(en: 'divided by')
  - "⁅": [T: "corchete izquierdo"]	#  0x2045	(en: 'left square bracket with quill')
  - "⁆": [T: "corchete derecho"]	#  0x2046	(en: 'right square bracket with quill')
  - "※": [T: "signo de referencia"]	#  0x203b	(en: 'reference mark')
@@ -294,8 +298,6 @@
  - "⁒": [T: "signo menos comercial"]	#  0x2052	(en: 'commercial minus sign')
  - "⁗": [T: "cuádruple prima"]                     	#  0x2057	(en: 'quadruple prime')
  - "⁠": [T: ""]                                 	#  0x2060
- - "⁣": [T: ""]                                 	#  0x2063
- - "⁤": [T: "más"]                              	#  0x2064	(en: 'and', google: 'y')
  - "⁰": [T: "a la potencia de cero"]                    	#  0x2070	(en: 'to the zeroth power', google translation)
  - "ⁱ": [T: "superíndice i"]                    	#  0x2071	(en: 'to the eihth power', google: 'al poder eihth')
  - "⁴": [T: "a la cuarta potencia"]                  	#  0x2074	(en: 'to the fourth power', google translation)
@@ -413,11 +415,7 @@
     - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
  - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
 
- - "ℏ":                                         	#  0x210f
-     - test: 
-         if: "($Verbosity='Terse')"
-         then: [T: "h barra"]                     	# 	(google translation)
-         else: [T: "h barra"]                   	# 	(en: 'reduced planck constant')
+ - "ℏ": [T: "h barra"]                               # 0x210f	(en: 'h bar')
 
  - "ℐℒ℘ℬℰℱℳ":                          # 0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
     - T: "caligráfica"
@@ -616,7 +614,6 @@
  - "⇴": [T: "flecha derecha con círculo pequeño"]	#  0x21f4	(en: 'right arrow with small circle')
  - "⇵": [T: "flecha superior hacia la derecha de flecha inferior"]	#  0x21f5	(en: 'downwards arrow leftwards of upwards arrow')
  - "⇶": [T: "tres flechas hacia la derecha"]                 # 0x21f6
- - ⇷": [T: "flecha hacia la izquierda con trazo vertical"]	#  0x21f7	(en: 'leftwards arrow with vertical stroke')
  - "⇷": [T: "flecha hacia la izquierda con trazo vertical"]	#  0x21f7	(en: 'left arrow with vertical stroke')
  - "⇸": [T: "flecha hacia la derecha con trazo vertical"]	#  0x21f8	(en: 'rightwards arrow with vertical stroke')
  - "⇹": [T: "flecha izquierda derecha con trazo vertical"]	#  0x21f9	(en: 'left right arrow with vertical stroke', google: 'flecha derecha izquierda con carrera vertical')
@@ -635,17 +632,12 @@
  - "∃": [T: "existe"]                           	#  0x2203	(en: 'there exists')
  - "∄": [T: "no existe"]                        	#  0x2204	(en: 'there does not exist')
  - "∅": [T: "conjunto vacío"]                   	#  0x2205	(en: 'empty set')
- - "∇":                                         	#  0x2207
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "el"]                        	# 	(en: 'the', google translation)
-     - T: "gradiente"                           	# 	(en: 'gradient of', google: 'gradiente de')
+ - "∇": [T: "nabla"]                           # 0x2207	(en: 'nahblah')
  - "∋": [T: "comprende"]                      	#  0x220b	(en: 'contains the member')
  - "∌": [T: "no comprende"]                   	#  0x220c	(en: 'does not contain the member')
  - "∍": [T: "comprende"]                      	#  0x220d	(en: 'contains the member')
  - "∎": [T: "fin de demostración"]              	#  0x220e	(en: 'end of proof')
  - "∏": [T: "producto"]                         	#  0x220f	(en: 'product')
- - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'coproduct')
  - "∑": [T: "suma"]                             	#  0x2211	(en: 'sum', SRE: 'sumatorio')
  - "−": [T: "menos"]                            	#  0x2212	(en: 'minus')
  - "∓": [T: "menos más"]                        	#  0x2213	(en: 'minus or plus')
@@ -660,10 +652,11 @@
         then: [T: "punto"]                      	# 	(en: 'dot', google translation)
         else: [T: "bala"]                       	# 	(en: 'times')
 
- - "∛":                                         	#  0x221b
+ - "∛":                                          # 0x221b
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "raíz cúbica de"]                         	# 	(en: 'cube root of')
+         then: [OT: "la"]      # 	(en: 'the')
+     - T: "raíz cúbica de"      # 	(en: 'cube root of')
  - "∜":                                         	#  0x221c
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1924,7 +1917,11 @@
  - "⨬": [T: "signo menos con puntos ascendentes"]	#  0x2a2c	(en: 'minus sign with rising dots', google: 'minus firma con puntos ascendentes')
  - "⨭": [T: "signo más en semicírculo izquierdo"]     	#  0x2a2d	(en: 'plus sign in left half circle')
  - "⨮": [T: "signo más en semicírculo derecho"]       	#  0x2a2e	(en: 'plus sign in right half circle')
- - "⨯": [T: "producto vectorial"]               	#  0x2a2f	(en: 'cross product')
+ - "⨯":                                             # 0x2a2f
+      - test: 
+         if: "$Verbosity='Terse'"
+         then: [T: "cruz"]      # 	(en: 'cross')
+         else: [T: "producto vectorial"]      # 	(en: 'cross product')
  - "⨰": [T: "signo de multiplicación con punto encima"]                    	#  0x2a30	(en: 'multiplication sign with dot above')
  - "⨱": [T: "signo de multiplicación con barra inferior"]                	#  0x2a31	(en: 'multiplication sign with underbar')
  - "⨲": [T: "producto semidirecto con fondo cerrado"]	#  0x2a32	(en: 'semidirect product with bottom closed')
@@ -2010,7 +2007,7 @@
  - "⪁": [T: "menor que o signo igual inclinado con punto en la parte superior"]	#  0x2a81	(en: 'less than or slanted equal to with dot above')
  - "⪂": [T: "mayor que o signo igual con punto en la parte superior"]	#  0x2a82	(en: 'greater than or slanted equal to with dot above')
  - "⪃": [T: "menor que o signo igual inclinado con punto superior a la derecha"]	#  0x2a83	(en: 'less than or slanted equal to with dot above right')
- - "⪄": [	T: "mayor que con signo igual inclinado con punto superior hacia la izquierda"]	#  0x2a84	(en: 'greater than or slanted equal to with dot above left')
+ - "⪄": [T: "mayor que con signo igual inclinado con punto superior hacia la izquierda"]	#  0x2a84	(en: 'greater than or slanted equal to with dot above left')
  - "⪅": [T: "menor que o aproximado"]           	#  0x2a85	(en: 'less than or approximate', google: 'menos o aproximado')
  - "⪆": [T: "mayor que o aproximado"]           	#  0x2a86	(en: 'greater than or approximate', google: 'mayor o aproximado')
  - "⪇": [T: "menor que y una línea no es igual a"]	#  0x2a87	(en: 'less than and single line not equal to', google: 'menos que y una sola línea no es igual a')
@@ -3006,7 +3003,6 @@
  - " ": [T: ""]                                 	#  0x205f
  - "": [T: ""]                                 	#  0xef04
  - "": [T: ""]                                 	#  0xef05
- - " ": [T: ""]                                 	#  0x2003
  - "": [T: ""]                                 	#  0xef06
  - "": [T: ""]                                 	#  0xef07
  - "": [T: ""]                                 	#  0xef08
@@ -3049,8 +3045,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf040 - 0xf059
-    - T: "gótica negrita"                         	# 	(google translation)
+ - "-":                                          # 0xf040 - 0xf059
+    - T: "gótica"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
@@ -3059,8 +3058,11 @@
         if: "not($IgnoreBold)"
         then: [T: "negrita"]
     - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
- - "-":                                       	#  0xf05a - 0xf073
-    - T: "gótica negrita"                         	# 	(google translation)
+ - "-":    # 0xf05a - 0xf073
+    - T: "gótica"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
@@ -3069,27 +3071,21 @@
     - T: "doble trazo"
     - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf080 - 0xf098
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "doble trazo"]            	# 	(en: 'double struck', google translation)
+ - "-":                                          # 0xf080 - 0xf098
+    - T: "doble trazo"
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝕒-𝕫":    # 0x1d552 - 0x1d56b
     - T: "doble trazo"
     - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
- - "-":                                       	#  0xf09a - 0xf0b3
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "doble trazo"]            	# 	(en: 'double struck', google translation)
+ - "-":    # 0xf09a - 0xf0b3
+    - T: "doble trazo"
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝟘-𝟡":    # 0x1d7d8 - 0x1d7e1
     - T: "doble trazo"
     - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
- - "-":                                       	#  0xf0c0 - 0xf0c9
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "doble trazo"]            	# 	(en: 'double struck', google translation)
+ - "-":    # 0xf0c0 - 0xf0c9
+    - T: "doble trazo"
     - spell: "translate('.', '', '0123456789')"
 
  - "": [T: "doble nabla tachada"]             	#  0xf0ca	(en: 'double struck nabla', google translation)
@@ -3119,8 +3115,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf140 - 0xf159
-    - T: "caligráfica negrita"                     	# 	(en: 'script bold', google translation)
+ - "-":                                          # 0xf140 - 0xf159
+    - T: "caligráfica"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
@@ -3129,8 +3128,11 @@
         if: "not($IgnoreBold)"
         then: [T: "negrita"]
     - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
- - "-":                                       	#  0xf15a - 0xf173
-    - T: "caligráfica negrita"                     	# 	(en: 'script bold', google translation)
+ - "-":    # 0xf15a - 0xf173
+    - T: "caligráfica"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                       	#  0xf180 - 0xf199
@@ -3192,16 +3194,12 @@
         replace: [T: "o con trazo"]	# 	(en: 'o with stroke', google translation)
 
  # MathType only has a few of the cap Greek letters in PUA
- - "":                                 	#  0xf201 - 0xf209
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "doble trazo"]            	# 	(en: 'double struck', google translation)
+ - "":                                          # 0xf201 - 0xf209
+    - T: "doble trazo"
     - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
 
- - "-":                                       	#  0xf220 - 0xf236
-    - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "doble trazo"]            	# 	(en: 'double struck', google translation)
+ - "-":    # 0xf220 - 0xf236
+    - T: "doble trazo"
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "": [T: "sigma final de doble trazo"]      	#  0xf237	(en: 'double struck final sigma', google translation)
@@ -3213,8 +3211,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf260 - 0xf279
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf260 - 0xf279
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝐚-𝐳":    # 0x1d41a - 0x1d433
@@ -3223,8 +3223,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "-":                                       	#  0xf27a - 0xf293
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf27a - 0xf293
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
@@ -3246,9 +3248,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf2c8 - 0xf2e1
+ - "-":    # 0xf2c8 - 0xf2e1
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
@@ -3258,8 +3262,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "-":                                       	#  0xf2e2 - 0xf2fb
-    # - T: "negrita cursiva"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf2e2 - 0xf2fb
+    # - T: "negrita cursiva"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
@@ -3280,8 +3287,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf334 - 0xf34d
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf334 - 0xf34d
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
@@ -3290,8 +3299,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "-":                                       	#  0xf34e - 0xf367
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf34e - 0xf367
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
     # - T: "cursiva"
@@ -3315,9 +3326,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
- - "-":                                       	#  0xf39c - 0xf3b5
+ - "-":    # 0xf39c - 0xf3b5
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
@@ -3327,9 +3340,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
- - "-":                                       	#  0xf3b6 - 0xf3cf
+ - "-":    # 0xf3b6 - 0xf3cf
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝙰-𝚉":    # 0x1d670 - 0x1d689
@@ -3354,8 +3369,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
- - "-":                                       	#  0xf408 - 0xf420
-    - T: "negrita"                  	# 	(en: 'bold', google: 'atrevido')
+ - "-":    # 0xf408 - 0xf420
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
@@ -3364,8 +3381,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "-":                                       	#  0xf422 - 0xf43a
-    - T: "negrita"                  	# 	(en: 'bold', google: 'atrevido')
+ - "-":    # 0xf422 - 0xf43a
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "": [T: "nabla en negrita"]                       	#  0xf421	(google translation)
@@ -3377,8 +3396,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
 
- - "":                                   	#  0xF43C - 0xF441
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "":    # 0xF43C - 0xF441
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
@@ -3415,9 +3436,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
- - "-":                                       	#  0xf47c - 0xf494
+ - "-":    # 0xf47c - 0xf494
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
@@ -3427,9 +3450,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "-":                                       	#  0xf496 - 0xf4ae
+ - "-":    # 0xf496 - 0xf4ae
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
@@ -3439,9 +3464,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
 
- - "":                                   	#  0xf422 - 0xf43a
+ - "":    # 0xf422 - 0xf43a
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜵": [T: "nabla en cursiva y negrita"]            	#  0x1d735	(en: 'bold italic nabla', google translation)
@@ -3452,8 +3479,10 @@
         if: "not($IgnoreBold)"
         then: [T: "negrita"]
     - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
- - "-":                                       	#  0xf4b6 - 0xf4ce
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf4b6 - 0xf4ce
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝝰-𝞈":    # 0x1d770 - 0x1d788
@@ -3462,8 +3491,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "-":                                       	#  0xf4d0 - 0xf4e8
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "-":    # 0xf4d0 - 0xf4e8
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
@@ -3472,8 +3503,10 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
 
- - "":                                   	#  0xf4e9 - 0xf4ef
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+ - "":    # 0xf4e9 - 0xf4ef
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [T: "nabla en negrita"]                       	#  0xf4cf	(google translation)
@@ -3486,9 +3519,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
- - "-":                                       	#  0xf4f0 - 0xf508
+ - "-":    # 0xf4f0 - 0xf508
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
@@ -3498,9 +3533,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
- - "-":                                       	#  0xf50a - 0xf522
+ - "-":    # 0xf50a - 0xf522
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
@@ -3510,9 +3547,11 @@
         then: [T: "negrita"]
     - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
 
- - "":                                   	#  0xf523 - 0xf529
+ - "":    # 0xf523 - 0xf529
     # - T: "negrita cursiva"
-    - T: "negrita"                             	# 	(en: 'bold', google translation)
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrita"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [T: "nabla en negrita"]                       	#  0xf509	(google translation)
@@ -3544,16 +3583,6 @@
  - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff  
     - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
 
- - "": [T: "cero en negrita"]                        	#  0xf52e	(en: 'bold zero', google translation)
- - "": [T: "uno en negrita"]                            	#  0xf52f	(en: 'bold one', google translation)
- - "": [T: "dos en negrita"]                         	#  0xf530	(en: 'bold two', google translation)
- - "": [T: "tres en negrita"]                        	#  0xf531	(en: 'bold three', google translation)
- - "": [T: "cuatro en negrita"]                      	#  0xf532	(en: 'bold four', google translation)
- - "": [T: "cinco en negrita"]                       	#  0xf533	(en: 'bold five', google translation)
- - "": [T: "seis en negrita"]                        	#  0xf534	(en: 'bold six', google translation)
- - "": [T: "siete en negrita"]                       	#  0xf535	(en: 'bold seven', google translation)
- - "": [T: "ocho en negrita"]                         	#  0xf536	(en: 'bold eight', google translation)
- - "": [T: "nueve en negrita"]                       	#  0xf537	(en: 'bold nine', google translation)
  - "": [T: "cero"]                             	#  0xf542	(en: 'zero', google translation)
  - "": [T: "uno"]                              	#  0x1d7e3	(en: 'one', google translation)
  - "": [T: "dos"]                              	#  0xf544	(en: 'two', google translation)
@@ -3564,26 +3593,6 @@
  - "": [T: "siete"]                            	#  0xf549	(en: 'seven', google translation)
  - "": [T: "ocho"]                               	#  0xf54a	(en: 'eight', google translation)
  - "": [T: "nueve"]                            	#  0xf54b	(en: 'nine', google translation)
- - "": [T: "cero en negrita"]                        	#  0xf54c	(en: 'bold zero', google translation)
- - "": [T: "uno en negrita"]                            	#  0xf54d	(en: 'bold one', google translation)
- - "": [T: "dos en negrita"]                         	#  0xf54e	(en: 'bold two', google translation)
- - "": [T: "tres en negrita"]                        	#  0xf54f	(en: 'bold three', google translation)
- - "": [T: "cuatro en negrita"]                      	#  0xf550	(en: 'bold four', google translation)
- - "": [T: "cinco en negrita"]                       	#  0xf551	(en: 'bold five', google translation)
- - "": [T: "seis negrita"]                        	#  0xf552	(en: 'bold six', google translation)
- - "": [T: "siete negrita"]                       	#  0xf553	(en: 'bold seven', google translation)
- - "": [T: "ocho en negrita"]                         	#  0xf554	(en: 'bold eight', google translation)
- - "": [T: "nueve en negrita"]                       	#  0xf555	(en: 'bold nine', google translation)
- - "": [T: "cero"]                             	#  0xf556	(en: 'zero', google translation)
- - "": [T: "uno"]                              	#  0xf557	(en: 'one', google translation)
- - "": [T: "dos"]                              	#  0xf558	(en: 'two', google translation)
- - "": [T: "tres"]                             	#  0xf559	(en: 'three', google translation)
- - "": [T: "cuatro"]                           	#  0xf55a	(en: 'four', google translation)
- - "": [T: "cinco"]                            	#  0xf55b	(en: 'five', google translation)
- - "": [T: "seis"]                             	#  0xf55c	(en: 'six', google translation)
- - "": [T: "siete"]                            	#  0xf55d	(en: 'seven', google translation)
- - "": [T: "ocho"]                               	#  0xf55e	(en: 'eight', google translation)
- - "": [T: "nueve"]                            	#  0xf55f	(en: 'nine', google translation)
  - "": [T: "carácter desconocido"]            	#  0xf700	(en: 'unknown character', google translation)
  - "": [T: "triángulos inferior derecho e inferior izquierdo"]	#  0xf726	(en: 'lower right and lower left triangles', google translation)
  - "": [T: "extensor de puntos suspensivos horizontales"]   	#  0xf72d	(en: 'horizontal ellipsis extender', google translation)
@@ -3672,7 +3681,7 @@
  - "￪": [T: "flecha arriba"]	#  0xffea	(en: 'up arrow')
  - "￫": [T: "flecha derecha"]	#  0xffeb	(en: 'right arrow')
  - "￬": [T: "flecha abajo"]	#  0xffec	(en: 'down arrow')
- - "﹨": [T: "división entera"]                  	#  0xfe68	(en: 'integer divide')
+ - "﹨": [T: "barra invertida pequeña"]                  	#  0xfe68	(en: 'integer divide')
  - "￼": [T: "objeto desconocido o faltante"]    	#  0xfffc	(en: 'unknown or missing object', google translation)
  - "�": [T: "carácter desconocido o faltante"]  	#  0xfffd	(en: 'unknown or missing character', google: 'personaje desconocido o faltante')
  - "🣑": [T: "está en equilibrio con"]	#  0x1F8D1	(en: 'is in equilibrium with')

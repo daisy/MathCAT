@@ -105,7 +105,7 @@ fn not_gradient() -> Result<()> {
   <mi>a</mi>
 </math>
 "#;
-  test("es", "SimpleSpeak", expr, "se abren paréntesis, b por el gradiente, se cierran paréntesis; por a")?;
+  test("es", "SimpleSpeak", expr, "se abren paréntesis, b por nabla, se cierran paréntesis; por a")?;
   return Ok(());
 
 }
