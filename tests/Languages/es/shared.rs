@@ -3,7 +3,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (inglés: breve grave tilde): «a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t»
+// REVISAR (inglés: breve grave tilde): «a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x sombrero, más vector t»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn modified_vars() -> Result<()> {
@@ -23,7 +23,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("es", "SimpleSpeak", expr, 
-        "a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x acento circunflejo; más vector t")?;
+        "a acento grave, b tilde, c breve, b ̌, c acento grave; más r carón más; x punto, y punto, z diéresis, u tres puntos, v cuatro puntos; más x sombrero, más vector t")?;
             return Ok(());
 
 }
@@ -174,8 +174,8 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis; mayúscula a barra vertical mayúscula b; se cierran paréntesis")?;
-    test("es", "ClearSpeak", expr,  "mayúscula p; se abren paréntesis; mayúscula a barra vertical mayúscula b; se cierran paréntesis")?; // not good, but follows the spec
+    test("es", "SimpleSpeak", expr, "mayúscula p; se abren paréntesis, mayúscula a dado mayúscula b; se cierran paréntesis")?;
+    test("es", "ClearSpeak", expr,  "mayúscula p; se abren paréntesis, mayúscula a dado mayúscula b; se cierran paréntesis")?; // not good, but follows the spec
     return Ok(());
 
 }
@@ -433,7 +433,7 @@ fn bug_199_2pi() -> Result<()> {
 #[test]
 fn caret_and_hat() -> Result<()> {
   let expr = "<math><mi>x</mi><mo>^</mo><mn>2</mn><mo>+</mo><mover><mi>y</mi><mo>^</mo></mover></math>";
-  test("es", "SimpleSpeak",expr, "x acento circunflejo 2, más y acento circunflejo")?;
+  test("es", "SimpleSpeak",expr, "x acento circunflejo 2, más y sombrero")?;
   return Ok(());
 
 }
@@ -553,12 +553,12 @@ fn literal_speak_chars() -> Result<()> {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("es", "LiteralSpeak", expr, "barra vertical; x por, y por z barra oblicua 2; más a; es paralelo a, b más x factorial; barra vertical")?;
+  test("es", "LiteralSpeak", expr, "barra vertical; x cruz, y punto z barra oblicua 2; más a; doble barra vertical, b más x signo de exclamación; barra vertical")?;
   return Ok(());
 
 }
 
-// REVISAR (inglés: forced): «forced f, se abren paréntesis, x factorial, se cierran paréntesis»
+// REVISAR (inglés: forced): «forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn literal_speak_with_name() -> Result<()> {
@@ -576,7 +576,7 @@ fn literal_speak_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#;
-  test("es", "LiteralSpeak", expr, "forced f, se abren paréntesis, x factorial, se cierran paréntesis")?;
+  test("es", "LiteralSpeak", expr, "forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
   return Ok(());
 
 }
@@ -597,7 +597,7 @@ fn literal_speak_with_property() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("es", "LiteralSpeak", expr, "f, se abren paréntesis, x factorial, se cierran paréntesis")?;
+  test("es", "LiteralSpeak", expr, "f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
   return Ok(());
 
 }
@@ -624,7 +624,7 @@ fn literal_intent_property() -> Result<()> {
 
 }
 
-// REVISAR (inglés: forced): «forced f, se abren paréntesis, x factorial, se cierran paréntesis»
+// REVISAR (inglés: forced): «forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn literal_intent_property_with_name() -> Result<()> {
@@ -642,7 +642,7 @@ fn literal_intent_property_with_name() -> Result<()> {
         </mrow>
       </mrow>
     </math>"#; 
-  test("es", "SimpleSpeak", expr, "forced f, se abren paréntesis, x factorial, se cierran paréntesis")?;
+  test("es", "SimpleSpeak", expr, "forced f; se abren paréntesis, x signo de exclamación, se cierran paréntesis")?;
   return Ok(());
 
 }

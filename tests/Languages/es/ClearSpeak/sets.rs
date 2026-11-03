@@ -409,7 +409,7 @@ fn element_alone_in() -> Result<()> {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 más 2 i, no está incluido en, números reales")?;
+                expr, "3 más 2 i, no está en números reales")?;
                 return Ok(());
 
 }
@@ -446,7 +446,7 @@ fn set_with_bar_belongs() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "el conjunto de todos los x pertenece a enteros tal que x es mayor que 5")?;
+                expr, "el conjunto de todos los x perteneciente a enteros tal que x es mayor que 5")?;
                 return Ok(());
 
 }

@@ -26,7 +26,7 @@ fn multiplication_cross() -> Result<()> {
     let expr = "<math>
                     <mi>u</mi><mo>×</mo><mi>v</mi>
                 </math>";
-    test_ClearSpeak("es", "ClearSpeak_MultSymbolX", "Cross", expr, "u por v")?;
+    test_ClearSpeak("es", "ClearSpeak_MultSymbolX", "Cross", expr, "u cruz v")?;
     return Ok(());
 
 }
@@ -159,7 +159,7 @@ fn vertical_line_auto() -> Result<()> {
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Auto", expr,
-            "3 barra vertical 6")?;
+            "3 divide a 6")?;
             return Ok(());
 
 }
@@ -170,7 +170,7 @@ fn vertical_line_divides() -> Result<()> {
         <mn>3</mn><mo>|</mo><mn>6</mn>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Divides", expr,
-            "3 barra vertical 6")?;
+            "3 divide a 6")?;
             return Ok(());
 
 }

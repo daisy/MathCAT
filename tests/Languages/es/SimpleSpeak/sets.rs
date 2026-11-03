@@ -243,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("es", "SimpleSpeak", expr,
-                    "la suma sobre i un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
+                    "la suma sobre i es un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
                     return Ok(());
 
 }

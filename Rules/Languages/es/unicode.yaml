@@ -31,7 +31,14 @@
 
  - " ": [t: " "]                                  # 0x20
 
- - "!": [T: "factorial"]                        	#  0x21
+ - "!":                                            # 0x21
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then_test:
+            if: "$Verbosity = 'Terse'"
+            then: [T: "exclamación"]                      # 0x21	(en: 'bang')
+            else: [T: "signo de exclamación"]          # 0x21	(en: 'exclamation point')
+        else: [T: "factorial"]                     # 0x21
  - "\"": [T: "barra inversa"]                   	#  0x22	(en: 'quotation mark')
  - "#": [T: "almohadilla"]                      	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
  - "$": [T: "dólar"]                            	#  0x24	(en: 'dollars')
@@ -57,7 +64,7 @@
 
  - "*":                                         	#  0x2a
     test:
-        if: "parent::*[name(.)='msup' or name(.)='msubsup']"
+        if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
         then: [T: "estrella"]                   	# 	(en: 'star', google translation)
         else: [T: "por"]                        	# 	(en: 'times')
  - "+": [T: "más"]                              	#  0x2b	(en: 'plus')
@@ -85,7 +92,11 @@
         if: "parent::*[1][self::m:mn]"
         then: [T: "punto"]                      	# 	(en: 'point', google translation)
         else: [T: "punto"]                      	# 	(en: 'dot')
- - "/": [T: "barra oblicua"]                    	#  0x2f	(en: 'divided by')
+ - "/":                                           # 0x2f
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "barra oblicua"]                        # 0x2f	(en: 'slash')
+        else: [T: "dividido por"]                   # 0x2f	(en: 'divided by')
  - ":": [T: "dos puntos"]                       	#  0x3a	(en: 'colon')
  - ";": [T: "punto y coma"]                     	#  0x3b	(en: 'semicolon')
  - "<":                                         	#  0x3c
@@ -117,7 +128,11 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "cerrar corchetes"]          	# 	(en: 'close bracket', google translation)
         else: [T: "se cierran corchetes"]           	# 	(en: 'right bracket', MathPlayer: 'cierra corchetes', google: 'soporte derecho')
- - "^": [T: "acento circunflejo"]                      	#  0x5e	(en: 'hat')
+ - "^":                                           # 0x5e
+    - test:
+        if: "parent::m:modified-variable or parent::m:mover"
+        then: [T: "sombrero"]      # 	(en: 'hat')
+        else: [T: "acento circunflejo"]      # 	(en: 'caret')
  - "_": [T: "subrayado"]                        	#  0x5f	(en: 'under bar')
  - "`": [T: "acento grave"]                     	#  0x60	(en: 'grave')
  - "{":                                         	#  0x7b
@@ -125,16 +140,29 @@
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "abrir llaves"]         	# 	(en: 'open brace', google translation)
         else: [T: "se abren llaves"]            	# 	(en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
- - "|":                                         	#  0x7c
+ - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
-     - test:
-        - if: "$SpeechStyle != 'ClearSpeak' or not(preceding-sibling::*) or not(following-sibling::*)"
-          then: [T: "barra vertical"]           	# 	(en: 'vertical line', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
-          then: [T: "tal que"]                  	# 	(en: 'such that', google translation)
-        - else_if: "$ClearSpeak_VerticalLine = 'Given'"  
-          then: [T: "dado"]                     	# 	(en: 'given', google translation)
-        - else: [T: "barra vertical"]           	# 	(en: 'divides')
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [T: "barra vertical"]      # 	(en: 'vertical line')
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                - if: "$DefaultToGiven"
+                  then: [T: "dado"]      # 	(en: 'given')
+                - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
+                            following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
+                  then: [T: "divide a"]      # 	(en: 'divides')
+                  else: [T: "barra vertical"]      # 	(en: 'vertical line')
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [T: "barra vertical"]      # 	(en: 'vertical line')
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [T: "tal que"]      # 	(en: 'such that')
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [T: "dado"]      # 	(en: 'given')
+            - else: [T: "divide a"]      # 	(en: 'divides')
 
  - "}":                                         	#  0x7d
     - test:
@@ -156,19 +184,35 @@
  - "°": [T: "grado"]                            	#  0xb0	(en: 'degrees')
  - "±": [T: "más menos"]                        	#  0xb1	(en: 'plus or minus')
  - "´": [T: "acento agudo"]                     	#  0xb4	(en: 'acute')
- - "·":                                         	#  0xB7
+ - "·":                                            # 0xB7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then_test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        then: [T: "punto"]      # 	(en: 'dot')
+        else_test:
             if: "$Verbosity = 'Verbose'"
-            then:  [T: "multiplicado por"]          # 	(en: 'times', google translation)
-            else: [T: "por"]
-        else: [T: "punto medio"]                	# 	(en: 'dot')
- - "×":                                         	#  0xd7
+            then: [T: "multiplicado por"]      # 	(en: 'times')
+            else: [T: "por"]      # 	(en: 'times')
+ - "×":                                          # 0xd7
     - test:
-        if: "$Verbosity = 'Verbose'"
-        then:  [T: "multiplicado por"]          # 	(en: 'times', google translation)
-        else: [T: "por"]
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then:
+          - test:
+              if: "$Verbosity = 'Verbose'"
+              then: [T: "multiplicado por"]      # 	(en: 'times')
+              else: [T: "por"]      # 	(en: 'times')
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [T: "por"]      # 	(en: 'by')
+          else: [T: "cruz"]      # 	(en: 'cross')
+        else_test:
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [T: "cruz"]      # 	(en: 'cross')
+            else:
+            - test:
+                if: "$Verbosity = 'Verbose'"
+                then: [T: "multiplicado por"]      # 	(en: 'times')
+                else: [T: "por"]      # 	(en: 'times')
  - "÷": [T: "dividido por"]                         	#  0xf7	(en: 'divided by')
  - "̀": [T: "acento grave ornamentado"]                     	#  0x300	(en: 'grave accent embellishment', google: 'embellido de acento grave')
  - "́": [T: "acento agudo ornamentado"]                     	#  0x301	(en: 'acute accent embellishment', google: 'embellido de acento agudo')
@@ -232,6 +276,7 @@
  - "϶": [T: "épsilon invertida"]                	#  0x3f6	(en: 'reversed epsilon')
 
  - "⁢": [T: ""]                                 	#  0x2062
+ - "⁣": [T: ""]                                 	#  0x2063
  - "⁤": [T: "y"]                                	#  0x2064	(en: 'and')
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "prima inversa"                      	# 	(en: 'double-struck', google: 'doble golpe')
@@ -249,11 +294,15 @@
     - T: "angstrom resaltado"                             	# 	(en: 'double-struck italic')
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
- - "∥":                                         	#  0x2225
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "paralelo a"                          	# 	(en: 'parallel to')
+ - "∥":                                           # 0x2225
+     - test:
+         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+         then: [T: "doble barra vertical"]      # 	(en: 'double vertical line')
+         else:
+         - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "es"]      # 	(en: 'is')
+         - T: "paralelo a"      # 	(en: 'parallel to')
  - "∦":                                         	#  0x2226
      - test: 
          if: "$Verbosity!='Terse'"
@@ -311,76 +360,87 @@
          if: "$Verbosity!='Terse'"
          then: [T: "el"]                        	# 	(en: 'the', google translation)
      - T: "incremento"                          	# 	(en: 'laplacian of')
- - "∈":                                         	#  0x2208
+ - "∈":                                          # 0x2208
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "un elemento de"]             	# 	(en: 'an element of', google translation)
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [T: "es"]      # 	(en: 'is')
+        - T: "un elemento de"      # 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            if: "../../self::m:set or ../../../self::m:set" # inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "en"]                 	# 	(en: 'in', google translation)
+                then: [T: "en"]      # 	(en: 'in')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "miembro de"]         	# 	(en: 'member of', google translation)
+                then: [T: "miembro de"]      # 	(en: 'member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "elemento de"]        	# 	(en: 'element of', google translation)
-              - else: [T: "pertenece a"]    	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+                then: [T: "elemento de"]      # 	(en: 'element of')
+              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "es miembro de"]      	# 	(en: 'is a member of', google translation)
+                then: [T: "es miembro de"]      # 	(en: 'is a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "es un elemento de"]  	# 	(en: 'is an element of', google translation)
+                then: [T: "es un elemento de"]      # 	(en: 'is an element of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "está en"]              	# 	(en: 'is in', google translation)
-              - else: [T: "pertenece a"]    	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
- - "∉":                                         	#  0x2209
-    # rule is identical to 0x2208
+                then: [T: "está en"]      # 	(en: 'is in')
+              - else: [T: "pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+ - "∉":                                          # 0x2209
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "no es un elemento de"]       	# 	(en: 'is not an element of', google translation)
+        then:
+        - test: 
+            if: "$Verbosity!='Terse'"
+            then: [T: "no es un elemento de"]      # 	(en: 'is not an element of')
+            else: [T: "no elemento de"]      # 	(en: 'not an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            if: "../../self::m:set or ../../../self::m:set" # inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "no está en"]              	# 	(en: 'not in', google translation)
+                then: [T: "no en"]      # 	(en: 'not in')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "no es miembro de"]      	# 	(en: 'not member of', google translation)
+                then: [T: "no miembro de"]      # 	(en: 'not member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "no es un elemento de"]     	# 	(en: 'not element of', google translation)
-              - else: [T: "no pertenece a"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
+                then: [T: "no elemento de"]      # 	(en: 'not element of')
+              - else: [T: "no perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "no es miembro de"]   	# 	(en: 'is not a member of', google translation)
+                then: [T: "no es miembro de"]      # 	(en: 'is not a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "no es un elemento de"]	# 	(en: 'is not an element of', google translation)
+                then: [T: "no es un elemento de"]      # 	(en: 'is not an element of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "no está incluido en"]     	# 	(en: 'is not in', google translation)
-              - else: [T: "no pertenece a"] 	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
- - "∊":                                         	#  0x220a
+                then: [T: "no está en"]      # 	(en: 'is not in')
+              - else: [T: "no pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'does not belong to')
+ - "∊":                                          # 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "es un elemento de"]          	# 	(en: 'is an element of', google translation)
+        then:
+        - test:
+            if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
+            then: [T: "es"]      # 	(en: 'is')
+        - T: "un elemento de"      # 	(en: 'an element of')
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
-            if: "../../self::m:set or ../../../self::m:set"	#  inside a set
+            if: "../../self::m:set or ../../../self::m:set" # inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "en"]                 	# 	(en: 'in', google translation)
+                then: [T: "en"]      # 	(en: 'in')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "miembro de"]         	# 	(en: 'member of', google translation)
+                then: [T: "miembro de"]      # 	(en: 'member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "elemento de"]        	# 	(en: 'element of', google translation)
-              - else: [T: "pertenece a"]    	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
+                then: [T: "elemento de"]      # 	(en: 'element of')
+              - else: [T: "perteneciente a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "es miembro de"]      	# 	(en: 'is a member of', google translation)
+                then: [T: "es miembro de"]      # 	(en: 'is a member of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "es un elemento de"]  	# 	(en: 'is an element of', google translation)
+                then: [T: "es un elemento de"]      # 	(en: 'is an element of')
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "está en"]              	# 	(en: 'is in', google translation)
-              - else: [T: "pertenece a"]    	#  $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
+                then: [T: "está en"]      # 	(en: 'is in')
+              - else: [T: "pertenece a"]      # $ClearSpeak_SetMemberSymbol = 'Belongs'	(en: 'belongs to')
  - "√":                                         	#  0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -458,6 +518,7 @@
  - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
  - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
  - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
+ - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')
  - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
  - "∣": [T: "divisible"]                         	#  0x2223	(en: 'divides')
  - "∤": [T: "indivisible"]                      	#  0x2224	(en: 'does not divide')
