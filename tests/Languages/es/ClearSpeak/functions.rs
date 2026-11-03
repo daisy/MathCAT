@@ -111,7 +111,7 @@ fn simple_log() -> Result<()> {
 #[test]
 fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
-    test("es", "ClearSpeak", expr, "Log de z")?;
+    test("es", "ClearSpeak", expr, "el logaritmo principal de z")?;
     return Ok(());
 
 }

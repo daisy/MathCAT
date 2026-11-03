@@ -1,9 +1,7 @@
 use crate::common::*;
 use anyhow::Result;
 
-// REVISAR (el suma): «el suma de n es igual a 1 a 10 de n»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sum_both() -> Result<()> {
     let expr = "<math>
         <munderover>
@@ -13,14 +11,12 @@ fn sum_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el suma de n es igual a 1 a 10 de n")?;
+    test("es", "SimpleSpeak", expr, "la suma desde n es igual a 1, hasta 10 de n")?;
     return Ok(());
 
 }
 
-// REVISAR (el suma): «el suma partido por mayúscula s de i»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sum_under() -> Result<()> {
     let expr = "<math>
         <munder>
@@ -29,13 +25,11 @@ fn sum_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el suma partido por mayúscula s de i")?;
+    test("es", "SimpleSpeak", expr, "la suma sobre mayúscula s de i")?;
     return Ok(());
 
 }
-// REVISAR (el suma): «el suma de n es igual a 1 a 10 de n»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sum_both_msubsup() -> Result<()> {
     let expr = "<math>
         <msubsup>
@@ -45,14 +39,12 @@ fn sum_both_msubsup() -> Result<()> {
         </msubsup>
         <mi>n</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el suma de n es igual a 1 a 10 de n")?;
+    test("es", "SimpleSpeak", expr, "la suma desde n es igual a 1, hasta 10 de n")?;
     return Ok(());
 
 }
 
-// REVISAR (el suma): «el suma partido por mayúscula s de i»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sum_sub() -> Result<()> {
     let expr = "<math>
         <msub>
@@ -61,20 +53,18 @@ fn sum_sub() -> Result<()> {
         </msub>
         <mi>i</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el suma partido por mayúscula s de i")?;
+    test("es", "SimpleSpeak", expr, "la suma sobre mayúscula s de i")?;
     return Ok(());
 
 }
 
-// REVISAR (el suma): «el suma de a subíndice i»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn sum() -> Result<()> {
     let expr = "<math>
             <mo>∑</mo>
             <msub><mi>a</mi><mi>i</mi></msub>
     </math>";
-    test("es", "SimpleSpeak", expr, "el suma de a subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la suma de a subíndice i")?;
     return Ok(());
 
 }
@@ -89,7 +79,7 @@ fn product_both() -> Result<()> {
         </munderover>
         <mi>n</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el producto de n es igual a 1 a 10 de n")?;
+    test("es", "SimpleSpeak", expr, "el producto desde n es igual a 1, hasta 10 de n")?;
     return Ok(());
 
 }
@@ -103,7 +93,7 @@ fn product_under() -> Result<()> {
         </munder>
         <mi>i</mi>
     </math>";
-    test("es", "SimpleSpeak", expr, "el producto partido por mayúscula s de i")?;
+    test("es", "SimpleSpeak", expr, "el producto sobre mayúscula s de i")?;
     return Ok(());
 
 }
@@ -129,7 +119,7 @@ fn intersection_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "SimpleSpeak", expr, "el intersección de i es igual a 1 a 10 de; mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la intersección desde i es igual a 1, hasta 10 de; mayúscula s subíndice i")?;
     return Ok(());
 
 }
@@ -143,7 +133,7 @@ fn intersection_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "SimpleSpeak", expr, "el intersección partido por mayúscula c de; mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la intersección sobre mayúscula c de; mayúscula s subíndice i")?;
     return Ok(());
 
 }
@@ -154,7 +144,7 @@ fn intersection() -> Result<()> {
             <mo>⋂</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("es", "SimpleSpeak", expr, "el intersección de mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la intersección de mayúscula s subíndice i")?;
     return Ok(());
 
 }
@@ -169,7 +159,7 @@ fn union_both() -> Result<()> {
         </munderover>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "SimpleSpeak", expr, "el unión de i es igual a 1 a 10 de; mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la unión desde i es igual a 1, hasta 10 de; mayúscula s subíndice i")?;
     return Ok(());
 
 }
@@ -183,7 +173,7 @@ fn union_under() -> Result<()> {
         </munder>
         <msub><mi>S</mi><mi>i</mi></msub>
     </math>";
-    test("es", "SimpleSpeak", expr, "el unión partido por mayúscula c de; mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la unión sobre mayúscula c de; mayúscula s subíndice i")?;
     return Ok(());
 
 }
@@ -194,14 +184,12 @@ fn union() -> Result<()> {
             <mo>⋃</mo>
             <msub><mi>S</mi><mi>i</mi></msub>
             </math>";
-    test("es", "SimpleSpeak", expr, "el unión de mayúscula s subíndice i")?;
+    test("es", "SimpleSpeak", expr, "la unión de mayúscula s subíndice i")?;
     return Ok(());
 
 }
 
-// REVISAR (el integral): «el integral de 0 a 1 de, f de x; d x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn integral_both() -> Result<()> {
     let expr = "<math>
             <mrow>
@@ -214,14 +202,12 @@ fn integral_both() -> Result<()> {
             </mrow>
             <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
         </math>";
-    test("es", "SimpleSpeak", expr, "el integral de 0 a 1 de, f de x; d x")?;
+    test("es", "SimpleSpeak", expr, "la integral desde 0, hasta 1 de; f de x; d x")?;
     return Ok(());
 
 }
 
-// REVISAR (el integral): «el integral partido por números reales de; f de x d x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn integral_under() -> Result<()> {
     let expr = "<math>
         <munder>
@@ -231,21 +217,19 @@ fn integral_under() -> Result<()> {
         <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
         <mi>d</mi><mi>x</mi>
         </math>";
-    test("es", "SimpleSpeak", expr, "el integral partido por números reales de; f de x d x")?;
+    test("es", "SimpleSpeak", expr, "la integral sobre números reales de; f de x d x")?;
     return Ok(());
 
 }
 
-// REVISAR (el integral): «el integral de f de x d x»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn integral() -> Result<()> {
     let expr = "<math>
             <mo>∫</mo>
             <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
             <mi>d</mi><mi>x</mi>
             </math>";
-    test("es", "SimpleSpeak", expr, "el integral de f de x d x")?;
+    test("es", "SimpleSpeak", expr, "la integral de f de x d x")?;
     return Ok(());
 
 }

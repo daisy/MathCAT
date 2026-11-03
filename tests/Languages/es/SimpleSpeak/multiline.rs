@@ -70,6 +70,6 @@ fn equation_1() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-    test("es", "SimpleSpeak", expr, "2 ecuacións; ecuación 1; x más y, es igual a 7; ecuación 2; 2 x más 3 y; es igual a 17")?;
+    test("es", "SimpleSpeak", expr, "2 ecuaciones; ecuación 1; x más y, es igual a 7; ecuación 2; 2 x más 3 y; es igual a 17")?;
     return Ok(());
 }

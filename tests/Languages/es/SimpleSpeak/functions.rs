@@ -105,7 +105,7 @@ fn simple_log() -> Result<()> {
 #[test]
 fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
-    test("es", "SimpleSpeak", expr, "Log de z")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo principal de z")?;
     return Ok(());
 
 }
@@ -134,8 +134,8 @@ fn normal_log_with_base() -> Result<()> {
 
 }
 
-// REVISAR (inglés: natural): «el natural log de, se abren paréntesis, x más y, se cierran paréntesis»
-// REVISAR (inglés: natural): «el natural log de, se abren paréntesis, x más y, se cierran paréntesis»
+// REVISAR (inglés: natural): «el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis»
+// REVISAR (inglés: natural): «el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn normal_ln() -> Result<()> {
@@ -143,15 +143,15 @@ fn normal_ln() -> Result<()> {
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "l n, abrir paréntesis, x más y, cerrar paréntesis")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "el natural log de, se abren paréntesis, x más y, se cierran paréntesis")?;
+                expr, "el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
-                expr, "el natural log de, se abren paréntesis, x más y, se cierran paréntesis")?;
+                expr, "el logaritmo natural de, se abren paréntesis, x más y, se cierran paréntesis")?;
                 return Ok(());
 
 }
 
-// REVISAR (inglés: natural): «el natural log de x»
-// REVISAR (inglés: natural): «el natural log de x»
+// REVISAR (inglés: natural): «el logaritmo natural de x»
+// REVISAR (inglés: natural): «el logaritmo natural de x»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn simple_ln() -> Result<()> {
@@ -159,30 +159,28 @@ fn simple_ln() -> Result<()> {
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "l n x")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "el natural log de x")?;
+                expr, "el logaritmo natural de x")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
-                expr, "el natural log de x")?;
+                expr, "el logaritmo natural de x")?;
                 return Ok(());
 
 }
 
-// REVISAR (inglés: cov): «Cov x»
-// REVISAR (inglés: cov): «Cov x»
+// REVISAR (inglés: cov): «cov x»
 // REVISAR (inglés: exp): «exp x»
-// REVISAR (inglés: exp): «exp de x»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn other_names() -> Result<()> {
     let expr = "<math> <mrow><mi>Cov</mi><mi>x</mi></mrow> </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "Cov x")?;
+                expr, "cov x")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "Cov x")?;
+                expr, "covarianza x")?;
     let expr = "<math> <mrow><mi>exp</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow> </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
                 expr, "exp x")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "exp de x")?;
+                expr, "exponencial de x")?;
                 return Ok(());
 
 }

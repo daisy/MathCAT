@@ -2,7 +2,7 @@ use crate::common::*;
 use anyhow::Result;
 
 
-// REVISAR (inglés: if): «f de x es igual a; 3 casos, caso 1; menos 1 if x es menor que 0; caso 2; 0 if x es igual a 0; caso 3; 1 if x es mayor que 0»
+// REVISAR (inglés: if): «f de x es igual a; 3 casos; línea 1; menos 1 if x es menor que 0; línea 2; 0 if x es igual a 0; línea 3; 1 if x es mayor que 0»
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn case_1() -> Result<()> {
@@ -25,7 +25,7 @@ fn case_1() -> Result<()> {
   </math>
    ";
   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr,
-    "f de x es igual a; 3 casos, caso 1; menos 1 if x es menor que 0; caso 2; 0 if x es igual a 0; caso 3; 1 if x es mayor que 0"
+    "f de x es igual a; 3 casos; línea 1; menos 1 if x es menor que 0; línea 2; 0 if x es igual a 0; línea 3; 1 if x es mayor que 0"
     )?;
     return Ok(());
 }
@@ -41,7 +41,7 @@ fn equation_auto() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr,
-                "2 líneas, línea 1; x más y, es igual a 7; línea 2; 2 x más 3 y; es igual a 17")?;
+                "2 líneas; línea 1; x más y, es igual a 7; línea 2; 2 x más 3 y; es igual a 17")?;
     return Ok(());
 }
 
@@ -56,7 +56,7 @@ fn equation_plus_at_start() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 líneas, línea 1; x más y es igual a 7; línea 2; 2 x, más 3 y, es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 líneas; línea 1; x más y es igual a 7; línea 2; 2 x, más 3 y, es igual a 17")?;
     return Ok(());
 }
 
@@ -71,7 +71,7 @@ fn equation_case() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Case", expr, 
-   "2 casos, caso 1; x más y, es igual a 7; caso 2; 2 x más 3 y; es igual a 17")?;
+   "2 casos; caso 1; x más y, es igual a 7; caso 2; 2 x más 3 y; es igual a 17")?;
     return Ok(());
 }
 
@@ -85,7 +85,7 @@ fn equation_constraint() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 superficie de ligaduras, superficie de ligadura 1; x más y, es igual a 7; superficie de ligadura 2; 2 x más 3 y; es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Constraint", expr, "2 restricciones; restricción 1; x más y, es igual a 7; restricción 2; 2 x más 3 y; es igual a 17")?;
    return Ok(());
 }
 
@@ -99,7 +99,7 @@ fn equation_equation() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 ecuacións, ecuación 1; x más y, es igual a 7; ecuación 2; 2 x más 3 y; es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Equation", expr, "2 ecuaciones; ecuación 1; x más y, es igual a 7; ecuación 2; 2 x más 3 y; es igual a 17")?;
    return Ok(());
 }
 
@@ -113,7 +113,7 @@ fn equation_line() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Line", expr, "2 líneas, línea 1; x más y, es igual a 7; línea 2; 2 x más 3 y; es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Line", expr, "2 líneas; línea 1; x más y, es igual a 7; línea 2; 2 x más 3 y; es igual a 17")?;
     return Ok(());
 }
 
@@ -128,7 +128,7 @@ fn equation_none() -> Result<()> {
     </math>
    ";
    test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "None", expr,
-        "2, x más y, es igual a 7; 2 x más 3 y; es igual a 17")?;
+        "2 líneas; x más y, es igual a 7; 2 x más 3 y; es igual a 17")?;
    return Ok(());
 }
 
@@ -142,7 +142,7 @@ fn equation_row() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Row", expr, "2 filas, fila 1; x más y, es igual a 7; fila 2; 2 x más 3 y; es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Row", expr, "2 filas; fila 1; x más y, es igual a 7; fila 2; 2 x más 3 y; es igual a 17")?;
    return Ok(());
 }
 
@@ -156,7 +156,7 @@ fn equation_step() -> Result<()> {
       </mtable></mrow>
     </math>
    ";
-   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Step", expr, "2 nivels, nivel 1; x más y, es igual a 7; nivel 2; 2 x más 3 y; es igual a 17")?;
+   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Step", expr, "2 pasos; paso 1; x más y, es igual a 7; paso 2; 2 x más 3 y; es igual a 17")?;
    return Ok(());
 }
 
@@ -170,6 +170,6 @@ fn continued_row() -> Result<()> {
   </mtable>
 </math>";
 test("es", "SimpleSpeak", expr,
-     "3 ecuacións; ecuación 1; x es igual a y; ecuación 2; vacío vacío más 1; ecuación 3; y es igual a 1")?;
+     "2 ecuaciones; ecuación 1; x es igual a y más 1; ecuación 2; y es igual a 1")?;
     return Ok(());
 }

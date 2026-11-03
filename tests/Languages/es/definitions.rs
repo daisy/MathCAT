@@ -246,8 +246,8 @@ fn functions_and_inverses_tests() -> Result<()> {
 
         ("complex-conjugate", "el conjugado complejo de x"),
         ("complex-arg", "el argumento de x"),
-        ("real-part", "la parte real"),
-        ("imaginary-part", "la parte imaginaria"),
+        ("real-part", "la parte real de x"),
+        ("imaginary-part", "la parte imaginaria de x"),
 
         ("polar-coordinate", "coordenada polar de x coma, y"),
         ("spherical-coordinate", "coordenada esférica de x coma, y coma, z"),

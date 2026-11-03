@@ -420,7 +420,7 @@
   }
 
 - SIPrefixes: {
-    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deka",
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deca",
     "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
@@ -603,6 +603,10 @@
 - PluralForms: {
   # FIX: this needs to be flushed out
     "lumen": "lúmenes",
+    "colón": "colones", "bitcóin": "bitcoines",
+    "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
+    "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",
+    "unidad astronómica": "unidades astronómicas", "unidad de masa atómica": "unidades de masa atómica",
     "kelvin": "kelvin",
     "grado Celsius": "grados Celsius",
     "grado Fahrenheit": "grados Fahrenheit",

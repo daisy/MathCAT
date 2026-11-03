@@ -329,7 +329,7 @@ fn vertical_line_evaluated_at_both() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Auto", expr,
-        "x cuadrado más x, evaluado en 1 evaluado excepto en la misma expresión 0")?;
+        "x cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
         return Ok(());
 
 }
@@ -373,7 +373,7 @@ fn vertical_line_evaluated_at_both_given() -> Result<()> {
             </msubsup>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_VerticalLine", "Given", expr,
-        "x cuadrado más x, evaluado en 1 evaluado excepto en la misma expresión 0")?;
+        "x cuadrado más x, evaluado en 1 menos la misma expresión evaluada en 0")?;
         return Ok(());
 
 }

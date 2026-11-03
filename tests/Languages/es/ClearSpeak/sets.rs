@@ -230,9 +230,7 @@ fn element_alone() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -245,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("es", "ClearSpeak", expr,
-                    "el suma partido por i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
+                    "la suma sobre i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
                     return Ok(());
 
 }
@@ -319,9 +317,7 @@ fn element_alone_member() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum_member() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -334,7 +330,7 @@ fn element_under_sum_member() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "el suma partido por i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
+                expr, "la suma sobre i es miembro de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
                 return Ok(());
 
 }
@@ -370,9 +366,7 @@ fn element_alone_element() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i es un elemento de enteros de; la fracción con numerador 1; y denominador i cuadrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum_element() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -385,7 +379,7 @@ fn element_under_sum_element() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "el suma partido por i es un elemento de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
+                expr, "la suma sobre i es un elemento de enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
                 return Ok(());
 
 }
@@ -420,9 +414,7 @@ fn element_alone_in() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i está en enteros de; la fracción con numerador 1; y denominador i cuadrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum_in() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -435,7 +427,7 @@ fn element_under_sum_in() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "el suma partido por i está en enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
+                expr, "la suma sobre i está en enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
                 return Ok(());
 
 }
@@ -470,9 +462,7 @@ fn element_alone_belongs() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i pertenece a enteros de; la fracción con numerador 1; y denominador i cuadrado»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum_belongs() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -485,7 +475,7 @@ fn element_under_sum_belongs() -> Result<()> {
             </mfrac>
         </math>";
     test_ClearSpeak("es", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "el suma partido por i pertenece a enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
+                expr, "la suma sobre i pertenece a enteros de; la fracción con numerador 1; y denominador i cuadrado")?;
                 return Ok(());
 
 }

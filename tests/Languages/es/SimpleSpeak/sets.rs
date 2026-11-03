@@ -230,9 +230,7 @@ fn element_alone() -> Result<()> {
 
 }
 
-// REVISAR (el suma): «el suma partido por i un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción»
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn element_under_sum() -> Result<()> {
     let expr = "<math>
             <munder>
@@ -245,7 +243,7 @@ fn element_under_sum() -> Result<()> {
             </mfrac>
         </math>";
     test("es", "SimpleSpeak", expr,
-                    "el suma partido por i un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
+                    "la suma sobre i un elemento de enteros de; fracción, 1 partido por, i al cuadrado, fin de fracción")?;
                     return Ok(());
 
 }
