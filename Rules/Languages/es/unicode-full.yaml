@@ -170,7 +170,7 @@
  - "⁄": [T: "barra de fracción"]                	#  0x2044	(en: 'divided by')
  - "⁅": [T: "corchete izquierdo"]	#  0x2045	(en: 'left square bracket with quill')
  - "⁆": [T: "corchete derecho"]	#  0x2046	(en: 'right square bracket with quill')
- - "⁗": [T: "cuatro prima"]                     	#  0x2057	(en: 'quadruple prime', MathPlayer: 'cuarta', google: 'prime cuádruple')
+ - "⁗": [T: "cuádruple prima"]                     	#  0x2057	(en: 'quadruple prime')
  - "⁠": [T: ""]                                 	#  0x2060
  - "⁣": [T: ""]                                 	#  0x2063
  - "⁤": [T: "más"]                              	#  0x2064	(en: 'and', google: 'y')
@@ -2787,7 +2787,6 @@
  - "": [T: "asintóticamente igual al acento"]  	#  0xee17	(en: 'asymptotically equal to accent', google translation)
  - "": [T: "signo igual a acetno"]         	#  0xee18	(en: 'equal sign accent', google translation)
  - "": [T: "prima cuádruple"]                  	#  0xee19	(en: 'quadruple prime', google translation)
- - "⁗": [T: "prima cuádruple"]                     	#  0x2057	(en: 'quadruple prime', MathPlayer: 'cuarta', google: 'prime cuádruple')
  - "": [T: "acento de barra con círculo abierto izquierdo"]	#  0xee1a	(en: 'bar accent with open circle left', google translation)
  - "": [T: "acento de barra con círculo cerrado izquierdo"]	#  0xee1b	(en: 'bar accent with closed circle left', google translation)
  - "": [T: "acento de barra con círculo abierto derecho"]	#  0xee1c	(en: 'bar accent with open circle right', google translation)

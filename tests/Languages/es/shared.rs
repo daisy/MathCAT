@@ -677,3 +677,14 @@ fn spanish_symbols_p1() -> Result<()> {
   test("es", "SimpleSpeak", "<math><mfrac><mn>1</mn><mn>2</mn></mfrac></math>", "un medio")?;
   return Ok(());
 }
+
+// pruebas propias del español: las primas se leen por el símbolo (sirve en cálculo, geometría y ángulos)
+#[test]
+fn spanish_primes() -> Result<()> {
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>′</mo></msup></math>", "f prima")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>″</mo></msup></math>", "f doble prima")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>‴</mo></msup></math>", "f triple prima")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>⁗</mo></msup></math>", "f cuádruple prima")?;
+  test("es", "SimpleSpeak", "<math><msup><mi>A</mi><mo>″</mo></msup></math>", "mayúscula a doble prima")?;
+  return Ok(());
+}
