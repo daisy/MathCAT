@@ -17,7 +17,7 @@
   # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
   tag: munder
   variables: [Base: "translate(*[1], ' \u00A0\u2061', '')"]
-  match: "$Base='lím' or $Base='límsup' or $Base='líminf'"
+  match: "($Base='lím' or $Base='límsup' or $Base='líminf') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
   replace:
   - test:
       if: "$Verbosity!='Terse'"
@@ -523,7 +523,7 @@
 # "arc de seno". Estas tres reglas lo leen como "arcoseno de x".
 - name: arc-trig-separado-aplicado
   tag: mrow
-  match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡']"
+  match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - x: "*[1]"
   - test:
@@ -534,7 +534,7 @@
 
 - name: arc-trig-separado-plano
   tag: mrow
-  match: "count(*)=5 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and *[4][self::m:mo][.='⁡']"
+  match: "count(*)=5 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and *[4][self::m:mo][.='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - bookmark: "*[1]/@id"
   - test:
@@ -557,7 +557,7 @@
 
 - name: arc-trig-separado
   tag: mrow
-  match: "count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']"
+  match: "count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - bookmark: "*[1]/@id"
   - test:

@@ -38,7 +38,7 @@
 # propia del español: ‖f‖_p en LaTeX corriente llega como msub de magnitude; se lee "la norma p de f"
 - name: subscripted-magnitude
   tag: [msub, indexed-by]
-  match: "*[1][self::m:magnitude and count(*)=1]"
+  match: "*[1][self::m:magnitude and count(*)=1] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
