@@ -172,6 +172,12 @@ pub fn mathcat_set_preference(name: String, value: String) {
     let _ = set_preference(name, value);
 }
 
+
+#[php_function]
+pub fn mathcat_get_version() -> Option<String> {
+    return get_version()
+}
+
 #[php_module]
 pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
     module
@@ -180,4 +186,5 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
        .function(wrap_function!(mathcat_get_spoken_text))
        .function(wrap_function!(mathcat_get_overview_text))
        .function(wrap_function!(mathcat_set_preference))
+       .function(wrap_function!(mathcat_get_version))
 }
