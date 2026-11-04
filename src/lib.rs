@@ -174,7 +174,7 @@ pub fn mathcat_set_preference(name: String, value: String) {
 
 
 #[php_function]
-pub fn mathcat_get_version() -> Option<String> {
+pub fn mathcat_get_version() -> String {
     return get_version()
 }
 
