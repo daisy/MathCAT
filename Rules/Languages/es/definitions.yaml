@@ -161,6 +161,7 @@
 - IntentMappings: {
     "binomial": "infix=binomial; sobre; fin del binomial",
     "inverse": "function=inversa || postfix=inversa",
+    "inverse-function": "function=función inversa",      # se oye al navegar en sen⁻¹ x
     "domain": "function= ; dominio| el dominio",
     "codomain": "function= ; codominio| el codominio",
     "image": "function=imagen| la imagen",

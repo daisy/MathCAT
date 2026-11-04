@@ -81,12 +81,12 @@
                 then: [T: "acercar"]                                  # phrase(zoom 'in' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "acercar al máximo"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [T: "acercado al máximo"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
                 then: [T: "alejar"]                                 # phrase(zoom 'out' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [T: "alejar al máximo"]                     # phrase(zoom 'out all of the way' to see more details)
+                then: [T: "alejado al máximo"]                     # phrase(zoom 'out all of the way' to see more details)
               - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
                 then: [T: "a la derecha"]                               # phrase(move to the 'right')
               - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"

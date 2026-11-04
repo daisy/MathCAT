@@ -259,3 +259,28 @@ fn no_intent_mi() -> Result<()> {
     "#;
     assert_zoom_in("ZoomIn", expr, "acercado al máximo; x")
 }
+
+// --- Propios del español ---
+
+#[test]
+fn zoom_in_all_accented_limit() -> Result<()> {
+    // babel escribe \lim como "lím"; la navegación tiene que poder llegar a ese nodo
+    let expr = r#"
+      <math>
+        <munder><mi mathvariant="normal">lím</mi><mrow><mi>x</mi><mo>→</mo><mn>0</mn></mrow></munder>
+        <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo>
+      </math>
+    "#;
+    assert_zoom_in("ZoomInAll", expr, "acercado al máximo; en base; lím")
+}
+
+#[test]
+fn zoom_in_all_babel_arc() -> Result<()> {
+    // babel escribe \arcsen como "arc\,sen"
+    let expr = r#"
+      <math>
+        <mrow><mi>arc</mi><mspace width="0.167em"/><mi>sen</mi></mrow><mspace width="0.167em"/><mi>x</mi>
+      </math>
+    "#;
+    assert_zoom_in("ZoomInAll", expr, "acercado al máximo; arc")
+}
