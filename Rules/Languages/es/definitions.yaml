@@ -388,28 +388,30 @@
   }
 
 - NavigationParts: {
-    "large-op": "base; lower limit; upper limit",
-    "mfrac": "numerator;denominator",
-    "fraction": "numerator;denominator",
-    "msqrt": "root",
-    "square-root": "root",
-    "mroot": "root;root index",
-    "root": "root;root index",
-    "msub": "base;subscript",
-    "sub": "base;subscript",
-    "msup": "base;superscript",
-    "say-super": "base;superscript",
-    "skip-super": "base;superscript",
-    "power": "base;exponent",
-    "msubsup": "base;subscript;superscript",
-    "munder": "base;under limit",
-    "mover": "base;upper limit",
-    "munderover": "base;under limit;upper limit",
+    # Partes de una fórmula a las que se puede navegar
+    "large-op": "base; límite inferior; límite superior",
+    "mfrac": "numerador; denominador",
+    "fraction": "numerador; denominador",
+    "msqrt": "raíz",
+    "square-root": "raíz",
+    "mroot": "raíz; índice",
+    "root": "raíz; índice",
+    "msub": "base; subíndice",
+    "sub": "base; subíndice",
+    "logarithm-with-base": "base",
+    "indexed-by": "base; subíndice",
+    "msup": "base; superíndice",
+    "say-super": "base; superíndice",
+    "skip-super": "base; superíndice",
+    "power": "base; exponente",
+    "msubsup": "base; subíndice; superíndice",
+    "munder": "base; límite inferior",
+    "mover": "base; límite superior",
+    "munderover": "base; límite inferior; límite superior",
 
-    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
-    # it's a hack to put them here, but at least they are grouped with the other navigation parts
-    "in": "in",
-    "out": "out of",
+    # palabras para entrar y salir de una parte (p. ej., "mover a la derecha, 'fuera de' numerador, 'en' denominador")
+    "in": "en",
+    "out": "fuera de",
   }
 
 - KnownWords: {
