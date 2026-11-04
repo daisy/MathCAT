@@ -529,3 +529,13 @@ fn silent_bracket() -> Result<()> {
 
         }
 
+#[test]
+fn number_sets_terse_without_article() -> Result<()> {
+    // en modo breve los conjuntos de números van sin artículo, todos por igual
+    let expr = "<math><mi>n</mi><mo>∈</mo><mi>ℕ</mi></math>";
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "n pertenece a números naturales")?;
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "n pertenece a los números naturales")?;
+    let expr = "<math><msup><mi>ℤ</mi><mo>−</mo></msup></math>";
+    test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr, "enteros negativos")?;
+    return Ok(());
+}

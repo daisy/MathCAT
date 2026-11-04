@@ -86,16 +86,19 @@
   replace:
   - bookmark: "@id"
   - test:
+      if: "$Verbosity!='Terse' and contains('ℂℕℚℝℤ', .)"
+      then: [T: "los"]      # phrase('los' números reales); en modo breve sin artículo, como pos-neg-number-sets
+  - test:
     - if: ".='ℂ'"
-      then: [T: "los números complejos"]
+      then: [T: "números complejos"]
     - else_if: ".='ℕ'"
-      then: [T: "los números naturales"]
+      then: [T: "números naturales"]
     - else_if: ".='ℚ'"
-      then: [T: "los números racionales"]
+      then: [T: "números racionales"]
     - else_if: ".='ℝ'"
-      then: [T: "los números reales"]
+      then: [T: "números reales"]
     - else_if: ".='ℤ'"
-      then: [T: "los enteros"]
+      then: [T: "enteros"]
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
