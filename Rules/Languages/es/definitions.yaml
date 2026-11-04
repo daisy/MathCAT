@@ -333,7 +333,7 @@
     "outer-product": "infix=producto exterior",
     "parallel-to": "infix=paralela a",
     "perpendicular": "infix=perpendicular a",
-    "plus": "infix=más || prefix=positivo",
+    "plus": "infix=más || prefix=más",     # sin "positivo": "+3" se lee "más 3", igual que "−3" es "menos 3"
     "minus": "infix=menos || prefix=menos",
     "plus-or-minus": "infix=más menos",
     "precedes": "infix=precede a",

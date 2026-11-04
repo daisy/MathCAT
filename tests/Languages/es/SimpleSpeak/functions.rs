@@ -478,3 +478,15 @@ fn max_min_spanish() -> Result<()> {
     test("es", "SimpleSpeak", expr, "m sub mín fin de sub")?;
     return Ok(());
 }
+
+#[test]
+fn signs_without_positivo_negativo() -> Result<()> {
+    // en español los signos se leen "más" y "menos", sin "positivo" ni "negativo"
+    let expr = "<math><mo>+</mo><mn>3</mn></math>";
+    test("es", "SimpleSpeak", expr, "más 3")?;
+    let expr = "<math><mo>-</mo><mn>1</mn><mo>+</mo><mn>2</mn></math>";
+    test("es", "SimpleSpeak", expr, "menos 1 más 2")?;
+    let expr = "<math><mn>3</mn><mo>-</mo><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo></math>";
+    test("es", "SimpleSpeak", expr, "3 menos menos 2")?;
+    return Ok(());
+}
