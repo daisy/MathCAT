@@ -361,7 +361,7 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>4.5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("es", "SimpleSpeak", expr, 
-        "abrir corchete; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 45 militeslas; cerrar corchete")?;
+        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 45 militeslas; cerrar corchetes")?;
                 return Ok(());
 
 }

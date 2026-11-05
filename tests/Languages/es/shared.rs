@@ -417,7 +417,7 @@ fn bug_199_2pi() -> Result<()> {
         <mo stretchy=\"false\" form=\"postfix\">)</mo>
       </mrow>
     </math>";
-  test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de 0 a 2 pi")?;
+  test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de extremos 0 y 2 pi")?;
   return Ok(());
 
 }
@@ -668,7 +668,7 @@ fn spanish_symbols_p1() -> Result<()> {
   test("es", "SimpleSpeak", "<math><mn>2</mn><mo>·</mo><mn>5</mn></math>", "2 por 5")?;
   test("es", "SimpleSpeak", "<math><mn>2</mn><mo>⋅</mo><mn>5</mn></math>", "2 por 5")?;
   test("es", "ClearSpeak", "<math><mn>2</mn><mo>⋅</mo><mn>5</mn></math>", "2 por 5")?;
-  test("es", "SimpleSpeak", "<math><mi>a</mi><mo>∤</mo><mi>b</mi></math>", "a no divide a b")?;
+  test("es", "SimpleSpeak", "<math><mi>a</mi><mo>∤</mo><mi>b</mi></math>", "a no es divisor de b")?;
   test("es", "SimpleSpeak", "<math><mn>90</mn><mo>°</mo></math>", "90 grados")?;
   test("es", "SimpleSpeak", "<math><mn>5</mn><mo>%</mo></math>", "5 por ciento")?;
   test("es", "SimpleSpeak", "<math><mi>μ</mi><mo>+</mo><mi>ν</mi></math>", "mu más nu")?;
@@ -680,9 +680,32 @@ fn spanish_symbols_p1() -> Result<()> {
 #[test]
 fn spanish_primes() -> Result<()> {
   test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>′</mo></msup></math>", "f prima")?;
-  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>″</mo></msup></math>", "f doble prima")?;
-  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>‴</mo></msup></math>", "f triple prima")?;
-  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>⁗</mo></msup></math>", "f cuádruple prima")?;
-  test("es", "SimpleSpeak", "<math><msup><mi>A</mi><mo>″</mo></msup></math>", "mayúscula a doble prima")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>″</mo></msup></math>", "f segunda")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>‴</mo></msup></math>", "f tercera")?;
+  test("es", "ClearSpeak", "<math><msup><mi>f</mi><mo>⁗</mo></msup></math>", "f cuarta")?;
+  test("es", "SimpleSpeak", "<math><msup><mi>A</mi><mo>″</mo></msup></math>", "mayúscula a segunda")?;
   return Ok(());
+}
+
+#[test]
+fn cmu_2024_readings() -> Result<()> {
+    // lecturas alineadas con el Código Matemático Unificado para Iberoamérica (2.ª ed., 2024)
+    let cases = [
+        ("<math><mo>±</mo><mn>2</mn></math>", "más o menos 2"),
+        ("<math><mi>a</mi><mo>≠</mo><mi>b</mi></math>", "a es distinto de b"),
+        ("<math><mi>a</mi><mo>≤</mo><mi>b</mi></math>", "a es menor o igual que b"),
+        ("<math><mi>A</mi><mo>⊂</mo><mi>B</mi></math>", "mayúscula a está incluido en mayúscula b"),
+        ("<math><mi>p</mi><mo>⇒</mo><mi>q</mi></math>", "p implica q"),
+        ("<math><mi>l</mi><mo>∥</mo><mi>m</mi></math>", "l es paralela a m"),
+        ("<math><mi>n</mi><mo>!</mo></math>", "factorial de n"),
+        ("<math><mn>1</mn><mfrac><mn>1</mn><mn>2</mn></mfrac></math>", "1 entero y un medio"),
+        ("<math><mi>mcd</mi><mo>&#x2061;</mo><mo>(</mo><mn>4</mn><mo>,</mo><mn>6</mn><mo>)</mo></math>",
+            "el máximo común divisor de, abrir paréntesis, 4 coma, 6, cerrar paréntesis"),
+        ("<math><mi>log</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el logaritmo de x"),
+        ("<math><mroot><mi>x</mi><mi>n</mi></mroot></math>", "la raíz enésima de x"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
 }

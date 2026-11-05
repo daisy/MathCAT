@@ -91,7 +91,7 @@ fn trig_power_other() -> Result<()> {
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
-    test("es", "SimpleSpeak", expr, "el log de x")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo de x")?;
     return Ok(());
 
 }
@@ -107,7 +107,7 @@ fn principal_value_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el log de, abrir paréntesis, x más y, cerrar paréntesis")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -351,7 +351,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo abierto de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto de extremos c y d")?;
     return Ok(());
 
 }
@@ -363,7 +363,7 @@ fn no_times_sqrt() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
             <mo>)</mo></mrow>
         </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de extremos c y d")?;
     return Ok(());
 
 }
@@ -376,7 +376,7 @@ fn parens_interval_open_closed() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr,"el intervalo abierto por la izquierda de c a d")?;
+    test("es", "SimpleSpeak",expr,"el intervalo abierto por la izquierda de extremos c y d")?;
     return Ok(());
 
 }
@@ -389,7 +389,7 @@ fn parens_interval_closed_closed() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
             <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo cerrado de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo cerrado de extremos c y d")?;
     return Ok(());
 
 }
@@ -402,7 +402,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el intervalo abierto de menos infinito a d")?;
+    "el intervalo abierto de extremos menos infinito y d")?;
     return Ok(());
 
 }
@@ -415,7 +415,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>]</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el intervalo abierto por la izquierda de menos infinito a d")?;
+    "el intervalo abierto por la izquierda de extremos menos infinito y d")?;
     return Ok(());
 
 }
@@ -453,9 +453,9 @@ fn trig_names_terse() -> Result<()> {
 fn arc_trig_names() -> Result<()> {
     let expr = "<math><mi>arcsen</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo><mi>arctan</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo><mi>argsenh</mi><mo>&#x2061;</mo><mi>z</mi></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
-                expr, "arcoseno de x más arcotangente de y, más arcoseno hiperbólico de z")?;
+                expr, "arco seno de x, más arco tangente de y, más, argumento seno hiperbólico de z")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "arcoseno x más arcotangente y, más arcoseno hiperbólico, z")?;
+                expr, "arco seno x, más arco tangente y, más, argumento seno hiperbólico, z")?;
     return Ok(());
 }
 
@@ -463,10 +463,10 @@ fn arc_trig_names() -> Result<()> {
 fn arc_trig_babel_split() -> Result<()> {
     // babel en español escribe \arcsen como "arc\,sen" (parche temporal en general.yaml)
     let expr = "<math><mrow><mi mathvariant='normal'>arc</mi><mspace width='0.167em'></mspace><mi mathvariant='normal'>sen</mi></mrow><mspace width='0.167em'></mspace><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "arcoseno de x")?;
+    test("es", "SimpleSpeak", expr, "arco seno de x")?;
     let expr = "<math><mi>arc</mi><mspace width='0.167em'></mspace><mi>tg</mi><mspace width='0.167em'></mspace><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "arcotangente; abrir paréntesis, x más 1, cerrar paréntesis")?;
+                expr, "arco tangente; abrir paréntesis, x más 1, cerrar paréntesis")?;
     return Ok(());
 }
 

@@ -134,7 +134,7 @@ fn bold_vector_products() -> Result<()> {
 fn negated_relations() -> Result<()> {
   // sin "es no es" ni "es no menor"
   let expr = "<math><mi>A</mi><mo>⊄</mo><mi>B</mi></math>";
-  test("es", "SimpleSpeak", expr, "mayúscula a, no es un subconjunto de, mayúscula b")?;
+  test("es", "SimpleSpeak", expr, "mayúscula a no está incluido en, mayúscula b")?;
   let expr = "<math><mi>a</mi><mo>≮</mo><mi>b</mi></math>";
   test("es", "SimpleSpeak", expr, "a no es menor que b")?;
   let expr = "<math><mi>a</mi><mo>≅</mo><mi>b</mi></math>";

@@ -66,7 +66,10 @@
       - else: [T: "de índice", x: "*[2]"]      # phrase(la raíz 'de índice' 21 de x)
       else_test:
         if: "*[2][self::m:mi][string-length(.)=1]"
-        then: [x: "*[2]", CT: "-ésima"]      # phrase(la raíz n'-ésima' de x)
+        then_test:
+          if: "*[2][.='n']"
+          then: [T: "enésima"]      # phrase(la raíz 'enésima' de x), como el CMU
+          else: [x: "*[2]", CT: "-ésima"]      # phrase(la raíz m'-ésima' de x)
         else: [T: "de índice", x: "*[2]"]      # phrase(la raíz 'de índice' n más 1 de x)
   - test:
       if: "$Verbosity!='Terse'"

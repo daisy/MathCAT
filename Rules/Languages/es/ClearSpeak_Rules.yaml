@@ -83,7 +83,10 @@
       - else: [T: "de índice", x: "*[2]"]      # phrase(la raíz 'de índice' 21 de x)
       else_test:
         if: "*[2][self::m:mi][string-length(.)=1]"
-        then: [x: "*[2]", CT: "-ésima"]      # phrase(la raíz n'-ésima' de x)
+        then_test:
+          if: "*[2][.='n']"
+          then: [T: "enésima"]      # phrase(la raíz 'enésima' de x), como el CMU
+          else: [x: "*[2]", CT: "-ésima"]      # phrase(la raíz m'-ésima' de x)
         else: [T: "de índice", x: "*[2]"]      # phrase(la raíz 'de índice' n más 1 de x)
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
@@ -607,11 +610,13 @@
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
       then: [OT: "el"]      # phrase('el' logaritmo de x más 1)
   - test:
-    - if: ".='log'"
+    - if: ".='log' and $Verbosity='Terse'"
       then: [T: "log"]
-    - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
-      then: [T: "logaritmo natural"]      # phrase(el 'logaritmo natural' de x)
-      else: [spell: "'ln'"]
+    - else_if: ".='log'"
+      then: [T: "logaritmo"]      # phrase(el 'logaritmo' de x)
+    - else_if: "$Verbosity='Terse' and $ClearSpeak_Log != 'LnAsNaturalLog'"
+      then: [spell: "'ln'"]
+      else: [T: "logaritmo natural"]      # phrase(el 'logaritmo natural' de x), como el CMU
 
 - name: ClearSpeak-multi-line
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs

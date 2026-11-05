@@ -123,7 +123,7 @@ fn simple_mi_root() -> Result<()> {
     let expr = "<math>
                     <mroot> <mi>x</mi> <mi>n</mi> </mroot>
                 </math>";
-    test("es", "ClearSpeak", expr, "la raíz n-ésima de x")?;
+    test("es", "ClearSpeak", expr, "la raíz enésima de x")?;
     return Ok(());
 
 }

@@ -15,8 +15,8 @@
     # copia de Rules/definitions.yaml (mantener al día) + nombres en español
     "sen", "cotg", "ctg", "cosec",  # español
     "sin", "cos", "tan", "sec", "csc", "cot",
-    "log", "ln",
-    "tang", "tg", "lg",       # these aren't listed in the ClearSpeak, but they are equivalents
+    # sin "log", "ln", "lg": en español se dice "el logaritmo de x" (CMU)
+    "tang", "tg",       # these aren't listed in the ClearSpeak, but they are equivalents
   }
 
 - AdditionalFunctionNames: {
@@ -206,24 +206,24 @@
     "secant": "function=sec | secante",
     "cosecant": "function=cosec | cosecante",
     "cotangent": "function=cotan | cotangente",
-    "arcsine": "function=arcoseno",
-    "arccosine": "function=arcocoseno",
-    "arctangent": "function=arcotangente",
-    "arcsecant": "function=arcosecante",
-    "arccosecant": "function=arcocosecante",
-    "arccotangent": "function=arcocotangente",
+    "arcsine": "function=arco seno",
+    "arccosine": "function=arco coseno",
+    "arctangent": "function=arco tangente",
+    "arcsecant": "function=arco secante",
+    "arccosecant": "function=arco cosecante",
+    "arccotangent": "function=arco cotangente",
     "hyperbolic-sine": "function=sen hache | seno hiperbólico",
     "hyperbolic-cosine": "function=cos hache | coseno hiperbólico",
     "hyperbolic-tangent": "function=tan hache | tangente hiperbólica",
     "hyperbolic-secant": "function=sec hache | secante hiperbólica",
     "hyperbolic-cosecant": "function=cosec hache | cosecante hiperbólica",
     "hyperbolic-cotangent": "function=cotan hache | cotangente hiperbólica",
-    "arc-hyperbolic-sine": "function=arcoseno hiperbólico",
-    "arc-hyperbolic-cosine": "function=arcocoseno hiperbólico",
-    "arc-hyperbolic-tangent": "function=arcotangente hiperbólica",
-    "arc-hyperbolic-secant": "function=arcosecante hiperbólica",
-    "arc-hyperbolic-cosecant": "function=arcocosecante hiperbólica",
-    "arc-hyperbolic-cotangent": "function=arcocotangente hiperbólica",
+    "arc-hyperbolic-sine": "function=argumento seno hiperbólico",
+    "arc-hyperbolic-cosine": "function=argumento coseno hiperbólico",
+    "arc-hyperbolic-tangent": "function=argumento tangente hiperbólica",
+    "arc-hyperbolic-secant": "function=argumento secante hiperbólica",
+    "arc-hyperbolic-cosecant": "function=argumento cosecante hiperbólica",
+    "arc-hyperbolic-cotangent": "function=argumento cotangente hiperbólica",
     "exponential": "function=exponencial| la exponencial",
     "natural-logarithm": "function=l n| el logaritmo natural| el logaritmo natural",
     "logarithm": "function=log| el logaritmo",
@@ -353,7 +353,7 @@
     "upwards-diagonal-ellipsis": "infix=puntos suspensivos diagonales ascendentes",
     "vertical-ellipsis": "infix=puntos suspensivos verticales",
     "xor": "infix=o exclusivo",
-    "factorial": "postfix=factorial",
+    "factorial": "postfix=factorial",     # se lee "factorial de n": regla factorial-de en general.yaml
     "percent": "postfix=por ciento",
     "diameter": "nofix=d| diámetro",
     "distance": "nofix=d; D| distancia",

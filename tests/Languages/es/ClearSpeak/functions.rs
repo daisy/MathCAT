@@ -99,7 +99,7 @@ fn trig_power_other() -> Result<()> {
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
-    test("es", "ClearSpeak", expr, "log x")?;
+    test("es", "ClearSpeak", expr, "logaritmo de x")?;
     return Ok(());
 
 }
@@ -115,7 +115,7 @@ fn principal_value_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el log de, abrir paréntesis, x más y, cerrar paréntesis")?;
+    test("es", "ClearSpeak", expr, "el logaritmo de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -139,7 +139,7 @@ fn normal_log_with_base() -> Result<()> {
 #[test]
 fn simple_ln() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
-    test("es", "ClearSpeak", expr, "l n x")?;
+    test("es", "ClearSpeak", expr, "logaritmo natural de x")?;
     return Ok(());
 
 }
@@ -147,7 +147,7 @@ fn simple_ln() -> Result<()> {
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "ClearSpeak", expr, "el l n de, abrir paréntesis, x más y, cerrar paréntesis")?;
+    test("es", "ClearSpeak", expr, "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -157,7 +157,7 @@ fn normal_ln() -> Result<()> {
 fn simple_natural_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_ClearSpeak("es", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-        "logaritmo natural x")?;
+        "logaritmo natural de x")?;
         return Ok(());
 
 }
@@ -215,7 +215,7 @@ fn test_functions_none_pref() -> Result<()> {
     <mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("es", "ClearSpeak_Functions", "None",expr,
-        "el log de, abrir paréntesis, x más y, cerrar paréntesis; más; f por, abrir paréntesis, x más y, cerrar paréntesis")?;
+        "el logaritmo de, abrir paréntesis, x más y, cerrar paréntesis; más; f por, abrir paréntesis, x más y, cerrar paréntesis")?;
         return Ok(());
 
 }
@@ -309,7 +309,7 @@ fn explicit_times_more_implied_times() -> Result<()> {
 fn explicit_times_none_simple_right() -> Result<()> {
     let expr = "<math><mn>2</mn><mo>[</mo><mn>3</mn> <mo>]</mo></math>";
     test_ClearSpeak("es", "ClearSpeak_ImpliedTimes", "None",
-        expr, "2, abrir corchete 3 cerrar corchete")?;
+        expr, "2, abrir corchetes 3 cerrar corchetes")?;
         return Ok(());
 
 }

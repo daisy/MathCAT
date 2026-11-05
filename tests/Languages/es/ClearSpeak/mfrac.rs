@@ -98,7 +98,7 @@ fn mixed_number() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 y un medio")?;
+    test("es", "ClearSpeak", expr, "3 enteros y un medio")?;
     return Ok(());
 
 }
@@ -110,7 +110,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 y un octavo")?;
+    test("es", "ClearSpeak", expr, "3 enteros y un octavo")?;
     return Ok(());
 
 }
@@ -121,7 +121,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("es", "ClearSpeak", expr, "3 y 7 partido por 83")?;
+    test("es", "ClearSpeak", expr, "3 enteros y 7 partido por 83")?;
     return Ok(());
 
 }

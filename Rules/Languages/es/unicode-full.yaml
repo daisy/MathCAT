@@ -265,11 +265,11 @@
         then: [T: "punto"]                      	# 	(en: 'dot', google translation)
         else: [T: "bala"]                       	# 	(en: 'bullet')
 
- - "‰": [T: "tanto por millar"]                 	#  0x2030	(en: 'per mille')
+ - "‰": [T: "por mil"]                            	#  0x2030	(en: 'per mille')
  - "‱": [T: "tanto por diez mil"]               	#  0x2031	(en: 'per ten thousand')
  - "′": [T: "prima"]                            	#  0x2032	(en: 'prime')
- - "″": [T: "doble prima"]                        	#  0x2033	(en: 'double prime')
- - "‴": [T: "triple prima"]                       	#  0x2034	(en: 'triple prime')
+ - "″": [T: "segunda"]                            	#  0x2033	(en: 'double prime')
+ - "‴": [T: "tercera"]                            	#  0x2034	(en: 'triple prime')
  - "‵": [T: "prima inversa"]                     	#  0x2035	(en: 'reversed prime')
  - "‶": [T: "doble prima inversa"]               	#  0x2036	(en: 'reversed double prime')
  - "‷": [T: "triple prima inversa"]                  	#  0x2037	(en: 'reversed triple prime', google: 'triple prime invertido')
@@ -296,7 +296,7 @@
  - "⁐": [T: "unir"]	#  0x2050	(en: 'close up')
  - "⁑": [T: "dos asteriscos verticales"]	#  0x2051	(en: 'two vertical asterisks')
  - "⁒": [T: "signo menos comercial"]	#  0x2052	(en: 'commercial minus sign')
- - "⁗": [T: "cuádruple prima"]                     	#  0x2057	(en: 'quadruple prime')
+ - "⁗": [T: "cuarta"]                             	#  0x2057	(en: 'quadruple prime')
  - "⁠": [T: ""]                                 	#  0x2060
  - "⁰": [T: "a la potencia de cero"]                    	#  0x2070	(en: 'to the zeroth power', google translation)
  - "ⁱ": [T: "superíndice i"]                    	#  0x2071	(en: 'to the eihth power', google: 'al poder eihth')
@@ -576,7 +576,7 @@
  - "⇍": [T: "flecha doble izquierda con trazo"]   	#  0x21cd	(en: 'leftwards double arrow with stroke')
  - "⇎": [T: "flecha doble izquierda y derecha con trazo"]	#  0x21ce	(en: 'left right double arrow with stroke')
  - "⇏": [T: "flecha doble hacia la derecha con trazo"]             	#  0x21cf	(en: 'rightwards double arrow with stroke')
- - "⇐": [T: "flecha doble hacia la izquierda"]  	#  0x21d0	(en: 'leftwards double arrow')
+ - "⇐": [T: "porque"]                             	#  0x21d0	(en: 'leftwards double arrow')
  - "⇑": [T: "flecha doble hacia arriba"]        	#  0x21d1	(en: 'upwards double arrow')
  - "⇓": [T: "flecha doble hacia abajo"]         	#  0x21d3	(en: 'downwards double arrow')
  - "⇔": [T: "si y solo si"]                     	#  0x21d4	(en: 'if and only if')
@@ -640,7 +640,7 @@
  - "∏": [T: "producto"]                         	#  0x220f	(en: 'product')
  - "∑": [T: "suma"]                             	#  0x2211	(en: 'sum', SRE: 'sumatorio')
  - "−": [T: "menos"]                            	#  0x2212	(en: 'minus')
- - "∓": [T: "menos más"]                        	#  0x2213	(en: 'minus or plus')
+ - "∓": [T: "menos o más"]                        	#  0x2213	(en: 'minus or plus')
  - "∔": [T: "punto más"]                        	#  0x2214	(en: 'dot plus')
  - "∕": [T: "dividido por"]                	#  0x2215	(en: 'divided by')
  - "∖": [T: "menos"]                            	#  0x2216	(en: 'set minus')
@@ -668,7 +668,11 @@
  - "∡": [T: "ángulo medido"]                    	#  0x2221	(en: 'measured angle')
  - "∢": [T: "ángulo esférico"]                  	#  0x2222	(en: 'spherical angle')
  - "∣": [T: "divide a"]                         	#  0x2223	(en: 'divides')
- - "∤": [T: "no divide a"]                      	#  0x2224	(en: 'does not divide')
+ - "∤":                                           	#  0x2224	(en: 'does not divide')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "no es divisor de"]
+         else: [T: "no divisor de"]
  - "∧": [T: "y"]                                	#  0x2227	(en: 'and')
  - "∨": [T: "o"]                                	#  0x2228	(en: 'or')
  - "∩": [T: "intersección"]                     	#  0x2229	(en: 'intersection')
@@ -683,7 +687,7 @@
  - "∲": [T: "integral de contorno en sentido de las agujas del reloj"]	#  0x2232	(en: 'clockwise contour integral')
  - "∳": [T: "integral de contorno en sentido contrario a las agujas del reloj"]	#  0x2233	(en: 'anticlockwise contour integral')
  - "∴": [T: "por lo tanto"]                     	#  0x2234	(en: 'therefore')
- - "∵": [T: "porque"]                           	#  0x2235	(en: 'because')
+ - "∵": [T: "puesto que"]                         	#  0x2235	(en: 'because')
  - "∷": [T: "como"]                       	#  0x2237	(en: 'as')
  - "∸": [T: "punto menos"]                      	#  0x2238	(en: 'dot minus')
  - "∹": [T: "exceso"]                           	#  0x2239	(en: 'has excess compared to')
@@ -697,7 +701,11 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "homotético a"                           	# 	(en: 'homothetic to')
- - "∼": [T: "varía con"]                            	#  0x223c	(en: 'varies with')
+ - "∼":                                           	#  0x223c	(en: 'varies with')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "es similar a"]
+         else: [T: "similar a"]
  - "∽": [T: "tilde inversa"]                  	#  0x223d	(en: 'reversed tilde')
  - "∿": [T: "onda sinusoidal"]                        	#  0x223f	(en: 'sine wave')
  - "≀": [T: "producto de guirnalda"]            	#  0x2240	(en: 'wreath product')
@@ -762,7 +770,11 @@
          if: "$Verbosity!='Terse'"
          then: [T: "la"]                        	# 	(en: 'the', google translation)
      - T: "diferencia entre"                    	# 	(en: 'difference between')
- - "≐": [T: "se acerca al límite"]              	#  0x2250	(en: 'approaches the limit')
+ - "≐":                                           	#  0x2250	(en: 'approaches the limit')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "es aproximadamente igual a"]
+         else: [T: "aproximadamente igual a"]
  - "≑":                                         	#  0x2251
      - test: 
          if: "$Verbosity!='Terse'"
@@ -778,7 +790,11 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es la"]                     	# 	(en: 'is the', google translation)
      - T: "imagen de o aproximadamente igual a" 	# 	(en: 'image of or approximately equal to')
- - "≔": [T: "dos puntos igual"]                 	#  0x2254	(en: 'colon equals')
+ - "≔":                                           	#  0x2254	(en: 'colon equals')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "es igual por definición a"]
+         else: [T: "igual por definición a"]
  - "≕": [T: "igual dos puntos"]                 	#  0x2255	(en: 'equals colon')
  - "≖": [T: "igual incluyendo anillo"]          	#  0x2256	(en: 'ring in equal to')
  - "≗":                                         	#  0x2257
@@ -813,8 +829,16 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "estrictamente equivalente a"         	# 	(en: 'strictly equivalent to')
- - "≦": [T: "menor o igual a"]                	#  0x2266	(en: 'less than over equal to')
- - "≧": [T: "mayor o igual a"]                	#  0x2267	(en: 'greater than over equal to')
+ - "≦":                                           	#  0x2266	(en: 'less than over equal to')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "es menor o igual que"]
+         else: [T: "menor o igual que"]
+ - "≧":                                           	#  0x2267	(en: 'greater than over equal to')
+     - test:
+         if: "$Verbosity!='Terse'"
+         then: [T: "es mayor o igual que"]
+         else: [T: "mayor o igual que"]
  - "≨":                                         	#  0x2268
      - test: 
          if: "$Verbosity!='Terse'"
@@ -858,18 +882,16 @@
          then: [T: "no es"]                        	# 	(en: 'is', google translation)
          else: [T: "no"]
      - T: "mayor que"                        	# 	(en: 'not greater than')
- - "≰":                                         	#  0x2270
-     - test: 
+ - "≰":                                           	#  0x2270
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "menor ni igual a"                 	# 	(en: 'neither less than nor equal to')
- - "≱":                                         	#  0x2271
-     - test: 
+         then: [T: "no es menor ni igual que"]
+         else: [T: "no menor ni igual que"]
+ - "≱":                                           	#  0x2271
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "mayor ni igual a"                 	# 	(en: 'neither greater than nor equal to')
+         then: [T: "no es mayor ni igual que"]
+         else: [T: "no mayor ni igual que"]
  - "≲":                                         	#  0x2272
      - test: 
          if: "$Verbosity!='Terse'"
@@ -922,18 +944,12 @@
  - "≿": [T: "sigue o es equivalente a"]         	#  0x227f	(en: 'succeeds or is equivalent to')
  - "⊀": [T: "no precede a"]                     	#  0x2280	(en: 'does not precede')
  - "⊁": [T: "no sigue a"]                       	#  0x2281	(en: 'does not succeed')
- - "⊈":                                         	#  0x2288
-     - test: 
+ - "⊈":                                           	#  0x2288
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "incluido ni igual a"              	# 	(en: 'neither a subset of nor equal to')
- - "⊉":                                         	#  0x2289
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "contiene ni es igual a"           	# 	(en: 'neither a superset of nor equal to')
+         then: [T: "no está incluido ni es igual a"]
+         else: [T: "no incluido ni igual a"]
+ - "⊉": [T: "no incluye ni es igual a"]           	#  0x2289
  - "⊊": [T: "incluido estrictamente en"]        	#  0x228a	(en: 'subset of with not equal to')
  - "⊋": [T: "contiene estrictamente a"]         	#  0x228b	(en: 'superset of with not equal to')
  - "⊌": [T: "multiconjunto"]             	#  0x228c	(en: 'multiset')
@@ -1103,16 +1119,16 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "mayor que igual a o menor que"             	# 	(en: 'greater than equal to or less than')
- - "⋜":                                         	#  0x22dc
-     - test: 
+ - "⋜":                                           	#  0x22dc
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "menor o igual que"                   	# 	(en: 'equal to or less than')
- - "⋝":                                         	#  0x22dd
-     - test: 
+         then: [T: "es menor o igual que"]
+         else: [T: "menor o igual que"]
+ - "⋝":                                           	#  0x22dd
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "mayor o igual que"                   	# 	(en: 'equal to or greater than')
+         then: [T: "es mayor o igual que"]
+         else: [T: "mayor o igual que"]
  - "⋞":                                         	#  0x22de
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1623,9 +1639,9 @@
  - "⟵": [T: "flecha larga hacia la izquierda"]  	#  0x27f5	(en: 'long leftwards arrow')
  - "⟶": [T: "flecha larga hacia la derecha"]                     	#  0x27f6	(en: 'long rightwards arrow')
  - "⟷": [T: "flecha larga hacia izquierda y derecha"]	#  0x27f7	(en: 'long left right arrow')
- - "⟸": [T: "doble flecha larga hacia la izquierda"]	#  0x27f8	(en: 'long leftwards double arrow')
- - "⟹": [T: "doble flecha larga hacia la derecha"]               	#  0x27f9	(en: 'long rightwards double arrow')
- - "⟺": [T: "doble flecha larga hacia izquierda y derecha"]	#  0x27fa	(en: 'long left right double arrow')
+ - "⟸": [T: "porque"]                             	#  0x27f8	(en: 'long leftwards double arrow')
+ - "⟹": [T: "implica"]                            	#  0x27f9	(en: 'long rightwards double arrow')
+ - "⟺": [T: "si y solo si"]                       	#  0x27fa	(en: 'long left right double arrow')
  - "⟻": [T: "flecha larga hacia la izquierda partiendo de una barra"]	#  0x27fb	(en: 'long leftwards arrow from bar')
  - "⟼": [T: "flecha larga hacia la derecha partiendo de una barra"]         	#  0x27fc	(en: 'long rightwards arrow from bar')
  - "⟽": [T: "doble flecha larga hacia la izquierda partiendo de una barra"]	#  0x27fd	(en: 'long leftwards double arrow from bar')

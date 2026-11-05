@@ -497,12 +497,12 @@ fn elementary_classical_tests() -> Result<()> {
         ("cotangent", "cotangente de x"),
 
         // Inverse trig
-        ("arcsine", "arcoseno de x"),
-        ("arccosine", "arcocoseno de x"),
-        ("arctangent", "arcotangente de x"),
-        ("arcsecant", "arcosecante de x"),
-        ("arccosecant", "arcocosecante de x"),
-        ("arccotangent", "arcocotangente de x"),
+        ("arcsine", "arco seno de x"),
+        ("arccosine", "arco coseno de x"),
+        ("arctangent", "arco tangente de x"),
+        ("arcsecant", "arco secante de x"),
+        ("arccosecant", "arco cosecante de x"),
+        ("arccotangent", "arco cotangente de x"),
 
         // Hyperbolic trig
         ("hyperbolic-sine", "seno hiperbólico de x"),
@@ -513,12 +513,12 @@ fn elementary_classical_tests() -> Result<()> {
         ("hyperbolic-cotangent", "cotangente hiperbólica de x"),
 
         // Inverse hyperbolic trig
-        ("arc-hyperbolic-sine", "arcoseno hiperbólico de x"),
-        ("arc-hyperbolic-cosine", "arcocoseno hiperbólico de x"),
-        ("arc-hyperbolic-tangent", "arcotangente hiperbólica de x"),
-        ("arc-hyperbolic-secant", "arcosecante hiperbólica de x"),
-        ("arc-hyperbolic-cosecant", "arcocosecante hiperbólica de x"),
-        ("arc-hyperbolic-cotangent", "arcocotangente hiperbólica de x"),
+        ("arc-hyperbolic-sine", "argumento seno hiperbólico de x"),
+        ("arc-hyperbolic-cosine", "argumento coseno hiperbólico de x"),
+        ("arc-hyperbolic-tangent", "argumento tangente hiperbólica de x"),
+        ("arc-hyperbolic-secant", "argumento secante hiperbólica de x"),
+        ("arc-hyperbolic-cosecant", "argumento cosecante hiperbólica de x"),
+        ("arc-hyperbolic-cotangent", "argumento cotangente hiperbólica de x"),
     ];
 
     for (intent, expected) in tests {

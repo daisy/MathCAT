@@ -120,14 +120,14 @@
  - "[":                                         	#  0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "abrir corchete"]            	# 	(en: 'open bracket', google translation)
-        else: [T: "abrir corchete"]         	# 	(en: 'left bracket', MathPlayer: 'abre corchetes', google: 'soporte izquierdo')
+        then: [T: "abrir corchetes"]            	# 	(en: 'open bracket', google translation)
+        else: [T: "abrir corchetes"]         	# 	(en: 'left bracket', MathPlayer: 'abre corchetes', google: 'soporte izquierdo')
  - "\\": [T: "barra invertida"]              	#  0x5c	(en: 'back slash', MathPlayer: 'abre corchetes', google: 'back slash')
  - "]":                                         	#  0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "cerrar corchete"]          	# 	(en: 'close bracket', google translation)
-        else: [T: "cerrar corchete"]           	# 	(en: 'right bracket', MathPlayer: 'cierra corchetes', google: 'soporte derecho')
+        then: [T: "cerrar corchetes"]          	# 	(en: 'close bracket', google translation)
+        else: [T: "cerrar corchetes"]           	# 	(en: 'right bracket', MathPlayer: 'cierra corchetes', google: 'soporte derecho')
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
@@ -138,8 +138,8 @@
  - "{":                                         	#  0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "abrir llave"]         	# 	(en: 'open brace', google translation)
-        else: [T: "abrir llave"]            	# 	(en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
+        then: [T: "abrir llaves"]         	# 	(en: 'open brace', google translation)
+        else: [T: "abrir llaves"]            	# 	(en: 'left brace', MathPlayer: 'abre llaves', google: 'abrazadera izquierda')
  - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
@@ -167,8 +167,8 @@
  - "}":                                         	#  0x7d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "cerrar llave"]          	# 	(en: 'close brace', google translation)
-        else: [T: "cerrar llave"]             	# 	(en: 'right brace', MathPlayer: 'cierra llaves', google: 'abrazadera derecha')
+        then: [T: "cerrar llaves"]          	# 	(en: 'close brace', google translation)
+        else: [T: "cerrar llaves"]             	# 	(en: 'right brace', MathPlayer: 'cierra llaves', google: 'abrazadera derecha')
 
  - "~": [T: "tilde"]                            	#  0x7e
  - " ":                                         	#  0xa0
@@ -180,7 +180,7 @@
 
  - "¬": [T: "no"]                         	#  0xac	(en: 'not')
  - "°": [T: "grados"]                            	#  0xb0	(en: 'degrees')
- - "±": [T: "más menos"]                        	#  0xb1	(en: 'plus or minus')
+ - "±": [T: "más o menos"]                        	#  0xb1	(en: 'plus or minus')
  - "´": [T: "acento agudo"]                     	#  0xb4	(en: 'acute')
  - "·":                                            # 0xB7
     - test:
@@ -275,7 +275,14 @@
 
  - "⁢": [T: ""]                                 	#  0x2062
  - "⁣": [T: ""]                                 	#  0x2063
- - "⁤": [T: "y"]                                	#  0x2064	(en: 'and')
+ - "⁤":                                          	#  0x2064	(en: 'and')
+     - test:      # número mixto, como el CMU: "3 enteros y un quinto", "1 entero y un medio"
+         if: "preceding-sibling::*[1][self::m:mn][.='1']"
+         then: [T: "entero y"]
+         else_test:
+           if: "preceding-sibling::*[1][self::m:mn]"
+           then: [T: "enteros y"]
+           else: [T: "y"]
  - "ℂℕℚℝℤ":                                     	#  here we rely on this running through the table again to speak "cap xxx"
     - T: "prima inversa"                      	# 	(en: 'double-struck', google: 'doble golpe')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
@@ -300,24 +307,22 @@
          - test:
               if: "$Verbosity!='Terse'"
               then: [T: "es"]      # 	(en: 'is')
-         - T: "paralelo a"      # 	(en: 'parallel to')
- - "∦":                                         	#  0x2226
-     - test: 
+         - T: "paralela a"      # 	(en: 'parallel to')
+ - "∦":                                           	#  0x2226
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "paralelo a"                       	# 	(en: 'not parallel to')
- - "≤":                                         	#  0x2264
-     - test: 
+         then: [T: "no es paralela a"]
+         else: [T: "no paralela a"]
+ - "≤":                                           	#  0x2264
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "menor o igual a"
- - "≥":                                         	#  0x2265
-     - test: 
+         then: [T: "es menor o igual que"]
+         else: [T: "menor o igual que"]
+ - "≥":                                           	#  0x2265
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "mayor o igual a"                   	# 	(en: 'greater than or equal to')
-
+         then: [T: "es mayor o igual que"]
+         else: [T: "mayor o igual que"]
  # --- restored complex short definitions (prefer over unicode-full) ---
  - "…":                                         	#  0x2026
     test:
@@ -460,52 +465,37 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "más positivo"              	# 	(en: 'most positive')
- - "≠":                                         	#  0x2260
-     - test: 
+ - "≠":                                           	#  0x2260
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es igual a"]             	# 	(en: 'is not equal to')
-         else: [T: "distinto de"]               	# 	(en: 'not equal to', MathPlayer: 'distinto de')
+         then: [T: "es distinto de"]
+         else: [T: "distinto de"]
  - "≡":                                         	#  0x2261
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "idéntico a"                          	# 	(en: 'identical to')
- - "⊂":                                         	#  0x2282
-     - test: 
+ - "⊂":                                           	#  0x2282
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es un"]                     	# 	(en: 'is a', google translation)
-     - T: "subconjunto de"                         	# 	(en: 'subset of')
- - "⊃":                                         	#  0x2283
-     - test: 
+         then: [T: "está incluido en"]
+         else: [T: "incluido en"]
+ - "⊃": [T: "incluye a"]                          	#  0x2283
+ - "⊄":                                           	#  0x2284
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es un"]                     	# 	(en: 'is a', google translation)
-     - T: "superconjunto de"                          	# 	(en: 'superset of')
- - "⊄":                                         	#  0x2284
-     - test: 
+         then: [T: "no está incluido en"]
+         else: [T: "no incluido en"]
+ - "⊅": [T: "no incluye a"]                       	#  0x2285
+ - "⊆":                                           	#  0x2286
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "un subconjunto de"                      	# 	(en: 'not a subset of')
- - "⊅":                                         	#  0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "no es"]                        	# 	(en: 'is', google translation)
-         else: [T: "no"]
-     - T: "un superconjunto de"                       	# 	(en: 'not a superset of')
- - "⊆":                                         	#  0x2286
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es un"]                     	# 	(en: 'is a', google translation)
-     - T: "subconjunto o igual a"                  	# 	(en: 'subset of or equal to')
- - "⊇":                                         	#  0x2287
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "es un"]                     	# 	(en: 'is a', google translation)
-     - T: "superconjunto o igual a"               	# 	(en: 'superset of or equal to')
-
+         then: [T: "está incluido o es igual a"]
+         else: [T: "incluido o igual a"]
+ - "⊇": [T: "incluye o es igual a"]               	#  0x2287
  # --- restored short definitions that differ from unicode-full ---
  - "←": [T: "flecha izquierda"]                 	#  0x2190	(en: 'leftwards arrow')
  - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
  - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
- - "⇒": [T: "flecha doble derecha"]                     	#  0x21d2	(en: 'rightwards double arrow')
+ - "⇒": [T: "implica"]                            	#  0x21d2	(en: 'rightwards double arrow')
  - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')

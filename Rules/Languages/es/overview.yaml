@@ -56,7 +56,10 @@
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
-          then: [T: la raíz, x: "*[2]", CT: "-ésima"]
+          then_test:
+            if: "*[2][.='n']"
+            then: [T: la raíz enésima]
+            else: [T: la raíz, x: "*[2]", CT: "-ésima"]
           else: [T: la raíz de índice, x: "*[2]"]
   - test:
       if: "IsNode(*[1], 'simple')"

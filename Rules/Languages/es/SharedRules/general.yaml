@@ -165,9 +165,9 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "de"
+      - T: "de extremos"      # phrase(el intervalo cerrado 'de extremos' 0 y 1), como el CMU
       - x: "*[1]"
-      - T: "a"
+      - T: "y"
       - x: "*[2]"
       else:
       - x: "*[1]"
@@ -516,11 +516,11 @@
       then: [T: "cotan hache"]
       else: [T: "cotangente hiperbólica"]
 
-# funciones trigonométricas inversas: "arcoseno de x" en vez de deletrear "arcsin"
+# funciones trigonométricas inversas: "arco seno de x" (CMU) en vez de deletrear "arcsin"
 # PARCHE TEMPORAL (sacar cuando se arregle merge_arc_trig en src/canonicalize.rs):
 # babel en español escribe \arcsen como "arc\,sen" y MathCAT no une "arc" con el nombre
 # de la función cuando hay un espacio entre medio, así que llega como arc ⁡ sen y se lee
-# "arc de seno". Estas tres reglas lo leen como "arcoseno de x".
+# "arc de seno". Estas tres reglas lo leen como "arco seno de x".
 - name: arc-trig-separado-aplicado
   tag: mrow
   match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
@@ -528,7 +528,7 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "de"]      # phrase(arcoseno 'de' x)
+      then: [T: "de"]      # phrase(arco seno 'de' x)
   - pause: auto
   - x: "*[3]"
 
@@ -539,19 +539,19 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[3][.='sen' or .='sin']"
-      then: [T: "arcoseno"]
+      then: [T: "arco seno"]
     - else_if: "*[3][.='cos']"
-      then: [T: "arcocoseno"]
+      then: [T: "arco coseno"]
     - else_if: "*[3][.='tan' or .='tg']"
-      then: [T: "arcotangente"]
+      then: [T: "arco tangente"]
     - else_if: "*[3][.='sec']"
-      then: [T: "arcosecante"]
+      then: [T: "arco secante"]
     - else_if: "*[3][.='csc' or .='cosec']"
-      then: [T: "arcocosecante"]
-    - else: [T: "arcocotangente"]
+      then: [T: "arco cosecante"]
+    - else: [T: "arco cotangente"]
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "de"]      # phrase(arcoseno 'de' x)
+      then: [T: "de"]      # phrase(arco seno 'de' x)
   - pause: auto
   - x: "*[5]"
 
@@ -562,100 +562,100 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[3][.='sen' or .='sin']"
-      then: [T: "arcoseno"]
+      then: [T: "arco seno"]
     - else_if: "*[3][.='cos']"
-      then: [T: "arcocoseno"]
+      then: [T: "arco coseno"]
     - else_if: "*[3][.='tan' or .='tg']"
-      then: [T: "arcotangente"]
+      then: [T: "arco tangente"]
     - else_if: "*[3][.='sec']"
-      then: [T: "arcosecante"]
+      then: [T: "arco secante"]
     - else_if: "*[3][.='csc' or .='cosec']"
-      then: [T: "arcocosecante"]
-    - else: [T: "arcocotangente"]
+      then: [T: "arco cosecante"]
+    - else: [T: "arco cotangente"]
 
 - name: arcsin
   tag: mi
   match: ".='arcsin' or .='arcsen'"
   replace:
   - bookmark: "@id"
-  - T: "arcoseno"
+  - T: "arco seno"
 
 - name: arccos
   tag: mi
   match: ".='arccos'"
   replace:
   - bookmark: "@id"
-  - T: "arcocoseno"
+  - T: "arco coseno"
 
 - name: arctan
   tag: mi
   match: ".='arctan' or .='arctang' or .='arctg'"
   replace:
   - bookmark: "@id"
-  - T: "arcotangente"
+  - T: "arco tangente"
 
 - name: arcsec
   tag: mi
   match: ".='arcsec'"
   replace:
   - bookmark: "@id"
-  - T: "arcosecante"
+  - T: "arco secante"
 
 - name: arccsc
   tag: mi
   match: ".='arccsc' or .='arccosec'"
   replace:
   - bookmark: "@id"
-  - T: "arcocosecante"
+  - T: "arco cosecante"
 
 - name: arccot
   tag: mi
   match: ".='arccot' or .='arccotan' or .='arccotg' or .='arcctg'"
   replace:
   - bookmark: "@id"
-  - T: "arcocotangente"
+  - T: "arco cotangente"
 
 - name: arcsinh
   tag: mi
   match: ".='arcsinh' or .='arcsenh' or .='arsinh' or .='argsinh' or .='argsenh'"
   replace:
   - bookmark: "@id"
-  - T: "arcoseno hiperbólico"
+  - T: "argumento seno hiperbólico"
 
 - name: arccosh
   tag: mi
   match: ".='arccosh' or .='arcosh' or .='argcosh'"
   replace:
   - bookmark: "@id"
-  - T: "arcocoseno hiperbólico"
+  - T: "argumento coseno hiperbólico"
 
 - name: arctanh
   tag: mi
   match: ".='arctanh' or .='artanh' or .='argtanh' or .='argtgh' or .='arctgh'"
   replace:
   - bookmark: "@id"
-  - T: "arcotangente hiperbólica"
+  - T: "argumento tangente hiperbólica"
 
 - name: arcsech
   tag: mi
   match: ".='arcsech' or .='arsech' or .='argsech'"
   replace:
   - bookmark: "@id"
-  - T: "arcosecante hiperbólica"
+  - T: "argumento secante hiperbólica"
 
 - name: arccsch
   tag: mi
   match: ".='arccsch' or .='arccosech' or .='arcsch' or .='argcsch'"
   replace:
   - bookmark: "@id"
-  - T: "arcocosecante hiperbólica"
+  - T: "argumento cosecante hiperbólica"
 
 - name: arccoth
   tag: mi
   match: ".='arccoth' or .='arccotanh' or .='arcoth' or .='argcoth'"
   replace:
   - bookmark: "@id"
-  - T: "arcocotangente hiperbólica"
+  - T: "argumento cotangente hiperbólica"
 
 - name: exponential
   tag: mi
@@ -677,11 +677,26 @@
       then: [T: "cov"]
       else: [T: "covarianza"]
 
+- name: factorial-de
+  # propia del español, como el CMU: "factorial de n", "doble factorial de n"
+  tag: mrow
+  match: "count(*)=2 and *[2][self::m:mo][.='!'] and not(*[1][self::m:mo]) and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "factorial de"      # phrase('factorial de' n)
+  - x: "*[1]"
+
+- name: doble-factorial-de
+  tag: mrow
+  match: "count(*)=2 and *[2][self::m:mo][.='‼'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "doble factorial de"      # phrase('doble factorial de' n)
+  - x: "*[1]"
+
 - name: max-min
   # propia del español: "máx" y "mín" se leen enteros ("el máximo de a coma b"); el sintetizador diría "max"
   tag: mi
   match:
-  - "(.='max' or .='máx' or .='min' or .='mín') and"
+  - "(.='max' or .='máx' or .='min' or .='mín' or .='mcd' or .='mcm' or .='gcd' or .='lcm') and"
   - "(parent::m:apply-function or following-sibling::*[1][.='⁡'] or"
   - " (not(preceding-sibling::*) and parent::*[self::m:munder or self::m:munderover or self::m:msub or self::m:msubsup or self::m:indexed-by]))"   # no "m sub min"
   replace:
@@ -690,9 +705,13 @@
       if: "$Verbosity!='Terse'"
       then: [T: "el"]      # phrase('el' máximo de a coma b)
   - test:
-      if: ".='max' or .='máx'"
+    - if: ".='max' or .='máx'"
       then: [T: "máximo"]      # phrase(el 'máximo' de a coma b)
-      else: [T: "mínimo"]      # phrase(el 'mínimo' de a coma b)
+    - else_if: ".='min' or .='mín'"
+      then: [T: "mínimo"]      # phrase(el 'mínimo' de a coma b)
+    - else_if: ".='mcd' or .='gcd'"
+      then: [T: "máximo común divisor"]      # phrase(el 'máximo común divisor' de 28 y 34)
+      else: [T: "mínimo común múltiplo"]      # phrase(el 'mínimo común múltiplo' de 4 y 6)
 
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7
@@ -713,8 +732,10 @@
     - if: "$Verbosity!='Terse'"
       then: [OT: "el"]      # phrase('el' logaritmo de x)
   - test:
-    - if: ".= 'log'"
-      then: [T: "log"]      # phrase(el 'log' de x)
+    - if: ".= 'log' and $Verbosity='Terse'"
+      then: [T: "log"]
+    - else_if: ".= 'log'"
+      then: [T: "logaritmo"]      # phrase(el 'logaritmo' de x)
     - else_if: ".= 'Log'"
       then: [T: "logaritmo principal"]
     - else_if: "$Verbosity='Terse'"
