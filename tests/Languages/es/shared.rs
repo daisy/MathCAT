@@ -709,3 +709,37 @@ fn cmu_2024_readings() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn cmu_2024_additions() -> Result<()> {
+    // lecturas añadidas desde el Código Matemático Unificado para Iberoamérica (2.ª ed., 2024)
+    let cases = [
+        ("<math><mo>∃</mo><mo>!</mo><mi>x</mi></math>", "existe un único x"),
+        ("<math><mo>⌊</mo><mi>x</mi><mo>⌋</mo></math>", "abrir suelo x cerrar suelo"),
+        ("<math><mo>⌈</mo><mi>x</mi><mo>⌉</mo></math>", "abrir techo x cerrar techo"),
+        ("<math><mn>3</mn><mi>€</mi></math>", "3 euros"),
+        ("<math><mn>1</mn><mi>€</mi></math>", "1 euro"),
+        ("<math><mi>a</mi><mo>∾</mo><mi>b</mi></math>", "a es semejante a b"),
+        ("<math><mi>a</mi><mo>≙</mo><mi>b</mi></math>", "a corresponde a b"),
+        ("<math><mi>x</mi><mo>∈</mo><mi>ℍ</mi></math>", "x pertenece a los cuaterniones"),
+        ("<math><mi>p</mi><mo>∈</mo><mi>ℙ</mi></math>", "p pertenece a los números primos"),
+        ("<math><munder><mi>lím</mi><mrow><mi>x</mi><mo>↓</mo><mn>0</mn></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>", "el límite cuando x tiende decreciendo a 0, de f de x"),
+        ("<math><munder><mi>lím</mi><mrow><mi>x</mi><mo>↑</mo><mn>0</mn></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>", "el límite cuando x tiende creciendo a 0, de f de x"),
+        ("<math><mfrac><mrow><mi>d</mi><mi>y</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac></math>", "la derivada de y respecto de x"),
+        ("<math><mfrac><mrow><msup><mi>d</mi><mn>2</mn></msup><mi>y</mi></mrow><mrow><mi>d</mi><msup><mi>x</mi><mn>2</mn></msup></mrow></mfrac></math>", "la derivada segunda de y respecto de x"),
+        ("<math><mfrac><mrow><mo>∂</mo><mi>f</mi></mrow><mrow><mo>∂</mo><mi>x</mi></mrow></mfrac></math>", "la derivada parcial de f respecto de x"),
+        ("<math><mover><mrow><mi>A</mi><mi>B</mi></mrow><mo>¯</mo></mover></math>", "el segmento mayúscula a mayúscula b"),
+        ("<math><mo>#</mo><mi>A</mi></math>", "el cardinal de mayúscula a"),
+        ("<math><mi>sgn</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el signo de x"),
+        ("<math><mi>Dom</mi><mo>&#x2061;</mo><mi>f</mi></math>", "el dominio de f"),
+        ("<math><mi>Rec</mi><mo>&#x2061;</mo><mi>f</mi></math>", "el recorrido de f"),
+        ("<math><mi>rg</mi><mo>&#x2061;</mo><mi>A</mi></math>", "el rango de mayúscula a"),
+        ("<math><mi>Adj</mi><mo>&#x2061;</mo><mi>A</mi></math>", "la adjunta de mayúscula a"),
+        ("<math><mi>antilog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el antilogaritmo de x"),
+        ("<math><mi>colog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el cologaritmo de x"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

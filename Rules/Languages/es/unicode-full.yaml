@@ -410,9 +410,27 @@
     - T: "gótica"
     - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
 
- - "ℍℙℾℿ":                                          # 0x210d, 0x2119, 0x213e, 0x213f
+ - "ℍ":                                           	#  0x210d
+    - test:
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and not(following-sibling::*[1][.='⁡' or .=','] or preceding-sibling::*[1][.=','])"
+        then:      # CMU
+        - test:
+            if: "$Verbosity!='Terse'"
+            then: [T: "los"]
+        - T: "cuaterniones"
+        else: [T: "doble trazo", spell: "'H'"]
+ - "ℙ":                                           	#  0x2119
+    - test:
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and not(following-sibling::*[1][.='⁡' or .=','] or preceding-sibling::*[1][.=','])"
+        then:      # CMU
+        - test:
+            if: "$Verbosity!='Terse'"
+            then: [T: "los"]
+        - T: "números primos"
+        else: [T: "doble trazo", spell: "'P'"]
+ - "ℾℿ":                                          # 0x213e, 0x213f
     - T: "doble trazo"
-    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')" 
+    - spell: "translate('.', 'ℾℿ', 'ΓΠ')"
  - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
 
  - "ℏ": [T: "h barra"]                               # 0x210f	(en: 'h bar')
@@ -803,7 +821,7 @@
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "aproximadamente igual a"                      	# 	(en: 'approximately equal to')
  - "≘": [T: "corresponde a"]                    	#  0x2258	(en: 'corresponds to')
- - "≙": [T: "estimación"]                         	#  0x2259	(en: 'estimates')
+ - "≙": [T: "corresponde a"]                      	#  0x2259	(en: 'estimates')
  - "≚":                                         	#  0x225a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1197,10 +1215,10 @@
  - "⌅": [T: "proyectiva"]             	#  0x2305	(en: 'projective')
  - "⌆": [T: "perspectiva"]            	#  0x2306	(en: 'perspective')
  - "⌇": [T: "línea ondulada"]                   	#  0x2307	(en: 'wavy line')
- - "⌈": [T: "límite superior izquierdo"]       	#  0x2308	(en: 'left ceiling')
- - "⌉": [T: "límite superior derecho"]         	#  0x2309	(en: 'right ceiling')
- - "⌊": [T: "límite inferior izquierdo"]       	#  0x230a	(en: 'left floor')
- - "⌋": [T: "límite inferior derecho"]         	#  0x230b	(en: 'right floor')
+ - "⌈": [T: "abrir techo"]                        	#  0x2308	(en: 'left ceiling')
+ - "⌉": [T: "cerrar techo"]                       	#  0x2309	(en: 'right ceiling')
+ - "⌊": [T: "abrir suelo"]                        	#  0x230a	(en: 'left floor')
+ - "⌋": [T: "cerrar suelo"]                       	#  0x230b	(en: 'right floor')
  - "⌌": [T: "corte inferior derecho"]           	#  0x230c	(en: 'bottom right crop')
  - "⌍": [T: "corte inferior izquierdo"]         	#  0x230d	(en: 'bottom left crop')
  - "⌎": [T: "corte superior derecho"]          	#  0x230e	(en: 'top right crop', MathPlayer: 'corte superior derecho', google: 'cropa de arriba a la derecha')

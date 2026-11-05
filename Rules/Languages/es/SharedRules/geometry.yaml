@@ -6,16 +6,11 @@
   match: "count(*)=2"
   replace:
   - test:
-      if: "$Verbosity='Verbose'"
-      then:
-      - T: "el segmento de línea de"
-      - x: "*[1]"
-      - T: "a"
-      - x: "*[2]"
-      else:
-      - T: "segmento de línea"
-      - x: "*[1]"
-      - x: "*[2]"
+      if: "$Verbosity!='Terse'"
+      then: [T: "el"]      # phrase('el' segmento A B), CMU
+  - T: "segmento"      # phrase(el 'segmento' A B)
+  - x: "*[1]"
+  - x: "*[2]"
 
 - name: geometry-ray
   tag: ray

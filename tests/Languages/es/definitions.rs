@@ -664,7 +664,7 @@ fn nofix_set_tests() -> Result<()> {
 #[test]
 fn geometry_prefix_multi_value_tests() -> Result<()> {
     let tests = vec![
-        ("line-segment", "segmento de línea x y"),
+        ("line-segment", "el segmento x y"),
         ("directed-line-segment", "segmento dirigido x y"),
         ("line", "recta x y"),
         ("ray", "semirrecta x y"),

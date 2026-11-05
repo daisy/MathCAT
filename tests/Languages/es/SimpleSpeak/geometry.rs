@@ -14,7 +14,7 @@ fn arc() -> Result<()> {
 #[test]
 fn ray() -> Result<()> {
   let expr = "<math> <mover><mrow><mi>X</mi><mi>Y</mi></mrow><mo>&#xAF;</mo></mover> </math>";
-  test("es", "SimpleSpeak", expr, "segmento de línea mayúscula x mayúscula y")?;
+  test("es", "SimpleSpeak", expr, "el segmento mayúscula x mayúscula y")?;
   return Ok(());
 
 }

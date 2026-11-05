@@ -40,7 +40,14 @@
             else: [T: "signo de exclamación"]          # 0x21	(en: 'exclamation point')
         else: [T: "factorial"]                     # 0x21
  - "\"": [T: "comillas"]                   	#  0x22	(en: 'quotation mark')
- - "#": [T: "almohadilla"]                      	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
+ - "#":                                           	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
+    - test:
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and not(preceding-sibling::*) and following-sibling::*[1][not(self::m:mo)] and parent::m:mrow[count(*)=2]"
+        then_test:      # #A (CMU)
+            if: "$Verbosity='Terse'"
+            then: [T: "cardinal de"]
+            else: [T: "el cardinal de"]
+        else: [T: "almohadilla"]          # (en: 'number')
  - "$": [T: "dólar"]                            	#  0x24	(en: 'dollars')
  - "%": [T: "por ciento"]                        	#  0x25	(en: 'percent')
  - "&": [T: "ampersand"]                        	#  0x26
@@ -460,11 +467,11 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "a"                               	# 	(en: 'to')
- - "∾":                                         	#  0x223e
-     - test: 
+ - "∾":                                           	#  0x223e
+     - test:
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "más positivo"              	# 	(en: 'most positive')
+         then: [T: "es semejante a"]
+         else: [T: "semejante a"]
  - "≠":                                           	#  0x2260
      - test:
          if: "$Verbosity!='Terse'"
@@ -495,7 +502,15 @@
  - "⊇": [T: "incluye o es igual a"]               	#  0x2287
  # --- restored short definitions that differ from unicode-full ---
  - "←": [T: "flecha izquierda"]                 	#  0x2190	(en: 'leftwards arrow')
- - "↑": [T: "flecha arriba"]                    	#  0x2191	(en: 'upwards arrow')
- - "↓": [T: "flecha abajo"]                     	#  0x2193	(en: 'downwards arrow')
+ - "↑":                                           	#  0x2191	(en: 'upwards arrow')
+    - test:
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
+        then: [T: "tiende creciendo a"]      # x ↑ c (CMU)
+        else: [T: "flecha arriba"]          # (en: 'upwards arrow')
+ - "↓":                                           	#  0x2193	(en: 'downwards arrow')
+    - test:
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
+        then: [T: "tiende decreciendo a"]      # x ↓ c (CMU)
+        else: [T: "flecha abajo"]          # (en: 'downwards arrow')
  - "⇒": [T: "implica"]                            	#  0x21d2	(en: 'rightwards double arrow')
  - "∐": [T: "coproducto"]                       	#  0x2210	(en: 'co-product')

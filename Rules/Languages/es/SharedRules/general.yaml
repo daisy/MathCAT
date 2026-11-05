@@ -696,14 +696,18 @@
   # propia del español: "máx" y "mín" se leen enteros ("el máximo de a coma b"); el sintetizador diría "max"
   tag: mi
   match:
-  - "(.='max' or .='máx' or .='min' or .='mín' or .='mcd' or .='mcm' or .='gcd' or .='lcm') and"
+  - "(.='max' or .='máx' or .='min' or .='mín' or .='mcd' or .='mcm' or .='gcd' or .='lcm' or"
+  - " .='sgn' or .='Dom' or .='Rec' or .='rg' or .='Adj' or .='antilog' or .='colog') and"   # CMU
   - "(parent::m:apply-function or following-sibling::*[1][.='⁡'] or"
   - " (not(preceding-sibling::*) and parent::*[self::m:munder or self::m:munderover or self::m:msub or self::m:msubsup or self::m:indexed-by]))"   # no "m sub min"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "el"]      # phrase('el' máximo de a coma b)
+      then_test:
+        if: ".='Adj'"
+        then: [T: "la"]      # phrase('la' adjunta de A)
+        else: [T: "el"]      # phrase('el' máximo de a coma b)
   - test:
     - if: ".='max' or .='máx'"
       then: [T: "máximo"]      # phrase(el 'máximo' de a coma b)
@@ -711,7 +715,47 @@
       then: [T: "mínimo"]      # phrase(el 'mínimo' de a coma b)
     - else_if: ".='mcd' or .='gcd'"
       then: [T: "máximo común divisor"]      # phrase(el 'máximo común divisor' de 28 y 34)
-      else: [T: "mínimo común múltiplo"]      # phrase(el 'mínimo común múltiplo' de 4 y 6)
+    - else_if: ".='mcm' or .='lcm'"
+      then: [T: "mínimo común múltiplo"]      # phrase(el 'mínimo común múltiplo' de 4 y 6)
+    - else_if: ".='sgn'"
+      then: [T: "signo"]      # phrase(el 'signo' de x)
+    - else_if: ".='Dom'"
+      then: [T: "dominio"]      # phrase(el 'dominio' de f)
+    - else_if: ".='Rec'"
+      then: [T: "recorrido"]      # phrase(el 'recorrido' de f)
+    - else_if: ".='rg'"
+      then: [T: "rango"]      # phrase(el 'rango' de A)
+    - else_if: ".='Adj'"
+      then: [T: "adjunta"]      # phrase(la 'adjunta' de A)
+    - else_if: ".='antilog'"
+      then: [T: "antilogaritmo"]      # phrase(el 'antilogaritmo' de x)
+      else: [T: "cologaritmo"]      # phrase(el 'cologaritmo' de x)
+
+- name: existe-un-unico
+  # ∃!x (CMU): "existe un único x"; sin esto se lee "existe factorial x"
+  tag: mrow
+  match: "count(*)=2 and *[1][self::m:mo][.='∃'] and *[2][self::m:mrow][*[1][self::m:mo][.='!']] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "existe un único"      # phrase('existe un único' x)
+  - x: "*[2]/*[position()>1]"
+
+- name: currency-after
+  # 3 € (CMU): el símbolo de moneda va después de la cantidad; misma lógica que 'currency'
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  variables:
+  - CurrencyWord: "DefinitionValue(*[3], 'Speech', 'CurrencySymbols')"
+  - LastChar: "substring(DefinitionValue(*[3], 'Speech', 'CurrencySymbols'), string-length(DefinitionValue(*[3], 'Speech', 'CurrencySymbols')), 1)"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "*[1]=1"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+    - else_if: "$LastChar='r' or $LastChar='l' or $LastChar='n'"
+      then: [x: "$CurrencyWord", ct: "es"]      # dólar -> dólares
+      else: [x: "$CurrencyWord", ct: "s"]       # euro -> euros
 
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7

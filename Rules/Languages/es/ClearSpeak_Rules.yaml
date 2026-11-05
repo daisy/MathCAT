@@ -131,6 +131,75 @@
           else: [T: "más"]      # phrase('más' 7)
   - x: "*[1]"
 
+- name: derivada
+  # dy/dx, d²y/dx² (CMU): "la derivada (segunda) de y respecto de x"
+  tag: fraction
+  match:
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and"
+  - "*[1][self::m:mrow][count(*)=3][*[2]='⁢'] and *[2][self::m:mrow][count(*)=3][*[2]='⁢'] and"
+  - "*[2]/*[1][self::m:mi][.='d' or .='ⅆ'] and"
+  - "( (*[1]/*[1][self::m:mi][.='d' or .='ⅆ'] and *[2]/*[3][self::m:mi]) or"
+  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][self::m:mi][.='d' or .='ⅆ']] and *[2]/*[3][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[3]/*[2]) )"
+  variables:
+  - Orden: "*[1]/*[1][self::m:msup or self::m:power]/*[2]"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "la"]      # phrase('la' derivada de y respecto de x)
+  - T: "derivada"      # phrase(la 'derivada' de y respecto de x)
+  - test:
+    - if: "$Orden = 2"
+      then: [T: "segunda"]      # phrase(la derivada 'segunda' de y respecto de x)
+    - else_if: "$Orden = 3"
+      then: [T: "tercera"]      # phrase(la derivada 'tercera' de y respecto de x)
+    - else_if: "$Orden = 4"
+      then: [T: "cuarta"]      # phrase(la derivada 'cuarta' de y respecto de x)
+    - else_if: "$Orden[self::m:mi][.='n']"
+      then: [T: "enésima"]      # phrase(la derivada 'enésima' de y respecto de x)
+    - else_if: "$Orden"
+      then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
+  - T: "de"      # phrase(la derivada 'de' y respecto de x)
+  - x: "*[1]/*[3]"
+  - T: "respecto de"      # phrase(la derivada de y 'respecto de' x)
+  - test:
+      if: "$Orden"
+      then: [x: "*[2]/*[3]/*[1]"]
+      else: [x: "*[2]/*[3]"]
+
+- name: derivada-parcial
+  # ∂f/∂x, ∂²f/∂x² (CMU): "la derivada parcial (segunda) de f respecto de x"
+  tag: fraction
+  match:
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and"
+  - "*[1][self::m:mrow][count(*)=2] and *[2][self::m:mrow][count(*)=2] and *[2]/*[1][self::m:mo][.='∂'] and"
+  - "( (*[1]/*[1][self::m:mo][.='∂'] and *[2]/*[2][self::m:mi]) or"
+  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][.='∂']] and *[2]/*[2][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[2]/*[2]) )"
+  variables:
+  - Orden: "*[1]/*[1][self::m:msup or self::m:power]/*[2]"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "la"]      # phrase('la' derivada parcial de f respecto de x)
+  - T: "derivada parcial"      # phrase(la 'derivada parcial' de f respecto de x)
+  - test:
+    - if: "$Orden = 2"
+      then: [T: "segunda"]      # phrase(la derivada 'segunda' de y respecto de x)
+    - else_if: "$Orden = 3"
+      then: [T: "tercera"]      # phrase(la derivada 'tercera' de y respecto de x)
+    - else_if: "$Orden = 4"
+      then: [T: "cuarta"]      # phrase(la derivada 'cuarta' de y respecto de x)
+    - else_if: "$Orden[self::m:mi][.='n']"
+      then: [T: "enésima"]      # phrase(la derivada 'enésima' de y respecto de x)
+    - else_if: "$Orden"
+      then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
+  - T: "de"      # phrase(la derivada parcial 'de' f respecto de x)
+  - x: "*[1]/*[2]"
+  - T: "respecto de"      # phrase(la derivada parcial de f 'respecto de' x)
+  - test:
+      if: "$Orden"
+      then: [x: "*[2]/*[2]/*[1]"]
+      else: [x: "*[2]/*[2]"]
+
 - name: per-fraction
   tag: fraction
   match:
