@@ -119,3 +119,27 @@ fn subscripted_double_bars() -> Result<()> {
   test("es", "SimpleSpeak", expr, "la norma de v")?;
   return Ok(());
 }
+
+#[test]
+fn bold_vector_products() -> Result<()> {
+  // u × v y u · v con vectores en negrita (intent cross-product / dot-product sin argumentos)
+  let expr = "<math><mi mathvariant='bold'>u</mi><mo>×</mo><mi mathvariant='bold'>v</mi></math>";
+  test("es", "SimpleSpeak", expr, "negrita u producto vectorial negrita v")?;
+  let expr = "<math><mi mathvariant='bold'>u</mi><mo>⋅</mo><mi mathvariant='bold'>v</mi></math>";
+  test("es", "SimpleSpeak", expr, "negrita u producto escalar negrita v")?;
+  return Ok(());
+}
+
+#[test]
+fn negated_relations() -> Result<()> {
+  // sin "es no es" ni "es no menor"
+  let expr = "<math><mi>A</mi><mo>⊄</mo><mi>B</mi></math>";
+  test("es", "SimpleSpeak", expr, "mayúscula a, no es un subconjunto de, mayúscula b")?;
+  let expr = "<math><mi>a</mi><mo>≮</mo><mi>b</mi></math>";
+  test("es", "SimpleSpeak", expr, "a no es menor que b")?;
+  let expr = "<math><mi>a</mi><mo>≅</mo><mi>b</mi></math>";
+  test("es", "SimpleSpeak", expr, "a es congruente con b")?;
+  let expr = "<math><mi>p</mi><mo>⇔</mo><mi>q</mi></math>";
+  test("es", "SimpleSpeak", expr, "p si y solo si q")?;
+  return Ok(());
+}

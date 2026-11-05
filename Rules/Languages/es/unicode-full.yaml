@@ -579,7 +579,7 @@
  - "⇐": [T: "flecha doble hacia la izquierda"]  	#  0x21d0	(en: 'leftwards double arrow')
  - "⇑": [T: "flecha doble hacia arriba"]        	#  0x21d1	(en: 'upwards double arrow')
  - "⇓": [T: "flecha doble hacia abajo"]         	#  0x21d3	(en: 'downwards double arrow')
- - "⇔": [T: "flecha doble vertical"]            	#  0x21d5	(en: 'up down double arrow')
+ - "⇔": [T: "si y solo si"]                     	#  0x21d4	(en: 'if and only if')
  - "⇕": [T: "flecha doble arriba y abajo"]	#  0x21d5	(en: 'up down double arrow')
  - "⇖": [T: "flecha doble hacia noroeste"]      	#  0x21d6	(en: 'north west double arrow')
  - "⇗": [T: "flecha doble hacia nordeste"]      	#  0x21d7	(en: 'north east double arrow')
@@ -711,13 +711,14 @@
  - "≄":                                         	#  0x2244
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no asintóticamente igual a"          	# 	(en: 'not asymptotically equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "asintóticamente igual a"          	# 	(en: 'not asymptotically equal to')
  - "≅":                                         	#  0x2245
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "aproximadamente igual a"             	# 	(en: 'approximately equal to')
+     - T: "congruente con"                      	# 	(en: 'congruent to')
  - "≆":                                         	#  0x2246
      - test: 
          if: "$Verbosity!='Terse'"
@@ -736,8 +737,9 @@
  - "≉":                                         	#  0x2249
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no es casi igual a"                  	# 	(en: 'not almost equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "casi igual a"                  	# 	(en: 'not almost equal to')
  - "≊":                                         	#  0x224a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -803,8 +805,9 @@
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no es idéntico a"                    	# 	(en: 'not identical to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "idéntico a"                    	# 	(en: 'not identical to')
  - "≣":                                         	#  0x2263
      - test: 
          if: "$Verbosity!='Terse'"
@@ -840,28 +843,33 @@
  - "≭":                                         	#  0x226d
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no equivalente a"                    	# 	(en: 'not equivalent to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "equivalente a"                    	# 	(en: 'not equivalent to')
  - "≮":                                         	#  0x226e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no menor que"                        	# 	(en: 'not less than')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "menor que"                        	# 	(en: 'not less than')
  - "≯":                                         	#  0x226f
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no mayor que"                        	# 	(en: 'not greater than')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "mayor que"                        	# 	(en: 'not greater than')
  - "≰":                                         	#  0x2270
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no menor ni igual a"                 	# 	(en: 'neither less than nor equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "menor ni igual a"                 	# 	(en: 'neither less than nor equal to')
  - "≱":                                         	#  0x2271
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no mayor ni igual a"                 	# 	(en: 'neither greater than nor equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "mayor ni igual a"                 	# 	(en: 'neither greater than nor equal to')
  - "≲":                                         	#  0x2272
      - test: 
          if: "$Verbosity!='Terse'"
@@ -875,13 +883,15 @@
  - "≴":                                         	#  0x2274
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no menor ni equivalente a"           	# 	(en: 'neither less than nor equivalent to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "menor ni equivalente a"           	# 	(en: 'neither less than nor equivalent to')
  - "≵":                                         	#  0x2275
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no mayor ni equivalente a"           	# 	(en: 'neither greater than nor equivalent to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "mayor ni equivalente a"           	# 	(en: 'neither greater than nor equivalent to')
  - "≶":                                         	#  0x2276
      - test: 
          if: "$Verbosity!='Terse'"
@@ -895,13 +905,15 @@
  - "≸":                                         	#  0x2278
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no menor ni mayor que"               	# 	(en: 'neither less than nor greater than')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "menor ni mayor que"               	# 	(en: 'neither less than nor greater than')
  - "≹":                                         	#  0x2279
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no mayor ni menor que"               	# 	(en: 'neither greater than nor less than')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "mayor ni menor que"               	# 	(en: 'neither greater than nor less than')
  - "≺": [T: "precede a"]                        	#  0x227a	(en: 'precedes')
  - "≻": [T: "sigue a"]                          	#  0x227b	(en: 'succeeds')
  - "≼": [T: "precede o es igual a"]             	#  0x227c	(en: 'precedes or is equal to')
@@ -913,13 +925,15 @@
  - "⊈":                                         	#  0x2288
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no incluido ni igual a"              	# 	(en: 'neither a subset of nor equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "incluido ni igual a"              	# 	(en: 'neither a subset of nor equal to')
  - "⊉":                                         	#  0x2289
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no contiene ni es igual a"           	# 	(en: 'neither a superset of nor equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "contiene ni es igual a"           	# 	(en: 'neither a superset of nor equal to')
  - "⊊": [T: "incluido estrictamente en"]        	#  0x228a	(en: 'subset of with not equal to')
  - "⊋": [T: "contiene estrictamente a"]         	#  0x228b	(en: 'superset of with not equal to')
  - "⊌": [T: "multiconjunto"]             	#  0x228c	(en: 'multiset')
@@ -1130,14 +1144,16 @@
  - "⋪":                                         	#  0x22ea
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no subgrupo normal de"               	# 	(en: 'not a normal subgroup of')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "subgrupo normal de"               	# 	(en: 'not a normal subgroup of')
  - "⋫": [T: "no contiene como subgrupo normal a"]	#  0x22eb	(en: 'does not contain as a normal subgroup')
  - "⋬":                                         	#  0x22ec
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no es subgrupo normal ni igual a"    	# 	(en: 'not a normal subgroup of nor is equal to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "subgrupo normal ni igual a"    	# 	(en: 'not a normal subgroup of nor is equal to')
  - "⋭": [T: "no contiene como subgrupo normal ni es igual a"]	#  0x22ed	(en: 'does not contain as a normal subgroup nor is equal to')
  - "⋮": [T: "puntos suspensivos verticales"]    	#  0x22ee	(en: 'vertical ellipsis')
  - "⋯": [T: "puntos suspensivos altos"]         	#  0x22ef	(en: 'dot dot dot')

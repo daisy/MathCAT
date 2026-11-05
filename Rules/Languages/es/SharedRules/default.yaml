@@ -760,4 +760,4 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - x: "SpeakIntentName(name(), $Verbosity, 'nofix')"      # usa IntentMappings (p. ej., cross-product); si no hay, dice el nombre sin guiones

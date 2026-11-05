@@ -304,8 +304,9 @@
  - "∦":                                         	#  0x2226
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no paralela a"                       	# 	(en: 'not parallel to')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "paralelo a"                       	# 	(en: 'not parallel to')
  - "≤":                                         	#  0x2264
      - test: 
          if: "$Verbosity!='Terse'"
@@ -482,13 +483,15 @@
  - "⊄":                                         	#  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no es un subconjunto de"                      	# 	(en: 'not a subset of')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "un subconjunto de"                      	# 	(en: 'not a subset of')
  - "⊅":                                         	#  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "no esun superconjunto de"                       	# 	(en: 'not a superset of')
+         then: [T: "no es"]                        	# 	(en: 'is', google translation)
+         else: [T: "no"]
+     - T: "un superconjunto de"                       	# 	(en: 'not a superset of')
  - "⊆":                                         	#  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
