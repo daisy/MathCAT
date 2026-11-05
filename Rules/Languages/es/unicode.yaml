@@ -42,7 +42,7 @@
  - "\"": [T: "comillas"]                   	#  0x22	(en: 'quotation mark')
  - "#":                                           	#  0x23	(en: 'number', MathPlayer: 'signo de número', google: 'número')
     - test:
-        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and not(preceding-sibling::*) and following-sibling::*[1][not(self::m:mo)] and parent::m:mrow[count(*)=2]"
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and not(preceding-sibling::*) and (parent::m:mrow[count(*)=2] and following-sibling::*[1][not(self::m:mo or self::m:mn)] or parent::m:mrow[count(*)=3] and following-sibling::*[1][.='⁢'] and following-sibling::*[2][not(self::m:mn)])"
         then_test:      # #A (CMU)
             if: "$Verbosity='Terse'"
             then: [T: "cardinal de"]

@@ -730,6 +730,8 @@ fn cmu_2024_additions() -> Result<()> {
         ("<math><mfrac><mrow><mo>∂</mo><mi>f</mi></mrow><mrow><mo>∂</mo><mi>x</mi></mrow></mfrac></math>", "la derivada parcial de f respecto de x"),
         ("<math><mover><mrow><mi>A</mi><mi>B</mi></mrow><mo>¯</mo></mover></math>", "el segmento mayúscula a mayúscula b"),
         ("<math><mo>#</mo><mi>A</mi></math>", "el cardinal de mayúscula a"),
+        ("<math><mi mathvariant=\"normal\">#</mi><mi>A</mi></math>", "el cardinal de mayúscula a"),
+        ("<math><mi mathvariant=\"normal\">#</mi><mn>3</mn></math>", "almohadilla 3"),
         ("<math><mi>sgn</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el signo de x"),
         ("<math><mi>Dom</mi><mo>&#x2061;</mo><mi>f</mi></math>", "el dominio de f"),
         ("<math><mi>Rec</mi><mo>&#x2061;</mo><mi>f</mi></math>", "el recorrido de f"),
