@@ -137,9 +137,9 @@
   match:
   - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and"
   - "*[1][self::m:mrow][count(*)=3][*[2]='⁢'] and *[2][self::m:mrow][count(*)=3][*[2]='⁢'] and"
-  - "*[2]/*[1][self::m:mi][.='d' or .='ⅆ'] and"
-  - "( (*[1]/*[1][self::m:mi][.='d' or .='ⅆ'] and *[2]/*[3][self::m:mi]) or"
-  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][self::m:mi][.='d' or .='ⅆ']] and *[2]/*[3][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[3]/*[2]) )"
+  - "*[2]/*[1][self::m:mi][.='d' or .='𝑑' or .='ⅆ'] and"
+  - "( (*[1]/*[1][self::m:mi][.='d' or .='𝑑' or .='ⅆ'] and *[2]/*[3][self::m:mi]) or"
+  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][self::m:mi][.='d' or .='𝑑' or .='ⅆ']] and *[2]/*[3][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[3]/*[2]) )"
   variables:
   - Orden: "*[1]/*[1][self::m:msup or self::m:power]/*[2]"
   replace:
@@ -171,9 +171,9 @@
   tag: fraction
   match:
   - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and"
-  - "*[1][self::m:mrow][count(*)=2] and *[2][self::m:mrow][count(*)=2] and *[2]/*[1][self::m:mo][.='∂'] and"
-  - "( (*[1]/*[1][self::m:mo][.='∂'] and *[2]/*[2][self::m:mi]) or"
-  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][.='∂']] and *[2]/*[2][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[2]/*[2]) )"
+  - "*[1][self::m:mrow][count(*)=2 or count(*)=3 and *[2]='\u2062'] and *[2][self::m:mrow][count(*)=2 or count(*)=3 and *[2]='\u2062'] and *[2]/*[1][.='∂' or .='𝜕'] and"
+  - "( (*[1]/*[1][.='∂' or .='𝜕'] and *[2]/*[last()][self::m:mi]) or"
+  - "  (*[1]/*[1][self::m:msup or self::m:power][*[1][.='∂' or .='𝜕']] and *[2]/*[last()][self::m:msup or self::m:power][*[1][self::m:mi]] and *[1]/*[1]/*[2] = *[2]/*[last()]/*[2]) )"
   variables:
   - Orden: "*[1]/*[1][self::m:msup or self::m:power]/*[2]"
   replace:
@@ -193,12 +193,12 @@
     - else_if: "$Orden"
       then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
   - T: "de"      # phrase(la derivada parcial 'de' f respecto de x)
-  - x: "*[1]/*[2]"
+  - x: "*[1]/*[last()]"
   - T: "respecto de"      # phrase(la derivada parcial de f 'respecto de' x)
   - test:
       if: "$Orden"
-      then: [x: "*[2]/*[2]/*[1]"]
-      else: [x: "*[2]/*[2]"]
+      then: [x: "*[2]/*[last()]/*[1]"]
+      else: [x: "*[2]/*[last()]"]
 
 - name: per-fraction
   tag: fraction

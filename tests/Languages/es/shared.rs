@@ -739,6 +739,14 @@ fn cmu_2024_additions() -> Result<()> {
         ("<math><mi>Adj</mi><mo>&#x2061;</mo><mi>A</mi></math>", "la adjunta de mayúscula a"),
         ("<math><mi>antilog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el antilogaritmo de x"),
         ("<math><mi>colog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el cologaritmo de x"),
+        // como llegan desde un PDF etiquetado (luamml): letras itálicas, nombres sin U+2061
+        ("<math><mfrac><mrow><mi>𝑑</mi><mi>𝑦</mi></mrow><mrow><mi>𝑑</mi><mi>𝑥</mi></mrow></mfrac></math>", "la derivada de y respecto de x"),
+        ("<math><mfrac><mrow><msup><mi>𝑑</mi><mn>2</mn></msup><mi>𝑦</mi></mrow><mrow><mi>𝑑</mi><msup><mi>𝑥</mi><mn>2</mn></msup></mrow></mfrac></math>", "la derivada segunda de y respecto de x"),
+        ("<math><mfrac><mrow><mi>𝜕</mi><mi>𝑓</mi></mrow><mrow><mi>𝜕</mi><mi>𝑥</mi></mrow></mfrac></math>", "la derivada parcial de f respecto de x"),
+        ("<math><mfrac><mrow><msup><mi>𝜕</mi><mn>2</mn></msup><mi>𝑓</mi></mrow><mrow><mi>𝜕</mi><msup><mi>𝑥</mi><mn>2</mn></msup></mrow></mfrac></math>", "la derivada parcial segunda de f respecto de x"),
+        ("<math><mi mathvariant=\"normal\">Dom</mi><mspace width=\"0.167em\"></mspace><mi>𝑓</mi></math>", "el dominio de f"),
+        ("<math><mi mathvariant=\"normal\">Rec</mi><mspace width=\"0.167em\"></mspace><mi>𝑓</mi></math>", "el recorrido de f"),
+        ("<math><mi mathvariant=\"normal\">Adj</mi><mspace width=\"0.167em\"></mspace><mi>𝐴</mi></math>", "la adjunta de mayúscula a"),
     ];
     for (expr, speech) in cases {
         test("es", "SimpleSpeak", expr, speech)?;

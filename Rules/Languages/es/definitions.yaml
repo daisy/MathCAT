@@ -21,7 +21,7 @@
 
 - AdditionalFunctionNames: {
     # copia de Rules/definitions.yaml (mantener al día) + nombres en español
-    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "Dom", "Rec", "Adj",  # español
+    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "dom", "rec", "adj",  # español (se buscan en minúscula)
     # the arcXXX functions aren't really trig functions (they are inverse functions)
     "arccos", "arccosec", "arccosech", "arccosh",
     "arccot", "arccotan", "arccotanh", "arccoth",
