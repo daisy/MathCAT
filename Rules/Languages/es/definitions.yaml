@@ -538,7 +538,17 @@
     "kgf": "kilogramo fuerza",
     "ppm": "parte por millón",
     "uma": "unidad de masa atómica", "ua": "unidad astronómica",
-    "kbps": "kilobit por segundo", "Mbps": "megabit por segundo", "Gbps": "gigabit por segundo",
+    # informática
+    "KB": "kilobyte",
+    "bit": "bit", "kbit": "kilobit", "Mbit": "megabit", "Gbit": "gigabit", "Tbit": "terabit",
+    "bps": "bit por segundo", "kbps": "kilobit por segundo", "Mbps": "megabit por segundo", "Gbps": "gigabit por segundo", "Tbps": "terabit por segundo",
+    "Bps": "byte por segundo", "kBps": "kilobyte por segundo", "MBps": "megabyte por segundo", "GBps": "gigabyte por segundo",
+    "dpi": "punto por pulgada", "ppp": "punto por pulgada",
+    "px": "píxel",
+    "fps": "fotograma por segundo",
+    "FLOPS": "flops", "GFLOPS": "gigaflops", "TFLOPS": "teraflops", "PFLOPS": "petaflops",
+    "MIPS": "millón de instrucciones por segundo",
+    "dBm": "decibelio milivatio",
 
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
@@ -646,7 +656,13 @@
     "milímetro de mercurio": "milímetros de mercurio", "torr": "torr", "centímetro cúbico": "centímetros cúbicos",
     "caballo de vapor": "caballos de vapor", "kilogramo fuerza": "kilogramos fuerza", "parte por millón": "partes por millón",
     "libra por pulgada cuadrada": "libras por pulgada cuadrada",
-    "kilobit por segundo": "kilobits por segundo", "megabit por segundo": "megabits por segundo", "gigabit por segundo": "gigabits por segundo",
+    "bit por segundo": "bits por segundo", "kilobit por segundo": "kilobits por segundo", "megabit por segundo": "megabits por segundo",
+    "gigabit por segundo": "gigabits por segundo", "terabit por segundo": "terabits por segundo",
+    "byte por segundo": "bytes por segundo", "kilobyte por segundo": "kilobytes por segundo", "megabyte por segundo": "megabytes por segundo", "gigabyte por segundo": "gigabytes por segundo",
+    "punto por pulgada": "puntos por pulgada", "píxel": "píxeles", "fotograma por segundo": "fotogramas por segundo",
+    "flops": "flops", "gigaflops": "gigaflops", "teraflops": "teraflops", "petaflops": "petaflops",
+    "millón de instrucciones por segundo": "millones de instrucciones por segundo",
+    "decibelio milivatio": "decibelios milivatio",
   }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
