@@ -57,7 +57,7 @@
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
           then_test:
-            if: "*[2][.='n']"
+            if: "*[2][.='n' or .='𝑛']"
             then: [T: la raíz enésima]
             else: [T: la raíz, x: "*[2]", CT: "-ésima"]
           else: [T: la raíz de índice, x: "*[2]"]

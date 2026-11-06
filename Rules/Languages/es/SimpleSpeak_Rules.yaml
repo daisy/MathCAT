@@ -67,7 +67,7 @@
       else_test:
         if: "*[2][self::m:mi][string-length(.)=1]"
         then_test:
-          if: "*[2][.='n']"
+          if: "*[2][.='n' or .='𝑛']"
           then: [T: "enésima"]      # phrase(la raíz 'enésima' de x), como el CMU
           else: [x: "*[2]", CT: "-ésima"]      # phrase(la raíz m'-ésima' de x)
         else: [T: "de índice", x: "*[2]"]      # phrase(la raíz 'de índice' n más 1 de x)
@@ -105,7 +105,7 @@
       then: [T: "tercera"]      # phrase(la derivada 'tercera' de y respecto de x)
     - else_if: "$Orden = 4"
       then: [T: "cuarta"]      # phrase(la derivada 'cuarta' de y respecto de x)
-    - else_if: "$Orden[self::m:mi][.='n']"
+    - else_if: "$Orden[self::m:mi][.='n' or .='𝑛']"
       then: [T: "enésima"]      # phrase(la derivada 'enésima' de y respecto de x)
     - else_if: "$Orden"
       then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
@@ -139,7 +139,7 @@
       then: [T: "tercera"]      # phrase(la derivada 'tercera' de y respecto de x)
     - else_if: "$Orden = 4"
       then: [T: "cuarta"]      # phrase(la derivada 'cuarta' de y respecto de x)
-    - else_if: "$Orden[self::m:mi][.='n']"
+    - else_if: "$Orden[self::m:mi][.='n' or .='𝑛']"
       then: [T: "enésima"]      # phrase(la derivada 'enésima' de y respecto de x)
     - else_if: "$Orden"
       then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
