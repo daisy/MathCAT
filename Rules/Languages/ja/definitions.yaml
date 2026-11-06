@@ -79,7 +79,7 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "binomial": "infix=二項係数; 選ぶ; 二項係数終わり",
+    "binomial": "infix=二項係数; シー; 二項係数終わり",
 
     ### Functions and Inverses
     # Interval intents (open-/closed-interval, etc.) are handled by rules due to special cases involving ∞.
@@ -243,7 +243,7 @@
     "translation":"function=平行移動",
     "constraint":"infix=;制約を使って;", 
     
-    "binomial-coefficient":"infix=選ぶ",
+    "binomial-coefficient":"infix=シー",
     "pochhammer":"function=順列",
     "permutation-cycle":"function=巡回置換",
     "embellished-name":"infix=アノテーション",

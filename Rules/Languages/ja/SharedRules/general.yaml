@@ -482,7 +482,7 @@
       then: [t: "主値ログ"]
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
-      else: [t: "自然ログ"]      # phrase(the 'natural log' function is used in mathematics)
+      else: [T: "自然対数"]      # phrase(the 'natural log' function is used in mathematics)
 
 
 - name: multi-line
