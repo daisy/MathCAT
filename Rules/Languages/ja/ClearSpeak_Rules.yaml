@@ -237,7 +237,7 @@
       else_test:
         if: "$ClearSpeak_Trig = 'ArcTrig'"
         then: [bookmark: "*[2]/@id", T: "アーク", x: "*[1]"]      # phrase(the 'arc' of a circle)
-        else: [bookmark: "*[2]/@id", t: "インバース", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+        else: [x: "*[1]", bookmark: "*[2]/@id", T: "インバース"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
 - name: function-squared-or-cubed
   tag: power
@@ -558,7 +558,7 @@
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
   - x: "*[1]/*[1]/*" # mtable/mtr/mtd
-  - t: "選ぶ"      # phrase(the binomial coefficient n 'choose' m)
+  - T: "シー"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
@@ -594,7 +594,7 @@
     - if: ".='log'"
       then: [T: "ログ"]
     - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
-      then: [t: "自然ログ"]      # phrase(the 'natural log' of x)
+      then: [T: "自然対数"]      # phrase(the 'natural log' of x)
       else: [spell: "'ln'"]
 
 - name: ClearSpeak-multi-line

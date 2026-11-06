@@ -1093,3 +1093,39 @@ fn the_function_names_are_japanese_words() -> Result<()> {
     }
     return Ok(());
 }
+
+/// sin⁻¹ x is read "サイン インバース" with インバース after the function name.
+/// The TrigInverse setting already put it there; the default and SimpleSpeak
+/// put it in front, which is the English word order.
+#[test]
+fn inverse_trig_puts_inverse_after_the_function() -> Result<()> {
+    let expr = "<math><msup><mi>sin</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "サイン インバース, オブ x")?;
+    test_ClearSpeak("ja", "ClearSpeak_Trig", "TrigInverse", expr, "サイン インバース, オブ x")?;
+    test("ja", "SimpleSpeak", expr, "サイン インバース, オブ x")?;
+    return Ok(());
+}
+
+/// ln is 自然対数 in Japanese; 自然ログ is a word-for-word rendering of "natural log".
+#[test]
+fn natural_log_is_shizen_taisuu() -> Result<()> {
+    let expr = "<math><mi>ln</mi><mi>x</mi></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Log", "LnAsNaturalLog", expr, "自然対数 x")?;
+    test("ja", "SimpleSpeak", expr, "自然対数 オブ x")?;
+    return Ok(());
+}
+
+/// A binomial coefficient is read like ₃C₂, "3 シー 2". "3 選ぶ 2" was a
+/// word-for-word translation of "3 choose 2".
+#[test]
+fn binomial_coefficient_is_read_like_ncr() -> Result<()> {
+    let expr = "<math><mo>(</mo><mrow><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable></mrow><mo>)</mo></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "Combinatorics", expr, "3 シー 2")?;
+    // (3 over 2) with no fraction line, and ₃C₂ itself, go through the binomial intent.
+    let frac = "<math><mo>(</mo><mfrac linethickness='0'><mn>3</mn><mn>2</mn></mfrac><mo>)</mo></math>";
+    test("ja", "SimpleSpeak", frac, "3 シー 2")?;
+    test("ja", "ClearSpeak", frac, "3 シー 2")?;
+    let ncr = "<math><mmultiscripts><mi>C</mi><mn>2</mn><none/><mprescripts/><mn>3</mn><none/></mmultiscripts></math>";
+    test("ja", "SimpleSpeak", ncr, "3 シー 2")?;
+    return Ok(());
+}
