@@ -155,8 +155,8 @@
   tag: inverse-function
   match: "."
   replace:
-  - t: "インバース"      # phrase(the 'inverse' of f)
   - x: "*[1]"
+  - T: "インバース"      # phrase(the 'inverse' of f)
 
 - name: function-squared-or-cubed
   tag: power
