@@ -180,6 +180,7 @@ Translators:
 * Greek -- Theodora Antonakopoulou and Paraskevi Riga (National and Kapodistrian University of Athens)
 * Hungarian -- Attila Hammer (IT Foundation for the Visually Impaired)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
+* Japanese -- 盛島康徳 (Yasunori Morishima)
 * Norwegian -- Marthe Gjelstad (National Library of Norway) and Kvile
 * Polish -- Michał Dziwisz (Fundacja Instytut Rozwoju Regionalnego)
 * Russian (both speech and braille) -- Danil Kostenkov
