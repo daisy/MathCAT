@@ -1,5 +1,79 @@
 ---
 - include: "../../definitions.yaml"
+
+# ----------------  Nombres de funciones en español  ----------------
+# Redefinen las listas de Rules/definitions.yaml para que MathCAT reconozca
+# las abreviaturas en español (sen, tg, arcsen, máx, mín, lím…).
+- TrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "senh", "cotg", "ctg", "tgh", "cotgh",  # español
+    "cos", "cosec", "cosech", "cosh", "cot", "cotan", "cotanh", "coth", "csc", "csch",
+    "sec", "sech", "sin", "sinh", "tan", "tang", "tanh", "tg", "ln", "log", "lg"    
+  }
+
+- ClearSpeakTrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "cotg", "ctg", "cosec",  # español
+    "sin", "cos", "tan", "sec", "csc", "cot",
+    # sin "log", "ln", "lg": en español se dice "el logaritmo de x" (CMU)
+    "tang", "tg",       # these aren't listed in the ClearSpeak, but they are equivalents
+  }
+
+- AdditionalFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "dom", "rec", "adj",  # español (se buscan en minúscula)
+    # the arcXXX functions aren't really trig functions (they are inverse functions)
+    "arccos", "arccosec", "arccosech", "arccosh",
+    "arccot", "arccotan", "arccotanh", "arccoth",
+    "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
+    "arctan", "arctang", "arctanh",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
+    "gcd", "lcm",
+    "min", "max", "deg", "det", "rank", "rg", "sgn",
+    "dim", "hom", "ker", "tr", "rot", "div",
+    "Dim", "Hom", "Ker", "Tr",
+    "inf", "lim", "liminf", "limsup", "sup",
+    "injlim", "projlim", "inj lim", "proj lim",
+
+    # these come from the nemeth book (Rule XVII)
+    "arc",
+    "amp", "amplitude",
+    "antilog", "antilogarithm",
+    "argument",
+    "colog", "cologarithm",
+    "cosine",
+    "hyperbolic cosine",
+    "cotangent",
+    "hyperbolic cotangent",
+    "covers", "coversine",
+    "cosecant",
+    "hyperbolic cosecant",
+    "ctn",
+    "ctnh",
+    "determinant",
+    "erf", "error function",
+    "exponential",
+    "exsec", "exsecant",
+    "grad", "gradient",
+    "hav", "haversine",
+    "limit",
+    "upper limit",
+    "lower limit",
+    "natural logarithm",
+    "logarithm",
+    "maximum",
+    "minimum",
+    "real part",
+    "secant",
+    "hyperbolic secant",
+    "sine",
+    "hyperbolic sine",
+    "supremum",
+    "tangent",
+    "hyperbolic tangent",
+    "vers", "versine"
+  }
+
 # Lines starting with "#" are a comment
 # Each definition in this file is of the form
 # - name: { "...", "..." "..." }
@@ -85,36 +159,232 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "indexed-by": "infix= ; subíndice; final del subíndice",
-    "modified-variable": "silent= ",
-    "say-super": "infix=superíndice",   # used with 'mo' for superscripts (e.g, "<")
-    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
-
-    "absolute-value": "function= ; valor absoluto| el valor absoluto de| el valor absoluto de; final del valor absoluto",
-    "binomial": "infix=binomial; elegir; end binomial",
-    "limit": "prefix=límite cuando",
-    "lim-sup": "prefix=lim sup as| the limit superior as| the limit superior as",
-    "lim-inf": "prefix=lim inf as| the limit inferior as | the limit inferior as",
-    "logarithm-with-base": "prefix=log base| el log base| el log base",
-    "minus": "infix=menos || prefix=negativo",
-    "plus": "infix=más || prefix=positivo",
-
-    "transpose": "postfix=intercambiar || function=intercambiar",
-    "norm": "function=; regla| regla| la regla; fin de la regla",
-    "trace": "function=;traza | traza de| la traza de; fin de la traza",
-    "dimension": "function=; dimensión | dimensión de| la dimensión de; fin de la dimensión",
-    "homomorphism": "function= ; homomorfismo | homomorfismo de| el homomorfismo de; find de el homomorfismo",
-    "kernel": "function= ; núcleo | núcleo de| el núcleo de; fin de el núcleo",
+    "binomial": "infix=binomial; sobre; fin del binomial",
+    "inverse": "function=inversa || postfix=inversa",
+    "domain": "function= ; dominio| el dominio",
+    "codomain": "function= ; codominio| el codominio",
+    "image": "function=imagen| la imagen",
+    "mixed-fraction": "infix=y",
+    "quotient": "function=parte entera: dividido por",
+    "evaluated-at": "infix=evaluado en",
+    "remainder": "function=el resto: dividido por",
+    "max": "function=máximo| el máximo",
+    "min": "function=mínimo| el mínimo",
+    "power": "infix=elevado a",
+    "root": "function=raíz| la raíz",
+    "greatest-common-divisor": "function=mcd| el mcd| el máximo común divisor",
+    "least-common-multiple": "function=mcm| el mcm| el mínimo común múltiplo",
+    "absolute-value": "function= ; valor absoluto| el valor absoluto| el valor absoluto; fin del valor absoluto",
+    "complex-conjugate": "function=conjugado complejo| el conjugado complejo",
+    "complex-arg": "function=arg| el argumento",
+    "real-part": "function=parte real| la parte real",
+    "imaginary-part": "function=parte imaginaria| la parte imaginaria| la parte imaginaria",
+    "polar-coordinate": "function=coordenada polar",
+    "spherical-coordinate": "function=coordenada esférica",
+    "cartesian-coordinate": "function=coordenada cartesiana",
+    "coordinate": "function=coordenada| la coordenada",
+    "floor": "function=piso| el piso",
+    "ceiling": "function=techo| el techo",
+    "round": "function=redondeo| el redondeo",
+    "fractional-part": "function=parte fraccionaria| la parte fraccionaria",
+    "limit": "prefix=límite cuando| el límite cuando",
+    "tends-to": "infix=tiende a",
+    "tends-to-from-above": "infix=tiende por la derecha a",
+    "tends-to-from-below": "infix=tiende por la izquierda a",
+    "set": "function= ; conjunto| el conjunto",
+    "set-difference": "function=diferencia: y || infix=menos",
+    "complement": "function=complemento| el complemento",
+    "empty-set": "nofix=conjunto vacío| el conjunto vacío",
+    "cardinality": "function=cardinal| el cardinal",
+    "list": "function=lista| la lista",
+    "tuple": "function= ; tupla| la tupla",
+    "sum": "function=suma| la suma: sobre: desde,hasta",
+    "product": "function=producto| el producto: sobre: desde,hasta",
+    "sine": "function=sen | seno",
+    "cosine": "function=cos | coseno",
+    "tangent": "function=tan | tangente",
+    "secant": "function=sec | secante",
+    "cosecant": "function=cosec | cosecante",
+    "cotangent": "function=cotan | cotangente",
+    "arcsine": "function=arco seno",
+    "arccosine": "function=arco coseno",
+    "arctangent": "function=arco tangente",
+    "arcsecant": "function=arco secante",
+    "arccosecant": "function=arco cosecante",
+    "arccotangent": "function=arco cotangente",
+    "hyperbolic-sine": "function=sen hache | seno hiperbólico",
+    "hyperbolic-cosine": "function=cos hache | coseno hiperbólico",
+    "hyperbolic-tangent": "function=tan hache | tangente hiperbólica",
+    "hyperbolic-secant": "function=sec hache | secante hiperbólica",
+    "hyperbolic-cosecant": "function=cosec hache | cosecante hiperbólica",
+    "hyperbolic-cotangent": "function=cotan hache | cotangente hiperbólica",
+    "arc-hyperbolic-sine": "function=argumento seno hiperbólico",
+    "arc-hyperbolic-cosine": "function=argumento coseno hiperbólico",
+    "arc-hyperbolic-tangent": "function=argumento tangente hiperbólica",
+    "arc-hyperbolic-secant": "function=argumento secante hiperbólica",
+    "arc-hyperbolic-cosecant": "function=argumento cosecante hiperbólica",
+    "arc-hyperbolic-cotangent": "function=argumento cotangente hiperbólica",
+    "exponential": "function=exponencial| la exponencial",
+    "natural-logarithm": "function=l n| el logaritmo natural| el logaritmo natural",
+    "logarithm": "function=log| el logaritmo",
+    "mean": "function=media| la media",
+    "standard-deviation": "function=desviación estándar| la desviación estándar",
+    "variance": "function=varianza| la varianza",
+    "median": "function=mediana| la mediana",
+    "mode": "function=moda| la moda",
+    "conditional-probability": "function=probabilidad: dado",
     "vector": "function= ; vector || prefix=vector",
-    "cross-product": "infix=cross| cross product| cross product",
-    "dot-product": "infix=dot| dot product| dot|dot product",
+    "matrix": "function=matriz| la matriz",
+    "determinant": "function=determinante| el determinante",
+    "adjugate": "function=adjunta| la matriz adjunta",
+    "magnitude": "function=norma| la norma",
+    "norm": "function=; norma| norma| la norma; fin de la norma",
+    "span": "function=espacio generado| el espacio generado",
+    "unit-vector": "prefix=vector unitario",
+    "identity-matrix": "nofix=matriz identidad| la matriz identidad",
+    "transpose": "postfix=transpuesta || function=transpuesta",
+    "dimensional-product": "infix=por",
+    "set-of-integers": "nofix=ℤ| el conjunto de los números enteros",
+    "set-of-reals": "nofix=ℝ| el conjunto de los números reales",
+    "set-of-rationals": "nofix=ℚ| el conjunto de los números racionales",
+    "set-of-natural-numbers": "nofix=ℕ| el conjunto de los números naturales",
+    "set-of-complex-numbers": "nofix=ℂ| el conjunto de los números complejos",
+    "set-of-primes": "nofix=ℙ| el conjunto de los números primos",
+    "line-segment": "prefix=segmento",
+    "directed-line-segment": "prefix=segmento dirigido",
+    "line": "prefix=recta",
+    "ray": "prefix=rayo",
+    "arc": "prefix=arco",
+    "length": "function=longitud| la longitud",
+    "area": "function=área| el área",
+    "point": "prefix=punto",
+    "time-separator": "infix=",
+    "fenced-group": "function=grupo delimitado",
+    "ordered-pair": "function=el par ordenado: y",
+    "indexed-by": "infix= ; sub| sub| subíndice; fin de sub| fin de sub| fin de subíndice",
+    "highlight": "postfix=resaltado",
+    "least-common-denominator": "function=mínimo común denominador| el mínimo común denominador",
+    "rate": "infix=por",
+    "translation": "function=traslación según",
+    "constraint": "infix= ; con la restricción; ",
+    "binomial-coefficient": "infix=sobre",
+    "pochhammer": "function=permutación",
+    "permutation-cycle": "function=ciclo| el ciclo de permutación",
+    "embellished-name": "infix=con anotación",
+    "annotation": "infix= ; que es ;",
+    "braced-group": "function=agrupado; fin del agrupado",
+    "curl": "function=rot| rotacional",
+    "divergence": "function=div| divergencia",
+    "gradient": "function=grad| gradiente",
+    "laplacian": "function=laplaciano",
+    "angle": "prefix=ángulo",
+    "angle-measure": "prefix=medida del ángulo",
+    "change": "prefix=incremento de",
+    "for-all": "prefix=para todo",
+    "measured-angle": "prefix=ángulo medido",
+    "not": "prefix=no",
+    "number-of": "prefix=número de",
+    "partial-derivative": "prefix=parcial",
+    "right-angle": "prefix=ángulo recto",
+    "square-root-of": "prefix=raíz cuadrada de",
+    "there-does-not-exist": "prefix=no existe",
+    "there-exists": "prefix=existe",
+    "and": "infix=y",
+    "applied-to": "infix=aplicado a",
+    "approximately": "infix=aproximadamente igual a",
+    "congruent": "infix=congruente con",
+    "cartesian-product": "infix=producto cartesiano",
+    "composed-with": "infix=compuesta con",
+    "cross-product": "infix=cruz| producto vectorial| producto vectorial || nofix=cruz| producto vectorial| producto vectorial",
+    "defined-as": "infix=definido como",
+    "divided-by": "infix=dividido por",
+    "divides": "infix=divide a",
+    "does-not-belong-to": "infix=no pertenece a",
+    "does-not-divide": "infix=no divide a",
+    "dot-product": "infix=punto| producto escalar| producto escalar || nofix=punto| producto escalar| producto escalar",
+    "downwards-diagonal-ellipsis": "infix=puntos suspensivos diagonales descendentes",
+    "direct-product": "infix=producto directo",
+    "element-of": "infix=pertenece a",
+    "ellipsis": "infix=puntos suspensivos",
+    "equals": "infix=es igual a",
+    "equivalent-to": "infix=equivalente a",
+    "evaluates-to": "infix=da como resultado",
+    "given": "infix=dado",
+    "greater-than": "infix=mayor que",
+    "greater-than-or-equal-to": "infix=mayor o igual que",
+    "identically-equals": "infix=idénticamente igual a",
+    "if-and-only-if": "infix=si y solo si",
+    "implies": "infix=implica",
+    "inner-product": "infix=producto interior",
+    "intersection": "infix=intersección",
+    "less-than": "infix=menor que",
+    "less-than-or-equal-to": "infix=menor o igual que",
+    "list-separator": "infix=coma",
+    "maps-to": "infix=se asigna a",
+    "member-of": "infix=pertenece a",
+    "minus-or-plus": "infix=menos más",
+    "not-subset": "infix=no es subconjunto de",
+    "not-superset": "infix=no es superconjunto de",
+    "not-equal-to": "infix=distinto de",
+    "not-member-of": "infix=no pertenece a",
+    "not-parallel-to": "infix=no es paralela a",
+    "obtained-from": "infix=obtenido de",
+    "or": "infix=o",
+    "outer-product": "infix=producto exterior",
+    "parallel-to": "infix=paralela a",
+    "perpendicular": "infix=perpendicular a",
+    "plus": "infix=más || prefix=más",     # sin "positivo": "+3" se lee "más 3", igual que "−3" es "menos 3"
+    "minus": "infix=menos || prefix=menos",
+    "plus-or-minus": "infix=más menos",
+    "precedes": "infix=precede a",
+    "proportional": "infix=proporcional a",
+    "range-separator": "infix=a",
+    "ratio": "function=razón : a | la razón : a",
+    "similar": "infix=semejante a",
+    "subset": "infix=subconjunto de",
+    "subset-or-equal": "infix=subconjunto o igual a",
+    "succeeds": "infix=sucede a",
+    "such-that": "infix=tal que",
+    "superset": "infix=superconjunto de",
+    "superset-or-equal": "infix=superconjunto o igual a",
+    "tilde": "infix=tilde",
+    "times": "infix=por",
+    "union": "infix=unión",
+    "upwards-diagonal-ellipsis": "infix=puntos suspensivos diagonales ascendentes",
+    "vertical-ellipsis": "infix=puntos suspensivos verticales",
+    "xor": "infix=o exclusivo",
+    "factorial": "postfix=factorial",     # se lee "factorial de n": regla factorial-de en general.yaml
+    "percent": "postfix=por ciento",
+    "diameter": "nofix=d| diámetro",
+    "distance": "nofix=d; D| distancia",
+    "probability": "nofix=P| probabilidad || function=probabilidad",
+    "radius": "nofix=r| radio",
+    "volume": "nofix=V| volumen || function=volumen",
+    "exponential-e": "nofix=e",
+    "imaginary-i": "nofix=i",
+    "differential-d": "nofix=d",
+    "golden-ratio": "nofix=número áureo",
+    "modified-variable": "silent= ",
+    "say-super": "infix=superíndice",
+    "skip-super": "silent=",
+    "lim-sup": "prefix=lím sup cuando| el límite superior cuando| el límite superior cuando",
+    "lim-inf": "prefix=lím inf cuando| el límite inferior cuando| el límite inferior cuando",
+    "logarithm-with-base": "prefix=log base| el logaritmo en base| el logaritmo en base",
+    "trace": "function= ; traza| la traza| la traza; fin de la traza",
+    "dimension": "function= ; dimensión| la dimensión| la dimensión; fin de la dimensión",
+    "homomorphism": "function= ; homomorfismo| el homomorfismo| el homomorfismo; fin del homomorfismo",
+    "kernel": "function= ; núcleo| el núcleo| el núcleo; fin del núcleo",
+    "chemistry-concentration": "function= ; concentración| la concentración| la concentración; fin de la concentración",
+  }
 
-    "divergence": "function= ; div| divergence| divergence; end divergence",
-    "curl": "function= ; curl; end curl",
-    "gradient": "function= ; grad| gradient| gradient; end gradient",
-    "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
+  # La palabra que une una función con su argumento en las IntentMappings funcionales (en inglés, "of").
+  # Probablemente es la misma que se usa para U+2061 en unicode.yaml, pero por razones técnicas se define aquí.
+  # Es un vector de largo 1 porque no se admiten escalares.
+- FunctionApplicationWord: ["de"]
 
-    "chemistry-concentration": "function= ; concentración| concentración de| la concentración de; fin de la concentración",
+  # Nombres de funciones (nombres de intent, no se traducen) que en modo breve no dicen "de"
+- TerseFunctionNames: {
+    "divergence", "del|gradient", "curl"
   }
 
 - NavigationParts: {
@@ -142,8 +412,15 @@
     "out": "out of",
   }
 
+- KnownWords: {
+    # MathCAT junta algunas secuencias de tres o más mi (un error común), pero no las que están en orden alfabético.
+    # Esta es la lista de excepciones que sí se juntan. No incluir palabras con letras repetidas.
+    # Lista inicial; se puede ampliar.
+    "abs", "adj", "bit", "dim", "fin", "lux"
+  }
+
 - SIPrefixes: {
-    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deka",
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deca",
     "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
@@ -155,7 +432,7 @@
     # base units
     "A": "amperio",
     "cd": "candela",
-    "K": "grado kelvin", "K": "grado kelvin", # U+212A
+    "K": "kelvin", "K": "kelvin", # U+212A
     "g": "gramo",
     "m": "metro",     # British spelling works for US also
     "mol": "mol",
@@ -249,7 +526,7 @@
 
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
-      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "dekámetro",
+      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
     "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
     #  conflicts: "fm": "femtómetro", "am": "attómetro",
     "zm": "zeptómetro", "ym": "yoctómetro", "rm": "rontómetro", "qm": "quectómetro",
@@ -262,74 +539,90 @@
 
   # this will only be used if the language is English, so it can be empty for other countries
 - EnglishUnits: {
+    # unidades anglosajonas, con su nombre en español
     # length
-    "in": "inch",
-    "ft": "foot",
-    "mi": "mile",
-    "rd": "rod",
-    "li": "link",
-    "ch": "chain",
+    "in": "pulgada",
+    "ft": "pie",
+    "mi": "milla",
+    "rd": "vara",
+    "li": "eslabón",
+    "ch": "cadena",
 
     # area
-    "sq in": "square inch", "sq. in": "square inch", "sq. in.": "square inch",
-    "sq ft": "square foot", "sq. ft": "square foot", "sq. ft.": "square foot",
-    "sq yd": "square yard", "sq. yd": "square yard", "sq. yd.": "square yard",
-    "sq mi": "square mile", "sq. mi": "square mile", "sq. mi.": "square mile",
+    "sq in": "pulgada cuadrada", "sq. in": "pulgada cuadrada", "sq. in.": "pulgada cuadrada",
+    "sq ft": "pie cuadrado", "sq. ft": "pie cuadrado", "sq. ft.": "pie cuadrado",
+    "sq yd": "yarda cuadrada", "sq. yd": "yarda cuadrada", "sq. yd.": "yarda cuadrada",
+    "sq mi": "milla cuadrada", "sq. mi": "milla cuadrada", "sq. mi.": "milla cuadrada",
     "ac": "acre",
-    "FBM": "board foot",
+    "FBM": "pie tablar",
 
     # volume
-    "cu in": "cubic inch", "cu. in": "cubic inch", "cu. in.": "cubic inch",
-    "cu ft": "cubic foot", "cu. ft": "cubic foot", "cu. ft.": "cubic foot",
-    "cu yd": "cubic yard", "cu. yd": "cubic yard", "cu. yd.": "cubic yard",
-    "bbl": "barrel", "BBL": "barrel",
+    "cu in": "pulgada cúbica", "cu. in": "pulgada cúbica", "cu. in.": "pulgada cúbica",
+    "cu ft": "pie cúbico", "cu. ft": "pie cúbico", "cu. ft.": "pie cúbico",
+    "cu yd": "yarda cúbica", "cu. yd": "yarda cúbica", "cu. yd.": "yarda cúbica",
+    "bbl": "barril", "BBL": "barril",
     "pk": "peck",
     "bu": "bushel",
-    "tsp": "teaspoon",
-    "tbl": "tablespoon",
+    "tsp": "cucharadita",
+    "tbl": "cucharada",
 
     # liquid
-    "fl dr": "fluid drams",
-    "fl oz": "fluid ounce",
+    "fl dr": "dracma líquida",
+    "fl oz": "onza líquida",
     "gi": "gill",
-    "cp": "cup", "cup": "cup",
-    "pt": "pint",
-    "qt": "quart",
-    "gal": "gallon",
+    "cp": "taza", "cup": "taza",
+    "pt": "pinta",
+    "qt": "cuarto de galón",
+    "gal": "galón",
 
     # weight
-    "gr": "grain",
-    "dr": "dram",
-    "oz": "ounce", "℥": "ounce",
-    "lb": "pound",
-    "cwt": "hundredweight",
+    "gr": "grano",
+    "dr": "dracma",
+    "oz": "onza", "℥": "onza",
+    "lb": "libra",
+    "cwt": "quintal",
     "dwt": "pennyweight",
-    "oz t": "troy ounce",
-    "lb t": "troy pound",
+    "oz t": "onza troy",
+    "lb t": "libra troy",
 
     # energy
-    "hp": "horsepower",
+    "hp": "caballo de fuerza",
     "BTU": "BTU",
-    "°F": "degree fahrenheit", "℉": "degree fahrenheit",
+    "°F": "grado Fahrenheit", "℉": "grado Fahrenheit",
 
     # other
-    "mph": "mile per hour",
-    "mpg": "mile per gallon",
+    "mph": "milla por hora",
+    "mpg": "milla por galón",
+  }
+
+- CurrencySymbols: {
+    "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
+    "₩": "won", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
+    # se pueden agregar más monedas...
   }
 
 - PluralForms: {
   # FIX: this needs to be flushed out
-    "lumen": "lúmenes",
+    "lumen": "lúmenes", "lux": "lux",
+    "colón": "colones", "bitcóin": "bitcoines",
+    "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
+    "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",
+    "unidad astronómica": "unidades astronómicas", "unidad de masa atómica": "unidades de masa atómica",
     "kelvin": "kelvin",
     "grado Celsius": "grados Celsius",
     "grado Fahrenheit": "grados Fahrenheit",
 
-    "inch": "inches", "square inch": "square inches", "cubic inch": "cubic inches",
-    "foot": "feet", "square foot": "square feet", "cubic foot": "cubic feet",
-    "board foot": "board feet",
     "hertz": "hertz",
     "siemens": "siemens",
-    "revolution per minute": "revolutions per minute",
+
+    # unidades anglosajonas
+    "eslabón": "eslabones", "galón": "galones", "gill": "gills", "bushel": "bushels", "BTU": "BTU",
+    "pulgada cuadrada": "pulgadas cuadradas", "pie cuadrado": "pies cuadrados", "yarda cuadrada": "yardas cuadradas",
+    "milla cuadrada": "millas cuadradas", "pie tablar": "pies tablares",
+    "pulgada cúbica": "pulgadas cúbicas", "pie cúbico": "pies cúbicos", "yarda cúbica": "yardas cúbicas",
+    "dracma líquida": "dracmas líquidas", "onza líquida": "onzas líquidas", "cuarto de galón": "cuartos de galón",
+    "onza troy": "onzas troy", "libra troy": "libras troy", "caballo de fuerza": "caballos de fuerza",
+    "milla por hora": "millas por hora", "milla por galón": "millas por galón",
   }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
@@ -364,19 +657,30 @@
     ]
 
 - NumbersOrdinalPluralOnes: [
-         "cero", "primero", "segundos", "tercios", "cuartos", "quintos", "sextos", "séptimos", "ochos", "novenos",
-         "décimos", "undécimos", "doceavos", "treceavos", "catorceavos", "decimoquintos", "dieciseisavos",
-         "diecisiete", "dieciochovo", "diecinueve"
+         "ceros", "primeros", "segundos", "terceros", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "undécimos", "duodécimos", "decimoterceros", "decimocuartos", "decimoquintos", "decimosextos",
+         "decimoséptimos", "decimoctavos", "decimonovenos"
     ]
 
     # stop when regularity begins
+# ordinales femeninos para "x a la quinta" y "la raíz quinta" (solo hasta 10; desde 11 se usa el cardinal)
+- OrdinalesFemeninos: {
+    "2": "segunda", "3": "tercera", "4": "cuarta", "5": "quinta", "6": "sexta",
+    "7": "séptima", "8": "octava", "9": "novena", "10": "décima"
+  }
+
 - NumbersOrdinalFractionalOnes: [
-         "cero", "primero", "mitad"
+         # en español los denominadores de fracciones no son ordinales hasta 20: tercio, onceavo…
+         "cero", "entero", "medio", "tercio", "cuarto", "quinto", "sexto", "séptimo", "octavo", "noveno",
+         "décimo", "onceavo", "doceavo", "treceavo", "catorceavo", "quinceavo", "dieciseisavo",
+         "diecisieteavo", "dieciochoavo", "diecinueveavo"
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "ceros", "primeros", "mitades"
+         "ceros", "enteros", "medios", "tercios", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "onceavos", "doceavos", "treceavos", "catorceavos", "quinceavos", "dieciseisavos",
+         "diecisieteavos", "dieciochoavos", "diecinueveavos"
     ]
 
 
