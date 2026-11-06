@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>fr navigate tests</title>
+</head>
+<body>
+  <h1>fr navigate tests</h1>
+
+  <h2>parts_prefix_logarithm_with_base</h2>
+  <math>
+    <msub id="log">
+      <mi>log</mi>
+      <mi id="b">b</mi>
+    </msub>
+  </math>
+
+  <h2>parts_infix_power</h2>
+  <math>
+    <msup id="pow">
+      <mi id="base">x</mi>
+      <mn id="exp">2</mn>
+    </msup>
+  </math>
+
+  <h2>parts_infix_indexed_by</h2>
+  <math>
+    <msub id="sub">
+      <mi id="base">x</mi>
+      <mn id="i">1</mn>
+    </msub>
+  </math>
+
+  <h2>parts_function_fraction</h2>
+  <math>
+    <mfrac id="frac">
+      <mn id="num">1</mn>
+      <mn id="den">2</mn>
+    </mfrac>
+  </math>
+
+  <h2>parts_function_square_root</h2>
+  <math>
+    <msqrt id="root">
+      <mi id="x">x</mi>
+    </msqrt>
+  </math>
+
+  <h2>parts_silent_skip_super</h2>
+  <math>
+    <msup id="deg">
+      <mi id="base">x</mi>
+      <mo id="deg-mark">°</mo>
+    </msup>
+  </math>
+
+  <h2>no_parts_prefix_unary_minus</h2>
+  <math>
+    <mrow id="neg">
+      <mo>-</mo>
+      <mi id="b">b</mi>
+    </mrow>
+  </math>
+
+  <h2>no_parts_prefix_limit</h2>
+  <math>
+    <mrow intent="limit:prefix($x)" id="lim">
+      <mi arg="x" id="x">x</mi>
+    </mrow>
+  </math>
+
+  <h2>no_parts_prefix_vector</h2>
+  <math>
+    <mover id="vec">
+      <mi id="v">v</mi>
+      <mo>→</mo>
+    </mover>
+  </math>
+
+  <h2>no_parts_infix_binomial</h2>
+  <math>
+    <mrow id="bin">
+      <mo>(</mo>
+      <mfrac linethickness="0" id="choose">
+        <mn id="n">7</mn>
+        <mn id="k">3</mn>
+      </mfrac>
+      <mo>)</mo>
+    </mrow>
+  </math>
+
+  <h2>no_parts_postfix_transpose</h2>
+  <math>
+    <msup id="tr">
+      <mi id="m">M</mi>
+      <mi>T</mi>
+    </msup>
+  </math>
+
+  <h2>no_parts_function_absolute_value</h2>
+  <math>
+    <mrow id="abs">
+      <mo>|</mo>
+      <mi id="x">x</mi>
+      <mo>|</mo>
+    </mrow>
+  </math>
+
+  <h2>no_parts_silent_modified_variable</h2>
+  <math>
+    <mover id="hat">
+      <mi id="x">x</mi>
+      <mo>^</mo>
+    </mover>
+  </math>
+
+  <h2>no_parts_nofix_set_of_reals</h2>
+  <math>
+    <mi intent="set-of-reals:nofix" id="r">R</mi>
+  </math>
+
+  <h2>no_intent_sum_mrow</h2>
+  <math>
+    <mrow id="sum">
+      <mi id="x">x</mi>
+      <mo>+</mo>
+      <mi id="y">y</mi>
+    </mrow>
+  </math>
+
+  <h2>no_intent_times_mrow</h2>
+  <math>
+    <mrow id="prod">
+      <mn id="two">2</mn>
+      <mo>&#x2062;</mo>
+      <mi id="a">a</mi>
+    </mrow>
+  </math>
+
+  <h2>no_intent_mi</h2>
+  <math>
+    <mi id="x">x</mi>
+  </math>
+</body>
+</html>

@@ -118,6 +118,13 @@
     "laplacian": "function=laplacien",
 
     "chemistry-concentration": "function= ; concentration| concentration de| la concentration de; fin de concentration",
+
+    "set-of-integers": "nofix=ℤ| ensemble des nombres entiers",
+    "set-of-reals": "nofix=ℝ| ensemble des nombres réels",
+    "set-of-rationals": "nofix=ℚ| ensemble des nombres rationnels",
+    "set-of-natural-numbers": "nofix=ℕ| ensemble des nombres entiers naturels",
+    "set-of-complex-numbers": "nofix=ℂ| ensemble des nombres complexes",
+    "set-of-primes": "nofix=ℙ| ensemble des nombres premiers",
   }
 
 # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)

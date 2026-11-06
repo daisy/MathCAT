@@ -98,6 +98,15 @@
           (name(.)='mrow' or name(.) = 'mtr' or name(.) = 'mlabeledtr' or @data-from-mathml = 'mtable')"
   replace: []
 
+# Prefix/silent intents with no NavigationParts entry (e.g. unary minus, x-hat)
+# should not announce "in"/"out of".
+- name: into-or-out-of-prefix-or-silent-without-parts
+  tag: "*"
+  match: "$Move2D != '' and
+          (contains(@data-intent-property, ':prefix:') or contains(@data-intent-property, ':silent:')) and
+          GetNavigationPartName(name(.), count($Child2D/preceding-sibling::*)) = ''"
+  replace: []
+
 - name: into-or-out-of-minus-silent-on-zoom-out
   tag: "*"
   match: "$Move2D != '' and name(.)='minus' and count(*)=1 and ($NavCommand = 'ZoomOut' or $NavCommand = 'ZoomOutAll')"
@@ -130,13 +139,13 @@
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [t: "pré-indice"]       # phrase(x with 'subscript' 2)
-                  else: [t: "pré-exposant"]     # phrase(x with 'superscript' 2)
+                  then: [t: "indice"]       # phrase(x with 'subscript' 2)
+                  else: [t: "exposant"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
-                  then: [t: "exposant"]    # phrase(x with 'pre-superscript' 2)
-                  else: [t: "indice"]      # phrase(x with 'pre-subscript' 2)
+                  then: [t: "pré-exposant"]    # phrase(x with 'pre-superscript' 2)
+                  else: [t: "pré-indice"]      # phrase(x with 'pre-subscript' 2)
           - pause: "medium"
 
 # Rules for speaking what happens when moving into or out of a notation
@@ -158,7 +167,23 @@
         - else_if: "count(*) = 1" # if the node has one child
           then_test:
             if: "$NavVerbosity = 'Verbose'"
-            then: [x: "translate(name(.), '-_', ' ')"]      # e.g., "in absolute value"
+            then:   # IntentMappings via SpeakIntentName; falls back to spaced intent name
+            - test:
+              - if: "contains(@data-intent-property, ':prefix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"]
+              - else_if: "contains(@data-intent-property, ':postfix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"]
+              - else_if: "contains(@data-intent-property, ':infix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')"]
+              - else_if: "contains(@data-intent-property, ':function:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]
+              - else_if: "contains(@data-intent-property, ':nofix:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"]
+              - else_if: "contains(@data-intent-property, ':silent:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
+              - else_if: "contains(@data-intent-property, ':other:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
+                else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]  # defaults to function
           else:
           - t: "partie"         # phrase(the 'part' of the expression)
           - x: "count($Child2D/preceding-sibling::*) + 1"
@@ -1360,14 +1385,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "mode caractère"                                                # phrase(a mathematical 'character')
+      - t: "caractère"                                                # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "mode simple"                                                   # phrase(a 'simple' way to do something)
+      - t: "simple"                                                   # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else:
-      - t: "mode étendu"                                                 # phrase(an 'enhanced' way to do something)
+      - t: "enrichi"                                                 # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
   - pause: long
   - test:
@@ -1384,14 +1409,14 @@
   - test:
     - if: "$NavMode = 'Enhanced'"
       then:
-      - t: "mode simple"                                                 # phrase(a 'simple' way to do something)
+      - t: "simple"                                                 # phrase(a 'simple' way to do something)
       - set_variables: [NavMode: "'Simple'", ReadZoomLevel: "1"]
     - else_if: "$NavMode = 'Character'"
       then:
-      - t: "mode étendu"                                               # phrase(an 'enhanced' way to do something)
+      - t: "enrichi"                                               # phrase(an 'enhanced' way to do something)
       - set_variables: [NavMode: "'Enhanced'", ReadZoomLevel: "-1"]
     - else:
-      - t: "mode caractère"                                              # phrase(a mathematical 'character')
+      - t: "caractère"                                              # phrase(a mathematical 'character')
       - set_variables: [NavMode: "'Character'", ReadZoomLevel: "1"]
   - pause: long
   - test:
@@ -1449,7 +1474,7 @@
         - else_if: "starts-with($NavCommand, 'Describe')"
           then: [t: "décrire"]                              # phrase('describe' next entry in table)     
         - else_if: "starts-with($NavCommand, 'MoveTo')"
-          then: [t: "aller à "]                              # phrase('move to' the next entry in table) 
+          then: [t: "aller à"]                              # phrase('move to' the next entry in table) 
           else: [t: "placer"]                                   # phrase('set' the value of the next entry in table) 
       - t: "marqueur"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
