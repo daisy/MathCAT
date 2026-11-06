@@ -21,7 +21,7 @@
 
 - AdditionalFunctionNames: {
     # copia de Rules/definitions.yaml (mantener al día) + nombres en español
-    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "dom", "rec", "adj",  # español (se buscan en minúscula)
+    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "dom", "rec", "adj", "var",  # español (se buscan en minúscula)
     # the arcXXX functions aren't really trig functions (they are inverse functions)
     "arccos", "arccosec", "arccosech", "arccosh",
     "arccot", "arccotan", "arccotanh", "arccoth",
@@ -527,6 +527,19 @@
     "dyn": "dina",
     "erg": "ergio",
 
+    # unidades de uso corriente en español (no están en inglés)
+    "kcal": "kilocaloría",
+    "Wh": "vatio hora", "kWh": "kilovatio hora", "MWh": "megavatio hora", "GWh": "gigavatio hora",
+    "Ah": "amperio hora", "mAh": "miliamperio hora",
+    "mmHg": "milímetro de mercurio", "Torr": "torr", "mbar": "milibar",
+    "cc": "centímetro cúbico",
+    "kn": "nudo",
+    "CV": "caballo de vapor",
+    "kgf": "kilogramo fuerza",
+    "ppm": "parte por millón",
+    "uma": "unidad de masa atómica", "ua": "unidad astronómica",
+    "kbps": "kilobit por segundo", "Mbps": "megabit por segundo", "Gbps": "gigabit por segundo",
+
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
       "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
@@ -545,6 +558,7 @@
     # unidades anglosajonas, con su nombre en español
     # length
     "in": "pulgada",
+    "yd": "yarda",
     "ft": "pie",
     "mi": "milla",
     "rd": "vara",
@@ -595,19 +609,20 @@
 
     # other
     "mph": "milla por hora",
+    "psi": "libra por pulgada cuadrada",
     "mpg": "milla por galón",
   }
 
 - CurrencySymbols: {
     "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
-    "₩": "won", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
+    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
     # se pueden agregar más monedas...
   }
 
 - PluralForms: {
   # FIX: this needs to be flushed out
     "lumen": "lúmenes", "lux": "lux",
-    "colón": "colones", "bitcóin": "bitcoines",
+    "colón": "colones", "bitcóin": "bitcoins", "guaraní": "guaraníes",
     "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
     "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",
     "unidad astronómica": "unidades astronómicas", "unidad de masa atómica": "unidades de masa atómica",
@@ -626,6 +641,12 @@
     "dracma líquida": "dracmas líquidas", "onza líquida": "onzas líquidas", "cuarto de galón": "cuartos de galón",
     "onza troy": "onzas troy", "libra troy": "libras troy", "caballo de fuerza": "caballos de fuerza",
     "milla por hora": "millas por hora", "milla por galón": "millas por galón",
+    "vatio hora": "vatios hora", "kilovatio hora": "kilovatios hora", "megavatio hora": "megavatios hora", "gigavatio hora": "gigavatios hora",
+    "amperio hora": "amperios hora", "miliamperio hora": "miliamperios hora",
+    "milímetro de mercurio": "milímetros de mercurio", "torr": "torr", "centímetro cúbico": "centímetros cúbicos",
+    "caballo de vapor": "caballos de vapor", "kilogramo fuerza": "kilogramos fuerza", "parte por millón": "partes por millón",
+    "libra por pulgada cuadrada": "libras por pulgada cuadrada",
+    "kilobit por segundo": "kilobits por segundo", "megabit por segundo": "megabits por segundo", "gigabit por segundo": "gigabits por segundo",
   }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------

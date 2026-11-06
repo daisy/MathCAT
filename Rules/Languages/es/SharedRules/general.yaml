@@ -687,14 +687,22 @@
       else: [T: "exponencial"]
 
 - name: covariance
+  # también Var (CMU cap. 12): "la covarianza de X coma Y", "la varianza de X"
   tag: mi
-  match: ".='Cov'"
+  match: ".='Cov' or .='Var'"
   replace:
   - bookmark: "@id"
   - test:
-      if: "$Verbosity='Terse'"
+      if: "$Verbosity!='Terse' and (parent::m:apply-function or following-sibling::*[1][.='\u2061'])"
+      then: [T: "la"]      # phrase('la' varianza de X)
+  - test:
+    - if: "$Verbosity='Terse' and .='Cov'"
       then: [T: "cov"]
-      else: [T: "covarianza"]
+    - else_if: "$Verbosity='Terse'"
+      then: [T: "var"]
+    - else_if: ".='Cov'"
+      then: [T: "covarianza"]      # phrase(la 'covarianza' de X coma Y)
+      else: [T: "varianza"]      # phrase(la 'varianza' de X)
 
 - name: factorial-de
   # propia del español, como el CMU: "factorial de n", "doble factorial de n"

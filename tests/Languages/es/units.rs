@@ -443,3 +443,33 @@ fn degrees_celsius_and_angles_cmu() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn units_and_currencies_common_in_spanish() -> Result<()> {
+    // unidades y monedas de uso corriente en español que no están en inglés
+    let cases = [
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "1 kilovatio hora"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "10 kilovatios hora"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kcal</mi></math>", "10 kilocalorías"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mAh</mi></math>", "10 miliamperios hora"),
+        ("<math><mn>760</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mmHg</mi></math>", "760 milímetros de mercurio"),
+        ("<math><mn>32</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">psi</mi></math>", "32 libras por pulgada cuadrada"),
+        ("<math><mn>1013</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mbar</mi></math>", "1013 milibares"),
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">cc</mi></math>", "5 centímetros cúbicos"),
+        ("<math><mn>20</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kn</mi></math>", "20 nudos"),
+        ("<math><mn>90</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">CV</mi></math>", "90 caballos de vapor"),
+        ("<math><mn>400</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ppm</mi></math>", "400 partes por millón"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kgf</mi></math>", "10 kilogramos fuerza"),
+        ("<math><mn>100</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">Mbps</mi></math>", "100 megabits por segundo"),
+        ("<math><mn>3</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">yd</mi></math>", "3 yardas"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "1 unidad astronómica"),
+        ("<math><mi mathvariant=\"normal\">R$</mi><mn>150</mn></math>", "150 reales"),
+        ("<math><mi mathvariant=\"normal\">¥</mi><mn>3</mn></math>", "3 yenes"),
+        ("<math><mi mathvariant=\"normal\">₲</mi><mn>3</mn></math>", "3 guaraníes"),
+        ("<math><mi mathvariant=\"normal\">₿</mi><mn>3</mn></math>", "3 bitcoins"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
