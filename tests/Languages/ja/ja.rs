@@ -1111,7 +1111,7 @@ fn inverse_trig_puts_inverse_after_the_function() -> Result<()> {
 fn natural_log_is_shizen_taisuu() -> Result<()> {
     let expr = "<math><mi>ln</mi><mi>x</mi></math>";
     test_ClearSpeak("ja", "ClearSpeak_Log", "LnAsNaturalLog", expr, "自然対数 x")?;
-    test("ja", "SimpleSpeak", expr, "自然対数 x")?;
+    test("ja", "SimpleSpeak", expr, "自然対数 オブ x")?;
     return Ok(());
 }
 
