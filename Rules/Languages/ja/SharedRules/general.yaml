@@ -116,7 +116,7 @@
   - x: "*[2]"
   - T: "個取る順列"
 
-- name: intervals
+- name: intervals   # audit-ignore: Japanese names the kind of interval in Japanese instead of speaking the tag, and puts から/まで after the endpoints
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "count(*)=2"
   replace:

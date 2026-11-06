@@ -213,6 +213,8 @@ fn interval_open_closed() -> Result<()> {
 
 /// SimpleSpeak names the kind of interval. The name was read in English
 /// ("open interval から c に d"), and から and まで now follow the endpoints.
+/// (a, b] is 左開右閉区間 and [a, b) is 左閉右開区間; 左半開区間 is avoided because
+/// authors differ on which side it means.
 #[test]
 fn simplespeak_interval_names_are_japanese() -> Result<()> {
     let cases = [
