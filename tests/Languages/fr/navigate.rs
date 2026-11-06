@@ -177,7 +177,7 @@ fn no_parts_postfix_transpose() -> Result<()> {
         </msup>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "zoom avant; dans transpose; m majuscule")
+    assert_zoom_in("ZoomIn", expr, "zoom avant; dans transposée; m majuscule")
 }
 
 #[test]
