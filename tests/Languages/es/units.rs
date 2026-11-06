@@ -423,3 +423,23 @@ fn radian_singular_plural() -> Result<()> {
     test("es", "SimpleSpeak", r#"<math><mn>3</mn><mi intent=":unit">rad</mi></math>"#, "3 radianes")?;
     return Ok(());
 }
+
+#[test]
+fn degrees_celsius_and_angles_cmu() -> Result<()> {
+    // CMU 2024, apéndice 1 y 11.5: {}^{\circ}C, y minutos y segundos tras los grados
+    let cases = [
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></math>", "1 grado Celsius"),
+        ("<math><mn>25</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></math>", "25 grados Celsius"),
+        ("<math><mn>25</mn><mspace width=\"0.167em\"></mspace><mrow intent=\":unit\"><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></mrow></math>", "25 grados Celsius"),
+        ("<math><mn>98</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">F</mi></math>", "98 grados Fahrenheit"),
+        ("<math><msup><mn>37</mn><mo>∘</mo></msup><mspace width=\"0.167em\"></mspace><msup><mn>22</mn><mo>′</mo></msup><mspace width=\"0.167em\"></mspace><msup><mn>49</mn><mrow><mo>′</mo><mo>′</mo></mrow></msup></math>", "37 grados, 22 minutos, 49 segundos"),
+        ("<math><msup><mn>1</mn><mo>°</mo></msup><msup><mn>1</mn><mo>′</mo></msup><msup><mn>1</mn><mo>″</mo></msup></math>", "1 grado, 1 minuto, 1 segundo"),
+        ("<math><msup><mi>f</mi><mo>′</mo></msup><mo>(</mo><mi>x</mi><mo>)</mo></math>", "f prima, de x"),
+        ("<math><msup><mi>x</mi><mo>″</mo></msup></math>", "x segunda"),
+        ("<math><msup><mn>5</mn><mo>′</mo></msup></math>", "5 prima"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

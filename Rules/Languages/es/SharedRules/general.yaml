@@ -376,6 +376,25 @@
               else: [x: "concat('\uF8FE', $PluralBase, $PluralEnding)"]
 
 # need to reverse the order of speech: $ 3 -> 3 dólares
+- name: grados-celsius-prescrito
+  # 25\,{}^{\circ}\mathrm{C} llega como C con un superíndice previo: "25 grados Celsius" (CMU)
+  tag: mmultiscripts
+  match:
+  - "count(*)=4 and *[1][self::m:mi][.='C' or .='F'] and *[2][self::m:mprescripts] and *[3][self::m:none] and"
+  - "*[4][.='°' or .='∘'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  variables:
+  - Numero: "preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:mn] |
+             parent::m:mrow[count(*)=1]/preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:mn]"
+  replace:
+  - test:
+      if: "$Numero = 1"
+      then: [T: "grado"]      # phrase(1 'grado' Celsius)
+      else: [T: "grados"]      # phrase(25 'grados' Celsius)
+  - test:
+      if: "*[1]='C'"
+      then: [T: "Celsius"]      # phrase(25 grados 'Celsius')
+      else: [T: "Fahrenheit"]      # phrase(25 grados 'Fahrenheit')
+
 - name: currency
   tag: mrow
   match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"

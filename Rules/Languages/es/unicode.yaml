@@ -186,7 +186,11 @@
         else: [T: ""]                            
 
  - "¬": [T: "no"]                         	#  0xac	(en: 'not')
- - "°": [T: "grados"]                            	#  0xb0	(en: 'degrees')
+ - "°":                                           	#  0xb0	(en: 'degrees')
+    - test:
+        if: "parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn][.=1]] or preceding-sibling::*[1][self::m:mn][.=1]"
+        then: [T: "grado"]      # 1° (singular)
+        else: [T: "grados"]          # (en: 'degrees')
  - "±": [T: "más o menos"]                        	#  0xb1	(en: 'plus or minus')
  - "´": [T: "acento agudo"]                     	#  0xb4	(en: 'acute')
  - "·":                                            # 0xB7

@@ -267,8 +267,22 @@
 
  - "‰": [T: "por mil"]                            	#  0x2030	(en: 'per mille')
  - "‱": [T: "tanto por diez mil"]               	#  0x2031	(en: 'per ten thousand')
- - "′": [T: "prima"]                            	#  0x2032	(en: 'prime')
- - "″": [T: "segunda"]                            	#  0x2033	(en: 'double prime')
+ - "′":                                           	#  0x2032	(en: 'prime')
+    - test:
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]][*[2][.='′']] and parent::*/preceding-sibling::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]][*[2][.='°' or .='∘']]"
+        then_test:      # 37° 22′ (CMU 11.5)
+          if: "parent::*/*[1]=1"
+          then: [T: "minuto"]
+          else: [T: "minutos"]
+        else: [T: "prima"]          # (en: 'prime')
+ - "″":                                           	#  0x2033	(en: 'double prime')
+    - test:
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]][*[2][.='″']] and (parent::*/preceding-sibling::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]][*[2][.='°' or .='∘']] or parent::*/preceding-sibling::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]][*[2][.='′']])"
+        then_test:      # 37° 22′ 49″ (CMU 11.5)
+          if: "parent::*/*[1]=1"
+          then: [T: "segundo"]
+          else: [T: "segundos"]
+        else: [T: "segunda"]          # (en: 'double prime')
  - "‴": [T: "tercera"]                            	#  0x2034	(en: 'triple prime')
  - "‵": [T: "prima inversa"]                     	#  0x2035	(en: 'reversed prime')
  - "‶": [T: "doble prima inversa"]               	#  0x2036	(en: 'reversed double prime')
@@ -663,7 +677,11 @@
  - "∕": [T: "dividido por"]                	#  0x2215	(en: 'divided by')
  - "∖": [T: "menos"]                            	#  0x2216	(en: 'set minus')
  - "∗": [T: "asterisco"]                        	#  0x2217	(en: 'times')
- - "∘": [T: "compuesto"]                      	#  0x2218	(en: 'composed with')
+ - "∘":                                           	#  0x2218	(en: 'composed with')
+    - test:
+        if: "parent::m:mmultiscripts[*[1][.='C' or .='F'] and *[2][self::m:mprescripts]] or parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]]"
+        then: [T: "grados"]      # {}^{\circ}C, 30^{\circ}
+        else: [T: "compuesto"]          # (en: 'composed with')
  - "∙":                                         	#  0x2219
     - test: 
         if: "@data-chem-formula-op"
