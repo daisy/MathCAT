@@ -604,6 +604,11 @@
       then: [pause: short]
       else: [pause: auto]
 
+- name: nofix-intent
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: prefix-intent
   tag: "*"
