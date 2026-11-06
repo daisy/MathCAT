@@ -252,6 +252,9 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
             prefs.set_user_prefs("BlockSeparators", ", ").unwrap();
         });
 
+        // Default fixities come from language definitions; use a stable baseline instead of the OS locale.
+        // Explicit test preferences below can still select another language.
+        set_preference("Language", "en").unwrap();
         set_preference("IntentErrorRecovery", "Error").unwrap();
         set_preference("SpeechStyle", "SimpleSpeak").unwrap();      // avoids possibility of "LiteralSpeak"
         for &(pref_name, pref_value) in &test_prefs {
