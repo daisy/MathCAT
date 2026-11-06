@@ -8,24 +8,24 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
+      - T: ""      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][.='+']"
-      then: [t: "正の"]      # phrase(set of all 'positive' integers less than 10)
-      else: [t: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [T: "正の"]      # phrase(set of all 'positive' integers less than 10)
+      else: [T: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "複素数"]      # phrase('complex numbers' consist of two parts)
+      then: [T: "複素数"]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [T: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "有理数"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][.='ℝ']"
-      then: [t: "実数"]      # phrase('real numbers' can be both positive and negative)
+      then: [T: "実数"]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
       else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
@@ -57,15 +57,15 @@
   - bookmark: "@id"
   - test:
     - if: ".='ℂ'"
-      then: [t: "複素数"]      # phrase('the complex numbers' include 2 parts)
+      then: [T: "複素数"]      # phrase('the complex numbers' include 2 parts)
     - else_if: ".='ℕ'"
-      then: [t: "自然数"]      # phrase('the natural numbers' begin at 1)
+      then: [T: "自然数"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
-      then: [t: "有理数"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
-      then: [t: "実数"]      # phrase('the real numbers' can be both positive and negative)
+      then: [T: "実数"]      # phrase('the real numbers' can be both positive and negative)
     - else_if: ".='ℤ'"
-      then: [t: "整数"]      # phrase('the integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase('the integers' are natural numbers above 0)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
@@ -73,14 +73,14 @@
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "実部"      # phrase('the real part' of a complex number does not include the imaginary part)
+  - T: "実部"      # phrase('the real part' of a complex number does not include the imaginary part)
 
 - name: imaginary-part
   tag: imaginary-part
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "虚部"      # phrase('the imaginary part' is part of a complex number)
+  - T: "虚部"      # phrase('the imaginary part' is part of a complex number)
 
 # rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
@@ -123,18 +123,25 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
+      - T: ""      # phrase('the' square root of 25 equals 5)
+  - test:
+    - if: "name(.)='open-interval'"
+      then: [T: "開区間"]      # phrase(the 'open interval' from a to b)
+    - else_if: "name(.)='closed-interval'"
+      then: [T: "閉区間"]      # phrase(the 'closed interval' from a to b)
+    - else_if: "name(.)='open-closed-interval'"
+      then: [T: "左開右閉区間"]      # phrase(the 'open closed interval' from a to b)
+      else: [T: "左閉右開区間"]      # phrase(the 'closed open interval' from a to b)
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[1]"
-      - t: "に"      # phrase(adding 6 'to' 6 equals  12)
+      - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[2]"
+      - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
       else:
       - x: "*[1]"
-      - t: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+      - T: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
       - x: "*[2]"
 
 - name: default-point
@@ -144,10 +151,10 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
+      - T: ""      # phrase('the' square root of 25 equals 5)
   - T: "点"      # phrase(a decimal 'point' indicates the fraction component of a number)
   - x: "*[1]"
-  - t: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+  - T: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
 
 - name: bigop-both
@@ -159,13 +166,13 @@
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - x: "*[2]"
-  - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
+  - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
   - pause: short
   - x: "*[3]"
-  - t: "まで"      # phrase(adding 6 'to' 6 equals  12)
+  - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
   - test:
       if: "following-sibling::*"
-      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
+      then: [T: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: bigop-under
   tag: large-op
@@ -176,10 +183,10 @@
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - x: "*[2]"
-  - t: "にわたる"      # phrase(2 'over' 3 equals two thirds)
+  - T: "にわたる"      # phrase(2 'over' 3 equals two thirds)
   - test:
       if: "following-sibling::*"
-      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
+      then: [T: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: largeop
   tag: mrow
@@ -189,7 +196,7 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "オブ"      # phrase(the square root 'of' 25 equals 5)
+  - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
 - name: repeating-decimal
@@ -197,7 +204,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "数字を繰り返して"      # phrase('with repeating digits')
+  - T: "循環節"      # phrase('with repeating digits')
   - spell: "*[2]"
 
 - name: msubsup-skip-super
@@ -346,7 +353,7 @@
   match: ".='sin'"
   replace:
   - bookmark: "@id"
-  - t: "サイン"      # phrase(the 'sine' of the angle)
+  - T: "サイン"      # phrase(the 'sine' of the angle)
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -354,8 +361,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コサイン"]      # phrase('cos' is the abbreviation for cosine)
-      else: [t: "コサイン"]      # phrase(find the 'cosine' in a right-angle triangle)
+      then: [T: "コサイン"]      # phrase('cos' is the abbreviation for cosine)
+      else: [T: "コサイン"]      # phrase(find the 'cosine' in a right-angle triangle)
 - name: tan
   tag: mi
   match: ".='tan' or .='tg'"
@@ -363,8 +370,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "タンジェント"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [t: "タンジェント"]      # phrase(a 'tangent' is a straight line that touches a curve)
+      then: [T: "タンジェント"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: [T: "タンジェント"]      # phrase(a 'tangent' is a straight line that touches a curve)
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -372,8 +379,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "セカント"]      # phrase(to 'seek' a solution)
-      else: [t: "セカント"]      # phrase(a 'secant' intersects a curve at two or more points)
+      then: [T: "セカント"]      # phrase(to 'seek' a solution)
+      else: [T: "セカント"]      # phrase(a 'secant' intersects a curve at two or more points)
 - name: csc
   tag: mi
   match: ".='csc'"
@@ -381,8 +388,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コセカント"]      # phrase(we will 'cosecant' a solution)
-      else: [t: "コセカント"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+      then: [T: "コセカント"]      # phrase(we will 'cosecant' a solution)
+      else: [T: "コセカント"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 - name: cot
   tag: mi
   match: ".='cot'"
@@ -390,8 +397,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コタンジェント"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [t: "コタンジェント"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: [T: "コタンジェント"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [T: "コタンジェント"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -400,8 +407,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックサイン"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: [t: "双曲線正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: [T: "ハイパーボリックサイン"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [T: "双曲線正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
 - name: cosh
   tag: mi
   match: ".='cosh'"
@@ -409,8 +416,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコサイン"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      else: [t: "双曲線余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+      then: [T: "ハイパーボリックコサイン"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [T: "双曲線余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
   match: ".='tanh'"
@@ -418,8 +425,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックタンジェント"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [t: "双曲線正接"]      # phrase('hyperbolic tangent' is a mathematical function)
+      then: [T: "ハイパーボリックタンジェント"]      # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [T: "双曲線正接"]      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -427,8 +434,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [t: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
+      then: [T: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [T: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -436,8 +443,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [t: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: [T: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [T: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -445,8 +452,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [t: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: [T: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [T: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -454,8 +461,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "指数関数"]      # phrase('exp' means exponential function)
-      else: [t: "指数関数"]      # phrase('exponential' function)
+      then: [T: "指数関数"]      # phrase('exp' means exponential function)
+      else: [T: "指数関数"]      # phrase('exponential' function)
 - name: covariance
   tag: mi
   match: ".='Cov'"
@@ -463,8 +470,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コーブ"]      # phrase('Cov' is shorthand for the covariance function)
-      else: [t: "コバリアンス"]      # phrase('covariance' function)
+      then: [T: "共分散"]      # phrase('Cov' is shorthand for the covariance function)
+      else: [T: "共分散"]      # phrase('covariance' function)
 
 -
   name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
@@ -477,7 +484,7 @@
       then: [ot: ""]      # phrase('the' logarithm function is used in mathematics)
   - test:
     - if: ".= 'log'"
-      then: [t: "ログ"]      # phrase(the 'log' function is used in mathematics)
+      then: [T: "ログ"]      # phrase(the 'log' function is used in mathematics)
     - else_if: ".= 'Log'"
       then: [t: "主値ログ"]
     - else_if: "$Verbosity='Terse'"
@@ -1081,7 +1088,7 @@
   tag: none
   match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
   replace:
-  - t: "" # don't say anything
+  - T: "" # don't say anything
 
 - name: ignore-intent-wrapper
   tag: intent-wrapper
