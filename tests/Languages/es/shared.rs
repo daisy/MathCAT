@@ -740,6 +740,9 @@ fn cmu_2024_additions() -> Result<()> {
         ("<math><mi>antilog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el antilogaritmo de x"),
         ("<math><mi>colog</mi><mo>&#x2061;</mo><mi>x</mi></math>", "el cologaritmo de x"),
         ("<math><mi mathvariant=\"normal\">Var</mi><mo>(</mo><mi>X</mi><mo>)</mo></math>", "la varianza de mayúscula x"),
+        ("<math><mi>A</mi><mo>∆</mo><mi>B</mi></math>", "mayúscula a diferencia simétrica, mayúscula b"),
+        ("<math><mo>∆</mo><mi>x</mi></math>", "el incremento x"),
+        ("<math><mi>a</mi><mo>≟</mo><mi>b</mi></math>", "a cuestionado que sea igual a b"),
         ("<math><mi mathvariant=\"normal\">Cov</mi><mo>&#x2061;</mo><mi>X</mi></math>", "la covarianza de mayúscula x"),
         // como llegan desde un PDF etiquetado (luamml): letras itálicas, nombres sin U+2061
         ("<math><mroot><mi>𝑥</mi><mi>𝑛</mi></mroot></math>", "la raíz enésima de x"),

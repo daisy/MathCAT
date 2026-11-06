@@ -853,7 +853,8 @@
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
      - T: "medido por"                          	# 	(en: 'measured by')
- - "≟": [T: "igual con interrogante"]           	#  0x225f	(en: 'has an unknown relationship with')
+ - "≟":                                           	#  0x225f	(en: 'has an unknown relationship with')
+    - T: "cuestionado que sea igual a"          # (CMU 6.1; en: 'has an unknown relationship with')
  - "≢":                                         	#  0x2262
      - test: 
          if: "$Verbosity!='Terse'"

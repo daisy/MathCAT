@@ -370,11 +370,15 @@
          if: "$Verbosity='Terse'"
          then: [T: "parcial"]                   	# 	(en: 'partial', google translation)
          else: [T: "derivada parcial"]          	# 	(en: 'partial derivative')
- - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "el"]                        	# 	(en: 'the', google translation)
-     - T: "incremento"                          	# 	(en: 'laplacian of')
+ - "∆":                                           	#  0x2206
+    - test:
+        if: "preceding-sibling::* and following-sibling::*"
+        then: [T: "diferencia simétrica"]      # A ∆ B (CMU 7.2)
+        else:
+        - test:
+            if: "$Verbosity!='Terse'"
+            then: [T: "el"]          # (en: 'the')
+        - T: "incremento"          # (en: 'increment')
  - "∈":                                          # 0x2208
      # en español lo natural es "x pertenece a A"; ClearSpeak Auto también usa "pertenece a"
      - test:

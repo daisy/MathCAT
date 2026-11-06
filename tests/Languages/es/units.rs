@@ -472,6 +472,7 @@ fn units_and_currencies_common_in_spanish() -> Result<()> {
         ("<math><mn>60</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">fps</mi></math>", "60 fotogramas por segundo"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">GFLOPS</mi></math>", "10 gigaflops"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dBm</mi></math>", "10 decibelios milivatio"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvin"),
         ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "1 unidad astronómica"),
         ("<math><mi mathvariant=\"normal\">R$</mi><mn>150</mn></math>", "150 reales"),
         ("<math><mi mathvariant=\"normal\">¥</mi><mn>3</mn></math>", "3 yenes"),

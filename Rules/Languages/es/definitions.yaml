@@ -444,7 +444,7 @@
     # derived units
     "Bq": "becquerel",
     "C": "culombio",
-    "°C": "grado Celsius", "℃": "grado Celsius",  # should only take negative powers
+    "°C": "grado Celsius", "℃": "grado Celsius", "°K": "grado kelvin",  # should only take negative powers
     "F": "faradio",
     "Gy": "gray",
     "H": "henrio",
