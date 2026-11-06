@@ -727,6 +727,33 @@ fn matrix_terminology() -> Result<()> {
     return Ok(());
 }
 
+/// A line between columns of a table was announced as セパレータ, the English word
+/// "separator" in katakana. It is 列区切り now, the partner of 行区切り for a line between rows.
+#[test]
+fn table_lines_are_column_and_row_separators() -> Result<()> {
+    let expr = "<math><mrow><mo>[</mo><mtable rowlines='dashed' columnlines='solid'>
+                <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+                <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+                </mtable><mo>]</mo></mrow></math>";
+    test("ja", "ClearSpeak", expr,
+        "2 かける 2 拡大行列; 行 1; 1, 列区切り, 2, 行区切り; 行 2; 3, 列区切り, 4")?;
+    test("ja", "SimpleSpeak", expr,
+        "2 かける 2 拡大行列; 行 1; 1, 列区切り, 2, 行区切り; 行 2; 3, 列区切り, 4")?;
+    return Ok(());
+}
+
+/// Scripts written before and after a symbol (mmultiscripts) were read with the English
+/// words pre sub, pre super, sub and super. They use the same words as msub, msup and
+/// navigate.yaml now: 前置き下付き, 前置き上付き, 下付き and 上付き, with 文字 added when Verbose.
+#[test]
+fn prescripts_and_postscripts_are_japanese_words() -> Result<()> {
+    let expr = "<math><mmultiscripts><mi>x</mi><mi>a</mi><mi>b</mi><mprescripts/><mi>c</mi><mi>d</mi></mmultiscripts></math>";
+    test("ja", "ClearSpeak", expr, "x 前置き下付き c および 前置き上付き d, 下付き エー および 上付き b")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
+        "x 前置き下付き文字 c および 前置き上付き文字 d, 下付き文字 エー および 上付き文字 b")?;
+    return Ok(());
+}
+
 /// Every number set, not just ℝ, has a settled Japanese name. ℝ was the only one
 /// with a test, which is how 合理的な数字 ("reasonable numbers") and 整数者
 /// ("integer person") survived in the other branches of the same rule.

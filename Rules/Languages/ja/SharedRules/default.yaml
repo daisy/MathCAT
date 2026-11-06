@@ -27,7 +27,7 @@
   tag: mrow
   match: "not(*)"
   replace:
-  - t: " " # say nothing -- placeholder
+  - T: " " # say nothing -- placeholder
 
 - name: default
   tag: mrow
@@ -70,7 +70,7 @@
   tag: ms
   match: "."
   replace:
-  - t: "文字列"      # phrase('the string' is long)
+  - T: "文字列"      # phrase('the string' is long)
   - pause: short
   - x: "text()"
 
@@ -125,15 +125,15 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [ot: ""]    # phrase("'the' root of x")
-  - t: "ルート"
+  - T: "ルート"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "オブ"]    # phrase("the root 'of' x")
+      then: [T: "オブ"]    # phrase("the root 'of' x")
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
-      then: [t: "根号終了", pause: medium] # phrase("root of x 'end root symbol'")
+      then: [T: "根号終了", pause: medium] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
 - name: literal-default
@@ -143,15 +143,15 @@
   - test:
       if: "$Verbosity!='Terse'"
       then: [ot: ""]   # phrase("'the' root of x")
-  - t: "根指数" # phrase("the 'root with index' 3 of 5")
+  - T: "根指数" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short
-  - t: "オブ"              # phrase("the root 'of' x")
+  - T: "オブ"              # phrase("the root 'of' x")
   - x: "*[2]"
   - pause: short
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [t: "根号終了"] # phrase("root of x 'end root symbol'")
+      then: [T: "根号終了"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub
@@ -234,9 +234,9 @@
       if: "not(IsNode(*[1], 'leaf'))"
       then: [t: "数量"]      # phrase(phrase(x 'quantity' with y above it)
   - x: "*[1]"
-  - t: "付き"      # phrase(x 'with' z below it)
+  - T: "付き"      # phrase(x 'with' z below it)
   - x: "*[2]"
-  - t: "下"      # phrase(x with z 'below' it)
+  - T: "下"      # phrase(x with z 'below' it)
 
 - name: diacriticals
   tag: mover
@@ -253,7 +253,7 @@
       if: "not(IsNode(*[1], 'leaf'))"
       then: [t: "数量"]      # phrase(phrase(the 'quantity' x plus 1 with y above it)
   - x: "*[1]"
-  - t: "付き"         # phrase(x modified 'with' y above it)
+  - T: "付き"         # phrase(x modified 'with' y above it)
   - x: "*[2]"
   - T: "上"        # phrase(x modified 'with' y above it)
 
@@ -265,9 +265,9 @@
       if: "not(IsNode(*[1], 'leaf'))"
       then: [t: "数量"]      # phrase(the 'quantity' x plus 1 with y above it)
   - x: "*[1]"
-  - t: "付き"         # phrase(x modified 'with' y above it)
+  - T: "付き"         # phrase(x modified 'with' y above it)
   - x: "*[2]"
-  - t: "下および"    # phrase(x modified with y 'below and' y above it)
+  - T: "下および"    # phrase(x modified with y 'below and' y above it)
   - x: "*[3]"
   - T: "上"        # phrase(x modified with y 'above' it)
 
@@ -290,8 +290,8 @@
       then:
       - with:
           variables:
-          - PreSubscript: "IfThenElse($Verbosity='Verbose', 'pre subscript', 'pre sub')"
-          - PreSuperscript: "IfThenElse($Verbosity='Verbose', 'pre superscript', 'pre super')"
+          - PreSubscript: "IfThenElse($Verbosity='Verbose', '前置き下付き文字', '前置き下付き')"
+          - PreSuperscript: "IfThenElse($Verbosity='Verbose', '前置き上付き文字', '前置き上付き')"
           replace:
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"
@@ -307,7 +307,7 @@
               - x: "$Prescripts[1]"
           - test:
               if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
-              then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
+              then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
               if: "not($Prescripts[2][self::m:none])"
               then:
@@ -324,7 +324,7 @@
                   - x: "$Prescripts[3]"
               - test:
                   if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [t: "および"]      # phrase(10 is grater than 8 'and' less than 15)
+                  then: [T: "および"]      # phrase(10 is grater than 8 'and' less than 15)
               - test:
                   if: "not($Prescripts[4][self::m:none])"
                   then:
@@ -341,15 +341,15 @@
       then:
       - with:
           variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'subscript', 'sub')"
-          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'superscript', 'super')"
+          - PostSubscript: "IfThenElse($Verbosity='Verbose', '下付き文字', '下付き')"
+          - PostSuperscript: "IfThenElse($Verbosity='Verbose', '上付き文字', '上付き')"
           replace:
           - test: # only bother announcing if there is more than one postscript
               if: "count($Postscripts) > 2"
               then:
               - test:
                   if: "$Prescripts"
-                  then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
+                  then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
               - x: "count($Postscripts) div 2"
               - T: "個の後置き添字"      # phrase(this material includes several 'postscripts')
               - T: "付き"      # phrase(substitute x 'with' y)
@@ -361,7 +361,7 @@
               - x: "$Postscripts[1]"
           - test:
               if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
-              then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
+              then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
               if: "not($Postscripts[2][self::m:none])"
               then:
@@ -377,7 +377,7 @@
                   - x: "$Postscripts[3]"
               - test:
                   if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
+                  then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
               - test:
                   if: "not($Postscripts[4][self::m:none])"
                   then:
@@ -393,7 +393,7 @@
                       - x: "$Postscripts[5]"
                   - test:
                       if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [t: "および"]      # phrase(10 is greater than 8 'and' less than 15)
+                      then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
                   - test:
                       if: "not($Postscripts[6][self::m:none])"
                       then:
@@ -409,7 +409,7 @@
                           - x: "$Postscripts[7]"
                       - test:
                           if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [t: "および"]      # phrase(10 is less than 15 'and' greater than 5)
+                          then: [T: "および"]      # phrase(10 is less than 15 'and' greater than 5)
                       - test:
                           if: "not($Postscripts[8][self::m:none])"
                           then:
@@ -432,9 +432,9 @@
   - x: count(*)
   - test:
       if: count(*)=1
-      then: [t: "行"]      # phrase(the table with 1 'row')
-      else: [t: "行"]      # phrase(the table with 3 'rows')
-  - t: "および"      # phrase(the table with 3 rows 'and' 4 columns)
+      then: [T: "行"]      # phrase(the table with 1 'row')
+      else: [T: "行"]      # phrase(the table with 3 'rows')
+  - T: "および"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
       if: "NumColumns=1"
@@ -451,7 +451,7 @@
   match: "."
   replace:
   - pause: medium
-  - t: "行"      # phrase(the first 'row' of a matrix)
+  - T: "行"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: "self::m:mlabeledtr"
@@ -483,13 +483,13 @@
       if: "HasVisibleColumnLine(../.., count(preceding-sibling::*) + 1)"
       then:
       - pause: short
-      - t: "セパレータ"
+      - T: "列区切り"
   - test:
       # Announce a row separator only after the row's final cell, so it is spoken once per horizontal boundary.
       if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
       then:
       - pause: short
-      - t: "行区切り"
+      - T: "行区切り"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
@@ -574,16 +574,16 @@
       then: [T: "右向き矢印", pause: short]      # phrase(the 'right arrow' indicates moving forward)
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
-      then: [t: "北東矢印", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
+      then: [T: "北東矢印", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
-      then: [t: "南東矢印", pause: short]      # phrase(direction is shown by the 'southeast arrow')
+      then: [T: "南東矢印", pause: short]      # phrase(direction is shown by the 'southeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
-      then: [t: "南西矢印", pause: short]      # phrase(direction is shown by the 'southwest arrow')
+      then: [T: "南西矢印", pause: short]      # phrase(direction is shown by the 'southwest arrow')
   - test:
       if: ".[contains(@notation,'northwestarrow')]"
-      then: [t: "北西矢印", pause: short]      # phrase(direction is shown by the 'northwest arrow')
+      then: [T: "北西矢印", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
       then: [T: "上下矢印", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
@@ -604,17 +604,17 @@
       then: [T: "アラビア文字の階乗記号", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
   - test:
       if: ".[contains(@notation,'phasorangle')]"
-      then: [t: "フェーザの角度", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
+      then: [T: "フェーザの角度", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
   - test:
       if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']" # default
       then: [T: "割り算の筆算の記号", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
   - test:
       if: ".[contains(@notation,'radical')]"
-      then: [t: "平方根", pause: short]      # phrase(5 is the 'square root' of 25)
+      then: [T: "平方根", pause: short]      # phrase(5 is the 'square root' of 25)
   - T: "囲み"      # phrase(parentheses are 'enclosing' part of the equation)
   - test:
       if: "*[self::m:mtext and .=' ']"
-      then: [t: "スペース"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
+      then: [T: "スペース"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
@@ -638,7 +638,7 @@
   match: .
   replace:
   - x: "*[1]"
-  - t: "オブ"      # phrase(the sine 'of' x )
+  - T: "オブ"      # phrase(the sine 'of' x )
   - pause: auto
   - x: "*[position() > 1]"
  
@@ -738,7 +738,7 @@
       - test:
           if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
                not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
-          then: [t: "オブ", pause: auto]      # phrase(sine 'of' 5)
+          then: [T: "オブ", pause: auto]      # phrase(sine 'of' 5)
       - insert:
           nodes: "*"
           replace:
