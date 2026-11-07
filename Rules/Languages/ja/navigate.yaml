@@ -104,9 +104,9 @@
                   - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
                     then: [T: "現在", x: "$Particle"]      # phrase(who is the 'current' president)
                   - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
-                    then: [T: "行の先頭", x: "$Particle"]      # phrase(move 'to start of line')
+                    then: [T: "ぎょうの先頭", x: "$Particle"]      # phrase(move 'to start of line')
                   - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
-                    then: [T: "行の末尾", x: "$Particle"]      # phrase(move 'to end of line')
+                    then: [T: "ぎょうの末尾", x: "$Particle"]      # phrase(move 'to end of line')
                 - x: "$Prefix"
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
@@ -524,7 +524,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   # we need to speak it here
-  # - t: "行"                                                  # phrase(the first 'row' of the matrix)
+  # - t: "ぎょう"                                                # phrase(the first 'row' of the matrix)
   #   # if we let the speech rules speak the row, it is given just the MathML for the row, so the row # will always be '1'
   # - x: "count(../preceding-sibling::*)+1"
   # - pause: medium
@@ -577,10 +577,10 @@
             - if: "$NavCommand = 'MoveStart'"
               then: [T: "数式の先頭に移動"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [T: "行の先頭に移動"]                  # phrase('move to start of line')
+              then: [T: "ぎょうの先頭に移動"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
               then: [T: "数式の末尾に移動"]                    # phrase('move to end of math')
-              else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              else: [T: "ぎょうの末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -620,8 +620,8 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [T: "行の先頭に移動"]                                # phrase('move to start of line')
-          else: [T: "行の末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          then: [T: "ぎょうの先頭に移動"]                                # phrase('move to start of line')
+          else: [T: "ぎょうの末尾に移動"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"
@@ -739,7 +739,7 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                 # phrase(the previous 'row' in the table)
+              - T: "ぎょう"                                 # phrase(the previous 'row' in the table)
               - x: "count(../preceding-sibling::*)"
               - pause: short
               - T: "列"                              # phrase(the previous 'column' in the table)
@@ -754,7 +754,7 @@
               else:
               - set_variables: [NavNode: "../preceding-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - T: "前の行はありません"                            # phrase('no previous row' in the table)
+      - T: "前のぎょうはありません"                            # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -775,7 +775,7 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                # phrase(the next 'row' in the table)
+              - T: "ぎょう"                                # phrase(the next 'row' in the table)
               - x: "count(../preceding-sibling::*)+2"
               - pause: short
               - T: "列"                             # phrase(the next 'column' in the table)
@@ -790,7 +790,7 @@
               else:
               - set_variables: [NavNode: "../following-sibling::*[1]/*[$Column]/*[1]/@id"]
       else:
-      - T: "次の行はありません"                                # phrase('no next row' in the table)
+      - T: "次のぎょうはありません"                                # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-up
@@ -800,7 +800,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "前の行に移動"                              # phrase('move to previous row' in the table)
+      - T: "前のぎょうに移動"                              # phrase('move to previous row' in the table)
       - pause: medium
   - test:
       if: "preceding-sibling::*"
@@ -814,7 +814,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
       else:
-      - T: "前の行はありません"                          # phrase('no previous row' in the table)
+      - T: "前のぎょうはありません"                          # phrase('no previous row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-down
@@ -824,7 +824,7 @@
   - test:
       if: "$NavVerbosity = 'Verbose'"
       then:
-      - T: "次の行に移動"                          # phrase('move to next row' in the table)
+      - T: "次のぎょうに移動"                          # phrase('move to next row' in the table)
       - pause: medium
   - test:
       if: "following-sibling::*"
@@ -838,7 +838,7 @@
           else:
           - set_variables: [NavNode: "following-sibling::*[1]/@id"]
       else:
-      - T: "次の行はありません"                          # phrase('no next row' in the table)
+      - T: "次のぎょうはありません"                          # phrase('no next row' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-previous
@@ -885,7 +885,7 @@
           - test:
               if: "$NavVerbosity != 'Terse'"
               then:
-              - T: "行"                                        # phrase(the previous 'row' in the table)
+              - T: "ぎょう"                                        # phrase(the previous 'row' in the table)
               - x: "count($MTD[1]/../preceding-sibling::*)+1"
               - pause: short
               - T: "列"                                     # phrase(the previous 'column' in the table)

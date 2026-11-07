@@ -789,23 +789,23 @@ fn matrix_sizes() -> Result<()> {
         &mat(&[&[n2, n0, n0], &[n0, n1, n0], &[n0, n0, x2]], "(", ")", ""),
         "3 かける 3 対角行列; 列 1; 2; 列 2; 1; 列 3; x の 2 乗")?;
     test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "(", ")", ""),
-        "2 かける 4 行列; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
+        "2 かける 4 行列; ぎょう 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ぎょう 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
     test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "(", ")", "columnlines='none none solid'"),
-        "2 かける 4 拡大行列; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列区切り, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列区切り, 列 4; 1")?;
+        "2 かける 4 拡大行列; ぎょう 1; 列 1; 1, 列 2; 2, 列 3; 3, 列区切り, 列 4; 4; ぎょう 2; 列 1; 4, 列 2; 3, 列 3; 2, 列区切り, 列 4; 1")?;
     test("ja", "SimpleSpeak", &mat(&[&[n1], &[n2], &[n3]], "(", ")", ""), "3 かける 1 行列; 1; 2; 3")?;
     let column = mat(&[&[n1], &[n2], &[n3], &[n4]], "(", ")", "");
     let row = mat(&[&[n1, n2, n3, n4]], "(", ")", "");
-    test("ja", "ClearSpeak", &column, "4 かける 1 行列; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4")?;
+    test("ja", "ClearSpeak", &column, "4 かける 1 行列; ぎょう 1; 1; ぎょう 2; 2; ぎょう 3; 3; ぎょう 4; 4")?;
     test("ja", "ClearSpeak", &row, "1 かける 4 行列; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4")?;
     // ClearSpeak_Matrix stays set for the rest of this test, so the Vector cases come last.
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "Vector", &column,
-        "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4")?;
+        "4 かける 1 ベクトル; ぎょう 1; 1; ぎょう 2; 2; ぎょう 3; 3; ぎょう 4; 4")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "Vector", &row,
         "1 かける 4 ベクトル; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &column,
-        "4 かける 1 行列; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; 行列終了")?;
+        "4 かける 1 行列; ぎょう 1; 1; ぎょう 2; 2; ぎょう 3; 3; ぎょう 4; 4; 行列終了")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &column,
-        "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; ベクトル終了")?;
+        "4 かける 1 ベクトル; ぎょう 1; 1; ぎょう 2; 2; ぎょう 3; 3; ぎょう 4; 4; ベクトル終了")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &row,
         "1 かける 4 行列; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行列終了")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &row,
@@ -814,7 +814,7 @@ fn matrix_sizes() -> Result<()> {
 }
 
 /// A line between columns of a table was announced as セパレータ, the English word
-/// "separator" in katakana. It is 列区切り now, the partner of 行区切り for a line between rows.
+/// "separator" in katakana. It is 列区切り now, the partner of ぎょう区切り for a line between rows.
 #[test]
 fn table_lines_are_column_and_row_separators() -> Result<()> {
     let expr = "<math><mrow><mo>[</mo><mtable rowlines='dashed' columnlines='solid'>
@@ -822,9 +822,9 @@ fn table_lines_are_column_and_row_separators() -> Result<()> {
                 <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
                 </mtable><mo>]</mo></mrow></math>";
     test("ja", "ClearSpeak", expr,
-        "2 かける 2 拡大行列; 行 1; 1, 列区切り, 2, 行区切り; 行 2; 3, 列区切り, 4")?;
+        "2 かける 2 拡大行列; ぎょう 1; 1, 列区切り, 2, ぎょう区切り; ぎょう 2; 3, 列区切り, 4")?;
     test("ja", "SimpleSpeak", expr,
-        "2 かける 2 拡大行列; 行 1; 1, 列区切り, 2, 行区切り; 行 2; 3, 列区切り, 4")?;
+        "2 かける 2 拡大行列; ぎょう 1; 1, 列区切り, 2, ぎょう区切り; ぎょう 2; 3, 列区切り, 4")?;
     return Ok(());
 }
 
@@ -975,7 +975,7 @@ fn row_vector_and_matrix_end_markers() -> Result<()> {
           <mtr><mtd><mn>7</mn></mtd><mtd><mn>5</mn></mtd></mtr>
         </mtable></mrow><mo>)</mo></mrow></math>";
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix",
-        square, "2 かける 2 行列; 行 1; 2, 1; 行 2; 7, 5; 行列終了")?;
+        square, "2 かける 2 行列; ぎょう 1; 2, 1; ぎょう 2; 7, 5; 行列終了")?;
     return Ok(());
 }
 
@@ -1035,7 +1035,7 @@ fn determinant_end_marker() -> Result<()> {
         </mtable>
       <mo>|</mo></mrow></mrow></math>";
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "2 かける 2 行列式; 行 1; 2, 1; 行 2; 7, 5; 行列式終了")?;
+        expr, "2 かける 2 行列式; ぎょう 1; 2, 1; ぎょう 2; 7, 5; 行列式終了")?;
     return Ok(());
 }
 
@@ -1047,7 +1047,7 @@ fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
     let (n1, n2, n3, n4) = ("<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
     test("ja", "ClearSpeak", &mat(&[&["<mi>x</mi>"]], "|", "|", ""), "1 かける 1 行列式 成分 x")?;
     test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "|", "|", ""),
-        "2 かける 4 行列式; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
+        "2 かける 4 行列式; ぎょう 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ぎょう 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
     let scalar = "<math><mrow intent='determinant($a)'><mrow arg='a'><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mrow></math>";
     test("ja", "ClearSpeak", scalar, "行列式 の x プラス y 行列式終了")?;
     return Ok(());
@@ -1211,7 +1211,7 @@ fn the_vertical_line_names_the_condition() -> Result<()> {
 #[test]
 fn a_labelled_row_names_its_label() -> Result<()> {
     let expr = "<math><mtable><mlabeledtr><mtd><mn>1</mn></mtd><mtd><mi>x</mi></mtd></mlabeledtr></mtable></math>";
-    test("ja", "ClearSpeak", expr, "array オブ; 行 1 ラベルは 1; 列 1; x")?;
+    test("ja", "ClearSpeak", expr, "array オブ; ぎょう 1 ラベルは 1; 列 1; x")?;
     return Ok(());
 }
 
@@ -1274,5 +1274,27 @@ fn binomial_coefficient_is_read_like_ncr() -> Result<()> {
     test("ja", "ClearSpeak", frac, "3 シー 2")?;
     let ncr = "<math><mmultiscripts><mi>C</mi><mn>2</mn><none/><mprescripts/><mn>3</mn><none/></mmultiscripts></math>";
     test("ja", "SimpleSpeak", ncr, "3 シー 2")?;
+    return Ok(());
+}
+
+/// 行 for a row or a line was read クダリ or アルキ by Open JTalk, the synthesizer in
+/// NVDA's Japanese edition: as a word of its own (行 1, 3 行) and also inside one
+/// string (行区切り, 前の行に移動). Written ぎょう it is read ギョウ. 行列 and 行列式
+/// are read correctly and stay as they are.
+#[test]
+fn row_and_line_are_written_in_kana() -> Result<()> {
+    let expr = "<math>
+     <mrow>
+      <mtable>
+       <mtr> <mtd> <mrow> <mi>x</mi><mo>+</mo><mi>y</mi></mrow> </mtd>  <mtd><mo>=</mo> </mtd>  <mtd><mn>7</mn></mtd>  </mtr>
+       <mtr> <mtd> <mrow> <mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi></mrow></mtd>  <mtd><mo>=</mo></mtd>  <mtd><mrow><mn>17</mn></mrow></mtd> </mtr>
+      </mtable></mrow>
+    </math>";
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Line", expr, "2 ぎょう; ぎょう 1; x プラス y, イコール 7; ぎょう 2; 2 x プラス 3 y; イコール 17")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Row", expr, "2 ぎょう; ぎょう 1; x プラス y, イコール 7; ぎょう 2; 2 x プラス 3 y; イコール 17")?;
+    // SimpleSpeak reads the two equations as equations (式), so its line word needs
+    // a table that is not one: one marked as lines.
+    let lines = "<math><mtable intent=':lines'><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable></math>";
+    test("ja", "SimpleSpeak", lines, "2 ぎょう; ぎょう 1; 3; ぎょう 2; 2")?;
     return Ok(());
 }

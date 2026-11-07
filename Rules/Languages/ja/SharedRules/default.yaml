@@ -432,8 +432,8 @@
   - x: count(*)
   - test:
       if: count(*)=1
-      then: [T: "行"]      # phrase(the table with 1 'row')
-      else: [T: "行"]      # phrase(the table with 3 'rows')
+      then: [T: "ぎょう"]      # phrase(the table with 1 'row')
+      else: [T: "ぎょう"]      # phrase(the table with 3 'rows')
   - T: "および"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
@@ -451,7 +451,7 @@
   match: "."
   replace:
   - pause: medium
-  - T: "行"      # phrase(the first 'row' of a matrix)
+  - T: "ぎょう"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: "self::m:mlabeledtr"
@@ -489,7 +489,7 @@
       if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
       then:
       - pause: short
-      - T: "行区切り"
+      - T: "ぎょう区切り"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
