@@ -154,7 +154,7 @@ fn the_simple_mode_is_named_like_the_others() -> Result<()> {
 }
 
 /// エントリ appeared exactly once in the whole Japanese rule set. This rule
-/// speaks 行 and 列 straight after it, and the sibling rule says 表, so セル is
+/// speaks ぎょう and 列 straight after it, and the sibling rule says 表, so セル is
 /// the word these rules already use for the thing being read.
 #[test]
 fn reading_the_current_cell_calls_it_a_cell() -> Result<()> {
@@ -167,4 +167,12 @@ fn reading_the_current_cell_calls_it_a_cell() -> Result<()> {
 #[test]
 fn the_overview_toggle_says_what_it_will_do() -> Result<()> {
     assert_command_prefix(EXPR, &["ToggleSpeakMode"], "移動後に式の概要を読み上げる")
+}
+
+/// Moving up or down a table names the row, and that word is ぎょう: written 行,
+/// Open JTalk read it クダリ or アルキ (前の行はありません was マエノクダリワアリマセン).
+#[test]
+fn moving_between_rows_names_the_row_in_kana() -> Result<()> {
+    assert_speech(TABLE, &["ZoomInAll", "MoveCellDown", "MoveCellUp"], "上に移動, ぎょう 1, 列 1; 1")?;
+    assert_speech(TABLE, &["ZoomInAll", "MoveCellUp"], "前のぎょうはありません")
 }
