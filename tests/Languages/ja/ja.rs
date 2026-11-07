@@ -211,6 +211,44 @@ fn interval_open_closed() -> Result<()> {
     return Ok(());
 }
 
+/// SimpleSpeak names the kind of interval. The name was read in English
+/// ("open interval から c に d"), and から and まで now follow the endpoints.
+/// (a, b] is 左開右閉区間 and [a, b) is 左閉右開区間; 左半開区間 is avoided because
+/// authors differ on which side it means.
+#[test]
+fn simplespeak_interval_names_are_japanese() -> Result<()> {
+    let cases = [
+        ("open-interval", "(", ")", "開区間"),
+        ("closed-interval", "[", "]", "閉区間"),
+        ("open-closed-interval", "(", "]", "左開右閉区間"),
+        ("closed-open-interval", "[", ")", "左閉右開区間"),
+    ];
+    for (intent, open, close, name) in cases {
+        let expr = format!("<math><mrow intent='{intent}($start, $end)'><mo>{open}</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi><mo>{close}</mo></mrow></math>");
+        test("ja", "SimpleSpeak", &expr, &format!("{name} c から d まで"))?;
+        test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], &expr, &format!("{name} c コンマ d"))?;
+    }
+    return Ok(());
+}
+
+/// 循環節 is the dictionary term for the repeating digits of a recurring decimal.
+#[test]
+fn repeating_decimal_says_junkansetsu() -> Result<()> {
+    let expr = "<math><mn>0.1</mn><mo>&#x2062;</mo><mover><mn>23</mn><mo>¯</mo></mover></math>";
+    test("ja", "SimpleSpeak", expr, "0.1 循環節 2 3")?;
+    test("ja", "ClearSpeak", expr, "0.1 循環節 2 3")?;
+    return Ok(());
+}
+
+/// Cov is 共分散 at every verbosity, as exp is 指数関数 at every verbosity.
+#[test]
+fn covariance_is_kyoubunsan() -> Result<()> {
+    let expr = "<math><mrow><mi>Cov</mi><mi>x</mi></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "共分散 x")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "共分散 x")?;
+    return Ok(());
+}
+
 /// Verifies that an indexed cube root receives the Japanese cube-root cue.
 #[test]
 fn cube_root() -> Result<()> {
