@@ -1071,14 +1071,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [t: "フォーム"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [t: "フォームに反応する"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [T: "から"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [T: "が反応して"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
-      then: [t: "との平衡にあります"]      # phrase(a reactant 'is in equilibrium with' a product)
+      then: [T: "と平衡にある"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3
-      then: [t: "平衡は左に偏ります"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+      then: [T: "と左に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
     - else_if: ".='🣒'" # U+1F8D2
-      then: [t: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      then: [T: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
 - name: chemical-equation-operator
