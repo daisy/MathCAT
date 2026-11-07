@@ -736,9 +736,10 @@ fn mat(rows: &[&[&str]], open: &str, close: &str, attrs: &str) -> String {
     format!("<math><mrow><mo>{open}</mo><mtable {attrs}>{rows}</mtable><mo>{close}</mo></mrow></math>")
 }
 
-/// Every matrix rule says the size as m かける n: the special matrices, a matrix
-/// too big for the short form, and the one-row and one-column forms (which no
-/// longer add 行 or 列 before 行列 or ベクトル).
+/// The matrix rules not covered above say the size as m かける n too: the special
+/// matrices, a matrix too big for the short form, and the one-row and one-column
+/// forms (which no longer add 行 or 列 before 行列 or ベクトル). A long column read
+/// as a vector ends with ベクトル終了, like the short column and row forms.
 #[test]
 fn matrix_sizes() -> Result<()> {
     let (n0, n1, n2, n3, n4) = ("<mn>0</mn>", "<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
@@ -763,6 +764,14 @@ fn matrix_sizes() -> Result<()> {
         "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4")?;
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "Vector", &row,
         "1 かける 4 ベクトル; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &column,
+        "4 かける 1 行列; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; 行列終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &column,
+        "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; ベクトル終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &row,
+        "1 かける 4 行列; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行列終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &row,
+        "1 かける 4 ベクトル; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ベクトル終了")?;
     return Ok(());
 }
 
