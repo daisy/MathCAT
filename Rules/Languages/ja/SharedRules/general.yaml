@@ -574,12 +574,12 @@
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - ot: ""      # phrase('the' 1 by 1 matrix M)
-  - t: "1 かける 1"      # phrase(the '1 by 1' matrix)
+  - OT: ""      # phrase('the' 1 by 1 matrix M)
+  - T: "1 かける 1"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant'))
-      else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant'))
+      else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
       
   - T: "成分"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
@@ -590,11 +590,11 @@
   # select all the non-zero entries -- if there are none of them, then it is a zero matrix
   match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "零行列"   # phrase(the 2 by 2 'zero matrix')
+  - T: "零行列"   # phrase(the 2 by 2 'zero matrix')
   - pause: long
 
 - name: identity-matrix
@@ -605,11 +605,11 @@
   - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
   - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "単位行列"   # phrase(the 2 by 2 'identity matrix')
+  - T: "単位行列"   # phrase(the 2 by 2 'identity matrix')
   - pause: long
 
 - name: diagonal-matrix
@@ -622,11 +622,11 @@
   - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
   - "    )"
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix)
+  - T: ""      # phrase('the' 1 by 2 matrix)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "対角行列"   # phrase(the 2 by 2 'diagonal matrix')
+  - T: "対角行列"   # phrase(the 2 by 2 'diagonal matrix')
   - pause: long
   - insert:
       # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
@@ -646,9 +646,9 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - T: ""      # phrase('the' 2 by 2 matrix M)
   - x: count(*)
-  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 by 2 'vector')
@@ -669,9 +669,9 @@
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - T: ""      # phrase('the' 2 by 2 matrix M)
   - x: "count(*)"
-  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 column 'vector')
@@ -691,9 +691,9 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "1 かける"      # phrase('the 1 by' 2 matrix)
+  - T: "1 かける"      # phrase('the 1 by' 2 matrix)
   - x: count(*/*)
-  - t: "行"      # phrase(the 1 by 4 'row' matrix)
+  - T: ""      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase('the 1 by' 2 row 'vector')
@@ -714,9 +714,9 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
-  - t: "1 かける"      # phrase('the 1 by' 2 matrix)
+  - T: "1 かける"      # phrase('the 1 by' 2 matrix)
   - x: "count(*/*)"
-  - t: "行"      # phrase(the 1 by 2 'row' matrix)
+  - T: ""      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 by 1 'vector')
@@ -741,18 +741,18 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"      # phrase(the 1 'by' 2 matrix)
+  - T: "かける"      # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
   - test:
       if: "self::m:determinant"
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [t: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -769,18 +769,18 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: "count(*)"
-  - t: "かける"      # phrase(the 1 'by' 2 matrix)
+  - T: "かける"      # phrase(the 1 'by' 2 matrix)
   - x: "count(*[self::m:mtr][1]/*)"
   - test:
       if: "self::m:determinant"
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [t: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -811,7 +811,7 @@
   replace:
   - insert:
       nodes: "*"
-      replace: [t: "かける", pause: auto]      # phrase(3 'by' 5 matrix)
+      replace: [T: "かける", pause: auto]      # phrase(3 'by' 5 matrix)
 
 - name: chemistry-msup
   tag: [chemical-formula]
