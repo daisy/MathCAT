@@ -60,10 +60,10 @@
         then: [T: "平方根"]        # phrase(the 'square root' of x)
       - else_if: "*[2][.='3']"
         then: [T: "立方根"]        # phrase(the 'cube root' of x)
-      - else: [x: "*[2]", T: "乗根"]      # phrase(the square 'root' of 25)
+      - else: [x: "*[2]", T: "じょうこん"]      # phrase(the square 'root' of 25)
       else:
       - x: "*[2]"
-      - T: "乗根"        # phrase(the square 'root' of)
+      - T: "じょうこん"        # phrase(the square 'root' of)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "オブ"]        # phrase(the square root 'of' x)
