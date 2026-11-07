@@ -186,7 +186,11 @@
         else: [T: ""]                            
 
  - "¬": [T: "no"]                         	#  0xac	(en: 'not')
- - "°": [T: "grados"]                            	#  0xb0	(en: 'degrees')
+ - "°":                                           	#  0xb0	(en: 'degrees')
+    - test:
+        if: "parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn][.=1]] or preceding-sibling::*[1][self::m:mn][.=1]"
+        then: [T: "grado"]      # 1° (singular)
+        else: [T: "grados"]          # (en: 'degrees')
  - "±": [T: "más o menos"]                        	#  0xb1	(en: 'plus or minus')
  - "´": [T: "acento agudo"]                     	#  0xb4	(en: 'acute')
  - "·":                                            # 0xB7
@@ -366,11 +370,15 @@
          if: "$Verbosity='Terse'"
          then: [T: "parcial"]                   	# 	(en: 'partial', google translation)
          else: [T: "derivada parcial"]          	# 	(en: 'partial derivative')
- - "∆":                                         	#  0x2206
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "el"]                        	# 	(en: 'the', google translation)
-     - T: "incremento"                          	# 	(en: 'laplacian of')
+ - "∆":                                           	#  0x2206
+    - test:
+        if: "preceding-sibling::* and following-sibling::*"
+        then: [T: "diferencia simétrica"]      # A ∆ B (CMU 7.2)
+        else:
+        - test:
+            if: "$Verbosity!='Terse'"
+            then: [T: "el"]          # (en: 'the')
+        - T: "incremento"          # (en: 'increment')
  - "∈":                                          # 0x2208
      # en español lo natural es "x pertenece a A"; ClearSpeak Auto también usa "pertenece a"
      - test:

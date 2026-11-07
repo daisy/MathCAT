@@ -423,3 +423,64 @@ fn radian_singular_plural() -> Result<()> {
     test("es", "SimpleSpeak", r#"<math><mn>3</mn><mi intent=":unit">rad</mi></math>"#, "3 radianes")?;
     return Ok(());
 }
+
+#[test]
+fn degrees_celsius_and_angles_cmu() -> Result<()> {
+    // CMU 2024, apéndice 1 y 11.5: {}^{\circ}C, y minutos y segundos tras los grados
+    let cases = [
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></math>", "1 grado Celsius"),
+        ("<math><mn>25</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></math>", "25 grados Celsius"),
+        ("<math><mn>25</mn><mspace width=\"0.167em\"></mspace><mrow intent=\":unit\"><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></mrow></math>", "25 grados Celsius"),
+        ("<math><mn>98</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">F</mi></math>", "98 grados Fahrenheit"),
+        ("<math><msup><mn>37</mn><mo>∘</mo></msup><mspace width=\"0.167em\"></mspace><msup><mn>22</mn><mo>′</mo></msup><mspace width=\"0.167em\"></mspace><msup><mn>49</mn><mrow><mo>′</mo><mo>′</mo></mrow></msup></math>", "37 grados, 22 minutos, 49 segundos"),
+        ("<math><msup><mn>1</mn><mo>°</mo></msup><msup><mn>1</mn><mo>′</mo></msup><msup><mn>1</mn><mo>″</mo></msup></math>", "1 grado, 1 minuto, 1 segundo"),
+        ("<math><msup><mi>f</mi><mo>′</mo></msup><mo>(</mo><mi>x</mi><mo>)</mo></math>", "f prima, de x"),
+        ("<math><msup><mi>x</mi><mo>″</mo></msup></math>", "x segunda"),
+        ("<math><msup><mn>5</mn><mo>′</mo></msup></math>", "5 prima"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn units_and_currencies_common_in_spanish() -> Result<()> {
+    // unidades y monedas de uso corriente en español que no están en inglés
+    let cases = [
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "1 kilovatio hora"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "10 kilovatios hora"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kcal</mi></math>", "10 kilocalorías"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mAh</mi></math>", "10 miliamperios hora"),
+        ("<math><mn>760</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mmHg</mi></math>", "760 milímetros de mercurio"),
+        ("<math><mn>32</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">psi</mi></math>", "32 libras por pulgada cuadrada"),
+        ("<math><mn>1013</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mbar</mi></math>", "1013 milibares"),
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">cc</mi></math>", "5 centímetros cúbicos"),
+        ("<math><mn>20</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kn</mi></math>", "20 nudos"),
+        ("<math><mn>90</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">CV</mi></math>", "90 caballos de vapor"),
+        ("<math><mn>400</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ppm</mi></math>", "400 partes por millón"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kgf</mi></math>", "10 kilogramos fuerza"),
+        ("<math><mn>100</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">Mbps</mi></math>", "100 megabits por segundo"),
+        ("<math><mn>3</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">yd</mi></math>", "3 yardas"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">KB</mi></math>", "10 kilobytes"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">bps</mi></math>", "10 bits por segundo"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">MBps</mi></math>", "10 megabytes por segundo"),
+        ("<math><mn>300</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dpi</mi></math>", "300 puntos por pulgada"),
+        ("<math><mn>300</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ppp</mi></math>", "300 puntos por pulgada"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">px</mi></math>", "1 píxel"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">px</mi></math>", "10 píxeles"),
+        ("<math><mn>60</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">fps</mi></math>", "60 fotogramas por segundo"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">GFLOPS</mi></math>", "10 gigaflops"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dBm</mi></math>", "10 decibelios milivatio"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvin"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "1 unidad astronómica"),
+        ("<math><mi mathvariant=\"normal\">R$</mi><mn>150</mn></math>", "150 reales"),
+        ("<math><mi mathvariant=\"normal\">¥</mi><mn>3</mn></math>", "3 yenes"),
+        ("<math><mi mathvariant=\"normal\">₲</mi><mn>3</mn></math>", "3 guaraníes"),
+        ("<math><mi mathvariant=\"normal\">₿</mi><mn>3</mn></math>", "3 bitcoins"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
