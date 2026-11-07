@@ -757,11 +757,59 @@ fn statistics_mode() -> Result<()> {
 }
 
 /// A matrix is 行列, not the loanword マトリクス, and the dimension separator is
-/// かける, not によって ("by means of").
+/// かける, not によって ("by means of"). A row matrix was "1 かける 2 行 行列": the
+/// size already says it is one row, and 行 standing alone is read クダリ or アルキ
+/// by Open JTalk, so the extra word is gone.
 #[test]
 fn matrix_terminology() -> Result<()> {
     let expr = "<math><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable><mo>]</mo></mrow></math>";
-    test("ja", "ClearSpeak", expr, "1 かける 2 行 行列; 1, 2")?;
+    test("ja", "ClearSpeak", expr, "1 かける 2 行列; 1, 2")?;
+    return Ok(());
+}
+
+fn mat(rows: &[&[&str]], open: &str, close: &str, attrs: &str) -> String {
+    let rows: String = rows.iter()
+        .map(|r| format!("<mtr>{}</mtr>", r.iter().map(|c| format!("<mtd>{c}</mtd>")).collect::<String>()))
+        .collect();
+    format!("<math><mrow><mo>{open}</mo><mtable {attrs}>{rows}</mtable><mo>{close}</mo></mrow></math>")
+}
+
+/// The matrix rules not covered above say the size as m かける n too: the special
+/// matrices, a matrix too big for the short form, and the one-row and one-column
+/// forms (which no longer add 行 or 列 before 行列 or ベクトル). A long column read
+/// as a vector ends with ベクトル終了, like the short column and row forms.
+#[test]
+fn matrix_sizes() -> Result<()> {
+    let (n0, n1, n2, n3, n4) = ("<mn>0</mn>", "<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
+    let x2 = "<msup><mi>x</mi><mn>2</mn></msup>";
+    test("ja", "SimpleSpeak", &mat(&[&[n0, n0], &[n0, n0]], "[", "]", ""), "2 かける 2 零行列")?;
+    test("ja", "SimpleSpeak", &mat(&[&[n1, n0, n0], &[n0, n1, n0], &[n0, n0, n1]], "(", ")", ""),
+        "3 かける 3 単位行列")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")],
+        &mat(&[&[n2, n0, n0], &[n0, n1, n0], &[n0, n0, x2]], "(", ")", ""),
+        "3 かける 3 対角行列; 列 1; 2; 列 2; 1; 列 3; x の 2 乗")?;
+    test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "(", ")", ""),
+        "2 かける 4 行列; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
+    test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "(", ")", "columnlines='none none solid'"),
+        "2 かける 4 拡大行列; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列区切り, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列区切り, 列 4; 1")?;
+    test("ja", "SimpleSpeak", &mat(&[&[n1], &[n2], &[n3]], "(", ")", ""), "3 かける 1 行列; 1; 2; 3")?;
+    let column = mat(&[&[n1], &[n2], &[n3], &[n4]], "(", ")", "");
+    let row = mat(&[&[n1, n2, n3, n4]], "(", ")", "");
+    test("ja", "ClearSpeak", &column, "4 かける 1 行列; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4")?;
+    test("ja", "ClearSpeak", &row, "1 かける 4 行列; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4")?;
+    // ClearSpeak_Matrix stays set for the rest of this test, so the Vector cases come last.
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "Vector", &column,
+        "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "Vector", &row,
+        "1 かける 4 ベクトル; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &column,
+        "4 かける 1 行列; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; 行列終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &column,
+        "4 かける 1 ベクトル; 行 1; 1; 行 2; 2; 行 3; 3; 行 4; 4; ベクトル終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndMatrix", &row,
+        "1 かける 4 行列; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行列終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector", &row,
+        "1 かける 4 ベクトル; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ベクトル終了")?;
     return Ok(());
 }
 
@@ -907,7 +955,7 @@ fn column_vector_end_vector() -> Result<()> {
           <mtr><mtd><mn>3</mn></mtd></mtr>
         </mtable></mrow><mo>)</mo></mrow></math>";
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector",
-        expr, "3 かける 1 列 ベクトル; 1; 2; 3; ベクトル終了")?;
+        expr, "3 かける 1 ベクトル; 1; 2; 3; ベクトル終了")?;
     return Ok(());
 }
 
@@ -920,7 +968,7 @@ fn row_vector_and_matrix_end_markers() -> Result<()> {
           <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
         </mtable></mrow><mo>]</mo></mrow></math>";
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "EndVector",
-        row, "1 かける 2 行 ベクトル; 1, 2; ベクトル終了")?;
+        row, "1 かける 2 ベクトル; 1, 2; ベクトル終了")?;
     let square = "<math display='block'>
         <mrow><mo>(</mo><mrow><mtable>
           <mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd></mtr>
@@ -991,6 +1039,20 @@ fn determinant_end_marker() -> Result<()> {
     return Ok(());
 }
 
+/// The other determinant forms: one entry, a table too big for the short form,
+/// and the determinant of a single expression, whose end marker was 末端の 行列式
+/// ("the terminal determinant") and is now 行列式終了 like the others.
+#[test]
+fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
+    let (n1, n2, n3, n4) = ("<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
+    test("ja", "ClearSpeak", &mat(&[&["<mi>x</mi>"]], "|", "|", ""), "1 かける 1 行列式 成分 x")?;
+    test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "|", "|", ""),
+        "2 かける 4 行列式; 行 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; 行 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
+    let scalar = "<math><mrow intent='determinant($a)'><mrow arg='a'><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mrow></math>";
+    test("ja", "ClearSpeak", scalar, "行列式 の x プラス y 行列式終了")?;
+    return Ok(());
+}
+
 /// LiteralSpeak reads what is written, and Japanese writes the denominator
 /// first: 3/4 is "4 分の 3". "3 分の 4" is the other number, 4/3.
 #[test]
@@ -1020,6 +1082,26 @@ fn overview_fraction_is_denominator_first() -> Result<()> {
     set_mathml("<math><mfrac><mn>3</mn><mn>4</mn></mfrac></math>")?;
     let spoken = get_overview_text()?;
     assert_eq!("4 分の 3", spoken.trim_end_matches([' ', ',', ';']));
+    return Ok(());
+}
+
+/// The overview rules say a matrix size the same way as the full speech.
+#[test]
+fn overview_matrix_size() -> Result<()> {
+    let (n1, n2, n3, n4) = ("<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
+    for (expr, expected) in [
+        (mat(&[&[n1, n2], &[n3, n4]], "(", ")", ""), "2 かける 2 行列"),
+        (mat(&[&[n1, n2], &[n3, n4]], "|", "|", ""), "2 かける 2 行列式"),
+        (mat(&[&[n1, n2, n3], &[n3, n4, n1]], "[", "]", ""), "2 かける 3 行列"),
+    ] {
+        set_rules_dir(abs_rules_dir_path())?;
+        set_preference("Language", "ja")?;
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        set_preference("Verbosity", "Medium")?;
+        set_mathml(&expr)?;
+        let spoken = get_overview_text()?;
+        assert_eq!(expected, spoken.trim_end_matches([' ', ',', ';']), "overview of {expr}");
+    }
     return Ok(());
 }
 
