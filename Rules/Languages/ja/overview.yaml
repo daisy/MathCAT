@@ -52,10 +52,10 @@
       - else_if: "*[2][.='3']"
         then: [t: "立方根"]
       - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "*[2]", t: "乗根"]
+        then: [x: "*[2]", T: "じょうこん"]
       else:
       - x: "*[2]"
-      - t: "乗根"
+      - T: "じょうこん"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:

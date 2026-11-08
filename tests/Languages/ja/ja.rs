@@ -259,11 +259,13 @@ fn cube_root() -> Result<()> {
 
 /// An n-th root is 「n 乗根」 -- the index, then 乗根. English builds an ordinal
 /// ("the fifth root"); Japanese has no such form and reads the number as it is.
+/// 乗根 is written in kana: Open JTalk does not know the word and reads the kanji
+/// ジョーネ (also in 4乗根, with no space), while じょうこん is read ジョーコン.
 #[test]
 fn nth_root() -> Result<()> {
     let expr = "<math><mroot><mi>x</mi><mn>5</mn></mroot></math>";
-    test("ja", "ClearSpeak", expr, "5 乗根 オブ x")?;
-    test("ja", "SimpleSpeak", expr, "5 乗根 オブ x")?;
+    test("ja", "ClearSpeak", expr, "5 じょうこん オブ x")?;
+    test("ja", "SimpleSpeak", expr, "5 じょうこん オブ x")?;
     return Ok(());
 }
 
@@ -271,7 +273,30 @@ fn nth_root() -> Result<()> {
 #[test]
 fn variable_index_root() -> Result<()> {
     let expr = "<math><mroot><mi>x</mi><mi>n</mi></mroot></math>";
-    test("ja", "ClearSpeak", expr, "n 乗根 オブ x")?;
+    test("ja", "ClearSpeak", expr, "n じょうこん オブ x")?;
+    test("ja", "SimpleSpeak", expr, "n じょうこん オブ x")?;
+    return Ok(());
+}
+
+/// The fourth-root sign ∜ uses the same kana word as an mroot.
+#[test]
+fn fourth_root_sign() -> Result<()> {
+    let expr = "<math><mo>&#x221C;</mo><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "4じょうこん x")?;
+    test("ja", "SimpleSpeak", expr, "4じょうこん x")?;
+    return Ok(());
+}
+
+/// The overview rules (the "describe" command) have their own root rule.
+#[test]
+fn overview_nth_root() -> Result<()> {
+    set_rules_dir(abs_rules_dir_path())?;
+    set_preference("Language", "ja")?;
+    set_preference("SpeechStyle", "SimpleSpeak")?;
+    set_preference("Verbosity", "Medium")?;
+    set_mathml("<math><mroot><mi>x</mi><mn>5</mn></mroot></math>")?;
+    let spoken = get_overview_text()?;
+    assert_eq!("5 じょうこん オブ x", spoken.trim_end_matches([' ', ',', ';']));
     return Ok(());
 }
 
