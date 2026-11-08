@@ -1254,7 +1254,18 @@ fn the_vertical_line_names_the_condition() -> Result<()> {
 #[test]
 fn a_labelled_row_names_its_label() -> Result<()> {
     let expr = "<math><mtable><mlabeledtr><mtd><mn>1</mn></mtd><mtd><mi>x</mi></mtd></mlabeledtr></mtable></math>";
-    test("ja", "ClearSpeak", expr, "array オブ; ぎょう 1 ラベルは 1; 列 1; x")?;
+    test("ja", "ClearSpeak", expr, "1 ぎょう および 1 列 の表; ぎょう 1 ラベルは 1; 列 1; x")?;
+    return Ok(());
+}
+
+/// A table with nothing in front of it gets the array intent. It is read as a
+/// table, like the plain mtable, and its rows are not joined by コンマ (#890).
+#[test]
+fn an_unfenced_array_is_read_as_a_table() -> Result<()> {
+    let expr = "<math><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr>
+                       <mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></math>";
+    test("ja", "ClearSpeak", expr, "2 ぎょう および 2 列 の表; ぎょう 1; 列 1; エー, 列 2; b; ぎょう 2; 列 1; c, 列 2; d")?;
+    test("ja", "SimpleSpeak", expr, "2 ぎょう および 2 列 の表; ぎょう 1; 列 1; エー, 列 2; b; ぎょう 2; 列 1; c, 列 2; d")?;
     return Ok(());
 }
 
