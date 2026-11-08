@@ -997,6 +997,24 @@ fn chemical_states() -> Result<()> {
     return Ok(());
 }
 
+/// MathCAT says the arrow word between the two sides, so the word has to fit
+/// there: A が反応して B, A から B (terse), A と平衡にある B.
+#[test]
+fn chemical_arrows() -> Result<()> {
+    for (arrow, verbosity, expected) in [
+        ("&#x2192;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; が反応して; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+        ("&#x2192;", "Terse", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; から; 2, 大文字 n エー; 大文字 c l; プラス 大文字 h, 2"),
+        ("&#x21CC;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+        ("&#x1F8D3;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と左に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+        ("&#x1F8D2;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と右に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+    ] {
+        let expr = format!("<math><mrow><mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
+            <mo>{arrow}</mo><mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub></mrow></math>");
+        test_prefs("ja", "SimpleSpeak", vec![("Verbosity", verbosity)], &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Bond names are 単結合 二重結合 三重結合 四重結合, not transliterations;
 /// 四倍の結束 is "quadruple solidarity", not a chemistry term.
 #[test]
