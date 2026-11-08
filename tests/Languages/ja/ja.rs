@@ -300,6 +300,27 @@ fn overview_nth_root() -> Result<()> {
     return Ok(());
 }
 
+/// The overview rules (the "describe" command) shorten a root, a fraction and a long
+/// row: a root whose radicand is not simple is just 平方根, a fraction whose parts are
+/// not simple is just 分数, and a long row stops after five items with 以下同様.
+#[test]
+fn overview_short_forms() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><msqrt><mi>x</mi><mo>+</mo><mn>1</mn></msqrt></math>", "平方根"),
+        ("<math><mfrac><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></mfrac></math>", "分数"),
+        ("<math><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>c</mi><mo>+</mo><mi>d</mi></math>", "エー プラス b プラス c 以下同様"),
+    ] {
+        set_rules_dir(abs_rules_dir_path())?;
+        set_preference("Language", "ja")?;
+        set_preference("SpeechStyle", "SimpleSpeak")?;
+        set_preference("Verbosity", "Medium")?;
+        set_mathml(expr)?;
+        let spoken = get_overview_text()?;
+        assert_eq!(expected, spoken.trim_end_matches([' ', ',', ';']));
+    }
+    return Ok(());
+}
+
 /// Verifies the basic Japanese SimpleSpeak subscript pattern.
 #[test]
 fn subscript() -> Result<()> {
@@ -501,6 +522,41 @@ fn geometry_verbose_from_to() -> Result<()> {
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], seg, "線分 x から y まで")?;
     let ray = "<math><mrow intent='ray($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], ray, "半直線 x を始点として y を通る")?;
+    return Ok(());
+}
+
+/// The measure of an angle is 「角 ABC の大きさ」: Japanese names the angle first.
+/// 「角の大きさ ABC」 kept the English order.
+#[test]
+fn measure_of_angle() -> Result<()> {
+    let expr = "<math><mrow intent='measure-of-angle($x,$y,$z)'><mi arg='x'>x</mi><mi arg='y'>y</mi><mi arg='z'>z</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "角 x y z の大きさ")?;
+    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "角 x y z の大きさ")?;
+    test("ja", "SimpleSpeak", expr, "角 x y z の大きさ")?;
+    return Ok(());
+}
+
+/// The angle-measure intent is said the same way: 角 A の大きさ.
+#[test]
+fn angle_measure_intent() -> Result<()> {
+    let expr = "<math><mrow intent='angle-measure($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "角 x の大きさ")?;
+    test("ja", "SimpleSpeak", expr, "角 x の大きさ")?;
+    // m∠ABC: the operand already says 角, so it is not said twice.
+    let angle_arg = "<math><mrow intent='angle-measure($x)'><mrow arg='x' intent='angle($p)'><mi arg='p'>x</mi></mrow></mrow></math>";
+    test("ja", "ClearSpeak", angle_arg, "角 x の大きさ")?;
+    test("ja", "SimpleSpeak", angle_arg, "角 x の大きさ")?;
+    let sign_arg = "<math><mrow intent='angle-measure($x)'><mi>m</mi><mrow arg='x'><mo>&#x2220;</mo><mi>x</mi></mrow></mrow></math>";
+    test("ja", "ClearSpeak", sign_arg, "角 x の大きさ")?;
+    test("ja", "SimpleSpeak", sign_arg, "角 x の大きさ")?;
+    // A silent angle does not say 角 itself, so it is said here.
+    let silent_arg = "<math><mrow intent='angle-measure($x)'><mrow arg='x' intent='angle:silent($p)'><mi arg='p'>x</mi></mrow></mrow></math>";
+    test("ja", "ClearSpeak", silent_arg, "角 x の大きさ")?;
+    test("ja", "SimpleSpeak", silent_arg, "角 x の大きさ")?;
+    // A silent angle-measure says only its operand.
+    let silent_measure = "<math><mrow intent='angle-measure:silent($x)'><mi arg='x'>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", silent_measure, "x")?;
+    test("ja", "SimpleSpeak", silent_measure, "x")?;
     return Ok(());
 }
 
@@ -1313,6 +1369,18 @@ fn natural_log_is_shizen_taisuu() -> Result<()> {
     let expr = "<math><mi>ln</mi><mi>x</mi></math>";
     test_ClearSpeak("ja", "ClearSpeak_Log", "LnAsNaturalLog", expr, "自然対数 x")?;
     test("ja", "SimpleSpeak", expr, "自然対数 オブ x")?;
+    return Ok(());
+}
+
+/// Log z (capital L) is the principal value of the logarithm, 対数の主値.
+/// 主値 is written in kana: Open JTalk reads the kanji シュネ or アルジチ.
+/// The comma is the automatic pause: src/tts.rs skips it before a two-byte "of",
+/// but オブ is six bytes in UTF-8, so a long function name gets a short pause.
+#[test]
+fn principal_value_log() -> Result<()> {
+    let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "対数のしゅち, オブ z")?;
+    test("ja", "SimpleSpeak", expr, "対数のしゅち, オブ z")?;
     return Ok(());
 }
 
