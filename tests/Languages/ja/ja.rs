@@ -1352,3 +1352,19 @@ fn row_and_line_are_written_in_kana() -> Result<()> {
     test("ja", "SimpleSpeak", lines, "2 ぎょう; ぎょう 1; 3; ぎょう 2; 2")?;
     return Ok(());
 }
+
+/// ASCII symbols said with their everyday Japanese names: # is シャープ, the star in A* is
+/// スター as in English, and the literal ! is 感嘆符 even when terse (バング is not Japanese).
+/// An empty part of a fraction or matrix is 空欄, because Open JTalk reads a lone 空 as ソラ (sky).
+#[test]
+fn ascii_symbol_names() -> Result<()> {
+    test("ja", "ClearSpeak", "<math><mo>#</mo><mi>A</mi></math>", "シャープ 大文字 エー")?;
+    test("ja", "ClearSpeak", "<math><msup><mi>A</mi><mo>*</mo></msup></math>", "大文字 エー スター")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")],
+        "<math><mi>n</mi><mo intent=':literal'>!</mo></math>", "n 感嘆符")?;
+    test("ja", "ClearSpeak", "<math><mfrac><mrow></mrow><mn>2</mn></mfrac></math>", "分数; 空欄; オーバー 2")?;
+    let cell = "<math><mrow><mo>(</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mtext> </mtext></mtd></mtr>\
+        <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", cell, "2 かける 2 行列; ぎょう 1; 列 1; 1, 列 2; 空欄; ぎょう 2; 列 1; 3, 列 2; 4")?;
+    return Ok(());
+}
