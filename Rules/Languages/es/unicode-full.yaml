@@ -1931,7 +1931,7 @@
  - "⧵": [T: "operador barra invertida"]      	#  0x29f5	(en: 'reverse solidus operator', google: 'operador reverso de solidus')
  - "⧶": [T: "barra oblicua con barra superior"]             	#  0x29f6
  - "⧷": [T: "barra invertida con trazo horizontal"]	#  0x29f7	(en: 'reverse solidus with horizontal stroke', google: 'reverse solidus con carrera horizontal')
- - "⧸": [T: "sólido grande"]                    	#  0x29f8	(en: 'big solidus', google: 'big solidus')
+ - "⧸": [T: "barra oblicua grande"]               	#  0x29f8	(en: 'big solidus', google: 'big solidus')
  - "⧹": [T: "barra invertida grande"]            	#  0x29f9	(en: 'big reverse solidus', google: 'big reverso solidus')
  - "⧺": [T: "doble signo más"]                       	#  0x29fa	(en: 'double plus', google: 'doble más')
  - "⧻": [T: "triple signo más"]                      	#  0x29fb	(en: 'triple plus', google: 'triple plus')

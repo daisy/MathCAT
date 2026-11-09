@@ -101,7 +101,7 @@ fn ethylene_with_bond() -> Result<()> {
           <mo>=</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c; doble enlace mayúscula c, mayúscula h, 2")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c; enlace doble mayúscula c, mayúscula h, 2")?;
   return Ok(());
 
 }
@@ -125,7 +125,7 @@ fn ethylene_with_colon_bond() -> Result<()> {
           <mo>::</mo>
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
-  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c; doble enlace mayúscula c, mayúscula h, 2")?;
+  test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "mayúscula h, 2, mayúscula c; enlace doble mayúscula c, mayúscula h, 2")?;
   return Ok(());
 
 }
@@ -158,11 +158,11 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
+      "14, 6, mayúscula c, da, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, sub 6, mayúscula c; reacciona para formar; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
+      "superíndice 14, sub 6, mayúscula c; produce; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; produce; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
 
 }
@@ -424,11 +424,11 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, mayúscula c; forma, 14, 7, mayúscula n; más 0, menos 1, e")?;
+      "14, 6, mayúscula c, da, 14, 7, mayúscula n; más 0, menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "superíndice 14, sub 6, mayúscula c; reacciona para formar; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
+      "superíndice 14, sub 6, mayúscula c; produce; superíndice 14, sub 7, mayúscula n; más superíndice 0, sub menos 1, e")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
-      "superíndice 14, subíndice 6, mayúscula c; reacciona para formar; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
+      "superíndice 14, subíndice 6, mayúscula c; produce; superíndice 14, subíndice 7, mayúscula n; más, superíndice 0, subíndice menos 1, e")?;
       return Ok(());
 
 }
@@ -443,7 +443,7 @@ fn hcl_na_yields() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "2, mayúscula h, mayúscula c l; más 2 mayúscula n a; reacciona para formar; 2, mayúscula n a; mayúscula c l; más mayúscula h, subíndice 2")?;
+        "2, mayúscula h, mayúscula c l; más 2 mayúscula n a; produce; 2, mayúscula n a; mayúscula c l; más mayúscula h, subíndice 2")?;
         return Ok(());
 
 }
@@ -582,7 +582,7 @@ fn mhchem_hcl_aq_etc() -> Result<()> {
     </mrow>
   </math>";
   test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-      expr, "2, mayúscula h, mayúscula c l; acuoso; más, 2, mayúscula n a; sólido; forma; 2, mayúscula n a; mayúscula c l; acuoso; más, mayúscula h, 2; gaseoso")?;
+      expr, "2, mayúscula h, mayúscula c l; acuoso; más, 2, mayúscula n a; sólido, da; 2, mayúscula n a; mayúscula c l; acuoso; más, mayúscula h, 2; gaseoso")?;
 
       return Ok(());
 
@@ -763,4 +763,18 @@ fn dropped_msubsup_bug_358() -> Result<()> {
 
 }
 
-
+#[test]
+fn gas_precipitate_hydrate_heat() -> Result<()> {
+    // ONCE B 6-1 (6.3, 6.5, 6.6, 8.2.2), SEP y EcuRed
+    let cases = [
+        ("<math><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub><mo>↑</mo></math>", "mayúscula c, mayúscula o, sub 2; desprendimiento gaseoso"),
+        ("<math><mi>Ca</mi><mi>C</mi><msub><mi>O</mi><mn>3</mn></msub><mo>↓</mo></math>", "mayúscula c a; mayúscula c, mayúscula o, sub 3; precipitado"),
+        ("<math><msub><mi>Na</mi><mn>2</mn></msub><mi>S</mi><msub><mi>O</mi><mn>4</mn></msub><mo>·</mo><mn>5</mn><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi></math>", "mayúscula n a, sub 2, mayúscula s, mayúscula o, sub 4; punto, 5, mayúscula h, sub 2, mayúscula o"),
+        ("<math><msub><mi>N</mi><mn>2</mn></msub><mo>+</mo><mn>3</mn><msub><mi>H</mi><mn>2</mn></msub><mo>⇄</mo><mn>2</mn><mi>N</mi><msub><mi>H</mi><mn>3</mn></msub></math>", "mayúscula n, sub 2, más, 3 mayúscula h, sub 2; está en equilibrio con; 2, mayúscula n, mayúscula h, sub 3"),
+        ("<math><mi>Ca</mi><mi>C</mi><msub><mi>O</mi><mn>3</mn></msub><mover><mo>→</mo><mi mathvariant=\"normal\">Δ</mi></mover><mi>Ca</mi><mi>O</mi><mo>+</mo><mi>C</mi><msub><mi>O</mi><mn>2</mn></msub></math>", "mayúscula c a; mayúscula c, mayúscula o, sub 3; produce con calor; mayúscula c a; mayúscula o; más, mayúscula c, mayúscula o, sub 2"),
+    ];
+    for (expr, speech) in cases {
+        test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, speech)?;
+    }
+    return Ok(());
+}
