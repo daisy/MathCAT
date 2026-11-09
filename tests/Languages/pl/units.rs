@@ -333,20 +333,20 @@ fn without_prefix_powers_of_2() -> Result<()> {
 
 #[test]
 fn si_other_numbers() -> Result<()> {
-    let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
-                            <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
+    let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
+                            <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
                             <mi>y</mi><mi intent=":unit">µs</mi><mo>,</mo>
                             <mi intent=":unit">dag</mi><mo>,</mo>
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
-                            <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
-                            <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
+                            <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
+                            <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test_prefs("pl", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "10 l przecinek, 20 m przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 25 mikro-sekundy, przecinek; 3234 mole")?;
+            "1,0 l przecinek, 2,0 m przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 2,5 mikro-sekundy, przecinek; 32,34 mole")?;
     test_prefs("pl", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "10 litr, przecinek; 20 metry, przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 25 mikro-sekundy, przecinek; 3234 mole")?;
+            "1,0 litr, przecinek; 2,0 metry, przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 2,5 mikro-sekundy, przecinek; 32,34 mole")?;
     test_prefs("pl", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "10 litr, przecinek; 20 metry, przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 25 mikro-sekundy, przecinek; 3234 mole")?;
+            "1,0 litr, przecinek; 2,0 metry, przecinek; x mili-sekund, przecinek; y mikro-sekund, przecinek; deka-gramów, przecinek; 1235 deka-niutonów; przecinek; 2,5 mikro-sekundy, przecinek; 32,34 mole")?;
                     return Ok(());
 
 }
@@ -358,10 +358,10 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("pl", "SimpleSpeak", expr, 
-        "nawias kwadratowy otwierający; 1 tona, przecinek; 2 peta-ampery, przecinek; 3 paskale, przecinek; 45 mili-tesli; nawias kwadratowy zamykający")?;
+        "nawias kwadratowy otwierający; 1 tona, przecinek; 2 peta-ampery, przecinek; 3 paskale, przecinek; 4,5 mili-tesli; nawias kwadratowy zamykający")?;
                 return Ok(());
 
 }

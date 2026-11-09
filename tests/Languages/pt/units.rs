@@ -380,16 +380,16 @@ fn without_prefix_powers_of_2() -> Result<()> {
 
 #[test]
 fn si_other_numbers() -> Result<()> {
-    let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
-                            <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
+    let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
+                            <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
                             <mi>y</mi><mi intent=":unit">µs</mi><mo>,</mo>
                             <mi intent=":unit">dag</mi><mo>,</mo>
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
-                            <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
-                            <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
+                            <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
+                            <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "10 litro, vírgula; 20 metros, vírgula; x milissegundos, vírgula; y microssegundos, vírgula, decagramas vírgula; 1235 decanewtons, vírgula; 25 microssegundos, vírgula; 3234 mols")?;
+        "1,0 litro, vírgula; 2,0 metros, vírgula; x milissegundos, vírgula; y microssegundos, vírgula, decagramas vírgula; 1235 decanewtons, vírgula; 2,5 microssegundos, vírgula; 32,34 mols")?;
                 return Ok(());
 
 }
@@ -401,10 +401,10 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("pt", "SimpleSpeak", expr, 
-        "abre colchetes; 1 tonelada, vírgula; 2 petaampères, vírgula; 3 pascals, vírgula; 45 militeslas; fecha colchetes")?;
+        "abre colchetes; 1 tonelada, vírgula; 2 petaampères, vírgula; 3 pascals, vírgula; 4,5 militeslas; fecha colchetes")?;
         return Ok(());
 
 }

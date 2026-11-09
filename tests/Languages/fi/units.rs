@@ -503,7 +503,7 @@ fn si_other_numbers() -> Result<()> {
                             <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
                             <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test("fi", "SimpleSpeak", expr, 
-        "1,0 litraa, pilkku, 2,0 metriä, pilkku; x milli-sekuntia, pilkku; y mikro-sekuntia, pilkku, \
+        "1,0 litra, pilkku, 2,0 metriä, pilkku; x milli-sekuntia, pilkku; y mikro-sekuntia, pilkku, \
                 deka-grammaa, pilkku; 1235 deka-newtonia, pilkku; 2,5 mikro-sekuntia; pilkku; 32,34 moolia")?;
                 return Ok(());
 

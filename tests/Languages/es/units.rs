@@ -333,20 +333,20 @@ fn without_prefix_powers_of_2() -> Result<()> {
 
 #[test]
 fn si_other_numbers() -> Result<()> {
-    let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
-                            <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
+    let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
+                            <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
                             <mi>y</mi><mi intent=":unit">µs</mi><mo>,</mo>
                             <mi intent=":unit">dag</mi><mo>,</mo>
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
-                            <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
-                            <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
+                            <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
+                            <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "10 l coma, 20 m coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 25 microsegundos, coma, 3234 moles")?;
+            "1,0 l coma, 2,0 m coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 2,5 microsegundos, coma, 32,34 moles")?;
     test_prefs("es", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "10 litro, coma, 20 metros, coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 25 microsegundos, coma, 3234 moles")?;
+            "1,0 litro, coma, 2,0 metros, coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 2,5 microsegundos, coma, 32,34 moles")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "10 litro, coma, 20 metros, coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 25 microsegundos, coma, 3234 moles")?;
+            "1,0 litro, coma, 2,0 metros, coma; x milisegundos, coma; y microsegundos, coma, decagramos coma; 1235 decanewtons, coma; 2,5 microsegundos, coma, 32,34 moles")?;
                     return Ok(());
 
 }
@@ -358,10 +358,10 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("es", "SimpleSpeak", expr, 
-        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 45 militeslas; cerrar corchetes")?;
+        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 4,5 militeslas; cerrar corchetes")?;
                 return Ok(());
 
 }

@@ -348,20 +348,20 @@ fn without_prefix_powers_of_2() -> Result<()> {
 // AI generated
 #[test]
 fn si_other_numbers() -> Result<()> {
-    let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
-                            <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
+    let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
+                            <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
                             <mi>y</mi><mi intent=":unit">µs</mi><mo>,</mo>
                             <mi intent=":unit">dag</mi><mo>,</mo>
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
-                            <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
-                            <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
+                            <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
+                            <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "10 l vessző, 20 m vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 25 mikro-másodperc; vessző; 3234 mol")?;
+            "1,0 l vessző, 2,0 m vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "10 liter, vessző; 20 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 25 mikro-másodperc; vessző; 3234 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "10 liter, vessző; 20 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 25 mikro-másodperc; vessző; 3234 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
                     return Ok(());
 
 }
@@ -374,10 +374,10 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "nyitott zárójel; 1 metrikus tonna, vessző; 2 peta-amper, vessző; 3 pascal, vessző; 45 milli-tesla; zárójel")?;
+        "nyitott zárójel; 1 metrikus tonna, vessző; 2 peta-amper, vessző; 3 pascal, vessző; 4,5 milli-tesla; zárójel")?;
                 return Ok(());
 
 }

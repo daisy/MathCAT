@@ -508,10 +508,10 @@ fn si_other_numbers() -> Result<()> {
             "1,0 l virgule, 2,0 m virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "1,0 litres, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
+            "1,0 litre, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
     test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "1,0 litres, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
+            "1,0 litre, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
                     return Ok(());
 
@@ -524,11 +524,11 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("fr", "SimpleSpeak", expr, 
         "crochet ouvrant; 1 tonne métrique, virgule; 2 peta-ampères, virgule; \
-        3 pascals, virgule; 45 milli-teslas; crochet fermant")?;
+        3 pascals, virgule; 4,5 milli-teslas; crochet fermant")?;
                 return Ok(());
 
 }
