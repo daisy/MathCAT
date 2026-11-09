@@ -271,12 +271,18 @@ Inside `replace`, some common commands are:
 
 * `t:` — text to speak
 * `ct:` — concatenate text without a space in front
+* `tc:` — concatenate text without a space in back
 * `ot:` — optional text, used to avoid repeated words
-* `tc:` — text to translate (automatically, via translations most commonly defined in `definitions.yaml`)
+* `spell:` — force each letter to spoken
+* `translate:` — text to translate (automatically, via translations most commonly defined in `definitions.yaml`)
 * `x:` — an XPath expression
 * `test:` — conditional logic
 * `pause:` — a pause in the speech
 * `bookmark:` — used for synchronized highlighting
+* `with:` — set variables whose values exist only while the contents are active (dynamic scoping)
+* `set_variables:` — set variables whose values exist during some command (used during navigation)
+
+There are also some other text-to-speech commands whose support is not universal among speech engine, but could be useful in some cases: `rate`, `pitch`, `volume`, `gender`.
 
 #### Example 1
 
