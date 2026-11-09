@@ -290,7 +290,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mo>&#x2212;</mo><mn>2</mn></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "2 más menos 2")?;
+        test("es", "SimpleSpeak", expr, "2 más 2 negativo")?;
         return Ok(());
 
     }
@@ -481,12 +481,17 @@ fn max_min_spanish() -> Result<()> {
 
 #[test]
 fn signs_without_positivo_negativo() -> Result<()> {
-    // en español los signos se leen "más" y "menos", sin "positivo" ni "negativo"
+    // sin paréntesis los signos se leen "más" y "menos"; un número con signo entre paréntesis,
+    // como en el colegio: (−2) "2 negativo", (+1) "1 positivo"
     let expr = "<math><mo>+</mo><mn>3</mn></math>";
     test("es", "SimpleSpeak", expr, "más 3")?;
     let expr = "<math><mo>-</mo><mn>1</mn><mo>+</mo><mn>2</mn></math>";
     test("es", "SimpleSpeak", expr, "menos 1 más 2")?;
     let expr = "<math><mn>3</mn><mo>-</mo><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo></math>";
-    test("es", "SimpleSpeak", expr, "3 menos menos 2")?;
+    test("es", "SimpleSpeak", expr, "3 menos 2 negativo")?;
+    let expr = "<math><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+    test("es", "SimpleSpeak", expr, "2 negativo más 1 positivo")?;
+    let expr = "<math><msup><mrow><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></msup></math>";
+    test("es", "SimpleSpeak", expr, "2 negativo al cuadrado")?;
     return Ok(());
 }
