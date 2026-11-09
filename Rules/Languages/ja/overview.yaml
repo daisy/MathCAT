@@ -25,19 +25,19 @@
       - T: "分の"
       - x: "*[1]"
       else:
-      - t: "分数"
+      - T: "分数"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
   match: "."
   replace:
-  - t: "平方根"
+  - T: "平方根"
   - test:
       if: "IsNode(*[1], 'simple')"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "オブ"]
+          then: [T: "オブ"]
       - x: "*[1]"
 
 - name: overview-default
@@ -48,9 +48,9 @@
       if: "*[2][self::m:mn]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "平方根"]
+        then: [T: "平方根"]
       - else_if: "*[2][.='3']"
-        then: [t: "立方根"]
+        then: [T: "立方根"]
       - else_if: "*[2][not(contains(., '.'))]"
         then: [x: "*[2]", T: "じょうこん"]
       else:
@@ -61,7 +61,7 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "オブ"]
+          then: [T: "オブ"]
       - x: "*[1]"
 
 - name: matrix-override
@@ -83,9 +83,9 @@
   tag: mtable
   match: "."
   replace:
-  - t: ""
+  - T: ""
   - x: count(*[2]/*)
-  - t: "かける"
+  - T: "かける"
   - x: count(*[2]/*[self::m:mtr][1]/*)
   - T: "の表"
 
@@ -111,6 +111,6 @@
   - pause: auto
   - x: "*[5]"
   - pause: auto
-  - t: "以下同様"
+  - T: "以下同様"
 
 - include: "SimpleSpeak_Rules.yaml"
