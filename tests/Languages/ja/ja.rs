@@ -768,7 +768,7 @@ fn product_with_limits() -> Result<()> {
 #[test]
 fn definite_integral() -> Result<()> {
     let expr = "<math><msubsup><mo>&#x222B;</mo><mn>0</mn><mn>1</mn></msubsup><mi>x</mi><mo>&#x2146;</mo><mi>x</mi></math>";
-    test("ja", "SimpleSpeak", expr, "インテグラル 0 から, 1 まで オブ; x 微分 d x")?;
+    test("ja", "SimpleSpeak", expr, "インテグラル 0 から, 1 まで オブ; x d x")?;
     return Ok(());
 }
 
@@ -1434,5 +1434,50 @@ fn ascii_symbol_names() -> Result<()> {
     let cell = "<math><mrow><mo>(</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mtext> </mtext></mtd></mtr>\
         <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable><mo>)</mo></mrow></math>";
     test("ja", "ClearSpeak", cell, "2 かける 2 行列; ぎょう 1; 列 1; 1, 列 2; 空欄; ぎょう 2; 列 1; 3, 列 2; 4")?;
+    return Ok(());
+}
+
+/// A mixed number is read 2 と 4分の3 in Japanese, whether the invisible plus is
+/// written or inferred; ± and ∓ are プラスマイナス and マイナスプラス, not the
+/// English "plus or minus" in katakana.
+#[test]
+fn mixed_number_and_plus_minus() -> Result<()> {
+    let implicit = "<math><mn>2</mn><mfrac><mn>3</mn><mn>4</mn></mfrac></math>";
+    test("ja", "SimpleSpeak", implicit, "2 と 4 分の 3")?;
+    let explicit = "<math><mn>2</mn><mo>&#x2064;</mo><mfrac><mn>3</mn><mn>4</mn></mfrac></math>";
+    test("ja", "SimpleSpeak", explicit, "2 と 4 分の 3")?;
+    let plus_minus = "<math><mi>x</mi><mo>&#xB1;</mo><mn>1</mn></math>";
+    test("ja", "SimpleSpeak", plus_minus, "x プラスマイナス 1")?;
+    let minus_plus = "<math><mi>x</mi><mo>&#x2213;</mo><mn>1</mn></math>";
+    test("ja", "SimpleSpeak", minus_plus, "x マイナスプラス 1")?;
+    // The same words when an author writes the intent.
+    for (intent, expected) in [
+        ("mixed-fraction", "x と y"),
+        ("plus-or-minus", "x プラスマイナス y"),
+        ("minus-or-plus", "x マイナスプラス y"),
+    ] {
+        let expr = format!(
+            "<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>"
+        );
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// ℃ is the unit 摂氏度 (like ℉ 華氏度); 摂氏温度 is the name of the quantity.
+#[test]
+fn degrees_celsius() -> Result<()> {
+    let character = "<math><mn>25</mn><mi>&#x2103;</mi></math>";
+    test("ja", "SimpleSpeak", character, "25 摂氏度")?;
+    let unit = "<math><mn>25</mn><mi intent=':unit'>°C</mi></math>";
+    test("ja", "SimpleSpeak", unit, "25 摂氏度")?;
+    return Ok(());
+}
+
+/// ⅇ and ⅈ are the exponential e and the imaginary i; they used to be read 微分 e and 微分 i.
+#[test]
+fn double_struck_italic_letters() -> Result<()> {
+    let expr = "<math><msup><mi>&#x2147;</mi><mrow><mi>&#x2148;</mi><mi>&#x3B8;</mi></mrow></msup></math>";
+    test("ja", "SimpleSpeak", expr, "e の上付き i シータ 上付き終了")?;
     return Ok(());
 }

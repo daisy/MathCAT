@@ -215,7 +215,7 @@
 
  - "¬": [T: "ノット"]                                 # 0xac
  - "°": [T: "度"]                           # 0xb0
- - "±": [T: "プラス オア マイナス"]                       # 0xb1
+ - "±": [T: "プラスマイナス"]                       # 0xb1
  - "´": [T: "アキュートアクセント"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
@@ -309,24 +309,23 @@
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [t: "オブ"]
- - "⁢": [t: ""]                                   # 0x2062
- - "⁣": [t: ""]                                   # 0x2063
- - "⁤": [t: "および"]                                # 0x2064
+        then: [T: "オブ"]
+ - "⁢": [T: ""]                                   # 0x2062
+ - "⁣": [T: ""]                                   # 0x2063
+ - "⁤": [T: "と"]                                # 0x2064
  - "ℂℕℚℝℤ":     # here we rely on this running through the table again to speak "cap xxx"
-    - t: "黒板太字"
+    - T: "黒板太字"
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
- - "℃": [t: "摂氏温度"]                     # 0x2103
+ - "℃": [T: "摂氏度"]                     # 0x2103
  - "ℋℛℓ":                                          # 0x210b
-    - t: "スクリプト"
+    - T: "スクリプト"
     - spell: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℜ":                                          # 0x211c
-    - t: "フラクトゥール"
+    - T: "フラクトゥール"
     - spell: "'R'"
 
  - "ⅆⅇⅈⅉ":                                          # 0x2146-9
-    - t: "微分"
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
 
  - "←": [T: "左向き矢印"]                     # 0x2190
@@ -334,7 +333,7 @@
  - "→":                                          # 0x2192
      - test:
         if: "ancestor::*[2][self::m:limit]"
-        then: [t: "近づく"]
+        then: [T: "近づく"]
         else: [T: "右向き矢印"]
 
  - "↓": [T: "下向き矢印"]                     # 0x2193
