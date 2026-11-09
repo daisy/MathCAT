@@ -338,10 +338,11 @@ fn sine_function() -> Result<()> {
 }
 
 /// Verifies Japanese speech for the less-than comparison operator.
+/// No は before the relation: = is already x イコール 5, and 小なり on its own means "less than".
 #[test]
 fn less_than() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&lt;</mo><mn>5</mn></math>";
-    test("ja", "ClearSpeak", expr, "x は 小なり 5")?;
+    test("ja", "ClearSpeak", expr, "x 小なり 5")?;
     return Ok(());
 }
 
@@ -351,7 +352,7 @@ fn less_than() -> Result<()> {
 #[test]
 fn greater_than() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&gt;</mo><mn>5</mn></math>";
-    test("ja", "ClearSpeak", expr, "x は 大なり 5")?;
+    test("ja", "ClearSpeak", expr, "x 大なり 5")?;
     return Ok(());
 }
 
@@ -359,7 +360,7 @@ fn greater_than() -> Result<()> {
 #[test]
 fn not_equal() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2260;</mo><mn>5</mn></math>";
-    test("ja", "ClearSpeak", expr, "x は ノット イコール 5")?;
+    test("ja", "ClearSpeak", expr, "x ノット イコール 5")?;
     return Ok(());
 }
 
@@ -369,7 +370,7 @@ fn not_equal() -> Result<()> {
 fn element_of() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
-        test("ja", "SimpleSpeak", &expr, "x は 要素オブ, 大文字 エー")?;
+        test("ja", "SimpleSpeak", &expr, "x 要素オブ 大文字 エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
             "x 要素オブ 大文字 エー")?;
     }
@@ -386,9 +387,9 @@ fn set_builder_member_symbol() -> Result<()> {
             "<math><mo>{{</mo><mi>x</mi><mo>{ch}</mo><mi>&#x2124;</mi><mo>:</mo>             <mi>x</mi><mo>&#x003E;</mo><mn>5</mn><mo>}}</mo></math>"
         );
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
-            "集合 すべての x イン 整数 ただし x は 大なり 5")?;
+            "集合 すべての x イン 整数 ただし x 大なり 5")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
-            "集合 すべての x 要素オブ 整数 ただし x は 大なり 5")?;
+            "集合 すべての x 要素オブ 整数 ただし x 大なり 5")?;
     }
     return Ok(());
 }
@@ -400,7 +401,7 @@ fn set_builder_member_symbol() -> Result<()> {
 #[test]
 fn not_element_of() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>A</mi></math>";
-    test("ja", "SimpleSpeak", expr, "x は ノット 要素オブ, 大文字 エー")?;
+    test("ja", "SimpleSpeak", expr, "x ノット 要素オブ, 大文字 エー")?;
     test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", expr,
         "x ノット 要素オブ, 大文字 エー")?;
     return Ok(());
@@ -431,12 +432,12 @@ fn member_and_in_options_work_between_the_operands() -> Result<()> {
 #[test]
 fn subset_and_superset() -> Result<()> {
     for (ch, expected) in [
-        ("&#x2282;", "x は 部分集合オブ y"),
-        ("&#x2283;", "x は 上位集合オブ y"),
-        ("&#x2284;", "x は ノット 部分集合オブ y"),
-        ("&#x2285;", "x は ノット 上位集合オブ y"),
-        ("&#x2286;", "x は 部分集合オブ オア イコール y"),
-        ("&#x2287;", "x は 上位集合オブ オア イコール y"),
+        ("&#x2282;", "x 部分集合オブ y"),
+        ("&#x2283;", "x 上位集合オブ y"),
+        ("&#x2284;", "x ノット 部分集合オブ y"),
+        ("&#x2285;", "x ノット 上位集合オブ y"),
+        ("&#x2286;", "x 部分集合オブ オア イコール y"),
+        ("&#x2287;", "x 上位集合オブ オア イコール y"),
     ] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -448,7 +449,7 @@ fn subset_and_superset() -> Result<()> {
 #[test]
 fn most_positive() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x223e;</mo><mi>y</mi></math>";
-    test("ja", "ClearSpeak", expr, "x は 最も正の y")?;
+    test("ja", "ClearSpeak", expr, "x 最も正の y")?;
     return Ok(());
 }
 
@@ -649,7 +650,7 @@ fn greek_letters() -> Result<()> {
 #[test]
 fn set_membership() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>R</mi></math>";
-    test("ja", "SimpleSpeak", expr, "x は 要素オブ 実数")?;
+    test("ja", "SimpleSpeak", expr, "x 要素オブ 実数")?;
     return Ok(());
 }
 
@@ -708,8 +709,8 @@ fn set_non_membership() -> Result<()> {
 #[test]
 fn parallel_and_perpendicular() -> Result<()> {
     for (op, expected) in [
-        ("&#x2225;", "x は 平行 y"),
-        ("&#x2226;", "x は ノット 平行 y"),
+        ("&#x2225;", "x 平行 y"),
+        ("&#x2226;", "x ノット 平行 y"),
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -723,8 +724,8 @@ fn parallel_and_perpendicular() -> Result<()> {
 #[test]
 fn comparison_with_equality() -> Result<()> {
     for (op, expected) in [
-        ("&#x2264;", "x は 小なり オア イコール 5"),
-        ("&#x2265;", "x は 大なり オア イコール 5"),
+        ("&#x2264;", "x 小なり オア イコール 5"),
+        ("&#x2265;", "x 大なり オア イコール 5"),
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mn>5</mn></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -927,11 +928,11 @@ fn prescripts_and_postscripts_are_japanese_words() -> Result<()> {
 #[test]
 fn number_set_names() -> Result<()> {
     for (letter, expected) in [
-        ("C", "x は 要素オブ 複素数"),
-        ("N", "x は 要素オブ 自然数"),
-        ("Q", "x は 要素オブ 有理数"),
-        ("R", "x は 要素オブ 実数"),
-        ("Z", "x は 要素オブ 整数"),
+        ("C", "x 要素オブ 複素数"),
+        ("N", "x 要素オブ 自然数"),
+        ("Q", "x 要素オブ 有理数"),
+        ("R", "x 要素オブ 実数"),
+        ("Z", "x 要素オブ 整数"),
     ] {
         let expr = format!(
             "<math><mi>x</mi><mo>&#x2208;</mo><mi mathvariant='double-struck'>{letter}</mi></math>"
@@ -1291,7 +1292,7 @@ fn coordinate_point() -> Result<()> {
 #[test]
 fn set_builder_says_the_condition_is_a_condition() -> Result<()> {
     let expr = "<math><mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo></math>";
-    test("ja", "SimpleSpeak", expr, "集合 すべての x ただし x は 大なり 2")?;
+    test("ja", "SimpleSpeak", expr, "集合 すべての x ただし x 大なり 2")?;
     return Ok(());
 }
 
