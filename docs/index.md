@@ -185,7 +185,7 @@ Translators:
 * Polish -- Michał Dziwisz (Fundacja Instytut Rozwoju Regionalnego)
 * Portuguese -- Nágila Seidenstucker and Camila Kawamura (Fundação Dorina Nowill para Cegos)
 * Russian (both speech and braille) -- Danil Kostenkov
-* Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development) and María Allo Roldán
+* Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development), María Allo Roldán and Pablo González Luengo
 * Swedish -- Tim Arborealis Lötberg (MTM) and Anders Eklund (SPSM)
 * Vietnamese -- Dang Hoai Phúc and Trang Pham
 * Others??? -- please volunteer so I can list you here...
