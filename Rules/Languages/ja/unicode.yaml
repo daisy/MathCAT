@@ -5,12 +5,12 @@
  - "a": 
     - test: 
         if: "$TTS='none'"
-        then: [t: "エー"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
+        then: [T: "エー"]                         # long "a" sound in all speech engines I tested (espeak, MS SAPI, eloquence,
         else: [spell: "'a'"]                         #    AWS Polly, ReadSpeaker, NaturalReader, google cloud, nuance, ibm watson)
  - "b-z": 
     - test: 
         if: "$TTS='none'"
-        then: [t: "."]                          
+        then: [T: "."]                          
         else: [spell: "'.'"]                       
 
  # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
@@ -30,14 +30,14 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "大文字"]
           else: [x: "$SpeechOverrides_CapitalLetters"]
     - pitch:
         value: "$CapitalLetters_Pitch"
         replace:
         - test:
             if: "$TTS='none'"
-            then: [t: "エー"]
+            then: [T: "エー"]
             else: [spell: "'a'"]
             
  - "B-Z":
@@ -53,32 +53,32 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "大文字"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
         replace: [spell: "translate('.', 'BCDEFGHIJKLMNOPQRSTUVWXYZ', 'bcdefghijklmnopqrstuvwxyz')"]
 
- - "0-9": [t: "."]
+ - "0-9": [T: "."]
 
- - " ": [t: " "]                     # 0x20
+ - " ": [T: " "]                     # 0x20
 
  - "!":                                            # 0x21
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
         then_test:
             if: "$Verbosity = 'Terse'"
-            then: [t: "バング"]                      # 0x21
-            else: [t: "感嘆符"]          # 0x21
-        else: [t: "階乗"]                     # 0x21
+            then: [T: "感嘆符"]                      # 0x21
+            else: [T: "感嘆符"]          # 0x21
+        else: [T: "階乗"]                     # 0x21
           
- - "\"": [t: "引用符"]                     # 0x22
- - "#": [t: "番号記号"]                              # 0x23
- - "$": [t: "ドル"]                             # 0x24
- - "%": [t: "パーセント"]                             # 0x25
- - "&": [t: "アンパサンド"]                           # 0x26
- - "'": [t: "アポストロフィ"]                          # 0x27
+ - "\"": [T: "引用符"]                     # 0x22
+ - "#": [T: "シャープ"]                              # 0x23
+ - "$": [T: "ドル"]                             # 0x24
+ - "%": [T: "パーセント"]                             # 0x25
+ - "&": [T: "アンパサンド"]                           # 0x26
+ - "'": [T: "アポストロフィ"]                          # 0x27
  - "(":                                            # 0x28
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -99,9 +99,9 @@
  - "*":                                          # 0x2a
     test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
-        then: [t: "アスタリスク"]                        # 0x2a
-        else: [t: "掛ける"]                       # 0x2a
- - "+": [t: "プラス"]                              # 0x2b
+        then: [T: "スター"]                        # 0x2a
+        else: [T: "掛ける"]                       # 0x2a
+ - "+": [T: "プラス"]                              # 0x2b
  - ",":                                          # 0x2c
     # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
     # that this test is here and not with "…" is not ideal, but seems simplest
@@ -114,26 +114,26 @@
                # except if expression starts with '…'
             - "../*[1][.='…'] "
         then:
-        - t: "コンマ"                         # 	(en: 'comma', google translation)
+        - T: "コンマ"                         # 	(en: 'comma', google translation)
         - test:
             if: "$Verbosity != Terse"
             then: [pause: short]
         # else silent
 
- - "-": [t: "マイナス"]                               # 0x2d
+ - "-": [T: "マイナス"]                               # 0x2d
  - ".":                                          # 0x2e
     - test:
         if: "parent::*[1][self::m:mn]"
         then: [T: "点"]
-        else: [t: "ドット"]
+        else: [T: "ドット"]
  - "/":                                           # 0x2f
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [t: "スラッシュ"]                        # 0x2f
-        else: [t: "割る"]                   # 0x2f
+        then: [T: "スラッシュ"]                        # 0x2f
+        else: [T: "割る"]                   # 0x2f
 
- - ":": [t: "コロン"]                               # 0x3a
- - ";": [t: "セミコロン"]                           # 0x3b
+ - ":": [T: "コロン"]                               # 0x3a
+ - ";": [T: "セミコロン"]                           # 0x3b
  - "<":                                          # 0x3c
      - test: 
          if: "$Verbosity!='Terse'"
@@ -142,22 +142,22 @@
  - "=":                                           # 0x3d
     - test: 
         if: "$Verbosity!='Terse'"
-        then: [t: "イコール"]
-        else: [t: "イコール"]
+        then: [T: "イコール"]
+        else: [T: "イコール"]
 
  - ">":                                          # 0x3e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: "は"]
      - T: "大なり"
- - "?": [t: "疑問符"]                       # 0x3f
- - "@": [t: "アットマーク"]                             # 0x40
+ - "?": [T: "疑問符"]                       # 0x3f
+ - "@": [T: "アットマーク"]                             # 0x40
  - "[":                                          # 0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "角カッコ"]
         else: [T: "角カッコ"]                            
- - "\\": [t: "バックスラッシュ"]                         # 0x5c
+ - "\\": [T: "バックスラッシュ"]                         # 0x5c
  - "]":                                          # 0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -166,10 +166,10 @@
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
-        then: [t: "ハット"]
-        else: [t: "キャレット"]
- - "_": [t: "アンダーバー"]                          # 0x5f
- - "`": [t: "グレイヴアクセント"]                              # 0x60
+        then: [T: "ハット"]
+        else: [T: "キャレット"]
+ - "_": [T: "アンダーバー"]                          # 0x5f
+ - "`": [T: "グレイヴアクセント"]                              # 0x60
  - "{":                                         # 0x7b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
@@ -182,22 +182,22 @@
         replace:
         - test:
             - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-              then: [t: "縦線"]
+              then: [T: "縦線"]
             - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
                   then: [T: "条件は"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
-                  then: [t: "割り切る"]
-                  else: [t: "縦線"]
+                  then: [T: "割り切る"]
+                  else: [T: "縦線"]
             - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
-              then: [t: "縦線"]
+              then: [T: "縦線"]
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [T: "ただし"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
               then: [T: "条件は"] 
-            - else: [t: "割り切る"]                   
+            - else: [T: "割り切る"]                   
 
  - "}":                                          # 0x7d
     - test:
@@ -205,38 +205,38 @@
         then: [T: "中カッコ閉じ"]
         else: [T: "中カッコ閉じ"]                            
 
- - "~": [t: "チルダ"]                               # 0x7e
+ - "~": [T: "チルダ"]                               # 0x7e
  - " ":                                            # 0xa0
     - test:
         # could be mtext in mtd or mtext in an mrow that is a concatenation of mtd's. Is there a better solution?
         if: "@data-empty-in-2D and not(ancestor::*[self::m:piecewise or self::m:system-of-equations or self::m:lines])"
-        then: [t: "空"]                         # want to say something for fraction (etc) with empty child
-        else: [t: ""]                            
+        then: [T: "空欄"]                         # want to say something for fraction (etc) with empty child
+        else: [T: ""]                            
 
- - "¬": [t: "ノット"]                                 # 0xac
- - "°": [t: "度"]                           # 0xb0
+ - "¬": [T: "ノット"]                                 # 0xac
+ - "°": [T: "度"]                           # 0xb0
  - "±": [T: "プラス オア マイナス"]                       # 0xb1
- - "´": [t: "アキュートアクセント"]                            # 0xb4
+ - "´": [T: "アキュートアクセント"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [t: "ドット"]
-        else: [t: "掛ける"]
+        then: [T: "ドット"]
+        else: [T: "掛ける"]
  - "×":                                          # 0xd7
     - test:
         if: "$SpeechStyle = 'ClearSpeak'"
         then_test:
         - if: "$ClearSpeak_MultSymbolX = 'Auto'"
-          then: [t: "掛ける"]
+          then: [T: "掛ける"]
         - else_if: "$ClearSpeak_MultSymbolX = 'By'"
           then: [T: "掛ける"]
-          else: [t: "クロス"]
+          else: [T: "クロス"]
         else_test:
             if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [t: "クロス"]
-            else: [t: "掛ける"]
+            then: [T: "クロス"]
+            else: [T: "掛ける"]
 
- - "÷": [t: "割る"]                          # 0xf7
+ - "÷": [T: "割る"]                          # 0xf7
  - "̀": [t: "グレイヴアクセント装飾"]          # 0x300
  - "́": [t: "アキュートアクセント装飾"]          # 0x301
  - "̂": [t: "サーカムフレックス装飾"]     # 0x302
