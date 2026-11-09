@@ -379,7 +379,8 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mo>&#x2212;</mo><mn>2</mn></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "ClearSpeak", expr, "2 más 2 negativo")?;
+        test("es", "ClearSpeak", expr, "2 más menos 2")?;
+        test_prefs("es", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "2 más 2 negativo")?;
         return Ok(());
 
     }

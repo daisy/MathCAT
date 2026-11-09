@@ -287,11 +287,19 @@ fn zoom_in_all_babel_arc() -> Result<()> {
 
 #[test]
 fn zoom_in_signed_number_in_parens() -> Result<()> {
-    // (−2) + (+1): al entrar al primer término se oye "2 negativo", igual que en la lectura completa
+    // (−2) + (+1) con verbosidad Verbose: al entrar al primer término se oye "2 negativo", igual que en la lectura completa
     let expr = r#"
       <math>
         <mo>(</mo><mo>−</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mo>+</mo><mn>1</mn><mo>)</mo>
       </math>
     "#;
-    assert_zoom_in("ZoomIn", expr, "acercar; 2 negativo")
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_nav("es", expr)?;
+        libmathcat::interface::set_preference("Verbosity", "Verbose")?;
+        let speech = do_navigate_command("ZoomIn")?;
+        assert_eq!("acercar; 2 negativo", speech.trim_end_matches([' ', ',', ';']));
+        Ok(())
+    }));
+    report_any_panic(result)
 }
