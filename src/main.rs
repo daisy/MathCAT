@@ -36,7 +36,18 @@ fn main() {
       .init();
 
    let expr = r#"
-<math><mn>20</mn><mo intent="_dividido">∶</mo><mn>5</mn></math>
+<math>
+        <mi mathvariant="normal">N</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <mi mathvariant="normal">m</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>

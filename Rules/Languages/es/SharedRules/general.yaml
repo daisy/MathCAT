@@ -301,12 +301,6 @@
     # But it might be in a fraction as (C) "3 m/s" (parent is mfrac/mrow) or (D) "3 m^2/s^2" (parent is msup/mfrac/mrow)
     #   or even (E) {3 m^2}/s (parent is msup/mrow)
     # If in a fraction, only look in the numerator to find the coefficient
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -359,7 +353,7 @@
           if: "$Prefix = ''"
           then:
           - test:
-            - if: "$IsSingular"
+            - if: "UnitNumber(.) = 'one'"
               # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
               then: [x: "$Word"]
             - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -368,7 +362,7 @@
           else:
           - x: "$Prefix"
           - test:
-            - if: "$IsSingular"
+            - if: "UnitNumber(.) = 'one'"
               # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
               then: [x: "concat('\uF8FE', $Word)"]
             - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -380,7 +374,7 @@
   # 25\,{}^{\circ}\mathrm{C} llega como C con un superíndice previo: "25 grados Celsius" (CMU)
   tag: mmultiscripts
   match:
-  - "count(*)=4 and *[1][self::m:mi][.='C' or .='F'] and *[2][self::m:mprescripts] and *[3][self::m:none] and"
+  - "count(*)=4 and *[1][self::m:mi or self::m:unit][.='C' or .='F'] and *[2][self::m:mprescripts] and *[3][self::m:none] and"
   - "*[4][.='°' or .='∘'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   variables:
   - Numero: "preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:mn] |
@@ -400,14 +394,13 @@
   match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
     # If the amount is singular, we don't add the plural ending.
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   - LastChar: "substring(DefinitionValue(*[1], 'Speech', 'CurrencySymbols'), string-length(DefinitionValue(*[1], 'Speech', 'CurrencySymbols')), 1)"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
-    - if: "$IsSingular"
+    - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]

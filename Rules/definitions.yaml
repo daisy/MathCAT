@@ -4,6 +4,10 @@
 # For numbers, 
 # - name: [] "...", "..." "..." ]
 
+# How counted nouns (units, currencies, …) choose one / few / many.
+# Languages that need few override this with ["one_few_many"] (e.g. pl, ru).
+- PluralSystem: ["one_many"]
+
 - IntentMappings: {
     # this should be defined for each translation; a default empty value is here to ensure the mapping exists
   }

@@ -190,6 +190,40 @@ fn set_local_name(element: Element, new_name: &str) {
 }
 
 
+static UNIT_JOINING_OPERATORS: phf::Set<&str> = phf_set! {
+    "\u{2062}", "·", "⋅", "∙", "×", "/", "∕",
+};
+
+/// Add `:unit:` to intent nodes built from units: a `power`/`indexed-by` whose base is a unit,
+/// a `fraction` whose parts are all units, and an `mrow` of units joined by multiplication/division operators.
+/// Returns true if `intent` is (now) marked as a unit.
+///
+/// This runs bottom-up on the finished intent tree so that explicit (`intent=':unit'`) and
+/// canonicalize-inferred unit leaves produce the same tree.
+pub fn mark_unit_containers(intent: Element) -> bool {
+    let children: Vec<Element> = intent.children().iter().filter_map(|child| child.element()).collect();
+    let child_is_unit: Vec<bool> = children.iter().map(|&child| mark_unit_containers(child)).collect();
+    let raw_properties = intent.attribute_value(INTENT_PROPERTY);
+    let properties = raw_properties.as_deref().unwrap_or_default();
+    if properties.contains(":unit:") {
+        return true;
+    }
+    let is_unit = match as_str!(name(intent)) {
+        "power" | "indexed-by" => child_is_unit.first() == Some(&true),
+        "fraction" => !child_is_unit.is_empty() && child_is_unit.iter().all(|&is_unit| is_unit),
+        "mrow" => child_is_unit.iter().any(|&is_unit| is_unit) &&
+                  children.iter().zip(&child_is_unit).all(|(&child, &is_unit)|
+                      is_unit || (name(child) == "mo" && UNIT_JOINING_OPERATORS.contains(as_str!(as_text(child))))
+                  ),
+        _ => false,
+    };
+    if is_unit {
+        let properties = if properties.is_empty() {":"} else {properties};
+        intent.set_attribute_value(INTENT_PROPERTY, &simplify_fixity_properties(&(properties.to_string() + "unit:")));
+    }
+    return is_unit;
+}
+
 static FIXITIES: phf::Set<&str> = phf_set! {
     "function", "infix", "prefix", "postfix", "silent", "nofix", "other",
 };

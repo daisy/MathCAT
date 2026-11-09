@@ -57,6 +57,293 @@ pub(crate) fn can_merge_mi_elements(left: Element<'_>, right: Element<'_>) -> bo
 	return !has_arg_or_intent(left) && !has_arg_or_intent(right);
 }
 
+/// True when `intent` is property-only (no concept name): trimmed value starts with `:`.
+fn intent_is_property_only(intent: &str) -> bool {
+	return intent.trim_start().starts_with(':');
+}
+
+/// True when the intent string includes the `:unit` property.
+fn intent_has_unit(intent: &str) -> bool {
+	return intent.contains(":unit");
+}
+
+/// Add `:unit` to a property-only intent, or set `intent=":unit"` if absent.
+/// An element with a concept-name intent is left unchanged.
+fn add_unit_property(el: Element<'_>) {
+	let intent_attr = el.attribute_value(INTENT_ATTR);
+	match intent_attr.as_deref() {
+		None => {
+			el.set_attribute_value(INTENT_ATTR, ":unit");
+		},
+		Some(intent) if intent_is_property_only(intent) && !intent_has_unit(intent) => {
+			let mut new_intent = intent.to_string();
+			if !new_intent.ends_with(':') {
+				new_intent.push(':');
+			}
+			new_intent.push_str("unit");
+			el.set_attribute_value(INTENT_ATTR, &new_intent);
+		},
+		Some(_) => {},
+	}
+}
+
+const LIKELY_UNIT_ATTR: &str = "data-likely-unit";
+
+/// Stamp `data-likely-unit` on dictionary-matching non-variable `mi`/`mtext` leaves.
+/// Returns true if any leaf was stamped (so a confirm pass is worthwhile).
+fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
+	let tag = as_str!(name(mathml));
+	if tag == "mi" || tag == "mtext" {
+		if looks_like_unit_leaf(mathml) &&
+		   is_known_unit_token_text(as_str!(as_text(mathml)))
+		{
+			mathml.set_attribute_value(LIKELY_UNIT_ATTR, "true");
+			return true;
+		}
+		return false;
+	}
+	let mut found = false;
+	for child in mathml.children() {
+		if let Some(child_el) = child.element() {
+			found |= mark_likely_unit_leaves(child_el);
+		}
+	}
+
+	/// True when `text` is a known unit name or SI-prefixed unit in the speech definitions.
+	fn is_known_unit_token_text(text: &str) -> bool {
+		return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+			let defs = definitions.borrow();
+			if defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("UnitsWithoutPrefixes").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("EnglishUnits").is_some_and(|m| m.contains_key(text))
+			{
+				return true;
+			}
+			if text.len() >= 3 &&
+			   text.starts_with("da") &&
+			   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(&text[2..]))
+			{
+				return true;
+			}
+			if text.chars().count() >= 2 {
+				let mut chars = text.chars();
+				let Some(prefix) = chars.next() else {
+					return false;
+				};
+				let rest: String = chars.collect();
+				if defs.get_hashmap("SIPrefixes").is_some_and(|m| m.contains_key(prefix.to_string().as_str())) &&
+				   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(rest.as_str()))
+				{
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
+	/// True when an `mi`/`mtext` leaf looks non-variable enough to be a unit token.
+	fn looks_like_unit_leaf(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag != "mi" && tag != "mtext" {
+			return false;
+		}
+		if el.attribute("data-chem-element").is_some() {
+			return false;
+		}
+		if tag == "mtext" {
+			return true;
+		}
+		let text = as_text(el);
+		if text.chars().count() > 1 {
+			return true;
+		}
+		return el.attribute_value("mathvariant").as_deref() == Some("normal");
+	}
+
+	return found;
+}
+
+/// Promote likely unit leaves that sit in a confirming context (quantity, product, fraction, equality).
+fn confirm_likely_units(mathml: Element<'_>) {
+	const UNIT_JOIN_OPS: &[&str] = &["\u{2062}", "·", "⋅", "∙", "×", "/", "∕"];
+
+	confirm_likely_units_in(mathml);
+	strip_likely_unit_attrs(mathml);
+
+	fn mathml_element_children(el: Element<'_>) -> Vec<Element<'_>> {
+		return el.children().iter().filter_map(|c| c.element()).collect();
+	}
+
+	fn is_likely_unit_leaf(el: Element<'_>) -> bool {
+		return el.attribute(LIKELY_UNIT_ATTR).is_some();
+	}
+
+	fn is_confirmed_or_likely_unit_leaf(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag != "mi" && tag != "mtext" {
+			return false;
+		}
+		if is_likely_unit_leaf(el) {
+			return true;
+		}
+		return el.attribute_value(INTENT_ATTR).as_deref().is_some_and(intent_has_unit);
+	}
+
+	fn is_unit_join_op(el: Element<'_>) -> bool {
+		return name(el) == "mo" && UNIT_JOIN_OPS.contains(&as_str!(as_text(el)));
+	}
+
+	fn is_equals_op(el: Element<'_>) -> bool {
+		return name(el) == "mo" && as_str!(as_text(el)) == "=";
+	}
+
+	/// A factor that can participate in a unit product/quotient (leaf, power of unit, fraction of units, or nested product).
+	fn is_unit_candidate_factor(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		match tag {
+			"mi" | "mtext" => return is_confirmed_or_likely_unit_leaf(el),
+			"msup" | "msubsup" => {
+				let children = mathml_element_children(el);
+				return children.first().is_some_and(|base| is_confirmed_or_likely_unit_leaf(*base));
+			},
+			"mfrac" => {
+				let children = mathml_element_children(el);
+				return children.len() >= 2 &&
+					is_unit_candidate_factor(children[0]) &&
+					is_unit_candidate_factor(children[1]);
+			},
+			"mrow" => return is_unit_product_or_quotient_children(&mathml_element_children(el)),
+			_ => return false,
+		}
+	}
+
+	fn is_unit_product_or_quotient_children(children: &[Element<'_>]) -> bool {
+		if children.is_empty() {
+			return false;
+		}
+		if children.len() == 1 {
+			return is_unit_candidate_factor(children[0]);
+		}
+		if children.len() % 2 == 0 {
+			return false;
+		}
+		for (i, child) in children.iter().enumerate() {
+			if i % 2 == 0 {
+				if !is_unit_candidate_factor(*child) {
+					return false;
+				}
+			} else if !is_unit_join_op(*child) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	fn promote_likely_leaves_in(el: Element<'_>) {
+		let tag = as_str!(name(el));
+		match tag {
+			"mi" | "mtext" => {
+				if is_likely_unit_leaf(el) {
+					add_unit_property(el);
+				}
+			},
+			"msup" | "msubsup" => {
+				if let Some(base) = mathml_element_children(el).first() {
+					promote_likely_leaves_in(*base);
+				}
+			},
+			"mfrac" | "mrow" => {
+				for child in mathml_element_children(el) {
+					promote_likely_leaves_in(child);
+				}
+			},
+			_ => {},
+		}
+	}
+
+	fn is_numeric_quantity(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag == "mn" {
+			return true;
+		}
+		if tag == "mfrac" {
+			let children = mathml_element_children(el);
+			return children.len() >= 2 &&
+				name(children[0]) == "mn" &&
+				name(children[1]) == "mn";
+		}
+		return false;
+	}
+
+	fn strip_likely_unit_attrs(mathml: Element<'_>) {
+		if mathml.attribute(LIKELY_UNIT_ATTR).is_some() {
+			mathml.remove_attribute(LIKELY_UNIT_ATTR);
+		}
+		for child in mathml_element_children(mathml) {
+			strip_likely_unit_attrs(child);
+		}
+	}
+
+	fn confirm_flat_unit_sequence(children: &[Element<'_>]) {
+		// Multi-factor product/quotient only (a lone likely token is not enough).
+		if children.len() >= 3 &&
+		   is_unit_product_or_quotient_children(children)
+		{
+			for child in children {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
+		// quantity ⁢ unit  (also allow longer products after the times; single factor OK here)
+		if children.len() >= 3 &&
+		   is_numeric_quantity(children[0]) &&
+		   is_unit_join_op(children[1]) &&
+		   as_str!(as_text(children[1])) == "\u{2062}" &&
+		   is_unit_product_or_quotient_children(&children[2..])
+		{
+			for child in &children[2..] {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
+		// LHS = unit-product-RHS (RHS may be a single factor, e.g. Hz = s⁻¹)
+		if let Some(eq_index) = children.iter().position(|c| is_equals_op(*c)) &&
+		   eq_index >= 1 &&
+		   eq_index + 1 < children.len() &&
+		   is_unit_product_or_quotient_children(&children[eq_index + 1..])
+		{
+			for child in &children[eq_index + 1..] {
+				promote_likely_leaves_in(*child);
+			}
+			let lhs = children[eq_index - 1];
+			if is_unit_candidate_factor(lhs) {
+				promote_likely_leaves_in(lhs);
+			}
+		}
+	}
+
+	fn confirm_likely_units_in(mathml: Element<'_>) {
+		let tag = as_str!(name(mathml));
+		if tag == "mfrac" {
+			let children = mathml_element_children(mathml);
+			if children.len() >= 2 &&
+			   is_unit_candidate_factor(children[0]) &&
+			   is_unit_candidate_factor(children[1])
+			{
+				promote_likely_leaves_in(children[0]);
+				promote_likely_leaves_in(children[1]);
+			}
+		} else if tag == "mrow" || tag == "math" {
+			let children = mathml_element_children(mathml);
+			confirm_flat_unit_sequence(&children);
+		}
+
+		for child in mathml_element_children(mathml) {
+			confirm_likely_units_in(child);
+		}
+	}
+}
+
 
 /// Used when mhchem is detected and we should favor postscripts rather than prescripts in constructing an mmultiscripts
 const MHCHEM_MMULTISCRIPTS_HACK: &str = "MHCHEM_SCRIPT_HACK";
@@ -602,8 +889,40 @@ impl CanonicalizeContext {
 			converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
 		}
+		if mark_likely_unit_leaves(converted_mathml) {
+			confirm_likely_units(converted_mathml);
+		}
 		debug!("\nMathML after canonicalize:\n{}", mml_to_string(converted_mathml));
 		return Ok(converted_mathml);
+	}
+
+	/// Push property-only `:unit` from a container down to `mi`/`mtext` leaves (not into scripts).
+	fn propagate_unit_intent(mathml: Element) {
+		let intent_attr = mathml.attribute_value(INTENT_ATTR);
+		let Some(intent) = intent_attr.as_deref() else {
+			return;
+		};
+		if is_leaf(mathml) || !intent_is_property_only(intent) || !intent_has_unit(intent) {
+			return;
+		}
+		propagate_unit_intent_into(mathml);
+
+		fn propagate_unit_intent_into(mathml: Element) {
+			match as_str!(name(mathml)) {
+				"mi" | "mtext" => add_unit_property(mathml),
+				"mrow" | "mstyle" | "mpadded" | "mfrac" => {
+					for child in mathml.children() {
+						propagate_unit_intent_into(as_element(child));
+					}
+				},
+				"msub" | "msup" | "msubsup" | "munder" | "mover" | "munderover" => {
+					if let Some(base) = mathml.children().first() {
+						propagate_unit_intent_into(as_element(*base));
+					}
+				},
+				_ => {},
+			}
+		}
 	}
 		
 	/// Make sure there is exactly one child
@@ -876,6 +1195,10 @@ impl CanonicalizeContext {
 			}
 		};
 
+		// Push `:unit` from property-only containers onto mi/mtext leaves before cleaning children
+		// (so mi→mo conversion and mi merging see the leaf intent).
+		CanonicalizeContext::propagate_unit_intent(mathml);
+
 		match element_name {
 			"mn" => {
 				let text = as_text(mathml);
@@ -979,7 +1302,6 @@ impl CanonicalizeContext {
 			},
 			"mtext" => {
 				// debug!("before merge_arc_trig: {}", mml_to_string(mathml));
-
 				if let Some(result) = merge_arc_trig(mathml) {
 					return Some(result);
 				} else if let Some(result) = split_points(mathml) {
@@ -1497,6 +1819,10 @@ impl CanonicalizeContext {
 					return mathml;
 				}
 				if let Some(elements) = convert_leaves_to_chem_elements(mathml) {
+					// Empty: the leaf was merged into a following script base and removed.
+					if elements.is_empty() {
+						return mathml;
+					}
 					// children are already marked as chemical elements					
 					let answer = replace_children(mathml, elements);
 					if name(answer) == "mrow" {
@@ -6885,6 +7211,52 @@ mod canonicalize_tests {
 	}
 
 	#[test]
+	fn unit_intent_propagates_to_leaves() -> Result<()> {
+		// Property-only :unit on an mrow is pushed to mi leaves, including script bases.
+		// Containers are not marked here; that happens on the intent tree.
+		let test_str = "<math>
+			<mrow intent=':unit'>
+				<mi>W</mi>
+				<mo>/</mo>
+				<msup>
+					<mi>m</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+		</math>";
+		let target_str = "<math>
+			<mrow intent=':unit'>
+				<mi intent=':unit'>W</mi>
+				<mo>/</mo>
+				<msup>
+					<mi intent=':unit'>m</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn unit_intent_propagates_to_juxtaposed_mis() -> Result<()> {
+		// Juxtaposed unit letters stay separate (intent blocks merge) with invisible times.
+		let test_str = "<math>
+			<mrow intent=':unit'>
+				<mi>W</mi>
+				<mi>h</mi>
+			</mrow>
+		</math>";
+		let target_str = "<math>
+			<mrow intent=':unit'>
+				<mi intent=':unit'>W</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi intent=':unit'>h</mi>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
 	fn merge_chem_element_skips_arg_and_intent() -> Result<()> {
 		// "N"+"a" would normally become Na; arg/intent must block that merge.
 		let test_str = "<math>
@@ -7081,8 +7453,9 @@ mod canonicalize_tests {
 	#[test]
     fn pseudo_scripts_in_mi() -> Result<()> {
         let test_str = "<math><mrow><mi>p'</mi><mo>=</mo><mi>µ°C</mi></mrow></math>";
-        let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi>µ°C</mi></mrow></math>";
-        are_strs_canonically_equal_result(test_str, target_str, &[])
+		// RHS is a known unit after '='; likely→confirm sets intent=':unit'.
+        let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi intent=':unit'>µ°C</mi></mrow></math>";
+        return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
 	#[test]

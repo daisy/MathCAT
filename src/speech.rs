@@ -77,6 +77,7 @@ pub fn unquote_string(str: &str) -> &str {
 /// If there is an error, the speech string will indicate an error.
 pub fn intent_from_mathml<'m>(mathml: Element, doc: Document<'m>) -> Result<Element<'m>> {
     let intent_tree = intent_rules(&INTENT_RULES, doc, mathml, "")?;
+    crate::infer_intent::mark_unit_containers(intent_tree);
     doc.root().append_child(intent_tree);
     return Ok(intent_tree);
 }

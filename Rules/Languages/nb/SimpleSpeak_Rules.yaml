@@ -76,15 +76,7 @@
   - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]"
   variables:
   - IsPlural: "not(*[1]=1)"
-  - UnitSibling: "IfThenElse(preceding-sibling::*[1][.='\u2064'],  .., .)"
-    # set the potential unit node -- otherwise set it to a empty node set (use a made up name)
-  - UnitNodeLocation: "IfThenElse($UnitSibling/..[self::m:mrow and count(*)=3 and *[2][.='\u2062']],
-                                  $UnitSibling/following-sibling::*[2],
-                                  self::m:select-no-nodes)"
-    # pick out the right node to test for being a neuter unit
-  - UnitNode: "IfThenElse($UnitNodeLocation[self::m:unit],
-                          $UnitNodeLocation[self::m:unit],
-                          $UnitNodeLocation[self::m:fraction[contains(@data-intent-property, ':unit:')]]/*[1])"
+  - UnitNode: "GetUnit(.)"
     # test the node for being a neuter unit
     # note: bias ha->hektar and Pa->Pascal, not si-prefix "a" (annum)
   - NeuterUnitFollows: "$UnitNode[DEBUG(IsInDefinition(., 'Speech', 'NeuterUnits')) or 
