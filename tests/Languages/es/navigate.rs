@@ -284,3 +284,14 @@ fn zoom_in_all_babel_arc() -> Result<()> {
     "#;
     assert_zoom_in("ZoomInAll", expr, "acercado al máximo; arc")
 }
+
+#[test]
+fn zoom_in_signed_number_in_parens() -> Result<()> {
+    // (−2) + (+1): al entrar al primer término se oye "2 negativo", igual que en la lectura completa
+    let expr = r#"
+      <math>
+        <mo>(</mo><mo>−</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mo>+</mo><mn>1</mn><mo>)</mo>
+      </math>
+    "#;
+    assert_zoom_in("ZoomIn", expr, "acercar; 2 negativo")
+}
