@@ -674,7 +674,13 @@
  - "−": [T: "menos"]                            	#  0x2212	(en: 'minus')
  - "∓": [T: "menos o más"]                        	#  0x2213	(en: 'minus or plus')
  - "∔": [T: "punto más"]                        	#  0x2214	(en: 'dot plus')
- - "∕": [T: "dividido por"]                	#  0x2215	(en: 'divided by')
+ - "∕":                                           	#  0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "barra oblicua"]              	# 	(en: 'slash')
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "por"]                        	# 	(en: 'per')
+          else: [T: "dividido por"]               	# 	(en: 'divided by')
  - "∖": [T: "menos"]                            	#  0x2216	(en: 'set minus')
  - "∗": [T: "asterisco"]                        	#  0x2217	(en: 'times')
  - "∘":                                           	#  0x2218	(en: 'composed with')
@@ -683,10 +689,12 @@
         then: [T: "grados"]      # {}^{\circ}C, 30^{\circ}
         else: [T: "compuesto"]          # (en: 'composed with')
  - "∙":                                         	#  0x2219
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "punto"]                      	# 	(en: 'dot', google translation)
-        else: [T: "bala"]                       	# 	(en: 'times')
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "punto"]                      	# 	(en: 'dot', google translation)
+          else: [T: "bala"]                       	# 	(en: 'times')
 
  - "∛":                                          # 0x221b
      - test: 
@@ -1070,10 +1078,12 @@
  - "⋃": [T: "unión"]                            	#  0x22c3	(en: 'union')
  - "⋄": [T: "operador diamante"]                	#  0x22c4	(en: 'diamond operator')
  - "⋅":                                         	#  0x22c5
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "punto"]                      	# 	(en: 'dot', google translation)
-        else_test:
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "punto"]                      	# 	(en: 'dot', google translation)
+          else_test:
             if: "$Verbosity = 'Verbose'"
             then: [T: "multiplicado por"]      # 	(en: 'times')
             else: [T: "por"]      # 	(en: 'times')

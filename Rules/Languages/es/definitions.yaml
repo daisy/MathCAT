@@ -729,10 +729,15 @@
 - MasculineUnitWords: {
     "día",
     "año luz",
+    "tesla",
+    "vatio hora", "kilovatio hora", "megavatio hora", "gigavatio hora",
+    "amperio hora", "miliamperio hora",
+    "kilogramo fuerza", "caballo de fuerza", "punto por pulgada",
   }
 - FeminineUnitWords: {
     "revolución por minuto",
     "parte por millón",
+    "libra troy", "onza troy", "milla por galón",
   }
 - MasculineCurrencyWords: {
   }
@@ -759,10 +764,10 @@
 - PluralForms: {
   # FIX: this needs to be flushed out
     "radián": "radianes", "estereorradián": "estereorradianes", "gradián": "gradianes",
-    "lumen": "lúmenes", "lux": "luxes",
+    "lumen": "lúmenes", "lux": "lux",
     "colón": "colones", "yen": "yenes", "bitcóin": "bitcoines", "guaraní": "guaraníes",
     "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
-    "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvins",
+    "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",
     "unidad astronómica": "unidades astronómicas", "unidad de masa atómica": "unidades de masa atómica",
     "kelvin": "kelvins",
     "grado Celsius": "grados Celsius",

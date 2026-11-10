@@ -103,7 +103,7 @@ fn si_derived_1() -> Result<()> {
         <mn>1</mn><mi intent=":unit">lx</mi><mo>,</mo><mn>2</mn><mi intent=":unit">lx</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "un becquerel, coma, 2 becquereles, coma, un culombio, coma, 2 culombios, coma; un grado Celsius, coma; 2 grados Celsius, coma; un grado Celsius, coma; 2 grados Celsius, coma, un faradio, coma, 2 faradios, coma, un gray, coma, 2 grays, coma, un henrio, coma, 2 henrios, coma, un hercio, coma, 2 hercios, coma, un julio, coma, 2 julios, coma, un katal, coma, 2 katales, coma, un lumen, coma, 2 lúmenes, coma, un lux, coma, 2 luxes")?;
+        "un becquerel, coma, 2 becquereles, coma, un culombio, coma, 2 culombios, coma; un grado Celsius, coma; 2 grados Celsius, coma; un grado Celsius, coma; 2 grados Celsius, coma, un faradio, coma, 2 faradios, coma, un gray, coma, 2 grays, coma, un henrio, coma, 2 henrios, coma, un hercio, coma, 2 hercios, coma, un julio, coma, 2 julios, coma, un katal, coma, 2 katales, coma, un lumen, coma, 2 lúmenes, coma, un lux, coma, 2 lux")?;
                 return Ok(());
 
 }
@@ -125,7 +125,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">p℃</mi><mo>,</mo><mn>2</mn><mi intent=":unit">n℃</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "un quettabecquerel, coma; 2 ronnabecquereles, coma; un yottaculombio, coma; 2 zettaculombios, coma; un exafaradio, coma; 2 petafaradios, coma, un teragray, coma, 2 gigagrays, coma; un megahenrio, coma; 2 kilohenrios, coma; un decahercio, coma; 2 decihercios, coma; un centijulio, coma; 2 milijulios, coma; un microkatal, coma; 2 nanokatales, coma; un picolumen, coma; 2 femtolúmenes, coma, un attolux, coma; 2 zeptoluxes, coma; un miligrado Celsius, coma; 2 microgrados Celsius, coma; un picogrado Celsius, coma; 2 nanogrados Celsius")?;
+        "un quettabecquerel, coma; 2 ronnabecquereles, coma; un yottaculombio, coma; 2 zettaculombios, coma; un exafaradio, coma; 2 petafaradios, coma, un teragray, coma, 2 gigagrays, coma; un megahenrio, coma; 2 kilohenrios, coma; un decahercio, coma; 2 decihercios, coma; un centijulio, coma; 2 milijulios, coma; un microkatal, coma; 2 nanokatales, coma; un picolumen, coma; 2 femtolúmenes, coma, un attolux, coma, 2 zeptolux, coma; un miligrado Celsius, coma; 2 microgrados Celsius, coma; un picogrado Celsius, coma; 2 nanogrados Celsius")?;
                 return Ok(());
 
 }
@@ -145,7 +145,7 @@ fn si_derived_2() -> Result<()> {
         <mn>1</mn><mi intent=":unit">Wb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Wb</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "un newton, coma, 2 newtons, coma, un ohmio, coma, 2 ohmios, coma, un ohmio, coma, 2 ohmios, coma, un pascal, coma, 2 pascales, coma, un siemens, coma, 2 siemens, coma, un sievert, coma, 2 sieverts, coma, una tesla, coma, 2 teslas, coma, un voltio, coma, 2 voltios, coma, un vatio, coma, 2 vatios, coma, un weber, coma, 2 weberes")?;
+        "un newton, coma, 2 newtons, coma, un ohmio, coma, 2 ohmios, coma, un ohmio, coma, 2 ohmios, coma, un pascal, coma, 2 pascales, coma, un siemens, coma, 2 siemens, coma, un sievert, coma, 2 sieverts, coma, un tesla, coma, 2 teslas, coma, un voltio, coma, 2 voltios, coma, un vatio, coma, 2 vatios, coma, un weber, coma, 2 weberes")?;
                 return Ok(());
 
 }
@@ -165,7 +165,7 @@ fn si_derived_2_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">PWb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EWb</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "un quectonewton, coma; 2 rontonewtons, coma; un yoctoohmio, coma; 2 zeptoohmios, coma; un attoohmio, coma; 2 femtoohmios, coma; un picopascal, coma; 2 nanopascales, coma; un microsiemens, coma; 2 milisiemens, coma; un centisievert, coma; 2 decisieverts, coma; una decatesla, coma; 2 hectoteslas, coma; un kilovoltio, coma; 2 megavoltios, coma; un gigavatio, coma; 2 teravatios, coma; un petaweber, coma; 2 exaweberes")?;
+        "un quectonewton, coma; 2 rontonewtons, coma; un yoctoohmio, coma; 2 zeptoohmios, coma; un attoohmio, coma; 2 femtoohmios, coma; un picopascal, coma; 2 nanopascales, coma; un microsiemens, coma; 2 milisiemens, coma; un centisievert, coma; 2 decisieverts, coma; un decatesla, coma; 2 hectoteslas, coma; un kilovoltio, coma; 2 megavoltios, coma; un gigavatio, coma; 2 teravatios, coma; un petaweber, coma; 2 exaweberes")?;
                 return Ok(());
 
 }
@@ -448,7 +448,7 @@ fn degrees_celsius_and_angles_cmu() -> Result<()> {
 fn units_and_currencies_common_in_spanish() -> Result<()> {
     // unidades y monedas de uso corriente en español que no están en inglés
     let cases = [
-        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "una kilovatio hora"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "un kilovatio hora"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "10 kilovatios hora"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kcal</mi></math>", "10 kilocalorías"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mAh</mi></math>", "10 miliamperios hora"),
@@ -472,12 +472,50 @@ fn units_and_currencies_common_in_spanish() -> Result<()> {
         ("<math><mn>60</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">fps</mi></math>", "60 fotogramas por segundo"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">GFLOPS</mi></math>", "10 gigaflops"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dBm</mi></math>", "10 decibelios milivatio"),
-        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvins"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvin"),
         ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "una unidad astronómica"),
         ("<math><mi mathvariant=\"normal\">R$</mi><mn>150</mn></math>", "150 reales"),
         ("<math><mi mathvariant=\"normal\">¥</mi><mn>3</mn></math>", "3 yenes"),
         ("<math><mi mathvariant=\"normal\">₲</mi><mn>3</mn></math>", "3 guaraníes"),
         ("<math><mi mathvariant=\"normal\">₿</mi><mn>3</mn></math>", "3 bitcoines"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn unit_gender_exceptions() -> Result<()> {
+    // "1" con el género de la unidad: excepciones a la regla de la última letra
+    let cases = [
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">T</mi></math>", "un tesla"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">Wh</mi></math>", "un vatio hora"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">Ah</mi></math>", "un amperio hora"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kgf</mi></math>", "un kilogramo fuerza"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">hp</mi></math>", "un caballo de fuerza"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ppp</mi></math>", "un punto por pulgada"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">oz t</mi></math>", "una onza troy"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">lb t</mi></math>", "una libra troy"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mpg</mi></math>", "una milla por galón"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn per_and_silent_dot_between_units() -> Result<()> {
+    // "/" y "∕" entre unidades se leen "por"; "·" y "⋅" entre unidades no se leen
+    let cases = [
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mrow><mi mathvariant=\"normal\">m</mi><mo>/</mo><mi mathvariant=\"normal\">s</mi></mrow></math>", "10 metros por segundo"),
+        ("<math><mn>90</mn><mspace width=\"0.167em\"></mspace><mrow><mi mathvariant=\"normal\">km</mi><mo>/</mo><mi mathvariant=\"normal\">h</mi></mrow></math>", "90 kilómetros por hora"),
+        ("<math><mn>9</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">m</mi><mo>∕</mo><mi mathvariant=\"normal\">s</mi></math>", "9 metros por segundo"),
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>·</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newton metros"),
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>⋅</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newton metros"),
+        ("<math><mn>2</mn><mo>·</mo><mn>5</mn></math>", "2 por 5"),
+        ("<math><mi>a</mi><mo>/</mo><mi>b</mi></math>", "a dividido por b"),
     ];
     for (expr, speech) in cases {
         test("es", "ClearSpeak", expr, speech)?;
