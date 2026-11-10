@@ -224,7 +224,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		if children.len() == 1 {
 			return is_unit_candidate_factor(children[0]);
 		}
-		if children.len() % 2 == 0 {
+		if children.len().is_multiple_of(2) {
 			return false;
 		}
 		for (i, child) in children.iter().enumerate() {

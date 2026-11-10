@@ -360,10 +360,9 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
         // Adjacent letter, or the base of a following script (C + u^{2+} → Cu^{2+}).
         let (merge_target, script_base) = if name(second_element) == "mi" || name(second_element) == "mtext" {
             (second_element, false)
-        } else if let Some(base) = single_letter_script_base(second_element) {
-            (base, true)
         } else {
-            return None;
+            let base = single_letter_script_base(second_element)?;
+            (base, true)
         };
         if !can_merge_mi_elements(leaf, merge_target) {
             return None;
