@@ -325,7 +325,7 @@ fn overview_short_forms() -> Result<()> {
 #[test]
 fn subscript() -> Result<()> {
     let expr = "<math><msub><mi>x</mi><mn>1</mn></msub></math>";
-    test("ja", "SimpleSpeak", expr, "x サブ 1")?;
+    test("ja", "SimpleSpeak", expr, "x 下付き 1")?;
     return Ok(());
 }
 
@@ -755,6 +755,34 @@ fn summation() -> Result<()> {
 fn summation_lower_limit_only() -> Result<()> {
     let expr = "<math><munder><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow></munder><mi>i</mi></math>";
     test("ja", "SimpleSpeak", expr, "サム i イコール 1 にわたる オブ i")?;
+    return Ok(());
+}
+
+/// When the argument is not simple, an intent ends with an end word. It is 〇〇終了, as in 分数終了,
+/// or 〇〇 閉じ for the bars of an absolute value or a norm, as in 丸カッコ閉じ.
+/// 端次元 was read ハシジゲン, and 絶対値終了 written as one word is read ゼッタイネ.
+/// A subscript says 下付き … 下付き終了 as the msub rules do; it was サブ … 末尾サブ (マツビサブ).
+#[test]
+fn intent_end_words() -> Result<()> {
+    for (name, expected) in [
+        ("trace", "トレース オブ エー プラス b トレース終了; イコール 3"),
+        ("dimension", "次元 オブ エー プラス b 次元終了; イコール 3"),
+        ("homomorphism", "準同型 オブ エー プラス b 準同型終了; イコール 3"),
+        ("kernel", "カーネル オブ エー プラス b カーネル終了; イコール 3"),
+        ("chemistry-concentration", "濃度 オブ エー プラス b 濃度終了; イコール 3"),
+        ("norm", "ノルム オブ エー プラス b ノルム閉じ; イコール 3"),
+        ("absolute-value", "絶対値 オブ エー プラス b 絶対値 閉じ; イコール 3"),
+    ] {
+        let expr = format!(r#"<math><mrow intent="{name}($x)"><mo>(</mo><mrow arg="x"><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mo>)</mo></mrow><mo>=</mo><mn>3</mn></math>"#);
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    let expr = "<math><mrow><mo>|</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>|</mo></mrow><mo>=</mo><mn>3</mn></math>";
+    test("ja", "SimpleSpeak", expr, "絶対値 オブ エー プラス b 絶対値 閉じ; イコール 3")?;
+    let expr = r#"<math><mrow intent="binomial($n,$x)"><mi arg="n">n</mi><mo>,</mo><mrow arg="x"><mi>a</mi><mo>+</mo><mi>b</mi></mrow></mrow><mo>=</mo><mn>3</mn></math>"#;
+    test("ja", "SimpleSpeak", expr, "n シー エー プラス b 二項係数終了; イコール 3")?;
+    let expr = "<math><msub><mi>x</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></math>";
+    test("ja", "SimpleSpeak", expr, "x 下付き i プラス 1 下付き終了")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "x 下付き文字, i プラス 1 下付き文字終了")?;
     return Ok(());
 }
 
