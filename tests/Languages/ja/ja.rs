@@ -1451,6 +1451,20 @@ fn subscripted_norm() -> Result<()> {
     return Ok(());
 }
 
+/// A subscripted base of a power used to end with a pause, so x_1^2 was read
+/// x 下付き 1, の 2 乗, which cuts the phrase before its particle の. The pause is
+/// left out when the subscript is the base of a power. In Medium and Verbose a
+/// following term still gets its pause after の 2 乗; Terse has none there.
+#[test]
+fn no_pause_between_subscript_and_power() -> Result<()> {
+    let expr = "<math><msubsup><mi>x</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><mi>y</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x 下付き 1 の 2 乗, プラス y")?;
+    test("ja", "ClearSpeak", expr, "x 下付き 1 の 2 乗, プラス y")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "x 下付き文字 1 の 2 乗, プラス y")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x 1 の 2 乗 プラス y")?;
+    return Ok(());
+}
+
 /// A matrix has 成分, not エントリー.
 #[test]
 fn matrix_entry() -> Result<()> {
