@@ -351,6 +351,10 @@
       - set_variables:
         - Word: "text()"
 
+  # un millón de metros (millones exactos llevan "de")
+  - test:
+      if: "UnitNumber(.) != 'one' and GetQuantity(.)[not(contains(., $DecimalSeparators))] and count(GetUnit(GetQuantity(.)) | .) = 1 and number(translate(GetQuantity(.), ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(GetQuantity(.), ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
   # PluralForms first, else PluralDefaultFromEnding / PluralSpellingDefaultSuffix
   - test:
       if: "$Prefix = ''"

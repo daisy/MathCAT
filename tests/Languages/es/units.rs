@@ -551,3 +551,20 @@ fn currency_after_amount() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn units_with_exact_millions() -> Result<()> {
+    // millones exactos llevan "de": NVDA dice "un millón de metros"
+    let cases = [
+        ("<math><mn>1000000</mn><mi intent=\":unit\">m</mi></math>", "1000000 de metros"),
+        ("<math><mn>2 000 000</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">km</mi></math>", "2000000 de kilómetros"),
+        ("<math><mn>1000000</mn><msup><mi intent=\":unit\">m</mi><mn>2</mn></msup></math>", "1000000 de metros al cuadrado"),
+        ("<math><mn>1000000</mn><mrow><mi mathvariant=\"normal\">m</mi><mo>/</mo><mi mathvariant=\"normal\">s</mi></mrow></math>", "1000000 de metros por segundo"),
+        ("<math><mn>1500000</mn><mi intent=\":unit\">m</mi></math>", "1500000 metros"),
+        ("<math><mn>1000000,5</mn><mi intent=\":unit\">m</mi></math>", "1000000,5 metros"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
