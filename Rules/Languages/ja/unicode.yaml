@@ -137,7 +137,7 @@
  - "<":                                          # 0x3c
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "小なり"
  - "=":                                           # 0x3d
     - test: 
@@ -148,7 +148,7 @@
  - ">":                                          # 0x3e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "大なり"
  - "?": [T: "疑問符"]                       # 0x3f
  - "@": [T: "アットマーク"]                             # 0x40
@@ -344,7 +344,7 @@
         then:
         - test:
             if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
-            then: [t: "は"]
+            then: [T: ""]
         - T: "要素オブ"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
@@ -368,26 +368,26 @@
  - "∥":                                           # 0x2225
      - test:
          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-         then: [t: "二重縦線"]
+         then: [T: "二重縦線"]
          else:
          - test:
               if: "$Verbosity!='Terse'"
-              then: [t: "は"]
-         - t: "平行"
+              then: [T: ""]
+         - T: "平行"
  - "∦":                                           # 0x2226
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "ノット 平行"
  - "≤":                                          # 0x2264
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "小なり オア イコール"
  - "≥":                                          # 0x2265
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "大なり オア イコール"
 
  # --- restored complex short definitions (prefer over unicode-full) ---
@@ -398,21 +398,21 @@
                # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
                # speak '…' as 'and so on...' unless expr starts with '…'
             - "../*[1][.='…']"
-        then: [t: "ドットドットドット"]
+        then: [T: "テンテンテン"]
         else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [t: "以下同様"]
-            else: [t: "まで"]
+            then: [T: "以下同様"]
+            else: [T: "以下同様に"]
  - "∂":                                          # 0x2202
      - test: 
          if: "$Verbosity='Terse'"
-         then: [t: "ラウンド"]
-         else: [t: "偏微分"]
+         then: [T: "ラウンド"]
+         else: [T: "偏微分"]
  - "∆":                                          # 0x2206
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "ラプラシアン オブ"
+     - T: "ラプラシアン オブ"
  - "∉":                                          # 0x2209
     # rule is identical to 0x2208
      - test:
@@ -420,7 +420,7 @@
         then:
         - test: 
             if: "$Verbosity!='Terse'"
-            then: [t: "は"]
+            then: [T: ""]
         - T: "ノット 要素オブ"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
@@ -447,7 +447,7 @@
         then:
         - test: 
             if: "$Verbosity!='Terse' and not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
-            then: [t: "は"]
+            then: [T: ""]
         - T: "要素オブ"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         else_test:
@@ -472,63 +472,63 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
-     - t: "平方根 オブ"
+     - T: "平方根 オブ"
  - "∝":                                          # 0x221d
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - t: "比例する"
  - "∶":                                          # 0x2236
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
-     - t: "に"
+         then: [T: ""]
+     - T: "対"
  - "∾":                                          # 0x223e
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "最も正の"
  - "≠":                                          # 0x2260
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "ノット イコール"
  - "≡":                                          # 0x2261
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - t: "恒等的に等しい"
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "部分集合オブ"
  - "⊃":                                          # 0x2283
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "上位集合オブ"
  - "⊄":                                          # 0x2284
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "ノット 部分集合オブ"
  - "⊅":                                          # 0x2285
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "ノット 上位集合オブ"
  - "⊆":                                          # 0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "部分集合オブ オア イコール"
  - "⊇":                                          # 0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [t: "は"]
+         then: [T: ""]
      - T: "上位集合オブ オア イコール"
 
  # --- restored short definitions that differ from unicode-full ---
  - "⇒": [T: "右向き二重矢印"]             # 0x21d2
- - "∐": [t: "余積"]                          # 0x2210
+ - "∐": [T: "余積"]                          # 0x2210
