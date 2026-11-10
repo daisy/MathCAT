@@ -7,13 +7,13 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "線分"      # phrase('the line segment from' A to B)
+      - T: "線分"      # phrase('the line segment from' A to B)
       - x: "*[1]"
-      - t: "から"                         # phrase(the line segment from A 'to' B)
+      - T: "から"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
-      - t: "まで"                         # phrase(the line segment from A to B)
+      - T: "まで"                         # phrase(the line segment from A to B)
       else:
-      - t: "線分"               # phrase(the 'line segment' A  B)
+      - T: "線分"               # phrase(the 'line segment' A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -24,13 +24,13 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "半直線"             # phrase('the ray from' A to B)
+      - T: "半直線"             # phrase('the ray from' A to B)
       - x: "*[1]"
-      - t: "を始点として"           # phrase(the ray 'from' A to B) -- A is the endpoint
+      - T: "を始点として"           # phrase(the ray 'from' A to B) -- A is the endpoint
       - x: "*[2]"
-      - t: "を通る"                   # phrase(the ray from A 'to' B) -- it passes through B, it does not stop there
+      - T: "を通る"                   # phrase(the ray from A 'to' B) -- it passes through B, it does not stop there
       else:
-      - t: "半直線"                      # phrase(the 'ray'A  B)
+      - T: "半直線"                      # phrase(the 'ray'A  B)
       - x: "*[1]"
       - x: "*[2]"
 
@@ -41,7 +41,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [ot: ""]            # phrase('the' arc A B C)
-  - t: "弧"                        # phrase(the 'arc' A B C)
+  - T: "弧"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
 
@@ -52,12 +52,27 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - t: "角の大きさ"      # phrase('the measure of the angle' ABC)
+      - T: "角"      # phrase('the measure of the angle' ABC)
       else:
-      - t: "角の大きさ"      # phrase('measure of angle' ABC)
+      - T: "角"      # phrase('measure of angle' ABC)
   - x: "*[1]"
   - x: "*[2]"
   - x: "*[3]"
+  - T: "の大きさ"      # Japanese says the angle first: 角 ABC の大きさ
+
+# The angle-measure intent: definitions.yaml can only give it as a prefix (角の大きさ A),
+# which keeps the English order, so say it here the same way as measure-of-angle.
+- name: angle-measure
+  tag: angle-measure
+  # angle-measure:silent($x) says only $x; leave it to the silent-intent rule
+  match: "count(*)>0 and not(contains(@data-intent-property, ':silent:'))"
+  replace:
+  - test:
+      # the operand already says 角 for m∠ABC or an angle intent; don't say it twice
+      if: "not(*[1][(self::m:angle and not(contains(@data-intent-property, ':silent:'))) or (self::m:mrow and *[1][self::m:mo and .='∠'])])"
+      then: [T: "角"]      # phrase('measure of angle' ABC)
+  - x: "*"
+  - T: "の大きさ"      # Japanese says the angle first: 角 A の大きさ
 
 
 - name: coordinate
@@ -68,15 +83,15 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [ot: ""]      # phrase('the' point at 1, 2)
-  - t: "点"      # phrase(the 'point' at 1, 2)
+  - T: "点"      # phrase(the 'point' at 1, 2)
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "の座標"]      # phrase('the' point at 1, 2)
+      then: [T: "の座標"]      # phrase('the' point at 1, 2)
   - pause: short
   - insert:
       nodes: "*"
-      replace: [t: "コンマ", pause: auto]      # phrase(f of x 'comma' y)
+      replace: [T: "コンマ", pause: auto]      # phrase(f of x 'comma' y)
   - pause: short
   - test:
       if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
-      then: [t: "点終了"]      # phrase(start point, 'end point')
+      then: [T: "点終了"]      # phrase(start point, 'end point')

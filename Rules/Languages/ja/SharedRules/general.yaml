@@ -479,7 +479,7 @@
     - if: ".= 'log'"
       then: [T: "ログ"]      # phrase(the 'log' function is used in mathematics)
     - else_if: ".= 'Log'"
-      then: [t: "主値ログ"]
+      then: [T: "対数のしゅち"]      # Log z is 対数(函数)の主値; 主値 is written in kana (Open JTalk reads it シュネ or アルジチ)
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
       else: [T: "自然対数"]      # phrase(the 'natural log' function is used in mathematics)
@@ -502,7 +502,7 @@
       then: [T: "ケース"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
       then: [T: "式"]      # phrase(this is the first 'equation' of three equations)
-      else: [T: "行"]      # phrase(this is the first 'line' of three lines)
+      else: [T: "ぎょう"]      # phrase(this is the first 'line' of three lines)
   - test:
     - if: "$LineCount != 1"
       then: [ct: ""] # plural
@@ -525,7 +525,7 @@
           then: [T: "ケース"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
           then: [T: "式"] # phrase('equation' 1 of 10 equations)
-          else: [T: "行"]     # phrase('line 1 of 10 lines)
+          else: [T: "ぎょう"]     # phrase('line 1 of 10 lines)
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
@@ -1064,14 +1064,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [t: "フォーム"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [t: "フォームに反応する"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [T: "から"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [T: "が反応して"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
-      then: [t: "との平衡にあります"]      # phrase(a reactant 'is in equilibrium with' a product)
+      then: [T: "と平衡にある"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3
-      then: [t: "平衡は左に偏ります"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+      then: [T: "と左に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
     - else_if: ".='🣒'" # U+1F8D2
-      then: [t: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      then: [T: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
 - name: chemical-equation-operator

@@ -1348,11 +1348,11 @@
     - if: ".='-' or .=':'"
       then: [T: "enlace simple"]      # phrase(un 'enlace simple' entre dos átomos)
     - else_if: ".='=' or .='∷'"
-      then: [T: "doble enlace"]
+      then: [T: "enlace doble"]      # ONCE B 6-1, 8.1.2
     - else_if: ".='≡'"
-      then: [T: "triple enlace"]
+      then: [T: "enlace triple"]
     - else_if: ".='≣'"
-      then: [T: "cuádruple enlace"]
+      then: [T: "enlace cuádruple"]
       else: [x: "text()"]
 
 - name: chemical-formula-operator
@@ -1371,15 +1371,38 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [T: "forma"]      # phrase(hidrógeno y oxígeno 'forma' agua)
-        else: [T: "reacciona para formar"]      # phrase(hidrógeno y oxígeno 'reacciona para formar' agua)
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+        then: [T: "da"]      # phrase(hidrógeno más oxígeno 'da' agua)
+        else: [T: "produce"]      # phrase(hidrógeno más oxígeno 'produce' agua) (SEP, EcuRed)
+    - else_if: ".='⇌' or .='🣑' or .='⇄' or .='⇆'" # U+01F8D1; ⇄ ⇆ también son equilibrio (ONCE B 6-1, 6.3)
       then: [T: "está en equilibrio con"]
     - else_if: ".='🣓'" # U+1F8D3
       then: [T: "está en equilibrio desplazado a la izquierda con"]
     - else_if: ".='🣒'" # U+1F8D2
       then: [T: "está en equilibrio desplazado a la derecha con"]
       else: [x: "*"]
+
+- name: chemical-gas-precipitate-hydrate
+  # CO₂↑, CaCO₃↓ y el punto de los hidratos (ONCE B 6-1, 6.5, 6.6 y 8.2.2; SEP)
+  tag: [chemical-equation-operator, chemical-formula-operator]
+  match: ".='↑' or .='↓' or .='·' or .='⋅' or .='⇄' or .='⇆'"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: ".='↑'"
+      then: [T: "desprendimiento gaseoso"]      # phrase(c o 2 'desprendimiento gaseoso')
+    - else_if: ".='↓'"
+      then: [T: "precipitado"]      # phrase(c a c o 3 'precipitado')
+    - else_if: ".='⇄' or .='⇆'"
+      then: [T: "está en equilibrio con"]      # ONCE B 6-1, 6.3
+      else: [T: "punto"]      # phrase(n a 2 s o 4 'punto' 5 h 2 o)
+
+- name: chemical-arrow-with-heat
+  # → con Δ encima: "produce con calor" (SEP, EcuRed)
+  tag: mover
+  match: "*[1][self::m:chemical-arrow-operator] and *[2][.='Δ' or .='∆']"
+  replace:
+  - x: "*[1]"
+  - T: "con calor"      # phrase(c a c o 3 produce 'con calor' c a o)
 
 - name: chemical-equation-operator
   tag: chemical-equation-operator

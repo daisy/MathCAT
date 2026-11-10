@@ -113,6 +113,22 @@
         then: [pause: short]
         else: [pause: long]
 
+- name: signo-de-numero-entre-parentesis
+  # el signo de (−2) o (+1) se dice después del número: "2 negativo", "1 positivo"
+  tag: [plus, minus]
+  match:
+  - "$Verbosity='Verbose' and"
+  - "count(*)=1 and *[1][self::m:mn] and contains(@data-intent-property, ':prefix:') and"
+  - "parent::m:mrow[count(*)=3 and *[1][.='('] and *[3][.=')']] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - bookmark: "@id"
+  - x: "*[1]"
+  - test:
+      if: "self::m:minus"
+      then: [T: "negativo"]      # phrase(2 'negativo' más 1 positivo)
+      else: [T: "positivo"]      # phrase(2 negativo más 1 'positivo')
+
 # The 'negative' rule interacts with the msqrt/mroot rules as those might pick off this case ("the negative square root of x")
 - name: negative_and_positive
   tag: [plus, minus]
@@ -830,6 +846,18 @@
       if: "$Verbosity = 'Verbose'"
       then: [T: "multiplicado por"]      # phrase(7 'multiplicado por' 5 es 35)
       else: [T: "por"]      # phrase(7 'por' 5 es 35)
+
+- name: numero-con-signo-entre-parentesis
+  # (−2) + (+1): "2 negativo más 1 positivo", como se enseña en el colegio (solo con verbosidad Verbose). Solo números
+  # entre paréntesis; sin paréntesis el signo sigue siendo "menos"/"más" (−2 + 1: "menos 2 más 1").
+  tag: mrow
+  match:
+  - "$Verbosity='Verbose' and"
+  - "count(*)=3 and *[1][.='('] and *[3][.=')'] and"
+  - "*[2][(self::m:minus or self::m:plus) and count(*)=1 and contains(@data-intent-property, ':prefix:')][*[1][self::m:mn]] and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - x: "*[2]"      # el signo lo dice la regla signo-de-numero-entre-parentesis
 
 - name: no-say-parens
   tag: mrow
