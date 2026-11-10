@@ -667,12 +667,13 @@ fn letter_a() -> Result<()> {
 /// Five Greek letters were wrong and ξ was silent: it had an empty string, so a
 /// formula using it simply skipped the variable. ゼタ is the SI prefix zetta,
 /// オクタ is "octa", and プッシー is an offensive English word.
+/// ξ is グザイ: クサイ is said the same as 臭い ("smelly").
 #[test]
 fn greek_letters_that_were_wrong() -> Result<()> {
     for (letter, expected) in [
         ("&#x3b6;", "ゼータ"),
         ("&#x3b9;", "イオタ"),
-        ("&#x3be;", "クサイ"),
+        ("&#x3be;", "グザイ"),
         ("&#x3c5;", "ウプシロン"),
         ("&#x3c8;", "プサイ"),
     ] {
