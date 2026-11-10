@@ -355,7 +355,7 @@
                 then: [T: "元オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "要素オブ"]
-              - else: [t: "に属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "元オブ"]
@@ -363,7 +363,7 @@
                 then: [T: "要素オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "イン"]
-              - else: [t: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∥":                                           # 0x2225
      - test:
          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
@@ -431,7 +431,7 @@
                 then: [T: "ノット 元オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "ノット 要素オブ"]
-              - else: [t: "属さない"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属さない"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "ノット 元オブ"]
@@ -439,7 +439,7 @@
                 then: [T: "ノット 要素オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "ノット イン"]
-              - else: [t: "属さない"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属さない"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∊":                                          # 0x220a
      - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -458,7 +458,7 @@
                 then: [T: "元オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "要素オブ"]
-              - else: [t: "に属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属する"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
                 then: [T: "元オブ"]
@@ -466,7 +466,7 @@
                 then: [T: "要素オブ"]
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "イン"]
-              - else: [t: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
+              - else: [T: "属する"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "√":                                          # 0x221a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -476,7 +476,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - t: "比例する"
+     - T: "比例"
  - "∶":                                          # 0x2236
      - test: 
          if: "$Verbosity!='Terse'"
@@ -496,7 +496,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - t: "恒等的に等しい"
+     - T: "合同"
  - "⊂":                                          # 0x2282
      - test: 
          if: "$Verbosity!='Terse'"

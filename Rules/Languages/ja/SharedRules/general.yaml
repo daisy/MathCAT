@@ -116,6 +116,21 @@
   - x: "*[2]"
   - T: "個取る順列"
 
+- name: object-first-relations   # audit-ignore: Japanese needs the second argument before the verb (x は y に写る), which an infix word cannot give
+  tag: [maps-to, obtained-from, applied-to]
+  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
+  replace:
+  - x: "*[1]"
+  - T: "は"
+  - pause: auto
+  - x: "*[2]"
+  - test:
+    - if: "name(.)='maps-to'"
+      then: [T: "に写る"]      # x maps to y = x は y に写る
+    - else_if: "name(.)='obtained-from'"
+      then: [T: "から得られる"]      # x obtained from y = x は y から得られる
+      else: [T: "に適用される"]      # f applied to x = f は x に適用される
+
 - name: intervals   # audit-ignore: Japanese names the kind of interval in Japanese instead of speaking the tag, and puts から/まで after the endpoints
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "count(*)=2"
