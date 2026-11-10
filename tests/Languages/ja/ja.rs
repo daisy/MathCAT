@@ -108,8 +108,8 @@ fn negative_number() -> Result<()> {
 #[test]
 fn gradient() -> Result<()> {
     let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";
-    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル 大文字 f")?;
-    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ 大文字 f")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル おおもじ f")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ おおもじ f")?;
     return Ok(());
 }
 
@@ -370,9 +370,9 @@ fn not_equal() -> Result<()> {
 fn element_of() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
-        test("ja", "SimpleSpeak", &expr, "x 要素オブ 大文字 エー")?;
+        test("ja", "SimpleSpeak", &expr, "x 要素オブ おおもじ エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
-            "x 要素オブ 大文字 エー")?;
+            "x 要素オブ おおもじ エー")?;
     }
     return Ok(());
 }
@@ -401,9 +401,9 @@ fn set_builder_member_symbol() -> Result<()> {
 #[test]
 fn not_element_of() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>A</mi></math>";
-    test("ja", "SimpleSpeak", expr, "x ノット 要素オブ, 大文字 エー")?;
+    test("ja", "SimpleSpeak", expr, "x ノット 要素オブ, おおもじ エー")?;
     test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", expr,
-        "x ノット 要素オブ, 大文字 エー")?;
+        "x ノット 要素オブ, おおもじ エー")?;
     return Ok(());
 }
 
@@ -417,9 +417,9 @@ fn member_and_in_options_work_between_the_operands() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Member", &expr,
-            "x 元オブ 大文字 エー")?;
+            "x 元オブ おおもじ エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
-            "x イン 大文字 エー")?;
+            "x イン おおもじ エー")?;
     }
     return Ok(());
 }
@@ -954,9 +954,9 @@ fn relation_words_in_symbol_order() -> Result<()> {
         test("ja", "SimpleSpeak", &expr, expected)?;
     }
     for (ch, expected) in [
-        ("&#x2208;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
-        ("&#x2209;", "集合 すべての x 属さない 大文字 エー ただし x 大なり 0"),
-        ("&#x220A;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
+        ("&#x2208;", "集合 すべての x 属する おおもじ エー ただし x 大なり 0"),
+        ("&#x2209;", "集合 すべての x 属さない おおもじ エー ただし x 大なり 0"),
+        ("&#x220A;", "集合 すべての x 属する おおもじ エー ただし x 大なり 0"),
     ] {
         let expr = format!("<math><mrow><mo>{{</mo><mrow><mi>x</mi><mo>{ch}</mo><mi>A</mi></mrow><mo>|</mo><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow><mo>}}</mo></mrow></math>");
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Belongs", &expr, expected)?;
@@ -1220,10 +1220,10 @@ fn row_vector_and_matrix_end_markers() -> Result<()> {
 #[test]
 fn chemical_states() -> Result<()> {
     for (state, expected) in [
-        ("s", "大文字 n エー; 固体"),
-        ("l", "大文字 n エー; 液体"),
-        ("g", "大文字 n エー; 気体"),
-        ("aq", "大文字 n エー; 水溶液"),
+        ("s", "おおもじ n エー; 固体"),
+        ("l", "おおもじ n エー; 液体"),
+        ("g", "おおもじ n エー; 気体"),
+        ("aq", "おおもじ n エー; 水溶液"),
     ] {
         let expr = format!(
             "<math><mrow><mi>Na</mi><mrow><mo>(</mo><mrow><mi>{state}</mi></mrow><mo>)</mo></mrow></mrow></math>"
@@ -1238,11 +1238,11 @@ fn chemical_states() -> Result<()> {
 #[test]
 fn chemical_arrows() -> Result<()> {
     for (arrow, verbosity, expected) in [
-        ("&#x2192;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; が反応して; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x2192;", "Terse", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; から; 2, 大文字 n エー; 大文字 c l; プラス 大文字 h, 2"),
-        ("&#x21CC;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x1F8D3;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と左に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x1F8D2;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と右に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+        ("&#x2192;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; が反応して; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x2192;", "Terse", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; から; 2, おおもじ n エー; おおもじ c l; プラス おおもじ h, 2"),
+        ("&#x21CC;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x1F8D3;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と左に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x1F8D2;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と右に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
     ] {
         let expr = format!("<math><mrow><mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
             <mo>{arrow}</mo><mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub></mrow></math>");
@@ -1261,7 +1261,7 @@ fn chemical_bonds() -> Result<()> {
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], ethylene,
-        "大文字 h, 2 大文字 c, 二重結合 大文字 c, 大文字 h, 2")?;
+        "おおもじ h, 2, おおもじ c; 二重結合 おおもじ c; おおもじ h, 2")?;
     return Ok(());
 }
 
@@ -1275,7 +1275,7 @@ fn sub_and_superscript_medium() -> Result<()> {
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Medium")], sulfate,
-        "角かっこ, 大文字 s, 大文字 o, 下付き 4; 角かっこ閉じ 上付き 2 マイナス")?;
+        "角かっこ, おおもじ s; おおもじ o, 下付き 4; 角かっこ閉じ 上付き 2 マイナス")?;
     return Ok(());
 }
 
@@ -1581,8 +1581,8 @@ fn row_and_line_are_written_in_kana() -> Result<()> {
 /// An empty part of a fraction or matrix is 空欄, because Open JTalk reads a lone 空 as ソラ (sky).
 #[test]
 fn ascii_symbol_names() -> Result<()> {
-    test("ja", "ClearSpeak", "<math><mo>#</mo><mi>A</mi></math>", "シャープ 大文字 エー")?;
-    test("ja", "ClearSpeak", "<math><msup><mi>A</mi><mo>*</mo></msup></math>", "大文字 エー スター")?;
+    test("ja", "ClearSpeak", "<math><mo>#</mo><mi>A</mi></math>", "シャープ おおもじ エー")?;
+    test("ja", "ClearSpeak", "<math><msup><mi>A</mi><mo>*</mo></msup></math>", "おおもじ エー スター")?;
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")],
         "<math><mi>n</mi><mo intent=':literal'>!</mo></math>", "n 感嘆符")?;
     test("ja", "ClearSpeak", "<math><mfrac><mrow></mrow><mn>2</mn></mfrac></math>", "分数; 空欄; オーバー 2")?;
