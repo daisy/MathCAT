@@ -400,6 +400,9 @@
   - test:
     - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "$CurrencyWord"]
+    # un millón de dólares (millones exactos llevan "de")
+    - else_if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de", x: "UnitPluralForm($CurrencyWord)"]
       else: [x: "UnitPluralForm($CurrencyWord)"]
 
 - name: sin
@@ -759,17 +762,18 @@
   match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   variables:
   - CurrencyWord: "DefinitionValue(*[3], 'Speech', 'CurrencySymbols')"
-  - LastChar: "substring(DefinitionValue(*[3], 'Speech', 'CurrencySymbols'), string-length(DefinitionValue(*[3], 'Speech', 'CurrencySymbols')), 1)"
   replace:
-  - x: "*[1]"
+  - bookmark: "*[1]/@id"
   - test:
-    - if: "*[1]=1"
+    - if: "UnitNumber(*[3]) = 'one'"
+      then: [x: "OneForUnit(*[3])"]       # un euro, una libra
+      else: [x: "*[1]"]
+  - test:
+    - if: "UnitNumber(*[3]) = 'one'"
       then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-    - else_if: "$LastChar='r' or $LastChar='l' or $LastChar='n'"
-      then: [x: "$CurrencyWord", ct: "es"]      # dólar -> dólares
-      else: [x: "$CurrencyWord", ct: "s"]       # euro -> euros
+    - else_if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de", x: "UnitPluralForm($CurrencyWord)"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
 
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7

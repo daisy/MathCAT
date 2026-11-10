@@ -768,7 +768,7 @@
 # Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
     "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
-    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
+    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₽": "rublo", "₴": "grivna", "₿": "bitcóin",
     # se pueden agregar más monedas...
   }
 

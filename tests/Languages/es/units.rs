@@ -523,3 +523,31 @@ fn per_and_silent_dot_between_units() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn currency_after_amount() -> Result<()> {
+    // símbolo después de la cantidad (España): "1 €" con el mismo "un"/"una" que "€ 1"; rublo y grivna;
+    // millones exactos con "de" (NVDA dice "un millón de dólares")
+    let cases = [
+        ("<math><mn>1</mn><mo>€</mo></math>", "un euro"),
+        ("<math><mn>1</mn><mo>£</mo></math>", "una libra"),
+        ("<math><mn>2</mn><mo>£</mo></math>", "2 libras"),
+        ("<math><mn>1,5</mn><mo>€</mo></math>", "1,5 euros"),
+        ("<math><mn>1</mn><mi>₲</mi></math>", "un guaraní"),
+        ("<math><mn>3</mn><mi>₲</mi></math>", "3 guaraníes"),
+        ("<math><mn>1</mn><mi>R$</mi></math>", "un real"),
+        ("<math><mi>₽</mi><mn>1</mn></math>", "un rublo"),
+        ("<math><mn>2</mn><mi>₽</mi></math>", "2 rublos"),
+        ("<math><mn>1</mn><mi>₴</mi></math>", "una grivna"),
+        ("<math><mi>₴</mi><mn>2</mn></math>", "2 grivnas"),
+        ("<math><mo>$</mo><mn>1000000</mn></math>", "1000000 de dólares"),
+        ("<math><mo>$</mo><mn>3 000 000</mn></math>", "3000000 de dólares"),
+        ("<math><mn>1 000 000</mn><mo>€</mo></math>", "1000000 de euros"),
+        ("<math><mo>$</mo><mn>1 500 000</mn></math>", "1500000 dólares"),
+        ("<math><mo>$</mo><mn>1 000 000,50</mn></math>", "1000000,50 dólares"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
