@@ -1296,6 +1296,8 @@ fn determinant_end_marker() -> Result<()> {
 /// The other determinant forms: one entry, a table too big for the short form,
 /// and the determinant of a single expression, whose end marker was 末端の 行列式
 /// ("the terminal determinant") and is now 行列式終了 like the others.
+/// The scalar form says 行列式 オブ x, like 平方根 オブ x; 行列式 の x would mean
+/// "the x of the determinant".
 #[test]
 fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
     let (n1, n2, n3, n4) = ("<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
@@ -1303,7 +1305,7 @@ fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
     test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "|", "|", ""),
         "2 かける 4 行列式; ぎょう 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ぎょう 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
     let scalar = "<math><mrow intent='determinant($a)'><mrow arg='a'><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mrow></math>";
-    test("ja", "ClearSpeak", scalar, "行列式 の x プラス y 行列式終了")?;
+    test("ja", "ClearSpeak", scalar, "行列式 オブ x プラス y 行列式終了")?;
     return Ok(());
 }
 
@@ -1415,10 +1417,12 @@ fn something_above_and_below_an_expression() -> Result<()> {
 }
 
 /// ノルダム is Notre-Dame. The Japanese for a norm is ノルム.
+/// It says オブ before the argument, like ノルム オブ x; with の, "2 ノルム の x"
+/// would mean "the x of the 2-norm".
 #[test]
 fn subscripted_norm() -> Result<()> {
     let expr = "<math><msub><mrow><mo>&#x2225;</mo><mi>x</mi><mo>&#x2225;</mo></mrow><mn>2</mn></msub></math>";
-    test("ja", "ClearSpeak", expr, "2 ノルム の x")?;
+    test("ja", "ClearSpeak", expr, "2 ノルム オブ x")?;
     return Ok(());
 }
 
