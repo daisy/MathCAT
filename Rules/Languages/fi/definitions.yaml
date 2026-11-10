@@ -153,8 +153,8 @@
 # Currency symbols use CurrencySymbols (e.g. "$" → "dollar").
 #
 # Once the singular base word is known, speech uses UnitNumber(.) to choose
-# singular vs plural (one / few / many), then PluralForms (or a language default
-# such as English "+s") when it is not "one". For "1" before a unit or currency,
+# singular vs plural (one / few / many), then PluralForms (or PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix) when it is not "one". For "1" before a unit or currency,
 # languages with gender may also consult UnitGender / OneBeforeUnit (see Gender
 # below). English has no gender agreement, so "1" is spoken normally.
 #
@@ -167,11 +167,11 @@
 # in a fraction denominator, or a non-final factor in a unit product such as m in m/s).
 # Speech rules typically:
 #   UnitNumber = "one"  → speak the singular base word from the unit/currency map
-#   otherwise           → PluralForms[base word] if listed, else a language default
-# For English, the default is to append "s". Irregulars and words that stay the same
-# in the plural go in PluralForms below (keyed by the *spoken singular* base word,
-# not the symbol). Languages with one_few_many often also have PluralGenitive
-# (or similar) for "many".
+#   otherwise           → PluralForms[base word] if listed, else PluralDefaultFromEnding /
+#                         PluralSpellingDefaultSuffix (English: empty ByFinal + suffix "s")
+# Irregulars and words that stay the same in the plural go in PluralForms below
+# (keyed by the *spoken singular* base word, not the symbol). Languages with
+# one_few_many often also have PluralGenitive (or similar) for "many".
 #
 # Examples (English, PluralSystem one_many):
 #   UnitNumber = "one" (singular base word as spoken):
@@ -189,31 +189,43 @@
 #
 # GenderSystem (vec, like PluralSystem) chooses the default policy:
 #   - none            — no gender; UnitGender returns "" (English, zh, ja, …)
-#   - neuter_list     — common unless the base word is in NeuterUnitWords (nb, sv)
-#   - romance_ending  — base word ending in "a" → feminine, "o" → masculine, else masculine
-#                       (es, pt; not French as the primary rule)
-#   - explicit_only   — default masculine/common unless listed (de, fr, …)
+#   - ending          — last letter of the last token via GenderDefaultFromEnding,
+#                       else GenderDefault (es, pt, …)
+#   - neuter_list     — common unless the *symbol* is in NeuterUnits /
+#                       NeuterUnitsWithoutPrefixes / CurrencySymbolsNeuter (nb, sv)
+#   - explicit_only   — GenderDefault unless listed in exception maps (de, fr, …)
 # Omit GenderSystem or use ["none"] when unused. Empty exception maps are fine.
 #
-# Exception / classification lists (spoken base words only), as needed per language:
+# Ending map + default (for GenderSystem ending / as fallback for explicit_only):
+#   GenderDefaultFromEnding: { "a": "feminine" }   # final letter → gender
+#   GenderDefault: ["masculine"]
+#
+# Exception lists (spoken base words only), as needed per language:
 #   FeminineUnitWords / MasculineUnitWords / NeuterUnitWords
-#   (optional parallel FeminineCurrencyWords / … if kept separate)
-# Multiword base words ("degree celsius", "atomic mass unit"): treat gender as that of
-# the head noun; listing the full base word in an exception set is OK if there is no
-# head-noun parser yet.
+#   FeminineCurrencyWords / MasculineCurrencyWords / NeuterCurrencyWords
+# Multiword base words ("degree celsius", "atomic mass unit"): gender uses the last
+# token’s ending unless the full base word is listed as an exception.
 #
 # How to speak "1" before the unit/currency (when gender is used):
 #   OneBeforeUnit: { "masculine": "un", "feminine": "una", "neuter": "ett", "common": "en" }
 # Missing key or GenderSystem none → fall back to normal number speech ("1" / NumbersOnes).
 #
-# Examples (Spanish-style GenderSystem romance_ending + OneBeforeUnit un/una):
-#   Common case (ending decides gender):
-#     1 m → base word "metro" ends in "o" → masculine → "un metro"
+# Examples (Spanish-style GenderSystem ending + OneBeforeUnit un/una):
+#   Common case (GenderDefaultFromEnding / GenderDefault):
+#     1 m  → "metro" ends in "o" → not in map → GenderDefault masculine → "un metro"
+#     1 cd → "candela" ends in "a" → feminine → "una candela"
 #   Exception (listed override; "día" ends in "a" but is masculine):
 #     MasculineUnitWords includes "día" → "un día"  (not "una día")
 #
+# --- Default plural spelling (when PluralForms has no entry) ---
+#   PluralDefaultFromEnding: { "r": "es", "l": "es" }  # final letter → suffix
+#   PluralSpellingDefaultSuffix: ["s"]               # otherwise append this
+# Example (Spanish): "dólar" → "dólares"; "metro" → "metros"; "gray" → "grays".
+# Irregulars stay in PluralForms ("lumen" → "lúmenes").
+#
 # English: GenderSystem is none; do not add OneBeforeUnit or gender exception lists
-# unless agreement is intentionally introduced later.
+# unless agreement is intentionally introduced later. Plural spelling inherits
+# PluralSpellingDefaultSuffix "s" with an empty PluralDefaultFromEnding map.
 # =============================================================================
 
 - SIPrefixes: {

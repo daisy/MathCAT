@@ -1955,9 +1955,8 @@ impl UnitNumber {
             // Exactly 1 is "one". 21 and 101 are not (Polish: "101 metrów").
             if near(value, 1.0) {
                 return "one";
-            } else if mod10 >= 2.0 &&
-             mod10 <= 4.0 &&
-             !(mod100 >= 12.0 && mod100 <= 14.0)
+            } else if (2.0..=4.0).contains(&mod10) &&
+             !(12.0..=14.0).contains(&mod100)
             {
                 return "few";
             } else {
@@ -1985,6 +1984,326 @@ impl Function for UnitNumber {
             _ => "many",
         };
         return Ok(Value::String(category.to_string()));
+    }
+}
+
+struct UnitGender;
+/// UnitGender(node_or_string) → `"masculine"` \| `"feminine"` \| `"neuter"` \| `"common"` \| `""`.
+/// Uses `GenderSystem` plus optional exception lists / symbol neuter sets.
+impl UnitGender {
+    fn gender_system() -> String {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec("GenderSystem")
+                .and_then(|values| values.first().cloned())
+                .unwrap_or_else(|| "none".to_string())
+        });
+    }
+
+    fn def_contains(set_name: &str, key: &str) -> bool {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            let defs = definitions.borrow();
+            if let Some(set) = defs.get_hashset(set_name) {
+                return set.contains(key);
+            }
+            if let Some(map) = defs.get_hashmap(set_name) {
+                return map.contains_key(key);
+            }
+            return false;
+        });
+    }
+
+    fn def_value(set_name: &str, key: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_hashmap(set_name)
+                .and_then(|map| map.get(key).cloned())
+        });
+    }
+
+    /// Spoken singular base word for a unit/currency symbol (or the text itself).
+    fn spoken_base_word(symbol: &str) -> String {
+        if let Some(word) = Self::def_value("SIUnits", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("UnitsWithoutPrefixes", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("EnglishUnits", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("CurrencySymbols", symbol) {
+            return word;
+        }
+        if symbol.len() >= 3 &&
+           symbol.starts_with("da") &&
+           let Some(word) = Self::def_value("SIUnits", &symbol[2..])
+        {
+            return word;
+        }
+        if symbol.chars().count() >= 2 {
+            let mut chars = symbol.chars();
+            if let Some(prefix) = chars.next() {
+                let rest: String = chars.collect();
+                if Self::def_contains("SIPrefixes", &prefix.to_string()) &&
+                   let Some(word) = Self::def_value("SIUnits", rest.as_str())
+                {
+                    return word;
+                }
+            }
+        }
+        return symbol.to_string();
+    }
+
+    fn exception_gender(base_word: &str) -> Option<&'static str> {
+        if Self::def_contains("FeminineUnitWords", base_word) ||
+           Self::def_contains("FeminineCurrencyWords", base_word)
+        {
+            return Some("feminine");
+        }
+        if Self::def_contains("MasculineUnitWords", base_word) ||
+           Self::def_contains("MasculineCurrencyWords", base_word)
+        {
+            return Some("masculine");
+        }
+        if Self::def_contains("NeuterUnitWords", base_word) ||
+           Self::def_contains("NeuterCurrencyWords", base_word)
+        {
+            return Some("neuter");
+        }
+        return None;
+    }
+
+    /// Symbol-based neuter check used by nb/sv (`NeuterUnits*`, `CurrencySymbolsNeuter`).
+    fn is_neuter_symbol(symbol: &str) -> bool {
+        if Self::def_contains("NeuterUnits", symbol) ||
+           Self::def_contains("NeuterUnitsWithoutPrefixes", symbol) ||
+           Self::def_contains("CurrencySymbolsNeuter", symbol)
+        {
+            return true;
+        }
+        // Prefixed SI unit whose base is neuter; bias ha→hektar and Pa→Pascal (not annum).
+        if symbol.len() >= 2 &&
+           symbol != "ha" &&
+           symbol != "Pa"
+        {
+            let mut chars = symbol.chars();
+            if let Some(prefix) = chars.next() {
+                let rest: String = chars.collect();
+                if Self::def_contains("SIPrefixes", &prefix.to_string()) &&
+                   Self::def_contains("NeuterUnits", rest.as_str())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    fn def_vec_first(name: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec(name)
+                .and_then(|values| values.first().cloned())
+        });
+    }
+
+    fn gender_default() -> String {
+        return Self::def_vec_first("GenderDefault").unwrap_or_else(|| "masculine".to_string());
+    }
+
+    /// Last whitespace-separated token’s final letter → `GenderDefaultFromEnding`, else `GenderDefault`.
+    fn gender_from_ending(base_word: &str) -> String {
+        let head = base_word.split_whitespace().next_back().unwrap_or(base_word);
+        let Some(last) = head.chars().next_back() else {
+            return Self::gender_default();
+        };
+        if let Some(gender) = Self::def_value("GenderDefaultFromEnding", &last.to_string()) {
+            return gender;
+        }
+        return Self::gender_default();
+    }
+
+    /// Classify gender for a symbol + spoken base word under `system`.
+    fn classify(system: &str, symbol: &str, base_word: &str) -> String {
+        match system {
+            "" | "none" => return String::new(),
+            "neuter_list" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                if Self::is_neuter_symbol(symbol) {
+                    return "neuter".to_string();
+                }
+                return "common".to_string();
+            },
+            "ending" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                return Self::gender_from_ending(base_word);
+            },
+            "explicit_only" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                return Self::gender_default();
+            },
+            _ => return String::new(),
+        }
+    }
+
+    fn gender_for_symbol(symbol: &str) -> String {
+        let base_word = Self::spoken_base_word(symbol);
+        return Self::classify(&Self::gender_system(), symbol, &base_word);
+    }
+
+    fn gender_for_element(element: Element) -> String {
+        let symbol = leaf_text(element);
+        if symbol.is_empty() {
+            return String::new();
+        }
+        return Self::gender_for_symbol(&symbol);
+    }
+}
+
+impl Function for UnitGender {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let gender = match &args[0] {
+            Value::String(text) => {
+                if text.is_empty() {
+                    String::new()
+                } else {
+                    UnitGender::gender_for_symbol(text)
+                }
+            },
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    String::new()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "UnitGender")?;
+                    match node {
+                        Node::Element(element) => UnitGender::gender_for_element(element),
+                        _ => String::new(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "UnitGender: first argument must be a node or string".to_string(),
+            }),
+        };
+        return Ok(Value::String(gender));
+    }
+}
+
+struct OneForUnit;
+/// OneForUnit(node) → spoken “1” before a following (or self) unit/currency, else `"1"`.
+impl OneForUnit {
+    fn word_for(element: Element) -> String {
+        let unit = if name(element) == "unit" ||
+           has_unit_property(element) ||
+           is_currency_leaf(element)
+        {
+            unit_leaf_in(element).or(Some(element))
+        } else {
+            following_unit(element)
+        };
+        let Some(unit) = unit else {
+            return "1".to_string();
+        };
+        let gender = UnitGender::gender_for_element(unit);
+        if gender.is_empty() {
+            return "1".to_string();
+        }
+        return UnitGender::def_value("OneBeforeUnit", &gender).filter(|word| !word.is_empty()).unwrap_or_else(|| "1".to_string());
+    }
+}
+
+impl Function for OneForUnit {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let word = match &args[0] {
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    "1".to_string()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "OneForUnit")?;
+                    match node {
+                        Node::Element(element) => OneForUnit::word_for(element),
+                        _ => "1".to_string(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "OneForUnit: argument must be a node".to_string(),
+            }),
+        };
+        return Ok(Value::String(word));
+    }
+}
+
+struct UnitPluralForm;
+/// UnitPluralForm(base_word) → PluralForms entry, else `PluralDefaultFromEnding` / `PluralSpellingDefaultSuffix`.
+impl UnitPluralForm {
+    fn plural_default_suffix() -> String {
+        return UnitGender::def_vec_first("PluralSpellingDefaultSuffix").unwrap_or_else(|| "s".to_string());
+    }
+
+    /// Default plural from definitions: final-letter map, else default suffix (usually `"s"`).
+    fn spelling_plural(base_word: &str) -> String {
+        let Some(last) = base_word.chars().next_back() else {
+            return base_word.to_string();
+        };
+        let suffix = UnitGender::def_value("PluralDefaultFromEnding", &last.to_string())
+            .unwrap_or_else(Self::plural_default_suffix);
+        return format!("{base_word}{suffix}");
+    }
+
+    fn plural_form(base_word: &str) -> String {
+        if let Some(word) = UnitGender::def_value("PluralForms", base_word).filter(|w| !w.is_empty()) {
+            return word;
+        }
+        return Self::spelling_plural(base_word);
+    }
+}
+
+impl Function for UnitPluralForm {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let base_word = match &args[0] {
+            Value::String(text) => text.clone(),
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    String::new()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "UnitPluralForm")?;
+                    match node {
+                        Node::Element(element) => leaf_text(element),
+                        _ => String::new(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "UnitPluralForm: argument must be a string or node".to_string(),
+            }),
+        };
+        return Ok(Value::String(UnitPluralForm::plural_form(&base_word)));
     }
 }
 
@@ -2017,6 +2336,9 @@ pub fn register_mathcat_xpath_functions(context: &mut Context) {
     context.set_function("GetQuantity", GetQuantity);
     context.set_function("GetUnit", GetUnit);
     context.set_function("UnitNumber", UnitNumber);
+    context.set_function("UnitGender", UnitGender);
+    context.set_function("OneForUnit", OneForUnit);
+    context.set_function("UnitPluralForm", UnitPluralForm);
     context.set_function("DEBUG", Debug);
 }
 
@@ -2399,6 +2721,72 @@ mod tests {
         let mn = as_element(as_element(fraction.children()[1]).children()[0]);
         assert_eq!(EdgeNode::edge_node(mn, true, "2D"), None);
         return Ok( () );
+        });
+    }
+
+    /// GenderSystem none / unset → empty gender (no numeral agreement).
+    #[test]
+    fn unit_gender_none() -> Result<()> {
+        return xpath_test(|| {
+            init_word_list()?;
+            assert_eq!(UnitGender::classify("none", "m", "metre"), "");
+            assert_eq!(UnitGender::gender_for_symbol("m"), "");
+            return Ok(());
+        });
+    }
+
+    /// GenderSystem ending: GenderDefaultFromEnding + GenderDefault; exceptions via language defs.
+    #[test]
+    fn unit_gender_ending_and_exception() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitGender::gender_for_symbol("m"), "masculine");   // metro
+            assert_eq!(UnitGender::gender_for_symbol("cd"), "feminine");  // candela
+            assert_eq!(UnitGender::classify("ending", "d", "día"), "masculine"); // MasculineUnitWords
+            assert_eq!(UnitGender::gender_from_ending("grado Celsius"), "masculine");
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// PluralDefaultFromEnding (es: r/l → es) + default suffix; PluralForms wins.
+    #[test]
+    fn unit_plural_form_spelling_maps() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitPluralForm::plural_form("metro"), "metros");
+            assert_eq!(UnitPluralForm::plural_form("dólar"), "dólares");
+            assert_eq!(UnitPluralForm::plural_form("mol"), "moles");
+            assert_eq!(UnitPluralForm::plural_form("hora"), "horas");
+            assert_eq!(UnitPluralForm::plural_form("gray"), "grays");
+            assert_eq!(UnitPluralForm::plural_form("newton"), "newtons");
+            assert_eq!(UnitPluralForm::plural_form("bit"), "bits");
+            assert_eq!(UnitPluralForm::plural_form("lumen"), "lúmenes"); // PluralForms
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// nb neuter_list: symbol sets mark neuter; other units are common.
+    #[test]
+    fn unit_gender_neuter_list_nb() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "nb")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitGender::gender_for_symbol("s"), "neuter");
+            assert_eq!(UnitGender::gender_for_symbol("m"), "common");
+            assert_eq!(UnitGender::gender_for_symbol("£"), "neuter");
+            // Restore English for other tests in this process.
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
         });
     }
 }

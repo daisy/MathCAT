@@ -4,9 +4,36 @@
 # For numbers, 
 # - name: [] "...", "..." "..." ]
 
+# *** The following are defaults that might be overridden by language-specific files ***
 # How counted nouns (units, currencies, …) choose one / few / many.
 # Languages that need few override this with ["one_few_many"] (e.g. pl, ru).
 - PluralSystem: ["one_many"]
+
+# Numeral–noun gender for “1” before a unit/currency (`UnitGender` / `OneForUnit`).
+# Omit or keep ["none"] when unused. See the units/currency comments in language definitions.yaml.
+#   none          — no gender agreement
+#   ending        — GenderDefaultFromEnding[last letter], else GenderDefault (es, pt, …)
+#   neuter_list   — common unless symbol is in NeuterUnits* / CurrencySymbolsNeuter (nb, sv)
+#   explicit_only — GenderDefault unless listed in Feminine*/Masculine*/Neuter*Word maps (de, fr, …)
+- GenderSystem: ["none"]
+
+# Final letter of the spoken base word’s last token → gender (`ending` system only).
+- GenderDefaultFromEnding: {
+  }
+
+# Fallback gender when `ending` / `explicit_only` find no map hit (and no exception list hit).
+- GenderDefault: ["masculine"]
+
+# Spoken form of “1” keyed by gender (`masculine` / `feminine` / `neuter` / `common`).
+# Empty here: languages that need agreement fill this in locally.
+- OneBeforeUnit: {
+  }
+
+# Default plural spelling when PluralForms has no entry (`UnitPluralForm`).
+# Final letter → suffix (e.g. es/pt: r/l → "es"); else PluralSpellingDefaultSuffix.
+- PluralDefaultFromEnding: {
+  }
+- PluralSpellingDefaultSuffix: ["s"]
 
 - IntentMappings: {
     # this should be defined for each translation; a default empty value is here to ensure the mapping exists

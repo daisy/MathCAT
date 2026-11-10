@@ -181,7 +181,7 @@ fn singular_frac_with_units() -> Result<()> {
         </mfrac>
         </mrow>
     </math>";
-    test("es", "SimpleSpeak", expr, "1 galón por milla")?;
+    test("es", "SimpleSpeak", expr, "un galón por milla")?;
     return Ok(());
 
 }

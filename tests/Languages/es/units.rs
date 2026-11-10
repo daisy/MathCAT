@@ -61,7 +61,7 @@ fn si_base() -> Result<()> {
         <mn>1</mn><mi intent=":unit">sec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">sec</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 amperio, coma, 2 amperios, coma, 1 candela, coma, 2 candelas, coma, 1 kelvin, coma, 2 kelvin, coma, 1 kelvin, coma, 2 kelvin, coma, 1 gramo, coma, 2 gramos, coma, 1 metro, coma, 2 metros, coma, 1 mol coma, 2 moles, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos")?;
+        "un amperio, coma, 2 amperios, coma, una candela, coma, 2 candelas, coma, un kelvin, coma, 2 kelvins, coma, un kelvin, coma, 2 kelvins, coma, un gramo, coma, 2 gramos, coma, un metro, coma, 2 metros, coma, un mol, coma, 2 moles, coma, un segundo, coma, 2 segundos, coma, un segundo, coma, 2 segundos, coma, un segundo, coma, 2 segundos, coma, un segundo, coma, 2 segundos")?;
                 return Ok(());
 
 }
@@ -80,7 +80,7 @@ fn si_base_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">nsec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">psec</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quettaamperio, coma; 2 ronnaamperios, coma; 1 yottacandela, coma; 2 zettacandelas, coma, 1 exakelvin, coma; 2 petakelvin, coma; 1 terakelvin, coma; 2 gigakelvin, coma, 1 megagramo, coma; 2 kilogramos, coma, 1 hectómetro, coma, 2 decámetros, coma, 1 decimol, coma; 2 centimoles, coma; 1 milisegundo, coma; 2 microsegundos, coma; 1 nanosegundo, coma; 2 picosegundos")?;
+        "un quettaamperio, coma; 2 ronnaamperios, coma; una yottacandela, coma; 2 zettacandelas, coma; un exakelvin, coma; 2 petakelvins, coma; un terakelvin, coma; 2 gigakelvins, coma; un megagramo, coma; 2 kilogramos, coma, un hectómetro, coma, 2 decámetros, coma, un decimol, coma; 2 centimoles, coma; un milisegundo, coma; 2 microsegundos, coma; un nanosegundo, coma; 2 picosegundos")?;
                 return Ok(());
 
 }
@@ -103,7 +103,7 @@ fn si_derived_1() -> Result<()> {
         <mn>1</mn><mi intent=":unit">lx</mi><mo>,</mo><mn>2</mn><mi intent=":unit">lx</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 becquerel, coma, 2 becquereles, coma, 1 culombio, coma, 2 culombios, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 grado Celsius, coma; 2 grados Celsius, coma, 1 faradio, coma, 2 faradios, coma, 1 gray, coma, 2 grays, coma, 1 henrio, coma, 2 henrios, coma, 1 hercio, coma, 2 hercios, coma, 1 julio, coma, 2 julios, coma, 1 katal, coma, 2 katales, coma, 1 lumen, coma, 2 lúmenes, coma, 1 lux coma, 2 lux")?;
+        "un becquerel, coma, 2 becquereles, coma, un culombio, coma, 2 culombios, coma; un grado Celsius, coma; 2 grados Celsius, coma; un grado Celsius, coma; 2 grados Celsius, coma, un faradio, coma, 2 faradios, coma, un gray, coma, 2 grays, coma, un henrio, coma, 2 henrios, coma, un hercio, coma, 2 hercios, coma, un julio, coma, 2 julios, coma, un katal, coma, 2 katales, coma, un lumen, coma, 2 lúmenes, coma, un lux, coma, 2 luxes")?;
                 return Ok(());
 
 }
@@ -125,7 +125,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">p℃</mi><mo>,</mo><mn>2</mn><mi intent=":unit">n℃</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quettabecquerel, coma; 2 ronnabecquereles, coma; 1 yottaculombio, coma; 2 zettaculombios, coma; 1 exafaradio, coma; 2 petafaradios, coma, 1 teragray, coma, 2 gigagrays, coma; 1 megahenrio, coma; 2 kilohenrios, coma; 1 decahercio, coma; 2 decihercios, coma; 1 centijulio, coma; 2 milijulios, coma; 1 microkatal, coma; 2 nanokatales, coma, 1 picolumen, coma; 2 femtolúmenes, coma, 1 attolux, coma, 2 zeptolux, coma; 1 miligrado Celsius, coma; 2 microgrados Celsius, coma; 1 picogrado Celsius, coma; 2 nanogrados Celsius")?;
+        "un quettabecquerel, coma; 2 ronnabecquereles, coma; un yottaculombio, coma; 2 zettaculombios, coma; un exafaradio, coma; 2 petafaradios, coma, un teragray, coma, 2 gigagrays, coma; un megahenrio, coma; 2 kilohenrios, coma; un decahercio, coma; 2 decihercios, coma; un centijulio, coma; 2 milijulios, coma; un microkatal, coma; 2 nanokatales, coma; un picolumen, coma; 2 femtolúmenes, coma, un attolux, coma; 2 zeptoluxes, coma; un miligrado Celsius, coma; 2 microgrados Celsius, coma; un picogrado Celsius, coma; 2 nanogrados Celsius")?;
                 return Ok(());
 
 }
@@ -145,7 +145,7 @@ fn si_derived_2() -> Result<()> {
         <mn>1</mn><mi intent=":unit">Wb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Wb</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 newton, coma, 2 newtons, coma, 1 ohmio, coma, 2 ohmios, coma, 1 ohmio, coma, 2 ohmios, coma, 1 pascal, coma, 2 pascales, coma, 1 siemens, coma, 2 siemens, coma, 1 sievert, coma, 2 sieverts, coma, 1 tesla, coma, 2 teslas, coma, 1 voltio, coma, 2 voltios, coma, 1 vatio, coma, 2 vatios, coma, 1 weber, coma, 2 weberes")?;
+        "un newton, coma, 2 newtons, coma, un ohmio, coma, 2 ohmios, coma, un ohmio, coma, 2 ohmios, coma, un pascal, coma, 2 pascales, coma, un siemens, coma, 2 siemens, coma, un sievert, coma, 2 sieverts, coma, una tesla, coma, 2 teslas, coma, un voltio, coma, 2 voltios, coma, un vatio, coma, 2 vatios, coma, un weber, coma, 2 weberes")?;
                 return Ok(());
 
 }
@@ -165,7 +165,7 @@ fn si_derived_2_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">PWb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EWb</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quectonewton, coma; 2 rontonewtons, coma; 1 yoctoohmio, coma; 2 zeptoohmios, coma, 1 attoohmio, coma; 2 femtoohmios, coma; 1 picopascal, coma; 2 nanopascales, coma; 1 microsiemens, coma; 2 milisiemens, coma; 1 centisievert, coma; 2 decisieverts, coma, 1 decatesla, coma; 2 hectoteslas, coma; 1 kilovoltio, coma; 2 megavoltios, coma, 1 gigavatio, coma; 2 teravatios, coma, 1 petaweber, coma; 2 exaweberes")?;
+        "un quectonewton, coma; 2 rontonewtons, coma; un yoctoohmio, coma; 2 zeptoohmios, coma; un attoohmio, coma; 2 femtoohmios, coma; un picopascal, coma; 2 nanopascales, coma; un microsiemens, coma; 2 milisiemens, coma; un centisievert, coma; 2 decisieverts, coma; una decatesla, coma; 2 hectoteslas, coma; un kilovoltio, coma; 2 megavoltios, coma; un gigavatio, coma; 2 teravatios, coma; un petaweber, coma; 2 exaweberes")?;
                 return Ok(());
 
 }
@@ -191,7 +191,7 @@ fn si_accepted() -> Result<()> {
         <mn>1</mn><mi intent=":unit">Bd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bd</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 litro, coma, 2 litros, coma, 1 litro, coma, 2 litros, coma, 1 litro, coma, 2 litros, coma, 1 tonelada, coma, 2 toneladas, coma, 1 dalton, coma, 2 daltons, coma, 1 néper, coma, 2 néperes, coma; 1 unidad de masa atómica, coma; 2 unidades de masa atómica, coma; 1 electronvoltio, coma; 2 electronvoltios, coma, 1 radián, coma, 2 radianes, coma; 1 estereorradián, coma; 2 estereorradianes, coma, 1 año, coma, 2 años, coma; 1 segundo de arco, coma; 2 segundos de arco, coma, 1 bit coma, 2 bits, coma, 1 byte, coma, 2 bytes, coma, 1 baudio, coma, 2 baudios")?;
+        "un litro, coma, 2 litros, coma, un litro, coma, 2 litros, coma, un litro, coma, 2 litros, coma, una tonelada, coma, 2 toneladas, coma, un dalton, coma, 2 daltons, coma, un néper, coma, 2 néperes, coma; una unidad de masa atómica, coma; 2 unidades de masa atómica, coma; un electronvoltio, coma; 2 electronvoltios, coma, un radián, coma, 2 radianes, coma; un estereorradián, coma; 2 estereorradianes, coma, un año, coma, 2 años, coma; un segundo de arco, coma; 2 segundos de arco, coma, un bit, coma, 2 bits, coma, un byte, coma, 2 bytes, coma, un baudio, coma, 2 baudios")?;
                 return Ok(());
 
 }
@@ -216,7 +216,7 @@ fn si_accepted_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">TBd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EBd</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 quettalitro, coma; 2 ronnalitros, coma; 1 yottalitro, coma; 2 zettalitros, coma, 1 exalitro, coma; 2 petalitros, coma; 1 teratonelada, coma; 2 gigatoneladas, coma; 1 megadalton, coma; 2 kilodaltons, coma; 1 decinéper, coma; 2 centinéperes, coma; 1 hectounidad de masa atómica; coma; 2 decaunidades de masa atómica; coma; 1 milielectronvoltio, coma; 2 microelectronvoltios, coma; 1 nanoradián, coma; 2 picoradianes, coma; 1 femtoestereorradián, coma; 2 attoestereorradianes, coma, 1 gigaaño, coma, 2 megaaños, coma; 1 zeptosegundo de arco, coma; 2 yoctosegundos de arco, coma, 1 kilobit, coma, 2 megabits, coma, 1 gigabyte, coma, 2 terabytes, coma; 1 terabaudio, coma; 2 exabaudios")?;
+        "un quettalitro, coma; 2 ronnalitros, coma; un yottalitro, coma; 2 zettalitros, coma, un exalitro, coma; 2 petalitros, coma; una teratonelada, coma; 2 gigatoneladas, coma; un megadalton, coma; 2 kilodaltons, coma; un decinéper, coma; 2 centinéperes, coma; una hectounidad de masa atómica; coma; 2 decaunidades de masa atómica; coma; un milielectronvoltio, coma; 2 microelectronvoltios, coma; un nanoradián, coma; 2 picoradianes, coma; un femtoestereorradián, coma; 2 attoestereorradianes, coma, un gigaaño, coma, 2 megaaños, coma; un zeptosegundo de arco, coma; 2 yoctosegundos de arco, coma, un kilobit, coma, 2 megabits, coma, un gigabyte, coma, 2 terabytes, coma; un terabaudio, coma; 2 exabaudios")?;
                 return Ok(());
 
 }
@@ -240,7 +240,7 @@ fn without_prefix_time() -> Result<()> {
         <mn>1</mn><mi intent=":unit">yr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">yr</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 segundo, coma, 2 segundos, coma, 1 segundo, coma, 2 segundos, coma, 1 minuto, coma, 2 minutos, coma, 1 minuto, coma, 2 minutos, coma, 1 minuto, coma, 2 minutos, coma, 1 hora, coma, 2 horas, coma, 1 hora, coma, 2 horas, coma, 1 hora, coma, 2 horas, coma, 1 día, coma, 2 días, coma, 1 día, coma, 2 días, coma, 1 semana, coma, 2 semanas, coma, 1 semana, coma, 2 semanas, coma, 1 año, coma, 2 años, coma, 1 año, coma, 2 años")?;
+        "un segundo, coma, 2 segundos, coma, un segundo, coma, 2 segundos, coma, un minuto, coma, 2 minutos, coma, un minuto, coma, 2 minutos, coma, un minuto, coma, 2 minutos, coma, una hora, coma, 2 horas, coma, una hora, coma, 2 horas, coma, una hora, coma, 2 horas, coma, un día, coma, 2 días, coma, un día, coma, 2 días, coma, una semana, coma, 2 semanas, coma, una semana, coma, 2 semanas, coma, un año, coma, 2 años, coma, un año, coma, 2 años")?;
                 return Ok(());
 
 }
@@ -258,7 +258,7 @@ fn without_prefix_angles() -> Result<()> {
         <mn>1</mn><mi intent=":unit">asec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">asec</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 grado, coma, 2 grados, coma, 1 grado, coma, 2 grados, coma; 1 minuto de arco, coma; 2 minutos de arco, coma; 1 minuto de arco, coma; 2 minutos de arco, coma; 1 minuto de arco, coma; 2 minutos de arco, coma; 1 minuto de arco, coma; 2 minutos de arco, coma; 1 segundo de arco, coma; 2 segundos de arco, coma; 1 segundo de arco, coma; 2 segundos de arco")?;
+        "un grado, coma, 2 grados, coma, un grado, coma, 2 grados, coma; un minuto de arco, coma; 2 minutos de arco, coma; un minuto de arco, coma; 2 minutos de arco, coma; un minuto de arco, coma; 2 minutos de arco, coma; un minuto de arco, coma; 2 minutos de arco, coma; un segundo de arco, coma; 2 segundos de arco, coma; un segundo de arco, coma; 2 segundos de arco")?;
                 return Ok(());
 
 }
@@ -274,7 +274,7 @@ fn without_prefix_distance() -> Result<()> {
         <mn>1</mn><mi intent=":unit">fm</mi><mo>,</mo><mn>2</mn><mi intent=":unit">fm</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 unidad astronómica, coma; 2 unidades astronómicas, coma, 1 año luz, coma, 2 años luz, coma, 1 parsec, coma, 2 parsecs, coma, 1 ángstrom, coma, 2 ángstroms, coma, 1 ángstrom, coma, 2 ángstroms, coma, 1 fermio, coma, 2 fermios")?;
+        "una unidad astronómica, coma; 2 unidades astronómicas, coma, un año luz, coma, 2 años luz, coma, un parsec, coma, 2 parsecs, coma, un ángstrom, coma, 2 ángstroms, coma, un ángstrom, coma, 2 ángstroms, coma, un fermio, coma, 2 fermios")?;
                 return Ok(());
 
 }
@@ -299,7 +299,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 hectárea, coma, 2 hectáreas, coma, 1 decibelio, coma, 2 decibelios, coma, 1 atmósfera, coma, 2 atmósferas, coma; 1 unidad de masa atómica, coma; 2 unidades de masa atómica, coma, 1 bar coma, 2 bares, coma, 1 caloría, coma, 2 calorías, coma, 1 curio, coma, 2 curios, coma, 1 gradián, coma, 2 gradianes, coma, 1 molar, coma, 2 molares, coma, 1 roentgen, coma, 2 roentgens, coma; 1 revolución por minuto, coma; 2 revoluciones por minuto, coma; 1 dracma líquida, coma; 2 dracmas líquidas, coma, 1 mho coma, 2 mhos, coma, 1 dina, coma, 2 dinas, coma, 1 ergio, coma, 2 ergios")?;
+        "una hectárea, coma, 2 hectáreas, coma, un decibelio, coma, 2 decibelios, coma, una atmósfera, coma, 2 atmósferas, coma; una unidad de masa atómica, coma; 2 unidades de masa atómica, coma, un bar, coma, 2 bares, coma, una caloría, coma, 2 calorías, coma, un curio, coma, 2 curios, coma, un gradián, coma, 2 gradianes, coma, un molar, coma, 2 molares, coma, un roentgen, coma, 2 roentgens, coma; una revolución por minuto, coma; 2 revoluciones por minuto, coma; una dracma líquida, coma; 2 dracmas líquidas, coma, un mho, coma, 2 mhos, coma, una dina, coma, 2 dinas, coma, un ergio, coma, 2 ergios")?;
                 return Ok(());
 
 }
@@ -325,7 +325,7 @@ fn without_prefix_powers_of_2() -> Result<()> {
         <mn>1</mn><mi intent=":unit">YiB</mi><mo>,</mo><mn>2</mn><mi intent=":unit">YiB</mi>
     </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 kibibit, coma, 2 kibibits, coma, 1 mebibit, coma, 2 mebibits, coma, 1 gibibit, coma, 2 gibibits, coma, 1 tebibit, coma, 2 tebibits, coma, 1 pebibit, coma, 2 pebibits, coma, 1 exbibit, coma, 2 exbibits, coma, 1 zebibit, coma, 2 zebibits, coma, 1 yobibit, coma, 2 yobibits, coma, 1 kibibyte, coma, 2 kibibytes, coma, 1 mebibyte, coma, 2 mebibytes, coma, 1 gibibyte, coma, 2 gibibytes, coma, 1 tebibyte, coma, 2 tebibytes, coma, 1 pebibyte, coma, 2 pebibytes, coma, 1 exbibyte, coma, 2 exbibytes, coma, 1 zebibyte, coma, 2 zebibytes, coma, 1 yobibyte, coma, 2 yobibytes")?;
+        "un kibibit, coma, 2 kibibits, coma, un mebibit, coma, 2 mebibits, coma, un gibibit, coma, 2 gibibits, coma, un tebibit, coma, 2 tebibits, coma, un pebibit, coma, 2 pebibits, coma, un exbibit, coma, 2 exbibits, coma, un zebibit, coma, 2 zebibits, coma, un yobibit, coma, 2 yobibits, coma, un kibibyte, coma, 2 kibibytes, coma, un mebibyte, coma, 2 mebibytes, coma, un gibibyte, coma, 2 gibibytes, coma, un tebibyte, coma, 2 tebibytes, coma, un pebibyte, coma, 2 pebibytes, coma, un exbibyte, coma, 2 exbibytes, coma, un zebibyte, coma, 2 zebibytes, coma, un yobibyte, coma, 2 yobibytes")?;
                 return Ok(());
 
 }
@@ -361,7 +361,7 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("es", "SimpleSpeak", expr, 
-        "abrir corchetes; 1 tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 4,5 militeslas; cerrar corchetes")?;
+        "abrir corchetes; una tonelada, coma; 2 petaamperios, coma, 3 pascales, coma; 4,5 militeslas; cerrar corchetes")?;
                 return Ok(());
 
 }
@@ -376,7 +376,7 @@ fn test_mtext_inference() -> Result<()> {
             <msub><mi>m</mi><mi>min</mi></msub>
             </math>"#;
         test("es", "SimpleSpeak", expr, 
-            "3 metros, coma, 1 kilómetro, coma, 3 metros, coma; 3 décimos faradios, coma; m sub min fin de sub")?;
+            "3 metros, coma, un kilómetro, coma, 3 metros, coma; 3 décimos faradios, coma; m sub min fin de sub")?;
             return Ok(());
 
     }
@@ -402,7 +402,7 @@ fn metro() -> Result<()> {
                 <mn>2</mn><mi intent=":unit">mm</mi>
             </math>"#;
     test("es", "SimpleSpeak", expr, 
-        "1 metro, coma, 2 metros, coma, 1 gigámetro, coma, 2 gigámetros, coma, 1 megámetro, coma, 2 megámetros, coma, 1 kilómetro, coma, 2 kilómetros, coma, 1 hectómetro, coma, 2 hectómetros, coma, 1 decámetro, coma, 2 decámetros, coma, 1 milímetro, coma, 2 milímetros")?;
+        "un metro, coma, 2 metros, coma, un gigámetro, coma, 2 gigámetros, coma, un megámetro, coma, 2 megámetros, coma, un kilómetro, coma, 2 kilómetros, coma, un hectómetro, coma, 2 hectómetros, coma, un decámetro, coma, 2 decámetros, coma, un milímetro, coma, 2 milímetros")?;
                 return Ok(());
 
 }
@@ -410,7 +410,7 @@ fn metro() -> Result<()> {
 // pruebas propias del español: plurales de monedas y unidades
 #[test]
 fn currency_plural() -> Result<()> {
-    test("es", "SimpleSpeak", "<math><mo>$</mo><mn>1</mn></math>", "1 dólar")?;
+    test("es", "SimpleSpeak", "<math><mo>$</mo><mn>1</mn></math>", "un dólar")?;
     test("es", "SimpleSpeak", "<math><mo>$</mo><mn>3</mn></math>", "3 dólares")?;
     test("es", "SimpleSpeak", "<math><mo>€</mo><mn>20</mn></math>", "20 euros")?;
     test("es", "SimpleSpeak", "<math><mo>₡</mo><mn>5</mn></math>", "5 colones")?;
@@ -419,7 +419,7 @@ fn currency_plural() -> Result<()> {
 
 #[test]
 fn radian_singular_plural() -> Result<()> {
-    test("es", "SimpleSpeak", r#"<math><mn>1</mn><mi intent=":unit">rad</mi></math>"#, "1 radián")?;
+    test("es", "SimpleSpeak", r#"<math><mn>1</mn><mi intent=":unit">rad</mi></math>"#, "un radián")?;
     test("es", "SimpleSpeak", r#"<math><mn>3</mn><mi intent=":unit">rad</mi></math>"#, "3 radianes")?;
     return Ok(());
 }
@@ -448,7 +448,7 @@ fn degrees_celsius_and_angles_cmu() -> Result<()> {
 fn units_and_currencies_common_in_spanish() -> Result<()> {
     // unidades y monedas de uso corriente en español que no están en inglés
     let cases = [
-        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "1 kilovatio hora"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "una kilovatio hora"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kWh</mi></math>", "10 kilovatios hora"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">kcal</mi></math>", "10 kilocalorías"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">mAh</mi></math>", "10 miliamperios hora"),
@@ -467,17 +467,17 @@ fn units_and_currencies_common_in_spanish() -> Result<()> {
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">MBps</mi></math>", "10 megabytes por segundo"),
         ("<math><mn>300</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dpi</mi></math>", "300 puntos por pulgada"),
         ("<math><mn>300</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ppp</mi></math>", "300 puntos por pulgada"),
-        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">px</mi></math>", "1 píxel"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">px</mi></math>", "un píxel"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">px</mi></math>", "10 píxeles"),
         ("<math><mn>60</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">fps</mi></math>", "60 fotogramas por segundo"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">GFLOPS</mi></math>", "10 gigaflops"),
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">dBm</mi></math>", "10 decibelios milivatio"),
-        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvin"),
-        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "1 unidad astronómica"),
+        ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">°K</mi></math>", "10 grados kelvins"),
+        ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">ua</mi></math>", "una unidad astronómica"),
         ("<math><mi mathvariant=\"normal\">R$</mi><mn>150</mn></math>", "150 reales"),
         ("<math><mi mathvariant=\"normal\">¥</mi><mn>3</mn></math>", "3 yenes"),
         ("<math><mi mathvariant=\"normal\">₲</mi><mn>3</mn></math>", "3 guaraníes"),
-        ("<math><mi mathvariant=\"normal\">₿</mi><mn>3</mn></math>", "3 bitcoins"),
+        ("<math><mi mathvariant=\"normal\">₿</mi><mn>3</mn></math>", "3 bitcoines"),
     ];
     for (expr, speech) in cases {
         test("es", "ClearSpeak", expr, speech)?;

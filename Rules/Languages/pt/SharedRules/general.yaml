@@ -302,33 +302,20 @@
       - set_variables:
         - Word: "text()"
 
-  - with:
-      variables:
-      - Word: "IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ián', concat(substring($Word, 1, string-length($Word)-2), ian), $Word)"
-      - LastChar: "substring($Word, string-length($Word), 1)"
-      - PluralEnding: "IfThenElse($LastChar = 'r' or $LastChar = 'l', 'es',
-                      IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ian', 'es', 's' )) "
-      replace:
-      # somewhat complicated logic to avoid spaces around "-" as in "centi-grams" vs "centi - grams" -- probably doesn't matter
+  # PluralForms first, else PluralDefaultFromEnding / PluralSpellingDefaultSuffix
+  - test:
+      if: "$Prefix = ''"
+      then:
       - test:
-          if: "$Prefix = ''"
-          then:
-          - test:
-            - if: "UnitNumber(.) = 'one'"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "$Word"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
-              else: [x: "concat($Word, $PluralEnding)"]
-          else:
-          - x: "$Prefix"
-          - test:
-            - if: "UnitNumber(.) = 'one'"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "concat('\uF8FE', $Word)"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
-              else: [x: "concat('\uF8FE', $Word, $PluralEnding)"]
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "$Word"]
+          else: [x: "UnitPluralForm($Word)"]
+      else:
+      - x: "$Prefix"
+      - test:
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "concat('\uF8FE', $Word)"]
+          else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 
 
 
@@ -338,17 +325,17 @@
   tag: mrow
   match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
-    # se o valor é 1, não pluraliza
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
-  - x: "*[3]"
+  - test:
+    - if: "UnitNumber(*[1]) = 'one'"
+      then: [x: "OneForUnit(*[1])"]
+      else: [x: "*[3]"]
   - test:
     - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
 
 - name: sin
   tag: mi

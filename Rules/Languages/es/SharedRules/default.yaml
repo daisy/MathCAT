@@ -45,6 +45,8 @@
   - test:
     - if: "@data-roman-numeral" 
       then: [spell: "text()", pause: "short"]
+    - else_if: ".=1"   # un/una before a following unit/currency (OneBeforeUnit)
+      then: [x: "OneForUnit(.)"]
       else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default

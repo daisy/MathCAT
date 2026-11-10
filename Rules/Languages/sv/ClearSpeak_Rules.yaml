@@ -146,15 +146,7 @@
   variables:
   - IsPlural: "*[1]!=1"                                                                                                  # "DEBUG(not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064']))"     '\u2064' is invisible plus and is used in mixed fractions
   - UnitNode: "GetUnit(.)"
-    # test the node for being a neuter unit
-    # note: bias ha->hektar and Pa->Pascal, not si-prefix "a" (annum)
-  - NeuterUnitFollows: "$UnitNode[IsInDefinition(., 'Speech', 'NeuterUnits') or 
-                                  IsInDefinition(., 'Speech', 'NeuterUnitsWithoutPrefixes') or
-                                  (string-length(.) >= 2 and
-                                    . != 'ha' and . != 'Pa' and
-                                    DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes') != '' and
-                                    IsInDefinition(substring(., 2), 'Speech', 'NeuterUnits') != ''
-                                  ) ]"  
+  - IsNeuterUnit: "UnitGender($UnitNode) = 'neuter'"
   replace:
   - test:
     - if: "not($UnitNode)" 
@@ -170,14 +162,14 @@
         - if: "*[1]=1" # or ($IsMixedFraction and preceding-sibling::*[2][.=1])"
           then: 
             - test:
-                if: "$NeuterUnitFollows"
+                if: "$IsNeuterUnit"
                 then: [T: "ett"]
                 else: [T: "en"]
           else: [x: "*[1]"]
       - test:
         - if: "*[1]=1 and *[2]=2"
           then_test:
-          - if: "$NeuterUnitFollows"
+          - if: "$IsNeuterUnit"
             then: [T: "halvt"]
             else: [T: "halv"]
         - else_if: "*[2] <= 10"

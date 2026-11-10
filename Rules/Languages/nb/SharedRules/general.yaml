@@ -254,26 +254,7 @@
   - bookmark: "@id"
   - SPELL: "text()"
 
-# need to say "ett" for '1' in front of a neuter unit
-# this is extra complicated because we need to allow do it for a 1 in front of a mixed fraction
-# note: bias ha->hektar and Pa->Pascal, not si-prefix "a" (annum)
-- name: one-for-unit
-  tag: mn
-  match: ".=1"
-  variables:
-  - UnitNode: "GetUnit(.)"
-    # test the node for being a neuter unit
-    # note: bias ha->hektar and Pa->Pascal, not si-prefix "a" (annum)
-  - NeuterUnitFollows: "$UnitNode[IsInDefinition(., 'Speech', 'NeuterUnits') or 
-                                  IsInDefinition(., 'Speech', 'NeuterUnitsWithoutPrefixes') or
-                                  (string-length(.) >= 2 and
-                                    . != 'ha' and . != 'Pa' and
-                                    DefinitionValue(substring(., 1, 1), 'Speech', 'SIPrefixes') != '' and
-                                    IsInDefinition(substring(., 2), 'Speech', 'NeuterUnits') != ''
-                                  ) ]"  
-  replace:
-  - x: "IfThenElse($NeuterUnitFollows, 'ett', 1)"
-
+# need to say "ett" for '1' in front of a neuter unit (GenderSystem neuter_list + OneBeforeUnit)
 # the order of matching is
 # 1. does it match the base of an SI unit
 # 2. does it match an English unit (if in an English language)
@@ -359,19 +340,17 @@
           else: [x: "concat('\uF8FE', $Word)"]
 
 # need to reverse the order of speech: $ 3 -> 3 dollars
-# Added test for neuter currencies, which use "ett" instead of "en" for the singular form of "one".
+# Neuter currencies use "ett" via UnitGender / OneBeforeUnit (CurrencySymbolsNeuter).
 - name: currency    # audit-ignore
   tag: mrow
   match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
-    # If the amount is singular, we don't add the plural ending.
-  - IsNeuterCurrency: "DefinitionValue(*[1], 'Speech', 'CurrencySymbolsNeuter') != ''"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
   - test:
-    - if: "UnitNumber(*[1]) = 'one' and $IsNeuterCurrency"
-      then: [T: "ett"]
+    - if: "UnitNumber(*[1]) = 'one'"
+      then: [x: "OneForUnit(*[1])"]
       else: [x: "*[3]"]
   - test:
     - if: "UnitNumber(*[1]) = 'one'"
