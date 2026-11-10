@@ -153,8 +153,8 @@
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
-                  then: [T: "前置き下付き文字"]       # phrase(x with 'subscript' 2)
-                  else: [T: "前置き上付き文字"]     # phrase(x with 'superscript' 2)
+                  then: [T: "前置きの下付き文字"]       # phrase(x with 'subscript' 2)
+                  else: [T: "前置きの上付き文字"]     # phrase(x with 'superscript' 2)
               else:
               - test:
                   if: "$NumPrecedingSiblings mod 2 = 0"
