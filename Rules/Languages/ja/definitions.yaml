@@ -90,7 +90,7 @@
 
     "image":"function=像", 
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
-    "mixed-fraction":"infix=および", # NOTE: in website says function, but follow infix speech pattern.
+    "mixed-fraction":"infix=と", # NOTE: in website says function, but follow infix speech pattern.
     "quotient":"function=整数部 : 割る",
     "evaluated-at":"infix=評価される",
     "remainder":"function=余り : 割る",
@@ -310,7 +310,7 @@
     "list-separator": "infix=コンマ",
     "maps-to": "infix=に写る",
     "member-of": "infix=元オブ",
-    "minus-or-plus": "infix=マイナスまたはプラス",
+    "minus-or-plus": "infix=マイナスプラス",
     "not-subset": "infix=ノット 部分集合オブ",
     "not-superset": "infix=ノット 上位集合オブ",
     "not-equal-to": "infix=ノット イコール",
@@ -323,7 +323,7 @@
     "perpendicular": "infix=垂直",
     "plus": "infix=プラス || prefix=プラス", # Prefix not tested
     "minus": "infix=マイナス || prefix=マイナス", # Prefix not tested
-    "plus-or-minus": "infix=プラス オア マイナス",
+    "plus-or-minus": "infix=プラスマイナス",
     "precedes": "infix=に先行する",
     "proportional": "infix=比例する",
     "range-separator": "infix=から",
@@ -526,7 +526,7 @@
     # derived units
     "Bq": "ベクレル",
     "C": "クーロン",
-    "°C": "摂氏温度", "℃": "摂氏温度", # should only take negative powers
+    "°C": "摂氏度", "℃": "摂氏度", # should only take negative powers
     "F": "ファラド",
     "Gy": "グレー",
     "H": "ヘンリー",
