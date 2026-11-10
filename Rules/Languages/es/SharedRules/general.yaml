@@ -10,6 +10,76 @@
 
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 
+# Hora y fecha con intent (":time", ":date"): MathCAT las dice en palabras para que el texto,
+# cualquier voz y el braille digan lo mismo. Base: la lectura de la voz del MathCAT Demo
+# ("las nueve y media", "las doce y 21 de la noche", "uno de enero de dos mil").
+- name: hora
+  tag: [mtext, mn, mi]
+  match: "contains(@data-intent-property, ':time:') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and
+          string-length(substring-before(translate(., ' ', ''), ':')) >= 1 and
+          string-length(substring-before(translate(., ' ', ''), ':')) <= 2"
+  variables:
+  - T: "translate(., ' ', '')"
+  - Resto: "substring-after(translate(., ' ', ''), ':')"
+  - H: "number(substring-before(translate(., ' ', ''), ':'))"
+  - M: "number(IfThenElse(contains(substring-after(translate(., ' ', ''), ':'), ':'), substring-before(substring-after(translate(., ' ', ''), ':'), ':'), substring-after(translate(., ' ', ''), ':')))"
+  - S: "IfThenElse(contains(substring-after(translate(., ' ', ''), ':'), ':'), number(substring-after(substring-after(translate(., ' ', ''), ':'), ':')), -1)"
+  replace:
+  - bookmark: "@id"
+  - test:
+      # hora imposible (25:70) o mal escrita: se dice el texto tal cual
+      if: "not($H >= 0 and $H < 24 and $M >= 0 and $M < 60 and $S < 60)"
+      then: [x: "text()"]
+      else:
+      - test:
+        - if: "$H = 1"
+          then: [T: "la una"]                    # la una (no "la uno")
+        - else_if: "$H = 0"
+          then: [T: "las", x: "12"]              # 0:21 = las 12 y 21 de la noche
+          else: [T: "las", x: "$H"]
+      - test:
+        - if: "$M = 0"
+          then: []
+        - else_if: "$H < 13 and $M = 15"
+          then: [T: "y cuarto"]
+        - else_if: "$H < 13 and $M = 30"
+          then: [T: "y media"]
+          else: [T: "y", x: "$M"]
+      - test:
+          if: "$H = 0"
+          then: [T: "de la noche"]
+      - test:
+        - if: "$S = 1"
+          then: [T: "con", x: "1", T: "segundo"]
+        - else_if: "$S >= 0"
+          then: [T: "con", x: "$S", T: "segundos"]
+
+- name: fecha
+  tag: [mtext, mn, mi]
+  match: "contains(@data-intent-property, ':date:') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and
+          (contains(., '/') or contains(., '-'))"
+  variables:
+  - Sep: "IfThenElse(contains(., '/'), '/', '-')"
+  replace:
+  - with:
+      variables:
+      - P1: "substring-before(translate(., ' ', ''), $Sep)"
+      - P2: "substring-before(substring-after(translate(., ' ', ''), $Sep), $Sep)"
+      - P3: "substring-after(substring-after(translate(., ' ', ''), $Sep), $Sep)"
+      replace:
+      - with:
+          variables:
+          # año con 4 cifras al principio (1981-01-02) o al final (02/01/1981)
+          - D: "number(IfThenElse(string-length($P1) = 4, $P3, $P1))"
+          - Mes: "DefinitionValue(string(number($P2)), 'Speech', 'MonthNames')"
+          - A: "number(IfThenElse(string-length($P1) = 4, $P1, $P3))"
+          replace:
+          - bookmark: "@id"
+          - test:
+              if: "$Mes != '' and $D >= 1 and $D <= 31 and (string-length($P1) = 4 or string-length($P3) = 4)"
+              then: [x: "$D", T: "de", x: "$Mes", T: "de", x: "$A"]
+              else: [x: "text()"]
+
 - name: one-sided-limit
   # "x → 0⁻" se lee "x tiende a 0 por la izquierda"; "x → 0⁺", "x tiende a 0 por la derecha"
   tag: [say-super, msup, power]
