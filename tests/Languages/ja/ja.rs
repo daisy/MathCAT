@@ -152,7 +152,7 @@ fn parenthesized_expression() -> Result<()> {
 #[test]
 fn square_and_curly_brackets() -> Result<()> {
     let square = "<math><mrow><mo>[</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>]</mo></mrow></math>";
-    test("ja", "ClearSpeak", square, "角カッコ, 1 プラス 2, 角カッコ閉じ")?;
+    test("ja", "ClearSpeak", square, "角かっこ, 1 プラス 2, 角かっこ閉じ")?;
     let curly = "<math><mrow><mo>{</mo><mn>1</mn><mo>+</mo><mn>2</mn><mo>}</mo></mrow></math>";
     test("ja", "ClearSpeak", curly, "中カッコ, 1 プラス 2, 中カッコ閉じ")?;
     return Ok(());
@@ -825,6 +825,22 @@ fn unicode_full_symbol_names() -> Result<()> {
     return Ok(());
 }
 
+/// Names that Open JTalk misread: 角カッコ was スミカッコ (上角カッコ ウエスミカッコ),
+/// 太白 was タイハク and 右下がり was ミギシタガリ.
+#[test]
+fn bracket_and_arrow_names_read_correctly() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x23B4;", "上側角かっこ"),
+        ("&#x27E6;", "白角かっこ"),
+        ("&#x27AD;", "右下に影の太い白抜き右向き矢印"),
+        ("&#x27CD;", "数学用右さがり斜線"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// main reads a∶b as the function intent ratio(a, b); ja gives it a name and glue word.
 #[test]
 fn ratio_as_function() -> Result<()> {
@@ -1200,7 +1216,7 @@ fn sub_and_superscript_medium() -> Result<()> {
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Medium")], sulfate,
-        "角カッコ, 大文字 s, 大文字 o, 下付き 4; 角カッコ閉じ 上付き 2 マイナス")?;
+        "角かっこ, 大文字 s, 大文字 o, 下付き 4; 角かっこ閉じ 上付き 2 マイナス")?;
     return Ok(());
 }
 
@@ -1290,7 +1306,7 @@ fn overview_matrix_size() -> Result<()> {
 fn menclose_strikes() -> Result<()> {
     for (notation, expected) in [
         ("updiagonalstrike", "右上がり方向, 取り消し線, 囲み x 囲み終了"),
-        ("downdiagonalstrike", "右下がり方向, 取り消し線, 囲み x 囲み終了"),
+        ("downdiagonalstrike", "右さがり方向, 取り消し線, 囲み x 囲み終了"),
     ] {
         let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
         test("ja", "ClearSpeak", &expr, expected)?;

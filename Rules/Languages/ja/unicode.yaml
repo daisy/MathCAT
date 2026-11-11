@@ -155,14 +155,14 @@
  - "[":                                          # 0x5b
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "角カッコ"]
-        else: [T: "角カッコ"]                            
+        then: [T: "角かっこ"]
+        else: [T: "角かっこ"]                            
  - "\\": [T: "バックスラッシュ"]                         # 0x5c
  - "]":                                          # 0x5d
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
-        then: [T: "角カッコ閉じ"]
-        else: [T: "角カッコ閉じ"]
+        then: [T: "角かっこ閉じ"]
+        else: [T: "角かっこ閉じ"]
  - "^":                                           # 0x5e
     - test:
         if: "parent::m:modified-variable or parent::m:mover"
