@@ -601,3 +601,18 @@ fn currency_per_unit() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn greek_mu_micro_prefix() -> Result<()> {
+    // μ (U+03BC) como prefijo micro, igual que µ (U+00B5)
+    let cases = [
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">μm</mi></math>", "10 micrómetros"),
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">µm</mi></math>", "10 micrómetros"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">μs</mi></math>", "5 microsegundos"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">μg</mi></math>", "un microgramo"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
