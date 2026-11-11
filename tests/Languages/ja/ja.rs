@@ -794,6 +794,24 @@ fn product_with_limits() -> Result<()> {
     return Ok(());
 }
 
+/// A sum or product written as an intent is said in the order the large-op symbol uses:
+/// the limits come first with から, まで or にわたる after them, and the product is プロダクト as for the symbol.
+#[test]
+fn sum_and_product_intents() -> Result<()> {
+    for (name, symbol, word) in [("sum", "&#x2211;", "サム"), ("product", "&#x220F;", "プロダクト")] {
+        let one = format!(r#"<math><mrow intent="{name}($x)"><mo>{symbol}</mo><mi arg="x">x</mi></mrow></math>"#);
+        test("ja", "SimpleSpeak", &one, &format!("{word} オブ x"))?;
+        let two = format!(r#"<math><mrow intent="{name}($i,$x)"><mo>{symbol}</mo><mi arg="i">i</mi><mi arg="x">x</mi></mrow></math>"#);
+        test("ja", "SimpleSpeak", &two, &format!("{word} i にわたる オブ x"))?;
+        let three = format!(r#"<math><mrow intent="{name}($i,$n,$x)"><mo>{symbol}</mo><mi arg="i">i</mi><mi arg="n">n</mi><mi arg="x">x</mi></mrow></math>"#);
+        test("ja", "SimpleSpeak", &three, &format!("{word} i から, n まで オブ x"))?;
+        test("ja", "ClearSpeak", &three, &format!("{word} i から, n まで オブ x"))?;
+    }
+    let expr = r#"<math><mrow intent="sum($l,$u,$b)"><munderover><mo>&#x2211;</mo><mrow arg="l"><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi arg="u">n</mi></munderover><msub arg="b"><mi>a</mi><mi>i</mi></msub></mrow></math>"#;
+    test("ja", "SimpleSpeak", expr, "サム i イコール 1 から, n まで オブ エー 下付き i")?;
+    return Ok(());
+}
+
 /// Verifies the seeded Japanese cues for a definite integral.
 #[test]
 fn definite_integral() -> Result<()> {
