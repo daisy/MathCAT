@@ -568,3 +568,17 @@ fn units_with_exact_millions() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn unknown_unit_is_spoken() -> Result<()> {
+    // una unidad que no está en las tablas se dice tal cual (antes se perdía)
+    let cases = [
+        ("<math><mn>10</mn><mi intent=\":unit\">zz</mi></math>", "10 zzs"),
+        ("<math><mn>1</mn><mi intent=\":unit\">zz</mi></math>", "un zz"),
+        ("<math><mn>3</mn><mi intent=\":unit\">bar</mi></math>", "3 bares"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

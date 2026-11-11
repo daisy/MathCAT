@@ -347,9 +347,10 @@
         - Word: "DefinitionValue(substring(., 2), 'Speech', 'SIUnits')"
 
     # not a known unit -- just speak the text, possibly as a plural
+    # (string(): UnitPluralForm needs a string, not the text node)
     - else:
       - set_variables:
-        - Word: "text()"
+        - Word: "string(.)"
 
   # un millón de metros (millones exactos llevan "de")
   - test:
