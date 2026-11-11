@@ -1,6 +1,14 @@
 name: Rust
 
-on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
+# PythonScripts-only changes must not run Rust (and must not trigger downstream rebuilds).
+on:
+  push:
+    paths-ignore:
+      - 'PythonScripts/**'
+  pull_request:
+    paths-ignore:
+      - 'PythonScripts/**'
+# note: pre-release job still only on 'refs/heads/main'
 
 env:
   CARGO_TERM_COLOR: always

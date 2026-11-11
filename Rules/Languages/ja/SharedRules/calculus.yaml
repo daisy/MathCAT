@@ -10,7 +10,7 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: "オブ"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
+          then: [T: "オブ"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
       - test:
           if: "not(IsNode(*[1], 'leaf'))"
           then: [pause: short]
@@ -22,8 +22,8 @@
   replace:
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ダイバージェンス"]             # phrase('div' is short for divergence) -- note OneCore voices spell out "div"
-      else: [t: "発散 オブ"]      # phrase('divergence of' this function from the mean)
+      then: [T: "ダイバージェンス"]             # phrase('div' is short for divergence) -- note OneCore voices spell out "div"
+      else: [T: "発散 オブ"]      # phrase('divergence of' this function from the mean)
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -33,10 +33,10 @@
   tag: curl
   match: "count(*) = 1"
   replace:
-  - t: "回転"      # phrase(the 'curl of' a field)
+  - T: "回転"      # phrase(the 'curl of' a field)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "オブ"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
+      then: [T: "オブ"]             # phrase(function 'of' one variable) -- note OneCore voices spell out "div"
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -48,8 +48,8 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "勾配 オブ"]      # phrase(the hill has a 'gradient of' five percent)
-      else: [t: "デル"]      # phrase(the delete key is labeled 'del')
+      then: [T: "勾配 オブ"]      # phrase(the hill has a 'gradient of' five percent)
+      else: [T: "デル"]      # phrase(the delete key is labeled 'del')
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]

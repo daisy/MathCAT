@@ -42,7 +42,10 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  - test:
+    - if: ".=1"   # en/ett before a following unit/currency (OneBeforeUnit)
+      then: [x: "OneForUnit(.)"]
+      else: [x: "translate(., $BlockSeparators, '')"]   # remove digit block separators
 
 - name: default
   tag: [mo, mtext]

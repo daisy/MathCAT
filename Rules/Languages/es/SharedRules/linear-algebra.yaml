@@ -15,8 +15,9 @@
       - T: "de"
   - x: "*[1]"
   - test:
-      if: "not(IsNode(*[1], 'simple'))"
-      then: [T: " fin del determinante"]
+      if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
+      then: [T: "fin del determinante"]
+
 
 - name: subscripted-norm
   tag: subscripted-norm
@@ -26,10 +27,25 @@
       if: "$Verbosity='Verbose'"
       then:
       - T: "la"
+  - T: "norma"      # phrase(la 'norma' p de f)
   - x: "*[2]"
-  - T: "regla"
   - test:
       if: "$Verbosity!='Terse'"
       then:
       - T: "de"
   - x: "*[1]"
+
+# propia del español: ‖f‖_p en LaTeX corriente llega como msub de magnitude; se lee "la norma p de f"
+- name: subscripted-magnitude
+  tag: [msub, indexed-by]
+  match: "*[1][self::m:magnitude and count(*)=1] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "la"]      # phrase('la' norma p de f)
+  - T: "norma"      # phrase(la 'norma' p de f)
+  - x: "*[2]"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]      # phrase(la norma p 'de' f)
+  - x: "*[1]/*[1]"

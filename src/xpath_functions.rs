@@ -47,7 +47,7 @@ fn get_text_from_element(e: Element) -> String {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn get_text_from_COE(coe: &ChildOfElement) -> String {
-    coe.element().map_or_else(String::new, get_text_from_element)
+    return coe.element().map_or_else(String::new, get_text_from_element);
 }
 
 // make sure that there is only one node in the NodeSet
@@ -69,7 +69,7 @@ fn is_tag(e: Element, tag_name: &str) -> bool {
 #[allow(non_snake_case)]
 // Same as 'is_tag', but for ChildOfElement
 fn is_COE_tag(coe: ChildOfElement, name: &str) -> bool {
-    coe.element().is_some_and(|element| is_tag(element, name))
+    return coe.element().is_some_and(|element| is_tag(element, name));
 }
 
 /// Should be an internal structure for implementation of the IsNode, but it was useful in one place in a separate module.
@@ -120,9 +120,9 @@ impl IsNode {
         // checks the single element to see if it is simple (mn, mi that is a single char, common fraction)
         fn is_trivially_simple(elem: Element) -> bool {
             // FIX: need to consult preference Fraction_Ordinal
-            is_tag(elem, "mn") ||
+            return is_tag(elem, "mn") ||
                   (is_tag(elem, "mi") && is_single_char(&to_str(elem))) ||
-                  IsNode::is_common_fraction(elem, 10, 19)
+                  IsNode::is_common_fraction(elem, 10, 19);
         }
 
         // true if the negative of a single element that is simple
@@ -377,7 +377,7 @@ impl ToOrdinal {
     // ordinals often have an irregular start (e.g., "half") before becoming regular.
     // if the number is irregular, return the ordinal form, otherwise return 'None'.
     fn compute_irregular_fractional_speech(number: &str, plural: bool) -> Option<String> {
-        SPEECH_DEFINITIONS.with(|definitions| {
+        return SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             let words = if plural {
                 definitions.get_vec("NumbersOrdinalFractionalPluralOnes")?
@@ -390,7 +390,7 @@ impl ToOrdinal {
                 return Some( words[number_as_int].clone() );
             };
             return None;
-        })
+        });
     }
 
     /**
@@ -892,13 +892,13 @@ impl IsInDefinition {
         } else {
             &SPEECH_DEFINITIONS
         };
-        match &args[0] {
-            Value::String(str) => return match IsInDefinition::is_defined_in(str, definitions, &set_name) {
+        return match &args[0] {
+            Value::String(str) => match IsInDefinition::is_defined_in(str, definitions, &set_name) {
                 Ok(result) => Ok( Value::Boolean( result ) ),
                 Err(e) => Err(e),
             },
             Value::Nodeset(nodes) => {
-                return if nodes.size() == 0 {
+                if nodes.size() == 0 {
                     Ok( Value::Boolean(false) )    // trivially not in definition
                 } else {
                     let node = validate_one_node(nodes.clone(), "IsInDefinition")?;
@@ -918,7 +918,7 @@ impl IsInDefinition {
                 }
             },
             _ => Err( Error::Other { what: "IsInDefinition:: neither a node nor a string is passed for first argument".to_string() } ),
-        }
+        };
     }
 }
 
@@ -962,13 +962,13 @@ impl DefinitionValue {
             "Braille" => &BRAILLE_DEFINITIONS,
             _ => return Err( Error::Other { what: "IsInDefinition:: second argument must be either 'Speech' or 'Braille'".to_string() } )
         };
-        match &args[0] {
-            Value::String(str) => return match DefinitionValue::definition_value(str, definitions, &set_name) {
+        return match &args[0] {
+            Value::String(str) => match DefinitionValue::definition_value(str, definitions, &set_name) {
                 Ok(result) => Ok( Value::String( result ) ),
                 Err(e) => Err(e),
             },
             Value::Nodeset(nodes) => {
-                return if nodes.size() == 0 {
+                if nodes.size() == 0 {
                     Ok( Value::String("".to_string()) )    // trivially not in definition
                 } else {
                     let node = validate_one_node(nodes.clone(), "DefinitionValue")?;
@@ -988,7 +988,7 @@ impl DefinitionValue {
                 }
             },
             _ => Err( Error::Other { what: "DefinitionValue:: neither a node nor a string is passed for first argument".to_string() } ),
-        }
+        };
     }
 }
 
@@ -1251,7 +1251,7 @@ impl GetBracketingIntentName {
     fn bracketing_words(intent_name: &str, verbosity: &str, fixity: &str, at_start: bool) -> String {
         // Bracketing words come from the `open; name; close` form of a fixity mapping; the
         // parsing lives in infer_intent so all IntentMappings delimiter rules stay in one place.
-        crate::infer_intent::intent_bracketing_word(intent_name, fixity, verbosity, at_start)
+        return crate::infer_intent::intent_bracketing_word(intent_name, fixity, verbosity, at_start);
     }
 }
 
@@ -1287,7 +1287,7 @@ pub struct GetNavigationPartName;
 /// If no matching part exists, this returns an empty string.
 impl GetNavigationPartName {
     fn navigation_part_name(intent_name: &str, index: usize) -> String {
-        crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+        return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
             if let Some(navigation_names) = definitions.get_hashmap("NavigationParts") &&
                let Some(nav_part_names) = navigation_names.get(intent_name) {
@@ -1297,7 +1297,7 @@ impl GetNavigationPartName {
                     }
                 }
             return "".to_string();
-        })
+        });
     }
 }
 
@@ -1378,7 +1378,7 @@ struct CountTableDims {
 impl CountTableDims {
 
     fn new() -> CountTableDims {
-        Self { num_rows: 0, num_cols: 0, extended_cells: HashMap::new(), permanent_cols: 0 }
+        return Self { num_rows: 0, num_cols: 0, extended_cells: HashMap::new(), permanent_cols: 0 };
     }
 
     /// Returns the number of columns the cell contributes to the
@@ -1412,7 +1412,7 @@ impl CountTableDims {
             self.permanent_cols += colspan;
         }
 
-        colspan
+        return colspan;
     }
 
     /// Update the number of rows, and update the extended cells.
@@ -1425,7 +1425,7 @@ impl CountTableDims {
             ext_cols += *v;
             (k-1, *v)
         }).collect();
-        ext_cols
+        return ext_cols;
     }
 
     /// For an `mtable` element, count the number of rows and columns in the table.
@@ -1482,7 +1482,7 @@ impl CountTableDims {
         // columns, so we will not use them.
         let _extra_rows = self.extended_cells.keys().max().map(|k| k-1).unwrap_or(0);
 
-        Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)))
+        return Ok((Value::Number(self.num_rows  as f64), Value::Number(self.num_cols as f64)));
     }
 
     fn evaluate<'d>(self, fn_name: &str,
@@ -1500,7 +1500,7 @@ impl CountTableDims {
             }
         }
 
-        Err( Error::Other { what: "Could not count dimensions of non-Element.".to_string() } )
+        return Err( Error::Other { what: "Could not count dimensions of non-Element.".to_string() } );
     }
 }
 
@@ -1509,7 +1509,7 @@ impl Function for CountTableRows {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-        CountTableDims::new().evaluate("CountTableRows", args).map(|a| a.0)
+        return CountTableDims::new().evaluate("CountTableRows", args).map(|a| a.0);
     }
 }
 
@@ -1518,7 +1518,7 @@ impl Function for CountTableColumns {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-        CountTableDims::new().evaluate("CountTableColumns", args).map(|a| a.1)
+        return CountTableDims::new().evaluate("CountTableColumns", args).map(|a| a.1);
     }
 }
 
@@ -1585,7 +1585,7 @@ impl Function for HasVisibleColumnLine {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-        evaluate_has_visible_table_line(args, "HasVisibleColumnLine", TableLineAxis::Column)
+        return evaluate_has_visible_table_line(args, "HasVisibleColumnLine", TableLineAxis::Column);
     }
 }
 
@@ -1595,10 +1595,806 @@ impl Function for HasVisibleRowLine {
     fn evaluate<'c, 'd>(&self,
                         _context: &context::Evaluation<'c, 'd>,
                         args: Vec<Value<'d>>) -> Result<Value<'d>, Error> {
-        evaluate_has_visible_table_line(args, "HasVisibleRowLine", TableLineAxis::Row)
+        return evaluate_has_visible_table_line(args, "HasVisibleRowLine", TableLineAxis::Row);
     }
 }
 
+
+const UNIT_TIMES: &[&str] = &["\u{2062}", "·", "⋅", "∙", "×"];
+const UNIT_DIV: &[&str] = &["/", "∕"];
+
+fn unit_children(element: Element) -> Vec<Element> {
+    return element.children().iter().filter_map(|child| child.element()).collect();
+}
+
+fn parent_element(element: Element) -> Option<Element> {
+    return element.parent()?.element();
+}
+
+fn child_index(parent: Element, child: Element) -> Option<usize> {
+    return unit_children(parent).iter().position(|element| element == &child);
+}
+
+fn leaf_text(element: Element) -> String {
+    return get_text_from_element(element);
+}
+
+fn is_times_op(element: Element) -> bool {
+    return name(element) == "mo" && UNIT_TIMES.contains(&leaf_text(element).as_str());
+}
+
+fn is_div_op(element: Element) -> bool {
+    return name(element) == "mo" && UNIT_DIV.contains(&leaf_text(element).as_str());
+}
+
+fn has_unit_property(element: Element) -> bool {
+    return element.attribute_value("data-intent-property")
+        .as_deref()
+        .unwrap_or("")
+        .contains(":unit:");
+}
+
+/// A unit leaf, or a power / fraction / mrow already marked `:unit:`.
+fn is_unit_expr(element: Element) -> bool {
+    let tag = as_str!(name(element));
+    return tag == "unit" || has_unit_property(element);
+}
+
+/// The product/quotient factor that contains `element` (climb through a script base).
+fn factor_element(mut element: Element) -> Element {
+    while let Some(parent) = parent_element(element) {
+        let parent_name = as_str!(name(parent));
+        if (parent_name == "power" || parent_name == "indexed-by") &&
+           child_index(parent, element) == Some(0)
+        {
+            element = parent;
+            continue;
+        }
+        break;
+    }
+    return element;
+}
+
+fn is_currency_leaf(element: Element) -> bool {
+    let text = leaf_text(element);
+    if text.is_empty() {
+        return false;
+    }
+    return SPEECH_DEFINITIONS.with(|definitions| {
+        definitions.borrow()
+            .get_hashmap("CurrencySymbols")
+            .is_some_and(|map| map.contains_key(text.as_str()))
+    });
+}
+
+/// Nearest `mn` sibling of `factor` under `parent`, skipping silent times ops.
+/// `forward`: look after `factor` (`$3`); otherwise look before (`3 m`, `3¢`).
+fn mn_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Option<Element<'a>> {
+    let children = unit_children(parent);
+    let index = children.iter().position(|child| child == &factor)?;
+    let step: isize = if forward { 1 } else { -1 };
+    let mut cursor = index as isize + step;
+    while cursor >= 0 && (cursor as usize) < children.len() {
+        let child = children[cursor as usize];
+        if is_times_op(child) {
+            cursor += step;
+            continue;
+        }
+        if name(child) == "mn" {
+            return Some(child);
+        }
+        break;
+    }
+    return None;
+}
+
+/// Coefficient next to a unit or currency leaf.
+/// Units look left (`3 m`). Currency looks both ways: prefix (`$3`, `€20`) and
+/// postfix (`3¢`, `20€`). A `:unit:` container does not hold the coefficient
+/// (`1` + `(N⋅m)`), so keep looking outside it.
+fn quantity_element(element: Element) -> Option<Element> {
+    if name(element) == "mn" {
+        return Some(element);
+    }
+    let mut factor = factor_element(element);
+    let currency = is_currency_leaf(element) || is_currency_leaf(factor);
+    loop {
+        let parent = parent_element(factor)?;
+        let amount = if currency {
+            // Prefer prefix form (`$3` / `€20`), then postfix (`3¢` / `20€`).
+            mn_beside(parent, factor, true).or_else(|| mn_beside(parent, factor, false))
+        } else {
+            mn_beside(parent, factor, false)
+        };
+        if let Some(amount) = amount {
+            return Some(amount);
+        }
+        if !is_unit_expr(parent) {
+            return None;
+        }
+        factor = parent;
+    }
+}
+
+/// First unit leaf inside an expression (power base, fraction numerator, or the leaf itself).
+fn unit_leaf_in(element: Element) -> Option<Element> {
+    if name(element) == "unit" || (is_leaf_tag(element) && has_unit_property(element)) {
+        return Some(element);
+    }
+    let children = unit_children(element);
+    let tag = as_str!(name(element));
+    if tag == "power" || tag == "indexed-by" || tag == "fraction" || has_unit_property(element) {
+        return children.first().copied().and_then(unit_leaf_in);
+    }
+    return None;
+}
+
+fn is_leaf_tag(element: Element) -> bool {
+    return matches!(as_str!(name(element)), "unit" | "mi" | "mtext" | "mn" | "mo");
+}
+
+fn scan_after(element: Element) -> Option<Element> {
+    let parent = parent_element(element)?;
+    let children = unit_children(parent);
+    let index = children.iter().position(|child| child == &element)?;
+    for child in children.iter().skip(index + 1) {
+        if is_times_op(*child) {
+            continue;
+        }
+        if is_div_op(*child) {
+            break;
+        }
+        if let Some(unit) = unit_leaf_in(*child) {
+            return Some(unit);
+        }
+        break;
+    }
+    return None;
+}
+
+fn following_unit(element: Element) -> Option<Element> {
+    if let Some(unit) = scan_after(element) {
+        return Some(unit);
+    }
+    // Mixed number: the "1" sits inside mrow(1, invisible-plus, fraction); the unit follows that mrow.
+    let parent = parent_element(element)?;
+    let inside_mixed = unit_children(parent).iter().any(|child| name(*child) == "mo" && leaf_text(*child) == "\u{2064}");
+    if inside_mixed {
+        return scan_after(parent);
+    }
+    return None;
+}
+
+struct GetQuantity;
+impl Function for GetQuantity {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let node = validate_one_node(args.pop_nodeset()?, "GetQuantity")?;
+        let mut node_set = Nodeset::new();
+        if let Node::Element(element) = node &&
+           let Some(quantity) = quantity_element(element)
+        {
+            node_set.add(quantity);
+        }
+        return Ok(Value::Nodeset(node_set));
+    }
+}
+
+struct GetUnit;
+impl Function for GetUnit {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let node = validate_one_node(args.pop_nodeset()?, "GetUnit")?;
+        let mut node_set = Nodeset::new();
+        if let Node::Element(element) = node {
+            let unit = if name(element) == "unit" || has_unit_property(element) {
+                unit_leaf_in(element).or(Some(element))
+            } else {
+                following_unit(element)
+            };
+            if let Some(unit) = unit {
+                node_set.add(unit);
+            }
+        }
+        return Ok(Value::Nodeset(node_set));
+    }
+}
+
+struct UnitNumber;
+/// UnitNumber(node)
+/// Returns the plural category for a unit (or currency) leaf: `"one"`, `"few"`, or `"many"`.
+/// `"few"` is only used when `PluralSystem` is `one_few_many` (e.g. Polish, Russian).
+/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural`.
+impl UnitNumber {
+    fn category(element: Element) -> &'static str {
+        let amount_category = Self::amount_category(element);
+        let has_number = amount_category.is_some();
+        let policy = Self::active_policy(has_number);
+
+        // Per-side with no local count stays singular unless the policy is `all`.
+        if Self::is_per_side_uncounted(element) {
+            if policy == "all" {
+                return amount_category.unwrap_or("many");
+            }
+            return "one";
+        }
+
+        let category = amount_category.unwrap_or("many");
+        if category == "one" {
+            return "one";
+        }
+        if Self::factor_is_selected(element, &policy) {
+            return category;
+        }
+        return "one";
+    }
+
+    /// Coefficient next to this unit, classified as one/few/many when present and parseable.
+    fn amount_category(element: Element) -> Option<&'static str> {
+        let amount_node = quantity_element(element)?;
+        let text = leaf_text(amount_node);
+        let amount = Self::parse_coeff(&text)?;
+        return Some(Self::classify_plural(&text, amount, &Self::plural_system()));
+    }
+
+    fn def_vec_first(name: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec(name)
+                .and_then(|values| values.first().cloned())
+        });
+    }
+
+    fn compound_unit_plural() -> String {
+        return Self::def_vec_first("CompoundUnitPlural").unwrap_or_else(|| "last".to_string());
+    }
+
+    fn numberless_unit_plural() -> String {
+        return Self::def_vec_first("NumberlessUnitPlural").unwrap_or_else(|| "same".to_string());
+    }
+
+    /// Policy in force: with a number use CompoundUnitPlural; without, NumberlessUnitPlural
+    /// (`same` → CompoundUnitPlural).
+    fn active_policy(has_number: bool) -> String {
+        if has_number {
+            return Self::compound_unit_plural();
+        }
+        let numberless = Self::numberless_unit_plural();
+        if numberless == "same" {
+            return Self::compound_unit_plural();
+        }
+        return numberless;
+    }
+
+    /// After `/`, or in a fraction denominator with no count of its own ("per hour").
+    /// A denominator that carries its own number (`3 m / 2 s`) is not immediately after
+    /// `/`—the `2` sits in a nested mrow—so it is treated as its own counted side.
+    fn is_per_side_uncounted(element: Element) -> bool {
+        if Self::after_div_op(element) {
+            return true;
+        }
+        return Self::in_fraction_denominator(element) && Self::local_count(element).is_none();
+    }
+
+    /// True when this factor’s previous sibling is a division operator.
+    fn after_div_op(element: Element) -> bool {
+        let factor = factor_element(element);
+        let Some(parent) = parent_element(factor) else { return false; };
+        // The two parts of a fraction are not factors of a product.
+        if name(parent) == "fraction" {
+            return false;
+        }
+        let children = unit_children(parent);
+        let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
+        return index > 0 && is_div_op(children[index - 1]);
+    }
+
+    /// Whether this counted-side factor takes the number’s category under `policy`.
+    fn factor_is_selected(element: Element, policy: &str) -> bool {
+        return match policy {
+            "all" => true,
+            "none" => false,
+            "first" => !Self::has_preceding_unit_factor(element),
+            // "last" and any unknown value: English-style last counted factor.
+            _ => !Self::has_following_unit_factor(element),
+        };
+    }
+
+    fn has_following_unit_factor(element: Element) -> bool {
+        let factor = factor_element(element);
+        let Some(parent) = parent_element(factor) else { return false; };
+        if name(parent) == "fraction" {
+            return false;
+        }
+        let children = unit_children(parent);
+        let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
+        let mut next = index + 1;
+        while next < children.len() {
+            if is_div_op(children[next]) {
+                break;
+            }
+            if is_times_op(children[next]) {
+                next += 1;
+                continue;
+            }
+            if is_unit_expr(children[next]) {
+                return true;
+            }
+            break;
+        }
+        return false;
+    }
+
+    fn has_preceding_unit_factor(element: Element) -> bool {
+        let factor = factor_element(element);
+        let Some(parent) = parent_element(factor) else { return false; };
+        if name(parent) == "fraction" {
+            return false;
+        }
+        let children = unit_children(parent);
+        let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
+        let mut prev = index;
+        while prev > 0 {
+            prev -= 1;
+            if is_div_op(children[prev]) {
+                break;
+            }
+            if is_times_op(children[prev]) {
+                continue;
+            }
+            if is_unit_expr(children[prev]) {
+                return true;
+            }
+            break;
+        }
+        return false;
+    }
+
+    fn in_fraction_denominator(element: Element) -> bool {
+        let mut current = element;
+        while let Some(parent) = parent_element(current) {
+            if name(parent) == "fraction" {
+                return child_index(parent, current) != Some(0);
+            }
+            if name(parent) == "math" {
+                return false;
+            }
+            current = parent;
+        }
+        return false;
+    }
+
+    /// An `mn` that counts this unit, without crossing out of a fraction.
+    /// The `62` in `62 mi/hr` counts the numerator, not the denominator.
+    fn local_count(element: Element) -> Option<Element> {
+        let mut factor = factor_element(element);
+        loop {
+            let parent = parent_element(factor)?;
+            if name(parent) == "fraction" {
+                return None;
+            }
+            if let Some(amount) = mn_beside(parent, factor, false) {
+                return Some(amount);
+            }
+            if !is_unit_expr(parent) {
+                return None;
+            }
+            factor = parent;
+        }
+    }
+
+    /// Normalize a coefficient for `f64` parsing using DecimalSeparators / BlockSeparators.
+    /// Block separators are dropped; the decimal separator becomes `.`.
+    fn normalize_coeff_text(text: &str) -> String {
+        let pref_manager = crate::prefs::PreferenceManager::get();
+        let pref_manager = pref_manager.borrow();
+        let block_separators = pref_manager.pref_to_string("BlockSeparators");
+        let decimal_separator = pref_manager.pref_to_string("DecimalSeparators");
+        let trimmed = text.trim().trim_start_matches(['+', '-', '−', '–']);
+        let mut normalized = String::with_capacity(trimmed.len());
+        for ch in trimmed.chars() {
+            if block_separators.contains(ch) {
+                continue;
+            } else if decimal_separator.contains(ch) {
+                normalized.push('.');
+            } else {
+                normalized.push(ch);
+            }
+        }
+        return normalized;
+    }
+
+    fn parse_coeff(text: &str) -> Option<f64> {
+        let normalized = Self::normalize_coeff_text(text);
+        if normalized.is_empty() {
+            return None;
+        }
+        return normalized.parse::<f64>().ok();
+    }
+
+    fn plural_system() -> String {
+        return Self::def_vec_first("PluralSystem").unwrap_or_else(|| "one_many".to_string());
+    }
+
+    /// `1` / `1.0` (or `1,0` when comma is the decimal separator) is one.
+    /// A block separator is removed first, so `1,0` is ten when comma groups digits.
+    fn text_is_one(text: &str) -> bool {
+        return match Self::normalize_coeff_text(text).parse::<f64>() {
+            Ok(value) => (value.abs() - 1.0).abs() < 1e-6,
+            Err(_) => false,
+        };
+    }
+
+    fn classify_plural(text: &str, amount: f64, system: &str) -> &'static str {
+        if system == "one_few_many" {
+            // Numeric modulo, matching the previous XPath (`mod 10` / `mod 100`), so 2.5 is "few".
+            let value = amount.abs();
+            let mod10 = value % 10.0;
+            let mod100 = value % 100.0;
+            let near = |left: f64, right: f64| (left - right).abs() < 1e-6;
+            // Exactly 1 is "one". 21 and 101 are not (Polish: "101 metrów").
+            if near(value, 1.0) {
+                return "one";
+            } else if (2.0..=4.0).contains(&mod10) &&
+             !(12.0..=14.0).contains(&mod100)
+            {
+                return "few";
+            } else {
+                return "many";
+            }
+        } else if Self::text_is_one(text) {
+            return "one";
+        } else {
+            return "many";
+        }
+    }
+} 
+impl Function for UnitNumber {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let mut args = Args(args);
+        args.exactly(1)?;
+        let node = validate_one_node(args.pop_nodeset()?, "UnitNumber")?;
+        let category = match node {
+            Node::Element(element) => UnitNumber::category(element),
+            _ => "many",
+        };
+        return Ok(Value::String(category.to_string()));
+    }
+}
+
+struct UnitGender;
+/// UnitGender(node_or_string) → `"masculine"` \| `"feminine"` \| `"neuter"` \| `"common"` \| `""`.
+/// Uses `GenderSystem` plus optional exception lists / symbol neuter sets.
+impl UnitGender {
+    fn gender_system() -> String {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec("GenderSystem")
+                .and_then(|values| values.first().cloned())
+                .unwrap_or_else(|| "none".to_string())
+        });
+    }
+
+    fn def_contains(set_name: &str, key: &str) -> bool {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            let defs = definitions.borrow();
+            if let Some(set) = defs.get_hashset(set_name) {
+                return set.contains(key);
+            }
+            if let Some(map) = defs.get_hashmap(set_name) {
+                return map.contains_key(key);
+            }
+            return false;
+        });
+    }
+
+    fn def_value(set_name: &str, key: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_hashmap(set_name)
+                .and_then(|map| map.get(key).cloned())
+        });
+    }
+
+    /// Spoken singular base word for a unit/currency symbol (or the text itself).
+    fn spoken_base_word(symbol: &str) -> String {
+        if let Some(word) = Self::def_value("SIUnits", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("UnitsWithoutPrefixes", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("EnglishUnits", symbol) {
+            return word;
+        }
+        if let Some(word) = Self::def_value("CurrencySymbols", symbol) {
+            return word;
+        }
+        if symbol.len() >= 3 &&
+           symbol.starts_with("da") &&
+           let Some(word) = Self::def_value("SIUnits", &symbol[2..])
+        {
+            return word;
+        }
+        if symbol.chars().count() >= 2 {
+            let mut chars = symbol.chars();
+            if let Some(prefix) = chars.next() {
+                let rest: String = chars.collect();
+                if Self::def_contains("SIPrefixes", &prefix.to_string()) &&
+                   let Some(word) = Self::def_value("SIUnits", rest.as_str())
+                {
+                    return word;
+                }
+            }
+        }
+        return symbol.to_string();
+    }
+
+    fn exception_gender(base_word: &str) -> Option<&'static str> {
+        if Self::def_contains("FeminineUnitWords", base_word) ||
+           Self::def_contains("FeminineCurrencyWords", base_word)
+        {
+            return Some("feminine");
+        }
+        if Self::def_contains("MasculineUnitWords", base_word) ||
+           Self::def_contains("MasculineCurrencyWords", base_word)
+        {
+            return Some("masculine");
+        }
+        if Self::def_contains("NeuterUnitWords", base_word) ||
+           Self::def_contains("NeuterCurrencyWords", base_word)
+        {
+            return Some("neuter");
+        }
+        return None;
+    }
+
+    /// Symbol-based neuter check used by nb/sv (`NeuterUnits*`, `CurrencySymbolsNeuter`).
+    fn is_neuter_symbol(symbol: &str) -> bool {
+        if Self::def_contains("NeuterUnits", symbol) ||
+           Self::def_contains("NeuterUnitsWithoutPrefixes", symbol) ||
+           Self::def_contains("CurrencySymbolsNeuter", symbol)
+        {
+            return true;
+        }
+        // Prefixed SI unit whose base is neuter; bias ha→hektar and Pa→Pascal (not annum).
+        if symbol.len() >= 2 &&
+           symbol != "ha" &&
+           symbol != "Pa"
+        {
+            let mut chars = symbol.chars();
+            if let Some(prefix) = chars.next() {
+                let rest: String = chars.collect();
+                if Self::def_contains("SIPrefixes", &prefix.to_string()) &&
+                   Self::def_contains("NeuterUnits", rest.as_str())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    fn def_vec_first(name: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec(name)
+                .and_then(|values| values.first().cloned())
+        });
+    }
+
+    fn gender_default() -> String {
+        return Self::def_vec_first("GenderDefault").unwrap_or_else(|| "masculine".to_string());
+    }
+
+    /// Last whitespace-separated token’s final letter → `GenderDefaultFromEnding`, else `GenderDefault`.
+    fn gender_from_ending(base_word: &str) -> String {
+        let head = base_word.split_whitespace().next_back().unwrap_or(base_word);
+        let Some(last) = head.chars().next_back() else {
+            return Self::gender_default();
+        };
+        if let Some(gender) = Self::def_value("GenderDefaultFromEnding", &last.to_string()) {
+            return gender;
+        }
+        return Self::gender_default();
+    }
+
+    /// Classify gender for a symbol + spoken base word under `system`.
+    fn classify(system: &str, symbol: &str, base_word: &str) -> String {
+        match system {
+            "" | "none" => return String::new(),
+            "neuter_list" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                if Self::is_neuter_symbol(symbol) {
+                    return "neuter".to_string();
+                }
+                return "common".to_string();
+            },
+            "ending" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                return Self::gender_from_ending(base_word);
+            },
+            "explicit_only" => {
+                if let Some(gender) = Self::exception_gender(base_word) {
+                    return gender.to_string();
+                }
+                return Self::gender_default();
+            },
+            _ => return String::new(),
+        }
+    }
+
+    fn gender_for_symbol(symbol: &str) -> String {
+        let base_word = Self::spoken_base_word(symbol);
+        return Self::classify(&Self::gender_system(), symbol, &base_word);
+    }
+
+    fn gender_for_element(element: Element) -> String {
+        let symbol = leaf_text(element);
+        if symbol.is_empty() {
+            return String::new();
+        }
+        return Self::gender_for_symbol(&symbol);
+    }
+}
+
+impl Function for UnitGender {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let gender = match &args[0] {
+            Value::String(text) => {
+                if text.is_empty() {
+                    String::new()
+                } else {
+                    UnitGender::gender_for_symbol(text)
+                }
+            },
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    String::new()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "UnitGender")?;
+                    match node {
+                        Node::Element(element) => UnitGender::gender_for_element(element),
+                        _ => String::new(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "UnitGender: first argument must be a node or string".to_string(),
+            }),
+        };
+        return Ok(Value::String(gender));
+    }
+}
+
+struct OneForUnit;
+/// OneForUnit(node) → spoken “1” before a following (or self) unit/currency, else `"1"`.
+impl OneForUnit {
+    fn word_for(element: Element) -> String {
+        let unit = if name(element) == "unit" ||
+           has_unit_property(element) ||
+           is_currency_leaf(element)
+        {
+            unit_leaf_in(element).or(Some(element))
+        } else {
+            following_unit(element)
+        };
+        let Some(unit) = unit else {
+            return "1".to_string();
+        };
+        let gender = UnitGender::gender_for_element(unit);
+        if gender.is_empty() {
+            return "1".to_string();
+        }
+        return UnitGender::def_value("OneBeforeUnit", &gender).filter(|word| !word.is_empty()).unwrap_or_else(|| "1".to_string());
+    }
+}
+
+impl Function for OneForUnit {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let word = match &args[0] {
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    "1".to_string()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "OneForUnit")?;
+                    match node {
+                        Node::Element(element) => OneForUnit::word_for(element),
+                        _ => "1".to_string(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "OneForUnit: argument must be a node".to_string(),
+            }),
+        };
+        return Ok(Value::String(word));
+    }
+}
+
+struct UnitPluralForm;
+/// UnitPluralForm(base_word) → PluralForms entry, else `PluralDefaultFromEnding` / `PluralSpellingDefaultSuffix`.
+impl UnitPluralForm {
+    fn plural_default_suffix() -> String {
+        return UnitGender::def_vec_first("PluralSpellingDefaultSuffix").unwrap_or_else(|| "s".to_string());
+    }
+
+    /// Default plural from definitions: final-letter map, else default suffix (usually `"s"`).
+    fn spelling_plural(base_word: &str) -> String {
+        let Some(last) = base_word.chars().next_back() else {
+            return base_word.to_string();
+        };
+        let suffix = UnitGender::def_value("PluralDefaultFromEnding", &last.to_string())
+            .unwrap_or_else(Self::plural_default_suffix);
+        return format!("{base_word}{suffix}");
+    }
+
+    fn plural_form(base_word: &str) -> String {
+        if let Some(word) = UnitGender::def_value("PluralForms", base_word).filter(|w| !w.is_empty()) {
+            return word;
+        }
+        return Self::spelling_plural(base_word);
+    }
+}
+
+impl Function for UnitPluralForm {
+    fn evaluate<'d>(&self,
+                        _context: &context::Evaluation<'_, 'd>,
+                        args: Vec<Value<'d>>)
+                        -> Result<Value<'d>, Error>
+    {
+        let args = Args(args);
+        args.exactly(1)?;
+        let base_word = match &args[0] {
+            Value::String(text) => text.clone(),
+            Value::Nodeset(nodes) => {
+                if nodes.size() == 0 {
+                    String::new()
+                } else {
+                    let node = validate_one_node(nodes.clone(), "UnitPluralForm")?;
+                    match node {
+                        Node::Element(element) => leaf_text(element),
+                        _ => String::new(),
+                    }
+                }
+            },
+            _ => return Err(Error::Other {
+                what: "UnitPluralForm: argument must be a string or node".to_string(),
+            }),
+        };
+        return Ok(Value::String(UnitPluralForm::plural_form(&base_word)));
+    }
+}
 
 /// Add all the functions defined in this module to `context`.
 pub fn register_mathcat_xpath_functions(context: &mut Context) {
@@ -1626,6 +2422,12 @@ pub fn register_mathcat_xpath_functions(context: &mut Context) {
     context.set_function("CountTableColumns", CountTableColumns);
     context.set_function("HasVisibleColumnLine", HasVisibleColumnLine);
     context.set_function("HasVisibleRowLine", HasVisibleRowLine);
+    context.set_function("GetQuantity", GetQuantity);
+    context.set_function("GetUnit", GetUnit);
+    context.set_function("UnitNumber", UnitNumber);
+    context.set_function("UnitGender", UnitGender);
+    context.set_function("OneForUnit", OneForUnit);
+    context.set_function("UnitPluralForm", UnitPluralForm);
     context.set_function("DEBUG", Debug);
 }
 
@@ -1834,13 +2636,13 @@ mod tests {
     /// Degree forms are simple, while longer products and identifiers exceed the limit.
     #[test]
     fn is_simple_shape_boundaries() -> Result<()> {
-        xpath_test(|| {
+        return xpath_test(|| {
             test_is_simple("variable with degrees", "<mrow><mi>x</mi><mo>°</mo></mrow>")?;
             test_is_simple("number with degrees", "<mrow><mn>30</mn><mo>°</mo></mrow>")?;
             test_is_not_simple("longer product", "<mrow><mi>x</mi><mo>&#x2062;</mo><mi>yz</mi></mrow>")?;
             test_is_not_simple("non-simple function argument", "<mrow><mi>f</mi><mo>&#x2061;</mo><msqrt><mi>x</mi></msqrt></mrow>")?;
-            Ok(())
-        })
+            return Ok(());
+        });
     }
 
     fn check_table_dims(mathml: &str, dims: (usize, usize)) -> Result<()> {
@@ -2008,6 +2810,203 @@ mod tests {
         let mn = as_element(as_element(fraction.children()[1]).children()[0]);
         assert_eq!(EdgeNode::edge_node(mn, true, "2D"), None);
         return Ok( () );
+        });
+    }
+
+    /// GenderSystem none / unset → empty gender (no numeral agreement).
+    #[test]
+    fn unit_gender_none() -> Result<()> {
+        return xpath_test(|| {
+            init_word_list()?;
+            assert_eq!(UnitGender::classify("none", "m", "metre"), "");
+            assert_eq!(UnitGender::gender_for_symbol("m"), "");
+            return Ok(());
+        });
+    }
+
+    /// GenderSystem ending: GenderDefaultFromEnding + GenderDefault; exceptions via language defs.
+    #[test]
+    fn unit_gender_ending_and_exception() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitGender::gender_for_symbol("m"), "masculine");   // metro
+            assert_eq!(UnitGender::gender_for_symbol("cd"), "feminine");  // candela
+            assert_eq!(UnitGender::classify("ending", "d", "día"), "masculine"); // MasculineUnitWords
+            assert_eq!(UnitGender::gender_from_ending("grado Celsius"), "masculine");
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// Find a leaf whose text equals `text` under `root` (depth-first).
+    fn find_leaf_by_text<'a>(root: Element<'a>, text: &str) -> Option<Element<'a>> {
+        if root.children().len() == 1 &&
+           root.children()[0].text().is_some() &&
+           leaf_text(root) == text
+        {
+            return Some(root);
+        }
+        for child in unit_children(root) {
+            if let Some(found) = find_leaf_by_text(child, text) {
+                return Some(found);
+            }
+        }
+        return None;
+    }
+
+    /// Parse MathML that already carries `data-intent-property=":unit:"` on unit leaves.
+    fn parse_unit_mathml(mathml: &str) -> Result<sxd_document_no_unsafe::Package> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
+        let mathml = get_element(&package);
+        trim_element(mathml, false);
+        return Ok(package);
+    }
+
+    /// CompoundUnitPlural last/first/all/none and NumberlessUnitPlural (hu last without mn).
+    #[test]
+    fn unit_number_compound_policies() -> Result<()> {
+        return xpath_test(|| {
+            // Coefficient sits outside the unit product, as canonicalize builds it.
+            let counted = r#"<math>
+                <mn>5</mn><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let uncounted = r#"<math>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+
+            // A real count of one forces every factor to "one".
+            init_word_list()?;
+            let one = r#"<math>
+                <mn>1</mn><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let package = parse_unit_mathml(one)?;
+            let root = get_element(&package);
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "kg").unwrap()), "one");
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "m").unwrap()), "one");
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "s").unwrap()), "one");
+
+            // English default: last counted factor plural; per side singular.
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            let package = parse_unit_mathml(uncounted)?;
+            let root = get_element(&package);
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // Spanish: first counted factor plural.
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "many");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // French: all factors plural, including the per side.
+            crate::interface::set_preference("Language", "fr")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "many");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "many");
+
+            // Hungarian: none with a number; last when uncounted.
+            crate::interface::set_preference("Language", "hu")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            let package = parse_unit_mathml(uncounted)?;
+            let root = get_element(&package);
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// PluralDefaultFromEnding (es: r/l → es) + default suffix; PluralForms wins.
+    #[test]
+    fn unit_plural_form_spelling_maps() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitPluralForm::plural_form("metro"), "metros");
+            assert_eq!(UnitPluralForm::plural_form("dólar"), "dólares");
+            assert_eq!(UnitPluralForm::plural_form("mol"), "moles");
+            assert_eq!(UnitPluralForm::plural_form("hora"), "horas");
+            assert_eq!(UnitPluralForm::plural_form("gray"), "grays");
+            assert_eq!(UnitPluralForm::plural_form("newton"), "newtons");
+            assert_eq!(UnitPluralForm::plural_form("bit"), "bits");
+            assert_eq!(UnitPluralForm::plural_form("lumen"), "lúmenes"); // PluralForms
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// nb neuter_list: symbol sets mark neuter; other units are common.
+    #[test]
+    fn unit_gender_neuter_list_nb() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "nb")?;
+            crate::definitions::read_definitions_file(true)?;
+            assert_eq!(UnitGender::gender_for_symbol("s"), "neuter");
+            assert_eq!(UnitGender::gender_for_symbol("m"), "common");
+            assert_eq!(UnitGender::gender_for_symbol("£"), "neuter");
+            // Restore English for other tests in this process.
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
         });
     }
 }

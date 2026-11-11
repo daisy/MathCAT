@@ -168,11 +168,112 @@
     "out": "saindo de",
   }
 
+# =============================================================================
+# Units and currency
+# =============================================================================
+# Spoken names for measures come from these maps. Keys are the MathML leaf text
+# (symbol or abbreviation); values are the spoken *singular* base word.
+#
+# Lookup order for a unit token (speech rules / canonicalize):
+#   1. SIUnits
+#   2. UnitsWithoutPrefixes
+#   3. EnglishUnits   (English-only; leave empty in other languages)
+#   4. SIPrefixes + SIUnits  (e.g. "km" → "kilo" + "metre"; "da" is two letters)
+# Currency symbols use CurrencySymbols (e.g. "$" → "dollar").
+#
+# Once the singular base word is known, speech uses UnitNumber(.) to choose
+# singular vs plural (one / few / many), then PluralForms (or PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix) when it is not "one". For "1" before a unit or currency,
+# languages with gender may also consult UnitGender / OneBeforeUnit (see Gender
+# below). English has no gender agreement, so "1" is spoken normally.
+#
+# --- Singular vs plural (one / few / many) ---
+# PluralSystem (see Rules/definitions.yaml) selects how integers map to one/few/many:
+#   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
+#   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
+# UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
+# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+#   - last (default) — last counted-side factor takes the category (en, …)
+#   - first           — first counted-side factor (es, pt)
+#   - all             — every factor, including the "per" side (fr)
+#   - none            — every factor stays "one" after a numeral (hu with a number)
+# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
+# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
+# so an uncounted head can be plural while counted forms stay singular. Languages
+# that need per-word exceptions (de/nl) or a different case/form without a number
+# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
+# these two keys alone cannot express those shifts.
+# A real count of one forces every factor to "one". Per-side factors with no local
+# count stay "one" unless the active policy is all.
+# Speech rules typically:
+#   UnitNumber = "one"  → speak the singular base word from the unit/currency map
+#   otherwise           → PluralForms[base word] if listed, else PluralDefaultFromEnding /
+#                         PluralSpellingDefaultSuffix (English: empty ByFinal + suffix "s")
+# Irregulars and words that stay the same in the plural go in PluralForms below
+# (keyed by the *spoken singular* base word, not the symbol). Languages with
+# one_few_many often also have PluralGenitive (or similar) for "many".
+#
+# Examples (English, PluralSystem one_many):
+#   UnitNumber = "one" (singular base word as spoken):
+#     1 m   → "1 metre"     (SIUnits "m" → "metre")
+#     $1    → "1 dollar"    (CurrencySymbols "$" → "dollar")
+#   UnitNumber ≠ "one" (plural form):
+#     3 m   → "3 metres"    (no PluralForms entry → default append "s")
+#     3 ft  → "3 feet"      (PluralForms "foot" → "feet")
+#
+# --- Gender (numeral–noun agreement for "1") ---
+# Gender attaches to the spoken singular base word (after SIUnits / CurrencySymbols
+# resolution), not to the symbol. Exception lists must only contain base words that
+# already appear as *values* in SIUnits / UnitsWithoutPrefixes / EnglishUnits /
+# CurrencySymbols (or the language’s equivalents)—not a general dictionary.
+#
+# GenderSystem (vec, like PluralSystem) chooses the default policy:
+#   - none            — no gender; UnitGender returns "" (English, zh, ja, …)
+#   - ending          — last letter of the last token via GenderDefaultFromEnding,
+#                       else GenderDefault (es, pt, …)
+#   - neuter_list     — common unless the *symbol* is in NeuterUnits /
+#                       NeuterUnitsWithoutPrefixes / CurrencySymbolsNeuter (nb, sv)
+#   - explicit_only   — GenderDefault unless listed in exception maps (de, fr, …)
+# Omit GenderSystem or use ["none"] when unused. Empty exception maps are fine.
+#
+# Ending map + default (for GenderSystem ending / as fallback for explicit_only):
+#   GenderDefaultFromEnding: { "a": "feminine" }   # final letter → gender
+#   GenderDefault: ["masculine"]
+#
+# Exception lists (spoken base words only), as needed per language:
+#   FeminineUnitWords / MasculineUnitWords / NeuterUnitWords
+#   FeminineCurrencyWords / MasculineCurrencyWords / NeuterCurrencyWords
+# Multiword base words ("degree celsius", "atomic mass unit"): gender uses the last
+# token’s ending unless the full base word is listed as an exception.
+#
+# How to speak "1" before the unit/currency (when gender is used):
+#   OneBeforeUnit: { "masculine": "un", "feminine": "una", "neuter": "ett", "common": "en" }
+# Missing key or GenderSystem none → fall back to normal number speech ("1" / NumbersOnes).
+#
+# Examples (Spanish-style GenderSystem ending + OneBeforeUnit un/una):
+#   Common case (GenderDefaultFromEnding / GenderDefault):
+#     1 m  → "metro" ends in "o" → not in map → GenderDefault masculine → "un metro"
+#     1 cd → "candela" ends in "a" → feminine → "una candela"
+#   Exception (listed override; "día" ends in "a" but is masculine):
+#     MasculineUnitWords includes "día" → "un día"  (not "una día")
+#
+# --- Default plural spelling (when PluralForms has no entry) ---
+#   PluralDefaultFromEnding: { "r": "es", "l": "es" }  # final letter → suffix
+#   PluralSpellingDefaultSuffix: ["s"]               # otherwise append this
+# Example (Spanish): "dólar" → "dólares"; "metro" → "metros"; "gray" → "grays".
+# Irregulars stay in PluralForms ("lumen" → "lúmenes").
+#
+# English: GenderSystem is none; do not add OneBeforeUnit or gender exception lists
+# unless agreement is intentionally introduced later. Plural spelling inherits
+# PluralSpellingDefaultSuffix "s" with an empty PluralDefaultFromEnding map.
+# =============================================================================
+
 - SIPrefixes: {
     "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "quilo", "h": "hecto", "da": "deca",
     "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
+# Units that accept SI prefixes (symbol → spoken singular base word).
 # this is a list of all units that accept SIPrefixes
 # from www.bipm.org/documents/20126/41483022/SIBrochure-9-EN.pdf
 #   Prefixes may be used with any of the 29 SI units with special names
@@ -231,6 +332,7 @@
   }
 
 
+# Units that do not take SI prefixes (symbol → spoken singular base word).
 - UnitsWithoutPrefixes: {
     # time
     "″": "segundo", "\"": "segundo", 
@@ -330,7 +432,7 @@
   }
 
 
-  # this will only be used if the language is English, so it can be empty for other countries
+# Imperial / US customary (and similar) units. English-only; leave empty elsewhere.
   # Mantida em inglês de propósito: são unidades imperiais, sem uso no Brasil.
 - EnglishUnits: {
     # length
@@ -388,8 +490,43 @@
     "mpg": "mile per gallon",
   }
 
+# Portuguese: first counted-side factor takes the plural (“metros por segundo”).
+- CompoundUnitPlural: ["first"]
+
+# Portuguese: um/uma before units and currencies from spoken base-word gender.
+- GenderSystem: ["ending"]
+- GenderDefaultFromEnding: {
+    "a": "feminine",
+  }
+- GenderDefault: ["masculine"]
+- OneBeforeUnit: {
+    "masculine": "um",
+    "feminine": "uma",
+  }
+# Exception lists: only spoken base words that appear as values in the unit/currency maps.
+# Override ending defaults (e.g. "dia" ends in "a" but is masculine).
+- MasculineUnitWords: {
+    "dia",
+    "ano-luz",
+  }
+- FeminineUnitWords: {
+    "rotação por minuto",
+  }
+- MasculineCurrencyWords: {
+  }
+- FeminineCurrencyWords: {
+  }
+# Default plural: final r/l → "es", else "s". Irregulars stay in PluralForms.
+- PluralDefaultFromEnding: {
+    "r": "es",
+    "l": "es",
+  }
+- PluralSpellingDefaultSuffix: ["s"]
+
+
 # ACRESCENTADO símbolos monetários para a regra currency.
 # O inglês não tem R$; acrescentado por ser o caso principal no Brasil.
+# Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
     "R$": "real",
     "$": "dólar", "US$": "dólar", "¢": "centavo", "€": "euro", "£": "libra",
@@ -397,6 +534,9 @@
     "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcoin",
   }
 
+# Irregular or invariant plurals of spoken singular base words (from the maps above).
+# Used when UnitNumber is not "one". Anything omitted uses PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix. Do not key by symbol ("m"); key by base word ("metro").
 - PluralForms: {
     "lúmen": "lúmens",
     "kelvin": "kelvins",

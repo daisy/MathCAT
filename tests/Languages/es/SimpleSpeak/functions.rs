@@ -16,7 +16,7 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("es", "SimpleSpeak", expr, "seno de x más coseno de y más tangente de z más secante de alpha, más cosecante de phi, más cotangente de phi")?;
+    test("es", "SimpleSpeak", expr, "seno de x más coseno de y más tangente de z más secante de alfa, más cosecante de fi, más cotangente de fi")?;
     return Ok(());
 
 }
@@ -31,12 +31,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     <mi>csch</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>coth</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("es", "SimpleSpeak", expr, "seno hipervólico de x, más \
-                                coseno hipervólico de y, más \
-                                tangente hipervólica de z, más \
-                                secante hipervólica de alpha, más \
-                                cosecante hipervólica de phi, más \
-                                cotangente hipervólica de phi")?;
+    test("es", "SimpleSpeak", expr, "seno hiperbólico de x, más coseno hiperbólico de y, más tangente hiperbólica de z, más secante hiperbólica de alfa, más cosecante hiperbólica de fi, más cotangente hiperbólica de fi")?;
                                 return Ok(());
 
 }
@@ -48,6 +43,16 @@ fn inverse_trig() -> Result<()> {
     test("es", "SimpleSpeak", expr, "seno inverso de x")?;
     return Ok(());
 
+}
+
+// prueba propia del español: "inverso"/"inversa" concuerda con la función
+#[test]
+fn inverse_trig_gender() -> Result<()> {
+    let expr = "<math><msup><mi>tan</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "tangente inversa de x")?;
+    let expr = "<math><msup><mi>cos</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "coseno inverso de x")?;
+    return Ok(());
 }
 
 #[test]
@@ -78,7 +83,7 @@ fn trig_fourth() -> Result<()> {
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("es", "SimpleSpeak", expr, "la potencia n menos 1 , seno hipervólico de x")?;
+    test("es", "SimpleSpeak", expr, "la potencia n menos 1 de, seno hiperbólico de x")?;
     return Ok(());
 
 }
@@ -86,7 +91,15 @@ fn trig_power_other() -> Result<()> {
 #[test]
 fn simple_log() -> Result<()> {
     let expr = "<math> <mrow>  <mi>log</mi><mi>x</mi></mrow> </math>";
-    test("es", "SimpleSpeak", expr, "logaritmo de x")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo de x")?;
+    return Ok(());
+
+}
+
+#[test]
+fn principal_value_log() -> Result<()> {
+    let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
+    test("es", "SimpleSpeak", expr, "el logaritmo principal de z")?;
     return Ok(());
 
 }
@@ -94,7 +107,7 @@ fn simple_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el logaritmo de, se abren paréntesis x más y, se cierran paréntesis")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -102,7 +115,7 @@ fn normal_log() -> Result<()> {
 #[test]
 fn simple_log_with_base() -> Result<()> {
     let expr = "<math> <mrow>  <msub><mi>log</mi><mi>b</mi></msub><mi>x</mi></mrow> </math>";
-    test("es", "SimpleSpeak", expr, "el logaritmo en base b de x")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de x")?;
     return Ok(());
 
 }
@@ -110,15 +123,7 @@ fn simple_log_with_base() -> Result<()> {
 #[test]
 fn normal_log_with_base() -> Result<()> {
     let expr = "<math><mrow><msub><mi>log</mi><mi>b</mi></msub><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el logaritmo en base b de, se abren paréntesis x más y, se cierran paréntesis")?;
-    return Ok(());
-
-}
-
-#[test]
-fn simple_ln() -> Result<()> {
-    let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
-    test("es", "SimpleSpeak", expr, "logaritmo natural de x")?;
+    test("es", "SimpleSpeak", expr, "el logaritmo en base b, de, abrir paréntesis, x más y, cerrar paréntesis")?;
     return Ok(());
 
 }
@@ -126,25 +131,41 @@ fn simple_ln() -> Result<()> {
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "el logaritmo natural de, se abren paréntesis x más y, se cierran paréntesis")?;
-    return Ok(());
-
-}
-
-#[test]
-fn normal_ln_terse() -> Result<()> {
-    let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "l n de x, apertura x más y cierre")?;
+                expr, "l n, abrir paréntesis, x más y, cerrar paréntesis")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
+                expr, "el logaritmo natural de, abrir paréntesis, x más y, cerrar paréntesis")?;
                 return Ok(());
 
 }
 
 #[test]
-fn simple_ln_terse() -> Result<()> {
+fn simple_ln() -> Result<()> {
     let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "l n de x")?;
+                expr, "l n x")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "el logaritmo natural de x")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")],
+                expr, "el logaritmo natural de x")?;
+                return Ok(());
+
+}
+
+#[test]
+fn other_names() -> Result<()> {
+    let expr = "<math> <mrow><mi>Cov</mi><mi>x</mi></mrow> </math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "cov x")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "covarianza x")?;
+    let expr = "<math> <mrow><mi>exp</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow> </math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "exp x")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "exponencial de x")?;
                 return Ok(());
 
 }
@@ -161,7 +182,7 @@ fn explicit_function_call_with_parens() -> Result<()> {
 #[test]
 fn explicit_times_with_parens() -> Result<()> {
     let expr = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></math>";
-    test("es", "SimpleSpeak", expr, "t veces x")?;
+    test("es", "SimpleSpeak", expr, "t por x")?;
     return Ok(());
 
 }
@@ -200,7 +221,7 @@ fn times_following_paren() -> Result<()> {
         <mn>2</mn>
         <mrow>  <mo>(</mo> <mn>3</mn>  <mo>)</mo> </mrow>
         </mrow></math>";
-    test("es", "SimpleSpeak", expr, "2 veces 3")?;
+    test("es", "SimpleSpeak", expr, "2 por 3")?;
     return Ok(());
 
 }
@@ -211,7 +232,7 @@ fn times_preceding_paren() -> Result<()> {
         <mrow>  <mo>(</mo> <mn>2</mn>  <mo>)</mo> </mrow>
         <mn>3</mn>
         </mrow></math>";
-    test("es", "SimpleSpeak", expr, "2 veces 3")?;
+    test("es", "SimpleSpeak", expr, "2 por 3")?;
     return Ok(());
 
 }
@@ -225,7 +246,9 @@ fn no_times_sqrt() -> Result<()> {
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
     test("es", "SimpleSpeak", expr, 
-            "la raíz cuadrada de 8; la raíz cuadrada de b; es igual a, la raíz cuadrada de 8 b fin de raíz")?;
+            "la raíz cuadrada de a; por la raíz cuadrada de b; es igual a, la raíz cuadrada de a b, fin de raíz")?;
+    test_prefs("es", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
+            "la raíz cuadrada de a; por la raíz cuadrada de b; es igual a, la raíz cuadrada de a b")?;
             return Ok(());
 
 }
@@ -241,7 +264,7 @@ fn no_times_sqrt() -> Result<()> {
         <mo>)</mo></mrow>
         <mi>x</mi>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "25 veces x")?;
+        test("es", "SimpleSpeak", expr, "25 por x")?;
         return Ok(());
 
     }
@@ -254,7 +277,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("es", "SimpleSpeak", expr, "b x y")?;
+        test("es", "SimpleSpeak", expr, "b, abrir paréntesis, x y cerrar paréntesis")?;
         return Ok(());
 
     }
@@ -299,7 +322,7 @@ fn no_times_sqrt() -> Result<()> {
         </msup>
         </mrow>
     </mrow></math>";
-        test("es", "SimpleSpeak", expr, "se abren paréntesis 2 x se cierran paréntesis al cuadrado")?;
+        test("es", "SimpleSpeak", expr, "abrir paréntesis, 2 x cerrar paréntesis al cuadrado")?;
         return Ok(());
 
     }
@@ -314,7 +337,7 @@ fn no_times_sqrt() -> Result<()> {
             <mfrac> <mn>1</mn><mn>2</mn></mfrac>
             <mo>)</mo></mrow></mrow>
     </mrow></math>";
-        test("es", "SimpleSpeak", expr, "2 más 1 partido por 2")?;
+        test("es", "SimpleSpeak", expr, "2 más un medio")?;
         return Ok(());
 
     }
@@ -328,7 +351,7 @@ fn no_times_sqrt() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
         <mo>)</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo abierto de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto de extremos c y d")?;
     return Ok(());
 
 }
@@ -340,7 +363,7 @@ fn no_times_sqrt() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>)</mo>
             <mo>)</mo></mrow>
         </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo cerrado abierto de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo abierto por la derecha de extremos c y d")?;
     return Ok(());
 
 }
@@ -353,7 +376,7 @@ fn parens_interval_open_closed() -> Result<()> {
         <mrow> <mo arg='open'>(</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
         <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr,"el intervalo abierto cerrado de c a d")?;
+    test("es", "SimpleSpeak",expr,"el intervalo abierto por la izquierda de extremos c y d")?;
     return Ok(());
 
 }
@@ -366,7 +389,7 @@ fn parens_interval_closed_closed() -> Result<()> {
             <mrow> <mo arg='open'>[(]</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi></mrow><mo arg='close'>]</mo>
             <mo>]</mo></mrow>
     </math>";
-    test("es", "SimpleSpeak",expr, "el intervalo cerrado de c a d")?;
+    test("es", "SimpleSpeak",expr, "el intervalo cerrado de extremos c y d")?;
     return Ok(());
 
 }
@@ -379,7 +402,7 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>)</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el intervalo abierto de menos infinito a d")?;
+    "el intervalo abierto de extremos menos infinito y d")?;
     return Ok(());
 
 }
@@ -392,8 +415,84 @@ fn parens_interval_closed_closed() -> Result<()> {
         <mo>]</mo></mrow>
     </math>";
     test("es", "SimpleSpeak",expr,
-    "el intervalo abierto cerrado de menos infinito a d")?;
+    "el intervalo abierto por la izquierda de extremos menos infinito y d")?;
     return Ok(());
 
 }
 
+// Tests propios del español (no existen en inglés)
+#[test]
+fn normal_ln_terse() -> Result<()> {
+    let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "l n, abrir paréntesis, x más y, cerrar paréntesis")?;
+                return Ok(());
+
+}
+
+#[test]
+fn simple_ln_terse() -> Result<()> {
+    let expr = "<math> <mrow>  <mi>ln</mi><mi>x</mi></mrow> </math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "l n x")?;
+                return Ok(());
+
+}
+
+#[test]
+fn trig_names_terse() -> Result<()> {
+    let expr = "<math><mi>sen</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo><mi>sinh</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo><mi>tgh</mi><mo>&#x2061;</mo><mi>z</mi></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "sen x más sen hache y, más tan hache z")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "seno de x más seno hiperbólico de y, más tangente hiperbólica de z")?;
+    return Ok(());
+}
+
+#[test]
+fn arc_trig_names() -> Result<()> {
+    let expr = "<math><mi>arcsen</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo><mi>arctan</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo><mi>argsenh</mi><mo>&#x2061;</mo><mi>z</mi></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")],
+                expr, "arco seno de x, más arco tangente de y, más, argumento seno hiperbólico de z")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "arco seno x, más arco tangente y, más, argumento seno hiperbólico, z")?;
+    return Ok(());
+}
+
+#[test]
+fn arc_trig_babel_split() -> Result<()> {
+    // babel en español escribe \arcsen como "arc\,sen" (parche temporal en general.yaml)
+    let expr = "<math><mrow><mi mathvariant='normal'>arc</mi><mspace width='0.167em'></mspace><mi mathvariant='normal'>sen</mi></mrow><mspace width='0.167em'></mspace><mi>x</mi></math>";
+    test("es", "SimpleSpeak", expr, "arco seno de x")?;
+    let expr = "<math><mi>arc</mi><mspace width='0.167em'></mspace><mi>tg</mi><mspace width='0.167em'></mspace><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")],
+                expr, "arco tangente; abrir paréntesis, x más 1, cerrar paréntesis")?;
+    return Ok(());
+}
+
+#[test]
+fn max_min_spanish() -> Result<()> {
+    let expr = "<math><mi>máx</mi><mo>(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>)</mo></math>";
+    test("es", "SimpleSpeak", expr, "el máximo de, abrir paréntesis, a coma, b, cerrar paréntesis")?;
+    let expr = "<math><msub><mi>m</mi><mi>mín</mi></msub></math>";
+    test("es", "SimpleSpeak", expr, "m sub mín fin de sub")?;
+    return Ok(());
+}
+
+#[test]
+fn signs_without_positivo_negativo() -> Result<()> {
+    // los signos se leen "más" y "menos"; con verbosidad Verbose, un número con signo entre
+    // paréntesis se lee como en el colegio: (−2) "2 negativo", (+1) "1 positivo"
+    let expr = "<math><mo>+</mo><mn>3</mn></math>";
+    test("es", "SimpleSpeak", expr, "más 3")?;
+    let expr = "<math><mo>-</mo><mn>1</mn><mo>+</mo><mn>2</mn></math>";
+    test("es", "SimpleSpeak", expr, "menos 1 más 2")?;
+    let expr = "<math><mn>3</mn><mo>-</mo><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo></math>";
+    test("es", "SimpleSpeak", expr, "3 menos menos 2")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "3 menos 2 negativo")?;
+    let expr = "<math><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo><mo>+</mo><mo>(</mo><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "2 negativo más 1 positivo")?;
+    let expr = "<math><msup><mrow><mo>(</mo><mo>-</mo><mn>2</mn><mo>)</mo></mrow><mn>2</mn></msup></math>";
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "2 negativo elevado al cuadrado")?;
+    return Ok(());
+}

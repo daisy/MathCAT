@@ -386,17 +386,9 @@
   tag: unit
   match: "$Verbosity != 'Terse' and contains(@data-intent-property, ':unit')"
   variables:
-    # we need to look at preceding-sibling::*[2] because invisible times should have been added
-    # if in a fraction, only count if we are in the numerator
-  - IsSingular: "(parent::m:mrow and preceding-sibling::*[2][self::m:mn and . = 1]) or  
-                 (ancestor::*[2][self::m:mrow] and parent::m:fraction and
-                  (preceding-sibling::* or parent::*[preceding-sibling::*[2][self::m:mn and . = 1]])
-                 )"
   - Prefix: "''"
-  - Word: "''"  
-  - QuantityNode: "preceding-sibling::*[1][self::m:mn] | preceding-sibling::*[1][.='⁢']/preceding-sibling::*[1][self::m:mn]"
-  - QuantityText: "translate(translate(string($QuantityNode), $BlockSeparators, ''), $DecimalSeparators, '.')"
-  - Quantity: "number(translate($QuantityText, '-−+', ''))"
+  - Word: "''"
+  - QuantityText: "translate(translate(string(GetQuantity(.)), $BlockSeparators, ''), $DecimalSeparators, '.')"
   - UnitForm: "''"
   replace:
   - bookmark: "@id"
@@ -411,6 +403,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -435,21 +430,25 @@
       - set_variables:
         - Word: "text()"
 
-  # Select the counted form before joining the SI prefix. NaN means no numeric count.
+  # one / few / many come from UnitNumber. Decimals keep the fractional form.
   - test:
-    - if: "$Quantity=$Quantity and contains($QuantityText, '.')"
+    - if: "contains($QuantityText, '.')"
       then:
       - set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'UnitFractionalForms')"]
       - test:
           if: "$UnitForm=''"
           then: [set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'PluralForms')"]]
-    - else_if: "($Quantity mod 10 = 1 and $Quantity mod 100 != 11) or (not($Quantity=$Quantity) and $IsSingular)"
-      then: [set_variables: [UnitForm: "$Word"]]
-    - else_if: "$Quantity=$Quantity and not($Quantity mod 10 >= 2 and $Quantity mod 10 <= 4 and not($Quantity mod 100 >= 12 and $Quantity mod 100 <= 14))"
+    # Decimals spoken by dropping the point ("1.0"→10, "2.5"→25) use that integer's many/few form.
+    # "32.34"→3234 still follows UnitNumber (few).
+    - else_if: "contains(string(GetQuantity(.)), '.0') or (contains(string(GetQuantity(.)), '.') and string-length(substring-after(string(GetQuantity(.)), '.')) = 1)"
       then: [set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'UnitManyForms')"]]
-    - else_if: "not($Quantity=$Quantity) and $Prefix!='' and $Word='грамм'"
+    - else_if: "UnitNumber(.) = 'one'"
+      then: [set_variables: [UnitForm: "$Word"]]
+    - else_if: "$Prefix!='' and $Word='грамм' and not(GetQuantity(.))"
       then: [set_variables: [UnitForm: "'граммы'"]]
-      else: [set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'PluralForms')"]]
+    - else_if: "UnitNumber(.) = 'few' or not(GetQuantity(.))"
+      then: [set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'PluralForms')"]]
+      else: [set_variables: [UnitForm: "DefinitionValue($Word, 'Speech', 'UnitManyForms')"]]
   - test:
       if: "$UnitForm=''"
       then: [set_variables: [UnitForm: "$Word"]]
@@ -463,13 +462,12 @@
   match: "false()"
   variables:
     # If the amount is singular, we don't add the plural ending.
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
-    - if: "$IsSingular"
+    - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]

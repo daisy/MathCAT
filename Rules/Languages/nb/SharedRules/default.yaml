@@ -43,8 +43,10 @@
   replace:
   - bookmark: "@id"
   - test:
-    - if: "@data-roman-numeral" 
+    - if: "@data-roman-numeral"
       then: [SPELL: "text()", pause: "short"]
+    - else_if: ".=1"   # en/ett before a following unit/currency (OneBeforeUnit)
+      then: [x: "OneForUnit(.)"]
       else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default

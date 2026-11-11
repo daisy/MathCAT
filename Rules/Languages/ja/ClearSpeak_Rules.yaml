@@ -25,7 +25,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "マイナス"      # phrase(10 'minus' 4 equals 6)
+  - T: "マイナス"      # phrase(10 'minus' 4 equals 6)
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -41,19 +41,19 @@
       - bookmark: "*[1]/@id"
       - test:
           if: "parent::*[self::m:minus and count(*)=1]"
-          then: [t: "マイナス"]      # phrase(minus 4 is a 'negative' number)
-          else: [t: "プラス"]      # phrase(10 is a 'positive' number)
-  - t: "平方根"      # phrase(8 is the 'square root' of 64)
+          then: [T: "マイナス"]      # phrase(minus 4 is a 'negative' number)
+          else: [T: "プラス"]      # phrase(10 is a 'positive' number)
+  - T: "平方根"      # phrase(8 is the 'square root' of 64)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "オブ"]      # phrase(the square root 'of' 5)
+      then: [T: "オブ"]      # phrase(the square root 'of' 5)
       else: [pause: short]
   - x: "*[1]"
   - test:
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "根号終了"      # phrase(the square root of x 'end root')
+      - T: "根号終了"      # phrase(the square root of x 'end root')
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -74,28 +74,28 @@
           then: [bookmark: "parent/@id"]
       - test:
           if: "parent::m:minus"
-          then: [t: "マイナス"]      # phrase(minus 6 is a 'negative' number)
-          else: [t: "プラス"]      # phrase(10 is a 'positive' number)
+          then: [T: "マイナス"]      # phrase(minus 6 is a 'negative' number)
+          else: [T: "プラス"]      # phrase(10 is a 'positive' number)
   - test:
       if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
       - if: "*[2][.='2']"
-        then: [t: "平方根"]      # phrase(5 is the 'square root' of 25)
+        then: [T: "平方根"]      # phrase(5 is the 'square root' of 25)
       - else_if: "*[2][.='3']"
-        then: [t: "立方根"]      # phrase(5 is the 'cube root' of 625)
-      - else: [x: "*[2]", t: "乗根"]      # phrase(the square 'root' of 25)
+        then: [T: "立方根"]      # phrase(5 is the 'cube root' of 625)
+      - else: [x: "*[2]", T: "じょうこん"]      # phrase(the square 'root' of 25)
       else:
       - x: "*[2]"
-      - t: "乗根"      # phrase(the square 'root' of 36)
+      - T: "じょうこん"      # phrase(the square 'root' of 36)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "オブ"]      # phrase(the square root 'of' 36)
+      then: [T: "オブ"]      # phrase(the square root 'of' 36)
   - x: "*[1]"
   - test:
       if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "根号終了"      # phrase(start the fifth root of x 'end root')
+      - T: "根号終了"      # phrase(start the fifth root of x 'end root')
       - pause: medium
       else_test:
         if: "IsNode(*[1], 'simple')"
@@ -111,13 +111,13 @@
       if:
       - "*[1][self::m:square-root or self::m:root] and"
       - "($ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd')"
-      then: [t: ""]
+      then: [T: ""]
       else:
       - bookmark: "@id"
       - test:
           if: "self::m:minus"
-          then: [t: "マイナス"]      # phrase(minus 5 is a 'negative' number)
-          else: [t: "プラス"]      # phrase(7 is a 'positive' number)
+          then: [T: "マイナス"]      # phrase(minus 5 is a 'negative' number)
+          else: [T: "プラス"]      # phrase(7 is a 'positive' number)
   - x: "*[1]"
 
 # Fraction rules
@@ -134,7 +134,7 @@
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - t: "毎"      # phrase('5 meters 'per' second)
+  - T: "毎"      # phrase('5 meters 'per' second)
   - x: "*[2]"
 
 - name: common-fraction
@@ -163,16 +163,16 @@
       - test:
           if: "$Verbosity!='Terse'"
           then: [ot: ""]
-      - t: "分数"      # phrase(the 'fraction' with 3 over 4)
+      - T: "分数"      # phrase(the 'fraction' with 3 over 4)
   - x: "*[1]"
-  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
+  - T: "オーバー"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       # very ugly!!! -- replicate nested ordinal fraction as they are an exception
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] and *[2][*[1][self::m:mn][not(contains(., '.'))]   and *[2][self::m:mn][not(contains(., '.'))] ] ) )"
       then:
       - pause: short
-      - t: "分数終了"      # phrase(7 over 8 'end fraction')
+      - T: "分数終了"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
@@ -194,13 +194,13 @@
   - ")"
   replace:
   - x: "*[1]"
-  - t: "オーバー"      # phrase(the fraction 3 'over' 4)
+  - T: "オーバー"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - t: "分数終了"      # phrase(7 over 8 'end fraction')
+      - T: "分数終了"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - name: default
@@ -208,20 +208,20 @@
   match: "."
   replace:
   - ot: ""      # phrase(5 is 'the' square toot of 25)
-  - t: "分数"      # phrase(the 'fraction with numerator' 6)
+  - T: "分数"      # phrase(the 'fraction with numerator' 6)
   - test:
       if: "not(IsNode(*[1], 'simple'))"
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - t: "オーバー"      # phrase(the fraction with numerator 5 'and denominator' 8)
+  - T: "オーバー"      # phrase(the fraction with numerator 5 'and denominator' 8)
   - x: "*[2]"
   - pause: long
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='GeneralEndFrac'"
       then:
       - pause: short
-      - t: "分数終了"      # phrase(the fraction with 3 over 4 'end fraction')
+      - T: "分数終了"      # phrase(the fraction with 3 over 4 'end fraction')
       - pause: short
 
 # rules for functions raised to a power
@@ -233,11 +233,11 @@
   replace:
   - test:
       if: "$ClearSpeak_Trig = 'TrigInverse'"
-      then: [x: "*[1]", bookmark: "*[2]/@id", t: "インバース"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+      then: [x: "*[1]", bookmark: "*[2]/@id", T: "インバース"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
       else_test:
         if: "$ClearSpeak_Trig = 'ArcTrig'"
-        then: [bookmark: "*[2]/@id", t: "アーク", x: "*[1]"]      # phrase(the 'arc' of a circle)
-        else: [bookmark: "*[2]/@id", t: "インバース", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+        then: [bookmark: "*[2]/@id", T: "アーク", x: "*[1]"]      # phrase(the 'arc' of a circle)
+        else: [x: "*[1]", bookmark: "*[2]/@id", T: "インバース"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
 - name: function-squared-or-cubed
   tag: power
@@ -249,8 +249,8 @@
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][.='2']"
-      then: [t: "の 2 乗"]      # phrase(25 equals 5 'squared')
-      else: [t: "の 3 乗"]      # phrase(625 equals 5 'cubed')
+      then: [T: "の 2 乗"]      # phrase(25 equals 5 'squared')
+      else: [T: "の 3 乗"]      # phrase(625 equals 5 'cubed')
 
 - name: function-power
   tag: power
@@ -258,10 +258,10 @@
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(the third 'power of' 6)
+  - T: "の"      # phrase(the third 'power of' 6)
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - t: "乗"      # phrase(the third 'power of' 6)
+  - T: "乗"      # phrase(the third 'power of' 6)
   - pause: short
 
 - name: AfterPower-nested
@@ -271,20 +271,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(5 'raised to the exponent' x plus 1)
+  - T: "の上付き"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "上付き終了"      # phrase(5 raised to the exponent x plus 1 'end exponent')
+  - T: "上付き終了"      # phrase(5 raised to the exponent x plus 1 'end exponent')
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(x is 'raised to the power' 4)
+  - T: "の"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
-  - t: "乗"      # phrase(x is raised to the 'power' 4)
+  - T: "乗"      # phrase(x is raised to the 'power' 4)
   - pause: short
 
 - name: squared
@@ -293,7 +293,7 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "の 2 乗"      # phrase(7 'squared' equals 49)
+  - T: "の 2 乗"      # phrase(7 'squared' equals 49)
 
 - name: cubed
   tag: power
@@ -301,16 +301,16 @@
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "の 3 乗"      # phrase(5 'cubed' equals 125)
+  - T: "の 3 乗"      # phrase(5 'cubed' equals 125)
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(2 raised 'to the' power 7)
+  - T: "の"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
-  - t: "乗"      # phrase(2 raised to the 'power' 7)
+  - T: "乗"      # phrase(2 raised to the 'power' 7)
 
 - name: simple-negative-integer
   tag: power
@@ -320,18 +320,18 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(2 raised 'to the' power 7)
+  - T: "の"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
-  - t: "乗"      # phrase(2 raised to the 'power' 7)
+  - T: "乗"      # phrase(2 raised to the 'power' 7)
 
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "の"      # phrase(3 raised 'to the' power 7)
+  - T: "の"      # phrase(3 raised 'to the' power 7)
   - x: "*[2]"
-  - t: "乗"      # phrase(2 raised to the 'power' 7)
+  - T: "乗"      # phrase(2 raised to the 'power' 7)
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -356,9 +356,9 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x 'raised to the' second power)
+  - T: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "上付き終了"      # phrase(x raised to the second 'power')
+  - T: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
@@ -377,9 +377,9 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x 'raised to the' second power)
+  - T: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "上付き終了"      # phrase(x raised to the second 'power')
+  - T: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -400,9 +400,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x 'raised to the' second power)
+  - T: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "上付き終了"      # phrase(x raised to the second 'power')
+  - T: "上付き終了"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -425,9 +425,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x 'raised to the' second power)
+  - T: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "上付き終了"      # phrase(x raised to the second 'power')
+  - T: "上付き終了"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -435,20 +435,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x is 'raised to the exponent')
+  - T: "の上付き"      # phrase(x is 'raised to the exponent')
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "上付き終了"      # phrase(and now 'end exponent' has been reached)
+  - T: "上付き終了"      # phrase(and now 'end exponent' has been reached)
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "の上付き"      # phrase(x 'raised to the' second power)
+  - T: "の上付き"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "上付き終了"      # phrase(x raised to the second 'power')
+  - T: "上付き終了"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows
@@ -469,7 +469,7 @@
       then:
       - pause: short
       - x: "$WordToSay"
-      - t: "閉じ"      # phrase('end' absolute value)
+      - T: "閉じ"      # phrase('end' absolute value)
   - pause: short
 
 - name: set
@@ -481,12 +481,12 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [t: "空集合"]      # phrase('the empty set')
+      then: [T: "空集合"]      # phrase('the empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [t: ""]      # phrase('the' set of all integers)
+          then: [T: ""]      # phrase('the' set of all integers)
       - T: "集合"      # phrase(this is a 'set of' numbers)
       - test:
           if: "$ClearSpeak_Sets != 'woAll'"
@@ -500,8 +500,8 @@
           then:
           - test:
               if: "$Verbosity!='Terse'"
-              then: [t: ""]      # phrase('the' set of integers)
-          - t: "集合"      # phrase(this is a 'set' of integers)
+              then: [T: ""]      # phrase('the' set of integers)
+          - T: "集合"      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 - # intervals are controlled by a ClearSpeak Preference -- parens/brackets do not have to match, so we avoid IsBracketed
@@ -521,11 +521,11 @@
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - t: "区間"      # phrase('the interval from' a to b)
+  - T: "区間"      # phrase('the interval from' a to b)
   - x: "*[1]"
-  - t: "から"      # phrase(the interval from a 'to' b)
+  - T: "から"      # phrase(the interval from a 'to' b)
   - x: "*[2]"
-  - t: "まで"      # phrase(the interval from a 'to' b)
+  - T: "まで"      # phrase(the interval from a 'to' b)
   - pause: short
     # each endpoint takes its own verb; the first one is continuative unless it is the only clause
   - test:
@@ -536,20 +536,20 @@
           if: "$is_start_closed"
           then_test:
             if: "$is_intervals_end_infinity"
-            then: [t: "を含む"]      # phrase(the interval from a to b 'including' b)
-            else: [t: "を含み"]      # phrase(the interval from a to b 'including' b)
+            then: [T: "を含む"]      # phrase(the interval from a to b 'including' b)
+            else: [T: "を含み"]      # phrase(the interval from a to b 'including' b)
           else_test:
             if: "$is_intervals_end_infinity"
-            then: [t: "を含まない"]      # phrase(the interval from a to b 'not' including b)
-            else: [t: "を含まず"]      # phrase(the interval from a to b 'not' including b)
+            then: [T: "を含まない"]      # phrase(the interval from a to b 'not' including b)
+            else: [T: "を含まず"]      # phrase(the interval from a to b 'not' including b)
   - test:
       if: "not($is_intervals_end_infinity)"
       then:
       - x: "*[2]"
       - test:
           if: "$is_end_closed"
-          then: [t: "を含む"]      # phrase(the interval not 'including' a)
-          else: [t: "を含まない"]      # phrase(the interval 'not' including a)
+          then: [T: "を含む"]      # phrase(the interval not 'including' a)
+          else: [T: "を含まない"]      # phrase(the interval 'not' including a)
 
 - name: binomial-frac-vector
   tag: matrix
@@ -558,7 +558,7 @@
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
   - x: "*[1]/*[1]/*" # mtable/mtr/mtd
-  - t: "選ぶ"      # phrase(the binomial coefficient n 'choose' m)
+  - T: "シー"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
@@ -567,7 +567,7 @@
   variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - pause: medium
-  - t: "行"      # phrase(the first 'row' of a matrix)
+  - T: "ぎょう"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
   - test:
       if: ".[self::m:mlabeledtr]"
@@ -592,9 +592,9 @@
       then: [ot: ""]      # phrase('the' square root of 25)
   - test:
     - if: ".='log'"
-      then: [t: "ログ"]
+      then: [T: "ログ"]
     - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
-      then: [t: "自然ログ"]      # phrase(the 'natural log' of x)
+      then: [T: "自然対数"]      # phrase(the 'natural log' of x)
       else: [spell: "'ln'"]
 
 - name: ClearSpeak-multi-line
@@ -614,13 +614,13 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then: [T: "ケース"]      # phrase(this is the first 'case' of three cases)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
-          then: [T: "行"]      # phrase(this is the first 'line' of three lines)
+          then: [T: "ぎょう"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "制約条件"]      # phrase(this is the first 'constraint' of three constraints)
+          then: [T: "制約条件"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then: [T: "式"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "行"]      # phrase(this is the first 'row' of three rows)
+          then: [T: "ぎょう"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then: [T: "ステップ"]      # phrase(this is the first 'step' of three steps)
           # else 'None -- don't say anything'
@@ -644,13 +644,13 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then: [T: "ケース"]      # phrase(in this  'case' x is not equal to y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-          then: [T: "行"]      # phrase(the straight 'line' between x and y)
+          then: [T: "ぎょう"]      # phrase(the straight 'line' between x and y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "制約条件"]      # phrase(there is a 'constraint' on possible values)
+          then: [T: "制約条件"]      # phrase(there is a 'constraint' on possible values)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then: [T: "式"]      # phrase(the 'equation' pi r squared gives the area of a circle)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "行"]      # phrase(the values on the top 'row' are relevant)
+          then: [T: "ぎょう"]      # phrase(the values on the top 'row' are relevant)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then: [T: "ステップ"]      # phrase(this is a 'step' by step process)
           # else 'None -- don't say anything'
@@ -678,8 +678,8 @@
   replace:
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
-      then: [t: ""]
-      else: [t: "掛ける"]      # phrase(5 'times' 3 equals 15)
+      then: [T: ""]
+      else: [T: "掛ける"]      # phrase(5 'times' 3 equals 15)
 
 - name: no-times
   tag: mo
@@ -687,7 +687,7 @@
   # Note: this rule is also part of the paren rule so that the parens speak
   - ".='⁢' and $ClearSpeak_ImpliedTimes = 'None'"
   replace:
-  - t: ""
+  - T: ""
 
 - name: ClearSpeak-times
   tag: mo
@@ -718,7 +718,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - t: "掛ける"      # phrase(5 'times' 3 equals 15)
+  - T: "掛ける"      # phrase(5 'times' 3 equals 15)
 
 - name: no-say-parens
   tag: mrow

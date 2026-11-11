@@ -8,24 +8,24 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
+      - T: ""      # phrase('the' square root of 25 equals 5)
   - bookmark: "*[2]/@id"
   - test:
     - if: "*[2][.='+']"
-      then: [t: "正の"]      # phrase(set of all 'positive' integers less than 10)
-      else: [t: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
+      then: [T: "正の"]      # phrase(set of all 'positive' integers less than 10)
+      else: [T: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [t: "複素数"]      # phrase('complex numbers' consist of two parts)
+      then: [T: "複素数"]      # phrase('complex numbers' consist of two parts)
     - else_if: "*[1][.='ℕ']"
-      then: [t: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
+      then: [T: "自然数"]      # phrase('natural numbers' are numbers from 1 to infinity)
     - else_if: "*[1][.='ℚ']"
-      then: [t: "有理数"]      # phrase('rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('rational numbers' are the fraction of 2 integers)
     - else_if: "*[1][.='ℝ']"
-      then: [t: "実数"]      # phrase('real numbers' can be both positive and negative)
+      then: [T: "実数"]      # phrase('real numbers' can be both positive and negative)
     - else_if: "*[1][.='ℤ']"
-      then: [t: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase(positive 'integers' are natural numbers above 0)
       else: [x: "*[1][text()]"] # shouldn't happen
 
 - name: dimension-number-sets
@@ -57,15 +57,15 @@
   - bookmark: "@id"
   - test:
     - if: ".='ℂ'"
-      then: [t: "複素数"]      # phrase('the complex numbers' include 2 parts)
+      then: [T: "複素数"]      # phrase('the complex numbers' include 2 parts)
     - else_if: ".='ℕ'"
-      then: [t: "自然数"]      # phrase('the natural numbers' begin at 1)
+      then: [T: "自然数"]      # phrase('the natural numbers' begin at 1)
     - else_if: ".='ℚ'"
-      then: [t: "有理数"]      # phrase('the rational numbers' are the fraction of 2 integers)
+      then: [T: "有理数"]      # phrase('the rational numbers' are the fraction of 2 integers)
     - else_if: ".='ℝ'"
-      then: [t: "実数"]      # phrase('the real numbers' can be both positive and negative)
+      then: [T: "実数"]      # phrase('the real numbers' can be both positive and negative)
     - else_if: ".='ℤ'"
-      then: [t: "整数"]      # phrase('the integers' are natural numbers above 0)
+      then: [T: "整数"]      # phrase('the integers' are natural numbers above 0)
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
@@ -73,14 +73,14 @@
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "実部"      # phrase('the real part' of a complex number does not include the imaginary part)
+  - T: "実部"      # phrase('the real part' of a complex number does not include the imaginary part)
 
 - name: imaginary-part
   tag: imaginary-part
   match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - t: "虚部"      # phrase('the imaginary part' is part of a complex number)
+  - T: "虚部"      # phrase('the imaginary part' is part of a complex number)
 
 # rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
@@ -116,25 +116,47 @@
   - x: "*[2]"
   - T: "個取る順列"
 
-- name: intervals
+- name: object-first-relations   # audit-ignore: Japanese needs the second argument before the verb (x は y に写る), which an infix word cannot give
+  tag: [maps-to, obtained-from, applied-to]
+  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
+  replace:
+  - x: "*[1]"
+  - T: "は"
+  - pause: auto
+  - x: "*[2]"
+  - test:
+    - if: "name(.)='maps-to'"
+      then: [T: "に写る"]      # x maps to y = x は y に写る
+    - else_if: "name(.)='obtained-from'"
+      then: [T: "から得られる"]      # x obtained from y = x は y から得られる
+      else: [T: "に適用される"]      # f applied to x = f は x に適用される
+
+- name: intervals   # audit-ignore: Japanese names the kind of interval in Japanese instead of speaking the tag, and puts から/まで after the endpoints
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "count(*)=2"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
-  - x: "translate(name(.),'-', ' ')"
+      - T: ""      # phrase('the' square root of 25 equals 5)
+  - test:
+    - if: "name(.)='open-interval'"
+      then: [T: "開区間"]      # phrase(the 'open interval' from a to b)
+    - else_if: "name(.)='closed-interval'"
+      then: [T: "閉区間"]      # phrase(the 'closed interval' from a to b)
+    - else_if: "name(.)='open-closed-interval'"
+      then: [T: "左開右閉区間"]      # phrase(the 'open closed interval' from a to b)
+      else: [T: "左閉右開区間"]      # phrase(the 'closed open interval' from a to b)
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[1]"
-      - t: "に"      # phrase(adding 6 'to' 6 equals  12)
+      - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
       - x: "*[2]"
+      - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
       else:
       - x: "*[1]"
-      - t: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+      - T: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
       - x: "*[2]"
 
 - name: default-point
@@ -144,10 +166,10 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - t: ""      # phrase('the' square root of 25 equals 5)
+      - T: ""      # phrase('the' square root of 25 equals 5)
   - T: "点"      # phrase(a decimal 'point' indicates the fraction component of a number)
   - x: "*[1]"
-  - t: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
+  - T: "コンマ"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
 
 - name: bigop-both
@@ -159,13 +181,13 @@
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - x: "*[2]"
-  - t: "から"      # phrase(subtracting 5 'from' 10 gives 5)
+  - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
   - pause: short
   - x: "*[3]"
-  - t: "まで"      # phrase(adding 6 'to' 6 equals  12)
+  - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
   - test:
       if: "following-sibling::*"
-      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
+      then: [T: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: bigop-under
   tag: large-op
@@ -176,10 +198,10 @@
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
   - x: "*[2]"
-  - t: "にわたる"      # phrase(2 'over' 3 equals two thirds)
+  - T: "にわたる"      # phrase(2 'over' 3 equals two thirds)
   - test:
       if: "following-sibling::*"
-      then: [t: "オブ"]      # phrase(the square root 'of' 25 equals 5)
+      then: [T: "オブ"]      # phrase(the square root 'of' 25 equals 5)
 
 - name: largeop
   tag: mrow
@@ -189,7 +211,7 @@
       if: "$Verbosity!='Terse'"
       then: [ot: ""]      # phrase('the' square root of 25 equals 5)
   - x: "*[1]"
-  - t: "オブ"      # phrase(the square root 'of' 25 equals 5)
+  - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
 - name: repeating-decimal
@@ -197,7 +219,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - t: "数字を繰り返して"      # phrase('with repeating digits')
+  - T: "循環節"      # phrase('with repeating digits')
   - spell: "*[2]"
 
 - name: msubsup-skip-super
@@ -256,12 +278,6 @@
     # Note: we have a special case for pseudo-scripts like "°" (degrees) which are not powers -- they are essentially "1^°"
     # The following "IfThenElse" logic returns the mrow that potentially contains the coefficient, if it exists
     # The tests are in the order A, B & E, C, D
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -277,6 +293,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -306,7 +325,7 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "$Word"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -316,7 +335,7 @@
       - x: "$Prefix"
       - ct: "- - -"
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -326,16 +345,15 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
     # If the amount is singular, we don't add the plural ending.
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
-    - if: "$IsSingular"
+    - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
@@ -346,7 +364,7 @@
   match: ".='sin'"
   replace:
   - bookmark: "@id"
-  - t: "サイン"      # phrase(the 'sine' of the angle)
+  - T: "サイン"      # phrase(the 'sine' of the angle)
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -354,8 +372,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コサイン"]      # phrase('cos' is the abbreviation for cosine)
-      else: [t: "コサイン"]      # phrase(find the 'cosine' in a right-angle triangle)
+      then: [T: "コサイン"]      # phrase('cos' is the abbreviation for cosine)
+      else: [T: "コサイン"]      # phrase(find the 'cosine' in a right-angle triangle)
 - name: tan
   tag: mi
   match: ".='tan' or .='tg'"
@@ -363,8 +381,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "タンジェント"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
-      else: [t: "タンジェント"]      # phrase(a 'tangent' is a straight line that touches a curve)
+      then: [T: "タンジェント"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
+      else: [T: "タンジェント"]      # phrase(a 'tangent' is a straight line that touches a curve)
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -372,8 +390,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "セカント"]      # phrase(to 'seek' a solution)
-      else: [t: "セカント"]      # phrase(a 'secant' intersects a curve at two or more points)
+      then: [T: "セカント"]      # phrase(to 'seek' a solution)
+      else: [T: "セカント"]      # phrase(a 'secant' intersects a curve at two or more points)
 - name: csc
   tag: mi
   match: ".='csc'"
@@ -381,8 +399,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コセカント"]      # phrase(we will 'cosecant' a solution)
-      else: [t: "コセカント"]      # phrase(the 'cosecant' is the reciprocal of the secant)
+      then: [T: "コセカント"]      # phrase(we will 'cosecant' a solution)
+      else: [T: "コセカント"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 - name: cot
   tag: mi
   match: ".='cot'"
@@ -390,8 +408,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コタンジェント"]      # phrase(find the 'cotangent' in a right-angle triangle)
-      else: [t: "コタンジェント"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
+      then: [T: "コタンジェント"]      # phrase(find the 'cotangent' in a right-angle triangle)
+      else: [T: "コタンジェント"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
 - name: sinh
   tag: mi
@@ -400,8 +418,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックサイン"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      else: [t: "双曲線正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
+      then: [T: "ハイパーボリックサイン"]      # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [T: "双曲線正弦"]      # phrase(the 'hyperbolic sine' is used in mathematics)
 - name: cosh
   tag: mi
   match: ".='cosh'"
@@ -409,8 +427,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコサイン"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      else: [t: "双曲線余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
+      then: [T: "ハイパーボリックコサイン"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [T: "双曲線余弦"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
   match: ".='tanh'"
@@ -418,8 +436,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックタンジェント"]      # phrase('tanch' is shorthand for hyperbolic tangent)
-      else: [t: "双曲線正接"]      # phrase('hyperbolic tangent' is a mathematical function)
+      then: [T: "ハイパーボリックタンジェント"]      # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [T: "双曲線正接"]      # phrase('hyperbolic tangent' is a mathematical function)
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -427,8 +445,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [t: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
+      then: [T: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [T: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -436,8 +454,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [t: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      then: [T: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [T: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -445,8 +463,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [t: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      then: [T: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [T: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -454,8 +472,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "指数関数"]      # phrase('exp' means exponential function)
-      else: [t: "指数関数"]      # phrase('exponential' function)
+      then: [T: "指数関数"]      # phrase('exp' means exponential function)
+      else: [T: "指数関数"]      # phrase('exponential' function)
 - name: covariance
   tag: mi
   match: ".='Cov'"
@@ -463,8 +481,8 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "コーブ"]      # phrase('Cov' is shorthand for the covariance function)
-      else: [t: "コバリアンス"]      # phrase('covariance' function)
+      then: [T: "共分散"]      # phrase('Cov' is shorthand for the covariance function)
+      else: [T: "共分散"]      # phrase('covariance' function)
 
 -
   name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
@@ -477,12 +495,12 @@
       then: [ot: ""]      # phrase('the' logarithm function is used in mathematics)
   - test:
     - if: ".= 'log'"
-      then: [t: "ログ"]      # phrase(the 'log' function is used in mathematics)
+      then: [T: "ログ"]      # phrase(the 'log' function is used in mathematics)
     - else_if: ".= 'Log'"
-      then: [t: "主値ログ"]
+      then: [T: "対数のしゅち"]      # Log z is 対数(函数)の主値; 主値 is written in kana (Open JTalk reads it シュネ or アルジチ)
     - else_if: "$Verbosity='Terse'"
       then: [spell: "'ln'"]
-      else: [t: "自然ログ"]      # phrase(the 'natural log' function is used in mathematics)
+      else: [T: "自然対数"]      # phrase(the 'natural log' function is used in mathematics)
 
 
 - name: multi-line
@@ -502,7 +520,7 @@
       then: [T: "ケース"]      # phrase(this is the first 'case' of three cases)
     - else_if: "self::m:system-of-equations"
       then: [T: "式"]      # phrase(this is the first 'equation' of three equations)
-      else: [T: "行"]      # phrase(this is the first 'line' of three lines)
+      else: [T: "ぎょう"]      # phrase(this is the first 'line' of three lines)
   - test:
     - if: "$LineCount != 1"
       then: [ct: ""] # plural
@@ -525,7 +543,7 @@
           then: [T: "ケース"]     # phrase('case' 1 of 10 cases)
         - else_if: "parent::m:system-of-equations"
           then: [T: "式"] # phrase('equation' 1 of 10 equations)
-          else: [T: "行"]     # phrase('line 1 of 10 lines)
+          else: [T: "ぎょう"]     # phrase('line 1 of 10 lines)
       - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
       if: "self::m:mlabeledtr"
@@ -574,12 +592,12 @@
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - ot: ""      # phrase('the' 1 by 1 matrix M)
-  - t: "1 かける 1"      # phrase(the '1 by 1' matrix)
+  - OT: ""      # phrase('the' 1 by 1 matrix M)
+  - T: "1 かける 1"      # phrase(the '1 by 1' matrix)
   - test:
       if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant'))
-      else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant'))
+      else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
       
   - T: "成分"      # phrase(the 2 by 2 matrix 'with entry' x)
   - x: "*[1]/*"
@@ -590,11 +608,11 @@
   # select all the non-zero entries -- if there are none of them, then it is a zero matrix
   match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "零行列"   # phrase(the 2 by 2 'zero matrix')
+  - T: "零行列"   # phrase(the 2 by 2 'zero matrix')
   - pause: long
 
 - name: identity-matrix
@@ -605,11 +623,11 @@
   - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
   - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "単位行列"   # phrase(the 2 by 2 'identity matrix')
+  - T: "単位行列"   # phrase(the 2 by 2 'identity matrix')
   - pause: long
 
 - name: diagonal-matrix
@@ -622,11 +640,11 @@
   - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
   - "    )"
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix)
+  - T: ""      # phrase('the' 1 by 2 matrix)
   - x: count(*)
-  - t: "かける"       # phrase(the 1 'by' 2 matrix)
+  - T: "かける"       # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
-  - t: "対角行列"   # phrase(the 2 by 2 'diagonal matrix')
+  - T: "対角行列"   # phrase(the 2 by 2 'diagonal matrix')
   - pause: long
   - insert:
       # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
@@ -646,9 +664,9 @@
   - count(*)<=3 and # at least two rows
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - T: ""      # phrase('the' 2 by 2 matrix M)
   - x: count(*)
-  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 by 2 'vector')
@@ -664,14 +682,14 @@
           then: [T: "ベクトル終了"]      # phrase(the 2 column 'vector')
           else: [T: "行列終了"]      # phrase(the 2 by 2 'matrix')
 
-- name: default-column-matrix
+- name: default-column-matrix   # audit-ignore: ends with ベクトル終了 for EndVector, as the other row and column rules do (en says "end matrix" here)
   tag: matrix
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
   replace:
-  - t: ""      # phrase('the' 2 by 2 matrix M)
+  - T: ""      # phrase('the' 2 by 2 matrix M)
   - x: "count(*)"
-  - T: "かける 1 列"      # phrase(the 2 'by 1 column' matrix)
+  - T: "かける 1"      # phrase(the 2 'by 1 column' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 column 'vector')
@@ -680,7 +698,11 @@
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "行列終了"]      # phrase(the 'end of matrix' has been reached)
+      then:
+      - test:
+          if: $ClearSpeak_Matrix = 'EndVector'
+          then: [T: "ベクトル終了"]      # phrase(the 2 by 1 'vector')
+          else: [T: "行列終了"]      # phrase(the 'end of matrix' has been reached)
 
 - name: 1x2-or-3-matrix
   tag: matrix
@@ -691,9 +713,9 @@
   - count(*[1]/*)<=3 and # at least two cols
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   replace:
-  - t: "1 かける"      # phrase('the 1 by' 2 matrix)
+  - T: "1 かける"      # phrase('the 1 by' 2 matrix)
   - x: count(*/*)
-  - t: "行"      # phrase(the 1 by 4 'row' matrix)
+  - T: ""      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase('the 1 by' 2 row 'vector')
@@ -714,9 +736,9 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "count(*)=1" # one row
   replace:
-  - t: "1 かける"      # phrase('the 1 by' 2 matrix)
+  - T: "1 かける"      # phrase('the 1 by' 2 matrix)
   - x: "count(*/*)"
-  - t: "行"      # phrase(the 1 by 2 'row' matrix)
+  - T: ""      # phrase(the 1 by 2 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
       then: [T: "ベクトル"]      # phrase(the 2 by 1 'vector')
@@ -741,18 +763,18 @@
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
   variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: count(*)
-  - t: "かける"      # phrase(the 1 'by' 2 matrix)
+  - T: "かける"      # phrase(the 1 'by' 2 matrix)
   - x: count(*[self::m:mtr][1]/*)
   - test:
       if: "self::m:determinant"
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [t: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -769,18 +791,18 @@
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
   match: "."
   replace:
-  - t: ""      # phrase('the' 1 by 2 matrix M)
+  - T: ""      # phrase('the' 1 by 2 matrix M)
   - x: "count(*)"
-  - t: "かける"      # phrase(the 1 'by' 2 matrix)
+  - T: "かける"      # phrase(the 1 'by' 2 matrix)
   - x: "count(*[self::m:mtr][1]/*)"
   - test:
       if: "self::m:determinant"
-      then: [t: "行列式"]      # phrase(the 2 by 2 'determinant')
+      then: [T: "行列式"]      # phrase(the 2 by 2 'determinant')
       else:
       - test:
           if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
-          then: [t: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
-          else: [t: "行列"]      # phrase(the 2 by 2 'matrix')
+          then: [T: "拡大行列"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "行列"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -811,7 +833,7 @@
   replace:
   - insert:
       nodes: "*"
-      replace: [t: "かける", pause: auto]      # phrase(3 'by' 5 matrix)
+      replace: [T: "かける", pause: auto]      # phrase(3 'by' 5 matrix)
 
 - name: chemistry-msup
   tag: [chemical-formula]
@@ -1060,14 +1082,14 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [t: "フォーム"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [t: "フォームに反応する"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [T: "から"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [T: "が反応して"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='🣑'" # U+01F8D1
-      then: [t: "との平衡にあります"]      # phrase(a reactant 'is in equilibrium with' a product)
+      then: [T: "と平衡にある"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='🣓'" # U+1F8D3
-      then: [t: "平衡は左に偏ります"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
+      then: [T: "と左に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
     - else_if: ".='🣒'" # U+1F8D2
-      then: [t: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
+      then: [T: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
 - name: chemical-equation-operator
@@ -1081,7 +1103,7 @@
   tag: none
   match: "../../*[self::m:chemical-formula or self::m:chemical-nuclide]"
   replace:
-  - t: "" # don't say anything
+  - T: "" # don't say anything
 
 - name: ignore-intent-wrapper
   tag: intent-wrapper

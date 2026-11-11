@@ -180,10 +180,12 @@ Translators:
 * Greek -- Theodora Antonakopoulou and Paraskevi Riga (National and Kapodistrian University of Athens)
 * Hungarian -- Attila Hammer (IT Foundation for the Visually Impaired)
 * Indonesian -- Dr. Pinta Deniyanti Sampoerno, M.Si; Dr. Meiliasari, S.Pd., M.Sc; and Ari Hendarno, S.Pd., M.Kom.
+* Japanese -- 盛島康徳 (Yasunori Morishima)
 * Norwegian -- Marthe Gjelstad (National Library of Norway) and Kvile
 * Polish -- Michał Dziwisz (Fundacja Instytut Rozwoju Regionalnego)
+* Portuguese -- Nágila Seidenstucker and Camila Kawamura (Fundação Dorina Nowill para Cegos)
 * Russian (both speech and braille) -- Danil Kostenkov
-* Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development) and María Allo Roldán
+* Spanish -- Noelia Ruiz Martínez (also helped with NVDA add-on development), María Allo Roldán and Pablo González Luengo
 * Swedish -- Tim Arborealis Lötberg (MTM) and Anders Eklund (SPSM)
 * Vietnamese -- Dang Hoai Phúc and Trang Pham
 * Others??? -- please volunteer so I can list you here...

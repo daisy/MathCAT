@@ -1,32 +1,62 @@
 ---
 
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
+
+- name: one-sided-limit
+  # "x → 0⁻" se lee "x tiende a 0 por la izquierda"; "x → 0⁺", "x tiende a 0 por la derecha"
+  tag: [say-super, msup, power]
+  match: "*[2][self::m:mo][.='-' or .='−' or .='+'] and ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf or self::m:munder[starts-with(normalize-space(*[1]), 'lím')]]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "*[2][.='+']"
+      then: [T: "por la derecha"]      # phrase(x tiende a 0 'por la derecha')
+      else: [T: "por la izquierda"]    # phrase(x tiende a 0 'por la izquierda')
+
+- name: limite-con-tilde
+  # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
+  tag: munder
+  variables: [Base: "translate(*[1], ' \u00A0\u2061', '')"]
+  match: "($Base='lím' or $Base='límsup' or $Base='líminf') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "el"]
+  - test:
+    - if: "$Base='límsup'"
+      then: [T: "límite superior cuando"]
+    - else_if: "$Base='líminf'"
+      then: [T: "límite inferior cuando"]
+      else: [T: "límite cuando"]
+  - x: "*[2]"
+  - pause: short
+
 - name: pos-neg-number-sets
+  # en español el adjetivo va después y concuerda: "los enteros negativos", "los números reales positivos"
   tag: number-sets
   match: "count(*)=2 and *[2][.='+' or .='-']"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then:
-      - T: "la"
-  - bookmark: "*[2]/@id"
-  - test:
-    - if: "*[2][.='+']"
-      then: [T: "positivo"]
-      else: [T: "negativo"]
+      then: [T: "los"]      # phrase('los' enteros positivos)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
-      then: [T: números complejos]
+      then: [T: "números complejos"]
     - else_if: "*[1][.='ℕ']"
-      then: [T:  números naturales]
+      then: [T: "números naturales"]
     - else_if: "*[1][.='ℚ']"
-      then: [T: números racionales]
+      then: [T: "números racionales"]
     - else_if: "*[1][.='ℝ']"
-      then: [T: números reales]
+      then: [T: "números reales"]
     - else_if: "*[1][.='ℤ']"
-      then: [T: enteros]
+      then: [T: "enteros"]
       else: [x: "*[1][text()]"] # shouldn't happen
+  - bookmark: "*[2]/@id"
+  - test:
+    - if: "*[2][.='+']"
+      then: [T: "positivos"]      # phrase(los enteros 'positivos')
+      else: [T: "negativos"]      # phrase(los enteros 'negativos')
 
 - name: dimension-number-sets
 
@@ -56,33 +86,35 @@
   replace:
   - bookmark: "@id"
   - test:
+      if: "$Verbosity!='Terse' and contains('ℂℕℚℝℤ', .)"
+      then: [T: "los"]      # phrase('los' números reales); en modo breve sin artículo, como pos-neg-number-sets
+  - test:
     - if: ".='ℂ'"
-      then: [T: números complejos]
+      then: [T: "números complejos"]
     - else_if: ".='ℕ'"
-      then: [T: números naturales]
+      then: [T: "números naturales"]
     - else_if: ".='ℚ'"
-      then: [T: números racionales]
+      then: [T: "números racionales"]
     - else_if: ".='ℝ'"
-      then: [T: números reales]
+      then: [T: "números reales"]
     - else_if: ".='ℤ'"
-      then: [T: enteros]
+      then: [T: "enteros"]
       else: [x: "text()"] # shouldn't happen
 
 - name: real-part
   tag: real-part
-  match: "."
+  match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - T: la parte real 
+  - T: "la parte real"      # phrase('la parte real' de un número complejo)
 
 - name: imaginary-part
   tag: imaginary-part
-  match: "."
+  match: "count(*)=0"
   replace:
   - bookmark: "@id"
-  - T: la parte imaginaria
+  - T: "la parte imaginaria"      # phrase('la parte imaginaria' de un número complejo)
 
-# rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
   tag: evaluate
   match: "count(*)=2"
@@ -99,18 +131,19 @@
   replace:
   - x: "*[1]"
   - pause: auto
-  - T:  evaluado en
+  - T: "evaluado en"      # phrase(el resultado 'evaluado en' este punto)
   - pause: auto
   - x: "*[3]"
-  - T: "evaluado excepto en la misma expresión"
+  - T: "menos la misma expresión evaluada en"      # phrase(esto 'menos la misma expresión evaluada en' un punto anterior)
   - x: "*[2]"
 
 - name: permutation
+  # Not a default because the order of the args is reversed
   tag: pochhammer
-  match: "count(*)=2"
+  match: "count(*)=2 and contains(@data-intent-property, ':infix:')"
   replace:
   - x: "*[2]"
-  - T: permutaciones de
+  - T: "permutaciones de"      # phrase(varias 'permutaciones de' valores)
   - x: "*[1]"
 
 - name: intervals
@@ -121,13 +154,20 @@
       if: "$Verbosity!='Terse'"
       then:
       - T: "el"
-  - x: "translate(name(.),'-', ' ')"
+  - test:
+    - if: "self::m:open-interval"
+      then: [T: "intervalo abierto"]      # phrase(el 'intervalo abierto' de 0 a 1)
+    - else_if: "self::m:closed-interval"
+      then: [T: "intervalo cerrado"]      # phrase(el 'intervalo cerrado' de 0 a 1)
+    - else_if: "self::m:open-closed-interval"
+      then: [T: "intervalo abierto por la izquierda"]      # phrase(el 'intervalo abierto por la izquierda' de 0 a 1)
+      else: [T: "intervalo abierto por la derecha"]      # phrase(el 'intervalo abierto por la derecha' de 0 a 1)
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "de"
+      - T: "de extremos"      # phrase(el intervalo cerrado 'de extremos' 0 y 1), como el CMU
       - x: "*[1]"
-      - T: "a"
+      - T: "y"
       - x: "*[2]"
       else:
       - x: "*[1]"
@@ -147,21 +187,26 @@
   - T: "coma"
   - x: "*[2]"
 
+# en español el artículo concuerda con el operador: "la suma", "la integral", "el producto"
 - name: bigop-both
   tag: large-op
   match: "count(*) = 3"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: el]
+      then_test:   # el producto, el coproducto; la suma, la integral, la unión…
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
+        then: [OT: "el"]      # phrase('el' producto de k)
+        else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
-  - T: de
+  - T: "desde"      # phrase(la suma 'desde' i igual a 1 hasta n)
   - x: "*[2]"
-  - T: a
+  - pause: short
+  - T: "hasta"      # phrase(la suma desde i igual a 1 'hasta' n)
   - x: "*[3]"
   - test:
       if: "following-sibling::*"
-      then: [T: de]
+      then: [T: "de"]      # phrase(la suma desde 1 hasta n 'de' i)
 
 - name: bigop-under
   tag: large-op
@@ -169,13 +214,16 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: el]
+      then_test:   # el producto, el coproducto; la suma, la integral, la unión…
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
+        then: [OT: "el"]      # phrase('el' producto de k)
+        else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
-  - T: partido por
+  - T: "sobre"      # phrase(la suma 'sobre' i de a sub i)
   - x: "*[2]"
   - test:
       if: "following-sibling::*"
-      then: [T: de]
+      then: [T: "de"]      # phrase(la suma sobre i 'de' a sub i)
 
 - name: largeop
   tag: mrow
@@ -183,10 +231,21 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: el]
+      then_test:   # el producto, el coproducto; la suma, la integral, la unión…
+        if: "*[1][.='∏' or .='∐' or .='⨀' or .='⨁' or .='⨂' or .='⨃' or .='⨄' or .='⨅' or .='⨆' or .='⨇' or .='⨈' or .='⨉']"
+        then: [OT: "el"]      # phrase('el' producto de k)
+        else: [OT: "la"]      # phrase('la' suma de i)
   - x: "*[1]"
-  - T: de
+  - T: "de"      # phrase(la suma 'de' a sub i)
   - x: "*[2]"
+
+- name: repeating-decimal
+  tag: repeating-decimal
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "con período"      # phrase(0,1 'con período' 6)
+  - spell: "*[2]"
 
 - name: msubsup-skip-super
   # handles single, double, etc., prime
@@ -197,15 +256,15 @@
   - test:
       if: "$Verbosity='Verbose'"
       then: [T: "subíndice"]
-      else: [T: "subíndice"]
+      else: [T: "sub"]
   - x: "*[2]"
   - test:
-      if: "not(IsNode(*[2],'leaf'))"
+      if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
       then:
       - test:
           if: "$Verbosity='Verbose'"
           then: [T: "fin de subíndice"]
-          else: [T: "fin de subíndice"]
+          else: [T: "fin de sub"]
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -218,6 +277,15 @@
         else: [T: "superíndice"]
   - x: "*[3]"
   - pause: short
+
+
+# in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: unit-terse
+  tag: unit
+  match: "$Verbosity = 'Terse' and string-length(.)=1"
+  replace:
+  - bookmark: "@id"
+  - spell: "text()"
 
 # the order of matching is
 # 1. does it match the base of an SI unit
@@ -233,12 +301,6 @@
     # But it might be in a fraction as (C) "3 m/s" (parent is mfrac/mrow) or (D) "3 m^2/s^2" (parent is msup/mfrac/mrow)
     #   or even (E) {3 m^2}/s (parent is msup/mrow)
     # If in a fraction, only look in the numerator to find the coefficient
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -254,6 +316,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -278,42 +343,67 @@
       - set_variables:
         - Word: "text()"
 
-  - with:
-      variables:
-      - Word: "IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ián', concat(substring($Word, 1, string-length($Word)-2), ian), $Word)"
-      - LastChar: "substring($Word, string-length($Word), 1)"
-      - PluralEnding: "IfThenElse($LastChar = 'r' or $LastChar = 'l', 'es',
-                      IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ian', 'es', 's' )) "
-      replace:
-      # somewhat complicated logic to avoid spaces around "-" as in "centi-grams" vs "centi - grams" -- probably doesn't matter
+  # PluralForms first, else PluralDefaultFromEnding / PluralSpellingDefaultSuffix
+  - test:
+      if: "$Prefix = ''"
+      then:
       - test:
-          if: "$Prefix = ''"
-          then:
-          - test:
-            - if: "$IsSingular"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "$Word"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
-              else: [x: "concat($Word, $PluralEnding)"]
-          else:
-          - x: "$Prefix"
-          - test:
-            - if: "$IsSingular"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "concat('\uF8FE', $Word)"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
-              else: [x: "concat('\uF8FE', $Word, $PluralEnding)"]
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "$Word"]
+          else: [x: "UnitPluralForm($Word)"]
+      else:
+      - x: "$Prefix"
+      - test:
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "concat('\uF8FE', $Word)"]
+          else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 
+# need to reverse the order of speech: $ 3 -> 3 dólares
+- name: grados-celsius-prescrito
+  # 25\,{}^{\circ}\mathrm{C} llega como C con un superíndice previo: "25 grados Celsius" (CMU)
+  tag: mmultiscripts
+  match:
+  - "count(*)=4 and *[1][self::m:mi or self::m:unit][.='C' or .='F'] and *[2][self::m:mprescripts] and *[3][self::m:none] and"
+  - "*[4][.='°' or .='∘'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  variables:
+  - Numero: "preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:mn] |
+             parent::m:mrow[count(*)=1]/preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:mn]"
+  replace:
+  - test:
+      if: "$Numero = 1"
+      then: [T: "grado"]      # phrase(1 'grado' Celsius)
+      else: [T: "grados"]      # phrase(25 'grados' Celsius)
+  - test:
+      if: "*[1]='C'"
+      then: [T: "Celsius"]      # phrase(25 grados 'Celsius')
+      else: [T: "Fahrenheit"]      # phrase(25 grados 'Fahrenheit')
 
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
+  variables:
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - test:
+    - if: "UnitNumber(*[1]) = 'one'"
+      then: [x: "OneForUnit(*[1])"]
+      else: [x: "*[3]"]
+  - test:
+    - if: "UnitNumber(*[1]) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
 
 - name: sin
   tag: mi
-  match: ".='sin'"
+  match: ".='sin' or .='sen'"
   replace:
   - bookmark: "@id"
-  - T: "seno"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "sen"]
+      else: [T: "seno"]
+
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -321,8 +411,9 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: cos]
-      else: [T: coseno]
+      then: [T: "cos"]
+      else: [T: "coseno"]
+
 - name: tan
   tag: mi
   match: ".='tan' or .='tg'"
@@ -330,8 +421,9 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: tan]
-      else: [T: tangente]
+      then: [T: "tan"]
+      else: [T: "tangente"]
+
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -339,36 +431,39 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: hallar]
-      else: [T: secante]
+      then: [T: "sec"]
+      else: [T: "secante"]
+
 - name: csc
   tag: mi
-  match: ".='csc'"
+  match: ".='csc' or .='cosec'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: hallar]
-      else: [T: cosecante]
+      then: [T: "cosec"]
+      else: [T: "cosecante"]
+
 - name: cot
   tag: mi
-  match: ".='cot'"
+  match: ".='cot' or .='cotg' or .='ctg'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: co-tan]
-      else: [T: cotangente]
+      then: [T: "cotan"]
+      else: [T: "cotangente"]
 
 - name: sinh
   tag: mi
-  match: ".='sinh'"
+  match: ".='sinh' or .='senh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: puesto que]
-      else: [T: seno hiperbólico]
+      then: [T: "sen hache"]
+      else: [T: "seno hiperbólico"]
+
 - name: cosh
   tag: mi
   match: ".='cosh'"
@@ -376,17 +471,19 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: cosh]
-      else: [T: coseno hiperbólico]
+      then: [T: "cos hache"]
+      else: [T: "coseno hiperbólico"]
+
 - name: tanh
   tag: mi
-  match: ".='tanh'"
+  match: ".='tanh' or .='tgh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: tangente]
-      else: [T: tangente hiperbólica]
+      then: [T: "tan hache"]
+      else: [T: "tangente hiperbólica"]
+
 - name: sech
   tag: mi
   match: ".='sech'"
@@ -394,8 +491,9 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: controlar]
-      else: [T: secante hiperbólica]
+      then: [T: "sec hache"]
+      else: [T: "secante hiperbólica"]
+
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -403,74 +501,354 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: controlar]
-      else: [T: cosecante hiperbólica]
+      then: [T: "cosec hache"]
+      else: [T: "cosecante hiperbólica"]
+
 - name: coth
   tag: mi
-  match: ".='coth'"
+  match: ".='coth' or .='cotgh'"
   replace:
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: cotangente]
-      else: [T: cotangente hiperbólica]
+      then: [T: "cotan hache"]
+      else: [T: "cotangente hiperbólica"]
+
+# funciones trigonométricas inversas: "arco seno de x" (CMU) en vez de deletrear "arcsin"
+# PARCHE TEMPORAL (sacar cuando se arregle merge_arc_trig en src/canonicalize.rs):
+# babel en español escribe \arcsen como "arc\,sen" y MathCAT no une "arc" con el nombre
+# de la función cuando hay un espacio entre medio, así que llega como arc ⁡ sen y se lee
+# "arc de seno". Estas tres reglas lo leen como "arco seno de x".
+- name: arc-trig-separado-aplicado
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]      # phrase(arco seno 'de' x)
+  - pause: auto
+  - x: "*[3]"
+
+- name: arc-trig-separado-plano
+  tag: mrow
+  match: "count(*)=5 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and *[4][self::m:mo][.='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[3][.='sen' or .='sin']"
+      then: [T: "arco seno"]
+    - else_if: "*[3][.='cos']"
+      then: [T: "arco coseno"]
+    - else_if: "*[3][.='tan' or .='tg']"
+      then: [T: "arco tangente"]
+    - else_if: "*[3][.='sec']"
+      then: [T: "arco secante"]
+    - else_if: "*[3][.='csc' or .='cosec']"
+      then: [T: "arco cosecante"]
+    - else: [T: "arco cotangente"]
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]      # phrase(arco seno 'de' x)
+  - pause: auto
+  - x: "*[5]"
+
+- name: arc-trig-separado
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+    - if: "*[3][.='sen' or .='sin']"
+      then: [T: "arco seno"]
+    - else_if: "*[3][.='cos']"
+      then: [T: "arco coseno"]
+    - else_if: "*[3][.='tan' or .='tg']"
+      then: [T: "arco tangente"]
+    - else_if: "*[3][.='sec']"
+      then: [T: "arco secante"]
+    - else_if: "*[3][.='csc' or .='cosec']"
+      then: [T: "arco cosecante"]
+    - else: [T: "arco cotangente"]
+
+- name: arcsin
+  tag: mi
+  match: ".='arcsin' or .='arcsen'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco seno"
+
+- name: arccos
+  tag: mi
+  match: ".='arccos'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco coseno"
+
+- name: arctan
+  tag: mi
+  match: ".='arctan' or .='arctang' or .='arctg'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco tangente"
+
+- name: arcsec
+  tag: mi
+  match: ".='arcsec'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco secante"
+
+- name: arccsc
+  tag: mi
+  match: ".='arccsc' or .='arccosec'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco cosecante"
+
+- name: arccot
+  tag: mi
+  match: ".='arccot' or .='arccotan' or .='arccotg' or .='arcctg'"
+  replace:
+  - bookmark: "@id"
+  - T: "arco cotangente"
+
+- name: arcsinh
+  tag: mi
+  match: ".='arcsinh' or .='arcsenh' or .='arsinh' or .='argsinh' or .='argsenh'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento seno hiperbólico"
+
+- name: arccosh
+  tag: mi
+  match: ".='arccosh' or .='arcosh' or .='argcosh'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento coseno hiperbólico"
+
+- name: arctanh
+  tag: mi
+  match: ".='arctanh' or .='artanh' or .='argtanh' or .='argtgh' or .='arctgh'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento tangente hiperbólica"
+
+- name: arcsech
+  tag: mi
+  match: ".='arcsech' or .='arsech' or .='argsech'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento secante hiperbólica"
+
+- name: arccsch
+  tag: mi
+  match: ".='arccsch' or .='arccosech' or .='arcsch' or .='argcsch'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento cosecante hiperbólica"
+
+- name: arccoth
+  tag: mi
+  match: ".='arccoth' or .='arccotanh' or .='arcoth' or .='argcoth'"
+  replace:
+  - bookmark: "@id"
+  - T: "argumento cotangente hiperbólica"
+
+- name: exponential
+  tag: mi
+  match: ".='exp'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "exp"]
+      else: [T: "exponencial"]
+
+- name: covariance
+  # también Var (CMU cap. 12): "la covarianza de X coma Y", "la varianza de X"
+  tag: mi
+  match: ".='Cov' or .='Var'"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity!='Terse' and (parent::m:apply-function or following-sibling::*[1][.='\u2061'])"
+      then: [T: "la"]      # phrase('la' varianza de X)
+  - test:
+    - if: "$Verbosity='Terse' and .='Cov'"
+      then: [T: "cov"]
+    - else_if: "$Verbosity='Terse'"
+      then: [T: "var"]
+    - else_if: ".='Cov'"
+      then: [T: "covarianza"]      # phrase(la 'covarianza' de X coma Y)
+      else: [T: "varianza"]      # phrase(la 'varianza' de X)
+
+- name: factorial-de
+  # propia del español, como el CMU: "factorial de n", "doble factorial de n"
+  tag: mrow
+  match: "count(*)=2 and *[2][self::m:mo][.='!'] and not(*[1][self::m:mo]) and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "factorial de"      # phrase('factorial de' n)
+  - x: "*[1]"
+
+- name: doble-factorial-de
+  tag: mrow
+  match: "count(*)=2 and *[2][self::m:mo][.='‼'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "doble factorial de"      # phrase('doble factorial de' n)
+  - x: "*[1]"
+
+- name: max-min
+  # propia del español: "máx" y "mín" se leen enteros ("el máximo de a coma b"); el sintetizador diría "max"
+  tag: mi
+  match:
+  - "(.='max' or .='máx' or .='min' or .='mín' or .='mcd' or .='mcm' or .='gcd' or .='lcm' or"
+  - " .='sgn' or .='Dom' or .='dom' or .='Rec' or .='rec' or .='rg' or .='Adj' or .='adj' or .='antilog' or .='colog') and"   # CMU
+  - "(parent::m:apply-function or following-sibling::*[1][.='⁡'] or"
+  - " (not(preceding-sibling::*) and parent::*[self::m:munder or self::m:munderover or self::m:msub or self::m:msubsup or self::m:indexed-by]))"   # no "m sub min"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then_test:
+        if: ".='Adj' or .='adj'"
+        then: [T: "la"]      # phrase('la' adjunta de A)
+        else: [T: "el"]      # phrase('el' máximo de a coma b)
+  - test:
+    - if: ".='max' or .='máx'"
+      then: [T: "máximo"]      # phrase(el 'máximo' de a coma b)
+    - else_if: ".='min' or .='mín'"
+      then: [T: "mínimo"]      # phrase(el 'mínimo' de a coma b)
+    - else_if: ".='mcd' or .='gcd'"
+      then: [T: "máximo común divisor"]      # phrase(el 'máximo común divisor' de 28 y 34)
+    - else_if: ".='mcm' or .='lcm'"
+      then: [T: "mínimo común múltiplo"]      # phrase(el 'mínimo común múltiplo' de 4 y 6)
+    - else_if: ".='sgn'"
+      then: [T: "signo"]      # phrase(el 'signo' de x)
+    - else_if: ".='Dom' or .='dom'"
+      then: [T: "dominio"]      # phrase(el 'dominio' de f)
+    - else_if: ".='Rec' or .='rec'"
+      then: [T: "recorrido"]      # phrase(el 'recorrido' de f)
+    - else_if: ".='rg'"
+      then: [T: "rango"]      # phrase(el 'rango' de A)
+    - else_if: ".='Adj' or .='adj'"
+      then: [T: "adjunta"]      # phrase(la 'adjunta' de A)
+    - else_if: ".='antilog'"
+      then: [T: "antilogaritmo"]      # phrase(el 'antilogaritmo' de x)
+      else: [T: "cologaritmo"]      # phrase(el 'cologaritmo' de x)
+
+- name: existe-un-unico
+  # ∃!x (CMU): "existe un único x"; sin esto se lee "existe factorial x"
+  tag: mrow
+  match: "count(*)=2 and *[1][self::m:mo][.='∃'] and *[2][self::m:mrow][*[1][self::m:mo][.='!']] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: "existe un único"      # phrase('existe un único' x)
+  - x: "*[2]/*[position()>1]"
+
+- name: currency-after
+  # 3 € (CMU): el símbolo de moneda va después de la cantidad; misma lógica que 'currency'
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  variables:
+  - CurrencyWord: "DefinitionValue(*[3], 'Speech', 'CurrencySymbols')"
+  - LastChar: "substring(DefinitionValue(*[3], 'Speech', 'CurrencySymbols'), string-length(DefinitionValue(*[3], 'Speech', 'CurrencySymbols')), 1)"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "*[1]=1"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+    - else_if: "$LastChar='r' or $LastChar='l' or $LastChar='n'"
+      then: [x: "$CurrencyWord", ct: "es"]      # dólar -> dólares
+      else: [x: "$CurrencyWord", ct: "s"]       # euro -> euros
+
+- name: ratio
+  # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7
+  tag: ratio
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - T: "es a"      # phrase(20 'es a' 5)
+  - x: "*[2]"
 
 -
-  name: log    # handle both log and ln (if in an mrow, 'intents' are used)
+  name: log    # handle log, principal Log, and ln (if in an mrow, 'intents' are used)
   tag: mi
-  match: ".='log' or .='ln'"
+  match: ".='log' or .='Log' or .='ln'"
   replace:
   - bookmark: "@id"
   - test:
     - if: "$Verbosity!='Terse'"
-      then: [T: "el"]      # phrase('the' logarithm function is used in mathematics)
+      then: [OT: "el"]      # phrase('el' logaritmo de x)
   - test:
-    - if: ".= 'log'"
-      then: [T: "log"]      # phrase(the 'log' function is used in mathematics)
+    - if: ".= 'log' and $Verbosity='Terse'"
+      then: [T: "log"]
+    - else_if: ".= 'log'"
+      then: [T: "logaritmo"]      # phrase(el 'logaritmo' de x)
+    - else_if: ".= 'Log'"
+      then: [T: "logaritmo principal"]
     - else_if: "$Verbosity='Terse'"
-      then: [SPELL: "'ln'"]
-      else: [T: "natural log"]      # phrase(the 'natural log' function is used in mathematics)
+      then: [spell: "'ln'"]
+      else: [T: "logaritmo natural"]      # phrase(el 'logaritmo natural' de x)
 
 - name: multi-line
   #   that eliminates the need for the if: else_if: ...
   # IDEA:  set a variable with the word to say for the row (e.g., RowLabel = Row/Case/Line/...)
   tag: [piecewise, system-of-equations, lines]
   match: "."
-  variables: [IsColumnSilent: true()]
+  variables:
+    # Wikipedia has some tables where all the entire first column is empty (e.g., https://en.wikipedia.org/wiki/List_of_trigonometric_identities)
+  - LineCount: "count(*[not(contains(@data-intent-property, ':continued-row:'))])"
+  - NextLineIsContinuedRow: "false()"   # default value
+  - IsColumnSilent: true()
   replace:
-  - x: "count(*)"
+  - x: "$LineCount"
   - test:
     - if: "self::m:piecewise"
-      then: [T: "caso"]
+      then_test:
+        if: "$LineCount = 1"
+        then: [T: "caso"]      # phrase(1 'caso')
+        else: [T: "casos"]     # phrase(3 'casos')
     - else_if: "self::m:system-of-equations"
-      then: [T: "ecuación"]
-      else: [T: "línea"]
-  - test:
-    - if: "count(*) > 1"
-      then: [ct: "s"] # plural
+      then_test:
+        if: "$LineCount = 1"
+        then: [T: "ecuación"]      # phrase(1 'ecuación')
+        else: [T: "ecuaciones"]    # phrase(3 'ecuaciones')
+      else_test:
+        if: "$LineCount = 1"
+        then: [T: "línea"]      # phrase(1 'línea')
+        else: [T: "líneas"]     # phrase(3 'líneas')
   - pause: short
   - x: "*"
+  - pause: long
 
 - name: default-multiline
   tag: [mtr, mlabeledtr]
   match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
-  - pause: medium
   - test:
-    - if: "parent::m:piecewise"
-      then: [T: "caso"]
-    - else_if: "parent::m:system-of-equations"
-      then: [T: "ecuación"]
-      else: [T: "línea"]
-  - x: "count(preceding-sibling::*)+1"
-  - test:
-      if: .[self::m:mlabeledtr]
+      if: "not($LineCount=1 or contains(@data-intent-property, ':continued-row:'))"
       then:
-      - T: etiquetada con
-      - x: "*[1]/*"
-  - pause: medium
+      - pause: medium
+      - test:
+        - if: "parent::m:piecewise"
+          then: [T: "caso"]     # phrase('caso' 1 de 10)
+        - else_if: "parent::m:system-of-equations"
+          then: [T: "ecuación"] # phrase('ecuación' 1 de 10)
+          else: [T: "línea"]     # phrase('línea' 1 de 10)
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
   - test:
-      if: .[self::m:mlabeledtr]
+      if: "self::m:mlabeledtr"
+      then:
+      - T: "con etiqueta"      # phrase(fila 1 'con etiqueta' (3.1))
+      - x: "*[1]/*"
+  - test:
+      if: "not(contains(@data-intent-property, ':continued-row:'))"
+      then: [pause: medium]
+  - test:
+      if: "self::m:mlabeledtr"
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
@@ -479,44 +857,92 @@
   match: "parent::*[parent::m:piecewise or parent::m:system-of-equations or parent::m:lines]"
   variables: [LongPause: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultiLinePausesBetweenColumns = 'Long'"]
   replace:
-  - x: "*"
   - test:
-    # short pause after each element; medium pause if last element in a row; long pause for last element in matrix unless ClearSpeak override
-    - if: "count(following-sibling::*) > 0"
+      if: "IsInDefinition(*[1], 'ComparisonOperators')"
+      then: [pause: short]
+  - test:
+      if: "*[1][@data-added!='missing-content']"
+      then: [x: "*"]
+  - test:
+    # no pause after each element; medium pause if last element in a row; long pause for last element in matrix unless ClearSpeak override
+    - if: "count(following-sibling::*) = 0 and not($NextLineIsContinuedRow)"
       then_test:
-        if: "$LongPause"
-        then: [pause: medium]
-        else: [pause: short]
-    - else_if: "count(../following-sibling::*) > 0"
-      then_test:
-        if: "$LongPause"
-        then: [pause: long]
-        else: [pause: medium]
-      else: [pause: long]
+          if: "count(../following-sibling::*) > 0"
+          then_test:
+              if: "$LongPause"
+              then: [pause: long]
+              else: [pause: medium]
+      else_test:
+          if: "IsInDefinition(*[1], 'ComparisonOperators')"
+          then: [pause: short]
+          else: [pause: auto]
 
 # Matrix/Determinant rules
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # the pausing logic is pushed down to the <mtd>
 # the rules either speak the <mtr>s (to get "row n") or the <mtd>s. "column n" spoken if $IsColumnSilent is false
+# en español el sustantivo va primero: "la matriz 2 por 2", "la matriz columna 3 por 1"
 - name: 1x1-matrix
-  tag: matrix
+  tag: [matrix, determinant]
   variables: [IsColumnSilent: true()]
   match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
   replace:
-  - OT: "la"
-  - T: "matriz 1 por 1"
-  - T: "con acceso"
+  - test:
+      if: "self::m:determinant" # just need to check the first bracket since we know it must be (, [, or |
+      then: [OT: "el", T: "determinante"]      # phrase('el determinante' 1 por 1)
+      else: [OT: "la", T: "matriz"]      # phrase('la matriz' 1 por 1)
+  - T: "1 por 1"      # phrase(la matriz '1 por 1')
+  - T: "con elemento"      # phrase(la matriz 1 por 1 'con elemento' x)
   - x: "*[1]/*"
 
-- name: 1x1-determinant
-  tag: determinant
-  variables: [IsColumnSilent: true()]
-  match: "count(*)=1 and *[self::m:mtr][count(*) = 1]"
+# simpler reading methods for special case matrices
+- name: zero-matrix
+  tag: matrix
+  # select all the non-zero entries -- if there are none of them, then it is a zero matrix
+  match: "not( */*/*[not(self::m:mn and .= 0)] )"
   replace:
-  - OT: "el"
-  - T: "determinante 1 por 1"
-  - T: "con acceso"
-  - x: "*[1]/*"
+  - T: "la matriz nula"   # phrase('la matriz nula' 2 por 2)
+  - x: count(*)
+  - T: "por"       # phrase(la matriz 1 'por' 2)
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+
+- name: identity-matrix
+  tag: matrix
+  # every diagonal entry must be a literal 1, and every off-diagonal entry must be a literal 0
+  match:
+  - "count(*) = count(*[1]/*) and " # matrix is square
+  - "not( */*[count(preceding-sibling::*) = count(../preceding-sibling::*)]/*[not(self::m:mn and .= 1)] ) and " # on-diagonal
+  - "not( */*[count(preceding-sibling::*) != count(../preceding-sibling::*)]/*[not(self::m:mn and .= 0)] )" # off-diagonal
+  replace:
+  - T: "la matriz identidad"   # phrase('la matriz identidad' 2 por 2)
+  - x: count(*)
+  - T: "por"       # phrase(la matriz 1 'por' 2)
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+
+- name: diagonal-matrix
+  tag: matrix
+  # select all the non-zero entries...if they are not on the diagonal
+  #   if there are any of them, then this isn't an identity matrix
+  match:
+  - "count(*) = count(*[1]/*) and "
+  - "not( */*/*[not(self::m:mn and .= 0)]"
+  - "          [count(../preceding-sibling::*)!=count(../../preceding-sibling::*)]"
+  - "    )"
+  replace:
+  - T: "la matriz diagonal"   # phrase('la matriz diagonal' 2 por 2)
+  - x: count(*)
+  - T: "por"       # phrase(la matriz 1 'por' 2)
+  - x: count(*[self::m:mtr][1]/*)
+  - pause: long
+  - insert:
+      # this lists the diagonal 'mtd's to be read, and they say "column nnn" before reading the contents
+      # there seems to be an xpath bug -- without the parens, the match fails for the
+      #   test Languages::en::mtable::diagonal_matrix due to match failure (the third matching element seems to be missing)
+      nodes: "(*/*/*[not(self::m:mn and .= 0)]/..)"
+      replace: [pause: auto]
+  - pause: long
 
 # simpler reading methods for smaller matrices if the entries are simple
 - name: 2-or-3x1-matrix
@@ -530,20 +956,21 @@
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "el vector columna"]
-      else: [T: "la matriz columna"]
+      then: [T: "el vector columna"]      # phrase('el vector columna' 3 por 1)
+      else: [T: "la matriz columna"]      # phrase('la matriz columna' 3 por 1)
   - x: count(*)
-  - T: "por 1 columna"
+  - T: "por 1"      # phrase(la matriz columna 2 'por 1')
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "fin"
       - test:
-          if: $ClearSpeak_Matrix = 'EndVector'
-          then: [T: vector]
-          else: [T: matriz]
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: default-column-matrix
   tag: matrix
@@ -552,19 +979,25 @@
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "el vector"]
-      else: [T: "la matriz"]
+      then: [T: "el vector columna"]      # phrase('el vector columna' 3 por 1)
+      else: [T: "la matriz columna"]      # phrase('la matriz columna' 3 por 1)
   - x: "count(*)"
-  - T: "por 1 columna"
+  - T: "por 1"      # phrase(la matriz columna 2 'por 1')
   - pause: long
   - x: "*" # select the rows (mtr)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "fin de la matriz"]
+      then:
+      - test:
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: 1x2-or-3-matrix
   tag: matrix
-  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"]
+  variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   match:
   - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
   - count(*)=1  and # one row
@@ -573,21 +1006,21 @@
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "el vector"]
-      else: [T: "la matriz"]
-  - T: "1 por"
+      then: [T: "el vector fila"]      # phrase('el vector fila' 3 por 1)
+      else: [T: "la matriz fila"]      # phrase('la matriz fila' 3 por 1)
+  - T: "1 por"      # phrase(la matriz fila '1 por' 2)
   - x: count(*/*)
-  - T: "fila"
   - pause: long
   - x: "*/*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "fin"
       - test:
-          if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [T: matriz]
-          else: [T: vector]
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: default-row-matrix
   tag: matrix
@@ -596,21 +1029,22 @@
   replace:
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "el vector"]
-      else: [T: "la matriz"]
-  - T: "1 por"
+      then: [T: "el vector fila"]      # phrase('el vector fila' 3 por 1)
+      else: [T: "la matriz fila"]      # phrase('la matriz fila' 3 por 1)
+  - T: "1 por"      # phrase(la matriz fila '1 por' 2)
   - x: "count(*/*)"
-  - T: "fila"
   - pause: long
+  - pause: medium
   - x: "*/*" # select the cols (mtd)
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: "fin"
       - test:
-          if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [T: matriz]
-          else: [T: vector]
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -618,48 +1052,56 @@
   - "$ClearSpeak_Matrix != 'SpeakColNum' and " # "simple" isn't used for this preference
   - (count(*)<=3 and count(*[1]/*)<=3) and # no bigger than a 3x3 matrix
   - IsNode(*/*/*,'simple') # IsNode() returns true if all the nodes are simple
-  variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum'"]
+  variables: [IsColumnSilent: "$SpeechStyle = 'SimpleSpeak' or ($SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix != 'SpeakColNum')"]
   replace:
   - test:
       if: "self::m:determinant"
-      then: [T: "el determinante"]
-      else: [T: "la matriz"]
+      then: [T: "el determinante"]      # phrase('el determinante' 2 por 2)
+      else_test:
+        if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+        then: [T: "la matriz ampliada"]      # phrase('la matriz ampliada' 2 por 3)
+        else: [T: "la matriz"]      # phrase('la matriz' 2 por 2)
   - x: count(*)
-  - T: por
+  - T: "por"      # phrase(la matriz 1 'por' 2)
   - x: count(*[self::m:mtr][1]/*)
   - pause: long
   - x: "*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: fin
       - test:
-          if: "self::m:determinant"
-          then: [T: "determinante"]
-          else: [T: "matriz"]
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: default-matrix
   tag: [matrix, determinant]
   variables: [IsColumnSilent: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_Matrix = 'SilentColNum'"]
-  match: "not(@data-intent-property)"
+  match: "."
   replace:
   - test:
       if: "self::m:determinant"
-      then: [T: "el determinante"]
-      else: [T: "la matriz"]
+      then: [T: "el determinante"]      # phrase('el determinante' 2 por 2)
+      else_test:
+        if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+        then: [T: "la matriz ampliada"]      # phrase('la matriz ampliada' 2 por 3)
+        else: [T: "la matriz"]      # phrase('la matriz' 2 por 2)
   - x: "count(*)"
-  - T: por
+  - T: "por"      # phrase(la matriz 1 'por' 2)
   - x: "count(*[self::m:mtr][1]/*)"
   - pause: long
   - x: "*"
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - T: fin
       - test:
-          if: "self::m:determinant"
-          then: [T: determinante]
-          else: [T: matriz]
+        - if: "self::m:determinant"
+          then: [T: "fin del determinante"]      # phrase('fin del determinante')
+        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
+          then: [T: "fin del vector"]      # phrase('fin del vector')
+          else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: chemistry-msub
 
@@ -672,8 +1114,16 @@
       then: [T: "subíndice"]
       else_test:
         if: "$Verbosity='Medium'"
-        then: [T: "subíndice"]
+        then: [T: "sub"]
   - x: "*[3]"
+
+- name: dimension-by
+  tag: mrow
+  match: dimension-product
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [T: "por", pause: auto]      # phrase(matriz de 3 'por' 5)
 
 - name: chemistry-msup
   tag: [chemical-formula]
@@ -727,7 +1177,7 @@
               then: [T: "subíndice"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndice"]
+                then: [T: "sub"]
           - x: "$Prescripts[1]"
           - pause: "short"
       - test:
@@ -752,7 +1202,7 @@
                   then: [T: "subíndice"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndice"]
+                    then: [T: "sub"]
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base
@@ -767,7 +1217,7 @@
               then: [T: "subíndice"]
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [T: "subíndice"]
+                then: [T: "sub"]
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -792,7 +1242,7 @@
                   then: [T: "subíndice"]
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [T: "subíndice"]
+                    then: [T: "sub"]
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -817,7 +1267,7 @@
                       then: [T: "subíndice"]
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [T: "subíndice"]
+                        then: [T: "sub"]
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -842,7 +1292,7 @@
                           then: [T: "subíndice"]
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [T: "subíndice"]
+                            then: [T: "sub"]
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -899,13 +1349,13 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [T: "enlace único"]
-    - else_if: ".='=' or .='::'"
-      then: [T: "doble enlace"]
+      then: [T: "enlace simple"]      # phrase(un 'enlace simple' entre dos átomos)
+    - else_if: ".='=' or .='∷'"
+      then: [T: "enlace doble"]      # ONCE B 6-1, 8.1.2
     - else_if: ".='≡'"
-      then: [T: "triple enlace"]
+      then: [T: "enlace triple"]
     - else_if: ".='≣'"
-      then: [T: "cuádruple enlace"]
+      then: [T: "enlace cuádruple"]
       else: [x: "text()"]
 
 - name: chemical-formula-operator
@@ -924,15 +1374,38 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [T: "formas"]
-        else: [T: "da forma"]
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+        then: [T: "da"]      # phrase(hidrógeno más oxígeno 'da' agua)
+        else: [T: "produce"]      # phrase(hidrógeno más oxígeno 'produce' agua) (SEP, EcuRed)
+    - else_if: ".='⇌' or .='🣑' or .='⇄' or .='⇆'" # U+01F8D1; ⇄ ⇆ también son equilibrio (ONCE B 6-1, 6.3)
       then: [T: "está en equilibrio con"]
     - else_if: ".='🣓'" # U+1F8D3
-      then: [T: "equilibrado parcialmente hacia el lado izquierdo"]
+      then: [T: "está en equilibrio desplazado a la izquierda con"]
     - else_if: ".='🣒'" # U+1F8D2
-      then: [T: "equilibrado parcialmente hacia el lado derecho"]
+      then: [T: "está en equilibrio desplazado a la derecha con"]
       else: [x: "*"]
+
+- name: chemical-gas-precipitate-hydrate
+  # CO₂↑, CaCO₃↓ y el punto de los hidratos (ONCE B 6-1, 6.5, 6.6 y 8.2.2; SEP)
+  tag: [chemical-equation-operator, chemical-formula-operator]
+  match: ".='↑' or .='↓' or .='·' or .='⋅' or .='⇄' or .='⇆'"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: ".='↑'"
+      then: [T: "desprendimiento gaseoso"]      # phrase(c o 2 'desprendimiento gaseoso')
+    - else_if: ".='↓'"
+      then: [T: "precipitado"]      # phrase(c a c o 3 'precipitado')
+    - else_if: ".='⇄' or .='⇆'"
+      then: [T: "está en equilibrio con"]      # ONCE B 6-1, 6.3
+      else: [T: "punto"]      # phrase(n a 2 s o 4 'punto' 5 h 2 o)
+
+- name: chemical-arrow-with-heat
+  # → con Δ encima: "produce con calor" (SEP, EcuRed)
+  tag: mover
+  match: "*[1][self::m:chemical-arrow-operator] and *[2][.='Δ' or .='∆']"
+  replace:
+  - x: "*[1]"
+  - T: "con calor"      # phrase(c a c o 3 produce 'con calor' c a o)
 
 - name: chemical-equation-operator
   tag: chemical-equation-operator

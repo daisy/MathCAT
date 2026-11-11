@@ -13,20 +13,16 @@ fn msub_simple() -> Result<()> {
 
 #[test]
 fn msub_not_simple() -> Result<()> {
-    let expr = "<math> <msub> <mi>x</mi> <mn>1.2</mn> </msub> </math>";
-    test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x δείκτης 1.2")?;
+    let expr = "<math> <msub> <mi>x</mi> <mn>1,2</mn> </msub> </math>";
+    test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x δείκτης 1,2")?;
     return Ok(());
-//theodora. fails --> converts 1.2 to 12.
-// The issue is at src/prefs (set_separator, decimal_separator)
   }
 
 #[test]
 fn msubsup_not_simple() -> Result<()> {
-    let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x δείκτης 1.2, στον κύβο")?;
+    let expr = "<math> <msubsup> <mi>x</mi> <mn>1,2</mn> <mn>3</mn></msubsup> </math>";
+    test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x δείκτης 1,2, στον κύβο")?;
     return Ok(());
-//theodora. fails --> converts 1.2 to 12, check what happens with decimals
-// The issue is at src/prefs (set_separator, decimal_separator)
   }
 
 #[test]

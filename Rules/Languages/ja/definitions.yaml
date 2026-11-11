@@ -79,7 +79,7 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "binomial": "infix=二項係数; 選ぶ; 二項係数終わり",
+    "binomial": "infix=二項係数; シー; 二項係数終了",
 
     ### Functions and Inverses
     # Interval intents (open-/closed-interval, etc.) are handled by rules due to special cases involving ∞.
@@ -90,9 +90,9 @@
 
     "image":"function=像", 
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
-    "mixed-fraction":"infix=および", # NOTE: in website says function, but follow infix speech pattern.
+    "mixed-fraction":"infix=と", # NOTE: in website says function, but follow infix speech pattern.
     "quotient":"function=整数部 : 割る",
-    "evaluated-at":"infix=評価される",
+    "evaluated-at":"infix=次の点で評価",
     "remainder":"function=余り : 割る",
 
     "max":"function=マックス",
@@ -104,7 +104,7 @@
     "greatest-common-divisor": "function=ジーシーディー|ジーシーディー|最大公約数",
     "least-common-multiple":"function=エルシーエム|エルシーエム|最小公倍数", # In webpage typo "lest common"
 
-    "absolute-value": "function=;絶対値|絶対値|絶対値;絶対値",
+    "absolute-value": "function=;絶対値|絶対値|絶対値;絶対値 閉じ",
     "complex-conjugate":"function=複素共役",
     "complex-arg":"function=偏角",
     "real-part": "function=実部",
@@ -126,7 +126,7 @@
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
     "limit": "prefix=極限|極限",
-    "tends-to":"infix=に近づく",
+    "tends-to":"infix=近づく",
     "tends-to-from-above":"infix=上から近づく",
     "tends-to-from-below":"infix=下から近づく",
 
@@ -235,15 +235,15 @@
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function=ペア :", # Needs to be tested
     # Simple last arg: "x sub k". Complex: "… end sub" (terse/medium) / "end subscript" (verbose) via infix-intent.
-    "indexed-by": "infix=; サブ; 末尾サブ| 末尾サブスクリプト",
+    "indexed-by": "infix=; 下付き|下付き|下付き文字; 下付き終了|下付き終了|下付き文字終了",
     
     "highlight":"postfix=ハイライト",
     "least-common-denominator":"function=最小公分母",
-    "rate":"infix=あたり",
+    "rate":"infix=毎",
     "translation":"function=平行移動",
     "constraint":"infix=;制約を使って;", 
     
-    "binomial-coefficient":"infix=選ぶ",
+    "binomial-coefficient":"infix=シー",
     "pochhammer":"function=順列",
     "permutation-cycle":"function=巡回置換",
     "embellished-name":"infix=アノテーション",
@@ -267,7 +267,7 @@
     "change": "prefix=変化量",
     "for-all": "prefix=すべての",
     "measured-angle": "prefix=測定角",
-    "not": "prefix=でない",
+    "not": "prefix=ノット",
     "number-of": "prefix=個数",
     "partial-derivative": "prefix=偏微分",
     "right-angle": "prefix=直角",
@@ -284,23 +284,23 @@
     "cartesian-product": "infix=デカルト積",
     "composed-with": "infix=合成",
     "cross-product": "infix=クロス|外積|外積",
-    "defined-as": "infix=定義する",
+    "defined-as": "infix=とは",
     "divided-by": "infix=割る",
     "divides": "infix=割り切る",
     "does-not-belong-to": "infix=属さない",
-    "does-not-divide": "infix=割り切れない",
+    "does-not-divide": "infix=割り切らない",
     "dot-product": "infix=内積",
     "downwards-diagonal-ellipsis": "infix=下向き対角の省略記号",
     "direct-product": "infix=直積",
     "element-of": "infix=要素オブ",
     "ellipsis": "infix=省略記号",
     "equals": "infix=イコール",
-    "equivalent-to": "infix=と同等の",
-    "evaluates-to": "infix=評価する",
+    "equivalent-to": "infix=同等",
+    "evaluates-to": "infix=評価すると",
     "given": "infix=条件は",
     "greater-than": "infix=大なり",
     "greater-than-or-equal-to": "infix=大なり オア イコール",
-    "identically-equals": "infix=恒等的に等しい",
+    "identically-equals": "infix=恒等的にイコール",
     "if-and-only-if": "infix=同値",
     "implies": "infix=ならば",
     "inner-product": "infix=内積",
@@ -310,7 +310,7 @@
     "list-separator": "infix=コンマ",
     "maps-to": "infix=に写る",
     "member-of": "infix=元オブ",
-    "minus-or-plus": "infix=マイナスまたはプラス",
+    "minus-or-plus": "infix=マイナスプラス",
     "not-subset": "infix=ノット 部分集合オブ",
     "not-superset": "infix=ノット 上位集合オブ",
     "not-equal-to": "infix=ノット イコール",
@@ -323,15 +323,15 @@
     "perpendicular": "infix=垂直",
     "plus": "infix=プラス || prefix=プラス", # Prefix not tested
     "minus": "infix=マイナス || prefix=マイナス", # Prefix not tested
-    "plus-or-minus": "infix=プラス オア マイナス",
-    "precedes": "infix=に先行する",
-    "proportional": "infix=比例する",
+    "plus-or-minus": "infix=プラスマイナス",
+    "precedes": "infix=先行",
+    "proportional": "infix=比例",
     "range-separator": "infix=から",
     "ratio": "infix=比率 || function=比 : 対",
     "similar": "infix=相似",
     "subset": "infix=部分集合オブ",
     "subset-or-equal": "infix=部分集合オブ オア イコール",
-    "succeeds": "infix=に後続する",
+    "succeeds": "infix=後続",
     "such-that": "infix=ただし",
     "superset": "infix=上位集合オブ",
     "superset-or-equal": "infix=上位集合オブ オア イコール",
@@ -367,12 +367,12 @@
     "lim-inf": "prefix=リム インフ|下極限|下極限",
     "logarithm-with-base": "prefix=ログベース|ログベース|ログベース",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "trace": "function=; トレース|トレース|トレース;終了トレース",
-    "dimension": "function=;次元|次元|次元;端次元",
-    "homomorphism": "function=; 準同型| 準同型| 準同型; 準同型終わり",
-    "kernel": "function=; カーネル | カーネル| カーネル; エンドカーネル",
+    "trace": "function=; トレース|トレース|トレース;トレース終了",
+    "dimension": "function=;次元|次元|次元;次元終了",
+    "homomorphism": "function=; 準同型| 準同型| 準同型; 準同型終了",
+    "kernel": "function=; カーネル | カーネル| カーネル; カーネル終了",
     
-    "chemistry-concentration": "function=; 濃度| 濃度| 濃度; 濃度終わり",
+    "chemistry-concentration": "function=; 濃度| 濃度| 濃度; 濃度終了",
   }
 
   # The connector word to say for functional 'IntentMappings' (in English, "of")
@@ -414,11 +414,112 @@
 
 - KnownWords: {"Abel"}
 
+# =============================================================================
+# Units and currency
+# =============================================================================
+# Spoken names for measures come from these maps. Keys are the MathML leaf text
+# (symbol or abbreviation); values are the spoken *singular* base word.
+#
+# Lookup order for a unit token (speech rules / canonicalize):
+#   1. SIUnits
+#   2. UnitsWithoutPrefixes
+#   3. EnglishUnits   (English-only; leave empty in other languages)
+#   4. SIPrefixes + SIUnits  (e.g. "km" → "kilo" + "metre"; "da" is two letters)
+# Currency symbols use CurrencySymbols (e.g. "$" → "dollar").
+#
+# Once the singular base word is known, speech uses UnitNumber(.) to choose
+# singular vs plural (one / few / many), then PluralForms (or PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix) when it is not "one". For "1" before a unit or currency,
+# languages with gender may also consult UnitGender / OneBeforeUnit (see Gender
+# below). English has no gender agreement, so "1" is spoken normally.
+#
+# --- Singular vs plural (one / few / many) ---
+# PluralSystem (see Rules/definitions.yaml) selects how integers map to one/few/many:
+#   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
+#   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
+# UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
+# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+#   - last (default) — last counted-side factor takes the category (en, …)
+#   - first           — first counted-side factor (es, pt)
+#   - all             — every factor, including the "per" side (fr)
+#   - none            — every factor stays "one" after a numeral (hu with a number)
+# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
+# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
+# so an uncounted head can be plural while counted forms stay singular. Languages
+# that need per-word exceptions (de/nl) or a different case/form without a number
+# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
+# these two keys alone cannot express those shifts.
+# A real count of one forces every factor to "one". Per-side factors with no local
+# count stay "one" unless the active policy is all.
+# Speech rules typically:
+#   UnitNumber = "one"  → speak the singular base word from the unit/currency map
+#   otherwise           → PluralForms[base word] if listed, else PluralDefaultFromEnding /
+#                         PluralSpellingDefaultSuffix (English: empty ByFinal + suffix "s")
+# Irregulars and words that stay the same in the plural go in PluralForms below
+# (keyed by the *spoken singular* base word, not the symbol). Languages with
+# one_few_many often also have PluralGenitive (or similar) for "many".
+#
+# Examples (English, PluralSystem one_many):
+#   UnitNumber = "one" (singular base word as spoken):
+#     1 m   → "1 metre"     (SIUnits "m" → "metre")
+#     $1    → "1 dollar"    (CurrencySymbols "$" → "dollar")
+#   UnitNumber ≠ "one" (plural form):
+#     3 m   → "3 metres"    (no PluralForms entry → default append "s")
+#     3 ft  → "3 feet"      (PluralForms "foot" → "feet")
+#
+# --- Gender (numeral–noun agreement for "1") ---
+# Gender attaches to the spoken singular base word (after SIUnits / CurrencySymbols
+# resolution), not to the symbol. Exception lists must only contain base words that
+# already appear as *values* in SIUnits / UnitsWithoutPrefixes / EnglishUnits /
+# CurrencySymbols (or the language’s equivalents)—not a general dictionary.
+#
+# GenderSystem (vec, like PluralSystem) chooses the default policy:
+#   - none            — no gender; UnitGender returns "" (English, zh, ja, …)
+#   - ending          — last letter of the last token via GenderDefaultFromEnding,
+#                       else GenderDefault (es, pt, …)
+#   - neuter_list     — common unless the *symbol* is in NeuterUnits /
+#                       NeuterUnitsWithoutPrefixes / CurrencySymbolsNeuter (nb, sv)
+#   - explicit_only   — GenderDefault unless listed in exception maps (de, fr, …)
+# Omit GenderSystem or use ["none"] when unused. Empty exception maps are fine.
+#
+# Ending map + default (for GenderSystem ending / as fallback for explicit_only):
+#   GenderDefaultFromEnding: { "a": "feminine" }   # final letter → gender
+#   GenderDefault: ["masculine"]
+#
+# Exception lists (spoken base words only), as needed per language:
+#   FeminineUnitWords / MasculineUnitWords / NeuterUnitWords
+#   FeminineCurrencyWords / MasculineCurrencyWords / NeuterCurrencyWords
+# Multiword base words ("degree celsius", "atomic mass unit"): gender uses the last
+# token’s ending unless the full base word is listed as an exception.
+#
+# How to speak "1" before the unit/currency (when gender is used):
+#   OneBeforeUnit: { "masculine": "un", "feminine": "una", "neuter": "ett", "common": "en" }
+# Missing key or GenderSystem none → fall back to normal number speech ("1" / NumbersOnes).
+#
+# Examples (Spanish-style GenderSystem ending + OneBeforeUnit un/una):
+#   Common case (GenderDefaultFromEnding / GenderDefault):
+#     1 m  → "metro" ends in "o" → not in map → GenderDefault masculine → "un metro"
+#     1 cd → "candela" ends in "a" → feminine → "una candela"
+#   Exception (listed override; "día" ends in "a" but is masculine):
+#     MasculineUnitWords includes "día" → "un día"  (not "una día")
+#
+# --- Default plural spelling (when PluralForms has no entry) ---
+#   PluralDefaultFromEnding: { "r": "es", "l": "es" }  # final letter → suffix
+#   PluralSpellingDefaultSuffix: ["s"]               # otherwise append this
+# Example (Spanish): "dólar" → "dólares"; "metro" → "metros"; "gray" → "grays".
+# Irregulars stay in PluralForms ("lumen" → "lúmenes").
+#
+# English: GenderSystem is none; do not add OneBeforeUnit or gender exception lists
+# unless agreement is intentionally introduced later. Plural spelling inherits
+# PluralSpellingDefaultSuffix "s" with an empty PluralDefaultFromEnding map.
+# =============================================================================
+
 - SIPrefixes: {
     "Q": "クエタ", "R": "ロナ", "Y": "ヨタ", "Z": "ゼタ", "E": "エクサ", "P": "ペタ", "T": "テラ", "G": "ギガ", "M": "メガ", "k": "キロ", "h": "ヘクト", "da": "デカ",
     "d": "デシ", "c": "センチ", "m": "ミリ", "µ": "マイクロ", "n": "ナノ", "p": "ピコ", "f": "フェムト", "a": "アト", "z": "ゼプト", "y": "ヨクト", "r": "ロント", "q": "クエクト"
   }
 
+# Units that accept SI prefixes (symbol → spoken singular base word).
 # this is a list of all units that accept SIPrefixes
 # from www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf
 #   Prefixes may be used with any of the 29 SI units with special names
@@ -436,7 +537,7 @@
     # derived units
     "Bq": "ベクレル",
     "C": "クーロン",
-    "°C": "摂氏温度", "℃": "摂氏温度", # should only take negative powers
+    "°C": "摂氏度", "℃": "摂氏度", # should only take negative powers
     "F": "ファラド",
     "Gy": "グレー",
     "H": "ヘンリー",
@@ -476,6 +577,7 @@
   }
 
 
+# Units that do not take SI prefixes (symbol → spoken singular base word).
 - UnitsWithoutPrefixes: {
     # time
     "″": "秒", "\"": "秒",
@@ -524,15 +626,19 @@
     "KiB": "キビバイト", "MiB": "メビバイト", "GiB": "ギビバイト", "TiB": "テビバイト", "PiB": "ペビバイト", "EiB": "エクスビバイト", "ZiB": "ゼビバイト", "YiB": "ヨビバイト",
   }
 
-  # this will only be used if the language is English, so it can be empty for other countries
+# Imperial / US customary (and similar) units. English-only; leave empty elsewhere.
 - EnglishUnits: {"in": "インチ"}
 
+# Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
     "$": "ドル", "¢": "セント", "€": "ユーロ", "£": "ポンド", "₡": "コロン", "₤": "リラ", "₨": "ルピー",
     "₩": "ウォン", "₪": "シェケル", "₱": "ペソ", "₹": "ルピー", "₺": "リラ", "₿": "ビットコイン",
     # could add more currencies...
   }
 
+# Irregular or invariant plurals of spoken singular base words (from the maps above).
+# Used when UnitNumber is not "one". Anything omitted gets the language default
+# (English: append "s"). Do not key these by symbol ("m"); key by base word ("metre").
 - PluralForms: {"秒": "秒"}
 
 # Lines starting with "#" are a comment

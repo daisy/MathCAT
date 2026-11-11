@@ -255,12 +255,6 @@
     # Note: we have a special case for pseudo-scripts like "°" (degrees) which are not powers -- they are essentially "1^°"
     # The following "IfThenElse" logic returns the mrow that potentially contains the coefficient, if it exists
     # The tests are in the order A, B & E, C, D
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -276,6 +270,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -305,7 +302,7 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "$Word"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -315,7 +312,7 @@
       - x: "$Prefix"
       - CT: "-"
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -325,16 +322,15 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency # audit-ignore
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
     # If the amount is singular, we don't add the plural ending.
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
-    - if: "$IsSingular"
+    - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
     - else_if: "DefinitionValue(*[1], 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue(*[1], 'Speech', 'PluralForms')"]

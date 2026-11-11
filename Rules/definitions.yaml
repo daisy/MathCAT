@@ -4,6 +4,56 @@
 # For numbers, 
 # - name: [] "...", "..." "..." ]
 
+# *** The following are defaults that might be overridden by language-specific files ***
+# How counted nouns (units, currencies, …) choose one / few / many.
+# Languages that need few override this with ["one_few_many"] (e.g. pl, ru).
+- PluralSystem: ["one_many"]
+
+# Which factor(s) of a compound unit take the number’s one/few/many category.
+# Position is among unit factors on the counted side (before `/` or in a fraction
+# numerator). A lone unit is both first and last. The “per” side stays "one" unless
+# the active policy is all. A real count of one forces every factor to "one".
+#   last  — last counted-side factor (English default; Germanic/Slavic position)
+#   first — first counted-side factor (es, pt: “5 metros por segundo”; kg·m → first plural)
+#   all   — every factor, including the “per” side (fr)
+#   none  — every factor singular after a numeral (hu with a number)
+- CompoundUnitPlural: ["last"]
+
+# Same four values as CompoundUnitPlural, plus "same" (default).
+# Used when there is no mn coefficient (m/s, x ms). "same" means reuse
+# CompoundUnitPlural as if the count were not one. Hungarian overrides to ["last"]
+# so a numberless head can be plural while counted forms stay singular (none).
+# Do not use these two keys alone for de/nl (per-word exceptions), fi (partitive vs
+# nominative), or pl/ru (genitive vs nominative without a number)—same position,
+# different form.
+- NumberlessUnitPlural: ["same"]
+
+# Numeral–noun gender for “1” before a unit/currency (`UnitGender` / `OneForUnit`).
+# Omit or keep ["none"] when unused. See the units/currency comments in language definitions.yaml.
+#   none          — no gender agreement
+#   ending        — GenderDefaultFromEnding[last letter], else GenderDefault (es, pt, …)
+#   neuter_list   — common unless symbol is in NeuterUnits* / CurrencySymbolsNeuter (nb, sv)
+#   explicit_only — GenderDefault unless listed in Feminine*/Masculine*/Neuter*Word maps (de, fr, …)
+- GenderSystem: ["none"]
+
+# Final letter of the spoken base word’s last token → gender (`ending` system only).
+- GenderDefaultFromEnding: {
+  }
+
+# Fallback gender when `ending` / `explicit_only` find no map hit (and no exception list hit).
+- GenderDefault: ["masculine"]
+
+# Spoken form of “1” keyed by gender (`masculine` / `feminine` / `neuter` / `common`).
+# Empty here: languages that need agreement fill this in locally.
+- OneBeforeUnit: {
+  }
+
+# Default plural spelling when PluralForms has no entry (`UnitPluralForm`).
+# Final letter → suffix (e.g. es/pt: r/l → "es"); else PluralSpellingDefaultSuffix.
+- PluralDefaultFromEnding: {
+  }
+- PluralSpellingDefaultSuffix: ["s"]
+
 - IntentMappings: {
     # this should be defined for each translation; a default empty value is here to ensure the mapping exists
   }
