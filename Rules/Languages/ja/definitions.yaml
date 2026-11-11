@@ -92,7 +92,7 @@
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
     "mixed-fraction":"infix=と", # NOTE: in website says function, but follow infix speech pattern.
     "quotient":"function=整数部 : 割る",
-    "evaluated-at":"infix=評価される",
+    "evaluated-at":"infix=次の点で評価",
     "remainder":"function=余り : 割る",
 
     "max":"function=マックス",
@@ -126,7 +126,7 @@
     # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
 
     "limit": "prefix=極限|極限",
-    "tends-to":"infix=に近づく",
+    "tends-to":"infix=近づく",
     "tends-to-from-above":"infix=上から近づく",
     "tends-to-from-below":"infix=下から近づく",
 
@@ -239,7 +239,7 @@
     
     "highlight":"postfix=ハイライト",
     "least-common-denominator":"function=最小公分母",
-    "rate":"infix=あたり",
+    "rate":"infix=毎",
     "translation":"function=平行移動",
     "constraint":"infix=;制約を使って;", 
     
@@ -267,7 +267,7 @@
     "change": "prefix=変化量",
     "for-all": "prefix=すべての",
     "measured-angle": "prefix=測定角",
-    "not": "prefix=でない",
+    "not": "prefix=ノット",
     "number-of": "prefix=個数",
     "partial-derivative": "prefix=偏微分",
     "right-angle": "prefix=直角",
@@ -284,23 +284,23 @@
     "cartesian-product": "infix=デカルト積",
     "composed-with": "infix=合成",
     "cross-product": "infix=クロス|外積|外積",
-    "defined-as": "infix=定義する",
+    "defined-as": "infix=とは",
     "divided-by": "infix=割る",
     "divides": "infix=割り切る",
     "does-not-belong-to": "infix=属さない",
-    "does-not-divide": "infix=割り切れない",
+    "does-not-divide": "infix=割り切らない",
     "dot-product": "infix=内積",
     "downwards-diagonal-ellipsis": "infix=下向き対角の省略記号",
     "direct-product": "infix=直積",
     "element-of": "infix=要素オブ",
     "ellipsis": "infix=省略記号",
     "equals": "infix=イコール",
-    "equivalent-to": "infix=と同等の",
-    "evaluates-to": "infix=評価する",
+    "equivalent-to": "infix=同等",
+    "evaluates-to": "infix=評価すると",
     "given": "infix=条件は",
     "greater-than": "infix=大なり",
     "greater-than-or-equal-to": "infix=大なり オア イコール",
-    "identically-equals": "infix=恒等的に等しい",
+    "identically-equals": "infix=恒等的にイコール",
     "if-and-only-if": "infix=同値",
     "implies": "infix=ならば",
     "inner-product": "infix=内積",
@@ -324,14 +324,14 @@
     "plus": "infix=プラス || prefix=プラス", # Prefix not tested
     "minus": "infix=マイナス || prefix=マイナス", # Prefix not tested
     "plus-or-minus": "infix=プラスマイナス",
-    "precedes": "infix=に先行する",
-    "proportional": "infix=比例する",
+    "precedes": "infix=先行",
+    "proportional": "infix=比例",
     "range-separator": "infix=から",
     "ratio": "infix=比率 || function=比 : 対",
     "similar": "infix=相似",
     "subset": "infix=部分集合オブ",
     "subset-or-equal": "infix=部分集合オブ オア イコール",
-    "succeeds": "infix=に後続する",
+    "succeeds": "infix=後続",
     "such-that": "infix=ただし",
     "superset": "infix=上位集合オブ",
     "superset-or-equal": "infix=上位集合オブ オア イコール",

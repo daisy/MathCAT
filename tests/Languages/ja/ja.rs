@@ -823,11 +823,61 @@ fn norm_terminology() -> Result<()> {
 }
 
 /// 限界 is a bound or a ceiling and 傾向がある is "has a tendency"; neither is how
-/// x → a is read. The mathematical terms are 極限 and に近づく.
+/// x → a is read. The mathematical terms are 極限 and 近づく. It is 近づく rather
+/// than に近づく, because the に would attach to the x in front of it.
 #[test]
 fn limit_terminology() -> Result<()> {
     let expr = "<math><mrow intent='tends-to($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "x に近づく y")?;
+    test("ja", "ClearSpeak", expr, "x 近づく y")?;
+    return Ok(());
+}
+
+/// Japanese puts the object in front of 比例する, 属する or に先行する, but these
+/// words are spoken where the symbol is, so x ≺ y (precedes) came out as
+/// x に先行する y, "the y that precedes x". The symbols and intents now use names
+/// that are read in symbol order, as 先行 for ≺ and 要素オブ for ∈ already are.
+/// maps-to, obtained-from and applied-to have no such name and are spoken in
+/// Japanese order instead (x は y に写る).
+#[test]
+fn relation_words_in_symbol_order() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x221D;", "x 比例 y"),
+        ("&#x2261;", "x 合同 y"),
+        ("&#x2262;", "x ノット 合同 y"),
+        ("&#x225E;", "x 測定によりイコール y"),
+        ("&#x22AD;", "x ノット 真 y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    for (ch, expected) in [
+        ("&#x2208;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
+        ("&#x2209;", "集合 すべての x 属さない 大文字 エー ただし x 大なり 0"),
+        ("&#x220A;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
+    ] {
+        let expr = format!("<math><mrow><mo>{{</mo><mrow><mi>x</mi><mo>{ch}</mo><mi>A</mi></mrow><mo>|</mo><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow><mo>}}</mo></mrow></math>");
+        test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Belongs", &expr, expected)?;
+    }
+    for (intent, expected) in [
+        ("precedes", "x 先行 y"),
+        ("succeeds", "x 後続 y"),
+        ("equivalent-to", "x 同等 y"),
+        ("proportional", "x 比例 y"),
+        ("identically-equals", "x 恒等的にイコール y"),
+        ("defined-as", "x とは y"),
+        ("evaluates-to", "x 評価すると y"),
+        ("maps-to", "x は y に写る"),
+        ("obtained-from", "x は y から得られる"),
+        ("applied-to", "x は y に適用される"),
+        ("rate", "x 毎 y"),
+        ("does-not-divide", "x 割り切らない y"),
+        ("evaluated-at", "x 次の点で評価 y"),
+    ] {
+        let expr = format!("<math><mrow intent='{intent}($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    let expr = "<math><mrow intent='not($p)'><mi arg='p'>p</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "ノット p")?;
     return Ok(());
 }
 
