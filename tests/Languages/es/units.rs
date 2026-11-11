@@ -616,3 +616,28 @@ fn greek_mu_micro_prefix() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn unit_negative_power() -> Result<()> {
+    // exponente negativo detrás de otra unidad: "por" (folleto SI del CEM, tabla 6)
+    let cases = [
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "10 metros por segundo"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "un metro por segundo"),
+        ("<math><mn>9,8</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>2</mn></mrow></msup></math>",
+            "9,8 metros por segundo al cuadrado"),
+        ("<math><mn>3</mn><mi mathvariant=\"normal\">kg</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>3</mn></mrow></msup></math>",
+            "3 kilogramos por metro al cubo"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">W</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><msup><mi mathvariant=\"normal\">K</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "5 vatios por metro y kelvin"),
+        // sin unidad delante, se lee el exponente
+        ("<math><mn>10</mn><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "10 segundos elevado a menos 1"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

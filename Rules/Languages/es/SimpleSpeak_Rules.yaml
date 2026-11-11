@@ -247,6 +247,26 @@
       then: [T: "inverso"]     # phrase(seno 'inverso')
       else: [T: "inversa"]     # phrase(tangente 'inversa')
 
+# unidad con exponente negativo detrás de otra unidad: "metros por segundo",
+# "vatios por metro y kelvin" (folleto SI del CEM, tabla 6)
+- name: unit-negative-power
+  tag: power
+  match:
+  - "*[1][self::m:unit] and *[2][self::m:minus and count(*)=1 and *[1][self::m:mn][.='1' or .='2' or .='3']] and"
+  - "preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:unit or self::m:power[*[1][self::m:unit]]]"
+  replace:
+  - test:
+      if: "preceding-sibling::*[2][self::m:power][*[2][self::m:minus]]"
+      then: [T: "y"]      # phrase(vatios por metro 'y' kelvin)
+      else: [T: "por"]      # phrase(metros 'por' segundo)
+  - x: "*[1]"
+  - bookmark: "*[2]/@id"
+  - test:
+    - if: "*[2]/*[1] = 2"
+      then: [T: "al cuadrado"]      # phrase(metros por segundo 'al cuadrado')
+    - else_if: "*[2]/*[1] = 3"
+      then: [T: "al cubo"]      # phrase(kilogramos por metro 'al cubo')
+
 - name: function-squared-or-cubed
   tag: power
   match:
