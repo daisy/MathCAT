@@ -181,7 +181,7 @@ fn is_currency_symbol_leaf(el: Element<'_>) -> bool {
 	return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
 		definitions.borrow()
 			.get_hashmap("CurrencySymbols")
-			.is_some_and(|map| map.contains_key(text))
+			.is_some_and(|map| map.contains_key(as_str!(text)))
 	});
 }
 
