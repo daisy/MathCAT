@@ -913,13 +913,13 @@ fn table_lines_are_column_and_row_separators() -> Result<()> {
 
 /// Scripts written before and after a symbol (mmultiscripts) were read with the English
 /// words pre sub, pre super, sub and super. They use the same words as msub, msup and
-/// navigate.yaml now: 前置き下付き, 前置き上付き, 下付き and 上付き, with 文字 added when Verbose.
+/// navigate.yaml now: 前置きの下付き, 前置きの上付き, 下付き and 上付き, with 文字 added when Verbose.
 #[test]
 fn prescripts_and_postscripts_are_japanese_words() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>x</mi><mi>a</mi><mi>b</mi><mprescripts/><mi>c</mi><mi>d</mi></mmultiscripts></math>";
-    test("ja", "ClearSpeak", expr, "x 前置き下付き c および 前置き上付き d, 下付き エー および 上付き b")?;
+    test("ja", "ClearSpeak", expr, "x 前置きの下付き c および 前置きの上付き d, 下付き エー および 上付き b")?;
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-        "x 前置き下付き文字 c および 前置き上付き文字 d, 下付き文字 エー および 上付き文字 b")?;
+        "x 前置きの下付き文字 c および 前置きの上付き文字 d, 下付き文字 エー および 上付き文字 b")?;
     return Ok(());
 }
 
