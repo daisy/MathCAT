@@ -79,7 +79,7 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "binomial": "infix=二項係数; シー; 二項係数終わり",
+    "binomial": "infix=二項係数; シー; 二項係数終了",
 
     ### Functions and Inverses
     # Interval intents (open-/closed-interval, etc.) are handled by rules due to special cases involving ∞.
@@ -104,7 +104,7 @@
     "greatest-common-divisor": "function=ジーシーディー|ジーシーディー|最大公約数",
     "least-common-multiple":"function=エルシーエム|エルシーエム|最小公倍数", # In webpage typo "lest common"
 
-    "absolute-value": "function=;絶対値|絶対値|絶対値;絶対値",
+    "absolute-value": "function=;絶対値|絶対値|絶対値;絶対値 閉じ",
     "complex-conjugate":"function=複素共役",
     "complex-arg":"function=偏角",
     "real-part": "function=実部",
@@ -235,7 +235,7 @@
      # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword
     "ordered-pair": "function=ペア :", # Needs to be tested
     # Simple last arg: "x sub k". Complex: "… end sub" (terse/medium) / "end subscript" (verbose) via infix-intent.
-    "indexed-by": "infix=; サブ; 末尾サブ| 末尾サブスクリプト",
+    "indexed-by": "infix=; 下付き|下付き|下付き文字; 下付き終了|下付き終了|下付き文字終了",
     
     "highlight":"postfix=ハイライト",
     "least-common-denominator":"function=最小公分母",
@@ -367,12 +367,12 @@
     "lim-inf": "prefix=リム インフ|下極限|下極限",
     "logarithm-with-base": "prefix=ログベース|ログベース|ログベース",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
-    "trace": "function=; トレース|トレース|トレース;終了トレース",
-    "dimension": "function=;次元|次元|次元;端次元",
-    "homomorphism": "function=; 準同型| 準同型| 準同型; 準同型終わり",
-    "kernel": "function=; カーネル | カーネル| カーネル; エンドカーネル",
+    "trace": "function=; トレース|トレース|トレース;トレース終了",
+    "dimension": "function=;次元|次元|次元;次元終了",
+    "homomorphism": "function=; 準同型| 準同型| 準同型; 準同型終了",
+    "kernel": "function=; カーネル | カーネル| カーネル; カーネル終了",
     
-    "chemistry-concentration": "function=; 濃度| 濃度| 濃度; 濃度終わり",
+    "chemistry-concentration": "function=; 濃度| 濃度| 濃度; 濃度終了",
   }
 
   # The connector word to say for functional 'IntentMappings' (in English, "of")
