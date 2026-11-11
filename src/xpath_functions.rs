@@ -1814,24 +1814,80 @@ struct UnitNumber;
 /// UnitNumber(node)
 /// Returns the plural category for a unit (or currency) leaf: `"one"`, `"few"`, or `"many"`.
 /// `"few"` is only used when `PluralSystem` is `one_few_many` (e.g. Polish, Russian).
+/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural`.
 impl UnitNumber {
     fn category(element: Element) -> &'static str {
-        // A fraction denominator is not forced to "one": the denominator's own number
-        // ("2 seconds") is a real count. Slash-form "per" still forces one via the operator.
-        if Self::structural_is_one(element) {
+        let amount_category = Self::amount_category(element);
+        let has_number = amount_category.is_some();
+        let policy = Self::active_policy(has_number);
+
+        // Per-side with no local count stays singular unless the policy is `all`.
+        if Self::is_per_side_uncounted(element) {
+            if policy == "all" {
+                return amount_category.unwrap_or("many");
+            }
             return "one";
         }
-        let Some(amount_node) = quantity_element(element) else { return "many"; };
-        let text = leaf_text(amount_node);
-        let Some(amount) = Self::parse_coeff(&text) else { return "many"; };
-        return Self::classify_plural(&text, amount, &Self::plural_system());
+
+        let category = amount_category.unwrap_or("many");
+        if category == "one" {
+            return "one";
+        }
+        if Self::factor_is_selected(element, &policy) {
+            return category;
+        }
+        return "one";
     }
 
-    /// After `/`, not the last factor of a product, or an uncounted denominator.
-    fn structural_is_one(element: Element) -> bool {
-        if Self::uncounted_denominator(element) {
+    /// Coefficient next to this unit, classified as one/few/many when present and parseable.
+    fn amount_category(element: Element) -> Option<&'static str> {
+        let amount_node = quantity_element(element)?;
+        let text = leaf_text(amount_node);
+        let amount = Self::parse_coeff(&text)?;
+        return Some(Self::classify_plural(&text, amount, &Self::plural_system()));
+    }
+
+    fn def_vec_first(name: &str) -> Option<String> {
+        return SPEECH_DEFINITIONS.with(|definitions| {
+            definitions.borrow()
+                .get_vec(name)
+                .and_then(|values| values.first().cloned())
+        });
+    }
+
+    fn compound_unit_plural() -> String {
+        return Self::def_vec_first("CompoundUnitPlural").unwrap_or_else(|| "last".to_string());
+    }
+
+    fn numberless_unit_plural() -> String {
+        return Self::def_vec_first("NumberlessUnitPlural").unwrap_or_else(|| "same".to_string());
+    }
+
+    /// Policy in force: with a number use CompoundUnitPlural; without, NumberlessUnitPlural
+    /// (`same` → CompoundUnitPlural).
+    fn active_policy(has_number: bool) -> String {
+        if has_number {
+            return Self::compound_unit_plural();
+        }
+        let numberless = Self::numberless_unit_plural();
+        if numberless == "same" {
+            return Self::compound_unit_plural();
+        }
+        return numberless;
+    }
+
+    /// After `/`, or in a fraction denominator with no count of its own ("per hour").
+    /// A denominator that carries its own number (`3 m / 2 s`) is not immediately after
+    /// `/`—the `2` sits in a nested mrow—so it is treated as its own counted side.
+    fn is_per_side_uncounted(element: Element) -> bool {
+        if Self::after_div_op(element) {
             return true;
         }
+        return Self::in_fraction_denominator(element) && Self::local_count(element).is_none();
+    }
+
+    /// True when this factor’s previous sibling is a division operator.
+    fn after_div_op(element: Element) -> bool {
         let factor = factor_element(element);
         let Some(parent) = parent_element(factor) else { return false; };
         // The two parts of a fraction are not factors of a product.
@@ -1840,9 +1896,28 @@ impl UnitNumber {
         }
         let children = unit_children(parent);
         let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
-        if index > 0 && is_div_op(children[index - 1]) {
-            return true;
+        return index > 0 && is_div_op(children[index - 1]);
+    }
+
+    /// Whether this counted-side factor takes the number’s category under `policy`.
+    fn factor_is_selected(element: Element, policy: &str) -> bool {
+        return match policy {
+            "all" => true,
+            "none" => false,
+            "first" => !Self::has_preceding_unit_factor(element),
+            // "last" and any unknown value: English-style last counted factor.
+            _ => !Self::has_following_unit_factor(element),
+        };
+    }
+
+    fn has_following_unit_factor(element: Element) -> bool {
+        let factor = factor_element(element);
+        let Some(parent) = parent_element(factor) else { return false; };
+        if name(parent) == "fraction" {
+            return false;
         }
+        let children = unit_children(parent);
+        let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
         let mut next = index + 1;
         while next < children.len() {
             if is_div_op(children[next]) {
@@ -1860,9 +1935,29 @@ impl UnitNumber {
         return false;
     }
 
-    /// Denominator unit with no count of its own ("per hour"), not "2 seconds".
-    fn uncounted_denominator(element: Element) -> bool {
-        return Self::in_fraction_denominator(element) && Self::local_count(element).is_none();
+    fn has_preceding_unit_factor(element: Element) -> bool {
+        let factor = factor_element(element);
+        let Some(parent) = parent_element(factor) else { return false; };
+        if name(parent) == "fraction" {
+            return false;
+        }
+        let children = unit_children(parent);
+        let Some(index) = children.iter().position(|child| child == &factor) else { return false; };
+        let mut prev = index;
+        while prev > 0 {
+            prev -= 1;
+            if is_div_op(children[prev]) {
+                break;
+            }
+            if is_times_op(children[prev]) {
+                continue;
+            }
+            if is_unit_expr(children[prev]) {
+                return true;
+            }
+            break;
+        }
+        return false;
     }
 
     fn in_fraction_denominator(element: Element) -> bool {
@@ -1928,12 +2023,7 @@ impl UnitNumber {
     }
 
     fn plural_system() -> String {
-        return SPEECH_DEFINITIONS.with(|definitions| {
-            definitions.borrow()
-                .get_vec("PluralSystem")
-                .and_then(|values| values.first().cloned())
-                .unwrap_or_else(|| "one_many".to_string())
-        });
+        return Self::def_vec_first("PluralSystem").unwrap_or_else(|| "one_many".to_string());
     }
 
     /// `1` / `1.0` (or `1,0` when comma is the decimal separator) is one.
@@ -1968,8 +2058,7 @@ impl UnitNumber {
             return "many";
         }
     }
-}
-
+} 
 impl Function for UnitNumber {
     fn evaluate<'d>(&self,
                         _context: &context::Evaluation<'_, 'd>,
@@ -2746,6 +2835,137 @@ mod tests {
             assert_eq!(UnitGender::gender_for_symbol("cd"), "feminine");  // candela
             assert_eq!(UnitGender::classify("ending", "d", "día"), "masculine"); // MasculineUnitWords
             assert_eq!(UnitGender::gender_from_ending("grado Celsius"), "masculine");
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            return Ok(());
+        });
+    }
+
+    /// Find a leaf whose text equals `text` under `root` (depth-first).
+    fn find_leaf_by_text<'a>(root: Element<'a>, text: &str) -> Option<Element<'a>> {
+        if root.children().len() == 1 &&
+           root.children()[0].text().is_some() &&
+           leaf_text(root) == text
+        {
+            return Some(root);
+        }
+        for child in unit_children(root) {
+            if let Some(found) = find_leaf_by_text(child, text) {
+                return Some(found);
+            }
+        }
+        return None;
+    }
+
+    /// Parse MathML that already carries `data-intent-property=":unit:"` on unit leaves.
+    fn parse_unit_mathml(mathml: &str) -> Result<sxd_document_no_unsafe::Package> {
+        let package = parser::parse(mathml).map_err(|e| anyhow::anyhow!("failed to parse XML: {e}"))?;
+        let mathml = get_element(&package);
+        trim_element(mathml, false);
+        return Ok(package);
+    }
+
+    /// CompoundUnitPlural last/first/all/none and NumberlessUnitPlural (hu last without mn).
+    #[test]
+    fn unit_number_compound_policies() -> Result<()> {
+        return xpath_test(|| {
+            // Coefficient sits outside the unit product, as canonicalize builds it.
+            let counted = r#"<math>
+                <mn>5</mn><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let uncounted = r#"<math>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+
+            // A real count of one forces every factor to "one".
+            init_word_list()?;
+            let one = r#"<math>
+                <mn>1</mn><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let package = parse_unit_mathml(one)?;
+            let root = get_element(&package);
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "kg").unwrap()), "one");
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "m").unwrap()), "one");
+            assert_eq!(UnitNumber::category(find_leaf_by_text(root, "s").unwrap()), "one");
+
+            // English default: last counted factor plural; per side singular.
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            let package = parse_unit_mathml(uncounted)?;
+            let root = get_element(&package);
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // Spanish: first counted factor plural.
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "many");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // French: all factors plural, including the per side.
+            crate::interface::set_preference("Language", "fr")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "many");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "many");
+
+            // Hungarian: none with a number; last when uncounted.
+            crate::interface::set_preference("Language", "hu")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(counted)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            let package = parse_unit_mathml(uncounted)?;
+            let root = get_element(&package);
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
             crate::interface::set_preference("Language", "en")?;
             crate::definitions::read_definitions_file(true)?;
             return Ok(());

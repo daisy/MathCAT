@@ -63,7 +63,7 @@ fn si_base() -> Result<()> {
         <mn>1</mn><mi intent=":unit">sec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">sec</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 amper, vessző; 2 amper, vessző, 1 kandela, vessző; 2 kandela, vessző, 1 kelvin, vessző; 2 kelvin, vessző, 1 kelvin, vessző; 2 kelvin, vessző, 1 gram, vessző; 2 gram, vessző, 1 méter, vessző; 2 méter, vessző, 1 mol, vessző, 2 mol, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc")?;
+        "1 amper, vessző, 2 amper, vessző, 1 kandela, vessző, 2 kandela, vessző, 1 kelvin, vessző, 2 kelvin, vessző, 1 kelvin, vessző, 2 kelvin, vessző, 1 gram, vessző, 2 gram, vessző, 1 méter, vessző, 2 méter, vessző, 1 mol, vessző, 2 mol, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc")?;
                 return Ok(());
 
 }
@@ -83,7 +83,7 @@ fn si_base_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">nsec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">psec</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 quetta-amper, vessző; 2 ronna-amper, vessző; 1 yotta-kandela, vessző; 2 zetta-kandela, vessző; 1 exa-kelvin, vessző; 2 peta-kelvin, vessző; 1 tera-kelvin, vessző; 2 giga-kelvin, vessző; 1 mega-gram, vessző; 2 kiló-gram, vessző; 1 hektó-méter, vessző; 2 deka-méter, vessző; 1 deci-mol, vessző; 2 centi-mol, vessző; 1 milli-másodperc, vessző; 2 mikro-másodperc; vessző; 1 nano-másodperc, vessző; 2 pikó-másodperc")?;
+        "1 quetta-amper, vessző; 2 ronna-amper, vessző; 1 yotta-kandela, vessző; 2 zetta-kandela, vessző; 1 exa-kelvin, vessző; 2 peta-kelvin, vessző; 1 tera-kelvin, vessző; 2 giga-kelvin, vessző; 1 mega-gram, vessző; 2 kiló-gram, vessző; 1 hektó-méter, vessző; 2 deka-méter, vessző; 1 deci-mol, vessző; 2 centi-mol, vessző; 1 milli-másodperc, vessző; 2 mikro-másodperc, vessző; 1 nano-másodperc, vessző; 2 pikó-másodperc")?;
                 return Ok(());
 
 }
@@ -107,7 +107,7 @@ fn si_derived_1() -> Result<()> {
         <mn>1</mn><mi intent=":unit">lx</mi><mo>,</mo><mn>2</mn><mi intent=":unit">lx</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 becquerel, vessző; 2 becquerel, vessző, 1 Coulomb, vessző; 2 Coulomb, vessző; 1 Celsius fok, vessző; 2 Celsius fok, vessző; 1 Celsius fok, vessző; 2 Celsius fok, vessző, 1 farád, vessző; 2 farád, vessző, 1 gray, vessző; 2 gray, vessző, 1 henry, vessző, 2 henri, vessző, 1 hertz, vessző, 2 hertz, vessző, 1 joule, vessző; 2 joule, vessző, 1 katal, vessző; 2 katal, vessző, 1 lumen, vessző; 2 lumen, vessző, 1 lux, vessző, 2 lux")?;
+        "1 becquerel, vessző; 2 becquerel, vessző, 1 Coulomb, vessző, 2 Coulomb, vessző; 1 Celsius fok, vessző; 2 Celsius fok, vessző; 1 Celsius fok, vessző; 2 Celsius fok, vessző, 1 farád, vessző, 2 farád, vessző, 1 gray, vessző, 2 gray, vessző, 1 henry, vessző, 2 henry, vessző, 1 hertz, vessző, 2 hertz, vessző, 1 joule, vessző, 2 joule, vessző, 1 katal, vessző, 2 katal, vessző, 1 lumen, vessző, 2 lumen, vessző, 1 lux, vessző, 2 lux")?;
                 return Ok(());
 
 }
@@ -130,7 +130,7 @@ fn si_derived_1_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">p℃</mi><mo>,</mo><mn>2</mn><mi intent=":unit">n℃</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 quetta-becquerel, vessző; 2 ronna-becquerel; vessző; 1 yotta-Coulomb, vessző; 2 zetta-Coulomb, vessző; 1 exa-farád, vessző; 2 peta-farád, vessző; 1 tera-gray, vessző; 2 giga-gray, vessző; 1 mega-henry, vessző; 2 kiló-henri, vessző; 1 deka-hertz, vessző; 2 deci-hertz, vessző; 1 centi-joule, vessző; 2 milli-joule, vessző; 1 mikro-katal, vessző; 2 nano-katal, vessző; 1 pikó-lumen, vessző; 2 femto-lumen, vessző; 1 atto-lux, vessző; 2 zepto-lux, vessző; 1 milli-Celsius fok, vessző; 2 mikro-Celsius fok; vessző; 1 pikó-Celsius fok, vessző; 2 nano-Celsius fok")?;
+        "1 quetta-becquerel, vessző; 2 ronna-becquerel, vessző; 1 yotta-Coulomb, vessző; 2 zetta-Coulomb, vessző; 1 exa-farád, vessző; 2 peta-farád, vessző; 1 tera-gray, vessző; 2 giga-gray, vessző; 1 mega-henry, vessző; 2 kiló-henry, vessző; 1 deka-hertz, vessző; 2 deci-hertz, vessző; 1 centi-joule, vessző; 2 milli-joule, vessző; 1 mikro-katal, vessző; 2 nano-katal, vessző; 1 pikó-lumen, vessző; 2 femto-lumen, vessző; 1 atto-lux, vessző; 2 zepto-lux, vessző; 1 milli-Celsius fok, vessző; 2 mikro-Celsius fok, vessző; 1 pikó-Celsius fok, vessző; 2 nano-Celsius fok")?;
                 return Ok(());
 
 }
@@ -151,7 +151,7 @@ fn si_derived_2() -> Result<()> {
         <mn>1</mn><mi intent=":unit">Wb</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Wb</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 newton, vessző; 2 newton, vessző, 1 ohm, vessző, 2 ohm, vessző, 1 ohm, vessző, 2 ohm, vessző, 1 pascal, vessző; 2 pascal, vessző, 1 siemens, vessző, 2 siemens, vessző, 1 sievert, vessző; 2 sievert, vessző, 1 tesla, vessző; 2 tesla, vessző, 1 volt, vessző; 2 volt, vessző, 1 watt, vessző; 2 watt, vessző, 1 weber, vessző; 2 weber")?;
+        "1 newton, vessző, 2 newton, vessző, 1 ohm, vessző, 2 ohm, vessző, 1 ohm, vessző, 2 ohm, vessző, 1 pascal, vessző, 2 pascal, vessző, 1 siemens, vessző, 2 siemens, vessző, 1 sievert, vessző, 2 sievert, vessző, 1 tesla, vessző, 2 tesla, vessző, 1 volt, vessző, 2 volt, vessző, 1 watt, vessző, 2 watt, vessző, 1 weber, vessző, 2 weber")?;
                 return Ok(());
 
 }
@@ -199,7 +199,7 @@ fn si_accepted() -> Result<()> {
         <mn>1</mn><mi intent=":unit">Bd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">Bd</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 liter, vessző; 2 liter, vessző, 1 liter, vessző; 2 liter, vessző, 1 liter, vessző; 2 liter, vessző; 1 metrikus tonna, vessző; 2 metrikus tonna, vessző, 1 dalton, vessző; 2 dalton, vessző, 1 neper, vessző; 2 neper, vessző; 1 atomtömegegység, vessző; 2 atomtömegegység, vessző; 1 elektronvolt, vessző; 2 elektronvolt, vessző, 1 radián, vessző; 2 radián, vessző; 1 szteradián, vessző; 2 szteradián, vessző, 1 év, vessző, 2 év, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc, vessző, 1 bit, vessző, 2 bit, vessző, 1 byte, vessző; 2 byte, vessző, 1 baud, vessző; 2 baud")?;
+        "1 liter, vessző, 2 liter, vessző, 1 liter, vessző, 2 liter, vessző, 1 liter, vessző, 2 liter, vessző; 1 metrikus tonna, vessző; 2 metrikus tonna, vessző, 1 dalton, vessző, 2 dalton, vessző, 1 neper, vessző, 2 neper, vessző; 1 atomtömegegység, vessző; 2 atomtömegegység, vessző; 1 elektronvolt, vessző; 2 elektronvolt, vessző, 1 radián, vessző, 2 radián, vessző; 1 szteradián, vessző; 2 szteradián, vessző, 1 év, vessző, 2 év, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc, vessző, 1 bit, vessző, 2 bit, vessző, 1 byte, vessző, 2 byte, vessző, 1 baud, vessző, 2 baud")?;
                 return Ok(());
 
 }
@@ -225,7 +225,7 @@ fn si_accepted_with_prefixes() -> Result<()> {
         <mn>1</mn><mi intent=":unit">TBd</mi><mo>,</mo><mn>2</mn><mi intent=":unit">EBd</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 quetta-liter, vessző; 2 ronna-liter, vessző; 1 yotta-liter, vessző; 2 zetta-liter, vessző; 1 exa-liter, vessző; 2 peta-liter, vessző; 1 tera-metrikus tonna; vessző; 2 giga-metrikus tonna; vessző; 1 mega-dalton, vessző; 2 kiló-dalton, vessző; 1 deci-neper, vessző; 2 centi-neper, vessző; 1 hektó-atomtömegegység; vessző; 2 deka-atomtömegegység; vessző; 1 milli-elektronvolt; vessző; 2 mikro-elektronvolt; vessző; 1 nano-radián, vessző; 2 pikó-radián, vessző; 1 femto-szteradián, vessző; 2 atto-szteradián; vessző; 1 giga-év, vessző; 2 mega-év, vessző; 1 zepto-ívmásodperc; vessző; 2 yokto-ívmásodperc; vessző; 1 kiló-bit, vessző; 2 mega-bit, vessző; 1 giga-byte, vessző; 2 tera-byte, vessző; 1 tera-baud, vessző; 2 exa-baud")?;
+        "1 quetta-liter, vessző; 2 ronna-liter, vessző; 1 yotta-liter, vessző; 2 zetta-liter, vessző; 1 exa-liter, vessző; 2 peta-liter, vessző; 1 tera-metrikus tonna; vessző; 2 giga-metrikus tonna; vessző; 1 mega-dalton, vessző; 2 kiló-dalton, vessző; 1 deci-neper, vessző; 2 centi-neper, vessző; 1 hektó-atomtömegegység; vessző; 2 deka-atomtömegegység; vessző; 1 milli-elektronvolt; vessző; 2 mikro-elektronvolt; vessző; 1 nano-radián, vessző; 2 pikó-radián, vessző; 1 femto-szteradián, vessző; 2 atto-szteradián, vessző; 1 giga-év, vessző; 2 mega-év, vessző; 1 zepto-ívmásodperc; vessző; 2 yokto-ívmásodperc; vessző; 1 kiló-bit, vessző; 2 mega-bit, vessző; 1 giga-byte, vessző; 2 tera-byte, vessző; 1 tera-baud, vessző; 2 exa-baud")?;
                 return Ok(());
 
 }
@@ -250,7 +250,7 @@ fn without_prefix_time() -> Result<()> {
         <mn>1</mn><mi intent=":unit">yr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">yr</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző, 1 perc, vessző; 2 perc, vessző, 1 perc, vessző; 2 perc, vessző, 1 perc, vessző; 2 perc, vessző, 1 óra, vessző; 2 óra, vessző, 1 óra, vessző; 2 óra, vessző, 1 óra, vessző; 2 óra, vessző, 1 nap, vessző, 2 nap, vessző, 1 nap, vessző, 2 nap, vessző, 1 hét, vessző; 2 hét, vessző, 1 hét, vessző; 2 hét, vessző, 1 év, vessző, 2 év, vessző, 1 év, vessző, 2 év")?;
+        "1 másodperc, vessző; 2 másodperc, vessző; 1 másodperc, vessző; 2 másodperc, vessző, 1 perc, vessző, 2 perc, vessző, 1 perc, vessző, 2 perc, vessző, 1 perc, vessző, 2 perc, vessző, 1 óra, vessző, 2 óra, vessző, 1 óra, vessző, 2 óra, vessző, 1 óra, vessző, 2 óra, vessző, 1 nap, vessző, 2 nap, vessző, 1 nap, vessző, 2 nap, vessző, 1 hét, vessző, 2 hét, vessző, 1 hét, vessző, 2 hét, vessző, 1 év, vessző, 2 év, vessző, 1 év, vessző, 2 év")?;
                 return Ok(());
 
 }
@@ -269,7 +269,7 @@ fn without_prefix_angles() -> Result<()> {
         <mn>1</mn><mi intent=":unit">asec</mi><mo>,</mo><mn>2</mn><mi intent=":unit">asec</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 fok, vessző, 2 fok, vessző, 1 fok, vessző, 2 fok, vessző, 1 ívperc, vessző; 2 ívperc, vessző, 1 ívperc, vessző; 2 ívperc, vessző, 1 ívperc, vessző; 2 ívperc, vessző, 1 ívperc, vessző; 2 ívperc, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc")?;
+        "1 fok, vessző, 2 fok, vessző, 1 fok, vessző, 2 fok, vessző, 1 ívperc, vessző, 2 ívperc, vessző, 1 ívperc, vessző, 2 ívperc, vessző, 1 ívperc, vessző, 2 ívperc, vessző, 1 ívperc, vessző, 2 ívperc, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc, vessző; 1 ívmásodperc, vessző; 2 ívmásodperc")?;
                 return Ok(());
 
 }
@@ -286,7 +286,7 @@ fn without_prefix_distance() -> Result<()> {
         <mn>1</mn><mi intent=":unit">fm</mi><mo>,</mo><mn>2</mn><mi intent=":unit">fm</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 csillagászati egység, vessző; 2 csillagászati egység; vessző; 1 fényév, vessző; 2 fényév, vessző, 1 parszek, vessző; 2 parszek, vessző; 1 angström, vessző; 2 angström, vessző; 1 angström, vessző; 2 angström, vessző, 1 fermi, vessző; 2 fermi")?;
+        "1 csillagászati egység, vessző; 2 csillagászati egység, vessző; 1 fényév, vessző; 2 fényév, vessző, 1 parszek, vessző, 2 parszek, vessző; 1 angström, vessző; 2 angström, vessző; 1 angström, vessző; 2 angström, vessző, 1 fermi, vessző, 2 fermi")?;
                 return Ok(());
 
 }
@@ -312,7 +312,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
     </math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "1 hektár, vessző; 2 hektár, vessző, 1 decibel, vessző; 2 decibel, vessző; 1 atmoszféra, vessző; 2 atmoszféra, vessző; 1 atomikus tömeg, vessző; 2 atomikus tömeg, vessző, 1 bár, vessző; 2 bár, vessző; 1 kalória, vessző; 2 kalória, vessző, 1 curie, vessző; 2 curie, vessző; 1 gradiens, vessző; 2 gradiens, vessző, 1 mól, vessző; 2 mól, vessző; 1 röntgen, vessző; 2 röntgen, vessző; 1 fordulat per perc, vessző; 2 fordulat per perc, vessző; 1 folyadékdróm, vessző; 2 folyadékdróm, vessző, 1 m-h-o, vessző; 2 m-h-o, vessző, 1 dyn, vessző, 2 dyn, vessző, 1 erg, vessző, 2 erg")?;
+        "1 hektár, vessző, 2 hektár, vessző, 1 decibel, vessző, 2 decibel, vessző; 1 atmoszféra, vessző; 2 atmoszféra, vessző; 1 atomikus tömeg, vessző; 2 atomikus tömeg, vessző, 1 bár, vessző, 2 bár, vessző; 1 kalória, vessző; 2 kalória, vessző, 1 curie, vessző, 2 curie, vessző; 1 gradiens, vessző; 2 gradiens, vessző, 1 mól, vessző, 2 mól, vessző; 1 röntgen, vessző; 2 röntgen, vessző; 1 fordulat per perc, vessző; 2 fordulat per perc, vessző; 1 folyadékdróm, vessző; 2 folyadékdróm, vessző, 1 m-h-o, vessző, 2 m-h-o, vessző, 1 dyn, vessző, 2 dyn, vessző, 1 erg, vessző, 2 erg")?;
                 return Ok(());
 
 }
@@ -357,11 +357,11 @@ fn si_other_numbers() -> Result<()> {
                             <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
                             <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "1,0 l vessző, 2,0 m vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
+            "1,0 l vessző, 2,0 m vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton; vessző; 2,5 mikro-másodperc; vessző; 32,34 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
                     return Ok(());
 
 }
@@ -377,7 +377,7 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("hu", "SimpleSpeak", expr, 
-        "nyitott zárójel; 1 metrikus tonna, vessző; 2 peta-amper, vessző; 3 pascal, vessző; 4,5 milli-tesla; zárójel")?;
+        "nyitott zárójel; 1 metrikus tonna, vessző; 2 peta-amper, vessző, 3 pascal, vessző; 4,5 milli-tesla; zárójel")?;
                 return Ok(());
 
 }
@@ -392,7 +392,27 @@ fn test_mtext_inference() -> Result<()> {
             <msub><mi>m</mi><mi>min</mi></msub>
             </math>"#;
         test("hu", "SimpleSpeak", expr, 
-            "3 méter, vessző; 1 kiló-méter, vessző; 3 méter, vessző; 3 tized farád, vessző; m alsó index min alsó index vége")?;
+            "3 méter, vessző; 1 kiló-méter, vessző, 3 méter, vessző; 3 tized farád, vessző; m alsó index min alsó index vége")?;
             return Ok(());
 
     }
+
+/// CompoundUnitPlural none after a numeral; NumberlessUnitPlural last without one.
+/// Hungarian unit rules currently leave PluralForms empty for most SI words, so the
+/// uncounted “many” head still sounds the same as singular—this locks the wording.
+#[test]
+fn compound_unit_plural_none_and_uncounted() -> Result<()> {
+    let counted = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mrow intent=":unit"><mi>N</mi><mo>·</mo><mi>m</mi></mrow>
+    </math>"#;
+    test("hu", "ClearSpeak", counted, "5, newton szorozva méter")?;
+    test("hu", "SimpleSpeak", counted, "5 newton pont méter")?;
+
+    let uncounted = r#"<math>
+        <mrow intent=":unit"><mi>m</mi><mo>/</mo><mi>s</mi></mrow>
+    </math>"#;
+    test("hu", "ClearSpeak", uncounted, "méter osztva másodperc")?;
+    test("hu", "SimpleSpeak", uncounted, "méter osztva másodperc")?;
+    return Ok(());
+}

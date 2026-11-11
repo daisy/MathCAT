@@ -547,3 +547,22 @@ fn test_mtext_inference() -> Result<()> {
             return Ok(());
 
     }
+
+/// CompoundUnitPlural all: every factor is plural, including the “per” side.
+#[test]
+fn compound_unit_plural_all() -> Result<()> {
+    let product = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mrow intent=":unit"><mi>N</mi><mo>·</mo><mi>m</mi></mrow>
+    </math>"#;
+    test("fr", "ClearSpeak", product, "5, newtons fois mètres")?;
+    test("fr", "SimpleSpeak", product, "5, newtons point mètres")?;
+
+    let per = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mrow intent=":unit"><mi mathvariant="normal">m</mi><mo>/</mo><mi mathvariant="normal">s</mi></mrow>
+    </math>"#;
+    test("fr", "ClearSpeak", per, "5, mètres divisé par secondes")?;
+    test("fr", "SimpleSpeak", per, "5, mètres divisé par secondes")?;
+    return Ok(());
+}

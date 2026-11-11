@@ -9,6 +9,25 @@
 # Languages that need few override this with ["one_few_many"] (e.g. pl, ru).
 - PluralSystem: ["one_many"]
 
+# Which factor(s) of a compound unit take the number’s one/few/many category.
+# Position is among unit factors on the counted side (before `/` or in a fraction
+# numerator). A lone unit is both first and last. The “per” side stays "one" unless
+# the active policy is all. A real count of one forces every factor to "one".
+#   last  — last counted-side factor (English default; Germanic/Slavic position)
+#   first — first counted-side factor (es, pt: “5 metros por segundo”; kg·m → first plural)
+#   all   — every factor, including the “per” side (fr)
+#   none  — every factor singular after a numeral (hu with a number)
+- CompoundUnitPlural: ["last"]
+
+# Same four values as CompoundUnitPlural, plus "same" (default).
+# Used when there is no mn coefficient (m/s, x ms). "same" means reuse
+# CompoundUnitPlural as if the count were not one. Hungarian overrides to ["last"]
+# so a numberless head can be plural while counted forms stay singular (none).
+# Do not use these two keys alone for de/nl (per-word exceptions), fi (partitive vs
+# nominative), or pl/ru (genitive vs nominative without a number)—same position,
+# different form.
+- NumberlessUnitPlural: ["same"]
+
 # Numeral–noun gender for “1” before a unit/currency (`UnitGender` / `OneForUnit`).
 # Omit or keep ["none"] when unused. See the units/currency comments in language definitions.yaml.
 #   none          — no gender agreement

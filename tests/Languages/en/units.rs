@@ -855,6 +855,32 @@ fn derived_unit_tesla_base_expansion() -> Result<()> {
     return Ok(());
 }
 
+/// Currency rates: `€5/l` should pluralize like a unit numerator (`euros per litre`).
+#[test]
+fn currency_per_unit() -> Result<()> {
+    let expr = r#"<math><mfrac><mrow><mi>€</mi><mn>5</mn></mrow><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mn>5</mn><mfrac><mi>€</mi><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>1</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "1 euro per litre")?;
+    test("en", "ClearSpeak", expr, "1 euro per litre")?;
+
+    // Postfix amount binds before the solidus: `(5 €) / l`.
+    let expr = r#"<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros, per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros, per litre")?;
+    return Ok(());
+}
+
 /// F = kg⁻¹ · m⁻² · s⁴ · A².
 #[test]
 fn derived_unit_farad_base_expansion() -> Result<()> {

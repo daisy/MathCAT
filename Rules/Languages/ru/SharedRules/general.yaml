@@ -403,6 +403,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 

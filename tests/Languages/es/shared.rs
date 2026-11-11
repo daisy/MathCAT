@@ -718,7 +718,7 @@ fn cmu_2024_additions() -> Result<()> {
         ("<math><mo>⌊</mo><mi>x</mi><mo>⌋</mo></math>", "abrir suelo x cerrar suelo"),
         ("<math><mo>⌈</mo><mi>x</mi><mo>⌉</mo></math>", "abrir techo x cerrar techo"),
         ("<math><mn>3</mn><mi>€</mi></math>", "3 euros"),
-        ("<math><mn>1</mn><mi>€</mi></math>", "1 euro"),
+        ("<math><mn>1</mn><mi>€</mi></math>", "un euro"),
         ("<math><mi>a</mi><mo>∾</mo><mi>b</mi></math>", "a es semejante a b"),
         ("<math><mi>a</mi><mo>≙</mo><mi>b</mi></math>", "a corresponde a b"),
         ("<math><mi>x</mi><mo>∈</mo><mi>ℍ</mi></math>", "x pertenece a los cuaterniones"),

@@ -512,8 +512,9 @@ fn per_and_silent_dot_between_units() -> Result<()> {
         ("<math><mn>10</mn><mspace width=\"0.167em\"></mspace><mrow><mi mathvariant=\"normal\">m</mi><mo>/</mo><mi mathvariant=\"normal\">s</mi></mrow></math>", "10 metros por segundo"),
         ("<math><mn>90</mn><mspace width=\"0.167em\"></mspace><mrow><mi mathvariant=\"normal\">km</mi><mo>/</mo><mi mathvariant=\"normal\">h</mi></mrow></math>", "90 kilómetros por hora"),
         ("<math><mn>9</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">m</mi><mo>∕</mo><mi mathvariant=\"normal\">s</mi></math>", "9 metros por segundo"),
-        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>·</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newton metros"),
-        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>⋅</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newton metros"),
+        // CompoundUnitPlural first: pluralize the first factor only (“newtons metro”).
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>·</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newtons metro"),
+        ("<math><mn>5</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">N</mi><mo>⋅</mo><mi mathvariant=\"normal\">m</mi></math>", "5 newtons metro"),
         ("<math><mn>2</mn><mo>·</mo><mn>5</mn></math>", "2 por 5"),
         ("<math><mi>a</mi><mo>/</mo><mi>b</mi></math>", "a dividido por b"),
     ];

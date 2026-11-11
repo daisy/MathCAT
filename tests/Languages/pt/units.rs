@@ -409,3 +409,15 @@ fn test_mtext_inference() -> Result<()> {
 
 }
 
+/// CompoundUnitPlural first: pluralize the first factor of a counted product only.
+#[test]
+fn compound_unit_plural_first() -> Result<()> {
+    let expr = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mi mathvariant="normal">N</mi><mo>·</mo><mi mathvariant="normal">m</mi>
+    </math>"#;
+    test("pt", "ClearSpeak", expr, "5 newtons vezes metro")?;
+    test("pt", "SimpleSpeak", expr, "5 newtons vezes metro")?;
+    return Ok(());
+}
+

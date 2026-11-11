@@ -109,13 +109,14 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 		}
 	}
 
-	/// True when `text` is a known unit name or SI-prefixed unit in the speech definitions.
+	/// True when `text` is a known unit name, SI-prefixed unit, or currency symbol in the speech definitions.
 	fn is_known_unit_token_text(text: &str) -> bool {
 		return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
 			let defs = definitions.borrow();
 			if defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(text)) ||
 			   defs.get_hashmap("UnitsWithoutPrefixes").is_some_and(|m| m.contains_key(text)) ||
-			   defs.get_hashmap("EnglishUnits").is_some_and(|m| m.contains_key(text))
+			   defs.get_hashmap("EnglishUnits").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("CurrencySymbols").is_some_and(|m| m.contains_key(text))
 			{
 				return true;
 			}
@@ -154,6 +155,10 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 			return true;
 		}
 		let text = as_text(el);
+		// Currency symbols are typically single-character `mi` without mathvariant=normal.
+		if is_currency_symbol_leaf(el) {
+			return true;
+		}
 		if text.chars().count() > 1 {
 			return true;
 		}
@@ -161,6 +166,36 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 	}
 
 	return found;
+}
+
+/// True when `el` is an `mi`/`mtext` whose text is a `CurrencySymbols` key.
+fn is_currency_symbol_leaf(el: Element<'_>) -> bool {
+	let tag = as_str!(name(el));
+	if tag != "mi" && tag != "mtext" {
+		return false;
+	}
+	let text = as_text(el);
+	if text.is_empty() {
+		return false;
+	}
+	return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+		definitions.borrow()
+			.get_hashmap("CurrencySymbols")
+			.is_some_and(|map| map.contains_key(text))
+	});
+}
+
+/// Implied times between a currency symbol and an `mn`, either order (`$` then `5`, or `5` then `€`).
+fn is_currency_times_pair(previous: Element<'_>, current: Element<'_>) -> bool {
+	let previous_is_mn = name(previous) == "mn";
+	let current_is_mn = name(current) == "mn";
+	if previous_is_mn && is_currency_symbol_leaf(current) {
+		return true;
+	}
+	if current_is_mn && is_currency_symbol_leaf(previous) {
+		return true;
+	}
+	return false;
 }
 
 /// Promote likely unit leaves that sit in a confirming context (quantity, product, fraction, equality).
@@ -275,6 +310,41 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		return false;
 	}
 
+	/// `$ ⁢ 5` or `5 ⁢ €` — currency bound to an amount (used to confirm `/ l` as a unit).
+	fn is_currency_amount_mrow(el: Element<'_>) -> bool {
+		if name(el) != "mrow" {
+			return false;
+		}
+		let children = mathml_element_children(el);
+		if children.len() != 3 ||
+		   name(children[1]) != "mo" ||
+		   as_str!(as_text(children[1])) != "\u{2062}"
+		{
+			return false;
+		}
+		if is_currency_symbol_leaf(children[0]) && name(children[2]) == "mn" {
+			return true;
+		}
+		if name(children[0]) == "mn" && is_currency_symbol_leaf(children[2]) {
+			return true;
+		}
+		return false;
+	}
+
+	/// Currency amount, possibly wrapped in single-child `mrow`s from author markup.
+	fn is_currency_amount_expr(el: Element<'_>) -> bool {
+		let mut el = el;
+		while name(el) == "mrow" {
+			let children = mathml_element_children(el);
+			if children.len() == 1 {
+				el = children[0];
+				continue;
+			}
+			return is_currency_amount_mrow(el);
+		}
+		return false;
+	}
+
 	fn strip_likely_unit_attrs(mathml: Element<'_>) {
 		if mathml.attribute(LIKELY_UNIT_ATTR).is_some() {
 			mathml.remove_attribute(LIKELY_UNIT_ATTR);
@@ -306,6 +376,18 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			}
 		}
 
+		// ($ ⁢ 5) / gal — currency amount over a unit (or unit product)
+		if children.len() >= 3 &&
+		   is_currency_amount_mrow(children[0]) &&
+		   is_unit_join_op(children[1]) &&
+		   matches!(as_str!(as_text(children[1])), "/" | "∕") &&
+		   is_unit_product_or_quotient_children(&children[2..])
+		{
+			for child in &children[2..] {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
 		// LHS = unit-product-RHS (RHS may be a single factor, e.g. Hz = s⁻¹)
 		if let Some(eq_index) = children.iter().position(|c| is_equals_op(*c)) &&
 		   eq_index >= 1 &&
@@ -326,12 +408,18 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		let tag = as_str!(name(mathml));
 		if tag == "mfrac" {
 			let children = mathml_element_children(mathml);
-			if children.len() >= 2 &&
-			   is_unit_candidate_factor(children[0]) &&
-			   is_unit_candidate_factor(children[1])
-			{
-				promote_likely_leaves_in(children[0]);
-				promote_likely_leaves_in(children[1]);
+			if children.len() >= 2 {
+				if is_unit_candidate_factor(children[0]) &&
+				   is_unit_candidate_factor(children[1])
+				{
+					promote_likely_leaves_in(children[0]);
+					promote_likely_leaves_in(children[1]);
+				} else if is_currency_amount_expr(children[0]) &&
+				          is_unit_candidate_factor(children[1])
+				{
+					// ($5)/gal — confirm the denominator unit for "dollars per gallon"
+					promote_likely_leaves_in(children[1]);
+				}
 			}
 		} else if tag == "mrow" || tag == "math" {
 			let children = mathml_element_children(mathml);
@@ -375,6 +463,11 @@ static TIMES_SIGN: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.
 
 // IMPLIED_TIMES_HIGH_PRIORITY -- used in trig functions for things like sin 2x cos 2x where want > function app priority
 static IMPLIED_TIMES_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 851, next: &None
+};
+// Same priority as trig-arg times so `$5/l` and `5€/l` group the amount before `/`.
+// A distinct value: `is_trig_arg` matches IMPLIED_TIMES_HIGH_PRIORITY by pointer.
+static IMPLIED_TIMES_CURRENCY: OperatorInfo = OperatorInfo{
 	op_type: OperatorTypes::INFIX, priority: 851, next: &None
 };
 // IMPLIED_SEPARATOR_HIGH_PRIORITY -- used for Geometry points like ABC
@@ -533,7 +626,11 @@ impl OperatorInfo {
 	}
 
 	fn is_times(&self) -> bool {
-		return ptr_eq(self, *IMPLIED_TIMES) || ptr_eq(self, *TIMES_SIGN);
+		// IMPLIED_TIMES_CURRENCY chains with other times (so `⁢188,23⁢€` stays flat)
+		// but its higher priority still binds before `/`.
+		return ptr_eq(self, *IMPLIED_TIMES) ||
+			ptr_eq(self, *TIMES_SIGN) ||
+			ptr_eq(self, &IMPLIED_TIMES_CURRENCY);
 	}
 
 	fn is_nary(&self, previous_op: &OperatorInfo) -> bool {
@@ -4814,6 +4911,9 @@ impl CanonicalizeContext {
 									OperatorPair{ ch: op_ch("\u{2063}"), op: &IMPLIED_CHEMICAL_BOND, _phantom: PhantomData }
 								} else if self.is_implied_separator(previous_child, current_child) {
 									OperatorPair{ ch: op_ch("\u{2063}"), op: &IMPLIED_SEPARATOR_HIGH_PRIORITY, _phantom: PhantomData }
+								} else if is_currency_times_pair(base_of_previous_child, base_of_child) {
+									// Bind currency to the number tighter than `/` (`($ ⁢ 5) / l`, `(5 ⁢ €) / l`).
+									OperatorPair{ ch: op_ch("\u{2062}"), op: &IMPLIED_TIMES_CURRENCY, _phantom: PhantomData }
 								} else if self.is_trig_arg(base_of_previous_child, base_of_child, &mut parse_stack) {
 									OperatorPair{ ch: op_ch("\u{2062}"), op: &IMPLIED_TIMES_HIGH_PRIORITY, _phantom: PhantomData }
 								} else {
@@ -7448,6 +7548,34 @@ mod canonicalize_tests {
 		</mrow>
 	   </math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	/// Currency and its number bind before `/`: prefix `$5/l` and postfix `5€/l`.
+	#[test]
+	fn currency_amount_binds_before_solidus() -> Result<()> {
+		let prefix = "<math><mrow><mi>$</mi><mn>5</mn><mo>/</mo><mi mathvariant='normal'>gal</mi></mrow></math>";
+		let prefix_target = "<math><mrow>
+			<mrow data-changed='added'>
+				<mi>$</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>5</mn>
+			</mrow>
+			<mo>/</mo>
+			<mi mathvariant='normal' intent=':unit'>gal</mi>
+		</mrow></math>";
+		are_strs_canonically_equal_result(prefix, prefix_target, &[])?;
+
+		let postfix = "<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant='normal'>l</mi></mrow></math>";
+		let postfix_target = "<math><mrow>
+			<mrow data-changed='added'>
+				<mn>5</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi intent=':unit'>€</mi>
+			</mrow>
+			<mo>/</mo>
+			<mi mathvariant='normal' intent=':unit'>l</mi>
+		</mrow></math>";
+		return are_strs_canonically_equal_result(postfix, postfix_target, &[]);
 	}
 
 	#[test]

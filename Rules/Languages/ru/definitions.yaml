@@ -225,9 +225,20 @@
 # PluralSystem (see Rules/definitions.yaml) selects how integers map to one/few/many:
 #   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
 #   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
-# UnitNumber(node) returns that value for a unit/currency leaf. It also forces
-# "one" in structural contexts where the word is not counted (after "per"/division,
-# in a fraction denominator, or a non-final factor in a unit product such as m in m/s).
+# UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
+# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+#   - last (default) — last counted-side factor takes the category (en, …)
+#   - first           — first counted-side factor (es, pt)
+#   - all             — every factor, including the "per" side (fr)
+#   - none            — every factor stays "one" after a numeral (hu with a number)
+# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
+# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
+# so an uncounted head can be plural while counted forms stay singular. Languages
+# that need per-word exceptions (de/nl) or a different case/form without a number
+# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
+# these two keys alone cannot express those shifts.
+# A real count of one forces every factor to "one". Per-side factors with no local
+# count stay "one" unless the active policy is all.
 # Speech rules typically:
 #   UnitNumber = "one"  → speak the singular base word from the unit/currency map
 #   otherwise           → PluralForms[base word] if listed, else PluralDefaultFromEnding /

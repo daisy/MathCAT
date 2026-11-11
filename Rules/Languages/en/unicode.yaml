@@ -75,7 +75,7 @@
           
  - "\"": [t: "quotation mark"]                     # 0x22
  - "#": [t: "number"]                              # 0x23
- - "$": [t: "dollars"]                             # 0x24
+ - "$": [t: "dollar"]                              # 0x24 — plural via currency/unit rules
  - "%": [t: "percent"]                             # 0x25
  - "&": [t: "ampersand"]                           # 0x26
  - "'": [t: "apostrophe"]                          # 0x27

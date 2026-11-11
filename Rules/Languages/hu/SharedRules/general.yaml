@@ -270,6 +270,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -319,7 +322,7 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency # audit-ignore
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
     # If the amount is singular, we don't add the plural ending.
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
