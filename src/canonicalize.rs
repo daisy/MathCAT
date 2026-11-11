@@ -168,6 +168,15 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 	return found;
 }
 
+/// True when `symbol` is a key in speech `CurrencySymbols`.
+fn is_currency_symbol(symbol: &str) -> bool {
+	return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+		definitions.borrow()
+			.get_hashmap("CurrencySymbols")
+			.is_some_and(|map| map.contains_key(symbol))
+	});
+}
+
 /// True when `el` is an `mi`/`mtext` whose text is a `CurrencySymbols` key.
 fn is_currency_symbol_leaf(el: Element<'_>) -> bool {
 	let tag = as_str!(name(el));
@@ -178,11 +187,7 @@ fn is_currency_symbol_leaf(el: Element<'_>) -> bool {
 	if text.is_empty() {
 		return false;
 	}
-	return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
-		definitions.borrow()
-			.get_hashmap("CurrencySymbols")
-			.is_some_and(|map| map.contains_key(as_str!(text)))
-	});
+	return is_currency_symbol(as_str!(text));
 }
 
 /// Implied times between a currency symbol and an `mn`, either order (`$` then `5`, or `5` then `€`).
@@ -1198,12 +1203,9 @@ impl CanonicalizeContext {
 		static IS_UNDERSCORE: Lazy<Regex> = lazy_regex!(r"^[_\u{00A0}]+$");
 
 			
-		fn is_currency_symbol(ch: char) -> bool {
-			matches!(ch, '$' | '¢' | '€' | '£' | '₡' | '₤' | '₨' | '₩' | '₪' | '₱' | '₹' | '₺' | '₿')
-		}
-
 		fn contains_currency(s: &str) -> bool {
-			s.chars().any(is_currency_symbol)
+			let mut buf = [0u8; 4];
+			return s.chars().any(|ch| is_currency_symbol(ch.encode_utf8(&mut buf)));
 		}
 
 		/// Geometry arc names like AB / ABC: a leaf whose text is 2–3 ASCII capitals.
@@ -2150,7 +2152,7 @@ impl CanonicalizeContext {
 						leaf.set_name("mn");	// make sure we create an mn (might be one already)
 					}
 					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
-					if is_currency_symbol(first_ch.chars().next().unwrap()) {
+					if is_currency_symbol(first_ch) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
@@ -2164,7 +2166,7 @@ impl CanonicalizeContext {
 						return Some(mrow);
 					}
 					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
-					if is_currency_symbol(last_ch.chars().next().unwrap()) {
+					if is_currency_symbol(last_ch) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
@@ -2179,7 +2181,7 @@ impl CanonicalizeContext {
 					}
 					// try to find it in the middle
 					for (byte_idx, ch) in text.char_indices() {
-						if contains_currency(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
+						if is_currency_symbol(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
 							// get all the substrings
 							let first_part = &text[..byte_idx];
 							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
