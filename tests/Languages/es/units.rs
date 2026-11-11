@@ -582,3 +582,22 @@ fn unknown_unit_is_spoken() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn currency_per_unit() -> Result<()> {
+    // precio por unidad, también como fracción y con el símbolo después de la cantidad (copiado de en)
+    let cases = [
+        ("<math><mfrac><mrow><mi>€</mi><mn>5</mn></mrow><mi mathvariant=\"normal\">l</mi></mfrac></math>", "5 euros por litro"),
+        ("<math><mn>5</mn><mfrac><mi>€</mi><mi mathvariant=\"normal\">l</mi></mfrac></math>", "5 euros por litro"),
+        ("<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "5 euros por litro"),
+        ("<math><mrow><mi>€</mi><mn>1</mn><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "un euro por litro"),
+        ("<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "5 euros por litro"),
+        ("<math><mfrac><mrow><mn>5</mn><mi>€</mi></mrow><mi mathvariant=\"normal\">kg</mi></mfrac></math>", "5 euros por kilogramo"),
+        ("<math><mo>$</mo><mn>5</mn><mo>/</mo><mi>gal</mi></math>", "5 dólares por galón"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

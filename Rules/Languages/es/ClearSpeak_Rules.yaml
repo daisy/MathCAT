@@ -222,7 +222,10 @@
   - "$ClearSpeak_Fractions='Per' or"
   - "(BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
   - "                ( self::m:mrow and count(*)=3 and"  # maybe a bit paranoid checking the structure...
-  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) ] and"
+  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) or"
+  - "                ( self::m:mrow and count(*)=3 and"  # $5 / kg: currency amount over a unit (symbol before or after the amount)
+  - "                 ( (DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]) or"
+  - "                   (*[1][self::m:mn] and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '') ) and *[2][.='\u2062'] ) ] and"
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
