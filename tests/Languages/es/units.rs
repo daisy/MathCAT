@@ -523,3 +523,137 @@ fn per_and_silent_dot_between_units() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn currency_after_amount() -> Result<()> {
+    // símbolo después de la cantidad (España): "1 €" con el mismo "un"/"una" que "€ 1"; rublo y grivna;
+    // millones exactos con "de" (NVDA dice "un millón de dólares")
+    let cases = [
+        ("<math><mn>1</mn><mo>€</mo></math>", "un euro"),
+        ("<math><mn>1</mn><mo>£</mo></math>", "una libra"),
+        ("<math><mn>2</mn><mo>£</mo></math>", "2 libras"),
+        ("<math><mn>1,5</mn><mo>€</mo></math>", "1,5 euros"),
+        ("<math><mn>1</mn><mi>₲</mi></math>", "un guaraní"),
+        ("<math><mn>3</mn><mi>₲</mi></math>", "3 guaraníes"),
+        ("<math><mn>1</mn><mi>R$</mi></math>", "un real"),
+        ("<math><mi>₽</mi><mn>1</mn></math>", "un rublo"),
+        ("<math><mn>2</mn><mi>₽</mi></math>", "2 rublos"),
+        ("<math><mn>1</mn><mi>₴</mi></math>", "una grivna"),
+        ("<math><mi>₴</mi><mn>2</mn></math>", "2 grivnas"),
+        ("<math><mo>$</mo><mn>1000000</mn></math>", "1000000 de dólares"),
+        ("<math><mo>$</mo><mn>3 000 000</mn></math>", "3000000 de dólares"),
+        ("<math><mn>1 000 000</mn><mo>€</mo></math>", "1000000 de euros"),
+        ("<math><mo>$</mo><mn>1 500 000</mn></math>", "1500000 dólares"),
+        ("<math><mo>$</mo><mn>1 000 000,50</mn></math>", "1000000,50 dólares"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn units_with_exact_millions() -> Result<()> {
+    // millones exactos llevan "de": NVDA dice "un millón de metros"
+    let cases = [
+        ("<math><mn>1000000</mn><mi intent=\":unit\">m</mi></math>", "1000000 de metros"),
+        ("<math><mn>2 000 000</mn><mspace width=\"0.167em\"></mspace><mi mathvariant=\"normal\">km</mi></math>", "2000000 de kilómetros"),
+        ("<math><mn>1000000</mn><msup><mi intent=\":unit\">m</mi><mn>2</mn></msup></math>", "1000000 de metros al cuadrado"),
+        ("<math><mn>1000000</mn><mrow><mi mathvariant=\"normal\">m</mi><mo>/</mo><mi mathvariant=\"normal\">s</mi></mrow></math>", "1000000 de metros por segundo"),
+        ("<math><mn>1500000</mn><mi intent=\":unit\">m</mi></math>", "1500000 metros"),
+        ("<math><mn>1000000,5</mn><mi intent=\":unit\">m</mi></math>", "1000000,5 metros"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn unknown_unit_is_spoken() -> Result<()> {
+    // una unidad que no está en las tablas se dice tal cual (antes se perdía)
+    let cases = [
+        ("<math><mn>10</mn><mi intent=\":unit\">zz</mi></math>", "10 zzs"),
+        ("<math><mn>1</mn><mi intent=\":unit\">zz</mi></math>", "un zz"),
+        ("<math><mn>3</mn><mi intent=\":unit\">bar</mi></math>", "3 bares"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn currency_per_unit() -> Result<()> {
+    // precio por unidad, también como fracción y con el símbolo después de la cantidad (copiado de en)
+    let cases = [
+        ("<math><mfrac><mrow><mi>€</mi><mn>5</mn></mrow><mi mathvariant=\"normal\">l</mi></mfrac></math>", "5 euros por litro"),
+        ("<math><mn>5</mn><mfrac><mi>€</mi><mi mathvariant=\"normal\">l</mi></mfrac></math>", "5 euros por litro"),
+        ("<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "5 euros por litro"),
+        ("<math><mrow><mi>€</mi><mn>1</mn><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "un euro por litro"),
+        ("<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant=\"normal\">l</mi></mrow></math>", "5 euros por litro"),
+        ("<math><mfrac><mrow><mn>5</mn><mi>€</mi></mrow><mi mathvariant=\"normal\">kg</mi></mfrac></math>", "5 euros por kilogramo"),
+        ("<math><mo>$</mo><mn>5</mn><mo>/</mo><mi>gal</mi></math>", "5 dólares por galón"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn greek_mu_micro_prefix() -> Result<()> {
+    // μ (U+03BC) como prefijo micro, igual que µ (U+00B5)
+    let cases = [
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">μm</mi></math>", "10 micrómetros"),
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">µm</mi></math>", "10 micrómetros"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">μs</mi></math>", "5 microsegundos"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">μg</mi></math>", "un microgramo"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn unit_negative_power() -> Result<()> {
+    // exponente negativo detrás de otra unidad: "por" (folleto SI del CEM, tabla 6)
+    let cases = [
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "10 metros por segundo"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "un metro por segundo"),
+        ("<math><mn>9,8</mn><mi mathvariant=\"normal\">m</mi><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>2</mn></mrow></msup></math>",
+            "9,8 metros por segundo al cuadrado"),
+        ("<math><mn>3</mn><mi mathvariant=\"normal\">kg</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>3</mn></mrow></msup></math>",
+            "3 kilogramos por metro al cubo"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">W</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><msup><mi mathvariant=\"normal\">K</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "5 vatios por metro kelvin"),
+        // sin unidad delante, se lee el exponente
+        ("<math><mn>10</mn><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
+            "10 segundos elevado a menos 1"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn unit_denominator_in_parens() -> Result<()> {
+    // con los paréntesis callados (main), el denominador entre paréntesis va en singular, como km/h
+    let cases = [
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">J</mi><mo>/</mo><mo>(</mo><mi mathvariant=\"normal\">kg</mi><mo>·</mo><mi mathvariant=\"normal\">K</mi><mo>)</mo></math>",
+            "5, julios por, kilogramo kelvin"),
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">km</mi><mo>/</mo><mi mathvariant=\"normal\">h</mi></math>",
+            "10 kilómetros por hora"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}

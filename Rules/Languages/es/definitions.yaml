@@ -527,7 +527,7 @@
 
 - SIPrefixes: {
     "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deca",
-    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "μ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
 # Units that accept SI prefixes (symbol → spoken singular base word).
@@ -658,7 +658,7 @@
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
       "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
-    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
+    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "μm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
     #  conflicts: "fm": "femtómetro", "am": "attómetro",
     "zm": "zeptómetro", "ym": "yoctómetro", "rm": "rontómetro", "qm": "quectómetro",
   
@@ -771,7 +771,7 @@
 # Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
     "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
-    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
+    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₽": "rublo", "₴": "grivna", "₿": "bitcóin",
     # se pueden agregar más monedas...
   }
 
