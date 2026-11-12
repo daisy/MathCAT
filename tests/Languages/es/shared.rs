@@ -66,6 +66,19 @@ fn ordinals() -> Result<()> {
 }
 
 #[test]
+fn limit_sup_inf() -> Result<()> {
+    // \limsup y \liminf: "límite superior/inferior" (Rules/Intent los llama limit-sup y limit-inf), con "de" como lim
+    let sup = "<math><munder><mo>lim sup</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    let inf = "<math><munder><mo>lim&#x2009;inf</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    let mi = "<math><munder><mi>limsup</mi><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    test("es", "ClearSpeak", sup, "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "SimpleSpeak", inf, "el límite inferior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", mi, "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], sup, "lím sup cuando n tiende a infinito; a sub n")?;
+    return Ok(());
+}
+
+#[test]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
