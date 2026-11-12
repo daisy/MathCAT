@@ -892,11 +892,11 @@
     ]
 
 - NumbersOrdinalTens: [
-         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "setenta", "ochogésimo", "novagésimo"
+         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "septuagésimo", "octogésimo", "nonagésimo"
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "décimos", "veinte", "treinta", "cuarentavos", "quincuagésimos", "sexagésimos", "setentavos", "ochentavos", "novenonavos"
+         "", "décimos", "vigésimos", "trigésimos", "cuadragésimos", "quincuagésimos", "sexagésimos", "septuagésimos", "octogésimos", "nonagésimos"
     ]
 
 
@@ -906,13 +906,13 @@
     ]
 
 - NumbersOrdinalHundreds: [
-       "", "una centésima", "dos centésima", "tres centésima", "cuatro centésima", "quinienta centésima",
-         "seiscientos", "setecientos", "ocho centésimo", "nueve centésimo"
+       "", "centésimo", "ducentésimo", "tricentésimo", "cuadringentésimo", "quingentésimo",
+         "sexcentésimo", "septingentésimo", "octingentésimo", "noningentésimo"
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "centésimas", "dos centésimas", "tres centésimas", "cuatro centésimas", "cinco centésimas",
-         "seis centésimas", "siete centésimas", "ocho centésimas", "nueve centésimas"
+       "", "centésimos", "ducentésimos", "tricentésimos", "cuadringentésimos", "quingentésimos",
+         "sexcentésimos", "septingentésimos", "octingentésimos", "noningentésimos"
     ]
       
 
@@ -923,11 +923,11 @@
     ]
       
 - NumbersOrdinalLarge: [
-         "", "milésima", "millonésima", "mil millonésima", "trillonésima", "cuatrillonésima",
-         "quintillionth", "sextillionth", "septillionth", "octillionth", "nonillionth"
+         "", "milésimo", "millonésimo", "milmillonésimo", "billonésimo", "milbillonésimo",
+         "trillonésimo", "miltrillonésimo", "cuatrillonésimo", "milcuatrillonésimo", "quintillonésimo"
     ]
       
 - NumbersOrdinalPluralLarge: [
-         "", "milésimas", "millonésimas", "mil millonésimas", "trillonésimas", "cuatrillonésimas",
-         "quintillionésimas", "sextillones", "septillones", "octillionésimas", "nonillionésimas"
+         "", "milésimos", "millonésimos", "milmillonésimos", "billonésimos", "milbillonésimos",
+         "trillonésimos", "miltrillonésimos", "cuatrillonésimos", "milcuatrillonésimos", "quintillonésimos"
     ]
