@@ -859,6 +859,21 @@
     "7": "séptima", "8": "octava", "9": "novena", "10": "décima"
   }
 
+# ordinales de texto (1.º, 2.ª, 3.er): unidades hasta 19 y decenas; el femenino, el plural
+# y el apócope (primer, tercer) los arma la regla "ordinal" de general.yaml
+- OrdinalesUnidades: {
+    "1": "primero", "2": "segundo", "3": "tercero", "4": "cuarto", "5": "quinto",
+    "6": "sexto", "7": "séptimo", "8": "octavo", "9": "noveno", "10": "décimo",
+    "11": "undécimo", "12": "duodécimo", "13": "decimotercero", "14": "decimocuarto",
+    "15": "decimoquinto", "16": "decimosexto", "17": "decimoséptimo", "18": "decimoctavo",
+    "19": "decimonoveno"
+  }
+
+- OrdinalesDecenas: {
+    "2": "vigésimo", "3": "trigésimo", "4": "cuadragésimo", "5": "quincuagésimo",
+    "6": "sexagésimo", "7": "septuagésimo", "8": "octogésimo", "9": "nonagésimo"
+  }
+
 - NumbersOrdinalFractionalOnes: [
          # en español los denominadores de fracciones no son ordinales hasta 20: tercio, onceavo…
          "cero", "entero", "medio", "tercio", "cuarto", "quinto", "sexto", "séptimo", "octavo", "noveno",
@@ -880,11 +895,11 @@
     ]
 
 - NumbersOrdinalTens: [
-         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "setenta", "ochogésimo", "novagésimo"
+         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "septuagésimo", "octogésimo", "nonagésimo"
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "décimos", "veinte", "treinta", "cuarentavos", "quincuagésimos", "sexagésimos", "setentavos", "ochentavos", "novenonavos"
+         "", "décimos", "vigésimos", "trigésimos", "cuadragésimos", "quincuagésimos", "sexagésimos", "septuagésimos", "octogésimos", "nonagésimos"
     ]
 
 
@@ -894,13 +909,13 @@
     ]
 
 - NumbersOrdinalHundreds: [
-       "", "una centésima", "dos centésima", "tres centésima", "cuatro centésima", "quinienta centésima",
-         "seiscientos", "setecientos", "ocho centésimo", "nueve centésimo"
+       "", "centésimo", "ducentésimo", "tricentésimo", "cuadringentésimo", "quingentésimo",
+         "sexcentésimo", "septingentésimo", "octingentésimo", "noningentésimo"
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "centésimas", "dos centésimas", "tres centésimas", "cuatro centésimas", "cinco centésimas",
-         "seis centésimas", "siete centésimas", "ocho centésimas", "nueve centésimas"
+       "", "centésimos", "ducentésimos", "tricentésimos", "cuadringentésimos", "quingentésimos",
+         "sexcentésimos", "septingentésimos", "octingentésimos", "noningentésimos"
     ]
       
 
@@ -911,11 +926,11 @@
     ]
       
 - NumbersOrdinalLarge: [
-         "", "milésima", "millonésima", "mil millonésima", "trillonésima", "cuatrillonésima",
-         "quintillionth", "sextillionth", "septillionth", "octillionth", "nonillionth"
+         "", "milésimo", "millonésimo", "milmillonésimo", "billonésimo", "milbillonésimo",
+         "trillonésimo", "miltrillonésimo", "cuatrillonésimo", "milcuatrillonésimo", "quintillonésimo"
     ]
       
 - NumbersOrdinalPluralLarge: [
-         "", "milésimas", "millonésimas", "mil millonésimas", "trillonésimas", "cuatrillonésimas",
-         "quintillionésimas", "sextillones", "septillones", "octillionésimas", "nonillionésimas"
+         "", "milésimos", "millonésimos", "milmillonésimos", "billonésimos", "milbillonésimos",
+         "trillonésimos", "miltrillonésimos", "cuatrillonésimos", "milcuatrillonésimos", "quintillonésimos"
     ]
