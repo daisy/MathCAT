@@ -92,6 +92,20 @@ fn min_max_with_condition() -> Result<()> {
 }
 
 #[test]
+fn accented_operators_babel() -> Result<()> {
+    // babel en español escribe lím, lím sup, lím ínf, mín, máx e ínf con tilde
+    let lim = |op: &str| format!("<math><munder><mo>{op}</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>");
+    let op = |op: &str| format!("<math><munder><mo movablelimits=\"true\">{op}</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>");
+    test("es", "ClearSpeak", &lim("lím sup"), "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", &lim("lím ínf"), "el límite inferior cuando n tiende a infinito, de a sub n")?;
+    test("es", "SimpleSpeak", &lim("lím&#x2009;sup"), "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", &op("mín"), "el mínimo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "SimpleSpeak", &op("máx"), "el máximo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "ClearSpeak", &op("ínf"), "el ínfimo de f de x, cuando x pertenece a mayúscula a")?;
+    return Ok(());
+}
+
+#[test]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
