@@ -124,18 +124,26 @@
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
 
 # Units (e.g., meters per second)
-- name: per-fraction
+- name: per-fraction   # audit-ignore: per hour is said as one word, 毎時
   tag: fraction
   match:
   - "$ClearSpeak_Fractions='Per' or"
   - "(BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
   - "                ( self::m:mrow and count(*)=3 and"  # maybe a bit paranoid checking the structure...
-  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) ] and"
+  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) or"
+  - "                ( self::m:mrow and count(*)=3 and"  # $5 / currency amount over a unit
+  - "                  DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[2][.='\u2062'] and *[3][self::m:mn] ) ] and"
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - T: "毎"      # phrase('5 meters 'per' second)
-  - x: "*[2]"
+  - test:
+    - if: "*[2][contains(@data-intent-property, ':unit') and (.='h' or .='hr' or .='Hr')]"
+      then: [T: "毎時"]      # per hour is 毎時; 毎 時間 would mean "every hour"
+    - else_if: "*[2][contains(@data-intent-property, ':unit') and .='min']"
+      then: [T: "毎分"]      # 毎 分 would be read マイ ブン
+      else:
+      - T: "毎"      # phrase('5 meters 'per' second)
+      - x: "*[2]"
 
 - name: common-fraction
   tag: fraction
