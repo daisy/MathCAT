@@ -222,6 +222,28 @@
   - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
+- name: sum-product-limits   # audit-ignore: Japanese puts から, まで and にわたる after the limits, as the large-op rules above do, which a glue word before each argument cannot give
+  tag: [sum, product]
+  match: "(count(*)=2 or count(*)=3) and contains(@data-intent-property, ':function:')"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - x: "*[1]"
+  - test:
+      if: "count(*)=3"
+      then:
+      - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
+      - pause: short
+      - x: "*[2]"
+      - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
+      else: [T: "にわたる"]      # phrase(2 'over' 3 equals two thirds)
+  - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
+  - pause: auto
+  - x: "*[last()]"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
 - name: repeating-decimal
   tag: repeating-decimal
   match: "."
