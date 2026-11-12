@@ -88,9 +88,13 @@ fn add_unit_property(el: Element<'_>) {
 }
 
 const LIKELY_UNIT_ATTR: &str = "data-likely-unit";
+/// Set on `(` / `)` that only group a unit numerator or denominator. Speech skips these; the nodes stay for braille.
+const UNIT_GROUPING_ATTR: &str = "data-unit-grouping";
 
 /// Stamp `data-likely-unit` on dictionary-matching non-variable `mi`/`mtext` leaves.
-/// Returns true if any leaf was stamped (so a confirm pass is worthwhile).
+/// Returns true when a confirm pass is worthwhile: a leaf was stamped, or an explicit
+/// `:unit` leaf sits in a parenthesis group. A superscript between the leaf and that
+/// group adds one ancestor to the check (`(m^2·s^2)`).
 fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 	let tag = as_str!(name(mathml));
 	if tag == "mi" || tag == "mtext" {
@@ -98,6 +102,11 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 		   is_known_unit_token_text(as_str!(as_text(mathml)))
 		{
 			mathml.set_attribute_value(LIKELY_UNIT_ATTR, "true");
+			return true;
+		}
+		if mathml.attribute_value(INTENT_ATTR).as_deref().is_some_and(intent_has_unit) &&
+		   explicit_unit_in_paren_group(mathml)
+		{
 			return true;
 		}
 		return false;
@@ -108,6 +117,8 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 			found |= mark_likely_unit_leaves(child_el);
 		}
 	}
+	return found;
+
 
 	/// True when `text` is a known unit name, SI-prefixed unit, or currency symbol in the speech definitions.
 	fn is_known_unit_token_text(text: &str) -> bool {
@@ -142,6 +153,49 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 		});
 	}
 
+	/// Parent, then grandparent. One more ancestor when a superscript is in that chain.
+	fn explicit_unit_in_paren_group(leaf: Element<'_>) -> bool {
+		let Some(parent) = parent_el(leaf) else {
+			return false;
+		};
+		if is_paren_group(parent) {
+			return true;
+		}
+		let Some(grand) = parent_el(parent) else {
+			return false;
+		};
+		if is_paren_group(grand) {
+			return true;
+		}
+		if is_superscript(parent) || is_superscript(grand) {
+			let Some(great) = parent_el(grand) else {
+				return false;
+			};
+			return is_paren_group(great);
+		}
+		return false;
+
+		fn parent_el(el: Element<'_>) -> Option<Element<'_>> {
+			return el.parent().and_then(|node| node.element());
+		}
+	
+		fn is_superscript(el: Element<'_>) -> bool {
+			return matches!(as_str!(name(el)), "msup" | "msubsup");
+		}
+	
+		fn is_paren_group(el: Element<'_>) -> bool {
+			let children: Vec<Element<'_>> = el.children().iter().filter_map(|child| child.element()).collect();
+			if children.len() < 2 {
+				return false;
+			}
+			let close = *children.last().unwrap();
+			return name(children[0]) == "mo" &&
+				as_str!(as_text(children[0])) == "(" &&
+				name(close) == "mo" &&
+				as_str!(as_text(close)) == ")";
+		}
+	}
+
 	/// True when an `mi`/`mtext` leaf looks non-variable enough to be a unit token.
 	fn looks_like_unit_leaf(el: Element<'_>) -> bool {
 		let tag = as_str!(name(el));
@@ -164,8 +218,6 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 		}
 		return el.attribute_value("mathvariant").as_deref() == Some("normal");
 	}
-
-	return found;
 }
 
 /// True when `symbol` is a key in speech `CurrencySymbols`.
@@ -208,6 +260,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 	const UNIT_JOIN_OPS: &[&str] = &["\u{2062}", "·", "⋅", "∙", "×", "/", "∕"];
 
 	confirm_likely_units_in(mathml);
+	mark_unit_grouping_parens(mathml);
 	strip_likely_unit_attrs(mathml);
 
 	fn mathml_element_children(el: Element<'_>) -> Vec<Element<'_>> {
@@ -244,15 +297,21 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			"mi" | "mtext" => return is_confirmed_or_likely_unit_leaf(el),
 			"msup" | "msubsup" => {
 				let children = mathml_element_children(el);
-				return children.first().is_some_and(|base| is_confirmed_or_likely_unit_leaf(*base));
+				return children.first().is_some_and(|base| is_unit_candidate_factor(*base));
 			},
 			"mfrac" => {
 				let children = mathml_element_children(el);
 				return children.len() >= 2 &&
-					is_unit_candidate_factor(children[0]) &&
-					is_unit_candidate_factor(children[1]);
+					is_unit_quotient_operand(children[0]) &&
+					is_unit_quotient_operand(children[1]);
 			},
-			"mrow" => return is_unit_product_or_quotient_children(&mathml_element_children(el)),
+			"mrow" => {
+				let children = mathml_element_children(el);
+				if let Some(interior) = grouping_paren_interior(&children) {
+					return is_unit_grouping_children(interior);
+				}
+				return is_unit_product_or_quotient_children(&children);
+			},
 			_ => return false,
 		}
 	}
@@ -277,6 +336,144 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			}
 		}
 		return true;
+	}
+
+	/// `(` … `)` around an expression. The returned slice omits the fences.
+	fn grouping_paren_interior<'a, 'b>(children: &'b [Element<'a>]) -> Option<&'b [Element<'a>]> {
+		if children.len() < 2 ||
+		   !is_paren_fence(children[0], "(") ||
+		   !is_paren_fence(*children.last().unwrap(), ")")
+		{
+			return None;
+		}
+		return Some(&children[1..children.len() - 1]);
+
+		fn is_paren_fence(el: Element<'_>, ch: &str) -> bool {
+			return name(el) == "mo" && as_str!(as_text(el)) == ch;
+		}
+	}
+
+	/// Number, implied times, then a unit product (`5 ⁢ J`, `5 ⁢ kg·m`).
+	fn is_quantity_times_units(children: &[Element<'_>]) -> bool {
+		return children.len() >= 3 &&
+			is_numeric_quantity(children[0]) &&
+			is_unit_join_op(children[1]) &&
+			as_str!(as_text(children[1])) == "\u{2062}" &&
+			is_unit_product_or_quotient_children(&children[2..]);
+	}
+
+	/// Interior of grouping parentheses: a unit product, or a counted unit (`5 J`).
+	fn is_unit_grouping_children(children: &[Element<'_>]) -> bool {
+		if is_unit_product_or_quotient_children(children) ||
+		   is_quantity_times_units(children)
+		{
+			return true;
+		}
+		if children.len() == 1 && name(children[0]) == "mrow" {
+			return is_quantity_times_units(&mathml_element_children(children[0]));
+		}
+		return false;
+	}
+
+	/// One side of `/` or of an `mfrac`: a unit factor, a counted unit, or a currency amount.
+	fn is_unit_quotient_operand(el: Element<'_>) -> bool {
+		if is_unit_candidate_factor(el) || is_currency_amount_expr(el) {
+			return true;
+		}
+		if name(el) == "mrow" &&
+		   is_quantity_times_units(&mathml_element_children(el))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/// Silence parentheses that only group a unit factor inside this numerator or denominator.
+	fn mark_parens_in_unit_side(el: Element<'_>) {
+		let children = mathml_element_children(el);
+		if let Some(interior) = grouping_paren_interior(&children) &&
+		   is_unit_grouping_children(interior)
+		{
+			mark_fence(children[0]);
+			mark_fence(*children.last().unwrap());
+			for child in interior {
+				mark_unit_factor_parens(*child);
+			}
+			return;
+		}
+		mark_unit_factor_parens(el);
+
+		fn mark_fence(el: Element<'_>) {
+			el.set_attribute_value(UNIT_GROUPING_ATTR, "true");
+		}
+
+		fn mark_unit_factor_parens(el: Element<'_>) {
+			let tag = as_str!(name(el));
+			let children = mathml_element_children(el);
+			if tag == "msup" || tag == "msubsup" {
+				if let Some(base) = children.first() {
+					mark_parens_in_unit_side(*base);
+				}
+				return;
+			}
+			if tag == "mfrac" &&
+			   children.len() >= 2 &&
+			   is_unit_quotient_operand(children[0]) &&
+			   is_unit_quotient_operand(children[1])
+			{
+				mark_parens_in_unit_side(children[0]);
+				mark_parens_in_unit_side(children[1]);
+				return;
+			}
+			if tag == "mrow" {
+				if is_unit_product_or_quotient_children(&children) ||
+				   is_quantity_times_units(&children)
+				{
+					for (i, child) in children.iter().enumerate() {
+						if i % 2 == 0 {
+							mark_parens_in_unit_side(*child);
+						}
+					}
+					return;
+				}
+				if children.len() == 1 {
+					mark_parens_in_unit_side(children[0]);
+				}
+			}
+		}
+	}
+
+	/// Mark `(` / `)` on the two sides of a unit quotient. The nodes stay in the tree.
+	fn mark_unit_grouping_parens(mathml: Element<'_>) {
+		let tag = as_str!(name(mathml));
+		let children = mathml_element_children(mathml);
+		if tag == "mfrac" &&
+		   children.len() >= 2 &&
+		   is_unit_quotient_operand(children[0]) &&
+		   is_unit_quotient_operand(children[1])
+		{
+			mark_parens_in_unit_side(children[0]);
+			mark_parens_in_unit_side(children[1]);
+		} else if tag == "mrow" || tag == "math" {
+			for (i, child) in children.iter().enumerate() {
+				if i == 0 || i + 1 >= children.len() || !is_slash(*child) {
+					continue;
+				}
+				let left = children[i - 1];
+				let right = children[i + 1];
+				if is_unit_quotient_operand(left) && is_unit_quotient_operand(right) {
+					mark_parens_in_unit_side(left);
+					mark_parens_in_unit_side(right);
+				}
+			}
+		}
+		for child in children {
+			mark_unit_grouping_parens(child);
+		}
+
+		fn is_slash(el: Element<'_>) -> bool {
+			return name(el) == "mo" && matches!(as_str!(as_text(el)), "/" | "∕");
+		}
 	}
 
 	fn promote_likely_leaves_in(el: Element<'_>) {
@@ -7816,6 +8013,88 @@ mod canonicalize_tests {
 		let test_str = "<math><msub><mi>a</mi><mrow><mn>1</mn><mo>,</mo><mn>234</mn></mrow></msub></math>";
 		let target_str = "<math><msub><mi>a</mi><mn>1,234</mn></msub></math>";
 		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	/// Parentheses that only group a unit numerator or denominator are marked, and the `mo` nodes stay.
+	#[test]
+	fn unit_grouping_parens_marked() -> Result<()> {
+		use crate::interface::{get_element, set_preference, set_rules_dir, trim_element};
+		set_rules_dir(abs_rules_dir_path())?;
+		set_preference("Language", "en")?;
+		crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
+		assert_marked(r#"<math>
+			<mn>5</mn>
+			<mi intent=":unit">J</mi>
+			<mo>/</mo>
+			<mo>(</mo>
+			<mi intent=":unit">kg</mi>
+			<mo>·</mo>
+			<mi intent=":unit">K</mi>
+			<mo>)</mo>
+		</math>"#, 2, true);
+		assert_marked(r#"<math>
+			<mo>(</mo>
+			<mi intent=":unit">N</mi>
+			<mo>·</mo>
+			<mi intent=":unit">m</mi>
+			<mo>)</mo>
+			<mo>/</mo>
+			<mi intent=":unit">s</mi>
+		</math>"#, 2, true);
+		assert_marked(r#"<math>
+			<mo>(</mo><mi intent=":unit">N</mi><mo>·</mo><mi intent=":unit">m</mi><mo>)</mo>
+			<mo>/</mo>
+			<mo>(</mo><mi intent=":unit">kg</mi><mo>·</mo><mi intent=":unit">K</mi><mo>)</mo>
+		</math>"#, 4, true);
+		assert_marked(r#"<math>
+			<mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+			<mo>/</mo>
+			<mn>2</mn>
+		</math>"#, 0, true);
+		// Superscripts sit between the letters and the parenthesis group, so the gate looks one level further.
+		assert_marked(r#"<math>
+			<mo>(</mo>
+			<msup><mi intent=":unit">m</mi><mn>2</mn></msup>
+			<mo>·</mo>
+			<msup><mi intent=":unit">s</mi><mn>2</mn></msup>
+			<mo>)</mo>
+			<mo>/</mo>
+			<mi intent=":unit">J</mi>
+		</math>"#, 2, true);
+		return Ok(());
+
+		fn assert_marked(expr: &str, n_marked: usize, paren_remains: bool) {
+			let package = parser::parse(expr).expect("parse");
+			let mathml = get_element(&package);
+			trim_element(mathml, false);
+			let mathml = canonicalize(mathml).expect("canonicalize");
+			assert_eq!(count_attr(mathml, UNIT_GROUPING_ATTR), n_marked, "{}", crate::pretty_print::mml_to_string(mathml));
+			assert_eq!(tree_has_open_paren(mathml), paren_remains);
+		}
+
+		fn count_attr(el: Element, attr: &str) -> usize {
+			let mut n = if el.attribute(attr).is_some() { 1 } else { 0 };
+			for child in el.children() {
+				if let Some(child) = child.element() {
+					n += count_attr(child, attr);
+				}
+			}
+			return n;
+		}
+
+		fn tree_has_open_paren(el: Element) -> bool {
+			if name(el) == "mo" && as_str!(as_text(el)) == "(" {
+				return true;
+			}
+			for child in el.children() {
+				if let Some(child) = child.element() &&
+				   tree_has_open_paren(child)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 

@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets

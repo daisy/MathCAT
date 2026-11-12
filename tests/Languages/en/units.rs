@@ -566,6 +566,35 @@ fn derived_unit_watts_per_metre_squared() -> Result<()> {
     Ok(())
 }
 
+/// Parentheses grouping a unit numerator or denominator are not spoken.
+#[test]
+fn unit_quotient_grouping_parens_are_silent() -> Result<()> {
+    let expr = r#"<math>
+        <mn>5</mn>
+        <mi intent=":unit">J</mi>
+        <mo>/</mo>
+        <mo>(</mo>
+        <mi intent=":unit">kg</mi>
+        <mo>·</mo>
+        <mi intent=":unit">K</mi>
+        <mo>)</mo>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    test("en", "ClearSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    let numerator = r#"<math>
+        <mo>(</mo>
+        <mi intent=":unit">N</mi>
+        <mo>·</mo>
+        <mi intent=":unit">m</mi>
+        <mo>)</mo>
+        <mo>/</mo>
+        <mi intent=":unit">s</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", numerator, "newton metres, per second")?;
+    test("en", "ClearSpeak", numerator, "newton metres, per second")?;
+    return Ok(());
+}
+
 /// Unit product with ·; multiplication is silent and only the last factor is plural.
 #[test]
 fn derived_unit_newton_metres() -> Result<()> {
