@@ -361,13 +361,13 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "UnitNumber(.) = 'one'"
+        - if: "UnitNumber(.) = 'one' or ancestor::*[preceding-sibling::*[1][self::m:mo][.='/']]"
           then: [x: "$Word"]
           else: [x: "UnitPluralForm($Word)"]
       else:
       - x: "$Prefix"
       - test:
-        - if: "UnitNumber(.) = 'one'"
+        - if: "UnitNumber(.) = 'one' or ancestor::*[preceding-sibling::*[1][self::m:mo][.='/']]"
           then: [x: "concat('\uF8FE', $Word)"]
           else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 

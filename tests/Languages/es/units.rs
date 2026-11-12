@@ -641,3 +641,19 @@ fn unit_negative_power() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn unit_denominator_in_parens() -> Result<()> {
+    // con los paréntesis callados (main), el denominador entre paréntesis va en singular, como km/h
+    let cases = [
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">J</mi><mo>/</mo><mo>(</mo><mi mathvariant=\"normal\">kg</mi><mo>·</mo><mi mathvariant=\"normal\">K</mi><mo>)</mo></math>",
+            "5, julios por, kilogramo kelvin"),
+        ("<math><mn>10</mn><mi mathvariant=\"normal\">km</mi><mo>/</mo><mi mathvariant=\"normal\">h</mi></math>",
+            "10 kilómetros por hora"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
