@@ -478,6 +478,47 @@ fn degree_sign() -> Result<()> {
     return Ok(());
 }
 
+/// The SI prefix was joined to the unit with "- - -", so 5 km was read キロ、、、メートル.
+/// Open JTalk reads a lone 分, 日 or 年 after a space as ブン, ヒ and トシ, so after a
+/// number they are joined to it (3日 is read みっか) and after a letter they are written
+/// in kana. Per hour and per minute are the words 毎時 and 毎分 (毎 時間 is "every hour").
+#[test]
+fn units() -> Result<()> {
+    for (n, unit, expected) in [
+        ("5", "km", "5 キロメートル"),
+        ("3", "mg", "3 ミリグラム"),
+        ("5", "&#xB5;s", "5 マイクロ秒"),
+        ("5", "min", "5分"),
+        ("3", "d", "3日"),
+        ("2", "yr", "2年"),
+    ] {
+        let expr = format!("<math><mn>{n}</mn><mi intent=':unit'>{unit}</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    let expr = "<math><mi>n</mi><mi intent=':unit'>d</mi></math>";
+    test("ja", "SimpleSpeak", expr, "n にち")?;
+    let expr = "<math><mn>15</mn><mi intent=':unit'>arcmin</mi></math>";
+    test("ja", "SimpleSpeak", expr, "15 ふんかく")?;
+    // h is only 毎時 when it is marked as a unit; with Fractions=Per a plain h stays h
+    let expr = "<math><mfrac><mi>d</mi><mi>h</mi></mfrac></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Fractions", "Per", expr, "d 毎 h")?;
+    for (unit, expected) in [("h", "5 キロメートル 毎時"), ("min", "5 キロメートル 毎分"), ("s", "5 キロメートル 毎 秒")] {
+        let expr = format!("<math><mfrac><mrow><mn>5</mn><mi intent=':unit'>km</mi></mrow><mi intent=':unit'>{unit}</mi></mfrac></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    // the Greek letter mu (U+03BC) is a micro prefix too, as in en
+    let expr = "<math><mn>3</mn><mi intent=':unit'>&#x3BC;g</mi></math>";
+    test("ja", "ClearSpeak", expr, "3 マイクログラム")?;
+    // a currency amount over a unit is a rate (5 euros per litre), as in en
+    for (cur, unit, expected) in [("€", "l", "5 ユーロ 毎 リットル"), ("$", "h", "5 ドル 毎時")] {
+        let expr = format!("<math><mfrac><mrow><mi>{cur}</mi><mn>5</mn></mrow><mi mathvariant='normal'>{unit}</mi></mfrac></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// The negation sign is ノット. The seed said コメントはありません -- "there are no
 /// comments" -- because the English source word is "not".
 #[test]
