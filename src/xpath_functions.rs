@@ -1688,6 +1688,60 @@ fn mn_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Opt
     return None;
 }
 
+/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`), looking left only.
+fn variable_coefficient(element: Element) -> Option<Element> {
+    let mut factor = factor_element(element);
+    loop {
+        let parent = parent_element(factor)?;
+        if let Some(ident) = identifier_beside(parent, factor, false) {
+            return Some(ident);
+        }
+        if !is_unit_expr(parent) {
+            return None;
+        }
+        factor = parent;
+    }
+
+    /// An identifier used as a unit coefficient (`x`, `x_i`), not a unit token itself.
+    fn is_identifier_coeff(element: Element) -> bool {
+        let tag = as_str!(name(element));
+        match tag {
+            "mi" | "mtext" => {
+                return !has_unit_property(element);
+            },
+            "power" | "indexed-by" | "msup" | "msub" | "msubsup" => {
+                let children = unit_children(element);
+                let Some(base) = children.first().copied() else {
+                    return false;
+                };
+                let base_tag = as_str!(name(base));
+                return matches!(base_tag, "mi" | "mtext") && !has_unit_property(base);
+            },
+            _ => return false,
+        }
+    }
+
+    /// Nearest identifier sibling of `factor` under `parent`, skipping silent times ops.
+    fn identifier_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Option<Element<'a>> {
+        let children = unit_children(parent);
+        let index = children.iter().position(|child| child == &factor)?;
+        let step: isize = if forward { 1 } else { -1 };
+        let mut cursor = index as isize + step;
+        while cursor >= 0 && (cursor as usize) < children.len() {
+            let child = children[cursor as usize];
+            if is_times_op(child) {
+                cursor += step;
+                continue;
+            }
+            if is_identifier_coeff(child) {
+                return Some(child);
+            }
+            break;
+        }
+        return None;
+    }
+}
+
 /// Coefficient next to a unit or currency leaf.
 /// Units look left (`3 m`). Currency looks both ways: prefix (`$3`, `€20`) and
 /// postfix (`3¢`, `20€`). A `:unit:` container does not hold the coefficient
@@ -1814,12 +1868,13 @@ struct UnitNumber;
 /// UnitNumber(node)
 /// Returns the plural category for a unit (or currency) leaf: `"one"`, `"few"`, or `"many"`.
 /// `"few"` is only used when `PluralSystem` is `one_few_many` (e.g. Polish, Russian).
-/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural`.
+/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural` /
+/// `VariableBeforeUnitPlural`.
 impl UnitNumber {
     fn category(element: Element) -> &'static str {
         let amount_category = Self::amount_category(element);
-        let has_number = amount_category.is_some();
-        let policy = Self::active_policy(has_number);
+        let has_variable = amount_category.is_none() && variable_coefficient(element).is_some();
+        let policy = Self::active_policy(amount_category.is_some(), has_variable);
 
         // Per-side with no local count stays singular unless the policy is `all`.
         if Self::is_per_side_uncounted(element) {
@@ -1863,27 +1918,38 @@ impl UnitNumber {
         return Self::def_vec_first("NumberlessUnitPlural").unwrap_or_else(|| "same".to_string());
     }
 
-    /// Policy in force: with a number use CompoundUnitPlural; without, NumberlessUnitPlural
-    /// (`same` → CompoundUnitPlural).
-    fn active_policy(has_number: bool) -> String {
+    fn variable_before_unit_plural() -> String {
+        return Self::def_vec_first("VariableBeforeUnitPlural").unwrap_or_else(|| "same".to_string());
+    }
+
+    /// Policy in force: mn → CompoundUnitPlural; identifier → VariableBeforeUnitPlural;
+    /// neither → NumberlessUnitPlural (`same` → CompoundUnitPlural).
+    fn active_policy(has_number: bool, has_variable: bool) -> String {
         if has_number {
             return Self::compound_unit_plural();
         }
-        let numberless = Self::numberless_unit_plural();
-        if numberless == "same" {
+        let policy = if has_variable {
+            Self::variable_before_unit_plural()
+        } else {
+            Self::numberless_unit_plural()
+        };
+        if policy == "same" {
             return Self::compound_unit_plural();
         }
-        return numberless;
+        return policy;
     }
 
     /// After `/`, or in a fraction denominator with no count of its own ("per hour").
-    /// A denominator that carries its own number (`3 m / 2 s`) is not immediately after
-    /// `/`—the `2` sits in a nested mrow—so it is treated as its own counted side.
+    /// A denominator that carries its own number (`3 m / 2 s`) or identifier (`m / x s`)
+    /// is not treated as an uncounted per side.
     fn is_per_side_uncounted(element: Element) -> bool {
         if Self::after_div_op(element) {
             return true;
         }
-        return Self::in_fraction_denominator(element) && Self::local_count(element).is_none();
+        if !Self::in_fraction_denominator(element) {
+            return false;
+        }
+        return Self::local_count(element).is_none() && variable_coefficient(element).is_none();
     }
 
     /// True when this factor’s previous sibling is a division operator.
@@ -2865,7 +2931,7 @@ mod tests {
         return Ok(package);
     }
 
-    /// CompoundUnitPlural last/first/all/none and NumberlessUnitPlural (hu last without mn).
+    /// CompoundUnitPlural last/first/all/none, NumberlessUnitPlural, and VariableBeforeUnitPlural.
     #[test]
     fn unit_number_compound_policies() -> Result<()> {
         return xpath_test(|| {
@@ -2882,6 +2948,16 @@ mod tests {
             </math>"#;
             let uncounted = r#"<math>
                 <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let with_variable = r#"<math>
+                <mi>x</mi><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
                     <mi data-intent-property=':unit:'>m</mi>
                     <mo>/</mo>
                     <mi data-intent-property=':unit:'>s</mi>
@@ -2966,8 +3042,28 @@ mod tests {
             assert_eq!(UnitNumber::category(m), "many");
             assert_eq!(UnitNumber::category(s), "one");
 
+            // VariableBeforeUnitPlural same → CompoundUnitPlural none: every factor singular.
+            let package = parse_unit_mathml(with_variable)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // English default: variable uses last counted factor like a non-one numeral.
             crate::interface::set_preference("Language", "en")?;
             crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(with_variable)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
             return Ok(());
         });
     }

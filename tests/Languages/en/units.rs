@@ -566,6 +566,18 @@ fn derived_unit_watts_per_metre_squared() -> Result<()> {
     Ok(())
 }
 
+/// A variable before a unit uses VariableBeforeUnitPlural (same → last): plural form.
+#[test]
+fn variable_before_unit_is_plural() -> Result<()> {
+    let expr = r#"<math>
+        <mi>x</mi>
+        <mi intent=":unit">m</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "x metres")?;
+    test("en", "ClearSpeak", expr, "x metres")?;
+    return Ok(());
+}
+
 /// Parentheses grouping a unit numerator or denominator are not spoken.
 #[test]
 fn unit_quotient_grouping_parens_are_silent() -> Result<()> {
