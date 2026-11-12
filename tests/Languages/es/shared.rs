@@ -79,6 +79,19 @@ fn limit_sup_inf() -> Result<()> {
 }
 
 #[test]
+fn min_max_with_condition() -> Result<()> {
+    // la condición va al final, como se dice: "el mínimo de f de x cuando x pertenece a A"
+    let min = "<math><munder><mo movablelimits=\"true\">min</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+    let sup = "<math><munder><mo movablelimits=\"true\">sup</mo><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+    let plus = "<math><munder><mo movablelimits=\"true\">min</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>+</mo><mn>1</mn></math>";
+    test("es", "ClearSpeak", min, "el mínimo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "SimpleSpeak", sup, "el supremo de f de x, cuando x es mayor que 0")?;
+    test("es", "ClearSpeak", plus, "el mínimo de f de x, cuando x pertenece a mayúscula a; más 1")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], min, "mín de f x, cuando x pertenece a mayúscula a")?;
+    return Ok(());
+}
+
+#[test]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>
