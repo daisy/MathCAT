@@ -21,6 +21,38 @@
       then: [T: "por la derecha"]      # phrase(x tiende a 0 'por la derecha')
       else: [T: "por la izquierda"]    # phrase(x tiende a 0 'por la izquierda')
 
+- name: min-max-con-condicion
+  # \min_{x∈A} f(x): la condición va al final, como se dice: "el mínimo de f de x cuando x pertenece a A"
+  tag: mrow
+  variables: [Op: "normalize-space(*[1]/*[1])"]
+  match: "count(*) >= 3 and *[1][self::m:munder][normalize-space(*[1])='min' or normalize-space(*[1])='max' or normalize-space(*[1])='sup' or normalize-space(*[1])='inf'] and *[2][.='\u2061']"
+  replace:
+  - bookmark: "*[1]/@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then:
+      - test:
+        - if: "$Op='min'"
+          then: [T: "mín"]      # phrase('mín' de f de x)
+        - else_if: "$Op='max'"
+          then: [T: "máx"]      # phrase('máx' de f de x)
+        - else: [x: "$Op"]
+      else:
+      - test:
+        - if: "$Op='min'"
+          then: [T: "el mínimo"]      # phrase('el mínimo' de f de x)
+        - else_if: "$Op='max'"
+          then: [T: "el máximo"]      # phrase('el máximo' de f de x)
+        - else_if: "$Op='sup'"
+          then: [T: "el supremo"]      # phrase('el supremo' de f de x)
+        - else: [T: "el ínfimo"]      # phrase('el ínfimo' de f de x)
+  - T: "de"      # phrase(el mínimo 'de' f de x)
+  - x: "*[position() > 2]"
+  - pause: short
+  - T: "cuando"      # phrase(el mínimo de f de x 'cuando' x pertenece a A)
+  - x: "*[1]/*[2]"
+  - pause: short
+
 - name: limite-con-tilde
   # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
   tag: munder
