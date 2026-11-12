@@ -23,12 +23,25 @@
 
 - name: min-max-con-condicion
   # \min_{x∈A} f(x): la condición va al final, como se dice: "el mínimo de f de x cuando x pertenece a A"
+  # (el nombre lo dice la regla "min-max-nombre", así la navegación encuentra cada parte)
   tag: mrow
-  # con tilde (babel en español: mín, máx, ínf) se lee igual
-  variables: [Op: "translate(*[1]/*[1], 'íá \u00A0\u2009\u2061', 'ia')"]
-  match: "count(*) >= 3 and *[1][self::m:munder][contains('|min|max|sup|inf|', concat('|', translate(*[1], 'íá \u00A0\u2009\u2061', 'ia'), '|'))] and *[2][.='\u2061']"
+  match: "count(*) >= 3 and *[1][self::m:munder][contains('|min|max|sup|inf|', concat('|', translate(*[1], 'íá \u00A0\u2009\u2061', 'ia'), '|'))] and *[2][.='\u2061'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
   replace:
-  - bookmark: "*[1]/@id"
+  - x: "*[1]"
+  - T: "de"      # phrase(el mínimo 'de' f de x)
+  - x: "*[position() > 2]"
+  - pause: short
+  - T: "cuando"      # phrase(el mínimo de f de x 'cuando' x pertenece a A)
+  - x: "*[1]/*[2]"
+  - pause: short
+
+- name: min-max-nombre
+  # el munder de "min-max-con-condicion": solo el nombre; la condición se dice al final
+  tag: munder
+  variables: [Op: "translate(*[1], 'íá \u00A0\u2009\u2061', 'ia')"]
+  match: "contains('|min|max|sup|inf|', concat('|', translate(*[1], 'íá \u00A0\u2009\u2061', 'ia'), '|')) and following-sibling::*[1][.='\u2061'] and following-sibling::*[2] and not(preceding-sibling::*) and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
       then:
@@ -47,12 +60,6 @@
         - else_if: "$Op='sup'"
           then: [T: "el supremo"]      # phrase('el supremo' de f de x)
         - else: [T: "el ínfimo"]      # phrase('el ínfimo' de f de x)
-  - T: "de"      # phrase(el mínimo 'de' f de x)
-  - x: "*[position() > 2]"
-  - pause: short
-  - T: "cuando"      # phrase(el mínimo de f de x 'cuando' x pertenece a A)
-  - x: "*[1]/*[2]"
-  - pause: short
 
 - name: limite-con-tilde
   # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
