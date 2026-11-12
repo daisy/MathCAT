@@ -27,6 +27,45 @@ fn modified_vars() -> Result<()> {
 }
 
 #[test]
+fn ordinals() -> Result<()> {
+    // ordinales como llegan desde LaTeX (luamml): la letra marca el género, el plural y el apócope
+    let cases = [
+        // 1\text{.\textsuperscript{o}}
+        ("<math><mn>1</mn><mtext>.o</mtext></math>", "primero"),
+        ("<math><mn>2</mn><mtext>.a</mtext></math>", "segunda"),
+        ("<math><mn>3</mn><mtext>.er</mtext></math>", "tercer"),
+        ("<math><mn>2</mn><mtext>.os</mtext></math>", "segundos"),
+        ("<math><mn>1</mn><mtext>.as</mtext></math>", "primeras"),
+        ("<math><mn>13</mn><mtext>.er</mtext></math>", "decimotercer"),
+        ("<math><mn>21</mn><mtext>.a</mtext></math>", "vigésima primera"),
+        ("<math><mn>30</mn><mtext>.o</mtext></math>", "trigésimo"),
+        ("<math><mn>99</mn><mtext>.o</mtext></math>", "nonagésimo noveno"),
+        // 1.\text{º}, \text{1.\textsuperscript{o}}
+        ("<math><mn>1</mn><mo>.</mo><mtext>º</mtext></math>", "primero"),
+        ("<math><mn>2</mn><mo>.</mo><mtext>ª</mtext></math>", "segunda"),
+        ("<math><mtext>1.o</mtext></math>", "primero"),
+        // 1.^{\text{o}} y 1^{\text{o}}
+        ("<math><mn>1</mn><msup><mo>.</mo><mtext>o</mtext></msup></math>", "primero"),
+        ("<math><mn>3</mn><msup><mo>.</mo><mtext>er</mtext></msup></math>", "tercer"),
+        ("<math><msup><mn>1</mn><mtext>o</mtext></msup></math>", "primero"),
+        // dentro de una fórmula
+        ("<math><msub><mi>a</mi><mrow><mn>1</mn><mtext>.o</mtext></mrow></msub><mo>+</mo><msub><mi>a</mi><mrow><mn>2</mn><mtext>.o</mtext></mrow></msub></math>",
+            "a sub primero fin de sub; más, a sub segundo fin de sub"),
+        ("<math><mtext>el </mtext><mn>1</mn><mtext>.er término es </mtext><msub><mi>a</mi><mn>1</mn></msub></math>",
+            "el primer término es a sub 1"),
+        // no son ordinales
+        ("<math><mn>100</mn><mtext>.o</mtext></math>", "100 .o"),
+        ("<math><mn>2</mn><mo>.</mo><mi>a</mi></math>", "2 punto a"),
+        ("<math><msup><mn>2</mn><mi>a</mi></msup></math>", "2 elevado a a"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
 fn limit() -> Result<()> {
     let expr = "<math>
             <munder>

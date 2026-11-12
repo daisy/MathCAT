@@ -20,6 +20,8 @@
   # say nothing
   replace: []
 
+- include: "SharedRules/ordinal.yaml"
+
 # handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here 
 
 - name: intent-literal-negative-number
