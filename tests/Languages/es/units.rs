@@ -630,7 +630,7 @@ fn unit_negative_power() -> Result<()> {
         ("<math><mn>3</mn><mi mathvariant=\"normal\">kg</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>3</mn></mrow></msup></math>",
             "3 kilogramos por metro al cubo"),
         ("<math><mn>5</mn><mi mathvariant=\"normal\">W</mi><msup><mi mathvariant=\"normal\">m</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><msup><mi mathvariant=\"normal\">K</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
-            "5 vatios por metro y kelvin"),
+            "5 vatios por metro kelvin"),
         // sin unidad delante, se lee el exponente
         ("<math><mn>10</mn><msup><mi mathvariant=\"normal\">s</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>",
             "10 segundos elevado a menos 1"),

@@ -248,7 +248,7 @@
       else: [T: "inversa"]     # phrase(tangente 'inversa')
 
 # unidad con exponente negativo detrás de otra unidad: "metros por segundo",
-# "vatios por metro y kelvin" (folleto SI del CEM, tabla 6)
+# "vatios por metro kelvin" (un solo "por", como W/(m·K))
 - name: unit-negative-power
   tag: power
   match:
@@ -256,9 +256,8 @@
   - "preceding-sibling::*[1][.='\u2062']/preceding-sibling::*[1][self::m:unit or self::m:power[*[1][self::m:unit]]]"
   replace:
   - test:
-      if: "preceding-sibling::*[2][self::m:power][*[2][self::m:minus]]"
-      then: [T: "y"]      # phrase(vatios por metro 'y' kelvin)
-      else: [T: "por"]      # phrase(metros 'por' segundo)
+      if: "not(preceding-sibling::*[2][self::m:power][*[2][self::m:minus]])"
+      then: [T: "por"]      # phrase(metros 'por' segundo; vatios por metro kelvin)
   - x: "*[1]"
   - bookmark: "*[2]/@id"
   - test:
