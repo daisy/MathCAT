@@ -27,7 +27,7 @@
     "arccot", "arccotan", "arccotanh", "arccoth",
     "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
     "arctan", "arctang", "arctanh",
-    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", "re", "Re", "ℜ", "Pr", "cis",
     "gcd", "lcm",
     "min", "max", "deg", "det", "rank", "rg", "sgn",
     "dim", "hom", "ker", "tr", "rot", "div",
@@ -35,7 +35,7 @@
     "inf", "lim", "liminf", "limsup", "lim inf", "lim sup", "lim inf", "lim sup", "sup",
     "injlim", "projlim", "inj lim", "proj lim",
     # con tilde (babel en español)
-    "mín", "máx", "ínf", "lím", "límsup", "líminf", "límínf", "lím sup", "lím inf", "lím ínf", "lím sup", "lím inf", "lím ínf",
+    "ínf", "límínf", "lím ínf", "lím sup", "lím inf", "lím ínf",
 
     # these come from the nemeth book (Rule XVII)
     "arc",
