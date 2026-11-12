@@ -8,6 +8,13 @@
   replace:
   - t: ""
 
+# After "/" or "∕" the hour or minute unit is already said by 毎時 or 毎分 (the "/" in unicode.yaml, the "∕" in unicode-full.yaml), so it is silent here.
+- name: unit-after-per-slash
+  tag: unit
+  match: "(.='h' or .='hr' or .='Hr' or .='min') and preceding-sibling::*[1][self::m:mo and (.='/' or .='\u2215')] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
