@@ -135,13 +135,13 @@ fn vector_calculus_operators() -> Result<()> {
 #[test]
 fn multiplication_and_division() -> Result<()> {
     let expr = "<math><mn>6</mn><mo>&#x00D7;</mo><mn>4</mn><mo>&#x00F7;</mo><mn>2</mn></math>";
-    test("ja", "ClearSpeak", expr, "6 掛ける 4 割る 2")?;
+    test("ja", "ClearSpeak", expr, "6 掛ける 4 わる 2")?;
     return Ok(());
 }
 
 /// A "/" between units said 割る ("divided by"); en says per here. It is now 毎, and before an
 /// hour or minute unit it is 毎時 or 毎分 and the unit itself is not spoken (毎 時間 is "every hour").
-/// A "/" that is not next to a unit still says 割る.
+/// A "/" that is not next to a unit still says わる.
 #[test]
 fn slash_between_units() -> Result<()> {
     for (expr, expected) in [
@@ -149,13 +149,13 @@ fn slash_between_units() -> Result<()> {
         (r#"<math><mn>10</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">min</mi></math>"#, "10 メートル 毎分"),
         (r#"<math><mn>3</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">s</mi></math>"#, "3, メートル 毎 秒"),
         (r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#, "5 ユーロ 毎 リットル"),
-        (r#"<math><mi>x</mi><mo>/</mo><mi>h</mi></math>"#, "x 割る h"),
+        (r#"<math><mi>x</mi><mo>/</mo><mi>h</mi></math>"#, "x わる h"),
         // the hour is still spoken when it is squared
         (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><msup><mi intent=":unit">h</mi><mn>2</mn></msup></math>"#, "5, メートル 毎 時間 の 2 乗"),
         (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">hr</mi></math>"#, "5 メートル 毎時"),
         // the division slash U+2215 is read the same way
         (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>&#x2215;</mo><mi intent=":unit">h</mi></math>"#, "5 メートル 毎時"),
-        (r#"<math><mi>a</mi><mo>&#x2215;</mo><mi>b</mi></math>"#, "エー 割る b"),
+        (r#"<math><mi>a</mi><mo>&#x2215;</mo><mi>b</mi></math>"#, "エー わる b"),
         (r#"<math><mrow intent=":literal"><mi>a</mi><mo>&#x2215;</mo><mi>h</mi></mrow></math>"#, "エー スラッシュ h"),
     ] {
         test("ja", "SimpleSpeak", expr, expected)?;
@@ -239,14 +239,15 @@ fn interval_open_closed() -> Result<()> {
 /// SimpleSpeak names the kind of interval. The name was read in English
 /// ("open interval から c に d"), and から and まで now follow the endpoints.
 /// (a, b] is 左開右閉区間 and [a, b) is 左閉右開区間; 左半開区間 is avoided because
-/// authors differ on which side it means.
+/// authors differ on which side it means. 開 is written かい because Open JTalk
+/// reads 開区間 as ひらきくかん.
 #[test]
 fn simplespeak_interval_names_are_japanese() -> Result<()> {
     let cases = [
-        ("open-interval", "(", ")", "開区間"),
+        ("open-interval", "(", ")", "かい区間"),
         ("closed-interval", "[", "]", "閉区間"),
-        ("open-closed-interval", "(", "]", "左開右閉区間"),
-        ("closed-open-interval", "[", ")", "左閉右開区間"),
+        ("open-closed-interval", "(", "]", "左かい右閉区間"),
+        ("closed-open-interval", "[", ")", "左閉右かい区間"),
     ];
     for (intent, open, close, name) in cases {
         let expr = format!("<math><mrow intent='{intent}($start, $end)'><mo>{open}</mo><mi arg='start'>c</mi><mo>,</mo><mi arg='end'>d</mi><mo>{close}</mo></mrow></math>");
@@ -434,15 +435,16 @@ fn not_element_of() -> Result<()> {
 
 /// The Member option said 元 on its own, which is the noun "element" with no
 /// preposition, so the set after it was stranded the same way 要素の was for ∈.
-/// 元オブ keeps the noun the seed chose and adds the オブ the source introduces
-/// for English prepositions. に含まれる attaches to what comes before it, which
+/// 元オブ then kept the noun the seed chose, but Open JTalk reads it もとおぶ, so
+/// 元 is now written げん; the Element option keeps 要素オブ. It keeps the オブ
+/// the source introduces for English prepositions. に含まれる attaches to what comes before it, which
 /// reverses the relation, so the In option uses the イン already used inside a set.
 #[test]
 fn member_and_in_options_work_between_the_operands() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Member", &expr,
-            "x 元オブ おおもじ エー")?;
+            "x げんオブ おおもじ エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
             "x イン おおもじ エー")?;
     }
@@ -645,16 +647,18 @@ fn trigonometric_function_names() -> Result<()> {
     return Ok(());
 }
 
-/// The six hyperbolic functions are 双曲線正弦 through 双曲線余接.
+/// The six hyperbolic functions are 双曲線正弦 through 双曲線余接. Open JTalk reads 割
+/// in 双曲線正割 and 双曲線余割 as わり and 双曲線余接 as そうきょくせんあまりせっ, so
+/// those three are written 双曲線せいかつ, 双曲線よかつ and 双曲線よせつ.
 #[test]
 fn hyperbolic_function_names() -> Result<()> {
     for (name, expected) in [
         ("sinh", "双曲線正弦 オブ x"),
         ("cosh", "双曲線余弦 オブ x"),
         ("tanh", "双曲線正接 オブ x"),
-        ("sech", "双曲線正割 オブ x"),
-        ("csch", "双曲線余割 オブ x"),
-        ("coth", "双曲線余接 オブ x"),
+        ("sech", "双曲線せいかつ, オブ x"),
+        ("csch", "双曲線よかつ オブ x"),
+        ("coth", "双曲線よせつ オブ x"),
     ] {
         let expr = format!("<math><mi>{name}</mi><mo>&#x2061;</mo><mi>x</mi></math>");
         test("ja", "SimpleSpeak", &expr, expected)?;
@@ -687,7 +691,8 @@ fn complex_number_parts() -> Result<()> {
     return Ok(());
 }
 
-/// The inverse trigonometric functions are 逆正弦 through 逆余接.
+/// The inverse trigonometric functions are 逆正弦 through 逆余接. 逆余割 is read
+/// ぎゃくよわり, so it is written 逆よかつ; 逆正割 and 逆余接 are read correctly.
 #[test]
 fn inverse_trigonometric_names() -> Result<()> {
     for (intent, expected) in [
@@ -695,7 +700,7 @@ fn inverse_trigonometric_names() -> Result<()> {
         ("arccosine", "逆余弦 オブ x"),
         ("arctangent", "逆正接 オブ x"),
         ("arcsecant", "逆正割 オブ x"),
-        ("arccosecant", "逆余割 オブ x"),
+        ("arccosecant", "逆よかつ オブ x"),
         ("arccotangent", "逆余接 オブ x"),
     ] {
         let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
@@ -762,11 +767,11 @@ fn partial_derivative_symbol() -> Result<()> {
 /// Set membership was worded as club membership: メンバー, 会員でない
 /// ("not a club member") and 所属団体 ("the organization one belongs to").
 /// The Auto option lands on the Member branch, which then said a bare 元でない;
-/// it now takes the ノット of ≠ in front of the 元オブ the positive form uses.
+/// it now takes the ノット of ≠ in front of the げんオブ the positive form uses.
 #[test]
 fn set_non_membership() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>y</mi></math>";
-    test("ja", "ClearSpeak", expr, "x ノット 元オブ y")?;
+    test("ja", "ClearSpeak", expr, "x ノット げんオブ y")?;
     return Ok(());
 }
 
@@ -781,6 +786,31 @@ fn parallel_and_perpendicular() -> Result<()> {
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Open JTalk reads these kanji words wrongly when they stand after a space, so the
+/// misread part is written in kana: 正割 is read せいわり and 余割 よわり (now せいかつ and
+/// よかつ), 割る after a letter or number is read われる (now わる), 負の is read まけの
+/// (now ふの), デカルト積 デカルトつもる, 線形包 せんけいつつみ, 丸めた値 まるめたね, and
+/// 空集合 そらしゅうごう. codomain said 共同ドメイン ("joint domain"); it is 終域, which
+/// Open JTalk reads おわりいき, so it is written しゅう域.
+#[test]
+fn kanji_words_written_so_they_read_right() -> Result<()> {
+    let cases = [
+        ("<mrow intent='secant($x)'><mi arg='x'>x</mi></mrow>", "せいかつ オブ x"),
+        ("<mrow intent='cosecant($x)'><mi arg='x'>x</mi></mrow>", "よかつ オブ x"),
+        ("<mrow intent='codomain($x)'><mi arg='x'>x</mi></mrow>", "しゅう域 オブ x"),
+        ("<mrow intent='quotient($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow>", "整数部 オブ x わる y"),
+        ("<mrow intent='cartesian-product($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow>", "x デカルトせき y"),
+        ("<mrow intent='span($x)'><mi arg='x'>x</mi></mrow>", "線形ほう オブ x"),
+        ("<mrow><mi>x</mi><mo>÷</mo><mi>y</mi></mrow>", "x わる y"),
+        ("<mrow><mi>x</mi><mo>/</mo><mi>y</mi></mrow>", "x わる y"),
+        ("<msup><mi>ℤ</mi><mo>-</mo></msup>", "ふの 整数"),
+    ];
+    for (body, expected) in cases {
+        test("ja", "SimpleSpeak", &format!("<math>{body}</math>"), expected)?;
     }
     return Ok(());
 }
@@ -893,7 +923,7 @@ fn definite_integral() -> Result<()> {
 fn unicode_full_symbol_names() -> Result<()> {
     for (ch, expected) in [
         ("&#x00A5;", "円記号"),
-        ("&#x2205;", "空集合"),
+        ("&#x2205;", "くう集合"),
         ("&#x2295;", "丸 プラス"),
     ] {
         let expr = format!("<math><mo>{ch}</mo></math>");
@@ -1526,7 +1556,7 @@ fn an_evaluation_bar_says_where_it_is_evaluated() -> Result<()> {
 #[test]
 fn the_function_names_are_japanese_words() -> Result<()> {
     for (intent, expected) in [
-        ("round", "丸めた値 オブ x"),
+        ("round", "丸めたあたい オブ x"),
         ("fenced-group", "括弧のまとまり オブ x"),
     ] {
         let expr = format!("<math><mrow intent='{intent}($x)'><mi arg='x'>x</mi></mrow></math>");
