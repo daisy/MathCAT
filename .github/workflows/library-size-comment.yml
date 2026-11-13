@@ -1,0 +1,119 @@
+name: Library Size Comment
+
+on:
+  workflow_run:
+    workflows: [Library Size]
+    types: [completed]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+concurrency:
+  group: library-size-comment-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  comment:
+    name: Update PR comment
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download measurements
+        uses: actions/download-artifact@v8
+        with:
+          name: library-size-report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/mathcat-size-report
+
+      # This job never checks out or executes PR code. Treat the downloaded report as untrusted.
+      - name: Update size comment
+        uses: actions/github-script@v9
+        env:
+          REPORT_PATH: ${{ runner.temp }}/mathcat-size-report/report.json
+        with:
+          script: |
+            const fs = require('fs');
+            const run = context.payload.workflow_run;
+            const {owner, repo} = context.repo;
+            const marker = '<!-- mathcat-library-size -->';
+
+            // Read and validate the artifact from the untrusted PR build.
+            function readReport() {
+              const report = JSON.parse(fs.readFileSync(process.env.REPORT_PATH, 'utf8'));
+              const shaPattern = /^[0-9a-f]{40}$/i;
+              if (!Number.isSafeInteger(report.prNumber) || report.prNumber <= 0 ||
+                  !shaPattern.test(report.baseSha) || !shaPattern.test(report.headSha) ||
+                  !Number.isSafeInteger(report.baseBytes) || report.baseBytes <= 0 ||
+                  !Number.isSafeInteger(report.headBytes) || report.headBytes <= 0) {
+                throw new Error('Invalid library size report');
+              }
+              return report;
+            }
+
+            // Only report measurements for the current PR and source branch.
+            async function matchesCurrentPull(report) {
+              const {data: pull} = await github.rest.pulls.get({
+                owner, repo, pull_number: report.prNumber,
+              });
+              if (pull.state !== 'open' || pull.base.sha !== report.baseSha ||
+                  pull.head.sha !== report.headSha) {
+                core.notice('PR revisions changed or PR closed; ignoring stale measurements');
+                return false;
+              }
+              if (run.head_repository?.id !== pull.head.repo?.id ||
+                  run.head_branch !== pull.head.ref ||
+                  (run.pull_requests?.length > 0 &&
+                   !run.pull_requests.some(pr => pr.number === report.prNumber))) {
+                throw new Error('Report does not belong to the triggering PR branch');
+              }
+              return true;
+            }
+
+            // The summary is the entire collapsed view; the table is shown on expansion.
+            function renderComment(report) {
+              const mib = bytes => `${(bytes / 1048576).toFixed(2)} MiB`;
+              const size = bytes => `${mib(bytes)} (${bytes.toLocaleString('en-US')} bytes)`;
+              const delta = report.headBytes - report.baseBytes;
+              const percent = `${delta > 0 ? '+' : ''}${(100 * delta / report.baseBytes).toFixed(2)}%`;
+              return [
+                marker,
+                '<details>',
+                `<summary>Linux library size: ${mib(report.headBytes)} (${percent})</summary>`,
+                '',
+                '| Revision | Release `liblibmathcat.so` |',
+                '| --- | ---: |',
+                `| Base (${report.baseSha.slice(0, 7)}) | ${size(report.baseBytes)} |`,
+                `| PR (${report.headSha.slice(0, 7)}) | ${size(report.headBytes)} |`,
+                `| Change | ${delta > 0 ? '+' : ''}${delta.toLocaleString('en-US')} bytes (${percent}) |`,
+                '',
+                `Built with default features, Rust 1.96.0, and Ubuntu 24.04. [Workflow run](${run.html_url}).`,
+                '</details>',
+              ].join('\n');
+            }
+
+            // Reuse the bot's marked comment instead of posting on every run.
+            async function upsertComment(prNumber, body) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner, repo, issue_number: prNumber, per_page: 100,
+              });
+              const previous = comments.find(comment =>
+                comment.user?.login === 'github-actions[bot]' && comment.body?.includes(marker));
+              if (previous) {
+                if (previous.body !== body) {
+                  await github.rest.issues.updateComment({
+                    owner, repo, comment_id: previous.id, body,
+                  });
+                }
+              } else {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: prNumber, body,
+                });
+              }
+            }
+
+            const report = readReport();
+            if (await matchesCurrentPull(report)) {
+              await upsertComment(report.prNumber, renderComment(report));
+            }

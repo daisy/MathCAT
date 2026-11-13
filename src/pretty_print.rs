@@ -127,39 +127,9 @@ fn is_complex(v: &Yaml) -> bool {
     }
 }
 
-use std::error::Error;
-use std::fmt::{self, Display};
+use std::fmt;
 use yaml_rust::{Yaml, yaml::Hash};
 
-//use crate::yaml::{Hash, Yaml};
-
-#[derive(Copy, Clone, Debug)]
-#[allow(dead_code)] // from original YAML code (isn't used here)
-enum EmitError {
-    FmtError(fmt::Error),
-    BadHashmapKey,
-}
-
-impl Error for EmitError {
-    fn cause(&self) -> Option<&dyn Error> {
-        None
-    }
-}
-
-impl Display for EmitError {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            EmitError::FmtError(ref err) => Display::fmt(err, formatter),
-            EmitError::BadHashmapKey => formatter.write_str("bad hashmap key"),
-        }
-    }
-}
-
-impl From<fmt::Error> for EmitError {
-    fn from(f: fmt::Error) -> Self {
-        EmitError::FmtError(f)
-    }
-}
 
 struct YamlEmitter<'a> {
     writer: &'a mut dyn fmt::Write,
@@ -169,10 +139,8 @@ struct YamlEmitter<'a> {
     level: isize,
 }
 
-type EmitResult = Result<(), EmitError>;
-
 // from serialize::json
-fn escape_str(wr: &mut dyn fmt::Write, v: &str) -> Result<(), fmt::Error> {
+fn escape_str(wr: &mut dyn fmt::Write, v: &str) -> fmt::Result {
     wr.write_str("\"")?;
 
     let mut start = 0;
@@ -263,7 +231,7 @@ impl<'a> YamlEmitter<'a> {
     }
 
 
-    fn write_indent(&mut self) -> EmitResult {
+    fn write_indent(&mut self) -> fmt::Result {
         if self.level <= 0 {
             return Ok(());
         }
@@ -275,7 +243,7 @@ impl<'a> YamlEmitter<'a> {
         Ok(())
     }
 
-    fn emit_node(&mut self, node: &Yaml) -> EmitResult {
+    fn emit_node(&mut self, node: &Yaml) -> fmt::Result {
         match *node {
             Yaml::Array(ref v) => self.emit_array(v),
             Yaml::Hash(ref h) => self.emit_hash(h),
@@ -312,7 +280,7 @@ impl<'a> YamlEmitter<'a> {
         }
     }
 
-    fn emit_array(&mut self, v: &[Yaml]) -> EmitResult {
+    fn emit_array(&mut self, v: &[Yaml]) -> fmt::Result {
         if v.is_empty() {
             write!(self.writer, "[]")?;
         } else if v.len() == 1 && !is_complex(&v[0]) {
@@ -336,7 +304,7 @@ impl<'a> YamlEmitter<'a> {
         return Ok(());
     }
 
-    fn emit_hash(&mut self, h: &Hash) -> EmitResult {
+    fn emit_hash(&mut self, h: &Hash) -> fmt::Result {
         if h.is_empty() {
             self.writer.write_str("{}")?;
         } else {
@@ -385,7 +353,7 @@ impl<'a> YamlEmitter<'a> {
     /// If `inline` is true, then the preceding characters are distinct
     /// and short enough to respect the compact flag.
     // changed: use to always emit ' ' for inline -- that is now handled elsewhere
-    fn emit_val(&mut self, inline: bool, val: &Yaml) -> EmitResult {
+    fn emit_val(&mut self, inline: bool, val: &Yaml) -> fmt::Result {
         match *val {
             Yaml::Array(ref v) => {
                 if !((inline && self.compact) || v.is_empty()) {

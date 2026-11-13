@@ -1,14 +1,29 @@
 ---
 
+- name: laplacian
+  tag: laplacian
+  match: "count(*) <= 1"   # can be on ∇^2 or on enclosing mrow
+  replace:
+  - T: "laplaciano"      # phrase(el 'laplaciano' de x)
+  - test:
+      if: "count(*) = 1"
+      then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [T: "de"]             # phrase(función 'de' una variable)
+      - test:
+          if: "not(IsNode(*[1], 'leaf'))"
+          then: [pause: short]
+      - x: "*[1]"
+
 - name: divergence
   tag: divergence
-  match: "."
+  match: "count(*) = 1"
   replace:
   - test:
-      if: "$Verbosity='Verbose'"
-      then: [t: "divergence"]      # phrase('divergence' from the mean)
-      else: [t: "div"]      # phrase('divergence' from the mean)
-  - t: "of"      # phrase(systems 'of' linear equations)
+      if: "$Verbosity='Terse'"
+      then: [T: "div"]             # phrase('div' es la abreviatura de divergencia)
+      else: [T: "divergencia de"]      # phrase(la 'divergencia de' un campo)
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -16,9 +31,12 @@
 
 - name: curl
   tag: curl
-  match: "."
+  match: "count(*) = 1"
   replace:
-  - t: "curl of"      # phrase(the 'curl of' a field)
+  - T: "rotacional"      # phrase(el 'rotacional' de un campo)
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]             # phrase(función 'de' una variable)
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
@@ -26,12 +44,12 @@
 
 - name: gradient
   tag: gradient
-  match: "."
+  match: "count(*) = 1"
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "gradient of"]      # phrase('divergence' from the mean)
-      else: [t: "del"]      # phrase('divergence' from the mean)
+      then: [T: "gradiente de"]      # phrase(el 'gradiente de' una función)
+      else: [T: "nabla"]      # phrase(el operador 'nabla')
   - test:
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]

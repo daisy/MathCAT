@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -233,6 +241,21 @@
   - pause: short
 
 
+# Currency words need a leaf-level rule so navigation can mark the symbol itself.
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
+
 # the order of matching is
 # 1. does it match the base of an SI unit
 # 2. does it match an English unit (if in an English language)
@@ -250,12 +273,6 @@
     # Note: we have a special case for pseudo-scripts like "°" (degrees) which are not powers -- they are essentially "1^°"
     # The following "IfThenElse" logic returns the mrow that potentially contains the coefficient, if it exists
     # The tests are in the order A, B & E, C, D
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not(DEBUG($MRowForCoefficient)) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -271,6 +288,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -300,7 +320,7 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "$Word"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -310,7 +330,7 @@
       - x: "$Prefix"
       - ct: "-"
       - test:
-        - if: "$IsSingular"
+        - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "concat('\uF8FE', $Word)"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -320,19 +340,15 @@
 # Currency symbols precede amounts in MathML but are spoken after them in German: $ 3 -> 3 dollar.
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "$IsSingular"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "$CurrencyWord"]
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

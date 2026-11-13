@@ -3,11 +3,11 @@
 #![allow(non_snake_case)]
 #![allow(clippy::needless_return)]
 use std::cell::RefCell;
-use std::sync::LazyLock;
 
 use crate::canonicalize::{as_text, create_mathml_element};
 use crate::errors::*;
 use phf::phf_map;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::{Captures, Regex};
 use sxd_document_no_unsafe::dom::{Element, Document, ChildOfRoot, ChildOfElement, Attribute};
 use sxd_document_no_unsafe::parser;
@@ -173,13 +173,15 @@ pub fn get_version() -> String {
 pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     enable_logs();
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
-    static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
-    static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
+    static MATHJAX_V2: Lazy<Regex> = lazy_regex!(r#"class *= *['"]MJX-.*?['"]"#);
+    static MATHJAX_V3: Lazy<Regex> = lazy_regex!(r#"class *= *['"]data-mjx-.*?['"]"#);
 
     // These have some length limits to avoid DOS attacks via long strings
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
+    static NAMESPACE_DECL: Lazy<Regex> = lazy_regex!(r#"xmlns:[[:alpha:]]{1,32}"#);
+    static PREFIX: Lazy<Regex> = lazy_regex!(r#"(</?)[[:alpha:]]{1,32}:"#);
+    // The longest name in src/entities.in is "CounterClockwiseContourIntegral" (31 letters),
+    // so 32 is used as the upper bound to keep names of any length resolvable.
+    static HTML_ENTITIES: Lazy<Regex> = lazy_regex!(r#"&([a-zA-Z]{2,32});"#);
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -246,35 +248,23 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
 /// Get the spoken text of the MathML that was set.
 /// The speech takes into account any AT or user preferences.
 pub fn get_spoken_text() -> Result<String> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            let new_package = Package::new();
-            let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
-            debug!("Intent tree:\n{}", mml_to_string(intent));
-            let speech = crate::speech::speak_mathml(intent, "", 0)?;
-            return Ok(speech);
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        let new_package = Package::new();
+        let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
+        debug!("Intent tree:\n{}", mml_to_string(intent));
+        let speech = crate::speech::speak_mathml(intent, "", 0)?;
+        return Ok(speech);
+    });
 }
 
 /// Get the spoken text for an overview of the MathML that was set.
 /// The speech takes into account any AT or user preferences.
 /// Note: this implementation for is currently minimal and should not be used.
 pub fn get_overview_text() -> Result<String> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            let speech = crate::speech::overview_mathml(mathml, "", 0)?;
-            return Ok(speech);
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        let speech = crate::speech::overview_mathml(mathml, "", 0)?;
+        return Ok(speech);
+    });
 }
 
 /// Get the value of the named preference.
@@ -287,10 +277,7 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| {
             let rules = rules.borrow();
             let pref_manager = rules.pref_manager.borrow();
-            let mut value = pref_manager.pref_to_string(&name);
-            if value == NO_PREFERENCE {
-                value = pref_manager.pref_to_string(&name);
-            }
+            let value = pref_manager.pref_to_string(&name);
             if value == NO_PREFERENCE {
                 bail!("No preference named '{}'", name);
             } else {
@@ -398,17 +385,10 @@ fn to_float(name: &str, value: &str) -> Result<f64> {
 /// The braille returned depends upon the preference for the `code` preference (default `Nemeth`).
 /// If 'nav_node_id' is given, it is highlighted based on the value of `BrailleNavHighlight` (default: `EndPoints`)
 pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
-    enable_logs();
-    let nav_node_id = nav_node_id.as_ref().to_string();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            let braille = crate::braille::braille_mathml(mathml, &nav_node_id)?.0;
-            return Ok(braille);
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        let braille = crate::braille::braille_mathml(mathml, nav_node_id.as_ref())?.0;
+        return Ok(braille);
+    });
 }
 
 /// Parse Unicode braille into MathML and set it as the current expression
@@ -429,57 +409,51 @@ pub fn set_mathml_from_braille(braille: impl AsRef<str>, braille_code: impl AsRe
 /// The braille returned depends upon the preference for the `code` preference (default `Nemeth`).
 /// The returned braille is brailled as if the current navigation focus is the entire expression to be brailled.
 pub fn get_navigation_braille() -> Result<String> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            let new_package = Package::new(); // used if we need to create a new tree
-            let new_doc = new_package.as_document();
-            let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
-                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                    Err(e) => Err(e),
-                    Ok((found, offset)) => {
-                        // get the MathML node and wrap it inside of a <math> element
-                        // if the offset is given, we need to get the character it references
-                        if offset == 0 {
-                            if name(found) == "math" {
-                                Ok(found)
-                            } else {
-                                let new_mathml = create_mathml_element(&new_doc, "math");
-                                new_mathml.append_child(copy_mathml(found));
-                                new_doc.root().append_child(new_mathml);
-                                Ok(new_mathml)
-                            }
-                        } else if !is_leaf(found) {
-                            bail!(
-                                "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
-                                offset,
-                                name(found)
-                            );
-                        } else if let Some(ch) = as_text(found).chars().nth(offset) {
-                            let internal_mathml = create_mathml_element(&new_doc, as_str!(name(found)));
-                            internal_mathml.set_text(&ch.to_string());
+    return with_mathml(|mathml| {
+        let new_package = Package::new(); // used if we need to create a new tree
+        let new_doc = new_package.as_document();
+        let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
+            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                Err(e) => Err(e),
+                Ok((found, offset)) => {
+                    // get the MathML node and wrap it inside of a <math> element
+                    // if the offset is given, we need to get the character it references
+                    if offset == 0 {
+                        if name(found) == "math" {
+                            Ok(found)
+                        } else {
                             let new_mathml = create_mathml_element(&new_doc, "math");
-                            new_mathml.append_child(internal_mathml);
+                            new_mathml.append_child(copy_mathml(found, new_doc));
                             new_doc.root().append_child(new_mathml);
                             Ok(new_mathml)
-                        } else {
-                            bail!(
-                                "Internal error: offset '{}' on leaf element '{}' doesn't exist",
-                                offset,
-                                mml_to_string(found)
-                            );
                         }
+                    } else if !is_leaf(found) {
+                        bail!(
+                            "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
+                            offset,
+                            name(found)
+                        );
+                    } else if let Some(ch) = as_text(found).chars().nth(offset) {
+                        let internal_mathml = create_mathml_element(&new_doc, as_str!(name(found)));
+                        internal_mathml.set_text(&ch.to_string());
+                        let new_mathml = create_mathml_element(&new_doc, "math");
+                        new_mathml.append_child(internal_mathml);
+                        new_doc.root().append_child(new_mathml);
+                        Ok(new_mathml)
+                    } else {
+                        bail!(
+                            "Internal error: offset '{}' on leaf element '{}' doesn't exist",
+                            offset,
+                            mml_to_string(found)
+                        );
                     }
-                };
-            })?;
+                }
+            };
+        })?;
 
-            let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
-            return Ok(braille);
-        })
-    }));
-    return report_any_panic(result);
+        let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
+        return Ok(braille);
+    });
 }
 
 /// Given a key code along with the modifier keys, the current node is moved accordingly (or value reported in some cases).
@@ -492,15 +466,9 @@ pub fn do_navigate_keypress(
     alt_key: bool,
     meta_key: bool,
 ) -> Result<String> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
+    });
 }
 
 /// Given a navigation command, the current node is moved accordingly.
@@ -537,21 +505,12 @@ pub fn do_navigate_keypress(
 ///
 /// When done with Navigation, call with `Exit`
 pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
-    enable_logs();
-    let command = command.as_ref().to_string();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
-        if cmd.is_none() {
+    return with_mathml(|mathml| {
+        let Some(cmd) = NAV_COMMANDS.get_key(command.as_ref()) else {   // gets a &'static version of the command.
             bail!("Unknown command in call to DoNavigateCommand()");
         };
-        let cmd = *cmd.unwrap();
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            return do_navigate_command_string(mathml, cmd);
-        })
-    }));
-    return report_any_panic(result);
+        return do_navigate_command_string(mathml, cmd);
+    });
 }
 
 /// Preferences shared by navigation unit and integration tests.
@@ -579,78 +538,61 @@ pub fn set_navigation_test_preferences(
 /// Given an 'id' and an offset (for tokens), set the navigation node to that id.
 /// An error is returned if the 'id' doesn't exist
 pub fn set_navigation_node(id: impl AsRef<str>, offset: usize) -> Result<()> {
-    enable_logs();
-    let id = id.as_ref().to_string();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            return set_navigation_node_from_id(mathml, &id, offset);
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        return set_navigation_node_from_id(mathml, id.as_ref(), offset);
+    });
 }
 
 /// Return the MathML associated with the current (navigation) node and the offset (0-based) from that mathml (not yet implemented)
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml() -> Result<(String, usize)> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            return NAVIGATION_STATE.with(|nav_stack| {
-                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                    Err(e) => Err(e),
-                    Ok((found, offset)) => Ok((mml_to_string(found), offset)),
-                };
-            });
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        return NAVIGATION_STATE.with(|nav_stack| {
+            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                Err(e) => Err(e),
+                Ok((found, offset)) => Ok((mml_to_string(found), offset)),
+            };
+        });
+    });
 }
 
 /// Return the `id` and `offset` (0-based) associated with the current (navigation) node.
 /// `offset` (not yet implemented)
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml_id() -> Result<(String, usize)> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            return Ok(NAVIGATION_STATE.with(|nav_stack| {
-                return nav_stack.borrow().get_navigation_mathml_id(mathml);
-            }));
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        return Ok(NAVIGATION_STATE.with(|nav_stack| {
+            return nav_stack.borrow().get_navigation_mathml_id(mathml);
+        }));
+    });
 }
 
 /// Return the start and end braille character positions associated with the current (navigation) node.
 pub fn get_braille_position() -> Result<(usize, usize)> {
-    enable_logs();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        MATHML_INSTANCE.with(|package_instance| {
-            let package_instance = package_instance.borrow();
-            let mathml = get_element(&package_instance);
-            let nav_node = get_navigation_mathml_id()?;
-            let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
-            return Ok((start, end));
-        })
-    }));
-    return report_any_panic(result);
+    return with_mathml(|mathml| {
+        let nav_node = get_navigation_mathml_id()?;
+        let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
+        return Ok((start, end));
+    });
 }
 
 /// Given a 0-based braille position, return the smallest MathML node enclosing it.
 /// This node might be a leaf with an offset.
 pub fn get_navigation_node_from_braille_position(position: usize) -> Result<(String, usize)> {
+    return with_mathml(|mathml| {
+        return crate::braille::get_navigation_node_from_braille_position(mathml, position);
+    });
+}
+
+/// Calls `f` with the MathML that was set by [`set_mathml`].
+/// Any panic inside `f` is caught and turned into an error (see [`report_any_panic`]).
+fn with_mathml<T>(f: impl FnOnce(Element) -> Result<T>) -> Result<T> {
     enable_logs();
     let result = catch_unwind(AssertUnwindSafe(|| {
         MATHML_INSTANCE.with(|package_instance| {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
-            return crate::braille::get_navigation_node_from_braille_position(mathml, position);
+            return f(mathml);
         })
     }));
     return report_any_panic(result);
@@ -720,23 +662,23 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 
 // utility functions
 
-/// Copy (recursively) the (MathML) element and return the new one.
-/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
-/// Convert the returned error from set_mathml, etc., to a useful string for display
-pub fn copy_mathml(mathml: Element) -> Element {
-    return copy_mathml_recursive(mathml, 0);
+/// Copy (recursively) the (MathML) element into `dest` and return the new one.
+/// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy.
+/// Nodes are document-local (arena indexes with `no-unsafe`), so the copy must be created in `dest`.
+pub fn copy_mathml<'d>(mathml: Element<'_>, dest: Document<'d>) -> Element<'d> {
+    return copy_mathml_recursive(mathml, dest, 0);
 }
 
-fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+fn copy_mathml_recursive<'d>(mathml: Element<'_>, dest: Document<'d>, depth: usize) -> Element<'d> {
     // Safety: Prevent stack overflow on deeply nested MathML
     if depth > MAX_DEPTH {
         // Return the element as a leaf if it's too deep to prevent crash
-        return create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+        return create_mathml_element(&dest, as_str!(name(mathml)));
     }
 
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
-    let new_mathml = create_mathml_element(&mathml.document(), as_str!(name(mathml)));
+    let new_mathml = create_mathml_element(&dest, as_str!(name(mathml)));
     mathml.attributes().iter().for_each(|attr| {
         new_mathml.set_attribute_value(as_qname!(attr.name()), as_str!(attr.value()));
     });
@@ -751,7 +693,7 @@ fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
     let mut new_children = Vec::with_capacity(children.len());
     for child in children {
         let child = as_element(child);
-        let new_child = copy_mathml_recursive(child, depth + 1);
+        let new_child = copy_mathml_recursive(child, dest, depth + 1);
         new_children.push(new_child);
     }
     new_mathml.append_children(new_children);
@@ -864,7 +806,7 @@ fn trim_element_recursive(e: Element, allow_structure_in_leaves: bool, depth: us
 
     // space, tab, newline, carriage return all get collapsed to a single space
     const WHITESPACE: &[char] = &[' ', '\u{0009}', '\u{000A}','\u{000C}', '\u{000D}'];
-    static WHITESPACE_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"[ \u{0009}\u{000A}\u{00C}\u{000D}]+"#).unwrap());
+    static WHITESPACE_MATCH: Lazy<Regex> = lazy_regex!(r#"[ \u{0009}\u{000A}\u{00C}\u{000D}]+"#);
 
     if is_leaf(e) && (!allow_structure_in_leaves || IsNode::is_mathml(e)) {
         // Assume it is HTML inside of the leaf -- turn the HTML into a string
@@ -1310,7 +1252,7 @@ mod tests {
             set_mathml("<math><mrow><mo>&#x02212;</mo><mi>&#x1D55E;</mi></mrow></math>")?;
 
         // need to remove unique ids
-        static ID_MATCH: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"id='.+?' "#).unwrap());
+        static ID_MATCH: Lazy<Regex> = lazy_regex!(r#"id='.+?' "#);
         let entity_str = ID_MATCH.replace_all(&entity_str, "");
         let converted_str = ID_MATCH.replace_all(&converted_str, "");
         assert_eq!(entity_str, converted_str, "normal entity test failed");
@@ -1534,6 +1476,19 @@ mod tests {
             Ok::<(), Error>(())
         })?;
         return Ok(());
+        });
+    }
+
+    #[test]
+    fn navigation_braille_copies_focused_node_into_temporary_document() -> Result<()> {
+        return interface_test(|| {
+            set_rules_dir(super::super::abs_rules_dir_path())?;
+            set_preference("BrailleCode", "LaTeX")?;
+            set_mathml("<math><mi id='focused'>x</mi><mo>+</mo><mi>y</mi></math>")?;
+            set_navigation_node("focused", 0)?;
+
+            assert_eq!(get_navigation_braille()?, "x");
+            Ok(())
         });
     }
 }

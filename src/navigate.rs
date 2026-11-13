@@ -52,6 +52,12 @@ struct NavigationPosition {
     current_node_offset: usize,     // for leaves, char offset in leaf (default = 0), otherwise id for artificial intent node
 }
 
+#[derive(Clone, Debug)]
+struct NavigationHistoryEntry {
+    position: NavigationPosition,
+    command: &'static str,
+}
+
 impl fmt::Display for NavigationPosition {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "{}[+{}]", self.current_node, self.current_node_offset);
@@ -71,10 +77,7 @@ impl Default for NavigationPosition {
 
 #[derive(Debug, Clone)]
 pub struct NavigationState {
-    // it might be better to use a linked for the stacks, with the first node being the top
-    // these two stacks should be kept in sync.
-    position_stack: Vec<NavigationPosition>,    // all positions, so we can go back to them
-    command_stack: Vec<&'static str>,           // all commands, so we can undo them
+    history: Vec<NavigationHistoryEntry>,       // positions and commands, so we can undo them
     place_markers: [NavigationPosition; MAX_PLACE_MARKERS],
     where_am_i: NavigationPosition,             // current 'where am i' location
 
@@ -90,13 +93,13 @@ impl fmt::Display for NavigationState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "NavigationState{{")?;
         write!(f, "  Position Stack: ")?;
-        for (i, nav_state) in self.position_stack.iter().enumerate() {
-            write!(f, "{}{}", if i==0 {""} else {", "}, nav_state)?;
+        for (i, entry) in self.history.iter().enumerate() {
+            write!(f, "{}{}", if i==0 {""} else {", "}, entry.position)?;
         }
         writeln!(f)?;
         write!(f, "  Command Stack: ")?;
-        for (i, nav_state) in self.command_stack.iter().enumerate() {
-            write!(f, "{}{}", if i==0 {""} else {", "}, *nav_state)?;
+        for (i, entry) in self.history.iter().enumerate() {
+            write!(f, "{}{}", if i==0 {""} else {", "}, entry.command)?;
         }
         writeln!(f)?;
         writeln!(f, "  where_am_i: {}, start_time: {:?}", self.where_am_i, self.where_am_i_start_time)?;
@@ -109,8 +112,7 @@ impl fmt::Display for NavigationState {
 impl NavigationState {
     fn new() -> NavigationState {
         return NavigationState {
-            position_stack: Vec::with_capacity(1024),
-            command_stack: Vec::with_capacity(1024),
+            history: Vec::with_capacity(1024),
             place_markers: Default::default(),
             where_am_i: NavigationPosition::default(),
             // FIX: figure this out for the web
@@ -124,8 +126,7 @@ impl NavigationState {
     }
 
     pub fn reset(&mut self) {
-        self.position_stack.clear();
-        self.command_stack.clear();
+        self.history.clear();
         self.where_am_i = NavigationPosition::default();
         self.reset_start_time()
     }
@@ -146,32 +147,22 @@ impl NavigationState {
 
 
     fn push(&mut self, position: NavigationPosition, command: &'static str) {
-        self.position_stack.push(position);
-        self.command_stack.push(command);
+        self.history.push(NavigationHistoryEntry { position, command });
     }
 
-    fn pop(&mut self) -> Option<(NavigationPosition, &'static str)> {
-        assert_eq!(self.position_stack.len(), self.command_stack.len());
-        if self.position_stack.is_empty() {
-            return None;
-        } else {
-            return Some( (self.position_stack.pop().unwrap(), self.command_stack.pop().unwrap()) );
-        }
+    fn pop(&mut self) -> Option<NavigationHistoryEntry> {
+        return self.history.pop();
     }
 
-    fn top(&self) -> Option<(&NavigationPosition, &'static str)> {
-        if self.position_stack.is_empty() {
-            return None;
-        }
-        let last = self.position_stack.len()-1;
-        return Some( (&self.position_stack[last], self.command_stack[last]) );
+    fn top(&self) -> Option<&NavigationHistoryEntry> {
+        return self.history.last();
     }
 
     pub fn get_navigation_mathml<'a>(&self, mathml: Element<'a>) -> Result<(Element<'a>, usize)> {
-        if self.position_stack.is_empty() {
+        if self.history.is_empty() {
             return Ok( (mathml, 0) );
         } else {
-            let (position, _) = self.top().unwrap();
+            let position = &self.top().unwrap().position;
             return match get_node_by_id(mathml, position) {
                 None => bail!("internal error: id '{}' was not found in mathml:\n{}",
                                 position.current_node, mml_to_string(mathml)),
@@ -181,23 +172,23 @@ impl NavigationState {
     }
 
     pub fn get_navigation_mathml_id(&self, mathml: Element) -> (String, usize) {
-        if self.position_stack.is_empty() {
+        if self.history.is_empty() {
             return (mathml.attribute_value("id").unwrap().to_string(), 0);
         } else {
-            let (position, _) = self.top().unwrap();
+            let position = &self.top().unwrap().position;
             return (position.current_node.clone(), position.current_node_offset);
         }
     }
 
     fn init_navigation_context(&self, context: &mut sxd_xpath_no_unsafe::Context, command: &'static str,
-                               nav_state_top: Option<(&NavigationPosition, &'static str)>) {
+                               nav_state_top: Option<&NavigationHistoryEntry>) {
         context.set_variable("NavCommand", command);
 
         if command == "WhereAmI" && self.where_am_i == NavigationPosition::default() {
             context.set_variable("NavNode", self.where_am_i.current_node.as_str());
             context.set_variable("NavNodeOffset", self.where_am_i.current_node_offset as f64);
         } else {
-            let position = &self.position_stack[self.position_stack.len()-1];
+            let position = &self.history.last().unwrap().position;
             context.set_variable("NavNode", position.current_node.as_str());
             context.set_variable("NavNodeOffset", position.current_node_offset as f64);
         }
@@ -218,7 +209,7 @@ impl NavigationState {
         if command == "MoveLastLocation" {
             let previous_command = match nav_state_top {
                 None => "None",
-                Some( (_, previous_command) ) => previous_command,
+                Some(entry) => entry.command,
             };
             context.set_variable("PreviousNavCommand", previous_command);
         }
@@ -372,7 +363,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
     return NAVIGATION_STATE.with(|nav_state| {
         let mut nav_state = nav_state.borrow_mut();
         // debug!("MathML: {}", mml_to_string(mathml));
-        if nav_state.position_stack.is_empty() {
+        if nav_state.history.is_empty() {
             // initialize to root node
             nav_state.push(NavigationPosition{
                 current_node: mathml.attribute_value("id").unwrap().to_string(),
@@ -400,47 +391,41 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             const LOOP_LIMIT: usize = 3;
             let mut cumulative_speech = String::with_capacity(120);
             for loop_count in 0..LOOP_LIMIT {
-                match apply_navigation_rules(mathml, nav_command, &rules, &mut rules_with_context, &mut nav_state, loop_count) {
-                    Ok( (speech, done)) => {
-                        cumulative_speech = cumulative_speech + if loop_count==0 {""} else {" "} + speech.trim();
-                        if done {
-                            let (tts, rate) = {
-                                let prefs = rules.pref_manager.borrow();
-                                (prefs.get_tts(), prefs.pref_to_string("MathRate"))
-                            };
-                            if rate != "100" {
-                                match tts {
-                                    TTS::SSML
-                                        if !cumulative_speech.starts_with("<prosody rate") => {
-                                            cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
-                                        }
-                                    TTS::SAPI5
-                                        if !cumulative_speech.starts_with("<rate speed") => {
-                                            cumulative_speech = format!(
-                                                "<rate speed='{:.1}'>{}</rate>",
-                                                10.0 * (0.01 * rate.parse::<f32>().unwrap_or(100.0)).log(3.0),
-                                                cumulative_speech
-                                            );
-                                        }
-                                    _ => (),  // do nothing
+                let (speech, done) = apply_navigation_rules(mathml, nav_command, &rules, &mut rules_with_context, &mut nav_state, loop_count)?;
+                cumulative_speech = cumulative_speech + if loop_count==0 {""} else {" "} + speech.trim();
+                if done {
+                    let (tts, rate) = {
+                        let prefs = rules.pref_manager.borrow();
+                        (prefs.get_tts(), prefs.pref_to_string("MathRate"))
+                    };
+                    if rate != "100" {
+                        match tts {
+                            TTS::SSML
+                                if !cumulative_speech.starts_with("<prosody rate") => {
+                                    cumulative_speech = format!("<prosody rate='{}%'>{}</prosody>", rate, cumulative_speech);
                                 }
-                            }
-                                                return Ok( rules.pref_manager.borrow().get_tts()
-                                            .merge_pauses(crate::speech::remove_optional_indicators(
-                                                &cumulative_speech.replace(CONCAT_STRING, "")
-                                                                    .replace(CONCAT_INDICATOR, "")                            
-                                                            )
-                                            .trim_start().trim_end_matches([' ', ',', ';'])) );
+                            TTS::SAPI5
+                                if !cumulative_speech.starts_with("<rate speed") => {
+                                    cumulative_speech = format!(
+                                        "<rate speed='{:.1}'>{}</rate>",
+                                        10.0 * (0.01 * rate.parse::<f32>().unwrap_or(100.0)).log(3.0),
+                                        cumulative_speech
+                                    );
+                                }
+                            _ => (),  // do nothing
                         }
-                    },
-                    Err(e) => {
-                        return Err(e);
                     }
+                    return Ok( rules.pref_manager.borrow().get_tts()
+                                .merge_pauses(crate::speech::remove_optional_indicators(
+                                    &cumulative_speech.replace(CONCAT_STRING, "")
+                                                        .replace(CONCAT_INDICATOR, "")
+                                                )
+                                .trim_start().trim_end_matches([' ', ',', ';'])) );
                 }
             }
             bail!("Internal error: Navigation exceeded limit of number of times no speech generated
                    when attempting to {} in {} mode start at id={} in this MathML:\n{}.",
-                   nav_command, nav_state.mode, nav_state.top().unwrap().0.current_node, mml_to_string(mathml));
+                   nav_command, nav_state.mode, nav_state.top().unwrap().position.current_node, mml_to_string(mathml));
         });
     });
 
@@ -450,14 +435,14 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 let nav_position = NavigationPosition { current_node: mathml.attribute_value("id").unwrap().to_string(), current_node_offset: 0 };
                 get_node_by_id(mathml, &nav_position)
             },
-            Some( (position, _) ) => get_node_by_id(mathml, position),
+            Some(entry) => get_node_by_id(mathml, &entry.position),
         };
 
         return match element {
             Some(node) => Ok(node),
             None => {
                 bail!("Internal Error: didn't find id/offset '{:?}' while attempting to start navigation. MathML is\n{}",
-                      nav_state.top().map(|t| t.0), mml_to_string(mathml));
+                      nav_state.top().map(|entry| &entry.position), mml_to_string(mathml));
             }
         };
     }
@@ -478,7 +463,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             (mathml, mathml)
         } else {
             let intent = crate::speech::intent_from_mathml(mathml, rules_with_context.get_document())?;
-            (intent, add_fixity_children(copy_mathml(intent)))
+            (intent, add_fixity_children(copy_mathml(intent, intent.document())))
         };
 
         let mut properties = "";
@@ -500,16 +485,22 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 debug!("Could not find start_node in nav_intent -- trying other_tree");
                 let other_tree = if nav_state.mode == "Character" {nav_intent} else {mathml};
                 let mut found_node = get_start_node(other_tree, nav_state)?;
-                while name(found_node) != "math" {
-                    found_node = get_parent(found_node);
-                    // debug!("found_node:\n{}", mml_to_string(found_node));
-                    let temp_pos = NavigationPosition {
-                        current_node: found_node.attribute_value("id").as_deref().unwrap_or_default().to_string().clone(),
-                        current_node_offset: found_node.attribute_value(ID_OFFSET).as_deref().unwrap_or_default().parse::<usize>().unwrap_or_default(),
-                    };
-                    if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
-                        found_node = intent_node;
-                        break;
+                // A character offset on a leaf is that leaf. Walking up to a shared ancestor
+                // drops the offset, so zooming into "gcd" on an intent leaf could not move by character.
+                let inside_leaf = crate::xpath_functions::is_leaf(found_node) &&
+                    nav_state.top().is_some_and(|entry| entry.position.current_node_offset > 0);
+                if !inside_leaf {
+                    while name(found_node) != "math" {
+                        found_node = get_parent(found_node);
+                        // debug!("found_node:\n{}", mml_to_string(found_node));
+                        let temp_pos = NavigationPosition {
+                            current_node: found_node.attribute_value("id").as_deref().unwrap_or_default().to_string().clone(),
+                            current_node_offset: found_node.attribute_value(ID_OFFSET).as_deref().unwrap_or_default().parse::<usize>().unwrap_or_default(),
+                        };
+                        if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
+                            found_node = intent_node;
+                            break;
+                        }
                     }
                 }
                 found_node
@@ -518,7 +509,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         // debug!("intent=\n{}", mml_to_string(intent));
         // debug!("nav intent=\n{}", mml_to_string(nav_intent));
-        // debug!("start_node id={}\n{}", nav_state.top().unwrap().0.current_node.as_str(), mml_to_string(start_node));
+        // debug!("start_node id={}\n{}", nav_state.top().unwrap().position.current_node.as_str(), mml_to_string(start_node));
         // if name(start_node) != "math" {
         //     let mut parent= get_parent(start_node);
         //     if name(parent) != "math" {
@@ -528,7 +519,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         // }
         let offset = context_get_int_variable(rules_with_context.get_context(), "NavNodeOffset", intent)?;
         rules_with_context.set_nav_node_offset(offset);
-        debug!("starting nav_position: {}, start node ={}", nav_state.top().unwrap().0, name(start_node));
+        debug!("starting nav_position: {}, start node ={}", nav_state.top().unwrap().position, name(start_node));
 
         let raw_speech_string = rules_with_context.match_pattern::<String>(start_node)
                     .context("Pattern match/replacement failure during math navigation!")?;
@@ -569,7 +560,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         debug!("after match nav_position: {}", nav_position);
         // push the new location on the stack
-        if nav_position != NavigationPosition::default() && &nav_position != nav_state.top().unwrap().0 {
+        if nav_position != NavigationPosition::default() && nav_position != nav_state.top().unwrap().position {
             nav_state.push(nav_position.clone(), nav_command);
         }
 
@@ -582,7 +573,14 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         }
 
         let nav_mathml = get_node_by_id(intent, &nav_position);
-        if nav_mathml.is_some() && context_get_variable(context, "SpeakExpression", intent)? == "true" {
+        // A concept that renames a leaf keeps the source id. The character offset then lives on the
+        // MathML leaf: the concept element is not a MathML leaf, so the offset does not match it.
+        let speak_leaf_char = nav_position.current_node_offset > 0 &&
+            get_node_by_id(mathml, &nav_position).is_some_and(crate::xpath_functions::is_leaf);
+        if (nav_mathml.is_some() ||
+            speak_leaf_char) &&
+            context_get_variable(context, "SpeakExpression", intent)? == "true"
+        {
             // Speak/Overview of where we landed (if we are supposed to speak it) -- use intent, not nav_intent
             // Note: NavMode might have changed, so we need to recheck the mode to see if we use LiteralSpeak
             let literal_speak = nav_state.mode == "Character";
@@ -634,23 +632,18 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         let push_command_on_stack = (nav_command.starts_with("Move") && nav_command != "MoveLastLocation") || nav_command.starts_with("Zoom");
         // debug!("pop_stack: nav_command={}, count={}, push? {} stack=\n{}", nav_command, count, push_command_on_stack, nav_state);
         if count == 0 {
-            if !push_command_on_stack && nav_command == nav_state.top().unwrap().1 {
+            if !push_command_on_stack && nav_command == nav_state.top().unwrap().command {
                 nav_state.pop();    // remove ReadXXX, SetPlacemarker, etc. commands that don't change the state
             }
             return;
         }
-        let (top_position, top_command) = nav_state.pop().unwrap();
-        let mut count = count - 1;
-        loop {
-            // debug!("  ... loop count={}", count);
+        let top_entry = nav_state.pop().unwrap();
+        for _i in 0..count {
+			// debug!("  ... loop count={}", count - 1 - _i);
             nav_state.pop();
-            if count == 0 {
-                break;
-            };
-            count -= 1;
-        };
+        }
         if push_command_on_stack {
-            nav_state.push(top_position, top_command);
+            nav_state.push(top_entry.position, top_entry.command);
         }
         // debug!("END pop_stack: stack=\n{}", nav_state);
     }
@@ -750,42 +743,14 @@ enum NavigationParam {
 }
 
 
-fn choose_command(
-	shift_key: bool,
-	control_key: bool,
-	none: NavigationCommand,
-	shift: NavigationCommand,
-	control: NavigationCommand,
-	shift_control: NavigationCommand
-) -> NavigationCommand {
-	   if shift_key && control_key {
-		return shift_control;
-    } else if control_key {
-        return control;
-    } else if shift_key {
-		return shift;
-	} else {
-		return none;
-    }
-}
-
-fn choose_param(
-	shift_key: bool,
-	control_key: bool,
-	none: NavigationParam,
-	shift: NavigationParam,
-	control: NavigationParam,
-	shift_control: NavigationParam
-) -> NavigationParam {
-    if shift_key && control_key {
-		return shift_control;
-    } else if control_key {
-        return control;
-    } else if shift_key {
-		return shift;
-	} else {
-		return none;
-    }
+/// Returns one of four values (a `NavigationCommand` or `NavigationParam`) depending on which of Shift/Ctrl are held.
+fn choose<T>(shift_key: bool, control_key: bool, none: T, shift: T, control: T, shift_control: T) -> T {
+    return match (shift_key, control_key) {
+        (true, true) => shift_control,
+        (false, true) => control,
+        (true, false) => shift,
+        (false, false) => none,
+    };
 }
 
 fn key_press_to_command_and_param(
@@ -799,7 +764,7 @@ fn key_press_to_command_and_param(
 	// for now, we build in the defaults
 
     // this is a hack to map alt+ctl+arrow to ctl+arrow to change table mappings (github.com/daisy/MathCAT/issues/105)
-    // if this change sticks, choose_command() needs to be changed and this hack should go away
+    // if this change sticks, choose() needs to be changed and this hack should go away
     let mut alt_key = alt_key;
     if alt_key && control_key && [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN].contains(&key) {
         alt_key = false;
@@ -812,37 +777,37 @@ fn key_press_to_command_and_param(
     let param;
 	match key {
         VK_LEFT => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move,   NavigationCommand::Read,	NavigationCommand::Move,	   NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous, NavigationParam::Previous, NavigationParam::CellPrevious, NavigationParam::Previous);
+            command = choose(shift_key, control_key, NavigationCommand::Move,   NavigationCommand::Read,	NavigationCommand::Move,	   NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Previous, NavigationParam::Previous, NavigationParam::CellPrevious, NavigationParam::Previous);
             },
         VK_RIGHT => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move,	NavigationCommand::Read, NavigationCommand::Move,	  NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Next, NavigationParam::Next, NavigationParam::CellNext, NavigationParam::Next);
+            command = choose(shift_key, control_key, NavigationCommand::Move,	NavigationCommand::Read, NavigationCommand::Move,	  NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Next, NavigationParam::Next, NavigationParam::CellNext, NavigationParam::Next);
             },
         VK_UP => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Zoom,      NavigationCommand::ChangeNavMode, NavigationCommand::Move,   NavigationCommand::Zoom);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous,  NavigationParam::Previous,      NavigationParam::CellUp, NavigationParam::Start);
+            command = choose(shift_key, control_key, NavigationCommand::Zoom,      NavigationCommand::ChangeNavMode, NavigationCommand::Move,   NavigationCommand::Zoom);
+            param =   choose(shift_key, control_key, NavigationParam::Previous,  NavigationParam::Previous,      NavigationParam::CellUp, NavigationParam::Start);
             },
         VK_DOWN => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Zoom, NavigationCommand::ChangeNavMode, NavigationCommand::Move,     NavigationCommand::Zoom);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Next, NavigationParam::Next,          NavigationParam::CellDown, NavigationParam::End);
+            command = choose(shift_key, control_key, NavigationCommand::Zoom, NavigationCommand::ChangeNavMode, NavigationCommand::Move,     NavigationCommand::Zoom);
+            param =   choose(shift_key, control_key, NavigationParam::Next, NavigationParam::Next,          NavigationParam::CellDown, NavigationParam::End);
             },
         VK_RETURN => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Locate,  NavigationCommand::Last, NavigationCommand::Locate, NavigationCommand::Last);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Previous,NavigationParam::Last, NavigationParam::Last,    NavigationParam::Last);
+            command = choose(shift_key, control_key, NavigationCommand::Locate,  NavigationCommand::Last, NavigationCommand::Locate, NavigationCommand::Last);
+            param =   choose(shift_key, control_key, NavigationParam::Previous,NavigationParam::Last, NavigationParam::Last,    NavigationParam::Last);
             },
         VK_SPACE => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Read,		NavigationCommand::ToggleSpeakMode,    NavigationCommand::Read,        NavigationCommand::Describe);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Current, NavigationParam::Last,                NavigationParam::CellCurrent, NavigationParam::Current);
+            command = choose(shift_key, control_key, NavigationCommand::Read,		NavigationCommand::ToggleSpeakMode,    NavigationCommand::Read,        NavigationCommand::Describe);
+            param =   choose(shift_key, control_key, NavigationParam::Current, NavigationParam::Last,                NavigationParam::CellCurrent, NavigationParam::Current);
             },
     
         VK_HOME => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,	   NavigationCommand::Move,      NavigationCommand::ReadTo);
-            param =   choose_param(  shift_key, control_key, NavigationParam::Start,NavigationParam::ColStart, NavigationParam::LineStart, NavigationParam::Start);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,	   NavigationCommand::Move,      NavigationCommand::ReadTo);
+            param =   choose(shift_key, control_key, NavigationParam::Start,NavigationParam::ColStart, NavigationParam::LineStart, NavigationParam::Start);
             },
         VK_END => {
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,   NavigationCommand::Move,    NavigationCommand::ReadTo);
-            param =   choose_param(  shift_key, control_key, NavigationParam::End,  NavigationParam::ColEnd, NavigationParam::LineEnd, NavigationParam::End);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Move,   NavigationCommand::Move,    NavigationCommand::ReadTo);
+            param =   choose(shift_key, control_key, NavigationParam::End,  NavigationParam::ColEnd, NavigationParam::LineEnd, NavigationParam::End);
             },
         VK_BACK => {
             command = NavigationCommand::MoveLastLocation;
@@ -853,7 +818,7 @@ fn key_press_to_command_and_param(
             param = NavigationParam::Last;
             },
         0x30..=0x39 => {  // '0' ... '9'
-            command = choose_command(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Read, NavigationCommand::SetPlacemarker, NavigationCommand::Describe);
+            command = choose(shift_key, control_key, NavigationCommand::Move, NavigationCommand::Read, NavigationCommand::SetPlacemarker, NavigationCommand::Describe);
             static PLACE_MARKER: &[NavigationParam] = &[
                 NavigationParam::Placemarker0,
                 NavigationParam::Placemarker1,
@@ -1051,6 +1016,72 @@ mod tests {
             test_command("ZoomIn", mathml, "base")?;
             test_command("ZoomIn", mathml, "base")?;
             return Ok( () );
+        });
+    }
+
+    // The currency symbol should remain addressable as a navigation leaf.
+    #[test]
+    fn zoom_in_currency_symbol() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>3</mn>
+            </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "currency-symbol")?;
+            assert!(speech.contains("dollars"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // `$x` inserts invisible times; MoveNext must not die on that silent mo.
+    #[test]
+    fn zoom_in_then_move_next_currency_variable() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='currency-symbol'>$</mi><mi id='var'>x</mi></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "var")?;
+            assert!(speech.contains("x"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // de ClearSpeak-log speaks log⁡x without visiting ⁡; MoveNext must still mark/skip it.
+    // Start on `log` (not ZoomIn — that leaf is spoken via T: without x:) so we only test the silent apply.
+    #[test]
+    fn move_next_de_log_apply() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='log'>log</mi><mo id='apply'>&#x2061;</mo><mi id='arg'>x</mi></math>";
+        init_prefs(mathml_str, "Enhanced", "de")?;
+        set_preference("SpeechStyle", "ClearSpeak")?;
+        set_navigation_node("log", 0)?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("MoveNext", mathml, "arg")?;
+            assert!(speech.contains("x"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // Singular amount must visit the mn (OneForUnit via default mn rule) so ZoomIn finds [[...]].
+    #[test]
+    fn zoom_in_currency_singular_amount() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>1</mn>
+            </mrow></math>";
+        // Simple mode skips the invisible times between `$` and `1`.
+        init_prefs(mathml_str, "Simple", "es")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "amount")?;
+            assert!(speech.contains("un"), "{speech}");
+            return Ok(());
         });
     }
 
@@ -1870,6 +1901,45 @@ mod tests {
         return Ok( () );
         });
     }
+
+    /// Zooming into a leaf whose intent only renames it (`gcd` → greatest-common-divisor)
+    /// stays on that `<mi>` and steps through its characters.
+    #[test]
+    fn leaf_intent_character_zoom() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='gcd' intent='greatest-common-divisor'>gcd</mi></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            assert_eq!("zoomed in to first character; g", test_command("ZoomIn", mathml, "gcd")?);
+            assert_eq!("move right; c", test_command("MoveNext", mathml, "gcd")?);
+            assert_eq!("move right; d", test_command("MoveNext", mathml, "gcd")?);
+            assert_eq!("cannot move right, end of math", test_command("MoveNext", mathml, "gcd")?);
+            return Ok( () );
+        });
+    }
+
+    /// `(f∘g)(x)` wraps the nested head in `apply-function`. That wrapper must keep the source mrow id
+    /// so moving onto it does not store an empty id.
+    #[test]
+    fn nested_intent_head_keeps_id() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='eq'><mi id='y'>y</mi><mo id='eq-sign'>=</mo>
+            <mrow id='apply' intent='$c($a)'>
+                <mrow id='comp' arg='c' intent='_composed-with:infix($f,$g)'><mi id='f'>f</mi><mo id='circ'>∘</mo><mi id='g'>g</mi></mrow>
+                <mo id='open'>(</mo><mi id='x' arg='a'>x</mi><mo id='close'>)</mo>
+            </mrow>
+        </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            assert_eq!("zoom in; y", test_command("ZoomIn", mathml, "y")?);
+            assert_eq!("move right; is equal to", test_command("MoveNext", mathml, "eq-sign")?);
+            assert_eq!("move right; f composed with g, times x", test_command("MoveNext", mathml, "apply")?);
+            assert_eq!("zoom in; f composed with g", test_command("ZoomIn", mathml, "comp")?);
+            return Ok( () );
+        });
+    }
     
     #[test]
     fn move_enhanced_times() -> Result<()> {
@@ -2621,6 +2691,7 @@ mod tests {
 
     #[test]
     fn describe_nested_fraction_ru() -> Result<()> {
+        // Navigation should retain the Russian expression cue for a fraction inside a square root.
         let mathml_str = "<math id='math'>
             <mfrac id='frac'>
                 <mrow id='num'>
@@ -2645,9 +2716,9 @@ mod tests {
             let package_instance = package_instance.borrow();
             let mathml = get_element(&package_instance);
             let speech = test_command("ZoomIn", mathml, "")?;
-            assert_eq!("переход внутрь; в числитель; икс  плюс, квадратный корень из 1 разделить на игрек, конец корня", speech);
+            assert_eq!("переход внутрь; в числитель; икс  плюс, квадратный корень из выражения 1 разделить на игрек, конец корня", speech);
             let speech = test_command("DescribeCurrent", mathml, "")?;
-            assert_eq!("описать текущее; икс  плюс, квадратный корень из 1 разделить на игрек", speech);
+            assert_eq!("описать текущее; икс  плюс; квадратный корень из выражения 1 разделить на игрек", speech);
             return Ok( () );
         });
     }

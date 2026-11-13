@@ -58,12 +58,10 @@ fn zero_power() -> Result<()> {
 #[test]
 fn decimal_power() -> Result<()> {
     let expr = "<math>
-                    <msup> <mi>x</mi> <mn>2.0</mn> </msup>
+                    <msup> <mi>x</mi> <mn>2,0</mn> </msup>
                 </math>";
-    test("el", "SimpleSpeak", expr, "x στην 2.0")?;
+    test("el", "SimpleSpeak", expr, "x στην 2,0")?;
     return Ok(());
-    //theodora. fails because of 2.0 -> 20
-    // The issue is at src/prefs (set_separator, decimal_separator)
 
 }
 

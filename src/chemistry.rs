@@ -42,6 +42,7 @@ use crate::canonicalize::*;
 use crate::canonicalize::NameStr;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use crate::xpath_functions::IsBracketed;
 use phf::{phf_map, phf_set};
@@ -51,7 +52,10 @@ use log::{error, debug};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 use crate::errors::*;
-use std::sync::LazyLock;
+use elements_rs::{
+    AtomicNumber, Electronegativity, Element as PeriodicElement, ElementCategory,
+    ElementClassification,
+};
 
 
 pub static NOT_CHEMISTRY: i32 = -10000;  // should overwhelm any positive signal
@@ -353,24 +357,64 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
             return None;
         }
         let second_element = as_element(following_siblings[0]);
-        let second_element_name = name(second_element);
-        if second_element_name != "mi" && second_element_name != "mtext" {
+        // Adjacent letter, or the base of a following script (C + u^{2+} → Cu^{2+}).
+        let (merge_target, script_base) = if name(second_element) == "mi" || name(second_element) == "mtext" {
+            (second_element, false)
+        } else {
+            let base = single_letter_script_base(second_element)?;
+            (base, true)
+        };
+        if !can_merge_mi_elements(leaf, merge_target) {
             return None;
         }
-        let second_element_text = as_text(second_element);
-        if second_element_text.len() != 1 {
+        let merge_target_text = as_text(merge_target);
+        if merge_target_text.len() != 1 {
             return None;
         }
         let token_string = as_text(leaf);
-        let chem_token_string = vec![token_string.as_bytes()[0], second_element_text.as_bytes()[0]];
+        let chem_token_string = vec![token_string.as_bytes()[0], merge_target_text.as_bytes()[0]];
         if let Some(chem_element) = get_chem_element(doc, &chem_token_string, 2) {
-            chem_element.set_text(as_str!(as_text(chem_element)));
-            chem_element.set_attribute_value(MAYBE_CHEMISTRY, chem_element.attribute_value(MAYBE_CHEMISTRY).as_deref().unwrap());
+            let merged_text = as_text(chem_element).to_string();
+            let maybe = chem_element.attribute_value(MAYBE_CHEMISTRY).as_deref().unwrap().to_string();
+            if script_base {
+                // Keep the script; fold the leading letter into its base.
+                set_mathml_name(merge_target, "mi");
+                merge_target.set_text(&merged_text);
+                merge_target.remove_attribute("mathvariant");
+                merge_target.set_attribute_value(MAYBE_CHEMISTRY, &maybe);
+                merge_target.set_attribute_value(MERGED_TOKEN, "true");
+                leaf.remove_from_parent();
+                return Some(vec![]);
+            }
+            chem_element.set_text(&merged_text);
+            chem_element.set_attribute_value(MAYBE_CHEMISTRY, &maybe);
             chem_element.set_attribute_value(MERGED_TOKEN, "true");
             second_element.remove_from_parent();
             return Some(vec![chem_element]);
         }
         return None;
+    }
+
+    /// Base of msup/msub/msubsup/mmultiscripts when it is a single ASCII letter.
+    fn single_letter_script_base(element: Element<'_>) -> Option<Element<'_>> {
+        let tag = as_str!(name(element));
+        if tag != "msup" && tag != "msub" && tag != "msubsup" && tag != "mmultiscripts" {
+            return None;
+        }
+        let children = element.children();
+        if children.is_empty() {
+            return None;
+        }
+        let base = as_element(children[0]);
+        let base_name = name(base);
+        if base_name != "mi" && base_name != "mtext" {
+            return None;
+        }
+        let text = as_text(base);
+        if text.len() != 1 || !text.is_ascii() {
+            return None;
+        }
+        return Some(base);
     }
 
     /// split the string which has been checked to be all ASCII chars
@@ -411,7 +455,7 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
         }
         match str::from_utf8(&bytes_str[..n]) {
             Ok(chem_element) => {
-                if CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(chem_element) {
+                if is_known_chemical_symbol(chem_element) {
                     return Some(new_chemical_element(doc, chem_element));
                 }
                 return None;
@@ -1014,8 +1058,8 @@ fn likely_chem_superscript(sup: Element) -> i32 {
     // bullet is radical (en.wikipedia.org/wiki/Radical_(chemistry)#Depiction_in_chemical_reactions); mhchem uses dot operator
     //  these can stand alone, be followed by +/- or have a number in front "(2•)-"" [examples from mhchem documentation]
     // roman numerals are "oxidation state" and range from -4 to +9
-    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$").unwrap());
-    static SINGLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[+-\U{2212}⋅∙•]$").unwrap());
+    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$");
+    static SINGLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^[+-\U{2212}⋅∙•]$");
     static DOTS: &[char; 3] = &['⋅', '∙', '•'];
     let sup_name = name(sup);
     if sup_name == "mo" && MULTIPLE_PLUS_OR_MINUS_OR_DOT.is_match(as_str!(as_text(sup))) {
@@ -1248,13 +1292,14 @@ fn likely_chem_formula(mathml: Element) -> i32 {
 ///   there are cases where the outer ordering doesn't match the inner ordering.
 /// For "generalized salts", we need to split the elements into positive and negative ions, and within each group
 ///   the order is suppose to be alphabetical but many use electronegativity (the point being there are two separate groups).
+///   The implementation looks like it will be complicated, so at least for now, we don't check that.
 /// This site has a nice summary of the rules: https://chemistry.stackexchange.com/questions/537/why-is-arsenous-acid-denoted-h3aso3/538#538
 /// Note: "(OH)" doesn't fit with the above, and Susan Jolly suggests allowing any sequence that ends with H, so we allow that.
 /// Also, Susan Jolly suggested allowing any compound with C, H, and O
 fn is_order_ok(mrow: Element) -> bool {
     assert_eq!(name(mrow), "mrow");
     if let Some(elements) = collect_elements(mrow) {
-        if elements.iter().any(|e| !CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(as_str!(*e))) {
+        if elements.iter().any(|e| !is_known_chemical_symbol(as_str!(e))) {
             return false;
         }
         let n_elements = elements.len();
@@ -1268,8 +1313,7 @@ fn is_order_ok(mrow: Element) -> bool {
                     has_c_h_o(&elements) ||
                     is_structural(&elements) ||
                     is_alphabetical(&elements) ||
-                    is_ordered_by_electronegativity(&elements) ||
-                    is_generalized_salt(&elements);
+                    is_ordered_by_electronegativity(&elements);
         }
     } else {
         return false;
@@ -1278,10 +1322,10 @@ fn is_order_ok(mrow: Element) -> bool {
 
 
 fn has_noble_element(elements: &[NameStr<'_>]) -> bool {
-    static NOBLE_ELEMENTS: phf::Set<&str> = phf_set! {
-        "He", "Ne", "Ar", "Kr", "Xe", "Rn", "Og" // Og might be reactive, but it is unstable
-    };
-    return elements.iter().any(|e| NOBLE_ELEMENTS.contains(as_str!(*e)));
+    return elements.iter().any(|symbol| {
+        periodic_element(as_str!(symbol))
+            .is_some_and(|e| e.classification() == ElementCategory::NobleGas)
+    });
 }
 
 #[allow(clippy::manual_contains)]
@@ -1343,12 +1387,9 @@ fn is_ordered_by_electronegativity(elements: &[NameStr<'_>]) -> bool {
     // HPO_4^2 (Mono-hydrogen phosphate) doesn't fit this pattern, nor does HCO_3^- (Hydrogen carbonate) and some others
     // FIX: drop "H" from the ordering??
     assert!(elements.len() > 1);   // already handled
-    return elements.windows(2).all(|pair| CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[0])).unwrap() < CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(as_str!(pair[1])).unwrap());
-}
-
-fn is_generalized_salt(elements: &[NameStr<'_>]) -> bool {
-    assert!(!elements.is_empty());
-    return false;
+    return elements.windows(2).all(|pair| {
+        chemical_electronegativity(as_str!(pair[0])).unwrap() < chemical_electronegativity(as_str!(pair[1])).unwrap()
+    });
 }
 
 
@@ -1429,8 +1470,8 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> i32 {
             let base = as_element(children[0]);
             let base_name = name(base);
             let atomic_number = if matches!(as_str!(base_name), "mi" | "mtext") &&
-                                        let Some(atomic_number) = CHEMICAL_ELEMENT_ATOMIC_NUMBER.get(as_str!(as_text(base))) {
-                        *atomic_number
+                                        let Some(atomic_number) = chemical_element_atomic_number(as_str!(as_text(base))) {
+                        atomic_number
                     } else {
                         return NOT_CHEMISTRY;
                     };
@@ -1685,7 +1726,7 @@ fn is_equilibrium_constant(mut mathml: Element) -> bool {
 
 // Oxidation states range from -4 to 9 and are written with (a subset of) roman numerals.
 // All instances seem to be upper case that I've seen.
-static SMALL_UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^(IX|IV|V?I{0,3})\s*$").unwrap());
+static SMALL_UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^(IX|IV|V?I{0,3})\s*$");
 
 /// look for "(s)", "(l)", "(g)", "(aq)", "(eau)" (could also use [...])
 /// this might be called before canonicalization, but in clean_chemistry_mrow, we made sure "( xxx )" is grouped properly
@@ -1835,51 +1876,38 @@ fn convert_to_short_form(mathml: Element) -> Result<String> {
     }
 }
 
-/// A map of chemical elements and their relative IUPAC electronegativity (https://i.stack.imgur.com/VCSzW.png)
-/// That list uses a horizontal line for the Lanthanide and Actinide Series.
-/// Because I had already ordered the elements before realizing that, I opened a gap and started the higher ones again with a '1' in front.
-/// The list is missing recent (unstable) elements -- I added them with the same value as the element above them in the periodic table.
-static CHEMICAL_ELEMENT_ELECTRONEGATIVITY: phf::Map<&str, u32> = phf_map! {
-	"Ac" => 40, "Ag" => 155, "Al" => 163, "Am" => 29, "Ar" => 4, "As" => 172, "At" => 181, "Au" => 154,
-    "B" => 164, "Ba" => 14, "Be" => 18, "Bh" => 137, "Bi" => 170, "Bk" => 27, "Br" => 183,
-	"C" => 169, "Ca" => 16, "Cd" => 158, "Ce" => 56, "Cf" => 26, "Cl" => 184, "Cm" => 28, "Cn" => 157, "Co" => 148, "Cr" => 136, "Cs" => 8, "Cu" => 156,
-    "Db" => 129, "Ds" => 149, "Dy" => 48, 
-	"Er" => 46, "Es" => 25, "Eu" => 51, "F" => 185, "Fe" => 144, "Fl" => 165, "Fm" => 24, "Fr" => 7, "Ga" => 162, "Gd" => 50, "Ge" => 167,
-	"H" => 175, "He" => 6, "Hf" => 126, "Hg" => 157, "Ho" => 47, "Hs" => 141, "I" => 182, "In" => 161, "Ir" => 146, "K" => 10, "Kr" => 3,
-	"La" => 62, "Li" => 12, "Lr" => 19, "Lu" => 41, "Lv" => 176, "Mc" => 170, "Md" => 23, "Mg" => 17, "Mn" => 140, "Mo" => 135, "Mt" => 145, 
-	"N" => 174, "Na" => 11, "Nb" => 131, "Nd" => 54, "Ne" => 5, "Nh" => 160, "Ni" => 152, "No" => 22, "Np" => 31, "O" => 180, "Og" => 1, "Os" => 142, 
-	"P" => 173, "Pa" => 33, "Pb" => 165, "Pd" => 151, "Pm" => 53, "Po" => 176, "Pr" => 55, "Pt" => 150, "Pu" => 30,
-	"Ra" => 13, "Rb" => 9, "Re" => 138, "Rf" => 125, "Rg" => 153, "Rh" => 147, "Rn" => 1, "Ru" => 143, 
-	"S" => 179, "Sb" => 171, "Sc" => 124, "Se" => 178, "Sg" => 133, "Si" => 168, "Sm" => 52, "Sn" => 166, "Sr" => 15,
-	"Ta" => 130, "Tb" => 49, "Tc" => 139, "Te" => 177, "Th" => 34, "Ti" => 128, "Tl" => 160, "Tm" => 45, "Ts" => 181, 
-	"U" => 32, "V" => 132, "W" => 134, "Xe" => 2, "Y" => 123, "Yb" => 44, "Zn" => 159, "Zr" => 127,
-    // The following come from E.A. Moore who said to treat them like chemicals 
-    // These stand for methyl, ethyl, alkyl, acetyl and phenyl and apparently are quite commonly used ("Ac" is already a chemical)
-    // A full(er?) list is at en.wikipedia.org/wiki/Skeletal_formula#Alkyl_groups and in following sections
-    "Me" => 0, "Et" => 0, "R" => 0, /* "Ac" => 0, */ "Ph" => 0,
-    "X" => 0, /* treated as an unknown */
+// These MathCAT-specific abbreviations are commonly used in chemical formulae, but are not
+// elements. Ac is deliberately absent: it is the real element actinium, even when authors use
+// the same spelling for acetyl. X represents an unknown element in MathCAT's chemistry heuristic.
+static CHEMICAL_ABBREVIATIONS: phf::Set<&str> = phf_set! {
+    "Me", "Et", "R", "Ph", "X"
 };
 
-// A map of the chemical elements and their atomic numbers
-static CHEMICAL_ELEMENT_ATOMIC_NUMBER: phf::Map<&str, u32> = phf_map! {
-    "H" => 1, "He" => 2, "Li" => 3, "Be" => 4, "B" => 5, "C" => 6, "N" => 7, "O" => 8, "F" => 9, "Ne" => 10,
-    "Na" => 11, "Mg" => 12, "Al" => 13, "Si" => 14, "P" => 15, "S" => 16, "Cl" => 17, "Ar" => 18, "K" => 19, "Ca" => 20,
-    "Sc" => 21, "Ti" => 22, "V" => 23, "Cr" => 24, "Mn" => 25, "Fe" => 26, "Co" => 27, "Ni" => 28, "Cu" => 29, "Zn" => 30,
-    "Ga" => 31, "Ge" => 32, "As" => 33, "Se" => 34, "Br" => 35, "Kr" => 36, "Rb" => 37, "Sr" => 38, "Y" => 39, "Zr" => 40,
-    "Nb" => 41, "Mo" => 42, "Tc" => 43, "Ru" => 44, "Rh" => 45, "Pd" => 46, "Ag" => 47, "Cd" => 48, "In" => 49, "Sn" => 50,
-    "Sb" => 51, "Te" => 52, "I" => 53, "Xe" => 54, "Cs" => 55, "Ba" => 56, "La" => 57, "Ce" => 58, "Pr" => 59, "Nd" => 60, 
-    "Pm" => 61, "Sm" => 62, "Eu" => 63, "Gd" => 64, "Tb" => 65, "Dy" => 66, "Ho" => 67, "Er" => 68, "Tm" => 69, "Yb" => 70,
-    "Lu" => 71, "Hf" => 72, "Ta" => 73, "W" => 74, "Re" => 75, "Os" => 76, "Ir" => 77, "Pt" => 78, "Au" => 79, "Hg" => 80,
-    "Tl" => 81, "Pb" => 82, "Bi" => 83, "Po" => 84, "At" => 85, "Rn" => 86, "Fr" => 87, "Ra" => 88, "Ac" => 89, "Th" => 90,
-    "Pa" => 91, "U" => 92, "Np" => 93, "Pu" => 94, "Am" => 95, "Cm" => 96, "Bk" => 97, "Cf" => 98, "Es" => 99, "Fm" => 100,
-    "Md" => 101, "No" => 102, "Lr" => 103, "Rf" => 104, "Db" => 105, "Sg" => 106, "Bh" => 107, "Hs" => 108, "Mt" => 109, "Ds" => 110,
-    "Rg" => 111, "Cn" => 112, "Nh" => 113, "Fl" => 114, "Mc" => 115, "Lv" => 116, "Ts" => 117, "Og" => 118, 
-};
+fn periodic_element(symbol: &str) -> Option<PeriodicElement> {
+    symbol.parse().ok()
+}
+
+fn is_known_chemical_symbol(symbol: &str) -> bool {
+    periodic_element(symbol).is_some() || CHEMICAL_ABBREVIATIONS.contains(symbol)
+}
+
+fn chemical_element_atomic_number(symbol: &str) -> Option<u32> {
+    periodic_element(symbol).map(|e| u32::from(e.atomic_number()))
+}
+
+fn chemical_electronegativity(symbol: &str) -> Option<f64> {
+    if CHEMICAL_ABBREVIATIONS.contains(symbol) {
+        return Some(0.0);
+    }
+
+    // MathCAT historically assigned a value to every real element. Keep that coverage for
+    // elements whose Pauling electronegativity has not been measured by sorting them at zero.
+    periodic_element(symbol).map(|e| e.pauling_electronegativity().unwrap_or(0.0))
+}
 
 /// True when `s` is an element symbol (H, Cl, Uue-style names in the table).
 pub(crate) fn is_element_symbol(s: &str) -> bool {
-    CHEMICAL_ELEMENT_ATOMIC_NUMBER.contains_key(s)
-        || CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(s)
+    return is_known_chemical_symbol(s);
 }
 
 pub fn is_chemical_element(node: Element) -> bool {
@@ -1890,7 +1918,7 @@ pub fn is_chemical_element(node: Element) -> bool {
 	}
 
 	let text = as_text(node);
-	return CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(as_str!(text)) ||
+	return is_known_chemical_symbol(as_str!(text)) ||
            has_chem_intent(node, "chemical-element") ||
            has_inherited_property(node, "chemical-formula");
 }
@@ -1980,6 +2008,34 @@ mod chem_tests {
     }
 
     #[test]
+    fn test_periodic_element_lookups() {
+        // Representative symbols retain their old validity and atomic-number results.
+        assert_eq!(chemical_element_atomic_number("H"), Some(1));
+        assert_eq!(chemical_element_atomic_number("Fe"), Some(26));
+        assert_eq!(chemical_element_atomic_number("Og"), Some(118));
+        assert!(is_known_chemical_symbol("H"));
+        assert!(is_known_chemical_symbol("Fe"));
+        assert!(is_known_chemical_symbol("Og"));
+        assert!(!is_known_chemical_symbol("fe"));
+        assert!(!is_known_chemical_symbol("Zz"));
+    }
+
+    #[test]
+    fn test_chemical_abbreviations_are_not_periodic_elements() {
+        // MathCAT abbreviations remain valid chemistry tokens without acquiring element data.
+        for abbreviation in ["Me", "Et", "Ph", "R", "X"] {
+            assert!(is_known_chemical_symbol(abbreviation));
+            assert!(periodic_element(abbreviation).is_none());
+            assert_eq!(chemical_element_atomic_number(abbreviation), None);
+            assert_eq!(chemical_electronegativity(abbreviation), Some(0.0));
+        }
+
+        // Ac remains actinium; its alternate use as acetyl does not shadow the real element.
+        assert!(!CHEMICAL_ABBREVIATIONS.contains("Ac"));
+        assert_eq!(chemical_element_atomic_number("Ac"), Some(89));
+    }
+
+    #[test]
     fn test_noble_element() -> Result<()> {
         return chem_test(|| {
         // mathml test strings need to be canonical MathML since we aren't testing canonicalize()
@@ -2060,7 +2116,7 @@ mod chem_tests {
             <mi>N</mi><mo>&#x2063;</mo> 
             <msub><mi>H</mi><mn>3</mn></msub>
              </mrow>"#;
-        assert_chem_elements(test, true, is_ordered_by_electronegativity)?;
+        assert_chem_elements(test, false, is_ordered_by_electronegativity)?;
         let test = r#"<mrow>  
             <mi>O</mi><mo>&#x2063;</mo> 
             <msub><mi>F</mi><mn>2</mn></msub>
@@ -3311,26 +3367,33 @@ mod chem_tests {
         "#;
         let target = "
             <math>
-                <mrow data-changed='added'>
-                <mrow data-changed='added'>
-                    <mn>2</mn>
-                    <mo data-changed='added'>&#x2062;</mo>
-                    <mrow data-changed='added'>
-                        <msup><mi>OH</mi><mo>-</mo></msup>
-                        <mo data-changed='added'>&#x2061;</mo>
-                        <mrow data-changed='added'>
-                            <mo stretchy='false'>(</mo>
-                            <mtext>aq</mtext>
-                            <mo stretchy='false'>)</mo>
+                <mrow data-changed='added' data-chem-equation='17'>
+                    <mrow data-changed='added' data-chem-equation='10'>
+                        <mn>2</mn>
+                        <mo data-changed='added' data-chem-equation-op='0'>&#x2062;</mo>
+                        <mrow data-changed='added' data-chem-equation='10'>
+                            <mi mathvariant='normal' data-chem-element='1'>O</mi>
+                            <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                            <msup data-chem-formula='4'>
+                                <mi mathvariant='normal' data-split='true' data-chem-element='1'>H</mi>
+                                <mo>-</mo>
+                            </msup>
+                            <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                            <mrow data-changed='added' data-chem-equation='3'>
+                                <mo stretchy='false'>(</mo>
+                                <mtext>aq</mtext>
+                                <mo stretchy='false'>)</mo>
+                            </mrow>
                         </mrow>
                     </mrow>
-                </mrow>
-                <mo>+</mo>
-                <mrow data-changed='added'>
-                    <mtext>C</mtext>
-                    <mo data-changed='added'>&#x2062;</mo>
-                    <msup> <mtext>u</mtext> <mrow><mn>2</mn><mo>+</mo></mrow> </msup>
-                </mrow>
+                    <mo data-chem-equation-op='1'>+</mo>
+                    <msup data-chem-formula='6'>
+                        <mi data-merged='true' data-chem-element='3'>Cu</mi>
+                        <mrow data-chem-equation='3'>
+                            <mn>2</mn>
+                            <mo>+</mo>
+                        </mrow>
+                    </msup>
                 </mrow>
             </math>
            ";

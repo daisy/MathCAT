@@ -1,0 +1,68 @@
+name: Cargo lockfile
+
+# A pull request that edits a manifest gets its lockfile refreshed and, for a
+# branch in this repository, committed. `cargo fetch` keeps pins that still
+# match. A GITHUB_TOKEN push does not start a new Actions run, so other
+# workflows keep the result from the commit before this one. Fork pull
+# requests cannot be pushed to; those fail until the author commits the lockfile.
+
+on:
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "fuzz/Cargo.toml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cargo-lock-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: Update Cargo.lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out same-repo PR branch
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Check out fork PR revision
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@1.96.0
+
+      - name: Refresh lockfiles
+        run: |
+          cargo fetch
+          cargo fetch --manifest-path fuzz/Cargo.toml
+
+      - name: Commit lockfiles
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          THIS_REPO: ${{ github.repository }}
+        run: |
+          git add -- Cargo.lock fuzz/Cargo.lock
+          if git diff --cached --quiet; then
+            echo "Lockfiles already match the manifests."
+            exit 0
+          fi
+          if [ "$HEAD_REPO" != "$THIS_REPO" ]; then
+            echo "Cargo.lock does not match Cargo.toml."
+            echo "Fork pull requests cannot be updated by this workflow."
+            echo "Run cargo fetch, and cargo fetch --manifest-path fuzz/Cargo.toml, then commit the lockfiles."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Cargo.lock to match Cargo.toml"
+          git push

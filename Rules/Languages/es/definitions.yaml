@@ -1,5 +1,79 @@
 ---
 - include: "../../definitions.yaml"
+
+# ----------------  Nombres de funciones en español  ----------------
+# Redefinen las listas de Rules/definitions.yaml para que MathCAT reconozca
+# las abreviaturas en español (sen, tg, arcsen, máx, mín, lím…).
+- TrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "senh", "cotg", "ctg", "tgh", "cotgh",  # español
+    "cos", "cosec", "cosech", "cosh", "cot", "cotan", "cotanh", "coth", "csc", "csch",
+    "sec", "sech", "sin", "sinh", "tan", "tang", "tanh", "tg", "ln", "log", "lg"    
+  }
+
+- ClearSpeakTrigFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "sen", "cotg", "ctg", "cosec",  # español
+    "sin", "cos", "tan", "sec", "csc", "cot",
+    # sin "log", "ln", "lg": en español se dice "el logaritmo de x" (CMU)
+    "tang", "tg",       # these aren't listed in the ClearSpeak, but they are equivalents
+  }
+
+- AdditionalFunctionNames: {
+    # copia de Rules/definitions.yaml (mantener al día) + nombres en español
+    "arcsen", "arcsenh", "arctg", "arccotg", "argsenh", "argcosh", "argtgh", "máx", "mín", "lím", "líminf", "límsup", "lím inf", "lím sup", "mcd", "mcm", "sig", "dom", "rec", "adj", "var",  # español (se buscan en minúscula)
+    # the arcXXX functions aren't really trig functions (they are inverse functions)
+    "arccos", "arccosec", "arccosech", "arccosh",
+    "arccot", "arccotan", "arccotanh", "arccoth",
+    "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
+    "arctan", "arctang", "arctanh",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
+    "gcd", "lcm",
+    "min", "max", "deg", "det", "rank", "rg", "sgn",
+    "dim", "hom", "ker", "tr", "rot", "div",
+    "Dim", "Hom", "Ker", "Tr",
+    "inf", "lim", "liminf", "limsup", "sup",
+    "injlim", "projlim", "inj lim", "proj lim",
+
+    # these come from the nemeth book (Rule XVII)
+    "arc",
+    "amp", "amplitude",
+    "antilog", "antilogarithm",
+    "argument",
+    "colog", "cologarithm",
+    "cosine",
+    "hyperbolic cosine",
+    "cotangent",
+    "hyperbolic cotangent",
+    "covers", "coversine",
+    "cosecant",
+    "hyperbolic cosecant",
+    "ctn",
+    "ctnh",
+    "determinant",
+    "erf", "error function",
+    "exponential",
+    "exsec", "exsecant",
+    "grad", "gradient",
+    "hav", "haversine",
+    "limit",
+    "upper limit",
+    "lower limit",
+    "natural logarithm",
+    "logarithm",
+    "maximum",
+    "minimum",
+    "real part",
+    "secant",
+    "hyperbolic secant",
+    "sine",
+    "hyperbolic sine",
+    "supremum",
+    "tangent",
+    "hyperbolic tangent",
+    "vers", "versine"
+  }
+
 # Lines starting with "#" are a comment
 # Each definition in this file is of the form
 # - name: { "...", "..." "..." }
@@ -7,77 +81,456 @@
 # - name: [] "...", "..." "..." ]
 
 
-# If an "intent" is used, the 'terse:medium:verbose' speech for the intent name is given here for a prefix||infix||postfix||function fixity
-# If only one ":" is used, it the first part is used for 'terse' and the second part is used for 'medium' and 'verbose'
-# If no ":"s are used, the same speech is used for all forms
-# If bracketing words make sense, they are separated with ";"s
-# Intent mappings must specify whether they are "prefix", "infix", "postfix", or "function" with an "=" sign
-# If there are multiple fixities (e.g., see transpose), they are separated with "||
-#   for readability, spaces can be used around any of the delimiter characters
-# Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
+# IntentMappings Syntax:
+#
+# This section defines how each "intent" is spoken for various grammatical forms (fixities such as "prefix", "infix", "postfix", and "function"),
+#  along with supporting different verbosity levels.
+# The syntax is a little bit complicated, but allows a declarative syntax so you don't have to write as many rules.
+#
+# For each intent, you specify spoken forms for one or more fixities using the syntax below.
+#
+# - Each mapping has the form:
+#     "<intent>": "<fixity1>=<speech1> || <fixity2>=<speech2> || ...",
+#   Every alternative must name a fixity and use "="; the fixity requested when speaking selects one.
+#
+# - Separate multiple fixities with "||". Spaces are allowed around any delimiter for readability.
+# - Within a speech string, "|" selects the verbosity form:
+#     - one "|"  (two forms):   the first is 'terse', the second is used for 'medium' and 'verbose'
+#     - two "|"  (three forms): 'terse', 'medium', 'verbose', in that order
+#     - no "|":                 the same spoken form is used for all verbosity levels
+#
+# - Use semicolons ";" to divide opening; main; closing bracketing words within the name part,
+#   where such words make sense (a name with no ";" is just the main phrase).
+# - If an intent has multiple fixities but a definition does not specify one, the first fixity listed is chosen by default.
+#
+# Functions and argument glue (the part after the name):
+# - ":" separates the name/bracketing phrase from the argument-glue options that follow it.
+# - Arity template (two or more ":" options, or one option with ','-separated glue words): the
+#   number of glue words implies the arity, and the final argument is preceded by "of".
+#   Example: "sum: over: from,to"
+#      - 1 arg:  "sum of x"
+#      - 2 args: "sum over i of x"
+#      - 3 args: "sum from i to n of x"
+#   If no option matches the argument count, the arguments are separated with "comma".
+# - Binary separator (exactly one ":" option, no commas in it): after "of", that word joins the two args.
+#   Example: "quotient": "function=integer part: divided by" → "integer part of x divided by y"
+#   If there are not exactly two args, the arguments fall back to "comma".
+# - Paired "ratio-style" ("<name> : <glue> | <name2> : <glue2> | ..."): used when every "|"-separated
+#   piece is a single "name : glue" pair. Verbosity selects one pair, whose glue is the binary
+#   separator described above. Example: "ratio": "function=ratio : to | the ratio : to | the ratio : to"
+#
+# Conceptual grammar (with precedence):
+#
+#   IntentMappingsEntry ::= <intent> ":" <intent_speech>          # ":" is the YAML key/value separator
+#
+#   <intent_speech> ::= <fixity_speech> ( "||" <fixity_speech> )*
+#
+#   <fixity_speech> ::= <fixity> "=" <fixity_body>
+#
+#   <fixity> ::= "prefix" | "infix" | "postfix" | "function" | "nofix" | "silent"
+#
+#   <fixity_body> ::= <standard_body> | <paired_body>
+#
+#   # Standard form: a name/bracketing part, then ":"-separated argument-glue options.
+#   <standard_body> ::= <speech_part> ( ":" <arg_glue> )*
+#
+#   <speech_part> ::= <segment> [ ";" <segment> ";" <segment> ]   # 1 part: name; 3 parts: opening; main; closing
+#
+#   <segment>  ::= <word> [ "|" <word> [ "|" <word> ] ]           # terse | medium | verbose
+#
+#   <arg_glue> ::= <segment>                                      # a single glue word, or ","-separated arity words
+#
+#   # Paired "ratio-style" form: recognized only when every "|" piece is a single "name : glue" pair.
+#   <paired_body> ::= <pair> ( "|" <pair> )+
+#
+#   <pair> ::= <word> ":" <word>                                 # the glue <word> contains no ":"
+#
+#   <word> ::= text
+#
+# Precedence depends on the form:
+#   - Standard: split on ":" first (name vs. argument-glue options), then split each piece on "|"
+#     for terse|medium|verbose, and split only the name part on ";" for opening; main; closing.
+#   - Paired: split on "|" first into "name : glue" pairs, then verbosity selects one pair.
+#
+# Example:
+#   "absolute-value": "function= ; absolute value| the absolute value| the absolute value; end absolute value"
+#   "sum": "function=sum: over: from,to"
+#   "quotient": "function=integer part: divided by"
+#   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
+#
 - IntentMappings: {
-    "indexed-by": "infix= ; subíndice; final del subíndice",
-    "modified-variable": "silent= ",
-    "say-super": "infix=superíndice",   # used with 'mo' for superscripts (e.g, "<")
-    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
-
-    "absolute-value": "function= ; valor absoluto: el valor absoluto de: el valor absoluto de; final del valor absoluto",
-    "binomial": "infix=binomial; elegir; end binomial",
-    "limit": "prefix=límite cuando",
-    "lim-sup": "prefix=lim sup as: the limit superior as: the limit superior as",
-    "lim-inf": "prefix=lim inf as: the limit inferior as : the limit inferior as",
-    "logarithm-with-base": "prefix=log base: el log base: el log base",
-    "minus": "infix=menos || prefix=negativo",
-    "plus": "infix=más || prefix=positivo",
-
-    "transpose": "postfix=intercambiar || function=intercambiar",
-    "norm": "function=; regla: regla: la regla; fin de la regla",
-    "trace": "function=;traza : traza de: la traza de; fin de la traza",
-    "dimension": "function=; dimensión : dimensión de: la dimensión de; fin de la dimensión",
-    "homomorphism": "function= ; homomorfismo : homomorfismo de: el homomorfismo de; find de el homomorfismo",
-    "kernel": "function= ; núcleo : núcleo de: el núcleo de; fin de el núcleo",
+    "binomial": "infix=binomial; sobre; fin del binomial",
+    "inverse": "function=inversa || postfix=inversa",
+    "inverse-function": "function=función inversa",      # se oye al navegar en sen⁻¹ x
+    "domain": "function= ; dominio| el dominio",
+    "codomain": "function= ; codominio| el codominio",
+    "image": "function=imagen| la imagen",
+    "mixed-fraction": "infix=y",
+    "quotient": "function=parte entera: dividido por",
+    "evaluated-at": "infix=evaluado en",
+    "remainder": "function=el resto: dividido por",
+    "max": "function=máximo| el máximo",
+    "min": "function=mínimo| el mínimo",
+    "power": "infix=elevado a",
+    "root": "function=raíz| la raíz",
+    "greatest-common-divisor": "function=mcd| el mcd| el máximo común divisor",
+    "least-common-multiple": "function=mcm| el mcm| el mínimo común múltiplo",
+    "absolute-value": "function= ; valor absoluto| el valor absoluto| el valor absoluto; fin del valor absoluto",
+    "complex-conjugate": "function=conjugado complejo| el conjugado complejo",
+    "complex-arg": "function=arg| el argumento",
+    "real-part": "function=parte real| la parte real",
+    "imaginary-part": "function=parte imaginaria| la parte imaginaria| la parte imaginaria",
+    "polar-coordinate": "function=coordenada polar",
+    "spherical-coordinate": "function=coordenada esférica",
+    "cartesian-coordinate": "function=coordenada cartesiana",
+    "coordinate": "function=coordenada| la coordenada",
+    "floor": "function=piso| el piso",
+    "ceiling": "function=techo| el techo",
+    "round": "function=redondeo| el redondeo",
+    "fractional-part": "function=parte fraccionaria| la parte fraccionaria",
+    "limit": "prefix=límite cuando| el límite cuando",
+    "tends-to": "infix=tiende a",
+    "tends-to-from-above": "infix=tiende por la derecha a",
+    "tends-to-from-below": "infix=tiende por la izquierda a",
+    "set": "function= ; conjunto| el conjunto",
+    "set-difference": "function=diferencia: y || infix=menos",
+    "complement": "function=complemento| el complemento",
+    "empty-set": "nofix=conjunto vacío| el conjunto vacío",
+    "cardinality": "function=cardinal| el cardinal",
+    "list": "function=lista| la lista",
+    "tuple": "function= ; tupla| la tupla",
+    "sum": "function=suma| la suma: sobre: desde,hasta",
+    "product": "function=producto| el producto: sobre: desde,hasta",
+    "sine": "function=sen | seno",
+    "cosine": "function=cos | coseno",
+    "tangent": "function=tan | tangente",
+    "secant": "function=sec | secante",
+    "cosecant": "function=cosec | cosecante",
+    "cotangent": "function=cotan | cotangente",
+    "arcsine": "function=arco seno",
+    "arccosine": "function=arco coseno",
+    "arctangent": "function=arco tangente",
+    "arcsecant": "function=arco secante",
+    "arccosecant": "function=arco cosecante",
+    "arccotangent": "function=arco cotangente",
+    "hyperbolic-sine": "function=sen hache | seno hiperbólico",
+    "hyperbolic-cosine": "function=cos hache | coseno hiperbólico",
+    "hyperbolic-tangent": "function=tan hache | tangente hiperbólica",
+    "hyperbolic-secant": "function=sec hache | secante hiperbólica",
+    "hyperbolic-cosecant": "function=cosec hache | cosecante hiperbólica",
+    "hyperbolic-cotangent": "function=cotan hache | cotangente hiperbólica",
+    "arc-hyperbolic-sine": "function=argumento seno hiperbólico",
+    "arc-hyperbolic-cosine": "function=argumento coseno hiperbólico",
+    "arc-hyperbolic-tangent": "function=argumento tangente hiperbólica",
+    "arc-hyperbolic-secant": "function=argumento secante hiperbólica",
+    "arc-hyperbolic-cosecant": "function=argumento cosecante hiperbólica",
+    "arc-hyperbolic-cotangent": "function=argumento cotangente hiperbólica",
+    "exponential": "function=exponencial| la exponencial",
+    "natural-logarithm": "function=l n| el logaritmo natural| el logaritmo natural",
+    "logarithm": "function=log| el logaritmo",
+    "mean": "function=media| la media",
+    "standard-deviation": "function=desviación estándar| la desviación estándar",
+    "variance": "function=varianza| la varianza",
+    "median": "function=mediana| la mediana",
+    "mode": "function=moda| la moda",
+    "conditional-probability": "function=probabilidad: dado",
     "vector": "function= ; vector || prefix=vector",
-    "cross-product": "infix=cross: cross product: cross product",
-    "dot-product": "infix=dot: dot product: dot:dot product",
+    "matrix": "function=matriz| la matriz",
+    "determinant": "function=determinante| el determinante",
+    "adjugate": "function=adjunta| la matriz adjunta",
+    "magnitude": "function=norma| la norma",
+    "norm": "function=; norma| norma| la norma; fin de la norma",
+    "span": "function=espacio generado| el espacio generado",
+    "unit-vector": "prefix=vector unitario",
+    "identity-matrix": "nofix=matriz identidad| la matriz identidad",
+    "transpose": "postfix=transpuesta || function=transpuesta",
+    "dimensional-product": "infix=por",
+    "set-of-integers": "nofix=ℤ| el conjunto de los números enteros",
+    "set-of-reals": "nofix=ℝ| el conjunto de los números reales",
+    "set-of-rationals": "nofix=ℚ| el conjunto de los números racionales",
+    "set-of-natural-numbers": "nofix=ℕ| el conjunto de los números naturales",
+    "set-of-complex-numbers": "nofix=ℂ| el conjunto de los números complejos",
+    "set-of-primes": "nofix=ℙ| el conjunto de los números primos",
+    "line-segment": "prefix=segmento",
+    "directed-line-segment": "prefix=segmento dirigido",
+    "line": "prefix=recta",
+    "ray": "prefix=rayo",
+    "arc": "prefix=arco",
+    "length": "function=longitud| la longitud",
+    "area": "function=área| el área",
+    "point": "prefix=punto",
+    "time-separator": "infix=",
+    "fenced-group": "function=grupo delimitado",
+    "ordered-pair": "function=el par ordenado: y",
+    "indexed-by": "infix= ; sub| sub| subíndice; fin de sub| fin de sub| fin de subíndice",
+    "highlight": "postfix=resaltado",
+    "least-common-denominator": "function=mínimo común denominador| el mínimo común denominador",
+    "rate": "infix=por",
+    "translation": "function=traslación según",
+    "constraint": "infix= ; con la restricción; ",
+    "binomial-coefficient": "infix=sobre",
+    "pochhammer": "function=permutación",
+    "permutation-cycle": "function=ciclo| el ciclo de permutación",
+    "embellished-name": "infix=con anotación",
+    "annotation": "infix= ; que es ;",
+    "braced-group": "function=agrupado; fin del agrupado",
+    "curl": "function=rot| rotacional",
+    "divergence": "function=div| divergencia",
+    "gradient": "function=grad| gradiente",
+    "laplacian": "function=laplaciano",
+    "angle": "prefix=ángulo",
+    "angle-measure": "prefix=medida del ángulo",
+    "change": "prefix=incremento de",
+    "for-all": "prefix=para todo",
+    "measured-angle": "prefix=ángulo medido",
+    "not": "prefix=no",
+    "number-of": "prefix=número de",
+    "partial-derivative": "prefix=parcial",
+    "right-angle": "prefix=ángulo recto",
+    "square-root-of": "prefix=raíz cuadrada de",
+    "there-does-not-exist": "prefix=no existe",
+    "there-exists": "prefix=existe",
+    "and": "infix=y",
+    "applied-to": "infix=aplicado a",
+    "approximately": "infix=aproximadamente igual a",
+    "congruent": "infix=congruente con",
+    "cartesian-product": "infix=producto cartesiano",
+    "composed-with": "infix=compuesta con",
+    "cross-product": "infix=cruz| producto vectorial| producto vectorial || nofix=cruz| producto vectorial| producto vectorial",
+    "defined-as": "infix=definido como",
+    "divided-by": "infix=dividido por",
+    "divides": "infix=divide a",
+    "does-not-belong-to": "infix=no pertenece a",
+    "does-not-divide": "infix=no divide a",
+    "dot-product": "infix=punto| producto escalar| producto escalar || nofix=punto| producto escalar| producto escalar",
+    "downwards-diagonal-ellipsis": "infix=puntos suspensivos diagonales descendentes",
+    "direct-product": "infix=producto directo",
+    "element-of": "infix=pertenece a",
+    "ellipsis": "infix=puntos suspensivos",
+    "equals": "infix=es igual a",
+    "equivalent-to": "infix=equivalente a",
+    "evaluates-to": "infix=da como resultado",
+    "given": "infix=dado",
+    "greater-than": "infix=mayor que",
+    "greater-than-or-equal-to": "infix=mayor o igual que",
+    "identically-equals": "infix=idénticamente igual a",
+    "if-and-only-if": "infix=si y solo si",
+    "implies": "infix=implica",
+    "inner-product": "infix=producto interior",
+    "intersection": "infix=intersección",
+    "less-than": "infix=menor que",
+    "less-than-or-equal-to": "infix=menor o igual que",
+    "list-separator": "infix=coma",
+    "maps-to": "infix=se asigna a",
+    "member-of": "infix=pertenece a",
+    "minus-or-plus": "infix=menos más",
+    "not-subset": "infix=no es subconjunto de",
+    "not-superset": "infix=no es superconjunto de",
+    "not-equal-to": "infix=distinto de",
+    "not-member-of": "infix=no pertenece a",
+    "not-parallel-to": "infix=no es paralela a",
+    "obtained-from": "infix=obtenido de",
+    "or": "infix=o",
+    "outer-product": "infix=producto exterior",
+    "parallel-to": "infix=paralela a",
+    "perpendicular": "infix=perpendicular a",
+    "plus": "infix=más || prefix=más",     # sin "positivo": "+3" se lee "más 3", igual que "−3" es "menos 3"
+    "minus": "infix=menos || prefix=menos",
+    "plus-or-minus": "infix=más menos",
+    "precedes": "infix=precede a",
+    "proportional": "infix=proporcional a",
+    "range-separator": "infix=a",
+    "ratio": "function=razón : a | la razón : a",
+    "similar": "infix=semejante a",
+    "subset": "infix=subconjunto de",
+    "subset-or-equal": "infix=subconjunto o igual a",
+    "succeeds": "infix=sucede a",
+    "such-that": "infix=tal que",
+    "superset": "infix=superconjunto de",
+    "superset-or-equal": "infix=superconjunto o igual a",
+    "tilde": "infix=tilde",
+    "times": "infix=por",
+    "union": "infix=unión",
+    "upwards-diagonal-ellipsis": "infix=puntos suspensivos diagonales ascendentes",
+    "vertical-ellipsis": "infix=puntos suspensivos verticales",
+    "xor": "infix=o exclusivo",
+    "factorial": "postfix=factorial",     # se lee "factorial de n": regla factorial-de en general.yaml
+    "percent": "postfix=por ciento",
+    "diameter": "nofix=d| diámetro",
+    "distance": "nofix=d; D| distancia",
+    "probability": "nofix=P| probabilidad || function=probabilidad",
+    "radius": "nofix=r| radio",
+    "volume": "nofix=V| volumen || function=volumen",
+    "exponential-e": "nofix=e",
+    "imaginary-i": "nofix=i",
+    "differential-d": "nofix=d",
+    "golden-ratio": "nofix=número áureo",
+    "modified-variable": "silent= ",
+    "say-super": "infix=superíndice",
+    "skip-super": "silent=",
+    "lim-sup": "prefix=lím sup cuando| el límite superior cuando| el límite superior cuando",
+    "lim-inf": "prefix=lím inf cuando| el límite inferior cuando| el límite inferior cuando",
+    "logarithm-with-base": "prefix=log base| el logaritmo en base| el logaritmo en base",
+    "trace": "function= ; traza| la traza| la traza; fin de la traza",
+    "dimension": "function= ; dimensión| la dimensión| la dimensión; fin de la dimensión",
+    "homomorphism": "function= ; homomorfismo| el homomorfismo| el homomorfismo; fin del homomorfismo",
+    "kernel": "function= ; núcleo| el núcleo| el núcleo; fin del núcleo",
+    "chemistry-concentration": "function= ; concentración| la concentración| la concentración; fin de la concentración",
+  }
 
-    "divergence": "function= ; div: divergence: divergence; end divergence",
-    "curl": "function= ; curl; end curl",
-    "gradient": "function= ; grad: gradient: gradient; end gradient",
-    "laplacian": "function=lahplahsian",   # speech engines don't do a good job with "laplacian"
+  # La palabra que une una función con su argumento en las IntentMappings funcionales (en inglés, "of").
+  # Probablemente es la misma que se usa para U+2061 en unicode.yaml, pero por razones técnicas se define aquí.
+  # Es un vector de largo 1 porque no se admiten escalares.
+- FunctionApplicationWord: ["de"]
 
-    "chemistry-concentration": "function= ; concentración: concentración de: la concentración de; fin de la concentración",
+  # Nombres de funciones (nombres de intent, no se traducen) que en modo breve no dicen "de"
+- TerseFunctionNames: {
+    "divergence", "del|gradient", "curl"
   }
 
 - NavigationParts: {
-    "large-op": "base; lower limit; upper limit",
-    "mfrac": "numerator;denominator",
-    "fraction": "numerator;denominator",
-    "msqrt": "root",
-    "square-root": "root",
-    "mroot": "root;root index",
-    "root": "root;root index",
-    "msub": "base;subscript",
-    "sub": "base;subscript",
-    "msup": "base;superscript",
-    "say-super": "base;superscript",
-    "skip-super": "base;superscript",
-    "power": "base;exponent",
-    "msubsup": "base;subscript;superscript",
-    "munder": "base;under limit",
-    "mover": "base;upper limit",
-    "munderover": "base;under limit;upper limit",
+    # Partes de una fórmula a las que se puede navegar
+    "large-op": "base; límite inferior; límite superior",
+    "mfrac": "numerador; denominador",
+    "fraction": "numerador; denominador",
+    "msqrt": "raíz",
+    "square-root": "raíz",
+    "mroot": "raíz; índice",
+    "root": "raíz; índice",
+    "msub": "base; subíndice",
+    "sub": "base; subíndice",
+    "logarithm-with-base": "base",
+    "indexed-by": "base; subíndice",
+    "msup": "base; superíndice",
+    "say-super": "base; superíndice",
+    "skip-super": "base; superíndice",
+    "power": "base; exponente",
+    "msubsup": "base; subíndice; superíndice",
+    "munder": "base; límite inferior",
+    "mover": "base; límite superior",
+    "munderover": "base; límite inferior; límite superior",
 
-    # words for moving into and out of one of the parts (e.g., "move right 'out of' numerator, 'in' denominator")
-    # it's a hack to put them here, but at least they are grouped with the other navigation parts
-    "in": "in",
-    "out": "out of",
+    # palabras para entrar y salir de una parte (p. ej., "mover a la derecha, 'fuera de' numerador, 'en' denominador")
+    "in": "en",
+    "out": "fuera de",
   }
+
+- KnownWords: {
+    # MathCAT junta algunas secuencias de tres o más mi (un error común), pero no las que están en orden alfabético.
+    # Esta es la lista de excepciones que sí se juntan. No incluir palabras con letras repetidas.
+    # Lista inicial; se puede ampliar.
+    "abs", "adj", "bit", "dim", "fin", "lux"
+  }
+
+# =============================================================================
+# Units and currency
+# =============================================================================
+# Spoken names for measures come from these maps. Keys are the MathML leaf text
+# (symbol or abbreviation); values are the spoken *singular* base word.
+#
+# Lookup order for a unit token (speech rules / canonicalize):
+#   1. SIUnits
+#   2. UnitsWithoutPrefixes
+#   3. EnglishUnits   (English-only; leave empty in other languages)
+#   4. SIPrefixes + SIUnits  (e.g. "km" → "kilo" + "metre"; "da" is two letters)
+# Currency symbols use CurrencySymbols (e.g. "$" → "dollar").
+#
+# Once the singular base word is known, speech uses UnitNumber(.) to choose
+# singular vs plural (one / few / many), then PluralForms (or PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix) when it is not "one". For "1" before a unit or currency,
+# languages with gender may also consult UnitGender / OneBeforeUnit (see Gender
+# below). English has no gender agreement, so "1" is spoken normally.
+#
+# --- Singular vs plural (one / few / many) ---
+# PluralSystem (see Rules/definitions.yaml) selects how integers map to one/few/many:
+#   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
+#   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
+# UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
+# position from CompoundUnitPlural / NumberlessUnitPlural / VariableBeforeUnitPlural
+# (Rules/definitions.yaml):
+#   - last (default) — last counted-side factor takes the category (en, …)
+#   - first           — first counted-side factor (es, pt)
+#   - all             — every factor, including the "per" side (fr)
+#   - none            — every factor stays "one" after a numeral (hu with a number)
+# NumberlessUnitPlural is used when there is no coefficient at all (bare m/s); "same"
+# (default) reuses CompoundUnitPlural. VariableBeforeUnitPlural covers an identifier
+# coefficient (x m, x_i kg·m/s); "same" (default) reuses CompoundUnitPlural with
+# category "many". Hungarian sets NumberlessUnitPlural to last so a bare head can be
+# plural while counted forms and "x méter" stay singular (CompoundUnitPlural none).
+# Languages that need per-word exceptions (de/nl) or a different case/form without a
+# number (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the
+# defaults — these keys alone cannot express those shifts.
+# A real count of one forces every factor to "one". Per-side factors with no local
+# count stay "one" unless the active policy is all.
+# Speech rules typically:
+#   UnitNumber = "one"  → speak the singular base word from the unit/currency map
+#   otherwise           → PluralForms[base word] if listed, else PluralDefaultFromEnding /
+#                         PluralSpellingDefaultSuffix (English: empty ByFinal + suffix "s")
+# Irregulars and words that stay the same in the plural go in PluralForms below
+# (keyed by the *spoken singular* base word, not the symbol). Languages with
+# one_few_many often also have PluralGenitive (or similar) for "many".
+#
+# Examples (English, PluralSystem one_many):
+#   UnitNumber = "one" (singular base word as spoken):
+#     1 m   → "1 metre"     (SIUnits "m" → "metre")
+#     $1    → "1 dollar"    (CurrencySymbols "$" → "dollar")
+#   UnitNumber ≠ "one" (plural form):
+#     3 m   → "3 metres"    (no PluralForms entry → default append "s")
+#     3 ft  → "3 feet"      (PluralForms "foot" → "feet")
+#
+# --- Gender (numeral–noun agreement for "1") ---
+# Gender attaches to the spoken singular base word (after SIUnits / CurrencySymbols
+# resolution), not to the symbol. Exception lists must only contain base words that
+# already appear as *values* in SIUnits / UnitsWithoutPrefixes / EnglishUnits /
+# CurrencySymbols (or the language’s equivalents)—not a general dictionary.
+#
+# GenderSystem (vec, like PluralSystem) chooses the default policy:
+#   - none            — no gender; UnitGender returns "" (English, zh, ja, …)
+#   - ending          — last letter of the last token via GenderDefaultFromEnding,
+#                       else GenderDefault (es, pt, …)
+#   - neuter_list     — common unless the *symbol* is in NeuterUnits /
+#                       NeuterUnitsWithoutPrefixes / CurrencySymbolsNeuter (nb, sv)
+#   - explicit_only   — GenderDefault unless listed in exception maps (de, fr, …)
+# Omit GenderSystem or use ["none"] when unused. Empty exception maps are fine.
+#
+# Ending map + default (for GenderSystem ending / as fallback for explicit_only):
+#   GenderDefaultFromEnding: { "a": "feminine" }   # final letter → gender
+#   GenderDefault: ["masculine"]
+#
+# Exception lists (spoken base words only), as needed per language:
+#   FeminineUnitWords / MasculineUnitWords / NeuterUnitWords
+#   FeminineCurrencyWords / MasculineCurrencyWords / NeuterCurrencyWords
+# Multiword base words ("degree celsius", "atomic mass unit"): gender uses the last
+# token’s ending unless the full base word is listed as an exception.
+#
+# How to speak "1" before the unit/currency (when gender is used):
+#   OneBeforeUnit: { "masculine": "un", "feminine": "una", "neuter": "ett", "common": "en" }
+# Missing key or GenderSystem none → fall back to normal number speech ("1" / NumbersOnes).
+#
+# Examples (Spanish-style GenderSystem ending + OneBeforeUnit un/una):
+#   Common case (GenderDefaultFromEnding / GenderDefault):
+#     1 m  → "metro" ends in "o" → not in map → GenderDefault masculine → "un metro"
+#     1 cd → "candela" ends in "a" → feminine → "una candela"
+#   Exception (listed override; "día" ends in "a" but is masculine):
+#     MasculineUnitWords includes "día" → "un día"  (not "una día")
+#
+# --- Default plural spelling (when PluralForms has no entry) ---
+#   PluralDefaultFromEnding: { "r": "es", "l": "es" }  # final letter → suffix
+#   PluralSpellingDefaultSuffix: ["s"]               # otherwise append this
+# Example (Spanish): "dólar" → "dólares"; "metro" → "metros"; "gray" → "grays".
+# Irregulars stay in PluralForms ("lumen" → "lúmenes").
+#
+# English: GenderSystem is none; do not add OneBeforeUnit or gender exception lists
+# unless agreement is intentionally introduced later. Plural spelling inherits
+# PluralSpellingDefaultSuffix "s" with an empty PluralDefaultFromEnding map.
+# =============================================================================
 
 - SIPrefixes: {
-    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deka",
-    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+    "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deca",
+    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "μ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
+# Units that accept SI prefixes (symbol → spoken singular base word).
 # this is a list of all units that accept SIPrefixes
 # from www.bipm.org/documents/20126/41483022/SIBrochure-9-EN.pdf
 #   Prefixes may be used with any of the 29 SI units with special names
@@ -86,7 +539,7 @@
     # base units
     "A": "amperio",
     "cd": "candela",
-    "K": "grado kelvin", "K": "grado kelvin", # U+212A
+    "K": "kelvin", "K": "kelvin", # U+212A
     "g": "gramo",
     "m": "metro",     # British spelling works for US also
     "mol": "mol",
@@ -95,7 +548,7 @@
     # derived units
     "Bq": "becquerel",
     "C": "culombio",
-    "°C": "grado Celsius", "℃": "grado Celsius",  # should only take negative powers
+    "°C": "grado Celsius", "℃": "grado Celsius", "°K": "grado kelvin",  # should only take negative powers
     "F": "faradio",
     "Gy": "gray",
     "H": "henrio",
@@ -135,6 +588,7 @@
   }
 
 
+# Units that do not take SI prefixes (symbol → spoken singular base word).
 - UnitsWithoutPrefixes: {
     # time
     "″": "segundo", "\"": "segundo", 
@@ -178,10 +632,33 @@
     "dyn": "dina",
     "erg": "ergio",
 
+    # unidades de uso corriente en español (no están en inglés)
+    "kcal": "kilocaloría",
+    "Wh": "vatio hora", "kWh": "kilovatio hora", "MWh": "megavatio hora", "GWh": "gigavatio hora",
+    "Ah": "amperio hora", "mAh": "miliamperio hora",
+    "mmHg": "milímetro de mercurio", "Torr": "torr", "mbar": "milibar",
+    "cc": "centímetro cúbico",
+    "kn": "nudo",
+    "CV": "caballo de vapor",
+    "kgf": "kilogramo fuerza",
+    "ppm": "parte por millón",
+    "uma": "unidad de masa atómica", "ua": "unidad astronómica",
+    # informática
+    "KB": "kilobyte",
+    "bit": "bit", "kbit": "kilobit", "Mbit": "megabit", "Gbit": "gigabit", "Tbit": "terabit",
+    "bps": "bit por segundo", "kbps": "kilobit por segundo", "Mbps": "megabit por segundo", "Gbps": "gigabit por segundo", "Tbps": "terabit por segundo",
+    "Bps": "byte por segundo", "kBps": "kilobyte por segundo", "MBps": "megabyte por segundo", "GBps": "gigabyte por segundo",
+    "dpi": "punto por pulgada", "ppp": "punto por pulgada",
+    "px": "píxel",
+    "fps": "fotograma por segundo",
+    "FLOPS": "flops", "GFLOPS": "gigaflops", "TFLOPS": "teraflops", "PFLOPS": "petaflops",
+    "MIPS": "millón de instrucciones por segundo",
+    "dBm": "decibelio milivatio",
+
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
-      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "dekámetro",
-    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
+      "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
+    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "μm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
     #  conflicts: "fm": "femtómetro", "am": "attómetro",
     "zm": "zeptómetro", "ym": "yoctómetro", "rm": "rontómetro", "qm": "quectómetro",
   
@@ -191,76 +668,151 @@
   }
 
 
-  # this will only be used if the language is English, so it can be empty for other countries
+# Imperial / US customary (and similar) units. English-only; leave empty elsewhere.
 - EnglishUnits: {
+    # unidades anglosajonas, con su nombre en español
     # length
-    "in": "inch",
-    "ft": "foot",
-    "mi": "mile",
-    "rd": "rod",
-    "li": "link",
-    "ch": "chain",
+    "in": "pulgada",
+    "yd": "yarda",
+    "ft": "pie",
+    "mi": "milla",
+    "rd": "vara",
+    "li": "eslabón",
+    "ch": "cadena",
 
     # area
-    "sq in": "square inch", "sq. in": "square inch", "sq. in.": "square inch",
-    "sq ft": "square foot", "sq. ft": "square foot", "sq. ft.": "square foot",
-    "sq yd": "square yard", "sq. yd": "square yard", "sq. yd.": "square yard",
-    "sq mi": "square mile", "sq. mi": "square mile", "sq. mi.": "square mile",
+    "sq in": "pulgada cuadrada", "sq. in": "pulgada cuadrada", "sq. in.": "pulgada cuadrada",
+    "sq ft": "pie cuadrado", "sq. ft": "pie cuadrado", "sq. ft.": "pie cuadrado",
+    "sq yd": "yarda cuadrada", "sq. yd": "yarda cuadrada", "sq. yd.": "yarda cuadrada",
+    "sq mi": "milla cuadrada", "sq. mi": "milla cuadrada", "sq. mi.": "milla cuadrada",
     "ac": "acre",
-    "FBM": "board foot",
+    "FBM": "pie tablar",
 
     # volume
-    "cu in": "cubic inch", "cu. in": "cubic inch", "cu. in.": "cubic inch",
-    "cu ft": "cubic foot", "cu. ft": "cubic foot", "cu. ft.": "cubic foot",
-    "cu yd": "cubic yard", "cu. yd": "cubic yard", "cu. yd.": "cubic yard",
-    "bbl": "barrel", "BBL": "barrel",
+    "cu in": "pulgada cúbica", "cu. in": "pulgada cúbica", "cu. in.": "pulgada cúbica",
+    "cu ft": "pie cúbico", "cu. ft": "pie cúbico", "cu. ft.": "pie cúbico",
+    "cu yd": "yarda cúbica", "cu. yd": "yarda cúbica", "cu. yd.": "yarda cúbica",
+    "bbl": "barril", "BBL": "barril",
     "pk": "peck",
     "bu": "bushel",
-    "tsp": "teaspoon",
-    "tbl": "tablespoon",
+    "tsp": "cucharadita",
+    "tbl": "cucharada",
 
     # liquid
-    "fl dr": "fluid drams",
-    "fl oz": "fluid ounce",
+    "fl dr": "dracma líquida",
+    "fl oz": "onza líquida",
     "gi": "gill",
-    "cp": "cup", "cup": "cup",
-    "pt": "pint",
-    "qt": "quart",
-    "gal": "gallon",
+    "cp": "taza", "cup": "taza",
+    "pt": "pinta",
+    "qt": "cuarto de galón",
+    "gal": "galón",
 
     # weight
-    "gr": "grain",
-    "dr": "dram",
-    "oz": "ounce", "℥": "ounce",
-    "lb": "pound",
-    "cwt": "hundredweight",
+    "gr": "grano",
+    "dr": "dracma",
+    "oz": "onza", "℥": "onza",
+    "lb": "libra",
+    "cwt": "quintal",
     "dwt": "pennyweight",
-    "oz t": "troy ounce",
-    "lb t": "troy pound",
+    "oz t": "onza troy",
+    "lb t": "libra troy",
 
     # energy
-    "hp": "horsepower",
+    "hp": "caballo de fuerza",
     "BTU": "BTU",
-    "°F": "degree fahrenheit", "℉": "degree fahrenheit",
+    "°F": "grado Fahrenheit", "℉": "grado Fahrenheit",
 
     # other
-    "mph": "mile per hour",
-    "mpg": "mile per gallon",
+    "mph": "milla por hora",
+    "psi": "libra por pulgada cuadrada",
+    "mpg": "milla por galón",
   }
 
+# Spanish: first counted-side factor takes the plural (“metros por segundo”).
+- CompoundUnitPlural: ["first"]
+
+# Spanish: un/una before units and currencies from spoken base-word gender.
+- GenderSystem: ["ending"]
+- GenderDefaultFromEnding: {
+    "a": "feminine",
+  }
+- GenderDefault: ["masculine"]
+- OneBeforeUnit: {
+    "masculine": "un",
+    "feminine": "una",
+  }
+# Exception lists: only spoken base words that appear as values in the unit/currency maps.
+# Override ending defaults (e.g. "día" ends in "a" but is masculine).
+- MasculineUnitWords: {
+    "día",
+    "año luz",
+    "tesla",
+    "vatio hora", "kilovatio hora", "megavatio hora", "gigavatio hora",
+    "amperio hora", "miliamperio hora",
+    "kilogramo fuerza", "caballo de fuerza", "punto por pulgada",
+  }
+- FeminineUnitWords: {
+    "revolución por minuto",
+    "parte por millón",
+    "libra troy", "onza troy", "milla por galón",
+  }
+- MasculineCurrencyWords: {
+  }
+- FeminineCurrencyWords: {
+  }
+# Default plural: final r/l → "es", else "s". Irregulars stay in PluralForms.
+- PluralDefaultFromEnding: {
+    "r": "es",
+    "l": "es",
+  }
+- PluralSpellingDefaultSuffix: ["s"]
+
+
+# Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
+- CurrencySymbols: {
+    "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
+    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₽": "rublo", "₴": "grivna", "₿": "bitcóin",
+    # se pueden agregar más monedas...
+  }
+
+# Irregular or invariant plurals of spoken singular base words (from the maps above).
+# Used when UnitNumber is not "one". Anything omitted uses PluralDefaultFromEnding /
+# PluralSpellingDefaultSuffix. Do not key by symbol ("m"); key by base word ("metro").
 - PluralForms: {
   # FIX: this needs to be flushed out
-    "lumen": "lúmenes",
-    "kelvin": "kelvin",
+    "radián": "radianes", "estereorradián": "estereorradianes", "gradián": "gradianes",
+    "lumen": "lúmenes", "lux": "lux",
+    "colón": "colones", "yen": "yenes", "bitcóin": "bitcoines", "guaraní": "guaraníes",
+    "año luz": "años luz", "minuto de arco": "minutos de arco", "segundo de arco": "segundos de arco",
+    "revolución por minuto": "revoluciones por minuto", "grado kelvin": "grados kelvin",
+    "unidad astronómica": "unidades astronómicas", "unidad de masa atómica": "unidades de masa atómica",
+    "kelvin": "kelvins",
     "grado Celsius": "grados Celsius",
     "grado Fahrenheit": "grados Fahrenheit",
 
-    "inch": "inches", "square inch": "square inches", "cubic inch": "cubic inches",
-    "foot": "feet", "square foot": "square feet", "cubic foot": "cubic feet",
-    "board foot": "board feet",
     "hertz": "hertz",
     "siemens": "siemens",
-    "revolution per minute": "revolutions per minute",
+
+    # unidades anglosajonas
+    "eslabón": "eslabones", "galón": "galones", "gill": "gills", "bushel": "bushels", "BTU": "BTU",
+    "pulgada cuadrada": "pulgadas cuadradas", "pie cuadrado": "pies cuadrados", "yarda cuadrada": "yardas cuadradas",
+    "milla cuadrada": "millas cuadradas", "pie tablar": "pies tablares",
+    "pulgada cúbica": "pulgadas cúbicas", "pie cúbico": "pies cúbicos", "yarda cúbica": "yardas cúbicas",
+    "dracma líquida": "dracmas líquidas", "onza líquida": "onzas líquidas", "cuarto de galón": "cuartos de galón",
+    "onza troy": "onzas troy", "libra troy": "libras troy", "caballo de fuerza": "caballos de fuerza",
+    "milla por hora": "millas por hora", "milla por galón": "millas por galón",
+    "vatio hora": "vatios hora", "kilovatio hora": "kilovatios hora", "megavatio hora": "megavatios hora", "gigavatio hora": "gigavatios hora",
+    "amperio hora": "amperios hora", "miliamperio hora": "miliamperios hora",
+    "milímetro de mercurio": "milímetros de mercurio", "torr": "torr", "centímetro cúbico": "centímetros cúbicos",
+    "caballo de vapor": "caballos de vapor", "kilogramo fuerza": "kilogramos fuerza", "parte por millón": "partes por millón",
+    "libra por pulgada cuadrada": "libras por pulgada cuadrada",
+    "bit por segundo": "bits por segundo", "kilobit por segundo": "kilobits por segundo", "megabit por segundo": "megabits por segundo",
+    "gigabit por segundo": "gigabits por segundo", "terabit por segundo": "terabits por segundo",
+    "byte por segundo": "bytes por segundo", "kilobyte por segundo": "kilobytes por segundo", "megabyte por segundo": "megabytes por segundo", "gigabyte por segundo": "gigabytes por segundo",
+    "punto por pulgada": "puntos por pulgada", "píxel": "píxeles", "fotograma por segundo": "fotogramas por segundo",
+    "flops": "flops", "gigaflops": "gigaflops", "teraflops": "teraflops", "petaflops": "petaflops",
+    "millón de instrucciones por segundo": "millones de instrucciones por segundo",
+    "decibelio milivatio": "decibelios milivatio",
   }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
@@ -295,19 +847,45 @@
     ]
 
 - NumbersOrdinalPluralOnes: [
-         "cero", "primero", "segundos", "tercios", "cuartos", "quintos", "sextos", "séptimos", "ochos", "novenos",
-         "décimos", "undécimos", "doceavos", "treceavos", "catorceavos", "decimoquintos", "dieciseisavos",
-         "diecisiete", "dieciochovo", "diecinueve"
+         "ceros", "primeros", "segundos", "terceros", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "undécimos", "duodécimos", "decimoterceros", "decimocuartos", "decimoquintos", "decimosextos",
+         "decimoséptimos", "decimoctavos", "decimonovenos"
     ]
 
     # stop when regularity begins
+# ordinales femeninos para "x a la quinta" y "la raíz quinta" (solo hasta 10; desde 11 se usa el cardinal)
+- OrdinalesFemeninos: {
+    "2": "segunda", "3": "tercera", "4": "cuarta", "5": "quinta", "6": "sexta",
+    "7": "séptima", "8": "octava", "9": "novena", "10": "décima"
+  }
+
+# ordinales de texto (1.º, 2.ª, 3.er): unidades hasta 19 y decenas; el femenino, el plural
+# y el apócope (primer, tercer) los arma la regla "ordinal" de general.yaml
+- OrdinalesUnidades: {
+    "1": "primero", "2": "segundo", "3": "tercero", "4": "cuarto", "5": "quinto",
+    "6": "sexto", "7": "séptimo", "8": "octavo", "9": "noveno", "10": "décimo",
+    "11": "undécimo", "12": "duodécimo", "13": "decimotercero", "14": "decimocuarto",
+    "15": "decimoquinto", "16": "decimosexto", "17": "decimoséptimo", "18": "decimoctavo",
+    "19": "decimonoveno"
+  }
+
+- OrdinalesDecenas: {
+    "2": "vigésimo", "3": "trigésimo", "4": "cuadragésimo", "5": "quincuagésimo",
+    "6": "sexagésimo", "7": "septuagésimo", "8": "octogésimo", "9": "nonagésimo"
+  }
+
 - NumbersOrdinalFractionalOnes: [
-         "cero", "primero", "mitad"
+         # en español los denominadores de fracciones no son ordinales hasta 20: tercio, onceavo…
+         "cero", "entero", "medio", "tercio", "cuarto", "quinto", "sexto", "séptimo", "octavo", "noveno",
+         "décimo", "onceavo", "doceavo", "treceavo", "catorceavo", "quinceavo", "dieciseisavo",
+         "diecisieteavo", "dieciochoavo", "diecinueveavo"
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "ceros", "primeros", "mitades"
+         "ceros", "enteros", "medios", "tercios", "cuartos", "quintos", "sextos", "séptimos", "octavos", "novenos",
+         "décimos", "onceavos", "doceavos", "treceavos", "catorceavos", "quinceavos", "dieciseisavos",
+         "diecisieteavos", "dieciochoavos", "diecinueveavos"
     ]
 
 
@@ -317,11 +895,11 @@
     ]
 
 - NumbersOrdinalTens: [
-         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "setenta", "ochogésimo", "novagésimo"
+         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "septuagésimo", "octogésimo", "nonagésimo"
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "décimos", "veinte", "treinta", "cuarentavos", "quincuagésimos", "sexagésimos", "setentavos", "ochentavos", "novenonavos"
+         "", "décimos", "vigésimos", "trigésimos", "cuadragésimos", "quincuagésimos", "sexagésimos", "septuagésimos", "octogésimos", "nonagésimos"
     ]
 
 
@@ -331,13 +909,13 @@
     ]
 
 - NumbersOrdinalHundreds: [
-       "", "una centésima", "dos centésima", "tres centésima", "cuatro centésima", "quinienta centésima",
-         "seiscientos", "setecientos", "ocho centésimo", "nueve centésimo"
+       "", "centésimo", "ducentésimo", "tricentésimo", "cuadringentésimo", "quingentésimo",
+         "sexcentésimo", "septingentésimo", "octingentésimo", "noningentésimo"
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "centésimas", "dos centésimas", "tres centésimas", "cuatro centésimas", "cinco centésimas",
-         "seis centésimas", "siete centésimas", "ocho centésimas", "nueve centésimas"
+       "", "centésimos", "ducentésimos", "tricentésimos", "cuadringentésimos", "quingentésimos",
+         "sexcentésimos", "septingentésimos", "octingentésimos", "noningentésimos"
     ]
       
 
@@ -348,11 +926,11 @@
     ]
       
 - NumbersOrdinalLarge: [
-         "", "milésima", "millonésima", "mil millonésima", "trillonésima", "cuatrillonésima",
-         "quintillionth", "sextillionth", "septillionth", "octillionth", "nonillionth"
+         "", "milésimo", "millonésimo", "milmillonésimo", "billonésimo", "milbillonésimo",
+         "trillonésimo", "miltrillonésimo", "cuatrillonésimo", "milcuatrillonésimo", "quintillonésimo"
     ]
       
 - NumbersOrdinalPluralLarge: [
-         "", "milésimas", "millonésimas", "mil millonésimas", "trillonésimas", "cuatrillonésimas",
-         "quintillionésimas", "sextillones", "septillones", "octillionésimas", "nonillionésimas"
+         "", "milésimos", "millonésimos", "milmillonésimos", "billonésimos", "milbillonésimos",
+         "trillonésimos", "miltrillonésimos", "cuatrillonésimos", "milcuatrillonésimos", "quintillonésimos"
     ]

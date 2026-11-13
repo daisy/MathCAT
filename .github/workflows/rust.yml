@@ -1,23 +1,36 @@
 name: Rust
 
-on: [push, pull_request] # note: pre-release job still only on 'refs/heads/main'
+# PythonScripts-only changes must not run Rust (and must not trigger downstream rebuilds).
+on:
+  push:
+    paths-ignore:
+      - 'PythonScripts/**'
+  pull_request:
+    paths-ignore:
+      - 'PythonScripts/**'
+# note: pre-release job still only on 'refs/heads/main'
 
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
+  # Tests must not read %APPDATA%\MathCAT\prefs.yaml (or the platform equivalent).
+  MATHCAT_IGNORE_USER_PREFS: "1"
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
+        # testing on Windows catches path-handling differences (separators, normalization) that Linux misses.
+        os: [ubuntu-latest, windows-latest]
+        name: [default, no-unsafe]
         include:
           - name: default
             features: ""
           - name: no-unsafe
             features: "--features no-unsafe"
-    name: Build and Test (${{ matrix.name }})
-    runs-on: ubuntu-latest
+    name: Build and Test (${{ matrix.os }}, ${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5
     - name: Build (${{ matrix.name }})

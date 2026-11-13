@@ -75,7 +75,7 @@
           
  - "\"": [t: "quotation mark"]                     # 0x22
  - "#": [t: "number"]                              # 0x23
- - "$": [t: "dollars"]                             # 0x24
+ - "$": [t: "dollar"]                              # 0x24 — plural via currency/unit rules
  - "%": [t: "percent"]                             # 0x25
  - "&": [t: "ampersand"]                           # 0x26
  - "'": [t: "apostrophe"]                          # 0x27
@@ -128,9 +128,11 @@
         else: [t: "dot"]
  - "/":                                           # 0x2f
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [t: "slash"]                        # 0x2f
-        else: [t: "divided by"]                   # 0x2f
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [t: "slash"]                        # 0x2f
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: "per"]
+          else: [t: "divided by"]                   # 0x2f
 
  - ":": [t: "colon"]                               # 0x3a
  - ";": [t: "semicolon"]                           # 0x3b
@@ -219,22 +221,27 @@
  - "´": [t: "acute"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [t: "dot"]
-        else: [t: "times"]
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: ""]
+        - else_if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+          then: [t: "dot"]
+          else: [t: "times"]
  - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle = 'ClearSpeak'"
-        then_test:
-        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
-          then: [t: "times"]
-        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
-          then: [t: "by"]
-          else: [t: "cross"]
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+        then: [t: ""]
         else_test:
-            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [t: "cross"]
-            else: [t: "times"]
+            if: "$SpeechStyle = 'ClearSpeak'"
+            then_test:
+            - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+              then: [t: "times"]
+            - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+              then: [t: "by"]
+              else: [t: "cross"]
+            else_test:
+                if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+                then: [t: "cross"]
+                else: [t: "times"]
 
  - "÷": [t: "divided by"]                          # 0xf7
  - "̀": [t: "grave accent embellishment"]          # 0x300

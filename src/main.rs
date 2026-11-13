@@ -36,8 +36,21 @@ fn main() {
       .init();
 
    let expr = r#"
-<math xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mover accent='true'> <mrow><mi>R</mi><mi>T</mi></mrow><mo stretchy='true'>&#x2322;</mo></mover> </mrow></math>
-
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <munderover>
+    <mrow><mi>&Sigma;</mi></mrow>
+    <mrow>
+      <mi>i</mi>
+      <mo>=</mo>
+      <mn>0</mn>
+    </mrow>
+    <mi>n</mi>
+  </munderover>
+  <msub>
+    <mi>x</mi>
+    <mi>i</mi>
+  </msub>
+</math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
@@ -182,10 +195,10 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "UEB").unwrap();
+  set_preference("BrailleCode", "CMU").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
-  set_preference("Verbosity", "Verbose").unwrap();
+  set_preference("Verbosity", "Medium").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
   set_preference("NavMode", "Enhanced").unwrap();
   set_preference("Impairment", "Blindness").unwrap();
@@ -208,14 +221,14 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  match do_navigate_command("ZoomIn")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  }
-  match do_navigate_command("ZoomIn")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  }
+  // match do_navigate_command("ZoomIn")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  // }
+  // match do_navigate_command("ZoomOut")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
+  // }
   info!("\n");
   // match do_navigate_command("ToggleZoomLockUp") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
@@ -277,7 +290,7 @@ fn main() {
   // info!("#xpath = {}; duplicates = {}", xpath_counts.0, xpath_counts.1);
   // info!("Time taken (second time for speech + braille): {}ms", instant.elapsed().as_millis());
   // debug!("Hashmap sizes:\n{}", libmathcat::speech::SpeechRules::print_sizes());
-  timing_test(expr, 100);
+  timing_test(expr, 0);
 
 }
 

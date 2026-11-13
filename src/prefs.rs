@@ -2,6 +2,7 @@
 //! Either source can set any preference, but users and AT typically set different preferences.
 //!
 //! User prefs are read in from a YAML file (prefs.yaml). They can be written by hand.
+//! Set `MATHCAT_IGNORE_USER_PREFS` (any value, including empty) to skip the per-user file.
 //! In the future, there will hopefully be a nice UI that writes out the YAML file.
 //!
 //! AT prefs are set via the API given in the [crate::interface] module.
@@ -106,37 +107,24 @@ impl Preferences{
 
     fn read_prefs_file(file: &Path, mut base_prefs: Preferences) -> Result<Preferences> {
         let file_name = file.to_str().unwrap();
-        let docs;
-        match read_to_string_shim(file) {
-            Err(e) => {
-                bail!("Couldn't read file {}\n{}", file_name, e);
-            },
-            Ok( file_contents) => {
-                match YamlLoader::load_from_str(&file_contents) {
-                    Err(e) => {
-                        bail!("Yaml parse error ('{}') in preference file {}.", e, file_name);
-                    },
-                    Ok(d) => docs = d,
-                }
-
-            }
-        }
+        let file_contents = read_to_string_shim(file)
+            .with_context(|| format!("Couldn't read file {file_name}"))?;
+        let docs = YamlLoader::load_from_str(&file_contents)
+            .with_context(|| format!("Yaml parse error in preference file {file_name}."))?;
         if docs.len() != 1 {
             bail!("MathCAT: error in prefs file '{}'.\nFound {} 'documents' -- should only be 1.", file_name, docs.len());
         }
 
         let doc = &docs[0];
+        const SECTIONS: [&str; 4] = ["Speech", "Navigation", "Braille", "Other"];
         if cfg!(debug_assertions) {
-            verify_keys(doc, "Speech", file_name)?;
-            verify_keys(doc, "Navigation", file_name)?;
-            verify_keys(doc, "Braille", file_name)?;
-            verify_keys(doc, "Other", file_name)?;
+            for section in SECTIONS {
+                verify_keys(doc, section, file_name)?;
+            }
         }
-
-        add_prefs(&mut base_prefs.prefs, &doc["Speech"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Navigation"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Braille"], "", file_name);
-        add_prefs(&mut base_prefs.prefs, &doc["Other"], "", file_name);
+        for section in SECTIONS {
+            add_prefs(&mut base_prefs.prefs, &doc[section], "", file_name);
+        }
         return Ok(base_prefs);
 
 
@@ -182,16 +170,6 @@ impl Preferences{
                 }                  
             }
         }
-    }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_string_value(&mut self, name: &str, value: &str) {
-        self.prefs.insert(name.to_string(), Yaml::String(value.trim().to_string()));
-    }
-
-    #[allow(dead_code)]     // used in testing
-    fn set_bool_value(&mut self, name: &str, value: bool) {
-        self.prefs.insert(name.to_string(), Yaml::Boolean(value));
     }
 }
 
@@ -260,10 +238,8 @@ impl PreferenceManager {
         // Note: if current_dir() also fails, unwrap_or_default yields an empty PathBuf,
         //       and the result may remain relative.
         #[cfg(not(feature = "include-zip"))]
-        let rules_dir = match canonicalize_shim(&rules_dir) {
-            Err(e) => bail!("set_rules_dir: could not canonicalize path {}: {}", rules_dir.display(), e),
-            Ok(rules_dir) => rules_dir,
-        };
+        let rules_dir = canonicalize_shim(&rules_dir)
+            .with_context(|| format!("set_rules_dir: could not canonicalize path {}", rules_dir.display()))?;
 
         self.set_rules_dir(&rules_dir)?;
         self.set_preference_files()?;
@@ -326,15 +302,22 @@ impl PreferenceManager {
                         system_prefs_file.to_str().unwrap());
         };
 
-        let mut user_prefs_file = dirs::config_dir();
-        if let Some(mut user_prefs_file_path_buf) = user_prefs_file {
-            user_prefs_file_path_buf.push("MathCAT/prefs.yaml");
-            if is_file_shim(&user_prefs_file_path_buf) {
-                prefs = Preferences::read_prefs_file(&user_prefs_file_path_buf, prefs)?;
+        let mut user_prefs_file = None;
+        if Self::ignore_user_prefs(std::env::var_os("MATHCAT_IGNORE_USER_PREFS").as_deref()) {
+            // Mark user prefs current without opening the config-dir file. Leaving
+            // `user_prefs_file` as None would reload the system file on every later call.
+            self.user_prefs_file = Some(FileAndTime::new_with_time(PathBuf::new()));
+        } else {
+            user_prefs_file = dirs::config_dir();
+            if let Some(mut user_prefs_file_path_buf) = user_prefs_file {
+                user_prefs_file_path_buf.push("MathCAT/prefs.yaml");
+                if is_file_shim(&user_prefs_file_path_buf) {
+                    prefs = Preferences::read_prefs_file(&user_prefs_file_path_buf, prefs)?;
+                }
+                // set the time otherwise keeps needing to do updates
+                self.user_prefs_file = Some( FileAndTime::new_with_time(user_prefs_file_path_buf.clone()) );
+                user_prefs_file = Some(user_prefs_file_path_buf);
             }
-            // set the time otherwise keeps needing to do updates
-            self.user_prefs_file = Some( FileAndTime::new_with_time(user_prefs_file_path_buf.clone()) );
-            user_prefs_file = Some(user_prefs_file_path_buf);
         }
 
         if prefs.prefs.is_empty() {
@@ -353,6 +336,11 @@ impl PreferenceManager {
         self.set_separators(language)?;
         
         return Ok( () );
+    }
+
+    /// True when `MATHCAT_IGNORE_USER_PREFS` is present. An empty value still counts as set.
+    fn ignore_user_prefs(flag: Option<&std::ffi::OsStr>) -> bool {
+        flag.is_some()
     }
 
     fn set_all_files(&mut self, rules_dir: &Path) -> Result<()> {
@@ -873,6 +861,15 @@ mod tests {
 
     fn speech_definitions_files_cache_path() -> PathBuf {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow().definitions_files_cache_path())
+    }
+
+    /// An unset flag reads the user prefs file. Any set value, including empty, skips it.
+    #[test]
+    fn ignore_user_prefs_follows_the_flag() {
+        use std::ffi::OsStr;
+        assert!(!PreferenceManager::ignore_user_prefs(None));
+        assert!(PreferenceManager::ignore_user_prefs(Some(OsStr::new("1"))));
+        assert!(PreferenceManager::ignore_user_prefs(Some(OsStr::new(""))));
     }
 
     #[test]

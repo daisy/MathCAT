@@ -1,6 +1,7 @@
 ---
 # Russian mathematical braille rules.
 
+# Ignore invisible operators when deciding whether the vector label needs a grouping indicator.
 -
   name: flat-vector-arrow-postfix-operator
   tag: mo
@@ -14,6 +15,7 @@
       then: [t: "⠨⠒⠂"]
       else: [t: "⠒⠂"]
 
+# Use the longer bar suffix for a label containing multiple symbols.
 -
   name: flat-vector-bar-postfix-operator
   tag: mo
@@ -27,6 +29,7 @@
       then: [t: "⠨⠒"]
       else: [t: "⠒"]
 
+# Use the line suffix after the label, ignoring invisible operators in the label count.
 -
   name: flat-geometry-line-double-arrow-postfix-operator
   tag: mo
@@ -40,6 +43,8 @@
       then: [t: "⠨⠒⠂⠂"]
       else: [t: "⠒⠂⠂"]
 
+# Re-enter the same node with whitespace matching disabled to avoid recursion.
+# W is a temporary space marker consumed by Russian braille cleanup.
 -
   name: whitespace
   tag: "!*"
@@ -60,12 +65,14 @@
         - else_if: "@data-following-space-width >= 0.25"
           then: [t: "W"]
 
+# Represent an intentional blank with a braille space.
 -
   name: omission-intent
   tag: "!*"
   match: "contains(@intent, ':blank')"
   replace: [t: "⠀"]
 
+# Use the omission sign and continuation digits so the trailing digits do not start a new number.
 -
   name: omitted-digit-in-number
   tag: mrow
@@ -148,6 +155,7 @@
       then: [t: "⠨⠒⠂⠂"]
       else: [t: "⠒⠂⠂"]
 
+# Honor a braille replacement supplied by Unicode processing before the generic rules.
 -
   name: unicode-override
   tag: "*"
@@ -181,6 +189,7 @@
   match: "not(following-sibling::*) and preceding-sibling::*[1][self::m:mtable] and count(../*)=2"
   replace: [t: ""]
 
+# Emit one group indicator and suppress repeated Latin indicators inside the element group.
 -
   name: chemistry-single-letter-element-group
   tag: mrow
@@ -194,6 +203,7 @@
       variables: [InChemElementGroup: "true()"]
       replace: [x: "*"]
 
+# Handle the function-application shape introduced by canonicalization for geometry symbols.
 -
   name: canonical-prefix-geometry-op
   tag: mrow
@@ -264,6 +274,7 @@
       then: [t: "⠨⠒⠂⠂"]
       else: [t: "⠒⠂⠂"]
 
+# Keep the repeating part in numeric continuation form when it is split across row children.
 -
   name: periodic-decimal-row
   tag: mrow
@@ -336,7 +347,7 @@
   - x: "*[2]"
 
 -
-  name: gost-58511-small-font
+  name: small-font
   tag: [mrow, mstyle, semantics]
   match: "@data-braille-typeform='small' or contains(@intent, ':small-font')"
   replace:
@@ -345,7 +356,7 @@
   - t: "⠔"
 
 -
-  name: gost-58511-letter-spacing
+  name: letter-spacing
   tag: [mrow, mstyle, semantics]
   match: "@data-braille-typeform='letter-spacing' or contains(@intent, ':letter-spacing')"
   replace:
@@ -354,7 +365,7 @@
   - t: "⠌"
 
 -
-  name: gost-58511-insertion
+  name: insertion
   tag: [mrow, mstyle, semantics]
   match: "@data-braille-typeform='insertion' or contains(@intent, ':insertion')"
   replace:
@@ -410,6 +421,7 @@
   - x: "*[1]"
   - t: "⠹"
 
+# Encode an integer root index with the lower-cell digit mappings.
 -
   name: integer-index
   tag: mroot
@@ -421,6 +433,7 @@
   - x: "*[1]"
   - t: "⠹"
 
+# Handle a fraction directly inside another fraction before the simple fraction rules.
 -
   name: nested-fraction
   tag: mfrac
@@ -432,6 +445,7 @@
   - x: "*[2]"
   - t: "⠰"
 
+# Use lower-cell denominator digits for a fraction with two unsigned integer tokens.
 -
   name: simple-numeric
   tag: mfrac
@@ -515,6 +529,7 @@
   - x: "*[2]/*[1]/*[1]/*[1]"
   - x: "*[3]"
 
+# Enable long-division context and leave the row delimiters empty inside this table.
 -
   name: long-division-table
   tag: mtable
@@ -525,6 +540,7 @@
   match: "contains(@intent, ':long-division') or contains(@intent, ':angle-division')"
   replace: [x: "*"]
 
+# Use column-arithmetic markers so cleanup preserves digit alignment.
 -
   name: column-arithmetic-table
   tag: mtable
@@ -1548,6 +1564,7 @@
   replace:
   - t: "⠶"
 
+# Use the same function markers for mo tokens as for mi and mtext tokens.
 -
   name: operator-functions
   tag: mo
@@ -1555,29 +1572,41 @@
   replace:
   - x: "DefinitionValue(., 'Braille', 'RussianFunctionBraille')"
 
+# Inspect neighboring visible leaves, including enclosing rows, for the recognition-point context.
 -
   name: contextual-square-bracket-recognition-point
   tag: mo
+  variables:
+  - PreviousLeaf: "(preceding-sibling::*/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])] |
+                   ancestor::m:mrow[parent::m:mrow or parent::m:math or parent::m:mtd]/preceding-sibling::*/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])])[last()]"
+  - NextLeaf: "(following-sibling::*/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])] |
+               ancestor::m:mrow[parent::m:mrow or parent::m:math or parent::m:mtd]/following-sibling::*/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])])[1]"
   match:
-  - "parent::*[IsBracketed(., '[', ']')] and"
-  - "((.='[' and not(preceding-sibling::*) and following-sibling::*[1][self::m:mi or self::m:mtext]) or"
-  - " (.=']' and not(following-sibling::*) and preceding-sibling::*[1][self::m:mi or self::m:mtext]))"
+  - "(.='[' or .=']') and"
+  - "$PreviousLeaf[self::m:mi or self::m:mtext] and"
+  - "contains('бвгджзйклмнпрстфхцчшщъьБВГДЖЗЙКЛМНПРСТФХЦЧШЩЪЬbcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZβγδζθκλμνξπρστφχψΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨ',"
+  - "         substring($PreviousLeaf, string-length($PreviousLeaf), 1)) and"
+  - "not($NextLeaf[self::m:mn or self::m:mo[contains('.,!?;:…', .)]])"
   replace:
   - T: "⠠"
   - x: "text()"
 
+# Use the first and last visible leaves inside the paired angle brackets to select the indicator.
 -
   name: contextual-angle-bracket-recognition-point
   tag: mo
+  variables:
+  - LeftEdge: "(parent::*/*[position() > 1 and position() < last()]/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])])[1]"
+  - RightEdge: "(parent::*/*[position() > 1 and position() < last()]/descendant-or-self::*[not(*) and not(self::m:mo[translate(., '\u2061\u2062\u2063\u2064', '')=''])])[last()]"
   match:
-  - "parent::*[IsBracketed(., '⟨', '⟩')] and"
-  - "((.='⟨' and not(preceding-sibling::*)) or (.='⟩' and not(following-sibling::*))) and"
-  - "(parent::*/*[2][self::m:mi or self::m:mtext] or"
-  - " parent::*/*[last()-1][self::m:mi or self::m:mtext])"
+  - "(parent::*[IsBracketed(., '⟨', '⟩')] or parent::*[IsBracketed(., '〈', '〉')]) and"
+  - "(((.='⟨' or .='〈') and not(preceding-sibling::*)) or ((.='⟩' or .='〉') and not(following-sibling::*))) and"
+  - "($LeftEdge[self::m:mi or self::m:mtext] or"
+  - " $RightEdge[self::m:mi or self::m:mtext])"
   replace:
   - T: "⠈"
   - test:
-    - if: ".='⟨'"
+    - if: ".='⟨' or .='〈'"
       then: [T: "⠪"]
       else: [T: "⠕"]
 
@@ -1595,6 +1624,7 @@
   replace:
   - x: "text()"
 
+# Digits in later long-division rows bypass the normal number indicator.
 -
   name: long-division-continuation-number
   tag: mn
@@ -1605,6 +1635,7 @@
   replace:
   - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
 
+# Use a separate digit range so cleanup can preserve column-arithmetic spacing.
 -
   name: column-arithmetic-continuation-number
   tag: mn
@@ -1613,8 +1644,9 @@
   - "ancestor::m:mtr[preceding-sibling::*] and"
   - "translate(., '0123456789', '')=''"
   replace:
-  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - x: "BrailleChars(translate(., '0123456789', '\ue040\ue041\ue042\ue043\ue044\ue045\ue046\ue047\ue048\ue049'), 'Russian')"
 
+# Continue numeric mode for a repeating part stored between separate parenthesis tokens.
 -
   name: periodic-decimal-period-digits
   tag: mn
@@ -1624,8 +1656,9 @@
   - "following-sibling::*[1][self::m:mo and .=')'] and"
   - "preceding-sibling::*[2][self::m:mn and contains(., ',')]"
   replace:
-  - x: "BrailleChars(translate(., '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - x: "BrailleChars(translate(., '0123456789', '\ue030\ue031\ue032\ue033\ue034\ue035\ue036\ue037\ue038\ue039'), 'Russian')"
 
+# Translate fractional and repeating digits through the decimal-continuation mappings.
 -
   name: periodic-decimal
   tag: mn
@@ -1633,11 +1666,12 @@
   replace:
   - x: "BrailleChars(substring-before(., ','), 'Russian')"
   - t: "⠂"
-  - x: "BrailleChars(translate(substring-before(substring-after(., ','), '('), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - x: "BrailleChars(translate(substring-before(substring-after(., ','), '('), '0123456789', '\ue030\ue031\ue032\ue033\ue034\ue035\ue036\ue037\ue038\ue039'), 'Russian')"
   - t: "⠣"
-  - x: "BrailleChars(translate(substring-before(substring-after(., '('), ')'), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - x: "BrailleChars(translate(substring-before(substring-after(., '('), ')'), '0123456789', '\ue030\ue031\ue032\ue033\ue034\ue035\ue036\ue037\ue038\ue039'), 'Russian')"
   - t: "⠜"
 
+# Keep the integer part in normal numeric mode and suppress a new indicator after the comma.
 -
   name: decimal-comma
   tag: mn
@@ -1645,7 +1679,7 @@
   replace:
   - x: "BrailleChars(substring-before(., ','), 'Russian')"
   - t: "⠂"
-  - x: "BrailleChars(translate(substring-after(., ','), '0123456789', '\ue020\ue021\ue022\ue023\ue024\ue025\ue026\ue027\ue028\ue029'), 'Russian')"
+  - x: "BrailleChars(translate(substring-after(., ','), '0123456789', '\ue030\ue031\ue032\ue033\ue034\ue035\ue036\ue037\ue038\ue039'), 'Russian')"
 
 -
   name: default
@@ -1654,6 +1688,7 @@
   replace:
   - x: "BrailleChars(., 'Russian')"
 
+# Return a private-use function marker; Unicode translation expands it to braille.
 -
   name: functions
   tag: [mi, mtext]

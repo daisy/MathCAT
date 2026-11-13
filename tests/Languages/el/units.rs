@@ -497,26 +497,24 @@ fn without_prefix_powers_of_2() -> Result<()> {
 
 #[test]
 fn si_other_numbers() -> Result<()> {
-    let expr = r#"<math><mn>1.0</mn><mi intent=":unit">l</mi><mo>,</mo>
-                            <mn>2.0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
+    let expr = r#"<math><mn>1,0</mn><mi intent=":unit">l</mi><mo>,</mo>
+                            <mn>2,0</mn><mo>&#xA0;</mo><mi intent=":unit">m</mi><mo>,</mo>
                             <mi>x</mi><mo>&#xA0;</mo><mi intent=":unit">ms</mi><mo>,</mo>
                             <mi>y</mi><mi intent=":unit">µs</mi><mo>,</mo>
                             <mi intent=":unit">dag</mi><mo>,</mo>
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
-                            <mn>2.5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
-                            <mn>32.34</mn><mi intent=":unit">mol</mi></math>"#;
+                            <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
+                            <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
     test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "1.0 l κόμμα, 2.0 m κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
-            δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 2.5, μίκρο-δευτερόλεπτα; κόμμα; 32.34 μολ")?;
+            "1,0 l κόμμα, 2,0 m κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
+            δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 2,5, μίκρο-δευτερόλεπτα; κόμμα; 32,34 μολ")?;
     test_prefs("el", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "1.0 λίτρο, κόμμα; 2.0 μέτρα, κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
-            δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 25, μίκρο-δευτερόλεπτα; κόμμα; 32.34 μολ")?;
+            "1,0 λίτρο, κόμμα; 2,0 μέτρα, κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
+            δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 2,5, μίκρο-δευτερόλεπτα; κόμμα; 32,34 μολ")?;
     test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "1.0 λίτρο, κόμμα; 2.0 μέτρα, κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
-                    δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 2.5, μίκρο-δευτερόλεπτα; κόμμα; 32.34 μολ")?;
+            "1,0 λίτρο, κόμμα; 2,0 μέτρα, κόμμα; x, μίλι-δευτερόλεπτα; κόμμα; y, μίκρο-δευτερόλεπτα; κόμμα; \
+                    δέκα-γραμμάρια, κόμμα; 1235 δέκα-νιούτον; κόμμα; 2,5, μίκρο-δευτερόλεπτα; κόμμα; 32,34 μολ")?;
                     return Ok(());
-                    //theodora. fails  32.34 --> 3234
-                    // The issue is at src/prefs (set_separator, decimal_separator)
 
 }
 
@@ -527,14 +525,12 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("el", "SimpleSpeak", expr, 
         "ανοίγει αγκύλη; 1 τόνος, κόμμα; 2 πέτα-αμπέρ; κόμμα; \
-                3 πασκάλ, κόμμα; 4.5 μίλι-τέσλα; κλείνει αγκύλη")?;
+                3 πασκάλ, κόμμα; 4,5 μίλι-τέσλα; κλείνει αγκύλη")?;
                 return Ok(());
-                //theodora. fails 4.5 --> converted to 45 
-                // // The issue is at src/prefs (set_separator, decimal_separator)
 
 }
 

@@ -7,7 +7,7 @@
 //
 // Inner language/braille zips always use BZIP2. Downloadable `Rules.zip` uses DEFLATE for the
 // outer archive so Windows Explorer / `unzip` can open it. The include-zip embed uses BZIP2
-// for both layers (MathCAT's `zip` crate reads it; zip 8.x bzip2 is pure Rust and works on wasm).
+// for both layers (MathCAT's `zip` crate reads it; zip 9.x bzip2 is pure Rust and works on wasm).
 
 use std::fs::{self, File, read_dir};
 use std::io::{self, Cursor, Read, Seek, Write};
@@ -20,6 +20,56 @@ use zip::CompressionMethod;
 const YAML_SUFFIXES: [&str; 2] = ["yaml", "yml"];
 const SKIP_LANGUAGE_DIR: &str = "zz";
 const ARCHIVE_ROOT: &str = "Rules";
+const LANGUAGES_DIR: &str = "Languages";
+const BRAILLE_DIR: &str = "Braille";
+const PREFS_FILE: &str = "prefs.yaml";
+const BRAILLE_CODE_PREF: &str = "BrailleCode";
+/// `find_file` falls back to this language by name, so it cannot be pruned away.
+const FALLBACK_LANGUAGE: &str = "en";
+/// `set_rules_dir` fails unless the default braille code's directory exists, even for a caller that
+/// never asks for braille, so a subset that keeps no braille code keeps this one.
+const FALLBACK_BRAILLE_CODE: &str = "UEB";
+
+/// Which `Languages/` and `Braille/` directories to keep, by directory name.
+///
+/// The full Rules tree is about 10 MB, and a caller that only ever asks for one language and one
+/// braille code pays for all of it: `include-zip` embeds every directory in the binary. `None`
+/// means keep everything, which is what every existing caller gets. `build.rs` fills this in from
+/// the `lang-*` and `braille-*` features.
+#[derive(Clone, Default)]
+pub struct RulesSubset {
+    pub languages: Option<Vec<String>>,
+    pub braille_codes: Option<Vec<String>>,
+}
+
+impl RulesSubset {
+    /// Keeps everything, the behaviour before this existed.
+    pub fn all() -> Self {
+        return RulesSubset::default();
+    }
+
+    /// Regional variants such as `en/gb` and `zh/tw` live inside their language's directory, so
+    /// keeping a language keeps them too.
+    fn keeps(wanted: &Option<Vec<String>>, name: &str) -> bool {
+        let Some(wanted) = wanted else {
+            return true;
+        };
+        return wanted.iter().any(|w| w.eq_ignore_ascii_case(name));
+    }
+
+    fn keeps_language(&self, name: &str) -> bool {
+        // `find_file` falls back to "en" by name from inside the library, so a subset without it
+        // cannot resolve anything.
+        return name.eq_ignore_ascii_case(FALLBACK_LANGUAGE) || RulesSubset::keeps(&self.languages, name);
+    }
+
+    fn keeps_braille_code(&self, name: &str) -> bool {
+        if self.braille_codes.as_ref().is_some_and(|codes| codes.is_empty()) {
+            return name.eq_ignore_ascii_case(FALLBACK_BRAILLE_CODE);
+        }
+        return RulesSubset::keeps(&self.braille_codes, name);
+    }
+}
 
 /// Compression methods for nested language zips vs the outer archive.
 #[derive(Clone, Copy)]
@@ -62,17 +112,6 @@ fn is_yaml_file(path: &Path) -> bool {
 
 fn is_zip_file(path: &Path) -> bool {
     return path.extension().map(|ext| ext.eq_ignore_ascii_case("zip")).unwrap_or(false);
-}
-
-fn posix_path(parts: &[&str]) -> String {
-    return parts.join("/");
-}
-
-fn posix_join(prefix: &str, name: &str) -> String {
-    if prefix.is_empty() {
-        return name.to_string();
-    }
-    return format!("{}/{}", prefix, name);
 }
 
 fn file_name_str(path: &Path) -> io::Result<String> {
@@ -260,17 +299,95 @@ fn minimize_yaml_file(src: &Path, dst: &Path) -> Result<(), String> {
 /// Copy a Rules tree. When `minify` is true, rewrite every YAML file as comment-free flow YAML.
 /// `Languages/zz` is omitted. Returns the number of files successfully minimized.
 pub fn copy_rules_tree(src: &Path, dst: &Path, minify: bool) -> io::Result<usize> {
-    fs::create_dir_all(dst)?;
-    return copy_dir(src, dst, minify, false);
+    return copy_rules_subset(src, dst, minify, &RulesSubset::all());
 }
 
-fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> io::Result<usize> {
+/// As [`copy_rules_tree`], keeping only the languages and braille codes `subset` asks for.
+pub fn copy_rules_subset(src: &Path, dst: &Path, minify: bool, subset: &RulesSubset) -> io::Result<usize> {
+    fs::create_dir_all(dst)?;
+    let minimized = copy_dir(src, dst, minify, None, subset)?;
+    if let Some(codes) = &subset.braille_codes {
+        set_default_braille_code(&dst.join(PREFS_FILE), codes)?;
+    }
+    return Ok(minimized);
+}
+
+/// Points the `BrailleCode` default in a staged `prefs.yaml` at the first of `kept` (or at
+/// [`FALLBACK_BRAILLE_CODE`] when it is empty) when the default was pruned, and leaves it alone when
+/// it was kept.
+///
+/// Without this, the default (Nemeth) and the library's own fallback (UEB) are both missing from a
+/// subset that asked for neither, and `set_rules_dir` reports that it could not read the braille
+/// directory. Keeping Nemeth and UEB instead would cost about 50 KB for rules nothing asks for.
+fn set_default_braille_code(prefs: &Path, kept: &[String]) -> io::Result<()> {
+    let text = fs::read_to_string(prefs)?;
+    let docs = YamlLoader::load_from_str(&text).map_err(io::Error::other)?;
+    let current = docs.iter().find_map(|doc| find_value(doc, BRAILLE_CODE_PREF));
+    if current.is_some_and(|current| kept.iter().any(|code| code.eq_ignore_ascii_case(current))) {
+        return Ok(());
+    }
+    let code = kept.first().map_or(FALLBACK_BRAILLE_CODE, |code| code.as_str());
+    let mut out = String::new();
+    for (i, doc) in docs.iter().enumerate() {
+        if i > 0 {
+            out.push_str("\n---\n");
+        }
+        emit_flow(&mut out, &with_replaced_value(doc, BRAILLE_CODE_PREF, code)).map_err(io::Error::other)?;
+    }
+    out.push('\n');
+    fs::write(prefs, out)?;
+    return Ok(());
+}
+
+/// The string value of the first `key` entry in `yaml`, at any depth.
+fn find_value<'a>(yaml: &'a Yaml, key: &str) -> Option<&'a str> {
+    match yaml {
+        Yaml::Hash(hash) => {
+            return hash.iter().find_map(|(k, v)| match (k, v) {
+                (Yaml::String(name), Yaml::String(value)) if name == key => Some(value.as_str()),
+                _ => find_value(v, key),
+            });
+        }
+        Yaml::Array(items) => return items.iter().find_map(|item| find_value(item, key)),
+        _ => return None,
+    }
+}
+
+/// `yaml` with the value of every `key` entry, at any depth, replaced by `value`.
+fn with_replaced_value(yaml: &Yaml, key: &str, value: &str) -> Yaml {
+    match yaml {
+        Yaml::Hash(hash) => {
+            let mut out = yaml_rust::yaml::Hash::new();
+            for (k, v) in hash {
+                let replace = matches!(k, Yaml::String(name) if name == key);
+                let v = if replace { Yaml::String(value.to_string()) } else { with_replaced_value(v, key, value) };
+                out.insert(k.clone(), v);
+            }
+            return Yaml::Hash(out);
+        }
+        Yaml::Array(items) => {
+            return Yaml::Array(items.iter().map(|item| with_replaced_value(item, key, value)).collect());
+        }
+        other => return other.clone(),
+    }
+}
+
+fn copy_dir(
+    src: &Path,
+    dst: &Path,
+    minify: bool,
+    parent: Option<&str>,
+    subset: &RulesSubset,
+) -> io::Result<usize> {
     let mut minimized = 0usize;
     for entry in read_dir(src)? {
         let entry = entry?;
         let src_path = entry.path();
         let name = file_name_str(&src_path)?;
-        if parent_is_languages && name == SKIP_LANGUAGE_DIR {
+        if parent == Some(LANGUAGES_DIR) && (name == SKIP_LANGUAGE_DIR || !subset.keeps_language(&name)) {
+            continue;
+        }
+        if parent == Some(BRAILLE_DIR) && src_path.is_dir() && !subset.keeps_braille_code(&name) {
             continue;
         }
         if is_zip_file(&src_path) {
@@ -279,7 +396,7 @@ fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> 
         let dst_path = dst.join(&name);
         if src_path.is_dir() {
             fs::create_dir_all(&dst_path)?;
-            minimized += copy_dir(&src_path, &dst_path, minify, name == "Languages")?;
+            minimized += copy_dir(&src_path, &dst_path, minify, Some(name.as_str()), subset)?;
         } else if minify && is_yaml_file(&src_path) {
             match minimize_yaml_file(&src_path, &dst_path) {
                 Ok(()) => minimized += 1,
@@ -305,10 +422,10 @@ fn copy_dir(src: &Path, dst: &Path, minify: bool, parent_is_languages: bool) -> 
 fn add_file_to_zip<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
     in_path: &Path,
-    zip_name: &str,
+    zip_path: &Path,
     options: SimpleFileOptions,
 ) -> io::Result<()> {
-    zip.start_file(zip_name, options)
+    zip.start_file_from_path(zip_path, options)
         .map_err(io::Error::other)?;
     let mut file = File::open(in_path)?;
     let mut buffer = Vec::new();
@@ -319,11 +436,11 @@ fn add_file_to_zip<W: Write + Seek>(
 
 fn add_bytes_to_zip<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
-    zip_name: &str,
+    zip_path: &Path,
     bytes: &[u8],
     options: SimpleFileOptions,
 ) -> io::Result<()> {
-    zip.start_file(zip_name, options)
+    zip.start_file_from_path(zip_path, options)
         .map_err(io::Error::other)?;
     zip.write_all(bytes)?;
     return Ok(());
@@ -332,7 +449,7 @@ fn add_bytes_to_zip<W: Write + Seek>(
 fn zip_entry<W: Write + Seek>(
     zip: &mut ZipWriter<W>,
     full_path: &Path,
-    relative_path: &str,
+    relative_path: &Path,
     options: SimpleFileOptions,
 ) -> io::Result<usize> {
     let mut n_files_in_zip = 0;
@@ -343,7 +460,7 @@ fn zip_entry<W: Write + Seek>(
                 continue;
             }
             let entry_name = file_name_str(&entry_path)?;
-            let child_rel = posix_join(relative_path, &entry_name);
+            let child_rel = relative_path.join(entry_name);
             n_files_in_zip += zip_entry(zip, &entry_path, &child_rel, options)?;
         }
     } else if is_yaml_file(full_path) {
@@ -356,7 +473,7 @@ fn zip_entry<W: Write + Seek>(
 fn write_inner_zip(source_dir: &Path, inner: SimpleFileOptions) -> io::Result<Option<Vec<u8>>> {
     let cursor = Cursor::new(Vec::new());
     let mut zip = ZipWriter::new(cursor);
-    let n_files = zip_entry(&mut zip, source_dir, "", inner)?;
+    let n_files = zip_entry(&mut zip, source_dir, Path::new(""), inner)?;
     let cursor = zip.finish().map_err(io::Error::other)?;
     if n_files == 0 {
         return Ok(None);
@@ -370,7 +487,7 @@ fn zip_dir<W: Write + Seek>(
     archive_zip: &mut ZipWriter<W>,
     inner: SimpleFileOptions,
     outer: SimpleFileOptions,
-    archive_prefix: &str,
+    archive_prefix: &Path,
 ) -> io::Result<()> {
     if !rules_section.is_dir() {
         return Ok(());
@@ -386,14 +503,14 @@ fn zip_dir<W: Write + Seek>(
                 continue;
             }
             if let Some(bytes) = write_inner_zip(&entry_path, inner)? {
-                let zip_name = posix_path(&[archive_prefix, &dir_name, &format!("{}.zip", dir_name)]);
-                add_bytes_to_zip(archive_zip, &zip_name, &bytes, outer)?;
+                let zip_path = archive_prefix.join(&dir_name).join(format!("{dir_name}.zip"));
+                add_bytes_to_zip(archive_zip, &zip_path, &bytes, outer)?;
             }
         } else if is_yaml_file(&entry_path) {
             // e.g. Rules/Braille/definitions.yaml
             let name = file_name_str(&entry_path)?;
-            let zip_name = posix_path(&[archive_prefix, &name]);
-            add_file_to_zip(archive_zip, &entry_path, &zip_name, outer)?;
+            let zip_path = archive_prefix.join(name);
+            add_file_to_zip(archive_zip, &entry_path, &zip_path, outer)?;
         }
     }
     return Ok(());
@@ -404,7 +521,7 @@ fn zip_other_files<W: Write + Seek>(
     rules_dir: &Path,
     archive_zip: &mut ZipWriter<W>,
     outer: SimpleFileOptions,
-    archive_prefix: &str,
+    archive_prefix: &Path,
 ) -> io::Result<()> {
     for entry in read_dir(rules_dir)? {
         let entry_path = entry?.path();
@@ -415,12 +532,12 @@ fn zip_other_files<W: Write + Seek>(
                     &rules_dir.join("Intent"),
                     archive_zip,
                     outer,
-                    &posix_join(archive_prefix, "Intent"),
+                    &archive_prefix.join("Intent"),
                 )?;
             }
         } else if is_yaml_file(&entry_path) {
-            let zip_name = posix_join(archive_prefix, &entry_name);
-            add_file_to_zip(archive_zip, &entry_path, &zip_name, outer)?;
+            let zip_path = archive_prefix.join(entry_name);
+            add_file_to_zip(archive_zip, &entry_path, &zip_path, outer)?;
         }
     }
     return Ok(());
@@ -441,21 +558,22 @@ pub fn write_rules_archive(
     let outer = zip_options(compression.outer);
     let archive_zip_file = File::create(output)?;
     let mut archive_zip = ZipWriter::new(archive_zip_file);
+    let archive_root = Path::new(ARCHIVE_ROOT);
 
-    zip_other_files(rules_dir, &mut archive_zip, outer, ARCHIVE_ROOT)?;
+    zip_other_files(rules_dir, &mut archive_zip, outer, archive_root)?;
     zip_dir(
         &rules_dir.join("Languages"),
         &mut archive_zip,
         inner,
         outer,
-        &posix_join(ARCHIVE_ROOT, "Languages"),
+        &archive_root.join("Languages"),
     )?;
     zip_dir(
         &rules_dir.join("Braille"),
         &mut archive_zip,
         inner,
         outer,
-        &posix_join(ARCHIVE_ROOT, "Braille"),
+        &archive_root.join("Braille"),
     )?;
 
     archive_zip.finish().map_err(io::Error::other)?;

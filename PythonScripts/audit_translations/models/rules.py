@@ -107,6 +107,7 @@ class ComparisonResult:
     english_rule_count: int
     translated_rule_count: int
     rule_differences: list[RuleDifference] = field(default_factory=list)
+    first_order_mismatch_position: int | None = None
 
     @property
     def has_issues(self) -> bool:
