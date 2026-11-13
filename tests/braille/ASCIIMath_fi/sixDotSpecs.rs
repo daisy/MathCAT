@@ -10,35 +10,35 @@ use anyhow::Result;
 #[test]
 fn p7_no_grouping_in_four_digit_numbers() -> Result<()> {
     let expr = r#"<math><mn>2000</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2000")?;
+    test_braille("ASCIIMath_fi", expr, r"2000")?;
     return Ok(());
 }
 
 #[test]
 fn p7_thousands_nbsp() -> Result<()> {
     let expr = r#"<math><mn>2 000 000</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2.000.000")?;
+    test_braille("ASCIIMath_fi", expr, r"2.000.000")?;
     return Ok(());
 }
 
 #[test]
 fn p7_thousands_point() -> Result<()> {
     let expr = r#"<math><mn>2.000.000</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2.000.000")?;
+    test_braille("ASCIIMath_fi", expr, r"2.000.000")?;
     return Ok(());
 }
 
 #[test]
 fn p7_thousands_space() -> Result<()> {
     let expr = r#"<math><mn>2 000 000</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2.000.000")?;
+    test_braille("ASCIIMath_fi", expr, r"2.000.000")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_comma() -> Result<()> {
     let expr = r#"<math><mn>5,12575</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"5,12575")?;
+    test_braille("ASCIIMath_fi", expr, r"5,12575")?;
     return Ok(());
 }
 
@@ -47,14 +47,14 @@ fn p7_decimal_comma() -> Result<()> {
 #[test]
 fn p7_decimal_point() -> Result<()> {
     let expr = r#"<math><mn>5.12575</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"5.12575")?;
+    test_braille("ASCIIMath_fi", expr, r"5.12575")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_no_grouping() -> Result<()> {
     let expr = r#"<math><mn>1,234657234</mn><mi>...</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234657234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234657234⠄⠄⠄")?;
     return Ok(());
 }
 
@@ -62,112 +62,112 @@ fn p7_decimal_point_endless_no_grouping() -> Result<()> {
 #[test]
 fn p7_decimal_point_endless_with_grouping_space() -> Result<()> {
     let expr = r#"<math><mn>1,234 657 234</mn><mi>...</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234.657.234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234.657.234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_with_grouping_nbsp() -> Result<()> {
     let expr = r#"<math><mn>1,234 657 234</mn><mi>...</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234.657.234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234.657.234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_with_grouping_nbsp_ellipses() -> Result<()> {
     let expr = r#"<math><mn>1,234 657 234</mn><mi>…</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234.657.234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234.657.234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_with_grouping_nbsp_ellipses_mathtype() -> Result<()> {
     let expr = r#"<math><mn>1</mn><mo>,</mo><mn>234</mn><mo>&#xA0;</mo><mn>657</mn><mo>&#xA0;</mo><mn>234</mn><mo>&#x2026;</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234.657.234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234.657.234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_no_grouping_ellipses() -> Result<()> {
     let expr = r#"<math><mn>1,234657234</mn><mi>…</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234657234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234657234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p7_decimal_point_endless_with_grouping_space_ellipses() -> Result<()> {
     let expr = r#"<math><mn>1,234 657 234…</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"1,234.657.234⠄⠄⠄")?;
+    test_braille("ASCIIMath_fi", expr, r"1,234.657.234⠄⠄⠄")?;
     return Ok(());
 }
 
 #[test]
 fn p9_units_percent() -> Result<()> {
     let expr = r#"<math><mn>99</mn><mi>%</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"99 %")?;
+    test_braille("ASCIIMath_fi", expr, r"99 %")?;
     return Ok(());
 }
 
 #[test]
 fn p9_units_permille() -> Result<()> {
     let expr = r#"<math><mn>115</mn><mi>‰</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"115 :%")?;
+    test_braille("ASCIIMath_fi", expr, r"115 :%")?;
     return Ok(());
 }
 
 #[test]
 fn p9_units_degrees() -> Result<()> {
     let expr = r#"<math><mn>100</mn><mi>˚</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"100 ^@")?;
+    test_braille("ASCIIMath_fi", expr, r"100 ^@")?;
     return Ok(());
 }
 
 #[test]
 fn p9_units_degrees_celsius() -> Result<()> {
     let expr = r#"<math><mn>37</mn><mi>˚</mi><mi>C</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"37 ^@C")?;
+    test_braille("ASCIIMath_fi", expr, r"37 ^@C")?;
     return Ok(());
 }
 
 #[test]
 fn p9_units_degrees_fahrenheit() -> Result<()> {
     let expr = r#"<math><mn>−43</mn><mi>˚</mi><mi>F</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"-43 ^@F")?;
+    test_braille("ASCIIMath_fi", expr, r"-43 ^@F")?;
     return Ok(());
 }
 
 #[test]
 fn p10_currency_euro() -> Result<()> {
     let expr = r#"<math><mn>6</mn><mi>€</mi><mn>15</mn><mi>snt</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"6 e 15 snt")?;
+    test_braille("ASCIIMath_fi", expr, r"6 e 15 snt")?;
     return Ok(());
 }
 
 #[test]
 fn p10_currency_dollar() -> Result<()> {
     let expr = r#"<math><mi>$</mi><mn>35</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"$35")?;
+    test_braille("ASCIIMath_fi", expr, r"$35")?;
     return Ok(());
 }
 
 #[test]
 fn p10_currency_pound() -> Result<()> {
     let expr = r#"<math><mi>£</mi><mn>25</mn></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"£25")?;
+    test_braille("ASCIIMath_fi", expr, r"£25")?;
     return Ok(());
 }
 
 #[test]
 fn p11_mm_squared() -> Result<()> {
     let expr = r#"<math><msup><mi>mm</mi><mn>2</mn></msup></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"mm^2")?;
+    test_braille("ASCIIMath_fi", expr, r"mm^2")?;
     return Ok(());
 }
 
 #[test]
 fn p11_cm_cubed() -> Result<()> {
     let expr = r#"<math><msup><mi>cm</mi><mn>3</mn></msup></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"cm^3")?;
+    test_braille("ASCIIMath_fi", expr, r"cm^3")?;
     return Ok(());
 }
 
@@ -175,7 +175,7 @@ fn p11_cm_cubed() -> Result<()> {
 #[test]
 fn p13_times_with_question_mark() -> Result<()> {
     let expr = r#"<math><mn>27</mn><mo>·</mo><mn>3</mn><mo>=</mo><mi>?</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"27 *3 =?")?;
+    test_braille("ASCIIMath_fi", expr, r"27 *3 =?")?;
     return Ok(());
 }
 
@@ -183,7 +183,7 @@ fn p13_times_with_question_mark() -> Result<()> {
 fn p13_parentheses_invisible_times() -> Result<()> {
     let expr = r#"<math><mo>(</mo><mn>3</mn><mo>&#8290;</mo><mi>x</mi><mo>+</mo><mn>2</mn><mo>&#8290;</mo><mi>y</mi><mo>)</mo>
                     <mo>&#8290;</mo><mo>(</mo><mn>2</mn><mo>&#8290;</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"(3 x +2 y) (2 x -1)")?;
+    test_braille("ASCIIMath_fi", expr, r"(3 x +2 y) (2 x -1)")?;
     return Ok(());
 }
 
@@ -197,7 +197,7 @@ fn greater_than_with_more_variables() -> Result<()> {
     <mo>&gt;</mo>
     <mn>6</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2 xy > 6")?;
+    test_braille("ASCIIMath_fi", expr, r"2 xy > 6")?;
     return Ok(());
 }
 
@@ -209,7 +209,7 @@ fn p15_greater_than_or_equal_to() -> Result<()> {
     <mo>≥</mo>
     <mn>6</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"2 x >= 6")?;
+    test_braille("ASCIIMath_fi", expr, r"2 x >= 6")?;
     return Ok(());
 }
 
@@ -220,7 +220,7 @@ fn p15_less_than_or_equal_to() -> Result<()> {
     <mo>≤</mo>
     <mn>18</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"x <= 18")?;
+    test_braille("ASCIIMath_fi", expr, r"x <= 18")?;
     return Ok(());
 }
 
@@ -237,7 +237,7 @@ fn p16_division() -> Result<()> {
     <mo>:</mo>
     <mn>3</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"(6 x +3 x) :3")?;
+    test_braille("ASCIIMath_fi", expr, r"(6 x +3 x) :3")?;
     return Ok(());
 }
 
@@ -255,7 +255,7 @@ fn p16_fractional() -> Result<()> {
     <mn>3</mn>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"(6 x +3 x) /3")?;
+    test_braille("ASCIIMath_fi", expr, r"(6 x +3 x) /3")?;
     return Ok(());
 }
 
@@ -277,7 +277,7 @@ fn p16_absolute_value() -> Result<()> {
         <mn>7</mn>
       </mrow>
     </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"|-(2 +5)| =|-7| =7")?;
+    test_braille("ASCIIMath_fi", expr, r"|-(2 +5)| =|-7| =7")?;
     return Ok(());
 }
 
@@ -299,7 +299,7 @@ fn p16_parens_and_brackets() -> Result<()> {
     <mo>]</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"92 +[-2 *(18 +5)]")?;
+    test_braille("ASCIIMath_fi", expr, r"92 +[-2 *(18 +5)]")?;
     return Ok(());
 }
 
@@ -330,7 +330,7 @@ fn p17_multiple_operations() -> Result<()> {
       <mn>2</mn>
     </msup>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"5 *3^2 +(81 -60) :3 -(2 +4)^2")?;
+    test_braille("ASCIIMath_fi", expr, r"5 *3^2 +(81 -60) :3 -(2 +4)^2")?;
     return Ok(());
 }
 
@@ -351,7 +351,7 @@ fn p19_fractions_sum() -> Result<()> {
     <mn>1</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠉⠲⠀⠖⠼⠁⠲⠀⠶⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠲⠀⠖⠼⠁⠲⠀⠶⠼⠁")?;
     return Ok(());
 }
 
@@ -384,7 +384,7 @@ fn p19_fractions_mixed_operations() -> Result<()> {
     <mo>)</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠉⠲⠀⠖⠼⠑⠖⠠⠴⠀⠤⠦⠼⠉⠢⠀⠖⠼⠁⠆⠠⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠉⠲⠀⠖⠼⠑⠖⠠⠴⠀⠤⠦⠼⠉⠢⠀⠖⠼⠁⠆⠠⠴")?;
     return Ok(());
 }
 
@@ -418,7 +418,7 @@ fn p19_fraction_multiplication_Finnish_notation_multiscripts() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠃⠜⠀⠁⠀⠌⠉⠀⠶⠁⠃⠀⠌⠃⠉")?;
+    test_braille("ASCIIMath_fi", expr, r"⠃⠜⠀⠁⠀⠌⠉⠀⠶⠁⠃⠀⠌⠃⠉")?;
     return Ok(());
 }
 
@@ -441,7 +441,7 @@ fn p19_fraction_multiplication_Finnish_notation_multiscripts_2() -> Result<()> {
     </mmultiscripts>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠋⠜⠼⠁⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠋⠜⠼⠁⠆")?;
     return Ok(());
 }
 
@@ -477,7 +477,7 @@ fn p22_fraction_division_Finnish_notation_msup() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠃⠉⠀⠌⠁⠙⠀⠣⠁⠀⠶⠃⠉⠀⠌⠙")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠃⠉⠀⠌⠁⠙⠀⠣⠁⠀⠶⠃⠉⠀⠌⠙")?;
     return Ok(());
 }
 
@@ -496,7 +496,7 @@ fn p22_fraction_division_Finnish_notation_msup_2() -> Result<()> {
     </mrow>
   </msup>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
     return Ok(());
 }
 
@@ -516,7 +516,7 @@ fn p22_fraction_division_Finnish_notation_mmultiscripts() -> Result<()> {
     </mrow>
   </mmultiscripts>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
     return Ok(());
 }
 
@@ -534,7 +534,7 @@ fn p23_equation_1_no_invisible_multiplication() -> Result<()> {
     <mo>−</mo>
     <mn>7</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
     return Ok(());
 }
 
@@ -554,7 +554,7 @@ fn p23_equation_1_with_invisible_multiplication() -> Result<()> {
     <mo>−</mo>
     <mn>7</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
     return Ok(());
 }
 
@@ -572,7 +572,7 @@ fn p22_equation_solving_notation() -> Result<()> {
     <mo>:</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠀⠒⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠀⠒⠼⠑")?;
     
     return Ok(());
 }
@@ -608,7 +608,7 @@ fn operate_by_on_both_sides() -> Result<()> {
     <mo>/</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠀⠀⠸⠀⠖⠼⠑⠀⠀⠸⠀⠤⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠒⠼⠑⠀⠀⠸ ⠦⠴⠬⠀⠀⠸⠀⠌⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"⠀⠀⠸⠀⠖⠼⠑⠀⠀⠸⠀⠤⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠒⠼⠑⠀⠀⠸ ⠦⠴⠬⠀⠀⠸⠀⠌⠼⠑")?;
     return Ok(());
   }
 
@@ -626,7 +626,7 @@ fn p22_equation_solving_notation_double_bars() -> Result<()> {
     <mo>:</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠸⠀⠒⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠸⠀⠒⠼⠑")?;
     
     return Ok(());
 }
@@ -669,7 +669,7 @@ fn operate_by_on_both_sides_double_bars() -> Result<()> {
     <mo>/</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠀⠀⠸⠸⠀⠖⠼⠑⠀⠀⠸⠸⠀⠤⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠒⠼⠑⠀⠀⠸⠸ ⠦⠴⠬⠀⠀⠸⠸⠀⠌⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"⠀⠀⠸⠸⠀⠖⠼⠑⠀⠀⠸⠸⠀⠤⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠒⠼⠑⠀⠀⠸⠸ ⠦⠴⠬⠀⠀⠸⠸⠀⠌⠼⠑")?;
     return Ok(());
   }
 
@@ -689,7 +689,7 @@ fn p24_fraction() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠑⠀⠖⠼⠛⠴⠀⠌⠦⠼⠃⠀⠄⠼⠉⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠑⠀⠖⠼⠛⠴⠀⠌⠦⠼⠃⠀⠄⠼⠉⠴")?;
     return Ok(());
 }
 
@@ -713,7 +713,7 @@ fn p24_fraction_2() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠙⠀⠭⠀⠌⠦⠼⠋⠀⠦⠼⠁⠀⠤⠭⠴⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠀⠭⠀⠌⠦⠼⠋⠀⠦⠼⠁⠀⠤⠭⠴⠴")?;
     return Ok(());
 }
 
@@ -763,7 +763,7 @@ fn p25_long_fraction() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠦⠭⠬⠀⠤⠼⠛⠀⠭⠀⠖⠼⠁⠃⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠃⠚⠴⠴⠀⠒⠦⠦⠭⠬⠀⠤⠼⠓⠀⠭⠀⠖⠼⠁⠑⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠁⠋⠴⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠦⠭⠬⠀⠤⠼⠛⠀⠭⠀⠖⠼⠁⠃⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠃⠚⠴⠴⠀⠒⠦⠦⠭⠬⠀⠤⠼⠓⠀⠭⠀⠖⠼⠁⠑⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠁⠋⠴⠴")?;
     return Ok(());
 }
 
@@ -795,7 +795,7 @@ fn p25_fraction_in_fraction() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠁⠆⠀⠖⠼⠁⠒⠠⠴⠀⠌⠦⠼⠁⠲⠀⠤⠼⠁⠢⠠⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠆⠀⠖⠼⠁⠒⠠⠴⠀⠌⠦⠼⠁⠲⠀⠤⠼⠁⠢⠠⠴")?;
     return Ok(());
 }
 
@@ -830,7 +830,7 @@ fn p26_exponent_multiplication_with_parens() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
     return Ok(());
 }
 
@@ -863,7 +863,7 @@ fn p26_exponent_multiplication_no_parens() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
     return Ok(());
 }
 
@@ -879,7 +879,7 @@ fn p27_exponent_to_large_number() -> Result<()> {
     <mn>1048576</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠬⠼⠃⠚⠀⠶⠼⠁⠄⠚⠙⠓⠄⠑⠛⠋")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠃⠚⠀⠶⠼⠁⠄⠚⠙⠓⠄⠑⠛⠋")?;
     return Ok(());
 }
 
@@ -902,7 +902,7 @@ fn p27_sqrt() -> Result<()> {
     <mn>2</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠙⠬⠼⠁⠆⠀⠶⠩⠼⠙⠀⠶⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠬⠼⠁⠆⠀⠶⠩⠼⠙⠀⠶⠼⠃")?;
     return Ok(());
 }
 
@@ -916,7 +916,7 @@ fn p31_trig_tan_infinity() -> Result<()> {
       <mo>=</mo>
       <mi>∞</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠞⠁⠝⠀⠼⠊⠚⠀⠴⠀⠶⠿")?;
+    test_braille("ASCIIMath_fi", expr, r"⠞⠁⠝⠀⠼⠊⠚⠀⠴⠀⠶⠿")?;
     return Ok(());
 }
 
@@ -938,7 +938,7 @@ fn p31_degrees_minutes_seconds_primes() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
     return Ok(());
 }
 
@@ -960,7 +960,7 @@ fn p31_degrees_minutes_seconds_alternative() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
     return Ok(());
 }
 
@@ -975,7 +975,7 @@ fn msub_singular() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠭⠡⠼⠁⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠭⠡⠼⠁⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -993,7 +993,7 @@ fn msub_parentheses() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1012,7 +1012,7 @@ fn msub_with_vector() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1030,7 +1030,7 @@ fn msub_with_vector_arrow() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1050,7 +1050,7 @@ fn msub_with_vector_with_sub_text() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠞⠥⠅⠊⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠞⠥⠅⠊⠱⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1071,7 +1071,7 @@ fn msubsup_with_vector() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠼⠑⠌⠼⠚⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠼⠑⠌⠼⠚⠱⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1104,7 +1104,7 @@ fn msubsup_with_vector_complex_with_parentheses() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠦⠼⠑⠀⠖⠼⠃⠴⠌⠦⠼⠉⠀⠖⠭⠴⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠼⠑⠀⠖⠼⠃⠴⠌⠦⠼⠉⠀⠖⠭⠴⠱⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1120,7 +1120,7 @@ fn msubsup() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠼⠁⠬⠼⠃⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠼⠁⠬⠼⠃⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1144,7 +1144,7 @@ fn msubsup_parentheses_in_sub_and_sup() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠬⠦⠭⠀⠤⠼⠁⠚⠴⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠬⠦⠭⠀⠤⠼⠁⠚⠴⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1171,7 +1171,7 @@ fn p32_expected_value() -> Result<()> {
       <mi>i</mi>
     </msub>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠑⠦⠭⠴⠀⠶⠨⠍⠀⠶⠸⠎⠡⠊⠐⠏⠡⠊⠐⠭⠡⠊")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠑⠦⠭⠴⠀⠶⠨⠍⠀⠶⠸⠎⠡⠊⠐⠏⠡⠊⠐⠭⠡⠊")?;
     return Ok(());
 }
 
@@ -1198,7 +1198,7 @@ fn p33_vector() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠁⠠⠃⠱⠀⠶⠼⠉⠀⠊⠱⠀⠤⠼⠙⠀⠚⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠠⠃⠱⠀⠶⠼⠉⠀⠊⠱⠀⠤⠼⠙⠀⠚⠱")?;
     return Ok(());
 }
 
@@ -1217,7 +1217,7 @@ fn p33_parallel_vectors() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠱⠀⠸⠸⠀⠃⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠱⠀⠸⠸⠀⠃⠱")?;
     return Ok(());
 }
 
@@ -1236,7 +1236,7 @@ fn p34_vector_dot_product() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠧⠱⠀⠄⠥⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"⠧⠱⠀⠄⠥⠱")?;
     return Ok(());
 }
 
@@ -1255,7 +1255,7 @@ fn p34_vector_cross_product() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠱⠀⠰⠄⠃⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠱⠀⠰⠄⠃⠱")?;
     return Ok(());
 }
 
@@ -1266,7 +1266,7 @@ fn p39_not_in_set() -> Result<()> {
     <mo>∉</mo>
     <mi>B</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠉⠀⠳⠐⠔⠠⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠀⠳⠐⠔⠠⠃")?;
     return Ok(());
 }
 
@@ -1279,7 +1279,7 @@ fn p39_subset() -> Result<()> {
     <mi>A</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠃⠀⠳⠪⠠⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠃⠀⠳⠪⠠⠁")?;
     return Ok(());
 }
 
@@ -1290,7 +1290,7 @@ fn p39_not_subset() -> Result<()> {
     <mo>⊄</mo>
     <mi>E</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠋⠀⠳⠐⠪⠠⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠋⠀⠳⠐⠪⠠⠑")?;
     return Ok(());
 }
 
@@ -1311,7 +1311,7 @@ fn p39_equal_sets_with_mtext() -> Result<()> {
     <mi>D</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠉⠀⠳⠶⠪⠠⠙⠀⠚⠁⠀⠠⠙⠀⠳⠶⠪⠠⠉⠀⠣⠤⠤⠱⠀⠠⠉⠀⠶⠠⠙")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠀⠳⠶⠪⠠⠙⠀⠚⠁⠀⠠⠙⠀⠳⠶⠪⠠⠉⠀⠣⠤⠤⠱⠀⠠⠉⠀⠶⠠⠙")?;
     return Ok(());
 }
 
@@ -1350,7 +1350,7 @@ fn p39_set_of_points_in_R2() -> Result<()> {
     <mo>}</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠁⠀⠰⠄⠠⠃⠀⠶⠫⠦⠼⠁⠂⠀⠼⠉⠴⠂⠀⠦⠼⠁⠂⠀⠼⠙⠴⠂⠀⠦⠼⠃⠂⠀⠼⠉⠴⠂⠀⠦⠼⠃⠂⠀⠼⠙⠴⠻")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠀⠰⠄⠠⠃⠀⠶⠫⠦⠼⠁⠂⠀⠼⠉⠴⠂⠀⠦⠼⠁⠂⠀⠼⠙⠴⠂⠀⠦⠼⠃⠂⠀⠼⠉⠴⠂⠀⠦⠼⠃⠂⠀⠼⠙⠴⠻")?;
     return Ok(());
 }
 
@@ -1360,7 +1360,7 @@ fn p40_not_p() -> Result<()> {
     <mo>¬</mo>
     <mi>p</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠳⠲⠏")?;
+    test_braille("ASCIIMath_fi", expr, r"⠳⠲⠏")?;
     return Ok(());
 }
 
@@ -1371,7 +1371,7 @@ fn p40_p_and_q() -> Result<()> {
     <mo>∧</mo>
     <mi>q</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠏⠀⠳⠩⠀⠟")?;
+    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠳⠩⠀⠟")?;
     return Ok(());
 }
 
@@ -1382,7 +1382,7 @@ fn p40_p_or_q() -> Result<()> {
     <mo>∨</mo>
     <mi>q</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠏⠀⠳⠬⠀⠟")?;
+    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠳⠬⠀⠟")?;
     return Ok(());
 }
 
@@ -1399,7 +1399,7 @@ fn p41_function_definition() -> Result<()> {
     <mi>x</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠒⠀⠭⠀⠤⠱⠀⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠒⠀⠭⠀⠤⠱⠀⠋⠦⠭⠴")?;
     return Ok(());
 }
 
@@ -1436,7 +1436,7 @@ fn p41_inverse_function() -> Result<()> {
     <mo>}</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠬⠤⠼⠁⠀⠶⠫⠦⠽⠂⠀⠭⠴⠀⠳⠔⠠⠃⠀⠰⠄⠠⠁⠀⠸⠀⠽⠀⠶⠋⠦⠭⠴⠻")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠬⠤⠼⠁⠀⠶⠫⠦⠽⠂⠀⠭⠴⠀⠳⠔⠠⠃⠀⠰⠄⠠⠁⠀⠸⠀⠽⠀⠶⠋⠦⠭⠴⠻")?;
     return Ok(());
 }
 
@@ -1502,7 +1502,7 @@ fn p41_function_with_parts_with_arrow() -> Result<()> {
       </mrow>
 </math>
 "#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠒⠀⠭⠀⠤⠱⠀⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠒⠀⠭⠀⠤⠱⠀⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻")?;
     return Ok(());
 }
 
@@ -1567,7 +1567,7 @@ fn p40_function_with_parts() -> Result<()> {
          </mrow>
       </mrow>
 </math>"#;
-  test_braille("ASCIIMath-fi", expr, r"⠋⠦⠭⠴⠀⠶⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻")?;
+  test_braille("ASCIIMath_fi", expr, r"⠋⠦⠭⠴⠀⠶⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻")?;
     return Ok(());
 }
 
@@ -1639,7 +1639,7 @@ fn p42_matrix() -> Result<()> {
 <mo>)</mo>
 </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠁⠀⠼⠚⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠚⠀⠼⠁⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠁⠀⠼⠚⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠚⠀⠼⠁⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴")?;
     return Ok(());
 }
 
@@ -1700,7 +1700,7 @@ fn matrix_with_empty_cells() -> Result<()> {
 <mo>)</mo>
 </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴⠀⠐⠐⠀⠦⠒⠀⠼⠁⠀⠒⠀⠒⠴⠀⠐⠐⠀⠦⠒⠀⠒⠀⠼⠁⠀⠒⠴⠀⠐⠐⠀⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴⠀⠐⠐⠀⠦⠒⠀⠼⠁⠀⠒⠀⠒⠴⠀⠐⠐⠀⠦⠒⠀⠒⠀⠼⠁⠀⠒⠴⠀⠐⠐⠀⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴")?;
     return Ok(());
 }
 
@@ -1744,7 +1744,7 @@ fn p42_determinant() -> Result<()> {
     <mi>a</mi>
     <mi>b</mi>
     </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠸⠁⠀⠖⠃⠀⠁⠀⠤⠃⠸⠀⠐⠐⠀⠸⠁⠀⠤⠃⠀⠁⠀⠖⠃⠸⠀⠶⠼⠙⠀⠁⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"⠸⠁⠀⠖⠃⠀⠁⠀⠤⠃⠸⠀⠐⠐⠀⠸⠁⠀⠤⠃⠀⠁⠀⠖⠃⠸⠀⠶⠼⠙⠀⠁⠃")?;
     return Ok(());
 }
 
@@ -1757,7 +1757,7 @@ fn open_interval() -> Result<()> {
     <mi>d</mi>
     <mo>[</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠾⠉⠂⠀⠙⠷")?;
+    test_braille("ASCIIMath_fi", expr, r"⠾⠉⠂⠀⠙⠷")?;
     return Ok(());
 }
 
@@ -1770,7 +1770,7 @@ fn open_interval_alt() -> Result<()> {
     <mi>d</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠉⠂⠀⠙⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠉⠂⠀⠙⠴")?;
     return Ok(());
 }
 
@@ -1783,7 +1783,7 @@ fn half_open_interval_left() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠾⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"⠾⠉⠂⠀⠙⠾")?;
     return Ok(());
 }
 
@@ -1796,7 +1796,7 @@ fn half_open_interval_left_alt() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠉⠂⠀⠙⠾")?;
     return Ok(());
 }
 
@@ -1809,7 +1809,7 @@ fn half_open_interval_right() -> Result<()> {
     <mi>d</mi>
     <mo>[</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠷⠉⠂⠀⠙⠷")?;
+    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠷")?;
     return Ok(());
 }
 
@@ -1822,7 +1822,7 @@ fn half_open_interval_right_alt() -> Result<()> {
     <mi>d</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠷⠉⠂⠀⠙⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠴")?;
     return Ok(());
 }
 
@@ -1835,7 +1835,7 @@ fn closed_interval() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠷⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠾")?;
     return Ok(());
 }
 
@@ -1850,7 +1850,7 @@ fn p45_arcsin_with_bar_over() -> Result<()> {
 <mi>sin</mi>
 <mi>x</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠁⠗⠉⠱⠀⠎⠊⠝⠀⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"⠁⠗⠉⠱⠀⠎⠊⠝⠀⠭")?;
     return Ok(());
 }
 
@@ -1860,49 +1860,49 @@ fn p46_simple_derivative_fraction() -> Result<()> {
         <mrow><mi>d</mi><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
         <mrow><mi>d</mi><mi>x</mi></mrow>
       </mfrac></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠙⠋⠦⠭⠴⠀⠌⠙⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"⠙⠋⠦⠭⠴⠀⠌⠙⠭")?;
     return Ok(());
 }
 
 #[test]
 fn p46_first_order_derivative() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠦⠭⠴")?;
     return Ok(());
 }
 
 #[test]
 fn p46_first_order_derivative_alt() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>’</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠦⠭⠴")?;
     return Ok(());
 }
 
 #[test]
 fn second_order_derivative() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>''</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
     return Ok(());
 }
 
 #[test]
 fn second_order_derivative_alt_1() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>’’</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
     return Ok(());
 }
 
 #[test]
 fn second_order_derivative_alt_2() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>”</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
     return Ok(());
 }
 
 #[test]
 fn nth_order_derivative() -> Result<()> {
     let expr = r#"<math><msup><mi>f</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠋⠌⠦⠝⠴⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠋⠌⠦⠝⠴⠦⠭⠴")?;
     return Ok(());
 }
 
@@ -1915,7 +1915,7 @@ fn p46_random_variable() -> Result<()> {
 <mo>_</mo>
 </munder>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠎⠤")?;
+    test_braille("ASCIIMath_fi", expr, r"⠎⠤")?;
     return Ok(());
 }
 
@@ -1929,7 +1929,7 @@ fn line_under_terminated_by_space() -> Result<()> {
 <mo>+</mo>
 <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠎⠤⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠎⠤⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1948,7 +1948,7 @@ fn line_under_parentheses() -> Result<()> {
 <mo>+</mo>
 <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠎⠀⠌⠼⠃⠴⠤⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠎⠀⠌⠼⠃⠴⠤⠀⠖⠼⠁")?;
     return Ok(());
 }
 
@@ -1974,7 +1974,7 @@ fn p48_limit_right_hand_approaching_Finnish_notation() -> Result<()> {
     <mo>)</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠀⠖⠴⠐⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠀⠖⠴⠐⠋⠦⠭⠴")?;
     return Ok(());
 }
 
@@ -2002,7 +2002,7 @@ fn p48_limit_right_hand_approaching_Finnish_notation_with_msup() -> Result<()> {
     <mo>)</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠬⠖⠴⠐⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠬⠖⠴⠐⠋⠦⠭⠴")?;
     return Ok(());
 }
 
@@ -2027,7 +2027,7 @@ fn limit_approaches_from_below() -> Result<()> {
 </mrow>
 </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠔⠱⠀⠼⠚⠴⠐⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠔⠱⠀⠼⠚⠴⠐⠋⠦⠭⠴")?;
     return Ok(());
 }
 
@@ -2062,7 +2062,7 @@ fn p49_integral_with_Finnish_notation_for_substitution() -> Result<()> {
     </msqrt>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠮⠢⠼⠚⠔⠼⠙⠐⠩⠭⠀⠙⠭⠀⠶⠸⠢⠼⠚⠔⠼⠙⠐⠦⠼⠃⠒⠀⠭⠀⠩⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠮⠢⠼⠚⠔⠼⠙⠐⠩⠭⠀⠙⠭⠀⠶⠸⠢⠼⠚⠔⠼⠙⠐⠦⠼⠃⠒⠀⠭⠀⠩⠭⠴")?;
     return Ok(());
 }
 
@@ -2089,7 +2089,7 @@ fn p49_summation_with_lower_upper_bounds() -> Result<()> {
 <mi>i</mi>
 </msub>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠸⠎⠡⠊⠢⠼⠚⠔⠝⠐⠦⠋⠡⠊⠀⠭⠡⠊⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠸⠎⠡⠊⠢⠼⠚⠔⠝⠐⠦⠋⠡⠊⠀⠭⠡⠊⠴")?;
     return Ok(());
 }
 
@@ -2112,7 +2112,7 @@ fn p49_union_with_lower_upper_bounds() -> Result<()> {
 <mi>i</mi>
 </msub>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠳⠖⠡⠊⠢⠼⠁⠔⠝⠐⠠⠁⠡⠊")?;
+    test_braille("ASCIIMath_fi", expr, r"⠳⠖⠡⠊⠢⠼⠁⠔⠝⠐⠠⠁⠡⠊")?;
     return Ok(());
 }
 
@@ -2138,7 +2138,7 @@ fn p49_sequence_with_lower_upper_bounds() -> Result<()> {
 <mi>∞</mi>
 </msubsup>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠭⠡⠝⠴⠡⠝⠢⠼⠁⠔⠿")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠭⠡⠝⠴⠡⠝⠢⠼⠁⠔⠿")?;
     return Ok(());
 }
 
@@ -2160,7 +2160,7 @@ fn p50_such_that_y_greater_than_x() -> Result<()> {
     <mo>&gt;</mo>
     <mi>x</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠳⠂⠭⠀⠳⠔⠠⠗⠂⠀⠳⠢⠽⠀⠳⠔⠠⠗⠆⠀⠽⠀⠱⠀⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"⠳⠂⠭⠀⠳⠔⠠⠗⠂⠀⠳⠢⠽⠀⠳⠔⠠⠗⠆⠀⠽⠀⠱⠀⠭")?;
     return Ok(());
 }
 
@@ -2177,7 +2177,7 @@ fn p50_cube_root() -> Result<()> {
     <mn>3</mn>
   </mroot>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠩⠼⠉⠐⠦⠭⠀⠖⠼⠑⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠩⠼⠉⠐⠦⠭⠀⠖⠼⠑⠴")?;
     return Ok(());
 }
 
@@ -2213,7 +2213,7 @@ fn p50_binomial_with_factorial() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠋⠯⠀⠼⠙⠴⠀⠶⠼⠋⠠⠲⠀⠌⠷⠼⠙⠠⠲⠀⠦⠼⠋⠀⠤⠼⠙⠠⠴⠠⠲⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠋⠯⠀⠼⠙⠴⠀⠶⠼⠋⠠⠲⠀⠌⠷⠼⠙⠠⠲⠀⠦⠼⠋⠀⠤⠼⠙⠠⠴⠠⠲⠾")?;
     return Ok(());
 }
 
@@ -2245,7 +2245,7 @@ fn p50_conditional_probability() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠏⠦⠠⠃⠀⠸⠀⠠⠁⠴⠀⠶⠠⠏⠦⠠⠁⠠⠃⠴⠀⠌⠠⠏⠦⠠⠁⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠏⠦⠠⠃⠀⠸⠀⠠⠁⠴⠀⠶⠠⠏⠦⠠⠁⠠⠃⠴⠀⠌⠠⠏⠦⠠⠁⠴")?;
     return Ok(());
 }
 
@@ -2264,7 +2264,7 @@ fn p50_alternative_derivative_1() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠙⠇⠝⠀⠭⠀⠌⠙⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"⠙⠇⠝⠀⠭⠀⠌⠙⠭")?;
     return Ok(());
 }
 
@@ -2284,7 +2284,7 @@ fn p50_alternative_derivative_2() -> Result<()> {
     <mi>x</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠙⠀⠌⠙⠭⠀⠇⠝⠀⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"⠙⠀⠌⠙⠭⠀⠇⠝⠀⠭")?;
     return Ok(());
 }
 
@@ -2310,7 +2310,7 @@ fn p51_set_with_closure() -> Result<()> {
 <mo>‾</mo>
 </mover>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠈⠙⠠⠁⠀⠶⠠⠁⠱⠀⠳⠦⠦⠠⠭⠀⠳⠡⠠⠁⠴⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"⠈⠙⠠⠁⠀⠶⠠⠁⠱⠀⠳⠦⠦⠠⠭⠀⠳⠡⠠⠁⠴⠱")?;
     return Ok(());
 }
 
@@ -2328,7 +2328,7 @@ fn p51_normal_distribution() -> Result<()> {
         <mo>)</mo>
       </mrow>
     </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠏⠀⠨⠶⠠⠝⠦⠼⠑⠓⠂⠀⠼⠃⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠨⠶⠠⠝⠦⠼⠑⠓⠂⠀⠼⠃⠴")?;
     return Ok(());
 }
 
@@ -2350,7 +2350,7 @@ fn p52_right_circular_cone_volume() -> Result<()> {
     <mi>h</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠧⠀⠶⠼⠁⠒⠀⠨⠏⠀⠗⠬⠀⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠧⠀⠶⠼⠁⠒⠀⠨⠏⠀⠗⠬⠀⠓")?;
     return Ok(());
 }
 
@@ -2383,7 +2383,7 @@ fn p52_circular_cone_area_equation() -> Result<()> {
     </msqrt>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠁⠀⠶⠨⠏⠀⠗⠬⠀⠖⠨⠏⠀⠗⠀⠩⠦⠗⠬⠀⠖⠓⠬⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠀⠶⠨⠏⠀⠗⠬⠀⠖⠨⠏⠀⠗⠀⠩⠦⠗⠬⠀⠖⠓⠬⠴")?;
     return Ok(());
 }
 
@@ -2418,7 +2418,7 @@ fn p52_quadratic_formula() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠭⠀⠶⠦⠤⠃⠀⠖⠤⠩⠦⠃⠬⠀⠤⠼⠙⠀⠁⠉⠴⠴⠀⠌⠦⠼⠃⠀⠁⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠭⠀⠶⠦⠤⠃⠀⠖⠤⠩⠦⠃⠬⠀⠤⠼⠙⠀⠁⠉⠴⠴⠀⠌⠦⠼⠃⠀⠁⠴")?;
     return Ok(());
 }
 
@@ -2427,7 +2427,7 @@ fn p52_quadratic_formula() -> Result<()> {
 fn p63_O16() -> Result<()> {
     // From MathType
     let expr = r#"<math><mmultiscripts><mi mathvariant="normal">O</mi><mprescripts/><mn>8</mn><mn>16</mn></mmultiscripts></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠡⠼⠓⠬⠼⠁⠋⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"⠡⠼⠓⠬⠼⠁⠋⠠⠕")?;
     return Ok(());
 }
 
@@ -2436,14 +2436,14 @@ fn p63_O16() -> Result<()> {
 fn p64_chemical_equation_1() -> Result<()> {
     // From MathType
     let expr = r#"<math><msub><mtext>C</mtext><mn>2</mn></msub><msub><mtext>H</mtext><mn>5</mn></msub><mtext>OH</mtext></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠉⠆⠠⠓⠢⠠⠕⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠆⠠⠓⠢⠠⠕⠠⠓")?;
     return Ok(());
 }
 
 #[test]
 fn p64_sodium_ion() -> Result<()> {
     let expr = r#"<math><msup><mi>Na</mi><mo>+</mo></msup></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠝⠁⠬⠖")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠝⠁⠬⠖")?;
     return Ok(());
 }
 
@@ -2452,14 +2452,14 @@ fn p64_sodium_ion() -> Result<()> {
 fn p64_copper_ion() -> Result<()> {
     // From MathType
     let expr = r#"<math><msup><mrow><mtext>Cu</mtext></mrow><mrow><mn>2</mn><mo>+</mo></mrow></msup></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠉⠥⠬⠦⠼⠃⠀⠖⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠥⠬⠦⠼⠃⠀⠖⠴")?;
     return Ok(());
 }
 
 #[test]
 fn p64_chemistry_1() -> Result<()> {
     let expr = r#"<math><msubsup><mrow><mi>S</mi><mi>O</mi></mrow><mn>4</mn><mrow><mn>2</mn><mo>-</mo></mrow></msubsup></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠎⠠⠕⠲⠬⠦⠼⠃⠀⠤⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠎⠠⠕⠲⠬⠦⠼⠃⠀⠤⠴")?;
     return Ok(());
 }
 
@@ -2467,7 +2467,7 @@ fn p64_chemistry_1() -> Result<()> {
 #[test]
 fn p64_chemistry_bond_1() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>-</mo><mi>H</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠓⠀⠒⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠓⠀⠒⠠⠓")?;
     return Ok(());
 }
 
@@ -2475,7 +2475,7 @@ fn p64_chemistry_bond_1() -> Result<()> {
 #[test]
 fn p64_chemistry_bond_1_alternative() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>:</mo><mi>H</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠓⠀⠆⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠓⠀⠆⠠⠓")?;
     return Ok(());
 }
 
@@ -2483,7 +2483,7 @@ fn p64_chemistry_bond_1_alternative() -> Result<()> {
 #[test]
 fn p64_chemistry_bond_2() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>=</mo><mi>O</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠕⠀⠒⠒⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠕⠀⠒⠒⠠⠕")?;
     return Ok(());
 }
 
@@ -2491,7 +2491,7 @@ fn p64_chemistry_bond_2() -> Result<()> {
 #[test]
 fn p64_chemistry_bond_2_alternative() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>∷</mo><mi>O</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠕⠀⠶⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠕⠀⠶⠠⠕")?;
     return Ok(());
 }
 
@@ -2499,7 +2499,7 @@ fn p64_chemistry_bond_2_alternative() -> Result<()> {
 #[test]
 fn p64_chemistry_bond_3() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>N</mi><mo>≡</mo><mi>N</mi></math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠝⠀⠒⠒⠒⠠⠝")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠝⠀⠒⠒⠒⠠⠝")?;
     return Ok(());
 }
 
@@ -2519,7 +2519,7 @@ fn chemical_formula_parentheses_1() -> Result<()> {
   <mn>2</mn>
   </msub>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠉⠁⠦⠠⠕⠠⠓⠴⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠁⠦⠠⠕⠠⠓⠴⠆")?;
     return Ok(());
 }
 
@@ -2544,7 +2544,7 @@ fn chemical_formula_parentheses_2() -> Result<()> {
   <mn>2</mn>
   </msub>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠠⠉⠁⠒⠦⠠⠏⠠⠕⠲⠐⠴⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠁⠒⠦⠠⠏⠠⠕⠲⠐⠴⠆")?;
     return Ok(());
 }
 
@@ -2559,7 +2559,7 @@ fn approx_1() -> Result<()> {
     <mn>200</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠉⠚⠀⠸⠶⠼⠃⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠉⠚⠀⠸⠶⠼⠃⠚⠚")?;
     return Ok(());
 }
 
@@ -2574,7 +2574,7 @@ fn approx_2() -> Result<()> {
     <mn>150</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠓⠚⠀⠖⠼⠋⠚⠀⠸⠶⠼⠁⠑⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠓⠚⠀⠖⠼⠋⠚⠀⠸⠶⠼⠁⠑⠚")?;
     return Ok(());
 }
 
@@ -2589,7 +2589,7 @@ fn large_numbers_1() -> Result<()> {
     <mn>23.000</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠃⠚⠄⠚⠚⠚⠀⠖⠼⠉⠚⠚⠚⠀⠶⠼⠃⠉⠄⠚⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠚⠄⠚⠚⠚⠀⠖⠼⠉⠚⠚⠚⠀⠶⠼⠃⠉⠄⠚⠚⠚")?;
     return Ok(());
 }
 
@@ -2604,7 +2604,7 @@ fn large_numbers_2() -> Result<()> {
     <mn>80.808</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠓⠓⠄⠓⠓⠓⠀⠤⠼⠓⠚⠓⠚⠀⠶⠼⠓⠚⠄⠓⠚⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠓⠓⠄⠓⠓⠓⠀⠤⠼⠓⠚⠓⠚⠀⠶⠼⠓⠚⠄⠓⠚⠓")?;
     return Ok(());
 }
 
@@ -2619,7 +2619,7 @@ fn comparison_multiple_numbers() -> Result<()> {
     <mn>10.000</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠁⠚⠚⠚⠀⠣⠀⠼⠊⠚⠚⠚⠀⠣⠀⠼⠁⠚⠄⠚⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠚⠚⠚⠀⠣⠀⠼⠊⠚⠚⠚⠀⠣⠀⠼⠁⠚⠄⠚⠚⠚")?;
     return Ok(());
 }
 
@@ -2634,7 +2634,7 @@ fn division_slash_1() -> Result<()> {
     <mn>3</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠊⠀⠌⠼⠉⠀⠶⠼⠉")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠊⠀⠌⠼⠉⠀⠶⠼⠉")?;
     return Ok(());
 }
 
@@ -2649,7 +2649,7 @@ fn division_slash_2() -> Result<()> {
     <mn>50</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠁⠚⠚⠀⠌⠼⠃⠀⠶⠼⠑⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠚⠚⠀⠌⠼⠃⠀⠶⠼⠑⠚")?;
     return Ok(());
 }
 
@@ -2659,7 +2659,7 @@ fn units_grams() -> Result<()> {
   <mn>380</mn>
   <mi>g</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠉⠓⠚⠀⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠓⠚⠀⠛")?;
     return Ok(());
 }
 
@@ -2675,7 +2675,7 @@ fn units_kilograms_and_grams() -> Result<()> {
     <mn>3,850</mn>
     <mi>kg</mi>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠙⠀⠅⠛⠀⠤⠼⠁⠑⠚⠀⠛⠀⠶⠼⠉⠂⠓⠑⠚⠀⠅⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠀⠅⠛⠀⠤⠼⠁⠑⠚⠀⠛⠀⠶⠼⠉⠂⠓⠑⠚⠀⠅⠛")?;
     return Ok(());
 }
 
@@ -2690,7 +2690,7 @@ fn invisible_plus_with_mixed_fraction_1() -> Result<()> {
       <mn>2</mn>
     </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠁⠼⠁⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠼⠁⠆")?;
     return Ok(());
 }
 
@@ -2712,7 +2712,7 @@ fn invisible_plus_with_mixed_fraction_2() -> Result<()> {
       <mn>3</mn>
     </mfrac>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠼⠁⠼⠁⠆⠀⠤⠼⠃⠼⠁⠒")?;
+    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠼⠁⠆⠀⠤⠼⠃⠼⠁⠒")?;
     return Ok(());
 }
 
@@ -2752,6 +2752,6 @@ fn count_with_steps() -> Result<()> {
     </mtr>
   </mtable>
 </math>"#;
-    test_braille("ASCIIMath-fi", expr, r"⠦⠼⠁⠚⠀⠤⠼⠋⠴⠀⠄⠦⠼⠑⠀⠖⠼⠑⠴⠀⠐⠐⠀⠶⠼⠙⠀⠄⠼⠁⠚⠀⠐⠐⠀⠶⠼⠙⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠚⠀⠤⠼⠋⠴⠀⠄⠦⠼⠑⠀⠖⠼⠑⠴⠀⠐⠐⠀⠶⠼⠙⠀⠄⠼⠁⠚⠀⠐⠐⠀⠶⠼⠙⠚")?;
     return Ok(());
 }
