@@ -351,7 +351,7 @@ fn p19_fractions_sum() -> Result<()> {
     <mn>1</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠲⠀⠖⠼⠁⠲⠀⠶⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"3/4 +1/4 =1")?;
     return Ok(());
 }
 
@@ -384,11 +384,11 @@ fn p19_fractions_mixed_operations() -> Result<()> {
     <mo>)</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠉⠲⠀⠖⠼⠑⠖⠠⠴⠀⠤⠦⠼⠉⠢⠀⠖⠼⠁⠆⠠⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"(3/4 +5/6) -(3/5 +1/2)")?;
     return Ok(());
 }
 
-// This is Finnish notation where the numerator and denomator is multiplied by the same expression that is in the pre-supercript. Structure is always: [multiplicator][parenthesis]
+// This is Finnish notation where the numerator and denomator is multiplied by the same expression that is in the pre-supercript. Structure is always: **[multiplier]
 #[test]
 fn p19_fraction_multiplication_Finnish_notation_multiscripts() -> Result<()> {
     let expr = r#"<math>
@@ -418,11 +418,11 @@ fn p19_fraction_multiplication_Finnish_notation_multiscripts() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠃⠜⠀⠁⠀⠌⠉⠀⠶⠁⠃⠀⠌⠃⠉")?;
+    test_braille("ASCIIMath_fi", expr, r"**b a/c =ab/(bc)")?;
     return Ok(());
 }
 
-// This is Finnish notation where the numerator and denomator is multiplied by the same expression that is in the pre-supercript. Structure is always: [multiplicator][parenthesis]
+// This is Finnish notation where the numerator and denomator is multiplied by the same expression that is in the pre-supercript. Structure is always: **[multiplier]
 #[test]
 fn p19_fraction_multiplication_Finnish_notation_multiscripts_2() -> Result<()> {
     let expr = r#"<math>
@@ -441,11 +441,11 @@ fn p19_fraction_multiplication_Finnish_notation_multiscripts_2() -> Result<()> {
     </mmultiscripts>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠋⠜⠼⠁⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"**6 1/2")?;
     return Ok(());
 }
 
-// This is Finnish notation for dividing the numerator and denominator by the same expression. It is always of the form: [parenthesis][divisor]
+// This is Finnish notation for dividing the numerator and denominator by the same expression. It is always of the form: ::[divisor]. The notation comes after the fraction.
 #[test]
 fn p22_fraction_division_Finnish_notation_msup() -> Result<()> {
     let expr = r#"<math>
@@ -477,11 +477,11 @@ fn p22_fraction_division_Finnish_notation_msup() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠃⠉⠀⠌⠁⠙⠀⠣⠁⠀⠶⠃⠉⠀⠌⠙")?;
+    test_braille("ASCIIMath_fi", expr, r"abc/(ad) ::a =bc/d")?;
     return Ok(());
 }
 
-// This is Finnish notation for dividing the numerator and denominator by the same expression. It is always of the form: [parenthesis][divisor]
+// This is Finnish notation for dividing the numerator and denominator by the same expression. It is always of the form: ::[divisor]. The notation comes after the fraction.
 #[test]
 fn p22_fraction_division_Finnish_notation_msup_2() -> Result<()> {
     let expr = r#"<math>
@@ -496,7 +496,7 @@ fn p22_fraction_division_Finnish_notation_msup_2() -> Result<()> {
     </mrow>
   </msup>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"2/4 ::2")?;
     return Ok(());
 }
 
@@ -516,7 +516,7 @@ fn p22_fraction_division_Finnish_notation_mmultiscripts() -> Result<()> {
     </mrow>
   </mmultiscripts>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠲⠣⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"2/4 ::2")?;
     return Ok(());
 }
 
@@ -534,7 +534,7 @@ fn p23_equation_1_no_invisible_multiplication() -> Result<()> {
     <mo>−</mo>
     <mn>7</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"2 x +3 =-3 x -7")?;
     return Ok(());
 }
 
@@ -554,7 +554,7 @@ fn p23_equation_1_with_invisible_multiplication() -> Result<()> {
     <mo>−</mo>
     <mn>7</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠀⠭⠀⠖⠼⠉⠀⠶⠤⠼⠉⠀⠭⠀⠤⠼⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"2 x +3 =-3 x -7")?;
     return Ok(());
 }
 
@@ -572,12 +572,12 @@ fn p22_equation_solving_notation() -> Result<()> {
     <mo>:</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠀⠒⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"5 x =-10 | :5")?; 
     
     return Ok(());
 }
 
-// This is Finnish notation. The bar | is used to denote that an operation is done on both sides of the equation. This is not a real life example, but a string of mark up that should produce the output in the test: [space][vertical bar][operation done on both sides].
+// This is Finnish notation. The bar | is used to denote that an operation is done on both sides of the equation. This is not a real life example, but a string of mark up that should produce the output in the test: [space][vertical bar][space][operation].
 #[test]
 fn operate_by_on_both_sides() -> Result<()> {
     let expr = r#"<math>
@@ -608,7 +608,7 @@ fn operate_by_on_both_sides() -> Result<()> {
     <mo>/</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠀⠀⠸⠀⠖⠼⠑⠀⠀⠸⠀⠤⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠄⠼⠑⠀⠀⠸⠀⠒⠼⠑⠀⠀⠸ ⠦⠴⠬⠀⠀⠸⠀⠌⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r" | +5 | -5 | *5 | xx 5 | ()^2 | /5")?;
     return Ok(());
   }
 
@@ -626,7 +626,7 @@ fn p22_equation_solving_notation_double_bars() -> Result<()> {
     <mo>:</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠑⠀⠭⠀⠶⠤⠼⠁⠚⠀⠀⠸⠸⠀⠒⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"5 x =-10 || :5")?;
     
     return Ok(());
 }
@@ -669,7 +669,7 @@ fn operate_by_on_both_sides_double_bars() -> Result<()> {
     <mo>/</mo>
     <mn>5</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠀⠀⠸⠸⠀⠖⠼⠑⠀⠀⠸⠸⠀⠤⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠄⠼⠑⠀⠀⠸⠸⠀⠒⠼⠑⠀⠀⠸⠸ ⠦⠴⠬⠀⠀⠸⠸⠀⠌⠼⠑")?;
+    test_braille("ASCIIMath_fi", expr, r" || +5 || -5 || *5 || xx 5 || ()^2 || /5")?;
     return Ok(());
   }
 
@@ -689,7 +689,7 @@ fn p24_fraction() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠑⠀⠖⠼⠛⠴⠀⠌⠦⠼⠃⠀⠄⠼⠉⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"(2 +7) /(2 *3)")?;
     return Ok(());
 }
 
@@ -713,7 +713,7 @@ fn p24_fraction_2() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠀⠭⠀⠌⠦⠼⠋⠀⠦⠼⠁⠀⠤⠭⠴⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"4 x /(6 (1 -x))")?;
     return Ok(());
 }
 
@@ -763,7 +763,7 @@ fn p25_long_fraction() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠦⠭⠬⠀⠤⠼⠛⠀⠭⠀⠖⠼⠁⠃⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠃⠚⠴⠴⠀⠒⠦⠦⠭⠬⠀⠤⠼⠓⠀⠭⠀⠖⠼⠁⠑⠴⠀⠌⠦⠼⠙⠀⠭⠀⠤⠼⠁⠋⠴⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"((x^2 -7 x +12) /(4 x -20)) / ((x^2 -8 x +15) /(4 x -16))")?;
     return Ok(());
 }
 
@@ -795,7 +795,7 @@ fn p25_fraction_in_fraction() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠆⠀⠖⠼⠁⠒⠠⠴⠀⠌⠦⠼⠁⠲⠀⠤⠼⠁⠢⠠⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"(1/2 +1/3) /(1/4 -1/5)")?;
     return Ok(());
 }
 
@@ -830,7 +830,7 @@ fn p26_exponent_multiplication_with_parens() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"2^3 *2^5 =2^(3 +5) =2^8")?;
     return Ok(());
 }
 
@@ -863,7 +863,7 @@ fn p26_exponent_multiplication_no_parens() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠉⠀⠄⠼⠃⠬⠼⠑⠀⠶⠼⠃⠬⠦⠼⠉⠀⠖⠼⠑⠴⠀⠶⠼⠃⠬⠼⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"2^3 *2^5 =2^(3 +5) =2^8")?;
     return Ok(());
 }
 
@@ -879,7 +879,7 @@ fn p27_exponent_to_large_number() -> Result<()> {
     <mn>1048576</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠬⠼⠃⠚⠀⠶⠼⠁⠄⠚⠙⠓⠄⠑⠛⠋")?;
+    test_braille("ASCIIMath_fi", expr, r"2^20 =1.048.576")?;
     return Ok(());
 }
 
@@ -902,7 +902,7 @@ fn p27_sqrt() -> Result<()> {
     <mn>2</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠬⠼⠁⠆⠀⠶⠩⠼⠙⠀⠶⠼⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"4^(1/2) =sqrt(4) =2")?;
     return Ok(());
 }
 
@@ -916,10 +916,11 @@ fn p31_trig_tan_infinity() -> Result<()> {
       <mo>=</mo>
       <mi>∞</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠞⠁⠝⠀⠼⠊⠚⠀⠴⠀⠶⠿")?;
+    test_braille("ASCIIMath_fi", expr, r"tan(90 ^@) =oo")?;
     return Ok(());
 }
 
+// The degree sign ^@ has a whitespace before it, but the ' or '' don't.
 #[test]
 fn p31_degrees_minutes_seconds_primes() -> Result<()> {
     let expr = r#"<math>
@@ -938,10 +939,11 @@ fn p31_degrees_minutes_seconds_primes() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
+    test_braille("ASCIIMath_fi", expr, r"30 ^@ 45' 20''")?;
     return Ok(());
 }
 
+// The degree sign ^@ has a whitespace before it, but the ' or '' don't.
 #[test]
 fn p31_degrees_minutes_seconds_alternative() -> Result<()> {
     let expr = r#"<math>
@@ -960,7 +962,7 @@ fn p31_degrees_minutes_seconds_alternative() -> Result<()> {
     </msup>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠚⠀⠴⠀⠼⠙⠑⠀⠨⠀⠼⠃⠚⠀⠸")?;
+    test_braille("ASCIIMath_fi", expr, r"30 ^@ 45' 20''")?;
     return Ok(());
 }
 
@@ -975,7 +977,7 @@ fn msub_singular() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠭⠡⠼⠁⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"x_1 +1")?;
     return Ok(());
 }
 
@@ -993,12 +995,11 @@ fn msub_parentheses() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"a_(x +1) +1")?;
     return Ok(());
 }
 
-// Overline braille notation (dots 156) comes after the (sub)script.
-// For the rule: order should be first subscript and then superscript
+// Overline denotes a vector here.
 #[test]
 fn msub_with_vector() -> Result<()> {
     let expr = r#"<math>
@@ -1012,11 +1013,11 @@ fn msub_with_vector() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a_b +1")?;
     return Ok(());
 }
 
-// Even when the vector is marked with an arrow, it should output the same dots (156).
+// Even when the vector is marked with an arrow, it should output the same as vec.
 #[test]
 fn msub_with_vector_arrow() -> Result<()> {
     let expr = r#"<math>
@@ -1030,11 +1031,10 @@ fn msub_with_vector_arrow() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠃⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a_b +1")?;
     return Ok(());
 }
 
-// Overline braille notation (dots 156) comes after the (sub)script.
 #[test]
 fn msub_with_vector_with_sub_text() -> Result<()> {
     let expr = r#"<math>
@@ -1050,11 +1050,10 @@ fn msub_with_vector_with_sub_text() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠞⠥⠅⠊⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a_tuki +1")?;
     return Ok(());
 }
 
-// First the subscript, then superscript and then overline notation.
 #[test]
 fn msubsup_with_vector() -> Result<()> {
     let expr = r#"<math>
@@ -1071,11 +1070,10 @@ fn msubsup_with_vector() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠼⠑⠌⠼⠚⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a_5^0 +1")?;
     return Ok(());
 }
 
-// First the subscript, then superscript and then overline notation.
 #[test]
 fn msubsup_with_vector_complex_with_parentheses() -> Result<()> {
     let expr = r#"<math>
@@ -1104,11 +1102,10 @@ fn msubsup_with_vector_complex_with_parentheses() -> Result<()> {
     <mn>1</mn>
   </mrow>
  </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠼⠑⠀⠖⠼⠃⠴⠌⠦⠼⠉⠀⠖⠭⠴⠱⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a_(5 +2)^(3 +x) +1")?;
     return Ok(());
 }
 
-// First the subscript and then the superscript.
 #[test]
 fn msubsup() -> Result<()> {
     let expr = r#"<math>
@@ -1120,11 +1117,10 @@ fn msubsup() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠼⠁⠬⠼⠃⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"a_1^2 +1")?;
     return Ok(());
 }
 
-// The scripts should have parentheses for easier reading.
 #[test]
 fn msubsup_parentheses_in_sub_and_sup() -> Result<()> {
     let expr = r#"<math>
@@ -1144,7 +1140,7 @@ fn msubsup_parentheses_in_sub_and_sup() -> Result<()> {
     <mo>+</mo>
     <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠡⠦⠭⠀⠖⠼⠁⠴⠬⠦⠭⠀⠤⠼⠁⠚⠴⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"a_(x +1)^(x -10) +1")?;
     return Ok(());
 }
 
@@ -1171,11 +1167,10 @@ fn p32_expected_value() -> Result<()> {
       <mi>i</mi>
     </msub>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠑⠦⠭⠴⠀⠶⠨⠍⠀⠶⠸⠎⠡⠊⠐⠏⠡⠊⠐⠭⠡⠊")?;
+    test_braille("ASCIIMath_fi", expr, r"E(x) =~m =sum_i (p_i x_i)")?;
     return Ok(());
 }
 
-// Dots 156 to signify the bar over "AB"
 #[test]
 fn p33_vector() -> Result<()> {
     let expr = r#"<math>
@@ -1198,7 +1193,7 @@ fn p33_vector() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠠⠃⠱⠀⠶⠼⠉⠀⠊⠱⠀⠤⠼⠙⠀⠚⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"vec AB =3 vec i -4 vec j")?;
     return Ok(());
 }
 
@@ -1217,10 +1212,11 @@ fn p33_parallel_vectors() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠱⠀⠸⠸⠀⠃⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a || vec b")?;
     return Ok(());
 }
 
+// Dot product is denoted with the center dot (multiplication), but it has whitespace on both sides of the operation.
 #[test]
 fn p34_vector_dot_product() -> Result<()> {
     let expr = r#"<math>
@@ -1236,7 +1232,7 @@ fn p34_vector_dot_product() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠧⠱⠀⠄⠥⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"vec v * vec u")?;
     return Ok(());
 }
 
@@ -1255,7 +1251,7 @@ fn p34_vector_cross_product() -> Result<()> {
     </mover>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠱⠀⠰⠄⠃⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"vec a xx vec b")?;
     return Ok(());
 }
 
@@ -1266,7 +1262,7 @@ fn p39_not_in_set() -> Result<()> {
     <mo>∉</mo>
     <mi>B</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠀⠳⠐⠔⠠⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"3 !in B")?;
     return Ok(());
 }
 
@@ -1279,7 +1275,7 @@ fn p39_subset() -> Result<()> {
     <mi>A</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠃⠀⠳⠪⠠⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"B sube A")?;
     return Ok(());
 }
 
@@ -1290,7 +1286,7 @@ fn p39_not_subset() -> Result<()> {
     <mo>⊄</mo>
     <mi>E</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠋⠀⠳⠐⠪⠠⠑")?;
+    test_braille("ASCIIMath_fi", expr, r"F !sub E")?;
     return Ok(());
 }
 
@@ -1311,7 +1307,7 @@ fn p39_equal_sets_with_mtext() -> Result<()> {
     <mi>D</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠀⠳⠶⠪⠠⠙⠀⠚⠁⠀⠠⠙⠀⠳⠶⠪⠠⠉⠀⠣⠤⠤⠱⠀⠠⠉⠀⠶⠠⠙")?;
+    test_braille("ASCIIMath_fi", expr, r"C sube D ja D sube C <--> C =D")?;
     return Ok(());
 }
 
@@ -1350,7 +1346,7 @@ fn p39_set_of_points_in_R2() -> Result<()> {
     <mo>}</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠀⠰⠄⠠⠃⠀⠶⠫⠦⠼⠁⠂⠀⠼⠉⠴⠂⠀⠦⠼⠁⠂⠀⠼⠙⠴⠂⠀⠦⠼⠃⠂⠀⠼⠉⠴⠂⠀⠦⠼⠃⠂⠀⠼⠙⠴⠻")?;
+    test_braille("ASCIIMath_fi", expr, r"A xx B ={(1, 3), (1, 4), (2, 3), (2, 4)}")?;
     return Ok(());
 }
 
@@ -1360,7 +1356,7 @@ fn p40_not_p() -> Result<()> {
     <mo>¬</mo>
     <mi>p</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠳⠲⠏")?;
+    test_braille("ASCIIMath_fi", expr, r"not p")?;
     return Ok(());
 }
 
@@ -1371,7 +1367,7 @@ fn p40_p_and_q() -> Result<()> {
     <mo>∧</mo>
     <mi>q</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠳⠩⠀⠟")?;
+    test_braille("ASCIIMath_fi", expr, r"p ^^ q")?;
     return Ok(());
 }
 
@@ -1382,7 +1378,7 @@ fn p40_p_or_q() -> Result<()> {
     <mo>∨</mo>
     <mi>q</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠳⠬⠀⠟")?;
+    test_braille("ASCIIMath_fi", expr, r"p vv q")?;
     return Ok(());
 }
 
@@ -1399,7 +1395,7 @@ fn p41_function_definition() -> Result<()> {
     <mi>x</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠒⠀⠭⠀⠤⠱⠀⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"f: x -> f(x)")?;
     return Ok(());
 }
 
@@ -1436,12 +1432,11 @@ fn p41_inverse_function() -> Result<()> {
     <mo>}</mo>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠬⠤⠼⠁⠀⠶⠫⠦⠽⠂⠀⠭⠴⠀⠳⠔⠠⠃⠀⠰⠄⠠⠁⠀⠸⠀⠽⠀⠶⠋⠦⠭⠴⠻")?;
+    test_braille("ASCIIMath_fi", expr, r"f^-1 ={(y, x) in (B xx A) | y =f(x)}")?;
     return Ok(());
 }
 
 
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
 #[test]
 fn p41_function_with_parts_with_arrow() -> Result<()> {
     let expr = r#"<math>
@@ -1506,7 +1501,8 @@ fn p41_function_with_parts_with_arrow() -> Result<()> {
     return Ok(());
 }
 
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
+// This notation differs from the actual specification and resembles how matrices are marked up.
+// Correct ouput would require a multiline braille display.
 #[test]
 fn p40_function_with_parts() -> Result<()> {
   let expr = r#"<math>
@@ -1567,83 +1563,11 @@ fn p40_function_with_parts() -> Result<()> {
          </mrow>
       </mrow>
 </math>"#;
-  test_braille("ASCIIMath_fi", expr, r"⠋⠦⠭⠴⠀⠶⠫⠤⠼⠁⠂⠀⠭⠀⠣⠶⠀⠤⠼⠁⠀⠐⠐⠀⠭⠬⠀⠖⠼⠃⠀⠭⠂⠀⠤⠼⠁⠀⠣⠀⠭⠀⠣⠶⠀⠼⠁⠀⠐⠐⠀⠤⠭⠀⠖⠼⠉⠂⠀⠭⠀⠱⠀⠼⠁⠻")?;
+  test_braille("ASCIIMath_fi", expr, r"f: x -> {-1, x <= -1}, {x^2 +2 x, -1 < x <= 1}, {-x +3, x > 1}")?;
     return Ok(());
 }
 
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
-// In the matrix the parentheses are repeated for every row.
-#[test]
-fn p42_matrix() -> Result<()> {
-    let expr = r#"<math>
-<mrow>
-<mo>(</mo>
-<mtable>
-	<mtr>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    </mtr>
-	<mtr>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    </mtr>
-	<mtr>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    </mtr>
-	<mtr>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>0</mn>
-    </mtd>
-    <mtd>
-    <mn>1</mn>
-    </mtd>
-    </mtr>
-</mtable>
-<mo>)</mo>
-</mrow>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠁⠀⠼⠚⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠚⠀⠼⠚⠀⠼⠁⠀⠼⠚⠴⠀⠐⠐⠀⠦⠼⠁⠀⠼⠚⠀⠼⠚⠀⠼⠁⠴")?;
-    return Ok(());
-}
-
-// Empty cells are marked up with dots (25).
+// Empty cells are marked up with :
 #[test]
 fn matrix_with_empty_cells() -> Result<()> {
     let expr = r#"<math>
@@ -1700,51 +1624,7 @@ fn matrix_with_empty_cells() -> Result<()> {
 <mo>)</mo>
 </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴⠀⠐⠐⠀⠦⠒⠀⠼⠁⠀⠒⠀⠒⠴⠀⠐⠐⠀⠦⠒⠀⠒⠀⠼⠁⠀⠒⠴⠀⠐⠐⠀⠦⠼⠁⠀⠒⠀⠒⠀⠼⠁⠴")?;
-    return Ok(());
-}
-
-// Two 5-dots separate the rows in the 2D math. Format: [whitespace][dot 5][dot 5][whitespace]. This is not an operator.
-// In the determinant the vertical bar is repeated for every row.
-#[test]
-fn p42_determinant() -> Result<()> {
-    let expr = r#"<math>
-    <mrow>
-    <mo>|</mo>
-    <mtable>
-      <mtr>
-        <mtd>
-        <mi>a</mi>
-        <mo>+</mo>
-        <mi>b</mi>
-        </mtd>
-        <mtd>
-        <mi>a</mi>
-        <mo>−</mo>
-        <mi>b</mi>
-        </mtd>
-        </mtr>
-        <mtr>
-        <mtd>
-        <mi>a</mi>
-        <mo>−</mo>
-        <mi>b</mi>
-        </mtd>
-        <mtd>
-        <mi>a</mi>
-        <mo>+</mo>
-        <mi>b</mi>
-        </mtd>
-        </mtr>
-    </mtable>
-    <mo>|</mo>
-    </mrow>
-    <mo>=</mo>
-    <mn>4</mn>
-    <mi>a</mi>
-    <mi>b</mi>
-    </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠸⠁⠀⠖⠃⠀⠁⠀⠤⠃⠸⠀⠐⠐⠀⠸⠁⠀⠤⠃⠀⠁⠀⠖⠃⠸⠀⠶⠼⠙⠀⠁⠃")?;
+    test_braille("ASCIIMath_fi", expr, r"((1 : : 1), (: 1 : :), (: : 1 :), (1 : : 1))")?;
     return Ok(());
 }
 
@@ -1757,7 +1637,7 @@ fn open_interval() -> Result<()> {
     <mi>d</mi>
     <mo>[</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠾⠉⠂⠀⠙⠷")?;
+    test_braille("ASCIIMath_fi", expr, r"]c, d[")?;
     return Ok(());
 }
 
@@ -1770,7 +1650,7 @@ fn open_interval_alt() -> Result<()> {
     <mi>d</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠉⠂⠀⠙⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"(c, d)")?;
     return Ok(());
 }
 
@@ -1783,7 +1663,7 @@ fn half_open_interval_left() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠾⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"]c, d]")?;
     return Ok(());
 }
 
@@ -1796,7 +1676,7 @@ fn half_open_interval_left_alt() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"(c, d]")?;
     return Ok(());
 }
 
@@ -1809,7 +1689,7 @@ fn half_open_interval_right() -> Result<()> {
     <mi>d</mi>
     <mo>[</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠷")?;
+    test_braille("ASCIIMath_fi", expr, r"[c, d]")?;
     return Ok(());
 }
 
@@ -1822,7 +1702,7 @@ fn half_open_interval_right_alt() -> Result<()> {
     <mi>d</mi>
     <mo>)</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"[c, d)")?;
     return Ok(());
 }
 
@@ -1835,11 +1715,11 @@ fn closed_interval() -> Result<()> {
     <mi>d</mi>
     <mo>]</mo>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠷⠉⠂⠀⠙⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"[c, d]")?;
     return Ok(());
 }
 
-// Dots 156 to signify the bar over "arc".
+// The bar over 'arc' is signified as the 'arc' being in parentheses.
 #[test]
 fn p45_arcsin_with_bar_over() -> Result<()> {
     let expr = r#"<math>
@@ -1850,63 +1730,39 @@ fn p45_arcsin_with_bar_over() -> Result<()> {
 <mi>sin</mi>
 <mi>x</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠁⠗⠉⠱⠀⠎⠊⠝⠀⠭")?;
-    return Ok(());
-}
-
-#[test]
-fn p46_simple_derivative_fraction() -> Result<()> {
-    let expr = r#"<math><mfrac>
-        <mrow><mi>d</mi><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
-        <mrow><mi>d</mi><mi>x</mi></mrow>
-      </mfrac></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠙⠋⠦⠭⠴⠀⠌⠙⠭")?;
-    return Ok(());
-}
-
-#[test]
-fn p46_first_order_derivative() -> Result<()> {
-    let expr = r#"<math><mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"bar (arc) sin x")?;
     return Ok(());
 }
 
 #[test]
 fn p46_first_order_derivative_alt() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>’</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠦⠭⠴")?;
-    return Ok(());
-}
-
-#[test]
-fn second_order_derivative() -> Result<()> {
-    let expr = r#"<math><mi>f</mi><mo>''</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"f'(x)")?;
     return Ok(());
 }
 
 #[test]
 fn second_order_derivative_alt_1() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>’’</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"f''(x)")?;
     return Ok(());
 }
 
 #[test]
 fn second_order_derivative_alt_2() -> Result<()> {
     let expr = r#"<math><mi>f</mi><mo>”</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠔⠔⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"f''(x)")?;
     return Ok(());
 }
 
 #[test]
 fn nth_order_derivative() -> Result<()> {
     let expr = r#"<math><msup><mi>f</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>(</mo><mi>x</mi><mo>)</mo></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠋⠌⠦⠝⠴⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"f^(n) (x)")?;
     return Ok(());
 }
 
-// Line under a variable
+// Underline
 #[test]
 fn p46_random_variable() -> Result<()> {
     let expr = r#"<math>
@@ -1915,7 +1771,7 @@ fn p46_random_variable() -> Result<()> {
 <mo>_</mo>
 </munder>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠎⠤")?;
+    test_braille("ASCIIMath_fi", expr, r"ul s")?;
     return Ok(());
 }
 
@@ -1929,7 +1785,7 @@ fn line_under_terminated_by_space() -> Result<()> {
 <mo>+</mo>
 <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠎⠤⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"ul s +1")?;
     return Ok(());
 }
 
@@ -1948,65 +1804,10 @@ fn line_under_parentheses() -> Result<()> {
 <mo>+</mo>
 <mn>1</mn>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠎⠀⠌⠼⠃⠴⠤⠀⠖⠼⠁")?;
+    test_braille("ASCIIMath_fi", expr, r"ul (s/2) +1")?;
     return Ok(());
 }
 
-// 'Change of zone' dot 5 is used after the limit subscript notation. The subscript is in parentheses for easier reading.
-#[test]
-fn p48_limit_right_hand_approaching_Finnish_notation() -> Result<()> {
-    let expr = r#"<math>
-  <mrow>
-    <msub>
-      <mi>lim</mi>
-      <mrow>
-        <mi>x</mi>
-        <mo>→</mo>
-        <mn>0</mn>
-        <mo>+</mo>
-      </mrow>
-    </msub>
-  </mrow>
-  <mrow>
-    <mi>f</mi>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠀⠖⠴⠐⠋⠦⠭⠴")?;
-    return Ok(());
-}
-
-// 'Change of zone' dot 5 is used after the limit subscript notation. The subscript is in parentheses for easier reading.
-#[test]
-fn p48_limit_right_hand_approaching_Finnish_notation_with_msup() -> Result<()> {
-    let expr = r#"<math>
-  <mrow>
-    <msub>
-      <mi>lim</mi>
-      <mrow>
-        <mi>x</mi>
-        <mo>→</mo>
-        <msup>
-        <mn>0</mn>
-        <mo>+</mo>
-        </msup>
-      </mrow>
-    </msub>
-  </mrow>
-  <mrow>
-    <mi>f</mi>
-    <mo>(</mo>
-    <mi>x</mi>
-    <mo>)</mo>
-  </mrow>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠤⠱⠀⠼⠚⠬⠖⠴⠐⠋⠦⠭⠴")?;
-    return Ok(());
-}
-
-// 'Change of zone' dot 5 is used after the limit subscript notation. The subscript is in parentheses for easier reading.
 #[test]
 fn limit_approaches_from_below() -> Result<()> {
     let expr = r#"<math>
