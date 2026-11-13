@@ -12,7 +12,7 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "の"      # phrase(systems 'of' linear equations)
+      - T: "オブ"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1], 'simple')) and $Impairment = 'Blindness'"
@@ -32,5 +32,5 @@
   - test:
       if: "$Verbosity!='Terse'"
       then:
-      - T: "の"      # phrase(systems 'of' linear equations)
+      - T: "オブ"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
