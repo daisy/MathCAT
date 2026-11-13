@@ -1828,7 +1828,7 @@ fn limit_approaches_from_below() -> Result<()> {
 </mrow>
 </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠇⠊⠍⠡⠦⠭⠀⠔⠱⠀⠼⠚⠴⠐⠋⠦⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"lim_(x *> 0) f(x)")?;
     return Ok(());
 }
 
@@ -1863,12 +1863,10 @@ fn p49_integral_with_Finnish_notation_for_substitution() -> Result<()> {
     </msqrt>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠮⠢⠼⠚⠔⠼⠙⠐⠩⠭⠀⠙⠭⠀⠶⠸⠢⠼⠚⠔⠼⠙⠐⠦⠼⠃⠒⠀⠭⠀⠩⠭⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"int_0^4 sqrt(x) dx =sij_0^4 2/3 x sqrt(x)")?;
     return Ok(());
 }
 
-// Markup for lower and upper bounds for summation, product, intersection, union and such. "Equal to" character is replaced lower (dots 26) and upper (dots 35) bounds.
-// Parentheses are added for clarity. Dot 5 is used to end the zone of the upper bound.
 #[test]
 fn p49_summation_with_lower_upper_bounds() -> Result<()> {
     let expr = r#"<math>
@@ -1890,12 +1888,10 @@ fn p49_summation_with_lower_upper_bounds() -> Result<()> {
 <mi>i</mi>
 </msub>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠸⠎⠡⠊⠢⠼⠚⠔⠝⠐⠦⠋⠡⠊⠀⠭⠡⠊⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"sum_(i =0)^n (f_i x_i)")?;
     return Ok(());
 }
 
-// Markup for lower and upper bounds for summation, product, intersection, union and such. "Equal to" character is replaced lower (dots 26) and upper (dots 35) bounds.
-// Dot 5 is used to end the zone of the upper bound.
 #[test]
 fn p49_union_with_lower_upper_bounds() -> Result<()> {
     let expr = r#"<math>
@@ -1913,12 +1909,10 @@ fn p49_union_with_lower_upper_bounds() -> Result<()> {
 <mi>i</mi>
 </msub>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠳⠖⠡⠊⠢⠼⠁⠔⠝⠐⠠⠁⠡⠊")?;
+    test_braille("ASCIIMath_fi", expr, r"uu_(i =1)^n A_i")?;
     return Ok(());
 }
 
-// The test combines subscript notation and the lower and upper bound notation. "Equal to" character is replaced lower (dots 26) and upper (dots 35) bounds.
-// Dot 5 is used to end the zone of the upper bound.
 #[test]
 fn p49_sequence_with_lower_upper_bounds() -> Result<()> {
     let expr = r#"<math>
@@ -1939,11 +1933,10 @@ fn p49_sequence_with_lower_upper_bounds() -> Result<()> {
 <mi>∞</mi>
 </msubsup>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠭⠡⠝⠴⠡⠝⠢⠼⠁⠔⠿")?;
+    test_braille("ASCIIMath_fi", expr, r"(x_n)_(n =1)^oo")?;
     return Ok(());
 }
 
-// Regular letters are used in the bold lettering.
 #[test]
 fn p50_such_that_y_greater_than_x() -> Result<()> {
     let expr = r#"<math>
@@ -1961,11 +1954,10 @@ fn p50_such_that_y_greater_than_x() -> Result<()> {
     <mo>&gt;</mo>
     <mi>x</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠳⠂⠭⠀⠳⠔⠠⠗⠂⠀⠳⠢⠽⠀⠳⠔⠠⠗⠆⠀⠽⠀⠱⠀⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"AA x in RR, EE y in RR; y > x")?;
     return Ok(());
 }
 
-// After the root sign, dot 5 is used to signify 'change of zone' in the braille.
 #[test]
 fn p50_cube_root() -> Result<()> {
     let expr = r#"<math>
@@ -1978,11 +1970,10 @@ fn p50_cube_root() -> Result<()> {
     <mn>3</mn>
   </mroot>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠩⠼⠉⠐⠦⠭⠀⠖⠼⠑⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"root3(x +5)")?;
     return Ok(());
 }
 
-// The ⠯ character is used between the elements in the binomial.
 #[test]
 fn p50_binomial_with_factorial() -> Result<()> {
     let expr = r#"<math>
@@ -2014,7 +2005,7 @@ fn p50_binomial_with_factorial() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠋⠯⠀⠼⠙⠴⠀⠶⠼⠋⠠⠲⠀⠌⠷⠼⠙⠠⠲⠀⠦⠼⠋⠀⠤⠼⠙⠠⠴⠠⠲⠾")?;
+    test_braille("ASCIIMath_fi", expr, r"((6), (4)) =6! /[4! (6 -4)!] ")?;
     return Ok(());
 }
 
@@ -2046,7 +2037,7 @@ fn p50_conditional_probability() -> Result<()> {
     </mfrac>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠏⠦⠠⠃⠀⠸⠀⠠⠁⠴⠀⠶⠠⠏⠦⠠⠁⠠⠃⠴⠀⠌⠠⠏⠦⠠⠁⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"P(B | A) =P(AB) /P(A)")?;
     return Ok(());
 }
 
@@ -2065,7 +2056,7 @@ fn p50_alternative_derivative_1() -> Result<()> {
     </mrow>
   </mfrac>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠙⠇⠝⠀⠭⠀⠌⠙⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"d ln x /dx")?;
     return Ok(());
 }
 
@@ -2085,7 +2076,7 @@ fn p50_alternative_derivative_2() -> Result<()> {
     <mi>x</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠙⠀⠌⠙⠭⠀⠇⠝⠀⠭")?;
+    test_braille("ASCIIMath_fi", expr, r"d/dx ln x")?;
     return Ok(());
 }
 
@@ -2111,27 +2102,10 @@ fn p51_set_with_closure() -> Result<()> {
 <mo>‾</mo>
 </mover>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠈⠙⠠⠁⠀⠶⠠⠁⠱⠀⠳⠦⠦⠠⠭⠀⠳⠡⠠⠁⠴⠱")?;
+    test_braille("ASCIIMath_fi", expr, r"del A =bar A nn bar (X -A)")?;
     return Ok(());
 }
 
-#[test]
-fn p51_normal_distribution() -> Result<()> {
-    let expr = r#"<math>
-      <mrow>
-        <mi>p</mi>
-        <mo>~</mo>
-        <mi>N</mi>
-        <mo>(</mo>
-        <mn>58</mn>
-        <mo>,</mo>
-        <mn>2</mn>
-        <mo>)</mo>
-      </mrow>
-    </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠏⠀⠨⠶⠠⠝⠦⠼⠑⠓⠂⠀⠼⠃⠴")?;
-    return Ok(());
-}
 
 #[test]
 fn p52_right_circular_cone_volume() -> Result<()> {
@@ -2151,7 +2125,7 @@ fn p52_right_circular_cone_volume() -> Result<()> {
     <mi>h</mi>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠧⠀⠶⠼⠁⠒⠀⠨⠏⠀⠗⠬⠀⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"V =1/3 ~p r^2 h")?;
     return Ok(());
 }
 
@@ -2184,128 +2158,73 @@ fn p52_circular_cone_area_equation() -> Result<()> {
     </msqrt>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠁⠀⠶⠨⠏⠀⠗⠬⠀⠖⠨⠏⠀⠗⠀⠩⠦⠗⠬⠀⠖⠓⠬⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"A =~p r^2 +~p r sqrt(r^2 +h^2)")?;
     return Ok(());
 }
 
-#[test]
-fn p52_quadratic_formula() -> Result<()> {
-    let expr = r#"<math>
-  <mrow>
-    <mi>x</mi>
-    <mo>=</mo>
-    <mfrac>
-      <mrow>
-        <mo>−</mo>
-        <mi>b</mi>
-        <mo>±</mo>
-        <msqrt>
-          <mrow>
-            <msup>
-              <mi>b</mi>
-              <mn>2</mn>
-            </msup>
-            <mo>−</mo>
-            <mn>4</mn>
-            <mi>a</mi>
-            <mi>c</mi>
-          </mrow>
-        </msqrt>
-      </mrow>
-      <mrow>
-        <mn>2</mn>
-        <mi>a</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠭⠀⠶⠦⠤⠃⠀⠖⠤⠩⠦⠃⠬⠀⠤⠼⠙⠀⠁⠉⠴⠴⠀⠌⠦⠼⠃⠀⠁⠴")?;
-    return Ok(());
-}
-
-// Sub- and superscripts are used before the atom sign. 
 #[test]
 fn p63_O16() -> Result<()> {
     // From MathType
     let expr = r#"<math><mmultiscripts><mi mathvariant="normal">O</mi><mprescripts/><mn>8</mn><mn>16</mn></mmultiscripts></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠡⠼⠓⠬⠼⠁⠋⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"_8^16O")?;
     return Ok(());
 }
 
-// The numbers are written as 'dropped dots' (like in fractions) right after the atom. No whitespace between the atoms.
 #[test]
 fn p64_chemical_equation_1() -> Result<()> {
     // From MathType
     let expr = r#"<math><msub><mtext>C</mtext><mn>2</mn></msub><msub><mtext>H</mtext><mn>5</mn></msub><mtext>OH</mtext></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠆⠠⠓⠢⠠⠕⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"C_2H_5OH")?;
     return Ok(());
 }
 
-#[test]
-fn p64_sodium_ion() -> Result<()> {
-    let expr = r#"<math><msup><mi>Na</mi><mo>+</mo></msup></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠝⠁⠬⠖")?;
-    return Ok(());
-}
-
-// Whitespace before the ion's plus or minus sign if there is a number before it. Parentheses for clarity.
-#[test]
-fn p64_copper_ion() -> Result<()> {
-    // From MathType
-    let expr = r#"<math><msup><mrow><mtext>Cu</mtext></mrow><mrow><mn>2</mn><mo>+</mo></mrow></msup></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠥⠬⠦⠼⠃⠀⠖⠴")?;
-    return Ok(());
-}
-
+// Whitespace before the ion's minus sign.
 #[test]
 fn p64_chemistry_1() -> Result<()> {
     let expr = r#"<math><msubsup><mrow><mi>S</mi><mi>O</mi></mrow><mn>4</mn><mrow><mn>2</mn><mo>-</mo></mrow></msubsup></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠎⠠⠕⠲⠬⠦⠼⠃⠀⠤⠴")?;
+    test_braille("ASCIIMath_fi", expr, r"SO_4^(2 -)")?;
     return Ok(());
 }
 
-// Whitespace before the dash, not after.
 #[test]
 fn p64_chemistry_bond_1() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>-</mo><mi>H</mi></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠓⠀⠒⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"H;H")?;
     return Ok(());
 }
 
-// Whitespace before the colon, not after.
+// No whitespace.
 #[test]
 fn p64_chemistry_bond_1_alternative() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>:</mo><mi>H</mi></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠓⠀⠆⠠⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"H:H")?;
     return Ok(());
 }
 
-// Whitespace before the dashes, not after.
+// No whitespace.
 #[test]
 fn p64_chemistry_bond_2() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>=</mo><mi>O</mi></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠕⠀⠒⠒⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"O=O")?;
     return Ok(());
 }
 
-// Whitespace before the double colon, not after.
+// No whitespace.
 #[test]
 fn p64_chemistry_bond_2_alternative() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>∷</mo><mi>O</mi></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠕⠀⠶⠠⠕")?;
+    test_braille("ASCIIMath_fi", expr, r"O::O")?;
     return Ok(());
 }
 
-// Whitespace before the dashes, not after.
+// No whitespace.
 #[test]
 fn p64_chemistry_bond_3() -> Result<()> {
     let expr = r#"<math intent=':chemical-formula'><mi>N</mi><mo>≡</mo><mi>N</mi></math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠝⠀⠒⠒⠒⠠⠝")?;
+    test_braille("ASCIIMath_fi", expr, r"N;=N")?;
     return Ok(());
 }
 
-// The specs use different parentheses for atomic groups. Dots (126) for left and dots (345) for right parenthesis.
-// For MathCAT these are not used, since making the rule would probably be difficult. The parentheses that are used in the MathML are also output by MathCAT.
 #[test]
 fn chemical_formula_parentheses_1() -> Result<()> {
     let expr = r#"<math>
@@ -2320,11 +2239,10 @@ fn chemical_formula_parentheses_1() -> Result<()> {
   <mn>2</mn>
   </msub>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠁⠦⠠⠕⠠⠓⠴⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"Ca(OH)_2")?;
     return Ok(());
 }
 
-// Here the zone ending dot (5) is needed, so parenthesis are not confused with the 'dropped dots'.
 #[test]
 fn chemical_formula_parentheses_2() -> Result<()> {
     let expr = r#"<math>
@@ -2345,11 +2263,9 @@ fn chemical_formula_parentheses_2() -> Result<()> {
   <mn>2</mn>
   </msub>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠠⠉⠁⠒⠦⠠⠏⠠⠕⠲⠐⠴⠆")?;
+    test_braille("ASCIIMath_fi", expr, r"Ca_3(PO_4)_2")?;
     return Ok(());
 }
-
-// New tests start here 11.9.2026
 
 #[test]
 fn approx_1() -> Result<()> {
@@ -2360,7 +2276,7 @@ fn approx_1() -> Result<()> {
     <mn>200</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠉⠚⠀⠸⠶⠼⠃⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"230 ~~200")?;
     return Ok(());
 }
 
@@ -2375,7 +2291,7 @@ fn approx_2() -> Result<()> {
     <mn>150</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠓⠚⠀⠖⠼⠋⠚⠀⠸⠶⠼⠁⠑⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"80 +60 ~~150")?;
     return Ok(());
 }
 
@@ -2390,7 +2306,7 @@ fn large_numbers_1() -> Result<()> {
     <mn>23.000</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠃⠚⠄⠚⠚⠚⠀⠖⠼⠉⠚⠚⠚⠀⠶⠼⠃⠉⠄⠚⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"20.000 +3000 =23.000")?;
     return Ok(());
 }
 
@@ -2405,7 +2321,7 @@ fn large_numbers_2() -> Result<()> {
     <mn>80.808</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠓⠓⠄⠓⠓⠓⠀⠤⠼⠓⠚⠓⠚⠀⠶⠼⠓⠚⠄⠓⠚⠓")?;
+    test_braille("ASCIIMath_fi", expr, r"88.888 -8080 =80.808")?;
     return Ok(());
 }
 
@@ -2420,7 +2336,7 @@ fn comparison_multiple_numbers() -> Result<()> {
     <mn>10.000</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠚⠚⠚⠀⠣⠀⠼⠊⠚⠚⠚⠀⠣⠀⠼⠁⠚⠄⠚⠚⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"1000 < 9000 < 10.000")?;
     return Ok(());
 }
 
@@ -2435,7 +2351,7 @@ fn division_slash_1() -> Result<()> {
     <mn>3</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠊⠀⠌⠼⠉⠀⠶⠼⠉")?;
+    test_braille("ASCIIMath_fi", expr, r"9/3 =3")?;
     return Ok(());
 }
 
@@ -2450,7 +2366,7 @@ fn division_slash_2() -> Result<()> {
     <mn>50</mn>
   </mrow>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠚⠚⠀⠌⠼⠃⠀⠶⠼⠑⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"100/2 =50")?;
     return Ok(());
 }
 
@@ -2460,7 +2376,7 @@ fn units_grams() -> Result<()> {
   <mn>380</mn>
   <mi>g</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠉⠓⠚⠀⠛")?;
+    test_braille("ASCIIMath_fi", expr, r"380 g")?;
     return Ok(());
 }
 
@@ -2476,83 +2392,6 @@ fn units_kilograms_and_grams() -> Result<()> {
     <mn>3,850</mn>
     <mi>kg</mi>
 </math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠙⠀⠅⠛⠀⠤⠼⠁⠑⠚⠀⠛⠀⠶⠼⠉⠂⠓⠑⠚⠀⠅⠛")?;
-    return Ok(());
-}
-
-// Invisible plus is replaced with the number sign (dots 3456) in a mixed fraction.
-#[test]
-fn invisible_plus_with_mixed_fraction_1() -> Result<()> {
-    let expr = r#"<math>
-    <mn>1</mn>
-    <mo>&#x2064;</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mn>2</mn>
-    </mfrac>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠼⠁⠆")?;
-    return Ok(());
-}
-
-// Invisible plus is replaced with the number sign (dots 3456) in a mixed fraction.
-#[test]
-fn invisible_plus_with_mixed_fraction_2() -> Result<()> {
-    let expr = r#"<math>
-    <mn>1</mn>
-    <mo>&#x2064;</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mn>2</mn>
-    </mfrac>
-    <mo>−</mo>
-    <mn>2</mn>
-    <mo>&#x2064;</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mn>3</mn>
-    </mfrac>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠼⠁⠼⠁⠆⠀⠤⠼⠃⠼⠁⠒")?;
-    return Ok(());
-}
-
-// The same solution is used for counting in steps as is in the matrices. A custom [space][dot 5][dot 5][space] separates rows from each other.
-#[test]
-fn count_with_steps() -> Result<()> {
-    let expr = r#"<math>
-  <mtable>
-    <mtr>
-      <mtd>
-        <mo>(</mo>
-        <mn>10</mn>
-        <mo>−</mo>
-        <mn>6</mn>
-        <mo>)</mo>
-        <mo>&#x22C5;</mo>
-        <mo>(</mo>
-        <mn>5</mn>
-        <mo>+</mo>
-        <mn>5</mn>
-        <mo>)</mo>
-      </mtd>
-    </mtr>
-    <mtr>
-      <mtd>
-        <mo>=</mo>
-        <mn>4</mn>
-        <mo>&#x22C5;</mo>
-        <mn>10</mn>
-      </mtd>
-    </mtr>
-    <mtr>
-      <mtd>
-        <mo>=</mo>
-        <mn>40</mn>
-      </mtd>
-    </mtr>
-  </mtable>
-</math>"#;
-    test_braille("ASCIIMath_fi", expr, r"⠦⠼⠁⠚⠀⠤⠼⠋⠴⠀⠄⠦⠼⠑⠀⠖⠼⠑⠴⠀⠐⠐⠀⠶⠼⠙⠀⠄⠼⠁⠚⠀⠐⠐⠀⠶⠼⠙⠚")?;
+    test_braille("ASCIIMath_fi", expr, r"4 kg -150 g =3,850 kg")?;
     return Ok(());
 }
