@@ -2184,7 +2184,7 @@ fn p50_cube_root() -> Result<()> {
 // The ⠯ character is used between the elements in the binomial.
 #[test]
 fn p50_binomial_with_factorial() -> Result<()> {
-    let expr = r#r#"<math>
+    let expr = r#"<math>
   <mrow>
     <mrow>
       <mo>(</mo>
@@ -2426,7 +2426,7 @@ fn p52_quadratic_formula() -> Result<()> {
 #[test]
 fn p63_O16() -> Result<()> {
     // From MathType
-    let expr = r#r#"<math><mmultiscripts><mi mathvariant="normal">O</mi><mprescripts/><mn>8</mn><mn>16</mn></mmultiscripts></math>"#;
+    let expr = r#"<math><mmultiscripts><mi mathvariant="normal">O</mi><mprescripts/><mn>8</mn><mn>16</mn></mmultiscripts></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠡⠼⠓⠬⠼⠁⠋⠠⠕")?;
     return Ok(());
 }
@@ -2466,7 +2466,7 @@ fn p64_chemistry_1() -> Result<()> {
 // Whitespace before the dash, not after.
 #[test]
 fn p64_chemistry_bond_1() -> Result<()> {
-    let expr = "<math intent=':chemical-formula'><mi>H</mi><mo>-</mo><mi>H</mi></math>"#;
+    let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>-</mo><mi>H</mi></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠠⠓⠀⠒⠠⠓")?;
     return Ok(());
 }
@@ -2474,7 +2474,7 @@ fn p64_chemistry_bond_1() -> Result<()> {
 // Whitespace before the colon, not after.
 #[test]
 fn p64_chemistry_bond_1_alternative() -> Result<()> {
-    let expr = "<math intent=':chemical-formula'><mi>H</mi><mo>:</mo><mi>H</mi></math>"#;
+    let expr = r#"<math intent=':chemical-formula'><mi>H</mi><mo>:</mo><mi>H</mi></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠠⠓⠀⠆⠠⠓")?;
     return Ok(());
 }
@@ -2482,7 +2482,7 @@ fn p64_chemistry_bond_1_alternative() -> Result<()> {
 // Whitespace before the dashes, not after.
 #[test]
 fn p64_chemistry_bond_2() -> Result<()> {
-    let expr = "<math intent=':chemical-formula'><mi>O</mi><mo>=</mo><mi>O</mi></math>"#;
+    let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>=</mo><mi>O</mi></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠠⠕⠀⠒⠒⠠⠕")?;
     return Ok(());
 }
@@ -2490,7 +2490,7 @@ fn p64_chemistry_bond_2() -> Result<()> {
 // Whitespace before the double colon, not after.
 #[test]
 fn p64_chemistry_bond_2_alternative() -> Result<()> {
-    let expr = "<math intent=':chemical-formula'><mi>O</mi><mo>∷</mo><mi>O</mi></math>"#;
+    let expr = r#"<math intent=':chemical-formula'><mi>O</mi><mo>∷</mo><mi>O</mi></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠠⠕⠀⠶⠠⠕")?;
     return Ok(());
 }
@@ -2498,7 +2498,7 @@ fn p64_chemistry_bond_2_alternative() -> Result<()> {
 // Whitespace before the dashes, not after.
 #[test]
 fn p64_chemistry_bond_3() -> Result<()> {
-    let expr = "<math intent=':chemical-formula'><mi>N</mi><mo>≡</mo><mi>N</mi></math>"#;
+    let expr = r#"<math intent=':chemical-formula'><mi>N</mi><mo>≡</mo><mi>N</mi></math>"#;
     test_braille("ASCIIMath-fi", expr, r"⠠⠝⠀⠒⠒⠒⠠⠝")?;
     return Ok(());
 }
