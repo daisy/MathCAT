@@ -3786,6 +3786,11 @@ impl CanonicalizeContext {
 		match tag_name {
 			"mi" | "ms" | "mtext" | "mspace"  => {
 				self.canonicalize_plane1(mathml);
+				let text = as_text(mathml);
+				if (text == "Σ" || text == "Π") && IsNode::is_modified(get_parent(mathml)) {
+					// remap Greek chars to proper char
+					mathml.set_text(if text == "Σ" { "∑" } else { "∏" });
+				}
 				return Ok( mathml ); },
 			"mo" => {
 				self.canonicalize_plane1(mathml);
@@ -5449,6 +5454,49 @@ mod canonicalize_tests {
 					<mi mathvariant='bold-script'>𝚺𝛑</mi>
 				</mrow>
 			</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn greek_sum_in_munderover() -> Result<()> {
+		let test_str = "<math>
+			<munderover>
+				<mrow><mi>Σ</mi></mrow>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</munderover>
+			<msub><mi>x</mi><mi>i</mi></msub>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<munderover>
+					<mi>∑</mi>
+					<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+					<mi>n</mi>
+				</munderover>
+				<mo data-changed='added'>&#x2062;</mo>
+				<msub><mi>x</mi><mi>i</mi></msub>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn greek_product_in_msubsup() -> Result<()> {
+		let test_str = "<math>
+			<msubsup>
+				<mrow><mi>Π</mi></mrow>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</msubsup>
+		</math>";
+		let target_str = "<math>
+			<msubsup>
+				<mi>∏</mi>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</msubsup>
+		</math>";
 		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
