@@ -765,30 +765,44 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             return Ok(intent);      // if we start with properties, then there can only be properties
         },
         Token::ConceptOrLiteral(word) | Token::Number(word) => {
+            // A concept that only renames a leaf (no arguments) keeps that leaf's id.
+            // Later literals minted from the same intent still need a distinct `-literal-N` id.
+            let mut is_leaf_concept = false;
             let (leaf_name, leaf_text) = if let Token::Number(_) = lex_state.token {
                 ("mn", word)
-                } else if let Token::ConceptOrLiteral(word) = lex_state.token && is_concept_name(lex_state.remaining_str) {
-                    (word, if is_leaf(mathml) { as_str!(as_text(mathml)) } else { "" })
-                }
-                else {
-                    ("mi", word)
-                };
+            } else if let Token::ConceptOrLiteral(word) = lex_state.token &&
+                is_concept_name(lex_state.remaining_str)
+            {
+                is_leaf_concept = is_leaf(mathml);
+                (word, if is_leaf_concept { as_str!(as_text(mathml)) } else { "" })
+            } else {
+                ("mi", word)
+            };
             intent = create_mathml_element(&doc, leaf_name);
             // if the str is part of a larger intent and not the head (e.g., "a" in "f($x, a)", but not the "f" in it), then it is "made up"
             // debug!("    Token::ConceptOrLiteral, word={}, leaf_name={}", word, leaf_name);
             let mathml_name = name(mathml);
             let raw_intent_attr = mathml.attribute_value(INTENT_ATTR);
+            let keep_leaf_id = is_leaf_concept &&
+                intent_attr_head_is(raw_intent_attr.as_deref().unwrap_or(""), word);
             intent.set_attribute_value(MATHML_FROM_NAME_ATTR, 
                 if word == raw_intent_attr.as_deref().unwrap_or_default() {as_str!(mathml_name)} else {leaf_name});
             intent.set_text(leaf_text);       // '-' and '_' get removed by the rules.
-            if let Some(id) = mathml.attribute_value("id") {
-               intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
-               *intent_offset += 1;
-            }
             lex_state.get_next()?;
             if let Token::Property(_) = lex_state.token {
                 let properties = get_properties(lex_state)?;
                 intent.set_attribute_value(INTENT_PROPERTY, &properties);
+            }
+            if let Some(id) = mathml.attribute_value("id") {
+                // A following '(' adds argument nodes, so the head still needs its own id.
+                if keep_leaf_id &&
+                    !lex_state.is_terminal("(")
+                {
+                    intent.set_attribute_value("id", as_str!(id));
+                } else {
+                    intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
+                    *intent_offset += 1;
+                }
             }
         },
         Token::ArgRef(word) => {
@@ -836,6 +850,14 @@ fn clear_nofix_property(intent: Element) {
     } else {
         intent.set_attribute_value(INTENT_PROPERTY, &cleaned);
     }
+}
+
+/// True when `word` is the head of this element's intent value, not a later literal argument.
+fn intent_attr_head_is(raw_intent: &str, word: &str) -> bool {
+    let Some(rest) = raw_intent.trim().strip_prefix(word) else {
+        return false;
+    };
+    return matches!(rest.chars().next(), None | Some(':') | Some('('));
 }
 
 fn is_concept_name(s: &str) -> bool {
