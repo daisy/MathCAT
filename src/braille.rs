@@ -52,7 +52,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             "Swedish" => swedish_cleanup(pref_manager, braille_string),
             "LaTeX" => LaTeX_cleanup(pref_manager, braille_string),
             "ASCIIMath" => ASCIIMath_cleanup(pref_manager, braille_string),
-            "ASCIIMath_fi" => ASCIIMath_cleanup(pref_manager, braille_string),
+            "ASCIIMath_fi" => ASCIIMath_fi_cleanup(pref_manager, braille_string),
             _ => braille_string.trim_matches('⠀').to_string(),    // probably needs cleanup if someone has another code, but this will have to get added by hand
         };
 
@@ -2186,6 +2186,27 @@ fn LaTeX_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> 
 
 #[allow(non_snake_case)]
 fn ASCIIMath_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
+    static REMOVE_SPACE_BEFORE_OP: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"([\w\d]) +([^\w\d"]|[\^_,;)\]}])"#).unwrap());
+    static REMOVE_SPACE_AFTER_OP: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"([^\^_,;)\]}\w\d"]) +([\w\d])"#).unwrap());
+    static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r" +").unwrap());
+    // debug!("ASCIIMath_cleanup: start={}", raw_braille);
+    let result  = raw_braille.replace("|𝐖__|", "|𝐰__|");    // protect the whitespace to prevent misinterpretation as lfloor
+    let result = result.replace('𝐖', " ");
+    let result = COLLAPSE_SPACES.replace_all(&result, " ");
+    // debug!("After collapse: {}", &result);
+    let result = REMOVE_SPACE_BEFORE_OP.replace_all(&result, "$1$2");
+    let result = REMOVE_SPACE_AFTER_OP.replace_all(&result, "$1$2");
+    let result = result.replace('𝐰', " ");     // spaces around relational operators
+    let result = COLLAPSE_SPACES.replace_all(&result, " ");
+    // debug!("After remove: {}", &result);
+    // let result = result.trim_matches('⠀');
+    let result = result.trim_matches(' ');
+   
+    return result.to_string();
+}
+
+#[allow(non_snake_case)]
+fn ASCIIMath_fi_cleanup(_pref_manager: Ref<PreferenceManager>, raw_braille: String) -> String {
     static REMOVE_SPACE_BEFORE_OP: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"([\w\d]) +([^\w\d"]|[\^_,;)\]}])"#).unwrap());
     static REMOVE_SPACE_AFTER_OP: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"([^\^_,;)\]}\w\d"]) +([\w\d])"#).unwrap());
     static COLLAPSE_SPACES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r" +").unwrap());
