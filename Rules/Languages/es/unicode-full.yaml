@@ -698,7 +698,7 @@
     - test:
         if: "parent::m:mmultiscripts[*[1][.='C' or .='F'] and *[2][self::m:mprescripts]] or parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]]"
         then: [T: "grados"]      # {}^{\circ}C, 30^{\circ}
-        else: [T: "compuesto"]          # (en: 'composed with')
+        else: [T: "compuesta con"]      # f compuesta con g: función, permutación, relación (en: 'composed with')
  - "∙":                                         	#  0x2219
     - test:
         - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
