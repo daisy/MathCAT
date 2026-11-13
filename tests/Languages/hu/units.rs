@@ -398,6 +398,15 @@ fn test_mtext_inference() -> Result<()> {
 
     }
 
+/// `$x` uses VariableBeforeUnitPlural (same → CompoundUnitPlural none): singular.
+#[test]
+fn currency_variable_amount_is_singular() -> Result<()> {
+    let expr = r#"<math><mo>$</mo><mi>x</mi></math>"#;
+    test("hu", "SimpleSpeak", expr, "x dollár")?;
+    test("hu", "ClearSpeak", expr, "x dollár")?;
+    return Ok(());
+}
+
 /// CompoundUnitPlural none after a numeral; NumberlessUnitPlural last without one.
 /// Hungarian unit rules currently leave PluralForms empty for most SI words, so the
 /// uncounted “many” head still sounds the same as singular—this locks the wording.

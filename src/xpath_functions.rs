@@ -1688,12 +1688,20 @@ fn mn_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Opt
     return None;
 }
 
-/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`), looking left only.
+/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`) or currency.
+/// Units look left only. Currency prefers after the symbol (prefix `$x`), then before (`x €`).
 fn variable_coefficient(element: Element) -> Option<Element> {
     let mut factor = factor_element(element);
+    let currency = is_currency_leaf(element) || is_currency_leaf(factor);
     loop {
         let parent = parent_element(factor)?;
-        if let Some(ident) = identifier_beside(parent, factor, false) {
+        let ident = if currency {
+            identifier_beside(parent, factor, true)
+                .or_else(|| identifier_beside(parent, factor, false))
+        } else {
+            identifier_beside(parent, factor, false)
+        };
+        if let Some(ident) = ident {
             return Some(ident);
         }
         if !is_unit_expr(parent) {
@@ -3063,6 +3071,26 @@ mod tests {
             assert_eq!(UnitNumber::category(kg), "one");
             assert_eq!(UnitNumber::category(m), "many");
             assert_eq!(UnitNumber::category(s), "one");
+
+            // Prefix currency `$x`: identifier is after the symbol (VariableBeforeUnitPlural).
+            let currency_var = r#"<math>
+                <mo>$</mo><mo>&#x2062;</mo><mi>x</mi>
+            </math>"#;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            assert_eq!(UnitNumber::category(dollar), "many");
+
+            crate::interface::set_preference("Language", "hu")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            // hu: VariableBeforeUnitPlural → CompoundUnitPlural none → singular
+            assert_eq!(UnitNumber::category(dollar), "one");
+
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
 
             return Ok(());
         });

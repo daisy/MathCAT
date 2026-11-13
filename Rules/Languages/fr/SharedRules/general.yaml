@@ -262,7 +262,7 @@
   tag: [unit, mi, mo, mtext]
   variables:
   - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
-  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "@id"
   - test:
@@ -366,7 +366,7 @@
   tag: mrow
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
-  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"

@@ -417,6 +417,14 @@ fn currency_plural() -> Result<()> {
     return Ok(());
 }
 
+/// Variable coefficient with prefix/postfix currency uses the plural currency word.
+#[test]
+fn currency_variable_amount_is_plural() -> Result<()> {
+    test("es", "SimpleSpeak", "<math><mo>$</mo><mi>x</mi></math>", "x dólares")?;
+    test("es", "SimpleSpeak", "<math><mi>x</mi><mo>€</mo></math>", "x euros")?;
+    return Ok(());
+}
+
 #[test]
 fn radian_singular_plural() -> Result<()> {
     test("es", "SimpleSpeak", r#"<math><mn>1</mn><mi intent=":unit">rad</mi></math>"#, "un radián")?;

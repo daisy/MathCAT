@@ -896,6 +896,15 @@ fn derived_unit_tesla_base_expansion() -> Result<()> {
     return Ok(());
 }
 
+/// `$x` uses currency rules with VariableBeforeUnitPlural (plural like a non-one amount).
+#[test]
+fn currency_variable_amount_is_plural() -> Result<()> {
+    let expr = r#"<math><mo>$</mo><mi>x</mi></math>"#;
+    test("en", "SimpleSpeak", expr, "x dollars")?;
+    test("en", "ClearSpeak", expr, "x dollars")?;
+    return Ok(());
+}
+
 /// Currency rates: `€5/l` should pluralize like a unit numerator (`euros per litre`).
 #[test]
 fn currency_per_unit() -> Result<()> {
