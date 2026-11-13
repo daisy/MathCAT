@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -250,6 +258,20 @@
   - pause: short
 
 # in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord", CT: "s"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -342,16 +364,14 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
+  variables:
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
-    - else_if: "DefinitionValue(*[1], 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", CT: "s"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

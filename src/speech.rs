@@ -3013,7 +3013,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
                 // open the file, read all the contents, then write them back so the time changes
                 let contents = std::fs::read(&start_main_file.file).unwrap_or_else(|_| panic!("Failed to read file {} during test", start_main_file.file.to_string_lossy()));
                 std::fs::write(start_main_file.file, contents).unwrap();
-                std::thread::sleep(Duration::from_millis(5));       // pause a little to make sure the time changes
+                std::thread::sleep(Duration::from_millis(50));       // pause a little to make sure the time changes
 
                 // speak should cause the file stored to have a new time
                 if let Err(e) = get_spoken_text() {

@@ -566,6 +566,47 @@ fn derived_unit_watts_per_metre_squared() -> Result<()> {
     Ok(())
 }
 
+/// A variable before a unit uses VariableBeforeUnitPlural (same → last): plural form.
+#[test]
+fn variable_before_unit_is_plural() -> Result<()> {
+    let expr = r#"<math>
+        <mi>x</mi>
+        <mi intent=":unit">m</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "x metres")?;
+    test("en", "ClearSpeak", expr, "x metres")?;
+    return Ok(());
+}
+
+/// Parentheses grouping a unit numerator or denominator are not spoken.
+#[test]
+fn unit_quotient_grouping_parens_are_silent() -> Result<()> {
+    let expr = r#"<math>
+        <mn>5</mn>
+        <mi intent=":unit">J</mi>
+        <mo>/</mo>
+        <mo>(</mo>
+        <mi intent=":unit">kg</mi>
+        <mo>·</mo>
+        <mi intent=":unit">K</mi>
+        <mo>)</mo>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    test("en", "ClearSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    let numerator = r#"<math>
+        <mo>(</mo>
+        <mi intent=":unit">N</mi>
+        <mo>·</mo>
+        <mi intent=":unit">m</mi>
+        <mo>)</mo>
+        <mo>/</mo>
+        <mi intent=":unit">s</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", numerator, "newton metres, per second")?;
+    test("en", "ClearSpeak", numerator, "newton metres, per second")?;
+    return Ok(());
+}
+
 /// Unit product with ·; multiplication is silent and only the last factor is plural.
 #[test]
 fn derived_unit_newton_metres() -> Result<()> {
@@ -852,6 +893,15 @@ fn derived_unit_tesla_base_expansion() -> Result<()> {
     </math>"#;
     test("en", "SimpleSpeak", expr, "teslas is equal to; kilo-gram second to the negative 2, amps to the negative 1")?;
     test("en", "ClearSpeak", expr, "teslas is equal to; kilo-gram second to the negative 2 power, amps to the negative 1 power")?;
+    return Ok(());
+}
+
+/// `$x` uses currency rules with VariableBeforeUnitPlural (plural like a non-one amount).
+#[test]
+fn currency_variable_amount_is_plural() -> Result<()> {
+    let expr = r#"<math><mo>$</mo><mi>x</mi></math>"#;
+    test("en", "SimpleSpeak", expr, "x dollars")?;
+    test("en", "ClearSpeak", expr, "x dollars")?;
     return Ok(());
 }
 

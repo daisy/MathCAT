@@ -20,13 +20,20 @@
 - CompoundUnitPlural: ["last"]
 
 # Same four values as CompoundUnitPlural, plus "same" (default).
-# Used when there is no mn coefficient (m/s, x ms). "same" means reuse
+# Used when there is no coefficient at all (bare m/s). "same" means reuse
 # CompoundUnitPlural as if the count were not one. Hungarian overrides to ["last"]
 # so a numberless head can be plural while counted forms stay singular (none).
-# Do not use these two keys alone for de/nl (per-word exceptions), fi (partitive vs
+# Do not use these keys alone for de/nl (per-word exceptions), fi (partitive vs
 # nominative), or pl/ru (genitive vs nominative without a number)—same position,
 # different form.
 - NumberlessUnitPlural: ["same"]
+
+# Same four values as CompoundUnitPlural, plus "same" (default).
+# Used when the coefficient is an identifier (`x m`, `x_i kg·m/s`), not an mn.
+# "same" means reuse CompoundUnitPlural with category "many" (a variable is not
+# the count one). Hungarian needs no override: CompoundUnitPlural is already none,
+# so "x méter" stays singular while bare units use NumberlessUnitPlural.
+- VariableBeforeUnitPlural: ["same"]
 
 # Numeral–noun gender for “1” before a unit/currency (`UnitGender` / `OneForUnit`).
 # Omit or keep ["none"] when unused. See the units/currency comments in language definitions.yaml.

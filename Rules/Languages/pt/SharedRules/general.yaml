@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -247,6 +255,18 @@
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
 # ACRESCENTADO (en): no modo conciso, unidade de uma letra é soletrada
 # ("3 m" -> "3 m" soletrado), em vez de expandida para "metros".
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -326,19 +346,14 @@
 # Depende de CurrencySymbols e dos plurais em definitions.yaml.
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "OneForUnit(*[1])"]
-      else: [x: "*[3]"]
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-      else: [x: "UnitPluralForm($CurrencyWord)"]
+  - x: "*[3]"
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

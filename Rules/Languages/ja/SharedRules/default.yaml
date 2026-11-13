@@ -551,7 +551,7 @@
               then: [T: "右上がり方向", pause: short]      # phrase(the line runs 'up diagonal')
           - test:
               if: ".[contains(@notation,'downdiagonalstrike')]"
-              then: [T: "右下がり方向", pause: short]      # phrase(the line runs 'down diagonal')
+              then: [T: "右さがり方向", pause: short]      # phrase(the line runs 'down diagonal')
       - test:
           if: ".[contains(@notation,'verticalstrike')]"
           then: [T: "垂直方向", pause: short]      # phrase(the line is  'vertical')

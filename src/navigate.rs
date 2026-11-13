@@ -485,16 +485,22 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 debug!("Could not find start_node in nav_intent -- trying other_tree");
                 let other_tree = if nav_state.mode == "Character" {nav_intent} else {mathml};
                 let mut found_node = get_start_node(other_tree, nav_state)?;
-                while name(found_node) != "math" {
-                    found_node = get_parent(found_node);
-                    // debug!("found_node:\n{}", mml_to_string(found_node));
-                    let temp_pos = NavigationPosition {
-                        current_node: found_node.attribute_value("id").as_deref().unwrap_or_default().to_string().clone(),
-                        current_node_offset: found_node.attribute_value(ID_OFFSET).as_deref().unwrap_or_default().parse::<usize>().unwrap_or_default(),
-                    };
-                    if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
-                        found_node = intent_node;
-                        break;
+                // A character offset on a leaf is that leaf. Walking up to a shared ancestor
+                // drops the offset, so zooming into "gcd" on an intent leaf could not move by character.
+                let inside_leaf = crate::xpath_functions::is_leaf(found_node) &&
+                    nav_state.top().is_some_and(|entry| entry.position.current_node_offset > 0);
+                if !inside_leaf {
+                    while name(found_node) != "math" {
+                        found_node = get_parent(found_node);
+                        // debug!("found_node:\n{}", mml_to_string(found_node));
+                        let temp_pos = NavigationPosition {
+                            current_node: found_node.attribute_value("id").as_deref().unwrap_or_default().to_string().clone(),
+                            current_node_offset: found_node.attribute_value(ID_OFFSET).as_deref().unwrap_or_default().parse::<usize>().unwrap_or_default(),
+                        };
+                        if let Some(intent_node) = get_node_by_id(nav_intent, &temp_pos) {
+                            found_node = intent_node;
+                            break;
+                        }
                     }
                 }
                 found_node
@@ -567,7 +573,14 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         }
 
         let nav_mathml = get_node_by_id(intent, &nav_position);
-        if nav_mathml.is_some() && context_get_variable(context, "SpeakExpression", intent)? == "true" {
+        // A concept that renames a leaf keeps the source id. The character offset then lives on the
+        // MathML leaf: the concept element is not a MathML leaf, so the offset does not match it.
+        let speak_leaf_char = nav_position.current_node_offset > 0 &&
+            get_node_by_id(mathml, &nav_position).is_some_and(crate::xpath_functions::is_leaf);
+        if (nav_mathml.is_some() ||
+            speak_leaf_char) &&
+            context_get_variable(context, "SpeakExpression", intent)? == "true"
+        {
             // Speak/Overview of where we landed (if we are supposed to speak it) -- use intent, not nav_intent
             // Note: NavMode might have changed, so we need to recheck the mode to see if we use LiteralSpeak
             let literal_speak = nav_state.mode == "Character";
@@ -1003,6 +1016,55 @@ mod tests {
             test_command("ZoomIn", mathml, "base")?;
             test_command("ZoomIn", mathml, "base")?;
             return Ok( () );
+        });
+    }
+
+    // The currency symbol should remain addressable as a navigation leaf.
+    #[test]
+    fn zoom_in_currency_symbol() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>3</mn>
+            </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "currency-symbol")?;
+            assert!(speech.contains("dollars"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // `$x` inserts invisible times; MoveNext must not die on that silent mo.
+    #[test]
+    fn zoom_in_then_move_next_currency_variable() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='currency-symbol'>$</mi><mi id='var'>x</mi></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "var")?;
+            assert!(speech.contains("x"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // Singular amount must visit the mn (OneForUnit via default mn rule) so ZoomIn finds [[...]].
+    #[test]
+    fn zoom_in_currency_singular_amount() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>1</mn>
+            </mrow></math>";
+        // Simple mode skips the invisible times between `$` and `1`.
+        init_prefs(mathml_str, "Simple", "es")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "amount")?;
+            assert!(speech.contains("un"), "{speech}");
+            return Ok(());
         });
     }
 
@@ -1820,6 +1882,45 @@ mod tests {
         assert_eq!("zoom out; αβγ", test_command("ZoomOut", mathml, "id-4")?);
 
         return Ok( () );
+        });
+    }
+
+    /// Zooming into a leaf whose intent only renames it (`gcd` → greatest-common-divisor)
+    /// stays on that `<mi>` and steps through its characters.
+    #[test]
+    fn leaf_intent_character_zoom() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='gcd' intent='greatest-common-divisor'>gcd</mi></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            assert_eq!("zoomed in to first character; g", test_command("ZoomIn", mathml, "gcd")?);
+            assert_eq!("move right; c", test_command("MoveNext", mathml, "gcd")?);
+            assert_eq!("move right; d", test_command("MoveNext", mathml, "gcd")?);
+            assert_eq!("cannot move right, end of math", test_command("MoveNext", mathml, "gcd")?);
+            return Ok( () );
+        });
+    }
+
+    /// `(f∘g)(x)` wraps the nested head in `apply-function`. That wrapper must keep the source mrow id
+    /// so moving onto it does not store an empty id.
+    #[test]
+    fn nested_intent_head_keeps_id() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='eq'><mi id='y'>y</mi><mo id='eq-sign'>=</mo>
+            <mrow id='apply' intent='$c($a)'>
+                <mrow id='comp' arg='c' intent='_composed-with:infix($f,$g)'><mi id='f'>f</mi><mo id='circ'>∘</mo><mi id='g'>g</mi></mrow>
+                <mo id='open'>(</mo><mi id='x' arg='a'>x</mi><mo id='close'>)</mo>
+            </mrow>
+        </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            assert_eq!("zoom in; y", test_command("ZoomIn", mathml, "y")?);
+            assert_eq!("move right; is equal to", test_command("MoveNext", mathml, "eq-sign")?);
+            assert_eq!("move right; f composed with g, times x", test_command("MoveNext", mathml, "apply")?);
+            assert_eq!("zoom in; f composed with g", test_command("ZoomIn", mathml, "comp")?);
+            return Ok( () );
         });
     }
     

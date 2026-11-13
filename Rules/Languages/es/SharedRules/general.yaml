@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 
 - name: one-sided-limit
@@ -280,6 +288,18 @@
 
 
 # in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -339,26 +359,52 @@
         - Word: "DefinitionValue(substring(., 2), 'Speech', 'SIUnits')"
 
     # not a known unit -- just speak the text, possibly as a plural
+    # (string(): UnitPluralForm needs a string, not the text node)
     - else:
       - set_variables:
-        - Word: "text()"
+        - Word: "string(.)"
 
+  # un millón de metros (millones exactos llevan "de")
+  - test:
+      if: "UnitNumber(.) != 'one' and GetQuantity(.)[not(contains(., $DecimalSeparators))] and count(GetUnit(GetQuantity(.)) | .) = 1 and number(translate(GetQuantity(.), ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(GetQuantity(.), ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
   # PluralForms first, else PluralDefaultFromEnding / PluralSpellingDefaultSuffix
   - test:
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "UnitNumber(.) = 'one'"
+        - if: "UnitNumber(.) = 'one' or ancestor::*[preceding-sibling::*[1][self::m:mo][.='/']]"
           then: [x: "$Word"]
           else: [x: "UnitPluralForm($Word)"]
       else:
       - x: "$Prefix"
       - test:
-        - if: "UnitNumber(.) = 'one'"
+        - if: "UnitNumber(.) = 'one' or ancestor::*[preceding-sibling::*[1][self::m:mo][.='/']]"
           then: [x: "concat('\uF8FE', $Word)"]
           else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 
 # need to reverse the order of speech: $ 3 -> 3 dólares
+- name: un-grado
+  # "un grado", "un grado Celsius": el 1 no ve una unidad delante (° o °C con superíndice previo)
+  tag: mn
+  match:
+  - ".='1' and following-sibling::*[not(self::m:mo and .='\u2062')][1]["
+  - "  (self::m:mo or self::m:mi) and (.='°' or .='℃' or .='℉' or (.='′' or .='″') and ../preceding-sibling::*[.//*[.='°']]) or"
+  - "  (self::m:mmultiscripts | self::*[count(*)=1]/m:mmultiscripts)[*[2][self::m:mprescripts] and *[4][.='°' or .='∘']]]"
+  replace:
+  - bookmark: "@id"
+  - T: "un"      # phrase('un' grado Celsius)
+
+- name: un-grado-celsius-simbolo
+  # ℃ y ℉ después de 1: "un grado Celsius" (unicode.yaml los lee en plural)
+  tag: [mo, mi]
+  match: "(.='℃' or .='℉') and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][.='1']"
+  replace:
+  - test:
+      if: ".='℃'"
+      then: [T: "grado Celsius"]      # phrase(un 'grado Celsius')
+      else: [T: "grado Fahrenheit"]      # phrase(un 'grado Fahrenheit')
+
 - name: grados-celsius-prescrito
   # 25\,{}^{\circ}\mathrm{C} llega como C con un superíndice previo: "25 grados Celsius" (CMU)
   tag: mmultiscripts
@@ -380,19 +426,17 @@
 
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
+  - x: "*[3]"
   - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "OneForUnit(*[1])"]
-      else: [x: "*[3]"]
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-      else: [x: "UnitPluralForm($CurrencyWord)"]
+      if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi
@@ -748,20 +792,17 @@
 - name: currency-after
   # 3 € (CMU): el símbolo de moneda va después de la cantidad; misma lógica que 'currency'
   tag: mrow
-  match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   variables:
   - CurrencyWord: "DefinitionValue(*[3], 'Speech', 'CurrencySymbols')"
-  - LastChar: "substring(DefinitionValue(*[3], 'Speech', 'CurrencySymbols'), string-length(DefinitionValue(*[3], 'Speech', 'CurrencySymbols')), 1)"
+  match: "count(*)=3 and *[1][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by] and *[2]='\u2062' and $CurrencyWord != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
+  - bookmark: "*[1]/@id"
   - x: "*[1]"
   - test:
-    - if: "*[1]=1"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-    - else_if: "$LastChar='r' or $LastChar='l' or $LastChar='n'"
-      then: [x: "$CurrencyWord", ct: "es"]      # dólar -> dólares
-      else: [x: "$CurrencyWord", ct: "s"]       # euro -> euros
+      if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
 
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7

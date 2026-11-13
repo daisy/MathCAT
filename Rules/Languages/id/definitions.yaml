@@ -157,17 +157,20 @@
 #   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
 #   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
 # UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
-# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+# position from CompoundUnitPlural / NumberlessUnitPlural / VariableBeforeUnitPlural
+# (Rules/definitions.yaml):
 #   - last (default) — last counted-side factor takes the category (en, …)
 #   - first           — first counted-side factor (es, pt)
 #   - all             — every factor, including the "per" side (fr)
 #   - none            — every factor stays "one" after a numeral (hu with a number)
-# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
-# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
-# so an uncounted head can be plural while counted forms stay singular. Languages
-# that need per-word exceptions (de/nl) or a different case/form without a number
-# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
-# these two keys alone cannot express those shifts.
+# NumberlessUnitPlural is used when there is no coefficient at all (bare m/s); "same"
+# (default) reuses CompoundUnitPlural. VariableBeforeUnitPlural covers an identifier
+# coefficient (x m, x_i kg·m/s); "same" (default) reuses CompoundUnitPlural with
+# category "many". Hungarian sets NumberlessUnitPlural to last so a bare head can be
+# plural while counted forms and "x méter" stay singular (CompoundUnitPlural none).
+# Languages that need per-word exceptions (de/nl) or a different case/form without a
+# number (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the
+# defaults — these keys alone cannot express those shifts.
 # A real count of one forces every factor to "one". Per-side factors with no local
 # count stay "one" unless the active policy is all.
 # Speech rules typically:

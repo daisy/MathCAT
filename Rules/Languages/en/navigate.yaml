@@ -530,7 +530,7 @@
           then: [x: ".."]
           else:
           - test:
-              if: "DEBUG($ReadZoomLevel)!=-1"
+              if: "$ReadZoomLevel!=-1"
               then: [set_variables: [ReadZoomLevel: "DistanceFromLeaf(.., true, $NavMode!='Character')"]]
           - set_variables:
               - NavNode: "../@id"

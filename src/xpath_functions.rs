@@ -1688,6 +1688,68 @@ fn mn_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Opt
     return None;
 }
 
+/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`) or currency.
+/// Units look left only. Currency prefers after the symbol (prefix `$x`), then before (`x €`).
+fn variable_coefficient(element: Element) -> Option<Element> {
+    let mut factor = factor_element(element);
+    let currency = is_currency_leaf(element) || is_currency_leaf(factor);
+    loop {
+        let parent = parent_element(factor)?;
+        let ident = if currency {
+            identifier_beside(parent, factor, true)
+                .or_else(|| identifier_beside(parent, factor, false))
+        } else {
+            identifier_beside(parent, factor, false)
+        };
+        if let Some(ident) = ident {
+            return Some(ident);
+        }
+        if !is_unit_expr(parent) {
+            return None;
+        }
+        factor = parent;
+    }
+
+    /// An identifier used as a unit coefficient (`x`, `x_i`), not a unit token itself.
+    fn is_identifier_coeff(element: Element) -> bool {
+        let tag = as_str!(name(element));
+        match tag {
+            "mi" | "mtext" => {
+                return !has_unit_property(element);
+            },
+            "power" | "indexed-by" | "msup" | "msub" | "msubsup" => {
+                let children = unit_children(element);
+                let Some(base) = children.first().copied() else {
+                    return false;
+                };
+                let base_tag = as_str!(name(base));
+                return matches!(base_tag, "mi" | "mtext") && !has_unit_property(base);
+            },
+            _ => return false,
+        }
+    }
+
+    /// Nearest identifier sibling of `factor` under `parent`, skipping silent times ops.
+    fn identifier_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Option<Element<'a>> {
+        let children = unit_children(parent);
+        let index = children.iter().position(|child| child == &factor)?;
+        let step: isize = if forward { 1 } else { -1 };
+        let mut cursor = index as isize + step;
+        while cursor >= 0 && (cursor as usize) < children.len() {
+            let child = children[cursor as usize];
+            if is_times_op(child) {
+                cursor += step;
+                continue;
+            }
+            if is_identifier_coeff(child) {
+                return Some(child);
+            }
+            break;
+        }
+        return None;
+    }
+}
+
 /// Coefficient next to a unit or currency leaf.
 /// Units look left (`3 m`). Currency looks both ways: prefix (`$3`, `€20`) and
 /// postfix (`3¢`, `20€`). A `:unit:` container does not hold the coefficient
@@ -1765,6 +1827,52 @@ fn following_unit(element: Element) -> Option<Element> {
     return None;
 }
 
+/// Unit or currency next to an amount: prefer after (`1 m`, `1 €`), then before (`$1`).
+fn adjacent_unit_or_currency(element: Element) -> Option<Element> {
+    if let Some(unit) = scan_beside_unit_or_currency(element, true) {
+        return Some(unit);
+    }
+    // Mixed number: the "1" sits inside mrow(1, invisible-plus, fraction); the unit follows that mrow.
+    let parent = parent_element(element)?;
+    let inside_mixed = unit_children(parent).iter().any(|child| name(*child) == "mo" && leaf_text(*child) == "\u{2064}");
+    if inside_mixed {
+        if let Some(unit) = scan_beside_unit_or_currency(parent, true) {
+            return Some(unit);
+        }
+    }
+    return scan_beside_unit_or_currency(element, false);
+
+    fn unit_or_currency_in(element: Element) -> Option<Element> {
+        if is_currency_leaf(element) {
+            return Some(element);
+        }
+        return unit_leaf_in(element);
+    }
+    
+    fn scan_beside_unit_or_currency(element: Element, forward: bool) -> Option<Element> {
+        let parent = parent_element(element)?;
+        let children = unit_children(parent);
+        let index = children.iter().position(|child| child == &element)?;
+        let step: isize = if forward { 1 } else { -1 };
+        let mut cursor = index as isize + step;
+        while cursor >= 0 && (cursor as usize) < children.len() {
+            let child = children[cursor as usize];
+            if is_times_op(child) {
+                cursor += step;
+                continue;
+            }
+            if is_div_op(child) {
+                break;
+            }
+            if let Some(unit) = unit_or_currency_in(child) {
+                return Some(unit);
+            }
+            break;
+        }
+        return None;
+    }
+}
+
 struct GetQuantity;
 impl Function for GetQuantity {
     fn evaluate<'d>(&self,
@@ -1814,12 +1922,13 @@ struct UnitNumber;
 /// UnitNumber(node)
 /// Returns the plural category for a unit (or currency) leaf: `"one"`, `"few"`, or `"many"`.
 /// `"few"` is only used when `PluralSystem` is `one_few_many` (e.g. Polish, Russian).
-/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural`.
+/// Compound position comes from `CompoundUnitPlural` / `NumberlessUnitPlural` /
+/// `VariableBeforeUnitPlural`.
 impl UnitNumber {
     fn category(element: Element) -> &'static str {
         let amount_category = Self::amount_category(element);
-        let has_number = amount_category.is_some();
-        let policy = Self::active_policy(has_number);
+        let has_variable = amount_category.is_none() && variable_coefficient(element).is_some();
+        let policy = Self::active_policy(amount_category.is_some(), has_variable);
 
         // Per-side with no local count stays singular unless the policy is `all`.
         if Self::is_per_side_uncounted(element) {
@@ -1863,27 +1972,38 @@ impl UnitNumber {
         return Self::def_vec_first("NumberlessUnitPlural").unwrap_or_else(|| "same".to_string());
     }
 
-    /// Policy in force: with a number use CompoundUnitPlural; without, NumberlessUnitPlural
-    /// (`same` → CompoundUnitPlural).
-    fn active_policy(has_number: bool) -> String {
+    fn variable_before_unit_plural() -> String {
+        return Self::def_vec_first("VariableBeforeUnitPlural").unwrap_or_else(|| "same".to_string());
+    }
+
+    /// Policy in force: mn → CompoundUnitPlural; identifier → VariableBeforeUnitPlural;
+    /// neither → NumberlessUnitPlural (`same` → CompoundUnitPlural).
+    fn active_policy(has_number: bool, has_variable: bool) -> String {
         if has_number {
             return Self::compound_unit_plural();
         }
-        let numberless = Self::numberless_unit_plural();
-        if numberless == "same" {
+        let policy = if has_variable {
+            Self::variable_before_unit_plural()
+        } else {
+            Self::numberless_unit_plural()
+        };
+        if policy == "same" {
             return Self::compound_unit_plural();
         }
-        return numberless;
+        return policy;
     }
 
     /// After `/`, or in a fraction denominator with no count of its own ("per hour").
-    /// A denominator that carries its own number (`3 m / 2 s`) is not immediately after
-    /// `/`—the `2` sits in a nested mrow—so it is treated as its own counted side.
+    /// A denominator that carries its own number (`3 m / 2 s`) or identifier (`m / x s`)
+    /// is not treated as an uncounted per side.
     fn is_per_side_uncounted(element: Element) -> bool {
         if Self::after_div_op(element) {
             return true;
         }
-        return Self::in_fraction_denominator(element) && Self::local_count(element).is_none();
+        if !Self::in_fraction_denominator(element) {
+            return false;
+        }
+        return Self::local_count(element).is_none() && variable_coefficient(element).is_none();
     }
 
     /// True when this factor’s previous sibling is a division operator.
@@ -2292,7 +2412,8 @@ impl Function for UnitGender {
 }
 
 struct OneForUnit;
-/// OneForUnit(node) → spoken “1” before a following (or self) unit/currency, else `"1"`.
+/// OneForUnit(node) → spoken “1” for an adjacent (or self) unit/currency, else `"1"`.
+/// Amounts look after then before so prefix `$1` and postfix `1 €` both work.
 impl OneForUnit {
     fn word_for(element: Element) -> String {
         let unit = if name(element) == "unit" ||
@@ -2301,7 +2422,7 @@ impl OneForUnit {
         {
             unit_leaf_in(element).or(Some(element))
         } else {
-            following_unit(element)
+            adjacent_unit_or_currency(element)
         };
         let Some(unit) = unit else {
             return "1".to_string();
@@ -2865,7 +2986,7 @@ mod tests {
         return Ok(package);
     }
 
-    /// CompoundUnitPlural last/first/all/none and NumberlessUnitPlural (hu last without mn).
+    /// CompoundUnitPlural last/first/all/none, NumberlessUnitPlural, and VariableBeforeUnitPlural.
     #[test]
     fn unit_number_compound_policies() -> Result<()> {
         return xpath_test(|| {
@@ -2882,6 +3003,16 @@ mod tests {
             </math>"#;
             let uncounted = r#"<math>
                 <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>m</mi>
+                    <mo>/</mo>
+                    <mi data-intent-property=':unit:'>s</mi>
+                </mrow>
+            </math>"#;
+            let with_variable = r#"<math>
+                <mi>x</mi><mo>&#x2062;</mo>
+                <mrow data-intent-property=':unit:'>
+                    <mi data-intent-property=':unit:'>kg</mi>
+                    <mo>&#x22C5;</mo>
                     <mi data-intent-property=':unit:'>m</mi>
                     <mo>/</mo>
                     <mi data-intent-property=':unit:'>s</mi>
@@ -2965,6 +3096,72 @@ mod tests {
             let s = find_leaf_by_text(root, "s").unwrap();
             assert_eq!(UnitNumber::category(m), "many");
             assert_eq!(UnitNumber::category(s), "one");
+
+            // VariableBeforeUnitPlural same → CompoundUnitPlural none: every factor singular.
+            let package = parse_unit_mathml(with_variable)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "one");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // English default: variable uses last counted factor like a non-one numeral.
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(with_variable)?;
+            let root = get_element(&package);
+            let kg = find_leaf_by_text(root, "kg").unwrap();
+            let m = find_leaf_by_text(root, "m").unwrap();
+            let s = find_leaf_by_text(root, "s").unwrap();
+            assert_eq!(UnitNumber::category(kg), "one");
+            assert_eq!(UnitNumber::category(m), "many");
+            assert_eq!(UnitNumber::category(s), "one");
+
+            // Prefix currency `$x`: identifier is after the symbol (VariableBeforeUnitPlural).
+            let currency_var = r#"<math>
+                <mo>$</mo><mo>&#x2062;</mo><mi>x</mi>
+            </math>"#;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            assert_eq!(UnitNumber::category(dollar), "many");
+
+            crate::interface::set_preference("Language", "hu")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            // hu: VariableBeforeUnitPlural → CompoundUnitPlural none → singular
+            assert_eq!(UnitNumber::category(dollar), "one");
+
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+
+            return Ok(());
+        });
+    }
+
+    /// OneForUnit on the amount finds prefix (`$1`) and postfix (`1 €`) currency.
+    #[test]
+    fn one_for_unit_finds_adjacent_currency() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+
+            let prefix = r#"<math><mo>$</mo><mo>&#x2062;</mo><mn>1</mn></math>"#;
+            let package = parse_unit_mathml(prefix)?;
+            let root = get_element(&package);
+            let amount = find_leaf_by_text(root, "1").unwrap();
+            assert_eq!(OneForUnit::word_for(amount), "un");
+
+            let postfix = r#"<math><mn>1</mn><mo>&#x2062;</mo><mo>€</mo></math>"#;
+            let package = parse_unit_mathml(postfix)?;
+            let root = get_element(&package);
+            let amount = find_leaf_by_text(root, "1").unwrap();
+            assert_eq!(OneForUnit::word_for(amount), "un");
 
             crate::interface::set_preference("Language", "en")?;
             crate::definitions::read_definitions_file(true)?;

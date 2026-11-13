@@ -356,12 +356,13 @@ fn si_other_numbers() -> Result<()> {
                             <mn>1235</mn><mi intent=":unit">daN</mi><mo>,</mo>
                             <mn>2,5</mn><mi intent=":unit">&#xB5;sec</mi><mo>,</mo>
                             <mn>32,34</mn><mi intent=":unit">mol</mi></math>"#;
+    // x/y before a unit use VariableBeforeUnitPlural → singular (same pauses as other singular units).
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr,
-            "1,0 l vessző, 2,0 m vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
+            "1,0 l vessző, 2,0 m vessző; x milli-másodperc, vessző; y mikro-másodperc, vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
     test_prefs("hu", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc, vessző; y mikro-másodperc, vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc; vessző; y mikro-másodperc; vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
+            "1,0 liter, vessző; 2,0 méter, vessző; x milli-másodperc, vessző; y mikro-másodperc, vessző, deka-gram, vessző; 1235 deka-newton, vessző; 2,5 mikro-másodperc; vessző, 32,34 mol")?;
                     return Ok(());
 
 }
@@ -396,6 +397,15 @@ fn test_mtext_inference() -> Result<()> {
             return Ok(());
 
     }
+
+/// `$x` uses VariableBeforeUnitPlural (same → CompoundUnitPlural none): singular.
+#[test]
+fn currency_variable_amount_is_singular() -> Result<()> {
+    let expr = r#"<math><mo>$</mo><mi>x</mi></math>"#;
+    test("hu", "SimpleSpeak", expr, "x dollár")?;
+    test("hu", "ClearSpeak", expr, "x dollár")?;
+    return Ok(());
+}
 
 /// CompoundUnitPlural none after a numeral; NumberlessUnitPlural last without one.
 /// Hungarian unit rules currently leave PluralForms empty for most SI words, so the

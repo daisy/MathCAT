@@ -36,18 +36,21 @@ fn main() {
       .init();
 
    let expr = r#"
-<math>
-        <mi mathvariant="normal">N</mi>
-        <mo>=</mo>
-        <mi mathvariant="normal">kg</mi>
-        <mo>&#xB7;</mo>
-        <mi mathvariant="normal">m</mi>
-        <mo>&#xB7;</mo>
-        <msup>
-            <mi mathvariant="normal">s</mi>
-            <mrow><mo>-</mo><mn>2</mn></mrow>
-        </msup>
-    </math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <munderover>
+    <mrow><mi>&Sigma;</mi></mrow>
+    <mrow>
+      <mi>i</mi>
+      <mo>=</mo>
+      <mn>0</mn>
+    </mrow>
+    <mi>n</mi>
+  </munderover>
+  <msub>
+    <mi>x</mi>
+    <mi>i</mi>
+  </msub>
+</math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
@@ -218,14 +221,14 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  match do_navigate_command("ZoomIn")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  }
-  match do_navigate_command("ZoomOut")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
-  }
+  // match do_navigate_command("ZoomIn")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  // }
+  // match do_navigate_command("ZoomOut")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
+  // }
   info!("\n");
   // match do_navigate_command("ToggleZoomLockUp") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,

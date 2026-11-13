@@ -1,5 +1,20 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
+# After "/" or "∕" the hour or minute unit is already said by 毎時 or 毎分 (the "/" in unicode.yaml, the "∕" in unicode-full.yaml), so it is silent here.
+- name: unit-after-per-slash
+  tag: unit
+  match: "(.='h' or .='hr' or .='Hr' or .='min') and preceding-sibling::*[1][self::m:mo and (.='/' or .='\u2215')] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - T: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -214,6 +229,28 @@
   - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
   - x: "*[2]"
 
+- name: sum-product-limits   # audit-ignore: Japanese puts から, まで and にわたる after the limits, as the large-op rules above do, which a glue word before each argument cannot give
+  tag: [sum, product]
+  match: "(count(*)=2 or count(*)=3) and contains(@data-intent-property, ':function:')"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - x: "*[1]"
+  - test:
+      if: "count(*)=3"
+      then:
+      - T: "から"      # phrase(subtracting 5 'from' 10 gives 5)
+      - pause: short
+      - x: "*[2]"
+      - T: "まで"      # phrase(adding 6 'to' 6 equals  12)
+      else: [T: "にわたる"]      # phrase(2 'over' 3 equals two thirds)
+  - T: "オブ"      # phrase(the square root 'of' 25 equals 5)
+  - pause: auto
+  - x: "*[last()]"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
 - name: repeating-decimal
   tag: repeating-decimal
   match: "."
@@ -254,6 +291,20 @@
   - pause: short
 
 # in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord", ct: ""]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -266,7 +317,7 @@
 # 2. does it match an English unit (if in an English language)
 # 3. does it match an SI prefix followed by an SI that accepts SI prefixes
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
-- name: unit
+- name: unit   # audit-ignore: Japanese joins 分, 日 and 年 to the number and needs no hyphen after a prefix
   tag: unit
   match: "."
   variables:
@@ -325,7 +376,18 @@
       if: "$Prefix = ''"
       then:
       - test:
-        - if: "UnitNumber(.) = 'one'"
+        # Open JTalk reads a lone 分, 日 or 年 as ブン, ヒ and トシ. Joined to the number they are
+        # read as counters (1分 いっぷん, 3日 みっか); after anything else they are written in kana.
+        - if: "$Word='分' or $Word='日' or $Word='年'"
+          then_test:
+          - if: "preceding-sibling::*[1][.='\u2062'] and preceding-sibling::*[2][self::m:mn]"
+            then: [x: "concat('\uF8FE', $Word)"]
+          - else_if: "$Word='分'"
+            then: [T: "ふん"]
+          - else_if: "$Word='日'"
+            then: [T: "にち"]
+            else: [T: "ねん"]
+        - else_if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
           then: [x: "$Word"]
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
@@ -333,7 +395,7 @@
           else: [x: "$Word", ct: ""]
       else:
       - x: "$Prefix"
-      - ct: "- - -"
+      - ct: ""
       - test:
         - if: "UnitNumber(.) = 'one'"
           # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatenated to the base
@@ -345,19 +407,15 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
     # If the amount is singular, we don't add the plural ending.
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: ""]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

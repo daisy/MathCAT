@@ -446,17 +446,20 @@
 #   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
 #   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
 # UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
-# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+# position from CompoundUnitPlural / NumberlessUnitPlural / VariableBeforeUnitPlural
+# (Rules/definitions.yaml):
 #   - last (default) — last counted-side factor takes the category (en, …)
 #   - first           — first counted-side factor (es, pt)
 #   - all             — every factor, including the "per" side (fr)
 #   - none            — every factor stays "one" after a numeral (hu with a number)
-# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
-# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
-# so an uncounted head can be plural while counted forms stay singular. Languages
-# that need per-word exceptions (de/nl) or a different case/form without a number
-# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
-# these two keys alone cannot express those shifts.
+# NumberlessUnitPlural is used when there is no coefficient at all (bare m/s); "same"
+# (default) reuses CompoundUnitPlural. VariableBeforeUnitPlural covers an identifier
+# coefficient (x m, x_i kg·m/s); "same" (default) reuses CompoundUnitPlural with
+# category "many". Hungarian sets NumberlessUnitPlural to last so a bare head can be
+# plural while counted forms and "x méter" stay singular (CompoundUnitPlural none).
+# Languages that need per-word exceptions (de/nl) or a different case/form without a
+# number (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the
+# defaults — these keys alone cannot express those shifts.
 # A real count of one forces every factor to "one". Per-side factors with no local
 # count stay "one" unless the active policy is all.
 # Speech rules typically:
@@ -524,7 +527,7 @@
 
 - SIPrefixes: {
     "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hecto", "da": "deca",
-    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
+    "d": "deci", "c": "centi", "m": "mili", "µ": "micro", "μ": "micro", "n": "nano", "p": "pico", "f": "femto", "a": "atto", "z": "zepto", "y": "yocto", "r": "ronto", "q": "quecto"
   }
 
 # Units that accept SI prefixes (symbol → spoken singular base word).
@@ -655,7 +658,7 @@
     # special case overrides because prefixes with the base "metro" all get accents
     "Qm": "quettámetro", "Rm": "ronnámetro", "Ym": "yottámetro", "Zm": "zettámetro", "Em": "exámetro", "Pm": "petámetro",
       "Tm": "terámetro", "Gm": "gigámetro", "Mm": "megámetro", "km": "kilómetro", "hm": "hectómetro", "dam": "decámetro",
-    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
+    "dm": "decímetro", "cm": "centímetro", "mm": "milímetro", "µm": "micrómetro", "μm": "micrómetro", "nm": "nanómetro", "pm": "picómetro",
     #  conflicts: "fm": "femtómetro", "am": "attómetro",
     "zm": "zeptómetro", "ym": "yoctómetro", "rm": "rontómetro", "qm": "quectómetro",
   
@@ -768,7 +771,7 @@
 # Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
     "$": "dólar", "¢": "centavo", "€": "euro", "£": "libra", "₡": "colón", "₤": "lira", "₨": "rupia",
-    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₿": "bitcóin",
+    "₩": "won", "R$": "real", "¥": "yen", "₲": "guaraní", "₪": "séquel", "₱": "peso", "₹": "rupia", "₺": "lira", "₽": "rublo", "₴": "grivna", "₿": "bitcóin",
     # se pueden agregar más monedas...
   }
 
@@ -856,6 +859,21 @@
     "7": "séptima", "8": "octava", "9": "novena", "10": "décima"
   }
 
+# ordinales de texto (1.º, 2.ª, 3.er): unidades hasta 19 y decenas; el femenino, el plural
+# y el apócope (primer, tercer) los arma la regla "ordinal" de general.yaml
+- OrdinalesUnidades: {
+    "1": "primero", "2": "segundo", "3": "tercero", "4": "cuarto", "5": "quinto",
+    "6": "sexto", "7": "séptimo", "8": "octavo", "9": "noveno", "10": "décimo",
+    "11": "undécimo", "12": "duodécimo", "13": "decimotercero", "14": "decimocuarto",
+    "15": "decimoquinto", "16": "decimosexto", "17": "decimoséptimo", "18": "decimoctavo",
+    "19": "decimonoveno"
+  }
+
+- OrdinalesDecenas: {
+    "2": "vigésimo", "3": "trigésimo", "4": "cuadragésimo", "5": "quincuagésimo",
+    "6": "sexagésimo", "7": "septuagésimo", "8": "octogésimo", "9": "nonagésimo"
+  }
+
 - NumbersOrdinalFractionalOnes: [
          # en español los denominadores de fracciones no son ordinales hasta 20: tercio, onceavo…
          "cero", "entero", "medio", "tercio", "cuarto", "quinto", "sexto", "séptimo", "octavo", "noveno",
@@ -877,11 +895,11 @@
     ]
 
 - NumbersOrdinalTens: [
-         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "setenta", "ochogésimo", "novagésimo"
+         "", "décimo", "vigésimo", "trigésimo", "cuadragésimo", "quincuagésimo", "sexagésimo", "septuagésimo", "octogésimo", "nonagésimo"
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "décimos", "veinte", "treinta", "cuarentavos", "quincuagésimos", "sexagésimos", "setentavos", "ochentavos", "novenonavos"
+         "", "décimos", "vigésimos", "trigésimos", "cuadragésimos", "quincuagésimos", "sexagésimos", "septuagésimos", "octogésimos", "nonagésimos"
     ]
 
 
@@ -891,13 +909,13 @@
     ]
 
 - NumbersOrdinalHundreds: [
-       "", "una centésima", "dos centésima", "tres centésima", "cuatro centésima", "quinienta centésima",
-         "seiscientos", "setecientos", "ocho centésimo", "nueve centésimo"
+       "", "centésimo", "ducentésimo", "tricentésimo", "cuadringentésimo", "quingentésimo",
+         "sexcentésimo", "septingentésimo", "octingentésimo", "noningentésimo"
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "centésimas", "dos centésimas", "tres centésimas", "cuatro centésimas", "cinco centésimas",
-         "seis centésimas", "siete centésimas", "ocho centésimas", "nueve centésimas"
+       "", "centésimos", "ducentésimos", "tricentésimos", "cuadringentésimos", "quingentésimos",
+         "sexcentésimos", "septingentésimos", "octingentésimos", "noningentésimos"
     ]
       
 
@@ -908,11 +926,11 @@
     ]
       
 - NumbersOrdinalLarge: [
-         "", "milésima", "millonésima", "mil millonésima", "trillonésima", "cuatrillonésima",
-         "quintillionth", "sextillionth", "septillionth", "octillionth", "nonillionth"
+         "", "milésimo", "millonésimo", "milmillonésimo", "billonésimo", "milbillonésimo",
+         "trillonésimo", "miltrillonésimo", "cuatrillonésimo", "milcuatrillonésimo", "quintillonésimo"
     ]
       
 - NumbersOrdinalPluralLarge: [
-         "", "milésimas", "millonésimas", "mil millonésimas", "trillonésimas", "cuatrillonésimas",
-         "quintillionésimas", "sextillones", "septillones", "octillionésimas", "nonillionésimas"
+         "", "milésimos", "millonésimos", "milmillonésimos", "billonésimos", "milbillonésimos",
+         "trillonésimos", "miltrillonésimos", "cuatrillonésimos", "milcuatrillonésimos", "quintillonésimos"
     ]

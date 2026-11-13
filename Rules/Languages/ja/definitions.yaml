@@ -143,7 +143,7 @@
 
     ### Sequence and Series
     "sum": "function=サム : にわたる : から,まで",
-    "product": "function=総積 : にわたる : から,まで",
+    "product": "function=プロダクト : にわたる : から,まで",
 
 
     ### Elementary classical functions
@@ -438,17 +438,20 @@
 #   - one_many      — 1 → "one", anything else → "many"   (English default; inherited)
 #   - one_few_many  — 1 → "one"; 2–4 (except 12–14) → "few"; else "many"  (pl, ru, …)
 # UnitNumber(node) returns that value for a unit/currency leaf, then applies compound
-# position from CompoundUnitPlural / NumberlessUnitPlural (Rules/definitions.yaml):
+# position from CompoundUnitPlural / NumberlessUnitPlural / VariableBeforeUnitPlural
+# (Rules/definitions.yaml):
 #   - last (default) — last counted-side factor takes the category (en, …)
 #   - first           — first counted-side factor (es, pt)
 #   - all             — every factor, including the "per" side (fr)
 #   - none            — every factor stays "one" after a numeral (hu with a number)
-# NumberlessUnitPlural is used when there is no mn coefficient (m/s, x ms); "same"
-# (default) reuses CompoundUnitPlural. Hungarian sets NumberlessUnitPlural to last
-# so an uncounted head can be plural while counted forms stay singular. Languages
-# that need per-word exceptions (de/nl) or a different case/form without a number
-# (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the defaults —
-# these two keys alone cannot express those shifts.
+# NumberlessUnitPlural is used when there is no coefficient at all (bare m/s); "same"
+# (default) reuses CompoundUnitPlural. VariableBeforeUnitPlural covers an identifier
+# coefficient (x m, x_i kg·m/s); "same" (default) reuses CompoundUnitPlural with
+# category "many". Hungarian sets NumberlessUnitPlural to last so a bare head can be
+# plural while counted forms and "x méter" stay singular (CompoundUnitPlural none).
+# Languages that need per-word exceptions (de/nl) or a different case/form without a
+# number (fi partitive vs nominative; pl/ru genitive vs nominative) stay on the
+# defaults — these keys alone cannot express those shifts.
 # A real count of one forces every factor to "one". Per-side factors with no local
 # count stay "one" unless the active policy is all.
 # Speech rules typically:
@@ -516,7 +519,7 @@
 
 - SIPrefixes: {
     "Q": "クエタ", "R": "ロナ", "Y": "ヨタ", "Z": "ゼタ", "E": "エクサ", "P": "ペタ", "T": "テラ", "G": "ギガ", "M": "メガ", "k": "キロ", "h": "ヘクト", "da": "デカ",
-    "d": "デシ", "c": "センチ", "m": "ミリ", "µ": "マイクロ", "n": "ナノ", "p": "ピコ", "f": "フェムト", "a": "アト", "z": "ゼプト", "y": "ヨクト", "r": "ロント", "q": "クエクト"
+    "d": "デシ", "c": "センチ", "m": "ミリ", "µ": "マイクロ", "μ": "マイクロ", "n": "ナノ", "p": "ピコ", "f": "フェムト", "a": "アト", "z": "ゼプト", "y": "ヨクト", "r": "ロント", "q": "クエクト"
   }
 
 # Units that accept SI prefixes (symbol → spoken singular base word).
@@ -589,10 +592,10 @@
 
     # angles
     "°": "度", "deg": "度", # should only take negative powers
-    "arcmin": "分角",
-    "amin": "分角",
-    "am": "分角",
-    "MOA": "分角",
+    "arcmin": "ふんかく",
+    "amin": "ふんかく",
+    "am": "ふんかく",
+    "MOA": "ふんかく",
     "arcsec": "秒角",
     "asec": "秒角",
 
