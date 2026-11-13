@@ -1852,6 +1852,28 @@ mod tests {
             return Ok( () );
         });
     }
+
+    /// `(f∘g)(x)` wraps the nested head in `apply-function`. That wrapper must keep the source mrow id
+    /// so moving onto it does not store an empty id.
+    #[test]
+    fn nested_intent_head_keeps_id() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='eq'><mi id='y'>y</mi><mo id='eq-sign'>=</mo>
+            <mrow id='apply' intent='$c($a)'>
+                <mrow id='comp' arg='c' intent='_composed-with:infix($f,$g)'><mi id='f'>f</mi><mo id='circ'>∘</mo><mi id='g'>g</mi></mrow>
+                <mo id='open'>(</mo><mi id='x' arg='a'>x</mi><mo id='close'>)</mo>
+            </mrow>
+        </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            assert_eq!("zoom in; y", test_command("ZoomIn", mathml, "y")?);
+            assert_eq!("move right; is equal to", test_command("MoveNext", mathml, "eq-sign")?);
+            assert_eq!("move right; f composed with g, times x", test_command("MoveNext", mathml, "apply")?);
+            assert_eq!("zoom in; f composed with g", test_command("ZoomIn", mathml, "comp")?);
+            return Ok( () );
+        });
+    }
     
     #[test]
     fn move_enhanced_times() -> Result<()> {

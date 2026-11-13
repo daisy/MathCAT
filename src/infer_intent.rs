@@ -936,6 +936,14 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
         lex_state.get_next()?;
     }
 
+    // A nested head such as (f∘g)(x) is wrapped in a new apply-function that otherwise has no id.
+    // Navigation records @id, so the wrapper keeps the source element's id.
+    if function.attribute_value("id").is_none() &&
+        let Some(id) = mathml.attribute_value("id")
+    {
+        function.set_attribute_value("id", as_str!(id));
+    }
+
     // debug!("  end build_function/# children: {}, #state: {}  ..[bfa] function name: {}",
     //     function.children().len(), lex_state, mml_to_string(function));
     return Ok(function);
