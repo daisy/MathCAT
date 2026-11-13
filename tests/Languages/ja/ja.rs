@@ -139,6 +139,31 @@ fn multiplication_and_division() -> Result<()> {
     return Ok(());
 }
 
+/// A "/" between units said 割る ("divided by"); en says per here. It is now 毎, and before an
+/// hour or minute unit it is 毎時 or 毎分 and the unit itself is not spoken (毎 時間 is "every hour").
+/// A "/" that is not next to a unit still says 割る.
+#[test]
+fn slash_between_units() -> Result<()> {
+    for (expr, expected) in [
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">h</mi></math>"#, "5 メートル 毎時"),
+        (r#"<math><mn>10</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">min</mi></math>"#, "10 メートル 毎分"),
+        (r#"<math><mn>3</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">s</mi></math>"#, "3, メートル 毎 秒"),
+        (r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#, "5 ユーロ 毎 リットル"),
+        (r#"<math><mi>x</mi><mo>/</mo><mi>h</mi></math>"#, "x 割る h"),
+        // the hour is still spoken when it is squared
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><msup><mi intent=":unit">h</mi><mn>2</mn></msup></math>"#, "5, メートル 毎 時間 の 2 乗"),
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">hr</mi></math>"#, "5 メートル 毎時"),
+        // the division slash U+2215 is read the same way
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>&#x2215;</mo><mi intent=":unit">h</mi></math>"#, "5 メートル 毎時"),
+        (r#"<math><mi>a</mi><mo>&#x2215;</mo><mi>b</mi></math>"#, "エー 割る b"),
+        (r#"<math><mrow intent=":literal"><mi>a</mi><mo>&#x2215;</mo><mi>h</mi></mrow></math>"#, "エー スラッシュ h"),
+    ] {
+        test("ja", "SimpleSpeak", expr, expected)?;
+        test("ja", "ClearSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Verifies that explicit parentheses retain Japanese opening and closing cues.
 #[test]
 fn parenthesized_expression() -> Result<()> {

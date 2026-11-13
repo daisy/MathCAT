@@ -757,7 +757,18 @@
  - "−": [t: "マイナス"]                               # 0x2212
  - "∓": [T: "マイナスプラス"]                      # 0x2213
  - "∔": [t: "ドットプラス"]                            # 0x2214
- - "∕": [t: "割る"]                          # 0x2215
+ - "∕":                                           # 0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "スラッシュ"]
+        # same as "/" in unicode.yaml: 毎時 and 毎分 before an hour or minute unit, 毎 next to a unit
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and (.='h' or .='hr' or .='Hr')]"
+          then: [T: "毎時"]
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and .='min']"
+          then: [T: "毎分"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "毎"]
+          else: [T: "割る"]
  - "∖": [t: "差集合"]                               # 0x2216
  - "∗": [t: "掛ける"]                               # 0x2217
  - "∘": [t: "合成"]                           # 0x2218
