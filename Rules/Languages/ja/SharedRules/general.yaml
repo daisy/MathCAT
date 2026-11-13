@@ -28,7 +28,7 @@
   - test:
     - if: "*[2][.='+']"
       then: [T: "正の"]      # phrase(set of all 'positive' integers less than 10)
-      else: [T: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
+      else: [T: "ふの"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
@@ -156,12 +156,12 @@
       - T: ""      # phrase('the' square root of 25 equals 5)
   - test:
     - if: "name(.)='open-interval'"
-      then: [T: "開区間"]      # phrase(the 'open interval' from a to b)
+      then: [T: "かい区間"]      # phrase(the 'open interval' from a to b)
     - else_if: "name(.)='closed-interval'"
       then: [T: "閉区間"]      # phrase(the 'closed interval' from a to b)
     - else_if: "name(.)='open-closed-interval'"
-      then: [T: "左開右閉区間"]      # phrase(the 'open closed interval' from a to b)
-      else: [T: "左閉右開区間"]      # phrase(the 'closed open interval' from a to b)
+      then: [T: "左かい右閉区間"]      # phrase(the 'open closed interval' from a to b)
+      else: [T: "左閉右かい区間"]      # phrase(the 'closed open interval' from a to b)
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -514,7 +514,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [T: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
+      else: [T: "双曲線せいかつ"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -523,7 +523,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [T: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      else: [T: "双曲線よかつ"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -532,7 +532,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [T: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      else: [T: "双曲線よせつ"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
