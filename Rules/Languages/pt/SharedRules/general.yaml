@@ -334,9 +334,9 @@
 # Depende de CurrencySymbols e dos plurais em definitions.yaml.
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
   replace:
   - bookmark: "*[3]/@id"
   - test:

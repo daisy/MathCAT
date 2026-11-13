@@ -479,7 +479,7 @@
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
+      else: [x: "$CurrencyWord"]
 
 - name: sin
   tag: mi

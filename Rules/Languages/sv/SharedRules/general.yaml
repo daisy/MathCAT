@@ -354,10 +354,10 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
     # If the amount is singular, we don't add the plural ending.
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
@@ -366,7 +366,7 @@
       then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"] # SWEDISH: Removed plural s. Not used in Swedish.
+      else: [x: "$CurrencyWord"] # SWEDISH: Removed plural s. Not used in Swedish.
 
 - name: sin # audit-ignore
   tag: mi

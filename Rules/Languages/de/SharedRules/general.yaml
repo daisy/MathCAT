@@ -325,9 +325,9 @@
 # Currency symbols precede amounts in MathML but are spoken after them in German: $ 3 -> 3 dollar.
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"

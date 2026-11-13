@@ -350,16 +350,18 @@
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
+  variables:
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
   - test:
     - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"]
+      then: [x: "$CurrencyWord"]
     - else_if: "DefinitionValue(*[1], 'Speech', 'PluralForms') != ''"
       then: [x: "DefinitionValue(*[1], 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", CT: "s"]
+      else: [x: "$CurrencyWord", CT: "s"]
 
 - name: sin
   tag: mi

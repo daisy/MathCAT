@@ -414,9 +414,9 @@
 
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[3][self::m:mn]"
   variables:
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn]"
   replace:
   - bookmark: "*[3]/@id"
   - test:
@@ -785,9 +785,9 @@
 - name: currency-after
   # 3 € (CMU): el símbolo de moneda va después de la cantidad; misma lógica que 'currency'
   tag: mrow
-  match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and DefinitionValue(*[3], 'Speech', 'CurrencySymbols') != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   variables:
   - CurrencyWord: "DefinitionValue(*[3], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and *[1][self::m:mn] and *[2]='\u2062' and $CurrencyWord != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - bookmark: "*[1]/@id"
   - test:
