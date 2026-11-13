@@ -362,7 +362,7 @@
 #  - t: "δείκτης"      # phrase(the subscripted variable a 'sub' i)
 #  - x: "*[2]"
 #  - test:
-#      if: "DEBUG(not(IsNode(*[2],'leaf')))"
+#      if: "not(IsNode(*[2],'leaf'))"
 #      then:
 #      - test:
 #          if: "$Verbosity='Verbose'"
