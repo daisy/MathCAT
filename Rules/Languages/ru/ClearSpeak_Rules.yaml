@@ -870,6 +870,7 @@
           then: [T: "натуральный логарифм"]
           else: [T: "эл эн"]
       - T: "от"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
 
 - name: ClearSpeak-log-with-base
@@ -877,6 +878,7 @@
   match: "count(*)=3 and *[1][self::m:logarithm-with-base] and *[2][.='⁡']"
   replace:
   - T: "логарифм"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
   - pause: short
   - T: "по основанию"
@@ -889,6 +891,7 @@
   - "*[2][.='⁡']"
   replace:
   - x: "*[1]/*[1]"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
   - T: "в степени"
   - x: "*[1]/*[2]"

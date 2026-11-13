@@ -658,6 +658,7 @@
           else: [spell: "'ln'"]
       - T: "von"
       - pause: short
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by ClearSpeak-log-apply)
   - x: "*[3]"
 
 - name: ClearSpeak-multi-line
@@ -747,6 +748,13 @@
         if: "self::m:mlabeledtr"
         then: [x: "*[position()>1]"]
         else: [x: "*"]
+
+# Parent ClearSpeak-log already says "von" (or omits it for simple args); keep ⁡ silent when visited for nav.
+- name: ClearSpeak-log-apply
+  tag: mo
+  match: ".='⁡' and preceding-sibling::*[1][self::m:mi][.='log' or .='ln'] and parent::*[count(*)=3]"
+  replace:
+  - T: ""
 
 - name: ClearSpeak_Functions_None
   tag: mo

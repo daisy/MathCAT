@@ -352,6 +352,7 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - bookmark: "*[1]/@id"
   - x: "*[1]"
 

@@ -471,6 +471,7 @@
           else: [T: log alami]
       - T: dari
       - pause: short
+  - x: "*[2]"   # visit silent function-apply so MoveNext can mark/skip it
   - x: "*[3]"
 
 - name: logarithm

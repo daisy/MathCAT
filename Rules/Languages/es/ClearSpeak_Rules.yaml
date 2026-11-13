@@ -177,8 +177,10 @@
     - else_if: "$Orden"
       then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
   - T: "de"      # phrase(la derivada 'de' y respecto de x)
+  - x: "*[1]/*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - x: "*[1]/*[3]"
   - T: "respecto de"      # phrase(la derivada de y 'respecto de' x)
+  - x: "*[2]/*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - test:
       if: "$Orden"
       then: [x: "*[2]/*[3]/*[1]"]
@@ -211,8 +213,14 @@
     - else_if: "$Orden"
       then: [T: "de orden", x: "$Orden"]      # phrase(la derivada 'de orden' n de y respecto de x)
   - T: "de"      # phrase(la derivada parcial 'de' f respecto de x)
+  - test:
+      if: "count(*[1]/*)=3"
+      then: [x: "*[1]/*[2]"]   # visit silent invisible times so MoveNext can mark/skip it
   - x: "*[1]/*[last()]"
   - T: "respecto de"      # phrase(la derivada parcial de f 'respecto de' x)
+  - test:
+      if: "count(*[2]/*)=3"
+      then: [x: "*[2]/*[2]"]   # visit silent invisible times so MoveNext can mark/skip it
   - test:
       if: "$Orden"
       then: [x: "*[2]/*[last()]/*[1]"]
