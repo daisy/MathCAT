@@ -456,7 +456,7 @@
  - "ℾℿ":                                          # 0x213e, 0x213f
     - T: "doble trazo"
     - spell: "translate('.', 'ℾℿ', 'ΓΠ')"
- - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
+ - "ℎ": [T: "h"]                                	#  0x210e	(es la h cursiva matemática de U+1D455; la constante de Planck se indica con intent)
 
  - "ℏ": [T: "h barra"]                               # 0x210f	(en: 'h bar')
 
