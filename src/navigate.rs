@@ -1035,6 +1035,39 @@ mod tests {
         });
     }
 
+    // `$x` inserts invisible times; MoveNext must not die on that silent mo.
+    #[test]
+    fn zoom_in_then_move_next_currency_variable() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='currency-symbol'>$</mi><mi id='var'>x</mi></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "var")?;
+            assert!(speech.contains("x"), "{speech}");
+            return Ok(());
+        });
+    }
+
+    // Singular amount must visit the mn (OneForUnit via default mn rule) so ZoomIn finds [[...]].
+    #[test]
+    fn zoom_in_currency_singular_amount() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>1</mn>
+            </mrow></math>";
+        // Simple mode skips the invisible times between `$` and `1`.
+        init_prefs(mathml_str, "Simple", "es")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "currency-symbol")?;
+            let speech = test_command("MoveNext", mathml, "amount")?;
+            assert!(speech.contains("un"), "{speech}");
+            return Ok(());
+        });
+    }
+
     #[test]
     fn test_init_navigate_move_right() -> Result<()> {
         // this is how navigation typically starts up

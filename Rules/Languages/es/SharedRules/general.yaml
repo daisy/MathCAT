@@ -431,10 +431,7 @@
   match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "OneForUnit(*[1])"]
-      else: [x: "*[3]"]
+  - x: "*[3]"
   - test:
       if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
       then: [T: "de"]
@@ -800,10 +797,7 @@
   match: "count(*)=3 and *[1][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by] and *[2]='\u2062' and $CurrencyWord != '' and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - bookmark: "*[1]/@id"
-  - test:
-    - if: "UnitNumber(*[3]) = 'one'"
-      then: [x: "OneForUnit(*[3])"]       # un euro, una libra
-      else: [x: "*[1]"]
+  - x: "*[1]"
   - test:
       if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
       then: [T: "de"]

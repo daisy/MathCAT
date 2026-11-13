@@ -351,10 +351,7 @@
   match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "OneForUnit(*[1])"]
-      else: [x: "*[3]"]
+  - x: "*[3]"
   - bookmark: "*[1]/@id"
   - x: "*[1]"
 
