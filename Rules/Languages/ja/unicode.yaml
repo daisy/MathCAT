@@ -226,22 +226,29 @@
  - "´": [T: "アキュートアクセント"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [T: "ドット"]
-        else: [T: "掛ける"]
+        # between two units (N·m) nothing is said, as in en
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+          then: [T: "ドット"]
+          else: [T: "掛ける"]
  - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle = 'ClearSpeak'"
-        then_test:
-        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
-          then: [T: "掛ける"]
-        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
-          then: [T: "掛ける"]
-          else: [T: "クロス"]
+        # between two units nothing is said, as in en
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+        then: [T: ""]
         else_test:
-            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [T: "クロス"]
-            else: [T: "掛ける"]
+            if: "$SpeechStyle = 'ClearSpeak'"
+            then_test:
+            - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+              then: [T: "掛ける"]
+            - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+              then: [T: "掛ける"]
+              else: [T: "クロス"]
+            else_test:
+                if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+                then: [T: "クロス"]
+                else: [T: "掛ける"]
 
  - "÷": [T: "割る"]                          # 0xf7
  - "̀": [T: "グレイヴアクセント装飾"]          # 0x300

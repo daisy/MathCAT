@@ -773,10 +773,13 @@
  - "∗": [t: "掛ける"]                               # 0x2217
  - "∘": [t: "合成"]                           # 0x2218
  - "∙":                                            # 0x2219
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [t: "ドット"]
-        else: [t: "掛ける"]
+    - test:
+        # between two units nothing is said, as in en
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [t: "ドット"]
+          else: [t: "掛ける"]
 
  - "√":                                          # 0x221a
      - test: 
@@ -1189,10 +1192,13 @@
  - "⋃": [t: "ユニオン"]                               # 0x22c3
  - "⋄": [t: "ひし形"]                             # 0x22c4
  - "⋅":                                             # 0x22c5
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [t: "ドット"]
-        else: [t: "掛ける"]
+    - test:
+        # between two units (N⋅m) nothing is said, as in en
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [t: "ドット"]
+          else: [t: "掛ける"]
 
  - "⋆": [t: "掛ける"]                               # 0x22c6
  - "⋇": [t: "割る掛ける"]                     # 0x22c7
