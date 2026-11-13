@@ -241,6 +241,21 @@
   - pause: short
 
 
+# Currency words need a leaf-level rule so navigation can mark the symbol itself.
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
+
 # the order of matching is
 # 1. does it match the base of an SI unit
 # 2. does it match an English unit (if in an English language)
@@ -331,12 +346,8 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "$CurrencyWord"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

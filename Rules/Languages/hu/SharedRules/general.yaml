@@ -239,6 +239,20 @@
   - pause: short
 
 # in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord", CT: ""]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -337,12 +351,8 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue(*[1], 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue(*[1], 'Speech', 'PluralForms')"]
-      else: [x: "$CurrencyWord", CT: ""]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 
 - name: sin

@@ -255,6 +255,18 @@
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
 # ACRESCENTADO (en): no modo conciso, unidade de uma letra é soletrada
 # ("3 m" -> "3 m" soletrado), em vez de expandida para "metros".
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -343,10 +355,8 @@
     - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "OneForUnit(*[1])"]
       else: [x: "*[3]"]
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-      else: [x: "UnitPluralForm($CurrencyWord)"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

@@ -255,6 +255,20 @@
   - x: "*[3]"
   - pause: short
   
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -363,12 +377,8 @@
     - if: "UnitNumber(*[1]) = 'one'"
       then: [x: "OneForUnit(*[1])"]
       else: [x: "*[3]"]
-  - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "$CurrencyWord"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin   # audit-ignore
   tag: mi

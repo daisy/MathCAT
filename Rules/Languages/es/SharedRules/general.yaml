@@ -288,6 +288,18 @@
 
 
 # in terse mode, we just say "m" or "s", etc., not meters or seconds
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn]"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -424,12 +436,10 @@
       then: [x: "OneForUnit(*[1])"]
       else: [x: "*[3]"]
   - test:
-    - if: "UnitNumber(*[1]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    # un millón de dólares (millones exactos llevan "de")
-    - else_if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
-      then: [T: "de", x: "UnitPluralForm($CurrencyWord)"]
-      else: [x: "UnitPluralForm($CurrencyWord)"]
+      if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi
@@ -795,11 +805,10 @@
       then: [x: "OneForUnit(*[3])"]       # un euro, una libra
       else: [x: "*[1]"]
   - test:
-    - if: "UnitNumber(*[3]) = 'one'"
-      then: [x: "$CurrencyWord"]
-    - else_if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
-      then: [T: "de", x: "UnitPluralForm($CurrencyWord)"]
-      else: [x: "UnitPluralForm($CurrencyWord)"]
+      if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
+      then: [T: "de"]
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
 
 - name: ratio
   # razón inferida de "a ∶ b" (Rules/Intent/general.yaml): se lee "20 es a 5", como en MathCAT 0.7.7

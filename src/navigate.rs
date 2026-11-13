@@ -1019,6 +1019,22 @@ mod tests {
         });
     }
 
+    // The currency symbol should remain addressable as a navigation leaf.
+    #[test]
+    fn zoom_in_currency_symbol() -> Result<()> {
+        let mathml_str = "<math id='math'><mrow id='currency'>
+                <mi id='currency-symbol'>$</mi><mn id='amount'>3</mn>
+            </mrow></math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("ZoomIn", mathml, "currency-symbol")?;
+            assert!(speech.contains("dollars"), "{speech}");
+            return Ok(());
+        });
+    }
+
     #[test]
     fn test_init_navigate_move_right() -> Result<()> {
         // this is how navigation typically starts up
