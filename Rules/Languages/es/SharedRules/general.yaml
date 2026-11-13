@@ -372,6 +372,27 @@
           else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 
 # need to reverse the order of speech: $ 3 -> 3 dólares
+- name: un-grado
+  # "un grado", "un grado Celsius": el 1 no ve una unidad delante (° o °C con superíndice previo)
+  tag: mn
+  match:
+  - ".='1' and following-sibling::*[not(self::m:mo and .='\u2062')][1]["
+  - "  (self::m:mo or self::m:mi) and (.='°' or .='℃' or .='℉' or (.='′' or .='″') and ../preceding-sibling::*[.//*[.='°']]) or"
+  - "  (self::m:mmultiscripts | self::*[count(*)=1]/m:mmultiscripts)[*[2][self::m:mprescripts] and *[4][.='°' or .='∘']]]"
+  replace:
+  - bookmark: "@id"
+  - T: "un"      # phrase('un' grado Celsius)
+
+- name: un-grado-celsius-simbolo
+  # ℃ y ℉ después de 1: "un grado Celsius" (unicode.yaml los lee en plural)
+  tag: [mo, mi]
+  match: "(.='℃' or .='℉') and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][.='1']"
+  replace:
+  - test:
+      if: ".='℃'"
+      then: [T: "grado Celsius"]      # phrase(un 'grado Celsius')
+      else: [T: "grado Fahrenheit"]      # phrase(un 'grado Fahrenheit')
+
 - name: grados-celsius-prescrito
   # 25\,{}^{\circ}\mathrm{C} llega como C con un superíndice previo: "25 grados Celsius" (CMU)
   tag: mmultiscripts

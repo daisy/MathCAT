@@ -108,8 +108,8 @@ fn negative_number() -> Result<()> {
 #[test]
 fn gradient() -> Result<()> {
     let expr = "<math><mo>&#x2207;</mo><mi mathvariant='normal'>F</mi></math>";
-    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル 大文字 f")?;
-    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ 大文字 f")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "デル おおもじ f")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "勾配 オブ おおもじ f")?;
     return Ok(());
 }
 
@@ -136,6 +136,31 @@ fn vector_calculus_operators() -> Result<()> {
 fn multiplication_and_division() -> Result<()> {
     let expr = "<math><mn>6</mn><mo>&#x00D7;</mo><mn>4</mn><mo>&#x00F7;</mo><mn>2</mn></math>";
     test("ja", "ClearSpeak", expr, "6 掛ける 4 割る 2")?;
+    return Ok(());
+}
+
+/// A "/" between units said 割る ("divided by"); en says per here. It is now 毎, and before an
+/// hour or minute unit it is 毎時 or 毎分 and the unit itself is not spoken (毎 時間 is "every hour").
+/// A "/" that is not next to a unit still says 割る.
+#[test]
+fn slash_between_units() -> Result<()> {
+    for (expr, expected) in [
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">h</mi></math>"#, "5 メートル 毎時"),
+        (r#"<math><mn>10</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">min</mi></math>"#, "10 メートル 毎分"),
+        (r#"<math><mn>3</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">s</mi></math>"#, "3, メートル 毎 秒"),
+        (r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#, "5 ユーロ 毎 リットル"),
+        (r#"<math><mi>x</mi><mo>/</mo><mi>h</mi></math>"#, "x 割る h"),
+        // the hour is still spoken when it is squared
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><msup><mi intent=":unit">h</mi><mn>2</mn></msup></math>"#, "5, メートル 毎 時間 の 2 乗"),
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>/</mo><mi intent=":unit">hr</mi></math>"#, "5 メートル 毎時"),
+        // the division slash U+2215 is read the same way
+        (r#"<math><mn>5</mn><mi intent=":unit">m</mi><mo>&#x2215;</mo><mi intent=":unit">h</mi></math>"#, "5 メートル 毎時"),
+        (r#"<math><mi>a</mi><mo>&#x2215;</mo><mi>b</mi></math>"#, "エー 割る b"),
+        (r#"<math><mrow intent=":literal"><mi>a</mi><mo>&#x2215;</mo><mi>h</mi></mrow></math>"#, "エー スラッシュ h"),
+    ] {
+        test("ja", "SimpleSpeak", expr, expected)?;
+        test("ja", "ClearSpeak", expr, expected)?;
+    }
     return Ok(());
 }
 
@@ -370,9 +395,9 @@ fn not_equal() -> Result<()> {
 fn element_of() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
-        test("ja", "SimpleSpeak", &expr, "x 要素オブ 大文字 エー")?;
+        test("ja", "SimpleSpeak", &expr, "x 要素オブ おおもじ エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", &expr,
-            "x 要素オブ 大文字 エー")?;
+            "x 要素オブ おおもじ エー")?;
     }
     return Ok(());
 }
@@ -401,9 +426,9 @@ fn set_builder_member_symbol() -> Result<()> {
 #[test]
 fn not_element_of() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2209;</mo><mi>A</mi></math>";
-    test("ja", "SimpleSpeak", expr, "x ノット 要素オブ, 大文字 エー")?;
+    test("ja", "SimpleSpeak", expr, "x ノット 要素オブ, おおもじ エー")?;
     test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Element", expr,
-        "x ノット 要素オブ, 大文字 エー")?;
+        "x ノット 要素オブ, おおもじ エー")?;
     return Ok(());
 }
 
@@ -417,9 +442,9 @@ fn member_and_in_options_work_between_the_operands() -> Result<()> {
     for ch in ["&#x2208;", "&#x220a;"] {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>A</mi></math>");
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Member", &expr,
-            "x 元オブ 大文字 エー")?;
+            "x 元オブ おおもじ エー")?;
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "In", &expr,
-            "x イン 大文字 エー")?;
+            "x イン おおもじ エー")?;
     }
     return Ok(());
 }
@@ -954,9 +979,9 @@ fn relation_words_in_symbol_order() -> Result<()> {
         test("ja", "SimpleSpeak", &expr, expected)?;
     }
     for (ch, expected) in [
-        ("&#x2208;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
-        ("&#x2209;", "集合 すべての x 属さない 大文字 エー ただし x 大なり 0"),
-        ("&#x220A;", "集合 すべての x 属する 大文字 エー ただし x 大なり 0"),
+        ("&#x2208;", "集合 すべての x 属する おおもじ エー ただし x 大なり 0"),
+        ("&#x2209;", "集合 すべての x 属さない おおもじ エー ただし x 大なり 0"),
+        ("&#x220A;", "集合 すべての x 属する おおもじ エー ただし x 大なり 0"),
     ] {
         let expr = format!("<math><mrow><mo>{{</mo><mrow><mi>x</mi><mo>{ch}</mo><mi>A</mi></mrow><mo>|</mo><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow><mo>}}</mo></mrow></math>");
         test_ClearSpeak("ja", "ClearSpeak_SetMemberSymbol", "Belongs", &expr, expected)?;
@@ -1220,10 +1245,10 @@ fn row_vector_and_matrix_end_markers() -> Result<()> {
 #[test]
 fn chemical_states() -> Result<()> {
     for (state, expected) in [
-        ("s", "大文字 n エー; 固体"),
-        ("l", "大文字 n エー; 液体"),
-        ("g", "大文字 n エー; 気体"),
-        ("aq", "大文字 n エー; 水溶液"),
+        ("s", "おおもじ n エー; 固体"),
+        ("l", "おおもじ n エー; 液体"),
+        ("g", "おおもじ n エー; 気体"),
+        ("aq", "おおもじ n エー; 水溶液"),
     ] {
         let expr = format!(
             "<math><mrow><mi>Na</mi><mrow><mo>(</mo><mrow><mi>{state}</mi></mrow><mo>)</mo></mrow></mrow></math>"
@@ -1238,11 +1263,11 @@ fn chemical_states() -> Result<()> {
 #[test]
 fn chemical_arrows() -> Result<()> {
     for (arrow, verbosity, expected) in [
-        ("&#x2192;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; が反応して; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x2192;", "Terse", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; から; 2, 大文字 n エー; 大文字 c l; プラス 大文字 h, 2"),
-        ("&#x21CC;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x1F8D3;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と左に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
-        ("&#x1F8D2;", "Verbose", "2, 大文字 h, 大文字 c l; プラス, 2 大文字 n エー; と右に偏った平衡にある; 2, 大文字 n エー; 大文字 c l; プラス, 大文字 h, 下付き文字 2"),
+        ("&#x2192;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; が反応して; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x2192;", "Terse", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; から; 2, おおもじ n エー; おおもじ c l; プラス おおもじ h, 2"),
+        ("&#x21CC;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x1F8D3;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と左に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#x1F8D2;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と右に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
     ] {
         let expr = format!("<math><mrow><mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
             <mo>{arrow}</mo><mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub></mrow></math>");
@@ -1261,7 +1286,7 @@ fn chemical_bonds() -> Result<()> {
           <mi>C</mi><msub><mi>H</mi><mn>2</mn></msub>
       </mrow></math>";
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], ethylene,
-        "大文字 h, 2 大文字 c, 二重結合 大文字 c, 大文字 h, 2")?;
+        "おおもじ h, 2, おおもじ c; 二重結合 おおもじ c; おおもじ h, 2")?;
     return Ok(());
 }
 
@@ -1275,7 +1300,7 @@ fn sub_and_superscript_medium() -> Result<()> {
           <mrow><mn>2</mn><mo>&#x2212;</mo></mrow>
       </msup></mrow></math>";
     test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Medium")], sulfate,
-        "角かっこ, 大文字 s, 大文字 o, 下付き 4; 角かっこ閉じ 上付き 2 マイナス")?;
+        "角かっこ, おおもじ s; おおもじ o, 下付き 4; 角かっこ閉じ 上付き 2 マイナス")?;
     return Ok(());
 }
 
@@ -1296,6 +1321,8 @@ fn determinant_end_marker() -> Result<()> {
 /// The other determinant forms: one entry, a table too big for the short form,
 /// and the determinant of a single expression, whose end marker was 末端の 行列式
 /// ("the terminal determinant") and is now 行列式終了 like the others.
+/// The scalar form says 行列式 オブ x, like 平方根 オブ x; 行列式 の x would mean
+/// "the x of the determinant".
 #[test]
 fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
     let (n1, n2, n3, n4) = ("<mn>1</mn>", "<mn>2</mn>", "<mn>3</mn>", "<mn>4</mn>");
@@ -1303,7 +1330,7 @@ fn determinant_sizes_and_scalar_end_marker() -> Result<()> {
     test("ja", "ClearSpeak", &mat(&[&[n1, n2, n3, n4], &[n4, n3, n2, n1]], "|", "|", ""),
         "2 かける 4 行列式; ぎょう 1; 列 1; 1, 列 2; 2, 列 3; 3, 列 4; 4; ぎょう 2; 列 1; 4, 列 2; 3, 列 3; 2, 列 4; 1")?;
     let scalar = "<math><mrow intent='determinant($a)'><mrow arg='a'><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mrow></math>";
-    test("ja", "ClearSpeak", scalar, "行列式 の x プラス y 行列式終了")?;
+    test("ja", "ClearSpeak", scalar, "行列式 オブ x プラス y 行列式終了")?;
     return Ok(());
 }
 
@@ -1415,10 +1442,12 @@ fn something_above_and_below_an_expression() -> Result<()> {
 }
 
 /// ノルダム is Notre-Dame. The Japanese for a norm is ノルム.
+/// It says オブ before the argument, like ノルム オブ x; with の, "2 ノルム の x"
+/// would mean "the x of the 2-norm".
 #[test]
 fn subscripted_norm() -> Result<()> {
     let expr = "<math><msub><mrow><mo>&#x2225;</mo><mi>x</mi><mo>&#x2225;</mo></mrow><mn>2</mn></msub></math>";
-    test("ja", "ClearSpeak", expr, "2 ノルム の x")?;
+    test("ja", "ClearSpeak", expr, "2 ノルム オブ x")?;
     return Ok(());
 }
 
@@ -1581,8 +1610,8 @@ fn row_and_line_are_written_in_kana() -> Result<()> {
 /// An empty part of a fraction or matrix is 空欄, because Open JTalk reads a lone 空 as ソラ (sky).
 #[test]
 fn ascii_symbol_names() -> Result<()> {
-    test("ja", "ClearSpeak", "<math><mo>#</mo><mi>A</mi></math>", "シャープ 大文字 エー")?;
-    test("ja", "ClearSpeak", "<math><msup><mi>A</mi><mo>*</mo></msup></math>", "大文字 エー スター")?;
+    test("ja", "ClearSpeak", "<math><mo>#</mo><mi>A</mi></math>", "シャープ おおもじ エー")?;
+    test("ja", "ClearSpeak", "<math><msup><mi>A</mi><mo>*</mo></msup></math>", "おおもじ エー スター")?;
     test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")],
         "<math><mi>n</mi><mo intent=':literal'>!</mo></math>", "n 感嘆符")?;
     test("ja", "ClearSpeak", "<math><mfrac><mrow></mrow><mn>2</mn></mfrac></math>", "分数; 空欄; オーバー 2")?;

@@ -205,7 +205,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -224,7 +224,7 @@
  - "ϕ": [T: "ファイ"]                                 # 0x3d5
  - "ϖ": [T: "パイ"]                                  # 0x3d6
  - "ϗ": [t: "カイ記号"]                                 # 0x3d7
- - "Ϙ": [t: "大文字 古代コッパ"]                    # 0x3d8
+ - "Ϙ": [T: "おおもじ 古代コッパ"]                    # 0x3d8
  - "ϙ": [t: "古代コッパ"]                           # 0x3d9
  - "ϵ": [T: "イプシロン"]                             # 0x3f5
  - "϶": [T: "逆イプシロン"]                    # 0x3f6
@@ -241,7 +241,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -757,7 +757,18 @@
  - "−": [t: "マイナス"]                               # 0x2212
  - "∓": [T: "マイナスプラス"]                      # 0x2213
  - "∔": [t: "ドットプラス"]                            # 0x2214
- - "∕": [t: "割る"]                          # 0x2215
+ - "∕":                                           # 0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "スラッシュ"]
+        # same as "/" in unicode.yaml: 毎時 and 毎分 before an hour or minute unit, 毎 next to a unit
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and (.='h' or .='hr' or .='Hr')]"
+          then: [T: "毎時"]
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and .='min']"
+          then: [T: "毎分"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "毎"]
+          else: [T: "割る"]
  - "∖": [t: "差集合"]                               # 0x2216
  - "∗": [t: "掛ける"]                               # 0x2217
  - "∘": [t: "合成"]                           # 0x2218
@@ -2594,7 +2605,7 @@
  - "㏄": [t: "立方センチメートル"]                   # 0x33c4
  - "㏅": [t: "カンデラ"]                             # 0x33c5
  - "㏆": [t: "クーロン毎キログラム"]                  # 0x33c6
- - "㏇": [t: "大文字 シー オー ピリオド"]                  # 0x33c7 (I have no idea what this is)
+ - "㏇": [T: "おおもじ シー オー ピリオド"]                  # 0x33c7 (I have no idea what this is)
  - "㏈": [t: "デシベル"]                             # 0x33c8
  - "㏉": [t: "グレイ"]                               # 0x33c9
  - "㏊": [t: "ヘクタール"]                            # 0x33ca
@@ -3247,7 +3258,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -3265,7 +3276,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -3283,7 +3294,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [t: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"

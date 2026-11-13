@@ -30,7 +30,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [T: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"]
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -53,7 +53,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [T: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
@@ -128,9 +128,16 @@
         else: [T: "ドット"]
  - "/":                                           # 0x2f
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [T: "スラッシュ"]                        # 0x2f
-        else: [T: "割る"]                   # 0x2f
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "スラッシュ"]                        # 0x2f
+        # per hour and per minute are the words 毎時 and 毎分; the unit after them is not spoken (general.yaml)
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and (.='h' or .='hr' or .='Hr')]"
+          then: [T: "毎時"]
+        - else_if: "following-sibling::*[1][(self::m:unit or contains(@data-intent-property, ':unit:')) and .='min']"
+          then: [T: "毎分"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "毎"]
+          else: [T: "割る"]                   # 0x2f
 
  - ":": [T: "コロン"]                               # 0x3a
  - ";": [T: "セミコロン"]                           # 0x3b
@@ -260,7 +267,7 @@
           if: "$SpeechOverrides_CapitalLetters = ''"
           then_test:
             if: "$Impairment = 'Blindness'"
-            then: [T: "大文字"]
+            then: [T: "おおもじ"]
           else: [x: "$SpeechOverrides_CapitalLetters"] 
     - pitch:
         value: "$CapitalLetters_Pitch"
