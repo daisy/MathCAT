@@ -1719,6 +1719,24 @@ fn binomial_coefficient_is_read_like_ncr() -> Result<()> {
     return Ok(());
 }
 
+/// The U+24xx, U+29xx and U+2Exx symbols MathJax writes from TeX: \circledS (the uppercase circled
+/// letters now stop at Ⓩ instead of running on into ⓐ-ⓩ), \blacklozenge (黒ロゼンジ as ◊ is ロゼンジ),
+/// \notChar and \textinterrobangdown, each in the element MathJax puts it in.
+#[test]
+fn circled_letters_and_the_last_tex_symbols() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mi mathvariant=\"normal\">&#x24C8;</mi></math>", "丸 おおもじ s"),
+        ("<math><mrow><mi>&#x24D0;</mi><mo>+</mo><mi>&#x24B7;</mi></mrow></math>", "丸 エー プラス 丸 おおもじ b"),
+        ("<math><mrow><mi>x</mi><mo>=</mo><mi>&#x29EB;</mi></mrow></math>", "x イコール 黒ロゼンジ"),
+        ("<math><mrow><mi>a</mi><mo>&#x29F8;</mo><mi>b</mi></mrow></math>", "エー 大きいスラッシュ b"),
+        ("<math><mtext>&#x2E18;</mtext></math>", "逆さインターロバング"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// 行 for a row or a line was read クダリ or アルキ by Open JTalk, the synthesizer in
 /// NVDA's Japanese edition: as a word of its own (行 1, 3 行) and also inside one
 /// string (行区切り, 前の行に移動). Written ぎょう it is read ギョウ. 行列 and 行列式
