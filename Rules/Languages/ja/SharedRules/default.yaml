@@ -522,7 +522,7 @@
       then: [T: "四角", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [T: "角丸の四角", pause: short]      # phrase(the 'round box' around the expression)
+      then: [T: "かど丸の四角", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
       then: [T: "円", pause: short]      # phrase(the 'circle' around the expression)
