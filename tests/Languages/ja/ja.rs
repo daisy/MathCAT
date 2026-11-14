@@ -944,7 +944,7 @@ fn definite_integral() -> Result<()> {
 #[test]
 fn unicode_full_symbol_names() -> Result<()> {
     for (ch, expected) in [
-        ("&#x00A5;", "円記号"),
+        ("&#x00A5;", "円"),
         ("&#x2205;", "くう集合"),
         ("&#x2295;", "丸 プラス"),
     ] {
@@ -957,6 +957,23 @@ fn unicode_full_symbol_names() -> Result<()> {
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Open JTalk read the vulgar fractions as minutes (4分の1 was ヨンプンノイチ and
+/// 2分の1 ニフンノイチ), so they are spaced the way the fraction rule says them;
+/// ¥ is a currency like $ and £ (it was 円記号 500); 節記号 was フシキゴー.
+#[test]
+fn latin1_fractions_and_yen() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mn>&#x00BC;</mn></math>", "4 分の 1"),
+        ("<math><mi>x</mi><mo>+</mo><mn>&#x00BE;</mn></math>", "x プラス 4 分の 3"),
+        ("<math><mo>&#x2E39;</mo></math>", "上半分のセクション記号"),
+        ("<math><mo>&#x00A5;</mo><mn>500</mn></math>", "500 円"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
     }
     return Ok(());
 }
