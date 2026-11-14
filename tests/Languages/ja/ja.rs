@@ -1819,6 +1819,21 @@ fn double_struck_italic_letters() -> Result<()> {
     return Ok(());
 }
 
+/// The card suits keep 黒 and 白 as en keeps black and white (♡ is not ♥), ★ is 黒星 as ☆ is 白星,
+/// and the music signs are the words used in Japanese music lessons. MathJax writes all of them as mi.
+#[test]
+fn card_suits_and_music_signs() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mi mathvariant=\"normal\">&#x2660;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2661;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2662;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2663;</mi></mrow></math>", "黒スペード コンマ, 白ハート コンマ, 白ダイヤ コンマ, 黒クラブ"),
+        ("<math><mrow><mi>C</mi><mi mathvariant=\"normal\">&#x266F;</mi><mo>,</mo><mi>B</mi><mi mathvariant=\"normal\">&#x266D;</mi><mo>,</mo><mi>F</mi><mi mathvariant=\"normal\">&#x266E;</mi></mrow></math>", "おおもじ c シャープ; コンマ; おおもじ b フラット; コンマ; おおもじ f ナチュラル"),
+        ("<math><msup><mi>A</mi><mi>&#x2605;</mi></msup></math>", "おおもじ エー の 黒星 乗"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Between two units a ·, ⋅, ∙ or × is not spoken (en does the same: newton metres), so N·m is
 /// ニュートン メートル. The dot is still said between other things and inside :literal.
 #[test]
