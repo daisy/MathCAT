@@ -533,6 +533,29 @@ fn per_and_silent_dot_between_units() -> Result<()> {
 }
 
 #[test]
+fn more_currencies() -> Result<()> {
+    // nombres del Libro de estilo interinstitucional de la UE (anexo A5) y monedas antiguas
+    let cases = [
+        ("֏", "un dram", "3 drams"), ("؋", "un afgani", "3 afganis"), ("৳", "un taka", "3 takas"),
+        ("฿", "un baht", "3 bahts"), ("៛", "un riel", "3 rieles"), ("₦", "un naira", "3 nairas"),
+        ("₫", "un dong", "3 dongs"), ("₭", "un kip", "3 kips"), ("₮", "un tugrik", "3 tugriks"),
+        ("₵", "un cedi", "3 cedis"), ("₸", "un tenge", "3 tenges"), ("₼", "un manat", "3 manats"),
+        ("₾", "un lari", "3 laris"), ("⃀", "un som", "3 soms"), ("﷼", "un rial", "3 riales"),
+        ("₧", "una peseta", "3 pesetas"), ("₣", "un franco", "3 francos"), ("₢", "un cruzeiro", "3 cruzeiros"),
+        ("₳", "un austral", "3 australes"), ("₯", "una dracma", "3 dracmas"), ("₠", "un ecu", "3 ecus"),
+        ("₰", "un pfennig", "3 pfennigs"), ("₶", "una libra tornesa", "3 libras tornesas"),
+        ("₷", "un spesmilo", "3 spesmilos"), ("₻", "un marco nórdico", "3 marcos nórdicos"),
+    ];
+    for (sym, one, three) in cases {
+        test("es", "ClearSpeak", &format!("<math><mn>1</mn><mi>{sym}</mi></math>"), one)?;
+        test("es", "SimpleSpeak", &format!("<math><mi>{sym}</mi><mn>3</mn></math>"), three)?;
+        test("es", "ClearSpeak", &format!("<math><mn>3</mn><mo>{sym}</mo></math>"), three)?;
+    }
+    test("es", "ClearSpeak", "<math><mn>1000000</mn><mi>₧</mi></math>", "1000000 de pesetas")?;
+    return Ok(());
+}
+
+#[test]
 fn currency_after_amount() -> Result<()> {
     // símbolo después de la cantidad (España): "1 €" con el mismo "un"/"una" que "€ 1"; rublo y grivna;
     // millones exactos con "de" (NVDA dice "un millón de dólares")

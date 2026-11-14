@@ -28,7 +28,7 @@
   - test:
     - if: "*[2][.='+']"
       then: [T: "正の"]      # phrase(set of all 'positive' integers less than 10)
-      else: [T: "負の"]      # phrase(set of all 'negative' integers less than minus 10)
+      else: [T: "ふの"]      # phrase(set of all 'negative' integers less than minus 10)
   - bookmark: "*[1]/@id"
   - test:
     - if: "*[1][.='ℂ']"
@@ -156,12 +156,12 @@
       - T: ""      # phrase('the' square root of 25 equals 5)
   - test:
     - if: "name(.)='open-interval'"
-      then: [T: "開区間"]      # phrase(the 'open interval' from a to b)
+      then: [T: "かい区間"]      # phrase(the 'open interval' from a to b)
     - else_if: "name(.)='closed-interval'"
       then: [T: "閉区間"]      # phrase(the 'closed interval' from a to b)
     - else_if: "name(.)='open-closed-interval'"
-      then: [T: "左開右閉区間"]      # phrase(the 'open closed interval' from a to b)
-      else: [T: "左閉右開区間"]      # phrase(the 'closed open interval' from a to b)
+      then: [T: "左かい右閉区間"]      # phrase(the 'open closed interval' from a to b)
+      else: [T: "左閉右かい区間"]      # phrase(the 'closed open interval' from a to b)
   - test:
       if: "$Verbosity!='Terse'"
       then:
@@ -317,7 +317,7 @@
 # 2. does it match an English unit (if in an English language)
 # 3. does it match an SI prefix followed by an SI that accepts SI prefixes
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
-- name: unit   # audit-ignore: Japanese joins 分, 日 and 年 to the number and needs no hyphen after a prefix
+- name: unit   # audit-ignore: Japanese joins 分, 日 and 年 to the number, joins 時 to the unit before the hour, and needs no hyphen after a prefix
   tag: unit
   match: "."
   variables:
@@ -376,9 +376,12 @@
       if: "$Prefix = ''"
       then:
       - test:
+        # After another unit in a product the hour is said by that unit as 時 (ワット時), see the end of this rule
+        - if: "$Word='時間' and $Verbosity!='Terse' and preceding-sibling::*[1][.='·' or .='⋅' or .='∙' or .='×' or .='\u2062'] and preceding-sibling::*[2][(self::m:unit or contains(@data-intent-property, ':unit:')) and not(*)]"
+          then: [T: ""]
         # Open JTalk reads a lone 分, 日 or 年 as ブン, ヒ and トシ. Joined to the number they are
         # read as counters (1分 いっぷん, 3日 みっか); after anything else they are written in kana.
-        - if: "$Word='分' or $Word='日' or $Word='年'"
+        - else_if: "$Word='分' or $Word='日' or $Word='年'"
           then_test:
           - if: "preceding-sibling::*[1][.='\u2062'] and preceding-sibling::*[2][self::m:mn]"
             then: [x: "concat('\uF8FE', $Word)"]
@@ -403,6 +406,12 @@
         - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)", ct: ""]
+  # A unit followed in a product by the hour says 時 joined to itself, and the hour says nothing: the unit names
+  # are ワット時 and ボルトアンペア時 (計量単位令). Open JTalk reads a lone 時 after a space or a pause as トキ.
+  # Not before a power (h²) and not in terse speech (the hour itself checks the same things).
+  - test:
+      if: "not(*) and $Verbosity!='Terse' and following-sibling::*[1][.='·' or .='⋅' or .='∙' or .='×' or .='\u2062'] and following-sibling::*[2][(self::m:unit or contains(@data-intent-property, ':unit:')) and not(*) and (.='h' or .='hr' or .='Hr')]"
+      then: [x: "concat('\uF8FE', '時')"]
 
 # need to reverse the order of speech: $ 3 -> 3 dollars
 - name: currency
@@ -414,6 +423,7 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - bookmark: "*[1]/@id"
   - x: "*[1]"
 
@@ -504,7 +514,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックセカント"]      # phrase('sheck' is shorthand for hyperbolic secant)
-      else: [T: "双曲線正割"]      # phrase('hyperbolic secant' is a mathematical function)
+      else: [T: "双曲線せいかつ"]      # phrase('hyperbolic secant' is a mathematical function)
 - name: csch
   tag: mi
   match: ".='csch'"
@@ -513,7 +523,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックコセカント"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      else: [T: "双曲線余割"]      # phrase('hyperbolic cosecant' is a mathematical function)
+      else: [T: "双曲線よかつ"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
   match: ".='coth'"
@@ -522,7 +532,7 @@
   - test:
       if: "$Verbosity='Terse'"
       then: [T: "ハイパーボリックコタンジェント"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      else: [T: "双曲線余接"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
+      else: [T: "双曲線よせつ"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 - name: exponential
   tag: mi
   match: ".='exp'"
@@ -1119,7 +1129,7 @@
     - else_if: ".='=' or .='∷'"
       then: [T: "二重結合"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
-      then: [T: "三重結合"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+      then: [T: "3重結合"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
     - else_if: ".='≣'"
       then: [T: "四重結合"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
       else: [x: "text()"]

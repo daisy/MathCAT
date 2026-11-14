@@ -104,6 +104,23 @@
       else: [pause: short]
   - x: "*[2]"
 
+# Parent rules already speak "от" (or intentionally omit it); keep ⁡ silent when visited for nav.
+# Do not silence every ⁡ after limit — lim⁡sin needs unicode "от"; only lim⁡fraction duplicates T:"от".
+- name: function-apply-nav-only
+  tag: mo
+  match:
+  - ".='⁡' and ("
+  - "  preceding-sibling::*[1][self::m:mi][.='log' or .='ln'] or"
+  - "  preceding-sibling::*[1][self::m:logarithm-with-base] or"
+  - "  preceding-sibling::*[1][self::m:power and IsInDefinition(*[1], 'TrigFunctionNames')] or"
+  - "  (preceding-sibling::*[1][name()='limit'] and"
+  - "   following-sibling::*[1][name()='fraction' or name()='mfrac']) or"
+  - "  (parent::*[count(*)=3 and *[3][IsBracketed(., '(', ')')]] and"
+  - "   ($SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')]))"
+  - ")"
+  replace:
+  - T: ""
+
 - name: limit-followed-by-apply-fraction
   tag: mrow
   match: "count(*)=3 and *[1][name()='limit'] and *[2][.='\u2061'] and *[3][name()='fraction' or name()='mfrac']"
@@ -116,6 +133,7 @@
       if: "$Impairment='LearningDisability'"
       then: [pause: medium]
       else: [pause: short]
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
 
 - name: default
@@ -179,6 +197,7 @@
   - "($SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   replace:
   - x: "*[1]"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - pause: short
   - T: "открывающая круглая скобка"
   - test:
@@ -219,6 +238,7 @@
   match: "count(*)=3 and *[1][self::m:mi[.='c']] and *[2][.='\u2062'] and *[3][name()='power' and *[1][self::m:mi[.='e']]]"
   replace:
   - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - pause: short
   - x: "*[3]"
 
@@ -227,6 +247,7 @@
   match: "count(*)=3 and *[1][name()='minus' and .//m:mi[.='h']] and *[2][.='\u2062'] and *[3][name()='power'] and parent::*[name()='power']"
   replace:
   - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - pause: short
   - x: "*[3]"
 

@@ -1050,6 +1050,23 @@ mod tests {
         });
     }
 
+    // de ClearSpeak-log speaks log⁡x without visiting ⁡; MoveNext must still mark/skip it.
+    // Start on `log` (not ZoomIn — that leaf is spoken via T: without x:) so we only test the silent apply.
+    #[test]
+    fn move_next_de_log_apply() -> Result<()> {
+        let mathml_str = "<math id='math'><mi id='log'>log</mi><mo id='apply'>&#x2061;</mo><mi id='arg'>x</mi></math>";
+        init_prefs(mathml_str, "Enhanced", "de")?;
+        set_preference("SpeechStyle", "ClearSpeak")?;
+        set_navigation_node("log", 0)?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = test_command("MoveNext", mathml, "arg")?;
+            assert!(speech.contains("x"), "{speech}");
+            return Ok(());
+        });
+    }
+
     // Singular amount must visit the mn (OneForUnit via default mn rule) so ZoomIn finds [[...]].
     #[test]
     fn zoom_in_currency_singular_amount() -> Result<()> {

@@ -432,6 +432,7 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - test:
       if: "*[3][self::m:mn] and not(contains(*[3], $DecimalSeparators)) and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[3], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
       then: [T: "de"]
@@ -563,6 +564,18 @@
 # babel en español escribe \arcsen como "arc\,sen" y MathCAT no une "arc" con el nombre
 # de la función cuando hay un espacio entre medio, así que llega como arc ⁡ sen y se lee
 # "arc de seno". Estas tres reglas lo leen como "arco seno de x".
+# Parent arc-trig-* rules already speak "de"/the name; keep ⁡/⁢ silent when visited for nav.
+- name: arc-trig-invisible-nav-only
+  tag: mo
+  match:
+  - "(.='⁡' or .='⁢') and parent::*["
+  - "  (count(*)=3 and *[1][self::m:mi][.='arc']) or"
+  - "  (count(*)=5 and *[1][self::m:mi][.='arc']) or"
+  - "  (count(*)=3 and *[1][self::m:mrow][*[1][.='arc']])"
+  - "]"
+  replace:
+  - T: ""
+
 - name: arc-trig-separado-aplicado
   tag: mrow
   match: "count(*)=3 and *[1][self::m:mrow][count(*)=3 and *[1][self::m:mi][.='arc'] and *[2][self::m:mo][.='⁡'] and *[3][self::m:mi][.='sen' or .='sin' or .='cos' or .='tan' or .='tg' or .='sec' or .='csc' or .='cosec' or .='cot' or .='cotg' or .='ctg' or .='cotan']] and *[2][self::m:mo][.='⁢' or .='⁡'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
@@ -572,6 +585,7 @@
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(arco seno 'de' x)
   - pause: auto
+  - x: "*[2]"   # mark times/apply for MoveNext (speech suppressed by arc-trig-invisible-nav-only)
   - x: "*[3]"
 
 - name: arc-trig-separado-plano
@@ -591,6 +605,8 @@
     - else_if: "*[3][.='csc' or .='cosec']"
       then: [T: "arco cosecante"]
     - else: [T: "arco cotangente"]
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by arc-trig-invisible-nav-only)
+  - x: "*[4]"   # mark function-apply for MoveNext (speech suppressed by arc-trig-invisible-nav-only)
   - test:
       if: "$Verbosity!='Terse'"
       then: [T: "de"]      # phrase(arco seno 'de' x)
@@ -614,6 +630,7 @@
     - else_if: "*[3][.='csc' or .='cosec']"
       then: [T: "arco cosecante"]
     - else: [T: "arco cotangente"]
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by arc-trig-invisible-nav-only)
 
 - name: arcsin
   tag: mi
@@ -798,6 +815,7 @@
   replace:
   - bookmark: "*[1]/@id"
   - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - test:
       if: "*[1][self::m:mn] and not(contains(*[1], $DecimalSeparators)) and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) >= 1000000 and number(translate(*[1], ' .\u00A0\u202F\u2009', '')) mod 1000000 = 0"
       then: [T: "de"]

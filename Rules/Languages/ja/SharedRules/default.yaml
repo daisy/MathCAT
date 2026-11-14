@@ -154,23 +154,27 @@
       then: [T: "根号終了"] # phrase("root of x 'end root symbol'")
 
 
-- name: simple-sub
+- name: simple-sub   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
   match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
   replace:
   - x: "*[1]"
   - x: "*[2]"
-  - pause: short
+  - test:
+      if: "not(parent::m:power and not(preceding-sibling::*))"   # no pause before the の 2 乗 of a power
+      then: [pause: short]
 
-- name: no-end-sub
+- name: no-end-sub   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   tag: indexed-by
   match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
   - T: "下付き"               # phrase(x 'sub' 2)
   - x: "*[2]"
-  - pause: short
+  - test:
+      if: "not(parent::m:power and not(preceding-sibling::*))"   # no pause before the の 2 乗 of a power
+      then: [pause: short]
 
 - name: power-indexed-by
   tag: power-indexed-by
@@ -518,7 +522,7 @@
       then: [T: "四角", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [T: "角丸の四角", pause: short]      # phrase(the 'round box' around the expression)
+      then: [T: "かど丸の四角", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
       then: [T: "円", pause: short]      # phrase(the 'circle' around the expression)
@@ -687,7 +691,7 @@
   - x: "*"
   - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
 
-- name: infix-intent
+- name: infix-intent   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
   match: "count(*)>0 and contains(@data-intent-property, ':infix:')"
@@ -709,9 +713,13 @@
       if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
       then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
   - test:
-      if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
-      then: [pause: short]
-      else: [pause: auto]
+      # x 下付き 1 の 2 乗: a pause here would split the subscript from the の 2 乗 that the power rule says next
+      if: "not(name(.)='indexed-by' and parent::m:power and not(preceding-sibling::*))"
+      then:
+      - test:
+          if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
+          then: [pause: short]
+          else: [pause: auto]
 
 - name: function-intent
   # uncaught intent -- speak as foo of arg1 comma arg2 ....

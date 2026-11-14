@@ -353,7 +353,7 @@
  - "ₚ": [T: "subíndice p"]                      	#  0x209a	(en: 'sub P', google: 'sub p')
  - "ₛ": [T: "subíndice s"]                      	#  0x209b	(en: 'sub S', google: 'sub s')
  - "ₜ": [T: "subíndice t"]                      	#  0x209c	(en: 'sub T', google: 'sub t')
- - "₠": [T: "unidades de corriente europeas"]   	#  0x20a0	(en: 'european currenty units', google translation)
+ - "₠": [T: "ecu"]                              	#  0x20a0	(en: 'european currency unit')
  - "₡": [T: "dos puntos"]                       	#  0x20a1	(en: 'colons', google: 'colons')
  - "₢": [T: "cruzeiro"]                         	#  0x20a2	(en: 'cruzeiro', google: 'cruzeiro')
  - "₣": [T: "franco"]                           	#  0x20a3	(en: 'franc')
@@ -375,12 +375,22 @@
  - "₳": [T: "australs"]                         	#  0x20b3	(google translation)
  - "₴": [T: "grivna"]                           	#  0x20b4	(en: 'hryvnias')
  - "₵": [T: "cedis"]                            	#  0x20b5	(google translation)
- - "₶": [T: "livre tournois"]                   	#  0x20b6	(google translation)
+ - "₶": [T: "libra tornesa"]                    	#  0x20b6	(en: 'livre tournois')
  - "₷": [T: "spesmilos"]                        	#  0x20b7	(google translation)
  - "₸": [T: "tenges"]                           	#  0x20b8	(google translation)
  - "₹": [T: "rupias indias"]                    	#  0x20b9	(en: 'indian rupees', google translation)
  - "₺": [T: "liras turcas"]                      	#  0x20ba	(en: 'turkish liras', google translation)
  - "₽": [T: "rublo"]                            	#  0x20bd
+ - "₻": [T: "marco nórdico"]                    	#  0x20bb
+ - "₼": [T: "manat"]                            	#  0x20bc
+ - "₾": [T: "lari"]                             	#  0x20be
+ - "⃀": [T: "som"]                              	#  0x20c0
+ - "֏": [T: "dram"]                             	#  0x58f
+ - "؋": [T: "afgani"]                           	#  0x60b
+ - "৳": [T: "taka"]                             	#  0x9f3
+ - "฿": [T: "baht"]                             	#  0xe3f
+ - "៛": [T: "riel"]                             	#  0x17db
+ - "﷼": [T: "rial"]                             	#  0xfdfc
  - "⃐": [T: "arpón izquierdo por encima de la ornamentación"]	#  0x20d0	(en: 'left harpoon above embellishment', google: 'arpón de izquierda por encima del adorno')
  - "⃑": [T: "arpón derecho por encima de la ornamentación"]            	#  0x20d1	(en: 'right harpoon above embellishment', google: 'arpón derecho por encima del adorno')
  - "⃒": [T: "línea vertical larga con ornamentación superpuesta"]	#  0x20d2	(en: 'long vertical line overlay embellishment', google translation)

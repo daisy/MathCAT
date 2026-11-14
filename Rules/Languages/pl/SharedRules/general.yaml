@@ -87,6 +87,7 @@
   - TakesPaucal: "$Number mod 10 >= 2 and $Number mod 10 <= 4 and not($Number mod 100 >= 12 and $Number mod 100 <= 14)"
   replace:
   - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - test:
     - if: "*[3]/*[1][.='C']"
       then:
@@ -397,6 +398,7 @@
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
   - bookmark: "*[1]/@id"
   - x: "*[1]"
 

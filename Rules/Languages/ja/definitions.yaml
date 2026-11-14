@@ -86,14 +86,14 @@
     "inverse":"function=インバース || postfix=インバース", 
 
     "domain": "function=;ドメイン",
-    "codomain": "function=; 共同ドメイン",
+    "codomain": "function=; しゅう域",
 
     "image":"function=像", 
     #"fraction":"function=fraction; over; end fraction", # NOTE: Fails
     "mixed-fraction":"infix=と", # NOTE: in website says function, but follow infix speech pattern.
-    "quotient":"function=整数部 : 割る",
+    "quotient":"function=整数部 : わる",
     "evaluated-at":"infix=次の点で評価",
-    "remainder":"function=余り : 割る",
+    "remainder":"function=余り : わる",
 
     "max":"function=マックス",
     "min":"function=最小値",
@@ -116,7 +116,7 @@
     "coordinate":"function=座標",
     "floor":"function=床関数",
     "ceiling":"function=天井関数",
-    "round":"function=丸めた値",
+    "round":"function=丸めたあたい",
     "fractional-part":"function=小数部分",
 
 
@@ -135,7 +135,7 @@
     "set": "function=; 集合| 集合",
     "set-difference":"function=差集合 : と || infix=マイナス",
     "complement":"function=補集合",
-    "empty-set":"nofix=空集合",
+    "empty-set":"nofix=くう集合",
     "cardinality":"function=濃度", # NOTE: does not have a defined speech template in website
     "list":"function=リスト",
     "tuple": "function=;タプル|タプル",
@@ -150,23 +150,23 @@
     "sine":"function=サイン| 正弦",
     "cosine":"function=コサイン| 余弦",
     "tangent":"function=タンジェント| 正接",
-    "secant":"function=セカント| 正割",
-    "cosecant":"function=コセカント| 余割",
+    "secant":"function=セカント| せいかつ",
+    "cosecant":"function=コセカント| よかつ",
     "cotangent":"function=コタンジェント| 余接",
 
     "arcsine":"function=アークサイン| 逆正弦",
     "arccosine":"function=アークコサイン| 逆余弦",
     "arctangent":"function=アークタンジェント| 逆正接",
     "arcsecant":"function=アークセカント| 逆正割",
-    "arccosecant":"function=アークコセカント| 逆余割",
+    "arccosecant":"function=アークコセカント| 逆よかつ",
     "arccotangent":"function=アークコタンジェント| 逆余接",
 
     "hyperbolic-sine":"function=ハイパーボリックサイン| 双曲線正弦",
     "hyperbolic-cosine":"function=ハイパーボリックコサイン| 双曲線余弦",
     "hyperbolic-tangent":"function=ハイパーボリックタンジェント| 双曲線正接",
-    "hyperbolic-secant":"function=ハイパーボリックセカント| 双曲線正割",
-    "hyperbolic-cosecant":"function=ハイパーボリックコセカント| 双曲線余割",
-    "hyperbolic-cotangent":"function=ハイパーボリックコタンジェント| 双曲線余接",
+    "hyperbolic-secant":"function=ハイパーボリックセカント| 双曲線せいかつ",
+    "hyperbolic-cosecant":"function=ハイパーボリックコセカント| 双曲線よかつ",
+    "hyperbolic-cotangent":"function=ハイパーボリックコタンジェント| 双曲線よせつ",
 
     "arc-hyperbolic-sine":"function=アークハイパーボリックサイン",
     "arc-hyperbolic-cosine":"function=アークハイパーボリックコサイン",
@@ -197,7 +197,7 @@
     "adjugate":"function=余因子行列",
     "magnitude":"function=大きさ",
     "norm": "function=;ノルム|ノルム|ノルム;ノルム閉じ",
-    "span":"function=線形包",
+    "span":"function=線形ほう",
 
     "unit-vector":"prefix=単位ベクトル",
 
@@ -281,11 +281,11 @@
     "applied-to": "infix=に適用される",
     "approximately": "infix=およそ",
     "congruent": "infix=合同",
-    "cartesian-product": "infix=デカルト積",
+    "cartesian-product": "infix=デカルトせき",
     "composed-with": "infix=合成",
     "cross-product": "infix=クロス|外積|外積",
     "defined-as": "infix=とは",
-    "divided-by": "infix=割る",
+    "divided-by": "infix=わる",
     "divides": "infix=割り切る",
     "does-not-belong-to": "infix=属さない",
     "does-not-divide": "infix=割り切らない",
@@ -309,12 +309,12 @@
     "less-than-or-equal-to": "infix=小なり オア イコール",
     "list-separator": "infix=コンマ",
     "maps-to": "infix=に写る",
-    "member-of": "infix=元オブ",
+    "member-of": "infix=げんオブ",
     "minus-or-plus": "infix=マイナスプラス",
     "not-subset": "infix=ノット 部分集合オブ",
     "not-superset": "infix=ノット 上位集合オブ",
     "not-equal-to": "infix=ノット イコール",
-    "not-member-of": "infix=ノット 元オブ",
+    "not-member-of": "infix=ノット げんオブ",
     "not-parallel-to": "infix=ノット 平行",
     "obtained-from": "infix=から得られる",
     "or": "infix=または",
