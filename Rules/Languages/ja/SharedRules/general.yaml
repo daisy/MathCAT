@@ -1129,7 +1129,7 @@
     - else_if: ".='=' or .='∷'"
       then: [T: "二重結合"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
-      then: [T: "三重結合"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
+      then: [T: "3重結合"]      # phrase(a 'triple bond' occurs when two atoms share three pairs of electrons)
     - else_if: ".='≣'"
       then: [T: "四重結合"]      # phrase(a 'quadruple bond' occurs when two atoms share four pairs of electrons)
       else: [x: "text()"]
