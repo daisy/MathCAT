@@ -99,9 +99,11 @@
         else: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
  - "/":                                         	#  0x2f
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [T: "per"]                      	#  0x2f	(DeepL translation)
-        else: [T: "osztva"]                     	#  0x2f	(en: 'divided by', DeepL translation)
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "per"]                      	#  0x2f	(DeepL translation)
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "per"]
+          else: [T: "osztva"]                     	#  0x2f	(en: 'divided by', DeepL translation)
 
  - ":": [T: "kettőspont"]                       	#  0x3a	(en: 'colon', DeepL translation)
  - ";": [T: "pontosvessző"]                     	#  0x3b	(en: 'semicolon', DeepL translation)
@@ -190,22 +192,27 @@
  - "´": [T: "éles ékezet"]                             	#  0xb4	(en: 'acute', DeepL translation)
  - "·":                                         	#  0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
-        else: [T: "szorozva"]                      	# 	(DeepL translation)
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "szorozva"]                       	# 	(en: 'dot', DeepL translation)
+        - else_if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+          then: [T: "szorozva"]
+          else: [T: "szorozva"]                      	# 	(DeepL translation)
  - "×":                                         	#  0xd7
     - test:
-        if: "$SpeechStyle = 'ClearSpeak'"
-        then_test:
-        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
-          then: [T: "szorozva"]                    	# 	(DeepL translation)
-        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
-          then: [T: "szorozva"]                       	# 	(DeepL translation)
-          else: [T: "kereszt"]                  	# 	(en: 'cross', DeepL translation)
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+        then: [T: ""]
         else_test:
-            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [T: "kereszt"]                	# 	(en: 'cross', DeepL translation)
-            else: [T: "szorozva"]                  	# 	(DeepL translation)
+            if: "$SpeechStyle = 'ClearSpeak'"
+            then_test:
+            - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+              then: [T: "szorozva"]                    	# 	(DeepL translation)
+            - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+              then: [T: "szorozva"]                       	# 	(DeepL translation)
+              else: [T: "kereszt"]                  	# 	(en: 'cross', DeepL translation)
+            else_test:
+                if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+                then: [T: "kereszt"]                	# 	(en: 'cross', DeepL translation)
+                else: [T: "szorozva"]                  	# 	(DeepL translation)
 
  - "÷": [T: "osztva"]                           	#  0xf7	(en: 'divided by', DeepL translation)
  - "̀": [T: "súlyos ékezet díszítés"]           	#  0x300	(en: 'grave accent embellishment', DeepL translation)

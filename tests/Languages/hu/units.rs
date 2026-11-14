@@ -417,12 +417,12 @@ fn compound_unit_plural_none_and_uncounted() -> Result<()> {
         <mrow intent=":unit"><mi>N</mi><mo>·</mo><mi>m</mi></mrow>
     </math>"#;
     test("hu", "ClearSpeak", counted, "5, newton szorozva méter")?;
-    test("hu", "SimpleSpeak", counted, "5 newton pont méter")?;
+    test("hu", "SimpleSpeak", counted, "5, newton szorozva méter")?;
 
     let uncounted = r#"<math>
         <mrow intent=":unit"><mi>m</mi><mo>/</mo><mi>s</mi></mrow>
     </math>"#;
-    test("hu", "ClearSpeak", uncounted, "méter osztva másodperc")?;
-    test("hu", "SimpleSpeak", uncounted, "méter osztva másodperc")?;
+    test("hu", "ClearSpeak", uncounted, "méter per másodperc")?;
+    test("hu", "SimpleSpeak", uncounted, "méter per másodperc")?;
     return Ok(());
 }

@@ -673,7 +673,7 @@
 # Hungarian: after a numeral every factor stays singular; without a numeral the last
 # counted-side factor is plural (per side stays singular).
 - CompoundUnitPlural: ["none"]
-- NumberlessUnitPlural: ["last"]
+- NumberlessUnitPlural: ["last"] # audit-ignore
 
 # Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {

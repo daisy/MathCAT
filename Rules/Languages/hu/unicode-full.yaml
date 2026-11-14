@@ -646,15 +646,23 @@
  - "−": [T: "mínusz"]                           	#  0x2212	(en: 'minus', DeepL translation)
  - "∓": [T: "mínusz vagy plusz"]                	#  0x2213	(en: 'minus or plus', DeepL translation)
  - "∔": [T: "pontozott plusz"]                       	#  0x2214	(en: 'dot plus', DeepL translation)
- - "∕": [T: "osztva"]                           	#  0x2215	(en: 'divided by', DeepL translation)
+ - "∕":                                           # 0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "per"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "per"]
+          else: [T: "osztva"]
  - "∖": [T: "halmaz mínusz"]                	#  0x2216	(en: 'set minus', DeepL translation)
  - "∗": [T: "csillag operátor"]                             	#  0x2217	(en: 'times', DeepL translation)
  - "∘": [T: "gyűrű operátor"]                     	#  0x2218	(en: 'composed with', DeepL translation)
  - "∙":                                         	#  0x2219
     - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
-        else: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
+        - else_if: "@data-chem-formula-op"
+          then: [T: "pont"]
+          else: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
 
  - "∛":                                         	#  0x221b
      - test: 
@@ -1008,9 +1016,11 @@
  - "⋄": [T: "gyémánt operátor"]               	#  0x22c4	(en: 'diamond operator', DeepL translation)
  - "⋅":                                         	#  0x22c5
     - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
-        else: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "pont"]                       	# 	(en: 'dot', DeepL translation)
+          else: [T: "szorozva"]                       	# 	(en: 'times', DeepL translation)
 
  - "⋆": [T: "szorozva"]                             	#  0x22c6	(en: 'times', DeepL translation)
  - "⋇": [T: "osztás szorzás"]                       	#  0x22c7	(en: 'division times', DeepL translation)
