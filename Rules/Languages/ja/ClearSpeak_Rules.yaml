@@ -489,7 +489,7 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [T: "空集合"]      # phrase('the empty set')
+      then: [T: "くう集合"]      # phrase('the empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
