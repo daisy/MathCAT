@@ -955,6 +955,25 @@ fn bracket_and_arrow_names_read_correctly() -> Result<()> {
     return Ok(());
 }
 
+/// Shape names that Open JTalk misread: 中くらい was ナカクライ, 四分円 was ヨンプンエン
+/// (with only 四分円 in kana, 右上 became ミギジョー, 左上 ヒダリジョー and 左下 ヒダリクダ,
+/// so the whole name is kana) and 角丸 was スミマル (also in the menclose roundedbox);
+/// 中カッコ after ちゅうくらいの also became ナカカッコ.
+#[test]
+fn shape_names_read_correctly() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x25FB;", "ちゅうくらいの白四角"),
+        ("&#x25F7;", "みぎうえしぶんえん付き白丸"),
+        ("&#x25A2;", "かど丸の白四角"),
+        ("&#x2774;", "ちゅうくらいのちゅうカッコ飾り"),
+        ("&#x25B3;", "三角形"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// main reads a∶b as the function intent ratio(a, b); ja gives it a name and glue word.
 #[test]
 fn ratio_as_function() -> Result<()> {
@@ -1435,7 +1454,7 @@ fn menclose_strikes() -> Result<()> {
 fn menclose_shapes_and_long_division() -> Result<()> {
     for (notation, expected) in [
         ("circle", "円, 囲み x 囲み終了"),
-        ("roundedbox", "角丸の四角, 囲み x 囲み終了"),
+        ("roundedbox", "かど丸の四角, 囲み x 囲み終了"),
         ("longdiv", "割り算の筆算の記号, 囲み x 囲み終了"),
     ] {
         let expr = format!("<math><menclose notation='{notation}'><mi>x</mi></menclose></math>");
