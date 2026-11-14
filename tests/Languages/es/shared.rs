@@ -126,6 +126,17 @@ fn limit_one_sided_superscript() -> Result<()> {
 
 
 #[test]
+fn composed_with() -> Result<()> {
+    // ∘: "f compuesta con g" (función, permutación, relación: femenino)
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi></math>", "f compuesta con g")?;
+    test("es", "SimpleSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>k</mi></math>", "f compuesta con g compuesta con k")?;
+    // ℎ (U+210E) es la h cursiva que llega desde LaTeX: "h", no "constante de Planck"
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>ℎ</mi></math>", "f compuesta con h")?;
+    test("es", "ClearSpeak", "<math><mi>ℎ</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>", "h de x")?;
+    return Ok(());
+}
+
+#[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
     test("es", "SimpleSpeak", expr, "n sobre m")?;
