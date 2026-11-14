@@ -1069,7 +1069,7 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
     <mo>)</mo></mrow></mrow>
   </math>";
   test_ClearSpeak("es", "ClearSpeak_Matrix", "EndVector",
-        expr, "la matriz 2 por 2; fila 1; 2, 1; fila 2; 7, 5; fin del vector")?;
+        expr, "la matriz 2 por 2; fila 1; 2, 1; fila 2; 7, 5; fin de la matriz")?;
     return Ok(());
   }
 
@@ -1130,7 +1130,7 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("es", "ClearSpeak_Matrix", "EndVector",
-        expr, "la matriz 2 por 2; fila 1; columna 1; b sub 1 1; columna 2; b sub 1 2; fila 2; columna 1; b sub 2 1; columna 2; b sub 2 2; fin del vector")?;
+        expr, "la matriz 2 por 2; fila 1; columna 1; b sub 1 1; columna 2; b sub 1 2; fila 2; columna 1; b sub 2 1; columna 2; b sub 2 2; fin de la matriz")?;
   return Ok(());
 }
 

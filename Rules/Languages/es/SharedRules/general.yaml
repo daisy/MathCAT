@@ -1129,10 +1129,9 @@
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
       - test:
+        # una matriz de 2 o más filas y columnas no es un vector: "fin de la matriz" también con EndVector
         - if: "self::m:determinant"
           then: [T: "fin del determinante"]      # phrase('fin del determinante')
-        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
-          then: [T: "fin del vector"]      # phrase('fin del vector')
           else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: default-matrix
@@ -1156,10 +1155,9 @@
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
       - test:
+        # una matriz de 2 o más filas y columnas no es un vector: "fin de la matriz" también con EndVector
         - if: "self::m:determinant"
           then: [T: "fin del determinante"]      # phrase('fin del determinante')
-        - else_if: "$ClearSpeak_Matrix = 'EndVector'"
-          then: [T: "fin del vector"]      # phrase('fin del vector')
           else: [T: "fin de la matriz"]      # phrase('fin de la matriz')
 
 - name: chemistry-msub
