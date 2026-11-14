@@ -799,3 +799,34 @@ fn cmu_2024_additions() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn time_and_date() -> Result<()> {
+    // intent ":time" y ":date": la hora y la fecha en palabras, como las dice la voz del MathCAT Demo
+    let cases = [
+        ("<math><mtext intent=\":time\">9:00</mtext></math>", "las 9"),
+        ("<math><mtext intent=\":time\">9:05</mtext></math>", "las 9 y 5"),
+        ("<math><mtext intent=\":time\">9:15</mtext></math>", "las 9 y cuarto"),
+        ("<math><mtext intent=\":time\">9:30</mtext></math>", "las 9 y media"),
+        ("<math><mtext intent=\":time\">9:45</mtext></math>", "las 9 y 45"),
+        ("<math><mtext intent=\":time\">12:30</mtext></math>", "las 12 y media"),
+        ("<math><mtext intent=\":time\">13:30</mtext></math>", "las 13 y 30"),
+        ("<math><mtext intent=\":time\">0:00</mtext></math>", "las 12 de la noche"),
+        ("<math><mtext intent=\":time\">00:21</mtext></math>", "las 12 y 21 de la noche"),
+        ("<math><mtext intent=\":time\">1:30</mtext></math>", "la una y media"),
+        ("<math><mtext intent=\":time\">23:45:10</mtext></math>", "las 23 y 45 con 10 segundos"),
+        ("<math><mtext intent=\":time\">1:00:01</mtext></math>", "la una con 1 segundo"),
+        ("<math><mtext intent=\":time\">25:70</mtext></math>", "25:70"),
+        ("<math><mtext intent=\":date\">02/01/1981</mtext></math>", "2 de enero de 1981"),
+        ("<math><mtext intent=\":date\">1981-01-02</mtext></math>", "2 de enero de 1981"),
+        ("<math><mtext intent=\":date\">31/12/1999</mtext></math>", "31 de diciembre de 1999"),
+        ("<math><mn intent=\":date\">2002-03-15</mn></math>", "15 de marzo de 2002"),
+        ("<math><mtext intent=\":date\">13/13/2000</mtext></math>", "13/13/2000"),
+        ("<math><mtext intent=\":time\">23:45</mtext><mi intent=\"_minutos\">⁣</mi></math>", "las 23 y 45 minutos"),
+        ("<math><mtext intent=\":time:literal\">9:30</mtext></math>", "9:30"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
