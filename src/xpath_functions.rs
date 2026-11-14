@@ -1835,10 +1835,8 @@ fn adjacent_unit_or_currency(element: Element) -> Option<Element> {
     // Mixed number: the "1" sits inside mrow(1, invisible-plus, fraction); the unit follows that mrow.
     let parent = parent_element(element)?;
     let inside_mixed = unit_children(parent).iter().any(|child| name(*child) == "mo" && leaf_text(*child) == "\u{2064}");
-    if inside_mixed {
-        if let Some(unit) = scan_beside_unit_or_currency(parent, true) {
-            return Some(unit);
-        }
+    if inside_mixed && let Some(unit) = scan_beside_unit_or_currency(parent, true) {
+        return Some(unit);
     }
     return scan_beside_unit_or_currency(element, false);
 
