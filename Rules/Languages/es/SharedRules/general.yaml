@@ -21,11 +21,51 @@
       then: [T: "por la derecha"]      # phrase(x tiende a 0 'por la derecha')
       else: [T: "por la izquierda"]    # phrase(x tiende a 0 'por la izquierda')
 
+- name: min-max-con-condicion
+  # \min_{x∈A} f(x): la condición va al final, como se dice: "el mínimo de f de x cuando x pertenece a A"
+  # (el nombre lo dice la regla "min-max-nombre", así la navegación encuentra cada parte)
+  tag: mrow
+  match: "count(*) >= 3 and *[1][self::m:munder][contains('|min|max|sup|inf|', concat('|', translate(*[1], 'íá \u00A0\u2009\u2061', 'ia'), '|'))] and *[2][.='\u2061'] and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
+  replace:
+  - x: "*[1]"
+  - T: "de"      # phrase(el mínimo 'de' f de x)
+  - x: "*[position() > 2]"
+  - pause: short
+  - T: "cuando"      # phrase(el mínimo de f de x 'cuando' x pertenece a A)
+  - x: "*[1]/*[2]"
+  - pause: short
+
+- name: min-max-nombre
+  # el munder de "min-max-con-condicion": solo el nombre; la condición se dice al final
+  tag: munder
+  variables: [Op: "translate(*[1], 'íá \u00A0\u2009\u2061', 'ia')"]
+  match: "contains('|min|max|sup|inf|', concat('|', translate(*[1], 'íá \u00A0\u2009\u2061', 'ia'), '|')) and following-sibling::*[1][.='\u2061'] and following-sibling::*[2] and not(preceding-sibling::*) and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - bookmark: "@id"
+  - test:
+      if: "$Verbosity='Terse'"
+      then:
+      - test:
+        - if: "$Op='min'"
+          then: [T: "mín"]      # phrase('mín' de f de x)
+        - else_if: "$Op='max'"
+          then: [T: "máx"]      # phrase('máx' de f de x)
+        - else: [x: "$Op"]
+      else:
+      - test:
+        - if: "$Op='min'"
+          then: [T: "el mínimo"]      # phrase('el mínimo' de f de x)
+        - else_if: "$Op='max'"
+          then: [T: "el máximo"]      # phrase('el máximo' de f de x)
+        - else_if: "$Op='sup'"
+          then: [T: "el supremo"]      # phrase('el supremo' de f de x)
+        - else: [T: "el ínfimo"]      # phrase('el ínfimo' de f de x)
+
 - name: limite-con-tilde
   # "lím", "lím sup" y "lím inf" escritos con tilde: Rules/Intent solo reconoce "lim", así que se leen aquí
   tag: munder
-  variables: [Base: "translate(*[1], ' \u00A0\u2061', '')"]
-  match: "($Base='lím' or $Base='límsup' or $Base='líminf') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
+  variables: [Base: "translate(*[1], ' \u00A0\u2004\u2005\u2006\u2009\u200A\u2061', '')"]
+  match: "($Base='lím' or $Base='límsup' or $Base='líminf' or $Base='límínf') and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"   # en modo literal (navegación) se lee con las reglas generales
   replace:
   - test:
       if: "$Verbosity!='Terse'"
@@ -33,7 +73,7 @@
   - test:
     - if: "$Base='límsup'"
       then: [T: "límite superior cuando"]
-    - else_if: "$Base='líminf'"
+    - else_if: "$Base='líminf' or $Base='límínf'"
       then: [T: "límite inferior cuando"]
       else: [T: "límite cuando"]
   - x: "*[2]"
