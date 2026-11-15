@@ -456,7 +456,7 @@
  - "ℾℿ":                                          # 0x213e, 0x213f
     - T: "doble trazo"
     - spell: "translate('.', 'ℾℿ', 'ΓΠ')"
- - "ℎ": [T: "constante de Planck"]              	#  0x210e	(en: 'planck constant', MathPlayer: 'constante de Planck', google: 'planck constante')
+ - "ℎ": [T: "h"]                                	#  0x210e	(es la h cursiva matemática de U+1D455; la constante de Planck se indica con intent)
 
  - "ℏ": [T: "h barra"]                               # 0x210f	(en: 'h bar')
 
@@ -698,7 +698,7 @@
     - test:
         if: "parent::m:mmultiscripts[*[1][.='C' or .='F'] and *[2][self::m:mprescripts]] or parent::*[self::m:msup or self::m:skip-super][*[1][self::m:mn]]"
         then: [T: "grados"]      # {}^{\circ}C, 30^{\circ}
-        else: [T: "compuesto"]          # (en: 'composed with')
+        else: [T: "compuesta con"]      # f compuesta con g: función, permutación, relación (en: 'composed with')
  - "∙":                                         	#  0x2219
     - test:
         - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
