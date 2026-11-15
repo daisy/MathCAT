@@ -1814,3 +1814,11 @@ fn hour_after_another_unit_terse() -> Result<()> {
     }
     return Ok(());
 }
+
+/// 開 in 開部分集合 is read ひらき by Open JTalk, so it is written かい (as in かい区間).
+#[test]
+fn open_subset_superset() -> Result<()> {
+    test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C3;</mo><mi>y</mi></math>", "x かい部分集合オブ y")?;
+    test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C4;</mo><mi>y</mi></math>", "x かい上位集合オブ y")?;
+    return Ok(());
+}
