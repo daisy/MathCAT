@@ -1710,6 +1710,23 @@ fn ascii_symbol_names() -> Result<()> {
     return Ok(());
 }
 
+/// The angle brackets ⟨ ⟩ that \langle and \rangle give are 山括弧 in Japanese (JIS calls 〈 始め山括弧);
+/// they were called 三角カッコ. The long arrows keep their names.
+#[test]
+fn angle_brackets_and_long_arrows() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mo>&#x27E8;</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>&#x27E9;</mo></mrow></math>",
+            "山カッコ, エー コンマ, b, 山カッコ閉じ"),
+        ("<math><mi>x</mi><mo>&#x27FC;</mo><msup><mi>x</mi><mn>2</mn></msup></math>",
+            "x 棒から出る長い右向き矢印, x の 2 乗"),
+        ("<math><mi>p</mi><mo>&#x27F8;</mo><mi>q</mi></math>", "p 長い左向き二重矢印 q"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// A mixed number is read 2 と 4分の3 in Japanese, whether the invisible plus is
 /// written or inferred; ± and ∓ are プラスマイナス and マイナスプラス, not the
 /// English "plus or minus" in katakana.
