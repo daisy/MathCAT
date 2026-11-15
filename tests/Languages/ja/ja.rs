@@ -1669,8 +1669,8 @@ fn natural_log_is_shizen_taisuu() -> Result<()> {
 #[test]
 fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "対数のしゅち, オブ z")?;
-    test("ja", "SimpleSpeak", expr, "対数のしゅち, オブ z")?;
+    test("ja", "ClearSpeak", expr, "対数のしゅち オブ z")?;
+    test("ja", "SimpleSpeak", expr, "対数のしゅち オブ z")?;
     return Ok(());
 }
 
@@ -1854,5 +1854,27 @@ fn hour_after_another_unit_terse() -> Result<()> {
 fn open_subset_superset() -> Result<()> {
     test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C3;</mo><mi>y</mi></math>", "x かい部分集合オブ y")?;
     test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C4;</mo><mi>y</mi></math>", "x かい上位集合オブ y")?;
+    return Ok(());
+}
+
+/// Terms and operators before an element with an empty `ot: ""` (such as a square root
+/// or absolute value) must not be dropped inside nested expressions.
+#[test]
+fn terms_before_root_in_nested_expressions() -> Result<()> {
+    let frac_num = "<math><mfrac><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow><mn>2</mn></mfrac></math>";
+    test("ja", "ClearSpeak", frac_num, "分数; 1 プラス 平方根 オブ 5; オーバー 2")?;
+    test("ja", "SimpleSpeak", frac_num, "分数, 1 プラス 平方根 オブ 5; オーバー 2, 分数終了")?;
+
+    let frac_den = "<math><mfrac><mn>2</mn><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow></mfrac></math>";
+    test("ja", "ClearSpeak", frac_den, "分数 2; オーバー 1 プラス 平方根 オブ 5")?;
+
+    let parens = "<math><mrow><mo>(</mo><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", parens, "丸カッコ, 1 プラス 平方根 オブ 5; 丸カッコ閉じ")?;
+
+    let sup = "<math><msup><mi>x</mi><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow></msup></math>";
+    test("ja", "ClearSpeak", sup, "x の上付き 1 プラス 平方根 オブ 5, 上付き終了")?;
+
+    let abs_frac = "<math><mfrac><mrow><mn>1</mn><mo>+</mo><mo>|</mo><mi>x</mi><mo>|</mo></mrow><mn>2</mn></mfrac></math>";
+    test("ja", "ClearSpeak", abs_frac, "分数; 1 プラス 絶対値 x; オーバー 2")?;
     return Ok(());
 }
