@@ -767,4 +767,4 @@
       # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
       if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
       then: [x: "text()"]
-      else: [x: "SpeakIntentName(name(), $Verbosity, 'nofix')"]      # usa IntentMappings (p. ej., cross-product); si no hay, dice el nombre sin guiones
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]
