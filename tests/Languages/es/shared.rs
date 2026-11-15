@@ -47,7 +47,8 @@ fn ordinals() -> Result<()> {
         // 1.^{\text{o}} y 1^{\text{o}}
         ("<math><mn>1</mn><msup><mo>.</mo><mtext>o</mtext></msup></math>", "primero"),
         ("<math><mn>3</mn><msup><mo>.</mo><mtext>er</mtext></msup></math>", "tercer"),
-        ("<math><msup><mn>1</mn><mtext>o</mtext></msup></math>", "primero"),
+        // sin punto no es ordinal (suele ser un grado mal escrito: 30º)
+        ("<math><mn>1</mn><mtext>º</mtext></math>", "1 ordinal masculino"),
         // dentro de una fórmula
         ("<math><msub><mi>a</mi><mrow><mn>1</mn><mtext>.o</mtext></mrow></msub><mo>+</mo><msub><mi>a</mi><mrow><mn>2</mn><mtext>.o</mtext></mrow></msub></math>",
             "a sub primero fin de sub; más, a sub segundo fin de sub"),
@@ -124,6 +125,17 @@ fn limit_one_sided_superscript() -> Result<()> {
     return Ok(());
 }
 
+
+#[test]
+fn composed_with() -> Result<()> {
+    // ∘: "f compuesta con g" (función, permutación, relación: femenino)
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi></math>", "f compuesta con g")?;
+    test("es", "SimpleSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>k</mi></math>", "f compuesta con g compuesta con k")?;
+    // ℎ (U+210E) es la h cursiva que llega desde LaTeX: "h", no "constante de Planck"
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>ℎ</mi></math>", "f compuesta con h")?;
+    test("es", "ClearSpeak", "<math><mi>ℎ</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>", "h de x")?;
+    return Ok(());
+}
 
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {

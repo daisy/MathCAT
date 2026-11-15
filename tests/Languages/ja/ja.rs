@@ -944,7 +944,7 @@ fn definite_integral() -> Result<()> {
 #[test]
 fn unicode_full_symbol_names() -> Result<()> {
     for (ch, expected) in [
-        ("&#x00A5;", "円記号"),
+        ("&#x00A5;", "円"),
         ("&#x2205;", "くう集合"),
         ("&#x2295;", "丸 プラス"),
     ] {
@@ -957,6 +957,23 @@ fn unicode_full_symbol_names() -> Result<()> {
     ] {
         let expr = format!("<math><mi>x</mi><mo>{op}</mo><mi>y</mi></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Open JTalk read the vulgar fractions as minutes (4分の1 was ヨンプンノイチ and
+/// 2分の1 ニフンノイチ), so they are spaced the way the fraction rule says them;
+/// ¥ is a currency like $ and £ (it was 円記号 500); 節記号 was フシキゴー.
+#[test]
+fn latin1_fractions_and_yen() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mn>&#x00BC;</mn></math>", "4 分の 1"),
+        ("<math><mi>x</mi><mo>+</mo><mn>&#x00BE;</mn></math>", "x プラス 4 分の 3"),
+        ("<math><mo>&#x2E39;</mo></math>", "上半分のセクション記号"),
+        ("<math><mo>&#x00A5;</mo><mn>500</mn></math>", "500 円"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
     }
     return Ok(());
 }
@@ -1710,6 +1727,23 @@ fn ascii_symbol_names() -> Result<()> {
     return Ok(());
 }
 
+/// The angle brackets ⟨ ⟩ that \langle and \rangle give are 山括弧 in Japanese (JIS calls 〈 始め山括弧);
+/// they were called 三角カッコ. The long arrows keep their names.
+#[test]
+fn angle_brackets_and_long_arrows() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mo>&#x27E8;</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>&#x27E9;</mo></mrow></math>",
+            "山カッコ, エー コンマ, b, 山カッコ閉じ"),
+        ("<math><mi>x</mi><mo>&#x27FC;</mo><msup><mi>x</mi><mn>2</mn></msup></math>",
+            "x 棒から出る長い右向き矢印, x の 2 乗"),
+        ("<math><mi>p</mi><mo>&#x27F8;</mo><mi>q</mi></math>", "p 長い左向き二重矢印 q"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// A mixed number is read 2 と 4分の3 in Japanese, whether the invisible plus is
 /// written or inferred; ± and ∓ are プラスマイナス and マイナスプラス, not the
 /// English "plus or minus" in katakana.
@@ -1812,5 +1846,13 @@ fn hour_after_another_unit_terse() -> Result<()> {
     ] {
         test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, expected)?;
     }
+    return Ok(());
+}
+
+/// 開 in 開部分集合 is read ひらき by Open JTalk, so it is written かい (as in かい区間).
+#[test]
+fn open_subset_superset() -> Result<()> {
+    test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C3;</mo><mi>y</mi></math>", "x かい部分集合オブ y")?;
+    test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C4;</mo><mi>y</mi></math>", "x かい上位集合オブ y")?;
     return Ok(());
 }

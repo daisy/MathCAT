@@ -634,7 +634,7 @@
 
 # Currency symbol → spoken singular base word. Same UnitNumber / PluralForms path as units.
 - CurrencySymbols: {
-    "$": "ドル", "¢": "セント", "€": "ユーロ", "£": "ポンド", "₡": "コロン", "₤": "リラ", "₨": "ルピー",
+    "$": "ドル", "¢": "セント", "€": "ユーロ", "£": "ポンド", "¥": "円", "₡": "コロン", "₤": "リラ", "₨": "ルピー",
     "₩": "ウォン", "₪": "シェケル", "₱": "ペソ", "₹": "ルピー", "₺": "リラ", "₿": "ビットコイン",
     # could add more currencies...
   }
