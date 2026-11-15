@@ -454,7 +454,7 @@ fn literal_speak() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
@@ -513,7 +513,7 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>

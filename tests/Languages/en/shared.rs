@@ -493,14 +493,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow, up tack cap b right arrow")?;
   return Ok(());
 
 }
@@ -575,14 +575,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow, is perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }

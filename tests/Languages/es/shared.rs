@@ -562,7 +562,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
+  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, tachuela hacia arriba, mayúscula b flecha derecha")?;
   return Ok(());
 
 }
@@ -644,7 +644,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
+  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, es perpendicular a, mayúscula b flecha derecha")?;
   return Ok(());
 
 }
