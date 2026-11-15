@@ -449,7 +449,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("fr", "LiteralSpeak", expr, "a majuscule flèche vers la droite, perpendiculaire à, b majuscule flèche vers la droite")?;
+  test("fr", "LiteralSpeak", expr, "a majuscule flèche vers la droite, est taquet vers le haut, b majuscule flèche vers la droite")?;
   Ok(())
 }
 
@@ -531,7 +531,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("fr", "SimpleSpeak", expr, "a majuscule flèche vers la droite, perpendiculaire à, b majuscule flèche vers la droite")?;
+  test("fr", "SimpleSpeak", expr, "a majuscule flèche vers la droite, est taquet vers le haut, b majuscule flèche vers la droite")?;
   Ok(())
 }
 

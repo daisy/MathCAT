@@ -1,5 +1,5 @@
 ---
-# Ordinales escritos en una fórmula: 1.º, 2.ª, 3.er, 1\text{.\textsuperscript{o}}, 1.^{\text{o}}, 1^{\text{o}}
+# Ordinales escritos en una fórmula (siempre con punto: sin punto suele ser un grado mal escrito): 1.º, 2.ª, 3.er, 1\text{.\textsuperscript{o}}, 1.^{\text{o}}
 # → "primero", "segunda", "tercer". Del 1 al 99. La letra marca el género y el número:
 # o (primero), a (primera), er (primer, tercer), os (primeros), as (primeras).
 # Se incluye al principio de ClearSpeak y SimpleSpeak para ganarle a las reglas de potencias.
@@ -9,10 +9,9 @@
   tag: mn
   match:
   - "translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1 and ("
-  - "  following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mtext or self::m:mi][contains('|.o|.a|.er|.os|.as|.º|.ª|º|ª|', concat('|', substring-before(concat(normalize-space(.), ' '), ' '), '|'))] or"
+  - "  following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mtext or self::m:mi][contains('|.o|.a|.er|.os|.as|.º|.ª|', concat('|', substring-before(concat(normalize-space(.), ' '), ' '), '|'))] or"
   - "  following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:msup or self::m:power][*[1][self::m:mo][.='.'] and *[2][self::m:mtext or self::m:mi][contains('|o|a|er|os|as|º|ª|𝑜|𝑎|', concat('|', ., '|'))]] or"
-  - "  following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mo][.='.']/following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mtext or self::m:mi][.='º' or .='ª'] or"
-  - "  parent::*[self::m:msup or self::m:power][*[2][self::m:mtext][contains('|o|a|er|os|as|', concat('|', ., '|'))]] and not(preceding-sibling::*)"
+  - "  following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mo][.='.']/following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mtext or self::m:mi][.='º' or .='ª']"
   - ")"
   variables:
   - OrdN: "number(.)"
@@ -51,7 +50,7 @@
 # la marca no se lee (ya la leyó la regla "ordinal"); si es un texto que sigue ("1.er término"), se lee el resto
 - name: ordinal-mark-text
   tag: [mtext, mi]
-  match: "contains('|.o|.a|.er|.os|.as|.º|.ª|º|ª|', concat('|', substring-before(concat(normalize-space(.), ' '), ' '), '|')) and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1]"
+  match: "contains('|.o|.a|.er|.os|.as|.º|.ª|', concat('|', substring-before(concat(normalize-space(.), ' '), ' '), '|')) and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1]"
   replace:
   - test:
       if: "contains(normalize-space(.), ' ')"
@@ -64,10 +63,3 @@
   - "self::m:mo and .='.' and following-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mtext or self::m:mi][.='º' or .='ª'] and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1] or"
   - "(self::m:mtext or self::m:mi) and (.='º' or .='ª') and preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mo][.='.']/preceding-sibling::*[not(self::m:mo and .='\u2062')][1][self::m:mn][translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1]"
   replace: []
-
-# 1^{\text{o}}: el número lee el ordinal y el exponente no se lee
-- name: ordinal-power
-  tag: [msup, power]
-  match: "*[1][self::m:mn][translate(., '0123456789', '') = '' and string-length(.) >= 1 and string-length(.) <= 2 and number(.) >= 1] and *[2][self::m:mtext][contains('|o|a|er|os|as|', concat('|', ., '|'))]"
-  replace:
-  - x: "*[1]"

@@ -23,7 +23,7 @@ fn case_1() -> Result<()> {
   </math>
    ";
   test_ClearSpeak("es", "ClearSpeak_MultiLineLabel", "Auto", expr,
-    "f de x es igual a; 3 casos; línea 1; menos 1 si x es menor que 0; línea 2; 0 si x es igual a 0; línea 3; 1 si x es mayor que 0"
+    "f de x es igual a; 3 casos; caso 1; menos 1 si x es menor que 0; caso 2; 0 si x es igual a 0; caso 3; 1 si x es mayor que 0"
     )?;
     return Ok(());
 }

@@ -552,4 +552,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "translate(name(), '-', ' ')"]
