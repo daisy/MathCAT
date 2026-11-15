@@ -47,7 +47,8 @@ fn ordinals() -> Result<()> {
         // 1.^{\text{o}} y 1^{\text{o}}
         ("<math><mn>1</mn><msup><mo>.</mo><mtext>o</mtext></msup></math>", "primero"),
         ("<math><mn>3</mn><msup><mo>.</mo><mtext>er</mtext></msup></math>", "tercer"),
-        ("<math><msup><mn>1</mn><mtext>o</mtext></msup></math>", "primero"),
+        // sin punto no es ordinal (suele ser un grado mal escrito: 30º)
+        ("<math><mn>1</mn><mtext>º</mtext></math>", "1 ordinal masculino"),
         // dentro de una fórmula
         ("<math><msub><mi>a</mi><mrow><mn>1</mn><mtext>.o</mtext></mrow></msub><mo>+</mo><msub><mi>a</mi><mrow><mn>2</mn><mtext>.o</mtext></mrow></msub></math>",
             "a sub primero fin de sub; más, a sub segundo fin de sub"),
