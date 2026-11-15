@@ -13,10 +13,10 @@
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
         then: [T: "barra"]                        	# 	(google translation)
         else: [T: "barra"]                      	# 	(en: 'line')
- - "²": [T: "al cuadrado"]                      	#  0xb2	(en: 'two', MathPlayer: 'super 2', google: 'dos')
- - "³": [T: "al cubo"]                          	#  0xb3	(en: 'three', MathPlayer: 'super 3', google: 'tres')
+ - "²": [T: "dos"]                      	#  0xb2	(en: 'two', MathPlayer: 'super 2', google: 'dos')
+ - "³": [T: "tres"]                          	#  0xb3	(en: 'three', MathPlayer: 'super 3', google: 'tres')
  - "µ": [T: "micro"]                            	#  0xb5
- - "¹": [T: "super 1"]                          	#  0xb9	(en: 'one', google: 'uno')
+ - "¹": [T: "uno"]                          	#  0xb9	(en: 'one', google: 'uno')
  - "º": [T: "ordinal masculino"]                	#  0xb9	(en: 'masculine ordinal indicator')
  - "¡": [T: "signo de exclamación de apertura"]	#  0xa1	(en: 'inverted exclamation mark')
  - "¶": [T: "calderón"]	#  0xb6	(en: 'paragraph mark')
@@ -250,7 +250,7 @@
  - "؇": [T: "raíz cuarta árabe"]	#  0x607	(en: 'Arabic-Indic fourth root')
  - "؈": [T: "rayo árabe"]	#  0x608	(en: 'Arabic ray')
  - "‐": [T: "menos"]                            	#  0x2010	(en: 'hyphen')
- - "‑": [T: "guión indivisible"]                	#  0x2011	(en: 'hyphen', google: 'guión')
+ - "‑": [T: "guion indivisible"]                	#  0x2011	(en: 'hyphen', google: 'guión')
  - "‒": [T: "guion de cifra"]                      	#  0x2012	(en: 'figure dash', google: 'figura dash')
  - "–": [T: "ene raya"]                          	#  0x2013	(en: 'en dash')
  - "—": [T: "eme raya"]                          	#  0x2014	(en: 'em dash')
@@ -326,7 +326,7 @@
  - "⁽": [T: "paréntesis izquierdo superíndice"] 	#  0x207d	(en: 'superscript left parenthesis', google: 'superscript dejó paréntesis')
  - "⁾": [T: "paréntesis derecho superíndice"]   	#  0x207e	(en: 'superscript right parenthesis', google: 'superscript dirección de entrega de paréntesis')
  - "ⁿ": [T: "superíndice n"]                    	#  0x207f	(en: 'to the ennth power', google: 'al poder de enth')
- - "₀": [T: "bajo cero"]                        	#  0x2080	(en: 'sub zero', google translation)
+ - "₀": [T: "sub cero"]                        	#  0x2080	(en: 'sub zero', google translation)
  - "₁": [T: "sub uno"]                          	#  0x2081	(en: 'sub one', google translation)
  - "₂": [T: "sub dos"]                          	#  0x2082	(en: 'sub two', google translation)
  - "₃": [T: "sub tres"]                         	#  0x2083	(en: 'sub three', google translation)
@@ -339,7 +339,7 @@
  - "₊": [T: "subíndice signo más"]           	#  0x208a	(en: 'subscript plus sign', google: 'subscript plus sign')
  - "₋": [T: "subíndice menos"]                  	#  0x208b	(en: 'subscript minus sign', google: 'subíndico menos signo')
  - "₌": [T: "subíndice signo igual"]      	#  0x208c	(en: 'subscript equals sign', google: 'el subíndice es igual al signo')
- - "₍": [T: "subíndice paréntesis derecho"]  	#  0x208e	(en: 'subscript right parenthesis', google: 'subíndice de paréntesis derecha')
+ - "₍": [T: "paréntesis izquierdo subíndice"]  	#  0x208d	(en: 'subscript left parenthesis')
  - "₎": [T: "paréntesis derecho subíndice"]	#  0x208e	(en: 'subscript right parenthesis')
  - "ₐ": [T: "subíndice a"]                      	#  0x2090	(en: 'sub A', google: 'sub a')
  - "ₑ": [T: "subíndice e"]                      	#  0x2091	(en: 'sub E', google: 'sub e')
@@ -354,7 +354,7 @@
  - "ₛ": [T: "subíndice s"]                      	#  0x209b	(en: 'sub S', google: 'sub s')
  - "ₜ": [T: "subíndice t"]                      	#  0x209c	(en: 'sub T', google: 'sub t')
  - "₠": [T: "ecu"]                              	#  0x20a0	(en: 'european currency unit')
- - "₡": [T: "dos puntos"]                       	#  0x20a1	(en: 'colons', google: 'colons')
+ - "₡": [T: "colón"]                       	#  0x20a1	(en: 'colons', google: 'colons')
  - "₢": [T: "cruzeiro"]                         	#  0x20a2	(en: 'cruzeiro', google: 'cruzeiro')
  - "₣": [T: "franco"]                           	#  0x20a3	(en: 'franc')
  - "₤": [T: "lira"]                             	#  0x20a4
@@ -363,23 +363,23 @@
  - "₧": [T: "peseta"]                           	#  0x20a7
  - "₨": [T: "rupia"]                            	#  0x20a8	(en: 'rupees', google: 'rupias')
  - "₩": [T: "won"]                              	#  0x20a9	(google: 'ganado')
- - "₪": [T: "nuevo sheqel"]                     	#  0x20aa	(en: 'new sheqels', google: 'nuevo sheqels')
+ - "₪": [T: "nuevo séquel"]                     	#  0x20aa	(en: 'new sheqels', google: 'nuevo sheqels')
  - "₫": [T: "dong"]                             	#  0x20ab	(google: 'polla')
  - "€": [T: "euro"]                             	#  0x20ac	(en: 'euros', google: 'euros')
  - "₭": [T: "kip"]                              	#  0x20ad	(google: 'dormir')
  - "₮": [T: "tugrik"]                           	#  0x20ae
  - "₯": [T: "dracma"]                           	#  0x20af	(en: 'drachma')
- - "₰": [T: "penique alemán"]                   	#  0x20b0	(en: 'german pennies', google: 'centavos alemanes')
+ - "₰": [T: "pfennig"]                   	#  0x20b0	(en: 'german pennies', google: 'centavos alemanes')
  - "₱": [T: "peso"]                             	#  0x20b1	(en: 'pesos', google: 'pesos')
- - "₲": [T: "guaraníes"]                        	#  0x20b2	(en: 'guaranis', google translation)
- - "₳": [T: "australs"]                         	#  0x20b3	(google translation)
+ - "₲": [T: "guaraní"]                        	#  0x20b2	(en: 'guaranis', google translation)
+ - "₳": [T: "austral"]                         	#  0x20b3	(google translation)
  - "₴": [T: "grivna"]                           	#  0x20b4	(en: 'hryvnias')
- - "₵": [T: "cedis"]                            	#  0x20b5	(google translation)
+ - "₵": [T: "cedi"]                            	#  0x20b5	(google translation)
  - "₶": [T: "libra tornesa"]                    	#  0x20b6	(en: 'livre tournois')
- - "₷": [T: "spesmilos"]                        	#  0x20b7	(google translation)
- - "₸": [T: "tenges"]                           	#  0x20b8	(google translation)
- - "₹": [T: "rupias indias"]                    	#  0x20b9	(en: 'indian rupees', google translation)
- - "₺": [T: "liras turcas"]                      	#  0x20ba	(en: 'turkish liras', google translation)
+ - "₷": [T: "spesmilo"]                        	#  0x20b7	(google translation)
+ - "₸": [T: "tenge"]                           	#  0x20b8	(google translation)
+ - "₹": [T: "rupia india"]                    	#  0x20b9	(en: 'indian rupees', google translation)
+ - "₺": [T: "lira turca"]                      	#  0x20ba	(en: 'turkish liras', google translation)
  - "₽": [T: "rublo"]                            	#  0x20bd
  - "₻": [T: "marco nórdico"]                    	#  0x20bb
  - "₼": [T: "manat"]                            	#  0x20bc
@@ -427,7 +427,7 @@
  - "℄": [T: "símbolo de línea central"]         	#  0x2104	(en: 'center line symbol', google translation)
  - "℅": [T: "para"]                             	#  0x2105	(en: 'care of', google: 'cuidado de')
  - "℆": [T: "cada una"]                         	#  0x2106	(google: 'cadada una')
- - "ℇ": [T: "constante de euler"]               	#  0x2107	(en: 'euler's constant', google: 'la constante de euler')
+ - "ℇ": [T: "constante de Euler"]               	#  0x2107	(en: 'euler's constant', google: 'la constante de euler')
  - "℈": [T: "escrúpulo"]                       	#  0x2108	(en: 'scruples', google translation)
  - "℉": [T: "grados Fahrenheit"]                	#  0x2109	(en: 'degrees fahrenheit')
  - "ℊ": [T: "g cursiva"]                        	#  0x210a	(en: 'script g', google: 'guión g')
@@ -468,10 +468,10 @@
  - "№": [T: "signo de número"]                  	#  0x2116	(en: 'number')
  - "℥": [T: "onza"]                             	#  0x2125	(en: 'ounces')
  - "Ω": [T: "ohmio"]                            	#  0x2126	(en: 'ohms')
- - "℧": [T: "iota invertida"]                   	#  0x2129	(en: 'turned iota', google: 'convertido en iota')
+ - "℧": [T: "mho"]                   	#  0x2127	(en: 'mhos')
  - "℩": [T: "iota girada"]	#  0x2129	(en: 'turned iota')
- - "K": [T: "grados Kelvin"]                    	#  0x212a	(en: 'kelvin')
- - "Å": [T: "angstrom"]                         	#  0x212b	(en: 'angstroms')
+ - "K": [T: "kelvin"]                    	#  0x212a	(en: 'kelvin')
+ - "Å": [T: "ángstrom"]                         	#  0x212b	(en: 'angstroms')
  - "ℯ": [T: "e cursiva"]                        	#  0x212f	(en: 'script e', google: 'guión e')
 
    # coalesced some chars that use cap letters
@@ -791,7 +791,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "es"]                        	# 	(en: 'is', google translation)
-     - T: "ni proximadamente ni realmente igual a"                     	# 	(en: 'neither approximately nor actually equal to')
+     - T: "ni aproximadamente ni realmente igual a"                     	# 	(en: 'neither approximately nor actually equal to')
  - "≈":                                         	#  0x2248
      - test: 
          if: "$Verbosity!='Terse'"
@@ -2129,10 +2129,10 @@
  - "⪢": [T: "mucho mayor que"]                  	#  0x2aa2	(en: 'double nested greater than')
  - "⪣": [T: "signo menor que doblemente anidado con barra inferior"]	#  0x2aa3	(en: 'double nested less than with underbar', google: 'doble anidado menos que con debajo de la barra')
  - "⪤": [T: "signo mayor que superpuesto a signo menor que"]             	#  0x2aa4	(en: 'greater than overlapping less than')
- - "⪥": [T: "signo mayor que al lado de signo enor que"]                	#  0x2aa5	(en: 'greater than beside less than')
+ - "⪥": [T: "signo mayor que al lado de signo menor que"]                	#  0x2aa5	(en: 'greater than beside less than')
  - "⪦": [T: "menor que cerrado con curva"]      	#  0x2aa6	(en: 'less than closed by curve')
  - "⪧": [T: "mayor que cerrado con curva"]      	#  0x2aa7	(en: 'greater than closed by curve')
- - "⪨": [T: "signo menor que cerrado con curva por encima de signo igual inclinadoa"]	#  0x2aa8	(en: 'less than closed by curve above slanted equal')
+ - "⪨": [T: "signo menor que cerrado con curva por encima de signo igual inclinado"]	#  0x2aa8	(en: 'less than closed by curve above slanted equal')
  - "⪩": [T: "signo mayor que cerrado con curva por encima de signo igual inclinado"]	#  0x2aa9	(en: 'greater than closed by curve above slanted equal')
  - "⪪": [T: "más pequeño que"]                 	#  0x2aaa	(en: 'smaller than')
  - "⪫": [T: "más grande que"]                   	#  0x2aab	(en: 'larger than')
@@ -2330,10 +2330,10 @@
  - "⸔": [T: "áncora hacia abajo"]               	#  0x2e14	(en: 'downwards ancora', google translation)
  - "⸕": [T: "áncora hacia arriba"]              	#  0x2e15	(en: 'upwards ancora', google translation)
  - "⸖": [T: "ángulo punteado apuntando hacia la derecha"] 	#  0x2e16	(en: 'dotted right pointing angle', google translation)
- - "⸗": [T: "doble guión oblicuo"]              	#  0x2e17	(en: 'double oblique hyphen', google translation)
+ - "⸗": [T: "doble guion oblicuo"]              	#  0x2e17	(en: 'double oblique hyphen', google translation)
  - "⸘": [T: "interrobang invertido"]            	#  0x2e18	(en: 'inverted interrobang', google translation)
  - "⸙": [T: "rama de palma"]                    	#  0x2e19	(en: 'palm branch', google translation)
- - "⸚": [T: "guión con diéresis"]               	#  0x2e1a	(en: 'hyphen with diaeresis', google translation)
+ - "⸚": [T: "guion con diéresis"]               	#  0x2e1a	(en: 'hyphen with diaeresis', google translation)
  - "⸛": [T: "tilde con anillo arriba"]          	#  0x2e1b	(en: 'tilde with ring above', google translation)
  - "⸜": [T: "corchete de paráfrasis bajo izquierdo"]	#  0x2e1c	(en: 'left low paraphrase bracket', google translation)
  - "⸝": [T: "corchete de paráfrasis bajo derecho"]	#  0x2e1d	(en: 'right low paraphrase bracket', google translation)
@@ -3099,8 +3099,8 @@
     - T: "doble trazo"
     - spell: "translate('.', '', '0123456789')"
 
- - "": [T: "doble nabla tachada"]             	#  0xf0ca	(en: 'double struck nabla', google translation)
- - "": [T: "doble constante de Euler tachada"]  	#  0xf0cb	(en: 'double struck euler constant', google translation)
+ - "": [T: "nabla de doble trazo"]             	#  0xf0ca	(en: 'double struck nabla', google translation)
+ - "": [T: "constante de Euler de doble trazo"]  	#  0xf0cb	(en: 'double struck euler constant', google translation)
  
  # script chars in math alphabetic block and also MathType private use area
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
