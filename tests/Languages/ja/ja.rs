@@ -1217,6 +1217,21 @@ fn geometry_translation() -> Result<()> {
     return Ok(());
 }
 
+/// The corner brackets were 左上角 and so on, and Open JTalk read 角 there inconsistently (カク, スミ, スミ, カク);
+/// 隅 is read スミ every time and is already used for a corner position, as in ⦍ 上隅短線付き角かっこ.
+#[test]
+fn corner_and_floor_brackets() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mo>&#x231C;</mo><mi>A</mi><mo>&#x231D;</mo></mrow></math>", "左上隅, おおもじ エー, 右上隅"),
+        ("<math><mrow><mo>&#x231E;</mo><mi>A</mi><mo>&#x231F;</mo></mrow></math>", "左下隅, おおもじ エー, 右下隅"),
+        ("<math><mrow><mo>&#x230A;</mo><mi>x</mi><mo>&#x230B;</mo></mrow></math>", "左床 x 右床"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// 分割する is to split something into parts; divisibility is 割り切る. Similar
 /// figures are 相似, not と同様 ("the same as").
 #[test]
