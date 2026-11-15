@@ -812,6 +812,21 @@ fn operator_words_in_unicode_full() -> Result<()> {
     return Ok(());
 }
 
+/// Open JTalk reads 波形 at the start of a word as なみかた and 対の as たいの
+/// ("versus"), so the wave arrows are 波形の … and the paired arrows are 一対の ….
+#[test]
+fn arrow_words_in_unicode_full() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x21AD;", "x 波形の左右矢印 y"),
+        ("&#x21C9;", "x 一対の右向き矢印 y"),
+        ("&#x21DD;", "x 波形の右向き矢印 y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Open JTalk reads these kanji words wrongly when they stand after a space, so the
 /// misread part is written in kana: 正割 is read せいわり and 余割 よわり (now せいかつ and
 /// よかつ), 割る after a letter or number is read われる (now わる), 負の is read まけの
