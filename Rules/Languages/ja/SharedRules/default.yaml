@@ -764,8 +764,11 @@
       else: [pause: auto]
 
 
-- name: default-text
+- name: default-text   # audit-ignore: ja speaks a leaf intent with its IntentMappings word, not the English name
   # unknown leaf -- just speak the text -- could be a literal intent
+  # A leaf intent such as <mo intent='plus'> ends up here. Speak the word in its first
+  # IntentMappings entry; SpeakIntentName falls back to the name, with - and _ as spaces,
+  # when the name is not in IntentMappings.
   tag: "*"
   match: "."
   replace:

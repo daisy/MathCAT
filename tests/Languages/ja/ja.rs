@@ -1856,3 +1856,55 @@ fn open_subset_superset() -> Result<()> {
     test("ja", "SimpleSpeak", "<math><mi>x</mi><mo>&#x27C4;</mo><mi>y</mi></math>", "x かい上位集合オブ y")?;
     return Ok(());
 }
+
+/// A leaf intent (no arguments) is spoken with its ja IntentMappings word instead of its
+/// English intent name; a name that is not there is still spoken as written.
+#[test]
+fn leaf_intent_uses_intent_mappings() -> Result<()> {
+    for (intent, expected) in [
+        ("plus", "エー プラス b"),
+        ("member-of", "エー げんオブ b"),
+        ("factorial", "エー 階乗 b"),
+        ("angle", "エー 角 b"),
+        ("gradient", "エー 勾配 b"),
+        ("not-in-mappings", "エー not in mappings b"),
+    ] {
+        let expr = format!("<math><mrow><mi>a</mi><mo intent='{intent}'>&#x2217;</mo><mi>b</mi></mrow></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// Under LiteralSpeak a leaf intent is not interpreted: the character itself is read
+/// (so ⊥ is the name of the sign, not 垂直), even though other leaf intents now use
+/// their IntentMappings word.
+#[test]
+fn literal_leaf_intent_reads_the_character() -> Result<()> {
+    let expr = "<math><mrow><mover><mi>A</mi><mo stretchy='false'>→</mo></mover><mo intent='perpendicular'>⊥</mo><mover><mi>B</mi><mo stretchy='false'>→</mo></mover></mrow></math>";
+    test("ja", "LiteralSpeak", expr, "おおもじ エー 右向き矢印, 上向きタック, おおもじ b 右向き矢印")?;
+    return Ok(());
+}
+
+/// The Terse form of a leaf intent's IntentMappings word is used when Verbosity is Terse.
+#[test]
+fn leaf_intent_terse() -> Result<()> {
+    let expr = "<math><mrow><mi>a</mi><mo intent='cross-product'>×</mo><mi>b</mi></mrow></math>";
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "エー クロス b")?;
+    return Ok(());
+}
+
+/// · between vectors becomes the leaf intent dot-product (Rules/Intent/linear-algebra.yaml).
+#[test]
+fn vector_dot_product() -> Result<()> {
+    let expr = "<math><mrow><mover><mi>a</mi><mo>→</mo></mover><mo>·</mo><mover><mi>b</mi><mo>→</mo></mover></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "ベクトル エー; 内積 ベクトル b")?;
+    return Ok(());
+}
+
+/// × between vectors becomes the leaf intent cross-product (Rules/Intent/linear-algebra.yaml).
+#[test]
+fn vector_cross_product() -> Result<()> {
+    let expr = "<math><mrow><mover><mi>a</mi><mo>→</mo></mover><mo>×</mo><mover><mi>b</mi><mo>→</mo></mover></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "ベクトル エー; 外積 ベクトル b")?;
+    return Ok(());
+}
