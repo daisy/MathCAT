@@ -1,6 +1,6 @@
 //! Round-trip audit: FromBraille braille → MathML → braille.
 //! Opt-in only (not part of default `cargo test`):
-//! `cargo test --features from-braille-roundtrip --test from_braille_roundtrip -- --nocapture`
+//! `cargo test --features from-braille --test from_braille_roundtrip -- --nocapture`
 #![allow(non_snake_case)]
 #![allow(clippy::needless_return)]
 

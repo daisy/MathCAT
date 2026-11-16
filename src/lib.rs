@@ -33,10 +33,15 @@ mod canonicalize;
 mod infer_intent;
 pub mod speech;
 mod braille;
+#[cfg(feature = "from-braille-impl")]
 pub mod parser;
+#[cfg(feature = "from-braille-ueb")]
 mod ueb_symbols;
+#[cfg(feature = "from-braille-nemeth")]
 mod nemeth_symbols;
+#[cfg(feature = "from-braille-asciimath")]
 mod asciimath_symbols;
+#[cfg(feature = "from-braille-latex")]
 mod latex_symbols;
 mod navigate;
 mod prefs;

@@ -17,9 +17,6 @@ default = ["rules-all"]
 "include-zip" = []
 "enable-logs" = ["android_logger"]
 "no-unsafe" = ["sxd-document-no-unsafe/no-unsafe", "sxd-xpath-no-unsafe/no-unsafe"]
-# Opt-in audit: braille ? MathML ? braille (not run by default).
-"from-braille-roundtrip" = []
-
 # Which Rules/Languages and Rules/Braille directories `include-zip` embeds. Every one is on by default.
 # To embed fewer, turn off default features and name the ones you want, for example
 # `default-features = false, features = ["include-zip", "lang-en", "braille-ueb"]`.
@@ -47,6 +44,15 @@ lang-ru = []
 lang-sv = []
 lang-vi = []
 lang-zh = []
+# From-braille parser support is opt-in and independent of braille output rules.
+# `from-braille-impl` is internal: each notation feature enables it so shared parser code can
+# gate on one cfg (`feature = "from-braille-impl"`) when any notation is selected.
+from-braille = ["from-braille-asciimath", "from-braille-latex", "from-braille-nemeth", "from-braille-ueb"]
+from-braille-impl = []
+from-braille-asciimath = ["from-braille-impl"]
+from-braille-latex = ["from-braille-impl"]
+from-braille-nemeth = ["from-braille-impl"]
+from-braille-ueb = ["from-braille-impl"]
 braille-asciimath = []
 braille-cmu = []
 braille-french = []
@@ -56,6 +62,7 @@ braille-russian = []
 braille-swedish = []
 braille-ueb = []
 braille-vietnam = []
+
 
 
 [dependencies]
@@ -109,11 +116,17 @@ path = "src/bin/mathml2text.rs"
 name = "package-rules"
 path = "src/bin/package_rules.rs"
 
-# Only built/run with `--features from-braille-roundtrip`.
+# Only built/run with all from-braille parsers enabled.
 [[test]]
 name = "from_braille_roundtrip"
 path = "tests/from_braille_roundtrip.rs"
-required-features = ["from-braille-roundtrip"]
+required-features = ["from-braille"]
+
+# From-braille parser tests are only meaningful when the parsers are enabled.
+[[test]]
+name = "from_braille"
+path = "tests/from_braille.rs"
+required-features = ["from-braille"]
 
 [lints.rust]
 unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }

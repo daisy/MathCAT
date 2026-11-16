@@ -393,6 +393,7 @@ pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
 
 /// Parse Unicode braille into MathML and set it as the current expression
 /// (same as [`set_mathml`]). Uses the current `BrailleCode` preference.
+#[cfg(feature = "from-braille-impl")]
 pub fn set_mathml_from_braille(braille: impl AsRef<str>, braille_code: impl AsRef<str>) -> Result<String> {
     enable_logs();
     let braille = braille.as_ref().to_string();

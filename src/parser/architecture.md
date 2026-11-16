@@ -10,7 +10,7 @@ All of the parsers share some common parts.
 
 ### Registry
 
-`NOTATIONS` is the list of codes. Each entry is a braille code name, a `braille_to_expr` function, and a function that drops that code's cached symbol table. `clear_symbol_caches` walks the list. Speech calls it when the rules directory or the braille code changes, so a stale table is not reused.
+`NOTATIONS` is the list of codes. Each entry is a braille code name, a `braille_to_expr` function, and a function that drops that code's cached symbol table. `clear_symbol_caches` walks the list. Speech calls it when the rules directory or the braille code changes, so a stale table is not reused. Parser support is opt-in with `from-braille-ueb`, `from-braille-nemeth`, `from-braille-asciimath`, or `from-braille-latex`; `from-braille` enables all four. None are enabled by default. `build.rs` warns if these features do not match the parser modules in this directory.
 
 Adding a notation is three steps, listed at the top of `mod.rs`: a parser module, a symbol table that reads that code's `unicode.yaml` through `symbols::collect_templates`, and one registry entry.
 
@@ -41,7 +41,7 @@ A parse does not fail because the user stopped typing. A missing argument, an un
 A round trip is notation to MathML to notation again. The audit is opt-in:
 
 ```text
-cargo test --features from-braille-roundtrip --test from_braille_roundtrip -- --nocapture
+cargo test --features from-braille --test from_braille_roundtrip -- --nocapture
 ```
 
 It does not fail the build. It writes `notes/_from_braille_roundtrip.json` with a category for each mismatch. The FromBraille tests (`tests/FromBraille/`, included from `tests/from_braille.rs`) are stricter: both the original MathML and the parsed MathML go through `set_mathml`, then the trees are compared while ignoring presentation-only attributes (`FROM_BRAILLE_IGNORE_ATTRS` in `tests/common/mod.rs`: `mathvariant`, `stretchy`, `accent`, spacing, and the `data-*` bookkeeping). When the forward MathML cannot be recovered, the expected tree is the parser's tree, recorded in an overrides JSON. Those files are the list of structural mismatches, not a license to edit the forward goldens.

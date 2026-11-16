@@ -334,6 +334,7 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
 /// Attrs ignored when comparing FromBraille parse output to forward-test MathML
 /// (mirrors `IGNORE_ATTRS` in MathMLData/compare_mathml_in_csv.py `areCanonicallyEqual`,
 /// plus a few presentation-only attrs that forward UEB does not encode).
+#[allow(dead_code)]
 pub const FROM_BRAILLE_IGNORE_ATTRS: &[&str] = &[
     "id",
     "class",
@@ -401,6 +402,7 @@ pub const FROM_BRAILLE_IGNORE_ATTRS: &[&str] = &[
 
 /// Normalize for comparison the same way as `areCanonicallyEqual` in
 /// MathMLData/compare_mathml_in_csv.py (after SetMathML + attr strip).
+#[cfg(feature = "from-braille")]
 fn normalize_from_braille_canon(mathml: &str) -> String {
     mathml
         .replace("<mtext", "<mi")
@@ -417,6 +419,7 @@ fn normalize_from_braille_canon(mathml: &str) -> String {
 /// (both sides run through [`set_mathml`], then compared with attrs stripped).
 #[allow(dead_code)] // used in testing
 #[allow(non_snake_case)]
+#[cfg(feature = "from-braille")]
 pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> {
     test_from_braille_prefs(code, vec![], mathml, braille)
 }
@@ -426,6 +429,7 @@ pub fn test_from_braille(code: &str, mathml: &str, braille: &str) -> Result<()> 
 /// forward MathML→braille test that produced the braille string.
 #[allow(dead_code)] // used in testing
 #[allow(non_snake_case)]
+#[cfg(feature = "from-braille")]
 pub fn test_from_braille_prefs(
     code: &str,
     test_prefs: Vec<(&str, &str)>,

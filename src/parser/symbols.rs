@@ -9,6 +9,7 @@
 //! ranges in `unicode-full.yaml` are expanded with one of those two cells.
 
 #![allow(clippy::needless_return)]
+#![cfg_attr(not(feature = "from-braille"), allow(dead_code))]
 
 use crate::errors::Result;
 use crate::prefs::PreferenceManager;
@@ -104,6 +105,7 @@ pub(crate) fn ueb_digit_cell(ch: char) -> &'static str {
 }
 
 /// Nemeth lower digits (`1` → ⠂, `0` → ⠴).
+#[cfg(feature = "from-braille-nemeth")]
 pub(crate) fn nemeth_digit_cell(ch: char) -> &'static str {
     match ch {
         '0' => "⠴",

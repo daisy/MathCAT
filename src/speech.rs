@@ -2212,6 +2212,7 @@ pub fn invalidate_braille_caches() {
     BRAILLE_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
     BRAILLE_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
     BRAILLE_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    #[cfg(feature = "from-braille-impl")]
     crate::parser::clear_symbol_caches();
 }
 

@@ -1906,6 +1906,7 @@ fn chemical_electronegativity(symbol: &str) -> Option<f64> {
 }
 
 /// True when `s` is an element symbol (H, Cl, Uue-style names in the table).
+#[cfg(feature = "from-braille-nemeth")]
 pub(crate) fn is_element_symbol(s: &str) -> bool {
     return is_known_chemical_symbol(s);
 }

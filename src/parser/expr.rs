@@ -2,6 +2,7 @@
 
 #![allow(clippy::needless_return)]
 #![allow(non_snake_case)]
+#![cfg_attr(not(feature = "from-braille"), allow(dead_code))]
 
 // --- AST --------------------------------------------------------------------
 

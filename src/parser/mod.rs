@@ -18,11 +18,15 @@
 
 use crate::errors::{bail, Result};
 
+#[cfg(feature = "from-braille-asciimath")]
 mod asciimath;
 mod expr;
+#[cfg(feature = "from-braille-latex")]
 mod latex;
+#[cfg(feature = "from-braille-nemeth")]
 mod nemeth;
 pub(crate) mod symbols;
+#[cfg(feature = "from-braille-ueb")]
 mod ueb;
 
 pub use expr::Expr;
@@ -34,21 +38,25 @@ struct Notation {
 }
 
 const NOTATIONS: &[Notation] = &[
+    #[cfg(feature = "from-braille-ueb")]
     Notation {
         code: "UEB",
         parse: ueb::braille_to_expr,
         clear_symbols: crate::ueb_symbols::clear_ueb_symbol_cache,
     },
+    #[cfg(feature = "from-braille-nemeth")]
     Notation {
         code: "Nemeth",
         parse: nemeth::braille_to_expr,
         clear_symbols: crate::nemeth_symbols::clear_nemeth_symbol_cache,
     },
+    #[cfg(feature = "from-braille-asciimath")]
     Notation {
         code: "ASCIIMath",
         parse: asciimath::braille_to_expr,
         clear_symbols: crate::asciimath_symbols::clear_asciimath_symbol_cache,
     },
+    #[cfg(feature = "from-braille-latex")]
     Notation {
         code: "LaTeX",
         parse: latex::braille_to_expr,
