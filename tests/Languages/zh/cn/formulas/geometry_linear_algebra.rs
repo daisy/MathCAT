@@ -52,7 +52,7 @@ fn probability_linear_algebra_and_geometry_keep_context() -> Result<()> {
             "normal-density",
             "<math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mi>σ</mi><msqrt><mn>2</mn><mi>π</mi></msqrt></mrow></mfrac><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mo>(</mo><mi>x</mi><mo>−</mo><mi>μ</mi><mo>)</mo></mrow><mn>2</mn></mfrac></mrow></msup></math>",
             "f x 等于; 分数, sigma 乘 根号 2 pi 结束根号; 分之 1, 结束分数; 乘; e 的 负 分数, 2 分之, 左括号 x 减 mu 右括号, 结束分数; 次方",
-            "f x 等于; 分数，分子为 1; 分母为 根号 2 pi; 乘; e 的 分数，分子为; 左括号 x 减 mu 右括号; 分母为 2; 次方",
+            "f x 等于; 分数，分子为 1; 分母为 sigma 乘 根号 2 pi; 乘; e 的 负 分数，分子为; 左括号 x 减 mu 右括号; 分母为 2; 次方",
         ),
         (
             "binomial-probability",

@@ -76,7 +76,7 @@ fn common_notation_formulas_keep_contextual_readings() -> Result<()> {
             "quadratic-formula",
             "<math><mi>x</mi><mo>=</mo><mfrac><mrow><mo>−</mo><mi>b</mi><mo>±</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>",
             "x 等于; 分数, 2 a, 分之, 负 b 加或减; 根号 b 平方 减 4 a c 结束根号; 结束分数",
-            "x 等于; 分数，分子为; 根号 b 平方 减 4 a c; 分母为 2 a",
+            "x 等于; 分数，分子为; 负 b 加或减, 根号 b 平方 减 4 a c; 分母为 2 a",
         ),
         (
             "inequality-chain",
