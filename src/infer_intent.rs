@@ -6,15 +6,15 @@
 #![allow(clippy::needless_return)]
 
 use sxd_document_no_unsafe::dom::{Element, Document, ChildOfElement};
-use sxd_document_no_unsafe::as_str;
+use sxd_document_no_unsafe::{as_str, as_qname, QName};
 use crate::prefs::PreferenceManager;
 use crate::speech::SpeechRulesWithContext;
 use crate::canonicalize::{as_element, as_text, name, create_mathml_element, set_mathml_name, INTENT_ATTR, MATHML_FROM_NAME_ATTR};
 use crate::errors::*;
 use std::fmt;
-use std::sync::LazyLock;
 use crate::pretty_print::mml_to_string;
-use crate::xpath_functions::is_leaf;
+use crate::xpath_functions::{is_leaf, is_leaf_name};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use phf::phf_set;
 #[allow(unused_imports)]
@@ -24,6 +24,10 @@ use log::{debug, error, warn};
 const IMPLICIT_FUNCTION_NAME: &str = "apply-function";
 
 pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, mathml: Element<'c>) -> Result<Element<'m>> {
+    return with_original_element(mathml, || infer_intent_from_original(rules_with_context, mathml));
+}
+
+fn infer_intent_from_original<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, mathml: Element<'c>) -> Result<Element<'m>> {
     match catch_errors_building_intent(rules_with_context, mathml) {
         Ok(intent) => return Ok(intent),
         Err(e) => {
@@ -67,6 +71,158 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
     }
 }
 
+const OVERLAY_NAME_ATTR: &str = "data-intent-overlay-name";
+const OVERLAY_TEXT_ATTR: &str = "data-intent-overlay-text";
+
+/// Elements rewritten by [`overlay_intents`]; dropping this clears the overlay.
+pub struct IntentOverlay<'a>(Vec<Element<'a>>);
+
+impl Drop for IntentOverlay<'_> {
+    fn drop(&mut self) {
+        for &element in &self.0 {
+            clear_intent_overlay(element);
+        }
+    }
+}
+
+/// While the Intent rules run, overlay every element that has an `intent` (other than a property-only one)
+/// with the form its intent gives it, so that inference rules inspecting that element see the intent.
+/// A rule that expected the presentation form no longer matches; a rule that matches the intent form does.
+/// * leaf with a literal/concept head: same tag, text is the head (e.g., `<mo intent='∶'>:</mo>` looks like `<mo>∶</mo>`)
+/// * leaf with a number head: `<mn>number</mn>`
+/// * non-leaf: renamed to the concept head (children kept); number and `$ref` heads get names no rule matches
+///
+/// The element the intent is on is shown in its original form while its own intent is processed (see [`infer_intent`]).
+pub fn overlay_intents(mathml: Element<'_>) -> IntentOverlay<'_> {
+    let mut overlaid = Vec::new();
+    add_overlays(mathml, &mut overlaid);
+    return IntentOverlay(overlaid);
+
+    fn add_overlays<'a>(mathml: Element<'a>, overlaid: &mut Vec<Element<'a>>) {
+        if overlay_element(mathml) {
+            overlaid.push(mathml);
+        }
+        for child in mathml.children() {
+            if let Some(child) = child.element() {
+                add_overlays(child, overlaid);
+            }
+        }
+    }
+}
+
+/// Run `f` with `mathml` in its original (no overlay) form, then overlay it again.
+fn with_original_element<T>(mathml: Element, f: impl FnOnce() -> Result<T>) -> Result<T> {
+    let was_overlaid = clear_intent_overlay(mathml);
+    let result = f();
+    if was_overlaid {
+        overlay_element(mathml);
+    }
+    return result;
+}
+
+/// Returns true if `mathml` was changed
+fn overlay_element(mathml: Element) -> bool {
+    if mathml.attribute_value(OVERLAY_NAME_ATTR).is_some() ||
+       mathml.attribute_value(OVERLAY_TEXT_ATTR).is_some() {
+        return false;
+    }
+    let Some(intent_attr) = mathml.attribute_value(INTENT_ATTR) else { return false; };
+    let intent_str = as_str!(intent_attr).to_string();
+    let Ok(lex_state) = LexState::init(&intent_str) else { return false; };
+    let head = lex_state.token;
+    if !matches!(head, Token::ConceptOrLiteral(_) | Token::Number(_) | Token::ArgRef(_)) {
+        return false;       // property-only (or illegal) -- the element is what was written
+    }
+
+    let mathml_name = as_str!(name(mathml)).to_string();
+    let (new_name, new_text) = if is_leaf(mathml) {
+        match head {
+            Token::Number(number) => ("mn", number),
+            Token::ConceptOrLiteral(word) | Token::ArgRef(word) => (mathml_name.as_str(), word),
+            _ => unreachable!(),
+        }
+    } else {
+        let new_name = match head {
+            Token::ConceptOrLiteral(word) if !is_leaf_name(word) => word,
+            Token::ConceptOrLiteral(_) => "intent-concept",
+            Token::Number(_) => "intent-number",
+            _ => "intent-ref",
+        };
+        (new_name, "")
+    };
+
+    let mut changed = false;
+    if is_leaf(mathml) && as_str!(as_text(mathml)) != new_text {
+        mathml.set_attribute_value(OVERLAY_TEXT_ATTR, as_str!(as_text(mathml)));
+        mathml.set_text(new_text);
+        changed = true;
+    }
+    if new_name != mathml_name {
+        mathml.set_attribute_value(OVERLAY_NAME_ATTR, &mathml_name);
+        set_local_name(mathml, new_name);
+        changed = true;
+    }
+    return changed;
+}
+
+/// Returns true if `mathml` was changed
+fn clear_intent_overlay(mathml: Element) -> bool {
+    let mut changed = false;
+    if let Some(text) = mathml.attribute_value(OVERLAY_TEXT_ATTR) {
+        let text = as_str!(text).to_string();
+        mathml.remove_attribute(OVERLAY_TEXT_ATTR);
+        mathml.set_text(&text);
+        changed = true;
+    }
+    if let Some(original_name) = mathml.attribute_value(OVERLAY_NAME_ATTR) {
+        let original_name = as_str!(original_name).to_string();
+        mathml.remove_attribute(OVERLAY_NAME_ATTR);
+        set_local_name(mathml, &original_name);
+        changed = true;
+    }
+    return changed;
+}
+
+fn set_local_name(element: Element, new_name: &str) {
+    let raw_name = element.name();
+    let namespace = as_qname!(raw_name).namespace_uri().map(|ns| ns.to_string());
+    element.set_name(QName::with_namespace_uri(namespace.as_deref(), new_name));
+}
+
+
+static UNIT_JOINING_OPERATORS: phf::Set<&str> = phf_set! {
+    "\u{2062}", "·", "⋅", "∙", "×", "/", "∕",
+};
+
+/// Add `:unit:` to intent nodes built from units: a `power`/`indexed-by` whose base is a unit,
+/// a `fraction` whose parts are all units, and an `mrow` of units joined by multiplication/division operators.
+/// Returns true if `intent` is (now) marked as a unit.
+///
+/// This runs bottom-up on the finished intent tree so that explicit (`intent=':unit'`) and
+/// canonicalize-inferred unit leaves produce the same tree.
+pub fn mark_unit_containers(intent: Element) -> bool {
+    let children: Vec<Element> = intent.children().iter().filter_map(|child| child.element()).collect();
+    let child_is_unit: Vec<bool> = children.iter().map(|&child| mark_unit_containers(child)).collect();
+    let raw_properties = intent.attribute_value(INTENT_PROPERTY);
+    let properties = raw_properties.as_deref().unwrap_or_default();
+    if properties.contains(":unit:") {
+        return true;
+    }
+    let is_unit = match as_str!(name(intent)) {
+        "power" | "indexed-by" => child_is_unit.first() == Some(&true),
+        "fraction" => !child_is_unit.is_empty() && child_is_unit.iter().all(|&is_unit| is_unit),
+        "mrow" => child_is_unit.iter().any(|&is_unit| is_unit) &&
+                  children.iter().zip(&child_is_unit).all(|(&child, &is_unit)|
+                      is_unit || (name(child) == "mo" && UNIT_JOINING_OPERATORS.contains(as_str!(as_text(child))))
+                  ),
+        _ => false,
+    };
+    if is_unit {
+        let properties = if properties.is_empty() {":"} else {properties};
+        intent.set_attribute_value(INTENT_PROPERTY, &simplify_fixity_properties(&(properties.to_string() + "unit:")));
+    }
+    return is_unit;
+}
 
 static FIXITIES: phf::Set<&str> = phf_set! {
     "function", "infix", "prefix", "postfix", "silent", "nofix", "other",
@@ -451,19 +607,10 @@ fn function_application_word() -> String {
 //  Furthermore an NCName cannot begin with a number, dot or minus character although they can appear later in an NCName.
 // NC_NAME defined in www.w3.org/TR/REC-xml/#sec-common-syn, but is complicated
 //   We follow NC_NAME for the basic latin block, but then allow everything
-static CONCEPT_OR_LITERAL: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#     // NC_NAME but simpler
-    ).unwrap()
-});
-static PROPERTY: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#    // : NC_NAME
-    ).unwrap()
-});
-static ARG_REF: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#   // $ NC_NAME
-    ).unwrap()
-});
-static NUMBER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"^-?[0-9]+(\.[0-9]+)?"#).unwrap());
+static CONCEPT_OR_LITERAL: Lazy<Regex> = lazy_regex!(r#"^[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);     // NC_NAME but simpler
+static PROPERTY: Lazy<Regex> = lazy_regex!(r#"^:[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);    // : NC_NAME
+static ARG_REF: Lazy<Regex> = lazy_regex!(r#"^\$[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*"#);   // $ NC_NAME
+static NUMBER: Lazy<Regex> = lazy_regex!(r#"^-?[0-9]+(\.[0-9]+)?"#);
 
 static TERMINALS_AS_U8: [u8; 3] = *b"(,)";
 // static TERMINALS: [char; 3] = ['(', ',',')'];
@@ -618,30 +765,44 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             return Ok(intent);      // if we start with properties, then there can only be properties
         },
         Token::ConceptOrLiteral(word) | Token::Number(word) => {
+            // A concept that only renames a leaf (no arguments) keeps that leaf's id.
+            // Later literals minted from the same intent still need a distinct `-literal-N` id.
+            let mut is_leaf_concept = false;
             let (leaf_name, leaf_text) = if let Token::Number(_) = lex_state.token {
                 ("mn", word)
-                } else if let Token::ConceptOrLiteral(word) = lex_state.token && is_concept_name(lex_state.remaining_str) {
-                    (word, if is_leaf(mathml) { as_str!(as_text(mathml)) } else { "" })
-                }
-                else {
-                    ("mi", word)
-                };
+            } else if let Token::ConceptOrLiteral(word) = lex_state.token &&
+                is_concept_name(lex_state.remaining_str)
+            {
+                is_leaf_concept = is_leaf(mathml);
+                (word, if is_leaf_concept { as_str!(as_text(mathml)) } else { "" })
+            } else {
+                ("mi", word)
+            };
             intent = create_mathml_element(&doc, leaf_name);
             // if the str is part of a larger intent and not the head (e.g., "a" in "f($x, a)", but not the "f" in it), then it is "made up"
             // debug!("    Token::ConceptOrLiteral, word={}, leaf_name={}", word, leaf_name);
             let mathml_name = name(mathml);
             let raw_intent_attr = mathml.attribute_value(INTENT_ATTR);
+            let keep_leaf_id = is_leaf_concept &&
+                intent_attr_head_is(raw_intent_attr.as_deref().unwrap_or(""), word);
             intent.set_attribute_value(MATHML_FROM_NAME_ATTR, 
                 if word == raw_intent_attr.as_deref().unwrap_or_default() {as_str!(mathml_name)} else {leaf_name});
             intent.set_text(leaf_text);       // '-' and '_' get removed by the rules.
-            if let Some(id) = mathml.attribute_value("id") {
-               intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
-               *intent_offset += 1;
-            }
             lex_state.get_next()?;
             if let Token::Property(_) = lex_state.token {
                 let properties = get_properties(lex_state)?;
                 intent.set_attribute_value(INTENT_PROPERTY, &properties);
+            }
+            if let Some(id) = mathml.attribute_value("id") {
+                // A following '(' adds argument nodes, so the head still needs its own id.
+                if keep_leaf_id &&
+                    !lex_state.is_terminal("(")
+                {
+                    intent.set_attribute_value("id", as_str!(id));
+                } else {
+                    intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
+                    *intent_offset += 1;
+                }
             }
         },
         Token::ArgRef(word) => {
@@ -689,6 +850,14 @@ fn clear_nofix_property(intent: Element) {
     } else {
         intent.set_attribute_value(INTENT_PROPERTY, &cleaned);
     }
+}
+
+/// True when `word` is the head of this element's intent value, not a later literal argument.
+fn intent_attr_head_is(raw_intent: &str, word: &str) -> bool {
+    let Some(rest) = raw_intent.trim().strip_prefix(word) else {
+        return false;
+    };
+    return matches!(rest.chars().next(), None | Some(':') | Some('('));
 }
 
 fn is_concept_name(s: &str) -> bool {
@@ -765,6 +934,14 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
             bail!("Illegal 'intent' syntax: missing ')' for intent name '{}'", name(function_name));
         }
         lex_state.get_next()?;
+    }
+
+    // A nested head such as (f∘g)(x) is wrapped in a new apply-function that otherwise has no id.
+    // Navigation records @id, so the wrapper keeps the source element's id.
+    if function.attribute_value("id").is_none() &&
+        let Some(id) = mathml.attribute_value("id")
+    {
+        function.set_attribute_value("id", as_str!(id));
     }
 
     // debug!("  end build_function/# children: {}, #state: {}  ..[bfa] function name: {}",
@@ -846,8 +1023,10 @@ fn find_arg<'r, 'c, 's:'c, 'm:'c>(
             if name == arg_val {
                 // check to see if this mathml has an intent value -- if so the value is the value of its intent value
                 if let Some(intent_str) = mathml.attribute_value(INTENT_ATTR) {
-                    let mut lex_state = LexState::init(intent_str.trim())?;
-                    return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml, intent_offset)? ) );
+                    return with_original_element(mathml, || {
+                        let mut lex_state = LexState::init(intent_str.trim())?;
+                        return Ok( Some( build_intent(rules_with_context, &mut lex_state, mathml, intent_offset)? ) );
+                    });
                 } else {
                     return Ok( Some( rules_with_context.match_pattern::<Element<'m>>(mathml)? ) );
                 }

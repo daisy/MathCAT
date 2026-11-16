@@ -35,6 +35,7 @@ but add common mistakes of AI agents here instead.
 - Keep code/rule changes focused and validate with targeted tests first: `cargo test <relevant-tests>`
 - Do **not** change test goldens (expected braille/speech/nav strings) unless the user explicitly says to. Prefer fixing code/rules to match existing goldens; if a golden looks wrong vs the spec, ask before editing it.
 - do not do any git commands unless explicitly asked for
+- Rust: always use explicit `return` in functions (no trailing-expression returns). See `.cursor/rules/rust-explicit-returns.mdc`.
 - Rust coverage is in `target/coverage/`.
 - When working with GitHub, e.g. looking at PRs and issues, check if the GitHub CLI is installed (`gh --version`).
 - When writing tests, add a brief description explaining the purpose and expected behaviour. Avoid complex setups like using heavily parameterized tests (eg `@pytest.mark.parametrize` for Python)

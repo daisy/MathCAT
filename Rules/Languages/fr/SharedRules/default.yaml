@@ -604,6 +604,11 @@
       then: [pause: short]
       else: [pause: auto]
 
+- name: nofix-intent
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: prefix-intent
   tag: "*"
@@ -658,7 +663,7 @@
   tag: "*"
   match: "count(*)>0"
   replace:
-  - x: "DEBUG(SpeakIntentName(name(.), $Verbosity, 'function'))"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
   - test:
       if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
            not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
@@ -682,4 +687,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

@@ -353,7 +353,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - test:
-      if: "DEBUG($MatchCounter) > 1 and IsNode(., '2D') "
+      if: "$MatchCounter > 1 and IsNode(., '2D') "
       then: [set_variables: [NavNode: "@id"]]   # time to stop, not going "in" to next thing, so before "Move2D"
       else:
       - with:

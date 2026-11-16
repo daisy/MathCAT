@@ -1,16 +1,16 @@
 """Models for definitions.yaml parsing and comparison."""
 
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import StrEnum, auto
 from typing import Any
 
 
 class DefinitionKind(StrEnum):
     """Collection shapes supported by MathCAT definitions files."""
 
-    VECTOR = "vector"
-    SET = "set"
-    MAP = "map"
+    VECTOR = auto()
+    SET = auto()
+    MAP = auto()
 
 
 @dataclass

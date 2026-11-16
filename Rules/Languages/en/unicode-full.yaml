@@ -648,15 +648,23 @@
  - "−": [t: "minus"]                               # 0x2212
  - "∓": [t: "minus or plus"]                       # 0x2213
  - "∔": [t: "dot plus"]                            # 0x2214
- - "∕": [t: "divided by"]                          # 0x2215
+ - "∕":                                           # 0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [t: "slash"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: "per"]
+          else: [t: "divided by"]
  - "∖": [t: "set minus"]                           # 0x2216
  - "∗": [t: "times"]                               # 0x2217
  - "∘": [t: "composed with"]                       # 0x2218
  - "∙":                                            # 0x2219
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [t: "dot"]
-        else: [t: "times"]
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [t: "dot"]
+          else: [t: "times"]
 
  - "∛":                                          # 0x221b
      - test: 
@@ -1009,10 +1017,12 @@
  - "⋃": [t: "union"]                               # 0x22c3
  - "⋄": [t: "diamond operator"]                    # 0x22c4
  - "⋅":                                             # 0x22c5
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [t: "dot"]
-        else: [t: "times"]
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [t: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [t: "dot"]
+          else: [t: "times"]
 
  - "⋆": [t: "times"]                               # 0x22c6
  - "⋇": [t: "division times"]                      # 0x22c7

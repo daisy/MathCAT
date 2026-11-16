@@ -6,7 +6,6 @@
 use std::path::PathBuf;
 use std::collections::HashMap;
 use std::cell::{RefCell, RefMut};
-use std::sync::LazyLock;
 use std::fmt::Debug;
 use sxd_document_no_unsafe::dom::{ChildOfElement, Document, Element};
 use sxd_document_no_unsafe::{Package, QName};
@@ -29,6 +28,7 @@ use std::path::Path;
 use std::rc::Rc;
 use crate::shim_filesystem::{read_to_string_shim, canonicalize_shim};
 use crate::canonicalize::{as_element, create_mathml_element, set_mathml_name, name, MATHML_FROM_NAME_ATTR};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use log::{debug, error, info};
 
@@ -77,6 +77,7 @@ pub fn unquote_string(str: &str) -> &str {
 /// If there is an error, the speech string will indicate an error.
 pub fn intent_from_mathml<'m>(mathml: Element, doc: Document<'m>) -> Result<Element<'m>> {
     let intent_tree = intent_rules(&INTENT_RULES, doc, mathml, "")?;
+    crate::infer_intent::mark_unit_containers(intent_tree);
     doc.root().append_child(intent_tree);
     return Ok(intent_tree);
 }
@@ -105,9 +106,11 @@ fn intent_rules<'m>(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>,
                 mathml.set_attribute_value("intent", ":literal");
             };
         }
+        let overlay = overlay_intents(mathml);
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, doc, nav_node_id, 0);
-        let intent =  rules_with_context.match_pattern::<Element<'m>>(mathml)
-                    .context("Pattern match/replacement failure!")?;
+        let intent =  rules_with_context.match_pattern::<Element<'m>>(mathml);
+        drop(overlay);
+        let intent = intent.context("Pattern match/replacement failure!")?;
         let answer = if name(intent) == "TEMP_NAME" {   // unneeded extra layer
             assert_eq!(intent.children().len(), 1);
             as_element(intent.children()[0])
@@ -458,7 +461,11 @@ impl Replacement {
                 return Ok( Replacement::Text( as_str_checked(value)?.to_string() + POSTFIX_CONCAT_INDICATOR ) );
             },
             "ot" | "OT" => {
-                return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + as_str_checked(value)? + OPTIONAL_INDICATOR ) );
+                let text = as_str_checked(value)?;
+                if text.trim().is_empty() {
+                    return Ok( Replacement::Text( text.to_string() ) );
+                }
+                return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + text + OPTIONAL_INDICATOR ) );
             },
             "x" => {
                 return Ok( Replacement::XPath( MyXPath::build(value)
@@ -582,13 +589,11 @@ impl InsertChildren {
 }
 
 
-static ATTR_NAME_VALUE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(
-        // match name='value', where name is sort of an NCNAME (see CONCEPT_OR_LITERAL in infer_intent.rs)
-        // The quotes can be either single or double quotes
-        r#"(?P<name>[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*)\s*=\s*('(?P<value>[^']+)'|"(?P<dqvalue>[^"]+)")"#
-    ).unwrap()
-});
+static ATTR_NAME_VALUE: Lazy<Regex> = lazy_regex!(
+    // match name='value', where name is sort of an NCNAME (see CONCEPT_OR_LITERAL in infer_intent.rs)
+    // The quotes can be either single or double quotes
+    r#"(?P<name>[^\s\u{0}-\u{40}\[\\\]^`\u{7B}-\u{BF}][^\s\u{0}-\u{2C}/:;<=>?@\[\\\]^`\u{7B}-\u{BF}]*)\s*=\s*('(?P<value>[^']+)'|"(?P<dqvalue>[^"]+)")"#
+);
 
 // structure used when "intent:" is encountered in a rule
 // the name is either a string or an xpath that needs evaluation. 99% of the time it is a string
@@ -969,12 +974,13 @@ impl ReplacementArray {
                 return None;
             }
 
-            // should be exactly one match -- ignore more than one for now
-            let i_start = next.find(OPTIONAL_INDICATOR)?;
-            let start_repeat_word_in_next = &next[i_start + OPTIONAL_INDICATOR_LEN..];
+            let start_repeat_word_in_next = next.trim_start().strip_prefix(OPTIONAL_INDICATOR)?;
             let i_end = start_repeat_word_in_next.find(OPTIONAL_INDICATOR)
                 .unwrap_or_else(|| panic!("Internal error: missing end optional char -- text handling is corrupted!"));
             let repeat_word = &start_repeat_word_in_next[..i_end];
+            if repeat_word.is_empty() {
+                return None;
+            }
             // debug!("check if '{}' is repetitive, end_index={}", repeat_word, i_end);
             // debug!("   prev: '{}', next '{}'", prev, next);
 
@@ -988,9 +994,9 @@ impl ReplacementArray {
                     .is_some();
             if ends_with_word || ends_with_wrapped_word {
                 // debug!("  is repetitive");
-                Some(start_repeat_word_in_next[i_end + OPTIONAL_INDICATOR_LEN..].trim_start())  // remove repeat word and OPTIONAL_INDICATOR
+                return Some(start_repeat_word_in_next[i_end + OPTIONAL_INDICATOR_LEN..].trim_start());  // remove repeat word and OPTIONAL_INDICATOR
             } else {
-                None
+                return None;
             }
         }
     }
@@ -3012,7 +3018,7 @@ cfg_if::cfg_if! {if #[cfg(not(feature = "include-zip"))] {
                 // open the file, read all the contents, then write them back so the time changes
                 let contents = std::fs::read(&start_main_file.file).unwrap_or_else(|_| panic!("Failed to read file {} during test", start_main_file.file.to_string_lossy()));
                 std::fs::write(start_main_file.file, contents).unwrap();
-                std::thread::sleep(Duration::from_millis(5));       // pause a little to make sure the time changes
+                std::thread::sleep(Duration::from_millis(50));       // pause a little to make sure the time changes
 
                 // speak should cause the file stored to have a new time
                 if let Err(e) = get_spoken_text() {

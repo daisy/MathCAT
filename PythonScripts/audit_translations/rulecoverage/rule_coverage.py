@@ -6,13 +6,36 @@ import subprocess
 import sys
 import webbrowser
 from collections import Counter, defaultdict
+from collections.abc import Callable
 from pathlib import Path, PurePosixPath
+from typing import TextIO
 
+from .cargo_progress_visualizer import CargoProgress
 from .rule_coverage_report import RuleKey, coverage, render_html
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "target" / "rule-coverage"
 EVENTS = OUTPUT / "events"
+COMMAND = ["cargo", "test", "--features", "rule-coverage"]
+
+
+def stream(command: list[str], log: TextIO, on_line: Callable[[str], None]) -> int:
+    """Run a command from the repo root, copying each output line to the log and passing it to `on_line`."""
+    log.write(f"$ {' '.join(command)}\n")
+    log.flush()
+    with subprocess.Popen(
+        command,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    ) as process:
+        for line in process.stdout:
+            log.write(line)
+            on_line(line.rstrip("\r\n"))
+        return process.wait()
 
 
 def read_events() -> tuple[set[RuleKey], dict[RuleKey, Counter[str]], list[str]]:
@@ -72,16 +95,14 @@ def run() -> int:
         shutil.rmtree(EVENTS)
     EVENTS.mkdir()
 
-    command = ["cargo", "test", "--features", "rule-coverage"]
     log_path = OUTPUT / "test.log"
-    print(f"Running {' '.join(command)}; saving output to {log_path.relative_to(ROOT)}", flush=True)
-    with log_path.open("w", encoding="utf-8") as log:
-        try:
-            result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, check=False)
-            test_status = result.returncode
-        except OSError as error:
-            log.write(f"Could not run cargo: {error}\n")
-            test_status = 1
+    print(f"Running {' '.join(COMMAND)}; saving output to {log_path.relative_to(ROOT)}", flush=True)
+    with log_path.open("w", encoding="utf-8") as log, CargoProgress() as progress:
+        # listing first gives the bar a total; a failure here (e.g. a compile error) skips the real run
+        test_status = stream([*COMMAND, "--", "--list"], log, progress.listing_line)
+        if not test_status:
+            progress.start_tests()
+            test_status = stream(COMMAND, log, progress.test_line)
 
     defined_rules, hits_by_test, errors = read_events()
     matched_rules = set(hits_by_test)

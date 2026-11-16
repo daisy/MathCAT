@@ -42,6 +42,7 @@ use crate::canonicalize::*;
 use crate::canonicalize::NameStr;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use crate::xpath_functions::IsBracketed;
 use phf::{phf_map, phf_set};
@@ -51,7 +52,6 @@ use log::{error, debug};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 use crate::errors::*;
-use std::sync::LazyLock;
 use elements_rs::{
     AtomicNumber, Electronegativity, Element as PeriodicElement, ElementCategory,
     ElementClassification,
@@ -357,24 +357,64 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
             return None;
         }
         let second_element = as_element(following_siblings[0]);
-        let second_element_name = name(second_element);
-        if second_element_name != "mi" && second_element_name != "mtext" {
+        // Adjacent letter, or the base of a following script (C + u^{2+} → Cu^{2+}).
+        let (merge_target, script_base) = if name(second_element) == "mi" || name(second_element) == "mtext" {
+            (second_element, false)
+        } else {
+            let base = single_letter_script_base(second_element)?;
+            (base, true)
+        };
+        if !can_merge_mi_elements(leaf, merge_target) {
             return None;
         }
-        let second_element_text = as_text(second_element);
-        if second_element_text.len() != 1 {
+        let merge_target_text = as_text(merge_target);
+        if merge_target_text.len() != 1 {
             return None;
         }
         let token_string = as_text(leaf);
-        let chem_token_string = vec![token_string.as_bytes()[0], second_element_text.as_bytes()[0]];
+        let chem_token_string = vec![token_string.as_bytes()[0], merge_target_text.as_bytes()[0]];
         if let Some(chem_element) = get_chem_element(doc, &chem_token_string, 2) {
-            chem_element.set_text(as_str!(as_text(chem_element)));
-            chem_element.set_attribute_value(MAYBE_CHEMISTRY, chem_element.attribute_value(MAYBE_CHEMISTRY).as_deref().unwrap());
+            let merged_text = as_text(chem_element).to_string();
+            let maybe = chem_element.attribute_value(MAYBE_CHEMISTRY).as_deref().unwrap().to_string();
+            if script_base {
+                // Keep the script; fold the leading letter into its base.
+                set_mathml_name(merge_target, "mi");
+                merge_target.set_text(&merged_text);
+                merge_target.remove_attribute("mathvariant");
+                merge_target.set_attribute_value(MAYBE_CHEMISTRY, &maybe);
+                merge_target.set_attribute_value(MERGED_TOKEN, "true");
+                leaf.remove_from_parent();
+                return Some(vec![]);
+            }
+            chem_element.set_text(&merged_text);
+            chem_element.set_attribute_value(MAYBE_CHEMISTRY, &maybe);
             chem_element.set_attribute_value(MERGED_TOKEN, "true");
             second_element.remove_from_parent();
             return Some(vec![chem_element]);
         }
         return None;
+    }
+
+    /// Base of msup/msub/msubsup/mmultiscripts when it is a single ASCII letter.
+    fn single_letter_script_base(element: Element<'_>) -> Option<Element<'_>> {
+        let tag = as_str!(name(element));
+        if tag != "msup" && tag != "msub" && tag != "msubsup" && tag != "mmultiscripts" {
+            return None;
+        }
+        let children = element.children();
+        if children.is_empty() {
+            return None;
+        }
+        let base = as_element(children[0]);
+        let base_name = name(base);
+        if base_name != "mi" && base_name != "mtext" {
+            return None;
+        }
+        let text = as_text(base);
+        if text.len() != 1 || !text.is_ascii() {
+            return None;
+        }
+        return Some(base);
     }
 
     /// split the string which has been checked to be all ASCII chars
@@ -1018,8 +1058,8 @@ fn likely_chem_superscript(sup: Element) -> i32 {
     // bullet is radical (en.wikipedia.org/wiki/Radical_(chemistry)#Depiction_in_chemical_reactions); mhchem uses dot operator
     //  these can stand alone, be followed by +/- or have a number in front "(2•)-"" [examples from mhchem documentation]
     // roman numerals are "oxidation state" and range from -4 to +9
-    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$").unwrap());
-    static SINGLE_PLUS_OR_MINUS_OR_DOT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[+-\U{2212}⋅∙•]$").unwrap());
+    static MULTIPLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^\++$|^-+$|^\U{2212}+$|^[⋅∙•][-+\U{2212}]*$");
+    static SINGLE_PLUS_OR_MINUS_OR_DOT: Lazy<Regex> = lazy_regex!(r"^[+-\U{2212}⋅∙•]$");
     static DOTS: &[char; 3] = &['⋅', '∙', '•'];
     let sup_name = name(sup);
     if sup_name == "mo" && MULTIPLE_PLUS_OR_MINUS_OR_DOT.is_match(as_str!(as_text(sup))) {
@@ -1686,7 +1726,7 @@ fn is_equilibrium_constant(mut mathml: Element) -> bool {
 
 // Oxidation states range from -4 to 9 and are written with (a subset of) roman numerals.
 // All instances seem to be upper case that I've seen.
-static SMALL_UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^(IX|IV|V?I{0,3})\s*$").unwrap());
+static SMALL_UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^(IX|IV|V?I{0,3})\s*$");
 
 /// look for "(s)", "(l)", "(g)", "(aq)", "(eau)" (could also use [...])
 /// this might be called before canonicalization, but in clean_chemistry_mrow, we made sure "( xxx )" is grouped properly
@@ -3322,26 +3362,33 @@ mod chem_tests {
         "#;
         let target = "
             <math>
-                <mrow data-changed='added'>
-                <mrow data-changed='added'>
-                    <mn>2</mn>
-                    <mo data-changed='added'>&#x2062;</mo>
-                    <mrow data-changed='added'>
-                        <msup><mi>OH</mi><mo>-</mo></msup>
-                        <mo data-changed='added'>&#x2061;</mo>
-                        <mrow data-changed='added'>
-                            <mo stretchy='false'>(</mo>
-                            <mtext>aq</mtext>
-                            <mo stretchy='false'>)</mo>
+                <mrow data-changed='added' data-chem-equation='17'>
+                    <mrow data-changed='added' data-chem-equation='10'>
+                        <mn>2</mn>
+                        <mo data-changed='added' data-chem-equation-op='0'>&#x2062;</mo>
+                        <mrow data-changed='added' data-chem-equation='10'>
+                            <mi mathvariant='normal' data-chem-element='1'>O</mi>
+                            <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                            <msup data-chem-formula='4'>
+                                <mi mathvariant='normal' data-split='true' data-chem-element='1'>H</mi>
+                                <mo>-</mo>
+                            </msup>
+                            <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                            <mrow data-changed='added' data-chem-equation='3'>
+                                <mo stretchy='false'>(</mo>
+                                <mtext>aq</mtext>
+                                <mo stretchy='false'>)</mo>
+                            </mrow>
                         </mrow>
                     </mrow>
-                </mrow>
-                <mo>+</mo>
-                <mrow data-changed='added'>
-                    <mtext>C</mtext>
-                    <mo data-changed='added'>&#x2062;</mo>
-                    <msup> <mtext>u</mtext> <mrow><mn>2</mn><mo>+</mo></mrow> </msup>
-                </mrow>
+                    <mo data-chem-equation-op='1'>+</mo>
+                    <msup data-chem-formula='6'>
+                        <mi data-merged='true' data-chem-element='3'>Cu</mi>
+                        <mrow data-chem-equation='3'>
+                            <mn>2</mn>
+                            <mo>+</mo>
+                        </mrow>
+                    </msup>
                 </mrow>
             </math>
            ";

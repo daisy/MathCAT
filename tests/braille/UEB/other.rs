@@ -143,15 +143,15 @@ fn contractions_1() -> Result<()> {
         <mi>cosh</mi><mo>&#x2061;</mo><mi>y</mi><mo>+</mo>
         <mi>arccos</mi><mo>&#x2061;</mo><mi>t</mi>
     </math>";
-    // Note: "arccos" does not use the "cc" contraction -- RUEB 10.6.5 lists "arccosine" without the contraction
-    test_braille("UEB", expr, "⠎⠑⠡⠀⠭⠐⠖⠉⠕⠩⠀⠽⠐⠖⠜⠉⠉⠕⠎⠀⠰⠞")?;
+    // Abbreviated function names are not contracted, including the "ch"/"sh"/"ar" groupsigns.
+    test_braille("UEB", expr, "⠎⠑⠉⠓⠀⠭⠐⠖⠉⠕⠎⠓⠀⠽⠐⠖⠁⠗⠉⠉⠕⠎⠀⠰⠞")?;
     return Ok(());
 
 }
 #[test]
 fn contractions_2() -> Result<()> {
     let expr = "<math><mi>ker</mi><mo>&#x2061;</mo><mi>h</mi></math>";
-    test_braille("UEB", expr, "⠅⠻⠀⠰⠓")?;
+    test_braille("UEB", expr, "⠅⠑⠗⠀⠰⠓")?;
     return Ok(());
 
 }
@@ -159,6 +159,7 @@ fn contractions_2() -> Result<()> {
 #[test]
 fn contractions_3() -> Result<()> {
     let expr = "<math><mi>argument</mi><mo>&#x2061;</mo><mo>(</mo><mi>f</mi><mo>)</mo></math>";
+    // "argument" is a spelled-out function name, so grade-2 contractions still apply.
     test_braille("UEB", expr, "⠜⠛⠥⠰⠞⠐⠣⠋⠐⠜")?;
     return Ok(());
 
@@ -167,7 +168,20 @@ fn contractions_3() -> Result<()> {
 #[test]
 fn contractions_4() -> Result<()> {
     let expr = "<math><mtext>error&#xA0;function&#xA0;</mtext><mi>erf</mi></math>";
-    test_braille("UEB", expr, "⠻⠗⠕⠗⠀⠋⠥⠝⠉⠰⠝⠀⠻⠋")?;
+    // "error" and "function" are ordinary words; "erf" is an abbreviation and is not contracted.
+    test_braille("UEB", expr, "⠻⠗⠕⠗⠀⠋⠥⠝⠉⠰⠝⠀⠑⠗⠋")?;
+    return Ok(());
+
+}
+
+#[test]
+fn contractions_6() -> Result<()> {
+    let expr = "<math>
+        <mi>arctan</mi><mo>&#x2061;</mo><mi>x</mi><mo>+</mo>
+        <mi>arcsin</mi><mo>&#x2061;</mo><mi>y</mi>
+    </math>";
+    // "arctan" and "arcsin" are abbreviations, so "ar" and "in" are not contracted.
+    test_braille("UEB", expr, "⠁⠗⠉⠞⠁⠝⠀⠭⠐⠖⠁⠗⠉⠎⠊⠝⠀⠰⠽")?;
     return Ok(());
 
 }
@@ -274,13 +288,12 @@ fn ueb_italic_typeform_for_digits() -> Result<()> {
 
 #[test]
 fn multiple_lines() -> Result<()> {
-    init_logger();
     // Bare equation-line mtable: `⠸⠀` between rows, no start/end bounds.
     let expr = "<math><mtable><mtr><mtd><mi>x</mi></mtd><mtd><mrow><mo>=</mo><mi>f</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mi>y</mi></mtd><mtd><mrow><mo>=</mo><mi>g</mi><mo>(</mo><mi>t</mi><mo>)</mo></mrow></mtd></mtr></mtable></math>";
     test_braille(
         "UEB",
         expr,
-        "⠰⠭⠀⠐⠶⠀⠋⠐⠣⠞⠐⠜⠸⠀⠰⠽⠀⠐⠶⠀⠛⠐⠣⠞⠐⠜",
+        "⠰⠭⠀⠐⠶⠀⠋⠐⠣⠞⠐⠜⠸⠀⠰⠽⠀⠐⠶⠀⠛⠐⠣⠞⠐⠜⠸⠀",
     )?;
     Ok(())
 }

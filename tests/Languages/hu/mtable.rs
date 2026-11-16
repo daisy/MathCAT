@@ -1338,3 +1338,71 @@ fn single_line_with_label() -> Result<()> {
       expr, "1 egyenlet, címkével 2; b egyenlő 2")?;
     return Ok(());
   }
+  #[test]
+fn matrix_simple_table() -> Result<()> {
+  let expr = "<math>
+        <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr, "táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2")
+  }
+
+
+#[test]
+fn mtable_blank_op() -> Result<()>{
+    // When a table is prefixed with a blank operator, still assume array intent
+    let expr = "<math>
+        <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+    test("hu", "ClearSpeak", expr, "; táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2")
+  }
+
+#[test]
+fn mtable_colspan_table() -> Result<()>{
+  let expr = "<math>
+        <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr, "táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2, oszlop 2; 4")
+  }
+
+#[test]
+fn bug_mtable_rowspan_colspan() -> Result<()>{
+  // Currently, the code correctly computes the number of rows and
+  // columns, but it does not correctly compute the column number whnen
+  // colspans are involved.
+  let expr = "<math>
+        <mtable>
+           <mtr>
+             <mtd rowspan=\"2\" colspan=\"2\"><mi>a</mi></mtd>
+             <mtd rowspan=\"2\"><mi>b</mi></mtd>
+             <mtd colspan=\"2\"><mi>c</mi></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mi>d</mi></mtd><mtd><mi>e</mi></mtd>
+           </mtr>
+        </mtable>
+    </math>";
+    test("hu", "ClearSpeak", expr,
+	 "táblázat 2 sorral és 3 oszloppal; sor 1; oszlop 1; a, oszlop 2; b, oszlop 3; c; sor 2; oszlop 1; d, oszlop 2; e")
+  }
+
+#[test]
+fn mtable_array_no_comma_between_rows() -> Result<()> {
+  // Issue #890: an unfenced table gets 'array' intent; its rows must not be separated by "comma"
+  let expr = "<math display=\"inline\">
+      <mtable class=\"menv-arraylike\">
+        <mtr>
+          <mtd><mi>a</mi></mtd>
+          <mtd><mi>b</mi></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mi>c</mi></mtd>
+          <mtd><mi>d</mi></mtd>
+        </mtr>
+      </mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr,
+    "táblázat 2 sorral és 2 oszloppal; sor 1; oszlop 1; a, oszlop 2; b; sor 2; oszlop 1; c, oszlop 2; d")?;
+  test("hu", "SimpleSpeak", expr,
+    "táblázat 2 sorral és 2 oszloppal; sor 1; oszlop 1; a, oszlop 2; b; sor 2; oszlop 1; c, oszlop 2; d")
+  }
+

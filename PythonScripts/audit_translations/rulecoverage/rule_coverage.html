@@ -18,8 +18,11 @@ summary { cursor: pointer; }
 .badge { display: inline-block; border-radius: .3rem; padding: .05rem .4rem; font-size: .85rem; font-weight: 600; }
 .badge.matched { color: #155c36; background: #dcf5e5; }
 .badge.unmatched { color: #8b3d00; background: #fff0cf; }
-.rules { list-style: none; padding-left: 1rem; }
-.rules li { position: relative; padding: .2rem 0; }
+.rules { list-style: none; padding-left: .5rem; }
+.rules li { position: relative; padding: .2rem .5rem; border-radius: .2rem; }
+/* zebra stripes count only visible rows so filtering keeps them alternating */
+.rules li:nth-child(odd of :not([hidden])) { background: #f1f4f6; }
+.rules li:hover, .rules li:focus { background: #e2eaf0; }
 .rule-tooltip { display: none; position: absolute; z-index: 1; top: 100%; left: 0;
   max-width: min(35rem, 90vw); max-height: 60vh; overflow: auto; padding: .5rem .7rem;
   border: 1px solid #8396a5; border-radius: .3rem; background: #fff; color: #17212b;
@@ -44,10 +47,15 @@ a file is matched when a rule from it completes its replacement successfully.</p
 <div class="controls"><input id="search" type="search" aria-label="Search files and rules"
 placeholder="Search paths, rule names, or tags">
 <select id="status" aria-label="Filter by coverage"><option value="all">All</option>
-<option value="matched">Matched</option><option value="unmatched">No match</option></select></div>
+<option value="matched">Matched</option><option value="unmatched">No match</option></select>
+<select id="rule-set" aria-label="Filter by language or braille code"><option value="all">All languages and codes</option>
+{% for group, values in rule_sets.items() %}<optgroup label="{{ group }}">
+{% for value in values %}<option value="{{ value }}">{{ value }}</option>{% endfor %}
+</optgroup>{% endfor %}
+</select></div>
 <div id="files">
 {% for file in files %}
-<details class="file" data-file-search="{{ file.path }}" data-status="{{ 'matched' if file.matched else 'unmatched' }}">
+<details class="file" data-file-search="{{ file.path }}" data-rule-set="{{ file.rule_set }}" data-status="{{ 'matched' if file.matched else 'unmatched' }}">
 <summary><span class="badge {{ 'matched' if file.matched else 'unmatched' }}">{{ 'Matched' if file.matched else 'No match' }}</span>
 <code>{{ file.path }}</code> <span class="count">{{ file.coverage }} rules</span></summary>
 <p>{{ file.coverage }} active rules matched</p><ul class="rules">
@@ -66,11 +74,17 @@ placeholder="Search paths, rule names, or tags">
 <script>
 const search = document.getElementById('search');
 const status = document.getElementById('status');
+const ruleSet = document.getElementById('rule-set');
 const files = [...document.querySelectorAll('.file')];
 function filter() {
   const query = search.value.trim().toLocaleLowerCase();
   let visible = 0;
   for (const file of files) {
+    // the text search only narrows files within the chosen language or braille code
+    if (ruleSet.value !== 'all' && file.dataset.ruleSet !== ruleSet.value) {
+      file.hidden = true;
+      continue;
+    }
     const pathMatches = file.dataset.fileSearch.toLocaleLowerCase().includes(query);
     let visibleRules = 0;
     for (const rule of file.querySelectorAll('[data-rule-search]')) {
@@ -88,6 +102,7 @@ function filter() {
 }
 search.addEventListener('input', filter);
 status.addEventListener('change', filter);
+ruleSet.addEventListener('change', filter);
 </script>
 </body>
 </html>

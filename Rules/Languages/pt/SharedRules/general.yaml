@@ -1,5 +1,13 @@
 ---
 
+# Parentheses that only group a unit numerator or denominator. Canonicalize sets data-unit-grouping;
+# the nodes stay in the tree for braille. Literal speech still reads them.
+- name: unit-grouping-paren
+  tag: mo
+  match: "@data-unit-grouping and not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - t: ""
+
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -247,6 +255,18 @@
 # Due to this order, some things like "ft" and "cd" mean "feet" vs "femto-tonnes" and "pints" vs "pico-tonnes"
 # ACRESCENTADO (en): no modo conciso, unidade de uma letra é soletrada
 # ("3 m" -> "3 m" soletrado), em vez de expandida para "metros".
+- name: currency-symbol
+  tag: [unit, mi, mo, mtext]
+  variables:
+  - CurrencyWord: "DefinitionValue(., 'Speech', 'CurrencySymbols')"
+  match: "$CurrencyWord != '' and ../*[self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "UnitNumber(.) = 'one'"
+      then: [x: "$CurrencyWord"]
+      else: [x: "UnitPluralForm($CurrencyWord)"]
+
 - name: unit-terse
   tag: unit
   match: "$Verbosity = 'Terse' and string-length(.)=1"
@@ -263,12 +283,6 @@
     # But it might be in a fraction as (C) "3 m/s" (parent is mfrac/mrow) or (D) "3 m^2/s^2" (parent is msup/mfrac/mrow)
     #   or even (E) {3 m^2}/s (parent is msup/mrow)
     # If in a fraction, only look in the numerator to find the coefficient
-  - MRowForCoefficient: "IfThenElse(parent::m:mrow, parent::m:mrow,
-                         IfThenElse(parent::m:power, ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:fraction and not(preceding-sibling::*), ancestor::*[2][self::m:mrow],
-                         IfThenElse(parent::m:power[parent::m:fraction and not(preceding-sibling::*)], ancestor::*[3][self::m:mrow], false()) ) ) )"
-  - IsSingular: "(not($MRowForCoefficient) and parent::*[name(.)!='skip-super' or *[1][.=1]]) or
-                 ($MRowForCoefficient and $MRowForCoefficient[(count(*) = 3 and *[1][self::m:mn and .=1] and *[2]='\u2062')])"
   - Prefix: "''"
   - Word: "''"  
   replace:
@@ -284,6 +298,9 @@
     - else_if: "DefinitionValue(., 'Speech', 'EnglishUnits') != ''"
       then:
       - set_variables: [Word: "DefinitionValue(., 'Speech', 'EnglishUnits')"]
+    - else_if: "DefinitionValue(., 'Speech', 'CurrencySymbols') != ''"
+      then:
+      - set_variables: [Word: "DefinitionValue(., 'Speech', 'CurrencySymbols')"]
 
     # do the first two chars match "da" and the remainder match an SIUnit
     - else_if: "string-length(.) >= 3 and 
@@ -308,33 +325,20 @@
       - set_variables:
         - Word: "text()"
 
-  - with:
-      variables:
-      - Word: "IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ián', concat(substring($Word, 1, string-length($Word)-2), ian), $Word)"
-      - LastChar: "substring($Word, string-length($Word), 1)"
-      - PluralEnding: "IfThenElse($LastChar = 'r' or $LastChar = 'l', 'es',
-                      IfThenElse(substring($Word, string-length($Word)-2, 3) = 'ian', 'es', 's' )) "
-      replace:
-      # somewhat complicated logic to avoid spaces around "-" as in "centi-grams" vs "centi - grams" -- probably doesn't matter
+  # PluralForms first, else PluralDefaultFromEnding / PluralSpellingDefaultSuffix
+  - test:
+      if: "$Prefix = ''"
+      then:
       - test:
-          if: "$Prefix = ''"
-          then:
-          - test:
-            - if: "$IsSingular"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "$Word"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "DefinitionValue($Word, 'Speech', 'PluralForms')"]
-              else: [x: "concat($Word, $PluralEnding)"]
-          else:
-          - x: "$Prefix"
-          - test:
-            - if: "$IsSingular"
-              # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets the prefix concatinated to the base
-              then: [x: "concat('\uF8FE', $Word)"]
-            - else_if: "DefinitionValue($Word, 'Speech', 'PluralForms') != ''"
-              then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
-              else: [x: "concat('\uF8FE', $Word, $PluralEnding)"]
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "$Word"]
+          else: [x: "UnitPluralForm($Word)"]
+      else:
+      - x: "$Prefix"
+      - test:
+        - if: "UnitNumber(.) = 'one'"
+          then: [x: "concat('\uF8FE', $Word)"]
+          else: [x: "concat('\uF8FE', UnitPluralForm($Word))"]
 
 
 
@@ -342,20 +346,15 @@
 # Depende de CurrencySymbols e dos plurais em definitions.yaml.
 - name: currency
   tag: mrow
-  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
-    # se o valor é 1, não pluraliza
-  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
   - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  match: "count(*)=3 and $CurrencyWord != '' and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by]"
   replace:
   - bookmark: "*[3]/@id"
   - x: "*[3]"
-  - test:
-    - if: "$IsSingular"
-      then: [x: "$CurrencyWord"]
-    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
-      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
-      else: [x: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')", ct: "s"]
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
+  - bookmark: "*[1]/@id"
+  - x: "*[1]"
 
 - name: sin
   tag: mi

@@ -307,7 +307,7 @@
       if: "$French_UseShortForm"
       then_test:
         - if: "IsInDefinition(., 'Braille', 'ShortForms')"
-          then: [x: "DEBUG(DefinitionValue(., 'Braille', 'ShortForms'))"]     # sin
+          then: [x: "DefinitionValue(., 'Braille', 'ShortForms')"]     # sin
         - else_if: "IsInDefinition(., 'Braille', 'ShortFormAbbreviations')"   # cosh ->  ch
           then: [x: "BrailleChars(DefinitionValue(., 'Braille', 'ShortFormAbbreviations'), 'French')"]
           else: [x: "BrailleChars(., 'French')"]

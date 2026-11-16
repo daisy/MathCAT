@@ -492,14 +492,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("pl", "LiteralSpeak", expr, "wielka a strzałka w prawo, perpendicular to, wielka b strzałka w prawo")?;
+  test("pl", "LiteralSpeak", expr, "wielka a strzałka w prawo, dół wielka b strzałka w prawo")?;
   return Ok(());
 
 }
@@ -574,14 +574,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("pl", "SimpleSpeak", expr, "wielka a strzałka w prawo, perpendicular to, wielka b strzałka w prawo")?;
+  test("pl", "SimpleSpeak", expr, "wielka a strzałka w prawo, jest prostopadłe do, wielka b strzałka w prawo")?;
   return Ok(());
 
 }

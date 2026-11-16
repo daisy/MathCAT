@@ -2676,7 +2676,7 @@
          then: [t: "~O"]
          else: [t: "\\O"]
  - "𝛱-𝛺":    # 0x1d6f1 - 0x1d6fa (Pi - Omega)
-    - spell: "translate('.', '𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΠΡΣΤΥΦΧΨΩ')"
+    - spell: "translate('.', '𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΠΡϴΣΤΥΦΧΨΩ')"
  - "𝛻": [t: "\\nabla"]        # 0x1d6fb
  - "𝛼-𝜔":    # 0x1d6fc - 0x1d714 (alpha - omega)
     - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
@@ -2697,7 +2697,7 @@
          else: [t: "\\O"]
  - "𝜫-𝜴":    # 0x1d72b - 0x1d734 (Pi - Omega)
     - tc: "\\mathbit"
-    - spell: "translate('.', '𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΠΡΣΤΥΦΧΨΩ')"
+    - spell: "translate('.', '𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΠΡϴΣΤΥΦΧΨΩ')"
  - "𝜵": [t: "\\mathbit{\\nabla}"]        # 0x1d735
  - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
     - tc: "\\mathbit"
@@ -2722,7 +2722,7 @@
          else: [t: "\\O"]
  - "𝝥-𝝰":    # 0x1d765 - 0x1d76f
     - tc: "\\mathsfbf"
-    - spell: "translate('.', '𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮𝝯', 'ΠΡΣΤΥΦΧΨΩ∇')"
+    - spell: "translate('.', '𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮𝝯', 'ΠΡϴΣΤΥΦΧΨΩ∇')"
  - "𝝱-𝝽":    # 0x1d770 - 0x1d77d
     - tc: "\\mathsfbf"
     - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽', 'αβγδεζηθικλμνξ')"
@@ -2751,7 +2751,7 @@
          else: [t: "\\O"]
  - "𝞟-𝞨":    # 0x1d79f - 0x1d7a8 (Pi - Omega)
     - tc: "\\mathsfbfsl"
-    - spell: "translate('.', '𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΠΡΣΤΥΦΧΨΩ')"
+    - spell: "translate('.', '𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΠΡϴΣΤΥΦΧΨΩ')"
  - "𝞩": [t: "\\mathsfbfsl{\\nabla}"]     # 0x1d7a9
  - "𝞪-𝞷":    # 0x1d7aa - 0x1d7b7 (alpha - xi)
     - tc: "\\mathsfbfsl"

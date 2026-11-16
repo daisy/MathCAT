@@ -15,8 +15,8 @@ fn msub_simple() -> Result<()> {
 // AI generated
 #[test]
 fn msub_not_simple() -> Result<()> {
-    let expr = "<math> <msub> <mi>x</mi> <mn>1.2</mn> </msub> </math>";
-    test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x alsó index 12")?;
+    let expr = "<math> <msub> <mi>x</mi> <mn>1,2</mn> </msub> </math>";
+    test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x alsó index 1,2")?;
     return Ok(());
 
   }
@@ -24,8 +24,8 @@ fn msub_not_simple() -> Result<()> {
 // AI generated
 #[test]
 fn msubsup_not_simple() -> Result<()> {
-    let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x alsó index 12, a köbön")?;
+    let expr = "<math> <msubsup> <mi>x</mi> <mn>1,2</mn> <mn>3</mn></msubsup> </math>";
+    test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x alsó index 1,2, a köbön")?;
     return Ok(());
 
   }

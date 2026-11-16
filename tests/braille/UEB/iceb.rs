@@ -1809,7 +1809,7 @@ fn root_letter_base() -> Result<()> {
 #[test]
 fn spacing_9_3_1_1() -> Result<()> {
     let expr = "<math> <mi>Sin</mi><mo>&#x2061;</mo> <mn>30</mn> </math>";
-    test_braille("UEB", expr, "⠠⠎⠔⠼⠉⠚")?;
+    test_braille("UEB", expr, "⠠⠎⠊⠝⠼⠉⠚")?;
     return Ok(());
 
 }
@@ -1841,7 +1841,7 @@ fn spacing_9_3_2_1() -> Result<()> {
 #[test]
 fn spacing_9_3_2_2() -> Result<()> {
     let expr = "<math><mi>sin</mi><mi>θ</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠨⠹")?;
+    test_braille("UEB", expr, "⠎⠊⠝⠨⠹")?;
     return Ok(());
 
 }
@@ -1875,7 +1875,7 @@ fn spacing_9_3_2_5() -> Result<()> {
 #[test]
 fn spacing_9_3_3_1() -> Result<()> {
     let expr = "<math><mi>x</mi><mi>sin</mi><mn>60</mn></math>";
-    test_braille("UEB", expr, "⠰⠭⠀⠎⠔⠼⠋⠚")?;
+    test_braille("UEB", expr, "⠰⠭⠀⠎⠊⠝⠼⠋⠚")?;
     return Ok(());
 
 }
@@ -1883,7 +1883,7 @@ fn spacing_9_3_3_1() -> Result<()> {
 #[test]
 fn spacing_9_3_3_2() -> Result<()> {
     let expr = "<math><mi>x</mi><mrow><mi>Sin</mi><mo>&#x2061;</mo><mn>60</mn></mrow></math>";
-    test_braille("UEB", expr, "⠭⠠⠎⠔⠼⠋⠚")?;
+    test_braille("UEB", expr, "⠭⠠⠎⠊⠝⠼⠋⠚")?;
     return Ok(());
 
 }
@@ -1910,7 +1910,7 @@ fn spacing_9_3_3_5() -> Result<()> {
         <mi>sin</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>A</mi><mo>+</mo><mi>B</mi><mo>)</mo> </mrow>
         <mo>=</mo><mi>sin</mi><mo>&#x2061;</mo><mi>A</mi><mi>cos</mi><mo>&#x2061;</mo>  <mi>B</mi>
         <mo>+</mo><mi>cos</mi><mo>&#x2061;</mo><mi>A</mi><mi>sin</mi><mo>&#x2061;</mo><mi>B</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠐⠣⠠⠁⠐⠖⠠⠃⠐⠜⠀⠐⠶⠀⠎⠔⠠⠁⠀⠉⠕⠎⠠⠃⠐⠖⠉⠕⠎⠠⠁⠀⠎⠔⠠⠃")?;
+    test_braille("UEB", expr, "⠎⠊⠝⠐⠣⠠⠁⠐⠖⠠⠃⠐⠜⠀⠐⠶⠀⠎⠊⠝⠠⠁⠀⠉⠕⠎⠠⠃⠐⠖⠉⠕⠎⠠⠁⠀⠎⠊⠝⠠⠃")?;
     return Ok(());
 
 }
@@ -1919,7 +1919,7 @@ fn spacing_9_3_3_5() -> Result<()> {
 fn spacing_9_3_3_6() -> Result<()> {
     let expr = "<math><mi>sin</mi><mn>2</mn><mi>β</mi><mo>=</mo>
                 <mn>2</mn><mi>sin</mi><mi>β</mi><mi>cos</mi><mi>β</mi></math>";
-    test_braille("UEB", expr, "⠎⠔⠼⠃⠨⠃⠀⠐⠶⠀⠼⠃⠎⠊⠝⠨⠃⠉⠕⠎⠨⠃")?;
+    test_braille("UEB", expr, "⠎⠊⠝⠼⠃⠨⠃⠀⠐⠶⠀⠼⠃⠎⠊⠝⠨⠃⠉⠕⠎⠨⠃")?;
     return Ok(());
 
 }
@@ -2055,7 +2055,7 @@ fn example_11_5_3() -> Result<()> {
         </mfrac>
     </math>";
     // modified to use "shape" as recommended in a comment on this example
-    test_braille("UEB", expr, "⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠰⠻⠗⠐⠜⠀⠐⠶⠀⠰⠰⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾")?;
+    test_braille("UEB", expr, "⠰⠰⠰⠔⠝⠠⠉⠢⠗⠀⠐⠶⠀⠐⠣⠝⠻⠗⠐⠜⠀⠐⠶⠀⠷⠝⠖⠨⠌⠗⠖⠐⠣⠝⠐⠤⠗⠐⠜⠖⠾⠰⠄")?;
     return Ok(());
 
 }

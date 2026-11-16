@@ -420,7 +420,9 @@
   - test:
       if: "count(*)=2"
       then: [x: "*[2]"]
-      else: [x: "*[3]"]
+      else:
+      - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
+      - x: "*[3]"
 
 - name: SimpleSpeak-log-with-base
   tag: mrow
@@ -432,6 +434,7 @@
   - test:
       if: "not(IsNode(*[3], 'simple'))"
       then: [pause: short]
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
 
 - name: simple-parens-after-apply-or-times
@@ -490,6 +493,7 @@
   - "*[2][.='⁡']"
   replace:
   - x: "*[1]/*[1]"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
   - x: "*[3]"
   - T: "в степени"
   - x: "*[1]/*[2]"

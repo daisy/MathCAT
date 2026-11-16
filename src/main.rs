@@ -36,16 +36,20 @@ fn main() {
       .init();
 
    let expr = r#"
- <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-  <mi>A</mi>
-  <mo>=</mo>
-  <mi>&#x1D70B;</mi>
-  <msup>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <munderover>
+    <mrow><mi>&Sigma;</mi></mrow>
     <mrow>
-      <mi>r</mi>
+      <mi>i</mi>
+      <mo>=</mo>
+      <mn>0</mn>
     </mrow>
-    <mn>2</mn>
-  </msup>
+    <mi>n</mi>
+  </munderover>
+  <msub>
+    <mi>x</mi>
+    <mi>i</mi>
+  </msub>
 </math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
@@ -191,7 +195,7 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "LaTeX").unwrap();
+  set_preference("BrailleCode", "CMU").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Medium").unwrap();
@@ -217,14 +221,14 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  match do_navigate_command("ZoomIn")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  }
-  match do_navigate_command("ZoomIn")  {
-    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  }
+  // match do_navigate_command("ZoomIn")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  // }
+  // match do_navigate_command("ZoomOut")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
+  // }
   info!("\n");
   // match do_navigate_command("ToggleZoomLockUp") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
