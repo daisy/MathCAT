@@ -1603,6 +1603,27 @@ fn coordinate_point() -> Result<()> {
     return Ok(());
 }
 
+/// Letters from \mathbf, \boldsymbol, \mathcal, \mathfrak, \mathbb, \mathbfscr, \mathbffrak, \mathbfsf and
+/// \mathbfsfit, written as MathJax writes them (a script L is ℒ, read from the letterlike entries, so A is used).
+/// 太字 comes first, as in 太字 イタリック ナブラ, so a bold script letter is 太字 スクリプト (it was スクリプト 太字).
+#[test]
+fn bold_script_fraktur_and_double_struck_letters() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mi mathvariant=\"bold\">v</mi><mo>=</mo><mn>2</mn><mi mathvariant=\"bold\">u</mi></mrow></math>", "太字 v イコール, 2 太字 u"),
+        ("<math><mrow><mi data-mjx-variant=\"-tex-calligraphic\" mathvariant=\"script\">A</mi><mo>,</mo><mi mathvariant=\"script\">l</mi></mrow></math>", "スクリプト おおもじ エー, コンマ, スクリプト l"),
+        ("<math><mrow><mi mathvariant=\"fraktur\">g</mi><mo>,</mo><mi mathvariant=\"fraktur\">A</mi></mrow></math>", "フラクトゥール g, コンマ; フラクトゥール おおもじ エー"),
+        ("<math><mrow><mi mathvariant=\"double-struck\">k</mi><mo>,</mo><mi mathvariant=\"double-struck\">A</mi><mo>,</mo><mn mathvariant=\"double-struck\">1</mn></mrow></math>", "黒板太字 k コンマ; 黒板太字 おおもじ エー, コンマ, 黒板太字 1"),
+        ("<math><mrow><mi mathvariant=\"bold-italic\">&#x3B1;</mi><mo>+</mo><mi mathvariant=\"bold-italic\">x</mi><mo>+</mo><mi mathvariant=\"bold\">&#x393;</mi><mo>+</mo><mi mathvariant=\"bold-italic\">&#x3B2;</mi></mrow></math>", "太字 アルファ プラス 太字 x プラス, 太字 おおもじ ガンマ, プラス 太字 ベータ"),
+        ("<math><mrow><mi mathvariant=\"bold-script\">A</mi><mo>,</mo><mi mathvariant=\"bold-fraktur\">A</mi></mrow></math>", "太字 スクリプト おおもじ エー; コンマ; 太字 フラクトゥール おおもじ エー"),
+        ("<math><mrow><mi mathvariant=\"bold\">&#x2207;</mi><mo>,</mo><mi mathvariant=\"bold-italic\">&#x2202;</mi></mrow></math>", "太字 ナブラ コンマ, 太字 偏微分"),
+        ("<math><mrow><mi mathvariant=\"bold-sans-serif\">A</mi><mo>,</mo><mi mathvariant=\"sans-serif-bold-italic\">x</mi><mo>,</mo><mn mathvariant=\"bold\">7</mn><mo>,</mo><mn mathvariant=\"bold-sans-serif\">7</mn></mrow></math>", "太字 おおもじ エー, コンマ, 太字 x コンマ, 太字 7 コンマ, 太字 7"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// そのようなこと is "such a thing": it translates the words of "such that" and
 /// none of its work, which is to attach a condition to what was just named.
 /// ただし is the word Japanese mathematical prose uses for that. 集合 stays in
