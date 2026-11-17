@@ -36,21 +36,7 @@ fn main() {
       .init();
 
    let expr = r#"
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <munderover>
-    <mrow><mi>&Sigma;</mi></mrow>
-    <mrow>
-      <mi>i</mi>
-      <mo>=</mo>
-      <mn>0</mn>
-    </mrow>
-    <mi>n</mi>
-  </munderover>
-  <msub>
-    <mi>x</mi>
-    <mi>i</mi>
-  </msub>
-</math>
+<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>
 "#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>

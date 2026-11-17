@@ -4404,6 +4404,159 @@ impl CanonicalizeContext {
 	}
 
 
+	/// Decides whether a parenthesized infix of function expressions is a function call.
+	///
+	/// Returns `None` unless `node` is a `(...)` / `[...]` group whose interior is
+	/// `operand (infix operand)+` with every operand a function expression (a known or likely
+	/// function name, a script whose base is one, or a nested such group), or the `)` / `]`
+	/// that closed that group. Examples: `(f∘g)`, `(f+g)`, `(sin^2+cos^2)`.
+	///
+	/// When it is such a head:
+	/// - `True` if a following sibling starts with `(` or `[` (after skipping empty `mtext`),
+	///   so `(f∘g)(x)` is function application;
+	/// - `False` if there are no following siblings or no following paren/bracket, so
+	///   `(f∘g)-x` keeps an infix minus and `(f∘g) x` stays times;
+	/// - chemistry may still force `False` / `Maybe` via `is_likely_chemical_state`.
+	fn composed_function_certainty<'a>(&self, node: Element<'a>, right_siblings: Option<&[ChildOfElement<'a>]>) -> Option<FunctionNameCertainty> {
+		if !self.is_composed_function_head(node) {
+			return None;
+		}
+		let Some(right_siblings) = right_siblings else {
+			return Some(FunctionNameCertainty::False);
+		};
+		let non_whitespace = right_siblings.iter().enumerate()
+			.find(|&(_, child)| {
+				let child = as_element(*child);
+				return name(child) != "mtext" || !as_text(child).trim().is_empty();
+			});
+		let right_siblings = if let Some((i, _)) = non_whitespace { &right_siblings[i..] } else { right_siblings };
+		if right_siblings.is_empty() {
+			return Some(FunctionNameCertainty::False);
+		}
+
+		let first_child = as_element(right_siblings[0]);
+		let chem_state_certainty = self.is_likely_chemical_state(node, first_child);
+		if chem_state_certainty != FunctionNameCertainty::True {
+			return Some(chem_state_certainty);
+		}
+		if name(first_child) == "mrow" &&
+		   !first_child.children().is_empty()
+		{
+			let open = as_element(first_child.children()[0]);
+			if name(open) == "mo" &&
+			   (as_text(open) == "(" || as_text(open) == "[")
+			{
+				return Some(self.is_function_name(node, Some(&first_child.children())));
+			}
+		}
+		if right_siblings.len() < 2 {
+			return Some(FunctionNameCertainty::False);
+		}
+		let first_sibling = as_element(right_siblings[0]);
+		if name(first_sibling) != "mo" ||
+		   (as_text(first_sibling) != "(" &&
+		    as_text(first_sibling) != "[")
+		{
+			return Some(FunctionNameCertainty::False);
+		}
+		return Some(FunctionNameCertainty::True);
+	}
+
+	/// The node is a parenthesized infix of function expressions, or the `)` / `]` that closed one.
+	fn is_composed_function_head(&self, node: Element) -> bool {
+		let base = get_possible_embellished_node(node);
+		if let Some(interior) = bracketed_function_interior(base) &&
+		   self.is_infix_of_functions(&interior)
+		{
+			return true;
+		}
+		if is_close_paren_or_bracket(node) {
+			let parent = get_parent(node);
+			if let Some(interior) = bracketed_function_interior(parent) &&
+			   self.is_infix_of_functions(&interior)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/// A function name, a script whose base is one, or an infix of those.
+	fn is_function_expression(&self, node: Element) -> bool {
+		let base = get_possible_embellished_node(node);
+		let node_name = name(base);
+		if node_name == "mi" || node_name == "mtext" {
+			return is_function_leaf(base);
+		}
+		if node_name != "mrow" {
+			return false;
+		}
+		let children = base.children();
+		if children.len() == 1 {
+			return self.is_function_expression(as_element(children[0]));
+		}
+		if let Some(interior) = bracketed_function_interior(base) {
+			return self.is_infix_of_functions(&interior);
+		}
+		return self.is_infix_of_functions(&children);
+
+		/// Names that count as functions without looking at what follows them.
+		fn is_function_leaf(node: Element) -> bool {
+			let text_ns = as_text(node);
+			let text = text_ns.trim();
+			if text.is_empty() {
+				return false;
+			}
+			return crate::definitions::SPEECH_DEFINITIONS.with(|defs| {
+				let defs = defs.borrow();
+				let names = defs.get_hashset("FunctionNames").unwrap();
+				if names.contains(&text.to_ascii_lowercase()) {
+					return true;
+				}
+				let shapes = defs.get_hashset("GeometryShapes").unwrap();
+				if shapes.contains(text) {
+					return true;
+				}
+				let likely_names = defs.get_hashset("LikelyFunctionNames").unwrap();
+				if likely_names.contains(text) {
+					return true;
+				}
+				let mut chars = text.chars();
+				let first_char = chars.next().unwrap();
+				return chars.next().is_some() && first_char.is_uppercase();
+			});
+		}
+	}
+
+	/// `operand (infix-mo operand)+`, unwrapping a single nested `mrow` from the paren parser.
+	fn is_infix_of_functions(&self, children: &[ChildOfElement]) -> bool {
+		if children.len() == 1 {
+			let only = as_element(children[0]);
+			if name(only) == "mrow" {
+				return self.is_infix_of_functions(&only.children());
+			}
+			return false;
+		}
+		if children.len() < 3 || children.len() % 2 == 0 {
+			return false;
+		}
+		let mut i = 0;
+		while i < children.len() {
+			if !self.is_function_expression(as_element(children[i])) {
+				return false;
+			}
+			i += 1;
+			if i == children.len() {
+				return true;
+			}
+			if !mo_has_infix_form(as_element(children[i])) {
+				return false;
+			}
+			i += 1;
+		}
+		return false;
+	}
+
 	// return FunctionNameCertainty::False or Maybe if 'node' is a chemical element and is followed by a state (solid, liquid, ...)
 	//  in other words, we are certain this can't be a function since it looks like it is or might be chemistry
 	fn is_likely_chemical_state<'a>(&self, node: Element<'a>, right_sibling: Element<'a>) -> FunctionNameCertainty {
@@ -4444,6 +4597,8 @@ impl CanonicalizeContext {
 	//	 - if there are multiple comma-separated args
 	//   - if the name doesn't appear inside the parens (e.g., n(n+1))
 	//   - GeometryShapes also always returns True (△ABC, etc)
+	//   - a parenthesized infix of function expressions followed by parens (e.g., (f∘g)(x), (sin^2+cos^2)(θ))
+	//  FIX: a postfix prime on a complex function head, e.g. (f^2/g)'(x), is still not recognized
 	//
 	// 2. If there are no parens, then only names on the known function list are used (e.g., "sin x")
 	//
@@ -4452,9 +4607,12 @@ impl CanonicalizeContext {
 		let base_of_name = get_possible_embellished_node(node);
 	
 		// actually only 'mi' should be legal here, but some systems used 'mtext' for multi-char variables
-		// FIX: need to allow for composition of function names. E.g, (f+g)(x) and (f^2/g)'(x)
 		let node_name = name(base_of_name);
 		if node_name != "mi" && node_name != "mtext" {
+			// Parenthesized compositions such as (f∘g) are rare; only look once a plain name is ruled out.
+			if let Some(certainty) = self.composed_function_certainty(node, right_siblings) {
+				return certainty;
+			}
 			return FunctionNameCertainty::False;
 		}
 		// whitespace is sometimes added to the mi since braille needs it, so do a trim here to get function name
@@ -5307,6 +5465,68 @@ fn create_mo<'a, 'd:'a>(doc: Document<'d>, ch: &'a str, attr_value: &str) -> Ele
 	let mo_text = doc.create_text(ch);
 	implied_mo.append_child(mo_text);
 	return implied_mo;
+}
+
+/// Children between a matching `()` or `[]` pair, when `node` is that `mrow`.
+fn bracketed_function_interior<'a>(node: Element<'a>) -> Option<Vec<ChildOfElement<'a>>> {
+	if name(node) != "mrow" {
+		return None;
+	}
+	let children = node.children();
+	if children.len() < 3 {
+		return None;
+	}
+	let open = as_element(children[0]);
+	let close = as_element(children[children.len() - 1]);
+	if name(open) != "mo" ||
+	   name(close) != "mo"
+	{
+		return None;
+	}
+	let open_text = as_text(open);
+	let close_text = as_text(close);
+	if (open_text == "(" &&
+	    close_text == ")") ||
+	   (open_text == "[" &&
+	    close_text == "]")
+	{
+		return Some(children[1..children.len() - 1].to_vec());
+	}
+	return None;
+}
+
+fn is_close_paren_or_bracket(node: Element) -> bool {
+	if name(node) != "mo" {
+		return false;
+	}
+	let text = as_text(node);
+	return text == ")" || text == "]";
+}
+
+/// True when some operator-dictionary form of this `mo` is infix.
+/// An unknown `mo` is treated as infix, matching the parser's default.
+fn mo_has_infix_form(mo: Element) -> bool {
+	if name(mo) != "mo" {
+		return false;
+	}
+	let text_ns = as_text(mo);
+	let text = as_str!(text_ns);
+	if text.is_empty() {
+		return false;
+	}
+	let Some(op_info) = OPERATORS.get(text) else {
+		return true;
+	};
+	let mut op_info = op_info;
+	loop {
+		if op_info.is_infix() {
+			return true;
+		}
+		let Some(next) = op_info.next.as_ref() else {
+			return false;
+		};
+		op_info = next;
+	}
 }
 
 /// return 'node' or if it is adorned, return its base (recursive)
@@ -6603,6 +6823,202 @@ mod canonicalize_tests {
 	   </math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
     }
+
+	/// `(f∘g)(x)` and a longer chain are function application, not times.
+	#[test]
+	fn function_composition_application() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		// Repeated ∘ stays one flat mrow and is still a function head.
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>h</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			  <mo>∘</mo>
+			  <mi>h</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// A sum of function names, and function names that are bases of `msup`, applied to a parenthesized argument.
+	#[test]
+	fn function_composition_sums_and_superscripts() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>+</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>+</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>x</mi>
+			  <mo>+</mo>
+			  <mn>1</mn>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		let test_str = "<math><mo>(</mo><msup><mi>f</mi><mn>2</mn></msup><mo>∘</mo><msup><mi>g</mi><mn>3</mn></msup><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <msup><mi>f</mi><mn>2</mn></msup>
+			  <mo>∘</mo>
+			  <msup><mi>g</mi><mn>3</mn></msup>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		// sin and cos are known function names; each square is an msup base.
+		let test_str = "<math><mo>(</mo><msup><mi>sin</mi><mn>2</mn></msup><mo>+</mo><msup><mi>cos</mi><mn>2</mn></msup><mo>)</mo><mo>(</mo><mi>θ</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <msup><mi>sin</mi><mn>2</mn></msup>
+			  <mo>+</mo>
+			  <msup><mi>cos</mi><mn>2</mn></msup>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>θ</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// An explicit U+2061 is left as the function application; a second one is not inserted.
+	#[test]
+	fn function_composition_explicit_apply() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>&#x2061;</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// Names that are not functions, and a composition with no following parens, stay invisible times.
+	#[test]
+	fn function_composition_not_applied() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>a</mi>
+			  <mo>+</mo>
+			  <mi>b</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2062;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mi>x</mi></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2062;</mo>
+		  <mi>x</mi>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
 
 	
 	#[test]
