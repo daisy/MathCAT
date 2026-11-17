@@ -9,25 +9,25 @@ fn set_relations_use_textbook_containment_terms() -> Result<()> {
         "zh",
         "SimpleSpeak",
         "<math><mi>A</mi><mo>&#x2282;</mo><mi>B</mi><mo>,</mo><mi>C</mi><mo>&#x2286;</mo><mi>D</mi><mo>,</mo><mi>E</mi><mo>&#x228a;</mo><mi>F</mi><mo>,</mo><mi>G</mi><mo>&#x2acb;</mo><mi>H</mi></math>",
-        "大写 a 子集 大写 b, 逗号; 大写 c 子集或等于 大写 d; 逗号; 大写 e 真子集 大写 f; 逗号; 大写 g 真子集 大写 h",
+        "大写 a 真包含于 大写 b; 逗号; 大写 c 包含于 大写 d; 逗号; 大写 e 真包含于 大写 f; 逗号; 大写 g 真包含于 大写 h",
     )?;
     test(
         "zh",
         "SimpleSpeak",
         "<math><mi>A</mi><mo>&#x2284;</mo><mi>B</mi><mo>,</mo><mi>C</mi><mo>&#x2288;</mo><mi>D</mi></math>",
-        "大写 a 非子集 大写 b; 逗号; 大写 c 既非子集也不等于, 大写 d",
+        "大写 a 不包含于 大写 b; 逗号; 大写 c 不包含于 大写 d",
     )?;
     test(
         "zh",
         "ClearSpeak",
         "<math><mrow intent='subset($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>",
-        "x 子集 y",
+        "x 真包含于 y",
     )?;
     test(
         "zh",
         "ClearSpeak",
         "<math><mrow intent='subset-or-equal($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>",
-        "x 子集或等于 y",
+        "x 包含于 y",
     )
 }
 

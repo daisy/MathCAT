@@ -513,32 +513,32 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "子集"
+     - T: "真包含于"
  - "⊃":                                          # 0x2283
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "超集"
+     - T: "真包含"
  - "⊄":                                          # 0x2284
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "非子集"
+     - T: "不包含于"
  - "⊅":                                          # 0x2285
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "非超集"
+     - T: "不包含"
  - "⊆":                                          # 0x2286
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "子集或等于"
+     - T: "包含于"
  - "⊇":                                          # 0x2287
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: ""]
-     - T: "超集或等于"
+     - T: "包含"
 
  # --- restored short definitions that differ from unicode-full ---
  - "⇒": [T: "推出"]             # 0x21d2

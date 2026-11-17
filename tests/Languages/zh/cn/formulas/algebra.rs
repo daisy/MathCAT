@@ -219,8 +219,8 @@ fn common_notation_formulas_keep_contextual_readings() -> Result<()> {
         (
             "subset-chain",
             "<math><mi>A</mi><mo>⊂</mo><mi>B</mi><mo>⊆</mo><mi>C</mi></math>",
-            "大写 a 子集, 大写 b 子集或等于 大写 c",
-            "大写 a 子集, 大写 b 子集或等于 大写 c",
+            "大写 a 真包含于, 大写 b 包含于 大写 c",
+            "大写 a 真包含于, 大写 b 包含于 大写 c",
         ),
         (
             "interval",
@@ -439,12 +439,12 @@ fn semantic_function_cases_use_verified_terms() -> Result<()> {
         (
             "superset",
             "<math><mrow intent='superset($a,$b)'><mi arg='a'>A</mi><mi arg='b'>B</mi></mrow></math>",
-            "大写 a 超集 大写 b",
+            "大写 a 真包含 大写 b",
         ),
         (
             "not-superset",
             "<math><mrow intent='not-superset($a,$b)'><mi arg='a'>A</mi><mi arg='b'>B</mi></mrow></math>",
-            "大写 a 非超集 大写 b",
+            "大写 a 不包含 大写 b",
         ),
     ];
 
