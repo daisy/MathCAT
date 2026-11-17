@@ -4537,7 +4537,7 @@ impl CanonicalizeContext {
 			}
 			return false;
 		}
-		if children.len() < 3 || children.len() % 2 == 0 {
+		if children.len() < 3 || children.len().is_multiple_of(2) {
 			return false;
 		}
 		let mut i = 0;
