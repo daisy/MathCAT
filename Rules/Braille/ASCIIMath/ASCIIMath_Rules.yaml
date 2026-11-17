@@ -196,10 +196,11 @@
   - t: "𝐖"
     
 -
-  # ASCIIMath `"`text`"` is <mtext>. A one-letter mtext is still quoted (`"U"`, not the variable U).
-  name: mtext
+  # ASCIIMath `"`text`"` is <mtext>. Quote only a single Latin letter (`"U"`, not the variable U).
+  # Other one-char mtext (e.g. U+FFFD) falls through to the default mi/mtext rule.
+  name: mtext-single-letter
   tag: mtext
-  match: "string-length(.) > 0"
+  match: "string-length(.) = 1 and translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', '') = ''"
   replace:
   - t: "\""
   - x: "text()"
