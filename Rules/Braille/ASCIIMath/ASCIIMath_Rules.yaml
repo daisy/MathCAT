@@ -82,6 +82,15 @@
   - t: "))"
 
 -
+  name: undelimited-table
+  tag: mtable
+  # `{:` `:}` is an ASCIIMath matrix with no visible fences.
+  match: "@intent=':lines' or @intent=':system-of-equations' or (@intent=':matrix' and not(parent::m:mrow[(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or IsBracketed(., '{', '}'))]))"
+  replace:
+  - t: "{:"
+  - x: "*"
+  - t: ":}"
+-
   name: default-mtable
   tag: mtable
   match: "."
