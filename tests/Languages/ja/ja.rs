@@ -2014,3 +2014,191 @@ fn terms_before_root_in_nested_expressions() -> Result<()> {
     test("ja", "ClearSpeak", abs_frac, "分数; 1 プラス 絶対値 x; オーバー 2")?;
     return Ok(());
 }
+
+// ClearSpeak preference values that the en tests cover and ja had no test for.
+// The inputs are taken from the en tests that use the same preference.
+
+/// MoreImpliedTimes speaks the invisible times as 掛ける, where Auto leaves it silent
+/// (t x, and 2x inside parentheses that are squared).
+#[test]
+fn clearspeak_pref_implied_times_more_implied_times() -> Result<()> {
+    let expr1 = "<math><mrow><mi>t</mi><mo>&#x2062;</mo><mrow><mi>x</mi></mrow></mrow></math>";
+    let expr2 = "<math><mrow><mrow><msup><mrow><mrow><mo>(</mo><mrow><mn>2</mn><mi>x</mi></mrow><mo>)</mo></mrow></mrow><mn>2</mn></msup></mrow></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes", expr1,
+        "t 掛ける x")?;
+    test_ClearSpeak("ja", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes", expr2,
+        "丸カッコ, 2 掛ける x, 丸カッコ閉じ の 2 乗")?;
+    return Ok(());
+}
+
+/// ImpliedTimes=None drops the 掛ける that Auto speaks next to a parenthesized factor;
+/// in 2[3], which Auto reads as 2 掛ける 3, the brackets are then spoken.
+#[test]
+fn clearspeak_pref_implied_times_none() -> Result<()> {
+    let expr1 = "<math><mo>(</mo><mn>2</mn><mo>&#x2212;</mo><mn>1</mn><mo>)</mo><mi>x</mi></math>";
+    let expr2 = "<math><mn>2</mn><mo>[</mo><mn>3</mn><mo>]</mo></math>";
+    test_ClearSpeak("ja", "ClearSpeak_ImpliedTimes", "None", expr1,
+        "丸カッコ, 2 マイナス 1, 丸カッコ閉じ; x")?;
+    test_ClearSpeak("ja", "ClearSpeak_ImpliedTimes", "None", expr2,
+        "2, 角かっこ 3 角かっこ閉じ")?;
+    return Ok(());
+}
+
+/// Functions=None stops treating f(...) as a function call: f(x+y) says 掛ける instead
+/// of オブ, and B(2,6), which Auto reads with nothing between B and the parentheses, gets 掛ける.
+/// With ImpliedTimes=None as well, f(x) gets neither オブ nor 掛ける.
+#[test]
+fn clearspeak_pref_functions_none() -> Result<()> {
+    let expr1 = "<math><mi>log</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow><mo>+</mo><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></math>";
+    let expr2 = "<math><mi>B</mi><mrow><mo>(</mo><mrow><mn>2</mn><mo>,</mo><mn>6</mn></mrow><mo>)</mo></mrow></math>";
+    let expr3 = "<math><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow><mo>)</mo></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Functions", "None", expr1,
+        "ログ オブ, 丸カッコ, x プラス y, 丸カッコ閉じ; プラス; f 掛ける, 丸カッコ, x プラス y, 丸カッコ閉じ")?;
+    test_ClearSpeak("ja", "ClearSpeak_Functions", "None", expr2,
+        "おおもじ b 掛ける, 丸カッコ, 2 コンマ, 6, 丸カッコ閉じ")?;
+    test_ClearSpeak_prefs("ja", vec![("ClearSpeak_ImpliedTimes", "None"), ("ClearSpeak_Functions", "None")], expr3,
+        "f, 丸カッコ x 丸カッコ閉じ; イコール; x の 2 乗, 丸カッコ, x プラス 1, 丸カッコ閉じ")?;
+    return Ok(());
+}
+
+/// ArcTrig puts アーク before the function name; Auto says インバース after it.
+#[test]
+fn clearspeak_pref_trig_arc_trig() -> Result<()> {
+    let expr = "<math><msup><mi>cosh</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Trig", "ArcTrig", expr,
+        "アーク 双曲線余弦, オブ x")?;
+    return Ok(());
+}
+
+/// RootEnd adds 根号終了 after the radicand so the end of the root is heard.
+#[test]
+fn clearspeak_pref_roots_root_end() -> Result<()> {
+    let expr1 = "<math><msqrt><mi>x</mi></msqrt></math>";
+    let expr2 = "<math><mroot><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mn>21</mn></mroot></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "RootEnd", expr1,
+        "平方根 オブ x, 根号終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "RootEnd", expr2,
+        "21 じょうこん オブ x プラス y, 根号終了")?;
+    return Ok(());
+}
+
+/// PosNegSqRoot says プラス before a root that is not negated (the positive root);
+/// a negated root already says マイナス, as it does with Auto.
+#[test]
+fn clearspeak_pref_roots_pos_neg_sq_root() -> Result<()> {
+    let expr1 = "<math><msqrt><mi>x</mi></msqrt></math>";
+    let expr2 = "<math><mo>-</mo><mroot><mi>x</mi><mn>3</mn></mroot><mo>-</mo><msqrt><mi>x</mi></msqrt></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "PosNegSqRoot", expr1,
+        "プラス 平方根 オブ x")?;
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "PosNegSqRoot", expr2,
+        "マイナス 立方根 オブ x; マイナス, プラス 平方根 オブ x")?;
+    return Ok(());
+}
+
+/// PosNegSqRootEnd does both: プラス before the root and 根号終了 after it.
+#[test]
+fn clearspeak_pref_roots_pos_neg_sq_root_end() -> Result<()> {
+    let expr1 = "<math><msqrt><mi>x</mi></msqrt></math>";
+    let expr2 = "<math><mroot><mi>x</mi><mi>t</mi></mroot></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "PosNegSqRootEnd", expr1,
+        "プラス 平方根 オブ x, 根号終了")?;
+    test_ClearSpeak("ja", "ClearSpeak_Roots", "PosNegSqRootEnd", expr2,
+        "プラス t じょうこん オブ x, 根号終了")?;
+    return Ok(());
+}
+
+/// Auto numbers the lines (ぎょう 1, ぎょう 2), or the cases (ケース 1) of a piecewise function;
+/// None keeps the count (2 ぎょう) but drops the per-line labels; Equation, Constraint and Step
+/// use 式, 制約条件 and ステップ.
+#[test]
+fn clearspeak_pref_multiline_label_values() -> Result<()> {
+    let expr1 = "<math><mrow><mtable><mtr><mtd><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow></mtd><mtd><mo>=</mo></mtd><mtd><mn>7</mn></mtd></mtr><mtr><mtd><mrow><mn>2</mn><mi>x</mi><mo>+</mo><mn>3</mn><mi>y</mi></mrow></mtd><mtd><mo>=</mo></mtd><mtd><mrow><mn>17</mn></mrow></mtd></mtr></mtable></mrow></math>";
+    let expr2 = "<math><mi>f</mi><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mo>=</mo><mrow><mo stretchy='true'>{</mo><mtable><mtr><mtd><mo>-</mo><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&lt;</mo><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mtext>if</mtext></mtd><mtd><mi>x</mi><mo>&gt;</mo><mn>0</mn></mtd></mtr></mtable></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Auto", expr1,
+        "2 ぎょう; ぎょう 1; x プラス y, イコール 7; ぎょう 2; 2 x プラス 3 y; イコール 17")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Auto", expr2,
+        "f オブ x, イコール; 3 ケース; ケース 1; マイナス 1 if x 小なり 0; ケース 2; 0 if x イコール 0; ケース 3; 1 if x 大なり 0")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "None", expr1,
+        "2 ぎょう; x プラス y, イコール 7; 2 x プラス 3 y; イコール 17")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Equation", expr1,
+        "2 式; 式 1; x プラス y, イコール 7; 式 2; 2 x プラス 3 y; イコール 17")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Constraint", expr1,
+        "2 制約条件; 制約条件 1; x プラス y, イコール 7; 制約条件 2; 2 x プラス 3 y; イコール 17")?;
+    test_ClearSpeak("ja", "ClearSpeak_MultiLineLabel", "Step", expr1,
+        "2 ステップ; ステップ 1; x プラス y, イコール 7; ステップ 2; 2 x プラス 3 y; イコール 17")?;
+    return Ok(());
+}
+
+/// SilentBracket drops the 集合 that Auto says before a list of elements in braces.
+#[test]
+fn clearspeak_pref_sets_silent_bracket() -> Result<()> {
+    let expr = "<math><mo>{</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo>,</mo><mn>15</mn><mo>}</mo></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Sets", "SilentBracket", expr,
+        "5 コンマ, 10 コンマ, 15")?;
+    return Ok(());
+}
+
+/// woAll drops the すべての that Auto says in set-builder notation.
+#[test]
+fn clearspeak_pref_sets_wo_all() -> Result<()> {
+    let expr = "<math><mo>{</mo><mi>x</mi><mo>∈</mo><mi>ℤ</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>5</mn><mo>}</mo></math>";
+    test_ClearSpeak_prefs("ja", vec![("ClearSpeak_SetMemberSymbol", "Member"), ("ClearSpeak_Sets", "woAll")], expr,
+        "集合 x げんオブ 整数 ただし x 大なり 5")?;
+    return Ok(());
+}
+
+/// Auto reads … as テンテンテン and keeps the commas. AndSoOn at the end of a list
+/// says 以下同様 and drops the comma before it.
+#[test]
+fn clearspeak_pref_ellipses_auto_and_so_on() -> Result<()> {
+    let expr1 = "<math><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mi>…</mi></math>";
+    let expr2 = "<math><mrow><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>20</mn></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "Auto", expr1,
+        "1 コンマ, 2 コンマ, 3 コンマ, テンテンテン")?;
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "Auto", expr2,
+        "1 コンマ, 2 コンマ, 3 コンマ, テンテンテン, コンマ, 20")?;
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "AndSoOn", expr1,
+        "1 コンマ, 2 コンマ, 3 以下同様")?;
+    return Ok(());
+}
+
+/// Cross reads × as クロス; Auto reads it as 掛ける.
+#[test]
+fn clearspeak_pref_mult_symbol_x_cross() -> Result<()> {
+    let expr = "<math><mi>u</mi><mo>×</mo><mi>v</mi></math>";
+    test_ClearSpeak("ja", "ClearSpeak_MultSymbolX", "Cross", expr,
+        "u クロス v")?;
+    return Ok(());
+}
+
+/// With Auto a bar between two numbers is divisibility, 割り切る (SuchThat would say ただし
+/// and Given 条件は).
+#[test]
+fn clearspeak_pref_vertical_line_auto() -> Result<()> {
+    let expr = "<math><mn>3</mn><mo>|</mo><mn>6</mn></math>";
+    test_ClearSpeak("ja", "ClearSpeak_VerticalLine", "Auto", expr,
+        "3 割り切る 6")?;
+    return Ok(());
+}
+
+/// SpeakColNum says the column numbers (列 1, 列 2) even when the entries are simple numbers,
+/// which Auto reads without them.
+#[test]
+fn clearspeak_pref_matrix_speak_col_num() -> Result<()> {
+    let expr1 = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mrow><mo>(</mo><mrow><mtable><mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd></mtr><mtr><mtd><mn>7</mn></mtd><mtd><mn>5</mn></mtd></mtr></mtable></mrow><mo>)</mo></mrow></mrow></math>";
+    let expr2 = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mrow><mo>[</mo><mrow><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr></mtable></mrow><mo>]</mo></mrow></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "SpeakColNum", expr1,
+        "2 かける 2 行列; ぎょう 1; 列 1; 2, 列 2; 1; ぎょう 2; 列 1; 7, 列 2; 5")?;
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "SpeakColNum", expr2,
+        "1 かける 2 行列; 列 1; 1, 列 2; 2")?;
+    return Ok(());
+}
+
+/// SilentColNum drops the column numbers that Auto says when the entries are not simple.
+#[test]
+fn clearspeak_pref_matrix_silent_col_num() -> Result<()> {
+    let expr = "<math><mrow><mrow><mo>(</mo><mrow><mtable><mtr><mtd><mrow><msub><mi>b</mi><mrow><mn>1</mn><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>b</mi><mrow><mn>1</mn><mn>2</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>b</mi><mrow><mn>2</mn><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>b</mi><mrow><mn>2</mn><mn>2</mn></mrow></msub></mrow></mtd></mtr></mtable></mrow><mo>)</mo></mrow></mrow></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Matrix", "SilentColNum", expr,
+        "2 かける 2 行列; ぎょう 1; b 下付き 1 1; b 下付き 1 2; ぎょう 2; b 下付き 2 1; b 下付き 2 2")?;
+    return Ok(());
+}
