@@ -1,6 +1,6 @@
 [package]
 name = "mathcat"
-version = "0.7.8-alpha.1"
+version = "0.7.9-alpha.1"
 authors = ["Neil Soiffer <soiffer@alum.mit.edu>"]
 license = "MIT"
 description = "MathCAT: Math Capable Assistive Technology ('Speech and braille from MathML')"
@@ -92,14 +92,14 @@ elements_rs = { version = "0.2.8", default-features = false }
 # Runtime extracts inner language/braille zips (BZIP2). The package-rules binary also
 # writes DEFLATE outer archives for Windows/unzip-compatible Rules.zip downloads.
 # wasm uses the same features: zip 9.x bzip2 is pure Rust (libbz2-rs-sys), not clang C.
-zip = { version = "9.5", default-features = false, features = ["deflate", "bzip2"] }
+zip = { version = "9.6", default-features = false, features = ["deflate", "bzip2"] }
 
 android_logger = {version = "0.15.1", optional = true}
 
 [build-dependencies]
 bitflags = "2.6"
 yaml-rust = "0.4"
-zip = { version = "9.5", default-features = false, features = ["deflate", "bzip2"] }
+zip = { version = "9.6", default-features = false, features = ["deflate", "bzip2"] }
 
 [dev-dependencies]
 tempfile = "3.23"
