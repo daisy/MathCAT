@@ -20,7 +20,7 @@
   # say nothing
   replace: []
 
-# handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here 
+# handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here
 - name: intent-literal-negative-number
   tag: mn
   match: "starts-with(text(), '-')"
@@ -118,7 +118,9 @@
   match:
   - "BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
   - "               ( self::m:mrow and count(*)=3 and"  # maybe a bit paranoid checking the structure...
-  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) ] and"
+  - "                 *[1][self::m:mn] and *[2][.='⁢'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) or"
+  - "               ( self::m:mrow and count(*)=3 and"  # $5 / currency amount over a unit
+  - "                 DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[2][.='⁢'] and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by] ) ] and"
   - "BaseNode(*[2])[contains(@data-intent-property, ':unit')] "
   replace:
   - x: "*[1]"
@@ -374,7 +376,7 @@
   - "          not(self::m:math) ] and "       # rule out [x] standing alone
   - "( IsBracketed(., '(', ')') or IsBracketed(., '[', ']') ) and "
   - "( IsNode(*[2], 'simple')  ) and"
-  - "not(preceding-sibling::*[1][.='\u2062' and @data-function-guess]) and"
+  - "not(preceding-sibling::*[1][.='⁢' and @data-function-guess]) and"
   - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   # missing clause: 'a positive fraction that is spoken as an ordinal
   #   (either by the Ordinal preference or by the default rules_'

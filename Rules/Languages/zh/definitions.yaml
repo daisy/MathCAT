@@ -287,7 +287,7 @@
     "precedes": "infix=先于",
     "proportional": "infix=正比于",
     "range-separator": "infix=到",
-    "ratio": "infix=比",
+    "ratio": "infix=比 || function= : 比",
     "similar": "infix=相似于",
     "subset": "infix=子集",
     "subset-or-equal": "infix=子集或等于",
@@ -340,6 +340,9 @@
     "divergence", "del|gradient", "curl"
   }
 
+  # Word inserted before the final argument of an arity-glued function intent (empty in Chinese).
+- FunctionApplicationWord: [""]
+
 - NavigationParts: {
     # These are the parts of a formula that can be navigated to
     "large-op": "主体; 下限; 上限",
@@ -379,7 +382,7 @@
 
 - SIPrefixes: {
     "Q": "昆", "R": "容", "Y": "尧", "Z": "泽", "E": "艾", "P": "拍", "T": "太", "G": "吉", "M": "兆", "k": "千", "h": "百", "da": "十",
-    "d": "分", "c": "厘", "m": "毫", "µ": "微", "n": "纳", "p": "皮", "f": "飞", "a": "阿", "z": "仄", "y": "幺", "r": "柔", "q": "亏"
+    "d": "分", "c": "厘", "m": "毫", "µ": "微", "μ": "微", "n": "纳", "p": "皮", "f": "飞", "a": "阿", "z": "仄", "y": "幺", "r": "柔", "q": "亏"
   }
 
 # this is a list of all units that accept SIPrefixes

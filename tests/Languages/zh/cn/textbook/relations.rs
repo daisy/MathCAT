@@ -117,3 +117,34 @@ fn tau_and_dotted_minus_symbols_are_distinguishable() -> Result<()> {
         "带下降点列的减号, 逗号, 带上升点列的减号",
     )
 }
+
+#[test]
+fn inferred_ratio_and_leaf_intents_use_chinese_intent_mappings() -> Result<()> {
+    // U+2236 (∶) infers <ratio data-intent-property=':function:'> and should read "a 比 b",
+    // while leaf intents resolve through IntentMappings unless :literal: requests the glyph.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi>a</mi><mo>∶</mo><mi>b</mi></math>",
+        "a 比 b",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mi>a</mi><mo>∶</mo><mi>b</mi></math>",
+        "a 比 b",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mo intent='plus'>⊕</mo></math>",
+        "加",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mrow intent=':literal'><mo intent='plus'>⊥</mo></mrow></math>",
+        "垂直于",
+    )?;
+    return Ok(());
+}

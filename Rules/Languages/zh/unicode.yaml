@@ -132,9 +132,11 @@
         else: [T: "点"]
  - "/":                                           # 0x2f
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [T: "斜杠"]                        # 0x2f
-        else: [T: "除以"]                   # 0x2f
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "斜杠"]                        # 0x2f
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "每"]
+          else: [T: "除以"]                   # 0x2f
 
  - ":": [T: "冒号"]                               # 0x3a
  - ";": [T: "分号"]                           # 0x3b
@@ -227,22 +229,27 @@
  - "´": [T: "锐音符"]                            # 0xb4
  - "·":                                            # 0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [T: "点"]
-        else: [T: "乘"]
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+          then: [T: "点"]
+          else: [T: "乘"]
  - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle = 'ClearSpeak'"
-        then_test:
-        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
-          then: [T: "乘"]
-        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
-          then: [T: "乘"]
-          else: [T: "叉乘"]
+        if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+        then: [T: ""]
         else_test:
-            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-            then: [T: "叉乘"]
-            else: [T: "乘"]
+            if: "$SpeechStyle = 'ClearSpeak'"
+            then_test:
+            - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+              then: [T: "乘"]
+            - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+              then: [T: "乘"]
+              else: [T: "叉乘"]
+            else_test:
+                if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+                then: [T: "叉乘"]
+                else: [T: "乘"]
 
  - "÷": [T: "除以"]                          # 0xf7
  - "̀": [T: "上加钝音符"]          # 0x300

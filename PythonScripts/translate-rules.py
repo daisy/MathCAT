@@ -132,6 +132,7 @@ def substitute_in_translated_phrase(line, translated_phrase, translated_word) ->
     elif text_words:
         print(f"Failed to find quoted part in translation \"{translated_phrase}\", \
                using '{translated_word}\n   original line: {line}")
+
         replacement = text_words.group(1) + '"' + translated_word + '"'    # add the surrounding context back
         new_line = TextString.sub(replacement, line)
     return new_line
@@ -161,6 +162,7 @@ def build_new_translation(path_to_mathcat: str, lang: str, rule_file_name: str) 
     (phrases_to_translate, words_to_translate) = collect_phrases_to_translate(file_to_translate)
     phrase_translations = translate_phrases(phrases_to_translate, lang)
     word_translations = translate_phrases(words_to_translate, lang)
+
     print(f"file:{rule_file_name}: #phrases={len(phrase_translations)}, #words={len(word_translations)}")
     create_new_file(file_to_translate, os.path.join(lang, rule_file_name), phrase_translations, word_translations)
     print("done\n")
@@ -177,7 +179,7 @@ def build_all_translations(path_to_mathcat: str, lang: str, subdir="") -> None:
             build_new_translation(path_to_mathcat, lang, os.path.join(subdir, entry))
 
 
-language = 'zh-cn'
+language = 'ru'
 if not os.path.exists(language):
     os.makedirs(language)
 if not os.path.exists(language+"/SharedRules"):

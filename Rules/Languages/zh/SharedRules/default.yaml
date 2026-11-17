@@ -484,7 +484,7 @@
                           - T: "结束后置上下标"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
@@ -499,7 +499,7 @@
   - T: "与"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
+      if: "$NumColumns=1"
       then: [T: "列"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "列"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -822,8 +822,13 @@
 
 
 - name: default-text
-  # unknown leaf -- just speak the text -- could be a literal intent
+  # unknown leaf -- could be a literal intent or an intent name without children
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply,
+      # not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

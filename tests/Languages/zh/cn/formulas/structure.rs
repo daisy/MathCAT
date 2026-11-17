@@ -187,3 +187,23 @@ fn uncommon_structures_keep_formula_order() -> Result<()> {
     )?;
     Ok(())
 }
+
+#[test]
+fn unfenced_tables_and_arrays_announce_dimensions_without_row_commas() -> Result<()> {
+    // Unfenced mtable receives inferred array intent and announces row/column counts
+    // (including the single-column $NumColumns=1 case) without inserting commas between rows.
+    let single_col = "<math><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable></math>";
+    test(
+        "zh",
+        "SimpleSpeak",
+        single_col,
+        "表格有 2 行 与 1 列; 第 1 行; 第 1 列; 3; 第 2 行; 第 1 列; 2",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        single_col,
+        "表格有 2 行 与 1 列; 第 1 行; 第 1 列; 3; 第 2 行; 第 1 列; 2",
+    )?;
+    return Ok(());
+}

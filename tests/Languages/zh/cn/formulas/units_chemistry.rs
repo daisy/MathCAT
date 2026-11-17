@@ -142,3 +142,60 @@ fn units_chemistry_and_adornments_keep_standard_terms() -> Result<()> {
     }
     Ok(())
 }
+
+#[test]
+fn inline_unit_operators_grouping_and_currency_rates_use_natural_chinese() -> Result<()> {
+    // Inline unit slashes read as "每", unit multiplication dots/crosses and redundant
+    // denominator grouping parentheses stay silent, Greek mu (U+03BC) matches micro (U+00B5),
+    // and currency amounts work with variables and per-unit rates.
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mn>5</mn><mi mathvariant='normal'>J</mi><mo>/</mo><mo>(</mo><mi mathvariant='normal'>kg</mi><mo>·</mo><mi mathvariant='normal'>K</mi><mo>)</mo></math>",
+        "5, 焦耳 每, 千克 开尔文",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi mathvariant='normal'>m</mi><mo>∕</mo><mi mathvariant='normal'>s</mi></math>",
+        "米 每 秒",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi mathvariant='normal'>N</mi><mo>⋅</mo><mi mathvariant='normal'>m</mi></math>",
+        "牛顿 米",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi mathvariant='normal'>kW</mi><mo>×</mo><mi mathvariant='normal'>h</mi></math>",
+        "千瓦特 小时",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mi mathvariant='normal'>Pa</mi><mo>∙</mo><mi mathvariant='normal'>s</mi></math>",
+        "帕 秒",
+    )?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mn>10</mn><mi intent=':unit'>μm</mi></math>",
+        "10 微米",
+    )?;
+    test("zh", "SimpleSpeak", "<math><mo>$</mo><mi>x</mi></math>", "x 美元")?;
+    test(
+        "zh",
+        "SimpleSpeak",
+        "<math><mfrac><mrow><mo>$</mo><mn>5</mn></mrow><mi mathvariant='normal'>h</mi></mfrac></math>",
+        "5 美元每 小时",
+    )?;
+    test(
+        "zh",
+        "ClearSpeak",
+        "<math><mfrac><mrow><mo>$</mo><mn>5</mn></mrow><mi mathvariant='normal'>h</mi></mfrac></math>",
+        "5 美元每 小时",
+    )?;
+    return Ok(());
+}

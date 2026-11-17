@@ -10,7 +10,6 @@
  - "¨": [T: "分音符"]                          # 0xa8
  - "©": [T: "版权符号"]                           # 0xa9
  - "ª": [T: "阴性序数指示符"]          # 0xaa
- - "¬": [T: "非"]                                 # 0xac
  - "«": [T: "左双角引号"] # 0xab
  - "¯":                                            # 0xaf
      - test:
@@ -19,24 +18,9 @@
         else: [T: "长音符"]
  - "²": [T: "二"]                                 # 0xb2
  - "³": [T: "三"]                               # 0xb3
- - "´": [T: "锐音符"]                               # 0xb4
  - "µ": [T: "微"]                               # 0xb5
  - "¹": [T: "一"]                                 # 0xb9
  - "º": [T: "阳性序数指示符"]                                 # 0xba
- - "·":
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [T: "乘"]
-        else: [T: "点"]
- - "×":                                          # 0xd7
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [T: "乘"]
-        else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [T: "乘"]
-            else: [T: "叉乘"]
- - "÷": [T: "除以"]                          # 0xf7
  - "¡": [T: "倒置感叹号"]           # 0xa1
  - "¶": [T: "段落号"]                      # 0xb6
  - "¿": [T: "倒置问号"]              # 0xbf
@@ -124,14 +108,6 @@
  - "˽": [T: "修饰字母架"]                      # 0x2fd
  - "˾": [T: "修饰字母开放架"]                 # 0x2fe
  - "˿": [T: "修饰字母低左箭头"]             # 0x2ff
- - "̀": [T: "上加钝音符"]          # 0x300
- - "́": [T: "上加锐音符"]          # 0x301
- - "̂": [T: "上加抑扬符"]     # 0x302
- - "̃": [T: "上加波浪号"]                 # 0x303
- - "̄": [T: "上加长音符"]                # 0x304
- - "̅": [T: "上加横线"]               # 0x305
- - "̆": [T: "上加短音符"]                   # 0x306
- - "̇": [T: "上加点"]             # 0x307
  - "̈": [T: "上加分音符"]                   # 0x308
  - "̉": [T: "上加钩"]            # 0x309
  - "̊": [T: "上加圆环"]            # 0x30a
@@ -239,13 +215,9 @@
  - "ϒ": [T: "带钩的 upsilon"]                    # 0x3d2
  - "ϓ": [T: "带锐音与钩的 upsilon"]              # 0x3d3
  - "ϔ": [T: "带分音与钩的 upsilon"]              # 0x3d4
- - "ϕ": [T: "phi"]                                # 0x3d5
- - "ϖ": [T: "pi"]                                 # 0x3d6
  - "ϗ": [T: "kai"]                                # 0x3d7
  - "Ϙ": [T: "大写 archaic koppa"]                 # 0x3d8
  - "ϙ": [T: "archaic koppa"]                      # 0x3d9
- - "ϵ": [T: "epsilon"]                            # 0x3f5
- - "϶": [T: "反向 epsilon"]                       # 0x3f6
  - "А-Я":                                          # 0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -316,19 +288,6 @@
         if: "@data-chem-formula-op"
         then: [T: "点"]
         else: [T: "项目符号"]
-
- - "…":                                          # 0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [T: "省略号"]
-        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [T: "等等"]
-            else: [T: "依此类推，直到"]
 
  - "‰": [T: "千分号"]                           # 0x2030
  - "‱": [T: "万分号"]                    # 0x2031
@@ -406,27 +365,27 @@
  - "⁺":                                          # 0x207a
     - test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='power' or name(.)='skip-super' or name(.)='say-super']"
-        then: [T: "+"]
+        then: [T: "加"]
         else: [T: "上标加号"]
  - "⁻":                                          # 0x207b
     - test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='power' or name(.)='skip-super' or name(.)='say-super']"
-        then: [T: "−"]
+        then: [T: "减"]
         else: [T: "上标减号"]
  - "⁼":                                          # 0x207c
     - test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='power' or name(.)='skip-super' or name(.)='say-super']"
-        then: [T: "="]
+        then: [T: "等于"]
         else: [T: "上标等号"]
  - "⁽":                                          # 0x207d
     - test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='power' or name(.)='skip-super' or name(.)='say-super']"
-        then: [T: "("]
+        then: [T: "左括号"]
         else: [T: "上标左圆括号"]
  - "⁾":                                          # 0x207e
     - test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='power' or name(.)='skip-super' or name(.)='say-super']"
-        then: [T: ")"]
+        then: [T: "右括号"]
         else: [T: "上标右圆括号"]
  - "ⁿ":                                          # 0x207f
     - test:
@@ -486,27 +445,27 @@
  - "₊":                                          # 0x208a
     - test:
         if: "parent::*[name(.)='msub' or name(.)='msubsup' or name(.)='indexed-by']"
-        then: [T: "+"]
+        then: [T: "加"]
         else: [T: "下标加号"]
  - "₋":                                          # 0x208b
     - test:
         if: "parent::*[name(.)='msub' or name(.)='msubsup' or name(.)='indexed-by']"
-        then: [T: "−"]
+        then: [T: "减"]
         else: [T: "下标减号"]
  - "₌":                                          # 0x208c
     - test:
         if: "parent::*[name(.)='msub' or name(.)='msubsup' or name(.)='indexed-by']"
-        then: [T: "="]
+        then: [T: "等于"]
         else: [T: "下标等号"]
  - "₍":                                          # 0x208d
     - test:
         if: "parent::*[name(.)='msub' or name(.)='msubsup' or name(.)='indexed-by']"
-        then: [T: "("]
+        then: [T: "左括号"]
         else: [T: "下标左圆括号"]
  - "₎":                                          # 0x208e
     - test:
         if: "parent::*[name(.)='msub' or name(.)='msubsup' or name(.)='indexed-by']"
-        then: [T: ")"]
+        then: [T: "右括号"]
         else: [T: "下标右圆括号"]
  - "ₐ":                                          # 0x2090
     - test:
@@ -650,7 +609,6 @@
     - T: "花体"
     - SPELL: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
- - "ℓ": [T: "花体l"]                            # 0x2113
  - "℔": [T: "磅符号"]                              # 0x2114
  - "№": [T: "序号符号"]                              # 0x2116
  - "℥": [T: "盎司"]                              # 0x2125
@@ -808,7 +766,6 @@
  - "⇏": [T: "向右双线带斜线箭头"] # 0x21cf
  - "⇐": [T: "向左双线箭头"]              # 0x21d0
  - "⇑": [T: "向上双线箭头"]                # 0x21d1
- - "⇒": [T: "推出"]             # 0x21d2
  - "⇓": [T: "向下双线箭头"]              # 0x21d3
  - "⇔": [T: "当且仅当"]             # 0x21d4
  - "⇕": [T: "上下双线箭头"]                # 0x21d5
@@ -860,74 +817,15 @@
          if: "$Verbosity!='Terse'"
          then: [OT: ""]
      - T: "补集"
- - "∂":                                          # 0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [T: "偏微分"]
-         else: [T: "偏导数"]
  - "∃": [T: "存在"]                        # 0x2203
  - "∄": [T: "不存在"]                # 0x2204
  - "∅": [T: "空集"]                           # 0x2205
- - "∆": [T: "增量"]                            # 0x2206
-
  - "∇": [T: "纳布拉"]                           # 0x2207
- - "∉":                                          # 0x2209
-    # rule is identical to 0x2208
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [T: "不属于"]
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set" # inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "不属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "不属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "不属于"]
-              - else: [T: "不属于"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "不属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "不属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "不属于"]
-              - else: [T: "不属于"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
- - "∊":                                          # 0x220a
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test:
-            if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
-            then: [T: ""]
-        - T: "属于"
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set" # inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "属于"]
-              - else: [T: "属于"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [T: "属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "属于"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "属于"]
-              - else: [T: "属于"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∋": [T: "包含"]                 # 0x220b
  - "∌": [T: "不包含"]         # 0x220c
  - "∍": [T: "小型包含"]             # 0x220d
  - "∎": [T: "证毕"]                        # 0x220e
  - "∏": [T: "连乘"]                             # 0x220f
- - "∐": [T: "余积"]                           # 0x2210
  - "∑": [T: "求和"]                                 # 0x2211
  - "−":
     - test:
@@ -940,36 +838,34 @@
         then: [T: "减或加"]
         else: [T: "负或正"]
  - "∔": [T: "点加号"]                            # 0x2214
- - "∕": [T: "除以"]                          # 0x2215
+ - "∕":                                           # 0x2215
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "斜杠"]
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "每"]
+          else: [T: "除以"]
  - "∖": [T: "差集"]                           # 0x2216
  - "∗": [T: "乘"]                               # 0x2217
  - "∘": [T: "复合"]                       # 0x2218
  - "∙":                                            # 0x2219
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "点"]
-        else: [T: "乘"]
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "点"]
+          else: [T: "乘"]
 
- - "√":                                          # 0x221a
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [OT: ""]
-     - T: "平方根"
  - "∛":                                          # 0x221b
-     - test: 
+     - test:
          if: "$Verbosity!='Terse'"
          then: [OT: ""]
      - T: "立方根"
  - "∜":                                          # 0x221c
-     - test: 
+     - test:
          if: "$Verbosity!='Terse'"
          then: [OT: ""]
      - T: "四次方根"
- - "∝":                                          # 0x221d
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "正比于"
  - "∞": [T: "无穷大"]                          # 0x221e
  - "∟": [T: "直角"]                         # 0x221f
  - "∠": [T: "角"]                               # 0x2220
@@ -992,31 +888,21 @@
  - "∳": [T: "逆时针围道积分"]      # 0x2233
  - "∴": [T: "所以"]                           # 0x2234
  - "∵": [T: "因为"]                             # 0x2235
- - "∶":                                          # 0x2236
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "比"
  - "∷": [T: "比例"]                                  # 0x2237
  - "∸": [T: "点减号"]                           # 0x2238
  - "∹": [T: "超出"]              # 0x2239
  - "∺":                                          # 0x223a
-     - test: 
+     - test:
          if: "$Verbosity!='Terse'"
          then: [T: ""]
      - T: "几何比例"
  - "∻":                                          # 0x223b
-     - test: 
+     - test:
          if: "$Verbosity!='Terse'"
          then: [T: ""]
      - T: "位似于"
  - "∼": [T: "波浪运算符"]                         # 0x223c
  - "∽": [T: "反转波浪号"]                      # 0x223d
- - "∾":                                          # 0x223e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "最正值"
  - "∿": [T: "正弦波"]                           # 0x223f
  - "≀": [T: "圈积"]                      # 0x2240
  - "≁": [T: "非波浪号"]                           # 0x2241
@@ -1118,16 +1004,6 @@
          then: [T: ""]
      - T: "度量为"
  - "≟": [T: "问号等于"]    # 0x225f
- - "≠":                                          # 0x2260
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "不等于"
- - "≡":                                          # 0x2261
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "恒等于"
  - "≢":                                          # 0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1238,36 +1114,6 @@
  - "≿": [T: "后于或等价于"]        # 0x227f
  - "⊀": [T: "不先于"]                    # 0x2280
  - "⊁": [T: "不后于"]                    # 0x2281
- - "⊂":                                          # 0x2282
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "子集"
- - "⊃":                                          # 0x2283
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "超集"
- - "⊄":                                          # 0x2284
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "非子集"
- - "⊅":                                          # 0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "非超集"
- - "⊆":                                          # 0x2286
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "子集或等于"
- - "⊇":                                          # 0x2287
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "超集或等于"
  - "⊈":                                          # 0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1365,10 +1211,12 @@
  - "⋃": [T: "n 元并集"]                               # 0x22c3
  - "⋄": [T: "菱形运算符"]                    # 0x22c4
  - "⋅":                                             # 0x22c5
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "点"]
-        else: [T: "乘"]
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "点"]
+          else: [T: "乘"]
 
  - "⋆": [T: "星号运算符"]                               # 0x22c6
  - "⋇": [T: "除号乘号"]                      # 0x22c7
@@ -2731,7 +2579,7 @@
  - "㏊": [T: "公顷"]                            # 0x33ca
  - "㏋": [T: "马力"]                          # 0x33cb
  - "㏌": [T: "英寸"]                              # 0x33cc
- - "㏍": [T: "千开尔文"]                         # 0x33cd
+ - "㏍": [T: "株式会社"]                         # 0x33cd (square K.K.)
  - "㏎": [T: "千米"]                          # 0x33ce
  - "㏏": [T: "节"]                               # 0x33cf
  - "㏐": [T: "流明"]                              # 0x33d0
@@ -2744,7 +2592,7 @@
  - "㏗": [T: "pH 值"]                                 # 0x33d7
  - "㏘": [T: "下午"]                          # 0x33d8 (square p.m.)
  - "㏙": [T: "百万分之一"]                   # 0x33d9
- - "㏚": [T: "拍伦琴"]                       # 0x33da
+ - "㏚": [T: "公关"]                         # 0x33da (square PR)
  - "㏛": [T: "球面度"]                          # 0x33db
  - "㏜": [T: "希沃特"]                            # 0x33dc
  - "㏝": [T: "韦伯"]                              # 0x33dd
@@ -3177,11 +3025,8 @@
  - "": [T: "digamma"]                             # 0xed03
  - "ϝ": [T: "digamma"]                             # 0x3dd
  - "": [T: "d"]                                   # 0xed10
- - "ⅆ": [T: "d"]                                   # 0x2146
  - "": [T: "e"]                                   # 0xed11
- - "ⅇ": [T: "e"]                                   # 0x2147
  - "": [T: "i"]                                   # 0xed12
- - "ⅈ": [T: "i"]                                   # 0x2148
  - "": [T: "j"]                                   # 0xed13
  - "ⅅ":
     - SPELL: "translate('.', 'ⅅ', 'DD')"                                         # 0xed16, 0x2145

@@ -184,7 +184,9 @@
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"]
               - else_if: "contains(@data-intent-property, ':silent:')"
                 then: [x: "SpeakIntentName(name(.), $Verbosity, 'silent')"]
-              - else: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
+              - else_if: "contains(@data-intent-property, ':other:')"
+                then: [x: "SpeakIntentName(name(.), $Verbosity, 'other')"]
+                else: [x: "SpeakIntentName(name(.), $Verbosity, 'function')"]  # defaults to function
           else:
           - T: "第"
           - x: "count($Child2D/preceding-sibling::*) + 1"
@@ -531,7 +533,7 @@
           then: [x: ".."]
           else:
           - test:
-              if: "DEBUG($ReadZoomLevel)!=-1"
+              if: "$ReadZoomLevel!=-1"
               then: [set_variables: [ReadZoomLevel: "DistanceFromLeaf(.., true, $NavMode!='Character')"]]
           - set_variables:
               - NavNode: "../@id"

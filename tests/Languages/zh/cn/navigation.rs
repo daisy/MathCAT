@@ -72,3 +72,29 @@ fn navigation_overview_keeps_the_root_possessive_marker() -> Result<()> {
     }));
     report_any_panic(result)
 }
+
+#[test]
+fn navigation_zooms_out_without_debug_speech_and_steps_into_currency_symbol() -> Result<()> {
+    // ZoomOut must cleanly return to the parent fraction without debug output, and zooming
+    // into a currency expression must visit the amount and currency symbol leaf in spoken order.
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_navigation(
+            "<math><mfrac id='frac'><mn id='num'>1</mn><mn id='den'>2</mn></mfrac></math>",
+        )?;
+        do_navigate_command("ZoomIn")?;
+        let speech = do_navigate_command("ZoomOut")?;
+        let speech = speech.trim_end_matches([' ', ',', ';']);
+        assert_eq!("返回上一层; 离开 分子; 2 分之 1", speech);
+
+        init_navigation("<math><mrow id='amt'><mo id='sym'>$</mo><mn id='val'>3</mn></mrow></math>")?;
+        let speech = do_navigate_command("ZoomIn")?;
+        let speech = speech.trim_end_matches([' ', ',', ';']);
+        assert_eq!("进入下一层; 美元", speech);
+        let speech = do_navigate_command("MoveNext")?;
+        let speech = speech.trim_end_matches([' ', ',', ';']);
+        assert_eq!("移到 后一项; 3", speech);
+        return Ok(());
+    }));
+    return report_any_panic(result);
+}
