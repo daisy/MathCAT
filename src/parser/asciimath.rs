@@ -433,7 +433,9 @@ impl Parser {
         } else {
             let body = Expr::row(items);
             if sym.invisible {
-                Expr::Group(Box::new(body))
+                // `{:` `:}` groups without drawing fences. Keep a real `<mrow>`
+                // even around one child, so `{:a/b:}^2` is (a/b)^2, not a/(b^2).
+                invisible_mrow(body)
             } else {
                 Expr::Fenced {
                     open: sym.output.clone(),
@@ -692,6 +694,14 @@ fn script_expr(base: Expr, sub: Option<Expr>, sup: Option<Expr>, underover: bool
         (Some(s), None) => Expr::Sub(base, Box::new(s)),
         (None, Some(p)) => Expr::Sup(base, Box::new(p)),
         (None, None) => *base,
+    }
+}
+
+/// An invisible group is always an `<mrow>`, including a single child or an empty body.
+fn invisible_mrow(body: Expr) -> Expr {
+    match body {
+        Expr::Row(_) => return body,
+        other => return Expr::Row(vec![other]),
     }
 }
 
@@ -1024,6 +1034,22 @@ mod tests {
 
     fn parse(src: &str) -> String {
         Braille_to_MathML(src, "ASCIIMath").unwrap_or_else(|e| panic!("parse failed for {src:?}: {e}"))
+    }
+
+    #[test]
+    fn invisible_group_keeps_mrow() {
+        // `{:` `:}` is grouping, not a printed fence. The mrow must survive a single child.
+        let grouped = parse("{:a/b:}^2");
+        assert!(
+            grouped.contains("<msup><mrow><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow><mn>2</mn></msup>"),
+            "{grouped}"
+        );
+        // An empty group is the base of the following scripts (`{::}_92^235"U"`).
+        let prescript = parse(r#"{::}_92^235"U""#);
+        assert!(
+            prescript.contains("<msubsup><mrow></mrow><mn>92</mn><mn>235</mn></msubsup>"),
+            "{prescript}"
+        );
     }
 
     #[test]

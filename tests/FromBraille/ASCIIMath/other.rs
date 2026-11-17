@@ -160,3 +160,37 @@ fn dots() -> Result<()> {
     test_from_braille("ASCIIMath", expr, r#"dot x+ddot x+overset(...)(x)"#)?;
     Ok(())
 }
+
+fn invisible_parens_around_fraction() -> Result<()> {
+    // Reverse MathML differs from the forward source; see the overrides file.
+    let expr = r#"<math xmlns="http://www.w3.org/1998/Math/MathML">
+        <mstyle displaystyle="true">
+            <msup>
+            <mrow>
+                <mfrac>
+                <mi>a</mi>
+                <mi>b</mi>
+                </mfrac>
+            </mrow>
+            <mn>2</mn>
+            </msup>
+        </mstyle>
+        </math>"#;
+    test_from_braille("ASCIIMath", expr, r#"{:a/b:}^2"#)?;
+    Ok(())
+}
+
+#[test]
+fn invisible_parens_mmultiscripts() -> Result<()> {
+    // Reverse MathML differs from the forward source; see the overrides file.
+    let expr = r#"<math display='block'>
+        <mmultiscripts displaystyle='true' data-changed='added' data-chem-formula='6'>
+            <mtext data-chem-element='1'>U</mtext>
+            <mprescripts></mprescripts>
+            <mn>92</mn>
+            <mn>235</mn>
+        </mmultiscripts>
+        </math>"#;
+    test_from_braille("ASCIIMath", expr, r#"{::}_92^235"U""#)?;
+    Ok(())
+}
