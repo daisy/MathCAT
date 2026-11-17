@@ -196,6 +196,16 @@
   - t: "𝐖"
     
 -
+  # ASCIIMath `"`text`"` is <mtext>. A one-letter mtext is still quoted (`"U"`, not the variable U).
+  name: mtext
+  tag: mtext
+  match: "string-length(.) > 0"
+  replace:
+  - t: "\""
+  - x: "text()"
+  - t: "\""
+
+-
   name: default
   tag: [mi, mtext]
   match: "."
@@ -327,7 +337,14 @@
   tag: [msub, msup, msubsup]
   match: "."
   replace:
-  - x: "*[1]"
+  # `a/b^2` is a/(b^2). A fraction or unfenced row base needs invisible grouping: `{:a/b:}^2`.
+  - test:
+      if: "*[1][self::m:mfrac or (self::m:mrow and not(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '{', '}') or IsBracketed(., '|', '|')))]"
+      then:
+      - t: "{:"
+      - x: "*[1]"
+      - t: ":}"
+      else: [x: "*[1]"]
   - test:
       if: "self::m:msub or self::m:msubsup"
       then: [t: "_"]
@@ -425,29 +442,33 @@
   - test:
       if: "$Prescripts"
       then:
-      - t: "\\𝐰"        # empty base not needed if this is the only expr
+      - t: "{::}"        # empty invisible group; the following _/^ are prescripts of the base
       - test:
           if: "not($Prescripts[1][self::m:none])"
-          then_test:
-              if: "$Prescripts[1][IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "_"
+          - test:
+              if: "$Prescripts[1][self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Prescripts[1]"]
               else:
-              - t: "_("
+              - t: "("
               - x: "$Prescripts[1]"
               - t: ")"
       - test:
           if: "not($Prescripts[2][self::m:none])"
-          then_test:
-              if: "$Prescripts[2][IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "^"
+          - test:
+              if: "$Prescripts[2][self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Prescripts[2]"]
               else:
-              - t: "^("
+              - t: "("
               - x: "$Prescripts[2]"
               - t: ")"
       - test:
           if: "count($Prescripts)>2"
           then:
-          - t: "\\𝐰"        # empty base not needed if this is the only expr
+          - t: "{::}"        # another prescript pair needs its own empty group
           - test:
               if: "not($Prescripts[3][self::m:none])"
               then_test:

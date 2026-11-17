@@ -116,7 +116,7 @@ fn augenbit1_6_11() -> Result<()> {
         </msubsup>
         <mrow><mi mathvariant="normal">U</mi></mrow>
         </mrow></math>"#;
-    test_braille("ASCIIMath", expr, r"\ _(95)^(238)U")?;
+    test_braille("ASCIIMath", expr, r"{::}_95^238U")?;
     return Ok(());
 
 }
