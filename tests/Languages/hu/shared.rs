@@ -504,7 +504,7 @@ fn literal_speak_chars() -> Result<()> {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y pont z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
+  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y szorozva z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
   return Ok(());
 
 }

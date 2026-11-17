@@ -461,7 +461,11 @@ impl Replacement {
                 return Ok( Replacement::Text( as_str_checked(value)?.to_string() + POSTFIX_CONCAT_INDICATOR ) );
             },
             "ot" | "OT" => {
-                return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + as_str_checked(value)? + OPTIONAL_INDICATOR ) );
+                let text = as_str_checked(value)?;
+                if text.trim().is_empty() {
+                    return Ok( Replacement::Text( text.to_string() ) );
+                }
+                return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + text + OPTIONAL_INDICATOR ) );
             },
             "x" => {
                 return Ok( Replacement::XPath( MyXPath::build(value)
@@ -970,12 +974,13 @@ impl ReplacementArray {
                 return None;
             }
 
-            // should be exactly one match -- ignore more than one for now
-            let i_start = next.find(OPTIONAL_INDICATOR)?;
-            let start_repeat_word_in_next = &next[i_start + OPTIONAL_INDICATOR_LEN..];
+            let start_repeat_word_in_next = next.trim_start().strip_prefix(OPTIONAL_INDICATOR)?;
             let i_end = start_repeat_word_in_next.find(OPTIONAL_INDICATOR)
                 .unwrap_or_else(|| panic!("Internal error: missing end optional char -- text handling is corrupted!"));
             let repeat_word = &start_repeat_word_in_next[..i_end];
+            if repeat_word.is_empty() {
+                return None;
+            }
             // debug!("check if '{}' is repetitive, end_index={}", repeat_word, i_end);
             // debug!("   prev: '{}', next '{}'", prev, next);
 
@@ -989,9 +994,9 @@ impl ReplacementArray {
                     .is_some();
             if ends_with_word || ends_with_wrapped_word {
                 // debug!("  is repetitive");
-                Some(start_repeat_word_in_next[i_end + OPTIONAL_INDICATOR_LEN..].trim_start())  // remove repeat word and OPTIONAL_INDICATOR
+                return Some(start_repeat_word_in_next[i_end + OPTIONAL_INDICATOR_LEN..].trim_start());  // remove repeat word and OPTIONAL_INDICATOR
             } else {
-                None
+                return None;
             }
         }
     }

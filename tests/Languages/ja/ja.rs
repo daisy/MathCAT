@@ -1603,6 +1603,27 @@ fn coordinate_point() -> Result<()> {
     return Ok(());
 }
 
+/// Letters from \mathbf, \boldsymbol, \mathcal, \mathfrak, \mathbb, \mathbfscr, \mathbffrak, \mathbfsf and
+/// \mathbfsfit, written as MathJax writes them (a script L is ℒ, read from the letterlike entries, so A is used).
+/// 太字 comes first, as in 太字 イタリック ナブラ, so a bold script letter is 太字 スクリプト (it was スクリプト 太字).
+#[test]
+fn bold_script_fraktur_and_double_struck_letters() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mi mathvariant=\"bold\">v</mi><mo>=</mo><mn>2</mn><mi mathvariant=\"bold\">u</mi></mrow></math>", "太字 v イコール, 2 太字 u"),
+        ("<math><mrow><mi data-mjx-variant=\"-tex-calligraphic\" mathvariant=\"script\">A</mi><mo>,</mo><mi mathvariant=\"script\">l</mi></mrow></math>", "スクリプト おおもじ エー, コンマ, スクリプト l"),
+        ("<math><mrow><mi mathvariant=\"fraktur\">g</mi><mo>,</mo><mi mathvariant=\"fraktur\">A</mi></mrow></math>", "フラクトゥール g, コンマ; フラクトゥール おおもじ エー"),
+        ("<math><mrow><mi mathvariant=\"double-struck\">k</mi><mo>,</mo><mi mathvariant=\"double-struck\">A</mi><mo>,</mo><mn mathvariant=\"double-struck\">1</mn></mrow></math>", "黒板太字 k コンマ; 黒板太字 おおもじ エー, コンマ, 黒板太字 1"),
+        ("<math><mrow><mi mathvariant=\"bold-italic\">&#x3B1;</mi><mo>+</mo><mi mathvariant=\"bold-italic\">x</mi><mo>+</mo><mi mathvariant=\"bold\">&#x393;</mi><mo>+</mo><mi mathvariant=\"bold-italic\">&#x3B2;</mi></mrow></math>", "太字 アルファ プラス 太字 x プラス, 太字 おおもじ ガンマ, プラス 太字 ベータ"),
+        ("<math><mrow><mi mathvariant=\"bold-script\">A</mi><mo>,</mo><mi mathvariant=\"bold-fraktur\">A</mi></mrow></math>", "太字 スクリプト おおもじ エー; コンマ; 太字 フラクトゥール おおもじ エー"),
+        ("<math><mrow><mi mathvariant=\"bold\">&#x2207;</mi><mo>,</mo><mi mathvariant=\"bold-italic\">&#x2202;</mi></mrow></math>", "太字 ナブラ コンマ, 太字 偏微分"),
+        ("<math><mrow><mi mathvariant=\"bold-sans-serif\">A</mi><mo>,</mo><mi mathvariant=\"sans-serif-bold-italic\">x</mi><mo>,</mo><mn mathvariant=\"bold\">7</mn><mo>,</mo><mn mathvariant=\"bold-sans-serif\">7</mn></mrow></math>", "太字 おおもじ エー, コンマ, 太字 x コンマ, 太字 7 コンマ, 太字 7"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// そのようなこと is "such a thing": it translates the words of "such that" and
 /// none of its work, which is to attach a condition to what was just named.
 /// ただし is the word Japanese mathematical prose uses for that. 集合 stays in
@@ -1699,8 +1720,8 @@ fn natural_log_is_shizen_taisuu() -> Result<()> {
 #[test]
 fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "対数のしゅち, オブ z")?;
-    test("ja", "SimpleSpeak", expr, "対数のしゅち, オブ z")?;
+    test("ja", "ClearSpeak", expr, "対数のしゅち オブ z")?;
+    test("ja", "SimpleSpeak", expr, "対数のしゅち オブ z")?;
     return Ok(());
 }
 
@@ -1716,6 +1737,24 @@ fn binomial_coefficient_is_read_like_ncr() -> Result<()> {
     test("ja", "ClearSpeak", frac, "3 シー 2")?;
     let ncr = "<math><mmultiscripts><mi>C</mi><mn>2</mn><none/><mprescripts/><mn>3</mn><none/></mmultiscripts></math>";
     test("ja", "SimpleSpeak", ncr, "3 シー 2")?;
+    return Ok(());
+}
+
+/// The U+24xx, U+29xx and U+2Exx symbols MathJax writes from TeX: \circledS (the uppercase circled
+/// letters now stop at Ⓩ instead of running on into ⓐ-ⓩ), \blacklozenge (黒ロゼンジ as ◊ is ロゼンジ),
+/// \notChar and \textinterrobangdown, each in the element MathJax puts it in.
+#[test]
+fn circled_letters_and_the_last_tex_symbols() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mi mathvariant=\"normal\">&#x24C8;</mi></math>", "丸 おおもじ s"),
+        ("<math><mrow><mi>&#x24D0;</mi><mo>+</mo><mi>&#x24B7;</mi></mrow></math>", "丸 エー プラス 丸 おおもじ b"),
+        ("<math><mrow><mi>x</mi><mo>=</mo><mi>&#x29EB;</mi></mrow></math>", "x イコール 黒ロゼンジ"),
+        ("<math><mrow><mi>a</mi><mo>&#x29F8;</mo><mi>b</mi></mrow></math>", "エー 大きいスラッシュ b"),
+        ("<math><mtext>&#x2E18;</mtext></math>", "逆さインターロバング"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
     return Ok(());
 }
 
@@ -1816,6 +1855,21 @@ fn degrees_celsius() -> Result<()> {
 fn double_struck_italic_letters() -> Result<()> {
     let expr = "<math><msup><mi>&#x2147;</mi><mrow><mi>&#x2148;</mi><mi>&#x3B8;</mi></mrow></msup></math>";
     test("ja", "SimpleSpeak", expr, "e の上付き i シータ 上付き終了")?;
+    return Ok(());
+}
+
+/// The card suits keep 黒 and 白 as en keeps black and white (♡ is not ♥), ★ is 黒星 as ☆ is 白星,
+/// and the music signs are the words used in Japanese music lessons. MathJax writes all of them as mi.
+#[test]
+fn card_suits_and_music_signs() -> Result<()> {
+    for (expr, expected) in [
+        ("<math><mrow><mi mathvariant=\"normal\">&#x2660;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2661;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2662;</mi><mo>,</mo><mi mathvariant=\"normal\">&#x2663;</mi></mrow></math>", "黒スペード コンマ, 白ハート コンマ, 白ダイヤ コンマ, 黒クラブ"),
+        ("<math><mrow><mi>C</mi><mi mathvariant=\"normal\">&#x266F;</mi><mo>,</mo><mi>B</mi><mi mathvariant=\"normal\">&#x266D;</mi><mo>,</mo><mi>F</mi><mi mathvariant=\"normal\">&#x266E;</mi></mrow></math>", "おおもじ c シャープ; コンマ; おおもじ b フラット; コンマ; おおもじ f ナチュラル"),
+        ("<math><msup><mi>A</mi><mi>&#x2605;</mi></msup></math>", "おおもじ エー の 黒星 乗"),
+    ] {
+        test("ja", "ClearSpeak", expr, expected)?;
+        test("ja", "SimpleSpeak", expr, expected)?;
+    }
     return Ok(());
 }
 
@@ -1936,5 +1990,27 @@ fn vector_dot_product() -> Result<()> {
 fn vector_cross_product() -> Result<()> {
     let expr = "<math><mrow><mover><mi>a</mi><mo>→</mo></mover><mo>×</mo><mover><mi>b</mi><mo>→</mo></mover></mrow></math>";
     test("ja", "SimpleSpeak", expr, "ベクトル エー; 外積 ベクトル b")?;
+    return Ok(());
+}
+
+/// Terms and operators before an element with an empty `ot: ""` (such as a square root
+/// or absolute value) must not be dropped inside nested expressions.
+#[test]
+fn terms_before_root_in_nested_expressions() -> Result<()> {
+    let frac_num = "<math><mfrac><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow><mn>2</mn></mfrac></math>";
+    test("ja", "ClearSpeak", frac_num, "分数; 1 プラス 平方根 オブ 5; オーバー 2")?;
+    test("ja", "SimpleSpeak", frac_num, "分数, 1 プラス 平方根 オブ 5; オーバー 2, 分数終了")?;
+
+    let frac_den = "<math><mfrac><mn>2</mn><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow></mfrac></math>";
+    test("ja", "ClearSpeak", frac_den, "分数 2; オーバー 1 プラス 平方根 オブ 5")?;
+
+    let parens = "<math><mrow><mo>(</mo><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", parens, "丸カッコ, 1 プラス 平方根 オブ 5; 丸カッコ閉じ")?;
+
+    let sup = "<math><msup><mi>x</mi><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow></msup></math>";
+    test("ja", "ClearSpeak", sup, "x の上付き 1 プラス 平方根 オブ 5, 上付き終了")?;
+
+    let abs_frac = "<math><mfrac><mrow><mn>1</mn><mo>+</mo><mo>|</mo><mi>x</mi><mo>|</mo></mrow><mn>2</mn></mfrac></math>";
+    test("ja", "ClearSpeak", abs_frac, "分数; 1 プラス 絶対値 x; オーバー 2")?;
     return Ok(());
 }
