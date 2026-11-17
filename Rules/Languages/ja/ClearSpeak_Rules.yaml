@@ -728,6 +728,25 @@
   replace:
   - T: "掛ける"      # phrase(5 'times' 3 equals 15)
 
+# With AndSoOn, "1, 2, 3, …, 20" is read 3 以下同様に 20 まで (en: "3 and so on up to 20").
+# The "…" rule can only say 以下同様に before the last item, so まで is said here after it.
+# Only when the "…" is followed by a comma and one last item (not a sum like x₁+x₂+…+xₙ), and not when
+# the last item is a relation (x₁, …, xₙ > 0 would say まで after the 0).
+- name: ellipses-and-so-on-up-to
+  tag: mrow
+  match:
+  - "$ClearSpeak_Ellipses = 'AndSoOn' and *[1][.!='…'] and count(*[.='…']) = 1 and"
+  - "*[.='…']/following-sibling::*[1][self::m:mo and .=','] and"
+  - "count(*[.='…']/following-sibling::*[not(self::m:mo and .=',')]) = 1 and"
+  - "*[last()][not(self::m:mo and .=',') and"
+  - "  not(self::m:mrow and *[self::m:mo and (IsInDefinition(., 'ComparisonOperators') or"
+  - "      IsInDefinition(., 'SubsetOperators') or IsInDefinition(., 'Arrows'))])]"
+  replace:
+  - insert:
+      nodes: "*"
+      replace: [pause: auto]
+  - T: "まで"      # phrase(1, 2, 3, and so on 'up to' 20)
+
 - name: no-say-parens
   tag: mrow
   match:
