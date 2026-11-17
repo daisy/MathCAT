@@ -259,3 +259,71 @@ fn no_intent_mi() -> Result<()> {
     "#;
     assert_zoom_in("ZoomIn", expr, "zoomed in all of the way; x")
 }
+
+// --- 'intent' on <math> (it replaces the root, but navigation must work as if it were on a child <mrow>) ---
+
+/// Run the navigation `commands` in order and compare each result (trailing separators trimmed) with `expected`.
+fn assert_nav_sequence(mathml: &str, commands: &[&str], expected: &[&str]) -> Result<()> {
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_nav("en", mathml)?;
+        for (command, expected) in commands.iter().zip(expected) {
+            let speech = do_navigate_command(command)?;
+            assert_eq!(*expected, speech.trim_end_matches([' ', ',', ';']), "command '{command}'");
+        }
+        Ok(())
+    }));
+    report_any_panic(result)
+}
+
+#[test]
+fn intent_on_math_arguments() -> Result<()> {
+    // used to panic (EdgeNode) on MoveNext/MovePrevious because the root of the intent tree was not "math"
+    let expr = r#"
+      <math intent="wibble($x,$y)">
+        <mi arg="x">x</mi>
+        <mo>+</mo>
+        <mi arg="y">y</mi>
+      </math>
+    "#;
+    assert_nav_sequence(expr,
+        &["ZoomIn", "MoveNext", "MovePrevious", "ZoomOut"],
+        &["zoom in; in part 1; x", "move right; in part 2; y", "move left; in part 1; x", "zoom out; out of part 1; wibble of x comma, y"])
+}
+
+#[test]
+fn intent_on_math_same_as_on_mrow() -> Result<()> {
+    let on_math = r#"
+      <math intent="wibble($x,$y)">
+        <mi arg="x">a</mi><mo>+</mo><mi arg="y">b</mi>
+      </math>
+    "#;
+    let on_mrow = r#"
+      <math>
+        <mrow intent="wibble($x,$y)">
+          <mi arg="x">a</mi><mo>+</mo><mi arg="y">b</mi>
+        </mrow>
+      </math>
+    "#;
+    let commands = ["ZoomIn", "MoveNext", "MoveNext", "MovePrevious", "ZoomOut", "ZoomInAll", "MoveNext", "MoveNext"];
+    let run = |mathml: &str| -> Result<Vec<String>> {
+        init_nav("en", mathml)?;
+        commands.iter().map(|command| do_navigate_command(command)).collect()
+    };
+    assert_eq!(run(on_mrow)?, run(on_math)?);
+    Ok(())
+}
+
+#[test]
+fn intent_on_math_postfix() -> Result<()> {
+    // used to say nothing on ZoomIn/ZoomInAll
+    let expr = r#"
+      <math intent="_positivo:postfix($n)">
+        <mo>+</mo>
+        <mn arg="n">7</mn>
+      </math>
+    "#;
+    assert_nav_sequence(expr,
+        &["ZoomIn", "MoveNext", "ZoomOut"],
+        &["zoom in; in positivo; 7", "cannot move right", "zoom out; out of positivo; 7 positivo"])
+}

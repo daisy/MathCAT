@@ -117,6 +117,23 @@ fn intent_rules<'m>(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>,
         } else {
             intent
         };
+        // An 'intent' on <math> replaces the root, but the rest of MathCAT (e.g., navigation) assumes
+        //   the root of the intent tree is "math" (as when the 'intent' is on a child <mrow>), so put it back
+        let answer = if name(mathml) == "math" && name(answer) != "math" {
+            let math = create_mathml_element(&doc, "math");
+            math.set_attribute_value(MATHML_FROM_NAME_ATTR, "math");
+            if let Some(id) = mathml.attribute_value("id") {
+                math.set_attribute_value("id", as_str!(id));
+            }
+            if let Some(id_added) = mathml.attribute_value("data-id-added") {
+                math.set_attribute_value("data-id-added", as_str!(id_added));
+            }
+            answer.set_attribute_value(MATHML_FROM_NAME_ATTR, "mrow");  // it is now a child of "math"
+            math.append_child(answer);
+            math
+        } else {
+            answer
+        };
         if should_set_literal_intent {
             if let Some(original_intent) = original_intent {
                 mathml.set_attribute_value("intent", as_str!(original_intent));
