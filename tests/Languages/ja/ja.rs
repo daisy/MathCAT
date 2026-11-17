@@ -2162,6 +2162,27 @@ fn clearspeak_pref_ellipses_auto_and_so_on() -> Result<()> {
     return Ok(());
 }
 
+/// AndSoOn in the middle of a list says 以下同様に before the last item and まで after it
+/// (en: "3 and so on up to 20"); 以下同様に 20 alone does not say the list runs up to 20.
+/// A sum such as x₁ + x₂ + … + xₙ is not a list, so it gets no まで, and neither does a list
+/// that ends in a relation (x₁, …, xₙ = 0), where まで would come after the 0.
+#[test]
+fn clearspeak_pref_ellipses_and_so_on_up_to() -> Result<()> {
+    let list = "<math><mrow><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>20</mn></mrow></math>";
+    let subscripts = "<math><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub></math>";
+    let sum = "<math><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mi>x</mi><mn>2</mn></msub><mo>+</mo><mo>…</mo><mo>+</mo><msub><mi>x</mi><mi>n</mi></msub></math>";
+    let relation = "<math><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo>=</mo><mn>0</mn></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "AndSoOn", list,
+        "1 コンマ, 2 コンマ, 3 以下同様に 20 まで")?;
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "AndSoOn", subscripts,
+        "x 下付き 1; コンマ; x 下付き 2; 以下同様に x 下付き n, まで")?;
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "AndSoOn", sum,
+        "x 下付き 1; プラス x 下付き 2; プラス 以下同様に プラス x 下付き n")?;
+    test_ClearSpeak("ja", "ClearSpeak_Ellipses", "AndSoOn", relation,
+        "x 下付き 1; 以下同様に, x 下付き n; イコール 0")?;
+    return Ok(());
+}
+
 /// Cross reads × as クロス; Auto reads it as 掛ける.
 #[test]
 fn clearspeak_pref_mult_symbol_x_cross() -> Result<()> {
