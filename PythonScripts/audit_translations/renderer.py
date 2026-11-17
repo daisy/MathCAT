@@ -260,6 +260,14 @@ def print_audit_summary(summary: AuditSummary) -> None:
     console.print(Panel(table, style="cyan"))
 
 
+def print_order_findings(findings: list[tuple[str, int]]) -> None:
+    """Print the first shared-rule order difference for each affected file."""
+    for file_name, position in findings:
+        console.print(
+            f"[yellow]Rule order differs[/] in {escape(str(file_name))}: first difference at shared rule position {position}"
+        )
+
+
 def print_language_list(languages: list[tuple[str, int]]) -> None:
     """Print the available languages table.
 

@@ -1186,7 +1186,7 @@ fn matrix_simple_table() -> Result<()> {
   let expr = "<math>
         <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-  test("en", "ClearSpeak", expr, "array of; row 1; column 1; 3; comma; row 2; column 1; 2")
+  test("en", "ClearSpeak", expr, "array with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
 }
 
 #[test]
@@ -1210,7 +1210,7 @@ fn mtable_blank_op() -> Result<()>{
     let expr = "<math>
         <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
     </math>";
-    test("en", "ClearSpeak", expr, "; array of; row 1; column 1; 3; comma; row 2; column 1; 2")
+    test("en", "ClearSpeak", expr, "; array with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2")
 }
 
 
@@ -1220,7 +1220,7 @@ fn mtable_colspan_table() -> Result<()>{
   let expr = "<math>
         <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
     </math>";
-  test("en", "ClearSpeak", expr, "array of; row 1; column 1; 3; comma; row 2; column 1; 2, column 2; 4")
+  test("en", "ClearSpeak", expr, "array with 2 rows and 1 column; row 1; column 1; 3; row 2; column 1; 2, column 2; 4")
 }
 
 #[test]
@@ -1241,7 +1241,28 @@ fn bug_mtable_rowspan_colspan() -> Result<()>{
         </mtable>
     </math>";
     test("en", "ClearSpeak", expr,
-	 "array of; row 1; column 1; eigh, column 2; b, column 3; c; comma; row 2; column 1; d, column 2; e")
+	 "array with 2 rows and 3 columns; row 1; column 1; eigh, column 2; b, column 3; c; row 2; column 1; d, column 2; e")
+}
+
+#[test]
+fn mtable_array_no_comma_between_rows() -> Result<()> {
+  // Issue #890: an unfenced table gets 'array' intent; its rows must not be separated by "comma"
+  let expr = "<math display=\"inline\">
+      <mtable class=\"menv-arraylike\">
+        <mtr>
+          <mtd><mi>a</mi></mtd>
+          <mtd><mi>b</mi></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mi>c</mi></mtd>
+          <mtd><mi>d</mi></mtd>
+        </mtr>
+      </mtable>
+    </math>";
+  test("en", "ClearSpeak", expr,
+    "array with 2 rows and 2 columns; row 1; column 1; eigh, column 2; b; row 2; column 1; c, column 2; d")?;
+  test("en", "SimpleSpeak", expr,
+    "array with 2 rows and 2 columns; row 1; column 1; eigh, column 2; b; row 2; column 1; c, column 2; d")
 }
 
 
@@ -1390,3 +1411,47 @@ fn single_line_with_label() -> Result<()> {
       expr, "1 equation, with label 2; b equals 2")?;
     return Ok(());
   }
+
+#[test]
+fn matrix_raised_to_power() -> Result<()> {
+  // A parenthesized matrix as the base of msup must speak as "the matrix ... squared".
+  // Regression for #762: the mrow 'matrix' intent rule returns a bare `x:`, so the intent tree
+  // carried a nested TEMP_NAME wrapper into `power` and NVDA read "TEMP NAME of the 2 by 2 matrix ...".
+  let expr = "<math><msup>
+      <mrow><mo>(</mo>
+        <mtable>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+          <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+        </mtable>
+      <mo>)</mo></mrow>
+      <mn>2</mn>
+    </msup></math>";
+  test("en", "ClearSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2; row 2; 3, 4; squared")
+}
+
+#[test]
+fn matrix_raised_to_power_lualatex_spacing() -> Result<()> {
+  // The exact MathML from #762 (LuaLaTeX pmatrix output): negative-width mspace around the
+  // table and fence attributes on the parens. Canonicalization must fold the spacing away so
+  // the matrix is still recognized as the base of the power.
+  let expr = "<math display='block'>
+    <msup>
+      <mrow>
+        <mo fence='true' lspace='0' rspace='0' symmetric='true'>(</mo>
+        <mspace width='-4.981pt'/>
+        <mrow>
+          <mspace width='4.981pt'/>
+          <mtable>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+            <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+          </mtable>
+          <mspace width='4.981pt'/>
+        </mrow>
+        <mspace width='-4.981pt'/>
+        <mo fence='true' lspace='0' rspace='0' symmetric='true'>)</mo>
+      </mrow>
+      <mn>2</mn>
+    </msup>
+  </math>";
+  test("en", "ClearSpeak", expr, "the 2 by 2 matrix; row 1; 1, 2; row 2; 3, 4; squared")
+}

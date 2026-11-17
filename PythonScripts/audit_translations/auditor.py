@@ -19,6 +19,7 @@ from .renderer import (
     print_audit_summary,
     print_definition_findings,
     print_language_list,
+    print_order_findings,
     print_warnings,
 )
 
@@ -46,33 +47,28 @@ def is_definitions_file(file_path: str | Path) -> bool:
     return Path(file_path).name == "definitions.yaml"
 
 
-def get_yaml_files(lang_dir: Path, region_dir: Path | None = None, excluded_files: list[str] | None = None) -> list[Path]:
+def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]:
     """Get all YAML files to audit for a language, including region overrides."""
     files: set[Path] = set()
 
-    def collect_from(directory: Path, root: Path, excluded: list[str] | None) -> None:
+    def collect_from(directory: Path, root: Path) -> None:
         if not directory.exists():
             return
+        for f in directory.glob("*.yaml"):
+            if f.name != "prefs.yaml":
+                files.add(f.relative_to(root))
+        shared_dir = directory / "SharedRules"
+        if shared_dir.exists():
+            for f in shared_dir.glob("*.yaml"):
+                files.add(f.relative_to(root))
 
-        excluded_paths = {Path(path) for path in excluded or []}
-
-        candidates = {f for f in directory.glob("*.yaml") if f.name != "prefs.yaml"}
-        candidates.update((directory / "SharedRules").glob("*.yaml"))
-
-        relative_candidates = {f.relative_to(directory): f for f in candidates}
-
-        for path in excluded_paths - relative_candidates.keys():
-            console.print(f"\n[yellow]⚠ Warning:[/] File to exclude {path} does not exist.")
-
-        files.update(
-            f.relative_to(root) for relative_path, f in relative_candidates.items() if relative_path not in excluded_paths
-        )
-
-    collect_from(lang_dir, lang_dir, excluded_files)
+    collect_from(lang_dir, lang_dir)
     if region_dir:
-        collect_from(region_dir, region_dir, excluded_files)
+        collect_from(region_dir, region_dir)
 
-    return sorted(files)
+    # sort by path parts (case-sensitive) so the order is the same on every platform;
+    # Windows paths compare case-insensitively
+    return sorted(files, key=lambda p: p.parts)
 
 
 def compare_files(
@@ -116,6 +112,19 @@ def compare_files(
     include_untranslated = include_all or "untranslated" in issue_filter
     include_extra = include_all or "extra" in issue_filter
     include_diffs = include_all or "diffs" in issue_filter
+    include_order = include_all
+
+    first_order_mismatch_position = None
+    if include_order:
+        source_keys = {rule.key for rule in english_rules if rule.name is not None and not rule.audit_ignore}
+        target_keys = {rule.key for rule in translated_rules if rule.name is not None and not rule.audit_ignore}
+        shared_keys = source_keys & target_keys
+        source_order = [rule for rule in english_rules if rule.key in shared_keys and not rule.audit_ignore]
+        target_order = [rule for rule in translated_rules if rule.key in shared_keys and not rule.audit_ignore]
+        for position, (source_rule, target_rule) in enumerate(zip(source_order, target_order, strict=True), start=1):
+            if source_rule.key != target_rule.key:
+                first_order_mismatch_position = position
+                break
 
     # Find missing rules (in source but not in translation)
     missing_rules = []
@@ -153,6 +162,7 @@ def compare_files(
         extra_rules=extra_rules,
         untranslated_text=untranslated_text,
         rule_differences=rule_differences,
+        first_order_mismatch_position=first_order_mismatch_position,
         english_rule_count=len(english_rules),
         translated_rule_count=len(translated_rules),
     )
@@ -222,7 +232,6 @@ def compare_definition_files(
 def audit_language(
     language: str,
     specific_file: str | None = None,
-    excluded_files: list[str] | None = None,
     rules_dir: str | None = None,
     issue_filter: set[str] | None = None,
     verbose: bool = False,
@@ -256,7 +265,7 @@ def audit_language(
         raise AuditError(f"Target region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
-    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir, excluded_files)
+    files = [specific_file] if specific_file else get_yaml_files(source_dir, source_region_dir)
 
     print_audit_header(language, len(files), source_language)
 
@@ -270,6 +279,7 @@ def audit_language(
     total_definition_type_mismatches = 0
     files_with_issues = 0
     files_ok = 0
+    order_findings: list[tuple[str, int]] = []  # One item per file, eg  [("calculus.yaml", 2), ...]
 
     for file_name in files:
         english_path = source_dir / file_name
@@ -316,6 +326,8 @@ def audit_language(
                 existing_translated_region_path,
                 existing_english_region_path,
             )
+            if result.first_order_mismatch_position is not None:
+                order_findings.append((file_name, result.first_order_mismatch_position))
 
             if result.has_issues:
                 issues = print_warnings(result, file_name, verbose, language, source_language)
@@ -345,6 +357,8 @@ def audit_language(
             total_issues=total_issues,
         )
     )
+
+    print_order_findings(order_findings)
 
     return total_issues
 

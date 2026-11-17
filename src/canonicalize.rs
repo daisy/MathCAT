@@ -22,6 +22,7 @@ use phf::{phf_map, phf_set};
 use crate::xpath_functions::{IsBracketed, is_leaf, IsNode};
 use std::ptr::eq as ptr_eq;
 use crate::pretty_print::*;
+use lazy_regex::{lazy_regex, Lazy};
 use regex::Regex;
 use std::fmt;
 use std::marker::PhantomData;
@@ -37,6 +38,7 @@ const DECIMAL_SEPARATOR: &str = ".";
 pub const CHANGED_ATTR: &str = "data-changed";
 pub const ADDED_ATTR_VALUE: &str = "added";
 pub const INTENT_ATTR: &str = "intent";
+pub const ARG_ATTR: &str = "arg";
 pub const MATHML_FROM_NAME_ATTR: &str = "data-from-mathml";
 const MFENCED_ATTR_VALUE: &str = "from_mfenced";
 const EMPTY_IN_2D: &str = "data-empty-in-2D";
@@ -44,6 +46,593 @@ const SPACE_AFTER: &str = "data-space-after";
 const ACT_AS_OPERATOR: &str = "data-acts_as_operator";
 // character to use instead of the text content for priority, etc.
 pub const CHEMICAL_BOND: &str ="data-chemical-bond";
+
+/// `arg` and `intent` must stay on their own elements so intent references remain valid.
+fn has_arg_or_intent(el: Element<'_>) -> bool {
+	return el.attribute(ARG_ATTR).is_some() || el.attribute(INTENT_ATTR).is_some();
+}
+
+/// True when neither token carries `arg` or `intent`. Used before merging adjacent `mi`/`mtext`.
+pub(crate) fn can_merge_mi_elements(left: Element<'_>, right: Element<'_>) -> bool {
+	return !has_arg_or_intent(left) && !has_arg_or_intent(right);
+}
+
+/// True when `intent` is property-only (no concept name): trimmed value starts with `:`.
+fn intent_is_property_only(intent: &str) -> bool {
+	return intent.trim_start().starts_with(':');
+}
+
+/// True when the intent string includes the `:unit` property.
+fn intent_has_unit(intent: &str) -> bool {
+	return intent.contains(":unit");
+}
+
+/// Add `:unit` to a property-only intent, or set `intent=":unit"` if absent.
+/// An element with a concept-name intent is left unchanged.
+fn add_unit_property(el: Element<'_>) {
+	let intent_attr = el.attribute_value(INTENT_ATTR);
+	match intent_attr.as_deref() {
+		None => {
+			el.set_attribute_value(INTENT_ATTR, ":unit");
+		},
+		Some(intent) if intent_is_property_only(intent) && !intent_has_unit(intent) => {
+			let mut new_intent = intent.to_string();
+			if !new_intent.ends_with(':') {
+				new_intent.push(':');
+			}
+			new_intent.push_str("unit");
+			el.set_attribute_value(INTENT_ATTR, &new_intent);
+		},
+		Some(_) => {},
+	}
+}
+
+const LIKELY_UNIT_ATTR: &str = "data-likely-unit";
+/// Set on `(` / `)` that only group a unit numerator or denominator. Speech skips these; the nodes stay for braille.
+const UNIT_GROUPING_ATTR: &str = "data-unit-grouping";
+
+/// Stamp `data-likely-unit` on dictionary-matching non-variable `mi`/`mtext` leaves.
+/// Returns true when a confirm pass is worthwhile: a leaf was stamped, or an explicit
+/// `:unit` leaf sits in a parenthesis group. A superscript between the leaf and that
+/// group adds one ancestor to the check (`(m^2·s^2)`).
+fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
+	let tag = as_str!(name(mathml));
+	if tag == "mi" || tag == "mtext" {
+		if looks_like_unit_leaf(mathml) &&
+		   is_known_unit_token_text(as_str!(as_text(mathml)))
+		{
+			mathml.set_attribute_value(LIKELY_UNIT_ATTR, "true");
+			return true;
+		}
+		if mathml.attribute_value(INTENT_ATTR).as_deref().is_some_and(intent_has_unit) &&
+		   explicit_unit_in_paren_group(mathml)
+		{
+			return true;
+		}
+		return false;
+	}
+	let mut found = false;
+	for child in mathml.children() {
+		if let Some(child_el) = child.element() {
+			found |= mark_likely_unit_leaves(child_el);
+		}
+	}
+	return found;
+
+
+	/// True when `text` is a known unit name, SI-prefixed unit, or currency symbol in the speech definitions.
+	fn is_known_unit_token_text(text: &str) -> bool {
+		return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+			let defs = definitions.borrow();
+			if defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("UnitsWithoutPrefixes").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("EnglishUnits").is_some_and(|m| m.contains_key(text)) ||
+			   defs.get_hashmap("CurrencySymbols").is_some_and(|m| m.contains_key(text))
+			{
+				return true;
+			}
+			if text.len() >= 3 &&
+			   text.starts_with("da") &&
+			   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(&text[2..]))
+			{
+				return true;
+			}
+			if text.chars().count() >= 2 {
+				let mut chars = text.chars();
+				let Some(prefix) = chars.next() else {
+					return false;
+				};
+				let rest: String = chars.collect();
+				if defs.get_hashmap("SIPrefixes").is_some_and(|m| m.contains_key(prefix.to_string().as_str())) &&
+				   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(rest.as_str()))
+				{
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+
+	/// Parent, then grandparent. One more ancestor when a superscript is in that chain.
+	fn explicit_unit_in_paren_group(leaf: Element<'_>) -> bool {
+		let Some(parent) = parent_el(leaf) else {
+			return false;
+		};
+		if is_paren_group(parent) {
+			return true;
+		}
+		let Some(grand) = parent_el(parent) else {
+			return false;
+		};
+		if is_paren_group(grand) {
+			return true;
+		}
+		if is_superscript(parent) || is_superscript(grand) {
+			let Some(great) = parent_el(grand) else {
+				return false;
+			};
+			return is_paren_group(great);
+		}
+		return false;
+
+		fn parent_el(el: Element<'_>) -> Option<Element<'_>> {
+			return el.parent().and_then(|node| node.element());
+		}
+	
+		fn is_superscript(el: Element<'_>) -> bool {
+			return matches!(as_str!(name(el)), "msup" | "msubsup");
+		}
+	
+		fn is_paren_group(el: Element<'_>) -> bool {
+			let children: Vec<Element<'_>> = el.children().iter().filter_map(|child| child.element()).collect();
+			if children.len() < 2 {
+				return false;
+			}
+			let close = *children.last().unwrap();
+			return name(children[0]) == "mo" &&
+				as_str!(as_text(children[0])) == "(" &&
+				name(close) == "mo" &&
+				as_str!(as_text(close)) == ")";
+		}
+	}
+
+	/// True when an `mi`/`mtext` leaf looks non-variable enough to be a unit token.
+	fn looks_like_unit_leaf(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag != "mi" && tag != "mtext" {
+			return false;
+		}
+		if el.attribute("data-chem-element").is_some() {
+			return false;
+		}
+		if tag == "mtext" {
+			return true;
+		}
+		let text = as_text(el);
+		// Currency symbols are typically single-character `mi` without mathvariant=normal.
+		if is_currency_symbol_leaf(el) {
+			return true;
+		}
+		if text.chars().count() > 1 {
+			return true;
+		}
+		return el.attribute_value("mathvariant").as_deref() == Some("normal");
+	}
+}
+
+/// True when `symbol` is a key in speech `CurrencySymbols`.
+fn is_currency_symbol(symbol: &str) -> bool {
+	return crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
+		definitions.borrow()
+			.get_hashmap("CurrencySymbols")
+			.is_some_and(|map| map.contains_key(symbol))
+	});
+}
+
+/// True when `el` is an `mi`/`mtext` whose text is a `CurrencySymbols` key.
+fn is_currency_symbol_leaf(el: Element<'_>) -> bool {
+	let tag = as_str!(name(el));
+	if tag != "mi" && tag != "mtext" {
+		return false;
+	}
+	let text = as_text(el);
+	if text.is_empty() {
+		return false;
+	}
+	return is_currency_symbol(as_str!(text));
+}
+
+/// Implied times between a currency symbol and an `mn`, either order (`$` then `5`, or `5` then `€`).
+fn is_currency_times_pair(previous: Element<'_>, current: Element<'_>) -> bool {
+	let previous_is_mn = name(previous) == "mn";
+	let current_is_mn = name(current) == "mn";
+	if previous_is_mn && is_currency_symbol_leaf(current) {
+		return true;
+	}
+	if current_is_mn && is_currency_symbol_leaf(previous) {
+		return true;
+	}
+	return false;
+}
+
+/// Promote likely unit leaves that sit in a confirming context (quantity, product, fraction, equality).
+fn confirm_likely_units(mathml: Element<'_>) {
+	const UNIT_JOIN_OPS: &[&str] = &["\u{2062}", "·", "⋅", "∙", "×", "/", "∕"];
+
+	confirm_likely_units_in(mathml);
+	mark_unit_grouping_parens(mathml);
+	strip_likely_unit_attrs(mathml);
+
+	fn mathml_element_children(el: Element<'_>) -> Vec<Element<'_>> {
+		return el.children().iter().filter_map(|c| c.element()).collect();
+	}
+
+	fn is_likely_unit_leaf(el: Element<'_>) -> bool {
+		return el.attribute(LIKELY_UNIT_ATTR).is_some();
+	}
+
+	fn is_confirmed_or_likely_unit_leaf(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag != "mi" && tag != "mtext" {
+			return false;
+		}
+		if is_likely_unit_leaf(el) {
+			return true;
+		}
+		return el.attribute_value(INTENT_ATTR).as_deref().is_some_and(intent_has_unit);
+	}
+
+	fn is_unit_join_op(el: Element<'_>) -> bool {
+		return name(el) == "mo" && UNIT_JOIN_OPS.contains(&as_str!(as_text(el)));
+	}
+
+	fn is_equals_op(el: Element<'_>) -> bool {
+		return name(el) == "mo" && as_str!(as_text(el)) == "=";
+	}
+
+	/// A factor that can participate in a unit product/quotient (leaf, power of unit, fraction of units, or nested product).
+	fn is_unit_candidate_factor(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		match tag {
+			"mi" | "mtext" => return is_confirmed_or_likely_unit_leaf(el),
+			"msup" | "msubsup" => {
+				let children = mathml_element_children(el);
+				return children.first().is_some_and(|base| is_unit_candidate_factor(*base));
+			},
+			"mfrac" => {
+				let children = mathml_element_children(el);
+				return children.len() >= 2 &&
+					is_unit_quotient_operand(children[0]) &&
+					is_unit_quotient_operand(children[1]);
+			},
+			"mrow" => {
+				let children = mathml_element_children(el);
+				if let Some(interior) = grouping_paren_interior(&children) {
+					return is_unit_grouping_children(interior);
+				}
+				return is_unit_product_or_quotient_children(&children);
+			},
+			_ => return false,
+		}
+	}
+
+	fn is_unit_product_or_quotient_children(children: &[Element<'_>]) -> bool {
+		if children.is_empty() {
+			return false;
+		}
+		if children.len() == 1 {
+			return is_unit_candidate_factor(children[0]);
+		}
+		if children.len().is_multiple_of(2) {
+			return false;
+		}
+		for (i, child) in children.iter().enumerate() {
+			if i % 2 == 0 {
+				if !is_unit_candidate_factor(*child) {
+					return false;
+				}
+			} else if !is_unit_join_op(*child) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// `(` … `)` around an expression. The returned slice omits the fences.
+	fn grouping_paren_interior<'a, 'b>(children: &'b [Element<'a>]) -> Option<&'b [Element<'a>]> {
+		if children.len() < 2 ||
+		   !is_paren_fence(children[0], "(") ||
+		   !is_paren_fence(*children.last().unwrap(), ")")
+		{
+			return None;
+		}
+		return Some(&children[1..children.len() - 1]);
+
+		fn is_paren_fence(el: Element<'_>, ch: &str) -> bool {
+			return name(el) == "mo" && as_str!(as_text(el)) == ch;
+		}
+	}
+
+	/// Number, implied times, then a unit product (`5 ⁢ J`, `5 ⁢ kg·m`).
+	fn is_quantity_times_units(children: &[Element<'_>]) -> bool {
+		return children.len() >= 3 &&
+			is_numeric_quantity(children[0]) &&
+			is_unit_join_op(children[1]) &&
+			as_str!(as_text(children[1])) == "\u{2062}" &&
+			is_unit_product_or_quotient_children(&children[2..]);
+	}
+
+	/// Interior of grouping parentheses: a unit product, or a counted unit (`5 J`).
+	fn is_unit_grouping_children(children: &[Element<'_>]) -> bool {
+		if is_unit_product_or_quotient_children(children) ||
+		   is_quantity_times_units(children)
+		{
+			return true;
+		}
+		if children.len() == 1 && name(children[0]) == "mrow" {
+			return is_quantity_times_units(&mathml_element_children(children[0]));
+		}
+		return false;
+	}
+
+	/// One side of `/` or of an `mfrac`: a unit factor, a counted unit, or a currency amount.
+	fn is_unit_quotient_operand(el: Element<'_>) -> bool {
+		if is_unit_candidate_factor(el) || is_currency_amount_expr(el) {
+			return true;
+		}
+		if name(el) == "mrow" &&
+		   is_quantity_times_units(&mathml_element_children(el))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/// Silence parentheses that only group a unit factor inside this numerator or denominator.
+	fn mark_parens_in_unit_side(el: Element<'_>) {
+		let children = mathml_element_children(el);
+		if let Some(interior) = grouping_paren_interior(&children) &&
+		   is_unit_grouping_children(interior)
+		{
+			mark_fence(children[0]);
+			mark_fence(*children.last().unwrap());
+			for child in interior {
+				mark_unit_factor_parens(*child);
+			}
+			return;
+		}
+		mark_unit_factor_parens(el);
+
+		fn mark_fence(el: Element<'_>) {
+			el.set_attribute_value(UNIT_GROUPING_ATTR, "true");
+		}
+
+		fn mark_unit_factor_parens(el: Element<'_>) {
+			let tag = as_str!(name(el));
+			let children = mathml_element_children(el);
+			if tag == "msup" || tag == "msubsup" {
+				if let Some(base) = children.first() {
+					mark_parens_in_unit_side(*base);
+				}
+				return;
+			}
+			if tag == "mfrac" &&
+			   children.len() >= 2 &&
+			   is_unit_quotient_operand(children[0]) &&
+			   is_unit_quotient_operand(children[1])
+			{
+				mark_parens_in_unit_side(children[0]);
+				mark_parens_in_unit_side(children[1]);
+				return;
+			}
+			if tag == "mrow" {
+				if is_unit_product_or_quotient_children(&children) ||
+				   is_quantity_times_units(&children)
+				{
+					for (i, child) in children.iter().enumerate() {
+						if i % 2 == 0 {
+							mark_parens_in_unit_side(*child);
+						}
+					}
+					return;
+				}
+				if children.len() == 1 {
+					mark_parens_in_unit_side(children[0]);
+				}
+			}
+		}
+	}
+
+	/// Mark `(` / `)` on the two sides of a unit quotient. The nodes stay in the tree.
+	fn mark_unit_grouping_parens(mathml: Element<'_>) {
+		let tag = as_str!(name(mathml));
+		let children = mathml_element_children(mathml);
+		if tag == "mfrac" &&
+		   children.len() >= 2 &&
+		   is_unit_quotient_operand(children[0]) &&
+		   is_unit_quotient_operand(children[1])
+		{
+			mark_parens_in_unit_side(children[0]);
+			mark_parens_in_unit_side(children[1]);
+		} else if tag == "mrow" || tag == "math" {
+			for (i, child) in children.iter().enumerate() {
+				if i == 0 || i + 1 >= children.len() || !is_slash(*child) {
+					continue;
+				}
+				let left = children[i - 1];
+				let right = children[i + 1];
+				if is_unit_quotient_operand(left) && is_unit_quotient_operand(right) {
+					mark_parens_in_unit_side(left);
+					mark_parens_in_unit_side(right);
+				}
+			}
+		}
+		for child in children {
+			mark_unit_grouping_parens(child);
+		}
+
+		fn is_slash(el: Element<'_>) -> bool {
+			return name(el) == "mo" && matches!(as_str!(as_text(el)), "/" | "∕");
+		}
+	}
+
+	fn promote_likely_leaves_in(el: Element<'_>) {
+		let tag = as_str!(name(el));
+		match tag {
+			"mi" | "mtext" => {
+				if is_likely_unit_leaf(el) {
+					add_unit_property(el);
+				}
+			},
+			"msup" | "msubsup" => {
+				if let Some(base) = mathml_element_children(el).first() {
+					promote_likely_leaves_in(*base);
+				}
+			},
+			"mfrac" | "mrow" => {
+				for child in mathml_element_children(el) {
+					promote_likely_leaves_in(child);
+				}
+			},
+			_ => {},
+		}
+	}
+
+	fn is_numeric_quantity(el: Element<'_>) -> bool {
+		let tag = as_str!(name(el));
+		if tag == "mn" {
+			return true;
+		}
+		if tag == "mfrac" {
+			let children = mathml_element_children(el);
+			return children.len() >= 2 &&
+				name(children[0]) == "mn" &&
+				name(children[1]) == "mn";
+		}
+		return false;
+	}
+
+	/// `$ ⁢ 5` or `5 ⁢ €` — currency bound to an amount (used to confirm `/ l` as a unit).
+	fn is_currency_amount_mrow(el: Element<'_>) -> bool {
+		if name(el) != "mrow" {
+			return false;
+		}
+		let children = mathml_element_children(el);
+		if children.len() != 3 ||
+		   name(children[1]) != "mo" ||
+		   as_str!(as_text(children[1])) != "\u{2062}"
+		{
+			return false;
+		}
+		if is_currency_symbol_leaf(children[0]) && name(children[2]) == "mn" {
+			return true;
+		}
+		if name(children[0]) == "mn" && is_currency_symbol_leaf(children[2]) {
+			return true;
+		}
+		return false;
+	}
+
+	/// Currency amount, possibly wrapped in single-child `mrow`s from author markup.
+	fn is_currency_amount_expr(el: Element<'_>) -> bool {
+		let mut el = el;
+		while name(el) == "mrow" {
+			let children = mathml_element_children(el);
+			if children.len() == 1 {
+				el = children[0];
+				continue;
+			}
+			return is_currency_amount_mrow(el);
+		}
+		return false;
+	}
+
+	fn strip_likely_unit_attrs(mathml: Element<'_>) {
+		if mathml.attribute(LIKELY_UNIT_ATTR).is_some() {
+			mathml.remove_attribute(LIKELY_UNIT_ATTR);
+		}
+		for child in mathml_element_children(mathml) {
+			strip_likely_unit_attrs(child);
+		}
+	}
+
+	fn confirm_flat_unit_sequence(children: &[Element<'_>]) {
+		// Multi-factor product/quotient only (a lone likely token is not enough).
+		if children.len() >= 3 &&
+		   is_unit_product_or_quotient_children(children)
+		{
+			for child in children {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
+		// quantity ⁢ unit  (also allow longer products after the times; single factor OK here)
+		if children.len() >= 3 &&
+		   is_numeric_quantity(children[0]) &&
+		   is_unit_join_op(children[1]) &&
+		   as_str!(as_text(children[1])) == "\u{2062}" &&
+		   is_unit_product_or_quotient_children(&children[2..])
+		{
+			for child in &children[2..] {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
+		// ($ ⁢ 5) / gal — currency amount over a unit (or unit product)
+		if children.len() >= 3 &&
+		   is_currency_amount_mrow(children[0]) &&
+		   is_unit_join_op(children[1]) &&
+		   matches!(as_str!(as_text(children[1])), "/" | "∕") &&
+		   is_unit_product_or_quotient_children(&children[2..])
+		{
+			for child in &children[2..] {
+				promote_likely_leaves_in(*child);
+			}
+		}
+
+		// LHS = unit-product-RHS (RHS may be a single factor, e.g. Hz = s⁻¹)
+		if let Some(eq_index) = children.iter().position(|c| is_equals_op(*c)) &&
+		   eq_index >= 1 &&
+		   eq_index + 1 < children.len() &&
+		   is_unit_product_or_quotient_children(&children[eq_index + 1..])
+		{
+			for child in &children[eq_index + 1..] {
+				promote_likely_leaves_in(*child);
+			}
+			let lhs = children[eq_index - 1];
+			if is_unit_candidate_factor(lhs) {
+				promote_likely_leaves_in(lhs);
+			}
+		}
+	}
+
+	fn confirm_likely_units_in(mathml: Element<'_>) {
+		let tag = as_str!(name(mathml));
+		if tag == "mfrac" {
+			let children = mathml_element_children(mathml);
+			if children.len() >= 2 {
+				if is_unit_candidate_factor(children[0]) &&
+				   is_unit_candidate_factor(children[1])
+				{
+					promote_likely_leaves_in(children[0]);
+					promote_likely_leaves_in(children[1]);
+				} else if is_currency_amount_expr(children[0]) &&
+				          is_unit_candidate_factor(children[1])
+				{
+					// ($5)/gal — confirm the denominator unit for "dollars per gallon"
+					promote_likely_leaves_in(children[1]);
+				}
+			}
+		} else if tag == "mrow" || tag == "math" {
+			let children = mathml_element_children(mathml);
+			confirm_flat_unit_sequence(&children);
+		}
+
+		for child in mathml_element_children(mathml) {
+			confirm_likely_units_in(child);
+		}
+	}
+}
 
 
 /// Used when mhchem is detected and we should favor postscripts rather than prescripts in constructing an mmultiscripts
@@ -78,6 +667,11 @@ static TIMES_SIGN: LazyLock<&'static OperatorInfo> = LazyLock::new(|| OPERATORS.
 static IMPLIED_TIMES_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
 	op_type: OperatorTypes::INFIX, priority: 851, next: &None
 };
+// Same priority as trig-arg times so `$5/l` and `5€/l` group the amount before `/`.
+// A distinct value: `is_trig_arg` matches IMPLIED_TIMES_HIGH_PRIORITY by pointer.
+static IMPLIED_TIMES_CURRENCY: OperatorInfo = OperatorInfo{
+	op_type: OperatorTypes::INFIX, priority: 851, next: &None
+};
 // IMPLIED_SEPARATOR_HIGH_PRIORITY -- used for Geometry points like ABC
 static IMPLIED_SEPARATOR_HIGH_PRIORITY: OperatorInfo = OperatorInfo{
 	op_type: OperatorTypes::INFIX, priority: 901, next: &None
@@ -110,7 +704,7 @@ static ILLEGAL_OPERATOR_INFO: OperatorInfo = OperatorInfo{
 static EQUAL_PRIORITY: LazyLock<usize> = LazyLock::new(|| OPERATORS.get("=").unwrap().priority);
 
 // useful for detecting whitespace
-static IS_WHITESPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s+$").unwrap());    // only Unicode whitespace
+static IS_WHITESPACE: Lazy<Regex> = lazy_regex!(r"^\s+$");    // only Unicode whitespace
 
 // Operators are either PREFIX, INFIX, or POSTFIX, but can also have other properties such as LEFT_FENCE
 bitflags! {
@@ -234,7 +828,11 @@ impl OperatorInfo {
 	}
 
 	fn is_times(&self) -> bool {
-		return ptr_eq(self, *IMPLIED_TIMES) || ptr_eq(self, *TIMES_SIGN);
+		// IMPLIED_TIMES_CURRENCY chains with other times (so `⁢188,23⁢€` stays flat)
+		// but its higher priority still binds before `/`.
+		return ptr_eq(self, *IMPLIED_TIMES) ||
+			ptr_eq(self, *TIMES_SIGN) ||
+			ptr_eq(self, &IMPLIED_TIMES_CURRENCY);
 	}
 
 	fn is_nary(&self, previous_op: &OperatorInfo) -> bool {
@@ -462,8 +1060,8 @@ static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
 
 // turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
 // two cases because we don't want to have a match for 'Cl', etc.
-static UPPER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$").unwrap());
-static LOWER_ROMAN_NUMERAL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$").unwrap());
+static UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$");
+static LOWER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$");
 
 
 struct CanonicalizeContextPatterns {
@@ -590,8 +1188,40 @@ impl CanonicalizeContext {
 			converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
 		}
+		if mark_likely_unit_leaves(converted_mathml) {
+			confirm_likely_units(converted_mathml);
+		}
 		debug!("\nMathML after canonicalize:\n{}", mml_to_string(converted_mathml));
 		return Ok(converted_mathml);
+	}
+
+	/// Push property-only `:unit` from a container down to `mi`/`mtext` leaves (not into scripts).
+	fn propagate_unit_intent(mathml: Element) {
+		let intent_attr = mathml.attribute_value(INTENT_ATTR);
+		let Some(intent) = intent_attr.as_deref() else {
+			return;
+		};
+		if is_leaf(mathml) || !intent_is_property_only(intent) || !intent_has_unit(intent) {
+			return;
+		}
+		propagate_unit_intent_into(mathml);
+
+		fn propagate_unit_intent_into(mathml: Element) {
+			match as_str!(name(mathml)) {
+				"mi" | "mtext" => add_unit_property(mathml),
+				"mrow" | "mstyle" | "mpadded" | "mfrac" => {
+					for child in mathml.children() {
+						propagate_unit_intent_into(as_element(child));
+					}
+				},
+				"msub" | "msup" | "msubsup" | "munder" | "mover" | "munderover" => {
+					if let Some(base) = mathml.children().first() {
+						propagate_unit_intent_into(as_element(*base));
+					}
+				},
+				_ => {},
+			}
+		}
 	}
 		
 	/// Make sure there is exactly one child
@@ -764,18 +1394,15 @@ impl CanonicalizeContext {
 	/// Returns 'None' if the element should not be in the tree.
 	fn clean_mathml<'a>(&self, mathml: Element<'a>) -> Option<Element<'a>> {
 		// Note: this works bottom-up (clean the children first, then this element)
-		static IS_PRIME: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"['′″‴⁗]").unwrap());
+		static IS_PRIME: Lazy<Regex> = lazy_regex!(r"['′″‴⁗]");
 
 		// Note: including intervening spaces in what is likely a symbol of omission preserves any notion of separate digits (e.g., "_ _ _")
-		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
+		static IS_UNDERSCORE: Lazy<Regex> = lazy_regex!(r"^[_\u{00A0}]+$");
 
 			
-		fn is_currency_symbol(ch: char) -> bool {
-			matches!(ch, '$' | '¢' | '€' | '£' | '₡' | '₤' | '₨' | '₩' | '₪' | '₱' | '₹' | '₺' | '₿')
-		}
-
 		fn contains_currency(s: &str) -> bool {
-			s.chars().any(is_currency_symbol)
+			let mut buf = [0u8; 4];
+			return s.chars().any(|ch| is_currency_symbol(ch.encode_utf8(&mut buf)));
 		}
 
 		/// Geometry arc names like AB / ABC: a leaf whose text is 2–3 ASCII capitals.
@@ -863,6 +1490,10 @@ impl CanonicalizeContext {
 				// return Some(mathml);
 			}
 		};
+
+		// Push `:unit` from property-only containers onto mi/mtext leaves before cleaning children
+		// (so mi→mo conversion and mi merging see the leaf intent).
+		CanonicalizeContext::propagate_unit_intent(mathml);
 
 		match element_name {
 			"mn" => {
@@ -967,7 +1598,6 @@ impl CanonicalizeContext {
 			},
 			"mtext" => {
 				// debug!("before merge_arc_trig: {}", mml_to_string(mathml));
-
 				if let Some(result) = merge_arc_trig(mathml) {
 					return Some(result);
 				} else if let Some(result) = split_points(mathml) {
@@ -1135,7 +1765,7 @@ impl CanonicalizeContext {
 				// normalize width ems
 				let width_raw = mathml.attribute_value("width");
 				let width = width_raw.as_deref().unwrap_or("0em");
-				let normalized_width = crate::xpath_functions::FontSizeGuess::em_from_value(width);
+				let normalized_width = crate::xpath_functions::em_from_value(width);
 				mathml.set_attribute_value("data-width", &normalized_width.to_string());
 				return Some(mathml);
 			},
@@ -1485,6 +2115,10 @@ impl CanonicalizeContext {
 					return mathml;
 				}
 				if let Some(elements) = convert_leaves_to_chem_elements(mathml) {
+					// Empty: the leaf was merged into a following script base and removed.
+					if elements.is_empty() {
+						return mathml;
+					}
 					// children are already marked as chemical elements					
 					let answer = replace_children(mathml, elements);
 					if name(answer) == "mrow" {
@@ -1504,7 +2138,7 @@ impl CanonicalizeContext {
 
 		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
 		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
-			static IS_DEGREES_C_OR_F: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"[°º][CF]").unwrap());
+			static IS_DEGREES_C_OR_F: Lazy<Regex> = lazy_regex!(r"[°º][CF]");
 
 			let text = as_text(mi);
 			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
@@ -1684,12 +2318,12 @@ impl CanonicalizeContext {
 				return mathml;
 			} else if has_subscript {
 				set_mathml_name(mathml, "msub");
-				let children = vec!(children[0], children[1]);
+				let children = vec![children[0], children[1]];
 				mathml.replace_children(children);
 				return mathml;
 			} else if has_superscript {
 				set_mathml_name(mathml, "msup");
-				let children = vec!(children[0], children[2]);
+				let children = vec![children[0], children[2]];
 				mathml.replace_children(children);
 				return mathml;
 			} else {
@@ -1715,7 +2349,7 @@ impl CanonicalizeContext {
 						leaf.set_name("mn");	// make sure we create an mn (might be one already)
 					}
 					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
-					if is_currency_symbol(first_ch.chars().next().unwrap()) {
+					if is_currency_symbol(first_ch) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
@@ -1729,7 +2363,7 @@ impl CanonicalizeContext {
 						return Some(mrow);
 					}
 					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
-					if is_currency_symbol(last_ch.chars().next().unwrap()) {
+					if is_currency_symbol(last_ch) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
@@ -1744,7 +2378,7 @@ impl CanonicalizeContext {
 					}
 					// try to find it in the middle
 					for (byte_idx, ch) in text.char_indices() {
-						if contains_currency(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
+						if is_currency_symbol(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
 							// get all the substrings
 							let first_part = &text[..byte_idx];
 							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
@@ -1882,7 +2516,7 @@ impl CanonicalizeContext {
 			let close = close_raw.as_deref().unwrap_or(")").replace('>', "⟩");
 			// debug!("open={}, close={}", open, close);
 			let separators_raw = mfenced.attribute_value("separators");
-			let mut separators = separators_raw.as_deref().unwrap_or(",").chars();
+			let separators: Vec<char> = separators_raw.as_deref().unwrap_or(",").chars().filter(|ch| !ch.is_whitespace()).collect();
 			set_mathml_name(mfenced, "mrow");
 			mfenced.remove_attribute("open");
 			mfenced.remove_attribute("close");
@@ -1894,9 +2528,10 @@ impl CanonicalizeContext {
 			}
 			if !children.is_empty() {
 				new_children.push(children[0]);
-				for child in &children[1..] {
-					let sep = separators.next().unwrap_or(',').to_string();
-					new_children.push( ChildOfElement::Element( create_mo(mfenced.document(), &sep, MFENCED_ATTR_VALUE)) );
+				for (i, child) in children[1..].iter().enumerate() {
+					if let Some(&sep) = separators.get(i).or_else(|| separators.last()) {
+            		    new_children.push(ChildOfElement::Element( create_mo(mfenced.document(), &sep.to_string(), MFENCED_ATTR_VALUE)) );
+					}
 					new_children.push(*child);
 				}
 			}
@@ -2083,7 +2718,7 @@ impl CanonicalizeContext {
 		fn merge_number_blocks(context: &CanonicalizeContext, parent_mrow: Element, children: &mut Vec<ChildOfElement>) {
 			// debug!("parent:\n{}", mml_to_string(parent_mrow));
 			// If we find a comma that is not part of a number, don't form a number
-			//   (see https://github.com/NSoiffer/MathCAT/issues/271)
+			//   (see https://github.com/daisy/MathCAT/issues/271)
 			// Unfortunately, we can't do this in the loop below because we might discover the "not part of a number" after a number has been formed
 			let do_not_merge_comma = is_comma_not_part_of_a_number(children);
 			let mut i = 0;
@@ -2194,7 +2829,7 @@ impl CanonicalizeContext {
 		/// under some specific conditions (trying to be a little cautious).
 		/// The returned (mrow) element reuses the arg so tree siblings links remain correct.
 		fn split_points(leaf: Element) -> Option<Element> {
-			static IS_UPPERCASE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[A-Z]+$").unwrap());
+			static IS_UPPERCASE: Lazy<Regex> = lazy_regex!(r"^[A-Z]+$");
 
 			if !IS_UPPERCASE.is_match(as_str!(as_text(leaf))) {
 				return None;
@@ -2273,7 +2908,9 @@ impl CanonicalizeContext {
 			let parent = get_parent(mi);	// not canonicalized into mrows, so parent could be "math"
 			let parent_name = name(parent);
 			// don't merge if more than one char, or if not in an mrow (or implied on since we haven't normalized yet)
-			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") {
+			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") ||
+				has_arg_or_intent(mi)
+			{
 				return None;
 			}
 			let mut text =  as_text(mi).to_string();
@@ -2287,14 +2924,16 @@ impl CanonicalizeContext {
 							if name(child) == "msub" || name(child) == "msup" {
 								// check if the *last* char in the sequence is scripted
 								// if so, we need to stop here anyway and deal with it specially
-								last_char_is_scripted = Some(child);		// need to remember the value -- cleared later if not ok
-								child = as_element(child.children()[0]);
-								while name(child) == "mrow" && child.children().len() == 1 {
-									// the base may be wrapped with mrows
+								if !has_arg_or_intent(child) {
+									last_char_is_scripted = Some(child);		// need to remember the value -- cleared later if not ok
 									child = as_element(child.children()[0]);
+									while name(child) == "mrow" && child.children().len() == 1 {
+										// the base may be wrapped with mrows
+										child = as_element(child.children()[0]);
+									}
 								}
 							}
-							if name(child) == "mi" {
+							if name(child) == "mi" && can_merge_mi_elements(mi, child) {
 								let child_ns = as_text(child);
 								let mut child_text = child_ns.chars();
 								let first_char = child_text.next().unwrap_or('a');
@@ -2470,23 +3109,21 @@ impl CanonicalizeContext {
 			// This is not yet in canonical form, so the fences may be siblings or siblings of the parent 
 			let preceding_siblings = as_element(children[0]).preceding_siblings();
 			let following_siblings = as_element(children[end-1]).following_siblings();
-			let first_child;
-			let last_child;
-			if preceding_siblings.is_empty() && following_siblings.is_empty() {
+			
+			
+			let (first_child, last_child) = if preceding_siblings.is_empty() && following_siblings.is_empty() {
 				// number spans all children, look to parent for fences
 				let preceding_children = mrow.preceding_siblings();
 				let following_children = mrow.following_siblings();
 				if preceding_children.is_empty() || following_children.is_empty() {
 					return true;	// doesn't have left or right fence
 				}
-				first_child = preceding_children[preceding_children.len()-1];
-				last_child = following_children[0];
+				(preceding_children[preceding_children.len()-1], following_children[0])
 			} else if preceding_siblings.is_empty() || following_siblings.is_empty() {
 				return true; // can't be fences around it
 			} else {
-				first_child = preceding_siblings[preceding_siblings.len()-1];
-				last_child = following_siblings[0];
-			}
+				(preceding_siblings[preceding_siblings.len()-1], following_siblings[0])
+			};
 			let first_child = as_element(first_child);
 			let last_child = as_element(last_child);
 			return !(name(first_child) == "mo" && is_fence(first_child) &&
@@ -3149,6 +3786,11 @@ impl CanonicalizeContext {
 		match tag_name {
 			"mi" | "ms" | "mtext" | "mspace"  => {
 				self.canonicalize_plane1(mathml);
+				let text = as_text(mathml);
+				if (text == "Σ" || text == "Π") && IsNode::is_modified(get_parent(mathml)) {
+					// remap Greek chars to proper char
+					mathml.set_text(if text == "Σ" { "∑" } else { "∏" });
+				}
 				return Ok( mathml ); },
 			"mo" => {
 				self.canonicalize_plane1(mathml);
@@ -3534,6 +4176,7 @@ impl CanonicalizeContext {
 				"\u{02C9}"| "\u{0304}"| "\u{0305}" => "\u{00AF}",
 				"\u{02DC}" | "~"  => "\u{223C}",		// for base, use version with prefix and infix
 				"\u{01C1}" => "\u{2016}", // U+2016 is "‖"
+				"!!" => "\u{203C}", // U+203C is "‼" (double factorial)
 
 				_ => mo_text,
 			};
@@ -3761,6 +4404,159 @@ impl CanonicalizeContext {
 	}
 
 
+	/// Decides whether a parenthesized infix of function expressions is a function call.
+	///
+	/// Returns `None` unless `node` is a `(...)` / `[...]` group whose interior is
+	/// `operand (infix operand)+` with every operand a function expression (a known or likely
+	/// function name, a script whose base is one, or a nested such group), or the `)` / `]`
+	/// that closed that group. Examples: `(f∘g)`, `(f+g)`, `(sin^2+cos^2)`.
+	///
+	/// When it is such a head:
+	/// - `True` if a following sibling starts with `(` or `[` (after skipping empty `mtext`),
+	///   so `(f∘g)(x)` is function application;
+	/// - `False` if there are no following siblings or no following paren/bracket, so
+	///   `(f∘g)-x` keeps an infix minus and `(f∘g) x` stays times;
+	/// - chemistry may still force `False` / `Maybe` via `is_likely_chemical_state`.
+	fn composed_function_certainty<'a>(&self, node: Element<'a>, right_siblings: Option<&[ChildOfElement<'a>]>) -> Option<FunctionNameCertainty> {
+		if !self.is_composed_function_head(node) {
+			return None;
+		}
+		let Some(right_siblings) = right_siblings else {
+			return Some(FunctionNameCertainty::False);
+		};
+		let non_whitespace = right_siblings.iter().enumerate()
+			.find(|&(_, child)| {
+				let child = as_element(*child);
+				return name(child) != "mtext" || !as_text(child).trim().is_empty();
+			});
+		let right_siblings = if let Some((i, _)) = non_whitespace { &right_siblings[i..] } else { right_siblings };
+		if right_siblings.is_empty() {
+			return Some(FunctionNameCertainty::False);
+		}
+
+		let first_child = as_element(right_siblings[0]);
+		let chem_state_certainty = self.is_likely_chemical_state(node, first_child);
+		if chem_state_certainty != FunctionNameCertainty::True {
+			return Some(chem_state_certainty);
+		}
+		if name(first_child) == "mrow" &&
+		   !first_child.children().is_empty()
+		{
+			let open = as_element(first_child.children()[0]);
+			if name(open) == "mo" &&
+			   (as_text(open) == "(" || as_text(open) == "[")
+			{
+				return Some(self.is_function_name(node, Some(&first_child.children())));
+			}
+		}
+		if right_siblings.len() < 2 {
+			return Some(FunctionNameCertainty::False);
+		}
+		let first_sibling = as_element(right_siblings[0]);
+		if name(first_sibling) != "mo" ||
+		   (as_text(first_sibling) != "(" &&
+		    as_text(first_sibling) != "[")
+		{
+			return Some(FunctionNameCertainty::False);
+		}
+		return Some(FunctionNameCertainty::True);
+	}
+
+	/// The node is a parenthesized infix of function expressions, or the `)` / `]` that closed one.
+	fn is_composed_function_head(&self, node: Element) -> bool {
+		let base = get_possible_embellished_node(node);
+		if let Some(interior) = bracketed_function_interior(base) &&
+		   self.is_infix_of_functions(&interior)
+		{
+			return true;
+		}
+		if is_close_paren_or_bracket(node) {
+			let parent = get_parent(node);
+			if let Some(interior) = bracketed_function_interior(parent) &&
+			   self.is_infix_of_functions(&interior)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/// A function name, a script whose base is one, or an infix of those.
+	fn is_function_expression(&self, node: Element) -> bool {
+		let base = get_possible_embellished_node(node);
+		let node_name = name(base);
+		if node_name == "mi" || node_name == "mtext" {
+			return is_function_leaf(base);
+		}
+		if node_name != "mrow" {
+			return false;
+		}
+		let children = base.children();
+		if children.len() == 1 {
+			return self.is_function_expression(as_element(children[0]));
+		}
+		if let Some(interior) = bracketed_function_interior(base) {
+			return self.is_infix_of_functions(&interior);
+		}
+		return self.is_infix_of_functions(&children);
+
+		/// Names that count as functions without looking at what follows them.
+		fn is_function_leaf(node: Element) -> bool {
+			let text_ns = as_text(node);
+			let text = text_ns.trim();
+			if text.is_empty() {
+				return false;
+			}
+			return crate::definitions::SPEECH_DEFINITIONS.with(|defs| {
+				let defs = defs.borrow();
+				let names = defs.get_hashset("FunctionNames").unwrap();
+				if names.contains(&text.to_ascii_lowercase()) {
+					return true;
+				}
+				let shapes = defs.get_hashset("GeometryShapes").unwrap();
+				if shapes.contains(text) {
+					return true;
+				}
+				let likely_names = defs.get_hashset("LikelyFunctionNames").unwrap();
+				if likely_names.contains(text) {
+					return true;
+				}
+				let mut chars = text.chars();
+				let first_char = chars.next().unwrap();
+				return chars.next().is_some() && first_char.is_uppercase();
+			});
+		}
+	}
+
+	/// `operand (infix-mo operand)+`, unwrapping a single nested `mrow` from the paren parser.
+	fn is_infix_of_functions(&self, children: &[ChildOfElement]) -> bool {
+		if children.len() == 1 {
+			let only = as_element(children[0]);
+			if name(only) == "mrow" {
+				return self.is_infix_of_functions(&only.children());
+			}
+			return false;
+		}
+		if children.len() < 3 || children.len().is_multiple_of(2) {
+			return false;
+		}
+		let mut i = 0;
+		while i < children.len() {
+			if !self.is_function_expression(as_element(children[i])) {
+				return false;
+			}
+			i += 1;
+			if i == children.len() {
+				return true;
+			}
+			if !mo_has_infix_form(as_element(children[i])) {
+				return false;
+			}
+			i += 1;
+		}
+		return false;
+	}
+
 	// return FunctionNameCertainty::False or Maybe if 'node' is a chemical element and is followed by a state (solid, liquid, ...)
 	//  in other words, we are certain this can't be a function since it looks like it is or might be chemistry
 	fn is_likely_chemical_state<'a>(&self, node: Element<'a>, right_sibling: Element<'a>) -> FunctionNameCertainty {
@@ -3794,11 +4590,15 @@ impl CanonicalizeContext {
 	// E.g, sin x and f(x)
 	// 1. If parens follow the name, then we use a more inclusive set of heuristics as it is more likely a function
 	// The heuristics used are:
-	//   - it is on the list of known function names (e.g., sin" and "log")
+	//   - it is on the list of known function names (e.g., "sin" and "log")
 	//   - it is on the list of likely function names (e.g, f, g, h)
 	//   - multi-char names that begin with a capital letter (e.g, "Tr")
 	//   - there is a single token inside the parens (why else would someone use parens), any name (e.g, a(x))
 	//	 - if there are multiple comma-separated args
+	//   - if the name doesn't appear inside the parens (e.g., n(n+1))
+	//   - GeometryShapes also always returns True (△ABC, etc)
+	//   - a parenthesized infix of function expressions followed by parens (e.g., (f∘g)(x), (sin^2+cos^2)(θ))
+	//  FIX: a postfix prime on a complex function head, e.g. (f^2/g)'(x), is still not recognized
 	//
 	// 2. If there are no parens, then only names on the known function list are used (e.g., "sin x")
 	//
@@ -3807,9 +4607,12 @@ impl CanonicalizeContext {
 		let base_of_name = get_possible_embellished_node(node);
 	
 		// actually only 'mi' should be legal here, but some systems used 'mtext' for multi-char variables
-		// FIX: need to allow for composition of function names. E.g, (f+g)(x) and (f^2/g)'(x)
 		let node_name = name(base_of_name);
 		if node_name != "mi" && node_name != "mtext" {
+			// Parenthesized compositions such as (f∘g) are rare; only look once a plain name is ruled out.
+			if let Some(certainty) = self.composed_function_certainty(node, right_siblings) {
+				return certainty;
+			}
 			return FunctionNameCertainty::False;
 		}
 		// whitespace is sometimes added to the mi since braille needs it, so do a trim here to get function name
@@ -4470,6 +5273,9 @@ impl CanonicalizeContext {
 									OperatorPair{ ch: op_ch("\u{2063}"), op: &IMPLIED_CHEMICAL_BOND, _phantom: PhantomData }
 								} else if self.is_implied_separator(previous_child, current_child) {
 									OperatorPair{ ch: op_ch("\u{2063}"), op: &IMPLIED_SEPARATOR_HIGH_PRIORITY, _phantom: PhantomData }
+								} else if is_currency_times_pair(base_of_previous_child, base_of_child) {
+									// Bind currency to the number tighter than `/` (`($ ⁢ 5) / l`, `(5 ⁢ €) / l`).
+									OperatorPair{ ch: op_ch("\u{2062}"), op: &IMPLIED_TIMES_CURRENCY, _phantom: PhantomData }
 								} else if self.is_trig_arg(base_of_previous_child, base_of_child, &mut parse_stack) {
 									OperatorPair{ ch: op_ch("\u{2062}"), op: &IMPLIED_TIMES_HIGH_PRIORITY, _phantom: PhantomData }
 								} else {
@@ -4557,7 +5363,9 @@ impl CanonicalizeContext {
 		// We essentially have 'terminator( mrow terminator)'
 		//   in other words, we have an extra mrow with one child due to the initial start -- remove it
 		let mut top_of_stack = parse_stack.pop().unwrap();
-		assert_eq!(parse_stack.len(), 0);
+		if !parse_stack.is_empty() {
+			bail!("Unbalanced fences:\n{}", mml_to_string(mrow));
+		}
 	
 		let mut parsed_mrow = top_of_stack.mrow;
 		assert_eq!( name(top_of_stack.mrow), "mrow");
@@ -4657,6 +5465,68 @@ fn create_mo<'a, 'd:'a>(doc: Document<'d>, ch: &'a str, attr_value: &str) -> Ele
 	let mo_text = doc.create_text(ch);
 	implied_mo.append_child(mo_text);
 	return implied_mo;
+}
+
+/// Children between a matching `()` or `[]` pair, when `node` is that `mrow`.
+fn bracketed_function_interior<'a>(node: Element<'a>) -> Option<Vec<ChildOfElement<'a>>> {
+	if name(node) != "mrow" {
+		return None;
+	}
+	let children = node.children();
+	if children.len() < 3 {
+		return None;
+	}
+	let open = as_element(children[0]);
+	let close = as_element(children[children.len() - 1]);
+	if name(open) != "mo" ||
+	   name(close) != "mo"
+	{
+		return None;
+	}
+	let open_text = as_text(open);
+	let close_text = as_text(close);
+	if (open_text == "(" &&
+	    close_text == ")") ||
+	   (open_text == "[" &&
+	    close_text == "]")
+	{
+		return Some(children[1..children.len() - 1].to_vec());
+	}
+	return None;
+}
+
+fn is_close_paren_or_bracket(node: Element) -> bool {
+	if name(node) != "mo" {
+		return false;
+	}
+	let text = as_text(node);
+	return text == ")" || text == "]";
+}
+
+/// True when some operator-dictionary form of this `mo` is infix.
+/// An unknown `mo` is treated as infix, matching the parser's default.
+fn mo_has_infix_form(mo: Element) -> bool {
+	if name(mo) != "mo" {
+		return false;
+	}
+	let text_ns = as_text(mo);
+	let text = as_str!(text_ns);
+	if text.is_empty() {
+		return false;
+	}
+	let Some(op_info) = OPERATORS.get(text) else {
+		return true;
+	};
+	let mut op_info = op_info;
+	loop {
+		if op_info.is_infix() {
+			return true;
+		}
+		let Some(next) = op_info.next.as_ref() else {
+			return false;
+		};
+		op_info = next;
+	}
 }
 
 /// return 'node' or if it is adorned, return its base (recursive)
@@ -4804,6 +5674,49 @@ mod canonicalize_tests {
 					<mi mathvariant='bold-script'>𝚺𝛑</mi>
 				</mrow>
 			</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn greek_sum_in_munderover() -> Result<()> {
+		let test_str = "<math>
+			<munderover>
+				<mrow><mi>Σ</mi></mrow>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</munderover>
+			<msub><mi>x</mi><mi>i</mi></msub>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<munderover>
+					<mi>∑</mi>
+					<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+					<mi>n</mi>
+				</munderover>
+				<mo data-changed='added'>&#x2062;</mo>
+				<msub><mi>x</mi><mi>i</mi></msub>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn greek_product_in_msubsup() -> Result<()> {
+		let test_str = "<math>
+			<msubsup>
+				<mrow><mi>Π</mi></mrow>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</msubsup>
+		</math>";
+		let target_str = "<math>
+			<msubsup>
+				<mi>∏</mi>
+				<mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow>
+				<mi>n</mi>
+			</msubsup>
+		</math>";
 		are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 	
@@ -4992,14 +5905,120 @@ mod canonicalize_tests {
 					<mi>y</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>;</mo>
-				<mrow data-changed='added'>
-					<mi>z</mi>
-					<mo data-changed='from_mfenced'>,</mo>
-					<mi>a</mi>
-				</mrow>
+				<mi>z</mi>
+				<mo data-changed='from_mfenced'>;</mo>
+				<mi>a</mi>
 				</mrow>
 				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_empty_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=''><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_repeat_last_separator() -> Result<()> {
+        let test_str = "<math><mfenced separators=';'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>z</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_separators_with_whitespace() -> Result<()> {
+        let test_str = "<math><mfenced separators='; ,'><mi>x</mi><mi>y</mi><mi>z</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mrow data-changed='added'>
+						<mi>y</mi>
+						<mo data-changed='from_mfenced'>,</mo>
+						<mi>z</mi>
+					</mrow>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_too_many_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=';,'><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>;</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_default_separator() -> Result<()> {
+        let test_str = "<math><mfenced><mi>x</mi><mi>y</mi></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mi>x</mi>
+					<mo data-changed='from_mfenced'>,</mo>
+					<mi>y</mi>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn mfenced_whitespace_only_separators() -> Result<()> {
+        let test_str = "<math><mfenced separators=' '><mn>5</mn><mo>+</mo><mn>3</mn></mfenced></math>";
+        let target_str = "<math>
+			<mrow>
+				<mo data-changed='from_mfenced'>(</mo>
+				<mrow data-changed='added'>
+					<mn>5</mn>
+					<mo>+</mo>
+					<mn>3</mn>
+				</mrow>
+				<mo data-changed='from_mfenced'>)</mo>
 			</mrow>
 		</math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
@@ -5804,6 +6823,202 @@ mod canonicalize_tests {
 	   </math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
     }
+
+	/// `(f∘g)(x)` and a longer chain are function application, not times.
+	#[test]
+	fn function_composition_application() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		// Repeated ∘ stays one flat mrow and is still a function head.
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>h</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			  <mo>∘</mo>
+			  <mi>h</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// A sum of function names, and function names that are bases of `msup`, applied to a parenthesized argument.
+	#[test]
+	fn function_composition_sums_and_superscripts() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>+</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>+</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>x</mi>
+			  <mo>+</mo>
+			  <mn>1</mn>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		let test_str = "<math><mo>(</mo><msup><mi>f</mi><mn>2</mn></msup><mo>∘</mo><msup><mi>g</mi><mn>3</mn></msup><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <msup><mi>f</mi><mn>2</mn></msup>
+			  <mo>∘</mo>
+			  <msup><mi>g</mi><mn>3</mn></msup>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		// sin and cos are known function names; each square is an msup base.
+		let test_str = "<math><mo>(</mo><msup><mi>sin</mi><mn>2</mn></msup><mo>+</mo><msup><mi>cos</mi><mn>2</mn></msup><mo>)</mo><mo>(</mo><mi>θ</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <msup><mi>sin</mi><mn>2</mn></msup>
+			  <mo>+</mo>
+			  <msup><mi>cos</mi><mn>2</mn></msup>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>θ</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// An explicit U+2061 is left as the function application; a second one is not inserted.
+	#[test]
+	fn function_composition_explicit_apply() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>&#x2061;</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo>&#x2061;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// Names that are not functions, and a composition with no following parens, stay invisible times.
+	#[test]
+	fn function_composition_not_applied() -> Result<()> {
+		let test_str = "<math><mo>(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>a</mi>
+			  <mo>+</mo>
+			  <mi>b</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2062;</mo>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mi>x</mi>
+			<mo>)</mo>
+		  </mrow>
+		</mrow>
+	   </math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+
+		let test_str = "<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mi>x</mi></math>";
+		let target_str = "<math>
+		<mrow data-changed='added'>
+		  <mrow data-changed='added'>
+			<mo>(</mo>
+			<mrow data-changed='added'>
+			  <mi>f</mi>
+			  <mo>∘</mo>
+			  <mi>g</mi>
+			</mrow>
+			<mo>)</mo>
+		  </mrow>
+		  <mo data-changed='added'>&#x2062;</mo>
+		  <mi>x</mi>
+		</mrow>
+	   </math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
 
 	
 	#[test]
@@ -6730,6 +7945,106 @@ mod canonicalize_tests {
 	}
 
 	#[test]
+	fn merge_mi_skips_arg_and_intent() -> Result<()> {
+		// An mi with arg/intent must stay its own node, so "c o s" is not merged into "cos".
+		let test_str = "<math>
+			<mi>c</mi><mi arg='x'>o</mi><mi>s</mi><mo>=</mo>
+			<mi intent=':unit'>m</mi><mi>a</mi><mi>x</mi>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+					<mi>c</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi arg='x'>o</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>s</mi>
+				</mrow>
+				<mo>=</mo>
+				<mrow data-changed='added'>
+					<mi intent=':unit'>m</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>a</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>x</mi>
+				</mrow>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn unit_intent_propagates_to_leaves() -> Result<()> {
+		// Property-only :unit on an mrow is pushed to mi leaves, including script bases.
+		// Containers are not marked here; that happens on the intent tree.
+		let test_str = "<math>
+			<mrow intent=':unit'>
+				<mi>W</mi>
+				<mo>/</mo>
+				<msup>
+					<mi>m</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+		</math>";
+		let target_str = "<math>
+			<mrow intent=':unit'>
+				<mi intent=':unit'>W</mi>
+				<mo>/</mo>
+				<msup>
+					<mi intent=':unit'>m</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn unit_intent_propagates_to_juxtaposed_mis() -> Result<()> {
+		// Juxtaposed unit letters stay separate (intent blocks merge) with invisible times.
+		let test_str = "<math>
+			<mrow intent=':unit'>
+				<mi>W</mi>
+				<mi>h</mi>
+			</mrow>
+		</math>";
+		let target_str = "<math>
+			<mrow intent=':unit'>
+				<mi intent=':unit'>W</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi intent=':unit'>h</mi>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn merge_chem_element_skips_arg_and_intent() -> Result<()> {
+		// "N"+"a" would normally become Na; arg/intent must block that merge.
+		let test_str = "<math>
+			<mi>N</mi><mi arg='a'>a</mi><mo>+</mo>
+			<mi intent=':chemical-element'>C</mi><mi>l</mi>
+		</math>";
+		let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+					<mi>N</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi arg='a'>a</mi>
+				</mrow>
+				<mo>+</mo>
+				<mrow data-changed='added'>
+					<mi intent=':chemical-element'>C</mi>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mi>l</mi>
+				</mrow>
+			</mrow>
+		</math>";
+		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
     fn parent_bug_94() -> Result<()> {
 		// This is a test to make sure the crash in the bug report doesn't happen.
 		// Note: in the bug, they behavior they would like is a single mn with content "0.02"
@@ -6898,11 +8213,40 @@ mod canonicalize_tests {
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
+	/// Currency and its number bind before `/`: prefix `$5/l` and postfix `5€/l`.
+	#[test]
+	fn currency_amount_binds_before_solidus() -> Result<()> {
+		let prefix = "<math><mrow><mi>$</mi><mn>5</mn><mo>/</mo><mi mathvariant='normal'>gal</mi></mrow></math>";
+		let prefix_target = "<math><mrow>
+			<mrow data-changed='added'>
+				<mi>$</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>5</mn>
+			</mrow>
+			<mo>/</mo>
+			<mi mathvariant='normal' intent=':unit'>gal</mi>
+		</mrow></math>";
+		are_strs_canonically_equal_result(prefix, prefix_target, &[])?;
+
+		let postfix = "<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant='normal'>l</mi></mrow></math>";
+		let postfix_target = "<math><mrow>
+			<mrow data-changed='added'>
+				<mn>5</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi intent=':unit'>€</mi>
+			</mrow>
+			<mo>/</mo>
+			<mi mathvariant='normal' intent=':unit'>l</mi>
+		</mrow></math>";
+		return are_strs_canonically_equal_result(postfix, postfix_target, &[]);
+	}
+
 	#[test]
     fn pseudo_scripts_in_mi() -> Result<()> {
         let test_str = "<math><mrow><mi>p'</mi><mo>=</mo><mi>µ°C</mi></mrow></math>";
-        let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi>µ°C</mi></mrow></math>";
-        are_strs_canonically_equal_result(test_str, target_str, &[])
+		// RHS is a known unit after '='; likely→confirm sets intent=':unit'.
+        let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi intent=':unit'>µ°C</mi></mrow></math>";
+        return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
 	#[test]
@@ -7133,6 +8477,88 @@ mod canonicalize_tests {
 		let test_str = "<math><msub><mi>a</mi><mrow><mn>1</mn><mo>,</mo><mn>234</mn></mrow></msub></math>";
 		let target_str = "<math><msub><mi>a</mi><mn>1,234</mn></msub></math>";
 		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	/// Parentheses that only group a unit numerator or denominator are marked, and the `mo` nodes stay.
+	#[test]
+	fn unit_grouping_parens_marked() -> Result<()> {
+		use crate::interface::{get_element, set_preference, set_rules_dir, trim_element};
+		set_rules_dir(abs_rules_dir_path())?;
+		set_preference("Language", "en")?;
+		crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
+		assert_marked(r#"<math>
+			<mn>5</mn>
+			<mi intent=":unit">J</mi>
+			<mo>/</mo>
+			<mo>(</mo>
+			<mi intent=":unit">kg</mi>
+			<mo>·</mo>
+			<mi intent=":unit">K</mi>
+			<mo>)</mo>
+		</math>"#, 2, true);
+		assert_marked(r#"<math>
+			<mo>(</mo>
+			<mi intent=":unit">N</mi>
+			<mo>·</mo>
+			<mi intent=":unit">m</mi>
+			<mo>)</mo>
+			<mo>/</mo>
+			<mi intent=":unit">s</mi>
+		</math>"#, 2, true);
+		assert_marked(r#"<math>
+			<mo>(</mo><mi intent=":unit">N</mi><mo>·</mo><mi intent=":unit">m</mi><mo>)</mo>
+			<mo>/</mo>
+			<mo>(</mo><mi intent=":unit">kg</mi><mo>·</mo><mi intent=":unit">K</mi><mo>)</mo>
+		</math>"#, 4, true);
+		assert_marked(r#"<math>
+			<mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo>
+			<mo>/</mo>
+			<mn>2</mn>
+		</math>"#, 0, true);
+		// Superscripts sit between the letters and the parenthesis group, so the gate looks one level further.
+		assert_marked(r#"<math>
+			<mo>(</mo>
+			<msup><mi intent=":unit">m</mi><mn>2</mn></msup>
+			<mo>·</mo>
+			<msup><mi intent=":unit">s</mi><mn>2</mn></msup>
+			<mo>)</mo>
+			<mo>/</mo>
+			<mi intent=":unit">J</mi>
+		</math>"#, 2, true);
+		return Ok(());
+
+		fn assert_marked(expr: &str, n_marked: usize, paren_remains: bool) {
+			let package = parser::parse(expr).expect("parse");
+			let mathml = get_element(&package);
+			trim_element(mathml, false);
+			let mathml = canonicalize(mathml).expect("canonicalize");
+			assert_eq!(count_attr(mathml, UNIT_GROUPING_ATTR), n_marked, "{}", crate::pretty_print::mml_to_string(mathml));
+			assert_eq!(tree_has_open_paren(mathml), paren_remains);
+		}
+
+		fn count_attr(el: Element, attr: &str) -> usize {
+			let mut n = if el.attribute(attr).is_some() { 1 } else { 0 };
+			for child in el.children() {
+				if let Some(child) = child.element() {
+					n += count_attr(child, attr);
+				}
+			}
+			return n;
+		}
+
+		fn tree_has_open_paren(el: Element) -> bool {
+			if name(el) == "mo" && as_str!(as_text(el)) == "(" {
+				return true;
+			}
+			for child in el.children() {
+				if let Some(child) = child.element() &&
+				   tree_has_open_paren(child)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 

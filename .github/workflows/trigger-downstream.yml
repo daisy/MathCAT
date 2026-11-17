@@ -1,0 +1,59 @@
+# After a successful Rust push on main / braille-parser, start rebuilds in
+# dependent daisy repos. Direct pushes to those repos are unchanged.
+name: Trigger downstream
+
+on:
+  workflow_run:
+    workflows: ["Rust"]
+    types: [completed]
+
+jobs:
+  dispatch-main:
+    name: Dispatch dependents (${{ matrix.repo }})
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: MathCATForC
+            workflow: automaticRelease.yaml
+          - repo: MathCATForPython
+            workflow: automaticRelease.yaml
+          - repo: MathCATDemo
+            workflow: deploy-pages.yml
+    steps:
+      - name: workflow_dispatch ${{ matrix.repo }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DOWNSTREAM_DISPATCH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'daisy',
+              repo: '${{ matrix.repo }}',
+              workflow_id: '${{ matrix.workflow }}',
+              ref: 'main',
+            });
+
+  dispatch-braille-parser:
+    name: Dispatch MathCATDemo (braille-parser)
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'braille-parser'
+    runs-on: ubuntu-latest
+    steps:
+      - name: workflow_dispatch MathCATDemo braille-parser
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DOWNSTREAM_DISPATCH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'daisy',
+              repo: 'MathCATDemo',
+              workflow_id: 'deploy-pages.yml',
+              ref: 'braille-parser',
+            });

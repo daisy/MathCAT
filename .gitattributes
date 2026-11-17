@@ -1,0 +1,2 @@
+*.rs   text eol=crlf
+*.yaml text eol=crlf

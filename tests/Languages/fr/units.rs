@@ -508,10 +508,10 @@ fn si_other_numbers() -> Result<()> {
             "1,0 l virgule, 2,0 m virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
     test_prefs("fr", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-            "1,0 litres, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
+            "1,0 litre, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
     test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "1,0 litres, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
+            "1,0 litre, virgule; 2,0 mètres, virgule; x milli-secondes; virgule; y micro-secondes; virgule; déca-grammes, virgule; \
             1235 déca-newtons; virgule; 2,5 micro-secondes; virgule; 32,34 moles")?;
                     return Ok(());
 
@@ -524,11 +524,11 @@ fn test_mtext_inference() -> Result<()> {
                 <mn>1</mn><mtext>t</mtext><mo>,</mo>
                 <mn>2</mn><mtext>PA</mtext><mo>,</mo>
                 <mn>3</mn><mtext>Pa</mtext><mo>,</mo>
-                <mn>4.5</mn><mtext>mT</mtext>
+                <mn>4,5</mn><mtext>mT</mtext>
             <mo>]</mo></math>"#;
     test("fr", "SimpleSpeak", expr, 
         "crochet ouvrant; 1 tonne métrique, virgule; 2 peta-ampères, virgule; \
-        3 pascals, virgule; 45 milli-teslas; crochet fermant")?;
+        3 pascals, virgule; 4,5 milli-teslas; crochet fermant")?;
                 return Ok(());
 
 }
@@ -547,3 +547,22 @@ fn test_mtext_inference() -> Result<()> {
             return Ok(());
 
     }
+
+/// CompoundUnitPlural all: every factor is plural, including the “per” side.
+#[test]
+fn compound_unit_plural_all() -> Result<()> {
+    let product = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mrow intent=":unit"><mi>N</mi><mo>·</mo><mi>m</mi></mrow>
+    </math>"#;
+    test("fr", "ClearSpeak", product, "5, newtons fois mètres")?;
+    test("fr", "SimpleSpeak", product, "5, newtons point mètres")?;
+
+    let per = r#"<math>
+        <mn>5</mn><mspace width="0.167em"></mspace>
+        <mrow intent=":unit"><mi mathvariant="normal">m</mi><mo>/</mo><mi mathvariant="normal">s</mi></mrow>
+    </math>"#;
+    test("fr", "ClearSpeak", per, "5, mètres divisé par secondes")?;
+    test("fr", "SimpleSpeak", per, "5, mètres divisé par secondes")?;
+    return Ok(());
+}

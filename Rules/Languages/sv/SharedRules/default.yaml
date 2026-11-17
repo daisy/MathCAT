@@ -42,7 +42,10 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  - test:
+    - if: ".=1"   # en/ett before a following unit/currency (OneBeforeUnit)
+      then: [x: "OneForUnit(.)"]
+      else: [x: "translate(., $BlockSeparators, '')"]   # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -746,4 +749,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

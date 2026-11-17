@@ -483,7 +483,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, felfelé mutató merőleges, nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -504,7 +504,7 @@ fn literal_speak_chars() -> Result<()> {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y pont z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
+  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y szorozva z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
   return Ok(());
 
 }
@@ -569,7 +569,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, a(z) merőleges, nagy b jobbra nyíl")?;
   return Ok(());
 
 }

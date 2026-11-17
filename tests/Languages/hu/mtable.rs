@@ -240,6 +240,105 @@ fn matrix_2x3() -> Result<()> {
 
 }
 
+#[test]
+fn augmented_matrix_2x3() -> Result<()> {
+    let expr = "
+    <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow>
+      <mrow><mo>[</mo>
+        <mtable columnlines='none solid'>
+          <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>4</mn>
+          </mtd>
+          </mtr>
+          <mtr>
+          <mtd>
+            <mn>0</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+          <mtd>
+            <mn>6</mn>
+          </mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow></mrow>
+    </math>
+                                ";
+    test("hu", "ClearSpeak",  expr, "a(z) 2 x 3 mátrix; 1 . sor; 3, 1, elválasztó, 4; 2 . sor; 0, 2, elválasztó, 6")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 3 mátrix; 1 . sor; 3, 1, elválasztó, 4; 2 . sor; 0, 2, elválasztó, 6")?;
+    Ok(())
+}
+
+#[test]
+fn dashed_augmented_matrix_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable columnlines='dashed'>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("hu", "ClearSpeak", expr, "az 1-szer 3 -es sor mátrix; 1, elválasztó, 2, elválasztó, 3")?;
+    test("hu", "SimpleSpeak", expr, "az 1-szer 3 -es sor mátrix; 1, elválasztó, 2, elválasztó, 3")?;
+    Ok(())
+}
+
+/// A horizontal line is announced once, after the row it separates from the next row.
+#[test]
+fn matrix_row_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("hu", "ClearSpeak", expr, "a(z) 2 x 2 mátrix; 1 . sor; 1, 2, sorelválasztó; 2 . sor; 3, 4")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 2 mátrix; 1 . sor; 1, 2, sorelválasztó; 2 . sor; 3, 4")?;
+    Ok(())
+}
+
+/// Horizontal and vertical lines use distinct announcements at their respective boundaries.
+#[test]
+fn matrix_row_and_column_separators() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='dashed' columnlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("hu", "ClearSpeak", expr, "a(z) 2 x 2 mátrix; 1 . sor; 1, elválasztó, 2, sorelválasztó; 2 . sor; 3, elválasztó, 4")?;
+    test("hu", "SimpleSpeak", expr, "a(z) 2 x 2 mátrix; 1 . sor; 1, elválasztó, 2, sorelválasztó; 2 . sor; 3, elválasztó, 4")?;
+    Ok(())
+}
+
 // AI generated
 #[test]
 fn matrix_2x3_labeled() -> Result<()> {
@@ -860,6 +959,40 @@ test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
     return Ok(());
   }
 
+#[test]
+fn augmented_matrix_3x4_end_matrix() -> Result<()> {
+let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+  <mrow>
+    <mrow><mo>[</mo>
+      <mtable columnalign='right right right right' columnlines='none none solid'>
+        <mtr>
+          <mtd><mn>1</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mrow><mo>-</mo><mn>3</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>2</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+        </mtr>
+      </mtable>
+    <mo>]</mo></mrow>
+  </mrow>
+</math>";
+test_ClearSpeak("hu", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "a(z) 3 x 4 mátrix; 1 . sor; oszlop 1; 1, oszlop 2; 2, oszlop 3; negatív 1, elválasztó, oszlop 4; 3; 2 . sor; oszlop 1; negatív 3, oszlop 2; 3, oszlop 3; negatív 1, elválasztó, oszlop 4; 2; 3 . sor; oszlop 1; 2, oszlop 2; 3, oszlop 3; 2, elválasztó, oszlop 4; negatív 1; vége a mátrixnak")?;
+    test("hu", "SimpleSpeak",
+        expr, "a(z) 3 x 4 mátrix; 1 . sor; oszlop 1; 1, oszlop 2; 2, oszlop 3; negatív 1, elválasztó, oszlop 4; 3; 2 . sor; oszlop 1; negatív 3, oszlop 2; 3, oszlop 3; negatív 1, elválasztó, oszlop 4; 2; 3 . sor; oszlop 1; 2, oszlop 2; 3, oszlop 3; 2, elválasztó, oszlop 4; negatív 1; vége a mátrixnak")?;
+    Ok(())
+  }
 
 // AI generated
 #[test]
@@ -1205,3 +1338,71 @@ fn single_line_with_label() -> Result<()> {
       expr, "1 egyenlet, címkével 2; b egyenlő 2")?;
     return Ok(());
   }
+  #[test]
+fn matrix_simple_table() -> Result<()> {
+  let expr = "<math>
+        <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr, "táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2")
+  }
+
+
+#[test]
+fn mtable_blank_op() -> Result<()>{
+    // When a table is prefixed with a blank operator, still assume array intent
+    let expr = "<math>
+        <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+    test("hu", "ClearSpeak", expr, "; táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2")
+  }
+
+#[test]
+fn mtable_colspan_table() -> Result<()>{
+  let expr = "<math>
+        <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr, "táblázat 2 sorral és 1 oszloppal; sor 1; oszlop 1; 3; sor 2; oszlop 1; 2, oszlop 2; 4")
+  }
+
+#[test]
+fn bug_mtable_rowspan_colspan() -> Result<()>{
+  // Currently, the code correctly computes the number of rows and
+  // columns, but it does not correctly compute the column number whnen
+  // colspans are involved.
+  let expr = "<math>
+        <mtable>
+           <mtr>
+             <mtd rowspan=\"2\" colspan=\"2\"><mi>a</mi></mtd>
+             <mtd rowspan=\"2\"><mi>b</mi></mtd>
+             <mtd colspan=\"2\"><mi>c</mi></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mi>d</mi></mtd><mtd><mi>e</mi></mtd>
+           </mtr>
+        </mtable>
+    </math>";
+    test("hu", "ClearSpeak", expr,
+	 "táblázat 2 sorral és 3 oszloppal; sor 1; oszlop 1; a, oszlop 2; b, oszlop 3; c; sor 2; oszlop 1; d, oszlop 2; e")
+  }
+
+#[test]
+fn mtable_array_no_comma_between_rows() -> Result<()> {
+  // Issue #890: an unfenced table gets 'array' intent; its rows must not be separated by "comma"
+  let expr = "<math display=\"inline\">
+      <mtable class=\"menv-arraylike\">
+        <mtr>
+          <mtd><mi>a</mi></mtd>
+          <mtd><mi>b</mi></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mi>c</mi></mtd>
+          <mtd><mi>d</mi></mtd>
+        </mtr>
+      </mtable>
+    </math>";
+  test("hu", "ClearSpeak", expr,
+    "táblázat 2 sorral és 2 oszloppal; sor 1; oszlop 1; a, oszlop 2; b; sor 2; oszlop 1; c, oszlop 2; d")?;
+  test("hu", "SimpleSpeak", expr,
+    "táblázat 2 sorral és 2 oszloppal; sor 1; oszlop 1; a, oszlop 2; b; sor 2; oszlop 1; c, oszlop 2; d")
+  }
+

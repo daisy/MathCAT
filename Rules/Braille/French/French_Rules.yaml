@@ -307,7 +307,7 @@
       if: "$French_UseShortForm"
       then_test:
         - if: "IsInDefinition(., 'Braille', 'ShortForms')"
-          then: [x: "DEBUG(DefinitionValue(., 'Braille', 'ShortForms'))"]     # sin
+          then: [x: "DefinitionValue(., 'Braille', 'ShortForms')"]     # sin
         - else_if: "IsInDefinition(., 'Braille', 'ShortFormAbbreviations')"   # cosh ->  ch
           then: [x: "BrailleChars(DefinitionValue(., 'Braille', 'ShortFormAbbreviations'), 'French')"]
           else: [x: "BrailleChars(., 'French')"]
@@ -326,7 +326,7 @@
 -
   name: mhchem-hack
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   tag: mover
   match:
   -    "*[1][substring(., 1, 1)='↽'] and"

@@ -7,7 +7,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "линейный сегмент от"      # phrase('the line segment from' A to B)
+      - T: "отрезок от"      # phrase('the line segment from' A to B)
       - x: "*[1]"
       - T: "до"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
@@ -18,6 +18,7 @@
       - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
       - T: "большое"
 
+# In verbose speech, distinguish the origin of the ray from the point it passes through.
 - name: geometry-ray
   tag: ray
   match: "count(*)=2"
@@ -25,9 +26,9 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "луч от "             # phrase('the ray from' A to B)
+      - T: "луч с началом в"
       - x: "*[1]"
-      - T: "до"                       # phrase(the ray from A 'to' B)
+      - T: "проходящий через"
       - x: "*[2]"
       else:
       - T: "луч"                      # phrase(the 'ray'A  B)
@@ -36,13 +37,11 @@
       - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
       - T: "большое"
 
+# Read the two endpoint labels as capital letters.
 - name: geometry-arc
   tag: arc
   match: "count(*)=2"
   replace:
-  - test:
-      if: "$Verbosity='Verbose'"
-      then: [T: "а"]            # phrase('the' arc A B C)
   - T: "дуга"                        # phrase(the 'arc' A B C)
   - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
   - T: "большое"
@@ -64,17 +63,15 @@
   - x: "*[3]"
 
 
+# Separate coordinates with spoken commas; announce the end when the context requires it.
 - name: coordinate
   tag: coordinate
   match: "."
   replace:
-  - test:
-      if: "$Verbosity='Verbose'"
-      then: [T: "а"]      # phrase('the' point at 1, 2)
   - T: "точка"      # phrase(the 'point' at 1, 2)
   - test:
       if: "$Verbosity='Verbose'"
-      then: [T: "в"]      # phrase('the' point at 1, 2)
+      then: [T: "с координатами"]
   - pause: short
   - insert:
       nodes: "*"
@@ -82,4 +79,4 @@
   - pause: short
   - test:
       if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
-      then: [T: "конечная точка"]      # phrase(start point, 'end point')
+      then: [T: "конец координат"]

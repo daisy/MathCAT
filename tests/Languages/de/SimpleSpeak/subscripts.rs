@@ -13,16 +13,16 @@ fn msub_simple() -> Result<()> {
 
 #[test]
 fn msub_not_simple() -> Result<()> {
-    let expr = "<math> <msub> <mi>x</mi> <mn>1.2</mn> </msub> </math>";
-    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 1.2")?;
+    let expr = "<math> <msub> <mi>x</mi> <mn>1,2</mn> </msub> </math>";
+    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 1,2")?;
     return Ok(());
 
   }
 
 #[test]
 fn msubsup_not_simple() -> Result<()> {
-    let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 1.2, cubed")?;
+    let expr = "<math> <msubsup> <mi>x</mi> <mn>1,2</mn> <mn>3</mn></msubsup> </math>";
+    test_prefs("de", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "x sub 1,2, cubed")?;
     return Ok(());
 
   }
