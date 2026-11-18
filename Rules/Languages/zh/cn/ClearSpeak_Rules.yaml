@@ -1,4 +1,19 @@
 ---
+- name: pause
+  tag: "!*"
+  match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
+  replace:
+   - with:
+      variables: [MatchingPause: "true()"]
+      replace:
+      - test:
+        - if: "contains(@data-intent-property, ':pause-long')"
+          then: [pause: long]
+        - else_if: "contains(@data-intent-property, ':pause-short')"
+          then: [pause: short]
+          else: [pause: medium]
+      - x: "."
+
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
@@ -10,7 +25,7 @@
   tag: mn
   match: "starts-with(text(), '-')"
   replace:
-  - t: "减去"      # phrase(10 'minus' 4 equals 6)
+  - T: "负"      # A leading minus sign makes this a negative number.
   - x: "translate(text(), '-_', '')"
 
 - name: default
@@ -19,26 +34,26 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase('the' square root of 25)
+      then: [OT: ""]      # phrase('the' square root of 25)
   - test:
-      if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
+      if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - bookmark: "*[1]/@id"
       - test:
-          if: parent::*[self::m:negative]
-          then: [t: "负"]      # phrase(minus 4 is a 'negative' number)
-          else: [t: "正"]      # phrase(10 is a 'positive' number)
-  - t: "平方根"      # phrase(8 is the 'square root' of 64)
+          if: "parent::*[self::m:minus and count(*)=1]"
+          then: [T: "负"]      # phrase(minus 4 is a 'negative' number)
+          else: [T: "正"]      # phrase(10 is a 'positive' number)
+  - T: "根号"      # phrase(8 is the 'square root' of 64)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "的"]      # phrase(the square root 'of' 5)
+      then: [T: ""]      # phrase(the square root 'of' 5)
       else: [pause: short]
   - x: "*[1]"
   - test:
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "端根"      # phrase(the square root of x 'end root')
+      - T: "结束根号"      # phrase(the square root of x 'end root')
       - pause: medium
     - else_if: "IsNode(*[1], 'simple')"
       then: [pause: short]
@@ -50,102 +65,110 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase(6 is 'the' square root of 36)
+      then: [OT: ""]      # phrase(6 is 'the' square root of 36)
   - test:
-      if: $ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
+      if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - test:
-          if: "parent::m:negative or parent::m:positive"
+          if: "parent::*[(self::m:minus or self::m:plus) and count(*)=1]"
           then: [bookmark: "parent/@id"]
       - test:
-          if: parent::m:negative
-          then: [t: "负"]      # phrase(minus 6 is a 'negative' number)
-          else: [t: "正"]      # phrase(10 is a 'positive' number)
+          if: "parent::m:minus"
+          then: [T: "负"]      # phrase(minus 6 is a 'negative' number)
+          else: [T: "正"]      # phrase(10 is a 'positive' number)
   - test:
-      if: "*[2][self::m:mn]"
+      if: "$Verbosity!='Terse'"
+      then: [T: ""]      # phrase(the square root 'of' 36)
+  - x: "*[1]"
+  - T: "的"
+  - test:
+      if: "*[2][self::m:mn and not(contains(., '.'))]"
       then_test:
-      - if: "*[2][text()='2']"
-        then: [t: "平方根"]      # phrase(5 is the 'square root' of 25)
-      - else_if: "*[2][text()='3']"
-        then: [t: "立方根"]      # phrase(5 is the 'cube root' of 625)
-      - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", t: "根"]      # phrase(the square 'root' of 25)
+      - if: "*[2][.='2']"
+        then: [T: "平方根"]      # phrase(5 is the 'square root' of 25)
+      - else_if: "*[2][.='3']"
+        then: [T: "立方根"]      # phrase(5 is the 'cube root' of 625)
+      - else: [x: "*[2]", T: "次方根"]      # phrase(the square 'root' of 25)
       else:
       - test:
           if: "*[2][self::m:mi][string-length(.)=1]"
           then:
           - x: "*[2]"
-          - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
-          else: {x: "*[2]"}
-      - t: "根"      # phrase(the square 'root' of 36)
+          #- pronounce: [text: "-th", ipa: "θ", sapi5: "th", eloquence: "T"]
+          else: [x: "*[2]"]
+      - T: "次方根"      # phrase(the square 'root' of 36)
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "的"]      # phrase(the square root 'of' 36)
-  - x: "*[1]"
-  - test:
-      if: $ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'
+      if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
       - pause: short
-      - t: "end root"      # phrase(start the fifth root of x 'end root')
+      - T: "结束根号"
       - pause: medium
       else_test:
-        if: IsNode(*[1], 'simple')
+        if: "IsNode(*[1], 'simple')"
         then: [pause: short]
         else: [pause: long]
 
 # The 'negative' rule interacts with the msqrt/mroot rules as those might pick off this case ("the negative square root of x")
 - name: negative_and_positive
-  tag: [negative, positive]
-  match: "."
+  tag: [plus, minus]
+  match: "count(*)=1 and contains(@data-intent-property, ':prefix:')"
   replace:
   - test:
       if:
       - "*[1][self::m:square-root or self::m:root] and"
       - "($ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd')"
-      then: {t: ""}
+      then: [T: ""]
       else:
       - bookmark: "@id"
       - test:
-          if: "self::m:negative"
-          then: [t: "负"]      # phrase(minus 5 is a 'negative' number)
-          else: [t: "正"]      # phrase(7 is a 'positive' number)
+          if: "self::m:minus"
+          then: [T: "负"]      # phrase(minus 5 is a 'negative' number)
+          else: [T: "正"]      # phrase(7 is a 'positive' number)
   - x: "*[1]"
 
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
 
+- name: second-partial-derivative
+  tag: fraction
+  match:
+  - "*[1][self::m:mrow and count(*)=2 and"
+  - "     *[1][self::m:power and *[1][.='∂'] and *[2][self::m:mn and .='2']]] and"
+  - "*[2][self::m:mrow and count(*)=2 and *[1][.='∂'] and"
+  - "     *[2][self::m:power and *[2][self::m:mn and .='2']]]"
+  replace:
+  - x: "*[1]/*[2]"
+  - T: "对"
+  - x: "*[2]/*[2]/*[1]"
+  - T: "的二阶偏导数"
+
 # Units (e.g., meters per second)
 - name: per-fraction
   tag: fraction
-  match: "$ClearSpeak_Fractions='Per'"
+  match:
+  - "$ClearSpeak_Fractions='Per' or"
+  - "(BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
+  - "                ( self::m:mrow and count(*)=3 and"
+  - "                 *[1][self::m:mn] and *[2][.='⁢'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) or"
+  - "                ( self::m:mrow and count(*)=3 and"  # $5 / currency amount over a unit
+  - "                  DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[2][.='⁢'] and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by] ) ] and"
+  - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
-  - t: "每"      # phrase('5 meters 'per' second)
+  - CT: "每"      # phrase('5 meters 'per' second)
   - x: "*[2]"
 
 - name: common-fraction
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"
-  - "*[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))]"
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))]"
   variables: [IsPlural: "*[1]!=1"]
   replace:
+  - x: "*[2]"
+  - T: "分之"
   - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
-
-- name: common-fraction-mixed-number
-  tag: fraction
-  match:
-  - "preceding-sibling::*[1][self::m:mo][text()='⁤'] and" # preceding element is invisible plus
-  - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"
-  - "*[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))]"
-  variables: [IsPlural: "*[1]!=1"]
-  replace:
-  - x: "*[1]"
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
-
 
 - name: fraction-over-simple
   tag: fraction
@@ -159,17 +182,17 @@
       then:
       - test:
           if: "$Verbosity!='Terse'"
-          then: [ot: "这"]
-      - t: "分数"      # phrase(the 'fraction' with 3 over 4)
-  - x: "*[1]"
-  - t: "超过"      # phrase(the fraction 3 'over' 4)
+          then: [OT: ""]
+      - T: "分数"      # phrase(the 'fraction' with 3 over 4)
   - x: "*[2]"
+  - T: "分之"      # phrase(the fraction 3 'over' 4)
+  - x: "*[1]"
   - test:
       # very ugly!!! -- replicate nested ordinal fraction as they are an exception
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
       then:
       - pause: short
-      - t: "最终分数"      # phrase(7 over 8 'end fraction')
+      - T: "结束分数"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
@@ -181,44 +204,44 @@
   - "  ((*[1][self::m:mi or self::m:mtext][string-length(.)>1]) or " # fractions with text
   - "   (*[1][self::m:mrow][count(*)=3][ "
   - "        *[1][self::m:mn] and "
-  - "        *[2][self::m:mo][text()='⁢'] and " # invisible times
+  - "        *[2][self::m:mo][.='⁢'] and " # invisible times
   - "        *[3][self::m:mi or self::m:mtext][string-length(.)>1] ]) ) and"
   - "  ((*[2][self::m:mi or self::m:mtext][string-length(.)>1]) or " # fractions with text
   - "   (*[2][self::m:mrow][count(*)=3][ "
   - "        *[1][self::m:mn] and "
-  - "        *[2][self::m:mo][text()='⁢'] and " # invisible times
+  - "        *[2][self::m:mo][.='⁢'] and " # invisible times
   - "        *[3][self::m:mi or self::m:mtext][string-length(.)>1] ]) )"
   - ")"
   replace:
-  - x: "*[1]"
-  - t: "超过"      # phrase(the fraction 3 'over' 4)
   - x: "*[2]"
+  - T: "分之"      # phrase(the fraction 3 'over' 4)
+  - x: "*[1]"
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='OverEndFrac'"
       then:
       - pause: short
-      - t: "最终分数"      # phrase(7 over 8 'end fraction')
+      - T: "结束分数"      # phrase(7 over 8 'end fraction')
       - pause: short
 
 - name: default
   tag: fraction
   match: "."
   replace:
-  - ot: "正方形"      # phrase(5 is 'the' square toot of 25)
-  - t: "分子分数"      # phrase(the 'fraction with numerator' 6)
+  - OT: ""      # phrase(5 is 'the' square toot of 25)
+  - T: "分数，分子为"      # phrase(the 'fraction with numerator' 6)
   - test:
       if: not(IsNode(*[1], 'simple'))
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - t: "和分母"      # phrase(the fraction with numerator 5 'and denominator' 8)
+  - T: "分母为"      # phrase(the fraction with numerator 5 'and denominator' 8)
   - x: "*[2]"
   - pause: long
   - test:
       if: "$ClearSpeak_Fractions='EndFrac' or $ClearSpeak_Fractions='GeneralEndFrac'"
       then:
       - pause: short
-      - t: "最终分数的分数"      # phrase(the fraction with 3 over 4 'end fraction')
+      - T: "结束分数"      # phrase(the fraction with 3 over 4 'end fraction')
       - pause: short
 
 # rules for functions raised to a power
@@ -230,40 +253,68 @@
   replace:
   - test:
       if: $ClearSpeak_Trig = 'TrigInverse'
-      then: [{x: "*[1]"}, {bookmark: "*[2]/@id"}, t: "反向"]      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+      then: [T: "反", x: "*[1]", bookmark: "*[2]/@id"]      # Use the standard mainland names such as 反正弦.
       else_test:
         if: $ClearSpeak_Trig = 'ArcTrig'
-        then: [bookmark: "*[2]/@id", t: "弧", x: "*[1]"]      # phrase(the 'arc' of a circle)
-        else: [bookmark: "*[2]/@id", t: "反向", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
+        then: [bookmark: "*[2]/@id", T: "反", x: "*[1]"]
+        else: [bookmark: "*[2]/@id", x: "*[1]", T: "的反函数"] # default/Auto
+
+- name: squared-or-cubed-unit
+  tag: power
+  match: "BaseNode(*[1])[contains(@data-intent-property, ':unit')] and *[2][self::m:mn and (.='2' or .='3')]"
+  replace:
+  - test:
+      if: "*[2][.='2']"
+      then: [TC: "平方"]
+      else: [TC: "立方"]
+  - x: "*[1]"
+
+- name: unit-power
+  tag: power
+  match: "BaseNode(*[1])[contains(@data-intent-property, ':unit')]"
+  replace:
+  - x: "*[1]"
+  - CT: "的"
+  - x: "*[2]"
+  - T: "次方"
 
 - name: function-squared-or-cubed
   tag: power
   match:
-  - "*[2][self::m:mn][text()='2' or text()='3'] and"
-  - "following-sibling::*[1][self::m:mo][text()='⁡']" #invisible function apply
+  - "*[2][self::m:mn][.='2' or .='3'] and"
+  - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
   - test:
-      if: "*[2][text()='2']"
-      then: [t: "平方"]      # phrase(25 equals 5 'squared')
-      else: [t: "立方体"]      # phrase(625 equals 5 'cubed')
+      if: "*[2][.='2']"
+      then: [T: "平方"]      # phrase(25 equals 5 'squared')
+      else: [T: "立方"]      # phrase(625 equals 5 'cubed')
 - name: function-power
   tag: power
   match:
-  - "following-sibling::*[1][self::m:mo][text()='⁡']" #invisible function apply
+  - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase('the' third power of 2)
+  - x: "*[1]"
+  - T: "的"
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
-      then: [x: "ToOrdinal(*[2])"]
+      then: [x: "*[2]"]
       else: [x: "*[2]"]
-  - t: "力量"      # phrase(the third 'power of' 6)
+  - T: "次方"      # phrase(the third 'power of' 6)
   - pause: short
-  - x: "*[1]"
+
+- name: ClearSpeak-log-with-base
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:logarithm-with-base] and *[2][.='⁡']"
+  replace:
+  - T: "以"
+  - x: "*[1]/*[1]"
+  - T: "为底"
+  - pause: short
+  - x: "*[3]"
+  - T: "的对数"
 
 - name: AfterPower-nested
   tag: power
@@ -272,76 +323,70 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "提高到指数"      # phrase(5 'raised to the exponent' x plus 1)
+  - T: "的指数为"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "端指数"      # phrase(5 raised to the exponent x plus 1 'end exponent')
+  - T: "结束指数"      # phrase(5 raised to the exponent x plus 1 'end exponent')
 
 - name: AfterPower-default
   tag: power
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - t: "提高到力量"      # phrase(x is 'raised to the power' 4)
+  - T: "的"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
+  - T: "次方"
   - pause: short
 
 - name: squared
   tag: power
-  match: "*[2][self::m:mn][text()='2'] and $ClearSpeak_Exponents = 'Auto'"
+  match: "*[2][self::m:mn][.='2'] and $ClearSpeak_Exponents = 'Auto'"
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "平方"      # phrase(7 'squared' equals 49)
+  - T: "平方"      # phrase(7 'squared' equals 49)
 
 - name: cubed
   tag: power
-  match: "*[2][self::m:mn][text()='3'] and $ClearSpeak_Exponents = 'Auto'"
+  match: "*[2][self::m:mn][.='3'] and $ClearSpeak_Exponents = 'Auto'"
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - t: "立方体"      # phrase(5 'cubed' equals 125)
+  - T: "立方"      # phrase(5 'cubed' equals 125)
 
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., '.'))]"
   replace:
   - x: "*[1]"
-  - t: "功率7"      # phrase(2 raised 'to the' power 7)
+  - T: "的"      # phrase(2 raised 'to the' power 7)
   - test:
       if: "*[2][.>0]"
-      then: {x: "ToOrdinal(*[2])"}
-      else: {x: "*[2]"}
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "力量"]      # phrase(2 raised to the 'power' 7)
+      then: [x: "*[2]"]
+      else: [x: "*[2]"]
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 - name: simple-negative-integer
   tag: power
   match:
-  - "*[2][self::m:negative and"
+  - "*[2][self::m:minus and count(*)=1 and "
   - "     *[1][self::m:mn][not(contains(., '.'))]"
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "功率7"      # phrase(2 raised 'to the' power 7)
+  - T: "的"      # phrase(2 raised 'to the' power 7)
   - x: "*[2]"
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "力量"]      # phrase(2 raised to the 'power' 7)
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - t: "到"      # phrase(3 raised 'to the' power 7)
+  - T: "的"      # phrase(3 raised 'to the' power 7)
   - x: "*[2]"
-  - pronounce: [{text: "-th"}, {ipa: "θ"}, {sapi5: "th"}, {eloquence: "T"}]
-  - test:
-      if: "$ClearSpeak_Exponents != 'Ordinal'"
-      then: [t: "力量"]      # phrase(2 raised to the 'power' 7)
+  - T: "次方"      # Chinese has no inflected ordinal exponent form.
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -357,7 +402,7 @@
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
   - "*[2][self::m:power]["
-  - "     *[2][self::m:mn][text()='2' or text()='3'] and " # exp is 2 or 3
+  - "     *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   # base is mn, mi, common fraction ([xxx] case)
   - "     *[1][self::m:mn or self::m:mi or "
   - "          self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
@@ -366,18 +411,18 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(x 'raised to the' second power)
+  - T: "的"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "力量"      # phrase(x raised to the second 'power')
+  - T: "次方"      # phrase(x raised to the second 'power')
 
 - # - [xxx]^n
   name: nested-negative-squared-or-cubed
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
-  - " *[2][self::m:negative and "
+  - " *[2][self::m:minus and count(*)=1 and "
   - "      *[1]/*[1][self::m:power]["
-  - "                *[2][self::m:mn][text()='2' or text()='3'] and " # exp is 2 or 3"
+  - "                *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3"
   # base is mn, mi, common fraction ([xxx] case)
   - "                *[1][self::m:mn or self::m:mi or "
   - "                     self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
@@ -387,9 +432,9 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(x 'raised to the' second power)
+  - T: "的"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "力量"      # phrase(x raised to the second 'power')
+  - T: "次方"      # phrase(x raised to the second 'power')
 
 - # [xxx] var^n
   name: nested-var-squared-or-cubed
@@ -398,10 +443,10 @@
   - "$ClearSpeak_Exponents = 'Auto' and"
   - "  *[2][self::m:mrow][count(*)=3][ "
   - "       *[3][self::m:power]["
-  - "            *[2][self::m:mn][text()='2' or text()='3'] and " # exp is 2 or 3
+  - "            *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   - "            *[1][self::m:mi]"
   - "           ] and "
-  - "       *[2][self::m:mo][text()='⁢'] and " # invisible times
+  - "       *[2][self::m:mo][.='⁢'] and " # invisible times
   # base is mn, or common fraction ([xxx] case)
   - "       *[1][self::m:mn or "
   - "            self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
@@ -410,9 +455,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(x 'raised to the' second power)
+  - T: "的"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "力量"      # phrase(x raised to the second 'power')
+  - T: "次方"      # phrase(x raised to the second 'power')
 
 - # -[xxx] var^n
   name: nested-negative-var-squared-or-cubed
@@ -421,11 +466,11 @@
   - "$ClearSpeak_Exponents = 'Auto' and"
   - "  *[2][self::m:mrow][count(*)=3][ "
   - "       *[3][self::m:power]["
-  - "            *[2][self::m:mn][text()='2' or text()='3'] and " # exp is 2 or 3
+  - "            *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   - "            *[1][self::m:mi]"
   - "           ] and "
-  - "       *[2][self::m:mo][text()='⁢'] and " # invisible times
-  - "       *[1][self::m:negative and "
+  - "       *[2][self::m:mo][.='⁢'] and " # invisible times
+  - "       *[1][self::m:minus and count(*)=1 and "
   # base is mn, or common fraction ([xxx] case)
   - "            *[1][self::m:mn or "
   - "                 self::m:fraction[*[1][self::m:mn][not(contains(., '.')) and text()<20]   and"
@@ -435,9 +480,9 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(x 'raised to the' second power)
+  - T: "的"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "力量"      # phrase(x raised to the second 'power')
+  - T: "次方"      # phrase(x raised to the second 'power')
 
 - name: default-exponent-power
   tag: power
@@ -445,20 +490,20 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - t: "提高到指数"      # phrase(x is 'raised to the exponent')
+  - T: "的指数为"      # phrase(x is 'raised to the exponent')
   - pause: short
   - x: "*[2]"
   - pause: short
-  - t: "结束指数"      # phrase(and now 'end exponent' has been reached)
+  - T: "结束指数"      # phrase(and now 'end exponent' has been reached)
 
 - name: default
   tag: power
   match: "."
   replace:
   - x: "*[1]"
-  - t: "提高到"      # phrase(x 'raised to the' second power)
+  - T: "的"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
-  - t: "力量"      # phrase(x raised to the second 'power')
+  - T: "次方"      # phrase(x raised to the second 'power')
 
 #
 # Some rules on mrows
@@ -467,105 +512,94 @@
   name: ClearSpeak-absolute-value
   tag: absolute-value
   match: "."
-  variables: [WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', 'cardinality', 'absolute value')"]
+  variables:
+  - WordToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', '的基数', '的绝对值')"
+  - EndToSay: "IfThenElse($ClearSpeak_AbsoluteValue = 'Cardinality', '结束基数', '结束绝对值')"
   replace:
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "这"]      # phrase('the' absolute value of 25)
-  - x: "$WordToSay"
-  - t: "的"      # phrase(the absolute value 'of' 25)
   - x: "*[1]"
+  - x: "$WordToSay"
   - test:
       if: "$ClearSpeak_AbsoluteValue = 'AbsEnd'"
       then:
       - pause: short
-      - t: "结束"      # phrase('end' absolute value)
-      - x: "$WordToSay"
+      - x: "$EndToSay"
   - pause: short
 
 - name: set
   tag: set
-  match: "."
+  # Empty set and braced/{set-builder} forms (typically 0-1 child).
+  # Multi-arg intent set($x,$y,...) and set($x) with @arg fall through to function-intent.
+  match: "count(*)=0 or (count(*)=1 and not(*[1][@arg]))"
   replace:
   - test:
     - if: "count(*)=0"
-      then: [t: "空集"]      # phrase('the empty set')
-    - else_if: "count(*)=2"
+      then: [T: "空集"]      # phrase('the empty set')
+    - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "这"]      # phrase('the' empty set)
-      - t: "空集"      # phrase(the 'empty set')
-    - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][text()=':' or text()='|' or text()='∣']"
-      then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "这"]      # phrase('the' set of all integers)
-      - t: "一组"      # phrase(this is a 'set of' numbers)
-      - test:
-          if: $ClearSpeak_Sets != 'woAll'
-          then: [t: "所有"]      # phrase(the set of 'all' integers)
-      - x: "*[1]/*[1]"
-      - t: "s"      # phrase(the set S 'such that' x is less than y)
+      - T: "满足"
       - x: "*[1]/*[3]"
-      else:
+      - T: "的"
       - test:
-          if: $ClearSpeak_Sets != 'SilentBracket'
-          then:
-          - test:
-              if: "$Verbosity!='Terse'"
-              then: [t: "这"]      # phrase('the' set of integers)
-          - t: "放"      # phrase(this is a 'set' of integers)
+          if: "$ClearSpeak_Sets != 'woAll'"
+          then: [CT: "所有"]
+      - x: "*[1]/*[1]"
+      - T: "组成的集合"
+      else:
       - x: "*[1]"
+      - test:
+          if: "$ClearSpeak_Sets != 'SilentBracket'"
+          then: [T: "的集合"]
 
-- # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
-  # alternatively, we could have four (or ten) rules, but there is a lot of duplication if we do that
-  # this one rule handles all ten cases listed as part $ClearSpeak_Paren = 'Interval'
-  # note that *[2] is an mrow with X, ",", Y, so getting X or Y is a double index
+- # Intervals are controlled by a ClearSpeak preference; parentheses and brackets need not match.
   name: ClearSpeak-intervals # avoid overriding with default "intervals" name
   variables:
-  - is_intervals_start_infinity: "*[1][self::m:negative and *[1][text()='∞']]"
-  - is_intervals_end_infinity: "*[2][text()='∞'or (self::m:positive and *[1][text()='∞'])]"
+  - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
+  - is_intervals_end_infinity: "*[2][.='∞' or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
+  - is_intervals_end_positive_infinity: "*[2][self::m:plus and count(*)=1 and *[1][.='∞']]"
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "."
   replace:
-  - t: "从"      # phrase('the interval from' a to b)
-  - x: "*[1]"
-  - t: "到"      # phrase(the interval from a 'to' b)
-  - x: "*[2]"
-  - pause: short
   - test:
-      if: "not($is_intervals_start_infinity)"
+    - if: "$is_intervals_start_infinity and $is_intervals_end_infinity"
+      then: [T: "实数集"]
+    - else_if: "$is_intervals_start_infinity"
       then:
-      - test:
-          if: "starts-with(name(.), 'open')"
-          then: [t: "不是"]      # phrase(the interval from a to b 'not' including b)
-      - t: "包括"      # phrase(the interval from a to b not 'including' b)
-      - x: "*[1]"
-    # logic to deal with [not] arg #1
-  - test:
-      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
-      then_test:
-      - if: "name(.)='open-interval'"
-        then: [t: "或者"]      # phrase(the interval including a 'or' b )
-      - else_if: "name(.)='closed-interval'"
-        then: [t: "和"]      # phrase(the interval including a 'and' b)
-        else: [t: "但"]      # phrase(the interval including a 'but' not b)
-    # some ugly logic dealing with connectives: or, but, but, and (cleaner to be part of next clause?)
-  - test:
-      if: not($is_intervals_end_infinity)
-      then:
-      - test:
-          # there is some asymmetry to the test because of the and/or/but logic above
-          if: not( name(.)='open-interval' or name(.)='closed-interval' ) or $is_intervals_start_infinity
-          then:
-          - test:
-              if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [t: "不"]      # phrase(the interval 'not' including a)
-          - t: "包括"      # phrase(the interval not 'including' a)
+      - T: "从负无穷大到"
       - x: "*[2]"
-
-    # onto the [not] [including]... part
+      - T: "的区间"
+      - pause: short
+      - test:
+          if: "name(.) = 'closed-interval' or name(.) = 'open-closed-interval'"
+          then: [T: "包括端点"]
+          else: [T: "不包括端点"]
+      - x: "*[2]"
+    - else_if: "$is_intervals_end_infinity"
+      then:
+      - T: "从"
+      - x: "*[1]"
+      - test:
+          if: "$is_intervals_end_positive_infinity"
+          then: [T: "到正无穷大的区间"]
+          else: [T: "到无穷大的区间"]
+      - pause: short
+      - test:
+          if: "name(.) = 'closed-interval' or name(.) = 'closed-open-interval'"
+          then: [T: "包括端点"]
+          else: [T: "不包括端点"]
+      - x: "*[1]"
+      else:
+      - T: "从"
+      - x: "*[1]"
+      - T: "到"
+      - x: "*[2]"
+      - test:
+        - if: "name(.) = 'open-interval'"
+          then: [T: "的开区间"]
+        - else_if: "name(.) = 'closed-interval'"
+          then: [T: "的闭区间"]
+        - else_if: "name(.) = 'open-closed-interval'"
+          then: [T: "的左开右闭区间"]
+          else: [T: "的左闭右开区间"]
 - name: binomial-frac-vector
   tag: matrix
   match:
@@ -573,155 +607,156 @@
   - "count(*[1]/*)=1 and count(*)=2"
   replace:
   - x: "*[1]/*[1]/*" # mtable/mtr/mtd
-  - t: "选择"      # phrase(the binomial coefficient n 'choose' m)
+  - T: "取"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
 - name: ClearSpeak-default
   tag: [mtr, mlabeledtr]
   match: "parent::m:matrix or parent::m:determinant"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
-  - t: "行"      # phrase(the first 'row' of a matrix)
+  - pause: medium
+  - T: "第"      # phrase(the first 'row' of a matrix)
   - x: "count(preceding-sibling::*)+1"
+  - T: "行"
   - test:
-      if: .[self::m:mlabeledtr]
+      if: ".[self::m:mlabeledtr]"
       then:
-      - t: "带有标签"      # phrase(the line 'with label' first equation)
+      - T: "标签为"      # phrase(the line 'with label' first equation)
       - x: "*[1]/*"
       - pause: short
   - pause: medium
   - test:
-      if: .[self::m:mlabeledtr]
+      if: ".[self::m:mlabeledtr]"
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
+      else: [x: "*"]
 
 - # handle both log and ln
   name: ClearSpeak-log
-  tag: mrow
-  variables: [{log_is_simple: "IsNode(*[3],'simple')"}]
-  match:
-  - "count(*)=3 and"
-  - "*[1][self::m:mi][text()='log' or text()='ln'] and"
-  - "*[2][self::m:mo][text()='⁡']"
+  tag: mi
+  match: ".='log' or .='ln'"
   replace:
+  - bookmark: "@id"
   - test:
-      if: "$log_is_simple"
-      then_test:
-      - if: "*[1][text()='log']"
-        then: [t: "日志"]      # phrase(the 'log' of x)
-      - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-        then: [t: "自然日志"]      # phrase(the 'natural log' of the product of 2 numbers)
-        else: [spell: "'ln'"]
-      else:
-      - test:
-          if: "$Verbosity!='Terse' and not(log_is_simple)"
-          then: [t: "这"]      # phrase('the' square root of 25)
-      - test:
-        - if: "*[1][text()='log']"
-          then: [t: "日志"]
-        - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
-          then: [t: "自然日志"]      # phrase(the 'natural log' of x)
-          else: [spell: "'ln'"]
-      - t: "的"      # phrase(the natural log 'of' x)
-      - pause: short
-  - x: "*[3]"
+      if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
+      then: [OT: ""]
+  - test:
+    - if: ".='log'"
+      then: [T: "对数"]
+    - else_if: "$ClearSpeak_Log = 'LnAsNaturalLog'"
+      then: [T: "自然对数"]
+      else: [SPELL: "'ln'"]
 
 - name: ClearSpeak-multi-line
-  tag: [cases, equations, lines] # these are ignored in favor of the ClearSpeak prefs
+  tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
+  variables:
+  - LineCount: "count(*[not(contains(@data-intent-property, ':continued-row:'))])"
+  - NextLineIsContinuedRow: "false()"
+  - IsColumnSilent: true()
   replace:
-  - x: "count(*)"
   - test:
-    - if: $ClearSpeak_MultiLineOverview = 'Auto'
+    - if: "$ClearSpeak_MultiLineOverview = 'Auto'"
       then:
+      - x: "$LineCount"
       - test:
-        - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:cases) or $ClearSpeak_MultiLineLabel = 'Case'"
-          then: [t: "案例"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-          then: [t: "线"]      # phrase(this is the first 'line' of three lines)
+        - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+          then: [T: "个分支"]      # phrase(this is the first 'case' of three cases)
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line' or $ClearSpeak_MultiLineLabel = 'None'"
+          then: [T: "行"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [t: "约束"]      # phrase(this is the first 'constraint' of three constraints)
+          then: [T: "个约束"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-          then: [t: "方程式"]      # phrase(this is the first 'equation' of three equations)
+          then: [T: "个方程"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-          then: [t: "行"]      # phrase(this is the first 'row' of three rows)
+          then: [T: "行"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-          then: [t: "步骤"]      # phrase(this is the first 'step' of three steps)
-          # else 'None -- don't say anything'
+          then: [T: "步"]      # phrase(this is the first 'step' of three steps)
       - test:
-        - if: "count(*) > 1 and $ClearSpeak_MultiLineLabel != 'None'"
-          then: [ct: " s"] # plural      # phrase(shown by the letter 's')
+        - if: "$LineCount != 1"
+          then: [CT: ""] # Chinese has no plural suffix.
       - pause: short
   - x: "*"
+  - pause: long
 
 - name: ClearSpeak-default-multiline
   tag: [mtr, mlabeledtr]
-  match: "parent::m:cases or parent::m:equations or parent::m:lines"
+  match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
+  variables: [NextLineIsContinuedRow: "following-sibling::*[1][contains(@data-intent-property, ':continued-row:')]"]
   replace:
   - test:
-    - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:cases) or $ClearSpeak_MultiLineLabel = 'Case'"
-      then: [t: "情况"]      # phrase(in this  'case' x is not equal to y)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
-      then: [t: "线"]      # phrase(the straight 'line' between x and y)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-      then: [t: "约束"]      # phrase(there is a 'constraint' on possible values)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
-      then: [t: "方程式"]      # phrase(the 'equation' pi r squared gives the area of a circle)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
-      then: [t: "行"]      # phrase(the values on the top 'row' are relevant)
-    - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
-      then: [t: "步骤"]      # phrase(this is a 'step' by step process)
-      # else 'None -- don't say anything'
-  - test:
-      if: "$ClearSpeak_MultiLineLabel != 'None'"
+      if: "not($LineCount=1 or $ClearSpeak_MultiLineLabel='None' or contains(@data-intent-property, ':continued-row:'))"
       then:
-      - x: "count(preceding-sibling::*)+1"
-      - test:
-          if: .[self::m:mlabeledtr]
-          then:
-          - t: "与标签"      # phrase(the item 'with label' complete)
-          - x: "*[1]/*"
       - pause: medium
+      - T: "第"
+      - x: "count(preceding-sibling::*[not(contains(@data-intent-property, ':continued-row:'))]) + 1"
+      - test:
+        - if: "($ClearSpeak_MultiLineLabel = 'Auto' and parent::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
+          then: [T: "个分支"]
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'"
+          then: [T: "行"]
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
+          then: [T: "个约束"]
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
+          then: [T: "个方程"]
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
+          then: [T: "行"]
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
+          then: [T: "步"]
   - test:
-      if: .[self::m:mlabeledtr]
+      if: "self::m:mlabeledtr"
+      then:
+      - T: "标签为"
+      - x: "*[1]/*"
+  - test:
+    - if: "$ClearSpeak_MultiLineLabel='None'"
+      then: [pause: xlong]
+    - else_if: "not(contains(@data-intent-property, ':continued-row:'))"
+      then: [pause: medium]
+  - test:
+      if: "self::m:mlabeledtr"
       then: [x: "*[position()>1]"]
-      else: {x: "*"}
-  - test:
-      if: "$ClearSpeak_MultiLineLabel != 'None'"
-      then: [pause: long]
+      else: [x: "*"]
 
 - name: ClearSpeak_Functions_None
   tag: mo
   match:
-  - "text()='⁡' and $ClearSpeak_Functions = 'None' and"
+  - ".='⁡' and $ClearSpeak_Functions = 'None' and"
   - "not(preceding-sibling::*[1][IsInDefinition(., 'TrigFunctionNames')])" # Functions=None does not apply to "trig" functions
   replace:
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
-      then: [t: ""]
-      else: [t: "次"]      # phrase(5 'times' 3 equals 15)
+      then: [T: ""]
+      else: [T: "乘"]      # phrase(5 'times' 3 equals 15)
 
 - name: no-times
   tag: mo
   match:
   # Note: this rule is also part of the paren rule so that the parens speak
-  - "text()='⁢' and $ClearSpeak_ImpliedTimes = 'None'"
+  - ".='⁢' and $ClearSpeak_ImpliedTimes = 'None'"
   replace:
-  - t: ""
+  - T: ""
 
 - name: ClearSpeak-times
   tag: mo
   match:
   # say "times" when invisible times is followed by parens or a superscript that has a base with parens or "|"s
   # if we aren't sure if it is times or not, don't say anything
-  - "text()='⁢' and (not(@data-function-guess) or $ClearSpeak_Functions = 'None') and"
-  - "not(ancestor-or-self::*[contains(@data-intent-property, ':structure:')]) and ("
+  - ".='⁢' and (not(@data-function-guess) or $ClearSpeak_Functions = 'None') and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and ("
   - "  $ClearSpeak_ImpliedTimes = 'MoreImpliedTimes'"
   - " or "
   - "  following-sibling::*[1]["
-  - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or self::m:binomial or" # followed by parens
-  - "    ( (self::m:msup or self::m:msub or self::m:msubsup or self::m:power) and " # followed by msup, etc.
-  - "       *[1][self::m:mrow][IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # base has parens
-  - "    )"
+  - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or "
+  - "    self::m:matrix or self::m:determinant or self::m:binomial or"
+  - "    self::m:square-root or self::m:msqrt or self::m:root or self::m:mroot or"
+  - "    (self::m:msub or self::m:msubsup or"
+  - "    ((self::m:msup or self::m:power) and not(IsNode(*[1], 'leaf') and *[2][self::m:mn and (.=2 or '.=3')]))) and "
+  - "     (*[1][self::m:mrow[IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')] or "
+  - "           self::m:matrix or self::m:determinant] or"
+  - "      not(IsNode(*[2], 'simple')) or "
+  - "      (self::m:msubsup and not(IsNode(*[3], 'simple')))"
+  - "     )"
   - "  ]"
   # other possibility is the preceding element has parens (but not the following)
   # this is not mentioned in the ClearSpeak rules or examples but seems like it should say "times". E.g, |x| y
@@ -730,7 +765,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - t: "times"      # phrase(5 'times' 3 equals 15)
+  - T: "乘"      # phrase(5 'times' 3 equals 15)
 
 - name: no-say-parens
   tag: mrow
@@ -739,11 +774,12 @@
   - "          not(self::m:math) ] and "       # rule out [x] standing alone
   - "( IsBracketed(., '(', ')') or IsBracketed(., '[', ']') ) and "
   - "not( $ClearSpeak_Functions = 'None' and "
-  - "     (preceding-sibling::*[1][text()='⁡'] or following-sibling::*[1][text()='⁡']) ) and "
+  - "     (preceding-sibling::*[1][.='⁡'] or following-sibling::*[1][.='⁡']) ) and "
   - "not( $ClearSpeak_ImpliedTimes = 'None' and "
-  - "     (preceding-sibling::*[1][text()='⁢'] or following-sibling::*[1][text()='⁢']) ) and "
+  - "     (preceding-sibling::*[1][.='⁢'] or following-sibling::*[1][.='⁢']) ) and "
   - "IsNode(*[2], 'simple') and"
-  - "not(ancestor-or-self::*[contains(@data-intent-property, ':structure:')])"
+  - "not(preceding-sibling::*[1][.='⁢' and @data-function-guess]) and"
+  - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
   # missing clause: 'a positive fraction that is spoken as an ordinal
   #   (either by the Ordinal preference or by the default rules)'
   replace:
@@ -751,5 +787,6 @@
 
 - include: "SharedRules/geometry.yaml"
 - include: "SharedRules/linear-algebra.yaml"
+- include: "SharedRules/calculus.yaml"
 - include: "SharedRules/general.yaml"
 - include: "SharedRules/default.yaml"
