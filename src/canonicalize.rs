@@ -1060,8 +1060,8 @@ static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
 
 // turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
 // two cases because we don't want to have a match for 'Cl', etc.
-static UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$");
-static LOWER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*^m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$");
+static UPPER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\s*$");
+static LOWER_ROMAN_NUMERAL: Lazy<Regex> = lazy_regex!(r"^\s*m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})\s*$");
 
 
 struct CanonicalizeContextPatterns {
@@ -1362,7 +1362,7 @@ impl CanonicalizeContext {
 		assert!(is_leaf(leaf));
 		set_mathml_name(leaf, "mn");
 		leaf.set_attribute_value("data-roman-numeral", "true");	// mark for easy detection
-		let as_number = match as_text(leaf).parse::<RomanNumeral>() {
+		let as_number = match as_text(leaf).trim().parse::<RomanNumeral>() {
 			Ok(roman) => roman.as_u16().to_string(),
 			Err(_) => as_text(leaf).to_string(),
 		};
@@ -2111,7 +2111,7 @@ impl CanonicalizeContext {
 				// this is a hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
 				// FIX: come up with a less hacky way to prevent chem element misinterpretation
 				let text = as_text(mathml);
-				if text.len() > 2 && is_roman_number_match(as_str!(text)) {
+				if text.trim().len() > 2 && is_roman_number_match(as_str!(text)) {
 					return mathml;
 				}
 				if let Some(elements) = convert_leaves_to_chem_elements(mathml) {
@@ -2578,7 +2578,7 @@ impl CanonicalizeContext {
 			}
 
 			let text_ns = as_text(mathml);
-			let text = text_ns.as_bytes();	// note: we know it is all ASCII chars
+			let text = text_ns.trim().as_bytes();	// note: we know it is all ASCII chars
 			// if roman numeral is in superscript and we get here, then it had a chemical element base, so we accept it
 			// note: you never has a state = I; if two letters, it must be 'II'.
 			if text.len() > 2  || 
@@ -7407,6 +7407,49 @@ mod canonicalize_tests {
 				<mn data-roman-numeral='true' data-number='500'>D</mn>
 			</mrow>
 		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_letter_with_nbsp_is_not_number() -> Result<()> {
+        let test_str = "<math><mi>C&#xA0;</mi></math>";
+        let target_str = "<math><mi>C&#xA0;</mi></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_like_letter_with_nbsp_after_number() -> Result<()> {
+        let test_str = "<math><mn>2</mn><mi>C&#xA0;</mi></math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mn>2</mn>
+			<mo data-changed='added'>&#x2062;</mo>
+			<mi>C&#xA0;</mi>
+			</mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_with_nbsp() -> Result<()> {
+        let test_str = "<math><mi>XII&#xA0;</mi></math>";
+        let target_str = "<math><mn data-roman-numeral='true' data-number='12'>XII&#xA0;</mn></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_with_leading_nbsp() -> Result<()> {
+        let test_str = "<math><mi>&#xA0;XII</mi></math>";
+        let target_str = "<math><mn data-roman-numeral='true' data-number='12'>&#xA0;XII</mn></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn roman_numeral_context_with_nbsp() -> Result<()> {
+        let test_str = "<math><mi>C&#xA0;</mi><mo>+</mo><mi>X</mi></math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mn data-roman-numeral='true' data-number='100'>C&#xA0;</mn>
+			<mo>+</mo>
+			<mn data-roman-numeral='true' data-number='10'>X</mn>
+			</mrow></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
