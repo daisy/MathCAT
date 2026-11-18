@@ -74,13 +74,13 @@ fn plus_minus_symbols_follow_standard_contextual_readings() -> Result<()> {
         "zh-cn",
         "SimpleSpeak",
         "<math><mi>a</mi><mo>&#x2a7d;</mo><mi>b</mi></math>",
-        "a 小于或倾斜等于 b",
+        "a 小于等于 b",
     )?;
     test(
         "zh-cn",
         "SimpleSpeak",
         "<math><mi>c</mi><mo>&#x2a7e;</mo><mi>d</mi></math>",
-        "c 大于或倾斜等于 d",
+        "c 大于等于 d",
     )?;
     test(
         "zh-cn",

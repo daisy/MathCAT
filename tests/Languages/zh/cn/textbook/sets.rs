@@ -15,7 +15,7 @@ fn set_relations_use_textbook_containment_terms() -> Result<()> {
         "zh-cn",
         "SimpleSpeak",
         "<math><mi>A</mi><mo>&#x2284;</mo><mi>B</mi><mo>,</mo><mi>C</mi><mo>&#x2288;</mo><mi>D</mi></math>",
-        "大写 a 不包含于 大写 b; 逗号; 大写 c 不包含于 大写 d",
+        "大写 a 不是 大写 b 的真子集, 逗号; 大写 c 不包含于 大写 d",
     )?;
     test(
         "zh-cn",
@@ -137,4 +137,20 @@ fn finite_intervals_use_mainland_textbook_readings() -> Result<()> {
             .map_err(|error| anyhow::anyhow!("ClearSpeak/{name}: {error}"))?;
     }
     Ok(())
+}
+
+// Equal operands make negated strict and inclusive containment differ in truth value.
+#[test]
+fn negated_containment_distinguishes_equal_sets() -> Result<()> {
+    for (operator, expected) in [
+        ("⊄", "a 不是 a 的真子集"),
+        ("⊈", "a 不包含于 a"),
+        ("⊅", "a 不是 a 的真超集"),
+        ("⊉", "a 不包含 a"),
+    ] {
+        let expr = format!("<math><mi>a</mi><mo>{operator}</mo><mi>a</mi></math>");
+        test("zh-cn", "ClearSpeak", &expr, expected)?;
+    }
+    test("zh-cn", "ClearSpeak", "<math><mrow intent='not-subset($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>", "x 不是 y 的真子集")?;
+    return Ok(());
 }

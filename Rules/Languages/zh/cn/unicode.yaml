@@ -299,7 +299,7 @@
  - "ο": [T: "omicron"]                             # 0x3bf
  - "π": [T: "pi"]                                  # 0x3c0
  - "ρ": [T: "rho"]                                 # 0x3c1
- - "ς": [T: "final sigma"]                         # 0x3c2
+ - "ς": [T: "词尾 sigma"]                         # 0x3c2
  - "σ": [T: "sigma"]                               # 0x3c3
  - "τ": [T: "tau"]                                 # 0x3c4
  - "υ": [T: "upsilon"]                             # 0x3c5
@@ -519,16 +519,8 @@
          if: "$Verbosity!='Terse'"
          then: [T: ""]
      - T: "真包含"
- - "⊄":                                          # 0x2284
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "不包含于"
- - "⊅":                                          # 0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "不包含"
+ - "⊄": [T: "不真包含于"]                         # 0x2284
+ - "⊅": [T: "不真包含"]                           # 0x2285
  - "⊆":                                          # 0x2286
      - test: 
          if: "$Verbosity!='Terse'"

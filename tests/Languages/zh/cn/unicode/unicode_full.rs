@@ -15,12 +15,12 @@ fn unicode_full_relations_keep_distinct_mathematical_meanings() -> Result<()> {
         (
             "slanted-less-or-equal",
             "<math><mi>a</mi><mo>&#x2a7d;</mo><mi>b</mi></math>",
-            "a 小于或倾斜等于 b",
+            "a 小于等于 b",
         ),
         (
             "slanted-greater-or-equal",
             "<math><mi>a</mi><mo>&#x2a7e;</mo><mi>b</mi></math>",
-            "a 大于或倾斜等于 b",
+            "a 大于等于 b",
         ),
         (
             "less-above-similar-or-equal",
@@ -349,9 +349,9 @@ fn audited_unicode_gap_symbols_have_direct_and_contextual_coverage() -> Result<(
     // TINY and MINY are proper operator names, not translations of the size adjectives.
     let direct = [
         ("20e2", "外加屏幕"),
-        ("220b", "包含"),
-        ("220c", "不包含"),
-        ("220d", "小型包含"),
+        ("220b", "含有元素"),
+        ("220c", "不含元素"),
+        ("220d", "含有元素"),
         ("2256", "环等于"),
         ("228b", "真包含"),
         ("228d", "多重集乘法"),
@@ -374,9 +374,9 @@ fn audited_unicode_gap_symbols_have_direct_and_contextual_coverage() -> Result<(
         ("2ae1", "带 S 的垂直符号"),
     ];
     let contextual = [
-        ("220b", "x", "大写 a 包含 x"),
-        ("220c", "x", "大写 a 不包含 x"),
-        ("220d", "x", "大写 a 小型包含 x"),
+        ("220b", "x", "大写 a 含有元素 x"),
+        ("220c", "x", "大写 a 不含元素 x"),
+        ("220d", "x", "大写 a 含有元素 x"),
         ("2298", "B", "大写 a 带圆圈除号斜线, 大写 b"),
         ("22d4", "B", "大写 a 真相交 大写 b"),
         ("2a87", "b", "大写 a 小于且单线不等于 b"),
@@ -628,4 +628,21 @@ fn miscellaneous_technical_symbols_have_verified_readings() -> Result<()> {
         }
     }
     Ok(())
+}
+
+// Describe the slant in isolation and read the relation normally between operands.
+#[test]
+fn slanted_inequalities_and_white_bullet_in_context() -> Result<()> {
+    for (symbol, alone, in_formula) in [
+        ("⩽", "小于或倾斜等于", "x 小于等于 y"),
+        ("⩾", "大于或倾斜等于", "x 大于等于 y"),
+        ("&#xe969;", "小于或倾斜等于", "x 小于等于 y"),
+        ("&#xe96a;", "大于或倾斜等于", "x 大于等于 y"),
+        ("◦", "空心圆点", "x 空心圆点 y"),
+    ] {
+        let token = format!("<mo>{symbol}</mo>");
+        test("zh-cn", "ClearSpeak", &format!("<math>{token}</math>"), alone)?;
+        test("zh-cn", "ClearSpeak", &format!("<math><mi>x</mi>{token}<mi>y</mi></math>"), in_formula)?;
+    }
+    return Ok(());
 }

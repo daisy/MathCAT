@@ -21,7 +21,19 @@ fn unicode_letter_currency_and_operator_names_match_character_identity() -> Resu
         ("2114", "磅符号"),
         ("2116", "序号符号"),
         ("2127", "姆欧"),
-        ("2129", "倒置希腊小写字母 iota"),
+        ("2129", "倒置 iota"),
+        ("214e", "倒置 f"),
+        ("02b0", "修饰用 h"),
+        ("02b1", "带钩的修饰用 h"),
+        ("02b2", "修饰用 j"),
+        ("02b3", "修饰用 r"),
+        ("02b4", "修饰用倒置 r"),
+        ("02b5", "带钩的修饰用倒置 r"),
+        ("02b7", "修饰用 w"),
+        ("02b8", "修饰用 y"),
+        ("02e1", "修饰用 l"),
+        ("02e2", "修饰用 s"),
+        ("02e3", "修饰用 x"),
         ("223c", "波浪运算符"),
         ("223d", "反转波浪号"),
         ("2240", "圈积"),
@@ -69,7 +81,7 @@ fn unicode_arrows_shapes_and_ornaments_name_visible_features() -> Result<()> {
         ("25d9", "反白圆"),
         ("25da", "上半反白圆"),
         ("25db", "下半反白圆"),
-        ("25e6", "复合"),
+        ("25e6", "空心圆点"),
         ("29eb", "黑色长菱形"),
         ("2661", "空心红桃"),
         ("2665", "实心红桃"),
@@ -224,4 +236,25 @@ fn unicode_composite_symbols_preserve_feature_and_spatial_order() -> Result<()> 
             .map_err(|error| anyhow::anyhow!("U+{codepoint}: {error}"))?;
     }
     Ok(())
+}
+
+// Uppercase cues follow the reader's preference, including for Greek and legacy glyphs.
+#[test]
+fn capital_letter_preference_controls_symbol_speech() -> Result<()> {
+    for (symbol, with_cap, without_cap) in [
+        ("Ϙ", "大写 古体 koppa", "古体 koppa"),
+        ("ϙ", "古体 koppa", "古体 koppa"),
+        ("ϒ", "带钩的 大写 upsilon", "带钩的 upsilon"),
+        ("ϓ", "带锐音与钩的 大写 upsilon", "带锐音与钩的 upsilon"),
+        ("ϔ", "带分音与钩的 大写 upsilon", "带分音与钩的 upsilon"),
+        ("㍵", "o 大写 v", "o v"),
+        ("&#xed01;", "倒置无衬线体 大写 g", "倒置无衬线体 g"),
+        ("ʶ", "修饰用倒置小型大写 R", "修饰用倒置小型大写 R"),
+    ] {
+        let expr = format!("<math><mi>{symbol}</mi></math>");
+        for (setting, expected) in [("true", with_cap), ("false", without_cap)] {
+            test_prefs("zh-cn", "SimpleSpeak", vec![("CapitalLetters_UseWord", setting)], &expr, expected)?;
+        }
+    }
+    return Ok(());
 }

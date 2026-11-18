@@ -444,7 +444,7 @@ fn semantic_function_cases_use_verified_terms() -> Result<()> {
         (
             "not-superset",
             "<math><mrow intent='not-superset($a,$b)'><mi arg='a'>A</mi><mi arg='b'>B</mi></mrow></math>",
-            "大写 a 不包含 大写 b",
+            "大写 a 不是 大写 b 的真超集",
         ),
     ];
 

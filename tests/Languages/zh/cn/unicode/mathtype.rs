@@ -116,7 +116,7 @@ fn audited_unicode_math_names_match_symbol_identity() -> Result<()> {
         ("2af9", "双线倾斜小于或等于"),
         ("2afa", "双线倾斜大于或等于"),
         ("3372", "道尔顿"),
-        ("3375", "小写 o 大写 V"),
+        ("3375", "o 大写 v"),
         ("fb05", "长 s t 连字"),
     ];
 
@@ -181,7 +181,7 @@ fn audited_mathtype_private_use_symbols_match_their_source_names() -> Result<()>
         ("eb4c", "粗短黑色向左箭头"),
         ("eb52", "左端带空心圆点的左右鱼叉箭头"),
         ("ed00", "约化普朗克常量"),
-        ("ed01", "倒置无衬线体大写 G"),
+        ("ed01", "倒置无衬线体 大写 g"),
         ("ee1a", "左端带空心圆点的横线重音符"),
         ("ee1b", "左端带实心圆点的横线重音符"),
         ("ee1c", "右端带空心圆点的横线重音符"),
@@ -564,7 +564,7 @@ fn mathtype_double_struck_greek_matches_the_original_character_table() -> Result
     }
 
     let special = [
-        ("f237", "双线体 final sigma"),
+        ("f237", "双线体 词尾 sigma"),
         ("f250", "双线体 rho"),
         ("f251", "双线体 phi"),
     ];
@@ -687,7 +687,7 @@ fn audited_unicode_ranges_keep_their_boundaries() -> Result<()> {
 #[test]
 fn confirmed_greek_unicode_variants_keep_chinese_modifiers_and_english_cores() -> Result<()> {
     let cases = [
-        ("02e0", "修饰用小写 gamma"),
+        ("02e0", "修饰用 gamma"),
         ("03ca", "带分音符的 iota"),
         ("03cb", "带分音符的 upsilon"),
         ("03cc", "带重音符的 omicron"),
@@ -695,12 +695,12 @@ fn confirmed_greek_unicode_variants_keep_chinese_modifiers_and_english_cores() -
         ("03ce", "带重音符的 omega"),
         ("03d0", "beta"),
         ("03d1", "theta"),
-        ("03d2", "带钩的 upsilon"),
-        ("03d3", "带锐音与钩的 upsilon"),
-        ("03d4", "带分音与钩的 upsilon"),
+        ("03d2", "带钩的 大写 upsilon"),
+        ("03d3", "带锐音与钩的 大写 upsilon"),
+        ("03d4", "带分音与钩的 大写 upsilon"),
         ("03d7", "kai"),
-        ("03d8", "大写 archaic koppa"),
-        ("03d9", "archaic koppa"),
+        ("03d8", "大写 古体 koppa"),
+        ("03d9", "古体 koppa"),
         ("03dd", "digamma"),
         ("213c", "双线体 pi"),
         ("213d", "双线体 gamma"),
@@ -764,7 +764,7 @@ fn mathtype_greek_and_digit_ranges_keep_verified_character_order() -> Result<()>
         "omicron",
         "pi",
         "rho",
-        "final sigma",
+        "词尾 sigma",
         "sigma",
         "tau",
         "upsilon",

@@ -216,6 +216,21 @@
   - x: "*[2]"
   - T: "的差集"
 
+# Chinese places the name of the strict relation after the right operand.
+- name: negated-proper-containment
+  tag: [mrow, not-subset, not-superset]
+  match:
+  - "(self::m:mrow and count(*)=3 and *[2][self::m:mo and (.='⊄' or .='⊅')]) or"
+  - "((self::m:not-subset or self::m:not-superset) and count(*)=2 and contains(@data-intent-property, ':infix:'))"
+  replace:
+  - x: "*[1]"
+  - T: "不是"
+  - x: "*[last()]"
+  - test:
+      if: "self::m:not-subset or *[2][self::m:mo and .='⊄']"
+      then: [T: "的真子集"]
+      else: [T: "的真超集"]
+
 - name: least-common-denominator
   tag: least-common-denominator
   match: "count(*)=2 or count(*)=3"
