@@ -1,4 +1,4 @@
-name: Bug Report
+name: Bug Report Form
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug", "triage"]
@@ -32,21 +32,22 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - 0.7.x
+        - 0.6.x 
       default: 0
     validations:
       required: true
   - type: dropdown
-    id: browsers
+    id: System
     attributes:
-      label: What browsers are you seeing the problem on?
+      label: What system problem on?
       multiple: true
       options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
+        - NVDA integrated MathCat
+        - NVDA add-on
+        - JAWS
+        - MathCAT Demo page
+	- Other
   - type: textarea
     id: logs
     attributes:
