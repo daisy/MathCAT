@@ -25,12 +25,14 @@ fn read_function_set_intents() -> Result<()> {
             init_nav("ru", "<math><mrow intent='image($r)'><mi>Im</mi><mi arg='r'>R</mi></mrow></math>")?;
             set_preference("SpeechStyle", style)?;
             set_preference("NavMode", mode)?;
+            set_preference("Impairment", "Blindness")?;
+            set_preference("SpeechOverrides_CapitalLetters", "")?;
             let speech = do_navigate_command("ReadCurrent")?.split_whitespace().collect::<Vec<_>>().join(" ");
             let expected = if mode == "Character" {"Im заглавной эр"} else {"образ заглавной эр"};
-            assert!(speech.contains(expected), "{style}/{mode}: {speech}");
+            anyhow::ensure!(speech.contains(expected), "{style}/{mode}: expected {expected:?}, got {speech:?}");
         }
     }
-    Ok(())
+    return Ok(());
 }
 
 #[test]
