@@ -365,7 +365,7 @@
     # "large-op": "infix=over || other=from,to",
     "lim-sup": "prefix=リム サップ|上極限|上極限",
     "lim-inf": "prefix=リム インフ|下極限|下極限",
-    "logarithm-with-base": "prefix=ログベース|ログベース|ログベース",
+    "logarithm-with-base": "prefix=ログ|ログ|ログ",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
     "trace": "function=; トレース|トレース|トレース;トレース終了",
     "dimension": "function=;次元|次元|次元;次元終了",

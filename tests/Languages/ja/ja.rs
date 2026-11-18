@@ -1063,6 +1063,19 @@ fn limit_terminology() -> Result<()> {
     return Ok(());
 }
 
+/// A limit is followed directly by what it is the limit of. It was 極限 x 近づく 0; オブ, …,
+/// with the オブ that English says there ("the limit as x approaches 0, of …"); Japanese has no
+/// glue word in that place, and the pause after 0 already marks where the limit ends.
+#[test]
+fn limit_without_of() -> Result<()> {
+    let expr = "<math><munder><mo>lim</mo><mrow><mi>x</mi><mo>&#x2192;</mo><mn>0</mn></mrow></munder><mfrac><mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow><mi>x</mi></mfrac></math>";
+    test("ja", "ClearSpeak", expr, "極限 x 近づく 0; サイン x オーバー x")?;
+    test("ja", "SimpleSpeak", expr, "極限 x 近づく 0; 分数, サイン オブ x, オーバー x, 分数終了")?;
+    let expr = "<math><munder><mo>lim</mo><mrow><mi>x</mi><mo>&#x2197;</mo><mn>0</mn></mrow></munder><mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "極限 x 下から近づく 0; サイン x")?;
+    return Ok(());
+}
+
 /// Japanese puts the object in front of 比例する, 属する or に先行する, but these
 /// words are spoken where the symbol is, so x ≺ y (precedes) came out as
 /// x に先行する y, "the y that precedes x". The symbols and intents now use names
@@ -1722,6 +1735,26 @@ fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
     test("ja", "ClearSpeak", expr, "対数のしゅち オブ z")?;
     test("ja", "SimpleSpeak", expr, "対数のしゅち オブ z")?;
+    return Ok(());
+}
+
+/// log_b x is read ログ b の x, the way it is read in Japanese schools; it was ログベース b; オブ x,
+/// the English "log base b, of x" word for word. 底 ("base") is not used: Open JTalk reads it ソコ.
+/// A simple base is not followed by a pause, which would split ログ b from its の.
+#[test]
+fn logarithm_with_base() -> Result<()> {
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub><mo>&#x2061;</mo><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "ログ b の x")?;
+    test("ja", "SimpleSpeak", expr, "ログ b の x")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "ログ b の x")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ログ b の x")?;
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", expr, "ログ b の, 丸カッコ, x プラス y, 丸カッコ閉じ")?;
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub></math>";
+    test("ja", "ClearSpeak", expr, "ログ b")?;
+    // a base that is not simple keeps the pause that marks where it ends
+    let expr = "<math><msub><mi>log</mi><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></msub><mo>&#x2061;</mo><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "ログ エー プラス b; の x")?;
     return Ok(());
 }
 
