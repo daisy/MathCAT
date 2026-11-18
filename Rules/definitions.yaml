@@ -36,7 +36,7 @@
     "arccot", "arccotan", "arccotanh", "arccoth",
     "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
     "arctan", "arctang", "arctanh",
-    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", "re", "Re", "ℜ", "Pr", "cis",
     "gcd", "lcm",
     "min", "max", "deg", "det", "rank", "rg", "sgn",
     "dim", "hom", "ker", "tr", "rot", "div",

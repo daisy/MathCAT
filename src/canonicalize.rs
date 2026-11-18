@@ -1242,6 +1242,11 @@ impl CanonicalizeContext {
 				if element_name == "mrow" && children.len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(mathml) {
 					// "lift" the child up so all the links (e.g., siblings) are correct
 					let child = as_element(children[0]);
+					// The synthesized wrapper can disappear, but its original token must
+					// not inherit a marker that chemistry cleanup uses to delete added leaves.
+					if is_leaf(child) && mathml.attribute_value(CHANGED_ATTR).as_deref() == Some(ADDED_ATTR_VALUE) {
+						mathml.remove_attribute(CHANGED_ATTR);
+					}
 					mathml.replace_children(child.children());
 					set_mathml_name(mathml, as_str!(name(child)));
 					add_attrs(mathml, &child.attributes());
