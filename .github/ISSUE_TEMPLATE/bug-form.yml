@@ -47,7 +47,7 @@ body:
         - NVDA add-on
         - JAWS
         - MathCAT Demo page
-	- Other
+        - Other
   - type: textarea
     id: logs
     attributes:
