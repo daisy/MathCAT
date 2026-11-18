@@ -558,14 +558,16 @@
  - "↕": [T: "上下矢印"]                       # 0x2195
  - "↖": [T: "北西矢印"]                    # 0x2196
  - "↗":                                          # 0x2197
+    # audit-ignore: lim sup and lim inf (intents limit-sup and limit-inf) read their arrow like the limit does
     - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf]"
         then: [T: "下から近づく"]
         else: [T: "北東矢印"]
 
  - "↘":                                          # 0x2198
+    # audit-ignore: lim sup and lim inf (intents limit-sup and limit-inf) read their arrow like the limit does
     - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf]"
         then: [T: "上から近づく"]
         else: [T: "南東矢印"]
 
