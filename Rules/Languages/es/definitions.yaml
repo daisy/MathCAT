@@ -586,6 +586,7 @@
     "b": "bit",                 # should only take positive powers
     "B": "byte",                # should only take positive powers
     "Bd": "baudio",             # should only take positive powers
+    "tex": "tex", "barn": "barn",
   }
 
 
@@ -617,6 +618,7 @@
 
     # others
     "ha": "hectárea",
+    "gon": "gon", "dioptría": "dioptría", "quilate": "quilate", "vuelta": "vuelta",
     # "B": "belio",    # "B" more commonly means bytes
     "dB": "decibelio", # already logarithmic, so not used with SI prefixes
 
@@ -800,6 +802,7 @@
     "grado Fahrenheit": "grados Fahrenheit",
 
     "hertz": "hertz",
+    "tex": "tex", "gon": "gones",
     "siemens": "siemens",
 
     # unidades anglosajonas
