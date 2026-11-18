@@ -93,6 +93,24 @@ fn complex_exponent() -> Result<()> {
     return Ok(());
 }
 
+/// A decimal exponent is read with 乗 like an integer one, as SimpleSpeak already reads it.
+/// ClearSpeak read x^2.0 as a superscript (x の上付き 2.0 上付き終了), because the English rule
+/// keeps decimals away from its ordinals; Japanese has no ordinal here, so all Exponents values
+/// say 乗. The outer exponent of a nested one is still read as a superscript.
+#[test]
+fn decimal_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2.0</mn></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の 2.0 乗")?;
+    test("ja", "SimpleSpeak", expr, "x の 2.0 乗")?;
+    let expr = "<math><msup><mi>x</mi><msup><mi>y</mi><mn>2.5</mn></msup></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の上付き, y の 2.5 乗, 上付き終了")?;
+    let expr = "<math><msup><mn>3</mn><mn>5.0</mn></msup></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "Ordinal", expr, "3 の 5.0 乗")?;
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "OrdinalPower", expr, "3 の 5.0 乗")?;
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "AfterPower", expr, "3 の 5.0 乗")?;
+    return Ok(());
+}
+
 /// A leading minus is read マイナス, the same word as the binary operator.
 /// 負の / 正の name the *kind* of number (負の数 = "the negative numbers") and are
 /// not how −5 is read aloud.
