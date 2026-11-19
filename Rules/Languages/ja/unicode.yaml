@@ -312,18 +312,24 @@
  - "϶": [T: "逆イプシロン"]                    # 0x3f6
 
  - "⁡":                                          # 0x2061
+    # audit-ignore: Japanese says の after the base of a log (ログ b の x) and nothing after a limit
     - test:
-        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
-        if: "not(
+        if: "preceding-sibling::*[1][self::m:logarithm-with-base]"
+        then: [T: "の"]      # phrase(ログ b 'の' x)
+        else_test:
+          # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode,
+          # and after a limit, which is followed directly by what it is the limit of (極限 x 近づく 0; f x)
+          if: "not(
               ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
                 preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
                                                    IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
                                                    IsInDefinition(., 'TrigFunctionNames') )]
               ) or
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              preceding-sibling::*[1][self::m:limit] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [T: "オブ"]
+          then: [T: "オブ"]
  - "⁢": [T: ""]                                   # 0x2062
  - "⁣": [T: ""]                                   # 0x2063
  - "⁤": [T: "と"]                                # 0x2064
