@@ -34,7 +34,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' square root of 25)
+      then: [ot: "the"]      # phrase('the' square root of 25)
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
@@ -65,7 +65,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase(6 is 'the' square root of 36)
+      then: [ot: "the"]      # phrase(6 is 'the' square root of 36)
   - test:
       if: "$ClearSpeak_Roots = 'PosNegSqRoot' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
       then:
@@ -135,7 +135,9 @@
   - "$ClearSpeak_Fractions='Per' or"
   - "(BaseNode(*[1])[contains(@data-intent-property, ':unit') or"
   - "                ( self::m:mrow and count(*)=3 and"  # maybe a bit paranoid checking the structure...
-  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) ] and"
+  - "                 *[1][self::m:mn] and *[2][.='\u2062'] and BaseNode(*[3])[contains(@data-intent-property, ':unit')] ) or"
+  - "                ( self::m:mrow and count(*)=3 and"  # $5 / currency amount over a unit
+  - "                  DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != '' and *[2][.='\u2062'] and *[3][self::m:mn or self::m:mi or self::m:mtext or self::m:msub or self::m:msup or self::m:msubsup or self::m:power or self::m:indexed-by] ) ] and"
   - " BaseNode(*[2])[contains(@data-intent-property, ':unit')] )"
   replace:
   - x: "*[1]"
@@ -262,7 +264,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' third power of 2)
+      then: [ot: "the"]      # phrase('the' third power of 2)
   - bookmark: "*[2]/@id"
   - test:
       if: "*[2][self::m:mn][not(contains(., '.'))]"
@@ -478,7 +480,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]      # phrase('the' absolute value of 25)
+      then: [ot: "the"]      # phrase('the' absolute value of 25)
   - x: "$WordToSay"
   - t: "of"      # phrase(the absolute value 'of' 25)
   - x: "*[1]"
@@ -492,17 +494,14 @@
 
 - name: set
   tag: set
-  match: "."
+  # Empty set and braced/{set-builder} forms (typically 0–1 child).
+  # Multi-arg intent set($x,$y,...) and set($x) with @arg fall through to function-intent
+  # ("the set of …").
+  match: "count(*)=0 or (count(*)=1 and not(*[1][@arg]))"
   replace:
   - test:
     - if: "count(*)=0"
       then: [t: "the empty set"]      # phrase('the empty set')
-    - else_if: "count(*)=2"
-      then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "the"]      # phrase('the' empty set)
-      - t: "empty set"      # phrase(the 'empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:
@@ -611,7 +610,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity!='Terse' and not(IsNode(following-sibling::*[2],'simple'))"
-      then: [t: "the"]      # phrase('the' square root of 25)
+      then: [ot: "the"]      # phrase('the' square root of 25)
   - test:
     - if: ".='log'"
       then: [t: "log"]

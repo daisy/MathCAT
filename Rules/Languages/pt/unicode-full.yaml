@@ -1,0 +1,3431 @@
+
+ - "˘": [T: "breve"]                          # 0x2d8
+ - "˚": [T: "anel acima"]                     # 0x2da
+ - "˛": [T: "ogonek"]                         # 0x2db
+ - "˜": [T: "til pequeno"]                    # 0x2dc
+ - "˝": [T: "acento agudo duplo"]             # 0x2dd
+ - "↔": [T: "seta para a esquerda e para a direita"] # 0x2194
+ - "↕": [T: "seta para cima e para baixo"]    # 0x2195
+ - "↖": [T: "seta para noroeste"]             # 0x2196
+ - "↙": [T: "seta para sudoeste"]             # 0x2199
+ - "↚": [T: "seta para a esquerda com traço"] # 0x219a
+ - "↛": [T: "seta para a direita com traço"]  # 0x219b
+ - "↜": [T: "seta ondulada para a esquerda"]  # 0x219c
+ - "↝": [T: "seta ondulada para a direita"]   # 0x219d
+ - "↞": [T: "seta de duas pontas para a esquerda"] # 0x219e
+ - "↟": [T: "seta de duas pontas para cima"]  # 0x219f
+ - "↠": [T: "seta de duas pontas para a direita"] # 0x21a0
+ - "↡": [T: "seta de duas pontas para baixo"] # 0x21a1
+ - "↢": [T: "seta para a esquerda com cauda"] # 0x21a2
+ - "↣": [T: "seta para a direita com cauda"]  # 0x21a3
+ - "↤": [T: "seta para a esquerda a partir de barra"] # 0x21a4
+ - "↥": [T: "seta para cima a partir de barra"] # 0x21a5
+ - "↦": [T: "seta para a direita a partir de barra"] # 0x21a6
+ - "↧": [T: "seta para baixo a partir de barra"] # 0x21a7
+ - "↨": [T: "seta para cima e para baixo com base"] # 0x21a8
+ - "↩": [T: "seta para a esquerda com gancho"] # 0x21a9
+ - "↪": [T: "seta para a direita com gancho"] # 0x21aa
+ - "↫": [T: "seta para a esquerda com laço"]  # 0x21ab
+ - "↬": [T: "seta para a direita com laço"]   # 0x21ac
+ - "↭": [T: "seta ondulada para a esquerda e para a direita"] # 0x21ad
+ - "↮": [T: "seta para a esquerda e para a direita com traço"] # 0x21ae
+ - "↯": [T: "seta em zigue-zague para baixo"] # 0x21af
+ - "↰": [T: "seta para cima com ponta para a esquerda"] # 0x21b0
+ - "↱": [T: "seta para cima com ponta para a direita"] # 0x21b1
+ - "↲": [T: "seta para baixo com ponta para a esquerda"] # 0x21b2
+ - "↳": [T: "seta para baixo com ponta para a direita"] # 0x21b3
+ - "↴": [T: "seta para a direita com canto para baixo"] # 0x21b4
+ - "↵": [T: "seta para baixo com canto para a esquerda"] # 0x21b5
+ - "↶": [T: "seta semicircular superior no sentido anti-horário"] # 0x21b6
+ - "↷": [T: "seta semicircular superior no sentido horário"] # 0x21b7
+ - "↸": [T: "seta para noroeste até barra longa"] # 0x21b8
+ - "↹": [T: "seta para a esquerda até barra sobre seta para a direita até barra"] # 0x21b9
+ - "↺": [T: "seta circular aberta no sentido anti-horário"] # 0x21ba
+ - "↻": [T: "seta circular aberta no sentido horário"] # 0x21bb
+ - "↼": [T: "arpão para a esquerda com farpa para cima"] # 0x21bc
+ - "↽": [T: "arpão para a esquerda com farpa para baixo"] # 0x21bd
+ - "↾": [T: "arpão para cima com farpa para a direita"] # 0x21be
+ - "↿": [T: "arpão para cima com farpa para a esquerda"] # 0x21bf
+ - "⇀": [T: "arpão para a direita com farpa para cima"] # 0x21c0
+ - "⇁": [T: "arpão para a direita com farpa para baixo"] # 0x21c1
+ - "⇂": [T: "arpão para baixo com farpa para a direita"] # 0x21c2
+ - "⇃": [T: "arpão para baixo com farpa para a esquerda"] # 0x21c3
+ - "⇄": [T: "seta para a direita sobre seta para a esquerda"] # 0x21c4
+ - "⇅": [T: "seta para cima à esquerda de seta para baixo"] # 0x21c5
+ - "⇆": [T: "seta para a esquerda sobre seta para a direita"] # 0x21c6
+ - "⇇": [T: "duas setas para a esquerda"]     # 0x21c7
+ - "⇈": [T: "duas setas para cima"]           # 0x21c8
+ - "⇉": [T: "duas setas para a direita"]      # 0x21c9
+ - "⇊": [T: "duas setas para baixo"]          # 0x21ca
+ - "⇋": [T: "arpão para a esquerda sobre arpão para a direita"] # 0x21cb
+ - "⇌": [T: "arpão para a direita sobre arpão para a esquerda"] # 0x21cc
+ - "⇍": [T: "seta dupla para a esquerda com traço"] # 0x21cd
+ - "⇎": [T: "seta dupla para a esquerda e para a direita com traço"] # 0x21ce
+ - "⇏": [T: "seta dupla para a direita com traço"] # 0x21cf
+ - "⇐": [T: "seta dupla para a esquerda"]     # 0x21d0
+ - "⇑": [T: "seta dupla para cima"]           # 0x21d1
+ - "⇓": [T: "seta dupla para baixo"]          # 0x21d3
+ - "⇔": [T: "se e somente se"]                # 0x21d4
+ - "⇕": [T: "seta dupla para cima e para baixo"] # 0x21d5
+ - "⇖": [T: "seta dupla para noroeste"]       # 0x21d6
+ - "⇗": [T: "seta dupla para nordeste"]       # 0x21d7
+ - "⇘": [T: "seta dupla para sudeste"]        # 0x21d8
+ - "⇙": [T: "seta dupla para sudoeste"]       # 0x21d9
+ - "⇚": [T: "seta tripla para a esquerda"]    # 0x21da
+ - "⇛": [T: "seta tripla para a direita"]     # 0x21db
+ - "⇜": [T: "seta serpenteante para a esquerda"] # 0x21dc
+ - "⇝": [T: "seta serpenteante para a direita"] # 0x21dd
+ - "⇞": [T: "seta para cima com traço duplo"] # 0x21de
+ - "⇟": [T: "seta para baixo com traço duplo"] # 0x21df
+ - "⇠": [T: "seta tracejada para a esquerda"] # 0x21e0
+ - "⇡": [T: "seta tracejada para cima"]       # 0x21e1
+ - "⇢": [T: "seta tracejada para a direita"]  # 0x21e2
+ - "⇣": [T: "seta tracejada para baixo"]      # 0x21e3
+ - "⇤": [T: "seta para a esquerda até barra"] # 0x21e4
+ - "⇥": [T: "seta para a direita até barra"]  # 0x21e5
+ - "⇦": [T: "seta vazada para a esquerda"]    # 0x21e6
+ - "⇧": [T: "seta vazada para cima"]          # 0x21e7
+ - "⇨": [T: "seta vazada para a direita"]     # 0x21e8
+ - "⇩": [T: "seta vazada para baixo"]         # 0x21e9
+ - "⇪": [T: "seta vazada para cima a partir de barra"] # 0x21ea
+ - "⇫": [T: "seta vazada para cima sobre pedestal"] # 0x21eb
+ - "⇬": [T: "seta vazada para cima sobre pedestal com barra horizontal"] # 0x21ec
+ - "⇭": [T: "seta vazada para cima sobre pedestal com barra vertical"] # 0x21ed
+ - "⇮": [T: "seta vazada dupla para cima"]    # 0x21ee
+ - "⇯": [T: "seta vazada dupla para cima sobre pedestal"] # 0x21ef
+ - "⇰": [T: "seta vazada para a direita a partir de parede"] # 0x21f0
+ - "⇱": [T: "seta para noroeste até o canto"] # 0x21f1
+ - "⇲": [T: "seta para sudeste até o canto"]  # 0x21f2
+ - "⇳": [T: "seta vazada para cima e para baixo"] # 0x21f3
+ - "⇴": [T: "seta para a direita com círculo pequeno"] # 0x21f4
+ - "⇵": [T: "seta para baixo à esquerda de seta para cima"] # 0x21f5
+ - "⇶": [T: "três setas para a direita"]      # 0x21f6
+ - "⇷": [T: "seta para a esquerda com traço vertical"] # 0x21f7
+ - "⇸": [T: "seta para a direita com traço vertical"] # 0x21f8
+ - "⇹": [T: "seta para a esquerda e para a direita com traço vertical"] # 0x21f9
+ - "⇺": [T: "seta para a esquerda com traço vertical duplo"] # 0x21fa
+ - "⇻": [T: "seta para a direita com traço vertical duplo"] # 0x21fb
+ - "⇼": [T: "seta para a esquerda e para a direita com traço vertical duplo"] # 0x21fc
+ - "⇽": [T: "seta de ponta aberta para a esquerda"] # 0x21fd
+ - "⇾": [T: "seta de ponta aberta para a direita"] # 0x21fe
+ - "⇿": [T: "seta vazada para a esquerda e para a direita"] # 0x21ff
+ - "∀": [T: "para todo"]                      # 0x2200
+ - "∁":                                          # 0x2201
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "o"]
+     - T: "complemento de"
+ - "∃": [T: "existe"]                         # 0x2203
+ - "∄": [T: "não existe"]                     # 0x2204
+ - "∅": [T: "conjunto vazio"]                 # 0x2205
+ - "∇": [T: "nabla"]                          # 0x2207
+ - "∋": [T: "contém o elemento"]              # 0x220b
+ - "∌": [T: "não contém o elemento"]          # 0x220c
+ - "∍": [T: "contém o elemento"]              # 0x220d
+ - "∎": [T: "fim da demonstração"]            # 0x220e
+ - "∏": [T: "produtório"]                     # 0x220f
+ - "∑": [T: "somatório"]                      # 0x2211
+ - "−": [T: "menos"]                          # 0x2212
+ - "∓": [T: "menos ou mais"]                  # 0x2213
+ - "∔": [T: "mais com ponto"]                 # 0x2214
+ - "∕": [T: "dividido por"]                   # 0x2215
+ - "∖": [T: "diferença de conjuntos"]         # 0x2216
+ - "∗": [T: "vezes"]                          # 0x2217
+ - "∙":                                            # 0x2219
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [T: "ponto"]
+        else: [T: "vezes"]
+ - "∛":                                          # 0x221b
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "a"]
+     - T: "raiz cúbica de"
+ - "∜":                                          # 0x221c
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [OT: "a"]
+     - T: "raiz quarta de"
+ - "∞": [T: "infinito"]                       # 0x221e
+ - "∟": [T: "ângulo reto"]                    # 0x221f
+ - "∠": [T: "ângulo"]                         # 0x2220
+ - "∡": [T: "ângulo medido"]                  # 0x2221
+ - "∢": [T: "ângulo esférico"]                # 0x2222
+ - "∧": [T: "e"]                              # 0x2227
+ - "∨": [T: "ou"]                             # 0x2228
+ - "∩": [T: "interseção"]                     # 0x2229
+ - "∪": [T: "união"]                          # 0x222a
+ - "∫": [T: "integral"]                       # 0x222b
+ - "∬": [T: "integral dupla"]                 # 0x222c
+ - "∭": [T: "integral tripla"]                # 0x222d
+ - "∮": [T: "integral de contorno"]           # 0x222e
+ - "∯": [T: "integral de superfície"]         # 0x222f
+ - "∰": [T: "integral de volume"]             # 0x2230
+ - "∱": [T: "integral no sentido horário"]    # 0x2231
+ - "∲": [T: "integral de contorno no sentido horário"] # 0x2232
+ - "∳": [T: "integral de contorno no sentido anti-horário"] # 0x2233
+ - "∴": [T: "portanto"]                       # 0x2234
+ - "∵": [T: "porque"]                         # 0x2235
+ - "∸": [T: "menos com ponto"]                # 0x2238
+ - "∹": [T: "tem excesso em relação a"]       # 0x2239
+ - "∺":                                          # 0x223a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente proporcional a"
+ - "∻":                                          # 0x223b
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "homotético a"
+ - "≀": [T: "produto coroa"]                  # 0x2240
+ - "≁": [T: "não é semelhante a"]             # 0x2241
+ - "≂": [T: "menos til"]                      # 0x2242
+ - "≃":                                          # 0x2243
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "assintoticamente igual a"
+ - "≄":                                          # 0x2244
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é assintoticamente igual a"
+ - "≅":                                          # 0x2245
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "congruente a"
+ - "≆":                                          # 0x2246
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente mas não realmente igual a"
+ - "≇":                                          # 0x2247
+
+     - T: "não é congruente a"
+ - "≈":                                          # 0x2248
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual a"
+ - "≉":                                          # 0x2249
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é aproximadamente igual a"
+ - "≊":                                          # 0x224a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual ou igual a"
+ - "≋": [T: "til triplo"]                     # 0x224b
+ - "≌": [T: "são todos iguais a"]             # 0x224c
+ - "≍":                                          # 0x224d
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "equivalente a"
+ - "≎":                                          # 0x224e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente equivalente a"
+ - "≏":                                          # 0x224f
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "a diferença entre"
+ - "≐": [T: "aproxima-se do limite"]          # 0x2250
+ - "≑":                                          # 0x2251
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "geometricamente igual a"
+ - "≒":                                          # 0x2252
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "aproximadamente igual ou a imagem de"
+ - "≓":                                          # 0x2253
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "a imagem de ou aproximadamente igual a"
+ - "≔": [T: "dois pontos igual"]              # 0x2254
+ - "≕": [T: "igual dois pontos"]              # 0x2255
+ - "≖": [T: "igual com anel"]                 # 0x2256
+ - "≗":                                          # 0x2257
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual por definição a"
+ - "≘": [T: "corresponde a"]                  # 0x2258
+ - "≙": [T: "estima"]                         # 0x2259
+ - "≚":                                          # 0x225a
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "equiangular a"                 # era "igual e inclinado a" (descrição do glifo); en: 'is equiangular to'
+ - "≛": [T: "igual com estrela"]              # 0x225b
+ - "≜": [T: "igual delta"]                    # 0x225c
+ - "≝": [T: "é definido como"]                # 0x225d
+ - "≞":                                          # 0x225e
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "medido por"                    # era "igual por medida a" (descrição); en: 'is measured by'
+ - "≟": [T: "tem relação desconhecida com"]   # 0x225f
+ - "≢":                                          # 0x2262
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é idêntico a"
+ - "≣":                                          # 0x2263
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "estritamente equivalente a"
+ - "≨":                                          # 0x2268
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor que mas não igual a"
+ - "≩":                                          # 0x2269
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior que mas não igual a"
+ - "≬":                                          # 0x226c
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "entre"
+ - "≭":                                          # 0x226d
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é equivalente a"
+ - "≮":                                          # 0x226e
+     # audit-ignore: em português a negação já é frase completa; o "é" do
+     # inglês (is not less than) não tem par que valha suprimir no Terse
+     - T: "não é menor que"
+ - "≯":                                          # 0x226f
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior que"
+ - "≰":                                          # 0x2270
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é menor nem igual a"
+ - "≱":                                          # 0x2271
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior nem igual a"
+ - "≲":                                          # 0x2272
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor ou equivalente a"
+ - "≳":                                          # 0x2273
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior ou equivalente a"
+ - "≴":                                          # 0x2274
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é menor nem equivalente a"
+ - "≵":                                          # 0x2275
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é maior nem equivalente a"
+ - "≶":                                          # 0x2276
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor ou maior que"
+ - "≷":                                          # 0x2277
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior ou menor que"
+ - "≸":                                          # 0x2278
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "nem menor nem maior que"
+ - "≹":                                          # 0x2279
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "nem maior nem menor que"
+ - "≺": [T: "precede"]                        # 0x227a
+ - "≻": [T: "sucede"]                         # 0x227b
+ - "≼": [T: "precede ou é igual a"]           # 0x227c
+ - "≽": [T: "sucede ou é igual a"]            # 0x227d
+ - "≾": [T: "precede ou é equivalente a"]     # 0x227e
+ - "≿": [T: "sucede ou é equivalente a"]      # 0x227f
+ - "⊀": [T: "não precede"]                    # 0x2280
+ - "⊁": [T: "não sucede"]                     # 0x2281
+ - "⊈":                                          # 0x2288
+     # audit-ignore: negação já é frase completa; com o ramo "é" saía
+     # "é não está contido em nem é igual a". Igual a ≢, ≇ e ∦.
+     - T: "não está contido em nem é igual a"
+ - "⊉":                                          # 0x2289
+     # audit-ignore: idem ⊈ — saía "é não contém nem é igual a".
+     - T: "não contém nem é igual a"
+ - "⊊": [T: "está contido em mas não é igual a"] # 0x228a
+ - "⊋": [T: "contém mas não é igual a"]       # 0x228b
+ - "⊌": [T: "multiconjunto"]                  # 0x228c
+ - "⊍": [T: "multiplicação de multiconjunto"] # 0x228d
+ - "⊎": [T: "união de multiconjunto"]         # 0x228e
+ - "⊏": [T: "imagem quadrada de"]             # 0x228f
+ - "⊐": [T: "original quadrado de"]           # 0x2290
+ - "⊑": [T: "imagem quadrada de ou igual a"]  # 0x2291
+ - "⊒": [T: "original quadrado de ou igual a"] # 0x2292
+ - "⊓": [T: "interseção quadrada"]            # 0x2293
+ - "⊔": [T: "união quadrada"]                 # 0x2294
+ - "⊕": [T: "mais circulado"]                 # 0x2295
+ - "⊖": [T: "menos circulado"]                # 0x2296
+ - "⊗": [T: "vezes circulado"]                # 0x2297
+ - "⊘": [T: "barra circulada"]                # 0x2298
+ - "⊙": [T: "ponto circulado"]                # 0x2299
+ - "⊚": [T: "anel circulado"]                 # 0x229a
+ - "⊛": [T: "asterisco circulado"]            # 0x229b
+ - "⊜": [T: "igual circulado"]                # 0x229c
+ - "⊝": [T: "traço circulado"]                # 0x229d
+ - "⊞": [T: "mais enquadrado"]                # 0x229e
+ - "⊟": [T: "menos enquadrado"]               # 0x229f
+ - "⊠": [T: "vezes enquadrado"]               # 0x22a0
+ - "⊡": [T: "ponto enquadrado"]               # 0x22a1
+ - "⊢": [T: "demonstra"]                      # 0x22a2
+ - "⊣": [T: "não produz"]                     # 0x22a3
+ - "⊤": [T: "topo"]                           # 0x22a4
+ - "⊦": [T: "reduz a"]                        # 0x22a6
+ - "⊧": [T: "modela"]                         # 0x22a7
+ - "⊨":                                          # 0x22a8
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "verdadeiro"
+ - "⊩": [T: "força"]                          # 0x22a9
+ - "⊪": [T: "barra vertical tripla com catraca à direita"] # 0x22aa
+ - "⊫": [T: "barra vertical dupla com catraca dupla à direita"] # 0x22ab
+ - "⊬": [T: "não demonstra"]                  # 0x22ac
+ - "⊭":                                          # 0x22ad
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é verdadeiro"
+ - "⊮": [T: "não força"]                      # 0x22ae
+ - "⊯": [T: "barra vertical dupla com catraca dupla à direita negada"] # 0x22af
+ - "⊰": [T: "precede sob relação"]            # 0x22b0
+ - "⊱": [T: "sucede sob relação"]             # 0x22b1
+ - "⊲":                                          # 0x22b2
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "subgrupo normal de"
+ - "⊳": [T: "contém como subgrupo normal"]    # 0x22b3
+ - "⊴":                                          # 0x22b4
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "subgrupo normal de ou igual a"
+ - "⊵": [T: "contém como subgrupo normal ou é igual a"] # 0x22b5
+ - "⊶":                                          # 0x22b6
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "imagem original"
+ - "⊷":                                          # 0x22b7
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "imagem"
+ - "⊸": [T: "multimapa"]                      # 0x22b8
+ - "⊹": [T: "matriz conjugada hermitiana"]    # 0x22b9
+ - "⊺": [T: "intercala"]                      # 0x22ba
+ - "⊻": [T: "ou exclusivo"]                   # 0x22bb
+ - "⊼": [T: "não-e"]                          # 0x22bc
+ - "⊽": [T: "não-ou"]                         # 0x22bd
+ - "⊾": [T: "ângulo reto com arco"]           # 0x22be
+ - "⊿": [T: "triângulo retângulo"]            # 0x22bf
+ - "⋀": [T: "e lógico"]                       # 0x22c0
+ - "⋁": [T: "ou lógico"]                      # 0x22c1
+ - "⋂": [T: "interseção"]                     # 0x22c2
+ - "⋃": [T: "união"]                          # 0x22c3
+ - "⋄": [T: "operador losango"]               # 0x22c4
+ - "⋅":                                             # 0x22c5
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [T: "ponto"]
+        else: [T: "vezes"]
+ - "⋆": [T: "vezes"]                          # 0x22c6
+ - "⋇": [T: "divisão vezes"]                  # 0x22c7
+ - "⋈": [T: "junção"]                         # 0x22c8
+ - "⋉":                                          # 0x22c9
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "produto semidireto à esquerda"
+ - "⋊":                                          # 0x22ca
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "produto semidireto à direita"
+ - "⋋":                                          # 0x22cb
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "junção semidireta à esquerda"
+ - "⋌":                                          # 0x22cc
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "junção semidireta à direita"
+ - "⋍": [T: "til invertido igual"]            # 0x22cd
+ - "⋎": [T: "ou lógico ondulado"]             # 0x22ce
+ - "⋏": [T: "e lógico ondulado"]              # 0x22cf
+ - "⋐":                                          # 0x22d0
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "contido de forma fechada em"
+ - "⋑":                                          # 0x22d1
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "contém de forma fechada"
+ - "⋒":                                          # 0x22d2
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "interseção dupla"
+ - "⋓":                                          # 0x22d3
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "união dupla"
+ - "⋔":                                          # 0x22d4
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "transversal a"
+ - "⋕":                                          # 0x22d5
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual e paralelo a"            # era "paralelo forquilhado a" (descreve a forquilha); en: 'is equal to and parallel to'
+ - "⋖": [T: "menor que com ponto"]            # 0x22d6
+ - "⋗": [T: "maior que com ponto"]            # 0x22d7
+ - "⋘":                                          # 0x22d8
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "muito menor que"
+ - "⋙":                                          # 0x22d9
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "muito maior que"
+ - "⋚":                                          # 0x22da
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor que, igual ou maior que"
+ - "⋛":                                          # 0x22db
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior que, igual ou menor que"
+ - "⋜":                                          # 0x22dc
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou menor que"
+ - "⋝":                                          # 0x22dd
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou maior que"
+ - "⋞":                                          # 0x22de
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou precede"
+ - "⋟":                                          # 0x22df
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "igual ou sucede"
+ - "⋠": [T: "não precede nem é igual a"]      # 0x22e0
+ - "⋡": [T: "não sucede nem é igual a"]       # 0x22e1
+ - "⋢": [T: "não é imagem quadrada de nem igual a"] # 0x22e2
+ - "⋣": [T: "não é original quadrado de nem igual a"] # 0x22e3
+ - "⋤": [T: "imagem quadrada de ou não igual a"] # 0x22e4
+ - "⋥": [T: "original quadrado de ou não igual a"] # 0x22e5
+ - "⋦":                                          # 0x22e6
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "menor mas não equivalente a"
+ - "⋧":                                          # 0x22e7
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "maior mas não equivalente a"
+ - "⋨": [T: "precede mas não é equivalente a"] # 0x22e8
+ - "⋩": [T: "sucede mas não é equivalente a"] # 0x22e9
+ - "⋪":                                          # 0x22ea
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é subgrupo normal de"
+ - "⋫": [T: "não contém como subgrupo normal"] # 0x22eb
+ - "⋬":                                          # 0x22ec
+     # audit-ignore: em português a negação já é frase completa; o "is" do inglês não tem par que valha suprimir no Terse
+     - T: "não é subgrupo normal de nem igual a"
+ - "⋭": [T: "não contém como subgrupo normal nem é igual a"] # 0x22ed
+ - "⋮": [T: "reticências verticais"]          # 0x22ee
+ - "⋯": [T: "reticências"]                    # 0x22ef
+ - "⋰": [T: "reticências diagonais para cima"] # 0x22f0
+ - "⋱": [T: "reticências diagonais"]          # 0x22f1
+ - "⋲": [T: "pertence a com traço horizontal longo"] # 0x22f2
+ - "⋳": [T: "pertence a com barra vertical no fim do traço"] # 0x22f3
+ - "⋴": [T: "pertence a com barra vertical no fim do traço"] # 0x22f4
+ - "⋵": [T: "pertence a com ponto acima"]     # 0x22f5
+ - "⋶": [T: "pertence a com barra acima"]     # 0x22f6
+ - "⋷": [T: "pertence a com barra acima"]     # 0x22f7
+ - "⋸": [T: "pertence a com barra abaixo"]    # 0x22f8
+ - "⋹": [T: "pertence a com dois traços horizontais"] # 0x22f9
+ - "⋺": [T: "contém com traço horizontal longo"] # 0x22fa
+ - "⋻": [T: "contém com barra vertical no fim do traço"] # 0x22fb
+ - "⋼": [T: "contém com barra vertical no fim do traço"] # 0x22fc
+ - "⋽": [T: "contém com barra acima"]         # 0x22fd
+ - "⋾": [T: "contém com barra acima"]         # 0x22fe
+ - "⋿": [T: "pertinência de multiconjunto da notação z"] # 0x22ff
+ - "■": [T: "quadrado preto"]                 # 0x25a0
+ - "□": [T: "quadrado branco"]                # 0x25a1
+ - "▢": [T: "quadrado branco de cantos arredondados"] # 0x25a2
+ - "▣": [T: "quadrado branco contendo quadrado preto pequeno"] # 0x25a3
+ - "▤": [T: "quadrado com preenchimento horizontal"] # 0x25a4
+ - "▥": [T: "quadrado com preenchimento vertical"] # 0x25a5
+ - "▦": [T: "quadrado com hachura ortogonal"] # 0x25a6
+ - "▧": [T: "quadrado com preenchimento diagonal descendente"] # 0x25a7
+ - "▨": [T: "quadrado com preenchimento diagonal ascendente"] # 0x25a8
+ - "▩": [T: "quadrado com hachura diagonal"]  # 0x25a9
+ - "▪": [T: "quadrado preto pequeno"]         # 0x25aa
+ - "▫": [T: "quadrado branco pequeno"]        # 0x25ab
+ - "▬": [T: "retângulo preto"]                # 0x25ac
+ - "▭": [T: "retângulo branco"]               # 0x25ad
+ - "▮": [T: "retângulo preto vertical"]       # 0x25ae
+ - "▯": [T: "retângulo branco vertical"]      # 0x25af
+ - "▰": [T: "paralelogramo preto"]            # 0x25b0
+ - "▱": [T: "paralelogramo branco"]           # 0x25b1
+ - "▲": [T: "triângulo preto apontando para cima"] # 0x25b2
+ - "△": [T: "triângulo"]                      # 0x25b3
+ - "▴": [T: "triângulo preto pequeno apontando para cima"] # 0x25b4
+ - "▵": [T: "triângulo branco pequeno apontando para cima"] # 0x25b5
+ - "▶": [T: "triângulo preto apontando para a direita"] # 0x25b6
+ - "▷": [T: "triângulo branco apontando para a direita"] # 0x25b7
+ - "▸": [T: "triângulo preto pequeno apontando para a direita"] # 0x25b8
+ - "▹": [T: "triângulo branco pequeno apontando para a direita"] # 0x25b9
+ - "►": [T: "ponteiro preto para a direita"]  # 0x25ba
+ - "▻": [T: "ponteiro branco para a direita"] # 0x25bb
+ - "▼": [T: "triângulo preto apontando para baixo"] # 0x25bc
+ - "▽": [T: "triângulo branco apontando para baixo"] # 0x25bd
+ - "▾": [T: "triângulo preto pequeno apontando para baixo"] # 0x25be
+ - "▿": [T: "triângulo branco pequeno apontando para baixo"] # 0x25bf
+ - "◀": [T: "triângulo preto apontando para a esquerda"] # 0x25c0
+ - "◁": [T: "triângulo branco apontando para a esquerda"] # 0x25c1
+ - "◂": [T: "triângulo preto pequeno apontando para a esquerda"] # 0x25c2
+ - "◃": [T: "triângulo branco pequeno apontando para a esquerda"] # 0x25c3
+ - "◄": [T: "ponteiro preto para a esquerda"] # 0x25c4
+ - "◅": [T: "ponteiro branco para a esquerda"] # 0x25c5
+ - "◆": [T: "losango preto"]                  # 0x25c6
+ - "◇": [T: "losango branco"]                 # 0x25c7
+ - "◈": [T: "losango branco contendo losango preto pequeno"] # 0x25c8
+ - "◉": [T: "olho de peixe"]                  # 0x25c9
+ - "◊": [T: "losango"]                        # 0x25ca
+ - "○": [T: "círculo branco"]                 # 0x25cb
+ - "◌": [T: "círculo pontilhado"]             # 0x25cc
+ - "◍": [T: "círculo com preenchimento vertical"] # 0x25cd
+ - "◎": [T: "alvo"]                           # 0x25ce
+ - "●": [T: "círculo preto"]                  # 0x25cf
+ - "◐": [T: "círculo com metade esquerda preta"] # 0x25d0
+ - "◑": [T: "círculo com metade direita preta"] # 0x25d1
+ - "◒": [T: "círculo com metade inferior preta"] # 0x25d2
+ - "◓": [T: "círculo com metade superior preta"] # 0x25d3
+ - "◔": [T: "círculo com quadrante superior direito preto"] # 0x25d4
+ - "◕": [T: "círculo preto exceto o quadrante superior esquerdo"] # 0x25d5
+ - "◖": [T: "meio círculo preto esquerdo"]    # 0x25d6
+ - "◗": [T: "meio círculo preto direito"]     # 0x25d7
+ - "◘": [T: "marcador inverso"]               # 0x25d8
+ - "◙": [T: "círculo branco inverso"]         # 0x25d9
+ - "◚": [T: "metade superior de círculo branco inverso"] # 0x25da
+ - "◛": [T: "metade inferior de círculo branco inverso"] # 0x25db
+ - "◜": [T: "arco circular do quadrante superior esquerdo"] # 0x25dc
+ - "◝": [T: "arco circular do quadrante superior direito"] # 0x25dd
+ - "◞": [T: "arco circular do quadrante inferior direito"] # 0x25de
+ - "◟": [T: "arco circular do quadrante inferior esquerdo"] # 0x25df
+ - "◠": [T: "semicírculo superior"]           # 0x25e0
+ - "◡": [T: "semicírculo inferior"]           # 0x25e1
+ - "◢": [T: "triângulo preto inferior direito"] # 0x25e2
+ - "◣": [T: "triângulo preto inferior esquerdo"] # 0x25e3
+ - "◤": [T: "triângulo preto superior esquerdo"] # 0x25e4
+ - "◥": [T: "triângulo preto superior direito"] # 0x25e5
+ - "◦": [T: "composição"]                     # 0x25e6
+ - "◧": [T: "quadrado com metade esquerda preta"] # 0x25e7
+ - "◨": [T: "quadrado com metade direita preta"] # 0x25e8
+ - "◩": [T: "quadrado com metade superior esquerda preta"] # 0x25e9
+ - "◪": [T: "quadrado com metade inferior direita preta"] # 0x25ea
+ - "◫": [T: "quadrado branco com linha divisória"] # 0x25eb
+ - "◬": [T: "triângulo branco apontando para cima com ponto"] # 0x25ec
+ - "◭": [T: "triângulo apontando para cima com metade esquerda preta"] # 0x25ed
+ - "◮": [T: "triângulo apontando para cima com metade direita preta"] # 0x25ee
+ - "◯": [T: "círculo grande"]                 # 0x25ef
+ - "◰": [T: "quadrado branco com quadrante superior esquerdo"] # 0x25f0
+ - "◱": [T: "quadrado branco com quadrante inferior esquerdo"] # 0x25f1
+ - "◲": [T: "quadrado branco com quadrante inferior direito"] # 0x25f2
+ - "◳": [T: "quadrado branco com quadrante superior direito"] # 0x25f3
+ - "◴": [T: "círculo branco com quadrante superior esquerdo"] # 0x25f4
+ - "◵": [T: "círculo branco com quadrante inferior esquerdo"] # 0x25f5
+ - "◶": [T: "círculo branco com quadrante inferior direito"] # 0x25f6
+ - "◷": [T: "círculo branco com quadrante superior direito"] # 0x25f7
+ - "◸": [T: "triângulo superior esquerdo"]    # 0x25f8
+ - "◹": [T: "triângulo superior direito"]     # 0x25f9
+ - "◺": [T: "triângulo inferior esquerdo"]    # 0x25fa
+ - "◻": [T: "quadrado branco médio"]          # 0x25fb
+ - "◼": [T: "quadrado preto médio"]           # 0x25fc
+ - "◽": [T: "quadrado branco pequeno médio"]  # 0x25fd
+ - "◾": [T: "quadrado preto pequeno médio"]   # 0x25fe
+ - "◿": [T: "triângulo inferior direito"]     # 0x25ff
+
+
+# Ordem das palavras: ao contrário do inglês, que antepõe o estilo
+# ("fraktur cap a"), o português pospõe o adjetivo ("maiúscula a vazado").
+# Por isso o `spell:` vem ANTES da palavra de estilo nos blocos de alfabeto.
+# Isso segue a expectativa já registrada em tests/Languages/pt/alphabets.rs
+# ("maiúscula delta vazado").
+
+
+# ---- Frações vulgares (0x00bc-0x00be, 0x2150-0x215f) ----
+ - "¼": [T: "um quarto"]                        # 0x00bc
+ - "½": [T: "um meio"]                          # 0x00bd
+ - "¾": [T: "três quartos"]                     # 0x00be
+ - "⅐": [T: "um sétimo"]                        # 0x2150
+ - "⅑": [T: "um nono"]                          # 0x2151
+ - "⅒": [T: "um décimo"]                        # 0x2152
+ - "⅓": [T: "um terço"]                         # 0x2153
+ - "⅔": [T: "dois terços"]                      # 0x2154
+ - "⅕": [T: "um quinto"]                        # 0x2155
+ - "⅖": [T: "dois quintos"]                     # 0x2156
+ - "⅗": [T: "três quintos"]                     # 0x2157
+ - "⅘": [T: "quatro quintos"]                   # 0x2158
+ - "⅙": [T: "um sexto"]                         # 0x2159
+ - "⅚": [T: "cinco sextos"]                     # 0x215a
+ - "⅛": [T: "um oitavo"]                        # 0x215b
+ - "⅜": [T: "três oitavos"]                     # 0x215c
+ - "⅝": [T: "cinco oitavos"]                    # 0x215d
+ - "⅞": [T: "sete oitavos"]                     # 0x215e
+ - "⅟": [T: "um sobre"]                         # 0x215f
+
+# ---- Sobrescritos e subscritos (0x2070-0x209f) ----
+ - "⁰": [T: "elevado a zero"]                   # 0x2070
+ - "ⁱ": [T: "elevado a i"]                      # 0x2071
+ - "⁴": [T: "elevado à quarta potência"]        # 0x2074
+ - "⁵": [T: "elevado à quinta potência"]        # 0x2075
+ - "⁶": [T: "elevado à sexta potência"]         # 0x2076
+ - "⁷": [T: "elevado à sétima potência"]        # 0x2077
+ - "⁸": [T: "elevado à oitava potência"]        # 0x2078
+ - "⁹": [T: "elevado à nona potência"]          # 0x2079
+ - "⁺": [T: "sinal de mais sobrescrito"]        # 0x207a
+ - "⁻": [T: "menos sobrescrito"]                # 0x207b
+ - "⁼": [T: "sinal de igual sobrescrito"]       # 0x207c
+ - "⁽": [T: "abre parênteses sobrescrito"]      # 0x207d
+ - "⁾": [T: "fecha parênteses sobrescrito"]     # 0x207e
+ - "ⁿ": [T: "elevado à enésima potência"]       # 0x207f
+ - "₀": [T: "subscrito zero"]                   # 0x2080
+ - "₁": [T: "subscrito um"]                     # 0x2081
+ - "₂": [T: "subscrito dois"]                   # 0x2082
+ - "₃": [T: "subscrito três"]                   # 0x2083
+ - "₄": [T: "subscrito quatro"]                 # 0x2084
+ - "₅": [T: "subscrito cinco"]                  # 0x2085
+ - "₆": [T: "subscrito seis"]                   # 0x2086
+ - "₇": [T: "subscrito sete"]                   # 0x2087
+ - "₈": [T: "subscrito oito"]                   # 0x2088
+ - "₉": [T: "subscrito nove"]                   # 0x2089
+ - "₊": [T: "sinal de mais subscrito"]          # 0x208a
+ - "₋": [T: "sinal de menos subscrito"]         # 0x208b
+ - "₌": [T: "sinal de igual subscrito"]         # 0x208c
+ - "₍": [T: "abre parênteses subscrito"]        # 0x208d
+ - "₎": [T: "fecha parênteses subscrito"]       # 0x208e
+ - "ₐ": [T: "subscrito A"]                      # 0x2090
+ - "ₑ": [T: "subscrito E"]                      # 0x2091
+ - "ₒ": [T: "subscrito O"]                      # 0x2092
+ - "ₓ": [T: "subscrito X"]                      # 0x2093
+ - "ₕ": [T: "subscrito H"]                      # 0x2095
+ - "ₖ": [T: "subscrito K"]                      # 0x2096
+ - "ₗ": [T: "subscrito L"]                      # 0x2097
+ - "ₘ": [T: "subscrito M"]                      # 0x2098
+ - "ₙ": [T: "subscrito N"]                      # 0x2099
+ - "ₚ": [T: "subscrito P"]                      # 0x209a
+ - "ₛ": [T: "subscrito S"]                      # 0x209b
+ - "ₜ": [T: "subscrito T"]                      # 0x209c
+
+# ---- Numerais romanos (0x2160-0x217f) ----
+
+ - "Ⅰ": [T: "um"]                               # 0x2160 (valor 1)
+ - "Ⅱ": [T: "dois"]                             # 0x2161 (valor 2)
+ - "Ⅲ": [T: "três"]                             # 0x2162 (valor 3)
+ - "Ⅳ": [T: "quatro"]                           # 0x2163 (valor 4)
+ - "Ⅴ": [T: "cinco"]                            # 0x2164 (valor 5)
+ - "Ⅵ": [T: "seis"]                             # 0x2165 (valor 6)
+ - "Ⅶ": [T: "sete"]                             # 0x2166 (valor 7)
+ - "Ⅷ": [T: "oito"]                             # 0x2167 (valor 8)
+ - "Ⅸ": [T: "nove"]                             # 0x2168 (valor 9)
+ - "Ⅹ": [T: "dez"]                              # 0x2169 (valor 10)
+ - "Ⅺ": [T: "onze"]                             # 0x216a (valor 11)
+ - "Ⅻ": [T: "doze"]                             # 0x216b (valor 12)
+ - "Ⅼ": [T: "cinquenta"]                        # 0x216c (valor 50)
+ - "Ⅽ": [T: "cem"]                              # 0x216d (valor 100)
+ - "Ⅾ": [T: "quinhentos"]                       # 0x216e (valor 500)
+ - "Ⅿ": [T: "mil"]                              # 0x216f (valor 1000)
+ - "ⅰ": [T: "um"]                               # 0x2170 (valor 1)
+ - "ⅱ": [T: "dois"]                             # 0x2171 (valor 2)
+ - "ⅲ": [T: "três"]                             # 0x2172 (valor 3)
+ - "ⅳ": [T: "quatro"]                           # 0x2173 (valor 4)
+ - "ⅴ": [T: "cinco"]                            # 0x2174 (valor 5)
+ - "ⅵ": [T: "seis"]                             # 0x2175 (valor 6)
+ - "ⅶ": [T: "sete"]                             # 0x2176 (valor 7)
+ - "ⅷ": [T: "oito"]                             # 0x2177 (valor 8)
+ - "ⅸ": [T: "nove"]                             # 0x2178 (valor 9)
+ - "ⅹ": [T: "dez"]                              # 0x2179 (valor 10)
+ - "ⅺ": [T: "onze"]                             # 0x217a (valor 11)
+ - "ⅻ": [T: "doze"]                             # 0x217b (valor 12)
+ - "ⅼ": [T: "cinquenta"]                        # 0x217c (valor 50)
+ - "ⅽ": [T: "cem"]                              # 0x217d (valor 100)
+ - "ⅾ": [T: "quinhentos"]                       # 0x217e (valor 500)
+ - "ⅿ": [T: "mil"]                              # 0x217f (valor 1000)
+
+# ---- Alfabetos matemáticos: fraktur, vazado (double-struck) e caligráfico ----
+# Símbolos avulsos do bloco "letterlike" (0x2100-0x214f).
+
+ - "ℊ": [T: "g caligráfico"]                    # 0x210a
+ - "ℯ": [T: "e caligráfico"]                    # 0x212f
+ - "ℴ": [T: "o caligráfico"]                    # 0x2134
+ - "ℼ": [T: "pi vazado"]                        # 0x213c
+ - "ℽ": [T: "gama vazado"]                      # 0x213d
+ - "⅀": [T: "somatório n-ário vazado"]          # 0x2140
+
+ - "ℌℑℨℭ":   # 0x210c, 0x2111, 0x2128, 0x212d
+    - spell: "translate('.', 'ℌℑℨℭ', 'HIZC')"
+    - t: "fraktur"
+
+ - "ℍℙℾℿ":   # 0x210d, 0x2119, 0x213e, 0x213f
+    - spell: "translate('.', 'ℍℙℾℿ', 'HPΓΠ')"
+    - T: "vazado"
+
+ - "ℐℒ℘ℬℰℱℳ":   # 0x2110, 0x2112, 0x2118, 0x2130, 0x2131, 0x2133
+    - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
+    - t: "caligráfico"
+
+# Blocos alfabéticos do plano 1 e as cópias na área de uso privado do
+# MathType. Chaves e argumentos de translate() copiados byte a byte do en.
+
+ - "𝔄-𝔜":   # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - spell: "translate('.', '𝔄𝔅𝔆𝔇𝔈𝔉𝔊𝔋𝔌𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔𝔕𝔖𝔗𝔘𝔙𝔚𝔛𝔜', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - t: "fraktur"
+
+ - "-":   # 0xf000 - 0xf018
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXY')"
+    - t: "fraktur"
+
+ - "𝔞-𝔷":   # 0x1d51e - 0x1d537
+    - spell: "translate('.', '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+
+ - "-":   # 0xf01a - 0xf033
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+
+ - "𝕬-𝖅":   # 0x1D56C - 0x1D585
+    - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf040 - 0xf059
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝖆-𝖟":   # 0x1d586 - 0x1d59f
+    - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf05a - 0xf073
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝔸-𝕐":   # 0x1d504 - 0x1d51d ('z' version is reserved)
+    - spell: "translate('.', '𝔸𝔹𝔺𝔻𝔼𝔽𝔾𝔿𝕀𝕁𝕂𝕃𝕄𝕅𝕆𝕇𝕈𝕉𝕊𝕋𝕌𝕍𝕎𝕏𝕐', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "vazado"
+
+ - "-":   # 0xf080 - 0xf098
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "vazado"
+
+ - "𝕒-𝕫":   # 0x1d552 - 0x1d56b
+    - spell: "translate('.', '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "vazado"
+
+ - "-":   # 0xf09a - 0xf0b3
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "vazado"
+
+ - "𝟘-𝟡":   # 0x1d7d8 - 0x1d7e1
+    - spell: "translate('.', '𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡', '0123456789')"
+    - T: "vazado"
+
+ - "-":   # 0xf0c0 - 0xf0c9
+    - spell: "translate('.', '', '0123456789')"
+    - T: "vazado"
+
+ - "𝒜-𝒵":   # 0x1d49c - 0x1d4b5
+    - spell: "translate('.', '𝒜𝒝𝒞𝒟𝒠𝒡𝒢𝒣𝒤𝒥𝒦𝒧𝒨𝒩𝒪𝒫𝒬𝒭𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "caligráfico"
+
+ - "-":   # 0xf100 - 0xf119
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "caligráfico"
+
+ - "𝒶-𝓏":   # 0x1d4b6 - 0x1d4cf
+    - spell: "translate('.', '𝒶𝒷𝒸𝒹𝒺𝒻𝒼𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝓄𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "caligráfico"
+
+ - "-":   # 0xf11a - 0xf133
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "caligráfico"
+
+ - "𝓐-𝓩":   # 0x1d4d0 - 0x1d4e9
+    - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf140 - 0xf159
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - t: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "𝓪-𝔃":   # 0x1d4ea - 0x1d503
+    - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "-":   # 0xf15a - 0xf173
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+    - t: "caligráfico"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+ - "": [T: "nabla vazado"]                     # 0xf0ca
+ - "": [T: "constante de Euler vazada"]        # 0xf0cb
+
+# ---- Rodada 9: caracteres que o corpus real (latex2mathml do ACESSÍLIA) mostrou
+# saindo CRUS para o sintetizador. Prioridade pelo dano ao estudante, não pelo
+# tamanho da lacuna. Ver ACHADOS 9 e TERMINOLOGIA_PT_BR.md.
+#
+# Letras negrito: \mathbf{x} (vetores em Álgebra Linear) e \boldsymbol{\alpha}.
+# Ordem posposta (8.1): "x negrito". Grego negrito passa de novo pela tabela
+# e sai com o nome da letra ("alfa negrito").
+ - "𝐀-𝐙":   # 0x1d400 - 0x1d419  \mathbf maiúsculas
+    - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝐚-𝐳":   # 0x1d41a - 0x1d433  \mathbf minúsculas
+    - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝑨-𝒁":   # 0x1d468 - 0x1d481  negrito itálico maiúsculas (o en também fala só "bold")
+    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝒂-𝒛":   # 0x1d482 - 0x1d49b  negrito itálico minúsculas
+    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝚨-𝛀":   # 0x1d6a8 - 0x1d6c0  grego negrito maiúsculas
+    - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝛂-𝛚":   # 0x1d6c2 - 0x1d6da  grego negrito minúsculas
+    - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝜜-𝜴":   # 0x1d71c - 0x1d734  grego negrito itálico maiúsculas (\boldsymbol)
+    - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+ - "𝜶-𝝎":   # 0x1d736 - 0x1d74e  grego negrito itálico minúsculas (\boldsymbol)
+    - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+
+# Produto interno ⟨u, v⟩ e as setas longas (reações químicas, implicação).
+ - "⟨": [T: "abre colchete angular"]         # 0x27e8 (en: 'left angle bracket')
+ - "⟩": [T: "fecha colchete angular"]        # 0x27e9
+ - "⟪": [T: "abre colchete angular duplo"]   # 0x27ea
+ - "⟫": [T: "fecha colchete angular duplo"]  # 0x27eb
+ - "⟵": [T: "seta longa para a esquerda"]    # 0x27f5
+ - "⟶": [T: "seta longa para a direita"]     # 0x27f6 (em química a regra de reação fala "reage formando" antes de chegar aqui)
+ - "⟷": [T: "seta longa para a esquerda e para a direita"] # 0x27f7
+ - "⟸": [T: "seta dupla longa para a esquerda"] # 0x27f8
+ - "⟹": [T: "implica"]                       # 0x27f9 (en: 'implies')
+ - "⟺": [T: "se e somente se"]               # 0x27fa (en: 'if and only if')
+
+# Barra sobre variável: \bar{x}, \overline{x}. O motor canonicaliza U+0304 e
+# U+203E para U+00AF, então a entrada "̄" (com mácron) do unicode.yaml nunca
+# era alcançada em <mover>. "x barra" é a leitura corrente (média amostral).
+ - "¯":                                       # 0xaf
+     - test:
+        if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
+        then: [T: "barra"]                    #  (en: 'bar')
+        else: [T: "linha superior"]           #  (en: 'line')
+
+# Sinais "letterlike" que aparecem soltos (fora de unidade, onde definitions.yaml
+# já resolve): a leitura é a da letra, não a do prefixo.
+ - "µ": [T: "mi"]                             # 0xb5 MICRO SIGN — como letra; "micro" só dentro de unidade
+ - "Ω": [T: "ômega"]                          # 0x2126 OHM SIGN — espaço amostral, etc.
+ - "℧": [T: "mho"]                            # 0x2127
+ - "Å": [T: "angstrom"]                       # 0xc5
+ - "Å": [T: "angstrom"]                       # 0x212b
+
+
+ - "¤": [T: "símbolo de moeda"]
+ - "¥": [T: "iene"]
+ - "¦": [T: "barra quebrada"]
+ - "§": [T: "seção"]
+ - "©": [T: "direitos autorais"]
+ - "ª": [T: "feminino ordinal indicador"]
+ - "«": [T: "apontando para a esquerda duplo aspas angulares"]
+ - "²": [T: "dois"]
+ - "³": [T: "três"]
+ - "¹": [T: "um"]
+ - "º": [T: "masculino ordinal indicador"]
+ - "¡": [T: "ponto invertido de exclamação"]
+ - "¶": [T: "parágrafo marca"]
+ - "¿": [T: "ponto invertido de interrogação"]
+ - "ʰ": [T: "modificador pequeno agá"]
+ - "ʱ": [T: "modificador pequeno agá com gancho"]
+ - "ʲ": [T: "modificador pequeno jota"]
+ - "ʳ": [T: "modificador pequeno erre"]
+ - "ʴ": [T: "modificador pequeno invertido erre"]
+ - "ʵ": [T: "modificador pequeno invertido erre com gancho"]
+ - "ʶ":
+    - spell: "translate('R', 'R', 'R')"
+    - T: "modificador pequeno invertido"
+ - "ʷ": [T: "modificador pequeno w"]
+ - "ʸ": [T: "modificador pequeno y"]
+ - "ʹ": [T: "modificador linha"]
+ - "ʺ": [T: "modificador duplo linha"]
+ - "ʻ": [T: "modificador invertido vírgula"]
+ - "ʼ": [T: "modificador apóstrofo"]
+ - "ʽ": [T: "modificador invertido vírgula"]
+ - "ʾ": [T: "modificador direita metade anel"]
+ - "ʿ": [T: "modificador esquerda metade anel"]
+ - "ˀ": [T: "modificador oclusiva glotal"]
+ - "ˁ": [T: "modificador invertido oclusiva glotal"]
+ - "˂": [T: "modificador esquerda ponta de seta"]
+ - "˃": [T: "modificador direita ponta de seta"]
+ - "˄": [T: "modificador cima ponta de seta"]
+ - "˅": [T: "modificador baixo ponta de seta"]
+ - "ˆ": [T: "modificador circunflexo acento"]
+ - "ˇ": [T: "cáron"]
+ - "ˈ": [T: "modificador barra vertical"]
+ - "ˉ": [T: "modificador mácron"]
+ - "ˊ": [T: "modificador agudo acento"]
+ - "ˋ": [T: "modificador grave acento"]
+ - "ˌ": [T: "modificador baixo barra vertical"]
+ - "ˍ": [T: "modificador baixo mácron"]
+ - "ˎ": [T: "modificador baixo grave acento"]
+ - "ˏ": [T: "modificador baixo agudo acento"]
+ - "ː": [T: "modificador triangular dois pontos"]
+ - "ˑ": [T: "modificador metade triangular dois pontos"]
+ - "˒": [T: "modificador centralizado direita metade anel"]
+ - "˓": [T: "modificador centralizado esquerda metade anel"]
+ - "˔": [T: "modificador cima taco"]
+ - "˕": [T: "modificador baixo taco"]
+ - "˖": [T: "modificador sinal de mais"]
+ - "˗": [T: "modificador sinal de menos"]
+ - "˞": [T: "modificador rótico gancho"]
+ - "˟": [T: "cruzes modificador acento"]
+ - "ˠ": [T: "modificador pequeno gama"]
+ - "ˡ": [T: "modificador pequeno l"]
+ - "ˢ": [T: "modificador pequeno esse"]
+ - "ˣ": [T: "modificador pequeno xis"]
+ - "ˤ": [T: "modificador pequeno invertido oclusiva glotal"]
+ - "˥": [T: "modificador extra-alto tom barra"]
+ - "˦": [T: "modificador alto tom barra"]
+ - "˧": [T: "modificador médio tom barra"]
+ - "˨": [T: "modificador baixo tom barra"]
+ - "˩": [T: "modificador extra-baixo tom barra"]
+ - "˪": [T: "modificador yin partindo tom marca"]
+ - "˫": [T: "modificador yang partindo tom marca"]
+ - "ˬ": [T: "modificador sonorização"]
+ - "˭": [T: "modificador não aspirado"]
+ - "ˮ": [T: "modificador duplo apóstrofo"]
+ - "˯": [T: "modificador baixo baixo ponta de seta"]
+ - "˰": [T: "modificador baixo cima ponta de seta"]
+ - "˱": [T: "modificador baixo esquerda ponta de seta"]
+ - "˲": [T: "modificador baixo direita ponta de seta"]
+ - "˳": [T: "modificador baixo anel"]
+ - "˴": [T: "modificador do meio grave acento"]
+ - "˵": [T: "modificador do meio duplo grave acento"]
+ - "˶": [T: "modificador do meio duplo agudo acento"]
+ - "˷": [T: "modificador baixo til"]
+ - "˸": [T: "modificador elevado dois pontos"]
+ - "˹": [T: "modificador início alto tom"]
+ - "˺": [T: "modificador fim alto tom"]
+ - "˻": [T: "modificador início baixo tom"]
+ - "˼": [T: "modificador fim baixo tom"]
+ - "˽": [T: "modificador prateleira"]
+ - "˾": [T: "modificador aberto prateleira"]
+ - "˿": [T: "seta modificador baixo para a esquerda"]
+ - "̉": [T: "gancho acima de"]
+ - "̊": [T: "anel acima de"]
+ - "̋": [T: "duplo agudo acento"]
+ - "̍": [T: "barra vertical acima de"]
+ - "̎": [T: "barra dupla vertical acima de"]
+ - "̏": [T: "duplo grave acento"]
+ - "̐": [T: "candrabindu"]
+ - "̑": [T: "invertido breve"]
+ - "̒": [T: "invertido vírgula acima de"]
+ - "̓": [T: "vírgula acima de"]
+ - "̔": [T: "invertido vírgula acima de"]
+ - "̕": [T: "vírgula acima de direita"]
+ - "̖": [T: "grave acento abaixo de"]
+ - "̗": [T: "agudo acento abaixo de"]
+ - "̘": [T: "taco abaixo de à esquerda"]
+ - "̙": [T: "taco abaixo de à direita"]
+ - "̚": [T: "ângulo acima de à esquerda"]
+ - "̛": [T: "chifre"]
+ - "̜": [T: "esquerda metade anel abaixo de"]
+ - "̝": [T: "taco abaixo de para cima"]
+ - "̞": [T: "taco abaixo de para baixo"]
+ - "̟": [T: "sinal de mais abaixo de"]
+ - "̠": [T: "sinal de menos abaixo de"]
+ - "̡": [T: "palatalizado gancho abaixo de"]
+ - "̢": [T: "retroflexo gancho abaixo de"]
+ - "̣": [T: "ponto abaixo de"]
+ - "̤": [T: "trema abaixo de"]
+ - "̥": [T: "anel abaixo de"]
+ - "̦": [T: "vírgula abaixo de"]
+ - "̧": [T: "cedilha"]
+ - "̨": [T: "ogonek"]
+ - "̩": [T: "barra vertical abaixo de"]
+ - "̪": [T: "ponte abaixo de"]
+ - "̫": [T: "arco invertido duplo abaixo de"]
+ - "̬": [T: "cáron abaixo de"]
+ - "̭": [T: "circunflexo acento abaixo de"]
+ - "̮": [T: "breve abaixo de"]
+ - "̯": [T: "invertido breve abaixo de"]
+ - "̰": [T: "til abaixo de"]
+ - "̱": [T: "mácron abaixo de"]
+ - "̲": [T: "linha baixa"]
+ - "̳": [T: "linha dupla baixa"]
+ - "̴": [T: "til sobreposto"]
+ - "̵": [T: "traço curto sobreposto"]
+ - "̶": [T: "traço longo sobreposto"]
+ - "̷": [T: "barra curta sobreposto"]
+ - "̸": [T: "barra longa sobreposto"]
+ - "̹": [T: "direita metade anel abaixo de"]
+ - "̺": [T: "ponte invertida abaixo de"]
+ - "̻": [T: "quadrado abaixo de"]
+ - "̼": [T: "gaivota abaixo de"]
+ - "̽": [T: "xis acima de"]
+ - "̾": [T: "til vertical"]
+ - "̿": [T: "linha dupla superior"]
+ - "̀": [T: "grave tom marca"]
+ - "́": [T: "agudo tom marca"]
+ - "͆": [T: "ponte acima de"]
+ - "ΪΫϏ":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "maiúscula"]
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'ΪΫϏ', 'ιυϗ')"]
+    - T: "com trema"
+ - "ϊ": [T: "iota com trema"]
+ - "ϋ": [T: "ípsilon com trema"]
+ - "ό": [T: "ômicron com tônico"]
+ - "ύ": [T: "ípsilon com tônico"]
+ - "ώ": [T: "ômega com tônico"]
+ - "ϐ": [T: "beta"]
+ - "ϑ": [T: "teta"]
+ - "ϒ": [T: "ípsilon com gancho"]
+ - "ϓ": [T: "ípsilon com agudo e gancho"]
+ - "ϔ": [T: "ípsilon com trema e gancho"]
+ - "ϗ": [T: "kai"]
+ - "Ϙ": [T: "maiúscula arcaico copa"]
+ - "ϙ": [T: "arcaico copa"]
+ - "А-Я":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "maiúscula"]
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [spell: "translate('.', 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', 'абвгдежзийклмнопрстуфхцчшщъыьэюя')"]
+ - "а": [T: "a"]
+ - "б": [T: "ser"]
+ - "в": [T: "vê"]
+ - "г": [T: "guê"]
+ - "д": [T: "de"]
+ - "е": [T: "iê"]
+ - "ж": [T: "jê"]
+ - "з": [T: "zê"]
+ - "и": [T: "i"]
+ - "й": [T: "curto i"]
+ - "к": [T: "ka"]
+ - "л": [T: "ele"]
+ - "м": [T: "em"]
+ - "н": [T: "en"]
+ - "о": [T: "o"]
+ - "п": [T: "pê"]
+ - "р": [T: "erre"]
+ - "с": [T: "esse"]
+ - "т": [T: "tê"]
+ - "у": [T: "u"]
+ - "ф": [T: "efe"]
+ - "х": [T: "rrá"]
+ - "ц": [T: "tsê"]
+ - "ч": [T: "tchê"]
+ - "ш": [T: "chá"]
+ - "щ": [T: "chtchá"]
+ - "ъ": [T: "forte sinal"]
+ - "ы": [T: "ierí"]
+ - "ь": [T: "sinal suave"]
+ - "э": [T: "e"]
+ - "ю": [T: "iu"]
+ - "я": [T: "iá"]
+ - "؆": [T: "arábico-índico raiz cúbica"]
+ - "؇": [T: "arábico-índico raiz quarta"]
+ - "؈": [T: "arábico raio"]
+ - "‐": [T: "hífen"]
+ - "‑": [T: "hífen"]
+ - "‒": [T: "algarismo travessão"]
+ - "―": [T: "barra horizontal"]
+ - "†": [T: "adaga"]
+ - "‡": [T: "duplo adaga"]
+ - " - ": [t: " "]   # RECUO-EN
+ - "•":
+    - test: 
+        if: "@data-chem-formula-op"
+        then: [T: "ponto"]
+        else: [T: "marcador"]
+ - "‰": [T: "por mil"]
+ - "‱": [T: "por dez mil"]
+ - "‸": [T: "a o"]
+ - "‹": [T: "simples esquerda apontando aspas angulares"]
+ - "›": [T: "simples direita apontando aspas angulares"]
+ - "‼":
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "ponto duplo de exclamação"]      # 0x203c
+        else: [T: "duplo fatorial"]              # 0x203c
+ - "⁄":
+    - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [T: "barra grande"]      # 0x203c
+        else: [T: "dividido por"]              # 0x203c
+ - "⁅": [T: "quadrado esquerda colchete com pena"]
+ - "⁆": [T: "quadrado direita colchete com pena"]
+ - "※": [T: "marca de referência"]
+ - "‿": [T: "sob laço"]
+ - "⁀": [T: "laço"]
+ - "⁎": [T: "baixo asterisco"]
+ - "⁏": [T: "ponto invertido e vírgula"]
+ - "⁐": [T: "fechamento"]
+ - "⁑": [T: "dois vertical asteriscos"]
+ - "⁒": [T: "comercial sinal de menos"]
+ - "⁗": [T: "linha quádrupla"]
+ - "⁠": [T: ""]
+ - "₠": [T: "europeia moeda unidades"]
+ - "₡": [T: "dois pontos"]
+ - "₢": [T: "cruzeiro"]
+ - "₣": [T: "franco"]
+ - "₤": [T: "lira"]
+ - "₥": [T: "mills"]
+ - "₦": [T: "naira"]
+ - "₧": [T: "peseta"]
+ - "₨": [T: "rupias"]
+ - "₩": [T: "won"]
+ - "₪": [T: "novos shequels"]
+ - "₫": [T: "dong"]
+ - "€": [T: "euros"]
+ - "₭": [T: "kip"]
+ - "₮": [T: "tugrik"]
+ - "₯": [T: "dracma"]
+ - "₰": [T: "pfennigs"]
+ - "₱": [T: "pesos"]
+ - "₲": [T: "guaranis"]
+ - "₳": [T: "australes"]
+ - "₴": [T: "hryvnias"]
+ - "₵": [T: "cedis"]
+ - "₶": [T: "livre tournois"]
+ - "₷": [T: "spesmilos"]
+ - "₸": [T: "tenges"]
+ - "₹": [T: "indiano rupias"]
+ - "₺": [T: "liras turcas"]
+ - "⃐": [T: "arpão para a esquerda acima de"]
+ - "⃑": [T: "arpão para a direita acima de"]
+ - "⃒": [T: "barra longa vertical sobreposto"]
+ - "⃓": [T: "barra curta vertical sobreposto"]
+ - "⃔": [T: "seta no sentido anti-horário acima de"]
+ - "⃕": [T: "seta no sentido horário acima de"]
+ - "⃖": [T: "seta para a esquerda acima de"]
+ - "⃗": [T: "seta para a direita acima de"]
+ - "⃘": [T: "anel sobreposto"]
+ - "⃙": [T: "no sentido horário anel sobreposto"]
+ - "⃚": [T: "no sentido anti-horário anel sobreposto"]
+ - "⃝": [T: "círculo envolvente"]
+ - "⃞": [T: "quadrado envolvente"]
+ - "⃟": [T: "losango envolvente"]
+ - "⃠": [T: "círculo envolvente barra invertida"]
+ - "⃡": [T: "seta para a esquerda e para a direita acima de"]
+ - "⃢": [T: "envolvente tela"]
+ - "⃣": [T: "envolvente tecla"]
+ - "⃤": [T: "triângulo envolvente para cima apontando"]
+ - "⃥": [T: "barra invertida sobreposto"]
+ - "⃦": [T: "traço duplo vertical"]
+ - "⃧": [T: "anuidade símbolo"]
+ - "⃨": [T: "ponto triplo abaixo"]
+ - "⃩": [T: "ponte larga acima de"]
+ - "⃪": [T: "seta para a esquerda sobreposto"]
+ - "⃫": [T: "barra longa dupla sobreposto"]
+ - "⃬": [T: "arpão para a direita com farpa baixo"]
+ - "⃭": [T: "arpão para a esquerda com farpa baixo"]
+ - "⃮": [T: "seta para a esquerda abaixo de"]
+ - "⃯": [T: "seta para a direita abaixo de"]
+ - "⃰": [T: "asterisco acima de"]
+ - "℄": [T: "centro linha símbolo"]
+ - "℅": [T: "aos cuidados de"]
+ - "℆": [T: "cada uma"]
+ - "ℇ": [T: "euler'esse constante"]
+ - "℈": [T: "escrúpulos"]
+ - "ℏ": [T: "agá barra"]
+ - "℔": [T: "libras"]
+ - "№": [T: "número"]
+ - "℥": [T: "onças"]
+ - "℩": [T: "invertido iota"]
+ - "Ⅎ℺⅁⅂⅃⅄":
+    - test:
+      - if: "'.' = '℺'"
+        then: [T: "rotacionado"]
+      - else_if: "'.' = 'Ⅎ'"
+        then: [T: "invertido"]
+      - else_if: "'.' = '⅃'"
+        then: [T: "invertido sem serifa"]
+        else: [T: "invertido sem serifa"]
+    - spell: "translate('.', 'Ⅎ℺⅁⅂⅃⅄', 'FQGLLY')"
+ - "ℵ": [T: "primeiro transfinito cardinal"]
+ - "ℶ": [T: "segundo transfinito cardinal"]
+ - "ℷ": [T: "terceiro transfinito cardinal"]
+ - "ℸ": [T: "quarto transfinito cardinal"]
+ - "⅋": [T: "invertido e comercial"]
+ - "⅌": [T: "por"]
+ - "ⅎ": [T: "invertido efe"]
+ - "↉": [T: "zero terços"]
+ - "⌀": [T: "diâmetro"]
+ - "⌁": [T: "seta elétrico"]
+ - "⌂": [T: "casa"]
+ - "⌃": [T: "ponta de seta para cima"]
+ - "⌄": [T: "ponta de seta para baixo"]
+ - "⌅": [T: "projetivo"]
+ - "⌆": [T: "perspectiva"]
+ - "⌇": [T: "linha ondulada"]
+ - "⌈": [T: "abre teto"]
+ - "⌉": [T: "fecha teto"]
+ - "⌊": [T: "abre piso"]
+ - "⌋": [T: "fecha piso"]
+ - "⌌": [T: "inferior direita corte"]
+ - "⌍": [T: "inferior esquerda corte"]
+ - "⌎": [T: "superior direita corte"]
+ - "⌏": [T: "superior esquerda corte"]
+ - "⌐": [T: "invertido não sinal"]
+ - "⌑": [T: "quadrado losango"]
+ - "⌒": [T: "arco"]
+ - "⌓": [T: "segmento"]
+ - "⌔": [T: "setor"]
+ - "⌕": [T: "telefone gravador"]
+ - "⌖": [T: "posição indicador mira"]
+ - "⌗": [T: "quadrado viewdata"]
+ - "⌘": [T: "lugar de interesse sinal"]
+ - "⌙": [T: "invertido não sinal"]
+ - "⌚": [T: "relógio"]
+ - "⌛": [T: "ampulheta"]
+ - "⌜": [T: "superior esquerda canto"]
+ - "⌝": [T: "superior direita canto"]
+ - "⌞": [T: "inferior esquerda canto"]
+ - "⌟": [T: "inferior direita canto"]
+ - "⌠": [T: "superior metade integral"]
+ - "⌡": [T: "inferior metade integral"]
+ - "⌢": [T: "carranca"]
+ - "⌣": [T: "sorriso"]
+ - "⌤": [T: "ponta de seta entre dois barras horizontales para cima"]
+ - "⌥": [T: "tecla opção"]
+ - "⌦": [T: "apagar à direita"]
+ - "⌧": [T: "retângulo xis em a caixa"]
+ - "⌨": [T: "teclado"]
+ - "〈": [T: "abre colchete apontando ângulo"]
+ - "〉": [T: "fecha colchete apontando ângulo"]
+ - "⌫": [T: "apagar à esquerda"]
+ - "⌬": [T: "benzeno anel"]
+ - "⌭": [T: "cilindricidade"]
+ - "⌮": [T: "tudo ao redor perfil"]
+ - "⌯": [T: "simetria"]
+ - "⌰": [T: "total excentricidade"]
+ - "⌱": [T: "dimensão origem"]
+ - "⌲": [T: "cone de afunilamento"]
+ - "⌳": [T: "inclinação"]
+ - "⌴": [T: "rebaixo"]
+ - "⌵": [T: "escareado"]
+ - "⌶": [T: "viga i do apl"]
+ - "⌽": [T: "círculo apl montante"]
+ - "⌿": [T: "barra do apl com barra sobreposta"]
+ - "⍰": [T: "desconhecido caixa"]
+ - "⍼": [T: "seta ângulo com baixo em zigue-zague para a direita"]
+ - "⎔": [T: "hexágono"]
+ - "⎕": [T: "caixa"]
+ - "⎶": [T: "quadrado inferior colchete sobre superior quadrado colchete"]
+ - "⏜": [T: "parêntese superior"]
+ - "⏝": [T: "parêntese inferior"]
+ - "⏞": [T: "chave superior"]
+ - "⏟": [T: "chave inferior"]
+ - "⏠": [T: "concha superior de tartaruga colchete"]
+ - "⏡": [T: "concha inferior de tartaruga colchete"]
+ - "⏢": [T: "trapézio branco"]
+ - "⏣": [T: "círculo benzeno direita com"]
+ - "⏤": [T: "retilineidade"]
+ - "⏥": [T: "planicidade"]
+ - "⏦":
+     - spell: "ac"
+     - T: "corrente"
+ - "⏧": [T: "interseção elétrica"]
+ - "①-⑨":
+    - spell: "translate('.', '①②③④⑤⑥⑦⑧⑨', '123456789')"
+    - T: "circulado"
+ - "⑩": [T: "dez circulado"]
+ - "⑪": [T: "onze circulado"]
+ - "⑫": [T: "doze circulado"]
+ - "⑬": [T: "treze circulado"]
+ - "⑭": [T: "quatorze circulado"]
+ - "⑮": [T: "quinze circulado"]
+ - "⑯": [T: "dezesseis circulado"]
+ - "⑰": [T: "dezessete circulado"]
+ - "⑱": [T: "dezoito circulado"]
+ - "⑳": [T: "vinte circulado"]
+ - "⑴-⑼":
+    - spell: "translate('.', '⑴⑵⑶⑷⑸⑹⑺⑻⑼', '123456789')"
+    - T: "entre parênteses"
+ - "⑽": [T: "dez entre parênteses"]
+ - "⑾": [T: "onze entre parênteses"]
+ - "⑿": [T: "doze entre parênteses"]
+ - "⒀": [T: "treze entre parênteses"]
+ - "⒁": [T: "quatorze entre parênteses"]
+ - "⒂": [T: "quinze entre parênteses"]
+ - "⒃": [T: "dezesseis entre parênteses"]
+ - "⒄": [T: "dezessete entre parênteses"]
+ - "⒅": [T: "dezoito entre parênteses"]
+ - "⒆": [T: "dezenove entre parênteses"]
+ - "⒇": [T: "vinte entre parênteses"]
+ - "⒈-⒐":
+    - spell: "translate('.', '⒈⒉⒊⒋⒌⒍⒎⒏⒐', '123456789')"
+    - T: "com ponto"
+ - "⒑": [T: "dez com ponto final"]
+ - "⒒": [T: "onze com ponto final"]
+ - "⒓": [T: "doze com ponto final"]
+ - "⒔": [T: "treze com ponto final"]
+ - "⒕": [T: "quatorze com ponto final"]
+ - "⒖": [T: "quinze com ponto final"]
+ - "⒗": [T: "dezesseis com ponto final"]
+ - "⒘": [T: "dezessete com ponto final"]
+ - "⒙": [T: "dezoito com ponto final"]
+ - "⒚": [T: "dezenove com ponto final"]
+ - "⒛": [T: "vinte com ponto final"]
+ - "⒜-⒵":
+    - spell: "translate('.', '⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "entre parênteses"
+ - "Ⓐ-ⓩ":
+    - spell: "translate('.', 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "circulado"
+ - "🅐-🅩":
+    - spell: "translate('.', '🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    - T: "circulado preto"
+ - "ⓐ-ⓩ":
+    - spell: "translate('.', 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz')"
+    - T: "circulado"
+ - "⓪": [T: "zero circulado"]
+ - "⓫": [T: "onze circulado preto"]
+ - "⓬": [T: "doze circulado preto"]
+ - "⓭": [T: "treze circulado preto"]
+ - "⓮": [T: "quatorze circulado preto"]
+ - "⓯": [T: "quinze circulado preto"]
+ - "⓰": [T: "dezesseis circulado preto"]
+ - "⓱": [T: "dezessete circulado preto"]
+ - "⓲": [T: "dezoito circulado preto"]
+ - "⓳": [T: "dezenove circulado preto"]
+ - "⓴": [T: "vinte circulado preto"]
+ - "⓵-⓽":
+    - spell: "translate('.', '⓵⓶⓷⓸⓹⓺⓻⓼⓽', '123456789')"
+    - T: "duplo circulado"
+ - "⓾": [T: "dez circulado duas vezes"]
+ - "⓿": [T: "zero circulado preto"]
+ - "★": [T: "estrela preta"]
+ - "☆": [T: "estrela branca"]
+ - "☉": [T: "sol"]
+ - "☌": [T: "conjunção"]
+ - "☒": [T: "cédula caixa com xis"]
+ - "☽": [T: "crescente lua"]
+ - "☾": [T: "minguante lua"]
+ - "☿": [T: "mercúrio"]
+ - "♀": [T: "feminino"]
+ - "♁": [T: "terra"]
+ - "♂": [T: "masculino"]
+ - "♃": [T: "júpiter"]
+ - "♄": [T: "saturno"]
+ - "♅": [T: "urano"]
+ - "♆": [T: "netuno"]
+ - "♇": [T: "plutão"]
+ - "♈": [T: "áries"]
+ - "♉": [T: "touro"]
+ - "♩": [T: "um quarto nota"]
+ - "♭": [T: "bemol"]
+ - "♮": [T: "natural"]
+ - "♯": [T: "sustenido"]
+ - "♠": [T: "preto naipe de espadas"]
+ - "♡": [T: "branco naipe de copas"]
+ - "♢": [T: "branco naipe de ouros"]
+ - "♣": [T: "preto naipe de paus"]
+ - "♤": [T: "branco naipe de espadas"]
+ - "♥": [T: "preto naipe de copas"]
+ - "♦": [T: "preto naipe de ouros"]
+ - "♧": [T: "branco naipe de paus"]
+ - "⚀": [T: "face de dado 1"]
+ - "⚁": [T: "face de dado 2"]
+ - "⚂": [T: "face de dado 3"]
+ - "⚃": [T: "face de dado 4"]
+ - "⚄": [T: "face de dado 5"]
+ - "⚅": [T: "face de dado 6"]
+ - "⚆": [T: "círculo branco com ponto direita"]
+ - "⚇": [T: "círculo branco com dois pontos"]
+ - "⚈": [T: "círculo preto com ponto direita"]
+ - "⚉": [T: "círculo preto com dois pontos"]
+ - "⚪": [T: "círculo médio branco"]
+ - "⚫": [T: "círculo médio preto"]
+ - "⚬": [T: "círculo médio pequeno branco"]
+ - "⚲": [T: "neutro"]
+ - "✓": [T: "verificação marca"]
+ - "✠": [T: "cruzes de malta"]
+ - "✪": [T: "branco estrela circulado"]
+ - "✶": [T: "estrela seis pontuda preta"]
+ - "❨": [T: "médio parênteses ornamento à esquerda"]
+ - "❩": [T: "médio parênteses ornamento à direita"]
+ - "❪": [T: "médio achatado parênteses ornamento à esquerda"]
+ - "❫": [T: "médio achatado parênteses ornamento à direita"]
+ - "❬": [T: "médio apontando para a colchete angular ornamento à esquerda"]
+ - "❭": [T: "médio apontando para a colchete angular ornamento à direita"]
+ - "❮": [T: "grosso apontando para a esquerda aspas angulares ornamento"]
+ - "❯": [T: "grosso apontando para a direita aspas angulares ornamento"]
+ - "❰": [T: "grosso apontando para a colchete angular ornamento à esquerda"]
+ - "❱": [T: "grosso apontando para a colchete angular ornamento à direita"]
+ - "❲": [T: "fino concha de tartaruga colchete ornamento à esquerda"]
+ - "❳": [T: "fino concha de tartaruga colchete ornamento à direita"]
+ - "❴": [T: "médio chave ornamento à esquerda"]
+ - "❵": [T: "médio chave ornamento à direita"]
+ - "❶": [T: "um circulado preto"]
+ - "❷": [T: "dois circulado preto"]
+ - "❸": [T: "três circulado preto"]
+ - "❹": [T: "quatro circulado preto"]
+ - "❺": [T: "cinco circulado preto"]
+ - "❻": [T: "seis circulado preto"]
+ - "❼": [T: "sete circulado preto"]
+ - "❽": [T: "oito circulado preto"]
+ - "❾": [T: "nove circulado preto"]
+ - "❿": [T: "dez circulado preto"]
+ - "➀": [T: "um circulado sem serifa"]
+ - "➁": [T: "dois circulado sem serifa"]
+ - "➂": [T: "três circulado sem serifa"]
+ - "➃": [T: "quatro circulado sem serifa"]
+ - "➄": [T: "cinco circulado sem serifa"]
+ - "➅": [T: "seis circulado sem serifa"]
+ - "➆": [T: "sete circulado sem serifa"]
+ - "➇": [T: "oito circulado sem serifa"]
+ - "➈": [T: "nove circulado sem serifa"]
+ - "➉": [T: "dez circulado sem serifa"]
+ - "➊": [T: "um circulado preto sem serifa"]
+ - "➋": [T: "dois circulado preto sem serifa"]
+ - "➌": [T: "três circulado preto sem serifa"]
+ - "➍": [T: "quatro circulado preto sem serifa"]
+ - "➎": [T: "cinco circulado preto sem serifa"]
+ - "➏": [T: "seis circulado preto sem serifa"]
+ - "➐": [T: "sete circulado preto sem serifa"]
+ - "➑": [T: "oito circulado preto sem serifa"]
+ - "➒": [T: "nove circulado preto sem serifa"]
+ - "➓": [T: "dez circulado preto sem serifa"]
+ - "➔": [T: "seta grossa de cabeça larga para a direita"]
+ - "➕": [T: "sinal grosso de mais"]
+ - "➖": [T: "sinal grosso de menos"]
+ - "➗": [T: "sinal grosso de divisão"]
+ - "➘": [T: "seta grossa para sudeste"]
+ - "➙": [T: "seta grossa para a direita"]
+ - "➚": [T: "seta grossa para nordeste"]
+ - "➛": [T: "seta desenho técnico ponto para a direita"]
+ - "➜": [T: "seta grossa de ponta arredondada para a direita"]
+ - "➝": [T: "seta de ponta triangular para a direita"]
+ - "➞": [T: "seta grossa de ponta triangular para a direita"]
+ - "➟": [T: "seta tracejada de ponta triangular para a direita"]
+ - "➠": [T: "seta grossa tracejada de ponta triangular para a direita"]
+ - "➡": [T: "seta preta para a direita"]
+ - "➢": [T: "seta três dê superior aceso para a direita"]
+ - "➣": [T: "seta três dê inferior aceso para a direita"]
+ - "➤": [T: "preto ponta de seta à direita"]
+ - "➥": [T: "seta grossa preta curva baixo e para a direita"]
+ - "➦": [T: "seta grossa preta curva cima e para a direita"]
+ - "➧": [T: "seta achatado preta para a direita"]
+ - "➨": [T: "seta grossa de ponta côncava preta para a direita"]
+ - "➩": [T: "seta sombreado à direita branca para a direita"]
+ - "➪": [T: "seta sombreado à esquerda branca para a direita"]
+ - "➫": [T: "seta inclinado para trás sombreada branca para a direita"]
+ - "➬": [T: "seta inclinado para a frente sombreada branca para a direita"]
+ - "➭": [T: "seta grossa inferior com sombra à direita branca para a direita"]
+ - "➮": [T: "seta grossa superior com sombra à direita branca para a direita"]
+ - "➯": [T: "seta entalhada inferior com sombra à direita branca para a direita"]
+ - "➱": [T: "seta entalhada superior com sombra à direita branca para a direita"]
+ - "➲": [T: "grosso branco direita seta circulado"]
+ - "➳": [T: "seta de pena branca para a direita"]
+ - "➴": [T: "seta de pena preta para sudeste"]
+ - "➵": [T: "seta de pena preta para a direita"]
+ - "➶": [T: "seta de pena preta para nordeste"]
+ - "➷": [T: "seta grossa de pena preta para sudeste"]
+ - "➸": [T: "seta grossa de pena preta para a direita"]
+ - "➹": [T: "seta grossa de pena preta para nordeste"]
+ - "➺": [T: "seta de farpa em gota para a direita"]
+ - "➻": [T: "seta grossa de haste em gota para a direita"]
+ - "➼": [T: "seta de cauda em cunha para a direita"]
+ - "➽": [T: "seta grossa de cauda em cunha para a direita"]
+ - "➾": [T: "seta de contorno aberto para a direita"]
+ - "⟀": [T: "três dimensional ângulo"]
+ - "⟁": [T: "triângulo branco contendo pequeno branco triângulo"]
+ - "⟃":
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "um aberto contido em"
+ - "⟄":
+     - test: 
+         if: "$Verbosity!='Terse'"
+         then: [T: "é"]
+     - T: "um aberto contém"
+ - "⟅": [T: "esquerda em forma de s saco delimitador"]
+ - "⟆": [T: "direita em forma de s saco delimitador"]
+ - "⟇": [T: "ou com ponto dentro de"]
+ - "⟈": [T: "barra invertida precedente contido"]
+ - "⟉": [T: "contendo precedente barra"]
+ - "⟊": [T: "barra vertical com traço horizontal"]
+ - "⟋": [T: "matemático subindo diagonal"]
+ - "⟌": [T: "divisão longa"]
+ - "⟍": [T: "matemático descendo diagonal"]
+ - "⟎": [T: "e lógico enquadrado"]
+ - "⟏": [T: "ou lógico enquadrado"]
+ - "⟐": [T: "losango branco com centralizado ponto"]
+ - "⟑": [T: "e com ponto"]
+ - "⟒": [T: "pertence a abrindo cima"]
+ - "⟓": [T: "inferior direita canto com ponto"]
+ - "⟔": [T: "superior esquerda canto com ponto"]
+ - "⟕": [T: "esquerda externo unir"]
+ - "⟖": [T: "direita externo unir"]
+ - "⟗": [T: "completo externo unir"]
+ - "⟘": [T: "grande taco para cima"]
+ - "⟙": [T: "grande taco para baixo"]
+ - "⟚": [T: "esquerda e direita catraca dupla"]
+ - "⟛": [T: "esquerda e taco à direita"]
+ - "⟜": [T: "esquerda multimapa"]
+ - "⟝": [T: "longo taco à direita"]
+ - "⟞": [T: "longo taco à esquerda"]
+ - "⟟": [T: "círculo cima taco com acima de"]
+ - "⟠": [T: "losango dividido por horizontal régua"]
+ - "⟡": [T: "losango branco côncavo lateral"]
+ - "⟢": [T: "losango branco côncavo lateral com esquerda marca"]
+ - "⟣": [T: "losango branco côncavo lateral com direita marca"]
+ - "⟤": [T: "quadrado branco com esquerda marca"]
+ - "⟥": [T: "quadrado branco com direita marca"]
+ - "⟦": [T: "abre colchete branco quadrado"]
+ - "⟧": [T: "fecha colchete branco quadrado"]
+ - "⟬": [T: "abre colchete branco concha de tartaruga"]
+ - "⟭": [T: "fecha colchete branco concha de tartaruga"]
+ - "⟮": [T: "abre parêntese achatado"]
+ - "⟯": [T: "fecha parêntese achatado"]
+ - "⟰": [T: "seta quádrupla para cima"]
+ - "⟱": [T: "seta quádrupla para baixo"]
+ - "⟲": [T: "seta no sentido anti-horário com falha círculo"]
+ - "⟳": [T: "seta no sentido horário com falha círculo"]
+ - "⟴": [T: "seta para a direita com circulado mais"]
+ - "⟻": [T: "seta longa para a esquerda a partir de barra"]
+ - "⟼": [T: "seta longa para a direita a partir de barra"]
+ - "⟽": [T: "seta longa dupla para a esquerda a partir de barra"]
+ - "⟾": [T: "seta longa dupla para a direita a partir de barra"]
+ - "⟿": [T: "seta longa serpenteante para a direita"]
+ - "⤀": [T: "seta de duas pontas para a direita com vertical traço"]
+ - "⤁": [T: "seta de duas pontas para a direita com duplo vertical traço"]
+ - "⤂": [T: "seta dupla para a esquerda com vertical traço"]
+ - "⤃": [T: "seta dupla para a direita com vertical traço"]
+ - "⤄": [T: "seta dupla para a esquerda e para a direita com vertical traço"]
+ - "⤅": [T: "seta de duas pontas para a direita a partir de barra"]
+ - "⤆": [T: "seta dupla para a esquerda a partir de barra"]
+ - "⤇": [T: "seta dupla para a direita a partir de barra"]
+ - "⤈": [T: "seta para baixo com horizontal traço"]
+ - "⤉": [T: "seta para cima com horizontal traço"]
+ - "⤊": [T: "seta tripla para cima"]
+ - "⤋": [T: "seta tripla para baixo"]
+ - "⤌": [T: "seta dupla travessão para a esquerda"]
+ - "⤍": [T: "seta dupla travessão para a direita"]
+ - "⤎": [T: "seta de três traços para a esquerda"]
+ - "⤏": [T: "seta de três traços para a direita"]
+ - "⤐": [T: "seta de duas pontas de três traços para a direita"]
+ - "⤑": [T: "seta para a direita com pontilhado haste"]
+ - "⤒": [T: "seta para cima a barra"]
+ - "⤓": [T: "seta para baixo a barra"]
+ - "⤔": [T: "seta para a direita com cauda e vertical traço"]
+ - "⤕": [T: "seta para a direita com cauda e duplo vertical traço"]
+ - "⤖": [T: "seta de duas pontas para a direita com cauda"]
+ - "⤗": [T: "seta de duas pontas para a direita com cauda com vertical traço"]
+ - "⤘": [T: "seta de duas pontas para a direita com cauda com duplo vertical traço"]
+ - "⤙": [T: "seta para a esquerda cauda"]
+ - "⤚": [T: "seta para a direita cauda"]
+ - "⤛": [T: "seta dupla para a esquerda cauda"]
+ - "⤜": [T: "seta dupla para a direita cauda"]
+ - "⤝": [T: "seta para a esquerda a preenchido losango"]
+ - "⤞": [T: "seta para a direita a preenchido losango"]
+ - "⤟": [T: "seta para a esquerda a partir de barra a preenchido losango"]
+ - "⤠": [T: "seta para a direita a partir de barra a preenchido losango"]
+ - "⤡": [T: "seta e sul leste para noroeste"]
+ - "⤢": [T: "seta e sul oeste para nordeste"]
+ - "⤣": [T: "seta para noroeste com gancho"]
+ - "⤤": [T: "seta para nordeste com gancho"]
+ - "⤥": [T: "seta para sudeste com gancho"]
+ - "⤦": [T: "seta para sudoeste com gancho"]
+ - "⤧": [T: "seta para noroeste e norte leste seta"]
+ - "⤨": [T: "seta para nordeste e sul leste seta"]
+ - "⤩": [T: "seta para sudeste e sul oeste seta"]
+ - "⤪": [T: "seta para sudoeste e norte oeste seta"]
+ - "⤫": [T: "subindo diagonal cruzando descendo diagonal"]
+ - "⤬": [T: "descendo diagonal cruzando subindo diagonal"]
+ - "⤭": [T: "seta para sudeste cruzando norte leste seta"]
+ - "⤮": [T: "seta para nordeste cruzando sul leste seta"]
+ - "⤯": [T: "seta descendo diagonal cruzando para nordeste"]
+ - "⤰": [T: "seta subindo diagonal cruzando para sudeste"]
+ - "⤱": [T: "seta para nordeste cruzando norte oeste seta"]
+ - "⤲": [T: "seta para noroeste cruzando norte leste seta"]
+ - "⤳": [T: "seta ondulada apontando diretamente direita"]
+ - "⤴": [T: "seta apontando direita depois curvando cima"]
+ - "⤵": [T: "seta apontando direita depois curvando baixo"]
+ - "⤶": [T: "seta apontando baixo depois curvando esquerda"]
+ - "⤷": [T: "seta apontando baixo depois curvando direita"]
+ - "⤸": [T: "seta lado arco no sentido horário para a direita"]
+ - "⤹": [T: "seta lado arco no sentido anti-horário para a esquerda"]
+ - "⤺": [T: "seta superior arco no sentido anti-horário"]
+ - "⤻": [T: "seta inferior arco no sentido anti-horário"]
+ - "⤼": [T: "seta superior arco no sentido horário com menos"]
+ - "⤽": [T: "seta superior arco no sentido anti-horário com mais"]
+ - "⤾": [T: "seta inferior semicircular no sentido horário para a direita"]
+ - "⤿": [T: "seta inferior semicircular no sentido anti-horário para a esquerda"]
+ - "⥀": [T: "seta no sentido anti-horário fechada círculo"]
+ - "⥁": [T: "seta no sentido horário fechada círculo"]
+ - "⥂": [T: "seta para a direita acima de curto esquerda seta"]
+ - "⥃": [T: "seta para a esquerda acima de curto direita seta"]
+ - "⥄": [T: "seta curta para a direita acima de esquerda seta"]
+ - "⥅": [T: "seta para a direita com mais abaixo de"]
+ - "⥆": [T: "seta para a esquerda com mais abaixo de"]
+ - "⥇": [T: "seta para a direita atravessado por xis"]
+ - "⥈": [T: "seta para a esquerda e para a direita atravessado por círculo"]
+ - "⥉": [T: "seta de duas pontas para cima a partir de círculo"]
+ - "⥊": [T: "arpão farpa cima direita farpa baixo para a esquerda"]
+ - "⥋": [T: "arpão farpa baixo direita farpa cima para a esquerda"]
+ - "⥌": [T: "arpão cima farpa direita baixo farpa para a esquerda"]
+ - "⥍": [T: "arpão cima farpa baixo farpa direita para a esquerda"]
+ - "⥎": [T: "arpão farpa cima direita farpa cima para a esquerda"]
+ - "⥏": [T: "arpão cima farpa baixo farpa direita para a direita"]
+ - "⥐": [T: "arpão farpa baixo direita farpa baixo para a esquerda"]
+ - "⥑": [T: "arpão cima farpa baixo farpa esquerda para a esquerda"]
+ - "⥒": [T: "arpão para a esquerda com farpa cima a barra"]
+ - "⥓": [T: "arpão para a direita com farpa cima a barra"]
+ - "⥔": [T: "arpão para cima com farpa direita a barra"]
+ - "⥕": [T: "arpão para baixo com farpa direita a barra"]
+ - "⥖": [T: "arpão para a esquerda com farpa baixo a barra"]
+ - "⥗": [T: "arpão para a direita com farpa baixo a barra"]
+ - "⥘": [T: "arpão para cima com farpa esquerda a barra"]
+ - "⥙": [T: "arpão para baixo com farpa esquerda a barra"]
+ - "⥚": [T: "arpão para a esquerda com farpa cima a partir de barra"]
+ - "⥛": [T: "arpão para a direita com farpa cima a partir de barra"]
+ - "⥜": [T: "arpão para cima com farpa direita a partir de barra"]
+ - "⥝": [T: "arpão para baixo com farpa direita a partir de barra"]
+ - "⥞": [T: "arpão para a esquerda com farpa baixo a partir de barra"]
+ - "⥟": [T: "arpão para a direita com farpa baixo a partir de barra"]
+ - "⥠": [T: "arpão para cima com farpa esquerda a partir de barra"]
+ - "⥡": [T: "arpão para baixo com farpa esquerda a partir de barra"]
+ - "⥢": [T: "arpão para a esquerda com farpa cima acima de esquerda arpão com farpa baixo"]
+ - "⥣": [T: "arpão para cima com farpa esquerda ao lado de cima arpão com farpa direita"]
+ - "⥤": [T: "arpão para a direita com farpa cima acima de direita arpão com farpa baixo"]
+ - "⥥": [T: "arpão para baixo com farpa esquerda ao lado de baixo arpão com farpa direita"]
+ - "⥦": [T: "arpão para a esquerda com farpa cima acima de direita arpão com farpa cima"]
+ - "⥧": [T: "arpão para a esquerda com farpa baixo acima de direita arpão com farpa baixo"]
+ - "⥨": [T: "arpão para a direita com farpa cima acima de esquerda arpão com farpa cima"]
+ - "⥩": [T: "arpão para a direita com farpa baixo acima de esquerda arpão com farpa baixo"]
+ - "⥪": [T: "arpão para a esquerda com farpa cima acima de longo travessão"]
+ - "⥫": [T: "arpão para a esquerda com farpa baixo abaixo de longo travessão"]
+ - "⥬": [T: "arpão para a direita com farpa cima acima de longo travessão"]
+ - "⥭": [T: "arpão para a direita com farpa baixo abaixo de longo travessão"]
+ - "⥮": [T: "arpão para cima com farpa esquerda ao lado de baixo arpão com farpa direita"]
+ - "⥯": [T: "arpão para baixo com farpa esquerda ao lado de cima arpão com farpa direita"]
+ - "⥰": [T: "seta dupla para a direita com ponta arredondada"]
+ - "⥱": [T: "seta igual acima de para a direita"]
+ - "⥲": [T: "seta til operador acima de para a direita"]
+ - "⥳": [T: "seta para a esquerda acima de operador til"]
+ - "⥴": [T: "seta para a direita acima de operador til"]
+ - "⥵": [T: "seta para a direita acima de quase igual a"]
+ - "⥶": [T: "seta menor que acima de para a esquerda"]
+ - "⥷": [T: "seta para a esquerda atravessado por menor que"]
+ - "⥸": [T: "seta maior que acima de para a direita"]
+ - "⥹": [T: "seta contido acima de para a direita"]
+ - "⥺": [T: "seta para a esquerda atravessado por contido"]
+ - "⥻": [T: "seta contendo acima de para a esquerda"]
+ - "⥼": [T: "esquerda peixe cauda"]
+ - "⥽": [T: "direita peixe cauda"]
+ - "⥾": [T: "cima peixe cauda"]
+ - "⥿": [T: "baixo peixe cauda"]
+ - "⦀": [T: "barra tripla vertical delimitador"]
+ - "⦁": [T: "da notação z ponto"]
+ - "⦂": [T: "da notação z tipo dois pontos"]
+ - "⦃": [T: "abre chave branca"]
+ - "⦄": [T: "fecha chave branca"]
+ - "⦅": [T: "abre parêntese branco"]
+ - "⦆": [T: "fecha parêntese branco"]
+ - "⦇": [T: "da notação z esquerda imagem colchete"]
+ - "⦈": [T: "da notação z direita imagem colchete"]
+ - "⦉": [T: "da notação z esquerda vinculação colchete"]
+ - "⦊": [T: "da notação z direita vinculação colchete"]
+ - "⦋": [T: "quadrado esquerda colchete com barra inferior"]
+ - "⦌": [T: "quadrado direita colchete com barra inferior"]
+ - "⦍": [T: "quadrado esquerda colchete com marca em superior canto"]
+ - "⦎": [T: "quadrado direita colchete com marca em inferior canto"]
+ - "⦏": [T: "quadrado esquerda colchete com marca em inferior canto"]
+ - "⦐": [T: "quadrado direita colchete com marca em superior canto"]
+ - "⦑": [T: "colchete angular com ponto à esquerda"]
+ - "⦒": [T: "colchete angular com ponto à direita"]
+ - "⦓": [T: "abre colchete arco menor que"]
+ - "⦔": [T: "fecha colchete arco maior que"]
+ - "⦕": [T: "arco duplo esquerda maior que colchete"]
+ - "⦖": [T: "arco duplo direita menor que colchete"]
+ - "⦗": [T: "abre colchete preto concha de tartaruga"]
+ - "⦘": [T: "fecha colchete preto concha de tartaruga"]
+ - "⦙": [T: "cerca pontilhada"]
+ - "⦚": [T: "linha vertical em zigue-zague"]
+ - "⦛": [T: "medido ângulo abrindo esquerda"]
+ - "⦜": [T: "quadrado direita ângulo variante com"]
+ - "⦝": [T: "medido ângulo com ponto à direita"]
+ - "⦞": [T: "ângulo com esse dentro de"]
+ - "⦟": [T: "agudo ângulo"]
+ - "⦠": [T: "ângulo esférico abrindo esquerda"]
+ - "⦡": [T: "ângulo esférico abrindo cima"]
+ - "⦢": [T: "ângulo invertido"]
+ - "⦣": [T: "ângulo invertido"]
+ - "⦤": [T: "ângulo com barra inferior"]
+ - "⦥": [T: "ângulo invertido com barra inferior"]
+ - "⦦": [T: "ângulo oblíquo abrindo cima"]
+ - "⦧": [T: "ângulo oblíquo abrindo baixo"]
+ - "⦨": [T: "seta medido ângulo com aberta braço terminando em apontando cima e à direita"]
+ - "⦩": [T: "seta medido ângulo com aberta braço terminando em apontando cima e à esquerda"]
+ - "⦪": [T: "seta medido ângulo com aberta braço terminando em apontando baixo e à direita"]
+ - "⦫": [T: "seta medido ângulo com aberta braço terminando em apontando baixo e à esquerda"]
+ - "⦬": [T: "seta medido ângulo com aberta braço terminando em apontando direita e cima"]
+ - "⦭": [T: "seta medido ângulo com aberta braço terminando em apontando esquerda e cima"]
+ - "⦮": [T: "seta medido ângulo com aberta braço terminando em apontando direita e baixo"]
+ - "⦯": [T: "seta medido ângulo com aberta braço terminando em apontando esquerda e baixo"]
+ - "⦰": [T: "conjunto invertido vazio"]
+ - "⦱": [T: "conjunto vazio com barra superior"]
+ - "⦲": [T: "círculo vazio conjunto com pequeno acima de"]
+ - "⦳": [T: "seta vazio conjunto com para a direita acima de"]
+ - "⦴": [T: "seta vazio conjunto com para a esquerda acima de"]
+ - "⦵": [T: "círculo com barra horizontal"]
+ - "⦶": [T: "barra vertical circulado"]
+ - "⦷": [T: "paralelo circulado"]
+ - "⦸": [T: "invertido barra circulado"]
+ - "⦹": [T: "perpendicular circulado"]
+ - "⦺": [T: "dividido por barra horizontal e superior metade dividido por barra vertical circulado"]
+ - "⦻": [T: "círculo com sobreposto xis"]
+ - "⦼": [T: "no sentido anti-horário rotacionado sinal de divisão circulado"]
+ - "⦽": [T: "seta para cima atravessado por círculo"]
+ - "⦾": [T: "branco marcador circulado"]
+ - "⦿": [T: "marcador circulado"]
+ - "⧀": [T: "menor que circulado"]
+ - "⧁": [T: "maior que circulado"]
+ - "⧂": [T: "círculo com pequeno círculo à direita"]
+ - "⧃": [T: "círculo com dois horizontal traços à direita"]
+ - "⧄": [T: "subindo diagonal barra enquadrado"]
+ - "⧅": [T: "descendo diagonal barra enquadrado"]
+ - "⧆": [T: "asterisco enquadrado"]
+ - "⧇": [T: "pequeno círculo enquadrado"]
+ - "⧈": [T: "quadrado enquadrado"]
+ - "⧉": [T: "quadrados dois unido"]
+ - "⧊": [T: "triângulo com ponto acima de"]
+ - "⧋": [T: "triângulo com barra inferior"]
+ - "⧌": [T: "triângulo esse em"]
+ - "⧍": [T: "triângulo com serifas em inferior"]
+ - "⧎": [T: "triângulo direita acima de esquerda triângulo"]
+ - "⧏": [T: "triângulo esquerda ao lado de barra vertical"]
+ - "⧐": [T: "triângulo vertical barra ao lado de direita"]
+ - "⧑": [T: "laço com esquerda metade preto"]
+ - "⧒": [T: "laço com direita metade preto"]
+ - "⧓": [T: "laço preto"]
+ - "⧔": [T: "vezes com esquerda metade preto"]
+ - "⧕": [T: "vezes com direita metade preto"]
+ - "⧖": [T: "ampulheta branco"]
+ - "⧗": [T: "ampulheta preto"]
+ - "⧘": [T: "abre cerca ondulada"]
+ - "⧙": [T: "fecha cerca ondulada"]
+ - "⧚": [T: "abre cerca dupla ondulada"]
+ - "⧛": [T: "fecha cerca dupla ondulada"]
+ - "⧜": [T: "incompleto infinito"]
+ - "⧝": [T: "laço sobre infinito"]
+ - "⧞": [T: "infinito negado com barra vertical"]
+ - "⧟": [T: "de duas pontas multimapa"]
+ - "⧠": [T: "quadrado com contornado contorno"]
+ - "⧡": [T: "aumenta como"]
+ - "⧢": [T: "embaralhamento produto"]
+ - "⧣": [T: "sinal de igual e inclinado paralelo"]
+ - "⧤": [T: "sinal de igual e inclinado paralelo com til acima de"]
+ - "⧥": [T: "idêntico a e inclinado paralelo"]
+ - "⧦": [T: "igualmente forte"]
+ - "⧧": [T: "termodinâmico"]
+ - "⧨": [T: "triângulo baixo apontando com esquerda metade preto"]
+ - "⧩": [T: "triângulo baixo apontando com direita metade preto"]
+ - "⧪": [T: "seta preta losango com para baixo"]
+ - "⧫": [T: "losango preto"]
+ - "⧬": [T: "seta branca círculo com para baixo"]
+ - "⧭": [T: "seta preta círculo com para baixo"]
+ - "⧮": [T: "quadrado com barra de erro branco"]
+ - "⧯": [T: "quadrado com barra de erro preto"]
+ - "⧰": [T: "losango com barra de erro branco"]
+ - "⧱": [T: "losango com barra de erro preto"]
+ - "⧲": [T: "círculo com barra de erro branco"]
+ - "⧳": [T: "círculo com barra de erro preto"]
+ - "⧴": [T: "regra atrasada"]
+ - "⧵": [T: "barra invertida operador"]
+ - "⧶": [T: "barra com barra superior"]
+ - "⧷": [T: "barra invertida com traço horizontal"]
+ - "⧸": [T: "barra grande"]
+ - "⧹": [T: "barra grande invertida"]
+ - "⧺": [T: "duplo mais"]
+ - "⧻": [T: "triplo mais"]
+ - "⧼": [T: "abre colchete apontando curvo ângulo"]
+ - "⧽": [T: "fecha colchete apontando curvo ângulo"]
+ - "⧾": [T: "minúsculo"]
+ - "⧿": [T: "miny"]
+ - "⨀": [T: "ponto circulado"]
+ - "⨁": [T: "mais operador circulado"]
+ - "⨂": [T: "vezes operador circulado"]
+ - "⨃": [T: "união operador com ponto"]
+ - "⨄": [T: "união operador com mais"]
+ - "⨅": [T: "quadrado interseção operador"]
+ - "⨆": [T: "quadrado união operador"]
+ - "⨇": [T: "dois e lógico operador"]
+ - "⨈": [T: "dois ou lógico operador"]
+ - "⨉": [T: "vezes operador"]
+ - "⨊": [T: "módulo dois soma"]
+ - "⨋": [T: "somatório com integral"]
+ - "⨌": [T: "integral quádrupla operador"]
+ - "⨍": [T: "integral de parte finita"]
+ - "⨎": [T: "integral com traço duplo"]
+ - "⨏": [T: "integral média com barra"]
+ - "⨐": [T: "circulação função"]
+ - "⨑": [T: "no sentido anti-horário integração"]
+ - "⨒": [T: "linha integração com retangular caminho ao redor polo"]
+ - "⨓": [T: "linha integração com semicircular caminho ao redor polo"]
+ - "⨔": [T: "linha integração não incluindo o polo"]
+ - "⨕": [T: "integral ao redor a ponto operador"]
+ - "⨖": [T: "quatérnio integral operador"]
+ - "⨗": [T: "seta integral com para a esquerda com gancho"]
+ - "⨘": [T: "integral com vezes sinal"]
+ - "⨙": [T: "integral com interseção"]
+ - "⨚": [T: "integral com união"]
+ - "⨛": [T: "integral com barra superior"]
+ - "⨜": [T: "integral com barra inferior"]
+ - "⨝": [T: "unir"]
+ - "⨞": [T: "triângulo grande esquerda operador"]
+ - "⨟": [T: "da notação z esquema composição"]
+ - "⨠": [T: "da notação z esquema encanamento"]
+ - "⨡": [T: "da notação z esquema projeção"]
+ - "⨢": [T: "círculo mais sinal com acima de"]
+ - "⨣": [T: "sinal de mais com circunflexo acento acima de"]
+ - "⨤": [T: "sinal de mais com til acima de"]
+ - "⨥": [T: "sinal de mais com ponto abaixo de"]
+ - "⨦": [T: "sinal de mais com til abaixo de"]
+ - "⨧": [T: "sinal de mais com subscrito dois"]
+ - "⨨": [T: "triângulo mais sinal com preto"]
+ - "⨩": [T: "sinal de menos com vírgula acima de"]
+ - "⨪": [T: "sinal de menos com ponto abaixo de"]
+ - "⨫": [T: "sinal de menos com descendo pontos"]
+ - "⨬": [T: "sinal de menos com subindo pontos"]
+ - "⨭": [T: "círculo mais sinal em esquerda metade"]
+ - "⨮": [T: "círculo mais sinal em direita metade"]
+ - "⨯":
+      - test: 
+         if: "$Verbosity='Terse'"
+         then: [T: "cruzes"]
+         else: [T: "cruzes produto"]
+ - "⨰": [T: "sinal de multiplicação com ponto acima de"]
+ - "⨱": [T: "sinal de multiplicação com barra inferior"]
+ - "⨲": [T: "produto semidireto com inferior fechado"]
+ - "⨳": [T: "produto esmagado"]
+ - "⨴": [T: "círculo multiplicação sinal em esquerda metade"]
+ - "⨵": [T: "círculo multiplicação sinal em direita metade"]
+ - "⨶": [T: "sinal de multiplicação com circunflexo acento circulado"]
+ - "⨷": [T: "círculo multiplicação sinal em duplo"]
+ - "⨸": [T: "sinal de divisão circulado"]
+ - "⨹": [T: "triângulo mais sinal em"]
+ - "⨺": [T: "triângulo menos sinal em"]
+ - "⨻": [T: "triângulo multiplicação sinal em"]
+ - "⨼": [T: "interior produto"]
+ - "⨽": [T: "à direita interior produto"]
+ - "⨾": [T: "da notação z relacional composição"]
+ - "⨿": [T: "amálgama ou coproduto"]
+ - "⩀": [T: "interseção com ponto"]
+ - "⩁": [T: "união com sinal de menos"]
+ - "⩂": [T: "união com barra superior"]
+ - "⩃": [T: "interseção com barra superior"]
+ - "⩄": [T: "interseção com e lógico"]
+ - "⩅": [T: "união com ou lógico"]
+ - "⩆": [T: "união acima de interseção"]
+ - "⩇": [T: "interseção acima de união"]
+ - "⩈": [T: "união acima de barra acima de interseção"]
+ - "⩉": [T: "interseção acima de barra acima de união"]
+ - "⩊": [T: "união ao lado de e unido com união"]
+ - "⩋": [T: "interseção ao lado de e unido com interseção"]
+ - "⩌": [T: "união fechada com serifas"]
+ - "⩍": [T: "interseção fechada com serifas"]
+ - "⩎": [T: "quadrado duplo interseção"]
+ - "⩏": [T: "quadrado duplo união"]
+ - "⩐": [T: "união fechada com serifas e produto esmagado"]
+ - "⩑": [T: "e lógico com ponto acima de"]
+ - "⩒": [T: "ou lógico com ponto acima de"]
+ - "⩓": [T: "duplo e lógico"]
+ - "⩔": [T: "duplo ou lógico"]
+ - "⩕": [T: "dois cruzando e lógico"]
+ - "⩖": [T: "dois cruzando ou lógico"]
+ - "⩗": [T: "inclinado grande ou"]
+ - "⩘": [T: "inclinado grande e"]
+ - "⩙": [T: "ou lógico sobreposto e lógico"]
+ - "⩚": [T: "e lógico com do meio haste"]
+ - "⩛": [T: "ou lógico com do meio haste"]
+ - "⩜": [T: "e lógico com horizontal travessão"]
+ - "⩝": [T: "ou lógico com horizontal travessão"]
+ - "⩞": [T: "e lógico com barra dupla superior"]
+ - "⩟": [T: "e lógico com barra inferior"]
+ - "⩠": [T: "e lógico com barra dupla inferior"]
+ - "⩡": [T: "pequeno vê com barra inferior"]
+ - "⩢": [T: "ou lógico com barra dupla superior"]
+ - "⩣": [T: "ou lógico com barra dupla inferior"]
+ - "⩤": [T: "da notação z domínio antirrestrição"]
+ - "⩥": [T: "da notação z imagem antirrestrição"]
+ - "⩦": [T: "sinal de igual com ponto abaixo de"]
+ - "⩧": [T: "idêntico com ponto acima de"]
+ - "⩨": [T: "barra tripla horizontal com traço duplo vertical"]
+ - "⩩": [T: "barra tripla horizontal com traço triplo vertical"]
+ - "⩪": [T: "operador til com ponto acima de"]
+ - "⩫": [T: "operador til com subindo pontos"]
+ - "⩬": [T: "semelhante menos semelhante"]
+ - "⩭": [T: "congruente com ponto acima de"]
+ - "⩮": [T: "igual com asterisco"]
+ - "⩯": [T: "quase igual a com circunflexo acento"]
+ - "⩰": [T: "aproximadamente igual a ou igual a"]
+ - "⩱": [T: "sinal de igual acima de sinal de mais"]
+ - "⩲": [T: "sinal de mais acima de sinal de igual"]
+ - "⩳": [T: "sinal de igual acima de operador til"]
+ - "⩴": [T: "duplo dois pontos igual"]
+ - "⩵": [T: "dois consecutivo igual sinais"]
+ - "⩶": [T: "três consecutivo igual sinais"]
+ - "⩷": [T: "sinal de igual com dois pontos acima de e dois pontos abaixo de"]
+ - "⩸": [T: "equivalente com quatro pontos acima de"]
+ - "⩹": [T: "círculo menor que com dentro de"]
+ - "⩺": [T: "círculo maior que com dentro de"]
+ - "⩻": [T: "menor que com ponto de interrogação acima de"]
+ - "⩼": [T: "maior que com ponto de interrogação acima de"]
+ - "⩽": [T: "menor que ou inclinado igual a"]
+ - "⩾": [T: "maior que ou inclinado igual a"]
+ - "⩿": [T: "menor que ou inclinado igual a com ponto dentro de"]
+ - "⪀": [T: "maior que ou inclinado igual a com ponto dentro de"]
+ - "⪁": [T: "menor que ou inclinado igual a com ponto acima de"]
+ - "⪂": [T: "maior que ou inclinado igual a com ponto acima de"]
+ - "⪃": [T: "menor que ou inclinado igual a com ponto acima de direita"]
+ - "⪄": [T: "maior que ou inclinado igual a com ponto acima de esquerda"]
+ - "⪅": [T: "menor que ou aproximado"]
+ - "⪆": [T: "maior que ou aproximado"]
+ - "⪇": [T: "menor que e linha simples não igual a"]
+ - "⪈": [T: "maior que e linha simples não igual a"]
+ - "⪉": [T: "menor que e não aproximado"]
+ - "⪊": [T: "maior que e não aproximado"]
+ - "⪋": [T: "menor que acima de linha dupla igual acima de maior que"]
+ - "⪌": [T: "maior que acima de linha dupla igual acima de menor que"]
+ - "⪍": [T: "menor que acima de semelhante ou igual"]
+ - "⪎": [T: "maior que acima de semelhante ou igual"]
+ - "⪏": [T: "menor que acima de semelhante acima de maior que"]
+ - "⪐": [T: "maior que acima de semelhante acima de menor que"]
+ - "⪑": [T: "menor que acima de maior que acima de linha dupla igual"]
+ - "⪒": [T: "maior que acima de menor que acima de linha dupla igual"]
+ - "⪓": [T: "menor que acima de inclinado igual acima de maior que acima de inclinado igual"]
+ - "⪔": [T: "maior que acima de inclinado igual acima de menor que acima de inclinado igual"]
+ - "⪕": [T: "inclinado igual a ou menor que"]
+ - "⪖": [T: "inclinado igual a ou maior que"]
+ - "⪗": [T: "inclinado igual a ou menor que com ponto dentro de"]
+ - "⪘": [T: "inclinado igual a ou maior que com ponto dentro de"]
+ - "⪙": [T: "linha dupla igual a ou menor que"]
+ - "⪚": [T: "linha dupla igual a ou maior que"]
+ - "⪛": [T: "linha dupla inclinado igual a ou menor que"]
+ - "⪜": [T: "linha dupla inclinado igual a ou maior que"]
+ - "⪝": [T: "semelhante ou menor que"]
+ - "⪞": [T: "semelhante ou maior que"]
+ - "⪟": [T: "semelhante acima de menor que acima de sinal de igual"]
+ - "⪠": [T: "semelhante acima de maior que acima de sinal de igual"]
+ - "⪡": [T: "duplo aninhado menor que"]
+ - "⪢": [T: "duplo aninhado maior que"]
+ - "⪣": [T: "duplo aninhado menor que com barra inferior"]
+ - "⪤": [T: "maior que sobreposto menor que"]
+ - "⪥": [T: "maior que ao lado de menor que"]
+ - "⪦": [T: "menor que fechado por curva"]
+ - "⪧": [T: "maior que fechado por curva"]
+ - "⪨": [T: "menor que fechado por curva acima de inclinado igual"]
+ - "⪩": [T: "maior que fechado por curva acima de inclinado igual"]
+ - "⪪": [T: "menor que"]
+ - "⪫": [T: "maior que"]
+ - "⪬": [T: "menor que ou igual a"]
+ - "⪭": [T: "maior que ou igual a"]
+ - "⪮": [T: "sinal de igual com irregular acima de"]
+ - "⪯": [T: "precede acima de linha simples sinal de igual"]
+ - "⪰": [T: "sucede acima de linha simples sinal de igual"]
+ - "⪱": [T: "precede acima de linha simples não igual a"]
+ - "⪲": [T: "sucede acima de linha simples não igual a"]
+ - "⪳": [T: "precede acima de sinal de igual"]
+ - "⪴": [T: "sucede acima de sinal de igual"]
+ - "⪵": [T: "precede acima de não igual a"]
+ - "⪶": [T: "sucede acima de não igual a"]
+ - "⪷": [T: "precede acima de quase igual a"]
+ - "⪸": [T: "sucede acima de quase igual a"]
+ - "⪹": [T: "precede acima de não quase igual a"]
+ - "⪺": [T: "sucede acima de não quase igual a"]
+ - "⪻": [T: "duplo precede"]
+ - "⪼": [T: "duplo sucede"]
+ - "⪽": [T: "contido com ponto"]
+ - "⪾": [T: "contendo com ponto"]
+ - "⪿": [T: "contido com sinal de mais abaixo de"]
+ - "⫀": [T: "contendo com sinal de mais abaixo de"]
+ - "⫁": [T: "contido com sinal de multiplicação abaixo de"]
+ - "⫂": [T: "contendo com sinal de multiplicação abaixo de"]
+ - "⫃": [T: "contido em ou igual a com ponto acima de"]
+ - "⫄": [T: "contém ou igual a com ponto acima de"]
+ - "⫅": [T: "contido em acima de sinal de igual"]
+ - "⫆": [T: "contém acima de sinal de igual"]
+ - "⫇": [T: "contido em acima de operador til"]
+ - "⫈": [T: "contém acima de operador til"]
+ - "⫉": [T: "contido em acima de quase igual a"]
+ - "⫊": [T: "contém acima de quase igual a"]
+ - "⫋": [T: "contido acima de não igual a"]
+ - "⫌": [T: "contém acima de não igual a"]
+ - "⫍": [T: "quadrado esquerda aberto caixa operador"]
+ - "⫎": [T: "quadrado direita aberto caixa operador"]
+ - "⫏": [T: "fechado contido"]
+ - "⫐": [T: "fechado contendo"]
+ - "⫑": [T: "fechado contido ou igual a"]
+ - "⫒": [T: "fechado contendo ou igual a"]
+ - "⫓": [T: "contido acima de contendo"]
+ - "⫔": [T: "contendo acima de contido"]
+ - "⫕": [T: "contido acima de contido"]
+ - "⫖": [T: "contendo acima de contendo"]
+ - "⫗": [T: "contendo ao lado de contido"]
+ - "⫘": [T: "contendo ao lado de e unido por travessão com contido"]
+ - "⫙": [T: "pertence a abrindo baixo"]
+ - "⫚": [T: "forcado com t superior"]
+ - "⫛": [T: "interseção transversal"]
+ - "⫝̸": [T: "bifurcando"]
+ - "⫝": [T: "não bifurcante"]
+ - "⫞": [T: "curto taco à esquerda"]
+ - "⫟": [T: "curto taco para baixo"]
+ - "⫠": [T: "curto taco para cima"]
+ - "⫡": [T: "perpendicular com esse"]
+ - "⫢": [T: "barra vertical triplo catraca à direita"]
+ - "⫣": [T: "barra dupla vertical catraca à esquerda"]
+ - "⫤": [T: "barra vertical duplo catraca à esquerda"]
+ - "⫥": [T: "barra dupla vertical duplo catraca à esquerda"]
+ - "⫦": [T: "longo travessão a partir de esquerda membro de duplo vertical"]
+ - "⫧": [T: "curto taco com barra superior para baixo"]
+ - "⫨": [T: "curto taco com barra inferior para cima"]
+ - "⫩": [T: "curto taco acima de curto taco para baixo para cima"]
+ - "⫪": [T: "duplo taco para baixo"]
+ - "⫫": [T: "duplo taco para cima"]
+ - "⫬": [T: "traço duplo não sinal"]
+ - "⫭": [T: "traço invertido duplo não sinal"]
+ - "⫮": [T: "não divide com invertido negação barra"]
+ - "⫯": [T: "círculo vertical linha com acima de"]
+ - "⫰": [T: "círculo vertical linha com abaixo de"]
+ - "⫱": [T: "círculo baixo taco com abaixo de"]
+ - "⫲": [T: "paralelo com traço horizontal"]
+ - "⫳": [T: "paralelo com operador til"]
+ - "⫴": [T: "barra tripla vertical binário relação"]
+ - "⫵": [T: "barra tripla vertical com traço horizontal"]
+ - "⫶": [T: "triplo dois pontos operador"]
+ - "⫷": [T: "triplo aninhado menor que"]
+ - "⫸": [T: "triplo aninhado maior que"]
+ - "⫹": [T: "linha dupla inclinado menor ou igual a"]
+ - "⫺": [T: "linha dupla inclinado maior ou igual a"]
+ - "⫻": [T: "barra tripla binário relação"]
+ - "⫼": [T: "barra grande tripla operador vertical"]
+ - "⫽": [T: "barra dupla operador"]
+ - "⫾": [T: "barra branca vertical"]
+ - "⫿": [T: "barra branca vertical"]
+ - "⬀": [T: "seta branca para nordeste"]
+ - "⬁": [T: "seta branca para noroeste"]
+ - "⬂": [T: "seta branca para sudeste"]
+ - "⬃": [T: "seta branca para sudoeste"]
+ - "⬄": [T: "seta branca para a esquerda e para a direita"]
+ - "⬅": [T: "seta preta para a esquerda"]
+ - "⬆": [T: "seta preta para cima"]
+ - "⬇": [T: "seta preta para baixo"]
+ - "⬈": [T: "seta preta para nordeste"]
+ - "⬉": [T: "seta preta para noroeste"]
+ - "⬊": [T: "seta preta para sudeste"]
+ - "⬋": [T: "seta preta para sudoeste"]
+ - "⬌": [T: "seta preta para a esquerda e para a direita"]
+ - "⬍": [T: "seta preta para cima e para baixo"]
+ - "⬎": [T: "seta para a direita com ponta baixo"]
+ - "⬏": [T: "seta para a direita com ponta cima"]
+ - "⬐": [T: "seta para a esquerda com ponta baixo"]
+ - "⬑": [T: "seta para a esquerda com ponta cima"]
+ - "⬒": [T: "quadrado com superior metade preto"]
+ - "⬓": [T: "quadrado com inferior metade preto"]
+ - "⬔": [T: "quadrado com superior direita diagonal metade preto"]
+ - "⬕": [T: "quadrado com inferior esquerda diagonal metade preto"]
+ - "⬖": [T: "losango com esquerda metade preto"]
+ - "⬗": [T: "losango com direita metade preto"]
+ - "⬘": [T: "losango com superior metade preto"]
+ - "⬙": [T: "losango com inferior metade preto"]
+ - "⬚": [T: "caixa"]
+ - "⬛": [T: "quadrado preto grande"]
+ - "⬜": [T: "quadrado branco grande"]
+ - "⬝": [T: "quadrado preto muito pequeno"]
+ - "⬞": [T: "quadrado branco muito pequeno"]
+ - "⬟": [T: "pentágono preto"]
+ - "⬠": [T: "pentágono branco"]
+ - "⬡": [T: "hexágono branco"]
+ - "⬢": [T: "hexágono preto"]
+ - "⬣": [T: "hexágono horizontal preto"]
+ - "⬤": [T: "círculo preto grande"]
+ - "⬥": [T: "losango preto médio"]
+ - "⬦": [T: "losango branco médio"]
+ - "⬧": [T: "losango preto médio"]
+ - "⬨": [T: "losango branco médio"]
+ - "⬩": [T: "losango preto pequeno"]
+ - "⬪": [T: "losango preto pequeno"]
+ - "⬫": [T: "losango branco pequeno"]
+ - "⬬": [T: "elipse preta horizontal"]
+ - "⬭": [T: "elipse branca horizontal"]
+ - "⬮": [T: "elipse preta vertical"]
+ - "⬯": [T: "elipse branca vertical"]
+ - "⬰": [T: "seta para a esquerda com pequeno círculo"]
+ - "⬱": [T: "setas três para a esquerda"]
+ - "⬲": [T: "seta para a esquerda com circulado mais"]
+ - "⬳": [T: "seta longa serpenteante para a esquerda"]
+ - "⬴": [T: "seta de duas pontas para a esquerda com vertical traço"]
+ - "⬵": [T: "seta de duas pontas para a esquerda com duplo vertical traço"]
+ - "⬶": [T: "seta de duas pontas para a esquerda a partir de barra"]
+ - "⬷": [T: "seta de duas pontas de três traços para a esquerda"]
+ - "⬸": [T: "seta para a esquerda com pontilhado haste"]
+ - "⬹": [T: "seta para a esquerda com cauda com vertical traço"]
+ - "⬺": [T: "seta para a esquerda com cauda com duplo vertical traço"]
+ - "⬻": [T: "seta de duas pontas para a esquerda com cauda"]
+ - "⬼": [T: "seta de duas pontas para a esquerda com cauda com vertical traço"]
+ - "⬽": [T: "seta de duas pontas para a esquerda com cauda com duplo vertical traço"]
+ - "⬾": [T: "seta para a esquerda atravessado por xis"]
+ - "⬿": [T: "seta ondulada apontando diretamente esquerda"]
+ - "⭀": [T: "seta igual sinal acima de para a esquerda"]
+ - "⭁": [T: "seta invertida til operador acima de para a esquerda"]
+ - "⭂": [T: "seta para a esquerda acima de invertido quase igual a"]
+ - "⭃": [T: "seta para a direita atravessado por maior que"]
+ - "⭄": [T: "seta para a direita atravessado por contendo"]
+ - "⭅": [T: "seta quádrupla para a esquerda"]
+ - "⭆": [T: "seta quádrupla para a direita"]
+ - "⭇": [T: "seta invertida til operador acima de para a direita"]
+ - "⭈": [T: "seta para a direita acima de invertido quase igual a"]
+ - "⭉": [T: "seta til operador acima de para a esquerda"]
+ - "⭊": [T: "seta para a esquerda acima de quase igual a"]
+ - "⭋": [T: "seta para a esquerda acima de invertido operador til"]
+ - "⭌": [T: "seta para a direita acima de invertido operador til"]
+ - "⭐": [T: "estrela branca média"]
+ - "⭑": [T: "estrela preta pequena"]
+ - "⭒": [T: "estrela branca pequena"]
+ - "⭓": [T: "pentágono preto direita apontando"]
+ - "⭔": [T: "pentágono branco direita apontando"]
+ - "⭕": [T: "círculo grosso grande"]
+ - "⭖": [T: "grosso oval com oval dentro de"]
+ - "⭗": [T: "círculo grosso com círculo dentro de"]
+ - "⭘": [T: "círculo grosso"]
+ - "⭙": [T: "grosso circulado aspa"]
+ - "⸀": [T: "ângulo substituição marcador à direita"]
+ - "⸁": [T: "ângulo pontilhado substituição marcador à direita"]
+ - "⸂": [T: "abre colchete substituição"]
+ - "⸃": [T: "fecha colchete substituição"]
+ - "⸄": [T: "abre colchete pontilhado substituição"]
+ - "⸅": [T: "fecha colchete pontilhado substituição"]
+ - "⸆": [T: "elevado interpolação marcador"]
+ - "⸇": [T: "elevado pontilhado interpolação marcador"]
+ - "⸈": [T: "pontilhado transposição marcador marcador"]
+ - "⸉": [T: "abre colchete transposição"]
+ - "⸊": [T: "fecha colchete transposição"]
+ - "⸋": [T: "quadrado elevado"]
+ - "⸌": [T: "abre colchete elevado omissão"]
+ - "⸍": [T: "fecha colchete elevado omissão"]
+ - "⸎": [T: "editorial corônis"]
+ - "⸏": [T: "parágrafo"]
+ - "⸐": [T: "bifurcado parágrafo"]
+ - "⸑": [T: "invertido bifurcado parágrafo"]
+ - "⸒": [T: "hipodiástole"]
+ - "⸓": [T: "pontilhado óbelo"]
+ - "⸔": [T: "âncora para baixo"]
+ - "⸕": [T: "âncora para cima"]
+ - "⸖": [T: "pontilhado direita apontando ângulo"]
+ - "⸗": [T: "duplo oblíquo hífen"]
+ - "⸘": [T: "invertido interrobang"]
+ - "⸙": [T: "ramo de palmeira"]
+ - "⸚": [T: "hífen com trema"]
+ - "⸛": [T: "til com anel acima de"]
+ - "⸜": [T: "abre colchete baixo paráfrase"]
+ - "⸝": [T: "fecha colchete baixo paráfrase"]
+ - "⸞": [T: "til com ponto acima de"]
+ - "⸟": [T: "til com ponto abaixo de"]
+ - "⸠": [T: "barra vertical com pena à esquerda"]
+ - "⸡": [T: "barra vertical com pena à direita"]
+ - "⸢": [T: "superior esquerda metade colchete"]
+ - "⸣": [T: "superior direita metade colchete"]
+ - "⸤": [T: "inferior esquerda metade colchete"]
+ - "⸥": [T: "inferior direita metade colchete"]
+ - "⸦": [T: "abre colchete de lado u"]
+ - "⸧": [T: "fecha colchete de lado u"]
+ - "⸨": [T: "esquerda parênteses duplos"]
+ - "⸩": [T: "direita parênteses duplos"]
+ - "⸪": [T: "dois pontos sobre um ponto pontuação"]
+ - "⸫": [T: "um ponto sobre dois pontos pontuação"]
+ - "⸬": [T: "quatro ponto pontuação enquadrado"]
+ - "⸭": [T: "cinco ponto marca"]
+ - "⸮": [T: "ponto invertido de interrogação"]
+ - "ⸯ": [T: "til vertical"]
+ - "⸰": [T: "anel ponto"]
+ - "⸱": [T: "separador de palavras do meio ponto"]
+ - "⸲": [T: "invertido vírgula"]
+ - "⸳": [T: "elevado ponto"]
+ - "⸴": [T: "elevado vírgula"]
+ - "⸵": [T: "ponto invertido e vírgula"]
+ - "⸶": [T: "adaga com esquerda guarda"]
+ - "⸷": [T: "adaga com direita guarda"]
+ - "⸸": [T: "invertido adaga"]
+ - "⸹": [T: "superior metade seção sinal"]
+ - "⸺": [T: "dois em travessão"]
+ - "⸻": [T: "três em travessão"]
+ - "〃": [T: "idem marca"]
+ - "〈": [T: "abre colchete angular"]
+ - "〉": [T: "fecha colchete angular"]
+ - "《": [T: "abre colchete angular duplo"]
+ - "》": [T: "fecha colchete angular duplo"]
+ - "「": [T: "abre colchete canto"]
+ - "」": [T: "fecha colchete canto"]
+ - "『": [T: "abre colchete branco canto"]
+ - "』": [T: "fecha colchete branco canto"]
+ - "【": [T: "abre colchete preto lenticular"]
+ - "】": [T: "fecha colchete preto lenticular"]
+ - "〔": [T: "abre colchete concha de tartaruga"]
+ - "〕": [T: "fecha colchete concha de tartaruga"]
+ - "〖": [T: "abre colchete branco lenticular"]
+ - "〗": [T: "fecha colchete branco lenticular"]
+ - "〘": [T: "abre colchete branco concha de tartaruga"]
+ - "〙": [T: "fecha colchete branco concha de tartaruga"]
+ - "〚": [T: "abre colchete branco quadrado"]
+ - "〛": [T: "fecha colchete branco quadrado"]
+ - "〜": [T: "ondulado travessão"]
+ - "〰": [T: "ondulado travessão"]
+ - "㉈": [T: "dez sobre preto quadrado circulado"]
+ - "㉉": [T: "vinte sobre preto quadrado circulado"]
+ - "㉊": [T: "trinta sobre preto quadrado circulado"]
+ - "㉋": [T: "quarenta sobre pretos quadrado circulado"]
+ - "㉌": [T: "cinquenta sobre preto quadrado circulado"]
+ - "㉍": [T: "sessenta sobre preto quadrado circulado"]
+ - "㉎": [T: "setenta sobre preto quadrado circulado"]
+ - "㉏": [T: "oitenta sobre preto quadrado circulado"]
+ - "㉑": [T: "vinte um circulado"]
+ - "㉒": [T: "vinte dois circulado"]
+ - "㉓": [T: "vinte três circulado"]
+ - "㉔": [T: "vinte quatro circulado"]
+ - "㉕": [T: "vinte cinco circulado"]
+ - "㉖": [T: "vinte seis circulado"]
+ - "㉗": [T: "vinte sete circulado"]
+ - "㉘": [T: "vinte oito circulado"]
+ - "㉙": [T: "vinte nove circulado"]
+ - "㉚": [T: "trinta circulado"]
+ - "㉛": [T: "trinta um circulado"]
+ - "㉜": [T: "trinta dois circulado"]
+ - "㉝": [T: "trinta três circulado"]
+ - "㉞": [T: "trinta quatro circulado"]
+ - "㉟": [T: "trinta cinco circulado"]
+ - "㊱": [T: "trinta seis circulado"]
+ - "㊲": [T: "trinta sete circulado"]
+ - "㊳": [T: "trinta oito circulado"]
+ - "㊴": [T: "trinta nove circulado"]
+ - "㊵": [T: "quarenta circulado"]
+ - "㊶": [T: "quarenta um circulado"]
+ - "㊷": [T: "quarenta dois circulado"]
+ - "㊸": [T: "quarenta três circulado"]
+ - "㊹": [T: "quarenta quatro circulado"]
+ - "㊺": [T: "quarenta cinco circulado"]
+ - "㊻": [T: "quarenta seis circulado"]
+ - "㊼": [T: "quarenta sete circulado"]
+ - "㊽": [T: "quarenta oito circulado"]
+ - "㊾": [T: "quarenta nove circulado"]
+ - "㊿": [T: "cinquenta circulado"]
+ - "㋌": [T: "mercúrio"]
+ - "㋍": [T: "ergs"]
+ - "㋎": [T: "elétron volts"]
+ - "㋏": [T: "limitado responsabilidade sinal"]
+ - "㍱": [T: "hectopascals"]
+ - "㍲": [T: "daltons"]
+ - "㍳": [T: "unidades astronômicas"]
+ - "㍴": [T: "barras"]
+ - "㍵": [T: "o vê"]
+ - "㍶": [T: "parsecs"]
+ - "㍷": [T: "decimetros"]
+ - "㍸": [T: "decímetros ao quadrado"]
+ - "㍹": [T: "decímetros ao cubo"]
+ - "㍺": [T: "instrumental unidades"]
+ - "㎀": [T: "picoampères"]
+ - "㎁": [T: "nanoampères"]
+ - "㎂": [T: "microampères"]
+ - "㎃": [T: "miliampères"]
+ - "㎄": [T: "quiloampères"]
+ - "㎅": [T: "quilobytes"]
+ - "㎆": [T: "megabytes"]
+ - "㎇": [T: "gigabytes"]
+ - "㎈": [T: "calorias"]
+ - "㎉": [T: "quilocalorias"]
+ - "㎊": [T: "picofarads"]
+ - "㎋": [T: "nanofarads"]
+ - "㎌": [T: "microfarads"]
+ - "㎍": [T: "microgramas"]
+ - "㎎": [T: "miligramas"]
+ - "㎏": [T: "quilogramas"]
+ - "㎐": [T: "hertz"]
+ - "㎑": [T: "quilohertz"]
+ - "㎒": [T: "megahertz"]
+ - "㎓": [T: "gigahertz"]
+ - "㎔": [T: "terahertz"]
+ - "㎕": [T: "microlitros"]
+ - "㎖": [T: "mililitros"]
+ - "㎗": [T: "decilitros"]
+ - "㎘": [T: "quilolitros"]
+ - "㎙": [T: "femtometros"]
+ - "㎚": [T: "nanometros"]
+ - "㎛": [T: "micrometros"]
+ - "㎜": [T: "milimetros"]
+ - "㎝": [T: "centimetros"]
+ - "㎞": [T: "quilometros"]
+ - "㎟": [T: "milímetros ao quadrado"]
+ - "㎠": [T: "centímetros ao quadrado"]
+ - "㎡": [T: "metros ao quadrado"]
+ - "㎢": [T: "quilômetros ao quadrado"]
+ - "㎣": [T: "milímetros ao cubo"]
+ - "㎤": [T: "centímetros ao cubo"]
+ - "㎥": [T: "metros ao cubo"]
+ - "㎦": [T: "quilômetros ao cubo"]
+ - "㎧": [T: "metros por segundo"]
+ - "㎨": [T: "metros por segundo ao quadrado"]
+ - "㎩": [T: "pascals"]
+ - "㎪": [T: "quilopascals"]
+ - "㎫": [T: "megapascals"]
+ - "㎬": [T: "gigapascals"]
+ - "㎭": [T: "radianos"]
+ - "㎮": [T: "radianos por segundo"]
+ - "㎯": [T: "radianos por segundo ao quadrado"]
+ - "㎰": [T: "picosegundos"]
+ - "㎱": [T: "nanosegundos"]
+ - "㎲": [T: "microsegundos"]
+ - "㎳": [T: "milisegundos"]
+ - "㎴": [T: "picovolts"]
+ - "㎵": [T: "nanovolts"]
+ - "㎶": [T: "microvolts"]
+ - "㎷": [T: "milivolts"]
+ - "㎸": [T: "quilovolts"]
+ - "㎹": [T: "megavolts"]
+ - "㎺": [T: "picowatts"]
+ - "㎻": [T: "nanowatts"]
+ - "㎼": [T: "microwatts"]
+ - "㎽": [T: "miliwatts"]
+ - "㎾": [T: "quilowatts"]
+ - "㎿": [T: "megawatts"]
+ - "㏀": [T: "quiloohms"]
+ - "㏁": [T: "megaohms"]
+ - "㏂": [T: "atometros"]
+ - "㏃": [T: "becquereis"]
+ - "㏄": [T: "cúbico centímetros"]
+ - "㏅": [T: "candelas"]
+ - "㏆": [T: "coulombs por quilograma"]
+ - "㏇": [T: "maiúscula C, o, ponto final"]
+ - "㏈": [T: "decibéis"]
+ - "㏉": [T: "grays"]
+ - "㏊": [T: "hectares"]
+ - "㏋": [T: "cavalo-vapor"]
+ - "㏌": [T: "polegadas"]
+ - "㏍": [T: "quilokelvins"]
+ - "㏎": [T: "quilometros"]
+ - "㏏": [T: "nós"]
+ - "㏐": [T: "lúmens"]
+ - "㏑": [T: "logaritmo natural"]
+ - "㏒": [T: "logaritmo"]
+ - "㏓": [T: "lux"]
+ - "㏔": [T: "milibarns"]
+ - "㏕": [T: "mills"]
+ - "㏖": [T: "moles"]
+ - "㏗": [T: "pê agá"]
+ - "㏘": [T: "picometros"]
+ - "㏙": [T: "partes por milhão"]
+ - "㏚": [T: "petaroentgens"]
+ - "㏛": [T: "esferorradianos"]
+ - "㏜": [T: "sieverts"]
+ - "㏝": [T: "webers"]
+ - "㏞": [T: "volts por metro"]
+ - "㏟": [T: "ampères por metro"]
+ - "㏿": [T: "galões"]
+ - "": [T: "igual com chapéu abaixo de"]
+ - "": [T: "igual com mais acima de"]
+ - "": [T: "igual com mais abaixo de"]
+ - "": [T: "til com mais acima de"]
+ - "": [T: "til com mais abaixo de"]
+ - "": [T: "igual duplo sobre maior que"]
+ - "": [T: "igual duplo sobre menor que"]
+ - "": [T: "contém ou igual a"]
+ - "": [T: "contém ou igual a"]
+ - "": [T: "contido em ou igual a"]
+ - "": [T: "igual sobre menor que"]
+ - "": [T: "pertence a ou igual a"]
+ - "": [T: "igual a ou maior que"]
+ - "": [T: "aproximado contém"]
+ - "": [T: "aproximado contido em"]
+ - "": [T: "contém com ponto inclui como sub relação"]
+ - "": [T: "contido em com ponto é incluído em como sub relação"]
+ - "": [T: "igual com ponto abaixo de"]
+ - "": [T: "ponto sobre menos sobre ponto à direita à esquerda"]
+ - "": [T: "ponto sobre menos sobre ponto à esquerda à direita"]
+ - "": [T: "quase igual a menos"]
+ - "": [T: "quadrado duplo xícara"]
+ - "": [T: "quadrado duplo maiúscula"]
+ - "": [T: "menor que igual a ou maior que"]
+ - "": [T: "til com ponto"]
+ - "": [T: "til com dois pontos"]
+ - "": [T: "menor que maior ou igual a"]
+ - "": [T: "maior que menor ou igual a"]
+ - "": [T: "equivalente a ou menor que"]
+ - "": [T: "equivalente a ou maior que"]
+ - "": [T: "esquerda aberto caixa operador"]
+ - "": [T: "direita aberto caixa operador"]
+ - "": [T: "idêntico a com ponto"]
+ - "": [T: "maior que igual a ou menor que"]
+ - "": [T: "operador barra"]
+ - "": [T: "operador duplo barra"]
+ - "": [T: "operador triplo barra"]
+ - "": [T: "menor que ou aproximadamente igual a"]
+ - "": [T: "maior que ou aproximadamente igual a"]
+ - "": [T: "aninhado menor que"]
+ - "": [T: "aninhado maior que"]
+ - "": [T: "precede ou equivalente a"]
+ - "": [T: "sucede ou equivalente a"]
+ - "": [T: "precede sobre igual"]
+ - "": [T: "sucede sobre igual"]
+ - "": [T: "menor igual inclinado maior"]
+ - "": [T: "maior igual inclinado menor"]
+ - "": [T: "satisfeito por"]
+ - "": [T: "deitado esse"]
+ - "": [T: "não asserção"]
+ - "": [T: "duplo igual"]
+ - "": [T: "triplo igual"]
+ - "": [T: "régua atrasado"]
+ - "": [T: "alias delimitador"]
+ - "": [T: "subgrupo normal de com barra"]
+ - "": [T: "contém como subgrupo normal com barra"]
+ - "": [T: "implica arredondado"]
+ - "": [T: "sorriso barra inferior"]
+ - "": [T: "carranca barra superior"]
+ - "": [T: "contém ou quase igual a"]
+ - "": [T: "contido em ou quase igual a"]
+ - "": [T: "maior que quase igual a ou menor que"]
+ - "": [T: "menor que quase igual ou maior que"]
+ - "": [T: "duplo ou lógico"]
+ - "": [T: "duplo e lógico"]
+ - "": [T: "ou lógico com barra dupla abaixo de"]
+ - "": [T: "ou lógico com barra abaixo de"]
+ - "": [T: "quase igual sobre igual"]
+ - "": [T: "triângulo esquerda apontando com bissectando barra"]
+ - "": [T: "triângulo direita apontando com bissectando barra"]
+ - "": [T: "igual com linha pontilhada superior"]
+ - "": [T: "precede com dois pontos"]
+ - "": [T: "sucede com dois pontos"]
+ - "": [T: "menor que ou igual inclinado"]
+ - "": [T: "maior que ou igual inclinado"]
+ - "": [T: "aninhado muito muito menor que"]
+ - "": [T: "aninhado muito muito maior que"]
+ - "": [T: "diferença entre variante"]
+ - "": [T: "menor que maior que sobreposto"]
+ - "": [T: "ou lógico e lógico sobreposto"]
+ - "": [T: "contendo sobre contendo"]
+ - "": [T: "contido sobre contido"]
+ - "": [T: "contendo sobre contido"]
+ - "": [T: "contido sobre contendo"]
+ - "": [T: "barra tripla vertical"]
+ - "": [T: "pontos pareados quádruplos verticales"]
+ - "": [T: "perpendicular barra superior"]
+ - "": [T: "catraca barra dupla vertical à esquerda"]
+ - "": [T: "duplo catraca barra dupla vertical à esquerda"]
+ - "": [T: "perpendicular sobre invertido perpendicular"]
+ - "": [T: "duplo catraca barra vertical à esquerda"]
+ - "": [T: "ângulo esférico abrindo cima"]
+ - "": [T: "barra dupla"]
+ - "": [T: "ângulo com canto à direita"]
+ - "": [T: "barra vertical circulado"]
+ - "": [T: "sinal de divisão circulado"]
+ - "": [T: "barra tracejada"]
+ - "": [T: "barra tracejada invertida"]
+ - "": [T: "linha tracejada média"]
+ - "": [T: "barra tracejada vertical"]
+ - "": [T: "perpendicular com esse"]
+ - "": [T: "ângulo com esse"]
+ - "": [T: "ângulo esférico abrindo esquerda"]
+ - "": [T: "ângulo abrindo esquerda"]
+ - "": [T: "barra vertical com gancho duplo"]
+ - "": [T: "ponto médio operador radical livre"]
+ - "": [T: "triângulo branco cima apontando acima de barra"]
+ - "": [T: "idêntico e paralelo a"]
+ - "": [T: "produto esmagado"]
+ - "": [T: "operador triplo barra com barra horizontal"]
+ - "": [T: "idêntico a com barra dupla"]
+ - "": [T: "barras triplas cruzadas"]
+ - "": [T: "círculo vertical barra sobre"]
+ - "": [T: "vertical proporcional a"]
+ - "": [T: "preto último um quarto lua"]
+ - "": [T: "preto primeiro um quarto lua"]
+ - "": [T: "negativo seno ondulado"]
+ - "": [T: "ponto entre parênteses"]
+ - "": [T: "parênteses"]
+ - "": [T: "branco sorriso"]
+ - "": [T: "branco carranca"]
+ - "": [T: "hexágono"]
+ - "": [T: "equivalente a sobre mais"]
+ - "": [T: "mais sobre equivalente a"]
+ - "": [T: "interseção serifas"]
+ - "": [T: "união serifas"]
+ - "": [T: "quadrado interseção serifas"]
+ - "": [T: "quadrado união serifas"]
+ - "": [T: "precede equivalente a ou sucede"]
+ - "": [T: "sucede equivalente a ou precede"]
+ - "": [T: "precede quase igual a ou sucede"]
+ - "": [T: "sucede quase igual a ou precede"]
+ - "": [T: "menor que equivalente a ou maior que"]
+ - "": [T: "maior que equivalente a ou menor que"]
+ - "": [T: "não vertical muito menor que"]
+ - "": [T: "não vertical muito maior que"]
+ - "": [T: "não muito menor que variante"]
+ - "": [T: "não muito maior que variante"]
+ - "": [T: "menor vertical não duplo igual"]
+ - "": [T: "maior que vertical não duplo igual"]
+ - "": [T: "não menor ou igual a"]
+ - "": [T: "não maior ou igual a"]
+ - "": [T: "nem igual a nem menor que"]
+ - "": [T: "não contém ou igual a"]
+ - "": [T: "nem contém nem igual a"]
+ - "": [T: "nem contido em nem igual a"]
+ - "": [T: "barra invertida contido"]
+ - "": [T: "nem igual a nem maior que"]
+ - "": [T: "não menos operador til"]
+ - "": [T: "nem igual a nem menor que"]
+ - "": [T: "não operador til"]
+ - "": [T: "não pertence a ou igual a"]
+ - "": [T: "nem igual a nem maior que"]
+ - "": [T: "não quase igual"]
+ - "": [T: "não sucede semelhante"]
+ - "": [T: "menor que ou inclinado igual a com barra"]
+ - "": [T: "maior que ou inclinado igual a com barra"]
+ - "": [T: "contendo barra"]
+ - "": [T: "não contém"]
+ - "": [T: "não menor ou igual a"]
+ - "": [T: "não maior ou igual a"]
+ - "": [T: "não quase igual a menos"]
+ - "": [T: "negado conjunto pertinência ponto acima de"]
+ - "": [T: "não ângulo vertical"]
+ - "": [T: "não paralelo inclinado"]
+ - "": [T: "não operador barra"]
+ - "": [T: "não operador duplo barra"]
+ - "": [T: "não operador triplo barra"]
+ - "": [T: "menor que mas não aproximadamente igual a"]
+ - "": [T: "maior que mas não aproximadamente igual a"]
+ - "": [T: "menor que ou não igual a"]
+ - "": [T: "maior que ou não igual a"]
+ - "": [T: "não aninhado menor que"]
+ - "": [T: "não aninhado maior que"]
+ - "": [T: "não muito menor que"]
+ - "": [T: "não muito maior que"]
+ - "": [T: "precede mas não equivalente a"]
+ - "": [T: "sucede mas não equivalente a"]
+ - "": [T: "precede mas não igual a"]
+ - "": [T: "sucede mas não igual a"]
+ - "": [T: "não igual ou precede"]
+ - "": [T: "não igual ou sucede"]
+ - "": [T: "precede mas não igual a"]
+ - "": [T: "sucede mas não igual a"]
+ - "": [T: "não contido em nem igual a"]
+ - "": [T: "não contém nem igual a"]
+ - "": [T: "contido em ou não igual a"]
+ - "": [T: "contém ou não igual a"]
+ - "": [T: "não contido em nem igual a"]
+ - "": [T: "não contém nem igual a"]
+ - "": [T: "não triplo menor que"]
+ - "": [T: "não triplo maior que"]
+ - "": [T: "não precede igual"]
+ - "": [T: "não sucede igual"]
+ - "": [T: "não subgrupo normal de com barra"]
+ - "": [T: "não contém como subgrupo normal com barra"]
+ - "": [T: "não diferença entre"]
+ - "": [T: "não geometricamente equivalente a"]
+ - "": [T: "não vertical semelhante"]
+ - "": [T: "não igual ou semelhante"]
+ - "": [T: "não vertical aproximado"]
+ - "": [T: "não aproximadamente idêntico a"]
+ - "": [T: "não irregular igual"]
+ - "": [T: "não irregular simples igual"]
+ - "": [T: "não igual ponto"]
+ - "": [T: "invertido não equivalente"]
+ - "": [T: "quadrado não contido"]
+ - "": [T: "quadrado não contendo"]
+ - "": [T: "não quase igual sobre igual"]
+ - "": [T: "não estritamente equivalente a"]
+ - "": [T: "não congruente ponto"]
+ - "": [T: "invertido não igual"]
+ - "": [T: "triângulo não vertical esquerda igual"]
+ - "": [T: "triângulo não vertical direita igual"]
+ - "": [T: "não parcial"]
+ - "": [T: "seta extensor"]
+ - "": [T: "seta para a direita sobre seta esquerda"]
+ - "": [T: "seta para a direita sobre seta esquerda"]
+ - "": [T: "arpão para a direita sobre arpão esquerda"]
+ - "": [T: "arpão para a direita sobre arpão esquerda"]
+ - "": [T: "seta dupla para nordeste e para sudoeste"]
+ - "": [T: "seta dupla para noroeste e para sudeste"]
+ - "": [T: "arpão horizontal extensor"]
+ - "": [T: "seta no sentido anti-horário arco para a esquerda"]
+ - "": [T: "seta no sentido anti-horário arco para a direita"]
+ - "": [T: "seta grande para a direita acento"]
+ - "": [T: "seta grande para a esquerda acento"]
+ - "": [T: "ponta de seta à esquerda"]
+ - "": [T: "ponta de seta à direita"]
+ - "": [T: "seta grande para a esquerda e para a direita com traço"]
+ - "": [T: "seta horizontal dupla extensor"]
+ - "": [T: "seta grande dupla para a esquerda e para a direita com traço"]
+ - "": [T: "seta para baixo à esquerda de seta para cima"]
+ - "": [T: "seta para a esquerda com canto baixo"]
+ - "": [T: "seta para a direita com canto cima"]
+ - "": [T: "seta para a esquerda com canto cima"]
+ - "": [T: "seta semicircular superior no sentido anti-horário com mais"]
+ - "": [T: "seta semicircular superior no sentido horário com menos"]
+ - "": [T: "seta para a direita com cauda com traço"]
+ - "": [T: "arpão para a direita com farpa para baixo"]
+ - "": [T: "arpão para a esquerda com farpa para baixo"]
+ - "": [T: "arpão para a esquerda e para a direita baixo"]
+ - "": [T: "arpão para a esquerda e para a direita cima"]
+ - "": [T: "arpão para cima e para baixo esquerda"]
+ - "": [T: "arpão para cima e para baixo direita"]
+ - "": [T: "seta para cima à direita de baixo seta"]
+ - "": [T: "arpão para a esquerda a barra com farpa cima"]
+ - "": [T: "arpão para a direita a barra com farpa cima"]
+ - "": [T: "arpão para a esquerda a barra com farpa baixo"]
+ - "": [T: "arpão para a direita a barra com farpa baixo"]
+ - "": [T: "arpão para a esquerda a partir de barra com farpa cima"]
+ - "": [T: "arpão para a direita a partir de barra com farpa cima"]
+ - "": [T: "arpão para a esquerda a partir de barra com farpa baixo"]
+ - "": [T: "arpão para a direita a partir de barra com farpa baixo"]
+ - "": [T: "arpão para cima a barra com farpa esquerda"]
+ - "": [T: "arpão para baixo a barra com farpa esquerda"]
+ - "": [T: "arpão para cima a barra com farpa direita"]
+ - "": [T: "arpão para baixo a barra com farpa direita"]
+ - "": [T: "arpão para cima a partir de barra com farpa esquerda"]
+ - "": [T: "arpão para baixo a partir de barra com farpa esquerda"]
+ - "": [T: "arpão para cima a partir de barra com farpa direita"]
+ - "": [T: "arpão para baixo a partir de barra com farpa direita"]
+ - "": [T: "seta para cima a barra"]
+ - "": [T: "seta para baixo a barra"]
+ - "": [T: "arpão para cima à esquerda de baixo arpão"]
+ - "": [T: "arpão para cima à direita de baixo arpão"]
+ - "": [T: "ponta de seta para cima"]
+ - "": [T: "ponta de seta para baixo"]
+ - "": [T: "arpão duplo com esquerda farpa baixo direita farpa cima"]
+ - "": [T: "arpão duplo com esquerda farpa cima direita farpa baixo"]
+ - "": [T: "seta para a esquerda barra superior"]
+ - "": [T: "seta para a direita barra superior"]
+ - "": [T: "seta para a esquerda barra inferior"]
+ - "": [T: "seta para a direita barra inferior"]
+ - "": [T: "seta tripla para a esquerda e para a direita"]
+ - "": [T: "seta dupla para nordeste e para sudeste"]
+ - "": [T: "seta semicircular no sentido anti-horário para a esquerda"]
+ - "": [T: "seta semicircular no sentido horário para a esquerda"]
+ - "": [T: "seta esquerda aberta círculo para a esquerda e para a direita"]
+ - "": [T: "seta para a direita sobre til"]
+ - "": [T: "seta para a esquerda sobre til"]
+ - "": [T: "arpão para a esquerda barra superior"]
+ - "": [T: "arpão para a direita barra superior"]
+ - "": [T: "arpão para a esquerda barra inferior"]
+ - "": [T: "arpão para a direita barra inferior"]
+ - "": [T: "seta achatado preta para a esquerda"]
+ - "": [T: "seta semicircular no sentido horário para a direita"]
+ - "": [T: "seta semicircular no sentido anti-horário para a direita"]
+ - "": [T: "arpão esquerda aberto círculo para a esquerda e para a direita"]
+ - "": [T: "seta para cima esquerda de barra vertical"]
+ - "": [T: "seta para baixo esquerda de barra vertical"]
+ - "": [T: "seta para cima direita de barra vertical"]
+ - "": [T: "seta para baixo direita de barra vertical"]
+ - "": [T: "seta para a direita com estendido baixo gancho"]
+ - "": [T: "seta para a esquerda com estendido gancho"]
+ - "": [T: "seta para a esquerda com estendido baixo gancho"]
+ - "": [T: "seta para a direita com estendido gancho"]
+ - "": [T: "seta não para a direita ondulado"]
+ - "": [T: "seta não para a direita curvo"]
+ - "": [T: "arpão para cima esquerda de barra vertical"]
+ - "": [T: "arpão para baixo esquerda de barra vertical"]
+ - "": [T: "arpão para cima direita de barra vertical"]
+ - "": [T: "arpão para baixo direita de barra vertical"]
+ - "": [T: "seta vertical dupla extensor"]
+ - "": [T: "arpão vertical com farpa esquerda extensor"]
+ - "": [T: "arpão vertical com farpa direita extensor"]
+ - "": [T: "arpão para a direita sobre esquerda arpão direita"]
+ - "": [T: "arpão para a direita sobre esquerda arpão esquerda"]
+ - "": [T: "arpão para a esquerda sobre direita arpão direita"]
+ - "": [T: "arpão para a esquerda sobre direita arpão esquerda"]
+ - "": [T: "seta para a esquerda a partir de barra ponta de seta"]
+ - "": [T: "seta para a esquerda e para a direita a partir de barra extensor"]
+ - "": [T: "seta para a esquerda a partir de barra cauda"]
+ - "": [T: "seta para a direita a partir de barra cauda"]
+ - "": [T: "seta para a direita a partir de barra ponta de seta"]
+ - "": [T: "arpão para cima a partir de barra com farpa esquerda ponta de seta"]
+ - "": [T: "seta para a direita sobre esquerda seta direita"]
+ - "": [T: "seta para a direita sobre esquerda seta esquerda"]
+ - "": [T: "seta para a esquerda sobre direita seta direita"]
+ - "": [T: "seta para a esquerda sobre direita seta esquerda"]
+ - "": [T: "seta para cima a partir de barra ponta de seta"]
+ - "": [T: "seta para cima a partir de barra cauda"]
+ - "": [T: "seta para baixo a partir de barra cauda"]
+ - "": [T: "seta para baixo a partir de barra ponta de seta"]
+ - "": [T: "arpão para baixo a partir de barra com farpa direita ponta de seta"]
+ - "": [T: "arpão para cima à esquerda de baixo arpão inferior"]
+ - "": [T: "arpão para cima à esquerda de baixo arpão extensor"]
+ - "": [T: "arpão para baixo à esquerda de cima arpão superior"]
+ - "": [T: "arpão para cima à esquerda de baixo arpão superior"]
+ - "": [T: "arpão para baixo à esquerda de o cima arpão extensor"]
+ - "": [T: "arpão para baixo à esquerda de o cima arpão inferior"]
+ - "": [T: "seta para cima esquerda de baixo seta inferior"]
+ - "": [T: "seta para baixo esquerda de cima seta superior"]
+ - "": [T: "seta para cima esquerda de baixo seta superior"]
+ - "": [T: "seta para baixo esquerda de cima seta inferior"]
+ - "": [T: "setas para a esquerda e para a direita extensor"]
+ - "": [T: "seta para nordeste extensor"]
+ - "": [T: "seta para noroeste extensor"]
+ - "": [T: "baixo apontando chave esquerda"]
+ - "": [T: "baixo apontando chave médio"]
+ - "": [T: "baixo apontando chave direita"]
+ - "": [T: "chave horizontal extensor"]
+ - "": [T: "cima apontando chave esquerda"]
+ - "": [T: "cima apontando chave médio"]
+ - "": [T: "apontando para chave direita para cima"]
+ - "": [T: "barra vertical à esquerda"]
+ - "": [T: "barra vertical à direita"]
+ - "": [T: "esquerda barra dupla vertical"]
+ - "": [T: "direita barra dupla vertical"]
+ - "": [T: "colchete horizontal extensor"]
+ - "": [T: "quadrado sob colchete"]
+ - "⎵": [T: "quadrado sob colchete"]
+ - "": [T: "quadrado sobre colchete"]
+ - "⎴": [T: "quadrado sobre colchete"]
+ - "": [T: "sob colchete esquerda"]
+ - "": [T: "sob colchete direita"]
+ - "": [T: "sobre colchete esquerda"]
+ - "": [T: "sobre colchete direita"]
+ - "": [T: "abre parênteses 1"]
+ - "": [T: "abre parênteses 2"]
+ - "": [T: "abre parênteses 3"]
+ - "": [T: "abre parênteses 4"]
+ - "": [T: "fecha parênteses 1"]
+ - "": [T: "fecha parênteses 2"]
+ - "": [T: "fecha parênteses 3"]
+ - "": [T: "fecha parênteses 4"]
+ - "": [T: "radical 1"]
+ - "": [T: "radical 2"]
+ - "": [T: "radical 3"]
+ - "": [T: "radical 4"]
+ - "": [T: "radical 5"]
+ - "": [T: "radical inferior"]
+ - "": [T: "radical extensor vertical"]
+ - "": [T: "radical superior"]
+ - "": [T: "esquerda colchete branco superior"]
+ - "": [T: "esquerda colchete branco extensor"]
+ - "": [T: "esquerda colchete branco inferior"]
+ - "": [T: "direita colchete branco superior"]
+ - "": [T: "direita colchete branco extensor"]
+ - "": [T: "direita colchete branco inferior"]
+ - "": [T: "abre colchete branco encaracolado"]
+ - "": [T: "fecha colchete branco encaracolado"]
+ - "": [T: "sinal longo de divisão"]
+ - "": [T: "sinal longo de divisão extensor"]
+ - "": [T: "divisão curta"]
+ - "": [T: "duplo sudoeste a nordeste ligação em"]
+ - "": [T: "duplo noroeste a sudeste ligação em"]
+ - "": [T: "simples horizontal ligação em"]
+ - "": [T: "duplo horizontal ligação em"]
+ - "": [T: "triplo horizontal ligação em"]
+ - "": [T: "simples vertical ligação em"]
+ - "": [T: "duplo vertical ligação em"]
+ - "": [T: "triplo vertical ligação em"]
+ - "": [T: "menor que ligação em"]
+ - "": [T: "maior que ligação em"]
+ - "": [T: "simples horizontal ligação en"]
+ - "": [T: "duplo horizontal ligação en"]
+ - "": [T: "triplo horizontal ligação en"]
+ - "": [T: "retângulo superior esquerda"]
+ - "": [T: "retângulo inferior esquerda"]
+ - "": [T: "retângulo superior direita"]
+ - "": [T: "retângulo inferior direita"]
+ - "": [T: "divisão sintética canto"]
+ - "": [T: "divisão sintética extensor horizontal"]
+ - "": [T: "divisão sintética extensor vertical"]
+ - "": [T: "esquerda teto piso extensor"]
+ - "": [T: "direita teto piso extensor"]
+ - "": [T: "sobre colchete extensor"]
+ - "": [T: "barra extensor vertical"]
+ - "": [T: "esquerda barra dupla extensor vertical"]
+ - "": [T: "barra extensor horizontal"]
+ - "": [T: "sob colchete extensor"]
+ - "": [T: "baixo apontando parêntese direita"]
+ - "": [T: "baixo apontando parêntese extensor"]
+ - "": [T: "baixo apontando parêntese esquerda"]
+ - "": [T: "cima apontando chave extensor"]
+ - "": [T: "cima apontando parêntese esquerda"]
+ - "": [T: "cima apontando parêntese extensor"]
+ - "": [T: "cima apontando parêntese direita"]
+ - "": [T: "baixo apontando chave extensor"]
+ - "": [T: "planck constante sobre dois pi barra"]
+ - "": [T: "g espelhado"]
+ - "": [T: "sem ponto jota"]
+ - "": [T: "digama"]
+ - "ϝ": [T: "digama"]
+ - "": [T: "dê"]
+ - "": [T: "e"]
+ - "": [T: "i"]
+ - "": [T: "jota"]
+ - "ⅅ":
+    - spell: "translate('.', 'ⅅ', 'DD')"                                         # 0xed16, 0x2145
+ - "": [T: "no sentido anti-horário contorno integral laço"]
+ - "": [T: "no sentido horário contorno integral laço"]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: "junção status"]
+ - "": [T: "junção status esquerda"]
+ - "": [T: "junção status direita"]
+ - "": [T: "junção status extensor"]
+ - "": [T: "integral laço"]
+ - "": [T: "integral laço duplo"]
+ - "": [T: "integral laço triplo"]
+ - "": [T: "expandindo integral laço duplo"]
+ - "": [T: "expandindo integral laço triplo"]
+ - "": [T: "assintoticamente igual a acento"]
+ - "": [T: "sinal de igual acento"]
+ - "": [T: "linha quádrupla"]
+ - "": [T: "círculo barra acento com aberto esquerda"]
+ - "": [T: "círculo barra acento com fechado esquerda"]
+ - "": [T: "círculo barra acento com aberto direita"]
+ - "": [T: "barra acento com sobre ponto"]
+ - "": [T: "barra acento com sob ponto"]
+ - "": [T: "barra acento com duplo sobre ponto"]
+ - "": [T: "barra acento com duplo sob ponto"]
+ - "": [T: "barra acento com circunflexo"]
+ - "": [T: "barra espessa acento inferior"]
+ - "": [T: "círculo barra acento com fechado direita"]
+ - "": [T: "ponto grande acima de"]
+ - "": [T: "alinhamento marca"]
+ - "": [T: ""]
+ - "​": [T: ""]
+ - "": [T: ""]
+ - " ": [T: ""]
+ - "": [T: ""]
+ - " ": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - " ": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: ""]
+ - "": [T: "ausente termo"]
+ - "": [T: "seta no sentido horário contorno integral sobre esquerda"]
+ - "": [T: "quadrado integral com"]
+ - "": [T: "integral com barra"]
+ - "": [T: "integral invertida"]
+ - "": [T: "duplo zero sobre duplo zero"]
+ - "": [T: "zero com barra"]
+ - "-":
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" 
+ - "":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "maiúscula"]
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [T: "ligadura a e"]
+ - "":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "maiúscula"]
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [T: "sustenido esse"]
+ - "":
+    - test: 
+        if: "$CapitalLetters_Beep"
+        then:
+        - audio:
+            value: "beep.mp4"
+            replace: []
+    - test: 
+        if: "$CapitalLetters_UseWord"
+        then_test:
+          if: "$SpeechOverrides_CapitalLetters = ''"
+          then_test:
+            if: "$Impairment = 'Blindness'"
+            then: [T: "maiúscula"]
+          else: [x: "$SpeechOverrides_CapitalLetters"] 
+    - pitch:
+        value: "$CapitalLetters_Pitch"
+        replace: [T: "o com traço"]
+ - "":
+    - spell: "translate('.', '', 'ΔΨΛΠΣΘΓΩΥ')"
+    - T: "vazado"
+ - "-":
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+    - T: "vazado"
+ - "": [T: "vazado final sigma"]
+ - "": [T: "vazado rô"]
+ - "": [T: "vazado fi"]
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝐴-𝑍":
+    - spell: "translate('.', '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝑎-𝑧":
+    - spell: "translate('.', '𝑎𝑏𝑐𝑑𝑒𝑓𝑔𝑕𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝖠-𝖹":
+    - spell: "translate('.', '𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝖺-𝗓":
+    - spell: "translate('.', '𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝗔-𝗭":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝗮-𝘇":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝘈-𝘡":
+    - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝘢-𝘻":
+    - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝘼-𝙕":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝙖-𝙯":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "𝙰-𝚉":
+    - spell: "translate('.', '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "-":
+    - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+ - "𝚊-𝚣":
+    - spell: "translate('.', '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣', 'abcdefghijklmnopqrstuvwxyz')"
+ - "-":
+    - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
+ - "": [T: "sem ponto i"]
+ - "𝚤": [T: "sem ponto i"]
+ - "𝚥": [T: "sem ponto jota"]
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "": [T: "em negrito nábela"]
+ - "𝛁": [T: "em negrito nábela"]
+ - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
+ - "":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '∂εθκφρπ')"
+ - "𝛢-𝛺":
+    - spell: "translate('.', '𝛢𝛣𝛤𝛥𝛦𝛧𝛨𝛩𝛪𝛫𝛬𝛭𝛮𝛯𝛰𝛱𝛲𝛳𝛴𝛵𝛶𝛷𝛸𝛹𝛺', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "-":
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "𝛼-𝜔":
+    - spell: "translate('.', '𝛼𝛽𝛾𝛿𝜀𝜁𝜂𝜃𝜄𝜅𝜆𝜇𝜈𝜉𝜊𝜋𝜌𝜍𝜎𝜏𝜐𝜑𝜒𝜓𝜔', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "-":
+    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "": [T: "itálico nábela"]
+ - "𝛻": [T: "itálico nábela"]
+ - "𝜕𝜖𝜗𝜘𝜙𝜚𝜛":
+    - spell: "translate('.', '𝜕𝜖𝜗𝜘𝜙𝜚𝜛', '∂εθκφρπ')"
+ - "":
+    - spell: "translate('.', '', '∂εθκφρπ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
+ - "":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '∂εθκφρπ')"
+ - "𝜵": [T: "em negrito itálico nábela"]
+ - "": [T: "em negrito itálico nábela"]
+ - "𝝖-𝝮":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "𝝰-𝞈":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
+ - "":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '∂εθκφρπ')"
+ - "": [T: "em negrito nábela"]
+ - "𝝯": [T: "em negrito nábela"]
+ - "𝞐-𝞨":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
+ - "𝞪-𝟂":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
+ - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
+ - "":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '∂εθκφρπ')"
+ - "": [T: "em negrito nábela"]
+ - "𝞩": [T: "em negrito nábela"]
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '0123456789')"
+ - "𝟎-𝟗":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
+ - "-":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '', '0123456789')"
+ - "𝟬-𝟵":
+    - test:
+        if: "not($IgnoreBold)"
+        then: [T: "negrito"]
+    - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
+ - "-":
+    - spell: "translate('.', '', '0123456789')"
+ - "𝟢-𝟫":
+    - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
+ - "𝟶-𝟿":
+    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+ - "": [T: "desconhecido caractere"]
+ - "": [T: "triângulos inferior direita e inferior esquerda"]
+ - "": [T: "horizontal reticências extensor"]
+ - "": [T: "linha média horizontal reticências extensor"]
+ - "": [T: "radical extensor"]
+ - "": [T: "seta vertical extensor"]
+ - "": [T: "seta horizontal extensor"]
+ - "": [T: "registrado sinal sem serifa"]
+ - "": [T: "direitos autorais sinal sem serifa"]
+ - "": [T: "marca registrada sinal sem serifa"]
+ - "": [T: "parêntese superior à esquerda"]
+ - "": [T: "parêntese extensor à esquerda"]
+ - "": [T: "parêntese inferior à esquerda"]
+ - "": [T: "colchete superior à esquerda"]
+ - "": [T: "colchete extensor à esquerda"]
+ - "": [T: "colchete inferior à esquerda"]
+ - "": [T: "chave superior à esquerda"]
+ - "": [T: "chave médio à esquerda"]
+ - "": [T: "chave inferior à esquerda"]
+ - "": [T: "chave extensor"]
+ - "": [T: "integral extensor"]
+ - "": [T: "parêntese superior à direita"]
+ - "": [T: "parêntese extensor à direita"]
+ - "": [T: "parêntese inferior à direita"]
+ - "": [T: "colchete superior à direita"]
+ - "": [T: "colchete extensor à direita"]
+ - "": [T: "colchete inferior à direita"]
+ - "": [T: "chave superior à direita"]
+ - "": [T: "chave médio à direita"]
+ - "": [T: "chave inferior à direita"]
+ - "": [T: "logo da apple"]
+ - "ﬀ": [T: "ligadura ff"]
+ - "ﬁ": [T: "ligadura fi"]
+ - "ﬂ": [T: "ligadura fl"]
+ - "ﬃ": [T: "ligadura ffi"]
+ - "ﬄ": [T: "ligadura ffl"]
+ - "ﬅ": [T: "pés"]
+ - "ﬆ": [T: "st"]
+ - "﬩": [T: "letra hebraica alternativa mais"]
+ - "︠": [T: "ligadura esquerda metade"]
+ - "︡": [T: "ligadura direita metade"]
+ - "︢": [T: "til duplo esquerda metade"]
+ - "︣": [T: "til duplo direita metade"]
+ - "︤": [T: "mácron esquerda metade"]
+ - "︥": [T: "mácron direita metade"]
+ - "︦": [T: "conjugando mácron"]
+ - "︵": [T: "sobre parêntese"]
+ - "︶": [T: "sob parêntese"]
+ - "︷": [T: "sobre chave"]
+ - "︸": [T: "sob chave"]
+ - "︿": [T: "sobre colchete angular"]
+ - "﹀": [T: "sob colchete angular"]
+ - "﹡": [T: "pequeno asterisco"]
+ - "﹢": [T: "pequeno mais"]
+ - "﹣": [T: "pequeno menos"]
+ - "﹤": [T: "pequeno menor que"]
+ - "﹥": [T: "pequeno maior que"]
+ - "﹦": [T: "pequeno igual"]
+ - "＋": [T: "de largura total sinal de mais"]
+ - "＜": [T: "menor que"]
+ - "＝": [T: "igual"]
+ - "＞": [T: "maior que"]
+ - "＼": [T: "barra invertida"]
+ - "＾": [T: "chapéu"]
+ - "｜":
+     - with:
+        variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
+        replace:
+        - test:
+            - if: "$SpeechStyle != 'ClearSpeak'"
+              then_test:
+                  if: "$DefaultToGiven"
+                  then: [T: "dado"]
+                  else: [T: "barra vertical"]
+            - else_if: "not(preceding-sibling::*) or not(following-sibling::*)"
+              then: [T: "barra vertical"]
+            - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
+              then: [T: "tal que"]
+            - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
+              then: [T: "dado"] 
+            - else: [T: "divide"]                   
+ - "～": [T: "til"]
+ - "￢": [T: "não"]
+ - "￩": [T: "seta para a esquerda"]
+ - "￪": [T: "seta para cima"]
+ - "￫": [T: "seta para a direita"]
+ - "￬": [T: "seta para baixo"]
+ - "￼": [T: "desconhecido ou ausente objeto"]
+ - "�": [T: "ausente caractere"]
+ - "🣑": [T: "é em equilíbrio com"]
+ - "🣒": [T: "está em equilíbrio deslocado para a direita com"]
+ - "🣓": [T: "está em equilíbrio deslocado para a esquerda com"]
+# ==== FIM DO RECUO CONTROLADO ====

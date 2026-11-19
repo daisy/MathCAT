@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(clippy::needless_return)]
 
 mod common;
 
@@ -24,6 +25,14 @@ mod braille {
         mod vi;
     }
 
+    mod Russian {
+        mod russian;
+    }
+
+    mod Swedish {
+        mod swedish;
+    }
+
     mod LaTeX {
         mod augenbit;
         mod other;
@@ -39,5 +48,10 @@ mod braille {
         mod other;
         mod sixDotSpecs;
     }
-}
 
+    mod French {
+        mod french;
+        mod chemistry;
+        mod other;
+    }
+}

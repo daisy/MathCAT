@@ -150,12 +150,12 @@ fn si_derived_1() -> Result<()> {
                 1 degree celsius, comma; 2 degrees celsius, comma, \
                 1 farad, comma, 2 farads, comma, \
                 1 gray, comma, 2 grays, comma, \
-                1 henry, comma, 2 henrys, comma, \
+                1 henry, comma, 2 henries, comma, \
                 1 hertz, comma, 2 hertz, comma, \
                 1 joule, comma, 2 joules, comma, \
-                1 kattel, comma, 2 kattels, comma, \
+                1 katal, comma, 2 katals, comma, \
                 1 lumen, comma, 2 lumens, comma, \
-                1 lux, comma, 2 luxs")?;
+                1 lux, comma, 2 lux")?;
                 return Ok(());
 
 }
@@ -181,12 +181,12 @@ fn si_derived_1_with_prefixes() -> Result<()> {
                 1 yotta-coulomb, comma; 2 zetta-coulombs, comma; \
                 1 exa-farad, comma; 2 peta-farads, comma; \
                 1 tera-gray, comma; 2 giga-grays, comma; \
-                1 mega-henry, comma; 2 kilo-henrys, comma; \
+                1 mega-henry, comma; 2 kilo-henries, comma; \
                 1 deka-hertz, comma; 2 deci-hertz, comma; \
                 1 centi-joule, comma; 2 milli-joules, comma; \
-                1 micro-kattel, comma; 2 nano-kattels, comma; \
+                1 micro-katal, comma; 2 nano-katals, comma; \
                 1 pico-lumen, comma; 2 femto-lumens, comma; \
-                1 atto-lux, comma; 2 zepto-luxs, comma; \
+                1 atto-lux, comma; 2 zepto-lux, comma; \
                 1 milli-degree celsius; comma; 2 micro-degrees celsius; comma; \
                 1 pico-degree celsius; comma; 2 nano-degrees celsius")?;
                 return Ok(());
@@ -281,7 +281,7 @@ fn si_accepted() -> Result<()> {
                 1 atomic mass unit, comma; 2 atomic mass units, comma; \
                 1 electronvolt, comma; 2 electronvolts, comma, \
                 1 radian, comma, 2 radians, comma, \
-                1 sterradion, comma; 2 sterradions, comma, \
+                1 steradian, comma; 2 steradians, comma, \
                 1 annum, comma, 2 annums, comma, \
                 1 arcsecond, comma; 2 arcseconds, comma, \
                 1 bit, comma, 2 bits, comma, \
@@ -320,7 +320,7 @@ fn si_accepted_with_prefixes() -> Result<()> {
                 1 hecto-atomic mass unit; comma; 2 deka-atomic mass units; comma; \
                 1 milli-electronvolt, comma; 2 micro-electronvolts; comma; \
                 1 nano-radian, comma; 2 pico-radians, comma; \
-                1 femto-sterradion, comma; 2 atto-sterradions; comma; \
+                1 femto-steradian, comma; 2 atto-steradians; comma; \
                 1 giga-annum, comma; 2 mega-annums, comma; \
                 1 zepto-arcsecond, comma; 2 yocto-arcseconds; comma; \
                 1 kilo-bit, comma; 2 mega-bits, comma; \
@@ -427,6 +427,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">M</mi><mo>,</mo><mn>2</mn><mi intent=":unit">M</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">R</mi><mo>,</mo><mn>2</mn><mi intent=":unit">R</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">rpm</mi><mo>,</mo><mn>2</mn><mi intent=":unit">rpm</mi><mo>,</mo>
+        <mn>1</mn><mi intent=":unit">fl dr</mi><mo>,</mo><mn>2</mn><mi intent=":unit">fl dr</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">℧</mi><mo>,</mo><mn>2</mn><mi intent=":unit">℧</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">dyn</mi><mo>,</mo><mn>2</mn><mi intent=":unit">dyn</mi><mo>,</mo>
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
@@ -443,6 +444,7 @@ fn without_prefix_other() -> Result<()> {
                 1 molar, comma, 2 molars, comma, \
                 1 roentgen, comma; 2 roentgens, comma; \
                 1 revolution per minute, comma; 2 revolutions per minute, comma, \
+                1 fluid dram, comma; 2 fluid drams, comma, \
                 1 m-h-o, comma, 2 m-h-os, comma, \
                 1 dyne, comma, 2 dynes, comma, \
                 1 erg, comma, 2 ergs")?;
@@ -545,3 +547,417 @@ fn test_mtext_inference() -> Result<()> {
             return Ok(());
 
     }
+
+/// Derived unit with :unit on the outer mrow; "/" should be "per".
+#[test]
+fn derived_unit_watts_per_metre_squared() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mo>/</mo>
+            <msup>
+                <mi>m</mi>
+                <mn>2</mn>
+            </msup>
+        </mrow>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "watts per metre squared")?;
+    test("en", "ClearSpeak", expr, "watts per metre squared")?;
+    Ok(())
+}
+
+/// A variable before a unit uses VariableBeforeUnitPlural (same → last): plural form.
+#[test]
+fn variable_before_unit_is_plural() -> Result<()> {
+    let expr = r#"<math>
+        <mi>x</mi>
+        <mi intent=":unit">m</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "x metres")?;
+    test("en", "ClearSpeak", expr, "x metres")?;
+    return Ok(());
+}
+
+/// Parentheses grouping a unit numerator or denominator are not spoken.
+#[test]
+fn unit_quotient_grouping_parens_are_silent() -> Result<()> {
+    let expr = r#"<math>
+        <mn>5</mn>
+        <mi intent=":unit">J</mi>
+        <mo>/</mo>
+        <mo>(</mo>
+        <mi intent=":unit">kg</mi>
+        <mo>·</mo>
+        <mi intent=":unit">K</mi>
+        <mo>)</mo>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    test("en", "ClearSpeak", expr, "5; joules per, kilo-gram kelvins")?;
+    let numerator = r#"<math>
+        <mo>(</mo>
+        <mi intent=":unit">N</mi>
+        <mo>·</mo>
+        <mi intent=":unit">m</mi>
+        <mo>)</mo>
+        <mo>/</mo>
+        <mi intent=":unit">s</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", numerator, "newton metres, per second")?;
+    test("en", "ClearSpeak", numerator, "newton metres, per second")?;
+    return Ok(());
+}
+
+/// Unit product with ·; multiplication is silent and only the last factor is plural.
+#[test]
+fn derived_unit_newton_metres() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>N</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+        </mrow>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "newton metres")?;
+    test("en", "ClearSpeak", expr, "newton metres")?;
+    Ok(())
+}
+
+/// Juxtaposed unit letters under :unit (invisible times inserted by canonicalize).
+#[test]
+fn derived_unit_watt_hours_invisible_times() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mi>h</mi>
+        </mrow>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "watt hours")?;
+    test("en", "ClearSpeak", expr, "watt hours")?;
+    Ok(())
+}
+
+/// K·Wh: Wh is not in the English unit definitions, so it is spoken as text.
+#[test]
+fn derived_unit_kelvin_wh() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>K</mi>
+            <mo>·</mo>
+            <mi>Wh</mi>
+        </mrow>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "kelvin Whs")?;
+    test("en", "ClearSpeak", expr, "kelvin Whs")?;
+    Ok(())
+}
+
+/// Mixed product and quotient: kg⋅m/s².
+#[test]
+fn derived_unit_kg_m_per_s_squared() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>kg</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+            <mo>/</mo>
+            <msup>
+                <mi>s</mi>
+                <mn>2</mn>
+            </msup>
+        </mrow>
+    </math>"#;
+    // "kg" is spoken via SI prefix + unit ("kilo-gram"); a short pause separates product factors.
+    test("en", "SimpleSpeak", expr, "kilo-gram, metres per second squared")?;
+    test("en", "ClearSpeak", expr, "kilo-gram, metres per second squared")?;
+    Ok(())
+}
+
+/// Coefficient 1 with a compound unit stays singular on every factor.
+#[test]
+fn derived_unit_one_newton_metre() -> Result<()> {
+    let expr = r#"<math>
+        <mn>1</mn>
+        <mrow intent=":unit">
+            <mi>N</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+        </mrow>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "1 newton metre")?;
+    test("en", "ClearSpeak", expr, "1 newton metre")?;
+    return Ok(());
+}
+
+/// A lone normal known unit token is not confirmed without quantity/product/equality context.
+#[test]
+fn lone_likely_unit_not_spoken_as_unit() -> Result<()> {
+    let expr = r#"<math><mi mathvariant="normal">m</mi></math>"#;
+    test("en", "SimpleSpeak", expr, "m")?;
+    test("en", "ClearSpeak", expr, "m")?;
+    return Ok(());
+}
+
+/// SI derived unit as base-unit product: N = kg · m · s⁻² (mathvariant=normal, no :unit).
+#[test]
+fn derived_unit_newton_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">N</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <mi mathvariant="normal">m</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "newtons is equal to; kilo-gram metre seconds to the negative 2")?;
+    test("en", "ClearSpeak", expr, "newtons is equal to; kilo-gram metre seconds to the negative 2 power")?;
+    return Ok(());
+}
+
+/// J = kg · m² · s⁻².
+#[test]
+fn derived_unit_joule_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">J</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "joules is equal to; kilo-gram metre squared seconds to the negative 2")?;
+    test("en", "ClearSpeak", expr, "joules is equal to; kilo-gram metre squared seconds to the negative 2 power")?;
+    return Ok(());
+}
+
+/// W = kg · m² · s⁻³.
+#[test]
+fn derived_unit_watt_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">W</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "watts is equal to; kilo-gram metre squared seconds to the negative 3")?;
+    test("en", "ClearSpeak", expr, "watts is equal to; kilo-gram metre squared seconds to the negative 3 power")?;
+    return Ok(());
+}
+
+/// Pa = kg · m⁻¹ · s⁻².
+#[test]
+fn derived_unit_pascal_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">Pa</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "pascals is equal to; kilo-gram metre to the negative 1, seconds to the negative 2")?;
+    test("en", "ClearSpeak", expr, "pascals is equal to; kilo-gram metre to the negative 1 power; seconds to the negative 2 power")?;
+    return Ok(());
+}
+
+/// Hz = s⁻¹.
+#[test]
+fn derived_unit_hertz_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">Hz</mi>
+        <mo>=</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "hertz is equal to, seconds to the negative 1")?;
+    test("en", "ClearSpeak", expr, "hertz is equal to, seconds to the negative 1 power")?;
+    return Ok(());
+}
+
+/// C = s · A.
+#[test]
+fn derived_unit_coulomb_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">C</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">s</mi>
+        <mo>&#xB7;</mo>
+        <mi mathvariant="normal">A</mi>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "coulombs is equal to, second amps")?;
+    test("en", "ClearSpeak", expr, "coulombs is equal to, second amps")?;
+    return Ok(());
+}
+
+/// V = kg · m² · s⁻³ · A⁻¹.
+#[test]
+fn derived_unit_volt_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">V</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "volts is equal to; kilo-gram metre squared second to the negative 3, amps to the negative 1")?;
+    test("en", "ClearSpeak", expr, "volts is equal to; kilo-gram metre squared second to the negative 3 power, amps to the negative 1 power")?;
+    return Ok(());
+}
+
+/// Ω = kg · m² · s⁻³ · A⁻².
+#[test]
+fn derived_unit_ohm_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">&#x3A9;</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "ohms is equal to; kilo-gram metre squared second to the negative 3, amps to the negative 2")?;
+    test("en", "ClearSpeak", expr, "ohms is equal to; kilo-gram metre squared second to the negative 3 power, amps to the negative 2 power")?;
+    return Ok(());
+}
+
+/// T = kg · s⁻² · A⁻¹.
+#[test]
+fn derived_unit_tesla_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">T</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "teslas is equal to; kilo-gram second to the negative 2, amps to the negative 1")?;
+    test("en", "ClearSpeak", expr, "teslas is equal to; kilo-gram second to the negative 2 power, amps to the negative 1 power")?;
+    return Ok(());
+}
+
+/// `$x` uses currency rules with VariableBeforeUnitPlural (plural like a non-one amount).
+#[test]
+fn currency_variable_amount_is_plural() -> Result<()> {
+    let expr = r#"<math><mo>$</mo><mi>x</mi></math>"#;
+    test("en", "SimpleSpeak", expr, "x dollars")?;
+    test("en", "ClearSpeak", expr, "x dollars")?;
+    return Ok(());
+}
+
+/// Currency rates: `€5/l` should pluralize like a unit numerator (`euros per litre`).
+#[test]
+fn currency_per_unit() -> Result<()> {
+    let expr = r#"<math><mfrac><mrow><mi>€</mi><mn>5</mn></mrow><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mn>5</mn><mfrac><mi>€</mi><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros per litre")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>1</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "1 euro per litre")?;
+    test("en", "ClearSpeak", expr, "1 euro per litre")?;
+
+    // Postfix amount binds before the solidus: `(5 €) / l`.
+    let expr = r#"<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("en", "SimpleSpeak", expr, "5 euros, per litre")?;
+    test("en", "ClearSpeak", expr, "5 euros, per litre")?;
+    return Ok(());
+}
+
+/// F = kg⁻¹ · m⁻² · s⁴ · A².
+#[test]
+fn derived_unit_farad_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">F</mi>
+        <mo>=</mo>
+        <msup>
+            <mi mathvariant="normal">kg</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mn>4</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mn>2</mn>
+        </msup>
+    </math>"#;
+    test("en", "SimpleSpeak", expr, "farads is equal to; kilo-gram to the negative 1, metre to the negative 2, second to the fourth, amps squared")?;
+    test("en", "ClearSpeak", expr, "farads is equal to; kilo-gram to the negative 1 power, metre to the negative 2 power, second to the fourth power, amps squared")?;
+    return Ok(());
+}

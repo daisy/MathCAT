@@ -297,13 +297,12 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("nb", "SimpleSpeak", expr, "fi av x er lik, c ganger, e opphøyd i minus h i andre x i andre")?;
+    test("nb", "SimpleSpeak", expr, "fi av x er lik; c ganger, e opphøyd i minus h i andre x i andre, slutt eksponent")?;
     return Ok(());
 
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -339,7 +338,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("nb", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    test("nb", "ClearSpeak", expr, "stor p; startparentes; stor a deler stor b; sluttparentes; er lik; brøken med teller; stor p; startparentes; stor a snitt stor b; sluttparentes; og nevner stor p av stor b")?;
     return Ok(());
 
 }
@@ -379,6 +378,28 @@ fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
   test_prefs("nb", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
   return Ok(());
+
+}
+
+#[test]
+fn ignore_bold() -> Result<()> {
+  let expr = r#"<math>
+				<mi mathvariant="bold-italic">x</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mrow>
+				<mi>𝒔𝒊𝒏</mi>
+				<mo>&#x2061;</mo>
+				<mrow><mi mathvariant="bold-italic">t</mi></mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</math>"#; 
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "false")],
+             expr, "fet x er lik, 2 sinus av fet t, minus 1")?;
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "true")],
+             expr, "x er lik, 2 sinus av t, minus 1")?;
+             return Ok(());
 
 }
 
@@ -427,14 +448,14 @@ fn literal_speak() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("nb", "LiteralSpeak", expr, "stor a høyrepil, perpendicular to, stor b høyrepil")?;
+  test("nb", "LiteralSpeak", expr, "stor a høyrepil bunn stor b høyrepil")?;
   return Ok(());
 
 }
@@ -489,14 +510,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("nb", "SimpleSpeak", expr, "stor a høyrepil, perpendicular to, stor b høyrepil")?;
+  test("nb", "SimpleSpeak", expr, "stor a høyrepil bunn stor b høyrepil")?;
   return Ok(());
 
 }

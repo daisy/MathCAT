@@ -33,7 +33,7 @@ fn matrix_mtable_intent() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <matrix data-from-mathml='mtable' data-intent-property=':matrix:'>
+                        <matrix data-from-mathml='mtable' data-intent-property=':matrix:function:'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>
@@ -57,7 +57,7 @@ fn matrix_mrow_intent() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd><mtd><mn>6</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <matrix data-from-mathml='mtable' arg='t' data-intent-property=':matrix:'>
+                        <matrix data-from-mathml='mtable' arg='t' data-intent-property=':matrix:function:'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>
@@ -105,7 +105,7 @@ fn determinant_not_matrix() -> Result<()> {
             <mtr><mtd><mn>4</mn></mtd><mtd><mn>5</mn></mtd></mtr>
         </mtable></mfenced></math>"#;
     let intent = " <math data-from-mathml='math'>
-                        <determinant data-from-mathml='mtable' data-intent-property=':determinant:'>
+                        <determinant data-from-mathml='mtable' data-intent-property=':determinant:function:'>'>
                             <mtr data-from-mathml='mtr'>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>1</mn></mtd>
                                 <mtd data-from-mathml='mtd'><mn data-from-mathml='mn'>2</mn></mtd>
@@ -329,18 +329,16 @@ fn mlabelledtr_bug_526() -> Result<()> {
             </mlabeledtr>
             </mtable></math>"#;
     let intent = "<math data-from-mathml='math'>
-    <lines data-from-mathml='mtable'>
+    <array data-from-mathml='mtable'>
       <mlabeledtr data-from-mathml='mlabeledtr'>
-        <TEMP_NAME>
+        <mtd data-from-mathml='mtd'>
           <mtext data-from-mathml='mtext'>foo</mtext>
-        </TEMP_NAME>
-        <mtd data-from-mathml='mlabeledtr'>
-          <mrow data-from-mathml='mlabeledtr'>
-            <mi data-from-mathml='mi'>m</mi>
-          </mrow>
+        </mtd>
+        <mtd data-from-mathml='mtd'>
+          <mi data-from-mathml='mi'>m</mi>
         </mtd>
       </mlabeledtr>
-    </lines>
+    </array>
    </math>";
     test_intent(mathml, intent, vec![])?;
     return Ok(());

@@ -76,6 +76,15 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
+  name: cases
+  tag: mrow
+  match: "*[1][self::m:mo and .='{'] and *[2][self::m:mtable and @intent=':piecewise'] and count(*)=2"
+  replace:
+  - t: "𝐖\\begin{cases}𝐖"
+  - x: "*[2]"
+  - t: "𝐖\\end{cases}𝐖"
+
+-
   name: default-matrix
   tag: mrow
   variables:
@@ -102,6 +111,31 @@
   - x: "string($MatrixType)"     # need to get $MatrixType eval'd so that it is converted to braille (doesn't work if I do it in 'variables') 
   - t: "}𝐖"
 
+-
+  name: intent-gather
+  tag: mtable
+  match: "@intent=':lines'"
+  replace:
+  - t: "𝐖\\begin{gather}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{gather}𝐖"
+-
+  name: intent-align
+  tag: mtable
+  match: "@intent=':system-of-equations'"
+  replace:
+  - t: "𝐖\\begin{align}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{align}𝐖"
+-
+  name: intent-matrix
+  tag: mtable
+  # Fenced matrices are named by the brackets around them. A bare table is `matrix`.
+  match: "@intent=':matrix' and not(parent::m:mrow[(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or IsBracketed(., '‖', '‖') or IsBracketed(., '{', '}'))])"
+  replace:
+  - t: "𝐖\\begin{matrix}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{matrix}𝐖"
 -
   name: default-mtable
   tag: mtable
@@ -235,7 +269,7 @@
   # FIX: what should be output
   name: mhchem-hack
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   tag: mover
   match:
   -    "*[1][substring(., 1, 1)='↽'] and"
@@ -252,11 +286,24 @@
   - t: "𝐖"
 
 -
-  name: "hat"
-  tag: "mover"
-  match: "*[2][.='^']"
+  name: "accents"
+  tag: mover
+  match: "*[2][IsInDefinition(., 'Braille', 'Accents')]"
   replace:
-  - t: "𝐖\\hat{"
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'Accents')"
+  - t: "{"
+  - x: "*[1]"
+  - t: "}𝐖"
+
+-
+  name: "under-marks"
+  tag: munder
+  match: "*[2][IsInDefinition(., 'Braille', 'UnderAccents')]"
+  replace:
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'UnderAccents')"
+  - t: "{"
   - x: "*[1]"
   - t: "}𝐖"
 
@@ -267,8 +314,8 @@
   replace:
   - test:
       if: "$LaTeX_UseShortName"
-      then: [t: "\\ol{"]
-      else: [t: "\\overline{"]
+      then: [t: "𝐖\\ol{"]
+      else: [t: "𝐖\\overline{"]
   - x: "*[1]"
   - t: "}"
 
@@ -357,11 +404,11 @@
   replace:
   - test:
       if: "self::m:munderover"
-      then: [t: "\\overset{"]
+      then: [t: "𝐖\\overset{"]
   - test:
       if: "self::m:munder or self::m:undermover"
-      then: [t: "\\underset{"]
-      else: [t: "\\overset{"]
+      then: [t: "𝐖\\underset{"]
+      else: [t: "𝐖\\overset{"]
   - x: "*[2]"
   - t: "}{"
   - x: "*[1]"

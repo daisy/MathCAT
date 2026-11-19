@@ -210,6 +210,40 @@ fn presentation_mathml_in_semantics() -> Result<()> {
 }
 
 #[test]
+fn roman_like_superscript_identifier_is_not_chemistry() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>I</mi>
+        <mo>=</mo>
+        <mo>−</mo>
+        <mi>b</mi>
+        <mi>r</mi>
+        <mo>+</mo>
+        <msup>
+            <mi>z</mi>
+            <mi>I</mi>
+        </msup>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap i is equal to, negative b r, plus z to the cap i-th power")?;
+    Ok(())
+}
+
+#[test]
+fn roman_like_identifier_sequence_is_not_number() -> Result<()> {
+    // Regression test for https://github.com/daisy/MathCAT/issues/528
+    let expr = "<math>
+        <mi>C</mi>
+        <mo>+</mo>
+        <mi>I</mi>
+        <mo>+</mo>
+        <mi>X</mi>
+    </math>";
+    test("en", "ClearSpeak", expr, "cap c plus cap i plus cap x")?;
+    Ok(())
+}
+
+
+#[test]
 fn ignore_period() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -303,7 +337,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -339,7 +372,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b")?;
+    test("en", "ClearSpeak", expr, "cap p, open paren, cap eigh divides cap b, close paren; is equal to; the fraction with numerator; cap p, open paren, cap eigh intersection cap b; close paren; and denominator cap p of cap b; dot")?;
     return Ok(());
 
 }
@@ -372,6 +405,17 @@ fn caret_and_hat() -> Result<()> {
   test("en", "SimpleSpeak",expr, "x caret 2 plus y hat")?;
   return Ok(());
 
+}
+
+#[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+  test("en", "SimpleSpeak",expr, "x dot, plus x .., plus x ...")?;
+  return Ok(());
 }
 
 #[test]
@@ -415,7 +459,7 @@ fn mn_with_block_and_decimal_separators() -> Result<()> {
 #[test]
 fn divergence() -> Result<()> {
   let expr = "<math><mo>&#x2207;</mo><mo>&#xB7;</mo><mi mathvariant='normal'>F</mi></math>";                                       // may want to change this for another language
-  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "dihv cap f")?;
+  test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "div cap f")?;
   test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "divergence of cap f")?;
   return Ok(());
 
@@ -449,14 +493,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow, up tack cap b right arrow")?;
   return Ok(());
 
 }
@@ -531,14 +575,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow, is perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }

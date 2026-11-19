@@ -306,6 +306,62 @@ fn lim_subscript_bug_523() -> Result<()> {
     </math>"#;
     test_braille("ASCIIMath", expr, r#"lim_(N->oo) sum_(i=0)^N"#)?;
     return Ok(());
-
 }
 
+
+#[test]
+fn dots() -> Result<()> {
+  let expr = "<math>
+         <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>..</mo></mover><mo>+</mo>
+         <mover><mi>x</mi><mo>...</mo></mover>
+    </math>";
+    test_braille("ASCIIMath",expr, "dot x+ddot x+overset(...)(x)")?;
+  return Ok(());
+}
+
+#[test]
+fn gather_lines_use_invisible_fences() -> Result<()> {
+    // `{:` `:}` is a matrix with no visible fences.
+    let expr = r#"<math><mtable intent=":lines">
+        <mtr><mtd><mi>a</mi><mo>+</mo><mi>b</mi><mo>=</mo><mi>c</mi></mtd></mtr>
+        <mtr><mtd><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mtd></mtr>
+    </mtable></math>"#;
+    test_braille("ASCIIMath", expr, "{:[a+b=c], [E=mc^2]:}")?;
+    return Ok(());
+}
+
+#[test]
+fn invisible_parens_around_fraction_1032() -> Result<()> {
+    // Reverse MathML differs from the forward source; see the overrides file.
+    let expr = r#"<math xmlns="http://www.w3.org/1998/Math/MathML">
+        <mstyle displaystyle="true">
+            <msup>
+            <mrow>
+                <mfrac>
+                <mi>a</mi>
+                <mi>b</mi>
+                </mfrac>
+            </mrow>
+            <mn>2</mn>
+            </msup>
+        </mstyle>
+        </math>"#;
+        test_braille("ASCIIMath", expr, r#"{:a/b:}^2"#)?;
+    Ok(())
+}
+
+#[test]
+fn invisible_parens_mmultiscripts() -> Result<()> {
+    // Reverse MathML differs from the forward source; see the overrides file.
+    let expr = r#"<math display='block'>
+        <mmultiscripts displaystyle='true' data-changed='added' data-chem-formula='6'>
+            <mtext data-chem-element='1'>U</mtext>
+            <mprescripts></mprescripts>
+            <mn>92</mn>
+            <mn>235</mn>
+        </mmultiscripts>
+        </math>"#;
+        test_braille("ASCIIMath", expr, r#"{::}_92^235"U""#)?;
+    Ok(())
+}

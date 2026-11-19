@@ -92,6 +92,14 @@ fn simple_log() -> Result<()> {
 }
 
 #[test]
+fn principal_value_log() -> Result<()> {
+    let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
+    test("en", "SimpleSpeak", expr, "the principal value log of z")?;
+    return Ok(());
+
+}
+
+#[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
     test("en", "SimpleSpeak", expr, "the log of, open paren x plus y, close paren")?;

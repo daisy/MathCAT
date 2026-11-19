@@ -38,7 +38,7 @@
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "the"]            # phrase('the' arc A B C)
+      then: [ot: "the"]            # phrase('the' arc A B C)
   - t: "arc"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
@@ -60,11 +60,12 @@
 
 - name: coordinate
   tag: coordinate
-  match: "."
+  # Intent forms coordinate($x,...) use @arg and fall through to function-intent / IntentMappings
+  match: "not(*[@arg])"
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "the"]      # phrase('the' point at 1, 2)
+      then: [ot: "the"]      # phrase('the' point at 1, 2)
   - t: "point"      # phrase(the 'point' at 1, 2)
   - test:
       if: "$Verbosity='Verbose'"

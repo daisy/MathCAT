@@ -51,6 +51,8 @@ fn parenthesized() -> Result<()> {
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
     test("en", "SimpleSpeak", expr, "circled cap eigh comma, circled cap z")?;
+    let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
+    test("en", "SimpleSpeak", expr, "black circled cap eigh, comma, black circled cap z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
     test("en", "SimpleSpeak", expr, "circled eigh comma, circled z")?;
     return Ok(());
@@ -390,9 +392,30 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn up_tack_330() -> Result<()> {
+    // perpendicular and up tack look the same. I added a special LiteralSpeak rule for up tack not to say "perpendicular"
+    let perp = "<math><mi>a</mi><mo>⟂</mo><mi>b</mi></math>"; // 0x27c2
+    test("en", "SimpleSpeak", perp, "eigh is perpendicular to b")?;
+    test("en", "LiteralSpeak", perp, "eigh is perpendicular to b")?;
+    let up_tack = "<math><mi>a</mi><mo>⊥</mo><mi>b</mi></math>"; // 0x22a5
+    test("en", "ClearSpeak", up_tack, "eigh is perpendicular to b")?;
+    test("en", "LiteralSpeak", up_tack, "eigh up tack b")?;
+    return Ok(());
+  }
+
+#[test]
+fn unicode_typo_regressions() -> Result<()> {
+  test("en", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "to the i-th power")?;
+  test("en", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;
+  Ok(())
+}
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("en", "SimpleSpeak", expr, "circled 1 comma, circled 9")?;
+  let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
+  test("en", "SimpleSpeak", expr, "black circled one comma, circled number fifty")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("en", "SimpleSpeak", expr, "parenthesized 1 comma, parenthesized 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";

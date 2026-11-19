@@ -48,7 +48,7 @@ fn cube_root() -> Result<()> {
     let expr = "<math>
                     <mroot> <mi>x</mi> <mn>3</mn> </mroot>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "根號 x 的 立方根")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 的 立方根")?;
     return Ok(());
 
 }
@@ -58,7 +58,7 @@ fn ordinal_root() -> Result<()> {
     let expr = "<math>
                     <mroot> <mi>x</mi> <mn>9</mn> </mroot>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "根號 x 的 9 次方根")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 的 9 次方根")?;
     return Ok(());
 
 }
@@ -67,7 +67,7 @@ fn ordinal_root_2() -> Result<()> {
     let expr = "<math>
                     <mroot> <mi>x</mi> <mn>9.1</mn> </mroot>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "根號 x 的 9.1 次方根")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 的 9.1 次方根")?;
     return Ok(());
 
 }
@@ -77,7 +77,7 @@ fn simple_mi_root() -> Result<()> {
     let expr = "<math>
                     <mroot> <mi>x</mi> <mi>n</mi> </mroot>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "根號 x 的 n 次方根")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 的 n 次方根")?;
     return Ok(());
 
 }
@@ -91,7 +91,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </mroot>
                 </math>";
-    test("zh-tw", "SimpleSpeak", expr, "根號 x 的 3 分之 1 次方根")?;
+    test("zh-tw", "SimpleSpeak", expr, "x 的 3 分之 1 次方根")?;
     return Ok(());
 
 }

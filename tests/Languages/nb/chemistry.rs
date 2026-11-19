@@ -163,7 +163,7 @@ fn beta_decay() -> Result<()> {
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e")?;
+      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss hevet 0, senket minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e")?;
       return Ok(());
@@ -429,7 +429,7 @@ fn mhchem_beta_decay() -> Result<()> {
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
       "14, 6, stor c; danner, 14, 7, stor n; pluss 0, minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss, hevet 0, senket minus 1, e")?;
+      "hevet 14, senket 6, stor c; reaksjon danner; hevet 14, senket 7, stor n; pluss hevet 0, senket minus 1, e")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "øvre indeks 14, nedre indeks 6, stor c; reaksjon danner; øvre indeks 14, nedre indeks 7, stor n; pluss, øvre indeks 0, nedre indeks minus 1, e")?;
       return Ok(());

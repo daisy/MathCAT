@@ -11,13 +11,14 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4",
-    "deepl",
-    "googletrans",
+    # "deepl",                  deactive for now
+    # "googletrans",            deactive for now
     "html-table-extractor",
+    "jinja2>=3.1.6",
     "jsonpath-ng>=1.8.0",
     "pyyaml",
     "rich",
-    "ruamel.yaml",
+    "ruamel.yaml>=0.19.1",
 ]
 
 [project.scripts]
@@ -32,6 +33,9 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.9.25,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+exclude-newer = "1 week"
 
 [tool.uv.build-backend]
 module-name = "audit_translations"

@@ -116,7 +116,7 @@ fn augenbit1_6_11() -> Result<()> {
         </msubsup>
         <mrow><mi mathvariant="normal">U</mi></mrow>
         </mrow></math>"#;
-    test_braille("ASCIIMath", expr, r"\ _(95)^(238)U")?;
+    test_braille("ASCIIMath", expr, r"{::}_95^238U")?;
     return Ok(());
 
 }
@@ -126,6 +126,14 @@ fn augenbit1_6_11() -> Result<()> {
 fn augenbit1_7_7 () -> Result<()> {
     let expr = r#"<math><msub><mi>log</mi><mi>a</mi></msub><mi>x</mi></math>"#;
     test_braille("ASCIIMath", expr, r"log_a x")?;
+    return Ok(());
+
+}
+
+#[test]
+fn augenbit1_7_8 () -> Result<()> {
+    let expr = r#"<math><mi>lg</mi><mi>a</mi></math>"#;
+    test_braille("ASCIIMath", expr, r"lg a")?;
     return Ok(());
 
 }

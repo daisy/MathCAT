@@ -9,7 +9,7 @@ fn special_alphabet_chars() -> Result<()> {
   let expr = "<math> <mi>ℌ</mi><mo>,</mo><mi>ℭ</mi></math>";
   test("zh-tw", "SimpleSpeak", expr, "fraktur 大寫 h 逗號 fraktur 大寫 c")?;
   let expr = "<math> <mi>ℍ</mi><mo>,</mo><mi>ℿ</mi></math>";
-  test("zh-tw", "SimpleSpeak", expr, "空心 大寫 h 逗號 空心 大寫 pi")?;
+  test("zh-tw", "SimpleSpeak", expr, "雙線 大寫 h 逗號 雙線 大寫 pi")?;
   let expr = "<math> <mi>ℐ</mi><mo>,</mo><mi>ℳ</mi></math>";
   test("zh-tw", "SimpleSpeak", expr, "草體 大寫 i 逗號 草體 大寫 m")?;
   return Ok(());
@@ -24,7 +24,7 @@ fn greek() -> Result<()> {
     test("zh-tw", "SimpleSpeak", expr, "alpha 逗號 omega")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 大寫 delta 逗號 空心 大寫 upsilon")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 大寫 delta 逗號 雙線 大寫 upsilon")?;
     let expr = "<math> <mi>α</mi><mo>,</mo><mi>ω</mi></math>";
     test("zh-tw", "SimpleSpeak", expr, "alpha 逗號 omega")?;
     return Ok(());
@@ -51,6 +51,8 @@ fn parenthesized() -> Result<()> {
 fn circled() -> Result<()> {
     let expr = "<math> <mi>Ⓐ</mi><mo>,</mo><mi>Ⓩ</mi></math>";
     test("zh-tw", "SimpleSpeak", expr, "圈圈 大寫 a 逗號 圈圈 大寫 z")?;
+    let expr = "<math> <mi>🅐</mi><mo>,</mo><mi>🅩</mi></math>";
+    test("zh-tw", "SimpleSpeak", expr, "黑圈圈 大寫 a 逗號 黑圈圈 大寫 z")?;
     let expr = "<math> <mi>ⓐ</mi><mo>,</mo><mi>ⓩ</mi></math>";
     test("zh-tw", "SimpleSpeak", expr, "圈圈 a 逗號 圈圈 z")?;
     return Ok(());
@@ -90,18 +92,18 @@ fn bold_fraktur() -> Result<()> {
 #[test]
 fn double_struck() -> Result<()> {
     let expr = "<math> <mi>𝔸</mi><mo>,</mo><mi>𝕐</mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 大寫 a 逗號 空心 大寫 y")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 大寫 a 逗號 雙線 大寫 y")?;
     let expr = "<math> <mi>𝕒</mi><mo>,</mo><mi>𝕫</mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 a 逗號 空心 z")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 a 逗號 雙線 z")?;
     let expr = "<math> <mi>𝟘</mi><mo>,</mo><mi>𝟡</mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 0 逗號 空心 9")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 0 逗號 雙線 9")?;
     // MathType private space versions
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 大寫 a 逗號 空心 大寫 y")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 大寫 a 逗號 雙線 大寫 y")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 a 逗號 空心 z")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 a 逗號 雙線 z")?;
     let expr = "<math> <mi></mi><mo>,</mo><mi></mi></math>";
-    test("zh-tw", "SimpleSpeak", expr, "空心 0 逗號 空心 9")?;
+    test("zh-tw", "SimpleSpeak", expr, "雙線 0 逗號 雙線 9")?;
     return Ok(());
 
 }
@@ -390,9 +392,18 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn unicode_typo_regressions() -> Result<()> {
+  test("zh-tw", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "上標1")?;
+  test("zh-tw", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;
+  Ok(())
+}
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("zh-tw", "SimpleSpeak", expr, "圈圈 1 逗號 圈圈 9")?;
+  let expr = "<math> <mi>❶</mi><mo>,</mo><mi>㊿</mi></math>";
+  test("zh-tw", "SimpleSpeak", expr, "黑圈圈1 逗號 圈圈50")?;
   let expr = "<math> <mi>⑴</mi><mo>,</mo><mi>⑼</mi></math>";
   test("zh-tw", "SimpleSpeak", expr, "括號圍繞 1 逗號 括號圍繞 9")?;
   let expr = "<math> <mi>⒈</mi><mo>,</mo><mi>⒐</mi></math>";

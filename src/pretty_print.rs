@@ -1,17 +1,9 @@
 //! Useful functions for debugging and error messages.
 #![allow(clippy::needless_return)]
 
-use sxd_document::dom::{Element, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::dom::{Element, ChildOfElement, Attribute};
+use sxd_document_no_unsafe::{as_str, as_qname};
 
-// #[allow(dead_code)]
-// pub fn pp_doc(doc: &Document) {
-//     for root_child in doc.root().children() {
-//         if let ChildOfRoot::Element(e) = root_child {
-//             format_element(&e, 0);
-//             break;
-//         }
-//     };
-// }
 
 /// Pretty-print the MathML represented by `element`.
 pub fn mml_to_string(e: Element) -> String {
@@ -27,16 +19,18 @@ pub fn format_element(e: Element, indent: usize) -> String {
     // };
     // let namespace = namespace.as_str();
     let namespace = "";
-    let mut answer = format!("{:in$}<{ns}{name}{attrs}>", " ", in=2*indent, ns=namespace, name=e.name().local_part(), attrs=format_attrs(&e.attributes()));
+    let mut answer = format!("{:in$}<{ns}{name}{attrs}>", " ", in=2*indent, ns=namespace, name=as_qname!(e.name()).local_part(), attrs=format_attrs(&e.attributes()));
     let children = e.children();
     let has_element = children.iter().find(|&&c| matches!(c, ChildOfElement::Element(_x)));
     if has_element.is_none() {
         // print text content
-        let content = children.iter()
-                .map(|c| if let ChildOfElement::Text(t) = c {t.text()} else {""})
-                .collect::<Vec<&str>>()
-                .join("");
-        return format!("{}{}</{}{}>\n", answer, &handle_special_chars(&content), namespace, e.name().local_part());
+        let content = children.iter().fold(String::new(), |mut acc, c| {
+                if let ChildOfElement::Text(t) = c {
+                acc.push_str(as_str!(t.text()));
+                }
+        acc
+        });
+        return format!("{}{}</{}{}>\n", answer, handle_special_chars(&content), namespace, as_qname!(e.name()).local_part());
         // for child in children {
         //     if let ChildOfElement::Text(t) = child {
         //         return format!("{}{}</{}{}>\n", answer, &make_invisible_chars_visible(t.text()), namespace, e.name().local_part());
@@ -51,7 +45,7 @@ pub fn format_element(e: Element, indent: usize) -> String {
             }
         }
     }
-    return answer + &format!("{:in$}</{ns}{name}>\n", " ", in=2*indent, ns=namespace, name=e.name().local_part());
+    return answer + &format!("{:in$}</{ns}{name}>\n", " ", in=2*indent, ns=namespace, name=as_qname!(e.name()).local_part());
 
     // Use the &#x....; representation for invisible chars when printing
 }
@@ -60,7 +54,7 @@ pub fn format_element(e: Element, indent: usize) -> String {
 pub fn format_attrs(attrs: &[Attribute]) -> String {
     let mut result = String::new();
     for attr in attrs {
-        result += format!(" {}='{}'", attr.name().local_part(), &handle_special_chars(attr.value())).as_str();
+        result += format!(" {}='{}'", as_qname!(attr.name()).local_part(), handle_special_chars(as_str!(attr.value()))).as_str();
     }
     result
 }
@@ -85,23 +79,6 @@ fn handle_special_chars(text: &str) -> String {
     s
 }
 
-
-// /// Pretty print an xpath value.
-// /// If the value is a `NodeSet`, the MathML for the node/element is returned.
-// pub fn pp_xpath_value(value: Value) {
-//     use sxd_xpath::Value;
-//     use sxd_xpath::nodeset::Node;
-//     debug!("XPath value:");
-//     if let Value::Nodeset(nodeset) = &value {
-//         for node in nodeset.document_order() {
-//             match node {
-//                 Node::Element(el) => {debug!("{}", crate::pretty_print::format_element(&el, 1))},
-//                 Node::Text(t) =>  {debug!("found Text value: {}", t.text())},
-//                 _ => {debug!("found unexpected node type")}
-//             }
-//         }
-//     }
-// }
 
 /// Convert YAML to a string using with `indent` amount of space.
 pub fn yaml_to_string(yaml: &Yaml, indent: usize) -> String {
@@ -128,76 +105,31 @@ fn is_scalar(v: &Yaml) -> bool {
     return !matches!(v, Yaml::Hash(_) | Yaml::Array(_));
 }
 
+/// Whether a YAML collection is too complex for compact inline formatting.
 fn is_complex(v: &Yaml) -> bool {
-    return match v {
-        Yaml::Hash(h) => {
-            return match h.len() {
-                0 => false,
-                1 => {
-                    let (key,val) = h.iter().next().unwrap();
-                    return !(is_scalar(key) && is_scalar(val))
-                },
-                _ => true,
-            }
-        },
-        Yaml::Array(v) => {
-            return match v.len() {
-                0 => false,
-                1 => {
-                    let hash = v[0].as_hash();
-                    if let Some(hash) = hash {
-                        return match hash.len() {
-                            0 => false,
-                            1 => {
-                                let (key, val) = hash.iter().next().unwrap();
-                                return !(is_scalar(key) && is_scalar(val));
-                            },
-                            _ => true,
-                        }
-                    } else {
-                        return !is_scalar(&v[0]);
-                    }    
-                },
-                _ => true,
-            }
+    /// Whether a hash is empty or contains one scalar key/value pair.
+    fn is_simple_hash(hash: &Hash) -> bool {
+        hash.len() <= 1
+            && hash
+                .iter()
+                .all(|(key, value)| is_scalar(key) && is_scalar(value))
+    }
+
+    match v {
+        Yaml::Hash(hash) => !is_simple_hash(hash),
+        Yaml::Array(values) => match values.as_slice() {
+            [] => false,
+            [Yaml::Hash(hash)] => !is_simple_hash(hash),
+            [value] => !is_scalar(value),
+            _ => true,
         },
         _ => false,
     }
 }
 
-use std::error::Error;
-use std::fmt::{self, Display};
+use std::fmt;
 use yaml_rust::{Yaml, yaml::Hash};
 
-//use crate::yaml::{Hash, Yaml};
-
-#[derive(Copy, Clone, Debug)]
-#[allow(dead_code)] // from original YAML code (isn't used here)
-enum EmitError {
-    FmtError(fmt::Error),
-    BadHashmapKey,
-}
-
-impl Error for EmitError {
-    fn cause(&self) -> Option<&dyn Error> {
-        None
-    }
-}
-
-impl Display for EmitError {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            EmitError::FmtError(ref err) => Display::fmt(err, formatter),
-            EmitError::BadHashmapKey => formatter.write_str("bad hashmap key"),
-        }
-    }
-}
-
-impl From<fmt::Error> for EmitError {
-    fn from(f: fmt::Error) -> Self {
-        EmitError::FmtError(f)
-    }
-}
 
 struct YamlEmitter<'a> {
     writer: &'a mut dyn fmt::Write,
@@ -207,10 +139,8 @@ struct YamlEmitter<'a> {
     level: isize,
 }
 
-type EmitResult = Result<(), EmitError>;
-
 // from serialize::json
-fn escape_str(wr: &mut dyn fmt::Write, v: &str) -> Result<(), fmt::Error> {
+fn escape_str(wr: &mut dyn fmt::Write, v: &str) -> fmt::Result {
     wr.write_str("\"")?;
 
     let mut start = 0;
@@ -300,14 +230,8 @@ impl<'a> YamlEmitter<'a> {
         self.compact
     }
 
-    // fn dump(&mut self, doc: &Yaml) -> EmitResult {
-    //     // write DocumentStart
-    //     writeln!(self.writer, "---")?;
-    //     self.level = -1;
-    //     self.emit_node(doc)
-    // }
 
-    fn write_indent(&mut self) -> EmitResult {
+    fn write_indent(&mut self) -> fmt::Result {
         if self.level <= 0 {
             return Ok(());
         }
@@ -319,7 +243,7 @@ impl<'a> YamlEmitter<'a> {
         Ok(())
     }
 
-    fn emit_node(&mut self, node: &Yaml) -> EmitResult {
+    fn emit_node(&mut self, node: &Yaml) -> fmt::Result {
         match *node {
             Yaml::Array(ref v) => self.emit_array(v),
             Yaml::Hash(ref h) => self.emit_hash(h),
@@ -356,7 +280,7 @@ impl<'a> YamlEmitter<'a> {
         }
     }
 
-    fn emit_array(&mut self, v: &[Yaml]) -> EmitResult {
+    fn emit_array(&mut self, v: &[Yaml]) -> fmt::Result {
         if v.is_empty() {
             write!(self.writer, "[]")?;
         } else if v.len() == 1 && !is_complex(&v[0]) {
@@ -380,7 +304,7 @@ impl<'a> YamlEmitter<'a> {
         return Ok(());
     }
 
-    fn emit_hash(&mut self, h: &Hash) -> EmitResult {
+    fn emit_hash(&mut self, h: &Hash) -> fmt::Result {
         if h.is_empty() {
             self.writer.write_str("{}")?;
         } else {
@@ -429,7 +353,7 @@ impl<'a> YamlEmitter<'a> {
     /// If `inline` is true, then the preceding characters are distinct
     /// and short enough to respect the compact flag.
     // changed: use to always emit ' ' for inline -- that is now handled elsewhere
-    fn emit_val(&mut self, inline: bool, val: &Yaml) -> EmitResult {
+    fn emit_val(&mut self, inline: bool, val: &Yaml) -> fmt::Result {
         match *val {
             Yaml::Array(ref v) => {
                 if !((inline && self.compact) || v.is_empty()) {
@@ -517,11 +441,11 @@ fn need_quotes(string: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sxd_document::dom::{ChildOfElement, ChildOfRoot};
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::dom::{ChildOfElement, ChildOfRoot};
+    use sxd_document_no_unsafe::parser;
 
     /// helper function
-    fn first_element(package: &sxd_document::Package) -> Element<'_> {
+    fn first_element(package: &sxd_document_no_unsafe::Package) -> Element<'_> {
         let doc = package.as_document();
         for child in doc.root().children() {
             if let ChildOfRoot::Element(e) = child {
@@ -529,6 +453,49 @@ mod tests {
             }
         }
         panic!("No root element found");
+    }
+
+    #[test]
+    fn is_complex_classifies_hashes() {
+        assert!(!is_complex(&Yaml::Hash(Hash::new())));
+
+        let mut simple_hash = Hash::new();
+        simple_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::String("value".to_string()),
+        );
+        assert!(!is_complex(&Yaml::Hash(simple_hash)));
+
+        let mut nested_hash = Hash::new();
+        nested_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::Array(Vec::new()),
+        );
+        assert!(is_complex(&Yaml::Hash(nested_hash)));
+
+        let mut multi_entry_hash = Hash::new();
+        multi_entry_hash.insert(Yaml::String("first".to_string()), Yaml::Integer(1));
+        multi_entry_hash.insert(Yaml::String("second".to_string()), Yaml::Integer(2));
+        assert!(is_complex(&Yaml::Hash(multi_entry_hash)));
+    }
+
+    #[test]
+    fn is_complex_classifies_arrays() {
+        assert!(!is_complex(&Yaml::Array(Vec::new())));
+        assert!(!is_complex(&Yaml::Array(vec![Yaml::Integer(1)])));
+
+        let mut simple_hash = Hash::new();
+        simple_hash.insert(
+            Yaml::String("key".to_string()),
+            Yaml::String("value".to_string()),
+        );
+        assert!(!is_complex(&Yaml::Array(vec![Yaml::Hash(simple_hash)])));
+
+        assert!(is_complex(&Yaml::Array(vec![Yaml::Array(Vec::new())])));
+        assert!(is_complex(&Yaml::Array(vec![
+            Yaml::Integer(1),
+            Yaml::Integer(2),
+        ])));
     }
 
     #[test]
@@ -615,11 +582,11 @@ mod tests {
     #[test]
     /// Evaluates non-BMP literal text through sxd_xpath.
     fn xpath_non_bmp_literal() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let package = parser::parse("<math><mi>𝞪</mi></math>").unwrap();
-        let xpath = Factory::new().build("string(/math/mi)").unwrap().unwrap();
-        let context = sxd_xpath::Context::new();
+        let xpath = Factory::new().build("string(/math/mi)").unwrap();
+        let context = sxd_xpath_no_unsafe::Context::new();
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
         match value {
@@ -631,11 +598,11 @@ mod tests {
     #[test]
     /// Evaluates non-BMP numeric text through sxd_xpath.
     fn xpath_non_bmp_numeric() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let package = parser::parse("<math><mi>&#x1d7aa;</mi></math>").unwrap();
-        let xpath = Factory::new().build("string(/math/mi)").unwrap().unwrap();
-        let context = sxd_xpath::Context::new();
+        let xpath = Factory::new().build("string(/math/mi)").unwrap();
+        let context = sxd_xpath_no_unsafe::Context::new();
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
         match value {
@@ -647,15 +614,14 @@ mod tests {
     #[test]
     /// Evaluates non-BMP literal text with a MathML namespace-qualified XPath.
     fn xpath_non_bmp_namespace_literal() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>𝞪</mi></math>";
         let package = parser::parse(xml).unwrap();
         let xpath = Factory::new()
             .build("string(/m:math/m:mi)")
-            .unwrap()
             .unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
@@ -668,15 +634,14 @@ mod tests {
     #[test]
     /// Evaluates non-BMP numeric text with a MathML namespace-qualified XPath.
     fn xpath_non_bmp_namespace_numeric() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>&#120746;</mi></math>";
         let package = parser::parse(xml).unwrap();
         let xpath = Factory::new()
             .build("string(/m:math/m:mi)")
-            .unwrap()
             .unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();
@@ -689,12 +654,12 @@ mod tests {
     #[test]
     /// Extracts a text node via XPath (nodeset result) and verifies the non-BMP character survives.
     fn xpath_non_bmp_text_nodeset() {
-        use sxd_xpath::{Factory, Value};
+        use sxd_xpath_no_unsafe::{Factory, Value};
 
         let xml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi>𝞪</mi></math>";
         let package = parser::parse(xml).unwrap();
-        let xpath = Factory::new().build("/m:math/m:mi/text()").unwrap().unwrap();
-        let mut context = sxd_xpath::Context::new();
+        let xpath = Factory::new().build("/m:math/m:mi/text()").unwrap();
+        let mut context = sxd_xpath_no_unsafe::Context::new();
         context.set_namespace("m", "http://www.w3.org/1998/Math/MathML");
 
         let value = xpath.evaluate(&context, first_element(&package)).unwrap();

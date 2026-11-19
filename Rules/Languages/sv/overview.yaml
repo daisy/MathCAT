@@ -1,5 +1,5 @@
 ---
-# Provide an overview/outline/description of the math
+# Provide an overview/outline/description of the math expression
 # MathPlayer just tried to shorten things like "mfrac" by just saying "fraction"
 #   For mrow, it say up to 5 operands and just say "and n more things" for the rest
 # This results in strings of varying length. Given human memory is about 7 words long,
@@ -13,7 +13,7 @@
 #   That might mean that at the top level, we may want to allow the first few children to expand
 
 - name: overview-default
-  tag: mfrac
+  tag: [mfrac, fraction]
   match: "."
   replace:
   - test:
@@ -26,7 +26,7 @@
       - T: "bråk"
 
 - name: overview-default
-  tag: msqrt
+  tag: [msqrt, "square-root"]
   match: "."
   replace:
   - T: "roten"
@@ -38,8 +38,8 @@
           then: [T: "ur"]
       - x: "*[1]"
 
-- name: overview-default
-  tag: mroot
+- name: overview-default # audit-ignore
+  tag: [mroot, root]
   match: "."
   replace:
   - test:

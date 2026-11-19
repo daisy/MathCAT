@@ -1,0 +1,1473 @@
+---
+#default rules shared among several speech rules
+- name: russian-array-name
+  tag: array
+  match: "$SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak'"
+  replace:
+  - T: "таблица"
+  - pause: short
+  - x: "*"
+
+# A repeated equality across a gathered line break marks one derivation.
+# Priority is necessary because ClearSpeak's general table rule matches first.
+- name: russian-gathered-derivation
+  tag: "!*"
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and (self::m:lines or self::m:system-of-equations) and contains(@class, 'gathered') and (*[1]//*[not(*)])[last()][.='='] and (*[2]//*[not(*)])[1][.='=']"
+  variables:
+  - LineCount: "count(*)"
+  - IsColumnSilent: "true()"
+  replace:
+  - x: "$LineCount"
+  - T: "строки"
+  - test:
+      if: "$SpeechStyle='ClearSpeak'"
+      then: [pause: short]
+      else: [pause: medium]
+  - x: "*"
+
+- name: russian-gathered-derivation-row
+  tag: "!*"
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and self::m:mtr and parent::*[contains(@class, 'gathered') and (*[1]//*[not(*)])[last()][.='='] and (*[2]//*[not(*)])[1][.='=']]"
+  replace:
+  - T: "строка"
+  - x: "count(preceding-sibling::*)+1"
+  - pause: medium
+  - x: "*"
+  - pause: medium
+
+- name: russian-gathered-repeated-equality
+  tag: mo
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and .='=' and not(following-sibling::*) and ancestor::m:mtr[following-sibling::*[1][(.//*[not(*)])[1][.='=']]] and ancestor::*[contains(@class, 'gathered')]"
+  replace: []
+
+- name: russian-gathered-sentence-period
+  tag: mo
+  match: "($SpeechStyle='ClearSpeak' or $SpeechStyle='SimpleSpeak') and .='.' and not(following-sibling::*) and ancestor::m:mtr[not(following-sibling::*)] and ancestor::*[contains(@class, 'gathered')]"
+  replace: []
+
+- name: probability-given
+  tag: math
+  match: "count(*)=6 and *[1][.='P'] and *[2][.='('] and *[4][.='|'] and *[6][.=')']"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - T: "открывающая круглая скобка"
+  - pause: short
+  - x: "*[3]"
+  - x: "*[4]"
+  - x: "*[5]"
+  - pause: short
+  - T: "закрывающая круглая скобка"
+
+- name: probability-given-bracketed
+  tag: [math, mrow]
+  match: "*[1][self::m:mi[.='P']] and *[last()][IsBracketed(., '(', ')') and .//m:mo[.='|']]"
+  replace:
+  - T: "пэ большое"
+  - pause: short
+  - T: "скобка открывается"
+  - pause: short
+  - test:
+    - if: "*[last()]//*[self::m:mi[.='A']]"
+      then: [T: "а большое"]
+    - else: [x: "*[last()]//*[self::m:mo[.='|']]/preceding-sibling::*[1]"]
+  - x: "*[last()]//*[self::m:mo[.='|']]"
+  - test:
+    - if: "*[last()]//*[self::m:mi[.='B']]"
+      then: [T: "бэ большое"]
+    - else: [x: "*[last()]//*[self::m:mo[.='|']]/following-sibling::*[1]"]
+  - pause: short
+  - T: "скобка закрывается"
+
+- name: vector-cross-product
+  tag: [math, mrow]
+  match: "$SpeechStyle='ClearSpeak' and $ClearSpeak_MultSymbolX='Cross' and count(*)=3 and *[1][self::m:mi] and *[2][.='×'] and *[3][self::m:mi]"
+  replace:
+  - test:
+    - if: "*[1][.='u']"
+      then: [T: "у"]
+    - else: [x: "*[1]"]
+  - x: "*[2]"
+  - x: "*[3]"
+
+- name: limit-followed-by-fraction
+  tag: [math, mrow]
+  match: "count(*)=2 and *[1][name()='limit'] and *[2][name()='fraction' or name()='mfrac' or .//*[name()='fraction' or name()='mfrac']]"
+  replace:
+  - T: "предел при"
+  - x: "*[1]/*[1]"
+  - pause: short
+  - T: "от"
+  - test:
+      if: "$Impairment='LearningDisability'"
+      then: [pause: medium]
+      else: [pause: short]
+  - x: "*[2]"
+
+# Parent rules already speak "от" (or intentionally omit it); keep ⁡ silent when visited for nav.
+# Do not silence every ⁡ after limit — lim⁡sin needs unicode "от"; only lim⁡fraction duplicates T:"от".
+- name: function-apply-nav-only
+  tag: mo
+  match:
+  - ".='⁡' and ("
+  - "  preceding-sibling::*[1][self::m:mi][.='log' or .='ln'] or"
+  - "  preceding-sibling::*[1][self::m:logarithm-with-base] or"
+  - "  preceding-sibling::*[1][self::m:power and IsInDefinition(*[1], 'TrigFunctionNames')] or"
+  - "  (preceding-sibling::*[1][name()='limit'] and"
+  - "   following-sibling::*[1][name()='fraction' or name()='mfrac']) or"
+  - "  (parent::*[count(*)=3 and *[3][IsBracketed(., '(', ')')]] and"
+  - "   ($SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')]))"
+  - ")"
+  replace:
+  - T: ""
+
+- name: limit-followed-by-apply-fraction
+  tag: mrow
+  match: "count(*)=3 and *[1][name()='limit'] and *[2][.='\u2061'] and *[3][name()='fraction' or name()='mfrac']"
+  replace:
+  - T: "предел при"
+  - x: "*[1]/*[1]"
+  - pause: short
+  - T: "от"
+  - test:
+      if: "$Impairment='LearningDisability'"
+      then: [pause: medium]
+      else: [pause: short]
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
+  - x: "*[3]"
+
+- name: default
+  tag: math
+  match: "."
+  replace:
+  - with:
+      variables:
+      - ClearSpeak_Fractions: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Fractions='Auto', 'EndFrac', $ClearSpeak_Fractions)"
+      - ClearSpeak_AbsoluteValue: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_AbsoluteValue='Auto', 'AbsEnd', $ClearSpeak_AbsoluteValue)"
+      - ClearSpeak_Roots: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Roots='Auto', 'RootEnd', $ClearSpeak_Roots)"
+      - ClearSpeak_Matrix: "IfThenElse($Verbosity='Verbose' and $ClearSpeak_Matrix='Auto', 'EndMatrix', $ClearSpeak_Matrix)"
+
+      - MatchingPause: false()
+      # should be set at mtable level, but unknown intents make that impossible to know
+      - IsColumnSilent: false()
+      replace:
+      - test:
+          if: "$MathRate = 100"
+          then: [x: "*"]
+          else:
+          - rate:
+              value: "$MathRate"
+              replace: [x: "*"]
+
+- name: empty-mrow
+  tag: mrow
+  match: "not(*)"
+  replace:
+  - T: "полем" # say nothing -- placeholder
+
+- name: limit-approach
+  tag: mrow
+  match: "parent::m:limit and count(*)=3 and *[2][.='→' or .='↗']"
+  replace:
+  - x: "*[1]"
+  - T: "стремящемся к"
+  - x: "*[3]"
+  - test:
+      if: "*[2][.='↗']"
+      then: [T: "снизу"]
+
+- name: probability-given
+  tag: mrow
+  match: "count(*)=6 and *[1][.='P'] and *[2][.='('] and *[4][.='|'] and *[6][.=')']"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - T: "открывающая круглая скобка"
+  - pause: short
+  - x: "*[3]"
+  - x: "*[4]"
+  - x: "*[5]"
+  - pause: short
+  - T: "закрывающая круглая скобка"
+
+- name: literal-function-application
+  tag: mrow
+  match:
+  - "count(*)=3 and *[2][.='⁡'] and *[3][IsBracketed(., '(', ')')] and"
+  - "($SpeechStyle='LiteralSpeak' or ancestor-or-self::*[contains(@data-intent-property, ':literal:')])"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"   # mark function-apply for MoveNext (speech suppressed by function-apply-nav-only)
+  - pause: short
+  - T: "открывающая круглая скобка"
+  - test:
+      if: "*[3]/*[2]"
+      then: [x: "*[3]/*[2]"]
+      else: [x: "*[3]"]
+  - pause: short
+  - T: "закрывающая круглая скобка"
+
+- name: literal-perpendicular-row
+  tag: mrow
+  match: "count(*)=3 and *[2][self::m:mi[.='perpendicular-to' or .='perpendicular to' or .='perpendicular_to']]"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - x: "*[2]"
+  - pause: short
+  - x: "*[3]"
+
+- name: modified-variable
+  tag: modified-variable
+  match: "count(*)=2"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+- name: phi-exponential-equation
+  tag: mrow
+  match: "count(*)=3 and *[1][.//m:mi[.='ϕ']] and *[2][.='='] and *[3][.//m:mi[.='c'] and .//*[name()='power' and *[1][self::m:mi[.='e']]]]"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - pause: medium
+  - x: "*[3]"
+
+- name: coefficient-exponential
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mi[.='c']] and *[2][.='\u2062'] and *[3][name()='power' and *[1][self::m:mi[.='e']]]"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
+  - pause: short
+  - x: "*[3]"
+
+- name: exponent-product
+  tag: mrow
+  match: "count(*)=3 and *[1][name()='minus' and .//m:mi[.='h']] and *[2][.='\u2062'] and *[3][name()='power'] and parent::*[name()='power']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"   # visit silent invisible times so MoveNext can mark/skip it
+  - pause: short
+  - x: "*[3]"
+
+- name: set-member-number-set
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and *[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ'] and not(ancestor::*[self::m:set or self::m:large-op])"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then: [T: "является элементом множества"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='In'"
+      then: [T: "находится в множестве"]
+    - else: [T: "принадлежит множеству"]
+  - test:
+    - if: "*[3][.='ℕ']"
+      then: [T: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
+    - else: [T: "действительных чисел"]
+
+- name: set-membership-in-builder
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and ancestor::*[self::m:set]"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "входящих в множество"]
+          else: [T: "входящих в"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "являющихся элементами множества"]
+          else: [T: "являющихся элементами"]
+    - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Member')"
+      then:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "принадлежащих множеству"]
+          else: [T: "принадлежащих"]
+    - else: [T: "из"]
+  - test:
+    - if: "*[3][.='ℕ']"
+      then: [T: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
+    - else_if: "*[3][.='ℝ']"
+      then: [T: "действительных чисел"]
+    - else: [x: "*[3]"]
+  - pause: short
+
+- name: set-builder-even-number
+  tag: mrow
+  match: "*[self::m:mi[.='x']] and *[self::m:mtext[contains(., 'even') and contains(., 'number')]] and ancestor::*[self::m:set]"
+  replace:
+  - x: "*[self::m:mtext[contains(., 'even') and contains(., 'number')]]"
+
+- name: set-membership-under-large-op
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∈'] and ancestor::*[self::m:large-op]"
+  replace:
+  - x: "*[1]"
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "входящему в множество"]
+          else: [T: "входящему в"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='In'"
+      then: [T: "из"]
+    - else_if: "$SpeechStyle='ClearSpeak' and ($ClearSpeak_SetMemberSymbol='Auto' or $ClearSpeak_SetMemberSymbol='Member')"
+      then:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "принадлежащему множеству"]
+          else: [T: "принадлежащему"]
+    - else:
+      - pause: short
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "являющемуся элементом множества"]
+          else: [T: "являющемуся элементом"]
+  - test:
+    - if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
+    - else: [x: "*[3]"]
+  - pause: short
+
+- name: set-not-member
+  tag: mrow
+  match: "count(*)=3 and *[2][.='∉']"
+  replace:
+  - x: "*[1]"
+  - pause: short
+  - test:
+    - if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Belongs'"
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не входит в множество"]
+          else: [T: "не входит в"]
+    - else_if: "$SpeechStyle='ClearSpeak' and $ClearSpeak_SetMemberSymbol='Element'"
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не является элементом множества"]
+          else: [T: "не является элементом"]
+    - else_if: "$SpeechStyle='ClearSpeak'"
+      then:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не принадлежит множеству"]
+          else: [T: "не принадлежит"]
+    - else:
+      - test:
+          if: "*[3][.='ℕ' or .='ℤ' or .='ℚ' or .='ℝ']"
+          then: [T: "не является элементом множества"]
+          else: [T: "не является элементом"]
+  - test:
+    - if: "*[3][.='ℕ']"
+      then: [T: "натуральных чисел"]
+    - else_if: "*[3][.='ℤ']"
+      then: [T: "целых чисел"]
+    - else_if: "*[3][.='ℚ']"
+      then: [T: "рациональных чисел"]
+    - else_if: "*[3][.='ℝ']"
+      then: [T: "действительных чисел"]
+    - else: [x: "*[3]"]
+
+- name: probability-chain
+  tag: mrow
+  match: "count(*)=5 and *[1][.//m:mtext[contains(., 'and')]] and *[2][.='='] and *[3][.//m:mo[.='∩']] and *[4][.='='] and *[5][.//m:mi[.='P']]"
+  replace:
+  - x: "*[1]/*[1]"
+  - pause: medium
+  - T: "открывающая круглая скобка"
+  - pause: short
+  - x: "*[1]/*[3]/*[2]"
+  - pause: medium
+  - T: "закрывающая круглая скобка"
+  - pause: medium
+  - x: "*[2]"
+  - pause: medium
+  - x: "*[3]/*[1]"
+  - pause: short
+  - T: "открывающая круглая скобка"
+  - pause: short
+  - x: "*[3]/*[3]/*[2]"
+  - pause: medium
+  - T: "закрывающая круглая скобка"
+  - pause: medium
+  - x: "*[4]"
+  - pause: short
+  - x: "*[5]/*[1]/*[1]"
+  - T: "от"
+  - x: "*[5]/*[1]/*[3]/*[2]"
+  - pause: short
+  - x: "*[5]/*[3]/*[1]"
+  - T: "от"
+  - x: "*[5]/*[3]/*[3]/*[2]"
+
+- name: modified-variable-product
+  tag: mrow
+  match: "count(*)>2 and *[1][name()='modified-variable'] and not(*[.='+'])"
+  replace:
+  - insert:
+      nodes: "*[name()='modified-variable' or name()='mover']"
+      replace: [pause: auto]
+
+- name: modified-variable-sum
+  tag: mrow
+  match: "count(*)=9 and *[2][.='+'] and *[4][.='+'] and *[6][.='+'] and *[8][.='+'] and *[1][.//*[name()='modified-variable']] and *[5][.//*[name()='modified-variable']]"
+  replace:
+  - x: "*[1]/*[1]"
+  - pause: short
+  - x: "*[1]/*[3]"
+  - pause: short
+  - x: "*[1]/*[5]"
+  - pause: short
+  - x: "*[1]/*[7]"
+  - pause: short
+  - x: "*[1]/*[9]"
+  - pause: medium
+  - x: "*[2]"
+  - x: "*[3]"
+  - pause: medium
+  - x: "*[4]"
+  - x: "*[5]/*[1]"
+  - pause: short
+  - x: "*[5]/*[3]"
+  - pause: short
+  - x: "*[5]/*[5]"
+  - pause: short
+  - x: "*[5]/*[7]"
+  - pause: short
+  - x: "*[5]/*[9]"
+  - pause: medium
+  - x: "*[6]"
+  - x: "*[7]"
+  - pause: auto
+  - x: "*[8]"
+  - x: "*[9]"
+
+- name: default
+  tag: mrow
+  match: "."
+  replace:
+  - insert:
+      nodes: "*"
+      replace:
+      - test:
+        - if: "(name(.)='mover' or name(.)='modified-variable' or (name(.)='mrow' and .//*[name(.)='mover' or name(.)='modified-variable'])) and
+               following-sibling::*[1][.='+'] and
+               following-sibling::*[2][name(.)='mover' or name(.)='modified-variable' or (name(.)='mrow' and .//*[name(.)='mover' or name(.)='modified-variable'])] and
+               not(following-sibling::*[2][name(.)='vector' or (name(.)='mover' and *[2][.='→'])])"
+          then: [pause: medium]
+        - else_if: "self::m:mo[.='='] and following-sibling::*[1][.//m:mi[.='c']]"
+          then: [pause: medium]
+        - else_if: "self::m:mo[.='='] and following-sibling::*[1][.//m:mi[.='P']] and following-sibling::*[2][.='=']"
+          then: [pause: medium]
+        - else_if: "self::m:mo[.='='] and following-sibling::*[1][.//m:mi[.='P']]"
+          then: [pause: short]
+        - else_if: "name(.)='mrow' and .//m:mi[.='P'] and following-sibling::*[1][.='=']"
+          then: [pause: medium]
+        - else_if: "name(.)='mrow' and .//m:mi[.='P'] and following-sibling::*[1][.='\u2062'] and following-sibling::*[2][.//m:mi[.='P']]"
+          then: [pause: short]
+        - else_if: "self::m:mi[.='P'] and parent::*[following-sibling::*[1][.='='] and not(preceding-sibling::*[1][.='='])]"
+          then: [pause: medium]
+        - else_if: "self::m:mi[.='c'] and following-sibling::*[1][.='\u2062'] and
+                    following-sibling::*[2][(name(.)='power' or name(.)='msup') and *[1][self::m:mi[.='e']]]"
+          then: [pause: short]
+        - else_if: "(name(.)='power' or name(.)='msup' or name(.)='minus') and
+                    following-sibling::*[1][.='\u2062'] and following-sibling::*[2][name(.)='power' or name(.)='msup'] and
+                    ancestor::*[name(.)='power' or name(.)='msup']"
+          then: [pause: short]
+        - else_if: "(name(.)='power' or name(.)='msup') and following-sibling::*[1][name(.)='power' or name(.)='msup'] and
+                    ancestor::*[name(.)='power' or name(.)='msup']"
+          then: [pause: short]
+        - else_if: "self::m:mi[.='P'] and not(preceding-sibling::*[1][.='=']) and
+                    ((following-sibling::*[1][IsBracketed(., '(', ')')] and following-sibling::*[2][.='=']) or
+                     (following-sibling::*[1][.='\u2061'] and following-sibling::*[2][IsBracketed(., '(', ')')] and following-sibling::*[3][.='=']))"
+          then: [pause: medium]
+        - else_if: "IsBracketed(., '(', ')') and count(*)=3 and
+                    (preceding-sibling::*[1][.='\u2061'] or preceding-sibling::*[2][self::m:mi[.='P']]) and
+                    (following-sibling::*[1][self::m:mi[.='P']] or (following-sibling::*[1][.='\u2062'] and following-sibling::*[2][self::m:mi[.='P']]))"
+          then: [pause: short]
+        - else_if: "not(IsNode(., 'leaf') and following-sibling::*[1][IsNode(., 'leaf')]) or
+                    following-sibling::*[1][self::m:mo[.='=']] or
+                    (self::m:mi[contains('αβγδεζηθικλμνξοπρςστυφχψωϕ', text())] and following-sibling::*[1][.='+']) or
+                    (self::m:mo[.='+'] and preceding-sibling::*[1][self::m:mi[contains('αβγδεζηθικλμνξοπρςστυφχψωϕ', text())]])"
+          then: [pause: auto]
+
+- name: default
+  tag: mn
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+
+- name: english-and
+  tag: mtext
+  match: "normalize-space(.)='and' or contains(., 'and')"
+  replace:
+  - T: "и"
+
+- name: english-if
+  tag: mtext
+  match: "normalize-space(.)='if' or contains(., 'if')"
+  replace:
+  - test:
+      if: "ancestor::m:mtd"
+      then: [pause: short]
+  - T: "если"
+
+- name: even-number-text
+  tag: mtext
+  match: "contains(., 'even') and contains(., 'number')"
+  replace:
+  - test:
+      if: "$SpeechStyle='ClearSpeak'"
+      then: [T: "— чётное число"]
+      else: [T: "икс — чётное число"]
+
+- name: fraction-text-terms
+  tag: [mi, mtext]
+  match: ".='rise' or .='run' or .='miles' or .='gallons'"
+  replace:
+  - test:
+    - if: ".='rise'"
+      then: [T: "подъём"]
+    - else_if: ".='run'"
+      then: [T: "длину"]
+    - else_if: ".='miles'"
+      then: [T: "мили"]
+    - else: [T: "галлона"]
+
+- name: perpendicular-to
+  tag: mo
+  match: "@intent='perpendicular-to' or .='perpendicular to'"
+  replace:
+  - T: "перпендикулярно"
+
+- name: set-builder-such-that
+  tag: mo
+  match: ".=':' and ancestor::*[self::m:set] and preceding-sibling::*[.='ℤ' or .='ℕ' or (self::m:mrow and *[2][.='∈'])]"
+  replace:
+  - T: "таких что"
+
+- name: perpendicular-to-intent-node
+  tag: "*"
+  match: "@intent='perpendicular-to' or .='perpendicular to' or contains(name(.), 'perpendicular')"
+  replace:
+  - T: "перпендикулярно"
+
+- name: default
+  tag: [mo, mtext]
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - x: "text()"
+
+- name: inflected-capital-letter
+  tag: mi
+  match:
+  - "string-length(.)=1 and"
+  - "(parent::*[self::m:trace or self::m:dimension or self::m:homomorphism or self::m:kernel or self::m:norm or self::m:determinant or self::m:real-part or self::m:imaginary-part or self::m:laplacian or self::m:divergence or self::m:curl or self::m:gradient or self::m:subscripted-norm or self::m:limit or self::m:line-segment or self::m:ray or self::m:open-interval or self::m:closed-interval or self::m:open-closed-interval or self::m:closed-open-interval or self::m:binomial or self::m:pochhammer or self::m:square-root or self::m:root or self::m:absolute-value] or parent::m:large-op or parent::m:logarithm-with-base or (parent::m:power and preceding-sibling::*) or (parent::m:fraction and preceding-sibling::* and IsNode(../*[1], 'simple') and IsNode(., 'simple')) or (parent::m:apply-function and preceding-sibling::*) or (parent::m:evaluate and preceding-sibling::*) or preceding-sibling::*[1][.='⁡' or .='∈' or .='∉' or .='∊'] or parent::m:mrow[IsBracketed(., '(', ')') and count(*)=3 and parent::*[self::m:kernel or self::m:homomorphism]])"
+  replace:
+  - bookmark: "@id"
+  - with:
+      variables:
+      - RuCapitalWord: "IfThenElse((parent::m:ray or parent::m:fraction) and preceding-sibling::*, 'заглавную', 'заглавной')"
+      - RuInflectCapital: "not(parent::m:large-op and not(preceding-sibling::*)) and not(parent::m:line-segment and $Verbosity!='Verbose') and not(parent::m:ray and $Verbosity!='Verbose') and not($Verbosity='Terse' and (parent::m:square-root or (parent::m:root and not(preceding-sibling::*))))"
+      replace:
+      - with:
+          variables:
+          - SpeechOverrides_CapitalLetters: "IfThenElse($RuInflectCapital and $SpeechOverrides_CapitalLetters='' and $Impairment='Blindness', $RuCapitalWord, $SpeechOverrides_CapitalLetters)"
+          replace: [x: "text()"]
+
+- name: named-math-operator
+  tag: mi
+  match: "@class='qopname' and (text()='max' or text()='min' or text()='sup' or text()='lim')"
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "text()='max'"
+      then: [T: "максимум"]
+    - else_if: "text()='min'"
+      then: [T: "минимум"]
+    - else_if: "text()='sup'"
+      then: [T: "супремум"]
+    - else: [T: "предел"]
+
+- name: default
+  tag: mi
+  match: "."
+  replace:
+  - bookmark: "@id"
+  - test:
+    - if: "text()='perpendicular-to' or text()='perpendicular to' or text()='perpendicular_to'"
+      then: [T: "перпендикулярно"]
+    - else_if: "text()='A' and parent::*[self::m:mrow and IsBracketed(., '(', ')') and count(*)=3 and preceding-sibling::*[2][self::m:mi[.='P']]]"
+      then: [T: "заглавной а"]
+    - else_if: "text()='B' and parent::*[self::m:mrow and IsBracketed(., '(', ')') and count(*)=3 and preceding-sibling::*[2][self::m:mi[.='P']]]"
+      then: [T: "заглавной бэ"]
+    - else_if: "text()='e' and parent::*[self::m:power or self::m:msup][*[1][text()='e']]"
+      then: [T: "е"]
+    - else_if: "text()='g' and following-sibling::*[1][.='⁡' or (.='⁢' and @data-function-guess)]"
+      then: [T: "же"]
+    - else_if: "$SpeechStyle='SimpleSpeak' and (text()='n' or text()='k') and parent::*[self::m:mrow and count(*)=3 and *[2][.='+'] and *[3][self::m:mn]] and ancestor::*[name()='fraction']"
+      then_test:
+      - if: "text()='n'"
+        then: [T: "эн"]
+      - else: [T: "ка"]
+    - else_if: "text()='n' and parent::*[self::m:mrow and parent::*[self::m:power] and count(*)>1]"
+      then: [T: "эн"]
+    - else_if: "(text()='n' or text()='k') and ancestor::*[name()='binomial']"
+      then_test:
+      - if: "text()='n'"
+        then: [T: "эн"]
+      - else: [T: "ка"]
+    - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
+      then: [T: "и"]
+    - else_if: "text()='n' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
+      then: [T: "эн"]
+    - else_if: "text()='d' and preceding-sibling::*[1][.='⁢'] and following-sibling::*[1][.='⁢']"
+      then: [T: "д"]
+    - else_if: "text()='b' and parent::*[self::m:mover or self::m:modified-variable]"
+      then: [T: "б"]
+    - else_if: "text()='x' and ancestor::*[self::m:limit]"
+      then: [T: "икс"]
+    - else_if: "text()='x' and (($SpeechStyle='ClearSpeak' and ancestor::*[name()='set']) or (ancestor::*[name()='set' and not(.//*[.='∈'])] and ancestor::*[self::m:mrow and *[2][.=':']]))"
+      then: [T: "икс"]
+    - else_if: "text()='i' and $SpeechStyle='ClearSpeak' and ancestor-or-self::*[following-sibling::*[.='∉']]"
+      then: [T: "и"]
+    - else_if: "text()='i' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "и"]
+    - else_if: "text()='j' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "йот"]
+    - else_if: "text()='k' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "ка"]
+    - else_if: "text()='l' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "эль"]
+    - else_if: "text()='m' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "эм"]
+    - else_if: "text()='n' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
+      then: [T: "эн"]
+    - else_if: "string-length(.)=1 and contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text()) and ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]]"
+      then:
+      - x: "translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+    - else_if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
+      then: [x: "text()"]
+    - else_if: "@data-chem-element"                      # NavMode=Character needs this
+      then: [SPELL: "text()", pause: "short"]
+      else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
+
+- name: default
+  tag: ms
+  match: "."
+  replace:
+  - T: "строка"      # phrase('the string' is long)
+  - pause: short
+  - x: "text()"
+
+- name: default
+  tag: mstyle
+  match: "."
+  replace:
+  - insert:
+      nodes: "*"
+      replace:
+      - test:
+        - if: "self::m:mo[.='='] and following-sibling::*[1][self::m:mi[.='c'] or .//m:mi[.='c']]"
+          then: [pause: medium]
+        - else_if: "self::m:mi[.='c'] and following-sibling::*[1][.='\u2062'] and
+                    following-sibling::*[2][(name(.)='power' or name(.)='msup') and *[1][self::m:mi[.='e']]]"
+          then: [pause: short]
+        - else_if: "(name(.)='power' or name(.)='msup') and following-sibling::*[1][name(.)='power' or name(.)='msup'] and
+                    ancestor::*[name(.)='power' or name(.)='msup']"
+          then: [pause: short]
+        - else_if: "self::m:mi[.='P'] and not(preceding-sibling::*[1][.='=']) and
+                    ((following-sibling::*[1][IsBracketed(., '(', ')')] and following-sibling::*[2][.='=']) or
+                     (following-sibling::*[1][.='\u2061'] and following-sibling::*[2][IsBracketed(., '(', ')')] and following-sibling::*[3][.='=']))"
+          then: [pause: medium]
+        - else_if: "IsBracketed(., '(', ')') and following-sibling::*[1][.='=']"
+          then: [pause: medium]
+        - else_if: "self::m:mo[.='='] and
+                    ((following-sibling::*[1][self::m:mi[.='P']] and following-sibling::*[2][IsBracketed(., '(', ')')] and following-sibling::*[3][.='=']) or
+                     (following-sibling::*[1][self::m:mi[.='P']] and following-sibling::*[2][.='\u2061'] and following-sibling::*[3][IsBracketed(., '(', ')')] and following-sibling::*[4][.='=']))"
+          then: [pause: medium]
+        - else_if: "self::m:mo[.='='] and following-sibling::*[1][self::m:mi[.='P']]"
+          then: [pause: short]
+        - else_if: "IsBracketed(., '(', ')') and count(*)=3 and
+                    (preceding-sibling::*[1][.='\u2061'] or preceding-sibling::*[2][self::m:mi[.='P']]) and
+                    (following-sibling::*[1][self::m:mi[.='P']] or (following-sibling::*[1][.='\u2062'] and following-sibling::*[2][self::m:mi[.='P']]))"
+          then: [pause: short]
+
+
+- name: literal-simple
+  # don't include nested fractions. E.g, fraction a plus b over c + 1 end fraction" is ambiguous
+  # by simplistic SimpleSpeak's rules "b over c" is a fraction, but if we say nested fractions
+  # are never simple, then any 'over' applies only to enclosing "fraction...end fraction" pair.
+  tag: mfrac
+  match:
+  - "(IsNode(*[1],'leaf') and IsNode(*[2],'leaf')) and"
+  - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
+  replace:
+  - x: "*[1]"
+  - T: "разделить на"               # phrase("the fraction x 'over' y")
+  - x: "*[2]"
+  - pause: short
+
+- name: literal-default
+  tag: mfrac
+  match: "."
+  replace:
+  - T: "дробь, числитель:"              # phrase("'start'  fraction x over y end of fraction")
+  - pause: short
+  - x: "*[1]"
+  - test:
+      if: "not(IsNode(*[1],'leaf'))"
+      then: [pause: short]
+  - T: "знаменатель:"               # phrase("the fraction x 'over' y")
+  - test:
+      if: "not(IsNode(*[2],'leaf'))"
+      then: [pause: short]
+  - x: "*[2]"
+  - pause: short
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then: [T: "конец дроби"]          # phrase("start of fraction x over y 'end over'")
+  - pause: medium
+
+
+# not sure what really should be said for these since we should not assume they are square roots
+- name: literal-default
+  tag: msqrt
+  match: "."
+  replace:
+  - T: "квадратный корень"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "из"]    # phrase("the root 'of' x")
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
+      then: [T: "конец корня"] # phrase("root of x 'end root symbol'")
+
+# not sure what really should be said for these since we should not assume they are square roots
+- name: literal-default
+  tag: mroot
+  match: "."
+  replace:
+  - test:
+    - if: "*[2][.='2']"
+      then: [T: "квадратный корень"]
+    - else_if: "*[2][.='3']"
+      then: [T: "кубический корень"]
+    - else:
+      - T: "корень степени" # phrase("the 'root with index' 3 of 5")
+      - x: "*[2]"
+  - pause: short
+  - T: "из"              # phrase("the root 'of' x")
+  - x: "*[1]"
+  - pause: short
+  - test:
+      if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
+      then: [T: "конец корня"] # phrase("root of x 'end root symbol'")
+
+
+- name: simple-sub
+  tag: indexed-by
+  # invisible comma -- want "x 1 when subscript is an integer"
+  match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - pause: short
+
+- name: no-end-sub
+  tag: indexed-by
+  match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
+  replace:
+  - x: "*[1]"
+  - T: "с индексом"               # phrase(x 'sub' 2)
+  - x: "*[2]"
+  - pause: short
+
+- name: subscript-in-power
+  tag: indexed-by
+  match: "count(*)=2 and parent::*[self::m:power]"
+  replace:
+  - x: "*[1]"
+  - T: "нижний индекс"
+  - x: "*[2]"
+  - pause: short
+
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "нижний индекс"
+  - x: "*[2]"
+  - pause: short
+
+# otherwise let definitions/default infix handle it
+
+- name: literal
+  tag: msub
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"  # just say "x 1" for terse vs "x sub 1"
+      then: [T: "нижний индекс"]      # phrase(x 'sub' 2)
+  - x: "*[2]"
+
+
+- name: literal
+  tag: [msup, msubsup]
+  match: "."
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "name(.)='msubsup'"
+      then:
+      - T: "нижний индекс"          # phrase(x 'sub' 2)
+      - x: "*[2]"
+  - test:
+      if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
+      then:  [x: "*[last()]"]
+      else_test:
+          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
+          then:
+          - T: "верхний индекс"      # phrase(x 'super' 2)
+          - x: "*[last()]"
+          - test:
+              if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
+              then: [T: "конец верхнего индекса"]      # phrase(x super 2 'end of super')
+          else:
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [T: "верхний индекс"]
+              else: [T: "в степени"]
+          - x: "*[last()]"
+          - test:
+              if: "$Verbosity='Verbose'"
+              then: [T: "конец верхнего индекса"]
+              else: [T: "конец степени"]
+
+- name: named-operator-with-lower-limit
+  tag: munder
+  variables: [OperatorName: "translate(*[1], ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2061', '')"]
+  match: "$OperatorName='max' or $OperatorName='min' or $OperatorName='sup' or $OperatorName='lim'"
+  replace:
+  - test:
+    - if: "$OperatorName='max'"
+      then: [T: "максимум"]
+    - else_if: "$OperatorName='min'"
+      then: [T: "минимум"]
+    - else_if: "$OperatorName='sup'"
+      then: [T: "супремум"]
+    - else: [T: "предел"]
+  - test:
+    - if: "$OperatorName='lim'"
+      then: [T: "при"]
+    - else: [T: "по"]
+  - test:
+    - if: "$OperatorName='lim' and *[2][self::m:mrow and count(*)=3 and *[2][.='→' or .='↗']]"
+      then:
+      - x: "*[2]/*[1]"
+      - T: "стремящемся к"
+      - test:
+          if: "*[2]/*[3][.='∞']"
+          then: [T: "бесконечности"]
+          else: [x: "*[2]/*[3]"]
+      - test:
+          if: "*[2]/*[2][.='↗']"
+          then: [T: "снизу"]
+    - else: [x: "*[2]"]
+
+# Describe an otherwise unrecognized annotation below the base expression.
+- name: default
+  tag: munder
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [T: "выражение"]
+  - x: "*[1]"
+  - T: "с"
+  - x: "*[2]"
+  - T: "снизу"
+
+- name: double-overline
+  tag: mover
+  match: "*[1][self::m:mover or self::m:modified-variable][*[2][.='¯']] and *[2][.='¯']"
+  replace:
+  - x: "*[1]/*[1]"
+  - T: "с двойным надчёркиванием"
+
+- name: diacriticals
+  tag: mover
+  match: "*[1][self::m:mi] and *[2][translate(., '\u0306\u030c.\u00A8\u02D9\u20DB\u20DC`^ˇ~→¯_', '')='']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+
+# Describe an otherwise unrecognized annotation above the base expression.
+- name: default
+  tag: mover
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [T: "выражение"]
+  - x: "*[1]"
+  - T: "с"
+  - x: "*[2]"
+  - T: "сверху"
+
+# Read the base followed by its lower and upper annotations.
+- name: default
+  tag: munderover
+  match: "."
+  replace:
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [T: "выражение"]
+  - x: "*[1]"
+  - T: "с"
+  - x: "*[2]"
+  - T: "снизу и"
+  - x: "*[3]"
+  - T: "сверху"
+
+- name: default
+  #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
+  #   If there are more, we just dump them out without regard to sup/super :-(
+  # FIX: this could use more special cases 
+  # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  tag: mmultiscripts
+  match: "."
+  variables:
+  # computing the number of postscripts is messy because of <mprescripts> being optionally present -- we use "mod" to get the count right
+  - Prescripts: "m:mprescripts/following-sibling::*"
+  - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
+  - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "$Prescripts" # more common case
+      then:
+      - with:
+          variables:
+          - PreSubscript: "'левый нижний индекс'"
+          - PreSuperscript: "'левый верхний индекс'"
+          replace:
+          - test: # only bother announcing if there is more than one prescript
+              if: "count($Prescripts) > 2"
+              then:
+              - T: "с"      # phrase(substitute x 'with' y)
+              - x: "count($Prescripts) div 2"
+              - T: "индексами перед"
+              - pause: short
+          - test:
+              if: "not($Prescripts[1][self::m:none])"
+              then:
+              - x: "$PreSubscript"
+              - x: "$Prescripts[1]"
+          - test:
+              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
+              then: [T: "и"]      # phrase(10 is greater than 8 'and' less than 15)
+          - test:
+              if: "not($Prescripts[2][self::m:none])"
+              then:
+              - x: "$PreSuperscript"
+              - x: "$Prescripts[2]"
+          - pause: short
+          - test:
+              if: "count($Prescripts) > 2" # more common case
+              then:
+              - test:
+                  if: "not($Prescripts[3][self::m:none])"
+                  then:
+                  - x: "$PreSubscript"
+                  - x: "$Prescripts[3]"
+              - test:
+                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
+                  then: [T: "и"]      # phrase(10 is grater than 8 'and' less than 15)
+              - test:
+                  if: "not($Prescripts[4][self::m:none])"
+                  then:
+                  - x: "$PreSuperscript"
+                  - x: "$Prescripts[4]"
+              - test:
+                  if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
+                  then:
+                  - T: "и далее"
+                  - test:
+                      if: "not($Prescripts[5][self::m:none])"
+                      then:
+                      - x: "$PreSubscript"
+                      - x: "$Prescripts[5]"
+                  - test:
+                      if: "not($Prescripts[5][self::m:none] or $Prescripts[6][self::m:none])"
+                      then: [T: "и"]
+                  - test:
+                      if: "not($Prescripts[6][self::m:none])"
+                      then:
+                      - x: "$PreSuperscript"
+                      - x: "$Prescripts[6]"
+                  - test:
+                      if: "not($Prescripts[7][self::m:none])"
+                      then:
+                      - x: "$PreSubscript"
+                      - x: "$Prescripts[7]"
+                  - test:
+                      if: "not($Prescripts[7][self::m:none] or $Prescripts[8][self::m:none])"
+                      then: [T: "и"]
+                  - test:
+                      if: "not($Prescripts[8][self::m:none])"
+                      then:
+                      - x: "$PreSuperscript"
+                      - x: "$Prescripts[8]"
+  - test:
+      if: "$Postscripts"
+      then:
+      - with:
+          variables:
+          - PostSubscript: "IfThenElse($Verbosity='Verbose', 'нижний индекс', 'нижний')"
+          - PostSuperscript: "IfThenElse($Verbosity='Verbose', 'верхний индекс', 'верхний')"
+          replace:
+          - test: # only bother announcing if there is more than one postscript
+              if: "count($Postscripts) > 2"
+              then:
+              - test:
+                  if: "$Prescripts"
+                  then: [pause: short, T: "и"]      # phrase(10 is greater than 8 'and' less than 15)
+              - T: "с"      # phrase(substitute x 'with' y)
+              - x: "count($Postscripts) div 2"
+              - T: "индексами после"
+              - pause: short
+          - test:
+              if: "not($Postscripts[1][self::m:none])"
+              then:
+              - x: "$PostSubscript"
+              - x: "$Postscripts[1]"
+          - test:
+              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
+              then: [T: "и"]      # phrase(10 is greater than 8 'and' less than 15)
+          - test:
+              if: "not($Postscripts[2][self::m:none])"
+              then:
+              - x: "$PostSuperscript"
+              - x: "$Postscripts[2]"
+          - test:
+              if: "count($Postscripts) > 2"
+              then:
+              - test:
+                  if: "not($Postscripts[3][self::m:none])"
+                  then:
+                  - x: "$PostSubscript"
+                  - x: "$Postscripts[3]"
+              - test:
+                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
+                  then: [T: "и"]      # phrase(10 is greater than 8 'and' less than 15)
+              - test:
+                  if: "not($Postscripts[4][self::m:none])"
+                  then:
+                  - x: "$PostSuperscript"
+                  - x: "$Postscripts[4]"
+              - test:
+                  if: "count($Postscripts) > 4"
+                  then:
+                  - test:
+                      if: "not($Postscripts[5][self::m:none])"
+                      then:
+                      - x: "$PostSubscript"
+                      - x: "$Postscripts[5]"
+                  - test:
+                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
+                      then: [T: "и"]      # phrase(10 is greater than 8 'and' less than 15)
+                  - test:
+                      if: "not($Postscripts[6][self::m:none])"
+                      then:
+                      - x: "$PostSuperscript"
+                      - x: "$Postscripts[6]"
+                  - test:
+                      if: "count($Postscripts) > 6"
+                      then:
+                      - test:
+                          if: "not($Postscripts[7][self::m:none])"
+                          then:
+                          - x: "$PostSubscript"
+                          - x: "$Postscripts[7]"
+                      - test:
+                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
+                          then: [T: "и"]      # phrase(10 is less than 15 'and' greater than 5)
+                      - test:
+                          if: "not($Postscripts[8][self::m:none])"
+                          then:
+                          - x: "$PostSuperscript"
+                          - x: "$Postscripts[8]"
+                      - test:
+                          if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
+                          then:
+                          - T: "и далее"
+                          - test:
+                              if: "not($Postscripts[9][self::m:none])"
+                              then:
+                              - x: "$PostSubscript"
+                              - x: "$Postscripts[9]"
+                          - test:
+                              if: "not($Postscripts[9][self::m:none] or $Postscripts[10][self::m:none])"
+                              then: [T: "и"]
+                          - test:
+                              if: "not($Postscripts[10][self::m:none])"
+                              then:
+                              - x: "$PostSuperscript"
+                              - x: "$Postscripts[10]"
+
+- name: default
+  tag: mtable
+  variables: [IsColumnSilent: false()]
+  match: "."
+  replace:
+  - T: "таблица с"      # phrase(the 'table with' 3 rows)
+  - x: count(*)
+  - test:
+      if: count(*)=1
+      then: [T: "строкой"]      # phrase(the table with 1 'row')
+      else: [T: "строками"]      # phrase(the table with 3 'rows')
+  - T: "и "      # phrase(the table with 3 rows 'and' 4 columns)
+  - x: "count(*[1]/*)"
+  - test:
+      if: "count(*[1]/*)=1"
+      then: [T: "столбцом"]      # phrase(the table with 3 rows and 1 'column')
+      else: [T: "столбцами"]      # phrase(the table with 3 rows and 4 'columns')
+  - pause: long
+  - x: "*"
+
+- name: default
+  # callers/context should do that.
+  # this may get called from navigation -- in that case, there is no context to speak the row #, so don't do it
+  tag: [mtr, mlabeledtr]
+  match: "."
+  replace:
+  - pause: medium
+  - T: "строка"      # phrase(the first 'row' of a matrix)
+  - x: "count(preceding-sibling::*)+1"
+  - test:
+      if: .[self::m:mlabeledtr]
+      then:
+      - T: "с меткой"      # phrase(the line 'with label' first equation)
+      - x: "*[1]/*"
+      - pause: short
+  - pause: medium
+  - test:
+      if: .[self::m:mlabeledtr]
+      then: [x: "*[position()>1]"]
+      else: {x: "*"}
+
+- name: default
+  tag: mtd
+  match: "."
+  replace:
+  - test:
+      #  ClearSpeak normally speaks "column 1" even though it says the row number, which is a waste...
+      #  The following is commented out but the count(...)!=0 probably belongs in other rule sets
+      #   if: not($IsColumnSilent) and ($ClearSpeak_Matrix = 'SpeakColNum' or count(preceding-sibling::*) != 0)
+      if: "not($IsColumnSilent)"
+      then:
+      - T: "столбец"      # phrase(the first 'column' of the matrix)
+      - x: "count(preceding-sibling::*)+1"
+      - pause: medium
+  - x: "*"
+  - test:
+    # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
+    - if: count(following-sibling::*) > 0
+      then: [pause: short]
+    - else_if: count(../following-sibling::*) > 0
+      then: [pause: medium]
+      else: [pause: long]
+
+
+- name: empty-box
+  # The ordering below is the order in which words come out when there is more than one value
+  # Note: @notation can contain more than one value
+  tag: menclose
+  match: "@notation='box' and *[self::m:mtext and .=' ']"
+  replace:
+  - T: "пустое поле"      # phrase(the 'empty box' contains no values)
+
+- name: default
+  # The ordering below is the order in which words come out when there is more than one value
+  # Note: @notation can contain more than one value
+  tag: menclose
+  match: "."
+  replace:
+  - test:
+      if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' box ')]"
+      then: [T: "рамка", pause: short]      # phrase(the 'box' around the expression)
+  - test:
+      if: ".[contains(@notation,'roundedbox')]"
+      then: [T: "скругленная рамка", pause: short]      # phrase(the 'round box' around the expression)
+  - test:
+      if: ".[contains(@notation,'circle')]"
+      then: [T: "окружность", pause: short]      # phrase(the 'circle' around the expression)
+  - test:
+      if: ".[ contains(concat(' ', normalize-space(@notation), ' '), ' left ') or contains(concat(' ', normalize-space(@notation), ' '), ' right ') or contains(@notation,'top') or contains(@notation,'bottom') ]"
+      then:
+      - test:
+          if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' left ')]"
+          then: [T: "линия слева", pause: short]      # phrase(line on 'left' of the expression)
+      - test:
+          if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
+          then: [T: "линия справа", pause: short]      # phrase(line on 'right' of the expression)
+      - test:
+          if: ".[contains(@notation,'top')]"
+          then: [T: "линия сверху", pause: short]      # phrase(line on 'top' of the expression)
+      - test:
+          if: ".[contains(@notation,'bottom')]"
+          then: [T: "снизу", pause: short]      # phrase(line on the 'bottom' of the expression)
+  - test:
+      if: ".[ contains(@notation,'updiagonalstrike') or contains(@notation,'downdiagonalstrike') or contains(@notation,'verticalstrike') or contains(@notation,'horizontalstrike') ]"
+      then:
+      - test:
+          if: ".[contains(@notation,'updiagonalstrike') and contains(@notation,'downdiagonalstrike')]"
+          then: [T: "икс", pause: short] # seems better to say 'x cross out' than 'up diagonal, down diagonal cross out'
+          else:
+          - test:
+              if: ".[contains(@notation,'updiagonalstrike')]"
+              then: [T: "диагональ вверх", pause: short]      # phrase(the line runs 'up diagonal')
+          - test:
+              if: ".[contains(@notation,'downdiagonalstrike')]"
+              then: [T: "диагональ вниз", pause: short]      # phrase(the line runs 'down diagonal')
+      - test:
+          if: ".[contains(@notation,'verticalstrike')]"
+          then: [T: "вертикальная", pause: short]      # phrase(the line is  'vertical')
+      - test:
+          if: ".[contains(@notation,'horizontalstrike')]"
+          then: [T: "горизонтальная", pause: short]      # phrase(the line is 'horizontal')
+      - T: "перечёркивание"      # phrase(please 'cross out' the incorrect answer)
+      - pause: short
+  - test:
+      if: ".[contains(@notation,'uparrow')]"
+      then: [T: "стрелка вверх", pause: short]      # phrase(direction is shown by the 'up arrow')
+  - test:
+      if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' downarrow ')]"
+      then: [T: "стрелка вниз", pause: short]      # phrase(the trend is shown by the 'down arrow')
+  - test:
+      if: ".[contains(@notation,'leftarrow')]"
+      then: [T: "стрелка влево", pause: short]      # phrase(the 'left arrow' indicates going back)
+  - test:
+      if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
+      then: [T: "стрелка вправо", pause: short]      # phrase(the 'right arrow' indicates moving forward)
+  - test:
+      if: ".[contains(@notation,'northeastarrow')]"
+      then: [T: "стрелка на северо-восток", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
+  - test:
+      if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
+      then: [T: "стрелка на юго-восток", pause: short]      # phrase(direction is shown by the 'southeast arrow')
+  - test:
+      if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
+      then: [T: "стрелка на юго-запад", pause: short]      # phrase(direction is shown by the 'southwest arrow')
+  - test:
+      if: ".[contains(@notation,'northwestarrow')]"
+      then: [T: "стрелка на северо-запад", pause: short]      # phrase(direction is shown by the 'northwest arrow')
+  - test:
+      if: ".[contains(@notation,'updownarrow')]"
+      then: [T: "двунаправленная вертикальная стрелка", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+  - test:
+      if: ".[contains(@notation,'leftrightarrow')]"
+      then: [T: "двунаправленная горизонтальная стрелка", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+  - test:
+      if: ".[contains(@notation,'northeastsouthwestarrow')]"
+      then: [T: "двунаправленная диагональная стрелка вверх", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+  - test:
+      if: ".[contains(@notation,'northwestsoutheastarrow')]"
+      then: [T: "двунаправленная диагональная стрелка вниз", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+  - test:
+      if: ".[contains(@notation,'actuarial')]"
+      then: [T: "актуарный символ", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
+  - test:
+      if: ".[contains(@notation,'madrub')]"
+      then: [T: "арабский символ факториала", pause: short]      # phrase(the 'arabic factorial symbol' represents a factorial operation)
+  - test:
+      if: ".[contains(@notation,'phasorangle')]"
+      then: [T: "угол фазы", pause: short]      # phrase(the 'phasor angle' is used to measure electrical current)
+  - test:
+      if: ".[contains(@notation,'longdiv') or not(@notation) or normalize-space(@notation) ='']" # default
+      then: [T: "знак деления уголком", pause: short]      # phrase(the 'long division symbol' indicates  a long division calculation)
+  - test:
+      if: ".[contains(@notation,'radical')]"
+      then: [T: "квадратный корень", pause: short]      # phrase(5 is the 'square root' of 25)
+  - T: "внутри"      # Invariant wording also works for combined enclosure notations.
+  - test:
+      if: "*[self::m:mtext and .=' ']"
+      then: [T: "пространство"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)
+      else: [x: "*"]
+  - test:
+      if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
+      then: [T: "конец"]      # phrase(reached the 'end enclosure' point)
+  - pause: short
+
+- name: semantics
+  tag: "semantics"
+  match: "*[@encoding='MathML-Presentation']"
+  replace:
+  - x: "*[@encoding='MathML-Presentation']/*[1]"
+
+- name: semantics-default
+  tag: "semantics"
+  match: .
+  replace:
+  - x: "*[1]"
+
+- name: apply-function
+  tag: "apply-function"
+  match: .
+  replace:
+  - x: "*[1]"
+  - T: "от"      # phrase(the function sine 'applied to' x plus y)
+  - x: "*[2]"
+
+
+# Here are the intent hints that need to be handled: 'prefix' | 'infix' | 'postfix' | 'function' | 'silent'
+- name: silent-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
+  replace:
+  - x: "*"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: nofix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
+
+- name: prefix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':prefix:')"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"
+  - x: "*"
+  - test:
+      if: "not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'prefix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: postfix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':postfix:')"
+  replace:
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'postfix', 'start')"]
+  - x: "*"
+  - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
+
+- name: infix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "count(*)>0 and contains(@data-intent-property, ':infix:')"
+  replace:
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[1], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'start')"]
+  - test:
+      if: "count(*) = 1"  # in cases such as continued-row, plus/minus might have just one child
+      then:
+      - x: "SpeakIntentName(name(.), $Verbosity, 'infix')"
+      - pause: auto
+      - x: "*[1]"
+      else:
+      - insert:
+          nodes: "*"
+          replace: [x: "SpeakIntentName(name(.), $Verbosity, 'infix')", pause: auto]
+  - test:
+      if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: function-intent
+  # uncaught intent -- speak as foo of arg1 comma arg2 .... The MathML spec requires arguments to functions
+  tag: "*"
+  match: "count(*)>0"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
+  - test:
+      if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
+           not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
+      then: [T: "от", pause: auto]      # phrase(sine 'of' 5)
+  - test:
+      if: "count(*)=1 and not(contains(@data-intent-property, ':literal:')) and not(IsNode(*[1], 'simple')) and not(*[1][IsBracketed(., '(', ')') and count(*)=3 and IsNode(*[2], 'simple')])"
+      then: [T: "выражения"]
+  - insert:
+      nodes: "*"
+      replace:
+      - test:
+          if: "not(contains(@data-intent-property, ':literal:'))"
+          then: [x: "','"]
+      - pause: auto
+  - test:
+      # speak "end ..." if not bracketed or last child is not simple and not last node
+      if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
+      then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'function', 'end')"]
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: perpendicular-to
+  tag: "*"
+  match: "contains(name(.), 'perpendicular')"
+  replace:
+  - T: "перпендикулярно"
+
+- name: default-text
+  # unknown leaf -- just speak the text -- could be a literal intent
+  tag: "*"
+  match: "."
+  replace:
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

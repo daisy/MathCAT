@@ -103,7 +103,7 @@
  - "~": [t: "⠈⠔"]               # 0x007E (Tilde (swung dash))
  - "¢": [t: "⠈⠉"]               # 0x00A2 (Cents sign)
  - "‐": [t: "⠤"]                # 0x2010 (Hyphen)
- - "–": [t: "⠠⠤"]               # 0x2013 (En Dash)
+ - "–": [t: "P⠠⠤"]              # 0x2013 (En Dash)
  - "―": [t: "⠐⠠⠤"]              # 0x2015 (Horizontal Bar)
  - "‖": [t: "⠸⠳"]               # 0x2016
  - "€": [t: "⠈⠑"]               # 0x20AC (Euro sign)
@@ -118,13 +118,14 @@
  - "†": [t: "⠈⠠⠹"]              # 0x2020 (Dagger)
  - "‡": [t: "⠈⠠⠻"]              # 0x2021 (Double dagger)
  - "…": [t: "c⠲c⠲c⠲"]              # 0x2026 (Ellipsis)
+ - "⋯": [t: "⠄⠄⠄"]                # 0x22EF (midline horizontal ellipsis; GTM 15.4 matrix omission)
  - "′": [t: "1⠶"]                # 0x2032 (Prime sign)
  - "″": [t: "1⠶⠶"]               # 0x2033 (Double prime sign)
  - "‴": [t: "1⠶⠶⠶"]              # 0x2034 (Triple prime sign)
  - "℃": [t: "⠘⠚⠠⠉"]             # 0x2103 (Degrees Celsius)
  - "℉": [t: "⠘⠚⠠⠋"]             # 0x2109 (Degrees Fahrenheit)
- - "Å": [t: "⠠⠘⠫⠁"]             # 0x212B (Angstrom symbol)
- - "Å": [t: "⠠⠘⠫⠁"]             # 0x00C5 (WIRIS uses this for Angstrom)
+ - "Å": [t: "CA⠘⠫L⠁"]             # 0x212B (Angstrom symbol)
+ - "Å": [t: "CA⠘⠫L⠁"]             # 0x00C5 (WIRIS uses this for Angstrom)
  - "∀": [t: "⠘⠁"]               # 0x2200 (For all)
  - "∂": [t: "⠈⠙"]               # 0x2202 (Partial differential)
  - "∃": [t: "⠘⠢"]               # 0x2203 (There exists)
@@ -256,8 +257,6 @@
  - "⊞": [t: "1⠫⠼⠙⠪⠐⠖t"]         # 0x229E (Squared plus)
  - "⊟": [t: "1⠫⠼⠙⠪⠐⠤t"]         # 0x229F (Squared minus)
  - "⊠": [t: "1⠫⠼⠙⠪⠐⠦t"]         # 0x22A0 (Squared times)
- - "⋇": [t: "1⠌⠯⠦"]             # 0x22C7 (Division times)
- - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)
  - "˙": [t: "1⠲"]               # 0x02D9 ( Dot Above)
  - "¨": [t: "1⠲⠲"]              # 0x00A8 ( Diaeresis/Double Dot Above )
  - "©": [t: "⠘⠉"]               # 0xa9 (Copyright)
@@ -369,91 +368,23 @@
  - "y": [t: "L⠽"]               # 0x79 
  - "z": [t: "L⠵"]               # 0x7a 
 
- - "A": [t: "CL⠁"]              # 0x41 
- - "B":                         # 0x42 
+ # Latin capitals: chem-element letters use 𝐶 (no word indicator); others use C.
+ # Cells come from lowercase a-z via spell/translate.
+ - "BCHIKNOPSUVWY":              # chemistry-capable capitals
     - test:
         if: "@data-chem-element"
-        then: [t: "𝐶L⠃"]
-        else: [t: "CL⠃"]
- - "C":                         # 0x43 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠉"]
-        else: [t: "CL⠉"]
- - "D": [t: "CL⠙"]              # 0x44 
- - "E": [t: "CL⠑"]              # 0x45 
- - "F": [t: "CL⠋"]              # 0x46 
- - "G": [t: "CL⠛"]              # 0x47 
- - "H":                         # 0x48 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠓"]
-        else: [t: "CL⠓"]
- - "I":                         # 0x49 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠊"]
-        else: [t: "CL⠊"]
- - "J": [t: "CL⠚"]              # 0x4a 
- - "K":                         # 0x4b 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠅"]
-        else: [t: "CL⠅"]
- - "L": [t: "CL⠇"]              # 0x4c 
- - "M": [t: "CL⠍"]              # 0x4d 
- - "N":                         # 0x4e 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠝"]
-        else: [t: "CL⠝"]
- - "O":                         # 0x4f 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠕"]
-        else: [t: "CL⠕"]
- - "P":                         # 0x50 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠏"]
-        else: [t: "CL⠏"]
- - "Q": [t: "CL⠟"]              # 0x51 
- - "R": [t: "CL⠗"]              # 0x52 
- - "S":                         # 0x53 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠎"]
-        else: [t: "CL⠎"]
- - "T": [t: "CL⠞"]              # 0x54 
- - "U":                         # 0x55 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠥"]
-        else: [t: "CL⠥"]
- - "V":                         # 0x56 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠧"]
-        else: [t: "CL⠧"]
- - "W":                         # 0x57 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠺"]
-        else: [t: "CL⠺"]
- - "X": [t: "CL⠭"]              # 0x58 
- - "Y":                         # 0x59 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠽"]
-        else: [t: "CL⠽"]
- - "Z": [t: "CL⠵"]              # 0x5a 
+        then: [tc: "𝐶"]
+        else: [tc: "C"]
+    - spell: "translate('.', 'BCHIKNOPSUVWY', 'bchiknopsuvwy')"
+ - "ADEFGJLMQRTXZ":              # remaining capitals
+    - tc: "C"
+    - spell: "translate('.', 'ADEFGJLMQRTXZ', 'adefgjlmqrtxz')"
 
  - "α": [t: "GL⠁"]              # 0x3b1 
  - "β": [t: "GL⠃"]              # 0x3b2 
  - "γ": [t: "GL⠛"]              # 0x3b3 
  - "δ": [t: "GL⠙"]              # 0x3b4 
  - "ε": [t: "GL⠑"]              # 0x3b5 
- - "ϵ": [t: "GL⠑"]              # 0x3f5 \varepsilon
  - "ζ": [t: "GL⠵"]              # 0x3b6 
  - "η": [t: "GL⠱"]             # 0x3b7 
  - "θ": [t: "GL⠹"]              # 0x3b8 
@@ -475,13 +406,21 @@
  - "ψ": [t: "GL⠽"]              # 0x3c8 
  - "ω": [t: "GL⠺"]              # 0x3c9 
 
+ - "ϑ": [t: "GL⠹"]              # 0x3d1
+ - "ϵ": [t: "GL⠑"]              # 0x3f5 \varepsilon
+ - "ϰ": [t: "GL⠅"]              # 0x3f0
+ - "ϕ": [t: "GL⠋"]              # 0x3d5
+ - "ϱ": [t: "GL⠗"]              # 0x3f1
+ - "ϖ": [t: "GL⠏"]              # 0x3d6
+ - "Ϝ": [t: "GL⠧"]              # 0x3d7
+
  - "Α": [t: "CGL⠁"]             # 0x391 
  - "Β": [t: "CGL⠃"]             # 0x392 
  - "Γ": [t: "CGL⠛"]             # 0x393 
  - "Δ": [t: "CGL⠙"]             # 0x394 
  - "Ε": [t: "CGL⠑"]             # 0x395 
  - "Ζ": [t: "CGL⠵"]             # 0x396 
- - "Η": [t: "CGL⠱ "]            # 0x397 
+ - "Η": [t: "CGL⠱"]             # 0x397 
  - "Θ": [t: "CGL⠹"]             # 0x398 
  - "Ι": [t: "CGL⠊"]             # 0x399 
  - "Κ": [t: "CGL⠅"]             # 0x39a 
@@ -506,3 +445,7 @@
  - "∆": [t: "CGL⠙"]             # 0x2206 (Increment (capital Greek delta))
  - "∏": [t: "CGL⠏"]             # 0x220F (Product (capital Greek pi))
  - "∑": [t: "CGL⠎"]             # 0x2211 (Sum (capital Greek sigma))
+
+ # --- restored short definitions that differ from unicode-full ---
+ - "⋇": [t: "1⠌⠯⠦"]             # 0x22C7 (Division times)
+ - "⊩": [t: "⠸⠳⠿⠸⠒"]            # 0x22A9 (Forces)

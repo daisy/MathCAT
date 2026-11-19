@@ -461,7 +461,7 @@
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
   replace:
   - x: "*"
   - test:
@@ -552,4 +552,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

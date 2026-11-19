@@ -360,7 +360,7 @@
 
 -
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   name: chemistry-mhchem-equilibrium-arrow
   tag: mover
   match:
@@ -389,7 +389,7 @@
 -
   name: overparen
   tag: mover
-  match: "*[2][.='⏜']"
+  match: "*[2][.='⏜' or .='⌢' or .='⌒']"
   replace:
   - t: "⠫⠠⠗"     # shape indicator, overparen
   - x: "*[1]"
@@ -437,7 +437,7 @@
 -
    name: single-char-exceptions    # RUEB 3.11 -- ° and various prime/minute/seconds aren't treated as if superscripts
    tag: msup
-   match: "*[2][translate(., \"'*`ª°²³´¹º‘’“”‟′″‴‵‶‷⁗\",'')='']"
+   match: "*[2][translate(., \"'*`´°‘’“”‟′″‴‵‶‷⁗\",'')='']"
    replace: [x: "*"]
 
 -
@@ -1069,7 +1069,7 @@
    tag: "*"
    match: "*"    # make sure there are children
    replace: 
-   - t: "unknown math m l element"
+   - x: "BrailleChars('unknown math m l element', 'Vietnam')"
    - x: "name(.)"
    - x: "*"
 
@@ -1079,7 +1079,7 @@
    tag: "*"
    match: "text()"
    replace: 
-   - t: unknown math m l element
+   - x: "BrailleChars('unknown math m l element', 'Vietnam')"
    - x: "name(.)"
    - x: "text()"
 
@@ -1088,5 +1088,5 @@
    tag: "*"
    match: "."
    replace: 
-    - t: "empty unknown math m l element"
+    - x: "BrailleChars('empty unknown math m l element', 'Vietnam')"
     - x: "name(.)"

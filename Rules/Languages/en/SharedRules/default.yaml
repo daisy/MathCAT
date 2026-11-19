@@ -42,7 +42,10 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  - test:
+    - if: "@data-roman-numeral" 
+      then: [spell: "text()", pause: "short"]
+      else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -59,7 +62,7 @@
   - test:
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-    - else_if: "@data-chem-element"                      # NavMode=Character needs this
+    - else_if: "@data-chem-element or @data-roman-numeral"                      # NavMode=Character needs this
       then: [spell: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
@@ -120,7 +123,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]    # phrase("'the' root of x")
+      then: [ot: "the"]    # phrase("'the' root of x")
   - t: "root"
   - test:
       if: "$Verbosity!='Terse'"
@@ -138,7 +141,7 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "the"]   # phrase("'the' root of x")
+      then: [ot: "the"]   # phrase("'the' root of x")
   - t: "root with index" # phrase("the 'root with index' 3 of 5")
   - x: "*[1]"
   - pause: short
@@ -419,13 +422,14 @@
                           - t: "end scripts"      # phrase(At this point 'end scripts' occurs)
 
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
-  - t: "table with"      # phrase(the 'table with' 3 rows)
+  - x: "IfThenElse(self::m:mtable, 'table', 'array')"
+  - t: "with"      # phrase(the 'table with' 3 rows)
   - x: count(*)
   - test:
       if: count(*)=1
@@ -434,7 +438,7 @@
   - t: "and"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
+      if: "$NumColumns=1"
       then: [t: "column"]      # phrase(the table with 3 rows and 1 'column')
       else: [t: "columns"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -475,6 +479,17 @@
       - x: "count(preceding-sibling::*)+IfThenElse(parent::m:mlabeledtr, 0, 1)"
       - pause: medium
   - x: "*"
+  - test:
+      if: "HasVisibleColumnLine(../.., count(preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - t: "separator"
+  - test:
+      # Announce a row separator only after the row's final cell, so it is spoken once per horizontal boundary.
+      if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - t: "row separator"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
@@ -630,13 +645,20 @@
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
   replace:
   - x: "*"
   - test:
       if: "IsNode(., '2D')"
       then: [pause: short]
       else: [pause: auto]
+
+- name: nofix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
@@ -654,7 +676,7 @@
       else: [pause: auto]
 
 - name: postfix-intent
-  # uncaught intent -- the args have been inserted in the order of speech 
+  # uncaught intent -- the args have been inserted in the order of speech                
   tag: "*"
   match: "count(*)>0 and contains(@data-intent-property, ':postfix:')"
   replace:
@@ -691,22 +713,38 @@
       else: [pause: auto]
 
 - name: function-intent
-  # uncaught intent -- speak as foo of arg1 comma arg2 .... The MathML spec requires arguments to functions
+  # uncaught intent -- speak as foo of arg1 comma arg2 ....
+  # IntentMappings may add "| glue" options after the name:
+  #   * one option without ',': binary separator after "of" (e.g. "| divided by" → "... of x divided by y")
+  #   * multiple options / options with ',': arity templates; k glue words => k+1 args,
+  #     spoken as name + glue1 + arg1 + ... + "of" + lastArg (e.g. "| over | from,to")
+  #   * unmatched arity (or binary glue with ≠2 args): commas between all args
   tag: "*"
   match: "count(*)>0"
   replace:
   - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
   - test:
-      if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
-           not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
-      then: [t: "of", pause: auto]      # phrase(sine 'of' 5)
-  - insert:
-      nodes: "*"
-      replace:
-      - test:
-          if: "not(contains(@data-intent-property, ':literal:'))"
-          then: [x: "','"]
+    - if: "IntentFunctionUseArityPath(name(.), 'function', count(*))"
+      then:
+      - x: "IntentFunctionGlueBefore(name(.), 'function', 1, count(*))"
       - pause: auto
+      - insert:
+          nodes: "*"
+          replace:
+          - x: "IntentFunctionGlueBefore(name(.), 'function', $InsertIndex, count(*))"
+          - pause: auto
+      else:
+      - test:
+          if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
+               not(count(*)=2 and (IsInDefinition(*[1], 'TrigFunctionNames') or IsInDefinition(name(.), 'TerseFunctionNames')) and IsNode(*[2], 'simple'))"
+          then: [t: "of", pause: auto]      # phrase(sine 'of' 5)
+      - insert:
+          nodes: "*"
+          replace:
+          - test:
+              if: "not(contains(@data-intent-property, ':literal:'))"
+              then: [x: "IntentFunctionArgSeparator(name(.), 'function', count(*))"]
+          - pause: auto
   - test:
       # speak "end ..." if not bracketed or last child is not simple and not last node
       if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
@@ -722,4 +760,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → "up tack" in LiteralSpeak), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

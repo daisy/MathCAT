@@ -1,0 +1,281 @@
+%
+%       LaTeX- Vereinfachungen / U.Nitsch 1994
+%      ----------------------------------------
+%        Liste aller Kommandos
+%       -----------------------
+% Kommando   anstelle von ...      Bedeutung
+%
+%  <=         \le                   kleiner gleich
+%  <<         \ll                   viel kleiner
+%  >=         \ge                   groesser gleich
+%  >>         \gg                   viel groesser
+%  ~a ...     \alpha ...            kleine griechische Buchstaben
+%  ~A ...     \Alpha ...            grosse griechische Buchstaben
+%  \8         \infty                unendlich
+%  \apx       \approx               etwa
+%  \be        \begin{equation}   
+%  \bea       \begin{eqnarray}
+%  \beas      \begin{eqnarray*}
+%  \bs        \backslash            Backslash
+%  \cd        \cdots                mittige Dots
+%  \da        \downarrow            einfacher Pfeil nach unten
+%  \dd        \ddots                diagonale Dots
+%  \Do        \o                    kleines daenisches 'o'
+%  \ee        \end{equation}
+%  \eea       \end{eqnarray}
+%  \eeas      \end{eqnarray*}
+%  \eqv       \equiv                aequivalent
+%  \es        \emptyset             leere Menge
+%  \ex        \exists               es existiert
+%  \f         \frac                 Bruch
+%  \fa        \forall               fuer alle    
+%  \fmf                             Rahmen um einfache Formel
+%  \fsf                             Rahmen um mehrzeilige Formel
+%  \inn       \int\nolimits         Integral nolimits
+%  \inl       \int\limits           Integral limits
+%  \l<        \langle               Winkelklammer links
+%  \la        \leftarrow            einfacher Pfeil nach links
+%  \ld        \ldots                line Dots
+%  \lgla      \longleftarrow        langer Pfeil nach links
+%  \lglra     \longleftrightarrow   langer Pfeil nach links und rechts
+%  \lgmt      \longmapsto           langer folgt-aus-Pfeil
+%  \lgra      \longrightarrow       langer Pfeil nach rechts
+%  \lra       \leftrightarrow       einfacher Pfeil nach links und rechts
+%  \Lra       \leftrightarrow       doppelter Pfeil nach links und rechts
+%  \lt        \leadsto              fuehrt-zu-Pfeil
+%  \mt        \mapsto               folgt-aus-Pfeil
+%  \n         \not                  Negation
+%  \o+        \oplus
+%  \o-        \ominus
+%  \o.        \opoint
+%  \o/        \oslash
+%  \oin       \oint\nolimits        Kreisintegral nolimits
+%  \oil       \oint\limits          Kreisintegral limits
+%  \ol        \overline             Ueberstrich
+%  \ox        \otimes
+%  \pn        \prod\nolimits        Produkt nolimits
+%  \pl        \prod\limits          Produkt limits
+%  \Pl        \l                    kleines polnisches 'l'
+%  \pll       \parallel             parallel
+%  \r>        \rangle               Winkelklammer rechts
+%  \ra        \rightarrow           einfacher Pfeil nach rechts
+%  \Ra        \rightarrow           doppelter Pfeil nach rechts
+%  \s         \sqrt                 Wurzel
+%  \sbs       \subset               Untermenge
+%  \sbse      \subseteq             Untermenge und gleich
+%  \sps       \supset               Obermenge
+%  \spse      \supseteq             Obermenge und gleich
+%  \sun       \sum\nolimits         Summe nolimits
+%  \sul       \sum\limits           Summe limits
+%  \tri       \triangle             Dreieck
+%  \ua        \uparrow              einfacher Pfeil nach unten
+%  \uda       \updownarrow          einfacher Pfeil nach unten und oben
+%  \ul        \underline            Unterstrich
+%  \vd        \vdots                vertikale Dots
+%  \x         \times
+%
+%        Noetige Umdefinitionen
+%       ------------------------
+% Rettung der Symbole von \o und \l
+%
+\newsavebox{\boxA}
+\sbox{\boxA}{\o}
+\def\Do{\usebox{\boxA}}
+\newsavebox{\boxB}
+\sbox{\boxB}{\l}
+\def\Pl{\usebox{\boxB}}
+%
+%        Mathematische Umgebungen
+%       --------------------------
+% Math- und Mathindent-Umgebung nicht weiter beachtet
+%
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\def\eea{\end{eqnarray}}
+\def\beas{\begin{eqnarray*}}
+\def\eeas{\end{eqnarray*}}
+%
+%        Exponenten und Indizes
+%       ------------------------ 
+% keine Vereinfachungen noetig
+%
+%        Brueche
+%       ---------
+\def\f{\frac}
+%
+%        Wurzeln
+%       ---------
+\def\s{\sqrt}
+%
+%        Auslassungen
+%       --------------
+\def\ld{\ldots}
+\def\cd{\cdots}
+\def\vd{\vdots}
+\def\dd{\ddots}
+%
+%        Griechische Buchstaben
+%       ------------------------
+% Die verkuerzenden Schreibweisen der griech. Buchstaben sind aus der
+% "Systematik der internat. Math.-schrift fuer Blinde" abgeleitet.
+%
+\catcode`\~=\active
+\def~#1{\ifx#1a\alpha\fi
+        \ifx#1b\beta\fi
+        \ifx#1g\gamma\fi
+        \ifx#1d\delta\fi
+        \ifx#1e\epsilon\fi
+        \ifx#1z\zeta\fi
+        \ifx#1j\eta\fi
+        \ifx#1h\theta\fi
+        \ifx#1i\iota\fi
+        \ifx#1k\kappa\fi
+        \ifx#1l\lambda\fi
+        \ifx#1m\mu\fi
+        \ifx#1n\nu\fi
+        \ifx#1x\xi\fi
+        \ifx#1o o\fi
+        \ifx#1p\pi\fi
+        \ifx#1r\rho\fi
+        \ifx#1s\sigma\fi
+        \ifx#1t\tau\fi
+        \ifx#1u\upsilon\fi
+        \ifx#1f\phi\fi
+        \ifx#1c\chi\fi
+        \ifx#1y\psi\fi
+        \ifx#1w\omega\fi
+        \ifx#1A A\fi
+        \ifx#1B B\fi
+        \ifx#1G\Gamma\fi
+        \ifx#1D\Delta\fi
+        \ifx#1E E\fi
+        \ifx#1Z Z\fi
+        \ifx#1J H\fi
+        \ifx#1H\Theta\fi
+        \ifx#1I I\fi
+        \ifx#1K K\fi
+        \ifx#1L\Lambda\fi
+        \ifx#1M M\fi
+        \ifx#1N N\fi
+        \ifx#1X\Xi\fi
+        \ifx#1O O\fi
+        \ifx#1P\Pi\fi
+        \ifx#1R P\fi
+        \ifx#1S\Sigma\fi
+        \ifx#1T T\fi
+        \ifx#1U\Upsilon\fi
+        \ifx#1F\Phi\fi
+        \ifx#1C X\fi
+        \ifx#1Y\Psi\fi
+        \ifx#1W\Omega\fi}
+%
+%        Zweistellige Operatoren
+%       -------------------------
+% es wird mit dem daenischen 'o' konkurriert (wurde darum umbenannt)
+%
+\def\o#1{\ifx#1+\oplus\fi
+         \ifx#1-\ominus\fi 
+         \ifx#1/\oslash\fi 
+         \ifx#1.\odot\fi}
+\def\ox{\otimes}
+%
+%        Relationen
+%       ------------
+\newsavebox{\boxC}
+\sbox{\boxC}{$<$}
+\catcode`\<=\active
+\def<#1{\ifx#1=\le
+        \else\ifx#1<\ll
+        \else\usebox{\boxC}#1\fi\fi}
+\newsavebox{\boxD}
+\sbox{\boxD}{$>$}
+\catcode`\>=\active
+\def>#1{\ifx#1=\ge
+        \else\ifx#1>\gg
+        \else\usebox{\boxD}#1\fi\fi}
+\def\n{\not}
+\def\sbs{\subset}
+\def\sps{\supset}
+\def\sbse{\subseteq}
+\def\spse{\supseteq}
+\def\tri{\triangle}
+\def\apx{\approx}
+\def\eqv{\equiv}
+\def\pll{\parallel}
+%
+%        Pfeil- oder Zeigersymbole
+%       ---------------------------
+% die wichtigsten Symbole wurden verkuerzt
+%
+\def\la{\leftarrow}
+\def\ra{\rightarrow}
+\def\Ra{\Rightarrow}
+\def\ua{\uparrow}
+\def\da{\downarrow}
+\def\lra{\leftrightarrow}
+\def\Lra{\leftrightarrow}
+\def\uda{\updownarrow}
+\def\lgla{\longleftarrow}
+\def\lgra{\longrightarrow}
+\def\lglra{\longleftrightarrow}
+\def\mt{\mapsto}
+\def\lgmt{\longmapsto}
+\def\lt{\leadsto}
+%
+%        Vermischte Symbole
+%       --------------------
+\def\8{\infty}
+\def\es{\emptyset}
+\def\fa{\forall}
+\def\ex{\exists}
+\def\x{\times}
+%
+%        Symbole mit unterschiedlichen Groessen und Grenzangaben
+%       ---------------------------------------------------------
+% viele moegliche Abkuerzungen sind schon in Gebrauch
+%
+\def\inl{\int\limits}
+\def\inn{\int\nolimits}
+\def\oil{\oint\limits}
+\def\oin{\oint\nolimits}
+\def\pl{\prod\limits}
+\def\pn{\prod\nolimits}
+\def\sul{\sum\limits}
+\def\sun{\sum\nolimits}
+%
+%        Funktionen
+%       ------------
+% keine Aenderungen empfehlenswert
+%
+%        Begrenzer
+%       -----------
+%
+\def\l<{\langle}
+\def\r>{\rangle}
+\def\bs{\backslash}
+%
+%        Diakritische Zeichen
+%       ----------------------
+% Akzente, zu selten benoetigt
+%
+\def\ol{\overline}
+\def\ul{\underline}
+%
+%        Gestaltungsmittel
+%       -------------------
+% Rahmen um Formeln, Determinanten, Matrizen
+%
+\def\fsf#1{\fbox{$#1$}}
+\def\fmf#1{\fbox{$\begin{array}{rcl}#1\end{array}$}}
+%   
+\def\dtm#1#2{\left|\begin{array}{#1}#2\end{array}\right|}
+\def\mat#1{\left(\begin{pmatrix}#1\end{pmatrix}\right)}
+\def\kla#1#2{\left\{\begin{array}{#1}#2\end{array}\right.}
+%
+%        Anmerkung
+%       -----------
+% Die in den Saveboxen abgelegten Symbole werden auch nach 
+% Schriftgroessenaenderungen in der Groesse dargestellt, die
+% bei der Einspeicherung gegolten hat.
+%

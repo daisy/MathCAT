@@ -282,7 +282,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -318,7 +317,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("fi", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    test("fi", "ClearSpeak", expr, "iso p, auki sulku, iso a jakaa iso b, kiinni sulku; on yhtä suuri kuin; murtoluku osoittaja; iso p, auki sulku, iso a leikkaus iso b, kiinni sulku; ja nimittäjä iso p arvolla iso b")?;
     return Ok(());
 
 }
@@ -409,7 +408,7 @@ fn FinME_difference_quotinent() -> Result<()> {
     </mfrac>
   </mrow>
 </math>";
-test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h")?;
+test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h")?;
 test("fi", "SimpleSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku, f arvolla x, miinus f arvolla a, per, x miinus a, loppu murtoluku; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku, f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a, per h, loppu murtoluku")?;
 return Ok(());
 

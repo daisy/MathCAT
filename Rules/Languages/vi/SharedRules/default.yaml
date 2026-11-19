@@ -44,15 +44,15 @@
       if: "@data-roman-numeral"
       then:
       - test:
-          if: "parent::*[1][self::m:chemical-formula]"
+          if: "../self::m:chemical-formula"
           then:
           - t: "hóa trị"
           - x: "@data-number"
+          - test:
+              if: "$Verbosity = 'Verbose'"
+              then: [t: "la mã"]
           else:
-          - x: "@data-number"
-      - test:
-          if: "$Verbosity = 'Verbose'"
-          then: [t: "la mã"]
+          - x: "text()"
       else:
       # FIX: removing the digit block separators is likely locale dependent
       - x: "translate(., ' `', '')"   # remove digit block separators
@@ -231,7 +231,7 @@
 -
   name: overparen
   tag: mover
-  match: "*[2][.='⏜']"
+  match: "*[2][.='⏜' or .='⌢' or .='⌒']"
   replace:
   - x: "*[2]"     # shape indicator, overparen
   - x: "*[1]"
@@ -633,7 +633,7 @@
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
   replace:
   - x: "*"
   - test:
@@ -724,4 +724,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

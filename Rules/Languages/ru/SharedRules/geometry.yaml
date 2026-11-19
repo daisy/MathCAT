@@ -1,0 +1,82 @@
+---
+
+- name: line-segment
+  tag: line-segment
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "отрезок от"      # phrase('the line segment from' A to B)
+      - x: "*[1]"
+      - T: "до"                         # phrase(the line segment from A 'to' B)
+      - x: "*[2]"
+      else:
+      - T: "отрезок"               # phrase(the 'line segment' A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+
+# In verbose speech, distinguish the origin of the ray from the point it passes through.
+- name: geometry-ray
+  tag: ray
+  match: "count(*)=2"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "луч с началом в"
+      - x: "*[1]"
+      - T: "проходящий через"
+      - x: "*[2]"
+      else:
+      - T: "луч"                      # phrase(the 'ray'A  B)
+      - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+      - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+      - T: "большое"
+
+# Read the two endpoint labels as capital letters.
+- name: geometry-arc
+  tag: arc
+  match: "count(*)=2"
+  replace:
+  - T: "дуга"                        # phrase(the 'arc' A B C)
+  - x: "translate(*[1], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - T: "большое"
+  - x: "translate(*[2], 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+  - T: "большое"
+
+- name: measure-of-angle
+  tag: measure-of-angle
+  match: "count(*)=3"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then:
+      - T: "мера угла"      # phrase('the measure of the angle' ABC)
+      else:
+      - T: "мера угла"      # phrase('measure of angle' ABC)
+  - x: "*[1]"
+  - x: "*[2]"
+  - x: "*[3]"
+
+
+# Separate coordinates with spoken commas; announce the end when the context requires it.
+- name: coordinate
+  tag: coordinate
+  match: "."
+  replace:
+  - T: "точка"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "с координатами"]
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "запятая", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "конец координат"]

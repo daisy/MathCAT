@@ -1,7 +1,7 @@
 
 ────────────────────────────────────────────────────────────────────────────────
 ✓ structure_diff.yaml
-  English: 1 rules  →  Translated: 1 rules
+  en: 1 rules  →  tr: 1 rules
 ────────────────────────────────────────────────────────────────────────────────
 
   ≠ Rule Issues [1] (grouped by rule and issue type)

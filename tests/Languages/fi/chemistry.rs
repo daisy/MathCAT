@@ -158,9 +158,9 @@ fn beta_decay() -> Result<()> {
       </mmultiscripts>
     </math>";
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e")?;
+      "14, 6, iso c; muodostaa, 14, 7, iso n; plus 0, negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e")?;
+      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus ylä 0, ala negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e")?;
       return Ok(());
@@ -424,9 +424,9 @@ fn mhchem_beta_decay() -> Result<()> {
       </mrow>
     </math>";
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Terse")], expr,
-      "14, 6, iso c; muodostaa; 14, 7, iso n; plus 0, negatiivinen 1, e")?;
+      "14, 6, iso c; muodostaa, 14, 7, iso n; plus 0, negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
-      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus, ylä 0, ala negatiivinen 1, e")?;
+      "ylä 14, ala 6, iso c; reagoi; ylä 14, ala 7, iso n; plus ylä 0, ala negatiivinen 1, e")?;
     test_prefs("fi", "ClearSpeak", vec![("Verbosity", "Verbose")], expr,
       "yläindeksi 14, alaindeksi 6, iso c; reagoi; yläindeksi 14, alaindeksi 7, iso n; plus, yläindeksi 0, alaindeksi negatiivinen 1, e")?;
       return Ok(());

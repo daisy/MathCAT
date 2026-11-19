@@ -5,7 +5,7 @@ Maps rule diff types and structure tokens to precise YAML source line numbers.
 """
 
 from .extractors import extract_structure_elements
-from .models import DiffType, RuleDifference, RuleInfo
+from .models.rules import DiffType, RuleDifference, RuleInfo
 
 
 def _get_line_map_lines(rule: RuleInfo, kind: DiffType, token: str | None = None) -> list[int]:

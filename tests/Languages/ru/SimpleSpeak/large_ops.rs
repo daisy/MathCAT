@@ -1,0 +1,220 @@
+use crate::common::*;
+
+use anyhow::Result;
+
+#[test]
+fn sum_both() -> Result<()> {
+    let expr = "<math>
+        <munderover>
+            <mo>∑</mo>
+            <mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow>
+            <mrow><mn>10</mn></mrow>
+        </munderover>
+        <mi>n</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "сумма от эн равно 1 до 10 от эн")?;
+    return Ok(());
+}
+
+#[test]
+fn sum_under() -> Result<()> {
+    let expr = "<math>
+        <munder>
+            <mo>∑</mo>
+            <mi>S</mi>
+        </munder>
+        <mi>i</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "сумма по эс большое от и")?;
+    return Ok(());
+}
+
+#[test]
+fn sum_both_msubsup() -> Result<()> {
+    let expr = "<math>
+        <msubsup>
+            <mo>∑</mo>
+            <mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow>
+            <mrow><mn>10</mn></mrow>
+        </msubsup>
+        <mi>n</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "сумма от эн равно 1 до 10 от эн")?;
+    return Ok(());
+}
+
+#[test]
+fn sum_sub() -> Result<()> {
+    let expr = "<math>
+        <msub>
+            <mo>∑</mo>
+            <mi>S</mi>
+        </msub>
+        <mi>i</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "сумма по эс большое от и")?;
+    return Ok(());
+}
+
+#[test]
+fn sum() -> Result<()> {
+    let expr = "<math>
+            <mo>∑</mo>
+            <msub><mi>a</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "сумма а с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn product_both() -> Result<()> {
+    let expr = "<math>
+        <munderover>
+            <mo>∏</mo>
+            <mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow>
+            <mrow><mn>10</mn></mrow>
+        </munderover>
+        <mi>n</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "произведение от эн равно 1 до 10 от эн")?;
+    return Ok(());
+}
+
+#[test]
+fn product_under() -> Result<()> {
+    let expr = "<math>
+        <munder>
+            <mo>∏</mo>
+            <mi>S</mi>
+        </munder>
+        <mi>i</mi>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "произведение по эс большое от и")?;
+    return Ok(());
+}
+
+#[test]
+fn product() -> Result<()> {
+    let expr = "<math>
+            <mo>∏</mo>
+            <msub><mi>a</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "произведение а с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn intersection_both() -> Result<()> {
+    let expr = "<math>
+        <munderover>
+            <mo>⋂</mo>
+            <mrow><mi>i</mi><mo>=</mo><mn>1</mn> </mrow>
+            <mn>10</mn>
+        </munderover>
+        <msub><mi>S</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "пересечение от и равно 1 до 10 от; эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn intersection_under() -> Result<()> {
+    let expr = "<math>
+        <munder>
+            <mo>⋂</mo>
+            <mi>C</mi>
+        </munder>
+        <msub><mi>S</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "пересечение по цэ большое от, эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn intersection() -> Result<()> {
+    let expr = "<math>
+            <mo>⋂</mo>
+            <msub><mi>S</mi><mi>i</mi></msub>
+            </math>";
+    test("ru", "SimpleSpeak", expr, "пересечение эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn union_both() -> Result<()> {
+    let expr = "<math>
+        <munderover>
+            <mo>⋃</mo>
+            <mrow><mi>i</mi><mo>=</mo><mn>1</mn> </mrow>
+            <mn>10</mn>
+        </munderover>
+        <msub><mi>S</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "объединение от и равно 1 до 10 от; эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn union_under() -> Result<()> {
+    let expr = "<math>
+        <munder>
+            <mo>⋃</mo>
+            <mi>C</mi>
+        </munder>
+        <msub><mi>S</mi><mi>i</mi></msub>
+    </math>";
+    test("ru", "SimpleSpeak", expr, "объединение по цэ большое от, эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn union() -> Result<()> {
+    let expr = "<math>
+            <mo>⋃</mo>
+            <msub><mi>S</mi><mi>i</mi></msub>
+            </math>";
+    test("ru", "SimpleSpeak", expr, "объединение эс большое с индексом и")?;
+    return Ok(());
+}
+
+#[test]
+fn integral_both() -> Result<()> {
+    let expr = "<math>
+            <mrow>
+                <msubsup>
+                    <mo>∫</mo>
+                    <mn>0</mn>
+                    <mn>1</mn>
+                </msubsup>
+                <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
+            </mrow>
+            <mtext>&#x2009;</mtext><mi>d</mi><mi>x</mi>
+        </math>";
+    test("ru", "SimpleSpeak", expr, "интеграл от 0 до 1 от, эф от икс; д икс")?;
+    return Ok(());
+}
+
+#[test]
+fn integral_under() -> Result<()> {
+    let expr = "<math>
+        <munder>
+            <mo>∫</mo>
+            <mi>ℝ</mi>
+        </munder>
+        <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
+        <mi>d</mi><mi>x</mi>
+        </math>";
+    test("ru", "SimpleSpeak", expr, "интеграл по действительным числам от; эф от икс д икс")?;
+    return Ok(());
+}
+
+#[test]
+fn integral() -> Result<()> {
+    let expr = "<math>
+            <mo>∫</mo>
+            <mrow><mi>f</mi><mrow><mo>(</mo><mi>x</mi> <mo>)</mo></mrow></mrow>
+            <mi>d</mi><mi>x</mi>
+            </math>";
+    test("ru", "SimpleSpeak", expr, "интеграл от эф от икс д икс")?;
+    return Ok(());
+}

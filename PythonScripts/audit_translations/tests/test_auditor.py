@@ -6,10 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from ..auditor import compare_files, get_yaml_files, list_languages
+from ..auditor import audit_language, compare_files, get_yaml_files, list_languages
 from ..line_resolver import resolve_diff_lines
-from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
+from ..models.rules import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
 from ..renderer import console, print_warnings
+from .conftest import strip_ansi
 
 
 @pytest.fixture()
@@ -43,6 +44,163 @@ def resolved_diff_lines_by_type(result: ComparisonResult) -> dict[str, list[tupl
 
 def fixture_rules_dir() -> Path:
     return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
+
+
+def test_rule_order_reports_first_shared_difference(tmp_path) -> None:
+    """A swapped pair records the first shared rule position without adding an issue."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text(
+        """- name: a
+  tag: mi
+- name: b
+  tag: mi
+- name: c
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
+  tag: mi
+- name: c
+  tag: mi
+- name: b
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+
+    result = compare_files(source, target)
+    assert result.first_order_mismatch_position == 2
+    assert not result.has_issues
+
+
+def test_missing_and_ignored_rules_do_not_shift_order(tmp_path) -> None:
+    """Only shared rules without audit-ignore markers participate in ordering."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text(
+        """- name: a
+  tag: mi
+- name: missing
+  tag: mi
+- name: b
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
+  tag: mi
+- name: extra
+  tag: mi
+- name: b
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+    source.write_text(
+        """- name: a
+  tag: mi
+- name: b
+  tag: mi
+# audit-ignore
+- name: c
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """# audit-ignore
+- name: c
+  tag: mi
+- name: a
+  tag: mi
+- name: b
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+
+def test_include_placement_is_not_checked(tmp_path) -> None:
+    """An include moving around a named rule has no effect on named rule order."""
+    source = tmp_path / "source.yaml"
+    target = tmp_path / "target.yaml"
+    source.write_text(
+        """- include: shared.yaml
+- name: a
+  tag: mi
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- name: a
+  tag: mi
+- include: shared.yaml
+""",
+        encoding="utf-8",
+    )
+    result = compare_files(source, target)
+    assert result.first_order_mismatch_position is None
+    assert result.english_rule_count == result.translated_rule_count == 1
+    assert not result.missing_rules and not result.extra_rules
+    assert compare_files(source, target, {"missing"}).first_order_mismatch_position is None
+
+
+def test_unicode_entries_are_not_checked_for_order(tmp_path) -> None:
+    """The order check only covers named rules, not Unicode character entries."""
+    source = tmp_path / "unicode.yaml"
+    target = tmp_path / "target" / "unicode.yaml"
+    target.parent.mkdir()
+    source.write_text(
+        """- "←": [t: left]
+- "∥": [t: parallel]
+""",
+        encoding="utf-8",
+    )
+    target.write_text(
+        """- "∥": [T: parallel]
+- "←": [T: left]
+""",
+        encoding="utf-8",
+    )
+
+    assert compare_files(source, target).first_order_mismatch_position is None
+
+
+def test_order_findings_appear_after_summary_without_affecting_totals(tmp_path, capsys) -> None:
+    """Each affected file gets one final line while the audit issue count stays zero."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "en"
+    target_dir = rules_dir / "de"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+    source = """- name: a
+  tag: mi
+- name: b
+  tag: mi
+"""
+    target = """- name: b
+  tag: mi
+- name: a
+  tag: mi
+"""
+    for filename in ("first.yaml", "second.yaml"):
+        (source_dir / filename).write_text(source, encoding="utf-8")
+        (target_dir / filename).write_text(target, encoding="utf-8")
+
+    assert audit_language("de", rules_dir=str(rules_dir)) == 0
+    output = strip_ansi(capsys.readouterr().out)
+    assert "Files with issues                 0" in output
+    assert "Rule order differences" not in output
+    assert output.count("first difference at shared rule position 1") == 2
+    assert output.index("SUMMARY") < output.index("Rule order differs in first.yaml")
+    assert output.index("Rule order differs in first.yaml") < output.index("Rule order differs in second.yaml")
 
 
 def aggregate_issue_counts(
@@ -234,6 +392,73 @@ def test_compare_files_skips_untranslated_and_diffs_when_audit_ignored(tmp_path)
     assert result.rule_differences == []
 
 
+def test_audit_language_uses_configurable_source_language(tmp_path, fixed_console_width) -> None:
+    """
+    Ensure non-English source comparisons remain directional.
+
+    Source rules define missing items and source-side snippets. Target rules
+    define extra items and target-only untranslated text.
+    """
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "sv"
+    target_dir = rules_dir / "nb"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+
+    (source_dir / "sample.yaml").write_text(
+        """- name: common-rule
+  tag: mo
+  match: "self::m:mo"
+  replace:
+    - T: "source"
+- name: source-only
+  tag: mi
+  match: "."
+  replace:
+    - T: "source only"
+""",
+        encoding="utf-8",
+    )
+    (target_dir / "sample.yaml").write_text(
+        """- name: common-rule
+  tag: mo
+  match: "self::m:mi"
+  replace:
+    - t: "target"
+- name: target-only
+  tag: mi
+  match: "."
+  replace:
+    - T: "target only"
+""",
+        encoding="utf-8",
+    )
+
+    with console.capture() as capture:
+        total_issues = audit_language(
+            "nb",
+            specific_file="sample.yaml",
+            rules_dir=str(rules_dir),
+            verbose=True,
+            source_language="sv",
+        )
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 4
+    assert "Comparing against sv reference files" in output
+    assert "sv: 2 rules  →  nb: 2 rules" in output
+    assert "Missing in Translation [1]" in output
+    assert "(line 6 in sv)" in output
+    assert "Extra in Translation [1]" in output
+    assert "(line 6 in nb)" in output
+    assert "Untranslated Text [1]" in output
+    assert '(line 5 nb) "target"' in output
+    assert "Match Pattern Differences [1]" in output
+    assert "(line 3 sv, 3 nb)" in output
+    assert "sv: self::m:mo" in output
+    assert "nb: self::m:mi" in output
+
+
 def test_get_yaml_files_includes_region(tmp_path) -> None:
     """
     Ensures get_yaml_files merges base and region file lists.
@@ -252,6 +477,82 @@ def test_get_yaml_files_includes_region(tmp_path) -> None:
 
     files = get_yaml_files(lang_dir, region_dir)
     assert set(files) == {Path("base.yaml"), Path("SharedRules/shared.yaml"), Path("unicode.yaml")}
+
+
+def test_get_yaml_files_includes_definitions_but_ignores_prefs(tmp_path) -> None:
+    """Definitions use automatic discovery while prefs remains excluded."""
+    lang_dir = tmp_path / "lang"
+    shared_dir = lang_dir / "SharedRules"
+    shared_dir.mkdir(parents=True)
+    (lang_dir / "rules.yaml").write_text("---", encoding="utf-8")
+    (lang_dir / "definitions.yaml").write_text("---", encoding="utf-8")
+    (lang_dir / "prefs.yaml").write_text("---", encoding="utf-8")
+    (shared_dir / "definitions.yaml").write_text("---", encoding="utf-8")
+
+    assert get_yaml_files(lang_dir) == [
+        Path("SharedRules/definitions.yaml"),
+        Path("definitions.yaml"),
+        Path("rules.yaml"),
+    ]
+
+
+def test_audit_language_supports_explicit_definitions_file(tmp_path, fixed_console_width) -> None:
+    """Passing definitions.yaml through --file audits that file only."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text('- include: "other.yaml"\n', encoding="utf-8")
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", specific_file="definitions.yaml", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 1
+    assert "Files to check: 1" in output
+    assert "definitions.yaml" in output
+    assert "Definition Issues [1]" in output
+    assert "Missing definitions" in output
+
+
+def test_audit_language_discovers_definitions_by_default(tmp_path, fixed_console_width) -> None:
+    """A normal audit includes definitions.yaml without a feature flag."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text("- Foo: {key: value}\n", encoding="utf-8")
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 1
+    assert "Files to check: 1" in output
+    assert "Definition Type Mismatch" in output
+    assert "Definition type mismatches" in output
+
+
+def test_extra_definitions_are_informational_only(tmp_path, fixed_console_width) -> None:
+    """Target-only definitions render without increasing issue or file-issue counts."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    (rules_dir / "de").mkdir(parents=True)
+    (rules_dir / "en" / "definitions.yaml").write_text("- Foo: [one]\n", encoding="utf-8")
+    (rules_dir / "de" / "definitions.yaml").write_text(
+        "- Foo: [eins]\n- GermanSpecific: {key: value}\n",
+        encoding="utf-8",
+    )
+
+    with console.capture() as capture:
+        total_issues = audit_language("de", rules_dir=str(rules_dir))
+    output = strip_ansi(capture.get())
+
+    assert total_issues == 0
+    assert "Info: Extra Definitions [1]" in output
+    assert "Files with issues                 0" in output
+    assert "Files OK                          1" in output
+    assert "Extra definitions                 1" in output
 
 
 def test_list_languages_includes_region_codes(tmp_path) -> None:
@@ -273,7 +574,7 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
 
     with console.capture() as capture:
         list_languages(str(rules_dir))
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "zz" in output
     assert "zz-aa" in output
@@ -298,7 +599,7 @@ def test_list_languages_ignores_sharedrules_as_region(tmp_path) -> None:
 
     with console.capture() as capture:
         list_languages(str(rules_dir))
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "zz-aa" in output
     assert "zz-SharedRules" not in output
@@ -320,7 +621,7 @@ def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> 
 
     with console.capture() as capture:
         print_warnings(result, "structure_diff.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output == golden_path.read_text(encoding="utf-8")
 
@@ -341,7 +642,7 @@ def test_print_warnings_includes_snippets_when_verbose(fixed_console_width) -> N
 
     with console.capture() as capture:
         print_warnings(result, "structure_diff.yaml", verbose=True)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output == golden_path.read_text(encoding="utf-8")
 
@@ -511,7 +812,7 @@ def test_print_warnings_shows_misaligned_structures() -> None:
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "structure_misaligned.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     # Misaligned structure differences should be rendered.
     assert "Rule structure differs" in output, "Expected misaligned structure differences to be shown in display"
@@ -538,7 +839,7 @@ def test_print_warnings_still_shows_missing_else() -> None:
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "structure_missing_else.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     # CRITICAL: This legitimate difference should appear in output
     assert "Rule structure differs" in output, "Expected missing else block to be shown in output"
@@ -597,7 +898,7 @@ def test_print_warnings_groups_multiple_subgroups_for_single_rule(fixed_console_
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "grouped.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output.count("• grouped-rule (mi)") == 1
     assert "Untranslated Text [2]" in output
@@ -648,7 +949,7 @@ def test_print_warnings_groups_missing_and_extra_by_rule(fixed_console_width) ->
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "mixed.yaml", verbose=False)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert output.count("• missing-rule (mn)") == 1
     assert output.count("• extra-rule (mo)") == 1
@@ -692,13 +993,13 @@ def test_print_warnings_verbose_shows_snippets_only_for_differences(fixed_consol
 
     with console.capture() as capture:
         issues_count = print_warnings(result, "verbose.yaml", verbose=True)
-    output = capture.get()
+    output = strip_ansi(capture.get())
 
     assert "Missing in Translation [1]" in output
     assert "Untranslated Text [1]" in output
     assert "Match Pattern Differences [1]" in output
-    assert output.count("en:") == 1
-    assert output.count("tr:") == 1
+    assert output.count("                  en:") == 1
+    assert output.count("                  tr:") == 1
     assert "en-snippet" in output
     assert "tr-snippet" in output
     assert issues_count == 3
