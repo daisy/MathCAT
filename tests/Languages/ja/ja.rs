@@ -564,6 +564,19 @@ fn units() -> Result<()> {
     return Ok(());
 }
 
+/// rpm was 1分あたりの回転数 ("the number of turns per one minute"), so 1 rpm was read
+/// 1 1分あたりの回転数 with two numbers in a row. 毎分回転数 is the word used in Japanese
+/// (Open JTalk: マイフンカイテンスー); 回転毎分 is not used, it is read カイテンゴトブン.
+#[test]
+fn rpm_unit() -> Result<()> {
+    let expr = "<math><mn>1</mn><mi intent=':unit'>rpm</mi></math>";
+    test("ja", "SimpleSpeak", expr, "1 毎分回転数")?;
+    test("ja", "ClearSpeak", expr, "1 毎分回転数")?;
+    let expr = "<math><mn>3000</mn><mi intent=':unit'>rpm</mi></math>";
+    test("ja", "SimpleSpeak", expr, "3000 毎分回転数")?;
+    return Ok(());
+}
+
 /// The negation sign is ノット. The seed said コメントはありません -- "there are no
 /// comments" -- because the English source word is "not".
 #[test]
@@ -1051,6 +1064,16 @@ fn shape_names_read_correctly() -> Result<()> {
 fn ratio_as_function() -> Result<()> {
     let expr = "<math><mi>x</mi><mo>&#x2236;</mo><mi>y</mi></math>";
     test("ja", "ClearSpeak", expr, "比 オブ x 対 y")?;
+    return Ok(());
+}
+
+/// The infix form of ratio is read x 対 y, the word the function form already uses after its
+/// first argument; 比率 names a ratio as a quantity and is not how "x to y" is said.
+#[test]
+fn ratio_infix() -> Result<()> {
+    let expr = "<math><mrow intent='ratio($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "x 対 y")?;
+    test("ja", "SimpleSpeak", expr, "x 対 y")?;
     return Ok(());
 }
 
