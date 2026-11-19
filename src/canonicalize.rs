@@ -2136,7 +2136,8 @@ impl CanonicalizeContext {
 		}
 
 
-		/// looks for pairs of (letter, pseudo-script) such as x' or p'q' all inside of a single token element
+		/// looks for letters followed by a pseudo-script such as x', p'q' or cm³ all inside of a single token element
+		/// all letters before the pseudo-script are the base: two letters in one token element are one name ("cm")
 		fn split_apart_pseudo_scripts<'a>(mi: Element<'a>) -> Option<Element<'a>> {
 			static IS_DEGREES_C_OR_F: Lazy<Regex> = lazy_regex!(r"[°º][CF]");
 
@@ -2147,30 +2148,34 @@ impl CanonicalizeContext {
 			}
 
 			let document = mi.document();
-			// create pairs of text
-			let chars = text.chars();
-    		let next_chars = text.chars().skip(1);
-			let result = chars.zip(next_chars).map(|(a, b)|
-						if a.is_alphabetic() && is_pseudo_script_char(b) {
-							// create msup
-							let base = create_mathml_element(&document, "mi");
-							base.set_text(&a.to_string());
-							let script = create_mathml_element(&document, "mo");
-							script.set_text(&b.to_string());
-							let msup = create_mathml_element(&document, "msup");
-							msup.append_child(base);
-							msup.append_child(script);
-							msup
-						} else {
-							// create an mi "ab"
-							let new_mi = create_mathml_element(&document, "mi");
-							let mut new_mi_text = String::with_capacity(6);		// likely will fit almost all cases
-							new_mi_text.push(a);
-							new_mi_text.push(b);
-							new_mi.set_text(&new_mi_text);
-							new_mi
-						} )
-				.collect::<Vec<Element>>();
+			let mut result: Vec<Element> = vec![];
+			let mut base_text = String::new();
+			for ch in text.chars() {
+				// this could be improved to handle even more complex content such as <mi>2p'</mi>
+				if is_pseudo_script_char(ch) && base_text.chars().last().is_some_and(|c| c.is_alphabetic()) {
+					let base = create_mathml_element(&document, "mi");
+					base.set_text(&base_text);
+					let script = create_mathml_element(&document, "mo");
+					script.set_text(&ch.to_string());
+					let msup = create_mathml_element(&document, "msup");
+					msup.append_child(base);
+					msup.append_child(script);
+					result.push(msup);
+					base_text.clear();
+				// a pseudo-script directly after another one joins its superscript such as <mi>p''</mi>
+				} else if is_pseudo_script_char(ch) && base_text.is_empty() && result.last().is_some_and(|el| name(*el) == "msup") {
+					let script = as_element(result.last().unwrap().children()[1]);
+					script.set_text(&format!("{}{}", as_text(script), ch));
+				} else {
+					base_text.push(ch);
+				}
+			}
+			// handle left-over text after the last pseudo-script
+			if !base_text.is_empty() {
+				let new_mi = create_mathml_element(&document, "mi");
+				new_mi.set_text(&base_text);
+				result.push(new_mi);
+			}
 			if result.len() == 1 {
 				return Some( result[0] );
 			} else {
@@ -8256,7 +8261,18 @@ mod canonicalize_tests {
         let test_str = "<math><mrow><mi>p'</mi><mo>=</mo><mi>µ°C</mi></mrow></math>";
 		// RHS is a known unit after '='; likely→confirm sets intent=':unit'.
         let target_str = "<math><mrow><msup><mi>p</mi><mo>′</mo></msup><mo>=</mo><mi intent=':unit'>µ°C</mi></mrow></math>";
-        return are_strs_canonically_equal_result(test_str, target_str, &[]);
+        are_strs_canonically_equal_result(test_str, target_str, &[])?;
+		let double_prime = "<math><mi>p''</mi></math>";
+		let double_prime_target = "<math><msup><mi>p</mi><mo>″</mo></msup></math>";
+		are_strs_canonically_equal_result(double_prime, double_prime_target, &[])?;
+		let primes = "<math><mi>p'q'</mi></math>";
+		let primes_target = "<math><mrow data-changed='added'>
+			<msup><mi>p</mi><mo>′</mo></msup><mo data-changed='added'>&#x2062;</mo><msup><mi>q</mi><mo>′</mo></msup>
+		</mrow></math>";
+		are_strs_canonically_equal_result(primes, primes_target, &[])?;
+		let unit = "<math><mi>cm³</mi></math>";
+		let unit_target = "<math><msup><mi>cm</mi><mo>³</mo></msup></math>";
+		return are_strs_canonically_equal_result(unit, unit_target, &[]);
 	}
 
 	#[test]
