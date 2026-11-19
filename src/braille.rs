@@ -51,8 +51,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             "Finnish" => finnish_cleanup(pref_manager, braille_string),
             "Swedish" => swedish_cleanup(pref_manager, braille_string),
             "LaTeX" => LaTeX_cleanup(pref_manager, braille_string),
-            "ASCIIMath" => ASCIIMath_cleanup(pref_manager, braille_string),
-            "ASCIIMath-fi" => ASCIIMath_cleanup(pref_manager, braille_string),
+            "ASCIIMath" | "ASCIIMath_fi" => ASCIIMath_cleanup(pref_manager, braille_string),
             _ => braille_string.trim_matches('⠀').to_string(),    // probably needs cleanup if someone has another code, but this will have to get added by hand
         };
 

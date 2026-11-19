@@ -157,7 +157,11 @@
  - "←": [T: "𝐖<-𝐖"]                    # 0x2190
  - "↑": [T: "𝐖/>𝐖"]                    # 0x2191
  - "→": [T: "𝐖->𝐖"]                        # 0x2192 
- - "↓": [T: "𝐖\\>𝐖"]                    # 0x2193  # FI: is this escaped correctly? Slach 'points downwards'.
+ - "↓": [T: "𝐖\\>𝐖"]                    # 0x2193  # FI: is this escaped correctly? Slash 'points downwards'.
+ - "↖": [t: "𝐖<*𝐖"]           # 0x2196 (north west arrow)
+ - "↗": [T: "𝐖*>𝐖"]           # 0x2197 (north east arrow)
+ - "↘": [T: "𝐖?>𝐖"]           # 0x2198 (south east arrow)
+ - "↙": [t: "𝐖<?𝐖"]           # 0x2199 (south west arrow)
  - "↔": [T: "𝐖<->𝐖"]                    # 0x2194
  - "↠": [T: "𝐖->>𝐖"]                       # 0x21a0
  - "↣": [T: "𝐖>->𝐖"]                       # 0x21a3
@@ -229,6 +233,7 @@
  - "□": [t: "𝐖square𝐖"]                  # 0x25a1
  - "△": [t: "/_\\"]                      # 0x25b3
  - "⤖": [t: "𝐖>->>𝐖"]                      # 0x2916
+ - "⧸": [t: "sij"]
  - "⪯": [t: "𝐖-<=𝐖"]                       # 0x2aaf
  - "⪰": [t: "𝐖>-=𝐖"]                       # 0x2ab0
 

@@ -34,9 +34,10 @@ mod braille {
         mod other;
     }
 
-    // mod ASCIIMath_fi {
-    //     mod spec;
-    //     mod other;
-    // }
+    mod ASCIIMath_fi {
+        mod spec;
+        mod other;
+        mod sixDotSpecs;
+    }
 }
 
