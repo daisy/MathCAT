@@ -3504,8 +3504,8 @@ impl CanonicalizeContext {
 								if  following_siblings.is_empty() {
 									return true;
 								}
-								let first_child = as_element(following_siblings[0]);
-								return name(first_child) != "mo" || ["(", "[", "{"].contains(&as_str!(text));
+								let following_sibling = as_element(following_siblings[0]);
+								return name(following_sibling) == "mo" && !["(", "[", "{"].contains(&as_str!(as_text(following_sibling)));
 							} else {
 								return true;
 							}
@@ -8238,6 +8238,16 @@ mod canonicalize_tests {
 			<mo>/</mo>
 			<mi mathvariant='normal' intent=':unit'>l</mi>
 		</mrow></math>";
+		return are_strs_canonically_equal_result(postfix, postfix_target, &[]);
+	}
+
+	#[test]
+	fn pseudo_scripts_asterisk() -> Result<()> {
+		let infix = "<math><mrow><mi>a</mi><mo>*</mo><mi>b</mi></mrow></math>";
+		let infix_target = "<math><mrow><mi>a</mi><mo>*</mo><mi>b</mi></mrow></math>";
+		are_strs_canonically_equal_result(infix, infix_target, &[])?;
+		let postfix = "<math><mrow><mi>a</mi><mo>*</mo><mo>+</mo><mi>b</mi></mrow></math>";
+		let postfix_target = "<math><mrow><msup data-changed='added'><mi>a</mi><mo>*</mo></msup><mo>+</mo><mi>b</mi></mrow></math>";
 		return are_strs_canonically_equal_result(postfix, postfix_target, &[]);
 	}
 
