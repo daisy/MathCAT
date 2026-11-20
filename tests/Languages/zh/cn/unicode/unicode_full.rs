@@ -230,7 +230,7 @@ fn unicode_full_structured_symbols_have_verified_readings() -> Result<()> {
         (
             "U+20E1 combining left-right arrow above",
             "<math><mover><mi>v</mi><mo>&#x20e1;</mo></mover></math>",
-            "v 上加左右箭头",
+            "v 上方有 左右箭头",
         ),
         (
             "U+20DE combining enclosing square",
@@ -405,14 +405,14 @@ fn audited_unicode_gap_symbols_have_direct_and_contextual_coverage() -> Result<(
 fn remaining_unicode_phase_symbols_have_verified_readings() -> Result<()> {
     // Unicode NamesList supplies the identities; the structured cases verify placement too.
     let combining = [
-        ("20d0", "mover", "v", "v 上加左鱼叉箭头"),
-        ("20d1", "mover", "v", "v 上加右鱼叉箭头"),
+        ("20d0", "mover", "v", "v 上方有 倒钩向上的向左鱼叉箭头"),
+        ("20d1", "mover", "v", "向量 v"),
         ("20d2", "mover", "x", "x 叠加长竖直线"),
         ("20d3", "mover", "x", "x 叠加短竖直线"),
         ("20d4", "mover", "x", "x 上加逆时针箭头"),
         ("20d5", "mover", "x", "x 上加顺时针箭头"),
-        ("20d6", "mover", "v", "v 上加向左箭头"),
-        ("20d7", "mover", "v", "v 上加向右箭头"),
+        ("20d6", "mover", "v", "v 上方有 向左箭头"),
+        ("20d7", "mover", "v", "向量 v"),
         ("20d8", "mover", "x", "x 叠加圆环"),
         ("20d9", "mover", "x", "x 叠加顺时针圆环"),
         ("20da", "mover", "x", "x 叠加逆时针圆环"),

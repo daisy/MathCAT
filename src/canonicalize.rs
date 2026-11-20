@@ -4141,6 +4141,12 @@ impl CanonicalizeContext {
 				"\u{02C6}"| "\u{0302}" => "^",
 				"\u{0307}" => "\u{02D9}",	// Nemeth distinguishes this from "." -- \u{02D9} is generated for over dots by most generators
 				"\u{0308}" => "¨",
+				// combining arrows/harpoons (KaTeX and math-core generate U+20D7 for \vec) -> the spacing versions the rules use
+				"\u{20D0}" => "\u{21BC}",
+				"\u{20D1}" => "\u{21C0}",
+				"\u{20D6}" => "\u{2190}",
+				"\u{20D7}" => "\u{2192}",
+				"\u{20E1}" => "\u{2194}",
 				_ => mo_text,
 			}
 			// FIX: MathType generates the wrong version of union and intersection ops (binary instead of unary)
@@ -8088,6 +8094,30 @@ mod canonicalize_tests {
         let test_str = r#"<math><mrow><msub><mo>(</mo><mn>2</mn></msub><mo>)</mo></mrow></math>"#;
     	let target_str = "<math><mrow><msub><mo>(</mo><mn>2</mn></msub><mo>)</mo></mrow></math>";
 		are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+	fn combining_arrows_1065() -> Result<()> {
+		// KaTeX and math-core use combining arrows (e.g., U+20D7 for \vec) as the accent of mover/munder.
+		// They should become the spacing arrows that the speech and braille rules look for.
+		are_strs_canonically_equal_result(
+			"<math><mover accent='true'><mi>F</mi><mo stretchy='false'>\u{20D7}</mo></mover></math>",
+			"<math><mover accent='true'><mi>F</mi><mo stretchy='false'>\u{2192}</mo></mover></math>", &[])?;
+		are_strs_canonically_equal_result(
+			"<math><mover accent='true'><mi>F</mi><mo>\u{20D6}</mo></mover></math>",
+			"<math><mover accent='true'><mi>F</mi><mo>\u{2190}</mo></mover></math>", &[])?;
+		are_strs_canonically_equal_result(
+			"<math><mover accent='true'><mi>F</mi><mo>\u{20E1}</mo></mover></math>",
+			"<math><mover accent='true'><mi>F</mi><mo>\u{2194}</mo></mover></math>", &[])?;
+		are_strs_canonically_equal_result(
+			"<math><mover accent='true'><mi>F</mi><mo>\u{20D0}</mo></mover></math>",
+			"<math><mover accent='true'><mi>F</mi><mo>\u{21BC}</mo></mover></math>", &[])?;
+		are_strs_canonically_equal_result(
+			"<math><mover accent='true'><mi>F</mi><mo>\u{20D1}</mo></mover></math>",
+			"<math><mover accent='true'><mi>F</mi><mo>\u{21C0}</mo></mover></math>", &[])?;
+		are_strs_canonically_equal_result(
+			"<math><munder accentunder='true'><mi>F</mi><mo>\u{20D7}</mo></munder></math>",
+			"<math><munder accentunder='true'><mi>F</mi><mo>\u{2192}</mo></munder></math>", &[])
 	}
 
 	#[test]

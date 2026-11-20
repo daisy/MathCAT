@@ -375,3 +375,11 @@ fn vertical_line_evaluated_at_both_given() -> Result<()> {
         return Ok(());
 
 }
+
+#[test]
+fn vector_combining_arrow() -> Result<()> {
+    // KaTeX and math-core write \vec{F} with U+20D7 (COMBINING RIGHT ARROW ABOVE) -- issue #1065
+    let expr = r#"<math><mover accent="true"><mi>F</mi><mo stretchy="false">&#x20D7;</mo></mover></math>"#;
+    test("fr", "ClearSpeak", expr, "vecteur f majuscule")?;
+    return Ok(());
+}

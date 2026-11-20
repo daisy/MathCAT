@@ -385,4 +385,31 @@ fn double_factorial_test() -> Result<()> {
     test("en", "SimpleSpeak", expr1, "5 double factorial")?;
     Ok(())
 }
-
+
+#[test]
+fn vector_combining_arrow() -> Result<()> {
+    // KaTeX and math-core write \vec{F} with U+20D7 (COMBINING RIGHT ARROW ABOVE) -- issue #1065
+    let expr = r#"<math><mover accent="true"><mi>F</mi><mo stretchy="false">&#x20D7;</mo></mover></math>"#;
+    test("en", "ClearSpeak", expr, "vector cap f")?;
+    return Ok(());
+}
+
+#[test]
+fn vector_right_arrow() -> Result<()> {
+    // MathJax writes \vec{F} with U+2192 (RIGHTWARDS ARROW); this must keep working
+    let expr = r#"<math><mover accent="true"><mi>F</mi><mo stretchy="false">&#x2192;</mo></mover></math>"#;
+    test("en", "ClearSpeak", expr, "vector cap f")?;
+    return Ok(());
+}
+
+#[test]
+fn combining_arrows_over() -> Result<()> {
+    // The other combining arrows should be spoken like their spacing versions (U+2190, U+2194, U+21C0)
+    let expr = "<math><mover accent='true'><mi>F</mi><mo>&#x20D6;</mo></mover></math>";
+    test("en", "ClearSpeak", expr, "cap f with left arrow above")?;
+    let expr = "<math><mover accent='true'><mi>F</mi><mo>&#x20E1;</mo></mover></math>";
+    test("en", "ClearSpeak", expr, "cap f with left right arrow above")?;
+    let expr = "<math><mover accent='true'><mi>F</mi><mo>&#x20D1;</mo></mover></math>";
+    test("en", "ClearSpeak", expr, "vector cap f")?;
+    return Ok(());
+}
