@@ -100,6 +100,7 @@
     "Dim", "Hom", "Ker", "Tr",
     "inf", "lim", "liminf", "limsup", "sup",
     "injlim", "projlim", "inj lim", "proj lim",
+    "lim\u2006sup", "lim\u2006inf", "inj\u2006lim", "proj\u2006lim",   # MathJax writes these with U+2006 between the words
 
     # these come from the nemeth book (Rule XVII)
     "arc",

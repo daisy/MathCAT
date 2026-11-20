@@ -1135,6 +1135,20 @@ fn lim_sup_and_lim_inf() -> Result<()> {
     return Ok(());
 }
 
+/// MathJax writes \limsup and \liminf as an mo with U+2006 (six-per-em space) between the words. That
+/// form was not in FunctionNames, so the U+2061 after it was still read as オブ. It now reads
+/// like lim sup and lim inf above.
+#[test]
+fn lim_sup_and_lim_inf_from_mathjax() -> Result<()> {
+    let expr = r#"<math><munder><mo movablelimits="true">lim&#x2006;sup</mo><mrow><mi>n</mi><mo stretchy="false">&#x2192;</mo><mi mathvariant="normal">&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = r#"<math><munder><mo movablelimits="true">lim&#x2006;inf</mo><mrow><mi>x</mi><mo stretchy="false">&#x2192;</mo><mn>0</mn></mrow></munder><mo>&#x2061;</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></math>"#;
+    test("ja", "SimpleSpeak", expr, "か極限 x 近づく 0; f オブ x")?;
+    test("ja", "ClearSpeak", expr, "か極限 x 近づく 0; f オブ x")?;
+    return Ok(());
+}
+
 /// Japanese puts the object in front of 比例する, 属する or に先行する, but these
 /// words are spoken where the symbol is, so x ≺ y (precedes) came out as
 /// x に先行する y, "the y that precedes x". The symbols and intents now use names
