@@ -3423,13 +3423,18 @@ impl CanonicalizeContext {
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
 	
 			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(as_str!(name(mrow))), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
-			// lift a pseudo-script out of its own mrow such as <mrow><mo>°</mo></mrow> (the mrow is cleaned only after this)
+			// a pseudo-script can be in its own mrow or in an mi such as <mrow><mo>°</mo></mrow> or <mi>³</mi> (the children are cleaned only after this)
+			// FIX: this repeats part of the cleaning of the children -- refactor so the children are cleaned before looking for pseudo-scripts
 			for child in mrow.children().into_iter().map(as_element) {
 				if name(child) == "mrow" && child.children().len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(child) {
 					let grandchild = as_element(child.children()[0]);
 					if is_pseudo_script(grandchild) {
 						CanonicalizeContext::lift_single_child(child, grandchild);
 					}
+				// same conditions as the conversion of an mi to an mo in clean_mathml
+				} else if name(child) == "mi" && as_text(child).chars().all(is_pseudo_script_char) && OPERATORS.get(as_str!(as_text(child))).is_some() &&
+						  !child.attribute_value(INTENT_ATTR).is_some_and(|intent| intent.contains(":unit")) {
+					set_mathml_name(child, "mo");
 				}
 			}
 			let mut children = mrow.children();
@@ -8202,6 +8207,14 @@ mod canonicalize_tests {
 	fn pseudo_scripts_in_mrow() -> Result<()> {
 		let test_str = "<math><mrow><mn>30</mn><mrow><mo>°</mo></mrow><mo>+</mo><mn>1</mn></mrow></math>";
 		let target_str = "<math><mrow><msup data-changed='added'><mn>30</mn><mo>°</mo></msup><mo>+</mo><mn>1</mn></mrow></math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+	}
+
+	/// A pseudo-script in an mi is a superscript like in an mo: `x<mi>³</mi>` is `msup(x, ³)`.
+	#[test]
+	fn pseudo_scripts_mi_as_mo() -> Result<()> {
+		let test_str = "<math><mrow><mi>x</mi><mi>³</mi><mo>+</mo><mn>1</mn></mrow></math>";
+		let target_str = "<math><mrow><msup data-changed='added'><mi>x</mi><mo>³</mo></msup><mo>+</mo><mn>1</mn></mrow></math>";
 		return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
