@@ -99,14 +99,12 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 	let tag = as_str!(name(mathml));
 	if tag == "mi" || tag == "mtext" {
 		if looks_like_unit_leaf(mathml) &&
-		   is_known_unit_token_text(as_str!(as_text(mathml)))
-		{
+		   is_known_unit_token_text(as_str!(as_text(mathml))) {
 			mathml.set_attribute_value(LIKELY_UNIT_ATTR, "true");
 			return true;
 		}
 		if mathml.attribute_value(INTENT_ATTR).as_deref().is_some_and(intent_has_unit) &&
-		   explicit_unit_in_paren_group(mathml)
-		{
+		   explicit_unit_in_paren_group(mathml) {
 			return true;
 		}
 		return false;
@@ -127,14 +125,12 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 			if defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(text)) ||
 			   defs.get_hashmap("UnitsWithoutPrefixes").is_some_and(|m| m.contains_key(text)) ||
 			   defs.get_hashmap("EnglishUnits").is_some_and(|m| m.contains_key(text)) ||
-			   defs.get_hashmap("CurrencySymbols").is_some_and(|m| m.contains_key(text))
-			{
+			   defs.get_hashmap("CurrencySymbols").is_some_and(|m| m.contains_key(text)) {
 				return true;
 			}
 			if text.len() >= 3 &&
 			   text.starts_with("da") &&
-			   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(&text[2..]))
-			{
+			   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(&text[2..])) {
 				return true;
 			}
 			if text.chars().count() >= 2 {
@@ -144,8 +140,7 @@ fn mark_likely_unit_leaves(mathml: Element<'_>) -> bool {
 				};
 				let rest: String = chars.collect();
 				if defs.get_hashmap("SIPrefixes").is_some_and(|m| m.contains_key(prefix.to_string().as_str())) &&
-				   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(rest.as_str()))
-				{
+				   defs.get_hashmap("SIUnits").is_some_and(|m| m.contains_key(rest.as_str())) {
 					return true;
 				}
 			}
@@ -342,8 +337,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 	fn grouping_paren_interior<'a, 'b>(children: &'b [Element<'a>]) -> Option<&'b [Element<'a>]> {
 		if children.len() < 2 ||
 		   !is_paren_fence(children[0], "(") ||
-		   !is_paren_fence(*children.last().unwrap(), ")")
-		{
+		   !is_paren_fence(*children.last().unwrap(), ")") {
 			return None;
 		}
 		return Some(&children[1..children.len() - 1]);
@@ -365,8 +359,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 	/// Interior of grouping parentheses: a unit product, or a counted unit (`5 J`).
 	fn is_unit_grouping_children(children: &[Element<'_>]) -> bool {
 		if is_unit_product_or_quotient_children(children) ||
-		   is_quantity_times_units(children)
-		{
+		   is_quantity_times_units(children) {
 			return true;
 		}
 		if children.len() == 1 && name(children[0]) == "mrow" {
@@ -381,8 +374,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			return true;
 		}
 		if name(el) == "mrow" &&
-		   is_quantity_times_units(&mathml_element_children(el))
-		{
+		   is_quantity_times_units(&mathml_element_children(el)) {
 			return true;
 		}
 		return false;
@@ -392,8 +384,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 	fn mark_parens_in_unit_side(el: Element<'_>) {
 		let children = mathml_element_children(el);
 		if let Some(interior) = grouping_paren_interior(&children) &&
-		   is_unit_grouping_children(interior)
-		{
+		   is_unit_grouping_children(interior) {
 			mark_fence(children[0]);
 			mark_fence(*children.last().unwrap());
 			for child in interior {
@@ -419,16 +410,14 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			if tag == "mfrac" &&
 			   children.len() >= 2 &&
 			   is_unit_quotient_operand(children[0]) &&
-			   is_unit_quotient_operand(children[1])
-			{
+			   is_unit_quotient_operand(children[1]) {
 				mark_parens_in_unit_side(children[0]);
 				mark_parens_in_unit_side(children[1]);
 				return;
 			}
 			if tag == "mrow" {
 				if is_unit_product_or_quotient_children(&children) ||
-				   is_quantity_times_units(&children)
-				{
+				   is_quantity_times_units(&children) {
 					for (i, child) in children.iter().enumerate() {
 						if i % 2 == 0 {
 							mark_parens_in_unit_side(*child);
@@ -450,8 +439,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		if tag == "mfrac" &&
 		   children.len() >= 2 &&
 		   is_unit_quotient_operand(children[0]) &&
-		   is_unit_quotient_operand(children[1])
-		{
+		   is_unit_quotient_operand(children[1]) {
 			mark_parens_in_unit_side(children[0]);
 			mark_parens_in_unit_side(children[1]);
 		} else if tag == "mrow" || tag == "math" {
@@ -520,8 +508,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		let children = mathml_element_children(el);
 		if children.len() != 3 ||
 		   name(children[1]) != "mo" ||
-		   as_str!(as_text(children[1])) != "\u{2062}"
-		{
+		   as_str!(as_text(children[1])) != "\u{2062}" {
 			return false;
 		}
 		if is_currency_symbol_leaf(children[0]) && name(children[2]) == "mn" {
@@ -559,8 +546,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 	fn confirm_flat_unit_sequence(children: &[Element<'_>]) {
 		// Multi-factor product/quotient only (a lone likely token is not enough).
 		if children.len() >= 3 &&
-		   is_unit_product_or_quotient_children(children)
-		{
+		   is_unit_product_or_quotient_children(children) {
 			for child in children {
 				promote_likely_leaves_in(*child);
 			}
@@ -571,8 +557,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		   is_numeric_quantity(children[0]) &&
 		   is_unit_join_op(children[1]) &&
 		   as_str!(as_text(children[1])) == "\u{2062}" &&
-		   is_unit_product_or_quotient_children(&children[2..])
-		{
+		   is_unit_product_or_quotient_children(&children[2..]) {
 			for child in &children[2..] {
 				promote_likely_leaves_in(*child);
 			}
@@ -583,8 +568,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		   is_currency_amount_mrow(children[0]) &&
 		   is_unit_join_op(children[1]) &&
 		   matches!(as_str!(as_text(children[1])), "/" | "∕") &&
-		   is_unit_product_or_quotient_children(&children[2..])
-		{
+		   is_unit_product_or_quotient_children(&children[2..]) {
 			for child in &children[2..] {
 				promote_likely_leaves_in(*child);
 			}
@@ -594,8 +578,7 @@ fn confirm_likely_units(mathml: Element<'_>) {
 		if let Some(eq_index) = children.iter().position(|c| is_equals_op(*c)) &&
 		   eq_index >= 1 &&
 		   eq_index + 1 < children.len() &&
-		   is_unit_product_or_quotient_children(&children[eq_index + 1..])
-		{
+		   is_unit_product_or_quotient_children(&children[eq_index + 1..]) {
 			for child in &children[eq_index + 1..] {
 				promote_likely_leaves_in(*child);
 			}
@@ -612,13 +595,11 @@ fn confirm_likely_units(mathml: Element<'_>) {
 			let children = mathml_element_children(mathml);
 			if children.len() >= 2 {
 				if is_unit_candidate_factor(children[0]) &&
-				   is_unit_candidate_factor(children[1])
-				{
+				   is_unit_candidate_factor(children[1]) {
 					promote_likely_leaves_in(children[0]);
 					promote_likely_leaves_in(children[1]);
 				} else if is_currency_amount_expr(children[0]) &&
-				          is_unit_candidate_factor(children[1])
-				{
+				          is_unit_candidate_factor(children[1]) {
 					// ($5)/gal — confirm the denominator unit for "dollars per gallon"
 					promote_likely_leaves_in(children[1]);
 				}
@@ -1000,8 +981,7 @@ pub fn get_presentation_element(element: Element) -> (usize, Element) {
 				encoding == "MathML-Presentation"
 			} else {
 				false
-			})
-	{
+			}) {
 		let presentation_annotation = as_element(*child);
 		// debug!("get_presentation_element:\n{}", mml_to_string(presentation_annotation));
 		assert_eq!(presentation_annotation.children().len(), 1);
@@ -2909,8 +2889,7 @@ impl CanonicalizeContext {
 			let parent_name = name(parent);
 			// don't merge if more than one char, or if not in an mrow (or implied on since we haven't normalized yet)
 			if as_text(mi).chars().nth(1).is_some() || !(parent_name == "mrow" || parent_name == "math") ||
-				has_arg_or_intent(mi)
-			{
+				has_arg_or_intent(mi) {
 				return None;
 			}
 			let mut text =  as_text(mi).to_string();
@@ -3099,8 +3078,7 @@ impl CanonicalizeContext {
 						.all(|part| {
 							let digits = part.chars().filter(|c| c.is_ascii_digit()).count();
 							digits > 0 && digits <= 2
-						})
-				{
+						}) {
 					return false;
 				}
 			}
@@ -4440,12 +4418,10 @@ impl CanonicalizeContext {
 			return Some(chem_state_certainty);
 		}
 		if name(first_child) == "mrow" &&
-		   !first_child.children().is_empty()
-		{
+		   !first_child.children().is_empty() {
 			let open = as_element(first_child.children()[0]);
 			if name(open) == "mo" &&
-			   (as_text(open) == "(" || as_text(open) == "[")
-			{
+			   (as_text(open) == "(" || as_text(open) == "[") {
 				return Some(self.is_function_name(node, Some(&first_child.children())));
 			}
 		}
@@ -4455,8 +4431,7 @@ impl CanonicalizeContext {
 		let first_sibling = as_element(right_siblings[0]);
 		if name(first_sibling) != "mo" ||
 		   (as_text(first_sibling) != "(" &&
-		    as_text(first_sibling) != "[")
-		{
+		    as_text(first_sibling) != "[") {
 			return Some(FunctionNameCertainty::False);
 		}
 		return Some(FunctionNameCertainty::True);
@@ -4466,15 +4441,13 @@ impl CanonicalizeContext {
 	fn is_composed_function_head(&self, node: Element) -> bool {
 		let base = get_possible_embellished_node(node);
 		if let Some(interior) = bracketed_function_interior(base) &&
-		   self.is_infix_of_functions(&interior)
-		{
+		   self.is_infix_of_functions(&interior) {
 			return true;
 		}
 		if is_close_paren_or_bracket(node) {
 			let parent = get_parent(node);
 			if let Some(interior) = bracketed_function_interior(parent) &&
-			   self.is_infix_of_functions(&interior)
-			{
+			   self.is_infix_of_functions(&interior) {
 				return true;
 			}
 		}
@@ -4679,8 +4652,7 @@ impl CanonicalizeContext {
 			// at least two siblings are this point -- check that they are parens/brackets
 			// we can only check the open paren/bracket because the right side is unparsed and we don't know the close location
 			let first_sibling = as_element(right_siblings[0]);
-			if name(first_sibling) != "mo"  || !is_left_paren(first_sibling)  // '(' or '['
-			{
+			if name(first_sibling) != "mo"  || !is_left_paren(first_sibling) {  // '(' or '['
 				// debug!("     ...first sibling is not '(' or '['");
 				return FunctionNameCertainty::False;
 			}
@@ -5479,8 +5451,7 @@ fn bracketed_function_interior<'a>(node: Element<'a>) -> Option<Vec<ChildOfEleme
 	let open = as_element(children[0]);
 	let close = as_element(children[children.len() - 1]);
 	if name(open) != "mo" ||
-	   name(close) != "mo"
-	{
+	   name(close) != "mo" {
 		return None;
 	}
 	let open_text = as_text(open);
@@ -5488,8 +5459,7 @@ fn bracketed_function_interior<'a>(node: Element<'a>) -> Option<Vec<ChildOfEleme
 	if (open_text == "(" &&
 	    close_text == ")") ||
 	   (open_text == "[" &&
-	    close_text == "]")
-	{
+	    close_text == "]") {
 		return Some(children[1..children.len() - 1].to_vec());
 	}
 	return None;
@@ -8552,8 +8522,7 @@ mod canonicalize_tests {
 			}
 			for child in el.children() {
 				if let Some(child) = child.element() &&
-				   tree_has_open_paren(child)
-				{
+				   tree_has_open_paren(child) {
 					return true;
 				}
 			}

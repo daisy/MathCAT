@@ -93,6 +93,24 @@ fn complex_exponent() -> Result<()> {
     return Ok(());
 }
 
+/// A decimal exponent is read with 乗 like an integer one, as SimpleSpeak already reads it.
+/// ClearSpeak read x^2.0 as a superscript (x の上付き 2.0 上付き終了), because the English rule
+/// keeps decimals away from its ordinals; Japanese has no ordinal here, so all Exponents values
+/// say 乗. The outer exponent of a nested one is still read as a superscript.
+#[test]
+fn decimal_exponent() -> Result<()> {
+    let expr = "<math><msup><mi>x</mi><mn>2.0</mn></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の 2.0 乗")?;
+    test("ja", "SimpleSpeak", expr, "x の 2.0 乗")?;
+    let expr = "<math><msup><mi>x</mi><msup><mi>y</mi><mn>2.5</mn></msup></msup></math>";
+    test("ja", "ClearSpeak", expr, "x の上付き, y の 2.5 乗, 上付き終了")?;
+    let expr = "<math><msup><mn>3</mn><mn>5.0</mn></msup></math>";
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "Ordinal", expr, "3 の 5.0 乗")?;
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "OrdinalPower", expr, "3 の 5.0 乗")?;
+    test_ClearSpeak("ja", "ClearSpeak_Exponents", "AfterPower", expr, "3 の 5.0 乗")?;
+    return Ok(());
+}
+
 /// A leading minus is read マイナス, the same word as the binary operator.
 /// 負の / 正の name the *kind* of number (負の数 = "the negative numbers") and are
 /// not how −5 is read aloud.
@@ -543,6 +561,19 @@ fn units() -> Result<()> {
         test("ja", "SimpleSpeak", &expr, expected)?;
         test("ja", "ClearSpeak", &expr, expected)?;
     }
+    return Ok(());
+}
+
+/// rpm was 1分あたりの回転数 ("the number of turns per one minute"), so 1 rpm was read
+/// 1 1分あたりの回転数 with two numbers in a row. 毎分回転数 is the word used in Japanese
+/// (Open JTalk: マイフンカイテンスー); 回転毎分 is not used, it is read カイテンゴトブン.
+#[test]
+fn rpm_unit() -> Result<()> {
+    let expr = "<math><mn>1</mn><mi intent=':unit'>rpm</mi></math>";
+    test("ja", "SimpleSpeak", expr, "1 毎分回転数")?;
+    test("ja", "ClearSpeak", expr, "1 毎分回転数")?;
+    let expr = "<math><mn>3000</mn><mi intent=':unit'>rpm</mi></math>";
+    test("ja", "SimpleSpeak", expr, "3000 毎分回転数")?;
     return Ok(());
 }
 
@@ -1036,6 +1067,16 @@ fn ratio_as_function() -> Result<()> {
     return Ok(());
 }
 
+/// The infix form of ratio is read x 対 y, the word the function form already uses after its
+/// first argument; 比率 names a ratio as a quantity and is not how "x to y" is said.
+#[test]
+fn ratio_infix() -> Result<()> {
+    let expr = "<math><mrow intent='ratio($a,$b)'><mi arg='a'>x</mi><mi arg='b'>y</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "x 対 y")?;
+    test("ja", "SimpleSpeak", expr, "x 対 y")?;
+    return Ok(());
+}
+
 /// Set-theory names. セット/空のセット are the loanword for a set of objects; the
 /// mathematical term is 集合.
 #[test]
@@ -1060,6 +1101,19 @@ fn norm_terminology() -> Result<()> {
 fn limit_terminology() -> Result<()> {
     let expr = "<math><mrow intent='tends-to($x,$y)'><mi arg='x'>x</mi><mi arg='y'>y</mi></mrow></math>";
     test("ja", "ClearSpeak", expr, "x 近づく y")?;
+    return Ok(());
+}
+
+/// A limit is followed directly by what it is the limit of. It was 極限 x 近づく 0; オブ, …,
+/// with the オブ that English says there ("the limit as x approaches 0, of …"); Japanese has no
+/// glue word in that place, and the pause after 0 already marks where the limit ends.
+#[test]
+fn limit_without_of() -> Result<()> {
+    let expr = "<math><munder><mo>lim</mo><mrow><mi>x</mi><mo>&#x2192;</mo><mn>0</mn></mrow></munder><mfrac><mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow><mi>x</mi></mfrac></math>";
+    test("ja", "ClearSpeak", expr, "極限 x 近づく 0; サイン x オーバー x")?;
+    test("ja", "SimpleSpeak", expr, "極限 x 近づく 0; 分数, サイン オブ x, オーバー x, 分数終了")?;
+    let expr = "<math><munder><mo>lim</mo><mrow><mi>x</mi><mo>&#x2197;</mo><mn>0</mn></mrow></munder><mrow><mi>sin</mi><mo>&#x2061;</mo><mi>x</mi></mrow></math>";
+    test("ja", "ClearSpeak", expr, "極限 x 下から近づく 0; サイン x")?;
     return Ok(());
 }
 
@@ -1722,6 +1776,26 @@ fn principal_value_log() -> Result<()> {
     let expr = "<math><mrow><mi>Log</mi><mi>z</mi></mrow></math>";
     test("ja", "ClearSpeak", expr, "対数のしゅち オブ z")?;
     test("ja", "SimpleSpeak", expr, "対数のしゅち オブ z")?;
+    return Ok(());
+}
+
+/// log_b x is read ログ b の x, the way it is read in Japanese schools; it was ログベース b; オブ x,
+/// the English "log base b, of x" word for word. 底 ("base") is not used: Open JTalk reads it ソコ.
+/// A simple base is not followed by a pause, which would split ログ b from its の.
+#[test]
+fn logarithm_with_base() -> Result<()> {
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub><mo>&#x2061;</mo><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "ログ b の x")?;
+    test("ja", "SimpleSpeak", expr, "ログ b の x")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "ログ b の x")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "ログ b の x")?;
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></mrow></math>";
+    test("ja", "ClearSpeak", expr, "ログ b の, 丸カッコ, x プラス y, 丸カッコ閉じ")?;
+    let expr = "<math><msub><mi>log</mi><mi>b</mi></msub></math>";
+    test("ja", "ClearSpeak", expr, "ログ b")?;
+    // a base that is not simple keeps the pause that marks where it ends
+    let expr = "<math><msub><mi>log</mi><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></msub><mo>&#x2061;</mo><mi>x</mi></math>";
+    test("ja", "ClearSpeak", expr, "ログ エー プラス b; の x")?;
     return Ok(());
 }
 

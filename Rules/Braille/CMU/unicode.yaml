@@ -261,24 +261,16 @@
  - "_": [t: "⠤"]               # 0x005F (Low line (underscore))
  - "¯": [t: "⠈⠉"]               # 0x00AF (macron)
  - "═": [t: "⠈⠉⠈⠉"]             # 0x2550 (BOX DRAWINGS DOUBLE HORIZONTAL)
- - "~":                        # 0x007E (Tilde (swung dash))
+ - "~∼":                        # 0x007E (Tilde (swung dash) and 223c (Tilde operator))
+    # Multi-char keys substitute '.' with each char, so use parent::* not '..'
     - test:           # unclear what really should happen see 4.3.2, 4.3.3, 6.1, and 8.2 -- all use different codes
-        - if: "..[self::m:mover]"
+        - if: "parent::*[self::m:mover]"
           then: [t: "⠐⠢"]
-        - else_if: "..[self::m:munder]"
-          then: [t: "⠠⠢"] 
+        - else_if: "parent::*[self::m:munder]"
+          then: [t: "⠠⠢"]
         - else_if: "not(preceding-sibling::*)"
           then: [t: "⠠⠄"]     # (8.2 -- prefix?)
-          else: [t: "⠐⠢⠠"]   # (6.1 -- infix?)
- - ∼:                        # 223c (Tilde operator)
-    - test:           # unclear what really should happen see 4.3.2, 4.3.3, 6.1, and 8.2 -- all use different codes
-        - if: "..[self::m:mover]"
-          then: [t: "⠐⠢"]
-        - else_if: "..[self::m:munder]"
-          then: [t: "⠠⠢"] 
-        - else_if: "not(preceding-sibling::*)"
-          then: [t: "⠠⠄"]     # (8.2 -- prefix?)
-          else: [t: "⠐⠢⠠"]   # (6.1 -- infix?)
+          else: [t: "⠐⠢⠄"]   # (6.1 -- infix?)
  - "—": [t: "⠤⠤"]               # 0x2014 (Em dash)
  - "‖": [t: "⠸⠇"]               # 0x2016
 #  - "¦": [t: "⠨⠳"]               # 0x00A6 (Broken bar)

@@ -665,6 +665,15 @@
   replace:
   - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
+- name: logarithm-with-base-before-argument
+  # log_b x is read ログ b の x (の comes from U+2061). The pause that prefix-intent adds after
+  # the base would split ログ b from its の, so it is left out when the base is simple.
+  tag: logarithm-with-base
+  match: "count(*)=1 and IsNode(*[1], 'simple') and following-sibling::*[1][.='\u2061']"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"
+  - x: "*[1]"
+
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
