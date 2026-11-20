@@ -163,10 +163,10 @@ cfg_if! {
                 let mut answer = Vec::new();
 
                 let dir_name = canonicalize_path_separators(dir);
+                let direct_file_prefix = format!("{dir_name}/");
                 for file_name in files.keys() {
                     if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) &&
-                       file_name.ends_with(ending)
-                    {
+                       file_name.ends_with(ending) {
                         // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
                         let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
                         answer.push(file_name.to_string());
