@@ -2358,3 +2358,14 @@ fn clearspeak_pref_matrix_silent_col_num() -> Result<()> {
         "2 かける 2 行列; ぎょう 1; b 下付き 1 1; b 下付き 1 2; ぎょう 2; b 下付き 2 1; b 下付き 2 2")?;
     return Ok(());
 }
+
+/// ⁿ was written エヌ乗, which Open JTalk reads as エヌノ. With a space before 乗 it is
+/// read as a power (エヌ ジョー); ⁱ gets the same space so the two letters match.
+#[test]
+fn superscript_letter_powers() -> Result<()> {
+    let expr = "<math><mi>x</mi><mi>ⁿ</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x エヌ 乗")?;
+    let expr = "<math><mi>x</mi><mi>ⁱ</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x アイ 乗")?;
+    return Ok(());
+}
