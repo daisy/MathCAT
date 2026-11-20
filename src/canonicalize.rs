@@ -2149,6 +2149,9 @@ impl CanonicalizeContext {
 					base_text.push(ch);
 				}
 			}
+			if result.is_empty() {
+				return None;
+			}
 			// handle left-over text after the last pseudo-script
 			if !base_text.is_empty() {
 				let new_mi = create_mathml_element(&document, "mi");
@@ -8221,6 +8224,14 @@ mod canonicalize_tests {
 		are_strs_canonically_equal_result(mn_str, mn_target, &[])?;
 		let lone_str = "<math><mn>³</mn></math>";
 		return are_strs_canonically_equal_result(lone_str, lone_str, &[]);
+	}
+
+	/// A lone pseudo-script in an mi has nothing to split and is kept with its attributes (used to crash, issue #959).
+	#[test]
+	fn pseudo_scripts_lone_char_in_mi() -> Result<()> {
+		let test_str = "<math><mrow><mn>1</mn><mi mathvariant='normal'>º</mi></mrow></math>";
+		let target_str = "<math><mrow><mn>1</mn><mo data-changed='added'>&#x2062;</mo><mi mathvariant='normal'>º</mi></mrow></math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
 	/// The Unicode superscripts block (U+2070) are pseudo-scripts too: `x<mo>⁴</mo>` is `msup(x, ⁴)`.
