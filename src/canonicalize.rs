@@ -3488,9 +3488,9 @@ impl CanonicalizeContext {
 							// don't script a pseudo-script
 							let preceding_siblings = child.preceding_siblings();
 							if !preceding_siblings.is_empty() {
-								let last_child = as_element(preceding_siblings[preceding_siblings.len()-1]);
-								if name(last_child) == "mo" &&
-								   let Some(ch) = single_char(as_str!(as_text(last_child)))
+								let preceding_sibling = as_element(preceding_siblings[preceding_siblings.len()-1]);
+								if name(preceding_sibling) == "mo" &&
+								   let Some(ch) = single_char(as_str!(as_text(preceding_sibling)))
 										&& is_pseudo_script_char(ch) {
 											return false;
 										}
