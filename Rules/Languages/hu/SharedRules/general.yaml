@@ -1064,16 +1064,16 @@
   # FIX: this might be better/more efficient if in unicode.yaml
   - bookmark: "@id"
   - test:
-    - if: ".='→' or .='⟶'"
+    - if: ".='→' or .='⟶' or .='' or .=''"
       then_test:
         if: "$Verbosity='Terse'"
         then: [T: "keletkezik"]      # phrase(hydrogen and oxygen 'forms' water )
         else: [T: "reakcióba lép, és keletkezik"]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+    - else_if: ".='⇌' or .='🣑' or .=''" # U+1F8D1 / MathJax PUA E408
       then: [T: "egyensúlyban van a következővel:"]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='🣓'" # U+1F8D3
+    - else_if: ".='🣓' or .=''" # U+1F8D3 / MathJax PUA E40A
       then: [T: "balra eltolt egyensúlyban van a következővel:"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='🣒'" # U+1F8D2
+    - else_if: ".='🣒' or .=''" # U+1F8D2 / MathJax PUA E409
       then: [T: "jobbra eltolt egyensúlyban van a következővel:"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 
