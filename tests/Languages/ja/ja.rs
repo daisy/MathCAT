@@ -1184,6 +1184,26 @@ fn relation_words_in_symbol_order() -> Result<()> {
     return Ok(());
 }
 
+/// inj lim and proj lim kept their English names and were read like any other
+/// script (inj lim 付き i 下 オブ ..., proj lim 下付き i; オブ ...). They are now read
+/// like a limit: 帰納極限 or 射影極限, then what is under them, with no オブ before what follows.
+#[test]
+fn inj_lim_and_proj_lim() -> Result<()> {
+    let expr = r#"<math><munder><mo>inj lim</mo><mi>i</mi></munder><mo>&#x2061;</mo><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    test("ja", "ClearSpeak", expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    // a subscript instead of an underscript (msub reaches the speech rules as indexed-by)
+    let expr = r#"<math><msub><mo>proj lim</mo><mi>i</mi></msub><mo>&#x2061;</mo><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "射影極限 i; おおもじ エー 下付き i")?;
+    let expr = r#"<math><munder><mo>inj lim</mo><mrow><mi>i</mi><mo>&#x2208;</mo><mi>I</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>M</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "帰納極限 i 要素オブ おおもじ i; おおもじ m 下付き i")?;
+    // an mi and no U+2061 after it
+    let expr = r#"<math><munder><mi>proj lim</mi><mi>i</mi></munder><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "ClearSpeak", expr, "射影極限 i; おおもじ エー 下付き i")?;
+    return Ok(());
+}
+
 /// モード is the loanword; the statistical term is 最頻値.
 #[test]
 fn statistics_mode() -> Result<()> {

@@ -327,6 +327,8 @@
               ) or
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
               preceding-sibling::*[1][self::m:limit or self::m:limit-sup or self::m:limit-inf] or
+              preceding-sibling::*[1][self::m:munder or self::m:indexed-by][*[1][self::m:mi or self::m:mo][translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='injlim' or
+                                                                                                 translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='projlim']] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
           then: [T: "オブ"]
