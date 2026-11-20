@@ -1117,6 +1117,24 @@ fn limit_without_of() -> Result<()> {
     return Ok(());
 }
 
+/// The Intent rules give lim sup and lim inf the names limit-sup and limit-inf. ja only defined
+/// lim-sup and lim-inf, so the English name was spoken, the arrow was 右向き矢印
+/// and the オブ of U+2061 stayed. They now read like the plain limit above.
+#[test]
+fn lim_sup_and_lim_inf() -> Result<()> {
+    let expr = "<math><mrow><munder><mi>lim sup</mi><mrow><mi>n</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = "<math><mrow><munder><mi>lim inf</mi><mrow><mi>n</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "か極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "か極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = "<math><mrow><munder><mi>lim inf</mi><mrow><mi>x</mi><mo>&#x2197;</mo><mn>0</mn></mrow></munder><mo>&#x2061;</mo><mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "か極限 x 下から近づく 0; f オブ x")?;
+    test("ja", "ClearSpeak", expr, "か極限 x 下から近づく 0; f オブ x")?;
+    return Ok(());
+}
+
 /// Japanese puts the object in front of 比例する, 属する or に先行する, but these
 /// words are spoken where the symbol is, so x ≺ y (precedes) came out as
 /// x に先行する y, "the y that precedes x". The symbols and intents now use names
