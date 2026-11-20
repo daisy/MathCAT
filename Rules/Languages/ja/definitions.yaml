@@ -262,7 +262,7 @@
     "laplacian": "function=ラプラシアン",
 
     ## Default fixity prefix
-    "angle": "prefix=角",
+    "angle": "prefix=かく",
     "angle-measure": "prefix=角の大きさ",
     "change": "prefix=変化量",
     "for-all": "prefix=すべての",

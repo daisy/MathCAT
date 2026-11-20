@@ -275,12 +275,13 @@ fn simplespeak_interval_names_are_japanese() -> Result<()> {
     return Ok(());
 }
 
-/// 循環節 is the dictionary term for the repeating digits of a recurring decimal.
+/// 循環節 is the dictionary term for the repeating digits of a recurring decimal; Open JTalk reads
+/// the kanji ジュンカンブシ, so 節 is written せつ.
 #[test]
 fn repeating_decimal_says_junkansetsu() -> Result<()> {
     let expr = "<math><mn>0.1</mn><mo>&#x2062;</mo><mover><mn>23</mn><mo>¯</mo></mover></math>";
-    test("ja", "SimpleSpeak", expr, "0.1 循環節 2 3")?;
-    test("ja", "ClearSpeak", expr, "0.1 循環節 2 3")?;
+    test("ja", "SimpleSpeak", expr, "0.1 循環せつ 2 3")?;
+    test("ja", "ClearSpeak", expr, "0.1 循環せつ 2 3")?;
     return Ok(());
 }
 
@@ -625,34 +626,47 @@ fn geometry_verbose_from_to() -> Result<()> {
     return Ok(());
 }
 
-/// The measure of an angle is 「角 ABC の大きさ」: Japanese names the angle first.
+/// The measure of an angle is 「角 ABC の大きさ」: Japanese names the angle first. 角 is written
+/// かく because Open JTalk reads 角 before a pause as スミ (∠ABC = 90° was スミ, ...).
 /// 「角の大きさ ABC」 kept the English order.
 #[test]
 fn measure_of_angle() -> Result<()> {
     let expr = "<math><mrow intent='measure-of-angle($x,$y,$z)'><mi arg='x'>x</mi><mi arg='y'>y</mi><mi arg='z'>z</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "角 x y z の大きさ")?;
-    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "角 x y z の大きさ")?;
-    test("ja", "SimpleSpeak", expr, "角 x y z の大きさ")?;
+    test("ja", "ClearSpeak", expr, "かく x y z の大きさ")?;
+    test_prefs("ja", "ClearSpeak", vec![("Verbosity", "Verbose")], expr, "かく x y z の大きさ")?;
+    test("ja", "SimpleSpeak", expr, "かく x y z の大きさ")?;
     return Ok(());
 }
 
-/// The angle-measure intent is said the same way: 角 A の大きさ.
+/// ∠ABC = 90° with the letters not grouped: ∠ is followed by a pause, where 角 was read スミ.
+/// Two MathType names also ended in a lone 角: the angle one is かく too, and the synthetic
+/// division corner is 隅, like the corner brackets ⌜ 左上隅.
+#[test]
+fn angle_sign_before_a_pause() -> Result<()> {
+    let expr = "<math><mo>∠</mo><mi>A</mi><mi>B</mi><mi>C</mi><mo>=</mo><mn>90</mn><mo>°</mo></math>";
+    test("ja", "ClearSpeak", expr, "かく, おおもじ エー, おおもじ b おおもじ c; イコール 90 度")?;
+    test("ja", "ClearSpeak", "<math><mo>&#xEA2C;</mo></math>", "縦線付きノット かく")?;
+    test("ja", "ClearSpeak", "<math><mo>&#xEC92;</mo></math>", "組立除法 隅")?;
+    return Ok(());
+}
+
+/// The angle-measure intent is said the same way: かく A の大きさ.
 #[test]
 fn angle_measure_intent() -> Result<()> {
     let expr = "<math><mrow intent='angle-measure($x)'><mi arg='x'>x</mi></mrow></math>";
-    test("ja", "ClearSpeak", expr, "角 x の大きさ")?;
-    test("ja", "SimpleSpeak", expr, "角 x の大きさ")?;
-    // m∠ABC: the operand already says 角, so it is not said twice.
+    test("ja", "ClearSpeak", expr, "かく x の大きさ")?;
+    test("ja", "SimpleSpeak", expr, "かく x の大きさ")?;
+    // m∠ABC: the operand already says かく, so it is not said twice.
     let angle_arg = "<math><mrow intent='angle-measure($x)'><mrow arg='x' intent='angle($p)'><mi arg='p'>x</mi></mrow></mrow></math>";
-    test("ja", "ClearSpeak", angle_arg, "角 x の大きさ")?;
-    test("ja", "SimpleSpeak", angle_arg, "角 x の大きさ")?;
+    test("ja", "ClearSpeak", angle_arg, "かく x の大きさ")?;
+    test("ja", "SimpleSpeak", angle_arg, "かく x の大きさ")?;
     let sign_arg = "<math><mrow intent='angle-measure($x)'><mi>m</mi><mrow arg='x'><mo>&#x2220;</mo><mi>x</mi></mrow></mrow></math>";
-    test("ja", "ClearSpeak", sign_arg, "角 x の大きさ")?;
-    test("ja", "SimpleSpeak", sign_arg, "角 x の大きさ")?;
-    // A silent angle does not say 角 itself, so it is said here.
+    test("ja", "ClearSpeak", sign_arg, "かく x の大きさ")?;
+    test("ja", "SimpleSpeak", sign_arg, "かく x の大きさ")?;
+    // A silent angle does not say かく itself, so it is said here.
     let silent_arg = "<math><mrow intent='angle-measure($x)'><mrow arg='x' intent='angle:silent($p)'><mi arg='p'>x</mi></mrow></mrow></math>";
-    test("ja", "ClearSpeak", silent_arg, "角 x の大きさ")?;
-    test("ja", "SimpleSpeak", silent_arg, "角 x の大きさ")?;
+    test("ja", "ClearSpeak", silent_arg, "かく x の大きさ")?;
+    test("ja", "SimpleSpeak", silent_arg, "かく x の大きさ")?;
     // A silent angle-measure says only its operand.
     let silent_measure = "<math><mrow intent='angle-measure:silent($x)'><mi arg='x'>x</mi></mrow></math>";
     test("ja", "ClearSpeak", silent_measure, "x")?;
@@ -2084,7 +2098,7 @@ fn leaf_intent_uses_intent_mappings() -> Result<()> {
         ("plus", "エー プラス b"),
         ("member-of", "エー げんオブ b"),
         ("factorial", "エー 階乗 b"),
-        ("angle", "エー 角 b"),
+        ("angle", "エー かく b"),
         ("gradient", "エー 勾配 b"),
         ("not-in-mappings", "エー not in mappings b"),
     ] {
