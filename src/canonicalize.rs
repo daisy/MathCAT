@@ -1504,7 +1504,7 @@ impl CanonicalizeContext {
 				}
 				if let Some((idx, last_char)) = text.char_indices().next_back() {
 					// look for something like 12°
-					if is_pseudo_script_char(last_char) {
+					if idx > 0 && is_pseudo_script_char(last_char) {
 						let doc = mathml.document();
 						let mn = create_mathml_element(&doc, "mn");
 						let mo = create_mathml_element(&doc, "mo");
@@ -2131,7 +2131,6 @@ impl CanonicalizeContext {
 			let mut result: Vec<Element> = vec![];
 			let mut base_text = String::new();
 			for ch in text.chars() {
-				// this could be improved to handle even more complex content such as <mi>2p'</mi>
 				if is_pseudo_script_char(ch) && base_text.chars().last().is_some_and(|c| c.is_alphabetic()) {
 					let base = create_mathml_element(&document, "mi");
 					base.set_text(&base_text);
@@ -3423,7 +3422,7 @@ impl CanonicalizeContext {
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
 	
 			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(as_str!(name(mrow))), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
-			// a pseudo-script can be in its own mrow or in an mi such as <mrow><mo>°</mo></mrow> or <mi>³</mi> (the children are cleaned only after this)
+			// a pseudo-script can be in its own mrow or in an mi or mn such as <mrow><mo>°</mo></mrow> or <mi>³</mi> (the children are cleaned only after this)
 			// FIX: this repeats part of the cleaning of the children -- refactor so the children are cleaned before looking for pseudo-scripts
 			for child in mrow.children().into_iter().map(as_element) {
 				if name(child) == "mrow" && child.children().len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(child) {
@@ -3431,8 +3430,8 @@ impl CanonicalizeContext {
 					if is_pseudo_script(grandchild) {
 						CanonicalizeContext::lift_single_child(child, grandchild);
 					}
-				// same conditions as the conversion of an mi to an mo in clean_mathml
-				} else if name(child) == "mi" && as_text(child).chars().all(is_pseudo_script_char) && OPERATORS.get(as_str!(as_text(child))).is_some() &&
+				// same conditions as the conversion of an mi to an mo in clean_mathml, also used for an mn
+				} else if matches!(as_str!(name(child)), "mi" | "mn") && as_text(child).chars().all(is_pseudo_script_char) && OPERATORS.get(as_str!(as_text(child))).is_some() &&
 						  !child.attribute_value(INTENT_ATTR).is_some_and(|intent| intent.contains(":unit")) {
 					set_mathml_name(child, "mo");
 				}
@@ -8210,12 +8209,17 @@ mod canonicalize_tests {
 		return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
-	/// A pseudo-script in an mi is a superscript like in an mo: `x<mi>³</mi>` is `msup(x, ³)`.
+	/// A pseudo-script in an mi or mn is a superscript like in an mo: `x<mi>³</mi>` is `msup(x, ³)`; a lone `<mn>³</mn>` stays as is.
 	#[test]
-	fn pseudo_scripts_mi_as_mo() -> Result<()> {
+	fn pseudo_scripts_mi_or_mn_as_mo() -> Result<()> {
 		let test_str = "<math><mrow><mi>x</mi><mi>³</mi><mo>+</mo><mn>1</mn></mrow></math>";
 		let target_str = "<math><mrow><msup data-changed='added'><mi>x</mi><mo>³</mo></msup><mo>+</mo><mn>1</mn></mrow></math>";
-		return are_strs_canonically_equal_result(test_str, target_str, &[]);
+		are_strs_canonically_equal_result(test_str, target_str, &[])?;
+		let mn_str = "<math><mrow><mn>10</mn><mn>³</mn></mrow></math>";
+		let mn_target = "<math><msup data-changed='added'><mn>10</mn><mo>³</mo></msup></math>";
+		are_strs_canonically_equal_result(mn_str, mn_target, &[])?;
+		let lone_str = "<math><mn>³</mn></math>";
+		return are_strs_canonically_equal_result(lone_str, lone_str, &[]);
 	}
 
 	/// Currency and its number bind before `/`: prefix `$5/l` and postfix `5€/l`.
