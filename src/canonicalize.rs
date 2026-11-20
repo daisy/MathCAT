@@ -1357,6 +1357,13 @@ impl CanonicalizeContext {
 		return mrow.attribute(INTENT_ATTR).is_none();		// could check if child is referenced, but that's a chunk of code
 	}
 
+	/// "lift" the child up into the mrow so all the links (e.g., siblings) are correct
+	fn lift_single_child(mrow: Element, child: Element) {
+		mrow.replace_children(child.children());
+		set_mathml_name(mrow, as_str!(name(child)));
+		add_attrs(mrow, &child.attributes());
+	}
+
 	/// This function does some cleanup of MathML (mostly fixing bad MathML)
 	/// Unlike the main canonicalization routine, significant tree changes happen here
 	/// Changes to "good" MathML:
@@ -1773,10 +1780,7 @@ impl CanonicalizeContext {
 					} else if children.len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(mathml) {
 						let is_from_mhchem = is_from_mhchem_hack(mathml);
 						if let Some(new_mathml) = self.clean_mathml(as_element(children[0])) {
-							// "lift" the child up so all the links (e.g., siblings) are correct
-							mathml.replace_children(new_mathml.children());
-							set_mathml_name(mathml, as_str!(name(new_mathml)));
-							add_attrs(mathml, &new_mathml.attributes());
+							CanonicalizeContext::lift_single_child(mathml, new_mathml);
 							return Some(mathml);
 						} else if parent_requires_child {
 							let empty = CanonicalizeContext::make_empty_element(mathml);
@@ -1850,11 +1854,7 @@ impl CanonicalizeContext {
 
 				// could have deleted children so only one child remains -- need to lift it
 				if element_name == "mrow" && children.len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(mathml) {
-					// "lift" the child up so all the links (e.g., siblings) are correct
-					let child = as_element(children[0]);
-					mathml.replace_children(child.children());
-					set_mathml_name(mathml, as_str!(name(child)));
-					add_attrs(mathml, &child.attributes());
+					CanonicalizeContext::lift_single_child(mathml, as_element(children[0]));
 					return Some(mathml);		// child has already been cleaned, so we can return
 				}
 
@@ -3423,6 +3423,15 @@ impl CanonicalizeContext {
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
 	
 			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(as_str!(name(mrow))), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
+			// lift a pseudo-script out of its own mrow such as <mrow><mo>°</mo></mrow> (the mrow is cleaned only after this)
+			for child in mrow.children().into_iter().map(as_element) {
+				if name(child) == "mrow" && child.children().len() == 1 && CanonicalizeContext::is_ok_to_merge_mrow_child(child) {
+					let grandchild = as_element(child.children()[0]);
+					if is_pseudo_script(grandchild) {
+						CanonicalizeContext::lift_single_child(child, grandchild);
+					}
+				}
+			}
 			let mut children = mrow.children();
 			// check to see if mrow of all pseudo scripts
 			if children.iter().all(|&child| {
@@ -8186,6 +8195,14 @@ mod canonicalize_tests {
 		</mrow>
 	   </math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	/// A pseudo-script in its own mrow is still a superscript: `30<mrow>°</mrow>` is `msup(30, °)`.
+	#[test]
+	fn pseudo_scripts_in_mrow() -> Result<()> {
+		let test_str = "<math><mrow><mn>30</mn><mrow><mo>°</mo></mrow><mo>+</mo><mn>1</mn></mrow></math>";
+		let target_str = "<math><mrow><msup data-changed='added'><mn>30</mn><mo>°</mo></msup><mo>+</mo><mn>1</mn></mrow></math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
 	/// Currency and its number bind before `/`: prefix `$5/l` and postfix `5€/l`.
