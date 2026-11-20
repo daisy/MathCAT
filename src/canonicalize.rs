@@ -1504,7 +1504,7 @@ impl CanonicalizeContext {
 				}
 				if let Some((idx, last_char)) = text.char_indices().next_back() {
 					// look for something like 12°
-					if idx > 0 && is_pseudo_script_char(last_char) {
+					if idx > 0 && is_pseudo_script_char(last_char) && !text[..idx].ends_with(is_pseudo_script_char) {
 						let doc = mathml.document();
 						let mn = create_mathml_element(&doc, "mn");
 						let mo = create_mathml_element(&doc, "mo");
@@ -3415,8 +3415,9 @@ impl CanonicalizeContext {
 		fn is_pseudo_script_char(ch: char) -> bool {
 			matches!(ch,
 				'\"' | '\'' | '*' | '`' | 'ª' | '°' | '²' | '³' | '´' | '¹' | 'º' |
-				'\u{2018}' | '\u{2019}' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '\u{201F}' |
-				'\u{2032}' | '\u{2033}' | '\u{2034}' | '\u{2035}' | '\u{2036}' | '\u{2037}' | '\u{2057}'
+				'\u{2018}' | '\u{2019}' | '\u{201A}' | '\u{201B}' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '\u{201F}' |
+				'\u{2032}' | '\u{2033}' | '\u{2034}' | '\u{2035}' | '\u{2036}' | '\u{2037}' | '\u{2057}' |
+				'\u{2070}' | '\u{2071}' | '\u{2074}'..='\u{207F}'
 			)
 		}
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
@@ -8220,6 +8221,14 @@ mod canonicalize_tests {
 		are_strs_canonically_equal_result(mn_str, mn_target, &[])?;
 		let lone_str = "<math><mn>³</mn></math>";
 		return are_strs_canonically_equal_result(lone_str, lone_str, &[]);
+	}
+
+	/// The Unicode superscripts block (U+2070) are pseudo-scripts too: `x<mo>⁴</mo>` is `msup(x, ⁴)`.
+	#[test]
+	fn pseudo_scripts_unicode_superscripts() -> Result<()> {
+		let test_str = "<math><mrow><mi>x</mi><mo>⁴</mo></mrow></math>";
+		let target_str = "<math><msup data-changed='added'><mi>x</mi><mo>⁴</mo></msup></math>";
+		return are_strs_canonically_equal_result(test_str, target_str, &[]);
 	}
 
 	/// Currency and its number bind before `/`: prefix `$5/l` and postfix `5€/l`.
