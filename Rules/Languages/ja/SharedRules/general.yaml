@@ -251,6 +251,35 @@
       then: [pause: short]
       else: [pause: auto]
 
+- name: inductive-projective-limit
+  # inj lim and proj lim are read like a limit: the name, then what is under it, with no 付き ... 下
+  # (帰納極限 i; おおもじ エー 下付き i). The U+2061 after them says nothing (unicode.yaml).
+  # A subscript (msub) reaches here as indexed-by.
+  tag: [munder, indexed-by]
+  variables: [NoSpacesBase: "translate(*[1], ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')"]
+  match: "count(*)=2 and *[1][self::m:mi or self::m:mo][$NoSpacesBase='injlim' or $NoSpacesBase='projlim']"
+  replace:
+  - x: "*[1]"
+  - x: "*[2]"
+  - test:
+      if: "IsNode(., '2D')"
+      then: [pause: short]
+      else: [pause: auto]
+
+- name: inductive-limit
+  tag: [mi, mo]
+  match: "translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='injlim'"
+  replace:
+  - bookmark: "@id"
+  - T: "帰納極限"      # phrase(the 'inductive limit' of the system)
+
+- name: projective-limit
+  tag: [mi, mo]
+  match: "translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='projlim'"
+  replace:
+  - bookmark: "@id"
+  - T: "射影極限"      # phrase(the 'projective limit' of the system)
+
 - name: repeating-decimal
   tag: repeating-decimal
   match: "."
@@ -1145,18 +1174,19 @@
   match: "."
   replace:
   # FIX: this might be better/more efficient if in unicode.yaml
+  # MathJax v4 PUA arrows share the corresponding Unicode reaction readings.
   - bookmark: "@id"
   - test:
-    - if: ".='→' or .='⟶'"
+    - if: ".='→' or .='⟶' or .='' or .=''"
       then_test:
         if: "$Verbosity='Terse'"
         then: [T: "から"]      # phrase(hydrogen and oxygen 'forms' water )
         else: [T: "が反応して"]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+    - else_if: ".='⇌' or .='🣑' or .=''" # U+01F8D1
       then: [T: "と平衡にある"]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='🣓'" # U+1F8D3
+    - else_if: ".='🣓' or .=''" # U+1F8D3
       then: [T: "と左に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='🣒'" # U+1F8D2
+    - else_if: ".='🣒' or .=''" # U+1F8D2
       then: [T: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 

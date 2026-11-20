@@ -1117,6 +1117,38 @@ fn limit_without_of() -> Result<()> {
     return Ok(());
 }
 
+/// The Intent rules give lim sup and lim inf the names limit-sup and limit-inf. ja only defined
+/// lim-sup and lim-inf, so the English name was spoken, the arrow was 右向き矢印
+/// and the オブ of U+2061 stayed. They now read like the plain limit above.
+#[test]
+fn lim_sup_and_lim_inf() -> Result<()> {
+    let expr = "<math><mrow><munder><mi>lim sup</mi><mrow><mi>n</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = "<math><mrow><munder><mi>lim inf</mi><mrow><mi>n</mi><mo>&#x2192;</mo><mi>&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "か極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "か極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = "<math><mrow><munder><mi>lim inf</mi><mrow><mi>x</mi><mo>&#x2197;</mo><mn>0</mn></mrow></munder><mo>&#x2061;</mo><mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow></mrow></math>";
+    test("ja", "SimpleSpeak", expr, "か極限 x 下から近づく 0; f オブ x")?;
+    test("ja", "ClearSpeak", expr, "か極限 x 下から近づく 0; f オブ x")?;
+    return Ok(());
+}
+
+/// MathJax writes \limsup and \liminf as an mo with U+2006 (six-per-em space) between the words. That
+/// form was not in FunctionNames, so the U+2061 after it was still read as オブ. It now reads
+/// like lim sup and lim inf above.
+#[test]
+fn lim_sup_and_lim_inf_from_mathjax() -> Result<()> {
+    let expr = r#"<math><munder><mo movablelimits="true">lim&#x2006;sup</mo><mrow><mi>n</mi><mo stretchy="false">&#x2192;</mo><mi mathvariant="normal">&#x221E;</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>a</mi><mi>n</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    test("ja", "ClearSpeak", expr, "じょう極限 n 近づく 無限大; エー 下付き n")?;
+    let expr = r#"<math><munder><mo movablelimits="true">lim&#x2006;inf</mo><mrow><mi>x</mi><mo stretchy="false">&#x2192;</mo><mn>0</mn></mrow></munder><mo>&#x2061;</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></math>"#;
+    test("ja", "SimpleSpeak", expr, "か極限 x 近づく 0; f オブ x")?;
+    test("ja", "ClearSpeak", expr, "か極限 x 近づく 0; f オブ x")?;
+    return Ok(());
+}
+
 /// Japanese puts the object in front of 比例する, 属する or に先行する, but these
 /// words are spoken where the symbol is, so x ≺ y (precedes) came out as
 /// x に先行する y, "the y that precedes x". The symbols and intents now use names
@@ -1163,6 +1195,26 @@ fn relation_words_in_symbol_order() -> Result<()> {
     }
     let expr = "<math><mrow intent='not($p)'><mi arg='p'>p</mi></mrow></math>";
     test("ja", "ClearSpeak", expr, "ノット p")?;
+    return Ok(());
+}
+
+/// inj lim and proj lim kept their English names and were read like any other
+/// script (inj lim 付き i 下 オブ ..., proj lim 下付き i; オブ ...). They are now read
+/// like a limit: 帰納極限 or 射影極限, then what is under them, with no オブ before what follows.
+#[test]
+fn inj_lim_and_proj_lim() -> Result<()> {
+    let expr = r#"<math><munder><mo>inj lim</mo><mi>i</mi></munder><mo>&#x2061;</mo><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    test("ja", "ClearSpeak", expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    test_prefs("ja", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "帰納極限 i; おおもじ エー 下付き i")?;
+    // a subscript instead of an underscript (msub reaches the speech rules as indexed-by)
+    let expr = r#"<math><msub><mo>proj lim</mo><mi>i</mi></msub><mo>&#x2061;</mo><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "射影極限 i; おおもじ エー 下付き i")?;
+    let expr = r#"<math><munder><mo>inj lim</mo><mrow><mi>i</mi><mo>&#x2208;</mo><mi>I</mi></mrow></munder><mo>&#x2061;</mo><msub><mi>M</mi><mi>i</mi></msub></math>"#;
+    test("ja", "SimpleSpeak", expr, "帰納極限 i 要素オブ おおもじ i; おおもじ m 下付き i")?;
+    // an mi and no U+2061 after it
+    let expr = r#"<math><munder><mi>proj lim</mi><mi>i</mi></munder><msub><mi>A</mi><mi>i</mi></msub></math>"#;
+    test("ja", "ClearSpeak", expr, "射影極限 i; おおもじ エー 下付き i")?;
     return Ok(());
 }
 
@@ -1440,6 +1492,15 @@ fn chemical_arrows() -> Result<()> {
         ("&#x21CC;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
         ("&#x1F8D3;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と左に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
         ("&#x1F8D2;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と右に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        // MathJax PUA arrows must preserve the corresponding Unicode reaction reading.
+        ("&#xE429;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; が反応して; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#xE42D;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; が反応して; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#xE429;", "Terse", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; から; 2, おおもじ n エー; おおもじ c l; プラス おおもじ h, 2"),
+        ("&#xE42D;", "Terse", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; から; 2, おおもじ n エー; おおもじ c l; プラス おおもじ h, 2"),
+        ("&#x1F8D1;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#xE408;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#xE40A;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と左に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
+        ("&#xE409;", "Verbose", "2, おおもじ h; おおもじ c l; プラス, 2 おおもじ n エー; と右に偏った平衡にある; 2, おおもじ n エー; おおもじ c l; プラス, おおもじ h, 下付き文字 2"),
     ] {
         let expr = format!("<math><mrow><mn>2</mn><mi>H</mi><mi>Cl</mi><mo>+</mo><mn>2</mn><mtext>Na</mtext>
             <mo>{arrow}</mo><mn>2</mn><mtext>Na</mtext><mi>Cl</mi><mo>+</mo><msub><mi>H</mi><mn>2</mn></msub></mrow></math>");
@@ -2295,5 +2356,16 @@ fn clearspeak_pref_matrix_silent_col_num() -> Result<()> {
     let expr = "<math><mrow><mrow><mo>(</mo><mrow><mtable><mtr><mtd><mrow><msub><mi>b</mi><mrow><mn>1</mn><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>b</mi><mrow><mn>1</mn><mn>2</mn></mrow></msub></mrow></mtd></mtr><mtr><mtd><mrow><msub><mi>b</mi><mrow><mn>2</mn><mn>1</mn></mrow></msub></mrow></mtd><mtd><mrow><msub><mi>b</mi><mrow><mn>2</mn><mn>2</mn></mrow></msub></mrow></mtd></mtr></mtable></mrow><mo>)</mo></mrow></mrow></math>";
     test_ClearSpeak("ja", "ClearSpeak_Matrix", "SilentColNum", expr,
         "2 かける 2 行列; ぎょう 1; b 下付き 1 1; b 下付き 1 2; ぎょう 2; b 下付き 2 1; b 下付き 2 2")?;
+    return Ok(());
+}
+
+/// ⁿ was written エヌ乗, which Open JTalk reads as エヌノ. With a space before 乗 it is
+/// read as a power (エヌ ジョー); ⁱ gets the same space so the two letters match.
+#[test]
+fn superscript_letter_powers() -> Result<()> {
+    let expr = "<math><mi>x</mi><mi>ⁿ</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x エヌ 乗")?;
+    let expr = "<math><mi>x</mi><mi>ⁱ</mi></math>";
+    test("ja", "SimpleSpeak", expr, "x アイ 乗")?;
     return Ok(());
 }
