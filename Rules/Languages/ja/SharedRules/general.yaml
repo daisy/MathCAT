@@ -1145,18 +1145,19 @@
   match: "."
   replace:
   # FIX: this might be better/more efficient if in unicode.yaml
+  # MathJax v4 PUA arrows share the corresponding Unicode reaction readings.
   - bookmark: "@id"
   - test:
-    - if: ".='→' or .='⟶'"
+    - if: ".='→' or .='⟶' or .='' or .=''"
       then_test:
         if: "$Verbosity='Terse'"
         then: [T: "から"]      # phrase(hydrogen and oxygen 'forms' water )
         else: [T: "が反応して"]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+    - else_if: ".='⇌' or .='🣑' or .=''" # U+01F8D1
       then: [T: "と平衡にある"]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='🣓'" # U+1F8D3
+    - else_if: ".='🣓' or .=''" # U+1F8D3
       then: [T: "と左に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='🣒'" # U+1F8D2
+    - else_if: ".='🣒' or .=''" # U+1F8D2
       then: [T: "と右に偏った平衡にある"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 

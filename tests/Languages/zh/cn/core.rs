@@ -333,3 +333,21 @@ fn chemical_quadruple_bond_uses_the_standard_bond_order_term() -> Result<()> {
         "大写 c, 四重键 大写 c",
     )
 }
+
+// MathJax 4 arrow variants retain their reaction meaning in a complete chemical equation.
+#[test]
+fn mathjax_chemical_arrows() -> Result<()> {
+    for (arrow, expected) in [
+        ("&#xE408;", "大写 h, 可逆反应 大写 i"),
+        ("&#xE409;", "大写 h, 平衡偏右 大写 i"),
+        ("&#xE40A;", "大写 h, 平衡偏左 大写 i"),
+        ("&#xE429;", "大写 h, 反应形成 大写 i"),
+        ("&#xE42D;", "大写 h, 反应形成 大写 i"),
+    ] {
+        let expr = format!("<math intent=':chemical-equation'><mi mathvariant='normal'>H</mi><mo>{arrow}</mo><mi mathvariant='normal'>I</mi></math>");
+        for style in ["SimpleSpeak", "ClearSpeak"] {
+            test("zh-cn", style, &expr, expected)?;
+        }
+    }
+    return Ok(());
+}
