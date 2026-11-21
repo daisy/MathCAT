@@ -2092,7 +2092,8 @@ impl CanonicalizeContext {
 				assert!(name(mathml)=="mi" || name(mathml)=="mtext");
 				// this is a hack -- VII is more likely to be roman numeral than the molecule V I I so prevent that from happening
 				// FIX: come up with a less hacky way to prevent chem element misinterpretation
-				let text = as_text(mathml).trim();
+				let raw = as_text(mathml);
+				let text = raw.trim();
 				if text.len() > 2 && is_roman_number_match(as_str!(text)) {
 					return mathml;
 				}
@@ -2560,7 +2561,8 @@ impl CanonicalizeContext {
 				}
 			}
 
-			let text_ns = as_text(mathml).trim();
+			let raw = as_text(mathml);
+			let text_ns = raw.trim();
 			let text = text_ns.as_bytes();	// note: we know it is all ASCII chars
 			// if roman numeral is in superscript and we get here, then it had a chemical element base, so we accept it
 			// note: you never has a state = I; if two letters, it must be 'II'.
@@ -2611,7 +2613,8 @@ impl CanonicalizeContext {
 							if last_was_roman_numeral {
 								return false;		// no implicit multiplication (or whatever)
 							}
-							let text = as_text(maybe_roman_numeral).trim();
+							let raw = as_text(maybe_roman_numeral);
+							let text = raw.trim();
 							if !(( must_be_upper_case && UPPER_ROMAN_NUMERAL.is_match(as_str!(text))) ||
 								 (!must_be_upper_case && LOWER_ROMAN_NUMERAL.is_match(as_str!(text))) ) {
 								return false;
