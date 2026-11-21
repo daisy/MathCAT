@@ -1073,6 +1073,40 @@ fn shape_names_read_correctly() -> Result<()> {
     return Ok(());
 }
 
+/// Symbol names that Open JTalk misread, found by speaking the zh-cn tests' symbols in ja:
+/// 環 was タマキ, 魚の尾 ギョノオ, 凹辺 オーベ, 太 before a noun フトシ, 小文字 after a space
+/// コモンジ, 形 after 小なり カタチ, 白 before すみ ハク and before 羽根 シラ, 真直度 マッスグタビ
+/// and 辺 after 開いた アタリ.
+#[test]
+fn misread_symbol_names() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x232C;", "ベンゼンかん"),
+        ("&#x297C;", "左向きさかなの尾"),
+        ("&#x27E1;", "おうへん白ひし形"),
+        ("&#x2795;", "太いプラス"),
+        ("&#x2B58;", "太い丸"),
+        ("&#x02B0;", "修飾文字 こもじ エイチ"),
+        ("&#xEC48;", "小なりがたの全角結合"),
+        ("&#x3016;", "白いすみ付きカッコ"),
+        ("&#x27B3;", "白い羽根付き右向き矢印"),
+        ("&#x23E4;", "しんちょく度"),
+        ("&#x29A8;", "開いたへんが上と右を指す矢印で終わる測定角"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// U+23E6 (AC current) had spell: "ac", which is the XPath for a child element named ac,
+/// not the string, so the whole expression failed to speak. It is 交流 in Japanese.
+#[test]
+fn ac_current_symbol() -> Result<()> {
+    let expr = "<math><mi>q</mi><mo>&#x23E6;</mo><mi>q</mi></math>";
+    test("ja", "ClearSpeak", expr, "q 交流 q")?;
+    return Ok(());
+}
+
 /// main reads a∶b as the function intent ratio(a, b); ja gives it a name and glue word.
 #[test]
 fn ratio_as_function() -> Result<()> {
