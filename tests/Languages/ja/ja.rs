@@ -596,6 +596,24 @@ fn cjk_compatibility_squares() -> Result<()> {
     return Ok(());
 }
 
+/// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
+/// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
+/// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
+#[test]
+fn telegraph_symbols() -> Result<()> {
+    let expr = "<math><mi>&#x32c3;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "4月")?;
+    let expr = "<math><mi>&#x3358;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "零時")?;
+    let expr = "<math><mi>&#x3366;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "14時")?;
+    let expr = "<math><mi>&#x33e0;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ついたち")?;
+    let expr = "<math><mi>&#x33f3;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "20日")?;
+    return Ok(());
+}
+
 /// The negation sign is ノット. The seed said コメントはありません -- "there are no
 /// comments" -- because the English source word is "not".
 #[test]
