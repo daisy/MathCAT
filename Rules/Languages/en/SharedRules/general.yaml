@@ -1069,18 +1069,19 @@
   match: "."
   replace:
   # FIX: this might be better/more efficient if in unicode.yaml
+  # MathJax v4 PUA: E42D→→, E429→⟶, E408→🣑, E40A→🣓, E409→🣒
   - bookmark: "@id"
   - test:
-    - if: ".='→' or .='⟶'"
+    - if: ".='→' or .='⟶' or .='' or .=''"
       then_test:
         if: "$Verbosity='Terse'"
         then: [t: "forms"]      # phrase(hydrogen and oxygen 'forms' water )
         else: [t: "reacts to form"]      # phrase(hydrogen and oxygen 'reacts to form' water)
-    - else_if: ".='⇌' or .='🣑'" # U+01F8D1
+    - else_if: ".='⇌' or .='🣑' or .=''" # U+1F8D1 / MathJax PUA E408
       then: [t: "is in equilibrium with"]      # phrase(a reactant 'is in equilibrium with' a product)
-    - else_if: ".='🣓'" # U+1F8D3
+    - else_if: ".='🣓' or .=''" # U+1F8D3 / MathJax PUA E40A
       then: [t: "is in equilibrium biased to the left with"]      # phrase(the reactant 'is in equilibrium biased to the left with' the product)
-    - else_if: ".='🣒'" # U+1F8D2
+    - else_if: ".='🣒' or .=''" # U+1F8D2 / MathJax PUA E409
       then: [t: "is in equilibrium biased to the right with"]      # phrase(the reactant 'is in equilibrium biased to the right with' the product)
       else: [x: "*"]
 

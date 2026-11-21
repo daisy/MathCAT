@@ -311,9 +311,9 @@
   - bookmark: "*[2]/@id"
   - T: "の 3 乗"      # phrase(5 'cubed' equals 125)
 
-- name: simple-integer
+- name: simple-integer   # audit-ignore: Japanese has no ordinal exponent, so a decimal exponent is read 乗 too (x の 2.0 乗), as in SimpleSpeak
   tag: power
-  match: "*[2][self::m:mn][not(contains(., '.'))]"
+  match: "*[2][self::m:mn]"
   replace:
   - x: "*[1]"
   - T: "の"      # phrase(2 raised 'to the' power 7)
