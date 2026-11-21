@@ -4889,9 +4889,17 @@ impl CanonicalizeContext {
 			if !is_int(first_child) {
 				return Ok( false );
 			}
-			let slash_part = canonicalize.canonicalize_mrows(as_element(fraction_children[1]))?;
-			if name(slash_part) == "mo" && as_text(slash_part) == "/" {
-				let denom = canonicalize.canonicalize_mrows(as_element(fraction_children[2]))?;
+			let slash_part = as_element(fraction_children[1]);
+			if name(slash_part) != "mo" {
+				return Ok( false );
+			}
+			let slash_part = canonicalize.canonicalize_mrows(slash_part)?;
+			if as_text(slash_part) == "/" {
+				let denom = as_element(fraction_children[2]);
+				if name(denom) != "mn" {
+					return Ok( false );
+				}
+				let denom = canonicalize.canonicalize_mrows(denom)?;
 				return Ok( is_int(denom) );
 			}
 			return Ok( false );
@@ -6454,6 +6462,25 @@ mod canonicalize_tests {
 					<mo>/</mo>
 					<mn>4</mn>
 				</mrow>
+			</mrow>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+    }
+
+    #[test]
+    fn no_implied_plus_before_parens() -> Result<()> {
+        let test_str = "<math><mn>2</mn><mn>3</mn><mo>(</mo><mi>y</mi><mo>)</mo><mo>+</mo><mi>x</mi></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+				<mrow data-changed='added'>
+					<mn>2</mn>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mn>3</mn>
+					<mo data-changed='added'>&#x2062;</mo>
+					<mrow data-changed='added'><mo>(</mo><mi>y</mi><mo>)</mo></mrow>
+				</mrow>
+				<mo>+</mo>
+				<mi>x</mi>
 			</mrow>
 		</math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
