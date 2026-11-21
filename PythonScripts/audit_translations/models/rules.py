@@ -1,26 +1,26 @@
 """Models for speech, navigation, and unicode rule audits."""
 
 from dataclasses import dataclass, field
-from enum import StrEnum
+from enum import StrEnum, auto
 from typing import Any
 
 
 class IssueType(StrEnum):
     """Top-level issue categories used by the audit renderer."""
 
-    MISSING_RULE = "missing_rule"
-    UNTRANSLATED_TEXT = "untranslated_text"
-    RULE_DIFFERENCE = "rule_difference"
-    EXTRA_RULE = "extra_rule"
+    MISSING_RULE = auto()
+    UNTRANSLATED_TEXT = auto()
+    RULE_DIFFERENCE = auto()
+    EXTRA_RULE = auto()
 
 
 class DiffType(StrEnum):
     """Rule-difference subcategories used for fine-grained diagnostics."""
 
-    MATCH = "match"  # `match` XPath differs between source and translation.
-    CONDITION = "condition"  # `if` / `test` condition expressions differ.
-    VARIABLES = "variables"  # Variable names defined in `variables` differ.
-    STRUCTURE = "structure"  # Control-flow block shape/order differs (if/then/else/with/replace).
+    MATCH = auto()  # `match` XPath differs between source and translation.
+    CONDITION = auto()  # `if` / `test` condition expressions differ.
+    VARIABLES = auto()  # Variable names defined in `variables` differ.
+    STRUCTURE = auto()  # Control-flow block shape/order differs (if/then/else/with/replace).
 
 
 @dataclass
@@ -107,6 +107,7 @@ class ComparisonResult:
     english_rule_count: int
     translated_rule_count: int
     rule_differences: list[RuleDifference] = field(default_factory=list)
+    first_order_mismatch_position: int | None = None
 
     @property
     def has_issues(self) -> bool:

@@ -1,7 +1,7 @@
 ---
  - "⋇": [tc: "1⠌⠯⠦"]             # 0x22C7 (Division times)
  - "⊩": [tc: "⠸⠳⠿⠸⠒"]           # 0x22A9 (Forces)
- - "ℏ": [tc: "⠈⠒⠓"]              # t: "B"F  (reduced Plank's constant)
+ - "ℏ": [tc: "⠈⠒⠓"]              # U+210F (reduced Planck constant)
  - "ⅆ": [tc: "⠙"]                # 0x2146
  - "ⅇ": [tc: "⠑"]                # 0x2147
  - "ⅈ": [tc: "⠊"]                # 0x2148
@@ -294,7 +294,7 @@
 
  - "𝟢-𝟫":    # 0x1d7e2 - 0x1d7eb  
     - tc: "S"
-    - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"
+    - spell: "translate('.', '𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫', '0123456789')"
 
  - "𝟶-𝟿":    # 0x1d7f6 - 0x1d7ff
     - spell: "translate('.', '𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿', '0123456789')"

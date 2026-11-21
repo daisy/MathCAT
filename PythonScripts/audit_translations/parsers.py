@@ -149,11 +149,39 @@ def format_tag(tag_value: Any) -> str | None:
 
 
 def build_raw_blocks(lines: list[str], starts: list[int]) -> list[str]:
-    blocks = []
     if not starts:
-        return blocks
+        return []
+
+    block_starts = starts.copy()
     for idx, start in enumerate(starts):
-        end = starts[idx + 1] if idx + 1 < len(starts) else len(lines)
+        if idx == 0:
+            while start > 0 and (not lines[start - 1].strip() or lines[start - 1].lstrip().startswith("#")):
+                start -= 1
+            block_starts[idx] = start
+            continue
+
+        lower_bound = starts[idx - 1] + 1
+        dash_line = re.fullmatch(r"\s*-\s*(?:#.*)?", lines[start - 1]) if start > lower_bound else None
+        if dash_line:
+            start -= 1
+            block_starts[idx] = start
+            continue
+
+        comment_start = start
+        while comment_start > lower_bound and lines[comment_start - 1].lstrip().startswith("#"):
+            comment_start -= 1
+
+        # A separating blank makes the comment run introductory text for this
+        # item. Without one, leave the run with the preceding rule.
+        if comment_start > lower_bound and not lines[comment_start - 1].strip():
+            start = comment_start - 1
+            while start > lower_bound and not lines[start - 1].strip():
+                start -= 1
+            block_starts[idx] = start
+
+    blocks = []
+    for idx, start in enumerate(block_starts):
+        end = block_starts[idx + 1] if idx + 1 < len(block_starts) else len(lines)
         blocks.append("\n".join(lines[start:end]))
     return blocks
 

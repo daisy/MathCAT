@@ -449,14 +449,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("el", "LiteralSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; perpendicular to, κεφαλαίο b βέλος προς τα δεξιά")?;
+  test("el", "LiteralSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; είναι κάθετο, κεφαλαίο b βέλος προς τα δεξιά")?;
   return Ok(());
 
 }
@@ -532,14 +532,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("el", "SimpleSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; perpendicular to, κεφαλαίο b βέλος προς τα δεξιά")?;
+  test("el", "SimpleSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; είναι κάθετο, κεφαλαίο b βέλος προς τα δεξιά")?;
   return Ok(());
 }
 

@@ -12,14 +12,19 @@ mod Languages {
     mod fi;
     mod pl;
     mod sv;
+    mod pt;
     mod nb;
     mod de;
     mod fr;
+    mod ja {
+        mod ja;
+        mod navigate;
+    }
     mod vi {
         mod vi;
     }
     mod id {
         mod units;
     }
-    // mod es;
+    mod es;
 }

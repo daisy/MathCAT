@@ -231,7 +231,7 @@
 -
   name: overparen
   tag: mover
-  match: "*[2][.='⏜']"
+  match: "*[2][.='⏜' or .='⌢' or .='⌒']"
   replace:
   - x: "*[2]"     # shape indicator, overparen
   - x: "*[1]"
@@ -645,4 +645,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

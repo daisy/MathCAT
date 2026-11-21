@@ -329,7 +329,7 @@
 -
   name: mhchem-hack
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   tag: mover
   match:
   -    "*[1][substring(., 1, 1)='↽'] and"
@@ -480,7 +480,7 @@
   match: "count(*)=3"    # catches mmultiscripts equiv
   replace:
   - test:
-      if: "self::m:mundermover and NeedsToBeGrouped(*[1], 'Swedish', true())"
+      if: "self::m:munderover and NeedsToBeGrouped(*[1], 'Swedish', true())"
       then:
       - t: "⠘"
       - x: "*[1]"
@@ -530,7 +530,7 @@
               then: [t: "⠒"]
             - else_if: "*[3][.='^']"
               then: [t: "⠖"]
-              else: [t: "*[3]"]  # works for right arrow also
+              else: [x: "*[3]"]  # works for right arrow also
       - test:
           if: "$SecondScriptNeedsToBeGrouped"
           then: [t: "⠱"]

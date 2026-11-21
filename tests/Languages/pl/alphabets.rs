@@ -392,6 +392,21 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn up_tack_330() -> Result<()> {
+    // Znak prostopadłości i znak "dół" wyglądają identycznie, a edytory
+    // wstawiają U+22A5 tam, gdzie chodzi o prostopadłość. Dlatego oba znaki
+    // mówią "prostopadłe do", a osobna reguła LiteralSpeak zachowuje dosłowne
+    // czytanie U+22A5 jako "dół".
+    let perp = "<math><mi>a</mi><mo>⟂</mo><mi>b</mi></math>"; // 0x27c2
+    test("pl", "SimpleSpeak", perp, "a jest prostopadłe do b")?;
+    test("pl", "LiteralSpeak", perp, "a jest prostopadłe do b")?;
+    let up_tack = "<math><mi>a</mi><mo>⊥</mo><mi>b</mi></math>"; // 0x22a5
+    test("pl", "ClearSpeak", up_tack, "a jest prostopadłe do b")?;
+    test("pl", "LiteralSpeak", up_tack, "a dół b")?;
+    return Ok(());
+  }
+
+#[test]
 fn unicode_typo_regressions() -> Result<()> {
   test("pl", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "do potęgi i")?;
   test("pl", "SimpleSpeak", "<math><mi>☌</mi></math>", "koniunkcja")?;

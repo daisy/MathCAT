@@ -75,6 +75,32 @@ fn set_default_speech_prefs() {
         prefs.set_user_prefs("Impairment", "Blindness").unwrap();
     });
 }
+
+/// Initialize navigation prefs + MathML for `tests/Languages/*/navigate.rs`.
+/// Uses the same prefs as `src/navigate.rs` tests via [`set_navigation_test_preferences`],
+/// except `AutoZoomOut` is false (language ZoomIn speech tests need that).
+#[allow(dead_code)]     // used in testing
+pub fn init_nav(language: &str, mathml: &str) -> Result<()> {
+    set_rules_dir(abs_rules_dir_path())?;
+    set_navigation_test_preferences(language, "Enhanced", false)?;
+    set_mathml(mathml)?;
+    return Ok(());
+}
+
+/// Run navigation `commands` in order and compare each result (trailing separators trimmed) with `expected`.
+#[allow(dead_code)]     // used in testing
+pub fn assert_nav_sequence(language: &str, mathml: &str, commands: &[&str], expected: &[&str]) -> Result<()> {
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_nav(language, mathml)?;
+        for (command, expected) in commands.iter().zip(expected) {
+            let speech = do_navigate_command(command)?;
+            assert_eq!(*expected, speech.trim_end_matches([' ', ',', ';']), "command '{command}'");
+        }
+        return Ok(());
+    }));
+    return report_any_panic(result);
+}
 // Compare the result of speaking the mathml input to the output 'speech'
 // This uses default preferences
 #[allow(dead_code)]     // used in testing
@@ -249,7 +275,15 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
 
         let package = &parser::parse(target).expect("Failed to parse target input");
         let target_elem = get_element(package);
+        // trim_element drops the text of leaves with intent names (e.g., <unit>m</unit>), so put it back
+        let mut leaf_texts = Vec::new();
+        collect_text_only_elements(target_elem, &mut leaf_texts);
         trim_element(target_elem, true);
+        for (leaf, text) in leaf_texts {
+            if leaf.children().is_empty() {
+                leaf.set_text(&text);
+            }
+        }
 
         let new_package = parser::parse(mathml);
         if let Err(e) = new_package {
@@ -276,6 +310,23 @@ pub fn test_intent(mathml: &str, target: &str, test_prefs: Vec<(&str, &str)>) ->
             },
         }
     }));
+
+    fn collect_text_only_elements<'a>(mathml: Element<'a>, out: &mut Vec<(Element<'a>, String)>) {
+        let children = mathml.children();
+        if children.iter().any(|child| child.element().is_some()) {
+            for child in children {
+                if let Some(child) = child.element() {
+                    collect_text_only_elements(child, out);
+                }
+            }
+            return;
+        }
+        let text: String = children.iter().filter_map(|child| child.text()).map(|t| t.text().to_string()).collect();
+        let text = text.split_whitespace().collect::<Vec<_>>().join(" ");
+        if !text.is_empty() {
+            out.push((mathml, text));
+        }
+    }
 
     fn clean_attrs<'a>(mathml: Element<'a>) -> Element<'a> {
         mathml.remove_attribute("id");

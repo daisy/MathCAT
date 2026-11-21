@@ -32,7 +32,7 @@ fn my_set_basic() -> Result<()> {
       </math>
     "#;
 
-    test("hu", "ClearSpeak", expr, "az üres halmaz")?;
+    test("hu", "ClearSpeak", expr, "a halmaz x vessző, y")?;
 
     Ok(())
 }
@@ -91,7 +91,7 @@ fn set_difference_basic() -> Result<()> {
       </math>
     "#;
 
-    test( "hu", "ClearSpeak", expr, "különbséghalmaz nagy a vessző, nagy b")?;
+    test( "hu", "ClearSpeak", expr, "különbséghalmaz nagy a és nagy b")?;
 
     Ok(())
 }
@@ -107,7 +107,7 @@ fn postfix_test() -> Result<()> {
                 <mo>T</mo>
             </msup>
             "#,
-            "transzponált x",
+            "x transzponált",
         ),
         (
             "highlight",
@@ -205,9 +205,9 @@ fn functions_and_inverses_tests() -> Result<()> {
 
         //("fraction", "fraction x over y end fraction"),
         ("mixed-fraction", "x és y"),
-        ("quotient", "egész rész osztva x vessző, y"),
+        ("quotient", "egész rész x osztva y"),
         ("evaluated-at", "x értékelve y"),
-        ("remainder", "a maradék, osztva x vessző, y"),
+        ("remainder", "a maradék x osztva y"),
 
         ("max", "max x vessző, y vessző, z"),
         ("min", "min x vessző, y vessző, z"),
@@ -223,13 +223,13 @@ fn functions_and_inverses_tests() -> Result<()> {
 
         ("complex-conjugate", "Komplex konjugált x"),
         ("complex-arg", "argumentum x"),
-        ("real-part", "valós rész"),
-        ("imaginary-part", "képzetes rész"),
+        ("real-part", "az igazi rész x"),
+        ("imaginary-part", "a képzeletbeli rész x"),
 
         ("polar-coordinate", "poláris koordináta x vessző, y"),
         ("spherical-coordinate", "gömb koordináta x vessző, y vessző, z"),
         ("cartesian-coordinate", "derékszögű koordináta x vessző, y vessző, z"),
-        ("coordinate", "pont, x vessző y vessző z"),
+        ("coordinate", "koordináta x vessző, y vessző, z"),
 
         ("floor", "lépcső x"),
         ("ceiling", "mennyezet x"),
@@ -528,7 +528,7 @@ fn statistics_and_probability_tests() -> Result<()> {
         ("mode", "mód x"),
 
         // conditional probability typically two arguments
-        // ("conditional-probability", "probability of x given y"),
+        // ("conditional-probability", "valószínűség x adott y"),
     ];
 
     for (intent, expected) in tests {
@@ -576,7 +576,7 @@ fn linear_algebra_tests() -> Result<()> {
         ("span", "fesztávolság x"),
 
         // transpose supports both postfix and function; we test function explicitly
-        ("transpose", "transzponált x"),
+        ("transpose", "x transzponált"),
 
         // dimensional product is infix
         ("dimensional-product", "x a(z) y"),
@@ -727,13 +727,13 @@ fn general_concepts_tests() -> Result<()> {
         ("permutation-cycle", "permutációs ciklus x"),
 
         // Binary structural / infix-style
-        // ("ordered-pair", "the pair of x and y"),
+        ("ordered-pair", "a pár x és y"),
         ("rate", "x per y"),
         
         ("binomial-coefficient", "x választ y"),
         ("embellished-name", "x megjegyzéssel y"),
         ("indexed-by", "x alsó index y"),
-        // ("translation", "translation by x comma, y"), // Changes translation to comma
+        ("translation", "fordítás x vessző, y"), // Changes translation to comma
         ("constraint", "x feltétellel y"),
     ];
 

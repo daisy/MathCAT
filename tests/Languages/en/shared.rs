@@ -408,6 +408,15 @@ fn caret_and_hat() -> Result<()> {
 }
 
 #[test]
+fn ac_current() -> Result<()> {
+  // U+23E6 is spelled 'ac' before "current"; the value of spell is an XPath,
+  // so it has to be the quoted string 'ac' -- the bare name ac matched no child and the whole expression failed
+  let expr = "<math><mn>230</mn><mi mathvariant='normal'>V</mi><mo>&#x23e6;</mo></math>";
+  test("en", "SimpleSpeak", expr, "230 volts, eigh c current")?;
+  return Ok(());
+}
+
+#[test]
 fn dots() -> Result<()> {
   let expr = "<math>
          <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
@@ -493,14 +502,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "LiteralSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "LiteralSpeak", expr, "cap eigh right arrow, up tack cap b right arrow")?;
   return Ok(());
 
 }
@@ -575,14 +584,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("en", "SimpleSpeak", expr, "cap eigh right arrow, perpendicular to, cap b right arrow")?;
+  test("en", "SimpleSpeak", expr, "cap eigh right arrow, is perpendicular to, cap b right arrow")?;
   return Ok(());
 
 }

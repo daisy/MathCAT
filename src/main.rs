@@ -35,41 +35,6 @@ fn main() {
       .format_level(false)
       .init();
 
-   let expr = r#"
-   <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-   <mrow>
-     <msup>
-       <mi>e</mi>
-       <mrow>
-         <mo>&#x2212;</mo>
-         <mfrac>
-           <mn>1</mn>
-           <mn>2</mn>
-         </mfrac>
-         <msup>
-           <mrow>
-             <mrow>
-               <mo>(</mo>
-               <mrow>
-                 <mfrac>
-                   <mrow>
-                     <mi>x</mi>
-                     <mo>&#x2212;</mo>
-                     <mi>&#x03BC;</mi>
-                   </mrow>
-                   <mi>&#x03C3;</mi>
-                 </mfrac>
-               </mrow>
-               <mo>)</mo>
-             </mrow>
-           </mrow>
-           <mn>2</mn>
-         </msup>
-       </mrow>
-     </msup>
-   </mrow>
- </math>
-"#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
   //       <mi arg='base'>x</mi>
@@ -200,6 +165,13 @@ fn main() {
 //         <msub><mi mathvariant="normal">H</mi><mn>3</mn></msub>
 //     </math>
 //          "#;
+
+
+let expr = r#"
+<math intent="wibble($x,$y)"><mi arg="x">x</mi><mo>+</mo><mi arg="y">y</mi></math>
+"#;
+
+
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -213,10 +185,10 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "UEB").unwrap();
+  set_preference("BrailleCode", "CMU").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
-  set_preference("Verbosity", "Verbose").unwrap();
+  set_preference("Verbosity", "Medium").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
   set_preference("NavMode", "Enhanced").unwrap();
   set_preference("Impairment", "Blindness").unwrap();
@@ -243,10 +215,14 @@ fn main() {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
     Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
   }
-  match do_navigate_command("ZoomIn")  {
+  match do_navigate_command("MoveNext") {
     Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+    Ok(speech) => info!("MoveNext speech: '{}'", speech),
   }
+  // match do_navigate_command("ZoomOut")  {
+  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+  //   Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
+  // }
   info!("\n");
   // match do_navigate_command("ToggleZoomLockUp") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
@@ -263,10 +239,6 @@ fn main() {
   // match do_navigate_command("MovePrevious") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MovePrevious speech: '{}'", speech),
-  // }
-  // match do_navigate_command("MoveNext") {
-  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
-  //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
@@ -308,7 +280,7 @@ fn main() {
   // info!("#xpath = {}; duplicates = {}", xpath_counts.0, xpath_counts.1);
   // info!("Time taken (second time for speech + braille): {}ms", instant.elapsed().as_millis());
   // debug!("Hashmap sizes:\n{}", libmathcat::speech::SpeechRules::print_sizes());
-  timing_test(expr, 5000);
+  timing_test(expr, 0);
 
 }
 
@@ -327,10 +299,10 @@ fn timing_test(expr: &str, n_loops: usize) {
       Ok(_) =>( ),
       Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
     }
-    match get_braille("") {
-      Ok(_) => (),
-      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
-    }
+    // match get_braille("") {
+    //   Ok(_) => (),
+    //   Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
+    // }
   }
   info!("Time taken (time for set, speech, {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 

@@ -223,7 +223,7 @@ fn set_with_colon() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>:</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("hu", "ClearSpeak", expr, "x melyekre teljesül, hogy minden x nagyobb, mint 2")?;
+    test("hu", "ClearSpeak", expr, "minden x melyekre teljesül, hogy x nagyobb, mint 2")?;
     return Ok(());
 
 }
@@ -234,7 +234,7 @@ fn set_with_bar() -> Result<()> {
     let expr = "<math>
                     <mo>{</mo> <mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow> <mo>}</mo>
             </math>";
-    test("hu", "ClearSpeak", expr, "x melyekre teljesül, hogy minden x nagyobb, mint 2")?;
+    test("hu", "ClearSpeak", expr, "minden x melyekre teljesül, hogy x nagyobb, mint 2")?;
     return Ok(());
 
 }
@@ -285,7 +285,7 @@ fn complicated_set_with_colon() -> Result<()> {
             <mn>7</mn>
             <mo>}</mo>
         </math>";
-    test("hu", "ClearSpeak", expr, "x az egész számok halmaza melyekre teljesül, hogy minden 2 kisebb, mint x kisebb, mint 7")?;
+    test("hu", "ClearSpeak", expr, "minden x az egész számok halmaza melyekre teljesül, hogy 2 kisebb, mint x kisebb, mint 7")?;
     return Ok(());
 
 }
@@ -302,7 +302,7 @@ fn complicated_set_with_mtext() -> Result<()> {
         <mo>}</mo>
         </math>";
     test("hu", "ClearSpeak", expr, 
-            "x a természetes számok halmaza melyekre teljesül, hogy minden x páros szám")?;
+            "minden x a természetes számok halmaza melyekre teljesül, hogy x páros szám")?;
             return Ok(());
 
 }
@@ -323,7 +323,7 @@ fn set_with_bar_member() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("hu", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "x tagja az egész számok halmaza melyekre teljesül, hogy minden x nagyobb, mint 5")?;
+                expr, "minden x tagja az egész számok halmaza melyekre teljesül, hogy x nagyobb, mint 5")?;
                 return Ok(());
 
 }
@@ -375,7 +375,7 @@ fn set_with_bar_element() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("hu", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "x eleme ennek:, az egész számok halmaza melyekre teljesül, hogy minden x nagyobb, mint 5")?;
+                expr, "minden x eleme ennek:, az egész számok halmaza melyekre teljesül, hogy x nagyobb, mint 5")?;
                 return Ok(());
 
 }
@@ -426,7 +426,7 @@ fn set_with_bar_in() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("hu", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "x az egész számok halmaza melyekre teljesül, hogy minden x nagyobb, mint 5")?;
+                expr, "minden x az egész számok halmaza melyekre teljesül, hogy x nagyobb, mint 5")?;
                 return Ok(());
 
 }
@@ -477,7 +477,7 @@ fn set_with_bar_belongs() -> Result<()> {
             <mo>}</mo>
             </math>";
     test_ClearSpeak("hu", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "x hozzátartozó eleme ennek:, az egész számok halmaza melyekre teljesül, hogy minden x nagyobb, mint 5")?;
+                expr, "minden x hozzátartozó eleme ennek:, az egész számok halmaza melyekre teljesül, hogy x nagyobb, mint 5")?;
                 return Ok(());
 
 }
@@ -563,7 +563,7 @@ fn silent_bracket() -> Result<()> {
                 <mo>{</mo><mrow><mi>x</mi><mo>|</mo><mi>x</mi><mo>&#x003E;</mo><mn>2</mn></mrow><mo>}</mo>
             </math>";
             test_ClearSpeak("hu", "ClearSpeak_Sets", "SilentBracket", expr,
-                    "x melyekre teljesül, hogy minden x nagyobb, mint 2")?;
+                    "minden x melyekre teljesül, hogy x nagyobb, mint 2")?;
                     return Ok(());
 
         }

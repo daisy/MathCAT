@@ -448,14 +448,14 @@ fn literal_speak() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("nb", "LiteralSpeak", expr, "stor a høyrepil, perpendicular to, stor b høyrepil")?;
+  test("nb", "LiteralSpeak", expr, "stor a høyrepil bunn stor b høyrepil")?;
   return Ok(());
 
 }
@@ -510,14 +510,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("nb", "SimpleSpeak", expr, "stor a høyrepil, perpendicular to, stor b høyrepil")?;
+  test("nb", "SimpleSpeak", expr, "stor a høyrepil bunn stor b høyrepil")?;
   return Ok(());
 
 }

@@ -233,7 +233,7 @@ fn vertical_line_set() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
+            "minden x melyekre teljesül, hogy x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -254,7 +254,7 @@ fn vertical_line_set_such_that() -> Result<()> {
         <mo>}</mo>    
     </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "SuchThat", expr,
-            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
+            "minden x melyekre teljesül, hogy x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -275,7 +275,7 @@ fn vertical_line_set_given() -> Result<()> {
     </math>";
     // the rules for set will override all the options -- ClearSpeak spec should be clarified
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Given", expr,
-            "x melyekre teljesül, hogy minden x nagyobb, mint 0")?;
+            "minden x melyekre teljesül, hogy x nagyobb, mint 0")?;
             return Ok(());
 
 }
@@ -299,7 +299,7 @@ fn vertical_line_set_and_abs() -> Result<()> {
             <mo>}</mo>
         </math>";
     test_ClearSpeak("hu", "ClearSpeak_VerticalLine", "Auto", expr,
-        "x melyekre teljesül, hogy minden x abszolút értéke; nagyobb, mint 2")?;
+        "minden x melyekre teljesül, hogy x abszolút értéke; nagyobb, mint 2")?;
         return Ok(());
 
 }

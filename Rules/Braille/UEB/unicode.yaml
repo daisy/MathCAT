@@ -118,6 +118,7 @@
  - "†": [t: "⠈⠠⠹"]              # 0x2020 (Dagger)
  - "‡": [t: "⠈⠠⠻"]              # 0x2021 (Double dagger)
  - "…": [t: "c⠲c⠲c⠲"]              # 0x2026 (Ellipsis)
+ - "⋯": [t: "⠄⠄⠄"]                # 0x22EF (midline horizontal ellipsis; GTM 15.4 matrix omission)
  - "′": [t: "1⠶"]                # 0x2032 (Prime sign)
  - "″": [t: "1⠶⠶"]               # 0x2033 (Double prime sign)
  - "‴": [t: "1⠶⠶⠶"]              # 0x2034 (Triple prime sign)
