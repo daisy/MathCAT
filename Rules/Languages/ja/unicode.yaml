@@ -312,18 +312,26 @@
  - "϶": [T: "逆イプシロン"]                    # 0x3f6
 
  - "⁡":                                          # 0x2061
+    # audit-ignore: Japanese says の after the base of a log (ログ b の x) and nothing after a limit
     - test:
-        # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode
-        if: "not(
+        if: "preceding-sibling::*[1][self::m:logarithm-with-base]"
+        then: [T: "の"]      # phrase(ログ b 'の' x)
+        else_test:
+          # skip saying "of" when Terse and a trig function, when it is a shape (does this happen?), or we are in :literal mode,
+          # and after a limit, which is followed directly by what it is the limit of (極限 x 近づく 0; f x)
+          if: "not(
               ( $Verbosity='Terse' or ($SpeechStyle = 'ClearSpeak' and IsNode(following-sibling::*[1],'simple')) and
                 preceding-sibling::*[1][IfThenElse($SpeechStyle='ClearSpeak',
                                                    IsInDefinition(., 'ClearSpeakTrigFunctionNames'),
                                                    IsInDefinition(., 'TrigFunctionNames') )]
               ) or
               preceding-sibling::*[1][IsInDefinition(., 'GeometryShapes')] or
+              preceding-sibling::*[1][self::m:limit or self::m:limit-sup or self::m:limit-inf] or
+              preceding-sibling::*[1][self::m:munder or self::m:indexed-by][*[1][self::m:mi or self::m:mo][translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='injlim' or
+                                                                                                 translate(., ' \u00A0\u2004\u2005\u2006\u2007\u2008\u2009\u200A', '')='projlim']] or
               (@data-changed='added' and ancestor-or-self::*[contains(@data-intent-property, ':literal:')])
             )"
-        then: [T: "オブ"]
+          then: [T: "オブ"]
  - "⁢": [T: ""]                                   # 0x2062
  - "⁣": [T: ""]                                   # 0x2063
  - "⁤": [T: "と"]                                # 0x2064
@@ -345,8 +353,9 @@
  - "←": [T: "左向き矢印"]                     # 0x2190
  - "↑": [T: "上向き矢印"]                       # 0x2191
  - "→":                                          # 0x2192
+     # audit-ignore: lim sup and lim inf (intents limit-sup and limit-inf) read their arrow like the limit does
      - test:
-        if: "ancestor::*[2][self::m:limit]"
+        if: "ancestor::*[2][self::m:limit or self::m:limit-sup or self::m:limit-inf]"
         then: [T: "近づく"]
         else: [T: "右向き矢印"]
 

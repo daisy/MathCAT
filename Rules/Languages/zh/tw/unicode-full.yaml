@@ -1408,7 +1408,7 @@
  - "⏤": [t: "straightness"]                       # 0x23e4
  - "⏥": [t: "flatness"]                           # 0x23e5
  - "⏦":                                           # 0x23e6
-     - spell: "ac"
+     - spell: "'ac'"
      - t: "current"
  - "⏧": [t: "electrical intersection"]            # 0x23e7
  - "①-⑨":                                       	#  0x2460 - 0x2469

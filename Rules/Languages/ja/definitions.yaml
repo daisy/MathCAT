@@ -262,7 +262,7 @@
     "laplacian": "function=ラプラシアン",
 
     ## Default fixity prefix
-    "angle": "prefix=角",
+    "angle": "prefix=かく",
     "angle-measure": "prefix=角の大きさ",
     "change": "prefix=変化量",
     "for-all": "prefix=すべての",
@@ -327,7 +327,7 @@
     "precedes": "infix=先行",
     "proportional": "infix=比例",
     "range-separator": "infix=から",
-    "ratio": "infix=比率 || function=比 : 対",
+    "ratio": "infix=対 || function=比 : 対",
     "similar": "infix=相似",
     "subset": "infix=部分集合オブ",
     "subset-or-equal": "infix=部分集合オブ オア イコール",
@@ -363,9 +363,12 @@
     "say-super": "infix=スーパースクリプト|スーパースクリプト",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
     # "large-op": "infix=over || other=from,to",
-    "lim-sup": "prefix=リム サップ|上極限|上極限",
-    "lim-inf": "prefix=リム インフ|下極限|下極限",
-    "logarithm-with-base": "prefix=ログベース|ログベース|ログベース",
+    # じょう/か in kana: Open JTalk reads 上極限 as ウエキョクゲン and 下極限 as シモキョクゲン
+    "lim-sup": "prefix=じょう極限|じょう極限|じょう極限",
+    "lim-inf": "prefix=か極限|か極限|か極限",
+    "limit-sup": "prefix=じょう極限|じょう極限|じょう極限",   # the name the limit rule in Intent/general.yaml gives
+    "limit-inf": "prefix=か極限|か極限|か極限",
+    "logarithm-with-base": "prefix=ログ|ログ|ログ",
     # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
     "trace": "function=; トレース|トレース|トレース;トレース終了",
     "dimension": "function=;次元|次元|次元;次元終了",
@@ -619,7 +622,7 @@
     "grad": "グラード",
     "M": "モル濃度",
     "R": "レントゲン",
-    "rpm": "1分あたりの回転数",
+    "rpm": "毎分回転数",
     "℧": "モー",
     "dyn": "ダイネ",
     "erg": "エルグ",

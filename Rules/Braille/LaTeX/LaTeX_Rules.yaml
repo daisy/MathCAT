@@ -76,6 +76,15 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
+  name: cases
+  tag: mrow
+  match: "*[1][self::m:mo and .='{'] and *[2][self::m:mtable and @intent=':piecewise'] and count(*)=2"
+  replace:
+  - t: "𝐖\\begin{cases}𝐖"
+  - x: "*[2]"
+  - t: "𝐖\\end{cases}𝐖"
+
+-
   name: default-matrix
   tag: mrow
   variables:
@@ -102,6 +111,31 @@
   - x: "string($MatrixType)"     # need to get $MatrixType eval'd so that it is converted to braille (doesn't work if I do it in 'variables') 
   - t: "}𝐖"
 
+-
+  name: intent-gather
+  tag: mtable
+  match: "@intent=':lines'"
+  replace:
+  - t: "𝐖\\begin{gather}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{gather}𝐖"
+-
+  name: intent-align
+  tag: mtable
+  match: "@intent=':system-of-equations'"
+  replace:
+  - t: "𝐖\\begin{align}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{align}𝐖"
+-
+  name: intent-matrix
+  tag: mtable
+  # Fenced matrices are named by the brackets around them. A bare table is `matrix`.
+  match: "@intent=':matrix' and not(parent::m:mrow[(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or IsBracketed(., '‖', '‖') or IsBracketed(., '{', '}'))])"
+  replace:
+  - t: "𝐖\\begin{matrix}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{matrix}𝐖"
 -
   name: default-mtable
   tag: mtable
