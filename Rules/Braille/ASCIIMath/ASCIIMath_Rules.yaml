@@ -455,47 +455,54 @@
       process-order: [prescripts, base, postscripts]
       base:
       - x: "*[1]"
+      # Each prescript pair needs its own empty invisible group (`{::}`) so `_`/`^` attach before the real base.
       prescript-sub:
-      - test:
-          if: "$ScriptIndex=1"
-          then: [t: "\\𝐰"]        # empty base not needed if this is the only expr
+      - t: "{::}"
       - test:
           if: "not($Subscript[self::m:none])"
-          then_test:
-              if: "$Subscript[IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "_"
+          - test:
+              if: "$Subscript[self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Subscript"]
               else:
-              - t: "_("
+              - t: "("
               - x: "$Subscript"
               - t: ")"
       prescript-super:
       - test:
           if: "not($Superscript[self::m:none])"
-          then_test:
-              if: "$Superscript[IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "^"
+          - test:
+              if: "$Superscript[self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Superscript"]
               else:
-              - t: "^("
+              - t: "("
               - x: "$Superscript"
               - t: ")"
       postscript-sub:
       - test:
           if: "not($Subscript[self::m:none])"
-          then_test:
-              if: "$Subscript[IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "_"
+          - test:
+              if: "$Subscript[self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Subscript"]
               else:
-              - t: "_("
+              - t: "("
               - x: "$Subscript"
               - t: ")"
       postscript-super:
       - test:
           if: "not($Superscript[self::m:none])"
-          then_test:
-              if: "$Superscript[IsNode(., 'leaf') and string-length(.) = 1]"
+          then:
+          - t: "^"
+          - test:
+              if: "$Superscript[self::m:mn or (IsNode(., 'leaf') and string-length(.) = 1)]"
               then: [x: "$Superscript"]
               else:
-              - t: "^("
+              - t: "("
               - x: "$Superscript"
               - t: ")"
   - t: "𝐰"    # need to separate script from what follows
