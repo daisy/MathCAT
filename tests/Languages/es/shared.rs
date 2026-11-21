@@ -231,14 +231,14 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
+            "mayúscula r con 4 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "mayúscula r con 4 índices, sub i superíndice j sub k sub l")?;
+            "mayúscula r con 4 índices, sub i y superíndice nada sub nada y superíndice j sub k y superíndice nada sub l y superíndice nada")?;
             return Ok(());
 
 }
 
-// REVISAR (inglés: none): «mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices»
+// Expected speech announces each none as «nada» under the new mmultiscripts rule.
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn huge_num_mmultiscripts() -> Result<()> {
@@ -247,7 +247,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices")?;
+            "mayúscula r con 4 preíndices, presubíndice mayúscula i y presuperíndice nada, presubíndice nada y presuperíndice mayúscula j, presubíndice mayúscula k y presuperíndice nada, presubíndice mayúscula l y presuperíndice nada y con 5 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada subíndice m y superíndice nada")?;
             return Ok(());
 
 }

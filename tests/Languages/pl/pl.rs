@@ -770,7 +770,7 @@ fn clearspeak_prescript_words_are_polish() -> Result<()> {
             </mmultiscripts>
         </math>
     "#;
-    test("pl", "ClearSpeak", expr, "x lewy indeks górny prim")?;
+    test("pl", "ClearSpeak", expr, "x lewy indeks dolny brak i lewy indeks górny prim")?;
     Ok(())
 }
 
@@ -786,7 +786,7 @@ fn clearspeak_degree_prescript_uses_nominative() -> Result<()> {
             </mmultiscripts>
         </math>
     "#;
-    test("pl", "ClearSpeak", expr, "x lewy indeks górny stopień")?;
+    test("pl", "ClearSpeak", expr, "x lewy indeks dolny brak i lewy indeks górny stopień")?;
     Ok(())
 }
 

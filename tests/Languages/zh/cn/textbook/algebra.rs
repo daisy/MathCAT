@@ -75,20 +75,21 @@ fn linear_algebra_intents_use_standard_noun_phrases() -> Result<()> {
 }
 
 #[test]
-fn long_multiscripts_state_the_remaining_order_naturally() -> Result<()> {
-    // Once explicit pairs are exhausted, state that the remaining lower and upper scripts alternate.
+fn long_multiscripts_keep_each_pair_in_order() -> Result<()> {
+    // Every pre/post pair is spoken as subscript then superscript, including pairs past the old fixed limit.
     test(
         "zh-cn",
         "SimpleSpeak",
         "<math><mmultiscripts><mi>T</mi><mprescripts/><mi>k</mi><mi>l</mi><mi>m</mi><mi>n</mi><mi>o</mi><mi>p</mi></mmultiscripts></math>",
-        "大写 t 有 3 组前置上下标, 前下标 k 且 前上标 l, 前下标 m 且 前上标 n 其余前置下标、上标依次交替 o p 结束前置上下标",
+        "大写 t 有 3 组前置上下标, 前下标 k 且 前上标 l, 前下标 m 且 前上标 n, 前下标 o 且 前上标 p",
     )?;
     test(
         "zh-cn",
         "SimpleSpeak",
         "<math><mmultiscripts><mi>T</mi><mi>a</mi><mi>b</mi><mi>c</mi><mi>d</mi><mi>e</mi><mi>f</mi><mi>g</mi><mi>h</mi><mi>i</mi><mi>j</mi></mmultiscripts></math>",
-        "大写 t 有 5 组后置上下标, 下标 a 且 上标 b 下标 c 且 上标 d 下标 e 且 上标 f 下标 g 且 上标 h 其余后置下标、上标依次交替 i j 结束后置上下标",
-    )
+        "大写 t 有 5 组后置上下标, 下标 a 且 上标 b 下标 c 且 上标 d 下标 e 且 上标 f 下标 g 且 上标 h 下标 i 且 上标 j",
+    )?;
+    return Ok(());
 }
 
 #[test]
