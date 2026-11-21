@@ -408,6 +408,15 @@ fn caret_and_hat() -> Result<()> {
 }
 
 #[test]
+fn ac_current() -> Result<()> {
+  // U+23E6 is spelled 'ac' before "current"; the value of spell is an XPath,
+  // so it has to be the quoted string 'ac' -- the bare name ac matched no child and the whole expression failed
+  let expr = "<math><mn>230</mn><mi mathvariant='normal'>V</mi><mo>&#x23e6;</mo></math>";
+  test("en", "SimpleSpeak", expr, "230 volts, eigh c current")?;
+  return Ok(());
+}
+
+#[test]
 fn dots() -> Result<()> {
   let expr = "<math>
          <mover><mi>x</mi><mo>.</mo></mover><mo>+</mo>
