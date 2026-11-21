@@ -578,6 +578,24 @@ fn rpm_unit() -> Result<()> {
     return Ok(());
 }
 
+/// The squared katakana words (U+3300-3357), the era names and ㍿ had no entry, so the character itself
+/// was passed on and Open JTalk said nothing for most of them (㌔, ㍿); ㏂ was read アトメートル, and
+/// 毎 written with no space between two units was read ゴト.
+#[test]
+fn cjk_compatibility_squares() -> Result<()> {
+    let expr = "<math><mn>10</mn><mi>&#x3314;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "10 キロ")?;
+    let expr = "<math><mi>&#x337b;</mi><mn>31</mn></math>";
+    test("ja", "SimpleSpeak", expr, "平成 31")?;
+    let expr = "<math><mi>&#x337f;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "株式会社")?;
+    let expr = "<math><mi>&#x33c2;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "午前")?;
+    let expr = "<math><mn>3</mn><mi>&#x33de;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "3 ボルト 毎 メートル")?;
+    return Ok(());
+}
+
 /// The negation sign is ノット. The seed said コメントはありません -- "there are no
 /// comments" -- because the English source word is "not".
 #[test]
