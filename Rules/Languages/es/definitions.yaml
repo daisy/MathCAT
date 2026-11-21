@@ -27,12 +27,12 @@
     "arccot", "arccotan", "arccotanh", "arccoth",
     "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh",
     "arctan", "arctang", "arctanh",
-    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", "re", "Re", "ℜ", "Pr", "cis",
+    "exp", "Exp", "expt", "arg", "im", "Im", "ℑ", re", "Re", "ℜ", "Pr", "cis",
     "gcd", "lcm",
     "min", "max", "deg", "det", "rank", "rg", "sgn",
     "dim", "hom", "ker", "tr", "rot", "div",
     "Dim", "Hom", "Ker", "Tr",
-    "inf", "lim", "liminf", "limsup", "lim inf", "lim sup", "lim inf", "lim sup", "sup",
+    "inf", "lim", "liminf", "limsup", "sup",
     "injlim", "projlim", "inj lim", "proj lim",
     "lim\u2006sup", "lim\u2006inf", "inj\u2006lim", "proj\u2006lim",   # MathJax writes these with U+2006 between the words
 
@@ -371,9 +371,6 @@
     "skip-super": "silent=",
     "lim-sup": "prefix=lím sup cuando| el límite superior cuando| el límite superior cuando",
     "lim-inf": "prefix=lím inf cuando| el límite inferior cuando| el límite inferior cuando",
-    # Rules/Intent llama "limit-sup" y "limit-inf" a \limsup y \liminf
-    "limit-sup": "prefix=lím sup cuando| el límite superior cuando",
-    "limit-inf": "prefix=lím inf cuando| el límite inferior cuando",
     "logarithm-with-base": "prefix=log base| el logaritmo en base| el logaritmo en base",
     "trace": "function= ; traza| la traza| la traza; fin de la traza",
     "dimension": "function= ; dimensión| la dimensión| la dimensión; fin de la dimensión",
