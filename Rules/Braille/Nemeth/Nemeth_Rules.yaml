@@ -605,23 +605,21 @@
          else: [t: "b"]
 
 -
-   # Implement rules 75 - 83 for some general cases 
+   # Implement rules 75 - 83 for some general cases via mmultiscripts: (issue #234).
    # In general, we need to keep track of how we got to that script and put out the indicator(s)
    #   E.g, x^k_i has super, sub indicators in front of the 'i')
    # In general, the subscript comes before the superscript
    # After the last script, we need to indicate the initial script level except in certain cases
    # Exceptions to the above:
-   #  primes always come before the subscript
+   #  primes always come before the subscript (emitted from postscript-sub, suppressed in postscript-super)
+   #  chem 5.3.1: some superscripts on ∆ come before the subscript (same early-emit pattern)
    #  numeric subscripts associated with "simple" bases don't get a subscript indicator and hence don't need to reestablish the script level
    #   they do need a multipurpose indicator afterwards though so a following number isn't confused with the subscript (177.iiiG)
    #   subsequent rust code will eliminate unneeded multipurpose indicators
    # Prescripts differ from the above in the following ways:
    #   they need to establish their level before each prescript
    #   the number subscript simplification doesn't apply to prescripts
-   # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
-   #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
-   #   If there are more, we just dump them out without regard to sup/super :-(
-   #   Using variables makes the ugly code smaller/simpler
+   # process-order: most braille uses [prescripts, base, postscripts].
    name: default
    tag: [msubsup, mmultiscripts]
    match: "."
@@ -634,227 +632,117 @@
    - Prescripts: "m:mprescripts/following-sibling::*"
    - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
    - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+   # First-pair helpers (avoid nesting prime/chem predicates inside later ScriptIndex tests)
+   - FirstPostIsPrime: "$Postscripts[2][self::m:mo][.='′' or .='″' or .='‴' or .='⁗']"
+   - FirstPostIsChemDot: "$Postscripts[2][self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='']"
+   # chem 5.3.1 -- some superscripts come first; not enough to trigger chemistry so we look for the '∆'
+   - FirstPostIsChemFirst: "$Postscripts[2][self::m:mo][.='°' or .='\u2B96' or .='″' or .='*' or .='⋆'] and *[1]/*[1]='∆'"
+   - FirstPostWasOnlyPrime: "$Postscripts[1][self::m:none] and $FirstPostIsPrime"
    replace:
-   - test:  # prescripts first
-      if: "$Prescripts"
-      then:
-      - test:
-         if: "not($Prescripts[1][self::m:none])"
-         then:
-         - with:
-            variables:
-            - OldScriptContext: "$NewScriptContext"
-            - NewScriptContext: "concat($OldScriptContext, '↓')"
-            replace:
-            - test:
-              # avoid repeating level indicator
-                if: "not($Prescripts[1][self::m:mmultiscripts])" 
-                then: [x: "$NewScriptContext"]
-            - x: "$Prescripts[1]"
-      - test:
-         if: "not($Prescripts[2][self::m:none])"
-         then:
-         - with:
-            variables: [NewScriptContext: "concat($OldScriptContext, '↑')"]
-            replace:
-            - test:
-              # avoid repeating level indicator or putting one out if a chemistry dot
-               if: "not($Prescripts[2][self::m:mmultiscripts or
-                        (self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='') ])" 
-               then: [x: "$NewScriptContext"]
-            - x: "$Prescripts[2]"
-      - test:
-        - if: "$Prescripts[1][self::m:none] and $Prescripts[2][self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='']"
-          then: []  # do nothing
-        - else_if: "$OldScriptContext != ''"
-          then: [x: "$OldScriptContext"]
-          else: [t: "b"]
-      - test:
-         if: "count($Prescripts) > 2"    # second set of prescripts
-         then:
-         - test:
-            if: "not($Prescripts[3][self::m:none])"
-            then:
-            - with:
-                variables:
-                - OldScriptContext: "$NewScriptContext"
-                - NewScriptContext: "concat($OldScriptContext, '↓')"
-                replace:
-                - test:
-                    if: "not($Prescripts[3][self::m:mmultiscripts])" # avoid repeating level indicator
-                    then: [x: "$NewScriptContext"]
-                - x: "$Prescripts[3]"
-         - test:
-            if: "not($Prescripts[4][self::m:none])"
-            then:
-            - with:
-                variables: [NewScriptContext: "concat($OldScriptContext, '↑')"]
-                replace:
-                - test:
-                    if: "not($Prescripts[4][self::m:mmultiscripts])" # avoid repeating level indicator
-                    then: [x: "$NewScriptContext"]
-                - x: "$Prescripts[4]"
-         - test:
-            if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
-            then: [x: "$Prescripts[position() > 4]"]
-         - test:
-            if: "$OldScriptContext != ''"    # indicate the level of the base of the mmultiscripts
-            then: [x: "$OldScriptContext"]
-            else: [t: "b"]
-
-   - t: "M" # multipurpose indicator prevents the 'letter digit' substitution (177.2) from kicking in
-   - x: "*[1]"
-   - test:
-      if: "$Postscripts"
-      then:
-      - with:
-          variables:
-          - IsNumericSubscript: "$Postscripts[1][self::m:mn] and $NewScriptContext = '' and $BaseOkForNumericScript"
-          - IsPrimeSuperscript: "$Postscripts[2][self::m:mo][.='′' or .='″' or .='‴' or .='⁗']"
-          # chem 5.3.1 says some superscripts come first (u2B96 is proposed char for standard state) -- not enough to trigger chemistry we look for the '∆'
-          - IsSuperscriptFirst: "$Postscripts[2][self::m:mo][.='°' or .='\u2B96' or .='″' or .='*' or .='⋆'] and *[1]/*[1]='∆'"
-          replace:
-          - test:
-            - if: "$IsPrimeSuperscript"
-              then: [x: "$Postscripts[2]"]
-            - else_if: "$IsSuperscriptFirst"
-              then:
-              - with:
-                  variables:
-                  - NewScriptContext: "concat($OldScriptContext, '↑')"
-                  replace:
-                  - x: "$NewScriptContext"
-                  - x: "$Postscripts[2]"
-          - test:
-            - if: "$IsNumericSubscript"
-              then:
-              - t: "M"    # prevent 177.2 (see regex replacement MULTI_177_2 in code)
-              - x: "$Postscripts[1]"
-            - else_if: "not($Postscripts[1][self::m:none])"
-              then:
-              - with:
-                  variables:
-                  - OldScriptContext: "$NewScriptContext"
-                  - NewScriptContext: "concat($OldScriptContext, '↓')"
-                  replace:
-                  - x: "$NewScriptContext"
-                  - x: "$Postscripts[1]"
-          - test:
-              if: "not($IsPrimeSuperscript or $IsSuperscriptFirst or $Postscripts[2][self::m:none])"
-              then_test:
-                  if: "$Postscripts[2][self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='']"
-                  then: [x: "$Postscripts[2]"]
-                  else:
-                  - with:
-                      variables:
-                      - OldScriptContext: "$NewScriptContext"
-                      - NewScriptContext: "concat($OldScriptContext, '↑')"
-                      replace:
-                      - x: "$NewScriptContext"
-                      - x: "$Postscripts[2]"
-          - test:
-              if: "count($Postscripts) > 2"
-              then:
-              - with:
-                  variables:
-                  # generate a numeric shortcut if previous was only a prime 
-                  - IsNumericSubscript2: "$IsPrimeSuperscript and $Postscripts[1][self::m:none] and
-                                          $Postscripts[3][self::m:mn] and $NewScriptContext = '' and $BaseOkForNumericScript"
-                  replace:
-                  - test:
-                      # 82.b -- need to add level indicator between adjacent (not simultaneous) scripts
-                      # The exception is if there was only a prime and/or we used a numeric shortcut for the first script pair or for here
-                      if: "not( ($Postscripts[1][self::m:none] and $IsPrimeSuperscript) or
-                                $Postscripts[2][self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')=''])"
-                      then: [t: "b"]
-                  - test:
-                      if: "not($Postscripts[3][self::m:none])"
-                      then:
-                      - test:
-                          if: "$IsNumericSubscript2"
-                          then: [x: "$Postscripts[3]"]    # numeric shortcut -- note 177.2 can't happen because must be a prime symbol before the number
-                          else:
-                          - with:
-                              variables:
-                              - OldScriptContext: "$NewScriptContext"
-                              - NewScriptContext: "concat($OldScriptContext, '↓')"
-                              replace:
-                              - x: "$NewScriptContext"
-                              - x: "$Postscripts[3]"
-                  - test:
-                      if: "not($Postscripts[4][self::m:none])"
-                      then:
-                      - with:
-                          variables:
-                          - OldScriptContext: "$NewScriptContext"
-                          - NewScriptContext: "concat($OldScriptContext, '↑')"
-                          replace:
-                          - x: "$NewScriptContext"
-                          - x: "$Postscripts[4]"
-              - test:
-                  if: "count($Postscripts) > 4"
-                  then:
-                  - t: "b"
-                  - test:
-                      if: "not($Postscripts[5][self::m:none])"
-                      then:
-                      - with:
-                          variables:
-                          - OldScriptContext: "$NewScriptContext"
-                          - NewScriptContext: "concat($OldScriptContext, '↓')"
-                          replace:
-                          - x: "$NewScriptContext"
-                          - x: "$Postscripts[5]"
-                  - test:
-                      if: "not($Postscripts[6][self::m:none])"
-                      then:
-                      - with:
-                          variables:
-                          - OldScriptContext: "$NewScriptContext"
-                          - NewScriptContext: "concat($OldScriptContext, '↑')"
-                          replace:
-                          - x: "$NewScriptContext"
-                          - x: "$Postscripts[6]"
-                  - test:
-                      if: "count($Postscripts) > 6"
-                      then:
-                      - t: "b"    # 82.b -- need to add level indicator between adjacent (not simultaneous) scripts (assumes one of sub/super is not 'none')
-                      - test:
-                          if: "not($Postscripts[7][self::m:none])"
-                          then:
-                          - with:
-                              variables:
-                              - OldScriptContext: "$NewScriptContext"
-                              - NewScriptContext: "concat($OldScriptContext, '↓')"
-                              replace:
-                              - x: "$NewScriptContext"
-                              - x: "$Postscripts[7]"
-                      - test:
-                          if: "not($Postscripts[8][self::m:none])"
-                          then:
-                          - with:
-                              variables:
-                              - OldScriptContext: "$NewScriptContext"
-                              - NewScriptContext: "concat($OldScriptContext, '↑')"
-                              replace:
-                              - x: "$NewScriptContext"
-                              - x: "$Postscripts[8]"
-                          - test:
-                              if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
-                              then:
-                              - t: "b"    # 82.b -- need to add level indicator between adjacent (not simultaneous) scripts (assumes one of sub/super is not 'none')
-                              - x: "$Postscripts[position() > 8]"
-   - test:
-      # emit level indicator if not numeric subscript, something follows or the closest non-mrow is an element with a close tag [80(a)]
-      if: "$Postscripts and
-           not( ($Postscripts[last()][self::m:none] and $Postscripts[last()-1][self::m:mn] and $BaseOkForNumericScript) or
-                (parent::m:msubsup and count(following-sibling::*)=1) or
-                following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]]
-              )" # first child is likely invisible times
-      then_test:
-         if: "$OldScriptContext != ''"
-         then: [x: "$OldScriptContext"]
-         else: [t: "b"]
+   - mmultiscripts:
+       process-order: [prescripts, base, postscripts]
+       base:
+       - t: "M" # multipurpose indicator prevents the 'letter digit' substitution (177.2) from kicking in
+       - x: "*[1]"
+       prescript-sub:
+       - test:
+           if: "not($Subscript[self::m:none])"
+           then:
+           - with:
+               variables:
+               - OldScriptContext: "$NewScriptContext"
+               - NewScriptContext: "concat($OldScriptContext, '↓')"
+               replace:
+               - test:
+                   # avoid repeating level indicator
+                   if: "not($Subscript[self::m:mmultiscripts])"
+                   then: [x: "$NewScriptContext"]
+               - x: "$Subscript"
+       prescript-super:
+       - test:
+           if: "not($Superscript[self::m:none])"
+           then:
+           - with:
+               variables: [NewScriptContext: "concat($OldScriptContext, '↑')"]
+               replace:
+               - test:
+                   # avoid repeating level indicator or putting one out if a chemistry dot
+                   if: "not($Superscript[self::m:mmultiscripts or
+                            (self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='')])"
+                   then: [x: "$NewScriptContext"]
+               - x: "$Superscript"
+       - test:
+         # Return to the base level after each prescript pair (skip lone chemistry-dot first pair).
+         - if: "$ScriptIndex=1 and $Subscript[self::m:none] and
+                $Superscript[self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='']"
+           then: []
+         - else_if: "$OldScriptContext != ''"
+           then: [x: "$OldScriptContext"]
+           else: [t: "b"]
+       postscript-sub:
+       - test:
+           # 82.b -- level indicator between adjacent (not simultaneous) script pairs.
+           # Skip when the previous pair was only a prime, or a chemistry-dot superscript.
+           if: "$ScriptIndex > 1"
+           then:
+           - test:
+             - if: "$ScriptIndex=2 and ($FirstPostWasOnlyPrime or $FirstPostIsChemDot)"
+               then: []
+               else: [t: "b"]
+       # Prime / chem-5.3.1 superscripts come before the subscript: emit here, suppress in postscript-super.
+       - test:
+         - if: "$ScriptIndex=1 and $FirstPostIsPrime"
+           then: [x: "$Superscript"]
+         - else_if: "$ScriptIndex=1 and $FirstPostIsChemFirst"
+           then:
+           - with:
+               variables: [NewScriptContext: "concat($OldScriptContext, '↑')"]
+               replace:
+               - x: "$NewScriptContext"
+               - x: "$Superscript"
+       - test:
+         - if: "$Subscript[self::m:mn] and $NewScriptContext = '' and $BaseOkForNumericScript and
+                ($ScriptIndex=1 or ($ScriptIndex=2 and $FirstPostWasOnlyPrime))"
+           then:
+           - test:
+               # First-pair numeric shortcut needs M; after a lone prime, 177.2 can't happen.
+               if: "$ScriptIndex=1"
+               then: [t: "M"]
+           - x: "$Subscript"
+         - else_if: "not($Subscript[self::m:none])"
+           then:
+           - with:
+               variables:
+               - OldScriptContext: "$NewScriptContext"
+               - NewScriptContext: "concat($OldScriptContext, '↓')"
+               replace:
+               - x: "$NewScriptContext"
+               - x: "$Subscript"
+       postscript-super:
+       - test:
+           # Skip when already emitted early from postscript-sub (prime / chem-on-∆).
+           if: "not($ScriptIndex=1 and ($FirstPostIsPrime or $FirstPostIsChemFirst)) and not($Superscript[self::m:none])"
+           then_test:
+               if: "$Superscript[self::m:mo and @data-chem-formula-op and string-length(.)=1 and translate(., '∙•', '')='']"
+               then: [x: "$Superscript"]
+               else:
+               - with:
+                   variables:
+                   - OldScriptContext: "$NewScriptContext"
+                   - NewScriptContext: "concat($OldScriptContext, '↑')"
+                   replace:
+                   - x: "$NewScriptContext"
+                   - x: "$Superscript"
+       - test:
+           # Final baseline after the last postscript pair [80(a)], unless numeric-sub shortcut or a following left script.
+           if: "$ScriptIndex = count($Postscripts) div 2 and
+                not( ($Postscripts[last()][self::m:none] and $Postscripts[last()-1][self::m:mn] and $BaseOkForNumericScript) or
+                     (parent::m:msubsup and count(following-sibling::*)=1) or
+                     following-sibling::*[2][self::m:mmultiscripts and *[self::m:mprescripts]] )"
+           then_test:
+               if: "$OldScriptContext != ''"
+               then: [x: "$OldScriptContext"]
+               else: [t: "b"]
 
 -
    name: contracted-form # NFB Lesson 12.5.1.b
