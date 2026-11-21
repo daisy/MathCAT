@@ -1643,7 +1643,9 @@ impl CanonicalizeContext {
 						"..." => {
 							if parent_name != "mover" {
 								mathml.set_text("…");
-							}  // name might need to change -- checked below
+								set_mathml_name(mathml, "mi");
+								return Some(mathml);
+							}
 						},
 						"⌢" | "⏜" => {    // lookalikes:  U+2322 (“Frown”), U+23DC (“Top Parenthesis”)
 							// arc should be over constructs like AB or ABC 
@@ -7685,6 +7687,43 @@ mod canonicalize_tests {
 			<mn>9</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>11</mn><mo>,</mo>
 			<mn>5</mn><mo>,</mo><mrow data-changed='added'><mo>.</mo><mo>.</mo></mrow>
 			<mo>,</mo><mn>8</mn></mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn ellipsis_in_one_mo() -> Result<()> {
+        let test_str = "<math><mn>3</mn><mo>+</mo><mo>...</mo><mo>=</mo><mn>5</mn></math>";
+        let target_str = "<math><mrow data-changed='added'>
+			<mrow data-changed='added'><mn>3</mn><mo>+</mo><mi>…</mi></mrow>
+			<mo>=</mo><mn>5</mn></mrow></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn ellipsis_in_mover() -> Result<()> {
+        let test_str = "<math><mover><mi>x</mi><mo>…</mo></mover></math>";
+        let target_str = "<math><mover><mi>x</mi><mi>…</mi></mover></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn three_dots_in_mover() -> Result<()> {
+        let test_str = "<math><mover><mi>x</mi><mo>...</mo></mover></math>";
+        let target_str = "<math><mover><mi>x</mi><mo>...</mo></mover></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn ellipsis_in_munder() -> Result<()> {
+        let test_str = "<math><munder><mi>x</mi><mo>…</mo></munder></math>";
+        let target_str = "<math><munder><mi>x</mi><mi>…</mi></munder></math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn three_dots_in_munder() -> Result<()> {
+        let test_str = "<math><munder><mi>x</mi><mo>...</mo></munder></math>";
+        let target_str = "<math><munder><mi>x</mi><mi>…</mi></munder></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
