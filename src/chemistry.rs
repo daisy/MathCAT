@@ -989,17 +989,17 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
             .find(|(_, child)| name(as_element(**child)) == "mprescripts")
             .map(|(i, _)| i);
 
-        if let Some(i) = i_mprescripts {
+        if let Some(i) = i_mprescripts && i + 2 < children.len() {
             let subscript = as_element(children[i+1]);  // can be +1/-1 for beta decay
             let superscript = as_element(children[i+2]);  // mass number, so always >= 0
             if name(superscript) != "mn" {
                 return false;
             }
             return name(subscript) == "mn" ||
-                   (name(subscript) == "mrow" && subscript.children().len() == 3 &&
-                    name(as_element(subscript.children()[3])) == "mm" && 
-                    name(as_element(subscript.children()[1])) == "mo" &&
-                    matches!(as_str!(as_text(as_element(subscript.children()[1]))), "+" | "-"));
+                   (name(subscript) == "mrow" && subscript.children().len() == 2 &&
+                    name(as_element(subscript.children()[1])) == "mn" &&
+                    name(as_element(subscript.children()[0])) == "mo" &&
+                    matches!(as_str!(as_text(as_element(subscript.children()[0]))), "+" | "-"));
         }
         return false;
     }
