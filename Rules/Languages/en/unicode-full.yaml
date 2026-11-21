@@ -2430,7 +2430,7 @@
  - "㎿": [t: "megawatts"]                           # 0x33bf
  - "㏀": [t: "kilo-ohms"]                           # 0x33c0
  - "㏁": [t: "megaohms"]                            # 0x33c1
- - "㏂": [t: "a m"]                                 # 0x33c2
+ - "㏂": [spell: "'am'"]                            # 0x33c2
  - "㏃": [t: "becquerels"]                          # 0x33c3
  - "㏄": [t: "cubic centimeters"]                   # 0x33c4
  - "㏅": [t: "candelas"]                            # 0x33c5
@@ -2452,7 +2452,7 @@
  - "㏕": [t: "mills"]                               # 0x33d5
  - "㏖": [t: "moles"]                               # 0x33d6
  - "㏗": [t: "p h"]                                 # 0x33d7
- - "㏘": [t: "p m"]                                 # 0x33d8
+ - "㏘": [spell: "'pm'"]                            # 0x33d8
  - "㏙": [t: "parts per million"]                   # 0x33d9
  - "㏚": [t: "petaroentgens"]                       # 0x33da
  - "㏛": [t: "steradians"]                          # 0x33db
