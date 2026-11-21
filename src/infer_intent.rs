@@ -29,7 +29,7 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
 
 fn infer_intent_from_original<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRulesWithContext<'c,'s,'m>, mathml: Element<'c>) -> Result<Element<'m>> {
     match catch_errors_building_intent(rules_with_context, mathml) {
-        Ok(intent) => return Ok(intent),
+        Ok(intent) => return Ok(ensure_math_root(mathml, intent, rules_with_context.get_document())),
         Err(e) => {
             // lookup what we should do for error recovery
             let intent_preference = rules_with_context.get_rules().pref_manager.borrow().pref_to_string("IntentErrorRecovery");
@@ -44,7 +44,7 @@ fn infer_intent_from_original<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut 
                     Err(e) => Err(e),
                     Ok(intent) => {
                         intent.set_attribute_value(INTENT_ATTR, as_str!(saved_intent_attr)); //  so attr can be potentially be viewed later
-                        Ok(intent)
+                        Ok(ensure_math_root(mathml, intent, rules_with_context.get_document()))
                     },
                 };
                 mathml.set_attribute_value(INTENT_ATTR, as_str!(saved_intent_attr));
@@ -69,6 +69,25 @@ fn infer_intent_from_original<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut 
         }
         bail!("Internal error: infer_intent() called on MathML with no intent arg:\n{}", mml_to_string(mathml));
     }
+}
+
+/// Intent rules keep a `<math>` parent (see intent.yaml). When `@intent` is on `<math>` itself,
+/// `build_intent` may return a bare concept root; wrap it so navigation still has a math ancestor.
+fn ensure_math_root<'c, 'm>(source: Element<'c>, intent: Element<'m>, doc: Document<'m>) -> Element<'m> {
+    if name(source) != "math" ||
+        name(intent) == "math" {
+        return intent;
+    }
+    if intent.attribute_value(MATHML_FROM_NAME_ATTR).as_deref() == Some("math") {
+        intent.remove_attribute(MATHML_FROM_NAME_ATTR);
+    }
+    let math = create_mathml_element(&doc, "math");
+    math.set_attribute_value(MATHML_FROM_NAME_ATTR, "math");
+    if let Some(id) = source.attribute_value("id") {
+        math.set_attribute_value("id", as_str!(id));
+    }
+    math.append_child(intent);
+    return math;
 }
 
 const OVERLAY_NAME_ATTR: &str = "data-intent-overlay-name";
@@ -515,8 +534,8 @@ fn binary_separator(mapping: &FixityMapping) -> Option<&str> {
 /// True when the glue is an arity template (multiple options, or one option with comma-separated
 /// glue words) rather than a binary separator or a plain function.
 fn is_arity_mode(mapping: &FixityMapping) -> bool {
-    binary_separator(mapping).is_none()
-        && (mapping.glue.len() > 1 || mapping.glue.iter().any(|option| option.contains(',')))
+    return binary_separator(mapping).is_none() &&
+        (mapping.glue.len() > 1 || mapping.glue.iter().any(|option| option.contains(',')));
 }
 
 /// The glue words for an exact arity match: the option with `arg_count - 1` comma-separated words.
@@ -563,10 +582,9 @@ pub fn intent_function_arg_separator(intent_name: &str, fixity: &str, arg_count:
         // On an exact arity match the glue words are inserted individually (no separator).
         return if arity_glue(&mapping, arg_count).is_some() { String::new() } else { ",".to_string() };
     }
-    if arg_count == 2
-        && let Some(separator) = binary_separator(&mapping)
-        && !separator.eq_ignore_ascii_case("comma")
-    {
+    if arg_count == 2 &&
+        let Some(separator) = binary_separator(&mapping) &&
+        !separator.eq_ignore_ascii_case("comma") {
         return separator.to_string();
     }
     ",".to_string()
@@ -771,8 +789,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             let (leaf_name, leaf_text) = if let Token::Number(_) = lex_state.token {
                 ("mn", word)
             } else if let Token::ConceptOrLiteral(word) = lex_state.token &&
-                is_concept_name(lex_state.remaining_str)
-            {
+                is_concept_name(lex_state.remaining_str) {
                 is_leaf_concept = is_leaf(mathml);
                 (word, if is_leaf_concept { as_str!(as_text(mathml)) } else { "" })
             } else {
@@ -796,8 +813,7 @@ fn build_intent<'b, 'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
             if let Some(id) = mathml.attribute_value("id") {
                 // A following '(' adds argument nodes, so the head still needs its own id.
                 if keep_leaf_id &&
-                    !lex_state.is_terminal("(")
-                {
+                    !lex_state.is_terminal("(") {
                     intent.set_attribute_value("id", as_str!(id));
                 } else {
                     intent.set_attribute_value("id", &format!("{}-literal-{}", id, intent_offset));
@@ -939,8 +955,7 @@ fn build_function<'b, 'r, 'c, 's:'c, 'm:'c>(
     // A nested head such as (f∘g)(x) is wrapped in a new apply-function that otherwise has no id.
     // Navigation records @id, so the wrapper keeps the source element's id.
     if function.attribute_value("id").is_none() &&
-        let Some(id) = mathml.attribute_value("id")
-    {
+        let Some(id) = mathml.attribute_value("id") {
         function.set_attribute_value("id", as_str!(id));
     }
 
@@ -1575,5 +1590,43 @@ mod tests {
                             </math>";
         assert!(test_intent(mathml, intent, "Error"));
         return Ok(());
-    }   
+    }
+
+    // Intent on <math> must keep a <math> wrapper so navigation has a math ancestor.
+    #[test]
+    fn math_intent_keeps_math_wrapper() -> Result<()> {
+        use crate::interface::{get_element, init_panic_handler, report_any_panic, set_preference, set_rules_dir, trim_element};
+        use crate::pretty_print::mml_to_string;
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(|| {
+            set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
+            set_preference("Language", "en").unwrap();
+            set_preference("IntentErrorRecovery", "Error").unwrap();
+            set_preference("SpeechStyle", "SimpleSpeak").unwrap();
+            let mathml_str = "<math id='math' intent='wibble($x,$y)'>
+                    <mi id='x' arg='x'>x</mi><mo>+</mo><mi id='y' arg='y'>y</mi>
+                </math>";
+            let package = parser::parse(mathml_str).expect("Failed to parse test input");
+            let mathml = get_element(&package);
+            trim_element(mathml, false);
+            let result = crate::speech::intent_from_mathml(mathml, package.as_document())
+                .expect("intent_from_mathml failed");
+            assert_eq!(super::name(result), "math", "{}", mml_to_string(result));
+            assert_eq!(result.attribute_value("id").as_deref(), Some("math"), "{}", mml_to_string(result));
+            assert_eq!(result.attribute_value(super::MATHML_FROM_NAME_ATTR).as_deref(), Some("math"));
+            assert_eq!(result.children().len(), 1, "{}", mml_to_string(result));
+            let concept = super::as_element(result.children()[0]);
+            assert_eq!(super::name(concept), "wibble", "{}", mml_to_string(result));
+            assert_ne!(concept.attribute_value(super::MATHML_FROM_NAME_ATTR).as_deref(), Some("math"));
+            assert_eq!(concept.children().len(), 2, "{}", mml_to_string(result));
+            let x = super::as_element(concept.children()[0]);
+            let y = super::as_element(concept.children()[1]);
+            assert_eq!(super::name(x), "mi");
+            assert_eq!(x.attribute_value("id").as_deref(), Some("x"));
+            assert_eq!(super::name(y), "mi");
+            assert_eq!(y.attribute_value("id").as_deref(), Some("y"));
+            return Ok(());
+        }));
+        return report_any_panic(result);
+    }
 }

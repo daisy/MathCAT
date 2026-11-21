@@ -4,33 +4,17 @@
   tag: line-segment
   match: "count(*)=2"
   replace:
-  - test:
-      if: "$Verbosity='Verbose'"
-      then:
-      - t: "线段"      # phrase('the line segment from' A to B)
-      - x: "*[1]"
-      - t: "到"                         # phrase(the line segment from A 'to' B)
-      - x: "*[2]"
-      else:
-      - t: "线段"               # phrase(the 'line segment' A  B)
-      - x: "*[1]"
-      - x: "*[2]"
+  - T: "线段"
+  - x: "*[1]"
+  - x: "*[2]"
 
 - name: geometry-ray
   tag: ray
   match: "count(*)=2"
   replace:
-  - test:
-      if: "$Verbosity='Verbose'"
-      then:
-      - t: "射线"             # phrase('the ray from' A to B)
-      - x: "*[1]"
-      - t: "到"                       # phrase(the ray from A 'to' B)
-      - x: "*[2]"
-      else:
-      - t: "ray"                      # phrase(the 'ray'A  B)
-      - x: "*[1]"
-      - x: "*[2]"
+  - T: "射线"
+  - x: "*[1]"
+  - x: "*[2]"
 
 - name: geometry-arc
   tag: arc
@@ -38,8 +22,8 @@
   replace:
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "这"]            # phrase('the' arc A B C)
-  - t: "弧"                        # phrase(the 'arc' A B C)
+      then: [T: ""]            # phrase('the' arc A B C)
+  - T: "弧"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
 
@@ -47,13 +31,40 @@
   tag: measure-of-angle
   match: "count(*)=3"
   replace:
-  - test:
-      if: "$Verbosity='Verbose'"
-      then:
-      - t: "角度的度量"      # phrase('the measure of the angle' ABC)
-      else:
-      - t: "衡量角度"      # phrase('measure of angle' ABC)
+  - T: "角"
   - x: "*[1]"
   - x: "*[2]"
   - x: "*[3]"
+  - T: "的度数"
 
+- name: geometry-quantity
+  tag: [length, area]
+  match: "count(*)=1"
+  replace:
+  - x: "*[1]"
+  - test:
+      if: "self::m:length"
+      then: [T: "的长度"]
+      else: [T: "的面积"]
+
+
+- name: coordinate
+  tag: coordinate
+  # Intent forms coordinate($x,...) use @arg and fall through to function-intent / IntentMappings.
+  match: "not(*[@arg])"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [OT: ""]      # phrase('the' point at 1, 2)
+  - T: "点"      # phrase(the 'point' at 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: ""]      # Chinese does not need an equivalent of "at" here.
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "逗号", pause: auto]      # phrase(f of x 'comma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "结束点"]      # phrase(start point, 'end point')

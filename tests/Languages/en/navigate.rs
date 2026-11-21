@@ -6,18 +6,9 @@
 
 use crate::common::*;
 use anyhow::Result;
-use std::panic::{catch_unwind, AssertUnwindSafe};
 
 fn assert_zoom_in(command: &str, mathml: &str, expected: &str) -> Result<()> {
-    init_panic_handler();
-    let result = catch_unwind(AssertUnwindSafe(|| {
-        init_nav("en", mathml)?;
-        let speech = do_navigate_command(command)?;
-        let trimmed_speech = speech.trim_end_matches([' ', ',', ';']).to_string();
-        assert_eq!(expected, trimmed_speech);
-        Ok(())
-    }));
-    report_any_panic(result)
+    return assert_nav_sequence("en", mathml, &[command], &[expected]);
 }
 
 // --- Intents in NavigationParts (prefix, infix, function, silent; no postfix/nofix) ---

@@ -52,13 +52,13 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "角"      # phrase('the measure of the angle' ABC)
+      - T: "かく"      # phrase('the measure of the angle' ABC)
       else:
-      - T: "角"      # phrase('measure of angle' ABC)
+      - T: "かく"      # phrase('measure of angle' ABC)
   - x: "*[1]"
   - x: "*[2]"
   - x: "*[3]"
-  - T: "の大きさ"      # Japanese says the angle first: 角 ABC の大きさ
+  - T: "の大きさ"      # Japanese says the angle first: かく ABC の大きさ
 
 # The angle-measure intent: definitions.yaml can only give it as a prefix (角の大きさ A),
 # which keeps the English order, so say it here the same way as measure-of-angle.
@@ -68,11 +68,11 @@
   match: "count(*)>0 and not(contains(@data-intent-property, ':silent:'))"
   replace:
   - test:
-      # the operand already says 角 for m∠ABC or an angle intent; don't say it twice
+      # the operand already says かく for m∠ABC or an angle intent; don't say it twice
       if: "not(*[1][(self::m:angle and not(contains(@data-intent-property, ':silent:'))) or (self::m:mrow and *[1][self::m:mo and .='∠'])])"
-      then: [T: "角"]      # phrase('measure of angle' ABC)
+      then: [T: "かく"]      # phrase('measure of angle' ABC)
   - x: "*"
-  - T: "の大きさ"      # Japanese says the angle first: 角 A の大きさ
+  - T: "の大きさ"      # Japanese says the angle first: かく A の大きさ
 
 
 - name: coordinate

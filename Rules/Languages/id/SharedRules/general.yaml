@@ -457,7 +457,7 @@
       - if: "*[1][.='log']"
         then: [T: log]
       - else_if: "$Verbosity='Terse'"
-        then: [spell: ln]
+        then: [spell: "'ln'"]
         else: [T: log alami]
       else:
       - test:
@@ -467,7 +467,7 @@
         - if: "*[1][.='log']"
           then: [T: log]
         - else_if: "$Verbosity='Terse'"
-          then: [spell: ln]
+          then: [spell: "'ln'"]
           else: [T: log alami]
       - T: dari
       - pause: short
