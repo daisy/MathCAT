@@ -188,7 +188,7 @@ fn beta_decay_atomic_number_sum() -> Result<()> {
 #[test]
 fn sulfate_empty_prescripts() -> Result<()> {
   let expr = "<math><mn>2</mn><mi>S</mi><mmultiscripts><mi>O</mi><mn>4</mn><mrow><mn>2</mn><mo>&#x2212;</mo></mrow><mprescripts/></mmultiscripts></math>";
-  test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "2 cap s, cap o sub 4 and super 2 minus")?;
+  test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "2, cap s; cap o, sub 4, super 2 minus")?;
   return Ok(());
 
 }
