@@ -578,6 +578,26 @@ fn rpm_unit() -> Result<()> {
     return Ok(());
 }
 
+/// The circled katakana and ideographs, the parenthesized ideographs, ⑲, ㉐ and ㋿ had no entry, so the
+/// character itself was passed on and Open JTalk said nothing. A lone ヘ is read as the particle (エ),
+/// so ㋬ is written 丸、ヘ, which Open JTalk reads マル、ヘ.
+#[test]
+fn enclosed_characters() -> Result<()> {
+    let expr = "<math><mi>&#x2472;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "丸 19")?;
+    let expr = "<math><mi>&#x32d0;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "丸 ア")?;
+    let expr = "<math><mi>&#x32ec;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "丸、ヘ")?;
+    let expr = "<math><mi>&#x3299;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "丸 秘")?;
+    let expr = "<math><mi>&#x3231;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "カッコ 株")?;
+    let expr = "<math><mi>&#x32ff;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "令和")?;
+    return Ok(());
+}
+
 /// The squared katakana words (U+3300-3357), the era names and ㍿ had no entry, so the character itself
 /// was passed on and Open JTalk said nothing for most of them (㌔, ㍿); ㏂ was read アトメートル, and
 /// 毎 written with no space between two units was read ゴト.
