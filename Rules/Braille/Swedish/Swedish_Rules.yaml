@@ -480,7 +480,7 @@
   match: "count(*)=3"    # catches mmultiscripts equiv
   replace:
   - test:
-      if: "self::m:mundermover and NeedsToBeGrouped(*[1], 'Swedish', true())"
+      if: "self::m:munderover and NeedsToBeGrouped(*[1], 'Swedish', true())"
       then:
       - t: "⠘"
       - x: "*[1]"
@@ -530,7 +530,7 @@
               then: [t: "⠒"]
             - else_if: "*[3][.='^']"
               then: [t: "⠖"]
-              else: [t: "*[3]"]  # works for right arrow also
+              else: [x: "*[3]"]  # works for right arrow also
       - test:
           if: "$SecondScriptNeedsToBeGrouped"
           then: [t: "⠱"]
