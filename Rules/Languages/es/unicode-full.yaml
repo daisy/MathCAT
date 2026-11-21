@@ -7,7 +7,8 @@
  - "¨": [T: "diéresis"]                         	#  0xa8	(en: 'double dot')
  - "©": [T: "copyright"]                        	#  0xa9
  - "ª": [T: "ordinal femenino"]                 	#  0xaa	(en: 'feminine ordinal indicator')
- - "«": [T: "abrir comillas angulare"]     	#  0xab	(en: 'left-pointing double angle quote mark', MathPlayer: 'abre comillas angulares', google: 'marca de cotización de doble ángulo de punta izquierda')
+ - "«": [T: "abrir comillas angulares"]     	#  0xab	(en: 'left-pointing double angle quote mark', MathPlayer: 'abre comillas angulares', google: 'marca de cotización de doble ángulo de punta izquierda')
+ - "»": [T: "cerrar comillas angulares"]    	#  0xbb	(en: 'right-pointing double angle quote mark')
  - "¯":                                         	#  0xaf
      - test:
         if: "ancestor::m:modified-variable and preceding-sibling::*[1][self::m:mi]"
@@ -196,6 +197,8 @@
  - "ϗ": [T: "símbolo kai griego"]               	#  0x3d7	(en: 'kai')
  - "Ϙ": [T: "mayúscula koppa arcaica"]	#  0x3d8	(en: 'cap archaic koppa')
  - "ϙ": [T: "koppa arcaica"]	#  0x3d9	(en: 'archaic koppa')
+ - "ϰ": [T: "variante de kappa"]	#  0x3f0	(en: 'kappa')
+ - "ϱ": [T: "variante de rho"]	#  0x3f1	(en: 'rho')
  - "А-Я":                                       	#  0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -358,7 +361,7 @@
  - "₢": [T: "cruzeiro"]                         	#  0x20a2	(en: 'cruzeiro', google: 'cruzeiro')
  - "₣": [T: "franco"]                           	#  0x20a3	(en: 'franc')
  - "₤": [T: "lira"]                             	#  0x20a4
- - "₥": [T: "molinos"]                          	#  0x20a5	(en: 'mills')
+ - "₥": [T: "mil"]                          	#  0x20a5	(en: 'mills')
  - "₦": [T: "naira"]                            	#  0x20a6
  - "₧": [T: "peseta"]                           	#  0x20a7
  - "₨": [T: "rupia"]                            	#  0x20a8	(en: 'rupees', google: 'rupias')
@@ -2506,7 +2509,7 @@
  - "㎿": [T: "megavatios"]                        	#  0x33bf	(google translation)
  - "㏀": [T: "kiloohmios"]                        	#  0x33c0	(google translation)
  - "㏁": [T: "megaohmios"]                         	#  0x33c1	(google translation)
- - "㏂": [T: "attómetros"]                        	#  0x33c2	(en: 'attometers', google translation)
+ - "㏂": [T: "a. m."]                        	#  0x33c2	(en: 'attometers', google translation)
  - "㏃": [T: "becquerelios"]                       	#  0x33c3	(google translation)
  - "㏄": [T: "centímetros cúbicos"]              	#  0x33c4	(en: 'cubic centimeters', google translation)
  - "㏅": [T: "candelas"]                         	#  0x33c5	(google translation)
@@ -2528,7 +2531,7 @@
  - "㏕": [T: "mil"]                          	#  0x33d5	(en: 'mills', google translation)
  - "㏖": [T: "moles"]                            	#  0x33d6	(google translation)
  - "㏗": [T: "p h"]                              	#  0x33d7	(google translation)
- - "㏘": [T: "picómetros"]                       	#  0x33d8	(en: 'picometers', google translation)
+ - "㏘": [T: "p. m."]                       	#  0x33d8	(en: 'picometers', google translation)
  - "㏙": [T: "partes por millón"]                	#  0x33d9	(en: 'parts per million', google translation)
  - "㏚": [T: "roentgens"]                   	#  0x33da	(en: 'petaroentgens', google translation)
  - "㏛": [T: "estereorradianes"]                     	#  0x33db	(en: 'steradians', google translation)
