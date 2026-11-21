@@ -165,11 +165,11 @@ cfg_if! {
                 let dir_name = canonicalize_path_separators(dir);
                 let direct_file_prefix = format!("{dir_name}/");
                 for file_name in files.keys() {
-                    if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) &&
-                       file_name.ends_with(ending) {
-                        // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
-                        let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
-                        answer.push(file_name.to_string());
+                    // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
+                    if let Some(dir_relative_name) = file_name.strip_prefix(&direct_file_prefix) &&
+                       file_name.ends_with(ending) &&
+                       !dir_relative_name.contains('/') {
+                        answer.push(dir_relative_name.to_string());
                     }
                 }
                 // debug!("find_files_in_dir_that_ends_with_shim: in dir '{}' found {:?}", dir.display(), answer);
