@@ -2865,4 +2865,73 @@ mod tests {
             return Ok( () );
         }
     }
+
+    // --- intent on <math> (keeps a math wrapper; leaf nav matches intent-on-mrow) ---
+
+    // used to panic (EdgeNode) on MoveNext/MovePrevious when the intent tree root was not "math"
+    #[test]
+    fn intent_on_math_arguments() -> Result<()> {
+        let mathml_str = "<math id='math' intent='wibble($x,$y)'>
+                <mi id='x' arg='x'>x</mi><mo id='plus'>+</mo><mi id='y' arg='y'>y</mi>
+            </math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        set_preference("AutoZoomOut", "False")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "x")?;
+            test_command("MoveNext", mathml, "y")?;
+            test_command("MovePrevious", mathml, "x")?;
+            test_command("ZoomOut", mathml, "math-literal-0")?;
+            return Ok(());
+        });
+    }
+
+    // Leaf navigation should match whether intent is on <math> or on a child <mrow>.
+    #[test]
+    fn intent_on_math_same_as_on_mrow() -> Result<()> {
+        let on_math = "<math id='math' intent='wibble($x,$y)'>
+                <mi id='x' arg='x'>a</mi><mo>+</mo><mi id='y' arg='y'>b</mi>
+            </math>";
+        let on_mrow = "<math id='math'>
+                <mrow id='row' intent='wibble($x,$y)'>
+                    <mi id='x' arg='x'>a</mi><mo>+</mo><mi id='y' arg='y'>b</mi>
+                </mrow>
+            </math>";
+        let run = |mathml_str: &str| -> Result<Vec<String>> {
+            init_default_prefs(mathml_str, "Enhanced")?;
+            set_preference("AutoZoomOut", "False")?;
+            return MATHML_INSTANCE.with(|package_instance| {
+                let package_instance = package_instance.borrow();
+                let mathml = get_element(&package_instance);
+                let commands = ["ZoomIn", "MoveNext", "MoveNext", "MovePrevious", "ZoomInAll", "MoveNext", "MoveNext"];
+                let mut ids = Vec::with_capacity(commands.len());
+                for command in commands {
+                    test_command(command, mathml, "")?;
+                    ids.push(get_navigation_mathml_id()?.0);
+                }
+                return Ok(ids);
+            });
+        };
+        assert_eq!(run(on_mrow)?, run(on_math)?);
+        return Ok(());
+    }
+
+    // used to say nothing / fail to enter the postfix argument from a math-level intent
+    #[test]
+    fn intent_on_math_postfix() -> Result<()> {
+        let mathml_str = "<math id='math' intent='_positivo:postfix($n)'>
+                <mo id='plus'>+</mo><mn id='n' arg='n'>7</mn>
+            </math>";
+        init_default_prefs(mathml_str, "Enhanced")?;
+        set_preference("AutoZoomOut", "False")?;
+        return MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            test_command("ZoomIn", mathml, "n")?;
+            test_command("MoveNext", mathml, "n")?; // at edge -- cannot move right
+            test_command("ZoomOut", mathml, "math-literal-0")?;
+            return Ok(());
+        });
+    }
 }
