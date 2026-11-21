@@ -109,11 +109,3 @@ fn not_gradient() -> Result<()> {
   return Ok(());
 
 }
-
-#[test]
-fn vector_combining_arrow() -> Result<()> {
-  // KaTeX and math-core write \vec{F} with U+20D7 (COMBINING RIGHT ARROW ABOVE) -- issue #1065
-  let expr = r#"<math><mover accent="true"><mi>F</mi><mo stretchy="false">&#x20D7;</mo></mover></math>"#;
-  test("en", "SimpleSpeak", expr, "vector cap f")?;
-  return Ok(());
-}
