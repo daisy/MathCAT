@@ -306,14 +306,14 @@
           - x: "$PreSubscript"
           - test:
               if: "$Subscript[self::m:none]"
-              then: [t: "nada"]
+              then: [T: "vacío"]
               else: [x: "$Subscript"]
           prescript-super:
           - T: "y"      # phrase(10 is greater than 8 'and' less than 15)
           - x: "$PreSuperscript"
           - test:
               if: "$Superscript[self::m:none]"
-              then: [t: "nada"]
+              then: [T: "vacío"]
               else: [x: "$Superscript"]
           - test:
               # Pause after each pair except the last when there are multiple pairs;
@@ -334,14 +334,14 @@
           - x: "$PostSubscript"
           - test:
               if: "$Subscript[self::m:none]"
-              then: [t: "nada"]
+              then: [T: "vacío"]
               else: [x: "$Subscript"]
           postscript-super:
           - T: "y"      # phrase(10 is greater than 8 'and' less than 15)
           - x: "$PostSuperscript"
           - test:
               if: "$Superscript[self::m:none]"
-              then: [t: "nada"]
+              then: [T: "vacío"]
               else: [x: "$Superscript"]
 
 - name: default

@@ -231,23 +231,22 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada")?;
+            "mayúscula r con 4 índices, subíndice i y superíndice vacío subíndice vacío y superíndice j subíndice k y superíndice vacío subíndice l y superíndice vacío")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "mayúscula r con 4 índices, sub i y superíndice nada sub nada y superíndice j sub k y superíndice nada sub l y superíndice nada")?;
+            "mayúscula r con 4 índices, sub i y superíndice vacío sub vacío y superíndice j sub k y superíndice vacío sub l y superíndice vacío")?;
             return Ok(());
 
 }
 
-// Expected speech announces each none as «nada» under the new mmultiscripts rule.
+// Expected speech announces each none as «vacío» under the new mmultiscripts rule.
 #[test]
-#[ignore = "lectura en español pendiente de revisión"]
 fn huge_num_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> <mi>m</mi><none/>
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 preíndices, presubíndice mayúscula i y presuperíndice nada, presubíndice nada y presuperíndice mayúscula j, presubíndice mayúscula k y presuperíndice nada, presubíndice mayúscula l y presuperíndice nada y con 5 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada subíndice m y superíndice nada")?;
+            "mayúscula r con 4 preíndices, presubíndice mayúscula i y presuperíndice vacío, presubíndice vacío y presuperíndice mayúscula j, presubíndice mayúscula k y presuperíndice vacío, presubíndice mayúscula l y presuperíndice vacío y con 5 índices, subíndice i y superíndice vacío subíndice vacío y superíndice j subíndice k y superíndice vacío subíndice l y superíndice vacío subíndice m y superíndice vacío")?;
             return Ok(());
 
 }
