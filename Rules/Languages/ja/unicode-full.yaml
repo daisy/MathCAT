@@ -10,7 +10,6 @@
  - "¨": [T: "ダブルドット"]                          # 0xa8
  - "©": [T: "著作権"]                           # 0xa9
  - "ª": [T: "女性序数標識"]                 # 0xaa
- - "¬": [t: "ノット"]                                        # 0xac
  - "«": [t: "左向き二重山形引用符"]         # 0xab
  - "¯":                                            # 0xaf
      - test:
@@ -19,24 +18,9 @@
         else: [T: "横線"]
  - "²": [T: "2"]                                 # 0xb2
  - "³": [T: "3"]                               # 0xb3
- - "´": [t: "アキュート"]                               # 0xb4
  - "µ": [T: "マイクロ"]                               # 0xb5
  - "¹": [T: "1"]                                 # 0xb9
  - "º": [T: "男性序数標識"]                                       # 0xba
- - "·":
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolDot = 'Auto'"
-        then: [t: "掛ける"]
-        else: [t: "ドット"]
- - "×":                                          # 0xd7
-    - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [t: "掛ける"]
-        else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "掛ける"]
-            else: [t: "クロス"]
- - "÷": [T: "わる"]                          # 0xf7
  - "¡": [T: "逆感嘆符"]               # 0xa1
  - "¶": [T: "段落記号"]                       # 0xb6
  - "¿": [T: "逆疑問符"]                   # 0xbf
@@ -124,14 +108,6 @@
  - "˽": [t: "修飾文字 棚"]                     # 0x2fd
  - "˾": [t: "修飾文字 開いた棚"]                # 0x2fe
  - "˿": [t: "修飾文字 低い左向き矢印"]          # 0x2ff
- - "̀": [T: "グレイヴアクセント装飾"]        # 0x300
- - "́": [T: "アキュートアクセント装飾"]            # 0x301
- - "̂": [T: "サーカムフレックスアクセント装飾"] # 0x302
- - "̃": [T: "チルダ装飾"]                 # 0x303
- - "̄": [T: "マクロン装飾"]                # 0x304
- - "̅": [T: "オーバーバー装飾"]               # 0x305
- - "̆": [T: "ブレーヴェ装飾"]                # 0x306
- - "̇": [T: "上のドット装飾"]          # 0x307
  - "̈": [t: "ダブルドット装飾"]             # 0x308
  - "̉": [T: "上のフック装飾"]             # 0x309
  - "̊": [T: "上のリング装飾"]           # 0x30a
@@ -221,13 +197,9 @@
  - "ϒ": [t: "フック付きウプシロン"]                    # 0x3d2
  - "ϓ": [t: "アキュートアクセントとフック付きウプシロン"]     # 0x3d3
  - "ϔ": [t: "ダブルドットとフック付きウプシロン"]  # 0x3d4
- - "ϕ": [T: "ファイ"]                                 # 0x3d5
- - "ϖ": [T: "パイ"]                                  # 0x3d6
  - "ϗ": [t: "カイ記号"]                                 # 0x3d7
  - "Ϙ": [T: "おおもじ 古代コッパ"]                    # 0x3d8
  - "ϙ": [t: "古代コッパ"]                           # 0x3d9
- - "ϵ": [T: "イプシロン"]                             # 0x3f5
- - "϶": [T: "逆イプシロン"]                    # 0x3f6
  - "А-Я":                                          # 0x410 - 0x42f
     - test: 
         if: "$CapitalLetters_Beep"
@@ -299,18 +271,6 @@
         then: [t: "ドット"]
         else: [t: "ビュレット"]
 
- - "…":                                          # 0x2026
-    test:
-        if:
-            - "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_Ellipses = 'Auto' or"
-               # must be ClearSpeak and $ClearSpeak_Ellipses = 'AndSoOn'
-               # speak '…' as 'and so on...' unless expr starts with '…'
-            - "../*[1][.='…']"
-        then: [T: "テンテンテン"]
-        else_test:  # must have $ClearSpeak_Ellipses = 'AndSoOn'
-            if: "count(following-sibling::*) = 0"
-            then: [T: "以下同様"]
-            else: [T: "以下同様に"]
 
  - "‰": [t: "パーミル"]                           # 0x2030
  - "‱": [t: "パーミリアド"]                    # 0x2031
@@ -468,7 +428,6 @@
     - T: "スクリプト"
     - spell: "translate('.', 'ℐℒ℘ℬℰℱℳ', 'ILPBEFM')"
 
- - "ℓ": [t: "スクリプト エル"]                            # 0x2113
  - "℔": [t: "ポンド"]                              # 0x2114
  - "№": [T: "ナンバー"]                              # 0x2116
  - "℥": [t: "オンス"]                              # 0x2125
@@ -628,7 +587,6 @@
  - "⇏": [T: "線付き右向き二重矢印"]   # 0x21cf
  - "⇐": [T: "左向き二重矢印"]             # 0x21d0
  - "⇑": [T: "上向き二重矢印"]              # 0x21d1
- - "⇒": [t: "ならば"]               # 0x21d2
  - "⇓": [T: "下向き二重矢印"]               # 0x21d3
  - "⇔": [T: "同値"]                 # 0x21d4
  - "⇕": [T: "上下二重矢印"]                  # 0x21d5
@@ -680,81 +638,16 @@
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
      - T: "補集合"
- - "∂":                                          # 0x2202
-     - test: 
-         if: "$Verbosity='Terse'"
-         then: [T: "ラウンド"]
-         else: [T: "偏微分"]
  - "∃": [T: "存在する"]                           # 0x2203
  - "∄": [T: "存在しない"]                # 0x2204
  - "∅": [T: "くう集合"]                             # 0x2205
- - "∆":                                          # 0x2206
-     - test:
-         if: "following-sibling::*"
-         then_test:
-            if: "$Verbosity!='Terse'"
-            then: [T: "ラプラシアン"]       # "LahPlahsian" sounds better than "laplacian" in speech engines tested
-            else: [T: "ラプラシアン"]
-         else: [T: "ラプラシアン"]
 
  - "∇": [T: "ナブラ"]                           # 0x2207
- - "∉":                                          # 0x2209
-    # rule is identical to 0x2208
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then: [t: "ノット 要素オブ"]
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set" # inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "ノット 要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "ノット 要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "ノット 要素オブ"]
-              - else: [t: "ノット 要素オブ"]           # $ClearSpeak_SetMemberSymbol = 'Belongs'
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "ノット 要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "ノット 要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "ノット 要素オブ"]
-              - else: [t: "ノット 要素オブ"]           # $ClearSpeak_SetMemberSymbol = 'Belongs'
- - "∊":                                          # 0x220a
-     - test:
-        if: "$SpeechStyle != 'ClearSpeak'"
-        then:
-        - test:
-            if: "$Verbosity!='Terse' and not(parent::m:set)"    # "the set x is an element of ..." sounds bad
-            then: [T: ""]
-        - t: "要素オブ"
-        # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
-        else_test:
-            if: "../../self::m:set or ../../../self::m:set" # inside a set
-            then_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "要素オブ"]
-              - else: [t: "要素オブ"]             # $ClearSpeak_SetMemberSymbol = 'Belongs'
-            else_test:
-              - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Member'
-                then: [t: "要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [t: "要素オブ"]
-              - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [t: "要素オブ"]
-              - else: [t: "要素オブ"]              # $ClearSpeak_SetMemberSymbol = 'Belongs'
  - "∋": [T: "要素として含む"]               # 0x220b
  - "∌": [T: "ノット 要素として含む"]     # 0x220c
  - "∍": [T: "要素として含む"]               # 0x220d
  - "∎": [t: "証明終わり"]                       # 0x220e
  - "∏": [T: "プロダクト"]                             # 0x220f
- - "∐": [T: "余積"]                               # 0x2210
  - "∑": [T: "サム"]                                 # 0x2211
  - "−": [T: "マイナス"]                               # 0x2212
  - "∓": [T: "マイナスプラス"]                      # 0x2213
@@ -783,11 +676,6 @@
           then: [T: "ドット"]
           else: [T: "掛ける"]
 
- - "√":                                          # 0x221a
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [ot: ""]
-     - t: "平方根"
  - "∛":                                          # 0x221b
      - test: 
          if: "$Verbosity!='Terse'"
@@ -798,11 +686,6 @@
          if: "$Verbosity!='Terse'"
          then: [ot: ""]
      - T: "4じょうこん"
- - "∝":                                          # 0x221d
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "比例"
  - "∞": [T: "無限大"]                          # 0x221e
  - "∟": [t: "直角"]                            # 0x221f
  - "∠": [T: "かく"]                                  # 0x2220
@@ -825,11 +708,6 @@
  - "∳": [t: "反時計回り周回インテグラル"]     # 0x2233
  - "∴": [T: "ゆえに"]                            # 0x2234
  - "∵": [T: "なぜならば"]                           # 0x2235
- - "∶":                                          # 0x2236
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "対"
  - "∷": [T: "イコール"]                                 # 0x2237
  - "∸": [t: "ドットマイナス"]                           # 0x2238
  - "∹": [T: "超過"]                   # 0x2239
@@ -845,11 +723,6 @@
      - t: "位似"
  - "∼": [T: "チルダ"]                         # 0x223c
  - "∽": [T: "相似"]                       # 0x223d
- - "∾":                                          # 0x223e
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "最も正"
  - "∿": [t: "正弦波"]                           # 0x223f
  - "≀": [T: "リース積"]                       # 0x2240
  - "≁": [T: "ノット チルダ"]                          # 0x2241
@@ -951,16 +824,6 @@
          then: [T: ""]
      - T: "測定によりイコール"
  - "≟": [t: "関係が未知"]       # 0x225f
- - "≠":                                          # 0x2260
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "ノット イコール"
- - "≡":                                          # 0x2261
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - T: "合同"
  - "≢":                                          # 0x2262
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1071,36 +934,6 @@
  - "≿": [T: "後続 オア 同値"]                 # 0x227f
  - "⊀": [T: "ノット 先行"]                   # 0x2280
  - "⊁": [T: "ノット 後続"]                   # 0x2281
- - "⊂":                                          # 0x2282
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "部分集合オブ"
- - "⊃":                                          # 0x2283
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "上位集合オブ"
- - "⊄":                                          # 0x2284
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "ノット 部分集合オブ"
- - "⊅":                                          # 0x2285
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "ノット 上位集合オブ"
- - "⊆":                                          # 0x2286
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "部分集合オブ オア イコール"
- - "⊇":                                          # 0x2287
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: ""]
-     - t: "上位集合オブ オア イコール"
  - "⊈":                                          # 0x2288
      - test: 
          if: "$Verbosity!='Terse'"
@@ -3363,11 +3196,8 @@
  - "": [t: "ディガンマ"]                             # 0xed03
  - "ϝ": [T: "ディガンマ"]                             # 0x3dd
  - "": [t: "ディー"]                                   # 0xed10
- - "ⅆ": [t: "ディー"]                                   # 0x2146
  - "": [t: "イー"]                                      # 0xed11
- - "ⅇ": [t: "イー"]                                      # 0x2147
  - "": [t: "アイ"]                                   # 0xed12
- - "ⅈ": [t: "アイ"]                                   # 0x2148
  - "": [t: "ジェー"]                                   # 0xed13
  - "ⅅ":
     - spell: "translate('.', 'ⅅ', 'DD')"                                         # 0xed16, 0x2145
