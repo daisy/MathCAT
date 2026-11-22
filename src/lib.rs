@@ -1,5 +1,6 @@
 #![cfg_attr(coverage, feature(coverage_attribute))]
 #![allow(clippy::needless_return)]
+#![allow(clippy::needless_option_as_deref)]
 
 //! A library for generating speech and braille from MathML
 //! 
@@ -37,6 +38,8 @@ mod prefs;
 mod tts;
 mod xpath_functions;
 mod definitions;
+#[cfg(feature = "rule-coverage")]
+mod rule_coverage;
 pub mod pretty_print;
 mod chemistry;
 
@@ -73,7 +76,7 @@ pub fn abs_rules_dir_path() -> String {
 
 pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> Result<()> {
     use crate::{interface::*, pretty_print::mml_to_string};
-    use sxd_document::parser;
+    use sxd_document_no_unsafe::parser;
     use crate::canonicalize::canonicalize;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 

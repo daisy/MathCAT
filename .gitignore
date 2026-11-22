@@ -3,7 +3,6 @@
 target
 build.rs.orig
 Python/libmathcat.pyd
-Cargo.lock
 src-pest.7z
 src.7z
 mp2.7z
@@ -37,7 +36,6 @@ PythonScripts/encrypt.py
 PythonScripts/intent-coverage.py
 PythonScripts/PythonScripts.zip
 PythonScripts/google-defs.yaml
-BrailleDocs
 
 src/errors.rs
 src/pattern.pest

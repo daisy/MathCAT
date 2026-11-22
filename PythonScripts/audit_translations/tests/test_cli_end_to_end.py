@@ -13,10 +13,91 @@ import pytest
 
 from .. import cli as audit_cli
 from ..renderer import console
+from .conftest import strip_ansi
 
 
 def fixture_rules_dir() -> Path:
     return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
+
+
+def make_definitions_rules_dir(tmp_path: Path) -> Path:
+    """Create definitions with one missing, extra, and mismatched entry."""
+    rules_dir = tmp_path / "Rules" / "Languages"
+    source_dir = rules_dir / "en"
+    target_dir = rules_dir / "de"
+    source_dir.mkdir(parents=True)
+    target_dir.mkdir(parents=True)
+    (source_dir / "definitions.yaml").write_text(
+        "- Missing: [one]\n- Different: [one]\n",
+        encoding="utf-8",
+    )
+    (target_dir / "definitions.yaml").write_text(
+        "- Extra: {key: value}\n- Different: {key: value}\n",
+        encoding="utf-8",
+    )
+    return rules_dir
+
+
+def run_definitions_cli(tmp_path, capsys, monkeypatch, only: str) -> str:
+    """Run the definitions CLI fixture with one existing --only category."""
+    rules_dir = make_definitions_rules_dir(tmp_path)
+    args = ["de", "--rules-dir", str(rules_dir), "--file", "definitions.yaml", "--only", only]
+    monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
+
+    audit_cli.main()
+    return strip_ansi(capsys.readouterr().out)
+
+
+def test_cli_definitions_missing_filter_shows_only_missing_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI missing filter renders missing definitions but no extra or mismatch findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "missing")
+
+    assert "Files to check: 1" in output
+    assert "Missing in Translation" in output
+    assert "Definition Type Mismatch" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_extra_filter_shows_only_extra_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI extra filter renders informational target-only definitions and no issues."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "extra")
+
+    assert "Files to check: 1" in output
+    assert "Info: Extra Definitions" in output
+    assert "Missing in Translation" not in output
+    assert "Definition Type Mismatch" not in output
+
+
+def test_cli_definitions_diffs_filter_shows_only_type_mismatches(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI diffs filter renders type mismatches but no coverage findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "diffs")
+
+    assert "Files to check: 1" in output
+    assert "Definition Type Mismatch" in output
+    assert "Missing in Translation" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_untranslated_filter_shows_no_definition_findings(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI untranslated filter produces no definition-specific findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "untranslated")
+
+    assert "Files to check: 1" in output
+    assert "Missing definitions" in output
+    assert "Definition type mismatches" in output
+    assert "Extra definitions" in output
+    assert "Definition Issues" not in output
+    assert "Info: Extra Definitions" not in output
+
+
+def test_cli_definitions_all_filter_shows_every_definition_finding(tmp_path, capsys, monkeypatch) -> None:
+    """The CLI all filter renders missing, extra, and type-mismatch definition findings."""
+    output = run_definitions_cli(tmp_path, capsys, monkeypatch, "all")
+
+    assert "Files to check: 1" in output
+    assert "Missing in Translation" in output
+    assert "Definition Type Mismatch" in output
+    assert "Info: Extra Definitions" in output
 
 
 def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
@@ -33,7 +114,7 @@ def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
 
@@ -44,6 +125,26 @@ def test_cli_main_rich_only_filters_issue_groups(capsys, monkeypatch) -> None:
     assert "Condition Differences" not in output
     assert "Variable Differences" not in output
     assert "Structure Differences" not in output
+
+
+def test_cli_main_accepts_source_language(capsys, monkeypatch) -> None:
+    """
+    Ensure --source changes the reference language without changing target semantics.
+    """
+    args = ["en", "--source", "es", "--rules-dir", str(fixture_rules_dir()), "--file", "overview.yaml"]
+
+    old_width = console.width
+    console.width = 80
+    try:
+        monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
+        audit_cli.main()
+        output = strip_ansi(capsys.readouterr().out)
+    finally:
+        console.width = old_width
+
+    assert "Comparing against es reference files" in output
+    assert "es:" in output
+    assert "en:" in output
 
 
 def test_cli_main_rich_output_groups_by_rule_and_type(capsys, monkeypatch) -> None:
@@ -61,7 +162,7 @@ def test_cli_main_rich_output_groups_by_rule_and_type(capsys, monkeypatch) -> No
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
 
@@ -88,14 +189,17 @@ def test_cli_main_rich_output_matches_grouped_golden(capsys, monkeypatch) -> Non
     golden_path = Path(__file__).resolve().parent / "golden" / "rich" / "cli_calculus_verbose.golden"
 
     old_width = console.width
+    old_legacy_windows = console.legacy_windows
     console.width = 80
+    console.legacy_windows = False  # on Windows rich would otherwise replace the rounded box corners
 
     try:
         monkeypatch.setattr(sys, "argv", ["audit_translations", *args])
         audit_cli.main()
-        output = capsys.readouterr().out
+        output = strip_ansi(capsys.readouterr().out)
     finally:
         console.width = old_width
+        console.legacy_windows = old_legacy_windows
 
     assert output == golden_path.read_text(encoding="utf-8")
 
@@ -110,7 +214,7 @@ def test_cli_main_requires_language_or_list(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
     assert "Please specify a language code or use --list" in output
@@ -127,7 +231,7 @@ def test_cli_main_rejects_unknown_only_token(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
     assert "Unknown issue types: bogus" in output
@@ -144,10 +248,10 @@ def test_cli_main_reports_missing_region_directory(capsys, monkeypatch) -> None:
 
     with pytest.raises(SystemExit) as exc:
         audit_cli.main()
-    output = capsys.readouterr().out
+    output = strip_ansi(capsys.readouterr().out)
 
     assert exc.value.code == 1
-    assert "Region directory not found" in output
+    assert "Target region directory not found" in output
 
 
 def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
@@ -163,17 +267,19 @@ def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
     env = os.environ.copy()
     env["PYTHONPATH"] = os.pathsep.join([str(python_scripts_dir), env.get("PYTHONPATH", "")]).strip(os.pathsep)
     env["COLUMNS"] = "80"
+    env["PYTHONIOENCODING"] = "utf-8"  # output contains characters like "≠" that e.g. Windows code pages lack
 
     result = subprocess.run(
         [sys.executable, "-m", "audit_translations", *args],
         capture_output=True,
         text=True,
+        encoding="utf-8",
         cwd=str(python_scripts_dir),
         env=env,
         check=True,
     )
 
-    output = result.stdout
+    output = strip_ansi(result.stdout)
     assert "≠ Rule Issues [13] (grouped by rule and issue type)" in output
     assert "• laplacian (laplacian)" in output
     assert "• divergence (divergence)" in output

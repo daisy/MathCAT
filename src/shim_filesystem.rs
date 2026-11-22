@@ -108,7 +108,7 @@ cfg_if! {
                         let path = match file.enclosed_name() {
                             Some(path) => PathBuf::from(containing_dir).join(path),
                             None => {
-                                bail!("Entry {} has a suspicious path (outside of archive)", file.name());
+                                bail!("Entry {} has a suspicious path (outside of archive)", String::from_utf8_lossy(file.name_raw()));
                             }
                         };
                         // debug!("read_zip_file: file path='{}'", path.display());
@@ -163,10 +163,10 @@ cfg_if! {
                 let mut answer = Vec::new();
 
                 let dir_name = canonicalize_path_separators(dir);
+                let direct_file_prefix = format!("{dir_name}/");
                 for file_name in files.keys() {
                     if let Some(dir_relative_name) = file_name.strip_prefix(&dir_name) &&
-                       file_name.ends_with(ending)
-                    {
+                       file_name.ends_with(ending) {
                         // this could be (e.g.) xxx_Rules.yaml or it could be subdir/xxx_Rules.yaml
                         let file_name = dir_relative_name.split_once("/").map(|(_, after)| after).unwrap_or(dir_relative_name);
                         answer.push(file_name.to_string());
@@ -281,15 +281,81 @@ cfg_if! {
             crate::interface::set_rules_dir("Rules").unwrap();       // force reinitialization after the change
         }
     } else {
+        use std::collections::{HashMap, HashSet};
+        use std::sync::RwLock;
+
+        static IN_MEMORY_FILES: RwLock<Option<HashMap<String, String>>> = RwLock::new(None);
+        static IN_MEMORY_DIRS: RwLock<Option<HashSet<String>>> = RwLock::new(None);
+
+        pub fn add_in_memory_file(path: &str, content: &str) {
+            {
+                let mut files = IN_MEMORY_FILES.write().unwrap();
+                files.get_or_insert_with(HashMap::new).insert(get_in_memory_key(Path::new(path)), content.to_string());
+            }
+
+            let path_obj = Path::new(path);
+            {
+                let mut dirs = IN_MEMORY_DIRS.write().unwrap();
+                let dirs = dirs.get_or_insert_with(HashSet::new);
+                for parent in path_obj.ancestors().skip(1) {
+                    let parent_str = get_in_memory_key(parent);
+                    if !parent_str.is_empty() {
+                        dirs.insert(parent_str);
+                    }
+                }
+            }
+        }
+
+        pub fn canonicalize_shim(path: &Path) -> std::io::Result<PathBuf> {
+            use std::ffi::OsStr;
+            let dot = OsStr::new(".");
+            let dot_dot = OsStr::new("..");
+            let mut result = PathBuf::new();
+            for part in path.iter() {
+                if dot == part {
+                    continue;
+                } else if dot_dot == part {
+                    result.pop();
+                } else {
+                    result.push(part);
+                }
+            }
+            return Ok(result);
+        }
+
+        fn get_in_memory_key(path: &Path) -> String {
+            canonicalize_shim(path).unwrap_or_else(|_| path.to_path_buf()).to_str().unwrap_or_default().to_string()
+        }
+
         pub fn is_file_shim(path: &Path) -> bool {
+            if IN_MEMORY_FILES.read().unwrap().as_ref().is_some_and(|f| f.contains_key(&get_in_memory_key(path))) {
+                return true;
+            }
             return path.is_file();
         }
         
         pub fn is_dir_shim(path: &Path) -> bool {
+            if IN_MEMORY_DIRS.read().unwrap().as_ref().is_some_and(|d| d.contains(&get_in_memory_key(path))) {
+                return true;
+            }
             return path.is_dir();
         }
         
         pub fn find_files_in_dir_that_ends_with_shim(dir: &Path, ending: &str) ->  Vec<String> {
+            let dir_name = get_in_memory_key(dir);
+            let mut answer = Vec::new();
+            if let Some(files) = IN_MEMORY_FILES.read().unwrap().as_ref() {
+                for file_name in files.keys() {
+                    if file_name.starts_with(&dir_name) && file_name.ends_with(ending) {
+                        let name = Path::new(file_name).file_name().unwrap_or_default().to_str().unwrap_or_default();
+                        answer.push(name.to_string());
+                    }
+                }
+            }
+            if !answer.is_empty() {
+                return answer;
+            }
+
             match dir.read_dir() {
                 Err(_) => return vec![],    // empty
                 Ok(read_dir) => {
@@ -340,19 +406,44 @@ cfg_if! {
             }
         }
         
-        pub fn canonicalize_shim(path: &Path) -> std::io::Result<PathBuf> {
-            return path.canonicalize();
+        // Tests extract language/braille zips in parallel. During extraction, individual YAML
+        // files can briefly exist in a partially-written state (created/truncated before the
+        // full contents are flushed). Guard both extraction and YAML reads with the same lock
+        // so readers never observe truncated YAML.
+        use std::sync::Mutex;
+        static RULES_ZIP_EXTRACT_LOCK: Mutex<()> = Mutex::new(());
+
+        fn should_lock_rules_yaml_path(path: &Path) -> bool {
+            let s = path.to_string_lossy();
+            let is_yaml = s.ends_with(".yaml") || s.ends_with(".yml");
+            if !is_yaml {
+                return false;
+            }
+            return s.contains("Rules/Languages/") || s.contains("Rules\\Languages\\")
+                || s.contains("Rules/Braille/") || s.contains("Rules\\Braille\\");
         }
-        
+
         pub fn read_to_string_shim(path: &Path) -> Result<String> {
+            if let Some(content) = IN_MEMORY_FILES.read().unwrap().as_ref().and_then(|f| f.get(&get_in_memory_key(path)).cloned()) {
+                return Ok(content);
+            }
+
             let path = match path.canonicalize() {
                 Ok(path) => path,
-                Err(e) => bail!("Read error while trying to canonicalize in read_to_string_shim {}: {}", path.display(), e),
+                Err(_) => path.to_path_buf(),
             };
-            debug!("Reading file '{}'", &path.display());
-            match std::fs::read_to_string(&path) {
-                Ok(str) => return Ok(str),
-                Err(e) => bail!("Read error while trying to read {}: {}", &path.display(), e),
+            debug!("Reading file '{}'", path.display());
+            if should_lock_rules_yaml_path(&path) {
+                let _guard = RULES_ZIP_EXTRACT_LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+                match std::fs::read_to_string(&path) {
+                    Ok(str) => return Ok(str),
+                    Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
+                }
+            } else {
+                match std::fs::read_to_string(&path) {
+                    Ok(str) => return Ok(str),
+                    Err(e) => bail!("Read error while trying to read {}: {}", path.display(), e),
+                }
             }
         }
 
@@ -369,6 +460,7 @@ cfg_if! {
                     }
                 },
                 Ok(contents) => {
+                    let _guard = RULES_ZIP_EXTRACT_LOCK.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
                     let archive = std::io::Cursor::new(contents);
                     let mut zip_archive = zip::ZipArchive::new(archive).unwrap();
                     zip_archive.extract(dir).expect("Zip extraction failed");
@@ -376,5 +468,89 @@ cfg_if! {
                 },
             };
         }
+    }
+}
+
+/// compare with config at the top of the file
+#[cfg(all(test, not(any(target_family = "wasm", feature = "include-zip"))))]
+mod tests {
+    use super::*;
+    use std::fs::{self, File};
+    use std::io::Write;
+    use tempfile::Builder;
+
+    fn write_zip_file(dir: &Path, zip_name: &str, archived_file_name: &str, contents: &str) {
+        let zip_path = dir.join(zip_name);
+        let zip_file = File::create(zip_path).unwrap();
+        let mut zip = zip::write::ZipWriter::new(zip_file);
+        let options = zip::write::SimpleFileOptions::default();
+        zip.start_file(archived_file_name, options).unwrap();
+        zip.write_all(contents.as_bytes()).unwrap();
+        zip.finish().unwrap();
+    }
+
+    /// Verifies the normal extraction path: when a requested zip file exists,
+    /// `zip_extract_shim` unpacks it into the target directory and reports that
+    /// extraction occurred.
+    #[test]
+    fn zip_extract_shim_extracts_when_zip_exists() {
+        let yaml_path = "some/nested/path/rules.yaml";
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-success-").tempdir().unwrap();
+        write_zip_file(test_dir.path(), "en.zip", yaml_path, "hello");
+
+        let extracted: bool = zip_extract_shim(test_dir.path(), "en.zip").unwrap();
+        assert!(extracted); // zip was extracted
+        assert_eq!("hello", fs::read_to_string(test_dir.path().join(yaml_path)).unwrap());
+    }
+
+    /// Verifies the filesystem fallback path: if the zip is missing but YAML
+    /// files already exist, `zip_extract_shim` should not fail and should return
+    /// `false` to indicate that no extraction was needed.
+    #[test]
+    fn zip_extract_shim_returns_false_when_yaml_files_already_exist() {
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-fallback-").tempdir().unwrap();
+        fs::write(test_dir.path().join("foo.yaml"), "x: y").unwrap(); // dummy yaml
+
+        let extracted: bool = zip_extract_shim(test_dir.path(), "missing.zip").unwrap();
+        assert!(!extracted); // nothing was extracted
+    }
+
+    /// Verifies the hard error path: if neither the zip file nor any YAML files
+    /// are present, `zip_extract_shim` must return an error so callers can treat
+    /// the rules directory as invalid.
+    #[test]
+    fn zip_extract_shim_errors_when_zip_and_yaml_missing() {
+        let test_dir = Builder::new().prefix("mathcat-shim-zip-error-").tempdir().unwrap();
+        let result: Result<bool> = zip_extract_shim(test_dir.path(), "missing.zip");
+
+        assert!(result.is_err()); // not true/false, but an error instead
+    }
+
+    /// Verifies both `read_to_string_shim` outcomes in one test run:
+    /// reading an existing file succeeds with exact contents, and reading a
+    /// missing file returns an error.
+    #[test]
+    fn read_to_string_shim_reads_file_and_reports_missing_file() {
+        let test_dir = Builder::new().prefix("mathcat-shim-read-").tempdir().unwrap();
+
+        let existing_file = test_dir.path().join("sample.yaml");
+        fs::write(&existing_file, "test-value").unwrap();
+
+        assert_eq!("test-value", read_to_string_shim(&existing_file).unwrap());
+        assert!(read_to_string_shim(&test_dir.path().join("does-not-exist.yaml")).is_err());
+    }
+
+    #[test]
+    fn in_memory_filesystem_shim() {
+        add_in_memory_file("virtual/rules/Languages/en/test_Rules.yaml", "key: value");
+        let file_path = Path::new("virtual/rules/Languages/en/test_Rules.yaml");
+        let dir_path = Path::new("virtual/rules/Languages/en");
+
+        assert!(is_file_shim(file_path));
+        assert!(is_dir_shim(dir_path));
+        assert_eq!(read_to_string_shim(file_path).unwrap(), "key: value");
+
+        let found = find_files_in_dir_that_ends_with_shim(dir_path, "_Rules.yaml");
+        assert_eq!(found, vec!["test_Rules.yaml".to_string()]);
     }
 }

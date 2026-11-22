@@ -6,16 +6,11 @@
   match: "count(*)=2"
   replace:
   - test:
-      if: "$Verbosity='Verbose'"
-      then:
-      - T: "el segmento de línea de"
-      - x: "*[1]"
-      - T: "a"
-      - x: "*[2]"
-      else:
-      - T: "segmento de línea"
-      - x: "*[1]"
-      - x: "*[2]"
+      if: "$Verbosity!='Terse'"
+      then: [T: "el"]      # phrase('el' segmento A B), CMU
+  - T: "segmento"      # phrase(el 'segmento' A B)
+  - x: "*[1]"
+  - x: "*[2]"
 
 - name: geometry-ray
   tag: ray
@@ -58,3 +53,24 @@
   - x: "*[2]"
   - x: "*[3]"
 
+
+- name: coordinate
+  tag: coordinate
+  # Intent forms coordinate($x,...) use @arg and fall through to function-intent / IntentMappings
+  match: "not(*[@arg])"
+  replace:
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [OT: "el"]      # phrase('el' punto de coordenadas 1, 2)
+  - T: "punto"      # phrase(el 'punto' de coordenadas 1, 2)
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: [T: "de coordenadas"]      # phrase(el punto 'de coordenadas' 1, 2)
+  - pause: short
+  - insert:
+      nodes: "*"
+      replace: [T: "coma", pause: auto]      # phrase(f de x 'coma' y)
+  - pause: short
+  - test:
+      if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"
+      then: [T: "fin del punto"]      # phrase(inicio del punto, 'fin del punto')

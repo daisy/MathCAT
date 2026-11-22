@@ -239,6 +239,44 @@ fn matrix_2x3() -> Result<()> {
 }
 
 #[test]
+fn augmented_matrix_2x3() -> Result<()> {
+    let expr = "
+    <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow>
+      <mrow><mo>[</mo>
+        <mtable columnlines='none solid'>
+          <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>4</mn>
+          </mtd>
+          </mtr>
+          <mtr>
+          <mtd>
+            <mn>0</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+          <mtd>
+            <mn>6</mn>
+          </mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow></mrow>
+    </math>
+                                ";
+    test("nb", "ClearSpeak",  expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
+    Ok(())
+}
+
+#[test]
 fn matrix_2x3_labeled() -> Result<()> {
     let expr = "
     <math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
@@ -854,6 +892,44 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
   return Ok(());
 }
 
+#[test]
+fn augmented_matrix_3x4_end_matrix() -> Result<()> {
+let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
+  <mrow>
+    <mrow><mo>[</mo>
+      <mtable columnalign='right right right right' columnlines='none none solid'>
+        <mtr>
+          <mtd><mn>1</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mrow><mo>-</mo><mn>3</mn></mrow></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+          <mtd><mn>2</mn></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mn>3</mn></mtd>
+          <mtd><mn>2</mn></mtd>
+          <mtd><mrow><mo>-</mo><mn>1</mn></mrow></mtd>
+        </mtr>
+      </mtable>
+    <mo>]</mo></mrow>
+  </mrow>
+</math>";
+test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
+        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, kolonne 4; 3; \
+               rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, kolonne 4; 2; \
+               rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, kolonne 4; minus 1; slutt matrise")?;
+    test("nb", "SimpleSpeak",
+        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, kolonne 4; 3; \
+               rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, kolonne 4; 2; \
+               rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, kolonne 4; minus 1; slutt matrise")?;
+    Ok(())
+  }
 
 #[test]
 fn simple_matrix_vector() -> Result<()> {

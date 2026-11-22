@@ -4,3 +4,5 @@ fi: # Finnish
   name: Suomi
 ru: # Russian
   name: Русский
+sv: # Swedish
+  name: Svenska

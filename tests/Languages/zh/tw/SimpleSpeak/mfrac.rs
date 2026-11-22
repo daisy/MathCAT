@@ -151,6 +151,71 @@ fn denominator_simple_fraction() -> Result<()> {
 
 }
 
+#[test]
+fn frac_with_units() -> Result<()> {
+    let expr = "
+    <math>
+        <mrow>
+        <mn>62</mn>
+        <mfrac>
+        <mi intent=':unit'>mi</mi>
+        <mi intent=':unit'>hr</mi>
+        </mfrac>
+        </mrow>
+    </math>";
+    test("zh-tw", "SimpleSpeak", expr, "62 英里 每 小時")?;
+    return Ok(());
+
+}
+
+#[test]
+fn singular_frac_with_units() -> Result<()> {
+    let expr = "
+    <math>
+        <mrow>
+        <mn>1</mn>
+        <mfrac>
+        <mi intent=':unit'>gal</mi>
+        <mi intent=':unit'>mi</mi>
+        </mfrac>
+        </mrow>
+    </math>";
+    test("zh-tw", "SimpleSpeak", expr, "1 加侖 每 英里")?;
+    return Ok(());
+
+}
+
+#[test]
+fn number_in_numerator_with_units() -> Result<()> {
+    let expr = "
+    <math>
+        <mfrac>
+            <mrow>
+                <mn>3</mn>
+                <mi intent=':unit'>gal</mi>
+            </mrow>
+            <mi intent=':unit'>mi</mi>
+        </mfrac>
+    </math>";
+    test("zh-tw", "SimpleSpeak", expr, "3 加侖 每 英里")?;
+    return Ok(());
+
+}
+
+#[test]
+fn units_with_powers() -> Result<()> {
+    let expr = "
+    <math>
+        <mfrac>
+            <mrow> <mn>3</mn> <mi intent=':unit'>m</mi> </mrow>
+            <msup> <mi intent=':unit'>s</mi><mn>2</mn> </msup>
+        </mfrac>
+    </math>";
+    test("zh-tw", "SimpleSpeak", expr, "3 米 每 秒 平方")?;
+    return Ok(());
+
+}
+
 
 #[test]
 fn mixed_number() -> Result<()> {
@@ -232,7 +297,7 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test("zh-tw", "SimpleSpeak", expr, "分數 分數 3 分之 2 結束分數; 分之, 分數 2 分之 1 結束分數; 結束分數")?;
+    test("zh-tw", "SimpleSpeak", expr, "分數 3 分之 2, 分之, 2 分之 1 結束分數")?;
     return Ok(());
 
 }
@@ -246,6 +311,44 @@ fn binomial() -> Result<()> {
                     <mo>)</mo>
                 </math>";
     test("zh-tw", "SimpleSpeak", expr, "2 乘 7 選 3")?;
+    return Ok(());
+
+}
+#[test]
+fn binomial_non_simple_top() -> Result<()> {
+    let expr = "<math>
+                    <mn>2</mn>
+                    <mo>(</mo>
+                    <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mn>3</mn> </mfrac>
+                    <mo>)</mo>
+                </math>";
+    test("zh-tw", "SimpleSpeak", expr, "2 乘 n 加 7 選 3")?;
+    return Ok(());
+
+}
+
+#[test]
+fn binomial_non_simple_bottom() -> Result<()> {
+    let expr = "<math>
+                    <mn>2</mn>
+                    <mo>(</mo>
+                    <mfrac linethickness='0'> <mn>7</mn> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
+                    <mo>)</mo>
+                </math>";
+    test("zh-tw", "SimpleSpeak", expr, "2 乘 7 選 k 加 3")?;
+    return Ok(());
+
+}
+
+#[test]
+fn binomial_non_simple_top_and_bottom() -> Result<()> {
+    let expr = "<math>
+                    <mn>2</mn>
+                    <mo>(</mo>
+                    <mfrac linethickness='0'> <mrow><mi>n</mi><mo>+</mo><mn>7</mn></mrow> <mrow><mi>k</mi><mo>+</mo><mn>3</mn></mrow> </mfrac>
+                    <mo>)</mo>
+                </math>";
+    test("zh-tw", "SimpleSpeak", expr, "2 乘, n 加 7 選 k 加 3")?;
     return Ok(());
 
 }

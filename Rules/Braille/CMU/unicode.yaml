@@ -107,84 +107,17 @@
  - "Û": [t: "CL⠾"]               # 0xDA 
  - "Ü": [t: "CL⠳"]               # 0xDC 
 
- - "A": [t: "CL⠁"]              # 0x41 
- - "B":                         # 0x42 
+ # Latin capitals: chem-element letters use 𝐶 (no word indicator); others use C.
+ # Cells come from lowercase a-z via spell/translate.
+ - "BCHIKNOPSUVWY":              # chemistry-capable capitals
     - test:
         if: "@data-chem-element"
-        then: [t: "𝐶L⠃"]
-        else: [t: "CL⠃"]
- - "C":                         # 0x43 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠉"]
-        else: [t: "CL⠉"]
- - "D": [t: "CL⠙"]              # 0x44 
- - "E": [t: "CL⠑"]              # 0x45 
- - "F": [t: "CL⠋"]              # 0x46 
- - "G": [t: "CL⠛"]              # 0x47 
- - "H":                         # 0x48 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠓"]
-        else: [t: "CL⠓"]
- - "I":                         # 0x49 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠊"]
-        else: [t: "CL⠊"]
- - "J": [t: "CL⠚"]              # 0x4a 
- - "K":                         # 0x4b 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠅"]
-        else: [t: "CL⠅"]
- - "L": [t: "CL⠇"]              # 0x4c 
- - "M": [t: "CL⠍"]              # 0x4d 
- - "N":                         # 0x4e 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠝"]
-        else: [t: "CL⠝"]
- - "O":                         # 0x4f 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠕"]
-        else: [t: "CL⠕"]
- - "P":                         # 0x50 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠏"]
-        else: [t: "CL⠏"]
- - "Q": [t: "CL⠟"]              # 0x51 
- - "R": [t: "CL⠗"]              # 0x52 
- - "S":                         # 0x53 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠎"]
-        else: [t: "CL⠎"]
- - "T": [t: "CL⠞"]              # 0x54 
- - "U":                         # 0x55 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠥"]
-        else: [t: "CL⠥"]
- - "V":                         # 0x56 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠧"]
-        else: [t: "CL⠧"]
- - "W":                         # 0x57 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠺"]
-        else: [t: "CL⠺"]
- - "X": [t: "CL⠭"]              # 0x58 
- - "Y":                         # 0x59 
-    - test:
-        if: "@data-chem-element"
-        then: [t: "𝐶L⠽"]
-        else: [t: "CL⠽"]
- - "Z": [t: "CL⠵"]              # 0x5a 
+        then: [tc: "𝐶"]
+        else: [tc: "C"]
+    - spell: "translate('.', 'BCHIKNOPSUVWY', 'bchiknopsuvwy')"
+ - "ADEFGJLMQRTXZ":              # remaining capitals
+    - tc: "C"
+    - spell: "translate('.', 'ADEFGJLMQRTXZ', 'adefgjlmqrtxz')"
 
  - "α": [t: "GL⠁"]              # 0x3b1 
  - "β": [t: "GL⠃"]              # 0x3b2 
@@ -239,6 +172,7 @@
  - "Ω": [t: "CGL⠺"]             # 0x3a9
 
  - "ϑ": [t: "VL⠹"]              # 0x3d1
+ - "ϴ": [t: "CVL⠹"]             # 0x03F4 (capital theta symbol)
  - "ϵ": [t: "VL⠑"]              # 0x3f5
  - "ϰ": [t: "VL⠅"]              # 0x3f0
  - "ϕ": [t: "VL⠋"]              # 0x3d5
@@ -327,24 +261,16 @@
  - "_": [t: "⠤"]               # 0x005F (Low line (underscore))
  - "¯": [t: "⠈⠉"]               # 0x00AF (macron)
  - "═": [t: "⠈⠉⠈⠉"]             # 0x2550 (BOX DRAWINGS DOUBLE HORIZONTAL)
- - "~":                        # 0x007E (Tilde (swung dash))
+ - "~∼":                        # 0x007E (Tilde (swung dash) and 223c (Tilde operator))
+    # Multi-char keys substitute '.' with each char, so use parent::* not '..'
     - test:           # unclear what really should happen see 4.3.2, 4.3.3, 6.1, and 8.2 -- all use different codes
-        - if: "..[self::m:mover]"
+        - if: "parent::*[self::m:mover]"
           then: [t: "⠐⠢"]
-        - else_if: "..[self::m:munder]"
-          then: [t: "⠠⠢"] 
+        - else_if: "parent::*[self::m:munder]"
+          then: [t: "⠠⠢"]
         - else_if: "not(preceding-sibling::*)"
           then: [t: "⠠⠄"]     # (8.2 -- prefix?)
-          else: [t: "⠐⠢⠠"]   # (6.1 -- infix?)
- - ∼:                        # 223c (Tilde operator)
-    - test:           # unclear what really should happen see 4.3.2, 4.3.3, 6.1, and 8.2 -- all use different codes
-        - if: "..[self::m:mover]"
-          then: [t: "⠐⠢"]
-        - else_if: "..[self::m:munder]"
-          then: [t: "⠠⠢"] 
-        - else_if: "not(preceding-sibling::*)"
-          then: [t: "⠠⠄"]     # (8.2 -- prefix?)
-          else: [t: "⠐⠢⠠"]   # (6.1 -- infix?)
+          else: [t: "⠐⠢⠄"]   # (6.1 -- infix?)
  - "—": [t: "⠤⠤"]               # 0x2014 (Em dash)
  - "‖": [t: "⠸⠇"]               # 0x2016
 #  - "¦": [t: "⠨⠳"]               # 0x00A6 (Broken bar)

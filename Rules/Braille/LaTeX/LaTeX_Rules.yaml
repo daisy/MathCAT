@@ -76,6 +76,15 @@
 # matrix and determinant are the same other than "matrix"/"determinant" based on the bracketing chars
 # we don't do spatial layout, instead the beginning/ending of each row uses the enlarged bracketing chars
 -
+  name: cases
+  tag: mrow
+  match: "*[1][self::m:mo and .='{'] and *[2][self::m:mtable and @intent=':piecewise'] and count(*)=2"
+  replace:
+  - t: "𝐖\\begin{cases}𝐖"
+  - x: "*[2]"
+  - t: "𝐖\\end{cases}𝐖"
+
+-
   name: default-matrix
   tag: mrow
   variables:
@@ -102,6 +111,31 @@
   - x: "string($MatrixType)"     # need to get $MatrixType eval'd so that it is converted to braille (doesn't work if I do it in 'variables') 
   - t: "}𝐖"
 
+-
+  name: intent-gather
+  tag: mtable
+  match: "@intent=':lines'"
+  replace:
+  - t: "𝐖\\begin{gather}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{gather}𝐖"
+-
+  name: intent-align
+  tag: mtable
+  match: "@intent=':system-of-equations'"
+  replace:
+  - t: "𝐖\\begin{align}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{align}𝐖"
+-
+  name: intent-matrix
+  tag: mtable
+  # Fenced matrices are named by the brackets around them. A bare table is `matrix`.
+  match: "@intent=':matrix' and not(parent::m:mrow[(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or IsBracketed(., '‖', '‖') or IsBracketed(., '{', '}'))])"
+  replace:
+  - t: "𝐖\\begin{matrix}𝐖"
+  - x: "*"
+  - t: "𝐖\\end{matrix}𝐖"
 -
   name: default-mtable
   tag: mtable
@@ -235,7 +269,7 @@
   # FIX: what should be output
   name: mhchem-hack
   # this captures the output for the mhchem's "<=>", "<<=>", and "<=>>" output (there are no Unicode arrows for them)
-  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/NSoiffer/MathCAT/issues/60)
+  # this isn't a perfect match, but should be good enough and allows merging all three (see github.com/daisy/MathCAT/issues/60)
   tag: mover
   match:
   -    "*[1][substring(., 1, 1)='↽'] and"
@@ -252,11 +286,24 @@
   - t: "𝐖"
 
 -
-  name: "hat"
-  tag: "mover"
-  match: "*[2][.='^']"
+  name: "accents"
+  tag: mover
+  match: "*[2][IsInDefinition(., 'Braille', 'Accents')]"
   replace:
-  - t: "𝐖\\hat{"
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'Accents')"
+  - t: "{"
+  - x: "*[1]"
+  - t: "}𝐖"
+
+-
+  name: "under-marks"
+  tag: munder
+  match: "*[2][IsInDefinition(., 'Braille', 'UnderAccents')]"
+  replace:
+  - t: "𝐖\\"
+  - x: "DefinitionValue(*[2], 'Braille', 'UnderAccents')"
+  - t: "{"
   - x: "*[1]"
   - t: "}𝐖"
 
@@ -267,8 +314,8 @@
   replace:
   - test:
       if: "$LaTeX_UseShortName"
-      then: [t: "\\ol{"]
-      else: [t: "\\overline{"]
+      then: [t: "𝐖\\ol{"]
+      else: [t: "𝐖\\overline{"]
   - x: "*[1]"
   - t: "}"
 
@@ -357,11 +404,11 @@
   replace:
   - test:
       if: "self::m:munderover"
-      then: [t: "\\overset{"]
+      then: [t: "𝐖\\overset{"]
   - test:
       if: "self::m:munder or self::m:undermover"
-      then: [t: "\\underset{"]
-      else: [t: "\\overset{"]
+      then: [t: "𝐖\\underset{"]
+      else: [t: "𝐖\\overset{"]
   - x: "*[2]"
   - t: "}{"
   - x: "*[1]"
@@ -371,6 +418,8 @@
       then: [t: "}"]
 
 -
+  # Arbitrary numbers of pre-/post-scripts via mmultiscripts: (issue #234).
+  # process-order: most braille uses [prescripts, base, postscripts].
   name: default
   tag: mmultiscripts
   match: "."
@@ -380,146 +429,54 @@
   - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
   replace:
-  - test:
-      if: "$Prescripts"
-      then:
+  - mmultiscripts:
+      process-order: [prescripts, base, postscripts]
+      base:
+      - x: "*[1]"
+      prescript-sub:
       - test:
-          if: "preceding-sibling::*"
+          if: "$ScriptIndex=1 and preceding-sibling::*"
           then: [t: "{}"]         # empty base not needed if this is the only expr
       - test:
-          if: "not($Prescripts[1][self::m:none])"
+          if: "not($Subscript[self::m:none])"
           then_test:
-              if: "$Prescripts[1][IsNode(., 'leaf') and string-length(.) = 1]"
-              then: [x: "$Prescripts[1]"]
+              if: "$Subscript[IsNode(., 'leaf') and string-length(.) = 1]"
+              then: [x: "$Subscript"]
               else:
               - t: "_{"
-              - x: "$Prescripts[1]"
+              - x: "$Subscript"
               - t: "}"
+      prescript-super:
       - test:
-          if: "not($Prescripts[2][self::m:none])"
+          if: "not($Superscript[self::m:none])"
           then_test:
-              if: "$Prescripts[2][IsNode(., 'leaf') and string-length(.) = 1]"
-              then: [x: "$Prescripts[2]"]
+              if: "$Superscript[IsNode(., 'leaf') and string-length(.) = 1]"
+              then: [x: "$Superscript"]
               else:
               - t: "^{"
-              - x: "$Prescripts[2]"
+              - x: "$Superscript"
               - t: "}"
+      postscript-sub:
       - test:
-          if: "count($Prescripts)>2"
-          then:
-          - test:
-              if: "not($Prescripts[3][self::m:none])"
-              then_test:
-                  if: "$Prescripts[3][IsNode(., 'leaf') and string-length(.) = 1]"
-                  then: [x: "$Prescripts[3]"]
-                  else:
-                  - t: "_{"
-                  - x: "$Prescripts[3]"
-                  - t: "}"
-          - test:
-              if: "not($Prescripts[4][self::m:none])"
-              then_test:
-                  if: "$Prescripts[4][IsNode(., 'leaf') and string-length(.) = 1]"
-                  then: [x: "$Prescripts[4]"]
-                  else:
-                  - t: "^{"
-                  - x: "$Prescripts[4]"
-                  - t: "}"
-          - test:
-              if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
-              then: [x: "$Prescripts[position() > 4]"]
-
-  - x: "*[1]"
-  - test:
-      if: "$Postscripts"
-      then:
-      - test:
-          if: "not($Postscripts[1][self::m:none])"
+          if: "not($Subscript[self::m:none])"
           then_test:
-              if: "$Postscripts[1][IsNode(., 'leaf') and string-length(.) = 1]"
-              then: [x: "$Postscripts[1]"]
+              if: "$Subscript[IsNode(., 'leaf') and string-length(.) = 1]"
+              then: [x: "$Subscript"]
               else:
               - t: "_{"
-              - x: "$Postscripts[1]"
+              - x: "$Subscript"
               - t: "}"
+      postscript-super:
       - test:
-          if: "not($Postscripts[2][self::m:none])"
+          if: "not($Superscript[self::m:none])"
           then_test:
-              if: "$Postscripts[2][IsNode(., 'leaf') and string-length(.) = 1]"
-              then: [x: "$Postscripts[2]"]
+              if: "$Superscript[IsNode(., 'leaf') and string-length(.) = 1]"
+              then: [x: "$Superscript"]
               else:
               - t: "^{"
-              - x: "$Postscripts[2]"
+              - x: "$Superscript"
               - t: "}"
-      - test:
-          if: "count($Postscripts)>2"
-          then:
-          - test:
-              if: "not($Postscripts[3][self::m:none])"
-              then_test:
-                  if: "$Postscripts[3][IsNode(., 'leaf') and string-length(.) = 1]"
-                  then: [x: "$Postscripts[3]"]
-                  else:
-                  - t: "_{"
-                  - x: "$Postscripts[3]"
-                  - t: "}"
-          - test:
-              if: "not($Postscripts[4][self::m:none])"
-              then_test:
-                  if: "$Postscripts[4][IsNode(., 'leaf') and string-length(.) = 1]"
-                  then: [x: "$Postscripts[4]"]
-                  else:
-                  - t: "^{"
-                  - x: "$Postscripts[4]"
-                  - t: "}"
-          - test:
-              if: "count($Postscripts)>4"
-              then:
-              - test:
-                  if: "not($Postscripts[5][self::m:none])"
-                  then_test:
-                      if: "$Postscripts[5][IsNode(., 'leaf') and string-length(.) = 1]"
-                      then: [x: "$Postscripts[5]"]
-                      else:
-                      - t: "_{"
-                      - x: "$Postscripts[5]"
-                      - t: "}"
-              - test:
-                  if: "not($Postscripts[6][self::m:none])"
-                  then_test:
-                      if: "$Postscripts[6][IsNode(., 'leaf') and string-length(.) = 1]"
-                      then: [x: "$Postscripts[6]"]
-                      else:
-                      - t: "^{"
-                      - x: "$Postscripts[6]"
-                      - t: "}"
-              - test:
-                  if: "count($Postscripts)>6"
-                  then:
-                  - test:
-                      if: "not($Postscripts[7][self::m:none])"
-                      then_test:
-                          if: "$Postscripts[7][IsNode(., 'leaf') and string-length(.) = 1]"
-                          then: [x: "$Postscripts[7]"]
-                          else:
-                          - t: "_{"
-                          - x: "$Postscripts[7]"
-                          - t: "}"
-                  - test:
-                      if: "not($Postscripts[8][self::m:none])"
-                      then_test:
-                          if: "$Postscripts[8][IsNode(., 'leaf') and string-length(.) = 1]"
-                          then: [x: "$Postscripts[8]"]
-                          else:
-                          - t: "^{"
-                          - x: "$Postscripts[8]"
-                          - t: "}"
-                  - test:
-                      if: "count($Postscripts) > 8"   # give up and just dump them out so at least the content is there
-                      then:
-                      - x: "$Postscripts[position() > 8]"
   - t: "𝐖"    # need to separate script from what follows
-                
 
 -
   # Note: @notation can contain more than one value

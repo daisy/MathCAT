@@ -42,7 +42,12 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - x: "translate(., $BlockSeparators, '')"   # remove digit block separators
+  - test:
+    - if: "@data-roman-numeral"
+      then: [SPELL: "text()", pause: "short"]
+    - else_if: ".=1"   # en/ett before a following unit/currency (OneBeforeUnit)
+      then: [x: "OneForUnit(.)"]
+      else: [x: "translate(., $BlockSeparators, '')"]  # remove digit block separators
 
 - name: default
   tag: [mo, mtext]
@@ -59,8 +64,8 @@
   - test:
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
-    - else_if: "@data-chem-element"                      # NavMode=Character needs this
-      then: [spell: "text()", pause: "short"]
+    - else_if: "@data-chem-element or @data-roman-numeral"                      # NavMode=Character needs this
+      then: [SPELL: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
 - name: default
@@ -91,7 +96,7 @@
   - x: "*[2]"
   - pause: short
 
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: mfrac
   match: "."
   replace:
@@ -110,10 +115,9 @@
   - T: "slutt brøk"          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
-
 # not sure what really should be said for these since we should not assume they are square roots
 #NORWEGIAN: Removed test for verbosity
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: msqrt
   match: "."
   replace:
@@ -126,7 +130,7 @@
 
 # not sure what really should be said for these since we should not assume they are square roots
 # NORWEGIAN: Changed to "med grad", and changed the order of the index and the variable/number in the root. Removed test for verbosity. 
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: mroot
   match: "."
   replace:
@@ -145,6 +149,7 @@
       then: [T: "slutt rottegn"] # phrase("root of x 'end root symbol'")
 
 
+# Used for expressions where the subscript is an integer, and verbosity is terse.
 - name: simple-sub
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
@@ -154,9 +159,11 @@
   - x: "*[2]"
   - pause: short
 
+
+# Used for expression where the subscript is a leaf or an mrow where the second element is a comma.
 # NORWEGIAN: Removed the following test: if: "$Verbosity!='Terse' or not(*[2][self::m:mn])", which is in the Swedish translation. 
 # NORWEGIAN: Added "pause: short" before "senket"
-- name: no-end-sub
+- name: no-end-sub      # audit-ignore
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
   match: "count(*)=2 and (IsNode(*[2], 'leaf') or *[2][self::m:mrow][*[2][.='⁣']])"           #NORWEGIAN: Don't change this to English version. Then the rule "indexed-by" in definitions.yaml kicks in instead. Want to keep the pause before "senket". 
@@ -164,6 +171,15 @@
   - x: "*[1]"
   - pause: short
   - T: "senket"
+  - x: "*[2]"
+  - pause: short
+  
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "senket"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -177,7 +193,8 @@
       then: [T: "senket"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
-- name: literal
+# Norwegian: Changed this to be more similar to the English rule. Can't find a way to trigger the last "else" statement.
+- name: literal     # audit-ignore
   tag: [msup, msubsup]
   match: "."
   replace:
@@ -199,9 +216,10 @@
               if: "not(IsNode(*[last()], 'simple'))"
               then: [T: "slutt hevet"]      # phrase(x super 2 'end of super')
           else:
-          - T: "opphøyd i"            # phrase(5 'raised to the' second power equals 25)
+          - T: "hevet"            # phrase(5 'raised to the' second power equals 25)
           - x: "*[last()]"
-          # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
+          - T: "slutt hevet"
+
 
 #NORWEGIAN: Changed to English version. 
 - name: default
@@ -257,10 +275,9 @@
   - pause: short
 
 - name: default
-  #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
-  #   If there are more, we just dump them out without regard to sup/super :-(
-  # FIX: this could use more special cases 
-  # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  # Arbitrary numbers of pre-/post-scripts via the special `mmultiscripts:` replacement (issue #234).
+  # For each pair, $Subscript / $Superscript / $ScriptIndex (1-based) are set.
+  # process-order is required: speech uses [base, prescripts, postscripts]; most braille uses [prescripts, base, postscripts].
   tag: mmultiscripts
   match: "."
   variables:
@@ -269,71 +286,47 @@
   - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
   replace:
-  - x: "*[1]"
-  - test:
-      if: "$Prescripts" # more common case
-      then:
-      - with:
-          variables:
-          - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
-          - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
-          replace:
-          - test: # only bother announcing if there is more than one prescript
+  - with:
+      variables:
+      - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
+      - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
+      - PostSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
+      - PostSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
+      replace:
+      - mmultiscripts:
+          process-order: [base, prescripts, postscripts]
+          base:
+          - x: "*[1]"
+          - test: # only bother announcing if there is more than one prescript pair
               if: "count($Prescripts) > 2"
               then:
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
               - T: "venstre indeks"      # phrase(in this equation certain 'prescripts' apply)
               - pause: short
+          prescript-sub:
+          - x: "$PreSubscript"
           - test:
-              if: "not($Prescripts[1][self::m:none])"
-              then:
-              - x: "$PreSubscript"
-              - x: "$Prescripts[1]"
-              - pause: short
+              if: "$Subscript[self::m:none]"
+              then: [t: "ingen"]
+              else: [x: "$Subscript"]
+          - pause: short
+          prescript-super:
+          - T: "og"      # phrase(10 is greater than 8 'and' less than 15)
+          - x: "$PreSuperscript"
           - test:
-              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
-              then: [T: "og"]      # phrase(10 is greater than 8 'and' less than 15)
-          - test:
-              if: "not($Prescripts[2][self::m:none])"
-              then:
-              - x: "$PreSuperscript"
-              - x: "$Prescripts[2]"
+              if: "$Superscript[self::m:none]"
+              then: [t: "ingen"]
+              else: [x: "$Superscript"]
           - pause: short
           - test:
-              if: "count($Prescripts) > 2" # more common case
-              then:
-              - test:
-                  if: "not($Prescripts[3][self::m:none])"
-                  then:
-                  - x: "$PreSubscript"
-                  - x: "$Prescripts[3]"
-                  - pause: short
-              - test:
-                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [T: "og"]      # phrase(10 is grater than 8 'and' less than 15)
-              - test:
-                  if: "not($Prescripts[4][self::m:none])"
-                  then:
-                  - x: "$PreSuperscript"
-                  - x: "$Prescripts[4]"
-                  - pause: short
-              - test:
-                  if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
-                  then:
-                  - T: "og resterende venstre indeks"      # phrase(in this case there are values 'and alternating prescripts')
-                  - x: "$Prescripts[position() > 4]"
-                  - T: "slutt venstre indeks"      # phrase(This is where 'end prescripts' occurs)
-  - test:
-      if: "$Postscripts"
-      then:
-      - with:
-          variables:
-          - PostSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
-          - PostSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
-          replace:
-          - test: # only bother announcing if there is more than one postscript
-              if: "count($Postscripts) > 2"
+              # Pause after each pair except the last when there are multiple pairs;
+              # always pause after a single pair (matches prior default rule).
+              if: "count($Prescripts) <= 2 or $ScriptIndex < count($Prescripts) div 2"
+              then: [pause: short]
+          postscript-sub:
+          - test: # announce once before the first postscript pair when there is more than one pair
+              if: "$ScriptIndex=1 and count($Postscripts) > 2"
               then:
               - test:
                   if: "$Prescripts"
@@ -342,83 +335,21 @@
               - x: "count($Postscripts) div 2"
               - T: "høyre indeks"      # phrase(this material includes several 'postscripts')
               - pause: short
+          - x: "$PostSubscript"
           - test:
-              if: "not($Postscripts[1][self::m:none])"
-              then:
-              - x: "$PostSubscript"
-              - x: "$Postscripts[1]"
-              - pause: short
+              if: "$Subscript[self::m:none]"
+              then: [t: "ingen"]
+              else: [x: "$Subscript"]
+          - pause: short
+          postscript-super:
+          - T: "og"      # phrase(10 is greater than 8 'and' less than 15)
+          - x: "$PostSuperscript"
           - test:
-              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
-              then: [T: "og"]      # phrase(10 is greater than 8 'and' less than 15)
-          - test:
-              if: "not($Postscripts[2][self::m:none])"
-              then:
-              - x: "$PostSuperscript"
-              - x: "$Postscripts[2]"
-              - pause: short
-          - test:
-              if: "count($Postscripts) > 2"
-              then:
-              - test:
-                  if: "not($Postscripts[3][self::m:none])"
-                  then:
-                  - x: "$PostSubscript"
-                  - x: "$Postscripts[3]"
-                  - pause: short
-              - test:
-                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [T: "og"]      # phrase(10 is greater than 8 'and' less than 15)
-              - test:
-                  if: "not($Postscripts[4][self::m:none])"
-                  then:
-                  - x: "$PostSuperscript"
-                  - x: "$Postscripts[4]"
-                  - pause: short
-              - test:
-                  if: "count($Postscripts) > 4"
-                  then:
-                  - test:
-                      if: "not($Postscripts[5][self::m:none])"
-                      then:
-                      - x: "$PostSubscript"
-                      - x: "$Postscripts[5]"
-                      - pause: short
-                  - test:
-                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [T: "og"]      # phrase(10 is greater than 8 'and' less than 15)
-                  - test:
-                      if: "not($Postscripts[6][self::m:none])"
-                      then:
-                      - x: "$PostSuperscript"
-                      - x: "$Postscripts[6]"
-                      - pause: short
-                  - test:
-                      if: "count($Postscripts) > 6"
-                      then:
-                      - test:
-                          if: "not($Postscripts[7][self::m:none])"
-                          then:
-                          - x: "$PostSubscript"
-                          - x: "$Postscripts[7]"
-                          - pause: short
-                      - test:
-                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [T: "og"]      # phrase(10 is less than 15 'and' greater than 5)
-                      - test:
-                          if: "not($Postscripts[8][self::m:none])"
-                          then:
-                          - x: "$PostSuperscript"
-                          - x: "$Postscripts[8]"
-                          - pause: short
-                      - test:
-                          if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
-                          then:
-                          - T: "og resterende høyre indeks"      # phrase(this situation involves complexities 'and alternating scripts')
-                          - x: "$Postscripts[position() > 8]"
-                          - T: "slutt indeks"      # phrase(At this point 'end scripts' occurs)
+              if: "$Superscript[self::m:none]"
+              then: [t: "ingen"]
+              else: [x: "$Superscript"]
+          - pause: short
 
-# NORWEGIAN: Changed to English version
 - name: default
   tag: mtable
   variables:
@@ -639,6 +570,13 @@
       then: [pause: short]
       else: [pause: auto]
 
+- name: nofix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
+
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
@@ -691,14 +629,14 @@
       then: [pause: short]
       else: [pause: auto]
 
-- name: function-intent
+- name: function-intent     # audit-ignore
   # uncaught intent -- speak as foo of arg1 comma arg2 .... The MathML spec requires arguments to functions
   tag: "*"
   match: "count(*)>0"
   replace:
   - x: "SpeakIntentName(name(.), $Verbosity, 'function')"
   - test:
-      if: "not(contains(@data-intent-property, ':literal:')) and
+      if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
            not(count(*)=2 and
            (IsInDefinition(*[1], 'Speech', 'TrigFunctionNames') or
             IsInDefinition(name(.), 'Speech', 'TerseFunctionNames')) and
@@ -725,4 +663,9 @@
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → "bunn"), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

@@ -74,6 +74,10 @@ fn test_simple_fraction() {
 }
 ```
 
+## Helpful Links
+
+* [MathCAT Demo]([https://www.mathjax.org/#demo](https://daisy.github.io/MathCATDemo/)): lets you paste a MathML fragment and inspect its displayed math, speech and braille.
+
 ### Test Coverage
 
 Test coverage helps identify which parts of the code are exercised by tests and which parts need more testing.

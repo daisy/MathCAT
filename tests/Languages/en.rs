@@ -30,6 +30,8 @@ mod elem_math;
 mod units;
 mod chemistry;
 mod alphabets;
+mod definitions;
 mod intent;
 mod mtable;
+mod navigate;
 

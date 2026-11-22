@@ -1,0 +1,56 @@
+---
+
+- name: laplacian
+  tag: laplacian
+  match: "count(*) <= 1"
+  replace:
+  - T: "laplacien"
+  - test:
+      if: "count(*) = 1"
+      then:
+      - test:
+          if: "$Verbosity!='Terse'"
+          then: [T: "de"]
+      - test:
+          if: "not(IsNode(*[1], 'leaf'))"
+          then: [pause: short]
+      - x: "*[1]"
+
+- name: divergence
+  tag: divergence
+  match: "count(*) = 1"
+  replace:
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "div"]
+      else: [T: "divergence de"]
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"
+
+- name: curl
+  tag: curl
+  match: "count(*) = 1"
+  replace:
+  - T: "rotationnel"
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "de"]
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"
+
+- name: gradient
+  tag: gradient
+  match: "count(*) = 1"
+  replace:
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "gradient de"]
+      else: [T: "grad"]
+  - test:
+      if: "not(IsNode(*[1], 'leaf'))"
+      then: [pause: short]
+  - x: "*[1]"

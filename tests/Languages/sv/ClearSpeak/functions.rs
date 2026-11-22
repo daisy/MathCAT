@@ -107,7 +107,7 @@ fn simple_log() -> Result<()> {
 #[test]
 fn normal_log() -> Result<()> {
     let expr = "<math><mrow><mi>log</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("sv", "ClearSpeak", expr, "logg, vänster-parentes; x plus y; höger-parentes")?;
+    test("sv", "ClearSpeak", expr, "logg av, vänster-parentes; x plus y; höger-parentes")?;
     return Ok(());
 
 }
@@ -139,7 +139,7 @@ fn simple_ln() -> Result<()> {
 #[test]
 fn normal_ln() -> Result<()> {
     let expr = "<math><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow></mrow></math>";
-    test("sv", "ClearSpeak", expr, "l n, vänster-parentes; x plus y; höger-parentes")?;
+    test("sv", "ClearSpeak", expr, "l n av, vänster-parentes; x plus y; höger-parentes")?;
     return Ok(());
 
 }
@@ -159,7 +159,7 @@ fn simple_natural_log() -> Result<()> {
 fn natural_log() -> Result<()> {
     let expr = "<math><mi>ln</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo>)</mo></math>";
     test_ClearSpeak("sv", "ClearSpeak_Log", "LnAsNaturalLog",expr,
-    "naturliga logaritmen; vänster-parentes; x plus y; höger-parentes")?;
+    "naturliga logaritmen av, vänster-parentes; x plus y; höger-parentes")?;
     return Ok(());
 
 }
@@ -207,7 +207,7 @@ fn test_functions_none_pref() -> Result<()> {
     <mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mrow><mi>x</mi><mo>+</mo><mi>y</mi></mrow><mo>)</mo></mrow>
     </math>";
     test_ClearSpeak("sv", "ClearSpeak_Functions", "None",expr,
-        "logg, vänster-parentes; x plus y; höger-parentes; plus; f gånger, vänster-parentes; x plus y; höger-parentes")?;
+        "logg av, vänster-parentes; x plus y; höger-parentes; plus; f gånger, vänster-parentes; x plus y; höger-parentes")?;
         return Ok(());
 
 }
@@ -265,7 +265,7 @@ fn no_times_sqrt() -> Result<()> {
         <mo>=</mo>
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
-    test("sv", "ClearSpeak", expr, "kvadratroten ur a; kvadratroten ur b; lika med, kvadratroten ur a b")?;
+    test("sv", "ClearSpeak", expr, "kvadratroten ur a; gånger kvadratroten ur b; lika med, kvadratroten ur a b")?;
     return Ok(());
 
 }
@@ -358,7 +358,7 @@ fn explicit_times_none_superscript() -> Result<()> {
         <mrow><mi>x</mi><mi>y</mi></mrow>
         <mo>)</mo></mrow>
         </mrow></math>";
-        test("sv", "ClearSpeak", expr, "b x y")?;
+        test("sv", "ClearSpeak", expr, "b, vänster-parentes; x y; höger-parentes")?;
         return Ok(());
 
     }

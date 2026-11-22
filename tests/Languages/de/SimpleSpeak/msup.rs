@@ -58,9 +58,9 @@ fn zero_power() -> Result<()> {
 #[test]
 fn decimal_power() -> Result<()> {
     let expr = "<math>
-                    <msup> <mi>x</mi> <mn>2.0</mn> </msup>
+                    <msup> <mi>x</mi> <mn>2,0</mn> </msup>
                 </math>";
-    test("de", "SimpleSpeak", expr, "x to the 2.0")?;
+    test("de", "SimpleSpeak", expr, "x to the 2,0")?;
     return Ok(());
 
 }

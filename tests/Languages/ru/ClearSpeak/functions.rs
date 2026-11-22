@@ -59,6 +59,14 @@ fn inverse_trig_arc() -> Result<()> {
 }
 
 #[test]
+fn inverse_cosine_arc() -> Result<()> {
+    // Inverse cosine is arccosine; area cosine belongs to inverse hyperbolic cosine.
+    let expr = "<math><msup><mi>cos</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
+    test_ClearSpeak("ru", "ClearSpeak_Trig", "ArcTrig", expr, "арккосинус икс")?;
+    return Ok(());
+}
+
+#[test]
 fn trig_squared() -> Result<()> {
     let expr = "<math><msup><mi>sin</mi><mn>2</mn></msup><mi>x</mi></math>";
     test("ru", "ClearSpeak", expr, "синус в квадрате икс")?;
@@ -142,6 +150,22 @@ fn natural_log() -> Result<()> {
     test_ClearSpeak("ru", "ClearSpeak_Log", "LnAsNaturalLog", expr,
         "натуральный логарифм от, скобка открывается икс плюс игрек, скобка закрывается")?;
         return Ok(());
+}
+
+#[test]
+fn individual_log_mi() -> Result<()> {
+    let expr = "<math><mi>log</mi></math>";
+    test("ru", "ClearSpeak", expr, "логарифм")?;
+    return Ok(());
+}
+
+#[test]
+fn individual_ln_mi() -> Result<()> {
+    let expr = "<math><mi>ln</mi></math>";
+    test("ru", "ClearSpeak", expr, "эл эн")?;
+    test_ClearSpeak("ru", "ClearSpeak_Log", "LnAsNaturalLog", expr,
+        "натуральный логарифм")?;
+    return Ok(());
 }
 
 #[test]

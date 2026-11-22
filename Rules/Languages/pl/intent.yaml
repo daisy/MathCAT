@@ -1,0 +1,178 @@
+---
+# Per-jezyk override warstwy INTENT dla polskiego (Opcja 2 - bez ruszania rdzenia silnika).
+# Pandoc generuje norme ‖...‖ (U+2225) z OBOMA ogranicznikami jako form="postfix", przez co
+# IsBracketed nie paruje pary i norma nie staje sie intentem -> jej pod-wezly (∥, indeks, tresc)
+# sa NIENAWIGOWALNE (NVDA: "blad wyrazenia matematycznego"). Te reguly grupuja te norme w
+# semantyczny wezel PRZED wspolnym intentem. Sa WASKIE (wymagaja ∥ na poczatku), wiec nie ruszaja
+# zwyklej relacji rownoleglosci a ∥ b.
+
+# --- Norma BEZ indeksu: ‖tresc‖ -> mrow[ ∥, tresc..., ∥, ...reszta... ] ---
+-
+  name: norm-plain-iso-pandoc
+  tag: mrow
+  match:
+    - "count(*)=3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][self::m:mo and .='∥']"
+  replace:
+  - intent:
+      name: "norm"
+      attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+      children:
+      - x: "*[2]"
+
+-
+  name: norm-plain-leading-pandoc
+  tag: mrow
+  match:
+    - "count(*)>3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][self::m:mo and .='∥'] and"
+    - "not(*[2][self::m:mo and .='∥'])"
+  replace:
+  - intent:
+      xpath-name: "name(.)"
+      attrs: "id='*[3]/@id'"
+      children:
+      - intent:
+          name: "norm"
+          attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+          children:
+          - x: "*[2]"
+      - x: "*[position()>3]"
+
+-
+  name: norm-subscripted-iso-pandoc
+  tag: mrow
+  match:
+    - "count(*)=3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][(self::m:msub or self::m:indexed-by) and *[1][self::m:mo and .='∥']]"
+  replace:
+  - intent:
+      name: "subscripted-norm"
+      attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+      children:
+      - x: "*[2]"
+      - x: "*[3]/*[2]"
+
+-
+  name: norm-leading-subscripted-pandoc
+  tag: mrow
+  match:
+    - "count(*)>3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][(self::m:msub or self::m:indexed-by) and *[1][self::m:mo and .='∥']] and"
+    - "not(*[position()>1 and position()<3][self::m:mo and .='∥'])"
+  replace:
+  - intent:
+      xpath-name: "name(.)"
+      attrs: "id='*[3]/@id'"   # owijajacy mrow: id zwolnione przez rozbicie msub
+      children:
+      - intent:
+          name: "subscripted-norm"
+          attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+          children:
+          - x: "*[2]"
+          - x: "*[3]/*[2]"
+      - x: "*[position()>3]"
+
+# --- Norma z indeksem I POTEGA: ‖tresc‖_indeks^potega ---
+# canonicalize: mrow[ ∥, tresc..., power[ (indexed-by|msub)[∥, indeks], potega ], ...reszta... ]
+# Budujemy: power[ subscripted-norm[tresc, indeks], potega ].
+-
+  name: norm-subscripted-powered-iso-pandoc
+  tag: mrow
+  match:
+    - "count(*)=3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][(self::m:power or self::m:msubsup) and *[1][(self::m:indexed-by or self::m:msub) and *[1][self::m:mo and .='∥']]]"
+  replace:
+  - intent:
+      name: "power"
+      attrs: "data-intent-property='concat(data-intent-property, \":postfix:\")'"
+      children:
+      - intent:
+          name: "subscripted-norm"
+          attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+          children:
+          - x: "*[2]"
+          - x: "*[3]/*[1]/*[2]"   # indeks (z indexed-by/msub wewnatrz power)
+      - x: "*[3]/*[2]"            # potega
+
+-
+  name: norm-leading-subscripted-powered-pandoc
+  tag: mrow
+  match:
+    - "count(*)>3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][(self::m:power or self::m:msubsup) and *[1][(self::m:indexed-by or self::m:msub) and *[1][self::m:mo and .='∥']]] and"
+    - "not(*[position()>1 and position()<3][self::m:mo and .='∥'])"
+  replace:
+  - intent:
+      xpath-name: "name(.)"
+      attrs: "id='*[3]/@id'"
+      children:
+      - intent:
+          name: "power"
+          attrs: "data-intent-property='concat(data-intent-property, \":postfix:\")'"
+          children:
+          - intent:
+              name: "subscripted-norm"
+              attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+              children:
+              - x: "*[2]"
+              - x: "*[3]/*[1]/*[2]"
+          - x: "*[3]/*[2]"
+      - x: "*[position()>3]"
+
+# --- Norma z indeksem I POTEGA (wariant: zamykajacy ∥ to baza msubsup) ---
+# canonicalize czasem zostawia: mrow[ ∥, tresc..., msubsup[ ∥, indeks, potega ], ...reszta... ]
+# Budujemy: power[ subscripted-norm[tresc, indeks], potega ].
+-
+  name: norm-subscripted-powered-msubsup-iso-pandoc
+  tag: mrow
+  match:
+    - "count(*)=3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][self::m:msubsup and *[1][self::m:mo and .='∥']]"
+  replace:
+  - intent:
+      name: "power"
+      attrs: "data-intent-property='concat(data-intent-property, \":postfix:\")'"
+      children:
+      - intent:
+          name: "subscripted-norm"
+          attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+          children:
+          - x: "*[2]"
+          - x: "*[3]/*[2]"   # indeks
+      - x: "*[3]/*[3]"       # potega
+
+-
+  name: norm-leading-subscripted-powered-msubsup-pandoc
+  tag: mrow
+  match:
+    - "count(*)>3 and"
+    - "*[1][self::m:mo and .='∥'] and"
+    - "*[3][self::m:msubsup and *[1][self::m:mo and .='∥']] and"
+    - "not(*[position()>1 and position()<3][self::m:mo and .='∥'])"
+  replace:
+  - intent:
+      xpath-name: "name(.)"
+      attrs: "id='*[3]/@id'"
+      children:
+      - intent:
+          name: "power"
+          attrs: "data-intent-property='concat(data-intent-property, \":postfix:\")'"
+          children:
+          - intent:
+              name: "subscripted-norm"
+              attrs: "data-intent-property='concat(data-intent-property, \":function:\")'"
+              children:
+              - x: "*[2]"
+              - x: "*[3]/*[2]"
+          - x: "*[3]/*[3]"
+      - x: "*[position()>3]"
+
+- include: "../../intent.yaml"

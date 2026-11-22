@@ -50,11 +50,15 @@
             {% if lang_code == page.lang %}
               <span class="btn">{{ lang_name }}</span> <!-- current language: non-clickable label -->
             {% else %}
+              {% assign translation = nil %}
               {% for p in site.pages %}
-                {% if p.ref == page.ref and p.lang == lang_code %}
-                  <a href="{{ p.url | relative_url }}" class="btn">{{ lang_name }}</a>
+                {% if translation == nil and p.ref == page.ref and p.lang == lang_code %}
+                  {% assign translation = p %}
                 {% endif %}
               {% endfor %}
+              {% if translation %}
+                <a href="{{ translation.url | relative_url }}" class="btn">{{ lang_name }}</a>
+              {% endif %}
             {% endif %}
           {% endfor %}
         </nav>

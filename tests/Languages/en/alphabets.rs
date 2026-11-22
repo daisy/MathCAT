@@ -392,6 +392,18 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn up_tack_330() -> Result<()> {
+    // perpendicular and up tack look the same. I added a special LiteralSpeak rule for up tack not to say "perpendicular"
+    let perp = "<math><mi>a</mi><mo>⟂</mo><mi>b</mi></math>"; // 0x27c2
+    test("en", "SimpleSpeak", perp, "eigh is perpendicular to b")?;
+    test("en", "LiteralSpeak", perp, "eigh is perpendicular to b")?;
+    let up_tack = "<math><mi>a</mi><mo>⊥</mo><mi>b</mi></math>"; // 0x22a5
+    test("en", "ClearSpeak", up_tack, "eigh is perpendicular to b")?;
+    test("en", "LiteralSpeak", up_tack, "eigh up tack b")?;
+    return Ok(());
+  }
+
+#[test]
 fn unicode_typo_regressions() -> Result<()> {
   test("en", "SimpleSpeak", "<math><mi>ⁱ</mi></math>", "to the i-th power")?;
   test("en", "SimpleSpeak", "<math><mi>☌</mi></math>", "conjunction")?;

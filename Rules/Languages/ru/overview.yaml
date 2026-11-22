@@ -21,22 +21,25 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - t: "разделить на"  # (en: 'over')
+      - T: "разделить на"  # (en: 'over')
       - x: "*[2]"
       else:
-      - t: "дробь, числитель:"  # (en: 'fraction')
+      - T: "дробь, числитель:"  # (en: 'fraction')
       - x: "*[1]"
-      - t: "знаменатель:"
+      - T: "знаменатель:"
       - x: "*[2]"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
   match: "."
   replace:
-  - t: "квадратный корень"
+  - T: "квадратный корень"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]
+      then: [T: "из"]
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
   - x: "*[1]"
 
 - name: overview-default
@@ -44,25 +47,19 @@
   match: "."
   replace:
   - test:
-      if: "*[2][self::m:mn]"
-      then_test:
-      - if: "*[2][.='2']"
-        then: [t: "квадратный корень"]
-      - else_if: "*[2][.='3']"
-        then: [t: "кубический корень"]  # (en: 'cube root')
-      - else_if: "*[2][not(contains(., '.'))]"
-        then: [x: "ToOrdinal(*[2])", t: "корень"]
+    - if: "*[2][self::m:mn and .='2']"
+      then: [T: "квадратный корень"]
+    - else_if: "*[2][self::m:mn and .='3']"
+      then: [T: "кубический корень"]
       else:
-      - test:
-          if: "*[2][self::m:mi][string-length(.)=1]"
-          then:
-          - x: "*[2]"
-          - pronounce: [{text: "-й"}, {ipa: "j"}, {sapi5: "th"}, {eloquence: "T"}]
-          else: {x: "*[2]"}
-      - t: "корень"
+      - T: "корень степени"
+      - x: "*[2]"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "из"]
+      then: [T: "из"]
+  - test:
+      if: "not(IsNode(*[1], 'simple'))"
+      then: [T: "выражения"]
   - x: "*[1]"
 
 - name: matrix-override
@@ -71,24 +68,22 @@
   - "*[2][self::m:mtable] and"
   - "(IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|'))"
   replace:
-  - t: "на"  # (en: 'a')
   - x: count(*[2]/*)
-  - t: "на"  # (en: 'by')
-  - x: count(*[2]/*[self::m:mtr][1]/*)
+  - T: "на"  # (en: 'by')
+  - x: "count(*[2]/*[1]/*) - count(*[2]/*[1][self::m:mlabeledtr])"
   - test:
       if: "*[1][.='|']" # just need to check the first bracket since we know it must be (, [, or |
-      then: [t: "определитель"]  # (en: 'determinant')
-      else: [t: "матрица"]  # (en: 'matrix')
+      then: [T: "определитель"]  # (en: 'determinant')
+      else: [T: "матрица"]  # (en: 'matrix')
 
 - name: overview-default
   tag: mtable
   match: "."
   replace:
-  - t: "на"  # (en: 'a')
   - x: count(*)
-  - t: "на"  # (en: 'by')
-  - x: count(*[self::m:mtr][1]/*)
-  - t: "таблица"  # (en: 'table')
+  - T: "на"  # (en: 'by')
+  - x: "count(*[1]/*) - count(*[1][self::m:mlabeledtr])"
+  - T: "таблица"  # (en: 'table')
 
 - name: short-mrow
   tag: mrow
@@ -112,6 +107,6 @@
   - pause: auto
   - x: "*[5]"
   - pause: auto
-  - t: "и так далее"  # (en: 'and so on')
+  - T: "и так далее"  # (en: 'and so on')
 
 - include: "SimpleSpeak_Rules.yaml"

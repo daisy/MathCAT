@@ -100,9 +100,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l")?;
+            "versal r med 4 höger index, nedsänkt i och upphöjt ingen nedsänkt ingen och upphöjt j nedsänkt k och upphöjt ingen nedsänkt l och upphöjt ingen")?;
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "versal r med 4 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l")?;
+            "versal r med 4 höger index, nedsänkt i och upphöjt ingen nedsänkt ingen och upphöjt j nedsänkt k och upphöjt ingen nedsänkt l och upphöjt ingen")?;
             return Ok(());
 
 }
@@ -114,7 +114,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("sv", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "versal r med 4 vänster index, nedsänkt versal i, upphöjt versal j och resterande vänster index versal k none versal l none slut vänster index och med 5 höger index, nedsänkt i upphöjt j nedsänkt k nedsänkt l och resterande höger index m none slut index")?;
+            "versal r med 4 vänster index, nedsänkt versal i och upphöjt ingen, nedsänkt ingen och upphöjt versal j, nedsänkt versal k och upphöjt ingen, nedsänkt versal l och upphöjt ingen och med 5 höger index, nedsänkt i och upphöjt ingen nedsänkt ingen och upphöjt j nedsänkt k och upphöjt ingen nedsänkt l och upphöjt ingen nedsänkt m och upphöjt ingen")?;
             return Ok(());
 
 }
@@ -151,7 +151,7 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    test("sv", "ClearSpeak", expr, "x nedsänkt k, upphöjt till i")?;
     return Ok(());
 
 }
@@ -183,7 +183,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("sv", "ClearSpeak", expr, "x nedsänkt k upphöjt till i")?;
+    test("sv", "ClearSpeak", expr, "x nedsänkt k, upphöjt till i")?;
     return Ok(());
 
 }
@@ -282,7 +282,6 @@ fn ignore_comma() -> Result<()> {
 }
 
 #[test]
-#[ignore] // issue #14
 fn ignore_period_and_space() -> Result<()> {
     // from https://en.wikipedia.org/wiki/Probability
     let expr = "<math>
@@ -318,7 +317,7 @@ fn ignore_period_and_space() -> Result<()> {
         </mstyle>
       </mrow>
 </math>";
-    test("sv", "ClearSpeak", expr, "phi of x is equal to; c, e raised to the negative h squared x squared power")?;
+    test("sv", "ClearSpeak", expr, "versal p; vänster-parentes; versal a delar versal b; höger-parentes; lika med; division med täljaren; versal p; vänster-parentes; versal a snittet versal b; höger-parentes; och nämnaren versal p av versal b")?;
     return Ok(());
 
 }

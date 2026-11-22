@@ -1,7 +1,7 @@
 """
 Rule diffing logic.
 
-Compares English and translated rules to find fine-grained structural differences.
+Compares source and translated rules to find fine-grained structural differences.
 """
 
 from .extractors import (
@@ -11,7 +11,7 @@ from .extractors import (
     extract_variables,
     normalize_xpath,
 )
-from .models import DiffType, RuleDifference, RuleInfo
+from .models.rules import DiffType, RuleDifference, RuleInfo
 
 
 def dedup_list(values: list[str]) -> list[str]:

@@ -13,7 +13,9 @@ from rich.panel import Panel
 from rich.table import Table
 
 from .line_resolver import resolve_diff_lines
-from .models import AuditSummary, ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
+from .models.audit import AuditSummary
+from .models.definitions import DefinitionComparisonResult
+from .models.rules import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
 
 console = Console()
 
@@ -44,16 +46,23 @@ def rule_label(rule: RuleInfo) -> str:
     return f"[cyan]{escape(rule.name)}[/] [dim]({escape(tag)})[/]"
 
 
+def language_label(language: str) -> str:
+    """Normalize a language code for display."""
+    return language.lower().replace("_", "-")
+
+
 def print_warnings(
     result: ComparisonResult,
     file_name: str,
     verbose: bool = False,
     target_language: str = "tr",
+    source_language: str = "en",
 ) -> int:
     """Print warnings to console. Returns count of issues found."""
     issues = 0
     display_name = Path(file_name).as_posix()
-    target_label = target_language.lower().replace("_", "-")
+    source_label = language_label(source_language)
+    target_label = language_label(target_language)
 
     if not result.has_issues:
         return issues
@@ -68,7 +77,9 @@ def print_warnings(
     console.print()
     console.rule(style="cyan")
     console.print(f"[{style}]{icon}[/] [bold]{escape(display_name)}[/]")
-    console.print(f"  [dim]English: {result.english_rule_count} rules  →  Translated: {result.translated_rule_count} rules[/]")
+    console.print(
+        f"  [dim]{source_label}: {result.english_rule_count} rules  →  {target_label}: {result.translated_rule_count} rules[/]"
+    )
     console.rule(style="cyan")
 
     grouped_issues: dict[str, dict[str, Any]] = {}
@@ -120,7 +131,7 @@ def print_warnings(
                 console.print(f"          [dim]{ISSUE_GROUP_LABELS[group_key]} [{len(entries)}][/]")
                 for entry in entries:
                     if issue_type is IssueType.MISSING_RULE:
-                        console.print(f"              [dim]•[/] [dim](line {entry['line_en']} in English)[/]")
+                        console.print(f"              [dim]•[/] [dim](line {entry['line_en']} in {source_label})[/]")
                     elif issue_type is IssueType.EXTRA_RULE:
                         console.print(f"              [dim]•[/] [dim](line {entry['line_tr']} in {target_label})[/]")
                     elif issue_type is IssueType.UNTRANSLATED_TEXT:
@@ -131,15 +142,69 @@ def print_warnings(
                     else:
                         diff: RuleDifference = entry["diff"]
                         console.print(
-                            f"              [dim]•[/] [dim](line {entry['line_en']} en, {entry['line_tr']} {target_label})[/]"
+                            f"              [dim]•[/] [dim](line {entry['line_en']} {source_label}, "
+                            f"{entry['line_tr']} {target_label})[/]"
                         )
                         console.print(f"                  [dim]{diff.description}[/]")
                         if verbose:
-                            console.print(f"                  [green]en:[/] {escape(diff.english_snippet)}")
+                            console.print(f"                  [green]{source_label}:[/] {escape(diff.english_snippet)}")
                             console.print(f"                  [red]{target_label}:[/] {escape(diff.translated_snippet)}")
                 issues += len(entries)
 
     return issues
+
+
+def print_definition_findings(
+    result: DefinitionComparisonResult,
+    file_name: str | Path,
+    target_language: str = "tr",
+    source_language: str = "en",
+) -> int:
+    """Render definition issues and informational extras on a dedicated path."""
+    if not result.has_findings:
+        return 0
+
+    display_name = Path(file_name).as_posix()
+    source_label = language_label(source_language)
+    target_label = language_label(target_language)
+    style, icon = ("red", "✗") if result.issue_count else ("blue", "i")
+
+    console.print()
+    console.rule(style="cyan")
+    console.print(f"[{style}]{icon}[/] [bold]{escape(display_name)}[/]")
+    console.print(
+        f"  [dim]{source_label}: {result.source_definition_count} definitions  →  "
+        f"{target_label}: {result.target_definition_count} definitions[/]"
+    )
+    console.rule(style="cyan")
+
+    if result.issue_count:
+        console.print(f"\n  [magenta]≠[/] [bold]Definition Issues[/] [[magenta]{result.issue_count}[/]]")
+
+        for definition in result.missing_definitions:
+            console.print(f"      [dim]•[/] [cyan]{escape(definition.name)}[/]")
+            console.print("          [dim]Missing in Translation[/]")
+            console.print(f"              [dim]• (line {definition.line_number} in {source_label})[/]")
+
+        for mismatch in result.type_mismatches:
+            source_definition = mismatch.source_definition
+            target_definition = mismatch.target_definition
+            console.print(f"      [dim]•[/] [cyan]{escape(source_definition.name)}[/]")
+            console.print("          [dim]Definition Type Mismatch[/]")
+            console.print(
+                f"              [dim]• (line {source_definition.line_number} {source_label}, "
+                f"{target_definition.line_number} {target_label})[/]"
+            )
+            console.print(f"              [green]{source_label}:[/] {source_definition.kind.value}")
+            console.print(f"              [red]{target_label}:[/] {target_definition.kind.value}")
+
+    if result.extra_definitions:
+        console.print(f"\n  [blue]i[/] [bold]Info: Extra Definitions[/] [[blue]{len(result.extra_definitions)}[/]]")
+        for definition in result.extra_definitions:
+            console.print(f"      [dim]•[/] [cyan]{escape(definition.name)}[/]")
+            console.print(f"          [dim](line {definition.line_number} in {target_label})[/]")
+
+    return result.issue_count
 
 
 GREEN_FILE_COUNT_THRESHOLD = 7
@@ -155,10 +220,10 @@ def file_count_color(file_count: int) -> str:
     return "red"
 
 
-def print_audit_header(language: str, file_count: int) -> None:
+def print_audit_header(language: str, file_count: int, source_language: str = "en") -> None:
     """Print the audit header panel."""
     console.print(Panel(f"MathCAT Translation Audit: {language.upper()}", style="bold cyan"))
-    console.print("\n  [dim]Comparing against English (en) reference files[/]")
+    console.print(f"\n  [dim]Comparing against {language_label(source_language)} reference files[/]")
     console.print(f"  [dim]Files to check: {file_count}[/]")
 
 
@@ -175,9 +240,32 @@ def print_audit_summary(summary: AuditSummary) -> None:
         ("Untranslated text", summary.total_untranslated, "yellow" if summary.total_untranslated else "green"),
         ("Rule differences", summary.total_differences, "magenta" if summary.total_differences else "green"),
         ("Extra rules", summary.total_extra, "blue" if summary.total_extra else None),
+        (
+            "Missing definitions",
+            summary.total_missing_definitions,
+            "red" if summary.total_missing_definitions else "green",
+        ),
+        (
+            "Definition type mismatches",
+            summary.total_definition_type_mismatches,
+            "magenta" if summary.total_definition_type_mismatches else "green",
+        ),
+        (
+            "Extra definitions",
+            summary.total_extra_definitions,
+            "blue" if summary.total_extra_definitions else None,
+        ),
     ]:
         table.add_row(label, f"[{color}]{value}[/]" if color else str(value))
     console.print(Panel(table, style="cyan"))
+
+
+def print_order_findings(findings: list[tuple[str, int]]) -> None:
+    """Print the first shared-rule order difference for each affected file."""
+    for file_name, position in findings:
+        console.print(
+            f"[yellow]Rule order differs[/] in {escape(str(file_name))}: first difference at shared rule position {position}"
+        )
 
 
 def print_language_list(languages: list[tuple[str, int]]) -> None:
@@ -197,4 +285,4 @@ def print_language_list(languages: list[tuple[str, int]]) -> None:
         table.add_row(code, f"[{color}]{count}[/] files")
 
     console.print(table)
-    console.print("\n  [dim]Reference: en (English) - base translation[/]\n")
+    console.print("\n  [dim]Default reference: en; use --source to compare against another language[/]\n")

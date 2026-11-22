@@ -38,7 +38,7 @@
   replace:
   #      if: "$Verbosity='Verbose'"
   #      then: [T: "the"]
-  - T: "vòng cung"
+  - T: "cung"
     #   - test:
   - x: "*[1]"
   - x: "*[2]"

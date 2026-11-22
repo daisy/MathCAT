@@ -3,7 +3,7 @@ Tests for differ.py.
 """
 
 from ..differ import diff_rules
-from ..models import RuleDifference, RuleInfo
+from ..models.rules import RuleDifference, RuleInfo
 
 
 def make_rule(name: str, tag: str, data) -> RuleInfo:
