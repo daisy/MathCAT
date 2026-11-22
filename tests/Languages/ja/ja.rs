@@ -2505,3 +2505,20 @@ fn supplemental_operators() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "上に疑問符付き小なり")?;
     return Ok(());
 }
+
+/// ⧓ uses the ボウタイ of ⋈, ⥈ the 小さい円 of SMALL CIRCLE, and ⦦ ⧖ ⥌ avoid words that Open JTalk
+/// misreads (斜角 as ハスカク, 白砂時計 as ハクシャトケー, 下端 as カタン).
+#[test]
+fn miscellaneous_math_symbols_b() -> Result<()> {
+    let expr = "<math><mi>&#x29d3;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "黒ボウタイ")?;
+    let expr = "<math><mi>&#x2948;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "小さい円を貫く左右矢印")?;
+    let expr = "<math><mi>&#x29a6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上に開いた斜めの角")?;
+    let expr = "<math><mi>&#x29d6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "白い砂時計")?;
+    let expr = "<math><mi>&#x294c;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "うわはし右かえし したはし左かえし 上下ハープーン")?;
+    return Ok(());
+}
