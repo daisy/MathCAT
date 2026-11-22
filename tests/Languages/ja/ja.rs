@@ -598,6 +598,23 @@ fn enclosed_characters() -> Result<()> {
     return Ok(());
 }
 
+/// The MathType characters in U+E900-E9FF use the words of the standard symbols they look like:
+/// ⨫ for e919, the space of ⊓ ⊔ for e920, ⧴ for e94d. 差 異体 was read サ イタイ, so e96d is 差の変形.
+#[test]
+fn mathtype_relation_symbols() -> Result<()> {
+    let expr = "<math><mi>&#xe919;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "右さがりドット付きマイナス")?;
+    let expr = "<math><mi>&#xe920;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "二重四角 ユニオン")?;
+    let expr = "<math><mi>&#xe94d;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "遅延規則")?;
+    let expr = "<math><mi>&#xe96d;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "差の変形")?;
+    let expr = "<math><mi>&#xe90a;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "要素として含む オア イコール")?;
+    return Ok(());
+}
+
 /// The squared katakana words (U+3300-3357), the era names and ㍿ had no entry, so the character itself
 /// was passed on and Open JTalk said nothing for most of them (㌔, ㍿); ㏂ was read アトメートル, and
 /// 毎 written with no space between two units was read ゴト.
