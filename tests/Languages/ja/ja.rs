@@ -2473,3 +2473,18 @@ fn superscript_letter_powers() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "x アイ 乗")?;
     return Ok(());
 }
+
+/// ⨅ and ⨆ are written with a space like ⊓ and ⊔, ⫋ gets the オブ of ⫌, and a symbol above is
+/// 上に…付き as in the other verified names.
+#[test]
+fn supplemental_operators() -> Result<()> {
+    let expr = "<math><mi>&#x2a05;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "四角 交わり")?;
+    let expr = "<math><mi>&#x2a06;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "四角 ユニオン")?;
+    let expr = "<math><mi>&#x2acb;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット イコールの上に部分集合オブ")?;
+    let expr = "<math><mi>&#x2a7b;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上に疑問符付き小なり")?;
+    return Ok(());
+}
