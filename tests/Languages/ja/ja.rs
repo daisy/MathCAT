@@ -684,6 +684,29 @@ fn mathtype_arrows() -> Result<()> {
     return Ok(());
 }
 
+/// The MathType negated relations in U+EA00-EAFF use the words of the standard relations they look like:
+/// バックスラッシュ 部分集合オブ like ⟈, ノット 上にドット付き要素オブ like ⋵ and ∉, さらにきわめて like ⋘,
+/// 凹凸付き like ⪮ and ノット 四角の像 like ⋢, and contain is 要素として含む like ∋. A variant says 変形 like ⦜,
+/// because 異体 was read イタイ.
+#[test]
+fn mathtype_negated_relations() -> Result<()> {
+    let expr = "<math><mi>&#xea02;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット きわめて小なり 変形")?;
+    let expr = "<math><mi>&#xea0a;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 要素として含む オア イコール")?;
+    let expr = "<math><mi>&#xea0d;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "バックスラッシュ 部分集合オブ")?;
+    let expr = "<math><mi>&#xea22;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 上にドット付き要素オブ")?;
+    let expr = "<math><mi>&#xea48;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット さらにきわめて小なり")?;
+    let expr = "<math><mi>&#xea58;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 凹凸付きイコール")?;
+    let expr = "<math><mi>&#xea60;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 四角の像")?;
+    return Ok(());
+}
+
 /// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
 /// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
 /// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
@@ -1223,6 +1246,22 @@ fn shape_names_read_correctly() -> Result<()> {
         ("&#x25A2;", "かど丸の白四角"),
         ("&#x2774;", "ちゅうくらいのちゅうカッコ飾り"),
         ("&#x25B3;", "三角形"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// ◩ and ◪ are halved on the diagonal, so they say 斜め like ⬔ 右上側斜め半分黒の四角, and ▧ says
+/// 左上側から like ▨ 右上側から. ◫ says 縦の, since its bisecting line is vertical.
+#[test]
+fn geometric_shapes() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x25E9;", "左上側斜め半分黒の四角"),
+        ("&#x25EA;", "右下側斜め半分黒の四角"),
+        ("&#x25A7;", "左上側から右下への斜線塗りの四角"),
+        ("&#x25EB;", "縦の二等分線付き白四角"),
     ] {
         let expr = format!("<math><mo>{ch}</mo></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -2619,5 +2658,32 @@ fn miscellaneous_math_symbols_b() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "白い砂時計")?;
     let expr = "<math><mi>&#x294c;</mi></math>";
     test("ja", "SimpleSpeak", expr, "うわはし右かえし したはし左かえし 上下ハープーン")?;
+    return Ok(());
+}
+
+/// The MathType pieces in U+EC00-ECFF use the words of the standard symbols they are drawn with:
+/// 下側中カッコ like ⏟, 上側丸カッコ like ⏜, 筆算の割り算 like ⟌, 左天井床 like ⌈ and ⌊, and 左上側 like the
+/// top right rectangle ec90. 下部 was read カブ ("turnip"), so the bottom pieces here, in U+EBxx and U+F8xx
+/// and ⌡ say 下の部分, after a space because 下 right after インテグラル was read カ.
+#[test]
+fn mathtype_bracket_pieces() -> Result<()> {
+    let expr = "<math><mi>&#xec00;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "下側中カッコ 左端")?;
+    let expr = "<math><mi>&#xeca1;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上側丸カッコ 左端")?;
+    let expr = "<math><mi>&#xec1f;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "根号 下の部分")?;
+    let expr = "<math><mi>&#xec32;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "筆算の割り算")?;
+    let expr = "<math><mi>&#xec95;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左天井床 延長部")?;
+    let expr = "<math><mi>&#xec80;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左上側の長方形")?;
+    let expr = "<math><mi>&#xeb82;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "下向きハープーンの左に上向きハープーン 下の部分")?;
+    let expr = "<math><mi>&#xf8f0;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "角かっこ 下の部分")?;
+    let expr = "<math><mi>&#x2321;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "インテグラル 下の部分")?;
     return Ok(());
 }
