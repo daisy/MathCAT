@@ -1255,6 +1255,21 @@ fn misread_symbol_names() -> Result<()> {
     return Ok(());
 }
 
+/// The white arrows in U+2B00-2BFF put 白 after the direction like ⇦ 左向き白矢印 and
+/// ⇳ 上下白矢印, and ⬕ says 左下側 like ⬔ 右上側.
+#[test]
+fn misc_symbols_and_arrows() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x2B00;", "北東白矢印"),
+        ("&#x2B04;", "左右白矢印"),
+        ("&#x2B15;", "左下側斜め半分黒の四角"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// U+23E6 (AC current) had spell: "ac", which is the XPath for a child element named ac,
 /// not the string, so the whole expression failed to speak. It is 交流 in Japanese.
 #[test]
